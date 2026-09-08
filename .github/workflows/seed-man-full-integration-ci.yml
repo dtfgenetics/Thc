@@ -71,8 +71,8 @@ jobs:
           required=(
             index.html app.js canvas-compat-v1.js campaign-v1.js gameplay-v2.js
             combat-browser-v1.js enemy-attacks-browser-v1.js enemy-attacks.js
-            seed-man-production-art.js input-guard-v1.js seed-man.css
-            physics.mjs data/campaign.json data/level-01.json data/levels-02-11.json
+            world-five-v1.js seed-man-ui-v3.js seed-man-production-art.js input-guard-v1.js seed-man.css
+            physics.mjs data/campaign.json data/level-01.json data/levels-02-11.json data/levels-12-15.json
           )
           for file in "${required[@]}"; do
             test -s "$route/$file" || { echo "Missing Seed Man integration asset: $file" >&2; exit 1; }
@@ -84,6 +84,8 @@ jobs:
           node --check "$route/combat-browser-v1.js"
           node --check "$route/enemy-attacks-browser-v1.js"
           node --check "$route/enemy-attacks.js"
+          node --check "$route/world-five-v1.js"
+          node --check "$route/seed-man-ui-v3.js"
           node --check "$route/input-guard-v1.js"
           grep -Fq 'sprout-campaign-v3' "$route/campaign-v1.js"
           grep -Fq 'seed-man-campaign-experience-v3' "$route/campaign-v1.js"
@@ -101,8 +103,10 @@ jobs:
           grep -Fq 'combatBrowserAutoLoad: true' "$route/canvas-compat-v1.js"
           grep -Fq 'seed-man-phenotype-mobility-frame-v1' "$route/canvas-compat-v1.js"
           grep -Fq 'seed-man-shared-platform-v1' "$route/input-guard-v1.js"
-          grep -Fq '"levelCount": 11' "$route/data/campaign.json"
-          grep -Fq '"newLevelCount": 10' "$route/data/campaign.json"
+          grep -Fq '"levelCount": 15' "$route/data/campaign.json"
+          grep -Fq '"newLevelCount": 14' "$route/data/campaign.json"
+          grep -Fq '"id": "world-05"' "$route/data/campaign.json"
+          grep -Fq 'genome-spire' "$route/data/campaign.json"
           grep -Fq 'The Phantom Pump' "$route/campaign-v1.js"
           grep -Fq 'Mite Queen' "$route/campaign-v1.js"
           grep -Fq 'Mildew Wraith' "$route/campaign-v1.js"
@@ -115,6 +119,7 @@ jobs:
           cmp games/seed-man-platformer/data/campaign.json site/public-route-patch/games/seed-man-platformer/data/campaign.json
           cmp games/seed-man-platformer/data/level-01.json site/public-route-patch/games/seed-man-platformer/data/level-01.json
           cmp games/seed-man-platformer/data/levels-02-11.json site/public-route-patch/games/seed-man-platformer/data/levels-02-11.json
+          cmp games/seed-man-platformer/data/levels-12-15.json site/public-route-patch/games/seed-man-platformer/data/levels-12-15.json
 
       - name: Install browser acceptance dependencies
         run: |
