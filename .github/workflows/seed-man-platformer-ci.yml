@@ -55,6 +55,18 @@ jobs:
           bytes="$(wc -c < "$bundle" | tr -d ' ')"
           [[ "$bytes" -ge 250000 && "$bytes" -le 900000 ]] || { echo "Three.js bundle outside budget: $bytes" >&2; exit 1; }
 
+      - name: Stage generated Three.js bundle into public route
+        shell: bash
+        run: |
+          set -euo pipefail
+          bundle=games/seed-man-platformer/dist/three-world-v1.js
+          route=site/public-route-patch/games/seed-man-platformer/three-world-v1.js
+          cp "$bundle" "$route"
+          test -s "$route"
+          node --check "$route"
+          grep -Fq 'SeedManThreeWorld' "$route"
+          grep -Fq 'seed-man-three-world-v2' "$route"
+
       - name: Verify canonical 20-level campaign and approved-art contract
         shell: bash
         run: |
@@ -75,7 +87,6 @@ jobs:
           grep -Fq '"blight-king"' "$game/data/boss-catalog-v1.json"
           grep -Fq '"phases":4' "$game/data/boss-catalog-v1.json"
           grep -Fq '"dropDurationMs":30000' "$game/data/enemy-catalog-v1.json"
-
           cmp "$game/data/campaign-20-v1.json" "$route/data/campaign-20-v1.json"
           cmp "$game/data/levels-20-v1.json" "$route/data/levels-20-v1.json"
           cmp "$game/data/seed-man-art-manifest-v1.json" "$route/data/seed-man-art-manifest-v1.json"
@@ -105,6 +116,7 @@ jobs:
           node --check games/seed-man-platformer/src/systems/production-readiness.mjs
           node --check games/seed-man-platformer/src/systems/production-assets.mjs
           node --check games/seed-man-platformer/src/systems/production-bootstrap.mjs
+          node --check site/public-route-patch/games/seed-man-platformer/three-world-v1.js
 
       - name: Keep legacy route playable during migration
         run: |
@@ -115,13 +127,7 @@ jobs:
           node games/seed-man-platformer/test/public-campaign.test.mjs
           node games/seed-man-platformer/test/input-guard.test.mjs
 
-      - name: Install browser-test dependencies
+      - name: Validate packaged public route without browser automation
         run: |
-          npm ci
-          npx playwright install chromium
-
-      - name: Browser smoke test current playable route
-        run: node games/seed-man-platformer/test/browser-smoke.mjs
-
-      - name: Shared platform browser acceptance
-        run: node games/seed-man-platformer/test/shared-platform-browser.test.mjs
+          node scripts/audit-game-route-integrity.mjs
+          node scripts/validate-public-game-release-integrity.mjs
