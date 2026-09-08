@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "purpose": "seed-man-threejs-live-renderer-production",
+  "release": "20260908-three-live-r1",
+  "canonicalRoute": "/games/seed-man-platformer/",
+  "canonicalThreeSource": "games/seed-man-platformer/src/render/three-world.mjs",
+  "canonicalThreeEntry": "games/seed-man-platformer/src/render/three-world-public-entry.mjs",
+  "publicBundle": "three-world-v1.js",
+  "publicAdapter": "three-world-adapter-v1.js",
+  "authoredSpriteRuntime": "seed-man-sprite-runtime-v1.js",
+  "requirements": [
+    "build the self-contained Three.js public bundle from canonical source",
+    "load the Three.js bundle and live adapter on the canonical Seed Man route",
+    "retain Canvas2D gameplay simulation and foreground ownership",
+    "use Three.js only for world/background/platform/checkpoint/finish rendering",
+    "retain authored Seed Man sprite runtime above the Three.js world layer",
+    "fall back safely to Canvas2D when WebGL is unavailable",
+    "verify desktop and mobile visitor route after publication"
+  ],
+  "expectedMarkers": [
+    "SeedManThreeWorld",
+    "seed-man-three-public-v3",
+    "seed-man-three-world-v2",
+    "seed-man-three-adapter-v2",
+    "seed-man-three-instancing-v1",
+    "seed-man-sprite-runtime-v1"
+  ]
+}
