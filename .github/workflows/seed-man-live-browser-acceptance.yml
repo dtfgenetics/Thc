@@ -32,6 +32,7 @@ jobs:
           SPROUT_GAME_URL: https://dtfseeds.com/games/seed-man-platformer/
         run: |
           sed -i "s/{ waitUntil: 'networkidle' }/{ waitUntil: 'domcontentloaded', timeout: 90000 }/g" games/seed-man-platformer/test/browser-smoke.mjs
+          sed -i "s#/Seed Man: (Sprout Run|Greenhouse Gauntlet)/i#/Seed Man: Greenhouse Gauntlet/i#" games/seed-man-platformer/test/browser-smoke.mjs
           sed -i 's/assert.equal(contract.levels.length, 11);/assert.equal(contract.levels.length, 15);/' games/seed-man-platformer/test/campaign-browser.test.mjs
           node games/seed-man-platformer/test/browser-smoke.mjs
           node games/seed-man-platformer/test/gameplay-v2-smoke.mjs
