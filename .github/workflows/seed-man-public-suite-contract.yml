@@ -61,6 +61,7 @@ jobs:
           node --check "$route/seed-man-ui-v3.js"
           node --check "$route/seed-man-visual-v4.js"
           node --check "$route/world-five-v1.js"
+          node --check "$route/three-world-v1.js"
           grep -Fq '<title>Seed Man: Greenhouse Gauntlet | DTF Genetics</title>' "$route/index.html"
           grep -Fq "title: 'Seed Man: Greenhouse Gauntlet'" "$route/campaign-v1.js"
           ! grep -Fq "title: 'Seed Man: Sprout Run'" "$route/campaign-v1.js"
@@ -69,12 +70,15 @@ jobs:
           grep -Fq 'Resin Works' "$route/campaign-ui-v15.js"
           grep -Fq 'Sky Garden' "$route/campaign-ui-v15.js"
           grep -Fq 'Genetic Frontier' "$route/campaign-ui-v15.js"
+          grep -Fq 'SeedManThreeWorld' "$route/three-world-v1.js"
+          grep -Fq 'seed-man-three-public-v3' "$route/three-world-v1.js"
+          grep -Fq 'seed-man-three-world-v2' "$route/three-world-v1.js"
+          grep -Fq 'seed-man-three-instancing-v1' "$route/three-world-v1.js"
           required=(
             "$route/seed-man-sprite-runtime-v1.js"
             "$route/assets/seed-man/seed-man-atlas-v1.svg"
             "$route/three-world-adapter-v1.js"
-            "$route/seed-man-three-world-v2.js"
-            "$route/seed-man-three-public-v3.js"
+            "$route/three-world-v1.js"
             "$route/combat-browser-v1.js"
             "$route/enemy-attacks-browser-v1.js"
             "$route/data/levels-12-15.json"
@@ -96,8 +100,9 @@ jobs:
           assert.equal(app.machineData?.release, '20260907-r17');
           assert.match(app.runtime, /threejs/i);
           const sourceMap = JSON.parse(fs.readFileSync('data/game-source-map.json', 'utf8'));
-          const source = sourceMap.games?.find?.((entry) => entry.id === 'seed-man-platformer')
-            || sourceMap.find?.((entry) => entry.id === 'seed-man-platformer');
-          if (source) assert.equal(source.title, 'Seed Man: Greenhouse Gauntlet');
+          const entries = Array.isArray(sourceMap) ? sourceMap : (sourceMap.games || sourceMap.entries || []);
+          const source = entries.find((entry) => entry.id === 'seed-man-platformer');
+          assert.ok(source, 'Seed Man canonical source-map entry is required.');
+          assert.equal(source.title, 'Seed Man: Greenhouse Gauntlet');
           console.log(JSON.stringify({ ok: true, levels: 15, worlds: 5, bosses: 6, title: app.title }));
           NODE
