@@ -9,6 +9,8 @@ const atlasPath = 'site/public-route-patch/games/seed-man-platformer/assets/seed
 const LEGACY_VERSION = 'seed-man-authored-atlas-v1';
 const VERSION = 'seed-man-authored-atlas-v2';
 const VISUAL_ENHANCEMENT = 'seed-man-sprite-motion-phenotype-v3';
+const APPROVED_REFERENCE = '2026-09-08-approved-showcase-sheet';
+const APPROVED_VISUAL = 'approved-showcase-green-hero-v1';
 
 for (const file of [indexPath, publisherPath, legacyRuntimePath, legacyAtlasPath, runtimePath, atlasPath]) {
   if (!fs.existsSync(file)) throw new Error(`Missing Seed Man authored sprite release input: ${file}`);
@@ -28,6 +30,8 @@ for (const marker of [
   'seed-man-sprite-runtime-v2',
   VERSION,
   VISUAL_ENHANCEMENT,
+  APPROVED_REFERENCE,
+  APPROVED_VISUAL,
   'runC',
   'runD',
   'attackB',
@@ -36,19 +40,27 @@ for (const marker of [
   'drawPhenotypeLayer',
   'seedManSpriteVisual',
   'rendererOwner',
-  '__SPROUT_SPRITE_RUNTIME_V2__'
+  '__SPROUT_SPRITE_RUNTIME_V2__',
+  'window.drawSeedMan=renderer',
+  'orange forehead gem',
+  'brown exposed upper arms',
+  'white/green armored boots'
 ]) {
-  if (!runtime.includes(marker)) throw new Error(`Seed Man sprite v2 runtime missing marker: ${marker}`);
+  if (!runtime.includes(marker)) throw new Error(`Seed Man approved showcase runtime missing marker: ${marker}`);
 }
 if (/if\s*\(phenotype\)\s*return\s+phenotype/.test(runtime)) {
   throw new Error('Seed Man phenotype rendering must not replace movement/attack pose animation.');
 }
-if (!runtime.includes('drawPhenotypeLayer(activePhenotype(), g, now);')) {
-  throw new Error('Seed Man phenotype visuals must render as a layer around the active movement pose.');
+if (!runtime.includes('drawPhenotypeLayer') || !runtime.includes('drawElementalVfx')) {
+  throw new Error('Seed Man phenotype visuals must render as effects around the approved movement pose.');
 }
+for (const phenotype of ["'solar-flare'", "'static-haze'", "'frost-resin'"]) {
+  if (!runtime.includes(phenotype)) throw new Error(`Seed Man approved runtime missing phenotype: ${phenotype}`);
+}
+
 const atlas = fs.readFileSync(atlasPath, 'utf8');
 for (const marker of ['<svg', 'width="1024"', 'height="1024"', 'row 1: idleA idleB runA runB', 'row 4: victory fire electric ice']) {
-  if (!atlas.includes(marker)) throw new Error(`Seed Man authored atlas v2 missing marker: ${marker}`);
+  if (!atlas.includes(marker)) throw new Error(`Seed Man authored atlas v2 missing compatibility marker: ${marker}`);
 }
 
 let index = fs.readFileSync(indexPath, 'utf8');
@@ -85,18 +97,20 @@ if (missingEntries.length) {
 index = fs.readFileSync(indexPath, 'utf8');
 publisher = fs.readFileSync(publisherPath, 'utf8');
 if (!index.includes(legacyScript)) throw new Error('Seed Man index is missing legacy authored sprite runtime script.');
-if (!index.includes(spriteScript)) throw new Error('Seed Man index is missing authored sprite runtime v2 script.');
-if (index.indexOf(spriteScript) < index.indexOf(legacyScript)) throw new Error('Seed Man sprite runtime v2 must load after v1 so v2 owns rendering.');
+if (!index.includes(spriteScript)) throw new Error('Seed Man index is missing approved sprite runtime v2 script.');
+if (index.indexOf(spriteScript) < index.indexOf(legacyScript)) throw new Error('Seed Man approved runtime v2 must load after legacy v1 so the approved showcase renderer owns rendering.');
 for (const entry of releaseEntries) if (!publisher.includes(entry)) throw new Error(`Seed Man publisher is missing authored sprite file: ${entry}`);
 
 console.log(JSON.stringify({
   ok: true,
+  visualSourceOfTruth: APPROVED_REFERENCE,
+  approvedVisual: APPROVED_VISUAL,
   legacySpriteRuntime: 'seed-man-sprite-runtime-v1',
   legacyAtlas: LEGACY_VERSION,
   spriteRuntime: 'seed-man-sprite-runtime-v2',
   visualEnhancement: VISUAL_ENHANCEMENT,
   phenotypeMotionPreserved: true,
-  atlas: VERSION,
+  compatibilityAtlas: VERSION,
   release,
   publishedFiles: ['seed-man-sprite-runtime-v1.js', 'assets/seed-man/seed-man-atlas-v1.svg', 'seed-man-sprite-runtime-v2.js', 'assets/seed-man/seed-man-atlas-v2.svg']
 }, null, 2));
