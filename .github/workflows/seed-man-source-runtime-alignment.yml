@@ -1,0 +1,66 @@
+name: Seed Man Source Runtime Alignment
+
+on:
+  pull_request:
+    paths:
+      - site/public-route-patch/games/seed-man-platformer/index.html
+      - site/public-route-patch/games/seed-man-platformer/three-world-adapter-v1.js
+      - games/seed-man-platformer/src/render/**
+      - games/seed-man-platformer/scripts/build-three-public.mjs
+      - scripts/prepare-seed-man-combat-release.mjs
+      - .github/workflows/seed-man-source-runtime-alignment.yml
+  push:
+    branches: [main]
+    paths:
+      - site/public-route-patch/games/seed-man-platformer/index.html
+      - site/public-route-patch/games/seed-man-platformer/three-world-adapter-v1.js
+      - games/seed-man-platformer/src/render/**
+      - games/seed-man-platformer/scripts/build-three-public.mjs
+      - scripts/prepare-seed-man-combat-release.mjs
+      - .github/workflows/seed-man-source-runtime-alignment.yml
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify source route owns current visual runtimes
+        shell: bash
+        run: |
+          set -euo pipefail
+          route=site/public-route-patch/games/seed-man-platformer
+          index="$route/index.html"
+          test -s "$index"
+          grep -Fq './seed-man-sprite-runtime-v1.js?v=' "$index"
+          grep -Fq './seed-man-sprite-runtime-v2.js?v=' "$index"
+          grep -Fq './three-world-v1.js?v=' "$index"
+          grep -Fq './three-world-adapter-v1.js?v=' "$index"
+
+          sprite_v1="$(grep -nF './seed-man-sprite-runtime-v1.js?v=' "$index" | head -n1 | cut -d: -f1)"
+          sprite_v2="$(grep -nF './seed-man-sprite-runtime-v2.js?v=' "$index" | head -n1 | cut -d: -f1)"
+          three_bundle="$(grep -nF './three-world-v1.js?v=' "$index" | head -n1 | cut -d: -f1)"
+          three_adapter="$(grep -nF './three-world-adapter-v1.js?v=' "$index" | head -n1 | cut -d: -f1)"
+          ui_v3="$(grep -nF './seed-man-ui-v3.js?v=' "$index" | head -n1 | cut -d: -f1)"
+
+          test "$sprite_v1" -lt "$sprite_v2"
+          test "$three_bundle" -lt "$three_adapter"
+          test "$three_adapter" -lt "$ui_v3"
+
+          grep -Fq 'seed-man-three-adapter-v2' "$route/three-world-adapter-v1.js"
+          grep -Fq 'seed-man-three-public-v3' "$route/three-world-adapter-v1.js"
+          grep -Fq 'seed-man-three-world-v2' "$route/three-world-adapter-v1.js"
+
+      - name: Verify canonical Three.js source syntax
+        run: |
+          node --check games/seed-man-platformer/src/render/three-world.mjs
+          node --check games/seed-man-platformer/src/render/three-world-public-entry.mjs
+          node --check games/seed-man-platformer/src/render/three-world-state.mjs
+          node --check games/seed-man-platformer/src/render/visual-world-map.mjs
+          node --check games/seed-man-platformer/src/render/visual-palette.mjs
