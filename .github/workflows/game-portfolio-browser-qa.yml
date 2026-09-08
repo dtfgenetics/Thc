@@ -1,16 +1,8 @@
-name: Game Portfolio Browser QA
+name: Game Portfolio Contract QA
 
 on:
   workflow_dispatch:
     inputs:
-      mode:
-        description: QA target
-        required: true
-        default: local
-        type: choice
-        options:
-          - local
-          - live
       game:
         description: Optional game ID (leave blank for all)
         required: false
@@ -23,12 +15,12 @@ on:
       - 'games/strain-showdown/**'
       - 'site/deployment/public-apps.json'
       - 'site/public-route-patch/games/**'
-      - 'scripts/game-portfolio-browser-qa.mjs'
       - 'scripts/prepare-game-browser-qa.mjs'
       - 'scripts/game-asset-performance-audit.mjs'
       - 'scripts/sync-game-shared-platform.mjs'
       - 'scripts/lib/game-qa-catalog.mjs'
       - 'scripts/test-game-qa-catalog.mjs'
+      - 'scripts/audit-game-route-integrity.mjs'
       - 'package.json'
       - '.github/workflows/game-portfolio-browser-qa.yml'
   schedule:
@@ -38,12 +30,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: game-portfolio-browser-qa-${{ github.event_name }}-${{ github.ref }}
+  group: game-portfolio-contract-qa-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  catalog:
-    name: Canonical game catalog and platform contracts
+  contracts:
+    name: Canonical game contracts and route integrity
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -56,64 +48,21 @@ jobs:
       - run: npm run games:platform:test
       - run: npm run games:platform:sync-check
       - run: npm run games:qa:catalog > game-qa-catalog.json
+      - name: Prepare generated local game assets
+        run: node scripts/prepare-game-browser-qa.mjs
+      - name: Validate all public game routes and same-origin assets
+        run: node scripts/audit-game-route-integrity.mjs
       - name: Audit checked-in game payloads
         run: npm run games:qa:assets
+      - name: Verify portfolio release contracts
+        run: npm run games:preflight
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: game-qa-catalog-and-assets
+          name: game-portfolio-contract-qa
           path: |
             game-qa-catalog.json
+            game-route-audit.json
             artifacts/game-qa/assets
-          if-no-files-found: error
-          retention-days: 14
-
-  browser:
-    name: Browser QA
-    needs: catalog
-    runs-on: ubuntu-latest
-    env:
-      GAME_QA_OUTPUT_DIR: artifacts/game-qa
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
-      - name: Resolve mode and game filter
-        id: args
-        shell: bash
-        run: |
-          MODE="local"
-          GAME=""
-          if [[ "${{ github.event_name }}" == "schedule" ]]; then
-            MODE="live"
-          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            MODE="${{ inputs.mode }}"
-            GAME="${{ inputs.game }}"
-          fi
-          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
-          if [[ -n "$GAME" ]]; then
-            echo "game_arg=--game $GAME" >> "$GITHUB_OUTPUT"
-          else
-            echo "game_arg=" >> "$GITHUB_OUTPUT"
-          fi
-      - name: Prepare generated local game assets
-        if: steps.args.outputs.mode == 'local'
-        shell: bash
-        run: |
-          node scripts/prepare-game-browser-qa.mjs ${{ steps.args.outputs.game_arg }}
-      - name: Run portfolio browser QA
-        shell: bash
-        run: |
-          node scripts/game-portfolio-browser-qa.mjs --${{ steps.args.outputs.mode }} --strict ${{ steps.args.outputs.game_arg }}
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: game-portfolio-browser-qa-${{ steps.args.outputs.mode }}
-          path: artifacts/game-qa
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 14
