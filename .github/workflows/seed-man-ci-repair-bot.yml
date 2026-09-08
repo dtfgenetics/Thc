@@ -18,45 +18,28 @@ jobs:
         with:
           ref: seed-man-ci-repair-20260908
           fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      - name: Repair stale Seed Man release contracts
+      - name: Repair stale Seed Man browser identity contract
         shell: python
         run: |
           from pathlib import Path
-
           smoke = Path('games/seed-man-platformer/test/browser-smoke.mjs')
           text = smoke.read_text()
           old = "assert.match(await page.title(), /Seed Man: Sprout Run/i);"
           new = "assert.match(await page.title(), /Seed Man: (Sprout Run|Greenhouse Gauntlet)/i);"
+          if new in text:
+              raise SystemExit(0)
           if old not in text:
               raise SystemExit('browser-smoke title assertion anchor missing')
           smoke.write_text(text.replace(old, new, 1))
-
-          publish = Path('.github/workflows/publish-seed-man-production.yml')
-          text = publish.read_text()
-          text = text.replace("grep -Fq 'seed-man-three-world-v1'", "grep -Fq 'seed-man-three-world-v2'")
-          canonical_paths = "      - games/seed-man-platformer/src/render/**\n      - games/seed-man-platformer/scripts/build-three-public.mjs\n"
-          anchor = "      - scripts/prepare-seed-man-world-five-runtime.mjs\n"
-          if canonical_paths.strip() not in text:
-              if anchor not in text:
-                  raise SystemExit('publish workflow path anchor missing')
-              text = text.replace(anchor, anchor + canonical_paths, 1)
-          publish.write_text(text)
-
-      - name: Validate repairs
+      - name: Validate repair
         run: |
           node --check games/seed-man-platformer/test/browser-smoke.mjs
           grep -Fq 'Greenhouse Gauntlet' games/seed-man-platformer/test/browser-smoke.mjs
-          grep -Fq "seed-man-three-world-v2" .github/workflows/publish-seed-man-production.yml
-          grep -Fq 'games/seed-man-platformer/src/render/**' .github/workflows/publish-seed-man-production.yml
-
-      - name: Commit repairs
+      - name: Commit repair
         run: |
           git config user.name 'DTF Seed Man Repair Bot'
           git config user.email 'actions@users.noreply.github.com'
-          git add games/seed-man-platformer/test/browser-smoke.mjs .github/workflows/publish-seed-man-production.yml
+          git add games/seed-man-platformer/test/browser-smoke.mjs
           git diff --cached --quiet && exit 0
-          git commit -m 'Repair Seed Man release and browser gates [seed-man-ci-repair]'
+          git commit -m 'Repair Seed Man browser identity gate [seed-man-ci-repair]'
           git push origin HEAD:seed-man-ci-repair-20260908
