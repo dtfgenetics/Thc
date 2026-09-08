@@ -1,0 +1,62 @@
+name: Seed Man Approved Art Contract
+
+on:
+  pull_request:
+    paths:
+      - games/seed-man-platformer/data/seed-man-art-manifest-v1.json
+      - games/seed-man-platformer/data/campaign-20-v1.json
+      - games/seed-man-platformer/src/render/art-registry.mjs
+      - games/seed-man-platformer/test/art-registry.test.mjs
+      - games/seed-man-platformer/test/campaign-20.test.mjs
+      - games/seed-man-platformer/package.json
+      - site/public-route-patch/games/seed-man-platformer/**
+      - .github/workflows/seed-man-approved-art-contract.yml
+  push:
+    branches: [main]
+    paths:
+      - games/seed-man-platformer/data/seed-man-art-manifest-v1.json
+      - games/seed-man-platformer/data/campaign-20-v1.json
+      - games/seed-man-platformer/src/render/art-registry.mjs
+      - games/seed-man-platformer/test/art-registry.test.mjs
+      - games/seed-man-platformer/test/campaign-20.test.mjs
+      - games/seed-man-platformer/package.json
+      - site/public-route-patch/games/seed-man-platformer/**
+      - .github/workflows/seed-man-approved-art-contract.yml
+
+permissions:
+  contents: read
+
+jobs:
+  approved-art:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Lock approved art source of truth
+        run: |
+          node games/seed-man-platformer/test/art-registry.test.mjs
+          node games/seed-man-platformer/test/campaign-20.test.mjs
+      - name: Reject legacy visual ownership
+        shell: bash
+        run: |
+          set -euo pipefail
+          manifest=games/seed-man-platformer/data/seed-man-art-manifest-v1.json
+          registry=games/seed-man-platformer/src/render/art-registry.mjs
+          grep -Fq '"authoritative": true' "$manifest"
+          grep -Fq '"proceduralFallbackAllowed": false' "$manifest"
+          grep -Fq '"legacyAtlasFallbackAllowed": false' "$manifest"
+          grep -Fq 'green-armored-plant-hero' "$manifest"
+          grep -Fq "APPROVED_ART_MANIFEST_ID = 'seed-man-approved-art-v1'" "$registry"
+          grep -Fq "character.seedman.atlas" "$registry"
+          grep -Fq "world.frozen-peaks.background" "$manifest"
+      - name: Lock 20-level final-boss contract
+        shell: bash
+        run: |
+          campaign=games/seed-man-platformer/data/campaign-20-v1.json
+          grep -Fq '"levelCount": 20' "$campaign"
+          grep -Fq '"finalBoss": "blight-king"' "$campaign"
+          grep -Fq '"id":"5-4-the-last-seed"' "$campaign"
+          grep -Fq '"phases":4' "$campaign"
