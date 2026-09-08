@@ -1,0 +1,67 @@
+name: Reconcile Seed Man Base Manifest Identity
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/reconcile-seed-man-base-manifest-identity.mjs'
+      - '.github/workflows/reconcile-seed-man-base-manifest-identity.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: reconcile-seed-man-base-manifest-identity
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Reconcile base manifest public identity
+        run: node scripts/reconcile-seed-man-base-manifest-identity.mjs
+      - name: Confirm reconciliation is idempotent
+        shell: bash
+        run: |
+          set -euo pipefail
+          path=site/public-route-patch/games/seed-man-platformer/campaign-v1.js
+          before="$(git diff -- "$path" | git hash-object --stdin)"
+          node scripts/reconcile-seed-man-base-manifest-identity.mjs
+          after="$(git diff -- "$path" | git hash-object --stdin)"
+          test "$before" = "$after"
+      - name: Validate compatibility and identity contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/reconcile-seed-man-base-manifest-identity.mjs
+          node --check site/public-route-patch/games/seed-man-platformer/campaign-v1.js
+          grep -Fq "title: 'Seed Man: Greenhouse Gauntlet'" site/public-route-patch/games/seed-man-platformer/campaign-v1.js
+          grep -Fq "id: 'sprout-run-campaign'" site/public-route-patch/games/seed-man-platformer/campaign-v1.js
+          grep -Fq "defaultLevelId: 'sprout-run'" site/public-route-patch/games/seed-man-platformer/campaign-v1.js
+          grep -Fq 'levelCount: 11' site/public-route-patch/games/seed-man-platformer/campaign-v1.js
+          ! grep -Fq "title: 'Seed Man: Sprout Run'" site/public-route-patch/games/seed-man-platformer/campaign-v1.js
+      - name: Safely integrate base manifest identity when needed
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          path=site/public-route-patch/games/seed-man-platformer/campaign-v1.js
+          if git diff --quiet -- "$path"; then
+            echo 'No Seed Man base manifest identity changes were needed.'
+            exit 0
+          fi
+          node scripts/studio/integrate-generated-change.mjs \
+            --message='Align Seed Man base campaign manifest public identity' \
+            --paths=site/public-route-patch/games/seed-man-platformer/campaign-v1.js
