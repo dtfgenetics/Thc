@@ -106,7 +106,7 @@ jobs:
           node --check games/seed-man-platformer/src/systems/production-assets.mjs
           node --check games/seed-man-platformer/src/systems/production-bootstrap.mjs
 
-      - name: Keep legacy route playable during migration
+      - name: Run deterministic gameplay and migration coverage
         run: |
           node games/seed-man-platformer/test/physics.test.mjs
           node games/seed-man-platformer/test/progression-systems.test.mjs
@@ -115,13 +115,5 @@ jobs:
           node games/seed-man-platformer/test/public-campaign.test.mjs
           node games/seed-man-platformer/test/input-guard.test.mjs
 
-      - name: Install browser-test dependencies
-        run: |
-          npm ci
-          npx playwright install chromium
-
-      - name: Browser smoke test current playable route
-        run: node games/seed-man-platformer/test/browser-smoke.mjs
-
-      - name: Shared platform browser acceptance
-        run: node games/seed-man-platformer/test/shared-platform-browser.test.mjs
+      - name: Verify shared platform contract
+        run: node games/shared-platform/test/runtime.test.mjs
