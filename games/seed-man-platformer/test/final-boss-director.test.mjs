@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import { createFinalBossDirector } from '../src/systems/final-boss-director.mjs';
+const bosses=JSON.parse(fs.readFileSync(new URL('../data/boss-catalog-v1.json',import.meta.url),'utf8')).bosses;
+const def={id:'blight-king',...bosses['blight-king']};
+const director=createFinalBossDirector(def);
+assert.equal(director.snapshot().phase,1);
+assert.equal(director.snapshot().weakness,'plant');
+const strong=director.damage(10,'plant');
+assert.ok(strong.health<=81);
+for(let i=0;i<20&&!director.snapshot().defeated;i++) director.damage(10,director.snapshot().weakness);
+assert.equal(director.snapshot().defeated,true);
+console.log('Seed Man Blight King director OK');
