@@ -81,7 +81,9 @@ async function assertEncounterHud(page) {
       })
     });
     window.__SPROUT_UI_V3__.sync();
+    window.__SPROUT_VISUAL_V4__.sync();
     const shell = document.querySelector('.game-shell');
+    const canvas = document.querySelector('#game');
     const result = {
       phenoHidden: document.querySelector('.seed-pheno-banner')?.hidden,
       phenoName: document.querySelector('.seed-pheno-name')?.textContent || '',
@@ -93,10 +95,12 @@ async function assertEncounterHud(page) {
       bossWidth: document.querySelector('.seed-boss-health i')?.style.width || '',
       shellBoss: shell?.dataset.combatBoss || '',
       shellPhenotype: shell?.dataset.combatPhenotype || '',
-      kicker: document.querySelector('.course-kicker')?.textContent || ''
+      kicker: document.querySelector('.course-kicker')?.textContent || '',
+      canvasBorder: canvas ? getComputedStyle(canvas).borderTopColor : ''
     };
     window.__SPROUT_COMBAT_BROWSER__ = original;
     window.__SPROUT_UI_V3__.sync();
+    window.__SPROUT_VISUAL_V4__.sync();
     return result;
   });
   assert.equal(state.phenoHidden, false);
@@ -110,29 +114,34 @@ async function assertEncounterHud(page) {
   assert.equal(state.shellBoss, 'active');
   assert.equal(state.shellPhenotype, 'solar-flare');
   assert.match(state.kicker, /BOSS · Mite Queen/);
+  assert.equal(state.canvasBorder, 'rgb(255, 207, 102)');
 }
 
 async function assertLevel(page, id, worldTitle, canonicalWorldTitle, order, theme) {
   await page.evaluate((levelId) => window.__SPROUT_CAMPAIGN_EXPERIENCE__.selectLevel(levelId), id);
   await page.waitForFunction((levelId) => document.querySelector('.game-shell')?.dataset.levelId === levelId, id);
   await page.waitForFunction((expectedTheme) => document.querySelector('.game-shell')?.dataset.worldTheme === expectedTheme, theme);
-  const state = await page.evaluate(() => ({
-    ui: window.__SPROUT_UI_V3__?.version,
-    visual: window.__SPROUT_VISUAL_V4__?.version,
-    htmlUi: document.documentElement.dataset.seedManUi,
-    htmlVisual: document.documentElement.dataset.seedManVisual,
-    htmlWorld: document.documentElement.dataset.seedManWorld,
-    world: document.querySelector('.game-shell')?.dataset.worldLabel,
-    canonicalWorld: document.querySelector('.game-shell')?.dataset.canonicalWorldLabel,
-    theme: document.querySelector('.game-shell')?.dataset.worldTheme,
-    visualReady: document.querySelector('.game-shell')?.dataset.visualV4,
-    order: document.querySelector('.game-shell')?.dataset.levelOrder,
-    context: document.querySelector('.seed-run-context')?.innerText || '',
-    stage: document.querySelector('#course-stage')?.innerText || '',
-    aria: document.querySelector('.course-status')?.getAttribute('aria-label') || '',
-    worldAccent: getComputedStyle(document.querySelector('.game-shell')).getPropertyValue('--world-accent').trim(),
-    activeWorld: document.querySelector('.seed-world-card[data-active="true"]')?.dataset.worldId || ''
-  }));
+  const state = await page.evaluate(() => {
+    const shell = document.querySelector('.game-shell');
+    return {
+      ui: window.__SPROUT_UI_V3__?.version,
+      visual: window.__SPROUT_VISUAL_V4__?.version,
+      htmlUi: document.documentElement.dataset.seedManUi,
+      htmlVisual: document.documentElement.dataset.seedManVisual,
+      htmlWorld: document.documentElement.dataset.seedManWorld,
+      world: shell?.dataset.worldLabel,
+      canonicalWorld: shell?.dataset.canonicalWorldLabel,
+      theme: shell?.dataset.worldTheme,
+      visualReady: shell?.dataset.visualV4,
+      order: shell?.dataset.levelOrder,
+      context: document.querySelector('.seed-run-context')?.innerText || '',
+      stage: document.querySelector('#course-stage')?.innerText || '',
+      aria: document.querySelector('.course-status')?.getAttribute('aria-label') || '',
+      worldAccent: shell ? getComputedStyle(shell).getPropertyValue('--world-accent').trim() : '',
+      worldScene: shell ? getComputedStyle(shell).getPropertyValue('--world-scene').trim() : '',
+      activeWorld: document.querySelector('.seed-world-card[data-active="true"]')?.dataset.worldId || ''
+    };
+  });
   assert.equal(state.ui, 'seed-man-ui-v3');
   assert.equal(state.visual, 'seed-man-visual-v4');
   assert.equal(state.htmlUi, 'seed-man-ui-v3');
@@ -144,6 +153,8 @@ async function assertLevel(page, id, worldTitle, canonicalWorldTitle, order, the
   assert.equal(state.theme, theme);
   assert.equal(state.order, String(order));
   assert.ok(state.worldAccent, 'world accent should be populated');
+  assert.notEqual(state.worldScene, 'none', `world ${theme} should expose a scene treatment`);
+  assert.match(state.worldScene, /gradient/i, `world ${theme} should use layered atmosphere gradients`);
   assert.match(state.context, new RegExp(worldTitle, 'i'));
   assert.match(state.context, new RegExp(`LEVEL ${order} / 15`, 'i'));
   assert.ok(/Opening Route|Mid Route|Final Run/.test(state.stage));
@@ -189,7 +200,7 @@ try {
   assert.ok(mobileMetrics.worldRailHeight >= 48, `world rail should remain visible on touch screens, got ${mobileMetrics.worldRailHeight}px`);
   await mobile.close();
 
-  console.log(JSON.stringify({ ok: true, uiVersion: 'seed-man-ui-v3', visualVersion: 'seed-man-visual-v4', campaignAware: true, campaignIdentity: 'greenhouse-gauntlet', worldRail: true, encounterHud: true, approvedWorldNames: true, themedWorlds: true, mobileVerified: true }, null, 2));
+  console.log(JSON.stringify({ ok: true, uiVersion: 'seed-man-ui-v3', visualVersion: 'seed-man-visual-v4', campaignAware: true, campaignIdentity: 'greenhouse-gauntlet', worldRail: true, encounterHud: true, bossVisualState: true, approvedWorldNames: true, themedWorlds: true, worldAtmosphere: true, mobileVerified: true }, null, 2));
 } finally {
   if (browser) await browser.close();
   if (server) server.kill('SIGTERM');
