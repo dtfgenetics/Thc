@@ -62,7 +62,7 @@
   };
 
   function setBrandedCampaignTitle(stageTitle) {
-    document.title = stageTitle
+    document.title = stageTitle && stageTitle !== 'Greenhouse Gauntlet'
       ? `Seed Man: Greenhouse Gauntlet — ${stageTitle} | DTF Genetics`
       : 'Seed Man: Greenhouse Gauntlet | DTF Genetics';
   }
