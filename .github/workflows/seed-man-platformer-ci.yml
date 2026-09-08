@@ -162,6 +162,8 @@ jobs:
           grep -Fq 'seed-man-ui-v3' "$route/seed-man-ui-v3.js"
           grep -Fq 'seed-run-context' "$route/seed-man-ui-v3.js"
           grep -Fq 'data-combat-boss' "$route/seed-man-visual-v4.js"
+          grep -Fq -- '--encounter-border' "$route/seed-man-visual-v4.js"
+          grep -Fq -- '--world-scene' "$route/seed-man-visual-v4.js"
           grep -Fq 'Greenhouse District' "$route/seed-man-ui-v3.js"
           grep -Fq 'Genetic Frontier' "$route/seed-man-ui-v3.js"
           grep -Fq 'groundAcceleration: 2600' "$route/app.js"
