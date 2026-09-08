@@ -8,6 +8,7 @@ const runtimePath = 'site/public-route-patch/games/seed-man-platformer/seed-man-
 const atlasPath = 'site/public-route-patch/games/seed-man-platformer/assets/seed-man/seed-man-atlas-v2.svg';
 const LEGACY_VERSION = 'seed-man-authored-atlas-v1';
 const VERSION = 'seed-man-authored-atlas-v2';
+const VISUAL_ENHANCEMENT = 'seed-man-sprite-motion-phenotype-v3';
 
 for (const file of [indexPath, publisherPath, legacyRuntimePath, legacyAtlasPath, runtimePath, atlasPath]) {
   if (!fs.existsSync(file)) throw new Error(`Missing Seed Man authored sprite release input: ${file}`);
@@ -23,8 +24,27 @@ for (const marker of ['<svg', 'width="1536"', 'height="512"', 'Fire form', 'Elec
 }
 
 const runtime = fs.readFileSync(runtimePath, 'utf8');
-for (const marker of ['seed-man-sprite-runtime-v2', VERSION, 'runC', 'runD', 'attackB', 'rendererOwner', '__SPROUT_SPRITE_RUNTIME_V2__']) {
+for (const marker of [
+  'seed-man-sprite-runtime-v2',
+  VERSION,
+  VISUAL_ENHANCEMENT,
+  'runC',
+  'runD',
+  'attackB',
+  'activePhenotype',
+  'drawElementalVfx',
+  'drawPhenotypeLayer',
+  'seedManSpriteVisual',
+  'rendererOwner',
+  '__SPROUT_SPRITE_RUNTIME_V2__'
+]) {
   if (!runtime.includes(marker)) throw new Error(`Seed Man sprite v2 runtime missing marker: ${marker}`);
+}
+if (/if\s*\(phenotype\)\s*return\s+phenotype/.test(runtime)) {
+  throw new Error('Seed Man phenotype rendering must not replace movement/attack pose animation.');
+}
+if (!runtime.includes('drawPhenotypeLayer(activePhenotype(), g, now);')) {
+  throw new Error('Seed Man phenotype visuals must render as a layer around the active movement pose.');
 }
 const atlas = fs.readFileSync(atlasPath, 'utf8');
 for (const marker of ['<svg', 'width="1024"', 'height="1024"', 'row 1: idleA idleB runA runB', 'row 4: victory fire electric ice']) {
@@ -74,6 +94,8 @@ console.log(JSON.stringify({
   legacySpriteRuntime: 'seed-man-sprite-runtime-v1',
   legacyAtlas: LEGACY_VERSION,
   spriteRuntime: 'seed-man-sprite-runtime-v2',
+  visualEnhancement: VISUAL_ENHANCEMENT,
+  phenotypeMotionPreserved: true,
   atlas: VERSION,
   release,
   publishedFiles: ['seed-man-sprite-runtime-v1.js', 'assets/seed-man/seed-man-atlas-v1.svg', 'seed-man-sprite-runtime-v2.js', 'assets/seed-man/seed-man-atlas-v2.svg']
