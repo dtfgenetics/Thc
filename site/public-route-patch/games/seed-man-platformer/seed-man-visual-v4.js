@@ -18,7 +18,7 @@
     const style = document.createElement('style');
     style.dataset.seedVisualV4 = VERSION;
     style.textContent = `
-      .game-shell[data-visual-v4="ready"]{--world-accent:var(--accent);--world-secondary:#5bbf76;--world-glow:rgba(200,243,106,.2);position:relative;isolation:isolate;overflow:hidden;transition:background .28s ease,border-color .2s ease,box-shadow .2s ease}
+      .game-shell[data-visual-v4="ready"]{--world-accent:var(--accent);--world-secondary:#5bbf76;--world-glow:rgba(200,243,106,.2);--encounter-border:color-mix(in srgb,var(--world-accent) 42%,#315c43);--encounter-glow:var(--world-glow);position:relative;isolation:isolate;overflow:hidden;transition:background .28s ease,border-color .2s ease,box-shadow .2s ease}
       .game-shell[data-visual-v4="ready"]::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.82;background:var(--world-scene,none);background-size:cover;mix-blend-mode:screen;transition:opacity .25s ease}
       .game-shell[data-visual-v4="ready"]::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--world-accent) 20%,transparent),inset 0 30px 80px color-mix(in srgb,var(--world-accent) 5%,transparent);z-index:0}
       .game-shell[data-visual-v4="ready"]>*{position:relative;z-index:1}
@@ -26,14 +26,13 @@
       .game-shell[data-visual-v4="ready"] .seed-run-context-world,.game-shell[data-visual-v4="ready"] .course-kicker{color:var(--world-accent)}
       .game-shell[data-visual-v4="ready"] .course-status{border-color:color-mix(in srgb,var(--world-accent) 28%,#244832);background:linear-gradient(90deg,color-mix(in srgb,var(--world-accent) 7%,#081a11),#081a11 70%)}
       .game-shell[data-visual-v4="ready"] #course-progress-fill{background:linear-gradient(90deg,var(--world-secondary),var(--world-accent),var(--gold));box-shadow:0 0 18px var(--world-glow)}
-      .game-shell[data-visual-v4="ready"] canvas{border-color:color-mix(in srgb,var(--world-accent) 42%,#315c43);box-shadow:0 20px 55px rgba(0,0,0,.42),0 0 34px var(--world-glow);transition:border-color .18s ease,box-shadow .18s ease}
+      .game-shell[data-visual-v4="ready"] canvas{border-color:var(--encounter-border);box-shadow:0 20px 55px rgba(0,0,0,.42),0 0 34px var(--encounter-glow);transition:border-color .18s ease,box-shadow .18s ease}
       .game-shell[data-visual-v4="ready"] .hud-stat--primary{border-color:color-mix(in srgb,var(--world-accent) 23%,transparent)}
       .game-shell[data-visual-v4="ready"] .touch-controls button{border-color:color-mix(in srgb,var(--world-accent) 24%,#315a43)}
       .game-shell[data-visual-v4="ready"] .touch-controls .jump{background:linear-gradient(135deg,var(--world-accent),color-mix(in srgb,var(--world-accent) 66%,white));color:#102013;box-shadow:inset 0 -4px 0 rgba(0,0,0,.16),0 0 26px var(--world-glow)}
       .game-shell[data-visual-v4="ready"][data-combat-boss="active"]{--boss-accent:#ffcf66}
       .game-shell[data-visual-v4="ready"][data-combat-boss="active"] .seed-run-context{border-color:rgba(255,207,102,.72);box-shadow:0 0 34px rgba(255,207,102,.14)}
       .game-shell[data-visual-v4="ready"][data-combat-boss="active"] .seed-run-context::before{content:"BOSS ENCOUNTER";display:inline-flex;align-items:center;justify-content:center;padding:.22rem .45rem;border-radius:.45rem;background:#ffcf66;color:#2b1b05;font:950 .55rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;grid-column:1/-1;width:max-content}
-      .game-shell[data-visual-v4="ready"][data-combat-boss="active"] canvas{border-color:#ffcf66;box-shadow:0 20px 55px rgba(0,0,0,.48),0 0 46px rgba(255,207,102,.26)}
       .game-shell[data-visual-v4="ready"][data-combat-boss="active"]::after{box-shadow:inset 0 0 0 1px rgba(255,207,102,.42),inset 0 34px 90px rgba(255,207,102,.07),0 0 44px rgba(255,207,102,.1)}
       html[data-seed-pheno-active="true"] .game-shell[data-visual-v4="ready"] .hud-stat[data-metric="power"]{border-color:var(--seed-pheno-accent,#d6c0ff);box-shadow:0 0 22px color-mix(in srgb,var(--seed-pheno-accent,#d6c0ff) 25%,transparent)}
       html[data-seed-pheno-active="true"] .game-shell[data-visual-v4="ready"] canvas{box-shadow:0 20px 55px rgba(0,0,0,.42),0 0 38px color-mix(in srgb,var(--seed-pheno-accent,#d6c0ff) 24%,transparent)}
@@ -53,11 +52,19 @@
     if (!shell || shell.dataset.uiV3 !== 'ready') return false;
     const worldId = shell.dataset.world || 'world-01';
     const theme = WORLD_THEMES[worldId] || WORLD_THEMES['world-01'];
+    const bossActive = shell.dataset.combatBoss === 'active';
     shell.dataset.visualV4 = 'ready';
     shell.dataset.worldTheme = theme.key;
     shell.style.setProperty('--world-accent', theme.accent);
     shell.style.setProperty('--world-secondary', theme.secondary);
     shell.style.setProperty('--world-glow', theme.glow);
+    if (bossActive) {
+      shell.style.setProperty('--encounter-border', '#ffcf66');
+      shell.style.setProperty('--encounter-glow', 'rgba(255,207,102,.26)');
+    } else {
+      shell.style.removeProperty('--encounter-border');
+      shell.style.removeProperty('--encounter-glow');
+    }
     document.documentElement.dataset.seedManVisual = VERSION;
     document.documentElement.dataset.seedManWorld = theme.key;
     const themeMeta = document.querySelector('meta[name="theme-color"]');
