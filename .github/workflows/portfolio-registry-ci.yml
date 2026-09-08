@@ -90,6 +90,7 @@ jobs:
           node games/strain-showdown/scripts/simulate-balance.mjs --seeds=4
           node games/strain-showdown/scripts/validate-browser-build.mjs
           node games/seed-man-platformer/test/physics.test.mjs
+          node games/seed-man-platformer/test/campaign.test.mjs
 
       - name: Verify canonical project statuses match deployment states
         run: |
@@ -102,23 +103,21 @@ jobs:
 
           expect(project('high-iq')?.status === 'canonical', 'High IQ must be canonical');
           expect(app('high-iq')?.runtime === 'static' && app('high-iq')?.status === 'ready-to-package', 'High IQ deployment state drift');
-
           expect(project('high-life')?.status === 'browser-prototype', 'High Life registry state drift');
           expect(app('high-life')?.runtime === 'static' && app('high-life')?.status === 'ready-to-package', 'High Life deployment state drift');
-
           expect(project('grower-conversations')?.status === 'browser-deck-alpha', 'Grower Conversations registry state drift');
           expect(app('grower-conversations')?.runtime === 'static' && app('grower-conversations')?.status === 'ready-to-package', 'Grower Conversations deployment state drift');
-
           expect(project('cannabis-fleet-battle')?.status === 'server-engine-alpha', 'Fleet Battle registry state drift');
           expect(app('cannabis-fleet-battle')?.runtime === 'server-engine' && app('cannabis-fleet-battle')?.status === 'server-engine-alpha', 'Fleet Battle deployment state drift');
-
           expect(app('protect-the-plants')?.runtime === 'static-php' && app('protect-the-plants')?.status === 'ready-to-package', 'Burn Buds deployment state drift');
-
           expect(project('strain-showdown')?.status === 'browser-prototype', 'Strain Showdown registry state drift');
           expect(app('strain-showdown')?.runtime === 'static' && app('strain-showdown')?.status === 'ready-to-package', 'Strain Showdown deployment state drift');
 
-          expect(project('seed-man-platformer')?.status === 'browser-vertical-slice', 'Seed Man registry state drift');
-          expect(app('seed-man-platformer')?.runtime === 'static-canvas2d' && app('seed-man-platformer')?.status === 'ready-to-package', 'Seed Man deployment state drift');
+          const seedProject = project('seed-man-platformer');
+          const seedApp = app('seed-man-platformer');
+          expect(seedProject?.repo === 'dtfgenetics/Thc', 'Seed Man canonical repository drift');
+          expect(seedApp?.runtime === 'static-canvas2d-threejs' && seedApp?.status === 'production-verified', 'Seed Man deployment state drift');
+          expect(seedApp?.title === 'Seed Man: Greenhouse Gauntlet', 'Seed Man deployment title drift');
           NODE
 
       - name: Verify self-hosted public route files exist
