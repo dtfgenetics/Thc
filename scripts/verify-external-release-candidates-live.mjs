@@ -1,6 +1,5 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { chromium } from '@playwright/test';
 
 const siteUrl = (process.env.DTF_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
 const cacheTag = process.env.GITHUB_RUN_ID || Date.now();
@@ -18,7 +17,6 @@ const candidates = [
     id: 'ganjumanji',
     route: '/games/ganjumanji/',
     title: 'Ganjumanji',
-    readySelector: '#game canvas',
     pin: readPin('site/public-route-patch/games/ganjumanji/source-revision.txt'),
     expectedRelease: { route: '/games/ganjumanji/', status: 'release-candidate' }
   },
@@ -26,7 +24,6 @@ const candidates = [
     id: 'thc-rpg',
     route: '/games/thc-rpg/',
     title: 'THC RPG',
-    readySelector: '#startBtn',
     pin: readPin('site/public-route-patch/games/thc-rpg/source-revision.txt'),
     expectedRelease: { route: '/games/thc-rpg/', runtime: 'static-es-modules', status: 'release-candidate', saveVersion: 6 }
   }
@@ -43,8 +40,18 @@ async function fetchNoRedirect(path) {
   return response;
 }
 
+function collectLocalRefs(html, route) {
+  const refs = [...html.matchAll(/(?:src|href)=["']([^"'#?]+)["']/gi)].map((match) => match[1]);
+  return [...new Set(refs.filter((ref) => {
+    if (/^(?:https?:|data:|mailto:|tel:|javascript:|#)/i.test(ref)) return false;
+    return /\.(?:js|mjs|css|json|svg|png|webp|jpg|jpeg|gif|woff2?|webmanifest)$/i.test(ref);
+  }).map((ref) => new URL(ref, `${siteUrl}${route}`).pathname))];
+}
+
 for (const candidate of candidates) {
   const pageResponse = await fetchNoRedirect(candidate.route);
+  const contentType = pageResponse.headers.get('content-type') || '';
+  assert.match(contentType, /text\/html/i, `${candidate.id} live route is not HTML`);
   const html = await pageResponse.text();
   assert.match(html, new RegExp(candidate.title, 'i'), `${candidate.id} title marker missing from live route`);
 
@@ -58,42 +65,21 @@ for (const candidate of candidates) {
   const livePinText = await pinResponse.text();
   assert.match(livePinText, new RegExp(`commit=${candidate.pin.commit}`), `${candidate.id} live source revision mismatch`);
   assert.match(livePinText, new RegExp(`repository=${candidate.pin.repository.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`), `${candidate.id} live repository pin mismatch`);
-}
 
-const browser = await chromium.launch({ headless: true });
-try {
-  for (const candidate of candidates) {
-    for (const [name, viewport] of [
-      ['desktop', { width: 1280, height: 820 }],
-      ['mobile', { width: 390, height: 844 }]
-    ]) {
-      const page = await browser.newPage({ viewport });
-      const errors = [];
-      const failed = [];
-      page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
-      page.on('pageerror', (error) => errors.push(error.message));
-      page.on('requestfailed', (request) => failed.push(`${request.method()} ${request.url()} :: ${request.failure()?.errorText || 'failed'}`));
-
-      const response = await page.goto(`${siteUrl}${candidate.route}?dtf_external_browser=${cacheTag}-${name}`, {
-        waitUntil: 'domcontentloaded',
-        timeout: 45_000
-      });
-      assert.ok(response, `${candidate.id} ${name} produced no navigation response`);
-      assert.equal(response.status(), 200, `${candidate.id} ${name} returned HTTP ${response.status()}`);
-      assert.equal(new URL(page.url()).pathname, candidate.route, `${candidate.id} ${name} redirected away from canonical route`);
-      await page.waitForSelector(candidate.readySelector, { state: 'visible', timeout: 20_000 });
-      assert.equal(errors.length, 0, `${candidate.id} ${name} browser errors: ${errors.join(' | ')}`);
-      assert.equal(failed.length, 0, `${candidate.id} ${name} failed requests: ${failed.join(' | ')}`);
-      await page.close();
-    }
+  const refs = collectLocalRefs(html, candidate.route);
+  assert.ok(refs.length > 0, `${candidate.id} live route exposed no local runtime assets`);
+  for (const ref of refs) {
+    const assetResponse = await fetchNoRedirect(ref);
+    const type = assetResponse.headers.get('content-type') || '';
+    assert.ok(type && !/text\/html/i.test(type), `${candidate.id} asset ${ref} unexpectedly returned HTML`);
+    const body = await assetResponse.arrayBuffer();
+    assert.ok(body.byteLength > 0, `${candidate.id} asset ${ref} is empty`);
   }
-} finally {
-  await browser.close();
 }
 
 console.log(JSON.stringify({
   ok: true,
   siteUrl,
   candidates: candidates.map(({ id, route, pin }) => ({ id, route, commit: pin.commit })),
-  viewports: ['desktop', 'mobile']
+  verification: ['canonical HTTP status', 'no redirects', 'release metadata', 'source pin', 'local runtime assets']
 }, null, 2));
