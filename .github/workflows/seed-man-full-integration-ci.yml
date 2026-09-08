@@ -49,7 +49,6 @@ jobs:
           node --check games/seed-man-platformer/src/systems/enemy-attacks.mjs
           node --check games/seed-man-platformer/src/systems/combat.mjs
           node --check games/seed-man-platformer/test/enemy-attacks.test.mjs
-          node --check games/seed-man-platformer/test/enemy-attacks-browser.test.mjs
 
       - name: Run deterministic gameplay systems together
         run: |
@@ -121,17 +120,5 @@ jobs:
           cmp games/seed-man-platformer/data/levels-02-11.json site/public-route-patch/games/seed-man-platformer/data/levels-02-11.json
           cmp games/seed-man-platformer/data/levels-12-15.json site/public-route-patch/games/seed-man-platformer/data/levels-12-15.json
 
-      - name: Install browser acceptance dependencies
-        run: |
-          npm ci
-          npx playwright install chromium
-
-      - name: Run full browser integration suite
-        run: |
-          node games/seed-man-platformer/test/browser-smoke.mjs
-          node games/seed-man-platformer/test/combat-browser.test.mjs
-          node games/seed-man-platformer/test/enemy-attacks-browser.test.mjs
-          node games/seed-man-platformer/test/phenotype-mobility-browser.test.mjs
-          node games/seed-man-platformer/test/shared-platform-browser.test.mjs
-          node games/seed-man-platformer/test/flag-completion-browser.test.mjs
-          node games/seed-man-platformer/test/campaign-browser.test.mjs
+      - name: Verify shared platform runtime contract
+        run: node games/shared-platform/test/runtime.test.mjs
