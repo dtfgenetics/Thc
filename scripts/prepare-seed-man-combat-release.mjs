@@ -4,6 +4,7 @@ import './prepare-seed-man-world-five-combat.mjs';
 import './prepare-seed-man-enemy-visuals.mjs';
 import './prepare-seed-man-elemental-vfx.mjs';
 import './prepare-seed-man-impact-fx.mjs';
+import './prepare-seed-man-sprite-release.mjs';
 
 const publisherPath = 'scripts/publish-seed-man-route-via-wordpress.mjs';
 const canonicalEnemyAttackModulePath = 'games/seed-man-platformer/src/systems/enemy-attacks.mjs';
@@ -49,6 +50,8 @@ const releaseEntries = [
   "  'campaign-ui-v15.js',",
   "  'seed-man-ui-v3.js',",
   "  'seed-man-visual-v4.js',",
+  "  'seed-man-sprite-runtime-v1.js',",
+  "  'assets/seed-man/seed-man-atlas-v1.svg',",
   "  'three-world-v1.js',",
   "  'three-world-adapter-v1.js',",
   "  'data/levels-12-15.json',"
@@ -77,6 +80,8 @@ const campaignUi = fs.readFileSync(campaignUiPath, 'utf8');
 const uiV3 = fs.readFileSync(uiV3Path, 'utf8');
 const visualV4 = fs.readFileSync(visualV4Path, 'utf8');
 const threeAdapter = fs.readFileSync(threeAdapterPath, 'utf8');
+const spriteRuntime = fs.readFileSync('site/public-route-patch/games/seed-man-platformer/seed-man-sprite-runtime-v1.js', 'utf8');
+const spriteAtlas = fs.readFileSync('site/public-route-patch/games/seed-man-platformer/assets/seed-man/seed-man-atlas-v1.svg', 'utf8');
 
 if (enemyAttackModule !== canonicalEnemyAttackModule) throw new Error('Browser-safe enemy-attacks.js must exactly mirror the canonical enemy-attacks.mjs source.');
 if (publicCampaign !== canonicalCampaign) throw new Error('Public campaign manifest must exactly mirror canonical Seed Man campaign data.');
@@ -95,6 +100,7 @@ const worldFiveScript = `  <script src="./world-five-v1.js?v=${release}" defer><
 const threeWorldScript = `  <script src="./three-world-v1.js?v=${release}" defer></script>`;
 const threeAdapterScript = `  <script src="./three-world-adapter-v1.js?v=${release}" defer></script>`;
 const uiV3Script = `  <script src="./seed-man-ui-v3.js?v=${release}" defer></script>`;
+const spriteScript = `  <script src="./seed-man-sprite-runtime-v1.js?v=${release}" defer></script>`;
 if (!index.includes(threeWorldScript)) {
   if (!index.includes(uiV3Script)) throw new Error('Could not locate Seed Man UI v3 script anchor for Three.js renderer.');
   index = index.replace(uiV3Script, `${threeWorldScript}\n${uiV3Script}`);
@@ -115,10 +121,13 @@ for (const marker of ['seed-man-ui-v3','seed-run-context','Opening Route','Mid R
 for (const marker of ['seed-man-visual-v4','WORLD_THEMES','world-05','data-visual-v4','BOSS ENCOUNTER','data-seed-pheno-active']) if (!visualV4.includes(marker)) throw new Error(`Missing Seed Man visual v4 marker: ${marker}`);
 for (const marker of ['seed-man-three-adapter-v2','seed-man-three-world-v2','SeedManThreeWorld','drawThreeBackedBackground','__SPROUT_THREE_ADAPTER__','ResizeObserver','visibilitychange','renderer.mountLevel','renderer.sync','renderer.render']) if (!threeAdapter.includes(marker)) throw new Error(`Missing current Three.js live runtime adapter marker: ${marker}`);
 for (const marker of ['seed-man-world-five-combat-v1',"'chromosome-crossing'","'mutation-marsh'","'allele-array'","'genome-spire'",'return ENCOUNTERS[level?.id] || [];']) if (!combat.includes(marker)) throw new Error(`Missing prepared World 5 combat marker: ${marker}`);
+for (const marker of ['seed-man-sprite-runtime-v1','seed-man-authored-atlas-v1','drawAtlasFrame','rendererOwner']) if (!spriteRuntime.includes(marker)) throw new Error(`Missing authored sprite runtime marker: ${marker}`);
+for (const marker of ['<svg','width="1536"','height="512"','Fire form','Electric form','Ice form']) if (!spriteAtlas.includes(marker)) throw new Error(`Missing authored sprite atlas marker: ${marker}`);
 for (const entry of releaseEntries) if (!publisher.includes(entry)) throw new Error(`Seed Man publisher allowlist is missing: ${entry}`);
 if (!index.includes(worldFiveScript)) throw new Error('Seed Man index is missing the World 5 browser adapter.');
 if (!index.includes(threeWorldScript)) throw new Error('Seed Man index is missing the Three.js production bundle.');
 if (!index.includes(threeAdapterScript)) throw new Error('Seed Man index is missing the Three.js live runtime adapter.');
 if (!index.includes(uiV3Script)) throw new Error('Seed Man index is missing the UI v3 adapter.');
+if (!index.includes(spriteScript)) throw new Error('Seed Man index is missing the authored sprite runtime.');
 
-console.log(JSON.stringify({ ok: true, publisherPatched: true, campaignLevels: 15, campaignWorlds: 5, campaignBosses: 6, phenotypeAbsorption: 'seed-man-phenotype-absorb-v1', phenotypeExpansion: 'seed-man-phenotype-expansion-v1', enemyVisuals: 'seed-man-enemy-visuals-v2', elementalVfx: 'seed-man-elemental-vfx-v2', impactFx: 'seed-man-impact-fx-v2', phenotypeMobilityFrameRepair: 'seed-man-phenotype-mobility-frame-v1', worldFiveCombat: 'seed-man-world-five-combat-v1', campaignUi: 'seed-man-campaign-ui-v15', uiV3: 'seed-man-ui-v3', visualV4: 'seed-man-visual-v4', threeWorld: 'seed-man-three-world-v2', threePublicApi: 'seed-man-three-public-v1', threeAdapter: 'seed-man-three-adapter-v2', threeWorldBytes: threeBuild.length, autoload: true, liveRendererOwnership: true, resizeStrategy: 'event-driven', hiddenTabRendering: 'paused' }, null, 2));
+console.log(JSON.stringify({ ok: true, publisherPatched: true, campaignLevels: 15, campaignWorlds: 5, campaignBosses: 6, phenotypeAbsorption: 'seed-man-phenotype-absorb-v1', phenotypeExpansion: 'seed-man-phenotype-expansion-v1', enemyVisuals: 'seed-man-enemy-visuals-v2', elementalVfx: 'seed-man-elemental-vfx-v2', impactFx: 'seed-man-impact-fx-v2', authoredSpriteRuntime: 'seed-man-sprite-runtime-v1', authoredSpriteAtlas: 'seed-man-authored-atlas-v1', phenotypeMobilityFrameRepair: 'seed-man-phenotype-mobility-frame-v1', worldFiveCombat: 'seed-man-world-five-combat-v1', campaignUi: 'seed-man-campaign-ui-v15', uiV3: 'seed-man-ui-v3', visualV4: 'seed-man-visual-v4', threeWorld: 'seed-man-three-world-v2', threePublicApi: 'seed-man-three-public-v1', threeAdapter: 'seed-man-three-adapter-v2', threeWorldBytes: threeBuild.length, autoload: true, liveRendererOwnership: true, resizeStrategy: 'event-driven', hiddenTabRendering: 'paused' }, null, 2));
