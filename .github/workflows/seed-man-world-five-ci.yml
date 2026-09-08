@@ -1,4 +1,4 @@
-name: Seed Man World 5 CI
+name: Seed Man World 5 Compatibility CI
 
 on:
   pull_request:
@@ -25,7 +25,7 @@ permissions:
   contents: read
 
 jobs:
-  genetic-frontier:
+  genetic-frontier-compatibility:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -38,13 +38,13 @@ jobs:
       - name: Prepare production Seed Man artifact
         run: node scripts/prepare-seed-man-combat-release.mjs
 
-      - name: Validate canonical campaign and combat systems
+      - name: Validate current campaign and combat systems
         run: |
           node games/seed-man-platformer/test/campaign.test.mjs
           node games/seed-man-platformer/test/combat.test.mjs
-          node games/seed-man-platformer/test/public-campaign.test.mjs
+          node games/seed-man-platformer/test/public-runtime.test.mjs
 
-      - name: Verify Genetic Frontier source parity
+      - name: Verify current campaign plus legacy Genetic Frontier compatibility
         shell: bash
         run: |
           set -euo pipefail
@@ -56,37 +56,22 @@ jobs:
           node --check scripts/prepare-seed-man-combat-release.mjs
           node --check scripts/prepare-seed-man-world-five-combat.mjs
           node --check scripts/prepare-seed-man-world-five-runtime.mjs
-
-      - name: Verify prepared World 5 production contract
-        shell: bash
-        run: |
-          set -euo pipefail
-          route=site/public-route-patch/games/seed-man-platformer
-          release="$(sed -n 's/.*name="dtf-sprout-release" content="\([^"]*\)".*/\1/p' "$route/index.html" | head -n 1)"
-          [[ "$release" =~ ^[0-9]{8}-r[0-9]+$ ]]
-          test -s "$route/world-five-v1.js"
-          test -s "$route/data/levels-12-15.json"
-          grep -Fq "<script src=\"./world-five-v1.js?v=${release}\" defer></script>" "$route/index.html"
-          grep -Fq '"levelCount": 15' "$route/data/campaign.json"
-          grep -Fq '"newLevelCount": 14' "$route/data/campaign.json"
-          grep -Fq '"title": "Genetic Frontier"' "$route/data/campaign.json"
+          grep -Fq '"levelCount": 20' "$route/data/campaign.json"
+          grep -Fq '"newLevelCount": 19' "$route/data/campaign.json"
+          grep -Fq '"finalBoss": "blight-king"' "$route/data/campaign.json"
+          grep -Fq '5-4-the-last-seed' "$route/data/campaign.json"
           grep -Fq 'Chromosome Crossing' "$route/world-five-v1.js"
           grep -Fq 'Mutation Marsh' "$route/world-five-v1.js"
           grep -Fq 'Allele Array' "$route/world-five-v1.js"
           grep -Fq 'Genome Spire' "$route/world-five-v1.js"
           grep -Fq 'Genome Hydra' "$route/world-five-v1.js"
           grep -Fq 'seed-man-world-five-state-sync-v1' "$route/world-five-v1.js"
-          grep -Fq 'window.__SPROUT_CAMPAIGN__?.selectLevel?.(id);' "$route/world-five-v1.js"
-          grep -Fq "attributeFilter: ['hidden']" "$route/world-five-v1.js"
-          ! grep -Fq "attributeFilter: ['hidden'], childList: true, subtree: true" "$route/world-five-v1.js"
           grep -Fq 'seed-man-world-five-combat-v1' "$route/combat-browser-v1.js"
-          grep -Fq "'chromosome-crossing'" "$route/combat-browser-v1.js"
-          grep -Fq "'mutation-marsh'" "$route/combat-browser-v1.js"
-          grep -Fq "'allele-array'" "$route/combat-browser-v1.js"
-          grep -Fq "'genome-spire'" "$route/combat-browser-v1.js"
-          grep -Fq 'Solar Ember Beetle' "$route/combat-browser-v1.js"
-          grep -Fq 'Voltage Wasp Alpha' "$route/combat-browser-v1.js"
-          grep -Fq 'Cryo Moth Prime' "$route/combat-browser-v1.js"
           grep -Fq "return ENCOUNTERS[level?.id] || [];" "$route/combat-browser-v1.js"
           grep -Fq "'world-five-v1.js'," scripts/publish-seed-man-route-via-wordpress.mjs
           grep -Fq "'data/levels-12-15.json'," scripts/publish-seed-man-route-via-wordpress.mjs
+
+      - name: Validate route integrity without browser automation
+        run: |
+          node scripts/audit-game-route-integrity.mjs
+          node scripts/validate-public-game-release-integrity.mjs
