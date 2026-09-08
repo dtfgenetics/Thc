@@ -106,6 +106,7 @@
     atlasFailed = true;
     atlasReady = false;
     document.documentElement.dataset.seedManSpriteAtlas = 'fallback';
+    console.error(`Seed Man authored sprite atlas failed to load: ${ATLAS_URL}`);
   }, { once: true });
   atlas.decoding = 'async';
   atlas.src = ATLAS_URL;
