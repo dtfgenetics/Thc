@@ -3,14 +3,15 @@
   "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "Production boundary for the 20-level Seed Man browser campaign, approved art registry, and Three.js world renderer.",
+  "description": "Production runtime for the 20-level Seed Man browser campaign with approved-art-only visuals, five worlds, phenotype combat, world bosses, and the Blight King finale.",
   "scripts": {
     "build:three-public": "node scripts/build-three-public.mjs",
     "test:three-world": "node test/three-world-state.test.mjs",
-    "test:visual-runtime": "node test/visual-runtime.test.mjs",
-    "test:art-registry": "node test/art-registry.test.mjs",
-    "test:campaign-20": "node test/campaign-20.test.mjs",
-    "test:production-contracts": "npm run test:art-registry && npm run test:campaign-20 && npm run test:visual-runtime && npm run test:three-world",
+    "test:visual-runtime": "node test/visual-runtime.test.mjs && node test/art-registry.test.mjs && node test/approved-art-loader.test.mjs",
+    "test:campaign-20": "node test/campaign-20.test.mjs && node test/production-campaign-20.test.mjs && node test/level-catalog.test.mjs && node test/level-runtime.test.mjs && node test/campaign-state-v2.test.mjs && node test/save-state-v2.test.mjs",
+    "test:combat-v2": "node test/phenotype-system.test.mjs && node test/power-drop.test.mjs && node test/final-boss-director.test.mjs && node test/world-boss-map.test.mjs",
+    "test:production": "node test/game-contract.test.mjs && node test/production-readiness.test.mjs && node test/production-assets-runtime.test.mjs && node test/asset-key-guard.test.mjs && node test/world-theme.test.mjs && node test/platform-surface-map.test.mjs && node test/hud-model.test.mjs && node test/input-actions.test.mjs && node test/audio-events.test.mjs && node test/diagnostics.test.mjs",
+    "test:production-contracts": "npm run test:visual-runtime && npm run test:campaign-20 && npm run test:combat-v2 && npm run test:production && npm run test:three-world",
     "verify:three-import": "node -e \"import('./src/render/three-world.mjs').then((m)=>{if(typeof m.createThreeWorldRenderer!=='function')process.exit(1)})\""
   },
   "dependencies": {
