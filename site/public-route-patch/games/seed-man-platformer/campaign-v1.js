@@ -9,7 +9,7 @@ const SPROUT_BEST_PREFIX = 'dtf-seed-man-best-v3:';
 const SPROUT_CAMPAIGN_MANIFEST = Object.freeze({
   schemaVersion: 2,
   id: 'sprout-run-campaign',
-  title: 'Seed Man: Sprout Run',
+  title: 'Seed Man: Greenhouse Gauntlet',
   defaultLevelId: 'sprout-run',
   levelCount: 11,
   newLevelCount: 10,
