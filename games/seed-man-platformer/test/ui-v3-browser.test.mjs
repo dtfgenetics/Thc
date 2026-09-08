@@ -32,12 +32,7 @@ async function assertCampaignIdentity(page) {
     identity: document.documentElement.dataset.seedManCampaignIdentity || '',
     heroIdentity: document.querySelector('.hero')?.dataset.gameIdentity || '',
     description: document.querySelector('meta[name="description"]')?.content || '',
-    worldCards: [...document.querySelectorAll('.seed-world-card')].map((node) => ({
-      world: node.dataset.worldId,
-      level: node.dataset.levelId,
-      text: node.innerText,
-      current: node.getAttribute('aria-current')
-    }))
+    worldCards: [...document.querySelectorAll('.seed-world-card')].map((node) => ({ world: node.dataset.worldId, level: node.dataset.levelId, text: node.innerText, current: node.getAttribute('aria-current') }))
   }));
   assert.equal(identity.title, 'Seed Man: Greenhouse Gauntlet | DTF Genetics');
   assert.equal(identity.heading, 'Seed Man');
@@ -67,16 +62,54 @@ async function assertCampaignIdentity(page) {
 async function assertWorldRailNavigation(page) {
   await page.locator('.seed-world-card[data-world-id="world-03"]').click();
   await page.waitForFunction(() => document.querySelector('.game-shell')?.dataset.levelId === 'kief-cavern-climb');
-  const state = await page.evaluate(() => ({
-    selected: document.querySelector('#seed-man-level-select')?.value || '',
-    activeWorld: document.querySelector('.seed-world-card[data-active="true"]')?.dataset.worldId || '',
-    current: document.querySelector('.seed-world-card[data-world-id="world-03"]')?.getAttribute('aria-current') || '',
-    focused: document.activeElement?.id || ''
-  }));
+  const state = await page.evaluate(() => ({ selected: document.querySelector('#seed-man-level-select')?.value || '', activeWorld: document.querySelector('.seed-world-card[data-active="true"]')?.dataset.worldId || '', current: document.querySelector('.seed-world-card[data-world-id="world-03"]')?.getAttribute('aria-current') || '', focused: document.activeElement?.id || '' }));
   assert.equal(state.selected, 'kief-cavern-climb');
   assert.equal(state.activeWorld, 'world-03');
   assert.equal(state.current, 'step');
   assert.equal(state.focused, 'game');
+}
+
+async function assertEncounterHud(page) {
+  const state = await page.evaluate(() => {
+    const original = window.__SPROUT_COMBAT_BROWSER__;
+    window.__SPROUT_COMBAT_BROWSER__ = Object.freeze({
+      installed: true,
+      snapshot: () => ({
+        activePhenotype: 'solar-flare',
+        phenotypeRemaining: 21.4,
+        enemies: [{ id: 'visual-boss', name: 'Mite Queen', health: 18, maxHealth: 30, defeated: false, bossRank: 'major' }]
+      })
+    });
+    window.__SPROUT_UI_V3__.sync();
+    const shell = document.querySelector('.game-shell');
+    const result = {
+      phenoHidden: document.querySelector('.seed-pheno-banner')?.hidden,
+      phenoName: document.querySelector('.seed-pheno-name')?.textContent || '',
+      phenoTime: document.querySelector('.seed-pheno-time')?.textContent || '',
+      bossHidden: document.querySelector('.seed-boss-banner')?.hidden,
+      bossRank: document.querySelector('.seed-boss-rank')?.textContent || '',
+      bossName: document.querySelector('.seed-boss-name')?.textContent || '',
+      bossValue: document.querySelector('.seed-boss-value')?.textContent || '',
+      bossWidth: document.querySelector('.seed-boss-health i')?.style.width || '',
+      shellBoss: shell?.dataset.combatBoss || '',
+      shellPhenotype: shell?.dataset.combatPhenotype || '',
+      kicker: document.querySelector('.course-kicker')?.textContent || ''
+    };
+    window.__SPROUT_COMBAT_BROWSER__ = original;
+    window.__SPROUT_UI_V3__.sync();
+    return result;
+  });
+  assert.equal(state.phenoHidden, false);
+  assert.equal(state.phenoName, 'Solar Flare');
+  assert.match(state.phenoTime, /22s REMAINING/);
+  assert.equal(state.bossHidden, false);
+  assert.equal(state.bossRank, 'MAJOR BOSS ENCOUNTER');
+  assert.equal(state.bossName, 'Mite Queen');
+  assert.equal(state.bossValue, '18 / 30');
+  assert.equal(state.bossWidth, '60%');
+  assert.equal(state.shellBoss, 'active');
+  assert.equal(state.shellPhenotype, 'solar-flare');
+  assert.match(state.kicker, /BOSS · Mite Queen/);
 }
 
 async function assertLevel(page, id, worldTitle, canonicalWorldTitle, order, theme) {
@@ -130,6 +163,7 @@ try {
   await desktop.waitForFunction(() => window.__SPROUT_VISUAL_V4__?.version === 'seed-man-visual-v4');
   await assertCampaignIdentity(desktop);
   await assertWorldRailNavigation(desktop);
+  await assertEncounterHud(desktop);
   await assertLevel(desktop, 'sprout-run', 'Greenhouse Valley', 'Greenhouse District', 1, 'greenhouse');
   await assertLevel(desktop, 'root-zone-rumble', 'Forest Ruins', 'Rootworks', 4, 'rootworks');
   await assertLevel(desktop, 'frostline-canopy', 'Frozen Peak', 'Sky Garden', 10, 'sky');
@@ -155,7 +189,7 @@ try {
   assert.ok(mobileMetrics.worldRailHeight >= 48, `world rail should remain visible on touch screens, got ${mobileMetrics.worldRailHeight}px`);
   await mobile.close();
 
-  console.log(JSON.stringify({ ok: true, uiVersion: 'seed-man-ui-v3', visualVersion: 'seed-man-visual-v4', campaignAware: true, campaignIdentity: 'greenhouse-gauntlet', worldRail: true, approvedWorldNames: true, themedWorlds: true, mobileVerified: true }, null, 2));
+  console.log(JSON.stringify({ ok: true, uiVersion: 'seed-man-ui-v3', visualVersion: 'seed-man-visual-v4', campaignAware: true, campaignIdentity: 'greenhouse-gauntlet', worldRail: true, encounterHud: true, approvedWorldNames: true, themedWorlds: true, mobileVerified: true }, null, 2));
 } finally {
   if (browser) await browser.close();
   if (server) server.kill('SIGTERM');
