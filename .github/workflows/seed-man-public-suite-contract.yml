@@ -9,8 +9,11 @@ on:
       - 'site/public-route-patch/games/index.html'
       - 'site/public-route-patch/projects/index.html'
       - 'site/deployment/public-apps.json'
+      - 'site/deployment/release-resources.json'
       - 'data/game-source-map.json'
+      - 'scripts/prepare-seed-man-combat-release.mjs'
       - '.github/workflows/build-dtfseeds-public-suite.yml'
+      - '.github/workflows/build-dtfseeds-public-resource.yml'
       - '.github/workflows/seed-man-public-suite-contract.yml'
   push:
     branches: [main]
@@ -20,8 +23,11 @@ on:
       - 'site/public-route-patch/games/index.html'
       - 'site/public-route-patch/projects/index.html'
       - 'site/deployment/public-apps.json'
+      - 'site/deployment/release-resources.json'
       - 'data/game-source-map.json'
+      - 'scripts/prepare-seed-man-combat-release.mjs'
       - '.github/workflows/build-dtfseeds-public-suite.yml'
+      - '.github/workflows/build-dtfseeds-public-resource.yml'
       - '.github/workflows/seed-man-public-suite-contract.yml'
   workflow_dispatch:
 
@@ -32,7 +38,7 @@ jobs:
   validate:
     name: Validate Greenhouse Gauntlet full campaign package
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -41,12 +47,15 @@ jobs:
           cache: npm
       - name: Install workspace
         run: npm ci
+      - name: Prepare exact production package
+        run: node scripts/prepare-seed-man-combat-release.mjs
       - name: Validate full Seed Man campaign mechanics
         run: |
           set -euo pipefail
           node games/seed-man-platformer/test/physics.test.mjs
           node games/seed-man-platformer/test/progression-systems.test.mjs
           node games/seed-man-platformer/test/campaign.test.mjs
+          node games/seed-man-platformer/test/combat.test.mjs
           node games/seed-man-platformer/test/three-world-state.test.mjs
           node games/seed-man-platformer/test/public-runtime.test.mjs
           node games/seed-man-platformer/test/public-campaign.test.mjs
@@ -81,6 +90,7 @@ jobs:
             "$route/three-world-v1.js"
             "$route/combat-browser-v1.js"
             "$route/enemy-attacks-browser-v1.js"
+            "$route/data/campaign.json"
             "$route/data/levels-12-15.json"
           )
           for file in "${required[@]}"; do test -s "$file"; done
@@ -99,6 +109,12 @@ jobs:
           assert.equal(app.machineData?.bossCount, 6);
           assert.equal(app.machineData?.release, '20260907-r17');
           assert.match(app.runtime, /threejs/i);
+          const resources = JSON.parse(fs.readFileSync('site/deployment/release-resources.json', 'utf8'));
+          const resource = resources.resources?.['seed-man-platformer'];
+          assert.ok(resource, 'Seed Man independent resource contract is required.');
+          assert.equal(resource.publicSuiteOwnership, 'resource');
+          assert.equal(resource.verifyMarker, 'Seed Man: Greenhouse Gauntlet');
+          assert.ok(resource.requiredFiles.includes('games/seed-man-platformer/three-world-v1.js'));
           const sourceMap = JSON.parse(fs.readFileSync('data/game-source-map.json', 'utf8'));
           const entries = Array.isArray(sourceMap) ? sourceMap : (sourceMap.games || sourceMap.entries || []);
           const source = entries.find((entry) => entry.id === 'seed-man-platformer');
