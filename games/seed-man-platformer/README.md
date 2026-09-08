@@ -1,140 +1,167 @@
 # Seed Man Platformer
 
-The **Seed Man Platformer** is an original DTF Genetics browser platformer starring the locked Seed Man mascot. The production route is `/games/seed-man-platformer/`.
+The **Seed Man Platformer** is the DTF Genetics browser action-platformer for `https://dtfseeds.com/games/seed-man-platformer/`.
 
-## Character contract
+## Production source of truth
 
-Seed Man remains a short, chubby oval seed with a simple face, three-leaf sprout, rubber-hose limbs, white gloves and shoes, thick outline, and flat 2D treatment. Animation can exaggerate movement, squash/stretch and poses, but it must preserve that silhouette and identity.
+The approved 2026-09-08 Seed Man showcase boards are authoritative for the game art. Existing procedural renderers, older brown-seed art, legacy sprite atlases, and stale documentation are **not** authoritative.
 
-The route keeps the original Canvas2D production-art layer (`seed-man-production-v1`) and now adds **Seed Man animation-v2** after the base game loads. Animation-v2 improves motion readability without changing collision geometry or physics:
+The production character is the approved **green armored plant-hero Seed Man** shown in the approved showcase: large leaf-shaped head silhouette, expressive face, green/white/black body treatment, white gloves and boots, and consistent platformer proportions. Plant, Fire, Electric, and Ice are gameplay forms of that same character.
 
-- idle breathing and blinking
-- speed-sensitive run stride and body lean
-- airborne stretch
-- double-jump pose and ring feedback
-- landing squash and recovery
-- hurt expression
-- boss-stomp recoil
-- finish celebration
-- leaf follow-through
-- speed trails
+The visual contract is encoded in:
 
-The runtime exposes `window.__SPROUT_ANIMATION_V2__` with the locked `seed-man-locked-v1` invariants.
+- `games/seed-man-platformer/data/seed-man-art-manifest-v1.json`
+- `games/seed-man-platformer/src/render/art-registry.mjs`
+- `games/seed-man-platformer/src/render/visual-runtime-v2.mjs`
+- `games/seed-man-platformer/src/render/approved-art-loader.mjs`
 
-## Eleven-level campaign
+Production policy:
 
-Greenhouse Gauntlet remains Level 1. This campaign adds **10 new levels**, for **11 total levels across four worlds**:
+- approved artwork is authoritative
+- raw filenames are not the public asset API
+- code references stable manifest keys
+- procedural character fallback is disabled
+- legacy atlas fallback is disabled
+- simulation owns collision/gameplay state
+- renderer only presents simulation state
 
-### World 1 — Greenhouse District
-1. **Greenhouse Gauntlet** — established 7,800px proving ground
-2. **Nursery Night Shift** — moonlit propagation nursery; bounce-pad routing
-3. **Reservoir Run** — hydro reservoir currents; **The Phantom Pump** boss
+## 20-level campaign
 
-### World 2 — Rootworks
-4. **Root Zone Rumble** — root maze and media drag zones
-5. **Mycelium Mile** — bioluminescent fungal undergarden and updrafts
-6. **Trichome Transit** — resin rail yard and boost lanes; **Mite Queen** boss
+The production campaign contains **20 levels across five worlds**, four levels per world:
 
-### World 3 — Resin Works
-7. **Kief Cavern Climb** — vertical cavern bounce routes
-8. **Rosin Refinery Rush** — heat vents and industrial pressure lanes
-9. **Terpene Tunnel** — alternating vapor gusts; **Mildew Wraith** boss
+### World 1 — Greenhouse Valley
+1. Sprout Steps
+2. Sunny Glade
+3. Waterfall Way
+4. Greenhouse Hub — Overgrown Guardian boss
 
-### World 4 — Sky Garden
-10. **Frostline Canopy** — frost/slip traversal
-11. **Cloud Nine Citadel** — alternating sky-garden winds; **Pollen Warden** final boss
+### World 2 — Forest Ruins
+5. Mossy Paths
+6. Broken Bridges
+7. Hollow Trunk
+8. Temple of Trees — Ancient Dryad boss
 
-The four boss encounters are gameplay-state encounters, not decorative DOM overlays. Boss stages require repeated stomp hits before the finish can unlock. Required hits rise from 3 to 5 across the campaign.
+### World 3 — Desert Canyon
+9. Red Rock Run
+10. Canyon Cliffs
+11. Dusty Winds
+12. Sun Spire — Scorchroot Titan boss
 
-## Campaign systems
+### World 4 — Frozen Peaks
+13. Icy Pass
+14. Crystal Caverns
+15. Frozen Bridges
+16. Glacier Gate — Frostbite Colossus boss
 
-The campaign runtime is self-contained in the already-allowlisted public `campaign-v1.js` so the dedicated WordPress publisher does not need an extra runtime dependency. It activates only after the proven base game has loaded.
+### World 5 — Eco City
+17. Toxic Outskirts
+18. Industrial Zone
+19. Reactor Core — Eco Sentinel boss
+20. The Last Seed — **Blight King final boss**
 
-The campaign includes:
+Canonical campaign files:
 
-- level selector for all 11 stages
-- Next Level flow after successful completion
-- per-level completion records and best times
-- four themed worlds
-- ten unique settings and palettes
-- nine traversal mechanic families
-- four boss health/finish gates
-- generated stage geometry from canonical level templates
-- checkpoint recovery on every generated stage
-- keyboard and touch support through the existing control layer
-- no runtime fetch and no browser-module dependency
+- `games/seed-man-platformer/data/campaign-20-v1.json`
+- `games/seed-man-platformer/data/levels-20-v1.json`
+- `games/seed-man-platformer/src/systems/level-catalog.mjs`
+- `games/seed-man-platformer/src/systems/level-runtime.mjs`
+- `games/seed-man-platformer/src/systems/campaign-state-v2.mjs`
+- `games/seed-man-platformer/src/systems/save-state-v2.mjs`
 
-The original Level 1 continues to use the established gameplay-v2 systems: moving greenhouse tables, stompable pests, bounce pads, particles, screen shake and the proven fixed-step physics. Levels 2–11 use the same core movement constants through a generated-level physics path, avoiding Level 1-specific moving-table/pest coordinates from leaking into unrelated settings.
+## Combat and phenotype powers
 
-## Canonical source
+Seed Man has four canonical forms:
 
-- physics: `games/seed-man-platformer/src/physics.mjs`
-- campaign manifest: `games/seed-man-platformer/data/campaign.json`
-- Greenhouse Gauntlet: `games/seed-man-platformer/data/level-01.json`
-- Levels 2–11 templates: `games/seed-man-platformer/data/levels-02-11.json`
-- generated course contract: `games/seed-man-platformer/src/course-generator.mjs`
-- metadata/release gates: `games/seed-man-platformer/game.json`
-- Level 1 browser acceptance: `games/seed-man-platformer/test/browser-smoke.mjs`
-- campaign/browser/boss acceptance: `games/seed-man-platformer/test/campaign-browser.test.mjs`
-- public campaign + animation runtime: `site/public-route-patch/games/seed-man-platformer/campaign-v1.js`
-- base production character art: `site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js`
-- public route source: `site/public-route-patch/games/seed-man-platformer/`
+- **Plant** — permanent base form
+- **Fire** — temporary 30-second form, burning projectile attacks
+- **Electric** — temporary 30-second form, chaining electric attacks
+- **Ice** — temporary 30-second form, freezing attacks
 
-Canonical campaign/level-pack copies must remain synchronized with the public route source.
+Fire, Electric, and Ice are earned from phenotype carriers/minor encounters. They do not replace the character identity; they transform the approved Seed Man artwork while preserving the same animation/state controller.
 
-## Existing movement and playability foundation
+Canonical systems:
 
-The campaign retains the established platformer feel:
+- `games/seed-man-platformer/src/systems/phenotype-system.mjs`
+- `games/seed-man-platformer/src/systems/power-drop.mjs`
+- `games/seed-man-platformer/data/enemy-catalog-v1.json`
 
-- fixed 60Hz simulation
-- coyote time and jump buffering
-- higher base jump
-- one true mid-air double jump per landing
-- variable jump height: tap for short hop, hold for full height
-- progressive ground and air acceleration/deceleration
-- refresh-rate-independent camera follow
-- pointer-captured mobile controls
-- speed, high-jump, magnet and shield power-ups
-- pause and guarded restart
-- accessible keyboard/touch controls
-- reduced-motion support
+## Enemies and bosses
 
-Greenhouse Gauntlet still contains 24 required sprouts, 7 power-ups, 3 checkpoints and 15 hazard zones. Generated levels scale from 16 to 26 sprouts and increase hazard/mechanic complexity through the campaign.
+The production enemy catalog is data-driven and uses the approved enemy atlas. Current core enemy archetypes include Sproutling, Root Crawler, Toxic Spore, Drone Bot, Thorn Beetle, Sky Wasp, Spike Plant, Sludge Monster, Bone Weed, and Shadow Root.
 
-## Three.js world work
+Bosses use a reusable phased boss state machine rather than level-specific ad hoc logic:
 
-The self-contained Three.js 2.5D renderer remains a **render-only prototype**. It does not own collision, campaign state, bosses, collectibles, checkpoints or player movement. The current Canvas2D campaign remains authoritative until the Three.js progressive-enhancement layer separately clears desktop/mobile/fallback/live gates.
+- Overgrown Guardian
+- Ancient Dryad
+- Scorchroot Titan
+- Frostbite Colossus
+- Eco Sentinel
+- **Blight King** — four-phase final boss
+
+The Blight King cycles weaknesses through Plant → Fire → Electric → Ice and ends the game only after the Level 20 finale completes.
+
+Canonical boss systems:
+
+- `games/seed-man-platformer/data/boss-catalog-v1.json`
+- `games/seed-man-platformer/src/systems/boss-state-machine.mjs`
+- `games/seed-man-platformer/src/systems/final-boss-director.mjs`
+- `games/seed-man-platformer/src/systems/world-boss-map.mjs`
+
+## Worlds, platforms, HUD and VFX
+
+World presentation is keyed to the approved five-world art direction:
+
+- Greenhouse Valley
+- Forest Ruins
+- Desert Canyon
+- Frozen Peaks
+- Eco City
+
+Terrain behavior is separated from terrain art. Grass, dirt, rock, stone, ice, sand, metal, wood, moving platforms and springs are selected through manifest/data keys while physics behavior comes from simulation modules.
+
+Relevant modules:
+
+- `games/seed-man-platformer/src/systems/world-theme.mjs`
+- `games/seed-man-platformer/src/systems/platform-surface-map.mjs`
+- `games/seed-man-platformer/src/systems/hud-model.mjs`
+- `games/seed-man-platformer/src/systems/vfx-catalog.mjs`
+- `games/seed-man-platformer/src/systems/collectible-catalog.mjs`
+- `games/seed-man-platformer/src/systems/audio-events.mjs`
+
+## Runtime architecture
+
+The project keeps gameplay/simulation independent from rendering. The existing Three.js layer remains the browser world renderer, but it is a view adapter—not the owner of player state, collisions, bosses, progression, or save state.
+
+Core rules:
+
+- fixed gameplay simulation owns entities and collision
+- renderer consumes stable state
+- DOM handles HUD/menu/accessibility surfaces
+- asset manifest keys are the only production asset API
+- approved art loader fails loudly if required production assets are unavailable
+- no renderer may silently replace the approved character runtime
+
+The production composition boundary is:
+
+- `games/seed-man-platformer/src/systems/production-assets.mjs`
+- `games/seed-man-platformer/src/systems/production-bootstrap.mjs`
+- `games/seed-man-platformer/src/systems/game-contract.mjs`
+- `games/seed-man-platformer/src/systems/production-readiness.mjs`
+- `games/seed-man-platformer/src/systems/release-contract.mjs`
 
 ## Validation
 
-The dedicated workflow is `.github/workflows/seed-man-platformer-ci.yml` and includes:
+Run:
 
 ```bash
-node games/seed-man-platformer/test/physics.test.mjs
-node games/seed-man-platformer/test/campaign.test.mjs
-node games/seed-man-platformer/test/three-world-state.test.mjs
-node games/seed-man-platformer/test/public-runtime.test.mjs
-node games/seed-man-platformer/test/public-campaign.test.mjs
-node games/seed-man-platformer/test/input-guard.test.mjs
-node games/seed-man-platformer/test/browser-smoke.mjs
-node games/seed-man-platformer/test/campaign-browser.test.mjs
+npm --prefix games/seed-man-platformer run test:production-contracts
+npm --prefix games/seed-man-platformer run build:three-public
 ```
 
-Campaign tests require all ten new templates to produce bounded stage geometry, unique settings, nine mechanic families, four boss encounters, checkpoint recovery, increasing difficulty and canonical/public data parity.
+The production test suite validates approved-art ownership, 20 contiguous levels, five worlds, world/level mapping, phenotype timing, phenotype drops, boss phases, final-boss behavior, campaign progression, save state, HUD model, input actions, terrain behavior, manifest-key policy, production readiness, and Three.js state boundaries.
 
-The campaign browser test runs desktop and mobile Chromium, switches through every level, checks theme/mechanic changes, tests the Nursery bounce mechanic, verifies the Reservoir boss finish gate, stomps The Phantom Pump through its hit count, and confirms the level can only finish after the boss is defeated.
+The live release must also pass browser/mobile smoke testing and production route verification before it is called released.
 
-Production verification additionally runs the campaign browser test against the live DTFSeeds route. An HTTP 200 is never sufficient evidence of a successful campaign release.
+## Current migration rule
 
-## Current status
-
-`campaign-v3-production-candidate`
-
-The 11-level campaign, unique settings, boss system and animation-v2 are established on the feature branch. They must still pass the full source/Chromium/release gate and merge before being called released/live.
-
-Human-only gates remain open until direct evidence exists:
-
-- physical-device mobile playtest
-- final visual consistency review of Seed Man in motion
-
-Audio remains optional and is not a gameplay blocker.
+Old 11-level and 15-level campaign files remain only for compatibility while the route migrates. They must not be used as the future production design source. Any future Seed Man work should begin from the 20-level campaign and approved-art manifest described above.
