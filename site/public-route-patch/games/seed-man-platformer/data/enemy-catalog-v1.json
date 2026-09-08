@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "seed-man-enemy-catalog-v1",
+  "common": {
+    "sproutling": {"asset":"enemy.atlas","role":"walker","hp":2,"speed":48,"drop":"seed"},
+    "root-crawler": {"asset":"enemy.atlas","role":"crawler","hp":3,"speed":42,"drop":"nutrient"},
+    "toxic-spore": {"asset":"enemy.atlas","role":"ranged","hp":3,"speed":24,"attack":"toxic-orb"},
+    "drone-bot": {"asset":"enemy.atlas","role":"flyer","hp":4,"speed":72,"attack":"pulse"},
+    "thorn-beetle": {"asset":"enemy.atlas","role":"charger","hp":5,"speed":64,"attack":"charge"},
+    "sky-wasp": {"asset":"enemy.atlas","role":"flyer","hp":4,"speed":90,"attack":"dive"},
+    "spike-plant": {"asset":"enemy.atlas","role":"turret","hp":5,"speed":0,"attack":"thorn-shot"},
+    "sludge-monster": {"asset":"enemy.atlas","role":"tank","hp":8,"speed":30,"attack":"sludge-slam"},
+    "bone-weed": {"asset":"enemy.atlas","role":"ambusher","hp":6,"speed":38,"attack":"bone-burst"},
+    "shadow-root": {"asset":"enemy.atlas","role":"teleporter","hp":7,"speed":50,"attack":"shadow-lash"}
+  },
+  "phenotypeCarriers": {
+    "fire-carrier": {"base":"thorn-beetle","phenotype":"fire","dropDurationMs":30000},
+    "electric-carrier": {"base":"drone-bot","phenotype":"electric","dropDurationMs":30000},
+    "ice-carrier": {"base":"root-crawler","phenotype":"ice","dropDurationMs":30000}
+  }
+}
