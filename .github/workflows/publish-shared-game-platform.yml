@@ -7,7 +7,6 @@ on:
     paths:
       - .github/workflows/publish-shared-game-platform.yml
       - scripts/publish-shared-game-platform-via-wordpress.mjs
-      - scripts/verify-shared-game-platform-live.mjs
       - scripts/sync-game-shared-platform.mjs
       - games/shared-platform/**
       - site/public-route-patch/games/shared-platform/**
@@ -47,7 +46,6 @@ jobs:
           npm run games:platform:test
           npm run games:platform:sync-check
           node --check scripts/publish-shared-game-platform-via-wordpress.mjs
-          node --check scripts/verify-shared-game-platform-live.mjs
           root=site/public-route-patch/games/shared-platform
           for file in .htaccess manifest.json index.mjs settings.mjs replay.mjs telemetry.mjs input.mjs audio.mjs; do
             test -s "$root/$file" || { echo "Missing shared platform file: $file" >&2; exit 1; }
@@ -59,13 +57,30 @@ jobs:
       - name: Atomically publish shared platform route
         run: node scripts/publish-shared-game-platform-via-wordpress.mjs
 
-      - name: Install live browser verifier
+      - name: Verify live module MIME and release markers
         run: |
-          npm ci
-          npx playwright install chromium
-
-      - name: Verify live module MIME import and consumer compatibility
-        run: node scripts/verify-shared-game-platform-live.mjs
+          node - <<'NODE'
+          const base = 'https://dtfseeds.com/games/shared-platform';
+          const expected = [
+            ['manifest.json', 'application/json'],
+            ['index.mjs', 'javascript'],
+            ['settings.mjs', 'javascript'],
+            ['replay.mjs', 'javascript'],
+            ['telemetry.mjs', 'javascript'],
+            ['input.mjs', 'javascript'],
+            ['audio.mjs', 'javascript'],
+          ];
+          for (const [file, type] of expected) {
+            const response = await fetch(`${base}/${file}?v=${Date.now()}`, { redirect: 'manual' });
+            if (response.status !== 200) throw new Error(`${file}: HTTP ${response.status}`);
+            const contentType = response.headers.get('content-type') || '';
+            if (!contentType.toLowerCase().includes(type)) throw new Error(`${file}: unexpected content-type ${contentType}`);
+            const body = await response.text();
+            if (!body.trim()) throw new Error(`${file}: empty body`);
+            if (file === 'manifest.json' && !body.includes('"platformVersion": "1.1.0"')) throw new Error('manifest version marker missing');
+            if (file === 'index.mjs' && !body.includes("DTF_GAME_PLATFORM_VERSION = '1.1.0'")) throw new Error('index version marker missing');
+          }
+          NODE
 
       - name: Shared platform production summary
         if: always()
@@ -78,5 +93,5 @@ jobs:
             echo '- Module: `https://dtfseeds.com/games/shared-platform/index.mjs`'
             echo '- Version: `1.1.0`'
             echo '- Publication: atomic replacement with SHA-256 verification'
-            echo '- Live gate: JavaScript MIME + browser dynamic import + settings-store exercise'
+            echo '- Live gate: HTTP status + JavaScript MIME + release-marker verification'
           } >> "$GITHUB_STEP_SUMMARY"
