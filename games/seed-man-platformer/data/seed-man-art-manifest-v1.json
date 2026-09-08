@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 1,
-  "id": "seed-man-approved-art-v1",
+  "schemaVersion": 2,
+  "id": "seed-man-approved-art-v2",
   "sourceOfTruth": "approved-showcase-2026-09-08",
   "policy": {
     "authoritative": true,
@@ -9,23 +9,31 @@
     "characterReference": "green-armored-plant-hero",
     "worlds": ["greenhouse-valley", "forest-ruins", "desert-canyon", "frozen-peaks", "eco-city"]
   },
+  "masterAtlas": {
+    "src": "assets/approved/seed-man-approved-master-atlas-v1.webp",
+    "width": 1600,
+    "height": 1208,
+    "regions": {
+      "cover.main": {"x":0,"y":0,"width":1536,"height":138},
+      "character.seedman.atlas": {"x":0,"y":138,"width":800,"height":360},
+      "enemy-boss.atlas": {"x":800,"y":138,"width":768,"height":288},
+      "world.atlas": {"x":0,"y":498,"width":1600,"height":180},
+      "platform.atlas": {"x":0,"y":678,"width":576,"height":192},
+      "ui-vfx.atlas": {"x":576,"y":678,"width":1024,"height":530}
+    }
+  },
   "assets": {
-    "cover.main": {"src": "assets/approved/seed-man-cover-banner-approved-v1.webp", "type": "image", "role": "cover"},
-    "character.seedman.atlas": {"src": "assets/approved/seed-man-character-atlas-approved-v1.webp", "type": "atlas", "role": "player"},
-    "enemy.atlas": {"src": "assets/approved/enemy-atlas-approved-v1.webp", "type": "atlas", "role": "enemy"},
-    "boss.atlas": {"src": "assets/approved/boss-atlas-approved-v1.webp", "type": "atlas", "role": "boss"},
-    "platform.atlas": {"src": "assets/approved/platform-atlas-approved-v1.webp", "type": "atlas", "role": "terrain"},
-    "world.atlas": {"src": "assets/approved/world-atlas-approved-v1.webp", "type": "atlas", "role": "world"},
-    "ui.vfx.cover": {"src": "assets/approved/ui-vfx-cover-approved-v1.webp", "type": "atlas", "role": "ui-vfx"},
-    "world.greenhouse-valley.background": {"src": "assets/approved/world-greenhouse-approved-v1.webp", "type": "image", "role": "background"},
-    "world.forest-ruins.background": {"src": "assets/approved/world-forest-approved-v1.webp", "type": "image", "role": "background"},
-    "world.desert-canyon.background": {"src": "assets/approved/world-desert-approved-v1.webp", "type": "image", "role": "background"},
-    "world.frozen-peaks.background": {"src": "assets/approved/world-frozen-approved-v1.webp", "type": "image", "role": "background"},
-    "world.eco-city.background": {"src": "assets/approved/world-eco-approved-v1.webp", "type": "image", "role": "background"}
+    "cover.main": {"atlasRegion":"cover.main","role":"cover"},
+    "character.seedman.atlas": {"atlasRegion":"character.seedman.atlas","role":"player"},
+    "enemy.atlas": {"atlasRegion":"enemy-boss.atlas","role":"enemy"},
+    "boss.atlas": {"atlasRegion":"enemy-boss.atlas","role":"boss"},
+    "platform.atlas": {"atlasRegion":"platform.atlas","role":"terrain"},
+    "world.atlas": {"atlasRegion":"world.atlas","role":"world"},
+    "ui.vfx": {"atlasRegion":"ui-vfx.atlas","role":"ui-vfx"}
   },
   "characterStates": ["idle", "walk", "run", "jump", "fall", "land", "attack", "hit", "victory"],
   "phenotypes": ["plant", "fire", "electric", "ice"],
   "enemies": ["sproutling", "root-crawler", "toxic-spore", "drone-bot", "thorn-beetle", "sky-wasp"],
-  "bosses": ["overgrown-guardian", "scorchroot-titan", "frostbite-colossus", "eco-sentinel", "blight-king"],
+  "bosses": ["overgrown-guardian", "ancient-dryad", "scorchroot-titan", "frostbite-colossus", "eco-sentinel", "blight-king"],
   "terrain": ["grass", "dirt", "rock", "stone", "ice", "sand", "metal", "wood", "moving-platform", "spring", "spikes"]
 }
