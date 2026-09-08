@@ -62,9 +62,9 @@
   };
 
   function setBrandedCampaignTitle(stageTitle) {
-    document.title = stageTitle
-      ? `Seed Man: Sprout Run — ${stageTitle} | DTF Genetics`
-      : 'Seed Man: Sprout Run | DTF Genetics';
+    document.title = stageTitle && stageTitle !== 'Greenhouse Gauntlet'
+      ? `Seed Man: Greenhouse Gauntlet — ${stageTitle} | DTF Genetics`
+      : 'Seed Man: Greenhouse Gauntlet | DTF Genetics';
   }
 
   function installLevelOneSummaryCompatibility() {

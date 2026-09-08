@@ -24,17 +24,25 @@ async function assertCampaignIdentity(page) {
   const identity = await page.evaluate(() => ({
     title: document.title,
     heading: document.querySelector('.hero h1')?.textContent?.trim() || '',
+    subtitle: document.querySelector('.seed-game-subtitle')?.textContent?.trim() || '',
     eyebrow: document.querySelector('.hero .eyebrow')?.textContent?.trim() || '',
     lede: document.querySelector('.hero .lede')?.textContent?.trim() || '',
     marker: document.querySelector('#seed-ui-release-marker')?.textContent?.trim() || '',
     summary: document.querySelector('.seed-campaign-summary')?.innerText || '',
     identity: document.documentElement.dataset.seedManCampaignIdentity || '',
     heroIdentity: document.querySelector('.hero')?.dataset.gameIdentity || '',
-    description: document.querySelector('meta[name="description"]')?.content || ''
+    description: document.querySelector('meta[name="description"]')?.content || '',
+    worldCards: [...document.querySelectorAll('.seed-world-card')].map((node) => ({
+      world: node.dataset.worldId,
+      level: node.dataset.levelId,
+      text: node.innerText,
+      current: node.getAttribute('aria-current')
+    }))
   }));
-  assert.equal(identity.title, 'Seed Man: Sprout Run | DTF Genetics');
+  assert.equal(identity.title, 'Seed Man: Greenhouse Gauntlet | DTF Genetics');
   assert.equal(identity.heading, 'Seed Man');
-  assert.match(identity.eyebrow, /Sprout Run/i);
+  assert.equal(identity.subtitle, 'GREENHOUSE GAUNTLET');
+  assert.match(identity.eyebrow, /Greenhouse Gauntlet/i);
   assert.match(identity.eyebrow, /Grow\. Fight\. Restore\./i);
   assert.match(identity.lede, /Greenhouse Valley/i);
   assert.match(identity.lede, /Forest Ruins/i);
@@ -46,11 +54,29 @@ async function assertCampaignIdentity(page) {
   assert.match(identity.summary, /15\s+LEVELS/i);
   assert.match(identity.summary, /6\s+BOSSES/i);
   assert.match(identity.summary, /10\s+PHENOTYPES/i);
-  assert.equal(identity.identity, 'sprout-run');
-  assert.equal(identity.heroIdentity, 'sprout-run');
+  assert.equal(identity.identity, 'greenhouse-gauntlet');
+  assert.equal(identity.heroIdentity, 'seed-man');
   assert.match(identity.description, /15 levels/i);
-  assert.match(identity.description, /Greenhouse Valley/i);
-  assert.match(identity.description, /Eco City/i);
+  assert.match(identity.description, /five worlds/i);
+  assert.equal(identity.worldCards.length, 5);
+  assert.deepEqual(identity.worldCards.map((card) => card.world), ['world-01', 'world-02', 'world-03', 'world-04', 'world-05']);
+  assert.deepEqual(identity.worldCards.map((card) => card.level), ['sprout-run', 'root-zone-rumble', 'kief-cavern-climb', 'frostline-canopy', 'chromosome-crossing']);
+  assert.match(identity.worldCards.map((card) => card.text).join(' '), /Greenhouse Valley.*Forest Ruins.*Desert Canyon.*Frozen Peak.*Eco City/is);
+}
+
+async function assertWorldRailNavigation(page) {
+  await page.locator('.seed-world-card[data-world-id="world-03"]').click();
+  await page.waitForFunction(() => document.querySelector('.game-shell')?.dataset.levelId === 'kief-cavern-climb');
+  const state = await page.evaluate(() => ({
+    selected: document.querySelector('#seed-man-level-select')?.value || '',
+    activeWorld: document.querySelector('.seed-world-card[data-active="true"]')?.dataset.worldId || '',
+    current: document.querySelector('.seed-world-card[data-world-id="world-03"]')?.getAttribute('aria-current') || '',
+    focused: document.activeElement?.id || ''
+  }));
+  assert.equal(state.selected, 'kief-cavern-climb');
+  assert.equal(state.activeWorld, 'world-03');
+  assert.equal(state.current, 'step');
+  assert.equal(state.focused, 'game');
 }
 
 async function assertLevel(page, id, worldTitle, canonicalWorldTitle, order, theme) {
@@ -71,7 +97,8 @@ async function assertLevel(page, id, worldTitle, canonicalWorldTitle, order, the
     context: document.querySelector('.seed-run-context')?.innerText || '',
     stage: document.querySelector('#course-stage')?.innerText || '',
     aria: document.querySelector('.course-status')?.getAttribute('aria-label') || '',
-    worldAccent: getComputedStyle(document.querySelector('.game-shell')).getPropertyValue('--world-accent').trim()
+    worldAccent: getComputedStyle(document.querySelector('.game-shell')).getPropertyValue('--world-accent').trim(),
+    activeWorld: document.querySelector('.seed-world-card[data-active="true"]')?.dataset.worldId || ''
   }));
   assert.equal(state.ui, 'seed-man-ui-v3');
   assert.equal(state.visual, 'seed-man-visual-v4');
@@ -88,6 +115,8 @@ async function assertLevel(page, id, worldTitle, canonicalWorldTitle, order, the
   assert.match(state.context, new RegExp(`LEVEL ${order} / 15`, 'i'));
   assert.ok(/Opening Route|Mid Route|Final Run/.test(state.stage));
   assert.match(state.aria, /route progress/i);
+  const expectedWorld = order <= 3 ? 'world-01' : order <= 6 ? 'world-02' : order <= 9 ? 'world-03' : order <= 11 ? 'world-04' : 'world-05';
+  assert.equal(state.activeWorld, expectedWorld);
 }
 
 try {
@@ -100,6 +129,7 @@ try {
   await desktop.waitForFunction(() => window.__SPROUT_UI_V3__?.version === 'seed-man-ui-v3');
   await desktop.waitForFunction(() => window.__SPROUT_VISUAL_V4__?.version === 'seed-man-visual-v4');
   await assertCampaignIdentity(desktop);
+  await assertWorldRailNavigation(desktop);
   await assertLevel(desktop, 'sprout-run', 'Greenhouse Valley', 'Greenhouse District', 1, 'greenhouse');
   await assertLevel(desktop, 'root-zone-rumble', 'Forest Ruins', 'Rootworks', 4, 'rootworks');
   await assertLevel(desktop, 'frostline-canopy', 'Frozen Peak', 'Sky Garden', 10, 'sky');
@@ -115,15 +145,17 @@ try {
     overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     contextHeight: document.querySelector('.seed-run-context')?.getBoundingClientRect().height || 0,
     touchMinHeight: Math.min(...[...document.querySelectorAll('.touch-controls button')].map((node) => node.getBoundingClientRect().height)),
-    summaryHeight: document.querySelector('.seed-campaign-summary')?.getBoundingClientRect().height || 0
+    summaryHeight: document.querySelector('.seed-campaign-summary')?.getBoundingClientRect().height || 0,
+    worldRailHeight: document.querySelector('.seed-world-rail')?.getBoundingClientRect().height || 0
   }));
   assert.ok(mobileMetrics.overflow <= 1, `Seed Man visual v4 caused ${mobileMetrics.overflow}px horizontal mobile overflow`);
   assert.ok(mobileMetrics.contextHeight >= 44, `campaign context should remain readable on touch screens, got ${mobileMetrics.contextHeight}px`);
   assert.ok(mobileMetrics.touchMinHeight >= 72, `touch controls should remain game-sized, got ${mobileMetrics.touchMinHeight}px`);
   assert.ok(mobileMetrics.summaryHeight >= 80, `campaign summary should remain readable on touch screens, got ${mobileMetrics.summaryHeight}px`);
+  assert.ok(mobileMetrics.worldRailHeight >= 48, `world rail should remain visible on touch screens, got ${mobileMetrics.worldRailHeight}px`);
   await mobile.close();
 
-  console.log(JSON.stringify({ ok: true, uiVersion: 'seed-man-ui-v3', visualVersion: 'seed-man-visual-v4', campaignAware: true, campaignIdentity: 'sprout-run', approvedWorldNames: true, themedWorlds: true, mobileVerified: true }, null, 2));
+  console.log(JSON.stringify({ ok: true, uiVersion: 'seed-man-ui-v3', visualVersion: 'seed-man-visual-v4', campaignAware: true, campaignIdentity: 'greenhouse-gauntlet', worldRail: true, approvedWorldNames: true, themedWorlds: true, mobileVerified: true }, null, 2));
 } finally {
   if (browser) await browser.close();
   if (server) server.kill('SIGTERM');
