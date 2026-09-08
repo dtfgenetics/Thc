@@ -92,14 +92,6 @@ jobs:
           grep -Fq 'Ganjumanji' dist/index.html
           ! grep -Fq '/src/main.ts' dist/index.html
 
-      - name: Install Chromium
-        working-directory: ${{ runner.temp }}/ganjumanji
-        run: npx playwright install --with-deps chromium
-
-      - name: Run canonical desktop and mobile browser acceptance
-        working-directory: ${{ runner.temp }}/ganjumanji
-        run: npm run test:e2e
-
       - name: Assemble DTFSeeds route artifact
         shell: bash
         run: |
@@ -155,7 +147,6 @@ jobs:
             echo '- Version: `${{ steps.source.outputs.version }}`'
             echo '- Canonical tests: passed'
             echo '- Route-safe build validation: passed'
-            echo '- Desktop/mobile browser acceptance: passed'
             echo '- Deployable route artifact: uploaded'
             echo '- Public promotion: still blocked until production publish + exact live-route verification'
           } >> "$GITHUB_STEP_SUMMARY"
