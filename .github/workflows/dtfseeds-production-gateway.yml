@@ -253,26 +253,43 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          learn="$(timeout "${VERIFY_REQUEST_TIMEOUT_SECONDS}s" curl -4 -fsSL \
-            --connect-timeout 10 --max-time 30 \
-            --retry 2 --retry-all-errors --retry-delay 2 \
-            -H 'Cache-Control: no-cache, no-store, max-age=0' \
-            "https://dtfseeds.com/learn/?dtf_gateway=${GITHUB_RUN_ID}")"
-          grep -Fqi 'Learn the plant as a connected system.' <<<"$learn"
-          grep -Fqi 'Plant Health & IPM' <<<"$learn"
-          grep -Fqi 'Cultivation Science' <<<"$learn"
-          grep -Fqi 'Symptom Differentials' <<<"$learn"
-          grep -Fqi 'Printable Field Tools' <<<"$learn"
-          grep -Fqi 'Evidence & Sources' <<<"$learn"
-          for route in plant-health cultivation-science symptoms tools sources; do
-            body="$(timeout "${VERIFY_REQUEST_TIMEOUT_SECONDS}s" curl -4 -fsSL \
+          check_reference() {
+            local path="$1" marker="$2" body
+            body="$(mktemp)"
+            if ! timeout "${VERIFY_REQUEST_TIMEOUT_SECONDS}s" curl -4 -fsSL \
               --connect-timeout 10 --max-time 30 \
               --retry 2 --retry-all-errors --retry-delay 2 \
+              --output "$body" \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
-              "https://dtfseeds.com/learn/$route/?dtf_gateway=${GITHUB_RUN_ID}")"
-            grep -Fqi 'Teaching Healthy Cultivation' <<<"$body"
-            ! grep -Fqi 'Reserved strain card' <<<"$body"
-          done
+              "https://dtfseeds.com${path}?dtf_gateway=${GITHUB_RUN_ID}"; then
+              echo "Timed out or failed education verification at $path" >&2
+              rm -f "$body"
+              return 1
+            fi
+            if ! grep -Fqi "$marker" "$body"; then
+              echo "Expected education marker '$marker' was not found at $path" >&2
+              rm -f "$body"
+              return 1
+            fi
+            if grep -Fqi 'Reserved strain card' "$body"; then
+              echo "Retired placeholder content was found at $path" >&2
+              rm -f "$body"
+              return 1
+            fi
+            rm -f "$body"
+          }
+
+          check_reference '/learn/' 'Learn the plant as a connected system.'
+          check_reference '/learn/' 'Plant Health & IPM'
+          check_reference '/learn/' 'Cultivation Science'
+          check_reference '/learn/' 'Symptom Differentials'
+          check_reference '/learn/' 'Printable Field Tools'
+          check_reference '/learn/' 'Evidence & Sources'
+          check_reference '/learn/plant-health/' 'Plant Health & IPM'
+          check_reference '/learn/cultivation-science/' 'Cultivation Science'
+          check_reference '/learn/symptoms/' 'Symptom Differentials'
+          check_reference '/learn/tools/' 'Printable Field Tools'
+          check_reference '/learn/sources/' 'Evidence & Sources'
 
       - name: Verify Harvest and Outdoor production surfaces independently
         id: harvest_outdoor_verify
