@@ -14,7 +14,7 @@ Never begin a game repair from the deployed HTML, a copied integration bundle, o
 | --- | --- | --- | --- | --- |
 | High IQ | `/games/high-iq/` | `dtfgenetics/Thc` | `games/high-iq` + `site/public-route-patch/games/high-iq` | same repo/runtime |
 | High Life | `/games/high-life/` | `dtfgenetics/Thc` | `games/high-life` | `site/public-route-patch/games/high-life` |
-| Seed Man: Sprout Run | `/games/seed-man-platformer/` | `dtfgenetics/Thc` | `games/seed-man-platformer` | `site/public-route-patch/games/seed-man-platformer` |
+| Seed Man: Greenhouse Gauntlet | `/games/seed-man-platformer/` | `dtfgenetics/Thc` | `games/seed-man-platformer` | `site/public-route-patch/games/seed-man-platformer` |
 | Grower Conversations | `/games/grower-conversations/` | `dtfgenetics/Thc` | `games/grower-conversations` | `site/public-route-patch/games/grower-conversations` |
 | High Land | `/games/high-land/` | `dtfgenetics/Thc` | `apps/high-land-web` | built by the DTFSeeds public suite |
 | Weedopolis | `/games/weedopolis/` | `dtfgenetics/Weedopolis-strain-Edition` | `src`, `digital`, `data` | external canonical build packaged by `dtfgenetics/Thc` |
