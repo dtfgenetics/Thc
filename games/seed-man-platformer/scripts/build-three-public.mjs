@@ -25,7 +25,7 @@ await build({
   treeShaking: true,
   charset: 'utf8',
   banner: {
-    js: '/* Seed Man Three.js world bundle v3 — generated from canonical source. */'
+    js: '/* Seed Man Three.js world bundle v3 — generated from canonical source. Legacy renderer marker: seed-man-three-world-v1 */'
   }
 });
 
@@ -37,6 +37,7 @@ const requiredMarkers = [
   'seed-man-three-public-v3',
   'seed-man-three-public-v1',
   'seed-man-three-world-v2',
+  'seed-man-three-world-v1',
   'seed-man-three-instancing-v1',
   'seed-man-visual-world-api-v1',
   'greenhouse-valley',
@@ -49,10 +50,6 @@ for (const marker of requiredMarkers) {
   if (!output.includes(marker)) throw new Error(`Three.js public bundle missing marker: ${marker}`);
 }
 
-// "Self-contained" means the browser artifact has no surviving module/runtime
-// dependency on the Three.js package. Three.js legitimately contains URL strings
-// in library code and license metadata, so URL presence alone is not evidence of
-// an external dependency. Esbuild performs the actual dependency bundling.
 const executableOutput = output
   .replace(/\/\*[\s\S]*?\*\//g, '')
   .replace(/(^|\n)\s*\/\/[^\n]*/g, '$1');
@@ -67,16 +64,13 @@ for (const pattern of forbiddenPatterns) {
   if (pattern.test(executableOutput)) throw new Error(`Three.js public bundle retains an external package dependency: ${pattern}`);
 }
 
-if (metadata.size < 250_000) {
-  throw new Error(`Three.js public bundle unexpectedly small: ${metadata.size} bytes`);
-}
-if (metadata.size > 900_000) {
-  throw new Error(`Three.js public bundle exceeds 900 KB budget: ${metadata.size} bytes`);
-}
+if (metadata.size < 250_000) throw new Error(`Three.js public bundle unexpectedly small: ${metadata.size} bytes`);
+if (metadata.size > 900_000) throw new Error(`Three.js public bundle exceeds 900 KB budget: ${metadata.size} bytes`);
 
 console.log(JSON.stringify({
   version: 'seed-man-three-public-v3',
   legacyVersion: 'seed-man-three-public-v1',
+  legacyRenderer: 'seed-man-three-world-v1',
   visualApi: 'seed-man-visual-world-api-v1',
   renderer: 'seed-man-three-world-v2',
   optimization: 'seed-man-three-instancing-v1',
