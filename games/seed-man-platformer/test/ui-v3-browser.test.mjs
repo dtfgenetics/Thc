@@ -20,6 +20,30 @@ async function waitForServer() {
   throw new Error('Seed Man UI/visual test server did not start.');
 }
 
+async function assertCampaignIdentity(page) {
+  const identity = await page.evaluate(() => ({
+    title: document.title,
+    heading: document.querySelector('.hero h1')?.textContent?.trim() || '',
+    eyebrow: document.querySelector('.hero .eyebrow')?.textContent?.trim() || '',
+    summary: document.querySelector('.seed-campaign-summary')?.innerText || '',
+    identity: document.documentElement.dataset.seedManCampaignIdentity || '',
+    heroIdentity: document.querySelector('.hero')?.dataset.campaignIdentity || '',
+    description: document.querySelector('meta[name="description"]')?.content || ''
+  }));
+  assert.equal(identity.title, 'Seed Man: Greenhouse Gauntlet | DTF Genetics');
+  assert.equal(identity.heading, 'Greenhouse Gauntlet');
+  assert.match(identity.eyebrow, /DTF Genetics Platform Adventure/i);
+  assert.match(identity.summary, /5\s+WORLDS/i);
+  assert.match(identity.summary, /15\s+LEVELS/i);
+  assert.match(identity.summary, /6\s+BOSSES/i);
+  assert.match(identity.summary, /10\s+PHENOTYPES/i);
+  assert.equal(identity.identity, 'greenhouse-gauntlet');
+  assert.equal(identity.heroIdentity, 'greenhouse-gauntlet');
+  assert.match(identity.description, /15 levels/i);
+  assert.match(identity.description, /five campaign worlds/i);
+  assert.match(identity.description, /six bosses/i);
+}
+
 async function assertLevel(page, id, worldTitle, order, theme) {
   await page.evaluate((levelId) => window.__SPROUT_CAMPAIGN_EXPERIENCE__.selectLevel(levelId), id);
   await page.waitForFunction((levelId) => document.querySelector('.game-shell')?.dataset.levelId === levelId, id);
@@ -64,6 +88,7 @@ try {
   await desktop.goto(URL, { waitUntil: 'networkidle' });
   await desktop.waitForFunction(() => window.__SPROUT_UI_V3__?.version === 'seed-man-ui-v3');
   await desktop.waitForFunction(() => window.__SPROUT_VISUAL_V4__?.version === 'seed-man-visual-v4');
+  await assertCampaignIdentity(desktop);
   await assertLevel(desktop, 'sprout-run', 'Greenhouse District', 1, 'greenhouse');
   await assertLevel(desktop, 'root-zone-rumble', 'Rootworks', 4, 'rootworks');
   await assertLevel(desktop, 'frostline-canopy', 'Sky Garden', 10, 'sky');
@@ -73,18 +98,21 @@ try {
   const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   await mobile.goto(URL, { waitUntil: 'networkidle' });
   await mobile.waitForFunction(() => window.__SPROUT_VISUAL_V4__?.version === 'seed-man-visual-v4');
+  await assertCampaignIdentity(mobile);
   await assertLevel(mobile, 'mutation-marsh', 'Genetic Frontier', 13, 'genetic');
   const mobileMetrics = await mobile.evaluate(() => ({
     overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     contextHeight: document.querySelector('.seed-run-context')?.getBoundingClientRect().height || 0,
-    touchMinHeight: Math.min(...[...document.querySelectorAll('.touch-controls button')].map((node) => node.getBoundingClientRect().height))
+    touchMinHeight: Math.min(...[...document.querySelectorAll('.touch-controls button')].map((node) => node.getBoundingClientRect().height)),
+    summaryHeight: document.querySelector('.seed-campaign-summary')?.getBoundingClientRect().height || 0
   }));
   assert.ok(mobileMetrics.overflow <= 1, `Seed Man visual v4 caused ${mobileMetrics.overflow}px horizontal mobile overflow`);
   assert.ok(mobileMetrics.contextHeight >= 44, `campaign context should remain readable on touch screens, got ${mobileMetrics.contextHeight}px`);
   assert.ok(mobileMetrics.touchMinHeight >= 72, `touch controls should remain game-sized, got ${mobileMetrics.touchMinHeight}px`);
+  assert.ok(mobileMetrics.summaryHeight >= 80, `campaign summary should remain readable on touch screens, got ${mobileMetrics.summaryHeight}px`);
   await mobile.close();
 
-  console.log(JSON.stringify({ ok: true, uiVersion: 'seed-man-ui-v3', visualVersion: 'seed-man-visual-v4', campaignAware: true, themedWorlds: true, mobileVerified: true }, null, 2));
+  console.log(JSON.stringify({ ok: true, uiVersion: 'seed-man-ui-v3', visualVersion: 'seed-man-visual-v4', campaignAware: true, campaignIdentity: 'greenhouse-gauntlet', themedWorlds: true, mobileVerified: true }, null, 2));
 } finally {
   if (browser) await browser.close();
   if (server) server.kill('SIGTERM');
