@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import './prepare-seed-man-world-five-combat.mjs';
 import './prepare-seed-man-enemy-visuals.mjs';
+import './prepare-seed-man-elemental-vfx.mjs';
 
 const publisherPath = 'scripts/publish-seed-man-route-via-wordpress.mjs';
 const canonicalEnemyAttackModulePath = 'games/seed-man-platformer/src/systems/enemy-attacks.mjs';
@@ -103,7 +104,7 @@ if (!index.includes(threeAdapterScript)) {
 }
 fs.writeFileSync(indexPath, index);
 
-for (const marker of ['seed-man-combat-browser-v1','seed-man-phenotype-absorb-v1','seed-man-phenotype-expansion-v1','seed-man-enemy-visuals-v2','combat-static-mite','PHENO ABSORBED','terpene-tempest','hydro-surge','gravity-haze','data-combat']) if (!combat.includes(marker)) throw new Error(`Missing combat adapter marker: ${marker}`);
+for (const marker of ['seed-man-combat-browser-v1','seed-man-phenotype-absorb-v1','seed-man-phenotype-expansion-v1','seed-man-enemy-visuals-v2','seed-man-elemental-vfx-v2','combat-static-mite','PHENO ABSORBED','terpene-tempest','hydro-surge','gravity-haze','data-combat']) if (!combat.includes(marker)) throw new Error(`Missing combat adapter marker: ${marker}`);
 for (const marker of ['combatBrowserAutoLoad: true','combat-browser-v1.js','seed-man-phenotype-mobility-frame-v1','mobilityFrameRepairInstalled','enemyAttackBrowserAutoLoad: true','enemy-attacks-browser-v1.js','campaignUiAutoLoad: true','campaign-ui-v15.js']) if (!compat.includes(marker)) throw new Error(`Missing combat compatibility marker: ${marker}`);
 for (const marker of ['seed-man-enemy-attacks-browser-v1',"import('./enemy-attacks.js')",'radial-burst','blink-strike','ground-wave','hitsTaken']) if (!enemyAttackBrowser.includes(marker)) throw new Error(`Missing enemy attack browser marker: ${marker}`);
 for (const marker of ['ATTACK_PATTERNS','stepEnemyAttack','advanceEnemyProjectile','resolveEnemyContact']) if (!enemyAttackModule.includes(marker)) throw new Error(`Missing enemy attack module marker: ${marker}`);
@@ -119,4 +120,4 @@ if (!index.includes(threeWorldScript)) throw new Error('Seed Man index is missin
 if (!index.includes(threeAdapterScript)) throw new Error('Seed Man index is missing the Three.js live runtime adapter.');
 if (!index.includes(uiV3Script)) throw new Error('Seed Man index is missing the UI v3 adapter.');
 
-console.log(JSON.stringify({ ok: true, publisherPatched: true, campaignLevels: 15, campaignWorlds: 5, campaignBosses: 6, phenotypeAbsorption: 'seed-man-phenotype-absorb-v1', phenotypeExpansion: 'seed-man-phenotype-expansion-v1', enemyVisuals: 'seed-man-enemy-visuals-v2', phenotypeMobilityFrameRepair: 'seed-man-phenotype-mobility-frame-v1', worldFiveCombat: 'seed-man-world-five-combat-v1', campaignUi: 'seed-man-campaign-ui-v15', uiV3: 'seed-man-ui-v3', visualV4: 'seed-man-visual-v4', threeWorld: 'seed-man-three-world-v2', threePublicApi: 'seed-man-three-public-v1', threeAdapter: 'seed-man-three-adapter-v2', threeWorldBytes: threeBuild.length, autoload: true, liveRendererOwnership: true, resizeStrategy: 'event-driven', hiddenTabRendering: 'paused' }, null, 2));
+console.log(JSON.stringify({ ok: true, publisherPatched: true, campaignLevels: 15, campaignWorlds: 5, campaignBosses: 6, phenotypeAbsorption: 'seed-man-phenotype-absorb-v1', phenotypeExpansion: 'seed-man-phenotype-expansion-v1', enemyVisuals: 'seed-man-enemy-visuals-v2', elementalVfx: 'seed-man-elemental-vfx-v2', phenotypeMobilityFrameRepair: 'seed-man-phenotype-mobility-frame-v1', worldFiveCombat: 'seed-man-world-five-combat-v1', campaignUi: 'seed-man-campaign-ui-v15', uiV3: 'seed-man-ui-v3', visualV4: 'seed-man-visual-v4', threeWorld: 'seed-man-three-world-v2', threePublicApi: 'seed-man-three-public-v1', threeAdapter: 'seed-man-three-adapter-v2', threeWorldBytes: threeBuild.length, autoload: true, liveRendererOwnership: true, resizeStrategy: 'event-driven', hiddenTabRendering: 'paused' }, null, 2));
