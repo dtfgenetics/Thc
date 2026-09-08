@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0.0",
+  "control_plane": "dtf-system-orchestrator",
+  "repair_skill": "rirt",
+  "domains": {
+    "GAME_RUNTIME": ["high-land", "seed-man-platformer", "high-life", "strain-showdown", "cannabis-fleet-battle", "grow-room-defense", "harvest-hustle", "high-lines", "lost-in-the-terps", "mystery-strain", "pheno-draft", "grow-room-bingo"],
+    "GAME_VISUAL": ["all-playable-games", "shared-game-assets"],
+    "CONTENT_EDUCATION": ["thc-education", "high-iq", "grower-conversations", "bud-or-bluff"],
+    "WEBSITE": ["dtf-platform"],
+    "ASSET_PIPELINE": ["dtf-platform", "all-playable-games", "thc-education"],
+    "INFRASTRUCTURE": ["dtf-platform", "high-land-multiplayer", "deployment"],
+    "REPOSITORY": ["all-dtf-repositories"],
+    "SECURITY": ["all-public-apps", "multiplayer", "deployment"]
+  },
+  "authority": [
+    "AGENTS.md",
+    "data/project-registry.json",
+    "data/site-registry.json",
+    "docs/DTF_SYSTEM_OPERATING_ARCHITECTURE.md",
+    ".agents/skills/dtf-system-orchestrator/SKILL.md",
+    ".agents/skills/rirt/SKILL.md",
+    "subsystem-source-of-truth",
+    "current-code-tests-ci-deployment-live-evidence"
+  ]
+}
