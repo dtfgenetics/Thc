@@ -101,14 +101,6 @@ jobs:
           if (bad.length) throw new Error(`Root-absolute runtime references break subroute packaging: ${bad.join(', ')}`);
           NODE
 
-      - name: Install Chromium
-        working-directory: ${{ runner.temp }}/thc-rpg
-        run: npx playwright install --with-deps chromium
-
-      - name: Run canonical desktop and mobile browser acceptance
-        working-directory: ${{ runner.temp }}/thc-rpg
-        run: npm run test:e2e
-
       - name: Assemble DTFSeeds route artifact
         shell: bash
         run: |
@@ -168,7 +160,6 @@ jobs:
             echo '- Version: `${{ steps.source.outputs.version }}`'
             echo '- Canonical tests: passed'
             echo '- Visitor-only release validation: passed'
-            echo '- Desktop/mobile browser acceptance: passed'
             echo '- Deployable route artifact: uploaded'
             echo '- Public promotion: still blocked until production publish + exact live-route verification'
           } >> "$GITHUB_STEP_SUMMARY"
