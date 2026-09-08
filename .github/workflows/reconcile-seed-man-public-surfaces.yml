@@ -1,0 +1,67 @@
+name: Reconcile Seed Man Public Surfaces
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/reconcile-seed-man-public-surfaces.mjs'
+      - '.github/workflows/reconcile-seed-man-public-surfaces.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: reconcile-seed-man-public-surfaces
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Reconcile homepage and projects Seed Man identity
+        run: node scripts/reconcile-seed-man-public-surfaces.mjs
+      - name: Confirm reconciliation is idempotent
+        shell: bash
+        run: |
+          set -euo pipefail
+          paths=(site/wordpress/pages/home.html site/public-route-patch/projects/index.html)
+          before="$(git diff -- "${paths[@]}" | git hash-object --stdin)"
+          node scripts/reconcile-seed-man-public-surfaces.mjs
+          after="$(git diff -- "${paths[@]}" | git hash-object --stdin)"
+          test "$before" = "$after"
+      - name: Validate canonical public surfaces
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/reconcile-seed-man-public-surfaces.mjs
+          grep -Fq 'Seed Man: Greenhouse Gauntlet' site/wordpress/pages/home.html
+          grep -Fq '15-level platform campaign across five worlds' site/wordpress/pages/home.html
+          ! grep -Fq '<strong>Seed Man: Sprout Run</strong>' site/wordpress/pages/home.html
+          grep -Fq '<h3>Seed Man: Greenhouse Gauntlet</h3>' site/public-route-patch/projects/index.html
+          grep -Fq 'Full 15-level platform campaign across five worlds' site/public-route-patch/projects/index.html
+          ! grep -Fq '<h3>Seed Man: Sprout Run</h3>' site/public-route-patch/projects/index.html
+      - name: Safely integrate public surface corrections when needed
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          paths=(site/wordpress/pages/home.html site/public-route-patch/projects/index.html)
+          if git diff --quiet -- "${paths[@]}"; then
+            echo 'No Seed Man public surface changes were needed.'
+            exit 0
+          fi
+          node scripts/studio/integrate-generated-change.mjs \
+            --message='Align Seed Man homepage and projects identity with verified campaign' \
+            --paths=site/wordpress/pages/home.html,site/public-route-patch/projects/index.html
