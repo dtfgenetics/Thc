@@ -1,0 +1,3 @@
+export const VFX=Object.freeze({
+  'plant-shot':{asset:'ui.vfx.cover',kind:'projectile'},'fire-shot':{asset:'ui.vfx.cover',kind:'projectile'},'electric-shot':{asset:'ui.vfx.cover',kind:'projectile'},'ice-shot':{asset:'ui.vfx.cover',kind:'projectile'},'hit-spark':{asset:'ui.vfx.cover',kind:'impact'},'collect':{asset:'ui.vfx.cover',kind:'reward'},'power-up':{asset:'ui.vfx.cover',kind:'reward'},'teleport':{asset:'ui.vfx.cover',kind:'portal'},'level-clear':{asset:'ui.vfx.cover',kind:'reward'},'jump-trail':{asset:'ui.vfx.cover',kind:'movement'},'dash':{asset:'ui.vfx.cover',kind:'movement'},'land-impact':{asset:'ui.vfx.cover',kind:'movement'},'double-jump':{asset:'ui.vfx.cover',kind:'movement'}
+});
