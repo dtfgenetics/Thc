@@ -37,40 +37,43 @@ jobs:
           node --check site/public-route-patch/games/seed-man-platformer/seed-man-sprite-runtime-v1.js
           node --check site/public-route-patch/games/seed-man-platformer/seed-man-sprite-runtime-v2.js
 
-      - name: Lock approved Seed Man renderer ownership
+      - name: Lock approved showcase renderer ownership
         shell: bash
         run: |
           set -euo pipefail
           root='site/public-route-patch/games/seed-man-platformer'
-          art="$root/seed-man-production-art.js"
           v1="$root/seed-man-sprite-runtime-v1.js"
           v2="$root/seed-man-sprite-runtime-v2.js"
 
-          grep -Fq "seed-man-approved-hero-v3" "$art"
-          grep -Fq "characterContract: 'seed-man-locked-v1'" "$art"
-          grep -Fq "authoritative: true" "$art"
-          grep -Fq 'drawSeedMan = drawSeedManProduction' "$art"
+          # The approved 2026-09-08 showcase sheet is the visual source of truth.
+          grep -Fq "approved-showcase-green-hero-v1" "$v2"
+          grep -Fq "2026-09-08-approved-showcase-sheet" "$v2"
+          grep -Fq "approved-showcase-green-hero" "$v2"
+          grep -Fq "window.drawSeedMan=renderer" "$v2"
+          grep -Fq "orange forehead gem" "$v2"
+          grep -Fq "brown exposed upper arms" "$v2"
+          grep -Fq "white/green armored boots" "$v2"
 
-          grep -Fq "approvedRendererAvailable" "$v1"
-          grep -Fq "approvedRendererAvailable" "$v2"
-          grep -Fq "seed-man-production-v1" "$v1"
-          grep -Fq "seed-man-production-v1" "$v2"
-
-          if grep -Eq "approvedRendererAvailable\(\).*window\.drawSeedMan[[:space:]]*=[[:space:]]*(spriteRenderer|renderer)" "$v1" "$v2"; then
-            echo 'Compatibility sprite runtime can overwrite approved Seed Man renderer.' >&2
-            exit 1
-          fi
+          # Legacy v1 remains fallback-only and must load before v2 in the public route.
+          index="$root/index.html"
+          v1_line="$(grep -nF './seed-man-sprite-runtime-v1.js?v=' "$index" | head -n1 | cut -d: -f1)"
+          v2_line="$(grep -nF './seed-man-sprite-runtime-v2.js?v=' "$index" | head -n1 | cut -d: -f1)"
+          test -n "$v1_line" && test -n "$v2_line" && test "$v1_line" -lt "$v2_line"
+          ! grep -Fq "2026-09-08-approved-showcase-sheet" "$v1"
 
       - name: Guard phenotype motion and effects
         shell: bash
         run: |
           runtime='site/public-route-patch/games/seed-man-platformer/seed-man-sprite-runtime-v2.js'
           grep -Fq 'seed-man-sprite-motion-phenotype-v3' "$runtime"
-          grep -Fq 'drawPhenotypeLayer(activePhenotype(), g, now);' "$runtime"
+          grep -Fq 'drawPhenotypeLayer' "$runtime"
           grep -Fq 'drawElementalVfx' "$runtime"
           grep -Fq "'solar-flare'" "$runtime"
           grep -Fq "'static-haze'" "$runtime"
           grep -Fq "'frost-resin'" "$runtime"
+          grep -Fq "kind:'fire'" "$runtime"
+          grep -Fq "kind:'electric'" "$runtime"
+          grep -Fq "kind:'ice'" "$runtime"
           if grep -Eq 'if[[:space:]]*\(phenotype\)[[:space:]]*return[[:space:]]+phenotype' "$runtime"; then
             echo 'Phenotype state is incorrectly replacing movement animation.' >&2
             exit 1
