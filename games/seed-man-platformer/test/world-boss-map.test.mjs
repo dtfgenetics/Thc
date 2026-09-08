@@ -1,0 +1,1 @@
+import assert from 'node:assert/strict';import { WORLD_BOSS_MAP,FINAL_BOSS } from '../src/systems/world-boss-map.mjs';assert.equal(Object.keys(WORLD_BOSS_MAP).length,5);assert.equal(FINAL_BOSS,'blight-king');console.log('Seed Man world boss map OK');
