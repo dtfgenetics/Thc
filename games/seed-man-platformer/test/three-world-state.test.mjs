@@ -5,10 +5,12 @@ import {
   buildThreeWorldDescriptor,
   gameRectToWorldBox
 } from '../src/render/three-world-state.mjs';
+import { resolveVisualWorldKey } from '../src/render/visual-world-map.mjs';
 
 const level = {
   worldWidth: 7800,
   worldHeight: 540,
+  worldTitle: 'Greenhouse District',
   platforms: [
     { id: 'ground-a', x: 0, y: 500, width: 960, height: 40 },
     { id: 'ledge-a', x: 1040, y: 390, width: 240, height: 24 }
@@ -33,6 +35,8 @@ assert.equal(ground.position.y, 0.25);
 
 const descriptor = buildThreeWorldDescriptor(level);
 assert.equal(descriptor.version, 'seed-man-three-world-v1');
+assert.equal(descriptor.visualWorldKey, 'greenhouse-valley');
+assert.equal(descriptor.level.visualWorldKey, 'greenhouse-valley');
 assert.equal(descriptor.world.width, 97.5);
 assert.equal(descriptor.world.height, 6.75);
 assert.equal(descriptor.platforms.length, 2);
@@ -40,6 +44,13 @@ assert.equal(descriptor.hazards.length, 1);
 assert.equal(descriptor.checkpoints.length, 1);
 assert.equal(descriptor.finish.id, 'finish');
 assert.equal(descriptor.checkpoints[0].source.id, 'cp-1');
+
+assert.equal(resolveVisualWorldKey({ worldTitle: 'Rootworks' }), 'forest-ruins');
+assert.equal(resolveVisualWorldKey({ worldTitle: 'Resin Works' }), 'desert-canyon');
+assert.equal(resolveVisualWorldKey({ worldTitle: 'Sky Garden' }), 'frozen-peak');
+assert.equal(resolveVisualWorldKey({ worldTitle: 'Genetic Frontier' }), 'eco-city');
+assert.equal(resolveVisualWorldKey({ theme: 'frost traversal' }), 'frozen-peak');
+assert.equal(resolveVisualWorldKey({ visualWorldKey: 'eco-city', worldTitle: 'Rootworks' }), 'eco-city');
 
 const cameraAtStart = buildThreeCameraState({
   cameraX: 0,

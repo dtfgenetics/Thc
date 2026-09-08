@@ -1,3 +1,5 @@
+import { resolveVisualWorldKey } from './visual-world-map.mjs';
+
 const DEFAULT_PIXELS_PER_UNIT = 80;
 const DEFAULT_VIEWPORT = Object.freeze({ width: 960, height: 540 });
 
@@ -85,6 +87,7 @@ export function buildThreeWorldDescriptor(level, options = {}) {
   const pixelsPerUnit = positiveNumber(options.pixelsPerUnit || DEFAULT_PIXELS_PER_UNIT, 'pixelsPerUnit');
   const worldWidth = positiveNumber(level.worldWidth, 'level.worldWidth');
   const worldHeight = positiveNumber(level.worldHeight, 'level.worldHeight');
+  const visualWorldKey = resolveVisualWorldKey(level);
 
   const platforms = rectList(level.platforms || [], 'platforms', worldHeight, {
     pixelsPerUnit,
@@ -113,8 +116,10 @@ export function buildThreeWorldDescriptor(level, options = {}) {
       title: typeof level.title === 'string' ? level.title : '',
       theme: typeof level.theme === 'string' && level.theme ? level.theme : 'greenhouse',
       setting: typeof level.setting === 'string' ? level.setting : '',
-      worldTitle: typeof level.worldTitle === 'string' ? level.worldTitle : ''
+      worldTitle: typeof level.worldTitle === 'string' ? level.worldTitle : '',
+      visualWorldKey
     },
+    visualWorldKey,
     pixelsPerUnit,
     world: {
       widthPixels: worldWidth,
