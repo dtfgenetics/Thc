@@ -7,13 +7,6 @@
   const TOTAL_LEVELS = 15;
   const TOTAL_WORLDS = 5;
   const TOTAL_BOSSES = 6;
-  const DISPLAY_WORLD_TITLES = Object.freeze({
-    'Greenhouse District': 'Greenhouse Valley',
-    Rootworks: 'Forest Ruins',
-    'Resin Works': 'Desert Canyon',
-    'Sky Garden': 'Frozen Peak',
-    'Genetic Frontier': 'Eco City'
-  });
   const PHENOTYPE_LABELS = Object.freeze({
     'static-haze': 'Static Haze',
     'frost-resin': 'Frost Resin',
@@ -27,11 +20,11 @@
     'gravity-haze': 'Gravity Haze'
   });
   const WORLD_SEQUENCE = Object.freeze([
-    { id: 'world-01', number: '01', title: 'Greenhouse Valley', levelId: 'sprout-run' },
-    { id: 'world-02', number: '02', title: 'Forest Ruins', levelId: 'root-zone-rumble' },
-    { id: 'world-03', number: '03', title: 'Desert Canyon', levelId: 'kief-cavern-climb' },
-    { id: 'world-04', number: '04', title: 'Frozen Peak', levelId: 'frostline-canopy' },
-    { id: 'world-05', number: '05', title: 'Eco City', levelId: 'chromosome-crossing' }
+    { id: 'world-01', number: '01', title: 'Greenhouse District', levelId: 'sprout-run' },
+    { id: 'world-02', number: '02', title: 'Rootworks', levelId: 'root-zone-rumble' },
+    { id: 'world-03', number: '03', title: 'Resin Works', levelId: 'kief-cavern-climb' },
+    { id: 'world-04', number: '04', title: 'Sky Garden', levelId: 'frostline-canopy' },
+    { id: 'world-05', number: '05', title: 'Genetic Frontier', levelId: 'chromosome-crossing' }
   ]);
   let attempts = 0;
 
@@ -55,7 +48,7 @@
   }
 
   function displayWorldTitle(value) {
-    return DISPLAY_WORLD_TITLES[value] || value || 'Seed Man Campaign';
+    return value || 'Seed Man Campaign';
   }
 
   function phaseFor(percent) {
@@ -113,7 +106,7 @@
     const lede = hero.querySelector('.lede');
     if (eyebrow) eyebrow.textContent = 'Greenhouse Gauntlet · Grow. Fight. Restore.';
     if (title) title.textContent = 'Seed Man';
-    if (lede) lede.textContent = 'Cross Greenhouse Valley, Forest Ruins, Desert Canyon and Frozen Peak on the way to Eco City. Absorb temporary phenotype powers, master responsive platforming, defeat six bosses and restore every world.';
+    if (lede) lede.textContent = 'Cross Greenhouse District, Rootworks, Resin Works and Sky Garden on the way to Genetic Frontier. Absorb temporary phenotype powers, master responsive platforming, defeat six bosses and restore every world.';
     let subtitle = hero.querySelector('.seed-game-subtitle');
     if (!subtitle) {
       subtitle = document.createElement('p');
