@@ -6,6 +6,13 @@
   const TOTAL_LEVELS = 15;
   const TOTAL_WORLDS = 5;
   const TOTAL_BOSSES = 6;
+  const DISPLAY_WORLD_TITLES = Object.freeze({
+    'Greenhouse District': 'Greenhouse Valley',
+    Rootworks: 'Forest Ruins',
+    'Resin Works': 'Desert Canyon',
+    'Sky Garden': 'Frozen Peak',
+    'Genetic Frontier': 'Eco City'
+  });
   let attempts = 0;
 
   function activeEntry() {
@@ -23,6 +30,10 @@
     return worlds.find((world) => world.id === entry.worldId || world.levels?.some((candidate) => candidate.id === entry.id)) || null;
   }
 
+  function displayWorldTitle(value) {
+    return DISPLAY_WORLD_TITLES[value] || value || 'Seed Man Campaign';
+  }
+
   function phaseFor(percent) {
     if (percent <= 32) return { key: 'opening', label: 'Opening Route' };
     if (percent <= 65) return { key: 'mid', label: 'Mid Route' };
@@ -33,16 +44,16 @@
     const hero = document.querySelector('.hero');
     if (!hero) return null;
 
-    document.title = 'Seed Man: Greenhouse Gauntlet | DTF Genetics';
+    document.title = 'Seed Man: Sprout Run | DTF Genetics';
     const description = document.querySelector('meta[name="description"]');
-    if (description) description.content = 'Play Seed Man: Greenhouse Gauntlet, the DTF Genetics platform adventure spanning 15 levels, five campaign worlds, six bosses, phenotype combat forms, checkpoints, keyboard controls, and touch controls.';
+    if (description) description.content = 'Play Seed Man: Sprout Run, the DTF Genetics platform adventure spanning Greenhouse Valley, Forest Ruins, Desert Canyon, Frozen Peak and Eco City across 15 levels with six bosses and phenotype combat.';
 
     const eyebrow = hero.querySelector('.eyebrow');
     const title = hero.querySelector('h1');
     const lede = hero.querySelector('.lede');
-    if (eyebrow) eyebrow.textContent = 'Seed Man · DTF Genetics Platform Adventure';
-    if (title) title.textContent = 'Greenhouse Gauntlet';
-    if (lede) lede.textContent = 'Run Seed Man across five distinct worlds, absorb temporary phenotype powers from elite enemies, defeat six bosses, master responsive platforming and carry the campaign from Greenhouse District to the Genetic Frontier.';
+    if (eyebrow) eyebrow.textContent = 'Sprout Run · Grow. Fight. Restore.';
+    if (title) title.textContent = 'Seed Man';
+    if (lede) lede.textContent = 'Run Seed Man from Greenhouse Valley through Forest Ruins, Desert Canyon and Frozen Peak to Eco City. Absorb temporary phenotype powers, master responsive platforming, defeat six bosses and restore each world.';
 
     let summary = hero.querySelector('.seed-campaign-summary');
     if (!summary) {
@@ -60,9 +71,10 @@
     }
 
     const marker = hero.querySelector('#seed-ui-release-marker');
-    if (marker) marker.textContent = 'CAMPAIGN READY · PHENOTYPE COMBAT · DESKTOP + TOUCH';
+    if (marker) marker.textContent = 'GROW · FIGHT · RESTORE · 15 LEVELS';
     hero.dataset.campaignIdentity = 'greenhouse-gauntlet';
-    document.documentElement.dataset.seedManCampaignIdentity = 'greenhouse-gauntlet';
+    hero.dataset.gameIdentity = 'sprout-run';
+    document.documentElement.dataset.seedManCampaignIdentity = 'sprout-run';
     return hero;
   }
 
@@ -124,8 +136,9 @@
     const entry = activeEntry();
     if (!entry) return false;
     const world = activeWorld(entry);
+    const canonicalWorldTitle = entry.worldTitle || world?.title || 'Seed Man Campaign';
+    const worldTitle = displayWorldTitle(canonicalWorldTitle);
     const order = Number(entry.order) || window.__SPROUT_CAMPAIGN__.listLevels().findIndex((candidate) => candidate.id === entry.id) + 1;
-    const worldTitle = entry.worldTitle || world?.title || 'Seed Man Campaign';
     const levelTitle = entry.title || String(entry.id || 'Current Level');
     const percent = Math.min(100, Math.max(0, Number.parseInt(progressNode?.textContent || '0', 10) || 0));
     const phase = phaseFor(percent);
@@ -146,6 +159,7 @@
     shell.dataset.uiV3 = 'ready';
     shell.dataset.world = entry.worldId || world?.id || '';
     shell.dataset.worldLabel = worldTitle;
+    shell.dataset.canonicalWorldLabel = canonicalWorldTitle;
     shell.dataset.levelId = entry.id;
     shell.dataset.levelLabel = levelTitle;
     shell.dataset.levelOrder = String(order);
@@ -173,7 +187,7 @@
       window.addEventListener('sprout:level-selected', () => requestAnimationFrame(sync));
       const select = document.querySelector('#seed-man-level-select');
       if (select) select.addEventListener('change', () => requestAnimationFrame(sync));
-      window.__SPROUT_UI_V3__ = Object.freeze({ version: VERSION, visualVersion: VISUAL_VERSION, sync, phaseFor, loadVisualV4, ensureCampaignIdentity });
+      window.__SPROUT_UI_V3__ = Object.freeze({ version: VERSION, visualVersion: VISUAL_VERSION, sync, phaseFor, displayWorldTitle, loadVisualV4, ensureCampaignIdentity });
       return;
     }
     attempts += 1;

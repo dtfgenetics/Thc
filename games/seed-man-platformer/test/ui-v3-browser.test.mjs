@@ -25,26 +25,35 @@ async function assertCampaignIdentity(page) {
     title: document.title,
     heading: document.querySelector('.hero h1')?.textContent?.trim() || '',
     eyebrow: document.querySelector('.hero .eyebrow')?.textContent?.trim() || '',
+    lede: document.querySelector('.hero .lede')?.textContent?.trim() || '',
+    marker: document.querySelector('#seed-ui-release-marker')?.textContent?.trim() || '',
     summary: document.querySelector('.seed-campaign-summary')?.innerText || '',
     identity: document.documentElement.dataset.seedManCampaignIdentity || '',
-    heroIdentity: document.querySelector('.hero')?.dataset.campaignIdentity || '',
+    heroIdentity: document.querySelector('.hero')?.dataset.gameIdentity || '',
     description: document.querySelector('meta[name="description"]')?.content || ''
   }));
-  assert.equal(identity.title, 'Seed Man: Greenhouse Gauntlet | DTF Genetics');
-  assert.equal(identity.heading, 'Greenhouse Gauntlet');
-  assert.match(identity.eyebrow, /DTF Genetics Platform Adventure/i);
+  assert.equal(identity.title, 'Seed Man: Sprout Run | DTF Genetics');
+  assert.equal(identity.heading, 'Seed Man');
+  assert.match(identity.eyebrow, /Sprout Run/i);
+  assert.match(identity.eyebrow, /Grow\. Fight\. Restore\./i);
+  assert.match(identity.lede, /Greenhouse Valley/i);
+  assert.match(identity.lede, /Forest Ruins/i);
+  assert.match(identity.lede, /Desert Canyon/i);
+  assert.match(identity.lede, /Frozen Peak/i);
+  assert.match(identity.lede, /Eco City/i);
+  assert.match(identity.marker, /GROW · FIGHT · RESTORE/i);
   assert.match(identity.summary, /5\s+WORLDS/i);
   assert.match(identity.summary, /15\s+LEVELS/i);
   assert.match(identity.summary, /6\s+BOSSES/i);
   assert.match(identity.summary, /10\s+PHENOTYPES/i);
-  assert.equal(identity.identity, 'greenhouse-gauntlet');
-  assert.equal(identity.heroIdentity, 'greenhouse-gauntlet');
+  assert.equal(identity.identity, 'sprout-run');
+  assert.equal(identity.heroIdentity, 'sprout-run');
   assert.match(identity.description, /15 levels/i);
-  assert.match(identity.description, /five campaign worlds/i);
-  assert.match(identity.description, /six bosses/i);
+  assert.match(identity.description, /Greenhouse Valley/i);
+  assert.match(identity.description, /Eco City/i);
 }
 
-async function assertLevel(page, id, worldTitle, order, theme) {
+async function assertLevel(page, id, worldTitle, canonicalWorldTitle, order, theme) {
   await page.evaluate((levelId) => window.__SPROUT_CAMPAIGN_EXPERIENCE__.selectLevel(levelId), id);
   await page.waitForFunction((levelId) => document.querySelector('.game-shell')?.dataset.levelId === levelId, id);
   await page.waitForFunction((expectedTheme) => document.querySelector('.game-shell')?.dataset.worldTheme === expectedTheme, theme);
@@ -55,6 +64,7 @@ async function assertLevel(page, id, worldTitle, order, theme) {
     htmlVisual: document.documentElement.dataset.seedManVisual,
     htmlWorld: document.documentElement.dataset.seedManWorld,
     world: document.querySelector('.game-shell')?.dataset.worldLabel,
+    canonicalWorld: document.querySelector('.game-shell')?.dataset.canonicalWorldLabel,
     theme: document.querySelector('.game-shell')?.dataset.worldTheme,
     visualReady: document.querySelector('.game-shell')?.dataset.visualV4,
     order: document.querySelector('.game-shell')?.dataset.levelOrder,
@@ -70,6 +80,7 @@ async function assertLevel(page, id, worldTitle, order, theme) {
   assert.equal(state.htmlWorld, theme);
   assert.equal(state.visualReady, 'ready');
   assert.equal(state.world, worldTitle);
+  assert.equal(state.canonicalWorld, canonicalWorldTitle);
   assert.equal(state.theme, theme);
   assert.equal(state.order, String(order));
   assert.ok(state.worldAccent, 'world accent should be populated');
@@ -89,17 +100,17 @@ try {
   await desktop.waitForFunction(() => window.__SPROUT_UI_V3__?.version === 'seed-man-ui-v3');
   await desktop.waitForFunction(() => window.__SPROUT_VISUAL_V4__?.version === 'seed-man-visual-v4');
   await assertCampaignIdentity(desktop);
-  await assertLevel(desktop, 'sprout-run', 'Greenhouse District', 1, 'greenhouse');
-  await assertLevel(desktop, 'root-zone-rumble', 'Rootworks', 4, 'rootworks');
-  await assertLevel(desktop, 'frostline-canopy', 'Sky Garden', 10, 'sky');
-  await assertLevel(desktop, 'genome-spire', 'Genetic Frontier', 15, 'genetic');
+  await assertLevel(desktop, 'sprout-run', 'Greenhouse Valley', 'Greenhouse District', 1, 'greenhouse');
+  await assertLevel(desktop, 'root-zone-rumble', 'Forest Ruins', 'Rootworks', 4, 'rootworks');
+  await assertLevel(desktop, 'frostline-canopy', 'Frozen Peak', 'Sky Garden', 10, 'sky');
+  await assertLevel(desktop, 'genome-spire', 'Eco City', 'Genetic Frontier', 15, 'genetic');
   await desktop.close();
 
   const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   await mobile.goto(URL, { waitUntil: 'networkidle' });
   await mobile.waitForFunction(() => window.__SPROUT_VISUAL_V4__?.version === 'seed-man-visual-v4');
   await assertCampaignIdentity(mobile);
-  await assertLevel(mobile, 'mutation-marsh', 'Genetic Frontier', 13, 'genetic');
+  await assertLevel(mobile, 'mutation-marsh', 'Eco City', 'Genetic Frontier', 13, 'genetic');
   const mobileMetrics = await mobile.evaluate(() => ({
     overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     contextHeight: document.querySelector('.seed-run-context')?.getBoundingClientRect().height || 0,
@@ -112,7 +123,7 @@ try {
   assert.ok(mobileMetrics.summaryHeight >= 80, `campaign summary should remain readable on touch screens, got ${mobileMetrics.summaryHeight}px`);
   await mobile.close();
 
-  console.log(JSON.stringify({ ok: true, uiVersion: 'seed-man-ui-v3', visualVersion: 'seed-man-visual-v4', campaignAware: true, campaignIdentity: 'greenhouse-gauntlet', themedWorlds: true, mobileVerified: true }, null, 2));
+  console.log(JSON.stringify({ ok: true, uiVersion: 'seed-man-ui-v3', visualVersion: 'seed-man-visual-v4', campaignAware: true, campaignIdentity: 'sprout-run', approvedWorldNames: true, themedWorlds: true, mobileVerified: true }, null, 2));
 } finally {
   if (browser) await browser.close();
   if (server) server.kill('SIGTERM');
