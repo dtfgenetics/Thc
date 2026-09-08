@@ -25,7 +25,7 @@ await build({
   treeShaking: true,
   charset: 'utf8',
   banner: {
-    js: '/* Seed Man Three.js world bundle v2 — generated from canonical source. */'
+    js: '/* Seed Man Three.js world bundle v3 — generated from canonical source. */'
   }
 });
 
@@ -34,9 +34,16 @@ const metadata = await stat(outfile);
 
 const requiredMarkers = [
   'SeedManThreeWorld',
-  'seed-man-three-public-v2',
+  'seed-man-three-public-v3',
+  'seed-man-three-public-v1',
   'seed-man-three-world-v2',
-  'seed-man-three-instancing-v1'
+  'seed-man-three-instancing-v1',
+  'seed-man-visual-world-api-v1',
+  'greenhouse-valley',
+  'forest-ruins',
+  'desert-canyon',
+  'frozen-peak',
+  'eco-city'
 ];
 for (const marker of requiredMarkers) {
   if (!output.includes(marker)) throw new Error(`Three.js public bundle missing marker: ${marker}`);
@@ -68,7 +75,9 @@ if (metadata.size > 900_000) {
 }
 
 console.log(JSON.stringify({
-  version: 'seed-man-three-public-v2',
+  version: 'seed-man-three-public-v3',
+  legacyVersion: 'seed-man-three-public-v1',
+  visualApi: 'seed-man-visual-world-api-v1',
   renderer: 'seed-man-three-world-v2',
   optimization: 'seed-man-three-instancing-v1',
   outfile,
