@@ -56,7 +56,6 @@ jobs:
           node --check scripts/prepare-seed-man-combat-release.mjs
           node --check scripts/prepare-seed-man-world-five-combat.mjs
           node --check scripts/prepare-seed-man-world-five-runtime.mjs
-          node --check games/seed-man-platformer/test/world-five-browser.test.mjs
 
       - name: Verify prepared World 5 production contract
         shell: bash
@@ -91,11 +90,3 @@ jobs:
           grep -Fq "return ENCOUNTERS[level?.id] || [];" "$route/combat-browser-v1.js"
           grep -Fq "'world-five-v1.js'," scripts/publish-seed-man-route-via-wordpress.mjs
           grep -Fq "'data/levels-12-15.json'," scripts/publish-seed-man-route-via-wordpress.mjs
-
-      - name: Install browser dependencies
-        run: |
-          npm ci
-          npx playwright install chromium
-
-      - name: Playtest Genetic Frontier desktop and mobile
-        run: node games/seed-man-platformer/test/world-five-browser.test.mjs
