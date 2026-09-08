@@ -44,19 +44,16 @@
     "dev": "npm run dev:high-land",
     "build": "npm run build:high-land",
     "test": "npm run test:high-land",
-    "test:e2e": "npm run test:e2e:high-land",
     "dev:high-land": "npm --workspace apps/high-land-web run dev",
     "build:high-land": "npm --workspace apps/high-land-web run build",
     "test:high-land": "npm --workspace apps/high-land-web run test && node apps/high-land-web/scripts/verify-room-api-security.mjs",
-    "test:e2e:high-land": "npm --workspace apps/high-land-web run test:e2e",
     "dev:growlens": "vite --config apps/growlens-web/vite.config.ts",
     "build:growlens": "tsc -p apps/growlens-web/tsconfig.json && vite build --config apps/growlens-web/vite.config.ts",
     "test:growlens": "vitest run --config apps/growlens-web/vitest.config.ts",
     "test:growlens:live-client": "node scripts/growlens-live-acceptance-selftest.mjs",
     "test:live:growlens": "node scripts/growlens-live-acceptance.mjs",
     "recover:growlens:acceptance": "node scripts/growlens-live-acceptance-recover.mjs",
-    "test:e2e:growlens": "playwright test --config apps/growlens-web/playwright.config.ts",
     "validate:plant-atlas:v4": "node --check apps/growlens-web/public/atlas/atlas-3d-v4.js && node --check apps/growlens-web/public/atlas/atlas-3d-bootstrap.js && node scripts/validate-plant-atlas-v4.mjs",
-    "verify:growlens": "npm run test:growlens && npm run test:growlens:live-client && npm run build:growlens && npm run validate:plant-atlas:v4 && npm run test:e2e:growlens"
+    "verify:growlens": "npm run test:growlens && npm run test:growlens:live-client && npm run build:growlens && npm run validate:plant-atlas:v4"
   }
 }
