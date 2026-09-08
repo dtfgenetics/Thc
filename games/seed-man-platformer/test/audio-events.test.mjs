@@ -1,0 +1,1 @@
+import assert from 'node:assert/strict';import { AUDIO_EVENTS,audioEventForAttack } from '../src/systems/audio-events.mjs';assert.ok(AUDIO_EVENTS.includes('game-complete'));assert.equal(audioEventForAttack('fire'),'attack-fire');console.log('Seed Man audio events OK');
