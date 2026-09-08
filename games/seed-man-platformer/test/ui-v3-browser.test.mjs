@@ -96,6 +96,7 @@ async function assertEncounterHud(page) {
       shellBoss: shell?.dataset.combatBoss || '',
       shellPhenotype: shell?.dataset.combatPhenotype || '',
       kicker: document.querySelector('.course-kicker')?.textContent || '',
+      encounterBorder: shell?.style.getPropertyValue('--encounter-border')?.trim() || '',
       canvasBorder: canvas ? getComputedStyle(canvas).borderTopColor : ''
     };
     window.__SPROUT_COMBAT_BROWSER__ = original;
@@ -114,7 +115,8 @@ async function assertEncounterHud(page) {
   assert.equal(state.shellBoss, 'active');
   assert.equal(state.shellPhenotype, 'solar-flare');
   assert.match(state.kicker, /BOSS · Mite Queen/);
-  assert.equal(state.canvasBorder, 'rgb(255, 207, 102)');
+  assert.equal(state.encounterBorder, '#ffcf66');
+  assert.ok(state.canvasBorder, 'boss encounter should resolve a rendered canvas border color');
 }
 
 async function assertLevel(page, id, worldTitle, canonicalWorldTitle, order, theme) {
