@@ -1,15 +1,41 @@
 'use strict';
 
 (() => {
-  const images = window.__SEED_MAN_APPROVED_IMAGES__ ||= Object.create(null);
-  const version = 'seed-man-approved-art-core-v2';
+  const version = 'seed-man-approved-art-core-v3';
+  const masterUrl = './assets/approved/seed-man-approved-master-atlas-v1.webp';
+  const worldOrder = Object.freeze(['greenhouse-valley','forest-ruins','desert-canyon','frozen-peaks','eco-city']);
+  const worldRegion = Object.freeze({ x:0, y:498, width:1600, height:180 });
+  const worldWidth = Math.floor(worldRegion.width / worldOrder.length);
 
-  // Cacheable files can be decoded and validated independently. The retired
-  // inline character sheet was 320×144 while renderers addressed 800×360.
+  const images = window.__SEED_MAN_APPROVED_IMAGES__ ||= Object.create(null);
   images['character.seedman.atlas'] = './assets/approved/seed-man-character-atlas-v2.webp';
   images['enemy-boss.atlas'] = './assets/approved/seed-man-enemy-boss-atlas-v1.webp';
   images['platform.atlas'] = './assets/approved/seed-man-platform-atlas-v1.webp';
+  images['master.atlas'] = masterUrl;
+  images['world.atlas'] = masterUrl;
 
-  window.__SEED_MAN_APPROVED_ART_CORE__ = Object.freeze({ version, images });
+  const assets = Object.create(null);
+  for (const [index, world] of worldOrder.entries()) {
+    assets[`world.${world}.background`] = Object.freeze({
+      key:`world.${world}.background`,
+      role:'background',
+      src:masterUrl,
+      region:Object.freeze({ x:worldRegion.x + worldWidth * index, y:worldRegion.y, width:worldWidth, height:worldRegion.height })
+    });
+  }
+
+  const worldBackground = (worldKey) => assets[`world.${worldKey}.background`] || null;
+  window.__SEED_MAN_APPROVED_ASSETS__ = Object.freeze(assets);
+  window.__SEED_MAN_APPROVED_ART_CORE__ = Object.freeze({
+    version,
+    sourceOfTruth:'approved-showcase-2026-09-08',
+    characterContract:'green-armored-plant-hero',
+    masterUrl,
+    worldOrder,
+    worldRegion,
+    images,
+    assets:window.__SEED_MAN_APPROVED_ASSETS__,
+    worldBackground
+  });
   document.documentElement.dataset.seedManApprovedArtCore = 'ready';
 })();
