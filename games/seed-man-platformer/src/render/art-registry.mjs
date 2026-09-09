@@ -1,8 +1,8 @@
 export const APPROVED_ART_MANIFEST_ID = 'seed-man-approved-art-v2';
 export const APPROVED_ART_SOURCE = 'approved-showcase-2026-09-08';
 
-const WORLD_ORDER = ['greenhouse-valley', 'forest-ruins', 'desert-canyon', 'frozen-peak', 'eco-city'];
-const WORLD_ALIASES = Object.freeze({ 'frozen-peaks': 'frozen-peak' });
+const WORLD_ORDER = ['greenhouse-valley', 'forest-ruins', 'desert-canyon', 'frozen-peaks', 'eco-city'];
+const WORLD_ALIASES = Object.freeze({ 'frozen-peak': 'frozen-peaks' });
 
 export function validateApprovedArtManifest(manifest) {
   if (!manifest || manifest.id !== APPROVED_ART_MANIFEST_ID) {
