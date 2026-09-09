@@ -2,7 +2,7 @@
 
 (() => {
   const VERSION='sprout-canvas-compat-v20';
-  const RELEASE='20260908-r20';
+  const RELEASE='20260909-r21';
   const proto=window.HTMLCanvasElement?.prototype;
   const nativeGetContext=proto?.getContext;
   let combatLoaded=false;
@@ -51,9 +51,9 @@
       return;
     }
     try{
-      if(window.__SPROUT_COMBAT_BROWSER__?.installed!==true) await loadScript('./combat-browser-v1.js','seedCombatBrowserV20');
+      if(window.__SPROUT_COMBAT_BROWSER__?.installed!==true) await loadScript('./combat-browser-v2.js','seedCombatBrowserV20');
       combatLoaded=window.__SPROUT_COMBAT_BROWSER__?.installed===true;
-      if(combatLoaded&&window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.installed!==true) await loadScript('./enemy-attacks-browser-v1.js','seedEnemyAttacksV20');
+      if(combatLoaded&&window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.installed!==true) await loadScript('./enemy-attacks-browser-v2.js','seedEnemyAttacksV20');
       enemyLoaded=window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.installed===true;
     }catch(error){console.error('[Seed Man] gameplay adapter load failed.',error);}
   }
@@ -80,5 +80,5 @@
   window.addEventListener('DOMContentLoaded',()=>{void boot();},{once:true});
   window.addEventListener('load',()=>{void boot();},{once:true});
 
-  window.__SPROUT_CANVAS_COMPAT__=Object.freeze({version:VERSION,release:RELEASE,campaignUi:'seed-man-campaign-ui-v20',campaignTarget:20,approvedArtTarget:'approved-showcase-2026-09-08',combatBrowserAutoLoad:true,enemyAttackBrowserAutoLoad:true,get combatLoaded(){return combatLoaded;},get enemyAttacksLoaded(){return enemyLoaded;},get campaignUiLoaded(){return uiLoaded;},get campaignLoaded(){return campaignLoaded;},get approvedArtLoaded(){return artLoaded;}});
+  window.__SPROUT_CANVAS_COMPAT__=Object.freeze({version:VERSION,release:RELEASE,campaignUi:'seed-man-campaign-ui-v20',campaignTarget:20,combatRuntime:'v2',approvedArtTarget:'approved-showcase-2026-09-08',combatBrowserAutoLoad:true,enemyAttackBrowserAutoLoad:true,get combatLoaded(){return combatLoaded;},get enemyAttacksLoaded(){return enemyLoaded;},get campaignUiLoaded(){return uiLoaded;},get campaignLoaded(){return campaignLoaded;},get approvedArtLoaded(){return artLoaded;}});
 })();

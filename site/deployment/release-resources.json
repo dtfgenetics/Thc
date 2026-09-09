@@ -77,6 +77,12 @@
         "games/seed-man-platformer/",
         "site/public-route-patch/games/seed-man-platformer/",
         "scripts/prepare-seed-man-combat-release.mjs",
+        "scripts/prepare-seed-man-elemental-vfx.mjs",
+        "scripts/prepare-seed-man-impact-fx.mjs",
+        "scripts/prepare-seed-man-enemy-visuals.mjs",
+        "scripts/prepare-seed-man-world-five-runtime.mjs",
+        "scripts/prepare-seed-man-world-five-combat.mjs",
+        "scripts/prepare-seed-man-release-version.mjs",
         "scripts/verify-seed-man-production-v20.mjs",
         "scripts/validate-seed-man-production-bundle.mjs",
         "scripts/publish-seed-man-route-via-wordpress.mjs",
@@ -89,11 +95,12 @@
         "games/seed-man-platformer/canvas-compat-v1.js",
         "games/seed-man-platformer/campaign-v20-runtime.js",
         "games/seed-man-platformer/campaign-ui-v20.js",
+        "games/seed-man-platformer/v20-enemy-runtime.js",
         "games/seed-man-platformer/approved-art-core-v1.js",
         "games/seed-man-platformer/approved-art-runtime-v1.js",
         "games/seed-man-platformer/seed-man-production-art.js",
-        "games/seed-man-platformer/combat-browser-v1.js",
-        "games/seed-man-platformer/enemy-attacks-browser-v1.js",
+        "games/seed-man-platformer/combat-browser-v2.js",
+        "games/seed-man-platformer/enemy-attacks-browser-v2.js",
         "games/seed-man-platformer/enemy-attacks.js",
         "games/seed-man-platformer/data/campaign.json",
         "games/seed-man-platformer/data/levels-20-v1.json",
@@ -108,6 +115,14 @@
         "status": "production-v20",
         "orchestration": "dedicated",
         "sharedProductionTarget": "wordpress:seed-man-route"
+      },
+      "releasePolicy": {
+        "canonicalSource": "games/seed-man-platformer/",
+        "generatedPublicRoute": "site/public-route-patch/games/seed-man-platformer/",
+        "combatRuntime": "v2",
+        "phenotypeForms": ["plant", "fire", "electric", "ice"],
+        "postBuildMutation": "disabled",
+        "legacyPrepareHelpers": "validation-only"
       }
     }
   }

@@ -1,45 +1,33 @@
 import fs from 'node:fs';
 
-const runtimePath = 'site/public-route-patch/games/seed-man-platformer/world-five-v1.js';
-if (!fs.existsSync(runtimePath)) throw new Error(`Missing Seed Man World 5 runtime: ${runtimePath}`);
+const campaignRuntimePath = 'site/public-route-patch/games/seed-man-platformer/campaign-v20-runtime.js';
+const enemyRuntimePath = 'site/public-route-patch/games/seed-man-platformer/v20-enemy-runtime.js';
+const campaignPath = 'site/public-route-patch/games/seed-man-platformer/data/campaign.json';
+const RETIRED_RUNTIME = 'world-five-v1.js';
 
-let runtime = fs.readFileSync(runtimePath, 'utf8');
-const STATE_MARKER = 'seed-man-world-five-state-sync-v1';
-
-if (!runtime.includes(STATE_MARKER)) {
-  const selectNeedle = "    if (!entry || !next) return false;\n    level = JSON.parse(JSON.stringify(next));";
-  const selectReplacement = "    if (!entry || !next) return false;\n    window.__SPROUT_CAMPAIGN__?.selectLevel?.(id);\n    level = JSON.parse(JSON.stringify(next));";
-  if (!runtime.includes(selectNeedle)) throw new Error('Could not locate World 5 level-selection state anchor.');
-  runtime = runtime.replace(selectNeedle, selectReplacement);
-
-  const observerNeedle = "      }).observe(finish, { attributes: true, attributeFilter: ['hidden'], childList: true, subtree: true });";
-  const observerReplacement = "      }).observe(finish, { attributes: true, attributeFilter: ['hidden'] });";
-  if (!runtime.includes(observerNeedle)) throw new Error('Could not locate World 5 completion observer anchor.');
-  runtime = runtime.replace(observerNeedle, observerReplacement);
-
-  runtime = runtime.replace(
-    "  const VERSION = 'seed-man-world-five-v1';",
-    "  const VERSION = 'seed-man-world-five-v1';\n  const STATE_SYNC_VERSION = 'seed-man-world-five-state-sync-v1';"
-  );
-  fs.writeFileSync(runtimePath, runtime);
+for (const file of [campaignRuntimePath, enemyRuntimePath, campaignPath]) {
+  if (!fs.existsSync(file)) throw new Error(`Missing canonical Seed Man v20 runtime input: ${file}`);
 }
 
-for (const marker of [
-  STATE_MARKER,
-  'window.__SPROUT_CAMPAIGN__?.selectLevel?.(id);',
-  "attributeFilter: ['hidden']",
-  'seed-man-world-five-v1'
-]) {
-  if (!runtime.includes(marker)) throw new Error(`Prepared World 5 runtime is missing state marker: ${marker}`);
-}
-if (runtime.includes("attributeFilter: ['hidden'], childList: true, subtree: true")) {
-  throw new Error('World 5 completion observer still watches its own child mutations.');
-}
+const campaignRuntime = fs.readFileSync(campaignRuntimePath, 'utf8');
+const enemyRuntime = fs.readFileSync(enemyRuntimePath, 'utf8');
+const campaign = JSON.parse(fs.readFileSync(campaignPath, 'utf8'));
 
+if (!campaignRuntime.includes('seed-man-campaign-v20-runtime-v2')) throw new Error('Canonical v20 campaign runtime marker is missing.');
+if (!enemyRuntime.includes('seed-man-v20-enemy-runtime-v2')) throw new Error('Canonical v20 enemy runtime marker is missing.');
+if (campaign.levelCount !== 20 || campaign.worlds?.length !== 5) throw new Error('Seed Man campaign must remain 20 levels across five worlds.');
+if (campaign.finalBoss !== 'blight-king') throw new Error('Seed Man final boss must remain Blight King.');
+
+// World 5 is part of the canonical 20-level campaign. The retired world-five-v1
+// script must never be patched back into production after a v20 build.
 console.log(JSON.stringify({
   ok: true,
-  runtime: runtimePath,
-  version: STATE_MARKER,
-  campaignApiStateSync: true,
-  completionObserver: 'hidden-attribute-only'
+  mode: 'validation-only',
+  campaignRuntime: campaignRuntimePath,
+  enemyRuntime: enemyRuntimePath,
+  levels: campaign.levelCount,
+  worlds: campaign.worlds.length,
+  finalBoss: campaign.finalBoss,
+  retiredRuntime: RETIRED_RUNTIME,
+  legacyMutationDisabled: true
 }, null, 2));

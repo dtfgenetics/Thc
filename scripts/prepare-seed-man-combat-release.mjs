@@ -13,8 +13,8 @@ const campaignUiPath = `${publicRoot}/campaign-ui-v20.js`;
 const approvedArtCorePath = `${publicRoot}/approved-art-core-v1.js`;
 const approvedArtRuntimePath = `${publicRoot}/approved-art-runtime-v1.js`;
 const productionArtPath = `${publicRoot}/seed-man-production-art.js`;
-const combatPath = `${publicRoot}/combat-browser-v1.js`;
-const enemyAttackPath = `${publicRoot}/enemy-attacks-browser-v1.js`;
+const combatPath = `${publicRoot}/combat-browser-v2.js`;
+const enemyAttackPath = `${publicRoot}/enemy-attacks-browser-v2.js`;
 const compatPath = `${publicRoot}/canvas-compat-v1.js`;
 
 const required = [
@@ -59,10 +59,26 @@ const expectedOrders = Array.from({ length: 20 }, (_, index) => index + 1);
 const actualOrders = flattened.map((entry) => entry.order);
 if (JSON.stringify(actualOrders) !== JSON.stringify(expectedOrders)) throw new Error(`Seed Man campaign orders must be contiguous 1-20: ${actualOrders.join(',')}`);
 
-for (const legacy of ['campaign-ui-v15.js', 'world-five-v1.js', 'levels-12-15.json', 'TOTAL_LEVELS = 15', 'levelCount: 15']) {
-  if (index.includes(legacy)) throw new Error(`Legacy Seed Man v15 reference remains in public index: ${legacy}`);
+for (const legacy of [
+  'campaign-ui-v15.js',
+  'world-five-v1.js',
+  'levels-12-15.json',
+  'combat-browser-v1.js',
+  'enemy-attacks-browser-v1.js',
+  'TOTAL_LEVELS = 15',
+  'levelCount: 15'
+]) {
+  if (index.includes(legacy)) throw new Error(`Legacy Seed Man reference remains in public index: ${legacy}`);
 }
-for (const marker of ['campaign-v20-runtime.js', 'campaign-ui-v20.js', 'approved-art-core-v1.js', 'approved-art-runtime-v1.js', 'seed-man-production-art.js', 'combat-browser-v1.js', 'enemy-attacks-browser-v1.js']) {
+for (const marker of [
+  'campaign-v20-runtime.js',
+  'campaign-ui-v20.js',
+  'approved-art-core-v1.js',
+  'approved-art-runtime-v1.js',
+  'seed-man-production-art.js',
+  'combat-browser-v2.js',
+  'enemy-attacks-browser-v2.js'
+]) {
   if (!index.includes(marker)) throw new Error(`Seed Man v20 public index is missing required runtime: ${marker}`);
 }
 for (const marker of ['levelCount:20', 'bossCount:6', "finalBoss:'blight-king'", 'levels-20-v1.json']) {
@@ -71,11 +87,12 @@ for (const marker of ['levelCount:20', 'bossCount:6', "finalBoss:'blight-king'",
 for (const marker of ['seed-man-campaign-ui-v20', '20']) {
   if (!campaignUi.includes(marker)) throw new Error(`Seed Man v20 campaign UI missing marker: ${marker}`);
 }
-for (const marker of ['sprout-canvas-compat-v20', 'campaignTarget:20', 'campaign-ui-v20.js']) {
+for (const marker of ['sprout-canvas-compat-v20', 'campaignTarget:20', 'campaign-ui-v20.js', 'combat-browser-v2.js', 'enemy-attacks-browser-v2.js']) {
   if (!compat.includes(marker)) throw new Error(`Seed Man compatibility bootstrap missing v20 marker: ${marker}`);
 }
 
-// Canonical campaign data owns the public data. Never republish legacy 12-15/15-level packs.
+// Canonical source owns the release. Public-route files are generated outputs;
+// legacy preparation helpers are validation-only and must not rewrite runtime JS.
 fs.copyFileSync(canonicalCampaignPath, publicCampaignPath);
 fs.copyFileSync(canonicalLevelsPath, publicLevelsPath);
 
@@ -93,7 +110,10 @@ console.log(JSON.stringify({
   worlds: 5,
   bosses: 6,
   finalBoss: 'blight-king',
+  combatRuntime: 'v2',
   approvedArtOnly: true,
   legacyV15PublisherDisabled: true,
+  legacyCombatV1Disabled: true,
+  postBuildRuntimeMutationDisabled: true,
   deterministicTests: true
 }, null, 2));
