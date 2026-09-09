@@ -2,9 +2,11 @@ const WORLD_TITLE_TO_VISUAL = Object.freeze({
   'greenhouse district': 'greenhouse-valley',
   rootworks: 'forest-ruins',
   'resin works': 'desert-canyon',
-  'sky garden': 'frozen-peak',
+  'sky garden': 'frozen-peaks',
   'genetic frontier': 'eco-city'
 });
+
+const VISUAL_WORLD_ALIASES = Object.freeze({ 'frozen-peak': 'frozen-peaks' });
 
 const THEME_HINTS = Object.freeze([
   ['greenhouse', 'greenhouse-valley'],
@@ -17,10 +19,10 @@ const THEME_HINTS = Object.freeze([
   ['rosin', 'desert-canyon'],
   ['terpene', 'desert-canyon'],
   ['desert', 'desert-canyon'],
-  ['frost', 'frozen-peak'],
-  ['ice', 'frozen-peak'],
-  ['cloud', 'frozen-peak'],
-  ['sky', 'frozen-peak'],
+  ['frost', 'frozen-peaks'],
+  ['ice', 'frozen-peaks'],
+  ['cloud', 'frozen-peaks'],
+  ['sky', 'frozen-peaks'],
   ['genetic', 'eco-city'],
   ['genome', 'eco-city'],
   ['allele', 'eco-city'],
@@ -33,7 +35,7 @@ export const VISUAL_WORLD_KEYS = Object.freeze([
   'greenhouse-valley',
   'forest-ruins',
   'desert-canyon',
-  'frozen-peak',
+  'frozen-peaks',
   'eco-city'
 ]);
 
@@ -43,7 +45,8 @@ function normalizedText(value) {
 
 export function resolveVisualWorldKey(level = {}) {
   const explicit = normalizedText(level.visualWorldKey || level.visualWorld || level.visualTheme);
-  if (VISUAL_WORLD_KEYS.includes(explicit)) return explicit;
+  const canonicalExplicit = VISUAL_WORLD_ALIASES[explicit] || explicit;
+  if (VISUAL_WORLD_KEYS.includes(canonicalExplicit)) return canonicalExplicit;
 
   const worldTitle = normalizedText(level.worldTitle);
   if (WORLD_TITLE_TO_VISUAL[worldTitle]) return WORLD_TITLE_TO_VISUAL[worldTitle];
@@ -65,7 +68,7 @@ export function getCampaignVisualWorldMap() {
     'Greenhouse District': 'greenhouse-valley',
     Rootworks: 'forest-ruins',
     'Resin Works': 'desert-canyon',
-    'Sky Garden': 'frozen-peak',
+    'Sky Garden': 'frozen-peaks',
     'Genetic Frontier': 'eco-city'
   });
 }
