@@ -293,21 +293,27 @@ function buildGreenhouseBackdrop(scene, world, resources) {
   return root;
 }
 
-
 const WORLD_BACKDROP_PROFILES = Object.freeze({
   'greenhouse-valley': Object.freeze({ kind: 'greenhouse', density: 1 }),
   'forest-ruins': Object.freeze({ kind: 'forest', density: 1.15 }),
   'desert-canyon': Object.freeze({ kind: 'desert', density: 0.78 }),
-  'frozen-peak': Object.freeze({ kind: 'frozen', density: 0.92 }),
+  'frozen-peaks': Object.freeze({ kind: 'frozen', density: 0.92 }),
   'eco-city': Object.freeze({ kind: 'city', density: 1.05 })
 });
+
+const WORLD_BACKDROP_ALIASES = Object.freeze({ 'frozen-peak': 'frozen-peaks' });
+
+function canonicalBackdropKey(visualWorldKey) {
+  return WORLD_BACKDROP_ALIASES[visualWorldKey] || visualWorldKey;
+}
 
 function setMaterialColor(material, color) {
   material?.color?.setHex?.(color);
 }
 
 function applyVisualWorldStyle(scene, resources, lights, visualWorldKey) {
-  const key = WORLD_BACKDROP_PROFILES[visualWorldKey] ? visualWorldKey : 'greenhouse-valley';
+  const requestedKey = canonicalBackdropKey(visualWorldKey);
+  const key = WORLD_BACKDROP_PROFILES[requestedKey] ? requestedKey : 'greenhouse-valley';
   const palette = getVisualWorldPalette(key);
   scene.background = new THREE.Color(palette.sky);
   scene.fog = new THREE.Fog(palette.fog, 11, 31);
@@ -340,14 +346,16 @@ function makeBackdropMaterial(color, opacity = 1) {
 }
 
 function buildThemedBackdrop(scene, world, resources, visualWorldKey) {
-  if (visualWorldKey === 'greenhouse-valley') return buildGreenhouseBackdrop(scene, world, resources);
+  const key = canonicalBackdropKey(visualWorldKey);
+  if (key === 'greenhouse-valley') return buildGreenhouseBackdrop(scene, world, resources);
 
-  const palette = getVisualWorldPalette(visualWorldKey);
-  const profile = WORLD_BACKDROP_PROFILES[visualWorldKey];
+  const palette = getVisualWorldPalette(key);
+  const profile = WORLD_BACKDROP_PROFILES[key];
+  if (!profile) throw new Error(`Unknown Seed Man backdrop profile: ${visualWorldKey}`);
   const root = new THREE.Group();
-  root.name = `seed-man-${visualWorldKey}-backdrop-v1`;
+  root.name = `seed-man-${key}-backdrop-v1`;
   root.userData.visualRuntime = 'seed-man-five-world-backdrop-v1';
-  root.userData.visualWorldKey = visualWorldKey;
+  root.userData.visualWorldKey = key;
 
   const farMaterial = makeBackdropMaterial(palette.far, 0.72);
   const midMaterial = makeBackdropMaterial(palette.mid, 0.82);
@@ -391,8 +399,8 @@ function buildThemedBackdrop(scene, world, resources, visualWorldKey) {
     }
   }
 
-  addBatch(root, resources.geometries.unitBox, nearMaterial, silhouettes, `seed-man-${visualWorldKey}-silhouettes-v1`);
-  addBatch(root, resources.geometries.unitBox, accentMaterial, accents, `seed-man-${visualWorldKey}-accents-v1`);
+  addBatch(root, resources.geometries.unitBox, nearMaterial, silhouettes, `seed-man-${key}-silhouettes-v1`);
+  addBatch(root, resources.geometries.unitBox, accentMaterial, accents, `seed-man-${key}-accents-v1`);
   scene.add(root);
   return root;
 }
