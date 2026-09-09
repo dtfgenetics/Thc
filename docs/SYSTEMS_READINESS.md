@@ -1,7 +1,6 @@
 # Systems Readiness Checklist
 
-This is the active readiness contract for the website, game hub, multiplayer
-room service, deployment, and coding agents.
+This is the active readiness contract for the website, game hub, multiplayer room service, deployment, and coding agents.
 
 ## Source of truth
 
@@ -16,6 +15,7 @@ room service, deployment, and coding agents.
 | Backend decision | Locked | `/docs/BACKEND_DECISION.md` |
 | Root build script | Ready | `npm run build:high-land` |
 | Root test script | Ready | `npm run test:high-land` |
+| Browser-tool policy | Ready | `node scripts/verify-browser-tool-policy.mjs` |
 | Connection preflight | Ready | `npm run verify:connections` |
 | Agent instructions | Ready | `/AGENTS.md` and `/CLAUDE.md` |
 | GitHub Actions CI | Ready | `/.github/workflows/high-land-ci.yml` |
@@ -33,23 +33,19 @@ This is connectivity evidence, not a complete multiplayer pass.
 
 ## Still required
 
-1. Add protected Hostinger SSH values to the GitHub `staging` and `production`
-   environments.
+1. Add protected Hostinger SSH values to the GitHub `staging` and `production` environments.
 2. Confirm the exact production and staging remote paths.
 3. Run the read-only WordPress audit workflow.
 4. Run a complete two-browser/device High Land room test.
-5. Verify host authority, join behavior, dice/movement, HIT cards, turn order,
-   reconnect, refresh, and winner synchronization.
+5. Verify host authority, join behavior, dice/movement, HIT cards, turn order, reconnect, refresh, and winner synchronization.
 6. Confirm private room files are not web-readable and expire old rooms.
 7. Confirm abuse controls, request-size limits, locking, and cleanup under load.
 
 ## Runtime configuration
 
-Production uses the same-origin API automatically. No multiplayer credential or
-API URL belongs in the browser environment.
+Production uses the same-origin API automatically. No multiplayer credential or API URL belongs in the browser environment.
 
-No database password, SSH key, API secret, room storage path, or service token
-may be committed or exposed to browser code.
+No database password, SSH key, API secret, room storage path, or service token may be committed or exposed to browser code.
 
 ## Connection order
 
@@ -64,20 +60,10 @@ may be committed or exposed to browser code.
 
 ## Readiness definition
 
-Steady development is ready when the repo contains the locked backend decision,
-room API, website transport, connection preflight, CI, guarded deployment, and
-rollback instructions. Production multiplayer is ready only after the separate
-two-device acceptance evidence is recorded.
+Steady development is ready when the repo contains the locked backend decision, room API, website transport, connection preflight, CI, guarded deployment, and rollback instructions. Production multiplayer is ready only after the separate two-device acceptance evidence is recorded.
 
 ## Agent handoff prompt
 
 ```txt
-Work in dtfgenetics/Thc. Read AGENTS.md, CLAUDE.md, README.md,
-docs/SYSTEMS_READINESS.md, docs/TOOL_CONNECTIONS.md, and
-docs/BACKEND_DECISION.md first. Main is production. The selected multiplayer
-backend is the Hostinger PHP Website Room API in
-apps/high-land-web/public/api. Do not reconnect Supabase or introduce a second
-room authority. Run npm run verify:connections, npm run test:high-land,
-npm run build:high-land, and npm run test:e2e:high-land. Do not commit secrets.
-Report repository, API-boundary, and two-device live validation separately.
+Work in dtfgenetics/Thc. Read AGENTS.md, CLAUDE.md, README.md, docs/SYSTEMS_READINESS.md, docs/TOOL_CONNECTIONS.md, and docs/BACKEND_DECISION.md first. Main is production. The selected multiplayer backend is the Hostinger PHP Website Room API in apps/high-land-web/public/api. Do not reconnect Supabase or introduce a second room authority. Run npm run verify:connections, npm run test:high-land, npm run build:high-land, and node scripts/verify-browser-tool-policy.mjs. Do not commit secrets. Report repository, API-boundary, and two-device live validation separately.
 ```
