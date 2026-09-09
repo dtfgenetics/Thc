@@ -4,7 +4,7 @@ const combatPath = 'site/public-route-patch/games/seed-man-platformer/combat-bro
 const enemyRuntimePath = 'site/public-route-patch/games/seed-man-platformer/v20-enemy-runtime.js';
 const campaignPath = 'site/public-route-patch/games/seed-man-platformer/data/campaign.json';
 const REQUIRED_COMBAT = 'seed-man-combat-browser-v2';
-const REQUIRED_ENEMIES = 'seed-man-v20-enemy-runtime-v3';
+const REQUIRED_ENEMIES = 'seed-man-v20-enemy-runtime-v2';
 const CANONICAL_FORMS = ['plant', 'fire', 'electric', 'ice'];
 const RETIRED_ALIASES = ['solar-flare', 'static-haze', 'frost-resin'];
 
