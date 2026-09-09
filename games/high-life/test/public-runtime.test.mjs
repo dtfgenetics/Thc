@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import crypto from 'node:crypto';
 
 const html = fs.readFileSync('site/public-route-patch/games/high-life/index.html', 'utf8');
 const app = fs.readFileSync('site/public-route-patch/games/high-life/app.js', 'utf8');
@@ -7,10 +8,25 @@ const visual = fs.readFileSync('site/public-route-patch/games/high-life/high-lif
 const canonicalEvents = JSON.parse(fs.readFileSync('games/high-life/data/events.json', 'utf8'));
 
 assert.match(html, /<script id="high-life-events" type="application\/json">/);
-assert.match(html, /<script defer src="\.\/app\.js"><\/script>/);
+assert.match(html, /<script defer src="\.\/app\.js\?v=20260909-visual-v1"><\/script>/);
+assert.match(html, /<script defer src="\.\/high-life-enhancements\.js\?v=20260909-visual-v1"><\/script>/);
 assert.doesNotMatch(html, /type="module"[^>]*app\.js/);
 assert.match(html, /high-life-v2\.css/);
 assert.match(html, /class="era-roadmap"/);
+assert.match(html, /assets\/high-life-era-journey-v1\.webp/);
+assert.match(html, /width="1920" height="768"/);
+assert.match(html, /fetchpriority="high"/);
+
+const canonicalArt = fs.readFileSync('games/high-life/assets/high-life-era-journey-v1.webp');
+const publicArt = fs.readFileSync('site/public-route-patch/games/high-life/assets/high-life-era-journey-v1.webp');
+assert.ok(canonicalArt.length > 150_000, 'High Life key art is suspiciously small or truncated');
+assert.equal(canonicalArt.subarray(0, 4).toString('ascii'), 'RIFF');
+assert.equal(canonicalArt.subarray(8, 12).toString('ascii'), 'WEBP');
+const frameHeader = canonicalArt.indexOf(Buffer.from([0x9d, 0x01, 0x2a]));
+assert.ok(frameHeader > 0, 'High Life key art is missing its VP8 frame header');
+assert.equal(canonicalArt.readUInt16LE(frameHeader + 3) & 0x3fff, 1920, 'High Life key art width drifted');
+assert.equal(canonicalArt.readUInt16LE(frameHeader + 5) & 0x3fff, 768, 'High Life key art height drifted');
+assert.equal(crypto.createHash('sha256').update(canonicalArt).digest('hex'), crypto.createHash('sha256').update(publicArt).digest('hex'), 'canonical and public key art must match');
 
 const embeddedMatch = html.match(/<script id="high-life-events" type="application\/json">([\s\S]*?)<\/script>/);
 assert.ok(embeddedMatch, 'embedded High Life event data must be present');
@@ -38,6 +54,8 @@ assert.match(visual, /\.resource-meter/);
 assert.match(visual, /\.action-card\.available:hover/);
 assert.match(visual, /\.delta-list span\.positive/);
 assert.match(visual, /\.danger-arm/);
+assert.match(visual, /\.hero-art/);
+assert.match(visual, /object-position:66% center/);
 assert.match(visual, /@media\(max-width:650px\)/);
 assert.match(visual, /@media\(prefers-reduced-motion:reduce\)/);
 

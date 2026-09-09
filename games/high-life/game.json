@@ -27,6 +27,7 @@
     "events": "games/high-life/data/events.json",
     "tests": "games/high-life/test/engine.test.mjs",
     "publicRoute": "site/public-route-patch/games/high-life",
+    "keyArt": "games/high-life/assets/high-life-era-journey-v1.webp",
     "deterministic": true,
     "simulationSeedsPerStrategy": 120,
     "balanceSpreadCeiling": 38
@@ -35,6 +36,7 @@
     "strategies": ["knowledge", "builder", "genetics", "balanced"],
     "observedAverageSpreadAtImplementation": 9.0834,
     "browserRouteBuilt": true,
+    "browserKeyArtIntegrated": true,
     "canonicalPublicCopyCheck": true
   },
   "components": [

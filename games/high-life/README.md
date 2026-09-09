@@ -22,6 +22,7 @@ This directory is the GitHub source-of-truth for machine-readable rules, event d
 - `data/eras.json` — era design intent and thematic boundaries.
 - `test/engine.test.mjs` — deterministic regression tests plus multi-seed balance simulation.
 - `site/public-route-patch/games/high-life/` — self-hosted browser prototype packaged by the DTFSeeds public-suite workflow.
+- `assets/high-life-era-journey-v1.webp` — original browser key art depicting the Underground, Medical, and Legal career progression.
 
 ## Balance guard
 
@@ -31,7 +32,7 @@ This is a regression guard, not a claim that final balance is solved. Human play
 
 ## Current status
 
-`browser-prototype` — the deterministic rules engine, event system, seeded simulations, browser route, and CI gates exist. Human browser playtesting, richer branch/path presentation, final art, accessibility review, print-layout review, and final economy approval are still open gates.
+`browser-prototype` — the deterministic rules engine, event system, seeded simulations, browser route, CI gates, and original responsive browser key art exist. Human playtesting, richer branch/path presentation, a complete final art set, accessibility review, print-layout review, and final economy approval are still open gates.
 
 ## Next implementation gate
 

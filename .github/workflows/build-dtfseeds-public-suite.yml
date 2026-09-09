@@ -78,6 +78,7 @@ jobs:
         run: |
           set -euo pipefail
           node games/high-life/test/engine.test.mjs
+          node games/high-life/test/public-runtime.test.mjs
           node --check site/public-route-patch/games/high-life/app.js
           cmp games/high-life/src/engine.mjs site/public-route-patch/games/high-life/engine.mjs
           cmp games/high-life/data/events.json site/public-route-patch/games/high-life/data/events.json
@@ -434,6 +435,9 @@ jobs:
             release/games/high-life/index.html
             release/games/high-life/app.js
             release/games/high-life/high-life.css
+            release/games/high-life/high-life-v2.css
+            release/games/high-life/high-life-enhancements.js
+            release/games/high-life/assets/high-life-era-journey-v1.webp
             release/games/high-life/engine.mjs
             release/games/high-life/data/events.json
             release/games/grower-conversations/index.html
