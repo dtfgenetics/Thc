@@ -4,6 +4,10 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - 'games/seed-man-platformer/src/systems/combat.mjs'
+      - 'games/seed-man-platformer/src/systems/enemy-attacks.mjs'
+      - 'games/seed-man-platformer/src/systems/enemy-archetypes.mjs'
+      - 'games/seed-man-platformer/src/systems/weapons.mjs'
       - 'games/seed-man-platformer/src/systems/phenotype-system.mjs'
       - 'games/seed-man-platformer/src/systems/phenotypes.mjs'
       - 'games/seed-man-platformer/src/systems/player-progression.mjs'
@@ -11,6 +15,8 @@ on:
       - 'games/seed-man-platformer/src/systems/boss-state-machine.mjs'
       - 'games/seed-man-platformer/src/systems/final-boss-director.mjs'
       - 'games/seed-man-platformer/src/systems/world-boss-map.mjs'
+      - 'games/seed-man-platformer/test/combat.test.mjs'
+      - 'games/seed-man-platformer/test/enemy-attacks.test.mjs'
       - 'games/seed-man-platformer/test/phenotype-system.test.mjs'
       - 'games/seed-man-platformer/test/power-drop.test.mjs'
       - 'games/seed-man-platformer/test/final-boss-director.test.mjs'
@@ -25,6 +31,10 @@ on:
   push:
     branches: [main]
     paths:
+      - 'games/seed-man-platformer/src/systems/combat.mjs'
+      - 'games/seed-man-platformer/src/systems/enemy-attacks.mjs'
+      - 'games/seed-man-platformer/src/systems/enemy-archetypes.mjs'
+      - 'games/seed-man-platformer/src/systems/weapons.mjs'
       - 'games/seed-man-platformer/src/systems/phenotype-system.mjs'
       - 'games/seed-man-platformer/src/systems/phenotypes.mjs'
       - 'games/seed-man-platformer/src/systems/player-progression.mjs'
@@ -32,6 +42,8 @@ on:
       - 'games/seed-man-platformer/src/systems/boss-state-machine.mjs'
       - 'games/seed-man-platformer/src/systems/final-boss-director.mjs'
       - 'games/seed-man-platformer/src/systems/world-boss-map.mjs'
+      - 'games/seed-man-platformer/test/combat.test.mjs'
+      - 'games/seed-man-platformer/test/enemy-attacks.test.mjs'
       - 'games/seed-man-platformer/test/phenotype-system.test.mjs'
       - 'games/seed-man-platformer/test/power-drop.test.mjs'
       - 'games/seed-man-platformer/test/final-boss-director.test.mjs'
@@ -62,6 +74,10 @@ jobs:
 
       - name: Validate v20 combat syntax
         run: |
+          node --check games/seed-man-platformer/src/systems/combat.mjs
+          node --check games/seed-man-platformer/src/systems/enemy-attacks.mjs
+          node --check games/seed-man-platformer/src/systems/enemy-archetypes.mjs
+          node --check games/seed-man-platformer/src/systems/weapons.mjs
           node --check games/seed-man-platformer/src/systems/phenotype-system.mjs
           node --check games/seed-man-platformer/src/systems/phenotypes.mjs
           node --check games/seed-man-platformer/src/systems/player-progression.mjs
@@ -69,6 +85,8 @@ jobs:
           node --check games/seed-man-platformer/src/systems/boss-state-machine.mjs
           node --check games/seed-man-platformer/src/systems/final-boss-director.mjs
           node --check games/seed-man-platformer/src/systems/world-boss-map.mjs
+          node --check games/seed-man-platformer/test/combat.test.mjs
+          node --check games/seed-man-platformer/test/enemy-attacks.test.mjs
           node --check site/public-route-patch/games/seed-man-platformer/player-state-v20.js
           node --check site/public-route-patch/games/seed-man-platformer/v20-enemy-runtime.js
           node --check site/public-route-patch/games/seed-man-platformer/combat-browser-v2.js
@@ -76,12 +94,10 @@ jobs:
           node --check site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
 
       - name: Test canonical v20 combat systems
-        run: |
-          node games/seed-man-platformer/test/phenotype-system.test.mjs
-          node games/seed-man-platformer/test/power-drop.test.mjs
-          node games/seed-man-platformer/test/final-boss-director.test.mjs
-          node games/seed-man-platformer/test/world-boss-map.test.mjs
-          node games/seed-man-platformer/test/progression-systems.test.mjs
+        run: npm run --prefix games/seed-man-platformer test:combat-v2
+
+      - name: Test canonical progression contract
+        run: node games/seed-man-platformer/test/progression-systems.test.mjs
 
       - name: Verify canonical public combat contract
         shell: bash
