@@ -24,14 +24,23 @@ jobs:
           status="$(curl -sS --connect-timeout 10 --max-time 35 -o "$tmp/index.html" -w '%{http_code}' "$base")"
           [[ "$status" == 200 ]] || { echo "bare route HTTP $status" >&2; exit 1; }
           test -s "$tmp/index.html"
-          for rel in data/campaign.json data/levels-20-v1.json campaign-v20-runtime.js campaign-ui-v20.js approved-art-core-v1.js seed-man-production-art.js; do
+          for rel in data/campaign.json data/levels-20-v1.json player-state-v20.js campaign-v20-runtime.js campaign-ui-v20.js v20-enemy-runtime.js combat-browser-v2.js enemy-attacks-browser-v2.js approved-art-core-v1.js approved-art-runtime-v1.js seed-man-production-art.js; do
             curl -fsS --retry 5 --retry-delay 4 -H 'Cache-Control: no-cache, no-store, max-age=0' "${base}${rel}?bare=${GITHUB_RUN_ID}" -o "$tmp/$(basename "$rel")"
           done
           grep -Fq '"levelCount": 20' "$tmp/campaign.json"
           grep -Fq '"finalBoss": "blight-king"' "$tmp/campaign.json"
-          grep -Fq 'seed-man-campaign-v20-runtime-v1' "$tmp/campaign-v20-runtime.js"
+          grep -Fq 'seed-man-player-state-v20' "$tmp/player-state-v20.js"
+          grep -Fq 'seed-man-campaign-v20-runtime-v3' "$tmp/campaign-v20-runtime.js"
+          grep -Fq 'approvedWorldBackgrounds:true' "$tmp/campaign-v20-runtime.js"
+          grep -Fq "phenotypeForms:['plant','fire','electric','ice']" "$tmp/campaign-v20-runtime.js"
           grep -Fq 'seed-man-campaign-ui-v20' "$tmp/campaign-ui-v20.js"
-          grep -Fq 'character.seedman.atlas' "$tmp/approved-art-core-v1.js"
+          grep -Fq 'seed-man-v20-enemy-runtime-v2' "$tmp/v20-enemy-runtime.js"
+          grep -Fq 'seed-man-combat-browser-v2' "$tmp/combat-browser-v2.js"
+          grep -Fq 'seed-man-enemy-attacks-browser-v2' "$tmp/enemy-attacks-browser-v2.js"
+          grep -Fq 'seed-man-approved-art-core-v3' "$tmp/approved-art-core-v1.js"
+          grep -Fq 'world.greenhouse-valley.background' "$tmp/approved-art-core-v1.js"
+          grep -Fq 'world.eco-city.background' "$tmp/approved-art-core-v1.js"
+          ! grep -Eq 'solar-flare|static-haze|frost-resin|shield-bounce' "$tmp/approved-art-runtime-v1.js"
           grep -Fq 'approved-showcase-2026-09-08' "$tmp/seed-man-production-art.js"
           grep -Fq 'green-armored-plant-hero' "$tmp/seed-man-production-art.js"
-          echo 'Bare Seed Man URL serves canonical v20 assets.'
+          echo 'Bare Seed Man URL serves canonical player-state v20, campaign v3, combat v2, and approved world art.'
