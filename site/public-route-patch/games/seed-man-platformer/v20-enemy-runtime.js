@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const VERSION = 'seed-man-v20-enemy-runtime-v2';
+  const VERSION = 'seed-man-v20-enemy-runtime-v3';
   const PHENOTYPE_DURATION_MS = 30000;
 
   const ENEMY_META = Object.freeze({
@@ -18,9 +18,9 @@
   });
 
   const PHENOTYPE_CARRIERS = Object.freeze({
-    fire: { base:'thorn-beetle', phenotype:'solar-flare', form:'fire', label:'Fire' },
-    electric: { base:'drone-bot', phenotype:'static-haze', form:'electric', label:'Electric' },
-    ice: { base:'root-crawler', phenotype:'frost-resin', form:'ice', label:'Ice' }
+    fire: { base:'thorn-beetle', phenotype:'fire', form:'fire', label:'Fire' },
+    electric: { base:'drone-bot', phenotype:'electric', form:'electric', label:'Electric' },
+    ice: { base:'root-crawler', phenotype:'ice', form:'ice', label:'Ice' }
   });
 
   const PHENOTYPE_ORDER = Object.freeze(['fire','electric','ice']);
@@ -136,6 +136,7 @@
     phenotypeDurationMs:PHENOTYPE_DURATION_MS,
     phenotypeForms:Object.freeze(['plant','fire','electric','ice']),
     enemyTypes:Object.freeze(Object.keys(ENEMY_META)),
+    phenotypeCarrierForms:Object.freeze([...PHENOTYPE_ORDER]),
     buildEncounter,
     buildAttackers,
     buildBoss
