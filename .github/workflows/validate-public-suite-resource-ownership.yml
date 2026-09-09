@@ -6,6 +6,7 @@ on:
     paths:
       - 'site/deployment/release-resources.json'
       - 'scripts/plan-dtfseeds-resource-release.mjs'
+      - 'scripts/run-workflow-and-wait.sh'
       - 'scripts/public_suite_resource_ownership.py'
       - 'scripts/assemble-wordpress-suite-v2.py'
       - 'scripts/assemble-wordpress-suite-resource-aware.py'
@@ -15,6 +16,7 @@ on:
       - 'scripts/test-public-suite-resource-ownership.py'
       - 'scripts/test-dtf-resource-release-system.mjs'
       - '.github/workflows/build-dtfseeds-public-resource.yml'
+      - '.github/workflows/deploy-dtfseeds-wordpress-resource.yml'
       - '.github/workflows/deploy-public-suite-wordpress-v2.yml'
       - '.github/workflows/deploy-games-suite-lock-recovery.yml'
       - '.github/workflows/dtfseeds-resource-production-gateway.yml'
@@ -24,6 +26,7 @@ on:
     paths:
       - 'site/deployment/release-resources.json'
       - 'scripts/plan-dtfseeds-resource-release.mjs'
+      - 'scripts/run-workflow-and-wait.sh'
       - 'scripts/public_suite_resource_ownership.py'
       - 'scripts/assemble-wordpress-suite-v2.py'
       - 'scripts/assemble-wordpress-suite-resource-aware.py'
@@ -33,6 +36,7 @@ on:
       - 'scripts/test-public-suite-resource-ownership.py'
       - 'scripts/test-dtf-resource-release-system.mjs'
       - '.github/workflows/build-dtfseeds-public-resource.yml'
+      - '.github/workflows/deploy-dtfseeds-wordpress-resource.yml'
       - '.github/workflows/deploy-public-suite-wordpress-v2.yml'
       - '.github/workflows/deploy-games-suite-lock-recovery.yml'
       - '.github/workflows/dtfseeds-resource-production-gateway.yml'
@@ -64,6 +68,7 @@ jobs:
           set -euo pipefail
           node --check scripts/plan-dtfseeds-resource-release.mjs
           node scripts/test-dtf-resource-release-system.mjs
+          bash -n scripts/run-workflow-and-wait.sh
           python -m py_compile \
             scripts/public_suite_resource_ownership.py \
             scripts/assemble-wordpress-suite-resource-aware.py \
@@ -126,19 +131,29 @@ jobs:
           grep -Fq 'build-dtfseeds-public-resource.yml --join-only' "$coordinator"
           grep -Fq 'publisherWorkflow' "$coordinator"
           grep -Fq 'resource=$resource' "$coordinator"
-          grep -Fq 'source_sha=$GITHUB_SHA' "$coordinator"
+          grep -Fq 'source_sha=$EXPECTED_SOURCE_SHA' "$coordinator"
           grep -Fq 'environment=production' "$coordinator"
           grep -Fq -- '--gateway-managed-only=true' "$coordinator"
           grep -Fq "resource.publisher?.orchestration !== 'gateway-managed'" "$coordinator"
-          grep -Fq 'Detect superseded queued resource release' "$coordinator"
+          grep -Fq 'recovery_attempt:' "$coordinator"
+          grep -Fq "MAX_RECOVERY_ATTEMPTS: '5'" "$coordinator"
+          grep -Fq 'if [[ "$status" -eq 75 ]]; then' "$coordinator"
+          ! grep -Fq 'Detect superseded queued resource release' "$coordinator"
           ! grep -Fq 'issues: write' "$coordinator"
           ! grep -Fq 'github.rest.issues.createComment' "$coordinator"
+
+          grep -Fq 'run-name: DTFSeeds WordPress Resource' .github/workflows/deploy-dtfseeds-wordpress-resource.yml
+          grep -Fq 'inputs.source_sha' .github/workflows/deploy-dtfseeds-wordpress-resource.yml
+          grep -Fq 'queue_replaced_exit=75' scripts/run-workflow-and-wait.sh
+          grep -Fq 'displayTitle' scripts/run-workflow-and-wait.sh
 
           grep -Fq "const gatewayManagedOnly = args['gateway-managed-only'] === 'true';" scripts/plan-dtfseeds-resource-release.mjs
           grep -Fq "if (resource.publicSuiteOwnership !== 'resource') continue;" scripts/plan-dtfseeds-resource-release.mjs
           grep -Fq "if (resource.publisher?.orchestration !== 'gateway-managed') continue;" scripts/plan-dtfseeds-resource-release.mjs
           grep -Fq '.github/workflows/dtfseeds-resource-production-gateway.yml' site/deployment/release-resources.json
+          grep -Fq 'scripts/run-workflow-and-wait.sh' site/deployment/release-resources.json
           grep -Fq '.github/workflows/dtfseeds-resource-production-gateway.yml' .github/workflows/build-dtfseeds-public-resource.yml
+          grep -Fq 'scripts/run-workflow-and-wait.sh' .github/workflows/build-dtfseeds-public-resource.yml
 
       - name: PHP-lint filtered and hardened embedded bridges
         run: |
