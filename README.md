@@ -1,56 +1,72 @@
-# Browser Game Project
+# DTF / THC Product Repository
 
-This repo contains the browser-based board game build.
+This repository is the primary monorepo for DTF Genetics browser games, shared game infrastructure, public-route release artifacts, site integration, and supporting product tooling.
 
-## Run locally
+Production target: **https://dtfseeds.com**
+
+## Repository map
+
+- `games/` — canonical source for games owned by this monorepo. Game logic, data, tests, assets manifests, and game-specific documentation belong here.
+- `apps/` — standalone application workspaces that are built as applications rather than static game packages, including High Land and GrowLens.
+- `site/public-route-patch/` — deployable public-route artifacts. Treat this as a release/deployment layer, not the canonical place to author game logic.
+- `site/deployment/` — public application/deployment registry and route metadata.
+- `scripts/` — active repository-wide build, validation, synchronization, release, and deployment tooling.
+- `scripts/archive/` — retired one-off migration/reconciliation helpers kept only for provenance. Nothing here may be called by active CI or production release flows.
+- `docs/` — architecture, source-of-truth, workflow, release, and operational documentation.
+- `data/` — repository-level registries and shared machine-readable data. Game-owned data belongs under that game in `games/<game-id>/data/`.
+- `assets/` — repository-wide shared assets. Game-owned assets belong with the owning game or its release bundle.
+- `.github/workflows/` — active CI/release workflows only. Retired workflows should be removed rather than left capable of mutating current production state.
+
+## Game ownership
+
+Before changing a game, resolve its canonical owner and deployment contract:
 
 ```bash
-cd apps/high-land-web
-npm install
-npm run dev
+npm run games:status -- --id <game-id>
 ```
 
-## Build
+Monorepo-owned games live in `games/`. Some portfolio games remain canonical in standalone repositories. The authoritative ownership and release mappings are recorded in `data/project-registry.json` and `site/deployment/public-apps.json`.
+
+See `games/README.md` for the game architecture contract and `docs/GAME_ARCHITECTURE_STANDARD.md` for the detailed standard.
+
+## Core validation
 
 ```bash
-cd apps/high-land-web
-npm run build
+npm run games:preflight
+npm run verify:portfolio
+npm run verify:navigation
+npm run verify:release-integrity
 ```
 
-The production build outputs to:
+These checks are intentionally deterministic and repository-based. Do not add Playwright to the routine game validation path.
 
-```txt
-apps/high-land-web/dist
+## Application workspaces
+
+High Land:
+
+```bash
+npm run dev:high-land
+npm run build:high-land
+npm run test:high-land
 ```
 
-## Project docs
+GrowLens:
 
-Read these first:
-
-- `docs/HIGH_LAND_CODEX_NOW.md` — current Codex execution plan and acceptance criteria
-- `docs/SYSTEMS_READINESS.md`
-- `docs/TOOL_CONNECTIONS.md`
-- `docs/CODEX_HIGH_LAND_GAME_BUILD.md`
-- `docs/GITHUB_CODE_TO_USE.md`
-
-## Current phase
-
-Current target is the playable High Land browser build for:
-
-```txt
-https://dtfseeds.com/games/high-land/
+```bash
+npm run build:growlens
+npm run test:growlens
+npm run verify:growlens
 ```
 
-The app must support:
+## Structural rules
 
-- player naming
-- invite-link / room-code multiplayer
-- dice roll movement that exactly matches spaces moved
-- tokens positioned directly on board path coordinates
-- continuous board path data
-- HIT/action cards
-- skip turns
-- win condition at/crossing finish
-- background audio with mute/unmute
-- mobile-friendly layout
-- tests for rules, board path integrity, and room/session behavior
+1. Canonical game behavior is authored under its owning source directory, not directly in the public deployment mirror.
+2. Public route files must be generated, synchronized, or deliberately copied from canonical source and validated for parity.
+3. Game-specific data stays with the game unless it is genuinely shared across the portfolio.
+4. One-off migration scripts must not accumulate indefinitely in the active `scripts/` root; archive them after the migration is complete.
+5. Active workflows must target the current production contract. Legacy compatibility workflows that can rewrite current files must be retired.
+6. Do not create duplicate implementations of the same game in multiple directories without an explicit source-of-truth document and synchronization contract.
+
+## Current priority
+
+The active game-production priority is Seed Man, Who Took It?, High IQ, High Life, Bud or Bluff, and the Doom-style parody project, followed by the remainder of the game portfolio. Each game should move through canonical source, working gameplay, approved visuals, deterministic QA, public route, deployment registry, merge, and live verification.
