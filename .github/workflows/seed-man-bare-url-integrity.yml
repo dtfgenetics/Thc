@@ -1,11 +1,6 @@
-name: Verify Sprout Run Bare URL Integrity
+name: Verify Seed Man v20 Bare URL Integrity
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/seed-man-bare-url-integrity.yml'
-      - 'site/public-route-patch/games/seed-man-platformer/**'
   workflow_run:
     workflows: ["Deploy DTFSeeds Public Suite via WordPress V2"]
     types: [completed]
@@ -18,66 +13,25 @@ jobs:
   bare-url:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
-      - name: Checkout deployed source revision
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
-
-      - name: Verify normal visitor URL is current and cache-proof
+      - name: Verify normal visitor URL and canonical assets
         shell: bash
         run: |
           set -euo pipefail
           base='https://dtfseeds.com/games/seed-man-platformer/'
-          source_html='site/public-route-patch/games/seed-man-platformer/index.html'
-          test -s "$source_html"
-          release="$(sed -n 's/.*name="dtf-sprout-release" content="\([^"]*\)".*/\1/p' "$source_html" | head -n 1)"
-          [[ "$release" =~ ^[0-9]{8}-r[0-9]+$ ]] || {
-            echo "Unable to resolve the Sprout Run release marker from deployed source: $release" >&2
-            exit 1
-          }
-
-          tmp="$(mktemp -d)"
-          trap 'rm -rf "$tmp"' EXIT
-
-          curl -sS --location --connect-timeout 10 --max-time 30 "$base" -o "$tmp/index.html"
+          tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
+          status="$(curl -sS --connect-timeout 10 --max-time 35 -o "$tmp/index.html" -w '%{http_code}' "$base")"
+          [[ "$status" == 200 ]] || { echo "bare route HTTP $status" >&2; exit 1; }
           test -s "$tmp/index.html"
-
-          for marker in \
-            'Seed Man · Greenhouse Gauntlet' \
-            '0 / 24' \
-            'JUMP ×2' \
-            '"worldWidth": 7800' \
-            '"requiredPickups": 24' \
-            "name=\"dtf-sprout-release\" content=\"${release}\"" \
-            "<script src=\"./app.js?v=${release}\" defer></script>" \
-            "<script src=\"./seed-man-production-art.js?v=${release}\" defer></script>" \
-            "<script src=\"./input-guard-v1.js?v=${release}\" defer></script>" \
-            "seed-man.css?v=${release}"; do
-            grep -Fq "$marker" "$tmp/index.html" || { echo "Bare public URL is stale/mismatched; missing: $marker" >&2; exit 1; }
+          for rel in data/campaign.json data/levels-20-v1.json campaign-v20-runtime.js campaign-ui-v20.js approved-art-core-v1.js seed-man-production-art.js; do
+            curl -fsS --retry 5 --retry-delay 4 -H 'Cache-Control: no-cache, no-store, max-age=0' "${base}${rel}?bare=${GITHUB_RUN_ID}" -o "$tmp/$(basename "$rel")"
           done
-
-          for stale in \
-            'collect all eight sprouts' \
-            '0 / 8' \
-            'Original browser vertical slice' \
-            'simple Canvas2D primitives'; do
-            if grep -Fqi "$stale" "$tmp/index.html"; then
-              echo "Bare public URL still exposes retired Sprout Run content: $stale" >&2
-              exit 1
-            fi
-          done
-
-          curl -sS --location --connect-timeout 10 --max-time 30 "${base}app.js?v=${release}" -o "$tmp/app.js"
-          curl -sS --location --connect-timeout 10 --max-time 30 "${base}seed-man-production-art.js?v=${release}" -o "$tmp/seed-man-production-art.js"
-          curl -sS --location --connect-timeout 10 --max-time 30 "${base}input-guard-v1.js?v=${release}" -o "$tmp/input-guard-v1.js"
-          curl -sS --location --connect-timeout 10 --max-time 30 "${base}seed-man.css?v=${release}" -o "$tmp/seed-man.css"
-          for rel in app.js seed-man-production-art.js input-guard-v1.js seed-man.css; do test -s "$tmp/$rel"; done
-          node --check "$tmp/app.js"
-          node --check "$tmp/seed-man-production-art.js"
-          node --check "$tmp/input-guard-v1.js"
-          grep -Fq 'seed-man-production-v1' "$tmp/seed-man-production-art.js"
-          grep -Fq 'seed-man-locked-v1' "$tmp/seed-man-production-art.js"
-
-          echo "Bare Sprout Run URL and versioned runtime assets are serving the ${release} Greenhouse Gauntlet production bundle."
+          grep -Fq '"levelCount": 20' "$tmp/campaign.json"
+          grep -Fq '"finalBoss": "blight-king"' "$tmp/campaign.json"
+          grep -Fq 'seed-man-campaign-v20-runtime-v1' "$tmp/campaign-v20-runtime.js"
+          grep -Fq 'seed-man-campaign-ui-v20' "$tmp/campaign-ui-v20.js"
+          grep -Fq 'character.seedman.atlas' "$tmp/approved-art-core-v1.js"
+          grep -Fq 'approved-showcase-2026-09-08' "$tmp/seed-man-production-art.js"
+          grep -Fq 'green-armored-plant-hero' "$tmp/seed-man-production-art.js"
+          echo 'Bare Seed Man URL serves canonical v20 assets.'

@@ -1,77 +1,48 @@
-name: Seed Man Sprite Visual CI
+name: Seed Man Approved Visual Contract CI
 
 on:
   push:
     branches: [main]
     paths:
       - 'site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js'
-      - 'site/public-route-patch/games/seed-man-platformer/seed-man-sprite-runtime-v1.js'
-      - 'site/public-route-patch/games/seed-man-platformer/seed-man-sprite-runtime-v2.js'
-      - 'site/public-route-patch/games/seed-man-platformer/assets/seed-man/seed-man-atlas-v2.svg'
-      - 'scripts/prepare-seed-man-sprite-release.mjs'
+      - 'site/public-route-patch/games/seed-man-platformer/approved-art-core-v1.js'
+      - 'site/public-route-patch/games/seed-man-platformer/approved-art-runtime-v1.js'
+      - 'site/public-route-patch/games/seed-man-platformer/data/seed-man-art-manifest-v1.json'
+      - 'scripts/verify-seed-man-production-v20.mjs'
       - '.github/workflows/seed-man-sprite-visual-ci.yml'
   pull_request:
     paths:
       - 'site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js'
-      - 'site/public-route-patch/games/seed-man-platformer/seed-man-sprite-runtime-v1.js'
-      - 'site/public-route-patch/games/seed-man-platformer/seed-man-sprite-runtime-v2.js'
-      - 'site/public-route-patch/games/seed-man-platformer/assets/seed-man/seed-man-atlas-v2.svg'
-      - 'scripts/prepare-seed-man-sprite-release.mjs'
+      - 'site/public-route-patch/games/seed-man-platformer/approved-art-core-v1.js'
+      - 'site/public-route-patch/games/seed-man-platformer/approved-art-runtime-v1.js'
+      - 'site/public-route-patch/games/seed-man-platformer/data/seed-man-art-manifest-v1.json'
+      - 'scripts/verify-seed-man-production-v20.mjs'
       - '.github/workflows/seed-man-sprite-visual-ci.yml'
 
 permissions:
   contents: read
 
 jobs:
-  verify-sprite-visual-contract:
+  verify-approved-art:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-
-      - name: Validate browser runtime syntax
-        run: |
-          node --check site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js
-          node --check site/public-route-patch/games/seed-man-platformer/seed-man-sprite-runtime-v1.js
-          node --check site/public-route-patch/games/seed-man-platformer/seed-man-sprite-runtime-v2.js
-
-      - name: Lock approved Seed Man renderer ownership
+      - name: Validate canonical approved-art contract
         shell: bash
         run: |
           set -euo pipefail
+          node scripts/verify-seed-man-production-v20.mjs
           root='site/public-route-patch/games/seed-man-platformer'
-          art="$root/seed-man-production-art.js"
-          v1="$root/seed-man-sprite-runtime-v1.js"
-          v2="$root/seed-man-sprite-runtime-v2.js"
-
-          grep -Fq "seed-man-approved-hero-v3" "$art"
-          grep -Fq "characterContract: 'seed-man-locked-v1'" "$art"
-          grep -Fq "authoritative: true" "$art"
-          grep -Fq 'drawSeedMan = drawSeedManProduction' "$art"
-
-          grep -Fq "approvedRendererAvailable" "$v1"
-          grep -Fq "approvedRendererAvailable" "$v2"
-          grep -Fq "seed-man-production-v1" "$v1"
-          grep -Fq "seed-man-production-v1" "$v2"
-
-          if grep -Eq "approvedRendererAvailable\(\).*window\.drawSeedMan[[:space:]]*=[[:space:]]*(spriteRenderer|renderer)" "$v1" "$v2"; then
-            echo 'Compatibility sprite runtime can overwrite approved Seed Man renderer.' >&2
-            exit 1
-          fi
-
-      - name: Guard phenotype motion and effects
-        shell: bash
-        run: |
-          runtime='site/public-route-patch/games/seed-man-platformer/seed-man-sprite-runtime-v2.js'
-          grep -Fq 'seed-man-sprite-motion-phenotype-v3' "$runtime"
-          grep -Fq 'drawPhenotypeLayer(activePhenotype(), g, now);' "$runtime"
-          grep -Fq 'drawElementalVfx' "$runtime"
-          grep -Fq "'solar-flare'" "$runtime"
-          grep -Fq "'static-haze'" "$runtime"
-          grep -Fq "'frost-resin'" "$runtime"
-          if grep -Eq 'if[[:space:]]*\(phenotype\)[[:space:]]*return[[:space:]]+phenotype' "$runtime"; then
-            echo 'Phenotype state is incorrectly replacing movement animation.' >&2
-            exit 1
-          fi
+          node --check "$root/approved-art-core-v1.js"
+          node --check "$root/approved-art-runtime-v1.js"
+          node --check "$root/seed-man-production-art.js"
+          grep -Fq 'approved-showcase-2026-09-08' "$root/seed-man-production-art.js"
+          grep -Fq 'green-armored-plant-hero' "$root/seed-man-production-art.js"
+          grep -Fq 'fallbackAllowed:false' "$root/seed-man-production-art.js"
+          grep -Fq 'character.seedman.atlas' "$root/approved-art-core-v1.js"
+          grep -Fq 'authoritative' "$root/data/seed-man-art-manifest-v1.json"
+          ! grep -Fq 'seed-man-production-v1' "$root/seed-man-production-art.js"
+          ! grep -Fq 'seed-man-locked-v1' "$root/seed-man-production-art.js"

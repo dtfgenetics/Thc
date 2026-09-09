@@ -1,4 +1,4 @@
-name: Seed Man Sprout Run Live Smoke
+name: Seed Man v20 Live Smoke
 
 on:
   workflow_run:
@@ -15,173 +15,38 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout deployed source revision
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
-
-      - name: Verify expanded Sprout Run live runtime
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify Seed Man v20 live runtime
         shell: bash
         run: |
           set -euo pipefail
-
+          node scripts/verify-seed-man-production-v20.mjs
           base='https://dtfseeds.com/games/seed-man-platformer/'
-          source_html='site/public-route-patch/games/seed-man-platformer/index.html'
-          test -s "$source_html"
-          release="$(sed -n 's/.*name="dtf-sprout-release" content="\([^"]*\)".*/\1/p' "$source_html" | head -n 1)"
-          [[ "$release" =~ ^[0-9]{8}-r[0-9]+$ ]] || {
-            echo "Unable to resolve the Sprout Run release marker from deployed source: $release" >&2
-            exit 1
-          }
-          bust="dtf_sprout_smoke=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-
-          fetch_asset() {
-            local rel="$1" body headers status type sep url
-            body="$(mktemp)"
-            headers="$(mktemp)"
-            sep='?'
-            [[ "$rel" == *'?'* ]] && sep='&'
-            url="${base}${rel}${sep}${bust}"
-            status="$(curl -sS --connect-timeout 10 --max-time 30 \
-              --output "$body" \
-              --dump-header "$headers" \
-              --write-out '%{http_code}' \
-              -H 'Cache-Control: no-cache, no-store, max-age=0' \
-              "$url")"
-            type="$(awk 'BEGIN{IGNORECASE=1} /^content-type:/{gsub(/\r/,""); sub(/^[^:]+:[[:space:]]*/,""); print; exit}' "$headers")"
-            echo "${rel:-/} -> HTTP ${status} ${type:-unknown-content-type} bytes=$(wc -c < "$body")" >&2
-            if [[ "$status" != '200' ]]; then
-              echo "FAILED_ASSET=${rel:-/}" >&2
-              head -c 500 "$body" >&2 || true
-              rm -f "$body" "$headers"
-              return 1
-            fi
-            if grep -Eiq '^location:' "$headers"; then
-              echo "Unexpected redirect for ${rel:-/}" >&2
-              cat "$headers" >&2
-              rm -f "$body" "$headers"
-              return 1
-            fi
-            cat "$body"
-            rm -f "$body" "$headers"
-          }
-
-          html="$(fetch_asset '')"
-
-          for marker in \
-            '<h1>Sprout Run</h1>' \
-            'Greenhouse Gauntlet' \
-            'id="seed-man-level"' \
-            '"schemaVersion": 2' \
-            '"id": "sprout-run"' \
-            '"worldWidth": 7800' \
-            '"requiredPickups": 24' \
-            '0 / 24' \
-            'JUMP ×2' \
-            'tap for a short hop' \
-            "name=\"dtf-sprout-release\" content=\"${release}\"" \
-            "<script src=\"./canvas-compat-v1.js?v=${release}\" defer></script>" \
-            "<script src=\"./app.js?v=${release}\" defer></script>" \
-            "<script src=\"./seed-man-production-art.js?v=${release}\" defer></script>" \
-            "<script src=\"./input-guard-v1.js?v=${release}\" defer></script>" \
-            "seed-man.css?v=${release}"; do
-            grep -Fq "$marker" <<<"$html" || { echo "Missing Sprout Run production marker: $marker" >&2; exit 1; }
-          done
-
-          for stale in \
-            'collect all eight sprouts' \
-            'Sprouts 0 / 8' \
-            'Objective: collect all 8 sprouts' \
-            'Original browser vertical slice' \
-            'simple Canvas2D primitives'; do
-            if grep -Fqi "$stale" <<<"$html"; then
-              echo "Stale Sprout Run fingerprint still live: $stale" >&2
-              exit 1
-            fi
-          done
-
-          if grep -Fq 'type="module"' <<<"$html"; then
-            echo 'Sprout Run regressed to a module-script dependency.' >&2
-            exit 1
-          fi
-
-          compat="$(fetch_asset "canvas-compat-v1.js?v=${release}")"
-          printf '%s' "$compat" > "$RUNNER_TEMP/sprout-canvas-compat.js"
-          node --check "$RUNNER_TEMP/sprout-canvas-compat.js"
-          for marker in \
-            'sprout-canvas-compat-v1' \
-            "const RELEASE = '${release}';" \
-            'softwarePreferred: true'; do
-            grep -Fq "$marker" <<<"$compat" || { echo "Missing canvas compatibility marker: $marker" >&2; exit 1; }
-          done
-
-          app="$(fetch_asset "app.js?v=${release}")"
-          printf '%s' "$app" > "$RUNNER_TEMP/sprout-app.js"
-          node --check "$RUNNER_TEMP/sprout-app.js"
-          for marker in \
-            'moveSpeed: 270' \
-            'groundAcceleration: 2600' \
-            'groundDeceleration: 3200' \
-            'airAcceleration: 1600' \
-            'airDeceleration: 700' \
-            'jumpSpeed: 640' \
-            'doubleJumpSpeed: 590' \
-            'jumpCutGravityMultiplier: 2.35' \
-            'maxAirJumps: 1' \
-            'speedBoostMultiplier: 1.35' \
-            'jumpBoostMultiplier: 1.18' \
-            'magnetRadius: 145' \
-            'shieldInvulnerability: 1.05' \
-            'function approach(' \
-            'function cameraBlend(' \
-            'jumpHeld: input.jumpHeld' \
-            'lostpointercapture' \
-            'function readEmbeddedLevel()' \
-            'function stepPlayer('; do
-            grep -Fq "$marker" <<<"$app" || { echo "Missing app.js production marker: $marker" >&2; exit 1; }
-          done
-          if grep -Fq "addEventListener('pointerleave'" <<<"$app"; then
-            echo 'Sprout Run touch controls regressed to pointerleave cancellation.' >&2
-            exit 1
-          fi
-          if grep -Eq '^[[:space:]]*import[[:space:]]' <<<"$app"; then
-            echo 'Sprout Run app.js regressed to a browser module import.' >&2
-            exit 1
-          fi
-          if grep -Fq "fetch('./data/level-01.json" <<<"$app"; then
-            echo 'Sprout Run app.js regressed to a runtime level fetch.' >&2
-            exit 1
-          fi
-
-          art="$(fetch_asset "seed-man-production-art.js?v=${release}")"
-          printf '%s' "$art" > "$RUNNER_TEMP/sprout-production-art.js"
-          node --check "$RUNNER_TEMP/sprout-production-art.js"
-          for marker in \
-            'seed-man-production-v1' \
-            'seed-man-locked-v1' \
-            "renderer: 'canvas2d-vector'" \
-            'original: true' \
-            'drawSeedMan = drawSeedManProduction'; do
-            grep -Fq "$marker" <<<"$art" || { echo "Missing production-art marker: $marker" >&2; exit 1; }
-          done
-
-          guard="$(fetch_asset "input-guard-v1.js?v=${release}")"
-          printf '%s' "$guard" > "$RUNNER_TEMP/sprout-input-guard.js"
-          node --check "$RUNNER_TEMP/sprout-input-guard.js"
-
-          css="$(fetch_asset "seed-man.css?v=${release}")"
-          grep -Fq 'touch-controls' <<<"$css"
-
-          level="$(fetch_asset 'data/level-01.json')"
-          node -e '
-            const level = JSON.parse(process.argv[1]);
-            if (level.schemaVersion !== 2) throw new Error(`schemaVersion=${level.schemaVersion}`);
-            if (level.worldWidth !== 7800) throw new Error(`worldWidth=${level.worldWidth}`);
-            if (level.requiredPickups !== 24) throw new Error(`requiredPickups=${level.requiredPickups}`);
-            if (!Array.isArray(level.pickups) || level.pickups.length !== 24) throw new Error(`pickups=${level.pickups?.length}`);
-            if (!Array.isArray(level.powerups) || level.powerups.length !== 7) throw new Error(`powerups=${level.powerups?.length}`);
-            if (!Array.isArray(level.checkpoints) || level.checkpoints.length !== 3) throw new Error(`checkpoints=${level.checkpoints?.length}`);
-            if (!Array.isArray(level.hazards) || level.hazards.length !== 15) throw new Error(`hazards=${level.hazards?.length}`);
-          ' "$level"
-
-          echo "Expanded Sprout Run ${release} live route, feel-v2 controls, cache-proof assets, production art, runtime and structured level data passed."
+          tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
+          fetch(){ local rel="$1" out="$2" status; status="$(curl -fsS --retry 6 --retry-delay 5 --connect-timeout 10 --max-time 35 -H 'Cache-Control: no-cache, no-store, max-age=0' -o "$out" -w '%{http_code}' "${base}${rel}?smoke=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}")"; [[ "$status" == 200 ]] || { echo "$rel HTTP $status" >&2; exit 1; }; test -s "$out"; }
+          fetch 'data/campaign.json' "$tmp/campaign.json"
+          fetch 'data/levels-20-v1.json' "$tmp/levels.json"
+          fetch 'campaign-v20-runtime.js' "$tmp/runtime.js"
+          fetch 'campaign-ui-v20.js' "$tmp/ui.js"
+          fetch 'approved-art-core-v1.js' "$tmp/core.js"
+          fetch 'seed-man-production-art.js' "$tmp/art.js"
+          node --check "$tmp/runtime.js"; node --check "$tmp/ui.js"; node --check "$tmp/core.js"; node --check "$tmp/art.js"
+          node - "$tmp/campaign.json" "$tmp/levels.json" <<'NODE'
+          const fs=require('fs');const c=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));const l=JSON.parse(fs.readFileSync(process.argv[3],'utf8'));
+          if(c.levelCount!==20||c.worlds?.length!==5||c.finalBoss!=='blight-king')throw new Error('live campaign contract mismatch');
+          if(l.levels?.length!==20||l.levels.find(x=>x.order===20)?.boss!=='blight-king')throw new Error('live level catalog mismatch');
+          NODE
+          grep -Fq 'seed-man-campaign-v20-runtime-v1' "$tmp/runtime.js"
+          grep -Fq 'seed-man-campaign-ui-v20' "$tmp/ui.js"
+          grep -Fq 'character.seedman.atlas' "$tmp/core.js"
+          grep -Fq 'approved-showcase-2026-09-08' "$tmp/art.js"
+          grep -Fq 'green-armored-plant-hero' "$tmp/art.js"
+          ! grep -Fq 'seed-man-production-v1' "$tmp/art.js"
+          ! grep -Fq 'seed-man-locked-v1' "$tmp/art.js"
+          echo 'Seed Man v20 live smoke passed.'

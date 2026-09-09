@@ -1,7 +1,13 @@
-Reconcile the canonical Sprout Run production release from the source-owned release marker.
+Repair the canonical Seed Man v20 production release through the protected Public Suite V2 publisher.
 
-Current source release: 20260830-r4. Expected live edition: Greenhouse Gauntlet, 7,800 px world, 24 sprouts, JUMP ×2, 7 power-ups, 3 checkpoints, 15 hazard zones, seed-man-production-v1, seed-man-locked-v1.
+Required live contract:
+- 20 levels across 5 worlds
+- 6 boss encounters
+- Level 20 final boss: Blight King
+- approved green armored plant-hero character art
+- approved-showcase-2026-09-08 visual contract
+- Plant / Fire / Electric / Ice phenotype support
+- deterministic Node/source validation and live HTTP checks
+- no Playwright
 
-The repair workflow must derive the release identifier from site/public-route-patch/games/seed-man-platformer/index.html and require all versioned runtime assets to use that same identifier. Do not hard-code an older release in CI, registry repair, live checks, or production status.
-
-Do not report success unless the normal live route rejects the retired 8-sprout vertical-slice fingerprints and passes live browser rendering plus desktop/mobile acceptance.
+Do not restore the retired 11-level or 15-level campaign, Genome Hydra, seed-man-production-v1, seed-man-locked-v1, or procedural character fallback ownership.

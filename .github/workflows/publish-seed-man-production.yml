@@ -6,26 +6,26 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/publish-seed-man-production.yml'
-      - 'scripts/publish-seed-man-route-via-wordpress.mjs'
+      - '.github/workflows/deploy-public-suite-wordpress-v2.yml'
       - 'scripts/verify-seed-man-production-v20.mjs'
+      - 'scripts/validate-seed-man-production-bundle.mjs'
       - 'site/public-route-patch/games/seed-man-platformer/**'
+      - 'games/seed-man-platformer/**'
 
 permissions:
+  actions: write
   contents: read
 
 concurrency:
-  group: publish-seed-man-production
+  group: publish-seed-man-production-v20
   cancel-in-progress: true
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
-    environment: production
+    timeout-minutes: 120
     env:
-      WP_SITE_URL: https://dtfseeds.com
-      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
-      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -36,74 +36,89 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Validate Seed Man v20 production contract
+      - name: Validate canonical Seed Man v20 source
+        shell: bash
         run: |
           set -euo pipefail
           node scripts/verify-seed-man-production-v20.mjs
+          node scripts/validate-seed-man-production-bundle.mjs
           root='site/public-route-patch/games/seed-man-platformer'
           node --check "$root/app.js"
           node --check "$root/canvas-compat-v1.js"
-          node --check "$root/campaign-v1.js"
-          node --check "$root/campaign-runtime-v20.js"
+          node --check "$root/campaign-v20-runtime.js"
           node --check "$root/campaign-ui-v20.js"
           node --check "$root/approved-art-core-v1.js"
           node --check "$root/approved-art-runtime-v1.js"
           node --check "$root/seed-man-production-art.js"
-          node --check "$root/gameplay-v2.js"
-          node --check "$root/combat-browser-v1.js"
-          node --check "$root/enemy-attacks-browser-v1.js"
-          node --check "$root/world-five-v1.js"
-          node --check scripts/publish-seed-man-route-via-wordpress.mjs
-          grep -Fq "campaignTarget:20" "$root/world-five-v1.js"
-          grep -Fq "campaignTarget:20" "$root/canvas-compat-v1.js"
-          grep -Fq "seed-man-campaign-ui-v20" "$root/campaign-ui-v20.js"
-          grep -Fq "seed-man-campaign-v20-runtime-v1" "$root/campaign-runtime-v20.js"
-          grep -Fq "approved-showcase-2026-09-08" "$root/seed-man-production-art.js"
-          grep -Fq "fallbackAllowed:false" "$root/seed-man-production-art.js"
-          ! grep -Fq 'Genome Hydra' "$root/world-five-v1.js"
-          ! grep -Fq 'Voltage Wasp Alpha' "$root/world-five-v1.js"
+          grep -Fq 'seed-man-campaign-v20-runtime-v1' "$root/campaign-v20-runtime.js"
+          grep -Fq 'seed-man-campaign-ui-v20' "$root/campaign-ui-v20.js"
+          grep -Fq 'approved-showcase-2026-09-08' "$root/seed-man-production-art.js"
+          grep -Fq 'green-armored-plant-hero' "$root/seed-man-production-art.js"
+          grep -Fq 'fallbackAllowed:false' "$root/seed-man-production-art.js"
 
-      - name: Atomically publish complete v20 route
-        run: node scripts/publish-seed-man-route-via-wordpress.mjs | tee "$RUNNER_TEMP/seed-man-publish.json"
+      - name: Dispatch protected Public Suite V2 deployment
+        id: deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_url="$(gh workflow run deploy-public-suite-wordpress-v2.yml --ref main)"
+          run_id="${run_url##*/}"
+          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Unable to parse deployment run id from $run_url" >&2; exit 1; }
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "Waiting for Public Suite V2 deployment run $run_id"
+          gh run watch "$run_id" --exit-status
 
-      - name: Verify live v20 route and approved art
+      - name: Verify live Seed Man v20 route
         shell: bash
         run: |
           set -euo pipefail
           base='https://dtfseeds.com/games/seed-man-platformer/'
-          ok=0
-          for attempt in {1..15}; do
-            campaign="$(curl -4 --fail --silent --show-error --location -H 'Cache-Control: no-cache, no-store' "${base}data/campaign.json?run=${GITHUB_RUN_ID}-${attempt}" || true)"
-            levels="$(curl -4 --fail --silent --show-error --location -H 'Cache-Control: no-cache, no-store' "${base}data/levels-20-v1.json?run=${GITHUB_RUN_ID}-${attempt}" || true)"
-            runtime="$(curl -4 --fail --silent --show-error --location -H 'Cache-Control: no-cache, no-store' "${base}campaign-runtime-v20.js?run=${GITHUB_RUN_ID}-${attempt}" || true)"
-            worldfive="$(curl -4 --fail --silent --show-error --location -H 'Cache-Control: no-cache, no-store' "${base}world-five-v1.js?run=${GITHUB_RUN_ID}-${attempt}" || true)"
-            art="$(curl -4 --fail --silent --show-error --location -H 'Cache-Control: no-cache, no-store' "${base}seed-man-production-art.js?run=${GITHUB_RUN_ID}-${attempt}" || true)"
-            core="$(curl -4 --fail --silent --show-error --location -H 'Cache-Control: no-cache, no-store' "${base}approved-art-core-v1.js?run=${GITHUB_RUN_ID}-${attempt}" || true)"
-            if grep -Fq '"levelCount": 20' <<<"$campaign" \
-              && grep -Fq '"finalBoss": "blight-king"' <<<"$campaign" \
-              && grep -Fq '"order":20' <<<"$levels" \
-              && grep -Fq 'seed-man-campaign-v20-runtime-v1' <<<"$runtime" \
-              && grep -Fq 'campaignTarget:20' <<<"$worldfive" \
-              && grep -Fq 'approved-showcase-2026-09-08' <<<"$art" \
-              && grep -Fq 'character.seedman.atlas' <<<"$core"; then
-              ok=1
-              break
-            fi
-            echo "Live Seed Man route is still stale on attempt $attempt"
-            sleep $((attempt * 2))
-          done
-          test "$ok" = 1 || { echo 'Seed Man v20 did not become visible on the live route.' >&2; exit 1; }
-          echo 'Seed Man v20 approved-art release is live and verified.'
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+          fetch() {
+            local rel="$1" out="$2" status
+            status="$(curl -fsS --retry 8 --retry-delay 5 --connect-timeout 10 --max-time 40 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              -o "$out" -w '%{http_code}' "${base}${rel}?seed_v20=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}")"
+            [[ "$status" == '200' ]] || { echo "$rel returned HTTP $status" >&2; exit 1; }
+            test -s "$out"
+          }
+          fetch 'data/campaign.json' "$tmp/campaign.json"
+          fetch 'data/levels-20-v1.json' "$tmp/levels.json"
+          fetch 'campaign-v20-runtime.js' "$tmp/runtime.js"
+          fetch 'campaign-ui-v20.js' "$tmp/ui.js"
+          fetch 'approved-art-core-v1.js' "$tmp/art-core.js"
+          fetch 'seed-man-production-art.js' "$tmp/renderer.js"
+          node --check "$tmp/runtime.js"
+          node --check "$tmp/ui.js"
+          node --check "$tmp/art-core.js"
+          node --check "$tmp/renderer.js"
+          node - "$tmp/campaign.json" "$tmp/levels.json" <<'NODE'
+          const fs=require('fs');
+          const campaign=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+          const levels=JSON.parse(fs.readFileSync(process.argv[3],'utf8'));
+          if(campaign.levelCount!==20) throw new Error(`live levelCount=${campaign.levelCount}`);
+          if(campaign.worlds?.length!==5) throw new Error(`live worlds=${campaign.worlds?.length}`);
+          if(campaign.finalBoss!=='blight-king') throw new Error(`live finalBoss=${campaign.finalBoss}`);
+          if(levels.levels?.length!==20) throw new Error(`live level catalog=${levels.levels?.length}`);
+          NODE
+          grep -Fq 'seed-man-campaign-v20-runtime-v1' "$tmp/runtime.js"
+          grep -Fq 'seed-man-campaign-ui-v20' "$tmp/ui.js"
+          grep -Fq 'character.seedman.atlas' "$tmp/art-core.js"
+          grep -Fq 'approved-showcase-2026-09-08' "$tmp/renderer.js"
+          grep -Fq 'green-armored-plant-hero' "$tmp/renderer.js"
+          echo 'Seed Man v20 is live through the protected Public Suite V2 publisher.'
 
       - name: Release summary
         if: always()
         run: |
           {
             echo '## Seed Man production release'
-            echo '- Campaign: 20 levels / 5 worlds'
+            echo '- Deployment path: protected Public Suite WordPress V2'
+            echo '- Campaign: 20 levels / 5 worlds / 6 bosses'
             echo '- Final boss: Blight King'
-            echo '- Character contract: green armored plant hero'
-            echo '- Approved art: 2026-09-08 showcase'
-            echo '- Verification: deterministic Node contract + live HTTP asset checks'
+            echo '- Character: approved green armored plant hero'
+            echo '- Verification: deterministic Node + live HTTP checks'
             echo '- Playwright: not used'
+            echo "- Public Suite deploy run: ${{ steps.deploy.outputs.run_id }}"
           } >> "$GITHUB_STEP_SUMMARY"

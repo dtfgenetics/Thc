@@ -1,4 +1,4 @@
-name: Repair Sprout Run Production
+name: Repair Seed Man v20 Production
 
 on:
   workflow_dispatch:
@@ -9,142 +9,36 @@ on:
       - '.github/sprout-run-repair-trigger.txt'
 
 permissions:
-  contents: write
   actions: write
+  contents: read
 
 concurrency:
-  group: repair-sprout-run-production
+  group: repair-seed-man-v20-production
   cancel-in-progress: false
 
 jobs:
   repair:
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 120
     env:
       GH_TOKEN: ${{ github.token }}
       LIVE_URL: https://dtfseeds.com/games/seed-man-platformer/
     steps:
-      - name: Checkout current main
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           ref: main
-          fetch-depth: 0
-
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: '22'
 
-      - name: Resolve canonical Sprout release
-        id: release
-        shell: bash
+      - name: Validate canonical v20 source before repair
         run: |
           set -euo pipefail
-          route='site/public-route-patch/games/seed-man-platformer'
-          release="$(sed -n 's/.*name="dtf-sprout-release" content="\([^"]*\)".*/\1/p' "$route/index.html" | head -n 1)"
-          [[ "$release" =~ ^[0-9]{8}-r[0-9]+$ ]] || { echo "Invalid Sprout release marker: $release" >&2; exit 1; }
-          echo "release=$release" >> "$GITHUB_OUTPUT"
-          echo "RELEASE_ID=$release" >> "$GITHUB_ENV"
-          echo "Canonical Sprout release: $release"
+          node scripts/verify-seed-man-production-v20.mjs
+          node scripts/validate-seed-man-production-bundle.mjs
 
-      - name: Correct canonical Sprout deployment registry
-        id: registry
-        shell: bash
-        run: |
-          set -euo pipefail
-          python - "$RELEASE_ID" <<'PY'
-          import json, sys
-          from pathlib import Path
-
-          release = sys.argv[1]
-          path = Path('site/deployment/public-apps.json')
-          data = json.loads(path.read_text())
-          matches = [app for app in data.get('apps', []) if app.get('id') == 'seed-man-platformer']
-          if len(matches) != 1:
-              raise SystemExit(f'Expected exactly one seed-man-platformer registry entry, found {len(matches)}')
-
-          app = matches[0]
-          app['title'] = 'Seed Man: Sprout Run — Greenhouse Gauntlet'
-          app['repository'] = 'dtfgenetics/Thc'
-          app['sourcePath'] = 'site/public-route-patch/games/seed-man-platformer'
-          app['canonicalDataPath'] = 'games/seed-man-platformer'
-          app['route'] = '/games/seed-man-platformer/'
-          app['runtime'] = 'static-canvas2d'
-          app['status'] = 'ready-to-package'
-          app['build'] = 'node games/seed-man-platformer/test/physics.test.mjs && node games/seed-man-platformer/test/public-runtime.test.mjs && node games/seed-man-platformer/test/input-guard.test.mjs'
-          app['machineData'] = {
-              'level': 'sprout-run',
-              'edition': 'greenhouse-gauntlet',
-              'release': release,
-              'worldWidth': 7800,
-              'collectibles': 24,
-              'powerups': 7,
-              'checkpointCount': 3,
-              'hazardZones': 15,
-              'doubleJump': True,
-              'productionCharacterArt': 'seed-man-production-v1',
-              'characterContract': 'seed-man-locked-v1'
-          }
-          app['notes'] = (
-              'Canonical self-hosted Greenhouse Gauntlet production build. Publishes the 7,800 px '
-              '24-sprout course with double jump, seven power-ups, three checkpoints, fifteen hazard '
-              'zones, keyboard/touch controls, gated finish, original Canvas2D Seed Man art, and '
-              f'cache-versioned {release} runtime assets. The retired 2,600 px eight-sprout vertical '
-              'slice must never be republished.'
-          )
-          data['updated'] = '2026-08-30'
-          path.write_text(json.dumps(data, indent=2) + '\n')
-          PY
-
-          if git diff --quiet -- site/deployment/public-apps.json; then
-            echo 'changed=false' >> "$GITHUB_OUTPUT"
-          else
-            echo 'changed=true' >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Validate canonical Sprout release tree
-        shell: bash
-        run: |
-          set -euo pipefail
-          route='site/public-route-patch/games/seed-man-platformer'
-          node games/seed-man-platformer/test/physics.test.mjs
-          node games/seed-man-platformer/test/public-runtime.test.mjs
-          node games/seed-man-platformer/test/input-guard.test.mjs
-          node --check "$route/app.js"
-          node --check "$route/seed-man-production-art.js"
-          node --check "$route/input-guard-v1.js"
-          for rel in index.html app.js seed-man-production-art.js input-guard-v1.js seed-man.css physics.mjs data/level-01.json; do
-            test -s "$route/$rel"
-          done
-          for marker in \
-            'Seed Man · Greenhouse Gauntlet' \
-            '0 / 24' \
-            'JUMP ×2' \
-            '"worldWidth": 7800' \
-            '"requiredPickups": 24' \
-            "name=\"dtf-sprout-release\" content=\"${RELEASE_ID}\"" \
-            "<script src=\"./app.js?v=${RELEASE_ID}\" defer></script>" \
-            "<script src=\"./seed-man-production-art.js?v=${RELEASE_ID}\" defer></script>" \
-            "<script src=\"./input-guard-v1.js?v=${RELEASE_ID}\" defer></script>" \
-            "seed-man.css?v=${RELEASE_ID}"; do
-            grep -Fq "$marker" "$route/index.html" || { echo "Source release missing marker: $marker" >&2; exit 1; }
-          done
-          grep -Fq 'seed-man-production-v1' "$route/seed-man-production-art.js"
-          grep -Fq 'seed-man-locked-v1' "$route/seed-man-production-art.js"
-          ! grep -Fqi 'collect all eight sprouts' "$route/index.html"
-          ! grep -Fq '0 / 8' "$route/index.html"
-
-      - name: Commit corrected registry before deployment
-        if: steps.registry.outputs.changed == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add site/deployment/public-apps.json
-          git commit -m "Sync Sprout Run ${RELEASE_ID} production registry"
-          git push origin HEAD:main
-
-      - name: Dispatch canonical WordPress V2 deployment
+      - name: Dispatch protected Public Suite V2 deployment
         id: deploy
         shell: bash
         run: |
@@ -155,130 +49,37 @@ jobs:
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
           gh run watch "$run_id" --exit-status
 
-      - name: Verify live Sprout release
+      - name: Verify repaired live v20 route
         shell: bash
         run: |
           set -euo pipefail
-          tmp="$(mktemp -d)"
-          trap 'rm -rf "$tmp"' EXIT
-          bust="sprout_repair=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-$(date +%s)"
-
-          fetch() {
-            local rel="$1" output="$2" status sep
-            sep='?'; [[ "$rel" == *'?'* ]] && sep='&'
-            status="$(curl -sS --retry 5 --retry-delay 4 --connect-timeout 10 --max-time 35 \
-              -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
-              -o "$output" -w '%{http_code}' "${LIVE_URL}${rel}${sep}${bust}")"
-            [[ "$status" == '200' ]] || { echo "${rel:-index} returned HTTP $status" >&2; return 1; }
-            test -s "$output"
-          }
-
-          fetch '' "$tmp/index.html"
-          for marker in \
-            'Seed Man · Greenhouse Gauntlet' \
-            '0 / 24' \
-            'JUMP ×2' \
-            '"worldWidth": 7800' \
-            '"requiredPickups": 24' \
-            "name=\"dtf-sprout-release\" content=\"${RELEASE_ID}\"" \
-            "<script src=\"./app.js?v=${RELEASE_ID}\" defer></script>" \
-            "<script src=\"./seed-man-production-art.js?v=${RELEASE_ID}\" defer></script>" \
-            "<script src=\"./input-guard-v1.js?v=${RELEASE_ID}\" defer></script>" \
-            "seed-man.css?v=${RELEASE_ID}"; do
-            grep -Fq "$marker" "$tmp/index.html" || { echo "Live Sprout Run missing marker: $marker" >&2; exit 1; }
-          done
-          for stale in 'collect all eight sprouts' '0 / 8' 'Original browser vertical slice' 'simple Canvas2D primitives'; do
-            ! grep -Fqi "$stale" "$tmp/index.html" || { echo "Retired Sprout content is live: $stale" >&2; exit 1; }
-          done
-
-          fetch "app.js?v=${RELEASE_ID}" "$tmp/app.js"
-          fetch "seed-man-production-art.js?v=${RELEASE_ID}" "$tmp/art.js"
-          fetch "input-guard-v1.js?v=${RELEASE_ID}" "$tmp/input.js"
-          fetch "seed-man.css?v=${RELEASE_ID}" "$tmp/style.css"
-          fetch 'data/level-01.json' "$tmp/level.json"
-          node --check "$tmp/app.js"
-          node --check "$tmp/art.js"
-          node --check "$tmp/input.js"
-          grep -Fq 'seed-man-production-v1' "$tmp/art.js"
-          grep -Fq 'seed-man-locked-v1' "$tmp/art.js"
-          node - "$tmp/level.json" <<'NODE'
-          const fs = require('fs');
-          const level = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
-          if (level.worldWidth !== 7800) throw new Error(`live worldWidth=${level.worldWidth}`);
-          if (level.requiredPickups !== 24) throw new Error(`live requiredPickups=${level.requiredPickups}`);
-          if (level.pickups?.length !== 24) throw new Error(`live pickups=${level.pickups?.length}`);
-          if (level.powerups?.length !== 7) throw new Error(`live powerups=${level.powerups?.length}`);
-          if (level.checkpoints?.length !== 3) throw new Error(`live checkpoints=${level.checkpoints?.length}`);
-          if (level.hazards?.length !== 15) throw new Error(`live hazards=${level.hazards?.length}`);
+          tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
+          fetch(){ local rel="$1" out="$2"; curl -fsS --retry 8 --retry-delay 5 --connect-timeout 10 --max-time 40 -H 'Cache-Control: no-cache, no-store, max-age=0' "${LIVE_URL}${rel}?repair=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" -o "$out"; test -s "$out"; }
+          fetch 'data/campaign.json' "$tmp/campaign.json"
+          fetch 'data/levels-20-v1.json' "$tmp/levels.json"
+          fetch 'campaign-v20-runtime.js' "$tmp/runtime.js"
+          fetch 'approved-art-core-v1.js' "$tmp/core.js"
+          fetch 'seed-man-production-art.js' "$tmp/art.js"
+          node - "$tmp/campaign.json" "$tmp/levels.json" <<'NODE'
+          const fs=require('fs');const c=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));const l=JSON.parse(fs.readFileSync(process.argv[3],'utf8'));
+          if(c.levelCount!==20||c.worlds?.length!==5||c.finalBoss!=='blight-king')throw new Error('campaign v20 repair verification failed');
+          if(l.levels?.length!==20||l.levels.find(x=>x.order===20)?.boss!=='blight-king')throw new Error('level catalog v20 repair verification failed');
           NODE
+          grep -Fq 'seed-man-campaign-v20-runtime-v1' "$tmp/runtime.js"
+          grep -Fq 'character.seedman.atlas' "$tmp/core.js"
+          grep -Fq 'approved-showcase-2026-09-08' "$tmp/art.js"
+          grep -Fq 'green-armored-plant-hero' "$tmp/art.js"
+          echo 'Seed Man v20 repair passed live verification.'
 
-          curl -sS --location --retry 5 --retry-delay 3 --connect-timeout 10 --max-time 35 "$LIVE_URL" -o "$tmp/bare.html"
-          grep -Fq "name=\"dtf-sprout-release\" content=\"${RELEASE_ID}\"" "$tmp/bare.html"
-          grep -Fq "<script src=\"./app.js?v=${RELEASE_ID}\" defer></script>" "$tmp/bare.html"
-
-      - name: Run live desktop and mobile browser acceptance
-        id: browser
-        shell: bash
-        run: |
-          set -euo pipefail
-          run_url="$(gh workflow run seed-man-live-browser-acceptance.yml --ref main)"
-          run_id="${run_url##*/}"
-          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse browser run id from $run_url" >&2; exit 1; }
-          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
-          gh run watch "$run_id" --exit-status
-
-      - name: Run live pixel rendering diagnostic
-        id: render
-        shell: bash
-        run: |
-          set -euo pipefail
-          run_url="$(gh workflow run seed-man-live-render-diagnostic.yml --ref main)"
-          run_id="${run_url##*/}"
-          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse render run id from $run_url" >&2; exit 1; }
-          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
-          gh run watch "$run_id" --exit-status
-
-      - name: Record production repair result
+      - name: Repair summary
         if: always()
-        shell: bash
-        env:
-          JOB_STATUS: ${{ job.status }}
-          DEPLOY_RUN: ${{ steps.deploy.outputs.run_id }}
-          BROWSER_RUN: ${{ steps.browser.outputs.run_id }}
-          RENDER_RUN: ${{ steps.render.outputs.run_id }}
-          REGISTRY_CHANGED: ${{ steps.registry.outputs.changed }}
         run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git reset --hard HEAD
-          git fetch origin main
-          git rebase origin/main
-          mkdir -p site/deployment/status
-          python - "$RELEASE_ID" <<'PY'
-          import json, os, sys
-          from datetime import datetime, timezone
-          from pathlib import Path
-          release = sys.argv[1]
-          payload = {
-              'schemaVersion': 1,
-              'game': 'seed-man-platformer',
-              'route': 'https://dtfseeds.com/games/seed-man-platformer/',
-              'checkedAt': datetime.now(timezone.utc).isoformat(),
-              'workflowStatus': os.environ.get('JOB_STATUS') or 'unknown',
-              'registryChanged': os.environ.get('REGISTRY_CHANGED') == 'true',
-              'deployRunId': os.environ.get('DEPLOY_RUN') or None,
-              'browserAcceptanceRunId': os.environ.get('BROWSER_RUN') or None,
-              'renderDiagnosticRunId': os.environ.get('RENDER_RUN') or None,
-              'expectedRelease': release,
-              'expectedEdition': 'greenhouse-gauntlet',
-              'expectedWorldWidth': 7800,
-              'expectedSprouts': 24,
-              'expectedProductionArt': 'seed-man-production-v1'
-          }
-          Path('site/deployment/status/sprout-run-production.json').write_text(json.dumps(payload, indent=2) + '\n')
-          PY
-          git add site/deployment/status/sprout-run-production.json
-          if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Record Sprout Run ${RELEASE_ID} production repair ${JOB_STATUS}"
-          git push origin HEAD:main
+          {
+            echo '## Seed Man v20 repair'
+            echo '- Canonical campaign: 20 levels / 5 worlds / 6 bosses'
+            echo '- Final boss: Blight King'
+            echo '- Approved art: green armored plant hero / 2026-09-08 showcase'
+            echo '- Deployment: protected Public Suite V2'
+            echo '- Playwright: not used'
+            echo "- Deployment run: ${{ steps.deploy.outputs.run_id }}"
+          } >> "$GITHUB_STEP_SUMMARY"
