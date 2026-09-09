@@ -8,16 +8,17 @@ export function createVisualRuntimeV2(manifest,{baseUrl='./'}={}){
   validateApprovedArtManifest(manifest);
   const registry=createApprovedArtRegistry(manifest,{baseUrl});
   for(const key of WORLD_KEYS){
-    if(!registry.has(`world.${key}.background`)) throw new Error(`Missing approved world background ${key}`);
+    const world=registry.get(`world.${key}.background`);
+    if(world.renderer!=='seed-man-three-world-v2') throw new Error(`Missing production world renderer ${key}`);
   }
   if(!registry.has('character.seedman.atlas')) throw new Error('Missing approved Seed Man atlas');
   if(!registry.has('enemy.atlas')) throw new Error('Missing approved enemy atlas');
   if(!registry.has('boss.atlas')) throw new Error('Missing approved boss atlas');
   if(!registry.has('platform.atlas')) throw new Error('Missing approved platform atlas');
   return Object.freeze({
-    version:'seed-man-visual-runtime-v2',
+    version:'seed-man-visual-runtime-v3',
     sourceOfTruth:manifest.sourceOfTruth,
-    rendererPolicy:Object.freeze({approvedArtOnly:true,proceduralCharacterFallback:false,legacyAtlasFallback:false}),
+    rendererPolicy:Object.freeze({approvedArtOnly:true,proceduralCharacterFallback:false,legacyAtlasFallback:false,worldRenderer:registry.worldRenderer,worldFallbackRenderer:registry.worldFallbackRenderer}),
     registry,
     player:Object.freeze({atlas:registry.get('character.seedman.atlas'),states:CHARACTER_STATES,phenotypes:PHENOTYPE_KEYS}),
     world:(key)=>{if(!WORLD_KEYS.includes(key)) throw new Error(`Unknown visual world ${key}`);return registry.get(`world.${key}.background`);},
