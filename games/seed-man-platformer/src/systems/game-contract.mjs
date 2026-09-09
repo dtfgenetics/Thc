@@ -13,7 +13,7 @@ export function validateProductionGameContract({campaign,levels,bosses,enemies,m
   for(const id of ['fire','electric','ice']){
     if(PHENOTYPES[id].durationMs!==30000) throw new Error(`${id} phenotype must last 30 seconds`);
   }
-  if(manifest?.id!=='seed-man-approved-art-v1'||manifest?.policy?.authoritative!==true) throw new Error('Approved Seed Man art manifest must own production');
+  if(manifest?.id!=='seed-man-approved-art-v2'||manifest?.policy?.authoritative!==true) throw new Error('Approved Seed Man art manifest v2 must own production');
   if(manifest.policy.proceduralFallbackAllowed!==false||manifest.policy.legacyAtlasFallbackAllowed!==false) throw new Error('Production visual fallbacks are forbidden');
   return true;
 }
