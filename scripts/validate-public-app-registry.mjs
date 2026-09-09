@@ -27,6 +27,7 @@ const requiredRepositories = new Set([
 const allowedStatuses = new Set([
   'release-candidate',
   'ready-to-package',
+  'production-v20',
   'public-landing',
   'runtime-integration',
   'preview-artifact-integration',
@@ -40,7 +41,7 @@ const allowedStatuses = new Set([
   'do-not-develop',
 ]);
 
-const packageableStatuses = new Set(['release-candidate', 'ready-to-package']);
+const packageableStatuses = new Set(['release-candidate', 'ready-to-package', 'production-v20']);
 const errors = [];
 
 if (registry.schemaVersion !== 1) errors.push('schemaVersion must equal 1');
