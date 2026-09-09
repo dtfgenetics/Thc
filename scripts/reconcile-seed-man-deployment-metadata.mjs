@@ -1,5 +1,7 @@
 import fs from 'node:fs';
 
+// Canonical v20 deployment metadata reconciler. Keep this in sync with the
+// Seed Man production contract so main can persist the normalized registry.
 const targetPath = 'site/deployment/public-apps.json';
 const document = JSON.parse(fs.readFileSync(targetPath, 'utf8'));
 const app = document.apps?.find((entry) => entry.id === 'seed-man-platformer');
