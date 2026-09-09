@@ -55,9 +55,9 @@ assert.equal(levels20.levels.length, 20);
 assert.equal(levels20.levels.at(-1).id, '5-4-the-last-seed');
 assert.equal(levels20.levels.at(-1).boss, 'blight-king');
 
-// Retained legacy packs are compatibility artifacts only. They must remain
-// canonical/public identical while old adapters still reference them, but they
-// are not allowed to redefine the production campaign contract.
+// Retained legacy data packs are compatibility artifacts only. They must remain
+// canonical/public identical while old URLs still exist, but they are not
+// allowed to redefine the production campaign contract.
 assert.deepStrictEqual(publicBasePack, basePack, 'legacy Levels 2–11 compatibility pack must remain synchronized');
 assert.deepStrictEqual(publicLegacyWorldFive, legacyWorldFive, 'legacy Levels 12–15 compatibility pack must remain synchronized');
 assert.equal(basePack.levels.length, 10);
@@ -72,16 +72,23 @@ assert.match(v20Runtime, /eco-city/, 'v20 runtime must own Eco City');
 assert.doesNotMatch(v20Runtime, /Genome Hydra|Genetic Frontier/, 'retired World 5 contract leaked into canonical v20 runtime');
 assert.match(v20Ui, /seed-man-campaign-ui-v20/, 'v20 campaign UI marker missing');
 
-// Compatibility adapters may remain while migration consumers still exist,
-// but they must remain self-contained and must not replace v20 ownership.
+// Compatibility paths may remain while cached clients still request them, but
+// both old script URLs must now hand ownership to v20 rather than reinstalling
+// the retired 11/15-level campaign.
 assert.match(legacyBaseRuntime, /seed-man-campaign-v1-compat-retired/, 'legacy base shim must expose its retired compatibility version');
 assert.match(legacyBaseRuntime, /retired:\s*true/, 'legacy base shim must identify itself as retired');
 assert.match(legacyBaseRuntime, /replacement:\s*'seed-man-campaign-v20-runtime-v1'/, 'legacy base shim must point to canonical v20 ownership');
 assert.doesNotMatch(legacyBaseRuntime, /sprout-campaign-v3|levelCount:\s*11|newLevelCount:\s*10/, 'retired base shim must not reinstall the obsolete campaign');
 assert.doesNotMatch(legacyBaseRuntime, /addEventListener\s*\(\s*['"]load['"]|MutationObserver|fetch\s*\(/i, 'retired base shim must stay side-effect-light and network free');
-assert.match(legacyWorldFiveRuntime, /seed-man-world-five-v1/, 'legacy World 5 compatibility adapter missing');
-assert.match(legacyWorldFiveRuntime, /installCampaignExtension/, 'legacy World 5 adapter must remain an extension only');
-assert.doesNotMatch(legacyWorldFiveRuntime, /^\s*import\s/m, 'legacy World 5 adapter must remain a classic browser script');
-assert.doesNotMatch(legacyWorldFiveRuntime, /fetch\s*\(/i, 'legacy World 5 adapter must not add network dependencies');
 
-console.log('Seed Man canonical v20 public campaign and legacy compatibility boundary checks passed');
+assert.match(legacyWorldFiveRuntime, /seed-man-world-five-compat-v22/, 'legacy World 5 URL must expose its v20 compatibility bridge');
+assert.match(legacyWorldFiveRuntime, /seedManLegacyWorldFive='retired'/, 'legacy World 5 bridge must mark the old extension retired');
+assert.match(legacyWorldFiveRuntime, /campaignTarget:20/, 'legacy World 5 bridge must target the 20-level campaign');
+for (const required of ['approved-art-core-v1.js','campaign-v20-runtime.js','campaign-combat-v20.js','campaign-progress-v20.js','campaign-ui-v20.js']) {
+  assert.ok(legacyWorldFiveRuntime.includes(required), `legacy World 5 bridge must bootstrap ${required}`);
+}
+assert.doesNotMatch(legacyWorldFiveRuntime, /installCampaignExtension|Genome Hydra|Genetic Frontier|Voltage Wasp Alpha/, 'legacy World 5 bridge must not reinstall retired World 5 ownership');
+assert.doesNotMatch(legacyWorldFiveRuntime, /^\s*import\s/m, 'legacy World 5 bridge must remain a classic browser script');
+assert.doesNotMatch(legacyWorldFiveRuntime, /fetch\s*\(/i, 'legacy World 5 bridge must not add fetch-based data ownership');
+
+console.log('Seed Man canonical v20 public campaign and retired compatibility bridge checks passed');
