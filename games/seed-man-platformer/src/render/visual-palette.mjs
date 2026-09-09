@@ -35,7 +35,7 @@ export const VISUAL_WORLD_PALETTES = Object.freeze({
     hazard: 0xff4a2f,
     fill: 0xffd2a1
   }),
-  'frozen-peak': Object.freeze({
+  'frozen-peaks': Object.freeze({
     sky: 0xa6ddff,
     fog: 0xd9f3ff,
     far: 0x769fca,
@@ -61,16 +61,20 @@ export const VISUAL_WORLD_PALETTES = Object.freeze({
   })
 });
 
+const WORLD_ALIASES = Object.freeze({ 'frozen-peak': 'frozen-peaks' });
+
 export function getVisualWorldPalette(worldKey) {
-  const palette = VISUAL_WORLD_PALETTES[worldKey];
+  const canonicalWorldKey = WORLD_ALIASES[worldKey] || worldKey;
+  const palette = VISUAL_WORLD_PALETTES[canonicalWorldKey];
   if (!palette) throw new Error(`Unknown Seed Man visual world palette: ${worldKey}`);
   return palette;
 }
 
 export function createVisualSceneStyle(worldKey) {
-  const palette = getVisualWorldPalette(worldKey);
+  const canonicalWorldKey = WORLD_ALIASES[worldKey] || worldKey;
+  const palette = getVisualWorldPalette(canonicalWorldKey);
   return Object.freeze({
-    worldKey,
+    worldKey: canonicalWorldKey,
     background: palette.sky,
     fog: { color: palette.fog, near: 11, far: 31 },
     hemisphere: { sky: 0xe8fff2, ground: palette.ground, intensity: 2.25 },
