@@ -1,8 +1,8 @@
 'use strict';
 
 (() => {
-  const VERSION='seed-man-world-five-compat-v20';
-  const RELEASE='20260908-r20';
+  const VERSION='seed-man-world-five-compat-v21';
+  const RELEASE='20260908-r21';
   const load=(src,key)=>new Promise((resolve,reject)=>{
     if(document.querySelector(`script[data-${key}]`)) return resolve();
     const script=document.createElement('script');
@@ -18,6 +18,7 @@
     try {
       if(!window.__SEED_MAN_APPROVED_IMAGES__) await load('./approved-art-core-v1.js','seedManApprovedCore');
       if(!window.__SEED_MAN_CAMPAIGN_V20__) await load('./campaign-v20-runtime.js','seedManCampaignV20');
+      if(!window.__SEED_MAN_CAMPAIGN_COMBAT_V20__) await load('./campaign-combat-v20.js','seedManCampaignCombatV20');
       if(document.documentElement.dataset.sproutCampaignUi!=='seed-man-campaign-ui-v20') await load('./campaign-ui-v20.js','seedManCampaignUiV20');
       document.documentElement.dataset.sproutWorldFive=VERSION;
       document.documentElement.dataset.seedManLegacyWorldFive='retired';
@@ -30,5 +31,5 @@
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',install,{once:true});
   else install();
 
-  window.__SEED_MAN_WORLD_FIVE__=Object.freeze({version:VERSION,legacyExtensionRetired:true,campaignTarget:20});
+  window.__SEED_MAN_WORLD_FIVE__=Object.freeze({version:VERSION,legacyExtensionRetired:true,campaignTarget:20,combat:'seed-man-campaign-combat-v20-v1'});
 })();
