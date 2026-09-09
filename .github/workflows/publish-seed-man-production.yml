@@ -57,7 +57,7 @@ jobs:
           grep -Fq "campaignTarget:20" "$root/world-five-v1.js"
           grep -Fq "campaignTarget:20" "$root/canvas-compat-v1.js"
           grep -Fq "seed-man-campaign-ui-v20" "$root/campaign-ui-v20.js"
-          grep -Fq "seed-man-campaign-runtime-v20" "$root/campaign-runtime-v20.js"
+          grep -Fq "seed-man-campaign-v20-runtime-v1" "$root/campaign-runtime-v20.js"
           grep -Fq "approved-showcase-2026-09-08" "$root/seed-man-production-art.js"
           grep -Fq "fallbackAllowed:false" "$root/seed-man-production-art.js"
           ! grep -Fq 'Genome Hydra' "$root/world-five-v1.js"
@@ -82,7 +82,7 @@ jobs:
             if grep -Fq '"levelCount": 20' <<<"$campaign" \
               && grep -Fq '"finalBoss": "blight-king"' <<<"$campaign" \
               && grep -Fq '"order":20' <<<"$levels" \
-              && grep -Fq 'seed-man-campaign-runtime-v20' <<<"$runtime" \
+              && grep -Fq 'seed-man-campaign-v20-runtime-v1' <<<"$runtime" \
               && grep -Fq 'campaignTarget:20' <<<"$worldfive" \
               && grep -Fq 'approved-showcase-2026-09-08' <<<"$art" \
               && grep -Fq 'character.seedman.atlas' <<<"$core"; then
