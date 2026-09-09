@@ -58,7 +58,7 @@ app.machineData = {
   campaignUi: 'seed-man-campaign-ui-v20',
   approvedArtManifest: 'seed-man-approved-art-v2',
   approvedArtSource: 'approved-showcase-2026-09-08',
-  productionCharacterArt: 'seed-man-approved-atlas-renderer-v3',
+  productionCharacterArt: 'seed-man-approved-atlas-renderer-v4',
   characterContract: 'green-armored-plant-hero',
   proceduralFallbackAllowed: false,
   legacyAtlasFallbackAllowed: false,

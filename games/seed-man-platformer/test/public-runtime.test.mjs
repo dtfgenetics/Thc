@@ -6,13 +6,14 @@ import { createPlayer as createCanonicalPlayer, stepPlayer as stepCanonicalPlaye
 const root = new URL('../', import.meta.url);
 const publicRoot = new URL('../../../site/public-route-patch/games/seed-man-platformer/', import.meta.url);
 
-const [canonicalLevelText, publicLevelText, html, app, css, productionArt] = await Promise.all([
+const [canonicalLevelText, publicLevelText, html, app, css, productionArt, approvedRuntime] = await Promise.all([
   readFile(new URL('data/level-01.json', root), 'utf8'),
   readFile(new URL('data/level-01.json', publicRoot), 'utf8'),
   readFile(new URL('index.html', publicRoot), 'utf8'),
   readFile(new URL('app.js', publicRoot), 'utf8'),
   readFile(new URL('seed-man.css', publicRoot), 'utf8'),
-  readFile(new URL('seed-man-production-art.js', publicRoot), 'utf8')
+  readFile(new URL('seed-man-production-art.js', publicRoot), 'utf8'),
+  readFile(new URL('approved-art-runtime-v1.js', publicRoot), 'utf8')
 ]);
 
 const canonicalLevel = JSON.parse(canonicalLevelText);
@@ -68,13 +69,19 @@ assert.match(css, /@media\(prefers-reduced-motion:reduce\)/, 'public styling mus
 
 // seed-man-production-art.js is now renderer-only. DOM/campaign UI ownership lives
 // in the v20 UI/runtime layers and is validated by dedicated production tests.
-assert.match(productionArt, /seed-man-approved-atlas-renderer-v3/, 'production renderer version must be current');
+assert.match(productionArt, /seed-man-approved-atlas-renderer-v4/, 'production renderer version must be current');
 assert.match(productionArt, /approved-showcase-2026-09-08/, 'production renderer must identify the approved showcase source');
 assert.match(productionArt, /green-armored-plant-hero/, 'production renderer must preserve the approved character contract');
 assert.match(productionArt, /function\s+drawSeedManProduction\s*\(/, 'production renderer must expose the approved Seed Man draw path');
 assert.match(productionArt, /character\.seedman\.atlas/, 'production renderer must resolve the approved character atlas key');
 assert.match(productionArt, /fallbackAllowed:false/, 'production renderer must keep fallback disabled');
 assert.match(productionArt, /window\.__SEED_MAN_PRODUCTION_ART__/, 'production renderer must publish its diagnostic contract');
+assert.match(productionArt, /const FRAME_COLS = 5;/, 'production renderer must use the atlas five-column grid');
+assert.match(productionArt, /const FRAME_ROWS = 2;/, 'production renderer must use the atlas two-row grid');
+assert.match(productionArt, /naturalWidth\/FRAME_COLS/, 'production renderer must derive source width from the decoded atlas');
+assert.match(productionArt, /naturalHeight\/FRAME_ROWS/, 'production renderer must derive source height from the decoded atlas');
+assert.match(approvedRuntime, /window\.drawSeedManProduction/, 'compatibility runtime must detect the production renderer');
+assert.match(approvedRuntime, /delegated-to-production/, 'compatibility runtime must delegate ownership deterministically');
 assert.doesNotMatch(productionArt, /function\s+installSproutRunShellV2\s*\(/, 'renderer must not reclaim retired DOM shell ownership');
 
 const runtimeEnd = app.indexOf("const BEST_KEY = 'dtf-seed-man-best-v1';");

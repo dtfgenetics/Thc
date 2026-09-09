@@ -47,7 +47,7 @@ jobs:
             art="$(curl -4 --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}seed-man-production-art.js?run=${GITHUB_RUN_ID}" || true)"
             if grep -Fq "character.seedman.atlas" <<<"$core" \
               && grep -Fq "approved" <<<"$runtime" \
-              && grep -Fq "seed-man-approved-atlas-renderer-v3" <<<"$art"; then
+              && grep -Fq "seed-man-approved-atlas-renderer-v4" <<<"$art"; then
               echo 'Approved Seed Man art runtime is live through the canonical production publisher.'
               exit 0
             fi

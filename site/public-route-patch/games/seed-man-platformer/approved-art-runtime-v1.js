@@ -75,6 +75,10 @@
   }
 
   function claimRenderer() {
+    if (typeof window.drawSeedManProduction === 'function' || window.__SEED_MAN_PRODUCTION_ART__) {
+      document.documentElement.dataset.seedManApprovedRuntime = 'delegated-to-production';
+      return false;
+    }
     if (typeof window.drawSeedMan !== 'function' && typeof drawSeedMan !== 'function') return false;
     window.drawSeedMan = drawApprovedSeedMan;
     try { drawSeedMan = drawApprovedSeedMan; } catch {}

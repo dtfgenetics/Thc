@@ -6,22 +6,18 @@
  * Gameplay state/collision remain owned by simulation. This file only renders.
  */
 
-const SPROUT_ART_VERSION = 'seed-man-approved-atlas-renderer-v3';
+const SPROUT_ART_VERSION = 'seed-man-approved-atlas-renderer-v4';
 const SPROUT_VISUAL_PIPELINE = 'approved-showcase-2026-09-08';
 const SPROUT_CHARACTER_CONTRACT = 'green-armored-plant-hero';
 const APPROVED_CORE_URL = './approved-art-core-v1.js';
 
-const APPROVED_RECTS = Object.freeze({
-  idle: Object.freeze({x:28,y:18,w:105,h:156}),
-  run: Object.freeze({x:162,y:18,w:120,h:156}),
-  jump: Object.freeze({x:315,y:18,w:125,h:156}),
-  attack: Object.freeze({x:475,y:18,w:145,h:156}),
-  hurt: Object.freeze({x:640,y:18,w:155,h:156}),
-  victory: Object.freeze({x:26,y:196,w:110,h:155}),
-  plant: Object.freeze({x:170,y:196,w:160,h:155}),
-  fire: Object.freeze({x:330,y:196,w:150,h:155}),
-  electric: Object.freeze({x:478,y:196,w:165,h:155}),
-  ice: Object.freeze({x:638,y:196,w:160,h:155})
+const FRAME_COLS = 5;
+const FRAME_ROWS = 2;
+const APPROVED_CELLS = Object.freeze({
+  idle: Object.freeze([0,0]), run: Object.freeze([1,0]), jump: Object.freeze([2,0]),
+  attack: Object.freeze([3,0]), hurt: Object.freeze([4,0]), victory: Object.freeze([0,1]),
+  plant: Object.freeze([1,1]), fire: Object.freeze([2,1]),
+  electric: Object.freeze([3,1]), ice: Object.freeze([4,1])
 });
 
 let approvedSeedManImage=null;
@@ -81,12 +77,18 @@ function resolveApprovedPose(){
   if(Math.abs(player.vx||0)>14)return'run';
   return'idle';
 }
-function chooseApprovedRect(){
+function chooseApprovedCell(){
   const phenotype=activeApprovedPhenotype();
   const pose=resolveApprovedPose();
-  if(phenotype!=='plant')return APPROVED_RECTS[phenotype];
-  if(pose==='victory')return APPROVED_RECTS.victory;
-  return APPROVED_RECTS[pose]||APPROVED_RECTS.idle;
+  if(phenotype!=='plant')return APPROVED_CELLS[phenotype];
+  if(pose==='victory')return APPROVED_CELLS.victory;
+  return APPROVED_CELLS[pose]||APPROVED_CELLS.idle;
+}
+function approvedRect(){
+  const [col,row]=chooseApprovedCell();
+  const w=approvedSeedManImage.naturalWidth/FRAME_COLS;
+  const h=approvedSeedManImage.naturalHeight/FRAME_ROWS;
+  return{x:col*w,y:row*h,w,h};
 }
 function drawApprovedShadow(screenX,screenY){
   if(!player?.grounded)return;
@@ -96,7 +98,7 @@ function drawSeedManProduction(){
   if(!player||!ctx)return;
   ensureApprovedSeedManImage();
   if(!approvedSeedManReady||!approvedSeedManImage)return;
-  const rect=chooseApprovedRect();
+  const rect=approvedRect();
   const screenX=player.x-cameraX;
   const screenY=player.y;
   const facing=(player.facing||(player.vx<0?-1:1))<0?-1:1;
@@ -127,7 +129,8 @@ window.__SEED_MAN_PRODUCTION_ART__=Object.freeze({
   approvedCoreUrl:APPROVED_CORE_URL,
   atlasKey:'character.seedman.atlas',
   fallbackAllowed:false,
-  rects:APPROVED_RECTS,
+  frameGrid:Object.freeze({cols:FRAME_COLS,rows:FRAME_ROWS}),
+  cells:APPROVED_CELLS,
   snapshot:()=>({ready:approvedSeedManReady,failed:approvedSeedManFailed,coreLoading:approvedCoreLoading,rendererOwner:document.documentElement.dataset.seedManRendererOwner||''})
 });
 
