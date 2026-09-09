@@ -1,0 +1,85 @@
+name: Repair Seed Man v20 Production
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/repair-seed-man-v20-production.yml'
+      - '.github/seed-man-v20-repair-trigger.txt'
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: repair-seed-man-v20-production
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      GH_TOKEN: ${{ github.token }}
+      LIVE_URL: https://dtfseeds.com/games/seed-man-platformer/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate canonical v20 source before repair
+        run: |
+          set -euo pipefail
+          node scripts/verify-seed-man-production-v20.mjs
+          node scripts/validate-seed-man-production-bundle.mjs
+
+      - name: Dispatch protected Public Suite V2 deployment
+        id: deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_url="$(gh workflow run deploy-public-suite-wordpress-v2.yml --ref main)"
+          run_id="${run_url##*/}"
+          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse deploy run id from $run_url" >&2; exit 1; }
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          gh run watch "$run_id" --exit-status
+
+      - name: Verify repaired live v20 route
+        shell: bash
+        run: |
+          set -euo pipefail
+          tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
+          fetch(){ local rel="$1" out="$2"; curl -fsS --retry 8 --retry-delay 5 --connect-timeout 10 --max-time 40 -H 'Cache-Control: no-cache, no-store, max-age=0' "${LIVE_URL}${rel}?repair=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" -o "$out"; test -s "$out"; }
+          fetch 'data/campaign.json' "$tmp/campaign.json"
+          fetch 'data/levels-20-v1.json' "$tmp/levels.json"
+          fetch 'campaign-v20-runtime.js' "$tmp/runtime.js"
+          fetch 'approved-art-core-v1.js' "$tmp/core.js"
+          fetch 'seed-man-production-art.js' "$tmp/art.js"
+          node - "$tmp/campaign.json" "$tmp/levels.json" <<'NODE'
+          const fs=require('fs');const c=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));const l=JSON.parse(fs.readFileSync(process.argv[3],'utf8'));
+          if(c.levelCount!==20||c.worlds?.length!==5||c.finalBoss!=='blight-king')throw new Error('campaign v20 repair verification failed');
+          if(l.levels?.length!==20||l.levels.find(x=>x.order===20)?.boss!=='blight-king')throw new Error('level catalog v20 repair verification failed');
+          NODE
+          grep -Fq 'seed-man-campaign-v20-runtime-v1' "$tmp/runtime.js"
+          grep -Fq 'character.seedman.atlas' "$tmp/core.js"
+          grep -Fq 'approved-showcase-2026-09-08' "$tmp/art.js"
+          grep -Fq 'green-armored-plant-hero' "$tmp/art.js"
+          echo 'Seed Man v20 repair passed live verification.'
+
+      - name: Repair summary
+        if: always()
+        run: |
+          {
+            echo '## Seed Man v20 repair'
+            echo '- Canonical campaign: 20 levels / 5 worlds / 6 bosses'
+            echo '- Final boss: Blight King'
+            echo '- Approved art: green armored plant hero / 2026-09-08 showcase'
+            echo '- Deployment: protected Public Suite V2'
+            echo '- Playwright: not used'
+            echo "- Deployment run: ${{ steps.deploy.outputs.run_id }}"
+          } >> "$GITHUB_STEP_SUMMARY"
