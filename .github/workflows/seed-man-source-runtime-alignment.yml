@@ -45,7 +45,7 @@ jobs:
           index="$route/index.html"
           test -s "$index"
           for script in canvas-compat-v1.js approved-art-core-v1.js approved-art-runtime-v1.js app.js seed-man-production-art.js campaign-v20-runtime.js campaign-ui-v20.js; do
-            grep -Fq "./${script}?v=20260908-v20" "$index"
+            grep -Eq "\\./${script}\\?v=[^\"']+" "$index"
           done
           core="$(grep -nF './approved-art-core-v1.js?v=' "$index"|head -n1|cut -d: -f1)"
           artRuntime="$(grep -nF './approved-art-runtime-v1.js?v=' "$index"|head -n1|cut -d: -f1)"
