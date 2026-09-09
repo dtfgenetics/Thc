@@ -76,27 +76,35 @@
         "games/seed-man-platformer/",
         "site/public-route-patch/games/seed-man-platformer/",
         "scripts/prepare-seed-man-combat-release.mjs",
-        "scripts/prepare-seed-man-world-five-combat.mjs",
-        "scripts/prepare-seed-man-world-five-runtime.mjs",
+        "scripts/verify-seed-man-production-v20.mjs",
+        "scripts/validate-seed-man-production-bundle.mjs",
         "scripts/publish-seed-man-route-via-wordpress.mjs",
-        ".github/workflows/publish-seed-man-production.yml",
-        ".github/workflows/seed-man-world-five-live.yml"
+        ".github/workflows/publish-seed-man-production.yml"
       ],
       "exactPaths": ["site/deployment/public-apps.json"],
       "requiredFiles": [
         "games/seed-man-platformer/index.html",
-        "games/seed-man-platformer/world-five-v1.js",
+        "games/seed-man-platformer/app.js",
+        "games/seed-man-platformer/canvas-compat-v1.js",
+        "games/seed-man-platformer/campaign-v20-runtime.js",
+        "games/seed-man-platformer/campaign-ui-v20.js",
+        "games/seed-man-platformer/approved-art-core-v1.js",
+        "games/seed-man-platformer/approved-art-runtime-v1.js",
+        "games/seed-man-platformer/seed-man-production-art.js",
         "games/seed-man-platformer/combat-browser-v1.js",
         "games/seed-man-platformer/enemy-attacks-browser-v1.js",
         "games/seed-man-platformer/enemy-attacks.js",
         "games/seed-man-platformer/data/campaign.json",
-        "games/seed-man-platformer/data/levels-12-15.json"
+        "games/seed-man-platformer/data/levels-20-v1.json",
+        "games/seed-man-platformer/data/seed-man-art-manifest-v1.json",
+        "games/seed-man-platformer/data/enemy-catalog-v1.json",
+        "games/seed-man-platformer/data/boss-catalog-v1.json"
       ],
-      "verifyMarker": "Sprout Run",
+      "verifyMarker": "20-Level Campaign",
       "publisher": {
         "type": "wordpress-dedicated-route",
         "workflow": "publish-seed-man-production.yml",
-        "status": "production",
+        "status": "production-v20",
         "orchestration": "dedicated",
         "sharedProductionTarget": "wordpress:seed-man-route"
       }
