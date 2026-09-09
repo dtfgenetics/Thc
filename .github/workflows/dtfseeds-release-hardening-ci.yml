@@ -101,7 +101,14 @@ jobs:
           ! grep -Fq "check 'https://dtfseeds.com/games/high-iq/'" .github/workflows/deploy-public-suite-wordpress-v2.yml
           grep -Fq "check 'https://dtfseeds.com/games/high-land/'" .github/workflows/deploy-public-suite-wordpress-v2.yml
           grep -Fq 'build-dtfseeds-public-resource.yml --join-only' .github/workflows/dtfseeds-resource-production-gateway.yml
-          grep -Fq 'source_sha=$GITHUB_SHA' .github/workflows/dtfseeds-resource-production-gateway.yml
+          grep -Fq 'source_sha=$EXPECTED_SOURCE_SHA' .github/workflows/dtfseeds-resource-production-gateway.yml
+          grep -Fq 'recovery_attempt:' .github/workflows/dtfseeds-resource-production-gateway.yml
+          grep -Fq "MAX_RECOVERY_ATTEMPTS: '5'" .github/workflows/dtfseeds-resource-production-gateway.yml
+          grep -Fq 'if [[ "$status" -eq 75 ]]; then' .github/workflows/dtfseeds-resource-production-gateway.yml
+          ! grep -Fq 'Detect superseded queued resource release' .github/workflows/dtfseeds-resource-production-gateway.yml
+          grep -Fq 'run-name: DTFSeeds WordPress Resource' .github/workflows/deploy-dtfseeds-wordpress-resource.yml
+          grep -Fq 'inputs.source_sha' .github/workflows/deploy-dtfseeds-wordpress-resource.yml
+          grep -Fq 'queue_replaced_exit=75' scripts/run-workflow-and-wait.sh
           grep -Fq 'gateway-managed' .github/workflows/dtfseeds-resource-production-gateway.yml
           ! grep -Fq 'issues: write' .github/workflows/dtfseeds-resource-production-gateway.yml
           grep -Fq 'assertNoOtherActivePublisher' scripts/cleanup-stale-wordpress-suite-snippets.mjs
