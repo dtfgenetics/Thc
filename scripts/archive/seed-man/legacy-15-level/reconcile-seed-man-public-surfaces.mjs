@@ -1,5 +1,9 @@
 import fs from 'node:fs';
 
+// Archived legacy migration helper.
+// This script targets the retired 15-level Seed Man public-surface contract.
+// Do not wire this back into active CI, homepage generation, project pages, or production release flows.
+
 const targets = [
   'site/wordpress/pages/home.html',
   'site/public-route-patch/projects/index.html'
@@ -30,6 +34,7 @@ must(!projects.includes('<h3>Seed Man: Sprout Run</h3>'), 'Projects page still e
 
 console.log(JSON.stringify({
   ok: true,
+  archived: true,
   surfaces: targets,
   title: 'Seed Man: Greenhouse Gauntlet',
   levels: 15,

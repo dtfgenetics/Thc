@@ -5,8 +5,8 @@ on:
   push:
     branches: [main]
     paths:
-      - '.github/workflows/repair-sprout-run-production.yml'
-      - '.github/sprout-run-repair-trigger.txt'
+      - '.github/workflows/repair-seed-man-v20-production.yml'
+      - '.github/seed-man-v20-repair-trigger.txt'
 
 permissions:
   actions: write

@@ -1,5 +1,9 @@
 import fs from 'node:fs';
 
+// Archived legacy migration helper.
+// This script rewrites Seed Man toward the retired 15-level/world-name contract.
+// Do not wire this back into active CI or production release flows.
+
 function read(path) { return fs.readFileSync(path, 'utf8'); }
 function write(path, text) { fs.writeFileSync(path, text); }
 function must(condition, message) { if (!condition) throw new Error(message); }
@@ -119,6 +123,7 @@ if (ui !== originalUi) write(uiPath, ui);
 if (uiTest !== originalUiTest) write(uiTestPath, uiTest);
 
 console.log(JSON.stringify({
+  archived: true,
   currentRelease,
   nextRelease,
   changed: true,

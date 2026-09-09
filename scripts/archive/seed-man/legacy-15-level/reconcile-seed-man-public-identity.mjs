@@ -1,5 +1,9 @@
 import fs from 'node:fs';
 
+// Archived legacy migration helper.
+// This script targets the retired 15-level Seed Man public identity contract.
+// Do not wire this back into active CI, Game Hub generation, or production release flows.
+
 const hubPath = 'site/public-route-patch/games/index.html';
 const sourceMapPath = 'data/game-source-map.json';
 
@@ -44,6 +48,7 @@ if (sourceMap !== originalSourceMap) write(sourceMapPath, sourceMap);
 
 console.log(JSON.stringify({
   ok: true,
+  archived: true,
   changed: hub !== originalHub || sourceMap !== originalSourceMap,
   hubPromoted: true,
   canonicalTitle: 'Seed Man: Greenhouse Gauntlet',

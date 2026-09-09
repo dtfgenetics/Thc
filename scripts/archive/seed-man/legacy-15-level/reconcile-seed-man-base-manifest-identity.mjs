@@ -1,5 +1,9 @@
 import fs from 'node:fs';
 
+// Archived legacy migration helper.
+// This script targets the retired 11-level base / 15-level expanded Seed Man contract.
+// Do not wire this back into active CI or production release flows.
+
 const targetPath = 'site/public-route-patch/games/seed-man-platformer/campaign-v1.js';
 let source = fs.readFileSync(targetPath, 'utf8');
 
@@ -20,6 +24,7 @@ if (source.includes(retiredTitle)) throw new Error('Retired public-style Sprout 
 fs.writeFileSync(targetPath, source);
 console.log(JSON.stringify({
   ok: true,
+  archived: true,
   targetPath,
   publicTitle: 'Seed Man: Greenhouse Gauntlet',
   compatibilityCampaignId: 'sprout-run-campaign',
