@@ -1,12 +1,24 @@
 name: Reconcile Who Took It Release Contract
 
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/reconcile-who-took-it-release-contract.mjs'
+      - 'scripts/reconcile-who-took-it-public-suite-source.mjs'
+      - '.github/workflows/reconcile-who-took-it-release-contract.yml'
+      - '.github/workflows/build-dtfseeds-public-suite.yml'
+      - 'site/deployment/public-apps.json'
+      - 'site/public-route-patch/games/who-took-it/source-revision.txt'
   push:
     branches: [main]
     paths:
       - 'scripts/reconcile-who-took-it-release-contract.mjs'
+      - 'scripts/reconcile-who-took-it-public-suite-source.mjs'
       - '.github/workflows/reconcile-who-took-it-release-contract.yml'
+      - '.github/workflows/build-dtfseeds-public-suite.yml'
       - 'site/deployment/public-apps.json'
+      - 'site/public-route-patch/games/who-took-it/source-revision.txt'
   workflow_dispatch:
 
 permissions:
@@ -15,7 +27,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: reconcile-who-took-it-release-contract
+  group: reconcile-who-took-it-release-contract-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -24,33 +36,53 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: main
       - uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Reconcile Who Took It deployment metadata
-        run: node scripts/reconcile-who-took-it-release-contract.mjs
+      - name: Reconcile Who Took It deployment and pinned-source contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/reconcile-who-took-it-release-contract.mjs
+          node scripts/reconcile-who-took-it-public-suite-source.mjs
 
-      - name: Validate reconciled contract
+      - name: Validate reconciled contracts
         shell: bash
         run: |
           set -euo pipefail
           node scripts/reconcile-who-took-it-release-contract.mjs --check
+          node scripts/reconcile-who-took-it-public-suite-source.mjs --check
           node scripts/validate-portfolio-registry.mjs
           node scripts/validate-public-app-registry.mjs
+          git diff --check
 
-      - name: Safely integrate registry update when needed
+      - name: Report generated diff on pull requests
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff -- site/deployment/public-apps.json .github/workflows/build-dtfseeds-public-suite.yml
+
+      - name: Safely integrate generated contract updates on main
+        if: github.event_name != 'pull_request'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          if git diff --quiet -- site/deployment/public-apps.json; then
-            echo 'No Who Took It deployment registry changes were needed.'
+          changed=()
+          if ! git diff --quiet -- site/deployment/public-apps.json; then
+            changed+=(site/deployment/public-apps.json)
+          fi
+          if ! git diff --quiet -- .github/workflows/build-dtfseeds-public-suite.yml; then
+            changed+=(.github/workflows/build-dtfseeds-public-suite.yml)
+          fi
+          if [ "${#changed[@]}" -eq 0 ]; then
+            echo 'No Who Took It release-contract changes were needed.'
             exit 0
           fi
+          paths="$(IFS=,; echo "${changed[*]}")"
           node scripts/studio/integrate-generated-change.mjs \
-            --message='Synchronize Who Took It full release contract' \
-            --paths=site/deployment/public-apps.json
+            --message='Synchronize Who Took It pinned release contract' \
+            --paths="$paths"
