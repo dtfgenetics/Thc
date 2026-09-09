@@ -1,16 +1,15 @@
-import { mkdir, readFile, stat } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, stat } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import process from 'node:process';
 import { build } from 'esbuild';
 
 const projectRoot = resolve(import.meta.dirname, '..');
 const entry = resolve(projectRoot, 'src/render/three-world-public-entry.mjs');
-const outfile = resolve(
-  projectRoot,
-  process.env.SEED_MAN_THREE_OUTFILE || 'dist/three-world-v1.js'
-);
+const outfile = resolve(projectRoot, process.env.SEED_MAN_THREE_OUTFILE || 'dist/three-world-v1.js');
+const publicOutfile = resolve(projectRoot, '../../site/public-route-patch/games/seed-man-platformer/three-world-v1.js');
 
 await mkdir(dirname(outfile), { recursive: true });
+await mkdir(dirname(publicOutfile), { recursive: true });
 
 await build({
   entryPoints: [entry],
@@ -54,18 +53,16 @@ const executableOutput = output
   .replace(/\/\*[\s\S]*?\*\//g, '')
   .replace(/(^|\n)\s*\/\/[^\n]*/g, '$1');
 
-const forbiddenPatterns = [
-  /from["']three["']/,
-  /import\(["']three["']\)/,
-  /require\(["']three["']\)/,
-  /node_modules\/three/i
-];
-for (const pattern of forbiddenPatterns) {
+for (const pattern of [/from["']three["']/, /import\(["']three["']\)/, /require\(["']three["']\)/, /node_modules\/three/i]) {
   if (pattern.test(executableOutput)) throw new Error(`Three.js public bundle retains an external package dependency: ${pattern}`);
 }
 
 if (metadata.size < 250_000) throw new Error(`Three.js public bundle unexpectedly small: ${metadata.size} bytes`);
 if (metadata.size > 900_000) throw new Error(`Three.js public bundle exceeds 900 KB budget: ${metadata.size} bytes`);
+
+await copyFile(outfile, publicOutfile);
+const publicMetadata = await stat(publicOutfile);
+if (publicMetadata.size !== metadata.size) throw new Error('Seed Man public Three.js bundle copy size mismatch.');
 
 console.log(JSON.stringify({
   version: 'seed-man-three-public-v3',
@@ -75,8 +72,10 @@ console.log(JSON.stringify({
   renderer: 'seed-man-three-world-v2',
   optimization: 'seed-man-three-instancing-v1',
   outfile,
+  publicOutfile,
   bytes: metadata.size,
   selfContained: true,
+  publicRouteSynchronized: true,
   legalCommentsPreserved: true,
   target: 'es2020'
 }, null, 2));
