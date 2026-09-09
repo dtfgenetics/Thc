@@ -47,9 +47,10 @@ assert.equal(descriptor.checkpoints[0].source.id, 'cp-1');
 
 assert.equal(resolveVisualWorldKey({ worldTitle: 'Rootworks' }), 'forest-ruins');
 assert.equal(resolveVisualWorldKey({ worldTitle: 'Resin Works' }), 'desert-canyon');
-assert.equal(resolveVisualWorldKey({ worldTitle: 'Sky Garden' }), 'frozen-peak');
+assert.equal(resolveVisualWorldKey({ worldTitle: 'Sky Garden' }), 'frozen-peaks');
 assert.equal(resolveVisualWorldKey({ worldTitle: 'Genetic Frontier' }), 'eco-city');
-assert.equal(resolveVisualWorldKey({ theme: 'frost traversal' }), 'frozen-peak');
+assert.equal(resolveVisualWorldKey({ theme: 'frost traversal' }), 'frozen-peaks');
+assert.equal(resolveVisualWorldKey({ visualWorldKey: 'frozen-peak' }), 'frozen-peaks');
 assert.equal(resolveVisualWorldKey({ visualWorldKey: 'eco-city', worldTitle: 'Rootworks' }), 'eco-city');
 
 const cameraAtStart = buildThreeCameraState({
