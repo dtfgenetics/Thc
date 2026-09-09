@@ -54,7 +54,7 @@ app.machineData = {
   finalBossPhases: 4,
   phenotypeDurationSeconds: 30,
   phenotypeForms: ['plant','fire','electric','ice'],
-  campaignRuntime: 'seed-man-campaign-v20-runtime-v1',
+  campaignRuntime: 'seed-man-campaign-v20-runtime-v3',
   campaignUi: 'seed-man-campaign-ui-v20',
   approvedArtManifest: 'seed-man-approved-art-v2',
   approvedArtSource: 'approved-showcase-2026-09-08',
@@ -115,6 +115,7 @@ if (verified.machineData?.worldCount !== 5) throw new Error('Expected five Seed 
 if (verified.machineData?.bossCount !== 6) throw new Error('Expected six Seed Man bosses.');
 if (verified.machineData?.finalBoss !== 'blight-king') throw new Error('Expected Blight King final boss.');
 if (verified.machineData?.release !== '20260908-v20') throw new Error('Unexpected Seed Man v20 release marker.');
+if (verified.machineData?.campaignRuntime !== 'seed-man-campaign-v20-runtime-v3') throw new Error('Unexpected Seed Man campaign runtime marker.');
 if (verified.machineData?.characterContract !== 'green-armored-plant-hero') throw new Error('Approved Seed Man character contract was not recorded.');
 if (verified.machineData?.proceduralFallbackAllowed !== false || verified.machineData?.legacyAtlasFallbackAllowed !== false) throw new Error('Seed Man production fallbacks must remain disabled.');
 
@@ -132,6 +133,7 @@ console.log(JSON.stringify({
   targets: [PUBLIC_APPS, GAME_HUB, PUBLIC_NAV, GAME_SOURCE_MAP, HOME_PAGE],
   title: verified.title,
   release: verified.machineData.release,
+  campaignRuntime: verified.machineData.campaignRuntime,
   levels: 20,
   worlds: 5,
   bosses: 6,
