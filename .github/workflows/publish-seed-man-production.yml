@@ -59,16 +59,25 @@ jobs:
           node --check "$root/canvas-compat-v1.js"
           node --check "$root/campaign-v20-runtime.js"
           node --check "$root/campaign-ui-v20.js"
+          node --check "$root/v20-enemy-runtime.js"
+          node --check "$root/combat-browser-v2.js"
+          node --check "$root/enemy-attacks-browser-v2.js"
           node --check "$root/approved-art-core-v1.js"
           node --check "$root/approved-art-runtime-v1.js"
           node --check "$root/seed-man-production-art.js"
-          grep -Fq 'seed-man-campaign-v20-runtime-v1' "$root/campaign-v20-runtime.js"
+          grep -Fq 'seed-man-campaign-v20-runtime-v2' "$root/campaign-v20-runtime.js"
+          grep -Fq "phenotypeForms:['plant','fire','electric','ice']" "$root/campaign-v20-runtime.js"
+          grep -Fq 'seed-man-v20-enemy-runtime-v2' "$root/v20-enemy-runtime.js"
+          grep -Fq 'seed-man-combat-browser-v2' "$root/combat-browser-v2.js"
+          grep -Fq 'seed-man-enemy-attacks-browser-v2' "$root/enemy-attacks-browser-v2.js"
           grep -Fq 'seed-man-campaign-ui-v20' "$root/campaign-ui-v20.js"
           grep -Fq 'approved-showcase-2026-09-08' "$root/seed-man-production-art.js"
           grep -Fq 'green-armored-plant-hero' "$root/seed-man-production-art.js"
           grep -Fq '20-Level Campaign' "$root/index.html"
           grep -Fq '"visualWorldKey":"frozen-peaks"' "$root/data/campaign.json"
           grep -Fq '"characterReference": "green-armored-plant-hero"' "$root/data/seed-man-art-manifest-v1.json"
+          ! grep -Fq './combat-browser-v1.js' "$root/index.html"
+          ! grep -Fq './enemy-attacks-browser-v1.js' "$root/index.html"
           ! grep -Fq 'campaign-ui-v15.js' "$root/index.html"
           ! grep -Fq 'world-five-v1.js' "$root/index.html"
           ! grep -Fq 'levels-12-15.json' "$root/index.html"
@@ -82,6 +91,7 @@ jobs:
           grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/seed-man-publish.json"
           grep -Eq '"campaign_levels"[[:space:]]*:[[:space:]]*20' "$RUNNER_TEMP/seed-man-publish.json"
           grep -Eq '"final_boss"[[:space:]]*:[[:space:]]*"blight-king"' "$RUNNER_TEMP/seed-man-publish.json"
+          grep -Eq '"combat_runtime"[[:space:]]*:[[:space:]]*"v2"' "$RUNNER_TEMP/seed-man-publish.json"
 
       - name: Verify live Seed Man v20 route
         shell: bash
@@ -104,12 +114,18 @@ jobs:
           fetch 'data/seed-man-art-manifest-v1.json' "$tmp/art-manifest.json"
           fetch 'campaign-v20-runtime.js' "$tmp/runtime.js"
           fetch 'campaign-ui-v20.js' "$tmp/ui.js"
+          fetch 'v20-enemy-runtime.js' "$tmp/enemy-runtime.js"
+          fetch 'combat-browser-v2.js' "$tmp/combat.js"
+          fetch 'enemy-attacks-browser-v2.js' "$tmp/attacks.js"
           fetch 'approved-art-core-v1.js' "$tmp/art-core.js"
           fetch 'approved-art-runtime-v1.js' "$tmp/art-runtime.js"
           fetch 'seed-man-production-art.js' "$tmp/renderer.js"
           fetch 'assets/approved/seed-man-character-atlas-v2.webp' "$tmp/character.webp"
           node --check "$tmp/runtime.js"
           node --check "$tmp/ui.js"
+          node --check "$tmp/enemy-runtime.js"
+          node --check "$tmp/combat.js"
+          node --check "$tmp/attacks.js"
           node --check "$tmp/art-core.js"
           node --check "$tmp/art-runtime.js"
           node --check "$tmp/renderer.js"
@@ -136,16 +152,22 @@ jobs:
           if(!art.policy?.worlds?.includes('frozen-peaks')) throw new Error('live approved art is missing frozen-peaks');
           NODE
           grep -Fq '20-Level Campaign' "$tmp/index.html"
-          grep -Fq 'seed-man-campaign-v20-runtime-v1' "$tmp/runtime.js"
+          grep -Fq 'seed-man-campaign-v20-runtime-v2' "$tmp/runtime.js"
+          grep -Fq "phenotypeForms:['plant','fire','electric','ice']" "$tmp/runtime.js"
+          grep -Fq 'seed-man-v20-enemy-runtime-v2' "$tmp/enemy-runtime.js"
+          grep -Fq 'seed-man-combat-browser-v2' "$tmp/combat.js"
+          grep -Fq 'seed-man-enemy-attacks-browser-v2' "$tmp/attacks.js"
           grep -Fq 'seed-man-campaign-ui-v20' "$tmp/ui.js"
           grep -Fq 'character.seedman.atlas' "$tmp/art-core.js"
           grep -Fq 'seed-man-character-atlas-v2.webp' "$tmp/art-core.js"
           grep -Fq 'approved-showcase-2026-09-08' "$tmp/renderer.js"
           grep -Fq 'green-armored-plant-hero' "$tmp/renderer.js"
           ! grep -Fq 'Greenhouse Gauntlet' "$tmp/index.html"
+          ! grep -Fq './combat-browser-v1.js' "$tmp/index.html"
+          ! grep -Fq './enemy-attacks-browser-v1.js' "$tmp/index.html"
           ! grep -Fq 'campaign-ui-v15.js' "$tmp/index.html"
           ! grep -Fq 'world-five-v1.js' "$tmp/index.html"
-          echo 'Seed Man v20 dedicated production route is live and verified.'
+          echo 'Seed Man v20 combat runtime v2 route is live and verified.'
 
       - name: Release summary
         if: always()
@@ -154,10 +176,11 @@ jobs:
             echo '## Seed Man production release'
             echo '- Deployment path: dedicated Seed Man WordPress publisher'
             echo '- Campaign: 20 levels / 5 worlds / 6 bosses'
+            echo '- Combat: canonical v20 Plant / Fire / Electric / Ice runtime v2'
             echo '- Final boss: Blight King'
             echo '- Character: approved green armored plant hero'
             echo '- World 4 key: frozen-peaks'
-            echo '- Legacy v15 runtime: blocked from production route'
+            echo '- Legacy v1 combat and v15 campaign runtime: blocked from production route'
             echo '- Verification: deterministic Node + build + live HTTP checks'
             echo '- Playwright: not used'
           } >> "$GITHUB_STEP_SUMMARY"
