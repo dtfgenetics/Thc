@@ -1,3 +1,5 @@
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { finishIndex } from './boardPath';
 import { starterActionCards } from './actionCards';
@@ -65,12 +67,48 @@ const expectedApprovedFiles = [
   'card-039-second-hit.svg'
 ];
 
+const temporarySvgMasterIds = [
+  'card-032',
+  'card-033',
+  'card-034',
+  'card-035',
+  'card-036',
+  'card-037',
+  'card-038',
+  'card-039'
+];
+
+function appRoot(): string {
+  return process.cwd().endsWith('apps/high-land-web')
+    ? process.cwd()
+    : join(process.cwd(), 'apps/high-land-web');
+}
+
+function publicAssetPath(imageSrc: string): string {
+  return imageSrc.replace(/^assets\//, 'public/assets/');
+}
+
 describe('High Land HIT card deck', () => {
   it('uses the locked 39-card deck with card-specific artwork paths', () => {
     expect(starterActionCards).toHaveLength(39);
     expect(starterActionCards.map((card) => card.imageSrc)).toEqual(
       expectedApprovedFiles.map((file) => `assets/images/cards/hit/master/${file}`)
     );
+  });
+
+  it('points every HIT card at a committed master asset', () => {
+    starterActionCards.forEach((card) => {
+      expect(card.imageSrc).toBeTruthy();
+      expect(existsSync(join(appRoot(), publicAssetPath(card.imageSrc ?? '')))).toBe(true);
+    });
+  });
+
+  it('makes the remaining temporary SVG master cards explicit', () => {
+    const temporaryIds = starterActionCards
+      .filter((card) => card.imageSrc?.endsWith('.svg'))
+      .map((card) => card.id);
+
+    expect(temporaryIds).toEqual(temporarySvgMasterIds);
   });
 
   it('has unique cards with complete visible content and artwork paths', () => {
@@ -124,11 +162,12 @@ describe('High Land HIT card deck', () => {
 
   it('can resolve every HIT card without corrupting player positions', () => {
     starterActionCards.forEach((card) => {
+      const baseGame = createNamedLocalGame(4, 'Tester');
       const state = {
-        ...createNamedLocalGame(4, 'Tester'),
+        ...baseGame,
         lastCard: card,
         phase: 'resolving_card' as const,
-        players: createNamedLocalGame(4, 'Tester').players.map((player, index) => ({
+        players: baseGame.players.map((player, index) => ({
           ...player,
           positionIndex: index * 3 + 10
         }))
