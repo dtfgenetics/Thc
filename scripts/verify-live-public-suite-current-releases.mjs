@@ -19,7 +19,25 @@ const routes = [
   },
   {
     path: '/games/seed-man-platformer/',
-    markers: ['content="20260830-r7"', '0 / 24', '7,800 px course']
+    markers: [
+      'content="20260909-combat-v2"',
+      'data-seed-man-approved-art="approved-showcase-2026-09-08"',
+      'LIVE UI · 20 LEVELS · APPROVED ART · PHENOTYPE COMBAT V2'
+    ],
+    assets: [
+      {
+        path: 'campaign-v20-runtime.js',
+        markers: ['seed-man-campaign-v20-runtime-v2']
+      },
+      {
+        path: 'combat-browser-v2.js',
+        markers: ['seed-man-combat-browser-v2']
+      },
+      {
+        path: 'seed-man-production-art.js',
+        markers: ['approved-showcase-2026-09-08', 'green-armored-plant-hero']
+      }
+    ]
   },
   {
     path: '/games/phenoquest/',
