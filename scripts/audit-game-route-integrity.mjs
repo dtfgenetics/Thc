@@ -56,7 +56,7 @@ async function fetchWithTimeout(url, options = {}) {
         ...fetchOptions,
         signal: AbortSignal.timeout(timeoutMs),
         headers: {
-          'user-agent': 'DTFSeeds-Game-Route-QA/1.4',
+          'user-agent': 'DTFSeeds-Game-Route-QA/1.5',
           'cache-control': 'no-cache, no-store, max-age=0',
           pragma: 'no-cache',
           ...headers
@@ -100,9 +100,28 @@ async function mapLimit(items, limit, task) {
   return output;
 }
 
+function isPositiveInteger(value) {
+  return Number.isInteger(value) && value > 0;
+}
+
 const runtimeJsonProbes = {
   'high-iq': [
-    { path: 'data/manifest.json', validate: (data) => data?.datasetVersion === '2.2' && data?.questionCount === 80 && data?.sourceCount === 50 }
+    {
+      path: 'data/manifest.json',
+      validate: (data) =>
+        data?.schemaVersion === 2 &&
+        ['2.2', '2.3', '2.4'].includes(data?.datasetVersion) &&
+        isPositiveInteger(data?.questionCount) &&
+        data.questionCount >= 80 &&
+        data.questionCount <= 500 &&
+        data?.sourceCount === 50 &&
+        Array.isArray(data?.questionChunks) &&
+        data.questionChunks.length > 0 &&
+        Array.isArray(data?.sourceChunks) &&
+        data.sourceChunks.length > 0 &&
+        data?.requiredStatus === 'Approved' &&
+        data?.requiredAudit === 'PASS'
+    }
   ],
   'high-life': [
     { path: 'data/events.json', validate: (data) => Array.isArray(data) && data.length === 18 }
@@ -111,7 +130,25 @@ const runtimeJsonProbes = {
     { path: 'data/prompt-bank.json', validate: (data) => data?.cardCount === 96 && Object.keys(data?.categories || {}).length === 8 }
   ],
   'seed-man-platformer': [
-    { path: 'data/level-01.json', validate: (data) => data?.id === 'sprout-run' && data?.pickups?.length === 8 }
+    {
+      path: 'data/level-01.json',
+      validate: (data) =>
+        data?.schemaVersion === 2 &&
+        data?.id === 'sprout-run' &&
+        isPositiveInteger(data?.worldWidth) &&
+        isPositiveInteger(data?.worldHeight) &&
+        Array.isArray(data?.platforms) &&
+        data.platforms.length >= 12 &&
+        Array.isArray(data?.hazards) &&
+        data.hazards.length >= 10 &&
+        Array.isArray(data?.pickups) &&
+        data.pickups.length === data?.requiredPickups &&
+        data.pickups.length >= 8 &&
+        Array.isArray(data?.powerups) &&
+        data.powerups.length >= 1 &&
+        Boolean(data?.spawn) &&
+        Boolean(data?.finish)
+    }
   ],
   'strain-showdown': [
     { path: 'data/families.json', validate: (data) => Array.isArray(data) && data.length === 8 },
