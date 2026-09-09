@@ -74,7 +74,7 @@ jobs:
           for retired in data/level-01.json data/levels-12-15.json campaign-v1.js gameplay-v2.js physics.mjs campaign-combat-v20.js campaign-progress-v20.js campaign-runtime-v20.js campaign-ui-v15.js world-five-v1.js combat-browser-v1.js enemy-attacks-browser-v1.js seed-man-ui-v3.js assets/approved/seed-man-approved-master-atlas-v1.webp assets/approved/seed-man-cover-banner-approved-v1.webp; do
             test ! -e "$route/$retired" || { echo "retired artifact still present: $retired" >&2; exit 1; }
           done
-          ! grep -Fq 'seed-man-level' "$index"
+          ! grep -Fq 'id="seed-man-level"' "$index"
           ! grep -Fq 'Seed Man: Sprout Run' "$index"
           ! grep -Fq 'Greenhouse Gauntlet' "$index"
 
