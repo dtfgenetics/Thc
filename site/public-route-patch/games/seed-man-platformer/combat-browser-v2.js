@@ -4,6 +4,9 @@
   const VERSION = 'seed-man-combat-browser-v2';
   const PHENOTYPE_DURATION = 30;
   const PROJECTILE_LIFE = 1.6;
+  const ENEMY_ATLAS_KEY = 'enemy-boss.atlas';
+  const ENEMY_FRAME_COLS = 6;
+  const ENEMY_FRAME_ROWS = 2;
   const PHENOTYPES = Object.freeze({
     fire: { form:'fire', label:'Fire', speed:560, damage:2, effect:'burn', cooldown:0.42, accent:'#ff9a4b' },
     electric: { form:'electric', label:'Electric', speed:660, damage:1, effect:'chain', cooldown:0.38, accent:'#d6c0ff' },
@@ -21,9 +24,38 @@
   let activeLevelId='';
   let defeated=0;
   let notice=null;
+  let enemyBossImage=null;
+  let enemyBossReady=false;
+  let enemyBossFailed=false;
 
   const overlap=(a,b)=>a.x<b.x+b.width&&a.x+a.width>b.x&&a.y<b.y+b.height&&a.y+a.height>b.y;
   const runtime=()=>window.__SEED_MAN_V20_ENEMY_RUNTIME__;
+
+  function loadEnemyBossAtlas(){
+    if(enemyBossReady||enemyBossFailed||enemyBossImage)return;
+    const src=window.__SEED_MAN_APPROVED_IMAGES__?.[ENEMY_ATLAS_KEY];
+    if(!src){
+      enemyBossFailed=true;
+      document.documentElement.dataset.seedManEnemyArt='missing';
+      console.error(`[Seed Man] approved enemy atlas missing: ${ENEMY_ATLAS_KEY}. Placeholder enemy rendering is disabled.`);
+      return;
+    }
+    const image=new Image();
+    enemyBossImage=image;
+    image.decoding='async';
+    image.addEventListener('load',()=>{
+      enemyBossReady=true;
+      enemyBossFailed=false;
+      document.documentElement.dataset.seedManEnemyArt='ready';
+    },{once:true});
+    image.addEventListener('error',()=>{
+      enemyBossReady=false;
+      enemyBossFailed=true;
+      document.documentElement.dataset.seedManEnemyArt='failed';
+      console.error('[Seed Man] approved enemy/boss atlas failed to decode. Placeholder enemy rendering is disabled.');
+    },{once:true});
+    image.src=src;
+  }
 
   function syncIdentity() {
     document.documentElement.dataset.seedManCombat=VERSION;
@@ -44,13 +76,13 @@
       threat.innerHTML='Threats <strong id="combat-threat-count">0</strong>';
       hud.append(phenotype,threat);
     }
-    const controls=document.querySelector('.controls');
+    const controls=document.querySelector('.touch-controls');
     if(controls&&!document.querySelector('#combat-attack-button')) {
       const attack=document.createElement('button');
-      attack.type='button';attack.id='combat-attack-button';attack.textContent='ATTACK';
+      attack.type='button';attack.id='combat-attack-button';attack.className='attack';attack.textContent='ATTACK';attack.setAttribute('aria-label','Fire Seed Slinger');
       attack.addEventListener('pointerdown',(event)=>{event.preventDefault();fireWeapon();});
       const ability=document.createElement('button');
-      ability.type='button';ability.id='combat-ability-button';ability.textContent='PHENO';
+      ability.type='button';ability.id='combat-ability-button';ability.className='ability';ability.textContent='PHENO';ability.setAttribute('aria-label','Use active phenotype ability');
       ability.addEventListener('pointerdown',(event)=>{event.preventDefault();fireAbility();});
       controls.append(attack,ability);
     }
@@ -65,7 +97,11 @@
     if(label) label.textContent=def?.label||'Plant';
     if(timer) timer.textContent=activePhenotype?`${Math.ceil(phenotypeRemaining)}s`:'';
     if(threat) threat.textContent=String(enemies.filter((enemy)=>!enemy.defeated).length);
-    if(ability) ability.textContent=activePhenotype?`${def.label.toUpperCase()} ${Math.ceil(phenotypeRemaining)}`:'PHENO';
+    if(ability){
+      ability.textContent=activePhenotype?`${def.label.toUpperCase()} ${Math.ceil(phenotypeRemaining)}`:'PHENO';
+      ability.dataset.active=activePhenotype?'true':'false';
+      ability.disabled=Boolean(typeof player!=='undefined'&&player?.finished);
+    }
     syncIdentity();
   }
 
@@ -130,28 +166,38 @@
     if(enemy.blink&&Math.sin(simTime*2.1+enemy.x*0.001)>0.985)enemy.x=Math.max(enemy.minX,Math.min(enemy.maxX-enemy.width,enemy.x+enemy.dir*125));
   }
 
-  function tickCombat(dt){
-    const step=Math.max(0,Math.min(Number(dt)||0,0.05));
-    const current=typeof level!=='undefined'?(level?.id||''):'';
-    if(current!==activeLevelId)resetCombat();
-    simTime+=step;weaponCooldown=Math.max(0,weaponCooldown-step);abilityCooldown=Math.max(0,abilityCooldown-step);
-    if(activePhenotype){phenotypeRemaining=Math.max(0,phenotypeRemaining-step);if(phenotypeRemaining<=0){setNotice(`${PHENOTYPES[activePhenotype]?.label||'Phenotype'} faded`,1.8);activePhenotype=null;syncHud();}}
-    if(typeof player!=='undefined'&&player){if(player.vx>8)facing=1;else if(player.vx<-8)facing=-1;}
-    for(const enemy of enemies)if(!enemy.defeated)tickEnemy(enemy,step);
-    for(const projectile of projectiles){projectile.x+=projectile.vx*step;projectile.life-=step;for(const enemy of enemies){if(enemy.defeated||projectile.hit||!overlap(projectile,enemy))continue;damageEnemy(enemy,projectile);projectile.hit=true;}}
-    const worldWidth=typeof level!=='undefined'?(level?.worldWidth||8000):8000;
-    projectiles=projectiles.filter((projectile)=>!projectile.hit&&projectile.life>0&&projectile.x>-100&&projectile.x<worldWidth+100);
-    syncHud();
-  }
-
   function drawEnemy(enemy){
     if(enemy.defeated||typeof ctx==='undefined'||typeof cameraX==='undefined')return;
-    const x=enemy.x-cameraX;ctx.save();
-    const carrier=Boolean(enemy.phenotype);const accent=carrier?(PHENOTYPES[enemy.phenotype]?.accent||'#c8f36a'):'#8ecf78';
-    ctx.globalAlpha=enemy.hitFlash>0?0.55:1;ctx.fillStyle=accent;ctx.shadowBlur=carrier?14:4;ctx.shadowColor=accent;
-    ctx.fillRect(x,enemy.y,enemy.width,enemy.height);
-    if(carrier){ctx.strokeStyle='#ffffff';ctx.lineWidth=2;ctx.strokeRect(x-3,enemy.y-3,enemy.width+6,enemy.height+6);}
-    ctx.shadowBlur=0;ctx.fillStyle='rgba(0,0,0,.72)';ctx.fillRect(x,enemy.y-9,enemy.width,5);ctx.fillStyle='#e9f3e5';ctx.fillRect(x,enemy.y-9,enemy.width*(enemy.health/enemy.maxHealth),5);ctx.restore();
+    if(!enemyBossReady||!enemyBossImage)return;
+    const visual=enemy.approvedVisual;
+    if(!visual||visual.atlas!==ENEMY_ATLAS_KEY)return;
+    const frame=Math.max(0,Math.min(ENEMY_FRAME_COLS-1,Number(visual.frame)||0));
+    const row=visual.row==='boss'?1:0;
+    const fw=enemyBossImage.naturalWidth/ENEMY_FRAME_COLS;
+    const fh=enemyBossImage.naturalHeight/ENEMY_FRAME_ROWS;
+    const centerX=enemy.x-cameraX+enemy.width/2;
+    const feetY=enemy.y+enemy.height;
+    const boss=visual.row==='boss';
+    const destH=boss?Math.max(128,enemy.height*1.2):Math.max(68,enemy.height*2.0);
+    const destW=destH*(fw/fh);
+    const carrier=Boolean(enemy.phenotype);
+    const accent=carrier?(PHENOTYPES[enemy.phenotype]?.accent||'#c8f36a'):'#8ecf78';
+    ctx.save();
+    ctx.globalAlpha=enemy.hitFlash>0?0.62:1;
+    if(carrier||boss){
+      ctx.shadowBlur=carrier?18:12;
+      ctx.shadowColor=carrier?accent:'rgba(200,243,106,.45)';
+    }
+    ctx.drawImage(enemyBossImage,frame*fw,row*fh,fw,fh,centerX-destW/2,feetY-destH,destW,destH);
+    ctx.shadowBlur=0;
+    if(carrier){
+      ctx.strokeStyle=accent;ctx.lineWidth=2.5;ctx.beginPath();ctx.ellipse(centerX,feetY-destH*.46,destW*.48,destH*.48,0,0,Math.PI*2);ctx.stroke();
+    }
+    const barWidth=Math.max(34,Math.min(boss?128:70,destW*.78));
+    const barX=centerX-barWidth/2;const barY=feetY-destH-11;
+    ctx.fillStyle='rgba(0,0,0,.72)';ctx.fillRect(barX,barY,barWidth,6);
+    ctx.fillStyle=carrier?accent:(boss?'#c8f36a':'#e9f3e5');ctx.fillRect(barX,barY,barWidth*Math.max(0,enemy.health/enemy.maxHealth),6);
+    ctx.restore();
   }
 
   function drawProjectile(projectile){
@@ -172,6 +218,6 @@
   }
 
   window.addEventListener('keydown',(event)=>{if(event.repeat)return;const key=event.key.toLowerCase();if(key==='j'||key==='x'){event.preventDefault();fireWeapon();}if(key==='k'||key==='c'){event.preventDefault();fireAbility();}},{passive:false});
-  ensureHud();resetCombat();const installed=installHooks();syncHud();
-  window.__SPROUT_COMBAT_BROWSER__=Object.freeze({version:VERSION,installed,phenotypeForms:Object.freeze(['plant','fire','electric','ice']),fireWeapon,fireAbility,snapshot:()=>({version:VERSION,installed,levelId:activeLevelId,activePhenotype,phenotypeForm:activePhenotype||'plant',phenotypeRemaining,defeated,enemies:enemies.map(({id,name,archetype,health,maxHealth,defeated:down,phenotype,phenotypeForm,flying,blink,elite})=>({id,name,archetype,health,maxHealth,defeated:down,phenotype,phenotypeForm,flying:Boolean(flying),blink:Boolean(blink),elite:Boolean(elite)}))})});
+  loadEnemyBossAtlas();ensureHud();resetCombat();const installed=installHooks();syncHud();
+  window.__SPROUT_COMBAT_BROWSER__=Object.freeze({version:VERSION,installed,phenotypeForms:Object.freeze(['plant','fire','electric','ice']),enemyArt:Object.freeze({atlasKey:ENEMY_ATLAS_KEY,cols:ENEMY_FRAME_COLS,rows:ENEMY_FRAME_ROWS,fallbackAllowed:false}),fireWeapon,fireAbility,snapshot:()=>({version:VERSION,installed,levelId:activeLevelId,activePhenotype,phenotypeForm:activePhenotype||'plant',phenotypeRemaining,defeated,enemyArtReady:enemyBossReady,enemyArtFailed:enemyBossFailed,enemies:enemies.map(({id,name,archetype,health,maxHealth,defeated:down,phenotype,phenotypeForm,flying,blink,elite,approvedVisual})=>({id,name,archetype,health,maxHealth,defeated:down,phenotype,phenotypeForm,flying:Boolean(flying),blink:Boolean(blink),elite:Boolean(elite),approvedVisual}))})});
 })();
