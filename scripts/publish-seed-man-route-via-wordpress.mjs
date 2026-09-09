@@ -9,25 +9,38 @@ if(!username||!password) throw new Error('WordPress credentials are required.');
 
 const root=path.resolve('site/public-route-patch/games/seed-man-platformer');
 const releaseFiles=[
-  '.htaccess','index.html','app.js','canvas-compat-v1.js','campaign-v1.js','campaign-v20-runtime.js','campaign-ui-v20.js',
-  'approved-art-core-v1.js','approved-art-runtime-v1.js','seed-man-production-art.js','gameplay-v2.js',
+  '.htaccess','index.html','app.js','canvas-compat-v1.js','player-state-v20.js','campaign-v20-runtime.js','campaign-ui-v20.js',
+  'approved-art-core-v1.js','approved-art-runtime-v1.js','seed-man-production-art.js',
   'v20-enemy-runtime.js','combat-browser-v2.js','enemy-attacks-browser-v2.js','enemy-attacks.js','three-world-v1.js',
-  'input-guard-v1.js','seed-man.css','physics.mjs',
+  'input-guard-v1.js','seed-man.css',
   'assets/approved/seed-man-character-atlas-v2.webp',
   'assets/approved/seed-man-enemy-boss-atlas-v1.webp',
   'assets/approved/seed-man-platform-atlas-v1.webp',
   'data/campaign.json','data/level-01.json','data/levels-20-v1.json','data/seed-man-art-manifest-v1.json',
   'data/enemy-catalog-v1.json','data/boss-catalog-v1.json'
 ];
+const retiredFiles=[
+  'campaign-v1.js','gameplay-v2.js','physics.mjs','campaign-combat-v20.js','campaign-progress-v20.js','campaign-runtime-v20.js',
+  'campaign-ui-v15.js','world-five-v1.js','combat-browser-v1.js','enemy-attacks-browser-v1.js','seed-man-ui-v3.js','data/levels-12-15.json'
+];
 for(const rel of releaseFiles){const p=path.join(root,rel);if(!fs.existsSync(p)||fs.statSync(p).size===0)throw new Error(`Missing release file: ${rel}`);}
+for(const rel of retiredFiles){if(fs.existsSync(path.join(root,rel)))throw new Error(`Retired release file still present: ${rel}`);}
 
 const campaign=JSON.parse(fs.readFileSync(path.join(root,'data/campaign.json'),'utf8'));
+const level01=JSON.parse(fs.readFileSync(path.join(root,'data/level-01.json'),'utf8'));
 const levels=JSON.parse(fs.readFileSync(path.join(root,'data/levels-20-v1.json'),'utf8'));
 if(campaign.levelCount!==20||campaign.finalBoss!=='blight-king'||levels.levels?.length!==20)throw new Error('Seed Man v20 campaign contract is not ready to publish.');
+if(!Array.isArray(level01.powerups)||level01.powerups.length!==0)throw new Error('Seed Man Level 1 still contains retired prototype powerups.');
 
 const indexText=fs.readFileSync(path.join(root,'index.html'),'utf8');
-for(const legacy of ['campaign-ui-v15.js','world-five-v1.js','levels-12-15.json','combat-browser-v1.js','enemy-attacks-browser-v1.js'])if(indexText.includes(legacy))throw new Error(`Legacy Seed Man runtime cannot be published: ${legacy}`);
+for(const legacy of ['campaign-v1.js','gameplay-v2.js','campaign-ui-v15.js','world-five-v1.js','levels-12-15.json','combat-browser-v1.js','enemy-attacks-browser-v1.js'])if(indexText.includes(legacy))throw new Error(`Legacy Seed Man runtime cannot be published: ${legacy}`);
 for(const required of ['campaign-v20-runtime.js','campaign-ui-v20.js','v20-enemy-runtime.js','combat-browser-v2.js','enemy-attacks-browser-v2.js','approved-art-core-v1.js','approved-art-runtime-v1.js','seed-man-production-art.js'])if(!indexText.includes(required))throw new Error(`Seed Man public index missing v20 runtime: ${required}`);
+
+const compatText=fs.readFileSync(path.join(root,'canvas-compat-v1.js'),'utf8');
+if(!compatText.includes('player-state-v20.js')||!compatText.includes("playerStateRuntime:'v20'"))throw new Error('Seed Man compatibility bootstrap is missing the v20 player-state dependency.');
+const playerStateText=fs.readFileSync(path.join(root,'player-state-v20.js'),'utf8');
+if(!playerStateText.includes('seed-man-player-state-v20'))throw new Error('Seed Man v20 player-state marker is missing.');
+
 const campaignRuntimeText=fs.readFileSync(path.join(root,'campaign-v20-runtime.js'),'utf8');
 for(const retiredPower of ["'speed'", "'shield'", "'magnet'", "'jump'"])if(campaignRuntimeText.includes(retiredPower))throw new Error(`Retired prototype power remains in v20 campaign runtime: ${retiredPower}`);
 for(const requiredForm of ["'plant'","'fire'","'electric'","'ice'"])if(!campaignRuntimeText.includes(requiredForm))throw new Error(`Missing canonical phenotype form in v20 campaign runtime: ${requiredForm}`);
@@ -86,14 +99,14 @@ add_action('rest_api_init', function () {
         $dest=wp_normalize_path($stage.'/'.$rel);$dir=dirname($dest);if(strpos($dest,trailingslashit($stage))!==0||(!is_dir($dir)&&!wp_mkdir_p($dir))){$remove($stage);return new WP_Error('dtf_seed_stage_path','Unsafe stage path.',['status'=>500]);}
         if(file_put_contents($dest,$raw,LOCK_EX)!==strlen($raw)||!hash_equals($sha,(string)hash_file('sha256',$dest))){$remove($stage);return new WP_Error('dtf_seed_write','Write failed.',['status'=>500,'rel'=>$rel]);}$written[$rel]=$sha;
       }
-      $campaign=@file_get_contents($stage.'/data/campaign.json');$levels=@file_get_contents($stage.'/data/levels-20-v1.json');$art=@file_get_contents($stage.'/seed-man-production-art.js');$runtime=@file_get_contents($stage.'/campaign-v20-runtime.js');$combat=@file_get_contents($stage.'/combat-browser-v2.js');$enemyRuntime=@file_get_contents($stage.'/v20-enemy-runtime.js');
-      if(!is_string($campaign)||strpos($campaign,'"levelCount": 20')===false||strpos($campaign,'"blight-king"')===false||!is_string($levels)||substr_count($levels,'"order":')<20||!is_string($art)||strpos($art,'approved-showcase-2026-09-08')===false||!is_string($runtime)||strpos($runtime,'levelCount:20')===false||!is_string($combat)||strpos($combat,'seed-man-combat-browser-v2')===false||!is_string($enemyRuntime)||strpos($enemyRuntime,'seed-man-v20-enemy-runtime-v2')===false){$remove($stage);return new WP_Error('dtf_seed_contract','Staged v20 contract failed.',['status'=>409]);}
+      $campaign=@file_get_contents($stage.'/data/campaign.json');$levels=@file_get_contents($stage.'/data/levels-20-v1.json');$level01=@file_get_contents($stage.'/data/level-01.json');$art=@file_get_contents($stage.'/seed-man-production-art.js');$runtime=@file_get_contents($stage.'/campaign-v20-runtime.js');$combat=@file_get_contents($stage.'/combat-browser-v2.js');$enemyRuntime=@file_get_contents($stage.'/v20-enemy-runtime.js');$playerState=@file_get_contents($stage.'/player-state-v20.js');
+      if(!is_string($campaign)||strpos($campaign,'"levelCount": 20')===false||strpos($campaign,'"blight-king"')===false||!is_string($levels)||substr_count($levels,'"order":')<20||!is_string($level01)||strpos($level01,'"powerups": []')===false||!is_string($art)||strpos($art,'approved-showcase-2026-09-08')===false||!is_string($runtime)||strpos($runtime,'levelCount:20')===false||!is_string($combat)||strpos($combat,'seed-man-combat-browser-v2')===false||!is_string($enemyRuntime)||strpos($enemyRuntime,'seed-man-v20-enemy-runtime-v2')===false||!is_string($playerState)||strpos($playerState,'seed-man-player-state-v20')===false){$remove($stage);return new WP_Error('dtf_seed_contract','Staged v20 contract failed.',['status'=>409]);}
       $had=is_dir($target);if($had&&!@rename($target,$backup)){$remove($stage);return new WP_Error('dtf_seed_backup','Backup failed.',['status'=>500]);}
       if(!@rename($stage,$target)){if($had)@rename($backup,$target);$remove($stage);return new WP_Error('dtf_seed_commit','Atomic publish failed.',['status'=>500]);}
       $verified=true;foreach($written as $rel=>$sha){$live=$target.'/'.$rel;if(!is_file($live)||!hash_equals($sha,(string)hash_file('sha256',$live))){$verified=false;break;}}
       if(!$verified){$remove($target);if($had)@rename($backup,$target);return new WP_Error('dtf_seed_verify','Server SHA verification failed; rolled back.',['status'=>500]);}
       if($had)$remove($backup);foreach($purge as $url)do_action('litespeed_purge_url',$url);do_action('litespeed_purge_all');if(function_exists('wp_cache_flush'))wp_cache_flush();
-      return rest_ensure_response(['ok'=>true,'route'=>'/games/seed-man-platformer/','files'=>$written,'server_verified'=>true,'campaign_levels'=>20,'final_boss'=>'blight-king','approved_art'=>true,'combat_runtime'=>'v2','published_at'=>gmdate('c')]);
+      return rest_ensure_response(['ok'=>true,'route'=>'/games/seed-man-platformer/','files'=>$written,'server_verified'=>true,'campaign_levels'=>20,'final_boss'=>'blight-king','approved_art'=>true,'player_state'=>'v20','combat_runtime'=>'v2','published_at'=>gmdate('c')]);
     }
   ]);
 });
