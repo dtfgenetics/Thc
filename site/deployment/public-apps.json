@@ -53,7 +53,23 @@
       "route": "/games/who-took-it/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "npm run validate && npm run smoke && npm run build"
+      "build": "npm run check",
+      "machineData": {
+        "modes": [
+          "solo",
+          "shared",
+          "duel"
+        ],
+        "suspects": 25,
+        "missingItems": 5,
+        "artRegistry": "src/data/suspect-art.json",
+        "portraitCount": 25,
+        "artStatus": "production-art-pending",
+        "artValidator": "node scripts/validate-art-registry.mjs",
+        "fullValidation": "npm run check",
+        "playwright": false
+      },
+      "notes": "Canonical standalone React/Vite build from dtfgenetics/Thc-guess-who/03_digital-game. Full packaging gate is npm run check, which includes game-data and 25-character art-registry validation, deterministic smoke/balance checks, dependency audit, production build, and mystery-privacy verification. Procedural suspect heads remain explicitly ART PENDING until approved portrait files land through the canonical suspect-art registry."
     },
     {
       "id": "thc-grow-doc",
