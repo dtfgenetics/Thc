@@ -5,79 +5,352 @@
   "principles": {
     "maxPrimaryNavItems": 6,
     "primaryAction": "Diagnose a Plant",
-    "statusLabels": ["play-now", "multiplayer", "development", "private"],
+    "statusLabels": [
+      "play-now",
+      "multiplayer",
+      "development",
+      "private"
+    ],
     "rule": "Only routes marked public may be rendered as visitor-facing navigation or play buttons."
   },
   "primaryNavigation": [
-    {"id":"learn","label":"Learn","route":"/learn/"},
-    {"id":"diagnose","label":"Diagnose","route":"/thc-grow-doc/","cta":"primary"},
-    {"id":"genetics","label":"Genetics","route":"/seeds/"},
-    {"id":"games","label":"Games","route":"/games/"},
-    {"id":"community","label":"Community","route":"/community/"},
-    {"id":"shop","label":"Shop","route":"/shop/"}
+    {
+      "id": "learn",
+      "label": "Learn",
+      "route": "/learn/"
+    },
+    {
+      "id": "diagnose",
+      "label": "Diagnose",
+      "route": "/thc-grow-doc/",
+      "cta": "primary"
+    },
+    {
+      "id": "genetics",
+      "label": "Genetics",
+      "route": "/seeds/"
+    },
+    {
+      "id": "games",
+      "label": "Games",
+      "route": "/games/"
+    },
+    {
+      "id": "community",
+      "label": "Community",
+      "route": "/community/"
+    },
+    {
+      "id": "shop",
+      "label": "Shop",
+      "route": "/shop/"
+    }
   ],
   "utilityNavigation": [
-    {"id":"atlas","label":"3D Plant Atlas","route":"/atlas/"},
-    {"id":"tools","label":"Tools","route":"/tools/"},
-    {"id":"gallery","label":"Gallery","route":"/gallery/"},
-    {"id":"about","label":"About","route":"/about/"},
-    {"id":"contact","label":"Contact","route":"/contact/"}
+    {
+      "id": "atlas",
+      "label": "3D Plant Atlas",
+      "route": "/atlas/"
+    },
+    {
+      "id": "tools",
+      "label": "Tools",
+      "route": "/tools/"
+    },
+    {
+      "id": "gallery",
+      "label": "Gallery",
+      "route": "/gallery/"
+    },
+    {
+      "id": "about",
+      "label": "About",
+      "route": "/about/"
+    },
+    {
+      "id": "contact",
+      "label": "Contact",
+      "route": "/contact/"
+    }
   ],
   "homeQuickActions": [
-    {"label":"Open 3D Plant Atlas","route":"/atlas/","priority":1},
-    {"label":"Diagnose a Plant","route":"/thc-grow-doc/","priority":2},
-    {"label":"Browse THC Education","route":"/learn/","priority":3},
-    {"label":"Play Games","route":"/games/","priority":4},
-    {"label":"Explore Genetics","route":"/seeds/","priority":5}
+    {
+      "label": "Open 3D Plant Atlas",
+      "route": "/atlas/",
+      "priority": 1
+    },
+    {
+      "label": "Diagnose a Plant",
+      "route": "/thc-grow-doc/",
+      "priority": 2
+    },
+    {
+      "label": "Browse THC Education",
+      "route": "/learn/",
+      "priority": 3
+    },
+    {
+      "label": "Play Games",
+      "route": "/games/",
+      "priority": 4
+    },
+    {
+      "label": "Explore Genetics",
+      "route": "/seeds/",
+      "priority": 5
+    }
   ],
   "learn": {
-    "route":"/learn/",
-    "sections":[
-      {"label":"3D Plant Atlas","route":"/atlas/"},
-      {"label":"Atlas Learning Library","route":"/learn/atlas/"},
-      {"label":"Start Here","route":"/learn/start-here/"},
-      {"label":"Academy","route":"/learn/academy/"},
-      {"label":"Encyclopedia","route":"/learn/encyclopedia/"},
-      {"label":"Infographics","route":"/learn/infographics/"},
-      {"label":"Beginner Guides","route":"/learn/beginner-guides/"},
-      {"label":"SOPs & Measurement","route":"/learn/sops/"},
-      {"label":"Glossary","route":"/learn/glossary/"},
-      {"label":"Printables & Records","route":"/learn/records/"}
+    "route": "/learn/",
+    "sections": [
+      {
+        "label": "3D Plant Atlas",
+        "route": "/atlas/"
+      },
+      {
+        "label": "Atlas Learning Library",
+        "route": "/learn/atlas/"
+      },
+      {
+        "label": "Start Here",
+        "route": "/learn/start-here/"
+      },
+      {
+        "label": "Academy",
+        "route": "/learn/academy/"
+      },
+      {
+        "label": "Encyclopedia",
+        "route": "/learn/encyclopedia/"
+      },
+      {
+        "label": "Infographics",
+        "route": "/learn/infographics/"
+      },
+      {
+        "label": "Beginner Guides",
+        "route": "/learn/beginner-guides/"
+      },
+      {
+        "label": "SOPs & Measurement",
+        "route": "/learn/sops/"
+      },
+      {
+        "label": "Glossary",
+        "route": "/learn/glossary/"
+      },
+      {
+        "label": "Printables & Records",
+        "route": "/learn/records/"
+      }
     ]
   },
   "tools": [
-    {"id":"atlas","title":"THC Living Plant Atlas — 3D Explorer","route":"/atlas/","status":"play-now","public":true},
-    {"id":"growlens","title":"THC GrowLens","route":"/growlens/","status":"play-now","public":true},
-    {"id":"grow-doc","title":"THC Grow Doc","route":"/thc-grow-doc/","status":"play-now","public":true}
+    {
+      "id": "atlas",
+      "title": "THC Living Plant Atlas — 3D Explorer",
+      "route": "/atlas/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "growlens",
+      "title": "THC GrowLens",
+      "route": "/growlens/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "grow-doc",
+      "title": "THC Grow Doc",
+      "route": "/thc-grow-doc/",
+      "status": "play-now",
+      "public": true
+    }
   ],
   "games": [
-    {"id":"high-iq","title":"High IQ — Test Higher Cognition","route":"/games/high-iq/","status":"play-now","public":true},
-    {"id":"high-life","title":"High Life: From Bagseed to Legacy","route":"/games/high-life/","status":"play-now","public":true},
-    {"id":"seed-man-platformer","title":"Seed Man: Greenhouse Gauntlet","route":"/games/seed-man-platformer/","status":"play-now","public":true},
-    {"id":"grower-conversations","title":"Grower Conversations","route":"/games/grower-conversations/","status":"play-now","public":true},
-    {"id":"high-land","title":"High Land: The Sweet Escape","route":"/games/high-land/","status":"play-now","public":true},
-    {"id":"weedopolis","title":"Weedopolis: Strain City Edition","route":"/games/weedopolis/","status":"play-now","public":true},
-    {"id":"strain-showdown","title":"Strain Showdown","route":"/games/strain-showdown/","status":"play-now","public":true},
-    {"id":"crossword","title":"THC Weekly Crossword","route":"/games/crossword/","status":"play-now","public":true},
-    {"id":"who-took-it","title":"Who Took It?","route":"/games/who-took-it/","status":"play-now","public":true},
-    {"id":"protect-the-plants","title":"Burn Buds","route":"/games/protect-the-plants/","status":"multiplayer","public":true},
-    {"id":"bud-or-bluff","title":"Bud or Bluff","route":"/games/bud-or-bluff/","status":"multiplayer","public":true},
-    {"id":"thc-u-know","title":"THC U Know","route":"/games/thc-u-know/","status":"multiplayer","public":true},
-    {"id":"kush-kings","title":"Kush Kings Chess","route":"/games/kush-kings-chess/","status":"multiplayer","public":true},
-    {"id":"terpocalypse","title":"Terpocalypse: Grow Room From Hell","route":"/games/terpocalypse/","status":"play-now","public":true},
-    {"id":"phenoquest","title":"PhenoQuest: The Living Seed Vault","route":"/games/phenoquest/","status":"play-now","public":true},
-    {"id":"strain-match","title":"Strain Match","route":"/games/strain-match/","status":"play-now","public":true},
-    {"id":"grow-room-bingo","title":"Grow Room Bingo / Bongwater Bingo","route":"/games/grow-room-bingo/","status":"play-now","public":true},
-    {"id":"lost-in-the-terps","title":"Lost in the Terps","route":"/games/lost-in-the-terps/","status":"play-now","public":true},
-    {"id":"mystery-strain","title":"Mystery Strain","route":"/games/mystery-strain/","status":"play-now","public":true},
-    {"id":"spin-the-strain","title":"Spin the Strain","route":"/games/spin-the-strain/","status":"play-now","public":true},
-    {"id":"grow-room-defense","title":"Grow Room Defense","route":"/games/grow-room-defense/","status":"play-now","public":true},
-    {"id":"harvest-hustle","title":"Harvest Hustle","route":"/games/harvest-hustle/","status":"play-now","public":true},
-    {"id":"trichome-trials","title":"Trichome Trials","route":"/games/trichome-trials/","status":"play-now","public":true},
-    {"id":"pheno-draft","title":"Pheno Draft","route":"/games/pheno-draft/","status":"play-now","public":true},
-    {"id":"high-lines","title":"High Lines","route":"/games/high-lines/","status":"play-now","public":true}
+    {
+      "id": "high-iq",
+      "title": "High IQ — Test Higher Cognition",
+      "route": "/games/high-iq/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "high-life",
+      "title": "High Life: From Bagseed to Legacy",
+      "route": "/games/high-life/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "seed-man-platformer",
+      "title": "Seed Man: Grow. Fight. Restore.",
+      "route": "/games/seed-man-platformer/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "grower-conversations",
+      "title": "Grower Conversations",
+      "route": "/games/grower-conversations/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "high-land",
+      "title": "High Land: The Sweet Escape",
+      "route": "/games/high-land/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "weedopolis",
+      "title": "Weedopolis: Strain City Edition",
+      "route": "/games/weedopolis/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "strain-showdown",
+      "title": "Strain Showdown",
+      "route": "/games/strain-showdown/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "crossword",
+      "title": "THC Weekly Crossword",
+      "route": "/games/crossword/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "who-took-it",
+      "title": "Who Took It?",
+      "route": "/games/who-took-it/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "protect-the-plants",
+      "title": "Burn Buds",
+      "route": "/games/protect-the-plants/",
+      "status": "multiplayer",
+      "public": true
+    },
+    {
+      "id": "bud-or-bluff",
+      "title": "Bud or Bluff",
+      "route": "/games/bud-or-bluff/",
+      "status": "multiplayer",
+      "public": true
+    },
+    {
+      "id": "thc-u-know",
+      "title": "THC U Know",
+      "route": "/games/thc-u-know/",
+      "status": "multiplayer",
+      "public": true
+    },
+    {
+      "id": "kush-kings",
+      "title": "Kush Kings Chess",
+      "route": "/games/kush-kings-chess/",
+      "status": "multiplayer",
+      "public": true
+    },
+    {
+      "id": "terpocalypse",
+      "title": "Terpocalypse: Grow Room From Hell",
+      "route": "/games/terpocalypse/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "phenoquest",
+      "title": "PhenoQuest: The Living Seed Vault",
+      "route": "/games/phenoquest/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "strain-match",
+      "title": "Strain Match",
+      "route": "/games/strain-match/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "grow-room-bingo",
+      "title": "Grow Room Bingo / Bongwater Bingo",
+      "route": "/games/grow-room-bingo/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "lost-in-the-terps",
+      "title": "Lost in the Terps",
+      "route": "/games/lost-in-the-terps/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "mystery-strain",
+      "title": "Mystery Strain",
+      "route": "/games/mystery-strain/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "spin-the-strain",
+      "title": "Spin the Strain",
+      "route": "/games/spin-the-strain/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "grow-room-defense",
+      "title": "Grow Room Defense",
+      "route": "/games/grow-room-defense/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "harvest-hustle",
+      "title": "Harvest Hustle",
+      "route": "/games/harvest-hustle/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "trichome-trials",
+      "title": "Trichome Trials",
+      "route": "/games/trichome-trials/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "pheno-draft",
+      "title": "Pheno Draft",
+      "route": "/games/pheno-draft/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "high-lines",
+      "title": "High Lines",
+      "route": "/games/high-lines/",
+      "status": "play-now",
+      "public": true
+    }
   ],
   "external": [
-    {"id":"discord","label":"Join Discord","url":"https://discord.gg/xJbUeHFPMt","newTab":true}
+    {
+      "id": "discord",
+      "label": "Join Discord",
+      "url": "https://discord.gg/xJbUeHFPMt",
+      "newTab": true
+    }
   ]
 }
