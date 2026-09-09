@@ -1,10 +1,10 @@
 import { boardPath, finishIndex } from '../data/boardPath';
-import type { GameState, TurnDirection } from '../types/gameTypes';
+import type { GameState } from '../types/gameTypes';
 import { drawActionCard, applyActionCard } from './cardSystem';
 import { rollDie } from './diceSystem';
 import { calculateMove } from './movementSystem';
 import { createPlayers } from './playerSystem';
-import { getCurrentPlayer, nextPlayerIndex, shouldSkipTurn } from './turnSystem';
+import { getCurrentPlayer, nextPlayerIndex, reduceReverseTurnCounter, shouldSkipTurn } from './turnSystem';
 
 export function createInitialGame(playerCount: number): GameState {
   return {
@@ -104,14 +104,4 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
 
 export function restartGame(playerCount: number): GameState {
   return createInitialGame(playerCount);
-}
-
-function reduceReverseTurnCounter(state: GameState): Pick<GameState, 'turnDirection' | 'reverseTurnsRemaining'> {
-  if (state.reverseTurnsRemaining <= 0) {
-    return { turnDirection: state.turnDirection, reverseTurnsRemaining: 0 };
-  }
-
-  const remaining = state.reverseTurnsRemaining - 1;
-  const turnDirection: TurnDirection = remaining <= 0 ? 1 : state.turnDirection;
-  return { turnDirection, reverseTurnsRemaining: remaining };
 }

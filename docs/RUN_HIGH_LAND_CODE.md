@@ -2,147 +2,56 @@
 
 Use this guide when Codex is unavailable or timing out.
 
-## Best backup: GitHub Codespaces
+## Source
 
-GitHub Codespaces is the best Codex-like backup for this repo because it opens the GitHub repository in a cloud development environment with a terminal, Node.js, Git, GitHub auth, port forwarding, and VS Code-style editing.
+- Repo: `dtfgenetics/Thc`
+- App: `apps/high-land-web`
+- Route: `/games/high-land/`
+- Live target: `https://dtfseeds.com/games/high-land/`
 
-### Open the repo in Codespaces
+## Required checks
 
-1. Open the GitHub repository: `dtfgenetics/Thc`.
-2. Click **Code**.
-3. Click **Codespaces**.
-4. Click **Create codespace on main**.
-5. Wait for setup to finish. The repo now has `.devcontainer/devcontainer.json`, so Codespaces should install dependencies automatically.
-
-### Run checks
-
-From the Codespaces terminal:
+From the repository root:
 
 ```bash
+npm ci
 npm run test:high-land
 npm run build:high-land
-npm run test:e2e:high-land
+node scripts/verify-browser-tool-policy.mjs
 ```
 
-For the app package directly:
+The active High Land gate is deterministic Vitest plus TypeScript/Vite build, room API security checks, PHP lint in CI, static asset checks, and the browser-tool policy. Do not install or run Playwright for High Land.
+
+## Preview locally
 
 ```bash
-cd apps/high-land-web
-npm run test
-npm run build
-npm run test:e2e
+npm run dev:high-land
 ```
 
-If Playwright browsers are missing, install Chromium first:
+Open the forwarded dev-server URL. The production route after packaging is `/games/high-land/`.
 
-```bash
-npm --workspace apps/high-land-web exec -- playwright install --with-deps chromium
-```
+## Manual browser review
 
-### Run the game preview
+After tests/build pass, manually confirm:
 
-```bash
-cd apps/high-land-web
-npm run dev
-```
+- Landing screen shows High Land: The Sweet Escape.
+- Local 2-player and 10-player setup start.
+- Roll Dice moves the active token exactly the rolled spaces.
+- Landing on HIT reveals and applies a HIT card.
+- Player turn advances; skip, draw-again, choice, and Reverse Rotation effects do not get stuck.
+- Board controls remain usable on mobile width.
+- No required board/card/audio asset is missing.
 
-Open the forwarded port for the dev server. The production preview route is:
+## GitHub Actions
 
-```txt
-/games/high-land/
-```
+Run **High Land CI** manually from the Actions tab. It installs with `npm ci`, runs deterministic tests, builds, verifies room API security, lints PHP files when present, verifies the built entrypoint/static assets, and uploads the dist artifact.
 
-## Gitpod backup
+## Live deployment boundary
 
-Gitpod is another Codex-like browser coding environment that can open the GitHub repo, install dependencies, run commands, and show a forwarded preview.
-
-The repo now has `.gitpod.yml`.
-
-Recommended flow:
-
-1. Open Gitpod.
-2. Import/open GitHub repo `dtfgenetics/Thc`.
-3. Let the workspace run `npm install`.
-4. It should start `npm run dev:high-land`.
-5. Use the forwarded `5173` preview for the dev server.
-
-Manual checks:
-
-```bash
-npm run test:high-land
-npm run build:high-land
-npm --workspace apps/high-land-web exec -- playwright install --with-deps chromium
-npm run test:e2e:high-land
-```
-
-## GitHub Actions manual run
-
-The workflow `.github/workflows/high-land-ci.yml` now has `workflow_dispatch`, so it can be manually run.
-
-1. Open the repo on GitHub.
-2. Click **Actions**.
-3. Choose **High Land CI**.
-4. Click **Run workflow**.
-5. Pick `main` and start the run.
-
-The workflow runs:
-
-```bash
-npm install
-npm run test:high-land
-npm run build:high-land
-npm --workspace apps/high-land-web exec -- playwright install --with-deps chromium
-npm run test:e2e:high-land
-```
-
-## Replit backup
-
-Replit is useful if you want a browser IDE with a Run button and AI help. It can import a GitHub repo, run Node/TypeScript apps, and provide a preview. Use it as a second backup after Codespaces/Gitpod.
-
-Recommended setup:
-
-```txt
-Import from GitHub: dtfgenetics/Thc
-Install command: npm install
-Run command: npm run dev:high-land
-Build command: npm run build:high-land
-```
-
-For preview issues, run from the app folder:
-
-```bash
-cd apps/high-land-web
-npm run dev
-```
-
-## Cursor / Windsurf desktop backup
-
-Use Cursor or Windsurf if you want a desktop AI coding app. They are good for code editing and terminal work, but they require your local machine to have Git and Node working.
-
-Recommended commands:
-
-```bash
-git clone https://github.com/dtfgenetics/Thc.git
-cd Thc
-npm install
-npm run test:high-land
-npm run build:high-land
-npm --workspace apps/high-land-web exec -- playwright install --with-deps chromium
-npm run test:e2e:high-land
-```
+A repo merge or artifact is not a live update. Live success requires deploying the built `apps/high-land-web/dist` contents to `public_html/games/high-land/` and then passing the live checks in `docs/deployment-hostinger.md`.
 
 ## What to send any coding app
 
-Use this prompt:
-
 ```txt
-Open dtfgenetics/Thc. Focus on apps/high-land-web. Run npm install, npm run test:high-land, npm run build:high-land, install Playwright Chromium if needed, and run npm run test:e2e:high-land from the repo root. Fix TypeScript, Vitest, Playwright, and Vite build errors only. Do not add new gameplay features until tests and build pass. Preserve the current High Land room flow: local play, create room, invite link, add test player, start lobby, roll through room runtime, restart room runtime. Do not commit secrets. After fixing, summarize every changed file and the test/build output.
-```
-
-## Current priority
-
-```txt
-1. Get unit tests, build, and browser smoke tests running in Codespaces, Gitpod, or GitHub Actions.
-2. Fix any actual output errors.
-3. Only then continue the Hostinger Website Room API live multiplayer checks.
+Open dtfgenetics/Thc. Focus on apps/high-land-web. Run npm ci, npm run test:high-land, npm run build:high-land, and node scripts/verify-browser-tool-policy.mjs from the repo root. Fix TypeScript, Vitest, Vite build, room API security, asset path, and deterministic gameplay errors only. Do not install or run Playwright for High Land. Preserve local play, create room, invite link, add test player, lobby start, transport-backed room roll/restart, exact dice movement, HIT card effects, and turn order. Do not commit secrets. After fixing, summarize every changed file and the test/build output.
 ```

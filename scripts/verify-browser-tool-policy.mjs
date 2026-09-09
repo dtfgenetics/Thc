@@ -5,6 +5,12 @@ const root = process.cwd();
 const workflowRoot = path.join(root, '.github', 'workflows');
 const ignoredDirs = new Set(['.git', 'node_modules', 'dist', 'build', 'coverage', 'vendor', 'artifacts']);
 const forbidden = /(?:npx\s+playwright|playwright\s+(?:test|install)|@playwright\/test|from\s+['"]playwright['"]|require\(['"]playwright['"]\))/i;
+const highLandRetiredBrowserTestPaths = [
+  'apps/high-land-web/playwright.config.ts',
+  'apps/high-land-web/playwright.live.config.ts',
+  'apps/high-land-web/e2e',
+  'apps/high-land-web/e2e-live'
+];
 const violations = [];
 
 function walk(dir, visitor) {
@@ -36,10 +42,16 @@ walk(root, (file) => {
   }
 });
 
+for (const rel of highLandRetiredBrowserTestPaths) {
+  if (fs.existsSync(path.join(root, rel))) {
+    violations.push(`${rel}#retired-high-land-browser-test-path`);
+  }
+}
+
 if (violations.length) {
-  console.error('Browser-tool policy violation: Playwright execution/dependency wiring is prohibited in active DTF workflows and package manifests.');
+  console.error('Browser-tool policy violation: Playwright execution/dependency wiring and retired High Land browser-test paths are prohibited in active DTF workflows.');
   for (const violation of [...new Set(violations)].sort()) console.error(` - ${violation}`);
   process.exit(1);
 }
 
-console.log('Browser-tool policy passed: no Playwright execution or dependency wiring found in active workflows or package manifests.');
+console.log('Browser-tool policy passed: no Playwright execution, dependency wiring, or retired High Land browser-test paths found.');

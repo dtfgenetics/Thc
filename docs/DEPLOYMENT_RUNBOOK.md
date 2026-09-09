@@ -2,12 +2,13 @@
 
 ## Build
 
+Run from the repository root:
+
 ```bash
-cd apps/high-land-web
-npm install
-npm run test
-npm run build
-npm run test:e2e
+npm ci
+npm run test:high-land
+npm run build:high-land
+node scripts/verify-browser-tool-policy.mjs
 ```
 
 ## Output
@@ -32,8 +33,12 @@ https://dtfseeds.com/games/high-land/
 
 - Page loads.
 - Board renders.
-- Ten-player mode starts.
+- Player setup starts.
 - Dice roll works.
-- Card reveal works.
+- HIT card reveal works.
+- Reverse Rotation, choices, skip turns, and draw-again cards do not get stuck.
 - Save and load work.
 - Mobile view works.
+- Browser console and required network requests pass live review.
+
+A repository build is not a live update. Live success requires uploading `apps/high-land-web/dist` to `/public_html/games/high-land/` and verifying the public route.

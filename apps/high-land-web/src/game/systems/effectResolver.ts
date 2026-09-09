@@ -1,7 +1,7 @@
 import { finishIndex } from '../data/boardPath';
 import type { ActionCard, ActionCardEffect, GameState, Player, TurnDirection } from '../types/gameTypes';
 import { calculateMove } from './movementSystem';
-import { nextPlayerIndex } from './turnSystem';
+import { nextPlayerIndex, reduceReverseTurnCounter } from './turnSystem';
 import {
   filterPlayersForGroupMove,
   findLastPlace,
@@ -24,16 +24,24 @@ export function resolveActionCard(state: GameState, card: ActionCard, random: ()
   const resolution = applyEffect(state, currentPlayer, card.effect, random);
   const winner = findWinner(resolution.state.players);
   const isChoosingPlayer = Boolean(resolution.state.pendingChoice) && !winner;
+  const shouldAdvanceTurn = !winner && !isChoosingPlayer && !resolution.keepTurn && !resolution.drawAgain;
+  const directionState = shouldAdvanceTurn && card.effect.type !== 'reverse_turn_order'
+    ? reduceReverseTurnCounter(resolution.state)
+    : {
+        turnDirection: resolution.state.turnDirection,
+        reverseTurnsRemaining: resolution.state.reverseTurnsRemaining
+      };
 
   return {
     ...resolution.state,
+    ...directionState,
     lastCard: card,
     phase: winner ? 'game_over' : isChoosingPlayer ? 'choosing_player' : 'ready',
     winnerId: winner?.id ?? null,
     pendingChoice: winner ? null : resolution.state.pendingChoice,
-    currentPlayerIndex: winner || isChoosingPlayer || resolution.keepTurn || resolution.drawAgain
-      ? state.currentPlayerIndex
-      : nextPlayerIndex(resolution.state.players, state.currentPlayerIndex, resolution.state.turnDirection),
+    currentPlayerIndex: shouldAdvanceTurn
+      ? nextPlayerIndex(resolution.state.players, state.currentPlayerIndex, directionState.turnDirection)
+      : state.currentPlayerIndex,
     message: `${currentPlayer.name}: ${card.title}. ${card.text}`
   };
 }
@@ -48,15 +56,22 @@ export function resolvePendingPlayerChoice(state: GameState, targetPlayerId: str
 
   const movedState = movePlayer(state, targetPlayerId, choice.targetAmount);
   const winner = findWinner(movedState.players);
+  const directionState = winner
+    ? {
+        turnDirection: movedState.turnDirection,
+        reverseTurnsRemaining: movedState.reverseTurnsRemaining
+      }
+    : reduceReverseTurnCounter(movedState);
 
   return {
     ...movedState,
+    ...directionState,
     phase: winner ? 'game_over' : 'ready',
     winnerId: winner?.id ?? null,
     pendingChoice: null,
     currentPlayerIndex: winner
       ? state.currentPlayerIndex
-      : nextPlayerIndex(movedState.players, state.currentPlayerIndex, movedState.turnDirection),
+      : nextPlayerIndex(movedState.players, state.currentPlayerIndex, directionState.turnDirection),
     message: winner
       ? `${winner.name} reached the finish.`
       : `${sourcePlayer.name} chose ${targetPlayer.name} to move forward ${choice.targetAmount} space${choice.targetAmount === 1 ? '' : 's'}.`
