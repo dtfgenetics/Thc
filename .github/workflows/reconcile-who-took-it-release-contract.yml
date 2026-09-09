@@ -38,8 +38,8 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/reconcile-who-took-it-release-contract.mjs --check
-          node scripts/validate-game-source-map.mjs
-          node scripts/validate-public-apps-registry.mjs
+          node scripts/validate-portfolio-registry.mjs
+          node scripts/validate-public-app-registry.mjs
 
       - name: Safely integrate registry update when needed
         shell: bash
