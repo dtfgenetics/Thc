@@ -2,6 +2,8 @@
 
 The **Seed Man Platformer** is the DTF Genetics browser action-platformer for `https://dtfseeds.com/games/seed-man-platformer/`.
 
+> **Canonical game-design and production direction:** [`docs/SEED_MAN_GAME_DIRECTION.md`](../../docs/SEED_MAN_GAME_DIRECTION.md). Update that living master whenever approved gameplay, visual, content, architecture, QA, or release direction changes.
+
 ## Production source of truth
 
 The approved 2026-09-08 Seed Man showcase boards are authoritative for the game art. Existing procedural renderers, older brown-seed art, legacy sprite atlases, and stale documentation are **not** authoritative.
