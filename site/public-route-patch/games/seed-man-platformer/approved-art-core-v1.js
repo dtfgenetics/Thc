@@ -4,6 +4,13 @@
   const version = 'seed-man-approved-art-core-v3';
   const masterUrl = './assets/approved/seed-man-approved-master-atlas-v1.webp';
   const worldOrder = Object.freeze(['greenhouse-valley','forest-ruins','desert-canyon','frozen-peaks','eco-city']);
+  const worldAssetKeys = Object.freeze({
+    'greenhouse-valley':'world.greenhouse-valley.background',
+    'forest-ruins':'world.forest-ruins.background',
+    'desert-canyon':'world.desert-canyon.background',
+    'frozen-peaks':'world.frozen-peaks.background',
+    'eco-city':'world.eco-city.background'
+  });
   const worldRegion = Object.freeze({ x:0, y:498, width:1600, height:180 });
   const worldWidth = Math.floor(worldRegion.width / worldOrder.length);
 
@@ -16,15 +23,16 @@
 
   const assets = Object.create(null);
   for (const [index, world] of worldOrder.entries()) {
-    assets[`world.${world}.background`] = Object.freeze({
-      key:`world.${world}.background`,
+    const key = worldAssetKeys[world];
+    assets[key] = Object.freeze({
+      key,
       role:'background',
       src:masterUrl,
       region:Object.freeze({ x:worldRegion.x + worldWidth * index, y:worldRegion.y, width:worldWidth, height:worldRegion.height })
     });
   }
 
-  const worldBackground = (worldKey) => assets[`world.${worldKey}.background`] || null;
+  const worldBackground = (worldKey) => assets[worldAssetKeys[worldKey]] || null;
   window.__SEED_MAN_APPROVED_ASSETS__ = Object.freeze(assets);
   window.__SEED_MAN_APPROVED_ART_CORE__ = Object.freeze({
     version,
@@ -32,6 +40,7 @@
     characterContract:'green-armored-plant-hero',
     masterUrl,
     worldOrder,
+    worldAssetKeys,
     worldRegion,
     images,
     assets:window.__SEED_MAN_APPROVED_ASSETS__,
