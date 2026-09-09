@@ -4,6 +4,8 @@ import { join } from 'node:path';
 const root = join(process.cwd(), 'site/public-route-patch/learn');
 const DTF420_SHA = '1427a9e1619a76a04b07c879d39b2af3b5b8806e';
 const RAW = `https://raw.githubusercontent.com/dtfgenetics/Dtf420/${DTF420_SHA}/content`;
+const FETCH_ATTEMPTS = Number.parseInt(process.env.DTF420_FETCH_ATTEMPTS || '4', 10);
+const FETCH_TIMEOUT_MS = Number.parseInt(process.env.DTF420_FETCH_TIMEOUT_MS || '60000', 10);
 
 const sourceFiles = {
   plantHealth: ['plant-health-library.json', 'plant-health-expanded.json'],
@@ -22,13 +24,56 @@ const sourceFiles = {
   sources: ['education-sources.json']
 };
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function errorDetail(error) {
+  if (!(error instanceof Error)) return String(error);
+  const cause = error.cause;
+  if (cause && typeof cause === 'object') {
+    const code = 'code' in cause ? String(cause.code) : '';
+    const message = 'message' in cause ? String(cause.message) : '';
+    if (code || message) return [code, message].filter(Boolean).join(': ');
+  }
+  return error.message || error.name;
+}
+
+function isRetryableStatus(status) {
+  return status === 408 || status === 425 || status === 429 || status >= 500;
+}
+
+function isRetryableFetchError(error) {
+  const detail = errorDetail(error);
+  return /ECONNRESET|ETIMEDOUT|ECONNREFUSED|EAI_AGAIN|UND_ERR_CONNECT_TIMEOUT|UND_ERR_HEADERS_TIMEOUT|UND_ERR_SOCKET|fetch failed|network/i.test(detail);
+}
+
 async function fetchJson(name) {
-  const response = await fetch(`${RAW}/${name}`, {
-    headers: { 'User-Agent': 'DTFSeeds-Production-Education-Importer/1.0' },
-    signal: AbortSignal.timeout(60_000)
-  });
-  if (!response.ok) throw new Error(`Could not fetch ${name} from pinned Dtf420 source (${response.status})`);
-  return response.json();
+  const url = `${RAW}/${name}`;
+  let lastError = null;
+
+  for (let attempt = 1; attempt <= FETCH_ATTEMPTS; attempt += 1) {
+    try {
+      const response = await fetch(url, {
+        headers: { 'User-Agent': 'DTFSeeds-Production-Education-Importer/1.1' },
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS)
+      });
+
+      if (response.ok) return response.json();
+
+      lastError = new Error(`HTTP ${response.status}`);
+      const retryable = isRetryableStatus(response.status);
+      if (!retryable || attempt === FETCH_ATTEMPTS) {
+        throw new Error(`Could not fetch ${name} from pinned Dtf420 source (${response.status})`);
+      }
+      await response.body?.cancel().catch(() => {});
+    } catch (error) {
+      lastError = error;
+      if (attempt === FETCH_ATTEMPTS || !isRetryableFetchError(error)) break;
+    }
+
+    await sleep(500 * attempt);
+  }
+
+  throw new Error(`Could not fetch ${name} from pinned Dtf420 source after ${FETCH_ATTEMPTS} attempts (${errorDetail(lastError)})`);
 }
 
 function flattenRecords(value) {
