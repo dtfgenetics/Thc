@@ -10,7 +10,7 @@ const art = JSON.parse(read('data/seed-man-art-manifest-v1.json'));
 const requiredFiles = [
   'index.html','app.js','canvas-compat-v1.js','campaign-v20-runtime.js','campaign-ui-v20.js',
   'approved-art-core-v1.js','approved-art-runtime-v1.js','seed-man-production-art.js',
-  'combat-browser-v1.js','enemy-attacks-browser-v1.js','enemy-attacks.js',
+  'v20-enemy-runtime.js','combat-browser-v2.js','enemy-attacks-browser-v2.js','enemy-attacks.js',
   'input-guard-v1.js','seed-man.css','physics.mjs','data/campaign.json','data/levels-20-v1.json',
   'data/seed-man-art-manifest-v1.json','data/enemy-catalog-v1.json','data/boss-catalog-v1.json'
 ];
@@ -50,13 +50,35 @@ const renderer = read('seed-man-production-art.js');
 for (const marker of ['approved-showcase-2026-09-08','green-armored-plant-hero','fallbackAllowed:false']) {
   if (!renderer.includes(marker)) throw new Error(`Approved renderer missing marker: ${marker}`);
 }
+
 const runtime = read('campaign-v20-runtime.js');
-if (!runtime.includes('seed-man-campaign-v20-runtime-v1')) throw new Error('Canonical v20 runtime marker is missing');
+if (!runtime.includes('seed-man-campaign-v20-runtime-v2')) throw new Error('Canonical v20 runtime v2 marker is missing');
+for (const form of ["'plant'","'fire'","'electric'","'ice'"]) if (!runtime.includes(form)) throw new Error(`Canonical phenotype form missing from campaign runtime: ${form}`);
+for (const retiredPower of ["'speed'","'shield'","'magnet'","'jump'"]) if (runtime.includes(retiredPower)) throw new Error(`Retired prototype power remains in campaign runtime: ${retiredPower}`);
+
+const enemyRuntime = read('v20-enemy-runtime.js');
+if (!enemyRuntime.includes('seed-man-v20-enemy-runtime-v2')) throw new Error('Canonical v20 enemy runtime marker is missing');
+for (const enemyType of ['sproutling','root-crawler','toxic-spore','drone-bot','thorn-beetle','sky-wasp','spike-plant','sludge-monster','bone-weed','shadow-root']) {
+  if (!enemyRuntime.includes(`'${enemyType}'`)) throw new Error(`Canonical enemy runtime missing enemy type: ${enemyType}`);
+}
+if (!enemyRuntime.includes('PHENOTYPE_DURATION_MS = 30000')) throw new Error('Phenotype carrier duration must remain exactly 30000ms');
+
+const combat = read('combat-browser-v2.js');
+if (!combat.includes('seed-man-combat-browser-v2')) throw new Error('Canonical combat-browser-v2 marker is missing');
+for (const retiredPhenotype of ['hydro-surge','terpene-tempest','vine-lash','mycelium-mind','rootbreaker','trichome-crystal','gravity-haze']) {
+  if (combat.includes(retiredPhenotype)) throw new Error(`Retired phenotype remains in canonical combat runtime: ${retiredPhenotype}`);
+}
+const attacks = read('enemy-attacks-browser-v2.js');
+if (!attacks.includes('seed-man-enemy-attacks-browser-v2')) throw new Error('Canonical enemy-attacks-browser-v2 marker is missing');
+
 const index = read('index.html');
-for (const stale of ['campaign-ui-v15.js','world-five-v1.js','levels-12-15.json','TOTAL_LEVELS = 15','levelCount: 15']) {
-  if (index.includes(stale)) throw new Error(`Legacy Seed Man v15 reference remains in public index: ${stale}`);
+for (const stale of ['campaign-ui-v15.js','world-five-v1.js','levels-12-15.json','combat-browser-v1.js','enemy-attacks-browser-v1.js','TOTAL_LEVELS = 15','levelCount: 15']) {
+  if (index.includes(stale)) throw new Error(`Legacy Seed Man reference remains in public index: ${stale}`);
+}
+for (const required of ['v20-enemy-runtime.js','combat-browser-v2.js','enemy-attacks-browser-v2.js']) {
+  if (!index.includes(required)) throw new Error(`Public index missing canonical combat runtime: ${required}`);
 }
 for (const stale of ['"levelCount": 15','"newLevelCount": 14','baseRuntimeLevelCount','Genome Hydra','Voltage Wasp Alpha']) {
   if (read('data/campaign.json').includes(stale)) throw new Error(`Retired campaign marker remains: ${stale}`);
 }
-console.log(JSON.stringify({ok:true,levels:20,worlds:5,finalBoss:'blight-king',approvedArt:true,approvedArtManifest:art.id}));
+console.log(JSON.stringify({ok:true,levels:20,worlds:5,finalBoss:'blight-king',approvedArt:true,approvedArtManifest:art.id,combatRuntime:'v2'}));
