@@ -97,10 +97,7 @@ Read these files in order before editing:
 10. `.agents/skills/high-land-game/SKILL.md` - exact High Land work sequence.
 11. `docs/deployment-hostinger.md` when deployment or live behavior is in scope.
 
-Keep `CLAUDE.md`. Its repository-wide safety rules remain authoritative. When an
-older gameplay note conflicts with `docs/high-land-spec.md` or
-`docs/HIGH_LAND_CODEX_NOW.md`, follow the newer High Land contract and report the
-conflict rather than silently changing the product.
+Keep `CLAUDE.md`. Its repository-wide safety rules remain authoritative. When an older gameplay note conflicts with `docs/high-land-spec.md` or `docs/HIGH_LAND_CODEX_NOW.md`, follow the newer High Land contract and report the conflict rather than silently changing the product.
 
 ## Scope
 
@@ -110,9 +107,7 @@ conflict rather than silently changing the product.
 - Do not edit gameplay while performing a documentation, workflow, or repository-control task.
 - Preserve unrelated and user-authored working-tree changes.
 - Never commit secrets, credentials, tokens, `.env` files, or private room data.
-- The active multiplayer backend is the Hostinger PHP Website Room API. Do not
-  reconnect Supabase, Firebase, or another backend unless the user explicitly
-  replaces the locked decision in `docs/BACKEND_DECISION.md`.
+- The active multiplayer backend is the Hostinger PHP Website Room API. Do not reconnect Supabase, Firebase, or another backend unless the user explicitly replaces the locked decision in `docs/BACKEND_DECISION.md`.
 
 ## Change protocol
 
@@ -129,10 +124,9 @@ conflict rather than silently changing the product.
 npm ci
 npm run test:high-land
 npm run build:high-land
-npm run test:e2e:high-land
+node scripts/verify-browser-tool-policy.mjs
 ```
 
-If a command is unavailable or blocked, report its exact status and reason. Local
-success does not prove that `https://dtfseeds.com/games/high-land/` is current or
-working. A live-success claim requires the separate checks in
-`docs/deployment-hostinger.md`.
+Playwright is retired from the active High Land validation path. Browser and live-route review are still required before any live-ready claim, but they are recorded separately from repository validation.
+
+If a command is unavailable or blocked, report its exact status and reason. Local success does not prove that `https://dtfseeds.com/games/high-land/` is current or working. A live-success claim requires the separate checks in `docs/deployment-hostinger.md`.

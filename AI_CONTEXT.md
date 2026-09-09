@@ -101,10 +101,12 @@ npm run verify:release-integrity:live
 ```bash
 npm run test:high-land
 npm run build:high-land
-npm run test:e2e:high-land
+node scripts/verify-browser-tool-policy.mjs
 ```
 
 High Land canonical web source lives in `apps/high-land-web`.
+
+Playwright is retired from the active High Land validation path. Use deterministic tests/build/policy checks for repository validation, then record manual browser/live-route review separately.
 
 The active multiplayer backend is the Hostinger PHP Website Room API. Do not reconnect Supabase, Firebase, or another room authority unless the product decision is explicitly changed.
 
