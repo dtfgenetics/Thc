@@ -23,9 +23,8 @@ on:
       - 'site/public-route-patch/games/seed-man-platformer/**'
       - 'site/deployment/public-apps.json'
       - 'site/deployment/release-resources.json'
-      - 'scripts/prepare-seed-man-combat-release.mjs'
-      - 'scripts/prepare-seed-man-world-five-combat.mjs'
-      - 'scripts/prepare-seed-man-world-five-runtime.mjs'
+      - 'scripts/verify-seed-man-production-v20.mjs'
+      - 'scripts/validate-seed-man-production-bundle.mjs'
       - 'scripts/plan-dtfseeds-resource-release.mjs'
       - 'scripts/package-dtf-public-resource.py'
       - 'scripts/verify-dtf-public-resource-artifact.py'
@@ -49,9 +48,8 @@ on:
       - 'site/public-route-patch/games/seed-man-platformer/**'
       - 'site/deployment/public-apps.json'
       - 'site/deployment/release-resources.json'
-      - 'scripts/prepare-seed-man-combat-release.mjs'
-      - 'scripts/prepare-seed-man-world-five-combat.mjs'
-      - 'scripts/prepare-seed-man-world-five-runtime.mjs'
+      - 'scripts/verify-seed-man-production-v20.mjs'
+      - 'scripts/validate-seed-man-production-bundle.mjs'
       - 'scripts/plan-dtfseeds-resource-release.mjs'
       - 'scripts/package-dtf-public-resource.py'
       - 'scripts/verify-dtf-public-resource-artifact.py'
@@ -195,16 +193,24 @@ jobs:
               cp -a site/public-route-patch/games/high-iq/. release-resource/games/high-iq/
               ;;
             seed-man-platformer)
-              node scripts/prepare-seed-man-combat-release.mjs
+              npm install --prefix games/seed-man-platformer --ignore-scripts --no-audit --no-fund
+              npm run --prefix games/seed-man-platformer test:production-contracts
+              npm run --prefix games/seed-man-platformer verify:three-import
+              npm run --prefix games/seed-man-platformer build:three-public
+              node scripts/verify-seed-man-production-v20.mjs
+              node scripts/validate-seed-man-production-bundle.mjs
               node games/seed-man-platformer/test/physics.test.mjs
+              node games/seed-man-platformer/test/progression-systems.test.mjs
               node games/seed-man-platformer/test/campaign.test.mjs
-              node games/seed-man-platformer/test/combat.test.mjs
+              node games/seed-man-platformer/test/public-runtime.test.mjs
               node games/seed-man-platformer/test/public-campaign.test.mjs
-              node --check site/public-route-patch/games/seed-man-platformer/world-five-v1.js
-              node --check site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js
-              test -s site/public-route-patch/games/seed-man-platformer/data/levels-12-15.json
-              grep -Fq 'seed-man-world-five-state-sync-v1' site/public-route-patch/games/seed-man-platformer/world-five-v1.js
-              grep -Fq 'seed-man-world-five-combat-v1' site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js
+              node games/seed-man-platformer/test/input-guard.test.mjs
+              node --check site/public-route-patch/games/seed-man-platformer/campaign-v20-runtime.js
+              node --check site/public-route-patch/games/seed-man-platformer/campaign-ui-v20.js
+              grep -Fq 'seed-man-campaign-v20-runtime-v1' site/public-route-patch/games/seed-man-platformer/campaign-v20-runtime.js
+              grep -Fq 'seed-man-campaign-ui-v20' site/public-route-patch/games/seed-man-platformer/campaign-ui-v20.js
+              grep -Fq 'blight-king' site/public-route-patch/games/seed-man-platformer/campaign-v20-runtime.js
+              ! grep -Fq 'Genome Hydra' site/public-route-patch/games/seed-man-platformer/campaign-v20-runtime.js
               mkdir -p release-resource/games/seed-man-platformer
               cp -a site/public-route-patch/games/seed-man-platformer/. release-resource/games/seed-man-platformer/
               ;;
