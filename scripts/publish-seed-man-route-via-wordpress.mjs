@@ -13,6 +13,9 @@ const releaseFiles=[
   'approved-art-core-v1.js','approved-art-runtime-v1.js','seed-man-production-art.js','gameplay-v2.js',
   'combat-browser-v1.js','enemy-attacks-browser-v1.js','enemy-attacks.js','three-world-v1.js',
   'input-guard-v1.js','seed-man.css','physics.mjs',
+  'assets/approved/seed-man-character-atlas-v2.webp',
+  'assets/approved/seed-man-enemy-boss-atlas-v1.webp',
+  'assets/approved/seed-man-platform-atlas-v1.webp',
   'data/campaign.json','data/level-01.json','data/levels-20-v1.json','data/seed-man-art-manifest-v1.json',
   'data/enemy-catalog-v1.json','data/boss-catalog-v1.json'
 ];

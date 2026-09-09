@@ -107,11 +107,18 @@ jobs:
           fetch 'approved-art-core-v1.js' "$tmp/art-core.js"
           fetch 'approved-art-runtime-v1.js' "$tmp/art-runtime.js"
           fetch 'seed-man-production-art.js' "$tmp/renderer.js"
+          fetch 'assets/approved/seed-man-character-atlas-v2.webp' "$tmp/character.webp"
           node --check "$tmp/runtime.js"
           node --check "$tmp/ui.js"
           node --check "$tmp/art-core.js"
           node --check "$tmp/art-runtime.js"
           node --check "$tmp/renderer.js"
+          node - "$tmp/character.webp" <<'NODE'
+          const fs=require('fs');const b=fs.readFileSync(process.argv[2]);
+          if(b.subarray(0,4).toString('ascii')!=='RIFF'||b.subarray(8,12).toString('ascii')!=='WEBP'||b.subarray(12,16).toString('ascii')!=='VP8X')throw new Error('live character atlas is not an extended WebP');
+          const width=1+b.readUIntLE(24,3),height=1+b.readUIntLE(27,3);
+          if(width!==1600||height!==640||(!(b[20]&0x10)&&!b.includes(Buffer.from('ALPH'))))throw new Error(`live character atlas contract failed: ${width}x${height}`);
+          NODE
           node - "$tmp/campaign.json" "$tmp/levels.json" "$tmp/art-manifest.json" <<'NODE'
           const fs=require('fs');
           const campaign=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
@@ -132,6 +139,7 @@ jobs:
           grep -Fq 'seed-man-campaign-v20-runtime-v1' "$tmp/runtime.js"
           grep -Fq 'seed-man-campaign-ui-v20' "$tmp/ui.js"
           grep -Fq 'character.seedman.atlas' "$tmp/art-core.js"
+          grep -Fq 'seed-man-character-atlas-v2.webp' "$tmp/art-core.js"
           grep -Fq 'approved-showcase-2026-09-08' "$tmp/renderer.js"
           grep -Fq 'green-armored-plant-hero' "$tmp/renderer.js"
           ! grep -Fq 'Greenhouse Gauntlet' "$tmp/index.html"
