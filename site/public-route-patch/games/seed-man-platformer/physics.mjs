@@ -12,11 +12,7 @@ export const DEFAULTS = Object.freeze({
   maxFallSpeed: 900,
   coyoteTime: 0.11,
   jumpBuffer: 0.12,
-  maxAirJumps: 1,
-  speedBoostMultiplier: 1.35,
-  jumpBoostMultiplier: 1.18,
-  magnetRadius: 145,
-  shieldInvulnerability: 1.05
+  maxAirJumps: 1
 });
 
 export function overlaps(a, b) {
@@ -27,14 +23,6 @@ export function approach(current, target, maxDelta) {
   if (current < target) return Math.min(target, current + maxDelta);
   if (current > target) return Math.max(target, current - maxDelta);
   return target;
-}
-
-function centerDistance(a, b) {
-  const ax = a.x + a.width / 2;
-  const ay = a.y + a.height / 2;
-  const bx = b.x + b.width / 2;
-  const by = b.y + b.height / 2;
-  return Math.hypot(ax - bx, ay - by);
 }
 
 export function createPlayer(spawn) {
@@ -51,14 +39,7 @@ export function createPlayer(spawn) {
     airJumpsRemaining: DEFAULTS.maxAirJumps,
     checkpoint: { x: spawn.x, y: spawn.y, id: 'start' },
     collected: [],
-    collectedPowerups: [],
-    power: {
-      speedTimer: 0,
-      jumpTimer: 0,
-      magnetTimer: 0,
-      shieldCharges: 0,
-      invulnerableTimer: 0
-    },
+    power: { invulnerableTimer: 0 },
     deaths: 0,
     finished: false,
     finishBlocked: false,
@@ -96,6 +77,7 @@ function respawn(player, config) {
   player.coyote = 0;
   player.jumpBuffer = 0;
   player.airJumpsRemaining = config.maxAirJumps;
+  player.power = player.power || {};
   player.power.invulnerableTimer = 0.45;
   player.deaths += 1;
   player.finishBlocked = false;
@@ -108,22 +90,6 @@ function pickupRequirement(level) {
   return Array.isArray(level?.pickups) ? level.pickups.length : 0;
 }
 
-function tickPowerTimers(player, step) {
-  player.power.speedTimer = Math.max(0, player.power.speedTimer - step);
-  player.power.jumpTimer = Math.max(0, player.power.jumpTimer - step);
-  player.power.magnetTimer = Math.max(0, player.power.magnetTimer - step);
-  player.power.invulnerableTimer = Math.max(0, player.power.invulnerableTimer - step);
-}
-
-function collectPowerup(player, powerup) {
-  if (player.collectedPowerups.includes(powerup.id)) return;
-  player.collectedPowerups.push(powerup.id);
-  if (powerup.type === 'speed') player.power.speedTimer = Math.max(player.power.speedTimer, Number(powerup.duration) || 8);
-  else if (powerup.type === 'jump') player.power.jumpTimer = Math.max(player.power.jumpTimer, Number(powerup.duration) || 10);
-  else if (powerup.type === 'magnet') player.power.magnetTimer = Math.max(player.power.magnetTimer, Number(powerup.duration) || 10);
-  else if (powerup.type === 'shield') player.power.shieldCharges = Math.min(2, player.power.shieldCharges + 1);
-}
-
 function checkpointsFor(level) {
   if (Array.isArray(level?.checkpoints)) return level.checkpoints;
   return level?.checkpoint ? [level.checkpoint] : [];
@@ -132,38 +98,34 @@ function checkpointsFor(level) {
 export function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
   const player = JSON.parse(JSON.stringify(inputPlayer));
   if (player.finished) return player;
-  if (!player.power) {
-    player.power = { speedTimer: 0, jumpTimer: 0, magnetTimer: 0, shieldCharges: 0, invulnerableTimer: 0 };
-  }
-  if (!Array.isArray(player.collectedPowerups)) player.collectedPowerups = [];
+  player.power = player.power || { invulnerableTimer: 0 };
+  player.power.invulnerableTimer = Math.max(0, Number(player.power.invulnerableTimer || 0));
   if (!Number.isInteger(player.airJumpsRemaining)) player.airJumpsRemaining = config.maxAirJumps;
 
   const step = Math.min(Math.max(dt, 0), 1 / 20);
   const requiredPickups = pickupRequirement(level);
-  tickPowerTimers(player, step);
+  player.power.invulnerableTimer = Math.max(0, player.power.invulnerableTimer - step);
   player.finishBlocked = false;
   player.missingPickups = Math.max(0, requiredPickups - player.collected.length);
 
   player.jumpBuffer = input.jumpPressed ? config.jumpBuffer : Math.max(0, player.jumpBuffer - step);
   player.coyote = player.grounded ? config.coyoteTime : Math.max(0, player.coyote - step);
 
-  const speedMultiplier = player.power.speedTimer > 0 ? config.speedBoostMultiplier : 1;
-  const jumpMultiplier = player.power.jumpTimer > 0 ? config.jumpBoostMultiplier : 1;
   const direction = (input.right ? 1 : 0) - (input.left ? 1 : 0);
-  const targetVx = direction * config.moveSpeed * speedMultiplier;
+  const targetVx = direction * config.moveSpeed;
   const acceleration = player.grounded ? config.groundAcceleration : config.airAcceleration;
   const deceleration = player.grounded ? config.groundDeceleration : config.airDeceleration;
   player.vx = approach(player.vx, targetVx, (direction === 0 ? deceleration : acceleration) * step);
 
   let jumped = false;
   if (player.jumpBuffer > 0 && player.coyote > 0) {
-    player.vy = -config.jumpSpeed * jumpMultiplier;
+    player.vy = -config.jumpSpeed;
     player.grounded = false;
     player.coyote = 0;
     player.jumpBuffer = 0;
     jumped = true;
   } else if (input.jumpPressed && player.airJumpsRemaining > 0) {
-    player.vy = -config.doubleJumpSpeed * jumpMultiplier;
+    player.vy = -config.doubleJumpSpeed;
     player.grounded = false;
     player.coyote = 0;
     player.jumpBuffer = 0;
@@ -184,13 +146,8 @@ export function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
   player.y += player.vy * step;
   for (const platform of level.platforms) solidCollisionY(player, platform, config);
 
-  for (const powerup of level.powerups || []) {
-    if (!player.collectedPowerups.includes(powerup.id) && overlaps(player, powerup)) collectPowerup(player, powerup);
-  }
-
-  for (const pickup of level.pickups) {
-    const magnetCollect = player.power.magnetTimer > 0 && centerDistance(player, pickup) <= config.magnetRadius;
-    if (!player.collected.includes(pickup.id) && (overlaps(player, pickup) || magnetCollect)) player.collected.push(pickup.id);
+  for (const pickup of level.pickups || []) {
+    if (!player.collected.includes(pickup.id) && overlaps(player, pickup)) player.collected.push(pickup.id);
   }
   player.missingPickups = Math.max(0, requiredPickups - player.collected.length);
 
@@ -204,17 +161,10 @@ export function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
     }
   }
 
-  const hitHazard = level.hazards.some((hazard) => overlaps(player, hazard)) || player.y > level.worldHeight + 160;
+  const hitHazard = (level.hazards || []).some((hazard) => overlaps(player, hazard)) || player.y > level.worldHeight + 160;
   if (hitHazard && player.power.invulnerableTimer <= 0) {
-    if (player.power.shieldCharges > 0 && player.y <= level.worldHeight + 160) {
-      player.power.shieldCharges -= 1;
-      player.power.invulnerableTimer = config.shieldInvulnerability;
-      player.vy = -Math.min(470, config.jumpSpeed * 0.74);
-      player.state = 'shield-bounce';
-    } else {
-      respawn(player, config);
-      return player;
-    }
+    respawn(player, config);
+    return player;
   }
 
   if (level.finish && player.x + player.width >= level.finish.x) {
@@ -226,7 +176,7 @@ export function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
     return player;
   }
 
-  if (!player.grounded && !['double-jump', 'shield-bounce'].includes(player.state)) player.state = player.vy < 0 ? 'jump' : 'fall';
+  if (!player.grounded && player.state !== 'double-jump') player.state = player.vy < 0 ? 'jump' : 'fall';
   else if (player.grounded && Math.abs(player.vx) > 1) player.state = 'run';
   else if (player.grounded) player.state = 'idle';
   return player;
