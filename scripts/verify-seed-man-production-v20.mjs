@@ -32,10 +32,20 @@ if (!finale || finale.boss !== 'blight-king' || !finale.mechanics?.includes('fin
 const campaignIds = new Set(campaign.worlds.flatMap((w)=>w.levels.map((l)=>l.id)));
 for (const level of levels.levels) if (!campaignIds.has(level.id)) throw new Error(`Level missing from campaign: ${level.id}`);
 
-const artText = JSON.stringify(art);
-for (const marker of ['green-armored-plant-hero','world.greenhouse-valley','world.forest-ruins','world.desert-canyon','world.frozen-peak','world.eco-city']) {
-  if (!artText.includes(marker)) throw new Error(`Approved art manifest missing marker: ${marker}`);
+if (art.id !== 'seed-man-approved-art-v2') throw new Error(`Expected approved-art manifest v2, got ${art.id || 'missing'}`);
+if (art.sourceOfTruth !== 'approved-showcase-2026-09-08') throw new Error('Approved art source-of-truth marker is missing');
+if (art.policy?.authoritative !== true) throw new Error('Approved art manifest must be authoritative');
+if (art.policy?.proceduralFallbackAllowed !== false || art.policy?.legacyAtlasFallbackAllowed !== false) throw new Error('Approved art fallbacks must stay disabled');
+if (art.policy?.characterReference !== 'green-armored-plant-hero') throw new Error('Approved Seed Man character reference is missing');
+const expectedWorlds = ['greenhouse-valley','forest-ruins','desert-canyon','frozen-peak','eco-city'];
+for (const world of expectedWorlds) if (!art.policy?.worlds?.includes(world)) throw new Error(`Approved art manifest missing world: ${world}`);
+for (const key of ['cover.main','character.seedman.atlas','enemy.atlas','boss.atlas','platform.atlas','world.atlas','ui.vfx.cover']) {
+  if (!art.assets?.[key]) throw new Error(`Approved art manifest missing asset key: ${key}`);
 }
+for (const region of ['cover.main','character.seedman.atlas','enemy-boss.atlas','world.atlas','platform.atlas','ui-vfx.atlas']) {
+  if (!art.masterAtlas?.regions?.[region]) throw new Error(`Approved master atlas missing region: ${region}`);
+}
+
 const renderer = read('seed-man-production-art.js');
 for (const marker of ['approved-showcase-2026-09-08','green-armored-plant-hero','fallbackAllowed:false']) {
   if (!renderer.includes(marker)) throw new Error(`Approved renderer missing marker: ${marker}`);
@@ -45,4 +55,4 @@ if (!runtime.includes('seed-man-campaign-v20-runtime-v1')) throw new Error('Cano
 for (const stale of ['"levelCount": 15','"newLevelCount": 14','baseRuntimeLevelCount','Genome Hydra','Voltage Wasp Alpha']) {
   if (read('data/campaign.json').includes(stale)) throw new Error(`Retired campaign marker remains: ${stale}`);
 }
-console.log(JSON.stringify({ok:true,levels:20,worlds:5,finalBoss:'blight-king',approvedArt:true}));
+console.log(JSON.stringify({ok:true,levels:20,worlds:5,finalBoss:'blight-king',approvedArt:true,approvedArtManifest:art.id}));
