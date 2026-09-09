@@ -1,13 +1,39 @@
+import { setDefaultResultOrder } from 'node:dns';
 import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
+
+setDefaultResultOrder('ipv4first');
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const contractsDir = path.join(repoRoot, 'site', 'deployment', 'external-games');
 const siteUrl = (process.env.DTF_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
 const cacheTag = process.env.GITHUB_RUN_ID || `${Date.now()}`;
 const promotableStatuses = new Set(['release-candidate', 'ready-to-package']);
+const FETCH_ATTEMPTS = Number.parseInt(process.env.EXTERNAL_GAME_LIVE_FETCH_ATTEMPTS || '8', 10);
+const FETCH_TIMEOUT_MS = Number.parseInt(process.env.EXTERNAL_GAME_LIVE_FETCH_TIMEOUT_MS || '30000', 10);
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function errorDetail(error) {
+  if (!(error instanceof Error)) return String(error);
+  const cause = error.cause;
+  if (cause && typeof cause === 'object') {
+    const code = 'code' in cause ? String(cause.code) : '';
+    const message = 'message' in cause ? String(cause.message) : '';
+    if (code || message) return [code, message].filter(Boolean).join(': ');
+  }
+  return error.message || error.name;
+}
+
+function isRetryableFetchError(error) {
+  return /ECONNRESET|ETIMEDOUT|ECONNREFUSED|EAI_AGAIN|UND_ERR_CONNECT_TIMEOUT|UND_ERR_HEADERS_TIMEOUT|UND_ERR_SOCKET|fetch failed|network/i.test(errorDetail(error));
+}
+
+function isRetryableStatus(status) {
+  return status === 408 || status === 425 || status === 429 || status >= 500;
+}
 
 function parseRevision(raw, label) {
   const values = {};
@@ -22,28 +48,34 @@ function parseRevision(raw, label) {
 
 async function fetchExact(url, { json = false } = {}) {
   let lastError;
-  for (let attempt = 1; attempt <= 5; attempt += 1) {
+  for (let attempt = 1; attempt <= FETCH_ATTEMPTS; attempt += 1) {
     try {
       const response = await fetch(url, {
         redirect: 'manual',
         headers: {
           'Cache-Control': 'no-cache, no-store, max-age=0',
           Pragma: 'no-cache',
-          'User-Agent': 'DTFSeeds-External-Game-Live-Verify/1.0',
+          'User-Agent': 'DTFSeeds-External-Game-Live-Verify/1.1',
         },
-        signal: AbortSignal.timeout(30_000),
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
       });
       if (response.status >= 300 && response.status < 400) {
         throw new Error(`redirected (${response.status}) to ${response.headers.get('location') || '(unknown)'}`);
       }
-      if (response.status !== 200) throw new Error(`HTTP ${response.status}`);
-      return json ? await response.json() : await response.text();
+      if (response.status !== 200) {
+        lastError = new Error(`HTTP ${response.status}`);
+        if (!isRetryableStatus(response.status) || attempt === FETCH_ATTEMPTS) throw lastError;
+        await response.body?.cancel().catch(() => {});
+      } else {
+        return json ? await response.json() : await response.text();
+      }
     } catch (error) {
       lastError = error;
-      if (attempt < 5) await new Promise(resolve => setTimeout(resolve, 1200 * attempt));
+      if (attempt === FETCH_ATTEMPTS || !isRetryableFetchError(error)) break;
     }
+    await sleep(900 * attempt);
   }
-  throw new Error(`${url}: ${lastError?.message || lastError}`);
+  throw new Error(`${url}: ${errorDetail(lastError)}`);
 }
 
 function localRuntimeRefs(html) {
