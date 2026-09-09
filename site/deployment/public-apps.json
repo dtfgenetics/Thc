@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
   "sourceOfTruth": "dtfgenetics/Thc",
-  "updated": "2026-09-08",
+  "updated": "2026-09-09",
   "apps": [
     {
       "id": "high-land",
@@ -76,12 +76,14 @@
       "status": "ready-to-package",
       "build": "node games/high-iq/scripts/validate-data.mjs",
       "machineData": {
-        "version": "2.2",
-        "questions": 80,
+        "version": "2.4",
+        "questions": 200,
         "sources": 50,
-        "validator": "node games/high-iq/scripts/validate-data.mjs"
+        "validator": "node games/high-iq/scripts/validate-data.mjs",
+        "publicRuntimeValidator": "node games/high-iq/scripts/validate-public-runtime.mjs",
+        "manifestDriven": true
       },
-      "notes": "Self-hosted HTML/CSS/JavaScript runtime is packaged directly into the public suite. The older Base44 build is legacy fallback only."
+      "notes": "Self-hosted manifest-driven High IQ runtime. Dataset v2.4 currently declares 200 Approved/PASS questions and 50 registered sources. The older Base44 build is legacy fallback only."
     },
     {
       "id": "high-life",
