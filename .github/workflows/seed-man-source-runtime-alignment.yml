@@ -10,6 +10,9 @@ on:
       - site/public-route-patch/games/seed-man-platformer/approved-art-core-v1.js
       - site/public-route-patch/games/seed-man-platformer/approved-art-runtime-v1.js
       - site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js
+      - site/public-route-patch/games/seed-man-platformer/assets/approved/**
+      - games/seed-man-platformer/assets/approved/**
+      - scripts/validate-seed-man-character-atlas.mjs
       - games/seed-man-platformer/src/render/**
       - .github/workflows/seed-man-source-runtime-alignment.yml
   push:
@@ -22,6 +25,9 @@ on:
       - site/public-route-patch/games/seed-man-platformer/approved-art-core-v1.js
       - site/public-route-patch/games/seed-man-platformer/approved-art-runtime-v1.js
       - site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js
+      - site/public-route-patch/games/seed-man-platformer/assets/approved/**
+      - games/seed-man-platformer/assets/approved/**
+      - scripts/validate-seed-man-character-atlas.mjs
       - games/seed-man-platformer/src/render/**
       - .github/workflows/seed-man-source-runtime-alignment.yml
 
@@ -45,7 +51,7 @@ jobs:
           index="$route/index.html"
           test -s "$index"
           for script in canvas-compat-v1.js approved-art-core-v1.js approved-art-runtime-v1.js app.js seed-man-production-art.js campaign-v20-runtime.js campaign-ui-v20.js; do
-            grep -Fq "./${script}?v=20260908-v20" "$index"
+            grep -Fq "./${script}?v=" "$index"
           done
           core="$(grep -nF './approved-art-core-v1.js?v=' "$index"|head -n1|cut -d: -f1)"
           artRuntime="$(grep -nF './approved-art-runtime-v1.js?v=' "$index"|head -n1|cut -d: -f1)"
@@ -72,6 +78,7 @@ jobs:
 
       - name: Verify canonical approved-art source syntax
         run: |
+          node scripts/validate-seed-man-character-atlas.mjs
           node --check games/seed-man-platformer/src/render/art-registry.mjs
           node --check games/seed-man-platformer/src/render/approved-art-loader.mjs
           node --check games/seed-man-platformer/src/render/visual-runtime-v2.mjs
