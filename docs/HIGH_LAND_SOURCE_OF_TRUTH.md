@@ -14,7 +14,7 @@
 - Default branch: `main`
 - Build: `npm run build:high-land`
 - Test: `npm run test:high-land`
-- E2E: `npm run test:e2e:high-land`
+- Browser-tool policy: `node scripts/verify-browser-tool-policy.mjs`
 - Production target: `https://dtfseeds.com/games/high-land/`
 
 ## Locked product rules
@@ -23,8 +23,14 @@
 - Dice movement must exactly equal spaces moved.
 - Tokens render on board-path coordinates rather than in a detached UI area.
 - Multiplayer requires player names and room/invite flow.
-- HIT/action cards, skip-turn rules, finish/win logic, and background-audio mute behavior must remain testable.
+- HIT/action cards, skip-turn rules, finish/win logic, reverse-turn logic, and background-audio mute behavior must remain testable.
 - Board artwork and HIT-card artwork must come from approved Drive assets or explicitly approved new originals.
+
+## Validation rule
+
+High Land repo validation is deterministic: install, unit tests, TypeScript/Vite build, room API security checks, PHP lint where applicable, and the browser-tool policy. Playwright is retired from the active High Land gate.
+
+Manual browser and live-route review are still required before calling a deployed artifact live-ready, but they are recorded separately from repository validation.
 
 ## Change rule
 
@@ -34,4 +40,4 @@ Do not create a second High Land production repository or a second Drive master 
 
 ## Release rule
 
-A release must pass `docs/PORTFOLIO_RELEASE_CRITERIA.md`, the High Land test/build checks, and a live route smoke test after deployment.
+A release must pass `docs/PORTFOLIO_RELEASE_CRITERIA.md`, the High Land deterministic test/build checks, and live route verification after deployment.

@@ -1,8 +1,6 @@
 # High Land acceptance checklist
 
-Use only **PASS**, **FAIL**, or **NOT TESTED** in the Status column. Add concrete
-evidence for every PASS. Any required FAIL or NOT TESTED blocks a complete or
-live-ready claim.
+Use only **PASS**, **FAIL**, or **NOT TESTED** in the Status column. Add concrete evidence for every PASS. Any required FAIL or NOT TESTED blocks a complete or live-ready claim.
 
 ## Scope and repository controls
 
@@ -12,6 +10,7 @@ live-ready claim.
 | `AGENTS.md`, `CLAUDE.md`, and all required High Land control docs exist | NOT TESTED | |
 | No secrets, `.env` files, credentials, or private room data are committed | NOT TESTED | |
 | No unrelated game, pricing, property, or strain content is introduced | NOT TESTED | |
+| Retired Playwright config/spec paths are absent | NOT TESTED | |
 
 ## Board, movement, and tokens
 
@@ -36,7 +35,7 @@ live-ready claim.
 | Forward, backward, color, swap, leader, group, and choice effects are correct | NOT TESTED | |
 | Skip turn, roll again, and draw again resolve without stuck or infinite turns | NOT TESTED | |
 | Backward protection is consumed correctly | NOT TESTED | |
-| Reverse turn order works when included | NOT TESTED | |
+| Reverse turn order works across dice turns, HIT-card turns, and pending choices | NOT TESTED | |
 | All card movement remains within START and FINISH | NOT TESTED | |
 
 ## Players and invite multiplayer
@@ -52,16 +51,16 @@ live-ready claim.
 | Refresh/reconnect restores the player session when possible | NOT TESTED | |
 | Public room data excludes secrets and session credentials | NOT TESTED | |
 
-## Automated local validation
+## Automated repository validation
 
 | Check | Status | Evidence |
 | --- | --- | --- |
 | `npm ci` | NOT TESTED | |
 | `npm run test:high-land` | NOT TESTED | |
 | `npm run build:high-land` | NOT TESTED | |
-| `npm run test:e2e:high-land` | NOT TESTED | |
+| `node scripts/verify-browser-tool-policy.mjs` | NOT TESTED | |
 | PHP room API lint passes when PHP files exist | NOT TESTED | |
-| CI runs unit tests, build, and browser smoke tests | NOT TESTED | |
+| CI runs deterministic tests, build, room API security, PHP lint, and static asset checks | NOT TESTED | |
 | Datadog skips successfully when required secrets are absent | NOT TESTED | |
 
 ## Presentation and live deployment
@@ -84,5 +83,4 @@ live-ready claim.
 - Overall status: PASS / FAIL / NOT TESTED
 - Remaining issues:
 
-Use **local validation passed; live deployment NOT TESTED** when the repository
-checks pass but the public site was not deployed and exercised.
+Use **local validation passed; live deployment NOT TESTED** when the repository checks pass but the public site was not deployed and exercised.

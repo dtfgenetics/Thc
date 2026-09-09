@@ -1,21 +1,29 @@
-# Browser Test Instructions
+# High Land Browser Review — No Playwright
 
-Codex should run these from the web app folder:
+Playwright is retired from the active High Land validation path. Use deterministic repository checks first, then perform manual browser review against the exact artifact or live route.
+
+## Repository checks
+
+Run from the repository root:
 
 ```bash
-npm install
-npx playwright install --with-deps chromium
-npm run test
-npm run build
-npm run test:e2e
+npm ci
+npm run test:high-land
+npm run build:high-land
+node scripts/verify-browser-tool-policy.mjs
 ```
 
-The browser tests should prove:
+## Manual browser review goals
 
-- The app loads.
-- Ten player mode starts.
-- A dice roll changes the board state.
-- Mobile layout can start and restart.
-- The production build works under `/games/high-land/`.
+Prove these behaviors in a real browser before calling the artifact presentation-ready:
 
-If tests fail, fix app code first, then test code second.
+- The app loads with the High Land identity.
+- Player setup supports local play.
+- 10-player mode can start.
+- A dice roll changes the board state by the exact rolled distance.
+- Landing on HIT reveals and applies a HIT card.
+- Reverse Rotation works across dice turns, HIT-card turns, and pending choices.
+- Mobile layout can start, roll, and restart without blocking controls.
+- The production build works under `/games/high-land/` after deployment.
+
+If browser review fails, fix app code first, then adjust review instructions only if the behavior requirement was wrong.

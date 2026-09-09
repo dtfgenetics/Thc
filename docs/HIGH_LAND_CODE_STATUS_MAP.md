@@ -6,16 +6,18 @@ This map shows what has been built, what is safe, and what still needs wiring.
 
 The current High Land game page front is approved and should be preserved. Continue fixing code, tests, build, runtime, deployment, and multiplayer wiring, but do not redesign the public front-page look unless a future task explicitly asks for a redesign.
 
-## Latest CI failures repaired
+## Current validation contract
 
-```txt
-Previous failures shown:
-- Vitest imported e2e/high-land.spec.ts and crashed on Playwright test.describe.
-- gameEngine reverse turn order and card-resolution tests expected the wrong currentPlayerIndex after turn advancement.
-- Build failed with TS5107 because tsconfig used deprecated moduleResolution=node10 via moduleResolution: Node.
+High Land uses deterministic repository validation:
+
+```bash
+npm ci
+npm run test:high-land
+npm run build:high-land
+node scripts/verify-browser-tool-policy.mjs
 ```
 
-Status: repaired. Vitest now only includes `src/**/*.test.ts` and `src/**/*.test.tsx`, excluding `e2e/**`. The game-engine tests now match actual card/turn behavior. The High Land app tsconfig now uses `moduleResolution: "Bundler"`, which is the modern Vite-compatible TypeScript setting. Production TypeScript build excludes unit/e2e files so `tsc && vite build` checks app/runtime code, not the test harness.
+Playwright config/spec files are retired from the active High Land gate. Manual browser review and live two-device checks remain required before a live-ready claim.
 
 ## Working local gameplay
 
@@ -28,7 +30,7 @@ apps/high-land-web/src/ui/DiceDisplay.tsx
 apps/high-land-web/src/ui/CardRevealModal.tsx
 ```
 
-Status: playable local prototype. Phaser board removes stale player tokens when player lists change and now binds global game-state listener cleanup to Phaser shutdown/destroy lifecycle events.
+Status: playable local prototype. Phaser board removes stale player tokens when player lists change and binds global game-state listener cleanup to Phaser shutdown/destroy lifecycle events.
 
 ## Named player setup
 
@@ -39,7 +41,7 @@ apps/high-land-web/src/app/highLandAppFlow.ts
 apps/high-land-web/src/app/highLandRoomModeService.ts
 ```
 
-Status: built. App has named-player flow and uses the room-mode service for local room actions. React type-only imports have been cleaned up.
+Status: built. App has named-player flow and uses the room-mode service for local room actions.
 
 ## Room and lobby fallback
 
@@ -54,7 +56,7 @@ apps/high-land-web/src/game/multiplayer/localRoomFlow.ts
 apps/high-land-web/src/game/multiplayer/roomSessionController.ts
 ```
 
-Status: local fallback systems are built. App can create a local room, show invite link, add a local test player, and start from lobby. Room state now enforces the 10-player max at the source layer. Opening an invite URL with `?room=CODE` opens the join-room flow with the code prefilled.
+Status: local fallback systems are built. App can create a local room, show invite link, add a local test player, and start from lobby. Room state enforces the 10-player max at the source layer. Invite URLs open the join-room flow with the room code prefilled.
 
 ## Room gameplay runtime
 
@@ -65,16 +67,20 @@ apps/high-land-web/src/game/multiplayer/roomGameActions.ts
 apps/high-land-web/src/game/multiplayer/roomActionExecutor.ts
 ```
 
-Status: built and wired into App for room start, restart, and roll. Room-mode gameplay now uses the transport-backed runtime path, and room player IDs/tokens/colors are preserved in game state. Local player-count buttons are hidden during room games so a user cannot accidentally leave room mode mid-game.
+Status: built and wired into App for room start, restart, and roll. Room-mode gameplay uses the transport-backed runtime path, and room player IDs/tokens/colors are preserved in game state.
 
 ## Board labels and HIT cards
 
 ```txt
 apps/high-land-web/src/game/data/boardPath.ts
+apps/high-land-web/src/game/data/actionCards.ts
+apps/high-land-web/src/game/systems/cardSystem.ts
+apps/high-land-web/src/game/systems/effectResolver.ts
+apps/high-land-web/src/game/systems/turnSystem.ts
 apps/high-land-web/src/ui/CardRevealModal.tsx
 ```
 
-Status: action spaces use the High Land `HIT` label instead of generic `CARD`. HIT card reveal UI already uses `HIT CARD`.
+Status: action spaces use the High Land `HIT` label. HIT card reveal UI uses `HIT CARD`. Reverse Rotation is required to work through dice turns, normal card turns, and pending choice resolution.
 
 ## Multiplayer transport boundary
 
@@ -85,27 +91,7 @@ apps/high-land-web/src/game/multiplayer/websiteRoomTransport.ts
 apps/high-land-web/src/game/multiplayer/roomTransportFactory.ts
 ```
 
-Status: local transport works and the live DTF Seeds route selects the Hostinger
-website transport. Local storage helpers fail clearly outside the browser.
-
-## Saved game storage
-
-```txt
-apps/high-land-web/src/game/systems/storageSystem.ts
-apps/high-land-web/src/game/systems/storageSystem.test.ts
-```
-
-Status: saved-game storage is safe outside the browser and has regression tests so Node-based unit tests do not crash when `window.localStorage` is missing. Old save hydration now restores unique fallback IDs, token/color fallbacks, clamps currentPlayerIndex, clamps negative counters, and normalizes turn direction.
-
-## Event logging
-
-```txt
-apps/high-land-web/src/game/events/gameEvents.ts
-apps/high-land-web/src/game/multiplayer/localRoomEvents.ts
-```
-
-Status: local event log is built and website room actions append events through
-the Hostinger API transport.
+Status: local transport works and the live DTF Seeds route selects the Hostinger website transport. Local storage helpers fail clearly outside the browser.
 
 ## Website Room API
 
@@ -116,56 +102,29 @@ apps/high-land-web/src/game/multiplayer/websiteRoomTransport.ts
 docs/HIGH_LAND_MULTIPLAYER_TRANSPORTS.md
 ```
 
-Status: the API boundary is deployed and guarded. Full two-device game-state
-synchronization remains an acceptance test, not an assumed pass.
+Status: API boundary is guarded. Full two-device game-state synchronization remains an acceptance test, not an assumed pass.
 
-## Runner setup
+## Tests that matter before release
 
 ```txt
+apps/high-land-web/src/**/*.test.ts
+apps/high-land-web/src/**/*.test.tsx
+scripts/verify-browser-tool-policy.mjs
 .github/workflows/high-land-ci.yml
-.devcontainer/devcontainer.json
-.gitpod.yml
-docs/RUN_HIGH_LAND_CODE.md
 ```
 
-Status: GitHub Actions has a manual trigger and now runs unit tests, build, Playwright Chromium install, browser smoke tests, and uploads Playwright artifacts on failure. Codespaces and Gitpod configs exist. Runner instructions exist for Codespaces, Gitpod, GitHub Actions, Replit, Cursor, and Windsurf.
-
-## Tests added
-
-```txt
-apps/high-land-web/src/app/highLandAppFlow.test.ts
-apps/high-land-web/src/app/highLandRoomModeService.test.ts
-apps/high-land-web/src/app/highLandRoomRuntime.test.ts
-apps/high-land-web/src/game/multiplayer/localRoomRepository.test.ts
-apps/high-land-web/src/game/multiplayer/localRoomFlow.test.ts
-apps/high-land-web/src/game/multiplayer/roomGameFactory.test.ts
-apps/high-land-web/src/game/multiplayer/roomSessionController.test.ts
-apps/high-land-web/src/game/multiplayer/roomState.test.ts
-apps/high-land-web/src/game/multiplayer/roomTransport.test.ts
-apps/high-land-web/src/game/multiplayer/localRoomTransport.test.ts
-apps/high-land-web/src/game/multiplayer/websiteRoomTransport.test.ts
-apps/high-land-web/src/game/multiplayer/roomTransportFactory.test.ts
-apps/high-land-web/src/game/multiplayer/localRoomEvents.test.ts
-apps/high-land-web/src/game/multiplayer/websiteRoomApi.test.ts
-apps/high-land-web/src/game/multiplayer/roomGameActions.test.ts
-apps/high-land-web/src/game/multiplayer/roomActionExecutor.test.ts
-apps/high-land-web/src/game/systems/storageSystem.test.ts
-apps/high-land-web/e2e/high-land.spec.ts
-```
-
-Status: tests exist, and browser smoke tests now cover local play, room start/roll, invite-link prefill, and mobile restart. They still must be run in a real runner.
+Status: deterministic tests must pass. Browser/live review must be recorded separately.
 
 ## Immediate next wiring tasks
 
 ```txt
-1. Manually run High Land CI again.
-2. Confirm npm run test:high-land passes.
-3. Confirm npm run build:high-land passes.
-4. Confirm npm run test:e2e:high-land passes.
-5. If any new failure appears, fix that exact failure.
-6. Run the live API guard checks.
-7. Run the complete two-device room acceptance test.
-8. Deploy and check https://dtfseeds.com/games/high-land/.
+1. Confirm npm run test:high-land passes.
+2. Confirm npm run build:high-land passes.
+3. Confirm node scripts/verify-browser-tool-policy.mjs passes.
+4. Run the live API guard checks.
+5. Run the complete two-browser/device room acceptance test.
+6. Deploy the exact tested artifact to /games/high-land/.
+7. Verify https://dtfseeds.com/games/high-land/ visitor-facing behavior.
 ```
 
 ## Do not claim done until
@@ -173,8 +132,8 @@ Status: tests exist, and browser smoke tests now cover local play, room start/ro
 ```txt
 - Unit tests pass.
 - Build passes.
-- Browser smoke tests pass.
-- Live route loads with no console errors.
+- Browser-tool policy passes.
+- Live route loads with no console errors after deployment.
 - Player names work.
 - Invite link is visible and opens join flow.
 - Room lobby works locally.
