@@ -4,17 +4,25 @@ on:
   push:
     branches: [main]
     paths:
+      - 'games/seed-man-platformer/src/render/**'
+      - 'games/seed-man-platformer/scripts/build-three-public.mjs'
       - 'site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js'
       - 'site/public-route-patch/games/seed-man-platformer/approved-art-core-v1.js'
       - 'site/public-route-patch/games/seed-man-platformer/approved-art-runtime-v1.js'
+      - 'site/public-route-patch/games/seed-man-platformer/three-world-v1.js'
+      - 'site/public-route-patch/games/seed-man-platformer/three-world-adapter-v1.js'
       - 'site/public-route-patch/games/seed-man-platformer/data/seed-man-art-manifest-v1.json'
       - 'scripts/verify-seed-man-production-v20.mjs'
       - '.github/workflows/seed-man-sprite-visual-ci.yml'
   pull_request:
     paths:
+      - 'games/seed-man-platformer/src/render/**'
+      - 'games/seed-man-platformer/scripts/build-three-public.mjs'
       - 'site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js'
       - 'site/public-route-patch/games/seed-man-platformer/approved-art-core-v1.js'
       - 'site/public-route-patch/games/seed-man-platformer/approved-art-runtime-v1.js'
+      - 'site/public-route-patch/games/seed-man-platformer/three-world-v1.js'
+      - 'site/public-route-patch/games/seed-man-platformer/three-world-adapter-v1.js'
       - 'site/public-route-patch/games/seed-man-platformer/data/seed-man-art-manifest-v1.json'
       - 'scripts/verify-seed-man-production-v20.mjs'
       - '.github/workflows/seed-man-sprite-visual-ci.yml'
@@ -25,11 +33,19 @@ permissions:
 jobs:
   verify-approved-art:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: npm
+      - name: Build canonical Three.js visual runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --prefix games/seed-man-platformer --ignore-scripts --no-audit --no-fund
+          npm run --prefix games/seed-man-platformer build:three-public
       - name: Validate canonical approved-art contract
         shell: bash
         run: |
@@ -39,10 +55,14 @@ jobs:
           node --check "$root/approved-art-core-v1.js"
           node --check "$root/approved-art-runtime-v1.js"
           node --check "$root/seed-man-production-art.js"
+          node --check "$root/three-world-v1.js"
+          node --check "$root/three-world-adapter-v1.js"
           grep -Fq 'approved-showcase-2026-09-08' "$root/seed-man-production-art.js"
           grep -Fq 'green-armored-plant-hero' "$root/seed-man-production-art.js"
           grep -Fq 'fallbackAllowed:false' "$root/seed-man-production-art.js"
           grep -Fq 'character.seedman.atlas' "$root/approved-art-core-v1.js"
+          grep -Fq 'seed-man-three-public-v3' "$root/three-world-v1.js"
+          grep -Fq 'seed-man-three-world-v2' "$root/three-world-v1.js"
           grep -Fq 'authoritative' "$root/data/seed-man-art-manifest-v1.json"
           ! grep -Fq 'seed-man-production-v1' "$root/seed-man-production-art.js"
           ! grep -Fq 'seed-man-locked-v1' "$root/seed-man-production-art.js"
