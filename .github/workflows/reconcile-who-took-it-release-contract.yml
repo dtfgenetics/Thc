@@ -1,0 +1,56 @@
+name: Reconcile Who Took It Release Contract
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/reconcile-who-took-it-release-contract.mjs'
+      - '.github/workflows/reconcile-who-took-it-release-contract.yml'
+      - 'site/deployment/public-apps.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: reconcile-who-took-it-release-contract
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Reconcile Who Took It deployment metadata
+        run: node scripts/reconcile-who-took-it-release-contract.mjs
+
+      - name: Validate reconciled contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/reconcile-who-took-it-release-contract.mjs --check
+          node scripts/validate-game-source-map.mjs
+          node scripts/validate-public-apps-registry.mjs
+
+      - name: Safely integrate registry update when needed
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- site/deployment/public-apps.json; then
+            echo 'No Who Took It deployment registry changes were needed.'
+            exit 0
+          fi
+          node scripts/studio/integrate-generated-change.mjs \
+            --message='Synchronize Who Took It full release contract' \
+            --paths=site/deployment/public-apps.json
