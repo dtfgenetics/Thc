@@ -1,0 +1,17 @@
+name: Seed Man Full Integration CI
+
+# ARCHIVED: retired 15-level full integration gate.
+# Historical snapshot only. Replaced by the v20 Seed Man platformer, bundle-validation, production, and live-smoke workflows.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  archived-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo 'Retired contract required data/campaign.json levelCount=15/newLevelCount=14, world-five-v1.js, and levels-12-15.json as production truth.'
