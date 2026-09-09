@@ -7,6 +7,9 @@ on:
       - site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
       - site/public-route-patch/games/seed-man-platformer/campaign-v20-runtime.js
       - site/public-route-patch/games/seed-man-platformer/campaign-ui-v20.js
+      - site/public-route-patch/games/seed-man-platformer/v20-enemy-runtime.js
+      - site/public-route-patch/games/seed-man-platformer/combat-browser-v2.js
+      - site/public-route-patch/games/seed-man-platformer/enemy-attacks-browser-v2.js
       - site/public-route-patch/games/seed-man-platformer/approved-art-core-v1.js
       - site/public-route-patch/games/seed-man-platformer/approved-art-runtime-v1.js
       - site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js
@@ -22,6 +25,9 @@ on:
       - site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
       - site/public-route-patch/games/seed-man-platformer/campaign-v20-runtime.js
       - site/public-route-patch/games/seed-man-platformer/campaign-ui-v20.js
+      - site/public-route-patch/games/seed-man-platformer/v20-enemy-runtime.js
+      - site/public-route-patch/games/seed-man-platformer/combat-browser-v2.js
+      - site/public-route-patch/games/seed-man-platformer/enemy-attacks-browser-v2.js
       - site/public-route-patch/games/seed-man-platformer/approved-art-core-v1.js
       - site/public-route-patch/games/seed-man-platformer/approved-art-runtime-v1.js
       - site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js
@@ -43,14 +49,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Verify source route boots only canonical v20 visual runtimes
+      - name: Verify source route boots only canonical v20 visual and combat runtimes
         shell: bash
         run: |
           set -euo pipefail
           route=site/public-route-patch/games/seed-man-platformer
           index="$route/index.html"
           test -s "$index"
-          for script in canvas-compat-v1.js approved-art-core-v1.js approved-art-runtime-v1.js app.js seed-man-production-art.js campaign-v20-runtime.js campaign-ui-v20.js; do
+          for script in canvas-compat-v1.js approved-art-core-v1.js approved-art-runtime-v1.js app.js seed-man-production-art.js campaign-v20-runtime.js campaign-ui-v20.js v20-enemy-runtime.js combat-browser-v2.js enemy-attacks-browser-v2.js; do
             grep -Fq "./${script}?v=" "$index"
           done
           core="$(grep -nF './approved-art-core-v1.js?v=' "$index"|head -n1|cut -d: -f1)"
@@ -59,11 +65,19 @@ jobs:
           renderer="$(grep -nF './seed-man-production-art.js?v=' "$index"|head -n1|cut -d: -f1)"
           campaign="$(grep -nF './campaign-v20-runtime.js?v=' "$index"|head -n1|cut -d: -f1)"
           ui="$(grep -nF './campaign-ui-v20.js?v=' "$index"|head -n1|cut -d: -f1)"
+          enemy="$(grep -nF './v20-enemy-runtime.js?v=' "$index"|head -n1|cut -d: -f1)"
+          combat="$(grep -nF './combat-browser-v2.js?v=' "$index"|head -n1|cut -d: -f1)"
+          attacks="$(grep -nF './enemy-attacks-browser-v2.js?v=' "$index"|head -n1|cut -d: -f1)"
           test "$core" -lt "$artRuntime"
           test "$artRuntime" -lt "$app"
           test "$app" -lt "$renderer"
           test "$renderer" -lt "$campaign"
           test "$campaign" -lt "$ui"
+          test "$ui" -lt "$enemy"
+          test "$enemy" -lt "$combat"
+          test "$combat" -lt "$attacks"
+          ! grep -Fq './combat-browser-v1.js' "$index"
+          ! grep -Fq './enemy-attacks-browser-v1.js' "$index"
           ! grep -Fq './seed-man-sprite-runtime-v1.js' "$index"
           ! grep -Fq './seed-man-sprite-runtime-v2.js' "$index"
           ! grep -Fq './world-five-v1.js' "$index"
@@ -73,8 +87,12 @@ jobs:
           grep -Fq 'approved-showcase-2026-09-08' "$route/seed-man-production-art.js"
           grep -Fq 'green-armored-plant-hero' "$route/seed-man-production-art.js"
           grep -Fq 'fallbackAllowed:false' "$route/seed-man-production-art.js"
-          grep -Fq 'seed-man-campaign-v20-runtime-v1' "$route/campaign-v20-runtime.js"
+          grep -Fq 'seed-man-campaign-v20-runtime-v2' "$route/campaign-v20-runtime.js"
+          grep -Fq "phenotypeForms:['plant','fire','electric','ice']" "$route/campaign-v20-runtime.js"
           grep -Fq 'seed-man-campaign-ui-v20' "$route/campaign-ui-v20.js"
+          grep -Fq 'seed-man-v20-enemy-runtime-v2' "$route/v20-enemy-runtime.js"
+          grep -Fq 'seed-man-combat-browser-v2' "$route/combat-browser-v2.js"
+          grep -Fq 'seed-man-enemy-attacks-browser-v2' "$route/enemy-attacks-browser-v2.js"
 
       - name: Verify canonical approved-art source syntax
         run: |

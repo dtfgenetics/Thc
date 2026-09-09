@@ -64,9 +64,16 @@ assert.equal(basePack.levels.length, 10);
 assert.equal(legacyWorldFive.levels.length, 4);
 assert.deepStrictEqual(legacyWorldFive.levels.map((entry) => entry.id), ['chromosome-crossing', 'mutation-marsh', 'allele-array', 'genome-spire']);
 
-assert.match(html, /campaign-v20-runtime\.js\?v=20260908-v20/, 'public page must load canonical v20 campaign runtime');
-assert.match(html, /campaign-ui-v20\.js\?v=20260908-v20/, 'public page must load canonical v20 campaign UI');
-assert.match(v20Runtime, /seed-man-campaign-v20-runtime-v1/, 'v20 runtime marker missing');
+// Asset query strings are cache-busters, not runtime identity. Verify the
+// canonical scripts are loaded without freezing a dated release token.
+assert.match(html, /campaign-v20-runtime\.js\?v=[^"']+/, 'public page must load canonical v20 campaign runtime');
+assert.match(html, /campaign-ui-v20\.js\?v=[^"']+/, 'public page must load canonical v20 campaign UI');
+assert.match(html, /v20-enemy-runtime\.js\?v=[^"']+/, 'public page must load canonical v20 enemy runtime');
+assert.match(html, /combat-browser-v2\.js\?v=[^"']+/, 'public page must load canonical v20 combat runtime');
+assert.match(html, /enemy-attacks-browser-v2\.js\?v=[^"']+/, 'public page must load canonical v20 enemy attack runtime');
+assert.doesNotMatch(html, /combat-browser-v1\.js|enemy-attacks-browser-v1\.js/, 'public page must not load legacy combat adapters');
+assert.match(v20Runtime, /seed-man-campaign-v20-runtime-v2/, 'v20 runtime v2 marker missing');
+assert.match(v20Runtime, /phenotypeForms:\['plant','fire','electric','ice'\]/, 'v20 runtime must expose canonical phenotype forms');
 assert.match(v20Runtime, /blight-king/, 'v20 runtime must own Blight King finale');
 assert.match(v20Runtime, /eco-city/, 'v20 runtime must own Eco City');
 assert.doesNotMatch(v20Runtime, /Genome Hydra|Genetic Frontier/, 'retired World 5 contract leaked into canonical v20 runtime');

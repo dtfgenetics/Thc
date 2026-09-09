@@ -7,7 +7,7 @@ const requireFile=(rel)=>{const p=path.join(root,rel);if(!fs.existsSync(p)||fs.s
 const required=[
   'index.html','app.js','canvas-compat-v1.js','campaign-v20-runtime.js','campaign-ui-v20.js',
   'approved-art-core-v1.js','approved-art-runtime-v1.js','seed-man-production-art.js','gameplay-v2.js',
-  'combat-browser-v1.js','enemy-attacks-browser-v1.js','input-guard-v1.js','seed-man.css','physics.mjs',
+  'v20-enemy-runtime.js','combat-browser-v2.js','enemy-attacks-browser-v2.js','input-guard-v1.js','seed-man.css','physics.mjs',
   'data/campaign.json','data/levels-20-v1.json','data/seed-man-art-manifest-v1.json','data/enemy-catalog-v1.json','data/boss-catalog-v1.json'
 ];
 required.forEach(requireFile);
@@ -37,9 +37,19 @@ for(const key of ['cover.main','character.seedman.atlas','enemy.atlas','boss.atl
 for(const region of ['cover.main','character.seedman.atlas','enemy-boss.atlas','world.atlas','platform.atlas','ui-vfx.atlas'])if(!art.masterAtlas?.regions?.[region])throw new Error(`approved-atlas-region-missing:${region}`);
 
 for(const [rel,markers] of [
-  ['campaign-v20-runtime.js',['seed-man-campaign-v20-runtime-v1']],
+  ['campaign-v20-runtime.js',['seed-man-campaign-v20-runtime-v2',"phenotypeForms:['plant','fire','electric','ice']"]],
   ['campaign-ui-v20.js',['seed-man-campaign-ui-v20']],
+  ['v20-enemy-runtime.js',['seed-man-v20-enemy-runtime-v2','PHENOTYPE_DURATION_MS = 30000']],
+  ['combat-browser-v2.js',['seed-man-combat-browser-v2']],
+  ['enemy-attacks-browser-v2.js',['seed-man-enemy-attacks-browser-v2']],
   ['seed-man-production-art.js',['approved-showcase-2026-09-08','green-armored-plant-hero','fallbackAllowed:false']]
 ])for(const marker of markers)if(!read(rel).includes(marker))throw new Error(`missing-marker:${rel}:${marker}`);
+
+const runtime=read('campaign-v20-runtime.js');
+for(const retiredPower of ["'speed'","'shield'","'magnet'","'jump'"])if(runtime.includes(retiredPower))throw new Error(`retired-v20-power:${retiredPower}`);
+const combat=read('combat-browser-v2.js');
+for(const retiredPhenotype of ['hydro-surge','terpene-tempest','vine-lash','mycelium-mind','rootbreaker','trichome-crystal','gravity-haze'])if(combat.includes(retiredPhenotype))throw new Error(`retired-v20-phenotype:${retiredPhenotype}`);
+const index=read('index.html');
+for(const stale of ['combat-browser-v1.js','enemy-attacks-browser-v1.js'])if(index.includes(stale))throw new Error(`legacy-runtime-in-index:${stale}`);
 for(const stale of ['Genome Hydra','Voltage Wasp Alpha','seed-man-production-v1','seed-man-locked-v1'])if(read('seed-man-production-art.js').includes(stale))throw new Error(`retired-renderer-marker:${stale}`);
-console.log(JSON.stringify({ok:true,levels:20,worlds:5,bosses:6,finalBoss:'blight-king',approvedArt:true,approvedArtManifest:art.id}));
+console.log(JSON.stringify({ok:true,levels:20,worlds:5,bosses:6,finalBoss:'blight-king',approvedArt:true,approvedArtManifest:art.id,combatRuntime:'v2'}));

@@ -1,9 +1,7 @@
 'use strict';
 
 (() => {
-  const VERSION = 'seed-man-campaign-v20-runtime-v1';
-  const PROGRESS_KEY = 'dtf-seed-man-campaign-v20';
-  const POWER_TYPES = ['speed', 'shield', 'magnet', 'jump'];
+  const VERSION = 'seed-man-campaign-v20-runtime-v2';
   const BOSS_META = Object.freeze({
     'overgrown-guardian': { name:'Overgrown Guardian', requiredHits:5, width:128, height:118, accent:'#76d858' },
     'ancient-dryad': { name:'Ancient Dryad', requiredHits:6, width:132, height:120, accent:'#9bd46f' },
@@ -82,15 +80,42 @@
     const platforms=[...ground.platforms,...upper];
     const pickupCount=Math.min(36,20+Math.floor(entry.order/2));
     const pickups=Array.from({length:pickupCount},(_,index)=>({id:`seed-${entry.order}-${index+1}`,x:safeX(ground.platforms,entry.length*(0.05+index*(0.9/Math.max(1,pickupCount-1))),55),y:425,width:22,height:22}));
-    const powerupCount=4+(entry.order>=9?1:0)+(entry.order>=17?1:0);
-    const powerups=Array.from({length:powerupCount},(_,index)=>{const type=POWER_TYPES[(index+entry.order)%POWER_TYPES.length];return{id:`power-${entry.order}-${index+1}`,type,x:safeX(ground.platforms,entry.length*(0.16+index*(0.68/Math.max(1,powerupCount-1))),60),y:425,width:28,height:28,duration:type==='magnet'?11:type==='jump'?10:8};});
     const checkpoints=Array.from({length:entry.checkpointCount},(_,index)=>{const x=safeX(ground.platforms,entry.length*((index+1)/(entry.checkpointCount+1)),90);return{id:`checkpoint-${entry.order}-${index+1}`,x,y:420,width:50,height:60,respawnX:Math.max(60,x-20),respawnY:400};});
     let boss=null;
     if (entry.boss) {
       const meta=BOSS_META[entry.boss]; const center=safeX(ground.platforms,entry.length*0.84,175);
       boss={id:entry.boss,name:meta.name,requiredHits:meta.requiredHits,width:meta.width,height:meta.height,accent:meta.accent,phases:meta.phases||1,phase:1,finalBoss:Boolean(meta.finalBoss),x:Math.round(center-meta.width/2),y:480-meta.height,arenaStartX:Math.round(entry.length*0.72),arenaEndX:Math.round(entry.length*0.94),speed:50+entry.order*2,hits:0,defeated:false};
     }
-    return {schemaVersion:4,id:entry.id,name:`Seed Man: ${entry.title}`,title:entry.title,levelNumber:entry.order,worldId:entry.worldId,worldTitle:entry.worldTitle,theme:entry.worldId,setting:`${entry.worldTitle} · ${entry.title}`,difficulty:entry.order,worldWidth:entry.length,worldHeight:540,requiredPickups:pickups.length,spawn:{x:80,y:390},platforms,hazards:ground.hazards,pickups,powerups,checkpoints,boss,enemyPool:[...entry.enemyPool],mechanics:[...entry.mechanics],hazardTypes:[...entry.hazards],backgroundKey:WORLD_BACKGROUND_KEYS[entry.worldId],palette:{accent:WORLD_COLORS[entry.worldId]},finish:{x:safeX(ground.platforms,entry.length-95,65),y:390,width:50,height:90}};
+    return {
+      schemaVersion:5,
+      id:entry.id,
+      name:`Seed Man: ${entry.title}`,
+      title:entry.title,
+      levelNumber:entry.order,
+      worldId:entry.worldId,
+      worldTitle:entry.worldTitle,
+      theme:entry.worldId,
+      setting:`${entry.worldTitle} · ${entry.title}`,
+      difficulty:entry.order,
+      worldWidth:entry.length,
+      worldHeight:540,
+      requiredPickups:pickups.length,
+      spawn:{x:80,y:390},
+      platforms,
+      hazards:ground.hazards,
+      pickups,
+      powerups:[],
+      phenotypeForms:['plant','fire','electric','ice'],
+      phenotypeDurationMs:30000,
+      checkpoints,
+      boss,
+      enemyPool:[...entry.enemyPool],
+      mechanics:[...entry.mechanics],
+      hazardTypes:[...entry.hazards],
+      backgroundKey:WORLD_BACKGROUND_KEYS[entry.worldId],
+      palette:{accent:WORLD_COLORS[entry.worldId]},
+      finish:{x:safeX(ground.platforms,entry.length-95,65),y:390,width:50,height:90}
+    };
   }
 
   function syncUi(entry) {
