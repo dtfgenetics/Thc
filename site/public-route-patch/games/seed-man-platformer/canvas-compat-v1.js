@@ -2,9 +2,10 @@
 
 (() => {
   const VERSION='sprout-canvas-compat-v20';
-  const RELEASE='20260909-r21';
+  const RELEASE='20260909-r22';
   const proto=window.HTMLCanvasElement?.prototype;
   const nativeGetContext=proto?.getContext;
+  let playerStateLoaded=false;
   let combatLoaded=false;
   let enemyLoaded=false;
   let uiLoaded=false;
@@ -51,6 +52,9 @@
       return;
     }
     try{
+      if(window.__SEED_MAN_PLAYER_STATE__?.installed!==true) await loadScript('./player-state-v20.js','seedPlayerStateV20');
+      playerStateLoaded=window.__SEED_MAN_PLAYER_STATE__?.installed===true;
+      if(!playerStateLoaded) throw new Error('Seed Man v20 player-state adapter did not install');
       if(window.__SPROUT_COMBAT_BROWSER__?.installed!==true) await loadScript('./combat-browser-v2.js','seedCombatBrowserV20');
       combatLoaded=window.__SPROUT_COMBAT_BROWSER__?.installed===true;
       if(combatLoaded&&window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.installed!==true) await loadScript('./enemy-attacks-browser-v2.js','seedEnemyAttacksV20');
@@ -80,5 +84,5 @@
   window.addEventListener('DOMContentLoaded',()=>{void boot();},{once:true});
   window.addEventListener('load',()=>{void boot();},{once:true});
 
-  window.__SPROUT_CANVAS_COMPAT__=Object.freeze({version:VERSION,release:RELEASE,campaignUi:'seed-man-campaign-ui-v20',campaignTarget:20,combatRuntime:'v2',approvedArtTarget:'approved-showcase-2026-09-08',combatBrowserAutoLoad:true,enemyAttackBrowserAutoLoad:true,get combatLoaded(){return combatLoaded;},get enemyAttacksLoaded(){return enemyLoaded;},get campaignUiLoaded(){return uiLoaded;},get campaignLoaded(){return campaignLoaded;},get approvedArtLoaded(){return artLoaded;}});
+  window.__SPROUT_CANVAS_COMPAT__=Object.freeze({version:VERSION,release:RELEASE,campaignUi:'seed-man-campaign-ui-v20',campaignTarget:20,combatRuntime:'v2',playerStateRuntime:'v20',approvedArtTarget:'approved-showcase-2026-09-08',playerStateAutoLoad:true,combatBrowserAutoLoad:true,enemyAttackBrowserAutoLoad:true,get playerStateLoaded(){return playerStateLoaded;},get combatLoaded(){return combatLoaded;},get enemyAttacksLoaded(){return enemyLoaded;},get campaignUiLoaded(){return uiLoaded;},get campaignLoaded(){return campaignLoaded;},get approvedArtLoaded(){return artLoaded;}});
 })();
