@@ -43,7 +43,7 @@ const requiredMarkers = [
   'greenhouse-valley',
   'forest-ruins',
   'desert-canyon',
-  'frozen-peak',
+  'frozen-peaks',
   'eco-city'
 ];
 for (const marker of requiredMarkers) {
