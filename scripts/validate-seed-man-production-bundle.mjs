@@ -8,6 +8,7 @@ const required=[
   'index.html','app.js','canvas-compat-v1.js','player-state-v20.js','campaign-v20-runtime.js','campaign-ui-v20.js',
   'approved-art-core-v1.js','approved-art-runtime-v1.js','seed-man-production-art.js',
   'v20-enemy-runtime.js','combat-browser-v2.js','enemy-attacks-browser-v2.js','enemy-attacks.js','input-guard-v1.js','seed-man.css',
+  'assets/approved/seed-man-approved-master-atlas-v1.webp','assets/approved/seed-man-character-atlas-v2.webp','assets/approved/seed-man-enemy-boss-atlas-v1.webp','assets/approved/seed-man-platform-atlas-v1.webp',
   'data/campaign.json','data/level-01.json','data/levels-20-v1.json','data/seed-man-art-manifest-v1.json','data/enemy-catalog-v1.json','data/boss-catalog-v1.json'
 ];
 required.forEach(requireFile);
@@ -48,10 +49,13 @@ if(art.policy?.characterReference!=='green-armored-plant-hero')throw new Error('
 for(const world of expectedWorlds)if(!art.policy?.worlds?.includes(world))throw new Error(`approved-world-missing:${world}`);
 for(const key of ['cover.main','character.seedman.atlas','enemy.atlas','boss.atlas','platform.atlas','world.atlas','ui.vfx.cover'])if(!art.assets?.[key])throw new Error(`approved-asset-key-missing:${key}`);
 for(const region of ['cover.main','character.seedman.atlas','enemy-boss.atlas','world.atlas','platform.atlas','ui-vfx.atlas'])if(!art.masterAtlas?.regions?.[region])throw new Error(`approved-atlas-region-missing:${region}`);
+if(fs.statSync(path.join(root,'assets/approved/seed-man-approved-master-atlas-v1.webp')).size<1000)throw new Error('approved-master-atlas-too-small');
 
 for(const [rel,markers] of [
   ['player-state-v20.js',['seed-man-player-state-v20','speedTimer','shieldCharges']],
-  ['campaign-v20-runtime.js',['seed-man-campaign-v20-runtime-v2',"phenotypeForms:['plant','fire','electric','ice']"]],
+  ['approved-art-core-v1.js',['seed-man-approved-art-core-v3','seed-man-approved-master-atlas-v1.webp','world.greenhouse-valley.background','world.eco-city.background']],
+  ['approved-art-runtime-v1.js',['seed-man-approved-art-runtime-v2',"phenotypeForms:Object.freeze(['plant','fire','electric','ice'])"]],
+  ['campaign-v20-runtime.js',['seed-man-campaign-v20-runtime-v3',"phenotypeForms:['plant','fire','electric','ice']",'approvedWorldBackgrounds:true']],
   ['campaign-ui-v20.js',['seed-man-campaign-ui-v20']],
   ['v20-enemy-runtime.js',['seed-man-v20-enemy-runtime-v2','PHENOTYPE_DURATION_MS = 30000']],
   ['combat-browser-v2.js',['seed-man-combat-browser-v2']],
@@ -66,8 +70,10 @@ for(const requiredMarker of ['delete next.collectedPowerups','delete next.power[
 const compat=read('canvas-compat-v1.js');
 for(const marker of ['player-state-v20.js','playerStateRuntime:\'v20\'','playerStateAutoLoad:true'])if(!compat.includes(marker))throw new Error(`compat-player-state-missing:${marker}`);
 const combat=read('combat-browser-v2.js');
-for(const retiredPhenotype of ['hydro-surge','terpene-tempest','vine-lash','mycelium-mind','rootbreaker','trichome-crystal','gravity-haze'])if(combat.includes(retiredPhenotype))throw new Error(`retired-v20-phenotype:${retiredPhenotype}`);
+for(const retiredPhenotype of ['solar-flare','static-haze','frost-resin','hydro-surge','terpene-tempest','vine-lash','mycelium-mind','rootbreaker','trichome-crystal','gravity-haze'])if(combat.includes(retiredPhenotype))throw new Error(`retired-v20-phenotype:${retiredPhenotype}`);
+const approvedRuntime=read('approved-art-runtime-v1.js');
+for(const retiredPhenotype of ['solar-flare','static-haze','frost-resin','shield-bounce'])if(approvedRuntime.includes(retiredPhenotype))throw new Error(`retired-approved-runtime-token:${retiredPhenotype}`);
 const index=read('index.html');
 for(const stale of ['combat-browser-v1.js','enemy-attacks-browser-v1.js','campaign-v1.js','gameplay-v2.js'])if(index.includes(stale))throw new Error(`legacy-runtime-in-index:${stale}`);
 for(const stale of ['Genome Hydra','Voltage Wasp Alpha','seed-man-production-v1','seed-man-locked-v1'])if(read('seed-man-production-art.js').includes(stale))throw new Error(`retired-renderer-marker:${stale}`);
-console.log(JSON.stringify({ok:true,levels:20,worlds:5,bosses:6,enemies:10,phenotypeCarriers:3,finalBoss:'blight-king',approvedArt:true,approvedArtManifest:art.id,playerState:'v20',combatRuntime:'v2',retiredArtifactsRemoved:retiredArtifacts.length}));
+console.log(JSON.stringify({ok:true,levels:20,worlds:5,bosses:6,enemies:10,phenotypeCarriers:3,finalBoss:'blight-king',approvedArt:true,approvedWorldArt:true,approvedArtManifest:art.id,playerState:'v20',campaignRuntime:'v3',combatRuntime:'v2',retiredArtifactsRemoved:retiredArtifacts.length}));
