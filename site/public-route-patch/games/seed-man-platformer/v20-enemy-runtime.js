@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const VERSION = 'seed-man-v20-enemy-runtime-v1';
+  const VERSION = 'seed-man-v20-enemy-runtime-v2';
   const PHENOTYPE_DURATION_MS = 30000;
 
   const ENEMY_META = Object.freeze({
@@ -18,9 +18,9 @@
   });
 
   const PHENOTYPE_CARRIERS = Object.freeze({
-    fire: { base:'thorn-beetle', phenotype:'solar-flare', label:'Fire', accent:'#ff9a4b' },
-    electric: { base:'drone-bot', phenotype:'static-haze', label:'Electric', accent:'#d6c0ff' },
-    ice: { base:'root-crawler', phenotype:'frost-resin', label:'Ice', accent:'#8fe7ff' }
+    fire: { base:'thorn-beetle', phenotype:'fire', label:'Fire', accent:'#ff9a4b' },
+    electric: { base:'drone-bot', phenotype:'electric', label:'Electric', accent:'#d6c0ff' },
+    ice: { base:'root-crawler', phenotype:'ice', label:'Ice', accent:'#8fe7ff' }
   });
 
   const PHENOTYPE_ORDER = Object.freeze(['fire','electric','ice']);
@@ -81,6 +81,38 @@
     };
   }
 
+  function buildBoss(levelData) {
+    const boss = levelData?.boss;
+    if (!boss?.id || boss.defeated) return null;
+    return {
+      id:`v20-${levelData.id}-boss-${boss.id}`,
+      archetype:boss.id,
+      name:boss.name || boss.id,
+      x:Number(boss.x || (levelData.worldWidth * 0.82)),
+      y:Number(boss.y || 320),
+      minX:Number(boss.arenaStartX || levelData.worldWidth * 0.72),
+      maxX:Number(boss.arenaEndX || levelData.worldWidth * 0.94),
+      width:Number(boss.width || 140),
+      height:Number(boss.height || 130),
+      health:Number(boss.requiredHits || 8),
+      speed:Number(boss.speed || 68),
+      flying:false,
+      blink:boss.id === 'blight-king',
+      elite:true,
+      role:'boss',
+      movement:boss.id === 'blight-king' ? 'blink' : 'ground',
+      attackPattern:boss.id === 'blight-king' ? 'radial-burst' : 'burst-shot',
+      phenotype:null,
+      phenotypeForm:null,
+      phenotypeDurationMs:null,
+      drop:['genetic-fragments',Math.max(3,Number(boss.phase || 1) * 2)],
+      bossRank:boss.finalBoss ? 'final' : 'major',
+      finalBoss:Boolean(boss.finalBoss),
+      phase:Number(boss.phase || 1),
+      canonicalV20:true
+    };
+  }
+
   function buildEncounter(levelData) {
     const pool = Array.isArray(levelData?.enemyPool) && levelData.enemyPool.length
       ? levelData.enemyPool.filter((type) => ENEMY_META[type])
@@ -89,21 +121,23 @@
     const count = clamp(4 + Math.floor((order - 1) / 4),4,8);
     const encounter = Array.from({length:count},(_,index) => buildEnemy(levelData,pool[index % pool.length],index,count));
 
-    // Plant is the permanent base form. Fire/Electric/Ice are the only temporary
-    // phenotype drops in the canonical v20 campaign and last exactly 30 seconds.
+    // Plant is permanent. Fire, Electric and Ice are the only temporary v20
+    // phenotype forms, granted by elite carriers for exactly 30 seconds.
     if (order >= 2) {
       const form = PHENOTYPE_ORDER[(order - 2) % PHENOTYPE_ORDER.length];
       const carrier = PHENOTYPE_CARRIERS[form];
       encounter.push(buildEnemy(levelData,carrier.base,count,count + 1,{carrier:true,form}));
     }
 
+    const boss = buildBoss(levelData);
+    if (boss) encounter.push(boss);
     return encounter;
   }
 
   function buildAttackers(levelData) {
     return buildEncounter(levelData).map((enemy) => ({
       ...enemy,
-      rank: enemy.elite ? 'elite' : 'standard'
+      rank: enemy.bossRank || (enemy.elite ? 'elite' : 'standard')
     }));
   }
 
@@ -113,6 +147,7 @@
     phenotypeForms:Object.freeze(['plant','fire','electric','ice']),
     enemyTypes:Object.freeze(Object.keys(ENEMY_META)),
     buildEncounter,
-    buildAttackers
+    buildAttackers,
+    buildBoss
   });
 })();
