@@ -1,4 +1,4 @@
-name: Seed Man World 5 and Finale CI
+name: Seed Man v20 Finale CI
 
 on:
   pull_request:
@@ -7,14 +7,14 @@ on:
       - 'games/seed-man-platformer/**'
       - 'site/public-route-patch/games/seed-man-platformer/**'
       - 'scripts/verify-seed-man-production-v20.mjs'
-      - '.github/workflows/seed-man-world-five-ci.yml'
+      - '.github/workflows/seed-man-v20-finale-ci.yml'
   push:
     branches: [main]
     paths:
       - 'games/seed-man-platformer/**'
       - 'site/public-route-patch/games/seed-man-platformer/**'
       - 'scripts/verify-seed-man-production-v20.mjs'
-      - '.github/workflows/seed-man-world-five-ci.yml'
+      - '.github/workflows/seed-man-v20-finale-ci.yml'
   workflow_dispatch:
 
 permissions:

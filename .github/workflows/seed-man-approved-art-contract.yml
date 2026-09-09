@@ -44,14 +44,18 @@ jobs:
         run: |
           set -euo pipefail
           manifest=games/seed-man-platformer/data/seed-man-art-manifest-v1.json
+          public_manifest=site/public-route-patch/games/seed-man-platformer/data/seed-man-art-manifest-v1.json
           registry=games/seed-man-platformer/src/render/art-registry.mjs
           grep -Fq '"authoritative": true' "$manifest"
           grep -Fq '"proceduralFallbackAllowed": false' "$manifest"
           grep -Fq '"legacyAtlasFallbackAllowed": false' "$manifest"
           grep -Fq 'green-armored-plant-hero' "$manifest"
-          grep -Fq "APPROVED_ART_MANIFEST_ID = 'seed-man-approved-art-v1'" "$registry"
+          grep -Fq '"id": "seed-man-approved-art-v2"' "$manifest"
+          grep -Fq '"ui.vfx.cover"' "$manifest"
+          grep -Fq "APPROVED_ART_MANIFEST_ID = 'seed-man-approved-art-v2'" "$registry"
           grep -Fq "character.seedman.atlas" "$registry"
-          grep -Fq "world.frozen-peaks.background" "$manifest"
+          grep -Fq "'frozen-peaks': 'frozen-peak'" "$registry"
+          cmp "$manifest" "$public_manifest"
       - name: Lock 20-level final-boss contract
         shell: bash
         run: |

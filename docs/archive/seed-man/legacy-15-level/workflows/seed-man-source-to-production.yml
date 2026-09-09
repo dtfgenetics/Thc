@@ -1,0 +1,17 @@
+name: Reconcile Seed Man Canonical Source to Production
+
+# ARCHIVED: retired 15-level canonical-source publisher gate.
+# Historical snapshot only. Do not restore to .github/workflows.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  archived-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo 'Retired contract: required games/seed-man-platformer/data/campaign.json levelCount=15 and levels-12-15.json before dispatching publish-seed-man-production.yml.'

@@ -30,7 +30,7 @@
     "boss.atlas": {"atlasRegion":"enemy-boss.atlas","role":"boss"},
     "platform.atlas": {"atlasRegion":"platform.atlas","role":"terrain"},
     "world.atlas": {"atlasRegion":"world.atlas","role":"world"},
-    "ui.vfx": {"atlasRegion":"ui-vfx.atlas","role":"ui-vfx"}
+    "ui.vfx.cover": {"atlasRegion":"ui-vfx.atlas","role":"ui-vfx"}
   },
   "characterStates": ["idle", "walk", "run", "jump", "fall", "land", "attack", "hit", "victory"],
   "phenotypes": ["plant", "fire", "electric", "ice"],

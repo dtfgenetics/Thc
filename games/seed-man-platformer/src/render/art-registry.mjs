@@ -15,7 +15,7 @@ export function validateApprovedArtManifest(manifest) {
   if (manifest.policy?.characterReference !== 'green-armored-plant-hero') throw new Error('Seed Man character reference must be the approved green armored plant hero.');
   if (!manifest.masterAtlas?.src || !manifest.masterAtlas?.width || !manifest.masterAtlas?.height) throw new Error('Approved Seed Man master atlas metadata is incomplete.');
 
-  const required = ['cover.main','character.seedman.atlas','enemy.atlas','boss.atlas','platform.atlas','world.atlas','ui.vfx'];
+  const required = ['cover.main','character.seedman.atlas','enemy.atlas','boss.atlas','platform.atlas','world.atlas','ui.vfx.cover'];
   for (const key of required) {
     const asset = manifest.assets?.[key];
     if (!asset?.atlasRegion) throw new Error(`Missing approved Seed Man atlas region: ${key}`);

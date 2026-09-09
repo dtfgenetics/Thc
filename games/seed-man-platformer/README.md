@@ -61,12 +61,41 @@ The production campaign contains **20 levels across five worlds**, four levels p
 
 Canonical campaign files:
 
+- `games/seed-man-platformer/data/campaign.json`
 - `games/seed-man-platformer/data/campaign-20-v1.json`
 - `games/seed-man-platformer/data/levels-20-v1.json`
 - `games/seed-man-platformer/src/systems/level-catalog.mjs`
 - `games/seed-man-platformer/src/systems/level-runtime.mjs`
 - `games/seed-man-platformer/src/systems/campaign-state-v2.mjs`
 - `games/seed-man-platformer/src/systems/save-state-v2.mjs`
+
+## Compatibility boundary
+
+The current production contract is v20. The following files are **compatibility-only** and must never be treated as the canonical campaign definition:
+
+- `games/seed-man-platformer/data/levels-12-15.json`
+- `site/public-route-patch/games/seed-man-platformer/data/levels-12-15.json`
+- `site/public-route-patch/games/seed-man-platformer/campaign-ui-v15.js`
+- `site/public-route-patch/games/seed-man-platformer/world-five-v1.js`
+- `site/public-route-patch/games/seed-man-platformer/seed-man-ui-v3.js` where retained only for compatibility/bootstrap support
+
+These compatibility artifacts may remain only while a current v20 runtime or publisher still imports them. They may not define level count, world identity, bosses, public copy, release readiness, or canonical source ownership.
+
+Current v20 runtime/release ownership is represented by:
+
+- `games/seed-man-platformer/data/campaign.json`
+- `games/seed-man-platformer/data/levels-20-v1.json`
+- `site/public-route-patch/games/seed-man-platformer/campaign-v20-runtime.js`
+- `site/public-route-patch/games/seed-man-platformer/campaign-ui-v20.js`
+- `scripts/verify-seed-man-production-v20.mjs`
+- `scripts/validate-seed-man-production-bundle.mjs`
+- `.github/workflows/seed-man-platformer-ci.yml`
+- `.github/workflows/seed-man-production-bundle-validation.yml`
+- `.github/workflows/seed-man-v20-finale-ci.yml`
+- `.github/workflows/publish-seed-man-production.yml`
+- `.github/workflows/repair-seed-man-v20-production.yml`
+
+Retired 11-level/15-level workflows belong under `docs/archive/seed-man/legacy-15-level/workflows/` and must not be restored to `.github/workflows/`.
 
 ## Combat and phenotype powers
 
@@ -156,11 +185,13 @@ Run:
 ```bash
 npm --prefix games/seed-man-platformer run test:production-contracts
 npm --prefix games/seed-man-platformer run build:three-public
+node scripts/verify-seed-man-production-v20.mjs
+node scripts/validate-seed-man-production-bundle.mjs
 ```
 
 The production test suite validates approved-art ownership, 20 contiguous levels, five worlds, world/level mapping, phenotype timing, phenotype drops, boss phases, final-boss behavior, campaign progression, save state, HUD model, input actions, terrain behavior, manifest-key policy, production readiness, and Three.js state boundaries.
 
-The live release must also pass browser/mobile smoke testing and production route verification before it is called released.
+The live release must also pass deterministic source/build validation and production route verification before it is called released.
 
 ## Current migration rule
 

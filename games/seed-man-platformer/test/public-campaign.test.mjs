@@ -7,105 +7,88 @@ const publicRoot = new URL('../../../site/public-route-patch/games/seed-man-plat
 const [
   canonicalCampaignText,
   publicCampaignText,
+  canonicalLevels20Text,
+  publicLevels20Text,
   canonicalBasePackText,
   publicBasePackText,
-  canonicalWorldFivePackText,
-  publicWorldFivePackText,
-  canonicalLevelText,
+  canonicalLegacyWorldFiveText,
+  publicLegacyWorldFiveText,
   html,
-  baseRuntime,
-  worldFiveRuntime
+  v20Runtime,
+  v20Ui,
+  legacyBaseRuntime,
+  legacyWorldFiveRuntime
 ] = await Promise.all([
   readFile(new URL('data/campaign.json', root), 'utf8'),
   readFile(new URL('data/campaign.json', publicRoot), 'utf8'),
+  readFile(new URL('data/levels-20-v1.json', root), 'utf8'),
+  readFile(new URL('data/levels-20-v1.json', publicRoot), 'utf8'),
   readFile(new URL('data/levels-02-11.json', root), 'utf8'),
   readFile(new URL('data/levels-02-11.json', publicRoot), 'utf8'),
   readFile(new URL('data/levels-12-15.json', root), 'utf8'),
   readFile(new URL('data/levels-12-15.json', publicRoot), 'utf8'),
-  readFile(new URL('data/level-01.json', root), 'utf8'),
   readFile(new URL('index.html', publicRoot), 'utf8'),
+  readFile(new URL('campaign-v20-runtime.js', publicRoot), 'utf8'),
+  readFile(new URL('campaign-ui-v20.js', publicRoot), 'utf8'),
   readFile(new URL('campaign-v1.js', publicRoot), 'utf8'),
   readFile(new URL('world-five-v1.js', publicRoot), 'utf8')
 ]);
 
 const campaign = JSON.parse(canonicalCampaignText);
 const publicCampaign = JSON.parse(publicCampaignText);
+const levels20 = JSON.parse(canonicalLevels20Text);
+const publicLevels20 = JSON.parse(publicLevels20Text);
 const basePack = JSON.parse(canonicalBasePackText);
 const publicBasePack = JSON.parse(publicBasePackText);
-const worldFivePack = JSON.parse(canonicalWorldFivePackText);
-const publicWorldFivePack = JSON.parse(publicWorldFivePackText);
-const levelOne = JSON.parse(canonicalLevelText);
+const legacyWorldFive = JSON.parse(canonicalLegacyWorldFiveText);
+const publicLegacyWorldFive = JSON.parse(publicLegacyWorldFiveText);
 
-assert.deepStrictEqual(publicCampaign, campaign, 'public campaign manifest must match canonical campaign data');
-assert.deepStrictEqual(publicBasePack, basePack, 'public Levels 2–11 pack must match canonical definitions');
-assert.deepStrictEqual(publicWorldFivePack, worldFivePack, 'public Levels 12–15 pack must match canonical definitions');
-assert.equal(campaign.defaultLevelId, levelOne.id, 'campaign default must keep Greenhouse Gauntlet');
+assert.deepStrictEqual(publicCampaign, campaign, 'public campaign manifest must match canonical v20 campaign data');
+assert.deepStrictEqual(publicLevels20, levels20, 'public 20-level catalog must match canonical definitions');
+assert.equal(campaign.levelCount, 20);
+assert.equal(campaign.newLevelCount, 19);
 assert.equal(campaign.worlds.length, 5);
-assert.equal(campaign.levelCount, 15);
-assert.equal(campaign.newLevelCount, 14);
-assert.deepStrictEqual(campaign.baseRuntimeCompatibility, { levelCount: 11, newLevelCount: 10 });
-assert.equal(campaign.worlds.flatMap((world) => world.levels).length, 15);
+assert.equal(campaign.worlds.flatMap((world) => world.levels).length, 20);
+assert.equal(campaign.defaultLevelId, '1-1-sprout-steps');
+assert.equal(campaign.finalBoss, 'blight-king');
+assert.equal(levels20.levels.length, 20);
+assert.equal(levels20.levels.at(-1).id, '5-4-the-last-seed');
+assert.equal(levels20.levels.at(-1).boss, 'blight-king');
+
+// Retained legacy data packs are compatibility artifacts only. They must remain
+// canonical/public identical while old URLs still exist, but they are not
+// allowed to redefine the production campaign contract.
+assert.deepStrictEqual(publicBasePack, basePack, 'legacy Levels 2–11 compatibility pack must remain synchronized');
+assert.deepStrictEqual(publicLegacyWorldFive, legacyWorldFive, 'legacy Levels 12–15 compatibility pack must remain synchronized');
 assert.equal(basePack.levels.length, 10);
-assert.equal(worldFivePack.levels.length, 4);
-assert.deepStrictEqual(worldFivePack.levels.map((entry) => entry.id), ['chromosome-crossing', 'mutation-marsh', 'allele-array', 'genome-spire']);
-assert.equal(worldFivePack.levels.at(-1).boss?.name, 'Genome Hydra');
+assert.equal(legacyWorldFive.levels.length, 4);
+assert.deepStrictEqual(legacyWorldFive.levels.map((entry) => entry.id), ['chromosome-crossing', 'mutation-marsh', 'allele-array', 'genome-spire']);
 
-const embeddedLevelMatch = html.match(/<script\s+id=["']seed-man-level["']\s+type=["']application\/json["']>\s*([\s\S]*?)\s*<\/script>/i);
-assert.ok(embeddedLevelMatch, 'public page must keep Level 1 embedded for immediate startup');
-assert.deepStrictEqual(JSON.parse(embeddedLevelMatch[1]), levelOne, 'embedded Level 1 must match Greenhouse Gauntlet');
-assert.match(html, /id=["']seed-man-campaign["']/, 'public page must expose the campaign manifest slot');
+assert.match(html, /campaign-v20-runtime\.js\?v=20260908-v20/, 'public page must load canonical v20 campaign runtime');
+assert.match(html, /campaign-ui-v20\.js\?v=20260908-v20/, 'public page must load canonical v20 campaign UI');
+assert.match(v20Runtime, /seed-man-campaign-v20-runtime-v1/, 'v20 runtime marker missing');
+assert.match(v20Runtime, /blight-king/, 'v20 runtime must own Blight King finale');
+assert.match(v20Runtime, /eco-city/, 'v20 runtime must own Eco City');
+assert.doesNotMatch(v20Runtime, /Genome Hydra|Genetic Frontier/, 'retired World 5 contract leaked into canonical v20 runtime');
+assert.match(v20Ui, /seed-man-campaign-ui-v20/, 'v20 campaign UI marker missing');
 
-const release = html.match(/name="dtf-sprout-release" content="([^"]+)"/)?.[1];
-assert.ok(release, 'public page must expose a release marker');
-const baseScriptIndex = html.indexOf(`./campaign-v1.js?v=${release}`);
-const appScriptIndex = html.indexOf(`./app.js?v=${release}`);
-const worldFiveScriptIndex = html.indexOf(`./world-five-v1.js?v=${release}`);
-assert.ok(baseScriptIndex >= 0, 'public page must load campaign-v1.js');
-assert.ok(appScriptIndex > baseScriptIndex, 'campaign bootstrap must load before app.js');
-if (worldFiveScriptIndex >= 0) assert.ok(worldFiveScriptIndex > appScriptIndex, 'prepared World 5 adapter must load after the base runtime');
+// Compatibility paths may remain while cached clients still request them, but
+// both old script URLs must now hand ownership to v20 rather than reinstalling
+// the retired 11/15-level campaign.
+assert.match(legacyBaseRuntime, /seed-man-campaign-v1-compat-retired/, 'legacy base shim must expose its retired compatibility version');
+assert.match(legacyBaseRuntime, /retired:\s*true/, 'legacy base shim must identify itself as retired');
+assert.match(legacyBaseRuntime, /replacement:\s*'seed-man-campaign-v20-runtime-v1'/, 'legacy base shim must point to canonical v20 ownership');
+assert.doesNotMatch(legacyBaseRuntime, /sprout-campaign-v3|levelCount:\s*11|newLevelCount:\s*10/, 'retired base shim must not reinstall the obsolete campaign');
+assert.doesNotMatch(legacyBaseRuntime, /addEventListener\s*\(\s*['"]load['"]|MutationObserver|fetch\s*\(/i, 'retired base shim must stay side-effect-light and network free');
 
-for (const marker of [
-  'sprout-campaign-v3',
-  'seed-man-campaign-experience-v3',
-  'seed-man-animation-v2',
-  'levelCount: 11',
-  'newLevelCount: 10',
-  'bossCount: 4',
-  'The Phantom Pump',
-  'Mite Queen',
-  'Mildew Wraith',
-  'Pollen Warden',
-  'seed-man-level-select',
-  '__SPROUT_CAMPAIGN_EXPERIENCE__',
-  'boss-stomp',
-  'finish-celebration'
-]) {
-  assert.ok(baseRuntime.includes(marker), `base campaign runtime is missing ${marker}`);
+assert.match(legacyWorldFiveRuntime, /seed-man-world-five-compat-v22/, 'legacy World 5 URL must expose its v20 compatibility bridge');
+assert.match(legacyWorldFiveRuntime, /seedManLegacyWorldFive='retired'/, 'legacy World 5 bridge must mark the old extension retired');
+assert.match(legacyWorldFiveRuntime, /campaignTarget:20/, 'legacy World 5 bridge must target the 20-level campaign');
+for (const required of ['approved-art-core-v1.js','campaign-v20-runtime.js','campaign-combat-v20.js','campaign-progress-v20.js','campaign-ui-v20.js']) {
+  assert.ok(legacyWorldFiveRuntime.includes(required), `legacy World 5 bridge must bootstrap ${required}`);
 }
+assert.doesNotMatch(legacyWorldFiveRuntime, /installCampaignExtension|Genome Hydra|Genetic Frontier|Voltage Wasp Alpha/, 'legacy World 5 bridge must not reinstall retired World 5 ownership');
+assert.doesNotMatch(legacyWorldFiveRuntime, /^\s*import\s/m, 'legacy World 5 bridge must remain a classic browser script');
+assert.doesNotMatch(legacyWorldFiveRuntime, /fetch\s*\(/i, 'legacy World 5 bridge must not add fetch-based data ownership');
 
-for (const marker of [
-  'seed-man-world-five-v1',
-  'Genetic Frontier',
-  'Chromosome Crossing',
-  'Mutation Marsh',
-  'Allele Array',
-  'Genome Spire',
-  'Voltage Wasp Alpha',
-  'Genome Hydra',
-  'levelCount: 15',
-  'newLevelCount: 14',
-  'sproutWorldFive'
-]) {
-  assert.ok(worldFiveRuntime.includes(marker), `World 5 runtime is missing ${marker}`);
-}
-
-assert.match(baseRuntime, /window\.addEventListener\(['"]load['"]/, 'base campaign mechanics must wait for startup');
-assert.match(baseRuntime, /stepGeneratedPlayer/, 'Levels 2–11 retain the generated physics path');
-assert.match(baseRuntime, /resolveBoss/, 'base boss collisions remain gameplay state');
-assert.match(worldFiveRuntime, /selectFrontierLevel/, 'World 5 must own explicit frontier selection');
-assert.match(worldFiveRuntime, /installCampaignExtension/, 'World 5 must extend, not replace, the proven campaign runtime');
-assert.match(worldFiveRuntime, /installVisualLayer/, 'World 5 must install its distinct visual layer');
-assert.doesNotMatch(worldFiveRuntime, /^\s*import\s/m, 'World 5 runtime must remain a classic self-contained browser script');
-assert.doesNotMatch(worldFiveRuntime, /fetch\s*\(/i, 'World 5 runtime must not add network dependencies');
-
-console.log('Seed Man public 15-level source contract and Genetic Frontier extension checks passed');
+console.log('Seed Man canonical v20 public campaign and retired compatibility bridge checks passed');

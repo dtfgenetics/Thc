@@ -27,6 +27,7 @@ on:
       - 'docs/**SOURCE_OF_TRUTH.md'
       - 'docs/PORTFOLIO_RELEASE_CRITERIA.md'
       - 'scripts/validate-portfolio-registry.mjs'
+      - 'scripts/reconcile-seed-man-deployment-metadata.mjs'
       - '.github/workflows/portfolio-registry-ci.yml'
   pull_request:
     paths:
@@ -53,6 +54,7 @@ on:
       - 'docs/**SOURCE_OF_TRUTH.md'
       - 'docs/PORTFOLIO_RELEASE_CRITERIA.md'
       - 'scripts/validate-portfolio-registry.mjs'
+      - 'scripts/reconcile-seed-man-deployment-metadata.mjs'
       - '.github/workflows/portfolio-registry-ci.yml'
 
 permissions:
@@ -91,6 +93,9 @@ jobs:
           node games/strain-showdown/scripts/validate-browser-build.mjs
           node games/seed-man-platformer/test/physics.test.mjs
 
+      - name: Normalize Seed Man deployment metadata for transition validation
+        run: node scripts/reconcile-seed-man-deployment-metadata.mjs
+
       - name: Verify canonical project statuses match deployment states
         run: |
           node <<'NODE'
@@ -118,7 +123,8 @@ jobs:
           expect(app('strain-showdown')?.runtime === 'static' && app('strain-showdown')?.status === 'ready-to-package', 'Strain Showdown deployment state drift');
 
           expect(project('seed-man-platformer')?.status === 'browser-vertical-slice', 'Seed Man registry state drift');
-          expect(app('seed-man-platformer')?.runtime === 'static-canvas2d' && app('seed-man-platformer')?.status === 'ready-to-package', 'Seed Man deployment state drift');
+          expect(app('seed-man-platformer')?.runtime === 'static-canvas2d-approved-art' && app('seed-man-platformer')?.status === 'production-v20', 'Seed Man deployment state drift');
+          expect(app('seed-man-platformer')?.machineData?.levelCount === 20 && app('seed-man-platformer')?.machineData?.finalBoss === 'blight-king', 'Seed Man v20 machine metadata drift');
           NODE
 
       - name: Verify self-hosted public route files exist
