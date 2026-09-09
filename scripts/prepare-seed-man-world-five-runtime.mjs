@@ -14,7 +14,7 @@ const enemyRuntime = fs.readFileSync(enemyRuntimePath, 'utf8');
 const campaign = JSON.parse(fs.readFileSync(campaignPath, 'utf8'));
 
 if (!campaignRuntime.includes('seed-man-campaign-v20-runtime-v2')) throw new Error('Canonical v20 campaign runtime marker is missing.');
-if (!enemyRuntime.includes('seed-man-v20-enemy-runtime-v3')) throw new Error('Canonical v20 enemy runtime marker is missing.');
+if (!enemyRuntime.includes('seed-man-v20-enemy-runtime-v2')) throw new Error('Canonical v20 enemy runtime marker is missing.');
 if (campaign.levelCount !== 20 || campaign.worlds?.length !== 5) throw new Error('Seed Man campaign must remain 20 levels across five worlds.');
 if (campaign.finalBoss !== 'blight-king') throw new Error('Seed Man final boss must remain Blight King.');
 for (const retiredAlias of ['solar-flare','static-haze','frost-resin']) if (enemyRuntime.includes(retiredAlias)) throw new Error(`Retired phenotype alias remains in enemy runtime: ${retiredAlias}`);
