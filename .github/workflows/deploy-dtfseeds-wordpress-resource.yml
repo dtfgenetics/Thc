@@ -1,4 +1,5 @@
 name: Deploy DTFSeeds WordPress Resource
+run-name: DTFSeeds WordPress Resource • ${{ inputs.resource }} • ${{ inputs.source_sha }} • ${{ inputs.environment }}
 
 on:
   workflow_dispatch:
