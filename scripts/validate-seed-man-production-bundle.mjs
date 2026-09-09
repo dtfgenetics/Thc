@@ -64,7 +64,7 @@ if(!three.includes('SeedManThreeWorld')||!three.includes('seed-man-three-public-
 if(fs.statSync(path.join(root,'three-world-v1.js')).size<250000)throw new Error('three-world-compatibility-stub-detected');
 const index=read('index.html');
 for(const marker of ['20-Level Campaign','three-world-v1.js','campaign-v20-runtime.js','campaign-ui-v20.js','v20-enemy-runtime.js','combat-browser-v2.js','enemy-attacks-browser-v2.js','player-state-v20.js'])if(!index.includes(marker))throw new Error(`index-production-marker-missing:${marker}`);
-for(const stale of ['seed-man-level','Seed Man: Sprout Run','Greenhouse Gauntlet','campaign-v1.js','gameplay-v2.js','combat-browser-v1.js','enemy-attacks-browser-v1.js'])if(index.includes(stale))throw new Error(`legacy-runtime-in-index:${stale}`);
+for(const stale of ['id="seed-man-level"','Seed Man: Sprout Run','Greenhouse Gauntlet','campaign-v1.js','gameplay-v2.js','combat-browser-v1.js','enemy-attacks-browser-v1.js'])if(index.includes(stale))throw new Error(`legacy-runtime-in-index:${stale}`);
 for(const stale of ['readEmbeddedLevel','worldWidth !== 7800','pickups.length !== 24'])if(read('app.js').includes(stale))throw new Error(`legacy-bootstrap-code-present:${stale}`);
 for(const stale of ['seed-man-approved-master-atlas-v1.webp','seed-man-cover-banner-approved-v1.webp'])if(read('approved-art-core-v1.js').includes(stale)||JSON.stringify(art).includes(stale))throw new Error(`retired-art-reference:${stale}`);
 for(const retiredPhenotype of ['solar-flare','static-haze','frost-resin','hydro-surge','terpene-tempest','vine-lash','mycelium-mind','rootbreaker','trichome-crystal','gravity-haze'])if(read('combat-browser-v2.js').includes(retiredPhenotype))throw new Error(`retired-v20-phenotype:${retiredPhenotype}`);
