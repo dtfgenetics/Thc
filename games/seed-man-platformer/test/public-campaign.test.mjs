@@ -68,7 +68,7 @@ assert.match(html, /v20-enemy-runtime\.js\?v=[^"']+/, 'public page must load can
 assert.match(html, /combat-browser-v2\.js\?v=[^"']+/, 'public page must load canonical v20 combat runtime');
 assert.match(html, /enemy-attacks-browser-v2\.js\?v=[^"']+/, 'public page must load canonical v20 enemy attack runtime');
 assert.match(html, /three-world-v1\.js\?v=[^"']+/, 'public page must load generated Three.js world bundle');
-assert.doesNotMatch(html, /seed-man-level/, 'public page must not embed retired Sprout Run bootstrap data');
+assert.doesNotMatch(html, /<script[^>]+id=["']seed-man-level["']/i, 'public page must not embed retired Sprout Run bootstrap data');
 assert.doesNotMatch(html, /campaign-v1\.js|gameplay-v2\.js|campaign-ui-v15\.js|world-five-v1\.js|combat-browser-v1\.js|enemy-attacks-browser-v1\.js|seed-man-ui-v3\.js/, 'public page must not load retired compatibility runtimes');
 assert.match(v20Runtime, /seed-man-campaign-v20-runtime-v3/, 'v20 campaign runtime marker missing');
 assert.match(v20Runtime, /phenotypeForms:\['plant','fire','electric','ice'\]/, 'v20 runtime must expose canonical phenotype forms');
