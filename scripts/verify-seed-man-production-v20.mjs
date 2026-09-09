@@ -47,7 +47,7 @@ for(const form of ['plant','fire','electric','ice'])if(!art.phenotypes?.includes
 
 const index=read('index.html');
 for(const marker of ['20-Level Campaign','three-world-v1.js','campaign-v20-runtime.js','campaign-ui-v20.js','v20-enemy-runtime.js','combat-browser-v2.js','enemy-attacks-browser-v2.js','player-state-v20.js'])if(!index.includes(marker))throw new Error(`Public index missing production marker: ${marker}`);
-for(const stale of ['seed-man-level','Seed Man: Sprout Run','Greenhouse Gauntlet','campaign-v1.js','gameplay-v2.js','combat-browser-v1.js','enemy-attacks-browser-v1.js'])if(index.includes(stale))throw new Error(`Legacy public marker remains: ${stale}`);
+for(const stale of ['id="seed-man-level"','Seed Man: Sprout Run','Greenhouse Gauntlet','campaign-v1.js','gameplay-v2.js','combat-browser-v1.js','enemy-attacks-browser-v1.js'])if(index.includes(stale))throw new Error(`Legacy public marker remains: ${stale}`);
 
 const app=read('app.js');
 for(const marker of ['seed-man-base-runtime-v20',"campaignAuthority:'campaign-v20-runtime.js'",'level.boss && !level.boss.defeated'])if(!app.includes(marker))throw new Error(`Base runtime missing marker: ${marker}`);
