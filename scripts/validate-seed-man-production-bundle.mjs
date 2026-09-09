@@ -23,12 +23,20 @@ if(levels.levels?.length!==20)throw new Error(`level-catalog:expected-20:got-${l
 for(let i=1;i<=20;i++)if(!levels.levels.some((l)=>l.order===i))throw new Error(`missing-level-order:${i}`);
 const finale=levels.levels.find((l)=>l.order===20);
 if(finale?.boss!=='blight-king'||!finale?.mechanics?.includes('final-gauntlet'))throw new Error('finale-contract-incomplete');
-const artText=JSON.stringify(art);
-for(const marker of ['green-armored-plant-hero','character.seedman.atlas','world.greenhouse-valley','world.forest-ruins','world.desert-canyon','world.frozen-peak','world.eco-city'])if(!artText.includes(marker))throw new Error(`art-marker-missing:${marker}`);
+
+if(art.id!=='seed-man-approved-art-v2')throw new Error(`approved-art-id:${art.id||'missing'}`);
+if(art.sourceOfTruth!=='approved-showcase-2026-09-08')throw new Error('approved-art-source-of-truth-missing');
+if(art.policy?.authoritative!==true)throw new Error('approved-art-not-authoritative');
+if(art.policy?.proceduralFallbackAllowed!==false||art.policy?.legacyAtlasFallbackAllowed!==false)throw new Error('approved-art-fallback-policy-invalid');
+if(art.policy?.characterReference!=='green-armored-plant-hero')throw new Error('approved-character-reference-missing');
+for(const world of ['greenhouse-valley','forest-ruins','desert-canyon','frozen-peak','eco-city'])if(!art.policy?.worlds?.includes(world))throw new Error(`approved-world-missing:${world}`);
+for(const key of ['cover.main','character.seedman.atlas','enemy.atlas','boss.atlas','platform.atlas','world.atlas','ui.vfx.cover'])if(!art.assets?.[key])throw new Error(`approved-asset-key-missing:${key}`);
+for(const region of ['cover.main','character.seedman.atlas','enemy-boss.atlas','world.atlas','platform.atlas','ui-vfx.atlas'])if(!art.masterAtlas?.regions?.[region])throw new Error(`approved-atlas-region-missing:${region}`);
+
 for(const [rel,markers] of [
   ['campaign-v20-runtime.js',['seed-man-campaign-v20-runtime-v1']],
   ['campaign-ui-v20.js',['seed-man-campaign-ui-v20']],
   ['seed-man-production-art.js',['approved-showcase-2026-09-08','green-armored-plant-hero','fallbackAllowed:false']]
 ])for(const marker of markers)if(!read(rel).includes(marker))throw new Error(`missing-marker:${rel}:${marker}`);
 for(const stale of ['Genome Hydra','Voltage Wasp Alpha','seed-man-production-v1','seed-man-locked-v1'])if(read('seed-man-production-art.js').includes(stale))throw new Error(`retired-renderer-marker:${stale}`);
-console.log(JSON.stringify({ok:true,levels:20,worlds:5,bosses:6,finalBoss:'blight-king',approvedArt:true}));
+console.log(JSON.stringify({ok:true,levels:20,worlds:5,bosses:6,finalBoss:'blight-king',approvedArt:true,approvedArtManifest:art.id}));
