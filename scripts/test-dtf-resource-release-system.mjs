@@ -72,6 +72,7 @@ for (const path of [
   'scripts/public_suite_resource_ownership.py',
   'scripts/assemble-wordpress-suite-resource-aware.py',
   'scripts/package-public-suite-wordpress-resource-aware.py',
+  'scripts/run-workflow-and-wait.sh',
   '.github/workflows/deploy-dtfseeds-public-resource.yml',
   '.github/workflows/deploy-dtfseeds-wordpress-resource.yml',
   '.github/workflows/dtfseeds-resource-production-gateway.yml',
@@ -82,5 +83,25 @@ for (const path of [
 for (const path of config.globalBuildPaths) {
   assert.ok(typeof path === 'string' && path.length > 0);
 }
+
+const handoffScript = readFileSync('scripts/run-workflow-and-wait.sh', 'utf8');
+assert.match(handoffScript, /queue_replaced_exit=75/, 'workflow handoff must expose a retryable queue-replacement status');
+assert.match(handoffScript, /displayTitle/, 'workflow handoff must correlate dispatches by exact-source run title when main has advanced');
+assert.match(handoffScript, /contains\(\$sha\)/, 'workflow handoff must match the expected source SHA embedded in a run title');
+
+const publisherWorkflow = readFileSync('.github/workflows/deploy-dtfseeds-wordpress-resource.yml', 'utf8');
+assert.match(publisherWorkflow, /^run-name:.*inputs\.source_sha.*$/m, 'WordPress resource publisher must expose its exact source SHA in the run title');
+assert.match(publisherWorkflow, /dtf-wordpress-temporary-code-snippets-bridge/, 'WordPress resource publisher must stay serialized on the shared bridge');
+
+const gatewayWorkflow = readFileSync('.github/workflows/dtfseeds-resource-production-gateway.yml', 'utf8');
+assert.match(gatewayWorkflow, /^\s+source_sha:\s*$/m, 'resource gateway must accept an exact-source recovery SHA');
+assert.match(gatewayWorkflow, /^\s+recovery_attempt:\s*$/m, 'resource gateway must bound queue-replacement recovery attempts');
+assert.match(gatewayWorkflow, /status" -eq 75/, 'resource gateway must recognize retryable zero-job queue replacement');
+assert.match(gatewayWorkflow, /MAX_RECOVERY_ATTEMPTS: '5'/, 'resource gateway recovery must be bounded');
+assert.doesNotMatch(gatewayWorkflow, /Detect superseded queued resource release/, 'unrelated newer main commits must not discard an exact-source resource release');
+
+const builderWorkflow = readFileSync('.github/workflows/build-dtfseeds-public-resource.yml', 'utf8');
+const helperTriggerCount = (builderWorkflow.match(/scripts\/run-workflow-and-wait\.sh/g) || []).length;
+assert.ok(helperTriggerCount >= 2, 'resource builder must run on helper changes for both PR and main push events');
 
 console.log('DTF resource release isolation tests passed.');
