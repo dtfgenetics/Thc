@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "id": "seed-man-approved-art-v2",
   "sourceOfTruth": "approved-showcase-2026-09-08",
   "policy": {
@@ -7,34 +7,26 @@
     "proceduralFallbackAllowed": false,
     "legacyAtlasFallbackAllowed": false,
     "characterReference": "green-armored-plant-hero",
+    "worldRenderer": "seed-man-three-world-v2",
+    "worldFallbackRenderer": "seed-man-canvas-world-gradient-v1",
     "worlds": ["greenhouse-valley", "forest-ruins", "desert-canyon", "frozen-peaks", "eco-city"]
   },
-  "masterAtlas": {
-    "src": "assets/approved/seed-man-approved-master-atlas-v1.webp",
-    "publicSrc": "./assets/approved/seed-man-approved-master-atlas-v1.webp",
-    "width": 1600,
-    "height": 1208,
-    "regions": {
-      "cover.main": {"x":0,"y":0,"width":1536,"height":138},
-      "character.seedman.atlas": {"x":0,"y":138,"width":800,"height":360},
-      "enemy-boss.atlas": {"x":800,"y":138,"width":768,"height":288},
-      "world.atlas": {"x":0,"y":498,"width":1600,"height":180},
-      "platform.atlas": {"x":0,"y":678,"width":576,"height":192},
-      "ui-vfx.atlas": {"x":576,"y":678,"width":1024,"height":530}
-    }
-  },
   "assets": {
-    "cover.main": {"atlasRegion":"cover.main","role":"cover"},
-    "character.seedman.atlas": {"atlasRegion":"character.seedman.atlas","role":"player"},
-    "enemy.atlas": {"atlasRegion":"enemy-boss.atlas","role":"enemy"},
-    "boss.atlas": {"atlasRegion":"enemy-boss.atlas","role":"boss"},
-    "platform.atlas": {"atlasRegion":"platform.atlas","role":"terrain"},
-    "world.atlas": {"atlasRegion":"world.atlas","role":"world"},
-    "ui.vfx.cover": {"atlasRegion":"ui-vfx.atlas","role":"ui-vfx"}
+    "character.seedman.atlas": {"src":"assets/approved/seed-man-character-atlas-v2.webp","type":"atlas","role":"player"},
+    "enemy.atlas": {"src":"assets/approved/seed-man-enemy-boss-atlas-v1.webp","type":"atlas","role":"enemy"},
+    "boss.atlas": {"src":"assets/approved/seed-man-enemy-boss-atlas-v1.webp","type":"atlas","role":"boss"},
+    "platform.atlas": {"src":"assets/approved/seed-man-platform-atlas-v1.webp","type":"atlas","role":"terrain"},
+    "ui.vfx.cover": {"renderer":"seed-man-canvas-vfx-v2","role":"ui-vfx"},
+    "cover.main": {"renderer":"seed-man-campaign-cover-v1","role":"cover"},
+    "world.greenhouse-valley.background": {"renderer":"seed-man-three-world-v2","fallbackRenderer":"seed-man-canvas-world-gradient-v1","world":"greenhouse-valley","role":"background"},
+    "world.forest-ruins.background": {"renderer":"seed-man-three-world-v2","fallbackRenderer":"seed-man-canvas-world-gradient-v1","world":"forest-ruins","role":"background"},
+    "world.desert-canyon.background": {"renderer":"seed-man-three-world-v2","fallbackRenderer":"seed-man-canvas-world-gradient-v1","world":"desert-canyon","role":"background"},
+    "world.frozen-peaks.background": {"renderer":"seed-man-three-world-v2","fallbackRenderer":"seed-man-canvas-world-gradient-v1","world":"frozen-peaks","role":"background"},
+    "world.eco-city.background": {"renderer":"seed-man-three-world-v2","fallbackRenderer":"seed-man-canvas-world-gradient-v1","world":"eco-city","role":"background"}
   },
   "characterStates": ["idle", "walk", "run", "jump", "fall", "land", "attack", "hit", "victory"],
   "phenotypes": ["plant", "fire", "electric", "ice"],
-  "enemies": ["sproutling", "root-crawler", "toxic-spore", "drone-bot", "thorn-beetle", "sky-wasp"],
+  "enemies": ["sproutling", "root-crawler", "toxic-spore", "drone-bot", "thorn-beetle", "sky-wasp", "spike-plant", "sludge-monster", "bone-weed", "shadow-root"],
   "bosses": ["overgrown-guardian", "ancient-dryad", "scorchroot-titan", "frostbite-colossus", "eco-sentinel", "blight-king"],
   "terrain": ["grass", "dirt", "rock", "stone", "ice", "sand", "metal", "wood", "moving-platform", "spring", "spikes"]
 }
