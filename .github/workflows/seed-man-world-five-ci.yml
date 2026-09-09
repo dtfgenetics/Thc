@@ -1,4 +1,4 @@
-name: Seed Man World 5 CI
+name: Seed Man World 5 and Finale CI
 
 on:
   pull_request:
@@ -6,18 +6,14 @@ on:
     paths:
       - 'games/seed-man-platformer/**'
       - 'site/public-route-patch/games/seed-man-platformer/**'
-      - 'scripts/prepare-seed-man-combat-release.mjs'
-      - 'scripts/prepare-seed-man-world-five-combat.mjs'
-      - 'scripts/prepare-seed-man-world-five-runtime.mjs'
+      - 'scripts/verify-seed-man-production-v20.mjs'
       - '.github/workflows/seed-man-world-five-ci.yml'
   push:
     branches: [main]
     paths:
       - 'games/seed-man-platformer/**'
       - 'site/public-route-patch/games/seed-man-platformer/**'
-      - 'scripts/prepare-seed-man-combat-release.mjs'
-      - 'scripts/prepare-seed-man-world-five-combat.mjs'
-      - 'scripts/prepare-seed-man-world-five-runtime.mjs'
+      - 'scripts/verify-seed-man-production-v20.mjs'
       - '.github/workflows/seed-man-world-five-ci.yml'
   workflow_dispatch:
 
@@ -25,68 +21,53 @@ permissions:
   contents: read
 
 jobs:
-  genetic-frontier:
+  eco-city-finale:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
-          cache: npm
+          node-version: '22'
 
-      - name: Prepare production Seed Man artifact
-        run: node scripts/prepare-seed-man-combat-release.mjs
-
-      - name: Validate canonical campaign and combat systems
+      - name: Validate canonical v20 campaign
         run: |
-          node games/seed-man-platformer/test/campaign.test.mjs
-          node games/seed-man-platformer/test/combat.test.mjs
-          node games/seed-man-platformer/test/public-campaign.test.mjs
+          set -euo pipefail
+          node scripts/verify-seed-man-production-v20.mjs
 
-      - name: Verify Genetic Frontier source parity
+      - name: Verify Eco City and Blight King finale contract
         shell: bash
         run: |
           set -euo pipefail
-          route=site/public-route-patch/games/seed-man-platformer
-          cmp games/seed-man-platformer/data/campaign.json "$route/data/campaign.json"
-          cmp games/seed-man-platformer/data/levels-12-15.json "$route/data/levels-12-15.json"
-          node --check "$route/world-five-v1.js"
-          node --check "$route/combat-browser-v1.js"
-          node --check scripts/prepare-seed-man-combat-release.mjs
-          node --check scripts/prepare-seed-man-world-five-combat.mjs
-          node --check scripts/prepare-seed-man-world-five-runtime.mjs
+          node <<'NODE'
+          const fs=require('fs');
+          const campaign=JSON.parse(fs.readFileSync('games/seed-man-platformer/data/campaign.json','utf8'));
+          const levels=JSON.parse(fs.readFileSync('games/seed-man-platformer/data/levels-20-v1.json','utf8'));
+          const publicLevels=JSON.parse(fs.readFileSync('site/public-route-patch/games/seed-man-platformer/data/levels-20-v1.json','utf8'));
+          if(campaign.levelCount!==20) throw new Error(`expected 20 levels, got ${campaign.levelCount}`);
+          if(campaign.finalBoss!=='blight-king') throw new Error(`unexpected final boss ${campaign.finalBoss}`);
+          const world5=levels.levels.filter(l=>l.world==='eco-city');
+          if(world5.length!==4) throw new Error(`Eco City must contain 4 levels, got ${world5.length}`);
+          const orders=world5.map(l=>l.order).join(',');
+          if(orders!=='17,18,19,20') throw new Error(`Eco City level orders are ${orders}`);
+          const finale=world5.find(l=>l.order===20);
+          if(finale?.id!=='5-4-the-last-seed'||finale?.boss!=='blight-king') throw new Error('Level 20 finale contract mismatch');
+          if(!finale.mechanics?.includes('final-gauntlet')||!finale.mechanics?.includes('phenotype-cycle')) throw new Error('Level 20 finale mechanics incomplete');
+          if(JSON.stringify(levels)!==JSON.stringify(publicLevels)) throw new Error('canonical/public v20 level data mismatch');
+          console.log('Eco City World 5 and Blight King finale contract OK');
+          NODE
 
-      - name: Verify prepared World 5 production contract
+      - name: Verify v20 runtime replaces retired Genetic Frontier runtime
         shell: bash
         run: |
           set -euo pipefail
-          route=site/public-route-patch/games/seed-man-platformer
-          release="$(sed -n 's/.*name="dtf-sprout-release" content="\([^"]*\)".*/\1/p' "$route/index.html" | head -n 1)"
-          [[ "$release" =~ ^[0-9]{8}-r[0-9]+$ ]]
-          test -s "$route/world-five-v1.js"
-          test -s "$route/data/levels-12-15.json"
-          grep -Fq "<script src=\"./world-five-v1.js?v=${release}\" defer></script>" "$route/index.html"
-          grep -Fq '"levelCount": 15' "$route/data/campaign.json"
-          grep -Fq '"newLevelCount": 14' "$route/data/campaign.json"
-          grep -Fq '"title": "Genetic Frontier"' "$route/data/campaign.json"
-          grep -Fq 'Chromosome Crossing' "$route/world-five-v1.js"
-          grep -Fq 'Mutation Marsh' "$route/world-five-v1.js"
-          grep -Fq 'Allele Array' "$route/world-five-v1.js"
-          grep -Fq 'Genome Spire' "$route/world-five-v1.js"
-          grep -Fq 'Genome Hydra' "$route/world-five-v1.js"
-          grep -Fq 'seed-man-world-five-state-sync-v1' "$route/world-five-v1.js"
-          grep -Fq 'window.__SPROUT_CAMPAIGN__?.selectLevel?.(id);' "$route/world-five-v1.js"
-          grep -Fq "attributeFilter: ['hidden']" "$route/world-five-v1.js"
-          ! grep -Fq "attributeFilter: ['hidden'], childList: true, subtree: true" "$route/world-five-v1.js"
-          grep -Fq 'seed-man-world-five-combat-v1' "$route/combat-browser-v1.js"
-          grep -Fq "'chromosome-crossing'" "$route/combat-browser-v1.js"
-          grep -Fq "'mutation-marsh'" "$route/combat-browser-v1.js"
-          grep -Fq "'allele-array'" "$route/combat-browser-v1.js"
-          grep -Fq "'genome-spire'" "$route/combat-browser-v1.js"
-          grep -Fq 'Solar Ember Beetle' "$route/combat-browser-v1.js"
-          grep -Fq 'Voltage Wasp Alpha' "$route/combat-browser-v1.js"
-          grep -Fq 'Cryo Moth Prime' "$route/combat-browser-v1.js"
-          grep -Fq "return ENCOUNTERS[level?.id] || [];" "$route/combat-browser-v1.js"
-          grep -Fq "'world-five-v1.js'," scripts/publish-seed-man-route-via-wordpress.mjs
-          grep -Fq "'data/levels-12-15.json'," scripts/publish-seed-man-route-via-wordpress.mjs
+          route='site/public-route-patch/games/seed-man-platformer'
+          node --check "$route/campaign-v20-runtime.js"
+          node --check "$route/campaign-ui-v20.js"
+          grep -Fq 'seed-man-campaign-v20-runtime-v1' "$route/campaign-v20-runtime.js"
+          grep -Fq 'blight-king' "$route/campaign-v20-runtime.js"
+          grep -Fq 'eco-city' "$route/campaign-v20-runtime.js"
+          ! grep -Fq 'Genome Hydra' "$route/campaign-v20-runtime.js"
+          ! grep -Fq 'Genetic Frontier' "$route/campaign-v20-runtime.js"
