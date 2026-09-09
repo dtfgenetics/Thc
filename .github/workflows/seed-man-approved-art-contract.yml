@@ -54,7 +54,8 @@ jobs:
           grep -Fq '"ui.vfx.cover"' "$manifest"
           grep -Fq "APPROVED_ART_MANIFEST_ID = 'seed-man-approved-art-v2'" "$registry"
           grep -Fq "character.seedman.atlas" "$registry"
-          grep -Fq "'frozen-peaks': 'frozen-peak'" "$registry"
+          grep -Fq "const WORLD_ORDER = ['greenhouse-valley', 'forest-ruins', 'desert-canyon', 'frozen-peaks', 'eco-city'];" "$registry"
+          grep -Fq "const WORLD_ALIASES = Object.freeze({ 'frozen-peak': 'frozen-peaks' });" "$registry"
           cmp "$manifest" "$public_manifest"
       - name: Lock 20-level final-boss contract
         shell: bash
