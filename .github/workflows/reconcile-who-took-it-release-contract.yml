@@ -64,25 +64,28 @@ jobs:
           set -euo pipefail
           git diff -- site/deployment/public-apps.json .github/workflows/build-dtfseeds-public-suite.yml
 
-      - name: Safely integrate generated contract updates on main
+      - name: Require workflow changes to arrive through a reviewed PR
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! git diff --quiet -- .github/workflows/build-dtfseeds-public-suite.yml; then
+            echo '::error::Who Took It public-suite workflow drift detected. GitHub Actions cannot push workflow-file mutations with GITHUB_TOKEN. Run the reconciler on a branch and commit the generated workflow through a reviewed PR.'
+            git diff -- .github/workflows/build-dtfseeds-public-suite.yml
+            exit 1
+          fi
+
+      - name: Safely integrate generated registry updates on main
         if: github.event_name != 'pull_request'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          changed=()
-          if ! git diff --quiet -- site/deployment/public-apps.json; then
-            changed+=(site/deployment/public-apps.json)
-          fi
-          if ! git diff --quiet -- .github/workflows/build-dtfseeds-public-suite.yml; then
-            changed+=(.github/workflows/build-dtfseeds-public-suite.yml)
-          fi
-          if [ "${#changed[@]}" -eq 0 ]; then
-            echo 'No Who Took It release-contract changes were needed.'
+          if git diff --quiet -- site/deployment/public-apps.json; then
+            echo 'No Who Took It deployment-registry changes were needed.'
             exit 0
           fi
-          paths="$(IFS=,; echo "${changed[*]}")"
           node scripts/studio/integrate-generated-change.mjs \
-            --message='Synchronize Who Took It pinned release contract' \
-            --paths="$paths"
+            --message='Synchronize Who Took It deployment registry' \
+            --paths='site/deployment/public-apps.json'
