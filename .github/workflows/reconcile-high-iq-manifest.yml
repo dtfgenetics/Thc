@@ -1,0 +1,92 @@
+name: Reconcile High IQ Manifest Outputs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'games/high-iq/data/manifest.json'
+      - 'games/high-iq/data/questions-*.json'
+      - 'games/high-iq/data/sources-*.json'
+      - 'games/high-iq/scripts/sync-runtime-shell.mjs'
+      - 'games/high-iq/scripts/sync-deployment-registry.mjs'
+      - '.github/workflows/reconcile-high-iq-manifest.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: reconcile-high-iq-manifest
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Reconcile manifest-derived High IQ outputs
+        run: |
+          set -euo pipefail
+          node games/high-iq/scripts/sync-runtime-shell.mjs
+          node games/high-iq/scripts/sync-deployment-registry.mjs
+
+      - name: Confirm reconciliation is idempotent
+        shell: bash
+        run: |
+          set -euo pipefail
+          shell_path=site/public-route-patch/games/high-iq/index.html
+          registry_path=site/deployment/public-apps.json
+          before="$(git diff -- "$shell_path" "$registry_path" | git hash-object --stdin)"
+          node games/high-iq/scripts/sync-runtime-shell.mjs
+          node games/high-iq/scripts/sync-deployment-registry.mjs
+          after="$(git diff -- "$shell_path" "$registry_path" | git hash-object --stdin)"
+          test "$before" = "$after"
+
+      - name: Validate v2.4 production contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          node games/high-iq/scripts/validate-data.mjs
+          node games/high-iq/scripts/sync-runtime-shell.mjs --check
+          node games/high-iq/scripts/sync-deployment-registry.mjs --check
+          node games/high-iq/scripts/validate-public-runtime.mjs
+          node games/high-iq/test/question-bank-tool.test.mjs
+          node games/high-iq/test/game-core.test.mjs
+          node games/high-iq/test/runtime-smoke.mjs
+          node <<'NODE'
+          const fs=require('fs');
+          const manifest=JSON.parse(fs.readFileSync('games/high-iq/data/manifest.json','utf8'));
+          const registry=JSON.parse(fs.readFileSync('site/deployment/public-apps.json','utf8'));
+          const app=registry.apps.find((entry)=>entry.id==='high-iq');
+          const html=fs.readFileSync('site/public-route-patch/games/high-iq/index.html','utf8');
+          if(manifest.datasetVersion!=='2.4'||manifest.questionCount!==200||manifest.sourceCount!==50) process.exit(1);
+          if(!app||app.machineData?.version!==manifest.datasetVersion||app.machineData?.questions!==manifest.questionCount||app.machineData?.sources!==manifest.sourceCount) process.exit(2);
+          if(!app.machineData?.manifestDriven||!app.machineData?.publicRuntimeValidator) process.exit(3);
+          if(!html.includes('id="hero-question-count">200</strong>')||!html.includes('id="hero-version">2.4</strong>')) process.exit(4);
+          if(!html.includes('with 200 approved questions')) process.exit(5);
+          if(!html.includes('The v2.4 bank is machine-validated')) process.exit(6);
+          NODE
+
+      - name: Safely integrate reconciled High IQ outputs when needed
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- site/public-route-patch/games/high-iq/index.html site/deployment/public-apps.json; then
+            echo 'No High IQ manifest-derived changes were needed.'
+            exit 0
+          fi
+          node scripts/studio/integrate-generated-change.mjs \
+            --message='Synchronize High IQ runtime and registry to manifest v2.4' \
+            --paths=site/public-route-patch/games/high-iq/index.html,site/deployment/public-apps.json
