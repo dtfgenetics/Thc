@@ -1,8 +1,8 @@
 'use strict';
 
 (() => {
-  const VERSION='sprout-canvas-compat-v20';
-  const RELEASE='20260908-r20';
+  const VERSION='sprout-canvas-compat-v20.1';
+  const RELEASE='20260909-v20';
   const proto=window.HTMLCanvasElement?.prototype;
   const nativeGetContext=proto?.getContext;
   let combatLoaded=false;
@@ -40,6 +40,8 @@
       if(!window.__SEED_MAN_APPROVED_ART_RUNTIME__) await loadScript('./approved-art-runtime-v1.js','seedApprovedArtRuntimeV20');
       artLoaded=Boolean(window.__SEED_MAN_APPROVED_ART_CORE__||window.__SEED_MAN_APPROVED_ART_RUNTIME__);
       if(window.__SPROUT_CAMPAIGN__?.levelCount!==20) await loadScript('./campaign-v20-runtime.js','seedCampaignRuntimeV20');
+      if(!window.__SEED_MAN_V20_CAMPAIGN_GUARD__) await loadScript('./v20-campaign-guard.js','seedCampaignGuardV20');
+      if(!window.__SEED_MAN_V20_ENEMY_RUNTIME__) await loadScript('./v20-enemy-runtime.js','seedEnemyRuntimeV20');
       campaignLoaded=window.__SPROUT_CAMPAIGN__?.levelCount===20||Boolean(window.__SEED_MAN_CAMPAIGN_V20__);
     }catch(error){console.error('[Seed Man] canonical v20 bootstrap failed.',error);}
   }
@@ -51,10 +53,10 @@
       return;
     }
     try{
-      if(window.__SPROUT_COMBAT_BROWSER__?.installed!==true) await loadScript('./combat-browser-v1.js','seedCombatBrowserV20');
-      combatLoaded=window.__SPROUT_COMBAT_BROWSER__?.installed===true;
-      if(combatLoaded&&window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.installed!==true) await loadScript('./enemy-attacks-browser-v1.js','seedEnemyAttacksV20');
-      enemyLoaded=window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.installed===true;
+      if(window.__SPROUT_COMBAT_BROWSER__?.version!=='seed-man-combat-browser-v2') await loadScript('./combat-browser-v2.js','seedCombatBrowserV20');
+      combatLoaded=window.__SPROUT_COMBAT_BROWSER__?.version==='seed-man-combat-browser-v2'&&window.__SPROUT_COMBAT_BROWSER__?.installed===true;
+      if(combatLoaded&&window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.version!=='seed-man-enemy-attacks-browser-v2') await loadScript('./enemy-attacks-browser-v2.js','seedEnemyAttacksV20');
+      enemyLoaded=window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.version==='seed-man-enemy-attacks-browser-v2'&&window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.installed===true;
     }catch(error){console.error('[Seed Man] gameplay adapter load failed.',error);}
   }
 
@@ -66,12 +68,7 @@
     }catch(error){console.error('[Seed Man] 20-level campaign UI failed to load.',error);}
   }
 
-  async function boot(){
-    await installCanonicalRuntime();
-    installAdapters();
-    installCampaignUi();
-  }
-
+  async function boot(){await installCanonicalRuntime();installAdapters();installCampaignUi();}
   function redraw(){requestAnimationFrame(()=>{try{if(typeof render==='function')render();}catch{}});}
   window.addEventListener('pageshow',redraw);
   window.addEventListener('orientationchange',redraw);
@@ -80,5 +77,5 @@
   window.addEventListener('DOMContentLoaded',()=>{void boot();},{once:true});
   window.addEventListener('load',()=>{void boot();},{once:true});
 
-  window.__SPROUT_CANVAS_COMPAT__=Object.freeze({version:VERSION,release:RELEASE,campaignUi:'seed-man-campaign-ui-v20',campaignTarget:20,approvedArtTarget:'approved-showcase-2026-09-08',combatBrowserAutoLoad:true,enemyAttackBrowserAutoLoad:true,get combatLoaded(){return combatLoaded;},get enemyAttacksLoaded(){return enemyLoaded;},get campaignUiLoaded(){return uiLoaded;},get campaignLoaded(){return campaignLoaded;},get approvedArtLoaded(){return artLoaded;}});
+  window.__SPROUT_CANVAS_COMPAT__=Object.freeze({version:VERSION,release:RELEASE,campaignUi:'seed-man-campaign-ui-v20',campaignTarget:20,approvedArtTarget:'approved-showcase-2026-09-08',combatBrowserTarget:'seed-man-combat-browser-v2',enemyAttackBrowserTarget:'seed-man-enemy-attacks-browser-v2',combatBrowserAutoLoad:true,enemyAttackBrowserAutoLoad:true,get combatLoaded(){return combatLoaded;},get enemyAttacksLoaded(){return enemyLoaded;},get campaignUiLoaded(){return uiLoaded;},get campaignLoaded(){return campaignLoaded;},get approvedArtLoaded(){return artLoaded;}});
 })();
