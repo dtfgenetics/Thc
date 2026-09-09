@@ -5,6 +5,7 @@
   "globalBuildPaths": [
     "site/deployment/release-resources.json",
     "scripts/plan-dtfseeds-resource-release.mjs",
+    "scripts/run-workflow-and-wait.sh",
     "scripts/package-dtf-public-resource.py",
     "scripts/verify-dtf-public-resource-artifact.py",
     "scripts/assemble-wordpress-resource-v2.py",
