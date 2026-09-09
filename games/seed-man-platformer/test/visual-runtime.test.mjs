@@ -29,6 +29,7 @@ validateVisualRuntime(config);
 assert.deepEqual(Object.keys(config.worlds).sort(), [...VISUAL_RUNTIME_CONTRACT.requiredWorlds].sort());
 assert.deepEqual(Object.keys(config.player.phenotypes).sort(), [...VISUAL_RUNTIME_CONTRACT.requiredPhenotypes].sort());
 assert.deepEqual(Object.keys(VISUAL_WORLD_PALETTES).sort(), [...VISUAL_WORLD_KEYS].sort());
+assert.equal(VISUAL_RUNTIME_CONTRACT.characterContract, 'approved-green-armored-plant-hero-v1');
 
 const greenhouse = getWorldVisual(config, 'greenhouse-valley');
 assert.equal(greenhouse.label, 'Greenhouse Valley');
@@ -41,21 +42,21 @@ assert.equal(plan.find((layer) => layer.key === 'gameplay').parallax, 1);
 assert.ok(plan.find((layer) => layer.key === 'far-bg').parallax < plan.find((layer) => layer.key === 'mid-bg').parallax);
 assert.ok(plan.find((layer) => layer.key === 'mid-bg').parallax < plan.find((layer) => layer.key === 'near-bg').parallax);
 
-for (const phenotypeKey of ['fire', 'electric', 'ice']) {
-  assert.equal(getPhenotypeVisual(config, phenotypeKey).durationMs, 30000);
-}
+for (const phenotypeKey of ['fire', 'electric', 'ice']) assert.equal(getPhenotypeVisual(config, phenotypeKey).durationMs, 30000);
 assert.equal(getPhenotypeVisual(config, 'plant').durationMs, 0);
 
 const campaignMap = getCampaignVisualWorldMap();
 assert.equal(campaignMap['Greenhouse District'], 'greenhouse-valley');
 assert.equal(campaignMap.Rootworks, 'forest-ruins');
 assert.equal(campaignMap['Resin Works'], 'desert-canyon');
-assert.equal(campaignMap['Sky Garden'], 'frozen-peak');
+assert.equal(campaignMap['Sky Garden'], 'frozen-peaks');
 assert.equal(campaignMap['Genetic Frontier'], 'eco-city');
 
 assert.equal(resolveVisualWorldKey({ worldTitle: 'Rootworks' }), 'forest-ruins');
-assert.equal(resolveVisualWorldKey({ title: 'Frostline Canopy' }), 'frozen-peak');
+assert.equal(resolveVisualWorldKey({ title: 'Frostline Canopy' }), 'frozen-peaks');
+assert.equal(resolveVisualWorldKey({ visualWorldKey: 'frozen-peak' }), 'frozen-peaks', 'legacy singular key must normalize to canonical Frozen Peaks');
 assert.equal(resolveVisualWorldKey({ title: 'Genome Spire' }), 'eco-city');
+assert.equal(getWorldVisual(config, 'frozen-peak').label, 'Frozen Peaks', 'legacy singular key remains a read-only compatibility alias');
 
 for (const worldKey of VISUAL_WORLD_KEYS) {
   const palette = getVisualWorldPalette(worldKey);
@@ -66,6 +67,7 @@ for (const worldKey of VISUAL_WORLD_KEYS) {
   assert.equal(style.background, palette.sky);
   assert.equal(style.platform.top, palette.top);
 }
+assert.equal(createVisualSceneStyle('frozen-peak').worldKey, 'frozen-peaks');
 
 const invalid = structuredClone(config);
 invalid.assetPolicy.allowRawFilenameReferences = true;
