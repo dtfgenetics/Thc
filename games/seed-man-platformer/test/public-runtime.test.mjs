@@ -64,23 +64,18 @@ assert.match(app, /lostpointercapture/, 'touch controls should clear held input 
 assert.doesNotMatch(app, /addEventListener\(['"]pointerleave['"]/, 'touch controls must not cancel movement merely because a captured pointer drifts outside the button');
 assert.match(css, /position:sticky/, 'mobile touch controls should remain reachable during the longer run');
 assert.match(css, /min-height:72px/, 'mobile touch targets should remain large enough for repeated double-jump input');
+assert.match(css, /@media\(prefers-reduced-motion:reduce\)/, 'public styling must preserve reduced-motion support');
 
-assert.match(productionArt, /function installSproutRunShellV2\(/, 'production layer must install the V2 game shell');
-assert.match(productionArt, /course-progress-fill/, 'V2 shell must expose live course progress');
-assert.match(productionArt, /Stage 1 \/ 3 · Propagation Bay/, 'V2 shell must expose the first course stage');
-assert.match(productionArt, /Stage 2 \/ 3 · Canopy Run/, 'V2 shell must expose the middle course stage');
-assert.match(productionArt, /Stage 3 \/ 3 · Final Greenhouse/, 'V2 shell must expose the final course stage');
-assert.match(productionArt, /hud-stat--primary/, 'V2 shell must distinguish primary HUD metrics');
-assert.match(productionArt, /hud-stat--secondary/, 'V2 shell must distinguish secondary HUD metrics');
-assert.match(productionArt, /control-help/, 'long controls must move behind a disclosure surface');
-assert.match(productionArt, /MutationObserver/, 'V2 shell must follow live runtime state rather than static decoration');
-assert.match(productionArt, /__SPROUT_UI_V2__/, 'V2 shell must publish a debug contract');
-assert.match(css, /\.game-shell\[data-ui-v2="ready"\]/, 'V2 game-shell theme must be present');
-assert.match(css, /\.course-status/, 'course progress presentation must be styled');
-assert.match(css, /\[data-paused="true"\]/, 'pause state must be visually explicit');
-assert.match(css, /\[data-power="active"\]/, 'active power state must alter the playfield presentation');
-assert.match(css, /\.control-help/, 'control disclosure must be styled');
-assert.match(css, /@media\(prefers-reduced-motion:reduce\)/, 'V2 shell must preserve reduced-motion support');
+// seed-man-production-art.js is now renderer-only. DOM/campaign UI ownership lives
+// in the v20 UI/runtime layers and is validated by dedicated production tests.
+assert.match(productionArt, /seed-man-approved-atlas-renderer-v3/, 'production renderer version must be current');
+assert.match(productionArt, /approved-showcase-2026-09-08/, 'production renderer must identify the approved showcase source');
+assert.match(productionArt, /green-armored-plant-hero/, 'production renderer must preserve the approved character contract');
+assert.match(productionArt, /function\s+drawSeedManProduction\s*\(/, 'production renderer must expose the approved Seed Man draw path');
+assert.match(productionArt, /character\.seedman\.atlas/, 'production renderer must resolve the approved character atlas key');
+assert.match(productionArt, /fallbackAllowed:false/, 'production renderer must keep fallback disabled');
+assert.match(productionArt, /window\.__SEED_MAN_PRODUCTION_ART__/, 'production renderer must publish its diagnostic contract');
+assert.doesNotMatch(productionArt, /function\s+installSproutRunShellV2\s*\(/, 'renderer must not reclaim retired DOM shell ownership');
 
 const runtimeEnd = app.indexOf("const BEST_KEY = 'dtf-seed-man-best-v1';");
 assert.ok(runtimeEnd > 0, 'could not isolate inlined public physics runtime');
@@ -122,4 +117,4 @@ for (let frame = 0; frame < 480; frame += 1) {
   );
 }
 
-console.log('Seed Man expanded public runtime and bootstrap regression checks passed.');
+console.log('Seed Man expanded public runtime, approved renderer, and bootstrap regression checks passed.');
