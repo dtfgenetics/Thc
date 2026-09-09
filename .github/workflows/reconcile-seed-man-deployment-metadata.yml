@@ -15,7 +15,7 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: reconcile-seed-man-deployment-metadata
+  group: reconcile-seed-man-deployment-metadata-v20
   cancel-in-progress: false
 
 jobs:
@@ -29,7 +29,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Reconcile Seed Man deployment registry
+      - name: Reconcile Seed Man v20 deployment registry
         run: node scripts/reconcile-seed-man-deployment-metadata.mjs
       - name: Confirm reconciliation is idempotent
         shell: bash
@@ -40,13 +40,26 @@ jobs:
           node scripts/reconcile-seed-man-deployment-metadata.mjs
           after="$(git diff -- "$path" | git hash-object --stdin)"
           test "$before" = "$after"
-      - name: Validate reconciled deployment metadata
+      - name: Validate reconciled v20 metadata
         shell: bash
         run: |
           set -euo pipefail
           node --check scripts/reconcile-seed-man-deployment-metadata.mjs
-          node -e "const d=JSON.parse(require('fs').readFileSync('site/deployment/public-apps.json','utf8')); const a=d.apps.find(x=>x.id==='seed-man-platformer'); if(!a)process.exit(1); if(a.title!=='Seed Man: Greenhouse Gauntlet')process.exit(2); if(a.machineData.levelCount!==15||a.machineData.worldCount!==5||a.machineData.bossCount!==6)process.exit(3); if(a.machineData.release!=='20260907-r17')process.exit(4); if(!a.runtime.includes('threejs'))process.exit(5);"
-          ! grep -Fq '"title": "Seed Man: Sprout Run — Greenhouse Gauntlet"' site/deployment/public-apps.json
+          node <<'NODE'
+          const d=JSON.parse(require('fs').readFileSync('site/deployment/public-apps.json','utf8'));
+          const a=d.apps.find(x=>x.id==='seed-man-platformer');
+          if(!a)process.exit(1);
+          if(a.title!=='Seed Man: Grow. Fight. Restore.')process.exit(2);
+          if(a.machineData.levelCount!==20||a.machineData.worldCount!==5||a.machineData.bossCount!==6)process.exit(3);
+          if(a.machineData.release!=='20260908-v20'||a.machineData.finalBoss!=='blight-king')process.exit(4);
+          if(a.machineData.characterContract!=='green-armored-plant-hero')process.exit(5);
+          if(a.machineData.approvedArtSource!=='approved-showcase-2026-09-08')process.exit(6);
+          if(a.machineData.proceduralFallbackAllowed!==false||a.machineData.legacyAtlasFallbackAllowed!==false)process.exit(7);
+          NODE
+          ! grep -Fq '"levelCount": 15' site/deployment/public-apps.json
+          ! grep -Fq 'seed-man-production-v1' site/deployment/public-apps.json
+          ! grep -Fq 'seed-man-locked-v1' site/deployment/public-apps.json
+          ! grep -Fq 'Genome Hydra' site/deployment/public-apps.json
       - name: Safely integrate reconciled deployment metadata when needed
         shell: bash
         env:
@@ -58,5 +71,5 @@ jobs:
             exit 0
           fi
           node scripts/studio/integrate-generated-change.mjs \
-            --message='Align Seed Man deployment metadata with verified production' \
+            --message='Align Seed Man deployment metadata with canonical v20 production' \
             --paths=site/deployment/public-apps.json
