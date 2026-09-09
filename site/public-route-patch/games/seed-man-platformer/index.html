@@ -1,20 +1,20 @@
 <!doctype html>
-<html lang="en" data-seed-man-release="20260908-v20">
+<html lang="en" data-seed-man-release="20260909-v20">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <meta name="dtf-sprout-release" content="20260908-v20">
+  <meta name="dtf-sprout-release" content="20260909-v20">
   <title>Seed Man: Grow. Fight. Restore. | DTF Genetics</title>
   <meta name="description" content="Play Seed Man, the DTF Genetics 20-level platform adventure across five worlds with six bosses, approved green-armored character art, phenotype combat, checkpoints, desktop controls, and touch controls.">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta name="theme-color" content="#10291d">
   <link rel="canonical" href="https://dtfseeds.com/games/seed-man-platformer/">
-  <link rel="stylesheet" href="./seed-man.css?v=20260908-v20">
+  <link rel="stylesheet" href="./seed-man.css?v=20260909-v20">
 </head>
-<body data-seed-ui-release="20260908-v20" data-seed-man-approved-art="approved-showcase-2026-09-08">
+<body data-seed-ui-release="20260909-v20" data-seed-man-approved-art="approved-showcase-2026-09-08">
   <header class="site-header">
     <a class="brand" href="/">DTF Genetics <span>Dream the Future</span></a>
     <nav aria-label="Primary"><a href="/games/">Games</a><a href="/learn/">Learn</a><a href="/community/">Community</a></nav>
@@ -24,7 +24,7 @@
     <section class="hero" data-campaign-identity="seed-man-v20">
       <p class="eyebrow">Seed Man · 20-Level Campaign · 5 Worlds · Approved Character Art · Phenotype Combat</p>
       <h1>Seed Man</h1>
-      <p class="lede">Run through Greenhouse Valley, Forest Ruins, Desert Canyon, Frozen Peaks and Eco City. Master platforming and temporary Plant, Fire, Electric and Ice phenotype powers, defeat six bosses, and face the four-phase Blight King in Level 20.</p>
+      <p class="lede">Run through Greenhouse Valley, Forest Ruins, Desert Canyon, Frozen Peaks and Eco City. Master platforming and temporary Fire, Electric and Ice phenotype powers from Seed Man's permanent Plant form, defeat six bosses, and face the four-phase Blight King in Level 20.</p>
       <p id="load-status" class="status" role="status" aria-live="polite" aria-atomic="true">Loading Seed Man v20 campaign…</p>
       <p class="status" id="seed-ui-release-marker" data-seed-ui-marker="seed-man-v20">LIVE UI · 20 LEVELS · APPROVED ART · PHENOTYPE COMBAT</p>
     </section>
@@ -42,7 +42,7 @@
         <button id="restart" type="button">Restart</button>
       </div>
       <canvas id="game" width="960" height="540" tabindex="0" aria-label="Seed Man game canvas. Move with A and D or the arrow keys. Jump with Space, W, or Up. Press J to attack, K for phenotype ability, and P to pause."></canvas>
-      <div class="touch-controls" aria-label="Touch controls">
+      <div class="touch-controls controls" aria-label="Touch controls">
         <button type="button" data-control="left" aria-label="Move left">◀</button>
         <button type="button" data-control="right" aria-label="Move right">▶</button>
         <button type="button" data-control="jump" class="jump" aria-label="Jump or double jump">JUMP ×2</button>
@@ -77,9 +77,9 @@
     <section class="panel">
       <h2>Phenotype combat</h2>
       <div class="power-guide">
-        <p><strong>Plant</strong> is Seed Man's base form.</p>
-        <p><strong>Fire</strong> launches fire attacks and applies burn pressure.</p>
-        <p><strong>Electric</strong> strikes enemies with fast chain damage.</p>
+        <p><strong>Plant</strong> is Seed Man's permanent base form.</p>
+        <p><strong>Fire</strong> launches burning projectiles.</p>
+        <p><strong>Electric</strong> chains fast damage between nearby enemies.</p>
         <p><strong>Ice</strong> freezes enemies and controls dangerous encounters.</p>
       </div>
     </section>
@@ -87,16 +87,18 @@
 
   <footer><p><strong>DTF Genetics</strong> · Dream the Future</p><p>Original DTF browser game using the approved Seed Man visual system.</p></footer>
 
-  <script id="seed-man-level" type="application/json">{"schemaVersion":2,"id":"sprout-run","name":"Seed Man bootstrap","worldWidth":7800,"worldHeight":540,"requiredPickups":24,"spawn":{"x":80,"y":390},"platforms":[{"x":0,"y":480,"width":7800,"height":60}],"hazards":[],"pickups":[{"id":"bootstrap-seed-01","x":300,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-02","x":580,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-03","x":860,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-04","x":1140,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-05","x":1420,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-06","x":1700,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-07","x":1980,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-08","x":2260,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-09","x":2540,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-10","x":2820,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-11","x":3100,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-12","x":3380,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-13","x":3660,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-14","x":3940,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-15","x":4220,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-16","x":4500,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-17","x":4780,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-18","x":5060,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-19","x":5340,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-20","x":5620,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-21","x":5900,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-22","x":6180,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-23","x":6460,"y":430,"width":22,"height":22},{"id":"bootstrap-seed-24","x":6740,"y":430,"width":22,"height":22}],"powerups":[{"id":"bootstrap-speed","type":"speed","x":900,"y":430,"width":28,"height":28,"duration":8},{"id":"bootstrap-shield","type":"shield","x":1700,"y":430,"width":28,"height":28},{"id":"bootstrap-magnet","type":"magnet","x":2500,"y":430,"width":28,"height":28,"duration":11},{"id":"bootstrap-jump","type":"jump","x":3300,"y":430,"width":28,"height":28,"duration":10},{"id":"bootstrap-speed-2","type":"speed","x":4100,"y":430,"width":28,"height":28,"duration":8},{"id":"bootstrap-shield-2","type":"shield","x":4900,"y":430,"width":28,"height":28},{"id":"bootstrap-magnet-2","type":"magnet","x":5700,"y":430,"width":28,"height":28,"duration":11}],"checkpoints":[{"id":"bootstrap-checkpoint-1","x":2000,"y":420,"width":50,"height":60,"respawnX":1980,"respawnY":400},{"id":"bootstrap-checkpoint-2","x":4000,"y":420,"width":50,"height":60,"respawnX":3980,"respawnY":400},{"id":"bootstrap-checkpoint-3","x":6000,"y":420,"width":50,"height":60,"respawnX":5980,"respawnY":400}],"finish":{"x":7700,"y":390,"width":50,"height":90}}</script>
-  <script src="./canvas-compat-v1.js?v=20260908-v20" defer></script>
-  <script src="./approved-art-core-v1.js?v=20260908-v20" defer></script>
-  <script src="./approved-art-runtime-v1.js?v=20260908-v20" defer></script>
-  <script src="./app.js?v=20260908-v20" defer></script>
-  <script src="./seed-man-production-art.js?v=20260908-v20" defer></script>
-  <script src="./campaign-v20-runtime.js?v=20260908-v20" defer></script>
-  <script src="./campaign-ui-v20.js?v=20260908-v20" defer></script>
-  <script src="./combat-browser-v1.js?v=20260908-v20" defer></script>
-  <script src="./enemy-attacks-browser-v1.js?v=20260908-v20" defer></script>
-  <script src="./input-guard-v1.js?v=20260908-v20" defer></script>
+  <script id="seed-man-level" type="application/json">{"schemaVersion":4,"id":"1-1-sprout-steps","name":"Seed Man bootstrap","levelNumber":1,"worldId":"greenhouse-valley","worldWidth":6200,"worldHeight":540,"requiredPickups":0,"spawn":{"x":80,"y":390},"platforms":[{"x":0,"y":480,"width":6200,"height":60}],"hazards":[],"pickups":[],"powerups":[],"checkpoints":[],"enemyPool":["sproutling","root-crawler"],"phenotypeForms":["plant","fire","electric","ice"],"phenotypeDurationMs":30000,"finish":{"x":6100,"y":390,"width":50,"height":90}}</script>
+  <script src="./canvas-compat-v1.js?v=20260909-v20" defer></script>
+  <script src="./approved-art-core-v1.js?v=20260909-v20" defer></script>
+  <script src="./approved-art-runtime-v1.js?v=20260909-v20" defer></script>
+  <script src="./app.js?v=20260909-v20" defer></script>
+  <script src="./seed-man-production-art.js?v=20260909-v20" defer></script>
+  <script src="./campaign-v20-runtime.js?v=20260909-v20" defer></script>
+  <script src="./v20-campaign-guard.js?v=20260909-v20" defer></script>
+  <script src="./campaign-ui-v20.js?v=20260909-v20" defer></script>
+  <script src="./v20-enemy-runtime.js?v=20260909-v20" defer></script>
+  <script src="./combat-browser-v2.js?v=20260909-v20" defer></script>
+  <script src="./enemy-attacks-browser-v2.js?v=20260909-v20" defer></script>
+  <script src="./input-guard-v1.js?v=20260909-v20" defer></script>
 </body>
 </html>
