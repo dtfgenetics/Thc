@@ -5,6 +5,7 @@ on:
     paths:
       - site/public-route-patch/games/seed-man-platformer/index.html
       - site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
+      - site/public-route-patch/games/seed-man-platformer/player-state-v20.js
       - site/public-route-patch/games/seed-man-platformer/campaign-v20-runtime.js
       - site/public-route-patch/games/seed-man-platformer/campaign-ui-v20.js
       - site/public-route-patch/games/seed-man-platformer/v20-enemy-runtime.js
@@ -23,6 +24,7 @@ on:
     paths:
       - site/public-route-patch/games/seed-man-platformer/index.html
       - site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
+      - site/public-route-patch/games/seed-man-platformer/player-state-v20.js
       - site/public-route-patch/games/seed-man-platformer/campaign-v20-runtime.js
       - site/public-route-patch/games/seed-man-platformer/campaign-ui-v20.js
       - site/public-route-patch/games/seed-man-platformer/v20-enemy-runtime.js
@@ -49,7 +51,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Verify source route boots only canonical v20 visual and combat runtimes
+      - name: Verify source route boots only canonical production runtimes
         shell: bash
         run: |
           set -euo pipefail
@@ -76,18 +78,31 @@ jobs:
           test "$ui" -lt "$enemy"
           test "$enemy" -lt "$combat"
           test "$combat" -lt "$attacks"
-          ! grep -Fq './combat-browser-v1.js' "$index"
-          ! grep -Fq './enemy-attacks-browser-v1.js' "$index"
+          for retired in campaign-v1.js gameplay-v2.js physics.mjs campaign-combat-v20.js campaign-progress-v20.js campaign-runtime-v20.js campaign-ui-v15.js world-five-v1.js combat-browser-v1.js enemy-attacks-browser-v1.js seed-man-ui-v3.js data/levels-12-15.json; do
+            test ! -e "$route/$retired" || { echo "retired artifact still present: $retired" >&2; exit 1; }
+            ! grep -Fq "./${retired}" "$index"
+          done
           ! grep -Fq './seed-man-sprite-runtime-v1.js' "$index"
           ! grep -Fq './seed-man-sprite-runtime-v2.js' "$index"
-          ! grep -Fq './world-five-v1.js' "$index"
           ! grep -Fq './three-world-v1.js' "$index"
           ! grep -Fq './three-world-adapter-v1.js' "$index"
-          ! grep -Fq './seed-man-ui-v3.js' "$index"
+          node --check "$route/player-state-v20.js"
+          grep -Fq 'seed-man-player-state-v20' "$route/player-state-v20.js"
+          grep -Fq 'player-state-v20.js' "$route/canvas-compat-v1.js"
+          grep -Fq "playerStateRuntime:'v20'" "$route/canvas-compat-v1.js"
           grep -Fq 'approved-showcase-2026-09-08' "$route/seed-man-production-art.js"
           grep -Fq 'green-armored-plant-hero' "$route/seed-man-production-art.js"
           grep -Fq 'fallbackAllowed:false' "$route/seed-man-production-art.js"
-          grep -Fq 'seed-man-campaign-v20-runtime-v2' "$route/campaign-v20-runtime.js"
+          grep -Fq 'seed-man-approved-art-core-v3' "$route/approved-art-core-v1.js"
+          grep -Fq 'seed-man-approved-master-atlas-v1.webp' "$route/approved-art-core-v1.js"
+          for world in greenhouse-valley forest-ruins desert-canyon frozen-peaks eco-city; do
+            grep -Fq "world.${world}.background" "$route/approved-art-core-v1.js"
+          done
+          test -s "$route/assets/approved/seed-man-approved-master-atlas-v1.webp"
+          grep -Fq 'seed-man-approved-art-runtime-v2' "$route/approved-art-runtime-v1.js"
+          ! grep -Eq 'solar-flare|static-haze|frost-resin|shield-bounce' "$route/approved-art-runtime-v1.js"
+          grep -Fq 'seed-man-campaign-v20-runtime-v3' "$route/campaign-v20-runtime.js"
+          grep -Fq 'approvedWorldBackgrounds:true' "$route/campaign-v20-runtime.js"
           grep -Fq "phenotypeForms:['plant','fire','electric','ice']" "$route/campaign-v20-runtime.js"
           grep -Fq 'seed-man-campaign-ui-v20' "$route/campaign-ui-v20.js"
           grep -Fq 'seed-man-v20-enemy-runtime-v2' "$route/v20-enemy-runtime.js"
