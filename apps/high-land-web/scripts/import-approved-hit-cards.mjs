@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync, readdirSync, rmSync, statSync, copyFileSync } from 'node:fs';
-import { basename, dirname, join, resolve } from 'node:path';
+import { basename, dirname, extname, join, resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
 
 const repoRoot = resolve(process.cwd().endsWith('apps/high-land-web') ? '../..' : '.');
@@ -22,36 +22,46 @@ const masterDir = findDirectoryNamed(extractDir, 'master');
 const variantsDir = findDirectoryNamed(extractDir, 'variants');
 
 if (!masterDir) {
-  const pngs = findFiles(extractDir, (path) => path.toLowerCase().endsWith('.png'));
-  fail(`ZIP extracted, but no folder named master was found. PNGs found: ${pngs.length}. Expected package structure: highland_hit_cards_package/master/*.png`);
+  const assets = findFiles(extractDir, isSupportedCardAsset);
+  fail(`ZIP extracted, but no folder named master was found. Card assets found: ${assets.length}. Expected package structure: highland_hit_cards_package/master/*.{png,svg}`);
 }
 
-const masterPngs = findFiles(masterDir, (path) => path.toLowerCase().endsWith('.png')).sort();
-const variantPngs = variantsDir ? findFiles(variantsDir, (path) => path.toLowerCase().endsWith('.png')).sort() : [];
+const masterAssets = findFiles(masterDir, isSupportedCardAsset).sort();
+const variantAssets = variantsDir ? findFiles(variantsDir, isSupportedCardAsset).sort() : [];
 
-if (masterPngs.length !== 39) {
-  fail(`Expected 39 approved master HIT cards, found ${masterPngs.length} in ${masterDir}.`);
+if (masterAssets.length !== 39) {
+  fail(`Expected 39 master HIT card assets, found ${masterAssets.length} in ${masterDir}.`);
+}
+
+const temporarySvgMasters = masterAssets.filter((path) => extname(path).toLowerCase() === '.svg');
+if (temporarySvgMasters.length > 0) {
+  console.warn(`Warning: found ${temporarySvgMasters.length} SVG master assets. Treat these as temporary unless explicitly approved as final art.`);
 }
 
 mkdirSync(targetMaster, { recursive: true });
 mkdirSync(targetVariants, { recursive: true });
-clearPngs(targetMaster);
-clearPngs(targetVariants);
+clearCardAssets(targetMaster);
+clearCardAssets(targetVariants);
 
-for (const file of masterPngs) copyFileSync(file, join(targetMaster, basename(file)));
-for (const file of variantPngs) copyFileSync(file, join(targetVariants, basename(file)));
+for (const file of masterAssets) copyFileSync(file, join(targetMaster, basename(file)));
+for (const file of variantAssets) copyFileSync(file, join(targetVariants, basename(file)));
 copyFirstIfFound(extractDir, 'manifest.csv', join(targetRoot, 'manifest.csv'));
 copyFirstIfFound(extractDir, 'manifest.json', join(targetRoot, 'manifest.json'));
 copyFirstIfFound(extractDir, 'README.md', join(targetRoot, 'README_APPROVED_PACKAGE.md'));
 
-console.log(`Installed ${masterPngs.length} approved master HIT card images.`);
-console.log(`Installed ${variantPngs.length} approved variant HIT card images.`);
+console.log(`Installed ${masterAssets.length} master HIT card assets.`);
+console.log(`Installed ${variantAssets.length} variant HIT card assets.`);
 console.log(`Target: ${targetRoot}`);
-console.log('Next: git add apps/high-land-web/public/assets/images/cards/hit && git commit -m "Add approved High Land HIT card artwork" && git push origin main');
+console.log('Next: update actionCards.ts/tests if filenames changed, then run npm run test:high-land && npm run build:high-land before merge.');
 
 function findApprovedZip(root) {
   const matches = findFiles(root, (path) => basename(path).toLowerCase() === 'highland_hit_cards_package.zip');
   return matches[0] ?? null;
+}
+
+function isSupportedCardAsset(path) {
+  const ext = extname(path).toLowerCase();
+  return ext === '.png' || ext === '.svg';
 }
 
 function findDirectoryNamed(root, targetName) {
@@ -111,10 +121,10 @@ function safeStat(path) {
   }
 }
 
-function clearPngs(dir) {
+function clearCardAssets(dir) {
   if (!existsSync(dir)) return;
   for (const entry of readdirSync(dir)) {
-    if (entry.toLowerCase().endsWith('.png')) rmSync(join(dir, entry), { force: true });
+    if (isSupportedCardAsset(entry)) rmSync(join(dir, entry), { force: true });
   }
 }
 
