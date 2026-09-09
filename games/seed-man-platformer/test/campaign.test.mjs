@@ -19,7 +19,7 @@ assert.ok(levels.every((entry) => entry.status === 'playable'));
 assert.ok(levels.every((entry) => entry.dataPath === 'data/levels-20-v1.json'));
 assert.deepStrictEqual(campaign.worlds.map((world) => world.levels.length), [4,4,4,4,4]);
 assert.deepStrictEqual(campaign.worlds.map((world) => world.title), ['Greenhouse Valley','Forest Ruins','Desert Canyon','Frozen Peaks','Eco City']);
-assert.deepStrictEqual(campaign.worlds.map((world) => world.visualWorldKey), ['greenhouse-valley','forest-ruins','desert-canyon','frozen-peak','eco-city']);
+assert.deepStrictEqual(campaign.worlds.map((world) => world.visualWorldKey), ['greenhouse-valley','forest-ruins','desert-canyon','frozen-peaks','eco-city']);
 
 assert.equal(catalog.schemaVersion, 1);
 assert.equal(catalog.id, 'seed-man-levels-20-v1');
