@@ -3,7 +3,7 @@ import fs from 'node:fs';
 const combatPath = 'site/public-route-patch/games/seed-man-platformer/combat-browser-v2.js';
 const enemyRuntimePath = 'site/public-route-patch/games/seed-man-platformer/v20-enemy-runtime.js';
 const REQUIRED_COMBAT = 'seed-man-combat-browser-v2';
-const REQUIRED_ENEMIES = 'seed-man-v20-enemy-runtime-v3';
+const REQUIRED_ENEMIES = 'seed-man-v20-enemy-runtime-v2';
 
 for (const file of [combatPath, enemyRuntimePath]) {
   if (!fs.existsSync(file)) throw new Error(`Missing canonical Seed Man runtime: ${file}`);
