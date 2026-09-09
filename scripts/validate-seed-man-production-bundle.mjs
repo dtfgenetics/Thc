@@ -23,13 +23,16 @@ if(levels.levels?.length!==20)throw new Error(`level-catalog:expected-20:got-${l
 for(let i=1;i<=20;i++)if(!levels.levels.some((l)=>l.order===i))throw new Error(`missing-level-order:${i}`);
 const finale=levels.levels.find((l)=>l.order===20);
 if(finale?.boss!=='blight-king'||!finale?.mechanics?.includes('final-gauntlet'))throw new Error('finale-contract-incomplete');
+const campaignWorldKeys=campaign.worlds.map((world)=>world.visualWorldKey);
+const expectedWorlds=['greenhouse-valley','forest-ruins','desert-canyon','frozen-peaks','eco-city'];
+if(JSON.stringify(campaignWorldKeys)!==JSON.stringify(expectedWorlds))throw new Error(`campaign-world-keys:${campaignWorldKeys.join(',')}`);
 
 if(art.id!=='seed-man-approved-art-v2')throw new Error(`approved-art-id:${art.id||'missing'}`);
 if(art.sourceOfTruth!=='approved-showcase-2026-09-08')throw new Error('approved-art-source-of-truth-missing');
 if(art.policy?.authoritative!==true)throw new Error('approved-art-not-authoritative');
 if(art.policy?.proceduralFallbackAllowed!==false||art.policy?.legacyAtlasFallbackAllowed!==false)throw new Error('approved-art-fallback-policy-invalid');
 if(art.policy?.characterReference!=='green-armored-plant-hero')throw new Error('approved-character-reference-missing');
-for(const world of ['greenhouse-valley','forest-ruins','desert-canyon','frozen-peak','eco-city'])if(!art.policy?.worlds?.includes(world))throw new Error(`approved-world-missing:${world}`);
+for(const world of expectedWorlds)if(!art.policy?.worlds?.includes(world))throw new Error(`approved-world-missing:${world}`);
 for(const key of ['cover.main','character.seedman.atlas','enemy.atlas','boss.atlas','platform.atlas','world.atlas','ui.vfx.cover'])if(!art.assets?.[key])throw new Error(`approved-asset-key-missing:${key}`);
 for(const region of ['cover.main','character.seedman.atlas','enemy-boss.atlas','world.atlas','platform.atlas','ui-vfx.atlas'])if(!art.masterAtlas?.regions?.[region])throw new Error(`approved-atlas-region-missing:${region}`);
 
