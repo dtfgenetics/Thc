@@ -60,7 +60,7 @@ assert.notEqual(resources['high-iq'].publisher.sharedProductionTarget, resources
 
 assert.equal(resources['seed-man-platformer'].publicSuiteOwnership, 'resource');
 assert.equal(resources['seed-man-platformer'].publisher.type, 'wordpress-dedicated-route');
-assert.equal(resources['seed-man-platformer'].publisher.status, 'production');
+assert.equal(resources['seed-man-platformer'].publisher.status, 'production-v20');
 assert.equal(resources['seed-man-platformer'].publisher.orchestration, 'dedicated');
 assert.equal(resources['seed-man-platformer'].publisher.workflow, 'publish-seed-man-production.yml');
 assert.equal(resources['seed-man-platformer'].publisher.sharedProductionTarget, 'wordpress:seed-man-route');
