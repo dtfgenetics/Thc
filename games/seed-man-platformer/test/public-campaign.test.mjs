@@ -74,7 +74,11 @@ assert.match(v20Ui, /seed-man-campaign-ui-v20/, 'v20 campaign UI marker missing'
 
 // Compatibility adapters may remain while migration consumers still exist,
 // but they must remain self-contained and must not replace v20 ownership.
-assert.match(legacyBaseRuntime, /sprout-campaign-v3/, 'legacy base compatibility runtime missing');
+assert.match(legacyBaseRuntime, /seed-man-campaign-v1-compat-retired/, 'legacy base shim must expose its retired compatibility version');
+assert.match(legacyBaseRuntime, /retired:\s*true/, 'legacy base shim must identify itself as retired');
+assert.match(legacyBaseRuntime, /replacement:\s*'seed-man-campaign-v20-runtime-v1'/, 'legacy base shim must point to canonical v20 ownership');
+assert.doesNotMatch(legacyBaseRuntime, /sprout-campaign-v3|levelCount:\s*11|newLevelCount:\s*10/, 'retired base shim must not reinstall the obsolete campaign');
+assert.doesNotMatch(legacyBaseRuntime, /addEventListener\s*\(\s*['"]load['"]|MutationObserver|fetch\s*\(/i, 'retired base shim must stay side-effect-light and network free');
 assert.match(legacyWorldFiveRuntime, /seed-man-world-five-v1/, 'legacy World 5 compatibility adapter missing');
 assert.match(legacyWorldFiveRuntime, /installCampaignExtension/, 'legacy World 5 adapter must remain an extension only');
 assert.doesNotMatch(legacyWorldFiveRuntime, /^\s*import\s/m, 'legacy World 5 adapter must remain a classic browser script');
