@@ -14,9 +14,9 @@ const enemies = fs.readFileSync(enemyRuntimePath, 'utf8');
 if (!combat.includes(REQUIRED_COMBAT)) throw new Error(`Canonical combat marker missing: ${REQUIRED_COMBAT}`);
 if (!enemies.includes(REQUIRED_ENEMIES)) throw new Error(`Canonical enemy marker missing: ${REQUIRED_ENEMIES}`);
 if (combat.includes('seed-man-combat-browser-v1')) throw new Error('Legacy v1 combat marker leaked into canonical v2 runtime.');
+for (const retiredAlias of ['solar-flare','static-haze','frost-resin']) if (enemies.includes(retiredAlias)) throw new Error(`Retired phenotype alias leaked into enemy runtime: ${retiredAlias}`);
+for (const canonical of ["phenotype:'fire'","phenotype:'electric'","phenotype:'ice'"]) if (!enemies.includes(canonical)) throw new Error(`Canonical phenotype ID missing from enemy runtime: ${canonical}`);
 
-// Enemy presentation now belongs to the canonical v20 enemy/combat renderer.
-// This script intentionally validates generated output rather than rewriting it.
 console.log(JSON.stringify({
   ok: true,
   mode: 'validation-only',
@@ -24,5 +24,6 @@ console.log(JSON.stringify({
   enemyRuntimeFile: enemyRuntimePath,
   requiredCombat: REQUIRED_COMBAT,
   requiredEnemyRuntime: REQUIRED_ENEMIES,
+  canonicalPhenotypes: ['plant','fire','electric','ice'],
   legacyMutationDisabled: true
 }, null, 2));

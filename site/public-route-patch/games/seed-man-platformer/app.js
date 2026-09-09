@@ -14,11 +14,7 @@ const DEFAULTS = Object.freeze({
   maxFallSpeed: 900,
   coyoteTime: 0.11,
   jumpBuffer: 0.12,
-  maxAirJumps: 1,
-  speedBoostMultiplier: 1.35,
-  jumpBoostMultiplier: 1.18,
-  magnetRadius: 145,
-  shieldInvulnerability: 1.05
+  maxAirJumps: 1
 });
 
 function overlaps(a, b) {
@@ -29,14 +25,6 @@ function approach(current, target, maxDelta) {
   if (current < target) return Math.min(target, current + maxDelta);
   if (current > target) return Math.max(target, current - maxDelta);
   return target;
-}
-
-function centerDistance(a, b) {
-  const ax = a.x + a.width / 2;
-  const ay = a.y + a.height / 2;
-  const bx = b.x + b.width / 2;
-  const by = b.y + b.height / 2;
-  return Math.hypot(ax - bx, ay - by);
 }
 
 function createPlayer(spawn) {
@@ -53,14 +41,7 @@ function createPlayer(spawn) {
     airJumpsRemaining: DEFAULTS.maxAirJumps,
     checkpoint: { x: spawn.x, y: spawn.y, id: 'start' },
     collected: [],
-    collectedPowerups: [],
-    power: {
-      speedTimer: 0,
-      jumpTimer: 0,
-      magnetTimer: 0,
-      shieldCharges: 0,
-      invulnerableTimer: 0
-    },
+    power: { invulnerableTimer: 0 },
     deaths: 0,
     finished: false,
     finishBlocked: false,
@@ -98,6 +79,7 @@ function respawn(player, config) {
   player.coyote = 0;
   player.jumpBuffer = 0;
   player.airJumpsRemaining = config.maxAirJumps;
+  player.power = player.power || {};
   player.power.invulnerableTimer = 0.45;
   player.deaths += 1;
   player.finishBlocked = false;
@@ -110,22 +92,6 @@ function pickupRequirement(level) {
   return Array.isArray(level?.pickups) ? level.pickups.length : 0;
 }
 
-function tickPowerTimers(player, step) {
-  player.power.speedTimer = Math.max(0, player.power.speedTimer - step);
-  player.power.jumpTimer = Math.max(0, player.power.jumpTimer - step);
-  player.power.magnetTimer = Math.max(0, player.power.magnetTimer - step);
-  player.power.invulnerableTimer = Math.max(0, player.power.invulnerableTimer - step);
-}
-
-function collectPowerup(player, powerup) {
-  if (player.collectedPowerups.includes(powerup.id)) return;
-  player.collectedPowerups.push(powerup.id);
-  if (powerup.type === 'speed') player.power.speedTimer = Math.max(player.power.speedTimer, Number(powerup.duration) || 8);
-  else if (powerup.type === 'jump') player.power.jumpTimer = Math.max(player.power.jumpTimer, Number(powerup.duration) || 10);
-  else if (powerup.type === 'magnet') player.power.magnetTimer = Math.max(player.power.magnetTimer, Number(powerup.duration) || 10);
-  else if (powerup.type === 'shield') player.power.shieldCharges = Math.min(2, player.power.shieldCharges + 1);
-}
-
 function checkpointsFor(level) {
   if (Array.isArray(level?.checkpoints)) return level.checkpoints;
   return level?.checkpoint ? [level.checkpoint] : [];
@@ -134,38 +100,34 @@ function checkpointsFor(level) {
 function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
   const player = JSON.parse(JSON.stringify(inputPlayer));
   if (player.finished) return player;
-  if (!player.power) {
-    player.power = { speedTimer: 0, jumpTimer: 0, magnetTimer: 0, shieldCharges: 0, invulnerableTimer: 0 };
-  }
-  if (!Array.isArray(player.collectedPowerups)) player.collectedPowerups = [];
+  player.power = player.power || { invulnerableTimer: 0 };
+  player.power.invulnerableTimer = Math.max(0, Number(player.power.invulnerableTimer || 0));
   if (!Number.isInteger(player.airJumpsRemaining)) player.airJumpsRemaining = config.maxAirJumps;
 
   const step = Math.min(Math.max(dt, 0), 1 / 20);
   const requiredPickups = pickupRequirement(level);
-  tickPowerTimers(player, step);
+  player.power.invulnerableTimer = Math.max(0, player.power.invulnerableTimer - step);
   player.finishBlocked = false;
   player.missingPickups = Math.max(0, requiredPickups - player.collected.length);
 
   player.jumpBuffer = input.jumpPressed ? config.jumpBuffer : Math.max(0, player.jumpBuffer - step);
   player.coyote = player.grounded ? config.coyoteTime : Math.max(0, player.coyote - step);
 
-  const speedMultiplier = player.power.speedTimer > 0 ? config.speedBoostMultiplier : 1;
-  const jumpMultiplier = player.power.jumpTimer > 0 ? config.jumpBoostMultiplier : 1;
   const direction = (input.right ? 1 : 0) - (input.left ? 1 : 0);
-  const targetVx = direction * config.moveSpeed * speedMultiplier;
+  const targetVx = direction * config.moveSpeed;
   const acceleration = player.grounded ? config.groundAcceleration : config.airAcceleration;
   const deceleration = player.grounded ? config.groundDeceleration : config.airDeceleration;
   player.vx = approach(player.vx, targetVx, (direction === 0 ? deceleration : acceleration) * step);
 
   let jumped = false;
   if (player.jumpBuffer > 0 && player.coyote > 0) {
-    player.vy = -config.jumpSpeed * jumpMultiplier;
+    player.vy = -config.jumpSpeed;
     player.grounded = false;
     player.coyote = 0;
     player.jumpBuffer = 0;
     jumped = true;
   } else if (input.jumpPressed && player.airJumpsRemaining > 0) {
-    player.vy = -config.doubleJumpSpeed * jumpMultiplier;
+    player.vy = -config.doubleJumpSpeed;
     player.grounded = false;
     player.coyote = 0;
     player.jumpBuffer = 0;
@@ -186,13 +148,8 @@ function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
   player.y += player.vy * step;
   for (const platform of level.platforms) solidCollisionY(player, platform, config);
 
-  for (const powerup of level.powerups || []) {
-    if (!player.collectedPowerups.includes(powerup.id) && overlaps(player, powerup)) collectPowerup(player, powerup);
-  }
-
-  for (const pickup of level.pickups) {
-    const magnetCollect = player.power.magnetTimer > 0 && centerDistance(player, pickup) <= config.magnetRadius;
-    if (!player.collected.includes(pickup.id) && (overlaps(player, pickup) || magnetCollect)) player.collected.push(pickup.id);
+  for (const pickup of level.pickups || []) {
+    if (!player.collected.includes(pickup.id) && overlaps(player, pickup)) player.collected.push(pickup.id);
   }
   player.missingPickups = Math.max(0, requiredPickups - player.collected.length);
 
@@ -206,17 +163,10 @@ function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
     }
   }
 
-  const hitHazard = level.hazards.some((hazard) => overlaps(player, hazard)) || player.y > level.worldHeight + 160;
+  const hitHazard = (level.hazards || []).some((hazard) => overlaps(player, hazard)) || player.y > level.worldHeight + 160;
   if (hitHazard && player.power.invulnerableTimer <= 0) {
-    if (player.power.shieldCharges > 0 && player.y <= level.worldHeight + 160) {
-      player.power.shieldCharges -= 1;
-      player.power.invulnerableTimer = config.shieldInvulnerability;
-      player.vy = -Math.min(470, config.jumpSpeed * 0.74);
-      player.state = 'shield-bounce';
-    } else {
-      respawn(player, config);
-      return player;
-    }
+    respawn(player, config);
+    return player;
   }
 
   if (level.finish && player.x + player.width >= level.finish.x) {
@@ -228,7 +178,7 @@ function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
     return player;
   }
 
-  if (!player.grounded && !['double-jump', 'shield-bounce'].includes(player.state)) player.state = player.vy < 0 ? 'jump' : 'fall';
+  if (!player.grounded && player.state !== 'double-jump') player.state = player.vy < 0 ? 'jump' : 'fall';
   else if (player.grounded && Math.abs(player.vx) > 1) player.state = 'run';
   else if (player.grounded) player.state = 'idle';
   return player;
@@ -263,8 +213,6 @@ let previous = 0;
 let cameraX = 0;
 let running = false;
 let paused = false;
-let powerNotice = null;
-let lastPowerupCount = 0;
 const STEP = 1 / 60;
 const input = { left: false, right: false, jumpHeld: false, jumpQueued: false };
 
@@ -288,11 +236,8 @@ function writeBest(value) {
 
 function focusCanvas() {
   if (!canvas) return;
-  try {
-    canvas.focus({ preventScroll: true });
-  } catch {
-    canvas.focus();
-  }
+  try { canvas.focus({ preventScroll: true }); }
+  catch { canvas.focus(); }
 }
 
 function requiredSprouts() {
@@ -330,8 +275,6 @@ function reset() {
   cameraX = 0;
   paused = false;
   running = true;
-  powerNotice = null;
-  lastPowerupCount = 0;
   clearInput();
   if (ui.finish) ui.finish.hidden = true;
   syncPauseButton();
@@ -400,9 +343,7 @@ for (const button of document.querySelectorAll('[data-control]')) {
   const release = (event) => {
     event.preventDefault();
     clearControl();
-    try {
-      if (button.hasPointerCapture?.(event.pointerId)) button.releasePointerCapture(event.pointerId);
-    } catch {}
+    try { if (button.hasPointerCapture?.(event.pointerId)) button.releasePointerCapture(event.pointerId); } catch {}
   };
   button.addEventListener('pointerdown', press);
   button.addEventListener('pointerup', release);
@@ -410,23 +351,17 @@ for (const button of document.querySelectorAll('[data-control]')) {
   button.addEventListener('lostpointercapture', clearControl);
 }
 
-function powerLabel() {
-  if (!player) return '—';
-  const active = [];
-  if (player.power.speedTimer > 0.05) active.push(`Speed ${Math.ceil(player.power.speedTimer)}s`);
-  if (player.power.jumpTimer > 0.05) active.push(`High Jump ${Math.ceil(player.power.jumpTimer)}s`);
-  if (player.power.magnetTimer > 0.05) active.push(`Magnet ${Math.ceil(player.power.magnetTimer)}s`);
-  if (player.power.shieldCharges > 0) active.push(`Shield ×${player.power.shieldCharges}`);
-  return active.length ? active.join(' · ') : 'None';
+function combatSnapshot() {
+  try { return window.__SPROUT_COMBAT_BROWSER__?.snapshot?.() || null; }
+  catch { return null; }
 }
 
-function noteNewPowerup() {
-  if (!player || player.collectedPowerups.length <= lastPowerupCount) return;
-  const id = player.collectedPowerups[player.collectedPowerups.length - 1];
-  const powerup = level.powerups.find((item) => item.id === id);
-  const labels = { speed: 'Speed Boost', jump: 'High Jump', magnet: 'Sprout Magnet', shield: 'Hazard Shield' };
-  powerNotice = { text: `${labels[powerup?.type] || 'Power-up'} collected!`, until: elapsed + 2.4 };
-  lastPowerupCount = player.collectedPowerups.length;
+function phenotypeLabel() {
+  const snapshot = combatSnapshot();
+  const form = snapshot?.phenotypeForm || 'plant';
+  const label = form.charAt(0).toUpperCase() + form.slice(1);
+  const remaining = Number(snapshot?.phenotypeRemaining) || 0;
+  return remaining > 0 ? `${label} ${Math.ceil(remaining)}s` : label;
 }
 
 function updateHud() {
@@ -438,20 +373,14 @@ function updateHud() {
   if (ui.time) ui.time.textContent = `${elapsed.toFixed(1)}s`;
   const best = readBest();
   if (ui.best) ui.best.textContent = best ? `${best.toFixed(1)}s` : '—';
-  if (ui.power) ui.power.textContent = powerLabel();
+  if (ui.power) ui.power.textContent = phenotypeLabel();
   if (ui.jump) ui.jump.textContent = player?.grounded ? '2 jumps ready' : player?.airJumpsRemaining > 0 ? 'Double jump ready' : 'Landing resets';
   if (ui.progress && level && player) ui.progress.textContent = `${Math.min(100, Math.max(0, Math.round((player.x / level.finish.x) * 100)))}%`;
 
   if (!level || !player) return;
-  if (powerNotice && elapsed < powerNotice.until) {
-    setObjectiveStatus(`${powerNotice.text} · ${powerLabel()}`, 'power');
-  } else if (player.finished) {
-    setObjectiveStatus(`Run complete · ${collected} of ${required} optional sprouts · Dream the Future reached!`, 'complete');
-  } else if (remaining === 0) {
-    setObjectiveStatus(`Perfect harvest · all ${required} sprouts collected · reach the flag!`, 'ready');
-  } else {
-    setObjectiveStatus(`Reach the flag to finish · ${collected} of ${required} optional sprouts found · tap jump for a short hop, hold for height · double jump available`, 'progress');
-  }
+  if (player.finished) setObjectiveStatus(`Run complete · ${collected} of ${required} optional sprouts · Dream the Future reached!`, 'complete');
+  else if (remaining === 0) setObjectiveStatus(`Perfect harvest · all ${required} sprouts collected · reach the flag!`, 'ready');
+  else setObjectiveStatus(`Reach the flag · ${collected} of ${required} optional sprouts · J attack · K phenotype · double jump available`, 'progress');
 }
 
 function worldRect(rect, fill, stroke = null) {
@@ -465,44 +394,20 @@ function worldRect(rect, fill, stroke = null) {
 }
 
 function drawBackground() {
-  const zone = Math.min(2, Math.floor((player?.x || 0) / 2600));
-  const zoneSkies = [
-    ['#bfe6ff','#dff2ce','#7fa35c'],
-    ['#c9dcff','#e6efcb','#73965a'],
-    ['#e1d7ff','#e7efcc','#668a54']
-  ];
-  const colors = zoneSkies[zone];
   const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-  gradient.addColorStop(0, colors[0]);
-  gradient.addColorStop(.7, colors[1]);
-  gradient.addColorStop(1, colors[2]);
+  gradient.addColorStop(0, '#10283a');
+  gradient.addColorStop(1, '#17351f');
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  ctx.globalAlpha = .3;
-  ctx.fillStyle = '#ffffff';
-  for (let i = -1; i < 8; i += 1) {
-    const x = ((i * 260 - cameraX * .18) % 2100) - 120;
-    ctx.beginPath();
-    ctx.arc(x, 105, 70, Math.PI, 0);
-    ctx.fillRect(x - 70, 105, 140, 140);
-    ctx.fill();
-  }
-  ctx.globalAlpha = 1;
-
-  const zoneNames = ['Sprout Yard', 'Canopy Run', 'Dreamhouse Climb'];
-  ctx.fillStyle = '#173522cc';
-  ctx.font = '900 18px system-ui';
-  ctx.fillText(zoneNames[zone], 24, 38);
 }
 
 function drawPlatforms() {
-  for (const platform of level.platforms) {
+  for (const platform of level.platforms || []) {
     worldRect(platform, platform.height > 40 ? '#4e6f37' : '#5d8445', '#31552d');
     ctx.fillStyle = '#93c868';
     ctx.fillRect(Math.round(platform.x - cameraX), platform.y, platform.width, Math.min(7, platform.height));
   }
-  for (const hazard of level.hazards) {
+  for (const hazard of level.hazards || []) {
     const x = Math.round(hazard.x - cameraX);
     ctx.fillStyle = '#533927';
     ctx.fillRect(x, hazard.y, hazard.width, hazard.height);
@@ -523,13 +428,6 @@ function drawPickup(pickup) {
   const y = pickup.y + pickup.height / 2;
   ctx.save();
   ctx.translate(x, y);
-  if (player.power.magnetTimer > 0 && centerDistance(player, pickup) <= DEFAULTS.magnetRadius * 1.5) {
-    ctx.strokeStyle = '#7344bd88';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(0, 0, 18 + Math.sin(elapsed * 7) * 3, 0, Math.PI * 2);
-    ctx.stroke();
-  }
   ctx.fillStyle = '#5a7e37';
   ctx.beginPath(); ctx.ellipse(-5, -3, 5, 10, -.55, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.ellipse(5, -3, 5, 10, .55, 0, Math.PI * 2); ctx.fill();
@@ -537,32 +435,6 @@ function drawPickup(pickup) {
   ctx.strokeStyle = '#29451f';
   ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(0, 2); ctx.lineTo(0, 9); ctx.stroke();
-  ctx.restore();
-}
-
-function drawPowerup(powerup) {
-  if (player.collectedPowerups.includes(powerup.id)) return;
-  const x = powerup.x - cameraX + powerup.width / 2;
-  const y = powerup.y + powerup.height / 2;
-  const palette = {
-    speed: ['#f3c867','»'],
-    jump: ['#c8f36a','↑↑'],
-    magnet: ['#b58cff','U'],
-    shield: ['#85d7ff','◆']
-  };
-  const [fill, glyph] = palette[powerup.type] || ['#ffffff','+'];
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.shadowColor = fill;
-  ctx.shadowBlur = 12 + Math.sin(elapsed * 5) * 3;
-  ctx.fillStyle = fill;
-  ctx.beginPath(); ctx.arc(0, 0, 13 + Math.sin(elapsed * 4) * 1.5, 0, Math.PI * 2); ctx.fill();
-  ctx.shadowBlur = 0;
-  ctx.fillStyle = '#10291d';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.font = '900 12px system-ui';
-  ctx.fillText(glyph, 0, 0);
   ctx.restore();
 }
 
@@ -575,11 +447,6 @@ function drawCheckpoints() {
     ctx.beginPath(); ctx.moveTo(x + 8, cp.y + cp.height); ctx.lineTo(x + 8, cp.y); ctx.stroke();
     ctx.fillStyle = active ? '#c8f36a' : '#f3c867';
     ctx.beginPath(); ctx.moveTo(x + 10, cp.y + 4); ctx.lineTo(x + 45, cp.y + 14); ctx.lineTo(x + 10, cp.y + 27); ctx.closePath(); ctx.fill();
-    if (active) {
-      ctx.fillStyle = '#173522';
-      ctx.font = '900 10px system-ui';
-      ctx.fillText('SAVED', x + 12, cp.y - 7);
-    }
   }
 }
 
@@ -613,70 +480,14 @@ function drawProgressRail() {
 }
 
 function drawSeedMan() {
-  const x = player.x - cameraX;
-  const y = player.y;
-  const facing = player.vx < 0 ? -1 : 1;
-  ctx.save();
-  ctx.translate(x + player.width / 2, y + player.height / 2);
-
-  if (player.power.speedTimer > 0) {
-    ctx.strokeStyle = '#f3c86788';
-    ctx.lineWidth = 3;
-    for (let i = 0; i < 3; i += 1) {
-      ctx.beginPath();
-      ctx.moveTo(-24 - i * 7, -8 + i * 8);
-      ctx.lineTo(-10 - i * 5, -8 + i * 8);
-      ctx.stroke();
-    }
-  }
-  if (player.power.shieldCharges > 0 || player.power.invulnerableTimer > 0) {
-    ctx.strokeStyle = '#85d7ffcc';
-    ctx.lineWidth = 3;
-    ctx.beginPath(); ctx.arc(0, 0, 28 + Math.sin(elapsed * 8) * 2, 0, Math.PI * 2); ctx.stroke();
-  }
-  if (player.state === 'double-jump') {
-    ctx.strokeStyle = '#c8f36aaa';
-    ctx.lineWidth = 3;
-    ctx.beginPath(); ctx.ellipse(0, 23, 24, 7, 0, 0, Math.PI * 2); ctx.stroke();
-  }
-
-  ctx.strokeStyle = '#1b211c';
-  ctx.lineWidth = 4;
-  ctx.lineCap = 'round';
-  const limb = player.state === 'run' ? Math.sin(elapsed * 13) * 6 : 0;
-  ctx.beginPath(); ctx.moveTo(-10, 7); ctx.lineTo(-17, 17 + limb); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(10, 7); ctx.lineTo(17, 17 - limb); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(-11, -1); ctx.lineTo(-18, 7 - limb); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(11, -1); ctx.lineTo(18, 7 + limb); ctx.stroke();
-  ctx.fillStyle = '#f7f7f2';
-  ctx.beginPath(); ctx.arc(-18, 8 - limb, 5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-  ctx.beginPath(); ctx.arc(18, 8 + limb, 5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-  ctx.beginPath(); ctx.ellipse(-17, 20 + limb, 8, 4, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-  ctx.beginPath(); ctx.ellipse(17, 20 - limb, 8, 4, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-  ctx.fillStyle = '#9a6e45';
-  ctx.beginPath(); ctx.ellipse(0, 0, 15, 19, -.12 * facing, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-  ctx.fillStyle = '#1b211c';
-  ctx.beginPath(); ctx.arc(-5, -4, 2, 0, Math.PI * 2); ctx.arc(5, -4, 2, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(0, 3, 6, .15, Math.PI - .15); ctx.stroke();
-  ctx.fillStyle = '#4b7f35';
-  ctx.strokeStyle = '#264822';
-  ctx.lineWidth = 2;
-  for (const [dx, dy, rot] of [[0,-23,0],[-7,-20,-.55],[7,-20,.55]]) {
-    ctx.save();
-    ctx.translate(dx, dy);
-    ctx.rotate(rot);
-    ctx.beginPath(); ctx.ellipse(0, 0, 4, 9, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-    ctx.restore();
-  }
-  ctx.restore();
+  if (typeof window.drawSeedManProduction === 'function') window.drawSeedManProduction();
 }
 
 function render() {
   if (!ctx || !canvas || !level || !player) return;
   drawBackground();
   drawPlatforms();
-  level.pickups.forEach(drawPickup);
-  (level.powerups || []).forEach(drawPowerup);
+  (level.pickups || []).forEach(drawPickup);
   drawCheckpoints();
   drawFinish();
   drawProgressRail();
@@ -696,16 +507,13 @@ function render() {
 function finishGame() {
   running = false;
   paused = false;
-  powerNotice = null;
   syncPauseButton();
   const previousBest = readBest();
   const newBest = previousBest === null || elapsed < previousBest;
   if (newBest) writeBest(elapsed);
   updateHud();
   if (ui.finish) ui.finish.hidden = false;
-  if (ui.summary) {
-    ui.summary.textContent = `${player.collected.length} of ${requiredSprouts()} sprouts · ${player.collectedPowerups.length} power-ups · ${player.deaths} falls · ${elapsed.toFixed(1)} seconds.${newBest ? ' New personal best!' : ''}`;
-  }
+  if (ui.summary) ui.summary.textContent = `${player.collected.length} of ${requiredSprouts()} sprouts · ${player.deaths} falls · ${elapsed.toFixed(1)} seconds.${newBest ? ' New personal best!' : ''}`;
 }
 
 function cameraBlend(frameSeconds) {
@@ -728,7 +536,6 @@ function frame(timeMs) {
       }, level, STEP);
       input.jumpQueued = false;
       accumulator -= STEP;
-      noteNewPowerup();
       if (player.finished) {
         finishGame();
         break;
@@ -764,13 +571,11 @@ function validateLevel(candidate) {
     candidate.pickups.length !== 24 ||
     candidate.requiredPickups !== 24 ||
     candidate.requiredPickups !== candidate.pickups.length ||
-    candidate.powerups.length < 7 ||
+    candidate.powerups.length !== 0 ||
     candidate.checkpoints.length !== 3 ||
     !candidate.spawn ||
     !candidate.finish
-  ) {
-    throw new Error('level contract mismatch');
-  }
+  ) throw new Error('level contract mismatch');
   return candidate;
 }
 
@@ -778,10 +583,10 @@ function load() {
   try {
     if (!canvas || !ctx) throw new Error('canvas 2D context unavailable');
     level = validateLevel(readEmbeddedLevel());
-    setObjectiveStatus(`Reach the flag to clear the run · ${level.requiredPickups} optional sprouts · tap/hold jump control · double jump enabled · ${level.powerups.length} power-ups · ${level.checkpoints.length} checkpoints`, 'progress');
+    setObjectiveStatus(`Reach the flag · ${level.requiredPickups} optional sprouts · double jump · J attack · K phenotype · ${level.checkpoints.length} checkpoints`, 'progress');
     reset();
   } catch (error) {
-    console.error('Sprout Run failed to initialize.', error);
+    console.error('Seed Man failed to initialize.', error);
     running = false;
     setObjectiveStatus('The Seed Man level could not be loaded. Reload the page to retry.', 'error');
   }

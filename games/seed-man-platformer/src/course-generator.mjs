@@ -1,4 +1,3 @@
-const POWER_TYPES = ['speed', 'shield', 'magnet', 'jump'];
 const MECHANIC_TYPES = new Set(['bounce-pads','flow-zones','drag-zones','updraft-zones','boost-zones','heat-vents','gust-zones','slip-zones','wind-zones']);
 const MIN_FINAL_LANDING = 260;
 
@@ -15,7 +14,6 @@ export function validateCourseTemplate(template) {
   assertPositiveInteger(template.requiredPickups, `${template.id}.requiredPickups`);
   assertPositiveInteger(template.segmentLength, `${template.id}.segmentLength`);
   assertPositiveInteger(template.spikeCount, `${template.id}.spikeCount`);
-  assertPositiveInteger(template.powerupCount, `${template.id}.powerupCount`);
   if (!template.palette?.sky || !template.palette?.ground || !template.palette?.accent || !template.palette?.hazard) throw new Error(`${template.id}.palette is incomplete`);
   if (!template.mechanic || !MECHANIC_TYPES.has(template.mechanic.type) || !Number.isInteger(template.mechanic.count) || template.mechanic.count < 1) throw new Error(`${template.id}.mechanic is invalid`);
   if (template.boss && (!template.boss.id || !template.boss.name || !Number.isInteger(template.boss.requiredHits) || template.boss.requiredHits < 2)) throw new Error(`${template.id}.boss is invalid`);
@@ -36,14 +34,12 @@ function groundPlatformsFor(template) {
       platforms.push({ x, y: 480, width: remaining, height: 60 });
       break;
     }
-
     const gap = template.gaps[gapIndex % template.gaps.length];
     const remainingAfterSegmentAndGap = remaining - template.segmentLength - gap;
     if (remainingAfterSegmentAndGap < MIN_FINAL_LANDING) {
       platforms.push({ x, y: 480, width: remaining, height: 60 });
       break;
     }
-
     platforms.push({ x, y: 480, width: template.segmentLength, height: 60 });
     hazards.push({ x: x + template.segmentLength, y: 500, width: gap, height: 40 });
     x += template.segmentLength + gap;
@@ -64,7 +60,6 @@ function upperPlatformsFor(template) {
     platforms.push({ x: Math.round(template.worldWidth * fraction), y: 220 - (index % 2) * 25, width: 150 - (index === 2 ? 5 : 0), height: 24 });
   }
   if (!template.boss) return platforms;
-
   const arenaStart = Math.round(template.worldWidth * 0.74) - 32;
   const arenaEnd = Math.round(template.worldWidth * 0.92) + 32;
   return platforms.filter((platform) => platform.x + platform.width <= arenaStart || platform.x >= arenaEnd);
@@ -100,20 +95,6 @@ function pickupsFor(template, groundPlatforms, upperPlatforms) {
     pickups.push({ id: `sprout-${String(template.levelNumber).padStart(2, '0')}-${String(pickups.length + 1).padStart(2, '0')}`, x: safeGroundX(groundPlatforms, desired, 50), y: 425, width: 22, height: 22 });
   }
   return pickups;
-}
-
-function powerupsFor(template, groundPlatforms) {
-  const powerups = [];
-  for (let index = 0; index < template.powerupCount; index += 1) {
-    const fraction = template.powerupCount === 1 ? 0.5 : 0.18 + index * (0.64 / (template.powerupCount - 1));
-    const type = POWER_TYPES[(index + template.levelNumber) % POWER_TYPES.length];
-    const powerup = { id: `power-${type}-${String(template.levelNumber).padStart(2, '0')}-${index + 1}`, type, x: safeGroundX(groundPlatforms, template.worldWidth * fraction, 55), y: 425, width: 28, height: 28 };
-    if (type === 'speed') powerup.duration = 8;
-    else if (type === 'magnet') powerup.duration = 11;
-    else if (type === 'jump') powerup.duration = 10;
-    powerups.push(powerup);
-  }
-  return powerups;
 }
 
 function checkpointsFor(template, groundPlatforms) {
@@ -173,7 +154,7 @@ export function generateCourse(inputTemplate) {
   return {
     schemaVersion: 3,
     id: template.id,
-    name: `Sprout Run: ${template.name}`,
+    name: `Seed Man: ${template.name}`,
     levelNumber: template.levelNumber,
     theme: template.theme,
     setting: template.setting,
@@ -186,7 +167,7 @@ export function generateCourse(inputTemplate) {
     platforms: [...ground.platforms, ...upperPlatforms],
     hazards,
     pickups: pickupsFor(template, ground.platforms, upperPlatforms),
-    powerups: powerupsFor(template, ground.platforms),
+    powerups: [],
     checkpoints: checkpointsFor(template, ground.platforms),
     mechanicZones: mechanicZonesFor(template, ground.platforms),
     boss: bossFor(template, ground.platforms),

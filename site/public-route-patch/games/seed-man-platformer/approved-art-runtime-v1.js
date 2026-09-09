@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const VERSION = 'seed-man-approved-art-runtime-v1';
+  const VERSION = 'seed-man-approved-art-runtime-v2';
   const CHARACTER_KEY = 'character.seedman.atlas';
   const FRAME_COLS = 5;
   const FRAME_ROWS = 2;
@@ -11,6 +11,7 @@
     finish: [0, 1], victory: [0, 1],
     plant: [1, 1], fire: [2, 1], electric: [3, 1], ice: [4, 1]
   });
+  const CANONICAL_FORMS = new Set(['plant','fire','electric','ice']);
 
   let characterImage = null;
   let ready = false;
@@ -27,19 +28,17 @@
 
   function phenotype() {
     try {
-      const id = window.__SPROUT_COMBAT_BROWSER__?.snapshot?.()?.activePhenotype || null;
-      if (id === 'solar-flare' || id === 'fire') return 'fire';
-      if (id === 'static-haze' || id === 'electric') return 'electric';
-      if (id === 'frost-resin' || id === 'ice') return 'ice';
-      return null;
-    } catch { return null; }
+      const snapshot = window.__SPROUT_COMBAT_BROWSER__?.snapshot?.() || null;
+      const form = snapshot?.phenotypeForm || snapshot?.activePhenotype || 'plant';
+      return CANONICAL_FORMS.has(form) ? form : 'plant';
+    } catch { return 'plant'; }
   }
 
   function pose() {
     const s = playerState();
     if (!s) return 'idle';
     if (s.finished || s.state === 'finish') return 'victory';
-    if (s.state === 'hurt' || s.state === 'shield-bounce') return 'hurt';
+    if (s.state === 'hurt') return 'hurt';
     if (s.state === 'attack' || s.state === 'ability') return 'attack';
     if (!s.grounded) return Number(s.vy || 0) < -20 ? 'jump' : 'fall';
     if (Math.abs(Number(s.vx || 0)) > 14) return 'run';
@@ -47,7 +46,8 @@
   }
 
   function frameName() {
-    return phenotype() || pose();
+    const form = phenotype();
+    return form !== 'plant' ? form : pose();
   }
 
   function drawApprovedSeedMan() {
@@ -125,6 +125,7 @@
     version: VERSION,
     characterKey: CHARACTER_KEY,
     characterContract: 'green-armored-plant-hero',
+    phenotypeForms:Object.freeze(['plant','fire','electric','ice']),
     frames: POSES,
     snapshot: () => ({ ready, failed, installs, pose: pose(), phenotype: phenotype(), frame: frameName(), rendererOwner: document.documentElement.dataset.seedManRendererOwner }),
     reinstall: claimRenderer

@@ -65,11 +65,14 @@ jobs:
           if(c.levelCount!==20||c.worlds?.length!==5||c.finalBoss!=='blight-king')throw new Error('campaign v20 repair verification failed');
           if(l.levels?.length!==20||l.levels.find(x=>x.order===20)?.boss!=='blight-king')throw new Error('level catalog v20 repair verification failed');
           NODE
-          grep -Fq 'seed-man-campaign-v20-runtime-v1' "$tmp/runtime.js"
-          grep -Fq 'character.seedman.atlas' "$tmp/core.js"
+          grep -Fq 'seed-man-campaign-v20-runtime-v3' "$tmp/runtime.js"
+          grep -Fq 'approvedWorldBackgrounds:true' "$tmp/runtime.js"
+          grep -Fq 'seed-man-approved-art-core-v3' "$tmp/core.js"
+          grep -Fq 'world.greenhouse-valley.background' "$tmp/core.js"
+          grep -Fq 'world.eco-city.background' "$tmp/core.js"
           grep -Fq 'approved-showcase-2026-09-08' "$tmp/art.js"
           grep -Fq 'green-armored-plant-hero' "$tmp/art.js"
-          echo 'Seed Man v20 repair passed live verification.'
+          echo 'Seed Man v20 campaign v3 repair passed live verification.'
 
       - name: Repair summary
         if: always()
@@ -77,6 +80,7 @@ jobs:
           {
             echo '## Seed Man v20 repair'
             echo '- Canonical campaign: 20 levels / 5 worlds / 6 bosses'
+            echo '- Campaign runtime: v3 with approved world backgrounds'
             echo '- Final boss: Blight King'
             echo '- Approved art: green armored plant hero / 2026-09-08 showcase'
             echo '- Deployment: protected Public Suite V2'

@@ -5,22 +5,31 @@
   const PHENOTYPE_DURATION_MS = 30000;
 
   const ENEMY_META = Object.freeze({
-    'sproutling': { name:'Sproutling', role:'walker', hp:2, speed:48, width:34, height:32, attackPattern:'aimed-shot', drop:['resin',1] },
-    'root-crawler': { name:'Root Crawler', role:'crawler', hp:3, speed:42, width:40, height:26, attackPattern:'ground-wave', drop:['nutrients',1] },
-    'toxic-spore': { name:'Toxic Spore', role:'ranged', hp:3, speed:24, width:38, height:40, attackPattern:'aimed-shot', drop:['nutrients',2] },
-    'drone-bot': { name:'Drone Bot', role:'flyer', hp:4, speed:72, width:42, height:30, attackPattern:'burst-shot', drop:['genetic-fragments',1] },
-    'thorn-beetle': { name:'Thorn Beetle', role:'charger', hp:5, speed:64, width:46, height:34, attackPattern:'ground-wave', drop:['resin',2] },
-    'sky-wasp': { name:'Sky Wasp', role:'flyer', hp:4, speed:90, width:38, height:28, attackPattern:'dive-charge', drop:['trichomes',2] },
-    'spike-plant': { name:'Spike Plant', role:'turret', hp:5, speed:0, width:44, height:50, attackPattern:'aimed-shot', drop:['nutrients',2] },
-    'sludge-monster': { name:'Sludge Monster', role:'tank', hp:8, speed:30, width:58, height:48, attackPattern:'ground-wave', drop:['resin',3] },
-    'bone-weed': { name:'Bone Weed', role:'ambusher', hp:6, speed:38, width:46, height:48, attackPattern:'radial-burst', drop:['trichomes',3] },
-    'shadow-root': { name:'Shadow Root', role:'teleporter', hp:7, speed:50, width:44, height:46, attackPattern:'blink-strike', drop:['genetic-fragments',2] }
+    'sproutling': { name:'Sproutling', role:'walker', hp:2, speed:48, width:34, height:32, attackPattern:'aimed-shot', drop:['resin',1], visualFrame:0 },
+    'root-crawler': { name:'Root Crawler', role:'crawler', hp:3, speed:42, width:40, height:26, attackPattern:'ground-wave', drop:['nutrients',1], visualFrame:1 },
+    'toxic-spore': { name:'Toxic Spore', role:'ranged', hp:3, speed:24, width:38, height:40, attackPattern:'aimed-shot', drop:['nutrients',2], visualFrame:2 },
+    'drone-bot': { name:'Drone Bot', role:'flyer', hp:4, speed:72, width:42, height:30, attackPattern:'burst-shot', drop:['genetic-fragments',1], visualFrame:3 },
+    'thorn-beetle': { name:'Thorn Beetle', role:'charger', hp:5, speed:64, width:46, height:34, attackPattern:'ground-wave', drop:['resin',2], visualFrame:4 },
+    'sky-wasp': { name:'Sky Wasp', role:'flyer', hp:4, speed:90, width:38, height:28, attackPattern:'dive-charge', drop:['trichomes',2], visualFrame:5 },
+    'spike-plant': { name:'Spike Plant', role:'turret', hp:5, speed:0, width:44, height:50, attackPattern:'aimed-shot', drop:['nutrients',2], visualFrame:2 },
+    'sludge-monster': { name:'Sludge Monster', role:'tank', hp:8, speed:30, width:58, height:48, attackPattern:'ground-wave', drop:['resin',3], visualFrame:1 },
+    'bone-weed': { name:'Bone Weed', role:'ambusher', hp:6, speed:38, width:46, height:48, attackPattern:'radial-burst', drop:['trichomes',3], visualFrame:4 },
+    'shadow-root': { name:'Shadow Root', role:'teleporter', hp:7, speed:50, width:44, height:46, attackPattern:'blink-strike', drop:['genetic-fragments',2], visualFrame:0 }
+  });
+
+  const BOSS_VISUAL_FRAME = Object.freeze({
+    'overgrown-guardian':0,
+    'ancient-dryad':1,
+    'scorchroot-titan':2,
+    'frostbite-colossus':3,
+    'eco-sentinel':4,
+    'blight-king':5
   });
 
   const PHENOTYPE_CARRIERS = Object.freeze({
-    fire: { base:'thorn-beetle', phenotype:'solar-flare', form:'fire', label:'Fire' },
-    electric: { base:'drone-bot', phenotype:'static-haze', form:'electric', label:'Electric' },
-    ice: { base:'root-crawler', phenotype:'frost-resin', form:'ice', label:'Ice' }
+    fire: { base:'thorn-beetle', phenotype:'fire', form:'fire', label:'Fire' },
+    electric: { base:'drone-bot', phenotype:'electric', form:'electric', label:'Electric' },
+    ice: { base:'root-crawler', phenotype:'ice', form:'ice', label:'Ice' }
   });
 
   const PHENOTYPE_ORDER = Object.freeze(['fire','electric','ice']);
@@ -74,6 +83,7 @@
       phenotypeForm:carrier?.form || null,
       phenotypeDurationMs:carrier ? PHENOTYPE_DURATION_MS : null,
       drop:carrier ? ['alleles',1] : [...meta.drop],
+      approvedVisual:Object.freeze({ atlas:'enemy-boss.atlas', row:'enemy', frame:meta.visualFrame }),
       canonicalV20:true
     };
   }
@@ -81,6 +91,8 @@
   function buildBoss(levelData) {
     const boss = levelData?.boss;
     if (!boss?.id || boss.defeated) return null;
+    const visualFrame=BOSS_VISUAL_FRAME[boss.id];
+    if (!Number.isInteger(visualFrame)) throw new Error(`Missing approved boss visual frame: ${boss.id}`);
     return {
       id:`v20-${levelData.id}-boss-${boss.id}`,
       archetype:boss.id,
@@ -106,6 +118,7 @@
       bossRank:boss.finalBoss ? 'final' : 'major',
       finalBoss:Boolean(boss.finalBoss),
       phase:Number(boss.phase || 1),
+      approvedVisual:Object.freeze({ atlas:'enemy-boss.atlas', row:'boss', frame:visualFrame }),
       canonicalV20:true
     };
   }
@@ -136,6 +149,8 @@
     phenotypeDurationMs:PHENOTYPE_DURATION_MS,
     phenotypeForms:Object.freeze(['plant','fire','electric','ice']),
     enemyTypes:Object.freeze(Object.keys(ENEMY_META)),
+    bossVisualFrames:BOSS_VISUAL_FRAME,
+    phenotypeCarrierForms:Object.freeze([...PHENOTYPE_ORDER]),
     buildEncounter,
     buildAttackers,
     buildBoss

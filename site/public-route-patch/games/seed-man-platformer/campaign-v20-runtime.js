@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const VERSION = 'seed-man-campaign-v20-runtime-v2';
+  const VERSION = 'seed-man-campaign-v20-runtime-v3';
   const BOSS_META = Object.freeze({
     'overgrown-guardian': { name:'Overgrown Guardian', requiredHits:5, width:128, height:118, accent:'#76d858' },
     'ancient-dryad': { name:'Ancient Dryad', requiredHits:6, width:132, height:120, accent:'#9bd46f' },
@@ -158,14 +158,46 @@
     select.addEventListener('change',()=>{if(generated.has(select.value))selectLevel(select.value);});
   }
 
+  function approvedWorldAsset(key) {
+    return window.__SEED_MAN_APPROVED_ASSETS__?.[key] || null;
+  }
+
+  function imageForWorld(asset) {
+    if (!asset?.src || !asset?.region) return null;
+    if (!backgroundImages.has(asset.src)) {
+      const image=new Image();
+      image.decoding='async';
+      image.src=asset.src;
+      backgroundImages.set(asset.src,image);
+    }
+    return { image:backgroundImages.get(asset.src), region:asset.region };
+  }
+
   function installBackground() {
     if (typeof drawBackground!=='function') return;
-    const imageFor=(key)=>{const src=window.__SEED_MAN_APPROVED_IMAGES__?.[key];if(!src)return null;if(!backgroundImages.has(key)){const image=new Image();image.decoding='async';image.src=src;backgroundImages.set(key,image);}return backgroundImages.get(key);};
     drawBackground=function seedManApprovedWorldBackground(){
       if(typeof ctx==='undefined'||!ctx||typeof canvas==='undefined'||!canvas)return;
-      const entry=entries.find((item)=>item.id===activeId)||entries[0]; const key=WORLD_BACKGROUND_KEYS[entry.worldId]; const image=imageFor(key);
-      const gradient=ctx.createLinearGradient(0,0,0,canvas.height); gradient.addColorStop(0,'#10283a'); gradient.addColorStop(1,'#17351f'); ctx.fillStyle=gradient; ctx.fillRect(0,0,canvas.width,canvas.height);
-      if(image?.complete&&image.naturalWidth>0){const scale=Math.max(canvas.width/image.naturalWidth,canvas.height/image.naturalHeight);const width=image.naturalWidth*scale;const height=image.naturalHeight*scale;const offset=((typeof cameraX==='number'?cameraX:0)*0.08)%Math.max(1,width);const y=(canvas.height-height)/2;ctx.save();ctx.globalAlpha=.94;ctx.drawImage(image,-offset,y,width,height);if(-offset+width<canvas.width)ctx.drawImage(image,-offset+width,y,width,height);ctx.restore();}
+      const entry=entries.find((item)=>item.id===activeId)||entries[0];
+      const key=WORLD_BACKGROUND_KEYS[entry.worldId];
+      const asset=approvedWorldAsset(key);
+      const atlas=imageForWorld(asset);
+      const gradient=ctx.createLinearGradient(0,0,0,canvas.height);
+      gradient.addColorStop(0,'#10283a'); gradient.addColorStop(1,'#17351f');
+      ctx.fillStyle=gradient; ctx.fillRect(0,0,canvas.width,canvas.height);
+      if(atlas?.image?.complete&&atlas.image.naturalWidth>0){
+        const {region}=atlas;
+        const parallax=((typeof cameraX==='number'?cameraX:0)*0.035)%canvas.width;
+        ctx.save();
+        ctx.globalAlpha=.97;
+        ctx.imageSmoothingEnabled=true;
+        ctx.imageSmoothingQuality='high';
+        ctx.drawImage(atlas.image,region.x,region.y,region.width,region.height,-parallax,0,canvas.width,canvas.height);
+        if(parallax>0)ctx.drawImage(atlas.image,region.x,region.y,region.width,region.height,canvas.width-parallax,0,canvas.width,canvas.height);
+        ctx.restore();
+        document.documentElement.dataset.seedManWorldArt=key;
+      } else {
+        document.documentElement.dataset.seedManWorldArt='loading';
+      }
     };
   }
 
@@ -182,7 +214,7 @@
     const worlds=campaignData.worlds.map((world)=>Object.freeze({...world,levels:Object.freeze(entries.filter((entry)=>entry.worldOrder===world.order).map((entry)=>Object.freeze({...entry})))}));
     window.__SPROUT_CAMPAIGN__=Object.freeze({version:VERSION,campaignId:campaignData.id,title:campaignData.title,defaultLevelId:campaignData.defaultLevelId,levelCount:20,newLevelCount:19,worldCount:5,bossCount:6,finalBoss:'blight-king',worlds:Object.freeze(worlds),listLevels:()=>entries.map((entry)=>({...entry})),getLevel:(id=activeId)=>{const entry=entries.find((item)=>item.id===id);return entry?{...entry}:null;},get activeLevelId(){return activeId;},selectLevel});
     window.__SPROUT_CAMPAIGN_BASE_LEVELS__=Object.freeze(entries.map((entry)=>entry.id));
-    window.__SEED_MAN_CAMPAIGN_V20__=Object.freeze({version:VERSION,levelCount:20,worldCount:5,bossCount:6,finalBoss:'blight-king',generatedLevelCount:generated.size,selectLevel});
+    window.__SEED_MAN_CAMPAIGN_V20__=Object.freeze({version:VERSION,levelCount:20,worldCount:5,bossCount:6,finalBoss:'blight-king',generatedLevelCount:generated.size,approvedWorldBackgrounds:true,selectLevel});
     installSelect(); installBackground(); installFinalBossHook();
     let requested=null;try{requested=localStorage.getItem('dtf-seed-man-last-level-v20');}catch{}
     selectLevel(generated.has(requested)?requested:campaignData.defaultLevelId);

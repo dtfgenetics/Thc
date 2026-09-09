@@ -26,12 +26,20 @@ const routes = [
     ],
     assets: [
       {
+        path: 'player-state-v20.js',
+        markers: ['seed-man-player-state-v20']
+      },
+      {
         path: 'campaign-v20-runtime.js',
-        markers: ['seed-man-campaign-v20-runtime-v2']
+        markers: ['seed-man-campaign-v20-runtime-v3', 'approvedWorldBackgrounds:true']
       },
       {
         path: 'combat-browser-v2.js',
         markers: ['seed-man-combat-browser-v2']
+      },
+      {
+        path: 'approved-art-core-v1.js',
+        markers: ['seed-man-approved-art-core-v3', 'seed-man-approved-master-atlas-v1.webp', 'world.greenhouse-valley.background', 'world.eco-city.background']
       },
       {
         path: 'seed-man-production-art.js',

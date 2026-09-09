@@ -209,7 +209,7 @@ jobs:
               node games/seed-man-platformer/test/input-guard.test.mjs
               node --check site/public-route-patch/games/seed-man-platformer/campaign-v20-runtime.js
               node --check site/public-route-patch/games/seed-man-platformer/campaign-ui-v20.js
-              grep -Fq 'seed-man-campaign-v20-runtime-v1' site/public-route-patch/games/seed-man-platformer/campaign-v20-runtime.js
+              grep -Fq 'seed-man-campaign-v20-runtime-v3' site/public-route-patch/games/seed-man-platformer/campaign-v20-runtime.js
               grep -Fq 'seed-man-campaign-ui-v20' site/public-route-patch/games/seed-man-platformer/campaign-ui-v20.js
               grep -Fq 'blight-king' site/public-route-patch/games/seed-man-platformer/campaign-v20-runtime.js
               ! grep -Fq 'Genome Hydra' site/public-route-patch/games/seed-man-platformer/campaign-v20-runtime.js

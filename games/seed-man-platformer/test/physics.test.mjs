@@ -11,11 +11,13 @@ assert.equal(level.worldWidth, 7800, 'expanded course must stay exactly 3x the o
 assert.equal(level.pickups.length, 24);
 assert.equal(level.requiredPickups, 24);
 assert.equal(level.checkpoints.length, 3);
-assert.ok(level.powerups.length >= 7, 'expanded course should include its power-up set');
 assert.ok(DEFAULTS.jumpSpeed >= 620, 'base jump must remain materially higher than the original 520');
 assert.equal(DEFAULTS.maxAirJumps, 1, 'one air jump creates a true double jump');
 assert.ok(DEFAULTS.groundAcceleration > DEFAULTS.moveSpeed, 'movement should accelerate quickly without snapping to full speed');
 assert.ok(DEFAULTS.jumpCutGravityMultiplier > 1, 'released jumps need extra gravity for short hops');
+for (const retired of ['speedBoostMultiplier','jumpBoostMultiplier','magnetRadius','shieldInvulnerability']) {
+  assert.equal(Object.hasOwn(DEFAULTS, retired), false, `retired prototype physics option must stay removed: ${retired}`);
+}
 assert.equal(overlaps({x:0,y:0,width:10,height:10},{x:9,y:9,width:10,height:10}), true);
 assert.equal(overlaps({x:0,y:0,width:10,height:10},{x:10,y:0,width:10,height:10}), false);
 assert.equal(approach(0, 10, 4), 4);
@@ -23,6 +25,8 @@ assert.equal(approach(10, 0, 4), 6);
 assert.equal(approach(7, 7, 4), 7);
 
 let player = createPlayer(level.spawn);
+assert.deepEqual(player.power, {invulnerableTimer:0}, 'movement state must not own retired speed/jump/magnet/shield powers');
+assert.equal('collectedPowerups' in player, false, 'retired prototype powerup collection state must stay removed');
 for (let i = 0; i < 60; i += 1) player = stepPlayer(player, idleInput, level, 1/60);
 assert.equal(player.grounded, true);
 assert.ok(player.y < 440 && player.y > 420, `unexpected ground y ${player.y}`);
@@ -76,24 +80,12 @@ assert.equal(player.airJumpsRemaining,0,'second press in air must consume the on
 assert.ok(player.vy < vyBeforeDouble,'double jump must renew upward velocity');
 assert.ok(player.vy < -530,'double jump must have meaningful height');
 
-player = createPlayer({x:1128,y:255});
-player = stepPlayer(player,idleInput,level,1/60);
-assert.ok(player.collectedPowerups.includes('power-speed-1'),'speed power-up must be collectible');
-assert.ok(player.power.speedTimer > 7.9,'speed power-up should start its timer');
-
-player = createPlayer({x:1535,y:434});
-player.power.shieldCharges = 1;
-player = stepPlayer(player,idleInput,level,1/60);
-assert.equal(player.deaths,0,'shield should absorb a hazard hit');
-assert.equal(player.power.shieldCharges,0,'absorbing a hit consumes one shield');
-assert.ok(player.power.invulnerableTimer > 0,'shield hit should provide a brief escape window');
-assert.ok(player.vy < 0,'shield hit should bounce Seed Man away from the hazard');
-
 player = createPlayer({x:610,y:500});
 player.checkpoint = {x:80,y:390,id:'start'};
 for(let i=0;i<10;i+=1) player=stepPlayer(player,idleInput,level,1/60);
 assert.equal(player.deaths,1);
 assert.equal(player.x,80);
+assert.ok(player.power.invulnerableTimer > 0, 'respawn must provide a short damage grace period');
 
 player=createPlayer({x:2485,y:434});
 player=stepPlayer(player,idleInput,level,1/60);
@@ -115,4 +107,4 @@ assert.equal(player.finishBlocked,false);
 assert.equal(player.finished,true,'collecting every sprout is a mastery result, not a completion requirement');
 assert.equal(player.state,'finish');
 
-console.log('Seed Man expanded platformer physics tests passed');
+console.log('Seed Man v20 platformer physics tests passed');

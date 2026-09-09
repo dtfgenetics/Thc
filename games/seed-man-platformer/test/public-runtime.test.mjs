@@ -17,29 +17,29 @@ const [canonicalLevelText, publicLevelText, html, app, css, productionArt, appro
 ]);
 
 const canonicalLevel = JSON.parse(canonicalLevelText);
-assert.deepStrictEqual(JSON.parse(publicLevelText), canonicalLevel, 'public level JSON must match the canonical level');
+assert.deepStrictEqual(JSON.parse(publicLevelText), canonicalLevel, 'public level fixture must remain semantically aligned with the canonical fixture');
 assert.equal(canonicalLevel.worldWidth, 7800);
 assert.equal(canonicalLevel.pickups.length, 24);
 assert.equal(canonicalLevel.checkpoints.length, 3);
-assert.ok(canonicalLevel.powerups.length >= 7);
 
 assert.doesNotMatch(html, /<script[^>]+type=["']module["']/i, 'public runtime must not depend on module-script MIME handling');
 assert.match(html, /<script\s+src=["']\.\/app\.js\?v=[^"']+["']\s+defer><\/script>/i, 'public runtime should use a versioned deferred classic script');
 assert.match(html, /JUMP ×2/, 'touch UI must advertise the double-jump control');
-assert.match(html, /id=["']power-count["']/, 'HUD must expose active power-up state');
+assert.match(html, /id=["']power-count["']/, 'HUD must expose active phenotype state');
 assert.match(html, /id=["']jump-count["']/, 'HUD must expose double-jump readiness');
 
 const levelMatch = html.match(/<script\s+id=["']seed-man-level["']\s+type=["']application\/json["']>\s*([\s\S]*?)\s*<\/script>/i);
 assert.ok(levelMatch, 'public page must embed bootstrap level data for immediate startup');
 const bootstrapLevel = JSON.parse(levelMatch[1]);
 assert.equal(bootstrapLevel.schemaVersion, 2, 'bootstrap level schema must stay compatible');
-assert.equal(bootstrapLevel.id, canonicalLevel.id, 'bootstrap level must preserve the canonical level identity');
+assert.equal(bootstrapLevel.id, canonicalLevel.id, 'bootstrap level must preserve the compatibility identity');
 assert.equal(bootstrapLevel.worldWidth, canonicalLevel.worldWidth, 'bootstrap level must preserve world width');
 assert.equal(bootstrapLevel.worldHeight, canonicalLevel.worldHeight, 'bootstrap level must preserve world height');
 assert.equal(bootstrapLevel.requiredPickups, canonicalLevel.requiredPickups, 'bootstrap level must preserve completion requirement');
 assert.deepStrictEqual(bootstrapLevel.spawn, canonicalLevel.spawn, 'bootstrap level must preserve initial spawn');
 assert.equal(bootstrapLevel.pickups?.length, canonicalLevel.requiredPickups, 'bootstrap level must expose the required pickup count');
 assert.equal(bootstrapLevel.checkpoints?.length, canonicalLevel.checkpoints.length, 'bootstrap level must retain checkpoint count');
+assert.deepStrictEqual(bootstrapLevel.powerups, [], 'bootstrap must not reintroduce retired speed/shield/magnet/jump pickups');
 assert.ok(bootstrapLevel.platforms?.length > 0, 'bootstrap level needs traversable ground');
 assert.ok(bootstrapLevel.finish?.x > bootstrapLevel.spawn.x, 'bootstrap finish must remain ahead of spawn');
 assert.match(bootstrapLevel.name, /Seed Man/i, 'bootstrap level must expose current Seed Man identity');
@@ -51,9 +51,7 @@ assert.match(app, /groundAcceleration:\s*2600/, 'public runtime must include pro
 assert.match(app, /jumpCutGravityMultiplier:\s*2\.35/, 'public runtime must include variable jump-height gravity');
 assert.match(app, /maxAirJumps:\s*1/, 'public runtime must preserve one mid-air jump');
 assert.match(app, /function\s+approach\s*\(/, 'public runtime must include acceleration/deceleration helper');
-assert.match(app, /function\s+collectPowerup\s*\(/, 'public runtime must include power-up collection');
 assert.match(app, /function\s+guardedReset\s*\(/, 'active runs should guard destructive restart');
-assert.match(app, /function\s+drawPowerup\s*\(/, 'power-ups must be visible in the canvas renderer');
 assert.match(app, /function\s+drawProgressRail\s*\(/, 'expanded level needs visible course progress');
 assert.match(app, /function\s+readEmbeddedLevel\s*\(/, 'public runtime should read embedded level data');
 assert.match(app, /function\s+writeBest\s*\(/, 'public runtime should guard best-time persistence');
@@ -63,12 +61,17 @@ assert.match(app, /Math\.exp\(-CAMERA_FOLLOW_RATE/, 'camera smoothing should use
 assert.match(app, /jumpHeld:\s*input\.jumpHeld/, 'held jump state must reach the fixed-step physics runtime');
 assert.match(app, /lostpointercapture/, 'touch controls should clear held input when pointer capture actually ends');
 assert.doesNotMatch(app, /addEventListener\(['"]pointerleave['"]/, 'touch controls must not cancel movement merely because a captured pointer drifts outside the button');
+assert.match(app, /window\.drawSeedManProduction/, 'public app must delegate character rendering to approved production art');
+assert.match(app, /function\s+combatSnapshot\s*\(/, 'public HUD must read phenotype state from combat runtime');
+assert.doesNotMatch(app, /function\s+collectPowerup\s*\(/, 'retired prototype powerup collection must stay removed');
+assert.doesNotMatch(app, /function\s+drawPowerup\s*\(/, 'retired prototype powerup rendering must stay removed');
+for (const retired of ['speedBoostMultiplier','jumpBoostMultiplier','magnetRadius','shieldInvulnerability','speedTimer','jumpTimer','magnetTimer','shieldCharges','collectedPowerups','shield-bounce']) {
+  assert.doesNotMatch(app, new RegExp(retired), `retired prototype runtime token must stay removed: ${retired}`);
+}
 assert.match(css, /position:sticky/, 'mobile touch controls should remain reachable during the longer run');
 assert.match(css, /min-height:72px/, 'mobile touch targets should remain large enough for repeated double-jump input');
 assert.match(css, /@media\(prefers-reduced-motion:reduce\)/, 'public styling must preserve reduced-motion support');
 
-// seed-man-production-art.js is now renderer-only. DOM/campaign UI ownership lives
-// in the v20 UI/runtime layers and is validated by dedicated production tests.
 assert.match(productionArt, /seed-man-approved-atlas-renderer-v4/, 'production renderer version must be current');
 assert.match(productionArt, /approved-showcase-2026-09-08/, 'production renderer must identify the approved showcase source');
 assert.match(productionArt, /green-armored-plant-hero/, 'production renderer must preserve the approved character contract');
@@ -87,14 +90,7 @@ assert.doesNotMatch(productionArt, /function\s+installSproutRunShellV2\s*\(/, 'r
 const runtimeEnd = app.indexOf("const BEST_KEY = 'dtf-seed-man-best-v1';");
 assert.ok(runtimeEnd > 0, 'could not isolate inlined public physics runtime');
 const runtimeSource = app.slice(0, runtimeEnd);
-const sandbox = {
-  console,
-  JSON,
-  Number,
-  Array,
-  Math,
-  Object
-};
+const sandbox = { console, JSON, Number, Array, Math, Object };
 vm.createContext(sandbox);
 vm.runInContext(runtimeSource, sandbox, { filename: 'public-seed-man-physics.js' });
 
@@ -109,19 +105,10 @@ assert.deepStrictEqual(JSON.parse(JSON.stringify(publicPlayer)), canonicalPlayer
 for (let frame = 0; frame < 480; frame += 1) {
   const jumpFrame = frame === 38 || frame === 52 || frame === 126 || frame === 141 || frame === 270 || frame === 286;
   const releaseWindow = (frame >= 43 && frame < 52) || (frame >= 132 && frame < 141) || (frame >= 276 && frame < 286);
-  const input = {
-    left: false,
-    right: frame < 450,
-    jumpPressed: jumpFrame,
-    jumpHeld: jumpFrame || !releaseWindow
-  };
+  const input = { left: false, right: frame < 450, jumpPressed: jumpFrame, jumpHeld: jumpFrame || !releaseWindow };
   canonicalPlayer = stepCanonicalPlayer(canonicalPlayer, input, canonicalLevel, 1 / 60);
   publicPlayer = sandbox.stepPlayer(publicPlayer, input, canonicalLevel, 1 / 60);
-  assert.deepStrictEqual(
-    JSON.parse(JSON.stringify(publicPlayer)),
-    canonicalPlayer,
-    `public physics diverged from canonical physics at frame ${frame}`
-  );
+  assert.deepStrictEqual(JSON.parse(JSON.stringify(publicPlayer)), canonicalPlayer, `public physics diverged from canonical physics at frame ${frame}`);
 }
 
-console.log('Seed Man expanded public runtime, approved renderer, and bootstrap regression checks passed.');
+console.log('Seed Man clean v20 public runtime, approved renderer, and bootstrap regression checks passed.');

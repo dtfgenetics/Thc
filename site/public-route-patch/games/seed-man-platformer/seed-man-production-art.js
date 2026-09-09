@@ -62,16 +62,13 @@ function ensureApprovedSeedManImage(){
 
 function combatSnapshot(){try{return window.__SPROUT_COMBAT_BROWSER__?.snapshot?.()||null;}catch{return null;}}
 function activeApprovedPhenotype(){
-  const id=combatSnapshot()?.activePhenotype||'';
-  if(id==='solar-flare'||id==='fire')return'fire';
-  if(id==='static-haze'||id==='electric')return'electric';
-  if(id==='frost-resin'||id==='ice')return'ice';
-  return'plant';
+  const id=combatSnapshot()?.activePhenotype||'plant';
+  return ['plant','fire','electric','ice'].includes(id)?id:'plant';
 }
 function resolveApprovedPose(){
   if(!player)return'idle';
   if(player.finished||player.state==='finish'||player.state==='victory')return'victory';
-  if(player.state==='hurt'||player.state==='shield-bounce')return'hurt';
+  if(player.state==='hurt')return'hurt';
   if(player.state==='attack'||player.state==='ability')return'attack';
   if(!player.grounded)return'jump';
   if(Math.abs(player.vx||0)>14)return'run';
@@ -129,6 +126,7 @@ window.__SEED_MAN_PRODUCTION_ART__=Object.freeze({
   approvedCoreUrl:APPROVED_CORE_URL,
   atlasKey:'character.seedman.atlas',
   fallbackAllowed:false,
+  phenotypeForms:Object.freeze(['plant','fire','electric','ice']),
   frameGrid:Object.freeze({cols:FRAME_COLS,rows:FRAME_ROWS}),
   cells:APPROVED_CELLS,
   snapshot:()=>({ready:approvedSeedManReady,failed:approvedSeedManFailed,coreLoading:approvedCoreLoading,rendererOwner:document.documentElement.dataset.seedManRendererOwner||''})

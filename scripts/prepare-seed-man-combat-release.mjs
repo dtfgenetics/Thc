@@ -8,6 +8,7 @@ const canonicalLevelsPath = `${root}/data/levels-20-v1.json`;
 const publicCampaignPath = `${publicRoot}/data/campaign.json`;
 const publicLevelsPath = `${publicRoot}/data/levels-20-v1.json`;
 const indexPath = `${publicRoot}/index.html`;
+const playerStatePath = `${publicRoot}/player-state-v20.js`;
 const campaignRuntimePath = `${publicRoot}/campaign-v20-runtime.js`;
 const campaignUiPath = `${publicRoot}/campaign-ui-v20.js`;
 const approvedArtCorePath = `${publicRoot}/approved-art-core-v1.js`;
@@ -23,6 +24,7 @@ const required = [
   publicCampaignPath,
   publicLevelsPath,
   indexPath,
+  playerStatePath,
   campaignRuntimePath,
   campaignUiPath,
   approvedArtCorePath,
@@ -42,6 +44,7 @@ const canonicalLevelsText = fs.readFileSync(canonicalLevelsPath, 'utf8');
 const campaign = JSON.parse(canonicalCampaignText);
 const levels = JSON.parse(canonicalLevelsText);
 const index = fs.readFileSync(indexPath, 'utf8');
+const playerState = fs.readFileSync(playerStatePath, 'utf8');
 const campaignRuntime = fs.readFileSync(campaignRuntimePath, 'utf8');
 const campaignUi = fs.readFileSync(campaignUiPath, 'utf8');
 const compat = fs.readFileSync(compatPath, 'utf8');
@@ -81,18 +84,17 @@ for (const marker of [
 ]) {
   if (!index.includes(marker)) throw new Error(`Seed Man v20 public index is missing required runtime: ${marker}`);
 }
+if (!playerState.includes('seed-man-player-state-v20')) throw new Error('Seed Man v20 player-state runtime marker is missing.');
 for (const marker of ['levelCount:20', 'bossCount:6', "finalBoss:'blight-king'", 'levels-20-v1.json']) {
   if (!campaignRuntime.includes(marker)) throw new Error(`Seed Man v20 campaign runtime missing marker: ${marker}`);
 }
 for (const marker of ['seed-man-campaign-ui-v20', '20']) {
   if (!campaignUi.includes(marker)) throw new Error(`Seed Man v20 campaign UI missing marker: ${marker}`);
 }
-for (const marker of ['sprout-canvas-compat-v20', 'campaignTarget:20', 'campaign-ui-v20.js', 'combat-browser-v2.js', 'enemy-attacks-browser-v2.js']) {
+for (const marker of ['sprout-canvas-compat-v20', 'campaignTarget:20', 'campaign-ui-v20.js', 'player-state-v20.js', "playerStateRuntime:'v20'", 'combat-browser-v2.js', 'enemy-attacks-browser-v2.js']) {
   if (!compat.includes(marker)) throw new Error(`Seed Man compatibility bootstrap missing v20 marker: ${marker}`);
 }
 
-// Canonical source owns the release. Public-route files are generated outputs;
-// legacy preparation helpers are validation-only and must not rewrite runtime JS.
 fs.copyFileSync(canonicalCampaignPath, publicCampaignPath);
 fs.copyFileSync(canonicalLevelsPath, publicLevelsPath);
 
@@ -110,6 +112,7 @@ console.log(JSON.stringify({
   worlds: 5,
   bosses: 6,
   finalBoss: 'blight-king',
+  playerStateRuntime: 'v20',
   combatRuntime: 'v2',
   approvedArtOnly: true,
   legacyV15PublisherDisabled: true,

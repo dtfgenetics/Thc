@@ -33,23 +33,46 @@ jobs:
           fetch '' "$tmp/index.html"
           fetch 'data/campaign.json' "$tmp/campaign.json"
           fetch 'data/levels-20-v1.json' "$tmp/levels.json"
+          fetch 'player-state-v20.js' "$tmp/player-state.js"
           fetch 'campaign-v20-runtime.js' "$tmp/runtime.js"
           fetch 'campaign-ui-v20.js' "$tmp/ui.js"
+          fetch 'v20-enemy-runtime.js' "$tmp/enemy.js"
+          fetch 'combat-browser-v2.js' "$tmp/combat.js"
+          fetch 'enemy-attacks-browser-v2.js' "$tmp/attacks.js"
           fetch 'approved-art-core-v1.js' "$tmp/core.js"
+          fetch 'approved-art-runtime-v1.js' "$tmp/art-runtime.js"
           fetch 'seed-man-production-art.js' "$tmp/art.js"
           grep -Fq 'content="20260909-combat-v2"' "$tmp/index.html"
           grep -Fq 'data-seed-man-approved-art="approved-showcase-2026-09-08"' "$tmp/index.html"
-          node --check "$tmp/runtime.js"; node --check "$tmp/ui.js"; node --check "$tmp/core.js"; node --check "$tmp/art.js"
+          node --check "$tmp/player-state.js"
+          node --check "$tmp/runtime.js"
+          node --check "$tmp/ui.js"
+          node --check "$tmp/enemy.js"
+          node --check "$tmp/combat.js"
+          node --check "$tmp/attacks.js"
+          node --check "$tmp/core.js"
+          node --check "$tmp/art-runtime.js"
+          node --check "$tmp/art.js"
           node - "$tmp/campaign.json" "$tmp/levels.json" <<'NODE'
           const fs=require('fs');const c=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));const l=JSON.parse(fs.readFileSync(process.argv[3],'utf8'));
           if(c.levelCount!==20||c.worlds?.length!==5||c.finalBoss!=='blight-king')throw new Error('live campaign contract mismatch');
           if(l.levels?.length!==20||l.levels.find(x=>x.order===20)?.boss!=='blight-king')throw new Error('live level catalog mismatch');
           NODE
-          grep -Fq 'seed-man-campaign-v20-runtime-v1' "$tmp/runtime.js"
+          grep -Fq 'seed-man-player-state-v20' "$tmp/player-state.js"
+          grep -Fq 'seed-man-campaign-v20-runtime-v3' "$tmp/runtime.js"
+          grep -Fq 'approvedWorldBackgrounds:true' "$tmp/runtime.js"
+          grep -Fq "phenotypeForms:['plant','fire','electric','ice']" "$tmp/runtime.js"
           grep -Fq 'seed-man-campaign-ui-v20' "$tmp/ui.js"
-          grep -Fq 'character.seedman.atlas' "$tmp/core.js"
+          grep -Fq 'seed-man-v20-enemy-runtime-v2' "$tmp/enemy.js"
+          grep -Fq 'seed-man-combat-browser-v2' "$tmp/combat.js"
+          grep -Fq 'seed-man-enemy-attacks-browser-v2' "$tmp/attacks.js"
+          grep -Fq 'seed-man-approved-art-core-v3' "$tmp/core.js"
+          for world in greenhouse-valley forest-ruins desert-canyon frozen-peaks eco-city; do
+            grep -Fq "world.${world}.background" "$tmp/core.js"
+          done
           grep -Fq 'approved-showcase-2026-09-08' "$tmp/art.js"
           grep -Fq 'green-armored-plant-hero' "$tmp/art.js"
+          ! grep -Eq 'solar-flare|static-haze|frost-resin|shield-bounce' "$tmp/art-runtime.js"
           ! grep -Fq 'seed-man-production-v1' "$tmp/art.js"
           ! grep -Fq 'seed-man-locked-v1' "$tmp/art.js"
-          echo 'Seed Man v20 live smoke passed.'
+          echo 'Seed Man v20 player-state + campaign v3 + combat v2 live smoke passed.'

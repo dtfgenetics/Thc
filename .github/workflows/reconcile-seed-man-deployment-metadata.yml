@@ -63,7 +63,7 @@ jobs:
           if(a.machineData.characterContract!=='green-armored-plant-hero')process.exit(6);
           if(a.machineData.approvedArtManifest!=='seed-man-approved-art-v2'||a.machineData.approvedArtSource!=='approved-showcase-2026-09-08')process.exit(7);
           if(a.machineData.productionCharacterArt!=='seed-man-approved-atlas-renderer-v4')process.exit(8);
-          if(a.machineData.campaignRuntime!=='seed-man-campaign-v20-runtime-v1'||a.machineData.campaignUi!=='seed-man-campaign-ui-v20')process.exit(9);
+          if(a.machineData.campaignRuntime!=='seed-man-campaign-v20-runtime-v3'||a.machineData.campaignUi!=='seed-man-campaign-ui-v20')process.exit(9);
           if(a.machineData.proceduralFallbackAllowed!==false||a.machineData.legacyAtlasFallbackAllowed!==false)process.exit(10);
           if(a.machineData.levelCount===15||a.machineData.productionCharacterArt==='seed-man-production-v1'||a.machineData.characterContract==='seed-man-locked-v1')process.exit(11);
           for(const legacyField of ['ui','visualSystem','authoredSpriteRuntime','threeJsRenderer','threeJsPublicApi','threeJsOptimization']){

@@ -93,6 +93,7 @@
         "games/seed-man-platformer/index.html",
         "games/seed-man-platformer/app.js",
         "games/seed-man-platformer/canvas-compat-v1.js",
+        "games/seed-man-platformer/player-state-v20.js",
         "games/seed-man-platformer/campaign-v20-runtime.js",
         "games/seed-man-platformer/campaign-ui-v20.js",
         "games/seed-man-platformer/v20-enemy-runtime.js",
@@ -102,7 +103,12 @@
         "games/seed-man-platformer/combat-browser-v2.js",
         "games/seed-man-platformer/enemy-attacks-browser-v2.js",
         "games/seed-man-platformer/enemy-attacks.js",
+        "games/seed-man-platformer/assets/approved/seed-man-approved-master-atlas-v1.webp",
+        "games/seed-man-platformer/assets/approved/seed-man-character-atlas-v2.webp",
+        "games/seed-man-platformer/assets/approved/seed-man-enemy-boss-atlas-v1.webp",
+        "games/seed-man-platformer/assets/approved/seed-man-platform-atlas-v1.webp",
         "games/seed-man-platformer/data/campaign.json",
+        "games/seed-man-platformer/data/level-01.json",
         "games/seed-man-platformer/data/levels-20-v1.json",
         "games/seed-man-platformer/data/seed-man-art-manifest-v1.json",
         "games/seed-man-platformer/data/enemy-catalog-v1.json",
@@ -119,8 +125,11 @@
       "releasePolicy": {
         "canonicalSource": "games/seed-man-platformer/",
         "generatedPublicRoute": "site/public-route-patch/games/seed-man-platformer/",
+        "campaignRuntime": "v3-approved-world-art",
         "combatRuntime": "v2",
+        "playerStateRuntime": "v20",
         "phenotypeForms": ["plant", "fire", "electric", "ice"],
+        "approvedWorldBackgrounds": true,
         "postBuildMutation": "disabled",
         "legacyPrepareHelpers": "validation-only"
       }

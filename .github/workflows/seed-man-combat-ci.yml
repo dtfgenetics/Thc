@@ -8,12 +8,25 @@ on:
       - 'games/seed-man-platformer/src/systems/enemy-attacks.mjs'
       - 'games/seed-man-platformer/src/systems/enemy-archetypes.mjs'
       - 'games/seed-man-platformer/src/systems/weapons.mjs'
+      - 'games/seed-man-platformer/src/systems/phenotype-system.mjs'
       - 'games/seed-man-platformer/src/systems/phenotypes.mjs'
       - 'games/seed-man-platformer/src/systems/player-progression.mjs'
+      - 'games/seed-man-platformer/src/systems/power-drop.mjs'
+      - 'games/seed-man-platformer/src/systems/boss-state-machine.mjs'
+      - 'games/seed-man-platformer/src/systems/final-boss-director.mjs'
+      - 'games/seed-man-platformer/src/systems/world-boss-map.mjs'
       - 'games/seed-man-platformer/test/combat.test.mjs'
       - 'games/seed-man-platformer/test/enemy-attacks.test.mjs'
+      - 'games/seed-man-platformer/test/phenotype-system.test.mjs'
+      - 'games/seed-man-platformer/test/power-drop.test.mjs'
+      - 'games/seed-man-platformer/test/final-boss-director.test.mjs'
+      - 'games/seed-man-platformer/test/world-boss-map.test.mjs'
+      - 'games/seed-man-platformer/test/progression-systems.test.mjs'
+      - 'site/public-route-patch/games/seed-man-platformer/v20-enemy-runtime.js'
+      - 'site/public-route-patch/games/seed-man-platformer/combat-browser-v2.js'
+      - 'site/public-route-patch/games/seed-man-platformer/enemy-attacks-browser-v2.js'
+      - 'site/public-route-patch/games/seed-man-platformer/player-state-v20.js'
       - 'site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js'
-      - 'site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js'
       - '.github/workflows/seed-man-combat-ci.yml'
   push:
     branches: [main]
@@ -22,12 +35,25 @@ on:
       - 'games/seed-man-platformer/src/systems/enemy-attacks.mjs'
       - 'games/seed-man-platformer/src/systems/enemy-archetypes.mjs'
       - 'games/seed-man-platformer/src/systems/weapons.mjs'
+      - 'games/seed-man-platformer/src/systems/phenotype-system.mjs'
       - 'games/seed-man-platformer/src/systems/phenotypes.mjs'
       - 'games/seed-man-platformer/src/systems/player-progression.mjs'
+      - 'games/seed-man-platformer/src/systems/power-drop.mjs'
+      - 'games/seed-man-platformer/src/systems/boss-state-machine.mjs'
+      - 'games/seed-man-platformer/src/systems/final-boss-director.mjs'
+      - 'games/seed-man-platformer/src/systems/world-boss-map.mjs'
       - 'games/seed-man-platformer/test/combat.test.mjs'
       - 'games/seed-man-platformer/test/enemy-attacks.test.mjs'
+      - 'games/seed-man-platformer/test/phenotype-system.test.mjs'
+      - 'games/seed-man-platformer/test/power-drop.test.mjs'
+      - 'games/seed-man-platformer/test/final-boss-director.test.mjs'
+      - 'games/seed-man-platformer/test/world-boss-map.test.mjs'
+      - 'games/seed-man-platformer/test/progression-systems.test.mjs'
+      - 'site/public-route-patch/games/seed-man-platformer/v20-enemy-runtime.js'
+      - 'site/public-route-patch/games/seed-man-platformer/combat-browser-v2.js'
+      - 'site/public-route-patch/games/seed-man-platformer/enemy-attacks-browser-v2.js'
+      - 'site/public-route-patch/games/seed-man-platformer/player-state-v20.js'
       - 'site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js'
-      - 'site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js'
       - '.github/workflows/seed-man-combat-ci.yml'
   workflow_dispatch:
 
@@ -37,29 +63,57 @@ permissions:
 jobs:
   combat:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate combat syntax
+
+      - name: Validate v20 combat syntax
         run: |
           node --check games/seed-man-platformer/src/systems/combat.mjs
           node --check games/seed-man-platformer/src/systems/enemy-attacks.mjs
           node --check games/seed-man-platformer/src/systems/enemy-archetypes.mjs
+          node --check games/seed-man-platformer/src/systems/weapons.mjs
+          node --check games/seed-man-platformer/src/systems/phenotype-system.mjs
+          node --check games/seed-man-platformer/src/systems/phenotypes.mjs
+          node --check games/seed-man-platformer/src/systems/player-progression.mjs
+          node --check games/seed-man-platformer/src/systems/power-drop.mjs
+          node --check games/seed-man-platformer/src/systems/boss-state-machine.mjs
+          node --check games/seed-man-platformer/src/systems/final-boss-director.mjs
+          node --check games/seed-man-platformer/src/systems/world-boss-map.mjs
           node --check games/seed-man-platformer/test/combat.test.mjs
           node --check games/seed-man-platformer/test/enemy-attacks.test.mjs
+          node --check site/public-route-patch/games/seed-man-platformer/player-state-v20.js
+          node --check site/public-route-patch/games/seed-man-platformer/v20-enemy-runtime.js
+          node --check site/public-route-patch/games/seed-man-platformer/combat-browser-v2.js
+          node --check site/public-route-patch/games/seed-man-platformer/enemy-attacks-browser-v2.js
           node --check site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
-          node --check site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js
-      - name: Test combat simulation
-        run: node games/seed-man-platformer/test/combat.test.mjs
-      - name: Test enemy attack patterns
-        run: node games/seed-man-platformer/test/enemy-attacks.test.mjs
-      - name: Verify public-route integration files
+
+      - name: Test canonical v20 combat systems
+        run: npm run --prefix games/seed-man-platformer test:combat-v2
+
+      - name: Test canonical progression contract
+        run: node games/seed-man-platformer/test/progression-systems.test.mjs
+
+      - name: Verify canonical public combat contract
         shell: bash
         run: |
           set -euo pipefail
-          test -s site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
-          test -s site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js
-          grep -Fq 'combat' site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js
+          route=site/public-route-patch/games/seed-man-platformer
+          grep -Fq 'seed-man-combat-browser-v2' "$route/combat-browser-v2.js"
+          grep -Fq 'seed-man-enemy-attacks-browser-v2' "$route/enemy-attacks-browser-v2.js"
+          grep -Fq 'seed-man-v20-enemy-runtime-v2' "$route/v20-enemy-runtime.js"
+          grep -Fq 'seed-man-player-state-v20' "$route/player-state-v20.js"
+          grep -Fq "phenotypeForms:Object.freeze(['plant','fire','electric','ice'])" "$route/combat-browser-v2.js"
+          grep -Fq "ENEMY_ATLAS_KEY = 'enemy-boss.atlas'" "$route/combat-browser-v2.js"
+          grep -Fq 'fallbackAllowed:false' "$route/combat-browser-v2.js"
+          grep -Fq "approvedVisual:Object.freeze({ atlas:'enemy-boss.atlas', row:'enemy'" "$route/v20-enemy-runtime.js"
+          grep -Fq "approvedVisual:Object.freeze({ atlas:'enemy-boss.atlas', row:'boss'" "$route/v20-enemy-runtime.js"
+          ! grep -Fq 'ctx.fillRect(x,enemy.y,enemy.width,enemy.height)' "$route/combat-browser-v2.js"
+          ! grep -Fq 'combat-browser-v1.js' "$route/index.html"
+          ! grep -Fq 'enemy-attacks-browser-v1.js' "$route/index.html"
+          ! grep -Eq 'solar-flare|static-haze|frost-resin|hydro-surge|terpene-tempest|vine-lash|mycelium-mind|rootbreaker|trichome-crystal|gravity-haze' "$route/combat-browser-v2.js"

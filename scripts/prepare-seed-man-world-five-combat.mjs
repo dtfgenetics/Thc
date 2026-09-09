@@ -6,6 +6,7 @@ const campaignPath = 'site/public-route-patch/games/seed-man-platformer/data/cam
 const REQUIRED_COMBAT = 'seed-man-combat-browser-v2';
 const REQUIRED_ENEMIES = 'seed-man-v20-enemy-runtime-v2';
 const CANONICAL_FORMS = ['plant', 'fire', 'electric', 'ice'];
+const RETIRED_ALIASES = ['solar-flare', 'static-haze', 'frost-resin'];
 
 for (const file of [combatPath, enemyRuntimePath, campaignPath]) {
   if (!fs.existsSync(file)) throw new Error(`Missing canonical Seed Man v20 input: ${file}`);
@@ -20,16 +21,13 @@ if (!enemies.includes(REQUIRED_ENEMIES)) throw new Error(`Canonical enemy marker
 if (campaign.levelCount !== 20 || campaign.worlds?.length !== 5) throw new Error('Seed Man v20 campaign contract is not present.');
 if (campaign.finalBoss !== 'blight-king') throw new Error('Seed Man v20 final boss must be Blight King.');
 if (combat.includes('seed-man-combat-browser-v1')) throw new Error('Legacy v1 combat marker leaked into canonical v2 runtime.');
-for (const retired of ['solar-flare', 'static-haze', 'frost-resin']) {
-  if (combat.includes(retired)) throw new Error(`Retired phenotype leaked into canonical combat runtime: ${retired}`);
+for (const retired of RETIRED_ALIASES) {
+  if (combat.includes(retired) || enemies.includes(retired)) throw new Error(`Retired phenotype alias leaked into canonical runtime: ${retired}`);
 }
 for (const form of CANONICAL_FORMS) {
-  if (!combat.includes(form)) throw new Error(`Canonical phenotype form is missing from combat runtime: ${form}`);
+  if (!combat.includes(form) || !enemies.includes(form)) throw new Error(`Canonical phenotype form is missing from runtime: ${form}`);
 }
 
-// World 5 combat is now owned by the canonical 20-level campaign and v20 enemy
-// runtime. Legacy encounter-table mutation is disabled so this helper cannot
-// re-introduce pre-v20 level names or phenotype contracts.
 console.log(JSON.stringify({
   ok: true,
   mode: 'validation-only',
@@ -37,5 +35,6 @@ console.log(JSON.stringify({
   worlds: campaign.worlds.length,
   finalBoss: campaign.finalBoss,
   phenotypeForms: CANONICAL_FORMS,
+  retiredAliasesBlocked: RETIRED_ALIASES,
   legacyMutationDisabled: true
 }, null, 2));
