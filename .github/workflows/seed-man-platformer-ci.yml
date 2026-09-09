@@ -32,6 +32,8 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -61,26 +63,21 @@ jobs:
           set -euo pipefail
           game=games/seed-man-platformer
           route=site/public-route-patch/games/seed-man-platformer
-          test -s "$game/data/campaign-20-v1.json"
-          test -s "$game/data/levels-20-v1.json"
-          test -s "$game/data/seed-man-art-manifest-v1.json"
-          test -s "$game/data/enemy-catalog-v1.json"
-          test -s "$game/data/boss-catalog-v1.json"
-          grep -Fq '"levelCount": 20' "$game/data/campaign-20-v1.json"
-          grep -Fq '"finalBoss": "blight-king"' "$game/data/campaign-20-v1.json"
-          grep -Fq '"authoritative": true' "$game/data/seed-man-art-manifest-v1.json"
-          grep -Fq '"proceduralFallbackAllowed": false' "$game/data/seed-man-art-manifest-v1.json"
-          grep -Fq '"legacyAtlasFallbackAllowed": false' "$game/data/seed-man-art-manifest-v1.json"
-          grep -Fq '"characterReference": "green-armored-plant-hero"' "$game/data/seed-man-art-manifest-v1.json"
-          grep -Fq '"blight-king"' "$game/data/boss-catalog-v1.json"
-          grep -Fq '"phases":4' "$game/data/boss-catalog-v1.json"
-          grep -Fq '"dropDurationMs":30000' "$game/data/enemy-catalog-v1.json"
-
-          cmp "$game/data/campaign-20-v1.json" "$route/data/campaign-20-v1.json"
-          cmp "$game/data/levels-20-v1.json" "$route/data/levels-20-v1.json"
-          cmp "$game/data/seed-man-art-manifest-v1.json" "$route/data/seed-man-art-manifest-v1.json"
-          cmp "$game/data/enemy-catalog-v1.json" "$route/data/enemy-catalog-v1.json"
-          cmp "$game/data/boss-catalog-v1.json" "$route/data/boss-catalog-v1.json"
+          node scripts/verify-seed-man-production-v20.mjs
+          node scripts/validate-seed-man-production-bundle.mjs
+          node <<'NODE'
+          const fs=require('fs');
+          const pairs=[
+            ['games/seed-man-platformer/data/campaign.json','site/public-route-patch/games/seed-man-platformer/data/campaign.json'],
+            ['games/seed-man-platformer/data/levels-20-v1.json','site/public-route-patch/games/seed-man-platformer/data/levels-20-v1.json'],
+            ['games/seed-man-platformer/data/seed-man-art-manifest-v1.json','site/public-route-patch/games/seed-man-platformer/data/seed-man-art-manifest-v1.json'],
+            ['games/seed-man-platformer/data/enemy-catalog-v1.json','site/public-route-patch/games/seed-man-platformer/data/enemy-catalog-v1.json'],
+            ['games/seed-man-platformer/data/boss-catalog-v1.json','site/public-route-patch/games/seed-man-platformer/data/boss-catalog-v1.json']
+          ];
+          const stable=v=>Array.isArray(v)?v.map(stable):v&&typeof v==='object'?Object.fromEntries(Object.keys(v).sort().map(k=>[k,stable(v[k])])):v;
+          for(const [a,b] of pairs){const left=stable(JSON.parse(fs.readFileSync(a,'utf8')));const right=stable(JSON.parse(fs.readFileSync(b,'utf8')));if(JSON.stringify(left)!==JSON.stringify(right))throw new Error(`semantic mismatch: ${a} != ${b}`);}
+          console.log('Seed Man canonical/public production data parity OK');
+          NODE
 
       - name: Verify production JavaScript syntax
         run: |
