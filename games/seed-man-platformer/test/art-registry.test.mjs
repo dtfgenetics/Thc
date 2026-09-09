@@ -4,14 +4,21 @@ import { APPROVED_ART_MANIFEST_ID, APPROVED_ART_SOURCE, createApprovedArtRegistr
 
 const manifest = JSON.parse(fs.readFileSync(new URL('../data/seed-man-art-manifest-v1.json', import.meta.url), 'utf8'));
 assert.equal(validateApprovedArtManifest(manifest), true);
+assert.equal(manifest.masterAtlas, undefined, 'retired corrupt master atlas must not return to the canonical manifest');
 const registry = createApprovedArtRegistry(manifest, { baseUrl: 'https://dtfseeds.com/games/seed-man-platformer/' });
 assert.equal(registry.id, APPROVED_ART_MANIFEST_ID);
 assert.equal(registry.sourceOfTruth, APPROVED_ART_SOURCE);
-assert.equal(registry.has('character.seedman.atlas'), true);
-assert.match(registry.characterAtlas().url, /seed-man-approved-master-atlas-v1\.webp$/);
-assert.deepEqual(registry.characterAtlas().region, manifest.masterAtlas.regions['character.seedman.atlas']);
-assert.match(registry.worldBackground('frozen-peaks').url, /seed-man-approved-master-atlas-v1\.webp$/);
-assert.equal(registry.worldBackground('frozen-peaks').region.width, 320);
-assert.equal(registry.worldBackground('eco-city').region.x, 1280);
+assert.equal(registry.worldRenderer, 'seed-man-three-world-v2');
+assert.equal(registry.worldFallbackRenderer, 'seed-man-canvas-world-gradient-v1');
+assert.match(registry.characterAtlas().url, /seed-man-character-atlas-v2\.webp$/);
+assert.match(registry.enemyAtlas().url, /seed-man-enemy-boss-atlas-v1\.webp$/);
+assert.match(registry.bossAtlas().url, /seed-man-enemy-boss-atlas-v1\.webp$/);
+assert.match(registry.platformAtlas().url, /seed-man-platform-atlas-v1\.webp$/);
+const frozen = registry.worldBackground('frozen-peaks');
+assert.equal(frozen.renderer, 'seed-man-three-world-v2');
+assert.equal(frozen.fallbackRenderer, 'seed-man-canvas-world-gradient-v1');
+assert.equal(frozen.world, 'frozen-peaks');
+assert.equal(frozen.url, null);
+assert.equal(registry.worldBackground('frozen-peak').world, 'frozen-peaks');
 assert.throws(() => registry.get('character.seedman.legacy'));
-console.log('Seed Man approved art registry v2 contract OK');
+console.log('Seed Man standalone approved-art registry contract OK');
