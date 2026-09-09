@@ -4,14 +4,15 @@ import path from 'node:path';
 const root = path.resolve('site/public-route-patch/games/seed-man-platformer');
 const read = (rel) => fs.readFileSync(path.join(root, rel), 'utf8');
 const campaign = JSON.parse(read('data/campaign.json'));
+const level01 = JSON.parse(read('data/level-01.json'));
 const levels = JSON.parse(read('data/levels-20-v1.json'));
 const art = JSON.parse(read('data/seed-man-art-manifest-v1.json'));
 
 const requiredFiles = [
-  'index.html','app.js','canvas-compat-v1.js','campaign-v20-runtime.js','campaign-ui-v20.js',
+  'index.html','app.js','canvas-compat-v1.js','player-state-v20.js','campaign-v20-runtime.js','campaign-ui-v20.js',
   'approved-art-core-v1.js','approved-art-runtime-v1.js','seed-man-production-art.js',
   'v20-enemy-runtime.js','combat-browser-v2.js','enemy-attacks-browser-v2.js','enemy-attacks.js',
-  'input-guard-v1.js','seed-man.css','physics.mjs','data/campaign.json','data/levels-20-v1.json',
+  'input-guard-v1.js','seed-man.css','data/campaign.json','data/level-01.json','data/levels-20-v1.json',
   'data/seed-man-art-manifest-v1.json','data/enemy-catalog-v1.json','data/boss-catalog-v1.json'
 ];
 for (const rel of requiredFiles) {
@@ -19,10 +20,18 @@ for (const rel of requiredFiles) {
   if (!fs.existsSync(p) || fs.statSync(p).size === 0) throw new Error(`Missing production file: ${rel}`);
 }
 
+const retiredArtifacts = [
+  'campaign-v1.js','gameplay-v2.js','physics.mjs','campaign-combat-v20.js','campaign-progress-v20.js','campaign-runtime-v20.js',
+  'campaign-ui-v15.js','world-five-v1.js','combat-browser-v1.js','enemy-attacks-browser-v1.js','seed-man-ui-v3.js','data/levels-12-15.json'
+];
+for (const rel of retiredArtifacts) if (fs.existsSync(path.join(root, rel))) throw new Error(`Retired production artifact still exists: ${rel}`);
+
 if (campaign.levelCount !== 20) throw new Error(`Expected 20 campaign levels, got ${campaign.levelCount}`);
 if (campaign.newLevelCount !== 19) throw new Error(`Expected 19 new levels, got ${campaign.newLevelCount}`);
 if (campaign.finalBoss !== 'blight-king') throw new Error('Final boss contract must be blight-king');
 if (!Array.isArray(campaign.worlds) || campaign.worlds.length !== 5) throw new Error('Campaign must contain five worlds');
+if (!String(level01.name || '').startsWith('Seed Man:')) throw new Error('Level 1 compatibility fixture must use current Seed Man identity');
+if (!Array.isArray(level01.powerups) || level01.powerups.length !== 0) throw new Error('Level 1 compatibility fixture still contains retired prototype powerups');
 if (!Array.isArray(levels.levels) || levels.levels.length !== 20) throw new Error('Level catalog must contain 20 levels');
 const orders = levels.levels.map((l) => l.order).sort((a,b)=>a-b);
 for (let i=0;i<20;i+=1) if (orders[i] !== i+1) throw new Error(`Missing level order ${i+1}`);
@@ -72,13 +81,13 @@ const attacks = read('enemy-attacks-browser-v2.js');
 if (!attacks.includes('seed-man-enemy-attacks-browser-v2')) throw new Error('Canonical enemy-attacks-browser-v2 marker is missing');
 
 const index = read('index.html');
-for (const stale of ['campaign-ui-v15.js','world-five-v1.js','levels-12-15.json','combat-browser-v1.js','enemy-attacks-browser-v1.js','TOTAL_LEVELS = 15','levelCount: 15']) {
+for (const stale of ['campaign-v1.js','gameplay-v2.js','campaign-ui-v15.js','world-five-v1.js','levels-12-15.json','combat-browser-v1.js','enemy-attacks-browser-v1.js','TOTAL_LEVELS = 15','levelCount: 15']) {
   if (index.includes(stale)) throw new Error(`Legacy Seed Man reference remains in public index: ${stale}`);
 }
-for (const required of ['v20-enemy-runtime.js','combat-browser-v2.js','enemy-attacks-browser-v2.js']) {
-  if (!index.includes(required)) throw new Error(`Public index missing canonical combat runtime: ${required}`);
+for (const required of ['player-state-v20.js','v20-enemy-runtime.js','combat-browser-v2.js','enemy-attacks-browser-v2.js']) {
+  if (!index.includes(required) && required !== 'player-state-v20.js') throw new Error(`Public index missing canonical combat runtime: ${required}`);
 }
 for (const stale of ['"levelCount": 15','"newLevelCount": 14','baseRuntimeLevelCount','Genome Hydra','Voltage Wasp Alpha']) {
   if (read('data/campaign.json').includes(stale)) throw new Error(`Retired campaign marker remains: ${stale}`);
 }
-console.log(JSON.stringify({ok:true,levels:20,worlds:5,finalBoss:'blight-king',approvedArt:true,approvedArtManifest:art.id,combatRuntime:'v2'}));
+console.log(JSON.stringify({ok:true,levels:20,worlds:5,finalBoss:'blight-king',approvedArt:true,approvedArtManifest:art.id,combatRuntime:'v2',retiredArtifactsRemoved:retiredArtifacts.length}));
