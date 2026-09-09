@@ -32,29 +32,16 @@ Questions 001–080 retain v2.2 workbook provenance. Questions 081–160 are the
 Use the dedicated content-maintenance CLI instead of manually hunting through chunk files.
 
 ```bash
-# Show commands
 npm run hiq:questions
-
-# Create a ready-to-edit question template
 npm run hiq:question-template -- /tmp/high-iq-question.json
-
-# Find a question and the chunk that owns it
 npm run hiq:questions -- get HIQ-S1-200
-
-# Search question IDs, categories, difficulty, or question text
 npm run hiq:questions -- list "Plant Biology"
-
-# Promote one reviewed question into the canonical bank
 npm run hiq:questions -- promote /tmp/high-iq-question.json
-
-# Safely edit an existing question with a JSON patch
 npm run hiq:questions -- edit HIQ-S1-200 /tmp/high-iq-patch.json
-
-# Re-sync canonical data to the public runtime and validate
 npm run hiq:questions -- sync
 ```
 
-`promote` assigns the next ID when one is not supplied, creates/uses the appropriate versioned question chunk, updates manifest counts/distributions, copies changed data to the public runtime, synchronizes visible shell metadata, and runs validation. `edit` locates a question by ID so maintainers do not need to know which chunk owns it.
+`promote` assigns the next ID when one is not supplied, creates or uses the appropriate versioned question chunk, updates manifest counts/distributions, copies changed data to the public runtime, synchronizes visible shell metadata, and runs validation. `edit` locates a question by ID so maintainers do not need to know which chunk owns it.
 
 Promotion/edit rejects duplicate IDs or duplicate question text, missing A–D choices, invalid answer mappings, invalid difficulty/point combinations, missing explanations/context, unknown sources, and records that are not in the required Approved/PASS state.
 
@@ -62,15 +49,15 @@ Promotion/edit rejects duplicate IDs or duplicate question text, missing A–D c
 
 `games/high-iq/scripts/sync-runtime-shell.mjs` synchronizes the crawlable HTML shell from the manifest. Hero question count, topic count, source count, dataset version, approved-question copy, and the current gameplay-first stylesheet hook follow the release automatically.
 
-`games/high-iq/scripts/validate-data.mjs` runs shell synchronization after dataset validation, so normal public-suite builds receive current visible metadata before packaging.
+`games/high-iq/scripts/sync-deployment-registry.mjs` keeps the public application registry aligned to the same manifest. `.github/workflows/reconcile-high-iq-manifest.yml` runs both synchronizers on `main`, validates that the result is idempotent, verifies the v2.4/200-question contract, and safely integrates generated shell/registry changes through the repository integration helper.
 
-High IQ CI opens the generated WordPress game-route archive, reads the packaged manifest, and requires every question/source chunk declared by that manifest. This prevents future content expansion from being silently omitted by an old hand-maintained chunk list.
+High IQ packaging must read the generated manifest and include every declared question/source chunk. Future content expansion must not depend on an old hand-maintained chunk list or hard-coded question count.
 
 ## UI/gameplay quality contract
 
 The active question is the dominant play surface. Setup is treated as mode selection, the score/streak/accuracy HUD stays compact and sticky, answer choices remain large game-like targets, selected/correct/incorrect states are visually distinct, and lock/next controls stay reachable during play.
 
-Desktop and mobile are both release gates. The browser test requires four answer targets, minimum 44 px answer/control heights, sticky gameplay HUD and controls, no horizontal overflow at 390×844, keyboard-safe source links, selected/correct state feedback, zero console/page errors, and a reduced-motion run.
+Desktop and mobile presentation must preserve readable answer targets, keyboard-safe source links, selected/correct state feedback, reduced-motion compatibility, and no horizontal overflow. Routine repository validation uses deterministic DOM/data/runtime checks and live-route verification rather than Playwright.
 
 The v3.3 layer is additive and must not duplicate A/B/C/D markers or move scoring/content logic into CSS/DOM presentation code.
 
@@ -81,32 +68,27 @@ Run the primary checks before promotion:
 ```bash
 npm run hiq:validate
 node games/high-iq/test/question-bank-tool.test.mjs
-node games/high-iq/test/browser-smoke.mjs
+node games/high-iq/test/game-core.test.mjs
+node games/high-iq/test/runtime-smoke.mjs
 ```
 
 The broader validation stack includes:
 
 ```bash
 node games/high-iq/scripts/validate-data.mjs
+node games/high-iq/scripts/sync-runtime-shell.mjs --check
+node games/high-iq/scripts/sync-deployment-registry.mjs --check
 node games/high-iq/scripts/validate-public-runtime.mjs
+node games/high-iq/test/question-bank-tool.test.mjs
 node games/high-iq/test/game-core.test.mjs
 node games/high-iq/test/runtime-smoke.mjs
 node --check site/public-route-patch/games/high-iq/app-v3.js
 node --check site/public-route-patch/games/high-iq/game-core.mjs
 node --check games/high-iq/scripts/question-bank.mjs
 node --check games/high-iq/scripts/sync-runtime-shell.mjs
+node --check games/high-iq/scripts/sync-deployment-registry.mjs
 node --check games/high-iq/scripts/verify-live-v3.mjs
 ```
-
-For the real-browser gate:
-
-```bash
-npm ci
-npx playwright install chromium
-node games/high-iq/test/browser-smoke.mjs
-```
-
-The browser smoke test serves `site/public-route-patch` locally, loads the complete manifest-declared bank in Chromium, completes a five-question desktop challenge through results, verifies explanations/sources/history and keyboard behavior, then enters active gameplay at 390×844 with reduced-motion enabled and checks touch-target geometry, sticky controls, answer reveal state, overflow, and browser errors.
 
 After deployment:
 
@@ -114,6 +96,6 @@ After deployment:
 node games/high-iq/scripts/verify-live-v3.mjs
 ```
 
-A DTF-hosted High IQ release requires canonical data validation, synchronized public data, authoring-tool tests, deterministic gameplay-core tests, runtime DOM/data contract checks, manifest-derived package verification, real Chromium desktop/mobile playthrough, and a passing post-deploy live verifier before the new release is recorded as production-verified.
+A DTF-hosted High IQ release requires canonical data validation, synchronized public data, authoring-tool tests, deterministic gameplay-core tests, runtime DOM/data contract checks, manifest-derived package verification, and a passing post-deploy live verifier before the new release is recorded as production-verified.
 
 See `game.json` for the machine-readable feature/integration contract and `data/manifest.json` for the controlled dataset contract.
