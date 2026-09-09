@@ -1,11 +1,13 @@
 import { createApprovedArtRegistry, validateApprovedArtManifest } from './art-registry.mjs';
 
-const REQUIRED_ASSET_KEYS = Object.freeze([
-  'cover.main',
+const REQUIRED_IMAGE_KEYS = Object.freeze([
   'character.seedman.atlas',
   'enemy.atlas',
   'boss.atlas',
-  'platform.atlas',
+  'platform.atlas'
+]);
+const REQUIRED_DESCRIPTOR_KEYS = Object.freeze([
+  'cover.main',
   'ui.vfx.cover',
   'world.greenhouse-valley.background',
   'world.forest-ruins.background',
@@ -36,8 +38,9 @@ export async function preloadApprovedArt({
   const registry = createApprovedArtRegistry(manifest, { baseUrl });
   const images = new Map();
 
-  await Promise.all(REQUIRED_ASSET_KEYS.map((key) => new Promise((resolve, reject) => {
+  await Promise.all(REQUIRED_IMAGE_KEYS.map((key) => new Promise((resolve, reject) => {
     const asset = registry.get(key);
+    if (!asset.url) return reject(new Error(`Approved Seed Man image asset has no URL: ${key}`));
     const image = imageFactory();
     image.decoding = 'async';
     image.onload = () => {
@@ -53,11 +56,16 @@ export async function preloadApprovedArt({
 
 export function assertApprovedArtReady(bundle) {
   if (!bundle?.registry || !bundle?.images) throw new Error('Seed Man approved art bundle is not initialized.');
-  for (const key of REQUIRED_ASSET_KEYS) {
+  for (const key of REQUIRED_IMAGE_KEYS) {
     if (!bundle.registry.has(key)) throw new Error(`Seed Man approved art registry missing ${key}`);
     if (!bundle.images.has(key)) throw new Error(`Seed Man approved art image missing ${key}`);
+  }
+  for (const key of REQUIRED_DESCRIPTOR_KEYS) {
+    if (!bundle.registry.has(key)) throw new Error(`Seed Man approved renderer descriptor missing ${key}`);
   }
   return true;
 }
 
-export const APPROVED_ART_REQUIRED_KEYS = REQUIRED_ASSET_KEYS;
+export const APPROVED_ART_REQUIRED_IMAGE_KEYS = REQUIRED_IMAGE_KEYS;
+export const APPROVED_ART_REQUIRED_DESCRIPTOR_KEYS = REQUIRED_DESCRIPTOR_KEYS;
+export const APPROVED_ART_REQUIRED_KEYS = Object.freeze([...REQUIRED_IMAGE_KEYS,...REQUIRED_DESCRIPTOR_KEYS]);
