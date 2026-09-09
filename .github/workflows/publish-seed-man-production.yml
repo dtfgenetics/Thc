@@ -50,6 +50,7 @@ jobs:
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           npm run --prefix games/seed-man-platformer test:production-contracts
+          npm run --prefix games/seed-man-platformer build:three-public
           node scripts/verify-seed-man-production-v20.mjs
           node scripts/validate-seed-man-production-bundle.mjs
           node --check scripts/publish-seed-man-route-via-wordpress.mjs
@@ -66,6 +67,8 @@ jobs:
           grep -Fq 'approved-showcase-2026-09-08' "$root/seed-man-production-art.js"
           grep -Fq 'green-armored-plant-hero' "$root/seed-man-production-art.js"
           grep -Fq '20-Level Campaign' "$root/index.html"
+          grep -Fq '"visualWorldKey":"frozen-peaks"' "$root/data/campaign.json"
+          grep -Fq '"characterReference": "green-armored-plant-hero"' "$root/data/seed-man-art-manifest-v1.json"
           ! grep -Fq 'campaign-ui-v15.js' "$root/index.html"
           ! grep -Fq 'world-five-v1.js' "$root/index.html"
           ! grep -Fq 'levels-12-15.json' "$root/index.html"
@@ -98,24 +101,32 @@ jobs:
           fetch '' "$tmp/index.html"
           fetch 'data/campaign.json' "$tmp/campaign.json"
           fetch 'data/levels-20-v1.json' "$tmp/levels.json"
+          fetch 'data/seed-man-art-manifest-v1.json' "$tmp/art-manifest.json"
           fetch 'campaign-v20-runtime.js' "$tmp/runtime.js"
           fetch 'campaign-ui-v20.js' "$tmp/ui.js"
           fetch 'approved-art-core-v1.js' "$tmp/art-core.js"
+          fetch 'approved-art-runtime-v1.js' "$tmp/art-runtime.js"
           fetch 'seed-man-production-art.js' "$tmp/renderer.js"
           node --check "$tmp/runtime.js"
           node --check "$tmp/ui.js"
           node --check "$tmp/art-core.js"
+          node --check "$tmp/art-runtime.js"
           node --check "$tmp/renderer.js"
-          node - "$tmp/campaign.json" "$tmp/levels.json" <<'NODE'
+          node - "$tmp/campaign.json" "$tmp/levels.json" "$tmp/art-manifest.json" <<'NODE'
           const fs=require('fs');
           const campaign=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
           const levels=JSON.parse(fs.readFileSync(process.argv[3],'utf8'));
+          const art=JSON.parse(fs.readFileSync(process.argv[4],'utf8'));
           if(campaign.levelCount!==20) throw new Error(`live levelCount=${campaign.levelCount}`);
           if(campaign.worlds?.length!==5) throw new Error(`live worlds=${campaign.worlds?.length}`);
           if(campaign.finalBoss!=='blight-king') throw new Error(`live finalBoss=${campaign.finalBoss}`);
+          if(campaign.worlds?.[3]?.visualWorldKey!=='frozen-peaks') throw new Error(`live frozen world key=${campaign.worlds?.[3]?.visualWorldKey}`);
           if(levels.levels?.length!==20) throw new Error(`live level catalog=${levels.levels?.length}`);
           const orders=levels.levels.map((level)=>level.order);
           if(orders.some((order,index)=>order!==index+1)) throw new Error('live level ordering is not contiguous 1-20');
+          if(art.id!=='seed-man-approved-art-v2') throw new Error(`live art manifest=${art.id}`);
+          if(art.policy?.characterReference!=='green-armored-plant-hero') throw new Error(`live character=${art.policy?.characterReference}`);
+          if(!art.policy?.worlds?.includes('frozen-peaks')) throw new Error('live approved art is missing frozen-peaks');
           NODE
           grep -Fq '20-Level Campaign' "$tmp/index.html"
           grep -Fq 'seed-man-campaign-v20-runtime-v1' "$tmp/runtime.js"
@@ -137,7 +148,8 @@ jobs:
             echo '- Campaign: 20 levels / 5 worlds / 6 bosses'
             echo '- Final boss: Blight King'
             echo '- Character: approved green armored plant hero'
+            echo '- World 4 key: frozen-peaks'
             echo '- Legacy v15 runtime: blocked from production route'
-            echo '- Verification: deterministic Node + live HTTP checks'
+            echo '- Verification: deterministic Node + build + live HTTP checks'
             echo '- Playwright: not used'
           } >> "$GITHUB_STEP_SUMMARY"
