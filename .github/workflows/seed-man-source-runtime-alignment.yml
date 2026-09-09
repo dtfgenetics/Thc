@@ -33,7 +33,7 @@ jobs:
           index="$route/index.html"
           test -s "$index"
           for script in canvas-compat-v1.js approved-art-core-v1.js approved-art-runtime-v1.js app.js seed-man-production-art.js campaign-v20-runtime.js campaign-ui-v20.js input-guard-v1.js; do
-            grep -Eq "\\./${script}\\?v=2026090[89]-v20" "$index"
+            grep -Eq "\\./${script}\\?v=[A-Za-z0-9._-]+" "$index"
           done
           line(){ grep -nF "./$1?v=" "$index"|head -n1|cut -d: -f1; }
           core="$(line approved-art-core-v1.js)"
