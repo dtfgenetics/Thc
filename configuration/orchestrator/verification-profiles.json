@@ -22,7 +22,7 @@
       "commands": [
         "npm run test:high-land",
         "npm run build:high-land",
-        "npm run test:e2e:high-land",
+        "node scripts/verify-browser-tool-policy.mjs",
         "npm run games:preflight"
       ],
       "requiresExactHead": true,
