@@ -14,12 +14,19 @@ fi
 
 expected_sha="${EXPECTED_SOURCE_SHA:-${GITHUB_SHA:-}}"
 started="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+queue_replaced_exit=75
 
-find_same_sha_run() {
+find_same_source_run() {
   gh run list --workflow "$workflow" --branch main --limit 30 \
-    --json databaseId,createdAt,headSha,status,conclusion,event \
+    --json databaseId,createdAt,headSha,status,conclusion,event,displayTitle \
     | jq -r --arg sha "$expected_sha" '
-        [ .[] | select(($sha == "") or (.headSha == $sha)) ]
+        [ .[]
+          | select(
+              ($sha == "")
+              or (.headSha == $sha)
+              or (((.displayTitle // "") | contains($sha)))
+            )
+        ]
         | sort_by(.createdAt)
         | last
         | .databaseId // empty
@@ -28,7 +35,7 @@ find_same_sha_run() {
 
 run_id=""
 if [[ "$mode" == "join-existing" ]]; then
-  run_id="$(find_same_sha_run)"
+  run_id="$(find_same_source_run)"
   if [[ -n "$run_id" ]]; then
     echo "Joining existing $workflow run $run_id for source $expected_sha"
   fi
@@ -36,7 +43,7 @@ fi
 
 if [[ "$mode" == "join-only" ]]; then
   for attempt in $(seq 1 60); do
-    run_id="$(find_same_sha_run)"
+    run_id="$(find_same_source_run)"
     [[ -n "$run_id" ]] && break
     sleep 2
   done
@@ -46,14 +53,23 @@ if [[ "$mode" == "join-only" ]]; then
   fi
   echo "Joining required downstream $workflow run $run_id for source $expected_sha"
 elif [[ -z "$run_id" ]]; then
-  echo "Dispatching $workflow from main at $started"
+  echo "Dispatching $workflow from main at $started for source $expected_sha"
   gh workflow run "$workflow" --ref main "$@"
 
   for attempt in $(seq 1 30); do
-    runs="$(gh run list --workflow "$workflow" --branch main --event workflow_dispatch --limit 20 --json databaseId,createdAt,headSha,status,conclusion)"
+    runs="$(gh run list --workflow "$workflow" --branch main --event workflow_dispatch --limit 30 --json databaseId,createdAt,headSha,status,conclusion,displayTitle)"
     run_id="$(jq -r --arg started "$started" --arg sha "$expected_sha" '
-      [ .[] | select(.createdAt >= $started) | select(($sha == "") or (.headSha == $sha)) ]
-      | sort_by(.createdAt) | last | .databaseId // empty
+      [ .[]
+        | select(.createdAt >= $started)
+        | select(
+            ($sha == "")
+            or (.headSha == $sha)
+            or (((.displayTitle // "") | contains($sha)))
+          )
+      ]
+      | sort_by(.createdAt)
+      | last
+      | .databaseId // empty
     ' <<<"$runs")"
     [[ -n "$run_id" ]] && break
     sleep 2
@@ -76,37 +92,43 @@ if [[ "$watch_status" -eq 0 ]]; then
   exit 0
 fi
 
-# A workflow_run can be cancelled by GitHub's concurrency queue before a job is
-# created when a newer same-source trigger supersedes it. Join modes should
-# follow that authoritative replacement instead of treating the empty run as a
-# publication failure. Runs that created jobs remain authoritative and are
-# evaluated normally below.
-if [[ "$mode" != "dispatch" ]]; then
-  run_meta="$(gh run view "$run_id" --json conclusion,jobs)"
-  run_conclusion="$(jq -r '.conclusion // empty' <<<"$run_meta")"
-  run_job_count="$(jq '.jobs | length' <<<"$run_meta")"
-  if [[ "$run_conclusion" == "cancelled" && "$run_job_count" -eq 0 ]]; then
-    superseding_id=""
-    for attempt in $(seq 1 30); do
-      candidate_id="$(find_same_sha_run)"
-      if [[ -n "$candidate_id" && "$candidate_id" != "$run_id" ]]; then
-        superseding_id="$candidate_id"
-        break
-      fi
-      sleep 2
-    done
-    if [[ -n "$superseding_id" ]]; then
-      echo "Child run $run_id was cancelled before jobs started; following superseding same-source run $superseding_id."
-      run_id="$superseding_id"
-      set +e
-      gh run watch "$run_id" --exit-status
-      watch_status=$?
-      set -e
-      if [[ "$watch_status" -eq 0 ]]; then
-        echo "$run_id"
-        exit 0
-      fi
+# GitHub concurrency can cancel a queued workflow before any job is created.
+# A same-source replacement is authoritative when one exists. If no such run
+# exists, return a dedicated retryable status so the owning gateway can enqueue
+# an exact-source recovery instead of either masking the loss or treating it as
+# an application failure.
+run_meta="$(gh run view "$run_id" --json conclusion,jobs)"
+run_conclusion="$(jq -r '.conclusion // empty' <<<"$run_meta")"
+run_job_count="$(jq '.jobs | length' <<<"$run_meta")"
+if [[ "$run_conclusion" == "cancelled" && "$run_job_count" -eq 0 ]]; then
+  superseding_id=""
+  for attempt in $(seq 1 15); do
+    candidate_id="$(find_same_source_run)"
+    if [[ -n "$candidate_id" && "$candidate_id" != "$run_id" ]]; then
+      superseding_id="$candidate_id"
+      break
     fi
+    sleep 2
+  done
+  if [[ -n "$superseding_id" ]]; then
+    echo "Child run $run_id was cancelled before jobs started; following superseding same-source run $superseding_id."
+    run_id="$superseding_id"
+    set +e
+    gh run watch "$run_id" --exit-status
+    watch_status=$?
+    set -e
+    if [[ "$watch_status" -eq 0 ]]; then
+      echo "$run_id"
+      exit 0
+    fi
+    run_meta="$(gh run view "$run_id" --json conclusion,jobs)"
+    run_conclusion="$(jq -r '.conclusion // empty' <<<"$run_meta")"
+    run_job_count="$(jq '.jobs | length' <<<"$run_meta")"
+  fi
+
+  if [[ "$run_conclusion" == "cancelled" && "$run_job_count" -eq 0 ]]; then
+    echo "Child workflow $workflow was replaced by the GitHub concurrency queue before jobs started; exact-source recovery is required." >&2
+    exit "$queue_replaced_exit"
   fi
 fi
 
