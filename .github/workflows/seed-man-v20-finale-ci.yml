@@ -23,7 +23,7 @@ permissions:
 jobs:
   eco-city-finale:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -31,11 +31,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: npm
+
+      - name: Build canonical Three.js world renderer
+        run: |
+          npm install --prefix games/seed-man-platformer --ignore-scripts --no-audit --no-fund
+          npm run --prefix games/seed-man-platformer build:three-public
 
       - name: Validate canonical v20 campaign
-        run: |
-          set -euo pipefail
-          node scripts/verify-seed-man-production-v20.mjs
+        run: node scripts/verify-seed-man-production-v20.mjs
 
       - name: Verify Eco City and Blight King finale contract
         shell: bash
@@ -46,12 +50,10 @@ jobs:
           const campaign=JSON.parse(fs.readFileSync('games/seed-man-platformer/data/campaign.json','utf8'));
           const levels=JSON.parse(fs.readFileSync('games/seed-man-platformer/data/levels-20-v1.json','utf8'));
           const publicLevels=JSON.parse(fs.readFileSync('site/public-route-patch/games/seed-man-platformer/data/levels-20-v1.json','utf8'));
-          if(campaign.levelCount!==20) throw new Error(`expected 20 levels, got ${campaign.levelCount}`);
+          if(campaign.levelCount!==20||campaign.worlds?.length!==5) throw new Error('campaign must remain 20 levels across five worlds');
           if(campaign.finalBoss!=='blight-king') throw new Error(`unexpected final boss ${campaign.finalBoss}`);
           const world5=levels.levels.filter(l=>l.world==='eco-city');
-          if(world5.length!==4) throw new Error(`Eco City must contain 4 levels, got ${world5.length}`);
-          const orders=world5.map(l=>l.order).join(',');
-          if(orders!=='17,18,19,20') throw new Error(`Eco City level orders are ${orders}`);
+          if(world5.length!==4||world5.map(l=>l.order).join(',')!=='17,18,19,20') throw new Error('Eco City level ordering mismatch');
           const finale=world5.find(l=>l.order===20);
           if(finale?.id!=='5-4-the-last-seed'||finale?.boss!=='blight-king') throw new Error('Level 20 finale contract mismatch');
           if(!finale.mechanics?.includes('final-gauntlet')||!finale.mechanics?.includes('phenotype-cycle')) throw new Error('Level 20 finale mechanics incomplete');
@@ -59,32 +61,34 @@ jobs:
           console.log('Eco City World 5 and Blight King finale contract OK');
           NODE
 
-      - name: Verify v3 approved-world runtime and finale
+      - name: Verify renderer, boss gate, combat and retired artifact removal
         shell: bash
         run: |
           set -euo pipefail
           route='site/public-route-patch/games/seed-man-platformer'
-          node --check "$route/player-state-v20.js"
-          node --check "$route/campaign-v20-runtime.js"
-          node --check "$route/campaign-ui-v20.js"
-          node --check "$route/v20-enemy-runtime.js"
-          node --check "$route/combat-browser-v2.js"
-          node --check "$route/enemy-attacks-browser-v2.js"
-          node --check "$route/approved-art-core-v1.js"
+          for js in app.js player-state-v20.js campaign-v20-runtime.js campaign-ui-v20.js v20-enemy-runtime.js combat-browser-v2.js enemy-attacks-browser-v2.js approved-art-core-v1.js three-world-v1.js three-world-adapter-v1.js; do node --check "$route/$js"; done
+          grep -Fq 'seed-man-base-runtime-v20' "$route/app.js"
+          grep -Fq 'level.boss && !level.boss.defeated' "$route/app.js"
           grep -Fq 'seed-man-player-state-v20' "$route/player-state-v20.js"
           grep -Fq 'seed-man-campaign-v20-runtime-v3' "$route/campaign-v20-runtime.js"
-          grep -Fq 'approvedWorldBackgrounds:true' "$route/campaign-v20-runtime.js"
           grep -Fq "phenotypeForms:['plant','fire','electric','ice']" "$route/campaign-v20-runtime.js"
           grep -Fq 'seed-man-v20-enemy-runtime-v2' "$route/v20-enemy-runtime.js"
           grep -Fq 'seed-man-combat-browser-v2' "$route/combat-browser-v2.js"
+          grep -Fq 'syncBossState' "$route/combat-browser-v2.js"
+          grep -Fq 'seedman:boss-defeated' "$route/combat-browser-v2.js"
           grep -Fq 'seed-man-enemy-attacks-browser-v2' "$route/enemy-attacks-browser-v2.js"
-          grep -Fq 'seed-man-approved-art-core-v3' "$route/approved-art-core-v1.js"
+          grep -Fq 'seed-man-approved-art-core-v4' "$route/approved-art-core-v1.js"
+          grep -Fq "worldRenderer:'seed-man-three-world-v2'" "$route/approved-art-core-v1.js"
           grep -Fq 'world.eco-city.background' "$route/approved-art-core-v1.js"
-          test -s "$route/assets/approved/seed-man-approved-master-atlas-v1.webp"
+          ! grep -Fq 'seed-man-approved-master-atlas-v1.webp' "$route/approved-art-core-v1.js"
+          grep -Fq 'seed-man-three-public-v3' "$route/three-world-v1.js"
+          grep -Fq 'seed-man-three-world-v2' "$route/three-world-v1.js"
+          bytes="$(wc -c < "$route/three-world-v1.js" | tr -d ' ')"
+          test "$bytes" -ge 250000
           grep -Fq 'blight-king' "$route/campaign-v20-runtime.js"
           grep -Fq 'eco-city' "$route/campaign-v20-runtime.js"
           ! grep -Fq 'Genome Hydra' "$route/campaign-v20-runtime.js"
           ! grep -Fq 'Genetic Frontier' "$route/campaign-v20-runtime.js"
-          for retired in campaign-v1.js gameplay-v2.js physics.mjs campaign-combat-v20.js campaign-progress-v20.js campaign-runtime-v20.js campaign-ui-v15.js world-five-v1.js combat-browser-v1.js enemy-attacks-browser-v1.js seed-man-ui-v3.js data/levels-12-15.json; do
+          for retired in data/level-01.json data/levels-12-15.json campaign-v1.js gameplay-v2.js physics.mjs campaign-combat-v20.js campaign-progress-v20.js campaign-runtime-v20.js campaign-ui-v15.js world-five-v1.js combat-browser-v1.js enemy-attacks-browser-v1.js seed-man-ui-v3.js assets/approved/seed-man-approved-master-atlas-v1.webp assets/approved/seed-man-cover-banner-approved-v1.webp; do
             test ! -e "$route/$retired" || { echo "retired artifact still present: $retired" >&2; exit 1; }
           done
