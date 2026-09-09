@@ -29,24 +29,31 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Reconcile Seed Man v20 deployment registry
+      - name: Reconcile Seed Man v20 deployment registry and public surfaces
         run: node scripts/reconcile-seed-man-deployment-metadata.mjs
       - name: Confirm reconciliation is idempotent
         shell: bash
         run: |
           set -euo pipefail
-          path=site/deployment/public-apps.json
-          before="$(git diff -- "$path" | git hash-object --stdin)"
+          paths=(
+            site/deployment/public-apps.json
+            site/public-route-patch/games/index.html
+            data/public-navigation.json
+            data/game-source-map.json
+            site/wordpress/pages/home.html
+          )
+          before="$(git diff -- "${paths[@]}" | git hash-object --stdin)"
           node scripts/reconcile-seed-man-deployment-metadata.mjs
-          after="$(git diff -- "$path" | git hash-object --stdin)"
+          after="$(git diff -- "${paths[@]}" | git hash-object --stdin)"
           test "$before" = "$after"
-      - name: Validate reconciled v20 metadata
+      - name: Validate reconciled v20 metadata and public identity
         shell: bash
         run: |
           set -euo pipefail
           node --check scripts/reconcile-seed-man-deployment-metadata.mjs
           node <<'NODE'
-          const d=JSON.parse(require('fs').readFileSync('site/deployment/public-apps.json','utf8'));
+          const fs=require('fs');
+          const d=JSON.parse(fs.readFileSync('site/deployment/public-apps.json','utf8'));
           const a=d.apps.find(x=>x.id==='seed-man-platformer');
           if(!a)process.exit(1);
           if(a.title!=='Seed Man: Grow. Fight. Restore.')process.exit(2);
@@ -62,17 +69,31 @@ jobs:
           for(const legacyField of ['ui','visualSystem','authoredSpriteRuntime','threeJsRenderer','threeJsPublicApi','threeJsOptimization']){
             if(Object.hasOwn(a.machineData,legacyField))process.exit(12);
           }
+          const hub=fs.readFileSync('site/public-route-patch/games/index.html','utf8');
+          for(const retired of ['Seed Man: Sprout Run','Seed Man: Greenhouse Gauntlet','15 levels']) if(hub.includes(retired)) process.exit(13);
+          for(const marker of ['Seed Man: Grow. Fight. Restore.','20 levels','5 worlds','6 bosses']) if(!hub.includes(marker)) process.exit(14);
+          const nav=JSON.parse(fs.readFileSync('data/public-navigation.json','utf8')).games.find(x=>x.id==='seed-man-platformer');
+          if(!nav||nav.title!=='Seed Man: Grow. Fight. Restore.'||nav.route!=='/games/seed-man-platformer/')process.exit(15);
+          const source=JSON.parse(fs.readFileSync('data/game-source-map.json','utf8')).games.find(x=>x.id==='seed-man-platformer');
+          if(!source||source.title!=='Seed Man: Grow. Fight. Restore.')process.exit(16);
           NODE
-      - name: Safely integrate reconciled deployment metadata when needed
+      - name: Safely integrate reconciled Seed Man public surfaces when needed
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          if git diff --quiet -- site/deployment/public-apps.json; then
-            echo 'No Seed Man deployment metadata changes were needed.'
+          paths=(
+            site/deployment/public-apps.json
+            site/public-route-patch/games/index.html
+            data/public-navigation.json
+            data/game-source-map.json
+            site/wordpress/pages/home.html
+          )
+          if git diff --quiet -- "${paths[@]}"; then
+            echo 'No Seed Man v20 public-surface changes were needed.'
             exit 0
           fi
           node scripts/studio/integrate-generated-change.mjs \
-            --message='Align Seed Man deployment metadata with canonical v20 production' \
-            --paths=site/deployment/public-apps.json
+            --message='Align Seed Man public surfaces with canonical v20 production' \
+            --paths="$(IFS=,; echo "${paths[*]}")"
