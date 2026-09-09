@@ -4,7 +4,7 @@
     "title": "Seed Man visual asset package",
     "intent": "Translate the approved reference boards into deterministic runtime keys instead of filename-coupled rendering.",
     "style": ["lush", "high-contrast", "readable-silhouettes", "2.5d-platformer", "bright-elemental-vfx"],
-    "characterContract": "seed-man-locked-v1"
+    "characterContract": "approved-green-armored-plant-hero-v1"
   },
   "worlds": {
     "greenhouse-valley": {
@@ -37,8 +37,8 @@
       "materials": ["sand", "stone", "metal"],
       "setPieces": ["mesas", "arches", "ruins", "heat-vents"]
     },
-    "frozen-peak": {
-      "label": "Frozen Peak",
+    "frozen-peaks": {
+      "label": "Frozen Peaks",
       "accent": "#54cfff",
       "layers": ["sky", "far-bg", "mid-bg", "near-bg", "gameplay", "foreground", "vfx"],
       "materials": ["ice", "stone", "metal"],
@@ -81,7 +81,7 @@
   "bosses": [
     {"key":"overgrown-guardian","world":"greenhouse-valley","phenotype":"plant"},
     {"key":"scorchroot-titan","world":"desert-canyon","phenotype":"fire"},
-    {"key":"frostbite-colossus","world":"frozen-peak","phenotype":"ice"},
+    {"key":"frostbite-colossus","world":"frozen-peaks","phenotype":"ice"},
     {"key":"eco-sentinel","world":"eco-city","phenotype":"electric"}
   ],
   "hud": {
