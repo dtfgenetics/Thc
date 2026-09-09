@@ -63,7 +63,8 @@ for (const marker of ['approved-showcase-2026-09-08','green-armored-plant-hero',
 const runtime = read('campaign-v20-runtime.js');
 if (!runtime.includes('seed-man-campaign-v20-runtime-v1')) throw new Error('Canonical v20 runtime marker is missing');
 const enemyRuntime = read('v20-enemy-runtime.js');
-if (!enemyRuntime.includes('seed-man-v20-enemy-runtime-v1') || !enemyRuntime.includes("['fire','electric','ice']")) throw new Error('Canonical v20 enemy runtime contract is missing');
+const enemyRuntimeVersion = enemyRuntime.match(/seed-man-v20-enemy-runtime-v\d+/)?.[0];
+if (!['seed-man-v20-enemy-runtime-v1','seed-man-v20-enemy-runtime-v2'].includes(enemyRuntimeVersion) || !enemyRuntime.includes("['fire','electric','ice']")) throw new Error('Canonical v20 enemy runtime contract is missing');
 const combat = read('combat-browser-v2.js');
 if (!combat.includes('seed-man-combat-browser-v2') || !combat.includes('PHENOTYPE_DURATION = 30')) throw new Error('Canonical v20 combat runtime contract is missing');
 const attacks = read('enemy-attacks-browser-v2.js');
@@ -81,4 +82,4 @@ for (const required of ['campaign-v20-runtime.js','v20-campaign-guard.js','campa
 for (const stale of ['"levelCount": 15','"newLevelCount": 14','baseRuntimeLevelCount','Genome Hydra','Voltage Wasp Alpha']) {
   if (read('data/campaign.json').includes(stale)) throw new Error(`Retired campaign marker remains: ${stale}`);
 }
-console.log(JSON.stringify({ok:true,levels:20,worlds:5,finalBoss:'blight-king',approvedArt:true,approvedArtManifest:art.id,combat:'seed-man-combat-browser-v2',enemyRuntime:'seed-man-v20-enemy-runtime-v1'}));
+console.log(JSON.stringify({ok:true,levels:20,worlds:5,finalBoss:'blight-king',approvedArt:true,approvedArtManifest:art.id,combat:'seed-man-combat-browser-v2',enemyRuntime:enemyRuntimeVersion}));
