@@ -1,26 +1,31 @@
 # Approved High Land HIT Card Assets
 
-The approved HIT card art is locked as the source of truth.
+This folder is the live asset home for High Land HIT card artwork.
 
 ## Required live asset structure
 
-Master cards should live here:
+Master cards live here:
 
 ```txt
 apps/high-land-web/public/assets/images/cards/hit/master/
 ```
 
-Variant/archive cards should live here:
+Variant/archive cards live here:
 
 ```txt
 apps/high-land-web/public/assets/images/cards/hit/variants/
 ```
 
-## Master deck
+## Master deck status
 
-The live approved deck contains **39 unique master cards**.
+The live gameplay deck contains **39 unique master cards**.
 
-The live browser game should load these master assets, not random upload names like `1000017863.png`.
+Current committed asset state:
+
+- **31 PNG master cards**: `card-001` through `card-031`
+- **8 temporary SVG master cards**: `card-032` through `card-039`
+
+The SVG files keep the live game from falling back to generic artwork, but they should be treated as visible art debt until final approved masters are added.
 
 ## Variant archive
 
@@ -34,6 +39,17 @@ Use names like:
 card-001-perfect-roll.png
 card-002-cough-lock.png
 card-003-rosin-rush.png
+...
+card-031-kief-cave-slip.png
+card-032-rolling-breeze.svg
+...
+card-039-second-hit.svg
+```
+
+When approved final art arrives for cards `032` through `039`, prefer matching PNG names:
+
+```txt
+card-032-rolling-breeze.png
 ...
 card-039-second-hit.png
 ```
@@ -54,8 +70,11 @@ apps/high-land-web/public/assets/images/cards/hit/variants/
 ```
 
 4. Commit the assets.
-5. Update `src/game/data/actionCards.ts` so `imageSrc` points to the approved master files.
+5. Update `src/game/data/actionCards.ts` so `imageSrc` points to the committed master files.
+6. Update the HIT card tests so expected filenames match the committed asset inventory.
+
+The import script accepts `.png` and `.svg` master assets so it can handle the current mixed production state without silently dropping cards.
 
 ## Runtime rule
 
-Do not allow the game to show fallback art when approved master art exists.
+Do not allow the game to show fallback art when committed card-specific master art exists.
