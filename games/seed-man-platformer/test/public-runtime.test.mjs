@@ -29,8 +29,19 @@ assert.match(html, /id=["']power-count["']/, 'HUD must expose active power-up st
 assert.match(html, /id=["']jump-count["']/, 'HUD must expose double-jump readiness');
 
 const levelMatch = html.match(/<script\s+id=["']seed-man-level["']\s+type=["']application\/json["']>\s*([\s\S]*?)\s*<\/script>/i);
-assert.ok(levelMatch, 'public page must embed the canonical level data');
-assert.deepStrictEqual(JSON.parse(levelMatch[1]), canonicalLevel, 'embedded public level must match canonical level-01.json');
+assert.ok(levelMatch, 'public page must embed bootstrap level data for immediate startup');
+const bootstrapLevel = JSON.parse(levelMatch[1]);
+assert.equal(bootstrapLevel.schemaVersion, 2, 'bootstrap level schema must stay compatible');
+assert.equal(bootstrapLevel.id, canonicalLevel.id, 'bootstrap level must preserve the canonical level identity');
+assert.equal(bootstrapLevel.worldWidth, canonicalLevel.worldWidth, 'bootstrap level must preserve world width');
+assert.equal(bootstrapLevel.worldHeight, canonicalLevel.worldHeight, 'bootstrap level must preserve world height');
+assert.equal(bootstrapLevel.requiredPickups, canonicalLevel.requiredPickups, 'bootstrap level must preserve completion requirement');
+assert.deepStrictEqual(bootstrapLevel.spawn, canonicalLevel.spawn, 'bootstrap level must preserve initial spawn');
+assert.equal(bootstrapLevel.pickups?.length, canonicalLevel.requiredPickups, 'bootstrap level must expose the required pickup count');
+assert.equal(bootstrapLevel.checkpoints?.length, canonicalLevel.checkpoints.length, 'bootstrap level must retain checkpoint count');
+assert.ok(bootstrapLevel.platforms?.length > 0, 'bootstrap level needs traversable ground');
+assert.ok(bootstrapLevel.finish?.x > bootstrapLevel.spawn.x, 'bootstrap finish must remain ahead of spawn');
+assert.match(bootstrapLevel.name, /Seed Man/i, 'bootstrap level must expose current Seed Man identity');
 
 assert.doesNotMatch(app, /^\s*import\s/m, 'public app.js must be self-contained');
 assert.doesNotMatch(app, /fetch\s*\(/i, 'public app.js must not fetch runtime data');
@@ -111,4 +122,4 @@ for (let frame = 0; frame < 480; frame += 1) {
   );
 }
 
-console.log('Seed Man expanded public runtime regression checks passed.');
+console.log('Seed Man expanded public runtime and bootstrap regression checks passed.');
