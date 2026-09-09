@@ -22,9 +22,9 @@
     "authoringCli": "node games/high-iq/scripts/question-bank.mjs",
     "authoringTests": "node games/high-iq/test/question-bank-tool.test.mjs",
     "shellSync": "node games/high-iq/scripts/sync-runtime-shell.mjs",
+    "deploymentRegistrySync": "node games/high-iq/scripts/sync-deployment-registry.mjs",
     "gameCoreTests": "node games/high-iq/test/game-core.test.mjs",
-    "browserPlaythrough": "node games/high-iq/test/browser-smoke.mjs",
-    "debugReplayAcceptance": "node games/high-iq/test/debug-replay-browser.test.mjs",
+    "runtimeAcceptance": "node games/high-iq/test/runtime-smoke.mjs",
     "liveVerification": "node games/high-iq/scripts/verify-live-v3.mjs",
     "provenance": "High_IQ_Master_Production_Workbook_v2_2.xlsx + source-backed v2.3/v2.4 expansions"
   },
@@ -69,7 +69,8 @@
       "mobile-active-play-qa",
       "minimum-44px-answer-targets",
       "shared-platform-replay-debug-export",
-      "sanitized-question-action-trace"
+      "sanitized-question-action-trace",
+      "deterministic-runtime-acceptance"
     ]
   },
   "integration": {
@@ -81,7 +82,7 @@
     "v3_ci_gates_ready": true,
     "authoring_workflow_ready": true,
     "manifest_driven_growth_ready": true,
-    "browser_playthrough_gate_ready": true,
+    "deterministic_runtime_gate_ready": true,
     "shared_platform_replay_ready": true,
     "live_verification_script_ready": true,
     "last_production_verified_version": "2.3",
