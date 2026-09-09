@@ -34,12 +34,14 @@ includes('site/public-route-patch/games/grower-conversations/app.js', [
 ]);
 
 includes('site/public-route-patch/games/seed-man-platformer/app.js', [
-  "dtf-seed-man-best-v1",
+  "dtf-seed-man-best-v20",
+  "campaignAuthority:'campaign-v20-runtime.js'",
   'function togglePause(',
   "document.addEventListener('visibilitychange'",
   'New personal best!'
 ]);
 includes('site/public-route-patch/games/seed-man-platformer/index.html', [
+  '20-Level Campaign',
   'id="best-count"',
   'id="pause"',
   'P to pause'
