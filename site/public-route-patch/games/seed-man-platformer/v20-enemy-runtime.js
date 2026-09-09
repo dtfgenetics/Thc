@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const VERSION = 'seed-man-v20-enemy-runtime-v3';
+  const VERSION = 'seed-man-v20-enemy-runtime-v2';
   const PHENOTYPE_DURATION_MS = 30000;
 
   const ENEMY_META = Object.freeze({
