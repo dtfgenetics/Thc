@@ -9,7 +9,12 @@ const includes = (path, markers) => {
 };
 
 includes('site/public-route-patch/games/high-life/app.js', [
+  "import('./runtime.mjs')",
+  'High Life canonical runtime failed to load.'
+]);
+includes('site/public-route-patch/games/high-life/runtime.mjs', [
   "dtf-high-life-save-v1",
+  "from './engine.mjs';",
   'function resumeGame()',
   'function discardSave()',
   'saveGame({ pendingEvent: true })',
@@ -73,6 +78,7 @@ includes('site/public-route-patch/games/dtf-route.css', [
 
 for (const path of [
   'site/public-route-patch/games/high-life/app.js',
+  'site/public-route-patch/games/high-life/runtime.mjs',
   'site/public-route-patch/games/grower-conversations/app.js',
   'site/public-route-patch/games/seed-man-platformer/app.js',
   'site/public-route-patch/games/strain-showdown/polish-v1.js',

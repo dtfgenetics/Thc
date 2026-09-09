@@ -34,12 +34,13 @@ jobs:
       - name: Run autosave recovery tests
         run: node games/high-life/test/save-state.test.mjs
 
-      - name: Run production runtime and exact-resume regression tests
+      - name: Run canonical runtime, exact-resume, and visual regression tests
         run: node games/high-life/test/public-runtime.test.mjs
 
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/high-life/app.js
+          node --check site/public-route-patch/games/high-life/runtime.mjs
           node --check site/public-route-patch/games/high-life/engine.mjs
           node --check site/public-route-patch/games/high-life/save-state.mjs
 
@@ -51,15 +52,19 @@ jobs:
           cmp games/high-life/src/save-state.mjs site/public-route-patch/games/high-life/save-state.mjs
           cmp games/high-life/data/events.json site/public-route-patch/games/high-life/data/events.json
 
-      - name: Verify public route and career UI contract
+      - name: Verify public route, visual release, and engine ownership contract
         shell: bash
         run: |
           set -euo pipefail
           root=site/public-route-patch/games/high-life
           test -s "$root/index.html"
           test -s "$root/app.js"
+          test -s "$root/runtime.mjs"
+          test -s "$root/engine.mjs"
           test -s "$root/high-life.css"
           test -s "$root/high-life-v2.css"
+          test -s "$root/assets/high-life-era-journey-v1.webp"
+
           grep -Fq '<h1>From Bagseed to Legacy</h1>' "$root/index.html"
           grep -Fq 'https://dtfseeds.com/games/high-life/' "$root/index.html"
           grep -Fqi 'rel="canonical"' "$root/index.html"
@@ -67,29 +72,33 @@ jobs:
           grep -Fq '<script id="high-life-events" type="application/json">' "$root/index.html"
           grep -Fq '<script defer src="./app.js?v=' "$root/index.html"
           grep -Fq '<script defer src="./high-life-enhancements.js?v=' "$root/index.html"
-          test -s "$root/assets/high-life-era-journey-v1.webp"
           grep -Fq 'assets/high-life-era-journey-v1.webp' "$root/index.html"
           grep -Fq 'class="era-roadmap"' "$root/index.html"
           grep -Fq 'high-life-v2.css' "$root/index.html"
-          grep -Fq 'const SAVE_VERSION = 2;' "$root/app.js"
-          grep -Fq 'pendingEvent: Boolean(pendingEvent)' "$root/app.js"
-          grep -Fq 'renderTurnResolution(state.history.at(-1))' "$root/app.js"
-          grep -Fq 'saveGame({ pendingEvent: true })' "$root/app.js"
-          grep -Fq 'saveGame({ pendingEvent: false })' "$root/app.js"
-          grep -Fq 'Confirm New Career' "$root/app.js"
-          grep -Fq 'Confirm Discard' "$root/app.js"
-          grep -Fq 'globalThis.localStorage?.getItem' "$root/app.js"
-          grep -Fq 'globalThis.localStorage?.setItem' "$root/app.js"
-          grep -Fq 'globalThis.localStorage?.removeItem' "$root/app.js"
+
+          grep -Fq "import('./runtime.mjs')" "$root/app.js"
+          grep -Fq "from './engine.mjs';" "$root/runtime.mjs"
+          grep -Fq 'const SAVE_VERSION = 3;' "$root/runtime.mjs"
+          grep -Fq 'pendingEvent: Boolean(pendingEvent)' "$root/runtime.mjs"
+          grep -Fq 'renderTurnResolution(state.history.at(-1))' "$root/runtime.mjs"
+          grep -Fq 'saveGame({ pendingEvent: true })' "$root/runtime.mjs"
+          grep -Fq 'saveGame({ pendingEvent: false })' "$root/runtime.mjs"
+          grep -Fq 'Confirm New Career' "$root/runtime.mjs"
+          grep -Fq 'Confirm Discard' "$root/runtime.mjs"
+          grep -Fq 'globalThis.localStorage?.getItem' "$root/runtime.mjs"
+          grep -Fq 'globalThis.localStorage?.setItem' "$root/runtime.mjs"
+          grep -Fq 'globalThis.localStorage?.removeItem' "$root/runtime.mjs"
+
           grep -Fq '.era-roadmap' "$root/high-life-v2.css"
           grep -Fq '.resource-meter' "$root/high-life-v2.css"
           grep -Fq '.danger-arm' "$root/high-life-v2.css"
+          grep -Fq '.hero-art' "$root/high-life-v2.css"
           grep -Fq '@media(max-width:650px)' "$root/high-life-v2.css"
-          if grep -Eq '^\s*import\s' "$root/app.js"; then
-            echo 'public High Life runtime regressed to browser module imports' >&2
-            exit 1
-          fi
-          if grep -Eq 'fetch\s*\(' "$root/app.js"; then
-            echo 'public High Life runtime regressed to browser-time event fetch' >&2
-            exit 1
-          fi
+
+          test "$(wc -c < "$root/app.js")" -lt 1500
+          for forbidden in 'function takeTurn(' 'function createGame(' 'function calculateLegacyScore(' 'function legalActions(' 'function resolveEvent(' 'const ACTIONS ='; do
+            if grep -Fq "$forbidden" "$root/runtime.mjs"; then
+              echo "High Life runtime duplicated canonical engine rule: $forbidden" >&2
+              exit 1
+            fi
+          done
