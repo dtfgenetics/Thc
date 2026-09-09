@@ -17,7 +17,7 @@
   async function install(){
     try {
       if(!window.__SEED_MAN_APPROVED_IMAGES__) await load('./approved-art-core-v1.js','seedManApprovedCore');
-      if(!window.__SEED_MAN_CAMPAIGN_V20__) await load('./campaign-runtime-v20.js','seedManCampaignV20');
+      if(!window.__SEED_MAN_CAMPAIGN_V20__) await load('./campaign-v20-runtime.js','seedManCampaignV20');
       if(document.documentElement.dataset.sproutCampaignUi!=='seed-man-campaign-ui-v20') await load('./campaign-ui-v20.js','seedManCampaignUiV20');
       document.documentElement.dataset.sproutWorldFive=VERSION;
       document.documentElement.dataset.seedManLegacyWorldFive='retired';
