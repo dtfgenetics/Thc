@@ -8,7 +8,7 @@ const levels = JSON.parse(read('data/levels-20-v1.json'));
 const art = JSON.parse(read('data/seed-man-art-manifest-v1.json'));
 
 const requiredFiles = [
-  'index.html','app.js','canvas-compat-v1.js','campaign-v1.js','campaign-runtime-v20.js','campaign-ui-v20.js',
+  'index.html','app.js','canvas-compat-v1.js','campaign-v1.js','campaign-v20-runtime.js','campaign-ui-v20.js',
   'approved-art-core-v1.js','approved-art-runtime-v1.js','seed-man-production-art.js','gameplay-v2.js',
   'combat-browser-v1.js','enemy-attacks-browser-v1.js','enemy-attacks.js','world-five-v1.js','three-world-v1.js',
   'input-guard-v1.js','seed-man.css','physics.mjs','data/campaign.json','data/levels-20-v1.json',
@@ -40,6 +40,8 @@ const renderer = read('seed-man-production-art.js');
 for (const marker of ['approved-showcase-2026-09-08','green-armored-plant-hero','fallbackAllowed:false']) {
   if (!renderer.includes(marker)) throw new Error(`Approved renderer missing marker: ${marker}`);
 }
+const runtime = read('campaign-v20-runtime.js');
+if (!runtime.includes('seed-man-campaign-v20-runtime-v1')) throw new Error('Canonical v20 runtime marker is missing');
 for (const stale of ['"levelCount": 15','"newLevelCount": 14','baseRuntimeLevelCount','Genome Hydra','Voltage Wasp Alpha']) {
   if (read('data/campaign.json').includes(stale)) throw new Error(`Retired campaign marker remains: ${stale}`);
 }
