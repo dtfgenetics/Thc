@@ -88,4 +88,5 @@ jobs:
           fi
           node scripts/studio/integrate-generated-change.mjs \
             --message='Synchronize Who Took It deployment registry' \
-            --paths='site/deployment/public-apps.json'
+            --paths='site/deployment/public-apps.json' \
+            --dispatch-production=false
