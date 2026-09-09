@@ -294,20 +294,37 @@ jobs:
           test -d dist/puzzles
           echo "CROSSWORD_SHA=$revision" >> "$GITHUB_ENV"
 
-      - name: Build Who Took It
+      - name: Build pinned Who Took It
         shell: bash
         run: |
           set -euo pipefail
+          revision_file="$GITHUB_WORKSPACE/site/public-route-patch/games/who-took-it/source-revision.txt"
+          test -s "$revision_file"
+          repo_name="$(sed -n 's/^repository=//p' "$revision_file")"
+          revision="$(sed -n 's/^commit=//p' "$revision_file")"
+          route="$(sed -n 's/^route=//p' "$revision_file")"
+          source_path="$(sed -n 's/^sourcePath=//p' "$revision_file")"
+          test "$repo_name" = "dtfgenetics/Thc-guess-who"
+          test "$route" = "/games/who-took-it/"
+          test "$source_path" = "03_digital-game"
+          [[ "$revision" =~ ^[0-9a-f]{40}$ ]]
+
           repo="$RUNNER_TEMP/who-took-it"
-          git clone --depth=1 https://github.com/dtfgenetics/Thc-guess-who.git "$repo"
-          cd "$repo/03_digital-game"
-          npm install --ignore-scripts
-          npm run validate
-          npm run smoke
-          npm run build
-          test -s dist/index.html
+          git init "$repo"
           cd "$repo"
-          echo "WHO_TOOK_IT_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+          git remote add origin "https://github.com/${repo_name}.git"
+          git fetch --depth=1 origin "$revision"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$revision"
+
+          cd "$repo/$source_path"
+          npm install --ignore-scripts
+          npm run check
+          test -s dist/index.html
+          test -s src/data/suspect-art.json
+          node scripts/validate-art-registry.mjs
+          cd "$repo"
+          echo "WHO_TOOK_IT_SHA=$revision" >> "$GITHUB_ENV"
 
       - name: Build pinned THC Grow Doc
         shell: bash
@@ -373,6 +390,7 @@ jobs:
 
           mkdir -p release/games/who-took-it
           cp -a "$RUNNER_TEMP/who-took-it/03_digital-game/dist/." release/games/who-took-it/
+          cp site/public-route-patch/games/who-took-it/source-revision.txt release/games/who-took-it/source-revision.txt
 
           mkdir -p release/thc-grow-doc
           cp -a "$RUNNER_TEMP/thc-grow-doc/dist/." release/thc-grow-doc/
@@ -468,6 +486,7 @@ jobs:
             release/games/crossword/index.html
             release/games/crossword/source-revision.txt
             release/games/who-took-it/index.html
+            release/games/who-took-it/source-revision.txt
             release/growlens/index.html
             release/thc-grow-doc/index.html
             release/thc-grow-doc/api/visual-observations.php
@@ -500,6 +519,10 @@ jobs:
           grep -Fq "commit=$CROSSWORD_SHA" release/games/crossword/source-revision.txt
           grep -Fq "\"crossword\": \"$CROSSWORD_SHA\"" release/dtf-build.json
           grep -Fq '/games/who-took-it/' release/games/who-took-it/index.html
+          grep -Fq 'repository=dtfgenetics/Thc-guess-who' release/games/who-took-it/source-revision.txt
+          grep -Fq "commit=$WHO_TOOK_IT_SHA" release/games/who-took-it/source-revision.txt
+          grep -Fq 'route=/games/who-took-it/' release/games/who-took-it/source-revision.txt
+          grep -Fq "\"whoTookIt\": \"$WHO_TOOK_IT_SHA\"" release/dtf-build.json
           grep -Fq '/thc-grow-doc/' release/thc-grow-doc/index.html
           grep -Fq "commit=$THC_GROW_DOC_SHA" release/thc-grow-doc/source-revision.txt
           grep -Fq "\"thcGrowDoc\": \"$THC_GROW_DOC_SHA\"" release/dtf-build.json
@@ -532,7 +555,7 @@ jobs:
             echo '- /games/high-land/'
             echo "- /games/weedopolis/ (pinned $WEEDOPOLIS_SHA)"
             echo "- /games/crossword/ (canonical pinned $CROSSWORD_SHA)"
-            echo '- /games/who-took-it/'
+            echo "- /games/who-took-it/ (canonical pinned $WHO_TOOK_IT_SHA)"
             echo '- /growlens/'
             echo "- /thc-grow-doc/ (canonical pinned $THC_GROW_DOC_SHA)"
             echo '- /tools/'
