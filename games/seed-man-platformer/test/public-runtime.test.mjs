@@ -31,7 +31,7 @@ assert.match(html, /id=["']jump-count["']/, 'HUD must expose double-jump readine
 const levelMatch = html.match(/<script\s+id=["']seed-man-level["']\s+type=["']application\/json["']>\s*([\s\S]*?)\s*<\/script>/i);
 assert.ok(levelMatch, 'public page must embed bootstrap level data for immediate startup');
 const bootstrapLevel = JSON.parse(levelMatch[1]);
-assert.equal(bootstrapLevel.schemaVersion, 2, 'bootstrap level schema must stay compatible');
+assert.equal(bootstrapLevel.schemaVersion, canonicalLevel.schemaVersion, 'bootstrap level schema must stay aligned with the canonical level');
 assert.equal(bootstrapLevel.id, canonicalLevel.id, 'bootstrap level must preserve the canonical level identity');
 assert.equal(bootstrapLevel.worldWidth, canonicalLevel.worldWidth, 'bootstrap level must preserve world width');
 assert.equal(bootstrapLevel.worldHeight, canonicalLevel.worldHeight, 'bootstrap level must preserve world height');
