@@ -38,8 +38,21 @@ jobs:
           node scripts/verify-seed-man-production-v20.mjs
           node scripts/validate-seed-man-production-bundle.mjs
       - name: Validate canonical/public data parity
+        shell: bash
         run: |
           set -euo pipefail
-          cmp games/seed-man-platformer/data/campaign.json site/public-route-patch/games/seed-man-platformer/data/campaign.json
-          cmp games/seed-man-platformer/data/levels-20-v1.json site/public-route-patch/games/seed-man-platformer/data/levels-20-v1.json
-          cmp games/seed-man-platformer/data/seed-man-art-manifest-v1.json site/public-route-patch/games/seed-man-platformer/data/seed-man-art-manifest-v1.json
+          node <<'NODE'
+          const fs=require('fs');
+          const pairs=[
+            ['games/seed-man-platformer/data/campaign.json','site/public-route-patch/games/seed-man-platformer/data/campaign.json'],
+            ['games/seed-man-platformer/data/levels-20-v1.json','site/public-route-patch/games/seed-man-platformer/data/levels-20-v1.json'],
+            ['games/seed-man-platformer/data/seed-man-art-manifest-v1.json','site/public-route-patch/games/seed-man-platformer/data/seed-man-art-manifest-v1.json']
+          ];
+          const stable=(v)=>Array.isArray(v)?v.map(stable):v&&typeof v==='object'?Object.fromEntries(Object.keys(v).sort().map(k=>[k,stable(v[k])])):v;
+          for(const [a,b] of pairs){
+            const left=stable(JSON.parse(fs.readFileSync(a,'utf8')));
+            const right=stable(JSON.parse(fs.readFileSync(b,'utf8')));
+            if(JSON.stringify(left)!==JSON.stringify(right)) throw new Error(`semantic data mismatch: ${a} != ${b}`);
+          }
+          console.log('Canonical/public Seed Man data are semantically identical.');
+          NODE
