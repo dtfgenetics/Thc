@@ -5,9 +5,9 @@
   const PHENOTYPE_DURATION = 30;
   const PROJECTILE_LIFE = 1.6;
   const PHENOTYPES = Object.freeze({
-    'solar-flare': { form:'fire', label:'Fire', speed:560, damage:2, effect:'burn', cooldown:0.42, accent:'#ff9a4b' },
-    'static-haze': { form:'electric', label:'Electric', speed:660, damage:1, effect:'chain', cooldown:0.38, accent:'#d6c0ff' },
-    'frost-resin': { form:'ice', label:'Ice', speed:520, damage:1, effect:'freeze', cooldown:0.40, accent:'#8fe7ff' }
+    fire: { form:'fire', label:'Fire', speed:560, damage:2, effect:'burn', cooldown:0.42, accent:'#ff9a4b' },
+    electric: { form:'electric', label:'Electric', speed:660, damage:1, effect:'chain', cooldown:0.38, accent:'#d6c0ff' },
+    ice: { form:'ice', label:'Ice', speed:520, damage:1, effect:'freeze', cooldown:0.40, accent:'#8fe7ff' }
   });
 
   let enemies=[];
@@ -28,7 +28,7 @@
   function syncIdentity() {
     document.documentElement.dataset.seedManCombat=VERSION;
     document.documentElement.dataset.seedPhenoActive=activePhenotype?'true':'false';
-    document.documentElement.dataset.seedPhenoForm=activePhenotype?PHENOTYPES[activePhenotype]?.form||'plant':'plant';
+    document.documentElement.dataset.seedPhenoForm=activePhenotype||'plant';
     const def=PHENOTYPES[activePhenotype];
     if(def?.accent) document.documentElement.style.setProperty('--seed-pheno-accent',def.accent);
     else document.documentElement.style.removeProperty('--seed-pheno-accent');
@@ -173,5 +173,5 @@
 
   window.addEventListener('keydown',(event)=>{if(event.repeat)return;const key=event.key.toLowerCase();if(key==='j'||key==='x'){event.preventDefault();fireWeapon();}if(key==='k'||key==='c'){event.preventDefault();fireAbility();}},{passive:false});
   ensureHud();resetCombat();const installed=installHooks();syncHud();
-  window.__SPROUT_COMBAT_BROWSER__=Object.freeze({version:VERSION,installed,phenotypeForms:Object.freeze(['plant','fire','electric','ice']),fireWeapon,fireAbility,snapshot:()=>({version:VERSION,installed,levelId:activeLevelId,activePhenotype,phenotypeForm:activePhenotype?PHENOTYPES[activePhenotype]?.form:'plant',phenotypeRemaining,defeated,enemies:enemies.map(({id,name,archetype,health,maxHealth,defeated:down,phenotype,phenotypeForm,flying,blink,elite})=>({id,name,archetype,health,maxHealth,defeated:down,phenotype,phenotypeForm,flying:Boolean(flying),blink:Boolean(blink),elite:Boolean(elite)}))})});
+  window.__SPROUT_COMBAT_BROWSER__=Object.freeze({version:VERSION,installed,phenotypeForms:Object.freeze(['plant','fire','electric','ice']),fireWeapon,fireAbility,snapshot:()=>({version:VERSION,installed,levelId:activeLevelId,activePhenotype,phenotypeForm:activePhenotype||'plant',phenotypeRemaining,defeated,enemies:enemies.map(({id,name,archetype,health,maxHealth,defeated:down,phenotype,phenotypeForm,flying,blink,elite})=>({id,name,archetype,health,maxHealth,defeated:down,phenotype,phenotypeForm,flying:Boolean(flying),blink:Boolean(blink),elite:Boolean(elite)}))})});
 })();
