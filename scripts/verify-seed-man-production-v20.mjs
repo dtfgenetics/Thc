@@ -8,9 +8,9 @@ const levels = JSON.parse(read('data/levels-20-v1.json'));
 const art = JSON.parse(read('data/seed-man-art-manifest-v1.json'));
 
 const requiredFiles = [
-  'index.html','app.js','canvas-compat-v1.js','campaign-v1.js','campaign-v20-runtime.js','campaign-ui-v20.js',
-  'approved-art-core-v1.js','approved-art-runtime-v1.js','seed-man-production-art.js','gameplay-v2.js',
-  'combat-browser-v1.js','enemy-attacks-browser-v1.js','enemy-attacks.js','world-five-v1.js','three-world-v1.js',
+  'index.html','app.js','canvas-compat-v1.js','campaign-v20-runtime.js','campaign-ui-v20.js',
+  'approved-art-core-v1.js','approved-art-runtime-v1.js','seed-man-production-art.js',
+  'combat-browser-v1.js','enemy-attacks-browser-v1.js','enemy-attacks.js',
   'input-guard-v1.js','seed-man.css','physics.mjs','data/campaign.json','data/levels-20-v1.json',
   'data/seed-man-art-manifest-v1.json','data/enemy-catalog-v1.json','data/boss-catalog-v1.json'
 ];
@@ -37,7 +37,7 @@ if (art.sourceOfTruth !== 'approved-showcase-2026-09-08') throw new Error('Appro
 if (art.policy?.authoritative !== true) throw new Error('Approved art manifest must be authoritative');
 if (art.policy?.proceduralFallbackAllowed !== false || art.policy?.legacyAtlasFallbackAllowed !== false) throw new Error('Approved art fallbacks must stay disabled');
 if (art.policy?.characterReference !== 'green-armored-plant-hero') throw new Error('Approved Seed Man character reference is missing');
-const expectedWorlds = ['greenhouse-valley','forest-ruins','desert-canyon','frozen-peak','eco-city'];
+const expectedWorlds = ['greenhouse-valley','forest-ruins','desert-canyon','frozen-peaks','eco-city'];
 for (const world of expectedWorlds) if (!art.policy?.worlds?.includes(world)) throw new Error(`Approved art manifest missing world: ${world}`);
 for (const key of ['cover.main','character.seedman.atlas','enemy.atlas','boss.atlas','platform.atlas','world.atlas','ui.vfx.cover']) {
   if (!art.assets?.[key]) throw new Error(`Approved art manifest missing asset key: ${key}`);
@@ -52,6 +52,10 @@ for (const marker of ['approved-showcase-2026-09-08','green-armored-plant-hero',
 }
 const runtime = read('campaign-v20-runtime.js');
 if (!runtime.includes('seed-man-campaign-v20-runtime-v1')) throw new Error('Canonical v20 runtime marker is missing');
+const index = read('index.html');
+for (const stale of ['campaign-ui-v15.js','world-five-v1.js','levels-12-15.json','TOTAL_LEVELS = 15','levelCount: 15']) {
+  if (index.includes(stale)) throw new Error(`Legacy Seed Man v15 reference remains in public index: ${stale}`);
+}
 for (const stale of ['"levelCount": 15','"newLevelCount": 14','baseRuntimeLevelCount','Genome Hydra','Voltage Wasp Alpha']) {
   if (read('data/campaign.json').includes(stale)) throw new Error(`Retired campaign marker remains: ${stale}`);
 }
