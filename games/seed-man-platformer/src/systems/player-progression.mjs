@@ -1,27 +1,38 @@
+import { CANONICAL_PHENOTYPE_IDS } from './phenotypes.mjs';
+
 export const RESOURCE_TYPES = Object.freeze(['resin', 'trichomes', 'nutrients', 'genetic-fragments', 'alleles']);
 export const DEFAULT_PHENOTYPE_ABSORB_SECONDS = 30;
+const TEMPORARY_PHENOTYPES = Object.freeze(['fire','electric','ice']);
 
 export function createProgressionState() {
   return {
-    activePhenotype: null,
+    activePhenotype: 'plant',
     absorbedPhenotype: null,
     absorbedPhenotypeRemaining: 0,
-    discoveredPhenotypes: [],
+    discoveredPhenotypes: ['plant'],
     weapons: [],
     equippedWeapon: null,
     resources: Object.fromEntries(RESOURCE_TYPES.map((type) => [type, 0]))
   };
 }
 
+function canonicalPhenotype(id, {temporaryOnly=false}={}) {
+  if (!id || !CANONICAL_PHENOTYPE_IDS.includes(id)) throw new Error(`unknown phenotype: ${id}`);
+  if (temporaryOnly && !TEMPORARY_PHENOTYPES.includes(id)) throw new Error(`phenotype cannot be absorbed temporarily: ${id}`);
+  return id;
+}
+
 export function normalizeProgressionState(input = {}) {
   const source = input && typeof input === 'object' ? input : {};
   const state = createProgressionState();
-  state.activePhenotype = source.activePhenotype || null;
-  state.absorbedPhenotype = source.absorbedPhenotype || null;
+  state.activePhenotype = 'plant';
+  const absorbed = TEMPORARY_PHENOTYPES.includes(source.absorbedPhenotype) ? source.absorbedPhenotype : null;
   const remaining = Number(source.absorbedPhenotypeRemaining);
-  state.absorbedPhenotypeRemaining = state.absorbedPhenotype && Number.isFinite(remaining) && remaining > 0 ? remaining : 0;
+  state.absorbedPhenotype = absorbed;
+  state.absorbedPhenotypeRemaining = absorbed && Number.isFinite(remaining) && remaining > 0 ? Math.min(DEFAULT_PHENOTYPE_ABSORB_SECONDS, remaining) : 0;
   if (state.absorbedPhenotypeRemaining <= 0) state.absorbedPhenotype = null;
-  state.discoveredPhenotypes = Array.isArray(source.discoveredPhenotypes) ? [...new Set(source.discoveredPhenotypes)] : [];
+  const discovered = Array.isArray(source.discoveredPhenotypes) ? source.discoveredPhenotypes.filter((id)=>CANONICAL_PHENOTYPE_IDS.includes(id)) : [];
+  state.discoveredPhenotypes = [...new Set(['plant', ...discovered])];
   state.weapons = Array.isArray(source.weapons) ? [...new Set(source.weapons)] : [];
   state.equippedWeapon = state.weapons.includes(source.equippedWeapon) ? source.equippedWeapon : (state.weapons[0] || null);
   for (const type of RESOURCE_TYPES) {
@@ -32,20 +43,18 @@ export function normalizeProgressionState(input = {}) {
 }
 
 export function acquirePhenotype(inputState, phenotypeId) {
-  if (!phenotypeId) throw new Error('phenotype id is required');
-  const state = normalizeProgressionState(inputState);
-  if (!state.discoveredPhenotypes.includes(phenotypeId)) state.discoveredPhenotypes.push(phenotypeId);
-  state.activePhenotype = phenotypeId;
-  return state;
+  const id = canonicalPhenotype(phenotypeId);
+  if (id !== 'plant') return absorbPhenotype(inputState,id);
+  return normalizeProgressionState(inputState);
 }
 
 export function absorbPhenotype(inputState, phenotypeId, seconds = DEFAULT_PHENOTYPE_ABSORB_SECONDS) {
-  if (!phenotypeId) throw new Error('phenotype id is required');
+  const id = canonicalPhenotype(phenotypeId,{temporaryOnly:true});
   const state = normalizeProgressionState(inputState);
-  if (!state.discoveredPhenotypes.includes(phenotypeId)) state.discoveredPhenotypes.push(phenotypeId);
-  state.absorbedPhenotype = phenotypeId;
+  if (!state.discoveredPhenotypes.includes(id)) state.discoveredPhenotypes.push(id);
+  state.absorbedPhenotype = id;
   const duration = Number(seconds);
-  state.absorbedPhenotypeRemaining = Number.isFinite(duration) && duration > 0 ? duration : DEFAULT_PHENOTYPE_ABSORB_SECONDS;
+  state.absorbedPhenotypeRemaining = Number.isFinite(duration) && duration > 0 ? Math.min(DEFAULT_PHENOTYPE_ABSORB_SECONDS,duration) : DEFAULT_PHENOTYPE_ABSORB_SECONDS;
   return state;
 }
 
@@ -63,7 +72,7 @@ export function stepPhenotypeAbsorption(inputState, dt) {
 
 export function getEffectivePhenotype(inputState) {
   const state = normalizeProgressionState(inputState);
-  return state.absorbedPhenotype || state.activePhenotype || null;
+  return state.absorbedPhenotype || 'plant';
 }
 
 export function collectWeapon(inputState, weaponId, { autoEquip = true } = {}) {
