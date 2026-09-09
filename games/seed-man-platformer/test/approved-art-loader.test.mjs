@@ -12,9 +12,21 @@ assert.equal(runtime.rendererPolicy.proceduralCharacterFallback,false);
 assert.equal(runtime.rendererPolicy.legacyAtlasFallback,false);
 assert.equal(runtime.player.states.length,9);
 assert.deepEqual(runtime.player.phenotypes,PHENOTYPE_KEYS);
-for(const world of WORLD_KEYS) assert.match(runtime.world(world).url,/assets\/approved\/world-/);
-assert.match(runtime.player.atlas.url,/seed-man-character-atlas-approved-v1\.webp$/);
-assert.match(runtime.enemyAtlas.url,/enemy-atlas-approved-v1\.webp$/);
-assert.match(runtime.bossAtlas.url,/boss-atlas-approved-v1\.webp$/);
-assert.match(runtime.platformAtlas.url,/platform-atlas-approved-v1\.webp$/);
-console.log('Seed Man approved-art-only visual runtime OK');
+
+const expectedAtlas=/assets\/approved\/seed-man-approved-master-atlas-v1\.webp$/;
+const worldRegions=[];
+for(const world of WORLD_KEYS){
+  const asset=runtime.world(world);
+  assert.match(asset.url,expectedAtlas);
+  assert.equal(asset.role,'background');
+  assert.ok(asset.region?.width>0&&asset.region?.height>0,`missing approved region for ${world}`);
+  worldRegions.push(`${asset.region.x}:${asset.region.y}:${asset.region.width}:${asset.region.height}`);
+}
+assert.equal(new Set(worldRegions).size,WORLD_KEYS.length,'each approved world must occupy a distinct master-atlas region');
+assert.match(runtime.player.atlas.url,expectedAtlas);
+assert.match(runtime.enemyAtlas.url,expectedAtlas);
+assert.match(runtime.bossAtlas.url,expectedAtlas);
+assert.match(runtime.platformAtlas.url,expectedAtlas);
+assert.match(runtime.ui.url,expectedAtlas);
+assert.match(runtime.cover.url,expectedAtlas);
+console.log('Seed Man approved-art-only master-atlas visual runtime OK');
