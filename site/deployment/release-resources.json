@@ -30,12 +30,7 @@
       "exactPaths": ["site/deployment/public-apps.json"],
       "requiredFiles": ["games/high-land/index.html"],
       "verifyMarker": "High Land",
-      "publisher": {
-        "type": "hostinger-ssh",
-        "workflow": "deploy-dtfseeds-public-resource.yml",
-        "status": "pilot-manual",
-        "remotePathVariable": "HOSTINGER_HIGH_LAND_PATH"
-      }
+      "publisher": {"type": "hostinger-ssh", "workflow": "deploy-dtfseeds-public-resource.yml", "status": "pilot-manual", "remotePathVariable": "HOSTINGER_HIGH_LAND_PATH"}
     },
     "high-iq": {
       "studioResource": "game.high-iq",
@@ -46,24 +41,9 @@
       "publicSuiteOwnership": "resource",
       "sourcePrefixes": ["games/high-iq/", "site/public-route-patch/games/high-iq/"],
       "exactPaths": ["site/deployment/public-apps.json"],
-      "requiredFiles": [
-        "games/high-iq/index.html",
-        "games/high-iq/app.js",
-        "games/high-iq/app-v3.js",
-        "games/high-iq/game-core.mjs",
-        "games/high-iq/high-iq.css",
-        "games/high-iq/high-iq-v3.css",
-        "games/high-iq/data/manifest.json"
-      ],
+      "requiredFiles": ["games/high-iq/index.html","games/high-iq/app.js","games/high-iq/app-v3.js","games/high-iq/game-core.mjs","games/high-iq/high-iq.css","games/high-iq/high-iq-v3.css","games/high-iq/data/manifest.json"],
       "verifyMarker": "Build your High IQ run",
-      "publisher": {
-        "type": "wordpress-transactional-resource",
-        "workflow": "deploy-dtfseeds-wordpress-resource.yml",
-        "status": "pilot-manual",
-        "orchestration": "gateway-managed",
-        "coordinator": "dtfseeds-resource-production-gateway.yml",
-        "sharedProductionTarget": "wordpress:temporary-code-snippets-bridge"
-      }
+      "publisher": {"type": "wordpress-transactional-resource","workflow": "deploy-dtfseeds-wordpress-resource.yml","status": "pilot-manual","orchestration": "gateway-managed","coordinator": "dtfseeds-resource-production-gateway.yml","sharedProductionTarget": "wordpress:temporary-code-snippets-bridge"}
     },
     "seed-man-platformer": {
       "studioResource": "game.seed-man-platformer",
@@ -85,11 +65,13 @@
       "exactPaths": ["site/deployment/public-apps.json"],
       "requiredFiles": [
         "games/seed-man-platformer/index.html",
+        "games/seed-man-platformer/app-bootstrap-compat-v20.js",
         "games/seed-man-platformer/app.js",
         "games/seed-man-platformer/canvas-compat-v1.js",
         "games/seed-man-platformer/campaign-v20-runtime.js",
         "games/seed-man-platformer/v20-campaign-guard.js",
         "games/seed-man-platformer/campaign-ui-v20.js",
+        "games/seed-man-platformer/campaign-progression-v20.js",
         "games/seed-man-platformer/approved-art-core-v1.js",
         "games/seed-man-platformer/approved-art-runtime-v1.js",
         "games/seed-man-platformer/seed-man-production-art.js",
@@ -104,13 +86,7 @@
         "games/seed-man-platformer/data/boss-catalog-v1.json"
       ],
       "verifyMarker": "20-Level Campaign",
-      "publisher": {
-        "type": "wordpress-dedicated-route",
-        "workflow": "publish-seed-man-production.yml",
-        "status": "production-v20",
-        "orchestration": "dedicated",
-        "sharedProductionTarget": "wordpress:seed-man-route"
-      }
+      "publisher": {"type": "wordpress-dedicated-route","workflow": "publish-seed-man-production.yml","status": "production-v20","orchestration": "dedicated","sharedProductionTarget": "wordpress:seed-man-route"}
     }
   }
 }
