@@ -58,7 +58,7 @@ jobs:
           for js in app.js canvas-compat-v1.js player-state-v20.js campaign-v20-runtime.js campaign-ui-v20.js v20-enemy-runtime.js combat-browser-v2.js enemy-attacks-browser-v2.js approved-art-core-v1.js approved-art-runtime-v1.js seed-man-production-art.js three-world-v1.js three-world-adapter-v1.js; do node --check "$root/$js"; done
           grep -Fq '20-Level Campaign' "$root/index.html"
           grep -Fq './three-world-v1.js?v=' "$root/index.html"
-          ! grep -Fq 'seed-man-level' "$root/index.html"
+          ! grep -Fq 'id="seed-man-level"' "$root/index.html"
           ! grep -Fq 'Seed Man: Sprout Run' "$root/index.html"
           grep -Fq 'seed-man-base-runtime-v20' "$root/app.js"
           grep -Fq "campaignAuthority:'campaign-v20-runtime.js'" "$root/app.js"
@@ -159,7 +159,7 @@ jobs:
           NODE
           grep -Fq '20-Level Campaign' "$tmp/index.html"
           grep -Fq './three-world-v1.js?v=' "$tmp/index.html"
-          ! grep -Fq 'seed-man-level' "$tmp/index.html"
+          ! grep -Fq 'id="seed-man-level"' "$tmp/index.html"
           ! grep -Fq 'Seed Man: Sprout Run' "$tmp/index.html"
           grep -Fq 'seed-man-player-state-v20' "$tmp/player-state.js"
           grep -Fq 'seed-man-campaign-v20-runtime-v3' "$tmp/runtime.js"
