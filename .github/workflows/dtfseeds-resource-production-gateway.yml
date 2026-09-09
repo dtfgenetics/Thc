@@ -2,6 +2,17 @@ name: DTFSeeds Resource Production Gateway
 
 on:
   workflow_dispatch:
+    inputs:
+      source_sha:
+        description: Exact main commit to recover. Leave empty for the workflow-dispatch main snapshot.
+        required: false
+        default: ''
+        type: string
+      recovery_attempt:
+        description: Internal bounded retry counter for queue-replaced publisher runs.
+        required: false
+        default: '0'
+        type: string
   push:
     branches: [main]
     paths:
@@ -10,6 +21,7 @@ on:
       - 'site/deployment/public-apps.json'
       - 'site/deployment/release-resources.json'
       - 'scripts/plan-dtfseeds-resource-release.mjs'
+      - 'scripts/run-workflow-and-wait.sh'
       - 'scripts/package-dtf-public-resource.py'
       - 'scripts/verify-dtf-public-resource-artifact.py'
       - 'scripts/assemble-wordpress-resource-v2.py'
@@ -39,12 +51,33 @@ jobs:
       deploy: ${{ steps.plan.outputs.deploy }}
       matrix: ${{ steps.plan.outputs.matrix }}
       plan: ${{ steps.plan.outputs.plan }}
+      source_sha: ${{ steps.source.outputs.sha }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           fetch-tags: true
           persist-credentials: false
+
+      - name: Resolve exact release source
+        id: source
+        shell: bash
+        env:
+          REQUESTED_SOURCE_SHA: ${{ github.event_name == 'workflow_dispatch' && inputs.source_sha || '' }}
+        run: |
+          set -euo pipefail
+          git fetch --quiet origin main --tags
+          source_sha="${REQUESTED_SOURCE_SHA:-$GITHUB_SHA}"
+          [[ "$source_sha" =~ ^[0-9a-f]{40}$ ]] || {
+            echo "source_sha must be a full lowercase commit SHA: $source_sha" >&2
+            exit 2
+          }
+          git cat-file -e "${source_sha}^{commit}"
+          git merge-base --is-ancestor "$source_sha" origin/main || {
+            echo "Refusing resource source that is not an ancestor of current main: $source_sha" >&2
+            exit 1
+          }
+          echo "sha=$source_sha" >> "$GITHUB_OUTPUT"
 
       - uses: actions/setup-node@v4
         with:
@@ -55,25 +88,29 @@ jobs:
         shell: bash
         env:
           PUSH_BASE: ${{ github.event_name == 'push' && github.event.before || '' }}
+          TARGET_SOURCE_SHA: ${{ steps.source.outputs.sha }}
         run: |
           set -euo pipefail
           node --check scripts/plan-dtfseeds-resource-release.mjs
           node scripts/test-dtf-resource-release-system.mjs
           node scripts/plan-dtfseeds-resource-release.mjs \
             --base="$PUSH_BASE" \
-            --head="$GITHUB_SHA" \
+            --head="$TARGET_SOURCE_SHA" \
             --resource=auto \
             --gateway-managed-only=true
 
       - name: Record independent resource plan
         env:
           RELEASE_PLAN: ${{ steps.plan.outputs.plan }}
+          TARGET_SOURCE_SHA: ${{ steps.source.outputs.sha }}
+          RECOVERY_ATTEMPT: ${{ github.event_name == 'workflow_dispatch' && inputs.recovery_attempt || '0' }}
         shell: bash
         run: |
           {
             echo '## Independent resource production plan'
             echo
-            echo "- Source: $GITHUB_SHA"
+            echo "- Source: $TARGET_SOURCE_SHA"
+            echo "- Recovery attempt: $RECOVERY_ATTEMPT"
             echo "- Deploy required: ${{ steps.plan.outputs.deploy }}"
             echo '- Automatic publication planning includes only routes whose registry ownership is `resource` and whose publisher orchestration is `gateway-managed`.'
             echo '- Isolated resource builds may still validate pilot resources that remain suite-owned.'
@@ -91,33 +128,20 @@ jobs:
     timeout-minutes: 150
     env:
       GH_TOKEN: ${{ github.token }}
-      EXPECTED_SOURCE_SHA: ${{ github.sha }}
+      EXPECTED_SOURCE_SHA: ${{ needs.plan.outputs.source_sha }}
       RESOURCE_PLAN: ${{ needs.plan.outputs.plan }}
+      RECOVERY_ATTEMPT: ${{ github.event_name == 'workflow_dispatch' && inputs.recovery_attempt || '0' }}
+      MAX_RECOVERY_ATTEMPTS: '5'
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ needs.plan.outputs.source_sha }}
           fetch-depth: 0
           fetch-tags: true
           persist-credentials: false
 
-      - name: Detect superseded queued resource release
-        id: freshness
-        shell: bash
-        run: |
-          set -euo pipefail
-          git fetch --quiet origin main
-          latest="$(git rev-parse origin/main)"
-          if [[ "$latest" == "$GITHUB_SHA" ]]; then
-            echo 'current=true' >> "$GITHUB_OUTPUT"
-          else
-            echo 'current=false' >> "$GITHUB_OUTPUT"
-            echo "Skipping superseded resource gateway source $GITHUB_SHA; latest main is $latest. The newer push owns cumulative resource planning."
-          fi
-
       - name: Join exact-source independent resource build
         id: build
-        if: steps.freshness.outputs.current == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -125,25 +149,46 @@ jobs:
 
       - name: Publish each gateway-managed resource through its owning workflow
         id: publish
-        if: steps.freshness.outputs.current == 'true' && steps.build.outcome == 'success'
+        if: steps.build.outcome == 'success'
         shell: bash
         run: |
           set -euo pipefail
+          [[ "$RECOVERY_ATTEMPT" =~ ^[0-9]+$ ]] || { echo "Invalid recovery_attempt: $RECOVERY_ATTEMPT" >&2; exit 2; }
           mapfile -t rows < <(jq -r '.resources[] | [.id,.publisherWorkflow] | @tsv' <<<"$RESOURCE_PLAN")
           test "${#rows[@]}" -gt 0
           for row in "${rows[@]}"; do
             IFS=$'\t' read -r resource workflow <<<"$row"
             [[ -n "$resource" && -n "$workflow" && "$workflow" != 'null' ]]
-            echo "Publishing $resource through $workflow at exact source $GITHUB_SHA"
+            echo "Publishing $resource through $workflow at exact source $EXPECTED_SOURCE_SHA"
+            set +e
             bash scripts/run-workflow-and-wait.sh "$workflow" \
               -f "resource=$resource" \
-              -f "source_sha=$GITHUB_SHA" \
+              -f "source_sha=$EXPECTED_SOURCE_SHA" \
               -f 'environment=production'
+            status=$?
+            set -e
+
+            if [[ "$status" -eq 75 ]]; then
+              if (( RECOVERY_ATTEMPT >= MAX_RECOVERY_ATTEMPTS )); then
+                echo "Publisher queue replacement persisted through $RECOVERY_ATTEMPT recovery attempt(s); refusing an unbounded retry loop." >&2
+                exit 75
+              fi
+              next_attempt=$((RECOVERY_ATTEMPT + 1))
+              echo "Publisher was replaced before jobs started. Scheduling exact-source gateway recovery attempt $next_attempt for $EXPECTED_SOURCE_SHA."
+              gh workflow run dtfseeds-resource-production-gateway.yml --ref main \
+                -f "source_sha=$EXPECTED_SOURCE_SHA" \
+                -f "recovery_attempt=$next_attempt"
+              echo "recovery_scheduled=true" >> "$GITHUB_OUTPUT"
+              exit 75
+            fi
+
+            [[ "$status" -eq 0 ]] || exit "$status"
           done
+          echo "recovery_scheduled=false" >> "$GITHUB_OUTPUT"
 
       - name: Independently verify every resource-owned route
         id: verify
-        if: steps.freshness.outputs.current == 'true' && steps.publish.outcome == 'success'
+        if: steps.publish.outcome == 'success'
         shell: bash
         run: |
           set -euo pipefail
@@ -181,10 +226,11 @@ jobs:
           {
             echo '## Independent resource production gateway'
             echo
-            echo "- Source: $GITHUB_SHA"
-            echo "- Superseded: ${{ steps.freshness.outputs.current != 'true' }}"
+            echo "- Source: $EXPECTED_SOURCE_SHA"
+            echo "- Recovery attempt: $RECOVERY_ATTEMPT"
             echo "- Exact-source build: ${{ steps.build.outcome }}"
             echo "- Publisher outcome: ${{ steps.publish.outcome }}"
+            echo "- Recovery scheduled: ${{ steps.publish.outputs.recovery_scheduled || 'false' }}"
             echo "- Independent visitor verification: ${{ steps.verify.outcome }}"
             echo '- Each successful publisher advances only its own monotonic resource checkpoint; the global DTFSeeds checkpoint is untouched.'
             echo '- High IQ is currently the only automatic resource-owned route. High Land remains suite-owned while its independent SSH publisher stays in pilot validation.'
