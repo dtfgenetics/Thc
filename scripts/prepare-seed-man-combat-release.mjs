@@ -87,11 +87,12 @@ for (const marker of ['levelCount:20', 'bossCount:6', "finalBoss:'blight-king'",
 for (const marker of ['seed-man-campaign-ui-v20', '20']) {
   if (!campaignUi.includes(marker)) throw new Error(`Seed Man v20 campaign UI missing marker: ${marker}`);
 }
-for (const marker of ['sprout-canvas-compat-v20', 'campaignTarget:20', 'campaign-ui-v20.js']) {
+for (const marker of ['sprout-canvas-compat-v20', 'campaignTarget:20', 'campaign-ui-v20.js', 'combat-browser-v2.js', 'enemy-attacks-browser-v2.js']) {
   if (!compat.includes(marker)) throw new Error(`Seed Man compatibility bootstrap missing v20 marker: ${marker}`);
 }
 
-// Canonical campaign data owns the public data. Never republish legacy 12-15/15-level packs.
+// Canonical source owns the release. Public-route files are generated outputs;
+// legacy preparation helpers are validation-only and must not rewrite runtime JS.
 fs.copyFileSync(canonicalCampaignPath, publicCampaignPath);
 fs.copyFileSync(canonicalLevelsPath, publicLevelsPath);
 
@@ -113,5 +114,6 @@ console.log(JSON.stringify({
   approvedArtOnly: true,
   legacyV15PublisherDisabled: true,
   legacyCombatV1Disabled: true,
+  postBuildRuntimeMutationDisabled: true,
   deterministicTests: true
 }, null, 2));
