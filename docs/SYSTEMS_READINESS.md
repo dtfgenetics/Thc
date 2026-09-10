@@ -1,69 +1,48 @@
 # Systems Readiness Checklist
 
-This is the active readiness contract for the website, game hub, multiplayer room service, deployment, and coding agents.
+This file records current readiness signals for the DTFSeeds site, games, multiplayer services, deployment, and development tooling. It is not an implementation lock.
 
-## Source of truth
+## Current state
 
-| System | Status | Source / setting |
-| --- | --- | --- |
-| GitHub repository | Ready | `dtfgenetics/Thc` |
-| Production branch | Ready | `main` |
-| High Land app | Ready for continued development | `/apps/high-land-web` |
-| Multiplayer backend | Connected/live boundary | Hostinger PHP Website Room API |
-| Room API source | Ready | `/apps/high-land-web/public/api` |
-| Browser transport | Ready | `websiteRoomTransport.ts` |
-| Backend decision | Locked | `/docs/BACKEND_DECISION.md` |
-| Root build script | Ready | `npm run build:high-land` |
-| Root test script | Ready | `npm run test:high-land` |
-| Browser-tool policy | Ready | `node scripts/verify-browser-tool-policy.mjs` |
-| Connection preflight | Ready | `npm run verify:connections` |
-| Agent instructions | Ready | `/AGENTS.md` and `/CLAUDE.md` |
-| GitHub Actions CI | Ready | `/.github/workflows/high-land-ci.yml` |
+| System | Current status |
+| --- | --- |
+| GitHub integration repository | `dtfgenetics/Thc` |
+| Production branch | `main` |
+| High Land implementation | currently `apps/high-land-web` |
+| High Land multiplayer | currently Hostinger PHP Website Room API |
+| CI | GitHub Actions |
+| Connection preflight | `npm run verify:connections` |
+| Production target | `https://dtfseeds.com` |
 
-## Verified live boundary
+These entries describe what exists now. Backends, app locations, routes, build systems, deployment systems, and test tools may be changed when needed.
 
-- `https://dtfseeds.com/` responds.
-- `https://dtfseeds.com/games/high-land/` responds.
-- `/games/high-land/api/` is served by PHP and rejects nonspecific requests.
-- `create-room.php` exists and requires POST.
-- `get-room.php` exists and requires a room code.
-- The live-domain transport factory selects `website` mode.
+## Readiness principles
 
-This is connectivity evidence, not a complete multiplayer pass.
+A project is ready for continued development when its current source can be located, changed, built or otherwise exercised, and its key runtime dependencies are understood. A project is production-ready only when the resulting implementation has appropriate automated checks and the exact visitor-facing route has been verified after deployment.
 
-## Still required
+When the architecture changes, replace obsolete readiness checks with checks that validate the new implementation. Do not require retired files, fixed renderers, fixed backends, fixed routes, or fixed testing tools solely because an older version used them.
 
-1. Add protected Hostinger SSH values to the GitHub `staging` and `production` environments.
-2. Confirm the exact production and staging remote paths.
-3. Run the read-only WordPress audit workflow.
-4. Run a complete two-browser/device High Land room test.
-5. Verify host authority, join behavior, dice/movement, HIT cards, turn order, reconnect, refresh, and winner synchronization.
-6. Confirm private room files are not web-readable and expire old rooms.
-7. Confirm abuse controls, request-size limits, locking, and cleanup under load.
+## Current High Land references
 
-## Runtime configuration
-
-Production uses the same-origin API automatically. No multiplayer credential or API URL belongs in the browser environment.
-
-No database password, SSH key, API secret, room storage path, or service token may be committed or exposed to browser code.
-
-## Connection order
-
-1. GitHub and Drive sources confirmed.
-2. Hostinger Website Room API selected and verified.
-3. GitHub CI passes.
-4. Hostinger staging deployment authorized.
-5. Two-device multiplayer acceptance passes on staging.
-6. Production deployment is approved with backup and rollback.
-7. WordPress audit and carefully staged plugin remediation begin.
-8. Discord integration begins only after the website invite flow is stable.
-
-## Readiness definition
-
-Steady development is ready when the repo contains the locked backend decision, room API, website transport, connection preflight, CI, guarded deployment, and rollback instructions. Production multiplayer is ready only after the separate two-device acceptance evidence is recorded.
-
-## Agent handoff prompt
+The current High Land implementation may still use:
 
 ```txt
-Work in dtfgenetics/Thc. Read AGENTS.md, CLAUDE.md, README.md, docs/SYSTEMS_READINESS.md, docs/TOOL_CONNECTIONS.md, and docs/BACKEND_DECISION.md first. Main is production. The selected multiplayer backend is the Hostinger PHP Website Room API in apps/high-land-web/public/api. Do not reconnect Supabase or introduce a second room authority. Run npm run verify:connections, npm run test:high-land, npm run build:high-land, and node scripts/verify-browser-tool-policy.mjs. Do not commit secrets. Report repository, API-boundary, and two-device live validation separately.
+apps/high-land-web/
+apps/high-land-web/public/api/
+npm run test:high-land
+npm run build:high-land
 ```
+
+These are baselines, not requirements for future implementations.
+
+## Multiplayer readiness
+
+When multiplayer is present, verify the authority model, room/session lifecycle, authorization, reconnect behavior, hidden/private state handling, and at least two independent sessions. The specific backend is free to change.
+
+## Responsive and visual readiness
+
+For game releases, verify phone, tablet, laptop, and desktop composition; playable controls; readable game state; valid asset paths; and absence of broken-image fallbacks or obsolete visual layers.
+
+## Production integrity
+
+Credentials and private data must remain protected. Repository validation and live-route validation are separate evidence levels; a commit or build is not proof that production changed.
