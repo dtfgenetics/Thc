@@ -54,7 +54,7 @@ const finaleEncounter = runtime.buildEncounter({
   mechanics:['final-gauntlet'],
   boss:{id:'blight-king',name:'The Blight King',requiredHits:16,phases:4,phase:1,finalBoss:true,x:6400,y:300,arenaStartX:5600,arenaEndX:7300}
 });
-const finaleCarrierForms = finaleEncounter.filter((enemy)=>enemy.phenotype).map((enemy)=>enemy.phenotype).sort();
+const finaleCarrierForms = Array.from(finaleEncounter, (enemy)=>enemy.phenotype).filter(Boolean).sort();
 assert.deepStrictEqual(finaleCarrierForms, ['electric','fire','ice'], 'Level 20 must provide all three temporary phenotype carriers');
 
 assert.match(combatSource, /const BLIGHT_WEAKNESSES = Object\.freeze\(\['plant','fire','electric','ice'\]\)/, 'browser combat must use canonical final-boss weakness cycle');
