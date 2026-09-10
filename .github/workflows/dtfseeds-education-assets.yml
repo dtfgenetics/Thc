@@ -41,7 +41,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Verify rejected THC-C assets are absent
+      - name: Verify rejected THC-C visual style is absent
         shell: bash
         run: |
           set -euo pipefail
@@ -49,10 +49,16 @@ jobs:
           page="$EDUCATION_LIBRARY_SOURCE/index.html"
           test -d "$base"
           test -s "$page"
-          banned=(THC-C008_Infographic_Flower_Anatomy_Reproduction.jpg THC-C009_Infographic_Trichomes_Secretory_Biology.jpg)
-          for file in "${banned[@]}"; do
-            if [[ -e "$base/$file" ]]; then echo "Rejected asset still present: $file" >&2; exit 1; fi
-            if grep -R "$file" "$EDUCATION_LIBRARY_SOURCE" site/wordpress/assets/infographics/import-curated-2026-08-19.json site/public-route-patch/assets/education/infographics/import-curated-2026-08-19.json; then echo "Rejected asset still referenced: $file" >&2; exit 1; fi
+          banned_stems=(THC-C008_Infographic_Flower_Anatomy_Reproduction THC-C009_Infographic_Trichomes_Secretory_Biology)
+          for stem in "${banned_stems[@]}"; do
+            if find "$base" -maxdepth 1 -type f -name "$stem.*" | grep -q .; then
+              echo "Rejected asset still present: $stem" >&2
+              exit 1
+            fi
+            if grep -R -F "$stem" "$EDUCATION_LIBRARY_SOURCE" site/wordpress/assets/infographics/import-curated-2026-08-19.json site/public-route-patch/assets/education/infographics/import-curated-2026-08-19.json; then
+              echo "Rejected asset still referenced: $stem" >&2
+              exit 1
+            fi
           done
           required=(THC-C004_Infographic_From_Cell_to_Canopy.jpg THC-C005_Infographic_Root_Anatomy_and_Forensics.jpg THC-C006_Infographic_Stem_Transport_and_Training_Risk.jpg THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange.jpg Cannabis_Plant_Anatomy_Infographic.png Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic.png Nutrient_Uptake_and_Root_Zone_Chemistry.png Beneficial_Insects_and_Biological_Controls.png)
           for file in "${required[@]}"; do test -s "$base/$file"; done
