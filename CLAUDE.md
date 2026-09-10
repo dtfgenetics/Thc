@@ -1,5 +1,15 @@
 # THC Games Workspace - Agent Instructions
 
+## TEMPORARY USER OVERRIDE — GAME RESTRICTIONS ON HOLD
+
+**Status: ACTIVE until the user explicitly revokes it.**
+
+Read `docs/GAME_RESTRICTIONS_HOLD.md` first for all DTFSeeds game work. While that hold is active, it supersedes conflicting project-level game restrictions in this file and other repository documentation. Developers and agents may modify, replace, restructure, migrate, rewrite, consolidate, move, or remove game code, UI, assets, engines, backends, routes, repository layout, build tooling, and deployment packaging when needed to achieve the user's requested goal. Prior "locked", "preserve", "smallest change", "canonical only", backend-only, or no-rewrite rules are not blockers during the hold.
+
+Security, credential handling, truthful live-verification requirements, and higher-level platform requirements remain in force because they are not project-development restrictions.
+
+---
+
 This repository is the working codebase for the DTF / THC browser games and website game hub.
 
 ## Project priorities
