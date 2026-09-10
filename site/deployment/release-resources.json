@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
-  "description": "Independent DTFSeeds release resources. Resource builds are isolated; production serialization is scoped to the resource and any explicitly shared publisher mechanism. Routes become authoritative independent publishers only after their production path is proven and gateway orchestration is enabled.",
+  "description": "Current DTFSeeds release-resource registry. Entries describe the implementation that exists today and may be changed, replaced, moved, or removed during active development. Release validation checks structural integrity rather than freezing architecture.",
   "globalBuildPaths": [
     "site/deployment/release-resources.json",
     "scripts/plan-dtfseeds-resource-release.mjs",
@@ -34,8 +34,7 @@
       "publisher": {
         "type": "hostinger-ssh",
         "workflow": "deploy-dtfseeds-public-resource.yml",
-        "status": "pilot-manual",
-        "remotePathVariable": "HOSTINGER_HIGH_LAND_PATH"
+        "status": "current"
       }
     },
     "high-iq": {
@@ -47,23 +46,12 @@
       "publicSuiteOwnership": "resource",
       "sourcePrefixes": ["games/high-iq/", "site/public-route-patch/games/high-iq/"],
       "exactPaths": ["site/deployment/public-apps.json"],
-      "requiredFiles": [
-        "games/high-iq/index.html",
-        "games/high-iq/app.js",
-        "games/high-iq/app-v3.js",
-        "games/high-iq/game-core.mjs",
-        "games/high-iq/high-iq.css",
-        "games/high-iq/high-iq-v3.css",
-        "games/high-iq/data/manifest.json"
-      ],
-      "verifyMarker": "Build your High IQ run",
+      "requiredFiles": ["games/high-iq/index.html"],
+      "verifyMarker": "High IQ",
       "publisher": {
         "type": "wordpress-transactional-resource",
         "workflow": "deploy-dtfseeds-wordpress-resource.yml",
-        "status": "pilot-manual",
-        "orchestration": "gateway-managed",
-        "coordinator": "dtfseeds-resource-production-gateway.yml",
-        "sharedProductionTarget": "wordpress:temporary-code-snippets-bridge"
+        "status": "current"
       }
     },
     "seed-man-platformer": {
@@ -76,66 +64,27 @@
       "sourcePrefixes": [
         "games/seed-man-platformer/",
         "site/public-route-patch/games/seed-man-platformer/",
-        "scripts/prepare-seed-man-combat-release.mjs",
-        "scripts/prepare-seed-man-elemental-vfx.mjs",
-        "scripts/prepare-seed-man-impact-fx.mjs",
-        "scripts/prepare-seed-man-enemy-visuals.mjs",
-        "scripts/prepare-seed-man-world-five-runtime.mjs",
-        "scripts/prepare-seed-man-world-five-combat.mjs",
-        "scripts/prepare-seed-man-release-version.mjs",
         "scripts/verify-seed-man-production-v20.mjs",
         "scripts/validate-seed-man-production-bundle.mjs",
         "scripts/publish-seed-man-route-via-wordpress.mjs",
         ".github/workflows/publish-seed-man-production.yml"
       ],
       "exactPaths": ["site/deployment/public-apps.json"],
-      "requiredFiles": [
-        "games/seed-man-platformer/index.html",
-        "games/seed-man-platformer/app.js",
-        "games/seed-man-platformer/canvas-compat-v1.js",
-        "games/seed-man-platformer/player-state-v20.js",
-        "games/seed-man-platformer/campaign-v20-runtime.js",
-        "games/seed-man-platformer/campaign-ui-v20.js",
-        "games/seed-man-platformer/v20-enemy-runtime.js",
-        "games/seed-man-platformer/approved-art-core-v1.js",
-        "games/seed-man-platformer/approved-art-runtime-v1.js",
-        "games/seed-man-platformer/seed-man-production-art.js",
-        "games/seed-man-platformer/three-world-v1.js",
-        "games/seed-man-platformer/three-world-adapter-v1.js",
-        "games/seed-man-platformer/combat-browser-v2.js",
-        "games/seed-man-platformer/enemy-attacks-browser-v2.js",
-        "games/seed-man-platformer/enemy-attacks.js",
-        "games/seed-man-platformer/assets/approved/seed-man-character-atlas-v2.webp",
-        "games/seed-man-platformer/assets/approved/seed-man-enemy-boss-atlas-v1.webp",
-        "games/seed-man-platformer/assets/approved/seed-man-platform-atlas-v1.webp",
-        "games/seed-man-platformer/data/campaign.json",
-        "games/seed-man-platformer/data/levels-20-v1.json",
-        "games/seed-man-platformer/data/seed-man-art-manifest-v1.json",
-        "games/seed-man-platformer/data/enemy-catalog-v1.json",
-        "games/seed-man-platformer/data/boss-catalog-v1.json"
-      ],
-      "verifyMarker": "20-Level Campaign",
+      "requiredFiles": ["games/seed-man-platformer/index.html"],
+      "verifyMarker": "Seed Man",
       "publisher": {
-        "type": "wordpress-dedicated-route",
+        "type": "wordpress-route-directory",
         "workflow": "publish-seed-man-production.yml",
-        "status": "production-v20",
-        "orchestration": "dedicated",
-        "sharedProductionTarget": "wordpress:seed-man-route"
+        "status": "current"
       },
       "releasePolicy": {
-        "canonicalSource": "games/seed-man-platformer/",
-        "generatedPublicRoute": "site/public-route-patch/games/seed-man-platformer/",
-        "campaignRuntime": "v20",
-        "worldRenderer": "seed-man-three-world-v2",
-        "worldRendererBundle": "seed-man-three-public-v3",
-        "worldFallbackRenderer": "seed-man-canvas-world-gradient-v1",
-        "combatRuntime": "v2",
-        "playerStateRuntime": "v20",
-        "phenotypeForms": ["plant", "fire", "electric", "ice"],
-        "corruptMasterAtlas": "forbidden",
-        "legacySproutRunBootstrap": "forbidden",
-        "postBuildMutation": "disabled",
-        "legacyPrepareHelpers": "validation-only"
+        "editableDuringDevelopment": true,
+        "sourceDirectory": "games/seed-man-platformer/",
+        "publicRouteDirectory": "site/public-route-patch/games/seed-man-platformer/",
+        "validation": "structural-and-runtime",
+        "fixedRenderer": false,
+        "fixedArtPack": false,
+        "fixedCampaignShape": false
       }
     }
   }
