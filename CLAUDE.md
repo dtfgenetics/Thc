@@ -1,54 +1,43 @@
-# THC Games Workspace - Agent Instructions
+# THC Games Workspace — Agent Context
 
-## TEMPORARY USER OVERRIDE — GAME RESTRICTIONS ON HOLD
+## Standing unrestricted development policy
 
-**Status: ACTIVE until the user explicitly revokes it.**
+Read `docs/GAME_DEVELOPMENT_FREEDOM.md` first for DTFSeeds game work.
 
-Read `docs/GAME_RESTRICTIONS_HOLD.md` first for all DTFSeeds game work. While that hold is active, it supersedes conflicting project-level game restrictions in this file and other repository documentation. Developers and agents may modify, replace, restructure, migrate, rewrite, consolidate, move, or remove game code, UI, assets, engines, backends, routes, repository layout, build tooling, and deployment packaging when needed to achieve the user's requested goal. Prior "locked", "preserve", "smallest change", "canonical only", backend-only, or no-rewrite rules are not blockers during the hold.
+There is no temporary hold and no default project-level implementation lock. Older rules such as `locked`, `canonical only`, `preserve existing logic`, `smallest change`, no-rewrite, backend-only, route-only, repository-placement, naming, engine, browser-tool, or QA-tool restrictions are historical guidance and do not block current user-directed work.
 
-Security, credential handling, truthful live-verification requirements, and higher-level platform requirements remain in force because they are not project-development restrictions.
+Game code, UI, assets, engines, backends, routes, ownership, repository layout, build systems, deployment packaging, tests, and tooling may be changed, replaced, migrated, consolidated, or rebuilt when that better serves the requested result.
 
----
+Security, privacy, credential handling, truthful live verification, and higher-level platform/legal requirements remain in force because they protect users and production integrity rather than constrain product design.
 
-This repository is the working codebase for the DTF / THC browser games and website game hub.
+## Workspace purpose
 
-## Project priorities
+This repository is the working integration codebase for DTF / THC browser games and the dtfseeds.com game ecosystem.
 
-1. Keep the live game code stable.
-2. Do not overwrite existing game logic without inspecting the current implementation and tests first.
-3. Treat `main` as the production branch.
-4. Use the Hostinger PHP Website Room API for shared multiplayer rooms.
-5. Keep High Land web app code under `/apps/high-land-web`.
-6. Never commit secrets, service role keys, database passwords, bot tokens, or `.env` files.
+Current production branch: `main`
 
-## Current repository structure
+Current production site: `https://dtfseeds.com`
 
-```txt
-/
-  apps/
-    high-land-web/
-      package.json
-      src/
-  docs/
-  supabase/                 # legacy planning only; not the active backend
-  package.json
-  .gitignore
-```
+Current High Land source location: `apps/high-land-web`
 
-## High Land game notes
+Current High Land multiplayer implementation: Hostinger PHP Website Room API
 
-Current gameplay goals:
+Those locations and technologies describe the current state; they may be deliberately changed when the product goal calls for a better architecture.
 
-- 2-4 players
-- player naming
-- invite/session links for multiplayer
-- dice rolls that match spaces moved
-- tokens that sit on the board spaces, not beside the board
-- text and icons contained inside board boxes without overlap
-- action card logic for forward/back movement
-- tests for core movement and board integrity
+## Development priorities
 
-Before changing High Land:
+- Build the strongest version of the requested game or system rather than preserving obsolete implementation choices.
+- Inspect existing source and tests enough to understand what is being kept, replaced, or migrated.
+- Reuse good systems when useful and remove or replace weak ones when they are not.
+- Keep production metadata, navigation, route ownership, and documentation synchronized with the implementation that actually ships.
+- Validate material gameplay, networking, storage, rendering, and release changes with tests/checks suited to the resulting architecture.
+- Verify visitor-facing production behavior separately from repository/build success.
+
+## High Land current context
+
+Current gameplay goals include multiplayer player naming and invites, accurate dice movement, tokens placed on board spaces, clean board text/icon layout, forward/back action-card logic, and strong movement/board integrity.
+
+Current baseline commands are:
 
 ```bash
 npm install
@@ -56,56 +45,47 @@ npm run test:high-land
 npm run build:high-land
 ```
 
-If tests fail, inspect the failure before changing unrelated code.
-
-## Multiplayer backend notes
-
-The approved backend is the existing Hostinger PHP Website Room API:
+The current backend is located under:
 
 ```txt
 apps/high-land-web/public/api/
 https://dtfseeds.com/games/high-land/api/
 ```
 
-The browser selects `websiteRoomTransport` on the live High Land route and polls
-room snapshots every two seconds. Local transport remains available for offline
-development and tests. Do not add Supabase, Firebase, or a second room authority
-without an explicit replacement decision and migration plan.
+That backend is not locked. Supabase, Firebase, another service, or a custom replacement may be adopted when technically justified. Any multiplayer architecture still needs to protect private room state, validate authorization, and keep credentials out of browser code.
 
-Room JSON storage must remain outside public browsing, room codes must be
-validated, writes must be host/player authorized, and no credentials may enter
-browser code.
+## Deployment context
 
-## Deployment notes
-
-The site deployment should build the High Land app from:
+The current High Land build is produced with:
 
 ```bash
 npm run build:high-land
 ```
 
-The production build output is expected at:
+and currently outputs to:
 
 ```txt
 apps/high-land-web/dist
 ```
 
-## Working rules for Codex, Claude Code, and other agents
+If the build or hosting architecture changes, update these instructions and the deployment system to match rather than preserving an obsolete path.
 
-- Read `README.md`, this file, and relevant docs before making changes.
-- Prefer small pull requests with clear titles.
-- Run available tests and builds before claiming success.
-- Add or update tests when changing game rules, movement, multiplayer, room API authorization, or storage.
-- Do not rename projects, games, domains, routes, or brand terms unless explicitly requested.
-- Do not replace the existing High Land game with a generic demo.
-- Preserve the existing DTF / THC branding and game direction.
+## Agent working guidance
+
+- Read current source, relevant docs, and recent changes when they help establish reality.
+- Use a small patch, large refactor, migration, or complete rebuild according to what best achieves the goal.
+- Add or replace tests when materially changing game rules, movement, multiplayer, authorization, persistence, or other critical behavior.
+- Project names, domains, routes, brands, architectures, and backends may be changed when the user's current direction requires it.
+- Existing DTF / THC branding and game direction are product context, not technical locks.
+- Do not expose credentials, tokens, passwords, private keys, `.env` secrets, service-role keys, or private user/room data.
+- Do not claim a production change is live until the exact public route and expected behavior are verified.
 
 ## Connection map
 
 - GitHub repo: `dtfgenetics/Thc`
 - Production branch: `main`
-- Multiplayer backend: Hostinger PHP Website Room API
-- API source: `/apps/high-land-web/public/api`
-- Live API: `https://dtfseeds.com/games/high-land/api/`
-- Website/game app: `/apps/high-land-web`
-- Target domains: `dtfseeds.com`, `dtf420.com`
+- Production site: `https://dtfseeds.com`
+- Current High Land app: `apps/high-land-web`
+- Current High Land API: `apps/high-land-web/public/api`
+- Current live High Land API: `https://dtfseeds.com/games/high-land/api/`
+- Target domains currently in use: `dtfseeds.com`, `dtf420.com`

@@ -1,18 +1,14 @@
 # AI Assistant Context for the DTF Games Workspace
 
-## TEMPORARY USER OVERRIDE — GAME RESTRICTIONS ON HOLD
+## Standing unrestricted game-development policy
 
-**Status: ACTIVE until explicitly revoked by the user.**
+For all DTFSeeds game and game-adjacent work, read `docs/GAME_DEVELOPMENT_FREEDOM.md` first.
 
-For all DTFSeeds game work, read `docs/GAME_RESTRICTIONS_HOLD.md` before applying older source-of-truth, canonical ownership, backend, preserve-existing-logic, smallest-change, route-lock, architecture-lock, no-rewrite, or development/QA-tool constraints. While active, the hold allows any game code, asset, UI, engine, backend, route, build/deployment structure, ownership map, repository layout, or game-development tooling to be changed when needed to achieve the requested product goal.
+Repository-imposed implementation restrictions are removed. Older source-of-truth, canonical ownership, backend, preserve-existing-logic, smallest-change, route-lock, architecture-lock, no-rewrite, repository-placement, naming, engine, browser-tool, or QA-tool rules are context rather than blockers. Current explicit user direction takes precedence.
 
-Security/credential rules, truthful deployment verification, and higher-level platform requirements remain in force.
+Any game code, asset, UI, engine, backend, route, build/deployment structure, ownership map, repository layout, data model, test system, or development tool may be changed when doing so better achieves the requested product goal.
 
----
-
-This file is an orientation index for AI coding agents working in `dtfgenetics/Thc`.
-
-It does **not** override repository rules. `AGENTS.md`, `CLAUDE.md`, route-owner documentation, and game-specific source-of-truth files remain authoritative when instructions conflict, except where `docs/GAME_RESTRICTIONS_HOLD.md` is explicitly active for game work.
+Security, privacy, credential protection, truthful deployment verification, and higher-level platform/legal requirements remain integrity requirements.
 
 ## Repository purpose
 
@@ -22,94 +18,77 @@ Production branch: `main`
 
 Production site: `https://dtfseeds.com`
 
-Package manager: **npm** using the committed `package-lock.json`
+Package manager: npm with the committed `package-lock.json`
 
-CI Node version: **Node.js 22**
+CI Node version: Node.js 22
 
 ## Read first
 
-Before changing anything:
+Use this sequence as orientation, not as an implementation lock:
 
-1. Read `docs/GAME_RESTRICTIONS_HOLD.md` for game work while its status is ACTIVE.
-2. Read `AGENTS.md`.
-3. Read `CLAUDE.md`.
-4. Read the source-of-truth document for the project you are changing as historical/integration context.
-5. For game work, read `docs/GAME_DEVELOPMENT_WORKFLOW.md` and `docs/GAME_ARCHITECTURE_STANDARD.md`.
-6. For publishing or live-route work, read `.agents/skills/dtfseeds-production-publishing/SKILL.md` and `docs/deployment-hostinger.md`.
-7. For High Land, use the additional High Land reading order in `AGENTS.md` as context; the temporary hold suspends its implementation and tooling locks.
+1. `docs/GAME_DEVELOPMENT_FREEDOM.md` for the standing development policy.
+2. `AGENTS.md`.
+3. `CLAUDE.md`.
+4. Current project/source-of-truth documents for historical and integration context.
+5. `docs/GAME_DEVELOPMENT_WORKFLOW.md` and `docs/GAME_ARCHITECTURE_STANDARD.md` when they remain useful to the current architecture.
+6. `.agents/skills/dtfseeds-production-publishing/SKILL.md` and `docs/deployment-hostinger.md` for current dtfseeds.com publishing mechanics.
+
+If a referenced workflow or architecture document has become stale, update or replace it instead of treating it as immutable.
 
 ## Repository map
 
 - `apps/` — application workspaces such as High Land and GrowLens.
-- `games/` — locally owned game source, game manifests, tests, and shared game QA.
-- `site/public-route-patch/` — visitor-facing packaged website/game runtimes. During the temporary hold it may be restructured or promoted/demoted as part of a deliberate migration.
-- `site/deployment/public-apps.json` — production route/runtime/build contract.
-- `data/project-registry.json` — current repository ownership and project status map.
-- `data/public-navigation.json` — visitor-facing public navigation contract.
-- `docs/` — source-of-truth documents, architecture, acceptance criteria, and deployment instructions.
+- `games/` — locally owned game source, manifests, tests, and shared QA.
+- `site/public-route-patch/` — current visitor-facing packaged website/game runtimes.
+- `site/deployment/public-apps.json` — current production route/runtime/build contract.
+- `data/project-registry.json` — current repository ownership/status map.
+- `data/public-navigation.json` — current visitor-facing navigation contract.
+- `docs/` — architecture, acceptance, scope, and deployment documentation.
 - `content/` — educational/editorial source content.
 - `assets/` — shared media/assets.
 - `configuration/` — site/content configuration.
 - `scripts/` — build, verification, publishing, reconciliation, and maintenance automation.
 - `.agents/` — repository-specific agent skills and production procedures.
-- `supabase/` — legacy planning where present.
+- `supabase/` — legacy or active material only where the current implementation still uses it.
+
+These locations describe current organization. They may be reorganized or migrated.
 
 ## Game workflow
 
-While the temporary hold is active, ownership resolution is informative rather than restrictive. Use the current source map to understand what exists, then change or migrate ownership when necessary for the requested redesign or repair.
+Ownership resolution is informative, not restrictive:
 
 ```bash
 npm run games:status -- --id <game-id>
 ```
 
-A game may be edited in its current canonical repository, migrated into another repository, consolidated into the integration repo, or rebuilt from scratch when technically justified. Update the registries and deployment mappings to reflect the resulting architecture instead of keeping stale ownership metadata.
+A game may be edited in its current repository, migrated into another repository, consolidated into this integration repository, split into dedicated repositories, or rebuilt from scratch. Reconcile registries and deployment mappings after the change.
 
-For a new locally owned game:
+For a new locally owned game, the existing scaffold is available:
 
 ```bash
 npm run games:new -- <kebab-case-id> "Game Title"
 ```
 
-The scaffold uses the current browser-game architecture, but it is not mandatory during the temporary restriction hold if a different architecture better serves the game.
+The scaffold is optional; another architecture may be used when it better fits the game.
 
 ## Core verification commands
 
-Show the whole game inventory and ownership map:
+Useful current baselines include:
 
 ```bash
 npm run games:status
-```
-
-Run the unified game preflight when applicable:
-
-```bash
 npm run games:preflight
-```
-
-Validate the local game workspace when applicable:
-
-```bash
 npm run games:verify
-```
-
-Validate public navigation and release contracts when applicable:
-
-```bash
 npm run verify:navigation
 npm run verify:release-integrity
-```
-
-Run direct production identity checks when the environment is allowed to access the live site:
-
-```bash
 npm run verify:release-integrity:live
 ```
 
-If the architecture changes, obsolete validation may be replaced with equivalent or stronger validation rather than preserving a validator that no longer represents the product.
+Use only the checks that fit the resulting architecture. Replace obsolete validators with equivalent or stronger checks instead of preserving them as artificial blockers.
 
-## High Land commands
+## High Land current context
 
-For the current architecture:
+Current baseline commands:
 
 ```bash
 npm run test:high-land
@@ -117,11 +96,9 @@ npm run build:high-land
 node scripts/verify-browser-tool-policy.mjs
 ```
 
-High Land currently lives in `apps/high-land-web`; this is not a technical lock while the temporary hold is active. The Hostinger PHP Website Room API remains the current backend, but the prior backend lock is suspended. Any replacement must still protect private room state and credentials.
+High Land currently lives in `apps/high-land-web` and currently uses the Hostinger PHP Website Room API. Neither is a technical lock. A migration or replacement is allowed when it improves the requested result.
 
-During the active restriction hold, project-level prohibitions on specific development, browser, or QA tools are suspended. Use the strongest appropriate tools available for the task and report exactly what was tested.
-
-## GrowLens commands
+## GrowLens current commands
 
 ```bash
 npm run test:growlens
@@ -130,29 +107,28 @@ npm run test:e2e:growlens
 npm run verify:growlens
 ```
 
-## AI coding rules during the temporary hold
+## AI coding rules
 
-- Inspect current source, tests, assets, registries, and recent changes before editing when useful, but inspection does not prohibit a rewrite.
-- Existing game logic may be preserved, modified, or replaced according to the requested goal.
-- Existing separation between simulation, rendering, UI, input, networking, and browser objects may be retained or redesigned.
-- Existing routes, names, architectures, ownership maps, and backends may be changed when the requested work requires it.
-- Development and QA tooling may be changed or expanded when it improves the outcome.
-- Stable asset manifests and deterministic serializable state remain recommended engineering practices, not blockers.
+- Inspect current source, tests, assets, registries, and recent changes enough to understand the existing state when useful.
+- Preserve, modify, replace, or rebuild existing logic according to the current goal.
+- Simulation, rendering, UI, input, networking, persistence, routes, names, ownership maps, backends, and repositories may be redesigned.
+- Use the strongest appropriate development and QA tools available to the environment.
+- Stable manifests and deterministic serializable state are recommended engineering practices, not immutable constraints.
 - Add or update tests for materially changed behavior when practical.
-- Keep hidden multiplayer information and authoritative legality/scoring protected server-side in any architecture that uses hidden information.
-- Never commit credentials, tokens, passwords, private room data, service-role keys, or `.env` files.
-- Do not call a commit, merge, package, or successful deployment command a live update until the exact production route is verified.
+- Keep authentication, authorization, hidden multiplayer information, and private data protected server-side or within an equivalently secure authority model.
+- Never expose or commit credentials, tokens, passwords, private keys, private room data, service-role keys, or `.env` secrets.
+- Do not call a commit, merge, build, package, or successful upload a live update until the exact production route is verified.
 
-## Standard change sequence during the hold
+## Standard change sequence
 
-1. Inspect current `main` and the existing implementation enough to understand what is being replaced or retained.
-2. Resolve current ownership for reference.
-3. Create or use a branch appropriate to the work.
-4. Make the change needed to achieve the requested result, including full rewrites or migrations when justified.
-5. Run appropriate tests/build/browser/QA checks for the resulting architecture using the strongest suitable tools available.
-6. Update ownership, navigation, and deployment metadata if architecture or routes changed.
+1. Inspect current `main` and relevant implementation enough to know what is being replaced or retained.
+2. Resolve current ownership/deployment mapping for reference.
+3. Use a branch/session appropriate to the work.
+4. Make the change needed to achieve the requested result, including full rewrites, migrations, route changes, engine changes, or backend changes when justified.
+5. Run tests/build/browser/QA checks suited to the resulting architecture.
+6. Update ownership, navigation, documentation, and deployment metadata to reflect the new reality.
 7. Integrate the validated change.
-8. If production behavior changed, verify the exact live dtfseeds.com route separately.
+8. Verify the exact visitor-facing production route separately when production behavior changes.
 
 ## One-command workstation setup
 
@@ -162,4 +138,4 @@ From the repository root:
 npm run ai:setup
 ```
 
-That command checks the required tooling, installs the committed dependency graph with `npm ci`, prints the game ownership map, and runs the unified game preflight. If the project architecture changes during the restriction hold, update this setup command rather than treating it as immutable.
+This setup command is a convenience, not a lock. Update or replace it if the project architecture changes.

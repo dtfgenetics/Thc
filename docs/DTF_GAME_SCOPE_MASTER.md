@@ -1,8 +1,10 @@
 # DTFSeeds Game Scope Master
 
-## TEMPORARY USER OVERRIDE — GAME RESTRICTIONS ON HOLD
+## Standing development policy
 
-`docs/GAME_RESTRICTIONS_HOLD.md` is currently **ACTIVE**. Until the user explicitly revokes it, prior scope language in this file that discourages rebuilding shipped games, requires ownership to remain locked before implementation, or treats existing architecture/repository placement as immutable is advisory only. Any game may be redesigned, rewritten, migrated, restructured, or consolidated as needed to achieve the current user-directed rebuild. Keep this ledger synchronized with the resulting reality rather than using stale scope text to block changes.
+`docs/GAME_DEVELOPMENT_FREEDOM.md` is the standing policy for DTFSeeds game work.
+
+Prior scope language that discourages rebuilding shipped games, requires ownership to remain locked before implementation, treats existing architecture/repository placement as immutable, limits tools, or mandates preservation of an existing implementation is advisory only. Any game may be redesigned, rewritten, migrated, restructured, consolidated, split, renamed, or rebuilt as needed to achieve current user direction. Keep this ledger synchronized with the resulting reality rather than using stale scope text to block changes.
 
 Production target: **https://dtfseeds.com/games/**
 
@@ -38,14 +40,16 @@ The current Game Hub exposes 25 playable browser games:
 24. Pheno Draft
 25. High Lines
 
-## Existing controlled development projects
+## Existing development projects
 
-- **Ganjumanji: The Lost Grower’s Temple** — canonical release candidate `0.3.0` in its dedicated repository. The three-region campaign, deterministic rules/storage, campaign solvability validation, route-safe build, desktop/mobile Playwright acceptance, screenshot evidence, and production artifact are green at revision `e82580daa684fc7733ef6cfcb12a502939a609dd`. It stays outside the public playable count until DTFSeeds packaging and exact live-route verification pass.
-- **THC RPG** — canonical release candidate `2.0.0` in `dtfgenetics/Thc-rpg`, pinned at merged revision `15fe22d69afaee906714a1ad0933505e437202dd`. Environment/equipment simulation, quests, deterministic phenotypes, persistent Pheno Grow Journal, Keeper selection, Keeper cutting/replanting, visitor-only build validation, desktop/mobile Chromium acceptance, and artifact `thc-rpg-production-build` are green. It stays outside the public playable count until central DTFSeeds packaging and exact live-route verification pass.
+- **Ganjumanji: The Lost Grower’s Temple** — current dedicated-repository release candidate `0.3.0`, with its existing campaign, deterministic rules/storage, solvability validation, route-safe build, browser acceptance evidence, and production artifact. Its ownership, architecture, tooling, and promotion path may be changed if that better serves the product goal.
+- **THC RPG** — current dedicated-repository release candidate `2.0.0` in `dtfgenetics/Thc-rpg`, with environment/equipment simulation, quests, deterministic phenotypes, persistent Pheno Grow Journal, Keeper systems, visitor build validation, browser acceptance evidence, and a production artifact. Its ownership, architecture, tooling, and promotion path may be changed if that better serves the product goal.
+
+A title's current repository or release-candidate state describes where it is today; it does not lock future development.
 
 ## Formerly missing outlined slate — shipped
 
-The ten titles that were previously tracked as missing now have canonical tested browser implementations, self-hosted routes, public navigation entries, and deployment registration. They remain in this ledger so prior scope is not lost or accidentally rebuilt under the old policy. During the active temporary restriction hold, intentional rebuilds are allowed.
+The ten titles that were previously tracked as missing now have tested browser implementations, self-hosted routes, public navigation entries, and deployment registration. They remain in this ledger so prior scope is not lost. Intentional redesigns and rebuilds are allowed.
 
 1. **Strain Match** — educational memory/matching game.
 2. **Grow Room Bingo / Bongwater Bingo** — event/community bingo.
@@ -58,22 +62,26 @@ The ten titles that were previously tracked as missing now have canonical tested
 9. **Pheno Draft** — genetics deck-builder centered on selection and breeding decisions.
 10. **Trichome Trials** — structured judging/scorecard game.
 
-Their current ownership/status is recorded in `data/project-registry.json`; their visitor-facing routes are recorded in `data/public-navigation.json` and `site/deployment/public-apps.json`. These mappings may be changed during the active hold and must then be reconciled to the new architecture.
+Their current ownership/status is recorded in `data/project-registry.json`; visitor-facing routes are recorded in `data/public-navigation.json` and `site/deployment/public-apps.json`. Those mappings may be changed and then reconciled to the resulting architecture.
 
 ## Built prototype not yet promoted
 
-- **Root Cause** — a tested browser vertical slice exists in this repository, but it remains outside the public Game Hub because it originated in the secondary concept bank. During the temporary hold it may be promoted, rebuilt, migrated, or otherwise changed if that serves the current project goal; public status must still be represented truthfully.
+- **Root Cause** — a tested browser vertical slice currently exists in this repository and currently remains outside the public Game Hub. It may be promoted, rebuilt, migrated, renamed, merged into another title, or otherwise changed when that serves current project direction. Public status must remain represented truthfully.
 
 ## Future concept bank
 
-These earlier concepts are preserved as a secondary backlog rather than silently lost: Pheno Hunter, Pest Patrol, Solo Cup Showdown, The Cure Room, Seed Bank Builder, Keeper or Compost, Grow Shop Hustle, Event Night, Find/Where’s Seed Man, Grow-Off, The Grow Room, Pest War, Line Builder, Selection Pressure, Pest Siege, Reputation Economy, The Limiting Factor, and The Perfect Save.
+Earlier concepts retained as a secondary backlog include Pheno Hunter, Pest Patrol, Solo Cup Showdown, The Cure Room, Seed Bank Builder, Keeper or Compost, Grow Shop Hustle, Event Night, Find/Where’s Seed Man, Grow-Off, The Grow Room, Pest War, Line Builder, Selection Pressure, Pest Siege, Reputation Economy, The Limiting Factor, and The Perfect Save.
 
-These are not automatically public production titles. During the active hold they may enter development without the former ownership-lock prerequisite when the user directs it, but deployment status must remain accurate.
+These are not automatically public production titles, but there is no ownership-lock or architecture-lock prerequisite before development. They may enter development whenever current user direction prioritizes them.
 
-## Current development sequence during the restriction hold
+## Development sequence
 
-The previous sequence that favored finishing existing release candidates before rebuilding public titles is suspended. Current user direction takes precedence: the portfolio may be redesigned or rebuilt in whatever order best advances the requested game-quality overhaul. Existing source, mechanics, data, multiplayer, and deployment systems should be reused only when they help; they are not mandatory constraints.
+There is no mandatory portfolio development order. Current user direction takes precedence. Existing source, mechanics, data, multiplayer systems, repositories, and deployment systems should be reused when they help and replaced when they do not.
+
+Public games may be rebuilt before unfinished concepts, unfinished concepts may be promoted ahead of older release candidates, and shared systems may be consolidated across titles when that is the strongest product/engineering decision.
 
 ## Release integrity
 
-Even during the restriction hold, a title should only be described as publicly playable after its actual visitor-facing route and runtime are verified. Deterministic tests, build checks, navigation/deployment metadata, and exact route verification should be updated to fit the resulting architecture rather than used to block legitimate redesigns.
+A title should only be described as publicly playable after its actual visitor-facing route and runtime are verified. Deterministic tests, build checks, navigation/deployment metadata, and exact route verification should evolve with the architecture rather than being used to block legitimate redesigns.
+
+Release integrity is evidence that the requested result reached production; it is not a restriction on how the game is designed or implemented.
