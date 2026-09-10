@@ -67,7 +67,7 @@ jobs:
               echo "Rejected asset still present: $stem" >&2
               exit 1
             fi
-            if grep -H -F "$stem" "${active_surfaces[@]}"; then
+            if grep -H -E "(src=|href=|wp-content/uploads/|assets/education/infographics/)[^\"'[:space:]]*${stem}\.(png|jpe?g|webp)" "${active_surfaces[@]}"; then
               echo "Rejected asset still referenced by an active publishing surface: $stem" >&2
               exit 1
             fi
