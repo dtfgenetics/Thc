@@ -32,6 +32,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Build canonical Three.js public bundle
+        run: |
+          set -euo pipefail
+          npm install --prefix games/seed-man-platformer --ignore-scripts --no-audit --no-fund
+          npm run --prefix games/seed-man-platformer build:three-public
       - name: Validate canonical 20-level production contract
         run: |
           set -euo pipefail

@@ -170,12 +170,19 @@ function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
   }
 
   if (level.finish && player.x + player.width >= level.finish.x) {
-    player.finished = true;
-    player.finishBlocked = false;
-    player.vx = 0;
-    player.vy = 0;
-    player.state = 'finish';
-    return player;
+    if (level.boss && !level.boss.defeated) {
+      player.finished = false;
+      player.finishBlocked = true;
+      player.x = Math.min(player.x, level.finish.x - player.width - 6);
+      player.vx = Math.min(0, player.vx);
+    } else {
+      player.finished = true;
+      player.finishBlocked = false;
+      player.vx = 0;
+      player.vy = 0;
+      player.state = 'finish';
+      return player;
+    }
   }
 
   if (!player.grounded && player.state !== 'double-jump') player.state = player.vy < 0 ? 'jump' : 'fall';
@@ -184,7 +191,7 @@ function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
   return player;
 }
 
-const BEST_KEY = 'dtf-seed-man-best-v1';
+const BEST_KEY = 'dtf-seed-man-best-v20';
 const CAMERA_FOLLOW_RATE = 7.7;
 const CAMERA_LOOK_AHEAD_SECONDS = 0.18;
 const canvas = document.querySelector('#game');
@@ -205,8 +212,8 @@ const ui = {
   again: document.querySelector('#play-again')
 };
 
-let level;
-let player;
+let level = null;
+let player = null;
 let elapsed = 0;
 let accumulator = 0;
 let previous = 0;
@@ -215,6 +222,14 @@ let running = false;
 let paused = false;
 const STEP = 1 / 60;
 const input = { left: false, right: false, jumpHeld: false, jumpQueued: false };
+
+const WORLD_FALLBACKS = Object.freeze({
+  'greenhouse-valley':['#78cfa1','#173d2d','#9dd06c','#426b45'],
+  'forest-ruins':['#4f7b5c','#14291f','#7ca35c','#35543b'],
+  'desert-canyon':['#dba16f','#553424','#e8b568','#805439'],
+  'frozen-peaks':['#a9dbea','#36586a','#d8f5ff','#607f8c'],
+  'eco-city':['#5cbda9','#173c3a','#78d7a4','#305e55']
+});
 
 function readBest() {
   try {
@@ -227,11 +242,8 @@ function readBest() {
 }
 
 function writeBest(value) {
-  try {
-    window.localStorage.setItem(BEST_KEY, String(value));
-  } catch (error) {
-    console.warn('Seed Man personal best could not be saved.', error);
-  }
+  try { window.localStorage.setItem(BEST_KEY, String(value)); }
+  catch (error) { console.warn('Seed Man personal best could not be saved.', error); }
 }
 
 function focusCanvas() {
@@ -267,7 +279,7 @@ function syncPauseButton() {
 }
 
 function reset() {
-  if (!level) return;
+  if (!level?.spawn) return;
   player = createPlayer(level.spawn);
   elapsed = 0;
   accumulator = 0;
@@ -283,7 +295,7 @@ function reset() {
 }
 
 function guardedReset() {
-  if (!player || player.finished || elapsed < 5 || window.confirm('Restart this run from the beginning? Your current run time and progress will be cleared.')) reset();
+  if (!player || player.finished || elapsed < 5 || window.confirm('Restart this level from the beginning? Current time and progress will be cleared.')) reset();
 }
 
 function togglePause(forcePause = null) {
@@ -323,9 +335,7 @@ function keyState(event, down) {
 window.addEventListener('keydown', (event) => keyState(event, true), { passive: false });
 window.addEventListener('keyup', (event) => keyState(event, false), { passive: false });
 window.addEventListener('blur', clearInput);
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden && running) togglePause(true);
-});
+document.addEventListener('visibilitychange', () => { if (document.hidden && running) togglePause(true); });
 
 for (const button of document.querySelectorAll('[data-control]')) {
   const control = button.dataset.control;
@@ -365,7 +375,7 @@ function phenotypeLabel() {
 }
 
 function updateHud() {
-  const collected = player?.collected.length || 0;
+  const collected = player?.collected?.length || 0;
   const required = requiredSprouts();
   const remaining = Math.max(0, required - collected);
   if (ui.sprouts) ui.sprouts.textContent = `${collected} / ${required}`;
@@ -375,12 +385,12 @@ function updateHud() {
   if (ui.best) ui.best.textContent = best ? `${best.toFixed(1)}s` : '—';
   if (ui.power) ui.power.textContent = phenotypeLabel();
   if (ui.jump) ui.jump.textContent = player?.grounded ? '2 jumps ready' : player?.airJumpsRemaining > 0 ? 'Double jump ready' : 'Landing resets';
-  if (ui.progress && level && player) ui.progress.textContent = `${Math.min(100, Math.max(0, Math.round((player.x / level.finish.x) * 100)))}%`;
-
+  if (ui.progress && level?.finish && player) ui.progress.textContent = `${Math.min(100, Math.max(0, Math.round((player.x / level.finish.x) * 100)))}%`;
   if (!level || !player) return;
-  if (player.finished) setObjectiveStatus(`Run complete · ${collected} of ${required} optional sprouts · Dream the Future reached!`, 'complete');
-  else if (remaining === 0) setObjectiveStatus(`Perfect harvest · all ${required} sprouts collected · reach the flag!`, 'ready');
-  else setObjectiveStatus(`Reach the flag · ${collected} of ${required} optional sprouts · J attack · K phenotype · double jump available`, 'progress');
+  if (player.finished) setObjectiveStatus(`Level complete · ${collected} of ${required} seeds · Dream the Future reached!`, 'complete');
+  else if (player.finishBlocked && level.boss && !level.boss.defeated) setObjectiveStatus(`Boss gate locked · defeat ${level.boss.name || level.boss.id} before exiting.`, 'boss');
+  else if (remaining === 0) setObjectiveStatus(`All ${required} seeds collected · reach the flag${level.boss ? ' after defeating the boss' : ''}!`, 'ready');
+  else setObjectiveStatus(`Level ${level.levelNumber || '?'} / 20 · ${collected} of ${required} seeds · J attack · K phenotype`, 'progress');
 }
 
 function worldRect(rect, fill, stroke = null) {
@@ -393,47 +403,49 @@ function worldRect(rect, fill, stroke = null) {
   }
 }
 
+function fallbackPalette() {
+  return WORLD_FALLBACKS[level?.worldId] || WORLD_FALLBACKS['greenhouse-valley'];
+}
+
 function drawBackground() {
+  const [sky, deep] = fallbackPalette();
   const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-  gradient.addColorStop(0, '#10283a');
-  gradient.addColorStop(1, '#17351f');
+  gradient.addColorStop(0, sky);
+  gradient.addColorStop(1, deep);
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  document.documentElement.dataset.seedManWorldArt = `fallback-${level?.worldId || 'boot'}`;
 }
 
 function drawPlatforms() {
-  for (const platform of level.platforms || []) {
-    worldRect(platform, platform.height > 40 ? '#4e6f37' : '#5d8445', '#31552d');
-    ctx.fillStyle = '#93c868';
+  const [, , top, base] = fallbackPalette();
+  for (const platform of level?.platforms || []) {
+    worldRect(platform, base, '#17321f');
+    ctx.fillStyle = top;
     ctx.fillRect(Math.round(platform.x - cameraX), platform.y, platform.width, Math.min(7, platform.height));
   }
-  for (const hazard of level.hazards || []) {
+  for (const hazard of level?.hazards || []) {
     const x = Math.round(hazard.x - cameraX);
-    ctx.fillStyle = '#533927';
+    ctx.fillStyle = '#542d2d';
     ctx.fillRect(x, hazard.y, hazard.width, hazard.height);
-    ctx.fillStyle = '#d78644';
+    ctx.fillStyle = '#ff865f';
     for (let px = x; px < x + hazard.width; px += 24) {
-      ctx.beginPath();
-      ctx.moveTo(px, hazard.y + 12);
-      ctx.lineTo(px + 12, hazard.y - 10);
-      ctx.lineTo(px + 24, hazard.y + 12);
-      ctx.fill();
+      ctx.beginPath(); ctx.moveTo(px, hazard.y + 12); ctx.lineTo(px + 12, hazard.y - 10); ctx.lineTo(px + 24, hazard.y + 12); ctx.fill();
     }
   }
 }
 
 function drawPickup(pickup) {
-  if (player.collected.includes(pickup.id)) return;
+  if (player?.collected?.includes(pickup.id)) return;
   const x = pickup.x - cameraX + pickup.width / 2;
   const y = pickup.y + pickup.height / 2;
   ctx.save();
   ctx.translate(x, y);
-  ctx.fillStyle = '#5a7e37';
+  ctx.fillStyle = '#75b84d';
   ctx.beginPath(); ctx.ellipse(-5, -3, 5, 10, -.55, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.ellipse(5, -3, 5, 10, .55, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.ellipse(0, -8, 5, 11, 0, 0, Math.PI * 2); ctx.fill();
-  ctx.strokeStyle = '#29451f';
-  ctx.lineWidth = 2;
+  ctx.strokeStyle = '#29451f'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(0, 2); ctx.lineTo(0, 9); ctx.stroke();
   ctx.restore();
 }
@@ -441,9 +453,8 @@ function drawPickup(pickup) {
 function drawCheckpoints() {
   for (const cp of checkpointsFor(level)) {
     const x = cp.x - cameraX;
-    const active = player.checkpoint.id === cp.id;
-    ctx.strokeStyle = '#584c35';
-    ctx.lineWidth = 5;
+    const active = player?.checkpoint?.id === cp.id;
+    ctx.strokeStyle = '#584c35'; ctx.lineWidth = 5;
     ctx.beginPath(); ctx.moveTo(x + 8, cp.y + cp.height); ctx.lineTo(x + 8, cp.y); ctx.stroke();
     ctx.fillStyle = active ? '#c8f36a' : '#f3c867';
     ctx.beginPath(); ctx.moveTo(x + 10, cp.y + 4); ctx.lineTo(x + 45, cp.y + 14); ctx.lineTo(x + 10, cp.y + 27); ctx.closePath(); ctx.fill();
@@ -451,27 +462,23 @@ function drawCheckpoints() {
 }
 
 function drawFinish() {
+  if (!level?.finish) return;
   const f = level.finish;
   const x = f.x - cameraX;
-  ctx.strokeStyle = '#28482f';
-  ctx.lineWidth = 6;
+  ctx.strokeStyle = '#28482f'; ctx.lineWidth = 6;
   ctx.beginPath(); ctx.moveTo(x + 10, f.y + f.height); ctx.lineTo(x + 10, f.y); ctx.stroke();
-  ctx.fillStyle = '#10291d';
-  ctx.fillRect(x + 13, f.y + 3, 55, 24);
-  ctx.fillStyle = '#c8f36a';
-  ctx.font = 'bold 8px system-ui';
-  ctx.fillText('FINISH', x + 17, f.y + 18);
+  ctx.fillStyle = level?.boss && !level.boss.defeated ? '#772f2f' : '#10291d';
+  ctx.fillRect(x + 13, f.y + 3, 58, 24);
+  ctx.fillStyle = '#c8f36a'; ctx.font = 'bold 8px system-ui';
+  ctx.fillText(level?.boss && !level.boss.defeated ? 'LOCKED' : 'FINISH', x + 17, f.y + 18);
 }
 
 function drawProgressRail() {
-  const x = 180;
-  const y = 20;
-  const width = canvas.width - 360;
+  if (!level?.finish || !player) return;
+  const x = 180, y = 20, width = canvas.width - 360;
   const pct = Math.max(0, Math.min(1, player.x / level.finish.x));
-  ctx.fillStyle = '#10291d88';
-  ctx.fillRect(x, y, width, 8);
-  ctx.fillStyle = '#c8f36a';
-  ctx.fillRect(x, y, width * pct, 8);
+  ctx.fillStyle = '#10291d88'; ctx.fillRect(x, y, width, 8);
+  ctx.fillStyle = '#c8f36a'; ctx.fillRect(x, y, width * pct, 8);
   for (const cp of checkpointsFor(level)) {
     const markerX = x + width * (cp.x / level.finish.x);
     ctx.fillStyle = player.checkpoint.id === cp.id ? '#f3c867' : '#f5f7f4';
@@ -484,7 +491,14 @@ function drawSeedMan() {
 }
 
 function render() {
-  if (!ctx || !canvas || !level || !player) return;
+  if (!ctx || !canvas) return;
+  if (!level || !player) {
+    ctx.fillStyle = '#0d2419'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#e9f3e5'; ctx.textAlign = 'center'; ctx.font = '700 22px system-ui';
+    ctx.fillText('Loading Seed Man v20 campaign…', canvas.width / 2, canvas.height / 2);
+    ctx.textAlign = 'start';
+    return;
+  }
   drawBackground();
   drawPlatforms();
   (level.pickups || []).forEach(drawPickup);
@@ -492,15 +506,10 @@ function render() {
   drawFinish();
   drawProgressRail();
   drawSeedMan();
-
   if (paused) {
-    ctx.fillStyle = '#06110c99';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#f5f7f4';
-    ctx.textAlign = 'center';
-    ctx.font = '900 42px system-ui';
-    ctx.fillText('PAUSED', canvas.width / 2, canvas.height / 2);
-    ctx.textAlign = 'start';
+    ctx.fillStyle = '#06110c99'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#f5f7f4'; ctx.textAlign = 'center'; ctx.font = '900 42px system-ui';
+    ctx.fillText('PAUSED', canvas.width / 2, canvas.height / 2); ctx.textAlign = 'start';
   }
 }
 
@@ -513,7 +522,7 @@ function finishGame() {
   if (newBest) writeBest(elapsed);
   updateHud();
   if (ui.finish) ui.finish.hidden = false;
-  if (ui.summary) ui.summary.textContent = `${player.collected.length} of ${requiredSprouts()} sprouts · ${player.deaths} falls · ${elapsed.toFixed(1)} seconds.${newBest ? ' New personal best!' : ''}`;
+  if (ui.summary) ui.summary.textContent = `${player.collected.length} of ${requiredSprouts()} seeds · ${player.deaths} falls · ${elapsed.toFixed(1)} seconds.${newBest ? ' New personal best!' : ''}`;
 }
 
 function cameraBlend(frameSeconds) {
@@ -524,22 +533,14 @@ function frame(timeMs) {
   if (!previous) previous = timeMs;
   const frameTime = Math.min((timeMs - previous) / 1000, .1);
   previous = timeMs;
-  if (running) {
+  if (running && level && player) {
     accumulator += frameTime;
     elapsed += frameTime;
     while (accumulator >= STEP) {
-      player = stepPlayer(player, {
-        left: input.left,
-        right: input.right,
-        jumpPressed: input.jumpQueued,
-        jumpHeld: input.jumpHeld
-      }, level, STEP);
+      player = stepPlayer(player, { left:input.left, right:input.right, jumpPressed:input.jumpQueued, jumpHeld:input.jumpHeld }, level, STEP);
       input.jumpQueued = false;
       accumulator -= STEP;
-      if (player.finished) {
-        finishGame();
-        break;
-      }
+      if (player.finished) { finishGame(); break; }
     }
     const lookAhead = Math.max(-90, Math.min(120, player.vx * CAMERA_LOOK_AHEAD_SECONDS));
     const targetCamera = Math.max(0, Math.min(level.worldWidth - canvas.width, player.x + lookAhead - canvas.width * .34));
@@ -550,50 +551,30 @@ function frame(timeMs) {
   window.requestAnimationFrame(frame);
 }
 
-function readEmbeddedLevel() {
-  const node = document.querySelector('#seed-man-level');
-  if (!node) throw new Error('embedded level data missing');
-  return JSON.parse(node.textContent || '');
-}
-
-function validateLevel(candidate) {
-  if (
-    !candidate ||
-    candidate.id !== 'sprout-run' ||
-    candidate.schemaVersion !== 2 ||
-    candidate.worldWidth !== 7800 ||
-    candidate.worldHeight !== 540 ||
-    !Array.isArray(candidate.platforms) ||
-    !Array.isArray(candidate.hazards) ||
-    !Array.isArray(candidate.pickups) ||
-    !Array.isArray(candidate.powerups) ||
-    !Array.isArray(candidate.checkpoints) ||
-    candidate.pickups.length !== 24 ||
-    candidate.requiredPickups !== 24 ||
-    candidate.requiredPickups !== candidate.pickups.length ||
-    candidate.powerups.length !== 0 ||
-    candidate.checkpoints.length !== 3 ||
-    !candidate.spawn ||
-    !candidate.finish
-  ) throw new Error('level contract mismatch');
-  return candidate;
-}
-
-function load() {
-  try {
-    if (!canvas || !ctx) throw new Error('canvas 2D context unavailable');
-    level = validateLevel(readEmbeddedLevel());
-    setObjectiveStatus(`Reach the flag · ${level.requiredPickups} optional sprouts · double jump · J attack · K phenotype · ${level.checkpoints.length} checkpoints`, 'progress');
-    reset();
-  } catch (error) {
-    console.error('Seed Man failed to initialize.', error);
+function bootV20Shell() {
+  if (!canvas || !ctx) {
     running = false;
-    setObjectiveStatus('The Seed Man level could not be loaded. Reload the page to retry.', 'error');
+    setObjectiveStatus('Seed Man could not initialize the game canvas.', 'error');
+    return;
   }
+  level = null;
+  player = null;
+  running = false;
+  paused = false;
+  setObjectiveStatus('Loading canonical Seed Man v20 campaign…', 'loading');
+  document.documentElement.dataset.seedManBaseRuntime = 'seed-man-base-runtime-v20';
 }
 
 ui.restart?.addEventListener('click', guardedReset);
 ui.pause?.addEventListener('click', () => togglePause());
 ui.again?.addEventListener('click', reset);
+window.__SEED_MAN_BASE_RUNTIME__ = Object.freeze({
+  version:'seed-man-base-runtime-v20',
+  campaignAuthority:'campaign-v20-runtime.js',
+  retiredBootstrap:'sprout-run',
+  reset,
+  respawnPlayer:(target)=>respawn(target,DEFAULTS),
+  snapshot:()=>({levelId:level?.id||null,running,paused,playerState:player?.state||null})
+});
 window.requestAnimationFrame(frame);
-load();
+bootV20Shell();

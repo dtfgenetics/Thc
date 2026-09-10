@@ -22,6 +22,7 @@ on:
       - 'games/seed-man-platformer/test/final-boss-director.test.mjs'
       - 'games/seed-man-platformer/test/world-boss-map.test.mjs'
       - 'games/seed-man-platformer/test/progression-systems.test.mjs'
+      - 'games/seed-man-platformer/test/public-enemy-art.test.mjs'
       - 'site/public-route-patch/games/seed-man-platformer/v20-enemy-runtime.js'
       - 'site/public-route-patch/games/seed-man-platformer/combat-browser-v2.js'
       - 'site/public-route-patch/games/seed-man-platformer/enemy-attacks-browser-v2.js'
@@ -49,6 +50,7 @@ on:
       - 'games/seed-man-platformer/test/final-boss-director.test.mjs'
       - 'games/seed-man-platformer/test/world-boss-map.test.mjs'
       - 'games/seed-man-platformer/test/progression-systems.test.mjs'
+      - 'games/seed-man-platformer/test/public-enemy-art.test.mjs'
       - 'site/public-route-patch/games/seed-man-platformer/v20-enemy-runtime.js'
       - 'site/public-route-patch/games/seed-man-platformer/combat-browser-v2.js'
       - 'site/public-route-patch/games/seed-man-platformer/enemy-attacks-browser-v2.js'
@@ -87,6 +89,7 @@ jobs:
           node --check games/seed-man-platformer/src/systems/world-boss-map.mjs
           node --check games/seed-man-platformer/test/combat.test.mjs
           node --check games/seed-man-platformer/test/enemy-attacks.test.mjs
+          node --check games/seed-man-platformer/test/public-enemy-art.test.mjs
           node --check site/public-route-patch/games/seed-man-platformer/player-state-v20.js
           node --check site/public-route-patch/games/seed-man-platformer/v20-enemy-runtime.js
           node --check site/public-route-patch/games/seed-man-platformer/combat-browser-v2.js
@@ -99,6 +102,9 @@ jobs:
       - name: Test canonical progression contract
         run: node games/seed-man-platformer/test/progression-systems.test.mjs
 
+      - name: Test public boss art and finale contract
+        run: node games/seed-man-platformer/test/public-enemy-art.test.mjs
+
       - name: Verify canonical public combat contract
         shell: bash
         run: |
@@ -110,9 +116,13 @@ jobs:
           grep -Fq 'seed-man-player-state-v20' "$route/player-state-v20.js"
           grep -Fq "phenotypeForms:Object.freeze(['plant','fire','electric','ice'])" "$route/combat-browser-v2.js"
           grep -Fq "ENEMY_ATLAS_KEY = 'enemy-boss.atlas'" "$route/combat-browser-v2.js"
+          grep -Fq 'const ENEMY_FRAME_COLS = 6' "$route/combat-browser-v2.js"
+          grep -Fq 'const BOSS_FRAME_COLS = 4' "$route/combat-browser-v2.js"
+          grep -Fq "boss:Object.freeze({ columns:4" "$route/v20-enemy-runtime.js"
+          grep -Fq 'region:regionFor' "$route/v20-enemy-runtime.js"
+          grep -Fq "const BLIGHT_WEAKNESSES = Object.freeze(['plant','fire','electric','ice'])" "$route/combat-browser-v2.js"
+          grep -Fq "phenotype===blightWeakness(enemy)?1.5:0.65" "$route/combat-browser-v2.js"
           grep -Fq 'fallbackAllowed:false' "$route/combat-browser-v2.js"
-          grep -Fq "approvedVisual:Object.freeze({ atlas:'enemy-boss.atlas', row:'enemy'" "$route/v20-enemy-runtime.js"
-          grep -Fq "approvedVisual:Object.freeze({ atlas:'enemy-boss.atlas', row:'boss'" "$route/v20-enemy-runtime.js"
           ! grep -Fq 'ctx.fillRect(x,enemy.y,enemy.width,enemy.height)' "$route/combat-browser-v2.js"
           ! grep -Fq 'combat-browser-v1.js' "$route/index.html"
           ! grep -Fq 'enemy-attacks-browser-v1.js' "$route/index.html"

@@ -168,12 +168,19 @@ export function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
   }
 
   if (level.finish && player.x + player.width >= level.finish.x) {
-    player.finished = true;
-    player.finishBlocked = false;
-    player.vx = 0;
-    player.vy = 0;
-    player.state = 'finish';
-    return player;
+    if (level.boss && !level.boss.defeated) {
+      player.finished = false;
+      player.finishBlocked = true;
+      player.x = Math.min(player.x, level.finish.x - player.width - 6);
+      player.vx = Math.min(0, player.vx);
+    } else {
+      player.finished = true;
+      player.finishBlocked = false;
+      player.vx = 0;
+      player.vy = 0;
+      player.state = 'finish';
+      return player;
+    }
   }
 
   if (!player.grounded && player.state !== 'double-jump') player.state = player.vy < 0 ? 'jump' : 'fall';

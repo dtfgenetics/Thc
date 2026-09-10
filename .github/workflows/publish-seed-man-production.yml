@@ -43,7 +43,7 @@ jobs:
       - name: Install Seed Man dependencies
         run: npm install --prefix games/seed-man-platformer --ignore-scripts --no-audit --no-fund
 
-      - name: Validate canonical Seed Man production source
+      - name: Validate canonical Seed Man v20 production source
         shell: bash
         run: |
           set -euo pipefail
@@ -55,44 +55,45 @@ jobs:
           node scripts/validate-seed-man-production-bundle.mjs
           node --check scripts/publish-seed-man-route-via-wordpress.mjs
           root='site/public-route-patch/games/seed-man-platformer'
-          node --check "$root/app.js"
-          node --check "$root/canvas-compat-v1.js"
-          node --check "$root/player-state-v20.js"
-          node --check "$root/campaign-v20-runtime.js"
-          node --check "$root/campaign-ui-v20.js"
-          node --check "$root/v20-enemy-runtime.js"
-          node --check "$root/combat-browser-v2.js"
-          node --check "$root/enemy-attacks-browser-v2.js"
-          node --check "$root/approved-art-core-v1.js"
-          node --check "$root/approved-art-runtime-v1.js"
-          node --check "$root/seed-man-production-art.js"
-          test -s "$root/assets/approved/seed-man-approved-master-atlas-v1.webp"
-          test -s "$root/assets/approved/seed-man-character-atlas-v2.webp"
+          for js in app.js canvas-compat-v1.js player-state-v20.js campaign-v20-runtime.js campaign-ui-v20.js v20-enemy-runtime.js combat-browser-v2.js enemy-attacks-browser-v2.js approved-art-core-v1.js approved-art-runtime-v1.js seed-man-production-art.js three-world-v1.js three-world-adapter-v1.js; do node --check "$root/$js"; done
+          grep -Fq '20-Level Campaign' "$root/index.html"
+          grep -Fq './three-world-v1.js?v=' "$root/index.html"
+          ! grep -Fq 'id="seed-man-level"' "$root/index.html"
+          ! grep -Fq 'Seed Man: Sprout Run' "$root/index.html"
+          grep -Fq 'seed-man-base-runtime-v20' "$root/app.js"
+          grep -Fq "campaignAuthority:'campaign-v20-runtime.js'" "$root/app.js"
+          ! grep -Fq 'readEmbeddedLevel' "$root/app.js"
           grep -Fq 'seed-man-player-state-v20' "$root/player-state-v20.js"
+          grep -Fq 'seed-man-runtime-bootstrap-v20' "$root/canvas-compat-v1.js"
+          grep -Fq 'three-world-adapter-v1.js' "$root/canvas-compat-v1.js"
+          grep -Fq 'seed-man-three-public-v3' "$root/three-world-v1.js"
+          grep -Fq 'seed-man-three-world-v2' "$root/three-world-v1.js"
+          bytes="$(wc -c < "$root/three-world-v1.js" | tr -d ' ')"
+          test "$bytes" -ge 250000
           grep -Fq 'seed-man-campaign-v20-runtime-v3' "$root/campaign-v20-runtime.js"
-          grep -Fq 'approvedWorldBackgrounds:true' "$root/campaign-v20-runtime.js"
           grep -Fq "phenotypeForms:['plant','fire','electric','ice']" "$root/campaign-v20-runtime.js"
           grep -Fq 'seed-man-v20-enemy-runtime-v2' "$root/v20-enemy-runtime.js"
           grep -Fq 'seed-man-combat-browser-v2' "$root/combat-browser-v2.js"
+          grep -Fq 'syncBossState' "$root/combat-browser-v2.js"
           grep -Fq 'seed-man-enemy-attacks-browser-v2' "$root/enemy-attacks-browser-v2.js"
-          grep -Fq 'seed-man-campaign-ui-v20' "$root/campaign-ui-v20.js"
-          grep -Fq 'seed-man-approved-art-core-v3' "$root/approved-art-core-v1.js"
-          grep -Fq 'world.greenhouse-valley.background' "$root/approved-art-core-v1.js"
-          grep -Fq 'world.eco-city.background' "$root/approved-art-core-v1.js"
+          grep -Fq 'seed-man-approved-art-core-v4' "$root/approved-art-core-v1.js"
+          grep -Fq 'seed-man-character-atlas-v2.webp' "$root/approved-art-core-v1.js"
+          ! grep -Fq 'seed-man-approved-master-atlas-v1.webp' "$root/approved-art-core-v1.js"
           grep -Fq 'approved-showcase-2026-09-08' "$root/seed-man-production-art.js"
           grep -Fq 'green-armored-plant-hero' "$root/seed-man-production-art.js"
-          grep -Fq '20-Level Campaign' "$root/index.html"
-          grep -Fq '"visualWorldKey":"frozen-peaks"' "$root/data/campaign.json"
-          grep -Fq '"characterReference": "green-armored-plant-hero"' "$root/data/seed-man-art-manifest-v1.json"
-          node - "$root/data/level-01.json" <<'NODE'
-          const fs=require('fs');const level=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
-          if(!Array.isArray(level.powerups)||level.powerups.length!==0)throw new Error('Level 1 still contains retired prototype powerups');
+          grep -Fq '"schemaVersion": 3' "$root/data/seed-man-art-manifest-v1.json"
+          ! grep -Fq 'seed-man-approved-master-atlas-v1.webp' "$root/data/seed-man-art-manifest-v1.json"
+          for asset in seed-man-character-atlas-v2.webp seed-man-enemy-boss-atlas-v1.webp seed-man-platform-atlas-v1.webp; do
+            node - "$root/assets/approved/$asset" <<'NODE'
+          const fs=require('fs');const b=fs.readFileSync(process.argv[2]);
+          if(b.subarray(0,4).toString('ascii')!=='RIFF'||b.subarray(8,12).toString('ascii')!=='WEBP')throw new Error(`invalid WebP: ${process.argv[2]}`);
           NODE
-          for retired in campaign-v1.js gameplay-v2.js physics.mjs campaign-combat-v20.js campaign-progress-v20.js campaign-runtime-v20.js campaign-ui-v15.js world-five-v1.js combat-browser-v1.js enemy-attacks-browser-v1.js seed-man-ui-v3.js data/levels-12-15.json; do
+          done
+          for retired in data/level-01.json data/levels-12-15.json campaign-v1.js gameplay-v2.js physics.mjs campaign-combat-v20.js campaign-progress-v20.js campaign-runtime-v20.js campaign-ui-v15.js world-five-v1.js combat-browser-v1.js enemy-attacks-browser-v1.js seed-man-ui-v3.js assets/approved/seed-man-approved-master-atlas-v1.webp assets/approved/seed-man-cover-banner-approved-v1.webp; do
             test ! -e "$root/$retired" || { echo "retired artifact still present: $retired" >&2; exit 1; }
           done
 
-      - name: Publish canonical v20 route through dedicated WordPress publisher
+      - name: Publish canonical Seed Man route through dedicated WordPress publisher
         id: deploy
         shell: bash
         run: |
@@ -100,12 +101,15 @@ jobs:
           node scripts/publish-seed-man-route-via-wordpress.mjs | tee "$RUNNER_TEMP/seed-man-publish.json"
           grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/seed-man-publish.json"
           grep -Eq '"campaign_levels"[[:space:]]*:[[:space:]]*20' "$RUNNER_TEMP/seed-man-publish.json"
+          grep -Eq '"worlds"[[:space:]]*:[[:space:]]*5' "$RUNNER_TEMP/seed-man-publish.json"
           grep -Eq '"final_boss"[[:space:]]*:[[:space:]]*"blight-king"' "$RUNNER_TEMP/seed-man-publish.json"
-          grep -Eq '"approved_world_art"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/seed-man-publish.json"
+          grep -Eq '"world_renderer"[[:space:]]*:[[:space:]]*"seed-man-three-world-v2"' "$RUNNER_TEMP/seed-man-publish.json"
+          grep -Eq '"legacy_sprout_run"[[:space:]]*:[[:space:]]*false' "$RUNNER_TEMP/seed-man-publish.json"
+          grep -Eq '"corrupt_master_atlas"[[:space:]]*:[[:space:]]*false' "$RUNNER_TEMP/seed-man-publish.json"
           grep -Eq '"player_state"[[:space:]]*:[[:space:]]*"v20"' "$RUNNER_TEMP/seed-man-publish.json"
           grep -Eq '"combat_runtime"[[:space:]]*:[[:space:]]*"v2"' "$RUNNER_TEMP/seed-man-publish.json"
 
-      - name: Verify live Seed Man production route
+      - name: Verify live Seed Man v20 production route
         shell: bash
         run: |
           set -euo pipefail
@@ -114,22 +118,17 @@ jobs:
           trap 'rm -rf "$tmp"' EXIT
           fetch() {
             local rel="$1" out="$2" status
-            status="$(curl -4 -fsS --retry 10 --retry-delay 4 --connect-timeout 10 --max-time 40 \
-              -H 'Cache-Control: no-cache, no-store, max-age=0' \
-              -o "$out" -w '%{http_code}' "${base}${rel}?seed_v20=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}")"
+            status="$(curl -4 -fsS --retry 10 --retry-delay 4 --connect-timeout 10 --max-time 40 -H 'Cache-Control: no-cache, no-store, max-age=0' -o "$out" -w '%{http_code}' "${base}${rel}?seed_v20=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}")"
             [[ "$status" == '200' ]] || { echo "$rel returned HTTP $status" >&2; exit 1; }
             test -s "$out"
           }
           expect_missing() {
             local rel="$1" status
-            status="$(curl -4 -sS --retry 4 --retry-delay 2 --connect-timeout 10 --max-time 30 \
-              -H 'Cache-Control: no-cache, no-store, max-age=0' \
-              -o /dev/null -w '%{http_code}' "${base}${rel}?seed_v20=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}")"
+            status="$(curl -4 -sS --retry 4 --retry-delay 2 --connect-timeout 10 --max-time 30 -H 'Cache-Control: no-cache, no-store, max-age=0' -o /dev/null -w '%{http_code}' "${base}${rel}?seed_v20=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}")"
             [[ "$status" == '404' || "$status" == '410' ]] || { echo "retired $rel unexpectedly returned HTTP $status" >&2; exit 1; }
           }
           fetch '' "$tmp/index.html"
           fetch 'data/campaign.json' "$tmp/campaign.json"
-          fetch 'data/level-01.json' "$tmp/level-01.json"
           fetch 'data/levels-20-v1.json' "$tmp/levels.json"
           fetch 'data/seed-man-art-manifest-v1.json' "$tmp/art-manifest.json"
           fetch 'player-state-v20.js' "$tmp/player-state.js"
@@ -138,84 +137,59 @@ jobs:
           fetch 'v20-enemy-runtime.js' "$tmp/enemy-runtime.js"
           fetch 'combat-browser-v2.js' "$tmp/combat.js"
           fetch 'enemy-attacks-browser-v2.js' "$tmp/attacks.js"
-          fetch 'enemy-attacks.js' "$tmp/attack-core.js"
           fetch 'approved-art-core-v1.js' "$tmp/art-core.js"
           fetch 'approved-art-runtime-v1.js' "$tmp/art-runtime.js"
           fetch 'seed-man-production-art.js' "$tmp/renderer.js"
-          fetch 'assets/approved/seed-man-approved-master-atlas-v1.webp' "$tmp/master.webp"
+          fetch 'three-world-v1.js' "$tmp/three.js"
+          fetch 'three-world-adapter-v1.js' "$tmp/three-adapter.js"
           fetch 'assets/approved/seed-man-character-atlas-v2.webp' "$tmp/character.webp"
-          node --check "$tmp/player-state.js"
-          node --check "$tmp/runtime.js"
-          node --check "$tmp/ui.js"
-          node --check "$tmp/enemy-runtime.js"
-          node --check "$tmp/combat.js"
-          node --check "$tmp/attacks.js"
-          node --check "$tmp/attack-core.js"
-          node --check "$tmp/art-core.js"
-          node --check "$tmp/art-runtime.js"
-          node --check "$tmp/renderer.js"
-          node - "$tmp/character.webp" "$tmp/master.webp" <<'NODE'
+          fetch 'assets/approved/seed-man-enemy-boss-atlas-v1.webp' "$tmp/enemies.webp"
+          fetch 'assets/approved/seed-man-platform-atlas-v1.webp' "$tmp/platforms.webp"
+          for js in player-state runtime ui enemy-runtime combat attacks art-core art-runtime renderer three three-adapter; do node --check "$tmp/$js.js"; done
+          node - "$tmp/character.webp" "$tmp/enemies.webp" "$tmp/platforms.webp" <<'NODE'
           const fs=require('fs');
-          const character=fs.readFileSync(process.argv[2]);
-          if(character.subarray(0,4).toString('ascii')!=='RIFF'||character.subarray(8,12).toString('ascii')!=='WEBP'||character.subarray(12,16).toString('ascii')!=='VP8X')throw new Error('live character atlas is not an extended WebP');
-          const width=1+character.readUIntLE(24,3),height=1+character.readUIntLE(27,3);
-          if(width!==1600||height!==640||(!(character[20]&0x10)&&!character.includes(Buffer.from('ALPH'))))throw new Error(`live character atlas contract failed: ${width}x${height}`);
-          const master=fs.readFileSync(process.argv[3]);
-          if(master.length<1000||master.subarray(0,4).toString('ascii')!=='RIFF'||master.subarray(8,12).toString('ascii')!=='WEBP')throw new Error('live approved master atlas is invalid');
+          for(const file of process.argv.slice(2)){const b=fs.readFileSync(file);if(b.subarray(0,4).toString('ascii')!=='RIFF'||b.subarray(8,12).toString('ascii')!=='WEBP')throw new Error(`invalid live WebP: ${file}`);}
           NODE
-          node - "$tmp/campaign.json" "$tmp/level-01.json" "$tmp/levels.json" "$tmp/art-manifest.json" <<'NODE'
-          const fs=require('fs');
-          const campaign=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
-          const level01=JSON.parse(fs.readFileSync(process.argv[3],'utf8'));
-          const levels=JSON.parse(fs.readFileSync(process.argv[4],'utf8'));
-          const art=JSON.parse(fs.readFileSync(process.argv[5],'utf8'));
-          if(campaign.levelCount!==20) throw new Error(`live levelCount=${campaign.levelCount}`);
-          if(campaign.worlds?.length!==5) throw new Error(`live worlds=${campaign.worlds?.length}`);
-          if(campaign.finalBoss!=='blight-king') throw new Error(`live finalBoss=${campaign.finalBoss}`);
-          if(campaign.worlds?.[3]?.visualWorldKey!=='frozen-peaks') throw new Error(`live frozen world key=${campaign.worlds?.[3]?.visualWorldKey}`);
-          if(!Array.isArray(level01.powerups)||level01.powerups.length!==0) throw new Error('live Level 1 contains retired prototype powerups');
-          if(levels.levels?.length!==20) throw new Error(`live level catalog=${levels.levels?.length}`);
-          const orders=levels.levels.map((level)=>level.order);
-          if(orders.some((order,index)=>order!==index+1)) throw new Error('live level ordering is not contiguous 1-20');
-          if(art.id!=='seed-man-approved-art-v2') throw new Error(`live art manifest=${art.id}`);
-          if(art.policy?.characterReference!=='green-armored-plant-hero') throw new Error(`live character=${art.policy?.characterReference}`);
-          for(const world of ['greenhouse-valley','forest-ruins','desert-canyon','frozen-peaks','eco-city'])if(!art.policy?.worlds?.includes(world))throw new Error(`live approved art missing ${world}`);
+          node - "$tmp/campaign.json" "$tmp/levels.json" "$tmp/art-manifest.json" <<'NODE'
+          const fs=require('fs');const campaign=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));const levels=JSON.parse(fs.readFileSync(process.argv[3],'utf8'));const art=JSON.parse(fs.readFileSync(process.argv[4],'utf8'));
+          if(campaign.levelCount!==20||campaign.worlds?.length!==5||campaign.finalBoss!=='blight-king')throw new Error('live campaign contract mismatch');
+          if(levels.levels?.length!==20||levels.levels.some((level,index)=>level.order!==index+1))throw new Error('live level catalog mismatch');
+          if(art.schemaVersion!==3||art.id!=='seed-man-approved-art-v2'||art.masterAtlas)throw new Error('live art manifest mismatch');
+          if(art.policy?.characterReference!=='green-armored-plant-hero'||art.policy?.worldRenderer!=='seed-man-three-world-v2')throw new Error('live visual ownership mismatch');
           NODE
           grep -Fq '20-Level Campaign' "$tmp/index.html"
+          grep -Fq './three-world-v1.js?v=' "$tmp/index.html"
+          ! grep -Fq 'id="seed-man-level"' "$tmp/index.html"
+          ! grep -Fq 'Seed Man: Sprout Run' "$tmp/index.html"
           grep -Fq 'seed-man-player-state-v20' "$tmp/player-state.js"
           grep -Fq 'seed-man-campaign-v20-runtime-v3' "$tmp/runtime.js"
-          grep -Fq 'approvedWorldBackgrounds:true' "$tmp/runtime.js"
           grep -Fq "phenotypeForms:['plant','fire','electric','ice']" "$tmp/runtime.js"
           grep -Fq 'seed-man-v20-enemy-runtime-v2' "$tmp/enemy-runtime.js"
           grep -Fq 'seed-man-combat-browser-v2' "$tmp/combat.js"
+          grep -Fq 'syncBossState' "$tmp/combat.js"
           grep -Fq 'seed-man-enemy-attacks-browser-v2' "$tmp/attacks.js"
-          grep -Fq 'seed-man-campaign-ui-v20' "$tmp/ui.js"
-          grep -Fq 'seed-man-approved-art-core-v3' "$tmp/art-core.js"
-          grep -Fq 'seed-man-approved-master-atlas-v1.webp' "$tmp/art-core.js"
-          grep -Fq 'world.greenhouse-valley.background' "$tmp/art-core.js"
-          grep -Fq 'world.eco-city.background' "$tmp/art-core.js"
+          grep -Fq 'seed-man-approved-art-core-v4' "$tmp/art-core.js"
+          ! grep -Fq 'seed-man-approved-master-atlas-v1.webp' "$tmp/art-core.js"
+          grep -Fq 'seed-man-three-public-v3' "$tmp/three.js"
+          grep -Fq 'seed-man-three-world-v2' "$tmp/three.js"
+          bytes="$(wc -c < "$tmp/three.js" | tr -d ' ')"
+          test "$bytes" -ge 250000
           grep -Fq 'approved-showcase-2026-09-08' "$tmp/renderer.js"
           grep -Fq 'green-armored-plant-hero' "$tmp/renderer.js"
-          ! grep -Eq 'solar-flare|static-haze|frost-resin|shield-bounce' "$tmp/art-runtime.js"
-          ! grep -Fq 'Greenhouse Gauntlet' "$tmp/index.html"
-          for retired in campaign-v1.js gameplay-v2.js physics.mjs campaign-combat-v20.js campaign-progress-v20.js campaign-runtime-v20.js campaign-ui-v15.js world-five-v1.js combat-browser-v1.js enemy-attacks-browser-v1.js seed-man-ui-v3.js data/levels-12-15.json; do
-            expect_missing "$retired"
-          done
-          echo 'Seed Man v20 player-state + campaign v3 approved-world art + combat v2 route is live and verified.'
+          for retired in data/level-01.json data/levels-12-15.json campaign-v1.js gameplay-v2.js physics.mjs campaign-combat-v20.js campaign-progress-v20.js campaign-runtime-v20.js campaign-ui-v15.js world-five-v1.js combat-browser-v1.js enemy-attacks-browser-v1.js seed-man-ui-v3.js assets/approved/seed-man-approved-master-atlas-v1.webp assets/approved/seed-man-cover-banner-approved-v1.webp; do expect_missing "$retired"; done
+          echo 'Seed Man canonical v20 campaign + Three.js worlds + standalone approved art + combat v2 is live and verified.'
 
       - name: Release summary
         if: always()
         run: |
           {
             echo '## Seed Man production release'
-            echo '- Deployment path: dedicated atomic Seed Man WordPress publisher'
             echo '- Campaign: 20 levels / 5 worlds / 6 bosses'
-            echo '- Campaign runtime: v3 with approved five-world atlas backgrounds'
-            echo '- Player state: canonical v20 adapter'
-            echo '- Combat: Plant / Fire / Electric / Ice runtime v2 with 30-second temporary forms'
-            echo '- Final boss: Blight King'
+            echo '- World renderer: canonical generated Three.js v2 runtime / public bundle v3'
             echo '- Character: approved green armored plant hero'
-            echo '- Retired prototype powerups and legacy public runtimes: physically absent'
+            echo '- Combat: Plant / Fire / Electric / Ice with 30-second absorbed forms'
+            echo '- Boss progression: exits remain locked until boss defeat; Blight King finale state is synchronized'
+            echo '- Retired Sprout Run bootstrap and corrupt master/cover assets: physically absent'
             echo '- Verification: deterministic Node + build + live HTTP checks'
             echo '- Playwright: not used'
           } >> "$GITHUB_STEP_SUMMARY"

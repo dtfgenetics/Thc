@@ -1,27 +1,37 @@
 export const APPROVED_ART_MANIFEST_ID = 'seed-man-approved-art-v2';
 export const APPROVED_ART_SOURCE = 'approved-showcase-2026-09-08';
 
-const WORLD_ORDER = ['greenhouse-valley', 'forest-ruins', 'desert-canyon', 'frozen-peaks', 'eco-city'];
+const WORLD_ORDER = Object.freeze(['greenhouse-valley', 'forest-ruins', 'desert-canyon', 'frozen-peaks', 'eco-city']);
 const WORLD_ALIASES = Object.freeze({ 'frozen-peak': 'frozen-peaks' });
+const REQUIRED_IMAGE_ASSETS = Object.freeze(['character.seedman.atlas','enemy.atlas','boss.atlas','platform.atlas']);
+const REQUIRED_RENDER_ASSETS = Object.freeze(['cover.main','ui.vfx.cover']);
 
 export function validateApprovedArtManifest(manifest) {
   if (!manifest || manifest.id !== APPROVED_ART_MANIFEST_ID) {
     throw new Error(`Seed Man approved art manifest mismatch: ${manifest?.id || 'missing'}`);
   }
+  if (manifest.schemaVersion !== 3) throw new Error(`Seed Man approved art schema must be v3, got ${manifest?.schemaVersion || 'missing'}`);
   if (manifest.sourceOfTruth !== APPROVED_ART_SOURCE) throw new Error(`Seed Man approved art source mismatch: ${manifest.sourceOfTruth || 'missing'}`);
   if (manifest.policy?.authoritative !== true) throw new Error('Approved Seed Man art must be authoritative.');
   if (manifest.policy?.proceduralFallbackAllowed !== false) throw new Error('Procedural character fallback is forbidden in production.');
   if (manifest.policy?.legacyAtlasFallbackAllowed !== false) throw new Error('Legacy character atlas fallback is forbidden in production.');
   if (manifest.policy?.characterReference !== 'green-armored-plant-hero') throw new Error('Seed Man character reference must be the approved green armored plant hero.');
-  if (!manifest.masterAtlas?.src || !manifest.masterAtlas?.width || !manifest.masterAtlas?.height) throw new Error('Approved Seed Man master atlas metadata is incomplete.');
+  if (manifest.policy?.worldRenderer !== 'seed-man-three-world-v2') throw new Error('Seed Man worlds must use the production Three.js renderer.');
+  if (manifest.masterAtlas) throw new Error('Retired Seed Man master atlas must not be present in the production manifest.');
 
-  const required = ['cover.main','character.seedman.atlas','enemy.atlas','boss.atlas','platform.atlas','world.atlas','ui.vfx.cover'];
-  for (const key of required) {
+  for (const key of REQUIRED_IMAGE_ASSETS) {
     const asset = manifest.assets?.[key];
-    if (!asset?.atlasRegion) throw new Error(`Missing approved Seed Man atlas region: ${key}`);
-    if (!manifest.masterAtlas.regions?.[asset.atlasRegion]) throw new Error(`Unknown approved Seed Man atlas region: ${asset.atlasRegion}`);
+    if (!asset?.src || asset.type !== 'atlas') throw new Error(`Missing approved Seed Man image atlas: ${key}`);
   }
-  for (const world of WORLD_ORDER) if (!manifest.policy.worlds?.includes(world)) throw new Error(`Missing approved Seed Man world: ${world}`);
+  for (const key of REQUIRED_RENDER_ASSETS) {
+    const asset = manifest.assets?.[key];
+    if (!asset?.renderer) throw new Error(`Missing Seed Man renderer-backed asset: ${key}`);
+  }
+  for (const world of WORLD_ORDER) {
+    if (!manifest.policy.worlds?.includes(world)) throw new Error(`Missing approved Seed Man world: ${world}`);
+    const asset = manifest.assets?.[`world.${world}.background`];
+    if (asset?.renderer !== manifest.policy.worldRenderer || asset?.world !== world) throw new Error(`Missing production world renderer descriptor: ${world}`);
+  }
   for (const phenotype of ['plant','fire','electric','ice']) if (!manifest.phenotypes?.includes(phenotype)) throw new Error(`Missing approved Seed Man phenotype: ${phenotype}`);
   for (const boss of ['overgrown-guardian','ancient-dryad','scorchroot-titan','frostbite-colossus','eco-sentinel','blight-king']) if (!manifest.bosses?.includes(boss)) throw new Error(`Missing Seed Man boss: ${boss}`);
   return true;
@@ -30,24 +40,17 @@ export function validateApprovedArtManifest(manifest) {
 export function createApprovedArtRegistry(manifest, { baseUrl = './' } = {}) {
   validateApprovedArtManifest(manifest);
   const root = new URL(baseUrl, globalThis.location?.href || 'https://dtfseeds.com/games/seed-man-platformer/');
-  const atlasUrl = new URL(manifest.masterAtlas.src, root).href;
-  const buildAsset = (key, value) => {
-    const region = manifest.masterAtlas.regions[value.atlasRegion];
-    return Object.freeze({ ...value, key, src: manifest.masterAtlas.src, url: atlasUrl, region: Object.freeze({ ...region }) });
-  };
-  const entries = new Map(Object.entries(manifest.assets).map(([key, value]) => [key, buildAsset(key, value)]));
-  const worldRegion = manifest.masterAtlas.regions['world.atlas'];
-  const worldWidth = Math.floor(worldRegion.width / WORLD_ORDER.length);
-  for (const [index, world] of WORLD_ORDER.entries()) {
-    entries.set(`world.${world}.background`, Object.freeze({
-      key: `world.${world}.background`, role: 'background', src: manifest.masterAtlas.src, url: atlasUrl,
-      region: Object.freeze({ x: worldRegion.x + worldWidth * index, y: worldRegion.y, width: worldWidth, height: worldRegion.height })
-    }));
-  }
+  const entries = new Map(Object.entries(manifest.assets).map(([key, value]) => {
+    const asset = value.src
+      ? { ...value, key, url: new URL(value.src, root).href }
+      : { ...value, key, url: null };
+    return [key, Object.freeze(asset)];
+  }));
   return Object.freeze({
     id: manifest.id,
     sourceOfTruth: manifest.sourceOfTruth,
-    masterAtlas: Object.freeze({ ...manifest.masterAtlas, url: atlasUrl }),
+    worldRenderer: manifest.policy.worldRenderer,
+    worldFallbackRenderer: manifest.policy.worldFallbackRenderer,
     get(key) {
       const normalized = key?.startsWith('world.') && key?.endsWith('.background')
         ? `world.${WORLD_ALIASES[key.slice(6, -11)] || key.slice(6, -11)}.background`

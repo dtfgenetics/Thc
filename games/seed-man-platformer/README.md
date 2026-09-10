@@ -24,6 +24,8 @@ Production policy:
 - legacy atlas fallback is disabled
 - simulation owns collision/gameplay state
 - renderer only presents simulation state
+- corrupt or mislabeled image files must fail validation and must never be shipped merely because their extension looks correct
+- world presentation is owned by the generated Three.js renderer, with the deterministic canvas world renderer only as the non-WebGL fallback
 
 ## 20-level campaign
 
@@ -69,24 +71,42 @@ Canonical campaign files:
 - `games/seed-man-platformer/src/systems/campaign-state-v2.mjs`
 - `games/seed-man-platformer/src/systems/save-state-v2.mjs`
 
-## Compatibility boundary
+## Production/retired boundary
 
-The current production contract is v20. The following files are **compatibility-only** and must never be treated as the canonical campaign definition:
+The current production contract is **v20 only**. Sprout Run, 11-level, and 15-level public runtimes are retired and must not be restored to the deployable route.
 
-- `games/seed-man-platformer/data/levels-12-15.json`
-- `site/public-route-patch/games/seed-man-platformer/data/levels-12-15.json`
-- `site/public-route-patch/games/seed-man-platformer/campaign-ui-v15.js`
-- `site/public-route-patch/games/seed-man-platformer/world-five-v1.js`
-- `site/public-route-patch/games/seed-man-platformer/seed-man-ui-v3.js` where retained only for compatibility/bootstrap support
+Retired public artifacts include:
 
-These compatibility artifacts may remain only while a current v20 runtime or publisher still imports them. They may not define level count, world identity, bosses, public copy, release readiness, or canonical source ownership.
+- `data/level-01.json`
+- `data/levels-12-15.json`
+- `campaign-v1.js`
+- `gameplay-v2.js`
+- public `physics.mjs`
+- `campaign-combat-v20.js`
+- `campaign-progress-v20.js`
+- `campaign-runtime-v20.js`
+- `campaign-ui-v15.js`
+- `world-five-v1.js`
+- `combat-browser-v1.js`
+- `enemy-attacks-browser-v1.js`
+- `seed-man-ui-v3.js`
+- corrupt `seed-man-approved-master-atlas-v1.webp`
+- invalid `seed-man-cover-banner-approved-v1.webp`
+
+Those files may exist only in historical Git data or explicit archive documentation. They may not be runtime dependencies, release inputs, test requirements, publisher assets, or public-route files.
 
 Current v20 runtime/release ownership is represented by:
 
 - `games/seed-man-platformer/data/campaign.json`
 - `games/seed-man-platformer/data/levels-20-v1.json`
+- `site/public-route-patch/games/seed-man-platformer/app.js`
+- `site/public-route-patch/games/seed-man-platformer/player-state-v20.js`
+- `site/public-route-patch/games/seed-man-platformer/three-world-v1.js` generated from canonical Three.js source
 - `site/public-route-patch/games/seed-man-platformer/campaign-v20-runtime.js`
 - `site/public-route-patch/games/seed-man-platformer/campaign-ui-v20.js`
+- `site/public-route-patch/games/seed-man-platformer/v20-enemy-runtime.js`
+- `site/public-route-patch/games/seed-man-platformer/combat-browser-v2.js`
+- `site/public-route-patch/games/seed-man-platformer/enemy-attacks-browser-v2.js`
 - `scripts/verify-seed-man-production-v20.mjs`
 - `scripts/validate-seed-man-production-bundle.mjs`
 - `.github/workflows/seed-man-platformer-ci.yml`
@@ -114,6 +134,8 @@ Canonical systems:
 - `games/seed-man-platformer/src/systems/power-drop.mjs`
 - `games/seed-man-platformer/data/enemy-catalog-v1.json`
 
+Retired speed, jump, magnet, shield, Hydro Surge, Terpene Tempest, Vine Lash, Mycelium Mind, Rootbreaker, Trichome Crystal, Gravity Haze, Solar Flare, Static Haze, and Frost Resin power contracts must not be reintroduced into production gameplay.
+
 ## Enemies and bosses
 
 The production enemy catalog is data-driven and uses the approved enemy atlas. Current core enemy archetypes include Sproutling, Root Crawler, Toxic Spore, Drone Bot, Thorn Beetle, Sky Wasp, Spike Plant, Sludge Monster, Bone Weed, and Shadow Root.
@@ -126,6 +148,8 @@ Bosses use a reusable phased boss state machine rather than level-specific ad ho
 - Frostbite Colossus
 - Eco Sentinel
 - **Blight King** — four-phase final boss
+
+Boss levels are exit-gated: reaching the finish does not complete a boss level while its boss is alive. Boss defeat must synchronize back into level/campaign state before the exit unlocks.
 
 The Blight King cycles weaknesses through Plant → Fire → Electric → Ice and ends the game only after the Level 20 finale completes.
 
@@ -146,6 +170,8 @@ World presentation is keyed to the approved five-world art direction:
 - Frozen Peaks
 - Eco City
 
+The generated `seed-man-three-world-v2` renderer is the production world renderer. It receives campaign/simulation state and does not own collisions, player health, combat, progression, or saves. The canvas world renderer is a deterministic non-WebGL fallback, not a second game runtime.
+
 Terrain behavior is separated from terrain art. Grass, dirt, rock, stone, ice, sand, metal, wood, moving platforms and springs are selected through manifest/data keys while physics behavior comes from simulation modules.
 
 Relevant modules:
@@ -159,16 +185,21 @@ Relevant modules:
 
 ## Runtime architecture
 
-The project keeps gameplay/simulation independent from rendering. The existing Three.js layer remains the browser world renderer, but it is a view adapter—not the owner of player state, collisions, bosses, progression, or save state.
+The project keeps gameplay/simulation independent from rendering. The Three.js layer is the browser world renderer, but it is a view adapter—not the owner of player state, collisions, bosses, progression, or save state.
 
 Core rules:
 
+- `campaign-v20-runtime.js` is the only public campaign/level authority
+- `player-state-v20.js` owns the public player-state contract
 - fixed gameplay simulation owns entities and collision
+- combat/enemy runtimes use only canonical production IDs
 - renderer consumes stable state
 - DOM handles HUD/menu/accessibility surfaces
 - asset manifest keys are the only production asset API
 - approved art loader fails loudly if required production assets are unavailable
 - no renderer may silently replace the approved character runtime
+- the public page must not embed a `seed-man-level` Sprout Run bootstrap JSON block
+- generated public runtime files must be built from canonical source before release packaging
 
 The production composition boundary is:
 
@@ -189,10 +220,10 @@ node scripts/verify-seed-man-production-v20.mjs
 node scripts/validate-seed-man-production-bundle.mjs
 ```
 
-The production test suite validates approved-art ownership, 20 contiguous levels, five worlds, world/level mapping, phenotype timing, phenotype drops, boss phases, final-boss behavior, campaign progression, save state, HUD model, input actions, terrain behavior, manifest-key policy, production readiness, and Three.js state boundaries.
+The production test suite validates approved-art ownership, 20 contiguous levels, five worlds, world/level mapping, phenotype timing, phenotype drops, boss phases, final-boss behavior, campaign progression, save state, HUD model, input actions, terrain behavior, manifest-key policy, production readiness, source/public physics parity, boss-gated exits, and Three.js state boundaries.
 
-The live release must also pass deterministic source/build validation and production route verification before it is called released.
+The live release must also pass deterministic source/build validation, atomic publisher validation, public asset validation, and live production route verification before it is called released.
 
 ## Current migration rule
 
-Old 11-level and 15-level campaign files remain only for compatibility while the route migrates. They must not be used as the future production design source. Any future Seed Man work should begin from the 20-level campaign and approved-art manifest described above.
+Migration is complete at the public-route contract level: **v20 is canonical and Sprout Run/11-level/15-level runtime ownership is retired.** Future Seed Man work must begin from the 20-level campaign, v20 player/combat contracts, generated Three.js world renderer, and approved-art manifest described above. Do not restore retired public files to make an obsolete test pass; update the obsolete test or release guard to the v20 contract instead.
