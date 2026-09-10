@@ -2,26 +2,102 @@
   "schemaVersion": 1,
   "id": "seed-man-levels-20-v1",
   "levels": [
-    {"id":"1-1-sprout-steps","order":1,"world":"greenhouse-valley","background":"world.greenhouse-valley.background","tiles":"platform.atlas","length":6200,"checkpointCount":2,"enemyPool":["sproutling","root-crawler"],"hazards":["spikes"],"mechanics":["run","double-jump","stomp"],"boss":null},
+    {
+      "id":"1-1-sprout-steps","order":1,"world":"greenhouse-valley","background":"world.greenhouse-valley.background","tiles":"platform.atlas","length":6200,"checkpointCount":2,"enemyPool":["sproutling","root-crawler"],"hazards":["spikes"],"mechanics":["run","double-jump","stomp","authored-layout","combat-intro","phenotype-intro"],"boss":null,
+      "layout":{
+        "mode":"authored","revision":1,"requiredPickups":18,
+        "spawn":{"x":96,"y":390},
+        "platforms":[
+          {"id":"ground-a","x":0,"y":480,"width":760,"height":60,"surface":"grass"},
+          {"id":"ground-b","x":860,"y":480,"width":750,"height":60,"surface":"grass"},
+          {"id":"ground-c","x":1720,"y":480,"width":760,"height":60,"surface":"grass"},
+          {"id":"ground-d","x":2600,"y":480,"width":720,"height":60,"surface":"grass"},
+          {"id":"ground-e","x":3420,"y":480,"width":760,"height":60,"surface":"grass"},
+          {"id":"ground-f","x":4300,"y":480,"width":740,"height":60,"surface":"grass"},
+          {"id":"ground-g","x":5140,"y":480,"width":1060,"height":60,"surface":"grass"},
+          {"id":"canopy-a","x":520,"y":382,"width":210,"height":24,"surface":"wood"},
+          {"id":"canopy-b","x":1110,"y":330,"width":200,"height":24,"surface":"wood"},
+          {"id":"canopy-c","x":1880,"y":365,"width":220,"height":24,"surface":"wood"},
+          {"id":"canopy-d","x":2720,"y":312,"width":220,"height":24,"surface":"wood"},
+          {"id":"canopy-e","x":3520,"y":360,"width":210,"height":24,"surface":"wood"},
+          {"id":"canopy-f","x":4400,"y":325,"width":240,"height":24,"surface":"wood"},
+          {"id":"canopy-g","x":5260,"y":355,"width":220,"height":24,"surface":"wood"},
+          {"id":"canopy-h","x":5660,"y":300,"width":230,"height":24,"surface":"wood"}
+        ],
+        "hazards":[
+          {"id":"pit-a","x":760,"y":500,"width":100,"height":40,"type":"spikes"},
+          {"id":"pit-b","x":1610,"y":500,"width":110,"height":40,"type":"spikes"},
+          {"id":"pit-c","x":2480,"y":500,"width":120,"height":40,"type":"spikes"},
+          {"id":"pit-d","x":3320,"y":500,"width":100,"height":40,"type":"spikes"},
+          {"id":"pit-e","x":4180,"y":500,"width":120,"height":40,"type":"spikes"},
+          {"id":"pit-f","x":5040,"y":500,"width":100,"height":40,"type":"spikes"}
+        ],
+        "pickups":[
+          {"id":"seed-1-01","x":220,"y":430,"width":22,"height":22},
+          {"id":"seed-1-02","x":545,"y":340,"width":22,"height":22},
+          {"id":"seed-1-03","x":690,"y":430,"width":22,"height":22},
+          {"id":"seed-1-04","x":1010,"y":430,"width":22,"height":22},
+          {"id":"seed-1-05","x":1195,"y":288,"width":22,"height":22},
+          {"id":"seed-1-06","x":1480,"y":430,"width":22,"height":22},
+          {"id":"seed-1-07","x":1870,"y":430,"width":22,"height":22},
+          {"id":"seed-1-08","x":1990,"y":323,"width":22,"height":22},
+          {"id":"seed-1-09","x":2320,"y":430,"width":22,"height":22},
+          {"id":"seed-1-10","x":2780,"y":270,"width":22,"height":22},
+          {"id":"seed-1-11","x":3090,"y":430,"width":22,"height":22},
+          {"id":"seed-1-12","x":3570,"y":318,"width":22,"height":22},
+          {"id":"seed-1-13","x":3980,"y":430,"width":22,"height":22},
+          {"id":"seed-1-14","x":4480,"y":283,"width":22,"height":22},
+          {"id":"seed-1-15","x":4870,"y":430,"width":22,"height":22},
+          {"id":"seed-1-16","x":5320,"y":313,"width":22,"height":22},
+          {"id":"seed-1-17","x":5740,"y":258,"width":22,"height":22},
+          {"id":"seed-1-18","x":5980,"y":430,"width":22,"height":22}
+        ],
+        "checkpoints":[
+          {"id":"checkpoint-1-1","x":2180,"y":420,"width":50,"height":60,"respawnX":2080,"respawnY":400},
+          {"id":"checkpoint-1-2","x":4480,"y":420,"width":50,"height":60,"respawnX":4380,"respawnY":400}
+        ],
+        "enemySpawns":[
+          {"id":"sprout-a","type":"sproutling","x":980,"minX":900,"maxX":1220},
+          {"id":"root-a","type":"root-crawler","x":1430,"minX":1260,"maxX":1570},
+          {"id":"sprout-b","type":"sproutling","x":1970,"minX":1780,"maxX":2310},
+          {"id":"root-b","type":"root-crawler","x":2870,"minX":2660,"maxX":3250},
+          {"id":"sprout-c","type":"sproutling","x":3670,"minX":3480,"maxX":4100},
+          {"id":"root-c","type":"root-crawler","x":5480,"minX":5200,"maxX":5880}
+        ],
+        "phenotypeCarrierSpawns":[
+          {"id":"fire-carrier-intro","form":"fire","x":4700,"minX":4450,"maxX":4970}
+        ],
+        "encounterZones":[
+          {"id":"movement-intro","startX":120,"endX":780,"purpose":"movement"},
+          {"id":"combat-intro","startX":900,"endX":1600,"purpose":"basic-combat"},
+          {"id":"double-jump-check","startX":1700,"endX":2500,"purpose":"double-jump"},
+          {"id":"phenotype-intro","startX":4380,"endX":5050,"purpose":"fire-carrier"},
+          {"id":"finish-run","startX":5140,"endX":6150,"purpose":"mixed-traversal"}
+        ],
+        "tutorials":[
+          {"id":"move","x":150,"action":"move","text":"Move with A/D or ←/→"},
+          {"id":"jump","x":560,"action":"jump","text":"Jump with Space/W/↑ · press again in air to double jump"},
+          {"id":"attack","x":930,"action":"attack","text":"Press J/X or ATTACK to fire the Seed Slinger"},
+          {"id":"phenotype","x":4380,"action":"phenotype","text":"Defeat the glowing carrier, then use K/C or PHENO for its 30-second power"}
+        ],
+        "finish":{"x":6060,"y":390,"width":50,"height":90}
+      }
+    },
     {"id":"1-2-sunny-glade","order":2,"world":"greenhouse-valley","background":"world.greenhouse-valley.background","tiles":"platform.atlas","length":6800,"checkpointCount":2,"enemyPool":["sproutling","root-crawler","toxic-spore"],"hazards":["spikes","toxic-slime"],"mechanics":["moving-platforms"],"boss":null},
     {"id":"1-3-waterfall-way","order":3,"world":"greenhouse-valley","background":"world.greenhouse-valley.background","tiles":"platform.atlas","length":7200,"checkpointCount":3,"enemyPool":["sproutling","drone-bot","sky-wasp"],"hazards":["waterfall-gap"],"mechanics":["springs","vertical-platforms"],"boss":null},
     {"id":"1-4-greenhouse-hub","order":4,"world":"greenhouse-valley","background":"world.greenhouse-valley.background","tiles":"platform.atlas","length":5200,"checkpointCount":2,"enemyPool":["thorn-beetle","spike-plant"],"hazards":["spikes"],"mechanics":["arena-lock"],"boss":"overgrown-guardian"},
-
     {"id":"2-1-mossy-paths","order":5,"world":"forest-ruins","background":"world.forest-ruins.background","tiles":"platform.atlas","length":7000,"checkpointCount":2,"enemyPool":["root-crawler","toxic-spore","spike-plant"],"hazards":["thorn-pits"],"mechanics":["vine-platforms"],"boss":null},
     {"id":"2-2-broken-bridges","order":6,"world":"forest-ruins","background":"world.forest-ruins.background","tiles":"platform.atlas","length":7600,"checkpointCount":3,"enemyPool":["root-crawler","sky-wasp","thorn-beetle"],"hazards":["falling-bridges"],"mechanics":["collapsing-platforms"],"boss":null},
     {"id":"2-3-hollow-trunk","order":7,"world":"forest-ruins","background":"world.forest-ruins.background","tiles":"platform.atlas","length":7800,"checkpointCount":3,"enemyPool":["toxic-spore","bone-weed","shadow-root"],"hazards":["spore-cloud"],"mechanics":["dark-zones","teleport-roots"],"boss":null},
     {"id":"2-4-temple-of-trees","order":8,"world":"forest-ruins","background":"world.forest-ruins.background","tiles":"platform.atlas","length":5600,"checkpointCount":2,"enemyPool":["spike-plant","shadow-root"],"hazards":["root-cage"],"mechanics":["arena-lock"],"boss":"ancient-dryad"},
-
     {"id":"3-1-red-rock-run","order":9,"world":"desert-canyon","background":"world.desert-canyon.background","tiles":"platform.atlas","length":7400,"checkpointCount":2,"enemyPool":["thorn-beetle","drone-bot"],"hazards":["lava","rockfall"],"mechanics":["heat-updraft"],"boss":null},
     {"id":"3-2-canyon-cliffs","order":10,"world":"desert-canyon","background":"world.desert-canyon.background","tiles":"platform.atlas","length":8000,"checkpointCount":3,"enemyPool":["sky-wasp","thorn-beetle","sludge-monster"],"hazards":["falling-rocks"],"mechanics":["wall-routes","moving-platforms"],"boss":null},
     {"id":"3-3-dusty-winds","order":11,"world":"desert-canyon","background":"world.desert-canyon.background","tiles":"platform.atlas","length":8200,"checkpointCount":3,"enemyPool":["sky-wasp","bone-weed","drone-bot"],"hazards":["sandstorm"],"mechanics":["wind-zones"],"boss":null},
     {"id":"3-4-sun-spire","order":12,"world":"desert-canyon","background":"world.desert-canyon.background","tiles":"platform.atlas","length":5800,"checkpointCount":2,"enemyPool":["thorn-beetle","sludge-monster"],"hazards":["lava"],"mechanics":["arena-lock"],"boss":"scorchroot-titan"},
-
     {"id":"4-1-icy-pass","order":13,"world":"frozen-peaks","background":"world.frozen-peaks.background","tiles":"platform.atlas","length":7600,"checkpointCount":2,"enemyPool":["root-crawler","sky-wasp","drone-bot"],"hazards":["ice-spikes"],"mechanics":["slippery-ground"],"boss":null},
     {"id":"4-2-crystal-caverns","order":14,"world":"frozen-peaks","background":"world.frozen-peaks.background","tiles":"platform.atlas","length":8200,"checkpointCount":3,"enemyPool":["toxic-spore","bone-weed","drone-bot"],"hazards":["falling-icicles"],"mechanics":["crystal-bounce"],"boss":null},
     {"id":"4-3-frozen-bridges","order":15,"world":"frozen-peaks","background":"world.frozen-peaks.background","tiles":"platform.atlas","length":8400,"checkpointCount":3,"enemyPool":["sky-wasp","thorn-beetle","shadow-root"],"hazards":["breakaway-ice"],"mechanics":["collapsing-platforms","wind-zones"],"boss":null},
     {"id":"4-4-glacier-gate","order":16,"world":"frozen-peaks","background":"world.frozen-peaks.background","tiles":"platform.atlas","length":6000,"checkpointCount":2,"enemyPool":["spike-plant","shadow-root"],"hazards":["freeze-floor"],"mechanics":["arena-lock"],"boss":"frostbite-colossus"},
-
     {"id":"5-1-toxic-outskirts","order":17,"world":"eco-city","background":"world.eco-city.background","tiles":"platform.atlas","length":8000,"checkpointCount":3,"enemyPool":["toxic-spore","drone-bot","sludge-monster"],"hazards":["toxic-slime","electric-floor"],"mechanics":["conveyor-platforms"],"boss":null},
     {"id":"5-2-industrial-zone","order":18,"world":"eco-city","background":"world.eco-city.background","tiles":"platform.atlas","length":8600,"checkpointCount":3,"enemyPool":["drone-bot","thorn-beetle","shadow-root"],"hazards":["laser-grid","crusher"],"mechanics":["moving-platforms","timed-doors"],"boss":null},
     {"id":"5-3-reactor-core","order":19,"world":"eco-city","background":"world.eco-city.background","tiles":"platform.atlas","length":6800,"checkpointCount":2,"enemyPool":["drone-bot","spike-plant","sludge-monster"],"hazards":["energy-beam","electric-floor"],"mechanics":["arena-lock"],"boss":"eco-sentinel"},
