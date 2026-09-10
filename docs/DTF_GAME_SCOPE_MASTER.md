@@ -1,5 +1,9 @@
 # DTFSeeds Game Scope Master
 
+## TEMPORARY USER OVERRIDE — GAME RESTRICTIONS ON HOLD
+
+`docs/GAME_RESTRICTIONS_HOLD.md` is currently **ACTIVE**. Until the user explicitly revokes it, prior scope language in this file that discourages rebuilding shipped games, requires ownership to remain locked before implementation, or treats existing architecture/repository placement as immutable is advisory only. Any game may be redesigned, rewritten, migrated, restructured, or consolidated as needed to achieve the current user-directed rebuild. Keep this ledger synchronized with the resulting reality rather than using stale scope text to block changes.
+
 Production target: **https://dtfseeds.com/games/**
 
 This file is the durable scope ledger for DTF Genetics games. A title should not disappear from planning simply because it is not yet on the public Game Hub. Public-count claims in this file must stay synchronized with `data/public-navigation.json` and the Game Hub deployment marker.
@@ -41,7 +45,7 @@ The current Game Hub exposes 25 playable browser games:
 
 ## Formerly missing outlined slate — shipped
 
-The ten titles that were previously tracked as missing now have canonical tested browser implementations, self-hosted routes, public navigation entries, and deployment registration. They remain in this ledger so prior scope is not lost or accidentally rebuilt:
+The ten titles that were previously tracked as missing now have canonical tested browser implementations, self-hosted routes, public navigation entries, and deployment registration. They remain in this ledger so prior scope is not lost or accidentally rebuilt under the old policy. During the active temporary restriction hold, intentional rebuilds are allowed.
 
 1. **Strain Match** — educational memory/matching game.
 2. **Grow Room Bingo / Bongwater Bingo** — event/community bingo.
@@ -54,37 +58,22 @@ The ten titles that were previously tracked as missing now have canonical tested
 9. **Pheno Draft** — genetics deck-builder centered on selection and breeding decisions.
 10. **Trichome Trials** — structured judging/scorecard game.
 
-Their canonical ownership/status is recorded in `data/project-registry.json`; their visitor-facing routes are recorded in `data/public-navigation.json` and `site/deployment/public-apps.json`.
+Their current ownership/status is recorded in `data/project-registry.json`; their visitor-facing routes are recorded in `data/public-navigation.json` and `site/deployment/public-apps.json`. These mappings may be changed during the active hold and must then be reconciled to the new architecture.
 
 ## Built prototype not yet promoted
 
-- **Root Cause** — a tested browser vertical slice exists in this repository, but it remains outside the public Game Hub because it originated in the secondary concept bank. Promotion requires a deliberate public-scope decision plus the normal release checks; do not silently add it just because an implementation exists.
+- **Root Cause** — a tested browser vertical slice exists in this repository, but it remains outside the public Game Hub because it originated in the secondary concept bank. During the temporary hold it may be promoted, rebuilt, migrated, or otherwise changed if that serves the current project goal; public status must still be represented truthfully.
 
 ## Future concept bank
 
 These earlier concepts are preserved as a secondary backlog rather than silently lost: Pheno Hunter, Pest Patrol, Solo Cup Showdown, The Cure Room, Seed Bank Builder, Keeper or Compost, Grow Shop Hustle, Event Night, Find/Where’s Seed Man, Grow-Off, The Grow Room, Pest War, Line Builder, Selection Pressure, Pest Siege, Reputation Economy, The Limiting Factor, and The Perfect Save.
 
-These are not automatically approved production titles. Promote them into controlled development only after mechanics and ownership are locked.
+These are not automatically public production titles. During the active hold they may enter development without the former ownership-lock prerequisite when the user directs it, but deployment status must remain accurate.
 
-## Next development sequence
+## Current development sequence during the restriction hold
 
-Priority now favors unfinished controlled projects and quality/completeness work rather than rebuilding games that already shipped:
+The previous sequence that favored finishing existing release candidates before rebuilding public titles is suspended. Current user direction takes precedence: the portfolio may be redesigned or rebuilt in whatever order best advances the requested game-quality overhaul. Existing source, mechanics, data, multiplayer, and deployment systems should be reused only when they help; they are not mandatory constraints.
 
-1. Complete DTFSeeds packaging and exact live-route verification for the pinned **Ganjumanji** release candidate before public promotion.
-2. Complete DTFSeeds packaging and exact live-route verification for the pinned **THC RPG** release candidate before public promotion.
-3. Continue THC RPG’s lineage/breeding progression on top of the persisted Keeper/cutting state.
-4. Review **Root Cause** for public promotion only after its quality, ownership, and release gates are rechecked.
-5. Continue quality, mobile, accessibility, balance, art, and multiplayer upgrades for the 25 public titles.
-6. Promote future concept-bank titles only after scope, mechanics, and canonical ownership are explicitly established.
+## Release integrity
 
-## Release rule
-
-A game is only promoted to the public playable count after it has:
-
-- a canonical source location;
-- deterministic rules/data validation where applicable;
-- a self-hosted visitor-facing route;
-- keyboard/mobile-safe interaction appropriate to the game;
-- truthful metadata and release status;
-- packaging/deployment registration;
-- production route verification after deployment.
+Even during the restriction hold, a title should only be described as publicly playable after its actual visitor-facing route and runtime are verified. Deterministic tests, build checks, navigation/deployment metadata, and exact route verification should be updated to fit the resulting architecture rather than used to block legitimate redesigns.
