@@ -4,12 +4,26 @@ description: Audit and verify DTFSeeds web pages, games, tools, educational rout
 compatibility: Browser-capable agent environment with Lighthouse or equivalent web performance tooling, direct browser inspection, screenshot/image comparison, and deterministic unit/integration test support.
 metadata:
   author: dtfgenetics
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # DTF Web Quality Gate
 
 This is the common visitor-facing quality gate for the DTF web portfolio. It applies to site pages, educational routes, games, Plant Atlas, Grow Doc, calculators, libraries, and embedded/public-route applications.
+
+Detailed guidance migrated out of the certification repository is preserved here:
+
+- `references/development-debugging.md` — root-cause web/runtime/route debugging and deterministic production verification.
+- `references/pixel-perfect-visual-qa.md` — approved-reference visual fidelity and responsive QA.
+- `references/lighthouse-site-auditor.md` — site-wide Lighthouse inventory, scoring, and regression policy.
+
+The canonical deterministic site-wide tooling lives in this production repository at:
+
+- `web-qa.config.mjs`
+- `scripts/discover-public-routes.mjs`
+- `scripts/check-public-route-health.mjs`
+- `lighthouserc.cjs`
+- `.github/workflows/web-quality.yml`
 
 ## Non-negotiable tooling rule
 
