@@ -1,119 +1,62 @@
 # DTF / THC Portfolio Release Criteria
 
-This document defines the minimum release gate for every DTF Genetics / THC project. It applies to games, websites, apps, education, books, diagnostic tools, automation, and print products.
+This document defines quality evidence for releases across games, websites, apps, education, books, diagnostic tools, automation, and print products. It does not lock repository ownership, folder structure, route structure, renderer, backend, workflow, release-state vocabulary, or implementation architecture.
 
-## Canonical ownership
+## General release evidence
 
-- Google Drive master source owns human-readable approved/source assets, research, print masters, controlled evidence, proofs, and release packages.
-- GitHub owns code, machine-readable data, tests, schemas, build/deployment configuration, and automation.
-- ChatGPT Library is a temporary working surface only.
-- A working file is not a release merely because it exists or looks finished.
+A release should have enough evidence to identify what was shipped and verify that it works in its intended environment. Applicable checks may include:
 
-## Required release states
+- source revision or release identifier recorded;
+- required source/output files present;
+- machine-readable files validate where relevant;
+- code builds or otherwise runs successfully using the current architecture;
+- tests appropriate to changed behavior pass;
+- public routes and asset paths are verified when relevant;
+- spelling/grammar/content QA is performed where relevant;
+- third-party assets/code have compatible licensing or permission;
+- credentials, private user data, and private multiplayer state are not exposed;
+- a practical recovery/rollback path exists for production-changing work;
+- exact visitor-facing production behavior is checked after deployment before calling the release live.
 
-Every releasable artifact must use one of these states:
+Project registries, Drive folders, GitHub repositories, route maps, and release ledgers may be used when helpful, but they are not mandatory ownership locks. Update or replace them when the architecture changes.
 
-1. `draft` — active work, not publishable.
-2. `review` — candidate awaiting required QA.
-3. `approved` — content/art/code approved but not yet packaged.
-4. `release-candidate` — packaged and awaiting final verification.
-5. `released` — verified published/printed/distributed version.
-6. `superseded` — retained for history, not current.
-7. `quarantined` — duplicate, conflicting, corrupt, or unresolved.
+## Web/app evidence
 
-## Universal release gate
+For a web/app release, verify the current production route or destination, build/package output where applicable, required assets, critical interactions, browser/runtime errors, and responsive behavior on relevant phone/tablet/desktop sizes.
 
-A release is complete only when all applicable checks pass:
+The hosting provider, branch, build command, output folder, deployment mechanism, and route may change with the implementation.
 
-- Project has a canonical project ID in `data/project-registry.json`.
-- Canonical Drive and GitHub ownership are unambiguous.
-- A source-of-truth document exists for the project or its umbrella.
-- Version/release ID is unique and recorded.
-- Required source files exist.
-- Required output files exist.
-- No unreviewed duplicate is being used as the release master.
-- Public text has spelling/grammar QA.
-- Images have approval status and known source/creation provenance.
-- Third-party assets have a compatible license or documented permission.
-- Machine-readable files validate.
-- Code builds and required tests pass.
-- URLs/routes referenced by the release are checked.
-- Secrets/private customer data are absent from public repositories and artifacts.
-- Rollback/source archive is retained.
-- Release is entered in the project tracker or project release ledger.
+## Game evidence
 
-## Web/app gate
+For a game release, verify the intended current gameplay rather than a historical fixed rules master. Useful evidence includes:
 
-Additionally require:
+- a complete start-to-finish core loop;
+- coherent state/rules/content data;
+- win/end/failure states when applicable;
+- input and feedback appropriate to the game;
+- phone/tablet/desktop presentation where supported;
+- asset loading without broken-image placeholders;
+- multiplayer authority/synchronization/privacy checks when multiplayer exists;
+- playtesting appropriate to the scale of the change.
 
-- production URL mapped in `data/site-registry.json`;
-- repository and branch recorded;
-- build command recorded;
-- output/deployment target recorded;
-- route/base-path behavior verified;
-- browser console free of release-blocking errors;
-- mobile/responsive smoke test;
-- critical interaction smoke test;
-- live deployment verification after publish.
+Rules, board/deck/component counts, art direction, renderer, mechanics, player limits, routes, engines, and data models may be deliberately redesigned. Update tests and release checks to represent the new intended game.
 
-## Game gate
+## Education evidence
 
-Additionally require:
+For educational material, keep factual claims traceable to suitable sources, review wording for accuracy/scope, verify relevant image/source rights, and validate IDs/cross-links/data where they are part of the current system. Presentation and file structure remain free to change.
 
-- locked rules master;
-- locked game-data master;
-- board/deck/component counts validated;
-- playtest record exists;
-- digital rules match physical rules when both exist;
-- original/approved art only;
-- win/end state verified;
-- release package separated from drafts.
+## Diagnostic evidence
 
-## Education gate
+For diagnostic systems, separate observation from unsupported certainty, preserve useful provenance/review metadata, document dataset/model versions when needed, and validate code/data appropriate to the current architecture. The model stack, repository, schema, and UI may change.
 
-Additionally require:
+## Print evidence
 
-- claims traceable to sources;
-- wording reviewed for accuracy and scope;
-- image/source licensing recorded;
-- lesson/course IDs unique;
-- glossary/cross-links validated where applicable;
-- public content passes release gates in the education repository.
+For print deliverables, verify the current manuscript/artwork, trim/bleed/resolution requirements, proof output, and editable/source retention needed for future revision. File names, folder structure, and production workflow are not locked.
 
-## Diagnostic gate
+## Automation/content-engine evidence
 
-Additionally require:
+For automation, validate current inputs/outputs, manifests or schemas when useful, credential handling, and connector behavior. Tool choice and workflow architecture may be changed or replaced.
 
-- evidence/source and image-license metadata separated;
-- visual-only findings do not claim laboratory confirmation;
-- provenance and review status recorded for reference assets;
-- dataset split/version documented;
-- diagnostic output clearly distinguishes evidence for, evidence against, missing evidence, and uncertainty;
-- code/data checks pass in `dtfgenetics/Thc-dataset`.
+## Working principle
 
-## Book/print gate
-
-Additionally require:
-
-- manuscript version locked;
-- illustration placement locked;
-- trim/bleed/DPI requirements checked;
-- proof reviewed;
-- source/editable files retained;
-- release PDF/export saved separately from working drafts.
-
-## Automation/content-engine gate
-
-Additionally require:
-
-- input originals remain untouched;
-- generated output package contains a manifest;
-- no secrets/tokens/private media committed;
-- recipe/tool schema validation passes;
-- connector writes require explicit approved configuration.
-
-## Release folder rule
-
-Where a Drive project uses `07 Approved Release`, `09 Print`, `06 Approved Releases`, or another mature equivalent, preserve that established structure. New/light projects should use `07 Approved Release` unless their project bible defines another canonical release location.
-
-No release folder may be used as a scratch workspace.
+Release checks are evidence systems. They should fail when the resulting product is broken, incomplete, insecure, or inaccurately represented—not because a developer changed an old implementation detail on purpose.
