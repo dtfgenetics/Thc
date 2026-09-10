@@ -1,32 +1,16 @@
 {
-  "schemaVersion": 3,
-  "id": "seed-man-approved-art-v2",
-  "sourceOfTruth": "approved-showcase-2026-09-08",
+  "schemaVersion": 4,
+  "id": "seed-man-art-registry",
+  "status": "redesign-open",
   "policy": {
-    "authoritative": true,
-    "proceduralFallbackAllowed": false,
-    "legacyAtlasFallbackAllowed": false,
-    "characterReference": "green-armored-plant-hero",
-    "worldRenderer": "seed-man-three-world-v2",
-    "worldFallbackRenderer": "seed-man-canvas-world-gradient-v1",
-    "worlds": ["greenhouse-valley", "forest-ruins", "desert-canyon", "frozen-peaks", "eco-city"]
+    "authoritative": false,
+    "styleLocked": false,
+    "rendererLocked": false,
+    "assetFamilyLocked": false
   },
-  "assets": {
-    "character.seedman.atlas": {"src":"assets/approved/seed-man-character-atlas-v2.webp","type":"atlas","role":"player"},
-    "enemy.atlas": {"src":"assets/approved/seed-man-enemy-boss-atlas-v1.webp","type":"atlas","role":"enemy"},
-    "boss.atlas": {"src":"assets/approved/seed-man-enemy-boss-atlas-v1.webp","type":"atlas","role":"boss"},
-    "platform.atlas": {"src":"assets/approved/seed-man-platform-atlas-v1.webp","type":"atlas","role":"terrain"},
-    "ui.vfx.cover": {"renderer":"seed-man-canvas-vfx-v2","role":"ui-vfx"},
-    "cover.main": {"renderer":"seed-man-campaign-cover-v1","role":"cover"},
-    "world.greenhouse-valley.background": {"renderer":"seed-man-three-world-v2","fallbackRenderer":"seed-man-canvas-world-gradient-v1","world":"greenhouse-valley","role":"background"},
-    "world.forest-ruins.background": {"renderer":"seed-man-three-world-v2","fallbackRenderer":"seed-man-canvas-world-gradient-v1","world":"forest-ruins","role":"background"},
-    "world.desert-canyon.background": {"renderer":"seed-man-three-world-v2","fallbackRenderer":"seed-man-canvas-world-gradient-v1","world":"desert-canyon","role":"background"},
-    "world.frozen-peaks.background": {"renderer":"seed-man-three-world-v2","fallbackRenderer":"seed-man-canvas-world-gradient-v1","world":"frozen-peaks","role":"background"},
-    "world.eco-city.background": {"renderer":"seed-man-three-world-v2","fallbackRenderer":"seed-man-canvas-world-gradient-v1","world":"eco-city","role":"background"}
-  },
+  "assets": {},
   "characterStates": ["idle", "walk", "run", "jump", "fall", "land", "attack", "hit", "victory"],
   "phenotypes": ["plant", "fire", "electric", "ice"],
-  "enemies": ["sproutling", "root-crawler", "toxic-spore", "drone-bot", "thorn-beetle", "sky-wasp", "spike-plant", "sludge-monster", "bone-weed", "shadow-root"],
-  "bosses": ["overgrown-guardian", "ancient-dryad", "scorchroot-titan", "frostbite-colossus", "eco-sentinel", "blight-king"],
-  "terrain": ["grass", "dirt", "rock", "stone", "ice", "sand", "metal", "wood", "moving-platform", "spring", "spikes"]
+  "worlds": ["greenhouse-valley", "forest-ruins", "desert-canyon", "frozen-peaks", "eco-city"],
+  "notes": "Current gameplay labels are retained as editable data references. No image, atlas, renderer, character style, world style, or visual fallback is mandatory. New visual assets may be added, removed, renamed, reorganized, or generated as the redesign evolves."
 }
