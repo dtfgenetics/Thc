@@ -73,7 +73,6 @@ Current baseline commands include:
 npm ci
 npm run test:high-land
 npm run build:high-land
-node scripts/verify-browser-tool-policy.mjs
 ```
 
 If High Land is redesigned or migrated, replace stale commands and backend/route assumptions with checks appropriate to the new implementation.
