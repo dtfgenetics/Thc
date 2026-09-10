@@ -5,39 +5,41 @@ export function flattenCampaignLevels(campaign) {
 }
 
 export function validateCampaign(campaign) {
-  if (!campaign || campaign.schemaVersion !== 2 || campaign.id !== 'sprout-run-campaign') {
+  if (!campaign || campaign.schemaVersion !== 2 || campaign.id !== 'seed-man-campaign-20-v1') {
     throw new Error('campaign contract mismatch');
   }
-  if (!Array.isArray(campaign.worlds) || campaign.worlds.length === 0) {
-    throw new Error('campaign must include at least one world');
+  if (!Array.isArray(campaign.worlds) || campaign.worlds.length !== 5) {
+    throw new Error('campaign must include exactly five worlds');
   }
 
   const worldIds = new Set();
   const levelIds = new Set();
   const orders = [];
   for (const world of campaign.worlds) {
-    if (!world?.id || worldIds.has(world.id) || !Array.isArray(world.levels) || world.levels.length === 0) {
+    if (!world?.id || worldIds.has(world.id) || !Array.isArray(world.levels) || world.levels.length !== 4) {
       throw new Error('invalid campaign world');
     }
     worldIds.add(world.id);
 
     for (const level of world.levels) {
       if (!level?.id || levelIds.has(level.id)) throw new Error('invalid or duplicate campaign level');
-      if (!['playable', 'locked', 'preview'].includes(level.status)) throw new Error('invalid campaign level status');
+      if (level.status !== 'playable') throw new Error('invalid campaign level status');
       if (!Number.isInteger(level.order) || level.order < 1) throw new Error('invalid campaign level order');
-      if (!level.dataPath) throw new Error('campaign level data path is required');
-      if (level.order > 1 && !level.dataKey) throw new Error('generated campaign level data key is required');
+      if (level.dataPath !== 'data/levels-20-v1.json') throw new Error('campaign level must use v20 catalog');
+      if (!level.dataKey) throw new Error('campaign level data key is required');
+      if ('publicDataElementId' in level) throw new Error('retired embedded-level metadata is forbidden');
       levelIds.add(level.id);
       orders.push(level.order);
     }
   }
 
   const levels = flattenCampaignLevels(campaign);
-  const expectedOrders = Array.from({ length: levels.length }, (_, index) => index + 1);
+  const expectedOrders = Array.from({ length: 20 }, (_, index) => index + 1);
   const actualOrders = [...orders].sort((a, b) => a - b);
-  if (JSON.stringify(actualOrders) !== JSON.stringify(expectedOrders)) throw new Error('campaign level order must be contiguous');
-  if (campaign.levelCount !== levels.length) throw new Error('campaign levelCount does not match manifest');
-  if (campaign.newLevelCount !== levels.length - 1) throw new Error('campaign newLevelCount does not match manifest');
+  if (levels.length !== 20 || JSON.stringify(actualOrders) !== JSON.stringify(expectedOrders)) throw new Error('campaign level order must be contiguous 1-20');
+  if (campaign.levelCount !== 20 || campaign.levelCount !== levels.length) throw new Error('campaign levelCount does not match v20 manifest');
+  if (campaign.newLevelCount !== 19) throw new Error('campaign newLevelCount does not match v20 manifest');
+  if (campaign.finalBoss !== 'blight-king') throw new Error('campaign final boss must be blight-king');
   if (!levelIds.has(campaign.defaultLevelId)) throw new Error('campaign default level is missing');
   return campaign;
 }
