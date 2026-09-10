@@ -7,25 +7,24 @@ export const CHARACTER_STATES=Object.freeze(['idle','walk','run','jump','fall','
 export function createVisualRuntimeV2(manifest,{baseUrl='./'}={}){
   validateApprovedArtManifest(manifest);
   const registry=createApprovedArtRegistry(manifest,{baseUrl});
-  for(const key of WORLD_KEYS){
-    const world=registry.get(`world.${key}.background`);
-    if(world.renderer!=='seed-man-three-world-v2') throw new Error(`Missing production world renderer ${key}`);
-  }
-  if(!registry.has('character.seedman.atlas')) throw new Error('Missing approved Seed Man atlas');
-  if(!registry.has('enemy.atlas')) throw new Error('Missing approved enemy atlas');
-  if(!registry.has('boss.atlas')) throw new Error('Missing approved boss atlas');
-  if(!registry.has('platform.atlas')) throw new Error('Missing approved platform atlas');
+  const optional=(key)=>registry.has(key)?registry.get(key):null;
   return Object.freeze({
-    version:'seed-man-visual-runtime-v3',
-    sourceOfTruth:manifest.sourceOfTruth,
-    rendererPolicy:Object.freeze({approvedArtOnly:true,proceduralCharacterFallback:false,legacyAtlasFallback:false,worldRenderer:registry.worldRenderer,worldFallbackRenderer:registry.worldFallbackRenderer}),
+    version:'seed-man-visual-runtime-open',
+    sourceOfTruth:manifest.sourceOfTruth||null,
+    rendererPolicy:Object.freeze({
+      approvedArtOnly:false,
+      proceduralCharacterFallback:true,
+      legacyAtlasFallback:true,
+      worldRenderer:registry.worldRenderer,
+      worldFallbackRenderer:registry.worldFallbackRenderer
+    }),
     registry,
-    player:Object.freeze({atlas:registry.get('character.seedman.atlas'),states:CHARACTER_STATES,phenotypes:PHENOTYPE_KEYS}),
-    world:(key)=>{if(!WORLD_KEYS.includes(key)) throw new Error(`Unknown visual world ${key}`);return registry.get(`world.${key}.background`);},
-    enemyAtlas:registry.get('enemy.atlas'),
-    bossAtlas:registry.get('boss.atlas'),
-    platformAtlas:registry.get('platform.atlas'),
-    ui:registry.get('ui.vfx.cover'),
-    cover:registry.get('cover.main')
+    player:Object.freeze({atlas:optional('character.seedman.atlas'),states:CHARACTER_STATES,phenotypes:PHENOTYPE_KEYS}),
+    world:(key)=>optional(`world.${key}.background`),
+    enemyAtlas:optional('enemy.atlas')||optional('enemy-boss.atlas'),
+    bossAtlas:optional('boss.atlas')||optional('enemy-boss.atlas'),
+    platformAtlas:optional('platform.atlas'),
+    ui:optional('ui.vfx.cover'),
+    cover:optional('cover.main')
   });
 }
