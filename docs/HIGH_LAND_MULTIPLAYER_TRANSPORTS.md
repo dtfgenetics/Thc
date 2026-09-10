@@ -1,9 +1,8 @@
 # High Land Multiplayer Transports
 
-The room transport boundary supports offline/local development and the selected
-Hostinger Website Room API without changing game rules.
+This file records the current multiplayer transport implementation. It does not require High Land to keep any particular backend, transport, polling model, API location, or repository structure.
 
-## Current files
+## Current implementation
 
 ```txt
 apps/high-land-web/src/game/multiplayer/roomTransport.ts
@@ -13,36 +12,19 @@ apps/high-land-web/src/game/multiplayer/websiteRoomTransport.ts
 apps/high-land-web/src/game/multiplayer/roomTransportFactory.ts
 ```
 
-## Transport roles
+The current live implementation uses a same-origin Hostinger PHP room API. This may be retained, replaced, migrated, or removed when another approach better serves the game.
 
-### Local transport
+## Behavior to verify when multiplayer exists
 
-Used for offline development, automated tests, pass-and-play, and recovery when
-the online room service is unavailable.
+- room/session creation and joining work;
+- authorized players can perform intended actions;
+- game state synchronizes correctly;
+- reconnect/resume behaves as designed;
+- connection failures are visible and recoverable;
+- secrets, private credentials, and hidden room state are not exposed publicly.
 
-### Website transport
-
-Selected automatically on `dtfseeds.com/games/high-land/`. It calls the PHP API
-under the same route and polls room snapshots every two seconds.
-
-Required behavior:
-
-- create a room and identify its host;
-- join by room code;
-- update authoritative game state;
-- append auditable game events;
-- poll snapshots and report connection errors;
-- preserve invite codes across refresh/reconnect.
-
-## Production rule
-
-The locked backend is defined in `docs/BACKEND_DECISION.md`. Do not reconnect
-Supabase or introduce a parallel room authority. A replacement requires an
-explicit decision, migration, cost review, security review, and rollback plan.
+The specific backend, state model, protocol, polling/websocket approach, and hosting provider are implementation choices rather than fixed product rules.
 
 ## Completion evidence
 
-Repository tests and API guard responses are necessary but insufficient. Online
-multiplayer is production-ready only after a host and a separate browser/device
-complete room creation, join, start, dice movement, HIT-card resolution, turn
-order, refresh/reconnect, and winner synchronization.
+Repository checks alone do not prove live multiplayer. When multiplayer is part of the current build, verify it with at least two independent sessions and separately verify the exact deployed production route.
