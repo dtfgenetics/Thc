@@ -23,9 +23,6 @@
     'shadow-root': { name:'Shadow Root', role:'teleporter', hp:7, speed:50, width:44, height:46, attackPattern:'blink-strike', drop:['genetic-fragments',2], visualFrame:0 }
   });
 
-  // The approved 320x120 enemy/boss atlas contains six enemy cells on row 0
-  // and four larger boss cells on row 1. Ancient Dryad and Blight King use
-  // deterministic variants of approved boss cells until dedicated sprites land.
   const BOSS_VISUAL = Object.freeze({
     'overgrown-guardian': Object.freeze({ frame:0, variant:'guardian', mirrorX:false, sizeScale:1 }),
     'ancient-dryad': Object.freeze({ frame:0, variant:'dryad', mirrorX:true, sizeScale:0.94, aura:'#9bd46f' }),
@@ -43,6 +40,7 @@
 
   const PHENOTYPE_ORDER = Object.freeze(['fire','electric','ice']);
   const clamp = (value,min,max) => Math.max(min,Math.min(max,value));
+  const finite = (value) => Number.isFinite(Number(value));
 
   function regionFor(row, frame) {
     const layout = ATLAS_LAYOUT[row];
@@ -73,25 +71,30 @@
     const fraction = Number.isFinite(options.fraction)
       ? clamp(options.fraction, 0.08, 0.92)
       : options.carrier ? 0.62 : 0.12 + (index * 0.68 / Math.max(1,count - 1));
-    const centerX = clamp(Math.round(worldWidth * fraction), 260, worldWidth - 300);
+    const generatedX = clamp(Math.round(worldWidth * fraction), 260, worldWidth - 300);
+    const x = finite(options.x) ? clamp(Number(options.x),80,worldWidth-meta.width-80) : generatedX;
     const movement = movementFor(meta.role);
     const flying = movement === 'flying';
     const blink = movement === 'blink';
     const healthScale = Math.floor((order - 1) / 6);
     const elite = Boolean(options.carrier) || (order >= 8 && index === count - 1);
     const health = meta.hp + healthScale + (elite ? 2 : 0);
-    const y = flying ? 285 + ((index * 37 + order * 19) % 80) : 480 - meta.height;
+    const generatedY = flying ? 285 + ((index * 37 + order * 19) % 80) : 480 - meta.height;
+    const y = finite(options.y) ? Number(options.y) : generatedY;
     const patrolRadius = flying ? 300 : 230;
+    const minX = finite(options.minX) ? clamp(Number(options.minX),60,x) : Math.max(80,x - patrolRadius);
+    const maxX = finite(options.maxX) ? clamp(Number(options.maxX),x+meta.width+20,worldWidth-40) : Math.min(worldWidth - 80,x + patrolRadius);
     const carrier = options.carrier ? PHENOTYPE_CARRIERS[options.form] : null;
+    const authoredId = String(options.id || '').trim();
 
     return {
-      id:`v20-${levelData?.id || 'level'}-${options.carrier ? `phenotype-${options.form}` : `${index + 1}-${type}`}`,
+      id:authoredId ? `v20-${levelData?.id || 'level'}-${authoredId}` : `v20-${levelData?.id || 'level'}-${options.carrier ? `phenotype-${options.form}` : `${index + 1}-${type}`}`,
       archetype:type,
       name:carrier ? `${carrier.label} ${meta.name}` : meta.name,
-      x:centerX,
+      x,
       y,
-      minX:Math.max(80,centerX - patrolRadius),
-      maxX:Math.min(worldWidth - 80,centerX + patrolRadius),
+      minX,
+      maxX,
       width:meta.width,
       height:meta.height,
       health,
@@ -106,6 +109,7 @@
       phenotypeForm:carrier?.form || null,
       phenotypeDurationMs:carrier ? PHENOTYPE_DURATION_MS : null,
       drop:carrier ? ['alleles',1] : [...meta.drop],
+      authoredPlacement:Boolean(options.authored),
       approvedVisual:Object.freeze({
         atlas:'enemy-boss.atlas',
         row:'enemy',
@@ -123,7 +127,13 @@
     return buildEnemy(levelData, carrier.base, index, 3, {
       carrier:true,
       form,
-      fraction:options.fraction
+      fraction:options.fraction,
+      id:options.id,
+      x:options.x,
+      y:options.y,
+      minX:options.minX,
+      maxX:options.maxX,
+      authored:options.authored
     });
   }
 
@@ -171,22 +181,58 @@
     };
   }
 
-  function buildEncounter(levelData) {
-    const pool = Array.isArray(levelData?.enemyPool) && levelData.enemyPool.length
-      ? levelData.enemyPool.filter((type) => ENEMY_META[type])
-      : ['sproutling'];
-    const order = levelOrder(levelData);
-    const count = clamp(4 + Math.floor((order - 1) / 4),4,8);
-    const encounter = Array.from({length:count},(_,index) => buildEnemy(levelData,pool[index % pool.length],index,count));
+  function buildAuthoredEnemies(levelData) {
+    if (levelData?.authoringMode!=='authored' || !Array.isArray(levelData.enemySpawns)) return null;
+    return levelData.enemySpawns.map((spawn,index) => {
+      const type=ENEMY_META[spawn.type] ? spawn.type : 'sproutling';
+      return buildEnemy(levelData,type,index,levelData.enemySpawns.length,{
+        authored:true,
+        id:spawn.id,
+        x:spawn.x,
+        y:spawn.y,
+        minX:spawn.minX,
+        maxX:spawn.maxX
+      });
+    });
+  }
 
+  function addPhenotypeCarriers(levelData,encounter,generatedCount) {
+    if (levelData?.authoringMode==='authored' && Array.isArray(levelData.phenotypeCarrierSpawns)) {
+      levelData.phenotypeCarrierSpawns.forEach((spawn,index) => encounter.push(buildPhenotypeCarrier(levelData,spawn.form,generatedCount+index,{
+        authored:true,
+        id:spawn.id,
+        x:spawn.x,
+        y:spawn.y,
+        minX:spawn.minX,
+        maxX:spawn.maxX
+      })));
+      return;
+    }
+    const order=levelOrder(levelData);
     if (levelData?.boss?.id === 'blight-king' || levelData?.mechanics?.includes?.('final-gauntlet')) {
       const fractions = Object.freeze({ fire:0.58, electric:0.68, ice:0.76 });
-      PHENOTYPE_ORDER.forEach((form,index) => encounter.push(buildPhenotypeCarrier(levelData,form,count+index,{fraction:fractions[form]})));
+      PHENOTYPE_ORDER.forEach((form,index) => encounter.push(buildPhenotypeCarrier(levelData,form,generatedCount+index,{fraction:fractions[form]})));
     } else if (order >= 2) {
       const form = PHENOTYPE_ORDER[(order - 2) % PHENOTYPE_ORDER.length];
-      encounter.push(buildPhenotypeCarrier(levelData,form,count));
+      encounter.push(buildPhenotypeCarrier(levelData,form,generatedCount));
+    }
+  }
+
+  function buildEncounter(levelData) {
+    const authored=buildAuthoredEnemies(levelData);
+    let encounter;
+    if (authored) {
+      encounter=[...authored];
+    } else {
+      const pool = Array.isArray(levelData?.enemyPool) && levelData.enemyPool.length
+        ? levelData.enemyPool.filter((type) => ENEMY_META[type])
+        : ['sproutling'];
+      const order = levelOrder(levelData);
+      const count = clamp(4 + Math.floor((order - 1) / 4),4,8);
+      encounter = Array.from({length:count},(_,index) => buildEnemy(levelData,pool[index % pool.length],index,count));
     }
 
+    addPhenotypeCarriers(levelData,encounter,encounter.length);
     const boss = buildBoss(levelData);
     if (boss) encounter.push(boss);
     return encounter;
