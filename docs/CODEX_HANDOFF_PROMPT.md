@@ -1,166 +1,50 @@
-# Codex Handoff Prompt
+# High Land Engineering Handoff
 
-You are working in the GitHub repo `dtfgenetics/Thc`.
+Repository: `dtfgenetics/Thc`
 
-Finish and verify **High Land: The Sweet Escape** using the existing app in `apps/high-land-web`. Do not replace it with a generic template, do not restart the game from scratch, and do not mix in another DTF game.
+Read `docs/GAME_DEVELOPMENT_FREEDOM.md` first. High Land may be repaired, redesigned, migrated, or rebuilt as needed to meet the current product goal. Existing React, Phaser, board data, multiplayer transport, routes, files, and assets are current implementation details rather than mandatory architecture.
 
-## Source of truth
+## Current location
 
-Read these first:
+The current implementation is under `apps/high-land-web` and the current public target is `https://dtfseeds.com/games/high-land/`. If the implementation or route changes, update repository and deployment metadata to match.
 
-```txt
-AGENTS.md
-CLAUDE.md
-README.md
-docs/HIGH_LAND_SOURCE_OF_TRUTH.md
-docs/HIGH_LAND_CODE_STATUS_MAP.md
-docs/high-land-spec.md
-docs/high-land-acceptance-checklist.md
-docs/deployment-hostinger.md
-apps/high-land-web/
-```
+## Engineering goal
 
-## Main goal
+Deliver a polished, responsive High Land game that works on phone, tablet, laptop, and desktop; has clear gameplay state and controls; passes the tests/build checks appropriate to the resulting architecture; and is verified on the exact public route before being called live.
 
-Make High Land install, test, build, package, and deploy safely at:
+## Current baseline checks
 
-```txt
-https://dtfseeds.com/games/high-land/
-```
-
-The game must preserve:
-
-```txt
-2 to 10 players
-single continuous board path
-exact dice movement
-player tokens on board coordinates
-HIT card spaces and card effects
-skip turns, draw-again, choices, and Reverse Rotation
-save/load
-win condition
-mobile-friendly layout
-Hostinger Website Room API boundary
-```
-
-## Required repository checks
-
-Run from the repo root:
+Use these when they still apply:
 
 ```bash
 npm ci
 npm run test:high-land
 npm run build:high-land
-node scripts/verify-browser-tool-policy.mjs
 ```
 
-Do not install or run Playwright for High Land. It is retired from the active validation path.
+Add, remove, or replace validation tools when the architecture changes. Browser automation, manual browser review, static analysis, visual regression, device testing, and other QA approaches may all be used when useful.
 
-## Fix order
+## Current implementation map
 
-```txt
-1. TypeScript errors
-2. Unit test failures
-3. Production build errors
-4. Room API security / PHP lint failures
-5. Asset path errors
-6. Phaser render errors
-7. Mobile layout errors
-8. UI polish
-9. Live deployment and two-device multiplayer verification
-```
-
-## Important app files
+Useful current files include:
 
 ```txt
-apps/high-land-web/package.json
-apps/high-land-web/tsconfig.json
-apps/high-land-web/vite.config.ts
 apps/high-land-web/src/main.tsx
 apps/high-land-web/src/App.tsx
 apps/high-land-web/src/styles.css
-apps/high-land-web/src/ui/PhaserBoard.tsx
-apps/high-land-web/src/ui/DiceDisplay.tsx
-apps/high-land-web/src/ui/CardRevealModal.tsx
-apps/high-land-web/src/ui/GameRulesPanel.tsx
-apps/high-land-web/src/game/HighLandGame.ts
-apps/high-land-web/src/game/scenes/BoardScene.ts
-apps/high-land-web/src/game/data/boardPath.ts
-apps/high-land-web/src/game/data/actionCards.ts
-apps/high-land-web/src/game/systems/gameEngine.ts
-apps/high-land-web/src/game/systems/cardSystem.ts
-apps/high-land-web/src/game/systems/effectResolver.ts
-apps/high-land-web/src/game/systems/turnSystem.ts
-apps/high-land-web/src/game/systems/movementSystem.ts
-apps/high-land-web/src/game/systems/diceSystem.ts
-apps/high-land-web/src/game/systems/storageSystem.ts
-apps/high-land-web/src/game/systems/audioSystem.ts
-apps/high-land-web/src/game/systems/assetPath.ts
+apps/high-land-web/src/ui/
+apps/high-land-web/src/game/
 apps/high-land-web/public/api/
 ```
 
-## Rules for fixing
+These paths are not locked and may be reorganized.
 
-```txt
-Keep changes small.
-Prefer repairing existing files over adding parallel systems.
-Do not delete working game systems.
-Do not replace Phaser + React setup.
-Do not remove 10-player support.
-Do not commit secrets or private room data.
-Do not reconnect Supabase/Firebase or introduce a second multiplayer authority.
-Do not use copyrighted Candy Land art, names, board layout, or card text.
-```
+## Quality targets
 
-## Visual/game requirements
+Verify the intended current gameplay rules, movement, turn resolution, multiplayer behavior, save/reconnect behavior, visual clarity, responsive layout, controls, audio/settings, and win/finish states. If the design changes, update tests and documentation to validate the new intended behavior instead of preserving obsolete assumptions.
 
-High Land must remain an adult 21+ original THC community board game with one continuous path, large colored spaces, HIT spaces, skip/choice/reverse mechanics, and a race to Cloud 9 Citadel.
+Security and release integrity still matter: do not expose credentials or private room/user data, protect multiplayer authority appropriately, and do not claim a production change is live until the exact visitor-facing route has been exercised and verified.
 
-Locked world order:
+## Report
 
-```txt
-Rolling Hills
-Dankwood Forest
-Rosin Rail Station
-Munchie Mountain
-Kief Caves
-Trichome Towers
-Cloud 9 Citadel
-```
-
-## Manual browser/live review
-
-After repository checks pass, manually verify:
-
-```txt
-app loads
-2-player game starts
-4-player game starts
-10-player game starts
-Roll Dice works
-tokens move exact spaces
-current player updates
-HIT card effects resolve
-skip turns work
-choices resolve
-Reverse Rotation works through dice turns and card turns
-save/load works
-winner condition works
-mobile view is usable
-production build works under /games/high-land/
-```
-
-Live success requires deployment of the tested `apps/high-land-web/dist` artifact and visitor-facing verification of `https://dtfseeds.com/games/high-land/`.
-
-## Final output required
-
-Report:
-
-```txt
-What commands passed
-What files changed
-What errors were fixed
-What still needs assets or live credentials
-Whether the repo artifact is ready to upload
-Whether live /games/high-land/ verification passed, failed, or was not tested
-```
+Record what changed, what tests/builds/browser checks ran, any remaining defects, and whether live-route verification passed, failed, or was not tested.
