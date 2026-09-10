@@ -5,6 +5,7 @@
   const TOTAL_LEVELS=20;
   const TOTAL_WORLDS=5;
   const TOTAL_BOSSES=6;
+  const LEVEL_SELECT_ID='campaign-level-select-v20';
   const PROGRESS_KEYS=['dtf-seed-man-campaign-v20','dtf-seed-man-campaign-v3'];
   const ACTIVE_PROGRESS_KEY=PROGRESS_KEYS[0];
   const NEXT_LEVEL_DELAY_MS=1100;
@@ -83,7 +84,7 @@
       if(window.__SPROUT_CAMPAIGN__?.activeLevelId!==completedId)return;
       try{
         campaign.selectLevel(nextId);
-        const select=document.querySelector('#seed-man-level-select');if(select)select.value=nextId;
+        const select=document.getElementById(LEVEL_SELECT_ID);if(select)select.value=nextId;
         window.dispatchEvent(new CustomEvent('seedman:level-advanced',{detail:{from:completedId,to:nextId}}));
       }catch(error){
         console.error('[Seed Man] next level failed to load.',error);
@@ -98,7 +99,7 @@
     if(!campaign||campaign.levelCount!==TOTAL_LEVELS){setTimeout(install,25);return;}
     const base=window.__SPROUT_CAMPAIGN_EXPERIENCE__||{};
     window.__SPROUT_CAMPAIGN_EXPERIENCE__=Object.freeze({...base,version:VERSION,baseVersion:base.version||null,levelCount:TOTAL_LEVELS,newLevelCount:19,bossCount:TOTAL_BOSSES,selectLevel:(id)=>{clearAdvance();transitionFromLevel=null;const selected=campaign.selectLevel(id);queueMicrotask(normalize);return selected;}});
-    const select=document.querySelector('#seed-man-level-select');if(select)select.addEventListener('change',()=>requestAnimationFrame(normalize));
+    const select=document.getElementById(LEVEL_SELECT_ID);if(select)select.addEventListener('change',()=>requestAnimationFrame(normalize));
     const finish=document.querySelector('#finish-panel');if(finish)new MutationObserver(()=>{queueMicrotask(normalize);queueMicrotask(handleFinish);}).observe(finish,{attributes:true,attributeFilter:['hidden'],childList:true,subtree:true});
     window.addEventListener('sprout:level-selected',()=>{clearAdvance();transitionFromLevel=null;queueMicrotask(normalize);});
     normalize();
