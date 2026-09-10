@@ -93,7 +93,6 @@ Current baseline commands:
 ```bash
 npm run test:high-land
 npm run build:high-land
-node scripts/verify-browser-tool-policy.mjs
 ```
 
 High Land currently lives in `apps/high-land-web` and currently uses the Hostinger PHP Website Room API. Neither is a technical lock. A migration or replacement is allowed when it improves the requested result.
