@@ -1,0 +1,138 @@
+name: Web quality system
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'apps/**'
+      - 'games/**'
+      - 'site/**'
+      - 'scripts/discover-public-routes.mjs'
+      - 'scripts/check-public-route-health.mjs'
+      - 'web-qa.config.mjs'
+      - 'lighthouserc.cjs'
+      - '.github/workflows/web-quality.yml'
+      - '.agents/skills/dtf-web-quality-gate/**'
+  push:
+    branches: [main]
+  schedule:
+    - cron: '23 8 * * *'
+  workflow_dispatch:
+    inputs:
+      enforce:
+        description: 'Fail the run for route/Lighthouse findings'
+        required: false
+        default: false
+        type: boolean
+      max_routes:
+        description: 'Maximum routes to audit'
+        required: false
+        default: '250'
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: web-quality-v3-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deterministic-health:
+    name: Deterministic route health audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      WEB_QA_BASE_URL: https://dtfseeds.com
+      WEB_QA_ARTIFACT_DIR: .artifacts/web-qa
+      WEB_QA_ROUTE_FILE: .artifacts/web-qa/routes.json
+      WEB_QA_ENFORCE: ${{ ((github.event_name == 'workflow_dispatch' && inputs.enforce) || github.ref == 'refs/heads/main') && '1' || '0' }}
+      WEB_QA_MAX_ROUTES: ${{ github.event_name == 'pull_request' && '80' || (github.event_name == 'workflow_dispatch' && inputs.max_routes) || '250' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install repository dependencies
+        run: npm ci
+
+      - name: Discover public routes
+        run: node scripts/discover-public-routes.mjs
+
+      - name: Check public route health
+        run: node scripts/check-public-route-health.mjs
+
+      - name: Upload route-health evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-qa-health-${{ github.run_id }}
+          path: .artifacts/web-qa
+          if-no-files-found: warn
+          retention-days: 30
+
+  lighthouse:
+    name: Lighthouse every discovered page
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      WEB_QA_BASE_URL: https://dtfseeds.com
+      WEB_QA_ARTIFACT_DIR: .artifacts/web-qa
+      WEB_QA_ROUTE_FILE: .artifacts/web-qa/routes.json
+      WEB_QA_ENFORCE: ${{ ((github.event_name == 'workflow_dispatch' && inputs.enforce) || github.ref == 'refs/heads/main') && '1' || '0' }}
+      WEB_QA_MAX_ROUTES: ${{ github.event_name == 'pull_request' && '20' || (github.event_name == 'workflow_dispatch' && inputs.max_routes) || '250' }}
+      LHCI_RUNS: ${{ github.ref == 'refs/heads/main' && '3' || '1' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install repository dependencies
+        run: npm ci
+
+      - name: Install pinned Lighthouse CI runtime
+        run: npm install --no-save --package-lock=false @lhci/cli@0.15.1
+
+      - name: Install Chrome for Lighthouse
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@v2
+        with:
+          chrome-version: stable
+          install-dependencies: true
+
+      - name: Export Chrome path for Lighthouse
+        shell: bash
+        run: |
+          echo "CHROME_PATH=${{ steps.setup-chrome.outputs.chrome-path }}" >> "$GITHUB_ENV"
+          test -x "${{ steps.setup-chrome.outputs.chrome-path }}"
+
+      - name: Discover public routes
+        run: node scripts/discover-public-routes.mjs
+
+      - name: Run Lighthouse CI
+        shell: bash
+        run: |
+          mkdir -p "$WEB_QA_ARTIFACT_DIR"
+          set -o pipefail
+          npx lhci autorun --config=lighthouserc.cjs 2>&1 | tee "$WEB_QA_ARTIFACT_DIR/lhci.log"
+
+      - name: Upload Lighthouse evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-qa-lighthouse-${{ github.run_id }}
+          path: .artifacts/web-qa
+          if-no-files-found: warn
+          retention-days: 30
