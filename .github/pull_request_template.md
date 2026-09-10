@@ -1,51 +1,49 @@
 ## Summary
 
-Describe the requested change and why it is needed.
+Describe the requested change, the target result, and why it is needed.
 
 ## Files changed
 
-List every changed file and its purpose:
+List changed files and their purpose.
 
-- `path/to/file` - purpose
+## Development freedom
 
-## Scope guardrails
+This repository allows game code, architecture, routes, renderers, assets, backends, tooling, and project structure to change when needed to achieve the requested goal. Do not treat prior implementation details as PR blockers.
 
-- [ ] I read `AGENTS.md`, `CLAUDE.md`, and the applicable High Land docs.
-- [ ] This remains High Land: The Sweet Escape with no unrelated game content.
-- [ ] Unrelated working-tree changes and approved assets were preserved.
-- [ ] Gameplay code was not changed for a controls-only or documentation-only task.
-- [ ] No secrets, credentials, `.env` files, or private room data are included.
+## Integrity
+
+- [ ] No secrets, credentials, private keys, `.env` secrets, or private room/user data are included.
+- [ ] Tests/validators were updated when the implementation changed.
+- [ ] Repository validation and live production verification are reported separately.
 
 ## Tests run
 
-Use PASS, FAIL, or NOT TESTED and include the relevant output or CI link.
+Use PASS, FAIL, or NOT TESTED and include relevant output or a CI link. List checks appropriate to the resulting implementation rather than a fixed command set.
 
 | Command/check | Status | Evidence |
 | --- | --- | --- |
-| `npm ci` | NOT TESTED | |
-| `npm run test:high-land` | NOT TESTED | |
-| `npm run build:high-land` | NOT TESTED | |
-| `node scripts/verify-browser-tool-policy.mjs` | NOT TESTED | |
-| PHP lint when applicable | NOT TESTED | |
+| | NOT TESTED | |
 
-## Screenshots and verification
+## Responsive/visual verification
 
-- Desktop screenshot/manual review:
-- Mobile screenshot/manual review:
-- Multiplayer two-browser/device evidence:
-- CI run:
-- Live URL and verification date:
-- Live status: PASS / FAIL / NOT TESTED
+When presentation is in scope, record phone, tablet, laptop/desktop, asset-path, and visual-state verification.
 
-Explain why visual, multiplayer, or live evidence is not applicable when omitted. Do not infer live success from local validation.
+## Multiplayer verification
+
+When multiplayer is in scope, record authority, room/session, reconnect, privacy, and two-independent-session evidence.
+
+## Live verification
+
+- Live URL:
+- Verification date:
+- Status: PASS / FAIL / NOT TESTED
+
+Do not infer live success from a commit, build, or upload alone.
 
 ## Remaining issues
 
-List every known failure, skipped check, manual follow-up, deployment dependency, or risk. Write `None` only when all applicable checks have evidence.
+List known failures, skipped checks, deployment dependencies, or risks.
 
--
+## Rollback / recovery
 
-## Rollback
-
-- Risk:
-- Rollback plan:
+Describe recovery steps when the change affects production state or data.
