@@ -1,0 +1,55 @@
+name: Recover First Approved Trichome Visual
+
+on:
+  push:
+    branches:
+      - cleanup/sitewide-simple-image-audit-2026-09-09
+    paths:
+      - .github/workflows/recover-first-approved-trichome.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: recover-first-approved-trichome
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      RECOVERY_MANIFEST: site/wordpress/education/recovery/THC_Trichomes_Secretory_Biology_Approved.json
+      DESTINATION: site/wordpress/assets/infographics/THC_Trichomes_Secretory_Biology_Approved.jpg
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Recover exact approved Drive binary
+        run: node scripts/recover-approved-drive-visual.mjs
+
+      - name: Verify recovered asset and deterministic policy
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s "$DESTINATION"
+          node --check scripts/recover-approved-drive-visual.mjs
+          node scripts/audit-education-visual-maps.mjs
+          git diff --check
+
+      - name: Commit only the recovered asset and manifest transition
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DESTINATION" "$RECOVERY_MANIFEST"
+          git diff --cached --name-only
+          test "$(git diff --cached --name-only | wc -l | tr -d ' ')" = "2"
+          git commit -m "Recover approved trichome education visual"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
