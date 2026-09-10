@@ -28,8 +28,11 @@ const campaign=JSON.parse(read('data/campaign.json'));
 const levels=JSON.parse(read('data/levels-20-v1.json'));
 const enemies=JSON.parse(read('data/enemy-catalog-v1.json'));
 const art=JSON.parse(read('data/seed-man-art-manifest-v1.json'));
+if(campaign.id!=='seed-man-campaign-20-v1')throw new Error(`campaign-id:${campaign.id}`);
 if(campaign.levelCount!==20||campaign.newLevelCount!==19||campaign.worlds?.length!==5)throw new Error('campaign-contract-invalid');
 if(campaign.finalBoss!=='blight-king')throw new Error(`campaign-finalBoss:${campaign.finalBoss}`);
+const campaignLevels=campaign.worlds.flatMap((world)=>world.levels||[]);
+if(campaignLevels.length!==20||campaignLevels.some((entry)=>Object.hasOwn(entry,'publicDataElementId')))throw new Error('retired-embedded-level-metadata-present');
 if(levels.levels?.length!==20)throw new Error(`level-catalog:expected-20:got-${levels.levels?.length}`);
 for(let i=1;i<=20;i+=1)if(!levels.levels.some((level)=>level.order===i))throw new Error(`missing-level-order:${i}`);
 const finale=levels.levels.find((level)=>level.order===20);
@@ -71,4 +74,4 @@ for(const stale of ['seed-man-approved-master-atlas-v1.webp','seed-man-cover-ban
 for(const stale of ['seed-man-signature-features-v1','nursery-night-shift','reservoir-run','root-zone-rumble','trichome-transit','weak-point stomps','power-ups'])if(read('input-guard-v1.js').includes(stale))throw new Error(`retired-input-runtime:${stale}`);
 for(const retiredPhenotype of ['solar-flare','static-haze','frost-resin','hydro-surge','terpene-tempest','vine-lash','mycelium-mind','rootbreaker','trichome-crystal','gravity-haze'])if(read('combat-browser-v2.js').includes(retiredPhenotype))throw new Error(`retired-v20-phenotype:${retiredPhenotype}`);
 
-console.log(JSON.stringify({ok:true,levels:20,worlds:5,bosses:6,enemies:10,phenotypeCarriers:3,finalBoss:'blight-king',approvedArt:true,worldRenderer:'seed-man-three-world-v2',playerState:'v20',combatRuntime:'v2',inputGuard:'v20',legacySproutRunRemoved:true,corruptAssetsRemoved:true,retiredArtifactsRemoved:retired.length}));
+console.log(JSON.stringify({ok:true,campaignId:campaign.id,levels:20,worlds:5,bosses:6,enemies:10,phenotypeCarriers:3,finalBoss:'blight-king',approvedArt:true,worldRenderer:'seed-man-three-world-v2',playerState:'v20',combatRuntime:'v2',inputGuard:'v20',legacySproutRunRemoved:true,corruptAssetsRemoved:true,retiredArtifactsRemoved:retired.length}));
