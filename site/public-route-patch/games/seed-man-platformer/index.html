@@ -89,37 +89,6 @@
 
   <footer><p><strong>DTF Genetics</strong> · Dream the Future</p><p>Original DTF browser game using the approved Seed Man visual system.</p></footer>
 
-  <script>
-    (() => {
-      const SELECT_ID='campaign-level-select-v20';
-      let installed=false;
-      function installCampaignSelect(){
-        if(installed)return;
-        const campaign=window.__SPROUT_CAMPAIGN__;
-        const select=document.getElementById(SELECT_ID);
-        if(!campaign||campaign.levelCount!==20||!select){setTimeout(installCampaignSelect,25);return;}
-        const levels=campaign.listLevels?.()||[];
-        select.innerHTML='';
-        for(const world of campaign.worlds||[]){
-          const group=document.createElement('optgroup');
-          group.label=`World ${world.order} — ${world.title}`;
-          for(const entry of levels.filter((item)=>item.worldOrder===world.order)){
-            const option=document.createElement('option');
-            option.value=entry.id;
-            option.textContent=`${entry.order}. ${entry.title}${entry.boss?` — Boss` : ''}`;
-            group.append(option);
-          }
-          select.append(group);
-        }
-        select.value=campaign.activeLevelId||campaign.defaultLevelId||levels[0]?.id||'';
-        select.addEventListener('change',()=>{if(select.value)campaign.selectLevel(select.value);});
-        window.addEventListener('sprout:level-selected',(event)=>{const id=event.detail?.levelId;if(id)select.value=id;});
-        installed=true;
-        document.documentElement.dataset.seedManCampaignSelect='v20';
-      }
-      if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installCampaignSelect,{once:true});else installCampaignSelect();
-    })();
-  </script>
   <script src="./approved-art-core-v1.js?v=20260909-v20-runtime-v4" defer></script>
   <script src="./approved-art-runtime-v1.js?v=20260909-v20-runtime-v4" defer></script>
   <script src="./app.js?v=20260909-v20-runtime-v4" defer></script>
