@@ -1,35 +1,35 @@
 <!doctype html>
-<html lang="en" data-seed-man-release="20260909-v20-runtime-v4">
+<html lang="en" data-seed-man-release="20260909-flex-v1">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <meta name="dtf-seed-man-release" content="20260909-v20-runtime-v4">
+  <meta name="dtf-seed-man-release" content="20260909-flex-v1">
   <title>Seed Man: Grow. Fight. Restore. | DTF Genetics</title>
-  <meta name="description" content="Play Seed Man, the DTF Genetics 20-level platform adventure across five worlds with six bosses, approved green-armored character art, phenotype combat, checkpoints, desktop controls, and touch controls.">
+  <meta name="description" content="Play Seed Man, the DTF Genetics browser platform adventure with campaign progression, phenotype combat, checkpoints, desktop controls, and touch controls.">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta name="theme-color" content="#10291d">
   <link rel="canonical" href="https://dtfseeds.com/games/seed-man-platformer/">
-  <link rel="stylesheet" href="./seed-man.css?v=20260909-v20-runtime-v4">
+  <link rel="stylesheet" href="./seed-man.css?v=20260909-flex-v1">
 </head>
-<body data-seed-ui-release="20260909-v20-runtime-v4" data-seed-man-approved-art="approved-showcase-2026-09-08">
+<body data-seed-ui-release="20260909-flex-v1">
   <header class="site-header">
     <a class="brand" href="/">DTF Genetics <span>Dream the Future</span></a>
     <nav aria-label="Primary"><a href="/games/">Games</a><a href="/learn/">Learn</a><a href="/community/">Community</a></nav>
   </header>
 
   <main>
-    <section class="hero" data-campaign-identity="seed-man-v20">
-      <p class="eyebrow">Seed Man · 20-Level Campaign · 5 Worlds · Approved Character Art · Phenotype Combat</p>
+    <section class="hero" data-campaign-identity="seed-man">
+      <p class="eyebrow">Seed Man · Platform Adventure · Phenotype Combat</p>
       <h1>Seed Man</h1>
-      <p class="lede">Run through Greenhouse Valley, Forest Ruins, Desert Canyon, Frozen Peaks and Eco City. Seed Man stays in permanent Plant form until he defeats phenotype carriers and temporarily absorbs Fire, Electric or Ice powers for 30 seconds. Defeat six bosses and face the four-phase Blight King in Level 20.</p>
-      <p id="load-status" class="status" role="status" aria-live="polite" aria-atomic="true">Loading canonical Seed Man v20 campaign…</p>
-      <p class="status" id="seed-ui-release-marker" data-seed-ui-marker="seed-man-v20">LIVE UI · 20 LEVELS · APPROVED ART · THREE.JS WORLDS · PHENOTYPE COMBAT</p>
+      <p class="lede">Run, jump, fight, collect, and restore each world. Defeat phenotype carriers to temporarily absorb Fire, Electric, or Ice powers and use them against enemies and bosses.</p>
+      <p id="load-status" class="status" role="status" aria-live="polite" aria-atomic="true">Loading Seed Man campaign…</p>
+      <p class="status" id="seed-ui-release-marker" data-seed-ui-marker="seed-man-flex">ACTIVE GAME · CAMPAIGN · COMBAT · RESPONSIVE CONTROLS</p>
     </section>
 
-    <section class="game-shell" aria-label="Seed Man platformer" data-seed-production-ui="v20">
+    <section class="game-shell" aria-label="Seed Man platformer" data-seed-production-ui="active">
       <div class="hud" aria-live="polite">
         <span>Seeds <strong id="sprout-count">0 / 0</strong></span>
         <span>Progress <strong id="progress-count">0%</strong></span>
@@ -46,17 +46,17 @@
         <button type="button" data-control="left" aria-label="Move left">◀</button>
         <button type="button" data-control="right" aria-label="Move right">▶</button>
         <button type="button" data-control="jump" class="jump" aria-label="Jump or double jump">JUMP ×2</button>
-        <button type="button" id="combat-attack-button" class="attack" aria-label="Attack with Seed Slinger">ATTACK</button>
-        <button type="button" id="combat-ability-button" class="ability" aria-label="Use absorbed phenotype ability">PHENO</button>
+        <button type="button" id="combat-attack-button" class="attack" aria-label="Attack">ATTACK</button>
+        <button type="button" id="combat-ability-button" class="ability" aria-label="Use phenotype ability">PHENO</button>
       </div>
-      <p class="controls control-copy"><strong>Movement:</strong> A/D or ←/→ · Space/W/↑ · double jump. <strong>Combat:</strong> J/X attack · K/C phenotype ability · P pause. Defeat phenotype carriers to absorb temporary Fire, Electric, or Ice powers.</p>
+      <p class="controls control-copy"><strong>Movement:</strong> A/D or ←/→ · Space/W/↑ · double jump. <strong>Combat:</strong> J/X attack · K/C phenotype ability · P pause.</p>
     </section>
 
-    <section class="feature-strip" aria-label="Seed Man campaign features">
-      <article><strong>20 levels</strong><span>Five distinct campaign worlds</span></article>
-      <article><strong>4 core forms</strong><span>Plant · Fire · Electric · Ice</span></article>
-      <article><strong>6 bosses</strong><span>Blight King is the four-phase finale</span></article>
-      <article><strong>Enemy-pool encounters</strong><span>Every level uses its canonical enemy roster</span></article>
+    <section class="feature-strip" aria-label="Seed Man features">
+      <article><strong>Campaign</strong><span>Progress through multiple playable worlds</span></article>
+      <article><strong>Phenotypes</strong><span>Plant · Fire · Electric · Ice</span></article>
+      <article><strong>Combat</strong><span>Enemies, carriers, and bosses</span></article>
+      <article><strong>Responsive play</strong><span>Keyboard and touch controls</span></article>
     </section>
 
     <section class="panel" id="finish-panel" hidden>
@@ -68,18 +68,18 @@
 
     <section class="panel">
       <h2>Campaign</h2>
-      <p>Four levels per world carry Seed Man from Greenhouse Valley through Forest Ruins, Desert Canyon and Frozen Peaks to Eco City. World bosses cap the first four worlds; Eco Sentinel guards Level 19 and the Blight King ends Level 20.</p>
+      <p>Choose a playable level and continue through the current campaign build.</p>
       <label for="seed-man-level-select">Choose level</label>
       <select id="seed-man-level-select" aria-label="Choose Seed Man level"></select>
-      <p id="seed-campaign-title">Level 1 / 20 · Sprout Steps</p>
-      <p id="seed-campaign-setting">Greenhouse Valley</p>
-      <p id="seed-campaign-progress">0 / 20 cleared</p>
+      <p id="seed-campaign-title">Loading levels…</p>
+      <p id="seed-campaign-setting"></p>
+      <p id="seed-campaign-progress"></p>
     </section>
 
     <section class="panel">
       <h2>Phenotype combat</h2>
       <div class="power-guide">
-        <p><strong>Plant</strong> is Seed Man's permanent base form and standard Seed Slinger attack.</p>
+        <p><strong>Plant</strong> is the base form.</p>
         <p><strong>Fire</strong> launches burning projectiles.</p>
         <p><strong>Electric</strong> chains damage between nearby enemies.</p>
         <p><strong>Ice</strong> freezes enemies and controls dangerous encounters.</p>
@@ -87,20 +87,18 @@
     </section>
   </main>
 
-  <footer><p><strong>DTF Genetics</strong> · Dream the Future</p><p>Original DTF browser game using the approved Seed Man visual system.</p></footer>
+  <footer><p><strong>DTF Genetics</strong> · Dream the Future</p><p>Original DTF browser game in active visual redevelopment.</p></footer>
 
-  <script src="./approved-art-core-v1.js?v=20260909-v20-runtime-v4" defer></script>
-  <script src="./approved-art-runtime-v1.js?v=20260909-v20-runtime-v4" defer></script>
-  <script src="./app.js?v=20260909-v20-runtime-v4" defer></script>
-  <script src="./player-state-v20.js?v=20260909-v20-runtime-v4" defer></script>
-  <script src="./seed-man-production-art.js?v=20260909-v20-runtime-v4" defer></script>
-  <script src="./three-world-v1.js?v=20260909-v20-runtime-v4" defer></script>
-  <script src="./campaign-v20-runtime.js?v=20260909-v20-runtime-v4" defer></script>
-  <script src="./campaign-ui-v20.js?v=20260909-v20-runtime-v4" defer></script>
-  <script src="./v20-enemy-runtime.js?v=20260909-v20-runtime-v4" defer></script>
-  <script src="./combat-browser-v2.js?v=20260909-v20-runtime-v4" defer></script>
-  <script src="./enemy-attacks-browser-v2.js?v=20260909-v20-runtime-v4" defer></script>
-  <script src="./input-guard-v1.js?v=20260909-v20-runtime-v4" defer></script>
-  <script src="./canvas-compat-v1.js?v=20260909-v20-runtime-v4" defer></script>
+  <script src="./app.js?v=20260909-flex-v1" defer></script>
+  <script src="./player-state-v20.js?v=20260909-flex-v1" defer></script>
+  <script src="./seed-man-production-art.js?v=20260909-flex-v1" defer></script>
+  <script src="./three-world-v1.js?v=20260909-flex-v1" defer></script>
+  <script src="./campaign-v20-runtime.js?v=20260909-flex-v1" defer></script>
+  <script src="./campaign-ui-v20.js?v=20260909-flex-v1" defer></script>
+  <script src="./v20-enemy-runtime.js?v=20260909-flex-v1" defer></script>
+  <script src="./combat-browser-v2.js?v=20260909-flex-v1" defer></script>
+  <script src="./enemy-attacks-browser-v2.js?v=20260909-flex-v1" defer></script>
+  <script src="./input-guard-v1.js?v=20260909-flex-v1" defer></script>
+  <script src="./canvas-compat-v1.js?v=20260909-flex-v1" defer></script>
 </body>
 </html>
