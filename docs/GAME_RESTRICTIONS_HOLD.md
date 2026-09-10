@@ -7,7 +7,7 @@ Duration: remains active until the user explicitly revokes or replaces it.
 
 ## Purpose
 
-All DTFSeeds project-imposed development restrictions that would prevent necessary changes to a game are temporarily suspended. Agents and developers may modify, replace, restructure, migrate, rewrite, consolidate, or remove game code, assets, rendering, UI, architecture, data plumbing, build tooling, deployment packaging, multiplayer implementation, routes, and repository layout when doing so is reasonably necessary to achieve the requested product goal.
+All DTFSeeds project-imposed development restrictions that would prevent necessary changes to a game are temporarily suspended. Agents and developers may modify, replace, restructure, migrate, rewrite, consolidate, or remove game code, assets, rendering, UI, architecture, data plumbing, build tooling, deployment packaging, multiplayer implementation, routes, repository layout, and development/QA tooling when doing so is reasonably necessary to achieve the requested product goal.
 
 ## Scope
 
@@ -18,6 +18,7 @@ This hold applies to every DTFSeeds game and game-adjacent runtime, including Hi
 While this hold is active:
 
 - Existing project-level instructions such as "preserve existing logic," "make the smallest change," "do not create a competing implementation," "do not change the backend," "do not rename or restructure," "locked," "canonical only," or similar game-development constraints are not blockers when they conflict with the current user-directed work.
+- Project-level restrictions on development, testing, browser, rendering, engine, build, or QA tools are also suspended. Use the strongest appropriate tools available for the task.
 - Canonical/source-of-truth files remain useful historical and integration references, but they do not prohibit replacing or migrating the implementation.
 - A game may be rebuilt from scratch when that is cleaner than incremental repair.
 - Existing engines, APIs, networking, persistence, build systems, or renderers may be replaced when technically justified.
