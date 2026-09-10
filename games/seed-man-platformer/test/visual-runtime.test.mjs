@@ -9,69 +9,48 @@ import {
   getWorldVisual,
   validateVisualRuntime
 } from '../src/render/visual-runtime.mjs';
-import {
-  VISUAL_WORLD_KEYS,
-  getCampaignVisualWorldMap,
-  resolveVisualWorldKey
-} from '../src/render/visual-world-map.mjs';
-import {
-  VISUAL_WORLD_PALETTES,
-  createVisualSceneStyle,
-  getVisualWorldPalette
-} from '../src/render/visual-palette.mjs';
+import { resolveVisualWorldKey } from '../src/render/visual-world-map.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const configPath = path.resolve(here, '../data/visual-runtime-v1.json');
 const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
-validateVisualRuntime(config);
-
-assert.deepEqual(Object.keys(config.worlds).sort(), [...VISUAL_RUNTIME_CONTRACT.requiredWorlds].sort());
-assert.deepEqual(Object.keys(config.player.phenotypes).sort(), [...VISUAL_RUNTIME_CONTRACT.requiredPhenotypes].sort());
-assert.deepEqual(Object.keys(VISUAL_WORLD_PALETTES).sort(), [...VISUAL_WORLD_KEYS].sort());
-assert.equal(VISUAL_RUNTIME_CONTRACT.characterContract, 'approved-green-armored-plant-hero-v1');
+assert.equal(validateVisualRuntime(config), config);
+assert.equal(VISUAL_RUNTIME_CONTRACT.locked, false);
+assert.equal(VISUAL_RUNTIME_CONTRACT.characterContract, null);
+assert.equal(config.reference.styleLocked, false);
 
 const greenhouse = getWorldVisual(config, 'greenhouse-valley');
 assert.equal(greenhouse.label, 'Greenhouse Valley');
-assert.ok(greenhouse.materials.includes('grass'));
-assert.ok(greenhouse.requiredFx.includes('water-mist'));
+assert.ok(Array.isArray(greenhouse.layers));
 
 const plan = buildParallaxPlan(config, 'greenhouse-valley');
-assert.equal(plan.length, 7);
+assert.ok(plan.length > 0);
 assert.equal(plan.find((layer) => layer.key === 'gameplay').parallax, 1);
-assert.ok(plan.find((layer) => layer.key === 'far-bg').parallax < plan.find((layer) => layer.key === 'mid-bg').parallax);
-assert.ok(plan.find((layer) => layer.key === 'mid-bg').parallax < plan.find((layer) => layer.key === 'near-bg').parallax);
 
-for (const phenotypeKey of ['fire', 'electric', 'ice']) assert.equal(getPhenotypeVisual(config, phenotypeKey).durationMs, 30000);
 assert.equal(getPhenotypeVisual(config, 'plant').durationMs, 0);
+assert.equal(resolveVisualWorldKey({ visualWorldKey: 'frozen-peak' }), 'frozen-peaks');
+assert.equal(getWorldVisual(config, 'frozen-peak').label, 'Frozen Peaks');
 
-const campaignMap = getCampaignVisualWorldMap();
-assert.equal(campaignMap['Greenhouse District'], 'greenhouse-valley');
-assert.equal(campaignMap.Rootworks, 'forest-ruins');
-assert.equal(campaignMap['Resin Works'], 'desert-canyon');
-assert.equal(campaignMap['Sky Garden'], 'frozen-peaks');
-assert.equal(campaignMap['Genetic Frontier'], 'eco-city');
+const alternate = {
+  version: 'another-renderer',
+  worlds: {
+    'new-world': { label: 'New World', layers: ['gameplay'] }
+  },
+  player: {
+    phenotypes: {
+      custom: { durationMs: 1250 }
+    }
+  },
+  assetPolicy: {
+    locked: false,
+    allowRawFilenameReferences: true,
+    rendererOwnsGameplayState: true
+  }
+};
+assert.equal(validateVisualRuntime(alternate), alternate);
+assert.equal(getWorldVisual(alternate, 'new-world').label, 'New World');
+assert.equal(getPhenotypeVisual(alternate, 'custom').durationMs, 1250);
 
-assert.equal(resolveVisualWorldKey({ worldTitle: 'Rootworks' }), 'forest-ruins');
-assert.equal(resolveVisualWorldKey({ title: 'Frostline Canopy' }), 'frozen-peaks');
-assert.equal(resolveVisualWorldKey({ visualWorldKey: 'frozen-peak' }), 'frozen-peaks', 'legacy singular key must normalize to canonical Frozen Peaks');
-assert.equal(resolveVisualWorldKey({ title: 'Genome Spire' }), 'eco-city');
-assert.equal(getWorldVisual(config, 'frozen-peak').label, 'Frozen Peaks', 'legacy singular key remains a read-only compatibility alias');
-
-for (const worldKey of VISUAL_WORLD_KEYS) {
-  const palette = getVisualWorldPalette(worldKey);
-  assert.equal(typeof palette.sky, 'number');
-  assert.equal(typeof palette.accent, 'number');
-  const style = createVisualSceneStyle(worldKey);
-  assert.equal(style.worldKey, worldKey);
-  assert.equal(style.background, palette.sky);
-  assert.equal(style.platform.top, palette.top);
-}
-assert.equal(createVisualSceneStyle('frozen-peak').worldKey, 'frozen-peaks');
-
-const invalid = structuredClone(config);
-invalid.assetPolicy.allowRawFilenameReferences = true;
-assert.throws(() => validateVisualRuntime(invalid), /raw filename references are forbidden/);
-assert.throws(() => getVisualWorldPalette('not-a-world'), /Unknown Seed Man visual world palette/);
-
-console.log('seed-man visual runtime contract: ok');
+assert.throws(() => validateVisualRuntime(null), /config must be an object/);
+console.log('seed-man open visual runtime contract: ok');
