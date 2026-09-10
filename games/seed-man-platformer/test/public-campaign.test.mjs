@@ -35,6 +35,7 @@ assert.equal(levels20.levels.at(-1).boss, 'blight-king');
 
 for (const retired of [
   'data/level-01.json',
+  'data/levels-02-11.json',
   'data/levels-12-15.json',
   'campaign-v1.js',
   'gameplay-v2.js',
@@ -52,6 +53,7 @@ for (const retired of [
 ]) {
   await assert.rejects(access(new URL(retired, publicRoot)), { code: 'ENOENT' }, `retired public artifact must stay removed: ${retired}`);
 }
+await assert.rejects(access(new URL('data/levels-02-11.json', root)), { code:'ENOENT' }, 'retired canonical v3 level catalog must stay removed');
 
 for (const required of [
   'player-state-v20.js',

@@ -24,8 +24,10 @@ class FakeElement {
 }
 
 const listeners = new Map();
+const documentElement = { dataset:{} };
 const sandbox = {
   Element: FakeElement,
+  document: { documentElement },
   window: {
     addEventListener(type, handler, options) {
       listeners.set(type, { handler, options });
@@ -39,6 +41,28 @@ assert.equal(listeners.has('keydown'), true, 'keydown guard must be installed');
 assert.equal(listeners.has('keyup'), true, 'keyup guard must be installed');
 assert.equal(listeners.get('keydown').options.capture, true, 'keydown guard must run in capture phase');
 assert.equal(listeners.get('keyup').options.capture, true, 'keyup guard must run in capture phase');
+assert.equal(sandbox.window.__SEED_MAN_INPUT_GUARD__?.version, 'seed-man-input-guard-v20');
+assert.equal(sandbox.window.__SEED_MAN_INPUT_GUARD__?.legacySignatureRuntime, false);
+assert.equal(documentElement.dataset.seedManInputGuard, 'seed-man-input-guard-v20');
+
+for (const retired of [
+  'sprout-run',
+  'nursery-night-shift',
+  'reservoir-run',
+  'root-zone-rumble',
+  'mycelium-mile',
+  'trichome-transit',
+  'kief-cavern-climb',
+  'rosin-refinery-rush',
+  'terpene-tunnel',
+  'frostline-canopy',
+  'cloud-nine-citadel',
+  'power-ups',
+  'weak-point stomps',
+  'seed-man-signature-features-v1'
+]) {
+  assert.equal(guardSource.includes(retired), false, `retired input/signature marker must stay removed: ${retired}`);
+}
 
 function dispatch(type, target) {
   let stopped = false;
@@ -71,4 +95,4 @@ assert.deepEqual(
   'canvas gameplay keys must continue through to the platformer runtime'
 );
 
-console.log('Seed Man keyboard focus guard regression checks passed.');
+console.log('Seed Man v20 keyboard focus guard regression checks passed.');

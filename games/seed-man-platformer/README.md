@@ -29,7 +29,7 @@ Production policy:
 
 ## 20-level campaign
 
-The production campaign contains **20 levels across five worlds**, four levels per world:
+The production campaign identity is `seed-man-campaign-20-v1` and contains **20 levels across five worlds**, four levels per world:
 
 ### World 1 — Greenhouse Valley
 1. Sprout Steps
@@ -71,13 +71,16 @@ Canonical campaign files:
 - `games/seed-man-platformer/src/systems/campaign-state-v2.mjs`
 - `games/seed-man-platformer/src/systems/save-state-v2.mjs`
 
+The campaign manifest must not contain the retired embedded-bootstrap field `publicDataElementId`.
+
 ## Production/retired boundary
 
-The current production contract is **v20 only**. Sprout Run, 11-level, and 15-level public runtimes are retired and must not be restored to the deployable route.
+The current production contract is **v20 only**. Sprout Run, the v3 generated 2–11 stages, and the 11/15-level public runtimes are retired and must not be restored to source-of-truth or the deployable route.
 
-Retired public artifacts include:
+Retired campaign/runtime artifacts include:
 
 - `data/level-01.json`
+- `data/levels-02-11.json`
 - `data/levels-12-15.json`
 - `campaign-v1.js`
 - `gameplay-v2.js`
@@ -93,7 +96,7 @@ Retired public artifacts include:
 - corrupt `seed-man-approved-master-atlas-v1.webp`
 - invalid `seed-man-cover-banner-approved-v1.webp`
 
-Those files may exist only in historical Git data or explicit archive documentation. They may not be runtime dependencies, release inputs, test requirements, publisher assets, or public-route files.
+Those files may exist only in historical Git data or explicit archive documentation. They may not be runtime dependencies, canonical level sources, release inputs, test requirements, publisher assets, or public-route files.
 
 Current v20 runtime/release ownership is represented by:
 
@@ -101,6 +104,7 @@ Current v20 runtime/release ownership is represented by:
 - `games/seed-man-platformer/data/levels-20-v1.json`
 - `site/public-route-patch/games/seed-man-platformer/app.js`
 - `site/public-route-patch/games/seed-man-platformer/player-state-v20.js`
+- `site/public-route-patch/games/seed-man-platformer/input-guard-v1.js` — v20 keyboard-focus guard only; no gameplay/signature engine
 - `site/public-route-patch/games/seed-man-platformer/three-world-v1.js` generated from canonical Three.js source
 - `site/public-route-patch/games/seed-man-platformer/campaign-v20-runtime.js`
 - `site/public-route-patch/games/seed-man-platformer/campaign-ui-v20.js`
@@ -178,40 +182,17 @@ Relevant modules:
 
 - `games/seed-man-platformer/src/systems/world-theme.mjs`
 - `games/seed-man-platformer/src/systems/platform-surface-map.mjs`
-- `games/seed-man-platformer/src/systems/hud-model.mjs`
-- `games/seed-man-platformer/src/systems/vfx-catalog.mjs`
-- `games/seed-man-platformer/src/systems/collectible-catalog.mjs`
-- `games/seed-man-platformer/src/systems/audio-events.mjs`
+- `games/seed-man-platformer/src/render/three-world.mjs`
 
-## Runtime architecture
+## HUD and player state
 
-The project keeps gameplay/simulation independent from rendering. The Three.js layer is the browser world renderer, but it is a view adapter—not the owner of player state, collisions, bosses, progression, or save state.
+Browser player state is owned by `player-state-v20.js` and must remain free of the retired speed/jump/magnet/shield power model. HUD, combat, campaign UI, deaths, checkpoint state and phenotype presentation read from the canonical v20 state rather than rebuilding incompatible state independently.
 
-Core rules:
+The shipped input guard only protects keyboard behavior on interactive HTML controls. It must not contain a second gameplay engine or old level-specific signature mechanics.
 
-- `campaign-v20-runtime.js` is the only public campaign/level authority
-- `player-state-v20.js` owns the public player-state contract
-- fixed gameplay simulation owns entities and collision
-- combat/enemy runtimes use only canonical production IDs
-- renderer consumes stable state
-- DOM handles HUD/menu/accessibility surfaces
-- asset manifest keys are the only production asset API
-- approved art loader fails loudly if required production assets are unavailable
-- no renderer may silently replace the approved character runtime
-- the public page must not embed a `seed-man-level` Sprout Run bootstrap JSON block
-- generated public runtime files must be built from canonical source before release packaging
+## Release gate
 
-The production composition boundary is:
-
-- `games/seed-man-platformer/src/systems/production-assets.mjs`
-- `games/seed-man-platformer/src/systems/production-bootstrap.mjs`
-- `games/seed-man-platformer/src/systems/game-contract.mjs`
-- `games/seed-man-platformer/src/systems/production-readiness.mjs`
-- `games/seed-man-platformer/src/systems/release-contract.mjs`
-
-## Validation
-
-Run:
+The deterministic production gate is:
 
 ```bash
 npm --prefix games/seed-man-platformer run test:production-contracts
@@ -220,10 +201,4 @@ node scripts/verify-seed-man-production-v20.mjs
 node scripts/validate-seed-man-production-bundle.mjs
 ```
 
-The production test suite validates approved-art ownership, 20 contiguous levels, five worlds, world/level mapping, phenotype timing, phenotype drops, boss phases, final-boss behavior, campaign progression, save state, HUD model, input actions, terrain behavior, manifest-key policy, production readiness, source/public physics parity, boss-gated exits, and Three.js state boundaries.
-
-The live release must also pass deterministic source/build validation, atomic publisher validation, public asset validation, and live production route verification before it is called released.
-
-## Current migration rule
-
-Migration is complete at the public-route contract level: **v20 is canonical and Sprout Run/11-level/15-level runtime ownership is retired.** Future Seed Man work must begin from the 20-level campaign, v20 player/combat contracts, generated Three.js world renderer, and approved-art manifest described above. Do not restore retired public files to make an obsolete test pass; update the obsolete test or release guard to the v20 contract instead.
+The WordPress publisher then atomically stages the allowlisted v20 route, verifies hashes and the staged production contract, swaps it into `/games/seed-man-platformer/`, purges cache, and performs cache-busted live HTTP verification. Playwright is not part of this workflow.

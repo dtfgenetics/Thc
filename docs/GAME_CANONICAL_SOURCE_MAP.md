@@ -1,6 +1,6 @@
 # DTFSeeds Game Canonical Source Map
 
-Updated: 2026-09-05
+Updated: 2026-09-09
 
 This document is the human-readable companion to `data/game-source-map.json`.
 
@@ -14,7 +14,7 @@ Never begin a game repair from the deployed HTML, a copied integration bundle, o
 | --- | --- | --- | --- | --- |
 | High IQ | `/games/high-iq/` | `dtfgenetics/Thc` | `games/high-iq` + `site/public-route-patch/games/high-iq` | same repo/runtime |
 | High Life | `/games/high-life/` | `dtfgenetics/Thc` | `games/high-life` | `site/public-route-patch/games/high-life` |
-| Seed Man: Greenhouse Gauntlet | `/games/seed-man-platformer/` | `dtfgenetics/Thc` | `games/seed-man-platformer` | `site/public-route-patch/games/seed-man-platformer` |
+| Seed Man: Grow. Fight. Restore. | `/games/seed-man-platformer/` | `dtfgenetics/Thc` | `games/seed-man-platformer` | `site/public-route-patch/games/seed-man-platformer` |
 | Grower Conversations | `/games/grower-conversations/` | `dtfgenetics/Thc` | `games/grower-conversations` | `site/public-route-patch/games/grower-conversations` |
 | High Land | `/games/high-land/` | `dtfgenetics/Thc` | `apps/high-land-web` | built by the DTFSeeds public suite |
 | Weedopolis | `/games/weedopolis/` | `dtfgenetics/Weedopolis-strain-Edition` | `src`, `digital`, `data` | external canonical build packaged by `dtfgenetics/Thc` |
@@ -78,12 +78,12 @@ For every game:
 1. resolve this canonical owner;
 2. read that game's source-of-truth document and current `main`;
 3. branch and repair canonical source;
-4. run canonical tests/build/validators;
-5. merge the canonical repair;
-6. sync or package the exact passing source through `dtfgenetics/Thc`;
-7. run the DTFSeeds public-suite and release-integrity gates;
-8. deploy through the production workflow;
-9. verify the exact live route and essential assets;
-10. browser-playtest the critical loop and mobile behavior separately.
+4. validate in the canonical repository;
+5. build or package the integration artifact;
+6. merge through the normal repository workflow;
+7. publish through the protected DTFSeeds pipeline;
+8. verify the exact public visitor URL after deployment.
 
-A source test is not a browser playtest, and a successful deploy is not proof that the route is serving the intended game.
+## Concurrency rule
+
+If a repository is being changed by more than one task or agent, avoid concurrent edits to the same file. Prefer narrow ownership, re-fetch before write, and integrate through a single PR or controlled merge sequence.
