@@ -1,4 +1,4 @@
-name: Repair canonical THC C004-C009 infographic sources
+name: Repair canonical THC C004-C007 infographic sources
 
 on:
   workflow_dispatch:
@@ -32,7 +32,7 @@ jobs:
           set -euo pipefail
           root='site/wordpress/assets/infographics'
           registry="$root/import-curated-2026-08-19.json"
-          tmp="$RUNNER_TEMP/thc-c004-c009-masters"
+          tmp="$RUNNER_TEMP/thc-c004-c007-masters"
           mkdir -p "$tmp"
 
           cat > "$tmp/expected.tsv" <<'EOF'
@@ -40,8 +40,6 @@ jobs:
           THC-C005_Infographic_Root_Anatomy_and_Forensics	255268	3e5cdd4f2a823d65e42c2f12426340518bf177536ebdfd86f30126adfc417968
           THC-C006_Infographic_Stem_Transport_and_Training_Risk	251938	995913c034a3bd9e73f3090cf40c2e60fe82c4965e500f546eda5af4a015ce71
           THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange	347576	31300aa7d22fa29fc40a5722ebe918b94fa9a49fd506ee3f70306776a122ed50
-          THC-C008_Infographic_Flower_Anatomy_Reproduction	287636	563ad278f034f7aeea72037f9825e6adb7082942263b8cec88d043e041e178eb
-          THC-C009_Infographic_Trichomes_Secretory_Biology	291366	b41c43fb663ef9fb3b1fcff5a313e0063abcdda013fb0bb40c23561d1e10cf23
           EOF
 
           validate_png() {
@@ -130,9 +128,7 @@ jobs:
             'THC-C004_Infographic_From_Cell_to_Canopy',
             'THC-C005_Infographic_Root_Anatomy_and_Forensics',
             'THC-C006_Infographic_Stem_Transport_and_Training_Risk',
-            'THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange',
-            'THC-C008_Infographic_Flower_Anatomy_Reproduction',
-            'THC-C009_Infographic_Trichomes_Secretory_Biology'
+            'THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange'
           ];
           for (const file of files) {
             let text = fs.readFileSync(file, 'utf8');
@@ -148,11 +144,17 @@ jobs:
           set -euo pipefail
           node --check scripts/stage-eligible-infographics.mjs
           git diff --check
-          for n in 004 005 006 007 008 009; do
+          for n in 004 005 006 007; do
             count="$(find site/wordpress/assets/infographics -maxdepth 1 -type f -name "THC-C${n}_Infographic_*.png" | wc -l)"
             test "$count" -eq 1 || { echo "Expected exactly one repaired PNG for THC-C${n}, found $count" >&2; exit 1; }
             if find site/wordpress/assets/infographics -maxdepth 1 -type f -name "THC-C${n}_Infographic_*.jpg" | grep -q .; then
               echo "Mislabeled legacy JPG remains for THC-C${n}" >&2
+              exit 1
+            fi
+          done
+          for stem in THC-C008_Infographic_Flower_Anatomy_Reproduction THC-C009_Infographic_Trichomes_Secretory_Biology; do
+            if find site/wordpress/assets/infographics -maxdepth 1 -type f -name "$stem.*" | grep -q .; then
+              echo "Rejected visual must remain absent: $stem" >&2
               exit 1
             fi
           done
@@ -169,7 +171,7 @@ jobs:
             echo 'changed=false' >> "$GITHUB_OUTPUT"
             echo 'Canonical infographic sources already match the approved masters.'
           else
-            git commit -m 'Restore verified C004-C009 infographic PNG masters'
+            git commit -m 'Restore verified C004-C007 infographic PNG masters'
             git pull --rebase origin main
             git push origin HEAD:main
             echo 'changed=true' >> "$GITHUB_OUTPUT"
