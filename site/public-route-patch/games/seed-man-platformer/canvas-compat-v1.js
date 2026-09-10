@@ -1,8 +1,8 @@
 'use strict';
 
 (() => {
-  const VERSION='seed-man-runtime-bootstrap-v20';
-  const RELEASE='20260909-v20-runtime-v4';
+  const VERSION='seed-man-runtime-bootstrap-flex-v1';
+  const RELEASE='20260909-flex-v1';
   const proto=window.HTMLCanvasElement?.prototype;
   const nativeGetContext=proto?.getContext;
   let playerStateLoaded=false;
@@ -10,7 +10,6 @@
   let enemyLoaded=false;
   let uiLoaded=false;
   let campaignLoaded=false;
-  let artLoaded=false;
   let threeLoaded=false;
   let attempts=0;
 
@@ -36,13 +35,10 @@
     });
   }
 
-  async function installCanonicalRuntime(){
-    try{
-      if(!window.__SEED_MAN_APPROVED_ART_CORE__) await loadScript('./approved-art-core-v1.js','seedApprovedArtCoreV20');
-      if(!window.__SEED_MAN_APPROVED_ART_RUNTIME__) await loadScript('./approved-art-runtime-v1.js','seedApprovedArtRuntimeV20');
-      artLoaded=Boolean(window.__SEED_MAN_APPROVED_ART_CORE__||window.__SEED_MAN_APPROVED_ART_RUNTIME__);
-      campaignLoaded=window.__SPROUT_CAMPAIGN__?.levelCount===20||Boolean(window.__SEED_MAN_CAMPAIGN_V20__);
-    }catch(error){console.error('[Seed Man] canonical v20 bootstrap failed.',error);}
+  function detectCampaign(){
+    const count=Number(window.__SPROUT_CAMPAIGN__?.levelCount||window.__SEED_MAN_CAMPAIGN_V20__?.levelCount||0);
+    campaignLoaded=count>0||Boolean(window.__SPROUT_CAMPAIGN__||window.__SEED_MAN_CAMPAIGN_V20__);
+    return campaignLoaded;
   }
 
   async function installAdapters(){
@@ -52,32 +48,30 @@
       return;
     }
     try{
-      if(window.__SEED_MAN_PLAYER_STATE__?.installed!==true) await loadScript('./player-state-v20.js','seedPlayerStateV20');
+      if(window.__SEED_MAN_PLAYER_STATE__?.installed!==true) await loadScript('./player-state-v20.js','seedPlayerState');
       playerStateLoaded=window.__SEED_MAN_PLAYER_STATE__?.installed===true;
-      if(!playerStateLoaded) throw new Error('Seed Man v20 player-state adapter did not install');
-      if(window.__SPROUT_COMBAT_BROWSER__?.installed!==true) await loadScript('./combat-browser-v2.js','seedCombatBrowserV20');
+      if(window.__SPROUT_COMBAT_BROWSER__?.installed!==true) await loadScript('./combat-browser-v2.js','seedCombatBrowser');
       combatLoaded=window.__SPROUT_COMBAT_BROWSER__?.installed===true;
-      if(combatLoaded&&window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.installed!==true) await loadScript('./enemy-attacks-browser-v2.js','seedEnemyAttacksV20');
+      if(combatLoaded&&window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.installed!==true) await loadScript('./enemy-attacks-browser-v2.js','seedEnemyAttacks');
       enemyLoaded=window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.installed===true;
     }catch(error){console.error('[Seed Man] gameplay adapter load failed.',error);}
   }
 
   async function installCampaignUiAndWorld(){
-    if(window.__SPROUT_CAMPAIGN__?.levelCount!==20){setTimeout(installCampaignUiAndWorld,25);return;}
-    campaignLoaded=true;
+    if(!detectCampaign()){setTimeout(installCampaignUiAndWorld,25);return;}
     try{
-      if(document.documentElement.dataset.sproutCampaignUi!=='seed-man-campaign-ui-v20') await loadScript('./campaign-ui-v20.js','seedCampaignUiV20');
-      uiLoaded=document.documentElement.dataset.sproutCampaignUi==='seed-man-campaign-ui-v20';
-      if(window.SeedManThreeWorld?.version==='seed-man-three-public-v3'&&window.SeedManThreeWorld?.supportsWebGL?.()&&window.__SPROUT_THREE_ADAPTER__?.active!==true){
-        await loadScript('./three-world-adapter-v1.js','seedThreeWorldAdapterV20');
+      if(!window.__SEED_MAN_CAMPAIGN_UI__&&document.documentElement.dataset.sproutCampaignUi!=='seed-man-campaign-ui-v20') await loadScript('./campaign-ui-v20.js','seedCampaignUi');
+      uiLoaded=Boolean(window.__SEED_MAN_CAMPAIGN_UI__)||Boolean(document.documentElement.dataset.sproutCampaignUi);
+      if(window.SeedManThreeWorld?.supportsWebGL?.()&&window.__SPROUT_THREE_ADAPTER__?.active!==true){
+        await loadScript('./three-world-adapter-v1.js','seedThreeWorldAdapter');
       }
       threeLoaded=window.__SPROUT_THREE_ADAPTER__?.active===true;
-      document.documentElement.dataset.seedManWorldRenderer=threeLoaded?'seed-man-three-world-v2':'seed-man-canvas-world-gradient-v1';
+      document.documentElement.dataset.seedManWorldRenderer=threeLoaded?'webgl':'canvas';
     }catch(error){console.error('[Seed Man] campaign UI/world renderer failed to load.',error);}
   }
 
   async function boot(){
-    await installCanonicalRuntime();
+    detectCampaign();
     installAdapters();
     installCampaignUiAndWorld();
   }
@@ -93,18 +87,11 @@
   window.__SPROUT_CANVAS_COMPAT__=Object.freeze({
     version:VERSION,
     release:RELEASE,
-    campaignUi:'seed-man-campaign-ui-v20',
-    campaignTarget:20,
-    combatRuntime:'v2',
-    playerStateRuntime:'v20',
-    worldRuntime:'seed-man-three-world-v2',
-    approvedArtTarget:'approved-showcase-2026-09-08',
     get playerStateLoaded(){return playerStateLoaded;},
     get combatLoaded(){return combatLoaded;},
     get enemyAttacksLoaded(){return enemyLoaded;},
     get campaignUiLoaded(){return uiLoaded;},
     get campaignLoaded(){return campaignLoaded;},
-    get approvedArtLoaded(){return artLoaded;},
     get threeWorldLoaded(){return threeLoaded;}
   });
 })();
