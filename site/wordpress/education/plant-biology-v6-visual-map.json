@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "updatedAt": "2026-09-09",
   "curriculumId": "plant-biology-v6",
   "policy": {
@@ -9,48 +9,42 @@
     "allowGitHubRawFallback": true,
     "neverSubstituteMisleadingRelatedVisuals": true,
     "rejectedVisualStyle": "old-thc-course-card-infographic",
+    "centralExclusions": "site/wordpress/assets/infographics/infographic-exclusions.json",
     "excludedFiles": [
       "THC-C008_Infographic_Flower_Anatomy_Reproduction.png",
       "THC-C008_Infographic_Flower_Anatomy_Reproduction.jpg",
       "THC-C009_Infographic_Trichomes_Secretory_Biology.png",
       "THC-C009_Infographic_Trichomes_Secretory_Biology.jpg"
     ],
-    "exclusionRule": "Treat rejected assets by basename so alternate image extensions cannot bypass the sitewide visual rejection."
+    "exclusionRule": "Never publish central-exclusion families or rejected basenames on chapter visual surfaces. Supporting/reference assets stay source-only."
   },
   "chapters": {
-    "identity-morphology": [
-      {"file":"THC-ENC-001_VIS-01_Whole_Plant_Atlas_v3.1.0.jpg","title":"Whole Plant Atlas","alt":"Cannabis whole-plant anatomy atlas showing major visible plant structures"},
-      {"file":"THC-ENC-001_VIS-03_Nodes_Internodes_Branching_v3.0.0.jpg","title":"Nodes, Internodes & Branching","alt":"Cannabis nodes, internodes and branching anatomy reference"}
-    ],
+    "identity-morphology": [],
     "cells-tissues-meristems": [
-      {"file":"THC-C004_Infographic_From_Cell_to_Canopy.jpg","title":"From Cell to Canopy","alt":"Plant organization from cells and tissues through organs and canopy structure"},
+      {"file":"THC-C004_Infographic_From_Cell_to_Canopy.png","title":"From Cell to Canopy","alt":"Plant organization from cells and tissues through organs and canopy structure"},
       {"file":"THC-ENC-061_Plant_Cells_Tissues_and_Organ_Systems.jpg","title":"Cells, Tissues & Organ Systems","alt":"Plant cells, tissue systems and organ organization reference"}
     ],
     "roots": [
-      {"file":"THC-C005_Infographic_Root_Anatomy_and_Forensics.jpg","title":"Root Anatomy & Forensics","alt":"Cannabis root anatomy and diagnostic observation infographic"},
+      {"file":"THC-C005_Infographic_Root_Anatomy_and_Forensics.png","title":"Root Anatomy & Forensics","alt":"Cannabis root anatomy and diagnostic observation infographic"},
       {"file":"THC-ENC-041_Root_Tip_Development_and_Functional_Zones.jpg","title":"Root Tip Functional Zones","alt":"Root cap, division, elongation and differentiation zones"}
     ],
     "stems-transport": [
-      {"file":"THC-C006_Infographic_Stem_Transport_and_Training_Risk.jpg","title":"Stem Transport & Training Risk","alt":"Cannabis stem anatomy, vascular transport and injury context"},
-      {"file":"V04-SUP-002_Xylem_Phloem_and_Long_Distance_Transport.jpg","title":"Xylem, Phloem & Long-Distance Transport","alt":"Xylem and phloem long-distance transport reference"}
+      {"file":"THC-C006_Infographic_Stem_Transport_and_Training_Risk.png","title":"Stem Transport & Training Risk","alt":"Cannabis stem anatomy, vascular transport and injury context"}
     ],
     "leaves-stomata": [
-      {"file":"THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange.jpg","title":"Leaf Anatomy & Gas Exchange","alt":"Cannabis leaf cross-section and gas-exchange anatomy"},
+      {"file":"THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange.png","title":"Leaf Anatomy & Gas Exchange","alt":"Cannabis leaf cross-section and gas-exchange anatomy"},
       {"file":"THC-ENC-068_Stomata_Guard_Cells_and_Gas_Exchange.jpg","title":"Stomata & Guard Cells","alt":"Stomata, guard cells and gas exchange reference"}
     ],
     "carbon-water-energy": [
-      {"file":"V04-SUP-001_Photosynthesis_and_Light_Energy_Conversion.jpg","title":"Photosynthesis & Light Energy","alt":"Photosynthesis and conversion of light energy into plant chemical energy"},
       {"file":"THC-ENC-067_Cellular_Respiration_and_Night_Metabolism.jpg","title":"Cellular Respiration & Night Metabolism","alt":"Plant cellular respiration and nighttime metabolism reference"},
       {"file":"THC-ENC-044_Water_Movement_from_Media_to_Leaf.jpg","title":"Water Movement: Media to Leaf","alt":"Whole-plant water movement from growing media through roots and leaves"}
     ],
-    "growth-signaling": [
-      {"file":"V04-SUP-004_Plant_Hormones_and_Signal_Integration.jpg","title":"Plant Hormones & Signal Integration","alt":"Plant hormone signaling network and integrated growth responses"},
-      {"file":"V04-SUP-005_Tropisms_and_Directional_Growth_Responses.jpg","title":"Tropisms & Directional Growth","alt":"Phototropism, gravitropism and directional plant growth responses"},
-      {"file":"V04-SUP-008_Stress_Physiology_and_Acclimation.jpg","title":"Stress Physiology & Acclimation","alt":"Plant stress response, acclimation and recovery concepts"}
-    ],
+    "growth-signaling": [],
     "reproduction-trichomes-senescence": []
   },
   "gaps": [
+    {"id":"identity-morphology-redesign","chapter":"identity-morphology","status":"needed","title":"Whole-plant morphology — redesigned Atlas visual","reason":"Previous THC-ENC-001 supporting references are excluded from public topic surfaces."},
+    {"id":"growth-signaling-redesign","chapter":"growth-signaling","status":"needed","title":"Growth signaling — redesigned Atlas visual","reason":"Previous V04 supplemental references are excluded from public topic surfaces."},
     {"id":"flower-anatomy-redesign","chapter":"reproduction-trichomes-senescence","status":"needed","title":"Flower Anatomy & Reproductive Structures - redesigned Atlas visual","reason":"Old THC-C008 course-card infographic style is rejected sitewide and removed."},
     {"id":"trichome-secretory-biology-redesign","chapter":"reproduction-trichomes-senescence","status":"needed","title":"Trichomes & Secretory Biology - redesigned Atlas visual","reason":"Old THC-C009 course-card infographic style is rejected sitewide and removed."}
   ]
