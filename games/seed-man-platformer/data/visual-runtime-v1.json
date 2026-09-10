@@ -1,10 +1,10 @@
 {
-  "version": "seed-man-visual-runtime-v1",
+  "version": "seed-man-visual-runtime-open",
   "reference": {
-    "title": "Seed Man visual asset package",
-    "intent": "Translate the approved reference boards into deterministic runtime keys instead of filename-coupled rendering.",
-    "style": ["lush", "high-contrast", "readable-silhouettes", "2.5d-platformer", "bright-elemental-vfx"],
-    "characterContract": "approved-green-armored-plant-hero-v1"
+    "title": "Seed Man visual runtime reference",
+    "intent": "Describe current world and phenotype presentation data while allowing complete visual redesign.",
+    "styleLocked": false,
+    "characterContract": null
   },
   "worlds": {
     "greenhouse-valley": {
@@ -19,37 +19,31 @@
         {"key":"foreground","depth":20,"parallax":1.08},
         {"key":"vfx","depth":40,"parallax":1}
       ],
-      "materials": ["grass", "dirt", "stone", "metal"],
-      "setPieces": ["glass-domes", "waterfalls", "greenhouse-frames", "giant-trees", "hanging-vines"],
-      "requiredFx": ["leaf-motes", "water-mist", "collect-burst", "checkpoint-glow"]
+      "materials": ["grass", "dirt", "stone", "metal"]
     },
     "forest-ruins": {
       "label": "Forest Ruins",
       "accent": "#38c96a",
       "layers": ["sky", "far-bg", "mid-bg", "near-bg", "gameplay", "foreground", "vfx"],
-      "materials": ["grass", "dirt", "stone"],
-      "setPieces": ["ancient-columns", "roots", "collapsed-bridges", "giant-canopy"]
+      "materials": ["grass", "dirt", "stone"]
     },
     "desert-canyon": {
       "label": "Desert Canyon",
       "accent": "#ff8b42",
       "layers": ["sky", "far-bg", "mid-bg", "near-bg", "gameplay", "foreground", "vfx"],
-      "materials": ["sand", "stone", "metal"],
-      "setPieces": ["mesas", "arches", "ruins", "heat-vents"]
+      "materials": ["sand", "stone", "metal"]
     },
     "frozen-peaks": {
       "label": "Frozen Peaks",
       "accent": "#54cfff",
       "layers": ["sky", "far-bg", "mid-bg", "near-bg", "gameplay", "foreground", "vfx"],
-      "materials": ["ice", "stone", "metal"],
-      "setPieces": ["ice-spires", "floating-ice", "frost-caves", "snow-gusts"]
+      "materials": ["ice", "stone", "metal"]
     },
     "eco-city": {
       "label": "Eco City",
       "accent": "#70f27b",
       "layers": ["sky", "far-bg", "mid-bg", "near-bg", "gameplay", "foreground", "vfx"],
-      "materials": ["grass", "metal", "stone"],
-      "setPieces": ["eco-towers", "waterfalls", "solar-structures", "green-transit"]
+      "materials": ["grass", "metal", "stone"]
     }
   },
   "player": {
@@ -58,43 +52,10 @@
       "fire": {"durationMs":30000,"projectile":"fire-shot","vfx":"fire-aura"},
       "electric": {"durationMs":30000,"projectile":"electric-shot","vfx":"electric-aura"},
       "ice": {"durationMs":30000,"projectile":"ice-shot","vfx":"ice-aura"}
-    },
-    "animations": {
-      "idle": {"minFrames":6},
-      "run": {"minFrames":8},
-      "jump": {"minFrames":3},
-      "fall": {"minFrames":2},
-      "land": {"minFrames":4},
-      "crouch": {"minFrames":2},
-      "attack": {"minFrames":6},
-      "hurt": {"minFrames":4},
-      "victory": {"minFrames":8},
-      "transform": {"minFrames":10}
     }
   },
-  "enemyFamilies": {
-    "plant": {"drop":"plant","telegraph":"green-leaf-energy"},
-    "fire": {"drop":"fire","telegraph":"orange-embers"},
-    "electric": {"drop":"electric","telegraph":"yellow-arcs"},
-    "ice": {"drop":"ice","telegraph":"cyan-crystals"}
-  },
-  "bosses": [
-    {"key":"overgrown-guardian","world":"greenhouse-valley","phenotype":"plant"},
-    {"key":"scorchroot-titan","world":"desert-canyon","phenotype":"fire"},
-    {"key":"frostbite-colossus","world":"frozen-peaks","phenotype":"ice"},
-    {"key":"eco-sentinel","world":"eco-city","phenotype":"electric"}
-  ],
-  "hud": {
-    "fixedToCamera": true,
-    "required": ["portrait", "health", "energy", "lives", "seed-count", "phenotype-slots", "pause"]
-  },
   "assetPolicy": {
-    "publicApiUsesManifestKeys": true,
-    "allowRawFilenameReferences": false,
-    "modelFormat": "glb",
-    "textureFormats": ["webp", "png"],
-    "atlasMetadata": "json",
-    "collisionOwnedBySimulation": true,
-    "rendererOwnsGameplayState": false
+    "locked": false,
+    "notes": "Manifest keys, filenames, renderer ownership, model formats, texture formats, atlas formats, and collision/render boundaries may change with the redesign."
   }
 }
