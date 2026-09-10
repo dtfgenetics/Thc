@@ -1,86 +1,77 @@
 # High Land acceptance checklist
 
-Use only **PASS**, **FAIL**, or **NOT TESTED** in the Status column. Add concrete evidence for every PASS. Any required FAIL or NOT TESTED blocks a complete or live-ready claim.
+Use **PASS**, **FAIL**, or **NOT TESTED** with concrete evidence. This checklist validates the resulting game; it does not lock the implementation, route architecture, renderer, backend, board geometry, player count, art source, or test tooling.
 
-## Scope and repository controls
-
-| Check | Status | Evidence |
-| --- | --- | --- |
-| Change is limited to the requested scope; unrelated work is preserved | NOT TESTED | |
-| `AGENTS.md`, `CLAUDE.md`, and all required High Land control docs exist | NOT TESTED | |
-| No secrets, `.env` files, credentials, or private room data are committed | NOT TESTED | |
-| No unrelated game, pricing, property, or strain content is introduced | NOT TESTED | |
-| Retired Playwright config/spec paths are absent | NOT TESTED | |
-
-## Board, movement, and tokens
+## Repository and integrity
 
 | Check | Status | Evidence |
 | --- | --- | --- |
-| `boardPath` has continuous indexes `0` through `108` | NOT TESTED | |
-| The route is single, connected, and visits the seven locations in locked order | NOT TESTED | |
-| Space types are limited to start, normal, action, and finish | NOT TESTED | |
-| Exactly 22 indexes are gameplay HIT/action triggers | NOT TESTED | |
-| Die results are integers from 1 through 6 | NOT TESTED | |
-| Normal movement equals the rolled number and clamps at START/FINISH | NOT TESTED | |
-| Movement animates through every traversed index | NOT TESTED | |
-| Tokens and colocated-token offsets remain inside board spaces | NOT TESTED | |
-| Reaching Cloud 9 Citadel declares the correct winner | NOT TESTED | |
+| Current implementation and deployment metadata agree | NOT TESTED | |
+| No secrets, credentials, private keys, `.env` secrets, or private room/user data are committed | NOT TESTED | |
+| Changed code has appropriate syntax/type/build validation | NOT TESTED | |
+| Obsolete tests or validators were updated when the design changed | NOT TESTED | |
 
-## HIT cards and turns
+## Gameplay
 
 | Check | Status | Evidence |
 | --- | --- | --- |
-| Landing on every HIT index draws and immediately applies a card | NOT TESTED | |
-| Card text exactly matches each coded effect | NOT TESTED | |
-| Forward, backward, color, swap, leader, group, and choice effects are correct | NOT TESTED | |
-| Skip turn, roll again, and draw again resolve without stuck or infinite turns | NOT TESTED | |
-| Backward protection is consumed correctly | NOT TESTED | |
-| Reverse turn order works across dice turns, HIT-card turns, and pending choices | NOT TESTED | |
-| All card movement remains within START and FINISH | NOT TESTED | |
+| A new game can start and reach its intended finish/win state | NOT TESTED | |
+| Movement and turn resolution match the current game design | NOT TESTED | |
+| Cards/events/choices resolve without soft locks or infinite loops | NOT TESTED | |
+| Player state remains coherent through restart, save, reconnect, or refresh where supported | NOT TESTED | |
+| Error states recover cleanly or explain what the player should do | NOT TESTED | |
 
-## Players and invite multiplayer
+## Multiplayer when present
 
 | Check | Status | Evidence |
 | --- | --- | --- |
-| Local setup supports 1-10 entered names and stable fallbacks | NOT TESTED | |
-| Online setup supports 2-10 entered names | NOT TESTED | |
-| Host creates a room and a usable `?game=ROOMCODE` invite | NOT TESTED | |
-| A second browser/device joins and both clients show the same lobby | NOT TESTED | |
-| Only the host starts and only the active player commits a turn | NOT TESTED | |
-| Dice, movement, cards, choices, skips, turn order, and winner synchronize | NOT TESTED | |
-| Refresh/reconnect restores the player session when possible | NOT TESTED | |
-| Public room data excludes secrets and session credentials | NOT TESTED | |
+| Room creation/join flow works using the current multiplayer architecture | NOT TESTED | |
+| Only authorized players can commit protected state changes | NOT TESTED | |
+| Two independent browser/device sessions stay synchronized | NOT TESTED | |
+| Reconnect/resume behavior works as intended | NOT TESTED | |
+| Public responses exclude secrets and private session data | NOT TESTED | |
 
-## Automated repository validation
+## Responsive presentation
 
 | Check | Status | Evidence |
 | --- | --- | --- |
-| `npm ci` | NOT TESTED | |
-| `npm run test:high-land` | NOT TESTED | |
-| `npm run build:high-land` | NOT TESTED | |
-| `node scripts/verify-browser-tool-policy.mjs` | NOT TESTED | |
-| PHP room API lint passes when PHP files exist | NOT TESTED | |
-| CI runs deterministic tests, build, room API security, PHP lint, and static asset checks | NOT TESTED | |
-| Datadog skips successfully when required secrets are absent | NOT TESTED | |
+| Phone layout is intentionally composed and playable | NOT TESTED | |
+| Tablet portrait and landscape are usable | NOT TESTED | |
+| Laptop/desktop presentation uses available space well | NOT TESTED | |
+| Controls do not obscure the playfield | NOT TESTED | |
+| Text, state indicators, buttons, cards, tokens, and interactive targets remain legible | NOT TESTED | |
+| Keyboard, pointer, and touch input work where supported | NOT TESTED | |
+| Reduced-motion/accessibility behavior is reasonable for the resulting UI | NOT TESTED | |
 
-## Presentation and live deployment
+## Visual quality
 
 | Check | Status | Evidence |
 | --- | --- | --- |
-| Desktop and mobile keep the board readable without covered controls | NOT TESTED | |
-| Names, active turn, die result, HIT reveal, winner, and 21+ note are clear | NOT TESTED | |
-| The exact locally tested artifact is deployed to `/games/high-land/` | NOT TESTED | |
-| Live route, assets, and room API return expected responses | NOT TESTED | |
-| A real two-browser/device live invite game passes | NOT TESTED | |
-| Live mobile layout and browser console pass review | NOT TESTED | |
-| Deployed commit and rollback reference are recorded | NOT TESTED | |
+| The game has a clear visual focal point rather than dashboard-like clutter | NOT TESTED | |
+| Final artwork is used where production-ready art exists | NOT TESTED | |
+| Missing assets fail gracefully without broken-image icons | NOT TESTED | |
+| Animation, VFX, feedback, and state changes are readable | NOT TESTED | |
+| Phone/tablet/desktop variants preserve the intended visual identity | NOT TESTED | |
+
+## Build and live release
+
+Run the strongest checks appropriate to the resulting architecture. Current commands may include `npm run test:high-land` and `npm run build:high-land`, but they may be replaced if the implementation changes.
+
+| Check | Status | Evidence |
+| --- | --- | --- |
+| Automated tests appropriate to the current architecture pass | NOT TESTED | |
+| Production build/package completes | NOT TESTED | |
+| Public asset paths resolve | NOT TESTED | |
+| Exact deployed artifact/revision is identified | NOT TESTED | |
+| Exact visitor-facing route loads the expected current game | NOT TESTED | |
+| Live phone/tablet/desktop behavior is verified when deployment is in scope | NOT TESTED | |
 
 ## Result
 
 - Commit/branch:
-- Local verification date:
+- Repository verification date:
 - Live verification date:
 - Overall status: PASS / FAIL / NOT TESTED
 - Remaining issues:
 
-Use **local validation passed; live deployment NOT TESTED** when the repository checks pass but the public site was not deployed and exercised.
+Repository validation and live-route validation must be reported separately.
