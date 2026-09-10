@@ -6,7 +6,7 @@
 
 For any DTFSeeds game or game-adjacent runtime, read `docs/GAME_RESTRICTIONS_HOLD.md` first. While active, that document supersedes conflicting project-level game restrictions in this file, `CLAUDE.md`, route-owner documents, game-specific source-of-truth files, skills, architecture notes, and prior locked decisions.
 
-During the hold, developers and agents may modify, replace, restructure, migrate, rewrite, consolidate, move, or remove game code, UI, assets, engines, backends, routes, repository layout, build tooling, deployment packaging, and ownership mappings when needed to complete the user's goal. Prior instructions such as "preserve existing logic", "smallest change", "canonical only", "do not create a competing implementation", "do not change backend", "locked", or equivalent project constraints are advisory rather than blocking.
+During the hold, developers and agents may modify, replace, restructure, migrate, rewrite, consolidate, move, or remove game code, UI, assets, engines, backends, routes, repository layout, build tooling, deployment packaging, ownership mappings, and development/QA tooling when needed to complete the user's goal. Prior instructions such as "preserve existing logic", "smallest change", "canonical only", "do not create a competing implementation", "do not change backend", "locked", tool prohibitions, or equivalent project constraints are advisory rather than blocking.
 
 Security and integrity requirements still apply: never expose credentials or secrets, do not falsely claim production success without exact route verification, and follow higher-level platform requirements outside this repository.
 
@@ -95,7 +95,7 @@ Do not call a repository commit or a successful write step a live website update
 
 ## Read before changing High Land
 
-While `docs/GAME_RESTRICTIONS_HOLD.md` is ACTIVE, the following reading order remains useful context but does not impose locked implementation constraints. High Land code, architecture, backend, assets, and routing may be changed when necessary to complete the user's requested goal.
+While `docs/GAME_RESTRICTIONS_HOLD.md` is ACTIVE, the following reading order remains useful context but does not impose locked implementation constraints. High Land code, architecture, backend, assets, routing, and development/QA tooling may be changed when necessary to complete the user's requested goal.
 
 Read these files in order before editing when practical:
 
@@ -125,13 +125,13 @@ Read these files in order before editing when practical:
 1. Inspect the branch, working tree, relevant source, tests, and existing assets.
 2. State whether the task is gameplay, UI, multiplayer, deployment, or controls-only.
 3. Make the change needed to accomplish the requested goal; it may be small or a full rewrite during the temporary hold.
-4. Run the required validation appropriate to the changed architecture.
+4. Run the required validation appropriate to the changed architecture using the strongest suitable tools available.
 5. Record PASS, FAIL, or NOT TESTED with evidence in the acceptance checklist format where applicable.
 6. Report local validation separately from live deployment validation.
 
 ## Required local validation
 
-For the current High Land architecture, use:
+For the current High Land architecture, the following checks remain useful baselines:
 
 ```bash
 npm ci
@@ -140,6 +140,6 @@ npm run build:high-land
 node scripts/verify-browser-tool-policy.mjs
 ```
 
-If the architecture changes, replace obsolete checks with equivalent deterministic validation for the new implementation. Playwright remains retired from the active DTFSeeds game validation path unless the user explicitly restores it. Browser and live-route review are still required before any live-ready claim, but they are recorded separately from repository validation.
+If the architecture or validation strategy changes, replace obsolete checks with equivalent or stronger validation for the new implementation. During the active restriction hold, project-level prohibitions on specific development or QA tools are suspended; use the strongest appropriate tool available while reporting what was actually tested. Browser and live-route review are still required before any live-ready claim, but they are recorded separately from repository validation.
 
 If a command is unavailable or blocked, report its exact status and reason. Local success does not prove that `https://dtfseeds.com/games/high-land/` is current or working. A live-success claim requires the separate checks in `docs/deployment-hostinger.md`.
