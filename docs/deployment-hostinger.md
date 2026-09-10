@@ -1,77 +1,42 @@
-# Deploy High Land to Hostinger
+# Hostinger Deployment Guide
 
-This runbook separates repository/build success from live-site success. Never use a passing local build, commit, merge, or GitHub Actions run as evidence that the public game was updated.
+Use this document when the current implementation deploys through Hostinger. It does not lock a game to Hostinger, a particular repository path, build command, output directory, route, renderer, backend, or QA tool.
 
-## Deployment contract
+## Current High Land deployment reference
 
-- Source repository: `dtfgenetics/Thc`
-- Production branch: `main`
-- Build command: `npm run build:high-land`
-- Build output: `apps/high-land-web/dist`
-- Hostinger target: `public_html/games/high-land/`
-- Public URL: `https://dtfseeds.com/games/high-land/`
+At the time of writing, High Land is built from `dtfgenetics/Thc`, currently lives under `apps/high-land-web`, and is served at `https://dtfseeds.com/games/high-land/`. These values may change during redesign or migration.
 
-Do not modify WordPress core, WooCommerce data, root `.htaccess`, `wp-config.php`, themes, plugins, or unrelated site content for a High Land deployment. Keep room storage and credentials outside `public_html`.
+## Repository validation
 
-## Phase 1: repository validation
+Run the tests, build, browser checks, PHP lint, asset validation, and other QA appropriate to the implementation being deployed. Current commands such as `npm run test:high-land` and `npm run build:high-land` are baselines only while they remain relevant.
 
-Run from the repository root:
+Record the exact source revision and resulting artifact. Local or CI success does not prove the public site changed.
 
-```bash
-npm ci
-npm run test:high-land
-npm run build:high-land
-node scripts/verify-browser-tool-policy.mjs
-```
+## Upload / publish
 
-If PHP exists, lint each room API file with `php -l`. Record the commit SHA and the exact CI run. A Phase 1 PASS means only that the tested checkout produced a valid local artifact. It does not mean the public URL changed.
+Deploy the exact tested artifact to the configured production destination. Preserve required directory structure and binary assets. Keep credentials, private room data, and secret configuration outside public web content.
 
-Before upload, confirm that `apps/high-land-web/dist/index.html` exists, the Vite production base is `/games/high-land/`, required assets are present in `dist`, and no secrets or local room files are included.
+If the game changes its route, output folder, backend, or hosting method, update deployment metadata before release rather than forcing the new implementation into an obsolete path.
 
-## Phase 2: backup and upload
+## Live verification
 
-1. Make a timestamped backup of the current live High Land directory.
-2. Upload the **contents** of `apps/high-land-web/dist` into `public_html/games/high-land/`; do not add an extra `dist` directory level.
-3. Preserve the built directory structure and binary assets.
-4. Ensure PHP room endpoints are served as PHP when present.
-5. Ensure private room storage is writable by the site account but is not web accessible.
+Test the actual public origin after deployment. Confirm the expected game loads, required scripts/styles/assets resolve, core gameplay can start and transition meaningfully, phone/tablet/desktop layouts are usable, and browser/network errors are reviewed.
 
-An upload without Phase 3 evidence is **NOT TESTED**, not a successful live deployment.
+When multiplayer exists, verify room/session behavior, authority, reconnect, synchronization, and private-state handling with at least two independent sessions.
 
-## Phase 3: live `/games/high-land/` verification
+## Recovery
 
-Test the public origin, not localhost or a local preview:
-
-1. `https://dtfseeds.com/games/high-land/` returns success and loads its scripts, styles, board, card, audio, and font assets without 404 errors.
-2. The game shows the expected High Land identity and no unrelated content.
-3. A named local game rolls, moves the exact distance, triggers a HIT card, and reaches a valid turn state.
-4. A host creates a new room and shares its `?game=ROOMCODE` URL.
-5. A separate browser profile or device joins; both clients see the same lobby.
-6. Start the room and verify active-player authority, dice, movement, HIT card, skips/choices, reverse turn order, refresh/reconnect, and winner synchronization.
-7. Verify a mobile viewport has no horizontal overflow or blocked controls.
-8. Confirm the browser console and network panel have no uncaught errors or failed required requests.
-9. Confirm public room responses contain no tokens, credentials, or secrets.
-
-Only a PASS for all applicable Phase 3 checks supports the statement **live `/games/high-land/` verification passed**.
-
-## Rollback
-
-If any required live check fails:
-
-1. Record the failing deployed SHA, URL, console/network evidence, and time.
-2. Restore the timestamped backup.
-3. Verify the restored route.
-4. Mark live deployment FAIL and repair through a reviewed repository change.
+For production-changing releases, keep a practical recovery path such as a prior artifact, commit, backup, or reversible migration. If live verification fails, record the failing revision and observed evidence, recover the site, then repair the implementation.
 
 ## Deployment record
 
-- Commit SHA:
-- CI run:
-- Build result: PASS / FAIL / NOT TESTED
-- Backup path:
-- Upload time:
-- Live verification result: PASS / FAIL / NOT TESTED
-- Two-browser/device evidence:
-- Mobile/console evidence:
-- Rollback reference:
+- Source revision:
+- Build/package result:
+- Deployment destination:
+- Public URL:
+- Deployment time:
+- Live verification: PASS / FAIL / NOT TESTED
+- Responsive/browser evidence:
+- Multiplayer evidence when applicable:
+- Recovery reference:
 - Remaining issues:
