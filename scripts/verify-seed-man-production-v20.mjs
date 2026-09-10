@@ -28,8 +28,11 @@ const campaign=JSON.parse(read('data/campaign.json'));
 const levels=JSON.parse(read('data/levels-20-v1.json'));
 const art=JSON.parse(read('data/seed-man-art-manifest-v1.json'));
 const enemies=JSON.parse(read('data/enemy-catalog-v1.json'));
+if(campaign.id!=='seed-man-campaign-20-v1')throw new Error(`Seed Man campaign identity mismatch: ${campaign.id}`);
 if(campaign.levelCount!==20||campaign.newLevelCount!==19||campaign.worlds?.length!==5)throw new Error('Seed Man campaign must be 20 levels across five worlds');
 if(campaign.finalBoss!=='blight-king')throw new Error('Final boss contract must be blight-king');
+const campaignLevels=campaign.worlds.flatMap((world)=>world.levels||[]);
+if(campaignLevels.length!==20||campaignLevels.some((entry)=>Object.hasOwn(entry,'publicDataElementId')))throw new Error('Retired embedded-level metadata remains in v20 campaign');
 if(levels.levels?.length!==20)throw new Error('Level catalog must contain 20 levels');
 for(let i=1;i<=20;i+=1)if(!levels.levels.some((level)=>level.order===i))throw new Error(`Missing level order ${i}`);
 const finale=levels.levels.find((level)=>level.order===20);
@@ -75,4 +78,4 @@ if(!read('player-state-v20.js').includes('seed-man-player-state-v20'))throw new 
 if(!read('v20-enemy-runtime.js').includes('seed-man-v20-enemy-runtime-v2'))throw new Error('Canonical v20 enemy runtime marker is missing');
 if(!read('enemy-attacks-browser-v2.js').includes('seed-man-enemy-attacks-browser-v2'))throw new Error('Canonical enemy attack runtime marker is missing');
 
-console.log(JSON.stringify({ok:true,levels:20,worlds:5,bosses:6,enemies:10,phenotypeCarriers:3,finalBoss:'blight-king',approvedArt:true,worldRenderer:'seed-man-three-world-v2',playerState:'v20',combatRuntime:'v2',inputGuard:'v20',legacySproutRunRemoved:true,corruptAssetsRemoved:true,retiredArtifactsRemoved:retired.length}));
+console.log(JSON.stringify({ok:true,campaignId:campaign.id,levels:20,worlds:5,bosses:6,enemies:10,phenotypeCarriers:3,finalBoss:'blight-king',approvedArt:true,worldRenderer:'seed-man-three-world-v2',playerState:'v20',combatRuntime:'v2',inputGuard:'v20',legacySproutRunRemoved:true,corruptAssetsRemoved:true,retiredArtifactsRemoved:retired.length}));
