@@ -1,7 +1,8 @@
 # High Land Multiplayer Transports
 
-The room transport boundary supports offline/local development and the selected
-Hostinger Website Room API without changing game rules.
+Updated: 2026-09-09
+
+This document describes the current multiplayer transport implementation. It does not lock High Land to a particular backend, polling model, room authority, or transport architecture.
 
 ## Current files
 
@@ -13,36 +14,20 @@ apps/high-land-web/src/game/multiplayer/websiteRoomTransport.ts
 apps/high-land-web/src/game/multiplayer/roomTransportFactory.ts
 ```
 
-## Transport roles
+## Current transports
 
 ### Local transport
 
-Used for offline development, automated tests, pass-and-play, and recovery when
-the online room service is unavailable.
+The current code includes a local transport for offline development and local play.
 
 ### Website transport
 
-Selected automatically on `dtfseeds.com/games/high-land/`. It calls the PHP API
-under the same route and polls room snapshots every two seconds.
+The current production build includes a same-origin website transport backed by PHP room endpoints under the High Land route.
 
-Required behavior:
+## Redesign freedom
 
-- create a room and identify its host;
-- join by room code;
-- update authoritative game state;
-- append auditable game events;
-- poll snapshots and report connection errors;
-- preserve invite codes across refresh/reconnect.
+The transport interface, backend technology, room model, polling/realtime strategy, persistence, invite flow, and synchronization model may be changed or replaced as needed. Update this document and deployment metadata when the implementation changes.
 
-## Production rule
+## Verification
 
-The locked backend is defined in `docs/BACKEND_DECISION.md`. Do not reconnect
-Supabase or introduce a parallel room authority. A replacement requires an
-explicit decision, migration, cost review, security review, and rollback plan.
-
-## Completion evidence
-
-Repository tests and API guard responses are necessary but insufficient. Online
-multiplayer is production-ready only after a host and a separate browser/device
-complete room creation, join, start, dice movement, HIT-card resolution, turn
-order, refresh/reconnect, and winner synchronization.
+For whatever multiplayer architecture is active, test the behavior that matters to players: room creation/join, turn synchronization, reconnect/refresh, hidden/private state where applicable, error handling, and completion across separate clients/devices.
