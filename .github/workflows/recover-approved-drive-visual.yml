@@ -22,15 +22,22 @@ jobs:
   recover-one:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      TARGET_REF: ${{ inputs.target_ref }}
+      RECOVERY_MANIFEST: ${{ inputs.manifest_path }}
     steps:
-      - name: Validate input path
+      - name: Validate inputs
         shell: bash
         run: |
           set -euo pipefail
-          case "${{ inputs.manifest_path }}" in
-            site/wordpress/education/recovery/*.json) ;;
-            *) echo "Manifest must live under site/wordpress/education/recovery/" >&2; exit 1 ;;
-          esac
+          if [[ ! "$TARGET_REF" =~ ^[A-Za-z0-9._/-]+$ ]] || [[ "$TARGET_REF" == -* ]] || [[ "$TARGET_REF" == *..* ]]; then
+            echo "Unsafe target ref." >&2
+            exit 1
+          fi
+          if [[ ! "$RECOVERY_MANIFEST" =~ ^site/wordpress/education/recovery/[A-Za-z0-9._-]+\.json$ ]]; then
+            echo "Manifest must be one JSON file directly under site/wordpress/education/recovery/." >&2
+            exit 1
+          fi
 
       - uses: actions/checkout@v4
         with:
@@ -42,8 +49,6 @@ jobs:
           node-version: '22'
 
       - name: Recover and byte-validate exactly one approved visual
-        env:
-          RECOVERY_MANIFEST: ${{ inputs.manifest_path }}
         run: node scripts/recover-approved-drive-visual.mjs
 
       - name: Run deterministic education image audit
@@ -69,4 +74,4 @@ jobs:
           git add site/wordpress/assets/infographics site/wordpress/education/recovery
           git status --short
           git commit -m "Recover one approved Drive education visual"
-          git push origin HEAD:${{ inputs.target_ref }}
+          git push origin "HEAD:${TARGET_REF}"
