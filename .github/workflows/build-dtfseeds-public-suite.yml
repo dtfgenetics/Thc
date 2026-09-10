@@ -96,14 +96,18 @@ jobs:
           test -s site/public-route-patch/games/grower-conversations/grower-conversations.css
           grep -Fq 'https://dtfseeds.com/games/grower-conversations/' site/public-route-patch/games/grower-conversations/index.html
 
-      - name: Validate Seed Man browser vertical slice
+      - name: Validate Seed Man v20 campaign
         run: |
           set -euo pipefail
+          npm install --prefix games/seed-man-platformer --ignore-scripts --no-audit --no-fund
+          npm run --prefix games/seed-man-platformer build:three-public
           node games/seed-man-platformer/test/physics.test.mjs
-          node --check site/public-route-patch/games/seed-man-platformer/app.js
-          node --check site/public-route-patch/games/seed-man-platformer/physics.mjs
-          cmp games/seed-man-platformer/src/physics.mjs site/public-route-patch/games/seed-man-platformer/physics.mjs
-          cmp games/seed-man-platformer/data/level-01.json site/public-route-patch/games/seed-man-platformer/data/level-01.json
+          node games/seed-man-platformer/test/progression-systems.test.mjs
+          node games/seed-man-platformer/test/campaign.test.mjs
+          node games/seed-man-platformer/test/public-runtime.test.mjs
+          node games/seed-man-platformer/test/public-campaign.test.mjs
+          node scripts/verify-seed-man-production-v20.mjs
+          node scripts/validate-seed-man-production-bundle.mjs
           test -s site/public-route-patch/games/seed-man-platformer/index.html
           test -s site/public-route-patch/games/seed-man-platformer/seed-man.css
           grep -Fq 'https://dtfseeds.com/games/seed-man-platformer/' site/public-route-patch/games/seed-man-platformer/index.html
@@ -447,8 +451,19 @@ jobs:
             release/games/seed-man-platformer/index.html
             release/games/seed-man-platformer/app.js
             release/games/seed-man-platformer/seed-man.css
-            release/games/seed-man-platformer/physics.mjs
-            release/games/seed-man-platformer/data/level-01.json
+            release/games/seed-man-platformer/player-state-v20.js
+            release/games/seed-man-platformer/campaign-v20-runtime.js
+            release/games/seed-man-platformer/campaign-ui-v20.js
+            release/games/seed-man-platformer/v20-enemy-runtime.js
+            release/games/seed-man-platformer/combat-browser-v2.js
+            release/games/seed-man-platformer/enemy-attacks-browser-v2.js
+            release/games/seed-man-platformer/three-world-v1.js
+            release/games/seed-man-platformer/data/campaign.json
+            release/games/seed-man-platformer/data/levels-20-v1.json
+            release/games/seed-man-platformer/data/seed-man-art-manifest-v1.json
+            release/games/seed-man-platformer/assets/approved/seed-man-character-atlas-v2.webp
+            release/games/seed-man-platformer/assets/approved/seed-man-enemy-boss-atlas-v1.webp
+            release/games/seed-man-platformer/assets/approved/seed-man-platform-atlas-v1.webp
             release/games/strain-showdown/index.html
             release/games/strain-showdown/app.js
             release/games/strain-showdown/engine.mjs
@@ -505,6 +520,9 @@ jobs:
           grep -Fq '/games/high-life/' release/games/high-life/index.html
           grep -Fq '/games/grower-conversations/' release/games/grower-conversations/index.html
           grep -Fq '/games/seed-man-platformer/' release/games/seed-man-platformer/index.html
+          grep -Fq 'data-seed-man-release="20260909-v20-runtime-v4"' release/games/seed-man-platformer/index.html
+          test ! -e release/games/seed-man-platformer/physics.mjs
+          test ! -e release/games/seed-man-platformer/data/level-01.json
           grep -Fq '/games/strain-showdown/' release/games/strain-showdown/index.html
           grep -Fq '/games/bud-or-bluff/' release/games/bud-or-bluff/index.html
           grep -Fq 'LEVEL 01 · THE VEG LAB' release/games/terpocalypse/index.html
@@ -550,7 +568,7 @@ jobs:
             echo '- /games/high-iq/ (self-hosted validated browser game)'
             echo '- /games/high-life/ (tested browser prototype)'
             echo '- /games/grower-conversations/ (96-card browser deck)'
-            echo '- /games/seed-man-platformer/ (browser vertical slice)'
+            echo '- /games/seed-man-platformer/ (canonical 20-level / 5-world v20 campaign)'
             echo '- /games/strain-showdown/ (solo card-battle prototype)'
             echo '- /games/bud-or-bluff/ (multiplayer party game)'
             echo '- /games/terpocalypse/ (validated browser vertical slice)'
