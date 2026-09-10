@@ -5,21 +5,27 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - scripts/audit-public-education-images.mjs
       - scripts/build-education-image-derivatives.py
       - scripts/build-public-learning-center.mjs
       - scripts/publish-wordpress-education-wave2.mjs
+      - site/public-route-patch/assets/education/infographics/**
       - site/public-route-patch/learn/infographics/**
       - site/wordpress/assets/infographics/**
+      - site/wordpress/education/*visual*.json
       - site/wordpress/pages/gallery.html
       - .github/workflows/dtfseeds-education-assets.yml
   push:
     branches: [main]
     paths:
+      - scripts/audit-public-education-images.mjs
       - scripts/build-education-image-derivatives.py
       - scripts/build-public-learning-center.mjs
       - scripts/publish-wordpress-education-wave2.mjs
+      - site/public-route-patch/assets/education/infographics/**
       - site/public-route-patch/learn/infographics/**
       - site/wordpress/assets/infographics/**
+      - site/wordpress/education/*visual*.json
       - site/wordpress/pages/gallery.html
       - .github/workflows/dtfseeds-education-assets.yml
 
@@ -44,9 +50,14 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Audit public education image references
+        run: node scripts/audit-public-education-images.mjs
       - name: Verify rejected THC-C visual style is absent
         shell: bash
         run: |
