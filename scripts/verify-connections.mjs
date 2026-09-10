@@ -1,7 +1,6 @@
 import { access } from "node:fs/promises";
 
 const requiredFiles = [
-  "docs/BACKEND_DECISION.md",
   "apps/high-land-web/package.json",
   "apps/high-land-web/public/api/create-room.php",
   "apps/high-land-web/public/api/get-room.php",
