@@ -1,14 +1,10 @@
-# High Land Supabase Schema Draft — Legacy, Not Selected
+# High Land Supabase Schema Draft — Optional Architecture Reference
 
-> Historical planning only. The locked backend is the Hostinger PHP Website
-> Room API defined in `docs/BACKEND_DECISION.md`. Do not implement this schema
-> unless the user explicitly replaces that decision.
-
-This is a design draft, not an executable migration. Keep `.mcp.json` read-only until this is reviewed.
+This is a historical design draft that may be reused, changed, migrated, or discarded. High Land is not locked to Hostinger, Supabase, or any other multiplayer backend.
 
 ## Goal
 
-Support real browser multiplayer for **High Land: The Sweet Escape** with room codes, invite links, named players, shared turns, and event history.
+Support browser multiplayer for High Land with room codes, invite links, named players, shared turns, and event history.
 
 ## Proposed tables
 
@@ -85,7 +81,7 @@ session_id
 
 ### high_land_turns
 
-Purpose: permanent record of dice turns.
+Purpose: optional record of dice turns.
 
 Fields:
 
@@ -94,18 +90,11 @@ id: uuid primary key
 session_id: uuid references game_sessions
 player_id: uuid references game_players
 turn_number: integer
-dice_roll: integer 1-6
+dice_roll: integer
 from_index: integer
 to_index: integer
 card_id: text nullable
 created_at: timestamp
-```
-
-Indexes:
-
-```txt
-session_id + turn_number
-player_id
 ```
 
 ### high_land_events
@@ -123,61 +112,12 @@ payload: json/jsonb
 created_at: timestamp
 ```
 
-Event names should match:
+## Security considerations
 
-```txt
-room_created
-player_joined
-game_started
-dice_rolled
-player_moved
-hit_card_drawn
-skip_turn_applied
-winner_declared
-```
+If this or a similar backend is used, protect room state with an appropriate authorization model. Do not expose service-role keys, database credentials, private room state, or unrestricted public mutation access.
 
-Indexes:
+Possible identity approaches include guest room tokens, authenticated users, or a hybrid model. Choose the model that best fits the current game design and hosting architecture.
 
-```txt
-session_id + created_at
-event_name
-```
+## Implementation status
 
-## RLS requirements
-
-Enable RLS on every public table.
-
-Required access model:
-
-```txt
-Only room participants can read session, player, turn, and event data for that room.
-Only the active player can write a dice turn.
-Only the host can start the game.
-Only the system/server trusted path should finalize winner state if that becomes server-side later.
-```
-
-## Critical decision before migration
-
-Codex must decide one of these before writing the real migration:
-
-```txt
-Option A: guest multiplayer with room secret / join token
-Option B: authenticated Supabase users
-Option C: hybrid: guest rooms now, auth accounts later
-```
-
-For fast browser-game progress, use **Option A** first, but do not expose broad public update access. Use a room secret or join token so random visitors cannot mutate every room.
-
-## Do not do
-
-```txt
-Do not commit service-role keys.
-Do not put database passwords in frontend env vars.
-Do not create broad public update policies.
-Do not remove read_only=true from .mcp.json until approved.
-Do not claim multiplayer is done until two browsers share one room state.
-```
-
-## Codex next step
-
-Write a real migration only after this draft is approved. Then run local Supabase verification before remote application.
+This file is not an executable migration. It is available as a reference if a Supabase-based or relational multiplayer architecture becomes useful. The implementation may diverge from or replace this draft entirely.
