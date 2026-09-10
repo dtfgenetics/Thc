@@ -1,137 +1,190 @@
 'use strict';
 
 /*
- * Seed Man approved-art renderer.
- * Source of truth: approved 2026-09-08 green armored plant-hero showcase.
- * Gameplay state/collision remain owned by simulation. This file only renders.
+ * Seed Man flexible canvas renderer.
+ * No external character atlas or fixed art owner is required.
+ * The renderer can be replaced by future sprite, skeletal, canvas, or WebGL art.
  */
 
-const SPROUT_ART_VERSION = 'seed-man-approved-atlas-renderer-v4';
-const SPROUT_VISUAL_PIPELINE = 'approved-showcase-2026-09-08';
-const SPROUT_CHARACTER_CONTRACT = 'green-armored-plant-hero';
-const APPROVED_CORE_URL = './approved-art-core-v1.js';
+(() => {
+  const VERSION = 'seed-man-flexible-canvas-renderer-v1';
+  const FORMS = new Set(['plant', 'fire', 'electric', 'ice']);
 
-const FRAME_COLS = 5;
-const FRAME_ROWS = 2;
-const APPROVED_CELLS = Object.freeze({
-  idle: Object.freeze([0,0]), run: Object.freeze([1,0]), jump: Object.freeze([2,0]),
-  attack: Object.freeze([3,0]), hurt: Object.freeze([4,0]), victory: Object.freeze([0,1]),
-  plant: Object.freeze([1,1]), fire: Object.freeze([2,1]),
-  electric: Object.freeze([3,1]), ice: Object.freeze([4,1])
-});
+  function state() {
+    try { return typeof player !== 'undefined' ? player : null; }
+    catch { return null; }
+  }
 
-let approvedSeedManImage=null;
-let approvedSeedManReady=false;
-let approvedSeedManFailed=false;
-let approvedCoreLoading=false;
+  function phenotype() {
+    try {
+      const snapshot = window.__SPROUT_COMBAT_BROWSER__?.snapshot?.() || null;
+      const form = snapshot?.phenotypeForm || snapshot?.activePhenotype || 'plant';
+      return FORMS.has(form) ? form : 'plant';
+    } catch { return 'plant'; }
+  }
 
-function approvedSource(){return window.__SEED_MAN_APPROVED_IMAGES__?.['character.seedman.atlas']||'';}
+  function accents(form) {
+    if (form === 'fire') return { glow: '#ff8a3d', leaf: '#ffb45e' };
+    if (form === 'electric') return { glow: '#ffe45a', leaf: '#c9f34d' };
+    if (form === 'ice') return { glow: '#8de5ff', leaf: '#bcefff' };
+    return { glow: '#83cf69', leaf: '#74b957' };
+  }
 
-function loadApprovedCore(){
-  if(approvedCoreLoading||approvedSource()) return;
-  approvedCoreLoading=true;
-  const script=document.createElement('script');
-  script.src=APPROVED_CORE_URL;
-  script.async=false;
-  script.dataset.seedManApprovedCoreLoader='v1';
-  script.onload=()=>{approvedCoreLoading=false;ensureApprovedSeedManImage();};
-  script.onerror=()=>{approvedCoreLoading=false;approvedSeedManFailed=true;console.error('[Seed Man] approved-art-core-v1.js failed to load. Character fallback is disabled.');};
-  document.head.appendChild(script);
-}
+  function strokeLine(x1, y1, x2, y2, width = 5) {
+    ctx.lineWidth = width;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  }
 
-function ensureApprovedSeedManImage(){
-  if(approvedSeedManReady||approvedSeedManFailed) return;
-  const src=approvedSource();
-  if(!src){loadApprovedCore();return;}
-  const image=new Image();
-  image.decoding='async';
-  image.onload=()=>{
-    approvedSeedManImage=image;
-    approvedSeedManReady=true;
-    document.documentElement.dataset.seedManRendererOwner=SPROUT_ART_VERSION;
-    document.documentElement.dataset.seedManApprovedCharacter=SPROUT_CHARACTER_CONTRACT;
-    document.documentElement.dataset.seedManApprovedArt='ready';
-  };
-  image.onerror=()=>{
-    approvedSeedManFailed=true;
-    document.documentElement.dataset.seedManApprovedArt='failed';
-    console.error('[Seed Man] approved character atlas failed to decode. Character fallback is disabled.');
-  };
-  image.src=src;
-}
+  function glove(x, y, flip = 1) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(flip, 1);
+    ctx.fillStyle = '#fffdf6';
+    ctx.strokeStyle = '#171a16';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 8, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(6, -2, 4, -.8, 1.15);
+    ctx.stroke();
+    ctx.restore();
+  }
 
-function combatSnapshot(){try{return window.__SPROUT_COMBAT_BROWSER__?.snapshot?.()||null;}catch{return null;}}
-function activeApprovedPhenotype(){
-  const id=combatSnapshot()?.activePhenotype||'plant';
-  return ['plant','fire','electric','ice'].includes(id)?id:'plant';
-}
-function resolveApprovedPose(){
-  if(!player)return'idle';
-  if(player.finished||player.state==='finish'||player.state==='victory')return'victory';
-  if(player.state==='hurt')return'hurt';
-  if(player.state==='attack'||player.state==='ability')return'attack';
-  if(!player.grounded)return'jump';
-  if(Math.abs(player.vx||0)>14)return'run';
-  return'idle';
-}
-function chooseApprovedCell(){
-  const phenotype=activeApprovedPhenotype();
-  const pose=resolveApprovedPose();
-  if(phenotype!=='plant')return APPROVED_CELLS[phenotype];
-  if(pose==='victory')return APPROVED_CELLS.victory;
-  return APPROVED_CELLS[pose]||APPROVED_CELLS.idle;
-}
-function approvedRect(){
-  const [col,row]=chooseApprovedCell();
-  const w=approvedSeedManImage.naturalWidth/FRAME_COLS;
-  const h=approvedSeedManImage.naturalHeight/FRAME_ROWS;
-  return{x:col*w,y:row*h,w,h};
-}
-function drawApprovedShadow(screenX,screenY){
-  if(!player?.grounded)return;
-  ctx.save();ctx.globalAlpha=.22;ctx.fillStyle='#07120d';ctx.beginPath();ctx.ellipse(screenX+player.width/2,screenY+player.height+3,Math.max(16,player.width*.62),6,0,0,Math.PI*2);ctx.fill();ctx.restore();
-}
-function drawSeedManProduction(){
-  if(!player||!ctx)return;
-  ensureApprovedSeedManImage();
-  if(!approvedSeedManReady||!approvedSeedManImage)return;
-  const rect=approvedRect();
-  const screenX=player.x-cameraX;
-  const screenY=player.y;
-  const facing=(player.facing||(player.vx<0?-1:1))<0?-1:1;
-  const targetHeight=Math.max(70,(player.height||58)*1.82);
-  const targetWidth=targetHeight*(rect.w/rect.h);
-  const centerX=screenX+(player.width||38)/2;
-  const feetY=screenY+(player.height||58)+5;
-  drawApprovedShadow(screenX,screenY);
-  ctx.save();
-  ctx.imageSmoothingEnabled=true;
-  ctx.imageSmoothingQuality='high';
-  ctx.translate(centerX,feetY);
-  ctx.scale(facing,1);
-  const pose=resolveApprovedPose();
-  if(pose==='run')ctx.rotate(Math.sin((performance.now()||0)*.018)*.025*facing);
-  if(pose==='hurt')ctx.globalAlpha=.78+Math.sin((performance.now()||0)*.04)*.18;
-  ctx.drawImage(approvedSeedManImage,rect.x,rect.y,rect.w,rect.h,-targetWidth/2,-targetHeight,targetWidth,targetHeight);
-  ctx.restore();
-}
+  function shoe(x, y, flip = 1) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(flip, 1);
+    ctx.fillStyle = '#fffdf6';
+    ctx.strokeStyle = '#171a16';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.ellipse(4, 0, 11, 6, -.08, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  }
 
-window.drawSeedManProduction=drawSeedManProduction;
-window.drawSeedMan=drawSeedManProduction;
-window.__SEED_MAN_PRODUCTION_ART__=Object.freeze({
-  version:SPROUT_ART_VERSION,
-  pipeline:SPROUT_VISUAL_PIPELINE,
-  characterContract:SPROUT_CHARACTER_CONTRACT,
-  sourceOfTruth:'approved-showcase-2026-09-08',
-  approvedCoreUrl:APPROVED_CORE_URL,
-  atlasKey:'character.seedman.atlas',
-  fallbackAllowed:false,
-  phenotypeForms:Object.freeze(['plant','fire','electric','ice']),
-  frameGrid:Object.freeze({cols:FRAME_COLS,rows:FRAME_ROWS}),
-  cells:APPROVED_CELLS,
-  snapshot:()=>({ready:approvedSeedManReady,failed:approvedSeedManFailed,coreLoading:approvedCoreLoading,rendererOwner:document.documentElement.dataset.seedManRendererOwner||''})
-});
+  function drawSeedManProduction() {
+    const s = state();
+    if (!s || typeof ctx === 'undefined' || !ctx) return;
 
-document.documentElement.dataset.seedManRendererOwner=SPROUT_ART_VERSION;
-document.documentElement.dataset.seedManApprovedCharacter=SPROUT_CHARACTER_CONTRACT;
-ensureApprovedSeedManImage();
+    const form = phenotype();
+    const accent = accents(form);
+    const camera = typeof cameraX === 'number' ? cameraX : 0;
+    const facing = Number(s.vx || 0) < -1 ? -1 : 1;
+    const moving = Math.abs(Number(s.vx || 0)) > 14;
+    const airborne = !s.grounded;
+    const t = (performance.now?.() || 0) * 0.012;
+    const bob = moving && !airborne ? Math.sin(t * 1.8) * 2 : airborne ? -2 : Math.sin(t) * .7;
+    const stride = moving && !airborne ? Math.sin(t * 1.8) * 8 : 0;
+    const centerX = Number(s.x || 0) - camera + Number(s.width || 34) / 2;
+    const feetY = Number(s.y || 0) + Number(s.height || 46) + 3;
+
+    ctx.save();
+    ctx.translate(centerX, feetY + bob);
+    ctx.scale(facing, 1);
+
+    if (form !== 'plant') {
+      ctx.save();
+      ctx.globalAlpha = .18;
+      ctx.fillStyle = accent.glow;
+      ctx.beginPath();
+      ctx.ellipse(0, -47, 35, 45, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    if (s.grounded) {
+      ctx.save();
+      ctx.scale(facing, 1);
+      ctx.globalAlpha = .18;
+      ctx.fillStyle = '#0b130d';
+      ctx.beginPath();
+      ctx.ellipse(0, 3 - bob, 23, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    ctx.strokeStyle = '#171a16';
+    strokeLine(-9, -27, -17 - stride * .45, -4, 5);
+    strokeLine(9, -27, 17 + stride * .45, -4, 5);
+    shoe(-19 - stride * .45, -1, -1);
+    shoe(19 + stride * .45, -1, 1);
+
+    const armSwing = moving && !airborne ? Math.sin(t * 1.8) * 7 : airborne ? -6 : 0;
+    strokeLine(-19, -49, -30 + armSwing, -30, 5);
+    strokeLine(19, -49, 30 - armSwing, -30, 5);
+    glove(-31 + armSwing, -29, -1);
+    glove(31 - armSwing, -29, 1);
+
+    ctx.fillStyle = '#8b5f3c';
+    ctx.strokeStyle = '#171a16';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.ellipse(0, -46, 25, 31, -.04, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.save();
+    ctx.globalAlpha = .22;
+    ctx.strokeStyle = '#5d3a26';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-10, -70);
+    ctx.quadraticCurveTo(1, -50, 9, -22);
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.strokeStyle = '#171a16';
+    ctx.fillStyle = '#171a16';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(-8, -51, 2.8, 0, Math.PI * 2);
+    ctx.arc(8, -51, 2.8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(0, -40, 8, .2, Math.PI - .2);
+    ctx.stroke();
+
+    ctx.strokeStyle = '#2d5c2d';
+    ctx.lineWidth = 4;
+    strokeLine(0, -76, 0, -86, 4);
+    ctx.fillStyle = accent.leaf;
+    ctx.strokeStyle = '#204521';
+    ctx.lineWidth = 2.5;
+    for (const leaf of [
+      { x: 0, y: -91, rx: 7, ry: 12, r: 0 },
+      { x: -8, y: -87, rx: 6, ry: 11, r: -.75 },
+      { x: 8, y: -87, rx: 6, ry: 11, r: .75 }
+    ]) {
+      ctx.save();
+      ctx.translate(leaf.x, leaf.y);
+      ctx.rotate(leaf.r);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, leaf.rx, leaf.ry, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    ctx.restore();
+    document.documentElement.dataset.seedManRendererOwner = VERSION;
+    document.documentElement.dataset.seedManArtPipeline = 'flexible';
+  }
+
+  window.drawSeedManProduction = drawSeedManProduction;
+  window.drawSeedMan = drawSeedManProduction;
+  window.__SEED_MAN_PRODUCTION_ART__ = Object.freeze({
+    version: VERSION,
+    pipeline: 'flexible-canvas',
+    externalCharacterAtlas: false,
+    phenotypeForms: Object.freeze([...FORMS]),
+    draw: drawSeedManProduction
+  });
+})();
