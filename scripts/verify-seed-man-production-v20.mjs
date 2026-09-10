@@ -18,7 +18,7 @@ required.forEach(requireFile);
 for(const rel of ['assets/approved/seed-man-character-atlas-v2.webp','assets/approved/seed-man-enemy-boss-atlas-v1.webp','assets/approved/seed-man-platform-atlas-v1.webp'])requireWebp(rel);
 
 const retired=[
-  'data/level-01.json','data/levels-12-15.json','campaign-v1.js','gameplay-v2.js','physics.mjs','campaign-combat-v20.js','campaign-progress-v20.js','campaign-runtime-v20.js',
+  'data/level-01.json','data/levels-02-11.json','data/levels-12-15.json','campaign-v1.js','gameplay-v2.js','physics.mjs','campaign-combat-v20.js','campaign-progress-v20.js','campaign-runtime-v20.js',
   'campaign-ui-v15.js','world-five-v1.js','combat-browser-v1.js','enemy-attacks-browser-v1.js','seed-man-ui-v3.js',
   'assets/approved/seed-man-approved-master-atlas-v1.webp','assets/approved/seed-man-cover-banner-approved-v1.webp'
 ];
@@ -59,6 +59,10 @@ if(fs.statSync(path.join(root,'three-world-v1.js')).size<250000)throw new Error(
 const bootstrap=read('canvas-compat-v1.js');
 for(const marker of ['seed-man-runtime-bootstrap-v20','three-world-adapter-v1.js','seed-man-three-public-v3','player-state-v20.js'])if(!bootstrap.includes(marker))throw new Error(`Runtime bootstrap missing marker: ${marker}`);
 
+const inputGuard=read('input-guard-v1.js');
+for(const marker of ['seed-man-input-guard-v20','protect-native-interactive-keyboard-behavior','legacySignatureRuntime:false'])if(!inputGuard.includes(marker))throw new Error(`Input guard missing v20 marker: ${marker}`);
+for(const stale of ['seed-man-signature-features-v1','nursery-night-shift','reservoir-run','root-zone-rumble','trichome-transit','weak-point stomps','power-ups'])if(inputGuard.includes(stale))throw new Error(`Retired signature/input runtime remains: ${stale}`);
+
 const core=read('approved-art-core-v1.js');
 for(const marker of ['seed-man-approved-art-core-v4','seed-man-character-atlas-v2.webp','seed-man-enemy-boss-atlas-v1.webp','seed-man-platform-atlas-v1.webp',"worldRenderer:'seed-man-three-world-v2'"])if(!core.includes(marker))throw new Error(`Approved art core missing marker: ${marker}`);
 if(core.includes('seed-man-approved-master-atlas-v1.webp'))throw new Error('Corrupt master atlas remains in public art core');
@@ -71,4 +75,4 @@ if(!read('player-state-v20.js').includes('seed-man-player-state-v20'))throw new 
 if(!read('v20-enemy-runtime.js').includes('seed-man-v20-enemy-runtime-v2'))throw new Error('Canonical v20 enemy runtime marker is missing');
 if(!read('enemy-attacks-browser-v2.js').includes('seed-man-enemy-attacks-browser-v2'))throw new Error('Canonical enemy attack runtime marker is missing');
 
-console.log(JSON.stringify({ok:true,levels:20,worlds:5,bosses:6,enemies:10,phenotypeCarriers:3,finalBoss:'blight-king',approvedArt:true,worldRenderer:'seed-man-three-world-v2',playerState:'v20',combatRuntime:'v2',legacySproutRunRemoved:true,corruptAssetsRemoved:true,retiredArtifactsRemoved:retired.length}));
+console.log(JSON.stringify({ok:true,levels:20,worlds:5,bosses:6,enemies:10,phenotypeCarriers:3,finalBoss:'blight-king',approvedArt:true,worldRenderer:'seed-man-three-world-v2',playerState:'v20',combatRuntime:'v2',inputGuard:'v20',legacySproutRunRemoved:true,corruptAssetsRemoved:true,retiredArtifactsRemoved:retired.length}));
