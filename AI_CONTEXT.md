@@ -4,7 +4,7 @@
 
 **Status: ACTIVE until explicitly revoked by the user.**
 
-For all DTFSeeds game work, read `docs/GAME_RESTRICTIONS_HOLD.md` before applying older source-of-truth, canonical ownership, backend, preserve-existing-logic, smallest-change, route-lock, architecture-lock, or no-rewrite constraints. While active, the hold allows any game code, asset, UI, engine, backend, route, build/deployment structure, ownership map, or repository layout to be changed when needed to achieve the requested product goal.
+For all DTFSeeds game work, read `docs/GAME_RESTRICTIONS_HOLD.md` before applying older source-of-truth, canonical ownership, backend, preserve-existing-logic, smallest-change, route-lock, architecture-lock, no-rewrite, or development/QA-tool constraints. While active, the hold allows any game code, asset, UI, engine, backend, route, build/deployment structure, ownership map, repository layout, or game-development tooling to be changed when needed to achieve the requested product goal.
 
 Security/credential rules, truthful deployment verification, and higher-level platform requirements remain in force.
 
@@ -36,7 +36,7 @@ Before changing anything:
 4. Read the source-of-truth document for the project you are changing as historical/integration context.
 5. For game work, read `docs/GAME_DEVELOPMENT_WORKFLOW.md` and `docs/GAME_ARCHITECTURE_STANDARD.md`.
 6. For publishing or live-route work, read `.agents/skills/dtfseeds-production-publishing/SKILL.md` and `docs/deployment-hostinger.md`.
-7. For High Land, use the additional High Land reading order in `AGENTS.md` as context; the temporary hold suspends its implementation locks.
+7. For High Land, use the additional High Land reading order in `AGENTS.md` as context; the temporary hold suspends its implementation and tooling locks.
 
 ## Repository map
 
@@ -105,7 +105,7 @@ Run direct production identity checks when the environment is allowed to access 
 npm run verify:release-integrity:live
 ```
 
-If the architecture changes, obsolete validation may be replaced with equivalent deterministic tests rather than preserving a validator that no longer represents the product.
+If the architecture changes, obsolete validation may be replaced with equivalent or stronger validation rather than preserving a validator that no longer represents the product.
 
 ## High Land commands
 
@@ -119,7 +119,7 @@ node scripts/verify-browser-tool-policy.mjs
 
 High Land currently lives in `apps/high-land-web`; this is not a technical lock while the temporary hold is active. The Hostinger PHP Website Room API remains the current backend, but the prior backend lock is suspended. Any replacement must still protect private room state and credentials.
 
-Playwright remains retired from the active DTFSeeds validation path unless the user explicitly restores it. Use deterministic tests/build/policy checks, direct browser/live-route review, HTTP/resource checks, Lighthouse, and screenshot/image comparison as appropriate.
+During the active restriction hold, project-level prohibitions on specific development, browser, or QA tools are suspended. Use the strongest appropriate tools available for the task and report exactly what was tested.
 
 ## GrowLens commands
 
@@ -136,6 +136,7 @@ npm run verify:growlens
 - Existing game logic may be preserved, modified, or replaced according to the requested goal.
 - Existing separation between simulation, rendering, UI, input, networking, and browser objects may be retained or redesigned.
 - Existing routes, names, architectures, ownership maps, and backends may be changed when the requested work requires it.
+- Development and QA tooling may be changed or expanded when it improves the outcome.
 - Stable asset manifests and deterministic serializable state remain recommended engineering practices, not blockers.
 - Add or update tests for materially changed behavior when practical.
 - Keep hidden multiplayer information and authoritative legality/scoring protected server-side in any architecture that uses hidden information.
@@ -148,7 +149,7 @@ npm run verify:growlens
 2. Resolve current ownership for reference.
 3. Create or use a branch appropriate to the work.
 4. Make the change needed to achieve the requested result, including full rewrites or migrations when justified.
-5. Run appropriate deterministic tests/build checks for the resulting architecture.
+5. Run appropriate tests/build/browser/QA checks for the resulting architecture using the strongest suitable tools available.
 6. Update ownership, navigation, and deployment metadata if architecture or routes changed.
 7. Integrate the validated change.
 8. If production behavior changed, verify the exact live dtfseeds.com route separately.
