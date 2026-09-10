@@ -1,44 +1,28 @@
 # Deployment Runbook
 
-## Build
+This runbook describes release evidence, not a fixed game architecture, build tool, hosting path, route owner, or deployment provider.
 
-Run from the repository root:
+## Build and validation
 
-```bash
-npm ci
-npm run test:high-land
-npm run build:high-land
-node scripts/verify-browser-tool-policy.mjs
-```
+Run the tests, build, static analysis, browser checks, asset checks, and packaging steps appropriate to the implementation being deployed. Existing game-specific npm commands are useful only while they match the current architecture.
 
-## Output
+## Artifact
 
-```txt
-apps/high-land-web/dist
-```
+Identify the exact built/package artifact or source revision being deployed. The artifact directory may change when a game is restructured.
 
-## Upload target
+## Destination
 
-```txt
-/public_html/games/high-land/
-```
+Record the actual deployment target and public route for the current implementation. Hostinger, WordPress, another host, or a different route structure may be used when the project changes.
 
-## Public URL
+## Live verification
 
-```txt
-https://dtfseeds.com/games/high-land/
-```
+After deployment, verify the actual visitor-facing route. At minimum confirm:
 
-## Check after upload
+- the expected game/application loads;
+- required assets resolve without broken-image placeholders;
+- core controls and a meaningful gameplay transition work;
+- responsive phone/tablet/desktop composition is usable when relevant;
+- browser/network/runtime errors are reviewed;
+- multiplayer is checked with independent sessions when relevant.
 
-- Page loads.
-- Board renders.
-- Player setup starts.
-- Dice roll works.
-- HIT card reveal works.
-- Reverse Rotation, choices, skip turns, and draw-again cards do not get stuck.
-- Save and load work.
-- Mobile view works.
-- Browser console and required network requests pass live review.
-
-A repository build is not a live update. Live success requires uploading `apps/high-land-web/dist` to `/public_html/games/high-land/` and verifying the public route.
+A repository commit, build, merge, or upload is not by itself proof that production changed. Record the exact live URL, revision, verification time, and observed result.
