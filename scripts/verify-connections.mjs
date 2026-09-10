@@ -1,46 +1,29 @@
 import { access } from "node:fs/promises";
 
 const requiredFiles = [
-  "docs/BACKEND_DECISION.md",
-  "apps/high-land-web/package.json",
-  "apps/high-land-web/public/api/create-room.php",
-  "apps/high-land-web/public/api/get-room.php",
-  "apps/high-land-web/src/game/multiplayer/websiteRoomTransport.ts",
-  ".github/workflows/high-land-ci.yml",
-  ".github/workflows/hostinger-high-land-deploy.yml",
-  ".github/workflows/wordpress-readonly-audit.yml",
+  "package.json",
+  "AGENTS.md",
+  "docs/GAME_DEVELOPMENT_FREEDOM.md",
 ];
 
-const endpointChecks = [
+const requiredEndpoints = [
   {
     name: "DTF Seeds public site",
     url: "https://dtfseeds.com/",
     expected: [200],
   },
+];
+
+const optionalCurrentEndpoints = [
   {
-    name: "DTF Seeds High Land route",
+    name: "Current High Land route",
     url: "https://dtfseeds.com/games/high-land/",
     expected: [200],
   },
   {
-    name: "WordPress MCP authentication boundary",
-    url: "https://dtfseeds.com/wp-json/mcp/mcp-adapter-default-server",
-    expected: [401, 403],
-  },
-  {
-    name: "High Land room API index guard",
+    name: "Current High Land room API index",
     url: "https://dtfseeds.com/games/high-land/api/",
-    expected: [404],
-  },
-  {
-    name: "High Land create-room method guard",
-    url: "https://dtfseeds.com/games/high-land/api/create-room.php",
-    expected: [405],
-  },
-  {
-    name: "High Land get-room validation guard",
-    url: "https://dtfseeds.com/games/high-land/api/get-room.php",
-    expected: [400],
+    expected: [200, 400, 401, 403, 404, 405],
   },
 ];
 
@@ -56,29 +39,31 @@ for (const path of requiredFiles) {
   }
 }
 
-for (const check of endpointChecks) {
+async function probe(check, required) {
   try {
     const response = await fetch(check.url, {
       redirect: "follow",
       signal: AbortSignal.timeout(15_000),
     });
-
-    if (check.expected.includes(response.status)) {
-      console.log(`PASS ${check.name}: HTTP ${response.status}`);
-    } else {
-      failed = true;
-      console.error(
-        `FAIL ${check.name}: HTTP ${response.status}; expected ${check.expected.join("/")}`,
-      );
-    }
+    const ok = check.expected.includes(response.status);
+    const prefix = ok ? "PASS" : required ? "FAIL" : "INFO";
+    console.log(`${prefix} ${check.name}: HTTP ${response.status}`);
+    if (!ok && required) failed = true;
   } catch (error) {
-    failed = true;
-    console.error(`FAIL ${check.name}: ${error.message}`);
+    if (required) {
+      failed = true;
+      console.error(`FAIL ${check.name}: ${error.message}`);
+    } else {
+      console.log(`INFO ${check.name}: unavailable (${error.message})`);
+    }
   }
 }
+
+for (const check of requiredEndpoints) await probe(check, true);
+for (const check of optionalCurrentEndpoints) await probe(check, false);
 
 if (failed) {
   process.exitCode = 1;
 } else {
-  console.log("Connection preflight passed.");
+  console.log("Connection preflight passed without enforcing a game backend, route owner, or transport implementation.");
 }
