@@ -2,6 +2,7 @@
 
 (() => {
   const VERSION = 'seed-man-campaign-v20-runtime-v3';
+  const LEVEL_SELECT_ID = 'campaign-level-select-v20';
   const BOSS_META = Object.freeze({
     'overgrown-guardian': { name:'Overgrown Guardian', requiredHits:5, width:128, height:118, accent:'#76d858' },
     'ancient-dryad': { name:'Ancient Dryad', requiredHits:6, width:132, height:120, accent:'#9bd46f' },
@@ -127,6 +128,7 @@
     const marker=document.querySelector('#seed-ui-release-marker'); if(marker) marker.textContent='LIVE UI · 20 LEVELS · APPROVED ART · PHENOTYPE COMBAT';
     const title=document.querySelector('#seed-campaign-title'); if(title) title.textContent=`Level ${entry.order} / 20 · ${entry.title}`;
     const setting=document.querySelector('#seed-campaign-setting'); if(setting) setting.textContent=`${entry.worldTitle}${entry.boss?` · ${BOSS_META[entry.boss].name}`:''}`;
+    const select=document.getElementById(LEVEL_SELECT_ID); if(select) select.value=entry.id;
     document.title=`Seed Man: ${entry.title} | DTF Genetics`;
   }
 
@@ -144,7 +146,7 @@
   }
 
   function installSelect() {
-    const select=document.querySelector('#seed-man-level-select');
+    const select=document.getElementById(LEVEL_SELECT_ID);
     if (!select) return;
     select.innerHTML='';
     for (const world of campaignData.worlds) {
@@ -156,6 +158,7 @@
     }
     select.value=activeId;
     select.addEventListener('change',()=>{if(generated.has(select.value))selectLevel(select.value);});
+    document.documentElement.dataset.seedManCampaignSelect='v20';
   }
 
   function approvedWorldAsset(key) {
