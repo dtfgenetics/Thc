@@ -2,6 +2,7 @@
 
 (() => {
   const VERSION = 'seed-man-campaign-v20-runtime-v3';
+  const AUTHORING_VERSION = 'seed-man-authored-levels-v1';
   const BOSS_META = Object.freeze({
     'overgrown-guardian': { name:'Overgrown Guardian', requiredHits:5, width:128, height:118, accent:'#76d858' },
     'ancient-dryad': { name:'Ancient Dryad', requiredHits:6, width:132, height:120, accent:'#9bd46f' },
@@ -68,7 +69,75 @@
     const p=candidates[0]; return Math.round(clamp(desired,p.x+margin,p.x+p.width-margin));
   }
 
-  function generateLevel(entry) {
+  function validateAuthoredLayout(entry) {
+    const layout=entry?.layout;
+    if (!layout || layout.mode!=='authored') return null;
+    for (const key of ['platforms','hazards','pickups','checkpoints','enemySpawns','phenotypeCarrierSpawns']) {
+      if (!Array.isArray(layout[key])) throw new Error(`Authored level ${entry.id} is missing ${key}`);
+    }
+    if (!layout.spawn || !layout.finish) throw new Error(`Authored level ${entry.id} must define spawn and finish`);
+    if (layout.checkpoints.length!==entry.checkpointCount) throw new Error(`Authored level ${entry.id} checkpoint count does not match catalog`);
+    if (layout.finish.x<=layout.spawn.x || layout.finish.x+layout.finish.width>entry.length+1) throw new Error(`Authored level ${entry.id} finish is outside level bounds`);
+    if ((layout.requiredPickups ?? layout.pickups.length)!==layout.pickups.length) throw new Error(`Authored level ${entry.id} requiredPickups must equal authored pickup count`);
+    const ids=[...layout.platforms,...layout.hazards,...layout.pickups,...layout.checkpoints,...layout.enemySpawns,...layout.phenotypeCarrierSpawns].map((item)=>item.id).filter(Boolean);
+    if (new Set(ids).size!==ids.length) throw new Error(`Authored level ${entry.id} contains duplicate object ids`);
+    return layout;
+  }
+
+  function buildBoss(entry,platforms) {
+    if (!entry.boss) return null;
+    const meta=BOSS_META[entry.boss];
+    if (!meta) throw new Error(`Missing boss metadata: ${entry.boss}`);
+    const center=safeX(platforms,entry.length*0.84,175);
+    return {id:entry.boss,name:meta.name,requiredHits:meta.requiredHits,width:meta.width,height:meta.height,accent:meta.accent,phases:meta.phases||1,phase:1,finalBoss:Boolean(meta.finalBoss),x:Math.round(center-meta.width/2),y:480-meta.height,arenaStartX:Math.round(entry.length*0.72),arenaEndX:Math.round(entry.length*0.94),speed:50+entry.order*2,hits:0,defeated:false};
+  }
+
+  function generateAuthoredLevel(entry,layout) {
+    const platforms=clone(layout.platforms);
+    const pickups=clone(layout.pickups);
+    const checkpoints=clone(layout.checkpoints);
+    const hazards=clone(layout.hazards);
+    const boss=buildBoss(entry,platforms.filter((platform)=>platform.y>=450));
+    return {
+      schemaVersion:6,
+      id:entry.id,
+      name:`Seed Man: ${entry.title}`,
+      title:entry.title,
+      levelNumber:entry.order,
+      worldId:entry.worldId,
+      worldTitle:entry.worldTitle,
+      theme:entry.worldId,
+      setting:`${entry.worldTitle} · ${entry.title}`,
+      difficulty:entry.order,
+      authoringMode:'authored',
+      authoringVersion:AUTHORING_VERSION,
+      layoutRevision:Number(layout.revision)||1,
+      worldWidth:entry.length,
+      worldHeight:540,
+      requiredPickups:Number(layout.requiredPickups ?? pickups.length),
+      spawn:clone(layout.spawn),
+      platforms,
+      hazards,
+      pickups,
+      powerups:[],
+      phenotypeForms:['plant','fire','electric','ice'],
+      phenotypeDurationMs:30000,
+      checkpoints,
+      boss,
+      enemyPool:[...entry.enemyPool],
+      enemySpawns:clone(layout.enemySpawns),
+      phenotypeCarrierSpawns:clone(layout.phenotypeCarrierSpawns),
+      encounterZones:clone(layout.encounterZones || []),
+      tutorials:clone(layout.tutorials || []),
+      mechanics:[...entry.mechanics],
+      hazardTypes:[...entry.hazards],
+      backgroundKey:WORLD_BACKGROUND_KEYS[entry.worldId],
+      palette:{accent:WORLD_COLORS[entry.worldId]},
+      finish:clone(layout.finish)
+    };
+  }
+
+  function generateProceduralLevel(entry) {
     const ground = buildGround(entry);
     const upper=[];
     const upperCount = 9 + Math.min(10, Math.floor(entry.order/2));
@@ -81,11 +150,6 @@
     const pickupCount=Math.min(36,20+Math.floor(entry.order/2));
     const pickups=Array.from({length:pickupCount},(_,index)=>({id:`seed-${entry.order}-${index+1}`,x:safeX(ground.platforms,entry.length*(0.05+index*(0.9/Math.max(1,pickupCount-1))),55),y:425,width:22,height:22}));
     const checkpoints=Array.from({length:entry.checkpointCount},(_,index)=>{const x=safeX(ground.platforms,entry.length*((index+1)/(entry.checkpointCount+1)),90);return{id:`checkpoint-${entry.order}-${index+1}`,x,y:420,width:50,height:60,respawnX:Math.max(60,x-20),respawnY:400};});
-    let boss=null;
-    if (entry.boss) {
-      const meta=BOSS_META[entry.boss]; const center=safeX(ground.platforms,entry.length*0.84,175);
-      boss={id:entry.boss,name:meta.name,requiredHits:meta.requiredHits,width:meta.width,height:meta.height,accent:meta.accent,phases:meta.phases||1,phase:1,finalBoss:Boolean(meta.finalBoss),x:Math.round(center-meta.width/2),y:480-meta.height,arenaStartX:Math.round(entry.length*0.72),arenaEndX:Math.round(entry.length*0.94),speed:50+entry.order*2,hits:0,defeated:false};
-    }
     return {
       schemaVersion:5,
       id:entry.id,
@@ -97,6 +161,7 @@
       theme:entry.worldId,
       setting:`${entry.worldTitle} · ${entry.title}`,
       difficulty:entry.order,
+      authoringMode:'generated',
       worldWidth:entry.length,
       worldHeight:540,
       requiredPickups:pickups.length,
@@ -108,8 +173,12 @@
       phenotypeForms:['plant','fire','electric','ice'],
       phenotypeDurationMs:30000,
       checkpoints,
-      boss,
+      boss:buildBoss(entry,ground.platforms),
       enemyPool:[...entry.enemyPool],
+      enemySpawns:[],
+      phenotypeCarrierSpawns:[],
+      encounterZones:[],
+      tutorials:[],
       mechanics:[...entry.mechanics],
       hazardTypes:[...entry.hazards],
       backgroundKey:WORLD_BACKGROUND_KEYS[entry.worldId],
@@ -118,12 +187,19 @@
     };
   }
 
+  function generateLevel(entry) {
+    const authored=validateAuthoredLayout(entry);
+    return authored ? generateAuthoredLevel(entry,authored) : generateProceduralLevel(entry);
+  }
+
   function syncUi(entry) {
     document.documentElement.dataset.sproutCampaignLevels='20';
     document.documentElement.dataset.seedManCampaign=VERSION;
     document.body.dataset.seedTheme=entry.worldId;
     document.body.dataset.seedLevel=entry.id;
-    const status=document.querySelector('#load-status'); if(status) status.textContent=`Level ${entry.order}/20 · ${entry.worldTitle} · ${entry.title}${entry.boss?` · Boss: ${BOSS_META[entry.boss].name}`:''}`;
+    const authored=entry.layout?.mode==='authored';
+    document.body.dataset.seedLevelAuthoring=authored?'authored':'generated';
+    const status=document.querySelector('#load-status'); if(status) status.textContent=`Level ${entry.order}/20 · ${entry.worldTitle} · ${entry.title}${entry.boss?` · Boss: ${BOSS_META[entry.boss].name}`:''}${authored?' · Authored layout':''}`;
     const marker=document.querySelector('#seed-ui-release-marker'); if(marker) marker.textContent='LIVE UI · 20 LEVELS · APPROVED ART · PHENOTYPE COMBAT';
     const title=document.querySelector('#seed-campaign-title'); if(title) title.textContent=`Level ${entry.order} / 20 · ${entry.title}`;
     const setting=document.querySelector('#seed-campaign-setting'); if(setting) setting.textContent=`${entry.worldTitle}${entry.boss?` · ${BOSS_META[entry.boss].name}`:''}`;
@@ -139,7 +215,7 @@
     try { running=true; } catch {}
     try { localStorage.setItem('dtf-seed-man-last-level-v20',id); } catch {}
     syncUi(entry);
-    window.dispatchEvent(new CustomEvent('sprout:level-selected',{detail:{levelId:id,level:{...entry},campaignV20:true}}));
+    window.dispatchEvent(new CustomEvent('sprout:level-selected',{detail:{levelId:id,level:{...entry},campaignV20:true,authoringMode:level.authoringMode}}));
     return {...entry};
   }
 
@@ -212,9 +288,10 @@
     try { await loadData(); } catch (error) { console.error('[Seed Man] 20-level campaign initialization failed.',error); return; }
     activeId=entries[0].id;
     const worlds=campaignData.worlds.map((world)=>Object.freeze({...world,levels:Object.freeze(entries.filter((entry)=>entry.worldOrder===world.order).map((entry)=>Object.freeze({...entry})))}));
-    window.__SPROUT_CAMPAIGN__=Object.freeze({version:VERSION,campaignId:campaignData.id,title:campaignData.title,defaultLevelId:campaignData.defaultLevelId,levelCount:20,newLevelCount:19,worldCount:5,bossCount:6,finalBoss:'blight-king',worlds:Object.freeze(worlds),listLevels:()=>entries.map((entry)=>({...entry})),getLevel:(id=activeId)=>{const entry=entries.find((item)=>item.id===id);return entry?{...entry}:null;},get activeLevelId(){return activeId;},selectLevel});
+    const authoredLevelCount=entries.filter((entry)=>entry.layout?.mode==='authored').length;
+    window.__SPROUT_CAMPAIGN__=Object.freeze({version:VERSION,authoringVersion:AUTHORING_VERSION,campaignId:campaignData.id,title:campaignData.title,defaultLevelId:campaignData.defaultLevelId,levelCount:20,newLevelCount:19,worldCount:5,bossCount:6,finalBoss:'blight-king',authoredLevelCount,worlds:Object.freeze(worlds),listLevels:()=>entries.map((entry)=>({...entry})),getLevel:(id=activeId)=>{const entry=entries.find((item)=>item.id===id);return entry?{...entry}:null;},get activeLevelId(){return activeId;},selectLevel});
     window.__SPROUT_CAMPAIGN_BASE_LEVELS__=Object.freeze(entries.map((entry)=>entry.id));
-    window.__SEED_MAN_CAMPAIGN_V20__=Object.freeze({version:VERSION,levelCount:20,worldCount:5,bossCount:6,finalBoss:'blight-king',generatedLevelCount:generated.size,approvedWorldBackgrounds:true,selectLevel});
+    window.__SEED_MAN_CAMPAIGN_V20__=Object.freeze({version:VERSION,authoringVersion:AUTHORING_VERSION,levelCount:20,worldCount:5,bossCount:6,finalBoss:'blight-king',generatedLevelCount:generated.size,authoredLevelCount,approvedWorldBackgrounds:true,selectLevel});
     installSelect(); installBackground(); installFinalBossHook();
     let requested=null;try{requested=localStorage.getItem('dtf-seed-man-last-level-v20');}catch{}
     selectLevel(generated.has(requested)?requested:campaignData.defaultLevelId);
