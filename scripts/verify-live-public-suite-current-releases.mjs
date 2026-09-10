@@ -27,7 +27,7 @@ const routes = [
       './campaign-v20-runtime.js?v=',
       './combat-browser-v2.js?v='
     ],
-    forbiddenMarkers: ['seed-man-level','Seed Man: Sprout Run','Greenhouse Gauntlet','combat-browser-v1.js','enemy-attacks-browser-v1.js'],
+    forbiddenMarkers: ['id="seed-man-level"','Seed Man: Sprout Run','Greenhouse Gauntlet','combat-browser-v1.js','enemy-attacks-browser-v1.js'],
     assets: [
       { path: 'app.js', markers: ['seed-man-base-runtime-v20', "campaignAuthority:'campaign-v20-runtime.js'", 'level.boss && !level.boss.defeated'], forbiddenMarkers: ['readEmbeddedLevel','worldWidth !== 7800'] },
       { path: 'player-state-v20.js', markers: ['seed-man-player-state-v20'] },
