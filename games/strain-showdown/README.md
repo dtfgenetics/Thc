@@ -1,69 +1,41 @@
 # Strain Showdown
 
-**Strain Showdown** is an original cannabis-themed trading-card battle game organized around eight strain families. This directory owns the canonical 96-card roster, family identities, deterministic rules engine, simulation tooling, tests, and release metadata used by the dtfseeds.com browser prototype.
+**Strain Showdown** is an original cannabis-themed trading-card battle game. This README records the current implementation and data model; it does not lock the game to a family roster, tier structure, card count, renderer, engine, route, repository, effect vocabulary, or release workflow.
 
-## Locked families
+## Current content model
 
-Kush, Haze, Skunk, Gas, Cookies, Fruit, Purple, Frost.
+The current prototype uses eight families: Kush, Haze, Skunk, Gas, Cookies, Fruit, Purple, and Frost. The current core roster contains 96 strain cards arranged as 6 Base, 4 Select, and 2 Elite cards per family.
 
-## Locked card progression
+Those values are current-state data and may be redesigned, expanded, reduced, renamed, or replaced when the game direction changes.
 
-Each family contains 12 strain cards: 6 Tier 1 Base, 4 Tier 2 Select, and 2 Tier 3 Elite, for a 96-strain core roster.
+## Current browser ruleset
 
-## Playable browser ruleset
+The present implementation uses Vigor and Power, three battlefield lanes, Garden health, Focus resources, staged evolution, family passives, and solo CPU play. These mechanics may be kept, rebalanced, replaced, or rebuilt. Tests and data validators should follow the intended current rules rather than force obsolete mechanics to remain.
 
-- **Vigor** is the primary defensive stat.
-- **Power** is the primary attacking stat.
-- The battlefield has three lanes.
-- Each side begins with 20 Garden and 3 Focus.
-- Stage 1 Base cards enter empty lanes.
-- Stage 2 Select cards evolve same-family Stage 1 cards.
-- Stage 3 Elite cards evolve same-family Stage 2 cards.
-- Attacks hit the opposing card in the same lane; open lanes damage Garden directly.
-- Eight family passives create distinct prototype play styles.
-- A match ends when a Garden reaches 0 or after the 18-round board-strength tiebreak.
-- The current visitor-facing mode is solo vs CPU.
+## Current data and tooling
 
-## Draft effect authoring
+Useful current files include:
 
-The first controlled effect-authoring layer now lives in `data/effect-profiles.json`.
+```txt
+data/roster-manifest.json
+data/families.json
+data/effect-profiles.json
+scripts/validate-roster.mjs
+scripts/validate-effects.mjs
+scripts/validate-browser-build.mjs
+scripts/simulate-balance.mjs
+test/engine.test.mjs
+site/public-route-patch/games/strain-showdown/
+```
 
-- 24 profiles cover every combination of the 8 families and 3 stages.
-- Every canonical card deterministically maps to exactly one profile through `family + stage`.
-- Each card's existing `roleTag` becomes its draft ability name, so all 96 cards have a stable per-card ability label without duplicating effect logic across 96 scripts.
-- The mechanic vocabulary is deliberately small and machine-validatable: shields, attack bonuses, shield breaking, breakthrough damage, adaptive resource/recovery, Garden healing, evolution draws, recovery bonuses, and evolution protection.
-- `scripts/validate-effects.mjs` proves that all 96 cards are covered and that no unsupported mechanic or out-of-range value enters the draft catalog.
-- These effects are **not active in the browser battle rules yet**. Activation is a separate balance-integration gate so authored text cannot silently change the live ruleset before simulation and human playtesting.
+These paths and validators are implementation references, not permanent ownership boundaries. If the game moves or the schema changes, update or replace them.
 
-## Verification
+## Visual redesign
 
-- `data/roster-manifest.json` controls roster count, files, tier distribution, stage progression, and current effect-authoring state.
-- `data/families.json` controls family identity.
-- `data/effect-profiles.json` controls the draft effect vocabulary and family/stage profiles.
-- `scripts/validate-roster.mjs` checks the canonical 96-card roster and DTF Genetics catalog cross-links.
-- `scripts/validate-effects.mjs` validates 96-card draft ability coverage.
-- `test/engine.test.mjs` exercises setup, legal play, evolution prerequisites, attacks, turn flow, and CPU actions.
-- `scripts/validate-browser-build.mjs` verifies that the public runtime and public roster remain synchronized with canonical source.
-- `scripts/simulate-balance.mjs` alternates the starting side and runs deterministic family-vs-family matches so tuning can be measured instead of guessed. CI requires all automated family win rates to stay between 40% and 68% with no more than a 25-point spread.
-- `.github/workflows/strain-showdown-ci.yml` runs roster, effect-authoring, engine, simulation, and public-runtime checks for pull requests and changes to `main`.
+The current browser prototype is not a visual constraint. The front end, card frames, battlefield, animation, VFX, menus, responsive layout, and complete art system may be rebuilt from scratch. Current gameplay/data systems may be reused selectively when useful.
 
-## Public runtime
+## Quality and release
 
-The self-hosted browser prototype lives at `site/public-route-patch/games/strain-showdown/` and is packaged for:
+When mechanics or content change, verify the resulting roster/schema, legal actions, turn flow, scoring/win logic, balance assumptions, responsive presentation, asset loading, and browser behavior using checks appropriate to the new implementation. Human playtesting and visual review should evaluate the redesigned game rather than require the previous prototype to remain unchanged.
 
-`https://dtfseeds.com/games/strain-showdown/`
-
-The browser build includes family selection, a CPU rival, three-lane play, Base/Select/Elite evolution, family passives, Focus economy, Garden health, match history, battle feedback, rematches, keyboard-accessible card selection, and responsive controls.
-
-## Deliberately open gates
-
-The playable prototype is not the final printed TCG ruleset. These remain open and must not be represented as complete:
-
-- activation and measured tuning of the authored draft effect profiles;
-- final per-card tournament wording and exceptions after effect playtesting;
-- balance approval based on simulation plus human playtesting;
-- final tournament/rules wording;
-- final card art and rights clearance;
-- print proof and production approval.
-
-Current status: **playable browser prototype + complete draft effect-profile coverage**. The next design phase is engine integration of the validated effect vocabulary, measured balance tuning, and human playtesting rather than rebuilding the browser game from scratch.
+Current public reference: `https://dtfseeds.com/games/strain-showdown/`. This route may also change if the deployment architecture is deliberately migrated.
