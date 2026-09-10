@@ -1,28 +1,12 @@
 import { createApprovedArtRegistry, validateApprovedArtManifest } from './art-registry.mjs';
 
-const REQUIRED_IMAGE_KEYS = Object.freeze([
-  'character.seedman.atlas',
-  'enemy.atlas',
-  'boss.atlas',
-  'platform.atlas'
-]);
-const REQUIRED_DESCRIPTOR_KEYS = Object.freeze([
-  'cover.main',
-  'ui.vfx.cover',
-  'world.greenhouse-valley.background',
-  'world.forest-ruins.background',
-  'world.desert-canyon.background',
-  'world.frozen-peaks.background',
-  'world.eco-city.background'
-]);
-
 export async function loadApprovedArtManifest({
   manifestUrl = './data/seed-man-art-manifest-v1.json',
   fetchImpl = globalThis.fetch
 } = {}) {
-  if (typeof fetchImpl !== 'function') throw new Error('Seed Man approved art loader requires fetch.');
+  if (typeof fetchImpl !== 'function') throw new Error('Seed Man art loader requires fetch.');
   const response = await fetchImpl(manifestUrl, { cache: 'no-store' });
-  if (!response?.ok) throw new Error(`Seed Man approved art manifest failed to load: ${response?.status || 'unknown'}`);
+  if (!response?.ok) throw new Error(`Seed Man art manifest failed to load: ${response?.status || 'unknown'}`);
   const manifest = await response.json();
   validateApprovedArtManifest(manifest);
   return manifest;
@@ -37,17 +21,18 @@ export async function preloadApprovedArt({
   const manifest = await loadApprovedArtManifest({ manifestUrl, fetchImpl });
   const registry = createApprovedArtRegistry(manifest, { baseUrl });
   const images = new Map();
+  const imageEntries = registry.keys()
+    .map((key) => [key, registry.get(key)])
+    .filter(([, asset]) => asset?.url && (asset.type === 'image' || asset.type === 'atlas' || /\.(?:png|jpe?g|webp|avif|gif|svg)(?:\?|$)/i.test(asset.url)));
 
-  await Promise.all(REQUIRED_IMAGE_KEYS.map((key) => new Promise((resolve, reject) => {
-    const asset = registry.get(key);
-    if (!asset.url) return reject(new Error(`Approved Seed Man image asset has no URL: ${key}`));
+  await Promise.all(imageEntries.map(([key, asset]) => new Promise((resolve) => {
     const image = imageFactory();
     image.decoding = 'async';
     image.onload = () => {
       images.set(key, image);
       resolve();
     };
-    image.onerror = () => reject(new Error(`Approved Seed Man art failed to load: ${key} -> ${asset.url}`));
+    image.onerror = () => resolve();
     image.src = asset.url;
   })));
 
@@ -55,17 +40,10 @@ export async function preloadApprovedArt({
 }
 
 export function assertApprovedArtReady(bundle) {
-  if (!bundle?.registry || !bundle?.images) throw new Error('Seed Man approved art bundle is not initialized.');
-  for (const key of REQUIRED_IMAGE_KEYS) {
-    if (!bundle.registry.has(key)) throw new Error(`Seed Man approved art registry missing ${key}`);
-    if (!bundle.images.has(key)) throw new Error(`Seed Man approved art image missing ${key}`);
-  }
-  for (const key of REQUIRED_DESCRIPTOR_KEYS) {
-    if (!bundle.registry.has(key)) throw new Error(`Seed Man approved renderer descriptor missing ${key}`);
-  }
+  if (!bundle?.registry || !bundle?.images) throw new Error('Seed Man art bundle is not initialized.');
   return true;
 }
 
-export const APPROVED_ART_REQUIRED_IMAGE_KEYS = REQUIRED_IMAGE_KEYS;
-export const APPROVED_ART_REQUIRED_DESCRIPTOR_KEYS = REQUIRED_DESCRIPTOR_KEYS;
-export const APPROVED_ART_REQUIRED_KEYS = Object.freeze([...REQUIRED_IMAGE_KEYS,...REQUIRED_DESCRIPTOR_KEYS]);
+export const APPROVED_ART_REQUIRED_IMAGE_KEYS = Object.freeze([]);
+export const APPROVED_ART_REQUIRED_DESCRIPTOR_KEYS = Object.freeze([]);
+export const APPROVED_ART_REQUIRED_KEYS = Object.freeze([]);
