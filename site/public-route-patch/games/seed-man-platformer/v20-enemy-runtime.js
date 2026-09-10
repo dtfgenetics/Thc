@@ -3,6 +3,12 @@
 (() => {
   const VERSION = 'seed-man-v20-enemy-runtime-v2';
   const PHENOTYPE_DURATION_MS = 30000;
+  const ATLAS_LAYOUT = Object.freeze({
+    width:320,
+    height:120,
+    enemy:Object.freeze({ columns:6, y:0, height:0.5 }),
+    boss:Object.freeze({ columns:4, y:0.5, height:0.5 })
+  });
 
   const ENEMY_META = Object.freeze({
     'sproutling': { name:'Sproutling', role:'walker', hp:2, speed:48, width:34, height:32, attackPattern:'aimed-shot', drop:['resin',1], visualFrame:0 },
@@ -17,13 +23,16 @@
     'shadow-root': { name:'Shadow Root', role:'teleporter', hp:7, speed:50, width:44, height:46, attackPattern:'blink-strike', drop:['genetic-fragments',2], visualFrame:0 }
   });
 
-  const BOSS_VISUAL_FRAME = Object.freeze({
-    'overgrown-guardian':0,
-    'ancient-dryad':1,
-    'scorchroot-titan':2,
-    'frostbite-colossus':3,
-    'eco-sentinel':4,
-    'blight-king':5
+  // The approved 320x120 enemy/boss atlas contains six enemy cells on row 0
+  // and four larger boss cells on row 1. Ancient Dryad and Blight King use
+  // deterministic variants of approved boss cells until dedicated sprites land.
+  const BOSS_VISUAL = Object.freeze({
+    'overgrown-guardian': Object.freeze({ frame:0, variant:'guardian', mirrorX:false, sizeScale:1 }),
+    'ancient-dryad': Object.freeze({ frame:0, variant:'dryad', mirrorX:true, sizeScale:0.94, aura:'#9bd46f' }),
+    'scorchroot-titan': Object.freeze({ frame:1, variant:'scorchroot', mirrorX:false, sizeScale:1.04, aura:'#ff754b' }),
+    'frostbite-colossus': Object.freeze({ frame:2, variant:'frostbite', mirrorX:false, sizeScale:1.06, aura:'#77dfff' }),
+    'eco-sentinel': Object.freeze({ frame:3, variant:'sentinel', mirrorX:false, sizeScale:1, aura:'#8df5b1' }),
+    'blight-king': Object.freeze({ frame:3, variant:'blight-king', mirrorX:true, sizeScale:1.16, aura:'#9cff2f' })
   });
 
   const PHENOTYPE_CARRIERS = Object.freeze({
@@ -34,6 +43,18 @@
 
   const PHENOTYPE_ORDER = Object.freeze(['fire','electric','ice']);
   const clamp = (value,min,max) => Math.max(min,Math.min(max,value));
+
+  function regionFor(row, frame) {
+    const layout = ATLAS_LAYOUT[row];
+    if (!layout) throw new Error(`Unknown approved atlas row: ${row}`);
+    const safeFrame = clamp(Math.trunc(Number(frame) || 0), 0, layout.columns - 1);
+    return Object.freeze({
+      x:safeFrame / layout.columns,
+      y:layout.y,
+      width:1 / layout.columns,
+      height:layout.height
+    });
+  }
 
   function levelOrder(levelData) {
     return Math.max(1, Number(levelData?.levelNumber || levelData?.difficulty || 1));
@@ -49,7 +70,9 @@
     const meta = ENEMY_META[type] || ENEMY_META.sproutling;
     const order = levelOrder(levelData);
     const worldWidth = Math.max(1600, Number(levelData?.worldWidth || 6200));
-    const fraction = options.carrier ? 0.62 : 0.12 + (index * 0.68 / Math.max(1,count - 1));
+    const fraction = Number.isFinite(options.fraction)
+      ? clamp(options.fraction, 0.08, 0.92)
+      : options.carrier ? 0.62 : 0.12 + (index * 0.68 / Math.max(1,count - 1));
     const centerX = clamp(Math.round(worldWidth * fraction), 260, worldWidth - 300);
     const movement = movementFor(meta.role);
     const flying = movement === 'flying';
@@ -83,16 +106,32 @@
       phenotypeForm:carrier?.form || null,
       phenotypeDurationMs:carrier ? PHENOTYPE_DURATION_MS : null,
       drop:carrier ? ['alleles',1] : [...meta.drop],
-      approvedVisual:Object.freeze({ atlas:'enemy-boss.atlas', row:'enemy', frame:meta.visualFrame }),
+      approvedVisual:Object.freeze({
+        atlas:'enemy-boss.atlas',
+        row:'enemy',
+        frame:meta.visualFrame,
+        region:regionFor('enemy', meta.visualFrame),
+        variant:carrier ? `carrier-${carrier.form}` : type
+      }),
       canonicalV20:true
     };
+  }
+
+  function buildPhenotypeCarrier(levelData, form, index = 0, options = {}) {
+    const carrier = PHENOTYPE_CARRIERS[form];
+    if (!carrier) throw new Error(`Unknown phenotype carrier form: ${form}`);
+    return buildEnemy(levelData, carrier.base, index, 3, {
+      carrier:true,
+      form,
+      fraction:options.fraction
+    });
   }
 
   function buildBoss(levelData) {
     const boss = levelData?.boss;
     if (!boss?.id || boss.defeated) return null;
-    const visualFrame=BOSS_VISUAL_FRAME[boss.id];
-    if (!Number.isInteger(visualFrame)) throw new Error(`Missing approved boss visual frame: ${boss.id}`);
+    const visual = BOSS_VISUAL[boss.id];
+    if (!visual) throw new Error(`Missing approved boss visual definition: ${boss.id}`);
     return {
       id:`v20-${levelData.id}-boss-${boss.id}`,
       archetype:boss.id,
@@ -118,7 +157,16 @@
       bossRank:boss.finalBoss ? 'final' : 'major',
       finalBoss:Boolean(boss.finalBoss),
       phase:Number(boss.phase || 1),
-      approvedVisual:Object.freeze({ atlas:'enemy-boss.atlas', row:'boss', frame:visualFrame }),
+      approvedVisual:Object.freeze({
+        atlas:'enemy-boss.atlas',
+        row:'boss',
+        frame:visual.frame,
+        region:regionFor('boss', visual.frame),
+        variant:visual.variant,
+        mirrorX:Boolean(visual.mirrorX),
+        sizeScale:Number(visual.sizeScale || 1),
+        aura:visual.aura || boss.accent || '#c8f36a'
+      }),
       canonicalV20:true
     };
   }
@@ -130,11 +178,15 @@
     const order = levelOrder(levelData);
     const count = clamp(4 + Math.floor((order - 1) / 4),4,8);
     const encounter = Array.from({length:count},(_,index) => buildEnemy(levelData,pool[index % pool.length],index,count));
-    if (order >= 2) {
+
+    if (levelData?.boss?.id === 'blight-king' || levelData?.mechanics?.includes?.('final-gauntlet')) {
+      const fractions = Object.freeze({ fire:0.58, electric:0.68, ice:0.76 });
+      PHENOTYPE_ORDER.forEach((form,index) => encounter.push(buildPhenotypeCarrier(levelData,form,count+index,{fraction:fractions[form]})));
+    } else if (order >= 2) {
       const form = PHENOTYPE_ORDER[(order - 2) % PHENOTYPE_ORDER.length];
-      const carrier = PHENOTYPE_CARRIERS[form];
-      encounter.push(buildEnemy(levelData,carrier.base,count,count + 1,{carrier:true,form}));
+      encounter.push(buildPhenotypeCarrier(levelData,form,count));
     }
+
     const boss = buildBoss(levelData);
     if (boss) encounter.push(boss);
     return encounter;
@@ -149,10 +201,13 @@
     phenotypeDurationMs:PHENOTYPE_DURATION_MS,
     phenotypeForms:Object.freeze(['plant','fire','electric','ice']),
     enemyTypes:Object.freeze(Object.keys(ENEMY_META)),
-    bossVisualFrames:BOSS_VISUAL_FRAME,
+    atlasLayout:ATLAS_LAYOUT,
+    bossVisuals:BOSS_VISUAL,
     phenotypeCarrierForms:Object.freeze([...PHENOTYPE_ORDER]),
     buildEncounter,
     buildAttackers,
-    buildBoss
+    buildBoss,
+    buildPhenotypeCarrier,
+    regionFor
   });
 })();
