@@ -69,8 +69,8 @@
     <section class="panel">
       <h2>Campaign</h2>
       <p>Four levels per world carry Seed Man from Greenhouse Valley through Forest Ruins, Desert Canyon and Frozen Peaks to Eco City. World bosses cap the first four worlds; Eco Sentinel guards Level 19 and the Blight King ends Level 20.</p>
-      <label for="seed-man-level-select">Choose level</label>
-      <select id="seed-man-level-select" aria-label="Choose Seed Man level"></select>
+      <label for="campaign-level-select-v20">Choose level</label>
+      <select id="campaign-level-select-v20" aria-label="Choose Seed Man campaign level"></select>
       <p id="seed-campaign-title">Level 1 / 20 · Sprout Steps</p>
       <p id="seed-campaign-setting">Greenhouse Valley</p>
       <p id="seed-campaign-progress">0 / 20 cleared</p>
@@ -89,6 +89,37 @@
 
   <footer><p><strong>DTF Genetics</strong> · Dream the Future</p><p>Original DTF browser game using the approved Seed Man visual system.</p></footer>
 
+  <script>
+    (() => {
+      const SELECT_ID='campaign-level-select-v20';
+      let installed=false;
+      function installCampaignSelect(){
+        if(installed)return;
+        const campaign=window.__SPROUT_CAMPAIGN__;
+        const select=document.getElementById(SELECT_ID);
+        if(!campaign||campaign.levelCount!==20||!select){setTimeout(installCampaignSelect,25);return;}
+        const levels=campaign.listLevels?.()||[];
+        select.innerHTML='';
+        for(const world of campaign.worlds||[]){
+          const group=document.createElement('optgroup');
+          group.label=`World ${world.order} — ${world.title}`;
+          for(const entry of levels.filter((item)=>item.worldOrder===world.order)){
+            const option=document.createElement('option');
+            option.value=entry.id;
+            option.textContent=`${entry.order}. ${entry.title}${entry.boss?` — Boss` : ''}`;
+            group.append(option);
+          }
+          select.append(group);
+        }
+        select.value=campaign.activeLevelId||campaign.defaultLevelId||levels[0]?.id||'';
+        select.addEventListener('change',()=>{if(select.value)campaign.selectLevel(select.value);});
+        window.addEventListener('sprout:level-selected',(event)=>{const id=event.detail?.levelId;if(id)select.value=id;});
+        installed=true;
+        document.documentElement.dataset.seedManCampaignSelect='v20';
+      }
+      if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installCampaignSelect,{once:true});else installCampaignSelect();
+    })();
+  </script>
   <script src="./approved-art-core-v1.js?v=20260909-v20-runtime-v4" defer></script>
   <script src="./approved-art-runtime-v1.js?v=20260909-v20-runtime-v4" defer></script>
   <script src="./app.js?v=20260909-v20-runtime-v4" defer></script>
