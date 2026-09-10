@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 2,
-  "updatedAt": "2026-08-25",
+  "schemaVersion": 3,
+  "updatedAt": "2026-09-09",
   "curriculumId": "lifecycle-propagation-v6",
   "route": "/learn/lifecycle-propagation/",
   "visualPolicy": {
@@ -9,10 +9,16 @@
     ],
     "bannedStyleDescription": "Do not use flat beige/green THC-C### course-card infographic posters with dark green title strip, small boxed diagram panels, tiny academic labels, simple flat plant icons, or blank rounded image containers. This style is rejected sitewide and must not be used in product cards, seed cards, education cards, galleries, or Atlas pages.",
     "bannedFiles": [
+      "THC-C008_Infographic_Flower_Anatomy_Reproduction.png",
       "THC-C008_Infographic_Flower_Anatomy_Reproduction.jpg",
+      "THC-C009_Infographic_Trichomes_Secretory_Biology.png",
       "THC-C009_Infographic_Trichomes_Secretory_Biology.jpg"
     ],
-    "replacementRule": "Use approved strain/product visuals in seed areas. Use redesigned high-quality Atlas visuals in education areas. If a redesigned visual is not available, leave the image slot empty with a clean non-image placeholder rather than using the banned style."
+    "bannedBasenames": [
+      "THC-C008_Infographic_Flower_Anatomy_Reproduction",
+      "THC-C009_Infographic_Trichomes_Secretory_Biology"
+    ],
+    "replacementRule": "Use approved strain/product visuals in seed areas. Use redesigned high-quality Atlas visuals in education areas. If a redesigned visual is not available, leave the image slot empty with a clean non-image layout rather than using the banned style."
   },
   "chapters": {
     "seed-identity-quality": [
@@ -109,12 +115,12 @@
   },
   "removedRejectedVisuals": [
     {
-      "file": "THC-C008_Infographic_Flower_Anatomy_Reproduction.jpg",
-      "reason": "Rejected old THC-C course-card infographic style shown by user on dtfseeds.com."
+      "basename": "THC-C008_Infographic_Flower_Anatomy_Reproduction",
+      "reason": "Rejected old THC-C course-card infographic style shown by user on dtfseeds.com. All raster derivatives are banned."
     },
     {
-      "file": "THC-C009_Infographic_Trichomes_Secretory_Biology.jpg",
-      "reason": "Rejected old THC-C course-card infographic style shown by user on dtfseeds.com."
+      "basename": "THC-C009_Infographic_Trichomes_Secretory_Biology",
+      "reason": "Rejected old THC-C course-card infographic style shown by user on dtfseeds.com. All raster derivatives are banned."
     }
   ],
   "gaps": [

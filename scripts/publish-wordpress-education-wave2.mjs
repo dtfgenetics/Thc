@@ -12,8 +12,8 @@ const img={
  life:'https://dtfseeds.com/wp-content/uploads/2026/08/Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic.png',
  roots:'https://dtfseeds.com/wp-content/uploads/2026/08/THC-C005_Infographic_Root_Anatomy_and_Forensics.png',
  leaf:'https://dtfseeds.com/wp-content/uploads/2026/08/THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange.png',
- flower:'https://dtfseeds.com/wp-content/uploads/2026/08/THC-C008_Infographic_Flower_Anatomy_Reproduction.png',
- trichome:'https://dtfseeds.com/wp-content/uploads/2026/08/THC-C009_Infographic_Trichomes_Secretory_Biology.png',
+ flower:'',
+ trichome:'',
  diagnose:'https://dtfseeds.com/wp-content/uploads/2026/08/Diagnosing_Deficiency_vs_Toxicity_Infographic.png',
  vpd:'https://dtfseeds.com/wp-content/uploads/2026/08/THC-ENC-086_Air_VPD_Versus_Leaf_VPD.jpg'
 };
