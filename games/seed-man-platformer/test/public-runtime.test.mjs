@@ -20,10 +20,12 @@ const canonicalLevel = JSON.parse(canonicalLevelText);
 
 assert.doesNotMatch(html, /<script[^>]+id=["']seed-man-level["']/i, 'public page must not embed retired Sprout Run bootstrap data');
 assert.doesNotMatch(html, /Greenhouse Gauntlet|Seed Man: Sprout Run/i, 'retired public identity must stay absent');
+assert.match(html, /data-seed-man-release=["']20260909-v20-runtime-v4["']/, 'public page must preserve the production release identity expected by suite publishing');
+assert.match(html, /data-seed-ui-release=["']20260909-v20-runtime-v5["']/, 'public page must expose the cache-busted runtime asset revision');
 assert.match(html, /20-Level Campaign/, 'public page must identify the canonical 20-level campaign');
-assert.match(html, /three-world-v1\.js\?v=/, 'public page must load the generated Three.js world bundle');
-assert.doesNotMatch(html, /three-world-adapter-v1\.js\?v=/, 'Three.js adapter must be sequenced after campaign startup by the bootstrap runtime');
-assert.match(html, /player-state-v20\.js\?v=/, 'player state must be an explicit production dependency');
+assert.match(html, /three-world-v1\.js\?v=20260909-v20-runtime-v5/, 'public page must load the cache-busted Three.js world bundle');
+assert.match(html, /three-world-adapter-v1\.js\?v=20260909-v20-runtime-v5/, 'Three.js adapter must be an explicit deterministic production dependency');
+assert.match(html, /player-state-v20\.js\?v=20260909-v20-runtime-v5/, 'player state must be an explicit cache-busted production dependency');
 assert.match(html, /JUMP ×2/, 'touch UI must advertise double jump');
 assert.match(html, /id=["']combat-attack-button["']/, 'touch UI must expose attack');
 assert.match(html, /id=["']combat-ability-button["']/, 'touch UI must expose phenotype ability');
@@ -56,9 +58,11 @@ for (const retired of ['speedBoostMultiplier','jumpBoostMultiplier','magnetRadiu
   assert.doesNotMatch(app, new RegExp(retired), `retired prototype runtime token must stay removed: ${retired}`);
 }
 
-assert.match(bootstrap, /seed-man-runtime-bootstrap-v20/, 'bootstrap runtime marker must be current');
-assert.match(bootstrap, /three-world-adapter-v1\.js/, 'bootstrap must install the world adapter after campaign startup');
-assert.match(bootstrap, /window\.SeedManThreeWorld\?\.version===['"]seed-man-three-public-v3['"]/, 'bootstrap must require the generated Three.js API');
+assert.match(bootstrap, /seed-man-runtime-health-v20/, 'runtime health bridge marker must be current');
+assert.match(bootstrap, /campaignTarget:\s*20/, 'runtime health bridge must target the v20 campaign');
+assert.match(bootstrap, /legacyDynamicLoader:\s*false/, 'runtime health bridge must declare dynamic loader retirement');
+assert.match(bootstrap, /legacyCanvasMonkeyPatch:\s*false/, 'runtime health bridge must declare canvas monkey patch retirement');
+assert.doesNotMatch(bootstrap, /loadScript\s*\(|document\.createElement\(['"]script['"]\)|HTMLCanvasElement\?\.prototype|proto\.getContext\s*=/, 'runtime health bridge must not dynamically load scripts or monkey-patch canvas contexts');
 assert.match(buildScript, /publicRouteSynchronized:\s*true/, 'Three.js build must synchronize the generated bundle into the public route');
 assert.match(buildScript, /copyFile\(outfile, publicOutfile\)/, 'Three.js build must copy canonical output into the deployable route');
 

@@ -4,7 +4,7 @@ import { access, readFile } from 'node:fs/promises';
 const root = new URL('../', import.meta.url);
 const publicRoot = new URL('../../../site/public-route-patch/games/seed-man-platformer/', import.meta.url);
 
-const [canonicalCampaignText, publicCampaignText, canonicalLevels20Text, publicLevels20Text, html, v20Runtime, v20Ui, approvedCore, bootstrap] = await Promise.all([
+const [canonicalCampaignText, publicCampaignText, canonicalLevels20Text, publicLevels20Text, html, v20Runtime, v20Ui, approvedCore, runtimeHealth] = await Promise.all([
   readFile(new URL('data/campaign.json', root), 'utf8'),
   readFile(new URL('data/campaign.json', publicRoot), 'utf8'),
   readFile(new URL('data/levels-20-v1.json', root), 'utf8'),
@@ -70,6 +70,7 @@ assert.match(html, /v20-enemy-runtime\.js\?v=[^"']+/, 'public page must load can
 assert.match(html, /combat-browser-v2\.js\?v=[^"']+/, 'public page must load canonical v20 combat runtime');
 assert.match(html, /enemy-attacks-browser-v2\.js\?v=[^"']+/, 'public page must load canonical v20 enemy attack runtime');
 assert.match(html, /three-world-v1\.js\?v=[^"']+/, 'public page must load generated Three.js world bundle');
+assert.match(html, /three-world-adapter-v1\.js\?v=[^"']+/, 'public page must load Three.js adapter explicitly');
 assert.doesNotMatch(html, /<script[^>]+id=["']seed-man-level["']/i, 'public page must not embed retired Sprout Run bootstrap data');
 assert.doesNotMatch(html, /campaign-v1\.js|gameplay-v2\.js|campaign-ui-v15\.js|world-five-v1\.js|combat-browser-v1\.js|enemy-attacks-browser-v1\.js|seed-man-ui-v3\.js/, 'public page must not load retired compatibility runtimes');
 assert.match(v20Runtime, /seed-man-campaign-v20-runtime-v3/, 'v20 campaign runtime marker missing');
@@ -87,6 +88,9 @@ for (const world of ['greenhouse-valley','forest-ruins','desert-canyon','frozen-
   assert.ok(approvedCore.includes(`world.${world}.background`), `approved browser art registry missing ${world}`);
 }
 assert.match(approvedCore, /worldRenderer:'seed-man-three-world-v2'/, 'world art must be owned by the production Three.js renderer');
-assert.match(bootstrap, /three-world-adapter-v1\.js/, 'bootstrap must attach Three.js adapter after campaign initialization');
+assert.match(runtimeHealth, /seed-man-runtime-health-v20/, 'runtime health bridge marker missing');
+assert.match(runtimeHealth, /legacyDynamicLoader:\s*false/, 'runtime health bridge must keep the retired dynamic loader disabled');
+assert.match(runtimeHealth, /legacyCanvasMonkeyPatch:\s*false/, 'runtime health bridge must keep the retired canvas monkey patch disabled');
+assert.doesNotMatch(runtimeHealth, /loadScript\s*\(|HTMLCanvasElement\?\.prototype|proto\.getContext\s*=/, 'runtime health bridge must not own script loading or canvas context creation');
 
-console.log('Seed Man canonical v20 campaign, renderer-backed worlds, and retired artifact removal checks passed');
+console.log('Seed Man canonical v20 campaign, deterministic renderer startup, and retired artifact removal checks passed');

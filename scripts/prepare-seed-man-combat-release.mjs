@@ -14,6 +14,8 @@ const campaignUiPath = `${publicRoot}/campaign-ui-v20.js`;
 const approvedArtCorePath = `${publicRoot}/approved-art-core-v1.js`;
 const approvedArtRuntimePath = `${publicRoot}/approved-art-runtime-v1.js`;
 const productionArtPath = `${publicRoot}/seed-man-production-art.js`;
+const threeWorldPath = `${publicRoot}/three-world-v1.js`;
+const threeAdapterPath = `${publicRoot}/three-world-adapter-v1.js`;
 const combatPath = `${publicRoot}/combat-browser-v2.js`;
 const enemyAttackPath = `${publicRoot}/enemy-attacks-browser-v2.js`;
 const compatPath = `${publicRoot}/canvas-compat-v1.js`;
@@ -30,6 +32,8 @@ const required = [
   approvedArtCorePath,
   approvedArtRuntimePath,
   productionArtPath,
+  threeWorldPath,
+  threeAdapterPath,
   combatPath,
   enemyAttackPath,
   compatPath,
@@ -79,6 +83,8 @@ for (const marker of [
   'approved-art-core-v1.js',
   'approved-art-runtime-v1.js',
   'seed-man-production-art.js',
+  'three-world-v1.js',
+  'three-world-adapter-v1.js',
   'combat-browser-v2.js',
   'enemy-attacks-browser-v2.js'
 ]) {
@@ -91,8 +97,11 @@ for (const marker of ['levelCount:20', 'bossCount:6', "finalBoss:'blight-king'",
 for (const marker of ['seed-man-campaign-ui-v20', '20']) {
   if (!campaignUi.includes(marker)) throw new Error(`Seed Man v20 campaign UI missing marker: ${marker}`);
 }
-for (const marker of ['sprout-canvas-compat-v20', 'campaignTarget:20', 'campaign-ui-v20.js', 'player-state-v20.js', "playerStateRuntime:'v20'", 'combat-browser-v2.js', 'enemy-attacks-browser-v2.js']) {
-  if (!compat.includes(marker)) throw new Error(`Seed Man compatibility bootstrap missing v20 marker: ${marker}`);
+for (const marker of ['seed-man-runtime-health-v20', 'campaignTarget: 20', "combatRuntime: 'v2'", "playerStateRuntime: 'v20'", 'legacyDynamicLoader: false', 'legacyCanvasMonkeyPatch: false']) {
+  if (!compat.includes(marker)) throw new Error(`Seed Man runtime health bridge missing v20 marker: ${marker}`);
+}
+for (const stale of ['loadScript(', 'HTMLCanvasElement?.prototype', 'proto.getContext=', "document.createElement('script')"]) {
+  if (compat.includes(stale)) throw new Error(`Seed Man runtime health bridge contains retired bootstrap behavior: ${stale}`);
 }
 
 fs.copyFileSync(canonicalCampaignPath, publicCampaignPath);
@@ -114,9 +123,13 @@ console.log(JSON.stringify({
   finalBoss: 'blight-king',
   playerStateRuntime: 'v20',
   combatRuntime: 'v2',
+  worldAdapter: 'explicit',
+  runtimeBootstrap: 'health-only',
   approvedArtOnly: true,
   legacyV15PublisherDisabled: true,
   legacyCombatV1Disabled: true,
+  legacyDynamicLoaderDisabled: true,
+  legacyCanvasMonkeyPatchDisabled: true,
   postBuildRuntimeMutationDisabled: true,
   deterministicTests: true
 }, null, 2));

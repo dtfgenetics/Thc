@@ -21,10 +21,12 @@ const routes = [
     path: '/games/seed-man-platformer/',
     markers: [
       'data-seed-man-release="20260909-v20-runtime-v4"',
+      'data-seed-ui-release="20260909-v20-runtime-v5"',
       'data-seed-man-approved-art="approved-showcase-2026-09-08"',
       'LIVE UI · 20 LEVELS · APPROVED ART · THREE.JS WORLDS · PHENOTYPE COMBAT',
       './three-world-v1.js?v=',
       './campaign-v20-runtime.js?v=',
+      './three-world-adapter-v1.js?v=',
       './combat-browser-v2.js?v='
     ],
     forbiddenMarkers: ['id="seed-man-level"','Seed Man: Sprout Run','Greenhouse Gauntlet','combat-browser-v1.js','enemy-attacks-browser-v1.js'],
@@ -36,7 +38,8 @@ const routes = [
       { path: 'approved-art-core-v1.js', markers: ['seed-man-approved-art-core-v4','seed-man-character-atlas-v2.webp','world.greenhouse-valley.background','world.eco-city.background'], forbiddenMarkers: ['seed-man-approved-master-atlas-v1.webp'] },
       { path: 'three-world-v1.js', markers: ['SeedManThreeWorld','seed-man-three-public-v3','seed-man-three-world-v2'], minBytes: 250000 },
       { path: 'three-world-adapter-v1.js', markers: ['seed-man-three-adapter-v2'] },
-      { path: 'seed-man-production-art.js', markers: ['approved-showcase-2026-09-08', 'green-armored-plant-hero','fallbackAllowed:false'] }
+      { path: 'seed-man-production-art.js', markers: ['approved-showcase-2026-09-08', 'green-armored-plant-hero','fallbackAllowed:false'] },
+      { path: 'canvas-compat-v1.js', markers: ['seed-man-runtime-health-v20','legacyDynamicLoader: false','legacyCanvasMonkeyPatch: false'], forbiddenMarkers: ['loadScript(','HTMLCanvasElement?.prototype','proto.getContext='] }
     ],
     missingAssets: [
       'data/level-01.json',
