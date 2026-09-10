@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-09-09",
+  "status": "active",
+  "productionTarget": "https://dtfseeds.com/games/",
+  "ownership": {
+    "drive": "High-resolution source art, approved masters, print masters, reference sheets, audio masters, marketing art, provenance and review material.",
+    "github": "Optimized runtime assets, asset manifests, mappings, tests, build/deployment integration and automation.",
+    "live": "Final visitor-facing proof after exact route verification."
+  },
+  "lifecycle": [
+    "NEEDED",
+    "CONCEPT",
+    "REVIEW",
+    "APPROVED",
+    "NORMALIZED",
+    "OPTIMIZED",
+    "INTEGRATED",
+    "VERIFIED-LIVE"
+  ],
+  "controlStates": ["REPLACE", "ARCHIVED", "BLOCKED", "UNRESOLVED"],
+  "drive": {
+    "gamesRoot": {
+      "name": "04 Games",
+      "id": "1XP6Ezpd2xBbD1ZeScGInOM_yUH6V6s3l"
+    },
+    "shared": {
+      "name": "00 Shared Game Assets",
+      "id": "1Whf7bWmgjgzzOW71dWi2laah4fUZHpGX",
+      "controlFolderId": "1mTHygjwOCUQ0k5JhUbE59NnhybAqJ1NB",
+      "trackerId": "1csjWn1kT8vDG8wcIgN9GAUNdr8Ond4BYSdYpYsvMFZM",
+      "trackerTitle": "DTF Games — Visual Asset Master Tracker"
+    },
+    "visualRootName": "08 Visual Assets",
+    "visualSubfolders": [
+      "00 Art Direction",
+      "01 Source Masters",
+      "02 Approved Masters",
+      "03 Characters",
+      "04 Environments",
+      "05 Gameplay Objects",
+      "06 UI + HUD",
+      "07 FX + Animation",
+      "08 Audio",
+      "09 Marketing",
+      "10 Print",
+      "11 Runtime Exports",
+      "99 Archive"
+    ]
+  },
+  "standards": {
+    "batchSize": 10,
+    "assetIdPattern": "GAME-CATEGORY-SUBJECT-STATE-vNN",
+    "runtimeFilenamePolicy": "lowercase stable descriptive filenames",
+    "mobileReviewWidths": [360, 390, 430],
+    "touchTargetPx": 44,
+    "opaqueRuntimeFormats": ["webp", "avif"],
+    "alphaRuntimeFormats": ["webp", "png"],
+    "vectorFormat": "svg",
+    "threeDFormats": ["glb", "gltf"],
+    "globalVisualRules": [
+      "professional game-studio finish",
+      "no yellow tint",
+      "no watermarks",
+      "no placeholder art on active production paths",
+      "do not encode gameplay state by color alone",
+      "avoid baked-in body text when runtime text can be used"
+    ]
+  },
+  "waves": [
+    {
+      "wave": 1,
+      "priority": "P0",
+      "games": ["seed-man", "who-took-it", "high-life", "high-iq", "terpocalypse", "bud-or-bluff"]
+    },
+    {
+      "wave": 2,
+      "priority": "P1",
+      "games": ["high-land", "weedopolis", "strain-showdown", "burn-buds"]
+    },
+    {
+      "wave": 3,
+      "priority": "P2",
+      "games": [
+        "grower-conversations",
+        "thc-crossword",
+        "thc-u-know",
+        "kush-kings-chess",
+        "phenoquest",
+        "strain-match",
+        "grow-room-bingo",
+        "lost-in-the-terps",
+        "mystery-strain",
+        "spin-the-strain",
+        "grow-room-defense",
+        "harvest-hustle",
+        "trichome-trials",
+        "pheno-draft",
+        "high-lines"
+      ]
+    },
+    {
+      "wave": 4,
+      "priority": "P3",
+      "games": ["ganjumanji", "thc-rpg"]
+    }
+  ],
+  "games": {
+    "seed-man": {
+      "title": "Seed Man",
+      "repo": "dtfgenetics/Thc",
+      "driveGameFolderId": "1NrqkjVWCjw9Cf_6kiHyupYcKfA7uT8vd",
+      "driveVisualRootId": "1KvhKlWp5_PdlpM7CbBSUP1YpjY4m0DDj",
+      "repoRuntimeRoot": "games/seed-man-platformer",
+      "publicRoute": "/games/seed-man-platformer/",
+      "wave": 1,
+      "priority": "P0",
+      "nextBatch": "SM-001",
+      "knownScope": {
+        "phenotypes": 4,
+        "coreCharacterStates": 9,
+        "enemies": 10,
+        "bosses": 6,
+        "worlds": 5,
+        "terrainClasses": 11
+      }
+    },
+    "who-took-it": {
+      "title": "Who Took It?",
+      "repo": "dtfgenetics/Thc-guess-who",
+      "driveGameFolderId": "18SBSxsGOau4uwWhG1Diwd79hISb_k9AO",
+      "driveVisualRootId": "1QzFBDGjQQIJOEam4KCZws7nQq-MA6qwz",
+      "repoRuntimeRoot": "assets",
+      "publicRoute": "/games/who-took-it/",
+      "wave": 1,
+      "priority": "P0",
+      "nextBatch": "WTI-001",
+      "knownScope": {
+        "suspectPortraitsComplete": 25,
+        "itemEvidenceCardsMissing": 18,
+        "boardFramesMissing": 3,
+        "selectionStateAssetsMissing": 4
+      }
+    },
+    "high-life": {
+      "title": "High Life",
+      "repo": "dtfgenetics/Thc",
+      "driveGameFolderId": "1O75rPZg2AzA0kE2J1gFnmptKRdm-IZJ1",
+      "driveVisualRootId": "1zLPjubw5rezTeafcTwvL1c5Tr3dKFwnh",
+      "repoRuntimeRoot": "games/high-life",
+      "publicRoute": "/games/high-life/",
+      "wave": 1,
+      "priority": "P0",
+      "nextBatch": "HL-001",
+      "knownScope": {
+        "eras": 3,
+        "canonicalEvents": 18,
+        "knownDedicatedVisualAssets": 1
+      }
+    },
+    "high-iq": {
+      "title": "High IQ",
+      "repo": "dtfgenetics/Thc",
+      "driveGameFolderId": "1WClMjYObsNUyojKoOb_nviBy0AXnATOq",
+      "driveVisualRootId": "1lAF3xNtpm7p_gbI-2b06lXuz9f2Omjqg",
+      "repoRuntimeRoot": "site/public-route-patch/games/high-iq",
+      "publicRoute": "/games/high-iq/",
+      "wave": 1,
+      "priority": "P0",
+      "nextBatch": "HIQ-001",
+      "knownScope": {
+        "datasetVersion": "2.4",
+        "approvedQuestions": 200,
+        "topicDomains": 10
+      }
+    },
+    "terpocalypse": {
+      "title": "Terpocalypse: Grow Room From Hell",
+      "repo": "dtfgenetics/Terpocalapse",
+      "driveGameFolderId": "1EODsF4DqxO5G_fd3UajGpTOOe1sVo_fR",
+      "driveVisualRootId": "1fUqEM6zfDz7BOppp6U4vy7GiDKV9QVQT",
+      "repoRuntimeRoot": "assets",
+      "publicRoute": "/games/terpocalypse/",
+      "wave": 1,
+      "priority": "P0",
+      "nextBatch": "TERP-001",
+      "knownScope": {
+        "brandingMissing": 3,
+        "uiMissing": 8,
+        "weaponFramesMissing": 6,
+        "enemyStatesMissing": 9,
+        "pickupsMissing": 5,
+        "effectsMissing": 4
+      }
+    },
+    "bud-or-bluff": {
+      "title": "Bud or Bluff",
+      "repo": "dtfgenetics/Thc",
+      "driveGameFolderId": "1Ok1MHU0GIoG0cHseR4kQ1LI2fUTxPdq_",
+      "driveVisualRootId": "1cXjrWU62au9DKaG29rKYAgTysLSbOiih",
+      "repoRuntimeRoot": "games/bud-or-bluff",
+      "publicRoute": "/games/bud-or-bluff/",
+      "wave": 1,
+      "priority": "P0",
+      "nextBatch": "BOB-001",
+      "knownScope": {
+        "minimumPlayers": 2,
+        "maximumPlayers": 10,
+        "assetSystem": "unscoped"
+      }
+    },
+    "high-land": {
+      "title": "High Land",
+      "repo": "dtfgenetics/Thc",
+      "driveGameFolderId": "1kWOX1UYlbEraSFL5UyCOdyzXqMcqcFpZ",
+      "driveVisualRootId": "1EeySYtL4duj-oYhKyfXbi1vEh9fN5URf",
+      "repoRuntimeRoot": "apps/high-land-web",
+      "publicRoute": "/games/high-land/",
+      "wave": 2,
+      "priority": "P1",
+      "knownAssets": ["full board PNG", "HIT card sheets"]
+    },
+    "weedopolis": {
+      "title": "Weedopolis",
+      "repo": "dtfgenetics/Weedopolis-strain-Edition",
+      "driveGameFolderId": "1K0amWG5J6nN9820hBxVOpf12HtFrsw_K",
+      "driveVisualRootId": "1gYFcOW-0NQGgN0YEt2fLRn3844GDtuLO",
+      "wave": 2,
+      "priority": "P1"
+    },
+    "strain-showdown": {
+      "title": "Strain Showdown",
+      "repo": "dtfgenetics/Thc",
+      "driveGameFolderId": "1jJ1JtWGdNCJ--xfHJbclv7QyaIVr30Fh",
+      "driveVisualRootId": "1yPCJzEveV5hQ03OUMRheAUKWKB1L_x3L",
+      "wave": 2,
+      "priority": "P1",
+      "knownScope": {"strainCards": 96, "families": 8, "locations": 32}
+    },
+    "burn-buds": {
+      "title": "Burn Buds",
+      "repo": "dtfgenetics/Thc",
+      "driveGameFolderId": "11yWoRkU0HTdavEroYkVluVAOFCWldtuu",
+      "driveVisualRootId": "18yajn4zbPJgTW32IR8C1X6d4dyUcCd4L",
+      "wave": 2,
+      "priority": "P1"
+    }
+  },
+  "definitionOfDone": [
+    "required source masters exist in the correct Drive game folder",
+    "approval state is recorded",
+    "runtime exports are normalized and optimized",
+    "manifest IDs and paths are updated",
+    "game code loads the new files",
+    "deterministic asset/path/build checks pass",
+    "game-scale mobile and desktop review passes",
+    "no unintended placeholder or retired asset remains active",
+    "exact visitor-facing production route is verified after release"
+  ]
+}
