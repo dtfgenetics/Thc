@@ -6,6 +6,7 @@ const campaign = JSON.parse(fs.readFileSync(new URL('../data/campaign.json', imp
 const catalog = JSON.parse(fs.readFileSync(new URL('../data/levels-20-v1.json', import.meta.url), 'utf8'));
 
 assert.equal(validateCampaign(campaign), campaign);
+assert.equal(campaign.id, 'seed-man-campaign-20-v1');
 assert.equal(campaign.defaultLevelId, '1-1-sprout-steps');
 assert.equal(campaign.levelCount, 20);
 assert.equal(campaign.newLevelCount, 19);
@@ -17,6 +18,8 @@ assert.equal(levels.length, 20);
 assert.deepStrictEqual(levels.map((entry) => entry.order), Array.from({ length: 20 }, (_, index) => index + 1));
 assert.ok(levels.every((entry) => entry.status === 'playable'));
 assert.ok(levels.every((entry) => entry.dataPath === 'data/levels-20-v1.json'));
+assert.ok(levels.every((entry) => entry.dataKey === entry.id));
+assert.ok(levels.every((entry) => !Object.hasOwn(entry, 'publicDataElementId')), 'retired embedded-level metadata must stay removed');
 assert.deepStrictEqual(campaign.worlds.map((world) => world.levels.length), [4,4,4,4,4]);
 assert.deepStrictEqual(campaign.worlds.map((world) => world.title), ['Greenhouse Valley','Forest Ruins','Desert Canyon','Frozen Peaks','Eco City']);
 assert.deepStrictEqual(campaign.worlds.map((world) => world.visualWorldKey), ['greenhouse-valley','forest-ruins','desert-canyon','frozen-peaks','eco-city']);
@@ -51,7 +54,7 @@ assert.ok(finaleData.mechanics.includes('phenotype-cycle'));
 
 const state = createCampaignState(campaign);
 assert.deepStrictEqual(state, {
-  campaignId: 'sprout-run-campaign',
+  campaignId: 'seed-man-campaign-20-v1',
   activeLevelId: '1-1-sprout-steps',
   worldId: 'world-01',
   levelOrder: 1,
@@ -65,9 +68,12 @@ assert.throws(() => createCampaignState(campaign, 'missing-level'), /unknown cam
 
 const duplicate = structuredClone(campaign);
 duplicate.worlds[0].levels.push({ ...duplicate.worlds[0].levels[0] });
-assert.throws(() => validateCampaign(duplicate), /duplicate campaign level/);
+assert.throws(() => validateCampaign(duplicate), /invalid campaign world|duplicate campaign level/);
 const locked = structuredClone(campaign);
 locked.worlds[4].levels[3].status = 'locked';
-assert.throws(() => createCampaignState(locked, '5-4-the-last-seed'), /not playable/);
+assert.throws(() => createCampaignState(locked, '5-4-the-last-seed'), /invalid campaign level status/);
+const legacyMetadata = structuredClone(campaign);
+legacyMetadata.worlds[0].levels[0].publicDataElementId = 'seed-man-level';
+assert.throws(() => validateCampaign(legacyMetadata), /retired embedded-level metadata/);
 
-console.log('Seed Man 20-level campaign, five worlds, six bosses, and Blight King finale tests passed');
+console.log('Seed Man v20 campaign identity, 20 levels, five worlds, six bosses, and Blight King finale tests passed');
