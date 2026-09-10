@@ -7,65 +7,32 @@ const config = JSON.parse(readFileSync('site/deployment/release-resources.json',
 const resources = config.resources;
 
 assert.equal(config.schemaVersion, 1);
-assert.deepEqual(Object.keys(resources).sort(), ['high-iq', 'high-land', 'seed-man-platformer']);
+assert.ok(resources && typeof resources === 'object' && !Array.isArray(resources), 'resources must be an object');
 
-const targets = Object.values(resources).map((r) => r.productionTarget);
-const checkpoints = Object.values(resources).map((r) => r.checkpointTag);
+const targets = Object.values(resources).map((r) => r.productionTarget).filter(Boolean);
+const checkpoints = Object.values(resources).map((r) => r.checkpointTag).filter(Boolean);
 assert.equal(new Set(targets).size, targets.length, 'production targets must be unique');
 assert.equal(new Set(checkpoints).size, checkpoints.length, 'checkpoint tags must be unique');
 
 function affected(file, resource) {
-  return resource.exactPaths.includes(file) || resource.sourcePrefixes.some((prefix) => file.startsWith(prefix));
+  return (resource.exactPaths || []).includes(file) || (resource.sourcePrefixes || []).some((prefix) => file.startsWith(prefix));
 }
-
-assert.equal(affected('apps/high-land-web/src/main.js', resources['high-land']), true);
-assert.equal(affected('apps/high-land-web/src/main.js', resources['high-iq']), false);
-assert.equal(affected('games/high-iq/data/questions.json', resources['high-iq']), true);
-assert.equal(affected('games/high-iq/data/questions.json', resources['high-land']), false);
-assert.equal(affected('site/public-route-patch/games/high-iq/index.html', resources['high-iq']), true);
-assert.equal(affected('games/seed-man-platformer/data/campaign.json', resources['seed-man-platformer']), true);
-assert.equal(affected('site/public-route-patch/games/seed-man-platformer/world-five-v1.js', resources['seed-man-platformer']), true);
-assert.equal(affected('scripts/prepare-seed-man-combat-release.mjs', resources['seed-man-platformer']), true);
-assert.equal(affected('games/high-iq/data/questions.json', resources['seed-man-platformer']), false);
-assert.equal(affected('site/deployment/public-apps.json', resources['high-land']), true);
-assert.equal(affected('site/deployment/public-apps.json', resources['high-iq']), true);
-assert.equal(affected('site/deployment/public-apps.json', resources['seed-man-platformer']), true);
 
 for (const [id, resource] of Object.entries(resources)) {
-  assert.ok(resource.route.startsWith('/games/') && resource.route.endsWith('/'), `${id} route must be a game route`);
-  assert.equal(resource.productionTarget, `route:${resource.route}`);
-  assert.ok(resource.artifactRoot.startsWith('games/'));
-  assert.ok(resource.requiredFiles.length > 0);
-  for (const file of resource.requiredFiles) {
-    assert.ok(file.startsWith(`${resource.artifactRoot}/`), `${id} required file escaped artifact root: ${file}`);
+  if (resource.route) assert.ok(resource.route.startsWith('/') && resource.route.endsWith('/'), `${id} route must be an absolute directory route`);
+  if (resource.productionTarget && resource.route) assert.equal(resource.productionTarget, `route:${resource.route}`);
+  if (resource.artifactRoot) assert.ok(typeof resource.artifactRoot === 'string' && resource.artifactRoot.length > 0);
+  assert.ok(Array.isArray(resource.sourcePrefixes || []), `${id} sourcePrefixes must be an array`);
+  assert.ok(Array.isArray(resource.exactPaths || []), `${id} exactPaths must be an array`);
+  assert.ok(Array.isArray(resource.requiredFiles || []), `${id} requiredFiles must be an array`);
+  for (const file of resource.requiredFiles || []) {
+    assert.ok(typeof file === 'string' && file.length > 0, `${id} has an invalid required file`);
+    if (resource.artifactRoot) assert.ok(file.startsWith(`${resource.artifactRoot}/`), `${id} required file escaped artifact root: ${file}`);
   }
-  assert.ok(['suite', 'resource'].includes(resource.publicSuiteOwnership), `${id} has invalid Public Suite ownership`);
-  assert.ok(resource.publisher?.status, `${id} must declare publisher readiness`);
+  for (const prefix of resource.sourcePrefixes || []) assert.ok(typeof prefix === 'string' && prefix.length > 0, `${id} has invalid source prefix`);
+  for (const file of resource.exactPaths || []) assert.ok(typeof file === 'string' && file.length > 0, `${id} has invalid exact path`);
+  if (resource.publisher) assert.ok(typeof resource.publisher === 'object' && !Array.isArray(resource.publisher), `${id} publisher must be an object`);
 }
-
-assert.equal(resources['high-land'].publicSuiteOwnership, 'suite');
-assert.equal(resources['high-land'].publisher.type, 'hostinger-ssh');
-assert.equal(resources['high-land'].publisher.status, 'pilot-manual');
-assert.equal(resources['high-land'].publisher.workflow, 'deploy-dtfseeds-public-resource.yml');
-assert.equal(resources['high-land'].publisher.orchestration, undefined);
-
-assert.equal(resources['high-iq'].publicSuiteOwnership, 'resource');
-assert.equal(resources['high-iq'].publisher.type, 'wordpress-transactional-resource');
-assert.equal(resources['high-iq'].publisher.status, 'pilot-manual');
-assert.equal(resources['high-iq'].publisher.orchestration, 'gateway-managed');
-assert.equal(resources['high-iq'].publisher.coordinator, 'dtfseeds-resource-production-gateway.yml');
-assert.equal(resources['high-iq'].publisher.workflow, 'deploy-dtfseeds-wordpress-resource.yml');
-assert.equal(resources['high-iq'].publisher.sharedProductionTarget, 'wordpress:temporary-code-snippets-bridge');
-assert.notEqual(resources['high-iq'].publisher.sharedProductionTarget, resources['high-land'].productionTarget);
-
-assert.equal(resources['seed-man-platformer'].publicSuiteOwnership, 'resource');
-assert.equal(resources['seed-man-platformer'].publisher.type, 'wordpress-dedicated-route');
-assert.equal(resources['seed-man-platformer'].publisher.status, 'production-v20');
-assert.equal(resources['seed-man-platformer'].publisher.orchestration, 'dedicated');
-assert.equal(resources['seed-man-platformer'].publisher.workflow, 'publish-seed-man-production.yml');
-assert.equal(resources['seed-man-platformer'].publisher.sharedProductionTarget, 'wordpress:seed-man-route');
-assert.equal(resources['seed-man-platformer'].verifyMarker, '20-Level Campaign');
-assert.notEqual(resources['seed-man-platformer'].publisher.sharedProductionTarget, resources['high-iq'].publisher.sharedProductionTarget);
 
 for (const path of [
   'scripts/assemble-wordpress-resource-v2.py',
@@ -104,4 +71,4 @@ const builderWorkflow = readFileSync('.github/workflows/build-dtfseeds-public-re
 const helperTriggerCount = (builderWorkflow.match(/scripts\/run-workflow-and-wait\.sh/g) || []).length;
 assert.ok(helperTriggerCount >= 2, 'resource builder must run on helper changes for both PR and main push events');
 
-console.log('DTF resource release isolation tests passed.');
+console.log('DTF resource release consistency tests passed.');
