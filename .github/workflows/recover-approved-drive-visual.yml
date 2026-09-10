@@ -1,0 +1,72 @@
+name: Recover One Approved Drive Visual
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_ref:
+        description: Existing branch to receive the recovered binary
+        required: true
+        default: main
+      manifest_path:
+        description: Path to exactly one approved visual recovery manifest
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: recover-approved-drive-visual-${{ inputs.target_ref }}
+  cancel-in-progress: false
+
+jobs:
+  recover-one:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Validate input path
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "${{ inputs.manifest_path }}" in
+            site/wordpress/education/recovery/*.json) ;;
+            *) echo "Manifest must live under site/wordpress/education/recovery/" >&2; exit 1 ;;
+          esac
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.target_ref }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Recover and byte-validate exactly one approved visual
+        env:
+          RECOVERY_MANIFEST: ${{ inputs.manifest_path }}
+        run: node scripts/recover-approved-drive-visual.mjs
+
+      - name: Run deterministic education image audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/recover-approved-drive-visual.mjs
+          if test -f scripts/audit-education-visual-maps.mjs; then
+            node scripts/audit-education-visual-maps.mjs
+          fi
+          git diff --check
+
+      - name: Commit recovered binary and manifest state
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "No recovery changes produced." >&2
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/wordpress/assets/infographics site/wordpress/education/recovery
+          git status --short
+          git commit -m "Recover one approved Drive education visual"
+          git push origin HEAD:${{ inputs.target_ref }}
