@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 2,
-  "updatedAt": "2026-08-25",
+  "schemaVersion": 3,
+  "updatedAt": "2026-09-09",
   "curriculumId": "plant-biology-v6",
   "policy": {
     "canonicalAssetRoot": "site/wordpress/assets/infographics",
@@ -9,7 +9,13 @@
     "allowGitHubRawFallback": true,
     "neverSubstituteMisleadingRelatedVisuals": true,
     "rejectedVisualStyle": "old-thc-course-card-infographic",
-    "excludedFiles": ["THC-C008_Infographic_Flower_Anatomy_Reproduction.jpg", "THC-C009_Infographic_Trichomes_Secretory_Biology.jpg"]
+    "excludedFiles": [
+      "THC-C008_Infographic_Flower_Anatomy_Reproduction.png",
+      "THC-C008_Infographic_Flower_Anatomy_Reproduction.jpg",
+      "THC-C009_Infographic_Trichomes_Secretory_Biology.png",
+      "THC-C009_Infographic_Trichomes_Secretory_Biology.jpg"
+    ],
+    "exclusionRule": "Treat rejected assets by basename so alternate image extensions cannot bypass the sitewide visual rejection."
   },
   "chapters": {
     "identity-morphology": [
