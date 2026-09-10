@@ -57,7 +57,7 @@ const markerSets=[
   ['combat-browser-v2.js',['seed-man-combat-browser-v2','syncBossState','seedman:boss-defeated']],
   ['enemy-attacks-browser-v2.js',['seed-man-enemy-attacks-browser-v2']],
   ['seed-man-production-art.js',['approved-showcase-2026-09-08','green-armored-plant-hero','fallbackAllowed:false']],
-  ['canvas-compat-v1.js',['seed-man-runtime-bootstrap-v20','three-world-adapter-v1.js','seed-man-three-public-v3']],
+  ['canvas-compat-v1.js',['seed-man-runtime-health-v20','campaignTarget: 20','legacyDynamicLoader: false','legacyCanvasMonkeyPatch: false']],
   ['input-guard-v1.js',['seed-man-input-guard-v20','protect-native-interactive-keyboard-behavior','legacySignatureRuntime:false']],
   ['app.js',['seed-man-base-runtime-v20',"campaignAuthority:'campaign-v20-runtime.js'",'level.boss && !level.boss.defeated']]
 ];
@@ -67,11 +67,16 @@ const three=read('three-world-v1.js');
 if(!three.includes('SeedManThreeWorld')||!three.includes('seed-man-three-public-v3')||!three.includes('seed-man-three-world-v2'))throw new Error('three-world-generated-bundle-marker-missing');
 if(fs.statSync(path.join(root,'three-world-v1.js')).size<250000)throw new Error('three-world-compatibility-stub-detected');
 const index=read('index.html');
-for(const marker of ['20-Level Campaign','three-world-v1.js','campaign-v20-runtime.js','campaign-ui-v20.js','v20-enemy-runtime.js','combat-browser-v2.js','enemy-attacks-browser-v2.js','player-state-v20.js'])if(!index.includes(marker))throw new Error(`index-production-marker-missing:${marker}`);
+for(const marker of ['20260909-v20-runtime-v5','20-Level Campaign','three-world-v1.js','three-world-adapter-v1.js','campaign-v20-runtime.js','campaign-ui-v20.js','v20-enemy-runtime.js','combat-browser-v2.js','enemy-attacks-browser-v2.js','player-state-v20.js'])if(!index.includes(marker))throw new Error(`index-production-marker-missing:${marker}`);
 for(const stale of ['id="seed-man-level"','Seed Man: Sprout Run','Greenhouse Gauntlet','campaign-v1.js','gameplay-v2.js','combat-browser-v1.js','enemy-attacks-browser-v1.js'])if(index.includes(stale))throw new Error(`legacy-runtime-in-index:${stale}`);
+const threeBundleIndex=index.indexOf('three-world-v1.js');
+const campaignIndex=index.indexOf('campaign-v20-runtime.js');
+const threeAdapterIndex=index.indexOf('three-world-adapter-v1.js');
+if(threeBundleIndex<0||campaignIndex<0||threeAdapterIndex<0||threeAdapterIndex<threeBundleIndex||threeAdapterIndex<campaignIndex)throw new Error('three-adapter-load-order-invalid');
 for(const stale of ['readEmbeddedLevel','worldWidth !== 7800','pickups.length !== 24'])if(read('app.js').includes(stale))throw new Error(`legacy-bootstrap-code-present:${stale}`);
 for(const stale of ['seed-man-approved-master-atlas-v1.webp','seed-man-cover-banner-approved-v1.webp'])if(read('approved-art-core-v1.js').includes(stale)||JSON.stringify(art).includes(stale))throw new Error(`retired-art-reference:${stale}`);
 for(const stale of ['seed-man-signature-features-v1','nursery-night-shift','reservoir-run','root-zone-rumble','trichome-transit','weak-point stomps','power-ups'])if(read('input-guard-v1.js').includes(stale))throw new Error(`retired-input-runtime:${stale}`);
+for(const stale of ['loadScript(', 'HTMLCanvasElement?.prototype', 'proto.getContext=', "document.createElement('script')"])if(read('canvas-compat-v1.js').includes(stale))throw new Error(`retired-dynamic-bootstrap:${stale}`);
 for(const retiredPhenotype of ['solar-flare','static-haze','frost-resin','hydro-surge','terpene-tempest','vine-lash','mycelium-mind','rootbreaker','trichome-crystal','gravity-haze'])if(read('combat-browser-v2.js').includes(retiredPhenotype))throw new Error(`retired-v20-phenotype:${retiredPhenotype}`);
 
-console.log(JSON.stringify({ok:true,campaignId:campaign.id,levels:20,worlds:5,bosses:6,enemies:10,phenotypeCarriers:3,finalBoss:'blight-king',approvedArt:true,worldRenderer:'seed-man-three-world-v2',playerState:'v20',combatRuntime:'v2',inputGuard:'v20',legacySproutRunRemoved:true,corruptAssetsRemoved:true,retiredArtifactsRemoved:retired.length}));
+console.log(JSON.stringify({ok:true,release:'20260909-v20-runtime-v5',campaignId:campaign.id,levels:20,worlds:5,bosses:6,enemies:10,phenotypeCarriers:3,finalBoss:'blight-king',approvedArt:true,worldRenderer:'seed-man-three-world-v2',worldAdapter:'explicit',runtimeBridge:'health-only',playerState:'v20',combatRuntime:'v2',inputGuard:'v20',legacyDynamicLoaderRemoved:true,legacyCanvasMonkeyPatchRemoved:true,legacySproutRunRemoved:true,corruptAssetsRemoved:true,retiredArtifactsRemoved:retired.length}));

@@ -12,6 +12,8 @@ const REQUIRED = [
   'approved-art-core-v1.js',
   'approved-art-runtime-v1.js',
   'seed-man-production-art.js',
+  'three-world-v1.js',
+  'three-world-adapter-v1.js',
   'input-guard-v1.js'
 ];
 const RETIRED = [
@@ -38,17 +40,21 @@ for (const marker of RETIRED) {
 }
 if (!index.includes('20-Level Campaign')) throw new Error('Seed Man v20 campaign identity marker is missing.');
 if (!index.includes('approved-showcase-2026-09-08')) throw new Error('Seed Man approved-art marker is missing.');
-if (!compat.includes('campaignTarget:20')) throw new Error('Seed Man compatibility bootstrap does not target 20 levels.');
-if (!compat.includes('combat-browser-v2.js')) throw new Error('Seed Man compatibility bootstrap does not load combat v2.');
-if (!compat.includes('enemy-attacks-browser-v2.js')) throw new Error('Seed Man compatibility bootstrap does not load enemy attacks v2.');
+for (const marker of ['seed-man-runtime-health-v20','campaignTarget: 20','legacyDynamicLoader: false','legacyCanvasMonkeyPatch: false']) {
+  if (!compat.includes(marker)) throw new Error(`Seed Man runtime health bridge missing marker: ${marker}`);
+}
+for (const stale of ['loadScript(', 'HTMLCanvasElement?.prototype', 'proto.getContext=', 'document.createElement(\'script\')']) {
+  if (compat.includes(stale)) throw new Error(`Retired Seed Man dynamic bootstrap behavior remains: ${stale}`);
+}
 
-// Release IDs are owned by the canonical build/publish pipeline. This legacy
-// helper no longer edits generated files or synchronizes retired v1 modules.
 console.log(JSON.stringify({
   ok: true,
   mode: 'validation-only',
   requiredRuntime: REQUIRED,
   retiredRuntime: RETIRED,
   campaignTarget: 20,
+  explicitThreeAdapter: true,
+  legacyDynamicLoaderDisabled: true,
+  legacyCanvasMonkeyPatchDisabled: true,
   legacyMutationDisabled: true
 }, null, 2));
