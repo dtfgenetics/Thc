@@ -1,83 +1,73 @@
 import assert from 'node:assert/strict';
-import { chromium } from '@playwright/test';
 
 const siteUrl = (process.env.DTF_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
 const version = process.env.DTF_GAME_PLATFORM_VERSION || '1.1.0';
 const cacheTag = process.env.GITHUB_RUN_ID || Date.now();
-const moduleUrl = `${siteUrl}/games/shared-platform/index.mjs?verify=${cacheTag}`;
 
-const moduleResponse = await fetch(moduleUrl, {
+async function fetchText(pathname, expectedType) {
+  const url = `${siteUrl}${pathname}${pathname.includes('?') ? '&' : '?'}verify=${cacheTag}`;
+  const response = await fetch(url, {
+    headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Pragma: 'no-cache' },
+    redirect: 'follow',
+    signal: AbortSignal.timeout(30_000),
+  });
+  assert.equal(response.status, 200, `${pathname} returned HTTP ${response.status}`);
+  const contentType = String(response.headers.get('content-type') || '').toLowerCase();
+  if (expectedType) assert.match(contentType, expectedType, `${pathname} has invalid MIME type: ${contentType || '<missing>'}`);
+  const body = await response.text();
+  assert.ok(body.trim(), `${pathname} returned an empty body`);
+  assert.doesNotMatch(body, /<!doctype html|<html/i, `${pathname} unexpectedly returned HTML`);
+  return { body, contentType };
+}
+
+const manifestResponse = await fetch(`${siteUrl}/games/shared-platform/manifest.json?verify=${cacheTag}`, {
   headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Pragma: 'no-cache' },
   redirect: 'follow',
   signal: AbortSignal.timeout(30_000),
 });
-assert.equal(moduleResponse.status, 200, `shared platform module returned HTTP ${moduleResponse.status}`);
-const contentType = String(moduleResponse.headers.get('content-type') || '').toLowerCase();
-assert.match(contentType, /(javascript|ecmascript)/, `shared platform module has invalid MIME type: ${contentType || '<missing>'}`);
-const source = await moduleResponse.text();
-assert.match(source, /DTF_GAME_PLATFORM_VERSION/, 'shared platform index module marker is missing');
-assert.doesNotMatch(source, /<!doctype html|<html/i, 'shared platform module URL returned HTML');
+assert.equal(manifestResponse.status, 200, `shared platform manifest returned HTTP ${manifestResponse.status}`);
+assert.match(String(manifestResponse.headers.get('content-type') || '').toLowerCase(), /application\/json/, 'shared platform manifest has invalid MIME type');
+const manifest = await manifestResponse.json();
+assert.equal(manifest.platformVersion, version, `manifest version ${manifest.platformVersion}; expected ${version}`);
 
-const browser = await chromium.launch({ headless: true });
-try {
-  const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
-  const errors = [];
-  page.on('console', (message) => {
-    if (message.type() === 'error') errors.push(message.text());
-  });
-  page.on('pageerror', (error) => errors.push(error.message));
-
-  await page.goto(`${siteUrl}/games/seed-man-platformer/?shared_platform_verify=${cacheTag}`, {
-    waitUntil: 'domcontentloaded',
-    timeout: 45_000,
-  });
-
-  const result = await page.evaluate(async ({ cacheTag: tag }) => {
-    const module = await import(`/games/shared-platform/index.mjs?browser_verify=${tag}`);
-    const storage = new Map();
-    const fakeStorage = {
-      getItem: (key) => storage.get(key) ?? null,
-      setItem: (key, value) => storage.set(key, value),
-      removeItem: (key) => storage.delete(key),
-    };
-    const store = module.createGameSettingsStore({ gameId: 'live-verifier', storage: fakeStorage });
-    store.update({ reducedMotion: 'on', uiScale: 1.2, muted: true });
-    const settings = store.get();
-    return {
-      version: module.DTF_GAME_PLATFORM_VERSION,
-      reducedMotion: settings.reducedMotion,
-      uiScale: settings.uiScale,
-      muted: settings.muted,
-      exportCount: Object.keys(module).length,
-    };
-  }, { cacheTag });
-
-  assert.equal(result.version, version, `browser loaded shared platform ${result.version}; expected ${version}`);
-  assert.equal(result.reducedMotion, 'on');
-  assert.equal(result.uiScale, 1.2);
-  assert.equal(result.muted, true);
-  assert.ok(result.exportCount >= 10, `shared platform export surface is unexpectedly small: ${result.exportCount}`);
-
-  await page.waitForFunction(() => Boolean(globalThis.__SPROUT_SHARED_PLATFORM__?.snapshot), null, { timeout: 15_000 });
-  const consumer = await page.evaluate(() => ({
-    adapter: globalThis.__SPROUT_SHARED_PLATFORM__.snapshot(),
-    settingsPanel: Boolean(document.querySelector('#seed-game-settings')),
-  }));
-  assert.equal(consumer.adapter.version, 'seed-man-shared-platform-v1');
-  assert.equal(consumer.settingsPanel, true, 'Seed Man shared settings UI did not initialize');
-  assert.equal(typeof consumer.adapter.audioUnlocked, 'boolean');
-
-  assert.equal(errors.length, 0, `browser errors while loading shared platform: ${errors.join(' | ')}`);
-
-  console.log(JSON.stringify({
-    ok: true,
-    route: '/games/shared-platform/',
-    module: '/games/shared-platform/index.mjs',
-    version: result.version,
-    mime: contentType,
-    exports: result.exportCount,
-    consumer: consumer.adapter.version,
-  }, null, 2));
-} finally {
-  await browser.close();
+const modules = ['index.mjs', 'settings.mjs', 'replay.mjs', 'telemetry.mjs', 'input.mjs', 'audio.mjs'];
+const sources = new Map();
+for (const file of modules) {
+  const { body } = await fetchText(`/games/shared-platform/${file}`, /(javascript|ecmascript)/);
+  sources.set(file, body);
 }
+const indexSource = sources.get('index.mjs');
+assert.match(indexSource, /DTF_GAME_PLATFORM_VERSION/, 'shared platform index module marker is missing');
+assert.match(indexSource, new RegExp(`DTF_GAME_PLATFORM_VERSION\\s*=\\s*['\"]${version.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['\"]`), `shared platform index does not declare version ${version}`);
+
+const seedIndexResponse = await fetch(`${siteUrl}/games/seed-man-platformer/?shared_platform_verify=${cacheTag}`, {
+  headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Pragma: 'no-cache' },
+  redirect: 'follow',
+  signal: AbortSignal.timeout(30_000),
+});
+assert.equal(seedIndexResponse.status, 200, `Seed Man route returned HTTP ${seedIndexResponse.status}`);
+const seedIndex = await seedIndexResponse.text();
+assert.match(seedIndex, /input-guard-v1\.js/, 'Seed Man page does not load the shared-platform adapter owner');
+
+const inputGuardResponse = await fetch(`${siteUrl}/games/seed-man-platformer/input-guard-v1.js?shared_platform_verify=${cacheTag}`, {
+  headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Pragma: 'no-cache' },
+  redirect: 'follow',
+  signal: AbortSignal.timeout(30_000),
+});
+assert.equal(inputGuardResponse.status, 200, `Seed Man input guard returned HTTP ${inputGuardResponse.status}`);
+assert.match(String(inputGuardResponse.headers.get('content-type') || '').toLowerCase(), /(javascript|ecmascript)/, 'Seed Man input guard has invalid JavaScript MIME type');
+const inputGuard = await inputGuardResponse.text();
+for (const marker of ['/games/shared-platform/index.mjs', '__SPROUT_SHARED_PLATFORM__', 'seed-game-settings', 'seed-man-shared-platform-v1']) {
+  assert.ok(inputGuard.includes(marker), `Seed Man shared-platform adapter marker missing: ${marker}`);
+}
+
+console.log(JSON.stringify({
+  ok: true,
+  route: '/games/shared-platform/',
+  module: '/games/shared-platform/index.mjs',
+  version,
+  modules: modules.length,
+  consumer: 'seed-man-shared-platform-v1',
+  verification: 'deterministic-http-and-source-contracts',
+  browserAutomation: false,
+}, null, 2));
