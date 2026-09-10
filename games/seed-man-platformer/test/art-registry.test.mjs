@@ -1,24 +1,27 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { APPROVED_ART_MANIFEST_ID, APPROVED_ART_SOURCE, createApprovedArtRegistry, validateApprovedArtManifest } from '../src/render/art-registry.mjs';
+import { createApprovedArtRegistry, validateApprovedArtManifest } from '../src/render/art-registry.mjs';
 
 const manifest = JSON.parse(fs.readFileSync(new URL('../data/seed-man-art-manifest-v1.json', import.meta.url), 'utf8'));
 assert.equal(validateApprovedArtManifest(manifest), true);
-assert.equal(manifest.masterAtlas, undefined, 'retired corrupt master atlas must not return to the canonical manifest');
+assert.equal(manifest.policy?.authoritative, false);
+assert.equal(manifest.policy?.styleLocked, false);
+assert.equal(manifest.policy?.rendererLocked, false);
+
 const registry = createApprovedArtRegistry(manifest, { baseUrl: 'https://dtfseeds.com/games/seed-man-platformer/' });
-assert.equal(registry.id, APPROVED_ART_MANIFEST_ID);
-assert.equal(registry.sourceOfTruth, APPROVED_ART_SOURCE);
-assert.equal(registry.worldRenderer, 'seed-man-three-world-v2');
-assert.equal(registry.worldFallbackRenderer, 'seed-man-canvas-world-gradient-v1');
-assert.match(registry.characterAtlas().url, /seed-man-character-atlas-v2\.webp$/);
-assert.match(registry.enemyAtlas().url, /seed-man-enemy-boss-atlas-v1\.webp$/);
-assert.match(registry.bossAtlas().url, /seed-man-enemy-boss-atlas-v1\.webp$/);
-assert.match(registry.platformAtlas().url, /seed-man-platform-atlas-v1\.webp$/);
-const frozen = registry.worldBackground('frozen-peaks');
-assert.equal(frozen.renderer, 'seed-man-three-world-v2');
-assert.equal(frozen.fallbackRenderer, 'seed-man-canvas-world-gradient-v1');
-assert.equal(frozen.world, 'frozen-peaks');
-assert.equal(frozen.url, null);
-assert.equal(registry.worldBackground('frozen-peak').world, 'frozen-peaks');
-assert.throws(() => registry.get('character.seedman.legacy'));
-console.log('Seed Man standalone approved-art registry contract OK');
+assert.equal(registry.id, 'seed-man-art-registry');
+assert.deepEqual(registry.keys(), []);
+assert.equal(registry.characterAtlas(), null);
+assert.equal(registry.enemyAtlas(), null);
+assert.equal(registry.bossAtlas(), null);
+assert.equal(registry.platformAtlas(), null);
+assert.equal(registry.worldBackground('frozen-peaks'), null);
+assert.throws(() => registry.get('missing.asset'), /Unknown Seed Man asset key/);
+
+const flexible = structuredClone(manifest);
+flexible.assets['character.seedman.idle'] = { src: 'assets/new/seed-man-idle.webp', type: 'image' };
+assert.equal(validateApprovedArtManifest(flexible), true);
+const flexibleRegistry = createApprovedArtRegistry(flexible, { baseUrl: 'https://example.test/game/' });
+assert.match(flexibleRegistry.get('character.seedman.idle').url, /assets\/new\/seed-man-idle\.webp$/);
+
+console.log('Seed Man open art registry contract OK');
