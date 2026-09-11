@@ -1,127 +1,101 @@
-# DTF Content Preservation Standard
+# DTF Canonical Content Integrity Standard
 
 ## Purpose
 
-DTF content libraries must be able to grow for years without routine publication, indexing, automation, or AI-assisted editing erasing earlier work.
+DTF content libraries must stay fully editable and extensible while remaining reliable enough to publish, search, migrate, and recover.
 
-The repository therefore uses an **append-first, preserve-by-default** content model.
+The repository therefore uses an **editable-with-Git-history** model. Canonical authored content can be added, revised, renamed, reorganized, replaced, or deleted when the work calls for it. A separate authorization file is not required to make an ordinary content change.
+
+Git history is the durable audit trail. CI protects structural integrity, not editorial immutability.
 
 ## Layer model
 
 ### 1. Canonical authored records
 
-These are the source of truth for authored content. They are individual, addressable records such as encyclopedia lessons.
-
-Example:
-
-- `content/encyclopedia/volume-14/lessons/thc-enc-280.json`
+These are source records such as encyclopedia lessons, course lessons, tests, glossary entries, and other durable educational content.
 
 Rules:
 
-- New canonical records are added as new files.
-- Existing canonical records are immutable by default.
-- IDs and record numbers must remain unique.
-- Existing records may only be modified, renamed, or deleted when an explicit change authorization is committed with the same change.
-- An authorization must bind to the exact previous and replacement SHA-256 hashes, so an old approval cannot authorize a later unrelated edit.
+- New records may be added.
+- Existing records may be edited directly.
+- Records may be renamed, moved, merged, split, replaced, or deleted when appropriate.
+- IDs and record numbers that remain in the current canonical collection must satisfy the collection schema and remain unique.
+- JSON and other structured source must remain parseable and internally consistent.
+- Do not rewrite Git history merely to hide an old version; normal commits preserve the previous state for recovery.
 
 ### 2. Derived indexes, catalogs, manifests, and search data
 
 These files organize canonical records for navigation, discovery, builds, or publication.
 
-Examples include:
+Derived files may be regenerated freely. They must not be mistaken for the only authored source unless the architecture intentionally changes to make them canonical.
 
-- encyclopedia catalogs;
-- volume manifests;
-- search indexes;
-- topic indexes;
-- release manifests;
-- generated navigation.
-
-Derived files may be regenerated as the library grows. They must not become the only copy of authored content and must never be treated as permission to delete canonical records that are absent from a generated subset.
-
-A publisher must build from the complete intended canonical collection or from an explicit append/replay manifest. A mutable pointer such as `current-production-batch.json` is a cursor, not the historical source of truth.
+A partial batch, stale generated index, or `current-*` pointer must not accidentally erase unrelated source during automation. That is a data-integrity rule, not an editing restriction.
 
 ### 3. Publication state
 
-Publication state records what has been attempted, published, verified, retried, or rolled back. It is operational state, not authored source.
+Publication state records what was attempted, published, verified, retried, or rolled back. It is operational state rather than editorial authority.
 
-Publication automation must be idempotent and should prefer reconciliation:
+Publication automation should remain recoverable and idempotent:
 
-1. read canonical records;
+1. read intended source;
 2. discover current production state;
-3. add or update only the explicitly targeted records;
-4. preserve unrelated published records;
+3. apply the requested change;
+4. preserve unrelated data unless the change intentionally replaces it;
 5. verify visitor-facing output;
-6. rollback the current transaction if its acceptance gate fails.
+6. rollback the current transaction when an acceptance gate fails.
 
-A failed publication must not advance the durable source-of-truth in a way that makes unpublished records appear completed.
+## Editing workflow
 
-## Normal content growth
+For additions, corrections, rewrites, reorganizations, or removals:
 
-Adding information should normally look like this:
+1. Inspect the current source and dependent indexes/builders.
+2. Make the product/content change needed to achieve the current goal.
+3. Update derived indexes, manifests, navigation, tests, or search data as required.
+4. Run the canonical content-integrity validator.
+5. Run the owning build/test pipeline.
+6. Publish through the owning production lane when live state is requested.
+7. Verify the exact visitor-facing result before calling the work live.
 
-1. Create a new canonical record with a new ID/number.
-2. Add it to the appropriate volume/topic/release manifest.
-3. Regenerate derived indexes as needed.
-4. Run validation.
-5. Publish through the owning production lane.
-6. Verify the exact public route/content.
+No SHA-bound authorization JSON is required.
 
-No authorization file is needed for a pure addition.
+## Integrity checks that remain
 
-## Revising existing content
+Removing editorial locks does not mean removing correctness checks. CI should still reject:
 
-When the project owner explicitly requests a correction, replacement, merge, deletion, or rename of existing canonical content:
+- malformed JSON or invalid structured records;
+- duplicate IDs or duplicate record numbers where uniqueness is required;
+- ID/number mismatches defined by a collection schema;
+- invalid build artifacts;
+- broken route/index references;
+- credential exposure or private-data leakage;
+- deployment failures reported as successes.
 
-1. Identify the exact existing file(s).
-2. Preserve the old Git history; never rewrite repository history.
-3. Calculate the previous SHA-256 hash.
-4. Make the requested change.
-5. Calculate the new SHA-256 hash when the record remains present.
-6. Add a new JSON authorization record under `content/change-authorizations/`.
-7. Include the explicit instruction reference and reason.
-8. Let `Content Preservation Contract` verify that the authorization exactly matches the bytes being changed.
+These checks protect correctness and security without preventing legitimate editing.
 
-Authorization records are themselves append-only audit history.
+## Historical change-authorization records
 
-## What automation must never do by default
-
-Automation, agents, publishers, generators, and reconciliation scripts must not do any of the following merely because a newer batch or index omits old content:
-
-- truncate a canonical library;
-- replace a whole collection from a partial batch;
-- reuse an existing canonical ID for different content;
-- renumber existing records;
-- delete an old lesson because a newer catalog does not list it;
-- interpret `current-*` pointers as complete historical inventories;
-- overwrite existing records as a side effect of adding new ones;
-- mark a batch successfully published before visitor-facing verification passes.
+`content/change-authorizations/` may remain in Git as historical project records from the previous append-only policy. New records are not required for ordinary content edits, and those historical files are not an authorization gate.
 
 ## CI enforcement
 
-The repository-level policy lives at:
+Policy:
 
 - `configuration/content-preservation-policy.json`
 
-The validator is:
+Validator:
 
 - `scripts/validate-append-only-content.mjs`
 
-The GitHub Actions contract is:
+The validator filename is retained for compatibility with existing automation, but its behavior is now editable-content integrity validation.
+
+Workflow:
 
 - `.github/workflows/content-preservation-contract.yml`
 
-The first protected collection is the THC Encyclopedia lesson library. Additional content libraries should be added to the policy as they are migrated to canonical per-record storage.
+The workflow validates current canonical integrity and no longer blocks modifications, deletions, or renames solely because an authorization artifact is absent.
 
-## Migration pattern for other libraries
+## Expanding to other libraries
 
-For Academy courses, SOPs, beginner guides, glossary records, genetics education, and future libraries:
+Academy courses, SOPs, beginner guides, glossary records, genetics education, tests, certifications, and future libraries may be added to the policy when structural validation is useful. Doing so must not introduce arbitrary content-count caps, fixed lesson limits, or per-edit approval files.
 
-1. split durable authored content into stable per-record source files where practical;
-2. assign stable unique IDs;
-3. add the collection path and identity rules to `content-preservation-policy.json`;
-4. keep generated indexes separate from canonical records;
-5. update the owning publisher to reconcile additions instead of replacing the entire public collection;
-6. add visitor-facing acceptance checks.
-
-This makes the system additive by default while still allowing deliberate corrections when the project owner specifically authorizes them.
+Content structure may evolve. Update the schema, validator, and publishers together when the product architecture changes.
