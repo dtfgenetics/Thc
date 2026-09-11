@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "batchId": "HIQ-002",
+  "gameId": "high-iq",
+  "title": "High IQ Feedback + Mastery System",
+  "status": "REVIEW",
+  "priority": "P0",
+  "quantity": 10,
+  "owningRepo": "dtfgenetics/Thc",
+  "dependsOn": "HIQ-001",
+  "sourceReference": {
+    "runtime": "site/public-route-patch/games/high-iq/",
+    "datasetVersion": "2.4",
+    "rule": "Only represent feedback surfaces already present in the production High IQ experience; this review batch must not introduce new gameplay mechanics."
+  },
+  "drive": {
+    "visualRootId": "1lAF3xNtpm7p_gbI-2b06lXuz9f2Omjqg",
+    "sourceBatchFolderId": "1H4r3rLLXkkq8QAHAx7KACNmmrLS__XZ-",
+    "qaFileId": "1Pn28DiiHxhb9wWYQomBf7CnYSjdXJNmV",
+    "approvedMastersFolderId": "1Y3iq4DTOtg7vqh93DocvDJBMKKLvg0HO",
+    "uiFolderId": "1OenFHb5MPVKpBVs5TDhpvXc8Iuau59rb",
+    "fxFolderId": "1aW4zR-i_QOmZ7njXN7j2CH3kA4eu_Msx",
+    "runtimeExportsFolderId": "1zCJDh1CdzDtb3WR8Cb1rSq8JomoYFb17"
+  },
+  "runtime": {
+    "root": "site/public-route-patch/games/high-iq",
+    "targetDirectory": "site/public-route-patch/games/high-iq/assets/feedback",
+    "activeIntegration": false,
+    "integrationRule": "Approve individual masters first, then bind only to existing UI states; feedback visuals remain progressive enhancement and cannot alter scoring or quiz state."
+  },
+  "output": {
+    "canvas": "square 1:1",
+    "background": "transparent",
+    "preferredSourceFormat": "SVG",
+    "runtimeFormat": "SVG",
+    "gameScaleReviewPx": 32,
+    "style": "same visual language as HIQ-001: dark green outline, restrained green/gold/purple/red/blue fills, readable without color alone"
+  },
+  "assets": [
+    {"assetId":"HIQ-FEEDBACK-CORRECT-v01","surface":"correct answer","state":"REVIEW","driveFile":{"fileId":"1x5PAbQsLn0DCcm33a9AbYSULYtTgfafi","sha256":"d6cb69483326b8fa6c4dcab985d5387dc1d9522fee09c5a459126fd988b0451b","sizeBytes":329,"mimeType":"image/svg+xml","extension":"svg"}},
+    {"assetId":"HIQ-FEEDBACK-INCORRECT-v01","surface":"incorrect answer","state":"REVIEW","driveFile":{"fileId":"1eCJUHH8_2l1jKt-4v7A2syCnNhDhtdy5","sha256":"cc26a527be60e84968f0fc611d078dfc4dedf8dd6ecf02675db2b60fa4f181da","sizeBytes":336,"mimeType":"image/svg+xml","extension":"svg"}},
+    {"assetId":"HIQ-FEEDBACK-STREAK-v01","surface":"live streak / best streak","state":"REVIEW","driveFile":{"fileId":"1bvK5gLG3DDHQGNM8VcqB5J71L9CLlliS","sha256":"c033ad82c5bc881184bb679719a889807eb27429c0abe3c4a5087e8a5fea63d3","sizeBytes":519,"mimeType":"image/svg+xml","extension":"svg"}},
+    {"assetId":"HIQ-FEEDBACK-POINTS-v01","surface":"score / earned points","state":"REVIEW","driveFile":{"fileId":"1-J0GK7RJTbwqQp4zMWh1KmZV3wvpLAka","sha256":"164158369cc903b4e77e6568a57995d52eb339e9d9fb4c2202bc5f24b68a6677","sizeBytes":376,"mimeType":"image/svg+xml","extension":"svg"}},
+    {"assetId":"HIQ-FEEDBACK-MASTERY-v01","surface":"topic mastery","state":"REVIEW","driveFile":{"fileId":"17t0EU7iO5RFxgU39vF4KYtCQfCPdKu0F","sha256":"b24dde392f798baabf83e6b61dbf099f8b2d7adc623a412d4c621abc36b1c433","sizeBytes":416,"mimeType":"image/svg+xml","extension":"svg"}},
+    {"assetId":"HIQ-FEEDBACK-PERSONAL-BEST-v01","surface":"personal best","state":"REVIEW","driveFile":{"fileId":"1zh5IKmQIi8XnCi_x5FBM7ZQW7T_ffKuz","sha256":"874802a16ac45069ae234d3830b830a4c71374cc22886cc70853094e589bfff0","sizeBytes":412,"mimeType":"image/svg+xml","extension":"svg"}},
+    {"assetId":"HIQ-FEEDBACK-DAILY-10-v01","surface":"Daily 10","state":"REVIEW","driveFile":{"fileId":"15sjnl2YKPiOLeu8LxYkUv9eLty_DPzeu","sha256":"cd9dca7779bf4d031506c6d63440420465909fe20d90f3d1bc097e00a1102e1e","sizeBytes":450,"mimeType":"image/svg+xml","extension":"svg"}},
+    {"assetId":"HIQ-FEEDBACK-VERIFIED-SOURCE-v01","surface":"verified/source-backed status","state":"REVIEW","driveFile":{"fileId":"1Mc4CYJKumeBQoN6hzMRCJs4prfepGceu","sha256":"885d3f17cf582bfdb5569bc773a88db49084141dcb9973fef446c5cf96f36e02","sizeBytes":498,"mimeType":"image/svg+xml","extension":"svg"}},
+    {"assetId":"HIQ-FEEDBACK-MISSED-REVIEW-v01","surface":"missed-question review / practice missed","state":"REVIEW","driveFile":{"fileId":"158nl14BENUG8ArCFUVhInybu_gSnrdEo","sha256":"05b41897c4f2bd1163ba774ecf97fd100f0b5e185eac50a900257301c5ecd37e","sizeBytes":511,"mimeType":"image/svg+xml","extension":"svg"}},
+    {"assetId":"HIQ-FEEDBACK-RANK-v01","surface":"result rank","state":"REVIEW","driveFile":{"fileId":"1JzSmlAc3B4lnO3tuYTpZF3I6z1vo3B2C","sha256":"c90e07de64f040de479eccb43d3b8c9fcd3e95d11f1f1c0cb207ee81322d9083","sizeBytes":504,"mimeType":"image/svg+xml","extension":"svg"}}
+  ],
+  "qa": {
+    "contactSheetDriveFileId": "1Pn28DiiHxhb9wWYQomBf7CnYSjdXJNmV",
+    "gameScalePx": 32,
+    "result": "PASS-FOR-REVIEW",
+    "notes": "All ten candidates were reviewed together at master size and reduced 32px size. Runtime placement and motion treatment remain pending approval."
+  },
+  "acceptanceCriteria": [
+    "symbols remain understandable at 32px",
+    "correct and incorrect are distinguishable by shape, not only color",
+    "mastery, personal best, rank and points have visibly different silhouettes",
+    "no asset invents a scoring rule or new gameplay mechanic",
+    "approved assets are copied to Drive Approved Masters before runtime integration",
+    "runtime integration remains optional/progressive and cannot block quiz operation"
+  ],
+  "nextBatch": "HIQ-003"
+}
