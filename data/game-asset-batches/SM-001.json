@@ -3,7 +3,7 @@
   "batchId": "SM-001",
   "gameId": "seed-man",
   "title": "Canonical Seed Man Character Master",
-  "status": "READY-FOR-AUTHORING",
+  "status": "AUTHORING",
   "priority": "P0",
   "quantity": 10,
   "owningRepo": "dtfgenetics/Thc",
@@ -11,7 +11,7 @@
     "manifest": "games/seed-man-platformer/data/seed-man-art-manifest-v1.json",
     "characterReference": "green-armored-plant-hero",
     "lockedIdentity": "short chubby oval seed/plant hero, thick readable outline, simple face, three-leaf sprout, white gloves and shoes, stable proportions across views and future animation",
-    "notes": "Use the current approved art manifest and approved atlas as the identity anchor; do not redesign the character while producing reference views."
+    "notes": "Use the current approved art manifest and approved atlas as the identity anchor; do not redesign the character while producing reference views. No costume drift, added cape, added armor, or realism may be introduced unless already present in the approved runtime reference."
   },
   "drive": {
     "visualRootId": "1KvhKlWp5_PdlpM7CbBSUP1YpjY4m0DDj",
@@ -34,6 +34,22 @@
     "runtimeReferenceFormat": "WebP",
     "colorRule": "No yellow cast; preserve approved greens, white gloves/shoes and readable outline."
   },
+  "reviewArtifacts": [
+    {
+      "artifactId": "SM-001-REVIEW-BOARD-v01",
+      "state": "REPLACE",
+      "driveFile": {
+        "fileId": "1yvObD-AawoivjuhVdUy6kqzaQ--xgFol",
+        "fileName": "SM-001_CONCEPT-REPLACE_reference-board_v01.png",
+        "sha256": "450f32bb1d13c73798a9478040c8d7d9b8664c60229bcf9075648af467366152",
+        "sizeBytes": 2618570,
+        "mimeType": "image/png",
+        "extension": "png",
+        "folderId": "1vbWGg6HjFcflO7Wtk9tTZttJAlFnr1Sv"
+      },
+      "reason": "Concept board introduced costume/cape/armor and 3D-realistic rendering drift instead of staying inside the locked simple Seed Man construction. It is retained only as review evidence and must not be integrated."
+    }
+  ],
   "assets": [
     {"assetId":"SM-CHAR-SEEDMAN-FRONT-v01","name":"Front orthographic full-body reference","state":"NEEDED","alpha":true},
     {"assetId":"SM-CHAR-SEEDMAN-THREEQUARTER-v01","name":"Three-quarter full-body reference","state":"NEEDED","alpha":true},
