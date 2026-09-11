@@ -7,6 +7,7 @@ on:
       - site/wordpress/education/learning-hub-course1-ui-v3.json
       - scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
+      - scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
       - scripts/publish-wordpress-courses-navigation-v2.mjs
       - scripts/verify-wordpress-learning-hub-course1.mjs
       - scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
@@ -19,6 +20,7 @@ on:
       - site/wordpress/education/learning-hub-course1-ui-v3.json
       - scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
+      - scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
       - scripts/publish-wordpress-courses-navigation-v2.mjs
       - scripts/verify-wordpress-learning-hub-course1.mjs
       - scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
@@ -40,15 +42,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Validate publisher, guided UI, navigation, verifiers and public manifest
+      - name: Validate publisher, guided UI, responsive layout, navigation, verifiers and public manifest
         run: |
           node --check scripts/publish-wordpress-learning-hub-course1-v2.mjs
           node --check scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
+          node --check scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
           node --check scripts/publish-wordpress-courses-navigation-v2.mjs
           node --check scripts/verify-wordpress-learning-hub-course1.mjs
           node --check scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
           node scripts/publish-wordpress-learning-hub-course1-v2.mjs --validate-only
           node scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs --validate-only
+          node scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs --validate-only
           node scripts/publish-wordpress-courses-navigation-v2.mjs --validate-only
 
   publish:
@@ -77,6 +81,8 @@ jobs:
         run: node scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - name: Build guided 18-lesson Course 1 learning UI
         run: node scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
+      - name: Apply responsive three-column Course 1 lesson layout
+        run: node scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
       - name: Publish Courses catalog and shared header link
         run: node scripts/publish-wordpress-courses-navigation-v2.mjs
       - name: Verify published Course 1 base release by WordPress readback
@@ -100,6 +106,8 @@ jobs:
           grep -Fq 'Professional cultivation courses' "$courses"
           grep -Fq 'href="/courses/"' "$courses"
           grep -Fq 'dtf-learning-hub-course1-ui-v3' "$lesson"
+          grep -Fq 'dtf-learning-hub-course1-layout-v4' "$lesson"
+          grep -Fq 'lhv4-lesson-layout' "$lesson"
           grep -Fq 'Course outline' "$lesson"
           grep -Fq 'Mark lesson complete' "$lesson"
           ! grep -Eqi 'interactive academic visual|<svg' "$lesson"
