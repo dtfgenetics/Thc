@@ -33,7 +33,7 @@ async function wp(path) {
         headers: {
           Authorization: auth,
           Accept: 'application/json',
-          'User-Agent': 'DTF-Learning-Hub-Course1-Readback/3.0'
+          'User-Agent': 'DTF-Learning-Hub-Course1-Readback/4.0'
         }
       });
       const text = await response.text();
@@ -77,13 +77,12 @@ function verifyPage(page, { label, minLength = 120, required = [], questionCount
   return content;
 }
 
+// Learn is owned by the Learning Experience publisher and can legitimately be
+// rewritten while Course 1 deploys. Course 1 verification therefore checks the
+// durable page hierarchy below Learn instead of requiring a historical marker in
+// the independently-owned /learn/ presentation layer.
 const learn = await pageBySlug('learn');
-const learnContent = verifyPage(learn, {
-  label: '/learn/',
-  minLength: 500,
-  required: ['DTF_LEARNING_HUB_COURSE1_START', local.course.route]
-});
-must((learnContent.match(/DTF_LEARNING_HUB_COURSE1_START/g) || []).length === 1, '/learn/: Course 1 Learning Hub marker must occur exactly once.');
+verifyPage(learn, { label: '/learn/', minLength: 500 });
 
 const hub = await pageBySlug('learning-hub', learn.id);
 verifyPage(hub, { label: '/learn/learning-hub/', required: ['THC Learning Hub', local.program.route] });
@@ -98,6 +97,7 @@ const courseContent = verifyPage(course, {
   required: [local.course.title, 'How to use this course', 'Course map', '18 lessons', 'Integrated practical']
 });
 must(courseContent.includes('dtf-learning-hub-course1-ui-v3'), 'Course index is missing the guided-learning UI marker.');
+must(courseContent.includes('dtf-learning-hub-course1-layout-v4'), 'Course index is missing the responsive Course 1 layout marker.');
 must(!/secure certification examination[\s\S]{0,80}(answer|key|correct)/i.test(courseContent), 'Course index appears to expose secure certification answer material.');
 
 const verified = [
@@ -113,7 +113,9 @@ for (const module of local.modules) {
     minLength: 1200,
     required: [module.title, `Module ${module.number} of 6`, 'Lessons in this module', `test-module-${module.number}`]
   });
-  must(rendered(page.content).includes('dtf-learning-hub-course1-ui-v3'), `Module ${module.number}: guided-learning UI marker missing.`);
+  const content = rendered(page.content);
+  must(content.includes('dtf-learning-hub-course1-ui-v3'), `Module ${module.number}: guided-learning UI marker missing.`);
+  must(content.includes('dtf-learning-hub-course1-layout-v4'), `Module ${module.number}: responsive layout marker missing.`);
   verified.push({ type: 'module', number: module.number, id: page.id, slug: module.slug });
 }
 
@@ -122,7 +124,7 @@ for (const doc of local.learnerDocuments) {
   verifyPage(page, {
     label: doc.title,
     minLength: 1000,
-    required: [doc.title]
+    required: [doc.title, 'dtf-learning-hub-course1-layout-v4']
   });
   verified.push({ type: 'document', id: page.id, slug: doc.slug });
 }
@@ -134,7 +136,7 @@ for (const module of local.modules) {
   verifyPage(page, {
     label: `Module ${module.number} learning test`,
     minLength: 1800,
-    required: ['Course mastery target:', 'not the passing standard for the separate secure certification examination'],
+    required: ['Course mastery target:', 'not the passing standard for the separate secure certification examination', 'dtf-learning-hub-course1-layout-v4'],
     questionCount: 12
   });
   publicQuestionCount += 12;
@@ -145,7 +147,7 @@ const final = await pageBySlug('final-course-test', course.id);
 verifyPage(final, {
   label: 'Course 1 final course test',
   minLength: 3500,
-  required: ['Course mastery target:', 'not the passing standard for the separate secure certification examination'],
+  required: ['Course mastery target:', 'not the passing standard for the separate secure certification examination', 'dtf-learning-hub-course1-layout-v4'],
   questionCount: 36
 });
 publicQuestionCount += 36;
@@ -165,6 +167,7 @@ console.log(JSON.stringify({
   managedBasePages: verified.length,
   publicCourseItems: publicQuestionCount,
   guidedUi: true,
+  responsiveLayout: 'v4',
   pageIds: verified.map(({ type, number, id, slug }) => ({ type, ...(number ? { number } : {}), id, slug })),
   result: 'success'
 }, null, 2));
