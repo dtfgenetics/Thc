@@ -3,7 +3,7 @@
   "batchId": "HIQ-001",
   "gameId": "high-iq",
   "title": "Ten-Domain Visual Identity System",
-  "status": "READY-FOR-AUTHORING",
+  "status": "OPTIMIZED-AWAITING-INTEGRATION",
   "priority": "P0",
   "quantity": 10,
   "owningRepo": "dtfgenetics/Thc",
@@ -19,33 +19,148 @@
     "briefFolderId": "1zkr-E4C2EU5128BSTvVV-_iK0hBJnjh-",
     "approvedMastersFolderId": "1Y3iq4DTOtg7vqh93DocvDJBMKKLvg0HO",
     "uiFolderId": "1OenFHb5MPVKpBVs5TDhpvXc8Iuau59rb",
-    "runtimeExportsFolderId": "1zCJDh1CdzDtb3WR8Cb1rSq8JomoYFb17"
+    "runtimeExportsFolderId": "1zCJDh1CdzDtb3WR8Cb1rSq8JomoYFb17",
+    "reviewContactSheetFileId": "1FFsJ6CNOJvNpANf487DodRAXVK5twqQP"
   },
   "runtime": {
     "root": "site/public-route-patch/games/high-iq",
     "targetDirectory": "site/public-route-patch/games/high-iq/assets/domains",
     "activeIntegration": false,
-    "dataBinding": "games/high-iq/data/manifest.json#categoryCounts"
+    "dataBinding": "games/high-iq/data/manifest.json#categoryCounts",
+    "integrationRule": "Map category names to these exact filenames; do not infer filenames from display text at runtime."
   },
   "output": {
     "sourceMasterMinimumPx": 1024,
     "canvas": "square 1:1",
     "background": "transparent",
-    "preferredSourceFormat": "PNG or SVG master",
-    "runtimeFormat": "SVG when clean/vector-safe, otherwise WebP/PNG",
-    "style": "premium science/trivia iconography with one coherent stroke/silhouette system; minimal THC branding; no baked category text"
+    "preferredSourceFormat": "SVG master",
+    "runtimeFormat": "SVG",
+    "style": "premium science/trivia iconography with one coherent stroke/silhouette system; minimal THC branding; no baked category text",
+    "stroke": "#E8F5EC",
+    "accent": "#73D98B",
+    "viewBox": "0 0 64 64"
   },
   "assets": [
-    {"assetId":"HIQ-DOMAIN-NUTRITION-PH-v01","category":"Nutrition & pH","state":"NEEDED"},
-    {"assetId":"HIQ-DOMAIN-ENVIRONMENT-CLIMATE-v01","category":"Environment & Climate","state":"NEEDED"},
-    {"assetId":"HIQ-DOMAIN-ROOT-ZONE-IRRIGATION-v01","category":"Root Zone & Irrigation","state":"NEEDED"},
-    {"assetId":"HIQ-DOMAIN-PLANT-BIOLOGY-v01","category":"Plant Biology","state":"NEEDED"},
-    {"assetId":"HIQ-DOMAIN-DIAGNOSTICS-v01","category":"Diagnostics","state":"NEEDED"},
-    {"assetId":"HIQ-DOMAIN-PHOTOBIOLOGY-v01","category":"Photobiology","state":"NEEDED"},
-    {"assetId":"HIQ-DOMAIN-PLANT-PHYSIOLOGY-v01","category":"Plant Physiology","state":"NEEDED"},
-    {"assetId":"HIQ-DOMAIN-IPM-v01","category":"Integrated Pest Management","state":"NEEDED"},
-    {"assetId":"HIQ-DOMAIN-GENETICS-BREEDING-v01","category":"Genetics & Breeding","state":"NEEDED"},
-    {"assetId":"HIQ-DOMAIN-HARVEST-POSTHARVEST-v01","category":"Harvest & Postharvest","state":"NEEDED"}
+    {
+      "assetId":"HIQ-DOMAIN-NUTRITION-PH-v01",
+      "category":"Nutrition & pH",
+      "state":"OPTIMIZED",
+      "runtimeFilename":"high-iq-domain-nutrition-ph-v01.svg",
+      "repoPath":"site/public-route-patch/games/high-iq/assets/domains/high-iq-domain-nutrition-ph-v01.svg",
+      "sha256":"439809d0ad1bdc1bdc070772d009172a0dcd1cd3ff69c8d8717e48eefa5cff6d",
+      "sizeBytes":572,
+      "driveSourceFileId":"1N-AP_D4TGDSQBXud6putJDNgs_GawBVW",
+      "driveApprovedFileId":"1sKadaUGKJQq5DqP3scB33tWt4XFuCVXP",
+      "driveRuntimeExportFileId":"19cxCudkRTJQd5S55RJk1pmUBz_oIr-wr"
+    },
+    {
+      "assetId":"HIQ-DOMAIN-ENVIRONMENT-CLIMATE-v01",
+      "category":"Environment & Climate",
+      "state":"OPTIMIZED",
+      "runtimeFilename":"high-iq-domain-environment-climate-v01.svg",
+      "repoPath":"site/public-route-patch/games/high-iq/assets/domains/high-iq-domain-environment-climate-v01.svg",
+      "sha256":"4a5c27b2b784f717c7e7c9ae2aea0b799e899b671052e80012608cb86fe6adcb",
+      "sizeBytes":576,
+      "driveSourceFileId":"1a-ES7KwZ-W7ln3WJTFKPMLmVDuTrEk_J",
+      "driveApprovedFileId":"1-J5xJA-8B6aHOWGTUUtOsH14Pyoxb6GL",
+      "driveRuntimeExportFileId":"1DqwI0Lz2qDTmAEMOzA7bOcskbjdGqHPc"
+    },
+    {
+      "assetId":"HIQ-DOMAIN-ROOT-ZONE-IRRIGATION-v01",
+      "category":"Root Zone & Irrigation",
+      "state":"OPTIMIZED",
+      "runtimeFilename":"high-iq-domain-root-zone-irrigation-v01.svg",
+      "repoPath":"site/public-route-patch/games/high-iq/assets/domains/high-iq-domain-root-zone-irrigation-v01.svg",
+      "sha256":"0035fb3d92d3f36f46fab8a27685d5dcaf3e37b1c37ed96edd0e8abba19e6e14",
+      "sizeBytes":597,
+      "driveSourceFileId":"1M1-3PxWKaFLSFyhnUvinkN59BUCe1tVV",
+      "driveApprovedFileId":"1HsGC0Km8PBW0yxM7VODzhTJdgys9GKrz",
+      "driveRuntimeExportFileId":"1KPS1KnBQQHYoAuBUTLDa_SGBRmi0iRKo"
+    },
+    {
+      "assetId":"HIQ-DOMAIN-PLANT-BIOLOGY-v01",
+      "category":"Plant Biology",
+      "state":"OPTIMIZED",
+      "runtimeFilename":"high-iq-domain-plant-biology-v01.svg",
+      "repoPath":"site/public-route-patch/games/high-iq/assets/domains/high-iq-domain-plant-biology-v01.svg",
+      "sha256":"b13f0ee49baf06add627534107b408db5536d1e9fbbfc3f93382240052da294f",
+      "sizeBytes":525,
+      "driveSourceFileId":"1NYEfaC1pJf55byPcFUHzARp8kQ8R9CYs",
+      "driveApprovedFileId":"1du56lV-H743CATtUz7az7j_EbNOrzIhG",
+      "driveRuntimeExportFileId":"15Vi5ZKOiSX3q9OuGVidjRzid5YeDwxDK"
+    },
+    {
+      "assetId":"HIQ-DOMAIN-DIAGNOSTICS-v01",
+      "category":"Diagnostics",
+      "state":"OPTIMIZED",
+      "runtimeFilename":"high-iq-domain-diagnostics-v01.svg",
+      "repoPath":"site/public-route-patch/games/high-iq/assets/domains/high-iq-domain-diagnostics-v01.svg",
+      "sha256":"adca534032940537171cc4f1a37a4de475e93a5ca11642ed020c76806feb16dc",
+      "sizeBytes":459,
+      "driveSourceFileId":"1ZshIGYpit-yt7XgQAF8B_gTkeu9jt_A3",
+      "driveApprovedFileId":"1jsFivfTeTHzq17T0mpiVIrXvGUVvMqpv",
+      "driveRuntimeExportFileId":"1mV9LhayegKoUhQyGY9Qgmb7zNmG_NXIp"
+    },
+    {
+      "assetId":"HIQ-DOMAIN-PHOTOBIOLOGY-v01",
+      "category":"Photobiology",
+      "state":"OPTIMIZED",
+      "runtimeFilename":"high-iq-domain-photobiology-v01.svg",
+      "repoPath":"site/public-route-patch/games/high-iq/assets/domains/high-iq-domain-photobiology-v01.svg",
+      "sha256":"10a7a1ec9a6280548709315a30d8655d1e0e30a2a15d59201056b92855ebcaeb",
+      "sizeBytes":527,
+      "driveSourceFileId":"1DcLAXQ4jU0SvrMa9m20lFYCmxJOz5Ar_",
+      "driveApprovedFileId":"1C5PAZwtA58kW-h0sa9A-1RFACOHS9NJQ",
+      "driveRuntimeExportFileId":"1iQpzYu0uJJpWuf3qjCwgGwo_ix-DvooC"
+    },
+    {
+      "assetId":"HIQ-DOMAIN-PLANT-PHYSIOLOGY-v01",
+      "category":"Plant Physiology",
+      "state":"OPTIMIZED",
+      "runtimeFilename":"high-iq-domain-plant-physiology-v01.svg",
+      "repoPath":"site/public-route-patch/games/high-iq/assets/domains/high-iq-domain-plant-physiology-v01.svg",
+      "sha256":"1442a368eb4802721abad7e7677c4f26ff8f0aee5471968f0189c7556c2e2c09",
+      "sizeBytes":527,
+      "driveSourceFileId":"11rpXsplsqR_do8gF921kil3vhPapAJx7",
+      "driveApprovedFileId":"13LLfVzxHqYj5fMCUI8sqXX68N6SQQOsD",
+      "driveRuntimeExportFileId":"10R2te3Nc6bDaaIbTKg6h-JPAf7CaAnib"
+    },
+    {
+      "assetId":"HIQ-DOMAIN-IPM-v01",
+      "category":"Integrated Pest Management",
+      "state":"OPTIMIZED",
+      "runtimeFilename":"high-iq-domain-ipm-v01.svg",
+      "repoPath":"site/public-route-patch/games/high-iq/assets/domains/high-iq-domain-ipm-v01.svg",
+      "sha256":"b90a74dbd1e1606305382bd968f439a2d068dcf7633d91843fc173cec8b4f057",
+      "sizeBytes":544,
+      "driveSourceFileId":"1s9iURM9UhcvDFspUVe5HXIwfhTD2_NfR",
+      "driveApprovedFileId":"12TSi67m4AW59ZSoRE9OtF-W6YsD2aSpI",
+      "driveRuntimeExportFileId":"1w-4riY4oMKknIiLbqr2fCarpEDiTjtxd"
+    },
+    {
+      "assetId":"HIQ-DOMAIN-GENETICS-BREEDING-v01",
+      "category":"Genetics & Breeding",
+      "state":"OPTIMIZED",
+      "runtimeFilename":"high-iq-domain-genetics-breeding-v01.svg",
+      "repoPath":"site/public-route-patch/games/high-iq/assets/domains/high-iq-domain-genetics-breeding-v01.svg",
+      "sha256":"69e0f20390af0c67742d5fe2357915e397d6f8fa9d166b98b49da62e6656cd2f",
+      "sizeBytes":487,
+      "driveSourceFileId":"1ewFyOvnYfFWQXzK1jmtw4QPHSizP21XL",
+      "driveApprovedFileId":"1a7O-GyWelnvULBBx8MPE9pxjnUiqzYZk",
+      "driveRuntimeExportFileId":"1LjtlmtjXZAR-16QSb-LHmllZtQtsgWvp"
+    },
+    {
+      "assetId":"HIQ-DOMAIN-HARVEST-POSTHARVEST-v01",
+      "category":"Harvest & Postharvest",
+      "state":"OPTIMIZED",
+      "runtimeFilename":"high-iq-domain-harvest-postharvest-v01.svg",
+      "repoPath":"site/public-route-patch/games/high-iq/assets/domains/high-iq-domain-harvest-postharvest-v01.svg",
+      "sha256":"17150f1c8ab827feb71608824426a0aaf72ee21b78569cee0574b4352284c994",
+      "sizeBytes":560,
+      "driveSourceFileId":"1ZwuFAyBp91VpA_cAwhRsjX0hJcy9_h_z",
+      "driveApprovedFileId":"1APWE05TpKso-xNcclkNrvs6-VpGaUBg_",
+      "driveRuntimeExportFileId":"1SY95N25u4kg1EMtg2x8n_UfTFTBe52T-"
+    }
   ],
   "acceptanceCriteria": [
     "all ten icons clearly belong to one visual system",
@@ -56,5 +171,12 @@
     "icons remain visually quiet enough for question-focused gameplay",
     "source masters are stored in the HIQ-001 Drive folder and approved exports map one-to-one to the runtime category names"
   ],
+  "qa": {
+    "contactSheetReviewed": true,
+    "smallSizeVisualCheck": "PASS",
+    "colorIndependence": "PASS — every domain has a distinct silhouette/shape",
+    "textBakedIntoIcons": false,
+    "nextGate": "wire deterministic category-to-icon mapping into the High IQ runtime and verify mobile/desktop live surfaces"
+  },
   "nextBatch": "HIQ-002"
 }
