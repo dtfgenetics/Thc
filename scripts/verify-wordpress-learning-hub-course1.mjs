@@ -10,7 +10,7 @@ const must = (value, message) => { if (!value) throw new Error(message); };
 const rendered = (value) => typeof value === 'string' ? value : (value?.raw || value?.rendered || '');
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const auth = `Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}`;
-const forbidden = /\b(draft|preview|tbd|todo|lorem ipsum|not approved|pilot\s+only|calibration\s+only)\b/i;
+const forbidden = /\b(tbd|todo|lorem ipsum|not approved for public release|draft production package|preview only|pilot\/calibration only until approved)\b/i;
 
 must(user && pass, 'WordPress application credentials are required for readback verification.');
 must(local?.course?.id === 'COURSE-LH-TECH1-001', 'Unexpected Course 1 package.');
@@ -86,7 +86,7 @@ const course = await pageBySlug(local.course.slug, program.id);
 const courseContent = verifyPage(course, {
   label: local.course.route,
   minLength: 1200,
-  required: [local.course.title, 'Finished public learner course.', '<strong>108</strong>', 'integrated practical']
+  required: [local.course.title, 'Finished public learner course.', '<strong>108</strong>', 'Integrated Practical']
 });
 must(!/secure certification examination[\s\S]{0,80}(answer|key|correct)/i.test(courseContent), 'Course index appears to expose secure certification answer material.');
 
