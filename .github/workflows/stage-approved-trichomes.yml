@@ -1,0 +1,42 @@
+name: Stage approved trichome infographic
+
+on:
+  push:
+    branches:
+      - education/approved-trichomes-2026-09-10
+    paths:
+      - .github/image-staging/trichomes.trigger
+
+permissions:
+  contents: write
+
+jobs:
+  recover-approved-trichome:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: education/approved-trichomes-2026-09-10
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Rebuild validated image
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/wordpress/assets/infographics
+          cat .github/image-staging/trichomes/part-*.txt | base64 --decode > site/wordpress/assets/infographics/THC-APPROVED_Trichomes_Secretory_Biology_v1.jpg
+          echo "cff5be65317057a84c3d1d83d361da454e43637776bfbe6846f88dde1b8a0654  site/wordpress/assets/infographics/THC-APPROVED_Trichomes_Secretory_Biology_v1.jpg" | sha256sum -c -
+          file site/wordpress/assets/infographics/THC-APPROVED_Trichomes_Secretory_Biology_v1.jpg | tee /tmp/file-info.txt
+          grep -qi 'JPEG image data' /tmp/file-info.txt
+
+      - name: Commit approved binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/wordpress/assets/infographics/THC-APPROVED_Trichomes_Secretory_Biology_v1.jpg
+          git commit -m "Add approved trichome secretory biology infographic"
+          git push origin HEAD:education/approved-trichomes-2026-09-10
