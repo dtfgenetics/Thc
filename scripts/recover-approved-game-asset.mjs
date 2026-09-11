@@ -31,7 +31,6 @@ if (!source?.fileId) fail('asset.driveFile.fileId is required');
 if (!source?.sha256 || !/^[a-f0-9]{64}$/i.test(source.sha256)) fail('asset.driveFile.sha256 must be a 64-character SHA-256');
 if (!Number(source?.sizeBytes)) fail('asset.driveFile.sizeBytes is required');
 if (!source?.mimeType || !source?.extension) fail('asset.driveFile.mimeType and extension are required');
-if (!asset.runtimeFilename || /[\\/]/.test(asset.runtimeFilename)) fail('asset.runtimeFilename must be a basename');
 
 const targetDirectory = String(batch.runtime?.targetDirectory || '');
 if (!targetDirectory || targetDirectory.includes('..') || targetDirectory.startsWith('/') || targetDirectory.startsWith('\\')) {
@@ -46,7 +45,9 @@ if (!allowedRoots.some((root) => targetDirectory === root || targetDirectory.sta
 }
 
 const extension = String(source.extension).toLowerCase().replace(/^\./, '');
-const filenameExtension = String(asset.runtimeFilename).split('.').pop()?.toLowerCase();
+const runtimeFilename = asset.runtimeFilename || `${String(asset.assetId).toLowerCase()}.${extension}`;
+if (/[\\/]/.test(runtimeFilename)) fail('runtime filename must be a basename');
+const filenameExtension = runtimeFilename.split('.').pop()?.toLowerCase();
 if (extension !== filenameExtension) fail(`runtime extension ${filenameExtension} does not match Drive export extension ${extension}`);
 
 const allowedMime = new Map([
@@ -79,7 +80,7 @@ for (const url of downloadUrls) {
     const response = await fetch(url, {
       redirect: 'follow',
       signal: AbortSignal.timeout(90_000),
-      headers: { Accept: `${source.mimeType},image/*,*/*;q=0.8`, 'User-Agent': 'DTFSeeds-Game-Asset-Recovery/1.0' },
+      headers: { Accept: `${source.mimeType},image/*,*/*;q=0.8`, 'User-Agent': 'DTFSeeds-Game-Asset-Recovery/1.1' },
     });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const candidate = Buffer.from(await response.arrayBuffer());
@@ -94,7 +95,7 @@ for (const url of downloadUrls) {
 }
 if (!bytes) fail(`approved Drive export could not be downloaded and validated: ${failures.join(' | ')}`);
 
-const destination = normalize(join(targetDirectory, asset.runtimeFilename));
+const destination = normalize(join(targetDirectory, runtimeFilename));
 const targetPrefix = `${normalize(targetDirectory)}${sep}`;
 if (!destination.startsWith(targetPrefix)) fail('resolved destination escapes target directory');
 
@@ -107,6 +108,7 @@ try {
 }
 await writeFile(destination, bytes);
 
+asset.runtimeFilename = runtimeFilename;
 asset.imported = {
   destination,
   sha256: sha256(bytes),
@@ -117,4 +119,4 @@ asset.imported = {
 asset.state = 'INTEGRATED';
 await writeFile(batchPath, `${JSON.stringify(batch, null, 2)}\n`);
 
-console.log(JSON.stringify({ batchId: batch.batchId, gameId: batch.gameId, assetId, destination, sha256: sha256(bytes), bytes: bytes.length }, null, 2));
+console.log(JSON.stringify({ batchId: batch.batchId, gameId: batch.gameId, assetId, destination, runtimeFilename, sha256: sha256(bytes), bytes: bytes.length }, null, 2));
