@@ -21,15 +21,22 @@ jobs:
           persist-credentials: true
           fetch-depth: 0
 
-      - name: Rebuild validated image
+      - name: Download and validate approved Drive image
         shell: bash
+        env:
+          DRIVE_FILE_ID: 10l97uHp4DMHjVx-wI9YNj2RKbAX0Utle
+          EXPECTED_SHA256: cff5be65317057a84c3d1d83d361da454e43637776bfbe6846f88dde1b8a0654
+          DEST: site/wordpress/assets/infographics/THC-APPROVED_Trichomes_Secretory_Biology_v1.jpg
         run: |
           set -euo pipefail
-          mkdir -p site/wordpress/assets/infographics
-          cat .github/image-staging/trichomes/part-*.txt | base64 --decode > site/wordpress/assets/infographics/THC-APPROVED_Trichomes_Secretory_Biology_v1.jpg
-          echo "cff5be65317057a84c3d1d83d361da454e43637776bfbe6846f88dde1b8a0654  site/wordpress/assets/infographics/THC-APPROVED_Trichomes_Secretory_Biology_v1.jpg" | sha256sum -c -
-          file site/wordpress/assets/infographics/THC-APPROVED_Trichomes_Secretory_Biology_v1.jpg | tee /tmp/file-info.txt
+          mkdir -p "$(dirname "$DEST")"
+          curl --fail --location --retry 3 --retry-delay 2 \
+            "https://drive.usercontent.google.com/download?id=${DRIVE_FILE_ID}&export=download&confirm=t" \
+            --output "$DEST"
+          echo "${EXPECTED_SHA256}  ${DEST}" | sha256sum -c -
+          file "$DEST" | tee /tmp/file-info.txt
           grep -qi 'JPEG image data' /tmp/file-info.txt
+          grep -Eq '900 x 1272|900x1272' /tmp/file-info.txt
 
       - name: Commit approved binary
         shell: bash
