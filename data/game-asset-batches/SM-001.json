@@ -9,9 +9,11 @@
   "owningRepo": "dtfgenetics/Thc",
   "sourceReference": {
     "manifest": "games/seed-man-platformer/data/seed-man-art-manifest-v1.json",
+    "manifestId": "seed-man-approved-art-v2",
+    "sourceOfTruth": "approved-showcase-2026-09-08",
     "characterReference": "green-armored-plant-hero",
-    "lockedIdentity": "short chubby oval seed/plant hero, thick readable outline, simple face, three-leaf sprout, white gloves and shoes, stable proportions across views and future animation",
-    "notes": "Use the current approved art manifest and approved atlas as the identity anchor; do not redesign the character while producing reference views. No costume drift, added cape, added armor, or realism may be introduced unless already present in the approved runtime reference."
+    "lockedIdentity": "green armored plant hero with a compact readable platformer silhouette, large expressive eyes, leafy head crest, green-and-white suit/armor treatment, gloves and boots, and stable proportions across views and future animation",
+    "notes": "The authoritative runtime manifest and approved 2026-09-08 showcase control this batch. Do not regress to the earlier brown oval seed-body mascot, cape variants, human/anime variants, or unrelated costumes. Do not redesign the character while producing reference views."
   },
   "drive": {
     "visualRootId": "1KvhKlWp5_PdlpM7CbBSUP1YpjY4m0DDj",
@@ -32,7 +34,7 @@
     "background": "transparent or neutral production-sheet background as appropriate",
     "preferredSourceFormat": "PNG",
     "runtimeReferenceFormat": "WebP",
-    "colorRule": "No yellow cast; preserve approved greens, white gloves/shoes and readable outline."
+    "colorRule": "No yellow cast; preserve the approved green/white visual identity and strong readable outline."
   },
   "reviewArtifacts": [
     {
@@ -47,7 +49,49 @@
         "extension": "png",
         "folderId": "1vbWGg6HjFcflO7Wtk9tTZttJAlFnr1Sv"
       },
-      "reason": "Concept board introduced costume/cape/armor and 3D-realistic rendering drift instead of staying inside the locked simple Seed Man construction. It is retained only as review evidence and must not be integrated."
+      "reason": "Concept introduced cape/armor and a different brown seed-body identity rather than the authoritative green-armored-plant-hero. Retained only as review evidence."
+    },
+    {
+      "artifactId": "SM-001-REVIEW-BOARD-v02",
+      "state": "REPLACE",
+      "driveFile": {
+        "fileId": "1jxNl3HCgn6AudyYCAT5qavtbtGXq7g6b",
+        "fileName": "SM-001_CONCEPT-REPLACE_reference-board_v02.png",
+        "sha256": "2156dc5e95f44c5ec9dbb7edf385985f50a7be901718a0e7049761fcfd559fd6",
+        "sizeBytes": 2787940,
+        "mimeType": "image/png",
+        "extension": "png",
+        "folderId": "1vbWGg6HjFcflO7Wtk9tTZttJAlFnr1Sv"
+      },
+      "reason": "Concept drifted into an anime/human hero with leaf hair and clothing. It does not match the approved runtime character silhouette and must not integrate."
+    },
+    {
+      "artifactId": "SM-001-REVIEW-BOARD-v03",
+      "state": "REPLACE",
+      "driveFile": {
+        "fileId": "1Y9OgmExQZVkvpF60_ZQe7_9-UdsYoWzb",
+        "fileName": "SM-001_REVIEW_reference-board_v03.png",
+        "sha256": "1620d55d86ab844c6b6373d75e15def8df4d4e13c21ff6b23bbc0696e6e11f4b",
+        "sizeBytes": 2766439,
+        "mimeType": "image/png",
+        "extension": "png",
+        "folderId": "1vbWGg6HjFcflO7Wtk9tTZttJAlFnr1Sv"
+      },
+      "reason": "Closer to a mascot construction, but still regressed to the earlier brown seed-body concept instead of the approved green-armored-plant-hero. Keep only for comparison."
+    },
+    {
+      "artifactId": "SM-001-REVIEW-BOARD-v04",
+      "state": "REPLACE",
+      "driveFile": {
+        "fileId": "13td95upysR-EW0BSjkVCPHgxVhO6XUUh",
+        "fileName": "SM-001_CONCEPT-REPLACE_reference-board_v04.png",
+        "sha256": "a794955824d984814de464b44970f0d763e824df466d1acd2b27e679951123d5",
+        "sizeBytes": 2787758,
+        "mimeType": "image/png",
+        "extension": "png",
+        "folderId": "1vbWGg6HjFcflO7Wtk9tTZttJAlFnr1Sv"
+      },
+      "reason": "Produced a brown seed-body/cape mascot again and mixed noncanonical world/item concepts. It is explicitly rejected from runtime use."
     }
   ],
   "assets": [
@@ -58,14 +102,14 @@
     {"assetId":"SM-CHAR-SEEDMAN-FACE-NEUTRAL-v01","name":"Neutral face and facial construction close-up","state":"NEEDED","alpha":true},
     {"assetId":"SM-CHAR-SEEDMAN-FACE-DETERMINED-v01","name":"Determined/combat expression close-up","state":"NEEDED","alpha":true},
     {"assetId":"SM-CHAR-SEEDMAN-SILHOUETTE-SCALE-v01","name":"Silhouette and scale consistency guide","state":"NEEDED","alpha":false},
-    {"assetId":"SM-CHAR-SEEDMAN-SPROUT-DETAIL-v01","name":"Three-leaf sprout construction/detail guide","state":"NEEDED","alpha":true},
-    {"assetId":"SM-CHAR-SEEDMAN-GLOVES-SHOES-v01","name":"White glove and shoe construction/detail guide","state":"NEEDED","alpha":true},
+    {"assetId":"SM-CHAR-SEEDMAN-LEAF-CREST-v01","name":"Leaf crest/head construction detail guide","state":"NEEDED","alpha":true},
+    {"assetId":"SM-CHAR-SEEDMAN-GLOVES-BOOTS-v01","name":"Glove and boot construction/detail guide","state":"NEEDED","alpha":true},
     {"assetId":"SM-CHAR-SEEDMAN-ANCHOR-CONTACT-v01","name":"Bottom-center animation anchor/contact/footing guide","state":"NEEDED","alpha":false}
   ],
   "acceptanceCriteria": [
-    "all ten assets clearly depict the same character identity",
-    "front/three-quarter/side/back views agree on body, sprout, glove and shoe proportions",
-    "no costume drift or unapproved props",
+    "all ten assets clearly depict the same authoritative green-armored-plant-hero identity",
+    "front/three-quarter/side/back views agree on body, leaf crest, glove and boot proportions",
+    "no regression to the older brown oval seed-body mascot, human/anime hero, cape, or unrelated costume",
     "silhouette remains readable at platformer game scale",
     "clean edges suitable for later sprite normalization",
     "future bottom-center animation anchor is unambiguous",
