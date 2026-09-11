@@ -93,23 +93,25 @@ for (const [batchId, gameId] of expectedBatches) {
   if (batch.priority !== 'P0') fail(`${batchId} must be P0`);
   if (batch.quantity !== 10) fail(`${batchId} must contain exactly 10 planned assets`);
   if (!allowedBatchStatuses.has(batch.status)) fail(`${batchId} has unsupported status ${batch.status}`);
-  if (!batch.drive?.sourceBatchFolderId || !batch.drive?.briefFolderId || !batch.drive?.approvedMastersFolderId || !batch.drive?.runtimeExportsFolderId) {
-    fail(`${batchId} is missing required Drive folder mapping`);
-  }
+  if (!batch.drive?.sourceBatchFolderId || !batch.drive?.briefFolderId || !batch.drive?.approvedMastersFolderId || !batch.drive?.runtimeExportsFolderId) fail(`${batchId} is missing required Drive folder mapping`);
   const assets = batch.assets ?? [];
   if (assets.length !== 10) fail(`${batchId} expected 10 asset entries, found ${assets.length}`);
   const ids = assets.map((asset) => asset.assetId);
   if (new Set(ids).size !== ids.length || ids.some((id) => !id || typeof id !== 'string')) fail(`${batchId} asset IDs must be nonempty and unique`);
-  if (!batch.runtime || !batch.runtime.targetDirectory) fail(`${batchId} missing runtime targetDirectory`);
+
+  const targetCandidates = Array.isArray(batch.runtime?.targetDirectories)
+    ? batch.runtime.targetDirectories
+    : [batch.runtime?.targetDirectory].filter(Boolean);
+  if (targetCandidates.length === 0) fail(`${batchId} missing runtime targetDirectory/targetDirectories`);
 
   const game = registry.games?.[gameId];
   if (game?.repo === 'dtfgenetics/Thc') {
     const routeSegment = String(game.publicRoute || '').replace(/^\/+|\/+$/g, '');
     const publicRoot = routeSegment ? `site/public-route-patch/${routeSegment}` : null;
     const roots = [game.repoRuntimeRoot, publicRoot].filter(Boolean);
-    const target = String(batch.runtime.targetDirectory);
-    if (!roots.some((rootPath) => target === rootPath || target.startsWith(`${rootPath}/`))) {
-      fail(`${batchId} targetDirectory ${target} is outside canonical game roots ${roots.join(', ')}`);
+    for (const target of targetCandidates) {
+      const targetString = String(target);
+      if (!roots.some((rootPath) => targetString === rootPath || targetString.startsWith(`${rootPath}/`))) fail(`${batchId} target ${targetString} is outside canonical game roots ${roots.join(', ')}`);
     }
   }
 }
@@ -130,10 +132,7 @@ const actualWtiItems = (wtiBatch?.assets ?? []).map((asset) => asset.canonicalIt
 if (JSON.stringify(actualWtiItems) !== JSON.stringify(expectedWtiItems)) fail(`WTI-001 canonical item IDs mismatch: ${JSON.stringify(actualWtiItems)}`);
 if (wtiBatch?.unresolvedPlannedItems !== 13) fail('WTI-001 must keep 13 planned evidence items unresolved until canonical data defines them');
 
-const expectedHiqCategories = [
-  'Nutrition & pH','Environment & Climate','Root Zone & Irrigation','Plant Biology','Diagnostics',
-  'Photobiology','Plant Physiology','Integrated Pest Management','Genetics & Breeding','Harvest & Postharvest',
-];
+const expectedHiqCategories = ['Nutrition & pH','Environment & Climate','Root Zone & Irrigation','Plant Biology','Diagnostics','Photobiology','Plant Physiology','Integrated Pest Management','Genetics & Breeding','Harvest & Postharvest'];
 const hiqCategories = (batches.get('HIQ-001')?.assets ?? []).map((asset) => asset.category);
 if (JSON.stringify(hiqCategories) !== JSON.stringify(expectedHiqCategories)) fail('HIQ-001 categories must exactly match v2.4 categoryCounts ordering');
 
@@ -147,15 +146,11 @@ if (terpBatch?.deferredManifestAsset !== 'thc-badge') fail('TERP-001 must defer 
 for (const marker of ['Google Drive = human/source asset library','GitHub = runtime asset library','10-asset production batch contract','SM-001','WTI-001','HL-001','HIQ-001','TERP-001','BOB-001']) {
   if (!master.includes(marker)) fail(`production master missing marker: ${marker}`);
 }
-
 for (const marker of ['04 Games/<Game>/08 Visual Assets','NEEDED → CONCEPT → REVIEW → APPROVED → NORMALIZED → OPTIMIZED → INTEGRATED → VERIFIED-LIVE','Definition of done']) {
   if (!skill.includes(marker)) fail(`asset skill missing marker: ${marker}`);
 }
-
 for (const marker of ['driveFile.fileId','driveFile.sha256','targetDirectory','validated-google-drive-direct-download','INTEGRATED']) {
   if (!importer.includes(marker)) fail(`game asset importer missing safety marker: ${marker}`);
 }
 
-if (!process.exitCode) {
-  console.log(`Game asset production controls valid: ${allWaveGames.length} games, ${expectedBatches.length} Wave 1 batch manifests, 60 immediate asset slots.`);
-}
+if (!process.exitCode) console.log(`Game asset production controls valid: ${allWaveGames.length} games, ${expectedBatches.length} Wave 1 batch manifests, 60 immediate asset slots.`);
