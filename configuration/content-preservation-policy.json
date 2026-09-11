@@ -1,7 +1,6 @@
 {
-  "schemaVersion": 1,
-  "mode": "append_only_by_default",
-  "authorizationDirectory": "content/change-authorizations",
+  "schemaVersion": 2,
+  "mode": "editable_with_git_history",
   "collections": [
     {
       "id": "encyclopedia-lessons",
@@ -11,7 +10,9 @@
       "numberField": "number",
       "idRegex": "^THC-ENC-([0-9]{3})$",
       "allowAdd": true,
-      "requireAuthorizationFor": ["modify", "delete", "rename"]
+      "allowModify": true,
+      "allowDelete": true,
+      "allowRename": true
     }
   ]
 }
