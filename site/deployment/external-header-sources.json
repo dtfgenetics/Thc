@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "surfaces": {
+    "kushKingsChess": {
+      "repository": "dtfgenetics/Thc-chess-git",
+      "commit": "f17545db7f65fc8831bcc9d2fdb96b1ff0408ecd",
+      "sourceRoot": "public-hostinger/kush-kings-chess",
+      "publicRoot": "games/kush-kings-chess",
+      "files": [
+        "index.html",
+        "play.php",
+        "css/dtf-sitewide-header-v5.css",
+        "js/dtf-sitewide-header-v5.js"
+      ],
+      "verifyRoutes": [
+        "/games/kush-kings-chess/",
+        "/games/kush-kings-chess/play.php"
+      ],
+      "requiredMarkers": [
+        "data-dtf-shell=\"header-v5\"",
+        ">Diagnostic</a>",
+        "Teaching"
+      ]
+    }
+  }
+}
