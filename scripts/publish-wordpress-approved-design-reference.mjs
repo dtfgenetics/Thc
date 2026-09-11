@@ -14,26 +14,32 @@ const auth=user&&pass?`Basic ${Buffer.from(`${user}:${pass}`).toString('base64')
 const must=(v,m)=>{if(!v)throw new Error(m)};
 
 must(user&&pass,'WordPress credentials are required.');
-const bytes=await readFile(assetPath);
-must(bytes.length>10_000,'Approved design reference asset is unexpectedly small.');
 
 async function request(path,options={}){
   const response=await fetch(`${site}${path}`,{
     ...options,
     signal:AbortSignal.timeout(60_000),
-    headers:{Authorization:auth,'User-Agent':'DTF-Approved-Design-Reference/1.0',...(options.headers||{})}
+    headers:{Authorization:auth,'User-Agent':'DTF-Approved-Design-Reference/1.1',...(options.headers||{})}
   });
   const text=await response.text();let body=text;try{body=text?JSON.parse(text):null}catch{}
   if(!response.ok)throw new Error(`${options.method||'GET'} ${path} failed (${response.status}): ${typeof body==='string'?body.slice(0,500):JSON.stringify(body).slice(0,500)}`);
   return body;
 }
 
+// The WordPress media item is the production design-reference record. Reuse it
+// when it already exists instead of making an unrelated local reference-copy
+// size check a deployment blocker. The local binary is needed only when the
+// production record is actually missing and must be uploaded.
 let media=await request(`/wp-json/wp/v2/media?slug=${encodeURIComponent(slug)}&context=edit&per_page=10`);
 let item=Array.isArray(media)?media[0]:null;
+let assetBytes=null;
+
 if(!item&&apply){
+  assetBytes=await readFile(assetPath);
+  must(assetBytes.length>10_000,'Approved design reference asset is unexpectedly small and WordPress has no existing canonical media item.');
   item=await request('/wp-json/wp/v2/media',{
     method:'POST',
-    body:bytes,
+    body:assetBytes,
     headers:{'Content-Type':'image/jpeg','Content-Disposition':`attachment; filename="${filename}"`}
   });
 }
@@ -57,4 +63,4 @@ const verify=await request(`/wp-json/wp/v2/media/${item.id}?context=edit`);
 must(verify.slug===slug,`Unexpected WordPress media slug: ${verify.slug}`);
 must(/^https:\/\//.test(verify.source_url||''),'WordPress media source URL is missing.');
 must((verify.mime_type||'').startsWith('image/'),'WordPress media is not an image.');
-console.log(JSON.stringify({result:'success',mediaId:verify.id,slug:verify.slug,sourceUrl:verify.source_url,repoPath,driveUrl,bytes:bytes.length},null,2));
+console.log(JSON.stringify({result:'success',mediaId:verify.id,slug:verify.slug,sourceUrl:verify.source_url,repoPath,driveUrl,uploadedBytes:assetBytes?.length||0,reusedExistingMedia:!assetBytes},null,2));
