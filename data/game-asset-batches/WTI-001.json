@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "batchId": "WTI-001",
+  "gameId": "who-took-it",
+  "title": "Canonical Evidence Objects + Core Card States",
+  "status": "READY-FOR-AUTHORING",
+  "priority": "P0",
+  "quantity": 10,
+  "owningRepo": "dtfgenetics/Thc-guess-who",
+  "sourceReference": {
+    "itemsData": "03_digital-game/src/data/items.json",
+    "assetManifest": "assets/production-manifest.json",
+    "visualDirection": "original humorous cannabis mystery board with distinct silhouettes, inclusive characters and evidence-first readability",
+    "dataMismatch": "The asset manifest plans 18 evidence cards, while current playable item data defines 5 canonical items. WTI-001 only names those 5 real items. The remaining 13 planned evidence items stay UNRESOLVED until canonical game data defines them."
+  },
+  "drive": {
+    "visualRootId": "1QzFBDGjQQIJOEam4KCZws7nQq-MA6qwz",
+    "sourceBatchFolderId": "1X00Tb5Iu6Cl5DI_8qRLtOgZE6xbLpvGM",
+    "briefFolderId": "1t5RGipICN5UDTJ6SAO2w859PfNrMcoAV",
+    "approvedMastersFolderId": "1nKB0ajEy-iT8We394zRiCTuvNSpImgJG",
+    "gameplayObjectsFolderId": "1CxiQAscePxpv6cjK-nou3XlZ4JlQZzrk",
+    "uiFolderId": "1DhCvn1BsYoOuVVlU4Q9qCTvaAy-dahc3",
+    "runtimeExportsFolderId": "1BzGMbCGpcjvVwEtZJjCy8zcv6DMsl0Py"
+  },
+  "runtime": {
+    "repo": "dtfgenetics/Thc-guess-who",
+    "targetDirectory": "assets/items",
+    "dataBinding": "03_digital-game/src/data/items.json",
+    "activeIntegration": false
+  },
+  "output": {
+    "objectMasterMinimumPx": 1600,
+    "cardAspect": "2.5:3.5 portrait",
+    "objectBackground": "transparent",
+    "cardBackground": "transparent/isolated frame components when possible",
+    "preferredSourceFormat": "PNG",
+    "runtimeFormat": "WebP"
+  },
+  "assets": [
+    {"assetId":"WTI-ITEM-BAG-v01","canonicalItemId":"item_bag","name":"Bag evidence object/card art","state":"NEEDED"},
+    {"assetId":"WTI-ITEM-DABS-v01","canonicalItemId":"item_dabs","name":"Dabs evidence object/card art","state":"NEEDED"},
+    {"assetId":"WTI-ITEM-LIGHTER-v01","canonicalItemId":"item_lighter","name":"Lighter evidence object/card art","state":"NEEDED"},
+    {"assetId":"WTI-ITEM-CHOCOLATE-BAR-v01","canonicalItemId":"item_chocolate_bar","name":"Chocolate Bar evidence object/card art","state":"NEEDED"},
+    {"assetId":"WTI-ITEM-GUMMIES-v01","canonicalItemId":"item_gummies","name":"Gummies evidence object/card art","state":"NEEDED"},
+    {"assetId":"WTI-UI-EVIDENCE-CARD-FRONT-v01","name":"Reusable evidence card front frame","state":"NEEDED"},
+    {"assetId":"WTI-UI-EVIDENCE-CARD-BACK-v01","name":"Reusable evidence card back","state":"NEEDED"},
+    {"assetId":"WTI-UI-HIDDEN-MYSTERY-SLEEVE-v01","name":"Hidden mystery item sleeve/envelope","state":"NEEDED"},
+    {"assetId":"WTI-UI-ITEM-SELECTED-v01","name":"Selected item state treatment","state":"NEEDED"},
+    {"assetId":"WTI-UI-ITEM-ELIMINATED-v01","name":"Eliminated item state treatment","state":"NEEDED"}
+  ],
+  "unresolvedPlannedItems": 13,
+  "acceptanceCriteria": [
+    "the five evidence objects map exactly to current canonical item IDs",
+    "objects remain recognizable at card-thumbnail size",
+    "humorous visual tone matches the completed suspect portrait set without copying third-party game art",
+    "front/back/state components are reusable by runtime-rendered text and data",
+    "selected and eliminated states are distinguishable without relying only on color",
+    "no additional evidence item names are invented before canonical game data exists",
+    "source masters are stored in the WTI-001 Drive batch folder and approved masters are promoted before runtime integration"
+  ],
+  "nextBatch": "WTI-002"
+}
