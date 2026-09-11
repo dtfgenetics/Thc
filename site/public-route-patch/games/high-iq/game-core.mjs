@@ -93,6 +93,13 @@ function isQuizShortcutKey(key) {
 }
 
 if (typeof document !== 'undefined') {
+  // Visual category icons are progressive enhancement. Their failure must never block quiz logic or data loading.
+  setTimeout(() => {
+    import('./domain-icons.js').catch((error) => {
+      console.warn('High IQ domain icon layer could not load.', error);
+    });
+  }, 0);
+
   // Keep production game logic independent from the optional QA/debug adapter.
   // The adapter itself is a no-op outside localhost or an explicit ?debug=1 run.
   setTimeout(() => {
