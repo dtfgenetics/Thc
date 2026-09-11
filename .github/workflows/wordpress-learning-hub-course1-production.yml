@@ -5,6 +5,7 @@ on:
     paths:
       - site/wordpress/education/learning-hub-course1.json
       - scripts/publish-wordpress-learning-hub-course1-v2.mjs
+      - scripts/verify-wordpress-learning-hub-course1.mjs
       - .github/workflows/wordpress-learning-hub-course1-production.yml
   push:
     branches:
@@ -12,6 +13,7 @@ on:
     paths:
       - site/wordpress/education/learning-hub-course1.json
       - scripts/publish-wordpress-learning-hub-course1-v2.mjs
+      - scripts/verify-wordpress-learning-hub-course1.mjs
       - .github/workflows/wordpress-learning-hub-course1-production.yml
   workflow_dispatch:
 
@@ -30,9 +32,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Validate publisher syntax and public manifest
+      - name: Validate publisher, verifier and public manifest
         run: |
           node --check scripts/publish-wordpress-learning-hub-course1-v2.mjs
+          node --check scripts/verify-wordpress-learning-hub-course1.mjs
           node scripts/publish-wordpress-learning-hub-course1-v2.mjs --validate-only
 
   publish:
@@ -59,7 +62,12 @@ jobs:
           test -n "${WP_API_PASSWORD:-}"
       - name: Publish final Course 1 page tree
         run: node scripts/publish-wordpress-learning-hub-course1-v2.mjs
-      - name: Upload rollback metadata
+      - name: Verify published Course 1 by WordPress readback
+        shell: bash
+        run: |
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/verify-wordpress-learning-hub-course1.mjs | tee "$BACKUP_ROOT/readback-verification.json"
+      - name: Upload rollback and verification evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
