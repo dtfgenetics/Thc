@@ -7,6 +7,7 @@ on:
       - site/wordpress/education/learning-hub-course1-ui-v3.json
       - scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
+      - scripts/publish-wordpress-courses-navigation-v1.mjs
       - scripts/verify-wordpress-learning-hub-course1.mjs
       - scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
       - .github/workflows/wordpress-learning-hub-course1-production.yml
@@ -18,6 +19,7 @@ on:
       - site/wordpress/education/learning-hub-course1-ui-v3.json
       - scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
+      - scripts/publish-wordpress-courses-navigation-v1.mjs
       - scripts/verify-wordpress-learning-hub-course1.mjs
       - scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
       - .github/workflows/wordpress-learning-hub-course1-production.yml
@@ -38,20 +40,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Validate publisher, guided UI, verifiers and public manifest
+      - name: Validate publisher, guided UI, navigation, verifiers and public manifest
         run: |
           node --check scripts/publish-wordpress-learning-hub-course1-v2.mjs
           node --check scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
+          node --check scripts/publish-wordpress-courses-navigation-v1.mjs
           node --check scripts/verify-wordpress-learning-hub-course1.mjs
           node --check scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
           node scripts/publish-wordpress-learning-hub-course1-v2.mjs --validate-only
           node scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs --validate-only
+          node scripts/publish-wordpress-courses-navigation-v1.mjs --validate-only
 
   publish:
     if: github.event_name != 'pull_request'
     needs: validate
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     environment: production
     env:
       WP_SITE_URL: https://dtfseeds.com
@@ -73,6 +77,8 @@ jobs:
         run: node scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - name: Build guided 18-lesson Course 1 learning UI
         run: node scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
+      - name: Publish Courses catalog and shared header link
+        run: node scripts/publish-wordpress-courses-navigation-v1.mjs
       - name: Verify published Course 1 base release by WordPress readback
         shell: bash
         run: |
@@ -82,6 +88,21 @@ jobs:
         shell: bash
         run: |
           node scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs | tee "$BACKUP_ROOT/readback-ui-v3-verification.json"
+      - name: Verify Courses page, header menu and representative public lesson
+        shell: bash
+        run: |
+          set -euo pipefail
+          courses="$RUNNER_TEMP/courses.html"
+          lesson="$RUNNER_TEMP/course1-lesson.html"
+          curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 --header 'Cache-Control: no-cache, no-store, max-age=0' "$WP_SITE_URL/courses/?verify=${GITHUB_RUN_ID}" --output "$courses"
+          curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 --header 'Cache-Control: no-cache, no-store, max-age=0' "$WP_SITE_URL/learn/learning-hub/cultivation-technician-i/safety-responsible-practice-cultivation-workflows/applied-workplace-safety/lesson-1-1-hazard-recognition-control-boundaries/?verify=${GITHUB_RUN_ID}" --output "$lesson"
+          grep -Fq 'dtf-courses-v1-style' "$courses"
+          grep -Fq 'Professional cultivation courses' "$courses"
+          grep -Fq 'href="/courses/"' "$courses"
+          grep -Fq 'dtf-learning-hub-course1-ui-v3' "$lesson"
+          grep -Fq 'Course outline' "$lesson"
+          grep -Fq 'Mark lesson complete' "$lesson"
+          ! grep -Eqi 'interactive academic visual|<svg' "$lesson"
       - name: Upload rollback and verification evidence
         if: always()
         uses: actions/upload-artifact@v4
