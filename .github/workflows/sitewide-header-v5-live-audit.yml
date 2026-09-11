@@ -1,0 +1,82 @@
+name: Sitewide Header V5 Live Audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 9 * * *'
+  push:
+    branches: [main]
+    paths:
+      - scripts/audit-sitewide-header-live.mjs
+      - scripts/lib/sitewide-header-template.mjs
+      - scripts/apply-sitewide-header.mjs
+      - scripts/rebuild-wordpress-shared-shell-v3.mjs
+      - scripts/repair-external-sitewide-header-via-wordpress.mjs
+      - site/deployment/external-header-sources.json
+      - site/deployment/public-apps.json
+      - data/public-navigation.json
+      - data/site-registry.json
+      - data/game-source-map.json
+      - .github/workflows/sitewide-header-v5-live-audit.yml
+  pull_request:
+    paths:
+      - scripts/audit-sitewide-header-live.mjs
+      - .github/workflows/sitewide-header-v5-live-audit.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtf-sitewide-header-v5-live-audit
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate audit implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/audit-sitewide-header-live.mjs
+          grep -Fq 'data-dtf-shell="header-v5"' scripts/audit-sitewide-header-live.mjs
+          grep -Fq '>Diagnostic</a>' scripts/audit-sitewide-header-live.mjs
+          grep -Fq 'site/deployment/public-apps.json' scripts/audit-sitewide-header-live.mjs
+
+  audit:
+    if: github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Audit discovered public HTML routes
+        shell: bash
+        env:
+          DTF_SITE_URL: https://dtfseeds.com
+          DTF_HEADER_AUDIT_MAX_PAGES: '450'
+          DTF_HEADER_AUDIT_MAX_DEPTH: '5'
+          DTF_HEADER_AUDIT_CONCURRENCY: '6'
+        run: node scripts/audit-sitewide-header-live.mjs
+      - name: Publish audit summary
+        if: always()
+        shell: bash
+        run: |
+          if [ -s sitewide-header-live-audit.md ]; then cat sitewide-header-live-audit.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sitewide-header-v5-live-audit-${{ github.run_id }}
+          path: |
+            sitewide-header-live-audit.json
+            sitewide-header-live-audit.md
+          if-no-files-found: ignore
+          retention-days: 30
