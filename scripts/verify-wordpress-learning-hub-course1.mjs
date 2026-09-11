@@ -11,6 +11,12 @@ const rendered = (value) => typeof value === 'string' ? value : (value?.raw || v
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const auth = `Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}`;
 const forbidden = /\b(tbd|todo|lorem ipsum|not approved for public release|draft production package|preview only|pilot\/calibration only until approved)\b/i;
+const htmlEscape = (value = '') => String(value)
+  .replaceAll('&', '&amp;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;')
+  .replaceAll('"', '&quot;')
+  .replaceAll("'", '&#039;');
 
 must(user && pass, 'WordPress application credentials are required for readback verification.');
 must(local?.course?.id === 'COURSE-LH-TECH1-001', 'Unexpected Course 1 package.');
@@ -60,7 +66,10 @@ function verifyPage(page, { label, minLength = 120, required = [], questionCount
   const content = rendered(page.content);
   must(content.length >= minLength, `${label}: published content is unexpectedly short (${content.length} chars).`);
   must(!forbidden.test(content), `${label}: unfinished learner-facing wording found after publication.`);
-  for (const needle of required) must(content.includes(needle), `${label}: required published marker/text missing: ${needle}`);
+  for (const needle of required) {
+    const found = content.includes(needle) || content.includes(htmlEscape(needle));
+    must(found, `${label}: required published marker/text missing: ${needle}`);
+  }
   if (questionCount !== null) {
     const count = (content.match(/class=(?:"|')lh1-test(?:"|')/g) || []).length;
     must(count === questionCount, `${label}: expected ${questionCount} rendered course-test items, found ${count}.`);
