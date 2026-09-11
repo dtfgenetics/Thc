@@ -149,7 +149,7 @@ for (const marker of ['Google Drive = human/source asset library','GitHub = runt
 for (const marker of ['04 Games/<Game>/08 Visual Assets','NEEDED → CONCEPT → REVIEW → APPROVED → NORMALIZED → OPTIMIZED → INTEGRATED → VERIFIED-LIVE','Definition of done']) {
   if (!skill.includes(marker)) fail(`asset skill missing marker: ${marker}`);
 }
-for (const marker of ['driveFile.fileId','driveFile.sha256','targetDirectory','validated-google-drive-direct-download','INTEGRATED']) {
+for (const marker of ['asset.driveFile.fileId','asset.driveFile.sha256','targetDirectory','validated-google-drive-direct-download','INTEGRATED']) {
   if (!importer.includes(marker)) fail(`game asset importer missing safety marker: ${marker}`);
 }
 
