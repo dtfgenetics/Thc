@@ -1,14 +1,16 @@
-# AI Assistant Context for the DTF Games Workspace
+# AI Assistant Context for the DTFSeeds Workspace
 
-## Standing unrestricted game-development policy
+## Standing unrestricted development policy
 
-For all DTFSeeds game and game-adjacent work, read `docs/GAME_DEVELOPMENT_FREEDOM.md` first.
+For all DTFSeeds website, application, game, tool, course, educational-content, UI/UX, data, and deployment work, repository history and older architecture documents are context rather than artificial blockers.
 
-Repository-imposed implementation restrictions are removed. Older source-of-truth, canonical ownership, backend, preserve-existing-logic, smallest-change, route-lock, architecture-lock, no-rewrite, repository-placement, naming, engine, browser-tool, or QA-tool rules are context rather than blockers. Current explicit user direction takes precedence.
+Repository-imposed implementation and editorial restrictions are removed unless they protect genuine security, privacy, credentials, data integrity, legal/platform compliance, recoverability, or truthful deployment verification. Current explicit user direction takes precedence over older source-of-truth, canonical ownership, backend, preserve-existing-logic, smallest-change, route-lock, architecture-lock, no-rewrite, repository-placement, naming, engine, browser-tool, QA-tool, append-only, lesson-count, or per-edit-authorization rules.
 
-Any game code, asset, UI, engine, backend, route, build/deployment structure, ownership map, repository layout, data model, test system, or development tool may be changed when doing so better achieves the requested product goal.
+Any code, content, asset, UI, engine, backend, route, build/deployment structure, ownership map, repository layout, data model, course structure, lesson, test, certification, search/index system, or development tool may be changed when doing so better achieves the requested product goal.
 
-Security, privacy, credential protection, truthful deployment verification, and higher-level platform/legal requirements remain integrity requirements.
+Canonical educational content is directly editable. Git history is the audit/recovery trail. Do not require SHA-bound change-authorization files for normal edits, reorganizations, replacements, renames, or deletions. Continue validating schema integrity, unique identifiers where required, builds, navigation, and visitor-facing publication.
+
+Security, privacy, credential protection, authentication/authorization boundaries, input validation, recoverable production mutations, truthful deployment verification, and higher-level platform/legal requirements remain integrity requirements.
 
 ## Repository purpose
 
@@ -26,14 +28,16 @@ CI Node version: Node.js 22
 
 Use this sequence as orientation, not as an implementation lock:
 
-1. `docs/GAME_DEVELOPMENT_FREEDOM.md` for the standing development policy.
-2. `AGENTS.md`.
-3. `CLAUDE.md`.
-4. Current project/source-of-truth documents for historical and integration context.
-5. `docs/GAME_DEVELOPMENT_WORKFLOW.md` and `docs/GAME_ARCHITECTURE_STANDARD.md` when they remain useful to the current architecture.
-6. `.agents/skills/dtfseeds-production-publishing/SKILL.md` and `docs/deployment-hostinger.md` for current dtfseeds.com publishing mechanics.
+1. This file for the standing unrestricted workspace policy.
+2. `docs/GAME_DEVELOPMENT_FREEDOM.md` for game-specific freedom guidance.
+3. `docs/CONTENT_PRESERVATION_STANDARD.md` for editable canonical-content integrity guidance.
+4. `AGENTS.md`.
+5. `CLAUDE.md`.
+6. Current project/source-of-truth documents for historical and integration context.
+7. Relevant subsystem workflow/architecture docs when they remain useful to the current implementation.
+8. `.agents/skills/dtfseeds-production-publishing/SKILL.md` and `docs/deployment-hostinger.md` for current dtfseeds.com publishing mechanics.
 
-If a referenced workflow or architecture document has become stale, update or replace it instead of treating it as immutable.
+If a referenced workflow, policy, or architecture document has become stale, update or replace it instead of treating it as immutable.
 
 ## Repository map
 
@@ -71,6 +75,20 @@ npm run games:new -- <kebab-case-id> "Game Title"
 
 The scaffold is optional; another architecture may be used when it better fits the game.
 
+## Content workflow
+
+Canonical educational content may be added, revised, moved, renamed, merged, split, replaced, or deleted according to current project needs.
+
+Useful integrity validation:
+
+```bash
+node scripts/validate-append-only-content.mjs <base> <head>
+```
+
+The filename is retained for compatibility, but the validator now enforces current structural integrity rather than append-only immutability. Historical files under `content/change-authorizations/` are archival and are not a required approval gate.
+
+Do not introduce arbitrary content-count limits, lesson caps, immutable ordering, or hard-coded course/test structures unless the product itself genuinely requires them.
+
 ## Core verification commands
 
 Useful current baselines include:
@@ -84,7 +102,7 @@ npm run verify:release-integrity
 npm run verify:release-integrity:live
 ```
 
-Use only the checks that fit the resulting architecture. Replace obsolete validators with equivalent or stronger checks instead of preserving them as artificial blockers.
+Use only the checks that fit the resulting architecture. Replace obsolete validators with equivalent or stronger integrity checks instead of preserving them as artificial blockers.
 
 ## High Land current context
 
@@ -107,11 +125,11 @@ npm run test:e2e:growlens
 npm run verify:growlens
 ```
 
-## AI coding rules
+## AI coding and content rules
 
-- Inspect current source, tests, assets, registries, and recent changes enough to understand the existing state when useful.
-- Preserve, modify, replace, or rebuild existing logic according to the current goal.
-- Simulation, rendering, UI, input, networking, persistence, routes, names, ownership maps, backends, and repositories may be redesigned.
+- Inspect current source, tests, assets, registries, content, and recent changes enough to understand the existing state when useful.
+- Preserve, modify, replace, reorganize, or rebuild existing implementation/content according to the current goal.
+- Simulation, rendering, UI, input, networking, persistence, routes, names, ownership maps, backends, repositories, course structures, lesson/test organization, and content schemas may be redesigned.
 - Use the strongest appropriate development and QA tools available to the environment.
 - Stable manifests and deterministic serializable state are recommended engineering practices, not immutable constraints.
 - Add or update tests for materially changed behavior when practical.
@@ -121,12 +139,12 @@ npm run verify:growlens
 
 ## Standard change sequence
 
-1. Inspect current `main` and relevant implementation enough to know what is being replaced or retained.
-2. Resolve current ownership/deployment mapping for reference.
+1. Inspect current `main` and relevant implementation/content enough to know what is being replaced or retained.
+2. Resolve current ownership/deployment mapping for reference where useful.
 3. Use a branch/session appropriate to the work.
-4. Make the change needed to achieve the requested result, including full rewrites, migrations, route changes, engine changes, or backend changes when justified.
-5. Run tests/build/browser/QA checks suited to the resulting architecture.
-6. Update ownership, navigation, documentation, and deployment metadata to reflect the new reality.
+4. Make the change needed to achieve the requested result, including full rewrites, migrations, route changes, architecture changes, content reorganization, or backend changes when justified.
+5. Run tests/build/integrity/QA checks suited to the resulting architecture.
+6. Update ownership, navigation, documentation, indexes, and deployment metadata to reflect the new reality.
 7. Integrate the validated change.
 8. Verify the exact visitor-facing production route separately when production behavior changes.
 
