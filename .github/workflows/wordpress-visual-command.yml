@@ -8,6 +8,8 @@ on:
       - '.github/workflows/wordpress-visual-command.yml'
       - 'scripts/polish-wordpress-visual-site-v3.mjs'
       - 'scripts/fix-wordpress-visual-polish-v3-cascade.mjs'
+      - 'scripts/lib/sitewide-header-template.mjs'
+      - 'scripts/rebuild-wordpress-shared-shell-v3.mjs'
   issue_comment:
     types: [created]
 
@@ -36,6 +38,7 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
       BACKUP_ROOT: /tmp/dtf-visual-rebuild
+      APPLY_SHARED_SHELL_V3: 'true'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -55,6 +58,8 @@ jobs:
           node --check scripts/rebuild-wordpress-infographic-gallery.mjs
           node --check scripts/polish-wordpress-visual-site-v3.mjs
           node --check scripts/fix-wordpress-visual-polish-v3-cascade.mjs
+          node --check scripts/lib/sitewide-header-template.mjs
+          node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
 
       - name: Reconcile canonical WordPress page records
         run: |
@@ -105,6 +110,11 @@ jobs:
           set -euo pipefail
           node scripts/fix-wordpress-visual-polish-v3-cascade.mjs
 
+      - name: Restore approved V5 shared header and sitemap shell
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs
+
       - name: Verify site icon through authenticated WordPress REST
         id: icon
         run: |
@@ -123,7 +133,7 @@ jobs:
           NODE
           echo "site_icon=$site_icon" >> "$GITHUB_OUTPUT"
 
-      - name: Verify live V3 site is image-driven and stale shell is gone
+      - name: Verify live V3 site is image-driven and approved navigation is intact
         id: verify
         run: |
           set -euo pipefail
@@ -135,17 +145,22 @@ jobs:
             for attempt in 1 2 3 4 5 6 7 8; do
               curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
-                "$WP_SITE_URL${path}?dtf_rebuild=${GITHUB_RUN_ID}-${attempt}" -o "$body"
-              if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
+                "$WP_SITE_URL${path}?dtf_rebuild=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" -o "$body"
+              if grep -Fqi -- "$required" "$body" && grep -Fqi 'data-dtf-shell="header-v5"' "$body"; then ok=1; break; fi
               sleep 8
             done
-            [[ "$ok" -eq 1 ]] || { echo "Missing required marker on $path: $required" >&2; head -c 3000 "$body" >&2 || true; exit 1; }
+            [[ "$ok" -eq 1 ]] || { echo "Missing required marker or approved V5 header on $path: $required" >&2; head -c 3000 "$body" >&2 || true; exit 1; }
             count="$(grep -Eo '/wp-content/uploads/[^"'"' )]+' "$body" | sort -u | wc -l | tr -d ' ')"
             [[ "$count" -ge "$minimum" ]] || { echo "$path has $count WordPress-hosted image URLs; expected at least $minimum" >&2; exit 1; }
             for forbidden in 'email@email.com' '+123456789' 'being rebuilt' 'Reserved strain card' 'Tool-ready rebuild' 'Grow education belongs in a clean, readable library.' 'MOPS, cultivation notes, THC basics'; do
               ! grep -Fqi -- "$forbidden" "$body" || { echo "Stale phrase remains on $path: $forbidden" >&2; exit 1; }
             done
-            echo "$path verified with $count WordPress-hosted images"
+            for navLabel in '>Home</a>' '>Seeds</a>' '>Learn</a>' '>Courses</a>' '>Diagnostic</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
+              grep -Fqi -- "$navLabel" "$body" || { echo "Approved navigation label missing on $path: $navLabel" >&2; exit 1; }
+            done
+            ! grep -Fqi -- '>Tools</a>' "$body" || { echo "Stale Tools primary-navigation label remains on $path" >&2; exit 1; }
+            ! grep -Fqi -- '>Genetics</a>' "$body" || { echo "Stale Genetics primary-navigation label remains on $path" >&2; exit 1; }
+            echo "$path verified with $count WordPress-hosted images and V5 navigation"
           }
           check_page '/' 'Breeding projects with documented lineage' 8
           check_page '/learn/' 'Explore by subject' 10
@@ -156,9 +171,8 @@ jobs:
           grep -Fqi 'dtf-v3-spotlight' "$home"
           grep -Fqi 'Measure. Diagnose. Document.' "$home"
           grep -Fqi 'Original DTF games' "$home"
-          grep -Fqi 'dtf-shell-header' "$home"
-          grep -Fqi 'dtf-shell-footer' "$home"
-          grep -Fqi 'DTF Genetics cannabis leaf' "$home"
+          grep -Fqi 'data-dtf-shell="header-v5"' "$home"
+          grep -Fqi 'dtf-footer-v3' "$home"
           grep -Fqi 'dtf-visual-polish-v3' "$learn"
           grep -Eqi '<link[^>]+rel=["'"'](shortcut )?icon["'"']' "$home"
 
@@ -207,6 +221,6 @@ jobs:
                 `Live V3 visual verification: **${process.env.VERIFY || 'not-run'}**`,
                 `Optional unmatched visual slots: **${process.env.MISSING || 'none'}**`,
                 '',
-                'This single protected command now rebuilds the canonical visual site, applies the final V3 premium presentation layer, finalizes cascade order, and verifies the visitor-facing result. Rollback assets are captured before production writes.'
+                'This protected command rebuilds the visual site, then restores and verifies the approved V5 Home / Seeds / Learn / Courses / Diagnostic / Games / Community / Shop navigation so visual rebuilds cannot regress the shared shell.'
               ].join('\n')
             });
