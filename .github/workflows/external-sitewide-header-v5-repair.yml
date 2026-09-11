@@ -1,0 +1,133 @@
+name: Repair External Sitewide Header V5
+
+on:
+  workflow_dispatch:
+    inputs:
+      surface:
+        description: External surface to repair
+        required: true
+        default: kushKingsChess
+        type: choice
+        options:
+          - kushKingsChess
+  push:
+    branches: [main]
+    paths:
+      - scripts/repair-external-sitewide-header-via-wordpress.mjs
+      - site/deployment/external-header-sources.json
+      - .github/workflows/external-sitewide-header-v5-repair.yml
+  pull_request:
+    paths:
+      - scripts/repair-external-sitewide-header-via-wordpress.mjs
+      - site/deployment/external-header-sources.json
+      - .github/workflows/external-sitewide-header-v5-repair.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtf-external-sitewide-header-v5-production
+  cancel-in-progress: false
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  EXTERNAL_HEADER_SOURCE_CONFIG: site/deployment/external-header-sources.json
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate protected external-header package
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/repair-external-sitewide-header-via-wordpress.mjs
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const cfg=JSON.parse(fs.readFileSync('site/deployment/external-header-sources.json','utf8'));
+          if(cfg.schemaVersion!==1) throw new Error('bad schema');
+          const s=cfg.surfaces?.kushKingsChess;
+          if(!s||!/^dtfgenetics\//.test(s.repository)||!/^[0-9a-f]{40}$/.test(s.commit)) throw new Error('bad source pin');
+          const required=['index.html','play.php','css/dtf-sitewide-header-v5.css','js/dtf-sitewide-header-v5.js'];
+          for(const f of required) if(!s.files.includes(f)) throw new Error(`missing ${f}`);
+          if(!s.verifyRoutes.includes('/games/kush-kings-chess/')||!s.verifyRoutes.includes('/games/kush-kings-chess/play.php')) throw new Error('missing visitor verification route');
+          console.log(`${s.repository}@${s.commit}`);
+          NODE
+      - name: Verify pinned upstream source contains V5 shell
+        shell: bash
+        run: |
+          set -euo pipefail
+          repo="$(node -p "require('./site/deployment/external-header-sources.json').surfaces.kushKingsChess.repository")"
+          sha="$(node -p "require('./site/deployment/external-header-sources.json').surfaces.kushKingsChess.commit")"
+          root="$(node -p "require('./site/deployment/external-header-sources.json').surfaces.kushKingsChess.sourceRoot")"
+          for file in index.html play.php css/dtf-sitewide-header-v5.css js/dtf-sitewide-header-v5.js; do
+            curl -fsSL --retry 3 --retry-delay 2 "https://raw.githubusercontent.com/${repo}/${sha}/${root}/${file}" -o "$RUNNER_TEMP/$(basename "$file")"
+            test -s "$RUNNER_TEMP/$(basename "$file")"
+          done
+          grep -Fq 'data-dtf-shell="header-v5"' "$RUNNER_TEMP/index.html"
+          grep -Fq 'data-dtf-shell="header-v5"' "$RUNNER_TEMP/play.php"
+          grep -Fq '>Diagnostic</a>' "$RUNNER_TEMP/index.html"
+          grep -Fq '>Diagnostic</a>' "$RUNNER_TEMP/play.php"
+
+  publish:
+    if: github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      EXTERNAL_HEADER_SURFACE: ${{ inputs.surface || 'kushKingsChess' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Require WordPress production credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured}"
+      - name: Publish only approved external header surface files
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/repair-external-sitewide-header-via-wordpress.mjs | tee /tmp/dtf-external-header-v5-repair.json
+      - name: Independently verify visitor-facing Kush Kings routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          for route in /games/kush-kings-chess/ /games/kush-kings-chess/play.php; do
+            out="$RUNNER_TEMP/kush-v5-$(echo "$route" | tr '/.' '__').html"
+            ok=0
+            for attempt in 1 2 3 4 5 6; do
+              curl -4 -fsSL --retry 2 --retry-delay 2 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
+                "https://dtfseeds.com${route}?dtf_kush_header_v5=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" -o "$out" || true
+              if grep -Fq 'data-dtf-shell="header-v5"' "$out" && \
+                 grep -Fq '>Diagnostic</a>' "$out" && \
+                 grep -Fq 'Teaching' "$out"; then
+                ok=1
+                break
+              fi
+              sleep 4
+            done
+            if [[ "$ok" -ne 1 ]]; then
+              echo "::error::Approved V5 header is not visitor-facing at ${route}."
+              exit 1
+            fi
+          done
+      - name: Upload repair evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: external-sitewide-header-v5-${{ github.run_id }}
+          path: /tmp/dtf-external-header-v5-repair.json
+          if-no-files-found: ignore
+          retention-days: 30
