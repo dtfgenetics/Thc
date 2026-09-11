@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const VERSION = 'seed-man-campaign-v20-runtime-v3';
+  const VERSION = 'seed-man-campaign-v20-runtime-v4';
   const AUTHORING_VERSION = 'seed-man-authored-levels-v1';
   const BOSS_META = Object.freeze({
     'overgrown-guardian': { name:'Overgrown Guardian', requiredHits:5, width:128, height:118, accent:'#76d858' },
@@ -21,6 +21,8 @@
   const clamp = (value,min,max) => Math.max(min,Math.min(max,value));
   let campaignData = null;
   let levelCatalog = null;
+  let authoredLevelCatalog = null;
+  let authoredLayouts = new Map();
   let entries = [];
   let generated = new Map();
   let activeId = null;
@@ -28,19 +30,29 @@
   const backgroundImages = new Map();
 
   async function loadData() {
-    const [campaignResponse, levelsResponse] = await Promise.all([
+    const [campaignResponse, levelsResponse, authoredResponse] = await Promise.all([
       fetch('./data/campaign.json', { cache:'no-store' }),
-      fetch('./data/levels-20-v1.json', { cache:'no-store' })
+      fetch('./data/levels-20-v1.json', { cache:'no-store' }),
+      fetch('./data/authored-levels-v1.json', { cache:'no-store' })
     ]);
-    if (!campaignResponse.ok || !levelsResponse.ok) throw new Error('Seed Man v20 campaign data request failed');
+    if (!campaignResponse.ok || !levelsResponse.ok || !authoredResponse.ok) throw new Error('Seed Man v20 campaign data request failed');
     campaignData = await campaignResponse.json();
     levelCatalog = await levelsResponse.json();
+    authoredLevelCatalog = await authoredResponse.json();
     if (campaignData.levelCount !== 20 || !Array.isArray(levelCatalog.levels) || levelCatalog.levels.length !== 20) throw new Error('Seed Man campaign must contain exactly 20 levels');
+    if (!Array.isArray(authoredLevelCatalog.levels)) throw new Error('Seed Man authored level overlay catalog must contain a levels array');
+    authoredLayouts = new Map(authoredLevelCatalog.levels.map((entry) => {
+      if (!entry?.id || !entry?.layout) throw new Error('Seed Man authored level overlay entry is invalid');
+      return [entry.id, clone(entry.layout)];
+    }));
     const campaignEntries = campaignData.worlds.flatMap((world) => world.levels.map((entry) => ({...entry, worldId:world.id, worldTitle:world.title, visualWorldKey:world.visualWorldKey, worldOrder:world.order})));
     entries = campaignEntries.map((entry) => {
       const catalog = levelCatalog.levels.find((item) => item.id === entry.id);
       if (!catalog) throw new Error(`Missing level catalog entry: ${entry.id}`);
-      return Object.freeze({...entry, ...catalog, worldId:catalog.world, worldTitle:entry.worldTitle, worldOrder:entry.worldOrder, visualWorldKey:entry.visualWorldKey});
+      const overlay = authoredLayouts.get(entry.id);
+      const mechanics = overlay ? [...new Set([...(catalog.mechanics || []),'authored-layout'])] : [...(catalog.mechanics || [])];
+      const mergedCatalog = overlay ? {...catalog,mechanics,layout:clone(overlay)} : catalog;
+      return Object.freeze({...entry, ...mergedCatalog, worldId:catalog.world, worldTitle:entry.worldTitle, worldOrder:entry.worldOrder, visualWorldKey:entry.visualWorldKey});
     });
     generated = new Map(entries.map((entry) => [entry.id, generateLevel(entry)]));
   }
@@ -75,11 +87,17 @@
     for (const key of ['platforms','hazards','pickups','checkpoints','enemySpawns','phenotypeCarrierSpawns']) {
       if (!Array.isArray(layout[key])) throw new Error(`Authored level ${entry.id} is missing ${key}`);
     }
+    if (layout.movingPlatforms!==undefined && !Array.isArray(layout.movingPlatforms)) throw new Error(`Authored level ${entry.id} movingPlatforms must be an array`);
     if (!layout.spawn || !layout.finish) throw new Error(`Authored level ${entry.id} must define spawn and finish`);
     if (layout.checkpoints.length!==entry.checkpointCount) throw new Error(`Authored level ${entry.id} checkpoint count does not match catalog`);
     if (layout.finish.x<=layout.spawn.x || layout.finish.x+layout.finish.width>entry.length+1) throw new Error(`Authored level ${entry.id} finish is outside level bounds`);
     if ((layout.requiredPickups ?? layout.pickups.length)!==layout.pickups.length) throw new Error(`Authored level ${entry.id} requiredPickups must equal authored pickup count`);
-    const ids=[...layout.platforms,...layout.hazards,...layout.pickups,...layout.checkpoints,...layout.enemySpawns,...layout.phenotypeCarrierSpawns].map((item)=>item.id).filter(Boolean);
+    const movers=layout.movingPlatforms || [];
+    for (const mover of movers) {
+      const motion=mover?.motion;
+      if (!mover?.id || !motion || !Number.isFinite(Number(motion.toX)) || !Number.isFinite(Number(motion.toY)) || Number(motion.periodMs)<400) throw new Error(`Authored level ${entry.id} contains an invalid moving platform`);
+    }
+    const ids=[...layout.platforms,...movers,...layout.hazards,...layout.pickups,...layout.checkpoints,...layout.enemySpawns,...layout.phenotypeCarrierSpawns].map((item)=>item.id).filter(Boolean);
     if (new Set(ids).size!==ids.length) throw new Error(`Authored level ${entry.id} contains duplicate object ids`);
     return layout;
   }
@@ -94,12 +112,13 @@
 
   function generateAuthoredLevel(entry,layout) {
     const platforms=clone(layout.platforms);
+    const movingPlatforms=clone(layout.movingPlatforms || []);
     const pickups=clone(layout.pickups);
     const checkpoints=clone(layout.checkpoints);
     const hazards=clone(layout.hazards);
     const boss=buildBoss(entry,platforms.filter((platform)=>platform.y>=450));
     return {
-      schemaVersion:6,
+      schemaVersion:7,
       id:entry.id,
       name:`Seed Man: ${entry.title}`,
       title:entry.title,
@@ -117,6 +136,7 @@
       requiredPickups:Number(layout.requiredPickups ?? pickups.length),
       spawn:clone(layout.spawn),
       platforms,
+      movingPlatforms,
       hazards,
       pickups,
       powerups:[],
@@ -167,6 +187,7 @@
       requiredPickups:pickups.length,
       spawn:{x:80,y:390},
       platforms,
+      movingPlatforms:[],
       hazards:ground.hazards,
       pickups,
       powerups:[],
@@ -289,9 +310,10 @@
     activeId=entries[0].id;
     const worlds=campaignData.worlds.map((world)=>Object.freeze({...world,levels:Object.freeze(entries.filter((entry)=>entry.worldOrder===world.order).map((entry)=>Object.freeze({...entry})))}));
     const authoredLevelCount=entries.filter((entry)=>entry.layout?.mode==='authored').length;
-    window.__SPROUT_CAMPAIGN__=Object.freeze({version:VERSION,authoringVersion:AUTHORING_VERSION,campaignId:campaignData.id,title:campaignData.title,defaultLevelId:campaignData.defaultLevelId,levelCount:20,newLevelCount:19,worldCount:5,bossCount:6,finalBoss:'blight-king',authoredLevelCount,worlds:Object.freeze(worlds),listLevels:()=>entries.map((entry)=>({...entry})),getLevel:(id=activeId)=>{const entry=entries.find((item)=>item.id===id);return entry?{...entry}:null;},get activeLevelId(){return activeId;},selectLevel});
+    const proceduralLevelCount=20-authoredLevelCount;
+    window.__SPROUT_CAMPAIGN__=Object.freeze({version:VERSION,authoringVersion:AUTHORING_VERSION,campaignId:campaignData.id,title:campaignData.title,defaultLevelId:campaignData.defaultLevelId,levelCount:20,newLevelCount:proceduralLevelCount,worldCount:5,bossCount:6,finalBoss:'blight-king',authoredLevelCount,proceduralLevelCount,worlds:Object.freeze(worlds),listLevels:()=>entries.map((entry)=>({...entry})),getLevel:(id=activeId)=>{const entry=entries.find((item)=>item.id===id);return entry?{...entry}:null;},get activeLevelId(){return activeId;},selectLevel});
     window.__SPROUT_CAMPAIGN_BASE_LEVELS__=Object.freeze(entries.map((entry)=>entry.id));
-    window.__SEED_MAN_CAMPAIGN_V20__=Object.freeze({version:VERSION,authoringVersion:AUTHORING_VERSION,levelCount:20,worldCount:5,bossCount:6,finalBoss:'blight-king',generatedLevelCount:generated.size,authoredLevelCount,approvedWorldBackgrounds:true,selectLevel});
+    window.__SEED_MAN_CAMPAIGN_V20__=Object.freeze({version:VERSION,authoringVersion:AUTHORING_VERSION,levelCount:20,worldCount:5,bossCount:6,finalBoss:'blight-king',generatedLevelCount:generated.size,authoredLevelCount,proceduralLevelCount,approvedWorldBackgrounds:true,selectLevel});
     installSelect(); installBackground(); installFinalBossHook();
     let requested=null;try{requested=localStorage.getItem('dtf-seed-man-last-level-v20');}catch{}
     selectLevel(generated.has(requested)?requested:campaignData.defaultLevelId);
