@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "batchId": "BOB-001",
+  "gameId": "bud-or-bluff",
+  "title": "Visual Identity + Card Frame System",
+  "status": "READY-FOR-AUTHORING",
+  "priority": "P0",
+  "quantity": 10,
+  "owningRepo": "dtfgenetics/Thc",
+  "sourceReference": {
+    "gameManifest": "games/bud-or-bluff/game.json",
+    "playerRange": "2–10",
+    "mechanicsToSupport": ["simultaneous voting", "hidden answers until reveal", "double-hit scoring", "room chat", "reconnect", "rematch", "host transfer"],
+    "rule": "Art must never leak the truth/bluff answer before the reveal state."
+  },
+  "drive": {
+    "visualRootId": "1cXjrWU62au9DKaG29rKYAgTysLSbOiih",
+    "sourceBatchFolderId": "1GccGeDHqzhaY0emCpodCBP42hPGkHumw",
+    "briefFolderId": "1ay0kmGZHjnAk4ooNL49-BM2b3k4lZ3Ff",
+    "approvedMastersFolderId": "19gcDYDl-HjoIVy2DNAxyEYjm0l2FII18",
+    "gameplayObjectsFolderId": "1NcT_WEtxGChQj8xoSS-3vK-Lj4bcIa_2",
+    "uiFolderId": "1QpCeT5Nu_ANlUyCNP-5i-mm0Yz_rwXxR",
+    "runtimeExportsFolderId": "1nP5XDKiLDYH8afCKT0IY9pIfciUdM8mq"
+  },
+  "runtime": {
+    "root": "games/bud-or-bluff",
+    "targetDirectory": "site/public-route-patch/games/bud-or-bluff/assets/v1",
+    "activeIntegration": false
+  },
+  "output": {
+    "sourceMasterMinimumPx": 2048,
+    "preferredSourceFormat": "PNG",
+    "runtimeFormat": "WebP/PNG/SVG",
+    "style": "bold social party-game presentation with cannabis cultivar personality, readable on phones, playful but not cheap novelty art"
+  },
+  "assets": [
+    {"assetId":"BOB-BRAND-LOGO-MAIN-v01","name":"Bud or Bluff primary logo","state":"NEEDED"},
+    {"assetId":"BOB-ART-KEY-ART-v01","name":"Main party-game key art","state":"NEEDED"},
+    {"assetId":"BOB-CARD-FRONT-FRAME-v01","name":"Reusable strain card front frame","state":"NEEDED"},
+    {"assetId":"BOB-CARD-BACK-v01","name":"Hidden-answer-safe card back","state":"NEEDED"},
+    {"assetId":"BOB-CARD-STRAIN-IMAGE-FRAME-v01","name":"Reusable strain image window/frame","state":"NEEDED"},
+    {"assetId":"BOB-STATE-TRUTH-v01","name":"Truth reveal badge/state treatment","state":"NEEDED"},
+    {"assetId":"BOB-STATE-BLUFF-v01","name":"Bluff reveal badge/state treatment","state":"NEEDED"},
+    {"assetId":"BOB-FX-REVEAL-v01","name":"Reveal burst/transition graphic","state":"NEEDED"},
+    {"assetId":"BOB-STATE-DOUBLE-HIT-v01","name":"Double-hit scoring badge/effect","state":"NEEDED"},
+    {"assetId":"BOB-ENV-LOBBY-v01","name":"Room/lobby background master","state":"NEEDED"}
+  ],
+  "acceptanceCriteria": [
+    "pre-reveal card art contains no truth/bluff answer cue",
+    "card frame leaves text and strain-name regions for runtime rendering",
+    "Truth and Bluff reveal states differ by shape/iconography as well as color",
+    "logo/key art remains readable on phone and Game Hub thumbnail crops",
+    "lobby background stays visually quiet behind room code, chat and player states",
+    "double-hit treatment reads instantly without covering score information",
+    "source masters land in the BOB-001 Drive folder before approval"
+  ],
+  "nextBatch": "BOB-002"
+}
