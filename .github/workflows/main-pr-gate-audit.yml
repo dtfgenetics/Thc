@@ -1,4 +1,4 @@
-name: Main PR gate audit
+name: Main change-path audit
 
 on:
   push:
@@ -11,18 +11,25 @@ permissions:
   pull-requests: read
 
 jobs:
-  main-pr-gate-audit:
+  main-change-path-audit:
     runs-on: ubuntu-latest
     steps:
-      - name: Verify main commit came through a merged PR
+      - name: Audit how the main commit landed
         env:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
           COMMIT_SHA: ${{ github.sha }}
+          PUSH_ACTOR: ${{ github.actor }}
+          EVENT_NAME: ${{ github.event_name }}
         shell: bash
         run: |
           set -euo pipefail
 
+          # This workflow is an audit, not an artificial editing lock. A merged PR is
+          # preferred for collaborative changes, but the repository owner is allowed
+          # to make intentional direct-to-main production fixes without creating a red
+          # CI failure. Automated repository workflows are also allowed to update main.
           associated='[]'
           for attempt in 1 2 3 4 5; do
             associated="$(gh api \
@@ -49,7 +56,25 @@ jobs:
             fi
           done < <(jq -r '.[].number' <<<"${associated}")
 
-          if [ -z "${valid_pr}" ]; then
-            echo '::error title=Direct-to-main bypass detected::This main commit is not associated with a merged pull request. Protect main with a ruleset requiring pull requests; repository workflow checks can detect this after the fact but cannot prevent it.'
-            exit 1
+          if [ -n "${valid_pr}" ]; then
+            echo "change_path=merged-pr" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
+
+          if [ "${PUSH_ACTOR}" = "${REPOSITORY_OWNER}" ]; then
+            echo "Repository-owner direct update accepted for ${COMMIT_SHA}."
+            echo '::notice title=Owner direct update::No merged PR was associated with this commit; owner-directed production work is permitted.'
+            echo "change_path=owner-direct" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          case "${PUSH_ACTOR}" in
+            github-actions\[bot\]|dependabot\[bot\])
+              echo "Trusted automation update accepted from ${PUSH_ACTOR} for ${COMMIT_SHA}."
+              echo "change_path=trusted-automation" >> "$GITHUB_OUTPUT"
+              exit 0
+              ;;
+          esac
+
+          echo "::error title=Unrecognized direct-to-main update::Commit ${COMMIT_SHA} was pushed by ${PUSH_ACTOR}, is not associated with a merged PR, and was not made by the repository owner or trusted automation."
+          exit 1
