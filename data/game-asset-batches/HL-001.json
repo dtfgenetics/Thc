@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "batchId": "HL-001",
+  "gameId": "high-life",
+  "title": "Three-Era Visual Master",
+  "status": "READY-FOR-AUTHORING",
+  "priority": "P0",
+  "quantity": 10,
+  "owningRepo": "dtfgenetics/Thc",
+  "sourceReference": {
+    "readme": "games/high-life/README.md",
+    "existingKeyArt": "games/high-life/assets/high-life-era-journey-v1.webp",
+    "lockedEras": ["Underground", "Medical", "Legal"],
+    "coreResources": ["reputation", "cash", "knowledge", "assets", "compliance", "brand", "operations", "genetics"],
+    "rule": "The same player identity must read as one person progressing through three eras; visual progression may change wardrobe/context/resources but must not become three unrelated characters."
+  },
+  "drive": {
+    "visualRootId": "1zLPjubw5rezTeafcTwvL1c5Tr3dKFwnh",
+    "sourceBatchFolderId": "1SLSpMkoPBHcdxQxjrxR5Xawn2LrSwgyY",
+    "briefFolderId": "11YIz0NOM7EFxti1KGLEOLmBeNkK-OuxU",
+    "approvedMastersFolderId": "1KGW4Wc0e4kRaUOCmcOSOD8JE_xC_rYYG",
+    "characterFolderId": "1qf7F8FPyXc1Ledi11eQ7-6ZOyL965pbg",
+    "environmentFolderId": "1DQIXm8RE-j6KFFKlGCG5qIdciLjxqd1w",
+    "uiFolderId": "1KN4-792OFFlwt3HW7rcw6-gM7mjNh0gD",
+    "runtimeExportsFolderId": "1L6G3MeQKMsO9AHlF5GKOcZYzXIN2CSaA"
+  },
+  "runtime": {
+    "root": "games/high-life",
+    "targetDirectory": "games/high-life/assets/v2",
+    "publicMirror": "site/public-route-patch/games/high-life/assets/v2",
+    "activeIntegration": false
+  },
+  "output": {
+    "sourceMasterMinimumPx": 2048,
+    "preferredSourceFormat": "PNG",
+    "runtimeFormat": "WebP",
+    "style": "original cannabis-industry life-path illustration with readable game-board clarity; independent visual identity; no imitation of existing life-path board games"
+  },
+  "assets": [
+    {"assetId":"HL-CHAR-PLAYER-UNDERGROUND-v01","name":"Core player identity — Underground era","state":"NEEDED"},
+    {"assetId":"HL-CHAR-PLAYER-MEDICAL-v01","name":"Same player identity — Medical era","state":"NEEDED"},
+    {"assetId":"HL-CHAR-PLAYER-LEGAL-v01","name":"Same player identity — Legal era","state":"NEEDED"},
+    {"assetId":"HL-ENV-UNDERGROUND-GROW-v01","name":"Underground era environment master","state":"NEEDED"},
+    {"assetId":"HL-ENV-MEDICAL-GROW-v01","name":"Medical era environment master","state":"NEEDED"},
+    {"assetId":"HL-ENV-LEGAL-COMMERCIAL-v01","name":"Legal era commercial environment master","state":"NEEDED"},
+    {"assetId":"HL-UI-OPPORTUNITY-RISK-GRAMMAR-v01","name":"Opportunity/risk visual grammar sheet","state":"NEEDED"},
+    {"assetId":"HL-UI-RESOURCE-ICON-SYSTEM-v01","name":"Eight-resource icon system sheet","state":"NEEDED"},
+    {"assetId":"HL-ART-ERA-TRANSITION-TRIPTYCH-v01","name":"Underground → Medical → Legal transition triptych","state":"NEEDED"},
+    {"assetId":"HL-ART-KEY-ART-v01","name":"High Life hero/key art using the approved three-era direction","state":"NEEDED"}
+  ],
+  "acceptanceCriteria": [
+    "player identity is visibly the same person across all three eras",
+    "each era has a distinct environment without stereotype-heavy or derivative board-game styling",
+    "resource icons remain legible at HUD/card size",
+    "opportunity and risk states are distinguishable without relying on color alone",
+    "era triptych can be reused for transitions, loading and marketing crops",
+    "visuals support the deterministic browser game instead of implying mechanics not present in the engine",
+    "source masters land in the HL-001 Drive folder before approval"
+  ],
+  "nextBatch": "HL-002"
+}
