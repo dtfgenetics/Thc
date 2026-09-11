@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "batchId": "HIQ-001",
+  "gameId": "high-iq",
+  "title": "Ten-Domain Visual Identity System",
+  "status": "READY-FOR-AUTHORING",
+  "priority": "P0",
+  "quantity": 10,
+  "owningRepo": "dtfgenetics/Thc",
+  "sourceReference": {
+    "manifest": "games/high-iq/data/manifest.json",
+    "datasetVersion": "2.4",
+    "categorySource": "categoryCounts",
+    "rule": "Use the exact ten canonical category names from the v2.4 dataset; icon meaning must remain educational and instantly distinguishable without turning the interface into decorative cannabis clip art."
+  },
+  "drive": {
+    "visualRootId": "1lAF3xNtpm7p_gbI-2b06lXuz9f2Omjqg",
+    "sourceBatchFolderId": "1AAe_n6E1hZ15-m6EIzQM0p6IJ2cIYHQn",
+    "briefFolderId": "1zkr-E4C2EU5128BSTvVV-_iK0hBJnjh-",
+    "approvedMastersFolderId": "1Y3iq4DTOtg7vqh93DocvDJBMKKLvg0HO",
+    "uiFolderId": "1OenFHb5MPVKpBVs5TDhpvXc8Iuau59rb",
+    "runtimeExportsFolderId": "1zCJDh1CdzDtb3WR8Cb1rSq8JomoYFb17"
+  },
+  "runtime": {
+    "root": "site/public-route-patch/games/high-iq",
+    "targetDirectory": "site/public-route-patch/games/high-iq/assets/domains",
+    "activeIntegration": false,
+    "dataBinding": "games/high-iq/data/manifest.json#categoryCounts"
+  },
+  "output": {
+    "sourceMasterMinimumPx": 1024,
+    "canvas": "square 1:1",
+    "background": "transparent",
+    "preferredSourceFormat": "PNG or SVG master",
+    "runtimeFormat": "SVG when clean/vector-safe, otherwise WebP/PNG",
+    "style": "premium science/trivia iconography with one coherent stroke/silhouette system; minimal THC branding; no baked category text"
+  },
+  "assets": [
+    {"assetId":"HIQ-DOMAIN-NUTRITION-PH-v01","category":"Nutrition & pH","state":"NEEDED"},
+    {"assetId":"HIQ-DOMAIN-ENVIRONMENT-CLIMATE-v01","category":"Environment & Climate","state":"NEEDED"},
+    {"assetId":"HIQ-DOMAIN-ROOT-ZONE-IRRIGATION-v01","category":"Root Zone & Irrigation","state":"NEEDED"},
+    {"assetId":"HIQ-DOMAIN-PLANT-BIOLOGY-v01","category":"Plant Biology","state":"NEEDED"},
+    {"assetId":"HIQ-DOMAIN-DIAGNOSTICS-v01","category":"Diagnostics","state":"NEEDED"},
+    {"assetId":"HIQ-DOMAIN-PHOTOBIOLOGY-v01","category":"Photobiology","state":"NEEDED"},
+    {"assetId":"HIQ-DOMAIN-PLANT-PHYSIOLOGY-v01","category":"Plant Physiology","state":"NEEDED"},
+    {"assetId":"HIQ-DOMAIN-IPM-v01","category":"Integrated Pest Management","state":"NEEDED"},
+    {"assetId":"HIQ-DOMAIN-GENETICS-BREEDING-v01","category":"Genetics & Breeding","state":"NEEDED"},
+    {"assetId":"HIQ-DOMAIN-HARVEST-POSTHARVEST-v01","category":"Harvest & Postharvest","state":"NEEDED"}
+  ],
+  "acceptanceCriteria": [
+    "all ten icons clearly belong to one visual system",
+    "each icon remains distinguishable at approximately 24–32 CSS pixels",
+    "icons do not rely on color alone for meaning",
+    "no category label is baked into the image",
+    "scientific meaning matches the canonical category name",
+    "icons remain visually quiet enough for question-focused gameplay",
+    "source masters are stored in the HIQ-001 Drive folder and approved exports map one-to-one to the runtime category names"
+  ],
+  "nextBatch": "HIQ-002"
+}
