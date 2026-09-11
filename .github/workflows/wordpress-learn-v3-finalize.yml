@@ -6,6 +6,8 @@ on:
     branches: [main]
     paths:
       - 'scripts/finalize-wordpress-learn-v3.mjs'
+      - 'scripts/lib/sitewide-header-template.mjs'
+      - 'scripts/rebuild-wordpress-shared-shell-v3.mjs'
       - '.github/workflows/wordpress-learn-v3-finalize.yml'
   workflow_run:
     workflows: ['Apply DTFSeeds Visual V3 After Canonical Production']
@@ -33,6 +35,7 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
       BACKUP_ROOT: /tmp/dtf-learn-v3-final
+      APPLY_SHARED_SHELL_V3: 'true'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -48,6 +51,8 @@ jobs:
           node --check scripts/polish-wordpress-visual-site-v3.mjs
           node --check scripts/fix-wordpress-visual-polish-v3-cascade.mjs
           node --check scripts/finalize-wordpress-learn-v3.mjs
+          node --check scripts/lib/sitewide-header-template.mjs
+          node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
       - name: Restore V3 visual ownership
         id: restore
         env:
@@ -72,6 +77,10 @@ jobs:
           set -euo pipefail
           node scripts/finalize-wordpress-learn-v3.mjs
           echo 'outcome=success' >> "$GITHUB_OUTPUT"
+      - name: Restore approved V5 shared navigation after Learn writers
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs
       - name: Verify visitor-facing Learn
         id: verify
         run: |
@@ -79,11 +88,16 @@ jobs:
           body="$RUNNER_TEMP/learn.html"
           ok=0
           for attempt in 1 2 3 4 5 6 7 8; do
-            curl -4 -fsSL --retry 2 --retry-delay 2 -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' "$WP_SITE_URL/learn/?dtf_learn_v3_final=${GITHUB_RUN_ID}-${attempt}" -o "$body"
-            if grep -Fqi 'dtf-visual-polish-v3' "$body" && grep -Fqi 'dtf-v3-learn-theme-title-suppression' "$body" && grep -Fqi '/learn/genetics-breeding/' "$body"; then ok=1; break; fi
+            curl -4 -fsSL --retry 2 --retry-delay 2 -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' "$WP_SITE_URL/learn/?dtf_learn_v3_final=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" -o "$body"
+            if grep -Fqi 'dtf-visual-polish-v3' "$body" && grep -Fqi 'dtf-v3-learn-theme-title-suppression' "$body" && grep -Fqi '/learn/genetics-breeding/' "$body" && grep -Fqi 'data-dtf-shell="header-v5"' "$body"; then ok=1; break; fi
             sleep 6
           done
-          [[ "$ok" -eq 1 ]] || { echo 'Final V3 Learn hierarchy is not visible.' >&2; exit 1; }
+          [[ "$ok" -eq 1 ]] || { echo 'Final V3 Learn hierarchy or approved V5 header is not visible.' >&2; exit 1; }
+          for required in '>Home</a>' '>Seeds</a>' '>Learn</a>' '>Courses</a>' '>Diagnostic</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
+            grep -Fqi -- "$required" "$body" || { echo "Approved navigation label missing: $required" >&2; exit 1; }
+          done
+          ! grep -Fqi -- '>Tools</a>' "$body" || { echo 'Stale Tools primary-navigation label remains.' >&2; exit 1; }
+          ! grep -Fqi -- '>Genetics</a>' "$body" || { echo 'Stale Genetics primary-navigation label remains.' >&2; exit 1; }
           echo 'outcome=success' >> "$GITHUB_OUTPUT"
       - name: Report V3 Learn finalization
         if: always()
@@ -105,5 +119,5 @@ jobs:
               `V3-owned title normalization: **${process.env.APPLY || 'not-completed'}**`,
               `Live verification: **${process.env.VERIFY || 'not-completed'}**`,
               '',
-              'This workflow restores the V3 Learn presentation before applying the single-H1 hierarchy fix, so a prior canonical publish cannot leave Learn in a half-polished state.'
+              'This workflow restores the V3 Learn presentation, then reapplies and verifies the approved V5 sitewide navigation so Learn finalization cannot regress the canonical header.'
             ].join('\n')});
