@@ -11,6 +11,8 @@ on:
       - site/public-route-patch/games/phenoquest/**
       - site/public-route-patch/games/crossword/source-revision.txt
       - scripts/validate-crossword-release-source.mjs
+      - scripts/lib/sitewide-header-template.mjs
+      - scripts/apply-sitewide-header.mjs
       - .github/workflows/validate-crossword-release-source.yml
       - .github/workflows/build-dtfseeds-public-suite.yml
   push:
@@ -30,6 +32,8 @@ on:
       - site/deployment/public-apps.json
       - data/public-navigation.json
       - scripts/validate-crossword-release-source.mjs
+      - scripts/lib/sitewide-header-template.mjs
+      - scripts/apply-sitewide-header.mjs
       - .github/workflows/validate-crossword-release-source.yml
       - .github/workflows/build-dtfseeds-public-suite.yml
 
@@ -425,6 +429,18 @@ jobs:
           }
           JSON
 
+      - name: Apply approved sitewide header to release HTML
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/apply-sitewide-header.mjs release
+          node scripts/apply-sitewide-header.mjs release --check
+          for file in release/games/index.html release/growlens/index.html release/thc-grow-doc/index.html release/tools/index.html release/projects/index.html; do
+            grep -Fq 'data-dtf-sitewide-header="approved-reference-v1"' "$file"
+            grep -Fq '>Diagnostic</a>' "$file"
+            grep -Fq 'dtf-sitewide-header-v5-script' "$file"
+          done
+
       - name: Verify release routes and base paths
         shell: bash
         run: |
@@ -584,6 +600,7 @@ jobs:
             echo '- /projects/'
             echo '- /puzzles/current.json'
             echo ''
+            echo 'All packaged HTML surfaces receive the approved DTF sitewide header during final release assembly.'
             echo 'Source revisions are stored in release/dtf-build.json.'
           } >> "$GITHUB_STEP_SUMMARY"
 
