@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "id": "seed-man-authored-level-overlays-v1",
+  "levels": [
+    {
+      "id": "1-2-sunny-glade",
+      "layout": {
+        "mode": "authored",
+        "revision": 1,
+        "requiredPickups": 20,
+        "spawn": {"x": 96, "y": 390},
+        "platforms": [
+          {"id":"sg-ground-a","x":0,"y":480,"width":680,"height":60,"surface":"grass"},
+          {"id":"sg-ground-b","x":1120,"y":480,"width":540,"height":60,"surface":"grass"},
+          {"id":"sg-ground-c","x":1960,"y":480,"width":640,"height":60,"surface":"grass"},
+          {"id":"sg-ground-d","x":2880,"y":480,"width":680,"height":60,"surface":"grass"},
+          {"id":"sg-ground-e","x":3900,"y":480,"width":680,"height":60,"surface":"grass"},
+          {"id":"sg-ground-f","x":4920,"y":480,"width":660,"height":60,"surface":"grass"},
+          {"id":"sg-ground-g","x":5920,"y":480,"width":880,"height":60,"surface":"grass"},
+          {"id":"sg-canopy-a","x":1260,"y":350,"width":220,"height":24,"surface":"wood"},
+          {"id":"sg-canopy-b","x":2140,"y":320,"width":210,"height":24,"surface":"wood"},
+          {"id":"sg-canopy-c","x":3060,"y":355,"width":220,"height":24,"surface":"wood"},
+          {"id":"sg-canopy-d","x":4100,"y":315,"width":230,"height":24,"surface":"wood"},
+          {"id":"sg-canopy-e","x":5140,"y":345,"width":220,"height":24,"surface":"wood"},
+          {"id":"sg-canopy-f","x":6150,"y":310,"width":230,"height":24,"surface":"wood"}
+        ],
+        "movingPlatforms": [
+          {"id":"sg-mover-a","x":720,"y":392,"width":180,"height":24,"surface":"wood","motion":{"toX":1010,"toY":392,"periodMs":3200,"phase":0}},
+          {"id":"sg-mover-b","x":1700,"y":410,"width":170,"height":24,"surface":"wood","motion":{"toX":1700,"toY":285,"periodMs":3000,"phase":0.25}},
+          {"id":"sg-mover-c","x":2635,"y":385,"width":180,"height":24,"surface":"wood","motion":{"toX":2820,"toY":385,"periodMs":2600,"phase":0.5}},
+          {"id":"sg-mover-d","x":3610,"y":390,"width":185,"height":24,"surface":"wood","motion":{"toX":3820,"toY":300,"periodMs":3400,"phase":0.15}},
+          {"id":"sg-mover-e","x":4620,"y":385,"width":180,"height":24,"surface":"wood","motion":{"toX":4850,"toY":385,"periodMs":2800,"phase":0.65}},
+          {"id":"sg-mover-f","x":5650,"y":390,"width":180,"height":24,"surface":"wood","motion":{"toX":5860,"toY":300,"periodMs":3300,"phase":0.4}}
+        ],
+        "hazards": [
+          {"id":"sg-slime-a","x":680,"y":500,"width":440,"height":40,"type":"toxic-slime"},
+          {"id":"sg-spikes-a","x":1660,"y":500,"width":300,"height":40,"type":"spikes"},
+          {"id":"sg-slime-b","x":2600,"y":500,"width":280,"height":40,"type":"toxic-slime"},
+          {"id":"sg-spikes-b","x":3560,"y":500,"width":340,"height":40,"type":"spikes"},
+          {"id":"sg-slime-c","x":4580,"y":500,"width":340,"height":40,"type":"toxic-slime"},
+          {"id":"sg-spikes-c","x":5580,"y":500,"width":340,"height":40,"type":"spikes"}
+        ],
+        "pickups": [
+          {"id":"seed-2-01","x":220,"y":430,"width":22,"height":22},
+          {"id":"seed-2-02","x":540,"y":430,"width":22,"height":22},
+          {"id":"seed-2-03","x":1190,"y":430,"width":22,"height":22},
+          {"id":"seed-2-04","x":1335,"y":308,"width":22,"height":22},
+          {"id":"seed-2-05","x":1530,"y":430,"width":22,"height":22},
+          {"id":"seed-2-06","x":2040,"y":430,"width":22,"height":22},
+          {"id":"seed-2-07","x":2215,"y":278,"width":22,"height":22},
+          {"id":"seed-2-08","x":2480,"y":430,"width":22,"height":22},
+          {"id":"seed-2-09","x":2980,"y":430,"width":22,"height":22},
+          {"id":"seed-2-10","x":3140,"y":313,"width":22,"height":22},
+          {"id":"seed-2-11","x":3440,"y":430,"width":22,"height":22},
+          {"id":"seed-2-12","x":4000,"y":430,"width":22,"height":22},
+          {"id":"seed-2-13","x":4190,"y":273,"width":22,"height":22},
+          {"id":"seed-2-14","x":4470,"y":430,"width":22,"height":22},
+          {"id":"seed-2-15","x":5000,"y":430,"width":22,"height":22},
+          {"id":"seed-2-16","x":5220,"y":303,"width":22,"height":22},
+          {"id":"seed-2-17","x":5470,"y":430,"width":22,"height":22},
+          {"id":"seed-2-18","x":6030,"y":430,"width":22,"height":22},
+          {"id":"seed-2-19","x":6230,"y":268,"width":22,"height":22},
+          {"id":"seed-2-20","x":6600,"y":430,"width":22,"height":22}
+        ],
+        "checkpoints": [
+          {"id":"checkpoint-2-1","x":2380,"y":420,"width":50,"height":60,"respawnX":2290,"respawnY":400},
+          {"id":"checkpoint-2-2","x":5140,"y":420,"width":50,"height":60,"respawnX":5040,"respawnY":400}
+        ],
+        "enemySpawns": [
+          {"id":"sg-sprout-a","type":"sproutling","x":360,"minX":180,"maxX":620},
+          {"id":"sg-root-a","type":"root-crawler","x":1300,"minX":1180,"maxX":1580},
+          {"id":"sg-spore-a","type":"toxic-spore","x":2180,"minX":2040,"maxX":2500},
+          {"id":"sg-sprout-b","type":"sproutling","x":3100,"minX":2960,"maxX":3480},
+          {"id":"sg-root-b","type":"root-crawler","x":4140,"minX":3980,"maxX":4500},
+          {"id":"sg-spore-b","type":"toxic-spore","x":5200,"minX":5000,"maxX":5480},
+          {"id":"sg-sprout-c","type":"sproutling","x":6250,"minX":6020,"maxX":6620}
+        ],
+        "phenotypeCarrierSpawns": [
+          {"id":"electric-carrier-glade","form":"electric","x":5340,"minX":5060,"maxX":5520}
+        ],
+        "encounterZones": [
+          {"id":"sg-moving-intro","startX":520,"endX":1180,"purpose":"moving-platform-intro"},
+          {"id":"sg-vertical-mover","startX":1540,"endX":2020,"purpose":"vertical-platform"},
+          {"id":"sg-mixed-crossing","startX":3400,"endX":3940,"purpose":"diagonal-platform"},
+          {"id":"sg-electric-carrier","startX":4920,"endX":5580,"purpose":"electric-carrier"},
+          {"id":"sg-final-crossing","startX":5580,"endX":6740,"purpose":"moving-platform-mastery"}
+        ],
+        "tutorials": [
+          {"id":"moving-platform","x":560,"action":"moving-platform","text":"Moving platforms are solid terrain. Ride their motion and jump near the turn-around points."},
+          {"id":"vertical-platform","x":1580,"action":"moving-platform","text":"Vertical movers carry Seed Man too. Stay centered before jumping off."},
+          {"id":"electric","x":4940,"action":"phenotype","text":"This glowing carrier drops Electric phenotype power. Defeat it and use PHENO for chain lightning."}
+        ],
+        "finish":{"x":6660,"y":390,"width":50,"height":90}
+      }
+    }
+  ]
+}
