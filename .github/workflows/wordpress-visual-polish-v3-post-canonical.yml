@@ -23,6 +23,7 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
       BACKUP_ROOT: /tmp/dtf-v3-post-canonical
+      APPLY_SHARED_SHELL_V3: 'true'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,6 +38,8 @@ jobs:
           test -n "${WP_API_PASSWORD:-}"
           node --check scripts/polish-wordpress-visual-site-v3.mjs
           node --check scripts/fix-wordpress-visual-polish-v3-cascade.mjs
+          node --check scripts/lib/sitewide-header-template.mjs
+          node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
       - name: Apply V3 after canonical WordPress publication
         id: apply
         env:
@@ -51,7 +54,11 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/fix-wordpress-visual-polish-v3-cascade.mjs
-      - name: Verify live V3 presentation
+      - name: Restore approved V5 shared navigation
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs
+      - name: Verify live V3 presentation and V5 navigation
         id: verify
         run: |
           set -euo pipefail
@@ -61,16 +68,19 @@ jobs:
             curl -4 -fsSL --retry 2 --retry-delay 2 \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
               -H 'Pragma: no-cache' \
-              "$WP_SITE_URL/?dtf_v3_post=${GITHUB_RUN_ID}-${attempt}" -o "$body"
-            if grep -Fqi 'dtf-visual-polish-v3' "$body" && grep -Fqi 'dtf-v3-spotlight' "$body"; then ok=1; break; fi
+              "$WP_SITE_URL/?dtf_v3_post=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" -o "$body"
+            if grep -Fqi 'dtf-visual-polish-v3' "$body" && grep -Fqi 'dtf-v3-spotlight' "$body" && grep -Fqi 'data-dtf-shell="header-v5"' "$body"; then ok=1; break; fi
             sleep 7
           done
-          [[ "$ok" -eq 1 ]] || { echo 'Required V3 Home visual layer is not visible.' >&2; exit 1; }
-          grep -Fqi 'dtf-shell-header' "$body"
-          grep -Fqi 'dtf-shell-footer' "$body"
-          grep -Fqi 'DTF Genetics cannabis leaf' "$body"
+          [[ "$ok" -eq 1 ]] || { echo 'Required V3 Home visual layer or approved V5 header is not visible.' >&2; exit 1; }
+          grep -Fqi 'dtf-footer-v3' "$body"
           grep -Fqi '/games/' "$body"
           grep -Fqi '/tools/' "$body"
+          for required in '>Home</a>' '>Seeds</a>' '>Learn</a>' '>Courses</a>' '>Diagnostic</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
+            grep -Fqi -- "$required" "$body" || { echo "Approved navigation label missing: $required" >&2; exit 1; }
+          done
+          ! grep -Fqi -- '>Tools</a>' "$body" || { echo 'Stale Tools primary-navigation label remains.' >&2; exit 1; }
+          ! grep -Fqi -- '>Genetics</a>' "$body" || { echo 'Stale Genetics primary-navigation label remains.' >&2; exit 1; }
       - name: Upload V3 rollback package
         if: always()
         uses: actions/upload-artifact@v4
@@ -95,5 +105,5 @@ jobs:
             echo "- Final cascade ordering: **${CASCADE:-not-run}**"
             echo "- Live Home visual verification: **${VERIFY:-not-run}**"
             echo
-            echo 'Legacy V3 is manual-only and no longer owns Learn. The serialized Learning Experience V3 workflow is the sole Learn writer and applies the connected learning map before success.'
+            echo 'Legacy V3 is manual-only. After it runs, the approved V5 shared navigation is restored and verified so visual polish cannot reintroduce the old Genetics / Tools header.'
           } >> "$GITHUB_STEP_SUMMARY"
