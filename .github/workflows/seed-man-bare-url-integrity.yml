@@ -13,7 +13,7 @@ jobs:
   bare-url:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
       - name: Verify normal visitor URL and canonical assets
         shell: bash
@@ -21,26 +21,74 @@ jobs:
           set -euo pipefail
           base='https://dtfseeds.com/games/seed-man-platformer/'
           tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
-          status="$(curl -sS --connect-timeout 10 --max-time 35 -o "$tmp/index.html" -w '%{http_code}' "$base")"
-          [[ "$status" == 200 ]] || { echo "bare route HTTP $status" >&2; exit 1; }
-          test -s "$tmp/index.html"
-          for rel in data/campaign.json data/levels-20-v1.json player-state-v20.js campaign-v20-runtime.js campaign-ui-v20.js v20-enemy-runtime.js combat-browser-v2.js enemy-attacks-browser-v2.js approved-art-core-v1.js approved-art-runtime-v1.js seed-man-production-art.js; do
-            curl -fsS --retry 5 --retry-delay 4 -H 'Cache-Control: no-cache, no-store, max-age=0' "${base}${rel}?bare=${GITHUB_RUN_ID}" -o "$tmp/$(basename "$rel")"
+          body="$tmp/index.html"
+          headers="$tmp/headers.txt"
+
+          check_contains() {
+            local file="$1"
+            local needle="$2"
+            if ! grep -Fq "$needle" "$file"; then
+              echo "Missing expected marker in $(basename "$file"): $needle" >&2
+              return 1
+            fi
+          }
+
+          check_not_contains_re() {
+            local file="$1"
+            local pattern="$2"
+            if grep -Eq "$pattern" "$file"; then
+              echo "Found retired marker in $(basename "$file"): $pattern" >&2
+              return 1
+            fi
+          }
+
+          fetch_assets() {
+            local bust="$1"
+            for rel in data/campaign.json data/levels-20-v1.json player-state-v20.js campaign-v20-runtime.js campaign-ui-v20.js v20-enemy-runtime.js combat-browser-v2.js enemy-attacks-browser-v2.js approved-art-core-v1.js approved-art-runtime-v1.js seed-man-production-art.js; do
+              curl -fsS --retry 5 --retry-delay 4 -H 'Cache-Control: no-cache, no-store, max-age=0' "${base}${rel}?bare=${bust}" -o "$tmp/$(basename "$rel")" || return 1
+            done
+          }
+
+          verify_downloaded_contract() {
+            check_contains "$body" 'data-seed-ui-release="20260909-v20-runtime-v5"'
+            check_contains "$body" 'data-seed-man-approved-art="approved-showcase-2026-09-08"'
+            check_contains "$body" 'player-state-v20.js?v=20260909-v20-runtime-v5'
+            check_contains "$body" 'combat-browser-v2.js?v=20260909-v20-runtime-v5'
+            check_not_contains_re "$body" 'Original browser vertical slice|20260830-r4'
+            check_contains "$tmp/campaign.json" '"levelCount": 20'
+            check_contains "$tmp/campaign.json" '"finalBoss": "blight-king"'
+            check_contains "$tmp/player-state-v20.js" 'seed-man-player-state-v20'
+            check_contains "$tmp/campaign-v20-runtime.js" 'seed-man-campaign-v20-runtime-v3'
+            check_contains "$tmp/campaign-v20-runtime.js" 'approvedWorldBackgrounds:true'
+            check_contains "$tmp/campaign-v20-runtime.js" "phenotypeForms:['plant','fire','electric','ice']"
+            check_contains "$tmp/campaign-ui-v20.js" 'seed-man-campaign-ui-v20'
+            check_contains "$tmp/v20-enemy-runtime.js" 'seed-man-v20-enemy-runtime-v2'
+            check_contains "$tmp/combat-browser-v2.js" 'seed-man-combat-browser-v2'
+            check_contains "$tmp/enemy-attacks-browser-v2.js" 'seed-man-enemy-attacks-browser-v2'
+            check_contains "$tmp/approved-art-core-v1.js" 'seed-man-approved-art-core-v3'
+            check_contains "$tmp/approved-art-core-v1.js" 'world.greenhouse-valley.background'
+            check_contains "$tmp/approved-art-core-v1.js" 'world.eco-city.background'
+            check_not_contains_re "$tmp/approved-art-runtime-v1.js" 'solar-flare|static-haze|frost-resin|shield-bounce'
+            check_contains "$tmp/seed-man-production-art.js" 'approved-showcase-2026-09-08'
+            check_contains "$tmp/seed-man-production-art.js" 'green-armored-plant-hero'
+          }
+
+          ok=0
+          for attempt in {1..12}; do
+            status="$(curl -sS --connect-timeout 10 --max-time 35 --location --dump-header "$headers" -o "$body" -w '%{http_code}' "$base" || true)"
+            if [[ "$status" == 200 ]] && fetch_assets "${GITHUB_RUN_ID:-manual}-${attempt}" && verify_downloaded_contract; then
+              ok=1
+              break
+            fi
+            echo "Seed Man bare URL not current yet on attempt $attempt (HTTP $status)."
+            grep -E 'dtf-seed-man-release|data-seed-ui-release|data-seed-man-approved-art|player-state-v20|combat-browser-v2|Original browser vertical slice|20260830-r4' "$body" || true
+            sleep $((attempt * 3))
           done
-          grep -Fq '"levelCount": 20' "$tmp/campaign.json"
-          grep -Fq '"finalBoss": "blight-king"' "$tmp/campaign.json"
-          grep -Fq 'seed-man-player-state-v20' "$tmp/player-state-v20.js"
-          grep -Fq 'seed-man-campaign-v20-runtime-v3' "$tmp/campaign-v20-runtime.js"
-          grep -Fq 'approvedWorldBackgrounds:true' "$tmp/campaign-v20-runtime.js"
-          grep -Fq "phenotypeForms:['plant','fire','electric','ice']" "$tmp/campaign-v20-runtime.js"
-          grep -Fq 'seed-man-campaign-ui-v20' "$tmp/campaign-ui-v20.js"
-          grep -Fq 'seed-man-v20-enemy-runtime-v2' "$tmp/v20-enemy-runtime.js"
-          grep -Fq 'seed-man-combat-browser-v2' "$tmp/combat-browser-v2.js"
-          grep -Fq 'seed-man-enemy-attacks-browser-v2' "$tmp/enemy-attacks-browser-v2.js"
-          grep -Fq 'seed-man-approved-art-core-v3' "$tmp/approved-art-core-v1.js"
-          grep -Fq 'world.greenhouse-valley.background' "$tmp/approved-art-core-v1.js"
-          grep -Fq 'world.eco-city.background' "$tmp/approved-art-core-v1.js"
-          ! grep -Eq 'solar-flare|static-haze|frost-resin|shield-bounce' "$tmp/approved-art-runtime-v1.js"
-          grep -Fq 'approved-showcase-2026-09-08' "$tmp/seed-man-production-art.js"
-          grep -Fq 'green-armored-plant-hero' "$tmp/seed-man-production-art.js"
+
+          echo '--- response headers ---'
+          cat "$headers" || true
+          if [[ "$ok" != 1 ]]; then
+            echo 'Seed Man bare URL did not converge on canonical player-state v20, campaign v3, combat v2, and approved world art.' >&2
+            exit 1
+          fi
           echo 'Bare Seed Man URL serves canonical player-state v20, campaign v3, combat v2, and approved world art.'
