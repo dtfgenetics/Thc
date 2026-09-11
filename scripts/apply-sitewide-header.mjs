@@ -29,7 +29,7 @@ function occurrences(source, needle) {
 function verifyDocument(source, rel) {
   if (!/<html\b/i.test(source) || !/<body\b/i.test(source)) return { skipped: true };
   const expected = [
-    ['data-dtf-shell="header-v5"', 'header'],
+    ['data-dtf-sitewide-header="approved-reference-v1"', 'header'],
     ['id="dtf-sitewide-header-v5-style"', 'style'],
     ['id="dtf-sitewide-header-v5-script"', 'script'],
   ];
