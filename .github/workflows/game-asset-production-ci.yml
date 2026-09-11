@@ -8,7 +8,9 @@ on:
       - 'data/game-asset-batches/**'
       - '.agents/skills/dtf-game-asset-production/SKILL.md'
       - 'scripts/validate-game-asset-production.mjs'
+      - 'scripts/validate-high-iq-domain-icons.mjs'
       - 'scripts/recover-approved-game-asset.mjs'
+      - 'site/public-route-patch/games/high-iq/assets/domains/**'
       - '.github/workflows/game-asset-production-ci.yml'
   push:
     branches:
@@ -19,7 +21,9 @@ on:
       - 'data/game-asset-batches/**'
       - '.agents/skills/dtf-game-asset-production/SKILL.md'
       - 'scripts/validate-game-asset-production.mjs'
+      - 'scripts/validate-high-iq-domain-icons.mjs'
       - 'scripts/recover-approved-game-asset.mjs'
+      - 'site/public-route-patch/games/high-iq/assets/domains/**'
       - '.github/workflows/game-asset-production-ci.yml'
 
 permissions:
@@ -40,3 +44,6 @@ jobs:
 
       - name: Validate game asset production control files
         run: node scripts/validate-game-asset-production.mjs
+
+      - name: Validate High IQ domain icons
+        run: node scripts/validate-high-iq-domain-icons.mjs
