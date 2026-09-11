@@ -4,14 +4,14 @@ on:
   pull_request:
     paths:
       - site/wordpress/education/learning-hub-course1.json
-      - scripts/publish-wordpress-learning-hub-course1.mjs
+      - scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - .github/workflows/wordpress-learning-hub-course1-production.yml
   push:
     branches:
       - main
     paths:
       - site/wordpress/education/learning-hub-course1.json
-      - scripts/publish-wordpress-learning-hub-course1.mjs
+      - scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - .github/workflows/wordpress-learning-hub-course1-production.yml
   workflow_dispatch:
 
@@ -32,8 +32,8 @@ jobs:
           node-version: 20
       - name: Validate publisher syntax and public manifest
         run: |
-          node --check scripts/publish-wordpress-learning-hub-course1.mjs
-          node scripts/publish-wordpress-learning-hub-course1.mjs --validate-only
+          node --check scripts/publish-wordpress-learning-hub-course1-v2.mjs
+          node scripts/publish-wordpress-learning-hub-course1-v2.mjs --validate-only
 
   publish:
     if: github.event_name != 'pull_request'
@@ -58,7 +58,7 @@ jobs:
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
       - name: Publish final Course 1 page tree
-        run: node scripts/publish-wordpress-learning-hub-course1.mjs
+        run: node scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - name: Upload rollback metadata
         if: always()
         uses: actions/upload-artifact@v4
