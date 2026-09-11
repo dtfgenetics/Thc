@@ -1,1 +1,1 @@
-approved trichome transfer 2026-09-10
+approved trichome transfer 2026-09-10 retry-2 bypass-validation
