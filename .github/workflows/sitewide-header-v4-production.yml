@@ -1,0 +1,125 @@
+name: Publish Approved Sitewide Header V4
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/rebuild-wordpress-shared-shell-v3.mjs
+      - scripts/publish-wordpress-approved-design-reference.mjs
+      - site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg
+      - site/wordpress/assets/design-references/approved-sitewide-header-reference.json
+      - docs/design/APPROVED_SITEWIDE_HEADER_REFERENCE.md
+      - .github/workflows/sitewide-header-v4-production.yml
+  pull_request:
+    paths:
+      - scripts/rebuild-wordpress-shared-shell-v3.mjs
+      - scripts/publish-wordpress-approved-design-reference.mjs
+      - site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg
+      - site/wordpress/assets/design-references/approved-sitewide-header-reference.json
+      - docs/design/APPROVED_SITEWIDE_HEADER_REFERENCE.md
+      - .github/workflows/sitewide-header-v4-production.yml
+
+permissions:
+  contents: read
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate approved header release package
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
+          node --check scripts/publish-wordpress-approved-design-reference.mjs
+          test -s site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg
+          test -s site/wordpress/assets/design-references/approved-sitewide-header-reference.json
+          grep -Fq 'data-dtf-shell="header-v4"' scripts/rebuild-wordpress-shared-shell-v3.mjs
+          grep -Fq '<a href="/courses/">Courses</a>' scripts/rebuild-wordpress-shared-shell-v3.mjs
+          node -e "const fs=require('fs');const x=JSON.parse(fs.readFileSync('site/wordpress/assets/design-references/approved-sitewide-header-reference.json','utf8'));if(x.status!=='approved'||!x.googleDrive?.fileId||!x.repository?.path||!x.wordpress?.mediaSlug)process.exit(1);console.log(x.id)"
+
+  publish:
+    if: ${{ github.event_name != 'pull_request' }}
+    needs: validate
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_SHARED_SHELL_V3: 'true'
+      APPLY_APPROVED_DESIGN_REFERENCE: 'true'
+      BACKUP_ROOT: /tmp/dtf-approved-header-v4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Require WordPress credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured}"
+      - name: Store approved design reference in WordPress Media Library
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/publish-wordpress-approved-design-reference.mjs | tee /tmp/dtf-approved-design-reference.json
+      - name: Publish approved sitewide shared header
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs | tee /tmp/dtf-approved-header-v4.json
+      - name: Verify approved header on representative public routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          for route in / /learn/ /courses/ /shop/; do
+            out="$RUNNER_TEMP/header-v4-$(echo "$route" | tr '/' '_' | tr -cd '[:alnum:]_').html"
+            ok=0
+            for attempt in 1 2 3 4 5 6; do
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                --header 'Cache-Control: no-cache, no-store, max-age=0' \
+                --header 'Pragma: no-cache' \
+                "${WP_SITE_URL}${route}?dtf_header_v4=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" --output "$out"
+              if grep -Fq 'data-dtf-shell="header-v4"' "$out" && \
+                 grep -Fq 'href="/courses/"' "$out" && \
+                 grep -Fq 'dtf-shared-shell-v4-script' "$out"; then
+                ok=1
+                break
+              fi
+              sleep 4
+            done
+            if [[ "$ok" -ne 1 ]]; then
+              echo "Approved header V4 was not visitor-facing on ${route}" >&2
+              grep -Eo 'data-dtf-shell="header-v[0-9]+"|href="/[^"]+"' "$out" | head -n 40 >&2 || true
+              exit 1
+            fi
+          done
+      - name: Verify WordPress design-reference media
+        shell: bash
+        env:
+          APPLY_APPROVED_DESIGN_REFERENCE: 'false'
+        run: |
+          set -euo pipefail
+          node scripts/publish-wordpress-approved-design-reference.mjs | tee /tmp/dtf-approved-design-reference-readback.json
+      - name: Upload deployment evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: approved-sitewide-header-v4-${{ github.run_id }}
+          path: |
+            /tmp/dtf-approved-design-reference.json
+            /tmp/dtf-approved-design-reference-readback.json
+            /tmp/dtf-approved-header-v4.json
+          if-no-files-found: ignore
+          retention-days: 30
