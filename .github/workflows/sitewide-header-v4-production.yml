@@ -23,6 +23,15 @@ on:
       - site/wordpress/assets/design-references/approved-sitewide-header-reference.json
       - docs/design/APPROVED_SITEWIDE_HEADER_REFERENCE.md
       - .github/workflows/sitewide-header-v4-production.yml
+  workflow_run:
+    workflows:
+      - Rebuild DTFSeeds Visual Site On Command
+      - Polish DTFSeeds Visual System V3
+      - Finalize DTFSeeds Learn V3
+      - Apply DTFSeeds Visual V3 After Canonical Production
+      - Publish Learning Hub Course 1
+      - Build DTFSeeds Public Suite
+    types: [completed]
 
 permissions:
   contents: read
@@ -30,11 +39,18 @@ permissions:
 env:
   WP_SITE_URL: https://dtfseeds.com
 
+concurrency:
+  group: dtfseeds-approved-sitewide-header-v5
+  cancel-in-progress: false
+
 jobs:
   validate:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -64,7 +80,7 @@ jobs:
           test "$count" -gt 10
 
   publish:
-    if: ${{ github.event_name != 'pull_request' }}
+    if: ${{ github.event_name != 'pull_request' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') }}
     needs: validate
     runs-on: ubuntu-latest
     environment: production
@@ -76,6 +92,8 @@ jobs:
       BACKUP_ROOT: /tmp/dtf-approved-header-v5
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - uses: actions/setup-node@v4
         with:
           node-version: 22
