@@ -15,26 +15,42 @@ const must=(v,m)=>{if(!v)throw new Error(m)};
 
 must(user&&pass,'WordPress credentials are required.');
 const bytes=await readFile(assetPath);
-must(bytes.length>10_000,'Approved design reference asset is unexpectedly small.');
+must(bytes.length>10_000,`Approved design reference asset is unexpectedly small (${bytes.length} bytes).`);
+must(bytes[0]===0xff&&bytes[1]===0xd8,'Approved design reference is not a valid JPEG byte stream.');
 
 async function request(path,options={}){
   const response=await fetch(`${site}${path}`,{
     ...options,
     signal:AbortSignal.timeout(60_000),
-    headers:{Authorization:auth,'User-Agent':'DTF-Approved-Design-Reference/1.0',...(options.headers||{})}
+    headers:{Authorization:auth,'User-Agent':'DTF-Approved-Design-Reference/2.0',...(options.headers||{})}
   });
-  const text=await response.text();let body=text;try{body=text?JSON.parse(text):null}catch{}
-  if(!response.ok)throw new Error(`${options.method||'GET'} ${path} failed (${response.status}): ${typeof body==='string'?body.slice(0,500):JSON.stringify(body).slice(0,500)}`);
+  const text=await response.text();
+  let body=text;
+  try{body=text?JSON.parse(text):null}catch{}
+  if(!response.ok){
+    const detail=typeof body==='string'?body.slice(0,1000):JSON.stringify(body).slice(0,1000);
+    throw new Error(`${options.method||'GET'} ${path} failed (${response.status}): ${detail}`);
+  }
   return body;
 }
 
-let media=await request(`/wp-json/wp/v2/media?slug=${encodeURIComponent(slug)}&context=edit&per_page=10`);
-let item=Array.isArray(media)?media[0]:null;
+async function findExisting(){
+  const bySlug=await request(`/wp-json/wp/v2/media?slug=${encodeURIComponent(slug)}&per_page=10`);
+  if(Array.isArray(bySlug)&&bySlug[0]) return bySlug[0];
+  const bySearch=await request(`/wp-json/wp/v2/media?search=${encodeURIComponent('DTF Course Header Approved Reference v1')}&per_page=20`);
+  return Array.isArray(bySearch)?bySearch.find(x=>x.slug===slug||String(x.title?.rendered||'').includes('Approved Sitewide Design Reference'))||null:null;
+}
+
+let item=await findExisting();
 if(!item&&apply){
+  const uploadBody=new Blob([bytes],{type:'image/jpeg'});
   item=await request('/wp-json/wp/v2/media',{
     method:'POST',
-    body:bytes,
-    headers:{'Content-Type':'image/jpeg','Content-Disposition':`attachment; filename="${filename}"`}
+    body:uploadBody,
+    headers:{
+      'Content-Type':'image/jpeg',
+      'Content-Disposition':`attachment; filename="${filename}"`
+    }
   });
 }
 must(item?.id&&item?.source_url,'Approved design reference is not present in WordPress media.');
