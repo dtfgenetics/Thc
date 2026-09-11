@@ -1,8 +1,8 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "dtf-approved-sitewide-header-reference-v1",
   "status": "approved",
-  "purpose": "Canonical visual reference for the DTF Genetics sitewide shared header and structured course-interface direction.",
+  "purpose": "Canonical visual and information-architecture reference for the DTF Genetics sitewide shared header and structured course-interface direction.",
   "usage": "Use as a design specification and QA reference. Do not rasterize the screenshot into live navigation; the production header remains semantic HTML/CSS.",
   "repository": {
     "repo": "dtfgenetics/Thc",
@@ -17,14 +17,38 @@
     "mediaSlug": "dtf-course-header-approved-reference-v1",
     "title": "DTF Course Header — Approved Sitewide Design Reference v1"
   },
+  "canonicalNavigation": [
+    { "label": "Home", "href": "/" },
+    { "label": "Seeds", "href": "/seeds/" },
+    { "label": "Learn", "href": "/learn/" },
+    { "label": "Courses", "href": "/courses/" },
+    { "label": "Diagnostic", "href": "/tools/", "routeOwner": "diagnostic/tools" },
+    { "label": "Games", "href": "/games/" },
+    { "label": "Community", "href": "/community/" },
+    { "label": "Shop", "href": "/shop/" }
+  ],
+  "utilityActions": [
+    "Search",
+    "Account",
+    "Cart",
+    "Teaching Healthy Cultivation"
+  ],
+  "responsiveRequirements": {
+    "desktop": "Show all eight canonical destinations in one row when there is sufficient width.",
+    "tablet": "Preserve brand and utility icons; collapse primary destinations into the menu before the row becomes cramped.",
+    "mobile": "Preserve brand, Search, Account, Cart, and Menu. Expanded navigation retains all eight canonical labels and order.",
+    "touchTargetMinimumPx": 44
+  },
   "approvedTraits": [
     "dark evergreen full-width header",
     "DTF Genetics brand at left",
-    "compact essential primary navigation",
-    "Courses as a first-class navigation destination",
+    "exact primary order: Home, Seeds, Learn, Courses, Diagnostic, Games, Community, Shop",
+    "Courses remains distinct from Learn",
+    "Diagnostic is the visitor-facing label for the tools and diagnostic route group",
     "green filled active-navigation state",
     "search, account, and cart utilities at right",
-    "compact responsive mobile navigation",
+    "Teaching Healthy Cultivation identity at right when space permits",
+    "compact responsive mobile navigation without removing utility access",
     "structured professional learning interface beneath the header"
   ]
 }
