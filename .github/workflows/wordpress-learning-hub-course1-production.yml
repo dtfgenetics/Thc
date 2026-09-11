@@ -1,0 +1,69 @@
+name: Publish Learning Hub Course 1
+
+on:
+  pull_request:
+    paths:
+      - site/wordpress/education/learning-hub-course1.json
+      - scripts/publish-wordpress-learning-hub-course1-v2.mjs
+      - .github/workflows/wordpress-learning-hub-course1-production.yml
+  push:
+    branches:
+      - main
+    paths:
+      - site/wordpress/education/learning-hub-course1.json
+      - scripts/publish-wordpress-learning-hub-course1-v2.mjs
+      - .github/workflows/wordpress-learning-hub-course1-production.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-learning-hub-course1
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validate publisher syntax and public manifest
+        run: |
+          node --check scripts/publish-wordpress-learning-hub-course1-v2.mjs
+          node scripts/publish-wordpress-learning-hub-course1-v2.mjs --validate-only
+
+  publish:
+    if: github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_LEARNING_HUB_COURSE1: 'true'
+      BACKUP_ROOT: /tmp/dtf-learning-hub-course1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Require WordPress credentials
+        shell: bash
+        run: |
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+      - name: Publish final Course 1 page tree
+        run: node scripts/publish-wordpress-learning-hub-course1-v2.mjs
+      - name: Upload rollback metadata
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: learning-hub-course1-backup-${{ github.run_id }}
+          path: /tmp/dtf-learning-hub-course1
+          if-no-files-found: warn
+          retention-days: 30
