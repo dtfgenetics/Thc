@@ -6,6 +6,8 @@ on:
     branches: [main]
     paths:
       - 'scripts/polish-wordpress-visual-site-v3.mjs'
+      - 'scripts/lib/sitewide-header-template.mjs'
+      - 'scripts/rebuild-wordpress-shared-shell-v3.mjs'
       - '.github/workflows/wordpress-visual-polish-v3.yml'
   workflow_run:
     workflows:
@@ -37,6 +39,7 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
       BACKUP_ROOT: /tmp/dtf-visual-polish-v3
+      APPLY_SHARED_SHELL_V3: 'true'
 
     steps:
       - name: Checkout production source
@@ -56,6 +59,8 @@ jobs:
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
           node --check scripts/polish-wordpress-visual-site-v3.mjs
+          node --check scripts/lib/sitewide-header-template.mjs
+          node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
 
       - name: Confirm WordPress REST path
         shell: bash
@@ -85,7 +90,13 @@ jobs:
           echo "spotlight=$(node -p "require(process.argv[1]).spotlightInjected" "$report")" >> "$GITHUB_OUTPUT"
           echo "brand_id=$(node -p "require(process.argv[1]).shell.brandMediaId || ''" "$report")" >> "$GITHUB_OUTPUT"
 
-      - name: Verify visitor-facing V3 experience
+      - name: Restore approved V5 shared header and sitemap shell
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs | tee "$RUNNER_TEMP/shared-shell-v5.log"
+
+      - name: Verify visitor-facing V3 experience and V5 navigation
         id: verify
         shell: bash
         run: |
@@ -100,17 +111,21 @@ jobs:
                 --connect-timeout 15 --max-time 50 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' \
                 -H 'Pragma: no-cache' \
-                "$WP_SITE_URL${path}?dtf_v3=${GITHUB_RUN_ID}-${attempt}" -o "$body"
-              if grep -Fqi -- "$marker" "$body" && grep -Fqi 'dtf-visual-polish-v3' "$body"; then
+                "$WP_SITE_URL${path}?dtf_v3=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" -o "$body"
+              if grep -Fqi -- "$marker" "$body" && \
+                 grep -Fqi 'dtf-visual-polish-v3' "$body" && \
+                 grep -Fqi 'data-dtf-shell="header-v5"' "$body"; then
                 ok=1
                 break
               fi
               sleep 7
             done
-            [[ "$ok" -eq 1 ]] || { echo "V3 marker not observed on $path" >&2; head -c 3500 "$body" >&2 || true; exit 1; }
-            for required in '/seeds/' '/learn/' '/tools/' '/games/' '/community/' '/shop/'; do
-              grep -Fqi -- "$required" "$body" || { echo "Required navigation route missing on $path: $required" >&2; exit 1; }
+            [[ "$ok" -eq 1 ]] || { echo "V3/V5 marker not observed on $path" >&2; head -c 3500 "$body" >&2 || true; exit 1; }
+            for required in '>Home</a>' '>Seeds</a>' '>Learn</a>' '>Courses</a>' '>Diagnostic</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
+              grep -Fqi -- "$required" "$body" || { echo "Required approved navigation label missing on $path: $required" >&2; exit 1; }
             done
+            ! grep -Fqi -- '>Tools</a>' "$body" || { echo "Stale Tools primary-navigation label remains on $path" >&2; exit 1; }
+            ! grep -Fqi -- '>Genetics</a>' "$body" || { echo "Stale Genetics primary-navigation label remains on $path" >&2; exit 1; }
             for forbidden in 'email@email.com' '+123456789' '© 2025 DTF Genetics' '&copy; 2025 DTF Genetics'; do
               ! grep -Fqi -- "$forbidden" "$body" || { echo "Forbidden stale presentation remains on $path: $forbidden" >&2; exit 1; }
             done
@@ -120,11 +135,10 @@ jobs:
           check_page '/learn/' 'Explore by subject'
 
           home="$RUNNER_TEMP/_.html"
-          grep -Fqi 'DTF Genetics cannabis leaf' "$home"
-          grep -Fqi 'dtf-shell-header' "$home"
-          grep -Fqi 'dtf-shell-footer' "$home"
+          grep -Fqi 'data-dtf-shell="header-v5"' "$home"
+          grep -Fqi 'dtf-footer-v3' "$home"
           grep -Fqi 'discord.gg/xJbUeHFPMt' "$home"
-          echo 'V3 live visual verification passed.'
+          echo 'V3 visual experience and approved V5 navigation verification passed.'
 
       - name: Upload rollback package
         if: always()
@@ -161,6 +175,6 @@ jobs:
                 `Homepage experience spotlight: **${process.env.SPOTLIGHT || 'not-run'}**`,
                 `Cannabis-leaf brand media ID: **${process.env.BRAND_ID || 'not-reported'}**`,
                 '',
-                'V3 upgrades the existing visual system rather than replacing it: premium hero depth, stronger typography and rhythm, richer cards, a sticky cannabis-leaf brand shell, cleaner mobile navigation, and reduced-motion support.'
+                'V3 visual polish now restores and verifies the approved V5 sitewide navigation after page styling so visual workflows cannot regress the canonical Home / Seeds / Learn / Courses / Diagnostic / Games / Community / Shop header.'
               ].join('\n')
             });
