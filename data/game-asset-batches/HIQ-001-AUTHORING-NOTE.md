@@ -1,1 +1,0 @@
-HIQ-001 authoring starts from the canonical v2.4 ten-domain list and the Drive batch folder. Runtime SVGs are authored as a coherent transparent icon system, then validated at small gameplay sizes before integration.
