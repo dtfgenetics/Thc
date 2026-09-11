@@ -65,22 +65,24 @@ jobs:
           for attempt in {1..12}; do
             status="$(curl -sS --location --output "$body" --dump-header "$headers" --write-out '%{http_code}' "$url" || true)"
             if [[ "$status" == '200' ]] \
-              && grep -Fq 'content="20260909-combat-v2"' "$body" \
+              && grep -Fq 'data-seed-ui-release="20260909-v20-runtime-v5"' "$body" \
               && grep -Fq 'data-seed-man-approved-art="approved-showcase-2026-09-08"' "$body" \
-              && grep -Fq 'combat-browser-v2.js?v=20260909-combat-v2' "$body" \
+              && grep -Fq 'combat-browser-v2.js?v=20260909-v20-runtime-v5' "$body" \
+              && grep -Fq 'player-state-v20.js?v=20260909-v20-runtime-v5' "$body" \
               && ! grep -Fqi 'Original browser vertical slice' "$body" \
               && ! grep -Fq '20260830-r4' "$body"; then
               ok=1
               break
             fi
             echo "Bare URL still stale on attempt $attempt (HTTP $status)."
+            grep -E 'dtf-seed-man-release|data-seed-ui-release|data-seed-man-approved-art|combat-browser-v2|player-state-v20|Original browser vertical slice|20260830-r4' "$body" || true
             sleep $((attempt * 3))
           done
           echo '--- response headers ---'
           cat "$headers"
           if [[ "$ok" != '1' ]]; then
-            echo 'Seed Man bare URL did not converge on the combat-v2 release after explicit cache purge.' >&2
-            grep -E 'Original browser vertical slice|dtf-sprout-release|data-seed-man-approved-art|combat-browser-v2' "$body" || true
+            echo 'Seed Man bare URL did not converge on the current v20 runtime-v5 release after explicit cache purge.' >&2
+            grep -E 'dtf-seed-man-release|data-seed-ui-release|data-seed-man-approved-art|combat-browser-v2|player-state-v20|Original browser vertical slice|20260830-r4' "$body" || true
             exit 1
           fi
-          echo 'Seed Man bare URL serves the combat-v2 cache-safe release.'
+          echo 'Seed Man bare URL serves the current v20 runtime-v5 cache-safe release.'
