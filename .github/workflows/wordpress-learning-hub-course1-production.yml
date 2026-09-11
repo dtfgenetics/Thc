@@ -7,7 +7,7 @@ on:
       - site/wordpress/education/learning-hub-course1-ui-v3.json
       - scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
-      - scripts/publish-wordpress-courses-navigation-v1.mjs
+      - scripts/publish-wordpress-courses-navigation-v2.mjs
       - scripts/verify-wordpress-learning-hub-course1.mjs
       - scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
       - .github/workflows/wordpress-learning-hub-course1-production.yml
@@ -19,7 +19,7 @@ on:
       - site/wordpress/education/learning-hub-course1-ui-v3.json
       - scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
-      - scripts/publish-wordpress-courses-navigation-v1.mjs
+      - scripts/publish-wordpress-courses-navigation-v2.mjs
       - scripts/verify-wordpress-learning-hub-course1.mjs
       - scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
       - .github/workflows/wordpress-learning-hub-course1-production.yml
@@ -44,12 +44,12 @@ jobs:
         run: |
           node --check scripts/publish-wordpress-learning-hub-course1-v2.mjs
           node --check scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
-          node --check scripts/publish-wordpress-courses-navigation-v1.mjs
+          node --check scripts/publish-wordpress-courses-navigation-v2.mjs
           node --check scripts/verify-wordpress-learning-hub-course1.mjs
           node --check scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
           node scripts/publish-wordpress-learning-hub-course1-v2.mjs --validate-only
           node scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs --validate-only
-          node scripts/publish-wordpress-courses-navigation-v1.mjs --validate-only
+          node scripts/publish-wordpress-courses-navigation-v2.mjs --validate-only
 
   publish:
     if: github.event_name != 'pull_request'
@@ -78,7 +78,7 @@ jobs:
       - name: Build guided 18-lesson Course 1 learning UI
         run: node scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
       - name: Publish Courses catalog and shared header link
-        run: node scripts/publish-wordpress-courses-navigation-v1.mjs
+        run: node scripts/publish-wordpress-courses-navigation-v2.mjs
       - name: Verify published Course 1 base release by WordPress readback
         shell: bash
         run: |
