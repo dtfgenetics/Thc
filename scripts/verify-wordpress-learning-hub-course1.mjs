@@ -33,7 +33,7 @@ async function wp(path) {
         headers: {
           Authorization: auth,
           Accept: 'application/json',
-          'User-Agent': 'DTF-Learning-Hub-Course1-Readback/1.0'
+          'User-Agent': 'DTF-Learning-Hub-Course1-Readback/3.0'
         }
       });
       const text = await response.text();
@@ -95,8 +95,9 @@ const course = await pageBySlug(local.course.slug, program.id);
 const courseContent = verifyPage(course, {
   label: local.course.route,
   minLength: 1200,
-  required: [local.course.title, 'Finished public learner course.', '<strong>108</strong>', 'Integrated Practical']
+  required: [local.course.title, 'How to use this course', 'Course map', '18 lessons', 'Integrated practical']
 });
+must(courseContent.includes('dtf-learning-hub-course1-ui-v3'), 'Course index is missing the guided-learning UI marker.');
 must(!/secure certification examination[\s\S]{0,80}(answer|key|correct)/i.test(courseContent), 'Course index appears to expose secure certification answer material.');
 
 const verified = [
@@ -110,8 +111,9 @@ for (const module of local.modules) {
   verifyPage(page, {
     label: `Module ${module.number}: ${module.title}`,
     minLength: 1200,
-    required: [module.title, `test-module-${module.number}`]
+    required: [module.title, `Module ${module.number} of 6`, 'Lessons in this module', `test-module-${module.number}`]
   });
+  must(rendered(page.content).includes('dtf-learning-hub-course1-ui-v3'), `Module ${module.number}: guided-learning UI marker missing.`);
   verified.push({ type: 'module', number: module.number, id: page.id, slug: module.slug });
 }
 
@@ -150,18 +152,19 @@ publicQuestionCount += 36;
 verified.push({ type: 'final-test', id: final.id, slug: 'final-course-test' });
 
 must(publicQuestionCount === 108, `Expected 108 public course-learning items, verified ${publicQuestionCount}.`);
-must(verified.length === 19, `Expected 19 managed Course 1 pages, verified ${verified.length}.`);
+must(verified.length === 19, `Expected 19 managed base Course 1 pages, verified ${verified.length}.`);
 
 const idSet = new Set(verified.map((page) => Number(page.id)));
-must(idSet.size === 19, 'Managed Course 1 page IDs are not unique.');
+must(idSet.size === 19, 'Managed Course 1 base page IDs are not unique.');
 
 console.log(JSON.stringify({
   verifiedAt: new Date().toISOString(),
   site,
   courseId: local.course.id,
   learnPageId: learn.id,
-  managedPages: verified.length,
+  managedBasePages: verified.length,
   publicCourseItems: publicQuestionCount,
+  guidedUi: true,
   pageIds: verified.map(({ type, number, id, slug }) => ({ type, ...(number ? { number } : {}), id, slug })),
   result: 'success'
 }, null, 2));
