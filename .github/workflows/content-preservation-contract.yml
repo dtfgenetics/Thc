@@ -1,4 +1,4 @@
-name: Content Preservation Contract
+name: Canonical Content Integrity
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
       - 'configuration/content-preservation-policy.json'
       - 'scripts/validate-append-only-content.mjs'
       - '.github/workflows/content-preservation-contract.yml'
-      - '.agents/skills/dtfseeds-production-publishing/SKILL.md'
+      - '.agents/skills/dtf-content-preservation/SKILL.md'
       - 'docs/CONTENT_PRESERVATION_STANDARD.md'
   push:
     branches: [main]
@@ -16,13 +16,15 @@ on:
       - 'configuration/content-preservation-policy.json'
       - 'scripts/validate-append-only-content.mjs'
       - '.github/workflows/content-preservation-contract.yml'
+      - '.agents/skills/dtf-content-preservation/SKILL.md'
+      - 'docs/CONTENT_PRESERVATION_STANDARD.md'
 
 permissions:
   contents: read
 
 jobs:
-  preserve:
-    name: Preserve existing canonical content unless explicitly authorized
+  integrity:
+    name: Validate canonical content integrity
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -34,7 +36,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: Syntax-check preservation validator
+      - name: Syntax-check content validator
         run: node --check scripts/validate-append-only-content.mjs
 
       - name: Resolve comparison range
@@ -60,7 +62,7 @@ jobs:
           echo "base=$base" >> "$GITHUB_OUTPUT"
           echo "head=$HEAD_SHA" >> "$GITHUB_OUTPUT"
 
-      - name: Enforce append-only canonical content
+      - name: Validate editable canonical content
         env:
           CONTENT_BASE_REF: ${{ steps.refs.outputs.base }}
           CONTENT_HEAD_REF: ${{ steps.refs.outputs.head }}
