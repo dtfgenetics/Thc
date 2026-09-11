@@ -13,15 +13,41 @@ const repoPath='site/wordpress/assets/design-references/dtf-course-header-approv
 const auth=user&&pass?`Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}`:'';
 const must=(v,m)=>{if(!v)throw new Error(m)};
 
+function readJpegDimensions(buffer){
+  if(buffer.length<4||buffer[0]!==0xff||buffer[1]!==0xd8) return null;
+  const sof=new Set([0xc0,0xc1,0xc2,0xc3,0xc5,0xc6,0xc7,0xc9,0xca,0xcb,0xcd,0xce,0xcf]);
+  let offset=2;
+  while(offset+4<=buffer.length){
+    while(offset<buffer.length&&buffer[offset]!==0xff) offset+=1;
+    while(offset<buffer.length&&buffer[offset]===0xff) offset+=1;
+    if(offset>=buffer.length) break;
+    const marker=buffer[offset++];
+    if(marker===0xd8||marker===0xd9||marker===0x01||(marker>=0xd0&&marker<=0xd7)) continue;
+    if(offset+2>buffer.length) break;
+    const length=buffer.readUInt16BE(offset);
+    if(length<2||offset+length>buffer.length) break;
+    if(sof.has(marker)&&length>=7){
+      const height=buffer.readUInt16BE(offset+3);
+      const width=buffer.readUInt16BE(offset+5);
+      return {width,height};
+    }
+    offset+=length;
+  }
+  return null;
+}
+
 must(user&&pass,'WordPress credentials are required.');
 const bytes=await readFile(assetPath);
-must(bytes.length>10_000,'Approved design reference asset is unexpectedly small.');
+const dimensions=readJpegDimensions(bytes);
+must(bytes.length>4_096,'Approved design reference asset is unexpectedly small.');
+must(dimensions,'Approved design reference is not a valid JPEG with readable dimensions.');
+must(dimensions.width>=800&&dimensions.height>=500,`Approved design reference resolution is too small: ${dimensions.width}x${dimensions.height}.`);
 
 async function request(path,options={}){
   const response=await fetch(`${site}${path}`,{
     ...options,
     signal:AbortSignal.timeout(60_000),
-    headers:{Authorization:auth,'User-Agent':'DTF-Approved-Design-Reference/1.0',...(options.headers||{})}
+    headers:{Authorization:auth,'User-Agent':'DTF-Approved-Design-Reference/1.1',...(options.headers||{})}
   });
   const text=await response.text();let body=text;try{body=text?JSON.parse(text):null}catch{}
   if(!response.ok)throw new Error(`${options.method||'GET'} ${path} failed (${response.status}): ${typeof body==='string'?body.slice(0,500):JSON.stringify(body).slice(0,500)}`);
@@ -57,4 +83,4 @@ const verify=await request(`/wp-json/wp/v2/media/${item.id}?context=edit`);
 must(verify.slug===slug,`Unexpected WordPress media slug: ${verify.slug}`);
 must(/^https:\/\//.test(verify.source_url||''),'WordPress media source URL is missing.');
 must((verify.mime_type||'').startsWith('image/'),'WordPress media is not an image.');
-console.log(JSON.stringify({result:'success',mediaId:verify.id,slug:verify.slug,sourceUrl:verify.source_url,repoPath,driveUrl,bytes:bytes.length},null,2));
+console.log(JSON.stringify({result:'success',mediaId:verify.id,slug:verify.slug,sourceUrl:verify.source_url,repoPath,driveUrl,bytes:bytes.length,dimensions},null,2));
