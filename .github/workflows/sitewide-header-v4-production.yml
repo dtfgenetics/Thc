@@ -85,11 +85,6 @@ jobs:
           set -euo pipefail
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured}"
-      - name: Store approved design reference in WordPress Media Library
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/publish-wordpress-approved-design-reference.mjs | tee /tmp/dtf-approved-design-reference.json
       - name: Publish approved sitewide shared header
         shell: bash
         run: |
@@ -123,13 +118,26 @@ jobs:
               exit 1
             fi
           done
+      - name: Store approved design reference in WordPress Media Library
+        id: reference_upload
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/publish-wordpress-approved-design-reference.mjs | tee /tmp/dtf-approved-design-reference.json
       - name: Verify WordPress design-reference media
+        if: ${{ steps.reference_upload.outcome == 'success' }}
         shell: bash
         env:
           APPLY_APPROVED_DESIGN_REFERENCE: 'false'
         run: |
           set -euo pipefail
           node scripts/publish-wordpress-approved-design-reference.mjs | tee /tmp/dtf-approved-design-reference-readback.json
+      - name: Note optional reference-media issue
+        if: ${{ steps.reference_upload.outcome == 'failure' }}
+        shell: bash
+        run: |
+          echo "The production header is independent of the optional WordPress design-reference copy. The canonical reference remains versioned in GitHub and Google Drive; media-library repair can proceed separately."
       - name: Upload deployment evidence
         uses: actions/upload-artifact@v4
         if: always()
