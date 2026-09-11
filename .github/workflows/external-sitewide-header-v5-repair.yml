@@ -51,7 +51,7 @@ jobs:
           const cfg=JSON.parse(fs.readFileSync('site/deployment/external-header-sources.json','utf8'));
           if(cfg.schemaVersion!==1) throw new Error('bad schema');
           const s=cfg.surfaces?.kushKingsChess;
-          if(!s||!/^dtfgenetics\//.test(s.repository)||!^[0-9a-f]{40}$/.test(s.commit)) throw new Error('bad source pin');
+          if(!s||!/^dtfgenetics\//.test(s.repository)||!/^[0-9a-f]{40}$/.test(s.commit)) throw new Error('bad source pin');
           const required=['index.html','play.php','css/dtf-sitewide-header-v5.css','js/dtf-sitewide-header-v5.js'];
           for(const f of required) if(!s.files.includes(f)) throw new Error(`missing ${f}`);
           if(!s.verifyRoutes.includes('/games/kush-kings-chess/')||!s.verifyRoutes.includes('/games/kush-kings-chess/play.php')) throw new Error('missing visitor verification route');
