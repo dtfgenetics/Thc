@@ -58,8 +58,19 @@ jobs:
           for js in app.js canvas-compat-v1.js player-state-v20.js campaign-v20-runtime.js campaign-ui-v20.js v20-enemy-runtime.js combat-browser-v2.js enemy-attacks-browser-v2.js approved-art-core-v1.js approved-art-runtime-v1.js seed-man-production-art.js three-world-v1.js three-world-adapter-v1.js; do node --check "$root/$js"; done
           grep -Fq '20-Level Campaign' "$root/index.html"
           grep -Fq './three-world-v1.js?v=' "$root/index.html"
+          grep -Fq 'id="next-level"' "$root/index.html"
+          grep -Fq 'id="scoreboard-body"' "$root/index.html"
+          grep -Fq 'High Scores' "$root/index.html"
+          grep -Fq './seed-man.css?v=20260911-v20-runtime-v6' "$root/index.html"
+          ! grep -Fq 'scoreboard-v20.css' "$root/index.html"
           ! grep -Fq 'id="seed-man-level"' "$root/index.html"
           ! grep -Fq 'Seed Man: Sprout Run' "$root/index.html"
+          grep -Fq 'seed-man-scoreboard-v1' "$root/campaign-ui-v20.js"
+          grep -Fq 'function tickCompletion' "$root/campaign-ui-v20.js"
+          grep -Fq 'function selectNextLevel' "$root/campaign-ui-v20.js"
+          grep -Fq 'dtf-seed-man-high-scores-v1' "$root/campaign-ui-v20.js"
+          grep -Fq '.scoreboard-table' "$root/seed-man.css"
+          grep -Fq '.scoreboard-scroll{overflow-x:auto' "$root/seed-man.css"
           grep -Fq 'seed-man-base-runtime-v20' "$root/app.js"
           grep -Fq "campaignAuthority:'campaign-v20-runtime.js'" "$root/app.js"
           ! grep -Fq 'readEmbeddedLevel' "$root/app.js"
@@ -89,7 +100,7 @@ jobs:
           if(b.subarray(0,4).toString('ascii')!=='RIFF'||b.subarray(8,12).toString('ascii')!=='WEBP')throw new Error(`invalid WebP: ${process.argv[2]}`);
           NODE
           done
-          for retired in data/level-01.json data/levels-12-15.json campaign-v1.js gameplay-v2.js physics.mjs campaign-combat-v20.js campaign-progress-v20.js campaign-runtime-v20.js campaign-ui-v15.js world-five-v1.js combat-browser-v1.js enemy-attacks-browser-v1.js seed-man-ui-v3.js assets/approved/seed-man-approved-master-atlas-v1.webp assets/approved/seed-man-cover-banner-approved-v1.webp; do
+          for retired in data/level-01.json data/levels-12-15.json campaign-v1.js gameplay-v2.js physics.mjs campaign-combat-v20.js campaign-progress-v20.js campaign-runtime-v20.js campaign-ui-v15.js world-five-v1.js combat-browser-v1.js enemy-attacks-browser-v1.js seed-man-ui-v3.js scoreboard-v20.css assets/approved/seed-man-approved-master-atlas-v1.webp assets/approved/seed-man-cover-banner-approved-v1.webp; do
             test ! -e "$root/$retired" || { echo "retired artifact still present: $retired" >&2; exit 1; }
           done
 
@@ -128,6 +139,7 @@ jobs:
             [[ "$status" == '404' || "$status" == '410' ]] || { echo "retired $rel unexpectedly returned HTTP $status" >&2; exit 1; }
           }
           fetch '' "$tmp/index.html"
+          fetch 'seed-man.css' "$tmp/seed-man.css"
           fetch 'data/campaign.json' "$tmp/campaign.json"
           fetch 'data/levels-20-v1.json' "$tmp/levels.json"
           fetch 'data/seed-man-art-manifest-v1.json' "$tmp/art-manifest.json"
@@ -159,8 +171,19 @@ jobs:
           NODE
           grep -Fq '20-Level Campaign' "$tmp/index.html"
           grep -Fq './three-world-v1.js?v=' "$tmp/index.html"
+          grep -Fq 'id="next-level"' "$tmp/index.html"
+          grep -Fq 'id="scoreboard-body"' "$tmp/index.html"
+          grep -Fq 'High Scores' "$tmp/index.html"
+          grep -Fq './seed-man.css?v=20260911-v20-runtime-v6' "$tmp/index.html"
+          ! grep -Fq 'scoreboard-v20.css' "$tmp/index.html"
           ! grep -Fq 'id="seed-man-level"' "$tmp/index.html"
           ! grep -Fq 'Seed Man: Sprout Run' "$tmp/index.html"
+          grep -Fq 'seed-man-scoreboard-v1' "$tmp/ui.js"
+          grep -Fq 'function tickCompletion' "$tmp/ui.js"
+          grep -Fq 'function selectNextLevel' "$tmp/ui.js"
+          grep -Fq 'dtf-seed-man-high-scores-v1' "$tmp/ui.js"
+          grep -Fq '.scoreboard-table' "$tmp/seed-man.css"
+          grep -Fq '.scoreboard-scroll{overflow-x:auto' "$tmp/seed-man.css"
           grep -Fq 'seed-man-player-state-v20' "$tmp/player-state.js"
           grep -Fq 'seed-man-campaign-v20-runtime-v3' "$tmp/runtime.js"
           grep -Fq "phenotypeForms:['plant','fire','electric','ice']" "$tmp/runtime.js"
@@ -176,8 +199,8 @@ jobs:
           test "$bytes" -ge 250000
           grep -Fq 'approved-showcase-2026-09-08' "$tmp/renderer.js"
           grep -Fq 'green-armored-plant-hero' "$tmp/renderer.js"
-          for retired in data/level-01.json data/levels-12-15.json campaign-v1.js gameplay-v2.js physics.mjs campaign-combat-v20.js campaign-progress-v20.js campaign-runtime-v20.js campaign-ui-v15.js world-five-v1.js combat-browser-v1.js enemy-attacks-browser-v1.js seed-man-ui-v3.js assets/approved/seed-man-approved-master-atlas-v1.webp assets/approved/seed-man-cover-banner-approved-v1.webp; do expect_missing "$retired"; done
-          echo 'Seed Man canonical v20 campaign + Three.js worlds + standalone approved art + combat v2 is live and verified.'
+          for retired in data/level-01.json data/levels-12-15.json campaign-v1.js gameplay-v2.js physics.mjs campaign-combat-v20.js campaign-progress-v20.js campaign-runtime-v20.js campaign-ui-v15.js world-five-v1.js combat-browser-v1.js enemy-attacks-browser-v1.js seed-man-ui-v3.js scoreboard-v20.css assets/approved/seed-man-approved-master-atlas-v1.webp assets/approved/seed-man-cover-banner-approved-v1.webp; do expect_missing "$retired"; done
+          echo 'Seed Man v20 progression, local high scores, Three.js worlds, approved art and combat v2 are live and verified.'
 
       - name: Release summary
         if: always()
@@ -185,6 +208,8 @@ jobs:
           {
             echo '## Seed Man production release'
             echo '- Campaign: 20 levels / 5 worlds / 6 bosses'
+            echo '- Level progression: finish flag advances through the canonical v20 campaign'
+            echo '- High scores: persistent local top-10 leaderboard per level'
             echo '- World renderer: canonical generated Three.js v2 runtime / public bundle v3'
             echo '- Character: approved green armored plant hero'
             echo '- Combat: Plant / Fire / Electric / Ice with 30-second absorbed forms'
