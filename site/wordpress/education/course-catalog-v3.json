@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 3,
+  "id": "dtf-courses-catalog-v3",
+  "title": "Professional cultivation courses",
+  "eyebrow": "THC Learning Hub",
+  "intro": "Structured cultivation learning paths built from researched instruction, guided practice, job tasks, course tests, and applied practical work. Use Learn for the broad education library; use Courses when you want a sequenced learning path.",
+  "primaryActions": [
+    {
+      "label": "Start Course 1",
+      "href": "/learn/learning-hub/cultivation-technician-i/safety-responsible-practice-cultivation-workflows/",
+      "style": "primary"
+    },
+    {
+      "label": "Open Learning Hub",
+      "href": "/learn/learning-hub/",
+      "style": "secondary"
+    }
+  ],
+  "courses": [
+    {
+      "id": "COURSE-LH-TECH1-001",
+      "number": 1,
+      "status": "available",
+      "statusLabel": "Available now",
+      "title": "Safety, Responsible Practice & Cultivation Workflows",
+      "pathLabel": "Cultivation Technician I",
+      "summary": "Build the workplace decision habits expected of a cultivation technician: hazard recognition, biosecurity, controlled instructions, traceability, equipment boundaries, trustworthy records, and professional shift handoff.",
+      "href": "/learn/learning-hub/cultivation-technician-i/safety-responsible-practice-cultivation-workflows/",
+      "metrics": [
+        {"value": "6", "label": "modules"},
+        {"value": "18", "label": "lessons"},
+        {"value": "6", "label": "module tests"},
+        {"value": "36", "label": "final-test items"}
+      ],
+      "includes": [
+        "Student workbook",
+        "Integrated practical",
+        "Lesson progress tracking",
+        "Module and final course assessments"
+      ]
+    }
+  ],
+  "learningSurfaces": [
+    {
+      "title": "Learn",
+      "copy": "The broad plant-science and cultivation reference library for topic-first study.",
+      "href": "/learn/"
+    },
+    {
+      "title": "Courses",
+      "copy": "Sequenced instruction with lessons, practice, workbook tasks, and learning assessments.",
+      "href": "/courses/"
+    },
+    {
+      "title": "Certification",
+      "copy": "A separate credential-governance and secure assessment layer. Course tests do not themselves issue a professional credential.",
+      "href": "/learn/learning-hub/"
+    }
+  ],
+  "courseFlow": [
+    {"number": 1, "title": "Orient", "copy": "See the objective, relevance, prerequisites, and position in the course."},
+    {"number": 2, "title": "Learn", "copy": "Work through researched explanations, examples, and teaching visuals."},
+    {"number": 3, "title": "Practice", "copy": "Use cases, retrieval checks, workbook tasks, and practical decisions."},
+    {"number": 4, "title": "Assess", "copy": "Complete module tests and the final course test before progressing."}
+  ],
+  "assessmentNote": "Course tests are learning assessments. They are separate from the secure professional certification examination.",
+  "editingPolicy": {
+    "contentDriven": true,
+    "allowAdditionalCourses": true,
+    "allowReordering": true,
+    "allowAdditionalMetrics": true,
+    "allowAdditionalActions": true,
+    "note": "The renderer iterates content arrays and does not impose a fixed course-count limit."
+  }
+}
