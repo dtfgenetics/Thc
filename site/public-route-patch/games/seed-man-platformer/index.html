@@ -8,11 +8,11 @@
   <meta http-equiv="Expires" content="0">
   <meta name="dtf-seed-man-release" content="20260909-v20-runtime-v4">
   <title>Seed Man: Grow. Fight. Restore. | DTF Genetics</title>
-  <meta name="description" content="Play Seed Man, the DTF Genetics 20-level platform adventure across five worlds with six bosses, approved green-armored character art, phenotype combat, checkpoints, desktop controls, and touch controls.">
+  <meta name="description" content="Play Seed Man, the DTF Genetics 20-level platform adventure across five worlds with six bosses, approved green-armored character art, phenotype combat, checkpoints, desktop controls, touch controls, and local high scores.">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta name="theme-color" content="#10291d">
   <link rel="canonical" href="https://dtfseeds.com/games/seed-man-platformer/">
-  <link rel="stylesheet" href="./seed-man.css?v=20260909-v20-runtime-v5">
+  <link rel="stylesheet" href="./seed-man.css?v=20260911-v20-runtime-v6">
 </head>
 <body data-seed-ui-release="20260909-v20-runtime-v5" data-seed-man-approved-art="approved-showcase-2026-09-08">
   <header class="site-header">
@@ -56,14 +56,14 @@
       <article><strong>20 levels</strong><span>Five distinct campaign worlds</span></article>
       <article><strong>4 core forms</strong><span>Plant · Fire · Electric · Ice</span></article>
       <article><strong>6 bosses</strong><span>Blight King is the four-phase finale</span></article>
-      <article><strong>Enemy-pool encounters</strong><span>Every level uses its canonical enemy roster</span></article>
+      <article><strong>Top 10 scores</strong><span>Per-level local leaderboard</span></article>
     </section>
 
     <section class="panel" id="finish-panel" hidden>
       <p class="eyebrow">Level complete</p>
       <h2>Dream the Future reached.</h2>
       <p id="finish-summary"></p>
-      <button id="play-again" class="primary" type="button">Run it again</button>
+      <button id="next-level" class="primary" type="button">Next Level</button>
     </section>
 
     <section class="panel">
@@ -74,6 +74,26 @@
       <p id="seed-campaign-title">Level 1 / 20 · Sprout Steps</p>
       <p id="seed-campaign-setting">Greenhouse Valley</p>
       <p id="seed-campaign-progress">0 / 20 cleared</p>
+    </section>
+
+    <section class="panel scoreboard-panel" aria-labelledby="scoreboard-heading">
+      <div class="scoreboard-heading-row">
+        <div>
+          <p class="eyebrow">Local leaderboard</p>
+          <h2 id="scoreboard-heading">High Scores</h2>
+          <p id="scoreboard-level" class="scoreboard-level">Current level</p>
+        </div>
+        <label class="player-name-field" for="score-player-name">Player name
+          <input id="score-player-name" type="text" maxlength="16" autocomplete="nickname" value="Seed Grower" aria-describedby="scoreboard-note">
+        </label>
+      </div>
+      <p id="scoreboard-note" class="scoreboard-note">Scores are saved on this device. Every completed run is ranked by points, then time, then falls.</p>
+      <div class="scoreboard-scroll">
+        <table class="scoreboard-table">
+          <thead><tr><th scope="col">Rank</th><th scope="col">Player</th><th scope="col">Score</th><th scope="col">Time</th><th scope="col">Falls</th></tr></thead>
+          <tbody id="scoreboard-body"><tr><td colspan="5" class="score-empty">Reach the flag to set the first score.</td></tr></tbody>
+        </table>
+      </div>
     </section>
 
     <section class="panel">
@@ -96,7 +116,7 @@
   <script src="./seed-man-production-art.js?v=20260909-v20-runtime-v5" defer></script>
   <script src="./three-world-v1.js?v=20260909-v20-runtime-v5" defer></script>
   <script src="./campaign-v20-runtime.js?v=20260909-v20-runtime-v5" defer></script>
-  <script src="./campaign-ui-v20.js?v=20260909-v20-runtime-v5" defer></script>
+  <script src="./campaign-ui-v20.js?v=20260911-v20-runtime-v6" defer></script>
   <script src="./three-world-adapter-v1.js?v=20260909-v20-runtime-v5" defer></script>
   <script src="./v20-enemy-runtime.js?v=20260909-v20-runtime-v5" defer></script>
   <script src="./combat-browser-v2.js?v=20260909-v20-runtime-v5" defer></script>
