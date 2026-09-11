@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "id": "learning-hub-course1",
+  "publicationState": "publish",
+  "program": {
+    "title": "THC Cultivation Technician I",
+    "slug": "cultivation-technician-i",
+    "route": "/learn/learning-hub/cultivation-technician-i/"
+  },
+  "course": {
+    "id": "COURSE-LH-TECH1-001",
+    "title": "Safety, Responsible Practice & Cultivation Workflows",
+    "slug": "safety-responsible-practice-cultivation-workflows",
+    "route": "/learn/learning-hub/cultivation-technician-i/safety-responsible-practice-cultivation-workflows/",
+    "estimatedLearningTime": "8–10 hours plus applied work and the integrated practical",
+    "masteryTarget": 80,
+    "purpose": "Build the workplace decision habits expected of a cultivation technician: recognize hazards, protect biosecurity, follow controlled instructions, preserve material identity, stay within equipment authority, maintain trustworthy records, and hand off unresolved work clearly."
+  },
+  "source": {
+    "repository": "dtfgenetics/Thc-learning-courses-",
+    "ref": "main",
+    "basePath": "docs/learning-hub/tech1/course-001"
+  },
+  "modules": [
+    {"number":1,"slug":"applied-workplace-safety","title":"Applied Cultivation Workplace Safety","source":"student/MODULE-01-APPLIED-WORKPLACE-SAFETY.md","assessment":"ASSESS-LH-TECH1-001-M01"},
+    {"number":2,"slug":"biosecurity-controlled-movement","title":"Sanitation, Biosecurity & Controlled Movement","source":"student/MODULE-02-BIOSECURITY.md","assessment":"ASSESS-LH-TECH1-001-M02"},
+    {"number":3,"slug":"sops-authority-escalation","title":"SOPs, Work Orders, Authority & Escalation","source":"student/MODULE-03-SOPS-AUTHORITY.md","assessment":"ASSESS-LH-TECH1-001-M03"},
+    {"number":4,"slug":"traceability-inventory-waste","title":"Traceability, Material Movement, Inventory & Waste","source":"student/MODULE-04-TRACEABILITY-INVENTORY-WASTE.md","assessment":"ASSESS-LH-TECH1-001-M04"},
+    {"number":5,"slug":"equipment-readiness-fault-reporting","title":"Equipment Readiness, Operator Care & Fault Reporting","source":"student/MODULE-05-EQUIPMENT-CARE.md","assessment":"ASSESS-LH-TECH1-001-M05"},
+    {"number":6,"slug":"records-shift-handoff","title":"Records, Shift Handoff & Integrated Workflow","source":"student/MODULE-06-RECORDS-HANDOFF-INTEGRATION.md","assessment":"ASSESS-LH-TECH1-001-M06"}
+  ],
+  "learnerDocuments": [
+    {"slug":"workbook","title":"Course 1 Student Workbook","source":"student/STUDENT-WORKBOOK.md"},
+    {"slug":"workbook-templates","title":"Course 1 Workbook Templates","source":"student/WORKBOOK-TEMPLATES.md"},
+    {"slug":"integrated-practical","title":"Course 1 Integrated Practical","source":"student/INTEGRATED-PRACTICAL.md"}
+  ],
+  "finalAssessment": "ASSESS-LH-TECH1-001-FINAL",
+  "publicAssessmentBoundary": "Module tests and the final course test are public learning assessments. They are separate from the secure THC Cultivation Technician I certification examination and credential decision.",
+  "excludedFromPublicSite": [
+    "credential-purpose exam items",
+    "review queues and reviewer records",
+    "pilot participant data and psychometric evidence",
+    "assessor calibration records",
+    "credential signing or issuance secrets"
+  ]
+}
