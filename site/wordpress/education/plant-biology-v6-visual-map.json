@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 3,
-  "updatedAt": "2026-09-09",
+  "schemaVersion": 4,
+  "updatedAt": "2026-09-10",
   "curriculumId": "plant-biology-v6",
   "policy": {
     "canonicalAssetRoot": "site/wordpress/assets/infographics",
@@ -48,10 +48,11 @@
       {"file":"V04-SUP-005_Tropisms_and_Directional_Growth_Responses.jpg","title":"Tropisms & Directional Growth","alt":"Phototropism, gravitropism and directional plant growth responses"},
       {"file":"V04-SUP-008_Stress_Physiology_and_Acclimation.jpg","title":"Stress Physiology & Acclimation","alt":"Plant stress response, acclimation and recovery concepts"}
     ],
-    "reproduction-trichomes-senescence": []
+    "reproduction-trichomes-senescence": [
+      {"file":"THC-APPROVED_Trichomes_Secretory_Biology_v1.jpg","title":"Trichomes & Secretory Biology","alt":"Cannabis trichome types, approximate size ranges, secretory biology, resin functions and scientific notes infographic"}
+    ]
   },
   "gaps": [
-    {"id":"flower-anatomy-redesign","chapter":"reproduction-trichomes-senescence","status":"needed","title":"Flower Anatomy & Reproductive Structures - redesigned Atlas visual","reason":"Old THC-C008 course-card infographic style is rejected sitewide and removed."},
-    {"id":"trichome-secretory-biology-redesign","chapter":"reproduction-trichomes-senescence","status":"needed","title":"Trichomes & Secretory Biology - redesigned Atlas visual","reason":"Old THC-C009 course-card infographic style is rejected sitewide and removed."}
+    {"id":"flower-anatomy-redesign","chapter":"reproduction-trichomes-senescence","status":"needed","title":"Flower Anatomy & Reproductive Structures - redesigned Atlas visual","reason":"Old THC-C008 course-card infographic style is rejected sitewide and removed."}
   ]
 }
