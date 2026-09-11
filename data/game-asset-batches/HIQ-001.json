@@ -3,7 +3,7 @@
   "batchId": "HIQ-001",
   "gameId": "high-iq",
   "title": "Ten-Domain Visual Identity System",
-  "status": "READY-FOR-AUTHORING",
+  "status": "INTEGRATING",
   "priority": "P0",
   "quantity": 10,
   "owningRepo": "dtfgenetics/Thc",
@@ -24,28 +24,30 @@
   "runtime": {
     "root": "site/public-route-patch/games/high-iq",
     "targetDirectory": "site/public-route-patch/games/high-iq/assets/domains",
-    "activeIntegration": false,
-    "dataBinding": "games/high-iq/data/manifest.json#categoryCounts"
+    "activeIntegration": true,
+    "dataBinding": "games/high-iq/data/manifest.json#categoryCounts",
+    "runtimeManifest": "site/public-route-patch/games/high-iq/assets/domains/manifest.json",
+    "decoratorModule": "site/public-route-patch/games/high-iq/domain-icons.js"
   },
   "output": {
     "sourceMasterMinimumPx": 1024,
     "canvas": "square 1:1",
     "background": "transparent",
-    "preferredSourceFormat": "PNG or SVG master",
-    "runtimeFormat": "SVG when clean/vector-safe, otherwise WebP/PNG",
+    "preferredSourceFormat": "SVG",
+    "runtimeFormat": "SVG",
     "style": "premium science/trivia iconography with one coherent stroke/silhouette system; minimal THC branding; no baked category text"
   },
   "assets": [
-    {"assetId":"HIQ-DOMAIN-NUTRITION-PH-v01","category":"Nutrition & pH","state":"NEEDED"},
-    {"assetId":"HIQ-DOMAIN-ENVIRONMENT-CLIMATE-v01","category":"Environment & Climate","state":"NEEDED"},
-    {"assetId":"HIQ-DOMAIN-ROOT-ZONE-IRRIGATION-v01","category":"Root Zone & Irrigation","state":"NEEDED"},
-    {"assetId":"HIQ-DOMAIN-PLANT-BIOLOGY-v01","category":"Plant Biology","state":"NEEDED"},
-    {"assetId":"HIQ-DOMAIN-DIAGNOSTICS-v01","category":"Diagnostics","state":"NEEDED"},
-    {"assetId":"HIQ-DOMAIN-PHOTOBIOLOGY-v01","category":"Photobiology","state":"NEEDED"},
-    {"assetId":"HIQ-DOMAIN-PLANT-PHYSIOLOGY-v01","category":"Plant Physiology","state":"NEEDED"},
-    {"assetId":"HIQ-DOMAIN-IPM-v01","category":"Integrated Pest Management","state":"NEEDED"},
-    {"assetId":"HIQ-DOMAIN-GENETICS-BREEDING-v01","category":"Genetics & Breeding","state":"NEEDED"},
-    {"assetId":"HIQ-DOMAIN-HARVEST-POSTHARVEST-v01","category":"Harvest & Postharvest","state":"NEEDED"}
+    {"assetId":"HIQ-DOMAIN-NUTRITION-PH-v02","category":"Nutrition & pH","state":"INTEGRATED","runtimeFilename":"HIQ-DOMAIN-NUTRITION-PH-v02.svg","driveFile":{"fileId":"1g4d8RCfVSXDS7dt9NrMBhWizYRzsOnNS","sha256":"3e411b39c5dfc4167d1a47ef83d295130ad1161ad7b6adfa411b46ba6077e42a","sizeBytes":569,"mimeType":"image/svg+xml","extension":"svg","folderId":"1Y3iq4DTOtg7vqh93DocvDJBMKKLvg0HO"}},
+    {"assetId":"HIQ-DOMAIN-ENVIRONMENT-CLIMATE-v02","category":"Environment & Climate","state":"INTEGRATED","runtimeFilename":"HIQ-DOMAIN-ENVIRONMENT-CLIMATE-v02.svg","driveFile":{"fileId":"1Mcu2Gypb-JTW-_xSSY_s6VJ-Ld1NSz4n","sha256":"382cea98252efe6ee714e1c1374a0af07039e6c867a0960978ab156da0ffdd25","sizeBytes":663,"mimeType":"image/svg+xml","extension":"svg","folderId":"1Y3iq4DTOtg7vqh93DocvDJBMKKLvg0HO"}},
+    {"assetId":"HIQ-DOMAIN-ROOT-ZONE-IRRIGATION-v02","category":"Root Zone & Irrigation","state":"INTEGRATED","runtimeFilename":"HIQ-DOMAIN-ROOT-ZONE-IRRIGATION-v02.svg","driveFile":{"fileId":"1e2M2rKPiByIkjJWsq9flP4LL4CWXr4yu","sha256":"d68866afff195ddc8677731e4d7c9dcb0d47a220de0db0f69c4add8881db15b3","sizeBytes":651,"mimeType":"image/svg+xml","extension":"svg","folderId":"1Y3iq4DTOtg7vqh93DocvDJBMKKLvg0HO"}},
+    {"assetId":"HIQ-DOMAIN-PLANT-BIOLOGY-v02","category":"Plant Biology","state":"INTEGRATED","runtimeFilename":"HIQ-DOMAIN-PLANT-BIOLOGY-v02.svg","driveFile":{"fileId":"1hz1Ws-cSiQRR4hL6z78gIysWwlwtLIaF","sha256":"70295fb76b424b0605ec92df4fd543491b71675263022902d539bd2b8e6fe75d","sizeBytes":629,"mimeType":"image/svg+xml","extension":"svg","folderId":"1Y3iq4DTOtg7vqh93DocvDJBMKKLvg0HO"}},
+    {"assetId":"HIQ-DOMAIN-DIAGNOSTICS-v02","category":"Diagnostics","state":"INTEGRATED","runtimeFilename":"HIQ-DOMAIN-DIAGNOSTICS-v02.svg","driveFile":{"fileId":"1RgbSoweHGO_Xd6Yafq70kSEhgfNtlBVw","sha256":"bcc584a1d04bf53c4b271631969285536983758a2469c2d1ba7d0c7fd22d9bb3","sizeBytes":510,"mimeType":"image/svg+xml","extension":"svg","folderId":"1Y3iq4DTOtg7vqh93DocvDJBMKKLvg0HO"}},
+    {"assetId":"HIQ-DOMAIN-PHOTOBIOLOGY-v02","category":"Photobiology","state":"INTEGRATED","runtimeFilename":"HIQ-DOMAIN-PHOTOBIOLOGY-v02.svg","driveFile":{"fileId":"11x_smZDkQvrspzz4h5ZflUjB5Iy3Eb4o","sha256":"c45891fedbabfc2e299582a716f5af5e865deb4a75c88b74f4b1efd3bd346945","sizeBytes":569,"mimeType":"image/svg+xml","extension":"svg","folderId":"1Y3iq4DTOtg7vqh93DocvDJBMKKLvg0HO"}},
+    {"assetId":"HIQ-DOMAIN-PLANT-PHYSIOLOGY-v02","category":"Plant Physiology","state":"INTEGRATED","runtimeFilename":"HIQ-DOMAIN-PLANT-PHYSIOLOGY-v02.svg","driveFile":{"fileId":"1VQD-A5ez52pxDPLHqeWUNAoJal3-8W_D","sha256":"741d061923199119c5cb2c5ad36aee417fab80c1213bd53ec938b772eebe3c88","sizeBytes":598,"mimeType":"image/svg+xml","extension":"svg","folderId":"1Y3iq4DTOtg7vqh93DocvDJBMKKLvg0HO"}},
+    {"assetId":"HIQ-DOMAIN-IPM-v02","category":"Integrated Pest Management","state":"INTEGRATED","runtimeFilename":"HIQ-DOMAIN-IPM-v02.svg","driveFile":{"fileId":"17pAXdEM-_ipmNkGtB0wivXjOkaofxRqo","sha256":"fb57241384cda248d0424bc40cdcb3907417c5c9f82b4b1e878363c1955fa3a8","sizeBytes":506,"mimeType":"image/svg+xml","extension":"svg","folderId":"1Y3iq4DTOtg7vqh93DocvDJBMKKLvg0HO"}},
+    {"assetId":"HIQ-DOMAIN-GENETICS-BREEDING-v02","category":"Genetics & Breeding","state":"INTEGRATED","runtimeFilename":"HIQ-DOMAIN-GENETICS-BREEDING-v02.svg","driveFile":{"fileId":"1L3v_Z16TqmotIRdGVfU3fVOAilt2D_ss","sha256":"e41d44db1eb5199f1c61f1cc0c3fcaccacb6f00b32d30ea7a443ce0167c2009e","sizeBytes":457,"mimeType":"image/svg+xml","extension":"svg","folderId":"1Y3iq4DTOtg7vqh93DocvDJBMKKLvg0HO"}},
+    {"assetId":"HIQ-DOMAIN-HARVEST-POSTHARVEST-v02","category":"Harvest & Postharvest","state":"INTEGRATED","runtimeFilename":"HIQ-DOMAIN-HARVEST-POSTHARVEST-v02.svg","driveFile":{"fileId":"1VaaE9YLW0mFLoSgMlxLUzr7gsHwH4jCR","sha256":"dfc985c014f977090d1006ec99fb06fa02012c63d80079a80b99cf1383e1c6fb","sizeBytes":501,"mimeType":"image/svg+xml","extension":"svg","folderId":"1Y3iq4DTOtg7vqh93DocvDJBMKKLvg0HO"}}
   ],
   "acceptanceCriteria": [
     "all ten icons clearly belong to one visual system",
@@ -56,5 +58,11 @@
     "icons remain visually quiet enough for question-focused gameplay",
     "source masters are stored in the HIQ-001 Drive folder and approved exports map one-to-one to the runtime category names"
   ],
+  "qa": {
+    "contactSheet": "HIQ-001-v2-QA-contact-sheet.png",
+    "gameScalePx": 32,
+    "result": "PASS",
+    "notes": "The v2 family was reviewed as one coherent set at master scale and reduced 32px gameplay scale before runtime integration."
+  },
   "nextBatch": "HIQ-002"
 }
