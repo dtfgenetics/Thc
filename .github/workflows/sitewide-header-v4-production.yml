@@ -9,6 +9,7 @@ on:
       - scripts/apply-sitewide-header.mjs
       - scripts/rebuild-wordpress-shared-shell-v3.mjs
       - scripts/publish-wordpress-approved-design-reference.mjs
+      - scripts/verify-sitewide-header-v5-live.mjs
       - site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg
       - site/wordpress/assets/design-references/approved-sitewide-header-reference.json
       - docs/design/APPROVED_SITEWIDE_HEADER_REFERENCE.md
@@ -19,6 +20,7 @@ on:
       - scripts/apply-sitewide-header.mjs
       - scripts/rebuild-wordpress-shared-shell-v3.mjs
       - scripts/publish-wordpress-approved-design-reference.mjs
+      - scripts/verify-sitewide-header-v5-live.mjs
       - site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg
       - site/wordpress/assets/design-references/approved-sitewide-header-reference.json
       - docs/design/APPROVED_SITEWIDE_HEADER_REFERENCE.md
@@ -62,6 +64,7 @@ jobs:
           node --check scripts/apply-sitewide-header.mjs
           node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
           node --check scripts/publish-wordpress-approved-design-reference.mjs
+          node --check scripts/verify-sitewide-header-v5-live.mjs
           test -s site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg
           test -s site/wordpress/assets/design-references/approved-sitewide-header-reference.json
           grep -Fq 'data-dtf-shell="header-v5"' scripts/lib/sitewide-header-template.mjs
@@ -84,12 +87,15 @@ jobs:
     needs: validate
     runs-on: ubuntu-latest
     environment: production
+    timeout-minutes: 30
     env:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       APPLY_SHARED_SHELL_V3: 'true'
       APPLY_APPROVED_DESIGN_REFERENCE: 'true'
       BACKUP_ROOT: /tmp/dtf-approved-header-v5
+      HEADER_AUDIT_CONCURRENCY: '6'
+      HEADER_AUDIT_MAX_ROUTES: '800'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -136,6 +142,11 @@ jobs:
               exit 1
             fi
           done
+      - name: Audit approved header across discovered public routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/verify-sitewide-header-v5-live.mjs | tee /tmp/dtf-header-v5-live-audit.json
       - name: Store approved design reference in WordPress Media Library
         id: reference_upload
         continue-on-error: true
@@ -165,5 +176,6 @@ jobs:
             /tmp/dtf-approved-design-reference.json
             /tmp/dtf-approved-design-reference-readback.json
             /tmp/dtf-approved-header-v5.json
+            /tmp/dtf-header-v5-live-audit.json
           if-no-files-found: ignore
           retention-days: 30
