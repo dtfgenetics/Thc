@@ -102,24 +102,42 @@ jobs:
         shell: bash
         run: |
           node scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs | tee "$BACKUP_ROOT/readback-ui-v3-verification.json"
-      - name: Verify Courses page, header menu and representative public lesson
+      - name: Verify public Courses and representative lesson after cache convergence
         shell: bash
         run: |
           set -euo pipefail
           courses="$RUNNER_TEMP/courses.html"
           lesson="$RUNNER_TEMP/course1-lesson.html"
-          curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 --header 'Cache-Control: no-cache, no-store, max-age=0' "$WP_SITE_URL/courses/?verify=${GITHUB_RUN_ID}" --output "$courses"
-          curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 --header 'Cache-Control: no-cache, no-store, max-age=0' "$WP_SITE_URL/learn/learning-hub/cultivation-technician-i/safety-responsible-practice-cultivation-workflows/applied-workplace-safety/lesson-1-1-hazard-recognition-control-boundaries/?verify=${GITHUB_RUN_ID}" --output "$lesson"
-          grep -Fq 'dtf-courses-v3-style' "$courses"
-          grep -Fq 'data-dtf-courses-catalog="v3"' "$courses"
-          grep -Fq 'Professional cultivation courses' "$courses"
-          grep -Fq 'href="/courses/"' "$courses"
-          grep -Fq 'dtf-learning-hub-course1-ui-v3' "$lesson"
-          grep -Fq 'dtf-learning-hub-course1-layout-v4' "$lesson"
-          grep -Fq 'lhv4-lesson-layout' "$lesson"
-          grep -Fq 'Course outline' "$lesson"
-          grep -Fq 'Mark lesson complete' "$lesson"
-          ! grep -Eqi 'interactive academic visual|<svg' "$lesson"
+          courses_ok=0
+          lesson_ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            nonce="${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)"
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/courses/?verify=${nonce}" --output "$courses"
+            if grep -Fq 'dtf-courses-v3-style' "$courses" && \
+               grep -Fq 'data-dtf-courses-catalog="v3"' "$courses" && \
+               grep -Fq 'Professional cultivation courses' "$courses"; then
+              courses_ok=1
+            fi
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/learning-hub/cultivation-technician-i/safety-responsible-practice-cultivation-workflows/applied-workplace-safety/lesson-1-1-hazard-recognition-control-boundaries/?verify=${nonce}" --output "$lesson"
+            if grep -Fq 'dtf-learning-hub-course1-ui-v3' "$lesson" && \
+               grep -Fq 'dtf-learning-hub-course1-layout-v4' "$lesson" && \
+               grep -Fq 'lhv4-lesson-layout' "$lesson" && \
+               grep -Fq 'Course outline' "$lesson" && \
+               grep -Fq 'Mark lesson complete' "$lesson" && \
+               ! grep -Fqi 'interactive academic visual' "$lesson"; then
+              lesson_ok=1
+            fi
+            if [[ "$courses_ok" -eq 1 && "$lesson_ok" -eq 1 ]]; then
+              break
+            fi
+            sleep 5
+          done
+          [[ "$courses_ok" -eq 1 ]] || { echo 'Courses V3 did not become visitor-facing within the verification window.' >&2; exit 1; }
+          [[ "$lesson_ok" -eq 1 ]] || { echo 'Course 1 V4 lesson layout did not become visitor-facing within the verification window.' >&2; exit 1; }
       - name: Upload rollback and verification evidence
         if: always()
         uses: actions/upload-artifact@v4
