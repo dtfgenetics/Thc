@@ -22,6 +22,24 @@ async function walk(dir) {
   return files;
 }
 
+function occurrences(source, needle) {
+  return source.split(needle).length - 1;
+}
+
+function verifyDocument(source, rel) {
+  if (!/<html\b/i.test(source) || !/<body\b/i.test(source)) return { skipped: true };
+  const expected = [
+    ['data-dtf-shell="header-v5"', 'header'],
+    ['id="dtf-sitewide-header-v5-style"', 'style'],
+    ['id="dtf-sitewide-header-v5-script"', 'script'],
+  ];
+  for (const [needle, label] of expected) {
+    const count = occurrences(source, needle);
+    if (count !== 1) report.failures.push(`${rel}: expected exactly one canonical ${label}; found ${count}`);
+  }
+  return { skipped: false };
+}
+
 function removeOwnedFragment(html, expression) {
   return html.replace(expression, '');
 }
@@ -85,8 +103,15 @@ const files = await walk(root);
 for (const file of files) {
   report.scanned += 1;
   const source = await readFile(file, 'utf8');
-  const result = reconcileDocument(source);
   const rel = relative(root, file);
+
+  if (checkOnly) {
+    const result = verifyDocument(source, rel);
+    if (result.skipped) report.skipped += 1;
+    continue;
+  }
+
+  const result = reconcileDocument(source);
   if (result.skipped) { report.skipped += 1; continue; }
   if (!result.output.includes('data-dtf-shell="header-v5"') || !result.output.includes('dtf-sitewide-header-v5-style')) {
     report.failures.push(`${rel}: canonical header markers missing after reconciliation`);
@@ -95,10 +120,9 @@ for (const file of files) {
   if (result.removedLegacy) report.replacedLegacyHeaders += 1;
   if (result.changed) {
     report.changed += 1;
-    if (!checkOnly) await writeFile(file, result.output);
+    await writeFile(file, result.output);
   }
 }
 
-if (checkOnly && report.changed > 0) report.failures.push(`${report.changed} HTML files require sitewide-header reconciliation`);
 console.log(JSON.stringify(report, null, 2));
 if (report.failures.length) process.exitCode = 1;
