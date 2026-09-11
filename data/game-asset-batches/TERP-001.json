@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "batchId": "TERP-001",
+  "gameId": "terpocalypse",
+  "title": "Branding + Core HUD Foundation",
+  "status": "READY-FOR-AUTHORING",
+  "priority": "P0",
+  "quantity": 10,
+  "owningRepo": "dtfgenetics/Terpocalapse",
+  "sourceReference": {
+    "assetManifest": "assets/ASSET_MANIFEST.md",
+    "rule": "Create original FPS/cannabis-horror visual language. Do not reuse, trace, imitate, or derive from copyrighted Doom art, logos, monsters, HUD frames or weapon graphics.",
+    "prototypeSetting": "The Veg Lab / grow-room-from-hell vertical slice"
+  },
+  "drive": {
+    "visualRootId": "1fUqEM6zfDz7BOppp6U4vy7GiDKV9QVQT",
+    "sourceBatchFolderId": "15ovxL7F9lhwEV2yrczN_x21l2wXYWEM4",
+    "briefFolderId": "1T5cjj5NcAlUDTCI-u1faZoYUVa-WGEik",
+    "approvedMastersFolderId": "1zJThv30hmGeHckIxOCtIRfhx4o91uYyr",
+    "uiFolderId": "1hWEw1CiHJs6h23xW6a5P9qr-gqsPbk24",
+    "runtimeExportsFolderId": "1MspHh_STVgRoMJSh4rt8Uwv8RGmKwpHV"
+  },
+  "runtime": {
+    "repo": "dtfgenetics/Terpocalapse",
+    "targetDirectories": ["assets/branding", "assets/ui"],
+    "activeIntegration": false
+  },
+  "output": {
+    "sourceMasterMinimumPx": 2048,
+    "preferredSourceFormat": "PNG",
+    "runtimeFormat": "WebP/PNG",
+    "uiAlpha": true,
+    "style": "original retro-fast FPS readability with modern HD production polish, grow-lab horror/comedy identity, strong silhouettes, no yellow cast"
+  },
+  "assets": [
+    {"assetId":"TERP-BRAND-LOGO-MAIN-v01","manifestAsset":"logo-main","name":"Main Terpocalypse logo","state":"NEEDED"},
+    {"assetId":"TERP-BRAND-TITLE-BACKGROUND-v01","manifestAsset":"title-background","name":"Grow-room title/menu background","state":"NEEDED"},
+    {"assetId":"TERP-UI-HUD-FRAME-v01","manifestAsset":"hud-frame","name":"Main HUD frame","state":"NEEDED"},
+    {"assetId":"TERP-UI-CROSSHAIR-v01","manifestAsset":"crosshair","name":"Default crosshair","state":"NEEDED"},
+    {"assetId":"TERP-UI-HEALTH-v01","manifestAsset":"health-icon","name":"Cure-jar health icon","state":"NEEDED"},
+    {"assetId":"TERP-UI-ARMOR-v01","manifestAsset":"armor-icon","name":"Kief armor icon","state":"NEEDED"},
+    {"assetId":"TERP-UI-AMMO-v01","manifestAsset":"ammo-icon","name":"Ammo icon","state":"NEEDED"},
+    {"assetId":"TERP-UI-KEY-GREEN-v01","manifestAsset":"green-key-icon","name":"Green keycard HUD icon","state":"NEEDED"},
+    {"assetId":"TERP-UI-KEY-PURPLE-v01","manifestAsset":"purple-key-icon","name":"Purple keycard HUD icon","state":"NEEDED"},
+    {"assetId":"TERP-UI-KEY-GOLD-v01","manifestAsset":"gold-key-icon","name":"Gold keycard HUD icon","state":"NEEDED"}
+  ],
+  "deferredManifestAsset": "thc-badge",
+  "acceptanceCriteria": [
+    "all ten pieces look like one original game identity",
+    "HUD frame preserves clear gameplay viewport and readable status areas",
+    "health/armor/ammo/key icons remain recognizable at small HUD size",
+    "green/purple/gold key states also differ by symbol/form, not color alone",
+    "logo and title background are original and not visually derivative of Doom branding",
+    "transparent HUD components have clean edges",
+    "source masters land in the TERP-001 Drive folder before approval"
+  ],
+  "nextBatch": "TERP-002"
+}
