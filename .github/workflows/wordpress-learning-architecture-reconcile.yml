@@ -1,0 +1,61 @@
+name: Reconcile WordPress Learning Architecture
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - scripts/reconcile-wordpress-learning-architecture.mjs
+      - .github/workflows/wordpress-learning-architecture-reconcile.yml
+  workflow_run:
+    workflows:
+      - Publish DTFSeeds Learning Experience V3
+      - Publish Learning Hub Course 1
+    types:
+      - completed
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-learning-architecture-reconcile
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_LEARNING_ARCHITECTURE: 'true'
+      BACKUP_ROOT: /tmp/dtf-learning-architecture
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Validate architecture reconciler
+        run: node --check scripts/reconcile-wordpress-learning-architecture.mjs
+      - name: Require WordPress credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+      - name: Reconcile and verify Learn architecture
+        run: node scripts/reconcile-wordpress-learning-architecture.mjs
+      - name: Upload reconciliation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: learning-architecture-${{ github.run_id }}
+          path: /tmp/dtf-learning-architecture
+          if-no-files-found: warn
+          retention-days: 30
