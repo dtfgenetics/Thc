@@ -5,10 +5,12 @@ on:
     paths:
       - site/wordpress/education/learning-hub-course1.json
       - site/wordpress/education/learning-hub-course1-ui-v3.json
+      - site/wordpress/education/course-catalog-v3.json
       - scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
       - scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
       - scripts/publish-wordpress-courses-navigation-v2.mjs
+      - scripts/publish-wordpress-courses-catalog-v3.mjs
       - scripts/verify-wordpress-learning-hub-course1.mjs
       - scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
       - .github/workflows/wordpress-learning-hub-course1-production.yml
@@ -18,10 +20,12 @@ on:
     paths:
       - site/wordpress/education/learning-hub-course1.json
       - site/wordpress/education/learning-hub-course1-ui-v3.json
+      - site/wordpress/education/course-catalog-v3.json
       - scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
       - scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
       - scripts/publish-wordpress-courses-navigation-v2.mjs
+      - scripts/publish-wordpress-courses-catalog-v3.mjs
       - scripts/verify-wordpress-learning-hub-course1.mjs
       - scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
       - .github/workflows/wordpress-learning-hub-course1-production.yml
@@ -42,18 +46,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Validate publisher, guided UI, responsive layout, navigation, verifiers and public manifest
+      - name: Validate publisher, guided UI, responsive layout, catalog, navigation and verifiers
         run: |
           node --check scripts/publish-wordpress-learning-hub-course1-v2.mjs
           node --check scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
           node --check scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
           node --check scripts/publish-wordpress-courses-navigation-v2.mjs
+          node --check scripts/publish-wordpress-courses-catalog-v3.mjs
           node --check scripts/verify-wordpress-learning-hub-course1.mjs
           node --check scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
           node scripts/publish-wordpress-learning-hub-course1-v2.mjs --validate-only
           node scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs --validate-only
           node scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs --validate-only
           node scripts/publish-wordpress-courses-navigation-v2.mjs --validate-only
+          node scripts/publish-wordpress-courses-catalog-v3.mjs --validate-only
 
   publish:
     if: github.event_name != 'pull_request'
@@ -83,8 +89,10 @@ jobs:
         run: node scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
       - name: Apply responsive three-column Course 1 lesson layout
         run: node scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
-      - name: Publish Courses catalog and shared header link
+      - name: Preserve shared Courses navigation behavior
         run: node scripts/publish-wordpress-courses-navigation-v2.mjs
+      - name: Publish editable responsive Courses catalog V3
+        run: node scripts/publish-wordpress-courses-catalog-v3.mjs
       - name: Verify published Course 1 base release by WordPress readback
         shell: bash
         run: |
@@ -102,7 +110,8 @@ jobs:
           lesson="$RUNNER_TEMP/course1-lesson.html"
           curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 --header 'Cache-Control: no-cache, no-store, max-age=0' "$WP_SITE_URL/courses/?verify=${GITHUB_RUN_ID}" --output "$courses"
           curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 --header 'Cache-Control: no-cache, no-store, max-age=0' "$WP_SITE_URL/learn/learning-hub/cultivation-technician-i/safety-responsible-practice-cultivation-workflows/applied-workplace-safety/lesson-1-1-hazard-recognition-control-boundaries/?verify=${GITHUB_RUN_ID}" --output "$lesson"
-          grep -Fq 'dtf-courses-v1-style' "$courses"
+          grep -Fq 'dtf-courses-v3-style' "$courses"
+          grep -Fq 'data-dtf-courses-catalog="v3"' "$courses"
           grep -Fq 'Professional cultivation courses' "$courses"
           grep -Fq 'href="/courses/"' "$courses"
           grep -Fq 'dtf-learning-hub-course1-ui-v3' "$lesson"
