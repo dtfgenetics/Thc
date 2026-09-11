@@ -102,6 +102,9 @@ jobs:
           node --check games/seed-man-platformer/src/systems/production-readiness.mjs
           node --check games/seed-man-platformer/src/systems/production-assets.mjs
           node --check games/seed-man-platformer/src/systems/production-bootstrap.mjs
+          node --check site/public-route-patch/games/seed-man-platformer/app.js
+          node --check site/public-route-patch/games/seed-man-platformer/campaign-v20-runtime.js
+          node --check site/public-route-patch/games/seed-man-platformer/campaign-ui-v20.js
 
       - name: Run deterministic gameplay and migration coverage
         run: |
