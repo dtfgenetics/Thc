@@ -122,7 +122,7 @@ for (const [field, expected] of Object.entries({phenotypes:4,coreCharacterStates
 }
 
 const who = registry.games?.['who-took-it']?.knownScope ?? {};
-for (const [field, expected] of Object.entries({suspectPortraitsComplete:25,itemEvidenceCardsMissing:18,boardFramesMissing:3,selectionStateAssetsMissing:4})) {
+for (const [field, expected] of Object.entries({suspectPortraitsComplete:25,itemEvidenceCardsMissing:5,boardFramesMissing:3,selectionStateAssetsMissing:4})) {
   if (who[field] !== expected) fail(`Who Took It ${field} expected ${expected}, found ${who[field]}`);
 }
 
@@ -130,7 +130,7 @@ const wtiBatch = batches.get('WTI-001');
 const expectedWtiItems = ['item_bag','item_dabs','item_lighter','item_chocolate_bar','item_gummies'];
 const actualWtiItems = (wtiBatch?.assets ?? []).map((asset) => asset.canonicalItemId).filter(Boolean);
 if (JSON.stringify(actualWtiItems) !== JSON.stringify(expectedWtiItems)) fail(`WTI-001 canonical item IDs mismatch: ${JSON.stringify(actualWtiItems)}`);
-if (wtiBatch?.unresolvedPlannedItems !== 13) fail('WTI-001 must keep 13 planned evidence items unresolved until canonical data defines them');
+if (wtiBatch?.unresolvedPlannedItems !== 0) fail('WTI-001 must not invent unresolved evidence items beyond the five canonical playable items');
 
 const expectedHiqCategories = ['Nutrition & pH','Environment & Climate','Root Zone & Irrigation','Plant Biology','Diagnostics','Photobiology','Plant Physiology','Integrated Pest Management','Genetics & Breeding','Harvest & Postharvest'];
 const hiqCategories = (batches.get('HIQ-001')?.assets ?? []).map((asset) => asset.category);
