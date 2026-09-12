@@ -1,0 +1,122 @@
+/*
+ * THC Living Plant Atlas + DTFSeeds V5 site-shell integration.
+ *
+ * The public Atlas keeps its own local navigation and 3D workspace, but the
+ * canonical DTFSeeds header is the primary global navigation. This layer keeps
+ * the Atlas sticky bar below that header and constrains dense viewer controls
+ * on tablets and phones without hiding horizontal-overflow regressions.
+ */
+
+:root {
+  --atlas-site-header-offset: 92px;
+}
+
+.topbar {
+  top: var(--atlas-site-header-offset) !important;
+}
+
+.topbar-inner,
+.atlas-shell,
+.hero > *,
+.plant-lab > *,
+.toolbar > *,
+.section-head > *,
+.system-grid > *,
+.deep-grid > * {
+  min-width: 0;
+}
+
+.top-links a,
+.anatomy-key button,
+.filter,
+.viewer-reset {
+  min-height: 44px;
+}
+
+.plant-tooltip {
+  min-width: 0 !important;
+  width: min(86%, 320px);
+  max-width: calc(100% - 32px) !important;
+}
+
+body.admin-bar .topbar {
+  top: calc(var(--atlas-site-header-offset) + 32px) !important;
+}
+
+@media (max-width: 1120px) {
+  :root {
+    --atlas-site-header-offset: 74px;
+  }
+}
+
+@media (max-width: 820px) {
+  .top-links,
+  .filters,
+  .anatomy-key {
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .top-links::-webkit-scrollbar,
+  .filters::-webkit-scrollbar,
+  .anatomy-key::-webkit-scrollbar {
+    display: none;
+  }
+
+  .plant-viewport,
+  .plant-viewport canvas {
+    min-height: clamp(430px, 72svh, 560px) !important;
+  }
+
+  .viewer-model-status {
+    max-width: calc(100% - 112px) !important;
+    overflow-wrap: anywhere;
+  }
+
+  .specimen-plaque {
+    max-width: calc(100% - 28px);
+  }
+}
+
+@media (max-width: 782px) {
+  body.admin-bar .topbar {
+    top: calc(var(--atlas-site-header-offset) + 46px) !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .plant-viewport,
+  .plant-viewport canvas {
+    min-height: clamp(390px, 64svh, 500px) !important;
+  }
+
+  .viewer-model-status {
+    max-width: calc(100% - 104px) !important;
+  }
+
+  .viewer-hud {
+    max-width: calc(100% - 28px);
+  }
+}
+
+@media (max-width: 390px) {
+  .atlas-shell {
+    padding-inline: 12px;
+  }
+
+  .plant-viewport,
+  .plant-viewport canvas {
+    min-height: clamp(360px, 62svh, 460px) !important;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .stat + .stat {
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid rgba(168, 203, 174, .12);
+  }
+}
