@@ -11,7 +11,7 @@
     "itemsData": "03_digital-game/src/data/items.json",
     "assetManifest": "assets/production-manifest.json",
     "visualDirection": "original humorous cannabis mystery board with distinct silhouettes, inclusive characters and evidence-first readability",
-    "dataMismatch": "The asset manifest plans 18 evidence cards, while current playable item data defines 5 canonical items. WTI-001 only names those 5 real items. The remaining 13 planned evidence items stay UNRESOLVED until canonical game data defines them."
+    "dataMismatch": "Resolved 2026-09-12: the canonical playable item system and production manifest define exactly 5 evidence items. WTI-001 names those 5 real items and uses the remaining batch slots for reusable evidence-card and item-state UI components."
   },
   "drive": {
     "visualRootId": "1QzFBDGjQQIJOEam4KCZws7nQq-MA6qwz",
@@ -48,14 +48,14 @@
     {"assetId":"WTI-UI-ITEM-SELECTED-v01","name":"Selected item state treatment","state":"NEEDED"},
     {"assetId":"WTI-UI-ITEM-ELIMINATED-v01","name":"Eliminated item state treatment","state":"NEEDED"}
   ],
-  "unresolvedPlannedItems": 13,
+  "unresolvedPlannedItems": 0,
   "acceptanceCriteria": [
     "the five evidence objects map exactly to current canonical item IDs",
     "objects remain recognizable at card-thumbnail size",
     "humorous visual tone matches the completed suspect portrait set without copying third-party game art",
     "front/back/state components are reusable by runtime-rendered text and data",
     "selected and eliminated states are distinguishable without relying only on color",
-    "no additional evidence item names are invented before canonical game data exists",
+    "no additional evidence item names are invented beyond canonical game data",
     "source masters are stored in the WTI-001 Drive batch folder and approved masters are promoted before runtime integration"
   ],
   "nextBatch": "WTI-002"
