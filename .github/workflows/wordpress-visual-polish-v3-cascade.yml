@@ -55,14 +55,29 @@ jobs:
         run: |
           set -euo pipefail
           home="$RUNNER_TEMP/home.html"
+          header="$RUNNER_TEMP/home-header.html"
           curl -4 -fsSL --retry 3 --retry-delay 2 -H 'Cache-Control: no-cache, no-store' "$WP_SITE_URL/?dtf_v3_final=$GITHUB_RUN_ID" -o "$home"
           if grep -Fqi 'dtf-visual-polish-v3' "$home"; then
             grep -Fqi 'dtf-v3-spotlight' "$home"
             grep -Fqi 'data-dtf-shell="header-v5"' "$home"
             grep -Fqi 'id="dtf-sitewide-ux-polish-v1"' "$home"
-            grep -Fqi '>Diagnostic</a>' "$home"
-            ! grep -Fqi '>Tools</a>' "$home"
-            ! grep -Fqi '>Genetics</a>' "$home"
+            node - "$home" "$header" <<'NODE'
+          const fs = require('node:fs');
+          const source = fs.readFileSync(process.argv[2], 'utf8');
+          const match = source.match(/<header\b[^>]*data-dtf-shell=["']header-v5["'][^>]*>[\s\S]*?<\/header>/i);
+          if (!match) process.exit(1);
+          fs.writeFileSync(process.argv[3], match[0]);
+          NODE
+            grep -Fqi '>Home</a>' "$header"
+            grep -Fqi '>Seeds</a>' "$header"
+            grep -Fqi '>Learn</a>' "$header"
+            grep -Fqi '>Courses</a>' "$header"
+            grep -Fqi '>Diagnostic</a>' "$header"
+            grep -Fqi '>Games</a>' "$header"
+            grep -Fqi '>Community</a>' "$header"
+            grep -Fqi '>Shop</a>' "$header"
+            ! grep -Fqi '>Tools</a>' "$header"
+            ! grep -Fqi '>Genetics</a>' "$header"
           fi
       - name: Upload rollback package
         if: always()
@@ -74,6 +89,7 @@ jobs:
           retention-days: 30
       - name: Report cascade finalization
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
@@ -88,5 +104,5 @@ jobs:
               `Pages with V3 style finalized: **${process.env.FOUND || '0'}**`,
               `Live verification: **${process.env.VERIFY || 'not-run'}**`,
               '',
-              'Verification now requires the approved V5 navigation and shared UX polish instead of the retired V3 shell.'
+              'Verification requires the approved V5 navigation and shared UX polish. Reporting is non-blocking because production correctness must not depend on issue-comment availability.'
             ].join('\n')});
