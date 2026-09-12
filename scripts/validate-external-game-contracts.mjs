@@ -1,5 +1,4 @@
 import { readdir, readFile } from 'node:fs/promises';
-import path from 'node:path';
 import process from 'node:process';
 
 const root = new URL('../site/deployment/external-games/', import.meta.url);
@@ -38,12 +37,16 @@ for (const filename of entries) {
   if (!['release-candidate', 'ready-to-package', 'runtime-integration'].includes(game.status)) errors.push(`${where}: unsupported status ${String(game.status)}`);
   if (typeof game.artifact !== 'string' || game.artifact.trim() === '') errors.push(`${where}: artifact required`);
   if (typeof game.build !== 'string' || game.build.trim() === '') errors.push(`${where}: build command required`);
+
+  // Deterministic shipped-UI validation replaces browser-runner acceptance for migrated games.
+  // Keep the legacy field readable until every external contract has completed that migration.
+  const uiGate = game.promotionGate?.deterministicUiValidation ?? game.promotionGate?.browserAcceptance;
   if (
     !game.promotionGate ||
     !satisfiesPromotionGate(game.promotionGate.standaloneCI) ||
-    !satisfiesPromotionGate(game.promotionGate.browserAcceptance)
+    !satisfiesPromotionGate(uiGate)
   ) {
-    errors.push(`${where}: standalone/browser promotion gates must be required or passed`);
+    errors.push(`${where}: standalone/UI promotion gates must be required or passed`);
   }
 }
 
