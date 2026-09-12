@@ -441,6 +441,17 @@ function renderChoices() {
   else renderComplete();
 }
 
+function resetChoiceViewport() {
+  const reducedMotion = Boolean(globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+  window.requestAnimationFrame(() => {
+    try {
+      ui.choices.scrollTo({ left: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
+    } catch {
+      ui.choices.scrollLeft = 0;
+    }
+  });
+}
+
 function renderArchive() {
   ui.archive.replaceChildren();
   if (!state.archive.length) {
@@ -495,6 +506,7 @@ function resetRun(code) {
   state = createRun({ code }, data);
   replaceChallengeUrl();
   render();
+  resetChoiceViewport();
 }
 
 function runHasProgress() {
@@ -517,11 +529,13 @@ ui.choices.addEventListener('click', (event) => {
       const projection = projectionSummary(state.currentLine, card, currentGoal(), data);
       state = selectParent(state, button.dataset.choice, data);
       render();
+      resetChoiceViewport();
       ui.announce.textContent = `${card.label} selected. Projected cross was ${projection.fit} percent fit; three actual phenotype cards are now revealed.`;
     } else if (state.phase === 'phenotype') {
       const chosen = state.phenotypes.find((line) => line.lineId === button.dataset.choice);
       state = selectPhenotype(state, button.dataset.choice, data);
       render();
+      resetChoiceViewport();
       ui.announce.textContent = state.status === 'complete' ? `${chosen.label} kept. Draft complete. Final rank ${state.finalRank}.` : `${chosen.label} kept. Round ${state.round} parent draft ready.`;
     }
   } catch (error) {
@@ -538,6 +552,7 @@ ui.refresh.addEventListener('click', () => {
   try {
     state = refreshDraft(state, data);
     render();
+    resetChoiceViewport();
     ui.announce.textContent = `Draft refreshed. ${state.refreshesRemaining} refresh token${state.refreshesRemaining === 1 ? '' : 's'} remaining.`;
   } catch (error) {
     ui.announce.textContent = error instanceof Error ? error.message : String(error);
@@ -617,6 +632,7 @@ function load() {
     replaceChallengeUrl();
     ui.load.textContent = 'Ready · 6 rounds · hidden phenotype variance · 2 refreshes';
     render();
+    resetChoiceViewport();
   } catch (error) {
     console.error(error);
     ui.load.textContent = 'Pheno Draft could not initialize.';
