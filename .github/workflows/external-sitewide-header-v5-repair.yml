@@ -6,10 +6,12 @@ on:
       surface:
         description: External surface to repair
         required: true
-        default: kushKingsChess
+        default: all
         type: choice
         options:
+          - all
           - kushKingsChess
+          - thcUKnow
   push:
     branches: [main]
     paths:
@@ -48,30 +50,60 @@ jobs:
           node --check scripts/repair-external-sitewide-header-via-wordpress.mjs
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
-          const cfg=JSON.parse(fs.readFileSync('site/deployment/external-header-sources.json','utf8'));
-          if(cfg.schemaVersion!==1) throw new Error('bad schema');
-          const s=cfg.surfaces?.kushKingsChess;
-          if(!s||!/^dtfgenetics\//.test(s.repository)||!/^[0-9a-f]{40}$/.test(s.commit)) throw new Error('bad source pin');
-          const required=['index.html','play.php','css/dtf-sitewide-header-v5.css','js/dtf-sitewide-header-v5.js'];
-          for(const f of required) if(!s.files.includes(f)) throw new Error(`missing ${f}`);
-          if(!s.verifyRoutes.includes('/games/kush-kings-chess/')||!s.verifyRoutes.includes('/games/kush-kings-chess/play.php')) throw new Error('missing visitor verification route');
-          console.log(`${s.repository}@${s.commit}`);
+          const cfg = JSON.parse(fs.readFileSync('site/deployment/external-header-sources.json', 'utf8'));
+          if (cfg.schemaVersion !== 1) throw new Error('bad schema');
+          const surfaces = Object.entries(cfg.surfaces || {});
+          if (surfaces.length < 2) throw new Error('expected at least two external header surfaces');
+          for (const [name, surface] of surfaces) {
+            if (!/^dtfgenetics\//.test(surface.repository || '') || !/^[0-9a-f]{40}$/.test(surface.commit || '')) throw new Error(`bad source pin for ${name}`);
+            if (!surface.sourceRoot || !surface.publicRoot) throw new Error(`missing root config for ${name}`);
+            if (!Array.isArray(surface.files) || !surface.files.length) throw new Error(`missing files for ${name}`);
+            if (!surface.files.includes('index.html')) throw new Error(`missing index.html for ${name}`);
+            if (!Array.isArray(surface.verifyRoutes) || !surface.verifyRoutes.length) throw new Error(`missing verification routes for ${name}`);
+            if (!Array.isArray(surface.requiredMarkers) || !surface.requiredMarkers.includes('data-dtf-shell="header-v5"')) throw new Error(`missing required marker for ${name}`);
+          }
+          console.log(JSON.stringify(Object.keys(cfg.surfaces)));
           NODE
-      - name: Verify pinned upstream source contains V5 shell
+      - name: Verify pinned upstream sources contain V5 shell
         shell: bash
         run: |
           set -euo pipefail
-          repo="$(node -p "require('./site/deployment/external-header-sources.json').surfaces.kushKingsChess.repository")"
-          sha="$(node -p "require('./site/deployment/external-header-sources.json').surfaces.kushKingsChess.commit")"
-          root="$(node -p "require('./site/deployment/external-header-sources.json').surfaces.kushKingsChess.sourceRoot")"
-          for file in index.html play.php css/dtf-sitewide-header-v5.css js/dtf-sitewide-header-v5.js; do
-            curl -fsSL --retry 3 --retry-delay 2 "https://raw.githubusercontent.com/${repo}/${sha}/${root}/${file}" -o "$RUNNER_TEMP/$(basename "$file")"
-            test -s "$RUNNER_TEMP/$(basename "$file")"
-          done
-          grep -Fq 'data-dtf-shell="header-v5"' "$RUNNER_TEMP/index.html"
-          grep -Fq 'data-dtf-shell="header-v5"' "$RUNNER_TEMP/play.php"
-          grep -Fq '>Diagnostic</a>' "$RUNNER_TEMP/index.html"
-          grep -Fq '>Diagnostic</a>' "$RUNNER_TEMP/play.php"
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { writeFileSync } from 'node:fs';
+          const cfg = JSON.parse(fs.readFileSync('site/deployment/external-header-sources.json', 'utf8'));
+          const surfaces = Object.entries(cfg.surfaces || {});
+          for (const [name, surface] of surfaces) {
+            for (const file of surface.files) {
+              const root = String(surface.sourceRoot || '').replace(/^\/+|\/+$/g, '');
+              const rel = String(file || '').replace(/^\/+/, '');
+              writeFileSync(process.env.GITHUB_OUTPUT, '', { flag: 'a' });
+              console.log(`${name}|${surface.repository}|${surface.commit}|${root}/${rel}`);
+            }
+          }
+          NODE
+          while IFS='|' read -r name repo sha path; do
+            out="$RUNNER_TEMP/${name}-$(basename "$path")"
+            curl -fsSL --retry 3 --retry-delay 2 "https://raw.githubusercontent.com/${repo}/${sha}/${path}" -o "$out"
+            test -s "$out"
+            case "$(basename "$path")" in
+              index.html|play.php)
+                grep -Fq 'data-dtf-shell="header-v5"' "$out"
+                grep -Fq '>Diagnostic</a>' "$out"
+                ;;
+            esac
+          done < <(node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const cfg = JSON.parse(fs.readFileSync('site/deployment/external-header-sources.json', 'utf8'));
+          for (const [name, surface] of Object.entries(cfg.surfaces || {})) {
+            for (const file of surface.files) {
+              const root = String(surface.sourceRoot || '').replace(/^\/+|\/+$/g, '');
+              const rel = String(file || '').replace(/^\/+/, '');
+              console.log(`${name}|${surface.repository}|${surface.commit}|${root}/${rel}`);
+            }
+          }
+          NODE
+          )
 
   publish:
     if: github.event_name != 'pull_request'
@@ -81,7 +113,7 @@ jobs:
     env:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      EXTERNAL_HEADER_SURFACE: ${{ inputs.surface || 'kushKingsChess' }}
+      REQUESTED_EXTERNAL_HEADER_SURFACE: ${{ inputs.surface || 'all' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -93,29 +125,58 @@ jobs:
           set -euo pipefail
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured}"
-      - name: Publish only approved external header surface files
+      - name: Publish approved external header surface files
         shell: bash
         run: |
           set -euo pipefail
-          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/repair-external-sitewide-header-via-wordpress.mjs | tee /tmp/dtf-external-header-v5-repair.json
-      - name: Independently verify visitor-facing Kush Kings routes
+          mapfile -t surfaces < <(node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const cfg = JSON.parse(fs.readFileSync('site/deployment/external-header-sources.json', 'utf8'));
+          const requested = process.env.REQUESTED_EXTERNAL_HEADER_SURFACE || 'all';
+          if (requested !== 'all') {
+            if (!cfg.surfaces?.[requested]) throw new Error(`Unknown surface: ${requested}`);
+            console.log(requested);
+          } else {
+            for (const name of Object.keys(cfg.surfaces || {})) console.log(name);
+          }
+          NODE
+          )
+          for surface in "${surfaces[@]}"; do
+            echo "Publishing external V5 header surface: ${surface}"
+            EXTERNAL_HEADER_SURFACE="$surface" \
+              node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/repair-external-sitewide-header-via-wordpress.mjs \
+              | tee "/tmp/dtf-external-header-v5-repair-${surface}.json"
+          done
+      - name: Independently verify visitor-facing external routes
         shell: bash
         run: |
           set -euo pipefail
-          for route in /games/kush-kings-chess/ /games/kush-kings-chess/play.php; do
-            out="$RUNNER_TEMP/kush-v5-$(echo "$route" | tr '/.' '__').html"
+          mapfile -t probes < <(node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const cfg = JSON.parse(fs.readFileSync('site/deployment/external-header-sources.json', 'utf8'));
+          const requested = process.env.REQUESTED_EXTERNAL_HEADER_SURFACE || 'all';
+          const names = requested === 'all' ? Object.keys(cfg.surfaces || {}) : [requested];
+          for (const name of names) {
+            const surface = cfg.surfaces[name];
+            for (const route of surface.verifyRoutes || []) console.log(`${name}|${route}|${(surface.requiredMarkers || []).join('\u001f')}`);
+          }
+          NODE
+          )
+          for probe in "${probes[@]}"; do
+            IFS='|' read -r name route markers <<< "$probe"
+            out="$RUNNER_TEMP/${name}-$(echo "$route" | tr '/.' '__').html"
             ok=0
             for attempt in 1 2 3 4 5 6; do
               curl -4 -fsSL --retry 2 --retry-delay 2 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' \
                 -H 'Pragma: no-cache' \
-                "https://dtfseeds.com${route}?dtf_kush_header_v5=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" -o "$out" || true
-              if grep -Fq 'data-dtf-shell="header-v5"' "$out" && \
-                 grep -Fq '>Diagnostic</a>' "$out" && \
-                 grep -Fq 'Teaching' "$out"; then
-                ok=1
-                break
-              fi
+                "https://dtfseeds.com${route}?dtf_external_header_v5=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" -o "$out" || true
+              missing=0
+              IFS=$'\037' read -r -a required <<< "$markers"
+              for marker in "${required[@]}"; do
+                grep -Fq "$marker" "$out" || missing=1
+              done
+              if [[ "$missing" -eq 0 ]]; then ok=1; break; fi
               sleep 4
             done
             if [[ "$ok" -ne 1 ]]; then
@@ -128,6 +189,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: external-sitewide-header-v5-${{ github.run_id }}
-          path: /tmp/dtf-external-header-v5-repair.json
+          path: /tmp/dtf-external-header-v5-repair-*.json
           if-no-files-found: ignore
           retention-days: 30
