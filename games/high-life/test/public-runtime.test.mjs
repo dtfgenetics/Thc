@@ -75,6 +75,11 @@ assert.match(visual, /\.danger-arm/);
 assert.match(visual, /\.hero-art/);
 assert.match(visual, /object-position:66% center/);
 assert.match(visual, /@media\(max-width:650px\)/);
+assert.match(visual, /@media\(max-width:480px\)\{\.dashboard\{grid-template-columns:1fr\}/, 'narrow-phone dashboard must collapse to one column');
+assert.match(visual, /top:calc\(var\(--dtf-global-header-height,74px\) \+ 8px\)/, 'sticky era roadmap must clear the V5 site header');
+assert.match(visual, /\.career-log-panel \.log-toggle\{min-height:44px/, 'career log control must retain a 44px touch target');
+assert.match(visual, /scroll-margin-top:calc\(var\(--dtf-global-header-height,92px\) \+ 16px\)/, 'turn-resolution anchors must clear the global header');
+assert.doesNotMatch(visual, /\.era-roadmap\{[^}]*position:sticky;top:\.35rem/, 'legacy sticky roadmap offset must not return');
 assert.match(visual, /@media\(prefers-reduced-motion:reduce\)/);
 
-console.log('High Life canonical engine runtime, exact resume, event parity, and three-era visual regression checks passed.');
+console.log('High Life canonical engine runtime, exact resume, event parity, V5 mobile layout, and three-era visual regression checks passed.');
