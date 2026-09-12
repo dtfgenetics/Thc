@@ -1,34 +1,44 @@
 {
-  "schemaVersion": 1,
-  "updated": "2026-09-08",
+  "schemaVersion": 2,
+  "updated": "2026-09-12",
   "site": "https://dtfseeds.com",
   "principles": {
-    "maxPrimaryNavItems": 6,
+    "maxPrimaryNavItems": 8,
     "primaryAction": "Diagnose a Plant",
+    "primaryActionLocation": "home-quick-actions",
     "statusLabels": [
       "play-now",
       "multiplayer",
       "development",
       "private"
     ],
-    "rule": "Only routes marked public may be rendered as visitor-facing navigation or play buttons."
+    "rule": "The shared primary navigation is fixed to Home, Seeds, Learn, Courses, Diagnostic, Games, Community, Shop. Search, Account, Cart, company/support links, and direct tool CTAs stay outside the primary navigation. Only routes marked public may be rendered as visitor-facing navigation or play buttons."
   },
   "primaryNavigation": [
+    {
+      "id": "home",
+      "label": "Home",
+      "route": "/"
+    },
+    {
+      "id": "seeds",
+      "label": "Seeds",
+      "route": "/seeds/"
+    },
     {
       "id": "learn",
       "label": "Learn",
       "route": "/learn/"
     },
     {
-      "id": "diagnose",
-      "label": "Diagnose",
-      "route": "/thc-grow-doc/",
-      "cta": "primary"
+      "id": "courses",
+      "label": "Courses",
+      "route": "/courses/"
     },
     {
-      "id": "genetics",
-      "label": "Genetics",
-      "route": "/seeds/"
+      "id": "diagnostic",
+      "label": "Diagnostic",
+      "route": "/tools/"
     },
     {
       "id": "games",
@@ -48,15 +58,22 @@
   ],
   "utilityNavigation": [
     {
-      "id": "atlas",
-      "label": "3D Plant Atlas",
-      "route": "/atlas/"
+      "id": "search",
+      "label": "Search",
+      "kind": "action"
     },
     {
-      "id": "tools",
-      "label": "Tools",
-      "route": "/tools/"
+      "id": "account",
+      "label": "Account",
+      "route": "/my-account/"
     },
+    {
+      "id": "cart",
+      "label": "Cart",
+      "route": "/cart/"
+    }
+  ],
+  "footerNavigation": [
     {
       "id": "gallery",
       "label": "Gallery",
@@ -95,11 +112,96 @@
       "priority": 4
     },
     {
-      "label": "Explore Genetics",
+      "label": "Explore Seeds",
       "route": "/seeds/",
       "priority": 5
     }
   ],
+  "informationArchitecture": {
+    "roots": [
+      {
+        "id": "home",
+        "label": "Home",
+        "route": "/",
+        "purpose": "Platform orientation, featured releases, current pathways, and high-value next actions."
+      },
+      {
+        "id": "seeds",
+        "label": "Seeds",
+        "route": "/seeds/",
+        "purpose": "Genetics library, breeding lines, lineage records, seed-generation context, and links to current product listings."
+      },
+      {
+        "id": "learn",
+        "label": "Learn",
+        "route": "/learn/",
+        "purpose": "Free topic-first plant science, cultivation references, guides, encyclopedia material, visual references, sources, and records."
+      },
+      {
+        "id": "courses",
+        "label": "Courses",
+        "route": "/courses/",
+        "purpose": "Sequenced curriculum, lessons, practice, workbooks, course assessments, and certification-oriented learning pathways."
+      },
+      {
+        "id": "diagnostic",
+        "label": "Diagnostic",
+        "route": "/tools/",
+        "purpose": "Grow records, diagnostics, calculators, measurement tools, charts, and evidence-based decision support."
+      },
+      {
+        "id": "games",
+        "label": "Games",
+        "route": "/games/",
+        "purpose": "Game hub, playable browser games, multiplayer experiences, and canonical game runtimes."
+      },
+      {
+        "id": "community",
+        "label": "Community",
+        "route": "/community/",
+        "purpose": "Discord, grow-offs, events, gallery/community participation, and community standards."
+      },
+      {
+        "id": "shop",
+        "label": "Shop",
+        "route": "/shop/",
+        "purpose": "Current commerce presentation, product discovery, cart/account entry points, and protected WooCommerce transaction flows."
+      }
+    ],
+    "supportSurface": {
+      "label": "Company & support",
+      "placement": "footer",
+      "routes": [
+        "/gallery/",
+        "/about/",
+        "/contact/"
+      ]
+    },
+    "specialOwnership": [
+      {
+        "route": "/atlas/",
+        "root": "learn",
+        "note": "Interactive 3D learning surface; related to, but not interchangeable with, /learn/atlas/."
+      },
+      {
+        "routePrefix": "/learn/learning-hub/",
+        "root": "courses",
+        "note": "Structured course trees remain beneath their existing Learning Hub URLs but are presented to visitors as Courses."
+      },
+      {
+        "route": "/growlens/",
+        "root": "diagnostic"
+      },
+      {
+        "route": "/thc-grow-doc/",
+        "root": "diagnostic"
+      },
+      {
+        "routePrefix": "/product/",
+        "root": "shop"
+      }
+    ]
+  },
   "learn": {
     "route": "/learn/",
     "sections": [
@@ -116,8 +218,16 @@
         "route": "/learn/start-here/"
       },
       {
-        "label": "Academy",
-        "route": "/learn/academy/"
+        "label": "Plant Health & IPM",
+        "route": "/learn/plant-health/"
+      },
+      {
+        "label": "Cultivation Science",
+        "route": "/learn/cultivation-science/"
+      },
+      {
+        "label": "Symptom Differentials",
+        "route": "/learn/symptoms/"
       },
       {
         "label": "Encyclopedia",
@@ -142,6 +252,50 @@
       {
         "label": "Printables & Records",
         "route": "/learn/records/"
+      },
+      {
+        "label": "Evidence & Sources",
+        "route": "/learn/sources/"
+      }
+    ]
+  },
+  "courses": {
+    "route": "/courses/",
+    "sections": [
+      {
+        "label": "Learning Hub",
+        "route": "/learn/learning-hub/"
+      },
+      {
+        "label": "Course 1 — Safety, Responsible Practice & Cultivation Workflows",
+        "route": "/learn/learning-hub/cultivation-technician-i/safety-responsible-practice-cultivation-workflows/"
+      }
+    ]
+  },
+  "diagnostic": {
+    "route": "/tools/",
+    "tools": [
+      {
+        "id": "growlens",
+        "title": "THC GrowLens",
+        "route": "/growlens/",
+        "status": "play-now",
+        "public": true
+      },
+      {
+        "id": "grow-doc",
+        "title": "THC Grow Doc",
+        "route": "/thc-grow-doc/",
+        "status": "play-now",
+        "public": true
+      },
+      {
+        "id": "atlas",
+        "title": "THC Living Plant Atlas — 3D Explorer",
+        "route": "/atlas/",
+        "status": "play-now",
+        "public": true,
+        "secondaryRoot": "learn"
       }
     ]
   },

@@ -40,9 +40,10 @@ function unique(items, key, label) {
 const projectsDoc = loadJson('data/project-registry.json');
 const sitesDoc = loadJson('data/site-registry.json');
 const assetsDoc = loadJson('data/asset-manifest.json');
+const navigationDoc = loadJson('data/public-navigation.json');
 loadJson('data/asset-manifest.schema.json');
 
-if (!projectsDoc || !sitesDoc || !assetsDoc) {
+if (!projectsDoc || !sitesDoc || !assetsDoc || !navigationDoc) {
   console.error(errors.join('\n'));
   process.exit(1);
 }
@@ -58,6 +59,7 @@ const allowedAssetStatuses = new Set([
 if (!projectsDoc.schema_version) errors.push('project-registry: missing schema_version');
 if (!sitesDoc.schema_version) errors.push('site-registry: missing schema_version');
 if (!assetsDoc.schema_version) errors.push('asset-manifest: missing schema_version');
+if (!navigationDoc.schemaVersion) errors.push('public-navigation: missing schemaVersion');
 if (!projects.length) errors.push('project-registry: projects is empty');
 
 unique(projects, 'id', 'project-registry');
@@ -127,6 +129,61 @@ for (const repo of siteRepos) {
   }
 }
 
+const canonicalNavigation = [
+  { id: 'home', label: 'Home', route: '/' },
+  { id: 'seeds', label: 'Seeds', route: '/seeds/' },
+  { id: 'learn', label: 'Learn', route: '/learn/' },
+  { id: 'courses', label: 'Courses', route: '/courses/' },
+  { id: 'diagnostic', label: 'Diagnostic', route: '/tools/' },
+  { id: 'games', label: 'Games', route: '/games/' },
+  { id: 'community', label: 'Community', route: '/community/' },
+  { id: 'shop', label: 'Shop', route: '/shop/' }
+];
+const siteNavigation = sitesDoc.information_architecture?.canonical_primary_navigation;
+const publicNavigation = navigationDoc.primaryNavigation;
+
+if (!Array.isArray(siteNavigation)) {
+  errors.push('site-registry: information_architecture.canonical_primary_navigation must be an array');
+}
+if (!Array.isArray(publicNavigation)) {
+  errors.push('public-navigation: primaryNavigation must be an array');
+}
+
+for (const [source, items] of [['site-registry', siteNavigation], ['public-navigation', publicNavigation]]) {
+  if (!Array.isArray(items)) continue;
+  if (items.length !== canonicalNavigation.length) {
+    errors.push(`${source}: canonical primary navigation must contain exactly ${canonicalNavigation.length} items`);
+    continue;
+  }
+  for (let index = 0; index < canonicalNavigation.length; index += 1) {
+    const expected = canonicalNavigation[index];
+    const actual = items[index];
+    for (const key of ['id', 'label', 'route']) {
+      if (actual?.[key] !== expected[key]) {
+        errors.push(`${source}: primary navigation item ${index + 1} ${key} must be '${expected[key]}'`);
+      }
+    }
+  }
+}
+
+const routeFamilies = sitesDoc.information_architecture?.route_families;
+if (!Array.isArray(routeFamilies) || routeFamilies.length !== canonicalNavigation.length) {
+  errors.push(`site-registry: information_architecture.route_families must contain exactly ${canonicalNavigation.length} roots`);
+} else {
+  unique(routeFamilies, 'id', 'site-registry route families');
+  for (let index = 0; index < canonicalNavigation.length; index += 1) {
+    const family = routeFamilies[index];
+    const expected = canonicalNavigation[index];
+    if (family?.id !== expected.id) errors.push(`site-registry route family ${index + 1}: id must be '${expected.id}'`);
+    if (family?.root !== expected.route) errors.push(`site-registry route family '${expected.id}': root must be '${expected.route}'`);
+    requiredString(family, 'visitor_purpose', `site-registry route family ${expected.id}`);
+    requiredString(family, 'authoritative_writer', `site-registry route family ${expected.id}`);
+    if (!Array.isArray(family?.content_scope) || !family.content_scope.length) {
+      errors.push(`site-registry route family ${expected.id}: content_scope must be a non-empty array`);
+    }
+  }
+}
+
 if (warnings.length) {
   console.warn(`Portfolio registry warnings (${warnings.length}):`);
   for (const warning of warnings) console.warn(`- ${warning}`);
@@ -138,4 +195,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Portfolio registry OK: ${projects.length} projects, ${sites.length} sites, ${assets.length} manifest assets.`);
+console.log(`Portfolio registry OK: ${projects.length} projects, ${sites.length} sites, ${assets.length} manifest assets, ${canonicalNavigation.length} canonical site roots.`);

@@ -1,6 +1,104 @@
 {
   "schema_version": "1.0.0",
-  "updated": "2026-08-16",
+  "updated": "2026-09-12",
+  "information_architecture": {
+    "contract": "Every public page belongs to one visitor-facing root and one authoritative production writer. Shared header/footer styling may span roots; content publishers may not overwrite routes they do not own.",
+    "canonical_primary_navigation": [
+      {"id": "home", "label": "Home", "route": "/"},
+      {"id": "seeds", "label": "Seeds", "route": "/seeds/"},
+      {"id": "learn", "label": "Learn", "route": "/learn/"},
+      {"id": "courses", "label": "Courses", "route": "/courses/"},
+      {"id": "diagnostic", "label": "Diagnostic", "route": "/tools/"},
+      {"id": "games", "label": "Games", "route": "/games/"},
+      {"id": "community", "label": "Community", "route": "/community/"},
+      {"id": "shop", "label": "Shop", "route": "/shop/"}
+    ],
+    "route_families": [
+      {
+        "id": "home",
+        "root": "/",
+        "visitor_purpose": "Orient visitors to the platform and route them to the most relevant next destination.",
+        "authoritative_writer": "Learning Experience V3 with reusable final Home visual handoff",
+        "content_scope": ["platform orientation", "featured releases", "current pathways", "high-value next actions"]
+      },
+      {
+        "id": "seeds",
+        "root": "/seeds/",
+        "visitor_purpose": "Browse DTF genetics, breeding lines, lineage records, seed-generation context, and related product paths.",
+        "authoritative_writer": "Dedicated genetics library publisher",
+        "content_scope": ["genetics library", "breeding lines", "lineage", "generation records", "seed-related product discovery"]
+      },
+      {
+        "id": "learn",
+        "root": "/learn/",
+        "visitor_purpose": "Use free topic-first plant-science and cultivation references without entering a sequenced course.",
+        "authoritative_writer": "Learning Experience V3 for /learn/ plus dedicated education publishers for owned descendants",
+        "content_scope": ["plant science", "cultivation references", "guides", "encyclopedia", "infographics", "sources", "glossary", "records", "plant health"]
+      },
+      {
+        "id": "courses",
+        "root": "/courses/",
+        "visitor_purpose": "Enter sequenced curriculum with lessons, practice, workbooks, tests, progress, and certification-oriented learning paths.",
+        "authoritative_writer": "Courses catalog publisher for /courses/ and Learning Hub course publishers for course descendants",
+        "content_scope": ["curriculum", "lessons", "practice", "workbooks", "course assessments", "course progress", "certification-oriented pathways"],
+        "existing_course_tree_root": "/learn/learning-hub/"
+      },
+      {
+        "id": "diagnostic",
+        "root": "/tools/",
+        "visitor_purpose": "Record, measure, diagnose, and verify cultivation decisions with evidence-based tools.",
+        "authoritative_writer": "Static public application suite and each diagnostic runtime owner",
+        "content_scope": ["GrowLens", "THC Grow Doc", "calculators", "charts", "measurement tools", "diagnostic references"],
+        "featured_routes": ["/growlens/", "/thc-grow-doc/"]
+      },
+      {
+        "id": "games",
+        "root": "/games/",
+        "visitor_purpose": "Discover and launch playable DTF browser and multiplayer games.",
+        "authoritative_writer": "Static public application suite hub plus each game's canonical repository/runtime",
+        "content_scope": ["game hub", "browser games", "multiplayer games", "canonical game runtimes"]
+      },
+      {
+        "id": "community",
+        "root": "/community/",
+        "visitor_purpose": "Join community activity, events, grow-offs, gallery participation, and Discord discussion.",
+        "authoritative_writer": "Canonical WordPress publisher",
+        "content_scope": ["Discord", "grow-offs", "events", "community standards", "community participation", "gallery links"]
+      },
+      {
+        "id": "shop",
+        "root": "/shop/",
+        "visitor_purpose": "Browse current commerce presentation and enter protected WooCommerce transaction flows.",
+        "authoritative_writer": "Canonical WordPress commerce-presentation publisher with protected WooCommerce transaction systems",
+        "content_scope": ["product discovery", "storefront presentation", "cart", "account", "protected checkout and transaction data"]
+      }
+    ],
+    "support_routes": [
+      {"route": "/gallery/", "placement": "footer", "owner": "Canonical WordPress publisher"},
+      {"route": "/about/", "placement": "footer", "owner": "Canonical WordPress publisher"},
+      {"route": "/contact/", "placement": "footer", "owner": "Canonical WordPress publisher"}
+    ],
+    "special_cases": [
+      {
+        "route": "/atlas/",
+        "primary_root": "learn",
+        "note": "Interactive 3D learning surface. It remains distinct from /learn/atlas/, which is the Atlas Learning Library."
+      },
+      {
+        "route": "/learn/learning-hub/",
+        "primary_root": "courses",
+        "note": "Existing Learning Hub URLs remain stable, but visitor-facing information architecture presents this tree under Courses."
+      },
+      {
+        "route": "/growlens/",
+        "primary_root": "diagnostic"
+      },
+      {
+        "route": "/thc-grow-doc/",
+        "primary_root": "diagnostic"
+      }
+    ]
+  },
   "sites": [
     {
       "id": "dtfseeds-main",
@@ -12,8 +110,8 @@
       "build": "mixed WordPress/public-content integration; see repository workflows and docs",
       "deployment": "Hostinger/WordPress production surface",
       "drive_control": "07 Websites & Apps/DTFSeeds Platform/01 Production Site",
-      "verification": "live-site-responds-source-newer-than-production-deploy-blocked-2026-08-16",
-      "verification_evidence": "Public homepage responds, but /seeds/ and /learn/ still expose older staging copy. WordPress source validation passed for commits 365abf11 and 32ba7733; production cleanup runs 31928470623 and 31928479795 failed at deployment-transport selection because no SSH credential pair or WordPress Application Password pair is configured."
+      "verification": "structure-reconciliation-in-progress-2026-09-12",
+      "verification_evidence": "On 2026-09-12 the production visual workflow successfully wrote the approved V5 shared shell, responsive layout v1, and sitewide UX polish v1, then successfully purged all LiteSpeed caches. Cache-busted /learn/ verification reached the current page and failed only because the workflow still expected the obsolete phrase 'Explore by subject'. The deterministic sitewide visual-integrity crawler is now merged; full route/content reconciliation and production-wide verification remain in progress, so whole-site health is not yet claimed."
     },
     {
       "id": "high-land-web",
