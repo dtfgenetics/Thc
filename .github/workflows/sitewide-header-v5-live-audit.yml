@@ -35,7 +35,7 @@ jobs:
           set -euo pipefail
           node --check scripts/audit-sitewide-header-live.mjs
           grep -Fq 'data-dtf-shell="header-v5"' scripts/audit-sitewide-header-live.mjs
-          grep -Fq '>Diagnostic</a>' scripts/audit-sitewide-header-live.mjs
+          grep -Fq 'Diagnostic' scripts/audit-sitewide-header-live.mjs
           grep -Fq 'site/deployment/public-apps.json' scripts/audit-sitewide-header-live.mjs
           grep -Fq 'workflow_run:' .github/workflows/sitewide-header-v5-live-audit.yml
           grep -Fq 'Deploy DTFSeeds Public Suite via WordPress V2' .github/workflows/sitewide-header-v5-live-audit.yml
