@@ -37,16 +37,14 @@ for (const filename of entries) {
   if (!['release-candidate', 'ready-to-package', 'runtime-integration'].includes(game.status)) errors.push(`${where}: unsupported status ${String(game.status)}`);
   if (typeof game.artifact !== 'string' || game.artifact.trim() === '') errors.push(`${where}: artifact required`);
   if (typeof game.build !== 'string' || game.build.trim() === '') errors.push(`${where}: build command required`);
-
-  // Deterministic shipped-UI validation replaces browser-runner acceptance for migrated games.
-  // Keep the legacy field readable until every external contract has completed that migration.
-  const uiGate = game.promotionGate?.deterministicUiValidation ?? game.promotionGate?.browserAcceptance;
+  if (/test:e2e|playwright/i.test(game.build || '')) errors.push(`${where}: browser-runner build gates are not permitted`);
+  if (game.promotionGate?.browserAcceptance !== undefined) errors.push(`${where}: legacy browserAcceptance gate is not permitted`);
   if (
     !game.promotionGate ||
     !satisfiesPromotionGate(game.promotionGate.standaloneCI) ||
-    !satisfiesPromotionGate(uiGate)
+    !satisfiesPromotionGate(game.promotionGate.deterministicUiValidation)
   ) {
-    errors.push(`${where}: standalone/UI promotion gates must be required or passed`);
+    errors.push(`${where}: standalone/deterministic UI promotion gates must be required or passed`);
   }
 }
 
