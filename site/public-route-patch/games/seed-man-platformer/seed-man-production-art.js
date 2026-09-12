@@ -7,6 +7,7 @@
  */
 
 const SPROUT_ART_VERSION = 'seed-man-approved-atlas-renderer-v4';
+const SPROUT_ACTION_FEEDBACK = 'seed-man-approved-action-feedback-v1';
 const SPROUT_VISUAL_PIPELINE = 'approved-showcase-2026-09-08';
 const SPROUT_CHARACTER_CONTRACT = 'green-armored-plant-hero';
 const APPROVED_CORE_URL = './approved-art-core-v1.js';
@@ -19,6 +20,7 @@ const APPROVED_CELLS = Object.freeze({
   plant: Object.freeze([1,1]), fire: Object.freeze([2,1]),
   electric: Object.freeze([3,1]), ice: Object.freeze([4,1])
 });
+const PHENOTYPE_ACCENTS = Object.freeze({plant:'#c8f36a',fire:'#ff9a4b',electric:'#d6c0ff',ice:'#8fe7ff'});
 
 let approvedSeedManImage=null;
 let approvedSeedManReady=false;
@@ -66,6 +68,8 @@ function activeApprovedPhenotype(){
   return ['plant','fire','electric','ice'].includes(id)?id:'plant';
 }
 function resolveApprovedPose(){
+  const combat=combatSnapshot();
+  if((Number(combat?.actionPoseRemaining)||0)>0&&['attack','ability'].includes(combat?.actionPose))return combat.actionPose;
   if(!player)return'idle';
   if(player.finished||player.state==='finish'||player.state==='victory')return'victory';
   if(player.state==='hurt')return'hurt';
@@ -79,6 +83,7 @@ function chooseApprovedCell(){
   const pose=resolveApprovedPose();
   if(phenotype!=='plant')return APPROVED_CELLS[phenotype];
   if(pose==='victory')return APPROVED_CELLS.victory;
+  if(pose==='ability')return APPROVED_CELLS.attack;
   return APPROVED_CELLS[pose]||APPROVED_CELLS.idle;
 }
 function approvedRect(){
@@ -90,6 +95,21 @@ function approvedRect(){
 function drawApprovedShadow(screenX,screenY){
   if(!player?.grounded)return;
   ctx.save();ctx.globalAlpha=.22;ctx.fillStyle='#07120d';ctx.beginPath();ctx.ellipse(screenX+player.width/2,screenY+player.height+3,Math.max(16,player.width*.62),6,0,0,Math.PI*2);ctx.fill();ctx.restore();
+}
+function drawPhenotypeAura(centerX,feetY,targetWidth,targetHeight,phenotype,pose){
+  if(phenotype==='plant')return;
+  const accent=PHENOTYPE_ACCENTS[phenotype]||PHENOTYPE_ACCENTS.plant;
+  const pulse=.72+Math.sin((performance.now()||0)*.01)*.12;
+  ctx.save();
+  ctx.globalAlpha=pose==='ability'?.62:.28;
+  ctx.strokeStyle=accent;
+  ctx.lineWidth=pose==='ability'?5:3;
+  ctx.shadowBlur=pose==='ability'?22:13;
+  ctx.shadowColor=accent;
+  ctx.beginPath();
+  ctx.ellipse(centerX,feetY-targetHeight*.48,targetWidth*.54*pulse,targetHeight*.49*pulse,0,0,Math.PI*2);
+  ctx.stroke();
+  ctx.restore();
 }
 function drawSeedManProduction(){
   if(!player||!ctx)return;
@@ -103,14 +123,25 @@ function drawSeedManProduction(){
   const targetWidth=targetHeight*(rect.w/rect.h);
   const centerX=screenX+(player.width||38)/2;
   const feetY=screenY+(player.height||58)+5;
+  const pose=resolveApprovedPose();
+  const phenotype=activeApprovedPhenotype();
   drawApprovedShadow(screenX,screenY);
+  drawPhenotypeAura(centerX,feetY,targetWidth,targetHeight,phenotype,pose);
   ctx.save();
   ctx.imageSmoothingEnabled=true;
   ctx.imageSmoothingQuality='high';
   ctx.translate(centerX,feetY);
   ctx.scale(facing,1);
-  const pose=resolveApprovedPose();
   if(pose==='run')ctx.rotate(Math.sin((performance.now()||0)*.018)*.025*facing);
+  if(pose==='attack'){
+    ctx.translate(-4,0);
+    ctx.rotate(-.045);
+  }
+  if(pose==='ability'){
+    ctx.translate(-2,-2);
+    ctx.rotate(.035);
+    ctx.scale(1.055,.965);
+  }
   if(pose==='hurt')ctx.globalAlpha=.78+Math.sin((performance.now()||0)*.04)*.18;
   ctx.drawImage(approvedSeedManImage,rect.x,rect.y,rect.w,rect.h,-targetWidth/2,-targetHeight,targetWidth,targetHeight);
   ctx.restore();
@@ -120,6 +151,7 @@ window.drawSeedManProduction=drawSeedManProduction;
 window.drawSeedMan=drawSeedManProduction;
 window.__SEED_MAN_PRODUCTION_ART__=Object.freeze({
   version:SPROUT_ART_VERSION,
+  actionFeedbackVersion:SPROUT_ACTION_FEEDBACK,
   pipeline:SPROUT_VISUAL_PIPELINE,
   characterContract:SPROUT_CHARACTER_CONTRACT,
   sourceOfTruth:'approved-showcase-2026-09-08',
@@ -129,7 +161,7 @@ window.__SEED_MAN_PRODUCTION_ART__=Object.freeze({
   phenotypeForms:Object.freeze(['plant','fire','electric','ice']),
   frameGrid:Object.freeze({cols:FRAME_COLS,rows:FRAME_ROWS}),
   cells:APPROVED_CELLS,
-  snapshot:()=>({ready:approvedSeedManReady,failed:approvedSeedManFailed,coreLoading:approvedCoreLoading,rendererOwner:document.documentElement.dataset.seedManRendererOwner||''})
+  snapshot:()=>({ready:approvedSeedManReady,failed:approvedSeedManFailed,coreLoading:approvedCoreLoading,rendererOwner:document.documentElement.dataset.seedManRendererOwner||'',actionFeedbackVersion:SPROUT_ACTION_FEEDBACK})
 });
 
 document.documentElement.dataset.seedManRendererOwner=SPROUT_ART_VERSION;
