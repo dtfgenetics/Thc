@@ -1,0 +1,51 @@
+name: Temporary Seed Ascent V5 verifier patch
+
+on:
+  push:
+    branches:
+      - fix/seed-ascent-v5-verifier
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: ${{ !contains(github.event.head_commit.message, 'Align Seed Ascent verification with V5 shell') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/seed-ascent-v5-verifier
+          fetch-depth: 0
+      - name: Replace obsolete WordPress-fingerprint rejection
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('scripts/promote-public-game-routes-via-wordpress.mjs')
+          text = path.read_text()
+          old = "        && !/wp-content|wp-includes|wordpress/i.test(wrapper.text);"
+          new = """        && wrapper.text.includes('data-dtf-shell=\"header-v5\"')
+                  && wrapper.text.includes('data-dtf-sitewide-header=\"approved-reference-v1\"')
+                  && wrapper.text.includes('id=\"dtf-sitewide-ux-polish-v1\"');"""
+          if text.count(old) != 1:
+              raise SystemExit(f'expected exactly one obsolete Seed Ascent verifier condition, found {text.count(old)}')
+          path.write_text(text.replace(old, new, 1))
+          workflow = Path('.github/workflows/tmp-seed-ascent-v5-verifier-patch.yml')
+          workflow.unlink()
+          PY
+          node --check scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq 'data-dtf-shell="header-v5"' scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq 'data-dtf-sitewide-header="approved-reference-v1"' scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq 'id="dtf-sitewide-ux-polish-v1"' scripts/promote-public-game-routes-via-wordpress.mjs
+          ! grep -Fq '!/wp-content|wp-includes|wordpress/i.test(wrapper.text)' scripts/promote-public-game-routes-via-wordpress.mjs
+      - name: Commit focused verifier correction
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'dtfgenetics'
+          git config user.email 'green801028@gmail.com'
+          git add scripts/promote-public-game-routes-via-wordpress.mjs .github/workflows/tmp-seed-ascent-v5-verifier-patch.yml
+          git commit -m 'Align Seed Ascent verification with V5 shell'
+          git push origin HEAD:fix/seed-ascent-v5-verifier
