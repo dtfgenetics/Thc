@@ -2,6 +2,7 @@
 
 (() => {
   const VERSION = 'seed-man-input-guard-v20';
+  const SHARED_PLATFORM_MODULE = '/games/shared-platform/index.mjs';
   const INTERACTIVE_SELECTOR = 'a, button, input, select, textarea, summary, [contenteditable="true"], [role="button"], [role="link"]';
 
   function isInteractiveTarget(target) {
@@ -20,6 +21,10 @@
     version:VERSION,
     campaign:'v20',
     purpose:'protect-native-interactive-keyboard-behavior',
+    sharedPlatformConsumer:'seed-man-shared-platform-v1',
+    sharedPlatformModule:SHARED_PLATFORM_MODULE,
+    sharedPlatformGlobal:'__SPROUT_SHARED_PLATFORM__',
+    settingsNamespace:'seed-game-settings',
     legacySignatureRuntime:false
   });
 
