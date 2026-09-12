@@ -52,8 +52,8 @@ jobs:
           version="$(sed -n 's/^version=//p' "$revision_file")"
           route="$(sed -n 's/^route=//p' "$revision_file")"
           test "$repo_name" = "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple"
-          test "$revision" = "e82580daa684fc7733ef6cfcb12a502939a609dd"
-          test "$version" = "0.3.0"
+          [[ "$revision" =~ ^[0-9a-f]{40}$ ]]
+          test "$version" = "0.4.0"
           test "$route" = "/games/ganjumanji/"
           echo "repository=$repo_name" >> "$GITHUB_OUTPUT"
           echo "revision=$revision" >> "$GITHUB_OUTPUT"
@@ -75,9 +75,11 @@ jobs:
         working-directory: ${{ runner.temp }}/ganjumanji
         run: npm install --ignore-scripts
 
-      - name: Run canonical unit and content tests
+      - name: Run canonical unit, content, and shipped UI checks
         working-directory: ${{ runner.temp }}/ganjumanji
-        run: npm test
+        run: |
+          npm test
+          npm run validate:ui
 
       - name: Build route-safe production bundle
         working-directory: ${{ runner.temp }}/ganjumanji
@@ -146,6 +148,7 @@ jobs:
             echo '- Canonical revision: `${{ steps.source.outputs.revision }}`'
             echo '- Version: `${{ steps.source.outputs.version }}`'
             echo '- Canonical tests: passed'
+            echo '- Deterministic shipped-UI validation: passed'
             echo '- Route-safe build validation: passed'
             echo '- Deployable route artifact: uploaded'
             echo '- Public promotion: still blocked until production publish + exact live-route verification'

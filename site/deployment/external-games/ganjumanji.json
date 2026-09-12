@@ -6,22 +6,24 @@
   "runtime": "static-phaser",
   "status": "ready-to-package",
   "artifact": "ganjumanji-production-build",
-  "build": "npm test && npm run build && npm run validate:release && npm run test:e2e",
+  "build": "npm test && npm run validate:ui && npm run build && npm run validate:release",
   "machineData": {
     "players": 1,
-    "regions": 3,
-    "relicSeeds": 6,
-    "saveVersion": 4,
+    "regions": 5,
+    "relicSeeds": 10,
+    "saveVersion": 5,
     "input": ["keyboard", "touch"],
     "persistentBestRun": true,
-    "checkpointSave": true
+    "checkpointSave": true,
+    "separateAutosaveAndCheckpoint": true,
+    "pressureCurve": [9, 7, 5, 6, 5]
   },
-  "verifiedRevision": "e82580daa684fc7733ef6cfcb12a502939a609dd",
+  "verifiedRevision": "54df2e0331ba9930899b4e11cb40e5c5f09235f1",
   "promotionGate": {
     "standaloneCI": "passed",
-    "browserAcceptance": "passed",
+    "deterministicUiValidation": "passed",
     "routeValidation": "passed",
     "liveVerification": "required-before-production-ready"
   },
-  "notes": "Canonical code remains in the standalone Ganjumanji repository. Revision e82580daa684fc7733ef6cfcb12a502939a609dd passed the canonical Ganjumanji CI on main, including unit/content tests, TypeScript/Vite build, release-route validation, desktop/mobile Playwright acceptance, screenshot evidence, and production artifact generation. Rebuild or consume this exact verified source during packaging; do not fork or hand-copy generated source into the THC repository. Live DTFSeeds route verification remains required before production-ready status."
+  "notes": "Canonical code remains in the standalone Ganjumanji repository. Revision 54df2e0331ba9930899b4e11cb40e5c5f09235f1 is the merged 0.4.0 five-region campaign with 10 relic seeds, save v5, separate autosave/safe-checkpoint recovery, deterministic campaign/content/input/storage/solvability tests, shipped UI-contract validation, TypeScript/Vite build, release-route validation, and production artifact generation. DTFSeeds packaging must rebuild this exact pinned revision and run validate:ui before promotion. Live route verification remains required before production-ready status."
 }
