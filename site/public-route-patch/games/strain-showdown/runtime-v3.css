@@ -10,7 +10,7 @@
 .attack-button:not(:disabled){box-shadow:0 0 0 1px rgba(242,216,125,.16),0 8px 18px rgba(0,0,0,.18)}
 
 @media(max-width:720px){
-  .tactical-strip{position:sticky;top:.25rem;z-index:20;margin:.45rem 0 .7rem;padding:.55rem .6rem;backdrop-filter:blur(10px)}
+  .tactical-strip{position:sticky;top:calc(var(--dtf-global-header-height,74px) + 8px);z-index:20;margin:.45rem 0 .7rem;padding:.55rem .6rem;backdrop-filter:blur(10px)}
   .tactical-strip span:last-child{flex-basis:100%}
   .hand-shortcut{display:none}
 
