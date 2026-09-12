@@ -20,6 +20,10 @@ on:
       - 'site/public-route-patch/games/high-iq/**'
       - 'site/deployment/public-apps.json'
       - 'site/deployment/release-resources.json'
+      - 'site/wordpress/assets/responsive-layout-v1.css'
+      - 'site/wordpress/assets/sitewide-ux-polish-v1.css'
+      - 'scripts/apply-sitewide-header.mjs'
+      - 'scripts/lib/sitewide-header-template.mjs'
       - 'scripts/plan-dtfseeds-resource-release.mjs'
       - 'scripts/run-workflow-and-wait.sh'
       - 'scripts/package-dtf-public-resource.py'
@@ -192,8 +196,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          while IFS=$'\t' read -r resource route marker; do
-            [[ -n "$resource" && -n "$route" && -n "$marker" ]]
+          while IFS=$'\t' read -r resource route marker tokens_b64; do
+            [[ -n "$resource" && -n "$route" && -n "$marker" && -n "$tokens_b64" ]]
             echo "Checking resource-owned route $resource at $route"
             body="$(mktemp)"
             headers="$(mktemp)"
@@ -204,6 +208,16 @@ jobs:
             [[ "$status" == '200' ]] || { echo "Expected HTTP 200 for $route, got $status" >&2; cat "$headers" >&2; exit 1; }
             ! grep -Eiq '^location:' "$headers" || { echo "Refusing redirected resource route: $route" >&2; cat "$headers" >&2; exit 1; }
             grep -Fqi "$marker" "$body" || { echo "Expected marker '$marker' not found at $route" >&2; exit 1; }
+            BODY_PATH="$body" TOKENS_B64="$tokens_b64" RESOURCE_ID="$resource" python - <<'PY'
+          import base64, json, os
+          from pathlib import Path
+          tokens=json.loads(base64.b64decode(os.environ['TOKENS_B64']).decode('utf-8'))
+          body=Path(os.environ['BODY_PATH']).read_text(encoding='utf-8', errors='replace')
+          missing=[token for token in tokens if token not in body]
+          if missing:
+              raise SystemExit(f"{os.environ['RESOURCE_ID']} visitor verification tokens missing: "+', '.join(repr(token) for token in missing))
+          print(f"Verified {len(tokens)} visitor contract token(s) for {os.environ['RESOURCE_ID']}.")
+          PY
             rm -f "$body" "$headers"
           done < <(node --input-type=module <<'NODE'
           import fs from 'node:fs';
@@ -214,7 +228,9 @@ jobs:
             if (!resource) throw new Error(`Missing resource config: ${selected.id}`);
             if (resource.publicSuiteOwnership !== 'resource') throw new Error(`Refusing non-resource-owned automatic publish: ${selected.id}`);
             if (resource.publisher?.orchestration !== 'gateway-managed') throw new Error(`Refusing non-gateway-managed automatic publish: ${selected.id}`);
-            console.log([selected.id, resource.route, resource.verifyMarker].join('\t'));
+            const tokens = Array.isArray(resource.verifyTokens) ? resource.verifyTokens : [];
+            const tokensB64 = Buffer.from(JSON.stringify(tokens), 'utf8').toString('base64');
+            console.log([selected.id, resource.route, resource.verifyMarker, tokensB64].join('\t'));
           }
           NODE
           )
@@ -233,7 +249,7 @@ jobs:
             echo "- Recovery scheduled: ${{ steps.publish.outputs.recovery_scheduled || 'false' }}"
             echo "- Independent visitor verification: ${{ steps.verify.outcome }}"
             echo '- Each successful publisher advances only its own monotonic resource checkpoint; the global DTFSeeds checkpoint is untouched.'
-            echo '- High IQ is currently the only automatic resource-owned route. High Land remains suite-owned while its independent SSH publisher stays in pilot validation.'
+            echo '- High IQ is the production gateway-managed resource route. High Land remains suite-owned while its independent SSH publisher stays in pilot validation.'
           } >> "$GITHUB_STEP_SUMMARY"
 
   no_deploy:
