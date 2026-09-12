@@ -21,15 +21,16 @@ if (!Number.isInteger(requestAttempts) || requestAttempts < 1 || requestAttempts
 }
 
 const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-const headers = { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learning-Expansion-Publisher/1.4' };
+const headers = { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learning-Expansion-Publisher/1.5' };
 const stamp = new Date().toISOString().replace(/[-:.]/g, '').replace('Z', 'Z');
 const backupDir = join(backupRoot, `learning-expansion-${stamp}`);
 await mkdir(backupDir, { recursive: true });
 
 // These WordPress child pages remain the editable/backing records, while the
 // public child-route surface is owned by the reviewed Dtf420 static overlay.
-// Public verification therefore uses stable Dtf420 visitor-facing markers,
-// not WordPress-only source-control comments or release-note text.
+// The WordPress host can reject large generated educational HTML through WAF
+// rules, so the backing record is intentionally small and safe. Public route
+// verification below still proves the full generated static overlay is live.
 const routes = [
   { slug: 'plant-health', title: 'Plant Health, Disease, Pests & IPM', publicMarker: 'Plant Health, IPM' },
   { slug: 'cultivation-science', title: 'Cultivation Science Reference Library', publicMarker: 'Cultivation Science Reference Library' },
@@ -50,6 +51,18 @@ const forbiddenStrings = [
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const retryableStatus = new Set([408, 425, 429, 500, 502, 503, 504]);
 
+function makeHttpError(message, status, body) {
+  const error = new Error(message);
+  error.status = status;
+  error.body = body;
+  return error;
+}
+
+function isForbiddenWaf(error) {
+  const body = String(error?.body || error?.message || '');
+  return Number(error?.status) === 403 && /403 Forbidden|Forbidden/i.test(body);
+}
+
 async function request(path, options = {}) {
   let lastError = null;
   for (let attempt = 1; attempt <= requestAttempts; attempt++) {
@@ -69,8 +82,9 @@ async function request(path, options = {}) {
       try { body = text ? JSON.parse(text) : null; } catch { body = text; }
       if (response.ok) return body;
       const message = `${options.method || 'GET'} ${path} failed (${response.status}): ${typeof body === 'string' ? body.slice(0, 500) : JSON.stringify(body).slice(0, 500)}`;
-      if (!retryableStatus.has(response.status) || attempt === requestAttempts) throw new Error(message);
-      lastError = new Error(message);
+      const error = makeHttpError(message, response.status, body);
+      if (!retryableStatus.has(response.status) || attempt === requestAttempts) throw error;
+      lastError = error;
     } catch (error) {
       lastError = error;
       if (attempt === requestAttempts) break;
@@ -88,10 +102,25 @@ function extract(html, pattern, label) {
   return match[1];
 }
 
-function sourceContent(html) {
-  const style = extract(html, /(<style>[\s\S]*?<\/style>)/i, 'style block');
-  const main = extract(html, /<main[^>]*>([\s\S]*?)<\/main>/i, 'main content');
-  return `${style}\n<!-- ${sourceMarker} -->\n${main}`;
+function verifyGeneratedStaticPage(html, route) {
+  extract(html, /<main[^>]*>([\s\S]*?)<\/main>/i, 'main content');
+  if (!/<h1(?:\s|>)/i.test(html)) throw new Error(`Generated ${route.slug} page is missing H1`);
+  if (!html.includes('Teaching Healthy Cultivation')) throw new Error(`Generated ${route.slug} page is missing THC identity`);
+  if (!html.includes(route.publicMarker)) throw new Error(`Generated ${route.slug} page is missing public marker ${route.publicMarker}`);
+  for (const forbidden of forbiddenStrings) {
+    if (html.toLowerCase().includes(forbidden.toLowerCase())) throw new Error(`Generated ${route.slug} page contains forbidden/stale content: ${forbidden}`);
+  }
+}
+
+function sourceContent(_html, route) {
+  return `<!-- ${sourceMarker} -->
+<section class="dtf-learning-backing-record" data-dtf-learning-backing="v1" data-dtf-learning-route="${route.slug}">
+  <p><strong>${route.title}</strong></p>
+  <p>Teaching Healthy Cultivation</p>
+  <p>${storedReleaseMarker}</p>
+  <p>Public overlay marker: ${route.publicMarker}</p>
+  <p>Canonical public route: <a href="/learn/${route.slug}/">/learn/${route.slug}/</a></p>
+</section>`;
 }
 
 function rawContent(page) {
@@ -101,7 +130,7 @@ function rawContent(page) {
   return '';
 }
 
-function assertStoredPage(page, route, learnId) {
+function assertPublishedChildPage(page, route, learnId) {
   if (!page || !page.id) throw new Error(`WordPress did not return a valid page for ${route.slug}`);
   if (page.status !== 'publish') throw new Error(`WordPress page ${page.id} for ${route.slug} is not published (status=${page.status})`);
   if (Number(page.parent) !== Number(learnId)) throw new Error(`WordPress page ${page.id} for ${route.slug} is not a child of Learn (${learnId})`);
@@ -109,10 +138,15 @@ function assertStoredPage(page, route, learnId) {
   const expectedPath = `/learn/${route.slug}/`;
   const link = String(page.link || '');
   if (!link.endsWith(expectedPath)) throw new Error(`WordPress page ${page.id} permalink drift: expected ${expectedPath}, got ${link || 'missing link'}`);
+}
+
+function assertStoredPage(page, route, learnId) {
+  assertPublishedChildPage(page, route, learnId);
   const stored = rawContent(page);
   if (!stored.includes(sourceMarker)) throw new Error(`WordPress page ${page.id} is missing source marker after write`);
   if (!stored.includes('Teaching Healthy Cultivation')) throw new Error(`WordPress page ${page.id} is missing THC identity after write`);
   if (!stored.includes(storedReleaseMarker)) throw new Error(`WordPress page ${page.id} is missing stored release marker after write`);
+  if (!stored.includes(route.publicMarker)) throw new Error(`WordPress page ${page.id} is missing public marker reference after write`);
   for (const forbidden of forbiddenStrings) {
     if (stored.toLowerCase().includes(forbidden.toLowerCase())) throw new Error(`Forbidden/stale content stored on WordPress page ${page.id}: ${forbidden}`);
   }
@@ -125,8 +159,8 @@ const results = [];
 
 for (const route of routes) {
   const html = await readFile(join(sourceRoot, route.slug, 'index.html'), 'utf8');
-  const content = sourceContent(html);
-  if (!content.includes(storedReleaseMarker)) throw new Error(`Generated ${route.slug} page is missing stored release marker`);
+  verifyGeneratedStaticPage(html, route);
+  const content = sourceContent(html, route);
   const candidates = await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(route.slug)}&context=edit&per_page=100`);
   const children = Array.isArray(candidates) ? candidates.filter((page) => Number(page.parent) === Number(learn.id)) : [];
   if (children.length > 1) throw new Error(`Multiple /learn/${route.slug}/ child pages exist; refusing ambiguous update.`);
@@ -134,12 +168,21 @@ for (const route of routes) {
   let page = children[0] || null;
   if (page) {
     await writeFile(join(backupDir, `page-${page.id}-${route.slug}-before.json`), `${JSON.stringify(page, null, 2)}\n`);
-    page = await request(`/wp-json/wp/v2/pages/${page.id}?context=edit`, {
-      method: 'POST',
-      body: JSON.stringify({ title: route.title, slug: route.slug, parent: learn.id, content, status: 'publish' })
-    });
-    assertStoredPage(page, route, learn.id);
-    results.push({ slug: route.slug, id: page.id, action: 'updated', url: `${siteUrl}/learn/${route.slug}/`, publicMarker: route.publicMarker });
+    try {
+      page = await request(`/wp-json/wp/v2/pages/${page.id}?context=edit`, {
+        method: 'POST',
+        body: JSON.stringify({ title: route.title, slug: route.slug, parent: learn.id, content, status: 'publish' })
+      });
+      assertStoredPage(page, route, learn.id);
+      results.push({ slug: route.slug, id: page.id, action: 'updated-backing-record', url: `${siteUrl}/learn/${route.slug}/`, publicMarker: route.publicMarker });
+    } catch (error) {
+      if (!isForbiddenWaf(error)) throw error;
+      console.warn(`WordPress WAF blocked backing-page update for /learn/${route.slug}/ page ${page.id}; preserving existing child page and relying on static overlay verification.`);
+      const existing = await request(`/wp-json/wp/v2/pages/${page.id}?context=edit`);
+      assertPublishedChildPage(existing, route, learn.id);
+      await writeFile(join(backupDir, `page-${page.id}-${route.slug}-waf-blocked.json`), `${JSON.stringify({ message: error.message, status: error.status, publicOwner: 'Dtf420 static child-route overlay' }, null, 2)}\n`);
+      results.push({ slug: route.slug, id: page.id, action: 'preserved-existing-backing-after-waf-block', url: `${siteUrl}/learn/${route.slug}/`, publicMarker: route.publicMarker });
+    }
   } else {
     page = await request('/wp-json/wp/v2/pages?context=edit', {
       method: 'POST',
@@ -147,7 +190,7 @@ for (const route of routes) {
     });
     assertStoredPage(page, route, learn.id);
     await writeFile(join(backupDir, `page-${page.id}-${route.slug}-created.json`), `${JSON.stringify(page, null, 2)}\n`);
-    results.push({ slug: route.slug, id: page.id, action: 'created', url: `${siteUrl}/learn/${route.slug}/`, publicMarker: route.publicMarker });
+    results.push({ slug: route.slug, id: page.id, action: 'created-backing-record', url: `${siteUrl}/learn/${route.slug}/`, publicMarker: route.publicMarker });
   }
 }
 
@@ -162,7 +205,7 @@ for (const result of results) {
         headers: {
           'Cache-Control': 'no-cache, no-store, max-age=0',
           Pragma: 'no-cache',
-          'User-Agent': 'DTFSeeds-Learning-Expansion-Publisher/1.4'
+          'User-Agent': 'DTFSeeds-Learning-Expansion-Publisher/1.5'
         },
         redirect: 'follow',
         signal: AbortSignal.timeout(60_000)
@@ -170,12 +213,7 @@ for (const result of results) {
       lastStatus = response.status;
       html = await response.text();
       lastError = '';
-      if (
-        response.ok &&
-        /<h1(?:\s|>)/i.test(html) &&
-        html.includes('Teaching Healthy Cultivation') &&
-        html.includes(result.publicMarker)
-      ) {
+      if (response.ok && /<h1(?:\s|>)/i.test(html) && html.includes('Teaching Healthy Cultivation') && html.includes(result.publicMarker)) {
         ok = true;
         break;
       }
