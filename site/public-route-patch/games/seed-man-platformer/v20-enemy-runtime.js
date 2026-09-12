@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const VERSION = 'seed-man-v20-enemy-runtime-v2';
+  const VERSION = 'seed-man-v20-enemy-runtime-v3';
   const PHENOTYPE_DURATION_MS = 30000;
   const ATLAS_LAYOUT = Object.freeze({
     width:320,
@@ -42,6 +42,49 @@
   const clamp = (value,min,max) => Math.max(min,Math.min(max,value));
   const finite = (value) => Number.isFinite(Number(value));
 
+  function levelOrder(levelData) {
+    return Math.max(1, Number(levelData?.levelNumber || levelData?.difficulty || 1));
+  }
+
+  function movementFor(role) {
+    if (role === 'flyer') return 'flying';
+    if (role === 'teleporter') return 'blink';
+    return 'ground';
+  }
+
+  function groundSupportFor(levelData, desiredX, width, height) {
+    const platforms = Array.isArray(levelData?.platforms)
+      ? levelData.platforms.filter((platform) => finite(platform?.x) && finite(platform?.y) && finite(platform?.width) && finite(platform?.height) && Number(platform.width) >= width + 24)
+      : [];
+    if (!platforms.length) return null;
+
+    const groundLike = platforms.filter((platform) => Number(platform.y) >= 420);
+    const candidates = groundLike.length ? groundLike : platforms;
+    const desiredCenter = desiredX + width / 2;
+    const containing = candidates
+      .filter((platform) => desiredCenter >= Number(platform.x) && desiredCenter <= Number(platform.x) + Number(platform.width))
+      .sort((a,b) => Number(b.y) - Number(a.y));
+    const support = containing[0] || [...candidates].sort((a,b) => {
+      const aCenter = Number(a.x) + Number(a.width) / 2;
+      const bCenter = Number(b.x) + Number(b.width) / 2;
+      return Math.abs(aCenter - desiredCenter) - Math.abs(bCenter - desiredCenter);
+    })[0];
+    if (!support) return null;
+
+    const margin = Math.max(12, Math.min(34, width * 0.45));
+    const platformMin = Number(support.x) + margin;
+    const platformMax = Number(support.x) + Number(support.width) - margin;
+    const maxLeft = Math.max(platformMin, platformMax - width);
+    const x = clamp(desiredX, platformMin, maxLeft);
+    return Object.freeze({
+      x,
+      y:Number(support.y) - height,
+      minX:platformMin,
+      maxX:platformMax,
+      platformId:String(support.id || '')
+    });
+  }
+
   function regionFor(row, frame) {
     const layout = ATLAS_LAYOUT[row];
     if (!layout) throw new Error(`Unknown approved atlas row: ${row}`);
@@ -54,16 +97,6 @@
     });
   }
 
-  function levelOrder(levelData) {
-    return Math.max(1, Number(levelData?.levelNumber || levelData?.difficulty || 1));
-  }
-
-  function movementFor(role) {
-    if (role === 'flyer') return 'flying';
-    if (role === 'teleporter') return 'blink';
-    return 'ground';
-  }
-
   function buildEnemy(levelData, type, index, count, options = {}) {
     const meta = ENEMY_META[type] || ENEMY_META.sproutling;
     const order = levelOrder(levelData);
@@ -72,18 +105,21 @@
       ? clamp(options.fraction, 0.08, 0.92)
       : options.carrier ? 0.62 : 0.12 + (index * 0.68 / Math.max(1,count - 1));
     const generatedX = clamp(Math.round(worldWidth * fraction), 260, worldWidth - 300);
-    const x = finite(options.x) ? clamp(Number(options.x),80,worldWidth-meta.width-80) : generatedX;
+    const requestedX = finite(options.x) ? clamp(Number(options.x),80,worldWidth-meta.width-80) : generatedX;
     const movement = movementFor(meta.role);
     const flying = movement === 'flying';
     const blink = movement === 'blink';
+    const authored = Boolean(options.authored);
+    const support = !flying && !blink && !authored ? groundSupportFor(levelData, requestedX, meta.width, meta.height) : null;
+    const x = support?.x ?? requestedX;
     const healthScale = Math.floor((order - 1) / 6);
     const elite = Boolean(options.carrier) || (order >= 8 && index === count - 1);
     const health = meta.hp + healthScale + (elite ? 2 : 0);
     const generatedY = flying ? 285 + ((index * 37 + order * 19) % 80) : 480 - meta.height;
-    const y = finite(options.y) ? Number(options.y) : generatedY;
+    const y = finite(options.y) ? Number(options.y) : (support?.y ?? generatedY);
     const patrolRadius = flying ? 300 : 230;
-    const minX = finite(options.minX) ? clamp(Number(options.minX),60,x) : Math.max(80,x - patrolRadius);
-    const maxX = finite(options.maxX) ? clamp(Number(options.maxX),x+meta.width+20,worldWidth-40) : Math.min(worldWidth - 80,x + patrolRadius);
+    const minX = finite(options.minX) ? clamp(Number(options.minX),60,x) : (support?.minX ?? Math.max(80,x - patrolRadius));
+    const maxX = finite(options.maxX) ? clamp(Number(options.maxX),x+meta.width+20,worldWidth-40) : (support?.maxX ?? Math.min(worldWidth - 80,x + patrolRadius));
     const carrier = options.carrier ? PHENOTYPE_CARRIERS[options.form] : null;
     const authoredId = String(options.id || '').trim();
 
@@ -109,7 +145,8 @@
       phenotypeForm:carrier?.form || null,
       phenotypeDurationMs:carrier ? PHENOTYPE_DURATION_MS : null,
       drop:carrier ? ['alleles',1] : [...meta.drop],
-      authoredPlacement:Boolean(options.authored),
+      authoredPlacement:authored,
+      supportPlatformId:support?.platformId || null,
       approvedVisual:Object.freeze({
         atlas:'enemy-boss.atlas',
         row:'enemy',
@@ -250,6 +287,7 @@
     atlasLayout:ATLAS_LAYOUT,
     bossVisuals:BOSS_VISUAL,
     phenotypeCarrierForms:Object.freeze([...PHENOTYPE_ORDER]),
+    groundSupportFor,
     buildEncounter,
     buildAttackers,
     buildBoss,
