@@ -23,6 +23,10 @@ on:
       - 'site/public-route-patch/games/seed-man-platformer/**'
       - 'site/deployment/public-apps.json'
       - 'site/deployment/release-resources.json'
+      - 'site/wordpress/assets/responsive-layout-v1.css'
+      - 'site/wordpress/assets/sitewide-ux-polish-v1.css'
+      - 'scripts/apply-sitewide-header.mjs'
+      - 'scripts/lib/sitewide-header-template.mjs'
       - 'scripts/verify-seed-man-production-v20.mjs'
       - 'scripts/validate-seed-man-production-bundle.mjs'
       - 'scripts/plan-dtfseeds-resource-release.mjs'
@@ -49,6 +53,10 @@ on:
       - 'site/public-route-patch/games/seed-man-platformer/**'
       - 'site/deployment/public-apps.json'
       - 'site/deployment/release-resources.json'
+      - 'site/wordpress/assets/responsive-layout-v1.css'
+      - 'site/wordpress/assets/sitewide-ux-polish-v1.css'
+      - 'scripts/apply-sitewide-header.mjs'
+      - 'scripts/lib/sitewide-header-template.mjs'
       - 'scripts/verify-seed-man-production-v20.mjs'
       - 'scripts/validate-seed-man-production-bundle.mjs'
       - 'scripts/plan-dtfseeds-resource-release.mjs'
@@ -100,6 +108,12 @@ jobs:
             scripts/package-dtf-public-resource.py \
             scripts/verify-dtf-public-resource-artifact.py \
             scripts/assemble-wordpress-resource-v2.py
+          node --check scripts/apply-sitewide-header.mjs
+          test -s site/wordpress/assets/responsive-layout-v1.css
+          test -s site/wordpress/assets/sitewide-ux-polish-v1.css
+          grep -Fq 'data-dtf-shell="header-v5"' scripts/lib/sitewide-header-template.mjs
+          grep -Fq 'DTFSeeds shared responsive layout system v1' site/wordpress/assets/responsive-layout-v1.css
+          grep -Fq 'DTFSeeds sitewide UX polish v1' site/wordpress/assets/sitewide-ux-polish-v1.css
           python scripts/assemble-wordpress-resource-v2.py "$RUNNER_TEMP/dtf-high-iq-resource-bridge.mjs" high-iq
           node --check "$RUNNER_TEMP/dtf-high-iq-resource-bridge.mjs"
           grep -Fq "dtf_resource_high_iq_deploy_lock" "$RUNNER_TEMP/dtf-high-iq-resource-bridge.mjs"
@@ -193,6 +207,12 @@ jobs:
               npm run hiq:validate
               mkdir -p release-resource/games/high-iq
               cp -a site/public-route-patch/games/high-iq/. release-resource/games/high-iq/
+              node scripts/apply-sitewide-header.mjs release-resource/games/high-iq
+              node scripts/apply-sitewide-header.mjs release-resource/games/high-iq --check
+              grep -Fq 'data-dtf-shell="header-v5"' release-resource/games/high-iq/index.html
+              grep -Fq 'id="dtf-responsive-layout-v1"' release-resource/games/high-iq/index.html
+              grep -Fq 'id="dtf-sitewide-ux-polish-v1"' release-resource/games/high-iq/index.html
+              grep -Fq '.high-iq-shell .quiz-scoreboard{top:calc(var(--dtf-global-header-height) + 8px)!important}' release-resource/games/high-iq/index.html
               ;;
             seed-man-platformer)
               npm install --prefix games/seed-man-platformer --ignore-scripts --no-audit --no-fund
