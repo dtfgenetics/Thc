@@ -10,6 +10,28 @@ const CONCURRENCY = Number(process.env.DTF_HEADER_AUDIT_CONCURRENCY || 6);
 const JSON_PATH = process.env.DTF_HEADER_AUDIT_JSON || 'sitewide-header-live-audit.json';
 const MD_PATH = process.env.DTF_HEADER_AUDIT_MD || 'sitewide-header-live-audit.md';
 
+const CONTENT_ENGINE_PREFIXES = [
+  '/dtf-content-overlay/',
+  '/learn/academy/',
+  '/learn/atlas/',
+  '/learn/cultivation-science/',
+  '/learn/glossary/',
+  '/learn/plant-health/',
+  '/learn/search/',
+  '/learn/sops/',
+  '/learn/sources/',
+  '/learn/subjects/',
+  '/learn/symptoms/',
+  '/learn/tools/'
+];
+
+const NON_HEADER_ROUTES = new Set([
+  '/journal/',
+  '/puzzles/'
+]);
+
+const RESOURCE_OWNED_ROUTES = new Set();
+
 function escapeRegExp(value) {
   return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -52,11 +74,18 @@ function cleanPath(input) {
   } catch { return null; }
 }
 
+function exclusionReason(path) {
+  if (NON_HEADER_ROUTES.has(path)) return 'non-page public data or retired route';
+  if (RESOURCE_OWNED_ROUTES.has(path)) return 'resource-owned route; audited by its dedicated production publisher';
+  if (CONTENT_ENGINE_PREFIXES.some(prefix => path.startsWith(prefix))) return 'content-engine route; audited by learning/content publication lanes';
+  return '';
+}
+
 function linksFromHtml(html) {
   const out = [];
   for (const match of html.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>/gi)) {
     const path = cleanPath(match[1]);
-    if (path) out.push(path);
+    if (path && !exclusionReason(path)) out.push(path);
   }
   return out;
 }
@@ -73,7 +102,7 @@ async function fetchText(url, accept = 'text/html,*/*') {
       const response = await fetch(`${url}${bust}`, {
         redirect: 'follow',
         signal: AbortSignal.timeout(25_000),
-        headers: { 'user-agent': 'DTFSeeds-Sitewide-Header-Audit/1.1', 'cache-control': 'no-cache, no-store', pragma: 'no-cache', accept }
+        headers: { 'user-agent': 'DTFSeeds-Sitewide-Header-Audit/1.2', 'cache-control': 'no-cache, no-store', pragma: 'no-cache', accept }
       });
       return { response, body: await response.text(), error: null };
     } catch (error) { lastError = error; }
@@ -81,24 +110,39 @@ async function fetchText(url, accept = 'text/html,*/*') {
   return { response: null, body: '', error: lastError instanceof Error ? lastError.message : String(lastError) };
 }
 
-async function addRegistrySeeds(path) {
-  try {
-    const raw = JSON.parse(await readFile(path, 'utf8'));
-    const visit = value => {
-      if (Array.isArray(value)) return value.forEach(visit);
-      if (!value || typeof value !== 'object') {
-        if (typeof value === 'string' && value.startsWith('/')) {
-          const route = cleanPath(value);
-          if (route) seeds.add(route);
-        }
-        return;
-      }
-      for (const item of Object.values(value)) visit(item);
-    };
-    visit(raw);
-  } catch {}
+async function readJson(path) {
+  try { return JSON.parse(await readFile(path, 'utf8')); }
+  catch { return null; }
 }
 
+async function addResourceOwnedRouteExclusions(path) {
+  const raw = await readJson(path);
+  const resources = raw?.resources && typeof raw.resources === 'object' ? Object.values(raw.resources) : [];
+  for (const resource of resources) {
+    if (resource?.publicSuiteOwnership !== 'resource') continue;
+    const route = cleanPath(resource.route || '');
+    if (route) RESOURCE_OWNED_ROUTES.add(route);
+  }
+}
+
+async function addRegistrySeeds(path) {
+  const raw = await readJson(path);
+  if (!raw) return;
+  const visit = value => {
+    if (Array.isArray(value)) return value.forEach(visit);
+    if (!value || typeof value !== 'object') {
+      if (typeof value === 'string' && value.startsWith('/')) {
+        const route = cleanPath(value);
+        if (route && !exclusionReason(route)) seeds.add(route);
+      }
+      return;
+    }
+    for (const item of Object.values(value)) visit(item);
+  };
+  visit(raw);
+}
+
+await addResourceOwnedRouteExclusions('site/deployment/release-resources.json');
 await Promise.all([
   addRegistrySeeds('site/deployment/public-apps.json'),
   addRegistrySeeds('data/public-navigation.json'),
@@ -117,7 +161,10 @@ async function collectSitemap(path, depth = 0) {
     let url; try { url = new URL(loc, BASE); } catch { continue; }
     if (!sameOrigin(url)) continue;
     if (/\.xml(?:$|\?)/i.test(url.pathname)) await collectSitemap(url.pathname, depth + 1);
-    else { const route = cleanPath(url.href); if (route) seeds.add(route); }
+    else {
+      const route = cleanPath(url.href);
+      if (route && !exclusionReason(route)) seeds.add(route);
+    }
   }
 }
 for (const candidate of sitemapCandidates) await collectSitemap(candidate);
@@ -130,17 +177,22 @@ const results = [];
 async function inspect({ path, depth }) {
   if (visited.has(path) || visited.size >= MAX_PAGES) return;
   visited.add(path);
+  const skippedReason = exclusionReason(path);
+  if (skippedReason) {
+    results.push({ path, status: null, html: false, passed: true, skipped: true, skippedReason, issues: [] });
+    return;
+  }
   const url = new URL(path, BASE).href;
   const { response, body, error } = await fetchText(url);
-  if (error) { results.push({ path, status: 0, html: false, passed: false, issues: [`fetch failed: ${error}`] }); return; }
+  if (error) { results.push({ path, status: 0, html: false, passed: false, skipped: false, issues: [`fetch failed: ${error}`] }); return; }
   const contentType = response.headers.get('content-type') || '';
   const isHtml = contentType.toLowerCase().includes('text/html') || /^\s*<!doctype html|^\s*<html\b/i.test(body);
-  if (!isHtml) { results.push({ path, status: response.status, html: false, passed: true, issues: [] }); return; }
+  if (!isHtml) { results.push({ path, status: response.status, html: false, passed: true, skipped: false, issues: [] }); return; }
 
   const issues = [];
   if (!response.ok) issues.push(`HTTP ${response.status}`);
   if (response.ok) for (const check of REQUIRED) if (!check.test(body)) issues.push(`missing header marker: ${check.label}`);
-  results.push({ path, status: response.status, html: true, passed: issues.length === 0, issues });
+  results.push({ path, status: response.status, html: true, passed: issues.length === 0, skipped: false, issues });
 
   if (response.ok && depth < MAX_DEPTH) {
     for (const next of linksFromHtml(body)) {
@@ -160,20 +212,27 @@ async function worker() {
 await Promise.all(Array.from({ length: Math.max(1, CONCURRENCY) }, worker));
 
 const htmlResults = results.filter(r => r.html);
+const skippedResults = results.filter(r => r.skipped);
 const failures = htmlResults.filter(r => !r.passed);
 const report = {
   generatedAt: new Date().toISOString(), baseUrl: BASE.href, requiredHeaderVersion: 5,
+  scope: 'sitewide-header-managed-public-routes',
   discoveredRoutes: visited.size, htmlRoutes: htmlResults.length, passingHtmlRoutes: htmlResults.length - failures.length,
+  skippedRoutes: skippedResults.length,
+  resourceOwnedRoutesExcluded: [...RESOURCE_OWNED_ROUTES].sort(),
+  contentEnginePrefixesExcluded: CONTENT_ENGINE_PREFIXES,
   failures, results: results.sort((a,b) => a.path.localeCompare(b.path))
 };
 await writeFile(JSON_PATH, `${JSON.stringify(report, null, 2)}\n`);
 const md = [
   '# Sitewide Header V5 Live Audit','',
   `Generated: ${report.generatedAt}`,'',
+  `Scope: ${report.scope}`,'',
   `HTML routes passing: **${report.passingHtmlRoutes}/${report.htmlRoutes}**`,'',
   `Discovered same-origin routes: **${report.discoveredRoutes}**`,'',
+  `Skipped out-of-scope routes: **${report.skippedRoutes}**`,'',
   failures.length ? '## Failures' : '## Result','',
-  failures.length ? failures.map(x => `- \`${x.path}\` — ${x.issues.join('; ')}`).join('\n') : 'Every discovered public HTML route exposes the approved V5 header contract.'
+  failures.length ? failures.map(x => `- \`${x.path}\` — ${x.issues.join('; ')}`).join('\n') : 'Every managed public HTML route exposes the approved V5 header contract.'
 ].join('\n');
 await writeFile(MD_PATH, `${md}\n`);
 console.log(md);
