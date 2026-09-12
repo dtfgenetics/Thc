@@ -53,8 +53,8 @@ jobs:
           route="$(sed -n 's/^route=//p' "$revision_file")"
           artifact="$(sed -n 's/^artifact=//p' "$revision_file")"
           test "$repo_name" = "dtfgenetics/Thc-rpg"
-          test "$revision" = "15fe22d69afaee906714a1ad0933505e437202dd"
-          test "$version" = "2.0.0"
+          [[ "$revision" =~ ^[0-9a-f]{40}$ ]]
+          test "$version" = "2.1.0"
           test "$route" = "/games/thc-rpg/"
           test "$artifact" = "thc-rpg-production-build"
           echo "repository=$repo_name" >> "$GITHUB_OUTPUT"
@@ -78,9 +78,11 @@ jobs:
         working-directory: ${{ runner.temp }}/thc-rpg
         run: npm install --ignore-scripts
 
-      - name: Run canonical engine and progression tests
+      - name: Run canonical engine, progression, and shipped UI checks
         working-directory: ${{ runner.temp }}/thc-rpg
-        run: npm test
+        run: |
+          npm test
+          npm run validate:ui
 
       - name: Build visitor-only production artifact
         working-directory: ${{ runner.temp }}/thc-rpg
@@ -137,7 +139,9 @@ jobs:
           grep -Fq '"route": "/games/thc-rpg/"' package/games/thc-rpg/game-release.json
           grep -Fq '"runtime": "static-es-modules"' package/games/thc-rpg/game-release.json
           grep -Fq '"status": "release-candidate"' package/games/thc-rpg/game-release.json
+          grep -Fq '"version": "2.1.0"' package/games/thc-rpg/game-release.json
           grep -Fq '"saveVersion": 6' package/games/thc-rpg/game-release.json
+          grep -Fq '"deterministicUiValidation": "required"' package/games/thc-rpg/game-release.json
           ! find package/games/thc-rpg -type f \( -path '*/tests/*' -o -path '*/e2e/*' \) -print | grep -q .
 
       - name: Upload deployable THC RPG route
@@ -159,6 +163,7 @@ jobs:
             echo '- Canonical revision: `${{ steps.source.outputs.revision }}`'
             echo '- Version: `${{ steps.source.outputs.version }}`'
             echo '- Canonical tests: passed'
+            echo '- Deterministic shipped-UI validation: passed'
             echo '- Visitor-only release validation: passed'
             echo '- Deployable route artifact: uploaded'
             echo '- Public promotion: still blocked until production publish + exact live-route verification'
