@@ -18,8 +18,21 @@
     {
       "id": "platform.repo-control",
       "kind": "platform",
-      "prefixes": [".github/", ".agents/", "docs/", "scripts/studio/"],
-      "exactPaths": ["AGENTS.md", "CLAUDE.md", "package.json", "package-lock.json", "data/project-work-lanes.json", "data/project-registry.json", "data/studio-resources.json"],
+      "prefixes": [
+        ".github/",
+        ".agents/",
+        "docs/",
+        "scripts/studio/"
+      ],
+      "exactPaths": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "package.json",
+        "package-lock.json",
+        "data/project-work-lanes.json",
+        "data/project-registry.json",
+        "data/studio-resources.json"
+      ],
       "productionTargets": []
     },
     {
@@ -56,112 +69,211 @@
         ".github/workflows/deploy-thc-learning-center-expansion-v1.yml",
         ".github/workflows/wordpress-harvest-outdoor-v6-production.yml"
       ],
-      "productionTargets": ["shared:release-control"]
+      "productionTargets": [
+        "shared:release-control"
+      ]
     },
     {
       "id": "platform.site-shell",
       "kind": "shared-ui",
-      "prefixes": ["site/design-system/"],
-      "exactPaths": ["data/public-navigation.json", "site/public-route-patch/games/dtf-route.css", "site/public-route-patch/games/dtf-shell.css"],
-      "productionTargets": ["shared:site-shell"]
+      "prefixes": [
+        "site/design-system/"
+      ],
+      "exactPaths": [
+        "data/public-navigation.json",
+        "site/public-route-patch/games/dtf-route.css",
+        "site/public-route-patch/games/dtf-shell.css"
+      ],
+      "productionTargets": [
+        "shared:site-shell"
+      ]
     },
     {
       "id": "page.home",
       "kind": "page",
       "prefixes": [],
-      "exactPaths": ["site/wordpress/pages/home.html"],
-      "productionTargets": ["route:/"]
+      "exactPaths": [
+        "site/wordpress/pages/home.html"
+      ],
+      "productionTargets": [
+        "route:/"
+      ]
     },
     {
       "id": "page.about",
       "kind": "page",
       "prefixes": [],
-      "exactPaths": ["site/wordpress/pages/about.html"],
-      "productionTargets": ["route:/about/"]
+      "exactPaths": [
+        "site/wordpress/pages/about.html"
+      ],
+      "productionTargets": [
+        "route:/about/"
+      ]
     },
     {
       "id": "page.blog",
       "kind": "page",
       "prefixes": [],
-      "exactPaths": ["site/wordpress/pages/blog.html"],
-      "productionTargets": ["route:/blog/"]
+      "exactPaths": [
+        "site/wordpress/pages/blog.html"
+      ],
+      "productionTargets": [
+        "route:/blog/"
+      ]
+    },
+    {
+      "id": "page.journal",
+      "kind": "page",
+      "prefixes": [],
+      "exactPaths": [
+        "site/wordpress/pages/journal.html"
+      ],
+      "productionTargets": [
+        "route:/journal/"
+      ]
     },
     {
       "id": "page.community",
       "kind": "page",
       "prefixes": [],
-      "exactPaths": ["site/wordpress/pages/community.html"],
-      "productionTargets": ["route:/community/"]
+      "exactPaths": [
+        "site/wordpress/pages/community.html"
+      ],
+      "productionTargets": [
+        "route:/community/"
+      ]
     },
     {
       "id": "page.contact",
       "kind": "page",
       "prefixes": [],
-      "exactPaths": ["site/wordpress/pages/contact.html"],
-      "productionTargets": ["route:/contact/"]
+      "exactPaths": [
+        "site/wordpress/pages/contact.html"
+      ],
+      "productionTargets": [
+        "route:/contact/"
+      ]
     },
     {
       "id": "page.gallery",
       "kind": "page",
       "prefixes": [],
-      "exactPaths": ["site/wordpress/pages/gallery.html"],
-      "productionTargets": ["route:/gallery/"]
+      "exactPaths": [
+        "site/wordpress/pages/gallery.html"
+      ],
+      "productionTargets": [
+        "route:/gallery/"
+      ]
     },
     {
       "id": "page.learn",
       "kind": "page",
       "prefixes": [],
-      "exactPaths": ["site/wordpress/pages/learn.html"],
-      "productionTargets": ["route:/learn/"]
+      "exactPaths": [
+        "site/wordpress/pages/learn.html"
+      ],
+      "productionTargets": [
+        "route:/learn/"
+      ]
     },
     {
       "id": "page.game-hub",
       "kind": "page",
       "prefixes": [],
-      "exactPaths": ["site/public-route-patch/games/index.html", "site/deployment/public-apps.json"],
-      "productionTargets": ["route:/games/"]
+      "exactPaths": [
+        "site/public-route-patch/games/index.html",
+        "site/deployment/public-apps.json"
+      ],
+      "productionTargets": [
+        "route:/games/"
+      ]
     },
     {
       "id": "app.growlens",
       "kind": "application",
-      "prefixes": ["apps/growlens-web/", "site/public-route-patch/growlens/"],
+      "prefixes": [
+        "apps/growlens-web/",
+        "site/public-route-patch/growlens/"
+      ],
       "exactPaths": [],
-      "productionTargets": ["route:/growlens/"]
+      "productionTargets": [
+        "route:/growlens/"
+      ]
     },
     {
       "id": "app.grow-doc",
       "kind": "application",
-      "prefixes": ["site/public-route-patch/thc-grow-doc/"],
-      "exactPaths": ["site/public-route-patch/assets/release-source-revisions/thc-grow-doc.txt"],
-      "productionTargets": ["route:/thc-grow-doc/"]
+      "prefixes": [
+        "site/public-route-patch/thc-grow-doc/"
+      ],
+      "exactPaths": [
+        "site/public-route-patch/assets/release-source-revisions/thc-grow-doc.txt"
+      ],
+      "productionTargets": [
+        "route:/thc-grow-doc/"
+      ]
     },
     {
       "id": "app.plant-atlas",
       "kind": "application",
-      "prefixes": ["site/public-route-patch/atlas/", "apps/growlens-web/public/atlas/", "site/public-route-patch/assets/images/atlas/"],
+      "prefixes": [
+        "site/public-route-patch/atlas/",
+        "apps/growlens-web/public/atlas/",
+        "site/public-route-patch/assets/images/atlas/"
+      ],
       "exactPaths": [],
-      "productionTargets": ["route:/atlas/"]
+      "productionTargets": [
+        "route:/atlas/"
+      ]
     },
     {
       "id": "content.education",
       "kind": "content-system",
-      "prefixes": ["content/", "configuration/", "assets/education/", "site/public-route-patch/learn/", "site/wordpress/education/", "site/wordpress/assets/infographics/", "staging/harvest-asset-upload/", "ops/asset-bridge/lighting/"],
+      "prefixes": [
+        "content/",
+        "configuration/",
+        "assets/education/",
+        "site/public-route-patch/learn/",
+        "site/wordpress/education/",
+        "site/wordpress/assets/infographics/",
+        "staging/harvest-asset-upload/",
+        "ops/asset-bridge/lighting/"
+      ],
       "exactPaths": [],
-      "productionTargets": ["route:/learn/"]
+      "productionTargets": [
+        "route:/learn/"
+      ]
     },
     {
       "id": "content.genetics",
       "kind": "content-system",
-      "prefixes": ["data/genetics/", "site/wordpress/genetics/", "site/wordpress/products/", "site/wordpress/assets/genetics/", ".tmp/strain-card-b64/"],
-      "exactPaths": ["site/wordpress/pages/seeds.html", "site/design-system/dtf-genetics-owner-v1.css"],
-      "productionTargets": ["route:/seeds/"]
+      "prefixes": [
+        "data/genetics/",
+        "site/wordpress/genetics/",
+        "site/wordpress/products/",
+        "site/wordpress/assets/genetics/",
+        ".tmp/strain-card-b64/"
+      ],
+      "exactPaths": [
+        "site/wordpress/pages/seeds.html",
+        "site/design-system/dtf-genetics-owner-v1.css"
+      ],
+      "productionTargets": [
+        "route:/seeds/"
+      ]
     },
     {
       "id": "commerce.shop",
       "kind": "commerce",
-      "prefixes": ["site/wordpress/shop/"],
-      "exactPaths": ["site/wordpress/pages/shop.html"],
-      "productionTargets": ["route:/shop/"]
+      "prefixes": [
+        "site/wordpress/shop/"
+      ],
+      "exactPaths": [
+        "site/wordpress/pages/shop.html"
+      ],
+      "productionTargets": [
+        "route:/shop/"
+      ]
     }
   ],
   "dynamicResources": [
@@ -173,7 +285,9 @@
         "^site/public-route-patch/games/([^/]+)/",
         "^apps/([^/]+)-web/"
       ],
-      "excludeIds": ["growlens"],
+      "excludeIds": [
+        "growlens"
+      ],
       "productionTargetTemplate": "route:/games/{id}/"
     }
   ]

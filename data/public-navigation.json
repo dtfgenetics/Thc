@@ -75,6 +75,11 @@
   ],
   "footerNavigation": [
     {
+      "id": "journal",
+      "label": "Journal",
+      "route": "/journal/"
+    },
+    {
       "id": "gallery",
       "label": "Gallery",
       "route": "/gallery/"
@@ -172,6 +177,7 @@
       "label": "Company & support",
       "placement": "footer",
       "routes": [
+        "/journal/",
         "/gallery/",
         "/about/",
         "/contact/"
@@ -267,7 +273,7 @@
         "route": "/learn/learning-hub/"
       },
       {
-        "label": "Course 1 — Safety, Responsible Practice & Cultivation Workflows",
+        "label": "Course 1 \u2014 Safety, Responsible Practice & Cultivation Workflows",
         "route": "/learn/learning-hub/cultivation-technician-i/safety-responsible-practice-cultivation-workflows/"
       }
     ]
@@ -291,7 +297,7 @@
       },
       {
         "id": "atlas",
-        "title": "THC Living Plant Atlas — 3D Explorer",
+        "title": "THC Living Plant Atlas \u2014 3D Explorer",
         "route": "/atlas/",
         "status": "play-now",
         "public": true,
@@ -302,7 +308,7 @@
   "tools": [
     {
       "id": "atlas",
-      "title": "THC Living Plant Atlas — 3D Explorer",
+      "title": "THC Living Plant Atlas \u2014 3D Explorer",
       "route": "/atlas/",
       "status": "play-now",
       "public": true
@@ -325,7 +331,7 @@
   "games": [
     {
       "id": "high-iq",
-      "title": "High IQ — Test Higher Cognition",
+      "title": "High IQ \u2014 Test Higher Cognition",
       "route": "/games/high-iq/",
       "status": "play-now",
       "public": true

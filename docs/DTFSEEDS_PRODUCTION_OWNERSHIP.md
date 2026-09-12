@@ -17,6 +17,7 @@ This document defines the single-writer rule for public DTFSeeds routes. A route
 | `/gallery/` | Canonical WordPress publisher | Editorial/media presentation. |
 | `/about/` | Canonical WordPress publisher | Editorial root. |
 | `/contact/` | Canonical WordPress publisher | Editorial root. |
+| `/journal/` | Canonical WordPress publisher | Dated release/change record that links to durable genetics, education, diagnostic, game, and community sources. |
 | `/seeds/` and `/seeds/*` | Dedicated genetics library publisher | Sole writer for genetics library and line pages. Generic WordPress and commerce-visual scripts must not rewrite these routes. |
 | `/learn/plant-health/`, `/learn/cultivation-science/`, `/learn/symptoms/`, `/learn/tools/`, `/learn/sources/` | THC education expansion publisher | Child pages are source-controlled education surfaces. Their links into `/learn/` are published by Learning Experience V3, not by the child-page publisher. |
 | `/learn/encyclopedia/` and lesson routes | Dedicated encyclopedia publisher | Publication is controlled by the current production-batch manifest and fresh-visitor verification. |

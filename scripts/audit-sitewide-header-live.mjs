@@ -26,7 +26,6 @@ const CONTENT_ENGINE_PREFIXES = [
 ];
 
 const NON_HEADER_ROUTES = new Set([
-  '/journal/',
   '/puzzles/'
 ]);
 
@@ -56,7 +55,7 @@ const REQUIRED = [
 ];
 const seeds = new Set([
   '/', '/seeds/', '/learn/', '/courses/', '/tools/', '/games/', '/community/', '/shop/',
-  '/gallery/', '/about/', '/contact/', '/cart/', '/my-account/', '/growlens/', '/thc-grow-doc/'
+  '/journal/', '/gallery/', '/about/', '/contact/', '/cart/', '/my-account/', '/growlens/', '/thc-grow-doc/'
 ]);
 
 function sameOrigin(url) { return url.origin === BASE.origin; }
