@@ -152,6 +152,21 @@ function safeFocus(element) {
   catch { element.focus(); }
 }
 
+function revealPrompt(element) {
+  if (!element) return;
+  safeFocus(element);
+  const reducedMotion = Boolean(globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+  const reveal = () => {
+    try {
+      element.scrollIntoView?.({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center', inline: 'nearest' });
+    } catch {
+      element.scrollIntoView?.();
+    }
+  };
+  if (typeof globalThis.requestAnimationFrame === 'function') globalThis.requestAnimationFrame(reveal);
+  else reveal();
+}
+
 function animateDraw() {
   const card = document.querySelector('#prompt-card');
   if (!card) return;
@@ -182,7 +197,7 @@ function draw() {
   updateStatus();
   saveSession();
   animateDraw();
-  safeFocus(ui.prompt);
+  revealPrompt(ui.prompt);
 }
 
 function resetUsed() {
