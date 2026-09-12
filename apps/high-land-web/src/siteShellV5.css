@@ -1,0 +1,102 @@
+/*
+ * High Land + DTFSeeds V5 site-shell integration.
+ *
+ * The global DTFSeeds header owns the top of the viewport. Keep High Land's
+ * sticky turn controls and full-screen game overlays inside the remaining game
+ * viewport so controls never disappear behind site navigation.
+ */
+
+:root {
+  --hl-site-header-offset: 92px;
+}
+
+.board-controls-card {
+  top: calc(var(--hl-site-header-offset) + 1rem);
+  max-height: calc(100svh - var(--hl-site-header-offset) - 2rem);
+}
+
+.card-reveal,
+.winner-overlay {
+  inset: var(--hl-site-header-offset) 0 0;
+}
+
+.game-panel,
+.game-stage,
+.board-wrap,
+.board-controls-card,
+.phaser-board,
+.phaser-board canvas {
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 1120px) {
+  :root {
+    --hl-site-header-offset: 74px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .board-controls-card {
+    position: static;
+    max-height: none;
+  }
+
+  .phaser-board {
+    width: 100%;
+  }
+
+  .phaser-board canvas {
+    max-height: min(72svh, 760px);
+  }
+}
+
+@media (max-width: 782px) {
+  body.admin-bar {
+    --hl-site-header-offset: 120px;
+  }
+}
+
+@media (min-width: 783px) {
+  body.admin-bar {
+    --hl-site-header-offset: 124px;
+  }
+}
+
+@media (max-width: 680px) {
+  .app-shell {
+    width: 100%;
+    padding-inline: clamp(0.35rem, 2vw, 0.65rem);
+  }
+
+  .game-stage {
+    gap: 0.65rem;
+  }
+
+  .phaser-board canvas {
+    max-height: min(66svh, 620px);
+  }
+
+  .card-reveal,
+  .winner-overlay {
+    padding: 0.75rem;
+  }
+
+  .hit-card,
+  .winner-card {
+    width: min(100%, 520px);
+    max-height: calc(100svh - var(--hl-site-header-offset) - 1.5rem);
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 390px) {
+  .phaser-board canvas {
+    max-height: min(60svh, 520px);
+  }
+
+  .turn-box,
+  .dice-display {
+    align-items: flex-start;
+  }
+}
