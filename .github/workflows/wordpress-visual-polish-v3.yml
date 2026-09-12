@@ -172,7 +172,7 @@ jobs:
           }
 
           check_page '/' 'dtf-v3-spotlight'
-          check_page '/learn/' 'Explore by subject'
+          check_page '/learn/' 'Start with the question you are trying to answer.'
 
           home="$RUNNER_TEMP/_.html"
           grep -Fqi 'data-dtf-shell="header-v5"' "$home"
