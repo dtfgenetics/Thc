@@ -56,13 +56,21 @@ jobs:
           grep -Fq "check '/learn/' 'Learn in a sequence that makes the plant easier to understand.'" .github/workflows/dtfseeds-production-gateway.yml
           ! grep -Fq "check '/' 'data-dtf-layout=\"home-v3\"'" .github/workflows/dtfseeds-production-gateway.yml
           ! grep -Fq "check '/learn/' 'data-dtf-layout=\"learn-v3\"'" .github/workflows/dtfseeds-production-gateway.yml
-          grep -Fq "check_reference '/learn/' 'Learn the plant as a connected system.'" .github/workflows/dtfseeds-production-gateway.yml
-          grep -Fq "check_reference '/learn/plant-health/' 'Plant Health & IPM'" .github/workflows/dtfseeds-production-gateway.yml
-          grep -Fq "check_reference '/learn/cultivation-science/' 'Cultivation Science'" .github/workflows/dtfseeds-production-gateway.yml
-          grep -Fq "check_reference '/learn/symptoms/' 'Symptom Differentials'" .github/workflows/dtfseeds-production-gateway.yml
-          grep -Fq "check_reference '/learn/tools/' 'Printable Field Tools'" .github/workflows/dtfseeds-production-gateway.yml
-          grep -Fq "check_reference '/learn/sources/' 'Evidence & Sources'" .github/workflows/dtfseeds-production-gateway.yml
-          grep -Fq "grep -Fqi 'Reserved strain card'" .github/workflows/dtfseeds-production-gateway.yml
+          grep -Fq 'Trust education child workflow verification' .github/workflows/dtfseeds-production-gateway.yml
+          grep -Fq 'Trust Harvest and Outdoor child workflow verification' .github/workflows/dtfseeds-production-gateway.yml
+          grep -Fq "steps.education_publish.outcome == 'success'" .github/workflows/dtfseeds-production-gateway.yml
+          grep -Fq "steps.harvest_outdoor_publish.outcome == 'success'" .github/workflows/dtfseeds-production-gateway.yml
+          grep -Fq "plant-health) public_marker='Plant Health, IPM'" .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          grep -Fq "cultivation-science) public_marker='Cultivation Science Reference Library'" .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          grep -Fq "symptoms) public_marker='Visual Symptom Differential Library'" .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          grep -Fq "tools) public_marker='Printable Learning Tools'" .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          grep -Fq "sources) public_marker='Current sources'" .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          grep -Fq "Mystery_Line_F1_Regular_DTF_Strain_Card" .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          grep -Fq "Rainbow_Bubblegum_F1_Regular_DTF_Strain_Card" .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          grep -Fq 'data-dtf-harvest-postharvest-v6="true"' .github/workflows/wordpress-harvest-outdoor-v6-production.yml
+          grep -Fq 'data-dtf-outdoor-v6="true"' .github/workflows/wordpress-harvest-outdoor-v6-production.yml
+          grep -Fq 'data-dtf-outdoor-quantification-v1="true"' .github/workflows/wordpress-harvest-outdoor-v6-production.yml
+          grep -Fq 'data-thc-outdoor-applied-v1="true"' .github/workflows/wordpress-harvest-outdoor-v6-production.yml
           ! grep -Fq 'issues: write' .github/workflows/dtfseeds-production-gateway.yml
           ! grep -Fq 'github.rest.issues.createComment' .github/workflows/dtfseeds-production-gateway.yml
           ! grep -Fq 'issue_number: 220' .github/workflows/dtfseeds-production-gateway.yml

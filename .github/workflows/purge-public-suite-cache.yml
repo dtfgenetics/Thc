@@ -23,12 +23,13 @@ jobs:
   purge:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     environment: production
     env:
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      NODE_OPTIONS: --dns-result-order=ipv4first
     steps:
       - uses: actions/checkout@v4
         with:
@@ -51,8 +52,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/purge-wordpress-litespeed-cache.mjs | tee "$RUNNER_TEMP/cache-purge.json"
-          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/cache-purge.json"
+          ok=0
+          for attempt in 1 2 3; do
+            if node scripts/purge-wordpress-litespeed-cache.mjs | tee "$RUNNER_TEMP/cache-purge.json" && grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/cache-purge.json"; then
+              ok=1
+              break
+            fi
+            echo "Cache purge attempt $attempt failed; retrying after WordPress transport backoff."
+            sleep $((attempt * 15))
+          done
+          [[ "$ok" -eq 1 ]]
 
       - name: Verify Seed Man bare URL is current
         shell: bash
@@ -63,7 +72,7 @@ jobs:
           headers="$RUNNER_TEMP/seed-man.headers"
           ok=0
           for attempt in {1..12}; do
-            status="$(curl -sS --location --output "$body" --dump-header "$headers" --write-out '%{http_code}' "$url" || true)"
+            status="$(curl -4 -sS --location --output "$body" --dump-header "$headers" --write-out '%{http_code}' "$url" || true)"
             if [[ "$status" == '200' ]] \
               && grep -Fq 'data-seed-ui-release="20260909-v20-runtime-v5"' "$body" \
               && grep -Fq 'data-seed-man-approved-art="approved-showcase-2026-09-08"' "$body" \

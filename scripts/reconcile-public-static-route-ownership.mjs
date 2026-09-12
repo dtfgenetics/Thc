@@ -1,5 +1,9 @@
 import crypto from 'node:crypto';
+import dns from 'node:dns';
 import fs from 'node:fs';
+import { spawn } from 'node:child_process';
+
+dns.setDefaultResultOrder('ipv4first');
 
 const siteUrl = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
 const username = process.env.WP_API_USERNAME || '';
@@ -11,122 +15,88 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const canonicalProjectsIndex = fs.readFileSync('site/public-route-patch/projects/index.html', 'utf8');
 const projectsFingerprint = canonicalProjectsIndex.match(/dtf-release-fingerprint: [A-Za-z0-9._:-]+/)?.[0] || '';
 if (!projectsFingerprint) throw new Error('Canonical Projects index does not expose a release fingerprint.');
+
 const staleProjectsFingerprint = 'Projects is the roadmap for DTF Genetics.';
-let mcpSession = '';
+const transientStatuses = new Set([408, 425, 429, 500, 502, 503, 504, 520, 522, 523, 524]);
 let projectPageBackup = null;
 let projectPageChanged = false;
 
+function collectErrorCodes(error, target = new Set()) {
+  if (!error || typeof error !== 'object') return target;
+  if (typeof error.code === 'string') target.add(error.code);
+  if (error.cause && error.cause !== error) collectErrorCodes(error.cause, target);
+  if (Array.isArray(error.errors)) for (const nested of error.errors) collectErrorCodes(nested, target);
+  return target;
+}
+
+function isTransient(error) {
+  if (!error || typeof error !== 'object') return false;
+  if (Number.isInteger(error.status) && transientStatuses.has(error.status)) return true;
+  if (error.name === 'AbortError' || error.name === 'TimeoutError') return true;
+  return [...collectErrorCodes(error)].some((code) => ['EAI_AGAIN', 'ECONNRESET', 'ETIMEDOUT', 'ENETUNREACH', 'EHOSTUNREACH', 'UND_ERR_CONNECT_TIMEOUT', 'UND_ERR_HEADERS_TIMEOUT', 'UND_ERR_SOCKET'].includes(code));
+}
+
 async function wpRequest(path, { method = 'GET', json, allow = [] } = {}) {
-  const response = await fetch(`${siteUrl}${path}`, {
-    method,
-    headers: {
-      Authorization: auth,
-      Accept: 'application/json',
-      ...(json !== undefined ? { 'Content-Type': 'application/json' } : {}),
-    },
-    body: json !== undefined ? JSON.stringify(json) : undefined,
-    redirect: 'follow',
-    signal: AbortSignal.timeout(30_000),
-  });
-  const text = await response.text();
-  let body = text;
-  try { body = text ? JSON.parse(text) : null; } catch {}
-  if (!response.ok && !allow.includes(response.status)) {
-    throw new Error(`WordPress ${method} ${path} failed (${response.status}): ${typeof body === 'string' ? body.slice(0, 700) : JSON.stringify(body).slice(0, 700)}`);
-  }
-  return { ok: response.ok, status: response.status, body };
-}
-
-function parseRpcText(text) {
-  try { return JSON.parse(text); } catch {}
-  for (const line of String(text).split(/\r?\n/)) {
-    if (!line.startsWith('data:')) continue;
-    try { return JSON.parse(line.slice(5).trim()); } catch {}
-  }
-  return null;
-}
-
-async function mcpRpc(payload) {
-  const headers = {
-    Authorization: auth,
-    Accept: 'application/json, text/event-stream',
-    'Content-Type': 'application/json',
-    'Cache-Control': 'no-cache',
-  };
-  if (mcpSession) headers['Mcp-Session-Id'] = mcpSession;
-  const response = await fetch(`${siteUrl}/wp-json/hostinger-ai-assistant/v1/mcp`, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify(payload),
-    signal: AbortSignal.timeout(30_000),
-  });
-  const next = response.headers.get('mcp-session-id') || response.headers.get('Mcp-Session-Id');
-  if (next) mcpSession = next;
-  const text = await response.text();
-  const body = parseRpcText(text);
-  if (!response.ok || !body || body.error) {
-    throw new Error(`Hostinger MCP failed (${response.status}): ${JSON.stringify(body?.error || body || text.slice(0, 350))}`);
-  }
-  return body;
-}
-
-async function initMcp() {
   let lastError;
-  for (const protocolVersion of ['2025-06-18', '2025-03-26', '2024-11-05']) {
+  for (let attempt = 1; attempt <= 8; attempt += 1) {
     try {
-      await mcpRpc({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'initialize',
-        params: { protocolVersion, capabilities: {}, clientInfo: { name: 'DTFRouteOwnership', version: '1.0.0' } },
+      const response = await fetch(`${siteUrl}${path}`, {
+        method,
+        headers: {
+          Authorization: auth,
+          Accept: 'application/json',
+          ...(json !== undefined ? { 'Content-Type': 'application/json' } : {}),
+        },
+        body: json !== undefined ? JSON.stringify(json) : undefined,
+        redirect: 'follow',
+        signal: AbortSignal.timeout(45_000),
       });
-      try { await mcpRpc({ jsonrpc: '2.0', method: 'notifications/initialized', params: {} }); } catch {}
-      return;
+      const text = await response.text();
+      let body = text;
+      try { body = text ? JSON.parse(text) : null; } catch {}
+      if (!response.ok && !allow.includes(response.status)) {
+        const error = new Error(`WordPress ${method} ${path} failed (${response.status}): ${typeof body === 'string' ? body.slice(0, 700) : JSON.stringify(body).slice(0, 700)}`);
+        error.status = response.status;
+        if (!transientStatuses.has(response.status)) throw error;
+        lastError = error;
+      } else {
+        return { ok: response.ok, status: response.status, body };
+      }
     } catch (error) {
+      if (!isTransient(error)) throw error;
       lastError = error;
-      mcpSession = '';
+    }
+    if (attempt < 8) {
+      await sleep(Math.min(1000 * 2 ** (attempt - 1), 10_000));
     }
   }
-  throw lastError || new Error('Unable to initialize Hostinger MCP.');
-}
-
-async function purgeHostingerCache() {
-  let lastError;
-  for (let attempt = 1; attempt <= 3; attempt += 1) {
-    try {
-      mcpSession = '';
-      await initMcp();
-      const result = await mcpRpc({
-        jsonrpc: '2.0',
-        id: crypto.randomInt(1000, 9_000_000),
-        method: 'tools/call',
-        params: { name: 'hostinger-ai-assistant-litespeed-cache-flush', arguments: {} },
-      });
-      if (result?.result?.isError === true) throw new Error('LiteSpeed tool returned isError.');
-      console.log('Hostinger LiteSpeed cache purge succeeded.');
-      return;
-    } catch (error) {
-      lastError = error;
-      await sleep(1500 * attempt);
-    }
-  }
-  throw new Error(`Hostinger LiteSpeed cache purge failed: ${lastError instanceof Error ? lastError.message : String(lastError)}`);
+  throw lastError || new Error(`WordPress ${method} ${path} failed after retries.`);
 }
 
 async function probe(path, { cacheBust = false } = {}) {
   const url = new URL(path, siteUrl);
   if (cacheBust) url.searchParams.set('dtf_route_ownership', `${Date.now()}-${crypto.randomBytes(4).toString('hex')}`);
-  const response = await fetch(url, {
-    redirect: 'manual',
-    headers: {
-      'User-Agent': 'DTFSeeds-Route-Ownership/1.0',
-      'Cache-Control': 'no-cache, no-store, max-age=0',
-      Pragma: 'no-cache',
-    },
-    signal: AbortSignal.timeout(30_000),
-  });
-  const text = await response.text();
-  return { response, text };
+  let lastError;
+  for (let attempt = 1; attempt <= 8; attempt += 1) {
+    try {
+      const response = await fetch(url, {
+        redirect: 'manual',
+        headers: {
+          'User-Agent': 'DTFSeeds-Route-Ownership/1.1',
+          'Cache-Control': 'no-cache, no-store, max-age=0',
+          Pragma: 'no-cache',
+        },
+        signal: AbortSignal.timeout(45_000),
+      });
+      const text = await response.text();
+      return { response, text };
+    } catch (error) {
+      if (!isTransient(error)) throw error;
+      lastError = error;
+      await sleep(Math.min(1000 * 2 ** (attempt - 1), 10_000));
+    }
+  }
+  throw lastError || new Error(`Visitor probe failed for ${path}`);
 }
 
 function assertDirectHtml(label, { response, text }, required, forbidden = []) {
@@ -149,8 +119,8 @@ async function verifyStaticProjectsIndex() {
     'This roadmap follows the same release records used by DTFSeeds deployment.',
     'Bud or Bluff',
     'Strain Showdown',
-    'Terpocalypse: Grow Room From Hell',
-    'PhenoQuest: The Living Seed Vault',
+    'Terpocalypse',
+    'PhenoQuest',
   ], [staleProjectsFingerprint]);
 }
 
@@ -188,6 +158,25 @@ async function retireConflictingProjectsPage() {
   return { found: true, changed: true, pageId: projectPageBackup.id, priorStatus };
 }
 
+async function runCachePurgeBestEffort() {
+  const env = {
+    ...process.env,
+    LITESPEED_PURGE_URLS: '/projects/,/projects/index.html,/games/bud-or-bluff/,/games/seed-man-platformer/',
+  };
+  let lastCode = 0;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    lastCode = await new Promise((resolve) => {
+      const child = spawn(process.execPath, ['scripts/purge-wordpress-litespeed-cache.mjs'], { env, stdio: 'inherit' });
+      child.on('close', (code) => resolve(code ?? 1));
+      child.on('error', () => resolve(1));
+    });
+    if (lastCode === 0) return true;
+    await sleep(attempt * 8000);
+  }
+  console.warn(`Cache purge helper did not complete after retries (exit ${lastCode}); continuing to direct visitor verification.`);
+  return false;
+}
+
 async function restoreProjectsPageBestEffort() {
   if (!projectPageChanged || !projectPageBackup?.id || !projectPageBackup.status) return;
   try {
@@ -196,7 +185,7 @@ async function restoreProjectsPageBestEffort() {
       json: { status: projectPageBackup.status },
     });
     projectPageChanged = false;
-    await purgeHostingerCache();
+    await runCachePurgeBestEffort();
     console.error(`Restored WordPress Projects page ${projectPageBackup.id} to ${projectPageBackup.status} after failed static-route verification.`);
   } catch (error) {
     console.error(`CRITICAL: could not restore WordPress Projects page ${projectPageBackup.id}: ${error instanceof Error ? error.message : String(error)}`);
@@ -205,7 +194,7 @@ async function restoreProjectsPageBestEffort() {
 
 async function verifyOrdinaryPublicRoutes() {
   let lastError;
-  for (let attempt = 1; attempt <= 6; attempt += 1) {
+  for (let attempt = 1; attempt <= 8; attempt += 1) {
     try {
       const projects = await probe('/projects/');
       assertDirectHtml('Projects public route', projects, [
@@ -224,9 +213,9 @@ async function verifyOrdinaryPublicRoutes() {
       return;
     } catch (error) {
       lastError = error;
-      if (attempt < 6) {
-        await purgeHostingerCache();
-        await sleep(1800 + attempt * 900);
+      if (attempt < 8) {
+        await runCachePurgeBestEffort();
+        await sleep(2500 + attempt * 1000);
       }
     }
   }
@@ -234,16 +223,15 @@ async function verifyOrdinaryPublicRoutes() {
 }
 
 try {
-  // Never retire a WordPress route owner unless the newly deployed static file is
-  // already present and carries the exact source-controlled release fingerprint.
   await verifyStaticProjectsIndex();
   const ownership = await retireConflictingProjectsPage();
-  await purgeHostingerCache();
+  const purgeCompleted = await runCachePurgeBestEffort();
   await verifyOrdinaryPublicRoutes();
   console.log(JSON.stringify({
     ok: true,
     projectsOwnership: ownership,
     projectsFingerprint,
+    cachePurgeCompleted: purgeCompleted,
     ordinaryProjectsDirect: true,
     ordinaryBudOrBluffDirect: true,
     futureSlotsRetired: true,

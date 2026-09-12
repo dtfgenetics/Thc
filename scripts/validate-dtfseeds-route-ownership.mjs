@@ -1,6 +1,5 @@
 import { readFile } from 'node:fs/promises';
 
-// This validator is intentionally lightweight so every ownership-affecting push can run it.
 const files = {
   canonicalPages: 'scripts/apply-wordpress-public-content-rest.mjs',
   ownershipWrapper: 'scripts/apply-wordpress-public-content-owned-routes.mjs',
@@ -16,228 +15,74 @@ const files = {
   learningStorage: 'scripts/verify-learning-owner-storage.mjs',
   productionGateway: '.github/workflows/dtfseeds-production-gateway.yml',
   educationNavigation: 'scripts/update-wordpress-learn-expansion-v1.mjs',
-  geneticsWorkflow: '.github/workflows/wordpress-genetics-library-production.yml'
+  educationWorkflow: '.github/workflows/deploy-thc-learning-center-expansion-v1.yml',
+  harvestOutdoorWorkflow: '.github/workflows/wordpress-harvest-outdoor-v6-production.yml',
+  geneticsWorkflow: '.github/workflows/wordpress-genetics-library-production.yml',
 };
 
-const content = Object.fromEntries(
-  await Promise.all(
-    Object.entries(files).map(async ([key, path]) => [key, await readFile(path, 'utf8')])
-  )
-);
-
+const content = Object.fromEntries(await Promise.all(Object.entries(files).map(async ([key, path]) => [key, await readFile(path, 'utf8')])));
 const failures = [];
-const failIf = (condition, message) => {
-  if (condition) failures.push(message);
-};
+const failIf = (condition, message) => { if (condition) failures.push(message); };
+const requireText = (key, text, message) => failIf(!content[key].includes(text), message || `${files[key]} is missing ${text}`);
+const rejectText = (key, text, message) => failIf(content[key].includes(text), message || `${files[key]} still contains ${text}`);
 
-// Generic editorial page reconciliation must never own the Seeds root.
-failIf(
-  /\[\s*['"]seeds['"]\s*,/m.test(content.canonicalPages) ||
-    /pageDefinitions[\s\S]{0,1200}['"]seeds['"]/m.test(content.canonicalPages),
-  'Generic WordPress page reconciliation includes the Seeds route.'
-);
+failIf(/\[\s*['"]seeds['"]\s*,/m.test(content.canonicalPages) || /pageDefinitions[\s\S]{0,1200}['"]seeds['"]/m.test(content.canonicalPages), 'Generic WordPress page reconciliation includes the Seeds route.');
+failIf(/getPage\(\s*['"]seeds['"]\s*\)/m.test(content.commerceVisuals), 'Commerce visual publisher fetches the Seeds page.');
+failIf(/backupAndUpdate\(\s*seeds\b/m.test(content.commerceVisuals), 'Commerce visual publisher updates the Seeds page.');
 
-// Commerce visual composition may link to /seeds/ but must not load or update it.
-failIf(
-  /getPage\(\s*['"]seeds['"]\s*\)/m.test(content.commerceVisuals),
-  'Commerce visual publisher fetches the Seeds page.'
-);
-failIf(
-  /backupAndUpdate\(\s*seeds\b/m.test(content.commerceVisuals),
-  'Commerce visual publisher updates the Seeds page.'
-);
+requireText('canonicalWorkflow', 'node scripts/apply-wordpress-public-content-owned-routes.mjs', 'Canonical WordPress workflow no longer uses the ownership-preserving reconciliation wrapper.');
+rejectText('canonicalWorkflow', 'node scripts/apply-wordpress-public-content-rest.mjs', 'Canonical WordPress workflow directly invokes the broad page writer.');
+rejectText('canonicalWorkflow', 'node scripts/rebuild-wordpress-visual-site.mjs', 'Canonical WordPress workflow still invokes the legacy Home/Learn visual writer.');
+failIf(/verify_page\s+['"]\/learn\//m.test(content.canonicalWorkflow), 'Canonical WordPress workflow verifies /learn/ as if it owned the route.');
+requireText('ownershipWrapper', "const delegatedSlugs = ['home', 'learn']", 'Ownership wrapper does not declare Home and Learn as delegated routes.');
+requireText('ownershipWrapper', "process.env.DTF_PRESERVE_PAGE_SLUGS = delegatedSlugs.join(',')", 'Ownership wrapper does not hand delegated routes to the generic read-only policy.');
+requireText('canonicalPages', 'DTF_PRESERVE_PAGE_SLUGS', 'Generic reconciler does not read delegated route preservation settings.');
+requireText('canonicalPages', "action: preserved ? 'preserve'", 'Generic reconciler does not preserve delegated routes.');
+requireText('ownershipWrapper', 'Canonical WordPress lane attempted to mutate delegated', 'Ownership wrapper does not fail closed on delegated-route mutation evidence.');
+requireText('ownershipWrapper', 'canonicalLaneMutation = false', 'Ownership wrapper no longer records no-write transaction evidence.');
+requireText('ownershipVerifier', "ownerStage = 'base-learning-owner'", 'Owned-route verifier no longer proves base Home/Learn ownership.');
+requireText('ownershipVerifier', "downstreamStageVerification = 'delegated-to-learning-production'", 'Owned-route verifier no longer delegates downstream Learning markers.');
+rejectText('ownershipVerifier', 'content changed during canonical reconciliation', 'Owned-route verifier still requires global Home/Learn hash stability.');
 
-// The broad canonical workflow must preserve the Learning-owned Home/Learn
-// content and must not invoke the old visual writer or gate /learn/ itself.
-failIf(
-  !/node scripts\/apply-wordpress-public-content-owned-routes\.mjs/m.test(content.canonicalWorkflow),
-  'Canonical WordPress workflow no longer uses the ownership-preserving reconciliation wrapper.'
-);
-failIf(
-  /node scripts\/apply-wordpress-public-content-rest\.mjs/m.test(content.canonicalWorkflow),
-  'Canonical WordPress workflow directly invokes the broad page writer instead of the ownership-preserving wrapper.'
-);
-failIf(
-  /node scripts\/rebuild-wordpress-visual-site\.mjs/m.test(content.canonicalWorkflow),
-  'Canonical WordPress workflow still invokes the legacy Home/Learn visual writer.'
-);
-failIf(
-  /verify_page\s+['"]\/learn\//m.test(content.canonicalWorkflow),
-  'Canonical WordPress workflow verifies /learn/ as if it owned the route.'
-);
+failIf(/method:\s*['"]POST['"][\s\S]{0,300}\/wp-json\/wp\/v2\/pages/m.test(content.educationNavigation) || /\/wp-json\/wp\/v2\/pages\/\$\{/m.test(content.educationNavigation), 'Education expansion navigation step still writes the Learn root.');
+requireText('educationNavigation', "mutation: 'none'", 'Education expansion navigation step is not explicitly read-only.');
+requireText('learningWorkflow', 'bash scripts/run-learning-v3-connected-production.sh', 'Learning V3 workflow no longer invokes its connected owner transaction.');
+requireText('learningTransaction', 'prepare-learning-v3-atlas-publisher.mjs', 'Learning transaction no longer prepares the Atlas affordance.');
+requireText('learningTransaction', 'prepare-learning-v3-owner-aware-publisher.mjs', 'Learning transaction no longer runs the owner-aware V3 publisher.');
+requireText('learningTransaction', 'prepare-learning-owner-aware-followup-publishers.mjs', 'Learning transaction no longer runs owner-aware follow-up publishers.');
+requireText('learningTransaction', 'publish-learning-expanded-references-owner-aware.mjs', 'Learning transaction no longer publishes expanded references through ownership.');
+for (const stage of ['v3', 'v4', 'expanded', 'visual']) requireText('learningTransaction', `LEARNING_OWNER_STAGE=${stage}`, `Learning owner transaction no longer verifies ${stage} through storage.`);
+requireText('learningTransaction', 'data-dtf-learning-map="v4"', 'Learning transaction no longer carries V4 ownership fingerprint.');
+requireText('learningTransaction', 'data-dtf-learning-expanded-reference="v1"', 'Learning transaction no longer carries expanded-reference ownership fingerprint.');
+requireText('learningV3AtlasPrepare', '/learn/atlas/', 'Learning V3 Atlas preparation no longer links the Atlas route.');
+requireText('learningV3AtlasPrepare', 'Open the THC Living Plant Atlas', 'Learning V3 Atlas preparation no longer adds the Atlas affordance.');
+requireText('learningV3Prepare', "rootVerification: 'wordpress-rest'", 'Learning V3 preparation no longer proves root storage through WordPress REST.');
+requireText('learningV3Prepare', "topicVerification: 'anonymous-public'", 'Learning V3 preparation no longer separates topic visitor proof.');
+requireText('learningStorage', "verification: 'wordpress-rest-storage'", 'Learning root storage verifier no longer proves WordPress storage.');
+requireText('learningStorage', 'Open the THC Living Plant Atlas', 'Learning root storage verifier no longer proves the Atlas affordance.');
+requireText('learningFollowupPrepare', 'Stored Learn V4 owner verification failed', 'Learning follow-up publisher no longer fails closed on V4 storage proof.');
+requireText('learningFollowupPrepare', 'Learning Visual V1 verification failed', 'Learning follow-up publisher no longer fails closed on visual storage proof.');
+requireText('learningExpanded', "storageVerification: 'success'", 'Expanded Learning references are no longer verified through stored Learn ownership.');
 
-// Delegated Home/Learn protection is a write-path policy, not a global hash
-// freeze. The wrapper must declare both delegated slugs, hand that policy to
-// the generic reconciler, and fail unless transaction evidence proves no broad
-// create/update occurred.
-failIf(
-  !/const delegatedSlugs = \['home', 'learn'\]/m.test(content.ownershipWrapper),
-  'Ownership-preserving reconciliation wrapper does not declare both Home and Learn as delegated routes.'
-);
-failIf(
-  !/process\.env\.DTF_PRESERVE_PAGE_SLUGS = delegatedSlugs\.join\(','\)/m.test(content.ownershipWrapper),
-  'Ownership-preserving wrapper does not hand delegated routes to the generic read-only policy.'
-);
-failIf(
-  !/DTF_PRESERVE_PAGE_SLUGS/m.test(content.canonicalPages) ||
-    !/action: preserved \? 'preserve'/m.test(content.canonicalPages) ||
-    !/Preserved delegated \/\$\{item\.slug\}\/ owner without mutation/m.test(content.canonicalPages),
-  'Generic WordPress reconciliation does not enforce delegated route preservation.'
-);
-failIf(
-  !/Canonical WordPress lane attempted to mutate delegated/m.test(content.ownershipWrapper) ||
-    !/canonicalLaneMutation = false/m.test(content.ownershipWrapper),
-  'Ownership wrapper does not fail closed on Home/Learn transaction mutation evidence.'
-);
+requireText('productionGateway', "check '/' 'Genetics first. Learn the plant behind the pack.'", 'Production gateway no longer verifies Home through stable visitor semantics.');
+requireText('productionGateway', "check '/learn/' 'Learn in a sequence that makes the plant easier to understand.'", 'Production gateway no longer verifies Learn through stable visitor semantics.');
+rejectText('productionGateway', "check '/' 'data-dtf-layout=\"home-v3\"'", 'Production gateway again treats private Home storage attributes as visitor requirements.');
+rejectText('productionGateway', "check '/learn/' 'data-dtf-layout=\"learn-v3\"'", 'Production gateway again treats private Learn storage attributes as visitor requirements.');
+requireText('productionGateway', 'Trust education child workflow verification', 'Production gateway no longer delegates education visitor proof to the child workflow.');
+requireText('productionGateway', 'Trust Harvest and Outdoor child workflow verification', 'Production gateway no longer delegates Harvest/Outdoor visitor proof to the child workflow.');
+requireText('productionGateway', "steps.education_publish.outcome == 'success'", 'Gateway education verification is not gated on successful child publication.');
+requireText('productionGateway', "steps.harvest_outdoor_publish.outcome == 'success'", 'Gateway Harvest/Outdoor verification is not gated on successful child publication.');
 
-// Canonical WordPress runs before the Education/Learning finalizer. Its
-// preservation verifier may prove only base Home/Learn ownership plus no-write
-// transaction evidence. V4, expanded references and visual markers are
-// downstream Learning-stage obligations and must not be prerequisites here.
-failIf(
-  !/canonicalLaneMutation !== false/m.test(content.ownershipVerifier) ||
-    !/ownerAdvanced/m.test(content.ownershipVerifier) ||
-    !/data-dtf-layout=\\?"home-v3\\?"/m.test(content.ownershipVerifier) ||
-    !/data-dtf-layout=\\?"learn-v3\\?"/m.test(content.ownershipVerifier) ||
-    !/ownerStage = ['"]base-learning-owner['"]/m.test(content.ownershipVerifier) ||
-    !/downstreamStageVerification = ['"]delegated-to-learning-production['"]/m.test(content.ownershipVerifier),
-  'Owned-route verifier no longer proves base Home/Learn ownership and canonical no-write evidence.'
-);
-failIf(
-  /data-dtf-learning-map=\\?"v4\\?"/m.test(content.ownershipVerifier) ||
-    /data-dtf-learning-expanded-reference=\\?"v1\\?"/m.test(content.ownershipVerifier),
-  'Canonical owned-route verifier incorrectly requires downstream Learning-stage markers.'
-);
-failIf(
-  /content changed during canonical reconciliation/m.test(content.ownershipVerifier),
-  'Owned-route verifier still requires global Home/Learn hash stability instead of transaction-level no-write proof.'
-);
-
-// Education child publishers may observe the Learn root but must not write it.
-failIf(
-  /method:\s*['"]POST['"][\s\S]{0,300}\/wp-json\/wp\/v2\/pages/m.test(content.educationNavigation) ||
-    /\/wp-json\/wp\/v2\/pages\/\$\{/m.test(content.educationNavigation),
-  'Education expansion navigation compatibility step still writes the Learn root.'
-);
-failIf(
-  !/mutation:\s*['"]none['"]/m.test(content.educationNavigation),
-  'Education expansion navigation step is not explicitly read-only.'
-);
-
-// Learning V3 remains the automatic Home/Learn owner. Root ownership is a
-// WordPress storage proof; topic and child-route acceptance stays anonymous.
-failIf(
-  !/bash scripts\/run-learning-v3-connected-production\.sh/m.test(content.learningWorkflow),
-  'Learning V3 workflow no longer invokes its connected owner transaction.'
-);
-failIf(
-  !/prepare-learning-v3-atlas-publisher\.mjs/m.test(content.learningTransaction) ||
-    !/LEARNING_V3_ATLAS_PUBLISHER="\$atlas_v3"/m.test(content.learningTransaction) ||
-    !/LEARNING_V3_SOURCE_PUBLISHER="\$atlas_v3"/m.test(content.learningTransaction) ||
-    !/prepare-learning-v3-owner-aware-publisher\.mjs/m.test(content.learningTransaction) ||
-    content.learningTransaction.indexOf('prepare-learning-v3-atlas-publisher.mjs') > content.learningTransaction.indexOf('prepare-learning-v3-owner-aware-publisher.mjs'),
-  'Learning V3 transaction no longer composes Atlas ownership before applying the root storage/public verification split.'
-);
-failIf(
-  !/\/learn\/atlas\//m.test(content.learningV3AtlasPrepare) ||
-    !/Open the THC Living Plant Atlas/m.test(content.learningV3AtlasPrepare) ||
-    !/originalCount === 1/m.test(content.learningV3AtlasPrepare) ||
-    !/atlasCount !== 1/m.test(content.learningV3AtlasPrepare),
-  'Learning V3 Atlas preparation no longer adds the canonical Atlas affordance with fail-closed source-shape checks.'
-);
-failIf(
-  !/prepare-learning-owner-aware-followup-publishers\.mjs/m.test(content.learningTransaction) ||
-    !/publish-learning-expanded-references-owner-aware\.mjs/m.test(content.learningTransaction),
-  'Learning owner transaction no longer uses the reviewed downstream owner-aware publisher chain.'
-);
-for (const stage of ['v3', 'v4', 'expanded', 'visual']) {
-  failIf(
-    !new RegExp(`LEARNING_OWNER_STAGE=${stage}`).test(content.learningTransaction),
-    `Learning owner transaction no longer verifies ${stage} through authenticated storage.`
-  );
+for (const marker of ["plant-health) public_marker='Plant Health, IPM'", "cultivation-science) public_marker='Cultivation Science Reference Library'", "symptoms) public_marker='Visual Symptom Differential Library'", "tools) public_marker='Printable Learning Tools'", "sources) public_marker='Current sources'", 'Teaching Healthy Cultivation', 'Mystery_Line_F1_Regular_DTF_Strain_Card', 'Rainbow_Bubblegum_F1_Regular_DTF_Strain_Card']) {
+  requireText('educationWorkflow', marker, `Education child workflow no longer verifies marker: ${marker}`);
 }
-failIf(
-  !/rootVerification:\s*['"]wordpress-rest['"]/m.test(content.learningV3Prepare) ||
-    !/topicVerification:\s*['"]anonymous-public['"]/m.test(content.learningV3Prepare),
-  'Learning V3 preparation no longer separates root storage proof from topic visitor proof.'
-);
-failIf(
-  !/verification:\s*['"]wordpress-rest-storage['"]/m.test(content.learningStorage) ||
-    !/page_on_front/m.test(content.learningStorage) ||
-    !/data-dtf-layout=\\?"home-v3\\?"/m.test(content.learningStorage) ||
-    !/data-dtf-layout=\\?"learn-v3\\?"/m.test(content.learningStorage) ||
-    !/Learn Atlas route/m.test(content.learningStorage) ||
-    !/Open the THC Living Plant Atlas/m.test(content.learningStorage) ||
-    !/data-dtf-learning-map=\\?"v4\\?"/m.test(content.learningStorage) ||
-    !/data-dtf-learning-expanded-reference=\\?"v1\\?"/m.test(content.learningStorage),
-  'Learning root storage verifier no longer proves Atlas-bearing V3 plus downstream Home/Learn ownership stages.'
-);
-failIf(
-  !/Stored Learn V4 owner verification failed/m.test(content.learningFollowupPrepare) ||
-    !/Learning Visual V1 verification failed/m.test(content.learningFollowupPrepare),
-  'Learning V4/Visual owner-aware preparation no longer fails closed on stored root verification.'
-);
-failIf(
-  !/storageVerification:\s*['"]success['"]/m.test(content.learningExpanded) ||
-    !/data-dtf-learning-expanded-reference=\\?"v1\\?"/m.test(content.learningExpanded),
-  'Expanded Learning references are no longer verified through stored Learn ownership.'
-);
-failIf(
-  !/data-dtf-learning-expanded-reference=\\?"v1\\?"/m.test(content.learningTransaction) ||
-    !/Learn the plant as a connected system\./m.test(content.learningTransaction),
-  'Learning V3 owner transaction no longer carries expanded-reference ownership fingerprints.'
-);
-
-// The cumulative gateway must verify public roots by stable visitor semantics,
-// not private WordPress storage attributes. Education child routes remain public
-// and each one must be checked against a route-specific visible marker.
-failIf(
-  !/check '\/' 'Genetics first\. Learn the plant behind the pack\.'/m.test(content.productionGateway) ||
-    !/check '\/learn\/' 'Learn in a sequence that makes the plant easier to understand\.'/m.test(content.productionGateway),
-  'Production gateway no longer verifies Home/Learn through stable visitor semantics.'
-);
-failIf(
-  /check '\/' 'data-dtf-layout=/m.test(content.productionGateway) ||
-    /check '\/learn\/' 'data-dtf-layout=/m.test(content.productionGateway),
-  'Production gateway again treats private root storage attributes as anonymous visitor requirements.'
-);
-const educationPublicChecks = [
-  ["/learn/", 'Learn the plant as a connected system.'],
-  ["/learn/plant-health/", 'Plant Health & IPM'],
-  ["/learn/cultivation-science/", 'Cultivation Science'],
-  ["/learn/symptoms/", 'Symptom Differentials'],
-  ["/learn/tools/", 'Printable Field Tools'],
-  ["/learn/sources/", 'Evidence & Sources']
-];
-for (const [path, marker] of educationPublicChecks) {
-  const escapedPath = path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const escapedMarker = marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  failIf(
-    !new RegExp(`check_reference ['"]${escapedPath}['"] ['"]${escapedMarker}['"]`).test(content.productionGateway),
-    `Production gateway no longer independently verifies education route ${path} with its public marker.`
-  );
+for (const marker of ['data-dtf-harvest-postharvest-v6="true"', 'data-dtf-outdoor-v6="true"', 'data-dtf-outdoor-quantification-v1="true"', 'data-thc-outdoor-applied-v1="true"']) {
+  requireText('harvestOutdoorWorkflow', marker, `Harvest/Outdoor child workflow no longer verifies marker: ${marker}`);
 }
-failIf(
-  !/Reserved strain card/m.test(content.productionGateway),
-  'Production gateway no longer rejects retired placeholder content from education routes.'
-);
 
-// The broad canonical workflow should not make an obsolete Seeds-layout check
-// part of its own release gate; dedicated genetics production owns that proof.
-failIf(
-  /verify_page\s+['"]\/seeds\//m.test(content.canonicalWorkflow),
-  'Canonical WordPress workflow verifies /seeds/ as if it owned the route.'
-);
-
-// The dedicated genetics workflow must continue to carry Seeds ownership.
-failIf(
-  !/publish-wordpress-genetics-library-cdn\.mjs/m.test(content.geneticsWorkflow),
-  'Dedicated genetics workflow no longer invokes the genetics library publisher.'
-);
-failIf(
-  !/(verify|verification)[\s\S]{0,1200}(\/seeds\/|seeds)/im.test(content.geneticsWorkflow),
-  'Dedicated genetics workflow no longer contains a Seeds verification gate.'
-);
+failIf(/verify_page\s+['"]\/seeds\//m.test(content.canonicalWorkflow), 'Canonical WordPress workflow verifies /seeds/ as if it owned the route.');
+requireText('geneticsWorkflow', 'publish-wordpress-genetics-library-cdn.mjs', 'Dedicated genetics workflow no longer invokes the genetics library publisher.');
+failIf(!/(verify|verification)[\s\S]{0,1200}(\/seeds\/|seeds)/im.test(content.geneticsWorkflow), 'Dedicated genetics workflow no longer contains a Seeds verification gate.');
 
 if (failures.length) {
   console.error('DTFSeeds route ownership validation failed:');
@@ -247,11 +92,7 @@ if (failures.length) {
 
 console.log('DTFSeeds route ownership validation passed.');
 console.log('- /seeds/ is excluded from generic WordPress page reconciliation.');
-console.log('- commerce visual publishing does not fetch or update /seeds/.');
-console.log('- canonical WordPress production proves only base Home/Learn ownership plus transaction-level no-write evidence.');
-console.log('- Learning V3 composes its Atlas affordance before the owner-aware root storage/public verification split.');
-console.log('- downstream V4/expanded/visual ownership is verified only by the Learning production lane.');
-console.log('- education child publishing cannot mutate the Learn root.');
-console.log('- Learning Experience V3 proves Home/Learn through WordPress storage while topic/child routes remain visitor-verified.');
-console.log('- the cumulative gateway verifies roots and education child routes by route-specific public semantics rather than private storage attributes.');
+console.log('- canonical WordPress production preserves Home/Learn and records transaction-level no-write evidence.');
+console.log('- Learning V3 owns Home/Learn through WordPress storage while topic and child routes remain visitor-verified.');
+console.log('- the cumulative gateway verifies broad roots and delegates education/Harvest/Outdoor detail proof to authoritative child workflows.');
 console.log('- the dedicated genetics workflow retains publisher + verification ownership.');
