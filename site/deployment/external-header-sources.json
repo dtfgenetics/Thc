@@ -15,6 +15,12 @@
         "js/fallback-polish.js",
         "js/dtf-sitewide-header-v5.js"
       ],
+      "generatedFiles": [
+        {
+          "path": "js/app.js",
+          "content": "(() => {\n  const $ = (id) => document.getElementById(id);\n  const playerName = $('playerName');\n  const roomInput = $('roomInput');\n  const createGame = $('createGame');\n  const joinGame = $('joinGame');\n\n  function submitToPlay(action, values = {}) {\n    const form = document.createElement('form');\n    form.method = action === 'join' ? 'get' : 'post';\n    form.action = 'play.php';\n    const entries = action === 'join' ? values : { action, ...values };\n    for (const [name, value] of Object.entries(entries)) {\n      const input = document.createElement('input');\n      input.type = 'hidden';\n      input.name = name;\n      input.value = value == null ? '' : String(value);\n      form.appendChild(input);\n    }\n    document.body.appendChild(form);\n    form.submit();\n  }\n\n  createGame?.addEventListener('click', () => {\n    submitToPlay('create', { player_name: playerName?.value || 'Grower' });\n  });\n\n  joinGame?.addEventListener('click', () => {\n    const room = (roomInput?.value || '').trim();\n    if (!room) {\n      roomInput?.focus();\n      return;\n    }\n    submitToPlay('join', { room });\n  });\n})();\n"
+        }
+      ],
       "verifyRoutes": [
         "/games/kush-kings-chess/",
         "/games/kush-kings-chess/play.php"
@@ -32,6 +38,13 @@
       "publicRoot": "games/thc-u-know",
       "files": [
         "index.html"
+      ],
+      "htmlReplacements": [
+        {
+          "file": "index.html",
+          "from": "    <script type=\"module\" src=\"/src/main.tsx\"></script>",
+          "to": "    <script id=\"thc-u-know-production-route-shim\">document.documentElement.dataset.thcUKnowRuntime='static-production-shell';</script>"
+        }
       ],
       "verifyRoutes": [
         "/games/thc-u-know/"
