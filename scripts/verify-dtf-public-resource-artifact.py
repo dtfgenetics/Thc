@@ -59,6 +59,21 @@ with zipfile.ZipFile(archive_path) as archive:
         if required not in payload_names:
             raise SystemExit(f'required file missing from artifact: {required}')
 
+    verify_tokens = resource.get('verifyTokens') or []
+    if verify_tokens:
+        index_name = f"{resource['artifactRoot'].rstrip('/')}/index.html"
+        if index_name not in payload_names:
+            raise SystemExit(f'verification-token entrypoint missing from artifact: {index_name}')
+        try:
+            index_text = archive.read(index_name).decode('utf-8')
+        except UnicodeDecodeError as exc:
+            raise SystemExit(f'verification-token entrypoint is not UTF-8: {index_name}') from exc
+        for token in verify_tokens:
+            if not isinstance(token, str) or not token:
+                raise SystemExit(f'invalid verify token configured for {resource_id}: {token!r}')
+            if token not in index_text:
+                raise SystemExit(f"resource verification token missing from {index_name}: {token!r}")
+
     out.mkdir(parents=True, exist_ok=True)
     for name in payload_names:
         target = out / name
@@ -73,6 +88,7 @@ print(json.dumps({
     'route': resource['route'],
     'productionTarget': resource['productionTarget'],
     'checkpointTag': resource['checkpointTag'],
+    'verifyTokenCount': len(resource.get('verifyTokens') or []),
     'fileCount': len(payload_names),
     'archiveSha256': hashlib.sha256(archive_path.read_bytes()).hexdigest(),
     'output': str(out),
