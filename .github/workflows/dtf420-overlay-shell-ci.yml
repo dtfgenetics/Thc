@@ -1,0 +1,110 @@
+name: Dtf420 Overlay Shared Shell CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/stage-dtf420-static-overlay.py'
+      - 'scripts/apply-sitewide-header.mjs'
+      - 'scripts/lib/sitewide-header-template.mjs'
+      - 'site/wordpress/assets/responsive-layout-v1.css'
+      - 'site/wordpress/assets/sitewide-ux-polish-v1.css'
+      - 'site/deployment/dtf420-static-overlay.json'
+      - '.github/workflows/dtf420-overlay-shell-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/stage-dtf420-static-overlay.py'
+      - 'scripts/apply-sitewide-header.mjs'
+      - 'scripts/lib/sitewide-header-template.mjs'
+      - 'site/wordpress/assets/responsive-layout-v1.css'
+      - 'site/wordpress/assets/sitewide-ux-polish-v1.css'
+      - 'site/deployment/dtf420-static-overlay.json'
+      - '.github/workflows/dtf420-overlay-shell-ci.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtf420-overlay-shell-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate shell reconciliation inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/stage-dtf420-static-overlay.py
+          node --check scripts/apply-sitewide-header.mjs
+          node --check scripts/lib/sitewide-header-template.mjs
+          test -s site/wordpress/assets/responsive-layout-v1.css
+          test -s site/wordpress/assets/sitewide-ux-polish-v1.css
+          grep -Fq 'DTFSeeds shared responsive layout system v1' site/wordpress/assets/responsive-layout-v1.css
+          grep -Fq 'DTFSeeds sitewide UX polish v1' site/wordpress/assets/sitewide-ux-polish-v1.css
+
+      - name: Build Dtf420 overlay and apply canonical shared shell
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/dtf-release"
+          python scripts/stage-dtf420-static-overlay.py "$RUNNER_TEMP/dtf-release" | tee "$RUNNER_TEMP/dtf420-overlay-shell.json"
+
+      - name: Verify representative child-route families
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/dtf-release/dtf-content-overlay"
+          routes=(
+            learn/academy/index.html
+            learn/atlas/index.html
+            learn/atlas/seed-germination/seed-anatomy/index.html
+            learn/cultivation-science/outdoor-site-and-sun-mapping/index.html
+            learn/plant-health/two-spotted-spider-mite/index.html
+            learn/sops/ph-meter-calibration-and-measurement/index.html
+            learn/symptoms/lower-leaf-yellowing/index.html
+            learn/tools/plant-health-intake/index.html
+            community/grow-offs/solo-cup-grow-off/index.html
+            games/seed-ascent/index.html
+          )
+          for rel in "${routes[@]}"; do
+            file="$root/$rel"
+            test -s "$file"
+            grep -Fq 'data-dtf-shell="header-v5"' "$file"
+            grep -Fq 'id="dtf-responsive-layout-v1"' "$file"
+            grep -Fq 'id="dtf-sitewide-ux-polish-v1"' "$file"
+            grep -Fq '>Seeds</a>' "$file"
+            grep -Fq '>Courses</a>' "$file"
+            grep -Fq '>Diagnostic</a>' "$file"
+            ! grep -Fq '>Genetics</a>' "$file"
+            ! grep -Fq '>Tools</a>' "$file"
+          done
+          node - "$root/overlay-manifest.json" <<'NODE'
+          const fs = require('node:fs');
+          const report = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+          if (report.schemaVersion !== 2) throw new Error('overlay manifest schema did not advance to v2');
+          if (report.sharedShell?.header !== 'v5') throw new Error('V5 shell metadata missing');
+          if (report.sharedShell?.responsiveLayout !== 'v1') throw new Error('responsive-layout metadata missing');
+          if (report.sharedShell?.sitewideUxPolish !== 'v1') throw new Error('UX-polish metadata missing');
+          if (!(report.sharedShell?.verifiedHtmlRoutes >= 200)) throw new Error('too few verified shell routes');
+          NODE
+
+      - name: Upload overlay verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf420-overlay-shell-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/dtf420-overlay-shell.json
+            ${{ runner.temp }}/dtf-release/dtf-content-overlay/overlay-manifest.json
+          if-no-files-found: warn
+          retention-days: 14

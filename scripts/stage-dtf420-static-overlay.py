@@ -6,6 +6,11 @@ current main branch, builds the explicit static export, requires the source
 ownership manifest to exactly match this repository's production contract, and
 copies only approved child routes/shared assets under an isolated staging
 namespace. Nothing is written directly to /learn, /community, /games, or /.
+
+After staging, every standalone HTML document is reconciled through the same
+DTFSeeds V5 header/responsive/UX shell used by the rest of the public suite.
+This is intentionally performed after the external Dtf420 build because those
+files do not exist yet when the normal public-suite header pass runs.
 """
 from __future__ import annotations
 
@@ -19,6 +24,11 @@ import tempfile
 
 REPO_URL = "https://github.com/dtfgenetics/Dtf420.git"
 STAGING_NAME = "dtf-content-overlay"
+SHELL_MARKERS = (
+    'data-dtf-shell="header-v5"',
+    'id="dtf-responsive-layout-v1"',
+    'id="dtf-sitewide-ux-polish-v1"',
+)
 
 
 def run(*args: str, cwd: Path | None = None) -> None:
@@ -46,6 +56,25 @@ def copy_path(source_root: Path, destination_root: Path, rel: str) -> None:
         shutil.copy2(src, dst)
     else:
         raise SystemExit(f"unsupported Dtf420 overlay source type: {rel}")
+
+
+def verify_shared_shell(staging_root: Path, route_prefixes: list[str]) -> int:
+    """Require the canonical shell on every staged route HTML document."""
+    checked = 0
+    for prefix in route_prefixes:
+        prefix_root = staging_root / prefix
+        for html_path in prefix_root.rglob("*.html"):
+            source = html_path.read_text(errors="replace")
+            if "<html" not in source.lower() or "<body" not in source.lower():
+                continue
+            checked += 1
+            missing = [marker for marker in SHELL_MARKERS if marker not in source]
+            if missing:
+                rel = html_path.relative_to(staging_root).as_posix()
+                raise SystemExit(f"staged Dtf420 route is missing shared shell marker(s) {missing}: {rel}")
+    if checked < 200:
+        raise SystemExit(f"too few staged Dtf420 HTML routes received the shared shell: {checked}")
+    return checked
 
 
 def main() -> None:
@@ -116,8 +145,18 @@ def main() -> None:
                 seed_html = f"{canonical_marker}\n{seed_html}"
             seed_wrapper.write_text(seed_html)
 
+        # The Dtf420 pages are created after the normal public-suite shell pass. Re-run
+        # the canonical reconciler over only this isolated staging tree so child routes
+        # cannot ship without the approved V5 navigation, responsive system, and UX layer.
+        shell_reconciler = repo_root / "scripts" / "apply-sitewide-header.mjs"
+        if not shell_reconciler.is_file():
+            raise SystemExit(f"shared shell reconciler is missing: {shell_reconciler}")
+        run("node", str(shell_reconciler), str(staging_root), cwd=repo_root)
+        run("node", str(shell_reconciler), str(staging_root), "--check", cwd=repo_root)
+        shell_route_count = verify_shared_shell(staging_root, list(contract["routePrefixes"]))
+
         metadata = {
-            "schemaVersion": 1,
+            "schemaVersion": 2,
             "purpose": contract["purpose"],
             "canonicalOrigin": contract["canonicalOrigin"],
             "repository": "dtfgenetics/Dtf420",
@@ -126,6 +165,12 @@ def main() -> None:
             "sharedPaths": contract["sharedPaths"],
             "wordpressOwnedRoutes": contract["wordpressOwnedRoutes"],
             "requiredRoutes": contract["requiredRoutes"],
+            "sharedShell": {
+                "header": "v5",
+                "responsiveLayout": "v1",
+                "sitewideUxPolish": "v1",
+                "verifiedHtmlRoutes": shell_route_count,
+            },
         }
         (staging_root / "overlay-manifest.json").write_text(
             json.dumps(metadata, indent=2, sort_keys=True) + "\n"
@@ -141,6 +186,7 @@ def main() -> None:
             "commit": source_sha,
             "stagingDirectory": STAGING_NAME,
             "publishableIndexRoutes": index_count,
+            "shellVerifiedHtmlRoutes": shell_route_count,
             "routePrefixes": len(contract["routePrefixes"]),
             "sharedPaths": len(contract["sharedPaths"]),
         }, separators=(",", ":")))
