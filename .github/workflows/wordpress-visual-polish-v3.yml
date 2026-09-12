@@ -8,6 +8,7 @@ on:
       - 'scripts/polish-wordpress-visual-site-v3.mjs'
       - 'scripts/lib/sitewide-header-template.mjs'
       - 'scripts/rebuild-wordpress-shared-shell-v3.mjs'
+      - 'site/wordpress/assets/sitewide-ux-polish-v1.css'
       - '.github/workflows/wordpress-visual-polish-v3.yml'
   workflow_run:
     workflows:
@@ -58,6 +59,8 @@ jobs:
           set -euo pipefail
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
+          test -s site/wordpress/assets/sitewide-ux-polish-v1.css
+          grep -Fq 'DTFSeeds sitewide UX polish v1' site/wordpress/assets/sitewide-ux-polish-v1.css
           node --check scripts/polish-wordpress-visual-site-v3.mjs
           node --check scripts/lib/sitewide-header-template.mjs
           node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
@@ -90,13 +93,14 @@ jobs:
           echo "spotlight=$(node -p "require(process.argv[1]).spotlightInjected" "$report")" >> "$GITHUB_OUTPUT"
           echo "brand_id=$(node -p "require(process.argv[1]).shell.brandMediaId || ''" "$report")" >> "$GITHUB_OUTPUT"
 
-      - name: Restore approved V5 shared header and sitemap shell
+      - name: Restore approved V5 shared header, sitemap shell, and UX polish
+        if: always()
         shell: bash
         run: |
           set -euo pipefail
           node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs | tee "$RUNNER_TEMP/shared-shell-v5.log"
 
-      - name: Verify visitor-facing V3 experience and V5 navigation
+      - name: Verify visitor-facing V3 experience, V5 navigation, and UX polish
         id: verify
         shell: bash
         run: |
@@ -114,13 +118,14 @@ jobs:
                 "$WP_SITE_URL${path}?dtf_v3=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" -o "$body"
               if grep -Fqi -- "$marker" "$body" && \
                  grep -Fqi 'dtf-visual-polish-v3' "$body" && \
-                 grep -Fqi 'data-dtf-shell="header-v5"' "$body"; then
+                 grep -Fqi 'data-dtf-shell="header-v5"' "$body" && \
+                 grep -Fqi 'id="dtf-sitewide-ux-polish-v1"' "$body"; then
                 ok=1
                 break
               fi
               sleep 7
             done
-            [[ "$ok" -eq 1 ]] || { echo "V3/V5 marker not observed on $path" >&2; head -c 3500 "$body" >&2 || true; exit 1; }
+            [[ "$ok" -eq 1 ]] || { echo "V3/V5/UX marker not observed on $path" >&2; head -c 3500 "$body" >&2 || true; exit 1; }
             for required in '>Home</a>' '>Seeds</a>' '>Learn</a>' '>Courses</a>' '>Diagnostic</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
               grep -Fqi -- "$required" "$body" || { echo "Required approved navigation label missing on $path: $required" >&2; exit 1; }
             done
@@ -136,9 +141,10 @@ jobs:
 
           home="$RUNNER_TEMP/_.html"
           grep -Fqi 'data-dtf-shell="header-v5"' "$home"
+          grep -Fqi 'id="dtf-sitewide-ux-polish-v1"' "$home"
           grep -Fqi 'dtf-footer-v3' "$home"
           grep -Fqi 'discord.gg/xJbUeHFPMt' "$home"
-          echo 'V3 visual experience and approved V5 navigation verification passed.'
+          echo 'V3 visual experience, approved V5 navigation, and UX polish verification passed.'
 
       - name: Upload rollback package
         if: always()
@@ -175,6 +181,6 @@ jobs:
                 `Homepage experience spotlight: **${process.env.SPOTLIGHT || 'not-run'}**`,
                 `Cannabis-leaf brand media ID: **${process.env.BRAND_ID || 'not-reported'}**`,
                 '',
-                'V3 visual polish now restores and verifies the approved V5 sitewide navigation after page styling so visual workflows cannot regress the canonical Home / Seeds / Learn / Courses / Diagnostic / Games / Community / Shop header.'
+                'V3 visual polish now restores and verifies the approved V5 sitewide navigation and shared UX polish after page styling, even if the page-polish step fails, so visual workflows cannot strand visitors on a stale shell.'
               ].join('\n')
             });
