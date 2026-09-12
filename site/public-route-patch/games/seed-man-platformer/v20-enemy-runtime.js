@@ -146,7 +146,7 @@
       phenotypeForm:carrier?.form || null,
       phenotypeDurationMs:carrier ? PHENOTYPE_DURATION_MS : null,
       drop:carrier ? ['alleles',1] : [...meta.drop],
-      authoredPlacement:authored,
+      authoredPlacement:Boolean(options.authored),
       supportPlatformId:support?.platformId || null,
       approvedVisual:Object.freeze({
         atlas:'enemy-boss.atlas',
