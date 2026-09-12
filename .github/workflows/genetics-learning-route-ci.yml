@@ -1,0 +1,55 @@
+name: Genetics Learning Route CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'site/wordpress/pages/seeds.html'
+      - 'scripts/publish-wordpress-genetics-library-cdn.mjs'
+      - 'scripts/publish-wordpress-genetics-library-cdn-core.mjs'
+      - 'scripts/normalize-wordpress-genetics-learning-links.mjs'
+      - '.github/workflows/genetics-learning-route-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/pages/seeds.html'
+      - 'scripts/publish-wordpress-genetics-library-cdn.mjs'
+      - 'scripts/publish-wordpress-genetics-library-cdn-core.mjs'
+      - 'scripts/normalize-wordpress-genetics-learning-links.mjs'
+      - '.github/workflows/genetics-learning-route-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate canonical genetics education route
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/publish-wordpress-genetics-library-cdn.mjs
+          node --check scripts/normalize-wordpress-genetics-learning-links.mjs
+          grep -Fq '/learn/genetics-breeding/' site/wordpress/pages/seeds.html
+          ! grep -Fq '/learn/subjects/genetics-breeding/' site/wordpress/pages/seeds.html
+          grep -Fq "normalize-wordpress-genetics-learning-links.mjs" scripts/publish-wordpress-genetics-library-cdn.mjs
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const wrapper = fs.readFileSync('scripts/publish-wordpress-genetics-library-cdn.mjs', 'utf8');
+          const core = wrapper.indexOf("publish-wordpress-genetics-library-cdn-core.mjs");
+          const normalize = wrapper.indexOf("normalize-wordpress-genetics-learning-links.mjs");
+          const visual = wrapper.indexOf("apply-wordpress-genetics-visual-v1.mjs");
+          const purge = wrapper.indexOf("flush-hostinger-litespeed-mcp.mjs");
+          if (!(core >= 0 && normalize > core && visual > normalize && purge > visual)) {
+            throw new Error('Genetics publisher must publish, normalize canonical learning links, apply visuals, then purge cache.');
+          }
+          const normalizer = fs.readFileSync('scripts/normalize-wordpress-genetics-learning-links.mjs', 'utf8');
+          for (const token of ["/learn/subjects/genetics-breeding/", "/learn/genetics-breeding/", "pagesChecked", "pagesChanged"]) {
+            if (!normalizer.includes(token)) throw new Error(`Normalizer contract missing ${token}`);
+          }
+          NODE
