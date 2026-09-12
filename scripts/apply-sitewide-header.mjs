@@ -9,7 +9,13 @@ import {
 
 const root = resolve(process.argv[2] || 'release');
 const checkOnly = process.argv.includes('--check');
-const report = { root, checkOnly, scanned: 0, changed: 0, replacedLegacyHeaders: 0, skipped: 0, failures: [] };
+const responsiveLayoutPath = resolve(process.env.DTF_RESPONSIVE_LAYOUT_CSS || 'site/wordpress/assets/responsive-layout-v1.css');
+const responsiveLayoutCss = await readFile(responsiveLayoutPath, 'utf8');
+if (!responsiveLayoutCss.includes('DTFSeeds shared responsive layout system v1')) {
+  throw new Error(`Responsive layout marker is missing from ${responsiveLayoutPath}`);
+}
+const RESPONSIVE_LAYOUT_STYLE_TAG = `<style id="dtf-responsive-layout-v1">${responsiveLayoutCss}</style>`;
+const report = { root, checkOnly, responsiveLayout: 'v1', scanned: 0, changed: 0, replacedLegacyHeaders: 0, skipped: 0, failures: [] };
 
 async function walk(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
@@ -30,12 +36,22 @@ function verifyDocument(source, rel) {
   if (!/<html\b/i.test(source) || !/<body\b/i.test(source)) return { skipped: true };
   const expected = [
     ['data-dtf-sitewide-header="approved-reference-v1"', 'header'],
-    ['id="dtf-sitewide-header-v5-style"', 'style'],
+    ['id="dtf-sitewide-header-v5-style"', 'header style'],
+    ['id="dtf-responsive-layout-v1"', 'responsive layout style'],
     ['id="dtf-sitewide-header-v5-script"', 'script'],
   ];
   for (const [needle, label] of expected) {
     const count = occurrences(source, needle);
     if (count !== 1) report.failures.push(`${rel}: expected exactly one canonical ${label}; found ${count}`);
+  }
+  const responsiveTokens = [
+    '--dtf-layout-max:1360px',
+    '@media (min-width:701px) and (max-width:1120px)',
+    '@media (max-width:700px)',
+    'scroll-snap-type:x proximity',
+  ];
+  for (const token of responsiveTokens) {
+    if (!source.includes(token)) report.failures.push(`${rel}: responsive layout token missing: ${token}`);
   }
   return { skipped: false };
 }
@@ -83,14 +99,16 @@ function reconcileDocument(source) {
 
   let output = source;
   output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-sitewide-header-v5-style["'][^>]*>[\s\S]*?<\/style>\s*/gi);
+  output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-responsive-layout-v1["'][^>]*>[\s\S]*?<\/style>\s*/gi);
   output = removeOwnedFragment(output, /<script\b[^>]*id=["']dtf-sitewide-header-v5-script["'][^>]*>[\s\S]*?<\/script>\s*/gi);
   output = removeOwnedFragment(output, /<header\b[^>]*data-dtf-sitewide-header=["'][^"']+["'][^>]*>[\s\S]*?<\/header>\s*/gi);
 
   const legacy = removeLegacyGlobalHeader(output);
   output = legacy.html;
 
-  if (/<\/head>/i.test(output)) output = output.replace(/<\/head>/i, `${SITEWIDE_HEADER_STYLE_TAG}\n</head>`);
-  else output = `${SITEWIDE_HEADER_STYLE_TAG}\n${output}`;
+  const sharedStyles = `${SITEWIDE_HEADER_STYLE_TAG}\n${RESPONSIVE_LAYOUT_STYLE_TAG}`;
+  if (/<\/head>/i.test(output)) output = output.replace(/<\/head>/i, `${sharedStyles}\n</head>`);
+  else output = `${sharedStyles}\n${output}`;
 
   output = output.replace(/<body\b([^>]*)>/i, `<body$1>\n${SITEWIDE_HEADER_HTML}`);
   if (/<\/body>/i.test(output)) output = output.replace(/<\/body>/i, `${SITEWIDE_HEADER_SCRIPT_TAG}\n</body>`);
@@ -113,8 +131,10 @@ for (const file of files) {
 
   const result = reconcileDocument(source);
   if (result.skipped) { report.skipped += 1; continue; }
-  if (!result.output.includes('data-dtf-shell="header-v5"') || !result.output.includes('dtf-sitewide-header-v5-style')) {
-    report.failures.push(`${rel}: canonical header markers missing after reconciliation`);
+  if (!result.output.includes('data-dtf-shell="header-v5"') ||
+      !result.output.includes('dtf-sitewide-header-v5-style') ||
+      !result.output.includes('dtf-responsive-layout-v1')) {
+    report.failures.push(`${rel}: canonical header or responsive layout markers missing after reconciliation`);
     continue;
   }
   if (result.removedLegacy) report.replacedLegacyHeaders += 1;
