@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-09-12",
+  "policy": {
+    "sourceMasterAuthority": "google-drive",
+    "runtimeAuthority": "github",
+    "publicMirror": "only-when-required",
+    "verificationRequired": true
+  },
+  "games": {
+    "who-took-it": {
+      "canonicalName": "Who Took It?",
+      "aliases": ["Who Took It", "THC Guess Who", "Thc-guess-who", "guess who"],
+      "github": {
+        "repository": "dtfgenetics/Thc-guess-who",
+        "branch": "main",
+        "gameRoot": "03_digital-game",
+        "runtimeAssetBase": "03_digital-game/public/assets/items",
+        "manifest": "03_digital-game/src/data/item-art.json",
+        "productionManifest": "assets/production-manifest.json",
+        "sourceMasterPolicy": "drive-only-by-default"
+      },
+      "drive": {
+        "gameRootFolderId": "18SBSxsGOau4uwWhG1Diwd79hISb_k9AO",
+        "cardsComponentsFolderId": "1NdJaBthWgV6NevxOk7wKr41FwOqQmjM8",
+        "evidenceCardsFolderId": "1E51OSI8AMdD_blM2lnkDWBUxLqTOOAuC",
+        "evidenceSourceMastersFolderId": "1U6HfFa954Pp9SHBLEekUZIGRproZPpvD"
+      },
+      "notes": [
+        "Full-resolution evidence-card PNGs belong in Drive source masters.",
+        "Only assets actually referenced by item-art.json should be exported to the runtime items directory.",
+        "Do not treat a related asset as a substitute for a canonical manifest item without explicitly updating the game design."
+      ],
+      "verifiedAt": "2026-09-12"
+    },
+    "seed-man-run": {
+      "canonicalName": "Seed Man Run",
+      "aliases": ["Seedman Run", "Seed Man Platformer", "seed-man-platformer"],
+      "github": {
+        "repository": "dtfgenetics/Thc",
+        "branch": "main",
+        "gameRoot": "games/seed-man-platformer",
+        "sourceAssetBase": "games/seed-man-platformer/assets/source",
+        "runtimeAssetBase": "games/seed-man-platformer/assets/approved",
+        "siteMirrorBase": "site/public-route-patch/games/seed-man-platformer/assets/approved",
+        "manifest": "games/seed-man-platformer/data/seed-man-art-manifest-v1.json",
+        "productionBacklog": "games/seed-man-platformer/data/visual-production-backlog-v1.json"
+      },
+      "drive": {
+        "gameRootFolderId": "1JCUbmLiG4yQYnOR_y4qotK0eABqPZJZ9",
+        "referenceFolderId": "15NCfa0bj8ldhj0hmKsFJF_nobZf9FOZT",
+        "sourceMastersFolderId": "1fAocf7prX2dKR6TPclG_JJzjRMTeL0_G",
+        "characterSpritesFolderId": "19gSJaTyiHYu3OTnvDOYa-2H1Sa4Ok5D-",
+        "enemiesBossesFolderId": "1NiyIVtNxXkC0-rqrl8DosWDeg4aXLKeb",
+        "worldArtFolderId": "1Wd3cjvUNwHxyOHH23tHg8Oslpw6VvILj",
+        "terrainPropsFolderId": "1ZsRClsACmAX8WNHUB-M27uF8bl6PcA6F",
+        "uiVfxFolderId": "13n4TDSKuX04kspCx1Jaf9Dq_HwjNAhbW",
+        "runtimeExportsFolderId": "1gBnA9kf-s1Gw_WJ05vXIyIPO2QE7Ts-k",
+        "reviewFolderId": "1VaDoEP1ETv0WQxShWhAYftF64_K7-nsQ"
+      },
+      "notes": [
+        "Use the game art manifest as runtime authority.",
+        "Source masters stay in Drive and the source asset tree when the production pipeline needs them.",
+        "Approved runtime exports must match the repo approved path and site mirror when deployment requires it."
+      ],
+      "verifiedAt": "2026-09-12"
+    }
+  }
+}
