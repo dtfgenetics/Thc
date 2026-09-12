@@ -6,6 +6,7 @@ on:
     paths:
       - 'data/project-registry.json'
       - 'data/site-registry.json'
+      - 'data/public-navigation.json'
       - 'data/asset-manifest.json'
       - 'data/asset-manifest.schema.json'
       - 'site/deployment/public-apps.json'
@@ -26,13 +27,16 @@ on:
       - 'site/public-route-patch/games/protect-the-plants/**'
       - 'docs/**SOURCE_OF_TRUTH.md'
       - 'docs/PORTFOLIO_RELEASE_CRITERIA.md'
+      - 'docs/DTFSEEDS_INFORMATION_ARCHITECTURE.md'
       - 'scripts/validate-portfolio-registry.mjs'
+      - 'scripts/validate-public-navigation.mjs'
       - 'scripts/reconcile-seed-man-deployment-metadata.mjs'
       - '.github/workflows/portfolio-registry-ci.yml'
   pull_request:
     paths:
       - 'data/project-registry.json'
       - 'data/site-registry.json'
+      - 'data/public-navigation.json'
       - 'data/asset-manifest.json'
       - 'data/asset-manifest.schema.json'
       - 'site/deployment/public-apps.json'
@@ -53,7 +57,9 @@ on:
       - 'site/public-route-patch/games/protect-the-plants/**'
       - 'docs/**SOURCE_OF_TRUTH.md'
       - 'docs/PORTFOLIO_RELEASE_CRITERIA.md'
+      - 'docs/DTFSEEDS_INFORMATION_ARCHITECTURE.md'
       - 'scripts/validate-portfolio-registry.mjs'
+      - 'scripts/validate-public-navigation.mjs'
       - 'scripts/reconcile-seed-man-deployment-metadata.mjs'
       - '.github/workflows/portfolio-registry-ci.yml'
 
@@ -74,8 +80,10 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate project, site, and asset registries
-        run: node scripts/validate-portfolio-registry.mjs
+      - name: Validate project, site, asset, and navigation registries
+        run: |
+          node scripts/validate-portfolio-registry.mjs
+          node scripts/validate-public-navigation.mjs
 
       - name: Validate implemented game data and engines
         shell: bash
