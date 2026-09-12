@@ -1,0 +1,105 @@
+/* Root Cause V5 integration and responsive containment.
+   Keep local game chrome useful without letting it slide under the sitewide shell. */
+.site-bar,
+.game-shell,
+.hero,
+.hud,
+.lab-grid,
+.case-column,
+.control-column,
+.case-card,
+.evidence-card,
+.control-card,
+.rules-card,
+.monitor-grid,
+.code-row {
+  min-width: 0;
+}
+
+.game-shell {
+  max-width: 100%;
+}
+
+.brand,
+.hub-link,
+.inspection-button,
+.diagnosis-button,
+.primary-button,
+.secondary-button,
+.code-row input {
+  min-height: 44px;
+}
+
+.brand,
+.hub-link {
+  display: inline-flex;
+  align-items: center;
+}
+
+.case-summary,
+.evidence-item,
+.feedback-card,
+.help-text,
+.history-list li,
+.rules-grid p {
+  overflow-wrap: anywhere;
+}
+
+.skip-link:focus {
+  z-index: 10010;
+}
+
+/* The local site bar remains sticky when Root Cause is developed by itself.
+   In the production V5 shell it begins below the global header instead. */
+body:has(> .dtf-global-header) .site-bar {
+  top: var(--dtf-global-header-height, 92px);
+}
+
+/* The desktop inspection tray already reserves 88px for Root Cause's own
+   sticky site bar. Add the global header height only when that shell exists. */
+body:has(> .dtf-global-header) .control-column > .control-card:first-child {
+  top: calc(var(--dtf-global-header-height, 92px) + 88px);
+}
+
+@media (max-width: 1120px) {
+  body:has(> .dtf-global-header) .site-bar {
+    top: var(--dtf-global-header-height, 74px);
+  }
+
+  body:has(> .dtf-global-header) .control-column > .control-card:first-child {
+    top: calc(var(--dtf-global-header-height, 74px) + 88px);
+  }
+}
+
+@media (max-width: 760px) {
+  .game-shell {
+    width: 100%;
+  }
+
+  .hud,
+  .monitor-grid,
+  .control-column,
+  .rules-grid {
+    min-width: 0;
+  }
+
+  .environment-strip {
+    max-width: 100%;
+    overscroll-behavior-inline: contain;
+  }
+}
+
+@media (max-width: 430px) {
+  .site-bar {
+    gap: .65rem;
+  }
+
+  .brand,
+  .hub-link {
+    min-width: 0;
+  }
+
+  .hub-link {
+    padding-inline: .35rem;
+  }
+}
