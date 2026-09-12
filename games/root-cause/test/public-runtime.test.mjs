@@ -21,6 +21,13 @@ assert.match(app, /globalThis\.crypto\?\.getRandomValues/, 'random code generati
 assert.match(app, /globalThis\.history\?\.replaceState/, 'shareable case URLs must tolerate restricted history APIs');
 assert.match(app, /navigator\.clipboard\?\.writeText/, 'challenge sharing must tolerate unavailable clipboard APIs');
 assert.match(app, /function prefersReducedMotion\(/, 'reduced-motion lookup must be guarded');
+assert.match(app, /function revealStackedResult\(/, 'stacked layouts must expose result panels after actions');
+assert.match(app, /\(max-width: 1050px\)/, 'result reveal must stay scoped to the one-column layout breakpoint');
+assert.match(app, /if \(!stacked \|\| !target\?\.scrollIntoView\) return;/, 'desktop layouts must not be force-scrolled by result reveals');
+assert.match(app, /requestAnimationFrame/, 'result reveal must wait for the newly rendered panel state');
+assert.match(app, /revealStackedResult\(ui\.evidence\.closest\('\.evidence-card'\) \?\? ui\.evidence\)/, 'inspection results must reveal the evidence panel on stacked layouts');
+assert.match(app, /revealStackedResult\(ui\.feedback\)/, 'diagnosis results must reveal feedback on stacked layouts');
+assert.match(app, /behavior: prefersReducedMotion\(\) \? 'auto' : 'smooth'/, 'result reveals must respect reduced motion');
 assert.match(app, /document\.documentElement\.dataset\.caseStatus/, 'case status must drive presentation state');
 assert.match(app, /document\.documentElement\.dataset\.caseVisual/, 'case visual type must be exposed to the presentation layer');
 
