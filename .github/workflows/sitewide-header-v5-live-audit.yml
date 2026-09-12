@@ -4,20 +4,10 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '41 9 * * *'
-  push:
-    branches: [main]
-    paths:
-      - scripts/audit-sitewide-header-live.mjs
-      - scripts/lib/sitewide-header-template.mjs
-      - scripts/apply-sitewide-header.mjs
-      - scripts/rebuild-wordpress-shared-shell-v3.mjs
-      - scripts/repair-external-sitewide-header-via-wordpress.mjs
-      - site/deployment/external-header-sources.json
-      - site/deployment/public-apps.json
-      - data/public-navigation.json
-      - data/site-registry.json
-      - data/game-source-map.json
-      - .github/workflows/sitewide-header-v5-live-audit.yml
+  workflow_run:
+    workflows:
+      - Publish Approved Sitewide Header V5
+    types: [completed]
   pull_request:
     paths:
       - scripts/audit-sitewide-header-live.mjs
@@ -32,6 +22,7 @@ concurrency:
 
 jobs:
   validate:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -46,9 +37,11 @@ jobs:
           grep -Fq 'data-dtf-shell="header-v5"' scripts/audit-sitewide-header-live.mjs
           grep -Fq '>Diagnostic</a>' scripts/audit-sitewide-header-live.mjs
           grep -Fq 'site/deployment/public-apps.json' scripts/audit-sitewide-header-live.mjs
+          grep -Fq 'workflow_run:' .github/workflows/sitewide-header-v5-live-audit.yml
+          grep -Fq 'Publish Approved Sitewide Header V5' .github/workflows/sitewide-header-v5-live-audit.yml
 
   audit:
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
     needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 20
