@@ -8,9 +8,11 @@ if (!ownerVisualCss.includes('premium catalog presentation') || !ownerVisualCss.
 import './force-original-image-accept.mjs';
 await import('./reconcile-wordpress-genetics-duplicate-pages.mjs');
 await import('./publish-wordpress-genetics-library-cdn-core.mjs');
+await import('./normalize-wordpress-genetics-learning-links.mjs');
 await import('./apply-wordpress-genetics-visual-v1.mjs');
 
 // The public Seeds page is cached by Hostinger/LiteSpeed. Purge only after the
-// authoritative genetics write and the owner-scoped visual pass both succeed
-// so live verification sees the same reviewed release that WordPress stores.
+// authoritative genetics write, canonical-link normalization, and the
+// owner-scoped visual pass all succeed so live verification sees the same
+// reviewed release that WordPress stores.
 await import('./flush-hostinger-litespeed-mcp.mjs');
