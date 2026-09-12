@@ -32,6 +32,13 @@ assert.match(app, /globalThis\.history\?\.replaceState/);
 assert.match(app, /navigator\.clipboard\?\.writeText/);
 assert.match(app, /projected-up/);
 assert.match(app, /pheno-card improving/);
+assert.match(app, /function resetChoiceViewport\(/, 'runtime must reset the horizontal decision rail between decision sets');
+assert.match(app, /prefers-reduced-motion: reduce/, 'choice rail reset must honor reduced-motion preference');
+assert.match(app, /window\.requestAnimationFrame\(\(\) => \{[\s\S]*ui\.choices\.scrollTo\(\{ left: 0, behavior: reducedMotion \? 'auto' : 'smooth' \}\)/, 'choice rail reset must occur after the new cards render');
+assert.match(app, /catch \{[\s\S]*ui\.choices\.scrollLeft = 0/, 'choice rail reset must have a direct-scroll fallback');
+const viewportResetCalls = app.match(/resetChoiceViewport\(\);/g) ?? [];
+assert.ok(viewportResetCalls.length >= 5, `expected decision-rail reset at load, run reset, phase transitions, and refresh; found ${viewportResetCalls.length}`);
+assert.doesNotMatch(app, /scrollIntoView\(/, 'decision-set resets must not vertically move the whole page');
 
 assert.match(visual, /\.round-track/);
 assert.match(visual, /\.parent-card\.projected-up/);
@@ -41,4 +48,4 @@ assert.match(visual, /scroll-snap-type:x mandatory/);
 assert.match(visual, /@media\(max-width:640px\)/);
 assert.match(visual, /@media\(prefers-reduced-motion:reduce\)/);
 
-console.log('Pheno Draft self-contained runtime and comparison UI regression checks passed.');
+console.log('Pheno Draft self-contained runtime, comparison UI, and mobile decision-viewport regression checks passed.');
