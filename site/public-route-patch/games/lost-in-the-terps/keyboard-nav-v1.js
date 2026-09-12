@@ -17,12 +17,22 @@
     for (const cell of cells) cell.tabIndex = cell === focusable ? 0 : -1;
   }
 
+  function keepCellVisible(target, { emphasize = false } = {}) {
+    if (!target?.scrollIntoView) return;
+    const reducedMotion = Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+    target.scrollIntoView({
+      behavior: emphasize && !reducedMotion ? 'smooth' : 'auto',
+      block: 'nearest',
+      inline: 'nearest'
+    });
+  }
+
   function focusCell(row, col) {
     const target = grid.querySelector(`button.letter[data-r="${row}"][data-c="${col}"]`);
     if (!target) return false;
     makeRoving(target);
     target.focus({ preventScroll: true });
-    target.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+    keepCellVisible(target);
     return true;
   }
 
@@ -60,8 +70,15 @@
 
   const gridObserver = new MutationObserver((records) => {
     if (records.some((record) => record.type === 'childList')) makeRoving();
+    for (const record of records) {
+      if (record.type !== 'attributes' || record.attributeName !== 'class') continue;
+      const target = record.target;
+      if (target instanceof HTMLElement && target.matches('button.letter.hint')) {
+        keepCellVisible(target, { emphasize: true });
+      }
+    }
   });
-  gridObserver.observe(grid, { childList: true });
+  gridObserver.observe(grid, { childList: true, attributes: true, subtree: true, attributeFilter: ['class'] });
 
   if (complete) {
     complete.tabIndex = -1;
@@ -76,6 +93,7 @@
     version: VERSION,
     arrowNavigation: true,
     homeEndNavigation: true,
+    hintVisibility: true,
     completionFocus: Boolean(complete),
     refresh: makeRoving
   });

@@ -44,7 +44,12 @@ assert.match(keyboard, /ArrowDown/, 'keyboard layer must support down grid navig
 assert.match(keyboard, /event\.key === 'Home'/, 'keyboard layer must support row-start navigation');
 assert.match(keyboard, /event\.key === 'End'/, 'keyboard layer must support row-end navigation');
 assert.match(keyboard, /cell\.tabIndex = cell === focusable \? 0 : -1/, 'grid must use roving tabindex instead of adding every letter to the page tab order');
-assert.match(keyboard, /scrollIntoView\?\./, 'keyboard navigation must keep focused cells visible in the mobile grid viewport');
+assert.match(keyboard, /function keepCellVisible\(/, 'navigation layer must share one viewport visibility helper');
+assert.match(keyboard, /scrollIntoView\(\{[\s\S]*block: 'nearest',[\s\S]*inline: 'nearest'/, 'grid navigation and hints must stay inside the nearest mobile viewport area');
+assert.match(keyboard, /prefers-reduced-motion: reduce/, 'hint visibility scrolling must respect reduced-motion preference');
+assert.match(keyboard, /target\.matches\('button\.letter\.hint'\)/, 'hint class changes must bring the highlighted start cell into view');
+assert.match(keyboard, /keepCellVisible\(target, \{ emphasize: true \}\)/, 'hint visibility must request the emphasized viewport behavior');
+assert.match(keyboard, /hintVisibility: true/, 'diagnostics must expose the mobile hint-visibility contract');
 assert.match(keyboard, /complete\.focus\(\{ preventScroll: true \}\)/, 'mission completion must move focus to the completion summary');
 assert.match(keyboard, /MutationObserver/, 'keyboard semantics must be restored after mission grid rerenders');
 
@@ -66,4 +71,4 @@ for (const puzzle of canonical.puzzles) {
   assert.equal(new Set(puzzle.words.map((item) => item.word)).size, 8, `${puzzle.id} words must be unique`);
 }
 
-console.log('Lost in the Terps public runtime, keyboard grid navigation, visual selection states, hint, mission isolation and mobile grid checks passed.');
+console.log('Lost in the Terps public runtime, keyboard grid navigation, visual selection states, visible hints, mission isolation and mobile grid checks passed.');
