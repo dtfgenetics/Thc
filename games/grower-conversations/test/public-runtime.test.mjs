@@ -29,6 +29,12 @@ assert.match(app, /globalThis\.localStorage\?\.setItem/, 'session persistence mu
 assert.match(app, /globalThis\.localStorage\?\.getItem/, 'session restore must tolerate restricted local storage');
 assert.match(app, /navigator\.clipboard\?\.writeText/, 'copy behavior must tolerate unavailable clipboard APIs');
 assert.match(app, /function safeFocus\(/, 'draw focus must include a compatibility fallback');
+assert.match(app, /function revealPrompt\(/, 'draw transition must reveal the newly rendered prompt');
+assert.match(app, /safeFocus\(element\)/, 'prompt reveal must preserve accessible programmatic focus');
+assert.match(app, /scrollIntoView\?\.\(\{ behavior: reducedMotion \? 'auto' : 'smooth', block: 'center', inline: 'nearest' \}\)/, 'prompt reveal must bring the new card into the viewport without forcing an edge alignment');
+assert.match(app, /prefers-reduced-motion: reduce/, 'prompt reveal must respect reduced-motion preferences');
+assert.match(app, /globalThis\.requestAnimationFrame\(reveal\)/, 'prompt reveal must wait for the rendered card before scrolling');
+assert.match(app, /revealPrompt\(ui\.prompt\)/, 'successful draws must reveal the new prompt instead of only focusing it with preventScroll');
 assert.match(app, /document\.documentElement\.dataset\.depth/, 'card depth must drive presentation state');
 assert.match(app, /ui\.progress\.style\.width/, 'filtered-deck use must drive the progress meter');
 assert.match(app, /aria-valuenow/, 'deck progress must remain accessible');
@@ -49,4 +55,4 @@ for (const [category, prompts] of Object.entries(canonical.categories)) {
   assert.equal(prompts.length, 12, `${category} must retain twelve prompts`);
 }
 
-console.log('Grower Conversations embedded runtime, deck progress and V2 visual-state regression checks passed.');
+console.log('Grower Conversations embedded runtime, prompt reveal, deck progress and V2 visual-state regression checks passed.');
