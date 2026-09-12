@@ -11,7 +11,9 @@ on:
       - scripts/publish-wordpress-approved-design-reference.mjs
       - scripts/repair-external-sitewide-header-via-wordpress.mjs
       - scripts/verify-sitewide-header-v5-live.mjs
+      - scripts/verify-responsive-layout-live.mjs
       - site/deployment/external-header-sources.json
+      - site/wordpress/assets/responsive-layout-v1.css
       - site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg
       - site/wordpress/assets/design-references/approved-sitewide-header-reference.json
       - docs/design/APPROVED_SITEWIDE_HEADER_REFERENCE.md
@@ -24,7 +26,9 @@ on:
       - scripts/publish-wordpress-approved-design-reference.mjs
       - scripts/repair-external-sitewide-header-via-wordpress.mjs
       - scripts/verify-sitewide-header-v5-live.mjs
+      - scripts/verify-responsive-layout-live.mjs
       - site/deployment/external-header-sources.json
+      - site/wordpress/assets/responsive-layout-v1.css
       - site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg
       - site/wordpress/assets/design-references/approved-sitewide-header-reference.json
       - docs/design/APPROVED_SITEWIDE_HEADER_REFERENCE.md
@@ -59,7 +63,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate approved header release package
+      - name: Validate approved header and responsive release package
         shell: bash
         run: |
           set -euo pipefail
@@ -69,11 +73,18 @@ jobs:
           node --check scripts/publish-wordpress-approved-design-reference.mjs
           node --check scripts/repair-external-sitewide-header-via-wordpress.mjs
           node --check scripts/verify-sitewide-header-v5-live.mjs
+          node --check scripts/verify-responsive-layout-live.mjs
+          test -s site/wordpress/assets/responsive-layout-v1.css
           test -s site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg
           test -s site/wordpress/assets/design-references/approved-sitewide-header-reference.json
           grep -Fq 'data-dtf-shell="header-v5"' scripts/lib/sitewide-header-template.mjs
           grep -Fq '>Diagnostic</a>' scripts/lib/sitewide-header-template.mjs
           grep -Fq '<a href="/courses/">Courses</a>' scripts/lib/sitewide-header-template.mjs
+          grep -Fq 'DTFSeeds shared responsive layout system v1' site/wordpress/assets/responsive-layout-v1.css
+          grep -Fq '@media (min-width:701px) and (max-width:1120px)' site/wordpress/assets/responsive-layout-v1.css
+          grep -Fq '@media (max-width:700px)' site/wordpress/assets/responsive-layout-v1.css
+          grep -Fq 'scroll-snap-type:x proximity' site/wordpress/assets/responsive-layout-v1.css
+          grep -Fq 'dtf-responsive-layout-v1' scripts/rebuild-wordpress-shared-shell-v3.mjs
           grep -Fq 'kushKingsChess' site/deployment/external-header-sources.json
           grep -Fq 'thcUKnow' site/deployment/external-header-sources.json
           grep -Fq '99c084b6d502f12d0ab5140191b507a7e0d01229' site/deployment/external-header-sources.json
@@ -116,7 +127,7 @@ jobs:
           set -euo pipefail
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured}"
-      - name: Publish approved sitewide shared header
+      - name: Publish approved sitewide shared header and responsive layout
         shell: bash
         run: |
           set -euo pipefail
@@ -149,6 +160,11 @@ jobs:
               exit 1
             fi
           done
+      - name: Verify shared responsive layout on representative public routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/verify-responsive-layout-live.mjs | tee /tmp/dtf-responsive-layout-v1-live.json
       - name: Repair external game headers before full audit
         shell: bash
         run: |
@@ -199,6 +215,7 @@ jobs:
             /tmp/dtf-approved-design-reference.json
             /tmp/dtf-approved-design-reference-readback.json
             /tmp/dtf-approved-header-v5.json
+            /tmp/dtf-responsive-layout-v1-live.json
             /tmp/dtf-external-header-v5-repair-*.json
             /tmp/dtf-header-v5-live-audit.json
           if-no-files-found: ignore
