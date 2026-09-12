@@ -6,7 +6,7 @@
   "runtime": "static-es-modules",
   "status": "release-candidate",
   "artifact": "thc-rpg-production-build",
-  "build": "npm test && npm run build && npm run validate:release && npm run test:e2e",
+  "build": "npm test && npm run validate:ui && npm run build && npm run validate:release",
   "machineData": {
     "players": 1,
     "saveVersion": 6,
@@ -14,15 +14,16 @@
     "deterministicPhenotypes": true,
     "growJournal": true,
     "keeperSelection": true,
-    "keeperCuttings": true
+    "keeperCuttings": true,
+    "modalGameplayShortcutGuard": true
   },
-  "verifiedRevision": "15fe22d69afaee906714a1ad0933505e437202dd",
+  "verifiedRevision": "bff31f0d6425f822a2647a7601c09cbd1b30a01d",
   "promotionGate": {
     "standaloneCI": "passed",
-    "browserAcceptance": "passed",
+    "deterministicUiValidation": "passed",
     "routeValidation": "passed",
     "centralPackaging": "required",
     "liveVerification": "required-before-production-ready"
   },
-  "notes": "Canonical code remains in dtfgenetics/Thc-rpg. Revision 15fe22d69afaee906714a1ad0933505e437202dd contains the route-safe release contract merged from PR #18. Its pull-request CI passed engine tests, syntax checks, visitor-only dist build, release validation, desktop/mobile Chromium acceptance, and uploaded artifact thc-rpg-production-build. This central registration may package that exact candidate, but production-ready status and public playable-count promotion remain blocked until DTFSeeds packaging and exact live-route verification pass."
+  "notes": "Canonical code remains in dtfgenetics/Thc-rpg. Revision bff31f0d6425f822a2647a7601c09cbd1b30a01d is the v2.1.0 release-candidate source after deterministic shipped-UI validation replaced Playwright and gameplay shortcuts were blocked behind dialog, inventory, and Grow Journal overlays. Canonical CI passed engine/campaign tests, syntax checks, deterministic UI validation, visitor-only build, and release validation. Central packaging and exact post-deploy live-route verification remain required before production-ready promotion."
 }
