@@ -16,9 +16,14 @@ assert.match(threeD.label, /3D Plant Atlas/i, '/atlas/ must be labeled as the 3D
 assert.ok(library, 'Learn navigation must expose /learn/atlas/');
 assert.match(library.label, /Atlas Learning Library/i, '/learn/atlas/ must be labeled as the Atlas Learning Library');
 
-const utilityAtlas = navigation.utilityNavigation.find((entry) => entry.id === 'atlas');
-assert.equal(utilityAtlas?.route, '/atlas/', 'utility Atlas navigation must point to /atlas/');
-assert.match(utilityAtlas?.label ?? '', /3D Plant Atlas/i, 'utility Atlas label must distinguish the 3D explorer');
+const atlasOwnership = (navigation.informationArchitecture?.specialOwnership ?? [])
+  .find((entry) => entry.route === '/atlas/');
+assert.equal(atlasOwnership?.root, 'learn', '/atlas/ must belong primarily to the Learn information-architecture root');
+assert.match(atlasOwnership?.note ?? '', /not interchangeable|distinct/i, 'Atlas special ownership must preserve the distinction between /atlas/ and /learn/atlas/');
+
+const diagnosticAtlas = (navigation.diagnostic?.tools ?? []).find((entry) => entry.id === 'atlas');
+assert.equal(diagnosticAtlas?.route, '/atlas/', 'Diagnostic may cross-link the public Atlas tool only at /atlas/');
+assert.equal(diagnosticAtlas?.secondaryRoot, 'learn', 'Diagnostic Atlas cross-link must preserve Learn as the Atlas primary root');
 
 const toolAtlas = navigation.tools.find((entry) => entry.id === 'atlas');
 assert.equal(toolAtlas?.route, '/atlas/', 'public Atlas tool must point to /atlas/');
@@ -36,4 +41,4 @@ for (const marker of [
   assert.ok(ownership.includes(marker), `Atlas ownership document is missing: ${marker}`);
 }
 
-console.log('Atlas route ownership verified: /atlas/ is the V4 3D explorer and /learn/atlas/ remains the lesson library.');
+console.log('Atlas route ownership verified: /atlas/ remains the Learn-owned V4 3D explorer, may be cross-linked from Diagnostic, and /learn/atlas/ remains the lesson library.');
