@@ -9,6 +9,7 @@
 
   const mobileTouchLayout = window.matchMedia('(max-width: 980px) and (pointer: coarse)');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  lanes.style.scrollMarginTop = '88px';
 
   function enhanceHealthMeters() {
     for (const track of lanes.querySelectorAll('.health-track')) {
