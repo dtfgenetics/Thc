@@ -1,11 +1,9 @@
-# Temporary branch-only reconciliation hook; restored before merge.
 name: Reconcile External Game Registry
 
 on:
+  workflow_dispatch:
   push:
-    branches:
-      - main
-      - release/ganjumanji-0-4-0-integration-20260912
+    branches: [main]
     paths:
       - site/deployment/external-games/**
       - site/public-route-patch/games/*/source-revision.txt
@@ -14,10 +12,13 @@ on:
       - .github/workflows/reconcile-external-game-registry.yml
 
 permissions:
+  actions: write
   contents: write
+  issues: write
+  pull-requests: write
 
 concurrency:
-  group: reconcile-external-game-registry-${{ github.ref }}
+  group: reconcile-external-game-registry
   cancel-in-progress: true
 
 jobs:
@@ -27,7 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref_name }}
+          ref: main
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -37,16 +38,16 @@ jobs:
         run: node scripts/reconcile-external-game-registry.mjs
       - name: Validate public app registry
         run: node scripts/validate-public-app-registry.mjs
-      - name: Commit generated registry when needed
+      - name: Safely integrate reconciled registry when needed
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           if git diff --quiet -- site/deployment/public-apps.json; then
             echo 'Registry already synchronized.'
             exit 0
           fi
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add site/deployment/public-apps.json
-          git commit -m 'release(games): reconcile external game registry'
-          git push origin HEAD:${GITHUB_REF_NAME}
+          node scripts/studio/integrate-generated-change.mjs \
+            --message='release(games): reconcile external game registry' \
+            --paths=site/deployment/public-apps.json
