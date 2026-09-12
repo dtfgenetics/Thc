@@ -9,17 +9,28 @@ const MAX_DEPTH = Number(process.env.DTF_HEADER_AUDIT_MAX_DEPTH || 5);
 const CONCURRENCY = Number(process.env.DTF_HEADER_AUDIT_CONCURRENCY || 6);
 const JSON_PATH = process.env.DTF_HEADER_AUDIT_JSON || 'sitewide-header-live-audit.json';
 const MD_PATH = process.env.DTF_HEADER_AUDIT_MD || 'sitewide-header-live-audit.md';
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function hasNavLink(text, href, label) {
+  const hrefPattern = escapeRegExp(href);
+  const labelPattern = escapeRegExp(label);
+  return new RegExp(`<a\\b(?=[^>]*href=["']${hrefPattern}["'])[^>]*>\\s*${labelPattern}\\s*<\\/a>`, 'i').test(text);
+}
+
 const REQUIRED = [
-  'data-dtf-shell="header-v5"',
-  'href="/seeds/"',
-  'href="/learn/"',
-  'href="/courses/"',
-  '>Diagnostic</a>',
-  'href="/games/"',
-  'href="/community/"',
-  'href="/shop/"',
-  'Teaching',
-  'Healthy Cultivation'
+  { label: 'data-dtf-shell="header-v5"', test: body => body.includes('data-dtf-shell="header-v5"') },
+  { label: '<a href="/seeds/">Seeds</a>', test: body => hasNavLink(body, '/seeds/', 'Seeds') },
+  { label: '<a href="/learn/">Learn</a>', test: body => hasNavLink(body, '/learn/', 'Learn') },
+  { label: '<a href="/courses/">Courses</a>', test: body => hasNavLink(body, '/courses/', 'Courses') },
+  { label: '<a href="/tools/">Diagnostic</a>', test: body => hasNavLink(body, '/tools/', 'Diagnostic') },
+  { label: '<a href="/games/">Games</a>', test: body => hasNavLink(body, '/games/', 'Games') },
+  { label: '<a href="/community/">Community</a>', test: body => hasNavLink(body, '/community/', 'Community') },
+  { label: '<a href="/shop/">Shop</a>', test: body => hasNavLink(body, '/shop/', 'Shop') },
+  { label: 'Teaching', test: body => body.includes('Teaching') },
+  { label: 'Healthy Cultivation', test: body => body.includes('Healthy Cultivation') }
 ];
 const seeds = new Set([
   '/', '/seeds/', '/learn/', '/courses/', '/tools/', '/games/', '/community/', '/shop/',
@@ -62,7 +73,7 @@ async function fetchText(url, accept = 'text/html,*/*') {
       const response = await fetch(`${url}${bust}`, {
         redirect: 'follow',
         signal: AbortSignal.timeout(25_000),
-        headers: { 'user-agent': 'DTFSeeds-Sitewide-Header-Audit/1.0', 'cache-control': 'no-cache, no-store', pragma: 'no-cache', accept }
+        headers: { 'user-agent': 'DTFSeeds-Sitewide-Header-Audit/1.1', 'cache-control': 'no-cache, no-store', pragma: 'no-cache', accept }
       });
       return { response, body: await response.text(), error: null };
     } catch (error) { lastError = error; }
@@ -128,7 +139,7 @@ async function inspect({ path, depth }) {
 
   const issues = [];
   if (!response.ok) issues.push(`HTTP ${response.status}`);
-  if (response.ok) for (const marker of REQUIRED) if (!body.includes(marker)) issues.push(`missing header marker: ${marker}`);
+  if (response.ok) for (const check of REQUIRED) if (!check.test(body)) issues.push(`missing header marker: ${check.label}`);
   results.push({ path, status: response.status, html: true, passed: issues.length === 0, issues });
 
   if (response.ok && depth < MAX_DEPTH) {
