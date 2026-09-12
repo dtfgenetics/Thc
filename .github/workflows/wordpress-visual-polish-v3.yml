@@ -109,6 +109,7 @@ jobs:
             local path="$1"
             local marker="$2"
             local body="$RUNNER_TEMP/$(printf '%s' "$path" | tr '/?' '__').html"
+            local header="$body.header.html"
             local ok=0
             for attempt in 1 2 3 4 5 6 7 8; do
               curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
@@ -126,11 +127,23 @@ jobs:
               sleep 7
             done
             [[ "$ok" -eq 1 ]] || { echo "V3/V5/UX marker not observed on $path" >&2; head -c 3500 "$body" >&2 || true; exit 1; }
+
+            node - "$body" "$header" <<'NODE'
+          const fs = require('node:fs');
+          const source = fs.readFileSync(process.argv[2], 'utf8');
+          const match = source.match(/<header\b[^>]*data-dtf-shell=["']header-v5["'][^>]*>[\s\S]*?<\/header>/i);
+          if (!match) {
+            console.error('Canonical V5 header fragment could not be isolated');
+            process.exit(1);
+          }
+          fs.writeFileSync(process.argv[3], match[0]);
+          NODE
+
             for required in '>Home</a>' '>Seeds</a>' '>Learn</a>' '>Courses</a>' '>Diagnostic</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
-              grep -Fqi -- "$required" "$body" || { echo "Required approved navigation label missing on $path: $required" >&2; exit 1; }
+              grep -Fqi -- "$required" "$header" || { echo "Required approved navigation label missing from V5 header on $path: $required" >&2; exit 1; }
             done
-            ! grep -Fqi -- '>Tools</a>' "$body" || { echo "Stale Tools primary-navigation label remains on $path" >&2; exit 1; }
-            ! grep -Fqi -- '>Genetics</a>' "$body" || { echo "Stale Genetics primary-navigation label remains on $path" >&2; exit 1; }
+            ! grep -Fqi -- '>Tools</a>' "$header" || { echo "Stale Tools label remains inside V5 primary navigation on $path" >&2; exit 1; }
+            ! grep -Fqi -- '>Genetics</a>' "$header" || { echo "Stale Genetics label remains inside V5 primary navigation on $path" >&2; exit 1; }
             for forbidden in 'email@email.com' '+123456789' '© 2025 DTF Genetics' '&copy; 2025 DTF Genetics'; do
               ! grep -Fqi -- "$forbidden" "$body" || { echo "Forbidden stale presentation remains on $path: $forbidden" >&2; exit 1; }
             done
@@ -181,6 +194,6 @@ jobs:
                 `Homepage experience spotlight: **${process.env.SPOTLIGHT || 'not-run'}**`,
                 `Cannabis-leaf brand media ID: **${process.env.BRAND_ID || 'not-reported'}**`,
                 '',
-                'V3 visual polish now restores and verifies the approved V5 sitewide navigation and shared UX polish after page styling, even if the page-polish step fails, so visual workflows cannot strand visitors on a stale shell.'
+                'V3 visual polish restores the approved V5 sitewide navigation and shared UX polish after page styling. Navigation assertions are scoped to the canonical V5 header so valid in-page genetics links cannot create false production failures.'
               ].join('\n')
             });
