@@ -173,7 +173,7 @@ for (const slug of delegatedSlugs) {
 // their dedicated owners and are intentionally not rewritten here.
 const visualCss = await readFile(visualCssPath, 'utf8');
 const visualStyleTag = `<style id="dtf-visual-v1">${visualCss}</style>`;
-for (const slug of ['community', 'gallery', 'about', 'contact']) {
+for (const slug of ['community', 'gallery', 'about', 'contact', 'journal']) {
   const file = join(ownedDir, `${slug}.html`);
   const content = await readFile(file, 'utf8');
   if (!content.includes('class="dtf-v1"')) continue;

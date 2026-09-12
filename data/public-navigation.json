@@ -75,6 +75,11 @@
   ],
   "footerNavigation": [
     {
+      "id": "journal",
+      "label": "Journal",
+      "route": "/journal/"
+    },
+    {
       "id": "gallery",
       "label": "Gallery",
       "route": "/gallery/"
@@ -172,6 +177,7 @@
       "label": "Company & support",
       "placement": "footer",
       "routes": [
+        "/journal/",
         "/gallery/",
         "/about/",
         "/contact/"

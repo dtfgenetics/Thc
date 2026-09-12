@@ -41,7 +41,8 @@ const pageDefinitions = [
   ['gallery', 'Gallery'],
   ['about', 'About DTF Genetics'],
   ['contact', 'Contact DTF Genetics'],
-  ['blog', 'DTF Field Notes & Updates']
+  ['blog', 'DTF Field Notes & Updates'],
+  ['journal', 'DTF Journal']
 ];
 
 const legacyPostTitles = [
