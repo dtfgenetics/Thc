@@ -50,7 +50,7 @@ jobs:
           node scripts/fix-wordpress-visual-polish-v3-cascade.mjs | tee "$RUNNER_TEMP/cascade.log"
           found="$(node -e "const s=require('fs').readFileSync(process.argv[1],'utf8');const m=s.match(/\"found\"\s*:\s*(\d+)/);console.log(m?m[1]:'0')" "$RUNNER_TEMP/cascade.log")"
           echo "found=$found" >> "$GITHUB_OUTPUT"
-      - name: Verify final style ordering when V3 is present
+      - name: Verify final style ordering and canonical site shell
         id: verify
         run: |
           set -euo pipefail
@@ -58,8 +58,11 @@ jobs:
           curl -4 -fsSL --retry 3 --retry-delay 2 -H 'Cache-Control: no-cache, no-store' "$WP_SITE_URL/?dtf_v3_final=$GITHUB_RUN_ID" -o "$home"
           if grep -Fqi 'dtf-visual-polish-v3' "$home"; then
             grep -Fqi 'dtf-v3-spotlight' "$home"
-            grep -Fqi 'dtf-shell-header' "$home"
-            grep -Fqi 'DTF Genetics cannabis leaf' "$home"
+            grep -Fqi 'data-dtf-shell="header-v5"' "$home"
+            grep -Fqi 'id="dtf-sitewide-ux-polish-v1"' "$home"
+            grep -Fqi '>Diagnostic</a>' "$home"
+            ! grep -Fqi '>Tools</a>' "$home"
+            ! grep -Fqi '>Genetics</a>' "$home"
           fi
       - name: Upload rollback package
         if: always()
@@ -83,5 +86,7 @@ jobs:
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Result: **${process.env.STATUS}**`,
               `Pages with V3 style finalized: **${process.env.FOUND || '0'}**`,
-              `Live verification: **${process.env.VERIFY || 'not-run'}**`
+              `Live verification: **${process.env.VERIFY || 'not-run'}**`,
+              '',
+              'Verification now requires the approved V5 navigation and shared UX polish instead of the retired V3 shell.'
             ].join('\n')});
