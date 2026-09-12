@@ -6,17 +6,57 @@ const concurrency = Math.max(1, Math.min(12, Number(process.env.HEADER_AUDIT_CON
 const maxRoutes = Math.max(20, Math.min(2000, Number(process.env.HEADER_AUDIT_MAX_ROUTES || 800)));
 const cacheKey = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function hasNavLink(text, href, label) {
+  const hrefPattern = escapeRegExp(href);
+  const labelPattern = escapeRegExp(label);
+  return new RegExp(`<a\\b(?=[^>]*href=["']${hrefPattern}["'])[^>]*>\\s*${labelPattern}\\s*<\\/a>`, 'i').test(text);
+}
+
 const required = [
-  'data-dtf-shell="header-v5"',
-  'dtf-sitewide-header-v5-script',
-  '<a href="/">Home</a>',
-  '<a href="/seeds/">Seeds</a>',
-  '<a href="/learn/">Learn</a>',
-  '<a href="/courses/">Courses</a>',
-  '>Diagnostic</a>',
-  '<a href="/games/">Games</a>',
-  '<a href="/community/">Community</a>',
-  '<a href="/shop/">Shop</a>'
+  {
+    label: 'data-dtf-shell="header-v5"',
+    test: text => text.includes('data-dtf-shell="header-v5"')
+  },
+  {
+    label: 'dtf-sitewide-header-v5-script',
+    test: text => text.includes('dtf-sitewide-header-v5-script')
+  },
+  {
+    label: '<a href="/">Home</a>',
+    test: text => hasNavLink(text, '/', 'Home')
+  },
+  {
+    label: '<a href="/seeds/">Seeds</a>',
+    test: text => hasNavLink(text, '/seeds/', 'Seeds')
+  },
+  {
+    label: '<a href="/learn/">Learn</a>',
+    test: text => hasNavLink(text, '/learn/', 'Learn')
+  },
+  {
+    label: '<a href="/courses/">Courses</a>',
+    test: text => hasNavLink(text, '/courses/', 'Courses')
+  },
+  {
+    label: '<a href="/tools/">Diagnostic</a>',
+    test: text => hasNavLink(text, '/tools/', 'Diagnostic')
+  },
+  {
+    label: '<a href="/games/">Games</a>',
+    test: text => hasNavLink(text, '/games/', 'Games')
+  },
+  {
+    label: '<a href="/community/">Community</a>',
+    test: text => hasNavLink(text, '/community/', 'Community')
+  },
+  {
+    label: '<a href="/shop/">Shop</a>',
+    test: text => hasNavLink(text, '/shop/', 'Shop')
+  }
 ];
 
 const seedRoutes = [
@@ -34,7 +74,7 @@ async function fetchText(url, { attempts = 3 } = {}) {
         redirect: 'follow',
         signal: AbortSignal.timeout(30000),
         headers: {
-          'User-Agent': 'DTF-Sitewide-Header-V5-Audit/1.0',
+          'User-Agent': 'DTF-Sitewide-Header-V5-Audit/1.1',
           'Cache-Control': 'no-cache, no-store, max-age=0',
           Pragma: 'no-cache'
         }
@@ -113,7 +153,7 @@ async function inspectRoute(route) {
     const { response, text } = await fetchText(url);
     const contentType = String(response.headers.get('content-type') || '').toLowerCase();
     if (!contentType.includes('text/html')) return { route, status: response.status, skipped: 'non-html' };
-    const missing = required.filter(token => !text.includes(token));
+    const missing = required.filter(check => !check.test(text)).map(check => check.label);
     const oldLabels = [];
     if (/class=["'][^"']*(?:dtf-shell-nav|dtf-global-nav)[^"']*["'][\s\S]{0,2500}>Genetics<\/a>/i.test(text)) oldLabels.push('Genetics nav label');
     if (/class=["'][^"']*(?:dtf-shell-nav|dtf-global-nav)[^"']*["'][\s\S]{0,2500}>Tools<\/a>/i.test(text)) oldLabels.push('Tools nav label');
