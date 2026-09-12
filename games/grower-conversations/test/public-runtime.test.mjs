@@ -4,11 +4,13 @@ import fs from 'node:fs';
 const canonical = JSON.parse(fs.readFileSync('games/grower-conversations/data/prompt-bank.json', 'utf8'));
 const html = fs.readFileSync('site/public-route-patch/games/grower-conversations/index.html', 'utf8');
 const app = fs.readFileSync('site/public-route-patch/games/grower-conversations/app.js', 'utf8');
+const baseCss = fs.readFileSync('site/public-route-patch/games/grower-conversations/grower-conversations.css', 'utf8');
 const css = fs.readFileSync('site/public-route-patch/games/grower-conversations/grower-conversations-v2.css', 'utf8');
 
 assert.match(html, /<script\s+id="grower-conversations-data"\s+type="application\/json">[\s\S]*?<\/script>/i, 'public page must embed the canonical prompt bank');
 assert.match(html, /<script\s+src="\.\/app\.js"\s+defer><\/script>/i, 'public page must load app.js as a deferred classic script');
 assert.doesNotMatch(html, /type="module"/i, 'public page must not depend on ES-module serving');
+assert.match(html, /grower-conversations\.css/i, 'public page must load the base responsive deck layer');
 assert.match(html, /grower-conversations-v2\.css/i, 'public page must load the V2 deck-table visual layer');
 assert.match(html, /id="remaining-stat"/, 'deck HUD must expose remaining cards');
 assert.match(html, /id="used-stat"/, 'deck HUD must expose used cards');
@@ -40,6 +42,13 @@ assert.match(app, /ui\.progress\.style\.width/, 'filtered-deck use must drive th
 assert.match(app, /aria-valuenow/, 'deck progress must remain accessible');
 assert.match(app, /event\.key === 'd' \|\| event\.key === 'D'/, 'D keyboard shortcut must draw outside interactive controls');
 
+assert.doesNotMatch(baseCss, /html\s*,\s*body\s*\{[^}]*overflow-x\s*:\s*(?:hidden|clip)/is, 'page root must not hide horizontal overflow regressions');
+assert.match(baseCss, /\.card-stage\s*\{[^}]*overflow-x\s*:\s*clip/is, 'decorative card overhang must be contained locally by the card stage');
+assert.match(baseCss, /\.controls select\s*,[\s\S]*?\.deck-actions button\s*\{[^}]*min-height\s*:\s*44px/is, 'primary deck controls must preserve a 44px minimum touch target');
+assert.match(baseCss, /\.site-header nav a\s*\{[^}]*min-height\s*:\s*44px/is, 'local fallback navigation must preserve a 44px minimum touch target');
+assert.match(baseCss, /@media\s*\(max-width:\s*720px\)[\s\S]*?\.controls\s*,\s*\.grid\s*\{[^}]*grid-template-columns\s*:\s*minmax\(0,\s*1fr\)/is, 'phone layout must collapse dense grids to one intrinsic-width column');
+assert.match(baseCss, /\.prompt-card\s*\{[^}]*width\s*:\s*min\(720px,\s*100%\)/is, 'prompt card width must remain bounded by the available viewport');
+
 assert.match(css, /\.card-stage::before,.card-stage::after/, 'deck presentation must include stacked-card depth');
 assert.match(css, /\.prompt-card\.draw-pop/, 'draw action must have focused card feedback');
 assert.match(css, /html\[data-depth="easy"\]/, 'easy cards must have a distinct depth treatment');
@@ -55,4 +64,4 @@ for (const [category, prompts] of Object.entries(canonical.categories)) {
   assert.equal(prompts.length, 12, `${category} must retain twelve prompts`);
 }
 
-console.log('Grower Conversations embedded runtime, prompt reveal, deck progress and V2 visual-state regression checks passed.');
+console.log('Grower Conversations embedded runtime, responsive containment, touch-target, prompt reveal, deck progress and V2 visual-state regression checks passed.');
