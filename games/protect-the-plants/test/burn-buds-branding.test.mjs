@@ -76,7 +76,7 @@ assert.ok(index.includes('./placement-v1.js'));
 assert.ok(index.includes('./targeting-v1.js'));
 assert.ok(branding.includes("const PRODUCT='Burn Buds'"));
 assert.ok(combatA11y.includes("setAttribute('aria-live','polite')"));
-assert.ok(serviceWorker.includes('ptp-shell-v8-burn-buds-native-targeting-20260905'));
+assert.ok(serviceWorker.includes('ptp-shell-v9-burn-buds-v5-responsive-20260913'));
 for (const asset of ['./runtime-sync-v1.js','./combat-a11y-v1.js','./battle-feedback-v1.js','./battle-feedback-v1.css','./placement-v1.js','./placement-v1.css','./targeting-v1.js','./targeting-v1.css']) assert.ok(serviceWorker.includes(asset), `Service worker must cache ${asset}`);
 
 console.log('Burn Buds native branding, migration, cache, accessibility, and multiplayer contract checks passed.');
