@@ -23,6 +23,7 @@ import './cultivation-records.css';
 import './cultivation-analytics.css';
 import './safe-auto-sync.css';
 import './accessibility.css';
+import './workspace-responsive.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
