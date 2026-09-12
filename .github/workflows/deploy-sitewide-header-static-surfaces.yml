@@ -50,6 +50,8 @@ jobs:
           grep -Fq '@media (min-width:701px) and (max-width:1120px)' site/wordpress/assets/responsive-layout-v1.css
           grep -Fq '@media (max-width:700px)' site/wordpress/assets/responsive-layout-v1.css
           grep -Fq 'scroll-snap-type:x proximity' site/wordpress/assets/responsive-layout-v1.css
+          grep -Fq -- '--dtf-global-header-height:92px' site/wordpress/assets/responsive-layout-v1.css
+          grep -Fq '.high-iq-shell .quiz-scoreboard{top:calc(var(--dtf-global-header-height) + 8px)!important}' site/wordpress/assets/responsive-layout-v1.css
 
   dispatch-production:
     if: ${{ github.event_name != 'pull_request' }}
@@ -71,11 +73,11 @@ jobs:
           set -euo pipefail
           gh workflow run deploy-public-suite-wordpress-v2.yml --repo "$GITHUB_REPOSITORY" --ref main
           echo 'Dispatched Deploy DTFSeeds Public Suite via WordPress V2 from the merged header/responsive source.'
-      - name: Wait for visitor-facing responsive shell across WordPress and static hubs
+      - name: Wait for visitor-facing responsive shell across WordPress, hubs, and High IQ
         shell: bash
         env:
           WP_SITE_URL: https://dtfseeds.com
-          RESPONSIVE_LAYOUT_VERIFY_ROUTES: /,/learn/,/courses/,/tools/,/games/
+          RESPONSIVE_LAYOUT_VERIFY_ROUTES: /,/learn/,/courses/,/tools/,/games/,/games/high-iq/
           RESPONSIVE_LAYOUT_VERIFY_ATTEMPTS: '120'
           RESPONSIVE_LAYOUT_VERIFY_PAUSE_MS: '10000'
         run: |
