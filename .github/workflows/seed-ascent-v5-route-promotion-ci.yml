@@ -1,0 +1,37 @@
+name: Seed Ascent V5 Route Promotion CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/promote-public-game-routes-via-wordpress.mjs'
+      - '.github/workflows/seed-ascent-v5-route-promotion-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/promote-public-game-routes-via-wordpress.mjs'
+      - '.github/workflows/seed-ascent-v5-route-promotion-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate Seed Ascent promotion contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq "wrapper.text.includes('<iframe')" scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq "wrapper.text.includes('/seed-ascent.html')" scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq "wrapper.text.includes('/_next/static/')" scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq 'data-dtf-shell="header-v5"' scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq 'data-dtf-sitewide-header="approved-reference-v1"' scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq 'id="dtf-sitewide-ux-polish-v1"' scripts/promote-public-game-routes-via-wordpress.mjs
+          ! grep -Fq '!/wp-content|wp-includes|wordpress/i.test(wrapper.text)' scripts/promote-public-game-routes-via-wordpress.mjs
