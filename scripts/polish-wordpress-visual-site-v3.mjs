@@ -28,15 +28,6 @@ function rendered(value) {
   return '';
 }
 
-function esc(value = '') {
-  return String(value)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
-}
-
 async function request(path, options = {}) {
   let lastError;
   for (let attempt = 1; attempt <= 5; attempt += 1) {
@@ -164,16 +155,6 @@ body{background:var(--dtf-v3-cream)}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.dtf-btn,.dtf-card,.dtf-img,.dtf-text-link span,.dtf-path-card{transition:none!important}.dtf-btn:hover,.dtf-card:hover,.dtf-card:hover .dtf-img,.dtf-path-card:hover{transform:none!important}}
 </style>`;
 
-const shellCss = `<style id="dtf-shell-v3">
-.dtf-shell-header{position:sticky;top:0;z-index:1000;background:rgba(7,23,15,.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.11);box-shadow:0 10px 34px rgba(0,0,0,.08)}
-.dtf-shell-inner{max-width:1260px;margin:auto;padding:11px 22px;display:flex;align-items:center;justify-content:space-between;gap:22px}
-.dtf-shell-brand{display:flex;align-items:center;gap:11px;color:white!important;text-decoration:none!important;min-width:max-content}.dtf-shell-brand img{width:42px;height:42px;object-fit:contain;filter:drop-shadow(0 5px 12px rgba(0,0,0,.18))}.dtf-shell-brand strong{display:block;font-size:1rem;line-height:1}.dtf-shell-brand small{display:block;margin-top:4px;color:#d7b965;font-size:.6rem;line-height:1;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
-.dtf-shell-nav{display:flex;align-items:center;gap:2px}.dtf-shell-nav a{color:#dfebe2!important;text-decoration:none!important;padding:9px 10px;border-radius:9px;font-size:.92rem;font-weight:790}.dtf-shell-nav a:hover{background:rgba(255,255,255,.07);color:white!important}.dtf-shell-nav .dtf-shell-shop{background:#d7b965!important;color:#112619!important;padding-inline:15px;margin-left:5px;font-weight:950}.dtf-shell-menu{display:none}.dtf-shell-menu summary{list-style:none;cursor:pointer;color:white;border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:9px 12px;font-weight:850}.dtf-shell-menu summary::-webkit-details-marker{display:none}.dtf-shell-mobile{position:absolute;right:16px;top:66px;width:min(330px,calc(100vw - 32px));padding:10px;background:#0b2417;border:1px solid rgba(255,255,255,.13);border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.3)}.dtf-shell-mobile a{display:block;color:#e5eee8!important;text-decoration:none!important;padding:12px;border-radius:10px;font-weight:800}.dtf-shell-mobile a:hover{background:rgba(255,255,255,.08)}
-.dtf-shell-footer{background:#07170f;color:#c7d8cc}.dtf-shell-footer-inner{max-width:1260px;margin:auto;padding:58px 22px 32px}.dtf-shell-footer-grid{display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:42px}.dtf-shell-footer h3{margin:0 0 13px;color:white;font-size:1rem}.dtf-shell-footer p{line-height:1.7;color:#aec4b5}.dtf-shell-footer a{color:#dbe8df!important;text-decoration:none!important}.dtf-shell-footer a:hover{color:#eed786!important}.dtf-shell-footer-links{display:grid;gap:8px}.dtf-shell-legal{margin-top:38px;padding-top:20px;border-top:1px solid rgba(255,255,255,.1);display:flex;gap:14px;justify-content:space-between;flex-wrap:wrap;font-size:.82rem;color:#8fa899}
-@media(max-width:880px){.dtf-shell-nav{display:none}.dtf-shell-menu{display:block}.dtf-shell-footer-grid{grid-template-columns:1fr 1fr}.dtf-shell-footer-grid>div:first-child{grid-column:1/-1}}
-@media(max-width:560px){.dtf-shell-inner{padding:10px 14px}.dtf-shell-brand img{width:38px;height:38px}.dtf-shell-footer-grid{grid-template-columns:1fr}.dtf-shell-footer-grid>div:first-child{grid-column:auto}}
-</style>`;
-
 function spotlightMarkup() {
   return `<section class="dtf-v3-spotlight" aria-label="DTF primary experiences"><div class="dtf-wrap"><div class="dtf-v3-spotlight-grid"><article><p class="dtf-v3-label">Genetics</p><h3><a href="/seeds/">Breeding projects with documented lineage</a></h3><p>Start with genetics, then move into the science and records behind the plant.</p></article><article><p class="dtf-v3-label">Tools</p><h3><a href="/tools/">Measure. Diagnose. Document.</a></h3><p>GrowLens and Grow Doc turn observations into usable records.</p></article><article><p class="dtf-v3-label">Play</p><h3><a href="/games/">Original DTF games</a></h3><p>Strategy, trivia, puzzles, and community-built browser experiences.</p></article></div></div></section>`;
 }
@@ -206,39 +187,6 @@ async function updatePage(page, content) {
   });
 }
 
-async function fetchBrand() {
-  const rows = await request('/wp-json/wp/v2/media?slug=dtf-potleaf-site-icon&context=edit&per_page=10');
-  return Array.isArray(rows) ? rows.find((item) => item?.source_url) || null : null;
-}
-
-function shellMarkup(brandUrl) {
-  const brandImage = brandUrl
-    ? `<img src="${esc(brandUrl)}" alt="DTF Genetics cannabis leaf" width="42" height="42" loading="eager" decoding="async">`
-    : '';
-  const brand = `<a class="dtf-shell-brand" href="/" aria-label="DTF Genetics home">${brandImage}<span><strong>DTF Genetics</strong><small>Dream the Future</small></span></a>`;
-  const links = `<a href="/seeds/">Genetics</a><a href="/learn/">Learn</a><a href="/tools/">Tools</a><a href="/games/">Games</a><a href="/community/">Community</a><a class="dtf-shell-shop" href="/shop/">Shop</a>`;
-  const header = `<!-- wp:html -->${shellCss}<header class="dtf-shell-header"><div class="dtf-shell-inner">${brand}<nav class="dtf-shell-nav" aria-label="Primary navigation">${links}</nav><details class="dtf-shell-menu"><summary aria-label="Open site menu">Menu</summary><nav class="dtf-shell-mobile" aria-label="Mobile navigation">${links}</nav></details></div></header><!-- /wp:html -->`;
-  const footer = `<!-- wp:html --><footer class="dtf-shell-footer"><div class="dtf-shell-footer-inner"><div class="dtf-shell-footer-grid"><div>${brand}<p>Documented genetics, Teaching Healthy Cultivation, practical grow tools, original games, and community projects in one home.</p></div><div><h3>Explore</h3><div class="dtf-shell-footer-links"><a href="/seeds/">Genetics</a><a href="/learn/">Learn</a><a href="/tools/">Tools</a><a href="/games/">Games</a><a href="/shop/">Shop</a></div></div><div><h3>Community</h3><div class="dtf-shell-footer-links"><a href="/community/">Community standards</a><a href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Join Teaching Healthy Cultivation on Discord</a><a href="/about/">About DTF Genetics</a><a href="/contact/">Contact</a></div></div></div><div class="dtf-shell-legal"><span>© 2026 DTF Genetics. All rights reserved.</span><span>Dream the Future · Adults only · Follow applicable local laws.</span></div></div></footer><!-- /wp:html -->`;
-  return { header, footer };
-}
-
-async function updateShell() {
-  const [parts, brand] = await Promise.all([
-    request('/wp-json/wp/v2/template-parts?context=edit&per_page=100'),
-    fetchBrand()
-  ]);
-  await writeFile(join(backupDir, 'template-parts-before.json'), `${JSON.stringify(parts, null, 2)}\n`);
-  const headerPart = (parts || []).find((item) => item.slug === 'header' && item.id);
-  const footerPart = (parts || []).find((item) => item.slug === 'footer' && item.id);
-  if (!headerPart?.id || !footerPart?.id) throw new Error('Active WordPress header/footer template parts were not found');
-  const shell = shellMarkup(brand?.source_url || '');
-  if (apply) {
-    await request(`/wp-json/wp/v2/template-parts/${encodeURIComponent(headerPart.id)}`, { method: 'POST', body: JSON.stringify({ content: shell.header, status: 'publish' }) });
-    await request(`/wp-json/wp/v2/template-parts/${encodeURIComponent(footerPart.id)}`, { method: 'POST', body: JSON.stringify({ content: shell.footer, status: 'publish' }) });
-  }
-  return { headerId: headerPart.id, footerId: footerPart.id, brandMediaId: brand?.id || null, brandUrl: brand?.source_url || null };
-}
-
 const [home, learn] = await Promise.all([getPage('home'), getPage('learn')]);
 const nextHome = polishPage(home.content, { home: true });
 const nextLearn = polishPage(learn.content, { home: false });
@@ -249,7 +197,6 @@ if (!nextHome.includes('dtf-v3-spotlight')) throw new Error('Home spotlight inje
 
 await updatePage(home, nextHome);
 await updatePage(learn, nextLearn);
-const shell = await updateShell();
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -261,7 +208,10 @@ const report = {
     { id: learn.id, slug: learn.slug, bytes: nextLearn.length }
   ],
   spotlightInjected: nextHome.includes('dtf-v3-spotlight'),
-  shell
+  shell: {
+    brandMediaId: null,
+    ownership: 'delegated-to-canonical-v5-builder'
+  }
 };
 
 await writeFile(join(backupDir, 'visual-polish-v3-report.json'), `${JSON.stringify(report, null, 2)}\n`);
