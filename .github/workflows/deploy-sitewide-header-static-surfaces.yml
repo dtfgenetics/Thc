@@ -7,12 +7,14 @@ on:
     paths:
       - scripts/lib/sitewide-header-template.mjs
       - scripts/apply-sitewide-header.mjs
+      - site/wordpress/assets/responsive-layout-v1.css
       - .github/workflows/build-dtfseeds-public-suite.yml
       - .github/workflows/deploy-sitewide-header-static-surfaces.yml
   pull_request:
     paths:
       - scripts/lib/sitewide-header-template.mjs
       - scripts/apply-sitewide-header.mjs
+      - site/wordpress/assets/responsive-layout-v1.css
       - .github/workflows/build-dtfseeds-public-suite.yml
       - .github/workflows/deploy-sitewide-header-static-surfaces.yml
 
@@ -32,14 +34,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate canonical header deployment inputs
+      - name: Validate canonical header and responsive deployment inputs
         shell: bash
         run: |
           set -euo pipefail
           node --check scripts/lib/sitewide-header-template.mjs
           node --check scripts/apply-sitewide-header.mjs
+          test -s site/wordpress/assets/responsive-layout-v1.css
           grep -Fq 'Apply approved sitewide header to release HTML' .github/workflows/build-dtfseeds-public-suite.yml
           grep -Fq 'data-dtf-sitewide-header="approved-reference-v1"' scripts/lib/sitewide-header-template.mjs
+          grep -Fq 'dtf-responsive-layout-v1' scripts/apply-sitewide-header.mjs
+          grep -Fq '@media (min-width:701px) and (max-width:1120px)' site/wordpress/assets/responsive-layout-v1.css
+          grep -Fq '@media (max-width:700px)' site/wordpress/assets/responsive-layout-v1.css
+          grep -Fq 'scroll-snap-type:x proximity' site/wordpress/assets/responsive-layout-v1.css
 
   dispatch-production:
     if: ${{ github.event_name != 'pull_request' }}
@@ -53,4 +60,4 @@ jobs:
         run: |
           set -euo pipefail
           gh workflow run deploy-public-suite-wordpress-v2.yml --repo "$GITHUB_REPOSITORY" --ref main
-          echo 'Dispatched Deploy DTFSeeds Public Suite via WordPress V2 from the merged header source.'
+          echo 'Dispatched Deploy DTFSeeds Public Suite via WordPress V2 from the merged header/responsive source.'
