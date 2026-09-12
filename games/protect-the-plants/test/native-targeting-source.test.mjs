@@ -13,6 +13,6 @@ for(const forbidden of ['confirmShots','armedShotKey','armedShotUntil','ptp-shot
 assert.ok(!fs.existsSync(path.join(root,'targeting-policy-v1.js')),'Temporary targeting policy guard must be retired.');
 assert.ok(!index.includes('./targeting-policy-v1.js'),'Production page must not load retired targeting policy guard.');
 assert.ok(!sw.includes('./targeting-policy-v1.js'),'Service worker must not cache retired targeting policy guard.');
-assert.ok(sw.includes('ptp-shell-v8-burn-buds-native-targeting-20260905'));
+assert.ok(sw.includes('ptp-shell-v9-burn-buds-v5-responsive-20260913'));
 for(const marker of ["const coarsePointer=()=>window.matchMedia?.('(pointer: coarse)').matches===true",'Tap once to aim. Tap the same cell again to fire.','target-armed','aria-pressed']) assert.ok(targeting.includes(marker),'Missing native targeting marker: '+marker);
 console.log('Burn Buds native targeting source is authoritative and legacy confirmShots code is removed.');
