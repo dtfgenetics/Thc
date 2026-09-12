@@ -99,7 +99,9 @@ jobs:
           import json
           c=json.load(open('site/deployment/release-resources.json'))['resources']['high-iq']
           assert c['publisher']['type']=='wordpress-transactional-resource'
-          assert c['publisher']['status']=='pilot-manual'
+          assert c['publisher']['status']=='production'
+          assert c['publisher']['orchestration']=='gateway-managed'
+          assert c.get('verifyTokens'), 'High IQ must declare visitor verification tokens'
           print('route='+c['route'])
           print('marker='+c['verifyMarker'])
           print('checkpoint='+c['checkpointTag'])
@@ -209,6 +211,17 @@ jobs:
           [[ "$status" == '200' ]] || { echo "Expected HTTP 200, got $status" >&2; cat "$headers" >&2; exit 1; }
           ! grep -Eiq '^location:' "$headers" || { echo 'Refusing redirected resource route' >&2; cat "$headers" >&2; exit 1; }
           grep -Fqi "$MARKER" "$body" || { echo "Expected marker '$MARKER' not found" >&2; exit 1; }
+          BODY_PATH="$body" python - <<'PY'
+          import json, os
+          from pathlib import Path
+          resource=json.load(open('site/deployment/release-resources.json'))['resources']['high-iq']
+          body=Path(os.environ['BODY_PATH']).read_text(encoding='utf-8', errors='replace')
+          missing=[token for token in resource.get('verifyTokens', []) if token not in body]
+          if missing:
+              raise SystemExit('High IQ visitor verification tokens missing: '+', '.join(repr(token) for token in missing))
+          print(f"Verified {len(resource.get('verifyTokens', []))} High IQ V5/responsive visitor tokens.")
+          PY
+          rm -f "$body" "$headers"
 
       - name: Advance only the High IQ production checkpoint
         if: inputs.environment == 'production'
