@@ -1,7 +1,10 @@
 import process from 'node:process';
 
 const siteUrl=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
-const routes=(process.env.RESPONSIVE_LAYOUT_VERIFY_ROUTES||'/,/learn/,/courses/,/tools/,/games/')
+// The default scope belongs to the WordPress shared-shell owner. Static application
+// routes are verified after their separate public-suite deployment by passing
+// RESPONSIVE_LAYOUT_VERIFY_ROUTES explicitly.
+const routes=(process.env.RESPONSIVE_LAYOUT_VERIFY_ROUTES||'/,/learn/,/courses/')
   .split(',').map(value=>value.trim()).filter(Boolean);
 const attempts=Math.max(1,Number(process.env.RESPONSIVE_LAYOUT_VERIFY_ATTEMPTS||6));
 const pauseMs=Math.max(250,Number(process.env.RESPONSIVE_LAYOUT_VERIFY_PAUSE_MS||3000));
@@ -25,7 +28,7 @@ async function fetchRoute(route,attempt){
       'cache-control':'no-cache, no-store, max-age=0',
       pragma:'no-cache',
       accept:'text/html',
-      'user-agent':'DTFSeeds-Responsive-Layout-Live/1.0'
+      'user-agent':'DTFSeeds-Responsive-Layout-Live/1.1'
     },
     signal:AbortSignal.timeout(30_000)
   });
