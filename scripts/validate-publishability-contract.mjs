@@ -95,9 +95,7 @@ for (const path of publishableFiles) {
     unclassifiedPublishable.push(path)
     continue
   }
-  if (!resources.some((resource) => (resource.productionTargets || []).length > 0)) {
-    missingProductionTarget.push(path)
-  }
+  if (!resources.some((resource) => (resource.productionTargets || []).length > 0)) missingProductionTarget.push(path)
   if (!releaseLanesFor(path).length) missingReleaseLane.push(path)
 }
 
@@ -124,9 +122,7 @@ for (const [path, expectedTarget] of expectedOwners) {
   }
   const one = classifyPaths(resourceConfig, [path])
   const targets = unique(one.resources.flatMap((resource) => resource.productionTargets || []))
-  if (!targets.includes(expectedTarget)) {
-    ownershipErrors.push(`${path}: expected ${expectedTarget}, got ${targets.join(', ') || 'no production target'}`)
-  }
+  if (!targets.includes(expectedTarget)) ownershipErrors.push(`${path}: expected ${expectedTarget}, got ${targets.join(', ') || 'no production target'}`)
 }
 
 const mutationSearchRoots = ['.github/workflows', 'scripts']
@@ -147,112 +143,52 @@ const generatedIntegrationSource = readFileSync('scripts/studio/integrate-genera
 const releasePlannerSource = readFileSync('scripts/plan-dtfseeds-release.mjs', 'utf8')
 const gatewaySource = readFileSync('.github/workflows/dtfseeds-production-gateway.yml', 'utf8')
 const educationSource = readFileSync('.github/workflows/deploy-thc-learning-center-expansion-v1.yml', 'utf8')
+const harvestOutdoorSource = readFileSync('.github/workflows/wordpress-harvest-outdoor-v6-production.yml', 'utf8')
 const learningTransactionSource = readFileSync('scripts/run-learning-v3-connected-production.sh', 'utf8')
 const educationLiveStart = educationSource.indexOf('      - name: Fresh anonymous production verification')
 const educationLiveEnd = educationSource.indexOf('      - name: Upload rollback and release evidence')
-const educationLiveSource = educationLiveStart >= 0 && educationLiveEnd > educationLiveStart
-  ? educationSource.slice(educationLiveStart, educationLiveEnd)
-  : ''
+const educationLiveSource = educationLiveStart >= 0 && educationLiveEnd > educationLiveStart ? educationSource.slice(educationLiveStart, educationLiveEnd) : ''
 
 const contractErrors = []
-if (!integrationSource.includes("gh', ['workflow', 'run', 'dtfseeds-production-gateway.yml'")) {
-  contractErrors.push('ordinary Studio integration does not explicitly dispatch the cumulative production gateway')
-}
-if (!generatedIntegrationSource.includes('dtfseeds-production-gateway.yml')) {
-  contractErrors.push('generated-change integration does not dispatch the cumulative production gateway')
-}
-if (!gatewaySource.includes('auto')) {
-  contractErrors.push('production gateway no longer exposes the automatic cumulative release mode')
-}
-if (!gatewaySource.includes('VERIFY_REQUEST_TIMEOUT_SECONDS') || !gatewaySource.includes('--connect-timeout 10') || !gatewaySource.includes('--max-time 30')) {
-  contractErrors.push('production gateway visitor verification is not bounded against hung network requests')
-}
-if (!gatewaySource.includes('Recheck automatic release freshness before visitor verification') || !gatewaySource.includes('steps.verify_freshness.outputs.current')) {
-  contractErrors.push('production gateway does not recheck current main before visitor verification and checkpoint enforcement')
-}
-if (!educationSource.includes('GITHUB_STEP_SUMMARY')) {
-  contractErrors.push('Education release no longer records an authoritative Actions summary')
-}
+if (!integrationSource.includes("gh', ['workflow', 'run', 'dtfseeds-production-gateway.yml'")) contractErrors.push('ordinary Studio integration does not explicitly dispatch the cumulative production gateway')
+if (!generatedIntegrationSource.includes('dtfseeds-production-gateway.yml')) contractErrors.push('generated-change integration does not dispatch the cumulative production gateway')
+if (!gatewaySource.includes('auto')) contractErrors.push('production gateway no longer exposes the automatic cumulative release mode')
+if (!gatewaySource.includes('VERIFY_REQUEST_TIMEOUT_SECONDS') || !gatewaySource.includes('--connect-timeout 10') || !gatewaySource.includes('--max-time 30')) contractErrors.push('production gateway visitor verification is not bounded against hung network requests')
+if (!gatewaySource.includes('Recheck automatic release freshness before visitor verification') || !gatewaySource.includes('steps.verify_freshness.outputs.current')) contractErrors.push('production gateway does not recheck current main before visitor verification and checkpoint enforcement')
+if (!educationSource.includes('GITHUB_STEP_SUMMARY')) contractErrors.push('Education release no longer records an authoritative Actions summary')
 const educationHasLegacyReporter = educationSource.includes('github.rest.issues.createComment') || educationSource.includes('Best-effort legacy issue report')
-if (educationHasLegacyReporter && !educationSource.includes('continue-on-error: true')) {
-  contractErrors.push('Education release reporting can still veto a verified production result')
-}
+if (educationHasLegacyReporter && !educationSource.includes('continue-on-error: true')) contractErrors.push('Education release reporting can still veto a verified production result')
 const educationOwnerRefresh = educationSource.indexOf('Refresh canonical Learning V3 owner transaction')
 const educationConvergence = educationSource.indexOf('Confirm expansion routes on canonical Learn hub')
-if (!educationSource.includes('group: dtfseeds-learning-experience-v3')) {
-  contractErrors.push('Education expansion is not serialized with the sole canonical /learn/ owner')
-}
-if (educationOwnerRefresh < 0 || !educationSource.includes('bash scripts/run-learning-v3-connected-production.sh')) {
-  contractErrors.push('Education expansion does not refresh the canonical Learning V3 owner before checking /learn/ convergence')
-}
-if (educationConvergence < 0 || educationOwnerRefresh > educationConvergence) {
-  contractErrors.push('Education expansion checks Learn convergence before the canonical owner transaction completes')
-}
-if (
-  !educationSource.includes('node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-learning-center-expansion-v1.mjs') ||
-  !educationSource.includes('node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/update-wordpress-learn-expansion-v1.mjs')
-) {
-  contractErrors.push('Education WordPress backing-page publication/read-only convergence is not forced through the established IPv4 transport')
-}
+if (!educationSource.includes('group: dtfseeds-learning-experience-v3')) contractErrors.push('Education expansion is not serialized with the sole canonical /learn/ owner')
+if (educationOwnerRefresh < 0 || !educationSource.includes('bash scripts/run-learning-v3-connected-production.sh')) contractErrors.push('Education expansion does not refresh the canonical Learning V3 owner before checking /learn/ convergence')
+if (educationConvergence < 0 || educationOwnerRefresh > educationConvergence) contractErrors.push('Education expansion checks Learn convergence before the canonical owner transaction completes')
+if (!educationSource.includes('node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-learning-center-expansion-v1.mjs') || !educationSource.includes('node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/update-wordpress-learn-expansion-v1.mjs')) contractErrors.push('Education WordPress backing-page publication/read-only convergence is not forced through the established IPv4 transport')
 if (!educationLiveSource) {
   contractErrors.push('Education release is missing the anonymous production verification step')
 } else {
-  for (const semantic of [
-    'Teaching Healthy Cultivation',
-    'Learn in a sequence that makes the plant easier to understand.',
-    'Learn the plant as a connected system.',
-    'Plant Health & IPM',
-    'Cultivation Science',
-    'Symptom Differentials',
-    'Printable Field Tools',
-    'Evidence & Sources',
-  ]) {
-    if (!educationLiveSource.includes(semantic)) {
-      contractErrors.push(`Education anonymous Learn verification is missing visible semantic: ${semantic}`)
-    }
+  for (const semantic of ['Teaching Healthy Cultivation', 'Learn in a sequence that makes the plant easier to understand.', 'Learn the plant as a connected system.', 'Plant Health & IPM', 'Cultivation Science', 'Symptom Differentials', 'Printable Field Tools', 'Evidence & Sources']) {
+    if (!educationLiveSource.includes(semantic)) contractErrors.push(`Education anonymous Learn verification is missing visible semantic: ${semantic}`)
   }
-  if (educationLiveSource.includes('data-dtf-layout=') || educationLiveSource.includes('data-dtf-learning-map=') || educationLiveSource.includes('data-dtf-learning-expanded-reference=')) {
-    contractErrors.push('Education anonymous Learn verification again requires private WordPress ownership attributes')
-  }
-  if (!educationLiveSource.includes('--connect-timeout 15') || !educationLiveSource.includes('--max-time 60')) {
-    contractErrors.push('Education anonymous visitor verification is not bounded against hung network requests')
-  }
+  if (educationLiveSource.includes('data-dtf-layout=') || educationLiveSource.includes('data-dtf-learning-map=') || educationLiveSource.includes('data-dtf-learning-expanded-reference=')) contractErrors.push('Education anonymous Learn verification again requires private WordPress ownership attributes')
+  if (!educationLiveSource.includes('--connect-timeout 15') || !educationLiveSource.includes('--max-time 60')) contractErrors.push('Education anonymous visitor verification is not bounded against hung network requests')
 }
-if (!learningTransactionSource.includes('data-dtf-learning-expanded-reference="v1"') || !learningTransactionSource.includes('data-dtf-learning-map="v4"')) {
-  contractErrors.push('Authenticated Learning owner transaction no longer requires the canonical Learn V4 + expanded-reference markers')
-}
-if (!(releaseConfig.lanes?.education?.prefixes || []).includes('site/wordpress/education/')) {
-  contractErrors.push('canonical site/wordpress/education source is not routed through the Education release lane')
-}
+if (!learningTransactionSource.includes('data-dtf-learning-expanded-reference="v1"') || !learningTransactionSource.includes('data-dtf-learning-map="v4"')) contractErrors.push('Authenticated Learning owner transaction no longer requires the canonical Learn V4 + expanded-reference markers')
+if (!(releaseConfig.lanes?.education?.prefixes || []).includes('site/wordpress/education/')) contractErrors.push('canonical site/wordpress/education source is not routed through the Education release lane')
 const harvestOutdoorPrefixes = releaseConfig.lanes?.harvestOutdoor?.prefixes || []
-for (const requiredPath of [
-  'site/wordpress/education/harvest-postharvest-v6.json',
-  'site/wordpress/education/outdoor-v6.json',
-  'site/wordpress/education/topic-literature.json',
-  'scripts/enhance-wordpress-outdoor-quantification-v1.mjs',
-  '.github/workflows/wordpress-harvest-outdoor-v6-production.yml',
-]) {
-  if (!harvestOutdoorPrefixes.includes(requiredPath)) {
-    contractErrors.push(`Harvest / Outdoor canonical source is not routed through its release lane: ${requiredPath}`)
-  }
+for (const requiredPath of ['site/wordpress/education/harvest-postharvest-v6.json', 'site/wordpress/education/outdoor-v6.json', 'site/wordpress/education/topic-literature.json', 'scripts/enhance-wordpress-outdoor-quantification-v1.mjs', '.github/workflows/wordpress-harvest-outdoor-v6-production.yml']) {
+  if (!harvestOutdoorPrefixes.includes(requiredPath)) contractErrors.push(`Harvest / Outdoor canonical source is not routed through its release lane: ${requiredPath}`)
 }
-if (!(releaseConfig.fullReleasePaths || []).includes('.github/workflows/wordpress-harvest-outdoor-v6-production.yml')) {
-  contractErrors.push('Harvest / Outdoor canonical publisher is not a full-release control-plane path')
-}
-if (!releasePlannerSource.includes('harvest_outdoor=${lanes.harvestOutdoor}')) {
-  contractErrors.push('release planner does not expose the Harvest / Outdoor lane to the gateway')
-}
-if (!gatewaySource.includes('needs.plan.outputs.harvest_outdoor') || !gatewaySource.includes('wordpress-harvest-outdoor-v6-production.yml')) {
-  contractErrors.push('production gateway does not publish and enforce the Harvest / Outdoor canonical lane')
-}
-if (!gatewaySource.includes('data-dtf-harvest-postharvest-v6="true"') || !gatewaySource.includes('data-dtf-outdoor-v6="true"')) {
-  contractErrors.push('production gateway does not independently verify Harvest / Outdoor visitor markers')
+if (!(releaseConfig.fullReleasePaths || []).includes('.github/workflows/wordpress-harvest-outdoor-v6-production.yml')) contractErrors.push('Harvest / Outdoor canonical publisher is not a full-release control-plane path')
+if (!releasePlannerSource.includes('harvest_outdoor=${lanes.harvestOutdoor}')) contractErrors.push('release planner does not expose the Harvest / Outdoor lane to the gateway')
+if (!gatewaySource.includes('needs.plan.outputs.harvest_outdoor') || !gatewaySource.includes('wordpress-harvest-outdoor-v6-production.yml')) contractErrors.push('production gateway does not publish and enforce the Harvest / Outdoor canonical lane')
+if (!gatewaySource.includes('Trust Harvest and Outdoor child workflow verification') || !gatewaySource.includes("steps.harvest_outdoor_publish.outcome == 'success'")) contractErrors.push('production gateway does not delegate Harvest / Outdoor verification to the successful child workflow')
+for (const marker of ['data-dtf-harvest-postharvest-v6="true"', 'data-dtf-outdoor-v6="true"', 'data-dtf-outdoor-quantification-v1="true"', 'data-thc-outdoor-applied-v1="true"']) {
+  if (!harvestOutdoorSource.includes(marker)) contractErrors.push(`Harvest / Outdoor child workflow does not verify visitor marker: ${marker}`)
 }
 for (const lane of ['publicSuite', 'wordpress']) {
   const prefixes = releaseConfig.lanes?.[lane]?.prefixes || []
-  if (!prefixes.includes('site/design-system/') || !prefixes.includes('data/public-navigation.json')) {
-    contractErrors.push(`shared shell is not routed through ${lane}`)
-  }
+  if (!prefixes.includes('site/design-system/') || !prefixes.includes('data/public-navigation.json')) contractErrors.push(`shared shell is not routed through ${lane}`)
 }
 
 const errors = [
