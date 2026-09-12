@@ -1,0 +1,172 @@
+/* DTFSeeds shared responsive layout system v1
+ * Complements page-specific art direction without replacing it.
+ * Applied through the canonical WordPress shared shell.
+ */
+:root{
+  --dtf-layout-max:1360px;
+  --dtf-reading-max:76ch;
+  --dtf-layout-gutter:clamp(14px,3vw,40px);
+  --dtf-layout-section:clamp(48px,7vw,92px);
+  --dtf-layout-gap:clamp(14px,2vw,24px);
+  --dtf-layout-touch:44px;
+}
+
+html{overflow-x:clip}
+body{min-width:0;overflow-wrap:break-word}
+img,svg,video,canvas{max-width:100%;height:auto}
+iframe{max-width:100%}
+
+/* Canonical visual pages */
+.dtf-page{min-width:0;overflow-x:clip}
+.dtf-page *{min-width:0;box-sizing:border-box}
+.dtf-page .dtf-wrap{
+  width:min(var(--dtf-layout-max),calc(100% - (var(--dtf-layout-gutter) * 2)))!important;
+  margin-inline:auto!important;
+}
+.dtf-page .dtf-section{padding-block:var(--dtf-layout-section)!important}
+.dtf-page .dtf-hero-grid,
+.dtf-page .dtf-callout{gap:clamp(24px,5vw,64px)!important}
+.dtf-page .dtf-heading{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.25fr) minmax(260px,.75fr)!important;
+  align-items:end!important;
+  gap:clamp(16px,3vw,40px)!important;
+}
+.dtf-page .dtf-heading>div,
+.dtf-page .dtf-heading>p{max-width:none!important}
+.dtf-page .dtf-heading>p{justify-self:end!important;max-width:52ch!important}
+.dtf-page .dtf-hero h1,
+.dtf-page .dtf-heading h2,
+.dtf-page .dtf-callout h2{text-wrap:balance;overflow-wrap:normal}
+.dtf-page .dtf-lede,
+.dtf-page .dtf-callout p{max-width:var(--dtf-reading-max)}
+
+/* Card systems keep their intended density on large screens while sharing sizing rules. */
+.dtf-page .dtf-grid-2,
+.dtf-page .dtf-grid-3,
+.dtf-page .dtf-grid-4,
+.dtf-page .dtf-grid-5,
+.dtf-page .dtf-flow{
+  gap:var(--dtf-layout-gap)!important;
+  align-items:stretch!important;
+}
+.dtf-page .dtf-card,
+.dtf-page .dtf-path-card,
+.dtf-page .dtf-flow>article{height:100%;overflow-wrap:anywhere}
+.dtf-page .dtf-image-card{display:flex!important;flex-direction:column!important}
+.dtf-page .dtf-image-card .dtf-card-copy{display:flex!important;flex:1!important;flex-direction:column!important}
+.dtf-page .dtf-image-card .dtf-text-link{margin-top:auto!important;padding-top:16px!important}
+.dtf-page .dtf-card img{width:100%;object-fit:cover}
+
+/* Quick destinations remain visible, but stop consuming a full phone screen. */
+.dtf-page .dtf-quickgrid a,
+.dtf-page .dtf-btn,
+.dtf-page .dtf-text-link,
+.lhv3 .lhv3-button,
+.lhv3 .lhv3-complete,
+.lhv3 .lhv3-nextprev a{min-height:var(--dtf-layout-touch)!important}
+.dtf-page .dtf-quickgrid a{display:flex!important;align-items:center!important;justify-content:center!important}
+
+/* Content resilience. */
+.dtf-page pre,
+.dtf-page code,
+.lhv3 pre,
+.lhv3 code{max-width:100%;overflow-wrap:anywhere}
+.dtf-page pre,
+.lhv3 pre{overflow-x:auto}
+.dtf-page table,
+.lhv3 table{max-width:100%}
+.dtf-page .dtf-table-scroll,
+.lhv3 .lhv3-table{overflow-x:auto!important;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch}
+
+/* Course shell: preserve three columns on roomy screens and make the middle state deliberate. */
+.lhv3{min-width:0;overflow-x:clip}
+.lhv3 *{box-sizing:border-box;min-width:0}
+.lhv3 .lhv3-content>p,
+.lhv3 .lhv3-content>ul,
+.lhv3 .lhv3-content>ol,
+.lhv3 .lhv3-content>blockquote{max-width:var(--dtf-reading-max)}
+
+/* Footer follows the same breakpoints as the page shell. */
+.dtf-footer-v3 .inner{width:min(var(--dtf-layout-max),calc(100% - (var(--dtf-layout-gutter) * 2)))!important}
+
+@media (min-width:1121px){
+  .dtf-page .dtf-grid-2{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .dtf-page .dtf-grid-3{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .dtf-page .dtf-grid-4{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  .dtf-page .dtf-grid-5{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+  .dtf-page .dtf-flow{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+}
+
+/* Tablet: not a stretched phone and not a squeezed desktop. */
+@media (min-width:701px) and (max-width:1120px){
+  .dtf-page .dtf-hero-grid{grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr)!important;gap:clamp(24px,4vw,42px)!important}
+  .dtf-page .dtf-grid-2,
+  .dtf-page .dtf-grid-3,
+  .dtf-page .dtf-grid-4,
+  .dtf-page .dtf-grid-5,
+  .dtf-page .dtf-flow{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .dtf-page .dtf-quickgrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .dtf-page .dtf-callout{grid-template-columns:minmax(260px,.8fr) minmax(0,1.2fr)!important}
+}
+
+@media (max-width:900px){
+  .dtf-page .dtf-heading{grid-template-columns:1fr!important;align-items:start!important}
+  .dtf-page .dtf-heading>p{justify-self:start!important;max-width:68ch!important}
+}
+
+/* Phone: one reading column, horizontal shortcut rail, full-width primary actions. */
+@media (max-width:700px){
+  :root{--dtf-layout-gutter:14px;--dtf-layout-section:clamp(42px,11vw,64px)}
+  .dtf-page .dtf-hero-grid,
+  .dtf-page .dtf-callout,
+  .dtf-page .dtf-grid-2,
+  .dtf-page .dtf-grid-3,
+  .dtf-page .dtf-grid-4,
+  .dtf-page .dtf-grid-5,
+  .dtf-page .dtf-flow,
+  .dtf-page .dtf-stats{grid-template-columns:1fr!important}
+  .dtf-page .dtf-hero{padding-block:clamp(46px,12vw,72px)!important}
+  .dtf-page .dtf-hero h1{font-size:clamp(2.35rem,12vw,4rem)!important;line-height:.98!important}
+  .dtf-page .dtf-heading h2{font-size:clamp(2rem,9vw,3rem)!important}
+  .dtf-page .dtf-actions{display:grid!important;grid-template-columns:1fr!important;width:100%!important}
+  .dtf-page .dtf-actions>*{width:100%!important;justify-content:center!important;text-align:center!important}
+  .dtf-page .dtf-quickbar{margin-top:0!important;padding-top:12px!important}
+  .dtf-page .dtf-quickgrid{
+    display:flex!important;
+    width:100%!important;
+    gap:8px!important;
+    padding:8px!important;
+    overflow-x:auto!important;
+    overscroll-behavior-inline:contain;
+    scroll-snap-type:x proximity;
+    scrollbar-width:thin;
+  }
+  .dtf-page .dtf-quickgrid a{
+    flex:0 0 auto!important;
+    min-width:132px!important;
+    min-height:48px!important;
+    padding-inline:14px!important;
+    scroll-snap-align:start;
+    white-space:nowrap;
+  }
+  .dtf-page .dtf-img{border-radius:18px!important}
+  .dtf-page .dtf-card,
+  .dtf-page .dtf-path-card,
+  .dtf-page .dtf-flow>article{border-radius:18px!important}
+  .lhv3 .lhv3-wrap{width:min(100% - 20px,1540px)!important}
+  .dtf-footer-grid{grid-template-columns:1fr!important;gap:26px!important}
+}
+
+@media (max-width:420px){
+  :root{--dtf-layout-gutter:10px}
+  .dtf-page .dtf-card-copy,
+  .dtf-page .dtf-compact-card,
+  .dtf-page .dtf-path-card,
+  .dtf-page .dtf-flow>article{padding:18px!important}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .dtf-page *,
+  .lhv3 *{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
+}
