@@ -42,6 +42,13 @@ assert.match(accessibility, /aria-keyshortcuts/, 'IPM tool buttons must expose k
 assert.match(accessibility, /\^\[1-7\]\$/, 'keyboard handler must be limited to the seven tool shortcuts');
 assert.match(accessibility, /closest\('input, textarea, select, \[contenteditable="true"\]'\)/, 'tool shortcuts must not steal input while typing');
 assert.match(accessibility, /MutationObserver/, 'accessibility semantics must be restored after deterministic rerenders');
+assert.match(accessibility, /\(max-width: 980px\) and \(pointer: coarse\)/, 'mobile return behavior must be limited to compact coarse-pointer layouts');
+assert.match(accessibility, /event\.detail === 0/, 'keyboard-generated tool clicks must not trigger touch auto-scroll');
+assert.match(accessibility, /requestAnimationFrame/, 'mobile return must wait for the core tool-selection rerender');
+assert.match(accessibility, /lanes\.scrollIntoView/, 'touch tool selection must return the player to the bench board');
+assert.match(accessibility, /prefers-reduced-motion: reduce/, 'mobile return must honor reduced-motion preference');
+assert.match(accessibility, /lanes\.style\.scrollMarginTop = '88px'/, 'mobile return must clear the sticky site header');
+assert.match(accessibility, /mobileToolReturn: true/, 'enhancement contract must expose mobile tool return');
 assert.match(accessibilityCss, /\.tool-shortcut/, 'visible shortcut badges must have styling');
 
 assert.match(baseCss, /\.lane-card\.lost/, 'lost bench state must remain represented by the base game layer');
@@ -69,4 +76,4 @@ assert.equal(new Set(canonical.lanes.map((item) => item.id)).size, 3, 'lane IDs 
 assert.equal(new Set(canonical.threats.map((item) => item.id)).size, 8, 'threat IDs must remain unique');
 assert.equal(new Set(canonical.tools.map((item) => item.id)).size, 7, 'tool IDs must remain unique');
 
-console.log('Grow Room Defense public runtime, accessibility layer, and V2 tactical visual-state regression checks passed.');
+console.log('Grow Room Defense public runtime, accessibility layer, mobile tool return, and V2 tactical visual-state regression checks passed.');
