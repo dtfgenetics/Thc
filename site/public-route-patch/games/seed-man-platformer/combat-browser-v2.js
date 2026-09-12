@@ -2,6 +2,7 @@
 
 (() => {
   const VERSION = 'seed-man-combat-browser-v2';
+  const ACTION_FEEDBACK_VERSION = 'seed-man-combat-action-feedback-v1';
   const PHENOTYPE_DURATION = 30;
   const PROJECTILE_LIFE = 1.6;
   const ENEMY_ATLAS_KEY = 'enemy-boss.atlas';
@@ -22,6 +23,8 @@
   let phenotypeRemaining=0;
   let weaponCooldown=0;
   let abilityCooldown=0;
+  let actionPose=null;
+  let actionPoseRemaining=0;
   let facing=1;
   let simTime=0;
   let activeLevelId='';
@@ -34,6 +37,11 @@
   const overlap=(a,b)=>a.x<b.x+b.width&&a.x+a.width>b.x&&a.y<b.y+b.height&&a.y+a.height>b.y;
   const runtime=()=>window.__SEED_MAN_V20_ENEMY_RUNTIME__;
   const currentForm=()=>activePhenotype||'plant';
+
+  function setActionPose(pose,seconds){
+    actionPose=pose;
+    actionPoseRemaining=Math.max(actionPoseRemaining,Math.max(0,Number(seconds)||0));
+  }
 
   function loadEnemyBossAtlas(){
     if(enemyBossReady||enemyBossFailed||enemyBossImage)return;
@@ -65,6 +73,7 @@
     document.documentElement.dataset.seedManCombat=VERSION;
     document.documentElement.dataset.seedPhenoActive=activePhenotype?'true':'false';
     document.documentElement.dataset.seedPhenoForm=currentForm();
+    document.documentElement.dataset.seedCombatAction=actionPose||'none';
     const def=PHENOTYPES[activePhenotype];
     if(def?.accent) document.documentElement.style.setProperty('--seed-pheno-accent',def.accent);
     else document.documentElement.style.removeProperty('--seed-pheno-accent');
@@ -121,7 +130,7 @@
     activeLevelId=typeof level!=='undefined'?(level?.id||''):'';
     const factory=runtime()?.buildEncounter;
     enemies=typeof factory==='function'&&level?factory(level).map((enemy,index)=>({...enemy,maxHealth:enemy.health,dir:index%2?-1:1,defeated:false,hitFlash:0,freeze:0,burn:0,burnTick:0.5,burnPhenotype:null,baseY:enemy.y})):[];
-    projectiles=[];activePhenotype=null;phenotypeRemaining=0;weaponCooldown=0;abilityCooldown=0;facing=1;simTime=0;defeated=0;
+    projectiles=[];activePhenotype=null;phenotypeRemaining=0;weaponCooldown=0;abilityCooldown=0;actionPose=null;actionPoseRemaining=0;facing=1;simTime=0;defeated=0;
     if(level?.boss?.id==='blight-king')setNotice('Blight King · weakness cycle: Plant → Fire → Electric → Ice',3.4);
     else if(level)setNotice('Seed Slinger ready · defeat phenotype carriers for 30s powers',2.8);
     syncHud();
@@ -136,14 +145,14 @@
 
   function fireWeapon(){
     if(typeof player==='undefined'||!player||player.finished||weaponCooldown>0)return false;
-    weaponCooldown=0.18;spawnProjectile({form:'plant',speed:560,damage:1,effect:null});return true;
+    weaponCooldown=0.18;setActionPose('attack',0.16);spawnProjectile({form:'plant',speed:560,damage:1,effect:null});return true;
   }
 
   function fireAbility(){
     if(typeof player==='undefined'||!player||player.finished||abilityCooldown>0)return false;
     const def=PHENOTYPES[activePhenotype];
     if(!def||phenotypeRemaining<=0){setNotice('Defeat a Fire, Electric, or Ice carrier to absorb its power for 30s.');return false;}
-    abilityCooldown=def.cooldown;spawnProjectile(def,true);setNotice(`${def.label} phenotype · ${Math.ceil(phenotypeRemaining)}s`,0.9);return true;
+    abilityCooldown=def.cooldown;setActionPose('ability',0.24);spawnProjectile(def,true);setNotice(`${def.label} phenotype · ${Math.ceil(phenotypeRemaining)}s`,0.9);return true;
   }
 
   function activeLevelBoss(){
@@ -243,6 +252,7 @@
     if(current!==activeLevelId)resetCombat();
     simTime+=step;
     weaponCooldown=Math.max(0,weaponCooldown-step);abilityCooldown=Math.max(0,abilityCooldown-step);
+    actionPoseRemaining=Math.max(0,actionPoseRemaining-step);if(actionPoseRemaining<=0)actionPose=null;
     if(activePhenotype){phenotypeRemaining=Math.max(0,phenotypeRemaining-step);if(phenotypeRemaining<=0){activePhenotype=null;setNotice('Phenotype expired · Plant restored',1.4);}}
     if(typeof player!=='undefined'&&player&&Math.abs(Number(player.vx)||0)>1)facing=player.vx<0?-1:1;
     for(const enemy of enemies)if(!enemy.defeated)tickEnemy(enemy,step);
@@ -327,6 +337,7 @@
   loadEnemyBossAtlas();ensureHud();resetCombat();const installed=installHooks();syncHud();
   window.__SPROUT_COMBAT_BROWSER__=Object.freeze({
     version:VERSION,
+    actionFeedbackVersion:ACTION_FEEDBACK_VERSION,
     installed,
     phenotypeForms:Object.freeze(['plant','fire','electric','ice']),
     blightWeaknesses:BLIGHT_WEAKNESSES,
@@ -335,11 +346,14 @@
     fireAbility,
     snapshot:()=>({
       version:VERSION,
+      actionFeedbackVersion:ACTION_FEEDBACK_VERSION,
       installed,
       levelId:activeLevelId,
       activePhenotype,
       phenotypeForm:currentForm(),
       phenotypeRemaining,
+      actionPose,
+      actionPoseRemaining,
       finalBossWeakness:blightWeakness(),
       defeated,
       enemyArtReady:enemyBossReady,
