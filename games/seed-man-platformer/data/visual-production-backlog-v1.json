@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "gameId": "seed-man-platformer",
+  "updated": "2026-09-12",
+  "sourceOfTruth": "games/seed-man-platformer/data/seed-man-art-manifest-v1.json",
+  "productionPolicy": {
+    "individualAssetsFirst": true,
+    "conceptSheetsAreReviewOnly": true,
+    "runtimeFormats": ["webp"],
+    "sourceMasterFormats": ["png"],
+    "transparentForSprites": true,
+    "noProceduralFallbackForApprovedArt": true,
+    "spriteRule": "Generate full animation strips from an approved seed frame, then normalize to fixed frames with one shared bottom-center anchor. Do not generate unrelated poster/sheet compositions as runtime art."
+  },
+  "drive": {
+    "rootFolderId": "1JCUbmLiG4yQYnOR_y4qotK0eABqPZJZ9",
+    "referenceFolderId": "15NCfa0bj8ldhj0hmKsFJF_nobZf9FOZT",
+    "sourceMastersFolderId": "1fAocf7prX2dKR6TPclG_JJzjRMTeL0_G",
+    "characterSpritesFolderId": "19gSJaTyiHYu3OTnvDOYa-2H1Sa4Ok5D-",
+    "enemiesBossesFolderId": "1NiyIVtNxXkC0-rqrl8DosWDeg4aXLKeb",
+    "worldArtFolderId": "1Wd3cjvUNwHxyOHH23tHg8Oslpw6VvILj",
+    "terrainPropsFolderId": "1ZsRClsACmAX8WNHUB-M27uF8bl6PcA6F",
+    "uiVfxFolderId": "13n4TDSKuX04kspCx1Jaf9Dq_HwjNAhbW",
+    "runtimeExportsFolderId": "1gBnA9kf-s1Gw_WJ05vXIyIPO2QE7Ts-k",
+    "reviewFolderId": "1VaDoEP1ETv0WQxShWhAYftF64_K7-nsQ"
+  },
+  "runtimeAssets": [
+    {
+      "id": "character.seedman.atlas",
+      "repoPath": "games/seed-man-platformer/assets/approved/seed-man-character-atlas-v2.webp",
+      "sitePath": "site/public-route-patch/games/seed-man-platformer/assets/approved/seed-man-character-atlas-v2.webp",
+      "status": "approved-runtime-present",
+      "next": "retain as runtime authority while producing normalized source strips for idle, walk, run, jump, fall, land, attack, hit and victory plus plant/fire/electric/ice phenotype source masters"
+    },
+    {
+      "id": "enemy.atlas",
+      "repoPath": "games/seed-man-platformer/assets/approved/seed-man-enemy-boss-atlas-v1.webp",
+      "sitePath": "site/public-route-patch/games/seed-man-platformer/assets/approved/seed-man-enemy-boss-atlas-v1.webp",
+      "status": "approved-runtime-present",
+      "next": "create individual transparent source masters for sproutling, root-crawler, toxic-spore, drone-bot, thorn-beetle, sky-wasp, spike-plant, sludge-monster, bone-weed and shadow-root"
+    },
+    {
+      "id": "boss.atlas",
+      "repoPath": "games/seed-man-platformer/assets/approved/seed-man-enemy-boss-atlas-v1.webp",
+      "sitePath": "site/public-route-patch/games/seed-man-platformer/assets/approved/seed-man-enemy-boss-atlas-v1.webp",
+      "status": "approved-runtime-present",
+      "next": "create individual source masters for overgrown-guardian, ancient-dryad, scorchroot-titan, frostbite-colossus, eco-sentinel and blight-king"
+    },
+    {
+      "id": "platform.atlas",
+      "repoPath": "games/seed-man-platformer/assets/approved/seed-man-platform-atlas-v1.webp",
+      "sitePath": "site/public-route-patch/games/seed-man-platformer/assets/approved/seed-man-platform-atlas-v1.webp",
+      "status": "approved-runtime-present",
+      "next": "create source masters for grass, dirt, rock, stone, ice, sand, metal, wood, moving-platform, spring and spikes"
+    }
+  ],
+  "worldBackgroundQueue": [
+    {"id":"world.greenhouse-valley.background","world":"greenhouse-valley","priority":1,"status":"source-master-needed"},
+    {"id":"world.forest-ruins.background","world":"forest-ruins","priority":2,"status":"source-master-needed"},
+    {"id":"world.desert-canyon.background","world":"desert-canyon","priority":3,"status":"source-master-needed"},
+    {"id":"world.frozen-peaks.background","world":"frozen-peaks","priority":4,"status":"source-master-needed"},
+    {"id":"world.eco-city.background","world":"eco-city","priority":5,"status":"source-master-needed"}
+  ],
+  "currentReviewAssets": [
+    {
+      "name": "seed-man-run-visual-asset-sheet-concept-v1.png",
+      "driveId": "10qNyOZvx3vO0yV5cg1Pq9ISOdPCoHVTs",
+      "status": "review-only-not-runtime"
+    },
+    {
+      "name": "seed-man-run-visual-asset-sheet-concept-v2.png",
+      "driveId": "1NqpmlCogs3ZfAbS4izSF0vWBhWIazBJw",
+      "status": "review-only-not-runtime"
+    }
+  ],
+  "nextProductionAsset": {
+    "id": "world.greenhouse-valley.background.source-v1",
+    "kind": "background-source-master",
+    "targetDriveFolderId": "1Wd3cjvUNwHxyOHH23tHg8Oslpw6VvILj",
+    "targetRepoSourcePath": "games/seed-man-platformer/assets/source/worlds/greenhouse-valley-v1.png",
+    "targetRuntimePath": "games/seed-man-platformer/assets/approved/world-greenhouse-valley-v1.webp",
+    "targetSitePath": "site/public-route-patch/games/seed-man-platformer/assets/approved/world-greenhouse-valley-v1.webp",
+    "status": "ready-to-create"
+  }
+}
