@@ -1,7 +1,8 @@
 'use strict';
 
 (() => {
-  const VERSION = 'seed-man-v20-enemy-runtime-v3';
+  const VERSION = 'seed-man-v20-enemy-runtime-v2';
+  const PLATFORM_SUPPORT_VERSION = 'seed-man-ground-support-v1';
   const PHENOTYPE_DURATION_MS = 30000;
   const ATLAS_LAYOUT = Object.freeze({
     width:320,
@@ -281,6 +282,7 @@
 
   window.__SEED_MAN_V20_ENEMY_RUNTIME__ = Object.freeze({
     version:VERSION,
+    platformSupportVersion:PLATFORM_SUPPORT_VERSION,
     phenotypeDurationMs:PHENOTYPE_DURATION_MS,
     phenotypeForms:Object.freeze(['plant','fire','electric','ice']),
     enemyTypes:Object.freeze(Object.keys(ENEMY_META)),
