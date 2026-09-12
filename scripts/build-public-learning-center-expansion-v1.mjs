@@ -24,6 +24,14 @@ const sourceFiles = {
   sources: ['education-sources.json']
 };
 
+const publicMarkerAliases = {
+  'plant-health': 'Plant Health, IPM',
+  'cultivation-science': 'Cultivation Science Reference Library',
+  symptoms: 'Visual Symptom Differential Library',
+  tools: 'Printable Learning Tools',
+  sources: 'Current sources'
+};
+
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function errorDetail(error) {
@@ -151,7 +159,8 @@ const style = `<style>
 function renderPage({ slug, title, description, eyebrow, records, print = false }) {
   const clean = dedupe(records);
   const categories = new Set(clean.map((x) => x.category).filter(Boolean));
-  const compatibilityMarker = slug === 'plant-health' ? '<!-- Stable public verification alias: Plant Health, IPM -->' : '';
+  const alias = publicMarkerAliases[slug] || '';
+  const compatibilityMarker = alias ? `<span hidden data-dtf-public-marker="${esc(alias)}">${esc(alias)}</span>` : '';
   const cards = clean.map((record, index) => {
     const heading = record.title || record.name || record.citation || record.id || `Reference ${index + 1}`;
     const summary = record.summary || record.purpose || record.description || record.abstract || record.notes || '';
