@@ -4,6 +4,10 @@
   "description": "Independent DTFSeeds release resources. Resource builds are isolated; production serialization is scoped to the resource and any explicitly shared publisher mechanism. Routes become authoritative independent publishers only after their production path is proven and gateway orchestration is enabled.",
   "globalBuildPaths": [
     "site/deployment/release-resources.json",
+    "site/wordpress/assets/responsive-layout-v1.css",
+    "site/wordpress/assets/sitewide-ux-polish-v1.css",
+    "scripts/apply-sitewide-header.mjs",
+    "scripts/lib/sitewide-header-template.mjs",
     "scripts/plan-dtfseeds-resource-release.mjs",
     "scripts/run-workflow-and-wait.sh",
     "scripts/package-dtf-public-resource.py",
@@ -57,10 +61,17 @@
         "games/high-iq/data/manifest.json"
       ],
       "verifyMarker": "Build your High IQ run",
+      "verifyTokens": [
+        "data-dtf-shell=\"header-v5\"",
+        "id=\"dtf-responsive-layout-v1\"",
+        "id=\"dtf-sitewide-ux-polish-v1\"",
+        "--dtf-global-header-height:92px",
+        ".high-iq-shell .quiz-scoreboard{top:calc(var(--dtf-global-header-height) + 8px)!important}"
+      ],
       "publisher": {
         "type": "wordpress-transactional-resource",
         "workflow": "deploy-dtfseeds-wordpress-resource.yml",
-        "status": "pilot-manual",
+        "status": "production",
         "orchestration": "gateway-managed",
         "coordinator": "dtfseeds-resource-production-gateway.yml",
         "sharedProductionTarget": "wordpress:temporary-code-snippets-bridge"

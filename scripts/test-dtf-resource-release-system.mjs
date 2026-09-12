@@ -51,12 +51,22 @@ assert.equal(resources['high-land'].publisher.orchestration, undefined);
 
 assert.equal(resources['high-iq'].publicSuiteOwnership, 'resource');
 assert.equal(resources['high-iq'].publisher.type, 'wordpress-transactional-resource');
-assert.equal(resources['high-iq'].publisher.status, 'pilot-manual');
+assert.equal(resources['high-iq'].publisher.status, 'production');
 assert.equal(resources['high-iq'].publisher.orchestration, 'gateway-managed');
 assert.equal(resources['high-iq'].publisher.coordinator, 'dtfseeds-resource-production-gateway.yml');
 assert.equal(resources['high-iq'].publisher.workflow, 'deploy-dtfseeds-wordpress-resource.yml');
 assert.equal(resources['high-iq'].publisher.sharedProductionTarget, 'wordpress:temporary-code-snippets-bridge');
 assert.notEqual(resources['high-iq'].publisher.sharedProductionTarget, resources['high-land'].productionTarget);
+assert.ok(Array.isArray(resources['high-iq'].verifyTokens) && resources['high-iq'].verifyTokens.length >= 5, 'High IQ must lock V5 visitor verification tokens');
+for (const token of [
+  'data-dtf-shell="header-v5"',
+  'id="dtf-responsive-layout-v1"',
+  'id="dtf-sitewide-ux-polish-v1"',
+  '--dtf-global-header-height:92px',
+  '.high-iq-shell .quiz-scoreboard{top:calc(var(--dtf-global-header-height) + 8px)!important}',
+]) {
+  assert.ok(resources['high-iq'].verifyTokens.includes(token), `High IQ production token missing: ${token}`);
+}
 
 assert.equal(resources['seed-man-platformer'].publicSuiteOwnership, 'resource');
 assert.equal(resources['seed-man-platformer'].publisher.type, 'wordpress-dedicated-route');
@@ -68,6 +78,10 @@ assert.equal(resources['seed-man-platformer'].verifyMarker, '20-Level Campaign')
 assert.notEqual(resources['seed-man-platformer'].publisher.sharedProductionTarget, resources['high-iq'].publisher.sharedProductionTarget);
 
 for (const path of [
+  'site/wordpress/assets/responsive-layout-v1.css',
+  'site/wordpress/assets/sitewide-ux-polish-v1.css',
+  'scripts/apply-sitewide-header.mjs',
+  'scripts/lib/sitewide-header-template.mjs',
   'scripts/assemble-wordpress-resource-v2.py',
   'scripts/public_suite_resource_ownership.py',
   'scripts/assemble-wordpress-suite-resource-aware.py',
@@ -89,19 +103,30 @@ assert.match(handoffScript, /queue_replaced_exit=75/, 'workflow handoff must exp
 assert.match(handoffScript, /displayTitle/, 'workflow handoff must correlate dispatches by exact-source run title when main has advanced');
 assert.match(handoffScript, /contains\(\$sha\)/, 'workflow handoff must match the expected source SHA embedded in a run title');
 
+const verifier = readFileSync('scripts/verify-dtf-public-resource-artifact.py', 'utf8');
+assert.match(verifier, /verify_tokens = resource\.get\('verifyTokens'\) or \[\]/, 'artifact verifier must read per-resource verification tokens');
+assert.match(verifier, /resource verification token missing/, 'artifact verifier must fail closed when V5 tokens disappear');
+
 const publisherWorkflow = readFileSync('.github/workflows/deploy-dtfseeds-wordpress-resource.yml', 'utf8');
 assert.match(publisherWorkflow, /^run-name:.*inputs\.source_sha.*$/m, 'WordPress resource publisher must expose its exact source SHA in the run title');
 assert.match(publisherWorkflow, /dtf-wordpress-temporary-code-snippets-bridge/, 'WordPress resource publisher must stay serialized on the shared bridge');
+assert.match(publisherWorkflow, /publisher'\]\['status'\]=='production'/, 'High IQ publisher must identify itself as production-ready');
+assert.match(publisherWorkflow, /High IQ visitor verification tokens missing/, 'High IQ publisher must independently enforce V5 visitor tokens');
 
 const gatewayWorkflow = readFileSync('.github/workflows/dtfseeds-resource-production-gateway.yml', 'utf8');
 assert.match(gatewayWorkflow, /^\s+source_sha:\s*$/m, 'resource gateway must accept an exact-source recovery SHA');
 assert.match(gatewayWorkflow, /^\s+recovery_attempt:\s*$/m, 'resource gateway must bound queue-replacement recovery attempts');
 assert.match(gatewayWorkflow, /status" -eq 75/, 'resource gateway must recognize retryable zero-job queue replacement');
 assert.match(gatewayWorkflow, /MAX_RECOVERY_ATTEMPTS: '5'/, 'resource gateway recovery must be bounded');
+assert.match(gatewayWorkflow, /site\/wordpress\/assets\/responsive-layout-v1\.css/, 'V5 responsive changes must trigger the independent resource gateway');
+assert.match(gatewayWorkflow, /scripts\/lib\/sitewide-header-template\.mjs/, 'V5 header changes must trigger the independent resource gateway');
+assert.match(gatewayWorkflow, /visitor verification tokens missing/, 'parent gateway must independently enforce configured visitor tokens');
 assert.doesNotMatch(gatewayWorkflow, /Detect superseded queued resource release/, 'unrelated newer main commits must not discard an exact-source resource release');
 
 const builderWorkflow = readFileSync('.github/workflows/build-dtfseeds-public-resource.yml', 'utf8');
 const helperTriggerCount = (builderWorkflow.match(/scripts\/run-workflow-and-wait\.sh/g) || []).length;
 assert.ok(helperTriggerCount >= 2, 'resource builder must run on helper changes for both PR and main push events');
+assert.match(builderWorkflow, /node scripts\/apply-sitewide-header\.mjs release-resource\/games\/high-iq/, 'High IQ resource build must reconcile the V5 shell before packaging');
+assert.match(builderWorkflow, /id=\"dtf-responsive-layout-v1\"/, 'High IQ resource build must gate the shared responsive layer');
 
-console.log('DTF resource release isolation tests passed.');
+console.log('DTF resource release isolation and High IQ V5 production contract tests passed.');
