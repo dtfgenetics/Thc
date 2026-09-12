@@ -37,8 +37,8 @@ jobs:
           grep -Fq 'data-dtf-shell="header-v5"' scripts/audit-sitewide-header-live.mjs
           grep -Fq '>Diagnostic</a>' scripts/audit-sitewide-header-live.mjs
           grep -Fq 'site/deployment/public-apps.json' scripts/audit-sitewide-header-live.mjs
+          grep -Fq 'workflow_run:' .github/workflows/sitewide-header-v5-live-audit.yml
           grep -Fq 'Publish Approved Sitewide Header V5' .github/workflows/sitewide-header-v5-live-audit.yml
-          ! grep -Fq 'push:' .github/workflows/sitewide-header-v5-live-audit.yml
 
   audit:
     if: github.event_name != 'pull_request' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
