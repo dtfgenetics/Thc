@@ -18,6 +18,7 @@ const requiredMirrors = [
   'atlas-3d-v4.js',
   'atlas-3d-bootstrap.js',
   'atlas-v4.css',
+  'atlas-site-shell-v5.css',
   'data/hotspots-v4.json',
   'models/model-manifest-v4.json',
   'models/README.md',
@@ -32,10 +33,17 @@ for (const relative of requiredMirrors) {
 }
 
 const index = read(path.join(appRoot, 'index.html'));
-for (const token of ['/atlas/atlas-v4.css', '/atlas/atlas-3d-bootstrap.js', 'data-plant-model-status', 'CLICK · INSPECT', 'Interactive 3D system V4']) {
+for (const token of ['/atlas/atlas-v4.css', '/atlas/atlas-site-shell-v5.css', '/atlas/atlas-3d-bootstrap.js', 'data-plant-model-status', 'CLICK · INSPECT', 'Interactive 3D system V4']) {
   ok(index.includes(token), `Atlas index missing V4 wiring: ${token}`);
 }
 ok(!index.includes('type="module" src="/atlas/atlas-3d.js"'), 'Atlas index must not boot V3 directly; V3 is emergency fallback only');
+
+const siteShell = read(path.join(appRoot, 'atlas-site-shell-v5.css'));
+for (const token of ['--atlas-site-header-offset: 92px', '--atlas-site-header-offset: 74px', '.topbar', '72svh', '64svh', 'min-height: 44px']) {
+  ok(siteShell.includes(token), `Atlas V5 site-shell contract missing: ${token}`);
+}
+ok(!/body\s*\{[^}]*overflow-x\s*:\s*hidden/i.test(siteShell), 'Atlas site-shell must not hide page-level horizontal overflow regressions');
+ok(/\.topbar\s*\{[^}]*top:\s*var\(--atlas-site-header-offset\)\s*!important/i.test(siteShell), 'Atlas secondary topbar must remain offset below the V5 global header');
 
 const bootstrap = read(path.join(appRoot, 'atlas-3d-bootstrap.js'));
 for (const token of ["import('/atlas/atlas-3d-v4.js')", 'bootPlantAtlasV4', "import('/atlas/atlas-3d.js')", "host.dataset.rendererGeneration = 'v3-fallback'"]) {
@@ -129,4 +137,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Plant Atlas V4 valid: ${requiredHotspots.size} inspectable regions, V4-first bootstrap, built-in PBR specimen, optional licensed GLB upgrade, and synchronized deployment mirror.`);
+console.log(`Plant Atlas V4 valid: ${requiredHotspots.size} inspectable regions, V4-first bootstrap, V5 responsive site-shell integration, built-in PBR specimen, optional licensed GLB upgrade, and synchronized deployment mirror.`);
