@@ -13,7 +13,7 @@ const verificationStep = `      - name: Verify exact external game release candi
 if (!source.includes(dispatchAnchor)) throw new Error('Feature-surface dispatch anchor not found');
 source = source.replace(dispatchAnchor, `${verificationStep}${dispatchAnchor}`);
 
-const summaryAnchor = `            echo \"- Atlas verification: ${{ steps.live_atlas.outcome }}\"\n`;
+const summaryAnchor = '            echo "- Atlas verification: ${{ steps.live_atlas.outcome }}"\n';
 const summaryReplacement = `${summaryAnchor}            echo '- External release candidates: exact source revision, release metadata, and runtime assets verified after publish.'\n`;
 if (!source.includes(summaryAnchor)) throw new Error('Deployment summary anchor not found');
 source = source.replace(summaryAnchor, summaryReplacement);
