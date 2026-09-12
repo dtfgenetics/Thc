@@ -8,6 +8,7 @@ on:
       - 'scripts/polish-wordpress-visual-site-v3.mjs'
       - 'scripts/lib/sitewide-header-template.mjs'
       - 'scripts/rebuild-wordpress-shared-shell-v3.mjs'
+      - 'scripts/flush-hostinger-litespeed-mcp.mjs'
       - 'site/wordpress/assets/sitewide-ux-polish-v1.css'
       - '.github/workflows/wordpress-visual-polish-v3.yml'
   workflow_run:
@@ -64,6 +65,7 @@ jobs:
           node --check scripts/polish-wordpress-visual-site-v3.mjs
           node --check scripts/lib/sitewide-header-template.mjs
           node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
 
       - name: Confirm WordPress REST path
         shell: bash
@@ -100,6 +102,19 @@ jobs:
           set -euo pipefail
           node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs | tee "$RUNNER_TEMP/shared-shell-v5.log"
 
+      - name: Purge WordPress and LiteSpeed shell cache
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3; do
+            if node scripts/flush-hostinger-litespeed-mcp.mjs; then
+              echo "LiteSpeed cache purge completed on attempt $attempt."
+              exit 0
+            fi
+            [[ "$attempt" -lt 3 ]] || { echo 'LiteSpeed cache purge failed after 3 attempts.' >&2; exit 1; }
+            sleep $((attempt * 5))
+          done
+
       - name: Verify visitor-facing V3 experience, V5 navigation, and UX polish
         id: verify
         shell: bash
@@ -124,9 +139,16 @@ jobs:
                 ok=1
                 break
               fi
-              sleep 7
+              if [[ "$attempt" -lt 8 ]]; then sleep 7; fi
             done
-            [[ "$ok" -eq 1 ]] || { echo "V3/V5/UX marker not observed on $path" >&2; head -c 3500 "$body" >&2 || true; exit 1; }
+            if [[ "$ok" -ne 1 ]]; then
+              echo "V3/V5/UX marker not observed on $path" >&2
+              for required_marker in "$marker" 'dtf-visual-polish-v3' 'data-dtf-shell="header-v5"' 'id="dtf-sitewide-ux-polish-v1"'; do
+                grep -Fqi -- "$required_marker" "$body" || echo "Missing marker on $path: $required_marker" >&2
+              done
+              head -c 3500 "$body" >&2 || true
+              exit 1
+            fi
 
             node - "$body" "$header" <<'NODE'
           const fs = require('node:fs');
@@ -194,6 +216,6 @@ jobs:
                 `Homepage experience spotlight: **${process.env.SPOTLIGHT || 'not-run'}**`,
                 `Cannabis-leaf brand media ID: **${process.env.BRAND_ID || 'not-reported'}**`,
                 '',
-                'V3 visual polish restores the approved V5 sitewide navigation and shared UX polish after page styling. Navigation assertions are scoped to the canonical V5 header so valid in-page genetics links cannot create false production failures.'
+                'V3 visual polish restores the approved V5 sitewide navigation and shared UX polish after page styling, purges the visitor cache, and validates the refreshed public shell.'
               ].join('\n')
             });
