@@ -7,6 +7,10 @@
   const announce = document.querySelector('#announce');
   if (!lanes || !tools) return;
 
+  const mobileTouchLayout = window.matchMedia('(max-width: 980px) and (pointer: coarse)');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  lanes.style.scrollMarginTop = '88px';
+
   function enhanceHealthMeters() {
     for (const track of lanes.querySelectorAll('.health-track')) {
       const heading = track.closest('.lane-card')?.querySelector('.lane-heading');
@@ -49,6 +53,20 @@
     return target instanceof HTMLElement && Boolean(target.closest('input, textarea, select, [contenteditable="true"]'));
   }
 
+  function returnToBenchesAfterTouchToolSelection(event) {
+    const button = event.target.closest?.('button[data-tool]');
+    if (!button || button.disabled || !mobileTouchLayout.matches || event.detail === 0) return;
+
+    window.requestAnimationFrame(() => {
+      lanes.scrollIntoView({
+        behavior: reducedMotion.matches ? 'auto' : 'smooth',
+        block: 'start'
+      });
+    });
+  }
+
+  tools.addEventListener('click', returnToBenchesAfterTouchToolSelection);
+
   window.addEventListener('keydown', (event) => {
     if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || isTypingTarget(event.target)) return;
     if (!/^[1-7]$/.test(event.key)) return;
@@ -73,6 +91,7 @@
     version: VERSION,
     toolShortcuts: '1-7',
     semanticHealthMeters: true,
+    mobileToolReturn: true,
     refresh: enhance
   });
 })();
