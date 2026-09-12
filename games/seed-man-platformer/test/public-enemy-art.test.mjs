@@ -3,9 +3,10 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 
 const publicRoot = new URL('../../../site/public-route-patch/games/seed-man-platformer/', import.meta.url);
-const [enemyRuntimeSource, combatSource] = await Promise.all([
+const [enemyRuntimeSource, combatSource, productionArtSource] = await Promise.all([
   readFile(new URL('v20-enemy-runtime.js', publicRoot), 'utf8'),
-  readFile(new URL('combat-browser-v2.js', publicRoot), 'utf8')
+  readFile(new URL('combat-browser-v2.js', publicRoot), 'utf8'),
+  readFile(new URL('seed-man-production-art.js', publicRoot), 'utf8')
 ]);
 
 const sandbox = { window:{} };
@@ -13,11 +14,12 @@ vm.createContext(sandbox);
 vm.runInContext(enemyRuntimeSource, sandbox, { filename:'v20-enemy-runtime.js' });
 const runtime = sandbox.window.__SEED_MAN_V20_ENEMY_RUNTIME__;
 assert.ok(runtime, 'public v20 enemy runtime must install');
-assert.equal(runtime.version, 'seed-man-v20-enemy-runtime-v2');
+assert.equal(runtime.version, 'seed-man-v20-enemy-runtime-v3');
 assert.equal(runtime.atlasLayout.width, 320);
 assert.equal(runtime.atlasLayout.height, 120);
 assert.equal(runtime.atlasLayout.enemy.columns, 6, 'approved enemy row has six cells');
 assert.equal(runtime.atlasLayout.boss.columns, 4, 'approved boss row has four cells');
+assert.equal(typeof runtime.groundSupportFor, 'function', 'generated ground encounters must expose platform support resolution');
 
 const bosses = [
   ['overgrown-guardian', 3, false],
@@ -45,6 +47,30 @@ for (const [id, phases, finalBoss] of bosses) {
   assert.equal(region.height, 0.5, `${id} boss row height mismatch`);
 }
 
+const supportedLevel = {
+  id:'support-test',
+  levelNumber:6,
+  difficulty:6,
+  worldWidth:2200,
+  enemyPool:['sproutling','root-crawler','thorn-beetle'],
+  mechanics:['run'],
+  platforms:[
+    {id:'ground-a',x:0,y:480,width:760,height:60},
+    {id:'ground-b',x:930,y:480,width:610,height:60},
+    {id:'ground-c',x:1710,y:480,width:490,height:60},
+    {id:'upper-a',x:820,y:330,width:180,height:24}
+  ]
+};
+const supportedEncounter = runtime.buildEncounter(supportedLevel);
+for (const enemy of supportedEncounter.filter((entry)=>entry.role!=='boss'&&!entry.flying&&!entry.blink)) {
+  const platform = supportedLevel.platforms.find((entry)=>entry.id===enemy.supportPlatformId);
+  assert.ok(platform, `${enemy.id} must be assigned a support platform`);
+  assert.equal(enemy.y + enemy.height, platform.y, `${enemy.id} must stand on the support surface`);
+  assert.ok(enemy.minX >= platform.x, `${enemy.id} patrol begins before its support platform`);
+  assert.ok(enemy.maxX <= platform.x + platform.width, `${enemy.id} patrol extends beyond its support platform`);
+  assert.ok(enemy.x >= enemy.minX && enemy.x + enemy.width <= enemy.maxX, `${enemy.id} spawn must begin inside its patrol span`);
+}
+
 const finaleEncounter = runtime.buildEncounter({
   id:'5-4-the-last-seed',
   levelNumber:20,
@@ -52,6 +78,7 @@ const finaleEncounter = runtime.buildEncounter({
   worldWidth:7600,
   enemyPool:['shadow-root','drone-bot','sludge-monster'],
   mechanics:['final-gauntlet'],
+  platforms:[{id:'final-ground',x:0,y:480,width:7600,height:60}],
   boss:{id:'blight-king',name:'The Blight King',requiredHits:16,phases:4,phase:1,finalBoss:true,x:6400,y:300,arenaStartX:5600,arenaEndX:7300}
 });
 const finaleCarrierForms = Array.from(finaleEncounter, (enemy)=>enemy.phenotype).filter(Boolean).sort();
@@ -63,5 +90,12 @@ assert.match(combatSource, /const phenotype=ability\?\(activePhenotype\|\|def\.f
 assert.match(combatSource, /const BOSS_FRAME_COLS = 4/, 'browser renderer must know approved boss row has four cells');
 assert.match(combatSource, /function sourceRect\(visual\)/, 'browser renderer must crop from explicit approved atlas regions');
 assert.doesNotMatch(combatSource, /naturalWidth\/ENEMY_FRAME_COLS[\s\S]{0,160}visual\.row==='boss'/, 'boss renderer must not slice boss row using enemy column count');
+assert.match(combatSource, /ACTION_FEEDBACK_VERSION = 'seed-man-combat-action-feedback-v1'/, 'combat runtime must expose action feedback contract');
+assert.match(combatSource, /setActionPose\('attack',0\.16\)/, 'Seed Slinger must expose an attack pose window');
+assert.match(combatSource, /setActionPose\('ability',0\.24\)/, 'phenotype ability must expose an ability pose window');
+assert.match(combatSource, /actionPoseRemaining=Math\.max\(0,actionPoseRemaining-step\)/, 'combat action pose must expire deterministically');
+assert.match(productionArtSource, /combat\?\.actionPoseRemaining/, 'approved character renderer must read combat action state');
+assert.match(productionArtSource, /drawPhenotypeAura/, 'powered forms must render phenotype action feedback without substituting unapproved art');
+assert.match(productionArtSource, /pose==='ability'/, 'approved renderer must distinguish phenotype ability feedback');
 
-console.log('Seed Man public enemy/boss atlas geometry, finale carriers, and Blight King weakness contract passed');
+console.log('Seed Man enemy platform support, approved atlas geometry, finale carriers, combat feedback, and Blight King weakness contract passed');
