@@ -17,7 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
@@ -44,7 +43,8 @@ jobs:
           fetch 'approved-art-core-v1.js' "$tmp/core.js"
           fetch 'approved-art-runtime-v1.js' "$tmp/art-runtime.js"
           fetch 'seed-man-production-art.js' "$tmp/art.js"
-          grep -Fq 'content="20260909-combat-v2"' "$tmp/index.html"
+          grep -Fq 'data-seed-man-release="20260909-v20-runtime-v4"' "$tmp/index.html"
+          grep -Fq 'content="20260909-v20-runtime-v4"' "$tmp/index.html"
           grep -Fq 'data-seed-man-approved-art="approved-showcase-2026-09-08"' "$tmp/index.html"
           node --check "$tmp/player-state.js"
           node --check "$tmp/runtime.js"
