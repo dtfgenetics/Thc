@@ -4,12 +4,13 @@ import { access, readFile } from 'node:fs/promises';
 const root = new URL('../', import.meta.url);
 const publicRoot = new URL('../../../site/public-route-patch/games/seed-man-platformer/', import.meta.url);
 
-const [canonicalCampaignText, publicCampaignText, canonicalLevels20Text, publicLevels20Text, html, v20Runtime, v20Ui, approvedCore, runtimeHealth, scoreboardCss] = await Promise.all([
+const [canonicalCampaignText, publicCampaignText, canonicalLevels20Text, publicLevels20Text, html, seedManCss, v20Runtime, v20Ui, approvedCore, runtimeHealth, scoreboardCss] = await Promise.all([
   readFile(new URL('data/campaign.json', root), 'utf8'),
   readFile(new URL('data/campaign.json', publicRoot), 'utf8'),
   readFile(new URL('data/levels-20-v1.json', root), 'utf8'),
   readFile(new URL('data/levels-20-v1.json', publicRoot), 'utf8'),
   readFile(new URL('index.html', publicRoot), 'utf8'),
+  readFile(new URL('seed-man.css', publicRoot), 'utf8'),
   readFile(new URL('campaign-v20-runtime.js', publicRoot), 'utf8'),
   readFile(new URL('campaign-ui-v20.js', publicRoot), 'utf8'),
   readFile(new URL('approved-art-core-v1.js', publicRoot), 'utf8'),
@@ -60,15 +61,17 @@ for (const required of [
   'player-state-v20.js',
   'three-world-v1.js',
   'three-world-adapter-v1.js',
+  'seed-man.css',
   'scoreboard-v20.css',
   'assets/approved/seed-man-character-atlas-v2.webp',
   'assets/approved/seed-man-enemy-boss-atlas-v1.webp',
   'assets/approved/seed-man-platform-atlas-v1.webp'
 ]) await access(new URL(required, publicRoot));
 
+assert.match(html, /seed-man\.css\?v=[^"']+/, 'public page must load route-owned Seed Man styling');
+assert.doesNotMatch(html, /scoreboard-v20\.css\?v=[^"']+/, 'public page must not reference an unbundled scoreboard stylesheet');
 assert.match(html, /campaign-v20-runtime\.js\?v=[^"']+/, 'public page must load canonical v20 campaign runtime');
 assert.match(html, /campaign-ui-v20\.js\?v=[^"']+/, 'public page must load canonical v20 campaign UI');
-assert.match(html, /scoreboard-v20\.css\?v=[^"']+/, 'public page must load high score board styling');
 assert.match(html, /v20-enemy-runtime\.js\?v=[^"']+/, 'public page must load canonical v20 enemy runtime');
 assert.match(html, /combat-browser-v2\.js\?v=[^"']+/, 'public page must load canonical v20 combat runtime');
 assert.match(html, /enemy-attacks-browser-v2\.js\?v=[^"']+/, 'public page must load canonical v20 enemy attack runtime');
@@ -96,8 +99,10 @@ assert.match(v20Ui, /function\s+recordScore\s*\(/, 'completed runs must be recor
 assert.match(v20Ui, /dtf-seed-man-high-scores-v1/, 'scoreboard must persist against a versioned storage key');
 assert.match(v20Ui, /SCORE_LIMIT=10/, 'scoreboard must cap each level at ten scores');
 assert.match(v20Ui, /querySelector\('#next-level'\)/, 'campaign UI must own the next-level button');
-assert.match(scoreboardCss, /\.scoreboard-table/, 'scoreboard styling must include the ranking table');
-assert.match(scoreboardCss, /overflow-x:auto/, 'scoreboard must remain usable on narrow screens');
+assert.match(seedManCss, /\.scoreboard-table/, 'bundled route stylesheet must include the ranking table');
+assert.match(seedManCss, /overflow-x:auto/, 'bundled route stylesheet must keep the scoreboard usable on narrow screens');
+assert.match(scoreboardCss, /\.scoreboard-table/, 'scoreboard source stylesheet must include the ranking table');
+assert.match(scoreboardCss, /overflow-x:auto/, 'scoreboard source stylesheet must remain usable on narrow screens');
 assert.match(approvedCore, /seed-man-approved-art-core-v4/, 'approved art core v4 marker missing');
 assert.match(approvedCore, /seed-man-character-atlas-v2\.webp/, 'approved character atlas must be standalone');
 assert.match(approvedCore, /seed-man-enemy-boss-atlas-v1\.webp/, 'approved enemy/boss atlas must be standalone');
