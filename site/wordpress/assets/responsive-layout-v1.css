@@ -9,6 +9,7 @@
   --dtf-layout-section:clamp(48px,7vw,92px);
   --dtf-layout-gap:clamp(14px,2vw,24px);
   --dtf-layout-touch:44px;
+  --dtf-global-header-height:92px;
 }
 
 html{overflow-x:clip}
@@ -90,6 +91,29 @@ body:has(.tool-chooser) .learn-rail{gap:var(--dtf-layout-gap)!important;align-it
 body:has(.tool-chooser) .button,
 body:has(.tool-chooser) .text-link{min-height:var(--dtf-layout-touch)!important;display:inline-flex;align-items:center}
 
+/* High IQ is a dense static game workspace. Keep sticky game state below V5. */
+.high-iq-shell,
+.high-iq-shell *,
+.high-iq-shell .quiz-console,
+.high-iq-shell .quiz-section,
+.high-iq-shell .quiz-scoreboard,
+.high-iq-shell .answer-grid,
+.high-iq-shell .result-grid,
+.high-iq-shell .coverage-layout{min-width:0;box-sizing:border-box}
+.high-iq-shell .quiz-scoreboard{top:calc(var(--dtf-global-header-height) + 8px)!important}
+.high-iq-shell .quiz-action,
+.high-iq-shell .preset-button,
+.high-iq-shell .answer-option,
+.high-iq-shell .button{min-height:var(--dtf-layout-touch)!important}
+.high-iq-shell .question-heading,
+.high-iq-shell .answer-copy,
+.high-iq-shell .source-copy,
+.high-iq-shell .missed-card,
+.high-iq-shell .result-card{overflow-wrap:anywhere}
+.high-iq-shell .skip-link{top:calc(var(--dtf-global-header-height) + 12px)!important}
+body.admin-bar .high-iq-shell .quiz-scoreboard{top:calc(var(--dtf-global-header-height) + 40px)!important}
+body.admin-bar .high-iq-shell .skip-link{top:calc(var(--dtf-global-header-height) + 44px)!important}
+
 /* Shortcut navigation remains visible without taking over small screens. */
 .dtf-page .dtf-quickgrid a,
 .dtf-page .dtf-btn,
@@ -133,6 +157,7 @@ body:has(.tool-chooser) .text-link{min-height:var(--dtf-layout-touch)!important;
 
 /* Tablet: not a stretched phone and not a squeezed desktop. */
 @media (min-width:701px) and (max-width:1120px){
+  :root{--dtf-global-header-height:74px}
   .dtf-page .dtf-hero-grid,
   body:has(.tool-chooser) .hero-grid,
   .game-hub-page .hero-grid{grid-template-columns:minmax(0,1.08fr) minmax(280px,.92fr)!important;gap:clamp(24px,4vw,42px)!important}
@@ -170,7 +195,7 @@ body:has(.tool-chooser) .text-link{min-height:var(--dtf-layout-touch)!important;
 
 /* Phone: one reading column, horizontal shortcut rail, full-width primary actions. */
 @media (max-width:700px){
-  :root{--dtf-layout-gutter:14px;--dtf-layout-section:clamp(42px,11vw,64px)}
+  :root{--dtf-layout-gutter:14px;--dtf-layout-section:clamp(42px,11vw,64px);--dtf-global-header-height:74px}
   .dtf-page .dtf-hero-grid,
   .dtf-page .dtf-callout,
   .dtf-page .dtf-grid-2,
@@ -238,6 +263,8 @@ body:has(.tool-chooser) .text-link{min-height:var(--dtf-layout-touch)!important;
   .dtf-footer-grid,
   .game-hub-page .footer-inner,
   body:has(.tool-chooser) .footer-inner{grid-template-columns:1fr!important;gap:26px!important}
+  .high-iq-shell .quiz-scoreboard{top:calc(var(--dtf-global-header-height) + 4px)!important}
+  body.admin-bar .high-iq-shell .quiz-scoreboard{top:calc(var(--dtf-global-header-height) + 50px)!important}
 }
 
 @media (max-width:420px){
@@ -249,11 +276,13 @@ body:has(.tool-chooser) .text-link{min-height:var(--dtf-layout-touch)!important;
   .game-hub-page .card,
   body:has(.tool-chooser) .tool-feature,
   body:has(.tool-chooser) .flow>article{padding:18px!important}
+  .high-iq-shell .quiz-scoreboard{grid-template-columns:1fr 1fr!important}
 }
 
 @media (prefers-reduced-motion:reduce){
   .dtf-page *,
   .lhv3 *,
   .game-hub-page *,
-  body:has(.tool-chooser) *{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
+  body:has(.tool-chooser) *,
+  .high-iq-shell *{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
 }
