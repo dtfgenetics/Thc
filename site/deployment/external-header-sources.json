@@ -21,6 +21,24 @@
         ">Diagnostic</a>",
         "Teaching"
       ]
+    },
+    "thcUKnow": {
+      "repository": "dtfgenetics/thc-u-know-card-game-",
+      "commit": "99c084b6d502f12d0ab5140191b507a7e0d01229",
+      "sourceRoot": "apps/web",
+      "publicRoot": "games/thc-u-know",
+      "files": [
+        "index.html"
+      ],
+      "verifyRoutes": [
+        "/games/thc-u-know/"
+      ],
+      "requiredMarkers": [
+        "data-dtf-shell=\"header-v5\"",
+        "dtf-sitewide-header-v5-script",
+        ">Diagnostic</a>",
+        "THC U Know"
+      ]
     }
   }
 }

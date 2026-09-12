@@ -9,7 +9,9 @@ on:
       - scripts/apply-sitewide-header.mjs
       - scripts/rebuild-wordpress-shared-shell-v3.mjs
       - scripts/publish-wordpress-approved-design-reference.mjs
+      - scripts/repair-external-sitewide-header-via-wordpress.mjs
       - scripts/verify-sitewide-header-v5-live.mjs
+      - site/deployment/external-header-sources.json
       - site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg
       - site/wordpress/assets/design-references/approved-sitewide-header-reference.json
       - docs/design/APPROVED_SITEWIDE_HEADER_REFERENCE.md
@@ -20,7 +22,9 @@ on:
       - scripts/apply-sitewide-header.mjs
       - scripts/rebuild-wordpress-shared-shell-v3.mjs
       - scripts/publish-wordpress-approved-design-reference.mjs
+      - scripts/repair-external-sitewide-header-via-wordpress.mjs
       - scripts/verify-sitewide-header-v5-live.mjs
+      - site/deployment/external-header-sources.json
       - site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg
       - site/wordpress/assets/design-references/approved-sitewide-header-reference.json
       - docs/design/APPROVED_SITEWIDE_HEADER_REFERENCE.md
@@ -40,6 +44,7 @@ permissions:
 
 env:
   WP_SITE_URL: https://dtfseeds.com
+  EXTERNAL_HEADER_SOURCE_CONFIG: site/deployment/external-header-sources.json
 
 concurrency:
   group: dtfseeds-approved-sitewide-header-v5
@@ -51,8 +56,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: main
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -64,12 +67,16 @@ jobs:
           node --check scripts/apply-sitewide-header.mjs
           node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
           node --check scripts/publish-wordpress-approved-design-reference.mjs
+          node --check scripts/repair-external-sitewide-header-via-wordpress.mjs
           node --check scripts/verify-sitewide-header-v5-live.mjs
           test -s site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg
           test -s site/wordpress/assets/design-references/approved-sitewide-header-reference.json
           grep -Fq 'data-dtf-shell="header-v5"' scripts/lib/sitewide-header-template.mjs
           grep -Fq '>Diagnostic</a>' scripts/lib/sitewide-header-template.mjs
           grep -Fq '<a href="/courses/">Courses</a>' scripts/lib/sitewide-header-template.mjs
+          grep -Fq 'kushKingsChess' site/deployment/external-header-sources.json
+          grep -Fq 'thcUKnow' site/deployment/external-header-sources.json
+          grep -Fq '99c084b6d502f12d0ab5140191b507a7e0d01229' site/deployment/external-header-sources.json
           node -e "const fs=require('fs');const x=JSON.parse(fs.readFileSync('site/wordpress/assets/design-references/approved-sitewide-header-reference.json','utf8'));if(x.status!=='approved'||!x.googleDrive?.fileId||!x.repository?.path||!x.wordpress?.mediaSlug)process.exit(1);console.log(x.id)"
       - name: Prove the static header reconciler is idempotent
         shell: bash
@@ -142,6 +149,22 @@ jobs:
               exit 1
             fi
           done
+      - name: Repair external game headers before full audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t surfaces < <(node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const cfg = JSON.parse(fs.readFileSync('site/deployment/external-header-sources.json', 'utf8'));
+          for (const name of Object.keys(cfg.surfaces || {})) console.log(name);
+          NODE
+          )
+          for surface in "${surfaces[@]}"; do
+            echo "Repairing external V5 header surface before audit: ${surface}"
+            EXTERNAL_HEADER_SURFACE="$surface" \
+              node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/repair-external-sitewide-header-via-wordpress.mjs \
+              | tee "/tmp/dtf-external-header-v5-repair-${surface}.json"
+          done
       - name: Audit approved header across discovered public routes
         shell: bash
         run: |
@@ -176,6 +199,7 @@ jobs:
             /tmp/dtf-approved-design-reference.json
             /tmp/dtf-approved-design-reference-readback.json
             /tmp/dtf-approved-header-v5.json
+            /tmp/dtf-external-header-v5-repair-*.json
             /tmp/dtf-header-v5-live-audit.json
           if-no-files-found: ignore
           retention-days: 30
