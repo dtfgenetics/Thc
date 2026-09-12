@@ -15,7 +15,10 @@ const surface=config?.surfaces?.[surfaceName];
 if(!surface) throw new Error(`Unknown external header surface: ${surfaceName}`);
 if(!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(surface.repository||'')) throw new Error('Invalid source repository.');
 if(!/^[a-f0-9]{40}$/.test(surface.commit||'')) throw new Error('External source must be pinned to a full Git commit SHA.');
-if(!Array.isArray(surface.files)||surface.files.length<1||surface.files.length>12) throw new Error('External source file list is invalid.');
+if(!Array.isArray(surface.files)||surface.files.length<1) throw new Error('External source file list is invalid.');
+const generatedFiles=Array.isArray(surface.generatedFiles)?surface.generatedFiles:[];
+const htmlReplacements=Array.isArray(surface.htmlReplacements)?surface.htmlReplacements:[];
+if(surface.files.length+generatedFiles.length>12) throw new Error('External source file list is invalid.');
 
 const auth=`Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -54,24 +57,46 @@ async function snippetApiReady(){
   return result.ok;
 }
 
-function joinRel(root,file){return `${String(root||'').replace(/^\/+|\/+$/g,'')}/${String(file||'').replace(/^\/+/, '')}`;}
-function sourceUrl(file){
-  return `https://raw.githubusercontent.com/${surface.repository}/${surface.commit}/${joinRel(surface.sourceRoot,file)}`;
+function assertSafeFile(file){
+  if(typeof file!=='string'||!file||file.includes('..')||file.startsWith('/')||file.includes('\\')) throw new Error(`Unsafe source file: ${file}`);
 }
+function joinRel(root,file){return `${String(root||'').replace(/^\/+|\/+$/g,'')}/${String(file||'').replace(/^\/+/, '')}`;}
+function sourceUrl(file){return `https://raw.githubusercontent.com/${surface.repository}/${surface.commit}/${joinRel(surface.sourceRoot,file)}`;}
 async function sourceFile(file){
-  const response=await fetch(sourceUrl(file),{headers:{'User-Agent':'DTFSeeds-External-Header-Repair/1.0','Cache-Control':'no-cache'},signal:AbortSignal.timeout(45_000)});
+  const response=await fetch(sourceUrl(file),{headers:{'User-Agent':'DTFSeeds-External-Header-Repair/1.1','Cache-Control':'no-cache'},signal:AbortSignal.timeout(45_000)});
   if(!response.ok) throw new Error(`Pinned source fetch failed for ${file}: HTTP ${response.status}`);
   const raw=Buffer.from(await response.arrayBuffer());
   if(raw.length<1||raw.length>260_000) throw new Error(`Pinned source file size rejected: ${file} (${raw.length})`);
   return raw;
 }
+function transformedSource(file,raw){
+  const transforms=htmlReplacements.filter(item=>item&&item.file===file);
+  if(!transforms.length) return raw;
+  let text=raw.toString('utf8');
+  for(const item of transforms){
+    if(typeof item.from!=='string'||typeof item.to!=='string'||item.from==='') throw new Error(`Invalid HTML replacement for ${file}.`);
+    if(!text.includes(item.from)) throw new Error(`Pinned source ${file} is missing configured replacement marker.`);
+    text=text.split(item.from).join(item.to);
+  }
+  return Buffer.from(text,'utf8');
+}
 
 const payload=[];
 for(const file of surface.files){
-  if(typeof file!=='string'||!file||file.includes('..')||file.startsWith('/')||file.includes('\\')) throw new Error(`Unsafe source file: ${file}`);
-  const raw=await sourceFile(file);
+  assertSafeFile(file);
+  let raw=await sourceFile(file);
+  raw=transformedSource(file,raw);
   const rel=joinRel(surface.publicRoot,file);
   if((file==='index.html'||file==='play.php')&&!raw.toString('utf8').includes('data-dtf-shell="header-v5"')) throw new Error(`Pinned source ${file} does not contain the approved V5 header marker.`);
+  payload.push({rel,sha256:crypto.createHash('sha256').update(raw).digest('hex'),content_b64:raw.toString('base64'),bytes:raw.length});
+}
+for(const item of generatedFiles){
+  const file=String(item?.path||'');
+  assertSafeFile(file);
+  if(typeof item.content!=='string'||item.content.length<1) throw new Error(`Generated file content is invalid: ${file}`);
+  const raw=Buffer.from(item.content,'utf8');
+  if(raw.length>260_000) throw new Error(`Generated file size rejected: ${file} (${raw.length})`);
+  const rel=joinRel(surface.publicRoot,file);
   payload.push({rel,sha256:crypto.createHash('sha256').update(raw).digest('hex'),content_b64:raw.toString('base64'),bytes:raw.length});
 }
 const totalBytes=payload.reduce((n,x)=>n+x.bytes,0);
