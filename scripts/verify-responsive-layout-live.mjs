@@ -11,10 +11,12 @@ const pauseMs=Math.max(250,Number(process.env.RESPONSIVE_LAYOUT_VERIFY_PAUSE_MS|
 const marker='id="dtf-responsive-layout-v1"';
 const requiredCssTokens=[
   '--dtf-layout-max:1360px',
+  '--dtf-global-header-height:92px',
   '@media (min-width:701px) and (max-width:1120px)',
   '@media (max-width:700px)',
   'scroll-snap-type:x proximity',
-  '--dtf-layout-touch:44px'
+  '--dtf-layout-touch:44px',
+  '.high-iq-shell .quiz-scoreboard{top:calc(var(--dtf-global-header-height) + 8px)!important}'
 ];
 
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -28,7 +30,7 @@ async function fetchRoute(route,attempt){
       'cache-control':'no-cache, no-store, max-age=0',
       pragma:'no-cache',
       accept:'text/html',
-      'user-agent':'DTFSeeds-Responsive-Layout-Live/1.1'
+      'user-agent':'DTFSeeds-Responsive-Layout-Live/1.2'
     },
     signal:AbortSignal.timeout(30_000)
   });
@@ -46,6 +48,9 @@ function inspect(route,body){
   }
   if(!/<meta[^>]+name=["']viewport["'][^>]+width=device-width/i.test(body) && !/<meta[^>]+content=["'][^"']*width=device-width[^"']*["'][^>]+name=["']viewport["']/i.test(body)) {
     missing.push('responsive viewport meta');
+  }
+  if(route==='/games/high-iq/' && !body.includes('class="high-iq-shell"')) {
+    missing.push('High IQ gameplay shell');
   }
   return missing;
 }
