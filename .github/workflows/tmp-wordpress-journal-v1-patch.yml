@@ -1,0 +1,188 @@
+name: Temporary WordPress Journal V1 patch
+
+on:
+  push:
+    branches:
+      - fix/wordpress-journal-v1
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: ${{ !contains(github.event.head_commit.message, 'Wire canonical WordPress Journal ownership') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/wordpress-journal-v1
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Wire Journal through canonical WordPress ownership and navigation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import json
+
+          def replace_once(path, old, new):
+              p = Path(path)
+              text = p.read_text()
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{path}: expected exactly one patch target, found {count}: {old[:90]!r}')
+              p.write_text(text.replace(old, new, 1))
+
+          replace_once(
+              'scripts/apply-wordpress-public-content-rest.mjs',
+              "  ['contact', 'Contact DTF Genetics'],\n  ['blog', 'DTF Field Notes & Updates']\n];",
+              "  ['contact', 'Contact DTF Genetics'],\n  ['blog', 'DTF Field Notes & Updates'],\n  ['journal', 'DTF Journal']\n];"
+          )
+
+          replace_once(
+              'scripts/apply-wordpress-public-content.sh',
+              'required_files=(home learn community shop gallery about contact blog)',
+              'required_files=(home learn community shop gallery about contact blog journal)'
+          )
+          replace_once(
+              'scripts/apply-wordpress-public-content.sh',
+              'page_slugs=(home learn community shop gallery about contact blog)',
+              'page_slugs=(home learn community shop gallery about contact blog journal)'
+          )
+          replace_once(
+              'scripts/apply-wordpress-public-content.sh',
+              '  "DTF Field Notes & Updates"\n)',
+              '  "DTF Field Notes & Updates"\n  "DTF Journal"\n)'
+          )
+
+          replace_once(
+              'scripts/apply-wordpress-public-content-owned-routes.mjs',
+              "for (const slug of ['community', 'gallery', 'about', 'contact']) {",
+              "for (const slug of ['community', 'gallery', 'about', 'contact', 'journal']) {"
+          )
+
+          deploy = '.github/workflows/wordpress-public-pages-deploy.yml'
+          replace_once(deploy, 'owns the remaining editorial pages, including the canonical Blog.', 'owns the remaining editorial pages, including the canonical Blog and Journal.')
+          replace_once(deploy, 'expected_sources=(home seeds learn community shop gallery about contact blog)', 'expected_sources=(home seeds learn community shop gallery about contact blog journal)')
+          replace_once(deploy, 'for slug in home learn community shop gallery about contact blog; do', 'for slug in home learn community shop gallery about contact blog journal; do')
+          replace_once(deploy, "          grep -Fq 'Game Hub' site/wordpress/pages/blog.html\n", "          grep -Fq 'Game Hub' site/wordpress/pages/blog.html\n          grep -Fq 'DTF Journal' site/wordpress/pages/journal.html\n")
+          replace_once(deploy, "          verify_page '/blog/' 'Follow what we are learning, building, and releasing.'\n", "          verify_page '/blog/' 'Follow what we are learning, building, and releasing.'\n          verify_page '/journal/' 'DTF Journal'\n          verify_page '/journal/' 'A changelog, not a duplicate library.'\n")
+          replace_once(deploy, 'The canonical eight-page WordPress publisher passed pre-deployment validation.', 'The canonical nine-page WordPress publisher passed pre-deployment validation.')
+          replace_once(deploy, "'Scope: Home, Learn, Community, Shop, Gallery, About, Contact, and Blog.',", "'Scope: Home, Learn, Community, Shop, Gallery, About, Contact, Blog, and Journal.',")
+
+          ci = '.github/workflows/wordpress-public-content-ci.yml'
+          replace_once(ci, 'expected=(home seeds learn community shop gallery about contact blog)', 'expected=(home seeds learn community shop gallery about contact blog journal)')
+          replace_once(ci, 'for slug in home learn community shop gallery about contact blog; do', 'for slug in home learn community shop gallery about contact blog journal; do')
+          replace_once(ci, "grep -Fq 'required_files=(home learn community shop gallery about contact blog)' scripts/apply-wordpress-public-content.sh", "grep -Fq 'required_files=(home learn community shop gallery about contact blog journal)' scripts/apply-wordpress-public-content.sh")
+          replace_once(ci, "grep -Fq 'page_slugs=(home learn community shop gallery about contact blog)' scripts/apply-wordpress-public-content.sh", "grep -Fq 'page_slugs=(home learn community shop gallery about contact blog journal)' scripts/apply-wordpress-public-content.sh")
+          replace_once(ci, "          grep -Fq \"['blog', 'DTF Field Notes & Updates']\" scripts/apply-wordpress-public-content-rest.mjs\n", "          grep -Fq \"['blog', 'DTF Field Notes & Updates']\" scripts/apply-wordpress-public-content-rest.mjs\n          grep -Fq \"['journal', 'DTF Journal']\" scripts/apply-wordpress-public-content-rest.mjs\n")
+
+          replace_once(
+              'scripts/rebuild-wordpress-shared-shell-v3.mjs',
+              '<a href="/gallery/">Gallery</a><a href="/about/">About</a><a href="/contact/">Contact</a>',
+              '<a href="/journal/">Journal</a><a href="/gallery/">Gallery</a><a href="/about/">About</a><a href="/contact/">Contact</a>'
+          )
+
+          replace_once(
+              'scripts/repair-wordpress-presentation-rest.mjs',
+              '<a href="/gallery/">Gallery</a> · <a href="/about/">About</a> · <a href="/contact/">Contact</a>',
+              '<a href="/journal/">Journal</a> · <a href="/gallery/">Gallery</a> · <a href="/about/">About</a> · <a href="/contact/">Contact</a>'
+          )
+
+          replace_once(
+              'scripts/audit-sitewide-header-live.mjs',
+              "  '/gallery/', '/about/', '/contact/', '/cart/', '/my-account/', '/growlens/', '/thc-grow-doc/'",
+              "  '/journal/', '/gallery/', '/about/', '/contact/', '/cart/', '/my-account/', '/growlens/', '/thc-grow-doc/'"
+          )
+          replace_once(
+              'scripts/audit-sitewide-header-live.mjs',
+              "const NON_HEADER_ROUTES = new Set([\n  '/journal/',\n  '/puzzles/'\n]);",
+              "const NON_HEADER_ROUTES = new Set([\n  '/puzzles/'\n]);"
+          )
+
+          replace_once(
+              'scripts/audit-dtfseeds-live.mjs',
+              "  { key: 'contact', path: '/contact/', minimumText: 250, requiredText: ['Discord'] },",
+              "  { key: 'contact', path: '/contact/', minimumText: 250, requiredText: ['Discord'] },\n  { key: 'journal', path: '/journal/', minimumText: 650, requiredText: ['DTF Journal', 'A changelog, not a duplicate library.'], requiredLinks: ['/seeds/', '/learn/', '/tools/', '/games/', '/community/'] },"
+          )
+
+          replace_once(
+              'scripts/validate-publishability-contract.mjs',
+              "  ['site/wordpress/pages/blog.html', 'route:/blog/'],",
+              "  ['site/wordpress/pages/blog.html', 'route:/blog/'],\n  ['site/wordpress/pages/journal.html', 'route:/journal/'],"
+          )
+
+          resources_path = Path('data/studio-resources.json')
+          resources = json.loads(resources_path.read_text())
+          static = resources['staticResources']
+          if any(row.get('id') == 'page.journal' for row in static):
+              raise SystemExit('page.journal already exists unexpectedly')
+          blog_index = next(i for i, row in enumerate(static) if row.get('id') == 'page.blog')
+          static.insert(blog_index + 1, {
+              'id': 'page.journal',
+              'kind': 'page',
+              'prefixes': [],
+              'exactPaths': ['site/wordpress/pages/journal.html'],
+              'productionTargets': ['route:/journal/']
+          })
+          resources_path.write_text(json.dumps(resources, indent=2) + '\n')
+
+          nav_path = Path('data/public-navigation.json')
+          nav = json.loads(nav_path.read_text())
+          footer = nav['footerNavigation']
+          if any(row.get('route') == '/journal/' for row in footer):
+              raise SystemExit('Journal already exists in footer navigation unexpectedly')
+          footer.insert(0, {'id': 'journal', 'label': 'Journal', 'route': '/journal/'})
+          support = nav['informationArchitecture']['supportSurface']['routes']
+          if '/journal/' not in support:
+              support.insert(0, '/journal/')
+          nav_path.write_text(json.dumps(nav, indent=2) + '\n')
+
+          replace_once(
+              'docs/DTFSEEDS_INFORMATION_ARCHITECTURE.md',
+              'Search, Account, Cart, About, Contact, Gallery, and direct action buttons remain outside the primary navigation.',
+              'Search, Account, Cart, Journal, About, Contact, Gallery, and direct action buttons remain outside the primary navigation.'
+          )
+          replace_once(
+              'docs/DTFSEEDS_INFORMATION_ARCHITECTURE.md',
+              '`/gallery/`, `/about/`, and `/contact/` are valid public pages but are not primary-navigation peers. They belong in footer/support navigation and contextual links.',
+              '`/journal/`, `/gallery/`, `/about/`, and `/contact/` are valid public pages but are not primary-navigation peers. Journal records dated DTF changes and points to durable sources; all four belong in footer/support navigation and contextual links.'
+          )
+
+          replace_once(
+              'docs/DTFSEEDS_PRODUCTION_OWNERSHIP.md',
+              '| `/contact/` | Canonical WordPress publisher | Editorial root. |',
+              '| `/contact/` | Canonical WordPress publisher | Editorial root. |\n| `/journal/` | Canonical WordPress publisher | Dated release/change record that links to durable genetics, education, diagnostic, game, and community sources. |'
+          )
+
+          Path('.github/workflows/tmp-wordpress-journal-v1-patch.yml').unlink()
+          PY
+
+          node --check scripts/apply-wordpress-public-content-rest.mjs
+          node --check scripts/apply-wordpress-public-content-owned-routes.mjs
+          node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
+          node --check scripts/repair-wordpress-presentation-rest.mjs
+          node --check scripts/audit-sitewide-header-live.mjs
+          node --check scripts/audit-dtfseeds-live.mjs
+          node --check scripts/validate-publishability-contract.mjs
+          bash -n scripts/apply-wordpress-public-content.sh
+          node scripts/validate-public-navigation.mjs
+          node scripts/validate-publishability-contract.mjs
+          grep -Fq "['journal', 'DTF Journal']" scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq '/journal/' data/public-navigation.json
+          grep -Fq 'href="/journal/">Journal</a>' scripts/rebuild-wordpress-shared-shell-v3.mjs
+          grep -Fq "key: 'journal', path: '/journal/'" scripts/audit-dtfseeds-live.mjs
+          test ! -e .github/workflows/tmp-wordpress-journal-v1-patch.yml
+
+      - name: Commit focused Journal wiring
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'dtfgenetics'
+          git config user.email 'green801028@gmail.com'
+          git add -A
+          git commit -m 'Wire canonical WordPress Journal ownership'
+          git push origin HEAD:fix/wordpress-journal-v1
