@@ -24,7 +24,7 @@ assert.ok(sw.includes('./gameplay-v3.js'));
 assert.ok(sw.includes('./combat-a11y-v1.js'));
 assert.ok(sw.includes('./runtime-sync-v1.js'));
 assert.ok(sw.includes("url.pathname.endsWith('/presence.php')"));
-assert.ok(sw.includes('ptp-shell-v8-burn-buds-native-targeting-20260905'));
+assert.ok(sw.includes('ptp-shell-v9-burn-buds-v5-responsive-20260913'));
 assert.ok(sw.includes('./battle-feedback-v1.js'));
 assert.ok(sw.includes('./placement-v1.js'));
 assert.ok(sw.includes('./targeting-v1.js'));
