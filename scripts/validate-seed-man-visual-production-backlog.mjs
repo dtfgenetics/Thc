@@ -1,8 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const backlogPath = path.resolve(process.argv[2] || 'games/seed-man-platformer/data/visual-production-backlog-v1.json');
-const root = path.resolve('.');
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+const root = path.resolve(scriptDir, '..');
+const backlogPath = path.resolve(root, process.argv[2] || 'games/seed-man-platformer/data/visual-production-backlog-v1.json');
 const readJson = rel => JSON.parse(fs.readFileSync(path.join(root, rel), 'utf8'));
 const exists = rel => fs.existsSync(path.join(root, rel));
 const fail = message => { throw new Error(message); };
