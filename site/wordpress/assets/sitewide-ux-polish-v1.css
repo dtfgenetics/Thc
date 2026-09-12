@@ -1,0 +1,271 @@
+/* DTFSeeds sitewide UX polish v1
+ * Shared visual/readability/accessibility layer for WordPress and static surfaces.
+ * This file intentionally complements page-specific art direction instead of replacing it.
+ */
+:root{
+  --dtf-ux-ink:#112b1c;
+  --dtf-ux-muted:#5f7065;
+  --dtf-ux-line:rgba(17,43,28,.12);
+  --dtf-ux-surface:#fffdf7;
+  --dtf-ux-surface-soft:#f4f1e8;
+  --dtf-ux-leaf:#26784a;
+  --dtf-ux-focus:#8fea76;
+  --dtf-ux-shadow:0 14px 34px rgba(17,43,28,.08);
+  --dtf-ux-shadow-hover:0 22px 48px rgba(17,43,28,.13);
+  --dtf-ux-radius:20px;
+  --dtf-ux-radius-small:12px;
+}
+
+html{
+  scroll-padding-top:calc(var(--dtf-global-header-height,92px) + 18px);
+  text-size-adjust:100%;
+  -webkit-text-size-adjust:100%;
+}
+
+:where(main,section,article,aside,nav,footer)[id],
+:where(h1,h2,h3,h4,h5,h6)[id],
+:where(.dtf-page,.lhv3,.game-hub-page,.tool-chooser) [id]{
+  scroll-margin-top:calc(var(--dtf-global-header-height,92px) + 18px);
+}
+
+body{
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+}
+
+:where(a,button,input,select,textarea,summary,[role="button"],[tabindex]):focus-visible{
+  outline:3px solid var(--dtf-ux-focus)!important;
+  outline-offset:3px!important;
+  box-shadow:none;
+}
+
+:where(button,input,select,textarea){
+  font:inherit;
+}
+
+:where(button,[role="button"],input[type="button"],input[type="submit"],input[type="reset"]){
+  min-height:44px;
+}
+
+:where(input:not([type="checkbox"]):not([type="radio"]),select,textarea){
+  max-width:100%;
+  min-height:44px;
+  border:1px solid rgba(17,43,28,.22);
+  border-radius:10px;
+  background:#fff;
+  color:var(--dtf-ux-ink);
+}
+
+:where(input:not([type="checkbox"]):not([type="radio"]),select,textarea):focus{
+  border-color:var(--dtf-ux-leaf);
+}
+
+/* Shared reading rhythm. */
+.dtf-page,
+.lhv3,
+.game-hub-page,
+body:has(.tool-chooser){
+  color:var(--dtf-ux-ink);
+}
+
+.dtf-page :where(p,li),
+.lhv3 :where(p,li),
+.game-hub-page :where(p,li),
+body:has(.tool-chooser) :where(p,li){
+  line-height:1.7;
+}
+
+.dtf-page :where(p,li),
+.lhv3 :where(p,li){
+  text-wrap:pretty;
+}
+
+.dtf-page :where(h1,h2,h3),
+.lhv3 :where(h1,h2,h3),
+.game-hub-page :where(h1,h2,h3),
+body:has(.tool-chooser) :where(h1,h2,h3){
+  text-wrap:balance;
+}
+
+.dtf-page .dtf-heading,
+.game-hub-page .section-heading,
+body:has(.tool-chooser) .section-heading{
+  margin-bottom:clamp(26px,4vw,46px)!important;
+}
+
+.dtf-page .dtf-heading>p,
+.game-hub-page .section-heading>p,
+body:has(.tool-chooser) .section-heading>p{
+  color:var(--dtf-ux-muted)!important;
+}
+
+/* Interactive surfaces should look tappable and share one elevation language. */
+.dtf-page .dtf-card,
+.dtf-page .dtf-path-card,
+.dtf-page .dtf-flow>article,
+.game-hub-page .card,
+body:has(.tool-chooser) .tool-feature,
+body:has(.tool-chooser) .flow>article,
+body:has(.tool-chooser) .learn-rail>article{
+  border-color:var(--dtf-ux-line)!important;
+  box-shadow:var(--dtf-ux-shadow)!important;
+}
+
+@media (hover:hover) and (pointer:fine){
+  .dtf-page .dtf-card:hover,
+  .dtf-page .dtf-path-card:hover,
+  .dtf-page .dtf-flow>article:hover,
+  .game-hub-page .card:hover,
+  body:has(.tool-chooser) .tool-feature:hover,
+  body:has(.tool-chooser) .flow>article:hover,
+  body:has(.tool-chooser) .learn-rail>article:hover{
+    box-shadow:var(--dtf-ux-shadow-hover)!important;
+  }
+}
+
+.dtf-page :where(.dtf-btn,.dtf-text-link),
+.game-hub-page :where(.button,.card-link),
+body:has(.tool-chooser) :where(.button,.text-link),
+.lhv3 :where(.lhv3-button,.lhv3-complete,.lhv3-nextprev a){
+  font-weight:800;
+  text-underline-offset:3px;
+}
+
+.dtf-page .dtf-btn,
+.game-hub-page .button,
+body:has(.tool-chooser) .button,
+.lhv3 .lhv3-button,
+.lhv3 .lhv3-complete{
+  min-height:46px!important;
+}
+
+/* Stable image frames reduce visual jitter while content loads. */
+.dtf-page .dtf-image-card>.dtf-img,
+.game-hub-page .card img,
+body:has(.tool-chooser) .tool-feature img{
+  display:block;
+  width:100%;
+}
+
+.dtf-page img,
+.game-hub-page img,
+body:has(.tool-chooser) img,
+.lhv3 img{
+  vertical-align:middle;
+}
+
+/* Long content and data stay usable without forcing the page wider than the viewport. */
+.dtf-page :where(table,pre),
+.lhv3 :where(table,pre),
+.game-hub-page :where(table,pre),
+body:has(.tool-chooser) :where(table,pre){
+  max-width:100%;
+}
+
+.dtf-page :where(pre,.dtf-table-scroll),
+.lhv3 :where(pre,.lhv3-table),
+.game-hub-page pre,
+body:has(.tool-chooser) pre{
+  overflow-x:auto;
+  overscroll-behavior-inline:contain;
+  -webkit-overflow-scrolling:touch;
+}
+
+/* Course workspace: make side rails calmer and keep reading priority on the lesson. */
+.lhv3 .lhv3-sidebar,
+.lhv3 .lhv3-right-rail{
+  scrollbar-width:thin;
+  scrollbar-color:rgba(38,120,74,.35) transparent;
+}
+
+.lhv3 .lhv3-content{
+  line-height:1.72;
+}
+
+.lhv3 .lhv3-content :where(h2,h3){
+  scroll-margin-top:calc(var(--dtf-global-header-height,92px) + 24px);
+}
+
+.lhv3 .lhv3-content :where(figure,table,blockquote,.lhv3-visual){
+  margin-block:clamp(24px,4vw,40px);
+}
+
+/* Header and footer interaction polish without changing the approved reference composition. */
+.dtf-global-header{
+  -webkit-backdrop-filter:saturate(130%) blur(8px);
+  backdrop-filter:saturate(130%) blur(8px);
+}
+
+.dtf-global-nav a,
+.dtf-global-icon,
+.dtf-global-menu{
+  -webkit-tap-highlight-color:transparent;
+}
+
+.dtf-global-nav a[aria-current="page"]{
+  cursor:default;
+}
+
+.dtf-footer-v3 .links a{
+  border-radius:8px;
+  padding-inline:6px;
+  margin-inline:-6px;
+}
+
+.dtf-footer-v3 .links a:focus-visible{
+  background:rgba(255,255,255,.08);
+}
+
+/* Small screens: prioritize scanning, touch comfort, and clean one-column reading. */
+@media (max-width:700px){
+  html{scroll-padding-top:calc(var(--dtf-global-header-height,74px) + 12px)}
+
+  .dtf-page .dtf-heading,
+  .game-hub-page .section-heading,
+  body:has(.tool-chooser) .section-heading{
+    margin-bottom:26px!important;
+  }
+
+  .dtf-page :where(p,li),
+  .lhv3 :where(p,li),
+  .game-hub-page :where(p,li),
+  body:has(.tool-chooser) :where(p,li){
+    line-height:1.66;
+  }
+
+  .dtf-global-nav a,
+  .dtf-global-menu,
+  .dtf-global-icon,
+  .dtf-footer-v3 .links a{
+    min-height:44px!important;
+  }
+
+  .dtf-global-nav{
+    max-height:calc(100dvh - 86px);
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    padding-bottom:max(8px,env(safe-area-inset-bottom))!important;
+  }
+
+  .lhv3 .lhv3-content{
+    font-size:1rem;
+  }
+}
+
+@media (max-width:420px){
+  .dtf-page .dtf-actions,
+  .game-hub-page .actions,
+  body:has(.tool-chooser) .actions{
+    gap:10px!important;
+  }
+
+  .dtf-global-actions__icons .dtf-global-icon:nth-child(2){
+    display:none!important;
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    scroll-behavior:auto!important;
+  }
+}

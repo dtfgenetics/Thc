@@ -10,12 +10,30 @@ import {
 const root = resolve(process.argv[2] || 'release');
 const checkOnly = process.argv.includes('--check');
 const responsiveLayoutPath = resolve(process.env.DTF_RESPONSIVE_LAYOUT_CSS || 'site/wordpress/assets/responsive-layout-v1.css');
-const responsiveLayoutCss = await readFile(responsiveLayoutPath, 'utf8');
+const uxPolishPath = resolve(process.env.DTF_SITEWIDE_UX_POLISH_CSS || 'site/wordpress/assets/sitewide-ux-polish-v1.css');
+const [responsiveLayoutCss, uxPolishCss] = await Promise.all([
+  readFile(responsiveLayoutPath, 'utf8'),
+  readFile(uxPolishPath, 'utf8'),
+]);
 if (!responsiveLayoutCss.includes('DTFSeeds shared responsive layout system v1')) {
   throw new Error(`Responsive layout marker is missing from ${responsiveLayoutPath}`);
 }
+if (!uxPolishCss.includes('DTFSeeds sitewide UX polish v1')) {
+  throw new Error(`Sitewide UX polish marker is missing from ${uxPolishPath}`);
+}
 const RESPONSIVE_LAYOUT_STYLE_TAG = `<style id="dtf-responsive-layout-v1">${responsiveLayoutCss}</style>`;
-const report = { root, checkOnly, responsiveLayout: 'v1', scanned: 0, changed: 0, replacedLegacyHeaders: 0, skipped: 0, failures: [] };
+const SITEWIDE_UX_POLISH_STYLE_TAG = `<style id="dtf-sitewide-ux-polish-v1">${uxPolishCss}</style>`;
+const report = {
+  root,
+  checkOnly,
+  responsiveLayout: 'v1',
+  sitewideUxPolish: 'v1',
+  scanned: 0,
+  changed: 0,
+  replacedLegacyHeaders: 0,
+  skipped: 0,
+  failures: [],
+};
 
 async function walk(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
@@ -38,6 +56,7 @@ function verifyDocument(source, rel) {
     ['data-dtf-sitewide-header="approved-reference-v1"', 'header'],
     ['id="dtf-sitewide-header-v5-style"', 'header style'],
     ['id="dtf-responsive-layout-v1"', 'responsive layout style'],
+    ['id="dtf-sitewide-ux-polish-v1"', 'sitewide UX polish style'],
     ['id="dtf-sitewide-header-v5-script"', 'script'],
   ];
   for (const [needle, label] of expected) {
@@ -52,6 +71,16 @@ function verifyDocument(source, rel) {
   ];
   for (const token of responsiveTokens) {
     if (!source.includes(token)) report.failures.push(`${rel}: responsive layout token missing: ${token}`);
+  }
+  const uxTokens = [
+    'DTFSeeds sitewide UX polish v1',
+    'scroll-padding-top:',
+    ':focus-visible',
+    'min-height:44px',
+    'overscroll-behavior:contain',
+  ];
+  for (const token of uxTokens) {
+    if (!source.includes(token)) report.failures.push(`${rel}: sitewide UX polish token missing: ${token}`);
   }
   return { skipped: false };
 }
@@ -100,13 +129,14 @@ function reconcileDocument(source) {
   let output = source;
   output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-sitewide-header-v5-style["'][^>]*>[\s\S]*?<\/style>\s*/gi);
   output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-responsive-layout-v1["'][^>]*>[\s\S]*?<\/style>\s*/gi);
+  output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-sitewide-ux-polish-v1["'][^>]*>[\s\S]*?<\/style>\s*/gi);
   output = removeOwnedFragment(output, /<script\b[^>]*id=["']dtf-sitewide-header-v5-script["'][^>]*>[\s\S]*?<\/script>\s*/gi);
   output = removeOwnedFragment(output, /<header\b[^>]*data-dtf-sitewide-header=["'][^"']+["'][^>]*>[\s\S]*?<\/header>\s*/gi);
 
   const legacy = removeLegacyGlobalHeader(output);
   output = legacy.html;
 
-  const sharedStyles = `${SITEWIDE_HEADER_STYLE_TAG}\n${RESPONSIVE_LAYOUT_STYLE_TAG}`;
+  const sharedStyles = `${SITEWIDE_HEADER_STYLE_TAG}\n${RESPONSIVE_LAYOUT_STYLE_TAG}\n${SITEWIDE_UX_POLISH_STYLE_TAG}`;
   if (/<\/head>/i.test(output)) output = output.replace(/<\/head>/i, `${sharedStyles}\n</head>`);
   else output = `${sharedStyles}\n${output}`;
 
@@ -133,8 +163,9 @@ for (const file of files) {
   if (result.skipped) { report.skipped += 1; continue; }
   if (!result.output.includes('data-dtf-shell="header-v5"') ||
       !result.output.includes('dtf-sitewide-header-v5-style') ||
-      !result.output.includes('dtf-responsive-layout-v1')) {
-    report.failures.push(`${rel}: canonical header or responsive layout markers missing after reconciliation`);
+      !result.output.includes('dtf-responsive-layout-v1') ||
+      !result.output.includes('dtf-sitewide-ux-polish-v1')) {
+    report.failures.push(`${rel}: canonical header, responsive layout, or UX polish markers missing after reconciliation`);
     continue;
   }
   if (result.removedLegacy) report.replacedLegacyHeaders += 1;

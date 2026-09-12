@@ -9,6 +9,7 @@ on:
       - scripts/apply-sitewide-header.mjs
       - scripts/verify-responsive-layout-live.mjs
       - site/wordpress/assets/responsive-layout-v1.css
+      - site/wordpress/assets/sitewide-ux-polish-v1.css
       - .github/workflows/build-dtfseeds-public-suite.yml
       - .github/workflows/deploy-sitewide-header-static-surfaces.yml
   pull_request:
@@ -17,6 +18,7 @@ on:
       - scripts/apply-sitewide-header.mjs
       - scripts/verify-responsive-layout-live.mjs
       - site/wordpress/assets/responsive-layout-v1.css
+      - site/wordpress/assets/sitewide-ux-polish-v1.css
       - .github/workflows/build-dtfseeds-public-suite.yml
       - .github/workflows/deploy-sitewide-header-static-surfaces.yml
 
@@ -36,7 +38,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate canonical header and responsive deployment inputs
+      - name: Validate canonical header, responsive layout, and UX polish inputs
         shell: bash
         run: |
           set -euo pipefail
@@ -44,20 +46,27 @@ jobs:
           node --check scripts/apply-sitewide-header.mjs
           node --check scripts/verify-responsive-layout-live.mjs
           test -s site/wordpress/assets/responsive-layout-v1.css
+          test -s site/wordpress/assets/sitewide-ux-polish-v1.css
           grep -Fq 'Apply approved sitewide header to release HTML' .github/workflows/build-dtfseeds-public-suite.yml
           grep -Fq 'data-dtf-sitewide-header="approved-reference-v1"' scripts/lib/sitewide-header-template.mjs
           grep -Fq 'dtf-responsive-layout-v1' scripts/apply-sitewide-header.mjs
+          grep -Fq 'dtf-sitewide-ux-polish-v1' scripts/apply-sitewide-header.mjs
           grep -Fq '@media (min-width:701px) and (max-width:1120px)' site/wordpress/assets/responsive-layout-v1.css
           grep -Fq '@media (max-width:700px)' site/wordpress/assets/responsive-layout-v1.css
           grep -Fq 'scroll-snap-type:x proximity' site/wordpress/assets/responsive-layout-v1.css
           grep -Fq -- '--dtf-global-header-height:92px' site/wordpress/assets/responsive-layout-v1.css
           grep -Fq '.high-iq-shell .quiz-scoreboard{top:calc(var(--dtf-global-header-height) + 8px)!important}' site/wordpress/assets/responsive-layout-v1.css
+          grep -Fq 'DTFSeeds sitewide UX polish v1' site/wordpress/assets/sitewide-ux-polish-v1.css
+          grep -Fq 'scroll-padding-top:' site/wordpress/assets/sitewide-ux-polish-v1.css
+          grep -Fq ':focus-visible' site/wordpress/assets/sitewide-ux-polish-v1.css
+          grep -Fq 'min-height:44px' site/wordpress/assets/sitewide-ux-polish-v1.css
+          grep -Fq 'overscroll-behavior:contain' site/wordpress/assets/sitewide-ux-polish-v1.css
 
   dispatch-production:
     if: ${{ github.event_name != 'pull_request' }}
     needs: validate
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
         with:
@@ -72,13 +81,13 @@ jobs:
         run: |
           set -euo pipefail
           gh workflow run deploy-public-suite-wordpress-v2.yml --repo "$GITHUB_REPOSITORY" --ref main
-          echo 'Dispatched Deploy DTFSeeds Public Suite via WordPress V2 from the merged header/responsive source.'
-      - name: Wait for visitor-facing responsive shell across WordPress, hubs, and High IQ
+          echo 'Dispatched Deploy DTFSeeds Public Suite via WordPress V2 from the merged header/responsive/UX source.'
+      - name: Wait for visitor-facing responsive shell and UX polish across primary navigation
         shell: bash
         env:
           WP_SITE_URL: https://dtfseeds.com
-          RESPONSIVE_LAYOUT_VERIFY_ROUTES: /,/learn/,/courses/,/tools/,/games/,/games/high-iq/
-          RESPONSIVE_LAYOUT_VERIFY_ATTEMPTS: '120'
+          RESPONSIVE_LAYOUT_VERIFY_ROUTES: /,/seeds/,/learn/,/courses/,/tools/,/games/,/community/,/shop/,/games/high-iq/
+          RESPONSIVE_LAYOUT_VERIFY_ATTEMPTS: '150'
           RESPONSIVE_LAYOUT_VERIFY_PAUSE_MS: '10000'
         run: |
           set -euo pipefail
