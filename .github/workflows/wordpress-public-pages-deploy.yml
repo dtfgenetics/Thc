@@ -38,8 +38,8 @@ jobs:
 
           # The source directory intentionally still carries seeds.html because the
           # dedicated genetics publisher consumes it. Generic WordPress publishing
-          # owns the remaining editorial pages, including the canonical Blog.
-          expected_sources=(home seeds learn community shop gallery about contact blog)
+          # owns the remaining editorial pages, including the canonical Blog and Journal.
+          expected_sources=(home seeds learn community shop gallery about contact blog journal)
           for slug in "${expected_sources[@]}"; do
             file="site/wordpress/pages/$slug.html"
             test -s "$file"
@@ -56,10 +56,11 @@ jobs:
             exit 1
           }
 
-          for slug in home learn community shop gallery about contact blog; do
+          for slug in home learn community shop gallery about contact blog journal; do
             grep -Eq "['\"]$slug['\"]" scripts/apply-wordpress-public-content-rest.mjs
           done
           grep -Fq "['blog', 'DTF Field Notes & Updates']" scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq "['journal', 'DTF Journal']" scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq 'page_for_posts: 0' scripts/apply-wordpress-public-content-rest.mjs
 
           if grep -Eq "\['seeds',[[:space:]]*'|\['games',[[:space:]]*'|\['high-iq',[[:space:]]*'" scripts/apply-wordpress-public-content-rest.mjs; then
@@ -108,6 +109,8 @@ jobs:
           grep -Fq 'DTF Field Notes &amp; Updates' site/wordpress/pages/blog.html
           grep -Fq 'Follow what we are learning, building, and releasing.' site/wordpress/pages/blog.html
           grep -Fq 'Game Hub' site/wordpress/pages/blog.html
+          grep -Fq 'DTF Journal' site/wordpress/pages/journal.html
+          grep -Fq 'A changelog, not a duplicate library.' site/wordpress/pages/journal.html
 
       - name: Report validation stage to issue 46
         if: always()
@@ -126,7 +129,7 @@ jobs:
               `Validation result: **${process.env.VALIDATION_STATUS}**`,
               '',
               process.env.VALIDATION_STATUS === 'success'
-                ? 'The canonical eight-page WordPress publisher passed pre-deployment validation. Seeds remains delegated to the genetics release family. The protected production deployment job may now proceed.'
+                ? 'The canonical nine-page WordPress publisher passed pre-deployment validation. Seeds remains delegated to the genetics release family. The protected production deployment job may now proceed.'
                 : 'The canonical WordPress package failed before the protected deployment stage. Inspect this run; no production WordPress mutation was attempted by the deploy job.',
               '',
               'No credential values are included in this report.'
@@ -224,6 +227,8 @@ jobs:
           verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
           verify_page '/blog/' 'DTF Field Notes &amp; Updates'
           verify_page '/blog/' 'Follow what we are learning, building, and releasing.'
+          verify_page '/journal/' 'DTF Journal'
+          verify_page '/journal/' 'A changelog, not a duplicate library.'
 
       - name: Upload page-level rollback package
         if: always()
@@ -254,11 +259,11 @@ jobs:
               `Page mutations: **${process.env.MUTATIONS || 'unknown'}**`,
               `Pages changed: **${process.env.CHANGED_PAGES || 'unknown'}**`,
               '',
-              'Scope: Home, Learn, Community, Shop, Gallery, About, Contact, and Blog.',
+              'Scope: Home, Learn, Community, Shop, Gallery, About, Contact, Blog, and Journal.',
               'Seeds remains exclusively owned by the genetics release family.',
               'The canonical `home` page is also enforced as the WordPress front page served at `/`.',
               'Static `/games/` and `/games/high-iq/` routes are intentionally absent from WordPress source ownership.',
-              'Verified live targets: Home, Learn gateway, Community, Contact, and Blog.',
+              'Verified live targets: Home, Learn gateway, Community, Contact, Blog, and Journal.',
               'No credential values are included in this report.'
             ].join('\n');
             await github.rest.issues.createComment({

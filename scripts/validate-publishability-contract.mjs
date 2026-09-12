@@ -103,6 +103,7 @@ const expectedOwners = new Map([
   ['site/wordpress/pages/home.html', 'route:/'],
   ['site/wordpress/pages/about.html', 'route:/about/'],
   ['site/wordpress/pages/blog.html', 'route:/blog/'],
+  ['site/wordpress/pages/journal.html', 'route:/journal/'],
   ['site/wordpress/pages/community.html', 'route:/community/'],
   ['site/wordpress/pages/contact.html', 'route:/contact/'],
   ['site/wordpress/pages/gallery.html', 'route:/gallery/'],

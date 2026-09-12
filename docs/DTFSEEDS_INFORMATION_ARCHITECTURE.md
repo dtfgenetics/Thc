@@ -28,7 +28,7 @@ The primary navigation is locked in this order:
 7. Community — `/community/`
 8. Shop — `/shop/`
 
-Do not rename Seeds to Genetics in the primary navigation. Do not rename Diagnostic to Tools in the primary navigation. Do not merge Courses into Learn. Search, Account, Cart, About, Contact, Gallery, and direct action buttons remain outside the primary navigation.
+Do not rename Seeds to Genetics in the primary navigation. Do not rename Diagnostic to Tools in the primary navigation. Do not merge Courses into Learn. Search, Account, Cart, Journal, About, Contact, Gallery, and direct action buttons remain outside the primary navigation.
 
 ## Root responsibilities
 
@@ -94,7 +94,7 @@ Belongs here: storefront presentation, product discovery, cart/account entry poi
 
 ## Company and support routes
 
-`/gallery/`, `/about/`, and `/contact/` are valid public pages but are not primary-navigation peers. They belong in footer/support navigation and contextual links.
+`/journal/`, `/gallery/`, `/about/`, and `/contact/` are valid public pages but are not primary-navigation peers. Journal records dated DTF changes and points to durable sources; all four belong in footer/support navigation and contextual links.
 
 Account, Cart, Search, and other utility actions are also separate from the eight primary destinations.
 
