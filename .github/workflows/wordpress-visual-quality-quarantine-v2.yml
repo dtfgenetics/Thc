@@ -24,6 +24,7 @@ on:
       - Publish DTFSeeds WordPress Production
       - Reconcile DTFSeeds WordPress Canonical Pages
       - Deploy THC Learning Centers
+      - Deploy DTFSeeds Education Assets
     types: [completed]
 
 permissions:
@@ -35,7 +36,7 @@ concurrency:
 
 jobs:
   quarantine:
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    if: ${{ always() }}
     runs-on: ubuntu-latest
     timeout-minutes: 35
     environment: production
