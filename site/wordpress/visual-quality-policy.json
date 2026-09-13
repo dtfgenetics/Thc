@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "mode": "quarantine",
   "purpose": "Keep the low-quality legacy educational/infographic images identified in the September 13, 2026 dtfseeds.com visual audit off every public-facing site surface and prevent automated publishers from reintroducing them.",
   "rule": "No image is better than a low-quality or contextually wrong image. Public cards, product/genetics surfaces, tools, education landing pages, and navigation surfaces may only use visuals that have been explicitly approved for that exact role.",
@@ -18,18 +18,47 @@
     "descriptionContains": [
       "Source-controlled DTF/THC educational asset"
     ],
-    "urlContains": [],
-    "anyTextContains": []
+    "urlContains": [
+      "Cannabis_Plant_Anatomy_Infographic.png",
+      "THC-C005_Infographic_Root_Anatomy_and_Forensics.png",
+      "THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange.png",
+      "Cannabis_Nutrition_Science_Behind_Healthy_Growth.png",
+      "Diagnosing_Deficiency_vs_Toxicity_Infographic.png",
+      "Beneficial_Insects_and_Biological_Controls.png",
+      "Cloning_Guide_with_Environment_Targets.png",
+      "Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic.png",
+      "THC-ENC-086_Air_VPD_Versus_Leaf_VPD.jpg",
+      "Cannabis_Sex_Expression_and_Chromosome_Combinations.png"
+    ],
+    "anyTextContains": [
+      "educational infographic",
+      "teaching healthy cultivation educational visual"
+    ]
   },
   "bannedHtml": {
     "altPrefixes": [
       "Teaching Healthy Cultivation —",
       "Teaching Healthy Cultivation -"
     ],
+    "urlContains": [
+      "Cannabis_Plant_Anatomy_Infographic.png",
+      "THC-C005_Infographic_Root_Anatomy_and_Forensics.png",
+      "THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange.png",
+      "Cannabis_Nutrition_Science_Behind_Healthy_Growth.png",
+      "Diagnosing_Deficiency_vs_Toxicity_Infographic.png",
+      "Beneficial_Insects_and_Biological_Controls.png",
+      "Cloning_Guide_with_Environment_Targets.png",
+      "Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic.png",
+      "THC-ENC-086_Air_VPD_Versus_Leaf_VPD.jpg",
+      "Cannabis_Sex_Expression_and_Chromosome_Combinations.png"
+    ],
     "classContains": []
   },
   "approvedMediaSlugs": [
     "dtf-potleaf-site-icon"
+  ],
+  "approvedMediaSlugPrefixes": [
+    "dtf-approved-visual-"
   ],
   "contentTypes": [
     "page",
@@ -54,9 +83,10 @@
     "requiresMobileTabletDesktopReview": true
   },
   "notes": [
-    "This policy targets the legacy low-quality infographic/diagram media family that has been appearing as large card imagery and unrelated product/genetics/tool imagery.",
+    "The first production quarantine removed 164 legacy media items from 55 WordPress content records. Public verification then exposed a second legacy family with older non-dtf-edu filenames; those filenames are now explicitly quarantined too.",
     "The underlying source files may remain in repository history for reference, but they are not approved public website visuals.",
-    "Future approved educational graphics must be republished through a new approved-media path rather than recycling the dtf-edu-* WordPress media family.",
-    "The site must never satisfy an image-count target by inserting an unapproved visual."
+    "Future approved educational graphics must be republished through the dtf-approved-visual-* path rather than recycling legacy WordPress media identities.",
+    "The site must never satisfy an image-count target by inserting an unapproved visual.",
+    "Image-less cards and sections are the required fallback until a role-specific replacement passes mobile, tablet, and desktop review."
   ]
 }
