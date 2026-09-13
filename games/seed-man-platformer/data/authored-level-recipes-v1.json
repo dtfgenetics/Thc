@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "id": "seed-man-authored-level-recipes-v1",
+  "defaults": {"groundY":480,"sectionGap":90,"pickupEvery":340,"checkpointEverySections":2},
+  "levels": {
+    "1-2-sunny-glade": {"world":"greenhouse-valley","sections":[
+      {"kind":"warmup","width":1100,"surface":"grass","enemies":["sproutling","root-crawler"]},
+      {"kind":"slime-beds","width":1300,"surface":"dirt","hazards":["toxic-slime"],"enemies":["toxic-spore","sproutling"]},
+      {"kind":"moving-canopy","width":1400,"surface":"wood","mechanics":["moving-platforms"],"enemies":["drone-bot","toxic-spore"]},
+      {"kind":"fire-mastery","width":1400,"surface":"grass","carrier":"fire","enemies":["thorn-beetle","root-crawler"]},
+      {"kind":"glade-finish","width":1500,"surface":"grass","hazards":["spikes"],"enemies":["toxic-spore","thorn-beetle"]}
+    ]},
+    "1-3-waterfall-way": {"world":"greenhouse-valley","sections":[
+      {"kind":"water-approach","width":1200,"surface":"grass","enemies":["sproutling","drone-bot"]},
+      {"kind":"waterfall-gap","width":1400,"surface":"wood","hazards":["waterfall-gap"],"mechanics":["springs"],"enemies":["sky-wasp"]},
+      {"kind":"vertical-climb","width":1500,"surface":"wood","mechanics":["vertical-platforms"],"enemies":["drone-bot","sky-wasp"]},
+      {"kind":"electric-intro","width":1500,"surface":"grass","carrier":"electric","enemies":["drone-bot","thorn-beetle"]},
+      {"kind":"waterfall-exit","width":1500,"surface":"grass","hazards":["spikes"],"enemies":["sky-wasp","sproutling"]}
+    ]},
+    "1-4-greenhouse-hub": {"world":"greenhouse-valley","sections":[
+      {"kind":"hub-entry","width":900,"surface":"grass","enemies":["thorn-beetle","spike-plant"]},
+      {"kind":"trellis-gauntlet","width":1100,"surface":"wood","hazards":["spikes"],"enemies":["spike-plant","toxic-spore"]},
+      {"kind":"boss-approach","width":950,"surface":"grass","enemies":["thorn-beetle"]},
+      {"kind":"boss-arena","width":1800,"surface":"grass","mechanics":["arena-lock"],"boss":"overgrown-guardian"},
+      {"kind":"restore-gate","width":450,"surface":"grass"}
+    ]},
+    "2-1-mossy-paths": {"world":"forest-ruins","sections":[
+      {"kind":"ruin-entry","width":1200,"surface":"grass","enemies":["root-crawler","toxic-spore"]},
+      {"kind":"vine-crossing","width":1400,"surface":"wood","mechanics":["vine-platforms"],"hazards":["thorn-pits"],"enemies":["spike-plant"]},
+      {"kind":"moss-temple","width":1500,"surface":"stone","enemies":["toxic-spore","spike-plant"]},
+      {"kind":"electric-mastery","width":1500,"surface":"stone","carrier":"electric","enemies":["sky-wasp","root-crawler"]},
+      {"kind":"path-exit","width":1400,"surface":"grass","hazards":["thorn-pits"],"enemies":["shadow-root"]}
+    ]},
+    "2-2-broken-bridges": {"world":"forest-ruins","sections":[
+      {"kind":"bridge-entry","width":1200,"surface":"stone","enemies":["root-crawler","thorn-beetle"]},
+      {"kind":"collapse-one","width":1500,"surface":"wood","mechanics":["collapsing-platforms"],"hazards":["falling-bridges"],"enemies":["sky-wasp"]},
+      {"kind":"ruin-islands","width":1500,"surface":"stone","enemies":["thorn-beetle","sky-wasp"]},
+      {"kind":"collapse-two","width":1700,"surface":"wood","mechanics":["collapsing-platforms"],"hazards":["falling-bridges"],"enemies":["shadow-root"]},
+      {"kind":"bridge-exit","width":1600,"surface":"stone","enemies":["root-crawler","thorn-beetle"]}
+    ]},
+    "2-3-hollow-trunk": {"world":"forest-ruins","sections":[
+      {"kind":"trunk-mouth","width":1200,"surface":"wood","mechanics":["dark-zones"],"enemies":["toxic-spore"]},
+      {"kind":"spore-chamber","width":1500,"surface":"wood","hazards":["spore-cloud"],"enemies":["bone-weed","toxic-spore"]},
+      {"kind":"root-portals","width":1700,"surface":"wood","mechanics":["teleport-roots"],"enemies":["shadow-root"]},
+      {"kind":"shadow-chamber","width":1700,"surface":"wood","hazards":["spore-cloud"],"enemies":["shadow-root","bone-weed"]},
+      {"kind":"trunk-exit","width":1700,"surface":"grass","enemies":["shadow-root"]}
+    ]},
+    "2-4-temple-of-trees": {"world":"forest-ruins","sections":[
+      {"kind":"temple-entry","width":1000,"surface":"stone","enemies":["spike-plant","shadow-root"]},
+      {"kind":"root-cage","width":1100,"surface":"stone","hazards":["root-cage"],"enemies":["bone-weed"]},
+      {"kind":"dryad-approach","width":1000,"surface":"stone","enemies":["shadow-root"]},
+      {"kind":"boss-arena","width":1900,"surface":"stone","mechanics":["arena-lock"],"boss":"ancient-dryad"},
+      {"kind":"forest-restored","width":600,"surface":"grass"}
+    ]},
+    "3-1-red-rock-run": {"world":"desert-canyon","sections":[
+      {"kind":"mesa-entry","width":1200,"surface":"sand","enemies":["thorn-beetle","drone-bot"]},
+      {"kind":"lava-rifts","width":1500,"surface":"rock","hazards":["lava"],"mechanics":["heat-updraft"],"enemies":["thorn-beetle"]},
+      {"kind":"rockfall-run","width":1500,"surface":"rock","hazards":["rockfall"],"enemies":["drone-bot"]},
+      {"kind":"fire-trial","width":1600,"surface":"sand","carrier":"fire","enemies":["sludge-monster","thorn-beetle"]},
+      {"kind":"red-rock-exit","width":1600,"surface":"rock","hazards":["lava"],"enemies":["drone-bot","thorn-beetle"]}
+    ]},
+    "3-2-canyon-cliffs": {"world":"desert-canyon","sections":[
+      {"kind":"cliff-entry","width":1300,"surface":"rock","enemies":["sky-wasp"]},
+      {"kind":"wall-route","width":1700,"surface":"rock","mechanics":["wall-routes"],"hazards":["falling-rocks"],"enemies":["thorn-beetle"]},
+      {"kind":"moving-lifts","width":1700,"surface":"metal","mechanics":["moving-platforms"],"enemies":["sky-wasp","drone-bot"]},
+      {"kind":"sludge-basin","width":1700,"surface":"rock","enemies":["sludge-monster","thorn-beetle"]},
+      {"kind":"cliff-exit","width":1600,"surface":"rock","hazards":["falling-rocks"],"enemies":["sky-wasp"]}
+    ]},
+    "3-3-dusty-winds": {"world":"desert-canyon","sections":[
+      {"kind":"wind-entry","width":1300,"surface":"sand","mechanics":["wind-zones"],"enemies":["sky-wasp"]},
+      {"kind":"sandstorm","width":1700,"surface":"sand","hazards":["sandstorm"],"enemies":["bone-weed","drone-bot"]},
+      {"kind":"gust-bridges","width":1700,"surface":"rock","mechanics":["wind-zones"],"enemies":["sky-wasp"]},
+      {"kind":"storm-eye","width":1700,"surface":"rock","hazards":["sandstorm"],"enemies":["bone-weed","drone-bot"]},
+      {"kind":"spire-road","width":1800,"surface":"rock","enemies":["thorn-beetle"]}
+    ]},
+    "3-4-sun-spire": {"world":"desert-canyon","sections":[
+      {"kind":"spire-entry","width":1000,"surface":"rock","enemies":["thorn-beetle","sludge-monster"]},
+      {"kind":"lava-lift","width":1200,"surface":"metal","hazards":["lava"],"mechanics":["moving-platforms"],"enemies":["drone-bot"]},
+      {"kind":"titan-approach","width":1000,"surface":"rock","enemies":["sludge-monster"]},
+      {"kind":"boss-arena","width":2000,"surface":"rock","mechanics":["arena-lock"],"boss":"scorchroot-titan"},
+      {"kind":"spire-restored","width":600,"surface":"sand"}
+    ]},
+    "4-1-icy-pass": {"world":"frozen-peaks","sections":[
+      {"kind":"snow-entry","width":1300,"surface":"ice","mechanics":["slippery-ground"],"enemies":["root-crawler"]},
+      {"kind":"ice-spike-run","width":1500,"surface":"ice","hazards":["ice-spikes"],"enemies":["sky-wasp"]},
+      {"kind":"frozen-lifts","width":1600,"surface":"ice","mechanics":["moving-platforms"],"enemies":["drone-bot"]},
+      {"kind":"ice-intro","width":1600,"surface":"ice","carrier":"ice","enemies":["root-crawler","drone-bot"]},
+      {"kind":"pass-exit","width":1600,"surface":"ice","hazards":["ice-spikes"],"enemies":["sky-wasp"]}
+    ]},
+    "4-2-crystal-caverns": {"world":"frozen-peaks","sections":[
+      {"kind":"cave-entry","width":1300,"surface":"stone","enemies":["toxic-spore"]},
+      {"kind":"icicle-hall","width":1700,"surface":"ice","hazards":["falling-icicles"],"enemies":["bone-weed"]},
+      {"kind":"crystal-bounce","width":1700,"surface":"ice","mechanics":["crystal-bounce"],"enemies":["drone-bot"]},
+      {"kind":"ice-mastery","width":1700,"surface":"ice","carrier":"ice","enemies":["bone-weed","drone-bot"]},
+      {"kind":"cavern-exit","width":1800,"surface":"stone","hazards":["falling-icicles"],"enemies":["toxic-spore"]}
+    ]},
+    "4-3-frozen-bridges": {"world":"frozen-peaks","sections":[
+      {"kind":"bridge-entry","width":1300,"surface":"ice","enemies":["sky-wasp"]},
+      {"kind":"breakaway-one","width":1800,"surface":"ice","hazards":["breakaway-ice"],"mechanics":["collapsing-platforms"],"enemies":["thorn-beetle"]},
+      {"kind":"wind-bridge","width":1700,"surface":"ice","mechanics":["wind-zones"],"enemies":["sky-wasp","shadow-root"]},
+      {"kind":"breakaway-two","width":1800,"surface":"ice","hazards":["breakaway-ice"],"mechanics":["collapsing-platforms"],"enemies":["shadow-root"]},
+      {"kind":"gate-road","width":1800,"surface":"stone","enemies":["thorn-beetle"]}
+    ]},
+    "4-4-glacier-gate": {"world":"frozen-peaks","sections":[
+      {"kind":"gate-entry","width":1000,"surface":"ice","enemies":["spike-plant","shadow-root"]},
+      {"kind":"freeze-floor","width":1200,"surface":"ice","hazards":["freeze-floor"],"enemies":["shadow-root"]},
+      {"kind":"colossus-approach","width":1100,"surface":"stone","enemies":["spike-plant"]},
+      {"kind":"boss-arena","width":2100,"surface":"ice","mechanics":["arena-lock"],"boss":"frostbite-colossus"},
+      {"kind":"glacier-restored","width":600,"surface":"ice"}
+    ]},
+    "5-1-toxic-outskirts": {"world":"eco-city","sections":[
+      {"kind":"city-entry","width":1300,"surface":"metal","enemies":["toxic-spore","drone-bot"]},
+      {"kind":"toxic-conveyor","width":1700,"surface":"metal","mechanics":["conveyor-platforms"],"hazards":["toxic-slime"],"enemies":["sludge-monster"]},
+      {"kind":"electric-street","width":1700,"surface":"metal","hazards":["electric-floor"],"enemies":["drone-bot"]},
+      {"kind":"electric-mastery","width":1700,"surface":"metal","carrier":"electric","enemies":["drone-bot","sludge-monster"]},
+      {"kind":"outskirts-exit","width":1600,"surface":"metal","hazards":["toxic-slime"],"enemies":["toxic-spore"]}
+    ]},
+    "5-2-industrial-zone": {"world":"eco-city","sections":[
+      {"kind":"factory-entry","width":1400,"surface":"metal","enemies":["drone-bot","thorn-beetle"]},
+      {"kind":"laser-hall","width":1800,"surface":"metal","hazards":["laser-grid"],"enemies":["shadow-root"]},
+      {"kind":"crusher-line","width":1800,"surface":"metal","hazards":["crusher"],"mechanics":["timed-doors"],"enemies":["drone-bot"]},
+      {"kind":"moving-factory","width":1800,"surface":"metal","mechanics":["moving-platforms"],"enemies":["thorn-beetle","shadow-root"]},
+      {"kind":"reactor-road","width":1800,"surface":"metal","hazards":["laser-grid"],"enemies":["drone-bot"]}
+    ]},
+    "5-3-reactor-core": {"world":"eco-city","sections":[
+      {"kind":"reactor-entry","width":1100,"surface":"metal","enemies":["drone-bot","spike-plant"]},
+      {"kind":"beam-chamber","width":1500,"surface":"metal","hazards":["energy-beam","electric-floor"],"enemies":["sludge-monster"]},
+      {"kind":"sentinel-approach","width":1100,"surface":"metal","enemies":["drone-bot"]},
+      {"kind":"boss-arena","width":2200,"surface":"metal","mechanics":["arena-lock"],"boss":"eco-sentinel"},
+      {"kind":"reactor-stabilized","width":900,"surface":"metal"}
+    ]},
+    "5-4-the-last-seed": {"world":"eco-city","sections":[
+      {"kind":"final-entry","width":1200,"surface":"metal","enemies":["shadow-root","drone-bot"]},
+      {"kind":"power-gauntlet","width":1800,"surface":"metal","carrier":"fire","hazards":["electric-floor"],"enemies":["thorn-beetle","sludge-monster"]},
+      {"kind":"power-gauntlet-two","width":1800,"surface":"metal","carrier":"ice","hazards":["laser-grid"],"enemies":["bone-weed","shadow-root"]},
+      {"kind":"blight-throne","width":2600,"surface":"metal","mechanics":["arena-lock"],"boss":"blight-king"},
+      {"kind":"final-restoration","width":800,"surface":"grass"}
+    ]}
+  }
+}
