@@ -40,18 +40,19 @@ jobs:
           set -euo pipefail
           test -s site/wordpress/assets/brand/dtf-potleaf-512.png
           node --check scripts/rebuild-wordpress-visual-site.mjs
+          node --check scripts/run-wordpress-visual-rebuild-approved-only.mjs
           node -e "const p=require('./site/wordpress/visual-quality-policy.json'); if(Number(p.schemaVersion)<2||p.replacementPolicy?.automaticKeywordMediaSelectionAllowed!==false) process.exit(1)"
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
 
-      - name: Rebuild brand shell, Home, and Learn
+      - name: Rebuild brand shell, Home, and Learn with approved visuals only
         id: site
         env:
           APPLY_VISUAL_REBUILD: 'true'
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/rebuild-wordpress-visual-site.mjs | tee "$RUNNER_TEMP/visual-rebuild.log"
+          node scripts/run-wordpress-visual-rebuild-approved-only.mjs | tee "$RUNNER_TEMP/visual-rebuild.log"
           report_dir="$(cat "$BACKUP_ROOT/visual-rebuild-backup-path.txt")"
           report="$report_dir/visual-rebuild-report.json"
           echo "media_count=$(node -p "require(process.argv[1]).mediaCount" "$report")" >> "$GITHUB_OUTPUT"
@@ -179,7 +180,7 @@ jobs:
                 `WordPress media indexed: **${process.env.SITE_MEDIA||'not-run'}**`,
                 `Cannabis-leaf site icon media ID: **${process.env.BRAND_ID||'not-run'}**`,
                 `Live visual verification: **${process.env.LIVE_OUTCOME||'not-run'}**`,
-                `Optional approved visual selections not found: **${process.env.MISSING||'none'}**`,'',
-                'Legacy infographic gallery rebuilding and minimum-image quotas are intentionally disabled. The visual system may render without an image until an explicitly approved replacement exists.'
+                `Approved visual selections not found: **${process.env.MISSING||'none'}**`,'',
+                'Legacy infographic gallery rebuilding, automatic keyword media selection, and minimum-image quotas are intentionally disabled. Cards render without imagery until an explicitly approved role-specific replacement exists.'
               ].join('\n')
             });
