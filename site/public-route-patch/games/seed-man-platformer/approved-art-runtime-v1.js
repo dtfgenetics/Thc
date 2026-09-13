@@ -1,8 +1,11 @@
 'use strict';
 
 (() => {
-  const VERSION = 'seed-man-approved-art-runtime-v2';
+  const VERSION = 'seed-man-approved-art-runtime-v3-transition';
   const CHARACTER_KEY = 'character.seedman.atlas';
+  const CHARACTER_TARGET = 'classic-seed-man-oval-v1';
+  const CURRENT_CHARACTER = 'green-armored-plant-hero';
+  const CURRENT_STATUS = 'temporary-legacy-replacement-pending';
   const FRAME_COLS = 5;
   const FRAME_ROWS = 2;
   const POSES = Object.freeze({
@@ -50,6 +53,15 @@
     return form !== 'plant' ? form : pose();
   }
 
+  function syncIdentity(status='loading') {
+    const root=document.documentElement;
+    root.dataset.seedManCharacterTarget=CHARACTER_TARGET;
+    root.dataset.seedManCharacterCurrent=CURRENT_CHARACTER;
+    root.dataset.seedManCharacterArtStatus=CURRENT_STATUS;
+    root.dataset.seedManApprovedRuntimeStatus=status;
+    delete root.dataset.seedManCharacterContract;
+  }
+
   function drawApprovedSeedMan() {
     const s = playerState();
     if (!ready || !characterImage || !s || typeof ctx === 'undefined' || !ctx) return;
@@ -75,6 +87,7 @@
   }
 
   function claimRenderer() {
+    syncIdentity(ready?'temporary-ready':failed?'failed':'loading');
     if (typeof window.drawSeedManProduction === 'function' || window.__SEED_MAN_PRODUCTION_ART__) {
       document.documentElement.dataset.seedManApprovedRuntime = 'delegated-to-production';
       return false;
@@ -84,8 +97,7 @@
     try { drawSeedMan = drawApprovedSeedMan; } catch {}
     installs += 1;
     document.documentElement.dataset.seedManRendererOwner = VERSION;
-    document.documentElement.dataset.seedManCharacterContract = 'green-armored-plant-hero';
-    document.documentElement.dataset.seedManApprovedArt = ready ? 'ready' : failed ? 'failed' : 'loading';
+    document.documentElement.dataset.seedManApprovedRuntime = 'temporary-atlas-fallback';
     return true;
   }
 
@@ -93,8 +105,8 @@
     const src = approvedImages()?.[CHARACTER_KEY];
     if (!src) {
       failed = true;
-      document.documentElement.dataset.seedManApprovedArt = 'missing-character';
-      console.error(`Seed Man approved art pack is missing ${CHARACTER_KEY}`);
+      syncIdentity('missing-character');
+      console.error(`Seed Man transition art pack is missing ${CHARACTER_KEY}`);
       return;
     }
     const image = new Image();
@@ -104,17 +116,18 @@
       ready = true;
       failed = false;
       claimRenderer();
-      document.documentElement.dataset.seedManApprovedArt = 'ready';
+      syncIdentity('temporary-ready');
     }, { once: true });
     image.addEventListener('error', () => {
       failed = true;
       ready = false;
-      document.documentElement.dataset.seedManApprovedArt = 'failed';
-      console.error('Seed Man approved character atlas failed to decode.');
+      syncIdentity('failed');
+      console.error('Seed Man temporary character atlas failed to decode.');
     }, { once: true });
     image.src = src;
   }
 
+  syncIdentity();
   loadCharacter();
   claimRenderer();
   window.addEventListener('DOMContentLoaded', claimRenderer, { once: true });
@@ -124,10 +137,12 @@
   window.__SEED_MAN_APPROVED_ART_RUNTIME__ = Object.freeze({
     version: VERSION,
     characterKey: CHARACTER_KEY,
-    characterContract: 'green-armored-plant-hero',
+    characterTarget: CHARACTER_TARGET,
+    currentCharacterAsset: CURRENT_CHARACTER,
+    currentCharacterStatus: CURRENT_STATUS,
     phenotypeForms:Object.freeze(['plant','fire','electric','ice']),
     frames: POSES,
-    snapshot: () => ({ ready, failed, installs, pose: pose(), phenotype: phenotype(), frame: frameName(), rendererOwner: document.documentElement.dataset.seedManRendererOwner }),
+    snapshot: () => ({ ready, failed, installs, pose: pose(), phenotype: phenotype(), frame: frameName(), rendererOwner: document.documentElement.dataset.seedManRendererOwner, characterTarget:CHARACTER_TARGET, currentCharacterAsset:CURRENT_CHARACTER, currentCharacterStatus:CURRENT_STATUS }),
     reinstall: claimRenderer
   });
 })();
