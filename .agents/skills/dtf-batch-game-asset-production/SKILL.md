@@ -18,6 +18,18 @@ This skill is for actual game assets, not generic inspiration boards. Concept sh
 - If a set contains more than 10 assets, split it into numbered waves of up to 10.
 - Never substitute a single collage or contact sheet when the requirement is for individual production assets.
 
+## Generator Collage Failure Recovery
+
+If the image generator returns a collage/contact sheet/poster when individual production assets were requested:
+1. Immediately classify the result as **review-only concept/reference**, never runtime art.
+2. Save the concept sheet only in the game's Drive art-direction/review area and register it as `runtimeEligible: false` if it is worth keeping.
+3. Do **not** crop, slice, or upscale panels from the collage into production assets.
+4. Retry using one explicit asset per generation when the current generator cannot reliably return multiple individual outputs.
+5. Continue through the requested batch sequentially until each needed asset exists as its own full-resolution image.
+6. Only approved individual files proceed to runtime export, GitHub/public placement, manifest updates, and site wiring.
+
+A failed multi-output attempt does not count as completing the production batch.
+
 ## Two Production Modes
 
 ### 1. Parallel Batch Mode
