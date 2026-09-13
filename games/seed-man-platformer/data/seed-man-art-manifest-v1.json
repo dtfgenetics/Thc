@@ -33,8 +33,7 @@
     "vfx.fire": {"renderer":"seed-man-canvas-vfx-v2","role":"combat-vfx","form":"fire"},
     "vfx.electric": {"renderer":"seed-man-canvas-vfx-v2","role":"combat-vfx","form":"electric"},
     "vfx.ice": {"renderer":"seed-man-canvas-vfx-v2","role":"combat-vfx","form":"ice"},
-
-    "world.greenhouse-valley.background": {"src":"assets/worlds/greenhouse-valley-bg-v1.webp","renderer":"seed-man-authored-flat-background-v1","fallbackRenderer":"seed-man-canvas-world-gradient-v1","world":"greenhouse-valley","role":"background","temporaryFlattened":true},
+    "world.greenhouse-valley.background": {"src":"assets/worlds/greenhouse-valley-bg-v1.png","renderer":"seed-man-authored-flat-background-v1","fallbackRenderer":"seed-man-canvas-world-gradient-v1","world":"greenhouse-valley","role":"background","temporaryFlattened":true},
     "world.greenhouse-valley.sky": {"renderer":"seed-man-three-world-v2","world":"greenhouse-valley","role":"sky","status":"needed"},
     "world.greenhouse-valley.far-bg": {"renderer":"seed-man-three-world-v2","world":"greenhouse-valley","role":"far-bg","status":"needed"},
     "world.greenhouse-valley.mid-bg": {"renderer":"seed-man-three-world-v2","world":"greenhouse-valley","role":"mid-bg","status":"needed"},
@@ -42,8 +41,7 @@
     "world.greenhouse-valley.gameplay": {"renderer":"seed-man-three-world-v2","world":"greenhouse-valley","role":"gameplay","status":"needed"},
     "world.greenhouse-valley.foreground": {"renderer":"seed-man-three-world-v2","world":"greenhouse-valley","role":"foreground","status":"needed"},
     "world.greenhouse-valley.vfx": {"renderer":"seed-man-three-world-v2","world":"greenhouse-valley","role":"vfx","status":"needed"},
-
-    "world.forest-ruins.background": {"src":"assets/worlds/forest-ruins-bg-v1.webp","renderer":"seed-man-authored-flat-background-v1","fallbackRenderer":"seed-man-canvas-world-gradient-v1","world":"forest-ruins","role":"background","temporaryFlattened":true},
+    "world.forest-ruins.background": {"src":"assets/worlds/forest-ruins-bg-v1.png","renderer":"seed-man-authored-flat-background-v1","fallbackRenderer":"seed-man-canvas-world-gradient-v1","world":"forest-ruins","role":"background","temporaryFlattened":true},
     "world.forest-ruins.sky": {"renderer":"seed-man-three-world-v2","world":"forest-ruins","role":"sky","status":"needed"},
     "world.forest-ruins.far-bg": {"renderer":"seed-man-three-world-v2","world":"forest-ruins","role":"far-bg","status":"needed"},
     "world.forest-ruins.mid-bg": {"renderer":"seed-man-three-world-v2","world":"forest-ruins","role":"mid-bg","status":"needed"},
@@ -51,8 +49,7 @@
     "world.forest-ruins.gameplay": {"renderer":"seed-man-three-world-v2","world":"forest-ruins","role":"gameplay","status":"needed"},
     "world.forest-ruins.foreground": {"renderer":"seed-man-three-world-v2","world":"forest-ruins","role":"foreground","status":"needed"},
     "world.forest-ruins.vfx": {"renderer":"seed-man-three-world-v2","world":"forest-ruins","role":"vfx","status":"needed"},
-
-    "world.desert-canyon.background": {"src":"assets/worlds/desert-canyon-bg-v1.webp","renderer":"seed-man-authored-flat-background-v1","fallbackRenderer":"seed-man-canvas-world-gradient-v1","world":"desert-canyon","role":"background","temporaryFlattened":true},
+    "world.desert-canyon.background": {"src":"assets/worlds/desert-canyon-bg-v1.png","renderer":"seed-man-authored-flat-background-v1","fallbackRenderer":"seed-man-canvas-world-gradient-v1","world":"desert-canyon","role":"background","temporaryFlattened":true},
     "world.desert-canyon.sky": {"renderer":"seed-man-three-world-v2","world":"desert-canyon","role":"sky","status":"needed"},
     "world.desert-canyon.far-bg": {"renderer":"seed-man-three-world-v2","world":"desert-canyon","role":"far-bg","status":"needed"},
     "world.desert-canyon.mid-bg": {"renderer":"seed-man-three-world-v2","world":"desert-canyon","role":"mid-bg","status":"needed"},
@@ -60,8 +57,7 @@
     "world.desert-canyon.gameplay": {"renderer":"seed-man-three-world-v2","world":"desert-canyon","role":"gameplay","status":"needed"},
     "world.desert-canyon.foreground": {"renderer":"seed-man-three-world-v2","world":"desert-canyon","role":"foreground","status":"needed"},
     "world.desert-canyon.vfx": {"renderer":"seed-man-three-world-v2","world":"desert-canyon","role":"vfx","status":"needed"},
-
-    "world.frozen-peaks.background": {"src":"assets/worlds/frozen-peaks-bg-v1.webp","renderer":"seed-man-authored-flat-background-v1","fallbackRenderer":"seed-man-canvas-world-gradient-v1","world":"frozen-peaks","role":"background","temporaryFlattened":true},
+    "world.frozen-peaks.background": {"src":"assets/worlds/frozen-peaks-bg-v1.png","renderer":"seed-man-authored-flat-background-v1","fallbackRenderer":"seed-man-canvas-world-gradient-v1","world":"frozen-peaks","role":"background","temporaryFlattened":true},
     "world.frozen-peaks.sky": {"renderer":"seed-man-three-world-v2","world":"frozen-peaks","role":"sky","status":"needed"},
     "world.frozen-peaks.far-bg": {"renderer":"seed-man-three-world-v2","world":"frozen-peaks","role":"far-bg","status":"needed"},
     "world.frozen-peaks.mid-bg": {"renderer":"seed-man-three-world-v2","world":"frozen-peaks","role":"mid-bg","status":"needed"},
@@ -69,8 +65,7 @@
     "world.frozen-peaks.gameplay": {"renderer":"seed-man-three-world-v2","world":"frozen-peaks","role":"gameplay","status":"needed"},
     "world.frozen-peaks.foreground": {"renderer":"seed-man-three-world-v2","world":"frozen-peaks","role":"foreground","status":"needed"},
     "world.frozen-peaks.vfx": {"renderer":"seed-man-three-world-v2","world":"frozen-peaks","role":"vfx","status":"needed"},
-
-    "world.eco-city.background": {"src":"assets/worlds/eco-city-bg-v1.webp","renderer":"seed-man-authored-flat-background-v1","fallbackRenderer":"seed-man-canvas-world-gradient-v1","world":"eco-city","role":"background","temporaryFlattened":true},
+    "world.eco-city.background": {"src":"assets/worlds/eco-city-bg-v1.png","renderer":"seed-man-authored-flat-background-v1","fallbackRenderer":"seed-man-canvas-world-gradient-v1","world":"eco-city","role":"background","temporaryFlattened":true},
     "world.eco-city.sky": {"renderer":"seed-man-three-world-v2","world":"eco-city","role":"sky","status":"needed"},
     "world.eco-city.far-bg": {"renderer":"seed-man-three-world-v2","world":"eco-city","role":"far-bg","status":"needed"},
     "world.eco-city.mid-bg": {"renderer":"seed-man-three-world-v2","world":"eco-city","role":"mid-bg","status":"needed"},
