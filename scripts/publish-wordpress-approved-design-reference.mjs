@@ -9,6 +9,7 @@ const assetPath=process.env.APPROVED_DESIGN_REFERENCE_PATH||'site/wordpress/asse
 const slug='dtf-course-header-approved-reference-v1';
 const driveUrl='https://drive.google.com/file/d/1kJMXWFSz_2BICRlQJZnmZqoC45ee875x/view?usp=drivesdk';
 const repoPath='site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg';
+const assetRole='optimized preview derivative of the full-resolution Google Drive canonical';
 const auth=user&&pass?`Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}`:'';
 const must=(v,m)=>{if(!v)throw new Error(m)};
 
@@ -62,16 +63,18 @@ must(user&&pass,'WordPress credentials are required.');
 const bytes=await readFile(assetPath);
 const image=inspectImage(bytes);
 const magic=bytes.subarray(0,16).toString('hex');
-must(bytes.length>4_096,'Approved design reference asset is unexpectedly small.');
+must(bytes.length>1_024,'Approved design reference preview asset is unexpectedly small.');
 must(image,`Approved design reference has an unsupported or invalid image format (magic ${magic}).`);
-must(image.width>=800&&image.height>=500,`Approved design reference resolution is too small: ${image.width}x${image.height}.`);
+const shortSide=Math.min(image.width,image.height);
+const longSide=Math.max(image.width,image.height);
+must(shortSide>=300&&longSide>=450,`Approved design reference preview resolution is too small: ${image.width}x${image.height}.`);
 const filename=`DTF_Course_Header_Approved_Reference_v1.${image.extension}`;
 
 async function request(path,options={}){
   const response=await fetch(`${site}${path}`,{
     ...options,
     signal:AbortSignal.timeout(60_000),
-    headers:{Authorization:auth,'User-Agent':'DTF-Approved-Design-Reference/1.2',...(options.headers||{})}
+    headers:{Authorization:auth,'User-Agent':'DTF-Approved-Design-Reference/1.3',...(options.headers||{})}
   });
   const text=await response.text();let body=text;try{body=text?JSON.parse(text):null}catch{}
   if(!response.ok)throw new Error(`${options.method||'GET'} ${path} failed (${response.status}): ${typeof body==='string'?body.slice(0,500):JSON.stringify(body).slice(0,500)}`);
@@ -96,8 +99,8 @@ if(apply){
       slug,
       title:'DTF Course Header — Approved Sitewide Design Reference v1',
       alt_text:'Approved DTF Genetics course and sitewide header design reference showing the dark evergreen navigation and structured learning interface.',
-      caption:'Approved sitewide DTF Genetics header and course-interface design reference.',
-      description:`Canonical visual design reference for the DTF Genetics shared site header and Course 1 learning interface. GitHub: ${repoPath}. Google Drive: ${driveUrl}. This image is a design reference; live navigation remains semantic HTML/CSS.`
+      caption:'Approved sitewide DTF Genetics header and course-interface design reference. Full-resolution canonical master is archived in Google Drive.',
+      description:`Approved visual design reference for the DTF Genetics shared site header and Course 1 learning interface. WordPress and GitHub store an optimized preview derivative for durable site/repository reference. The full-resolution canonical master remains in Google Drive: ${driveUrl}. GitHub preview: ${repoPath}. Live navigation remains semantic HTML/CSS.`
     }),
     headers:{'Content-Type':'application/json'}
   });
@@ -107,4 +110,4 @@ const verify=await request(`/wp-json/wp/v2/media/${item.id}?context=edit`);
 must(verify.slug===slug,`Unexpected WordPress media slug: ${verify.slug}`);
 must(/^https:\/\//.test(verify.source_url||''),'WordPress media source URL is missing.');
 must((verify.mime_type||'').startsWith('image/'),'WordPress media is not an image.');
-console.log(JSON.stringify({result:'success',mediaId:verify.id,slug:verify.slug,sourceUrl:verify.source_url,repoPath,driveUrl,bytes:bytes.length,image},null,2));
+console.log(JSON.stringify({result:'success',mediaId:verify.id,slug:verify.slug,sourceUrl:verify.source_url,repoPath,driveUrl,assetRole,bytes:bytes.length,image},null,2));

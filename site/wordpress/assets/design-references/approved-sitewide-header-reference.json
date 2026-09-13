@@ -1,21 +1,38 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "id": "dtf-approved-sitewide-header-reference-v1",
   "status": "approved",
   "purpose": "Canonical visual and information-architecture reference for the DTF Genetics sitewide shared header and structured course-interface direction.",
   "usage": "Use as a design specification and QA reference. Do not rasterize the screenshot into live navigation; the production header remains semantic HTML/CSS.",
+  "assetContract": {
+    "canonicalMaster": "Google Drive stores the full-resolution approved master.",
+    "repositoryPreview": "GitHub stores a durable optimized preview derivative for versioned design/QA reference.",
+    "wordpressPreview": "WordPress Media stores the site-side copy of the optimized repository preview and links back to the Drive master."
+  },
   "repository": {
     "repo": "dtfgenetics/Thc",
-    "path": "site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg"
+    "path": "site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg",
+    "role": "optimized preview derivative",
+    "gitBlobSha": "fc170958991f5e1cb9f8fd0642ff8052dfe8ae30",
+    "expectedMinimumShortSidePx": 300,
+    "expectedMinimumLongSidePx": 450
   },
   "googleDrive": {
     "folderId": "1PGuk_DQe0za2ERPybjGKXImpAcXxCXQw",
     "fileId": "1kJMXWFSz_2BICRlQJZnmZqoC45ee875x",
-    "fileName": "DTF_Course_Header_Approved_Reference_v1.png"
+    "fileName": "DTF_Course_Header_Approved_Reference_v1.png",
+    "role": "canonical full-resolution master",
+    "mimeType": "image/png",
+    "widthPx": 1024,
+    "heightPx": 1536,
+    "sizeBytes": 2144358,
+    "sha256": "b8118fec0b3da53ca9a5ebda27cb3c19234c6dbbfef7fec1f33af1c00e5597e6"
   },
   "wordpress": {
     "mediaSlug": "dtf-course-header-approved-reference-v1",
-    "title": "DTF Course Header — Approved Sitewide Design Reference v1"
+    "title": "DTF Course Header — Approved Sitewide Design Reference v1",
+    "role": "site-side optimized preview derivative",
+    "sourceOfTruth": "googleDrive.fileId"
   },
   "canonicalNavigation": [
     { "label": "Home", "href": "/" },
