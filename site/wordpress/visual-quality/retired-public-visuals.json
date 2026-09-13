@@ -1,34 +1,33 @@
 {
-  "schemaVersion": 1,
-  "policy": "Public pages must not render legacy low-quality educational diagram/infographic media. Retired media may remain in source control for historical reference, but it must not be published to dtfseeds.com. New replacement visuals require the approval marker DTF_APPROVED_PUBLIC_VISUAL in WordPress media metadata before this guard will allow a matching legacy-series filename or title.",
+  "schemaVersion": 2,
+  "policy": "Public pages must not render the retired low-quality educational diagram/infographic families. The rule applies whether an image is a current WordPress media attachment, an orphaned uploads URL, or a hardcoded source URL. Retired files may remain in source control only as historical/archive material; they must not be rendered on dtfseeds.com. A future replacement may bypass a family-name collision only when its media metadata contains DTF_APPROVED_PUBLIC_VISUAL.",
   "approvalMarker": "DTF_APPROVED_PUBLIC_VISUAL",
   "retireTextContains": [
-    "Teaching Healthy Cultivation — C",
-    "Teaching Healthy Cultivation - C",
-    "Teaching Healthy Cultivation — ENC",
-    "Teaching Healthy Cultivation - ENC",
-    "Teaching Healthy Cultivation — Outdoor",
-    "Teaching Healthy Cultivation - Outdoor",
+    "Teaching Healthy Cultivation C",
+    "Teaching Healthy Cultivation ENC",
+    "Teaching Healthy Cultivation Outdoor",
     "C011 Companion Respiration Root Oxygen",
     "Outdoor 07 Sex Expression Pollen Drift and Seed Set Investigation",
     "Beneficial Insects and Biological Controls",
     "Cannabis Plant Anatomy Infographic",
     "Cannabis Plant Life Cycle Seed to Harvest Infographic",
+    "Cannabis Sex Expression and Chromosome Combinations",
     "Nutrient Uptake and Root Zone Chemistry",
     "Plant Training Basics Infographic",
     "Stage 3 Seedling Establishment Infographic",
     "Training Recovery and Aftercare Infographic"
   ],
   "retireRegex": [
-    "\\bC\\d{3}\\b.*\\b(?:infographic|companion)\\b",
-    "\\bENC[ _-]?\\d{3}\\b",
+    "\\b(?:THC[ _-]?)?C\\d{3}\\b",
+    "\\b(?:THC[ _-]?)?ENC[ _-]?\\d{3}\\b",
     "\\bOutdoor[ _-]?\\d{2}\\b",
     "\\bStage[ _-]?\\d+\\b.*\\binfographic\\b",
+    "\\bCannabis\\b.*\\b(?:Anatomy|Life Cycle|Sex Expression)\\b.*\\b(?:Infographic|Chromosome|Combinations)\\b",
     "\\b(?:infographic|companion)\\b.*\\b(?:xylem|trichome|root oxygen|root anatomy|gas exchange|deficiency|toxicity|vpd|seedling|training|pollination|fertilization)\\b"
   ],
   "notes": [
-    "This list is intentionally biased toward removing the legacy diagram style currently visible on production.",
-    "Do not weaken or remove a retirement rule merely to make a publisher pass. Replace the asset with an approved production visual instead.",
-    "The guard removes references from public WordPress content and may delete the retired WordPress media attachment when production cleanup is enabled."
+    "The C###, ENC-### and Outdoor-## educational image families are retired from all visitor-facing surfaces, regardless of whether WordPress still indexes the underlying upload as media.",
+    "Do not weaken a retirement rule merely to make a publisher pass. Replace the visual with an explicitly approved production asset instead.",
+    "The guard removes references from public WordPress content, clears retired featured media, and deletes a matched WordPress media attachment when production cleanup is enabled."
   ]
 }

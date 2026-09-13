@@ -17,15 +17,39 @@ await mkdir(backupDir, { recursive: true });
 
 const rules = JSON.parse(await readFile(rulesPath, 'utf8'));
 const approvalMarker = String(rules.approvalMarker || 'DTF_APPROVED_PUBLIC_VISUAL').toLowerCase();
-const retireContains = (rules.retireTextContains || []).map((value) => String(value).toLowerCase());
 const retireRegex = (rules.retireRegex || []).map((value) => new RegExp(value, 'i'));
 const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
 const baseHeaders = {
   Authorization: auth,
   Accept: 'application/json',
   'Cache-Control': 'no-cache',
-  'User-Agent': 'DTFSeeds-Retired-Visual-Guard/1.0'
+  'User-Agent': 'DTFSeeds-Retired-Visual-Guard/2.0'
 };
+
+function normalizeText(value = '') {
+  let text = String(value);
+  try { text = decodeURIComponent(text); } catch {}
+  return text
+    .replace(/&(?:amp|quot|apos|#039|#39);/gi, ' ')
+    .replace(/[_/\\-]+/g, ' ')
+    .replace(/[^a-zA-Z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+const normalizedApprovalMarker = normalizeText(approvalMarker);
+const retireContains = (rules.retireTextContains || []).map(normalizeText).filter(Boolean);
+
+function isRetiredText(value) {
+  const raw = String(value || '');
+  if (!raw) return false;
+  const rawLower = raw.toLowerCase();
+  const normalized = normalizeText(raw);
+  if (rawLower.includes(approvalMarker) || (normalizedApprovalMarker && normalized.includes(normalizedApprovalMarker))) return false;
+  if (retireContains.some((needle) => normalized.includes(needle))) return true;
+  return retireRegex.some((regex) => regex.test(raw) || regex.test(normalized));
+}
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -83,11 +107,7 @@ function mediaText(item) {
 }
 
 function isRetiredMedia(item) {
-  const text = mediaText(item);
-  const lower = text.toLowerCase();
-  if (!text || lower.includes(approvalMarker)) return false;
-  if (retireContains.some((needle) => lower.includes(needle))) return true;
-  return retireRegex.some((regex) => regex.test(text));
+  return isRetiredText(mediaText(item));
 }
 
 async function fetchAll(path, { limitPages = 100 } = {}) {
@@ -107,10 +127,6 @@ async function fetchAll(path, { limitPages = 100 } = {}) {
   return rows;
 }
 
-function escapeRegExp(value) {
-  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
 function createFingerprints(retired) {
   const urls = retired.map((item) => item.source_url).filter(Boolean);
   const filenames = urls.map((url) => {
@@ -121,7 +137,9 @@ function createFingerprints(retired) {
 }
 
 function blockContainsRetired(block, fingerprints) {
-  const lower = String(block || '').toLowerCase();
+  const source = String(block || '');
+  if (isRetiredText(source)) return true;
+  const lower = source.toLowerCase();
   if (fingerprints.urls.some((url) => lower.includes(String(url).toLowerCase()))) return true;
   if (fingerprints.filenames.some((name) => lower.includes(String(name).toLowerCase()))) return true;
   return fingerprints.ids.some((id) =>
@@ -136,10 +154,12 @@ function blockContainsRetired(block, fingerprints) {
 function scrubHtml(html, fingerprints) {
   let next = String(html || '');
   let removed = 0;
+  let directPatternRemovals = 0;
   const removeMatchingBlocks = (regex) => {
     next = next.replace(regex, (block) => {
       if (!blockContainsRetired(block, fingerprints)) return block;
       removed += 1;
+      if (isRetiredText(block)) directPatternRemovals += 1;
       return '';
     });
   };
@@ -151,20 +171,19 @@ function scrubHtml(html, fingerprints) {
   removeMatchingBlocks(/<source\b[^>]*>/gi);
   removeMatchingBlocks(/<!--\s*wp:image\s+\{[\s\S]*?\}\s*-->/gi);
 
-  for (const url of fingerprints.urls) {
-    const encoded = escapeRegExp(url);
-    next = next.replace(new RegExp(`background(?:-image)?\\s*:\\s*url\\((['"]?)${encoded}\\1\\)\\s*;?`, 'gi'), () => {
-      removed += 1;
-      return '';
-    });
-  }
+  next = next.replace(/background(?:-image)?\s*:\s*url\(([^)]*)\)\s*;?/gi, (declaration) => {
+    if (!blockContainsRetired(declaration, fingerprints)) return declaration;
+    removed += 1;
+    if (isRetiredText(declaration)) directPatternRemovals += 1;
+    return '';
+  });
 
   next = next
     .replace(/<figure\b[^>]*>\s*<\/figure>/gi, '')
     .replace(/<picture\b[^>]*>\s*<\/picture>/gi, '')
     .replace(/\n{3,}/g, '\n\n');
 
-  return { html: next, removed };
+  return { html: next, removed, directPatternRemovals };
 }
 
 function itemDescriptor(typeName, item) {
@@ -201,6 +220,7 @@ await writeFile(join(backupDir, 'retired-media-index.json'), `${JSON.stringify(r
 const publicTypes = await discoverPublicTypes();
 const changed = [];
 const inspected = [];
+let totalDirectPatternRemovals = 0;
 
 for (const type of publicTypes) {
   let items;
@@ -213,7 +233,7 @@ for (const type of publicTypes) {
 
   for (const item of items) {
     const content = rendered(item.content);
-    const { html, removed } = scrubHtml(content, fingerprints);
+    const { html, removed, directPatternRemovals } = scrubHtml(content, fingerprints);
     const featuredRetired = fingerprints.ids.includes(Number(item.featured_media || 0));
     inspected.push(itemDescriptor(type.name, item));
     if (!removed && !featuredRetired) continue;
@@ -233,7 +253,13 @@ for (const type of publicTypes) {
       });
     }
 
-    changed.push({ ...itemDescriptor(type.name, item), removedBlocks: removed, clearedFeaturedMedia: featuredRetired });
+    totalDirectPatternRemovals += directPatternRemovals;
+    changed.push({
+      ...itemDescriptor(type.name, item),
+      removedBlocks: removed,
+      directPatternRemovals,
+      clearedFeaturedMedia: featuredRetired
+    });
   }
 }
 
@@ -258,6 +284,7 @@ const report = {
   approvalMarker: rules.approvalMarker || null,
   mediaInspected: media.length,
   retiredMediaMatched: retired.length,
+  directPatternRemovals: totalDirectPatternRemovals,
   publicTypesInspected: publicTypes,
   contentItemsInspected: inspected.length,
   contentItemsChanged: changed.length,
