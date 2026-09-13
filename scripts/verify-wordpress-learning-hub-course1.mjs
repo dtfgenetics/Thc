@@ -6,6 +6,10 @@ const user = process.env.WP_API_USERNAME || '';
 const pass = process.env.WP_API_PASSWORD || '';
 const packagePath = process.env.LEARNING_HUB_COURSE1_PATH || 'site/wordpress/education/learning-hub-course1.json';
 const local = JSON.parse(await readFile(packagePath, 'utf8'));
+const sourceRepo = local.source?.repository;
+const sourceRef = local.source?.ref;
+const releaseManifestPath = local.source?.releaseManifest || 'content/public-releases/PUBLIC-RELEASE-LH-TECH1-001.json';
+const rawBase = `https://raw.githubusercontent.com/${sourceRepo}/${encodeURIComponent(sourceRef || '')}`;
 const must = (value, message) => { if (!value) throw new Error(message); };
 const rendered = (value) => typeof value === 'string' ? value : (value?.raw || value?.rendered || '');
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -22,6 +26,45 @@ must(user && pass, 'WordPress application credentials are required for readback 
 must(local?.course?.id === 'COURSE-LH-TECH1-001', 'Unexpected Course 1 package.');
 must(Array.isArray(local.modules) && local.modules.length === 6, 'Expected six Course 1 modules.');
 must(Array.isArray(local.learnerDocuments) && local.learnerDocuments.length === 3, 'Expected three learner documents.');
+must(sourceRepo === 'dtfgenetics/Thc-learning-courses-', 'Course 1 must verify against the canonical THC learning-courses repository.');
+must(/^[0-9a-f]{40}$/i.test(sourceRef || ''), 'Course 1 verification requires an exact pinned Academy commit.');
+
+async function fetchSourceJson(rel) {
+  let last;
+  const url = `${rawBase}/${rel}`;
+  for (let attempt = 1; attempt <= 6; attempt++) {
+    try {
+      const response = await fetch(url, {
+        signal: AbortSignal.timeout(30000),
+        headers: { 'User-Agent': 'DTF-Learning-Hub-Course1-Source-Verify/1.0' }
+      });
+      if (response.ok) return JSON.parse(await response.text());
+      last = new Error(`${url} returned ${response.status}`);
+    } catch (error) {
+      last = error;
+    }
+    if (attempt < 6) await sleep(attempt * 800);
+  }
+  throw last;
+}
+
+const release = await fetchSourceJson(releaseManifestPath);
+must(release?.id === 'PUBLIC-RELEASE-LH-TECH1-001', 'Unexpected canonical Course 1 release manifest.');
+must(release.courseId === local.course.id && release.publicationState === 'published', 'Pinned Course 1 release is not published for this course.');
+const expectedAssessments = [...local.modules.map((module) => module.assessment), local.finalAssessment];
+must(JSON.stringify(release.publicScope?.assessments) === JSON.stringify(expectedAssessments), 'Pinned canonical assessment scope differs from the site package.');
+
+const assessmentCounts = new Map();
+let canonicalPublicItems = 0;
+for (const id of expectedAssessments) {
+  const assessment = await fetchSourceJson(`content/assessments/${id}.json`);
+  must(['formative', 'summative'].includes(assessment.purpose), `${id}: credential-purpose assessment is not allowed in the public site verifier.`);
+  const count = Array.isArray(assessment.items) ? assessment.items.length : 0;
+  must(count > 0, `${id}: canonical assessment contains no public items.`);
+  assessmentCounts.set(id, count);
+  canonicalPublicItems += count;
+}
+must(canonicalPublicItems === Number(release.publicScope.publicCourseItems), `Pinned release declares ${release.publicScope.publicCourseItems} public items but its assessments contain ${canonicalPublicItems}.`);
 
 async function wp(path) {
   let last;
@@ -33,7 +76,7 @@ async function wp(path) {
         headers: {
           Authorization: auth,
           Accept: 'application/json',
-          'User-Agent': 'DTF-Learning-Hub-Course1-Readback/4.0'
+          'User-Agent': 'DTF-Learning-Hub-Course1-Readback/4.1'
         }
       });
       const text = await response.text();
@@ -77,10 +120,9 @@ function verifyPage(page, { label, minLength = 120, required = [], questionCount
   return content;
 }
 
-// Learn is owned by the Learning Experience publisher and can legitimately be
-// rewritten while Course 1 deploys. Course 1 verification therefore checks the
-// durable page hierarchy below Learn instead of requiring a historical marker in
-// the independently-owned /learn/ presentation layer.
+// /learn/ has an independently managed presentation layer. Verify the durable
+// Learning Hub hierarchy and Course 1 descendants without requiring an old
+// /learn/ visual marker.
 const learn = await pageBySlug('learn');
 verifyPage(learn, { label: '/learn/', minLength: 500 });
 
@@ -94,7 +136,7 @@ const course = await pageBySlug(local.course.slug, program.id);
 const courseContent = verifyPage(course, {
   label: local.course.route,
   minLength: 1200,
-  required: [local.course.title, 'How to use this course', 'Course map', '18 lessons', 'Integrated practical']
+  required: [local.course.title, 'How to use this course', 'Course map', '18 lessons', 'Integrated practical', String(canonicalPublicItems)]
 });
 must(courseContent.includes('dtf-learning-hub-course1-ui-v3'), 'Course index is missing the guided-learning UI marker.');
 must(courseContent.includes('dtf-learning-hub-course1-layout-v4'), 'Course index is missing the responsive Course 1 layout marker.');
@@ -132,28 +174,30 @@ for (const doc of local.learnerDocuments) {
 let publicQuestionCount = 0;
 for (const module of local.modules) {
   const slug = `test-module-${module.number}`;
+  const expectedCount = assessmentCounts.get(module.assessment);
   const page = await pageBySlug(slug, course.id);
   verifyPage(page, {
     label: `Module ${module.number} learning test`,
     minLength: 1800,
     required: ['Course mastery target:', 'not the passing standard for the separate secure certification examination', 'dtf-learning-hub-course1-layout-v4'],
-    questionCount: 12
+    questionCount: expectedCount
   });
-  publicQuestionCount += 12;
+  publicQuestionCount += expectedCount;
   verified.push({ type: 'module-test', number: module.number, id: page.id, slug });
 }
 
+const finalExpectedCount = assessmentCounts.get(local.finalAssessment);
 const final = await pageBySlug('final-course-test', course.id);
 verifyPage(final, {
   label: 'Course 1 final course test',
   minLength: 3500,
   required: ['Course mastery target:', 'not the passing standard for the separate secure certification examination', 'dtf-learning-hub-course1-layout-v4'],
-  questionCount: 36
+  questionCount: finalExpectedCount
 });
-publicQuestionCount += 36;
+publicQuestionCount += finalExpectedCount;
 verified.push({ type: 'final-test', id: final.id, slug: 'final-course-test' });
 
-must(publicQuestionCount === 108, `Expected 108 public course-learning items, verified ${publicQuestionCount}.`);
+must(publicQuestionCount === canonicalPublicItems, `Expected ${canonicalPublicItems} public course-learning items from pinned Academy source, verified ${publicQuestionCount}.`);
 must(verified.length === 19, `Expected 19 managed base Course 1 pages, verified ${verified.length}.`);
 
 const idSet = new Set(verified.map((page) => Number(page.id)));
@@ -163,9 +207,13 @@ console.log(JSON.stringify({
   verifiedAt: new Date().toISOString(),
   site,
   courseId: local.course.id,
+  sourceRepository: sourceRepo,
+  sourceRef,
+  releaseManifest: release.id,
   learnPageId: learn.id,
   managedBasePages: verified.length,
   publicCourseItems: publicQuestionCount,
+  assessmentItemCounts: Object.fromEntries(assessmentCounts),
   guidedUi: true,
   responsiveLayout: 'v4',
   pageIds: verified.map(({ type, number, id, slug }) => ({ type, ...(number ? { number } : {}), id, slug })),
