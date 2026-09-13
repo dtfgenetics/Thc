@@ -16,6 +16,8 @@ on:
       - 'Recreate Codex WordPress Production Path'
       - 'Rebuild DTFSeeds Visual Site On Command'
       - 'Reconcile DTFSeeds WordPress Pages On Command'
+      - 'Publish DTFSeeds Learning Experience V3'
+      - 'Publish THC Infographics to WordPress Production'
     types: [completed]
 
 permissions:
@@ -66,10 +68,11 @@ jobs:
           set -euo pipefail
           node scripts/scrub-retired-public-visuals.mjs | tee "$RUNNER_TEMP/retired-visual-scrub.log"
 
-      - name: Verify blocked legacy visual families are absent from key public routes
+      - name: Verify retired visual URLs are absent from key public routes
         shell: bash
         run: |
           set -euo pipefail
+          blocked='(src|srcset|background)[^>]{0,800}(THC[-_ ]?C[0-9]{3}|THC[-_ ]?ENC[-_ ]?[0-9]{3}|Outdoor[-_ ]?[0-9]{2}|Cannabis[_ -]Plant[_ -]Anatomy[_ -]Infographic|Cannabis[_ -]Plant[_ -]Life[_ -]Cycle[_ -]Seed[_ -]to[_ -]Harvest[_ -]Infographic|Cannabis[_ -]Sex[_ -]Expression[_ -]and[_ -]Chromosome[_ -]Combinations|Beneficial[_ -]Insects[_ -]and[_ -]Biological[_ -]Controls)'
           for path in / /learn/ /seeds/ /tools/; do
             body="$RUNNER_TEMP/verify-$(printf '%s' "$path" | tr '/' '_').html"
             curl -4 --fail --silent --show-error --location \
@@ -77,9 +80,9 @@ jobs:
               -H 'Pragma: no-cache' \
               "$WP_SITE_URL${path}?dtf_retired_visual_guard=${GITHUB_RUN_ID}-${RANDOM}" \
               -o "$body"
-            if grep -Eqi 'C[0-9]{3}[^<]{0,100}(Infographic|Companion)|ENC[ _-]?[0-9]{3}|Outdoor[ _-]?[0-9]{2}[^<]{0,120}(Investigation|Infographic)|C011 Companion Respiration Root Oxygen|Beneficial Insects and Biological Controls' "$body"; then
-              echo "Retired visual family still present on $path" >&2
-              grep -Eio '.{0,100}(C[0-9]{3}|ENC[ _-]?[0-9]{3}|Outdoor[ _-]?[0-9]{2}|C011 Companion Respiration Root Oxygen|Beneficial Insects and Biological Controls).{0,160}' "$body" | head -20 >&2 || true
+            if grep -Eqi "$blocked" "$body"; then
+              echo "Retired visual URL still renders on $path" >&2
+              grep -Eio '.{0,120}(THC[-_ ]?C[0-9]{3}|THC[-_ ]?ENC[-_ ]?[0-9]{3}|Outdoor[-_ ]?[0-9]{2}|Cannabis[_ -]Plant[_ -]Anatomy[_ -]Infographic|Cannabis[_ -]Sex[_ -]Expression[_ -]and[_ -]Chromosome[_ -]Combinations|Beneficial[_ -]Insects[_ -]and[_ -]Biological[_ -]Controls).{0,180}' "$body" | head -20 >&2 || true
               exit 1
             fi
           done
