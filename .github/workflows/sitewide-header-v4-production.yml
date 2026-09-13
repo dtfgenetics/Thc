@@ -89,6 +89,23 @@ jobs:
           grep -Fq 'thcUKnow' site/deployment/external-header-sources.json
           grep -Fq '99c084b6d502f12d0ab5140191b507a7e0d01229' site/deployment/external-header-sources.json
           node -e "const fs=require('fs');const x=JSON.parse(fs.readFileSync('site/wordpress/assets/design-references/approved-sitewide-header-reference.json','utf8'));if(x.status!=='approved'||!x.googleDrive?.fileId||!x.repository?.path||!x.wordpress?.mediaSlug)process.exit(1);console.log(x.id)"
+      - name: Inspect approved design-reference preview
+        shell: bash
+        env:
+          APPROVED_DESIGN_REFERENCE_INSPECT_ONLY: 'true'
+        run: |
+          set -euo pipefail
+          out="$RUNNER_TEMP/approved-design-reference-inspection.json"
+          node scripts/publish-wordpress-approved-design-reference.mjs | tee "$out"
+          node --input-type=module - "$out" <<'NODE'
+          import fs from 'node:fs';
+          const file=process.argv[2];
+          const x=JSON.parse(fs.readFileSync(file,'utf8'));
+          if(x.result!=='success'||x.mode!=='inspect') throw new Error('Approved design-reference inspection did not succeed.');
+          if(x.image?.mime!=='image/jpeg'||x.image?.width!==300||x.image?.height!==450) throw new Error(`Unexpected approved preview metadata: ${JSON.stringify(x.image)}`);
+          if(!x.image?.sofMarker) throw new Error('JPEG SOF marker was not resolved.');
+          console.log(`Approved preview parsed: ${x.image.width}x${x.image.height} ${x.image.mime} ${x.image.sofMarker}`);
+          NODE
       - name: Prove the static header reconciler is idempotent
         shell: bash
         run: |
