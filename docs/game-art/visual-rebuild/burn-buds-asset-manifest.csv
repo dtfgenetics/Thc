@@ -1,6 +1,10 @@
 asset_id,batch,category,name,state,format,aspect_or_size,transparent,drive_destination,runtime_destination,device_scope,status,drive_file_id,notes
-BB-REF-001,REFERENCE,art-direction,Premium Asset Direction Sheet,reference,PNG,3:2,false,08 Visual Assets,,all,drive-saved,1XS7OnkQ9AXjO7Otz_bLEYQtm6MMI1SfV,Reference sheet only; do not ship as runtime art. Individual production assets must be generated and integrated separately.
-BB-001-01,BB-001,battlefield,Master Garden Battlefield,base,PNG/WebP,1:1,false,08 Visual Assets/02 Battlefields/Player Garden,assets/battlefields/player-garden.webp,all,needed,,
+BB-REF-001,REFERENCE,art-direction,Premium Asset Direction Sheet,reference,PNG,3:2,false,08 Visual Assets/Art Direction/Review References,,all,drive-saved,1XS7OnkQ9AXjO7Otz_bLEYQtm6MMI1SfV,Reference sheet only; do not ship as runtime art. Individual production assets must be generated and integrated separately.
+BB-001-REF-01,BB-001,battlefield-reference,Player Garden Battlefield Reference v1,reference,PNG,3:2,false,08 Visual Assets/02 Battlefields/Player Garden,,all,drive-saved,1lhqffb2EpSAH4D-Esu5bOYkv7iqsXByx,Code-facing visual reference only; embedded grid and labels mean this is not the interactive runtime board.
+BB-001-REF-02,BB-001,battlefield-reference,Player Garden Battlefield Reference v2,reference,PNG,3:2,false,08 Visual Assets/02 Battlefields/Player Garden,,all,drive-saved,1hm_N_He0cjO1hs5ZjqTrsB5ZUyX0ywLJ,Preferred battlefield art-direction reference; runtime must be decomposed into board frame tiles overlays and interactive cells.
+BB-006-REF-01,BB-006,lobby-reference,Lobby Menu Scene v1,reference,PNG,16:9,false,08 Visual Assets/07 Lobby Multiplayer,,all,drive-saved,1XWPapiRKxj9MIoLiQzVPTba22UORgMyh,Reference only because menu buttons are baked into the image; use it to guide the real DOM lobby composition.
+BB-008-REF-01,BB-008,branding-reference,Burn Buds Logo Source v1,reference,PNG,near-square,false,08 Visual Assets/01 Branding/Logo,site/public-route-patch/games/protect-the-plants/assets/branding/burn-buds-logo-v1.webp,all,repo-integrated,1wDOspTCoaX8PWaiNOR2u5shHWspKbZza,Full-resolution Drive master; optimized WebP is committed in both game and public runtime paths and wired into burn-buds.css.
+BB-001-01,BB-001,battlefield,Master Garden Battlefield,base,PNG/WebP,1:1,false,08 Visual Assets/02 Battlefields/Player Garden,assets/battlefields/player-garden.webp,all,needed,,Must be generated as a runtime-safe modular battlefield without baked controls or duplicated interactive grid labels.
 BB-001-02,BB-001,battlefield,Opponent Garden Battlefield,base,PNG/WebP,1:1,false,08 Visual Assets/02 Battlefields/Opponent Garden,assets/battlefields/opponent-garden.webp,all,needed,,
 BB-001-03,BB-001,layout,Desktop Dual Board Composition,reference,PNG,16:9,false,08 Visual Assets/02 Battlefields/Desktop,docs/reference/burn-buds-desktop-dual-board.png,desktop,needed,,
 BB-001-04,BB-001,layout,Tablet Battle Composition,reference,PNG,4:3,false,08 Visual Assets/02 Battlefields/Tablet,docs/reference/burn-buds-tablet.png,tablet,needed,,
@@ -9,7 +13,7 @@ BB-001-06,BB-001,battlefield,Enemy Fog Treatment,overlay,PNG/WebP,1:1,true,08 Vi
 BB-001-07,BB-001,battlefield,Grid Soil Texture,tile,PNG/WebP,1:1,false,08 Visual Assets/02 Battlefields,assets/battlefields/grid-soil.webp,all,needed,,
 BB-001-08,BB-001,battlefield,Scorched Grid Texture,tile,PNG/WebP,1:1,false,08 Visual Assets/02 Battlefields,assets/battlefields/grid-scorched.webp,all,needed,,
 BB-001-09,BB-001,scene,Finished Gameplay Key Scene,reference,PNG,16:9,false,08 Visual Assets/02 Battlefields/Desktop,docs/reference/burn-buds-gameplay-key-scene.png,desktop,needed,,
-BB-001-10,BB-001,scene,Lobby Battle Table Scene,base,PNG/WebP,16:9,false,08 Visual Assets/07 Lobby Multiplayer,assets/lobby/lobby-battle-table.webp,all,needed,,
+BB-001-10,BB-001,scene,Lobby Battle Table Scene,base,PNG/WebP,16:9,false,08 Visual Assets/07 Lobby Multiplayer,assets/lobby/lobby-battle-table.webp,all,needed,,Runtime version must not contain baked menu controls.
 BB-002-01,BB-002,formation,Mother Row,intact,PNG/WebP,variable,true,08 Visual Assets/03 Formations/Mother Row,assets/formations/mother-row.webp,all,needed,,
 BB-002-02,BB-002,formation,Trellis Row,intact,PNG/WebP,variable,true,08 Visual Assets/03 Formations/Trellis Row,assets/formations/trellis-row.webp,all,needed,,
 BB-002-03,BB-002,formation,Tall Pheno,intact,PNG/WebP,variable,true,08 Visual Assets/03 Formations/Tall Pheno,assets/formations/tall-pheno.webp,all,needed,,
@@ -26,6 +30,6 @@ BB-006-02,BB-006,lobby,Join Battle Panel,ui,SVG/PNG,variable,true,08 Visual Asse
 BB-006-03,BB-006,lobby,Waiting Room Player Slot,ui,SVG/PNG,variable,true,08 Visual Assets/07 Lobby Multiplayer,assets/ui/player-slot.svg,all,needed,,
 BB-007-01,BB-007,result,Victory Garden,result,PNG/WebP,16:9,false,08 Visual Assets/08 Results/Victory,assets/results/victory-garden.webp,all,needed,,
 BB-007-02,BB-007,result,Burnout Defeat,result,PNG/WebP,16:9,false,08 Visual Assets/08 Results/Defeat,assets/results/burnout-defeat.webp,all,needed,,
-BB-008-01,BB-008,branding,Burn Buds Primary Logo,brand,SVG/PNG,wide,true,08 Visual Assets/01 Branding/Logo,assets/branding/burn-buds-logo.svg,all,needed,,
+BB-008-01,BB-008,branding,Burn Buds Primary Logo,brand,PNG/WebP,192x199,false,08 Visual Assets/01 Branding/Logo,assets/branding/burn-buds-logo-v1.webp,all,repo-integrated,1wDOspTCoaX8PWaiNOR2u5shHWspKbZza,Optimized runtime WebP committed to games/protect-the-plants and mirrored to site/public-route-patch; CSS references the public asset.
 BB-008-02,BB-008,branding,Game Hub Cover,marketing,PNG/WebP,16:9,false,08 Visual Assets/12 Marketing,assets/branding/burn-buds-cover.webp,all,needed,,
 BB-008-03,BB-008,branding,Mobile Game Cover,marketing,PNG/WebP,4:5,false,08 Visual Assets/12 Marketing,assets/branding/burn-buds-mobile-cover.webp,phone,needed,,
