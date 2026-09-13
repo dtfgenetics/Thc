@@ -1,17 +1,23 @@
 {
-  "schemaVersion": 2,
-  "policy": "Public pages must not render the retired low-quality educational diagram/infographic families. The rule applies whether an image is a current WordPress media attachment, an orphaned uploads URL, or a hardcoded source URL. Retired files may remain in source control only as historical/archive material; they must not be rendered on dtfseeds.com. A future replacement may bypass a family-name collision only when its media metadata contains DTF_APPROVED_PUBLIC_VISUAL.",
+  "schemaVersion": 3,
+  "policy": "Public pages must not render the retired low-quality educational diagram/infographic families. The rule applies whether an image is a current WordPress media attachment, an orphaned uploads URL, or a hardcoded source URL. All legacy Teaching Healthy Cultivation educational-image identities are quarantined unless a replacement carries DTF_APPROVED_PUBLIC_VISUAL. Retired files may remain in source control only as historical/archive material; they must not render on dtfseeds.com.",
   "approvalMarker": "DTF_APPROVED_PUBLIC_VISUAL",
   "retireTextContains": [
-    "Teaching Healthy Cultivation C",
-    "Teaching Healthy Cultivation ENC",
-    "Teaching Healthy Cultivation Outdoor",
+    "Teaching Healthy Cultivation",
+    "Teaching Healthy Cultivation educational visual",
+    "Source controlled DTF THC educational asset",
+    "Cannabis Plant Anatomy Infographic",
+    "THC C005 Infographic Root Anatomy and Forensics",
+    "THC C007 Infographic Leaf Anatomy Gas Exchange",
+    "Cannabis Nutrition Science Behind Healthy Growth",
+    "Diagnosing Deficiency vs Toxicity Infographic",
+    "Beneficial Insects and Biological Controls",
+    "Cloning Guide with Environment Targets",
+    "Cannabis Plant Life Cycle Seed to Harvest Infographic",
+    "THC ENC 086 Air VPD Versus Leaf VPD",
+    "Cannabis Sex Expression and Chromosome Combinations",
     "C011 Companion Respiration Root Oxygen",
     "Outdoor 07 Sex Expression Pollen Drift and Seed Set Investigation",
-    "Beneficial Insects and Biological Controls",
-    "Cannabis Plant Anatomy Infographic",
-    "Cannabis Plant Life Cycle Seed to Harvest Infographic",
-    "Cannabis Sex Expression and Chromosome Combinations",
     "Nutrient Uptake and Root Zone Chemistry",
     "Plant Training Basics Infographic",
     "Stage 3 Seedling Establishment Infographic",
@@ -26,8 +32,10 @@
     "\\b(?:infographic|companion)\\b.*\\b(?:xylem|trichome|root oxygen|root anatomy|gas exchange|deficiency|toxicity|vpd|seedling|training|pollination|fertilization)\\b"
   ],
   "notes": [
-    "The C###, ENC-### and Outdoor-## educational image families are retired from all visitor-facing surfaces, regardless of whether WordPress still indexes the underlying upload as media.",
+    "This quarantine intentionally mirrors site/wordpress/visual-quality-policy.json: the legacy Teaching Healthy Cultivation infographic identity is not valid public artwork.",
+    "The C###, ENC-### and Outdoor-## educational image families are retired from all visitor-facing surfaces, regardless of whether WordPress still indexes the upload as media.",
     "Do not weaken a retirement rule merely to make a publisher pass. Replace the visual with an explicitly approved production asset instead.",
-    "The guard removes references from public WordPress content, clears retired featured media, and deletes a matched WordPress media attachment when production cleanup is enabled."
+    "The render-layer CSS blocks a stale forbidden visual immediately; the content guard then removes its markup and matched WordPress media identity.",
+    "Image-less cards are the required fallback when no approved role-specific replacement exists."
   ]
 }

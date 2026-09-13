@@ -154,6 +154,68 @@ body:has(.tool-chooser) img,
   vertical-align:middle;
 }
 
+/* Quarantine layer: these legacy infographic families are never allowed to render.
+ * The content scrubber removes the markup; this CSS is the fail-closed visitor layer
+ * if a stale publisher or cache briefly reintroduces a forbidden URL or alt identity.
+ */
+:where(img,source)[alt^="Teaching Healthy Cultivation —"],
+:where(img,source)[alt^="Teaching Healthy Cultivation -"],
+img[src*="Cannabis_Plant_Anatomy_Infographic"],
+img[src*="THC-C005_Infographic_Root_Anatomy_and_Forensics"],
+img[src*="THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange"],
+img[src*="Cannabis_Nutrition_Science_Behind_Healthy_Growth"],
+img[src*="Diagnosing_Deficiency_vs_Toxicity_Infographic"],
+img[src*="Beneficial_Insects_and_Biological_Controls"],
+img[src*="Cloning_Guide_with_Environment_Targets"],
+img[src*="Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic"],
+img[src*="THC-ENC-"],
+img[src*="THC_C"],
+img[src*="THC-C"],
+img[src*="Outdoor_0"],
+img[src*="Outdoor-0"],
+img[src*="Cannabis_Sex_Expression_and_Chromosome_Combinations"],
+source[srcset*="Cannabis_Plant_Anatomy_Infographic"],
+source[srcset*="THC-C005_Infographic_Root_Anatomy_and_Forensics"],
+source[srcset*="THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange"],
+source[srcset*="Cannabis_Nutrition_Science_Behind_Healthy_Growth"],
+source[srcset*="Diagnosing_Deficiency_vs_Toxicity_Infographic"],
+source[srcset*="Beneficial_Insects_and_Biological_Controls"],
+source[srcset*="Cloning_Guide_with_Environment_Targets"],
+source[srcset*="Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic"],
+source[srcset*="THC-ENC-"],
+source[srcset*="THC-C"],
+source[srcset*="Cannabis_Sex_Expression_and_Chromosome_Combinations"]{
+  display:none!important;
+}
+
+:where(figure,picture):has(>img[alt^="Teaching Healthy Cultivation —"]),
+:where(figure,picture):has(>img[alt^="Teaching Healthy Cultivation -"]),
+:where(figure,picture):has(>img[src*="Cannabis_Plant_Anatomy_Infographic"]),
+:where(figure,picture):has(>img[src*="THC-C"]),
+:where(figure,picture):has(>img[src*="THC-ENC-"]),
+:where(figure,picture):has(>img[src*="Beneficial_Insects_and_Biological_Controls"]),
+:where(figure,picture):has(>img[src*="Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic"]),
+:where(figure,picture):has(>img[src*="Cannabis_Sex_Expression_and_Chromosome_Combinations"]){
+  display:none!important;
+}
+
+.v3 .hero-media:has(>img[alt^="Teaching Healthy Cultivation —"]),
+.v3 .hero-media:has(>img[alt^="Teaching Healthy Cultivation -"]),
+.v3 .hero-media:has(>img[src*="THC-C"]),
+.v3 .hero-media:has(>img[src*="THC-ENC-"]),
+.v3 .hero-media:has(>img[src*="Cannabis_Plant_Anatomy_Infographic"]),
+.v3 .hero-media:has(>img[src*="Beneficial_Insects_and_Biological_Controls"]){
+  display:none!important;
+}
+
+.v3 .hero-grid:has(.hero-media>img[alt^="Teaching Healthy Cultivation —"]),
+.v3 .hero-grid:has(.hero-media>img[alt^="Teaching Healthy Cultivation -"]),
+.v3 .hero-grid:has(.hero-media>img[src*="THC-C"]),
+.v3 .hero-grid:has(.hero-media>img[src*="THC-ENC-"]),
+.v3 .hero-grid:has(.hero-media>img[src*="Cannabis_Plant_Anatomy_Infographic"]){
+  grid-template-columns:minmax(0,1fr)!important;
+}
+
 /* Long content and data stay usable without forcing the page wider than the viewport. */
 .dtf-page :where(table,pre),
 .lhv3 :where(table,pre),
