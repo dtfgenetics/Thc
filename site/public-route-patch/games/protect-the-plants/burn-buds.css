@@ -3,6 +3,8 @@
 .brand-mark,.mini-leaf,.demo-plant,.hero-leaf,.active-plant,.plant-token{color:#86d957}
 .burn-buds-meta{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:16px auto 0}
 .burn-buds-meta span{display:inline-flex;align-items:center;min-height:28px;padding:5px 9px;border:1px solid rgba(134,217,87,.28);border-radius:999px;background:rgba(5,17,10,.72);color:#cfead3;font-size:.72rem;font-weight:850;letter-spacing:.04em;text-transform:uppercase;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}
+.hero-logo{position:relative;width:min(100%,520px);min-height:clamp(210px,30vw,330px);margin:0 auto;background:url('./assets/branding/burn-buds-logo-v1.webp') center/contain no-repeat;filter:drop-shadow(0 18px 38px rgba(0,0,0,.42))}
+.hero-logo>.hero-leaf,.hero-logo>.hero-title{visibility:hidden}
 .cell.planted .plant-token{filter:drop-shadow(0 2px 3px rgba(0,0,0,.4));transform-origin:50% 78%}
 .cell.can-fire{cursor:crosshair;position:relative}
 .cell.can-fire::before{content:"";position:absolute;inset:18%;border:1px solid rgba(255,207,101,0);border-radius:50%;transform:scale(.55);transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease;pointer-events:none}
@@ -27,5 +29,5 @@
 @keyframes burn-bud-overlay{0%{transform:translateY(18px) scale(.72);opacity:0;filter:brightness(.8)}18%{transform:translateY(0) scale(1.12);opacity:1;filter:brightness(1.65) drop-shadow(0 0 20px var(--burn-ember))}56%{transform:scale(1.02) rotate(-3deg);filter:sepia(.45) saturate(1.8) drop-shadow(0 0 16px var(--burn-ember))}100%{transform:translateY(-10px) scale(.82) rotate(4deg);opacity:.2;filter:grayscale(1) brightness(.58)}}
 @keyframes burn-flame-left{0%,100%{transform:translate(-68%,5px) scale(.55,.8) rotate(-16deg);opacity:0}28%{opacity:.95}60%{transform:translate(-92%,-28px) scale(.9,1.35) rotate(9deg);opacity:.72}}
 @keyframes burn-flame-right{0%,100%{transform:translate(-20%,8px) scale(.5,.72) rotate(13deg);opacity:0}25%{opacity:1}62%{transform:translate(6%,-34px) scale(.82,1.45) rotate(-8deg);opacity:.62}}
-@media(max-width:640px){.burn-buds-meta{gap:6px}.burn-buds-meta span{font-size:.66rem;padding:4px 7px}}
+@media(max-width:640px){.burn-buds-meta{gap:6px}.burn-buds-meta span{font-size:.66rem;padding:4px 7px}.hero-logo{min-height:210px}}
 @media(prefers-reduced-motion:reduce){.cell.hit .plant-token,.cell.hit::after,.cell.miss::after,.cell.lost .plant-token,.plant-overlay.show .plant-loss,.plant-overlay.show .plant-loss-wrap::before,.plant-overlay.show .plant-loss-wrap::after{animation:none!important}.cell.lost .plant-token{opacity:.62;filter:grayscale(1) brightness(.66)}}
