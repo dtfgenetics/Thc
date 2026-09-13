@@ -1,11 +1,12 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "updated": "2026-09-12",
   "policy": {
-    "sourceMasterAuthority": "google-drive",
+    "sourceMasterAuthority": "google-drive-for-new-assets",
     "runtimeAuthority": "github",
     "publicMirror": "only-when-required",
-    "verificationRequired": true
+    "verificationRequired": true,
+    "legacyException": "Existing production packs that already have a complete, validated repo source-master set may remain repo-authoritative instead of being duplicated solely for storage symmetry."
   },
   "games": {
     "who-took-it": {
@@ -15,21 +16,55 @@
         "repository": "dtfgenetics/Thc-guess-who",
         "branch": "main",
         "gameRoot": "03_digital-game",
-        "runtimeAssetBase": "03_digital-game/public/assets/items",
-        "manifest": "03_digital-game/src/data/item-art.json",
         "productionManifest": "assets/production-manifest.json",
-        "sourceMasterPolicy": "drive-only-by-default"
+        "assetGroups": {
+          "suspects": {
+            "legacySourceBase": "assets/characters/suspects/source",
+            "legacyWebBase": "assets/characters/suspects/web",
+            "runtimeBase": "03_digital-game/public/assets/suspects",
+            "manifest": "03_digital-game/src/data/suspect-art.json"
+          },
+          "items": {
+            "runtimeBase": "03_digital-game/public/assets/items",
+            "manifest": "03_digital-game/src/data/item-art.json"
+          },
+          "ui": {
+            "runtimeBase": "03_digital-game/public/assets/ui",
+            "manifest": "03_digital-game/src/data/ui-art.json"
+          },
+          "environment": {
+            "runtimeBase": "03_digital-game/public/assets/environment",
+            "manifest": "03_digital-game/src/data/environment-art.json"
+          }
+        }
       },
       "drive": {
         "gameRootFolderId": "18SBSxsGOau4uwWhG1Diwd79hISb_k9AO",
-        "cardsComponentsFolderId": "1NdJaBthWgV6NevxOk7wKr41FwOqQmjM8",
-        "evidenceCardsFolderId": "1E51OSI8AMdD_blM2lnkDWBUxLqTOOAuC",
-        "evidenceSourceMastersFolderId": "1U6HfFa954Pp9SHBLEekUZIGRproZPpvD"
+        "visualAssetsFolderId": "1QzFBDGjQQIJOEam4KCZws7nQq-MA6qwz",
+        "charactersFolderId": "1B_1Rc8RerokAjJLb3S5YOAnt7711WMwb",
+        "characterSourceMastersFolderId": "1Wyi0_FCC1bczHae6HFiEf-GWMSpUguqt",
+        "characterRuntimeExportsFolderId": "1Hko6ZSrDSaa6YgRR8AEz7H68qb52-R4m",
+        "environmentsFolderId": "10wXnRysZseznov9RoMEe5UyZi-LHsMlX",
+        "environmentSourceMastersFolderId": "1MUeNQB5RCIBBw7IYwD3Sb_f7m_MZ8Fpo",
+        "environmentRuntimeExportsFolderId": "1EXCNMlvBlyUKjKeCqTiM3GukhYJuXrj4",
+        "gameplayObjectsFolderId": "1CxiQAscePxpv6cjK-nou3XlZ4JlQZzrk",
+        "gameplaySourceMastersFolderId": "1YL8qYaogLUOzFrAn043xdsxCY_sp82Sf",
+        "gameplayRuntimeExportsFolderId": "17d3ckcS2GTiDXLBroyrz-ive3W1rer1F",
+        "uiHudFolderId": "1DhCvn1BsYoOuVVlU4Q9qCTvaAy-dahc3",
+        "uiSourceMastersFolderId": "1NAXaP6MdR2OFoQAhw9QNpWp9rKNR5PwV",
+        "uiRuntimeExportsFolderId": "16ZrvjU6jyrMZmcFme-QGdVzRfUFqg64c",
+        "fxAnimationFolderId": "1e-a5ycv4YPdPMhi4uM3fFCMbGKq6-Lls",
+        "marketingFolderId": "11ITQ-jxQsoAtQqyBOgurDRtG89mgMKhB",
+        "approvedMastersFolderId": "1nKB0ajEy-iT8We394zRiCTuvNSpImgJG",
+        "legacyEvidenceCardsFolderId": "1E51OSI8AMdD_blM2lnkDWBUxLqTOOAuC",
+        "legacyEvidenceSourceMastersFolderId": "1U6HfFa954Pp9SHBLEekUZIGRproZPpvD"
       },
       "notes": [
-        "Full-resolution evidence-card PNGs belong in Drive source masters.",
-        "Only assets actually referenced by item-art.json should be exported to the runtime items directory.",
-        "Do not treat a related asset as a substitute for a canonical manifest item without explicitly updating the game design."
+        "New full-resolution gameplay, environment and UI masters go to their typed Drive Source Masters folders.",
+        "The existing 25-suspect master pack is already complete and validated in the repo source tree; do not duplicate it merely to satisfy folder symmetry.",
+        "Only approved manifest assets belong in the digital game's public runtime directories.",
+        "Concept sheets are review-only and must never be sliced into runtime assets.",
+        "CSS/DOM state treatments are preferred over duplicate raster files when the art itself does not change."
       ],
       "verifiedAt": "2026-09-12"
     },
