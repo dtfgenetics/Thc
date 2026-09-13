@@ -38,7 +38,7 @@ jobs:
       - name: Validate audit script syntax
         run: node --check scripts/audit-seed-man-asset-system.mjs
       - name: Run Seed Man production audit
-        run: npm run seedman:audit | tee seed-man-asset-audit.json
+        run: node scripts/audit-seed-man-asset-system.mjs | tee seed-man-asset-audit.json
       - name: Validate report shape
         run: |
           node -e "const fs=require('fs'); const report=JSON.parse(fs.readFileSync('seed-man-asset-audit.json','utf8')); if(!report.result||typeof report.result.failed!=='number') process.exit(1); console.log('blocking findings:', report.result.failed);"
