@@ -66,7 +66,7 @@ jobs:
         run: |
           set -euo pipefail
           route='site/public-route-patch/games/seed-man-platformer'
-          for js in app.js player-state-v20.js campaign-v20-runtime.js campaign-ui-v20.js v20-enemy-runtime.js combat-browser-v2.js enemy-attacks-browser-v2.js approved-art-core-v1.js three-world-v1.js three-world-adapter-v1.js; do node --check "$route/$js"; done
+          for js in app.js player-state-v20.js campaign-v20-runtime.js campaign-ui-v20.js v20-enemy-runtime.js combat-browser-v2.js enemy-attacks-browser-v2.js approved-art-core-v1.js seed-man-production-art.js three-world-v1.js three-world-adapter-v1.js release-truth-v1.js; do node --check "$route/$js"; done
           grep -Fq 'seed-man-base-runtime-v20' "$route/app.js"
           grep -Fq 'level.boss && !level.boss.defeated' "$route/app.js"
           grep -Fq 'seed-man-player-state-v20' "$route/player-state-v20.js"
@@ -76,11 +76,20 @@ jobs:
           grep -Fq 'seed-man-combat-browser-v2' "$route/combat-browser-v2.js"
           grep -Fq 'syncBossState' "$route/combat-browser-v2.js"
           grep -Fq 'seedman:boss-defeated' "$route/combat-browser-v2.js"
+          grep -Fq 'pierceRemaining' "$route/combat-browser-v2.js"
+          grep -Fq 'chainTargets:3' "$route/combat-browser-v2.js"
+          grep -Fq 'freezeSeconds:1.8' "$route/combat-browser-v2.js"
+          grep -Fq 'resolveStomp' "$route/combat-browser-v2.js"
           grep -Fq 'seed-man-enemy-attacks-browser-v2' "$route/enemy-attacks-browser-v2.js"
-          grep -Fq 'seed-man-approved-art-core-v4' "$route/approved-art-core-v1.js"
-          grep -Fq "worldRenderer:'seed-man-three-world-v2'" "$route/approved-art-core-v1.js"
+          grep -Fq 'seed-man-art-core-v5' "$route/approved-art-core-v1.js"
+          grep -Fq 'classic-seed-man-oval-v1' "$route/approved-art-core-v1.js"
+          grep -Fq 'seed-man-authored-flat-background-v1' "$route/approved-art-core-v1.js"
           grep -Fq 'world.eco-city.background' "$route/approved-art-core-v1.js"
+          grep -Fq 'eco-city-bg-v1.png' "$route/approved-art-core-v1.js"
           ! grep -Fq 'seed-man-approved-master-atlas-v1.webp' "$route/approved-art-core-v1.js"
+          grep -Fq 'classic-seed-man-transition-v1' "$route/seed-man-production-art.js"
+          grep -Fq 'temporary-legacy-replacement-pending' "$route/seed-man-production-art.js"
+          grep -Fq 'seed-man-release-truth-v1' "$route/release-truth-v1.js"
           grep -Fq 'seed-man-three-public-v3' "$route/three-world-v1.js"
           grep -Fq 'seed-man-three-world-v2' "$route/three-world-v1.js"
           bytes="$(wc -c < "$route/three-world-v1.js" | tr -d ' ')"
