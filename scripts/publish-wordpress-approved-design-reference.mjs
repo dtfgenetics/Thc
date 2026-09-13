@@ -5,6 +5,7 @@ const site=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const user=process.env.WP_API_USERNAME||'';
 const pass=process.env.WP_API_PASSWORD||'';
 const apply=String(process.env.APPLY_APPROVED_DESIGN_REFERENCE||'').toLowerCase()==='true';
+const inspectOnly=String(process.env.APPROVED_DESIGN_REFERENCE_INSPECT_ONLY||'').toLowerCase()==='true';
 const assetPath=process.env.APPROVED_DESIGN_REFERENCE_PATH||'site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg';
 const slug='dtf-course-header-approved-reference-v1';
 const driveUrl='https://drive.google.com/file/d/1kJMXWFSz_2BICRlQJZnmZqoC45ee875x/view?usp=drivesdk';
@@ -14,22 +15,33 @@ const auth=user&&pass?`Basic ${Buffer.from(`${user}:${pass}`).toString('base64')
 const must=(v,m)=>{if(!v)throw new Error(m)};
 
 function readJpegDimensions(buffer){
-  if(buffer.length<4||buffer[0]!==0xff||buffer[1]!==0xd8) return null;
+  if(buffer.length<11||buffer[0]!==0xff||buffer[1]!==0xd8) return null;
   const sof=new Set([0xc0,0xc1,0xc2,0xc3,0xc5,0xc6,0xc7,0xc9,0xca,0xcb,0xcd,0xce,0xcf]);
-  let offset=2;
-  while(offset+4<=buffer.length){
-    while(offset<buffer.length&&buffer[offset]!==0xff) offset+=1;
-    while(offset<buffer.length&&buffer[offset]===0xff) offset+=1;
-    if(offset>=buffer.length) break;
-    const marker=buffer[offset++];
-    if(marker===0xd8||marker===0xd9||marker===0x01||(marker>=0xd0&&marker<=0xd7)) continue;
-    if(offset+2>buffer.length) break;
-    const length=buffer.readUInt16BE(offset);
-    if(length<2||offset+length>buffer.length) break;
-    if(sof.has(marker)&&length>=7){
-      return {width:buffer.readUInt16BE(offset+5),height:buffer.readUInt16BE(offset+3)};
-    }
-    offset+=length;
+  const limit=Math.min(buffer.length-9,131_072);
+
+  // SOF markers are metadata markers that occur before scan data. Search for the
+  // marker directly instead of trusting every preceding segment length: optimized
+  // JPEG/JFIF encoders can include uncommon metadata layouts that make a strict
+  // hand-rolled segment walker unnecessarily brittle.
+  for(let i=2;i<=limit;i+=1){
+    if(buffer[i]!==0xff) continue;
+    let markerIndex=i+1;
+    while(markerIndex<buffer.length&&buffer[markerIndex]===0xff) markerIndex+=1;
+    if(markerIndex>=buffer.length) break;
+    const marker=buffer[markerIndex];
+    if(marker===0x00){i=markerIndex;continue;}
+    if(marker===0xda) break; // Start of Scan: SOF must already have appeared.
+    if(!sof.has(marker)){i=markerIndex;continue;}
+    if(markerIndex+8>=buffer.length) continue;
+
+    const segmentLength=buffer.readUInt16BE(markerIndex+1);
+    const segmentEnd=markerIndex+1+segmentLength;
+    if(segmentLength<8||segmentEnd>buffer.length) continue;
+    const precision=buffer[markerIndex+3];
+    const height=buffer.readUInt16BE(markerIndex+4);
+    const width=buffer.readUInt16BE(markerIndex+6);
+    if(![8,12,16].includes(precision)||width<1||height<1||width>32_768||height>32_768) continue;
+    return {width,height,precision,sofMarker:`0x${marker.toString(16)}`};
   }
   return null;
 }
@@ -59,7 +71,6 @@ function inspectImage(buffer){
   return null;
 }
 
-must(user&&pass,'WordPress credentials are required.');
 const bytes=await readFile(assetPath);
 const image=inspectImage(bytes);
 const magic=bytes.subarray(0,16).toString('hex');
@@ -69,12 +80,20 @@ const shortSide=Math.min(image.width,image.height);
 const longSide=Math.max(image.width,image.height);
 must(shortSide>=300&&longSide>=450,`Approved design reference preview resolution is too small: ${image.width}x${image.height}.`);
 const filename=`DTF_Course_Header_Approved_Reference_v1.${image.extension}`;
+const inspection={result:'success',mode:'inspect',repoPath,driveUrl,assetRole,bytes:bytes.length,image};
+
+if(inspectOnly){
+  console.log(JSON.stringify(inspection,null,2));
+  process.exit(0);
+}
+
+must(user&&pass,'WordPress credentials are required.');
 
 async function request(path,options={}){
   const response=await fetch(`${site}${path}`,{
     ...options,
     signal:AbortSignal.timeout(60_000),
-    headers:{Authorization:auth,'User-Agent':'DTF-Approved-Design-Reference/1.3',...(options.headers||{})}
+    headers:{Authorization:auth,'User-Agent':'DTF-Approved-Design-Reference/1.4',...(options.headers||{})}
   });
   const text=await response.text();let body=text;try{body=text?JSON.parse(text):null}catch{}
   if(!response.ok)throw new Error(`${options.method||'GET'} ${path} failed (${response.status}): ${typeof body==='string'?body.slice(0,500):JSON.stringify(body).slice(0,500)}`);
@@ -110,4 +129,4 @@ const verify=await request(`/wp-json/wp/v2/media/${item.id}?context=edit`);
 must(verify.slug===slug,`Unexpected WordPress media slug: ${verify.slug}`);
 must(/^https:\/\//.test(verify.source_url||''),'WordPress media source URL is missing.');
 must((verify.mime_type||'').startsWith('image/'),'WordPress media is not an image.');
-console.log(JSON.stringify({result:'success',mediaId:verify.id,slug:verify.slug,sourceUrl:verify.source_url,repoPath,driveUrl,assetRole,bytes:bytes.length,image},null,2));
+console.log(JSON.stringify({result:'success',mode:apply?'publish':'readback',mediaId:verify.id,slug:verify.slug,sourceUrl:verify.source_url,repoPath,driveUrl,assetRole,bytes:bytes.length,image},null,2));
