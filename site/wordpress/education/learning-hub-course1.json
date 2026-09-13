@@ -18,8 +18,18 @@
   },
   "source": {
     "repository": "dtfgenetics/Thc-learning-courses-",
-    "ref": "main",
-    "basePath": "docs/learning-hub/tech1/course-001"
+    "ref": "9cb13b82de0d3abd109d5975d8cbbcb0298db368",
+    "refType": "commit",
+    "releaseManifest": "content/public-releases/PUBLIC-RELEASE-LH-TECH1-001.json",
+    "basePath": "docs/learning-hub/tech1/course-001",
+    "sourceOfTruth": true
+  },
+  "delivery": {
+    "consumerRepository": "dtfgenetics/Thc",
+    "publisher": "scripts/publish-wordpress-learning-hub-course1-v2.mjs",
+    "verifier": "scripts/verify-wordpress-learning-hub-course1.mjs",
+    "rollbackStrategy": "restore the prior pinned Academy commit and republish",
+    "curriculumEditableHere": false
   },
   "modules": [
     {"number":1,"slug":"applied-workplace-safety","title":"Applied Cultivation Workplace Safety","source":"student/MODULE-01-APPLIED-WORKPLACE-SAFETY.md","assessment":"ASSESS-LH-TECH1-001-M01"},
