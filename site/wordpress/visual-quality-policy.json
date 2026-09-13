@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "mode": "quarantine",
+  "purpose": "Keep the low-quality legacy educational/infographic images identified in the September 13, 2026 dtfseeds.com visual audit off every public-facing site surface and prevent automated publishers from reintroducing them.",
+  "rule": "No image is better than a low-quality or contextually wrong image. Public cards, product/genetics surfaces, tools, education landing pages, and navigation surfaces may only use visuals that have been explicitly approved for that exact role.",
+  "bannedMedia": {
+    "slugPrefixes": [
+      "dtf-edu-"
+    ],
+    "altPrefixes": [
+      "Teaching Healthy Cultivation —",
+      "Teaching Healthy Cultivation -"
+    ],
+    "titleContains": [],
+    "captionContains": [
+      "Teaching Healthy Cultivation educational visual"
+    ],
+    "descriptionContains": [
+      "Source-controlled DTF/THC educational asset"
+    ],
+    "urlContains": [],
+    "anyTextContains": []
+  },
+  "bannedHtml": {
+    "altPrefixes": [
+      "Teaching Healthy Cultivation —",
+      "Teaching Healthy Cultivation -"
+    ],
+    "classContains": []
+  },
+  "approvedMediaSlugs": [
+    "dtf-potleaf-site-icon"
+  ],
+  "contentTypes": [
+    "page",
+    "post",
+    "product"
+  ],
+  "verifyRoutes": [
+    "/",
+    "/learn/",
+    "/tools/",
+    "/seeds/",
+    "/shop/"
+  ],
+  "replacementPolicy": {
+    "automaticKeywordMediaSelectionAllowed": false,
+    "legacyInfographicReuseAllowed": false,
+    "unapprovedDecorativeMediaAllowed": false,
+    "imageLessFallbackPreferred": true,
+    "replacementSlugPrefix": "dtf-approved-visual-",
+    "requiresRoleSpecificApproval": true,
+    "requiresResponsiveReview": true,
+    "requiresMobileTabletDesktopReview": true
+  },
+  "notes": [
+    "This policy targets the legacy low-quality infographic/diagram media family that has been appearing as large card imagery and unrelated product/genetics/tool imagery.",
+    "The underlying source files may remain in repository history for reference, but they are not approved public website visuals.",
+    "Future approved educational graphics must be republished through a new approved-media path rather than recycling the dtf-edu-* WordPress media family.",
+    "The site must never satisfy an image-count target by inserting an unapproved visual."
+  ]
+}
