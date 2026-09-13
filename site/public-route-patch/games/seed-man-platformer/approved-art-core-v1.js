@@ -11,11 +11,11 @@
     'eco-city':'world.eco-city.background'
   });
   const worldSources = Object.freeze({
-    'greenhouse-valley':'./assets/worlds/greenhouse-valley-bg-v1.webp',
-    'forest-ruins':'./assets/worlds/forest-ruins-bg-v1.webp',
-    'desert-canyon':'./assets/worlds/desert-canyon-bg-v1.webp',
-    'frozen-peaks':'./assets/worlds/frozen-peaks-bg-v1.webp',
-    'eco-city':'./assets/worlds/eco-city-bg-v1.webp'
+    'greenhouse-valley':'./assets/worlds/greenhouse-valley-bg-v1.png',
+    'forest-ruins':'./assets/worlds/forest-ruins-bg-v1.png',
+    'desert-canyon':'./assets/worlds/desert-canyon-bg-v1.png',
+    'frozen-peaks':'./assets/worlds/frozen-peaks-bg-v1.png',
+    'eco-city':'./assets/worlds/eco-city-bg-v1.png'
   });
   const images = window.__SEED_MAN_APPROVED_IMAGES__ ||= Object.create(null);
   images['character.seedman.atlas'] = './assets/approved/seed-man-character-atlas-v2.webp';
