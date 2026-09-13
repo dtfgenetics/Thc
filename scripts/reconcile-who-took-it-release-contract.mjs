@@ -26,12 +26,18 @@ const expected = {
     missingItems: 5,
     artRegistry: 'src/data/suspect-art.json',
     portraitCount: 25,
-    artStatus: 'production-art-pending',
+    itemArtCount: 5,
+    uiArtCount: 20,
+    environmentArtCount: 1,
+    manifestBackedVisualAssets: 51,
+    blockingVisualAssetsMissing: 0,
+    artStatus: 'production-art-approved',
     artValidator: 'node scripts/validate-art-registry.mjs',
+    assetAudit: 'node scripts/audit-production-assets.mjs',
     fullValidation: 'npm run check',
     playwright: false
   },
-  notes: 'Canonical standalone React/Vite build from dtfgenetics/Thc-guess-who/03_digital-game. Full packaging gate is npm run check, which includes game-data and 25-character art-registry validation, deterministic smoke/balance checks, dependency audit, production build, and mystery-privacy verification. Procedural suspect heads remain explicitly ART PENDING until approved portrait files land through the canonical suspect-art registry.'
+  notes: 'Canonical standalone React/Vite build from dtfgenetics/Thc-guess-who/03_digital-game. Production visual art is approved: 25 suspect portraits, 5 canonical missing-item assets, 20 UI/HUD assets, and one case-room environment. The full npm run check gate includes deterministic data/art registry validation, UI and environment validation, production-asset auditing, smoke and balance checks, dependency audit, production build, and mystery-privacy verification. No Playwright is used.'
 };
 
 const before = JSON.stringify(app);
