@@ -1,0 +1,97 @@
+name: Enforce DTFSeeds Visual Quality Quarantine V2
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 * * * *'
+  push:
+    branches: [main]
+    paths:
+      - scripts/scrub-wordpress-low-quality-visuals-v2.mjs
+      - site/wordpress/visual-quality-policy.json
+      - scripts/build-public-learning-center.mjs
+      - scripts/publish-wordpress-education-wave2.mjs
+      - scripts/finalize-wordpress-gallery-visual-v3.mjs
+      - scripts/rebuild-wordpress-visual-site.mjs
+      - scripts/rebuild-wordpress-visual-v4.mjs
+      - site/wordpress/pages/**
+      - site/wordpress/education/**
+      - site/wordpress/assets/infographics/**
+  workflow_run:
+    workflows:
+      - Rebuild DTFSeeds WordPress Visual Site
+      - Publish THC Infographics to WordPress Production
+      - Publish DTFSeeds WordPress Production
+      - Reconcile DTFSeeds WordPress Canonical Pages
+      - Deploy THC Learning Centers
+      - Deploy DTFSeeds Education Assets
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-wordpress-visual-quality-quarantine-v2
+  cancel-in-progress: false
+
+jobs:
+  quarantine:
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      BACKUP_ROOT: /tmp/dtf-visual-quality-quarantine-v2
+      DTF_VISUAL_QUALITY_POLICY: ${{ github.workspace }}/site/wordpress/visual-quality-policy.json
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate quarantine package
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/scrub-wordpress-low-quality-visuals-v2.mjs
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
+          node -e "const p=require('./site/wordpress/visual-quality-policy.json'); if(Number(p.schemaVersion)<2||p.mode!=='quarantine') process.exit(1)"
+
+      - name: Scrub banned visuals
+        env:
+          APPLY_VISUAL_SCRUB: 'true'
+          DELETE_BANNED_MEDIA: 'true'
+          SKIP_PUBLIC_VISUAL_VERIFICATION: 'true'
+        run: |
+          node scripts/scrub-wordpress-low-quality-visuals-v2.mjs
+          cp "$BACKUP_ROOT/visual-quarantine-latest.json" "$BACKUP_ROOT/apply-report.json"
+
+      - name: Purge site cache
+        run: node scripts/flush-hostinger-litespeed-mcp.mjs
+
+      - name: Verify public routes after purge
+        env:
+          APPLY_VISUAL_SCRUB: 'false'
+          DELETE_BANNED_MEDIA: 'false'
+          SKIP_PUBLIC_VISUAL_VERIFICATION: 'false'
+        run: |
+          sleep 8
+          node scripts/scrub-wordpress-low-quality-visuals-v2.mjs
+          cp "$BACKUP_ROOT/visual-quarantine-latest.json" "$BACKUP_ROOT/verification-report.json"
+
+      - name: Upload rollback evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtfseeds-visual-quality-quarantine-v2-${{ github.run_id }}
+          path: /tmp/dtf-visual-quality-quarantine-v2
+          if-no-files-found: warn
+          retention-days: 30

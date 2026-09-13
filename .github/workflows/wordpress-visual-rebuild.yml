@@ -40,35 +40,24 @@ jobs:
           set -euo pipefail
           test -s site/wordpress/assets/brand/dtf-potleaf-512.png
           node --check scripts/rebuild-wordpress-visual-site.mjs
-          node --check scripts/rebuild-wordpress-infographic-gallery.mjs
+          node --check scripts/run-wordpress-visual-rebuild-approved-only.mjs
+          node -e "const p=require('./site/wordpress/visual-quality-policy.json'); if(Number(p.schemaVersion)<2||p.replacementPolicy?.automaticKeywordMediaSelectionAllowed!==false) process.exit(1)"
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
 
-      - name: Rebuild brand shell, Home, and Learn with WordPress media
+      - name: Rebuild brand shell, Home, and Learn with approved visuals only
         id: site
         env:
           APPLY_VISUAL_REBUILD: 'true'
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/rebuild-wordpress-visual-site.mjs | tee "$RUNNER_TEMP/visual-rebuild.log"
+          node scripts/run-wordpress-visual-rebuild-approved-only.mjs | tee "$RUNNER_TEMP/visual-rebuild.log"
           report_dir="$(cat "$BACKUP_ROOT/visual-rebuild-backup-path.txt")"
           report="$report_dir/visual-rebuild-report.json"
           echo "media_count=$(node -p "require(process.argv[1]).mediaCount" "$report")" >> "$GITHUB_OUTPUT"
           echo "brand_id=$(node -p "require(process.argv[1]).brandMediaId" "$report")" >> "$GITHUB_OUTPUT"
           echo "missing=$(node -p "require(process.argv[1]).missingSelections.join(',')" "$report")" >> "$GITHUB_OUTPUT"
-
-      - name: Rebuild the complete infographic gallery
-        id: gallery
-        env:
-          APPLY_INFOGRAPHIC_GALLERY: 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/rebuild-wordpress-infographic-gallery.mjs | tee "$RUNNER_TEMP/infographic-gallery.log"
-          report_dir="$(cat "$BACKUP_ROOT/infographic-gallery-backup-path.txt")"
-          report="$report_dir/gallery-report.json"
-          echo "media_count=$(node -p "require(process.argv[1]).mediaCount" "$report")" >> "$GITHUB_OUTPUT"
 
       - name: Verify WordPress site icon and brand media
         id: brandverify
@@ -96,18 +85,15 @@ jobs:
             -o "$media"
 
           node - "$media" <<'NODE'
-          const fs = require('fs');
-          const file = process.argv[2];
-          const m = JSON.parse(fs.readFileSync(file, 'utf8'));
-          const text = `${m.title?.rendered || ''} ${m.alt_text || ''}`.toLowerCase();
-          if (!text.includes('dtf genetics cannabis leaf')) {
-            throw new Error('Site icon media is not the DTF cannabis leaf');
-          }
+          const fs=require('fs');
+          const file=process.argv[2];
+          const m=JSON.parse(fs.readFileSync(file,'utf8'));
+          const text=`${m.title?.rendered||''} ${m.alt_text||''}`.toLowerCase();
+          if(!text.includes('dtf genetics cannabis leaf')) throw new Error('Site icon media is not the DTF cannabis leaf');
           NODE
-
           echo "site_icon=$site_icon" >> "$GITHUB_OUTPUT"
 
-      - name: Verify live visual experience with cache-busted requests
+      - name: Verify live visual experience without image quotas
         id: live
         shell: bash
         run: |
@@ -116,12 +102,9 @@ jobs:
           check_page() {
             local path="$1"
             local required="$2"
-            local min_images="$3"
             local key
             local body
             local ok=0
-            local count=0
-
             key="$(printf '%s' "$path" | tr '/?' '__')"
             body="$RUNNER_TEMP/live-${key}.html"
 
@@ -131,23 +114,13 @@ jobs:
                 -H 'Pragma: no-cache' \
                 "$WP_SITE_URL${path}?dtf_visual=${GITHUB_RUN_ID}-${attempt}" \
                 -o "$body"
-
-              if grep -Fqi -- "$required" "$body"; then
-                ok=1
-                break
-              fi
+              if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
               sleep 5
             done
 
             if [[ "$ok" -ne 1 ]]; then
               echo "Required live marker missing on $path: $required" >&2
               head -c 3000 "$body" >&2 || true
-              exit 1
-            fi
-
-            count="$(grep -o '/wp-content/uploads/' "$body" | wc -l | tr -d ' ')"
-            if [[ "$count" -lt "$min_images" ]]; then
-              echo "$path has only $count WordPress-hosted media references; expected at least $min_images" >&2
               exit 1
             fi
 
@@ -158,19 +131,23 @@ jobs:
               'Reserved strain card' \
               'Tool-ready rebuild' \
               'Grow education belongs in a clean, readable library.' \
-              'MOPS, cultivation notes, THC basics'; do
+              'MOPS, cultivation notes, THC basics' \
+              'Cannabis_Plant_Anatomy_Infographic.png' \
+              'Cannabis_Sex_Expression_and_Chromosome_Combinations.png' \
+              'Beneficial_Insects_and_Biological_Controls.png'; do
               if grep -Fqi -- "$forbidden" "$body"; then
-                echo "Forbidden stale content remains on $path: $forbidden" >&2
+                echo "Forbidden stale or quarantined content remains on $path: $forbidden" >&2
                 exit 1
               fi
             done
 
-            echo "$path verified with $count WordPress-hosted media references"
+            count="$(grep -o '/wp-content/uploads/' "$body" | wc -l | tr -d ' ')"
+            echo "$path verified; $count WordPress media references present, with no minimum image quota"
           }
 
-          check_page '/' 'Genetics. Plant science. Tools. Games. Community.' 8
-          check_page '/learn/' 'Explore by subject' 10
-          check_page '/learn/infographics/' 'Visual plant science and cultivation library.' 30
+          check_page '/' 'Genetics. Plant science. Tools. Games. Community.'
+          check_page '/learn/' 'Explore by subject'
+          check_page '/learn/infographics/' 'Visual plant science and cultivation library.'
 
       - name: Upload rollback package
         if: always()
@@ -187,7 +164,6 @@ jobs:
         env:
           JOB_STATUS: ${{ job.status }}
           SITE_MEDIA: ${{ steps.site.outputs.media_count }}
-          GALLERY_MEDIA: ${{ steps.gallery.outputs.media_count }}
           BRAND_ID: ${{ steps.brandverify.outputs.site_icon }}
           LIVE_OUTCOME: ${{ steps.live.outcome }}
           MISSING: ${{ steps.site.outputs.missing }}
@@ -198,16 +174,13 @@ jobs:
               repo: context.repo.repo,
               issue_number: 46,
               body: [
-                '## DTFSeeds visual site rebuild',
-                '',
+                '## DTFSeeds visual site rebuild','',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Result: **${process.env.JOB_STATUS}**`,
-                `WordPress media indexed: **${process.env.SITE_MEDIA || 'not-run'}**`,
-                `Education visuals rendered in gallery source: **${process.env.GALLERY_MEDIA || 'not-run'}**`,
-                `Cannabis-leaf site icon media ID: **${process.env.BRAND_ID || 'not-run'}**`,
-                `Live visual verification: **${process.env.LIVE_OUTCOME || 'not-run'}**`,
-                `Optional visual selections not found: **${process.env.MISSING || 'none'}**`,
-                '',
-                'Verification now uses shell-safe media counting and cache-busted visitor-facing checks.'
+                `WordPress media indexed: **${process.env.SITE_MEDIA||'not-run'}**`,
+                `Cannabis-leaf site icon media ID: **${process.env.BRAND_ID||'not-run'}**`,
+                `Live visual verification: **${process.env.LIVE_OUTCOME||'not-run'}**`,
+                `Approved visual selections not found: **${process.env.MISSING||'none'}**`,'',
+                'Legacy infographic gallery rebuilding, automatic keyword media selection, and minimum-image quotas are intentionally disabled. Cards render without imagery until an explicitly approved role-specific replacement exists.'
               ].join('\n')
             });
