@@ -1,0 +1,94 @@
+name: Enforce DTFSeeds Retired Visual Guard
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sitewide-retired-visual-guard.yml'
+      - 'scripts/scrub-retired-public-visuals.mjs'
+      - 'site/wordpress/visual-quality/retired-public-visuals.json'
+  schedule:
+    - cron: '17 * * * *'
+  workflow_run:
+    workflows:
+      - 'Rebuild DTFSeeds WordPress Visual Site'
+      - 'Recreate Codex WordPress Production Path'
+      - 'Rebuild DTFSeeds Visual Site On Command'
+      - 'Reconcile DTFSeeds WordPress Pages On Command'
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-retired-visual-guard
+  cancel-in-progress: false
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+
+jobs:
+  scrub:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion != 'cancelled' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      BACKUP_ROOT: /tmp/dtf-retired-visual-scrub
+      APPLY_RETIRED_VISUAL_SCRUB: 'true'
+      DELETE_RETIRED_VISUAL_MEDIA: 'true'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate retired visual guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/scrub-retired-public-visuals.mjs
+          node -e "JSON.parse(require('fs').readFileSync('site/wordpress/visual-quality/retired-public-visuals.json','utf8'))"
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+
+      - name: Remove retired visuals from all public WordPress content
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/scrub-retired-public-visuals.mjs | tee "$RUNNER_TEMP/retired-visual-scrub.log"
+
+      - name: Verify blocked legacy visual families are absent from key public routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          for path in / /learn/ /seeds/ /tools/; do
+            body="$RUNNER_TEMP/verify-$(printf '%s' "$path" | tr '/' '_').html"
+            curl -4 --fail --silent --show-error --location \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              -H 'Pragma: no-cache' \
+              "$WP_SITE_URL${path}?dtf_retired_visual_guard=${GITHUB_RUN_ID}-${RANDOM}" \
+              -o "$body"
+            if grep -Eqi 'C[0-9]{3}[^<]{0,100}(Infographic|Companion)|ENC[ _-]?[0-9]{3}|Outdoor[ _-]?[0-9]{2}[^<]{0,120}(Investigation|Infographic)|C011 Companion Respiration Root Oxygen|Beneficial Insects and Biological Controls' "$body"; then
+              echo "Retired visual family still present on $path" >&2
+              grep -Eio '.{0,100}(C[0-9]{3}|ENC[ _-]?[0-9]{3}|Outdoor[ _-]?[0-9]{2}|C011 Companion Respiration Root Oxygen|Beneficial Insects and Biological Controls).{0,160}' "$body" | head -20 >&2 || true
+              exit 1
+            fi
+          done
+
+      - name: Upload visual scrub rollback package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtfseeds-retired-visual-scrub-${{ github.run_id }}
+          path: /tmp/dtf-retired-visual-scrub
+          if-no-files-found: warn
+          retention-days: 30
