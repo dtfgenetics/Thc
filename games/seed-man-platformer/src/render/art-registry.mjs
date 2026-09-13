@@ -1,8 +1,9 @@
-export const APPROVED_ART_MANIFEST_ID = 'seed-man-approved-art-v2';
-export const APPROVED_ART_SOURCE = 'approved-showcase-2026-09-08';
+export const APPROVED_ART_MANIFEST_ID = 'seed-man-art-manifest-v3';
+export const APPROVED_ART_SOURCE = 'classic-seed-man-oval-v1';
 
 const WORLD_ORDER = Object.freeze(['greenhouse-valley', 'forest-ruins', 'desert-canyon', 'frozen-peaks', 'eco-city']);
 const WORLD_ALIASES = Object.freeze({ 'frozen-peak': 'frozen-peaks' });
+const WORLD_LAYER_ROLES = Object.freeze(['sky','far-bg','mid-bg','near-bg','gameplay','foreground','vfx']);
 const REQUIRED_IMAGE_ASSETS = Object.freeze(['character.seedman.atlas','enemy.atlas','boss.atlas','platform.atlas']);
 const REQUIRED_RENDER_ASSETS = Object.freeze(['cover.main','ui.vfx.cover']);
 
@@ -10,29 +11,43 @@ export function validateApprovedArtManifest(manifest) {
   if (!manifest || manifest.id !== APPROVED_ART_MANIFEST_ID) {
     throw new Error(`Seed Man approved art manifest mismatch: ${manifest?.id || 'missing'}`);
   }
-  if (manifest.schemaVersion !== 3) throw new Error(`Seed Man approved art schema must be v3, got ${manifest?.schemaVersion || 'missing'}`);
+  if (manifest.schemaVersion !== 4) throw new Error(`Seed Man approved art schema must be v4, got ${manifest?.schemaVersion || 'missing'}`);
   if (manifest.sourceOfTruth !== APPROVED_ART_SOURCE) throw new Error(`Seed Man approved art source mismatch: ${manifest.sourceOfTruth || 'missing'}`);
-  if (manifest.policy?.authoritative !== true) throw new Error('Approved Seed Man art must be authoritative.');
+  if (manifest.policy?.authoritative !== true) throw new Error('Seed Man art manifest must remain authoritative.');
   if (manifest.policy?.proceduralFallbackAllowed !== false) throw new Error('Procedural character fallback is forbidden in production.');
-  if (manifest.policy?.legacyAtlasFallbackAllowed !== false) throw new Error('Legacy character atlas fallback is forbidden in production.');
-  if (manifest.policy?.characterReference !== 'green-armored-plant-hero') throw new Error('Seed Man character reference must be the approved green armored plant hero.');
-  if (manifest.policy?.worldRenderer !== 'seed-man-three-world-v2') throw new Error('Seed Man worlds must use the production Three.js renderer.');
+  if (manifest.policy?.legacyAtlasFallbackAllowed !== false) throw new Error('Unregistered legacy character atlas fallback is forbidden in production.');
+  if (manifest.policy?.characterReference !== 'classic-seed-man-oval-v1') throw new Error('Seed Man character target must be classic-seed-man-oval-v1.');
+  if (manifest.policy?.worldRendererTarget !== 'seed-man-three-world-v2') throw new Error('Seed Man final world renderer target must remain seed-man-three-world-v2.');
+  if (manifest.policy?.worldFallbackRenderer !== 'seed-man-authored-flat-background-v1') throw new Error('Seed Man current authored world renderer must be the flat background transition renderer.');
+  if (manifest.policy?.finalWorldLayerCount !== 7) throw new Error('Seed Man final world art contract requires seven layers per world.');
   if (manifest.masterAtlas) throw new Error('Retired Seed Man master atlas must not be present in the production manifest.');
 
   for (const key of REQUIRED_IMAGE_ASSETS) {
     const asset = manifest.assets?.[key];
-    if (!asset?.src || asset.type !== 'atlas') throw new Error(`Missing approved Seed Man image atlas: ${key}`);
+    if (!asset?.src || asset.type !== 'atlas') throw new Error(`Missing registered Seed Man image atlas: ${key}`);
   }
+  const playerAtlas = manifest.assets?.['character.seedman.atlas'];
+  if (playerAtlas?.status !== 'temporary-legacy-replacement-pending') throw new Error('Current Seed Man character atlas must stay marked temporary until classic Seed Man ships.');
+  if (playerAtlas?.targetCharacterReference !== 'classic-seed-man-oval-v1') throw new Error('Temporary player atlas must point to the classic Seed Man replacement target.');
+
   for (const key of REQUIRED_RENDER_ASSETS) {
     const asset = manifest.assets?.[key];
     if (!asset?.renderer) throw new Error(`Missing Seed Man renderer-backed asset: ${key}`);
   }
   for (const world of WORLD_ORDER) {
-    if (!manifest.policy.worlds?.includes(world)) throw new Error(`Missing approved Seed Man world: ${world}`);
-    const asset = manifest.assets?.[`world.${world}.background`];
-    if (asset?.renderer !== manifest.policy.worldRenderer || asset?.world !== world) throw new Error(`Missing production world renderer descriptor: ${world}`);
+    if (!manifest.policy.worlds?.includes(world)) throw new Error(`Missing Seed Man world: ${world}`);
+    const background = manifest.assets?.[`world.${world}.background`];
+    if (!background?.src || background?.renderer !== 'seed-man-authored-flat-background-v1' || background?.world !== world || background?.temporaryFlattened !== true) {
+      throw new Error(`Missing authored transition background: ${world}`);
+    }
+    for (const role of WORLD_LAYER_ROLES) {
+      const layer = manifest.assets?.[`world.${world}.${role}`];
+      if (layer?.renderer !== manifest.policy.worldRendererTarget || layer?.world !== world || layer?.status !== 'needed') {
+        throw new Error(`Missing final seven-layer world target descriptor: ${world}.${role}`);
+      }
+    }
   }
-  for (const phenotype of ['plant','fire','electric','ice']) if (!manifest.phenotypes?.includes(phenotype)) throw new Error(`Missing approved Seed Man phenotype: ${phenotype}`);
+  for (const phenotype of ['plant','fire','electric','ice']) if (!manifest.phenotypes?.includes(phenotype)) throw new Error(`Missing Seed Man phenotype: ${phenotype}`);
   for (const boss of ['overgrown-guardian','ancient-dryad','scorchroot-titan','frostbite-colossus','eco-sentinel','blight-king']) if (!manifest.bosses?.includes(boss)) throw new Error(`Missing Seed Man boss: ${boss}`);
   return true;
 }
@@ -49,7 +64,8 @@ export function createApprovedArtRegistry(manifest, { baseUrl = './' } = {}) {
   return Object.freeze({
     id: manifest.id,
     sourceOfTruth: manifest.sourceOfTruth,
-    worldRenderer: manifest.policy.worldRenderer,
+    characterTarget: manifest.policy.characterReference,
+    worldRendererTarget: manifest.policy.worldRendererTarget,
     worldFallbackRenderer: manifest.policy.worldFallbackRenderer,
     get(key) {
       const normalized = key?.startsWith('world.') && key?.endsWith('.background')
