@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "id": "seed-man-powerup-catalog-v1",
+  "baseForm": "plant",
+  "durationMs": 30000,
+  "forms": {
+    "plant": {
+      "id":"plant",
+      "title":"Plant",
+      "temporary":false,
+      "projectile":"plant-shot",
+      "damage":1,
+      "cooldownMs":320,
+      "effect":"pierce",
+      "mobility":"normal",
+      "visualKey":"character.seedman.plant",
+      "hudIcon":"ui.phenotype.plant"
+    },
+    "fire": {
+      "id":"fire",
+      "title":"Fire",
+      "temporary":true,
+      "durationMs":30000,
+      "projectile":"fire-shot",
+      "damage":2,
+      "cooldownMs":420,
+      "effect":"burn",
+      "statusDurationMs":2400,
+      "carrier":"fire-carrier",
+      "dropSource":"defeat-carrier-or-minor-boss",
+      "visualKey":"character.seedman.fire",
+      "hudIcon":"ui.phenotype.fire",
+      "vfx":"vfx.fire"
+    },
+    "electric": {
+      "id":"electric",
+      "title":"Electric",
+      "temporary":true,
+      "durationMs":30000,
+      "projectile":"electric-shot",
+      "damage":1,
+      "cooldownMs":380,
+      "effect":"chain",
+      "chainTargets":3,
+      "chainRange":180,
+      "carrier":"electric-carrier",
+      "dropSource":"defeat-carrier-or-minor-boss",
+      "visualKey":"character.seedman.electric",
+      "hudIcon":"ui.phenotype.electric",
+      "vfx":"vfx.electric"
+    },
+    "ice": {
+      "id":"ice",
+      "title":"Ice",
+      "temporary":true,
+      "durationMs":30000,
+      "projectile":"ice-shot",
+      "damage":1,
+      "cooldownMs":400,
+      "effect":"freeze",
+      "statusDurationMs":1800,
+      "slowMultiplier":0.2,
+      "carrier":"ice-carrier",
+      "dropSource":"defeat-carrier-or-minor-boss",
+      "visualKey":"character.seedman.ice",
+      "hudIcon":"ui.phenotype.ice",
+      "vfx":"vfx.ice"
+    }
+  },
+  "pickupRules": {
+    "refreshSameForm": true,
+    "replaceCurrentTemporaryForm": true,
+    "plantNeverExpires": true,
+    "dropLifetimeMs": 12000,
+    "pickupRadius": 34
+  }
+}

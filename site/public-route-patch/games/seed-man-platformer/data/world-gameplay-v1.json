@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "id": "seed-man-world-gameplay-v1",
+  "worlds": {
+    "greenhouse-valley": {
+      "order": 1,
+      "title": "Greenhouse Valley",
+      "visualIdentity": "sunlit glasshouse valley, irrigation lines, trellises, lush cultivation beds, distant hills",
+      "palette": {"sky":"#9ed9ff","far":"#6cae75","mid":"#3c7d4e","near":"#225a38","ground":"#654b2f","accent":"#d4ef77"},
+      "layers": ["sky","far-bg","mid-bg","near-bg","gameplay","foreground","vfx"],
+      "layerAssetKeys": {
+        "sky":"world.greenhouse-valley.sky",
+        "far-bg":"world.greenhouse-valley.far-bg",
+        "mid-bg":"world.greenhouse-valley.mid-bg",
+        "near-bg":"world.greenhouse-valley.near-bg",
+        "gameplay":"world.greenhouse-valley.gameplay",
+        "foreground":"world.greenhouse-valley.foreground",
+        "vfx":"world.greenhouse-valley.vfx"
+      },
+      "terrain": ["grass","dirt","wood","moving-platform","spring","spikes"],
+      "hazards": ["spikes","toxic-slime","waterfall-gap"],
+      "mechanics": ["moving-platforms","springs","vertical-platforms","arena-lock"],
+      "enemyBias": ["sproutling","root-crawler","toxic-spore","drone-bot","sky-wasp","thorn-beetle","spike-plant"],
+      "phenotypeFocus": ["fire"],
+      "boss": "overgrown-guardian"
+    },
+    "forest-ruins": {
+      "order": 2,
+      "title": "Forest Ruins",
+      "visualIdentity": "ancient forest temple ruins, moss, giant roots, broken stone bridges, shafts of green light",
+      "palette": {"sky":"#4c7566","far":"#315746","mid":"#234236","near":"#162f26","ground":"#514a3b","accent":"#8dcf6a"},
+      "layers": ["sky","far-bg","mid-bg","near-bg","gameplay","foreground","vfx"],
+      "layerAssetKeys": {
+        "sky":"world.forest-ruins.sky",
+        "far-bg":"world.forest-ruins.far-bg",
+        "mid-bg":"world.forest-ruins.mid-bg",
+        "near-bg":"world.forest-ruins.near-bg",
+        "gameplay":"world.forest-ruins.gameplay",
+        "foreground":"world.forest-ruins.foreground",
+        "vfx":"world.forest-ruins.vfx"
+      },
+      "terrain": ["grass","dirt","rock","stone","wood","moving-platform"],
+      "hazards": ["thorn-pits","falling-bridges","spore-cloud","root-cage"],
+      "mechanics": ["vine-platforms","collapsing-platforms","dark-zones","teleport-roots","arena-lock"],
+      "enemyBias": ["root-crawler","toxic-spore","spike-plant","sky-wasp","thorn-beetle","bone-weed","shadow-root"],
+      "phenotypeFocus": ["electric"],
+      "boss": "ancient-dryad"
+    },
+    "desert-canyon": {
+      "order": 3,
+      "title": "Desert Canyon",
+      "visualIdentity": "red sandstone canyon, heat haze, broken solar towers, updrafts, distant mesas",
+      "palette": {"sky":"#f2b67d","far":"#c47a4a","mid":"#9e5437","near":"#74382e","ground":"#8b4d32","accent":"#ffd166"},
+      "layers": ["sky","far-bg","mid-bg","near-bg","gameplay","foreground","vfx"],
+      "layerAssetKeys": {
+        "sky":"world.desert-canyon.sky",
+        "far-bg":"world.desert-canyon.far-bg",
+        "mid-bg":"world.desert-canyon.mid-bg",
+        "near-bg":"world.desert-canyon.near-bg",
+        "gameplay":"world.desert-canyon.gameplay",
+        "foreground":"world.desert-canyon.foreground",
+        "vfx":"world.desert-canyon.vfx"
+      },
+      "terrain": ["sand","rock","stone","metal","moving-platform"],
+      "hazards": ["lava","rockfall","falling-rocks","sandstorm"],
+      "mechanics": ["heat-updraft","wall-routes","moving-platforms","wind-zones","arena-lock"],
+      "enemyBias": ["thorn-beetle","drone-bot","sky-wasp","sludge-monster","bone-weed"],
+      "phenotypeFocus": ["fire"],
+      "boss": "scorchroot-titan"
+    },
+    "frozen-peaks": {
+      "order": 4,
+      "title": "Frozen Peaks",
+      "visualIdentity": "icy mountain pass, crystalline caverns, snow gusts, frozen bridges, blue-white glacier gate",
+      "palette": {"sky":"#bfe8ff","far":"#85b8d8","mid":"#5686aa","near":"#335b7b","ground":"#d8eff5","accent":"#77e4ff"},
+      "layers": ["sky","far-bg","mid-bg","near-bg","gameplay","foreground","vfx"],
+      "layerAssetKeys": {
+        "sky":"world.frozen-peaks.sky",
+        "far-bg":"world.frozen-peaks.far-bg",
+        "mid-bg":"world.frozen-peaks.mid-bg",
+        "near-bg":"world.frozen-peaks.near-bg",
+        "gameplay":"world.frozen-peaks.gameplay",
+        "foreground":"world.frozen-peaks.foreground",
+        "vfx":"world.frozen-peaks.vfx"
+      },
+      "terrain": ["ice","rock","stone","moving-platform"],
+      "hazards": ["ice-spikes","falling-icicles","breakaway-ice","freeze-floor"],
+      "mechanics": ["slippery-ground","crystal-bounce","collapsing-platforms","wind-zones","arena-lock"],
+      "enemyBias": ["root-crawler","sky-wasp","drone-bot","toxic-spore","bone-weed","thorn-beetle","shadow-root"],
+      "phenotypeFocus": ["ice"],
+      "boss": "frostbite-colossus"
+    },
+    "eco-city": {
+      "order": 5,
+      "title": "Eco City",
+      "visualIdentity": "overgrown clean-tech city, neon grow towers, conveyors, reactor pipes, rooftop cultivation and stormy skyline",
+      "palette": {"sky":"#495878","far":"#31445b","mid":"#23394a","near":"#152b34","ground":"#38464d","accent":"#67f0bf"},
+      "layers": ["sky","far-bg","mid-bg","near-bg","gameplay","foreground","vfx"],
+      "layerAssetKeys": {
+        "sky":"world.eco-city.sky",
+        "far-bg":"world.eco-city.far-bg",
+        "mid-bg":"world.eco-city.mid-bg",
+        "near-bg":"world.eco-city.near-bg",
+        "gameplay":"world.eco-city.gameplay",
+        "foreground":"world.eco-city.foreground",
+        "vfx":"world.eco-city.vfx"
+      },
+      "terrain": ["metal","stone","moving-platform","spring"],
+      "hazards": ["toxic-slime","electric-floor","laser-grid","crusher","energy-beam"],
+      "mechanics": ["conveyor-platforms","moving-platforms","timed-doors","arena-lock"],
+      "enemyBias": ["toxic-spore","drone-bot","sludge-monster","thorn-beetle","shadow-root","spike-plant"],
+      "phenotypeFocus": ["electric","fire","ice"],
+      "boss": "eco-sentinel",
+      "finalBoss": "blight-king"
+    }
+  }
+}
