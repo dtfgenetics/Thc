@@ -6,9 +6,11 @@ on:
     branches: [main]
     paths:
       - 'scripts/build-public-learning-center.mjs'
+      - 'scripts/run-public-learning-center-approved-only.mjs'
       - 'scripts/build-public-learning-center-wave3.mjs'
       - 'scripts/publish-wordpress-learning-center-pages.mjs'
       - 'scripts/update-wordpress-learn-learning-center.mjs'
+      - 'site/wordpress/visual-quality-policy.json'
       - '.github/workflows/deploy-thc-learning-centers.yml'
 
 permissions:
@@ -46,18 +48,20 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/build-public-learning-center.mjs
+          node --check scripts/run-public-learning-center-approved-only.mjs
           node --check scripts/build-public-learning-center-wave3.mjs
           node --check scripts/publish-wordpress-learning-center-pages.mjs
           node --check scripts/update-wordpress-learn-learning-center.mjs
+          node -e "const p=require('./site/wordpress/visual-quality-policy.json'); if(Number(p.schemaVersion)<3||p.replacementPolicy?.legacyInfographicReuseAllowed!==false) process.exit(1)"
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
 
-      - name: Build public THC learning routes
+      - name: Build public THC learning routes with approved visuals only
         id: build
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/build-public-learning-center.mjs
+          node scripts/run-public-learning-center-approved-only.mjs
           node scripts/build-public-learning-center-wave3.mjs
           routes=(library start-here beginner-guides academy encyclopedia sops glossary records search setup root-zone environment plant-health propagation)
           for route in "${routes[@]}"; do
@@ -68,6 +72,9 @@ jobs:
             grep -Fqi 'rel="canonical"' "$file"
             grep -Fqi 'name="description"' "$file"
             grep -Fqi 'Teaching Healthy Cultivation' "$file"
+            ! grep -Fqi 'Cannabis_Plant_Anatomy_Infographic.png' "$file"
+            ! grep -Fqi 'Beneficial_Insects_and_Biological_Controls.png' "$file"
+            ! grep -Fqi 'Cannabis_Sex_Expression_and_Chromosome_Combinations.png' "$file"
           done
           test -s site/public-route-patch/learn/public-learning-center-manifest.json
           test -s site/public-route-patch/learn/wave3-learning-routes.json
@@ -106,6 +113,9 @@ jobs:
             ! grep -Fqi 'email@email.com' "$body"
             ! grep -Fqi '+123456789' "$body"
             ! grep -Fqi 'being rebuilt' "$body"
+            ! grep -Fqi 'Cannabis_Plant_Anatomy_Infographic.png' "$body"
+            ! grep -Fqi 'Beneficial_Insects_and_Biological_Controls.png' "$body"
+            ! grep -Fqi 'Cannabis_Sex_Expression_and_Chromosome_Combinations.png' "$body"
           done
 
           info="$RUNNER_TEMP/learn-infographics.html"
@@ -141,7 +151,7 @@ jobs:
           ROUTE_COUNT: ${{ steps.build.outputs.route_count }}
           PAGE_OUTCOME: ${{ steps.pages.outputs.outcome }}
           NAV_OUTCOME: ${{ steps.navigation.outputs.outcome }}
-          LIVE_OUTCOME: ${{ steps.live.outputs.outcome }}
+          LIVE_OUTCOME: ${{ steps.live.outcome }}
         with:
           script: |
             await github.rest.issues.createComment({
@@ -149,16 +159,13 @@ jobs:
               repo: context.repo.repo,
               issue_number: 46,
               body: [
-                '## THC customer-facing Learning Center production',
-                '',
+                '## THC customer-facing Learning Center production','',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Result: **${process.env.JOB_STATUS}**`,
                 `Learning routes built: **${process.env.ROUTE_COUNT || 'not-run'}**`,
                 `WordPress child-page publication: **${process.env.PAGE_OUTCOME || 'not-run'}**`,
                 `WordPress Learn navigation update: **${process.env.NAV_OUTCOME || 'not-run'}**`,
-                `Visitor-facing verification: **${process.env.LIVE_OUTCOME || 'not-run'}**`,
-                '',
-                'Published scope: Start Here, Education Library, Beginner Guides, Academy, Encyclopedia, Infographics link, SOPs & Measurement, Glossary, Records/Printables, Search, Setup, Root Zone, Environment, Plant Health/IPM, and Genetics/Propagation.',
-                'All changed WordPress page records are backed up. Controlled manuscripts retain their existing review/release state; the customer-facing navigation does not relabel held material as independently approved.'
+                `Visitor-facing verification: **${process.env.LIVE_OUTCOME || 'not-run'}**`,'',
+                'Learning-center publication now strips quarantined legacy infographic imagery before any public page write. Image-less sections are allowed until role-specific approved replacements exist.'
               ].join('\n')
             });
