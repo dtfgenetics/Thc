@@ -1,0 +1,1 @@
+The five authored world master images have been verified in Drive and the runtime/manifest paths are prepared. Binary copies are still pending import into `games/seed-man-platformer/assets/worlds/` and the mirrored public route. Until those files land, the repaired runtime intentionally falls back to the world palette gradient instead of breaking gameplay.
