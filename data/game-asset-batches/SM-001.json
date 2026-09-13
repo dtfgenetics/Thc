@@ -3,15 +3,17 @@
   "batchId": "SM-001",
   "gameId": "seed-man",
   "title": "Canonical Seed Man Character Master",
-  "status": "READY-FOR-AUTHORING",
+  "status": "AUTHORING",
   "priority": "P0",
   "quantity": 10,
   "owningRepo": "dtfgenetics/Thc",
   "sourceReference": {
     "manifest": "games/seed-man-platformer/data/seed-man-art-manifest-v1.json",
-    "characterReference": "green-armored-plant-hero",
-    "lockedIdentity": "short chubby oval seed/plant hero, thick readable outline, simple face, three-leaf sprout, white gloves and shoes, stable proportions across views and future animation",
-    "notes": "Use the current approved art manifest and approved atlas as the identity anchor; do not redesign the character while producing reference views."
+    "targetCharacterReference": "classic-seed-man-oval-v1",
+    "currentRuntimeReference": "green-armored-plant-hero",
+    "currentRuntimeReferenceStatus": "TEMPORARY-LEGACY-VISUAL-CONTRACT",
+    "lockedIdentity": "short chubby oval seed; flat 2D vector; thick outline; rubber-hose limbs; simple face; three-leaf sprout; white gloves and shoes; no costume, armor, cape or prop; no realistic shading; stable proportions across views and future animation",
+    "notes": "Author against the locked classic Seed Man identity. The current green-armored runtime showcase is evidence of the visual mismatch being replaced, not the identity anchor for SM-001. Preserve the locked silhouette, sprout, face, gloves, shoes, palette family and bottom-center animation anchor across all views."
   },
   "drive": {
     "visualRootId": "1KvhKlWp5_PdlpM7CbBSUP1YpjY4m0DDj",
@@ -25,14 +27,15 @@
     "root": "games/seed-man-platformer",
     "targetDirectory": "games/seed-man-platformer/assets/source-reference/sm-001",
     "activeIntegration": false,
-    "integrationAfterApproval": "Derive normalized animation masters/atlases; do not replace the current approved runtime atlas from this reference batch alone."
+    "integrationAfterApproval": "Derive normalized animation masters/atlases from the approved classic Seed Man reference set. Do not replace the live runtime atlas until SM-002..005 are complete enough to preserve the full state and phenotype contract."
   },
   "output": {
     "sourceMasterMinimumPx": 2048,
     "background": "transparent or neutral production-sheet background as appropriate",
     "preferredSourceFormat": "PNG",
     "runtimeReferenceFormat": "WebP",
-    "colorRule": "No yellow cast; preserve approved greens, white gloves/shoes and readable outline."
+    "colorRule": "No yellow cast; preserve the classic seed-body palette, white gloves/shoes and readable dark outline.",
+    "styleRule": "Flat 2D vector only; no 3D render treatment, realistic shading, costume, armor, cape or prop."
   },
   "assets": [
     {"assetId":"SM-CHAR-SEEDMAN-FRONT-v01","name":"Front orthographic full-body reference","state":"NEEDED","alpha":true},
@@ -47,14 +50,16 @@
     {"assetId":"SM-CHAR-SEEDMAN-ANCHOR-CONTACT-v01","name":"Bottom-center animation anchor/contact/footing guide","state":"NEEDED","alpha":false}
   ],
   "acceptanceCriteria": [
-    "all ten assets clearly depict the same character identity",
-    "front/three-quarter/side/back views agree on body, sprout, glove and shoe proportions",
-    "no costume drift or unapproved props",
+    "all ten assets clearly depict the same classic Seed Man identity",
+    "front/three-quarter/side/back views agree on body, sprout, limb, glove and shoe proportions",
+    "flat 2D vector treatment with thick readable outline",
+    "no costume, armor, cape, props or realistic shading",
     "silhouette remains readable at platformer game scale",
     "clean edges suitable for later sprite normalization",
     "future bottom-center animation anchor is unambiguous",
     "source files are placed in the SM-001 Drive source folder before approval",
-    "approved versions are promoted to Drive Approved Masters before animation batches begin"
+    "approved versions are promoted to Drive Approved Masters before animation batches begin",
+    "rejected SM-001 review board is not reused as an identity source"
   ],
   "nextBatch": "SM-002"
 }

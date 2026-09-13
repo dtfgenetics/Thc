@@ -1,0 +1,49 @@
+name: Seed Man asset-system audit
+
+on:
+  push:
+    branches:
+      - main
+      - 'audit/seed-man-*'
+    paths:
+      - 'games/seed-man-platformer/**'
+      - 'site/public-route-patch/games/seed-man-platformer/**'
+      - 'data/game-asset-batches/SM-*.json'
+      - 'scripts/audit-seed-man-asset-system.mjs'
+      - 'package.json'
+      - '.github/workflows/seed-man-asset-audit.yml'
+  pull_request:
+    paths:
+      - 'games/seed-man-platformer/**'
+      - 'site/public-route-patch/games/seed-man-platformer/**'
+      - 'data/game-asset-batches/SM-*.json'
+      - 'scripts/audit-seed-man-asset-system.mjs'
+      - 'package.json'
+      - '.github/workflows/seed-man-asset-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate audit script syntax
+        run: node --check scripts/audit-seed-man-asset-system.mjs
+      - name: Run Seed Man production audit
+        run: node scripts/audit-seed-man-asset-system.mjs | tee seed-man-asset-audit.json
+      - name: Validate report shape
+        run: |
+          node -e "const fs=require('fs'); const report=JSON.parse(fs.readFileSync('seed-man-asset-audit.json','utf8')); if(!report.result||typeof report.result.failed!=='number') process.exit(1); console.log('blocking findings:', report.result.failed);"
+      - name: Upload audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: seed-man-asset-audit
+          path: seed-man-asset-audit.json
