@@ -3,6 +3,7 @@ set -euo pipefail
 
 learning_root="${BACKUP_ROOT:-/tmp/dtf-learning-v3}"
 map_root="${LEARNING_V4_BACKUP_ROOT:-/tmp/dtf-learning-v4-final}"
+retired_visual_root="${RETIRED_VISUAL_BACKUP_ROOT:-/tmp/dtf-retired-visual-scrub}"
 atlas_v3=/tmp/rebuild-wordpress-learning-experience-v3-atlas.mjs
 owner_v3=/tmp/rebuild-wordpress-learning-experience-v3-owner-aware.mjs
 owner_v4=/tmp/improve-wordpress-learning-v4-owner-aware.mjs
@@ -76,6 +77,32 @@ LEARNING_OWNER_STAGE=visual \
 node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/verify-learning-owner-storage.mjs \
   | tee /tmp/dtf-learning-owner-visual-storage.json
 
+# The production transaction cannot complete with retired visual families still
+# embedded anywhere in public WordPress content. This runs after all Learning
+# writers, so a downstream presentation pass cannot reintroduce quarantined art.
+mkdir -p "$retired_visual_root"
+APPLY_RETIRED_VISUAL_SCRUB=true \
+DELETE_RETIRED_VISUAL_MEDIA=true \
+BACKUP_ROOT="$retired_visual_root" \
+node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/scrub-retired-public-visuals.mjs \
+  | tee /tmp/dtf-retired-visual-scrub-output.json
+
+# Fail the canonical publish if Home or Learn still render a retired image URL.
+blocked_visual='(src|srcset|background)[^>]{0,800}(THC[-_ ]?C[0-9]{3}|THC[-_ ]?ENC[-_ ]?[0-9]{3}|Outdoor[-_ ]?[0-9]{2}|Cannabis[_ -]Plant[_ -]Anatomy[_ -]Infographic|Cannabis[_ -]Plant[_ -]Life[_ -]Cycle[_ -]Seed[_ -]to[_ -]Harvest[_ -]Infographic|Cannabis[_ -]Sex[_ -]Expression[_ -]and[_ -]Chromosome[_ -]Combinations|Beneficial[_ -]Insects[_ -]and[_ -]Biological[_ -]Controls)'
+for route in / /learn/; do
+  body="/tmp/dtf-learning-retired-visual-check-$(printf '%s' "$route" | tr '/' '_').html"
+  curl -4 --fail --silent --show-error --location \
+    -H 'Cache-Control: no-cache, no-store, max-age=0' \
+    -H 'Pragma: no-cache' \
+    "${WP_SITE_URL:-https://dtfseeds.com}${route}?dtf_learning_visual_gate=${GITHUB_RUN_ID:-local}-$(date +%s%N)" \
+    -o "$body"
+  if grep -Eqi "$blocked_visual" "$body"; then
+    echo "Learning publish still renders a retired visual on $route" >&2
+    exit 1
+  fi
+done
+
 test -s "$map_root/learning-v4-backup-path.txt"
 test -s "$map_root/learning-visual-v1-backup-path.txt"
-echo "Canonical Learning V3 with Atlas affordance, connected Learning V4 map, expanded THC references, and DTF Visual V1 stored as one owner transaction; child/topic visitor verification remains independent."
+test -s "$retired_visual_root/retired-visual-scrub-backup-path.txt"
+echo "Canonical Learning V3 published with approved-only media selection, connected Learning V4 map, expanded THC references, DTF Visual V1, and retired-visual enforcement."
