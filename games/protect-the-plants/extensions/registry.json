@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "game": "burn-buds",
+  "compatibilityId": "protect-the-plants",
+  "policy": {
+    "openEnded": true,
+    "featureFlagsRequiredForOptionalSystems": true,
+    "authoritativeStateMustRemainIsolated": true,
+    "optionalExtensionsMustFailSoft": true,
+    "assetFamiliesMayGrowBeyondBB010": true
+  },
+  "extensions": [
+    {
+      "id": "premium-lobby",
+      "version": "1.0.0",
+      "status": "planned",
+      "category": "ui",
+      "enabledByDefault": true,
+      "serverAuthoritative": false,
+      "dependencies": ["room-codes", "opponent-presence", "web-share-fallback"],
+      "hooks": ["room:created", "room:joined", "room:opponent-joined", "room:opponent-left", "network:reconnected"],
+      "assetFamilies": ["BB-006", "BB-008"],
+      "deviceScope": ["phone", "tablet", "desktop"],
+      "notes": "Host/join/resume and dedicated waiting-room presentation."
+    },
+    {
+      "id": "social-reactions",
+      "version": "1.0.0",
+      "status": "planned",
+      "category": "social",
+      "enabledByDefault": true,
+      "serverAuthoritative": false,
+      "dependencies": ["room-chat"],
+      "hooks": ["chat:message", "reaction:sent", "formation:burned", "match:won", "match:lost"],
+      "assetFamilies": ["BB-005", "BB-006"],
+      "deviceScope": ["phone", "tablet", "desktop"],
+      "notes": "Quick reactions and system-message presentation."
+    },
+    {
+      "id": "authored-audio",
+      "version": "1.0.0",
+      "status": "planned",
+      "category": "audio",
+      "enabledByDefault": true,
+      "serverAuthoritative": false,
+      "dependencies": ["generated-web-audio"],
+      "hooks": ["room:opponent-joined", "placement:locked", "turn:started", "target:armed", "shot:fired", "shot:hit", "shot:miss", "formation:burned", "match:won", "match:lost", "rematch:requested"],
+      "assetFamilies": ["BB-009"],
+      "deviceScope": ["phone", "tablet", "desktop"],
+      "notes": "Authored music/SFX layer with generated oscillator fallback."
+    },
+    {
+      "id": "premium-motion",
+      "version": "1.0.0",
+      "status": "planned",
+      "category": "presentation",
+      "enabledByDefault": true,
+      "serverAuthoritative": false,
+      "dependencies": ["reduced-motion"],
+      "hooks": ["room:opponent-joined", "placement:valid", "placement:invalid", "target:armed", "shot:hit", "shot:miss", "formation:burned", "match:won", "match:lost"],
+      "assetFamilies": ["BB-003", "BB-010"],
+      "deviceScope": ["phone", "tablet", "desktop"],
+      "notes": "Animation and FX system; nonessential motion respects reduced-motion."
+    },
+    {
+      "id": "practice-mode",
+      "version": "0.1.0",
+      "status": "future",
+      "category": "tool",
+      "enabledByDefault": false,
+      "serverAuthoritative": false,
+      "dependencies": [],
+      "hooks": ["target:armed", "shot:fired", "shot:hit", "shot:miss"],
+      "assetFamilies": [],
+      "deviceScope": ["phone", "tablet", "desktop"],
+      "notes": "Future local practice/onboarding tool; must not alter multiplayer room state."
+    },
+    {
+      "id": "custom-room-rules",
+      "version": "0.1.0",
+      "status": "future",
+      "category": "gameplay",
+      "enabledByDefault": false,
+      "serverAuthoritative": true,
+      "dependencies": ["server-authoritative-turns"],
+      "hooks": ["room:created", "room:joined", "turn:started"],
+      "assetFamilies": [],
+      "deviceScope": ["phone", "tablet", "desktop"],
+      "notes": "Future optional room rules; requires explicit API/state migration and deterministic tests before activation."
+    }
+  ]
+}
