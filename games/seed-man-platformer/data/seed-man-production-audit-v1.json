@@ -1,15 +1,36 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "gameId": "seed-man-platformer",
-  "auditDate": "2026-09-12",
+  "auditDate": "2026-09-13",
   "route": "/games/seed-man-platformer/",
-  "status": "asset-production-incomplete",
+  "status": "gameplay-system-expanded-visual-production-incomplete",
   "sources": {
     "gameContract": "games/seed-man-platformer/game.json",
     "artManifest": "games/seed-man-platformer/data/seed-man-art-manifest-v1.json",
-    "visualRebuildBrief": "docs/game-art/visual-rebuild/seed-man-platformer.md",
-    "batchPlan": "data/game-asset-batches/SM-001.json",
+    "levels": "games/seed-man-platformer/data/levels-20-v1.json",
+    "authoredRecipes": "games/seed-man-platformer/data/authored-level-recipes-v1.json",
+    "worldGameplay": "games/seed-man-platformer/data/world-gameplay-v1.json",
+    "powerups": "games/seed-man-platformer/data/powerup-catalog-v1.json",
     "runtimeAssetRoot": "site/public-route-patch/games/seed-man-platformer/assets"
+  },
+  "gameplaySystem": {
+    "campaignLevels": 20,
+    "authoredExplicitLevels": 1,
+    "authoredRecipeLevels": 19,
+    "authoredRuntimeLevels": 20,
+    "generatedRuntimeLevels": 0,
+    "worlds": 5,
+    "worldVisualLayerContracts": 35,
+    "canonicalEnemyArchetypes": 10,
+    "phenotypeCarrierArchetypes": 3,
+    "bosses": 6,
+    "blightKingPhases": 4,
+    "phenotypeForms": ["plant", "fire", "electric", "ice"],
+    "temporaryPhenotypeDurationMs": 30000,
+    "hazardClasses": 19,
+    "encounterDirector": true,
+    "powerupRuntime": true,
+    "publicAuthoredRecipeRuntime": true
   },
   "identity": {
     "lockedTarget": "classic-seed-man-oval-v1",
@@ -17,7 +38,7 @@
     "currentRuntimeContract": "green-armored-plant-hero",
     "currentRuntimeSource": "approved-showcase-2026-09-08",
     "status": "BLOCKING_MISMATCH",
-    "resolution": "Complete and approve SM-001 against the locked target identity before rebuilding the player animation batches. Do not silently treat the current armored showcase as the permanent mascot contract."
+    "resolution": "Complete and approve SM-001, then replace the live player art only when SM-002..005 preserve the complete action-state contract across Plant, Fire, Electric and Ice."
   },
   "observedRuntimeAssets": {
     "approvedBinaryFiles": [
@@ -25,145 +46,75 @@
       "assets/approved/seed-man-enemy-boss-atlas-v1.webp",
       "assets/approved/seed-man-platform-atlas-v1.webp"
     ],
-    "legacyOrDiagnosticVectorFiles": [
-      "assets/seed-man/seed-man-atlas-v1.svg",
-      "assets/seed-man/seed-man-atlas-v2.svg"
-    ],
     "approvedBinaryCount": 3,
-    "totalObservedAssetFiles": 5
+    "authoredWorldArtFiles": 0,
+    "note": "World layer keys and renderer contracts exist, but authored parallax world-image files have not landed yet."
   },
-  "plannedProduction": {
+  "plannedVisualProduction": {
     "batchRange": "SM-001..SM-023",
     "batchCount": 23,
-    "nominalDeliverablesPerBatch": 10,
-    "nominalDeliverableGroups": 230,
-    "currentBatch": "SM-001",
-    "currentBatchStatus": "AUTHORING",
-    "currentBatchApprovedDeliverables": 0
+    "currentCharacterBatch": "SM-001",
+    "currentWorldBatch": "SM-015",
+    "blockingFamilies": [
+      "SM-001 canonical character master",
+      "SM-002..005 complete phenotype animation families",
+      "SM-006..010 enemy visual/animation production",
+      "SM-011..014 boss visual/animation production",
+      "SM-015..019 authored world kits",
+      "SM-020 terrain/platform/prop art",
+      "SM-021 HUD/menu/mobile-control art",
+      "SM-022 combat/world FX"
+    ],
+    "nonBlockingFamily": "SM-023 audio package"
   },
-  "assetFamilies": [
-    {
-      "id": "SM-001",
-      "family": "canonical-character-master",
-      "priority": "P0",
-      "status": "AUTHORING",
-      "required": 10,
-      "approved": 0,
-      "blocking": true
-    },
-    {
-      "id": "SM-002..005",
-      "family": "plant-fire-electric-ice-player-animation",
-      "priority": "P0",
-      "status": "QUEUED",
-      "requiredGroups": 40,
-      "blocking": true
-    },
-    {
-      "id": "SM-006..010",
-      "family": "enemy-production-animation",
-      "priority": "P0",
-      "status": "QUEUED",
-      "canonicalArchetypes": 10,
-      "blocking": true
-    },
-    {
-      "id": "SM-011..014",
-      "family": "boss-production-animation-and-phases",
-      "priority": "P0",
-      "status": "QUEUED",
-      "canonicalBosses": 6,
-      "blightKingPhases": 4,
-      "blocking": true
-    },
-    {
-      "id": "SM-015..019",
-      "family": "authored-world-kits",
-      "priority": "P0",
-      "status": "QUEUED",
-      "worlds": 5,
-      "requiredGroups": 50,
-      "blocking": true
-    },
-    {
-      "id": "SM-020",
-      "family": "terrain-platforms-and-props",
-      "priority": "P0",
-      "status": "QUEUED",
-      "requiredGroups": 10,
-      "blocking": true
-    },
-    {
-      "id": "SM-021",
-      "family": "ui-hud-menus-and-mobile-controls",
-      "priority": "P0",
-      "status": "QUEUED",
-      "requiredGroups": 10,
-      "blocking": true
-    },
-    {
-      "id": "SM-022",
-      "family": "combat-and-world-fx",
-      "priority": "P0",
-      "status": "QUEUED",
-      "requiredGroups": 10,
-      "blocking": true
-    },
-    {
-      "id": "SM-023",
-      "family": "audio-package",
-      "priority": "P1",
-      "status": "QUEUED",
-      "requiredGroups": 10,
-      "blocking": false
-    }
-  ],
   "runtimeSystemFindings": [
     {
       "id": "SM-SYS-001",
       "severity": "critical",
-      "finding": "The authoritative runtime character contract is green-armored-plant-hero while the locked mascot construction requires the simple classic oval Seed Man with no costume or armor."
+      "status": "open",
+      "finding": "The live character contract is green-armored-plant-hero while the locked mascot identity is classic-seed-man-oval-v1."
     },
     {
       "id": "SM-SYS-002",
       "severity": "high",
-      "finding": "The production renderer provides only ten atlas cells total: six base action cells plus four phenotype cells. For non-plant phenotypes it selects a phenotype cell instead of preserving the full movement/action state family, so Fire/Electric/Ice cannot have complete run/jump/attack/hurt/victory animation coverage."
+      "status": "open",
+      "finding": "The current production player renderer still collapses Fire/Electric/Ice to single phenotype cells instead of complete idle/run/jump/fall/land/attack/hit/victory state families."
     },
     {
       "id": "SM-SYS-003",
       "severity": "high",
-      "finding": "The approved art manifest exposes five world background keys as renderer contracts rather than authored world-art files. This satisfies a key lookup but does not satisfy the five required parallax world kits."
+      "status": "open",
+      "finding": "Five worlds now have 35 explicit layer contracts, but zero authored world-art files have landed."
     },
     {
       "id": "SM-SYS-004",
-      "severity": "high",
-      "finding": "game.json reports 1 authored level and 19 generated levels. The campaign is live before the authored-level migration and final visual pass are complete."
+      "severity": "resolved",
+      "status": "resolved",
+      "finding": "All 20 campaign levels now resolve through one explicit authored layout plus 19 authored recipes; the public runtime loads those recipes instead of using generated fallback content as the normal path."
     },
     {
       "id": "SM-SYS-005",
       "severity": "high",
-      "finding": "Desktop browser playtest, mobile browser playtest and human final visual review release gates are false while the route is live."
-    },
-    {
-      "id": "SM-SYS-006",
-      "severity": "medium",
-      "finding": "Asset completeness and runtime release readiness are conflated. Existing production checks verify contract markers and file presence but do not prove that every planned visual family is authored and approved."
+      "status": "open",
+      "finding": "Desktop browser playtest, mobile browser playtest and human final visual review are still required before release-candidate status."
     }
   ],
   "releaseTruth": {
     "live": true,
+    "gameplaySystemCompleteEnoughForContentProduction": true,
+    "authoredCampaignRuntime": true,
+    "authoredWorldArtComplete": false,
+    "fullPhenotypeAnimationFamiliesComplete": false,
     "releaseCandidate": false,
     "humanFinalVisualReview": false,
     "desktopBrowserPlaytest": false,
-    "mobileBrowserPlaytest": false,
-    "blockingVisualProductionComplete": false
+    "mobileBrowserPlaytest": false
   },
   "nextActions": [
-    "Complete SM-001 as ten individual canonical reference masters using the locked classic Seed Man identity.",
-    "Approve SM-001 before producing SM-002..005 animation strips.",
-    "Keep bottom-center anchor and shared scale consistent across every animation strip.",
-    "Replace static phenotype-cell behavior with full per-form state animation families after SM-002..005 are approved.",
-    "Produce authored world kits SM-015..019 instead of treating renderer-only backgrounds as completed art.",
-    "Require the asset audit plus deterministic desktop/mobile/static route checks before release-candidate status can become true."
+    "Produce and integrate SM-015 Greenhouse Valley seven-layer world art plus its gameplay props and VFX.",
+    "Repeat authored visual kits for Forest Ruins, Desert Canyon, Frozen Peaks and Eco City.",
+    "Build complete Plant/Fire/Electric/Ice player animation families against one approved character anchor.",
+    "Build enemy and boss visual families against the gameplay archetype/boss catalogs.",
+    "Run deterministic route/build checks after every runtime integration and complete desktop/mobile human playtesting only after the authored world assets land."
   ]
 }
