@@ -46,7 +46,7 @@
 }
 
 .skip-link:focus {
-  z-index: 10010;
+  z-index: 2147483100;
 }
 
 /* The local site bar remains sticky when Root Cause is developed by itself.
@@ -61,6 +61,15 @@ body:has(> .dtf-global-header) .control-column > .control-card:first-child {
   top: calc(var(--dtf-global-header-height, 92px) + 88px);
 }
 
+/* WordPress moves the V5 header below its admin toolbar for logged-in editors. */
+body.admin-bar:has(> .dtf-global-header) .site-bar {
+  top: calc(var(--dtf-global-header-height, 92px) + 32px);
+}
+
+body.admin-bar:has(> .dtf-global-header) .control-column > .control-card:first-child {
+  top: calc(var(--dtf-global-header-height, 92px) + 120px);
+}
+
 @media (max-width: 1120px) {
   body:has(> .dtf-global-header) .site-bar {
     top: var(--dtf-global-header-height, 74px);
@@ -68,6 +77,14 @@ body:has(> .dtf-global-header) .control-column > .control-card:first-child {
 
   body:has(> .dtf-global-header) .control-column > .control-card:first-child {
     top: calc(var(--dtf-global-header-height, 74px) + 88px);
+  }
+
+  body.admin-bar:has(> .dtf-global-header) .site-bar {
+    top: calc(var(--dtf-global-header-height, 74px) + 32px);
+  }
+
+  body.admin-bar:has(> .dtf-global-header) .control-column > .control-card:first-child {
+    top: calc(var(--dtf-global-header-height, 74px) + 120px);
   }
 }
 
@@ -86,6 +103,16 @@ body:has(> .dtf-global-header) .control-column > .control-card:first-child {
   .environment-strip {
     max-width: 100%;
     overscroll-behavior-inline: contain;
+  }
+}
+
+@media (max-width: 700px) {
+  body.admin-bar:has(> .dtf-global-header) .site-bar {
+    top: calc(var(--dtf-global-header-height, 74px) + 46px);
+  }
+
+  body.admin-bar:has(> .dtf-global-header) .control-column > .control-card:first-child {
+    top: calc(var(--dtf-global-header-height, 74px) + 134px);
   }
 }
 
