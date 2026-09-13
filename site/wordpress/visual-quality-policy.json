@@ -1,8 +1,8 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "mode": "quarantine",
   "purpose": "Keep the low-quality legacy educational/infographic images identified in the September 13, 2026 dtfseeds.com visual audit off every public-facing site surface and prevent automated publishers from reintroducing them.",
-  "rule": "No image is better than a low-quality or contextually wrong image. Public cards, product/genetics surfaces, tools, education landing pages, and navigation surfaces may only use visuals that have been explicitly approved for that exact role.",
+  "rule": "No image is better than a low-quality or contextually wrong image. Public cards, product/genetics surfaces, tools, education landing pages, navigation surfaces, galleries, and subject pages may only use visuals that have been explicitly approved for that exact role.",
   "bannedMedia": {
     "slugPrefixes": [
       "dtf-edu-"
@@ -70,12 +70,23 @@
     "/learn/",
     "/tools/",
     "/seeds/",
-    "/shop/"
+    "/shop/",
+    "/gallery/",
+    "/learn/infographics/",
+    "/learn/plant-biology/",
+    "/learn/environment-vpd/",
+    "/learn/water-ph-ec/",
+    "/learn/nutrition-media/",
+    "/learn/ipm/",
+    "/learn/genetics-breeding/",
+    "/learn/lifecycle-propagation/",
+    "/learn/harvest-postharvest/"
   ],
   "replacementPolicy": {
     "automaticKeywordMediaSelectionAllowed": false,
     "legacyInfographicReuseAllowed": false,
     "unapprovedDecorativeMediaAllowed": false,
+    "legacyAutomaticInfographicPublishingAllowed": false,
     "imageLessFallbackPreferred": true,
     "replacementSlugPrefix": "dtf-approved-visual-",
     "requiresRoleSpecificApproval": true,
@@ -83,10 +94,11 @@
     "requiresMobileTabletDesktopReview": true
   },
   "notes": [
-    "The first production quarantine removed 164 legacy media items from 55 WordPress content records. Public verification then exposed a second legacy family with older non-dtf-edu filenames; those filenames are now explicitly quarantined too.",
+    "The first production quarantine removed 164 legacy media items from 55 WordPress content records; the hardened follow-up removed legacy references from 16 additional pages and passed public verification on Home, Learn, Tools, Seeds, and Shop after a LiteSpeed purge.",
     "The underlying source files may remain in repository history for reference, but they are not approved public website visuals.",
     "Future approved educational graphics must be republished through the dtf-approved-visual-* path rather than recycling legacy WordPress media identities.",
     "The site must never satisfy an image-count target by inserting an unapproved visual.",
-    "Image-less cards and sections are the required fallback until a role-specific replacement passes mobile, tablet, and desktop review."
+    "Image-less cards and sections are the required fallback until a role-specific replacement passes mobile, tablet, and desktop review.",
+    "Legacy automatic infographic publication is disabled; no legacy publisher may write these quarantined assets back to WordPress while replacement assets are being rebuilt."
   ]
 }

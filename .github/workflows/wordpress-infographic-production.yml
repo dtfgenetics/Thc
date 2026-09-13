@@ -2,132 +2,43 @@ name: Publish THC Infographics to WordPress Production
 
 on:
   workflow_dispatch:
-  issue_comment:
-    types: [created]
-  push:
-    branches: [main]
-    paths:
-      - site/wordpress/assets/infographics/**
-      - site/wordpress/imports/infographic-bulk-import.json
-      - site/wordpress/education/topic-literature.json
-      - site/wordpress/education/outdoor-quantification-v1.json
-      - site/wordpress/education/outdoor-quantification/**
-      - scripts/decode-inline-infographic-b64.mjs
-      - scripts/import-wordpress-infographic-remote-batch.mjs
-      - scripts/stage-eligible-infographics.mjs
-      - scripts/deploy-wordpress-infographic-library-rest.mjs
-      - scripts/publish-wordpress-topic-literature.mjs
-      - scripts/assemble-outdoor-quantification-v1.mjs
-      - scripts/enhance-wordpress-outdoor-quantification-v1.mjs
-      - scripts/flush-hostinger-litespeed-mcp.mjs
-      - scripts/publish-wordpress-infographics-canonical.sh
-      - scripts/publish-wordpress-infographics-canonical-v2.sh
-      - scripts/publish-wordpress-infographics-resilient.sh
-      - .github/workflows/wordpress-infographic-production.yml
-  workflow_run:
-    workflows:
-      - Publish DTFSeeds WordPress Production
-    types: [completed]
 
 permissions:
-  contents: write
-  issues: write
+  contents: read
 
 concurrency:
-  group: dtfseeds-wordpress-infographics-production
-  cancel-in-progress: false
+  group: dtfseeds-wordpress-infographics-production-disabled
+  cancel-in-progress: true
 
 jobs:
-  publish:
-    if: >-
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
-      github.event_name == 'workflow_dispatch' ||
-      github.event_name == 'push' ||
-      (github.event_name == 'issue_comment' &&
-       github.event.issue.number == 182 &&
-       github.event.comment.body == '/publish-infographics' &&
-       github.event.comment.user.login == github.repository_owner)
-    name: Canonical infographic publication transaction
+  legacy-publisher-disabled:
+    name: Legacy infographic publisher disabled
     runs-on: ubuntu-latest
-    timeout-minutes: 55
-    environment: production
-    env:
-      NODE_OPTIONS: --dns-result-order=ipv4first
-      WP_SITE_URL: https://dtfseeds.com
-      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
-      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      INFOGRAPHIC_SOURCE_DIR: ${{ github.workspace }}/site/wordpress/assets/infographics
-      INFOGRAPHIC_DIR: ${{ github.workspace }}/.tmp/eligible-infographics
-      INFOGRAPHIC_PLACEMENT_CONFIG: ${{ github.workspace }}/site/wordpress/assets/infographics/placement-rules.json
-      INFOGRAPHIC_EXCLUSIONS: ${{ github.workspace }}/site/wordpress/assets/infographics/infographic-exclusions.json
-      BULK_INFOGRAPHIC_MANIFEST: ${{ github.workspace }}/site/wordpress/imports/infographic-bulk-import.json
-      BULK_IMPORT_REPORT: /tmp/infographic-bulk-import-report.json
-      TOPIC_LITERATURE_CONFIG: ${{ github.workspace }}/site/wordpress/education/topic-literature.json
-      BACKUP_ROOT: /tmp/wordpress-infographic-backups
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
-          fetch-depth: 0
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Decode validated inline infographic transports
+      - name: Enforce visual quarantine policy
         shell: bash
         run: |
-          node --check scripts/decode-inline-infographic-b64.mjs
-          node scripts/decode-inline-infographic-b64.mjs
+          set -euo pipefail
+          node - <<'NODE'
+          const policy=require('./site/wordpress/visual-quality-policy.json');
+          if(Number(policy.schemaVersion)<3) throw new Error('Visual quality policy v3+ is required.');
+          if(policy.replacementPolicy?.legacyAutomaticInfographicPublishingAllowed!==false) {
+            throw new Error('Legacy infographic publication must remain disabled.');
+          }
+          if(policy.replacementPolicy?.legacyInfographicReuseAllowed!==false) {
+            throw new Error('Legacy infographic reuse must remain disabled.');
+          }
+          console.log('Legacy WordPress infographic publication is intentionally disabled.');
+          console.log('Only role-specific assets published through the dtf-approved-visual-* path may return to public site surfaces.');
+          NODE
 
-      - name: Report protected canonical intake semantics
-        continue-on-error: true
-        shell: bash
+      - name: Explain replacement path
         run: |
-          echo 'Remote queue items quarantined: reported by the canonical transaction when nonzero.'
-          echo 'This advisory step preserves the resilience contract; unavailable optional sources are quarantined or disabled without cancelling valid canonical assets.'
-
-      - name: Publish the complete approved infographic set
-        shell: bash
-        run: bash scripts/publish-wordpress-infographics-resilient.sh
-
-      - name: Upload canonical infographic publication evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: wordpress-infographic-production-${{ github.run_id }}
-          path: |
-            /tmp/wordpress-infographic-backups
-            /tmp/infographic-bulk-import-report.json
-            ${{ runner.temp }}/infographic-library.html
-            ${{ runner.temp }}/outdoor.html
-            ${{ runner.temp }}/outdoor-assembly.json
-            ${{ runner.temp }}/infographic-transaction-attempt-*.log
-          if-no-files-found: warn
-          retention-days: 30
-
-      - name: Report canonical publication result
-        if: always()
-        continue-on-error: true
-        uses: actions/github-script@v7
-        env:
-          JOB_STATUS: ${{ job.status }}
-        with:
-          script: |
-            try {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: 182,
-                body: [
-                  '## Canonical THC infographic publication',
-                  '',
-                  `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                  `Result: **${process.env.JOB_STATUS || 'see run'}**`,
-                  '',
-                  'This is the authoritative WordPress infographic writer. It assembles all completed Outdoor chapters first, retries only transient WordPress/Hostinger connectivity failures, publishes the complete quality-gated set, rebuilds the searchable library, publishes Outdoor at /learn/outdoor/, purges Hostinger/LiteSpeed, and requires the public card count to equal the eligible WordPress record count.'
-                ].join('\n')
-              });
-            } catch (error) {
-              core.warning(`Could not post infographic result: ${error.message}`);
-            }
+          echo 'No WordPress media is uploaded by this workflow.'
+          echo 'No gallery, Learn page, subject page, product card, or Home card is rewritten by this workflow.'
+          echo 'Create and approve production-quality replacement visuals first; publish them with the dtf-approved-visual-* identity and responsive QA.'
