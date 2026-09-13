@@ -65,8 +65,10 @@ export function createApprovedArtRegistry(manifest, { baseUrl = './' } = {}) {
     id: manifest.id,
     sourceOfTruth: manifest.sourceOfTruth,
     characterTarget: manifest.policy.characterReference,
+    worldRenderer: manifest.policy.worldRendererTarget,
     worldRendererTarget: manifest.policy.worldRendererTarget,
     worldFallbackRenderer: manifest.policy.worldFallbackRenderer,
+    finalWorldLayerCount: manifest.policy.finalWorldLayerCount,
     get(key) {
       const normalized = key?.startsWith('world.') && key?.endsWith('.background')
         ? `world.${WORLD_ALIASES[key.slice(6, -11)] || key.slice(6, -11)}.background`
