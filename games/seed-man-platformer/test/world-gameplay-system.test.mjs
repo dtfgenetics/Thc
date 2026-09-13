@@ -17,20 +17,29 @@ const bosses=data('boss-catalog-v1.json');
 const worlds=data('world-gameplay-v1.json');
 const manifest=data('seed-man-art-manifest-v1.json');
 
-const authored=buildAuthoredLayoutIndex(recipes);
+const authored=buildAuthoredLayoutIndex(recipes,levels);
 assert.equal(authored.size,19,'all remaining campaign levels must have authored recipes');
 for(const [id,layout] of authored){
+  const meta=levels.levels.find((level)=>level.id===id);
   assert.equal(layout.mode,'authored-recipe',`${id} must compile as authored`);
+  assert.equal(layout.length,meta.length,`${id} authored layout length must match level contract`);
+  assert.equal(layout.checkpoints.length,meta.checkpointCount,`${id} authored checkpoints must match level contract`);
   assert.ok(layout.platforms.length>=5,`${id} needs playable ground/platform geometry`);
   assert.ok(layout.pickups.length>=5,`${id} needs collectibles`);
   assert.ok(layout.encounterZones.length>=5,`${id} needs authored encounter pacing`);
   assert.ok(layout.finish.x>layout.spawn.x,`${id} finish must be after spawn`);
+  assert.ok(layout.finish.x+layout.finish.width<=meta.length+1,`${id} finish must remain inside world bounds`);
 }
 
 const runtime=createLevelRuntime(levels,{enemyCatalog:enemies,bossCatalog:bosses,recipeCatalog:recipes});
 assert.equal(runtime.count,20);
 assert.equal(runtime.authoredIds().length,20,'campaign should resolve all 20 levels through explicit or recipe-authored layout');
-assert.equal(runtime.get('1-2-sunny-glade').authored,true);
+for(const meta of levels.levels){
+  const resolved=runtime.get(meta.id);
+  assert.equal(resolved.authored,true,`${meta.id} must resolve as authored`);
+  assert.equal(resolved.length,meta.length,`${meta.id} runtime length must match catalog`);
+  assert.equal(resolved.layout.checkpoints.length,meta.checkpointCount,`${meta.id} runtime checkpoint count must match catalog`);
+}
 assert.equal(runtime.get('5-4-the-last-seed').layout.bosses[0].type,'blight-king');
 
 assert.ok(Object.keys(HAZARD_DEFS).length>=19,'all campaign hazard classes should be represented');
