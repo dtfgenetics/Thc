@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "policy": "Public pages must not render legacy low-quality educational diagram/infographic media. Retired media may remain in source control for historical reference, but it must not be published to dtfseeds.com. New replacement visuals require the approval marker DTF_APPROVED_PUBLIC_VISUAL in WordPress media metadata before this guard will allow a matching legacy-series filename or title.",
+  "approvalMarker": "DTF_APPROVED_PUBLIC_VISUAL",
+  "retireTextContains": [
+    "Teaching Healthy Cultivation — C",
+    "Teaching Healthy Cultivation - C",
+    "Teaching Healthy Cultivation — ENC",
+    "Teaching Healthy Cultivation - ENC",
+    "Teaching Healthy Cultivation — Outdoor",
+    "Teaching Healthy Cultivation - Outdoor",
+    "C011 Companion Respiration Root Oxygen",
+    "Outdoor 07 Sex Expression Pollen Drift and Seed Set Investigation",
+    "Beneficial Insects and Biological Controls",
+    "Cannabis Plant Anatomy Infographic",
+    "Cannabis Plant Life Cycle Seed to Harvest Infographic",
+    "Nutrient Uptake and Root Zone Chemistry",
+    "Plant Training Basics Infographic",
+    "Stage 3 Seedling Establishment Infographic",
+    "Training Recovery and Aftercare Infographic"
+  ],
+  "retireRegex": [
+    "\\bC\\d{3}\\b.*\\b(?:infographic|companion)\\b",
+    "\\bENC[ _-]?\\d{3}\\b",
+    "\\bOutdoor[ _-]?\\d{2}\\b",
+    "\\bStage[ _-]?\\d+\\b.*\\binfographic\\b",
+    "\\b(?:infographic|companion)\\b.*\\b(?:xylem|trichome|root oxygen|root anatomy|gas exchange|deficiency|toxicity|vpd|seedling|training|pollination|fertilization)\\b"
+  ],
+  "notes": [
+    "This list is intentionally biased toward removing the legacy diagram style currently visible on production.",
+    "Do not weaken or remove a retirement rule merely to make a publisher pass. Replace the asset with an approved production visual instead.",
+    "The guard removes references from public WordPress content and may delete the retired WordPress media attachment when production cleanup is enabled."
+  ]
+}
