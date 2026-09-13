@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "id": "dtf-approved-sitewide-header-reference-v1",
   "status": "approved",
   "purpose": "Canonical visual and information-architecture reference for the DTF Genetics sitewide shared header and structured course-interface direction.",
@@ -14,6 +14,10 @@
     "path": "site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg",
     "role": "optimized preview derivative",
     "gitBlobSha": "fc170958991f5e1cb9f8fd0642ff8052dfe8ae30",
+    "widthPx": 300,
+    "heightPx": 450,
+    "sizeBytes": 7491,
+    "mimeType": "image/jpeg",
     "expectedMinimumShortSidePx": 300,
     "expectedMinimumLongSidePx": 450
   },
@@ -30,9 +34,15 @@
   },
   "wordpress": {
     "mediaSlug": "dtf-course-header-approved-reference-v1",
+    "mediaId": 43296,
     "title": "DTF Course Header — Approved Sitewide Design Reference v1",
+    "sourceUrl": "https://dtfseeds.com/wp-content/uploads/2026/09/DTF_Course_Header_Approved_Reference_v1.jpg",
     "role": "site-side optimized preview derivative",
-    "sourceOfTruth": "googleDrive.fileId"
+    "sourceOfTruth": "googleDrive.fileId",
+    "publishRunId": 34736799798,
+    "publishVerified": true,
+    "readbackVerified": true,
+    "verifiedAt": "2026-09-13T03:59:50Z"
   },
   "canonicalNavigation": [
     { "label": "Home", "href": "/" },
