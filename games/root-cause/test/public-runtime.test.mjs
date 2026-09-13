@@ -46,6 +46,8 @@ assert.match(visual, /@media\(prefers-reduced-motion:reduce\)/, 'V2 case-file po
 assert.match(responsive, /body:has\(> \.dtf-global-header\) \.site-bar\s*\{[\s\S]*top:\s*var\(--dtf-global-header-height, 92px\)/, 'Root Cause local site bar must clear the V5 desktop header');
 assert.match(responsive, /body:has\(> \.dtf-global-header\) \.control-column > \.control-card:first-child\s*\{[\s\S]*top:\s*calc\(var\(--dtf-global-header-height, 92px\) \+ 88px\)/, 'desktop inspection tray must clear both V5 and local sticky chrome');
 assert.match(responsive, /@media \(max-width: 1120px\)[\s\S]*var\(--dtf-global-header-height, 74px\)/, 'tablet Root Cause shell must use the 74px V5 header offset');
+assert.match(responsive, /body\.admin-bar:has\(> \.dtf-global-header\) \.site-bar\s*\{[\s\S]*\+ 32px\)/, 'logged-in desktop/tablet editors must clear the WordPress admin bar');
+assert.match(responsive, /@media \(max-width: 700px\)[\s\S]*body\.admin-bar:has\(> \.dtf-global-header\) \.site-bar[\s\S]*\+ 46px\)/, 'logged-in phone editors must clear the 46px WordPress admin bar');
 assert.match(responsive, /min-height:\s*44px/, 'interactive controls must preserve the minimum touch target');
 assert.match(responsive, /min-width:\s*0/, 'responsive shell must use intrinsic-width containment');
 assert.match(responsive, /@media \(max-width: 430px\)/, 'narrow-phone shell contract must remain explicit');
