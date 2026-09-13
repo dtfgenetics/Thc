@@ -23,7 +23,7 @@ const frozen = registry.worldBackground('frozen-peaks');
 assert.equal(frozen.renderer, 'seed-man-authored-flat-background-v1');
 assert.equal(frozen.world, 'frozen-peaks');
 assert.equal(frozen.temporaryFlattened, true);
-assert.match(frozen.url, /assets\/worlds\/frozen-peaks-bg-v1\.webp$/);
+assert.match(frozen.url, /assets\/worlds\/frozen-peaks-bg-v1\.png$/);
 assert.equal(registry.worldBackground('frozen-peak').world, 'frozen-peaks');
 for (const world of ['greenhouse-valley','forest-ruins','desert-canyon','frozen-peaks','eco-city']) {
   for (const role of ['sky','far-bg','mid-bg','near-bg','gameplay','foreground','vfx']) {
