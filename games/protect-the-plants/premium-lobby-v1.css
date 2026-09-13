@@ -1,0 +1,17 @@
+:root{--bb-lobby-green:#79de52;--bb-lobby-blue:#55b7ff;--bb-lobby-purple:#9a6aff;--bb-lobby-panel:#07131a}
+.lobby-center>.action-panel{position:relative;isolation:isolate;overflow:hidden;background:rgba(7,19,26,.92);border-color:rgba(121,222,82,.28);min-height:250px}
+.lobby-center>.action-panel::before{content:"";position:absolute;inset:-2px;z-index:-1;background-position:center;background-size:100% 100%;background-repeat:no-repeat;opacity:.34;pointer-events:none}
+.lobby-center>.action-panel:first-of-type::before{background-image:url('./assets/ui/host-battle-frame-v1.svg')}
+.lobby-center>.action-panel:nth-of-type(2)::before{background-image:url('./assets/ui/join-battle-frame-v1.svg')}
+.lobby-center>.action-panel .panel-title,.lobby-center>.action-panel p,.lobby-center>.action-panel .create-row,.lobby-center>.action-panel .join-row{position:relative;z-index:1}
+.lobby-center>.action-panel:first-of-type{box-shadow:0 18px 40px rgba(0,0,0,.26),inset 0 0 0 1px rgba(121,222,82,.08)}
+.lobby-center>.action-panel:nth-of-type(2){box-shadow:0 18px 40px rgba(0,0,0,.26),inset 0 0 0 1px rgba(154,106,255,.08)}
+.active-card{position:relative;isolation:isolate;overflow:hidden;background:rgba(8,18,14,.94)}
+.active-card::before{content:"";position:absolute;inset:0;z-index:-1;background:url('./assets/ui/room-code-panel-v1.svg') center/100% 100% no-repeat;opacity:.22;pointer-events:none}
+.lobby-chat,.chat{position:relative;isolation:isolate;overflow:hidden;background:rgba(5,15,20,.94)}
+.lobby-chat::before,.chat::before{content:"";position:absolute;inset:0;z-index:-1;background:url('./assets/ui/chat-drawer-v1.svg') center/100% 100% no-repeat;opacity:.26;pointer-events:none}
+.mobile-tabs{background-color:rgba(5,11,14,.94);background-image:url('./assets/ui/mobile-nav-v1.svg');background-size:100% 100%;background-position:center;background-repeat:no-repeat;border-radius:18px;box-shadow:0 12px 30px rgba(0,0,0,.3)}
+.mobile-tab{position:relative;z-index:1;background:rgba(10,21,27,.72)!important;backdrop-filter:blur(4px)}
+.mobile-tab.active{background:rgba(23,56,36,.82)!important;border-color:rgba(121,222,82,.65)!important}
+@media(max-width:760px){.lobby-center>.action-panel{min-height:230px;padding:22px 18px}.lobby-center>.action-panel::before{opacity:.24}.lobby-chat::before,.chat::before{opacity:.18}.active-card::before{opacity:.16}}
+@media(prefers-reduced-motion:reduce){.lobby-center>.action-panel,.active-card,.lobby-chat,.chat,.mobile-tabs{scroll-behavior:auto}}
