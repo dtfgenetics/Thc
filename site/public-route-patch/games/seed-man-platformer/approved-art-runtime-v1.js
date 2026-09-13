@@ -2,6 +2,7 @@
 
 (() => {
   const VERSION = 'seed-man-approved-art-runtime-v3-transition';
+  const LEGACY_VERSION = 'seed-man-approved-art-runtime-v2';
   const CHARACTER_KEY = 'character.seedman.atlas';
   const CHARACTER_TARGET = 'classic-seed-man-oval-v1';
   const CURRENT_CHARACTER = 'green-armored-plant-hero';
@@ -136,6 +137,7 @@
 
   window.__SEED_MAN_APPROVED_ART_RUNTIME__ = Object.freeze({
     version: VERSION,
+    legacyVersion: LEGACY_VERSION,
     characterKey: CHARACTER_KEY,
     characterTarget: CHARACTER_TARGET,
     currentCharacterAsset: CURRENT_CHARACTER,
