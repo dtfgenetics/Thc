@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "id": "protect-the-plants",
   "title": "Burn Buds",
   "legacyTitle": "Protect the Plants",
@@ -48,6 +48,16 @@
     "post-game-stats",
     "reduced-motion"
   ],
+  "extensibility": {
+    "openEnded": true,
+    "registry": "extensions/registry.json",
+    "contract": "../../docs/game-art/visual-rebuild/burn-buds-extensibility.md",
+    "optionalFeaturesUseFlags": true,
+    "assetsAreManifestDriven": true,
+    "authoritativeStateIsolationRequired": true,
+    "optionalExtensionsFailSoft": true,
+    "futureAssetFamiliesAllowed": true
+  },
   "production": {
     "frontEnd": "static",
     "api": "php",
