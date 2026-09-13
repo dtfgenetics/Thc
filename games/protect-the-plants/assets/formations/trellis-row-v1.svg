@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 300" role="img" aria-labelledby="t d">
+<title id="t">Burn Buds Trellis Row formation</title><desc id="d">Four cannabis plants trained across a reinforced trellis row, transparent background.</desc>
+<defs>
+ <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#8a552b"/><stop offset="1" stop-color="#3a2113"/></linearGradient>
+ <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c7ff72"/><stop offset=".48" stop-color="#4fd342"/><stop offset="1" stop-color="#16692f"/></linearGradient>
+ <filter id="sh"><feDropShadow dx="0" dy="9" stdDeviation="8" flood-color="#000" flood-opacity=".35"/></filter>
+</defs>
+<g filter="url(#sh)">
+ <rect x="70" y="214" width="620" height="42" rx="14" fill="url(#wood)" stroke="#d49447" stroke-width="5"/>
+ <path d="M110 72V218M650 72V218" stroke="#9b632f" stroke-width="14" stroke-linecap="round"/>
+ <path d="M110 92H650M110 132H650M110 172H650" stroke="#c18a4f" stroke-width="5"/>
+ <path d="M165 76V208M300 76V208M435 76V208M570 76V208" stroke="#7b5b3f" stroke-width="3" stroke-dasharray="8 8"/>
+ <g stroke="#245f2c" stroke-width="5" stroke-linecap="round"><path d="M170 218V118"/><path d="M310 218V106"/><path d="M450 218V106"/><path d="M590 218V118"/></g>
+ <g fill="url(#leaf)" stroke="#174f26" stroke-width="4" stroke-linejoin="round">
+  <path d="M170 148l-28-48 27 16 1-58 15 42 28-34-11 43 40-13-33 31 43 6-43 12 31 31-41-13 7 43-25-35-11 40-9-43-33 24 20-38-41 4 36-21-35-20 42 2-17-39 33 28-2-43 23 37 18-40 4 44 35-24-22 37 41-3-37 20 36 22-42-1 17 39-32-29z" transform="translate(-8 5) scale(.72)"/>
+  <path d="M310 138l-28-48 27 16 1-58 15 42 28-34-11 43 40-13-33 31 43 6-43 12 31 31-41-13 7 43-25-35-11 40-9-43-33 24 20-38-41 4 36-21-35-20 42 2-17-39 33 28-2-43 23 37 18-40 4 44 35-24-22 37 41-3-37 20 36 22-42-1 17 39-32-29z" transform="translate(-10 0) scale(.78)"/>
+  <path d="M450 138l-28-48 27 16 1-58 15 42 28-34-11 43 40-13-33 31 43 6-43 12 31 31-41-13 7 43-25-35-11 40-9-43-33 24 20-38-41 4 36-21-35-20 42 2-17-39 33 28-2-43 23 37 18-40 4 44 35-24-22 37 41-3-37 20 36 22-42-1 17 39-32-29z" transform="translate(-10 0) scale(.78)"/>
+  <path d="M590 148l-28-48 27 16 1-58 15 42 28-34-11 43 40-13-33 31 43 6-43 12 31 31-41-13 7 43-25-35-11 40-9-43-33 24 20-38-41 4 36-21-35-20 42 2-17-39 33 28-2-43 23 37 18-40 4 44 35-24-22 37 41-3-37 20 36 22-42-1 17 39-32-29z" transform="translate(-8 5) scale(.72)"/>
+ </g>
+</g>
+</svg>
