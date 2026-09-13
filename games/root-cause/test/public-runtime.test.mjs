@@ -7,12 +7,15 @@ const classicEngine = fs.readFileSync('site/public-route-patch/games/root-cause/
 const canonicalEngine = fs.readFileSync('games/root-cause/src/engine.mjs', 'utf8');
 const publicModuleEngine = fs.readFileSync('site/public-route-patch/games/root-cause/engine.mjs', 'utf8');
 const visual = fs.readFileSync('site/public-route-patch/games/root-cause/root-cause-v2.css', 'utf8');
+const responsive = fs.readFileSync('site/public-route-patch/games/root-cause/root-cause-responsive-v3.css', 'utf8');
 
 assert.equal(publicModuleEngine, canonicalEngine, 'public module engine mirror must remain identical to canonical engine.mjs');
 assert.match(html, /<script\s+src="\.\/engine\.js"\s+defer><\/script>/i, 'public page must load the classic engine before the controller');
 assert.match(html, /<script\s+src="\.\/app\.js"\s+defer><\/script>/i, 'public page must load the controller as a deferred classic script');
 assert.doesNotMatch(html, /type="module"/i, 'Root Cause public route must not require ES-module serving');
 assert.match(html, /root-cause-v2\.css/i, 'public page must load the V2 case-file visual layer');
+assert.match(html, /root-cause-responsive-v3\.css/i, 'public page must load the V5 responsive integration layer after the visual layer');
+assert.ok(html.indexOf('root-cause-responsive-v3.css') > html.indexOf('root-cause-v2.css'), 'responsive integration must load after V2 visuals');
 assert.match(html, /pattern="\[A-HJ-NP-Z2-9\]\{6\}"/, 'case code field must expose its six-character validity contract');
 
 assert.doesNotMatch(app, /^\s*import\s/m, 'public controller must not import browser modules');
@@ -40,4 +43,12 @@ assert.match(visual, /@media\(max-width:1050px\)[\s\S]*position:static/, 'smalle
 assert.match(visual, /@media\(hover:none\)/, 'touch layouts must not inherit hover-only motion');
 assert.match(visual, /@media\(prefers-reduced-motion:reduce\)/, 'V2 case-file polish must respect reduced motion');
 
-console.log('Root Cause classic runtime and V2 case-file presentation regression checks passed.');
+assert.match(responsive, /body:has\(> \.dtf-global-header\) \.site-bar\s*\{[\s\S]*top:\s*var\(--dtf-global-header-height, 92px\)/, 'Root Cause local site bar must clear the V5 desktop header');
+assert.match(responsive, /body:has\(> \.dtf-global-header\) \.control-column > \.control-card:first-child\s*\{[\s\S]*top:\s*calc\(var\(--dtf-global-header-height, 92px\) \+ 88px\)/, 'desktop inspection tray must clear both V5 and local sticky chrome');
+assert.match(responsive, /@media \(max-width: 1120px\)[\s\S]*var\(--dtf-global-header-height, 74px\)/, 'tablet Root Cause shell must use the 74px V5 header offset');
+assert.match(responsive, /min-height:\s*44px/, 'interactive controls must preserve the minimum touch target');
+assert.match(responsive, /min-width:\s*0/, 'responsive shell must use intrinsic-width containment');
+assert.match(responsive, /@media \(max-width: 430px\)/, 'narrow-phone shell contract must remain explicit');
+assert.doesNotMatch(responsive, /overflow-x\s*:\s*hidden/, 'responsive integration must not hide page-level horizontal overflow regressions');
+
+console.log('Root Cause classic runtime, V2 presentation, and V5 responsive integration regression checks passed.');
