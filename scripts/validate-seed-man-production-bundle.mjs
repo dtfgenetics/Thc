@@ -6,9 +6,10 @@ const read=(rel)=>fs.readFileSync(path.join(root,rel),'utf8');
 const exists=(rel)=>fs.existsSync(path.join(root,rel));
 const requireFile=(rel)=>{const p=path.join(root,rel);if(!exists(rel)||fs.statSync(p).size===0)throw new Error(`missing-or-empty:${rel}`);return p;};
 const requireWebp=(rel)=>{const b=fs.readFileSync(requireFile(rel));if(b.subarray(0,4).toString('ascii')!=='RIFF'||b.subarray(8,12).toString('ascii')!=='WEBP')throw new Error(`invalid-webp:${rel}`);};
+const requirePng=(rel)=>{const b=fs.readFileSync(requireFile(rel));if(b.subarray(0,8).toString('hex')!=='89504e470d0a1a0a')throw new Error(`invalid-png:${rel}`);};
 
 const expectedWorlds=['greenhouse-valley','forest-ruins','desert-canyon','frozen-peaks','eco-city'];
-const worldBackgrounds=expectedWorlds.map((world)=>`assets/worlds/${world}-bg-v1.webp`);
+const worldBackgrounds=expectedWorlds.map((world)=>`assets/worlds/${world}-bg-v1.png`);
 const required=[
   'index.html','app.js','canvas-compat-v1.js','release-truth-v1.js','player-state-v20.js','campaign-v20-runtime.js','campaign-ui-v20.js',
   'approved-art-core-v1.js','approved-art-runtime-v1.js','seed-man-production-art.js','three-world-v1.js','three-world-adapter-v1.js',
@@ -18,7 +19,8 @@ const required=[
   'data/campaign.json','data/levels-20-v1.json','data/seed-man-art-manifest-v1.json','data/enemy-catalog-v1.json','data/boss-catalog-v1.json'
 ];
 required.forEach(requireFile);
-for(const rel of ['assets/approved/seed-man-character-atlas-v2.webp','assets/approved/seed-man-enemy-boss-atlas-v1.webp','assets/approved/seed-man-platform-atlas-v1.webp',...worldBackgrounds])requireWebp(rel);
+for(const rel of ['assets/approved/seed-man-character-atlas-v2.webp','assets/approved/seed-man-enemy-boss-atlas-v1.webp','assets/approved/seed-man-platform-atlas-v1.webp'])requireWebp(rel);
+for(const rel of worldBackgrounds)requirePng(rel);
 
 const retired=[
   'data/level-01.json','data/levels-02-11.json','data/levels-12-15.json','campaign-v1.js','gameplay-v2.js','physics.mjs','campaign-combat-v20.js','campaign-progress-v20.js','campaign-runtime-v20.js',
@@ -53,7 +55,7 @@ for(const key of ['character.seedman.atlas','enemy.atlas','boss.atlas','platform
 if(art.assets?.['character.seedman.atlas']?.targetCharacterReference!=='classic-seed-man-oval-v1')throw new Error('temporary-character-target-invalid');
 for(const world of expectedWorlds){
   const background=art.assets?.[`world.${world}.background`];
-  if(!background?.src||background?.renderer!=='seed-man-authored-flat-background-v1'||background?.world!==world||background?.temporaryFlattened!==true)throw new Error(`authored-world-background-missing:${world}`);
+  if(!background?.src?.endsWith(`${world}-bg-v1.png`)||background?.renderer!=='seed-man-authored-flat-background-v1'||background?.world!==world||background?.temporaryFlattened!==true)throw new Error(`authored-world-background-missing:${world}`);
   for(const role of ['sky','far-bg','mid-bg','near-bg','gameplay','foreground','vfx']){
     const layer=art.assets?.[`world.${world}.${role}`];
     if(layer?.renderer!=='seed-man-three-world-v2'||layer?.world!==world||layer?.status!=='needed')throw new Error(`final-world-layer-target-missing:${world}.${role}`);
@@ -62,7 +64,7 @@ for(const world of expectedWorlds){
 
 const markerSets=[
   ['player-state-v20.js',['seed-man-player-state-v20','delete next.collectedPowerups','delete next.power[key]']],
-  ['approved-art-core-v1.js',['seed-man-art-core-v5','classic-seed-man-oval-v1','temporary-green-armored-replacement-pending','seed-man-authored-flat-background-v1','finalWorldLayerTarget:7']],
+  ['approved-art-core-v1.js',['seed-man-art-core-v5','classic-seed-man-oval-v1','temporary-green-armored-replacement-pending','seed-man-authored-flat-background-v1','finalWorldLayerTarget:7','.png']],
   ['approved-art-runtime-v1.js',['seed-man-approved-art-runtime-v2',"phenotypeForms:Object.freeze(['plant','fire','electric','ice'])"]],
   ['campaign-v20-runtime.js',['seed-man-campaign-v20-runtime-v3',"phenotypeForms:['plant','fire','electric','ice']"]],
   ['campaign-ui-v20.js',['seed-man-campaign-ui-v20','seed-man-scoreboard-v1','function tickCompletion','function selectNextLevel','function scoreForRun','dtf-seed-man-high-scores-v1','SCORE_LIMIT=10']],
@@ -95,4 +97,4 @@ for(const stale of ['seed-man-signature-features-v1','nursery-night-shift','rese
 for(const stale of ['loadScript(', 'HTMLCanvasElement?.prototype', 'proto.getContext=', "document.createElement('script')"])if(read('canvas-compat-v1.js').includes(stale))throw new Error(`retired-dynamic-bootstrap:${stale}`);
 for(const retiredPhenotype of ['solar-flare','static-haze','frost-resin','hydro-surge','terpene-tempest','vine-lash','mycelium-mind','rootbreaker','trichome-crystal','gravity-haze'])if(read('combat-browser-v2.js').includes(retiredPhenotype))throw new Error(`retired-v20-phenotype:${retiredPhenotype}`);
 
-console.log(JSON.stringify({ok:true,release:'20260913-v20-runtime-repair-v2',campaignId:campaign.id,levels:20,worlds:5,bosses:6,enemies:10,phenotypeCarriers:3,finalBoss:'blight-king',characterTarget:'classic-seed-man-oval-v1',currentCharacterAsset:'temporary-green-armored-replacement-pending',worldPresentation:'authored-flat-transition',worldRendererTarget:'seed-man-three-world-v2',worldAdapter:'transition',runtimeBridge:'repair-v21',playerState:'v20',combatRuntime:'v2-repaired',inputGuard:'v20',levelProgression:'flag-to-next-level',scoreboard:'local-top-10-per-level',scoreboardStyles:'seed-man.css',legacyDynamicLoaderRemoved:true,legacyCanvasMonkeyPatchRemoved:true,legacySproutRunRemoved:true,corruptAssetsRemoved:true,retiredArtifactsRemoved:retired.length}));
+console.log(JSON.stringify({ok:true,release:'20260913-v20-runtime-repair-v2',campaignId:campaign.id,levels:20,worlds:5,bosses:6,enemies:10,phenotypeCarriers:3,finalBoss:'blight-king',characterTarget:'classic-seed-man-oval-v1',currentCharacterAsset:'temporary-green-armored-replacement-pending',worldPresentation:'authored-flat-transition-png',worldRendererTarget:'seed-man-three-world-v2',worldAdapter:'transition',runtimeBridge:'repair-v21',playerState:'v20',combatRuntime:'v2-repaired',inputGuard:'v20',levelProgression:'flag-to-next-level',scoreboard:'local-top-10-per-level',scoreboardStyles:'seed-man.css',legacyDynamicLoaderRemoved:true,legacyCanvasMonkeyPatchRemoved:true,legacySproutRunRemoved:true,corruptAssetsRemoved:true,retiredArtifactsRemoved:retired.length}));
