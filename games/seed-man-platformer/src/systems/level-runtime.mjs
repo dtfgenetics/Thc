@@ -4,7 +4,7 @@ import { buildAuthoredLayoutIndex } from './authored-layout-compiler.mjs';
 
 export function createLevelRuntime(catalog,{enemyCatalog,bossCatalog,recipeCatalog}={}){
   const index=buildLevelIndex(catalog);
-  const authored=recipeCatalog?buildAuthoredLayoutIndex(recipeCatalog):new Map();
+  const authored=recipeCatalog?buildAuthoredLayoutIndex(recipeCatalog,catalog):new Map();
   return Object.freeze({
     get(id){
       const level=index.get(id);
