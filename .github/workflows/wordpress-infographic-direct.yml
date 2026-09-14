@@ -4,58 +4,43 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
-# Emergency/manual compatibility lane only. The automatic owner is
-# wordpress-infographic-production.yml. Using the same lock and transaction
-# prevents this legacy entry point from replacing the complete library with a
-# partial independently generated version.
+# RETIRED MUTATION LANE
+# This old manual entry point called the legacy 117+ image transaction and could
+# restore quarantined educational artwork. Keep the command visible for audit
+# history, but never let it mutate WordPress again.
 concurrency:
-  group: dtfseeds-wordpress-infographics-production
-  cancel-in-progress: false
+  group: dtfseeds-infographic-direct-retired
+  cancel-in-progress: true
 
 jobs:
-  publish:
-    name: Run canonical infographic transaction manually
+  retired-publisher-guard:
+    name: Legacy direct infographic publisher disabled
     runs-on: ubuntu-latest
-    timeout-minutes: 55
-    environment: production
-    env:
-      NODE_OPTIONS: --dns-result-order=ipv4first
-      WP_SITE_URL: https://dtfseeds.com
-      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
-      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      INFOGRAPHIC_SOURCE_DIR: ${{ github.workspace }}/site/wordpress/assets/infographics
-      INFOGRAPHIC_DIR: ${{ github.workspace }}/.tmp/eligible-infographics
-      INFOGRAPHIC_PLACEMENT_CONFIG: ${{ github.workspace }}/site/wordpress/assets/infographics/placement-rules.json
-      INFOGRAPHIC_EXCLUSIONS: ${{ github.workspace }}/site/wordpress/assets/infographics/infographic-exclusions.json
-      BULK_INFOGRAPHIC_MANIFEST: ${{ github.workspace }}/site/wordpress/imports/infographic-bulk-import.json
-      BULK_IMPORT_REPORT: /tmp/infographic-bulk-import-report.json
-      TOPIC_LITERATURE_CONFIG: ${{ github.workspace }}/site/wordpress/education/topic-literature.json
-      BACKUP_ROOT: /tmp/wordpress-infographic-backups
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
-          fetch-depth: 0
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
+      - name: Enforce approved-only visual policy
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const policy=require('./site/wordpress/visual-quality-policy.json');
+          if(Number(policy.schemaVersion)<3 || policy.mode!=='quarantine') throw new Error('Visual quality quarantine policy v3+ is required.');
+          if(policy.replacementPolicy?.legacyAutomaticInfographicPublishingAllowed!==false) throw new Error('Legacy automatic infographic publishing must remain disabled.');
+          if(policy.replacementPolicy?.legacyInfographicReuseAllowed!==false) throw new Error('Legacy infographic reuse must remain disabled.');
+          if(policy.replacementPolicy?.automaticKeywordMediaSelectionAllowed!==false) throw new Error('Automatic keyword media selection must remain disabled.');
+          console.log('Legacy direct infographic publication is disabled.');
+          console.log('Only role-specific dtf-approved-visual-* replacements may be published.');
+          NODE
+          ! grep -Fq 'publish-wordpress-infographics-resilient.sh' .github/workflows/wordpress-infographic-direct.yml
 
-      - name: Publish through the canonical single-writer transaction
-        run: bash scripts/publish-wordpress-infographics-resilient.sh
-
-      - name: Preserve publication evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: direct-infographic-production-${{ github.run_id }}
-          path: |
-            /tmp/wordpress-infographic-backups
-            /tmp/infographic-bulk-import-report.json
-            ${{ runner.temp }}/infographic-library.html
-            ${{ runner.temp }}/outdoor.html
-            ${{ runner.temp }}/infographic-transaction-attempt-*.log
-          if-no-files-found: warn
-          retention-days: 30
+      - name: Explain current production path
+        shell: bash
+        run: |
+          echo 'No WordPress media, subject page, Gallery, or infographic library is changed by this compatibility workflow.'
+          echo 'Approved replacements are published only after subject and responsive review.'
