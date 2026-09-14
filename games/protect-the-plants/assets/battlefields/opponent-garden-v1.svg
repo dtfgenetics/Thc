@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#0b1712"/><stop offset="1" stop-color="#050907"/></linearGradient>
+<radialGradient id="fog"><stop stop-color="#cde6db" stop-opacity=".28"/><stop offset="1" stop-color="#537263" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1200" height="1200" rx="48" fill="url(#bg)"/>
+<rect x="42" y="42" width="1116" height="1116" rx="40" fill="#0d1912" stroke="#754b2c" stroke-width="14"/>
+<rect x="102" y="154" width="996" height="930" rx="26" fill="#2a1b12" stroke="#506d45" stroke-width="7"/>
+<g stroke="#6a4f34" stroke-width="3" opacity=".72"><path d="M102 154V1084"/><path d="M168 154V1084"/><path d="M235 154V1084"/><path d="M301 154V1084"/><path d="M368 154V1084"/><path d="M434 154V1084"/><path d="M500 154V1084"/><path d="M567 154V1084"/><path d="M633 154V1084"/><path d="M700 154V1084"/><path d="M766 154V1084"/><path d="M832 154V1084"/><path d="M899 154V1084"/><path d="M965 154V1084"/><path d="M1032 154V1084"/><path d="M1098 154V1084"/><path d="M102 154H1098"/><path d="M102 216H1098"/><path d="M102 278H1098"/><path d="M102 340H1098"/><path d="M102 402H1098"/><path d="M102 464H1098"/><path d="M102 526H1098"/><path d="M102 588H1098"/><path d="M102 650H1098"/><path d="M102 712H1098"/><path d="M102 774H1098"/><path d="M102 836H1098"/><path d="M102 898H1098"/><path d="M102 960H1098"/><path d="M102 1022H1098"/><path d="M102 1084H1098"/></g>
+<g fill="#27472e" opacity=".7"><circle cx="230" cy="340" r="54"/><circle cx="470" cy="580" r="70"/><circle cx="820" cy="420" r="62"/><circle cx="930" cy="760" r="75"/><circle cx="350" cy="860" r="58"/></g>
+<g><ellipse cx="280" cy="300" rx="260" ry="170" fill="url(#fog)"/><ellipse cx="720" cy="260" rx="330" ry="190" fill="url(#fog)"/><ellipse cx="890" cy="610" rx="280" ry="220" fill="url(#fog)"/><ellipse cx="430" cy="720" rx="360" ry="230" fill="url(#fog)"/><ellipse cx="690" cy="950" rx="380" ry="180" fill="url(#fog)"/></g>
+<rect x="160" y="70" width="880" height="70" rx="24" fill="#22140d" stroke="#b47637" stroke-width="5"/>
+</svg>
