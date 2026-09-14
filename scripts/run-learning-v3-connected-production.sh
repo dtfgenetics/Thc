@@ -16,6 +16,14 @@ if grep -Eq '^[[:space:]]+learn$' scripts/deploy/hostinger-overlay.sh; then
   exit 1
 fi
 
+# The source composer must enforce role-specific visual approval before any
+# WordPress mutation happens. Generic Learning slots may never consume strain
+# cards or legacy media merely because keywords happen to match.
+node --check scripts/prepare-learning-v3-owner-aware-publisher.mjs
+grep -Fq 'function isApprovedLearningMedia(item)' scripts/prepare-learning-v3-owner-aware-publisher.mjs
+grep -Fq "if (slug.startsWith('dtf-strain-card-')) return false;" scripts/prepare-learning-v3-owner-aware-publisher.mjs
+grep -Fq "slug.startsWith('dtf-approved-visual-')" scripts/prepare-learning-v3-owner-aware-publisher.mjs
+
 # Root owner state is proved through authenticated WordPress storage. Topic and
 # child routes still require anonymous visitor verification in their publishers.
 # Canonical stored markers remain:
@@ -36,6 +44,10 @@ LEARNING_V3_SOURCE_PUBLISHER="$atlas_v3" \
 LEARNING_V3_OWNER_AWARE_PUBLISHER="$owner_v3" \
 node scripts/prepare-learning-v3-owner-aware-publisher.mjs \
   | tee /tmp/dtf-learning-v3-owner-aware-prepare.json
+
+grep -Fq 'function isApprovedLearningMedia(item)' "$owner_v3"
+grep -Fq "if (slug.startsWith('dtf-strain-card-')) return false;" "$owner_v3"
+grep -Fq 'isApprovedLearningMedia(item) &&' "$owner_v3"
 
 LEARNING_V4_OWNER_AWARE_PUBLISHER="$owner_v4" \
 LEARNING_VISUAL_OWNER_AWARE_PUBLISHER="$owner_visual" \
@@ -87,17 +99,43 @@ BACKUP_ROOT="$retired_visual_root" \
 node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/scrub-retired-public-visuals.mjs \
   | tee /tmp/dtf-retired-visual-scrub-output.json
 
-# Fail the canonical publish if Home or Learn still render a retired image URL.
-blocked_visual='(src|srcset|background)[^>]{0,800}(THC[-_ ]?C[0-9]{3}|THC[-_ ]?ENC[-_ ]?[0-9]{3}|Outdoor[-_ ]?[0-9]{2}|Cannabis[_ -]Plant[_ -]Anatomy[_ -]Infographic|Cannabis[_ -]Plant[_ -]Life[_ -]Cycle[_ -]Seed[_ -]to[_ -]Harvest[_ -]Infographic|Cannabis[_ -]Sex[_ -]Expression[_ -]and[_ -]Chromosome[_ -]Combinations|Beneficial[_ -]Insects[_ -]and[_ -]Biological[_ -]Controls)'
-for route in / /learn/; do
+# Fail the canonical publish if Home or any core Learning route still renders a
+# retired image family. Learning routes additionally fail when a strain-card image
+# appears in a generic educational slot; strain cards are owned by product/release
+# surfaces, not by automatic Learning-media selection.
+blocked_visual='(src|srcset|background)[^>]{0,900}(THC[-_ ]?C[0-9]{3}|THC[-_ ]?ENC[-_ ]?[0-9]{3}|Outdoor[-_ ]?[0-9]{2}|Cannabis[_ -]Plant[_ -]Anatomy[_ -]Infographic|Cannabis[_ -]Plant[_ -]Life[_ -]Cycle[_ -]Seed[_ -]to[_ -]Harvest[_ -]Infographic|Cannabis[_ -]Sex[_ -]Expression[_ -]and[_ -]Chromosome[_ -]Combinations|Beneficial[_ -]Insects[_ -]and[_ -]Biological[_ -]Controls|C[0-9]{3}[_ -]Companion)'
+blocked_alt='alt=["'"'][^"'"']*Teaching[ _-]+Healthy[ _-]+Cultivation'
+blocked_learning_role='(Strain[_ -]Card|DTF[ _-]+Genetics[ _-]+strain[ _-]+card|Mystery[_ -]Line[_ -]F1[_ -]Regular|Rainbow[_ -]Bubblegum[_ -]F1[_ -]Regular)'
+verify_routes=(
+  /
+  /learn/
+  /learn/plant-biology/
+  /learn/genetics-breeding/
+  /learn/lifecycle-propagation/
+  /learn/environment-vpd/
+  /learn/lighting/
+  /learn/water-ph-ec/
+  /learn/nutrition-media/
+  /learn/ipm/
+  /learn/training-canopy/
+  /learn/harvest-postharvest/
+  /learn/outdoor/
+  /learn/research-methods/
+  /learn/plant-science-reference/
+)
+for route in "${verify_routes[@]}"; do
   body="/tmp/dtf-learning-retired-visual-check-$(printf '%s' "$route" | tr '/' '_').html"
-  curl -4 --fail --silent --show-error --location \
+  curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
     -H 'Cache-Control: no-cache, no-store, max-age=0' \
     -H 'Pragma: no-cache' \
     "${WP_SITE_URL:-https://dtfseeds.com}${route}?dtf_learning_visual_gate=${GITHUB_RUN_ID:-local}-$(date +%s%N)" \
     -o "$body"
-  if grep -Eqi "$blocked_visual" "$body"; then
+  if grep -Eqi "$blocked_visual" "$body" || grep -Eqi "$blocked_alt" "$body"; then
     echo "Learning publish still renders a retired visual on $route" >&2
+    exit 1
+  fi
+  if [[ "$route" == /learn/* ]] && grep -Eqi "$blocked_learning_role" "$body"; then
+    echo "Learning publish still renders a product/strain-card visual in an educational role on $route" >&2
     exit 1
   fi
 done
@@ -105,4 +143,4 @@ done
 test -s "$map_root/learning-v4-backup-path.txt"
 test -s "$map_root/learning-visual-v1-backup-path.txt"
 test -s "$retired_visual_root/retired-visual-scrub-backup-path.txt"
-echo "Canonical Learning V3 published with approved-only media selection, connected Learning V4 map, expanded THC references, DTF Visual V1, and retired-visual enforcement."
+echo "Canonical Learning V3 published with role-safe approved media selection, connected Learning V4 map, expanded THC references, DTF Visual V1, and retired-visual enforcement."
