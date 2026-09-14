@@ -26,15 +26,15 @@
     {
       "id": "social-reactions",
       "version": "1.0.0",
-      "status": "planned",
+      "status": "active",
       "category": "social",
       "enabledByDefault": true,
       "serverAuthoritative": false,
       "dependencies": ["room-chat"],
       "hooks": ["chat:message", "reaction:sent", "formation:burned", "match:won", "match:lost"],
-      "assetFamilies": ["BB-005", "BB-006"],
+      "assetFamilies": ["BB-011"],
       "deviceScope": ["phone", "tablet", "desktop"],
-      "notes": "Quick reactions and system-message presentation."
+      "notes": "Runtime social-feedback-v1 module adds quick reactions and art-backed notification presentation without altering server-authoritative room state."
     },
     {
       "id": "authored-audio",
