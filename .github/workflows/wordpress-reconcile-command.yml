@@ -7,8 +7,11 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
+# /rebuild-site is owned exclusively by wordpress-visual-command.yml. Keeping it
+# out of this workflow prevents the old broad visual writer from racing the
+# approved-only Learning transaction. This command now performs only the
+# ownership-preserving canonical page reconciliation.
 concurrency:
   group: dtfseeds-wordpress-reconcile-command
   cancel-in-progress: true
@@ -18,281 +21,102 @@ jobs:
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event.issue.number == 46 &&
-       (github.event.comment.body == '/reconcile-wordpress' || github.event.comment.body == '/rebuild-site') &&
+       github.event.comment.body == '/reconcile-wordpress' &&
        github.event.comment.user.login == github.repository_owner)
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 25
     environment: production
     env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
-      WC_CONSUMER_KEY: ${{ secrets.WC_CONSUMER_KEY }}
-      WC_CONSUMER_SECRET: ${{ secrets.WC_CONSUMER_SECRET }}
       CONTENT_DIR: ${{ github.workspace }}/site/wordpress/pages
-      BACKUP_ROOT: /tmp/wordpress-public-page-backups
-      NODE_OPTIONS: --dns-result-order=ipv4first
+      BACKUP_ROOT: /tmp/wordpress-owned-route-reconcile
+      OWNED_ROUTE_PRESERVATION_REPORT: /tmp/wordpress-owned-route-reconcile/owned-route-preservation.json
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout trusted main
+        uses: actions/checkout@v4
         with:
           ref: main
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: '22'
 
-      - name: Determine command mode
-        id: mode
+      - name: Validate ownership-safe reconciliation package
         shell: bash
         run: |
           set -euo pipefail
-          if [[ "${{ github.event_name }}" == "issue_comment" && "${{ github.event.comment.body }}" == "/rebuild-site" ]]; then
-            echo 'visual=true' >> "$GITHUB_OUTPUT"
-          else
-            echo 'visual=false' >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Validate reconciliation package
-        shell: bash
-        run: |
-          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/apply-wordpress-public-content-owned-routes.mjs
           node --check scripts/apply-wordpress-public-content-rest.mjs
-          node --check scripts/audit-wordpress-commerce-rest.mjs
-          node --check scripts/reconcile-woocommerce-products.mjs
-          node --check scripts/rollback-woocommerce-products.mjs
-          node --check scripts/rebuild-wordpress-visual-site.mjs
-          node --check scripts/rebuild-wordpress-infographic-gallery.mjs
-          node scripts/validate-genetics-commerce.mjs
-          node scripts/validate-woocommerce-reconciliation.mjs
-          test -s site/wordpress/assets/brand/dtf-potleaf-512.png
-          for slug in home seeds learn community shop gallery about contact; do
-            test -s "site/wordpress/pages/$slug.html"
-            grep -Fq '<h1' "site/wordpress/pages/$slug.html"
-          done
-          test ! -e site/wordpress/pages/games.html
-          test ! -e site/wordpress/pages/high-iq.html
-          grep -Fq 'https://discord.gg/xJbUeHFPMt' site/wordpress/pages/community.html
+          node --check scripts/verify-wordpress-owned-route-preservation.mjs
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
+          test -d "$CONTENT_DIR"
+          test -s "$CONTENT_DIR/home.html"
+          test -s "$CONTENT_DIR/learn.html"
+          ! grep -Fq 'node scripts/rebuild-wordpress-visual-site.mjs' .github/workflows/wordpress-reconcile-command.yml
+          ! grep -Fq 'node scripts/rebuild-wordpress-infographic-gallery.mjs' .github/workflows/wordpress-reconcile-command.yml
+          ! grep -Fq '/rebuild-site' .github/workflows/wordpress-reconcile-command.yml || grep -Fq '/rebuild-site is owned exclusively' .github/workflows/wordpress-reconcile-command.yml
 
-      - name: Require WordPress credentials
-        id: access
-        shell: bash
-        run: |
-          set -euo pipefail
-          [[ -n "${WP_API_USERNAME:-}" ]]
-          [[ -n "${WP_API_PASSWORD:-}" ]]
-          if [[ -n "${WC_CONSUMER_KEY:-}" && -n "${WC_CONSUMER_SECRET:-}" ]]; then
-            echo 'commerce_auth=woocommerce-consumer-key' >> "$GITHUB_OUTPUT"
-          else
-            echo 'commerce_auth=wordpress-basic-auth' >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Probe WordPress commerce and presentation without writes
-        id: presentation_probe
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/audit-wordpress-commerce-rest.mjs
-
-      - name: Reconcile canonical pages and front page
+      - name: Reconcile canonical non-Learning routes without overwriting Home or Learn
         id: pages
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/apply-wordpress-public-content-rest.mjs
-          backup_dir="$(cat "$BACKUP_ROOT/wordpress-rest-backup-path.txt")"
-          summary="$backup_dir/deployment-summary.json"
-          mutations="$(node -p "require(process.argv[1]).mutationCount" "$summary")"
-          changed_pages="$(node -p "require(process.argv[1]).changedPages" "$summary")"
-          echo "mutations=$mutations" >> "$GITHUB_OUTPUT"
-          echo "changed_pages=$changed_pages" >> "$GITHUB_OUTPUT"
-
-      - name: Rebuild visual brand shell, Home, and Learn
-        id: visual
-        if: steps.mode.outputs.visual == 'true'
-        env:
-          APPLY_VISUAL_REBUILD: 'true'
-          BACKUP_ROOT: ${{ runner.temp }}/dtf-visual-rebuild
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/rebuild-wordpress-visual-site.mjs
-          dir="$(cat "$BACKUP_ROOT/visual-rebuild-backup-path.txt")"
-          report="$dir/visual-rebuild-report.json"
-          echo "media_count=$(node -p "require(process.argv[1]).mediaCount" "$report")" >> "$GITHUB_OUTPUT"
-          echo "brand_id=$(node -p "require(process.argv[1]).brandMediaId" "$report")" >> "$GITHUB_OUTPUT"
-          echo "missing=$(node -p "require(process.argv[1]).missingSelections.join(',')" "$report")" >> "$GITHUB_OUTPUT"
-
-      - name: Rebuild responsive infographic gallery
-        id: gallery
-        if: steps.mode.outputs.visual == 'true'
-        env:
-          APPLY_INFOGRAPHIC_GALLERY: 'true'
-          BACKUP_ROOT: ${{ runner.temp }}/dtf-visual-rebuild
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/rebuild-wordpress-infographic-gallery.mjs
-          dir="$(cat "$BACKUP_ROOT/infographic-gallery-backup-path.txt")"
-          report="$dir/gallery-report.json"
-          echo "media_count=$(node -p "require(process.argv[1]).mediaCount" "$report")" >> "$GITHUB_OUTPUT"
-
-      - name: Verify DTF cannabis-leaf site icon
-        id: icon
-        if: steps.mode.outputs.visual == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
-          curl -4 --fail --silent --show-error --location -H "Authorization: Basic $auth" \
-            "$WP_SITE_URL/wp-json/wp/v2/settings?context=edit" -o "$RUNNER_TEMP/settings.json"
-          site_icon="$(node -p "Number(require(process.argv[1]).site_icon || 0)" "$RUNNER_TEMP/settings.json")"
-          [[ "$site_icon" -gt 0 ]]
-          curl -4 --fail --silent --show-error --location -H "Authorization: Basic $auth" \
-            "$WP_SITE_URL/wp-json/wp/v2/media/$site_icon?context=edit" -o "$RUNNER_TEMP/icon.json"
-          node - <<'NODE' "$RUNNER_TEMP/icon.json"
-          const m=require(process.argv[2]);
-          const value=`${m.title?.rendered||''} ${m.alt_text||''}`.toLowerCase();
-          if(!value.includes('dtf genetics cannabis leaf')) throw new Error('Active WordPress site icon is not the DTF cannabis leaf');
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/apply-wordpress-public-content-owned-routes.mjs \
+            | tee "$RUNNER_TEMP/owned-route-reconcile.log"
+          test -s "$OWNED_ROUTE_PRESERVATION_REPORT"
+          node - "$OWNED_ROUTE_PRESERVATION_REPORT" <<'NODE'
+          const fs=require('fs');
+          const r=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+          for(const slug of ['home','learn']){
+            if(r.routes?.[slug]?.canonicalLaneMutation!==false) throw new Error(`Delegated /${slug}/ was not proved read-only.`);
+          }
+          console.log('Home and Learn remained delegated and unmodified by canonical reconciliation.');
           NODE
-          echo "site_icon=$site_icon" >> "$GITHUB_OUTPUT"
 
-      - name: Verify live canonical pages
-        id: verify
-        if: steps.mode.outputs.visual != 'true'
+      - name: Purge LiteSpeed cache
         shell: bash
         run: |
           set -euo pipefail
-          verify_page() {
-            local path="$1" required="$2" body="$RUNNER_TEMP/$(echo "$path" | tr '/?' '__').html" ok=0
+          ok=0
+          for attempt in 1 2 3; do
+            if node scripts/flush-hostinger-litespeed-mcp.mjs; then ok=1; break; fi
+            [[ "$attempt" -lt 3 ]] && sleep $((attempt * 5))
+          done
+          [[ "$ok" -eq 1 ]] || { echo 'LiteSpeed cache purge failed after retries.' >&2; exit 1; }
+
+      - name: Verify delegated visual owners survived reconciliation
+        shell: bash
+        run: |
+          set -euo pipefail
+          blocked='(dtf-edu-|THC[-_ ]?C[0-9]{3}|THC[-_ ]?ENC[-_ ]?[0-9]{3}|Cannabis[_ -]Plant[_ -]Anatomy[_ -]Infographic|Beneficial[_ -]Insects[_ -]and[_ -]Biological[_ -]Controls)'
+          for spec in '/|data-dtf-layout="home-v3"' '/learn/|data-dtf-layout="learn-v3"'; do
+            route="${spec%%|*}"; marker="${spec#*|}"; body="$RUNNER_TEMP/$(printf '%s' "$route" | tr '/' '_').html"; ok=0
             for attempt in 1 2 3 4 5 6; do
-              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 --header 'Cache-Control: no-cache' \
-                "https://dtfseeds.com${path}?dtf_command=${GITHUB_RUN_ID}-${attempt}" --output "$body"
-              if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
-              sleep 10
-            done
-            [[ "$ok" -eq 1 ]]
-            for forbidden in 'Reserved strain card' 'staged for verified' 'being rebuilt' 'Needed from owner' 'email@email.com' '+123456789'; do
-              ! grep -Fqi -- "$forbidden" "$body"
-            done
-          }
-          verify_page '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'
-          verify_page '/seeds/' 'Shop current releases'
-          verify_page '/shop/' 'Shop current DTF releases without losing the breeding context.'
-          verify_page '/learn/' 'Read the yellow-leaves diagnostic guide'
-          verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
-          verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
-
-      - name: Verify live visual site
-        id: visual_verify
-        if: steps.mode.outputs.visual == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          check_page() {
-            local path="$1" required="$2" minimum="$3"
-            local key="$(echo "$path" | tr '/?' '__')"
-            local body="$RUNNER_TEMP/live-${key}.html" ok=0
-            for attempt in 1 2 3 4 5 6 7 8; do
-              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              if curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                --connect-timeout 20 --max-time 45 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
-                "$WP_SITE_URL${path}?dtf_rebuild=${GITHUB_RUN_ID}-${attempt}" -o "$body"
-              if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
-              sleep 8
+                "$WP_SITE_URL${route}?dtf_owned_reconcile=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" -o "$body"; then
+                if grep -Fq "$marker" "$body" && ! grep -Eqi "$blocked" "$body"; then ok=1; break; fi
+              fi
+              [[ "$attempt" -lt 6 ]] && sleep $((attempt * 3))
             done
-            [[ "$ok" -eq 1 ]] || { echo "Missing required marker on $path: $required" >&2; head -c 3000 "$body" >&2 || true; exit 1; }
-            count="$(grep -Eo '/wp-content/uploads/[^"'"' )]+' "$body" | sort -u | wc -l | tr -d ' ')"
-            [[ "$count" -ge "$minimum" ]] || { echo "$path has $count WordPress-hosted image URLs; expected >= $minimum" >&2; exit 1; }
-            for forbidden in 'email@email.com' '+123456789' 'being rebuilt' 'Reserved strain card' 'Tool-ready rebuild' 'Grow education belongs in a clean, readable library.' 'MOPS, cultivation notes, THC basics'; do
-              ! grep -Fqi -- "$forbidden" "$body" || { echo "Stale phrase remains on $path: $forbidden" >&2; exit 1; }
-            done
-            echo "$path verified with $count WordPress-hosted image URLs"
-          }
-          check_page '/' 'Genetics. Plant science. Tools. Games. Community.' 8
-          check_page '/learn/' 'Explore by subject' 10
-          check_page '/learn/infographics/' 'Visual plant science and cultivation library.' 30
-          grep -Fqi 'DTF Genetics cannabis leaf' "$RUNNER_TEMP/live-_.html"
-          grep -Eqi '<link[^>]+rel=["'"'](shortcut )?icon["'"']' "$RUNNER_TEMP/live-_.html"
+            [[ "$ok" -eq 1 ]] || { echo "Delegated owner verification failed on $route" >&2; exit 1; }
+          done
 
-      - name: Reconcile canonical WooCommerce product copy and categories
-        id: commerce_reconcile
-        if: steps.mode.outputs.visual != 'true' && steps.verify.outcome == 'success'
-        continue-on-error: true
-        shell: bash
-        env:
-          BACKUP_ROOT: ${{ runner.temp }}/woocommerce-product-backups
-        run: |
-          set -euo pipefail
-          APPLY_WOOCOMMERCE_CHANGES=true node scripts/reconcile-woocommerce-products.mjs
-
-      - name: Restore product snapshots after failed WooCommerce reconciliation
-        id: commerce_rollback
-        if: steps.commerce_reconcile.outcome == 'failure'
-        shell: bash
-        env:
-          BACKUP_ROOT: ${{ runner.temp }}/woocommerce-product-backups
-        run: |
-          set -euo pipefail
-          pointer="$BACKUP_ROOT/woocommerce-backup-path.txt"
-          if [[ ! -f "$pointer" ]]; then exit 0; fi
-          backup_dir="$(cat "$pointer")"
-          if [[ ! -f "$backup_dir/backup-manifest.json" ]]; then exit 0; fi
-          APPLY_WOOCOMMERCE_ROLLBACK=true node scripts/rollback-woocommerce-products.mjs
-
-      - name: Upload rollback and capability package
+      - name: Upload ownership evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: wordpress-reconcile-command-backup-${{ github.run_id }}
+          name: wordpress-owned-route-reconcile-${{ github.run_id }}
           path: |
-            ${{ runner.temp }}/wordpress-public-page-backups
-            ${{ runner.temp }}/dtf-visual-rebuild
-            ${{ runner.temp }}/woocommerce-product-backups
-            woocommerce-reconciliation-report.json
-            woocommerce-reconciliation-report.md
+            /tmp/wordpress-owned-route-reconcile
+            ${{ runner.temp }}/owned-route-reconcile.log
           if-no-files-found: warn
           retention-days: 30
-
-      - name: Report command result
-        if: always()
-        uses: actions/github-script@v7
-        env:
-          JOB_STATUS: ${{ job.status }}
-          VISUAL_MODE: ${{ steps.mode.outputs.visual }}
-          MUTATIONS: ${{ steps.pages.outputs.mutations }}
-          CHANGED_PAGES: ${{ steps.pages.outputs.changed_pages }}
-          MEDIA_COUNT: ${{ steps.visual.outputs.media_count }}
-          GALLERY_COUNT: ${{ steps.gallery.outputs.media_count }}
-          SITE_ICON: ${{ steps.icon.outputs.site_icon }}
-          VISUAL_VERIFY: ${{ steps.visual_verify.outcome }}
-          MISSING: ${{ steps.visual.outputs.missing }}
-          PRESENTATION_OUTCOME: ${{ steps.presentation_probe.outcome }}
-          COMMERCE_AUTH: ${{ steps.access.outputs.commerce_auth }}
-          COMMERCE_RECONCILE: ${{ steps.commerce_reconcile.outcome }}
-          COMMERCE_ROLLBACK: ${{ steps.commerce_rollback.outcome }}
-        with:
-          script: |
-            const visual = process.env.VISUAL_MODE === 'true';
-            const body = visual ? [
-              '## DTFSeeds visual rebuild command', '',
-              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              `Result: **${process.env.JOB_STATUS}**`,
-              `WordPress media indexed: **${process.env.MEDIA_COUNT || 'not-run'}**`,
-              `Education gallery media: **${process.env.GALLERY_COUNT || 'not-run'}**`,
-              `Cannabis-leaf Site Icon media ID: **${process.env.SITE_ICON || 'not-run'}**`,
-              `Live visual verification: **${process.env.VISUAL_VERIFY || 'not-run'}**`,
-              `Optional unmatched visual slots: **${process.env.MISSING || 'none'}**`, '',
-              'The visitor-facing brand shell, Home, Learn, and full infographic gallery were rebuilt from WordPress-hosted media. Backups were captured before writes.'
-            ].join('\n') : [
-              '## Canonical WordPress reconciliation', '',
-              `Trigger: **${context.eventName}**`,
-              `Status: **${process.env.JOB_STATUS}**`,
-              `Page mutations: **${process.env.MUTATIONS || 'not-run'}**`,
-              `Pages changed: **${process.env.CHANGED_PAGES || 'not-run'}**`,
-              `Presentation probe: **${process.env.PRESENTATION_OUTCOME || 'not-run'}**`,
-              `Commerce authentication: **${process.env.COMMERCE_AUTH || 'not-confirmed'}**`,
-              `WooCommerce reconciliation: **${process.env.COMMERCE_RECONCILE || 'not-run'}**`,
-              `WooCommerce rollback: **${process.env.COMMERCE_ROLLBACK || 'not-needed'}**`,
-              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
-            ].join('\n');
-            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});

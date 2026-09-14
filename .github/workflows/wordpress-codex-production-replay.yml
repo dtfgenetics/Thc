@@ -6,36 +6,30 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/wordpress-codex-production-replay.yml'
-      - 'scripts/apply-wordpress-public-content-rest.mjs'
-      - 'scripts/repair-wordpress-presentation-rest.mjs'
       - 'scripts/rebuild-wordpress-visual-site.mjs'
       - 'scripts/rebuild-wordpress-infographic-gallery.mjs'
-      - 'site/wordpress/pages/**'
-      - 'site/wordpress/assets/infographics/**'
-      - 'site/wordpress/assets/brand/**'
+      - 'scripts/run-wordpress-visual-rebuild-approved-only.mjs'
+      - 'scripts/publish-wordpress-approved-visual-library.mjs'
+      - 'site/wordpress/visual-quality-policy.json'
 
 permissions:
   contents: read
-  issues: write
 
+# RETIRED PRODUCTION REPLAY
+# The historical replay path directly executed the unrestricted Home/Learn visual
+# writer and the dtf-edu infographic gallery. Both behaviors can reintroduce
+# quarantined artwork after a clean Learning deployment. Production now uses the
+# canonical Learning V3 transaction, approved-only media gates, Gallery V2, and
+# the sitewide visual quarantine. This workflow is intentionally read-only.
 concurrency:
-  group: dtfseeds-codex-rest-production
-  cancel-in-progress: false
+  group: dtfseeds-codex-rest-production-retired
+  cancel-in-progress: true
 
 jobs:
-  publish:
-    name: Replay proven Codex REST-only production deployment
+  guard:
+    name: Confirm modern approved-only production path
     runs-on: ubuntu-latest
-    timeout-minutes: 35
-    environment: production
-    env:
-      NODE_OPTIONS: --dns-result-order=ipv4first
-      WP_SITE_URL: https://dtfseeds.com
-      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
-      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      CONTENT_DIR: ${{ github.workspace }}/site/wordpress/pages
-      BACKUP_ROOT: /tmp/dtfseeds-codex-replay
-
+    timeout-minutes: 8
     steps:
       - name: Checkout trusted main
         uses: actions/checkout@v4
@@ -47,179 +41,37 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Validate proven REST deployment package
+      - name: Validate current visual owners
         shell: bash
         run: |
           set -euo pipefail
-          test -n "${WP_API_USERNAME:-}"
-          test -n "${WP_API_PASSWORD:-}"
-          node --check scripts/apply-wordpress-public-content-rest.mjs
-          node --check scripts/repair-wordpress-presentation-rest.mjs
-          node --check scripts/rebuild-wordpress-visual-site.mjs
-          node --check scripts/rebuild-wordpress-infographic-gallery.mjs
-          test -s site/wordpress/assets/brand/dtf-potleaf-512.png
-
-      - name: Reconcile canonical WordPress pages through REST
-        id: canonical
-        shell: bash
-        run: |
-          set -euo pipefail
-          for attempt in 1 2 3 4; do
-            if node scripts/apply-wordpress-public-content-rest.mjs; then exit 0; fi
-            [[ "$attempt" -lt 4 ]] || exit 1
-            sleep $((attempt * 10))
-          done
-
-      - name: Replay successful Codex presentation repair
-        id: presentation
-        shell: bash
-        env:
-          BACKUP_ROOT: /tmp/dtfseeds-codex-replay/presentation
-        run: |
-          set -euo pipefail
-          node scripts/repair-wordpress-presentation-rest.mjs
-
-      - name: Rebuild visual Home and Learn through REST
-        id: visual
-        shell: bash
-        env:
-          APPLY_VISUAL_REBUILD: 'true'
-          BACKUP_ROOT: /tmp/dtfseeds-codex-replay/visual
-        run: |
-          set -euo pipefail
-          node scripts/rebuild-wordpress-visual-site.mjs
-
-      - name: Rebuild infographic library through REST
-        id: infographics
-        shell: bash
-        env:
-          APPLY_INFOGRAPHIC_GALLERY: 'true'
-          BACKUP_ROOT: /tmp/dtfseeds-codex-replay/infographics
-        run: |
-          set -euo pipefail
-          node scripts/rebuild-wordpress-infographic-gallery.mjs
-
-      - name: Verify WordPress database content directly
-        id: restverify
-        shell: bash
-        run: |
-          set -euo pipefail
-          auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
-
-          check_rest_page() {
-            slug="$1"
-            marker="$2"
-            file="$RUNNER_TEMP/rest-${slug}.json"
-            curl -4 --fail --silent --show-error --location \
-              --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 45 \
-              -H "Authorization: Basic $auth" \
-              -H 'Cache-Control: no-cache, no-store, max-age=0' \
-              "$WP_SITE_URL/wp-json/wp/v2/pages?slug=$slug&context=edit&per_page=1" \
-              -o "$file"
-            node - "$file" "$marker" <<'NODE'
-          const fs = require('fs');
-          const [file, marker] = process.argv.slice(2);
-          const pages = JSON.parse(fs.readFileSync(file, 'utf8'));
-          if (!Array.isArray(pages) || pages.length !== 1) throw new Error(`Page lookup failed: ${file}`);
-          const body = pages[0]?.content?.raw || pages[0]?.content?.rendered || '';
-          if (!body.toLowerCase().includes(marker.toLowerCase())) throw new Error(`Expected WordPress marker missing: ${marker}`);
+          node --check scripts/run-wordpress-visual-rebuild-approved-only.mjs
+          node --check scripts/publish-wordpress-approved-visual-library.mjs
+          node --check scripts/scrub-wordpress-low-quality-visuals-v2.mjs
+          bash -n scripts/run-learning-v3-connected-production.sh
+          node - <<'NODE'
+          const policy=require('./site/wordpress/visual-quality-policy.json');
+          if(Number(policy.schemaVersion)<3 || policy.mode!=='quarantine') throw new Error('Visual quality quarantine policy v3+ is required.');
+          if(policy.replacementPolicy?.automaticKeywordMediaSelectionAllowed!==false) throw new Error('Automatic keyword media selection must remain disabled.');
+          if(policy.replacementPolicy?.legacyInfographicReuseAllowed!==false) throw new Error('Legacy infographic reuse must remain disabled.');
+          if(policy.replacementPolicy?.legacyAutomaticInfographicPublishingAllowed!==false) throw new Error('Legacy infographic publishing must remain disabled.');
           NODE
-          }
+          grep -Fq 'function isApprovedLearningMedia(item)' scripts/prepare-learning-v3-owner-aware-publisher.mjs
+          grep -Fq 'delegatedPublisher' scripts/rebuild-wordpress-infographic-gallery.mjs
+          ! grep -Fq 'node scripts/rebuild-wordpress-visual-site.mjs' .github/workflows/wordpress-codex-production-replay.yml
+          ! grep -Fq 'APPLY_INFOGRAPHIC_GALLERY' .github/workflows/wordpress-codex-production-replay.yml
 
-          check_rest_page home 'Genetics. Plant science. Tools. Games. Community.'
-          check_rest_page learn 'Explore by subject'
-          check_rest_page infographics 'Visual plant science and cultivation library.'
-
-      - name: Verify visitor-facing routes using the same Codex cache-busted method
-        id: liveverify
+      - name: Verify public site is not serving the legacy visual identity
         shell: bash
         run: |
           set -euo pipefail
-
-          check_live() {
-            path="$1"
-            marker="$2"
-            body="$RUNNER_TEMP/live-$(printf '%s' "$path" | tr '/?' '__').html"
-            ok=0
-            for attempt in 1 2 3 4 5 6 7 8; do
-              if curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
-                -H 'Cache-Control: no-cache, no-store, max-age=0' \
-                -H 'Pragma: no-cache' \
-                "$WP_SITE_URL${path}?dtf_codex_replay=${GITHUB_RUN_ID}-${attempt}" \
-                -o "$body"; then
-                if grep -Fqi -- "$marker" "$body"; then
-                  ok=1
-                  break
-                fi
-              fi
-              sleep 5
-            done
-            [[ "$ok" -eq 1 ]] || {
-              echo "Current WordPress marker not visible on $path: $marker" >&2
-              head -c 2500 "$body" >&2 || true
-              exit 1
-            }
-            for stale in \
-              'email@email.com' \
-              '+123456789' \
-              'Grow education belongs in a clean, readable library.' \
-              'MOPS, cultivation notes, THC basics' \
-              'being rebuilt' \
-              'Reserved strain card' \
-              'Tool-ready rebuild'; do
-              ! grep -Fqi -- "$stale" "$body" || {
-                echo "Stale visitor-facing marker remains on $path: $stale" >&2
-                exit 1
-              }
-            done
-            echo "$path exposes current WordPress output"
-          }
-
-          check_live '/' 'Genetics. Plant science. Tools. Games. Community.'
-          check_live '/learn/' 'Explore by subject'
-          check_live '/learn/infographics/' 'Visual plant science and cultivation library.'
-
-      - name: Upload rollback evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: dtfseeds-codex-rest-replay-${{ github.run_id }}
-          path: /tmp/dtfseeds-codex-replay
-          if-no-files-found: warn
-          retention-days: 30
-
-      - name: Report replay result
-        if: always()
-        uses: actions/github-script@v7
-        env:
-          JOB_STATUS: ${{ job.status }}
-          CANONICAL: ${{ steps.canonical.outcome }}
-          PRESENTATION: ${{ steps.presentation.outcome }}
-          VISUAL: ${{ steps.visual.outcome }}
-          INFOGRAPHICS: ${{ steps.infographics.outcome }}
-          REST_VERIFY: ${{ steps.restverify.outcome }}
-          LIVE_VERIFY: ${{ steps.liveverify.outcome }}
-        with:
-          script: |
-            const body = [
-              '## Codex REST-only production replay',
-              '',
-              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              `Result: **${process.env.JOB_STATUS}**`,
-              `Canonical pages: **${process.env.CANONICAL || 'not-run'}**`,
-              `Presentation repair: **${process.env.PRESENTATION || 'not-run'}**`,
-              `Visual rebuild: **${process.env.VISUAL || 'not-run'}**`,
-              `Infographic rebuild: **${process.env.INFOGRAPHICS || 'not-run'}**`,
-              `WordPress REST verification: **${process.env.REST_VERIFY || 'not-run'}**`,
-              `Visitor-facing verification: **${process.env.LIVE_VERIFY || 'not-run'}**`,
-              '',
-              'This workflow intentionally recreates the previously successful Codex deployment path and requires no Hostinger SSH credentials.'
-            ].join('\n');
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body
-            });
-
-# Final uninterrupted replay trigger: 2026-08-21.
+          blocked='(dtf-edu-|THC[-_ ]?C[0-9]{3}|THC[-_ ]?ENC[-_ ]?[0-9]{3}|Cannabis[_ -]Plant[_ -]Anatomy[_ -]Infographic|Beneficial[_ -]Insects[_ -]and[_ -]Biological[_ -]Controls)'
+          for route in / /learn/ /gallery/ /learn/infographics/; do
+            body="$RUNNER_TEMP/$(printf '%s' "$route" | tr '/' '_').html"
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --connect-timeout 20 --max-time 50 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+              "https://dtfseeds.com${route}?dtf_retired_codex_guard=${GITHUB_RUN_ID}-$(date +%s%N)" -o "$body"
+            ! grep -Eqi "$blocked" "$body" || { echo "Legacy visual identity remains on $route" >&2; exit 1; }
+          done
+          echo 'Historical Codex replay performed no mutation; current approved-only production owners remain authoritative.'

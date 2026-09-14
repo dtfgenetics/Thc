@@ -1,11 +1,18 @@
 name: Publish DTF Gallery Visual V3
 
+# COMPATIBILITY ENTRY POINT
+# The old Gallery V3 could overwrite the approved image-less Gallery V2 with a
+# large mixed visual archive. Keep this workflow name for workflow_run history,
+# but route every production invocation to the clean Gallery V2 owner instead.
+
 on:
   workflow_dispatch:
   push:
     branches: [main]
     paths:
       - 'scripts/finalize-wordpress-gallery-visual-v3.mjs'
+      - 'scripts/publish-wordpress-gallery-v2.mjs'
+      - 'site/wordpress/pages/gallery.html'
       - '.github/workflows/wordpress-gallery-visual-v3.yml'
   workflow_run:
     workflows:
@@ -15,10 +22,9 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
-  group: dtfseeds-gallery-visual-v3
+  group: dtfseeds-gallery-visual-v2
   cancel-in-progress: true
 
 env:
@@ -26,7 +32,7 @@ env:
   NODE_OPTIONS: --dns-result-order=ipv4first
 
 jobs:
-  publish-gallery-v3:
+  publish-gallery-v2:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -34,106 +40,84 @@ jobs:
     env:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
-      BACKUP_ROOT: /tmp/dtf-gallery-visual-v3
+      BACKUP_ROOT: /tmp/dtf-gallery-v2-compat
+      APPLY_GALLERY_V2: 'true'
 
     steps:
       - name: Checkout trusted main
         uses: actions/checkout@v4
         with:
           ref: main
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
-      - name: Validate Gallery V3 package
+          node-version: '22'
+
+      - name: Validate clean Gallery V2 owner
         shell: bash
         run: |
           set -euo pipefail
-          test -n "${WP_API_USERNAME:-}"
-          test -n "${WP_API_PASSWORD:-}"
-          node --check scripts/finalize-wordpress-gallery-visual-v3.mjs
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-gallery-v2.mjs
           node --check scripts/flush-hostinger-litespeed-mcp.mjs
-          grep -Fq 'data-dtf-gallery-visual-v3' scripts/finalize-wordpress-gallery-visual-v3.mjs
-          grep -Fq 'See the genetics first. Explore the science behind them.' scripts/finalize-wordpress-gallery-visual-v3.mjs
-          grep -Fq 'dtf-strain-card-blue-mango-f2-regular' scripts/finalize-wordpress-gallery-visual-v3.mjs
-          grep -Fq 'dtf-strain-card-mango-bubbles-f1-regular' scripts/finalize-wordpress-gallery-visual-v3.mjs
-      - name: Publish Gallery V3 visual page
-        id: publish
-        env:
-          APPLY_GALLERY_VISUAL_V3: 'true'
+          grep -Fq 'data-dtf-layout="gallery-visual-v2"' site/wordpress/pages/gallery.html
+          grep -Fq 'Approved visuals only.' site/wordpress/pages/gallery.html
+          ! grep -Eqi '<img\b' site/wordpress/pages/gallery.html
+          ! grep -Fq 'node scripts/finalize-wordpress-gallery-visual-v3.mjs' .github/workflows/wordpress-gallery-visual-v3.yml
+
+      - name: Publish clean Gallery V2 instead of legacy V3
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p "$BACKUP_ROOT"
-          node scripts/finalize-wordpress-gallery-visual-v3.mjs | tee "$RUNNER_TEMP/gallery-v3.json"
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-gallery-v2.mjs \
+            | tee "$RUNNER_TEMP/gallery-v2-compat.json"
+          grep -Fq '"storedVerification": "success"' "$RUNNER_TEMP/gallery-v2-compat.json"
+
       - name: Purge Hostinger LiteSpeed cache
-        id: cache
         shell: bash
         run: |
           set -euo pipefail
           ok=0
           for attempt in 1 2 3; do
             if node scripts/flush-hostinger-litespeed-mcp.mjs; then ok=1; break; fi
-            sleep $((attempt * 4))
+            [[ "$attempt" -lt 3 ]] && sleep $((attempt * 4))
           done
           [[ "$ok" -eq 1 ]] || { echo 'LiteSpeed cache purge failed.' >&2; exit 1; }
           sleep 5
-      - name: Verify Gallery V3 origin and public cache
-        id: verify
+
+      - name: Verify clean Gallery V2 remains public
         shell: bash
         run: |
           set -euo pipefail
-          verify_gallery() {
-            local url="$1" output="$2" ok=0
-            for attempt in 1 2 3 4 5 6 7 8; do
-              curl -4 -fsSL --retry 2 --retry-delay 2 -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' "$url" -o "$output"
-              images="$(grep -oi '<img' "$output" | wc -l | tr -d ' ')"
-              if \
-                grep -Fqi 'data-dtf-gallery-visual-v3="true"' "$output" && \
-                grep -Fqi 'See the genetics first. Explore the science behind them.' "$output" && \
-                grep -Fqi 'Blue Mango F2 Regular DTF Genetics strain card' "$output" && \
-                grep -Fqi 'Blue Mango F2 Feminized DTF Genetics strain card' "$output" && \
-                grep -Fqi 'Blue Bubblegum F1 Regular DTF Genetics strain card' "$output" && \
-                grep -Fqi 'Mango Bubbles F1 Regular DTF Genetics strain card' "$output" && \
-                [[ "$images" -ge 12 ]]; then ok=1; break; fi
-              sleep 6
-            done
-            [[ "$ok" -eq 1 ]] || { echo "Gallery V3 verification failed for $url (images=$images)" >&2; exit 1; }
-          }
-          verify_gallery "$WP_SITE_URL/gallery/?dtf_gallery_v3=${GITHUB_RUN_ID}" "$RUNNER_TEMP/gallery-v3-origin.html"
-          verify_gallery "$WP_SITE_URL/gallery/" "$RUNNER_TEMP/gallery-v3-public.html"
-      - name: Upload Gallery V3 rollback evidence
+          body="$RUNNER_TEMP/gallery-v2-public.html"
+          blocked='(dtf-edu-|THC[-_ ]?C[0-9]{3}|THC[-_ ]?ENC[-_ ]?[0-9]{3}|Cannabis[_ -]Plant[_ -]Anatomy[_ -]Infographic|Beneficial[_ -]Insects[_ -]and[_ -]Biological[_ -]Controls)'
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            if curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --connect-timeout 20 --max-time 50 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+              "$WP_SITE_URL/gallery/?dtf_gallery_v2_compat=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" -o "$body"; then
+              if grep -Fq 'data-dtf-layout="gallery-visual-v2"' "$body" && \
+                 grep -Fq 'Approved visuals only.' "$body" && \
+                 grep -Fq 'Browse by destination.' "$body" && \
+                 ! grep -Eqi "$blocked" "$body"; then ok=1; break; fi
+            fi
+            [[ "$attempt" -lt 8 ]] && sleep $((attempt + 2))
+          done
+          [[ "$ok" -eq 1 ]] || { echo 'Gallery V2 compatibility publication did not converge.' >&2; head -c 4500 "$body" >&2 || true; exit 1; }
+          ! grep -Fqi 'DTF Visual Library' "$body"
+          echo 'Legacy Gallery V3 entry point reconciled to clean Gallery V2.'
+
+      - name: Upload Gallery rollback evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: dtf-gallery-visual-v3-${{ github.run_id }}
+          name: dtf-gallery-v2-compat-${{ github.run_id }}
           path: |
-            /tmp/dtf-gallery-visual-v3
-            ${{ runner.temp }}/gallery-v3-*.html
+            /tmp/dtf-gallery-v2-compat
+            ${{ runner.temp }}/gallery-v2-compat.json
+            ${{ runner.temp }}/gallery-v2-public.html
           if-no-files-found: warn
           retention-days: 30
-      - name: Report Gallery V3 production result
-        if: always()
-        continue-on-error: true
-        uses: actions/github-script@v7
-        env:
-          STATUS: ${{ job.status }}
-          PUBLISH: ${{ steps.publish.outcome }}
-          CACHE: ${{ steps.cache.outcome }}
-          VERIFY: ${{ steps.verify.outcome }}
-        with:
-          script: |
-            try {
-              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:220,body:[
-                '## DTF Gallery Visual V3','',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Result: **${process.env.STATUS}**`,
-                `Gallery write: **${process.env.PUBLISH || 'not-run'}**`,
-                `LiteSpeed cache purge: **${process.env.CACHE || 'not-run'}**`,
-                `Origin + public verification: **${process.env.VERIFY || 'not-run'}**`,
-                '',
-                'Gallery leads with reviewed DTF Genetics strain-card artwork and exposes the multi-image visual archive. Reporting is advisory and cannot turn a verified gallery publication into a false workflow failure.'
-              ].join('\n')});
-            } catch (error) {
-              core.warning(`Could not post Gallery V3 production result: ${error.message}`);
-            }

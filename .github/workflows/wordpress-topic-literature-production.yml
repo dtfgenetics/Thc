@@ -5,77 +5,171 @@ on:
   push:
     branches: [main]
     paths:
-      - scripts/publish-wordpress-topic-literature.mjs
-      - scripts/publish-wordpress-infographics-canonical.sh
-      - scripts/publish-wordpress-infographics-canonical-v2.sh
-      - scripts/publish-wordpress-infographics-resilient.sh
-      - scripts/assemble-outdoor-quantification-v1.mjs
+      - scripts/publish-wordpress-approved-visual-library.mjs
+      - scripts/scrub-wordpress-low-quality-visuals-v2.mjs
+      - site/wordpress/visual-quality-policy.json
+      - site/wordpress/visual-quality/retired-public-visuals.json
       - site/wordpress/education/topic-literature.json
-      - site/wordpress/education/outdoor-quantification-v1.json
-      - site/wordpress/education/outdoor-quantification/**
-      - site/wordpress/assets/infographics/placement-rules.json
-      - site/wordpress/assets/infographics/infographic-exclusions.json
       - .github/workflows/wordpress-topic-literature-production.yml
   workflow_run:
     workflows:
       - Publish DTFSeeds Learning Experience V3
-      - Publish Harvest Images Now
     types: [completed]
 
 permissions:
-  contents: write
-  issues: write
+  contents: read
 
-# This is a downstream finalizer, not an independent writer. It deliberately
-# shares the authoritative infographic lock and transaction so Learning V3 or a
-# Harvest lane cannot leave a partial/stale library behind.
+# This keeps the historical workflow name because other production workflows use
+# it as a workflow_run dependency. Its job has changed: it is now the final
+# approved-visual owner, not a legacy dtf-edu infographic republisher.
 concurrency:
-  group: dtfseeds-wordpress-infographics-production
-  cancel-in-progress: false
+  group: dtfseeds-wordpress-learning-visual-final-owner
+  cancel-in-progress: true
 
 jobs:
   finalize:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
-    name: Restore and verify canonical learning asset ownership
+    name: Finalize approved Learning visual ownership
     runs-on: ubuntu-latest
-    timeout-minutes: 55
+    timeout-minutes: 35
     environment: production
     env:
       NODE_OPTIONS: --dns-result-order=ipv4first
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      INFOGRAPHIC_SOURCE_DIR: ${{ github.workspace }}/site/wordpress/assets/infographics
-      INFOGRAPHIC_DIR: ${{ github.workspace }}/.tmp/eligible-infographics
-      INFOGRAPHIC_PLACEMENT_CONFIG: ${{ github.workspace }}/site/wordpress/assets/infographics/placement-rules.json
-      INFOGRAPHIC_EXCLUSIONS: ${{ github.workspace }}/site/wordpress/assets/infographics/infographic-exclusions.json
-      BULK_INFOGRAPHIC_MANIFEST: ${{ github.workspace }}/site/wordpress/imports/infographic-bulk-import.json
-      BULK_IMPORT_REPORT: /tmp/infographic-bulk-import-report.json
       TOPIC_LITERATURE_CONFIG: ${{ github.workspace }}/site/wordpress/education/topic-literature.json
-      BACKUP_ROOT: /tmp/wordpress-infographic-backups
+      DTF_VISUAL_QUALITY_POLICY: ${{ github.workspace }}/site/wordpress/visual-quality-policy.json
+      BACKUP_ROOT: /tmp/dtf-learning-visual-final-owner
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout trusted main
+        uses: actions/checkout@v4
         with:
           ref: main
-          fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: '22'
 
-      - name: Reassert the complete canonical infographic and literature state
-        run: bash scripts/publish-wordpress-infographics-resilient.sh
+      - name: Validate fail-closed visual package
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-approved-visual-library.mjs
+          node --check scripts/scrub-wordpress-low-quality-visuals-v2.mjs
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
+          node - <<'NODE'
+          const policy=require('./site/wordpress/visual-quality-policy.json');
+          if(Number(policy.schemaVersion)<3 || policy.mode!=='quarantine') throw new Error('Visual quality policy v3+ quarantine is required.');
+          if(policy.replacementPolicy?.legacyAutomaticInfographicPublishingAllowed!==false) throw new Error('Legacy automatic infographic publishing must remain disabled.');
+          if(policy.replacementPolicy?.legacyInfographicReuseAllowed!==false) throw new Error('Legacy infographic reuse must remain disabled.');
+          if(policy.replacementPolicy?.automaticKeywordMediaSelectionAllowed!==false) throw new Error('Automatic keyword media selection must remain disabled.');
+          if(policy.replacementPolicy?.imageLessFallbackPreferred!==true) throw new Error('Image-less fallback must remain preferred.');
+          NODE
+          ! grep -Fq 'publish-wordpress-infographics-resilient.sh' .github/workflows/wordpress-topic-literature-production.yml
+          ! grep -Fq 'publish-wordpress-topic-literature.mjs' .github/workflows/wordpress-topic-literature-production.yml
+
+      - name: Publish approved-only visual library
+        id: library
+        env:
+          APPLY_APPROVED_VISUAL_LIBRARY: 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-approved-visual-library.mjs \
+            | tee "$RUNNER_TEMP/approved-visual-library.json"
+          grep -Fq '"storageVerification": "success"' "$RUNNER_TEMP/approved-visual-library.json"
+          grep -Fq '"imageCount": 0' "$RUNNER_TEMP/approved-visual-library.json"
+
+      - name: Scrub every retired public visual after Learning writers
+        id: scrub
+        env:
+          APPLY_VISUAL_SCRUB: 'true'
+          DELETE_BANNED_MEDIA: 'true'
+          SKIP_PUBLIC_VISUAL_VERIFICATION: 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/scrub-wordpress-low-quality-visuals-v2.mjs \
+            | tee "$RUNNER_TEMP/final-visual-scrub.json"
+
+      - name: Purge WordPress and LiteSpeed cache
+        id: cache
+        shell: bash
+        run: |
+          set -euo pipefail
+          ok=0
+          for attempt in 1 2 3; do
+            if node scripts/flush-hostinger-litespeed-mcp.mjs; then ok=1; break; fi
+            [[ "$attempt" -lt 3 ]] && sleep $((attempt * 5))
+          done
+          [[ "$ok" -eq 1 ]] || { echo 'Hostinger/LiteSpeed cache purge failed after retries.' >&2; exit 1; }
+          sleep 5
+
+      - name: Verify approved-only library and clean Learning routes
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          blocked='(dtf-edu-|THC[-_ ]?C[0-9]{3}|THC[-_ ]?ENC[-_ ]?[0-9]{3}|Outdoor[-_ ]?[0-9]{2}|Cannabis[_ -]Plant[_ -]Anatomy[_ -]Infographic|Cannabis[_ -]Plant[_ -]Life[_ -]Cycle|Cannabis[_ -]Sex[_ -]Expression|Beneficial[_ -]Insects[_ -]and[_ -]Biological[_ -]Controls|Diagnosing[_ -]Deficiency[_ -]vs[_ -]Toxicity)'
+          fetch_clean() {
+            local path="$1" required="$2" output="$3" ok=0
+            for attempt in 1 2 3 4 5 6 7 8; do
+              if curl -4 --fail --silent --show-error --location \
+                --retry 2 --retry-delay 2 --connect-timeout 20 --max-time 50 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
+                "$WP_SITE_URL${path}?dtf_approved_visual_final=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" \
+                -o "$output"; then
+                if grep -Fq "$required" "$output" && ! grep -Eqi "$blocked" "$output"; then
+                  ok=1
+                  break
+                fi
+              fi
+              [[ "$attempt" -lt 8 ]] && sleep $((attempt + 2))
+            done
+            [[ "$ok" -eq 1 ]] || {
+              echo "Approved visual final-owner verification failed on $path" >&2
+              grep -Eoi "$blocked" "$output" | head -30 >&2 || true
+              exit 1
+            }
+          }
+
+          library="$RUNNER_TEMP/approved-library-public.html"
+          fetch_clean '/learn/infographics/' 'data-dtf-approved-visual-library="v1"' "$library"
+          ! grep -Eqi '<main[^>]+dtf-approved-visual-library[\s\S]*<img\b' "$library" || { echo 'Approved Visual Library unexpectedly renders image markup.' >&2; exit 1; }
+          grep -Fq 'Approved Visual Library' "$library"
+          grep -Fq 'Accuracy before image count.' "$library"
+
+          fetch_clean '/learn/' 'data-dtf-layout="learn-v3"' "$RUNNER_TEMP/learn-clean.html"
+          fetch_clean '/learn/plant-biology/' 'data-dtf-topic="plant-biology"' "$RUNNER_TEMP/plant-biology-clean.html"
+          fetch_clean '/learn/genetics-breeding/' 'data-dtf-topic="genetics-breeding"' "$RUNNER_TEMP/genetics-clean.html"
+          fetch_clean '/learn/ipm/' 'data-dtf-topic="plant-health-ipm"' "$RUNNER_TEMP/ipm-clean.html"
+          fetch_clean '/learn/outdoor/' 'data-dtf-topic="outdoor-cultivation"' "$RUNNER_TEMP/outdoor-clean.html"
+
+          # Run the central read-only quarantine verifier across its full route list.
+          APPLY_VISUAL_SCRUB=false \
+          DELETE_BANNED_MEDIA=false \
+          SKIP_PUBLIC_VISUAL_VERIFICATION=false \
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/scrub-wordpress-low-quality-visuals-v2.mjs \
+            | tee "$RUNNER_TEMP/final-visual-verification.json"
+          echo 'outcome=success' >> "$GITHUB_OUTPUT"
 
       - name: Upload final-owner evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: topic-literature-final-owner-${{ github.run_id }}
+          name: approved-learning-visual-final-owner-${{ github.run_id }}
           path: |
-            /tmp/wordpress-infographic-backups
-            /tmp/infographic-bulk-import-report.json
-            ${{ runner.temp }}/infographic-library.html
-            ${{ runner.temp }}/outdoor.html
-            ${{ runner.temp }}/infographic-transaction-attempt-*.log
+            /tmp/dtf-learning-visual-final-owner
+            ${{ runner.temp }}/approved-visual-library.json
+            ${{ runner.temp }}/final-visual-scrub.json
+            ${{ runner.temp }}/final-visual-verification.json
+            ${{ runner.temp }}/*-clean.html
+            ${{ runner.temp }}/approved-library-public.html
           if-no-files-found: warn
           retention-days: 30

@@ -1,7 +1,11 @@
 name: Enforce Responsive THC Education Images
 
-# Final education-image transform: validate on source pushes, mutate production only
-# after the downstream WordPress education owners have completed.
+# RETIRED MUTATION LANE
+# The former job optimized dtf-edu-* images after other Learning writers and then
+# required 20+ legacy infographic images on the public library. Those media are
+# now quarantined. Replacement responsive QA belongs to explicitly approved
+# dtf-approved-visual-* assets, not to this historical WordPress transformer.
+
 on:
   workflow_dispatch:
   pull_request:
@@ -16,56 +20,19 @@ on:
       - scripts/optimize-wordpress-infographic-page-images.mjs
       - scripts/verify-responsive-infographic-html.py
       - .github/workflows/wordpress-responsive-education-images.yml
-  workflow_run:
-    workflows:
-      - Publish DTFSeeds Learning Experience V3
-      - Publish THC Topic Literature to WordPress Production
-      - Restore Canonical Lighting Infographic
-    types: [completed]
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
-  group: dtfseeds-responsive-education-images
-  cancel-in-progress: false
+  group: dtfseeds-responsive-education-images-retired
+  cancel-in-progress: true
 
 jobs:
-  validate:
-    name: Validate responsive image transformation
+  guard:
+    name: Legacy responsive infographic writer disabled
     runs-on: ubuntu-latest
     timeout-minutes: 8
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Syntax and idempotence self-tests
-        shell: bash
-        run: |
-          set -euo pipefail
-          node --check scripts/optimize-wordpress-infographic-page-images.mjs
-          python3 -m py_compile scripts/verify-responsive-infographic-html.py
-          node scripts/optimize-wordpress-infographic-page-images.mjs --self-test
-          python3 scripts/verify-responsive-infographic-html.py --self-test
-
-  apply:
-    name: Optimize and verify WordPress education images
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
-    needs: validate
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-    environment: production
-    env:
-      NODE_OPTIONS: --dns-result-order=ipv4first
-      WP_SITE_URL: https://dtfseeds.com
-      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
-      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      TOPIC_LITERATURE_CONFIG: ${{ github.workspace }}/site/wordpress/education/topic-literature.json
-      BACKUP_ROOT: /tmp/wordpress-infographic-backups
     steps:
       - uses: actions/checkout@v4
         with:
@@ -73,121 +40,39 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: '22'
 
-      - name: Require protected WordPress access
+      - name: Validate current replacement policy
         shell: bash
         run: |
           set -euo pipefail
-          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
-          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           node --check scripts/optimize-wordpress-infographic-page-images.mjs
           python3 -m py_compile scripts/verify-responsive-infographic-html.py
-          node scripts/optimize-wordpress-infographic-page-images.mjs --self-test
-          python3 scripts/verify-responsive-infographic-html.py --self-test
+          node - <<'NODE'
+          const policy=require('./site/wordpress/visual-quality-policy.json');
+          if(Number(policy.schemaVersion)<3 || policy.mode!=='quarantine') throw new Error('Visual quality quarantine policy v3+ is required.');
+          if(policy.replacementPolicy?.legacyInfographicReuseAllowed!==false) throw new Error('Legacy infographic reuse must remain disabled.');
+          if(policy.replacementPolicy?.requiresResponsiveReview!==true) throw new Error('Responsive review must remain mandatory for replacements.');
+          if(policy.replacementPolicy?.requiresRoleSpecificApproval!==true) throw new Error('Role-specific approval must remain mandatory for replacements.');
+          console.log('Legacy responsive infographic mutation is disabled; replacement responsive review remains required.');
+          NODE
 
-      - name: Apply responsive attachment sizes to education pages
-        id: optimize
+      - name: Confirm approved visual library state when public verification is available
+        if: ${{ github.event_name != 'pull_request' }}
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/optimize-wordpress-infographic-page-images.mjs
-          backup_dir="$(cat "$BACKUP_ROOT/responsive-image-backup-path.txt")"
-          report="$backup_dir/responsive-image-report.json"
-          test -s "$report"
-          echo "media_count=$(node -p "require(process.argv[1]).mediaItems" "$report")" >> "$GITHUB_OUTPUT"
-          echo "page_count=$(node -p "require(process.argv[1]).pagesInspected" "$report")" >> "$GITHUB_OUTPUT"
-          echo "matched_count=$(node -p "require(process.argv[1]).matchedImageTags" "$report")" >> "$GITHUB_OUTPUT"
-          echo "responsive_count=$(node -p "require(process.argv[1]).responsiveImageTags" "$report")" >> "$GITHUB_OUTPUT"
-          echo "changed_count=$(node -p "require(process.argv[1]).changedImageTags" "$report")" >> "$GITHUB_OUTPUT"
-
-      - name: Verify fresh visitors receive responsive images
-        id: verify
-        shell: bash
-        run: |
-          set -euo pipefail
-          library="$RUNNER_TEMP/responsive-infographic-library.html"
+          body="$RUNNER_TEMP/approved-library.html"
           ok=0
-          for attempt in 1 2 3 4 5 6 7 8; do
-            curl -4 --fail --silent --show-error --location --retry 2 --retry-all-errors --retry-delay 2 \
-              --connect-timeout 15 --max-time 60 \
-              --header 'Cache-Control: no-cache, no-store, max-age=0' \
-              --header 'Pragma: no-cache' \
-              "https://dtfseeds.com/learn/infographics/?dtf_responsive=${GITHUB_RUN_ID}-${attempt}" \
-              --output "$library" || {
-                echo "Responsive visitor probe transport failure on attempt $attempt; retrying." >&2
-                sleep 8
-                continue
-              }
-            if grep -Fqi 'Searchable Infographic Library' "$library" && \
-               grep -Fqi 'srcset=' "$library" && \
-               grep -Fqi 'sizes=' "$library" && \
-               grep -Fqi 'dtf-responsive-education' "$library"; then
-              ok=1
-              break
+          for attempt in 1 2 3 4 5 6; do
+            if curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --connect-timeout 20 --max-time 45 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+              "https://dtfseeds.com/learn/infographics/?dtf_responsive_retired=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" -o "$body"; then
+              if grep -Fq 'data-dtf-approved-visual-library="v1"' "$body" || grep -Fq 'data-dtf-layout="learn-v3"' "$body"; then ok=1; break; fi
             fi
-            echo "Responsive visitor probe returned pre-transform HTML on attempt $attempt; retrying." >&2
-            sleep 8
+            [[ "$attempt" -lt 6 ]] && sleep $((attempt * 3))
           done
-          [[ "$ok" -eq 1 ]] || {
-            echo 'Live infographic library did not expose responsive image attributes after the final education writer completed.' >&2
-            exit 1
-          }
-
-          python3 scripts/verify-responsive-infographic-html.py "$library" --minimum 20
-          responsive_count="$(grep -Eoi '<img[^>]+srcset="[^"]+"' "$library" | wc -l | tr -d ' ')"
-          test "$responsive_count" -ge 20
-          echo "live_responsive_count=$responsive_count" >> "$GITHUB_OUTPUT"
-
-      - name: Upload rollback and measurement evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: wordpress-responsive-education-${{ github.run_id }}
-          path: /tmp/wordpress-infographic-backups
-          if-no-files-found: warn
-          retention-days: 30
-
-      - name: Report responsive image result
-        if: always()
-        uses: actions/github-script@v7
-        env:
-          JOB_STATUS: ${{ job.status }}
-          OPTIMIZE_OUTCOME: ${{ steps.optimize.outcome }}
-          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
-          MEDIA_COUNT: ${{ steps.optimize.outputs.media_count }}
-          PAGE_COUNT: ${{ steps.optimize.outputs.page_count }}
-          MATCHED_COUNT: ${{ steps.optimize.outputs.matched_count }}
-          RESPONSIVE_COUNT: ${{ steps.optimize.outputs.responsive_count }}
-          CHANGED_COUNT: ${{ steps.optimize.outputs.changed_count }}
-          LIVE_RESPONSIVE_COUNT: ${{ steps.verify.outputs.live_responsive_count }}
-        with:
-          script: |
-            const lines = [
-              '## Responsive THC education image enforcement',
-              '',
-              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              `Result: **${process.env.JOB_STATUS}**`,
-              `WordPress optimization: **${process.env.OPTIMIZE_OUTCOME || 'not-run'}**`,
-              `Fresh-visitor verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
-              `DTF education media discovered: **${process.env.MEDIA_COUNT || 'not-run'}**`,
-              `Education pages inspected: **${process.env.PAGE_COUNT || 'not-run'}**`,
-              `Image tags matched to canonical WordPress media: **${process.env.MATCHED_COUNT || 'not-run'}**`,
-              `Image tags with responsive attachment candidates: **${process.env.RESPONSIVE_COUNT || 'not-run'}**`,
-              `Image tags changed in this run: **${process.env.CHANGED_COUNT || 'not-run'}**`,
-              `Responsive image tags observed on live library: **${process.env.LIVE_RESPONSIVE_COUNT || 'not-run'}**`,
-              '',
-              'Production ordering: this transform runs after the downstream education writer, so later Learning or topic publication cannot erase responsive attachment attributes.',
-              'Full-resolution WordPress media remains the destination for Full-size links. Cards and topic-page previews use responsive attachment sizes.'
-            ];
-            await core.summary.addRaw(lines.join('\n')).write();
-            try {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: 46,
-                body: lines.join('\n')
-              });
-            } catch (error) {
-              core.warning(`Could not post responsive-image report to issue #46: ${error.message}`);
-            }
+          [[ "$ok" -eq 1 ]] || { echo 'Current approved Learning visual ownership was not observed; no legacy fallback will be applied.' >&2; exit 1; }
+          ! grep -Fqi 'dtf-edu-' "$body" || { echo 'Retired dtf-edu visual identity is visitor-facing.' >&2; exit 1; }
+          echo 'No legacy responsive-image mutation performed.'
