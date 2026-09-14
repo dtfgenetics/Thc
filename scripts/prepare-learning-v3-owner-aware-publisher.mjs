@@ -6,10 +6,12 @@ const outputPath = process.env.LEARNING_V3_OWNER_AWARE_PUBLISHER || '/tmp/rebuil
 
 let source = await readFile(sourcePath, 'utf8');
 
-// Learning V3 must never fill public image slots by loosely keyword-matching the
-// WordPress media library. Only role-reviewed DTF visuals, reviewed strain cards,
-// or media carrying the explicit approval marker may render. Missing matches fall
-// through to the publisher's branded image-less placeholder.
+// Learning V3 must never fill public educational image slots by loosely keyword-
+// matching the WordPress media library. Generic Learning media may only come from
+// the dedicated approved-learning visual family. Strain cards are intentionally
+// excluded here: the dedicated homepage release-card reconciler owns those exact
+// product images after the Learning transaction. Missing educational matches must
+// fall through to the publisher's image-less placeholder.
 const originalMediaChooser = `function chooseMedia(media, groups, used = new Set()) {
   for (const group of groups) {
     const terms = Array.isArray(group) ? group : [group];
@@ -22,12 +24,11 @@ const originalMediaChooser = `function chooseMedia(media, groups, used = new Set
   return null;
 }`;
 
-const approvedMediaChooser = `function isApprovedPublicMedia(item) {
+const approvedMediaChooser = `function isApprovedLearningMedia(item) {
   const slug = String(item?.slug || '').toLowerCase();
   const text = mediaText(item);
-  return slug === 'dtf-potleaf-site-icon' ||
-    slug.startsWith('dtf-approved-visual-') ||
-    slug.startsWith('dtf-strain-card-') ||
+  if (slug.startsWith('dtf-strain-card-')) return false;
+  return slug.startsWith('dtf-approved-visual-') ||
     text.includes('dtf_approved_public_visual') ||
     text.includes('dtf-approved-public-visual');
 }
@@ -35,7 +36,7 @@ const approvedMediaChooser = `function isApprovedPublicMedia(item) {
 function chooseMedia(media, groups, used = new Set()) {
   for (const group of groups) {
     const terms = Array.isArray(group) ? group : [group];
-    const match = media.find(item => item?.source_url && isApprovedPublicMedia(item) && !used.has(item.id) && terms.every(term => mediaText(item).includes(String(term).toLowerCase())));
+    const match = media.find(item => item?.source_url && isApprovedLearningMedia(item) && !used.has(item.id) && terms.every(term => mediaText(item).includes(String(term).toLowerCase())));
     if (match) {
       used.add(match.id);
       return match;
@@ -82,12 +83,12 @@ if (!source.includes(original)) {
 source = source.replace(original, ownerAware);
 
 for (const marker of [
-  'function isApprovedPublicMedia(item)',
+  'function isApprovedLearningMedia(item)',
   "slug.startsWith('dtf-approved-visual-')",
   "slug.startsWith('dtf-strain-card-')",
-  'isApprovedPublicMedia(item) &&',
+  'isApprovedLearningMedia(item) &&',
 ]) {
-  if (!source.includes(marker)) throw new Error(`Prepared Learning V3 publisher is missing visual-quality gate marker: ${marker}`);
+  if (!source.includes(marker)) throw new Error(`Prepared Learning V3 publisher is missing role-safe visual-quality gate marker: ${marker}`);
 }
 
 await writeFile(outputPath, source, 'utf8');
@@ -96,6 +97,7 @@ console.log(JSON.stringify({
   outputPath,
   rootVerification: 'wordpress-rest',
   topicVerification: 'anonymous-public',
-  mediaSelection: 'approved-only',
+  mediaSelection: 'approved-learning-only',
+  strainCardsOwnedBy: 'homepage-release-reconciler',
   imageLessFallback: true
 }, null, 2));
