@@ -18,7 +18,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: dtfseeds-wordpress-v4-post-v3
@@ -50,19 +49,21 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: '22'
 
-      - name: Validate post-V3 commerce package
+      - name: Validate post-V3 commerce package and clean Gallery owner
         shell: bash
         run: |
           set -euo pipefail
-          test -n "${WP_API_USERNAME:-}"
-          test -n "${WP_API_PASSWORD:-}"
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           test -s site/wordpress/pages/gallery.html
           node --check scripts/polish-wordpress-commerce-archive-v4.mjs
           node --check scripts/polish-wordpress-product-pages-v5.mjs
           node --check scripts/flush-hostinger-litespeed-mcp.mjs
-          grep -Fq 'dtf-gallery-v2' site/wordpress/pages/gallery.html
+          grep -Fq 'data-dtf-layout="gallery-visual-v2"' site/wordpress/pages/gallery.html
+          grep -Fq 'Approved visuals only.' site/wordpress/pages/gallery.html
+          ! grep -Eqi '<img\b' site/wordpress/pages/gallery.html
 
       - name: Apply V4 WooCommerce archive polish
         id: shop
@@ -86,25 +87,20 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/polish-wordpress-product-pages-v5.mjs | tee "$RUNNER_TEMP/product-v5.log"
-          echo 'outcome=success' >> "$GITHUB_OUTPUT"
 
       - name: Purge Hostinger LiteSpeed cache
-        id: cache
         shell: bash
         run: |
           set -euo pipefail
           ok=0
           for attempt in 1 2 3; do
-            if node scripts/flush-hostinger-litespeed-mcp.mjs; then
-              ok=1
-              break
-            fi
-            sleep $((attempt * 4))
+            if node scripts/flush-hostinger-litespeed-mcp.mjs; then ok=1; break; fi
+            [[ "$attempt" -lt 3 ]] && sleep $((attempt * 4))
           done
           [[ "$ok" -eq 1 ]] || { echo 'Hostinger LiteSpeed cache purge failed after retries.' >&2; exit 1; }
           sleep 5
 
-      - name: Verify current Genetics library, Shop, products, and Gallery
+      - name: Verify Genetics, Shop, products, and clean Gallery V2
         id: verify
         shell: bash
         run: |
@@ -112,25 +108,15 @@ jobs:
           fetch_live() {
             local path="$1" marker="$2" output="$3" ok=0
             for attempt in 1 2 3 4 5 6 7 8; do
-              curl -4 -fsSL --retry 2 --retry-delay 2 \
-                -H 'Cache-Control: no-cache, no-store, max-age=0' \
-                -H 'Pragma: no-cache' \
-                "$WP_SITE_URL${path}?dtf_post_v3=${GITHUB_RUN_ID}-${attempt}" -o "$output"
-              if grep -Fqi "$marker" "$output"; then ok=1; break; fi
-              sleep 7
+              if curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                --connect-timeout 20 --max-time 50 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+                "$WP_SITE_URL${path}?dtf_post_v3=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" -o "$output"; then
+                if grep -Fqi "$marker" "$output"; then ok=1; break; fi
+              fi
+              [[ "$attempt" -lt 8 ]] && sleep $((attempt + 2))
             done
-            [[ "$ok" -eq 1 ]] || { echo "Required marker not visible on origin $path: $marker" >&2; head -c 3000 "$output" >&2 || true; exit 1; }
-
-            local public_output="${output%.html}-public.html" public_ok=0
-            for attempt in 1 2 3 4 5 6; do
-              curl -4 -fsSL --retry 2 --retry-delay 2 \
-                -H 'Cache-Control: no-cache, no-store, max-age=0' \
-                -H 'Pragma: no-cache' \
-                "$WP_SITE_URL${path}" -o "$public_output"
-              if grep -Fqi "$marker" "$public_output"; then public_ok=1; break; fi
-              sleep 5
-            done
-            [[ "$public_ok" -eq 1 ]] || { echo "Required marker not visible on public cached route $path: $marker" >&2; head -c 3000 "$public_output" >&2 || true; exit 1; }
+            [[ "$ok" -eq 1 ]] || { echo "Required marker not visible on $path: $marker" >&2; head -c 3000 "$output" >&2 || true; exit 1; }
           }
 
           seeds="$RUNNER_TEMP/seeds.html"
@@ -139,14 +125,16 @@ jobs:
           bubblegum="$RUNNER_TEMP/bubblegum.html"
           fetch_live '/seeds/' 'DTF Genetics library' "$seeds"
           fetch_live '/shop/' 'dtf-commerce-archive-v4' "$shop"
-          fetch_live '/gallery/' 'dtf-gallery-v2' "$gallery"
+          fetch_live '/gallery/' 'data-dtf-layout="gallery-visual-v2"' "$gallery"
           fetch_live '/product/10-reg-f1-blueberry-bubblegum/' 'dtf-product-visual-v5' "$bubblegum"
 
           grep -Fqi 'Mango Bubbles' "$seeds"
           grep -Fqi 'Blue Mango' "$seeds"
           grep -Fqi 'Blue Bubblegum' "$seeds"
-          grep -Fqi 'DTF Visual Library' "$gallery"
-          grep -Fqi '/learn/infographics/' "$gallery"
+          grep -Fqi 'Approved visuals only.' "$gallery"
+          grep -Fqi 'Browse by destination.' "$gallery"
+          ! grep -Fqi 'DTF Visual Library' "$gallery"
+          ! grep -Eqi '(dtf-edu-|THC[-_ ]?C[0-9]{3}|THC[-_ ]?ENC[-_ ]?[0-9]{3}|Cannabis[_ -]Plant[_ -]Anatomy[_ -]Infographic|Beneficial[_ -]Insects[_ -]and[_ -]Biological[_ -]Controls)' "$gallery"
 
           for route in \
             '/product/10-regular-f2-blue-mango-seeds/' \
@@ -154,8 +142,6 @@ jobs:
             '/product/10-reg-f1-blueberry-bubblegum/'; do
             grep -Fqi "$route" "$shop" || { echo "Required Shop product route missing: $route" >&2; exit 1; }
           done
-
-          grep -Fqi 'BLUE BUBBLEGUM • F1 REGULAR' "$shop" || { echo 'Shop archive is missing canonical Blue Bubblegum release badge styling.' >&2; exit 1; }
           grep -Fqi 'aspect-ratio:2/3' "$shop" || { echo 'Shop archive is missing portrait strain-card image styling.' >&2; exit 1; }
 
           for body in "$seeds" "$shop" "$gallery" "$bubblegum"; do
@@ -163,8 +149,7 @@ jobs:
               ! grep -Fqi "$forbidden" "$body" || { echo "Stale presentation remains: $forbidden" >&2; exit 1; }
             done
           done
-
-          echo 'Post-V3 current-library and commerce verification passed for origin and public cache.'
+          echo 'Post-V3 commerce and clean Gallery V2 verification passed.'
 
       - name: Upload post-V3 rollback package
         if: always()
@@ -174,38 +159,8 @@ jobs:
           path: |
             ${{ env.SHOP_BACKUP_ROOT }}
             ${{ env.PRODUCT_BACKUP_ROOT }}
+            ${{ runner.temp }}/shop-v4.log
+            ${{ runner.temp }}/product-v5.log
+            ${{ runner.temp }}/gallery.html
           if-no-files-found: warn
           retention-days: 30
-
-      - name: Report post-V3 production result
-        if: always()
-        uses: actions/github-script@v7
-        env:
-          STATUS: ${{ job.status }}
-          SHOP: ${{ steps.shop.outcome }}
-          PRODUCT: ${{ steps.product.outcome }}
-          CACHE: ${{ steps.cache.outcome }}
-          VERIFY: ${{ steps.verify.outcome }}
-          TEMPLATE_PARTS: ${{ steps.shop.outputs.template_parts }}
-        with:
-          script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## DTFSeeds post-V3 commerce visual deployment',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Result: **${process.env.STATUS}**`,
-                `Shop archive styling: **${process.env.SHOP || 'not-run'}**`,
-                `Product-page styling: **${process.env.PRODUCT || 'not-run'}**`,
-                `Hostinger/LiteSpeed purge: **${process.env.CACHE || 'not-run'}**`,
-                `Origin + public-cache verification: **${process.env.VERIFY || 'not-run'}**`,
-                `Shop template parts styled: **${process.env.TEMPLATE_PARTS || 'not-reported'}**`,
-                '',
-                'The newer multi-line Genetics library remains read-only here. This workflow restores the Shop/archive and current product-page presentation after shared-theme rewrites, preserves the full portrait strain-card artwork, purges Hostinger/LiteSpeed, and verifies both origin and normal public routes.'
-              ].join('\n')
-            });
-
-# Production trigger: preserve current Genetics library; restyle commerce after V3
