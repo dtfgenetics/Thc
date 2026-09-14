@@ -1,60 +1,136 @@
-name: Verify DTFSeeds Gallery Visual V1
+name: Publish DTFSeeds Gallery Visual V2
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/pages/gallery.html'
+      - 'scripts/publish-wordpress-gallery-v2.mjs'
+      - '.github/workflows/wordpress-gallery-v2-production.yml'
 
 permissions:
   contents: read
 
 concurrency:
-  group: dtfseeds-gallery-visual-verification
+  group: dtfseeds-gallery-visual-v2
   cancel-in-progress: true
 
 env:
   WP_SITE_URL: https://dtfseeds.com
 
 jobs:
-  verify:
+  publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+      BACKUP_ROOT: /tmp/dtf-gallery-v2
+      APPLY_GALLERY_V2: 'true'
+
     steps:
       - name: Checkout trusted main
         uses: actions/checkout@v4
         with:
           ref: main
 
-      - name: Validate canonical Gallery source ownership
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -s site/wordpress/pages/gallery.html
-          grep -Fq 'data-dtf-layout="gallery-visual-v1"' site/wordpress/pages/gallery.html
-          grep -Fq 'class="dtf-v1"' site/wordpress/pages/gallery.html
-          grep -Fq 'DTF gallery.' site/wordpress/pages/gallery.html
-          ! grep -Fq 'DTF Visual Library' site/wordpress/pages/gallery.html
-          ! grep -Fq 'dtf-gallery-v2' site/wordpress/pages/gallery.html
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
 
-      - name: Verify current visitor-facing Gallery
+      - name: Validate clean Gallery V2 source
         shell: bash
         run: |
           set -euo pipefail
-          body="$RUNNER_TEMP/gallery.html"
-          curl -4 -fsSL --retry 4 --retry-all-errors --retry-delay 3 \
-            -H 'Cache-Control: no-cache, no-store, max-age=0' \
-            -H 'Pragma: no-cache' \
-            "$WP_SITE_URL/gallery/?dtf_gallery_visual=${GITHUB_RUN_ID}" -o "$body"
-          grep -Fqi 'DTF gallery.' "$body"
-          grep -Fqi '/learn/infographics/' "$body"
-          grep -Fqi '/seeds/' "$body"
-          grep -Fqi '/tools/' "$body"
-          grep -Fqi '/games/' "$body"
-          grep -Fqi '/community/' "$body"
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          test -s site/wordpress/pages/gallery.html
+          node --check scripts/publish-wordpress-gallery-v2.mjs
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
+          grep -Fq 'data-dtf-layout="gallery-visual-v2"' site/wordpress/pages/gallery.html
+          grep -Fq 'Approved visuals only.' site/wordpress/pages/gallery.html
+          grep -Fq 'Browse by destination.' site/wordpress/pages/gallery.html
+          ! grep -Eqi '<img\b' site/wordpress/pages/gallery.html
           for forbidden in \
-            'dtf-gallery-v2' \
             'DTF Visual Library' \
-            'email@email.com' \
-            '+123456789' \
-            '© 2025 DTF Genetics'; do
-            ! grep -Fqi "$forbidden" "$body" || { echo "Stale Gallery content remains: $forbidden" >&2; exit 1; }
+            'Cannabis plant anatomy educational infographic' \
+            'Nutrient uptake and root-zone chemistry infographic' \
+            'Beneficial insects and biological controls infographic' \
+            'Deficiency versus toxicity cannabis diagnostic infographic' \
+            'Cannabis plant life cycle infographic' \
+            'Cannabis nutrition science infographic' \
+            'Air VPD versus leaf VPD visual reference'; do
+            ! grep -Fqi "$forbidden" site/wordpress/pages/gallery.html || { echo "Retired Gallery visual source remains: $forbidden" >&2; exit 1; }
           done
-          echo 'Gallery is verified read-only. Canonical WordPress remains the sole production writer for /gallery/.' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publish clean Gallery owner
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-gallery-v2.mjs | tee "$RUNNER_TEMP/gallery-v2-publish.json"
+          grep -Fq '"storedVerification": "success"' "$RUNNER_TEMP/gallery-v2-publish.json"
+
+      - name: Purge Hostinger LiteSpeed cache
+        shell: bash
+        run: |
+          set -euo pipefail
+          ok=0
+          for attempt in 1 2 3; do
+            if node scripts/flush-hostinger-litespeed-mcp.mjs; then ok=1; break; fi
+            [[ "$attempt" -lt 3 ]] && sleep $((attempt * 5))
+          done
+          [[ "$ok" -eq 1 ]] || { echo 'Gallery cache purge failed after retries.' >&2; exit 1; }
+
+      - name: Verify visitor-facing clean Gallery
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/gallery-public.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            if curl -4 --fail --silent --show-error --location \
+              --retry 2 --retry-delay 2 --connect-timeout 20 --max-time 50 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              -H 'Pragma: no-cache' \
+              "$WP_SITE_URL/gallery/?dtf_gallery_v2=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" \
+              -o "$body"; then
+              if grep -Fq 'data-dtf-layout="gallery-visual-v2"' "$body" && \
+                 grep -Fq 'Approved visuals only.' "$body" && \
+                 grep -Fq 'Browse by destination.' "$body"; then
+                ok=1
+                break
+              fi
+            fi
+            [[ "$attempt" -lt 8 ]] && sleep $((attempt + 2))
+          done
+          [[ "$ok" -eq 1 ]] || { echo 'Clean Gallery V2 did not converge on the public route.' >&2; head -c 4500 "$body" >&2 || true; exit 1; }
+          ! grep -Eqi '<main[^>]+gallery-visual-v2[\s\S]*<img\b' "$body" || { echo 'Gallery V2 unexpectedly renders image markup.' >&2; exit 1; }
+          for forbidden in \
+            'DTF Visual Library' \
+            'Cannabis plant anatomy educational infographic' \
+            'Nutrient uptake and root-zone chemistry infographic' \
+            'Beneficial insects and biological controls infographic' \
+            'Deficiency versus toxicity cannabis diagnostic infographic' \
+            'Cannabis plant life cycle infographic' \
+            'Cannabis nutrition science infographic' \
+            'Air VPD versus leaf VPD visual reference'; do
+            ! grep -Fqi "$forbidden" "$body" || { echo "Retired Gallery visual still visitor-facing: $forbidden" >&2; exit 1; }
+          done
+          echo 'Gallery V2 is live with approved-only image-less fallback.'
+
+      - name: Upload Gallery rollback evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-gallery-v2-${{ github.run_id }}
+          path: |
+            /tmp/dtf-gallery-v2
+            ${{ runner.temp }}/gallery-v2-publish.json
+            ${{ runner.temp }}/gallery-public.html
+          if-no-files-found: warn
+          retention-days: 30
