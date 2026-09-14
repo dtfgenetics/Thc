@@ -32,7 +32,7 @@
       "serverAuthoritative": false,
       "dependencies": ["room-chat"],
       "hooks": ["chat:message", "reaction:sent", "formation:burned", "match:won", "match:lost"],
-      "assetFamilies": ["BB-011"],
+      "assetFamilies": ["BB-009"],
       "deviceScope": ["phone", "tablet", "desktop"],
       "notes": "Runtime social-feedback-v1 module adds quick reactions and art-backed notification presentation without altering server-authoritative room state."
     },
@@ -45,9 +45,9 @@
       "serverAuthoritative": false,
       "dependencies": ["generated-web-audio"],
       "hooks": ["room:opponent-joined", "placement:locked", "turn:started", "target:armed", "shot:fired", "shot:hit", "shot:miss", "formation:burned", "match:won", "match:lost", "rematch:requested"],
-      "assetFamilies": ["BB-009"],
+      "assetFamilies": ["BB-012"],
       "deviceScope": ["phone", "tablet", "desktop"],
-      "notes": "Authored music/SFX layer with generated oscillator fallback."
+      "notes": "Authored music/SFX layer with generated oscillator fallback. BB-012 is reserved so already-integrated BB-009 social assets keep stable IDs."
     },
     {
       "id": "premium-motion",
