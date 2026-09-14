@@ -104,7 +104,7 @@ node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/scrub-retired
 # appears in a generic educational slot; strain cards are owned by product/release
 # surfaces, not by automatic Learning-media selection.
 blocked_visual='(src|srcset|background)[^>]{0,900}(THC[-_ ]?C[0-9]{3}|THC[-_ ]?ENC[-_ ]?[0-9]{3}|Outdoor[-_ ]?[0-9]{2}|Cannabis[_ -]Plant[_ -]Anatomy[_ -]Infographic|Cannabis[_ -]Plant[_ -]Life[_ -]Cycle[_ -]Seed[_ -]to[_ -]Harvest[_ -]Infographic|Cannabis[_ -]Sex[_ -]Expression[_ -]and[_ -]Chromosome[_ -]Combinations|Beneficial[_ -]Insects[_ -]and[_ -]Biological[_ -]Controls|C[0-9]{3}[_ -]Companion)'
-blocked_alt='alt=["'"'][^"'"']*Teaching[ _-]+Healthy[ _-]+Cultivation'
+blocked_alt="alt=[\"'][^\"']*Teaching[ _-]+Healthy[ _-]+Cultivation"
 blocked_learning_role='(Strain[_ -]Card|DTF[ _-]+Genetics[ _-]+strain[ _-]+card|Mystery[_ -]Line[_ -]F1[_ -]Regular|Rainbow[_ -]Bubblegum[_ -]F1[_ -]Regular)'
 verify_routes=(
   /
