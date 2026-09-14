@@ -1,5 +1,14 @@
 name: WordPress Learn Visual V4 Production
 
+# RETIRED PRODUCTION WRITER
+#
+# This workflow is intentionally read-only. The canonical /learn/ owner is
+# Publish DTFSeeds Learning Experience V3. The former V4 writer performed loose
+# WordPress media-library matching and could overwrite the canonical Learn page
+# with stale or contextually wrong visual assets. Keeping this compatibility
+# workflow read-only prevents manual dispatches or future script edits from
+# reintroducing the retired visual system.
+
 on:
   workflow_dispatch:
   push:
@@ -10,55 +19,55 @@ on:
 
 concurrency:
   group: wordpress-learn-visual-v4-production
-  cancel-in-progress: false
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
-  publish:
+  retired-writer-guard:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    permissions:
-      contents: read
+    timeout-minutes: 8
     steps:
-      - name: Checkout
+      - name: Checkout canonical source
         uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          ref: main
 
-      - name: Validate required production secrets
-        env:
-          WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
-          WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      - name: Confirm legacy writer is not executed
+        shell: bash
         run: |
           set -euo pipefail
-          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
-          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           test -s scripts/rebuild-wordpress-learn-visual-v4.mjs
+          test -s scripts/run-learning-v3-connected-production.sh
+          grep -Fq 'data-dtf-layout="learn-v3"' scripts/rebuild-wordpress-learning-experience-v3.mjs
+          grep -Fq 'function isApprovedLearningMedia(item)' scripts/prepare-learning-v3-owner-aware-publisher.mjs
+          grep -Fq "if (slug.startsWith('dtf-strain-card-')) return false;" scripts/prepare-learning-v3-owner-aware-publisher.mjs
+          echo 'Legacy Learn Visual V4 mutation is retired. Canonical Learning V3 owns /learn/.'
 
-      - name: Publish Learn visual V4
-        env:
-          WP_SITE_URL: https://dtfseeds.com
-          WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
-          WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-          APPLY_LEARN_V4: 'true'
-        run: node scripts/rebuild-wordpress-learn-visual-v4.mjs
-
-      - name: Verify live Learn page
+      - name: Verify canonical visitor-facing Learn owner
+        shell: bash
         run: |
           set -euo pipefail
+          body="$RUNNER_TEMP/learn-canonical.html"
+          ok=0
           for attempt in 1 2 3 4 5 6; do
-            html="$(curl -fsSL --retry 2 --retry-delay 2 https://dtfseeds.com/learn/ || true)"
-            if printf '%s' "$html" | grep -q 'data-dtf-layout="learn-v4"' \
-              && printf '%s' "$html" | grep -q 'Learn the plant. Then learn the grow.' \
-              && printf '%s' "$html" | grep -q '/learn/start-here/' \
-              && printf '%s' "$html" | grep -q '/learn/infographics/' \
-              && printf '%s' "$html" | grep -q '/atlas/'; then
-              echo 'Learn V4 live verification passed.'
-              exit 0
+            if curl -4 --fail --silent --show-error --location \
+              --retry 2 --retry-delay 2 --connect-timeout 20 --max-time 45 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              -H 'Pragma: no-cache' \
+              "https://dtfseeds.com/learn/?dtf_retired_v4_guard=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" \
+              -o "$body"; then
+              if grep -Fq 'data-dtf-layout="learn-v3"' "$body" && \
+                 grep -Fq 'data-dtf-learning-map="v4"' "$body"; then
+                ok=1
+                break
+              fi
             fi
-            sleep 10
+            [[ "$attempt" -lt 6 ]] && sleep $((attempt * 3))
           done
-          echo 'Learn V4 marker or required navigation was not found on the live page.' >&2
-          exit 1
+          [[ "$ok" -eq 1 ]] || {
+            echo 'Canonical Learning V3 owner was not observed; refusing any legacy fallback mutation.' >&2
+            exit 1
+          }
+          echo 'Canonical Learning V3 is visitor-facing; no legacy write performed.'
