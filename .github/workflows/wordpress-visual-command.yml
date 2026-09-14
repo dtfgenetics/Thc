@@ -6,20 +6,22 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/wordpress-visual-command.yml'
-      - 'scripts/polish-wordpress-visual-site-v3.mjs'
-      - 'scripts/fix-wordpress-visual-polish-v3-cascade.mjs'
-      - 'scripts/lib/sitewide-header-template.mjs'
-      - 'scripts/rebuild-wordpress-shared-shell-v3.mjs'
+      - 'scripts/run-learning-v3-connected-production.sh'
+      - 'scripts/prepare-learning-v3-owner-aware-publisher.mjs'
+      - 'scripts/publish-wordpress-approved-visual-library.mjs'
+      - 'scripts/publish-wordpress-gallery-v2.mjs'
+      - 'scripts/fix-wordpress-home-release-visuals.mjs'
+      - 'scripts/scrub-wordpress-low-quality-visuals-v2.mjs'
+      - 'site/wordpress/visual-quality-policy.json'
   issue_comment:
     types: [created]
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
-  group: dtfseeds-visual-command
-  cancel-in-progress: true
+  group: dtfseeds-learning-experience-v3
+  cancel-in-progress: false
 
 jobs:
   rebuild:
@@ -30,197 +32,192 @@ jobs:
        github.event.comment.body == '/rebuild-site' &&
        github.event.comment.user.login == github.repository_owner)
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     environment: production
     env:
       NODE_OPTIONS: --dns-result-order=ipv4first
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
-      BACKUP_ROOT: /tmp/dtf-visual-rebuild
+      BACKUP_ROOT: /tmp/dtf-approved-visual-rebuild
+      LEARNING_V4_BACKUP_ROOT: /tmp/dtf-approved-visual-rebuild/learning-v4
       APPLY_SHARED_SHELL_V3: 'true'
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout trusted main
+        uses: actions/checkout@v4
         with:
           ref: main
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: '22'
 
-      - name: Validate visual rebuild package and credentials
+      - name: Validate approved-only production package
+        shell: bash
         run: |
           set -euo pipefail
-          test -n "${WP_API_USERNAME:-}"
-          test -n "${WP_API_PASSWORD:-}"
-          test -s site/wordpress/assets/brand/dtf-potleaf-512.png
-          node --check scripts/rebuild-wordpress-visual-site.mjs
-          node --check scripts/rebuild-wordpress-infographic-gallery.mjs
-          node --check scripts/polish-wordpress-visual-site-v3.mjs
-          node --check scripts/fix-wordpress-visual-polish-v3-cascade.mjs
-          node --check scripts/lib/sitewide-header-template.mjs
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          bash -n scripts/run-learning-v3-connected-production.sh
+          node --check scripts/prepare-learning-v3-owner-aware-publisher.mjs
+          node --check scripts/publish-wordpress-approved-visual-library.mjs
+          node --check scripts/publish-wordpress-gallery-v2.mjs
+          node --check scripts/fix-wordpress-home-release-visuals.mjs
+          node --check scripts/scrub-wordpress-low-quality-visuals-v2.mjs
           node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
+          node - <<'NODE'
+          const policy=require('./site/wordpress/visual-quality-policy.json');
+          if(Number(policy.schemaVersion)<3 || policy.mode!=='quarantine') throw new Error('Visual quality quarantine policy v3+ is required.');
+          if(policy.replacementPolicy?.automaticKeywordMediaSelectionAllowed!==false) throw new Error('Automatic keyword media selection must remain disabled.');
+          if(policy.replacementPolicy?.legacyInfographicReuseAllowed!==false) throw new Error('Legacy infographic reuse must remain disabled.');
+          if(policy.replacementPolicy?.legacyAutomaticInfographicPublishingAllowed!==false) throw new Error('Legacy automatic infographic publishing must remain disabled.');
+          if(policy.replacementPolicy?.imageLessFallbackPreferred!==true) throw new Error('Image-less fallback must remain preferred.');
+          NODE
+          grep -Fq 'function isApprovedLearningMedia(item)' scripts/prepare-learning-v3-owner-aware-publisher.mjs
+          grep -Fq "if (slug.startsWith('dtf-strain-card-')) return false;" scripts/prepare-learning-v3-owner-aware-publisher.mjs
+          ! grep -Fq 'node scripts/rebuild-wordpress-visual-site.mjs' .github/workflows/wordpress-visual-command.yml
 
-      - name: Reconcile canonical WordPress page records
+      - name: Publish canonical Learning V3 transaction
+        id: learning
+        shell: bash
         run: |
           set -euo pipefail
-          CONTENT_DIR="$GITHUB_WORKSPACE/site/wordpress/pages" node scripts/apply-wordpress-public-content-rest.mjs
+          mkdir -p "$BACKUP_ROOT" "$LEARNING_V4_BACKUP_ROOT"
+          BACKUP_ROOT="$BACKUP_ROOT/learning" \
+          LEARNING_V4_BACKUP_ROOT="$LEARNING_V4_BACKUP_ROOT" \
+          bash scripts/run-learning-v3-connected-production.sh \
+            | tee "$RUNNER_TEMP/approved-learning-rebuild.log"
 
-      - name: Install DTF cannabis-leaf brand and rebuild Home/Learn
-        id: visual
+      - name: Restore exact reviewed homepage release cards
+        id: releases
         env:
-          APPLY_VISUAL_REBUILD: 'true'
+          APPLY_HOME_RELEASE_VISUALS: 'true'
+          BACKUP_ROOT: /tmp/dtf-approved-visual-rebuild/home-release-visuals
+        shell: bash
         run: |
           set -euo pipefail
-          node scripts/rebuild-wordpress-visual-site.mjs
-          dir="$(cat "$BACKUP_ROOT/visual-rebuild-backup-path.txt")"
-          report="$dir/visual-rebuild-report.json"
-          echo "media_count=$(node -p "require(process.argv[1]).mediaCount" "$report")" >> "$GITHUB_OUTPUT"
-          echo "brand_id=$(node -p "require(process.argv[1]).brandMediaId" "$report")" >> "$GITHUB_OUTPUT"
-          echo "missing=$(node -p "require(process.argv[1]).missingSelections.join(',')" "$report")" >> "$GITHUB_OUTPUT"
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/fix-wordpress-home-release-visuals.mjs \
+            | tee "$RUNNER_TEMP/home-release-visuals.json"
+          grep -Eq '"apply"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/home-release-visuals.json"
 
-      - name: Rebuild all published educational visuals into responsive galleries
+      - name: Publish clean Gallery V2
         id: gallery
         env:
-          APPLY_INFOGRAPHIC_GALLERY: 'true'
+          APPLY_GALLERY_V2: 'true'
+          BACKUP_ROOT: /tmp/dtf-approved-visual-rebuild/gallery
+        shell: bash
         run: |
           set -euo pipefail
-          node scripts/rebuild-wordpress-infographic-gallery.mjs
-          dir="$(cat "$BACKUP_ROOT/infographic-gallery-backup-path.txt")"
-          report="$dir/gallery-report.json"
-          echo "media_count=$(node -p "require(process.argv[1]).mediaCount" "$report")" >> "$GITHUB_OUTPUT"
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-gallery-v2.mjs \
+            | tee "$RUNNER_TEMP/gallery-v2.json"
+          grep -Fq '"storedVerification": "success"' "$RUNNER_TEMP/gallery-v2.json"
 
-      - name: Apply V3 premium visual system
-        id: v3
+      - name: Publish approved-only Learning visual library
+        id: library
         env:
-          APPLY_VISUAL_POLISH: 'true'
+          APPLY_APPROVED_VISUAL_LIBRARY: 'true'
+          BACKUP_ROOT: /tmp/dtf-approved-visual-rebuild/library
+          DTF_VISUAL_QUALITY_POLICY: ${{ github.workspace }}/site/wordpress/visual-quality-policy.json
+        shell: bash
         run: |
           set -euo pipefail
-          node scripts/polish-wordpress-visual-site-v3.mjs
-          dir="$(cat "$BACKUP_ROOT/visual-polish-v3-backup-path.txt")"
-          report="$dir/visual-polish-v3-report.json"
-          echo "spotlight=$(node -p "require(process.argv[1]).spotlightInjected" "$report")" >> "$GITHUB_OUTPUT"
-          echo "brand_id=$(node -p "require(process.argv[1]).shell.brandMediaId || ''" "$report")" >> "$GITHUB_OUTPUT"
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-approved-visual-library.mjs \
+            | tee "$RUNNER_TEMP/approved-visual-library.json"
+          grep -Fq '"storageVerification": "success"' "$RUNNER_TEMP/approved-visual-library.json"
+          grep -Fq '"imageCount": 0' "$RUNNER_TEMP/approved-visual-library.json"
 
-      - name: Finalize V3 as the last presentation cascade
-        id: cascade
+      - name: Restore approved V5 shared shell
+        id: shell
         env:
-          APPLY_V3_CASCADE_FIX: 'true'
+          BACKUP_ROOT: /tmp/dtf-approved-visual-rebuild/shared-shell
+          APPLY_SHARED_SHELL_V3: 'true'
+        shell: bash
         run: |
           set -euo pipefail
-          node scripts/fix-wordpress-visual-polish-v3-cascade.mjs
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs \
+            | tee "$RUNNER_TEMP/shared-shell-v5.json"
 
-      - name: Restore approved V5 shared header and sitemap shell
+      - name: Final sitewide visual quarantine scrub
+        id: scrub
+        env:
+          APPLY_VISUAL_SCRUB: 'true'
+          DELETE_BANNED_MEDIA: 'true'
+          SKIP_PUBLIC_VISUAL_VERIFICATION: 'true'
+          DTF_VISUAL_QUALITY_POLICY: ${{ github.workspace }}/site/wordpress/visual-quality-policy.json
+          BACKUP_ROOT: /tmp/dtf-approved-visual-rebuild/quarantine
+        shell: bash
         run: |
           set -euo pipefail
-          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/scrub-wordpress-low-quality-visuals-v2.mjs \
+            | tee "$RUNNER_TEMP/visual-quarantine.json"
 
-      - name: Verify site icon through authenticated WordPress REST
-        id: icon
+      - name: Purge Hostinger LiteSpeed cache
+        id: cache
+        shell: bash
         run: |
           set -euo pipefail
-          auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
-          curl -4 --fail --silent --show-error --location -H "Authorization: Basic $auth" \
-            "$WP_SITE_URL/wp-json/wp/v2/settings?context=edit" -o "$RUNNER_TEMP/settings.json"
-          site_icon="$(node -p "Number(require(process.argv[1]).site_icon || 0)" "$RUNNER_TEMP/settings.json")"
-          [[ "$site_icon" -gt 0 ]]
-          curl -4 --fail --silent --show-error --location -H "Authorization: Basic $auth" \
-            "$WP_SITE_URL/wp-json/wp/v2/media/$site_icon?context=edit" -o "$RUNNER_TEMP/icon.json"
-          node - <<'NODE' "$RUNNER_TEMP/icon.json"
-          const m=require(process.argv[2]);
-          const value=`${m.title?.rendered||''} ${m.alt_text||''}`.toLowerCase();
-          if(!value.includes('dtf genetics cannabis leaf')) throw new Error('Active WordPress site icon is not the DTF cannabis leaf');
-          NODE
-          echo "site_icon=$site_icon" >> "$GITHUB_OUTPUT"
+          ok=0
+          for attempt in 1 2 3; do
+            if node scripts/flush-hostinger-litespeed-mcp.mjs; then ok=1; break; fi
+            [[ "$attempt" -lt 3 ]] && sleep $((attempt * 5))
+          done
+          [[ "$ok" -eq 1 ]] || { echo 'LiteSpeed cache purge failed after retries.' >&2; exit 1; }
+          sleep 6
 
-      - name: Verify live V3 site is image-driven and approved navigation is intact
+      - name: Verify clean visitor-facing visual system
         id: verify
+        shell: bash
         run: |
           set -euo pipefail
-          check_page() {
-            local path="$1" required="$2" minimum="$3"
-            local key="$(echo "$path" | tr '/?' '__')"
-            local body="$RUNNER_TEMP/live-${key}.html"
-            local ok=0
+          blocked='(dtf-edu-|THC[-_ ]?C[0-9]{3}|THC[-_ ]?ENC[-_ ]?[0-9]{3}|Outdoor[-_ ]?[0-9]{2}|Cannabis[_ -]Plant[_ -]Anatomy[_ -]Infographic|Cannabis[_ -]Plant[_ -]Life[_ -]Cycle|Cannabis[_ -]Sex[_ -]Expression|Beneficial[_ -]Insects[_ -]and[_ -]Biological[_ -]Controls|Diagnosing[_ -]Deficiency[_ -]vs[_ -]Toxicity)'
+          verify_page() {
+            local path="$1" required="$2" file="$RUNNER_TEMP/approved-$(printf '%s' "$path" | tr '/' '_').html" ok=0
             for attempt in 1 2 3 4 5 6 7 8; do
-              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              if curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                --connect-timeout 20 --max-time 50 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
-                "$WP_SITE_URL${path}?dtf_rebuild=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" -o "$body"
-              if grep -Fqi -- "$required" "$body" && grep -Fqi 'data-dtf-shell="header-v5"' "$body"; then ok=1; break; fi
-              sleep 8
+                "$WP_SITE_URL${path}?dtf_approved_rebuild=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" -o "$file"; then
+                if grep -Fq "$required" "$file" && ! grep -Eqi "$blocked" "$file"; then ok=1; break; fi
+              fi
+              [[ "$attempt" -lt 8 ]] && sleep $((attempt + 2))
             done
-            [[ "$ok" -eq 1 ]] || { echo "Missing required marker or approved V5 header on $path: $required" >&2; head -c 3000 "$body" >&2 || true; exit 1; }
-            count="$(grep -Eo '/wp-content/uploads/[^"'"' )]+' "$body" | sort -u | wc -l | tr -d ' ')"
-            [[ "$count" -ge "$minimum" ]] || { echo "$path has $count WordPress-hosted image URLs; expected at least $minimum" >&2; exit 1; }
-            for forbidden in 'email@email.com' '+123456789' 'being rebuilt' 'Reserved strain card' 'Tool-ready rebuild' 'Grow education belongs in a clean, readable library.' 'MOPS, cultivation notes, THC basics'; do
-              ! grep -Fqi -- "$forbidden" "$body" || { echo "Stale phrase remains on $path: $forbidden" >&2; exit 1; }
-            done
-            for navLabel in '>Home</a>' '>Seeds</a>' '>Learn</a>' '>Courses</a>' '>Diagnostic</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
-              grep -Fqi -- "$navLabel" "$body" || { echo "Approved navigation label missing on $path: $navLabel" >&2; exit 1; }
-            done
-            ! grep -Fqi -- '>Tools</a>' "$body" || { echo "Stale Tools primary-navigation label remains on $path" >&2; exit 1; }
-            ! grep -Fqi -- '>Genetics</a>' "$body" || { echo "Stale Genetics primary-navigation label remains on $path" >&2; exit 1; }
-            echo "$path verified with $count WordPress-hosted images and V5 navigation"
+            [[ "$ok" -eq 1 ]] || { echo "Approved visual verification failed on $path" >&2; grep -Eoi "$blocked" "$file" | head -30 >&2 || true; exit 1; }
+            grep -Fq 'data-dtf-shell="header-v5"' "$file" || { echo "V5 shared header missing on $path" >&2; exit 1; }
           }
-          check_page '/' 'Breeding projects with documented lineage' 8
-          check_page '/learn/' 'Explore by subject' 10
-          check_page '/learn/infographics/' 'Visual plant science and cultivation library.' 30
-          home="$RUNNER_TEMP/live-_.html"
-          learn="$RUNNER_TEMP/live-_learn_.html"
-          grep -Fqi 'dtf-visual-polish-v3' "$home"
-          grep -Fqi 'dtf-v3-spotlight' "$home"
-          grep -Fqi 'Measure. Diagnose. Document.' "$home"
-          grep -Fqi 'Original DTF games' "$home"
-          grep -Fqi 'data-dtf-shell="header-v5"' "$home"
-          grep -Fqi 'dtf-footer-v3' "$home"
-          grep -Fqi 'dtf-visual-polish-v3' "$learn"
-          grep -Eqi '<link[^>]+rel=["'"'](shortcut )?icon["'"']' "$home"
+          verify_page '/' 'data-dtf-layout="home-v3"'
+          verify_page '/learn/' 'data-dtf-layout="learn-v3"'
+          verify_page '/gallery/' 'data-dtf-layout="gallery-visual-v2"'
+          verify_page '/learn/infographics/' 'data-dtf-approved-visual-library="v1"'
+          verify_page '/learn/plant-biology/' 'data-dtf-topic="plant-biology"'
+          verify_page '/learn/genetics-breeding/' 'data-dtf-topic="genetics-breeding"'
+          verify_page '/learn/ipm/' 'data-dtf-topic="plant-health-ipm"'
 
-      - name: Upload backup package
+          library="$RUNNER_TEMP/approved-_learn_infographics_.html"
+          ! grep -Eqi '<main[^>]+dtf-approved-visual-library[\s\S]*<img\b' "$library" || { echo 'Approved Visual Library contains unexpected image markup.' >&2; exit 1; }
+
+          APPLY_VISUAL_SCRUB=false DELETE_BANNED_MEDIA=false SKIP_PUBLIC_VISUAL_VERIFICATION=false \
+          DTF_VISUAL_QUALITY_POLICY="${GITHUB_WORKSPACE}/site/wordpress/visual-quality-policy.json" \
+          BACKUP_ROOT=/tmp/dtf-approved-visual-rebuild/verify \
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/scrub-wordpress-low-quality-visuals-v2.mjs \
+            | tee "$RUNNER_TEMP/visual-quarantine-verify.json"
+          echo 'outcome=success' >> "$GITHUB_OUTPUT"
+
+      - name: Upload rollback and verification evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: dtf-visual-command-backup-${{ github.run_id }}
-          path: ${{ runner.temp }}/dtf-visual-rebuild
+          name: dtf-approved-visual-rebuild-${{ github.run_id }}
+          path: |
+            /tmp/dtf-approved-visual-rebuild
+            ${{ runner.temp }}/approved-learning-rebuild.log
+            ${{ runner.temp }}/home-release-visuals.json
+            ${{ runner.temp }}/gallery-v2.json
+            ${{ runner.temp }}/approved-visual-library.json
+            ${{ runner.temp }}/shared-shell-v5.json
+            ${{ runner.temp }}/visual-quarantine*.json
+            ${{ runner.temp }}/approved-*.html
           if-no-files-found: warn
           retention-days: 30
-
-      - name: Report command result
-        if: always()
-        continue-on-error: true
-        uses: actions/github-script@v7
-        env:
-          JOB_STATUS: ${{ job.status }}
-          MEDIA_COUNT: ${{ steps.visual.outputs.media_count }}
-          GALLERY_COUNT: ${{ steps.gallery.outputs.media_count }}
-          SITE_ICON: ${{ steps.icon.outputs.site_icon }}
-          V3_SPOTLIGHT: ${{ steps.v3.outputs.spotlight }}
-          V3_BRAND_ID: ${{ steps.v3.outputs.brand_id }}
-          V3_WRITE: ${{ steps.v3.outcome }}
-          V3_CASCADE: ${{ steps.cascade.outcome }}
-          VERIFY: ${{ steps.verify.outcome }}
-          MISSING: ${{ steps.visual.outputs.missing }}
-        with:
-          script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## DTFSeeds visual rebuild command + V3',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Result: **${process.env.JOB_STATUS}**`,
-                `WordPress media indexed: **${process.env.MEDIA_COUNT || 'not-run'}**`,
-                `Education gallery media: **${process.env.GALLERY_COUNT || 'not-run'}**`,
-                `Cannabis-leaf Site Icon media ID: **${process.env.SITE_ICON || 'not-run'}**`,
-                `V3 presentation write: **${process.env.V3_WRITE || 'not-run'}**`,
-                `V3 final cascade: **${process.env.V3_CASCADE || 'not-run'}**`,
-                `V3 homepage spotlight: **${process.env.V3_SPOTLIGHT || 'not-run'}**`,
-                `V3 cannabis-leaf brand media ID: **${process.env.V3_BRAND_ID || 'not-run'}**`,
-                `Live V3 visual verification: **${process.env.VERIFY || 'not-run'}**`,
-                `Optional unmatched visual slots: **${process.env.MISSING || 'none'}**`,
-                '',
-                'This protected command rebuilds the visual site, then restores and verifies the approved V5 Home / Seeds / Learn / Courses / Diagnostic / Games / Community / Shop navigation so visual rebuilds cannot regress the shared shell.'
-              ].join('\n')
-            });
