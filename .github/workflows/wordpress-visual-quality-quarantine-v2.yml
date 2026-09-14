@@ -8,15 +8,21 @@ on:
     branches: [main]
     paths:
       - scripts/scrub-wordpress-low-quality-visuals-v2.mjs
+      - scripts/publish-wordpress-approved-visual-library.mjs
       - site/wordpress/visual-quality-policy.json
+      - site/wordpress/visual-quality/retired-public-visuals.json
       - scripts/build-public-learning-center.mjs
       - scripts/publish-wordpress-education-wave2.mjs
       - scripts/finalize-wordpress-gallery-visual-v3.mjs
       - scripts/rebuild-wordpress-visual-site.mjs
       - scripts/rebuild-wordpress-visual-v4.mjs
+      - scripts/publish-wordpress-gallery-v2.mjs
       - site/wordpress/pages/**
       - site/wordpress/education/**
       - site/wordpress/assets/infographics/**
+      - .github/workflows/wordpress-topic-literature-production.yml
+      - .github/workflows/wordpress-gallery-v2-production.yml
+      - .github/workflows/wordpress-visual-quality-quarantine-v2.yml
   workflow_run:
     workflows:
       - Rebuild DTFSeeds WordPress Visual Site
@@ -25,6 +31,8 @@ on:
       - Reconcile DTFSeeds WordPress Canonical Pages
       - Deploy THC Learning Centers
       - Deploy DTFSeeds Education Assets
+      - Finalize THC Topic Literature and Infographic Library
+      - Publish DTFSeeds Gallery Visual V2
     types: [completed]
 
 permissions:
@@ -63,7 +71,8 @@ jobs:
           set -euo pipefail
           node --check scripts/scrub-wordpress-low-quality-visuals-v2.mjs
           node --check scripts/flush-hostinger-litespeed-mcp.mjs
-          node -e "const p=require('./site/wordpress/visual-quality-policy.json'); if(Number(p.schemaVersion)<2||p.mode!=='quarantine') process.exit(1)"
+          node --check scripts/publish-wordpress-approved-visual-library.mjs
+          node -e "const p=require('./site/wordpress/visual-quality-policy.json'); if(Number(p.schemaVersion)<3||p.mode!=='quarantine'||p.replacementPolicy?.legacyAutomaticInfographicPublishingAllowed!==false) process.exit(1)"
 
       - name: Scrub banned visuals
         env:
