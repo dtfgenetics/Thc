@@ -1,21 +1,23 @@
 'use strict';
 
 (() => {
-  const VERSION = 'seed-man-runtime-health-v20';
-  const RELEASE = '20260909-v20-runtime-v5';
+  const VERSION = 'seed-man-runtime-health-v21';
+  const LEGACY_VERSION = 'seed-man-runtime-health-v20';
+  const RELEASE = '20260915-v20-world-mechanics-v1';
   const EXPECTED = Object.freeze({
     campaignLevels: 20,
     campaignUi: 'seed-man-campaign-ui-v20',
     playerState: 'seed-man-player-state-v20',
     combat: 'seed-man-combat-browser-v2',
     enemyAttacks: 'seed-man-enemy-attacks-browser-v2',
+    worldMechanics: 'seed-man-world-mechanics-browser-v1',
     threeApi: 'seed-man-three-public-v3',
     threeRenderer: 'seed-man-three-world-v2',
     approvedArt: 'approved-showcase-2026-09-08'
   });
   const RELEASE_COMPATIBILITY = Object.freeze({
     retiredBootstrapMarker: 'seed-man-runtime-bootstrap-v20',
-    declaredDependencies: Object.freeze(['player-state-v20.js','three-world-adapter-v1.js']),
+    declaredDependencies: Object.freeze(['player-state-v20.js','three-world-adapter-v1.js','world-mechanics-browser-v1.js']),
     threeApi: EXPECTED.threeApi,
     behavior: 'metadata-only'
   });
@@ -28,6 +30,7 @@
     const campaignUiLoaded = document.documentElement.dataset.sproutCampaignUi === EXPECTED.campaignUi;
     const approvedArtLoaded = Boolean(window.__SEED_MAN_PRODUCTION_ART__ || window.__SEED_MAN_APPROVED_ART_RUNTIME__);
     const threeWorldLoaded = window.__SPROUT_THREE_ADAPTER__?.active === true;
+    const worldMechanicsLoaded = window.__SEED_MAN_WORLD_MECHANICS__?.version === EXPECTED.worldMechanics && window.__SEED_MAN_WORLD_MECHANICS__?.installed?.() === true;
     return Object.freeze({
       campaignLoaded,
       playerStateLoaded,
@@ -36,7 +39,8 @@
       campaignUiLoaded,
       approvedArtLoaded,
       threeWorldLoaded,
-      healthy: campaignLoaded && playerStateLoaded && combatLoaded && enemyAttacksLoaded && approvedArtLoaded
+      worldMechanicsLoaded,
+      healthy: campaignLoaded && playerStateLoaded && combatLoaded && enemyAttacksLoaded && approvedArtLoaded && worldMechanicsLoaded
     });
   }
 
@@ -44,6 +48,7 @@
     const state = snapshot();
     document.documentElement.dataset.seedManRuntimeHealth = state.healthy ? 'ready' : 'degraded';
     document.documentElement.dataset.seedManWorldRenderer = state.threeWorldLoaded ? EXPECTED.threeRenderer : 'seed-man-canvas-world-gradient-v1';
+    document.documentElement.dataset.seedManWorldMechanicsStatus = state.worldMechanicsLoaded ? 'ready' : 'missing';
     return state;
   }
 
@@ -62,15 +67,18 @@
   window.addEventListener('load', syncStatus, { once:true });
   window.addEventListener('sprout:level-selected', syncStatus);
   window.addEventListener('seedman:boss-defeated', syncStatus);
+  window.addEventListener('seedman:world-mechanics-ready', syncStatus);
 
   window.__SPROUT_CANVAS_COMPAT__ = Object.freeze({
     version: VERSION,
+    legacyVersion: LEGACY_VERSION,
     release: RELEASE,
     campaignTarget: 20,
     campaignUi: EXPECTED.campaignUi,
     combatRuntime: 'v2',
     playerStateRuntime: 'v20',
     worldRuntime: EXPECTED.threeRenderer,
+    worldMechanicsRuntime: EXPECTED.worldMechanics,
     approvedArtTarget: EXPECTED.approvedArt,
     releaseCompatibility: RELEASE_COMPATIBILITY,
     legacyDynamicLoader: false,

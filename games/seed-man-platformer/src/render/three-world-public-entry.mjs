@@ -1,7 +1,8 @@
 import {
   createThreeWorldRenderer,
-  supportsSeedManWebGL
-} from './three-world.mjs';
+  supportsSeedManWebGL,
+  DYNAMIC_PLATFORM_RUNTIME
+} from './three-world-dynamic.mjs';
 import {
   VISUAL_WORLD_KEYS,
   getCampaignVisualWorldMap,
@@ -33,6 +34,7 @@ const visual = Object.freeze({
 const api = Object.freeze({
   version: API_VERSION,
   legacyVersion: LEGACY_API_MARKER,
+  dynamicPlatformRuntime: DYNAMIC_PLATFORM_RUNTIME,
   createRenderer,
   supportsWebGL: supportsSeedManWebGL,
   visual
@@ -50,6 +52,7 @@ if (typeof window !== 'undefined') {
 export {
   API_VERSION,
   LEGACY_API_MARKER,
+  DYNAMIC_PLATFORM_RUNTIME,
   api,
   createRenderer,
   supportsSeedManWebGL,
