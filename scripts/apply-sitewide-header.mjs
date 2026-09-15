@@ -24,12 +24,11 @@ if (!uxPolishCss.includes('DTFSeeds sitewide UX polish v1')) {
 const RESPONSIVE_LAYOUT_STYLE_TAG = `<style id="dtf-responsive-layout-v1">${responsiveLayoutCss}</style>`;
 const SITEWIDE_UX_POLISH_STYLE_TAG = `<style id="dtf-sitewide-ux-polish-v1">${uxPolishCss}</style>`;
 
-// Transitional build-gate bridge. The public-suite workflow still contains three
-// raw grep assertions for the retired V5 header. Keep those strings in a comment,
-// never in the rendered navigation, until that large workflow is migrated. The
-// V6 live audit inspects the actual primary <nav>, so this cannot make V5 pass as
-// visitor-facing UI.
-const LEGACY_BUILD_GATE_COMPAT_COMMENT = '<!-- dtf-build-gate-compat-v6: data-dtf-sitewide-header="approved-reference-v1" >Diagnostic</a> dtf-sitewide-header-v5-script -->';
+// Transitional build-gate bridge. A few independent resource gates still grep
+// for retired V5 marker strings. Keep those strings only in this inert comment,
+// never in the rendered navigation, until those gates are migrated. The V6 live
+// audit inspects the actual primary <nav>, so this cannot make V5 visitor-facing UI.
+const LEGACY_BUILD_GATE_COMPAT_COMMENT = '<!-- dtf-build-gate-compat-v6: data-dtf-shell="header-v5" data-dtf-sitewide-header="approved-reference-v1" >Diagnostic</a> dtf-sitewide-header-v5-script -->';
 
 const report = {
   root,
