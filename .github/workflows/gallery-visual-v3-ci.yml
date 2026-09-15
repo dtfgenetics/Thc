@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/finalize-wordpress-gallery-visual-v3.mjs'
+      - 'site/wordpress/visual-quality-policy.json'
       - '.github/workflows/wordpress-gallery-visual-v3.yml'
       - '.github/workflows/gallery-visual-v3-ci.yml'
   workflow_dispatch:
@@ -21,28 +22,49 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
       - name: Validate Gallery V3 source
         shell: bash
         run: |
           set -euo pipefail
           node --check scripts/finalize-wordpress-gallery-visual-v3.mjs
           grep -Fq 'data-dtf-gallery-visual-v3="true"' scripts/finalize-wordpress-gallery-visual-v3.mjs
+          grep -Fq 'data-dtf-gallery-media-policy="approved-only"' scripts/finalize-wordpress-gallery-visual-v3.mjs
           grep -Fq 'See the genetics first. Explore the science behind them.' scripts/finalize-wordpress-gallery-visual-v3.mjs
           grep -Fq 'Education graphics do not stand in for cultivar artwork here.' scripts/finalize-wordpress-gallery-visual-v3.mjs
           grep -Fq 'dtf-strain-card-blue-mango-f2-regular' scripts/finalize-wordpress-gallery-visual-v3.mjs
           grep -Fq 'dtf-strain-card-blue-mango-f2-feminized' scripts/finalize-wordpress-gallery-visual-v3.mjs
           grep -Fq 'dtf-strain-card-blue-bubblegum-f1-regular' scripts/finalize-wordpress-gallery-visual-v3.mjs
           grep -Fq 'dtf-strain-card-mango-bubbles-f1-regular' scripts/finalize-wordpress-gallery-visual-v3.mjs
+          grep -Fq "approvedPrefixes.includes('dtf-approved-visual-')" scripts/finalize-wordpress-gallery-visual-v3.mjs
+          grep -Fq 'visual-quality-policy.json' scripts/finalize-wordpress-gallery-visual-v3.mjs
           grep -Fq 'Deploy DTFSeeds WordPress Pages' .github/workflows/wordpress-gallery-visual-v3.yml
           grep -Fq 'Publish DTF Genetics Library' .github/workflows/wordpress-gallery-visual-v3.yml
-      - name: Require a genuinely visual page
+
+      - name: Enforce approved-only Gallery media contract
         shell: bash
         run: |
           set -euo pipefail
-          count="$(grep -o '<img' scripts/finalize-wordpress-gallery-visual-v3.mjs | wc -l | tr -d ' ')"
-          # Dynamic helper calls create the actual image tags; require the explicit education collection too.
-          grep -Fq 'Cannabis_Plant_Anatomy_Infographic.png' scripts/finalize-wordpress-gallery-visual-v3.mjs
-          grep -Fq 'Nutrient_Uptake_and_Root_Zone_Chemistry.png' scripts/finalize-wordpress-gallery-visual-v3.mjs
-          grep -Fq 'Beneficial_Insects_and_Biological_Controls.png' scripts/finalize-wordpress-gallery-visual-v3.mjs
-          grep -Fq 'THC-ENC-086_Air_VPD_Versus_Leaf_VPD.jpg' scripts/finalize-wordpress-gallery-visual-v3.mjs
-          test "$count" -ge 2
+          node <<'NODE'
+          const fs = require('fs');
+          const source = fs.readFileSync('scripts/finalize-wordpress-gallery-visual-v3.mjs', 'utf8').toLowerCase();
+          const policy = JSON.parse(fs.readFileSync('site/wordpress/visual-quality-policy.json', 'utf8'));
+          if (policy.mode !== 'quarantine') throw new Error('Visual quarantine is not active.');
+          if (!(policy.approvedMediaSlugPrefixes || []).includes('dtf-approved-visual-')) throw new Error('Approved visual prefix is missing.');
+          if (source.includes("startswith('dtf-edu-')")) throw new Error('Gallery still automatically selects the quarantined dtf-edu family.');
+          for (const value of policy?.bannedMedia?.urlContains || []) {
+            if (value && source.includes(String(value).toLowerCase())) throw new Error(`Gallery hardcodes quarantined visual: ${value}`);
+          }
+          console.log('Gallery source is policy-driven and approved-media-only.');
+          NODE
+
+      - name: Require reviewed genetics artwork without filler targets
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq 'geneticsImages:4' scripts/finalize-wordpress-gallery-visual-v3.mjs
+          grep -Fq 'imageCount<4' scripts/finalize-wordpress-gallery-visual-v3.mjs
+          if grep -Eq 'imageCount<1[2-9]|images.*-ge 1[2-9]' scripts/finalize-wordpress-gallery-visual-v3.mjs; then
+            echo 'Gallery reintroduced an image-count filler target.' >&2
+            exit 1
+          fi
