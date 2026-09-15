@@ -43,12 +43,13 @@ jobs:
           }
           console.log('Public technician development overview manifest passed.');
           NODE
-      - name: Commit validated overview source
+      - name: Commit validated non-workflow overview source
         run: |
-          rm -f .github/workflows/build-public-technician-course-overviews-once.yml scripts/build-public-technician-course-overviews-v1.mjs
+          git checkout -- .github/workflows/wordpress-certification-catalog-v4.yml
+          rm -f scripts/build-public-technician-course-overviews-v1.mjs
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
+          git add site/wordpress/education/course-catalog-v4.json scripts/publish-wordpress-certification-catalog-v4.mjs docs/DTFSEEDS_PRODUCTION_OWNERSHIP.md scripts/build-public-technician-course-overviews-v1.mjs
           git diff --cached --quiet && exit 0
           git commit -m "feat: publish public technician course development overviews"
           git push origin HEAD:feat/public-technician-course-overviews
