@@ -186,8 +186,8 @@ jobs:
             echo
             echo '- Route: `/games/thc-rpg/`'
             echo '- Canonical repo: `${{ steps.source.outputs.repository }}`'
-            echo '- Canonical revision: `${{ steps.source.outputs.revision }}'
-            echo '- Version: `${{ steps.source.outputs.version }}'
+            echo '- Canonical revision: ${{ steps.source.outputs.revision }}'
+            echo '- Version: ${{ steps.source.outputs.version }}'
             echo '- Canonical tests: passed'
             echo '- Deterministic shipped-UI validation: passed'
             echo '- Visitor-only release validation: passed'
