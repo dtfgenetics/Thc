@@ -100,6 +100,8 @@ jobs:
           node games/strain-showdown/scripts/simulate-balance.mjs --seeds=4
           node games/strain-showdown/scripts/validate-browser-build.mjs
           node games/seed-man-platformer/test/physics.test.mjs
+          node games/seed-man-platformer/test/world-mechanics-runtime.test.mjs
+          node games/seed-man-platformer/test/public-world-mechanics-browser.test.mjs
 
       - name: Normalize Seed Man deployment metadata for transition validation
         run: node scripts/reconcile-seed-man-deployment-metadata.mjs
@@ -130,9 +132,15 @@ jobs:
           expect(project('strain-showdown')?.status === 'browser-prototype', 'Strain Showdown registry state drift');
           expect(app('strain-showdown')?.runtime === 'static' && app('strain-showdown')?.status === 'ready-to-package', 'Strain Showdown deployment state drift');
 
+          const seedMan=app('seed-man-platformer');
           expect(project('seed-man-platformer')?.status === 'browser-vertical-slice', 'Seed Man registry state drift');
-          expect(app('seed-man-platformer')?.runtime === 'static-canvas2d-approved-art' && app('seed-man-platformer')?.status === 'production-v20', 'Seed Man deployment state drift');
-          expect(app('seed-man-platformer')?.machineData?.levelCount === 20 && app('seed-man-platformer')?.machineData?.finalBoss === 'blight-king', 'Seed Man v20 machine metadata drift');
+          expect(seedMan?.runtime === 'static-canvas2d-approved-art' && seedMan?.status === 'production-v20', 'Seed Man deployment classification drift');
+          expect(seedMan?.machineData?.levelCount === 20 && seedMan?.machineData?.finalBoss === 'blight-king', 'Seed Man v20 machine metadata drift');
+          expect(seedMan?.machineData?.worldMechanicsRuntime === 'seed-man-world-mechanics-browser-v1', 'Seed Man world mechanics metadata drift');
+          expect(seedMan?.machineData?.dynamicPlatformRuntime === 'seed-man-three-dynamic-platforms-v1', 'Seed Man dynamic platform metadata drift');
+          expect(seedMan?.machineData?.worldRenderer === 'seed-man-three-world-v2' && seedMan?.machineData?.worldRendererBundle === 'seed-man-three-public-v3', 'Seed Man Three.js renderer metadata drift');
+          expect(seedMan?.machineData?.worldFallbackRenderer === 'seed-man-canvas-world-gradient-v1', 'Seed Man fallback renderer metadata drift');
+          expect(seedMan?.machineData?.canvasCompat === 'seed-man-runtime-health-v21', 'Seed Man runtime health metadata drift');
           NODE
 
       - name: Verify self-hosted public route files exist
@@ -149,6 +157,9 @@ jobs:
           test -s site/public-route-patch/games/protect-the-plants/styles.css
           test -s site/public-route-patch/games/protect-the-plants/plant.svg
           test -s site/public-route-patch/projects/index.html
+          test -s site/public-route-patch/games/seed-man-platformer/world-mechanics-browser-v1.js
+          grep -Fq 'seed-man-world-mechanics-browser-v1' site/public-route-patch/games/seed-man-platformer/world-mechanics-browser-v1.js
+          grep -Fq 'seed-man-three-dynamic-platforms-v1' site/public-route-patch/games/seed-man-platformer/three-world-v1.js
           grep -Fq 'Cannabis Fleet Battle' site/public-route-patch/projects/index.html
           grep -Fq 'Strain Showdown' site/public-route-patch/games/index.html
           grep -Fq 'Burn Buds' site/public-route-patch/games/index.html
