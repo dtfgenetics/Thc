@@ -170,7 +170,9 @@ function groupRecords(records) {
 }
 
 function recordId(record, index) {
-  return slugify(record?.slug || record?.id || record?.title || record?.name || `record-${index + 1}`);
+  const stableId = record?.slug || record?.id;
+  if (stableId) return slugify(stableId);
+  return `${slugify(record?.title || record?.name || 'record')}-${index + 1}`;
 }
 
 function renderRecord(record, index) {
@@ -178,6 +180,17 @@ function renderRecord(record, index) {
   const summary = record.summary || record.purpose || record.description || record.abstract || record.notes || '';
   const category = record.category || record.type || 'THC reference';
   return `<details class="record" id="${esc(recordId(record, index))}" data-reference-record="true"><summary><span class="record-copy"><span class="cat">${esc(category)}</span><span class="record-title">${esc(heading)}</span>${summary ? `<span class="record-summary">${esc(summary)}</span>` : ''}</span><span class="record-toggle" aria-hidden="true"></span></summary><div class="record-body">${renderObject(record)}</div></details>`;
+}
+
+function assertUniqueIds(html, slug) {
+  const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
+  const seen = new Set();
+  const duplicates = new Set();
+  for (const id of ids) {
+    if (seen.has(id)) duplicates.add(id);
+    seen.add(id);
+  }
+  if (duplicates.size) throw new Error(`${slug} output contains duplicate DOM ids: ${[...duplicates].join(', ')}`);
 }
 
 const style = `<style>
@@ -266,6 +279,7 @@ for (const page of pages) {
   for (const marker of ['data-reference-progressive-disclosure="true"', 'data-reference-group="true"', 'data-reference-record="true"']) {
     if (!html.includes(marker)) throw new Error(`${page.slug} output is missing progressive disclosure marker ${marker}`);
   }
+  assertUniqueIds(html, page.slug);
   await writeFile(join(dir, 'index.html'), html);
 }
 
