@@ -30,7 +30,7 @@ async function fetchText(url) {
     try {
       const response = await fetch(url, {
         signal: AbortSignal.timeout(30000),
-        headers: { 'User-Agent': 'DTF-Course1-Canonical-Visual-Sync/1.1' }
+        headers: { 'User-Agent': 'DTF-Course1-Canonical-Visual-Sync/1.2' }
       });
       if (response.ok) return response.text();
       lastError = new Error(`${url} returned ${response.status}`);
@@ -46,29 +46,74 @@ async function fetchJson(relativePath) {
   return JSON.parse(await fetchText(`${rawBase}/${relativePath}`));
 }
 
+const conceptCoverage = await fetchJson('visuals/COURSE1-VISUAL-CONCEPT-COVERAGE.json');
+const assetRegistry = await fetchJson('visuals/ASSET-REGISTRY.json');
+must(conceptCoverage?.courseId === local.course.id, 'Course 1 visual concept coverage belongs to an unexpected course.');
+must(conceptCoverage?.policy?.requiredPrimaryConceptCount === 18, 'Course 1 visual concept coverage must define 18 primary concepts.');
+must(Array.isArray(conceptCoverage?.concepts) && conceptCoverage.concepts.length === 18, 'Course 1 visual concept coverage must contain exactly 18 concepts.');
+must(assetRegistry?.courseId === local.course.id, 'Course 1 visual asset registry belongs to an unexpected course.');
+must(Array.isArray(assetRegistry?.assets), 'Course 1 visual asset registry is missing assets.');
+const registryById = new Map(assetRegistry.assets.map((asset) => [asset.id, asset]));
+
 function canonicalImageBlocks(lesson) {
   const blocks = Array.isArray(lesson?.content?.blocks) ? lesson.content.blocks : [];
   return blocks.filter((block) => block?.type === 'image');
 }
 
-function normalizeImage(route, image, position) {
-  must(image.assetId, `${route.id}: canonical image ${position} is missing assetId.`);
-  must(/^\/assets\/course1\/[a-z0-9._-]+\.(svg|png|webp)$/i.test(image.src || ''), `${route.id}: canonical image ${position} src must use /assets/course1/.`);
-  must(typeof image.alt === 'string' && image.alt.trim().length >= 20, `${route.id}: canonical image ${position} alt text is missing or too short.`);
-  must(typeof image.caption === 'string' && image.caption.trim().length >= 20, `${route.id}: canonical image ${position} caption is missing or too short.`);
+function normalizeLessonImage(route, image, position) {
+  must(image.assetId, `${route.id}: canonical lesson image ${position} is missing assetId.`);
+  must(/^\/assets\/course1\/[a-z0-9._-]+\.(svg|png|webp)$/i.test(image.src || ''), `${route.id}: canonical lesson image ${position} src must use /assets/course1/.`);
+  must(typeof image.alt === 'string' && image.alt.trim().length >= 20, `${route.id}: canonical lesson image ${position} alt text is missing or too short.`);
+  must(typeof image.caption === 'string' && image.caption.trim().length >= 20, `${route.id}: canonical lesson image ${position} caption is missing or too short.`);
   return {
     assetId: image.assetId,
     src: `${rawBase}/apps/web/public${image.src}`,
     alt: image.alt,
     caption: image.caption,
     title: image.title || '',
-    references: Array.isArray(image.references) ? image.references : []
+    references: Array.isArray(image.references) ? image.references : [],
+    canonicalSource: 'lesson-image-block'
   };
+}
+
+function coverageImagesForLesson(route) {
+  const matches = conceptCoverage.concepts.filter((concept) =>
+    Array.isArray(concept.lessonIds) &&
+    concept.lessonIds.includes(route.id) &&
+    (concept.status === 'deployed' || concept.status === 'deployed-combined')
+  );
+  const byAsset = new Map();
+  for (const concept of matches) {
+    must(concept.registryAssetId, `${concept.conceptId}: deployed concept is missing registryAssetId.`);
+    must(/^\/assets\/course1\/[a-z0-9._-]+\.(svg|png|webp)$/i.test(concept.publicAsset || ''), `${concept.conceptId}: deployed concept has an invalid publicAsset.`);
+    const registryAsset = registryById.get(concept.registryAssetId);
+    must(registryAsset, `${concept.conceptId}: registry asset ${concept.registryAssetId} does not exist.`);
+    must(registryAsset.status === 'produced', `${concept.conceptId}: registry asset ${concept.registryAssetId} is not produced.`);
+    must(registryAsset.learnerPath === concept.publicAsset, `${concept.conceptId}: concept publicAsset and registry learnerPath disagree.`);
+    if (!byAsset.has(concept.registryAssetId)) {
+      const purpose = String(registryAsset.purpose || concept.title || '').trim();
+      const title = String(concept.title || registryAsset.title || '').trim();
+      const coverageNote = String(concept.coverageNote || '').trim();
+      must(purpose.length >= 20, `${concept.conceptId}: canonical registry purpose is missing or too short.`);
+      must(title.length >= 5, `${concept.conceptId}: canonical concept title is missing or too short.`);
+      byAsset.set(concept.registryAssetId, {
+        assetId: concept.registryAssetId,
+        src: `${rawBase}/apps/web/public${concept.publicAsset}`,
+        alt: `${title}. ${purpose}`,
+        caption: coverageNote || purpose,
+        title,
+        references: [],
+        canonicalSource: 'visual-concept-coverage'
+      });
+    }
+  }
+  return [...byAsset.values()];
 }
 
 const generatedLessons = [];
 const uniqueAssets = new Map();
 let canonicalVisualPlacements = 0;
+let coverageFallbackPlacements = 0;
 
 for (let index = 0; index < uiSource.lessons.length; index += 1) {
   const route = uiSource.lessons[index];
@@ -80,7 +125,11 @@ for (let index = 0; index < uiSource.lessons.length; index += 1) {
   must(canonical.id === route.id, `${route.id}: canonical lesson ID mismatch.`);
   must(canonical.status === 'published', `${route.id}: canonical lesson must be published before public visual sync.`);
 
-  const images = canonicalImageBlocks(canonical).map((image, imageIndex) => normalizeImage(route, image, imageIndex + 1));
+  let images = canonicalImageBlocks(canonical).map((image, imageIndex) => normalizeLessonImage(route, image, imageIndex + 1));
+  if (images.length === 0) {
+    images = coverageImagesForLesson(route);
+    coverageFallbackPlacements += images.length;
+  }
   canonicalVisualPlacements += images.length;
   for (const image of images) uniqueAssets.set(image.assetId, image.src);
 
@@ -92,8 +141,8 @@ for (let index = 0; index < uiSource.lessons.length; index += 1) {
       lesson: route.lesson,
       visual: {
         status: 'not-required',
-        purpose: route.visual?.purpose || `No lead teaching visual is required for ${canonical.title}.`,
-        brief: 'Canonical lesson contains no reviewed image block; the public guided UI must not invent a decorative substitute.',
+        purpose: route.visual?.purpose || `No canonical teaching visual is required for ${canonical.title}.`,
+        brief: 'Neither the canonical lesson nor the canonical visual concept coverage assigns a reviewed learner visual; the public guided UI must not invent a decorative substitute.',
         alt: route.visual?.alt || 'No instructional image is assigned to this lesson.',
         items: []
       }
@@ -110,8 +159,8 @@ for (let index = 0; index < uiSource.lessons.length; index += 1) {
     visual: {
       status: 'approved',
       assetId: lead.assetId,
-      purpose: route.visual?.purpose || lead.title || lead.caption,
-      brief: `Canonical published learner visual set generated from ${route.id}; WordPress is not an independent visual approval authority.`,
+      purpose: lead.title || lead.caption,
+      brief: `Canonical published learner visual set generated from curriculum sources for ${route.id}; WordPress is not an independent visual approval authority.`,
       src: lead.src,
       alt: lead.alt,
       caption: lead.caption,
@@ -123,7 +172,8 @@ for (let index = 0; index < uiSource.lessons.length; index += 1) {
 
 const approvedCount = generatedLessons.filter((lesson) => lesson.visual.status === 'approved').length;
 const lessonsWithoutCanonicalVisualIds = generatedLessons.filter((lesson) => lesson.visual.status !== 'approved').map((lesson) => lesson.id);
-must(approvedCount > 2, `Canonical visual sync found only ${approvedCount} approved lesson visuals; refusing to preserve the stale two-visual state.`);
+must(approvedCount === 18, `Course 1 canonical visual coverage is incomplete: ${approvedCount}/18 lessons have reviewed visuals. Missing: ${lessonsWithoutCanonicalVisualIds.join(', ') || 'unknown'}.`);
+must(lessonsWithoutCanonicalVisualIds.length === 0, 'Course 1 canonical visual mapping must resolve every lesson before public publication.');
 must(canonicalVisualPlacements >= approvedCount, 'Canonical visual placement count is inconsistent.');
 
 if (validateAssets) {
@@ -137,12 +187,16 @@ if (validateAssets) {
 }
 
 const generated = {
-  schemaVersion: 3,
+  schemaVersion: 4,
   id: uiSource.id,
   courseId: local.course.id,
-  visualDataAuthority: `${local.source.repository}@${sourceRef}:content/lessons/LESSON-LH-TECH1-001-*.json`,
+  visualDataAuthority: [
+    `${local.source.repository}@${sourceRef}:content/lessons/LESSON-LH-TECH1-001-*.json`,
+    `${local.source.repository}@${sourceRef}:visuals/COURSE1-VISUAL-CONCEPT-COVERAGE.json`,
+    `${local.source.repository}@${sourceRef}:visuals/ASSET-REGISTRY.json`
+  ],
   designRule: uiSource.designRule,
-  lessonVisualRule: 'WordPress lesson visuals are generated from every reviewed image block in each published canonical lesson. The site routing map is not an independent approval authority. Missing canonical visuals never receive decorative fallback art.',
+  lessonVisualRule: 'WordPress lesson visuals are generated from reviewed image blocks in published canonical lessons. When a lesson has no image block, the canonical Course 1 visual concept coverage and produced asset registry may supply its explicitly deployed teaching visual. The site routing map is never an independent visual approval authority.',
   generatedAt: new Date().toISOString(),
   lessons: generatedLessons
 };
@@ -160,6 +214,7 @@ console.log(JSON.stringify({
   lessonsWithoutCanonicalVisual: lessonsWithoutCanonicalVisualIds.length,
   lessonsWithoutCanonicalVisualIds,
   canonicalVisualPlacements,
+  coverageFallbackPlacements,
   uniquePublicAssets: uniqueAssets.size,
   outputPath
 }, null, 2));
