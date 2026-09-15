@@ -3,7 +3,7 @@
   "id": "dtf-courses-catalog-v4",
   "title": "Professional cultivation courses & certifications",
   "eyebrow": "THC Learning Hub",
-  "intro": "Structured cultivation learning paths built from researched instruction, guided practice, job tasks, course tests, practical work, and separate credential validation. Explore what is available now and what is still in development without confusing course publication with certification release.",
+  "intro": "Structured cultivation learning paths built from researched instruction, guided practice, job tasks, course tests, practical work, and separate credential validation. The full Technician I and Technician II course sequence is visible here, while unreleased academic pages remain clearly marked as in development.",
   "primaryActions": [
     {
       "label": "Start Course 1",
@@ -61,7 +61,7 @@
           "summary": "Entry professional pathway covering safe cultivation work, plant observation, environment, irrigation, crop care, harvest, records, and integrated shift practice.",
           "availableCourse": {
             "id": "COURSE-LH-TECH1-001",
-            "label": "Course 1 available now",
+            "label": "Course 1 open now · all 7 course titles visible below",
             "href": "/learn/learning-hub/cultivation-technician-i/safety-responsible-practice-cultivation-workflows/"
           }
         },
@@ -73,7 +73,7 @@
           "statusLabel": "In development",
           "issuanceAvailable": false,
           "plannedCourses": 8,
-          "summary": "Advanced technician pathway covering diagnostic reasoning, environmental systems, fertigation, plant-health troubleshooting, production records, quality response, metrics, and shift coordination."
+          "summary": "Advanced technician pathway covering diagnostic reasoning, environmental systems, fertigation, plant-health troubleshooting, propagation and canopy performance, postharvest quality response, traceability, metrics, shift coordination, and integrated simulation. All 8 course titles are visible below; credential issuance remains blocked pending validation."
         }
       ]
     },
@@ -162,17 +162,436 @@
       "pathLabel": "THC Cultivation Technician I",
       "summary": "Build the workplace decision habits expected of a cultivation technician: hazard recognition, biosecurity, controlled instructions, traceability, equipment boundaries, trustworthy records, and professional shift handoff.",
       "href": "/learn/learning-hub/cultivation-technician-i/safety-responsible-practice-cultivation-workflows/",
+      "publicLessonReleaseAvailable": true,
       "metrics": [
-        {"value": "6", "label": "modules"},
-        {"value": "18", "label": "lessons"},
-        {"value": "6", "label": "module tests"},
-        {"value": "36", "label": "final-test items"}
+        {
+          "value": "6",
+          "label": "modules"
+        },
+        {
+          "value": "18",
+          "label": "lessons"
+        },
+        {
+          "value": "6",
+          "label": "module tests"
+        },
+        {
+          "value": "36",
+          "label": "final-test items"
+        }
       ],
       "includes": [
         "Student workbook",
         "Integrated practical",
         "Lesson progress tracking",
         "Module and final course assessments"
+      ]
+    },
+    {
+      "id": "COURSE-LH-TECH1-002",
+      "number": 2,
+      "status": "in-development",
+      "statusLabel": "Curriculum built · public lesson release pending review",
+      "title": "Plant Observation, Growth Stages & Crop Records",
+      "pathLabel": "THC Cultivation Technician I",
+      "summary": "Structured crop walks, representative observation, growth-stage and reproductive morphology records, diagnostic boundaries, photographs, crop records, and shift handoff.",
+      "publicLessonReleaseAvailable": false,
+      "availabilityNote": "Course instruction and assessments are built in the curriculum repository. Public lesson release remains pending review.",
+      "metrics": [
+        {
+          "value": "4",
+          "label": "lessons"
+        },
+        {
+          "value": "12",
+          "label": "formative items"
+        },
+        {
+          "value": "20",
+          "label": "final items"
+        },
+        {
+          "value": "1",
+          "label": "mapped practical"
+        }
+      ]
+    },
+    {
+      "id": "COURSE-LH-TECH1-003",
+      "number": 3,
+      "status": "in-development",
+      "statusLabel": "Curriculum built · public lesson release pending review",
+      "title": "Environmental, Light & Sensor Fundamentals",
+      "pathLabel": "THC Cultivation Technician I",
+      "summary": "Temperature, RH and VPD context, PPFD and photoperiod checks, sensor placement and verification, alarm and trend interpretation, environmental records, and shift handoff.",
+      "publicLessonReleaseAvailable": false,
+      "availabilityNote": "Course instruction and assessments are built. Public lesson release remains pending review.",
+      "metrics": [
+        {
+          "value": "4",
+          "label": "lessons"
+        },
+        {
+          "value": "12",
+          "label": "formative items"
+        },
+        {
+          "value": "20",
+          "label": "final items"
+        },
+        {
+          "value": "1",
+          "label": "performance gate"
+        }
+      ]
+    },
+    {
+      "id": "COURSE-LH-TECH1-004",
+      "number": 4,
+      "status": "in-development",
+      "statusLabel": "Curriculum built · public lesson release pending review",
+      "title": "Water, Root Zone, Nutrition & Irrigation Fundamentals",
+      "pathLabel": "THC Cultivation Technician I",
+      "summary": "Water sample identity, pH and EC measurement, root-zone moisture and dryback trends, nutrition evidence, authorized irrigation/fertigation work orders, equipment care, and reconstructable records.",
+      "publicLessonReleaseAvailable": false,
+      "availabilityNote": "Course instruction, assessments, and Practical B mapping are built. Public lesson release remains pending review.",
+      "metrics": [
+        {
+          "value": "4",
+          "label": "lessons"
+        },
+        {
+          "value": "12",
+          "label": "formative items"
+        },
+        {
+          "value": "24",
+          "label": "final items"
+        },
+        {
+          "value": "1",
+          "label": "mapped practical"
+        }
+      ]
+    },
+    {
+      "id": "COURSE-LH-TECH1-005",
+      "number": 5,
+      "status": "in-development",
+      "statusLabel": "Curriculum built · public lesson release pending review",
+      "title": "Propagation, Canopy, IPM Scouting & Crop Care",
+      "pathLabel": "THC Cultivation Technician I",
+      "summary": "Propagation and transplant identity, routine canopy work, IPM scouting evidence, biosecurity and quarantine, SOP authority boundaries, QA records, and shift handoff.",
+      "publicLessonReleaseAvailable": false,
+      "availabilityNote": "Course instruction, assessments, and Practicals C–E mapping are built. Public lesson release remains pending review.",
+      "metrics": [
+        {
+          "value": "4",
+          "label": "lessons"
+        },
+        {
+          "value": "12",
+          "label": "formative items"
+        },
+        {
+          "value": "24",
+          "label": "final items"
+        },
+        {
+          "value": "3",
+          "label": "mapped practicals"
+        }
+      ]
+    },
+    {
+      "id": "COURSE-LH-TECH1-006",
+      "number": 6,
+      "status": "in-development",
+      "statusLabel": "Curriculum built · public lesson release pending review",
+      "title": "Harvest, Postharvest, Traceability & Shift Handoff",
+      "pathLabel": "THC Cultivation Technician I",
+      "summary": "Harvest authorization, clean-work readiness, controlled handling, material protection, dry-room receiving, harvest genealogy, quantity reconciliation, holds, deviations, and reconstructable handoff.",
+      "publicLessonReleaseAvailable": false,
+      "availabilityNote": "Course instruction, assessments, and Practical F mapping are built. Public lesson release remains pending review.",
+      "metrics": [
+        {
+          "value": "4",
+          "label": "lessons"
+        },
+        {
+          "value": "12",
+          "label": "formative items"
+        },
+        {
+          "value": "24",
+          "label": "final items"
+        },
+        {
+          "value": "1",
+          "label": "mapped practical"
+        }
+      ]
+    },
+    {
+      "id": "COURSE-LH-TECH1-007",
+      "number": 7,
+      "status": "in-development",
+      "statusLabel": "Integrated lab built · validation pending",
+      "title": "Integrated Cultivation Technician Practice Lab",
+      "pathLabel": "THC Cultivation Technician I",
+      "summary": "Integrated supervised practice linking Technician I crop-work evidence, Practicals A–F, critical-failure controls, evaluator evidence, remediation/retest rules, and the shift capstone.",
+      "publicLessonReleaseAvailable": false,
+      "availabilityNote": "Integrated lab structure is built. Public lab release remains pending human review, accessibility review, practical validation, and pilot evidence.",
+      "metrics": [
+        {
+          "value": "4",
+          "label": "lab lessons"
+        },
+        {
+          "value": "12",
+          "label": "readiness items"
+        },
+        {
+          "value": "6",
+          "label": "required practicals"
+        },
+        {
+          "value": "1",
+          "label": "capstone"
+        }
+      ]
+    },
+    {
+      "id": "COURSE-LH-TECH2-001",
+      "number": 1,
+      "status": "in-development",
+      "statusLabel": "Curriculum built · public lesson release pending review",
+      "title": "Advanced Crop Observation & Diagnostic Reasoning",
+      "pathLabel": "THC Cultivation Technician II",
+      "summary": "Multi-factor crop diagnosis using plant, environmental, root-zone, nutrition, spatial, temporal, and QA evidence while separating observation from unsupported causal claims.",
+      "publicLessonReleaseAvailable": false,
+      "availabilityNote": "Advanced instruction, assessments, and Practical A mapping are built. Public lesson release remains pending review.",
+      "metrics": [
+        {
+          "value": "4",
+          "label": "lessons"
+        },
+        {
+          "value": "12",
+          "label": "formative items"
+        },
+        {
+          "value": "24",
+          "label": "final items"
+        },
+        {
+          "value": "1",
+          "label": "mapped practical"
+        }
+      ]
+    },
+    {
+      "id": "COURSE-LH-TECH2-002",
+      "number": 2,
+      "status": "in-development",
+      "statusLabel": "Curriculum built · public lesson release pending review",
+      "title": "Environmental Data, Sensors & Equipment Response",
+      "pathLabel": "THC Cultivation Technician II",
+      "summary": "Sensor validity, representative placement, command-versus-response checks, light mapping, measured irrigation distribution, safe troubleshooting boundaries, fault classification, maintenance handoff, and post-action verification.",
+      "publicLessonReleaseAvailable": false,
+      "availabilityNote": "Advanced instruction, assessments, and Practical B mapping are built. Public lesson release remains pending review.",
+      "metrics": [
+        {
+          "value": "4",
+          "label": "lessons"
+        },
+        {
+          "value": "12",
+          "label": "formative items"
+        },
+        {
+          "value": "24",
+          "label": "final items"
+        },
+        {
+          "value": "1",
+          "label": "mapped practical"
+        }
+      ]
+    },
+    {
+      "id": "COURSE-LH-TECH2-003",
+      "number": 3,
+      "status": "in-development",
+      "statusLabel": "Curriculum built · public lesson release pending review",
+      "title": "Fertigation Execution, Verification & Root-Zone Interpretation",
+      "pathLabel": "THC Cultivation Technician II",
+      "summary": "Approved batch readiness, material identity, controlled fertigation execution, measurement verification, root-zone and irrigation troubleshooting, chemical-safety boundaries, and evidence-based escalation without independent recipe design.",
+      "publicLessonReleaseAvailable": false,
+      "availabilityNote": "Advanced instruction, assessments, and Practical C mapping are built. Public lesson release remains pending review.",
+      "metrics": [
+        {
+          "value": "4",
+          "label": "lessons"
+        },
+        {
+          "value": "12",
+          "label": "formative items"
+        },
+        {
+          "value": "24",
+          "label": "final items"
+        },
+        {
+          "value": "1",
+          "label": "mapped practical"
+        }
+      ]
+    },
+    {
+      "id": "COURSE-LH-TECH2-004",
+      "number": 4,
+      "status": "in-development",
+      "statusLabel": "Curriculum built · public lesson release pending review",
+      "title": "Plant Health, IPM & Biosecurity Troubleshooting",
+      "pathLabel": "THC Cultivation Technician II",
+      "summary": "Comparable scouting, incidence and severity trends, spatial evidence, intervention follow-up, quarantine and biosecurity, QA records, and treatment-authority boundaries.",
+      "publicLessonReleaseAvailable": false,
+      "availabilityNote": "Advanced instruction, assessments, and Practical D mapping are built. Public lesson release remains pending review.",
+      "metrics": [
+        {
+          "value": "4",
+          "label": "lessons"
+        },
+        {
+          "value": "12",
+          "label": "formative items"
+        },
+        {
+          "value": "24",
+          "label": "final items"
+        },
+        {
+          "value": "1",
+          "label": "mapped practical"
+        }
+      ]
+    },
+    {
+      "id": "COURSE-LH-TECH2-005",
+      "number": 5,
+      "status": "in-development",
+      "statusLabel": "Curriculum built · public lesson release pending review",
+      "title": "Propagation & Canopy Performance Troubleshooting",
+      "pathLabel": "THC Cultivation Technician II",
+      "summary": "Propagation performance, donor and batch comparisons, advanced canopy and flowering response review, sanitation/IPM context, evidence-based troubleshooting, and QA handoff.",
+      "publicLessonReleaseAvailable": false,
+      "availabilityNote": "Advanced instruction, assessments, and Practical E mapping are built. Public lesson release remains pending review.",
+      "metrics": [
+        {
+          "value": "4",
+          "label": "lessons"
+        },
+        {
+          "value": "12",
+          "label": "formative items"
+        },
+        {
+          "value": "24",
+          "label": "final items"
+        },
+        {
+          "value": "1",
+          "label": "mapped practical"
+        }
+      ]
+    },
+    {
+      "id": "COURSE-LH-TECH2-006",
+      "number": 6,
+      "status": "in-development",
+      "statusLabel": "Curriculum built · public lesson release pending review",
+      "title": "Harvest/Postharvest Deviations & Quality Response",
+      "pathLabel": "THC Cultivation Technician II",
+      "summary": "Postharvest containment, process-trend interpretation, product measurements, lot genealogy and affected-scope reasoning, QA role boundaries, deviation evidence, and reconstructable handoff without independent product disposition authority.",
+      "publicLessonReleaseAvailable": false,
+      "availabilityNote": "Advanced instruction, assessments, and Practical F mapping are built. Public lesson release remains pending review.",
+      "metrics": [
+        {
+          "value": "4",
+          "label": "lessons"
+        },
+        {
+          "value": "12",
+          "label": "formative items"
+        },
+        {
+          "value": "24",
+          "label": "final items"
+        },
+        {
+          "value": "1",
+          "label": "mapped practical"
+        }
+      ]
+    },
+    {
+      "id": "COURSE-LH-TECH2-007",
+      "number": 7,
+      "status": "in-development",
+      "statusLabel": "Curriculum built · public lesson release pending review",
+      "title": "Traceability, Production Metrics, Shift Coordination & Peer Support",
+      "pathLabel": "THC Cultivation Technician II",
+      "summary": "Genealogy and reconciliation, KPI denominator and trend discipline, controlled-record integrity, SOP-based peer coaching, unresolved-work prioritization, and supervisor-ready shift handoff without formal supervisory authority.",
+      "publicLessonReleaseAvailable": false,
+      "availabilityNote": "Advanced instruction, assessments, and Practical G mapping are built. Public lesson release remains pending review.",
+      "metrics": [
+        {
+          "value": "4",
+          "label": "lessons"
+        },
+        {
+          "value": "12",
+          "label": "formative items"
+        },
+        {
+          "value": "24",
+          "label": "final items"
+        },
+        {
+          "value": "1",
+          "label": "mapped practical"
+        }
+      ]
+    },
+    {
+      "id": "COURSE-LH-TECH2-008",
+      "number": 8,
+      "status": "in-development",
+      "statusLabel": "Integrated lab built · validation pending",
+      "title": "Integrated Technician II Simulation Lab",
+      "pathLabel": "THC Cultivation Technician II",
+      "summary": "Integrated diagnostic-shift practice linking all seven Technician II practicals, non-compensatory critical-error controls, evaluator calibration, accessibility and equivalent-form controls, remediation/retest rules, and the Senior Technician capstone.",
+      "publicLessonReleaseAvailable": false,
+      "availabilityNote": "Integrated lab and capstone structure are built. Public lab release remains pending human review, practical/capstone validation, pilot evidence, evaluator calibration, and formal release approval.",
+      "metrics": [
+        {
+          "value": "4",
+          "label": "lab lessons"
+        },
+        {
+          "value": "16",
+          "label": "readiness items"
+        },
+        {
+          "value": "7",
+          "label": "required practicals"
+        },
+        {
+          "value": "1",
+          "label": "capstone"
+        }
       ]
     }
   ],
@@ -193,5 +612,10 @@
       "href": "/learn/learning-hub/"
     }
   ],
-  "assessmentNote": "Course tests are learning assessments. They are separate from secure professional certification examinations and do not by themselves issue a professional credential."
+  "assessmentNote": "Course tests are learning assessments. They are separate from secure professional certification examinations and do not by themselves issue a professional credential.",
+  "coursesSection": {
+    "eyebrow": "Technician curriculum",
+    "title": "Technician I & II courses",
+    "intro": "All 15 built Technician I and Technician II course packages are listed publicly. Only courses with an approved public academic page include an Open Course link; the others stay visible as curriculum-built work awaiting public lesson release review."
+  }
 }
