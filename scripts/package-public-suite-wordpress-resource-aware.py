@@ -15,6 +15,16 @@ if len(sys.argv) != 3:
 repo = Path(__file__).resolve().parents[1]
 release_dir = Path(sys.argv[1]).resolve()
 output = Path(sys.argv[2]).resolve()
+
+# Static top-level hubs are public-suite owned, so WordPress template parts cannot
+# repair their header. Normalize only those hub documents to the same canonical
+# V6 shell immediately before packaging while leaving game/app internals alone.
+subprocess.run(
+    ['node', str(repo / 'scripts/normalize-public-suite-hub-shells.mjs'), str(release_dir)],
+    cwd=repo,
+    check=True,
+)
+
 with tempfile.TemporaryDirectory(prefix='dtf-suite-package-resource-aware-') as temp:
     base = Path(temp) / 'suite-base.zip'
     subprocess.run(
