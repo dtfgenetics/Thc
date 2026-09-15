@@ -1,0 +1,58 @@
+{
+  "batch": "BB-BRAND-SOCIAL-001",
+  "game": "Burn Buds",
+  "canonical_route": "/games/protect-the-plants/",
+  "drive_visual_root": "18yajn4zbPJgTW32IR8C1X6d4dyUcCd4L",
+  "marketing": {
+    "desktop_cover": {
+      "drive_file_id": "1HEkPJtKUa3gMgLaAhHrLfGzq0HpdFxaY",
+      "drive_folder_id": "1CvuIKdolKj2M7BequVFpFXzX-uJsA1z-",
+      "repo": "games/protect-the-plants/assets/branding/burn-buds-cover-desktop-v1.svg",
+      "public_route": "site/public-route-patch/games/protect-the-plants/assets/branding/burn-buds-cover-desktop-v1.svg"
+    },
+    "mobile_cover": {
+      "drive_file_id": "1a02JaDwuC668QCX6y3l01hNK12leCCnJ",
+      "drive_folder_id": "1ZuPehnejHFjRsiUgbzC-8xzgoJ6wZF0-",
+      "repo": "games/protect-the-plants/assets/branding/burn-buds-cover-mobile-v1.svg",
+      "public_route": "site/public-route-patch/games/protect-the-plants/assets/branding/burn-buds-cover-mobile-v1.svg"
+    }
+  },
+  "notifications": {
+    "drive_folder_id": "1Qf59BPL9Yqy0oUVG3wIc1_BLrCBna7x1",
+    "repo_root": "games/protect-the-plants/assets/ui/notifications/",
+    "public_route_root": "site/public-route-patch/games/protect-the-plants/assets/ui/notifications/",
+    "files": [
+      ["toast-player-joined-v1.svg", "162Z8vzx9P-oyQT-M1fke0OuxG_soFWVq"],
+      ["toast-player-left-v1.svg", "1EKmRZUPENOfjgMs-EVkLE4p7y2uARryL"],
+      ["toast-your-turn-v1.svg", "1MrZszqkb_0uNCpE7vjNUN1mLcYHMvsrs"],
+      ["toast-victory-v1.svg", "1TH17xp0A4ZpaYp1hp6WHPtiabSRs-PXA"],
+      ["toast-defeat-v1.svg", "1jJNTnEDNouBFKyZ6PkisVWVhjsvSHUIK"]
+    ]
+  },
+  "reactions": {
+    "drive_folder_id": "1jwEl3Bmqrj_tUZNBGHFQ8YqdosxXJb1n",
+    "repo_root": "games/protect-the-plants/assets/ui/reactions/",
+    "public_route_root": "site/public-route-patch/games/protect-the-plants/assets/ui/reactions/",
+    "files": [
+      ["reaction-fire-v1.svg", "1xiDPoiq4eZSj9MfmWq5PYTgchxSUHFpH"],
+      ["reaction-leaf-v1.svg", "1-8ZKEjqC-4crf7C3QXWzLPajIjCM3hlw"],
+      ["reaction-heart-v1.svg", "1yh7jxk3UJIsXqcDR8HST9RoS6gkbi0am"],
+      ["reaction-smoke-v1.svg", "1VIMAAPnRoJVwJRlnZ80tWMzn7EZYCTOW"],
+      ["reaction-trophy-v1.svg", "128Rzbnqn9pevH0ZeenJF2STK7Viy6TAN"],
+      ["reaction-gg-v1.svg", "1CoXZr7YUhBSSJWhEWINmjF7iH0w7dg9X"],
+      ["reaction-laugh-v1.svg", "1gm1bBfwdrRoqBpxInS-KpvvrMOS3fqW9"],
+      ["reaction-target-v1.svg", "1ycHTzAaeZGWF9Tfg4jrlS9asoHMvhST-"]
+    ]
+  },
+  "cleanup": {
+    "duplicate_repo_paths_removed_commit": "41cc2359d6a266053d01349b0eafca7e8350da11",
+    "duplicate_drive_files_deleted": true,
+    "empty_duplicate_folder_archived_under_art_direction": true
+  },
+  "verification": {
+    "drive_readback": true,
+    "canonical_repo_readback": true,
+    "public_route_readback": true,
+    "playwright_used": false
+  }
+}

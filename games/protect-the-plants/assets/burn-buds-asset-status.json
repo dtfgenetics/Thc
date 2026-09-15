@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "game": "Burn Buds",
+  "route": "/games/protect-the-plants/",
+  "updated": "2026-09-14",
+  "driveRootId": "18yajn4zbPJgTW32IR8C1X6d4dyUcCd4L",
+  "statusRule": "An asset is complete only when its Drive master and canonical/public-route runtime paths are traceable. Runtime wiring is tracked separately.",
+  "families": {
+    "BB-001": {
+      "name": "Battlefield Identity",
+      "assetComplete": true,
+      "runtimeWiringComplete": false,
+      "assets": {
+        "opponentGarden": {"driveId":"1vv9DDSgA9p6Zhe-srbCi3v7c1zb_fjHE","path":"assets/battlefields/opponent-garden-v1.svg"},
+        "enemyFog": {"driveId":"1xnyRTxoYrOhTVJ53zJXTM7PGN216D24M","path":"assets/battlefields/enemy-fog-v1.svg"},
+        "soil": {"driveId":"10ZlVsamAIJYaxGVfuEVPv8U31KvSzcqW","path":"assets/battlefields/grid-soil-v1.svg"},
+        "scorched": {"driveId":"1XKTblfVKnzRwwYxYYEBAnk-Odgyl2oHm","path":"assets/battlefields/grid-scorched-v1.svg"},
+        "desktop": {"driveId":"19F0ZxgKEYTIMxzo4K2OFT_3_INYwxwU9","path":"assets/layouts/desktop-dual-board-v1.svg"},
+        "tablet": {"driveId":"130dJYJ2HZot2E_pf7zYaE1npzr2J6lI-","path":"assets/layouts/tablet-board-v1.svg"},
+        "phone": {"driveId":"1o5Aphpu_8J-WKB_ddwD9G0PX7O2XRg4n","path":"assets/layouts/phone-single-board-v1.svg"},
+        "keyScene": {"driveId":"1I0sqNAO2u5nrNfwM7v-ZU53C_jneQrig","path":"assets/layouts/gameplay-key-scene-v1.svg"}
+      }
+    },
+    "BB-002": {"name":"Formation Fleet","assetComplete":true,"runtimeWiringComplete":false,"count":5},
+    "BB-003": {"name":"Combat FX","assetComplete":true,"runtimeWiringComplete":false,"count":6},
+    "BB-004": {"name":"Placement UX","assetComplete":true,"runtimeWiringComplete":false,"count":6},
+    "BB-005": {
+      "name":"Battle HUD",
+      "assetComplete":true,
+      "runtimeWiringComplete":false,
+      "assets": {
+        "playerBanner":{"driveId":"1pdp-ITLaMqppvIjOPN31EdhKUBYhRu-1","path":"assets/ui/hud/player-banner-v1.svg"},
+        "opponentBanner":{"driveId":"17NGwD63XmKJTQoL1jlA5UmU5KYY4vNAS","path":"assets/ui/hud/opponent-banner-v1.svg"},
+        "turnIndicator":{"driveId":"1Xw3H59cz6EiCfEPLH8syNzorH8wclgre","path":"assets/ui/hud/turn-indicator-v1.svg"},
+        "fleetStatus":{"driveId":"1J7i_hPtiFyiqqRCmwLbM37x_Xv3Y0AsZ","path":"assets/ui/hud/fleet-status-frame-v1.svg"},
+        "networkReconnect":{"driveId":"1O5PS_iP75AYJ52jIZm_AAqM4DVHd12tR","path":"assets/ui/hud/network-reconnect-v1.svg"},
+        "coordinateReadout":{"driveId":"1pF5Mk7Wp8x_usc0G2IuTcLPESItpXJ0K","path":"assets/ui/hud/coordinate-readout-v1.svg"},
+        "mobileNav":{"driveId":"1_m8vSuRl6Q6UHE6vpS8Oracys1AXZPvw","path":"assets/ui/mobile-nav-v1.svg"}
+      }
+    },
+    "BB-006": {"name":"Multiplayer Lobby","assetComplete":true,"runtimeWiringComplete":false},
+    "BB-007": {"name":"Results","assetComplete":true,"runtimeWiringComplete":false},
+    "BB-008": {
+      "name":"Brand Package",
+      "assetComplete":true,
+      "runtimeWiringComplete":false,
+      "assets": {
+        "compactMark":{"driveId":"1Y5eqQ-CrMMU40IwQY0fBAP2nsitWmzuZ","path":"assets/branding/compact-mark-v1.svg"},
+        "loading":{"driveId":"1CB24227BYNRXQYKDBsv3qLE2_sn1cCoE","path":"assets/branding/loading-frame-v1.svg"},
+        "desktopCover":{"driveId":"1HEkPJtKUa3gMgLaAhHrLfGzq0HpdFxaY","path":"assets/branding/burn-buds-cover-desktop-v1.svg"},
+        "mobileCover":{"driveId":"1a02JaDwuC668QCX6y3l01hNK12leCCnJ","path":"assets/branding/burn-buds-cover-mobile-v1.svg"}
+      }
+    },
+    "BB-009": {"name":"Audio Identity / Social Feedback","visualSocialAssetsComplete":true,"authoredAudioComplete":false,"runtimeWiringComplete":false,"note":"Notification and reaction visuals are complete. Generated oscillator audio remains fallback; authored music/SFX remains a separate production task."},
+    "BB-010": {"name":"Motion / Game Feel","assetComplete":true,"runtimeWiringComplete":false,"note":"Motion is intentionally engine-composited from BB-002/003/004 assets and CSS/JS transforms; no duplicate frame sheets required unless later animation review proves necessary."}
+  },
+  "verification": {"drive":true,"canonicalRepo":true,"publicRouteMirror":true,"productionLive":false,"playwrightUsed":false}
+}

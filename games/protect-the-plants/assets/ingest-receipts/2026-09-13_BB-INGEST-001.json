@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "gameId": "protect-the-plants",
+  "publicProduct": "Burn Buds",
+  "batchId": "BB-INGEST-001",
+  "date": "2026-09-13",
+  "branch": "burn-buds-premium-rebuild-v1",
+  "drive": {
+    "visualAssetsFolderId": "18yajn4zbPJgTW32IR8C1X6d4dyUcCd4L",
+    "brandingFolderId": "1dgWozPgEnvsd5Y_rJJP--DKp7Ljxn6fo",
+    "logoFolderId": "1qDb4xC9AnDj75syk5T46L59W19HXNBYS",
+    "battlefieldsFolderId": "1-O7HXX_vohCfJA75QATeM9SBwuiv-seo",
+    "playerGardenFolderId": "1Dn7qdg3za4QUj2idsfRpRuqeX3thmWeA",
+    "lobbyFolderId": "1CxkPrkWU-BjloCtmN4Ao1KLFvh1Idg7C",
+    "reviewFolderId": "1SzNwUfCWedTUx0sHTW-IoCAiH4NzsBPR"
+  },
+  "assets": [
+    {
+      "assetId": "BB-008-01",
+      "logicalName": "Burn Buds Primary Logo",
+      "sourceFilename": "BB-008-REF_burn-buds-logo-v1.png",
+      "sourceChecksumSha256": "fa97414a542e7e68ad3bab528b97b867edca124935a8c1e8ba79dd517bc59ec0",
+      "driveFileId": "1wDOspTCoaX8PWaiNOR2u5shHWspKbZza",
+      "driveFolderId": "1qDb4xC9AnDj75syk5T46L59W19HXNBYS",
+      "repoRuntimePath": "games/protect-the-plants/assets/branding/burn-buds-logo-v1.webp",
+      "sitePublicPath": "site/public-route-patch/games/protect-the-plants/assets/branding/burn-buds-logo-v1.webp",
+      "gitBlobSha": "80511f89e748a2660b4f4257534694a814f092a5",
+      "assetCommitSha": "da61266d09afb1018ad11df40d07eb8b6b86bc5a",
+      "integrationCommitSha": "503cefebe5c37dff5153936372d8b15a1d3b68bf",
+      "verificationStatus": "repo-integrated"
+    },
+    {
+      "assetId": "BB-006-REF-01",
+      "logicalName": "Lobby Menu Scene v1",
+      "sourceFilename": "BB-006-REF_lobby-menu-scene-v1.png",
+      "sourceChecksumSha256": "b5ea96980fec92060d6ee94a57988457b2186605318c43ac211981aff41ae883",
+      "driveFileId": "1XWPapiRKxj9MIoLiQzVPTba22UORgMyh",
+      "driveFolderId": "1CxkPrkWU-BjloCtmN4Ao1KLFvh1Idg7C",
+      "runtimeEligible": false,
+      "reason": "Menu controls are baked into the art; use as visual direction only until a control-free background is generated.",
+      "verificationStatus": "drive-saved-reference"
+    },
+    {
+      "assetId": "BB-001-REF-02",
+      "logicalName": "Player Garden Battlefield Reference v2",
+      "sourceFilename": "BB-001-REF_player-garden-battlefield-v2.png",
+      "sourceChecksumSha256": "1038dd308ba4a274307671f7d43abf2eea3238e58a537230e0cc77f764aa1187",
+      "driveFileId": "1hm_N_He0cjO1hs5ZjqTrsB5ZUyX0ywLJ",
+      "driveFolderId": "1Dn7qdg3za4QUj2idsfRpRuqeX3thmWeA",
+      "runtimeEligible": false,
+      "reason": "Interactive 15x15 grid and UI labels are baked into the art; runtime needs decomposed frame/tile/overlay assets.",
+      "verificationStatus": "drive-saved-reference"
+    }
+  ],
+  "manifestCommitSha": "6fcb7685ec5e041be3a7aa38a837948d52c4a3a5",
+  "verification": {
+    "driveFoldersCreated": true,
+    "driveAssetsMovedToTypedFolders": true,
+    "repoBinaryCommitted": true,
+    "sitePublicMirrorCommitted": true,
+    "cssReferenceWired": true,
+    "playwrightUsed": false
+  }
+}

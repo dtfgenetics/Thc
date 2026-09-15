@@ -1,0 +1,47 @@
+(()=>{
+  const REACTIONS=[
+    ['fire','Burn!','🔥 Burn!'],['leaf','Nice grow','🌿 Nice grow'],['heart','Respect','♥ Respect'],['smoke','Up in smoke','💨 Up in smoke'],
+    ['trophy','Nice win','🏆 Nice win'],['gg','GG','GG 🔥'],['laugh','No way',':D No way'],['target','Lucky shot','🎯 Lucky shot']
+  ];
+  const TOASTS={
+    joined:'./assets/ui/notifications/toast-player-joined-v1.svg',
+    left:'./assets/ui/notifications/toast-player-left-v1.svg',
+    turn:'./assets/ui/notifications/toast-your-turn-v1.svg',
+    victory:'./assets/ui/notifications/toast-victory-v1.svg',
+    defeat:'./assets/ui/notifications/toast-defeat-v1.svg'
+  };
+  function toastType(text=''){
+    const s=String(text).toLowerCase();
+    if(/joined|entered|challenger/.test(s))return'joined';
+    if(/left|disconnect|offline/.test(s))return'left';
+    if(/your turn|light 'em up|light em up/.test(s))return'turn';
+    if(/victory|you won|won\.|final formation|opponent buds burned/.test(s))return'victory';
+    if(/defeat|you lost|your buds burned|better luck/.test(s))return'defeat';
+    return'';
+  }
+  function decorateToast(){
+    const el=document.querySelector('#toast');if(!el)return;
+    const type=toastType(el.textContent||'');
+    if(!type){delete el.dataset.bbToast;el.style.removeProperty('--bb-toast-art');return}
+    el.dataset.bbToast=type;el.style.setProperty('--bb-toast-art',`url("${TOASTS[type]}")`);
+  }
+  function installToastObserver(){
+    const el=document.querySelector('#toast');if(!el||el.dataset.bbObserved)return;
+    el.dataset.bbObserved='1';new MutationObserver(decorateToast).observe(el,{childList:true,characterData:true,subtree:true});decorateToast();
+  }
+  function injectReactions(){
+    const form=document.querySelector('#chatForm');if(!form||form.parentElement?.querySelector('.bb-reaction-tray'))return;
+    const tray=document.createElement('div');tray.className='bb-reaction-tray';tray.setAttribute('aria-label','Quick reactions');
+    tray.innerHTML=REACTIONS.map(([id,label,text])=>`<button type="button" class="bb-reaction-btn" data-bb-reaction="${text}" title="${label}" aria-label="${label}"><img src="./assets/ui/reactions/reaction-${id}-v1.svg" alt=""><span>${label}</span></button>`).join('');
+    form.before(tray);
+  }
+  function enhance(){installToastObserver();injectReactions()}
+  document.addEventListener('click',event=>{
+    const button=event.target.closest?.('[data-bb-reaction]');if(!button)return;
+    const input=document.querySelector('#chatInput'),form=document.querySelector('#chatForm');
+    if(input&&form){input.value=button.dataset.bbReaction||'';form.requestSubmit()}
+  });
+  if(window.BurnBudsSync)window.BurnBudsSync.subscribe(enhance,{immediate:false});
+  new MutationObserver(enhance).observe(document.documentElement,{childList:true,subtree:true});
+  enhance();
+})();

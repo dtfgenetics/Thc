@@ -1,0 +1,59 @@
+{
+  "receipt_id": "BB-RESPONSIVE-001",
+  "game": "Burn Buds",
+  "branch": "burn-buds-premium-rebuild-v1",
+  "created": "2026-09-13",
+  "policy": "DTF batch game asset production + ingest workflow",
+  "assets": [
+    {
+      "id": "BB-001-02",
+      "name": "Opponent Garden Frame",
+      "drive_file_id": "1pWv9aCvfxwbRcFf4NFhgp32IwcD-B5HA",
+      "drive_folder": "08 Visual Assets/02 Battlefields/Opponent Garden",
+      "game_path": "games/protect-the-plants/assets/battlefields/opponent-garden-frame-v1.svg",
+      "public_path": "site/public-route-patch/games/protect-the-plants/assets/battlefields/opponent-garden-frame-v1.svg"
+    },
+    {
+      "id": "BB-001-03",
+      "name": "Desktop Dual Board Composition",
+      "drive_file_id": "19F0ZxgKEYTIMxzo4K2OFT_3_INYwxwU9",
+      "drive_folder": "08 Visual Assets/02 Battlefields/Desktop",
+      "game_path": "games/protect-the-plants/assets/layouts/desktop-dual-board-v1.svg",
+      "public_path": "site/public-route-patch/games/protect-the-plants/assets/layouts/desktop-dual-board-v1.svg"
+    },
+    {
+      "id": "BB-001-04",
+      "name": "Tablet Battle Composition",
+      "drive_file_id": "130dJYJ2HZot2E_pf7zYaE1npzr2J6lI-",
+      "drive_folder": "08 Visual Assets/02 Battlefields/Tablet",
+      "game_path": "games/protect-the-plants/assets/layouts/tablet-board-v1.svg",
+      "public_path": "site/public-route-patch/games/protect-the-plants/assets/layouts/tablet-board-v1.svg"
+    },
+    {
+      "id": "BB-001-05",
+      "name": "Phone Single Board Composition",
+      "drive_file_id": "1o5Aphpu_8J-WKB_ddwD9G0PX7O2XRg4n",
+      "drive_folder": "08 Visual Assets/02 Battlefields/Mobile",
+      "game_path": "games/protect-the-plants/assets/layouts/phone-single-board-v1.svg",
+      "public_path": "site/public-route-patch/games/protect-the-plants/assets/layouts/phone-single-board-v1.svg"
+    },
+    {
+      "id": "BB-007-03",
+      "name": "Results Stats Frame",
+      "drive_file_id": "1l-6ly2ElF1YMe0HHLkQxTDyLmM73Ts8N",
+      "drive_folder": "08 Visual Assets/08 Results/Stats",
+      "game_path": "games/protect-the-plants/assets/results/results-stats-frame-v1.svg",
+      "public_path": "site/public-route-patch/games/protect-the-plants/assets/results/results-stats-frame-v1.svg"
+    }
+  ],
+  "reference_only": {
+    "drive_file_id": "1xMhd3tAzVAVW8fF95OSGIYa-1n6OAsj-",
+    "name": "BB-REF-007_results-responsive-concept-review-only.png",
+    "runtime_eligible": false
+  },
+  "verification": {
+    "repo_commit": "9f40756203d7e813fb9a49f1b1c182cf4270e0e7",
+    "public_route_mirrored": true,
+    "playwright_used": false
+  }
+}
