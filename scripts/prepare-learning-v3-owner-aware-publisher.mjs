@@ -52,6 +52,18 @@ else if (chooserApprovedCount !== 1) {
   throw new Error(`Could not locate exactly one Learning V3 automatic media chooser; original=${chooserOriginalCount}, approved=${chooserApprovedCount}`);
 }
 
+// The topic-page "Visual references" rail has its own media search. It must use
+// the same role-safe approval predicate as hero/topic media; otherwise keyword
+// matches can pull product strain cards from the shared WordPress media library.
+const originalRelatedFilter = `const scored = media.filter(item => item?.source_url).map(item => {`;
+const approvedRelatedFilter = `const scored = media.filter(item => item?.source_url && isApprovedLearningMedia(item)).map(item => {`;
+const relatedOriginalCount = source.split(originalRelatedFilter).length - 1;
+const relatedApprovedCount = source.split(approvedRelatedFilter).length - 1;
+if (relatedOriginalCount === 1) source = source.replace(originalRelatedFilter, approvedRelatedFilter);
+else if (relatedApprovedCount !== 1) {
+  throw new Error(`Could not locate exactly one Learning V3 related-media selector; original=${relatedOriginalCount}, approved=${relatedApprovedCount}`);
+}
+
 const original = `const checks = [];
 if (apply) {
   checks.push(await publicCheck('/', 'data-dtf-layout="home-v3"'));
@@ -88,6 +100,7 @@ for (const marker of [
   "slug.startsWith('dtf-approved-visual-')",
   "slug.startsWith('dtf-strain-card-')",
   'isApprovedLearningMedia(item) &&',
+  'media.filter(item => item?.source_url && isApprovedLearningMedia(item))',
   "content?.raw || content?.rendered || ''",
   "owner: 'wordpress-rest-raw-first'",
 ]) {
@@ -102,6 +115,7 @@ console.log(JSON.stringify({
   rootStorageRead: 'raw-first',
   topicVerification: 'anonymous-public',
   mediaSelection: 'approved-learning-only',
+  relatedMediaSelection: 'approved-learning-only',
   strainCardsOwnedBy: 'homepage-release-reconciler',
   imageLessFallback: true
 }, null, 2));

@@ -17,16 +17,18 @@ if grep -Eq '^[[:space:]]+learn$' scripts/deploy/hostinger-overlay.sh; then
 fi
 
 # The source composer must enforce role-specific visual approval before any
-# WordPress mutation happens. Generic Learning slots may never consume strain
-# cards or legacy media merely because keywords happen to match. Root-owner
-# storage verification must read authenticated edit-context raw content first;
-# rendered content is only a fallback because WordPress can transform markers.
+# WordPress mutation happens. Generic Learning slots and topic related-media
+# rails may never consume strain cards or legacy media merely because keywords
+# happen to match. Root-owner storage verification must read authenticated edit-
+# context raw content first; rendered content is only a fallback because
+# WordPress can transform markers.
 node --check scripts/prepare-learning-v3-owner-aware-publisher.mjs
 node --check scripts/clear-wordpress-home-featured-media.mjs
 node --check scripts/verify-public-learning-visual-quarantine.mjs
 grep -Fq 'function isApprovedLearningMedia(item)' scripts/prepare-learning-v3-owner-aware-publisher.mjs
 grep -Fq "if (slug.startsWith('dtf-strain-card-')) return false;" scripts/prepare-learning-v3-owner-aware-publisher.mjs
 grep -Fq "slug.startsWith('dtf-approved-visual-')" scripts/prepare-learning-v3-owner-aware-publisher.mjs
+grep -Fq 'media.filter(item => item?.source_url && isApprovedLearningMedia(item))' scripts/prepare-learning-v3-owner-aware-publisher.mjs
 grep -Fq "rootStorageRead: 'raw-first'" scripts/prepare-learning-v3-owner-aware-publisher.mjs
 grep -Fq "content?.raw || content?.rendered || ''" scripts/prepare-learning-v3-owner-aware-publisher.mjs
 
@@ -54,6 +56,7 @@ node scripts/prepare-learning-v3-owner-aware-publisher.mjs \
 grep -Fq 'function isApprovedLearningMedia(item)' "$owner_v3"
 grep -Fq "if (slug.startsWith('dtf-strain-card-')) return false;" "$owner_v3"
 grep -Fq 'isApprovedLearningMedia(item) &&' "$owner_v3"
+grep -Fq 'media.filter(item => item?.source_url && isApprovedLearningMedia(item))' "$owner_v3"
 grep -Fq "owner: 'wordpress-rest-raw-first'" "$owner_v3"
 grep -Fq "content?.raw || content?.rendered || ''" "$owner_v3"
 
@@ -154,4 +157,4 @@ test -s "$map_root/learning-v4-backup-path.txt"
 test -s "$map_root/learning-visual-v1-backup-path.txt"
 test -s "$map_root/home-featured-media-guard.json"
 test -s "$retired_visual_root/retired-visual-scrub-backup-path.txt"
-echo "Canonical Learning V3 published with raw-first root storage proof, role-safe approved media selection, connected Learning V4 map, expanded THC references, DTF Visual V1, Home featured-media quarantine, and rendered-media-only retired-visual enforcement."
+echo "Canonical Learning V3 published with raw-first root storage proof, role-safe approved media selection for hero and related visual references, connected Learning V4 map, expanded THC references, DTF Visual V1, Home featured-media quarantine, and rendered-media-only retired-visual enforcement."
