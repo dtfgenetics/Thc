@@ -111,15 +111,19 @@ jobs:
           lesson="$RUNNER_TEMP/course1-lesson.html"
           courses_ok=0
           lesson_ok=0
+          offering_count=0
           for attempt in 1 2 3 4 5 6 7 8; do
             nonce="${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)"
             curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
               --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
               "$WP_SITE_URL/courses/?verify=${nonce}" --output "$courses"
-            offering_count="$(grep -o 'data-credential-offering=' "$courses" | wc -l | tr -d ' ')"
+            offering_count="$(grep -o 'data-credential-offering=' "$courses" | wc -l | tr -d ' ' || true)"
             if grep -Fq 'dtf-courses-v4-style' "$courses" && \
                grep -Fq 'data-dtf-courses-catalog="v4"' "$courses" && \
-               grep -Fq 'Certificates & professional certifications' "$courses" && \
+               grep -Fq 'THC Cultivation Technician I' "$courses" && \
+               grep -Fq 'THC Cultivation Technician II' "$courses" && \
+               grep -Fq 'THC Plant Health, IPM &amp; Biosecurity Specialist' "$courses" && \
+               grep -Fq 'THC Cultivation Lead &amp; Operations Professional' "$courses" && \
                [[ "$offering_count" -eq 10 ]] && \
                ! grep -Fq 'data-issuance-available="true"' "$courses"; then
               courses_ok=1
@@ -141,7 +145,13 @@ jobs:
             fi
             sleep 5
           done
-          [[ "$courses_ok" -eq 1 ]] || { echo 'Certification Catalog V4 did not become visitor-facing within the verification window.' >&2; exit 1; }
+          if [[ "$courses_ok" -ne 1 ]]; then
+            echo "Certification Catalog V4 anonymous verification failed. offering_count=${offering_count}" >&2
+            grep -o 'data-dtf-courses-catalog="[^"]*"' "$courses" | head -5 >&2 || true
+            grep -o 'data-credential-offering=' "$courses" | wc -l >&2 || true
+            grep -o 'data-issuance-available="[^"]*"' "$courses" | sort | uniq -c >&2 || true
+            exit 1
+          fi
           [[ "$lesson_ok" -eq 1 ]] || { echo 'Course 1 V4 lesson visual did not become visitor-facing within the verification window.' >&2; exit 1; }
       - name: Upload rollback and verification evidence
         if: always()
