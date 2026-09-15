@@ -26,6 +26,8 @@ node --check scripts/prepare-learning-v3-atlas-publisher.mjs
 node --check scripts/prepare-learning-v3-owner-aware-publisher.mjs
 node --check scripts/clear-wordpress-home-featured-media.mjs
 node --check scripts/verify-public-learning-visual-quarantine.mjs
+node --check scripts/install-wordpress-learning-semantic-heading.mjs
+test -s site/wordpress/snippets/dtf-learning-semantic-heading.php
 grep -Fq 'progressiveDisclosure: true' scripts/prepare-learning-v3-atlas-publisher.mjs
 grep -Fq 'data-progressive-disclosure="true"' scripts/prepare-learning-v3-atlas-publisher.mjs
 grep -Fq 'function isApprovedLearningMedia(item)' scripts/prepare-learning-v3-owner-aware-publisher.mjs
@@ -34,6 +36,8 @@ grep -Fq "slug.startsWith('dtf-approved-visual-')" scripts/prepare-learning-v3-o
 grep -Fq 'media.filter(item => item?.source_url && isApprovedLearningMedia(item))' scripts/prepare-learning-v3-owner-aware-publisher.mjs
 grep -Fq "rootStorageRead: 'raw-first'" scripts/prepare-learning-v3-owner-aware-publisher.mjs
 grep -Fq "content?.raw || content?.rendered || ''" scripts/prepare-learning-v3-owner-aware-publisher.mjs
+grep -Fq "render_block_core/post-title" site/wordpress/snippets/dtf-learning-semantic-heading.php
+grep -Fq 'get_page_uri' site/wordpress/snippets/dtf-learning-semantic-heading.php
 
 # Root owner state is proved through authenticated WordPress storage. Topic and
 # child routes still require anonymous visitor verification in their publishers.
@@ -126,13 +130,21 @@ BACKUP_ROOT="$retired_visual_root" \
 node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/scrub-retired-public-visuals.mjs \
   | tee /tmp/dtf-retired-visual-scrub-output.json
 
+# WordPress keeps its stored page titles for SEO/admin use. The source-controlled
+# render owner removes only the block-theme core/post-title on /learn/* pages
+# whose designed page body already owns an H1. Install and verify that owner
+# before anonymous visitor checks so CSS-only hiding can never satisfy this gate.
+node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/install-wordpress-learning-semantic-heading.mjs \
+  | tee /tmp/dtf-learning-semantic-heading-output.json
+
 # Verify actual visitor-facing media attributes, not raw stylesheet text. The
 # sitewide quarantine CSS intentionally contains selectors like
 # img[src*="Cannabis_Plant_Anatomy_Infographic"] so scanning the entire HTML for
 # banned strings falsely reports the CSS blocklist itself as a rendered image.
 # The verifier strips style/script blocks and inspects real img/source attributes
 # plus inline background styles. Learning routes additionally reject product or
-# strain-card media in educational roles.
+# strain-card media in educational roles. Every /learn/* route must expose
+# exactly one semantic H1 after the theme-title owner is active.
 verify_routes=(
   /
   /learn/
@@ -158,6 +170,15 @@ for route in "${verify_routes[@]}"; do
     "${WP_SITE_URL:-https://dtfseeds.com}${route}?dtf_learning_visual_gate=${GITHUB_RUN_ID:-local}-$(date +%s%N)" \
     -o "$body"
   node scripts/verify-public-learning-visual-quarantine.mjs "$body" "$route"
+
+  if [[ "$route" == /learn/ || "$route" == /learn/* ]]; then
+    h1_count="$(node -e "const fs=require('fs');let s=fs.readFileSync(process.argv[1],'utf8');s=s.replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi,'').replace(/<style\\b[^>]*>[\\s\\S]*?<\\/style>/gi,'').replace(/<!--[\\s\\S]*?-->/g,'');process.stdout.write(String((s.match(/<h1\\b/gi)||[]).length));" "$body")"
+    if [[ "$h1_count" != '1' ]]; then
+      echo "Learning semantic heading violation on $route: expected exactly one H1, found $h1_count." >&2
+      grep -Eoi '<h1\b[^>]*>[^<]{0,180}' "$body" | head -10 >&2 || true
+      exit 1
+    fi
+  fi
 done
 
 # Final visitor-facing structure gate: downstream V4/expanded-reference passes
@@ -187,4 +208,5 @@ test -s "$map_root/learning-v4-backup-path.txt"
 test -s "$map_root/learning-visual-v1-backup-path.txt"
 test -s "$map_root/home-featured-media-guard.json"
 test -s "$retired_visual_root/retired-visual-scrub-backup-path.txt"
-echo "Canonical Learning V3 published with progressive-disclosure subject literature, raw-first root storage proof, role-safe approved media selection for hero and related visual references, connected Learning V4 map, expanded THC references, DTF Visual V1, Home featured-media quarantine, and rendered-media-only retired-visual enforcement."
+test -s /tmp/dtf-learning-semantic-heading-output.json
+echo "Canonical Learning V3 published with progressive-disclosure subject literature, raw-first root storage proof, role-safe approved media selection for hero and related visual references, connected Learning V4 map, expanded THC references, DTF Visual V1, Home featured-media quarantine, rendered-media-only retired-visual enforcement, and exactly one visitor-facing H1 per Learning route."
