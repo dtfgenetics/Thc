@@ -72,7 +72,7 @@ jobs:
       - name: Verify ordered production handoffs
         shell: bash
         run: |
-          set -euo pipefail
+          set -euxo pipefail
 
           canonical='.github/workflows/wordpress-canonical-production.yml'
           genetics='.github/workflows/wordpress-genetics-library-production.yml'
@@ -99,8 +99,6 @@ jobs:
 
           grep -Fq -- '- Stage DTFSeeds WordPress Canonical Deployment' "$canonical"
 
-          # Genetics owns /seeds/. Automatic production must purge explicit routes
-          # before REST/public acceptance; direct recovery remains manual-only.
           grep -Fq -- '- Publish DTFSeeds WordPress Production' "$genetics"
           grep -Fq -- "- 'scripts/wordpress-ipv4-fetch-bootstrap.mjs'" "$genetics"
           grep -Fq -- "- 'scripts/purge-wordpress-litespeed-cache.mjs'" "$genetics"
@@ -125,8 +123,6 @@ jobs:
           ! grep -Fq 'APPLY_GALLERY_V2' "$gallery_verify"
           grep -Fq 'Gallery is verified read-only' "$gallery_verify"
 
-          # The legacy infographic workflow remains upstream of Learning for now,
-          # but the public visual library itself is owned by the approved-only lane.
           grep -Fq -- '- Publish DTFSeeds WordPress Production' "$legacy_infographics"
           if grep -Fq -- '- Stage DTFSeeds WordPress Canonical Deployment' "$legacy_infographics"; then
             echo 'Legacy infographic production must not run directly from canonical staging.' >&2
@@ -198,9 +194,6 @@ jobs:
             exit 1
           fi
 
-          # Independent visual verification is now a manual, read-only audit of
-          # the approved-only library. Automatic public acceptance already lives
-          # in wordpress-approved-visual-library-v2.yml.
           grep -Fq 'workflow_dispatch:' "$verify_visuals"
           if grep -Fq 'workflow_run:' "$verify_visuals" || grep -Fq 'push:' "$verify_visuals"; then
             echo 'Independent approved-visual verification must remain manual-only.' >&2
