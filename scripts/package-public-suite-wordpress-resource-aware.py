@@ -25,6 +25,27 @@ subprocess.run(
     check=True,
 )
 
+# Fail closed before archive construction if a suite-owned top-level hub ever
+# drifts away from the canonical six-section shell. This keeps the production
+# transaction from publishing a mixed V5/V6 navigation state.
+for relative in ('tools/index.html', 'games/index.html', 'projects/index.html'):
+    candidate = release_dir / relative
+    if not candidate.is_file() or candidate.stat().st_size < 1:
+        raise SystemExit(f'canonical public-suite hub is missing: {relative}')
+    html = candidate.read_text(errors='replace')
+    for marker in (
+        'data-dtf-shell="header-v6"',
+        'data-dtf-sitewide-header="canonical-six-v1"',
+        '>Genetics</a>',
+        '>Learn</a>',
+        '>Tools</a>',
+        '>Games</a>',
+        '>Community</a>',
+        '>Shop</a>',
+    ):
+        if marker not in html:
+            raise SystemExit(f'{relative} is missing canonical V6 shell marker: {marker}')
+
 with tempfile.TemporaryDirectory(prefix='dtf-suite-package-resource-aware-') as temp:
     base = Path(temp) / 'suite-base.zip'
     subprocess.run(
