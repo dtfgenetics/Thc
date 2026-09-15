@@ -40,6 +40,28 @@ jobs:
           grep -Fq 'Refuse stale queued release' .github/workflows/dtfseeds-production-gateway.yml
           grep -Fq 'Join trusted WordPress production handoff' .github/workflows/dtfseeds-production-gateway.yml
 
+      - name: Verify pinned workflow dispatch tracking
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs=require('fs');
+          const source=fs.readFileSync('scripts/run-workflow-and-wait.sh','utf8');
+          const start=source.indexOf('find_new_dispatch_run()');
+          const end=source.indexOf('\n}\n', start);
+          if(start < 0 || end < 0) throw new Error('new dispatch selector is missing');
+          const selector=source.slice(start, end);
+          if(selector.includes('headSha') || selector.includes('expected_sha')) {
+            throw new Error('new dispatch selector must not equate workflow head SHA with release_sha input');
+          }
+          for(const required of ['before_dispatch_ids=', 'find_new_dispatch_run', '/actions\\/runs\\/([0-9]+)']) {
+            if(!source.includes(required)) throw new Error(`dispatch tracking contract is missing ${required}`);
+          }
+          if(source.indexOf('before_dispatch_ids=') > source.indexOf('dispatch_output="$(gh workflow run')) {
+            throw new Error('workflow run IDs must be snapshotted before dispatch');
+          }
+          NODE
+
       - name: Verify full-release planning
         shell: bash
         run: |
