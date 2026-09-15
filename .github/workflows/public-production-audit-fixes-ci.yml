@@ -25,7 +25,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate scripts and Shop MU plugin
+      - name: Validate scripts and Shop SEO source
         shell: bash
         run: |
           set -euo pipefail
@@ -67,8 +67,21 @@ jobs:
           grep -Fq "['projects/index.html', 'site/public-route-patch/projects/index.html']" scripts/deploy-wordpress-public-audit-fixes.mjs
           grep -Fq "\$allowed = ['games/protect-the-plants/index.html', 'projects/index.html'];" scripts/deploy-wordpress-public-audit-fixes.mjs
           grep -Fq "await import('./install-wordpress-shop-seo-meta-core.mjs')" scripts/install-wordpress-shop-seo-meta.mjs
-          grep -Fq "WPMU_PLUGIN_DIR . '/dtf-shop-seo-meta.php'" scripts/install-wordpress-shop-seo-meta-core.mjs
+
+          # Shop SEO is source-controlled from the reviewed PHP file but uses the
+          # Code Snippets REST surface already authorized for the production app-
+          # password identity. It must remain deterministic, verified and rollback-aware.
+          grep -Fq "const snippetName = 'DTF Shop SEO Metadata — source controlled';" scripts/install-wordpress-shop-seo-meta-core.mjs
+          grep -Fq "site/wordpress/mu-plugins/dtf-shop-seo-meta.php" scripts/install-wordpress-shop-seo-meta-core.mjs
+          grep -Fq '/wp-json/code-snippets/v1/snippets?per_page=100' scripts/install-wordpress-shop-seo-meta-core.mjs
+          grep -Fq "owner: 'code-snippets-fallback'" scripts/install-wordpress-shop-seo-meta-core.mjs
+          grep -Fq 'snippetCodeSha256' scripts/install-wordpress-shop-seo-meta-core.mjs
+          grep -Fq 'previouslyActive' scripts/install-wordpress-shop-seo-meta-core.mjs
+          grep -Fq 'for (const id of previouslyActive) await activate(id).catch(() => {});' scripts/install-wordpress-shop-seo-meta-core.mjs
+          ! grep -Fq "WPMU_PLUGIN_DIR . '/dtf-shop-seo-meta.php'" scripts/install-wordpress-shop-seo-meta-core.mjs
+          ! grep -Fq '/wp-json/dtf-shop-seo/v1/install' scripts/install-wordpress-shop-seo-meta-core.mjs
+
+          # The separate public-route mutator remains transactional for its two
+          # explicitly allowed static repair routes.
           grep -Fq '/rollback' scripts/deploy-wordpress-public-audit-fixes.mjs
-          grep -Fq '/rollback' scripts/install-wordpress-shop-seo-meta-core.mjs
           grep -Fq '/finalize' scripts/deploy-wordpress-public-audit-fixes.mjs
-          grep -Fq '/finalize' scripts/install-wordpress-shop-seo-meta-core.mjs
