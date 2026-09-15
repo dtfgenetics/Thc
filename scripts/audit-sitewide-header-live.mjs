@@ -42,17 +42,27 @@ function hasNavLink(text, href, label) {
   return new RegExp(`<a\\b(?=[^>]*href=["']${hrefPattern}["'])[^>]*>\\s*${labelPattern}\\s*<\\/a>`, 'i').test(text);
 }
 
+const CANONICAL_NAV = [
+  ['/seeds/', 'Genetics'],
+  ['/learn/', 'Learn'],
+  ['/tools/', 'Tools'],
+  ['/games/', 'Games'],
+  ['/community/', 'Community'],
+  ['/shop/', 'Shop']
+];
+
 const REQUIRED = [
-  { label: 'data-dtf-shell="header-v5"', test: body => body.includes('data-dtf-shell="header-v5"') },
-  { label: '<a href="/seeds/">Seeds</a>', test: body => hasNavLink(body, '/seeds/', 'Seeds') },
-  { label: '<a href="/learn/">Learn</a>', test: body => hasNavLink(body, '/learn/', 'Learn') },
-  { label: '<a href="/courses/">Courses</a>', test: body => hasNavLink(body, '/courses/', 'Courses') },
-  { label: '<a href="/tools/">Diagnostic</a>', test: body => hasNavLink(body, '/tools/', 'Diagnostic') },
-  { label: '<a href="/games/">Games</a>', test: body => hasNavLink(body, '/games/', 'Games') },
-  { label: '<a href="/community/">Community</a>', test: body => hasNavLink(body, '/community/', 'Community') },
-  { label: '<a href="/shop/">Shop</a>', test: body => hasNavLink(body, '/shop/', 'Shop') },
+  { label: 'data-dtf-shell="header-v6"', test: body => body.includes('data-dtf-shell="header-v6"') },
+  { label: 'data-dtf-sitewide-header="canonical-six-v1"', test: body => body.includes('data-dtf-sitewide-header="canonical-six-v1"') },
+  ...CANONICAL_NAV.map(([href, label]) => ({ label: `<a href="${href}">${label}</a>`, test: body => hasNavLink(body, href, label) })),
   { label: 'Teaching', test: body => body.includes('Teaching') },
   { label: 'Healthy Cultivation', test: body => body.includes('Healthy Cultivation') }
+];
+const OBSOLETE_PRIMARY = [
+  ['/', 'Home'],
+  ['/seeds/', 'Seeds'],
+  ['/courses/', 'Courses'],
+  ['/tools/', 'Diagnostic']
 ];
 const seeds = new Set([
   '/', '/seeds/', '/learn/', '/courses/', '/tools/', '/games/', '/community/', '/shop/',
@@ -94,6 +104,10 @@ function sitemapLocs(xml) {
   return [...xml.matchAll(/<loc>\s*([^<]+)\s*<\/loc>/gi)].map(m => m[1].replaceAll('&amp;', '&'));
 }
 
+function primaryNavFragment(body) {
+  return body.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>[\s\S]*?<\/nav>/i)?.[0] || '';
+}
+
 async function fetchText(url, accept = 'text/html,*/*') {
   let lastError;
   for (let attempt = 1; attempt <= 3; attempt++) {
@@ -102,7 +116,7 @@ async function fetchText(url, accept = 'text/html,*/*') {
       const response = await fetch(`${url}${bust}`, {
         redirect: 'follow',
         signal: AbortSignal.timeout(25_000),
-        headers: { 'user-agent': 'DTFSeeds-Sitewide-Header-Audit/1.2', 'cache-control': 'no-cache, no-store', pragma: 'no-cache', accept }
+        headers: { 'user-agent': 'DTFSeeds-Sitewide-Header-Audit/1.3', 'cache-control': 'no-cache, no-store', pragma: 'no-cache', accept }
       });
       return { response, body: await response.text(), error: null };
     } catch (error) { lastError = error; }
@@ -191,7 +205,13 @@ async function inspect({ path, depth }) {
 
   const issues = [];
   if (!response.ok) issues.push(`HTTP ${response.status}`);
-  if (response.ok) for (const check of REQUIRED) if (!check.test(body)) issues.push(`missing header marker: ${check.label}`);
+  if (response.ok) {
+    for (const check of REQUIRED) if (!check.test(body)) issues.push(`missing header marker: ${check.label}`);
+    const primary = primaryNavFragment(body);
+    for (const [href, label] of OBSOLETE_PRIMARY) {
+      if (hasNavLink(primary, href, label)) issues.push(`obsolete primary navigation remains: ${label}`);
+    }
+  }
   results.push({ path, status: response.status, html: true, passed: issues.length === 0, skipped: false, issues });
 
   if (response.ok && depth < MAX_DEPTH) {
@@ -215,7 +235,8 @@ const htmlResults = results.filter(r => r.html);
 const skippedResults = results.filter(r => r.skipped);
 const failures = htmlResults.filter(r => !r.passed);
 const report = {
-  generatedAt: new Date().toISOString(), baseUrl: BASE.href, requiredHeaderVersion: 5,
+  generatedAt: new Date().toISOString(), baseUrl: BASE.href, requiredHeaderVersion: 6,
+  canonicalNavigation: CANONICAL_NAV.map(([href, label]) => ({ href, label })),
   scope: 'sitewide-header-managed-public-routes',
   discoveredRoutes: visited.size, htmlRoutes: htmlResults.length, passingHtmlRoutes: htmlResults.length - failures.length,
   skippedRoutes: skippedResults.length,
@@ -225,14 +246,15 @@ const report = {
 };
 await writeFile(JSON_PATH, `${JSON.stringify(report, null, 2)}\n`);
 const md = [
-  '# Sitewide Header V5 Live Audit','',
+  '# Sitewide Header V6 Live Audit','',
   `Generated: ${report.generatedAt}`,'',
   `Scope: ${report.scope}`,'',
+  `Canonical navigation: **${CANONICAL_NAV.map(([, label]) => label).join(' → ')}**`,'',
   `HTML routes passing: **${report.passingHtmlRoutes}/${report.htmlRoutes}**`,'',
   `Discovered same-origin routes: **${report.discoveredRoutes}**`,'',
   `Skipped out-of-scope routes: **${report.skippedRoutes}**`,'',
   failures.length ? '## Failures' : '## Result','',
-  failures.length ? failures.map(x => `- \`${x.path}\` — ${x.issues.join('; ')}`).join('\n') : 'Every managed public HTML route exposes the approved V5 header contract.'
+  failures.length ? failures.map(x => `- \`${x.path}\` — ${x.issues.join('; ')}`).join('\n') : 'Every managed public HTML route exposes the canonical V6 six-section header contract.'
 ].join('\n');
 await writeFile(MD_PATH, `${md}\n`);
 console.log(md);
