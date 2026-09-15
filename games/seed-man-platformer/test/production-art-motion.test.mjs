@@ -38,7 +38,7 @@ vm.runInContext(source,context,{filename:'seed-man-production-art.js'});
 
 const api=fakeWindow.__SEED_MAN_PRODUCTION_ART__;
 assert.ok(api,'production art API must install');
-assert.equal(api.version,'seed-man-approved-atlas-renderer-v5');
+assert.equal(api.version,'seed-man-approved-atlas-renderer-v4');
 assert.equal(api.actionFeedbackVersion,'seed-man-approved-action-feedback-v2');
 assert.equal(api.motionRigVersion,'seed-man-character-motion-rig-v1');
 assert.equal(dataset.seedManMotionRig,'seed-man-character-motion-rig-v1');
