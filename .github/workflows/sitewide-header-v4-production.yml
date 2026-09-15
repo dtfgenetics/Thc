@@ -1,4 +1,4 @@
-name: Publish Approved Sitewide Header V5
+name: Publish Canonical Sitewide Header V6
 
 on:
   workflow_dispatch:
@@ -6,107 +6,70 @@ on:
     branches: [main]
     paths:
       - scripts/lib/sitewide-header-template.mjs
+      - scripts/lib/sitewide-header-template-v6.mjs
       - scripts/apply-sitewide-header.mjs
       - scripts/rebuild-wordpress-shared-shell-v3.mjs
-      - scripts/publish-wordpress-approved-design-reference.mjs
-      - scripts/repair-external-sitewide-header-via-wordpress.mjs
-      - scripts/verify-sitewide-header-v5-live.mjs
+      - scripts/verify-sitewide-header-v6-live.mjs
       - scripts/verify-responsive-layout-live.mjs
-      - site/deployment/external-header-sources.json
       - site/wordpress/assets/responsive-layout-v1.css
-      - site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg
-      - site/wordpress/assets/design-references/approved-sitewide-header-reference.json
-      - docs/design/APPROVED_SITEWIDE_HEADER_REFERENCE.md
+      - site/wordpress/assets/sitewide-ux-polish-v1.css
       - .github/workflows/sitewide-header-v4-production.yml
   pull_request:
     paths:
       - scripts/lib/sitewide-header-template.mjs
+      - scripts/lib/sitewide-header-template-v6.mjs
       - scripts/apply-sitewide-header.mjs
       - scripts/rebuild-wordpress-shared-shell-v3.mjs
-      - scripts/publish-wordpress-approved-design-reference.mjs
-      - scripts/repair-external-sitewide-header-via-wordpress.mjs
-      - scripts/verify-sitewide-header-v5-live.mjs
+      - scripts/verify-sitewide-header-v6-live.mjs
       - scripts/verify-responsive-layout-live.mjs
-      - site/deployment/external-header-sources.json
       - site/wordpress/assets/responsive-layout-v1.css
-      - site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg
-      - site/wordpress/assets/design-references/approved-sitewide-header-reference.json
-      - docs/design/APPROVED_SITEWIDE_HEADER_REFERENCE.md
+      - site/wordpress/assets/sitewide-ux-polish-v1.css
       - .github/workflows/sitewide-header-v4-production.yml
-  workflow_run:
-    workflows:
-      - Rebuild DTFSeeds Visual Site On Command
-      - Polish DTFSeeds Visual System V3
-      - Finalize DTFSeeds Learn V3
-      - Apply DTFSeeds Visual V3 After Canonical Production
-      - Publish Learning Hub Course 1
-      - Build DTFSeeds Public Suite
-    types: [completed]
 
 permissions:
   contents: read
 
 env:
   WP_SITE_URL: https://dtfseeds.com
-  EXTERNAL_HEADER_SOURCE_CONFIG: site/deployment/external-header-sources.json
 
 concurrency:
-  group: dtfseeds-approved-sitewide-header-v5
-  cancel-in-progress: false
+  group: dtfseeds-canonical-sitewide-header-v6
+  cancel-in-progress: true
 
 jobs:
   validate:
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate approved header and responsive release package
+
+      - name: Validate canonical V6 header package
         shell: bash
         run: |
           set -euo pipefail
           node --check scripts/lib/sitewide-header-template.mjs
+          node --check scripts/lib/sitewide-header-template-v6.mjs
           node --check scripts/apply-sitewide-header.mjs
           node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
-          node --check scripts/publish-wordpress-approved-design-reference.mjs
-          node --check scripts/repair-external-sitewide-header-via-wordpress.mjs
-          node --check scripts/verify-sitewide-header-v5-live.mjs
+          node --check scripts/verify-sitewide-header-v6-live.mjs
           node --check scripts/verify-responsive-layout-live.mjs
           test -s site/wordpress/assets/responsive-layout-v1.css
-          test -s site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg
-          test -s site/wordpress/assets/design-references/approved-sitewide-header-reference.json
-          grep -Fq 'data-dtf-shell="header-v5"' scripts/lib/sitewide-header-template.mjs
-          grep -Fq '>Diagnostic</a>' scripts/lib/sitewide-header-template.mjs
-          grep -Fq '<a href="/courses/">Courses</a>' scripts/lib/sitewide-header-template.mjs
-          grep -Fq 'DTFSeeds shared responsive layout system v1' site/wordpress/assets/responsive-layout-v1.css
-          grep -Fq '@media (min-width:701px) and (max-width:1120px)' site/wordpress/assets/responsive-layout-v1.css
-          grep -Fq '@media (max-width:700px)' site/wordpress/assets/responsive-layout-v1.css
-          grep -Fq 'scroll-snap-type:x proximity' site/wordpress/assets/responsive-layout-v1.css
-          grep -Fq 'dtf-responsive-layout-v1' scripts/rebuild-wordpress-shared-shell-v3.mjs
-          grep -Fq 'kushKingsChess' site/deployment/external-header-sources.json
-          grep -Fq 'thcUKnow' site/deployment/external-header-sources.json
-          grep -Fq '99c084b6d502f12d0ab5140191b507a7e0d01229' site/deployment/external-header-sources.json
-          node -e "const fs=require('fs');const x=JSON.parse(fs.readFileSync('site/wordpress/assets/design-references/approved-sitewide-header-reference.json','utf8'));if(x.status!=='approved'||!x.googleDrive?.fileId||!x.repository?.path||!x.wordpress?.mediaSlug)process.exit(1);console.log(x.id)"
-      - name: Inspect approved design-reference preview
-        shell: bash
-        env:
-          APPROVED_DESIGN_REFERENCE_INSPECT_ONLY: 'true'
-        run: |
-          set -euo pipefail
-          out="$RUNNER_TEMP/approved-design-reference-inspection.json"
-          node scripts/publish-wordpress-approved-design-reference.mjs | tee "$out"
-          node --input-type=module - "$out" <<'NODE'
-          import fs from 'node:fs';
-          const file=process.argv[2];
-          const x=JSON.parse(fs.readFileSync(file,'utf8'));
-          if(x.result!=='success'||x.mode!=='inspect') throw new Error('Approved design-reference inspection did not succeed.');
-          if(x.image?.mime!=='image/jpeg'||x.image?.width!==300||x.image?.height!==450) throw new Error(`Unexpected approved preview metadata: ${JSON.stringify(x.image)}`);
-          if(!x.image?.sofMarker) throw new Error('JPEG SOF marker was not resolved.');
-          console.log(`Approved preview parsed: ${x.image.width}x${x.image.height} ${x.image.mime} ${x.image.sofMarker}`);
-          NODE
-      - name: Prove the static header reconciler is idempotent
+          test -s site/wordpress/assets/sitewide-ux-polish-v1.css
+          grep -Fq 'data-dtf-shell="header-v6"' scripts/lib/sitewide-header-template-v6.mjs
+          grep -Fq 'data-dtf-sitewide-header="canonical-six-v1"' scripts/lib/sitewide-header-template-v6.mjs
+          for required in '>Genetics</a>' '>Learn</a>' '>Tools</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
+            grep -Fq "$required" scripts/lib/sitewide-header-template-v6.mjs || { echo "Missing canonical nav label: $required" >&2; exit 1; }
+          done
+          ! grep -Fq '>Home</a>' scripts/lib/sitewide-header-template-v6.mjs
+          ! grep -Fq '>Seeds</a>' scripts/lib/sitewide-header-template-v6.mjs
+          ! grep -Fq '>Courses</a>' scripts/lib/sitewide-header-template-v6.mjs
+          ! grep -Fq '>Diagnostic</a>' scripts/lib/sitewide-header-template-v6.mjs
+          grep -Fq "./lib/sitewide-header-template-v6.mjs" scripts/apply-sitewide-header.mjs
+          grep -Fq "./lib/sitewide-header-template-v6.mjs" scripts/rebuild-wordpress-shared-shell-v3.mjs
+
+      - name: Prove static V6 header reconciler is idempotent
         shell: bash
         run: |
           set -euo pipefail
@@ -114,11 +77,11 @@ jobs:
           cp -a site/public-route-patch "$RUNNER_TEMP/header-fixture"
           node scripts/apply-sitewide-header.mjs "$RUNNER_TEMP/header-fixture"
           node scripts/apply-sitewide-header.mjs "$RUNNER_TEMP/header-fixture" --check
-          count="$(grep -RFl 'data-dtf-shell="header-v5"' "$RUNNER_TEMP/header-fixture" --include='*.html' | wc -l | tr -d ' ')"
+          count="$(grep -RFl 'data-dtf-shell="header-v6"' "$RUNNER_TEMP/header-fixture" --include='*.html' | wc -l | tr -d ' ')"
           test "$count" -gt 10
 
   publish:
-    if: ${{ github.event_name != 'pull_request' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') }}
+    if: ${{ github.event_name != 'pull_request' }}
     needs: validate
     runs-on: ubuntu-latest
     environment: production
@@ -127,10 +90,8 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       APPLY_SHARED_SHELL_V3: 'true'
-      APPLY_APPROVED_DESIGN_REFERENCE: 'true'
-      BACKUP_ROOT: /tmp/dtf-approved-header-v5
-      HEADER_AUDIT_CONCURRENCY: '6'
-      HEADER_AUDIT_MAX_ROUTES: '800'
+      BACKUP_ROOT: /tmp/dtf-canonical-header-v6
+      HEADER_AUDIT_CONCURRENCY: '5'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -138,102 +99,70 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
       - name: Require WordPress credentials
         shell: bash
         run: |
           set -euo pipefail
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured}"
-      - name: Publish approved sitewide shared header and responsive layout
+
+      - name: Publish canonical WordPress shared shell V6
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p "$BACKUP_ROOT"
-          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs | tee /tmp/dtf-approved-header-v5.json
-      - name: Verify approved header on representative public routes
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs | tee /tmp/dtf-canonical-header-v6.json
+
+      - name: Verify V6 on representative public routes
         shell: bash
         run: |
           set -euo pipefail
-          for route in / /learn/ /courses/ /shop/; do
-            out="$RUNNER_TEMP/header-v5-$(echo "$route" | tr '/' '_' | tr -cd '[:alnum:]_').html"
+          for route in / /seeds/ /learn/ /tools/ /games/ /community/ /shop/; do
+            out="$RUNNER_TEMP/header-v6-$(echo "$route" | tr '/' '_' | tr -cd '[:alnum:]_').html"
             ok=0
             for attempt in 1 2 3 4 5 6; do
               curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
                 --header 'Cache-Control: no-cache, no-store, max-age=0' \
                 --header 'Pragma: no-cache' \
-                "${WP_SITE_URL}${route}?dtf_header_v5=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" --output "$out"
-              if grep -Fq 'data-dtf-shell="header-v5"' "$out" && \
-                 grep -Fq 'href="/courses/"' "$out" && \
-                 grep -Fq '>Diagnostic</a>' "$out" && \
-                 grep -Fq 'dtf-sitewide-header-v5-script' "$out"; then
-                ok=1
-                break
-              fi
+                "${WP_SITE_URL}${route}?dtf_header_v6=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" --output "$out"
+              if node - "$out" <<'NODE'
+          const fs=require('fs');
+          const html=fs.readFileSync(process.argv[2],'utf8');
+          const header=html.match(/<header\b[^>]*data-dtf-shell=["']header-v6["'][^>]*>[\s\S]*?<\/header>/i)?.[0]||'';
+          if(!header) process.exit(1);
+          const nav=header.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>([\s\S]*?)<\/nav>/i)?.[1]||'';
+          const labels=[...nav.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)].map(m=>m[1].replace(/<[^>]+>/g,'').trim());
+          const expected=['Genetics','Learn','Tools','Games','Community','Shop'];
+          if(JSON.stringify(labels)!==JSON.stringify(expected)) throw new Error(`Unexpected V6 navigation: ${JSON.stringify(labels)}`);
+          if(!/dtf-sitewide-header-v6-script/.test(html)) throw new Error('V6 script missing');
+          NODE
+              then ok=1; break; fi
               sleep 4
             done
-            if [[ "$ok" -ne 1 ]]; then
-              echo "Approved header V5 was not visitor-facing on ${route}" >&2
-              grep -Eo 'data-dtf-shell="header-v[0-9]+"|href="/[^"]+"' "$out" | head -n 40 >&2 || true
-              exit 1
-            fi
+            [[ "$ok" -eq 1 ]] || { echo "Canonical header V6 was not visitor-facing on ${route}" >&2; exit 1; }
           done
-      - name: Verify shared responsive layout on representative public routes
+
+      - name: Audit canonical V6 header across public routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/verify-sitewide-header-v6-live.mjs | tee /tmp/dtf-header-v6-live-audit.json
+
+      - name: Verify shared responsive layout
         shell: bash
         run: |
           set -euo pipefail
           node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/verify-responsive-layout-live.mjs | tee /tmp/dtf-responsive-layout-v1-live.json
-      - name: Repair external game headers before full audit
-        shell: bash
-        run: |
-          set -euo pipefail
-          mapfile -t surfaces < <(node --input-type=module <<'NODE'
-          import fs from 'node:fs';
-          const cfg = JSON.parse(fs.readFileSync('site/deployment/external-header-sources.json', 'utf8'));
-          for (const name of Object.keys(cfg.surfaces || {})) console.log(name);
-          NODE
-          )
-          for surface in "${surfaces[@]}"; do
-            echo "Repairing external V5 header surface before audit: ${surface}"
-            EXTERNAL_HEADER_SURFACE="$surface" \
-              node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/repair-external-sitewide-header-via-wordpress.mjs \
-              | tee "/tmp/dtf-external-header-v5-repair-${surface}.json"
-          done
-      - name: Audit approved header across discovered public routes
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/verify-sitewide-header-v5-live.mjs | tee /tmp/dtf-header-v5-live-audit.json
-      - name: Store approved design reference in WordPress Media Library
-        id: reference_upload
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/publish-wordpress-approved-design-reference.mjs | tee /tmp/dtf-approved-design-reference.json
-      - name: Verify WordPress design-reference media
-        if: ${{ steps.reference_upload.outcome == 'success' }}
-        shell: bash
-        env:
-          APPLY_APPROVED_DESIGN_REFERENCE: 'false'
-        run: |
-          set -euo pipefail
-          node scripts/publish-wordpress-approved-design-reference.mjs | tee /tmp/dtf-approved-design-reference-readback.json
-      - name: Note optional reference-media issue
-        if: ${{ steps.reference_upload.outcome == 'failure' }}
-        shell: bash
-        run: |
-          echo "The production header is independent of the optional WordPress design-reference copy. The canonical reference remains versioned in GitHub and Google Drive; media-library repair can proceed separately."
+
       - name: Upload deployment evidence
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: approved-sitewide-header-v5-${{ github.run_id }}
+          name: canonical-sitewide-header-v6-${{ github.run_id }}
           path: |
-            /tmp/dtf-approved-design-reference.json
-            /tmp/dtf-approved-design-reference-readback.json
-            /tmp/dtf-approved-header-v5.json
+            /tmp/dtf-canonical-header-v6.json
+            /tmp/dtf-header-v6-live-audit.json
             /tmp/dtf-responsive-layout-v1-live.json
-            /tmp/dtf-external-header-v5-repair-*.json
-            /tmp/dtf-header-v5-live-audit.json
           if-no-files-found: ignore
           retention-days: 30
