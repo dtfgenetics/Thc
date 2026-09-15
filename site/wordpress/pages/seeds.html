@@ -1,5 +1,33 @@
 <!-- DTFSeeds.com canonical genetics library fallback. Dedicated /seeds/<slug>/ profiles are published from seed-line-catalog.json. -->
 <main class="dtf-v1" data-dtf-layout="genetics-library-v2">
+  <style id="dtf-genetics-library-v2-style">
+    [data-dtf-layout="genetics-library-v2"]{--g-ink:#173522;--g-muted:#526559;--g-line:rgba(23,53,34,.14);--g-leaf:#236d42;--g-gold:#b8943e;color:var(--g-ink)}
+    [data-dtf-layout="genetics-library-v2"] .dtf-genetics-guide{padding:clamp(22px,3vw,34px);border-left:4px solid var(--g-gold);background:rgba(255,255,255,.66)}
+    [data-dtf-layout="genetics-library-v2"] .dtf-genetics-guide h2{margin:0 0 10px;font-size:clamp(1.45rem,2.3vw,2rem)}
+    [data-dtf-layout="genetics-library-v2"] .dtf-genetics-guide p{margin:0;color:var(--g-muted);line-height:1.65}
+    [data-dtf-layout="genetics-library-v2"] .dtf-genetics-list{border-top:1px solid var(--g-line)}
+    [data-dtf-layout="genetics-library-v2"] .dtf-genetics-line{border-bottom:1px solid var(--g-line);background:transparent}
+    [data-dtf-layout="genetics-library-v2"] .dtf-genetics-line>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:minmax(160px,.27fr) minmax(170px,.32fr) minmax(0,1fr) 38px;gap:18px;align-items:center;min-height:74px;padding:14px 2px}
+    [data-dtf-layout="genetics-library-v2"] .dtf-genetics-line>summary::-webkit-details-marker{display:none}
+    [data-dtf-layout="genetics-library-v2"] .dtf-genetics-line>summary span{font-size:.73rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--g-leaf)}
+    [data-dtf-layout="genetics-library-v2"] .dtf-genetics-line>summary strong{font-size:clamp(1.08rem,1.8vw,1.3rem)}
+    [data-dtf-layout="genetics-library-v2"] .dtf-genetics-line>summary em{font-style:normal;color:var(--g-muted);font-size:.92rem}
+    [data-dtf-layout="genetics-library-v2"] .dtf-genetics-line>summary:after{content:'+';display:grid;place-items:center;width:32px;height:32px;border:1px solid var(--g-line);border-radius:50%;font-size:1.15rem;font-weight:900;color:var(--g-leaf)}
+    [data-dtf-layout="genetics-library-v2"] .dtf-genetics-line[open]>summary:after{content:'−'}
+    [data-dtf-layout="genetics-library-v2"] .dtf-genetics-line[open]>summary{background:linear-gradient(90deg,rgba(35,109,66,.055),transparent)}
+    [data-dtf-layout="genetics-library-v2"] .dtf-disclosure-body{padding:2px 54px 24px calc(27% + 18px)}
+    [data-dtf-layout="genetics-library-v2"] .dtf-disclosure-body p{max-width:76ch;color:var(--g-muted);line-height:1.65}
+    [data-dtf-layout="genetics-library-v2"] .dtf-disclosure-body a{margin-right:16px;text-underline-offset:3px}
+    [data-dtf-layout="genetics-library-v2"] .dtf-split-info{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);gap:clamp(30px,6vw,80px);align-items:start}
+    [data-dtf-layout="genetics-library-v2"] .dtf-split-info>article{padding-left:24px;border-left:3px solid rgba(35,109,66,.28)}
+    [data-dtf-layout="genetics-library-v2"] .dtf-release-links{display:grid;border-top:1px solid var(--g-line)}
+    [data-dtf-layout="genetics-library-v2"] .dtf-release-links a{display:grid;grid-template-columns:1fr auto;gap:18px;padding:18px 2px;border-bottom:1px solid var(--g-line);color:inherit;text-decoration:none}
+    [data-dtf-layout="genetics-library-v2"] .dtf-release-links a:hover strong{color:var(--g-leaf)}
+    [data-dtf-layout="genetics-library-v2"] .dtf-release-links span{color:var(--g-muted)}
+    [data-dtf-layout="genetics-library-v2"] summary:focus-visible,[data-dtf-layout="genetics-library-v2"] a:focus-visible{outline:3px solid #66a86f;outline-offset:3px}
+    @media(max-width:880px){[data-dtf-layout="genetics-library-v2"] .dtf-genetics-line>summary{grid-template-columns:140px minmax(0,1fr) 38px}[data-dtf-layout="genetics-library-v2"] .dtf-genetics-line>summary em{grid-column:2}[data-dtf-layout="genetics-library-v2"] .dtf-genetics-line>summary:after{grid-column:3;grid-row:1 / span 2}[data-dtf-layout="genetics-library-v2"] .dtf-disclosure-body{padding-left:158px}[data-dtf-layout="genetics-library-v2"] .dtf-split-info{grid-template-columns:1fr}}
+    @media(max-width:600px){[data-dtf-layout="genetics-library-v2"] .dtf-genetics-line>summary{grid-template-columns:minmax(0,1fr) 38px;gap:5px 14px;padding:16px 0}[data-dtf-layout="genetics-library-v2"] .dtf-genetics-line>summary span,[data-dtf-layout="genetics-library-v2"] .dtf-genetics-line>summary strong,[data-dtf-layout="genetics-library-v2"] .dtf-genetics-line>summary em{grid-column:1}[data-dtf-layout="genetics-library-v2"] .dtf-genetics-line>summary:after{grid-column:2;grid-row:1 / span 3}[data-dtf-layout="genetics-library-v2"] .dtf-disclosure-body{padding:0 0 22px}[data-dtf-layout="genetics-library-v2"] .dtf-split-info>article{padding-left:16px}}
+  </style>
   <section class="site-hero" aria-labelledby="genetics-title">
     <div class="wrap hero-grid">
       <div class="hero-copy">
@@ -30,52 +58,42 @@
           <summary><span>F2 · Regular</span><strong>Berry Blue</strong><em>Lineage record pending</em></summary>
           <div class="dtf-disclosure-body"><p><strong>Lineage:</strong> controlled lineage record pending.</p><p>Berry-forward direction with blue and purple visual selection, sweet berry aroma direction, and dense resinous flower structure.</p><a href="/seeds/berry-blue/"><strong>Open Berry Blue profile →</strong></a></div>
         </details>
-
         <details class="dtf-genetics-line">
           <summary><span>F1 · Regular</span><strong>Berry Lemonade</strong><em>Lineage record pending</em></summary>
           <div class="dtf-disclosure-body"><p><strong>Lineage:</strong> controlled lineage record pending.</p><p>Sweet berry-and-citrus direction with colorful fruit-forward presentation and dense resinous flower selection.</p><a href="/seeds/berry-lemonade/"><strong>Open Berry Lemonade profile →</strong></a></div>
         </details>
-
         <details class="dtf-genetics-line">
           <summary><span>F1 · Regular</span><strong>Zestberry</strong><em>Blue Mango × Cali Orange</em></summary>
           <div class="dtf-disclosure-body"><p><strong>Lineage:</strong> Blue Mango × Cali Orange</p><p>Citrus-zest and berry-sweetness direction with vigorous growth selection. The reviewed card lists an 8–10 week planning range.</p><a href="/seeds/zestberry/"><strong>Open Zestberry profile →</strong></a></div>
         </details>
-
         <details class="dtf-genetics-line">
           <summary><span>F1 · Regular</span><strong>Blue Bubblegum</strong><em>Bubblegum Kush × Blueberry Butcher</em></summary>
-          <div class="dtf-disclosure-body"><p><strong>Lineage:</strong> Bubblegum Kush × Blueberry Butcher</p><p>Sweet fruit-and-bubblegum aromatic direction and a parent line used in Mango Bubbles.</p><p><a href="/seeds/blue-bubblegum/"><strong>Open Blue Bubblegum profile →</strong></a> <a href="/product/10-reg-f1-blueberry-bubblegum/">Current F1 regular listing</a></p></div>
+          <div class="dtf-disclosure-body"><p><strong>Lineage:</strong> Bubblegum Kush × Blueberry Butcher</p><p>Sweet fruit-and-bubblegum aromatic direction and a parent line used in Mango Bubbles.</p><p><a href="/seeds/blue-bubblegum/"><strong>Open Blue Bubblegum profile →</strong></a> · <a href="/product/10-reg-f1-blueberry-bubblegum/">Current F1 regular listing</a></p></div>
         </details>
-
         <details class="dtf-genetics-line">
           <summary><span>F1 · Regular</span><strong>Blue Cali Glue</strong><em>Lineage record pending</em></summary>
           <div class="dtf-disclosure-body"><p><strong>Lineage:</strong> controlled lineage record pending.</p><p>Resin-forward, gassy and glue-like aromatic direction with dense flower structure.</p><a href="/seeds/blue-cali-glue/"><strong>Open Blue Cali Glue profile →</strong></a></div>
         </details>
-
         <details class="dtf-genetics-line" open>
           <summary><span>F2 Regular · F2 Feminized · F3 Regular</span><strong>Blue Mango</strong><em>Somango XXL × Blueberry Butcher</em></summary>
-          <div class="dtf-disclosure-body"><p><strong>Lineage:</strong> Somango XXL × Blueberry Butcher</p><p>Flagship DTF Genetics project developed through multiple filial generations around vigorous branching, heavy resin, substantial flower structure, and a candy-blueberry-meets-ripe-mango aromatic direction. An 8–10 week flowering window is used as a planning range rather than a guarantee.</p><p><a href="/seeds/blue-mango/"><strong>Open Blue Mango profile →</strong></a> <a href="/product/10-regular-f2-blue-mango-seeds/">F2 regular listing</a> <a href="/product/10-feminized-f2-blue-mango-x/">F2 feminized listing</a></p></div>
+          <div class="dtf-disclosure-body"><p><strong>Lineage:</strong> Somango XXL × Blueberry Butcher</p><p>Flagship DTF Genetics project developed through multiple filial generations around vigorous branching, heavy resin, substantial flower structure, and a candy-blueberry-meets-ripe-mango aromatic direction. An 8–10 week flowering window is used as a planning range rather than a guarantee.</p><p><a href="/seeds/blue-mango/"><strong>Open Blue Mango profile →</strong></a> · <a href="/product/10-regular-f2-blue-mango-seeds/">F2 regular listing</a> · <a href="/product/10-feminized-f2-blue-mango-x/">F2 feminized listing</a></p></div>
         </details>
-
         <details class="dtf-genetics-line">
           <summary><span>BX1 · Regular</span><strong>Blue Mango BX1</strong><em>Blue Mango F2 × Somango XXL</em></summary>
           <div class="dtf-disclosure-body"><p><strong>Lineage:</strong> Blue Mango F2 × Somango XXL</p><p>Backcross direction emphasizing mango, tropical-fruit and sweet aromatic traits. The reviewed card lists an 8–10 week planning range.</p><a href="/seeds/blue-mango-bx1/"><strong>Open Blue Mango BX1 profile →</strong></a></div>
         </details>
-
         <details class="dtf-genetics-line">
           <summary><span>F1 · Regular</span><strong>Mango Bubbles</strong><em>Blue Mango × Blue Bubblegum</em></summary>
           <div class="dtf-disclosure-body"><p><strong>Lineage:</strong> Blue Mango × Blue Bubblegum</p><p>The reviewed F1 release specifically combines Blue Mango F2 × Blue Bubblegum F1 in a mango-forward, bubblegum-sweet, candy-fruit direction.</p><a href="/seeds/mango-bubbles/"><strong>Open Mango Bubbles profile →</strong></a></div>
         </details>
-
         <details class="dtf-genetics-line">
           <summary><span>F1 · Regular</span><strong>Blue Frequency</strong><em>Lineage record pending</em></summary>
           <div class="dtf-disclosure-body"><p><strong>Lineage:</strong> controlled lineage record pending.</p><p>Vivid blue, resin-forward presentation with an electric aromatic direction. Parentage is not filled from the name or artwork alone.</p><a href="/seeds/blue-frequency/"><strong>Open Blue Frequency profile →</strong></a></div>
         </details>
-
         <details class="dtf-genetics-line">
           <summary><span>F1 · Regular</span><strong>Rainbow Bubblegum</strong><em>Blue Bubblegum × Rainbow Belts F1</em></summary>
           <div class="dtf-disclosure-body"><p><strong>Lineage:</strong> Blue Bubblegum × Rainbow Belts F1</p><p>AMFIBEON + DTF Genetics collaboration with berry, candy, tropical-fruit, and colorful frosty presentation direction. The reviewed card lists an 8–10 week planning range.</p><a href="/seeds/rainbow-bubblegum/"><strong>Open Rainbow Bubblegum profile →</strong></a></div>
         </details>
-
         <details class="dtf-genetics-line">
           <summary><span>F1 · Regular</span><strong>Mystery Line</strong><em>Intentionally unknown lineage</em></summary>
           <div class="dtf-disclosure-body"><p><strong>Lineage:</strong> intentionally unknown on the reviewed card.</p><p>This line remains a true mystery record: parentage and flowering details are not invented when the supplied card explicitly leaves them unknown.</p><a href="/seeds/mystery-line/"><strong>Open Mystery Line profile →</strong></a></div>
