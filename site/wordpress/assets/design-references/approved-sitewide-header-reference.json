@@ -1,18 +1,18 @@
 {
-  "schemaVersion": 3,
-  "id": "dtf-approved-sitewide-header-reference-v1",
+  "schemaVersion": 4,
+  "id": "dtf-approved-sitewide-header-reference-v2",
   "status": "approved",
   "purpose": "Canonical visual and information-architecture reference for the DTF Genetics sitewide shared header and structured course-interface direction.",
-  "usage": "Use as a design specification and QA reference. Do not rasterize the screenshot into live navigation; the production header remains semantic HTML/CSS.",
+  "usage": "Use the approved reference image for visual treatment only. The production information architecture is the canonical six-section navigation defined here; do not restore obsolete labels from older screenshots.",
   "assetContract": {
-    "canonicalMaster": "Google Drive stores the full-resolution approved master.",
+    "canonicalMaster": "Google Drive stores the full-resolution approved visual master.",
     "repositoryPreview": "GitHub stores a durable optimized preview derivative for versioned design/QA reference.",
     "wordpressPreview": "WordPress Media stores the site-side copy of the optimized repository preview and links back to the Drive master."
   },
   "repository": {
     "repo": "dtfgenetics/Thc",
     "path": "site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg",
-    "role": "optimized preview derivative",
+    "role": "visual treatment preview derivative",
     "gitBlobSha": "fc170958991f5e1cb9f8fd0642ff8052dfe8ae30",
     "expectedMinimumShortSidePx": 300,
     "expectedMinimumLongSidePx": 450
@@ -21,7 +21,7 @@
     "folderId": "1PGuk_DQe0za2ERPybjGKXImpAcXxCXQw",
     "fileId": "1kJMXWFSz_2BICRlQJZnmZqoC45ee875x",
     "fileName": "DTF_Course_Header_Approved_Reference_v1.png",
-    "role": "canonical full-resolution master",
+    "role": "canonical full-resolution visual master",
     "mimeType": "image/png",
     "widthPx": 1024,
     "heightPx": 1536,
@@ -30,19 +30,17 @@
   },
   "wordpress": {
     "mediaSlug": "dtf-course-header-approved-reference-v1",
-    "title": "DTF Course Header — Approved Sitewide Design Reference v1",
-    "role": "site-side optimized preview derivative",
+    "title": "DTF Course Header — Approved Sitewide Visual Reference v1",
+    "role": "site-side optimized visual preview derivative",
     "sourceOfTruth": "googleDrive.fileId"
   },
   "canonicalNavigation": [
-    { "label": "Home", "href": "/" },
-    { "label": "Seeds", "href": "/seeds/" },
-    { "label": "Learn", "href": "/learn/" },
-    { "label": "Courses", "href": "/courses/" },
-    { "label": "Diagnostic", "href": "/tools/", "routeOwner": "diagnostic/tools" },
-    { "label": "Games", "href": "/games/" },
-    { "label": "Community", "href": "/community/" },
-    { "label": "Shop", "href": "/shop/" }
+    { "label": "Genetics", "href": "/seeds/", "owns": ["/seeds/"] },
+    { "label": "Learn", "href": "/learn/", "owns": ["/learn/", "/courses/", "/education/", "/yellow-leaves/"] },
+    { "label": "Tools", "href": "/tools/", "owns": ["/tools/", "/growlens/", "/thc-grow-doc/"] },
+    { "label": "Games", "href": "/games/", "owns": ["/games/"] },
+    { "label": "Community", "href": "/community/", "owns": ["/community/"] },
+    { "label": "Shop", "href": "/shop/", "owns": ["/shop/", "/product/", "/cart/", "/checkout/", "/my-account/"] }
   ],
   "utilityActions": [
     "Search",
@@ -50,18 +48,24 @@
     "Cart",
     "Teaching Healthy Cultivation"
   ],
+  "secondaryNavigation": [
+    { "label": "Home", "href": "/", "access": "DTF Genetics brand link" },
+    { "label": "Gallery", "href": "/gallery/" },
+    { "label": "About", "href": "/about/" },
+    { "label": "Contact", "href": "/contact/" }
+  ],
   "responsiveRequirements": {
-    "desktop": "Show all eight canonical destinations in one row when there is sufficient width.",
+    "desktop": "Show all six canonical destinations in one row when there is sufficient width.",
     "tablet": "Preserve brand and utility icons; collapse primary destinations into the menu before the row becomes cramped.",
-    "mobile": "Preserve brand, Search, Account, Cart, and Menu. Expanded navigation retains all eight canonical labels and order.",
+    "mobile": "Preserve brand, Search, Account, Cart, and Menu. Expanded navigation retains all six canonical labels and order.",
     "touchTargetMinimumPx": 44
   },
   "approvedTraits": [
     "dark evergreen full-width header",
-    "DTF Genetics brand at left",
-    "exact primary order: Home, Seeds, Learn, Courses, Diagnostic, Games, Community, Shop",
-    "Courses remains distinct from Learn",
-    "Diagnostic is the visitor-facing label for the tools and diagnostic route group",
+    "DTF Genetics brand at left links to Home",
+    "exact primary order: Genetics, Learn, Tools, Games, Community, Shop",
+    "Courses belongs beneath Learn rather than occupying a primary slot",
+    "Diagnostic, GrowLens, and THC Grow Doc belong beneath Tools rather than occupying a primary slot",
     "green filled active-navigation state",
     "search, account, and cart utilities at right",
     "Teaching Healthy Cultivation identity at right when space permits",
