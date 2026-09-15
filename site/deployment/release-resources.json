@@ -7,7 +7,7 @@
     "site/wordpress/assets/responsive-layout-v1.css",
     "site/wordpress/assets/sitewide-ux-polish-v1.css",
     "scripts/apply-sitewide-header.mjs",
-    "scripts/lib/sitewide-header-template.mjs",
+    "scripts/lib/sitewide-header-template-v6.mjs",
     "scripts/plan-dtfseeds-resource-release.mjs",
     "scripts/run-workflow-and-wait.sh",
     "scripts/package-dtf-public-resource.py",
@@ -62,7 +62,8 @@
       ],
       "verifyMarker": "Build your High IQ run",
       "verifyTokens": [
-        "data-dtf-shell=\"header-v5\"",
+        "data-dtf-shell=\"header-v6\"",
+        "data-dtf-sitewide-header=\"canonical-eight-v1\"",
         "id=\"dtf-responsive-layout-v1\"",
         "id=\"dtf-sitewide-ux-polish-v1\"",
         "--dtf-global-header-height:92px",
