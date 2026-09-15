@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "tech1-courses-public-v1",
+  "source": {
+    "repository": "dtfgenetics/Thc-learning-courses-",
+    "ref": "main"
+  },
+  "program": {
+    "title": "THC Cultivation Technician I",
+    "slug": "cultivation-technician-i",
+    "route": "/learn/learning-hub/cultivation-technician-i/"
+  },
+  "courses": [
+    {"number":2,"id":"COURSE-LH-TECH1-002","releaseId":"PUBLIC-RELEASE-LH-TECH1-002","slug":"plant-observation-growth-stages-crop-records"},
+    {"number":3,"id":"COURSE-LH-TECH1-003","releaseId":"PUBLIC-RELEASE-LH-TECH1-003","slug":"environmental-light-sensor-fundamentals"},
+    {"number":4,"id":"COURSE-LH-TECH1-004","releaseId":"PUBLIC-RELEASE-LH-TECH1-004","slug":"water-root-zone-nutrition-irrigation-fundamentals"},
+    {"number":5,"id":"COURSE-LH-TECH1-005","releaseId":"PUBLIC-RELEASE-LH-TECH1-005","slug":"propagation-canopy-ipm-scouting-crop-care"},
+    {"number":6,"id":"COURSE-LH-TECH1-006","releaseId":"PUBLIC-RELEASE-LH-TECH1-006","slug":"harvest-postharvest-traceability-shift-handoff"},
+    {"number":7,"id":"COURSE-LH-TECH1-007","releaseId":"PUBLIC-RELEASE-LH-TECH1-007","slug":"integrated-cultivation-technician-practice-lab"}
+  ],
+  "boundary": "These routes publish learner-facing academic training only. Professional credential examinations, secure credential forms, credential decisions, pilot/calibration evidence and issuance controls remain private/restricted."
+}
