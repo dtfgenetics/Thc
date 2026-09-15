@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import re
 import subprocess
 import sys
 import tempfile
@@ -28,6 +29,7 @@ subprocess.run(
 # Fail closed before archive construction if a suite-owned top-level hub ever
 # drifts away from the canonical six-section shell. This keeps the production
 # transaction from publishing a mixed V5/V6 navigation state.
+expected_labels = ['Genetics', 'Learn', 'Tools', 'Games', 'Community', 'Shop']
 for relative in ('tools/index.html', 'games/index.html', 'projects/index.html'):
     candidate = release_dir / relative
     if not candidate.is_file() or candidate.stat().st_size < 1:
@@ -36,15 +38,26 @@ for relative in ('tools/index.html', 'games/index.html', 'projects/index.html'):
     for marker in (
         'data-dtf-shell="header-v6"',
         'data-dtf-sitewide-header="canonical-six-v1"',
-        '>Genetics</a>',
-        '>Learn</a>',
-        '>Tools</a>',
-        '>Games</a>',
-        '>Community</a>',
-        '>Shop</a>',
+        'id="dtf-sitewide-header-v6-script"',
+        'id="dtf-responsive-layout-v1"',
+        'id="dtf-sitewide-ux-polish-v1"',
     ):
         if marker not in html:
             raise SystemExit(f'{relative} is missing canonical V6 shell marker: {marker}')
+
+    nav_match = re.search(
+        r'<nav\b[^>]*id=["\']dtf-global-primary-nav["\'][^>]*>([\s\S]*?)</nav>',
+        html,
+        re.IGNORECASE,
+    )
+    if not nav_match:
+        raise SystemExit(f'{relative} is missing canonical primary navigation')
+    labels = [
+        re.sub(r'<[^>]+>', '', match).strip()
+        for match in re.findall(r'<a\b[^>]*>([\s\S]*?)</a>', nav_match.group(1), re.IGNORECASE)
+    ]
+    if labels != expected_labels:
+        raise SystemExit(f'{relative} has unexpected primary navigation: {labels!r}')
 
 with tempfile.TemporaryDirectory(prefix='dtf-suite-package-resource-aware-') as temp:
     base = Path(temp) / 'suite-base.zip'
