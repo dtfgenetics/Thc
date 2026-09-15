@@ -14,9 +14,15 @@ const SURFACE_COLORS = Object.freeze({
   ice: Object.freeze({ base:0x4f829b, top:0xc9f4ff }),
   metal: Object.freeze({ base:0x3c4a52, top:0x7a929c })
 });
+const INTERACTIVE_PLATFORM_MECHANICS = Object.freeze(new Set(['moving-platforms','conveyor-platforms','crystal-bounce','collapsing-platforms','springs']));
 
-function isDynamicPlatform(platform) {
-  return Boolean(platform?.motion || platform?.breakaway || platform?.conveyor || platform?.bounce || platform?.__seedRuntimeAdded);
+function levelHasInteractivePlatforms(level) {
+  return (level?.mechanics || []).some((mechanic)=>INTERACTIVE_PLATFORM_MECHANICS.has(mechanic));
+}
+
+function isDynamicPlatform(platform, level = null) {
+  if (platform?.motion || platform?.breakaway || platform?.conveyor || platform?.bounce || platform?.__seedRuntimeAdded) return true;
+  return Boolean(levelHasInteractivePlatforms(level) && Number(platform?.y) < 450);
 }
 
 function surfacePalette(surface) {
@@ -101,9 +107,9 @@ export function createThreeWorldRenderer(options = {}) {
     clearDynamicPlatforms();
     levelRef = level;
     worldHeight = Number(level?.worldHeight) || 540;
-    const dynamicPlatforms = (level?.platforms || []).filter(isDynamicPlatform);
+    const dynamicPlatforms = (level?.platforms || []).filter((platform)=>isDynamicPlatform(platform,level));
     const staticLevel = dynamicPlatforms.length
-      ? { ...level, platforms:(level.platforms || []).filter((platform)=>!isDynamicPlatform(platform)) }
+      ? { ...level, platforms:(level.platforms || []).filter((platform)=>!isDynamicPlatform(platform,level)) }
       : level;
 
     const descriptor = base.mountLevel(staticLevel);
@@ -117,7 +123,7 @@ export function createThreeWorldRenderer(options = {}) {
     base.sync(args);
     if (!levelRef) return;
     for (const platform of levelRef.platforms || []) {
-      if (!isDynamicPlatform(platform)) continue;
+      if (!isDynamicPlatform(platform,levelRef)) continue;
       const mesh = dynamicMeshes.get(platform.id) || addDynamicPlatform(platform);
       if (mesh) setPlatformPosition(mesh, platform, worldHeight, pixelsPerUnit);
     }
