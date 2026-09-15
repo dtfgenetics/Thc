@@ -16,7 +16,7 @@ const SURFACE_COLORS = Object.freeze({
 });
 
 function isDynamicPlatform(platform) {
-  return Boolean(platform?.motion || platform?.breakaway);
+  return Boolean(platform?.motion || platform?.breakaway || platform?.conveyor || platform?.bounce || platform?.__seedRuntimeAdded);
 }
 
 function surfacePalette(surface) {
@@ -70,6 +70,25 @@ export function createThreeWorldRenderer(options = {}) {
   let worldHeight = 540;
   let pixelsPerUnit = 80;
 
+  function ensureDynamicGroup() {
+    if (dynamicGroup) return dynamicGroup;
+    dynamicGroup = new THREE.Group();
+    dynamicGroup.name = DYNAMIC_PLATFORM_RUNTIME;
+    dynamicGroup.userData.dynamicPlatformCount = 0;
+    base.scene.add(dynamicGroup);
+    return dynamicGroup;
+  }
+
+  function addDynamicPlatform(platform) {
+    if (!platform?.id || dynamicMeshes.has(platform.id)) return dynamicMeshes.get(platform?.id) || null;
+    const group=ensureDynamicGroup();
+    const mesh=createPlatformMesh(platform,worldHeight,pixelsPerUnit);
+    dynamicMeshes.set(platform.id,mesh);
+    group.add(mesh);
+    group.userData.dynamicPlatformCount=dynamicMeshes.size;
+    return mesh;
+  }
+
   function clearDynamicPlatforms() {
     if (!dynamicGroup) return;
     for (const mesh of dynamicMeshes.values()) disposePlatformMesh(mesh);
@@ -89,29 +108,18 @@ export function createThreeWorldRenderer(options = {}) {
 
     const descriptor = base.mountLevel(staticLevel);
     pixelsPerUnit = Number(descriptor?.pixelsPerUnit) || 80;
-
-    if (dynamicPlatforms.length) {
-      dynamicGroup = new THREE.Group();
-      dynamicGroup.name = DYNAMIC_PLATFORM_RUNTIME;
-      for (const platform of dynamicPlatforms) {
-        const mesh = createPlatformMesh(platform, worldHeight, pixelsPerUnit);
-        dynamicMeshes.set(platform.id, mesh);
-        dynamicGroup.add(mesh);
-      }
-      dynamicGroup.userData.dynamicPlatformCount = dynamicMeshes.size;
-      base.scene.add(dynamicGroup);
-    }
+    for (const platform of dynamicPlatforms) addDynamicPlatform(platform);
 
     return Object.freeze({ ...descriptor, dynamicPlatformCount:dynamicMeshes.size, dynamicRuntime:DYNAMIC_PLATFORM_RUNTIME });
   }
 
   function sync(args = {}) {
     base.sync(args);
-    if (!levelRef || !dynamicMeshes.size) return;
+    if (!levelRef) return;
     for (const platform of levelRef.platforms || []) {
-      const mesh = dynamicMeshes.get(platform.id);
-      if (!mesh) continue;
-      setPlatformPosition(mesh, platform, worldHeight, pixelsPerUnit);
+      if (!isDynamicPlatform(platform)) continue;
+      const mesh = dynamicMeshes.get(platform.id) || addDynamicPlatform(platform);
+      if (mesh) setPlatformPosition(mesh, platform, worldHeight, pixelsPerUnit);
     }
   }
 
