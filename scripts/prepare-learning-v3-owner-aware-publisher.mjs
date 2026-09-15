@@ -73,6 +73,15 @@ if (apply) {
   if (failures.length) throw new Error(\`Visitor verification failed: \${failures.map(item => \`\${item.path}:\${item.status}:\${item.markerFound}\`).join(', ')}\`);
 }`;
 
+const progressiveOriginal = `const checks = [];
+if (apply) {
+  checks.push(await publicCheck('/', 'data-dtf-layout="home-v3"'));
+  checks.push(await publicCheck('/learn/', 'data-dtf-layout="learn-v3"'));
+  for (const topic of topics) { checks.push(await publicCheck(topic.route, \`data-dtf-topic="\${topic.id}"\`)); checks.push(await publicCheck(topic.route, 'data-progressive-disclosure="true"')); }
+  const failures = checks.filter(check => check.status !== 200 || !check.markerFound);
+  if (failures.length) throw new Error(\`Visitor verification failed: \${failures.map(item => \`\${item.path}:\${item.status}:\${item.markerFound}\`).join(', ')}\`);
+}`;
+
 const ownerAware = `const checks = [];
 if (apply) {
   const storedRootCheck = async (slug, marker) => {
@@ -90,10 +99,33 @@ if (apply) {
   if (failures.length) throw new Error(\`Owner-aware verification failed: \${failures.map(item => \`\${item.path}:\${item.status}:\${item.markerFound}\`).join(', ')}\`);
 }`;
 
-if (!source.includes(original)) {
-  throw new Error('Could not locate the Learning V3 mixed root/topic verification block; refusing an unreviewed owner-verification patch.');
+const progressiveOwnerAware = `const checks = [];
+if (apply) {
+  const storedRootCheck = async (slug, marker) => {
+    const { body } = await request(\`/wp-json/wp/v2/pages?slug=\${encodeURIComponent(slug)}&context=edit&status=publish&per_page=100\`);
+    const roots = (Array.isArray(body) ? body : []).filter(page => Number(page.parent || 0) === 0);
+    if (roots.length !== 1) return { path: \`wordpress:/\${slug}/\`, status: 409, marker, markerFound: false, bytes: 0, owner: 'wordpress-rest' };
+    const content = roots[0]?.content;
+    const stored = typeof content === 'string' ? content : (content?.raw || content?.rendered || '');
+    return { path: \`wordpress:/\${slug}/\`, status: 200, marker, markerFound: stored.includes(marker), bytes: stored.length, owner: 'wordpress-rest-raw-first', pageId: roots[0].id };
+  };
+  checks.push(await storedRootCheck('home', 'data-dtf-layout="home-v3"'));
+  checks.push(await storedRootCheck('learn', 'data-dtf-layout="learn-v3"'));
+  for (const topic of topics) { checks.push(await publicCheck(topic.route, \`data-dtf-topic="\${topic.id}"\`)); checks.push(await publicCheck(topic.route, 'data-progressive-disclosure="true"')); }
+  const failures = checks.filter(check => check.status !== 200 || !check.markerFound);
+  if (failures.length) throw new Error(\`Owner-aware verification failed: \${failures.map(item => \`\${item.path}:\${item.status}:\${item.markerFound}\`).join(', ')}\`);
+}`;
+
+const originalCount = source.split(original).length - 1;
+const progressiveOriginalCount = source.split(progressiveOriginal).length - 1;
+const ownerAwareCount = source.split(ownerAware).length - 1;
+const progressiveOwnerAwareCount = source.split(progressiveOwnerAware).length - 1;
+
+if (progressiveOriginalCount === 1) source = source.replace(progressiveOriginal, progressiveOwnerAware);
+else if (originalCount === 1) source = source.replace(original, ownerAware);
+else if (progressiveOwnerAwareCount !== 1 && ownerAwareCount !== 1) {
+  throw new Error(`Could not locate exactly one Learning V3 mixed root/topic verification block; original=${originalCount}, progressiveOriginal=${progressiveOriginalCount}, ownerAware=${ownerAwareCount}, progressiveOwnerAware=${progressiveOwnerAwareCount}. Refusing an unreviewed owner-verification patch.`);
 }
-source = source.replace(original, ownerAware);
 
 for (const marker of [
   'function isApprovedLearningMedia(item)',
@@ -107,6 +139,10 @@ for (const marker of [
   if (!source.includes(marker)) throw new Error(`Prepared Learning V3 publisher is missing required owner/media marker: ${marker}`);
 }
 
+if (progressiveOriginalCount === 1 || progressiveOwnerAwareCount === 1) {
+  if (!source.includes('data-progressive-disclosure="true"')) throw new Error('Progressive Learning V3 source lost its progressive-disclosure verification during owner-aware preparation.');
+}
+
 await writeFile(outputPath, source, 'utf8');
 console.log(JSON.stringify({
   sourcePath,
@@ -114,6 +150,7 @@ console.log(JSON.stringify({
   rootVerification: 'wordpress-rest',
   rootStorageRead: 'raw-first',
   topicVerification: 'anonymous-public',
+  progressiveTopicVerification: source.includes('data-progressive-disclosure="true"'),
   mediaSelection: 'approved-learning-only',
   relatedMediaSelection: 'approved-learning-only',
   strainCardsOwnedBy: 'homepage-release-reconciler',
