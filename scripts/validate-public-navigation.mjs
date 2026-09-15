@@ -3,6 +3,7 @@ import path from 'node:path';
 
 const root = process.cwd();
 const nav = JSON.parse(fs.readFileSync(path.join(root, 'data/public-navigation.json'), 'utf8'));
+const shell = JSON.parse(fs.readFileSync(path.join(root, 'data/site-navigation-v6.json'), 'utf8'));
 const apps = JSON.parse(fs.readFileSync(path.join(root, 'site/deployment/public-apps.json'), 'utf8'));
 const hub = fs.readFileSync(path.join(root, 'site/public-route-patch/games/index.html'), 'utf8');
 
@@ -10,56 +11,51 @@ const errors = [];
 const assert = (condition, message) => { if (!condition) errors.push(message); };
 
 const canonicalPrimary = [
-  { id: 'home', label: 'Home', route: '/' },
-  { id: 'seeds', label: 'Seeds', route: '/seeds/' },
+  { id: 'genetics', label: 'Genetics', route: '/seeds/' },
   { id: 'learn', label: 'Learn', route: '/learn/' },
-  { id: 'courses', label: 'Courses', route: '/courses/' },
-  { id: 'diagnostic', label: 'Diagnostic', route: '/tools/' },
+  { id: 'tools', label: 'Tools', route: '/tools/' },
   { id: 'games', label: 'Games', route: '/games/' },
   { id: 'community', label: 'Community', route: '/community/' },
   { id: 'shop', label: 'Shop', route: '/shop/' }
 ];
 
-assert(Array.isArray(nav.primaryNavigation), 'primaryNavigation must be an array');
-assert(nav.primaryNavigation.length === canonicalPrimary.length, `primary navigation must contain exactly ${canonicalPrimary.length} canonical items`);
-assert(nav.principles?.maxPrimaryNavItems === canonicalPrimary.length, `maxPrimaryNavItems must be ${canonicalPrimary.length}`);
+assert(shell.status === 'canonical', 'site-navigation-v6 must be marked canonical');
+assert(shell.brandHome?.route === '/', 'DTF Genetics brand must remain the Home control');
+assert(Array.isArray(shell.primaryNavigation), 'site-navigation-v6 primaryNavigation must be an array');
+assert(shell.primaryNavigation.length === canonicalPrimary.length, `V6 primary navigation must contain exactly ${canonicalPrimary.length} canonical items`);
 
 for (let index = 0; index < canonicalPrimary.length; index += 1) {
-  const actual = nav.primaryNavigation[index];
+  const actual = shell.primaryNavigation[index];
   const expected = canonicalPrimary[index];
-  assert(actual?.id === expected.id, `primary navigation item ${index + 1} id must be '${expected.id}'`);
-  assert(actual?.label === expected.label, `primary navigation item ${index + 1} label must be '${expected.label}'`);
-  assert(actual?.route === expected.route, `primary navigation item ${index + 1} route must be '${expected.route}'`);
-  assert(actual?.cta === undefined, `primary navigation item '${expected.id}' must not be used as a CTA; CTAs belong outside the canonical nav`);
+  assert(actual?.id === expected.id, `V6 primary navigation item ${index + 1} id must be '${expected.id}'`);
+  assert(actual?.label === expected.label, `V6 primary navigation item ${index + 1} label must be '${expected.label}'`);
+  assert(actual?.route === expected.route, `V6 primary navigation item ${index + 1} route must be '${expected.route}'`);
 }
 
-assert(!nav.primaryNavigation.some((item) => item?.label === 'Genetics'), "primary navigation must use 'Seeds', not 'Genetics'");
-assert(!nav.primaryNavigation.some((item) => item?.label === 'Tools'), "primary navigation must use 'Diagnostic', not 'Tools'");
-assert(nav.principles?.primaryActionLocation === 'home-quick-actions', 'primaryAction must be explicitly separated from the shared primary navigation');
-
-const roots = nav.informationArchitecture?.roots || [];
-assert(Array.isArray(roots), 'informationArchitecture.roots must be an array');
-assert(roots.length === canonicalPrimary.length, `information architecture must define exactly ${canonicalPrimary.length} roots`);
-for (let index = 0; index < canonicalPrimary.length; index += 1) {
-  const rootEntry = roots[index];
-  const expected = canonicalPrimary[index];
-  assert(rootEntry?.id === expected.id, `information architecture root ${index + 1} id must be '${expected.id}'`);
-  assert(rootEntry?.label === expected.label, `information architecture root ${index + 1} label must be '${expected.label}'`);
-  assert(rootEntry?.route === expected.route, `information architecture root ${index + 1} route must be '${expected.route}'`);
-  assert(typeof rootEntry?.purpose === 'string' && rootEntry.purpose.trim().length > 0, `information architecture root '${expected.id}' requires a purpose`);
+const primaryLabels = shell.primaryNavigation.map((item) => item.label);
+for (const obsolete of ['Home', 'Seeds', 'Courses', 'Diagnostic']) {
+  assert(!primaryLabels.includes(obsolete), `obsolete primary label '${obsolete}' must not appear in the V6 primary navigation`);
 }
+assert(shell.sectionOwnership?.learn?.includes('/courses/'), 'Courses must be owned by Learn');
+assert(shell.sectionOwnership?.tools?.includes('/growlens/'), 'Tools must own GrowLens');
+assert(shell.sectionOwnership?.tools?.includes('/thc-grow-doc/'), 'Tools must own THC Grow Doc');
+assert(shell.sectionOwnership?.shop?.includes('/cart/'), 'Shop must own Cart');
+assert(shell.sectionOwnership?.shop?.includes('/my-account/'), 'Shop must own Account');
 
+// data/public-navigation.json remains the detailed public games/tools registry during
+// the V6 migration. Its legacy primaryNavigation field is not a site-shell authority.
 assert(nav.learn?.route === '/learn/', 'Learn registry root must remain /learn/');
 assert(nav.courses?.route === '/courses/', 'Courses registry root must remain /courses/');
-assert(nav.diagnostic?.route === '/tools/', 'Diagnostic registry root must remain /tools/');
+assert(nav.diagnostic?.route === '/tools/', 'Diagnostic registry data must remain owned by /tools/');
 assert(!(nav.learn?.sections || []).some((item) => item.route === '/learn/academy/'), 'Legacy /learn/academy/ must not be promoted as the public Courses entry point');
 assert((nav.courses?.sections || []).some((item) => item.route === '/learn/learning-hub/'), 'Courses must expose the Learning Hub as its structured course tree');
-assert((nav.diagnostic?.tools || []).some((item) => item.route === '/growlens/'), 'Diagnostic must include GrowLens');
-assert((nav.diagnostic?.tools || []).some((item) => item.route === '/thc-grow-doc/'), 'Diagnostic must include THC Grow Doc');
+assert((nav.diagnostic?.tools || []).some((item) => item.route === '/growlens/'), 'Tools registry must include GrowLens');
+assert((nav.diagnostic?.tools || []).some((item) => item.route === '/thc-grow-doc/'), 'Tools registry must include THC Grow Doc');
 
 const allInternal = [
-  ...nav.primaryNavigation,
-  ...(nav.utilityNavigation || []),
+  ...shell.primaryNavigation,
+  ...(shell.secondaryNavigation || []),
+  ...(shell.utilityNavigation || []),
   ...(nav.footerNavigation || []),
   ...(nav.homeQuickActions || []),
   ...(nav.learn?.sections || []),
@@ -70,10 +66,10 @@ const allInternal = [
 
 for (const route of allInternal) assert(route.startsWith('/') && route.endsWith('/'), `internal route must start and end with /: ${route}`);
 
-const primaryIds = nav.primaryNavigation.map((item) => item.id);
-assert(new Set(primaryIds).size === primaryIds.length, 'primary navigation IDs must be unique');
-const primaryRoutes = nav.primaryNavigation.map((item) => item.route);
-assert(new Set(primaryRoutes).size === primaryRoutes.length, 'primary navigation routes must be unique');
+const primaryIds = shell.primaryNavigation.map((item) => item.id);
+assert(new Set(primaryIds).size === primaryIds.length, 'V6 primary navigation IDs must be unique');
+const primaryRoutes = shell.primaryNavigation.map((item) => item.route);
+assert(new Set(primaryRoutes).size === primaryRoutes.length, 'V6 primary navigation routes must be unique');
 
 const appById = new Map(apps.apps.map((app) => [app.id, app]));
 const publicGames = nav.games.filter((game) => game.public);
@@ -108,4 +104,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Public navigation validation passed: ${nav.primaryNavigation.length} canonical primary destinations, ${publicGames.length} public games, ${privateGames.length} development-only games.`);
+console.log(`Public navigation validation passed: ${shell.primaryNavigation.length} canonical V6 primary destinations, ${publicGames.length} public games, ${privateGames.length} development-only games.`);
