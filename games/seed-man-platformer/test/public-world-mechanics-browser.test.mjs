@@ -9,6 +9,7 @@ const repoRoot=path.resolve(here,'../../..');
 const publicDir=path.join(repoRoot,'site/public-route-patch/games/seed-man-platformer');
 const source=fs.readFileSync(path.join(publicDir,'world-mechanics-browser-v1.js'),'utf8');
 const compat=fs.readFileSync(path.join(publicDir,'canvas-compat-v1.js'),'utf8');
+const index=fs.readFileSync(path.join(publicDir,'index.html'),'utf8');
 const entry=fs.readFileSync(path.join(here,'../src/render/three-world-public-entry.mjs'),'utf8');
 const dynamicRenderer=fs.readFileSync(path.join(here,'../src/render/three-world-dynamic.mjs'),'utf8');
 
@@ -18,8 +19,12 @@ for(const marker of ['moving-platforms','collapsing-platforms','conveyor-platfor
   assert.match(source,new RegExp(marker),`public mechanics runtime missing ${marker}`);
 }
 for(const phenotype of ['fire','electric','ice']) assert.match(source,new RegExp(`${phenotype}:`));
-assert.match(compat,/world-mechanics-browser-v1\.js/,'runtime health bridge must load public world mechanics');
+assert.match(compat,/world-mechanics-browser-v1\.js/,'runtime health bridge must declare public world mechanics');
 assert.doesNotMatch(compat,/stepPlayer\s*=\s*function/,'canvas compatibility layer must not own gameplay mechanics');
+const mechanicsScriptIndex=index.indexOf('world-mechanics-browser-v1.js');
+const adapterScriptIndex=index.indexOf('three-world-adapter-v1.js');
+assert.ok(mechanicsScriptIndex>=0,'public HTML must load world mechanics directly');
+assert.ok(adapterScriptIndex>mechanicsScriptIndex,'world mechanics must install before the Three adapter begins syncing dynamic geometry');
 assert.match(entry,/three-world-dynamic\.mjs/,'public Three entry must use dynamic renderer wrapper');
 assert.match(dynamicRenderer,/seed-man-three-dynamic-platforms-v1/);
 assert.match(dynamicRenderer,/dynamicPlatformCount/);
