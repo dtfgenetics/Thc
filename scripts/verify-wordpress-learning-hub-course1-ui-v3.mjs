@@ -9,9 +9,18 @@ const ui=JSON.parse(await readFile(process.env.LEARNING_HUB_COURSE1_UI_PATH||'si
 const auth=`Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}`;
 const must=(v,m)=>{if(!v)throw new Error(m);};
 const rendered=v=>typeof v==='string'?v:(v?.raw||v?.rendered||'');
+const decodeHtmlEntities=(value='')=>String(value)
+  .replaceAll('&quot;','"')
+  .replaceAll('&#039;',"'")
+  .replaceAll('&#39;',"'")
+  .replaceAll('&apos;',"'")
+  .replaceAll('&amp;','&')
+  .replaceAll('&lt;','<')
+  .replaceAll('&gt;','>');
+const includesSemanticText=(html,text)=>decodeHtmlEntities(html).includes(String(text));
 must(user&&pass,'WordPress credentials are required.');
 
-async function wp(path){const r=await fetch(`${site}/wp-json/wp/v2/${path}`,{signal:AbortSignal.timeout(30000),headers:{Authorization:auth,'User-Agent':'DTF-Learning-Hub-Course1-UI-Verify/3.0'}});const text=await r.text();if(!r.ok)throw new Error(`WordPress ${path} returned ${r.status}: ${text.slice(0,300)}`);return text?JSON.parse(text):null;}
+async function wp(path){const r=await fetch(`${site}/wp-json/wp/v2/${path}`,{signal:AbortSignal.timeout(30000),headers:{Authorization:auth,'User-Agent':'DTF-Learning-Hub-Course1-UI-Verify/3.1'}});const text=await r.text();if(!r.ok)throw new Error(`WordPress ${path} returned ${r.status}: ${text.slice(0,300)}`);return text?JSON.parse(text):null;}
 async function findPage(slug,parent){const rows=await wp(`pages?slug=${encodeURIComponent(slug)}&parent=${parent}&context=edit&per_page=100`);return rows[0]||null;}
 function checkContent(page,label){const html=rendered(page.content);must(/dtf-learning-hub-course1-ui-v3/.test(html),`${label}: guided Course 1 UI marker missing.`);must(!/\b(draft|preview only|tbd|todo|lorem ipsum)\b/i.test(html),`${label}: unfinished public wording found.`);must(!/<svg\b/i.test(html),`${label}: inline SVG teaching art is not allowed in Course 1 guided UI.`);must(!/interactive academic visual/i.test(html),`${label}: rejected visual treatment detected.`);return html;}
 
@@ -34,7 +43,7 @@ for(const mod of local.modules){
     must(html.includes(`Lesson ${def.lesson}`),`${def.id}: lesson position missing.`);
     if(def.visual.status==='approved'){
       must(html.includes(def.visual.src),`${def.id}: approved instructional visual missing.`);
-      must(html.includes(def.visual.alt),`${def.id}: instructional visual alt text missing.`);
+      must(includesSemanticText(html,def.visual.alt),`${def.id}: instructional visual alt text missing.`);
     }else{
       must(!/<img\b/i.test(html),`${def.id}: unapproved image rendered instead of a reviewed teaching visual.`);
     }
