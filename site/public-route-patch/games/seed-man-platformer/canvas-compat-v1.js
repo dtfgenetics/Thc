@@ -2,6 +2,7 @@
 
 (() => {
   const VERSION = 'seed-man-runtime-health-v21';
+  const LEGACY_VERSION = 'seed-man-runtime-health-v20';
   const RELEASE = '20260915-v20-world-mechanics-v1';
   const EXPECTED = Object.freeze({
     campaignLevels: 20,
@@ -70,6 +71,7 @@
 
   window.__SPROUT_CANVAS_COMPAT__ = Object.freeze({
     version: VERSION,
+    legacyVersion: LEGACY_VERSION,
     release: RELEASE,
     campaignTarget: 20,
     campaignUi: EXPECTED.campaignUi,
