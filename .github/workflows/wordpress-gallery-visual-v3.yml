@@ -2,6 +2,12 @@ name: Publish DTF Gallery Visual V3
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/finalize-wordpress-gallery-visual-v3.mjs'
+      - 'site/wordpress/visual-quality-policy.json'
+      - '.github/workflows/wordpress-gallery-visual-v3.yml'
   push:
     branches: [main]
     paths:
@@ -16,10 +22,9 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
-  group: dtfseeds-gallery-visual-v3
+  group: dtfseeds-gallery-visual-v3-${{ github.event.pull_request.number || github.ref_name }}
   cancel-in-progress: true
 
 env:
@@ -27,8 +32,43 @@ env:
   NODE_OPTIONS: --dns-result-order=ipv4first
 
 jobs:
+  validate-gallery-v3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout validation source
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate Gallery V3 approved-only package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s site/wordpress/visual-quality-policy.json
+          node --check scripts/finalize-wordpress-gallery-visual-v3.mjs
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
+          grep -Fq 'data-dtf-gallery-visual-v3' scripts/finalize-wordpress-gallery-visual-v3.mjs
+          grep -Fq 'data-dtf-gallery-media-policy="approved-only"' scripts/finalize-wordpress-gallery-visual-v3.mjs
+          grep -Fq 'See the genetics first. Explore the science behind them.' scripts/finalize-wordpress-gallery-visual-v3.mjs
+          grep -Fq 'dtf-strain-card-blue-mango-f2-regular' scripts/finalize-wordpress-gallery-visual-v3.mjs
+          grep -Fq 'dtf-strain-card-mango-bubbles-f1-regular' scripts/finalize-wordpress-gallery-visual-v3.mjs
+          grep -Fq "approvedPrefixes.includes('dtf-approved-visual-')" scripts/finalize-wordpress-gallery-visual-v3.mjs
+          node <<'NODE'
+          const fs = require('fs');
+          const policy = JSON.parse(fs.readFileSync('site/wordpress/visual-quality-policy.json','utf8'));
+          if (policy.mode !== 'quarantine') throw new Error('Visual quarantine is not active.');
+          if (!(policy.approvedMediaSlugPrefixes || []).includes('dtf-approved-visual-')) throw new Error('Approved visual prefix missing.');
+          if (policy.legacyAutomaticInfographicPublishingAllowed !== false) throw new Error('Legacy automatic infographic publishing must remain disabled.');
+          if (policy.legacyInfographicReuseAllowed !== false) throw new Error('Legacy infographic reuse must remain disabled.');
+          NODE
+
   publish-gallery-v3:
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    needs: validate-gallery-v3
+    if: ${{ github.event_name != 'pull_request' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment: production
@@ -48,27 +88,12 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate Gallery V3 package
+      - name: Validate production credentials
         shell: bash
         run: |
           set -euo pipefail
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
-          test -s site/wordpress/visual-quality-policy.json
-          node --check scripts/finalize-wordpress-gallery-visual-v3.mjs
-          node --check scripts/flush-hostinger-litespeed-mcp.mjs
-          grep -Fq 'data-dtf-gallery-visual-v3' scripts/finalize-wordpress-gallery-visual-v3.mjs
-          grep -Fq 'data-dtf-gallery-media-policy="approved-only"' scripts/finalize-wordpress-gallery-visual-v3.mjs
-          grep -Fq 'See the genetics first. Explore the science behind them.' scripts/finalize-wordpress-gallery-visual-v3.mjs
-          grep -Fq 'dtf-strain-card-blue-mango-f2-regular' scripts/finalize-wordpress-gallery-visual-v3.mjs
-          grep -Fq 'dtf-strain-card-mango-bubbles-f1-regular' scripts/finalize-wordpress-gallery-visual-v3.mjs
-          grep -Fq "approvedPrefixes.includes('dtf-approved-visual-')" scripts/finalize-wordpress-gallery-visual-v3.mjs
-          node <<'NODE'
-          const fs = require('fs');
-          const policy = JSON.parse(fs.readFileSync('site/wordpress/visual-quality-policy.json','utf8'));
-          if (policy.mode !== 'quarantine') throw new Error('Visual quarantine is not active.');
-          if (!(policy.approvedMediaSlugPrefixes || []).includes('dtf-approved-visual-')) throw new Error('Approved visual prefix missing.');
-          NODE
 
       - name: Publish Gallery V3 visual page
         id: publish
@@ -111,16 +136,53 @@ jobs:
                 grep -Fqi 'Blue Mango F2 Feminized DTF Genetics strain card' "$output" && \
                 grep -Fqi 'Blue Bubblegum F1 Regular DTF Genetics strain card' "$output" && \
                 grep -Fqi 'Mango Bubbles F1 Regular DTF Genetics strain card' "$output" && \
+                grep -Fqi 'data-dtf-shell="header-v6"' "$output" && \
+                grep -Fqi 'data-dtf-sitewide-header="canonical-eight-v1"' "$output" && \
                 [[ "$images" -ge 4 ]]; then
                 if OUTPUT="$output" node <<'NODE'
           const fs = require('fs');
-          const html = fs.readFileSync(process.env.OUTPUT,'utf8').toLowerCase();
+          const html = fs.readFileSync(process.env.OUTPUT,'utf8');
+          const lower = html.toLowerCase();
           const policy = JSON.parse(fs.readFileSync('site/wordpress/visual-quality-policy.json','utf8'));
+
+          const navMatch = html.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>([\s\S]*?)<\/nav>/i);
+          if (!navMatch) throw new Error('Canonical primary navigation missing.');
+          const labels = [...navMatch[1].matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)]
+            .map((match) => match[1].replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim());
+          const expected = ['Home','Seeds','Learn','Courses','Diagnostic','Games','Community','Shop'];
+          if (JSON.stringify(labels) !== JSON.stringify(expected)) {
+            throw new Error(`Unexpected Gallery V6 navigation: ${JSON.stringify(labels)}`);
+          }
+
+          const mediaValues = [];
+          for (const tag of html.match(/<(?:img|source)\b[^>]*>/gi) || []) {
+            for (const attr of ['src','srcset','data-src','data-srcset','alt']) {
+              const match = tag.match(new RegExp(`\\b${attr}=["']([^"']*)["']`, 'i'));
+              if (match?.[1]) mediaValues.push(match[1].toLowerCase());
+            }
+          }
+          const mediaText = mediaValues.join('\n');
           for (const value of policy?.bannedMedia?.urlContains || []) {
-            if (value && html.includes(String(value).toLowerCase())) process.exit(1);
+            if (value && mediaText.includes(String(value).toLowerCase())) {
+              throw new Error(`Retired Gallery media URL identity rendered: ${value}`);
+            }
           }
           for (const prefix of policy?.bannedMedia?.slugPrefixes || []) {
-            if (prefix && html.includes(String(prefix).toLowerCase())) process.exit(1);
+            if (prefix && mediaText.includes(String(prefix).toLowerCase())) {
+              throw new Error(`Retired Gallery media slug rendered: ${prefix}`);
+            }
+          }
+          if (/dtf-edu-|cannabis[_-]plant[_-](?:anatomy|life[_-]cycle)|beneficial[_-]insects|deficiency[_-]versus[_-]toxicity/.test(mediaText)) {
+            throw new Error('Retired educational visual rendered in Gallery media tags.');
+          }
+
+          const approvedPrefix = 'dtf-approved-visual-';
+          const educationSection = lower.match(/data-dtf-gallery-role=["']education["'][^>]*>([\s\S]*?)(?:<\/section>|<\/div>)/i)?.[1] || '';
+          const educationMedia = [...educationSection.matchAll(/<(?:img|source)\b[^>]*>/gi)].map((match) => match[0]);
+          for (const tag of educationMedia) {
+            if (!tag.toLowerCase().includes(approvedPrefix)) {
+              throw new Error('Gallery education role contains media outside the approved visual prefix.');
+            }
           }
           NODE
                 then ok=1; break; fi
@@ -144,28 +206,24 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report Gallery V3 production result
+      - name: Record Gallery V3 production result
         if: always()
-        continue-on-error: true
-        uses: actions/github-script@v7
+        shell: bash
         env:
           STATUS: ${{ job.status }}
           PUBLISH: ${{ steps.publish.outcome }}
           CACHE: ${{ steps.cache.outcome }}
           VERIFY: ${{ steps.verify.outcome }}
-        with:
-          script: |
-            try {
-              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:220,body:[
-                '## DTF Gallery Visual V3','',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Result: **${process.env.STATUS}**`,
-                `Gallery write: **${process.env.PUBLISH || 'not-run'}**`,
-                `LiteSpeed cache purge: **${process.env.CACHE || 'not-run'}**`,
-                `Approved-only origin + public verification: **${process.env.VERIFY || 'not-run'}**`,
-                '',
-                'Gallery leads with reviewed DTF Genetics artwork. Educational visuals are admitted only through the canonical approved-media quality gate; image-count filler is not permitted.'
-              ].join('\n')});
-            } catch (error) {
-              core.warning(`Could not post Gallery V3 production result: ${error.message}`);
-            }
+        run: |
+          {
+            echo '## DTF Gallery Visual V3'
+            echo
+            echo "- Result: **${STATUS}**"
+            echo "- Gallery write: **${PUBLISH:-not-run}**"
+            echo "- LiteSpeed cache purge: **${CACHE:-not-run}**"
+            echo "- Approved-only origin + public verification: **${VERIFY:-not-run}**"
+            echo '- Header contract: **V6 / canonical eight-item navigation**'
+            echo '- Educational media policy: **approved-prefix only; retired visuals blocked at rendered media tags**'
+            echo
+            echo 'Gallery leads with reviewed DTF Genetics artwork. Educational visuals are admitted only through the canonical approved-media quality gate; image-count filler is not permitted.'
+          } >> "$GITHUB_STEP_SUMMARY"
