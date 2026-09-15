@@ -39,7 +39,7 @@ async function fetchRoute(route,attempt){
       'cache-control':'no-cache, no-store, max-age=0',
       pragma:'no-cache',
       accept:'text/html',
-      'user-agent':'DTFSeeds-Responsive-Layout-Live/1.3'
+      'user-agent':'DTFSeeds-Responsive-Layout-Live/1.4'
     },
     signal:AbortSignal.timeout(30_000)
   });
@@ -50,7 +50,8 @@ async function fetchRoute(route,attempt){
 
 function inspect(route,body){
   const missing=[];
-  if(!body.includes('data-dtf-shell="header-v5"')) missing.push('approved V5 header');
+  if(!body.includes('data-dtf-shell="header-v6"')) missing.push('canonical V6 header');
+  if(!body.includes('data-dtf-sitewide-header="canonical-six-v1"')) missing.push('canonical six-link navigation marker');
   if(!body.includes(marker)) missing.push('responsive layout style marker');
   if(!body.includes(uxMarker)) missing.push('sitewide UX polish style marker');
   for(const token of requiredCssTokens){
@@ -96,5 +97,5 @@ for(const route of routes){
 }
 
 const failed=results.filter(row=>!row.ok);
-console.log(JSON.stringify({siteUrl,marker,uxMarker,routes:results,ok:failed.length===0},null,2));
+console.log(JSON.stringify({siteUrl,header:'v6',marker,uxMarker,routes:results,ok:failed.length===0},null,2));
 if(failed.length) process.exit(1);
