@@ -46,6 +46,7 @@ else if (!source.includes(progressiveLiteratureCopy)) throw new Error('Could not
 // Require the public publisher itself to prove the new interaction reached every
 // subject route. This turns a visual-structure regression into a failed release
 // instead of a silent return to the old wall-of-text layout.
+const progressivePublicCheckMarker = "checks.push(await publicCheck(topic.route, 'data-progressive-disclosure=\"true\"'))";
 const topicCheckLine = source.split('\n').find(line => line.includes('for (const topic of topics) checks.push(await publicCheck(topic.route'));
 if (topicCheckLine && !topicCheckLine.includes('data-progressive-disclosure')) {
   const originalCheck = "checks.push(await publicCheck(topic.route, `data-dtf-topic=\"${topic.id}\"`));";
@@ -53,7 +54,7 @@ if (topicCheckLine && !topicCheckLine.includes('data-progressive-disclosure')) {
   const progressiveTopicCheckLine = topicCheckLine.replace(originalCheck, progressiveCheck);
   if (progressiveTopicCheckLine === topicCheckLine) throw new Error('Could not strengthen Learning V3 public verification for progressive disclosure.');
   source = source.replace(topicCheckLine, progressiveTopicCheckLine);
-} else if (!source.includes("data-progressive-disclosure=\\\"true\\\"')") && !source.includes("data-progressive-disclosure=\"true\"")) {
+} else if (!source.includes(progressivePublicCheckMarker)) {
   throw new Error('Prepared Learning V3 publisher has no progressive-disclosure public verification marker.');
 }
 
@@ -63,6 +64,7 @@ for (const marker of [
   "btn('/learn/start-here/', 'Start here', false)",
   'data-progressive-disclosure="true"',
   '<details class="lesson" data-progressive-disclosure="true">',
+  progressivePublicCheckMarker,
   progressiveLiteratureCopy,
 ]) {
   if (!source.includes(marker)) throw new Error(`Prepared Learning V3 publisher is missing ${marker}`);
