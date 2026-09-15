@@ -2,9 +2,19 @@
 
 (async () => {
   const VERSION = 'seed-man-enemy-attacks-browser-v2';
+  const BOSS_BEHAVIOR_VERSION = 'seed-man-boss-attacks-v1';
   const HIT_INVULN = 0.85;
   const attackApi = await import('./enemy-attacks.js');
   const { createEnemyAttackState, stepEnemyAttack, advanceEnemyProjectile, overlapsRect } = attackApi;
+
+  const BOSS_ATTACK_PATTERNS=Object.freeze({
+    'overgrown-guardian':Object.freeze(['ground-wave','burst-shot','radial-burst']),
+    'ancient-dryad':Object.freeze(['aimed-shot','radial-burst','blink-strike']),
+    'scorchroot-titan':Object.freeze(['ground-wave','burst-shot','radial-burst']),
+    'frostbite-colossus':Object.freeze(['aimed-shot','burst-shot','ground-wave']),
+    'eco-sentinel':Object.freeze(['burst-shot','radial-burst','blink-strike']),
+    'blight-king':Object.freeze(['ground-wave','radial-burst','blink-strike','radial-burst'])
+  });
 
   let attackers=[];
   let attackStates=new Map();
@@ -17,20 +27,39 @@
 
   const enemyRuntime=()=>window.__SEED_MAN_V20_ENEMY_RUNTIME__;
 
+  function patternFor(enemy){
+    const set=BOSS_ATTACK_PATTERNS[enemy?.archetype];
+    if(!set)return enemy?.attackPattern||'contact';
+    const phase=Math.max(1,Math.min(set.length,Number(enemy.phase)||1));
+    return set[phase-1];
+  }
+
   function resetAttacks(){
     activeLevelId=typeof level!=='undefined'?(level?.id||''):'';
     const factory=enemyRuntime()?.buildAttackers;
-    attackers=typeof factory==='function'?factory(level).map((enemy,index)=>({...enemy,baseY:enemy.y,dir:index%2?-1:1,phase:1,defeated:false})):[];
+    attackers=typeof factory==='function'?factory(level).map((enemy,index)=>({...enemy,baseY:enemy.y,dir:index%2?-1:1,phase:Number(enemy.phase)||1,defeated:false,attackPattern:patternFor(enemy)})):[];
     attackStates=new Map(attackers.map((enemy,index)=>[enemy.id,createEnemyAttackState(enemy,{initialDelay:0.7+index*0.14})]));
     hostileProjectiles=[];hostileHitboxes=[];telegraphs=new Map();simTime=0;
     document.documentElement.dataset.seedManEnemyAttacks=VERSION;
+    document.documentElement.dataset.seedManBossAttacks=BOSS_BEHAVIOR_VERSION;
   }
 
-  function syncDefeated(){
+  function syncCombatState(){
     const snapshot=window.__SPROUT_COMBAT_BROWSER__?.snapshot?.();
     if(!snapshot)return;
     const byId=new Map(snapshot.enemies.map((enemy)=>[enemy.id,enemy]));
-    for(const attacker of attackers)attacker.defeated=Boolean(byId.get(attacker.id)?.defeated);
+    for(const attacker of attackers){
+      const live=byId.get(attacker.id);if(!live)continue;
+      attacker.defeated=Boolean(live.defeated);
+      if(live.phase)attacker.phase=Number(live.phase)||1;
+      const nextPattern=patternFor(attacker);
+      if(nextPattern!==attacker.attackPattern){
+        attacker.attackPattern=nextPattern;
+        attackStates.set(attacker.id,createEnemyAttackState(attacker,{initialDelay:.32}));
+        telegraphs.delete(attacker.id);
+        window.dispatchEvent(new CustomEvent('seedman:boss-attack-pattern',{detail:{boss:attacker.archetype,phase:attacker.phase,pattern:nextPattern}}));
+      }
+    }
   }
 
   function moveAttacker(enemy,dt){
@@ -58,12 +87,15 @@
     const step=Math.max(0,Math.min(Number(dt)||0,0.05));
     const current=typeof level!=='undefined'?(level?.id||''):'';
     if(current!==activeLevelId)resetAttacks();
-    simTime+=step;syncDefeated();
+    simTime+=step;syncCombatState();
     for(const enemy of attackers){
       moveAttacker(enemy,step);if(enemy.defeated)continue;
       const state=attackStates.get(enemy.id)||createEnemyAttackState(enemy,{initialDelay:0.5});
       const result=stepEnemyAttack(state,enemy,next,step);attackStates.set(enemy.id,result.state);
-      for(const event of result.events){if(event.type==='enemy-attack-telegraph')telegraphs.set(enemy.id,{pattern:event.pattern,until:simTime+event.duration});if(event.type==='enemy-attack-released')telegraphs.delete(enemy.id);}
+      for(const event of result.events){
+        if(event.type==='enemy-attack-telegraph')telegraphs.set(enemy.id,{pattern:event.pattern,until:simTime+event.duration});
+        if(event.type==='enemy-attack-released')telegraphs.delete(enemy.id);
+      }
       hostileProjectiles.push(...result.projectiles);hostileHitboxes.push(...result.hitboxes.map((hitbox)=>({...hitbox,remaining:hitbox.duration})));
     }
     const worldWidth=typeof level!=='undefined'?(level?.worldWidth||8000):8000;
@@ -76,7 +108,13 @@
 
   function drawAttacks(){
     if(typeof ctx==='undefined'||typeof cameraX==='undefined')return;ctx.save();
-    for(const enemy of attackers){const telegraph=telegraphs.get(enemy.id);if(!telegraph||telegraph.until<=simTime||enemy.defeated)continue;const x=enemy.x-cameraX+enemy.width/2;const y=enemy.y+enemy.height/2;ctx.strokeStyle='rgba(255,202,97,.92)';ctx.lineWidth=3;ctx.beginPath();ctx.arc(x,y,Math.max(enemy.width,enemy.height)*(0.72+Math.abs(Math.sin(simTime*15))*0.18),0,Math.PI*2);ctx.stroke();}
+    for(const enemy of attackers){
+      const telegraph=telegraphs.get(enemy.id);if(!telegraph||telegraph.until<=simTime||enemy.defeated)continue;
+      const x=enemy.x-cameraX+enemy.width/2;const y=enemy.y+enemy.height/2;
+      ctx.strokeStyle=enemy.role==='boss'?'rgba(255,230,126,.98)':'rgba(255,202,97,.92)';ctx.lineWidth=enemy.role==='boss'?4:3;
+      ctx.beginPath();ctx.arc(x,y,Math.max(enemy.width,enemy.height)*(0.72+Math.abs(Math.sin(simTime*15))*0.18),0,Math.PI*2);ctx.stroke();
+      if(enemy.role==='boss'){ctx.fillStyle='rgba(255,255,255,.92)';ctx.font='800 10px system-ui';ctx.textAlign='center';ctx.fillText(String(telegraph.pattern||enemy.attackPattern).toUpperCase().replaceAll('-',' '),x,y-Math.max(enemy.width,enemy.height)*.75);}
+    }
     for(const projectile of hostileProjectiles){ctx.fillStyle='#ffb45f';ctx.shadowBlur=10;ctx.shadowColor='#ff7f4d';ctx.beginPath();ctx.arc(projectile.x-cameraX+projectile.width/2,projectile.y+projectile.height/2,6,0,Math.PI*2);ctx.fill();}
     for(const hitbox of hostileHitboxes){ctx.globalAlpha=.34;ctx.fillStyle=hitbox.type==='blink-strike'?'#cf9cff':'#ff8b62';ctx.fillRect(hitbox.x-cameraX,hitbox.y,hitbox.width,hitbox.height);ctx.globalAlpha=1;}
     ctx.restore();
@@ -90,5 +128,11 @@
   }
 
   resetAttacks();const installed=installHooks();
-  window.__SPROUT_ENEMY_ATTACKS_BROWSER__=Object.freeze({version:VERSION,installed,snapshot:()=>({version:VERSION,levelId:activeLevelId,hitsTaken,attackers:attackers.map(({id,name,archetype,attackPattern,defeated,phenotype,phenotypeForm})=>({id,name,archetype,attackPattern,defeated,phenotype,phenotypeForm})),projectiles:hostileProjectiles.length,hitboxes:hostileHitboxes.length})});
+  window.__SPROUT_ENEMY_ATTACKS_BROWSER__=Object.freeze({
+    version:VERSION,
+    bossBehaviorVersion:BOSS_BEHAVIOR_VERSION,
+    installed,
+    bossPatterns:BOSS_ATTACK_PATTERNS,
+    snapshot:()=>({version:VERSION,bossBehaviorVersion:BOSS_BEHAVIOR_VERSION,levelId:activeLevelId,hitsTaken,attackers:attackers.map(({id,name,archetype,attackPattern,defeated,phenotype,phenotypeForm,phase})=>({id,name,archetype,attackPattern,defeated,phenotype,phenotypeForm,phase})),projectiles:hostileProjectiles.length,hitboxes:hostileHitboxes.length})
+  });
 })();

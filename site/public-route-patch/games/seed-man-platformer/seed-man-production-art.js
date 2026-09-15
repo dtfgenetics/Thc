@@ -1,15 +1,18 @@
 'use strict';
 
 /*
- * Seed Man approved-art renderer.
- * Source of truth: approved 2026-09-08 green armored plant-hero showcase.
+ * Seed Man production character renderer.
+ * Canonical target: classic-seed-man-oval-v1.
+ * The currently shipped green-armored atlas remains a temporary transition asset until SM-001 and the complete classic animation family replace it.
  * Gameplay state/collision remain owned by simulation. This file only renders.
  */
 
-const SPROUT_ART_VERSION = 'seed-man-approved-atlas-renderer-v4';
+const SPROUT_ART_VERSION = 'seed-man-transition-atlas-renderer-v5';
 const SPROUT_ACTION_FEEDBACK = 'seed-man-approved-action-feedback-v1';
-const SPROUT_VISUAL_PIPELINE = 'approved-showcase-2026-09-08';
-const SPROUT_CHARACTER_CONTRACT = 'green-armored-plant-hero';
+const SPROUT_VISUAL_PIPELINE = 'classic-seed-man-transition-v1';
+const SPROUT_CHARACTER_CONTRACT = 'classic-seed-man-oval-v1';
+const CURRENT_CHARACTER_ASSET = 'green-armored-plant-hero';
+const CURRENT_CHARACTER_STATUS = 'temporary-legacy-replacement-pending';
 const APPROVED_CORE_URL = './approved-art-core-v1.js';
 
 const FRAME_COLS = 5;
@@ -51,13 +54,15 @@ function ensureApprovedSeedManImage(){
     approvedSeedManImage=image;
     approvedSeedManReady=true;
     document.documentElement.dataset.seedManRendererOwner=SPROUT_ART_VERSION;
-    document.documentElement.dataset.seedManApprovedCharacter=SPROUT_CHARACTER_CONTRACT;
-    document.documentElement.dataset.seedManApprovedArt='ready';
+    document.documentElement.dataset.seedManCharacterTarget=SPROUT_CHARACTER_CONTRACT;
+    document.documentElement.dataset.seedManCharacterCurrent=CURRENT_CHARACTER_ASSET;
+    document.documentElement.dataset.seedManCharacterArtStatus=CURRENT_CHARACTER_STATUS;
+    document.documentElement.dataset.seedManApprovedArt='temporary-legacy-ready';
   };
   image.onerror=()=>{
     approvedSeedManFailed=true;
     document.documentElement.dataset.seedManApprovedArt='failed';
-    console.error('[Seed Man] approved character atlas failed to decode. Character fallback is disabled.');
+    console.error('[Seed Man] temporary character atlas failed to decode. Character fallback is disabled.');
   };
   image.src=src;
 }
@@ -154,16 +159,20 @@ window.__SEED_MAN_PRODUCTION_ART__=Object.freeze({
   actionFeedbackVersion:SPROUT_ACTION_FEEDBACK,
   pipeline:SPROUT_VISUAL_PIPELINE,
   characterContract:SPROUT_CHARACTER_CONTRACT,
-  sourceOfTruth:'approved-showcase-2026-09-08',
+  currentCharacterAsset:CURRENT_CHARACTER_ASSET,
+  currentCharacterStatus:CURRENT_CHARACTER_STATUS,
+  sourceOfTruth:'classic-seed-man-oval-v1',
   approvedCoreUrl:APPROVED_CORE_URL,
   atlasKey:'character.seedman.atlas',
   fallbackAllowed:false,
   phenotypeForms:Object.freeze(['plant','fire','electric','ice']),
   frameGrid:Object.freeze({cols:FRAME_COLS,rows:FRAME_ROWS}),
   cells:APPROVED_CELLS,
-  snapshot:()=>({ready:approvedSeedManReady,failed:approvedSeedManFailed,coreLoading:approvedCoreLoading,rendererOwner:document.documentElement.dataset.seedManRendererOwner||'',actionFeedbackVersion:SPROUT_ACTION_FEEDBACK})
+  snapshot:()=>({ready:approvedSeedManReady,failed:approvedSeedManFailed,coreLoading:approvedCoreLoading,rendererOwner:document.documentElement.dataset.seedManRendererOwner||'',actionFeedbackVersion:SPROUT_ACTION_FEEDBACK,characterTarget:SPROUT_CHARACTER_CONTRACT,currentCharacterAsset:CURRENT_CHARACTER_ASSET,currentCharacterStatus:CURRENT_CHARACTER_STATUS})
 });
 
 document.documentElement.dataset.seedManRendererOwner=SPROUT_ART_VERSION;
-document.documentElement.dataset.seedManApprovedCharacter=SPROUT_CHARACTER_CONTRACT;
+document.documentElement.dataset.seedManCharacterTarget=SPROUT_CHARACTER_CONTRACT;
+document.documentElement.dataset.seedManCharacterCurrent=CURRENT_CHARACTER_ASSET;
+document.documentElement.dataset.seedManCharacterArtStatus=CURRENT_CHARACTER_STATUS;
 ensureApprovedSeedManImage();

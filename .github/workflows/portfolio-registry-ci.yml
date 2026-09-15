@@ -131,7 +131,10 @@ jobs:
           expect(app('strain-showdown')?.runtime === 'static' && app('strain-showdown')?.status === 'ready-to-package', 'Strain Showdown deployment state drift');
 
           expect(project('seed-man-platformer')?.status === 'browser-vertical-slice', 'Seed Man registry state drift');
-          expect(app('seed-man-platformer')?.runtime === 'static-canvas2d-approved-art' && app('seed-man-platformer')?.status === 'production-v20', 'Seed Man deployment state drift');
+          expect(app('seed-man-platformer')?.runtime === 'static-canvas2d-authored-world-transition' && app('seed-man-platformer')?.status === 'production-v20-repair', 'Seed Man repaired deployment state drift');
+          expect(app('seed-man-platformer')?.machineData?.release === '20260913-v20-runtime-repair-v2', 'Seed Man repaired release marker drift');
+          expect(app('seed-man-platformer')?.machineData?.characterTarget === 'classic-seed-man-oval-v1' && app('seed-man-platformer')?.machineData?.currentCharacterStatus === 'temporary-legacy-replacement-pending', 'Seed Man character transition metadata drift');
+          expect(app('seed-man-platformer')?.machineData?.worldPresentation === 'seed-man-authored-flat-background-v1' && app('seed-man-platformer')?.machineData?.worldRendererTarget === 'seed-man-three-world-v2', 'Seed Man world transition metadata drift');
           expect(app('seed-man-platformer')?.machineData?.levelCount === 20 && app('seed-man-platformer')?.machineData?.finalBoss === 'blight-king', 'Seed Man v20 machine metadata drift');
           NODE
 

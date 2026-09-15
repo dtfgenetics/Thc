@@ -4,7 +4,7 @@ import { access, readFile } from 'node:fs/promises';
 const root = new URL('../', import.meta.url);
 const publicRoot = new URL('../../../site/public-route-patch/games/seed-man-platformer/', import.meta.url);
 
-const [canonicalCampaignText, publicCampaignText, canonicalLevels20Text, publicLevels20Text, html, seedManCss, v20Runtime, v20Ui, approvedCore, runtimeHealth] = await Promise.all([
+const [canonicalCampaignText, publicCampaignText, canonicalLevels20Text, publicLevels20Text, html, seedManCss, v20Runtime, v20Ui, approvedCore, runtimeHealth, releaseTruth] = await Promise.all([
   readFile(new URL('data/campaign.json', root), 'utf8'),
   readFile(new URL('data/campaign.json', publicRoot), 'utf8'),
   readFile(new URL('data/levels-20-v1.json', root), 'utf8'),
@@ -14,7 +14,8 @@ const [canonicalCampaignText, publicCampaignText, canonicalLevels20Text, publicL
   readFile(new URL('campaign-v20-runtime.js', publicRoot), 'utf8'),
   readFile(new URL('campaign-ui-v20.js', publicRoot), 'utf8'),
   readFile(new URL('approved-art-core-v1.js', publicRoot), 'utf8'),
-  readFile(new URL('canvas-compat-v1.js', publicRoot), 'utf8')
+  readFile(new URL('canvas-compat-v1.js', publicRoot), 'utf8'),
+  readFile(new URL('release-truth-v1.js', publicRoot), 'utf8')
 ]);
 
 const campaign = JSON.parse(canonicalCampaignText);
@@ -35,40 +36,24 @@ assert.equal(levels20.levels.at(-1).id, '5-4-the-last-seed');
 assert.equal(levels20.levels.at(-1).boss, 'blight-king');
 
 for (const retired of [
-  'data/level-01.json',
-  'data/levels-02-11.json',
-  'data/levels-12-15.json',
-  'campaign-v1.js',
-  'gameplay-v2.js',
-  'physics.mjs',
-  'campaign-combat-v20.js',
-  'campaign-progress-v20.js',
-  'campaign-runtime-v20.js',
-  'campaign-ui-v15.js',
-  'world-five-v1.js',
-  'combat-browser-v1.js',
-  'enemy-attacks-browser-v1.js',
-  'seed-man-ui-v3.js',
-  'scoreboard-v20.css',
-  'assets/approved/seed-man-approved-master-atlas-v1.webp',
-  'assets/approved/seed-man-cover-banner-approved-v1.webp'
+  'data/level-01.json','data/levels-02-11.json','data/levels-12-15.json','campaign-v1.js','gameplay-v2.js','physics.mjs',
+  'campaign-combat-v20.js','campaign-progress-v20.js','campaign-runtime-v20.js','campaign-ui-v15.js','world-five-v1.js','combat-browser-v1.js',
+  'enemy-attacks-browser-v1.js','seed-man-ui-v3.js','scoreboard-v20.css','assets/approved/seed-man-approved-master-atlas-v1.webp','assets/approved/seed-man-cover-banner-approved-v1.webp'
 ]) {
   await assert.rejects(access(new URL(retired, publicRoot)), { code: 'ENOENT' }, `retired public artifact must stay removed: ${retired}`);
 }
 await assert.rejects(access(new URL('data/levels-02-11.json', root)), { code:'ENOENT' }, 'retired canonical v3 level catalog must stay removed');
 
 for (const required of [
-  'player-state-v20.js',
-  'three-world-v1.js',
-  'three-world-adapter-v1.js',
-  'seed-man.css',
-  'assets/approved/seed-man-character-atlas-v2.webp',
-  'assets/approved/seed-man-enemy-boss-atlas-v1.webp',
-  'assets/approved/seed-man-platform-atlas-v1.webp'
+  'player-state-v20.js','three-world-v1.js','three-world-adapter-v1.js','release-truth-v1.js','seed-man.css',
+  'assets/approved/seed-man-character-atlas-v2.webp','assets/approved/seed-man-enemy-boss-atlas-v1.webp','assets/approved/seed-man-platform-atlas-v1.webp',
+  'assets/worlds/greenhouse-valley-bg-v1.png','assets/worlds/forest-ruins-bg-v1.png','assets/worlds/desert-canyon-bg-v1.png','assets/worlds/frozen-peaks-bg-v1.png','assets/worlds/eco-city-bg-v1.png'
 ]) await access(new URL(required, publicRoot));
 
 assert.match(html, /seed-man\.css\?v=[^"']+/, 'public page must load route-owned Seed Man styling');
 assert.doesNotMatch(html, /scoreboard-v20\.css\?v=[^"']+/, 'public page must not reference a separate scoreboard stylesheet');
+assert.match(html, /20260913-v20-runtime-repair-v2/, 'public page must expose the repaired release marker');
+assert.match(html, /AUTHORED WORLD ART/, 'public page must describe authored world art truthfully');
 assert.match(html, /campaign-v20-runtime\.js\?v=[^"']+/, 'public page must load canonical v20 campaign runtime');
 assert.match(html, /campaign-ui-v20\.js\?v=[^"']+/, 'public page must load canonical v20 campaign UI');
 assert.match(html, /v20-enemy-runtime\.js\?v=[^"']+/, 'public page must load canonical v20 enemy runtime');
@@ -76,12 +61,14 @@ assert.match(html, /combat-browser-v2\.js\?v=[^"']+/, 'public page must load can
 assert.match(html, /enemy-attacks-browser-v2\.js\?v=[^"']+/, 'public page must load canonical v20 enemy attack runtime');
 assert.match(html, /three-world-v1\.js\?v=[^"']+/, 'public page must load generated Three.js world bundle');
 assert.match(html, /three-world-adapter-v1\.js\?v=[^"']+/, 'public page must load Three.js adapter explicitly');
+assert.match(html, /release-truth-v1\.js\?v=[^"']+/, 'public page must load the release-truth guard');
 assert.match(html, /id=["']next-level["']/, 'finish panel must expose a next-level action');
 assert.doesNotMatch(html, /id=["']play-again["']/, 'finish panel must not reset the same level through the retired replay button');
 assert.match(html, /id=["']score-player-name["']/, 'scoreboard must expose a player-name field');
 assert.match(html, /id=["']scoreboard-body["']/, 'scoreboard must expose a ranked score body');
 assert.doesNotMatch(html, /<script[^>]+id=["']seed-man-level["']/i, 'public page must not embed retired Sprout Run bootstrap data');
 assert.doesNotMatch(html, /campaign-v1\.js|gameplay-v2\.js|campaign-ui-v15\.js|world-five-v1\.js|combat-browser-v1\.js|enemy-attacks-browser-v1\.js|seed-man-ui-v3\.js/, 'public page must not load retired compatibility runtimes');
+assert.doesNotMatch(html, /approved green-armored character art|APPROVED ART · THREE\.JS WORLDS/, 'public page must not overstate temporary art as final approved art');
 assert.match(v20Runtime, /seed-man-campaign-v20-runtime-v3/, 'v20 campaign runtime marker missing');
 assert.match(v20Runtime, /phenotypeForms:\['plant','fire','electric','ice'\]/, 'v20 runtime must expose canonical phenotype forms');
 assert.match(v20Runtime, /blight-king/, 'v20 runtime must own Blight King finale');
@@ -101,18 +88,26 @@ assert.match(v20Ui, /querySelector\('#next-level'\)/, 'campaign UI must own the 
 assert.match(seedManCss, /\.scoreboard-panel/, 'bundled route stylesheet must include scoreboard panel styling');
 assert.match(seedManCss, /\.scoreboard-table/, 'bundled route stylesheet must include the ranking table');
 assert.match(seedManCss, /\.scoreboard-scroll\{overflow-x:auto/, 'bundled route stylesheet must keep the scoreboard usable on narrow screens');
-assert.match(approvedCore, /seed-man-approved-art-core-v4/, 'approved art core v4 marker missing');
-assert.match(approvedCore, /seed-man-character-atlas-v2\.webp/, 'approved character atlas must be standalone');
-assert.match(approvedCore, /seed-man-enemy-boss-atlas-v1\.webp/, 'approved enemy/boss atlas must be standalone');
-assert.match(approvedCore, /seed-man-platform-atlas-v1\.webp/, 'approved platform atlas must be standalone');
+assert.match(approvedCore, /seed-man-art-core-v5/, 'repaired art core v5 marker missing');
+assert.match(approvedCore, /classic-seed-man-oval-v1/, 'art core must expose the classic character target');
+assert.match(approvedCore, /temporary-green-armored-replacement-pending/, 'art core must mark current character art temporary');
+assert.match(approvedCore, /seed-man-character-atlas-v2\.webp/, 'temporary character atlas must remain registered');
+assert.match(approvedCore, /seed-man-enemy-boss-atlas-v1\.webp/, 'enemy/boss atlas must remain registered');
+assert.match(approvedCore, /seed-man-platform-atlas-v1\.webp/, 'platform atlas must remain registered');
 assert.doesNotMatch(approvedCore, /seed-man-approved-master-atlas-v1\.webp/, 'corrupt master atlas must not remain in browser art registry');
 for (const world of ['greenhouse-valley','forest-ruins','desert-canyon','frozen-peaks','eco-city']) {
-  assert.ok(approvedCore.includes(`world.${world}.background`), `approved browser art registry missing ${world}`);
+  assert.ok(approvedCore.includes(`world.${world}.background`), `browser art registry missing ${world}`);
+  assert.ok(approvedCore.includes(`${world}-bg-v1.png`), `browser art registry missing authored PNG for ${world}`);
 }
-assert.match(approvedCore, /worldRenderer:'seed-man-three-world-v2'/, 'world art must be owned by the production Three.js renderer');
-assert.match(runtimeHealth, /seed-man-runtime-health-v20/, 'runtime health bridge marker missing');
+assert.match(approvedCore, /worldRendererTarget:'seed-man-three-world-v2'/, 'art core must preserve the final Three.js world target');
+assert.match(approvedCore, /activeWorldRenderer:'seed-man-authored-flat-background-v1'/, 'art core must expose the current authored-flat world renderer');
+assert.match(runtimeHealth, /seed-man-runtime-health-v21/, 'runtime health bridge marker missing');
+assert.match(runtimeHealth, /seed-man-runtime-mechanics-v1/, 'runtime mechanics marker missing');
 assert.match(runtimeHealth, /legacyDynamicLoader:\s*false/, 'runtime health bridge must keep the retired dynamic loader disabled');
 assert.match(runtimeHealth, /legacyCanvasMonkeyPatch:\s*false/, 'runtime health bridge must keep the retired canvas monkey patch disabled');
 assert.doesNotMatch(runtimeHealth, /loadScript\s*\(|HTMLCanvasElement\?\.prototype|proto\.getContext\s*=/, 'runtime health bridge must not own script loading or canvas context creation');
+assert.match(releaseTruth, /seed-man-release-truth-v1/, 'release truth guard marker missing');
+assert.match(releaseTruth, /classic-seed-man-oval-v1/, 'release truth guard must preserve classic character target');
+assert.match(releaseTruth, /AUTHORED WORLD ART/, 'release truth guard must preserve truthful world-art label');
 
-console.log('Seed Man canonical v20 campaign, level progression, high scores, deterministic renderer startup, and retired artifact removal checks passed');
+console.log('Seed Man repaired v20 campaign, progression, scores, visual transition, and retired artifact removal checks passed');

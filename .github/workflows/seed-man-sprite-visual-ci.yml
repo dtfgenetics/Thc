@@ -46,23 +46,36 @@ jobs:
           set -euo pipefail
           npm install --prefix games/seed-man-platformer --ignore-scripts --no-audit --no-fund
           npm run --prefix games/seed-man-platformer build:three-public
-      - name: Validate canonical approved-art contract
+      - name: Validate canonical visual transition contract
         shell: bash
         run: |
           set -euo pipefail
           node scripts/verify-seed-man-production-v20.mjs
+          node games/seed-man-platformer/test/art-registry.test.mjs
+          node games/seed-man-platformer/test/approved-art-loader.test.mjs
           root='site/public-route-patch/games/seed-man-platformer'
           node --check "$root/approved-art-core-v1.js"
           node --check "$root/approved-art-runtime-v1.js"
           node --check "$root/seed-man-production-art.js"
           node --check "$root/three-world-v1.js"
           node --check "$root/three-world-adapter-v1.js"
-          grep -Fq 'approved-showcase-2026-09-08' "$root/seed-man-production-art.js"
+          grep -Fq 'classic-seed-man-transition-v1' "$root/seed-man-production-art.js"
+          grep -Fq 'classic-seed-man-oval-v1' "$root/seed-man-production-art.js"
           grep -Fq 'green-armored-plant-hero' "$root/seed-man-production-art.js"
+          grep -Fq 'temporary-legacy-replacement-pending' "$root/seed-man-production-art.js"
           grep -Fq 'fallbackAllowed:false' "$root/seed-man-production-art.js"
+          ! grep -Fq 'approved-showcase-2026-09-08' "$root/seed-man-production-art.js"
           grep -Fq 'character.seedman.atlas' "$root/approved-art-core-v1.js"
+          grep -Fq 'seed-man-art-core-v5' "$root/approved-art-core-v1.js"
+          grep -Fq 'seed-man-authored-flat-background-v1' "$root/approved-art-core-v1.js"
+          grep -Fq 'finalWorldLayerTarget:7' "$root/approved-art-core-v1.js"
+          for world in greenhouse-valley forest-ruins desert-canyon frozen-peaks eco-city; do
+            grep -Fq "${world}-bg-v1.png" "$root/approved-art-core-v1.js"
+            test -s "$root/assets/worlds/${world}-bg-v1.png"
+          done
           grep -Fq 'seed-man-three-public-v3' "$root/three-world-v1.js"
           grep -Fq 'seed-man-three-world-v2' "$root/three-world-v1.js"
-          grep -Fq 'authoritative' "$root/data/seed-man-art-manifest-v1.json"
+          grep -Fq '"sourceOfTruth": "classic-seed-man-oval-v1"' "$root/data/seed-man-art-manifest-v1.json"
+          grep -Fq '"currentCharacterAtlasStatus": "temporary-green-armored-replacement-pending"' "$root/data/seed-man-art-manifest-v1.json"
           ! grep -Fq 'seed-man-production-v1' "$root/seed-man-production-art.js"
           ! grep -Fq 'seed-man-locked-v1' "$root/seed-man-production-art.js"

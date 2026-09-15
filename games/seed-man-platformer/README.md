@@ -4,9 +4,9 @@ The **Seed Man Platformer** is the DTF Genetics browser action-platformer for `h
 
 ## Production source of truth
 
-The approved 2026-09-08 Seed Man showcase boards are authoritative for the game art. Existing procedural renderers, older brown-seed art, legacy sprite atlases, and stale documentation are **not** authoritative.
+The production character target is **classic-seed-man-oval-v1**. This is the locked Seed Man identity: short chubby oval seed body, flat 2D vector treatment, thick outline, rubber-hose limbs, white gloves and white shoes, simple expressive face, and a three-leaf sprout. No armor, costume, realistic material shading, or character redesign is permitted in the final production character.
 
-The production character is the approved **green armored plant-hero Seed Man** shown in the approved showcase: large leaf-shaped head silhouette, expressive face, green/white/black body treatment, white gloves and boots, and consistent platformer proportions. Plant, Fire, Electric, and Ice are gameplay forms of that same character.
+The existing green-armored atlas is a **temporary legacy runtime asset only** while the classic Seed Man animation family is rebuilt. It must not be described as approved final character art and must not be used as the visual source of truth for new work.
 
 The visual contract is encoded in:
 
@@ -14,18 +14,21 @@ The visual contract is encoded in:
 - `games/seed-man-platformer/src/render/art-registry.mjs`
 - `games/seed-man-platformer/src/render/visual-runtime-v2.mjs`
 - `games/seed-man-platformer/src/render/approved-art-loader.mjs`
+- `data/game-asset-batches/SM-001.json`
 
 Production policy:
 
-- approved artwork is authoritative
+- `classic-seed-man-oval-v1` is authoritative for the player character
+- the current green-armored character atlas is temporary and replacement-pending
 - raw filenames are not the public asset API
 - code references stable manifest keys
 - procedural character fallback is disabled
-- legacy atlas fallback is disabled
+- legacy character atlas fallback is disabled once the classic animation family lands
 - simulation owns collision/gameplay state
 - renderer only presents simulation state
-- corrupt or mislabeled image files must fail validation and must never be shipped merely because their extension looks correct
-- world presentation is owned by the generated Three.js renderer, with the deterministic canvas world renderer only as the non-WebGL fallback
+- corrupt or mislabeled image files must fail validation
+- authored world imagery may be used as a temporary single-layer runtime background, but the final world target remains seven authored layers per world: sky, far-bg, mid-bg, near-bg, gameplay, foreground, and vfx
+- the game must never advertise an unfinished renderer or temporary art as completed/approved production art
 
 ## 20-level campaign
 
@@ -104,8 +107,8 @@ Current v20 runtime/release ownership is represented by:
 - `games/seed-man-platformer/data/levels-20-v1.json`
 - `site/public-route-patch/games/seed-man-platformer/app.js`
 - `site/public-route-patch/games/seed-man-platformer/player-state-v20.js`
-- `site/public-route-patch/games/seed-man-platformer/input-guard-v1.js` — v20 keyboard-focus guard only; no gameplay/signature engine
-- `site/public-route-patch/games/seed-man-platformer/three-world-v1.js` generated from canonical Three.js source
+- `site/public-route-patch/games/seed-man-platformer/input-guard-v1.js`
+- `site/public-route-patch/games/seed-man-platformer/three-world-v1.js`
 - `site/public-route-patch/games/seed-man-platformer/campaign-v20-runtime.js`
 - `site/public-route-patch/games/seed-man-platformer/campaign-ui-v20.js`
 - `site/public-route-patch/games/seed-man-platformer/v20-enemy-runtime.js`
@@ -119,32 +122,33 @@ Current v20 runtime/release ownership is represented by:
 - `.github/workflows/publish-seed-man-production.yml`
 - `.github/workflows/repair-seed-man-v20-production.yml`
 
-Retired 11-level/15-level workflows belong under `docs/archive/seed-man/legacy-15-level/workflows/` and must not be restored to `.github/workflows/`.
-
 ## Combat and phenotype powers
 
 Seed Man has four canonical forms:
 
-- **Plant** — permanent base form
-- **Fire** — temporary 30-second form, burning projectile attacks
-- **Electric** — temporary 30-second form, chaining electric attacks
-- **Ice** — temporary 30-second form, freezing attacks
+- **Plant** — permanent base form; Seed Slinger has piercing behavior
+- **Fire** — temporary 30-second form; stronger burning projectile attacks
+- **Electric** — temporary 30-second form; chaining electric attacks up to three targets total
+- **Ice** — temporary 30-second form; freezing attacks with the catalogued freeze duration
 
-Fire, Electric, and Ice are earned from phenotype carriers/minor encounters. They do not replace the character identity; they transform the approved Seed Man artwork while preserving the same animation/state controller.
+Fire, Electric, and Ice are earned from phenotype carriers/minor encounters. They transform the same classic Seed Man character rather than creating unrelated character designs.
 
 Canonical systems:
 
 - `games/seed-man-platformer/src/systems/phenotype-system.mjs`
 - `games/seed-man-platformer/src/systems/power-drop.mjs`
+- `games/seed-man-platformer/data/powerup-catalog-v1.json`
 - `games/seed-man-platformer/data/enemy-catalog-v1.json`
 
 Retired speed, jump, magnet, shield, Hydro Surge, Terpene Tempest, Vine Lash, Mycelium Mind, Rootbreaker, Trichome Crystal, Gravity Haze, Solar Flare, Static Haze, and Frost Resin power contracts must not be reintroduced into production gameplay.
 
 ## Enemies and bosses
 
-The production enemy catalog is data-driven and uses the approved enemy atlas. Current core enemy archetypes include Sproutling, Root Crawler, Toxic Spore, Drone Bot, Thorn Beetle, Sky Wasp, Spike Plant, Sludge Monster, Bone Weed, and Shadow Root.
+The production enemy catalog is data-driven. Current core enemy archetypes are Sproutling, Root Crawler, Toxic Spore, Drone Bot, Thorn Beetle, Sky Wasp, Spike Plant, Sludge Monster, Bone Weed, and Shadow Root.
 
-Bosses use a reusable phased boss state machine rather than level-specific ad hoc logic:
+Final production requires each enemy archetype to have visually readable identity and behavior rather than reusing an indistinguishable atlas frame solely because the gameplay role differs.
+
+Bosses use a reusable phased boss state machine:
 
 - Overgrown Guardian
 - Ancient Dryad
@@ -157,6 +161,8 @@ Boss levels are exit-gated: reaching the finish does not complete a boss level w
 
 The Blight King cycles weaknesses through Plant → Fire → Electric → Ice and ends the game only after the Level 20 finale completes.
 
+Each boss must also execute its catalogued attack family rather than a generic shared attack placeholder.
+
 Canonical boss systems:
 
 - `games/seed-man-platformer/data/boss-catalog-v1.json`
@@ -164,9 +170,9 @@ Canonical boss systems:
 - `games/seed-man-platformer/src/systems/final-boss-director.mjs`
 - `games/seed-man-platformer/src/systems/world-boss-map.mjs`
 
-## Worlds, platforms, HUD and VFX
+## Worlds, platforms, hazards, HUD and VFX
 
-World presentation is keyed to the approved five-world art direction:
+World presentation is keyed to five distinct art directions:
 
 - Greenhouse Valley
 - Forest Ruins
@@ -174,9 +180,11 @@ World presentation is keyed to the approved five-world art direction:
 - Frozen Peaks
 - Eco City
 
-The generated `seed-man-three-world-v2` renderer is the production world renderer. It receives campaign/simulation state and does not own collisions, player health, combat, progression, or saves. The canvas world renderer is a deterministic non-WebGL fallback, not a second game runtime.
+Final production requires seven authored visual layers per world. Temporary flattened world masters may be used only as an integration bridge and must not define collision geometry.
 
-Terrain behavior is separated from terrain art. Grass, dirt, rock, stone, ice, sand, metal, wood, moving platforms and springs are selected through manifest/data keys while physics behavior comes from simulation modules.
+Terrain behavior is separated from terrain art. Grass, dirt, rock, stone, ice, sand, metal, wood, moving platforms, conveyors, collapsing platforms and springs are selected through data while physics behavior comes from simulation/runtime modules.
+
+Named level mechanics in the catalog are requirements, not decoration. Moving platforms, vertical platforms, collapsing platforms, conveyors, slippery ground, crystal bounce, wind zones, dark zones, teleport roots, timed doors, lasers, crushers and other named mechanics must materially affect play before a level is considered finished.
 
 Relevant modules:
 
@@ -202,3 +210,5 @@ node scripts/validate-seed-man-production-bundle.mjs
 ```
 
 The WordPress publisher then atomically stages the allowlisted v20 route, verifies hashes and the staged production contract, swaps it into `/games/seed-man-platformer/`, purges cache, and performs cache-busted live HTTP verification. Playwright is not part of this workflow.
+
+A release must not be called final until classic Seed Man artwork, full phenotype animation families, authored world presentation, named level mechanics, unique boss behaviors, desktop/mobile playtesting and human visual review all pass.

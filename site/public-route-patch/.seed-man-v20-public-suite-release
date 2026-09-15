@@ -1,12 +1,18 @@
-Seed Man v20 public-suite release trigger — 2026-09-09
+Seed Man v20 public-suite release trigger — 2026-09-13
 
 Canonical route: /games/seed-man-platformer/
 Canonical title: Seed Man: Grow. Fight. Restore.
+Release: 20260913-v20-runtime-repair-v2
 Campaign: 20 levels / 5 worlds / 6 bosses
-Character contract: green-armored-plant-hero
-Approved art: seed-man-approved-art-v2 / approved-showcase-2026-09-08
+Character target: classic-seed-man-oval-v1
+Current character asset: green-armored-plant-hero (temporary replacement-pending transition atlas)
+World presentation: five authored flat background masters now registered locally
+Final world target: seven layers per world using seed-man-three-world-v2
+Art contract: seed-man-art-manifest-v3 / classic-seed-man-oval-v1
 Phenotypes: plant, fire, electric, ice (30 seconds)
-Required runtime: campaign-v20-runtime.js + campaign-ui-v20.js + seed-man-production-art.js
-Retired production contracts must not be accepted: Sprout Run r4, 15-level campaign, seed-man-production-v1, seed-man-locked-v1, campaign-ui-v15.js, world-five-v1.js, levels-12-15.json.
+Repaired mechanics: moving/vertical platforms, conveyors, collapsing platforms, crystal bounce, slippery ice, wind, heat updrafts, teleport roots, timed doors, dark zones, stomp
+Repaired powers: Plant pierce, Electric 3-target chain, Ice 1.8-second freeze
+Required runtime: campaign-v20-runtime.js + campaign-ui-v20.js + seed-man-production-art.js + canvas-compat-v1.js + release-truth-v1.js
+Retired or misleading production contracts must not be accepted: Sprout Run r4, 15-level campaign, approved-showcase-2026-09-08 as character authority, APPROVED ART · THREE.JS WORLDS release label, seed-man-production-v1, seed-man-locked-v1, campaign-ui-v15.js, world-five-v1.js, levels-12-15.json.
 
-Purpose: force the protected WordPress V2 public-suite publisher to rebuild from the current main after the guarded Seed Man v20 public-surface reconciliation, then verify the Game Hub and canonical Seed Man route against v20 markers.
+Purpose: force the protected WordPress V2 public-suite publisher to rebuild from current main after the guarded Seed Man v20 runtime/world-art repair, then verify the Game Hub and canonical Seed Man route against the 20260913 release markers. This trigger does not claim the classic character atlas or seven-layer worlds are finished; those remain explicit production targets.
