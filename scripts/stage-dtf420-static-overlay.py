@@ -8,7 +8,7 @@ copies only approved child routes/shared assets under an isolated staging
 namespace. Nothing is written directly to /learn, /community, /games, or /.
 
 After staging, every standalone HTML document is reconciled through the same
-DTFSeeds V5 header/responsive/UX shell used by the rest of the public suite.
+DTFSeeds V6 header/responsive/UX shell used by the rest of the public suite.
 This is intentionally performed after the external Dtf420 build because those
 files do not exist yet when the normal public-suite header pass runs.
 """
@@ -25,7 +25,8 @@ import tempfile
 REPO_URL = "https://github.com/dtfgenetics/Dtf420.git"
 STAGING_NAME = "dtf-content-overlay"
 SHELL_MARKERS = (
-    'data-dtf-shell="header-v5"',
+    'data-dtf-shell="header-v6"',
+    'data-dtf-sitewide-header="canonical-eight-v1"',
     'id="dtf-responsive-layout-v1"',
     'id="dtf-sitewide-ux-polish-v1"',
 )
@@ -147,7 +148,7 @@ def main() -> None:
 
         # The Dtf420 pages are created after the normal public-suite shell pass. Re-run
         # the canonical reconciler over only this isolated staging tree so child routes
-        # cannot ship without the approved V5 navigation, responsive system, and UX layer.
+        # cannot ship without the approved V6 navigation, responsive system, and UX layer.
         shell_reconciler = repo_root / "scripts" / "apply-sitewide-header.mjs"
         if not shell_reconciler.is_file():
             raise SystemExit(f"shared shell reconciler is missing: {shell_reconciler}")
@@ -166,7 +167,7 @@ def main() -> None:
             "wordpressOwnedRoutes": contract["wordpressOwnedRoutes"],
             "requiredRoutes": contract["requiredRoutes"],
             "sharedShell": {
-                "header": "v5",
+                "header": "v6",
                 "responsiveLayout": "v1",
                 "sitewideUxPolish": "v1",
                 "verifiedHtmlRoutes": shell_route_count,
