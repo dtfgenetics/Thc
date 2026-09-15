@@ -78,6 +78,8 @@ jobs:
           grep -Fq 'WP_REQUEST_ATTEMPTS' scripts/publish-wordpress-learning-center-expansion-v1.mjs
           grep -Fq 'data-dtf-learning-expanded-reference="v1"' scripts/run-learning-v3-connected-production.sh
           grep -Fq 'data-dtf-learning-map="v4"' scripts/run-learning-v3-connected-production.sh
+          grep -Fq "presentation: 'grouped-progressive-disclosure'" scripts/build-public-learning-center-expansion-v1.mjs
+          grep -Fq 'data-reference-progressive-disclosure="true"' scripts/build-public-learning-center-expansion-v1.mjs
           test -s site/wordpress/education/topic-literature.json
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
@@ -95,11 +97,15 @@ jobs:
             grep -Eqi '<h1([ >])' "$file"
             grep -Fqi 'Teaching Healthy Cultivation' "$file"
             grep -Fqi 'rel="canonical"' "$file"
+            grep -Fq 'data-reference-progressive-disclosure="true"' "$file"
+            grep -Fq 'data-reference-group="true"' "$file"
+            grep -Fq 'data-reference-record="true"' "$file"
             ! grep -Fqi 'Mystery_Line_F1_Regular_DTF_Strain_Card' "$file"
             ! grep -Fqi 'Rainbow_Bubblegum_F1_Regular_DTF_Strain_Card' "$file"
           done
           test -s site/public-route-patch/learn/dtf420-education-expansion-manifest.json
           grep -Fq '1427a9e1619a76a04b07c879d39b2af3b5b8806e' site/public-route-patch/learn/dtf420-education-expansion-manifest.json
+          grep -Fq 'grouped-progressive-disclosure' site/public-route-patch/learn/dtf420-education-expansion-manifest.json
           echo "route_count=${#routes[@]}" >> "$GITHUB_OUTPUT"
 
       - name: Publish expansion pages to WordPress
@@ -179,6 +185,9 @@ jobs:
             grep -Eqi '<h1([ >])' "$body"
             grep -Fqi 'Teaching Healthy Cultivation' "$body"
             grep -Fqi "$public_marker" "$body"
+            grep -Fq 'data-reference-progressive-disclosure="true"' "$body"
+            grep -Fq 'data-reference-group="true"' "$body"
+            grep -Fq 'data-reference-record="true"' "$body"
             ! grep -Fqi 'Mystery_Line_F1_Regular_DTF_Strain_Card' "$body"
             ! grep -Fqi 'Rainbow_Bubblegum_F1_Regular_DTF_Strain_Card' "$body"
           done
