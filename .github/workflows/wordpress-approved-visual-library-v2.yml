@@ -1,0 +1,140 @@
+name: Publish Approved THC Visual Library
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/rebuild-wordpress-infographic-gallery.mjs'
+      - 'site/wordpress/visual-quality-policy.json'
+      - '.github/workflows/wordpress-approved-visual-library-v2.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-approved-visual-library-v2
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  publish:
+    name: Publish approved-only visual library
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+      BACKUP_ROOT: /tmp/dtf-approved-visual-library-v2
+
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate approved visual library package
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured}"
+          test -s scripts/rebuild-wordpress-infographic-gallery.mjs
+          test -s site/wordpress/visual-quality-policy.json
+          test -s scripts/wordpress-ipv4-fetch-bootstrap.mjs
+          test -s scripts/flush-hostinger-litespeed-mcp.mjs
+          node --check scripts/rebuild-wordpress-infographic-gallery.mjs
+          node --check scripts/wordpress-ipv4-fetch-bootstrap.mjs
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
+          grep -Fq 'dtf-approved-visual-library-v2' scripts/rebuild-wordpress-infographic-gallery.mjs
+          grep -Fq "approvedPrefixes.includes('dtf-approved-visual-')" scripts/rebuild-wordpress-infographic-gallery.mjs
+          node <<'NODE'
+          const fs = require('fs');
+          const source = fs.readFileSync('scripts/rebuild-wordpress-infographic-gallery.mjs','utf8').toLowerCase();
+          const policy = JSON.parse(fs.readFileSync('site/wordpress/visual-quality-policy.json','utf8'));
+          if (Number(policy.schemaVersion) < 3 || policy.mode !== 'quarantine') throw new Error('Visual quarantine v3+ is required.');
+          if (!(policy.approvedMediaSlugPrefixes || []).includes('dtf-approved-visual-')) throw new Error('Approved media prefix is missing.');
+          if (policy.replacementPolicy?.legacyInfographicReuseAllowed !== false) throw new Error('Legacy infographic reuse must remain disabled.');
+          if (source.includes("startswith('dtf-edu-')")) throw new Error('Legacy dtf-edu selection returned to the visual library publisher.');
+          for (const value of policy?.bannedMedia?.urlContains || []) {
+            if (value && source.includes(String(value).toLowerCase())) throw new Error(`Publisher hardcodes quarantined media: ${value}`);
+          }
+          NODE
+
+      - name: Publish approved-only library page
+        id: publish
+        env:
+          APPLY_INFOGRAPHIC_GALLERY: 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-infographic-gallery.mjs | tee "$RUNNER_TEMP/approved-visual-library.json"
+
+      - name: Purge Hostinger LiteSpeed cache
+        id: cache
+        shell: bash
+        run: |
+          set -euo pipefail
+          ok=0
+          for attempt in 1 2 3; do
+            if node scripts/flush-hostinger-litespeed-mcp.mjs; then ok=1; break; fi
+            sleep $((attempt * 4))
+          done
+          [[ "$ok" -eq 1 ]] || { echo 'LiteSpeed cache purge failed.' >&2; exit 1; }
+          sleep 5
+
+      - name: Verify public approved-only library
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          output="$RUNNER_TEMP/approved-visual-library-public.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 -fsSL --retry 2 --retry-delay 2 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              -H 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/infographics/?dtf_visual_library=${GITHUB_RUN_ID}-${attempt}" -o "$output"
+            if grep -Fqi 'dtf-approved-visual-library-v2' "$output" && grep -Fqi 'Visual plant science library.' "$output"; then
+              if OUTPUT="$output" node <<'NODE'
+          const fs = require('fs');
+          const html = fs.readFileSync(process.env.OUTPUT,'utf8').toLowerCase();
+          const policy = JSON.parse(fs.readFileSync('site/wordpress/visual-quality-policy.json','utf8'));
+          for (const value of policy?.bannedMedia?.urlContains || []) {
+            if (value && html.includes(String(value).toLowerCase())) process.exit(1);
+          }
+          for (const prefix of policy?.bannedMedia?.slugPrefixes || []) {
+            if (prefix && html.includes(String(prefix).toLowerCase())) process.exit(1);
+          }
+          NODE
+              then ok=1; break; fi
+            fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]] || {
+            echo 'Approved-only visual library did not converge publicly without quarantined media.' >&2
+            head -c 5000 "$output" >&2 || true
+            exit 1
+          }
+
+      - name: Upload rollback and public evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-approved-visual-library-v2-${{ github.run_id }}
+          path: |
+            /tmp/dtf-approved-visual-library-v2
+            ${{ runner.temp }}/approved-visual-library.json
+            ${{ runner.temp }}/approved-visual-library-public.html
+          if-no-files-found: warn
+          retention-days: 30
