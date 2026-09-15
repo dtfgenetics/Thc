@@ -1,0 +1,109 @@
+name: Publish Technician I Courses 2-7
+
+on:
+  pull_request:
+    paths:
+      - site/wordpress/education/tech1-courses-public-v1.json
+      - site/wordpress/education/course-catalog-v4.json
+      - scripts/publish-wordpress-tech1-courses-2-7.mjs
+      - scripts/publish-wordpress-certification-catalog-v5.mjs
+      - scripts/verify-wordpress-tech1-courses-2-7.mjs
+      - .github/workflows/wordpress-tech1-courses-production.yml
+  push:
+    branches:
+      - main
+    paths:
+      - site/wordpress/education/tech1-courses-public-v1.json
+      - site/wordpress/education/course-catalog-v4.json
+      - scripts/publish-wordpress-tech1-courses-2-7.mjs
+      - scripts/publish-wordpress-certification-catalog-v5.mjs
+      - scripts/verify-wordpress-tech1-courses-2-7.mjs
+      - .github/workflows/wordpress-tech1-courses-production.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-tech1-public-courses
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Validate public-course publishers
+        run: |
+          node --check scripts/publish-wordpress-tech1-courses-2-7.mjs
+          node --check scripts/publish-wordpress-certification-catalog-v5.mjs
+          node --check scripts/verify-wordpress-tech1-courses-2-7.mjs
+          node scripts/publish-wordpress-tech1-courses-2-7.mjs --validate-only
+          node scripts/publish-wordpress-certification-catalog-v5.mjs --validate-only
+
+  publish:
+    if: github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_TECH1_PUBLIC_COURSES: 'true'
+      APPLY_CERTIFICATION_CATALOG_V5: 'true'
+      BACKUP_ROOT: /tmp/dtf-tech1-public-courses
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Require WordPress credentials
+        shell: bash
+        run: |
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+      - name: Publish Technician I Courses 2-7
+        run: node scripts/publish-wordpress-tech1-courses-2-7.mjs
+      - name: Verify all six new course trees and anonymous course roots
+        run: node scripts/verify-wordpress-tech1-courses-2-7.mjs
+      - name: Publish Certification Catalog V5
+        run: node scripts/publish-wordpress-certification-catalog-v5.mjs
+      - name: Verify visitor-facing Catalog V5
+        shell: bash
+        run: |
+          set -euo pipefail
+          page="$RUNNER_TEMP/courses-v5.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            nonce="${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)"
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/courses/?verify=${nonce}" --output "$page"
+            offering_count="$(grep -o 'data-credential-offering=' "$page" | wc -l | tr -d ' ' || true)"
+            course_count="$(grep -o 'data-course-id=' "$page" | wc -l | tr -d ' ' || true)"
+            open_count="$(grep -o 'data-course-open="true"' "$page" | wc -l | tr -d ' ' || true)"
+            if grep -Fq 'dtf-courses-v5-style' "$page" && \
+               grep -Fq 'data-dtf-courses-catalog="v5"' "$page" && \
+               [[ "$offering_count" -eq 10 ]] && \
+               [[ "$course_count" -eq 15 ]] && \
+               [[ "$open_count" -eq 7 ]] && \
+               ! grep -Fq 'data-issuance-available="true"' "$page"; then
+              ok=1
+              break
+            fi
+            sleep 5
+          done
+          [[ "$ok" -eq 1 ]] || { echo "Catalog V5 anonymous verification failed. offerings=${offering_count} courses=${course_count} open=${open_count}" >&2; exit 1; }
+      - name: Upload rollback and verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tech1-public-courses-${{ github.run_id }}
+          path: /tmp/dtf-tech1-public-courses
+          if-no-files-found: warn
+          retention-days: 30
