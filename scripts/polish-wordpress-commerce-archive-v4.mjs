@@ -43,6 +43,7 @@ body.woocommerce-shop main,body.post-type-archive-product main{position:relative
 body.woocommerce-shop main:before,body.post-type-archive-product main:before{content:"SHOP THE LINE • READ THE STORY";display:inline-flex;align-items:center;margin:0 0 14px;padding:7px 10px;border-radius:999px;background:#e9f1e9;border:1px solid #c9d9cd;color:var(--dtf-c4-green);font-size:.68rem;font-weight:950;letter-spacing:.12em;text-transform:uppercase}
 body.woocommerce-shop .wp-block-query-title,body.post-type-archive-product .wp-block-query-title,.woocommerce-products-header__title.page-title{max-width:900px!important;font-size:clamp(3rem,7vw,6rem)!important;line-height:.9!important;letter-spacing:-.06em!important;text-wrap:balance}
 body.woocommerce-shop .wp-block-query-title::after,body.post-type-archive-product .wp-block-query-title::after,.woocommerce-products-header__title.page-title::after{content:"Current releases and DTF products in one storefront. Genetics context lives in the breeding catalog; price, stock, pack details, and checkout terms live here.";display:block;max-width:760px;margin-top:18px;color:var(--dtf-c4-muted);font-size:clamp(1rem,1.5vw,1.16rem);line-height:1.72;letter-spacing:0;font-weight:500}
+body.woocommerce-shop:has(.dtf-shop-storefront-v5) .wp-block-query-title,body.post-type-archive-product:has(.dtf-shop-storefront-v5) .wp-block-query-title,body.woocommerce-shop:has(.dtf-shop-storefront-v5) .woocommerce-products-header__title.page-title,body.post-type-archive-product:has(.dtf-shop-storefront-v5) .woocommerce-products-header__title.page-title{display:none!important}
 body.woocommerce-shop ul.products,body.post-type-archive-product ul.products{gap:26px!important}
 body.woocommerce-shop ul.products li.product,body.post-type-archive-product ul.products li.product{isolation:isolate;padding:12px 12px 20px!important;border-radius:27px!important;background:rgba(255,253,247,.98)!important;box-shadow:0 14px 38px rgba(13,55,29,.075)!important;overflow:hidden!important}
 body.woocommerce-shop ul.products li.product:after,body.post-type-archive-product ul.products li.product:after{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,var(--dtf-c4-green),var(--dtf-c4-gold));z-index:4}
@@ -100,7 +101,8 @@ const report = {
   apply,
   backupDir,
   templateParts: results,
-  marker
+  marker,
+  visualTitleOwner: 'dtf-shop-storefront-v5'
 };
 await writeFile(join(backupDir, 'commerce-archive-v4-report.json'), `${JSON.stringify(report, null, 2)}\n`);
 await writeFile(join(backupRoot, 'commerce-archive-v4-backup-path.txt'), `${backupDir}\n`);
