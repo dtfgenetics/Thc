@@ -46,7 +46,7 @@ jobs:
           node scripts/reconcile-seed-man-deployment-metadata.mjs
           after="$(git diff -- "${paths[@]}" | git hash-object --stdin)"
           test "$before" = "$after"
-      - name: Validate reconciled v20 metadata and public identity
+      - name: Validate reconciled v20 repair metadata and public identity
         shell: bash
         run: |
           set -euo pipefail
@@ -57,25 +57,28 @@ jobs:
           const a=d.apps.find(x=>x.id==='seed-man-platformer');
           if(!a)process.exit(1);
           if(a.title!=='Seed Man: Grow. Fight. Restore.')process.exit(2);
-          if(a.runtime!=='static-canvas2d-approved-art'||a.status!=='production-v20')process.exit(3);
+          if(a.runtime!=='static-canvas2d-authored-world-transition'||a.status!=='production-v20-repair')process.exit(3);
           if(a.machineData.levelCount!==20||a.machineData.worldCount!==5||a.machineData.bossCount!==6)process.exit(4);
-          if(a.machineData.release!=='20260908-v20'||a.machineData.finalBoss!=='blight-king'||a.machineData.finalBossPhases!==4)process.exit(5);
-          if(a.machineData.characterContract!=='green-armored-plant-hero')process.exit(6);
-          if(a.machineData.approvedArtManifest!=='seed-man-approved-art-v2'||a.machineData.approvedArtSource!=='approved-showcase-2026-09-08')process.exit(7);
-          if(a.machineData.productionCharacterArt!=='seed-man-approved-atlas-renderer-v4')process.exit(8);
-          if(a.machineData.campaignRuntime!=='seed-man-campaign-v20-runtime-v3'||a.machineData.campaignUi!=='seed-man-campaign-ui-v20')process.exit(9);
-          if(a.machineData.proceduralFallbackAllowed!==false||a.machineData.legacyAtlasFallbackAllowed!==false)process.exit(10);
-          if(a.machineData.levelCount===15||a.machineData.productionCharacterArt==='seed-man-production-v1'||a.machineData.characterContract==='seed-man-locked-v1')process.exit(11);
-          for(const legacyField of ['ui','visualSystem','authoredSpriteRuntime','threeJsRenderer','threeJsPublicApi','threeJsOptimization']){
-            if(Object.hasOwn(a.machineData,legacyField))process.exit(12);
+          if(a.machineData.release!=='20260913-v20-runtime-repair-v2'||a.machineData.finalBoss!=='blight-king'||a.machineData.finalBossPhases!==4)process.exit(5);
+          if(a.machineData.characterTarget!=='classic-seed-man-oval-v1')process.exit(6);
+          if(a.machineData.currentCharacterAsset!=='green-armored-plant-hero'||a.machineData.currentCharacterStatus!=='temporary-legacy-replacement-pending')process.exit(7);
+          if(a.machineData.artManifest!=='seed-man-art-manifest-v3'||a.machineData.artSourceOfTruth!=='classic-seed-man-oval-v1')process.exit(8);
+          if(a.machineData.productionCharacterArt!=='seed-man-transition-atlas-renderer-v5')process.exit(9);
+          if(a.machineData.campaignRuntime!=='seed-man-campaign-v20-runtime-v3'||a.machineData.campaignUi!=='seed-man-campaign-ui-v20')process.exit(10);
+          if(a.machineData.worldPresentation!=='seed-man-authored-flat-background-v1'||a.machineData.worldRendererTarget!=='seed-man-three-world-v2'||a.machineData.finalWorldLayerCount!==7)process.exit(11);
+          if(a.machineData.proceduralFallbackAllowed!==false||a.machineData.unregisteredLegacyAtlasFallbackAllowed!==false)process.exit(12);
+          if(a.machineData.runtimeMechanics!=='seed-man-runtime-mechanics-v1'||a.machineData.releaseTruth!=='seed-man-release-truth-v1')process.exit(13);
+          if(a.machineData.stomp!==true||a.machineData.plantPierce!==true||a.machineData.electricChainTargets!==3||a.machineData.iceFreezeSeconds!==1.8)process.exit(14);
+          for(const legacyField of ['characterContract','approvedArtManifest','approvedArtSource','legacyAtlasFallbackAllowed','ui','visualSystem','authoredSpriteRuntime','threeJsRenderer','threeJsPublicApi','threeJsOptimization']){
+            if(Object.hasOwn(a.machineData,legacyField))process.exit(15);
           }
           const hub=fs.readFileSync('site/public-route-patch/games/index.html','utf8');
-          for(const retired of ['Seed Man: Sprout Run','Seed Man: Greenhouse Gauntlet','15 levels']) if(hub.includes(retired)) process.exit(13);
-          for(const marker of ['Seed Man: Grow. Fight. Restore.','20 levels','5 worlds','6 bosses']) if(!hub.includes(marker)) process.exit(14);
+          for(const retired of ['Seed Man: Sprout Run','Seed Man: Greenhouse Gauntlet','15 levels']) if(hub.includes(retired)) process.exit(16);
+          for(const marker of ['Seed Man: Grow. Fight. Restore.','20 levels','5 worlds','6 bosses']) if(!hub.includes(marker)) process.exit(17);
           const nav=JSON.parse(fs.readFileSync('data/public-navigation.json','utf8')).games.find(x=>x.id==='seed-man-platformer');
-          if(!nav||nav.title!=='Seed Man: Grow. Fight. Restore.'||nav.route!=='/games/seed-man-platformer/')process.exit(15);
+          if(!nav||nav.title!=='Seed Man: Grow. Fight. Restore.'||nav.route!=='/games/seed-man-platformer/')process.exit(18);
           const source=JSON.parse(fs.readFileSync('data/game-source-map.json','utf8')).games.find(x=>x.id==='seed-man-platformer');
-          if(!source||source.title!=='Seed Man: Grow. Fight. Restore.')process.exit(16);
+          if(!source||source.title!=='Seed Man: Grow. Fight. Restore.')process.exit(19);
           NODE
       - name: Safely integrate reconciled Seed Man public surfaces when needed
         shell: bash
@@ -95,5 +98,5 @@ jobs:
             exit 0
           fi
           node scripts/studio/integrate-generated-change.mjs \
-            --message='Align Seed Man public surfaces with canonical v20 production' \
+            --message='Align Seed Man public surfaces with canonical v20 repair' \
             --paths="$(IFS=,; echo "${paths[*]}")"
