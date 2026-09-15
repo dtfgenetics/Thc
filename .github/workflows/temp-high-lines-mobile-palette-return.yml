@@ -1,0 +1,40 @@
+name: Temporary High Lines Mobile Palette Return
+
+on:
+  push:
+    branches:
+      - fix/high-lines-mobile-palette-return-20260915
+    paths:
+      - scripts/apply-high-lines-mobile-palette-return.mjs
+      - .github/workflows/temp-high-lines-mobile-palette-return.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/high-lines-mobile-palette-return-20260915
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply High Lines mobile flow patch
+        run: node scripts/apply-high-lines-mobile-palette-return.mjs
+      - name: Validate runtime contract
+        run: |
+          node --check site/public-route-patch/games/high-lines/app.js
+          node games/high-lines/test/public-runtime.test.mjs
+          node games/high-lines/scripts/validate-data.mjs
+      - name: Commit persistent High Lines changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add site/public-route-patch/games/high-lines/app.js games/high-lines/test/public-runtime.test.mjs
+          git diff --cached --quiet && exit 0
+          git commit -m 'Return High Lines mobile palette choices to the board'
+          git push origin HEAD:${GITHUB_REF_NAME}
