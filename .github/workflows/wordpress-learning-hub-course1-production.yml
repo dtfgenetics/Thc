@@ -5,12 +5,12 @@ on:
     paths:
       - site/wordpress/education/learning-hub-course1.json
       - site/wordpress/education/learning-hub-course1-ui-v3.json
-      - site/wordpress/education/course-catalog-v3.json
+      - site/wordpress/education/course-catalog-v4.json
       - scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
       - scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
       - scripts/publish-wordpress-courses-navigation-v2.mjs
-      - scripts/publish-wordpress-courses-catalog-v3.mjs
+      - scripts/publish-wordpress-certification-catalog-v4.mjs
       - scripts/verify-wordpress-learning-hub-course1.mjs
       - scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
       - .github/workflows/wordpress-learning-hub-course1-production.yml
@@ -20,12 +20,12 @@ on:
     paths:
       - site/wordpress/education/learning-hub-course1.json
       - site/wordpress/education/learning-hub-course1-ui-v3.json
-      - site/wordpress/education/course-catalog-v3.json
+      - site/wordpress/education/course-catalog-v4.json
       - scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
       - scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
       - scripts/publish-wordpress-courses-navigation-v2.mjs
-      - scripts/publish-wordpress-courses-catalog-v3.mjs
+      - scripts/publish-wordpress-certification-catalog-v4.mjs
       - scripts/verify-wordpress-learning-hub-course1.mjs
       - scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
       - .github/workflows/wordpress-learning-hub-course1-production.yml
@@ -64,14 +64,14 @@ jobs:
           node --check scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
           node --check scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
           node --check scripts/publish-wordpress-courses-navigation-v2.mjs
-          node --check scripts/publish-wordpress-courses-catalog-v3.mjs
+          node --check scripts/publish-wordpress-certification-catalog-v4.mjs
           node --check scripts/verify-wordpress-learning-hub-course1.mjs
           node --check scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
           node scripts/publish-wordpress-learning-hub-course1-v2.mjs --validate-only
           node scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs --validate-only
           node scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs --validate-only
           node scripts/publish-wordpress-courses-navigation-v2.mjs --validate-only
-          node scripts/publish-wordpress-courses-catalog-v3.mjs --validate-only
+          node scripts/publish-wordpress-certification-catalog-v4.mjs --validate-only
 
   publish:
     if: github.event_name != 'pull_request'
@@ -84,6 +84,7 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       APPLY_LEARNING_HUB_COURSE1: 'true'
+      APPLY_CERTIFICATION_CATALOG_V4: 'true'
       BACKUP_ROOT: /tmp/dtf-learning-hub-course1
     steps:
       - uses: actions/checkout@v4
@@ -115,8 +116,8 @@ jobs:
         run: node scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
       - name: Preserve shared Courses navigation behavior
         run: node scripts/publish-wordpress-courses-navigation-v2.mjs
-      - name: Publish editable responsive Courses catalog V3
-        run: node scripts/publish-wordpress-courses-catalog-v3.mjs
+      - name: Publish professional certification catalog V4
+        run: node scripts/publish-wordpress-certification-catalog-v4.mjs
       - name: Verify published Course 1 base release by WordPress readback
         shell: bash
         run: |
@@ -126,7 +127,7 @@ jobs:
         shell: bash
         run: |
           node scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs | tee "$BACKUP_ROOT/readback-ui-v3-verification.json"
-      - name: Verify public Courses and representative lesson after cache convergence
+      - name: Verify public certification catalog and representative lesson after cache convergence
         shell: bash
         run: |
           set -euo pipefail
@@ -139,9 +140,12 @@ jobs:
             curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
               --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
               "$WP_SITE_URL/courses/?verify=${nonce}" --output "$courses"
-            if grep -Fq 'dtf-courses-v3-style' "$courses" && \
-               grep -Fq 'data-dtf-courses-catalog="v3"' "$courses" && \
-               grep -Fq 'Professional cultivation courses' "$courses"; then
+            offering_count="$(grep -o 'data-credential-offering=' "$courses" | wc -l | tr -d ' ')"
+            if grep -Fq 'dtf-courses-v4-style' "$courses" && \
+               grep -Fq 'data-dtf-courses-catalog="v4"' "$courses" && \
+               grep -Fq 'Certificates & professional certifications' "$courses" && \
+               [[ "$offering_count" -eq 10 ]] && \
+               ! grep -Fq 'data-issuance-available="true"' "$courses"; then
               courses_ok=1
             fi
             curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
@@ -161,7 +165,7 @@ jobs:
             fi
             sleep 5
           done
-          [[ "$courses_ok" -eq 1 ]] || { echo 'Courses V3 did not become visitor-facing within the verification window.' >&2; exit 1; }
+          [[ "$courses_ok" -eq 1 ]] || { echo 'Certification Catalog V4 did not become visitor-facing within the verification window.' >&2; exit 1; }
           [[ "$lesson_ok" -eq 1 ]] || { echo 'Course 1 V4 lesson visual did not become visitor-facing within the verification window.' >&2; exit 1; }
       - name: Upload rollback and verification evidence
         if: always()
