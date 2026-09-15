@@ -46,18 +46,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Normalize Course 1 release item-count contract
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p = Path('scripts/publish-wordpress-learning-hub-course1-v2.mjs')
-          s = p.read_text()
-          s = s.replace("must(release.publicScope.publicCourseItems===108,'Canonical public release must authorize exactly 108 course items.');", "must(Number.isInteger(release.publicScope.publicCourseItems) && release.publicScope.publicCourseItems > 0,'Canonical public release must declare a positive public-course item count.');")
-          s = s.replace("must(itemCount===108,'Public Course 1 item count must equal 108.');", "must(itemCount===release.publicScope.publicCourseItems,`Public Course 1 item count ${itemCount} must match release manifest ${release.publicScope.publicCourseItems}.`);")
-          s = s.replace('<strong>108</strong> public course-test items', '<strong>${s.release.publicScope.publicCourseItems}</strong> public course-test items')
-          p.write_text(s)
-          PY
       - name: Validate publisher, guided UI, responsive layout, catalog, navigation and verifiers
         run: |
           node --check scripts/publish-wordpress-learning-hub-course1-v2.mjs
@@ -91,18 +79,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Normalize Course 1 release item-count contract
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p = Path('scripts/publish-wordpress-learning-hub-course1-v2.mjs')
-          s = p.read_text()
-          s = s.replace("must(release.publicScope.publicCourseItems===108,'Canonical public release must authorize exactly 108 course items.');", "must(Number.isInteger(release.publicScope.publicCourseItems) && release.publicScope.publicCourseItems > 0,'Canonical public release must declare a positive public-course item count.');")
-          s = s.replace("must(itemCount===108,'Public Course 1 item count must equal 108.');", "must(itemCount===release.publicScope.publicCourseItems,`Public Course 1 item count ${itemCount} must match release manifest ${release.publicScope.publicCourseItems}.`);")
-          s = s.replace('<strong>108</strong> public course-test items', '<strong>${s.release.publicScope.publicCourseItems}</strong> public course-test items')
-          p.write_text(s)
-          PY
       - name: Require WordPress credentials
         shell: bash
         run: |

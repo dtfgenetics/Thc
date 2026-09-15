@@ -6,6 +6,10 @@ const user = process.env.WP_API_USERNAME || '';
 const pass = process.env.WP_API_PASSWORD || '';
 const packagePath = process.env.LEARNING_HUB_COURSE1_PATH || 'site/wordpress/education/learning-hub-course1.json';
 const local = JSON.parse(await readFile(packagePath, 'utf8'));
+const sourceRepo = local.source.repository;
+const sourceRef = local.source.ref || 'main';
+const rawBase = `https://raw.githubusercontent.com/${sourceRepo}/${encodeURIComponent(sourceRef)}`;
+const releaseManifestPath = 'content/public-releases/PUBLIC-RELEASE-LH-TECH1-001.json';
 const must = (value, message) => { if (!value) throw new Error(message); };
 const rendered = (value) => typeof value === 'string' ? value : (value?.raw || value?.rendered || '');
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -23,6 +27,62 @@ must(local?.course?.id === 'COURSE-LH-TECH1-001', 'Unexpected Course 1 package.'
 must(Array.isArray(local.modules) && local.modules.length === 6, 'Expected six Course 1 modules.');
 must(Array.isArray(local.learnerDocuments) && local.learnerDocuments.length === 3, 'Expected three learner documents.');
 
+async function fetchCanonicalText(relativePath) {
+  let last;
+  for (let attempt = 1; attempt <= 6; attempt++) {
+    const nonce = `${Date.now()}-${attempt}-${Math.random().toString(16).slice(2)}`;
+    try {
+      const response = await fetch(`${rawBase}/${relativePath}?verify=${nonce}`, {
+        signal: AbortSignal.timeout(30000),
+        headers: {
+          Accept: 'application/json,text/plain,*/*',
+          'Cache-Control': 'no-cache, no-store, max-age=0',
+          Pragma: 'no-cache',
+          'User-Agent': 'DTF-Learning-Hub-Course1-Canonical-Readback/1.0'
+        }
+      });
+      if (response.ok) return response.text();
+      last = new Error(`Canonical GET ${relativePath} failed (${response.status}).`);
+    } catch (error) {
+      last = error;
+    }
+    if (attempt < 6) await sleep(attempt * 800);
+  }
+  throw last;
+}
+
+async function fetchCanonicalJson(relativePath) {
+  return JSON.parse(await fetchCanonicalText(relativePath));
+}
+
+async function loadCanonicalAssessmentContract() {
+  const release = await fetchCanonicalJson(releaseManifestPath);
+  must(release?.id === 'PUBLIC-RELEASE-LH-TECH1-001', 'Unexpected Course 1 public-release manifest.');
+  must(release.courseId === local.course.id, 'Public-release manifest course ID mismatch.');
+  must(release.publicationState === 'published', 'Course 1 public-release manifest is not published.');
+  must(Number.isInteger(release.publicScope?.publicCourseItems) && release.publicScope.publicCourseItems > 0, 'Public release must declare a positive publicCourseItems count.');
+
+  const expectedAssessmentIds = [...local.modules.map((module) => module.assessment), local.finalAssessment];
+  must(JSON.stringify(release.publicScope?.assessments) === JSON.stringify(expectedAssessmentIds), 'Site assessment scope differs from canonical public-release manifest.');
+
+  const counts = new Map();
+  let total = 0;
+  for (const assessmentId of expectedAssessmentIds) {
+    const assessment = await fetchCanonicalJson(`content/assessments/${assessmentId}.json`);
+    must(assessment?.id === assessmentId, `Canonical assessment identity mismatch for ${assessmentId}.`);
+    must(['formative', 'summative'].includes(assessment.purpose), `${assessmentId} is not a public learning assessment.`);
+    must(Array.isArray(assessment.items) && assessment.items.length > 0, `${assessmentId} has no public learning items.`);
+    must(new Set(assessment.items).size === assessment.items.length, `${assessmentId} contains duplicate item references.`);
+    counts.set(assessmentId, assessment.items.length);
+    total += assessment.items.length;
+  }
+
+  must(total === release.publicScope.publicCourseItems, `Canonical assessment total ${total} does not match release manifest ${release.publicScope.publicCourseItems}.`);
+  return { release, counts, total };
+}
+
+const canonical = await loadCanonicalAssessmentContract();
+
 async function wp(path) {
   let last;
   for (let attempt = 1; attempt <= 8; attempt++) {
@@ -33,7 +93,7 @@ async function wp(path) {
         headers: {
           Authorization: auth,
           Accept: 'application/json',
-          'User-Agent': 'DTF-Learning-Hub-Course1-Readback/4.0'
+          'User-Agent': 'DTF-Learning-Hub-Course1-Readback/5.0'
         }
       });
       const text = await response.text();
@@ -77,10 +137,6 @@ function verifyPage(page, { label, minLength = 120, required = [], questionCount
   return content;
 }
 
-// Learn is owned by the Learning Experience publisher and can legitimately be
-// rewritten while Course 1 deploys. Course 1 verification therefore checks the
-// durable page hierarchy below Learn instead of requiring a historical marker in
-// the independently-owned /learn/ presentation layer.
 const learn = await pageBySlug('learn');
 verifyPage(learn, { label: '/learn/', minLength: 500 });
 
@@ -132,28 +188,33 @@ for (const doc of local.learnerDocuments) {
 let publicQuestionCount = 0;
 for (const module of local.modules) {
   const slug = `test-module-${module.number}`;
+  const expectedCount = canonical.counts.get(module.assessment);
+  must(Number.isInteger(expectedCount) && expectedCount > 0, `Missing canonical count for ${module.assessment}.`);
   const page = await pageBySlug(slug, course.id);
   verifyPage(page, {
     label: `Module ${module.number} learning test`,
     minLength: 1800,
     required: ['Course mastery target:', 'not the passing standard for the separate secure certification examination', 'dtf-learning-hub-course1-layout-v4'],
-    questionCount: 12
+    questionCount: expectedCount
   });
-  publicQuestionCount += 12;
-  verified.push({ type: 'module-test', number: module.number, id: page.id, slug });
+  publicQuestionCount += expectedCount;
+  verified.push({ type: 'module-test', number: module.number, id: page.id, slug, questionCount: expectedCount });
 }
 
+const expectedFinalCount = canonical.counts.get(local.finalAssessment);
+must(Number.isInteger(expectedFinalCount) && expectedFinalCount > 0, `Missing canonical count for ${local.finalAssessment}.`);
 const final = await pageBySlug('final-course-test', course.id);
 verifyPage(final, {
   label: 'Course 1 final course test',
   minLength: 3500,
   required: ['Course mastery target:', 'not the passing standard for the separate secure certification examination', 'dtf-learning-hub-course1-layout-v4'],
-  questionCount: 36
+  questionCount: expectedFinalCount
 });
-publicQuestionCount += 36;
-verified.push({ type: 'final-test', id: final.id, slug: 'final-course-test' });
+publicQuestionCount += expectedFinalCount;
+verified.push({ type: 'final-test', id: final.id, slug: 'final-course-test', questionCount: expectedFinalCount });
 
-must(publicQuestionCount === 108, `Expected 108 public course-learning items, verified ${publicQuestionCount}.`);
+must(publicQuestionCount === canonical.total, `Expected ${canonical.total} canonical public course-learning items, verified ${publicQuestionCount}.`);
+must(publicQuestionCount === canonical.release.publicScope.publicCourseItems, `Verified total ${publicQuestionCount} differs from release manifest ${canonical.release.publicScope.publicCourseItems}.`);
 must(verified.length === 19, `Expected 19 managed base Course 1 pages, verified ${verified.length}.`);
 
 const idSet = new Set(verified.map((page) => Number(page.id)));
@@ -163,11 +224,14 @@ console.log(JSON.stringify({
   verifiedAt: new Date().toISOString(),
   site,
   courseId: local.course.id,
+  sourceRelease: canonical.release.id,
   learnPageId: learn.id,
   managedBasePages: verified.length,
   publicCourseItems: publicQuestionCount,
+  moduleItemCounts: local.modules.map((module) => ({ module: module.number, assessmentId: module.assessment, items: canonical.counts.get(module.assessment) })),
+  finalItemCount: expectedFinalCount,
   guidedUi: true,
   responsiveLayout: 'v4',
-  pageIds: verified.map(({ type, number, id, slug }) => ({ type, ...(number ? { number } : {}), id, slug })),
+  pageIds: verified.map(({ type, number, id, slug, questionCount }) => ({ type, ...(number ? { number } : {}), id, slug, ...(questionCount ? { questionCount } : {}) })),
   result: 'success'
 }, null, 2));
