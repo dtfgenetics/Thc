@@ -1,0 +1,111 @@
+name: Publish Simple User Guide Batch 1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/simple-user-guide-batch1.json'
+      - 'scripts/publish-wordpress-simple-user-guide-batch1.mjs'
+      - '.github/workflows/wordpress-simple-user-guide-batch1.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/simple-user-guide-batch1.json'
+      - 'scripts/publish-wordpress-simple-user-guide-batch1.mjs'
+      - '.github/workflows/wordpress-simple-user-guide-batch1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-simple-user-guide-batch1
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  validate:
+    name: Validate Simple User Guide Batch 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate package
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/publish-wordpress-simple-user-guide-batch1.mjs
+          node scripts/publish-wordpress-simple-user-guide-batch1.mjs --validate-only | tee "$RUNNER_TEMP/sug1-validation.json"
+          grep -Fq '"pages": 10' "$RUNNER_TEMP/sug1-validation.json"
+          grep -Fq '"id": "simple-user-guide-batch1"' "$RUNNER_TEMP/sug1-validation.json"
+
+  publish:
+    name: Publish and verify Simple User Guide Batch 1
+    needs: validate
+    if: ${{ github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_SIMPLE_USER_GUIDE_BATCH1: 'true'
+      BACKUP_ROOT: /tmp/dtf-simple-user-guide-batch1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Confirm production package
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-simple-user-guide-batch1.mjs
+          node scripts/publish-wordpress-simple-user-guide-batch1.mjs --validate-only
+      - name: Publish Simple User Guide Batch 1
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-simple-user-guide-batch1.mjs | tee "$RUNNER_TEMP/sug1-publish.log"
+          report="$(find "$BACKUP_ROOT" -name report.json -type f -print -quit)"
+          test -n "$report"; test -s "$report"
+          echo "pages=$(node -p "require(process.argv[1]).pages" "$report")" >> "$GITHUB_OUTPUT"
+      - name: Verify fresh visitor page
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/sug1-live.html"; ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/beginner-guides/simple-user-guide/?dtf_sug1_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fq 'data-dtf-simple-user-guide-batch1="true"' "$body"; then ok=1; break; fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]]
+          [[ "$(grep -Fo 'data-sug-page=' "$body" | wc -l | tr -d ' ')" = '10' ]]
+          grep -Fq 'THC Simple User Guide' "$body"
+          grep -Fq 'Set up first. Start seeds second.' "$body"
+          grep -Fq 'Healthy basics beat complicated tricks.' "$body"
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: simple-user-guide-batch1-${{ github.run_id }}
+          path: |
+            /tmp/dtf-simple-user-guide-batch1
+            ${{ runner.temp }}/sug1-publish.log
+            ${{ runner.temp }}/sug1-live.html
+          if-no-files-found: warn
+          retention-days: 30
