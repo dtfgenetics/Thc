@@ -23,6 +23,8 @@ jobs:
           node-version: 24
       - name: Expand visible technician course catalog
         run: node scripts/expand-wordpress-course-catalog-visibility-v4.mjs
+      - name: Restore production workflow before bot commit
+        run: git checkout -- .github/workflows/wordpress-certification-catalog-v4.yml
       - name: Validate publisher syntax
         run: node --check scripts/publish-wordpress-certification-catalog-v4.mjs
       - name: Validate 15-course catalog render contract
@@ -44,7 +46,7 @@ jobs:
           NODE
       - name: Commit validated catalog visibility changes
         run: |
-          rm -f .github/workflows/expand-wordpress-course-catalog-visibility-once.yml scripts/expand-wordpress-course-catalog-visibility-v4.mjs
+          rm -f scripts/expand-wordpress-course-catalog-visibility-v4.mjs
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
