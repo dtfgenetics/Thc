@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 4,
+  "id": "dtf-courses-catalog-v4",
+  "title": "Professional cultivation courses & certifications",
+  "eyebrow": "THC Learning Hub",
+  "intro": "Structured cultivation learning paths built from researched instruction, guided practice, job tasks, course tests, practical work, and separate credential validation. Explore what is available now and what is still in development without confusing course publication with certification release.",
+  "primaryActions": [
+    {
+      "label": "Start Course 1",
+      "href": "/learn/learning-hub/cultivation-technician-i/safety-responsible-practice-cultivation-workflows/",
+      "style": "primary"
+    },
+    {
+      "label": "Open Learning Hub",
+      "href": "/learn/learning-hub/",
+      "style": "secondary"
+    }
+  ],
+  "statusDefinitions": {
+    "available-academic": "Public course content is available for study. This does not mean the related professional certification is available for issuance.",
+    "in-development": "The pathway has active curriculum and assessment development but is not approved for credential issuance.",
+    "planned": "The pathway is part of the canonical credential architecture and awaits full production build-out."
+  },
+  "credentialSections": [
+    {
+      "id": "foundational",
+      "title": "Foundational Certificates",
+      "description": "Prerequisite learning certificates that prepare learners for professional credential pathways.",
+      "offerings": [
+        {
+          "title": "THC Safety & Responsible Practice Certificate",
+          "type": "Foundational certificate",
+          "status": "in-development",
+          "statusLabel": "In development",
+          "issuanceAvailable": false,
+          "summary": "Foundational safety, responsible practice, sanitation, controlled workflow, documentation, and escalation knowledge for learners entering professional cultivation training."
+        },
+        {
+          "title": "THC Cultivation Foundations Certificate",
+          "type": "Foundational certificate",
+          "status": "in-development",
+          "statusLabel": "In development",
+          "issuanceAvailable": false,
+          "summary": "Foundational cultivation science and workflow knowledge intended to prepare learners for professional technician pathways."
+        }
+      ]
+    },
+    {
+      "id": "technician",
+      "title": "Technician Pathway",
+      "description": "Progressive applied cultivation credentials for entry and advanced cultivation technicians.",
+      "offerings": [
+        {
+          "id": "CREDPROG-CULT-TECH-I-001",
+          "title": "THC Cultivation Technician I",
+          "type": "Professional certification",
+          "status": "in-development",
+          "statusLabel": "In development",
+          "issuanceAvailable": false,
+          "plannedCourses": 7,
+          "summary": "Entry professional pathway covering safe cultivation work, plant observation, environment, irrigation, crop care, harvest, records, and integrated shift practice.",
+          "availableCourse": {
+            "id": "COURSE-LH-TECH1-001",
+            "label": "Course 1 available now",
+            "href": "/learn/learning-hub/cultivation-technician-i/safety-responsible-practice-cultivation-workflows/"
+          }
+        },
+        {
+          "id": "CREDPROG-CULT-TECH-II-001",
+          "title": "THC Cultivation Technician II",
+          "type": "Professional certification",
+          "status": "in-development",
+          "statusLabel": "In development",
+          "issuanceAvailable": false,
+          "plannedCourses": 8,
+          "summary": "Advanced technician pathway covering diagnostic reasoning, environmental systems, fertigation, plant-health troubleshooting, production records, quality response, metrics, and shift coordination."
+        }
+      ]
+    },
+    {
+      "id": "specialist",
+      "title": "Specialist Certifications",
+      "description": "Role-focused specialist credentials for advanced cultivation practice.",
+      "offerings": [
+        {
+          "id": "CREDPROG-PLANT-HEALTH-IPM-BIOSEC-001",
+          "title": "THC Plant Health, IPM & Biosecurity Specialist",
+          "type": "Professional certification",
+          "status": "planned",
+          "statusLabel": "Planned",
+          "issuanceAvailable": false,
+          "plannedCourses": 7,
+          "summary": "Scouting, differential diagnosis, pest biology, disease and HLVd, IPM, biological and cultural controls, outbreak containment, corrective action, and diagnostic case work."
+        },
+        {
+          "id": "CREDPROG-ENV-IRR-FERT-001",
+          "title": "THC Environmental, Irrigation & Fertigation Systems Specialist",
+          "type": "Professional certification",
+          "status": "planned",
+          "statusLabel": "Planned",
+          "issuanceAvailable": false,
+          "plannedCourses": 8,
+          "summary": "Lighting, HVAC and dehumidification, airflow, sensors and controls, water quality, irrigation, root-zone management, crop steering, automation, and reliability."
+        },
+        {
+          "id": "CREDPROG-PROP-CLEAN-STOCK-001",
+          "title": "THC Propagation & Clean Stock Specialist",
+          "type": "Professional certification",
+          "status": "planned",
+          "statusLabel": "Planned",
+          "issuanceAvailable": false,
+          "plannedCourses": 6,
+          "summary": "Seed biology, donor management, cloning, rooting and acclimation, sanitation, biosecurity, traceability, clean stock, tissue-culture fundamentals, and troubleshooting."
+        },
+        {
+          "id": "CREDPROG-POSTHARVEST-QA-001",
+          "title": "THC Postharvest Quality Specialist",
+          "type": "Professional certification",
+          "status": "planned",
+          "statusLabel": "Planned",
+          "issuanceAvailable": false,
+          "plannedCourses": 6,
+          "summary": "Harvest readiness, sanitary handling, drying, water activity, curing, storage, packaging, defects, laboratory and COA literacy, traceability, QA, recall, and disposition concepts."
+        },
+        {
+          "id": "CREDPROG-GEN-BREED-PRES-001",
+          "title": "THC Genetics, Breeding & Preservation Specialist",
+          "type": "Professional certification",
+          "status": "planned",
+          "statusLabel": "Planned",
+          "issuanceAvailable": false,
+          "plannedCourses": 8,
+          "summary": "Inheritance, quantitative traits, genotype-by-environment, phenotyping, population design, backcrossing, selfing, line breeding, progeny testing, seed production, and genetic preservation."
+        }
+      ]
+    },
+    {
+      "id": "advanced-professional",
+      "title": "Advanced Professional",
+      "description": "Operations-level cultivation leadership integrating the earlier technician and specialist domains.",
+      "offerings": [
+        {
+          "id": "CREDPROG-CULT-LEAD-OPS-001",
+          "title": "THC Cultivation Lead & Operations Professional",
+          "type": "Professional certification",
+          "status": "planned",
+          "statusLabel": "Planned",
+          "issuanceAvailable": false,
+          "plannedCourses": 9,
+          "summary": "Production planning, workforce coordination, crop-system oversight, metrics and economics, SOP and document control, quality systems, CAPA, equipment reliability, audit readiness, and continuous improvement."
+        }
+      ]
+    }
+  ],
+  "courses": [
+    {
+      "id": "COURSE-LH-TECH1-001",
+      "number": 1,
+      "status": "available-academic",
+      "statusLabel": "Available academic course",
+      "title": "Safety, Responsible Practice & Cultivation Workflows",
+      "pathLabel": "THC Cultivation Technician I",
+      "summary": "Build the workplace decision habits expected of a cultivation technician: hazard recognition, biosecurity, controlled instructions, traceability, equipment boundaries, trustworthy records, and professional shift handoff.",
+      "href": "/learn/learning-hub/cultivation-technician-i/safety-responsible-practice-cultivation-workflows/",
+      "metrics": [
+        {"value": "6", "label": "modules"},
+        {"value": "18", "label": "lessons"},
+        {"value": "6", "label": "module tests"},
+        {"value": "36", "label": "final-test items"}
+      ],
+      "includes": [
+        "Student workbook",
+        "Integrated practical",
+        "Lesson progress tracking",
+        "Module and final course assessments"
+      ]
+    }
+  ],
+  "learningSurfaces": [
+    {
+      "title": "Learn",
+      "copy": "The broad plant-science and cultivation reference library for topic-first study.",
+      "href": "/learn/"
+    },
+    {
+      "title": "Courses",
+      "copy": "Sequenced instruction with lessons, practice, workbook tasks, and learning assessments.",
+      "href": "/courses/"
+    },
+    {
+      "title": "Certification",
+      "copy": "A separate credential-governance and secure assessment layer. Course tests do not themselves issue a professional credential.",
+      "href": "/learn/learning-hub/"
+    }
+  ],
+  "assessmentNote": "Course tests are learning assessments. They are separate from secure professional certification examinations and do not by themselves issue a professional credential."
+}
