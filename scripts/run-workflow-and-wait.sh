@@ -33,6 +33,25 @@ find_same_source_run() {
       '
 }
 
+list_dispatch_runs() {
+  gh run list --workflow "$workflow" --branch main --event workflow_dispatch --limit 30 \
+    --json databaseId,createdAt,headSha,status,conclusion,displayTitle
+}
+
+find_new_dispatch_run() {
+  local runs_json="$1"
+  local before_ids_json="$2"
+  jq -r --arg started "$started" --argjson before "$before_ids_json" '
+    [ .[]
+      | select(.createdAt >= $started)
+      | select(.databaseId as $id | ($before | index($id)) == null)
+    ]
+    | sort_by(.createdAt)
+    | first
+    | .databaseId // empty
+  ' <<<"$runs_json"
+}
+
 run_id=""
 if [[ "$mode" == "join-existing" ]]; then
   run_id="$(find_same_source_run)"
@@ -53,30 +72,30 @@ if [[ "$mode" == "join-only" ]]; then
   fi
   echo "Joining required downstream $workflow run $run_id for source $expected_sha"
 elif [[ -z "$run_id" ]]; then
+  # workflow_dispatch runs report the SHA of the ref used to dispatch them
+  # (main here), not a release_sha input carried by the child workflow. Snapshot
+  # the queue before dispatch so a pinned release can track the run it actually
+  # created even when main advances before the child starts.
+  before_dispatch_ids="$(list_dispatch_runs | jq '[.[].databaseId]')"
   echo "Dispatching $workflow from main at $started for source $expected_sha"
-  gh workflow run "$workflow" --ref main "$@"
+  dispatch_output="$(gh workflow run "$workflow" --ref main "$@" 2>&1)"
+  [[ -n "$dispatch_output" ]] && printf '%s\n' "$dispatch_output"
 
-  for attempt in $(seq 1 30); do
-    runs="$(gh run list --workflow "$workflow" --branch main --event workflow_dispatch --limit 30 --json databaseId,createdAt,headSha,status,conclusion,displayTitle)"
-    run_id="$(jq -r --arg started "$started" --arg sha "$expected_sha" '
-      [ .[]
-        | select(.createdAt >= $started)
-        | select(
-            ($sha == "")
-            or (.headSha == $sha)
-            or (((.displayTitle // "") | contains($sha)))
-          )
-      ]
-      | sort_by(.createdAt)
-      | last
-      | .databaseId // empty
-    ' <<<"$runs")"
-    [[ -n "$run_id" ]] && break
-    sleep 2
-  done
+  # Newer gh versions return the created run URL. Prefer that exact ID when it
+  # is available; otherwise fall back to the pre-dispatch snapshot difference.
+  run_id="$(sed -nE 's#.*\/actions\/runs\/([0-9]+).*#\1#p' <<<"$dispatch_output" | tail -n 1)"
 
   if [[ -z "$run_id" ]]; then
-    echo "Could not identify the workflow_dispatch run for $workflow at expected source $expected_sha" >&2
+    for attempt in $(seq 1 30); do
+      runs="$(list_dispatch_runs)"
+      run_id="$(find_new_dispatch_run "$runs" "$before_dispatch_ids")"
+      [[ -n "$run_id" ]] && break
+      sleep 2
+    done
+  fi
+
+  if [[ -z "$run_id" ]]; then
+    echo "Could not identify the newly dispatched run for $workflow after $started" >&2
     exit 2
   fi
 fi
