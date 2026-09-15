@@ -1,4 +1,35 @@
-<main class="dtf-v1" data-dtf-layout="community-visual-v1">
+<main class="dtf-v1" data-dtf-layout="community-visual-v2">
+  <style id="dtf-community-v2-style">
+    [data-dtf-layout="community-visual-v2"]{--c-ink:#173522;--c-muted:#526559;--c-line:rgba(23,53,34,.14);--c-leaf:#236d42;--c-soft:#f1f5ef;color:var(--c-ink)}
+    [data-dtf-layout="community-visual-v2"] .dtf-community-glance,[data-dtf-layout="community-visual-v2"] .dtf-genetics-guide{padding:clamp(22px,3vw,34px);border:1px solid var(--c-line);border-radius:18px;background:rgba(255,255,255,.72);box-shadow:0 16px 38px rgba(12,39,23,.06)}
+    [data-dtf-layout="community-visual-v2"] .dtf-community-glance h2{margin:0 0 16px;font-size:clamp(1.5rem,2.4vw,2rem)}
+    [data-dtf-layout="community-visual-v2"] .dtf-activity-rail{list-style:none;margin:0;padding:0;border-top:1px solid var(--c-line)}
+    [data-dtf-layout="community-visual-v2"] .dtf-activity-rail li{display:grid;grid-template-columns:minmax(105px,.35fr) minmax(0,1fr);gap:16px;padding:14px 0;border-bottom:1px solid var(--c-line)}
+    [data-dtf-layout="community-visual-v2"] .dtf-activity-rail strong{color:var(--c-leaf)}
+    [data-dtf-layout="community-visual-v2"] .dtf-activity-rail span{color:var(--c-muted)}
+    [data-dtf-layout="community-visual-v2"] .dtf-disclosure-list{border-top:1px solid var(--c-line)}
+    [data-dtf-layout="community-visual-v2"] .dtf-disclosure{border-bottom:1px solid var(--c-line);background:transparent}
+    [data-dtf-layout="community-visual-v2"] .dtf-disclosure>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:100px minmax(0,1fr) 38px;gap:18px;align-items:center;min-height:68px;padding:14px 2px}
+    [data-dtf-layout="community-visual-v2"] .dtf-disclosure>summary::-webkit-details-marker{display:none}
+    [data-dtf-layout="community-visual-v2"] .dtf-disclosure>summary span{font-size:.75rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--c-leaf)}
+    [data-dtf-layout="community-visual-v2"] .dtf-disclosure>summary strong{font-size:clamp(1.12rem,2vw,1.35rem)}
+    [data-dtf-layout="community-visual-v2"] .dtf-disclosure>summary:after{content:'+';display:grid;place-items:center;width:32px;height:32px;border:1px solid var(--c-line);border-radius:50%;font-size:1.15rem;font-weight:900}
+    [data-dtf-layout="community-visual-v2"] .dtf-disclosure[open]>summary:after{content:'−'}
+    [data-dtf-layout="community-visual-v2"] .dtf-disclosure-body{padding:0 40px 22px 118px}
+    [data-dtf-layout="community-visual-v2"] .dtf-disclosure-body p{max-width:72ch;margin-top:0;color:var(--c-muted)}
+    [data-dtf-layout="community-visual-v2"] .dtf-action-rail{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-block:1px solid var(--c-line)}
+    [data-dtf-layout="community-visual-v2"] .dtf-action-rail a{display:flex;flex-direction:column;gap:6px;padding:22px 24px;border-right:1px solid var(--c-line);color:inherit;text-decoration:none}
+    [data-dtf-layout="community-visual-v2"] .dtf-action-rail a:last-child{border-right:0}
+    [data-dtf-layout="community-visual-v2"] .dtf-action-rail strong{font-size:1.18rem;color:var(--c-leaf)}
+    [data-dtf-layout="community-visual-v2"] .dtf-action-rail span{color:var(--c-muted);line-height:1.55}
+    [data-dtf-layout="community-visual-v2"] .dtf-standard-list{list-style:none;counter-reset:standard;margin:0;padding:0;border-top:1px solid var(--c-line)}
+    [data-dtf-layout="community-visual-v2"] .dtf-standard-list li{counter-increment:standard;display:grid;grid-template-columns:52px minmax(150px,.4fr) minmax(0,1fr);gap:18px;align-items:start;padding:20px 0;border-bottom:1px solid var(--c-line)}
+    [data-dtf-layout="community-visual-v2"] .dtf-standard-list li:before{content:counter(standard,decimal-leading-zero);color:var(--c-leaf);font-weight:900}
+    [data-dtf-layout="community-visual-v2"] .dtf-standard-list span{color:var(--c-muted)}
+    [data-dtf-layout="community-visual-v2"] summary:focus-visible,[data-dtf-layout="community-visual-v2"] a:focus-visible{outline:3px solid #66a86f;outline-offset:3px}
+    @media(max-width:780px){[data-dtf-layout="community-visual-v2"] .dtf-action-rail{grid-template-columns:1fr}[data-dtf-layout="community-visual-v2"] .dtf-action-rail a{border-right:0;border-bottom:1px solid var(--c-line)}[data-dtf-layout="community-visual-v2"] .dtf-action-rail a:last-child{border-bottom:0}[data-dtf-layout="community-visual-v2"] .dtf-standard-list li{grid-template-columns:42px minmax(0,1fr)}[data-dtf-layout="community-visual-v2"] .dtf-standard-list span{grid-column:2}}
+    @media(max-width:560px){[data-dtf-layout="community-visual-v2"] .dtf-activity-rail li{grid-template-columns:1fr;gap:4px}[data-dtf-layout="community-visual-v2"] .dtf-disclosure>summary{grid-template-columns:1fr 38px;gap:6px 14px}[data-dtf-layout="community-visual-v2"] .dtf-disclosure>summary span{grid-column:1}[data-dtf-layout="community-visual-v2"] .dtf-disclosure>summary strong{grid-column:1}[data-dtf-layout="community-visual-v2"] .dtf-disclosure>summary:after{grid-column:2;grid-row:1 / span 2}[data-dtf-layout="community-visual-v2"] .dtf-disclosure-body{padding:0 0 20px}}
+  </style>
   <section class="site-hero" aria-labelledby="community-title">
     <div class="wrap hero-grid">
       <div class="hero-copy">
@@ -9,25 +40,34 @@
           <a class="btn btn-secondary" href="/games/">View game nights</a>
         </div>
       </div>
-      <div class="panel" style="padding:24px">
-        <h2 style="font-size:2rem">Community activity</h2>
-        <div class="grid-2" style="margin-top:18px">
-          <article class="panel" style="padding:17px"><h3>Grow-offs</h3><p class="muted">Document progress, compare methods, and follow event rules.</p></article>
-          <article class="panel" style="padding:17px"><h3>Game nights</h3><p class="muted">Play DTF titles, test multiplayer, and share feedback.</p></article>
-          <article class="panel" style="padding:17px"><h3>Plant science</h3><p class="muted">Bring better evidence into cultivation questions and discussion.</p></article>
-          <article class="panel" style="padding:17px"><h3>Creative projects</h3><p class="muted">Contribute ideas, visual feedback, and community media.</p></article>
-        </div>
-      </div>
+      <aside class="dtf-community-glance" aria-label="Community activity at a glance">
+        <h2>What happens here</h2>
+        <ul class="dtf-activity-rail">
+          <li><strong>Grow-offs</strong><span>Document progress and compare methods.</span></li>
+          <li><strong>Game nights</strong><span>Play, test multiplayer, and share feedback.</span></li>
+          <li><strong>Plant science</strong><span>Bring evidence into cultivation discussion.</span></li>
+          <li><strong>Creative projects</strong><span>Contribute ideas and visual feedback.</span></li>
+        </ul>
+      </aside>
     </div>
   </section>
 
   <section class="section">
     <div class="wrap">
-      <div class="section-heading"><h2>Ways to participate.</h2><p>Give visitors a clear activity to join instead of a generic community description.</p></div>
-      <div class="grid-3">
-        <article class="panel" style="padding:22px"><h3>Grower conversations</h3><p class="muted">Share observations, ask better questions, compare records, and learn from other growers.</p><a class="card-link" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Join discussion →</a></article>
-        <article class="panel" style="padding:22px"><h3>Game nights & playtests</h3><p class="muted">Meet around DTF browser games, multiplayer tables, trivia, and new builds.</p><a class="card-link" href="/games/">Browse games →</a></article>
-        <article class="panel" style="padding:22px"><h3>Grow-offs & challenges</h3><p class="muted">Follow community grows, friendly challenges, progress updates, and finished runs.</p><a class="card-link" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">See community →</a></article>
+      <div class="section-heading"><h2>Choose how you want to participate.</h2><p>Start with one activity. Open the details only when you need the next step.</p></div>
+      <div class="dtf-disclosure-list">
+        <details class="dtf-disclosure" open>
+          <summary><span>Discussion</span><strong>Grower conversations</strong></summary>
+          <div class="dtf-disclosure-body"><p>Share observations, ask better questions, compare records, and learn from other growers.</p><a class="card-link" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Join discussion →</a></div>
+        </details>
+        <details class="dtf-disclosure">
+          <summary><span>Play</span><strong>Game nights &amp; playtests</strong></summary>
+          <div class="dtf-disclosure-body"><p>Meet around DTF browser games, multiplayer tables, trivia, and new builds.</p><a class="card-link" href="/games/">Browse games →</a></div>
+        </details>
+        <details class="dtf-disclosure">
+          <summary><span>Grow</span><strong>Grow-offs &amp; challenges</strong></summary>
+          <div class="dtf-disclosure-body"><p>Follow community grows, friendly challenges, progress updates, and finished runs.</p><a class="card-link" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">See community →</a></div>
+        </details>
       </div>
     </div>
   </section>
@@ -35,22 +75,22 @@
   <section class="section section-light">
     <div class="wrap">
       <div class="section-heading"><h2>Bring the record with you.</h2><p>Plant-health discussion improves when photos, plant stage, environment, root-zone context, and recent changes come with the question.</p></div>
-      <div class="grid-3">
-        <article class="card"><div class="card-body"><h3>Track</h3><p>Record plants, tasks, readings, photos, irrigation, and harvest details.</p><a class="card-link" href="/growlens/">Open GrowLens →</a></div></article>
-        <article class="card"><div class="card-body"><h3>Diagnose</h3><p>Use structured evidence and compare plausible causes instead of guessing from color alone.</p><a class="card-link" href="/thc-grow-doc/">Open Grow Doc →</a></div></article>
-        <article class="card"><div class="card-body"><h3>Learn</h3><p>Connect observations to the plant-science subjects behind them.</p><a class="card-link" href="/learn/">Open learning center →</a></div></article>
-      </div>
+      <nav class="dtf-action-rail" aria-label="Community evidence tools">
+        <a href="/growlens/"><strong>Track</strong><span>Plants, tasks, readings, photos, irrigation, and harvest records.</span></a>
+        <a href="/thc-grow-doc/"><strong>Diagnose</strong><span>Structured evidence and plausible-cause comparison.</span></a>
+        <a href="/learn/"><strong>Learn</strong><span>Plant-science subjects behind the observation.</span></a>
+      </nav>
     </div>
   </section>
 
   <section class="section section-mid">
     <div class="wrap">
       <div class="section-heading"><h2>Community standard.</h2><p>Useful participation depends on accurate context, respectful discussion, and verified DTF channels.</p></div>
-      <div class="grid-3">
-        <article class="panel" style="padding:20px"><h3>Document honestly</h3><p class="muted">Separate observation from assumption and label uncertainty.</p></article>
-        <article class="panel" style="padding:20px"><h3>Protect members</h3><p class="muted">Do not pressure people into private transactions or unsafe activity.</p></article>
-        <article class="panel" style="padding:20px"><h3>Credit creators</h3><p class="muted">Preserve breeder, artist, photographer, and source attribution.</p></article>
-      </div>
+      <ol class="dtf-standard-list">
+        <li><strong>Document honestly.</strong><span>Separate observation from assumption and label uncertainty.</span></li>
+        <li><strong>Protect members.</strong><span>Do not pressure people into private transactions or unsafe activity.</span></li>
+        <li><strong>Credit creators.</strong><span>Preserve breeder, artist, photographer, and source attribution.</span></li>
+      </ol>
     </div>
   </section>
 </main>

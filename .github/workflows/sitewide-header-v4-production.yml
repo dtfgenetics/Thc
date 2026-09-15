@@ -58,14 +58,12 @@ jobs:
           test -s site/wordpress/assets/responsive-layout-v1.css
           test -s site/wordpress/assets/sitewide-ux-polish-v1.css
           grep -Fq 'data-dtf-shell="header-v6"' scripts/lib/sitewide-header-template-v6.mjs
-          grep -Fq 'data-dtf-sitewide-header="canonical-six-v1"' scripts/lib/sitewide-header-template-v6.mjs
-          for required in '>Genetics</a>' '>Learn</a>' '>Tools</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
+          grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' scripts/lib/sitewide-header-template-v6.mjs
+          for required in '>Home</a>' '>Seeds</a>' '>Learn</a>' '>Courses</a>' '>Diagnostic</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
             grep -Fq "$required" scripts/lib/sitewide-header-template-v6.mjs || { echo "Missing canonical nav label: $required" >&2; exit 1; }
           done
-          ! grep -Fq '>Home</a>' scripts/lib/sitewide-header-template-v6.mjs
-          ! grep -Fq '>Seeds</a>' scripts/lib/sitewide-header-template-v6.mjs
-          ! grep -Fq '>Courses</a>' scripts/lib/sitewide-header-template-v6.mjs
-          ! grep -Fq '>Diagnostic</a>' scripts/lib/sitewide-header-template-v6.mjs
+          ! grep -Fq '>Genetics</a>' scripts/lib/sitewide-header-template-v6.mjs
+          ! grep -Fq '>Tools</a>' scripts/lib/sitewide-header-template-v6.mjs
           grep -Fq "./lib/sitewide-header-template-v6.mjs" scripts/apply-sitewide-header.mjs
           grep -Fq "./lib/sitewide-header-template-v6.mjs" scripts/rebuild-wordpress-shared-shell-v3.mjs
 
@@ -118,7 +116,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for route in / /seeds/ /learn/ /tools/ /games/ /community/ /shop/; do
+          for route in / /seeds/ /learn/ /courses/ /tools/ /games/ /community/ /shop/; do
             out="$RUNNER_TEMP/header-v6-$(echo "$route" | tr '/' '_' | tr -cd '[:alnum:]_').html"
             ok=0
             for attempt in 1 2 3 4 5 6; do
@@ -133,7 +131,7 @@ jobs:
           if(!header) process.exit(1);
           const nav=header.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>([\s\S]*?)<\/nav>/i)?.[1]||'';
           const labels=[...nav.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)].map(m=>m[1].replace(/<[^>]+>/g,'').trim());
-          const expected=['Genetics','Learn','Tools','Games','Community','Shop'];
+          const expected=['Home','Seeds','Learn','Courses','Diagnostic','Games','Community','Shop'];
           if(JSON.stringify(labels)!==JSON.stringify(expected)) throw new Error(`Unexpected V6 navigation: ${JSON.stringify(labels)}`);
           if(!/dtf-sitewide-header-v6-script/.test(html)) throw new Error('V6 script missing');
           NODE
