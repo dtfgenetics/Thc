@@ -11,7 +11,7 @@ const backupRoot = process.env.BACKUP_ROOT || '/tmp/dtf-learning-v4';
 if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 
 const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-const headers = { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learning-Hierarchy/4.3' };
+const headers = { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learning-Hierarchy/4.4' };
 const stamp = new Date().toISOString().replace(/[-:.]/g, '').replace('Z', 'Z');
 const backupDir = join(backupRoot, `learning-v4-${stamp}`);
 await mkdir(backupDir, { recursive: true });
@@ -72,23 +72,27 @@ const goalHeading = 'Start with the question you are trying to answer.';
 const mapHeading = 'See how the systems connect before you go deep.';
 
 const styles = `<style id="${styleId}">
-.v3 .learning-map-v4{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--v3-cream) 0%,var(--v3-soft) 100%)}
-.v3 .learning-map-v4:after{content:"";position:absolute;width:360px;height:360px;right:-190px;bottom:-220px;border:1px solid rgba(214,183,92,.2);border-radius:50%;box-shadow:0 0 0 48px rgba(214,183,92,.035),0 0 0 96px rgba(214,183,92,.02);pointer-events:none}
-.v3 .learning-map-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:12px}
-.v3 .learning-map-grid:before{content:"";position:absolute;left:7%;right:7%;top:29px;height:1px;background:linear-gradient(90deg,transparent,rgba(16,43,26,.22) 8%,rgba(16,43,26,.22) 92%,transparent)}
-.v3 .learning-map-step{position:relative;z-index:1;padding:0 8px 12px;text-align:center}
-.v3 .learning-map-step b{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 16px;border-radius:17px;background:linear-gradient(180deg,#173b27,var(--v3-deep));color:#efd786;box-shadow:0 8px 22px rgba(7,23,15,.15);font-size:.82rem;letter-spacing:.04em}
-.v3 .learning-map-step h3{margin:0 0 7px;font-size:1.02rem;line-height:1.18;letter-spacing:-.02em}
-.v3 .learning-map-step p{margin:0;color:var(--v3-muted);font-size:.87rem;line-height:1.55}
-.v3 .learning-map-step .v3-text-link{display:inline-flex;margin-top:10px;font-size:.86rem}
-.v3 .learning-map-cue{position:relative;z-index:1;margin-top:30px;padding:18px 20px;border-left:4px solid var(--v3-gold);border-radius:0 14px 14px 0;background:#fff;color:#344d3e;line-height:1.65;box-shadow:0 8px 24px rgba(17,43,28,.05)}
-@media(max-width:1020px){.v3 .learning-map-grid{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:28px}.v3 .learning-map-grid:before{display:none}}
-@media(max-width:640px){.v3 .learning-map-grid{grid-template-columns:1fr;gap:20px}.v3 .learning-map-step{display:grid;grid-template-columns:58px 1fr;gap:0 15px;text-align:left;padding:0}.v3 .learning-map-step b{grid-row:1 / span 3;margin:0}.v3 .learning-map-step h3{margin:4px 0 5px}.v3 .learning-map-step p,.v3 .learning-map-step .v3-text-link{grid-column:2}.v3 .learning-map-step .v3-text-link{margin-top:7px}}
+.v3 .learning-map-v4{position:relative;overflow:hidden;padding-block:clamp(46px,6vw,70px)!important;background:linear-gradient(180deg,#f7f4ea 0%,#eef2e9 100%)}
+.v3 .learning-map-v4:after{content:"";position:absolute;width:300px;height:300px;right:-190px;bottom:-210px;border:1px solid rgba(214,183,92,.16);border-radius:50%;box-shadow:0 0 0 42px rgba(214,183,92,.025),0 0 0 84px rgba(214,183,92,.016);pointer-events:none}
+.v3 .learning-map-v4 .heading{margin-bottom:clamp(22px,3vw,32px)!important}
+.v3 .learning-map-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid rgba(16,43,26,.15);border-bottom:1px solid rgba(16,43,26,.15)}
+.v3 .learning-map-step{position:relative;display:grid;grid-template-columns:38px minmax(0,1fr);grid-template-rows:auto auto auto;column-gap:13px;padding:20px 20px 20px 0;border-bottom:1px solid rgba(16,43,26,.11);min-width:0}
+.v3 .learning-map-step:nth-child(-n+3){border-top:0}
+.v3 .learning-map-step:nth-last-child(-n+3){border-bottom:0}
+.v3 .learning-map-step:not(:nth-child(3n+1)){padding-left:20px;border-left:1px solid rgba(16,43,26,.11)}
+.v3 .learning-map-step b{grid-row:1 / span 3;display:grid;place-items:center;width:34px;height:34px;margin:1px 0 0;border-radius:10px;background:#173b27;color:#efd786;font-size:.72rem;line-height:1;letter-spacing:.05em;box-shadow:none}
+.v3 .learning-map-step h3{margin:0 0 4px;font-size:1.02rem;line-height:1.2;letter-spacing:-.02em}
+.v3 .learning-map-step p{margin:0;color:var(--v3-muted);font-size:.86rem;line-height:1.48}
+.v3 .learning-map-step .v3-text-link{grid-column:2;display:inline-flex;width:max-content;margin-top:7px;font-size:.84rem}
+.v3 .learning-map-cue{position:relative;z-index:1;display:flex;gap:7px;align-items:baseline;margin-top:18px;padding:0;color:#405448;font-size:.9rem;line-height:1.58;background:transparent;border:0;box-shadow:none}
+.v3 .learning-map-cue strong{color:var(--v3-ink)}
+@media(max-width:900px){.v3 .learning-map-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.v3 .learning-map-step:nth-last-child(-n+3){border-bottom:1px solid rgba(16,43,26,.11)}.v3 .learning-map-step:nth-last-child(-n+2){border-bottom:0}.v3 .learning-map-step:not(:nth-child(3n+1)){padding-left:0;border-left:0}.v3 .learning-map-step:nth-child(even){padding-left:18px;border-left:1px solid rgba(16,43,26,.11)}}
+@media(max-width:620px){.v3 .learning-map-v4{padding-block:44px!important}.v3 .learning-map-grid{grid-template-columns:1fr;border-bottom:0}.v3 .learning-map-step,.v3 .learning-map-step:nth-child(even){padding:16px 0!important;border-left:0!important;border-bottom:1px solid rgba(16,43,26,.11)!important}.v3 .learning-map-step:last-child{border-bottom:0!important}.v3 .learning-map-step p{font-size:.9rem}.v3 .learning-map-cue{display:block;margin-top:16px;font-size:.88rem}.v3 .learning-map-cue strong{display:block;margin-bottom:3px}}
 </style>`;
 
 const mapMarkup = `${startMarker}
 <section class="section learning-map-v4" id="learning-map" data-dtf-learning-map="v4"><div class="wrap">
-  <div class="heading"><div><p class="eyebrow">Learning map</p><h2>${mapHeading}</h2></div><p>Cultivation decisions are connected. Use this map to move from the plant itself into environment, roots, management, plant health, and finish quality without treating each topic like an isolated trick.</p></div>
+  <div class="heading"><div><p class="eyebrow">Learning map</p><h2>${mapHeading}</h2></div><p>Cultivation decisions are connected. Move from plant biology into environment, roots, management, plant health, and finish quality without treating each topic like an isolated trick.</p></div>
   <div class="learning-map-grid" aria-label="Teaching Healthy Cultivation connected learning map">
     <article class="learning-map-step"><b>01</b><h3>Plant</h3><p>Biology, anatomy, lifecycle and plant response.</p><a class="v3-text-link" href="/learn/plant-biology/">Plant biology <span aria-hidden="true">→</span></a></article>
     <article class="learning-map-step"><b>02</b><h3>Environment</h3><p>Temperature, RH, VPD, airflow, light and CO₂ context.</p><a class="v3-text-link" href="/learn/environment-vpd/">Environment <span aria-hidden="true">→</span></a></article>
@@ -97,7 +101,7 @@ const mapMarkup = `${startMarker}
     <article class="learning-map-step"><b>05</b><h3>Protect</h3><p>Prevention, scouting, differential diagnosis and IPM.</p><a class="v3-text-link" href="/learn/ipm/">Plant health &amp; IPM <span aria-hidden="true">→</span></a></article>
     <article class="learning-map-step"><b>06</b><h3>Finish &amp; improve</h3><p>Harvest, post-harvest, genetics, evidence and iteration.</p><a class="v3-text-link" href="/learn/harvest-postharvest/">Harvest &amp; quality <span aria-hidden="true">→</span></a></article>
   </div>
-  <div class="learning-map-cue"><strong>Use this as a loop, not a checklist.</strong> Enter where your question is, move backward to the system that could be driving it, then move forward to the measurement or decision that tests your understanding.</div>
+  <div class="learning-map-cue"><strong>Use this as a loop, not a checklist.</strong><span>Enter where your question is, move backward to what could be driving it, then forward to the measurement or decision that tests it.</span></div>
 </div></section>
 ${endMarker}`;
 
