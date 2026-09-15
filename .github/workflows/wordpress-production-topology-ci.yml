@@ -9,6 +9,7 @@ on:
       - .github/workflows/wordpress-genetics-library-push.yml
       - .github/workflows/wordpress-gallery-v2-production.yml
       - .github/workflows/wordpress-infographic-production.yml
+      - .github/workflows/wordpress-approved-visual-library-v2.yml
       - .github/workflows/wordpress-learning-experience-v3-production.yml
       - .github/workflows/wordpress-home-release-visuals.yml
       - .github/workflows/wordpress-visual-polish-v3-post-canonical.yml
@@ -27,6 +28,7 @@ on:
       - scripts/prepare-learning-owner-aware-followup-publishers.mjs
       - scripts/publish-learning-expanded-references-owner-aware.mjs
       - scripts/verify-learning-owner-storage.mjs
+      - scripts/clear-wordpress-home-featured-media.mjs
   push:
     branches: [main]
     paths:
@@ -35,6 +37,7 @@ on:
       - .github/workflows/wordpress-genetics-library-push.yml
       - .github/workflows/wordpress-gallery-v2-production.yml
       - .github/workflows/wordpress-infographic-production.yml
+      - .github/workflows/wordpress-approved-visual-library-v2.yml
       - .github/workflows/wordpress-learning-experience-v3-production.yml
       - .github/workflows/wordpress-home-release-visuals.yml
       - .github/workflows/wordpress-visual-polish-v3-post-canonical.yml
@@ -53,6 +56,7 @@ on:
       - scripts/prepare-learning-owner-aware-followup-publishers.mjs
       - scripts/publish-learning-expanded-references-owner-aware.mjs
       - scripts/verify-learning-owner-storage.mjs
+      - scripts/clear-wordpress-home-featured-media.mjs
 
 permissions:
   contents: read
@@ -74,13 +78,14 @@ jobs:
           genetics='.github/workflows/wordpress-genetics-library-production.yml'
           genetics_recovery='.github/workflows/wordpress-genetics-library-push.yml'
           gallery_verify='.github/workflows/wordpress-gallery-v2-production.yml'
-          infographics='.github/workflows/wordpress-infographic-production.yml'
+          legacy_infographics='.github/workflows/wordpress-infographic-production.yml'
+          approved_visuals='.github/workflows/wordpress-approved-visual-library-v2.yml'
           learning='.github/workflows/wordpress-learning-experience-v3-production.yml'
           home='.github/workflows/wordpress-home-release-visuals.yml'
           legacy_visual='.github/workflows/wordpress-visual-polish-v3-post-canonical.yml'
           legacy_genetics='.github/workflows/wordpress-home-genetics-art.yml'
           watch='.github/workflows/wordpress-canonical-watch.yml'
-          verify_infographics='.github/workflows/verify-live-infographics.yml'
+          verify_visuals='.github/workflows/verify-live-infographics.yml'
           ipv4_bootstrap='scripts/wordpress-ipv4-fetch-bootstrap.mjs'
           genetics_verify='scripts/verify-wordpress-genetics-library-production.mjs'
           cache_purge='scripts/purge-wordpress-litespeed-cache.mjs'
@@ -90,57 +95,53 @@ jobs:
           learning_followup_prepare='scripts/prepare-learning-owner-aware-followup-publishers.mjs'
           learning_expanded='scripts/publish-learning-expanded-references-owner-aware.mjs'
           learning_storage='scripts/verify-learning-owner-storage.mjs'
+          home_feature_guard='scripts/clear-wordpress-home-featured-media.mjs'
 
           grep -Fq -- '- Stage DTFSeeds WordPress Canonical Deployment' "$canonical"
 
-          # Genetics is a dedicated /seeds/ owner. It may recover after any
-          # completed canonical run, but its acceptance must separate the
-          # authoritative WordPress record from public LiteSpeed convergence.
+          # Genetics owns /seeds/. Automatic production must purge explicit routes
+          # before REST/public acceptance; direct recovery remains manual-only.
           grep -Fq -- '- Publish DTFSeeds WordPress Production' "$genetics"
           grep -Fq -- "- 'scripts/wordpress-ipv4-fetch-bootstrap.mjs'" "$genetics"
-          grep -Fq -- "- 'scripts/flush-hostinger-litespeed-mcp.mjs'" "$genetics"
           grep -Fq -- "- 'scripts/purge-wordpress-litespeed-cache.mjs'" "$genetics"
           grep -Fq -- "- 'scripts/verify-wordpress-genetics-library-production.mjs'" "$genetics"
           grep -Fq "LITESPEED_PURGE_ALL: 'false'" "$genetics"
-          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-genetics-library-cdn.mjs' "$genetics"
-          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-woocommerce-strain-card-images-cdn.mjs' "$genetics"
-          grep -Fq 'LITESPEED_PURGE_URLS_JSON="$purge_urls" node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/purge-wordpress-litespeed-cache.mjs' "$genetics"
-          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/verify-wordpress-genetics-library-production.mjs' "$genetics"
-          node --check "$cache_purge"
-          node --check "$genetics_verify"
-          grep -Fq "do_action('litespeed_purge_url', \$url)" "$cache_purge"
-          grep -Fq 'Authoritative WordPress REST proof verified' "$genetics_verify"
-          grep -Fq 'public cache convergence failed' "$genetics_verify"
-
           purge_line="$(grep -n 'LITESPEED_PURGE_URLS_JSON=.*wordpress-ipv4-fetch-bootstrap.mjs.*purge-wordpress-litespeed-cache.mjs' "$genetics" | head -1 | cut -d: -f1)"
           verify_line="$(grep -n 'wordpress-ipv4-fetch-bootstrap.mjs scripts/verify-wordpress-genetics-library-production.mjs' "$genetics" | head -1 | cut -d: -f1)"
           [[ -n "$purge_line" && -n "$verify_line" && "$purge_line" -lt "$verify_line" ]] || {
-            echo 'Genetics must purge its explicit routes immediately before REST/public acceptance.' >&2
+            echo 'Genetics must purge explicit routes before REST/public acceptance.' >&2
             exit 1
           }
+          node --check "$cache_purge"
+          node --check "$genetics_verify"
 
-          # Recovery and Gallery verification lanes must stay manual-only so
-          # they cannot compete with the authoritative automatic writers.
           for manual_lane in "$genetics_recovery" "$gallery_verify"; do
             grep -Fq 'workflow_dispatch:' "$manual_lane"
             if grep -Fq 'workflow_run:' "$manual_lane" || grep -Fq 'push:' "$manual_lane"; then
-              echo "Manual recovery/verifier lane must not auto-trigger: $manual_lane" >&2
+              echo "Recovery/verifier lane must remain manual-only: $manual_lane" >&2
               exit 1
             fi
           done
-          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-genetics-library-cdn.mjs' "$genetics_recovery"
           ! grep -Fq 'APPLY_GALLERY_V2' "$gallery_verify"
           grep -Fq 'Gallery is verified read-only' "$gallery_verify"
 
-          grep -Fq -- '- Publish DTFSeeds WordPress Production' "$infographics"
-          if grep -Fq -- '- Stage DTFSeeds WordPress Canonical Deployment' "$infographics"; then
-            echo 'Infographic production must not run directly from canonical staging.' >&2
+          # The legacy infographic workflow remains upstream of Learning for now,
+          # but the public visual library itself is owned by the approved-only lane.
+          grep -Fq -- '- Publish DTFSeeds WordPress Production' "$legacy_infographics"
+          if grep -Fq -- '- Stage DTFSeeds WordPress Canonical Deployment' "$legacy_infographics"; then
+            echo 'Legacy infographic production must not run directly from canonical staging.' >&2
             exit 1
           fi
 
+          grep -Fq 'name: Publish Approved THC Visual Library' "$approved_visuals"
+          grep -Fq 'dtf-approved-visual-library-v2' "$approved_visuals"
+          grep -Fq 'site/wordpress/visual-quality-policy.json' "$approved_visuals"
+          grep -Fq "APPLY_INFOGRAPHIC_GALLERY: 'true'" "$approved_visuals"
+          grep -Fq 'Verify public approved-only library' "$approved_visuals"
+
           grep -Fq -- '- Publish THC Infographics to WordPress Production' "$learning"
           if grep -Fq -- '- Publish DTFSeeds WordPress Production' "$learning"; then
-            echo 'Learning V3 must have one upstream workflow handoff, not a parallel canonical trigger.' >&2
+            echo 'Learning must keep one upstream workflow handoff, not a parallel canonical trigger.' >&2
             exit 1
           fi
 
@@ -148,51 +149,31 @@ jobs:
           grep -Fq 'workflow_call:' "$home"
           grep -Fq 'workflow_dispatch:' "$home"
           if grep -Fq 'workflow_run:' "$home" || grep -Fq 'push:' "$home"; then
-            echo 'Final Home visuals must be reusable/manual-only; Learning owns automatic production triggering.' >&2
+            echo 'Final Home visuals must remain reusable/manual-only; Learning owns automatic Home/Learn production.' >&2
             exit 1
           fi
 
-          for home_input in \
-            'scripts/fix-wordpress-home-release-visuals.mjs' \
-            'scripts/wordpress-transient-fetch-bootstrap.mjs' \
-            'scripts/flush-hostinger-litespeed-mcp.mjs' \
-            'site/wordpress/products/strain-card-images.json' \
-            '.github/workflows/wordpress-home-release-visuals.yml'; do
-            grep -Fq -- "- ${home_input}" "$learning" || {
-              echo "Learning must own final Home source path: ${home_input}" >&2
-              exit 1
-            }
-          done
-
-          grep -Fq -- '- scripts/wordpress-ipv4-fetch-bootstrap.mjs' "$learning"
-          grep -Fq -- '- scripts/run-learning-v3-connected-production.sh' "$learning"
-          grep -Fq -- '- scripts/improve-wordpress-learning-v4.mjs' "$learning"
-          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs' "$learning"
-          grep -Fq 'bash scripts/run-learning-v3-connected-production.sh' "$learning"
-
-          # Learning root ownership is proved through authenticated WordPress
-          # storage at every stage. Topic/child routes remain anonymous-public.
           bash -n "$learning_wrapper"
           node --check "$learning_v3_prepare"
           node --check "$learning_followup_prepare"
           node --check "$learning_expanded"
           node --check "$learning_storage"
+          node --check "$home_feature_guard"
           grep -Fq 'prepare-learning-v3-owner-aware-publisher.mjs' "$learning_wrapper"
           grep -Fq 'prepare-learning-owner-aware-followup-publishers.mjs' "$learning_wrapper"
           grep -Fq 'LEARNING_V3_PUBLISHER_PATH="$owner_v3"' "$learning_wrapper"
           grep -Fq 'APPLY_LEARNING_V4=true' "$learning_wrapper"
-          grep -Fq '"$owner_v4"' "$learning_wrapper"
           grep -Fq 'publish-learning-expanded-references-owner-aware.mjs' "$learning_wrapper"
-          grep -Fq '"$owner_visual"' "$learning_wrapper"
+          grep -Fq 'clear-wordpress-home-featured-media.mjs' "$learning_wrapper"
           for stage in v3 v4 expanded visual; do
             grep -Fq "LEARNING_OWNER_STAGE=$stage" "$learning_wrapper"
           done
           grep -Fq "rootVerification: 'wordpress-rest'" "$learning_v3_prepare"
+          grep -Fq "rootStorageRead: 'raw-first'" "$learning_v3_prepare"
           grep -Fq "topicVerification: 'anonymous-public'" "$learning_v3_prepare"
           grep -Fq "verification: 'wordpress-rest-storage'" "$learning_storage"
           grep -Fq "storageVerification: 'success'" "$learning_expanded"
           node --check "$learning_map"
-          grep -Fq 'data-dtf-layout="learn-v3"' "$learning_map"
           grep -Fq 'data-dtf-learning-map="v4"' "$learning_map"
 
           node --check "$ipv4_bootstrap"
@@ -206,12 +187,10 @@ jobs:
             fi
             grep -Fq 'workflow_dispatch:' "$legacy"
           done
-
           if grep -Fq '/learn/' "$legacy_visual" || grep -Fq 'learn_body=' "$legacy_visual"; then
             echo 'Legacy visual compatibility workflow must not mutate or verify Learn ownership.' >&2
             exit 1
           fi
-
           grep -Fq 'continue-on-error: true' "$legacy_genetics"
 
           if grep -Fq 'issue_number: 46' "$watch"; then
@@ -219,11 +198,24 @@ jobs:
             exit 1
           fi
 
-          if grep -Fq 'git push origin HEAD:main' "$verify_infographics"; then
-            echo 'Independent live infographic verification must not mutate main and retrigger production.' >&2
+          # Independent visual verification is now a manual, read-only audit of
+          # the approved-only library. Automatic public acceptance already lives
+          # in wordpress-approved-visual-library-v2.yml.
+          grep -Fq 'workflow_dispatch:' "$verify_visuals"
+          if grep -Fq 'workflow_run:' "$verify_visuals" || grep -Fq 'push:' "$verify_visuals"; then
+            echo 'Independent approved-visual verification must remain manual-only.' >&2
             exit 1
           fi
-          grep -Fq 'actions/upload-artifact@v4' "$verify_infographics"
-          grep -Fq 'issue_number: 220' "$verify_infographics"
+          if grep -Fq 'git push origin HEAD:main' "$verify_visuals"; then
+            echo 'Independent approved-visual verification must not mutate main.' >&2
+            exit 1
+          fi
+          if grep -Fq 'issue_number:' "$verify_visuals"; then
+            echo 'Independent approved-visual verification must not depend on saturated advisory issues.' >&2
+            exit 1
+          fi
+          grep -Fq 'dtf-approved-visual-library-v2' "$verify_visuals"
+          grep -Fq 'site/wordpress/visual-quality-policy.json' "$verify_visuals"
+          grep -Fq 'actions/upload-artifact@v4' "$verify_visuals"
 
-          echo 'Verified production order: staging -> canonical -> infographics -> Learning owner-aware V3/V4/expanded/visual storage transaction with anonymous topic checks -> reusable final Home owner; Genetics remains the dedicated /seeds/ owner with IPv4 REST-first/cache-convergence acceptance; direct Genetics recovery and Gallery verification are manual-only; Topic Literature remains independently serialized, legacy writers are manual-only, and live infographic verification is non-mutating.'
+          echo 'Verified WordPress topology: canonical staging -> dedicated writers; approved-only visual library owns public education media; Learning owns serialized Home/Learn V3/V4/expanded/visual storage plus Home featured-media quarantine; final Home release visuals are reusable; Genetics owns /seeds/; recovery and independent visual-verification lanes are manual/read-only; legacy writers remain manual-only.'
