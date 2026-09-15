@@ -159,7 +159,7 @@ jobs:
           test -s site/public-route-patch/projects/index.html
           test -s site/public-route-patch/games/seed-man-platformer/world-mechanics-browser-v1.js
           grep -Fq 'seed-man-world-mechanics-browser-v1' site/public-route-patch/games/seed-man-platformer/world-mechanics-browser-v1.js
-          grep -Fq 'seed-man-three-dynamic-platforms-v1' site/public-route-patch/games/seed-man-platformer/three-world-v1.js
+          grep -Fq 'seed-man-three-dynamic-platforms-v1' games/seed-man-platformer/src/render/three-world-dynamic.mjs
           grep -Fq 'Cannabis Fleet Battle' site/public-route-patch/projects/index.html
           grep -Fq 'Strain Showdown' site/public-route-patch/games/index.html
           grep -Fq 'Burn Buds' site/public-route-patch/games/index.html
