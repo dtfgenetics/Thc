@@ -5,7 +5,7 @@ import {
   SITEWIDE_HEADER_HTML,
   SITEWIDE_HEADER_SCRIPT_TAG,
   SITEWIDE_HEADER_STYLE_TAG,
-} from './lib/sitewide-header-template.mjs';
+} from './lib/sitewide-header-template-v6.mjs';
 
 const root = resolve(process.argv[2] || 'release');
 const checkOnly = process.argv.includes('--check');
@@ -53,11 +53,11 @@ function occurrences(source, needle) {
 function verifyDocument(source, rel) {
   if (!/<html\b/i.test(source) || !/<body\b/i.test(source)) return { skipped: true };
   const expected = [
-    ['data-dtf-sitewide-header="approved-reference-v1"', 'header'],
-    ['id="dtf-sitewide-header-v5-style"', 'header style'],
+    ['data-dtf-sitewide-header="canonical-six-v1"', 'header'],
+    ['id="dtf-sitewide-header-v6-style"', 'header style'],
     ['id="dtf-responsive-layout-v1"', 'responsive layout style'],
     ['id="dtf-sitewide-ux-polish-v1"', 'sitewide UX polish style'],
-    ['id="dtf-sitewide-header-v5-script"', 'script'],
+    ['id="dtf-sitewide-header-v6-script"', 'script'],
   ];
   for (const [needle, label] of expected) {
     const count = occurrences(source, needle);
@@ -115,7 +115,7 @@ function removeLegacyGlobalHeader(html) {
   const matches = [...searchWindow.matchAll(/<header\b[^>]*>[\s\S]*?<\/header>/gi)];
   for (const match of matches) {
     const fragment = match[0];
-    if (fragment.includes('data-dtf-sitewide-header') || fragment.includes('data-dtf-shell="header-v5"')) continue;
+    if (fragment.includes('data-dtf-sitewide-header') || fragment.includes('data-dtf-shell="header-v6"')) continue;
     if (legacyHeaderScore(fragment) < 4) continue;
     const absoluteStart = searchStart + match.index;
     return { html: html.slice(0, absoluteStart) + html.slice(absoluteStart + fragment.length), removed: true };
@@ -128,9 +128,11 @@ function reconcileDocument(source) {
 
   let output = source;
   output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-sitewide-header-v5-style["'][^>]*>[\s\S]*?<\/style>\s*/gi);
+  output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-sitewide-header-v6-style["'][^>]*>[\s\S]*?<\/style>\s*/gi);
   output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-responsive-layout-v1["'][^>]*>[\s\S]*?<\/style>\s*/gi);
   output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-sitewide-ux-polish-v1["'][^>]*>[\s\S]*?<\/style>\s*/gi);
   output = removeOwnedFragment(output, /<script\b[^>]*id=["']dtf-sitewide-header-v5-script["'][^>]*>[\s\S]*?<\/script>\s*/gi);
+  output = removeOwnedFragment(output, /<script\b[^>]*id=["']dtf-sitewide-header-v6-script["'][^>]*>[\s\S]*?<\/script>\s*/gi);
   output = removeOwnedFragment(output, /<header\b[^>]*data-dtf-sitewide-header=["'][^"']+["'][^>]*>[\s\S]*?<\/header>\s*/gi);
 
   const legacy = removeLegacyGlobalHeader(output);
@@ -161,8 +163,8 @@ for (const file of files) {
 
   const result = reconcileDocument(source);
   if (result.skipped) { report.skipped += 1; continue; }
-  if (!result.output.includes('data-dtf-shell="header-v5"') ||
-      !result.output.includes('dtf-sitewide-header-v5-style') ||
+  if (!result.output.includes('data-dtf-shell="header-v6"') ||
+      !result.output.includes('dtf-sitewide-header-v6-style') ||
       !result.output.includes('dtf-responsive-layout-v1') ||
       !result.output.includes('dtf-sitewide-ux-polish-v1')) {
     report.failures.push(`${rel}: canonical header, responsive layout, or UX polish markers missing after reconciliation`);
