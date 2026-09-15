@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "gameId": "seed-man-platformer",
-  "updated": "2026-09-12",
+  "updated": "2026-09-15",
   "sourceOfTruth": "games/seed-man-platformer/data/seed-man-art-manifest-v1.json",
   "productionPolicy": {
     "individualAssetsFirst": true,
@@ -30,7 +30,9 @@
       "repoPath": "games/seed-man-platformer/assets/approved/seed-man-character-atlas-v2.webp",
       "sitePath": "site/public-route-patch/games/seed-man-platformer/assets/approved/seed-man-character-atlas-v2.webp",
       "status": "approved-runtime-present",
-      "next": "retain as runtime authority while producing normalized source strips for idle, walk, run, jump, fall, land, attack, hit and victory plus plant/fire/electric/ice phenotype source masters"
+      "interimMotionRig": "seed-man-character-motion-rig-v1",
+      "interimMotionRigRole": "renderer-only state feedback for idle, run, jump, fall, attack, ability, hurt, landing and victory while the approved multi-frame animation strips are still in production",
+      "next": "retain the approved atlas and interim motion rig as runtime authority while producing normalized transparent source strips for idle, walk, run, jump, fall, land, attack, hit and victory plus plant/fire/electric/ice phenotype source masters; replace transform-only motion state-by-state only after each strip passes sprite normalization and in-engine review"
     },
     {
       "id": "enemy.atlas",
@@ -62,26 +64,10 @@
     {"id":"world.eco-city.background","world":"eco-city","priority":5,"status":"source-master-needed"}
   ],
   "currentReviewAssets": [
-    {
-      "name": "seed-man-run-visual-asset-sheet-concept-v1.png",
-      "driveId": "10qNyOZvx3vO0yV5cg1Pq9ISOdPCoHVTs",
-      "status": "review-only-not-runtime"
-    },
-    {
-      "name": "seed-man-run-visual-asset-sheet-concept-v2.png",
-      "driveId": "1NqpmlCogs3ZfAbS4izSF0vWBhWIazBJw",
-      "status": "review-only-not-runtime"
-    },
-    {
-      "name": "seed-man-run-visual-asset-sheet-concept-v3.png",
-      "driveId": "1TgfUbVidQSDf7fzIu_ZSb3aXOZIdkVSs",
-      "status": "review-only-not-runtime"
-    },
-    {
-      "name": "seed-man-run-visual-asset-sheet-concept-v4.png",
-      "driveId": "1haEbjGxLhv1O1jVXvnyCPVb-dSm_Fop5",
-      "status": "review-only-not-runtime"
-    }
+    {"name":"seed-man-run-visual-asset-sheet-concept-v1.png","driveId":"10qNyOZvx3vO0yV5cg1Pq9ISOdPCoHVTs","status":"review-only-not-runtime"},
+    {"name":"seed-man-run-visual-asset-sheet-concept-v2.png","driveId":"1NqpmlCogs3ZfAbS4izSF0vWBhWIazBJw","status":"review-only-not-runtime"},
+    {"name":"seed-man-run-visual-asset-sheet-concept-v3.png","driveId":"1TgfUbVidQSDf7fzIu_ZSb3aXOZIdkVSs","status":"review-only-not-runtime"},
+    {"name":"seed-man-run-visual-asset-sheet-concept-v4.png","driveId":"1haEbjGxLhv1O1jVXvnyCPVb-dSm_Fop5","status":"review-only-not-runtime"}
   ],
   "nextProductionAsset": {
     "id": "world.greenhouse-valley.background.source-v1",
