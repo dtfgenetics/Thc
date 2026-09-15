@@ -22,6 +22,7 @@ fi
 # storage verification must read authenticated edit-context raw content first;
 # rendered content is only a fallback because WordPress can transform markers.
 node --check scripts/prepare-learning-v3-owner-aware-publisher.mjs
+node --check scripts/clear-wordpress-home-featured-media.mjs
 grep -Fq 'function isApprovedLearningMedia(item)' scripts/prepare-learning-v3-owner-aware-publisher.mjs
 grep -Fq "if (slug.startsWith('dtf-strain-card-')) return false;" scripts/prepare-learning-v3-owner-aware-publisher.mjs
 grep -Fq "slug.startsWith('dtf-approved-visual-')" scripts/prepare-learning-v3-owner-aware-publisher.mjs
@@ -95,6 +96,15 @@ LEARNING_OWNER_STAGE=visual \
 node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/verify-learning-owner-storage.mjs \
   | tee /tmp/dtf-learning-owner-visual-storage.json
 
+# Home/Learn are custom owner-rendered pages, so a stale WordPress featured image
+# is not part of their visual design. Clear Home's featured-media channel before
+# public verification so the theme cannot render quarantined artwork outside
+# content.raw and bypass the content scrubber.
+APPLY_HOME_FEATURED_MEDIA_GUARD=true \
+HOME_FEATURED_MEDIA_REPORT="$map_root/home-featured-media-guard.json" \
+node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/clear-wordpress-home-featured-media.mjs \
+  | tee /tmp/dtf-home-featured-media-guard-output.json
+
 # The production transaction cannot complete with retired visual families still
 # embedded anywhere in public WordPress content. This runs after all Learning
 # writers, so a downstream presentation pass cannot reintroduce quarantined art.
@@ -138,17 +148,25 @@ for route in "${verify_routes[@]}"; do
     -H 'Pragma: no-cache' \
     "${WP_SITE_URL:-https://dtfseeds.com}${route}?dtf_learning_visual_gate=${GITHUB_RUN_ID:-local}-$(date +%s%N)" \
     -o "$body"
-  if grep -Eqi "$blocked_visual" "$body" || grep -Eqi "$blocked_alt" "$body"; then
-    echo "Learning publish still renders a retired visual on $route" >&2
+  if grep -Eqi "$blocked_visual" "$body"; then
+    echo "Learning publish still renders a retired visual source on $route" >&2
+    grep -Eio "$blocked_visual" "$body" | head -20 >&2 || true
+    exit 1
+  fi
+  if grep -Eqi "$blocked_alt" "$body"; then
+    echo "Learning publish still renders a retired visual alt identity on $route" >&2
+    grep -Eio "$blocked_alt" "$body" | head -20 >&2 || true
     exit 1
   fi
   if [[ "$route" == /learn/* ]] && grep -Eqi "$blocked_learning_media" "$body"; then
     echo "Learning publish still renders a product/strain-card visual in an educational role on $route" >&2
+    grep -Eio "$blocked_learning_media" "$body" | head -20 >&2 || true
     exit 1
   fi
 done
 
 test -s "$map_root/learning-v4-backup-path.txt"
 test -s "$map_root/learning-visual-v1-backup-path.txt"
+test -s "$map_root/home-featured-media-guard.json"
 test -s "$retired_visual_root/retired-visual-scrub-backup-path.txt"
-echo "Canonical Learning V3 published with raw-first root storage proof, role-safe approved media selection, connected Learning V4 map, expanded THC references, DTF Visual V1, and retired-visual enforcement."
+echo "Canonical Learning V3 published with raw-first root storage proof, role-safe approved media selection, connected Learning V4 map, expanded THC references, DTF Visual V1, Home featured-media quarantine, and retired-visual enforcement."
