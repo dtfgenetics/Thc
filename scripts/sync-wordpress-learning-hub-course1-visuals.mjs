@@ -122,6 +122,7 @@ for (let index = 0; index < uiSource.lessons.length; index += 1) {
 }
 
 const approvedCount = generatedLessons.filter((lesson) => lesson.visual.status === 'approved').length;
+const lessonsWithoutCanonicalVisualIds = generatedLessons.filter((lesson) => lesson.visual.status !== 'approved').map((lesson) => lesson.id);
 must(approvedCount > 2, `Canonical visual sync found only ${approvedCount} approved lesson visuals; refusing to preserve the stale two-visual state.`);
 must(canonicalVisualPlacements >= approvedCount, 'Canonical visual placement count is inconsistent.');
 
@@ -156,7 +157,8 @@ console.log(JSON.stringify({
   sourceRef,
   lessonCount: generatedLessons.length,
   approvedVisualLessons: approvedCount,
-  lessonsWithoutCanonicalVisual: generatedLessons.length - approvedCount,
+  lessonsWithoutCanonicalVisual: lessonsWithoutCanonicalVisualIds.length,
+  lessonsWithoutCanonicalVisualIds,
   canonicalVisualPlacements,
   uniquePublicAssets: uniqueAssets.size,
   outputPath
