@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-09-15",
+  "status": "canonical",
+  "site": "https://dtfseeds.com",
+  "brandHome": {
+    "label": "DTF Genetics",
+    "route": "/",
+    "note": "The brand is the Home control; Home is not duplicated in primary navigation."
+  },
+  "primaryNavigation": [
+    { "id": "genetics", "label": "Genetics", "route": "/seeds/" },
+    { "id": "learn", "label": "Learn", "route": "/learn/" },
+    { "id": "tools", "label": "Tools", "route": "/tools/" },
+    { "id": "games", "label": "Games", "route": "/games/" },
+    { "id": "community", "label": "Community", "route": "/community/" },
+    { "id": "shop", "label": "Shop", "route": "/shop/" }
+  ],
+  "sectionOwnership": {
+    "genetics": ["/seeds/"],
+    "learn": ["/learn/", "/courses/", "/education/", "/yellow-leaves/", "/atlas/"],
+    "tools": ["/tools/", "/growlens/", "/thc-grow-doc/"],
+    "games": ["/games/"],
+    "community": ["/community/", "/gallery/"],
+    "shop": ["/shop/", "/product/", "/cart/", "/checkout/", "/my-account/"]
+  },
+  "secondaryNavigation": [
+    { "id": "gallery", "label": "Gallery", "route": "/gallery/" },
+    { "id": "about", "label": "About", "route": "/about/" },
+    { "id": "contact", "label": "Contact", "route": "/contact/" }
+  ],
+  "utilityNavigation": [
+    { "id": "search", "label": "Search", "kind": "action" },
+    { "id": "account", "label": "Account", "route": "/my-account/" },
+    { "id": "cart", "label": "Cart", "route": "/cart/" }
+  ],
+  "rules": [
+    "Primary navigation is exactly Genetics, Learn, Tools, Games, Community, Shop in that order.",
+    "Courses is owned by Learn and must not occupy a separate primary slot.",
+    "Diagnostic, GrowLens, and THC Grow Doc are owned by Tools and must not occupy a separate primary slot.",
+    "Home is accessed through the DTF Genetics brand and must not occupy a duplicate primary slot.",
+    "Search, Account, Cart, Gallery, About, and Contact remain outside the six primary destinations."
+  ]
+}
