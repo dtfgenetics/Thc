@@ -1,35 +1,33 @@
-name: Publish Technician I Courses 2-7
+name: Publish Technician II Courses 1-8
 
 on:
   pull_request:
     paths:
-      - site/wordpress/education/tech1-courses-public-v1.json
       - site/wordpress/education/tech2-courses-public-v1.json
       - site/wordpress/education/course-catalog-v4.json
-      - scripts/publish-wordpress-tech1-courses-2-7.mjs
+      - scripts/publish-wordpress-tech2-courses-1-8.mjs
       - scripts/publish-wordpress-certification-catalog-v6.mjs
-      - scripts/verify-wordpress-tech1-courses-2-7.mjs
+      - scripts/verify-wordpress-tech2-courses-1-8.mjs
       - scripts/run-wordpress-with-retry.mjs
-      - .github/workflows/wordpress-tech1-courses-production.yml
+      - .github/workflows/wordpress-tech2-courses-production.yml
   push:
     branches:
       - main
     paths:
-      - site/wordpress/education/tech1-courses-public-v1.json
       - site/wordpress/education/tech2-courses-public-v1.json
       - site/wordpress/education/course-catalog-v4.json
-      - scripts/publish-wordpress-tech1-courses-2-7.mjs
+      - scripts/publish-wordpress-tech2-courses-1-8.mjs
       - scripts/publish-wordpress-certification-catalog-v6.mjs
-      - scripts/verify-wordpress-tech1-courses-2-7.mjs
+      - scripts/verify-wordpress-tech2-courses-1-8.mjs
       - scripts/run-wordpress-with-retry.mjs
-      - .github/workflows/wordpress-tech1-courses-production.yml
+      - .github/workflows/wordpress-tech2-courses-production.yml
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: dtfseeds-tech1-public-courses
+  group: dtfseeds-tech2-public-courses
   cancel-in-progress: false
 
 jobs:
@@ -40,28 +38,28 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Validate public-course publishers
+      - name: Validate Technician II public-course publishers
         run: |
-          node --check scripts/publish-wordpress-tech1-courses-2-7.mjs
+          node --check scripts/publish-wordpress-tech2-courses-1-8.mjs
           node --check scripts/publish-wordpress-certification-catalog-v6.mjs
-          node --check scripts/verify-wordpress-tech1-courses-2-7.mjs
+          node --check scripts/verify-wordpress-tech2-courses-1-8.mjs
           node --check scripts/run-wordpress-with-retry.mjs
-          node scripts/publish-wordpress-tech1-courses-2-7.mjs --validate-only
+          node scripts/publish-wordpress-tech2-courses-1-8.mjs --validate-only
           node scripts/publish-wordpress-certification-catalog-v6.mjs --validate-only
 
   publish:
     if: github.event_name != 'pull_request'
     needs: validate
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 50
     environment: production
     env:
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      APPLY_TECH1_PUBLIC_COURSES: 'true'
+      APPLY_TECH2_PUBLIC_COURSES: 'true'
       APPLY_CERTIFICATION_CATALOG_V6: 'true'
-      BACKUP_ROOT: /tmp/dtf-tech1-public-courses
+      BACKUP_ROOT: /tmp/dtf-tech2-public-courses
       WP_COMMAND_MAX_ATTEMPTS: '5'
     steps:
       - uses: actions/checkout@v4
@@ -73,10 +71,10 @@ jobs:
         run: |
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
-      - name: Publish Technician I Courses 2-7
-        run: node scripts/run-wordpress-with-retry.mjs scripts/publish-wordpress-tech1-courses-2-7.mjs
-      - name: Verify all six course trees and anonymous course roots
-        run: node scripts/run-wordpress-with-retry.mjs scripts/verify-wordpress-tech1-courses-2-7.mjs
+      - name: Publish Technician II Courses 1-8
+        run: node scripts/run-wordpress-with-retry.mjs scripts/publish-wordpress-tech2-courses-1-8.mjs
+      - name: Verify all eight course trees and anonymous course roots
+        run: node scripts/run-wordpress-with-retry.mjs scripts/verify-wordpress-tech2-courses-1-8.mjs
       - name: Publish Certification Catalog V6
         run: node scripts/run-wordpress-with-retry.mjs scripts/publish-wordpress-certification-catalog-v6.mjs
       - name: Verify visitor-facing Catalog V6
@@ -109,7 +107,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: tech1-public-courses-${{ github.run_id }}
-          path: /tmp/dtf-tech1-public-courses
+          name: tech2-public-courses-${{ github.run_id }}
+          path: /tmp/dtf-tech2-public-courses
           if-no-files-found: warn
           retention-days: 30

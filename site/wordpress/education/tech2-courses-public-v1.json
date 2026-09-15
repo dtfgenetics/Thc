@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "tech2-courses-public-v1",
+  "source": {
+    "repository": "dtfgenetics/Thc-learning-courses-",
+    "ref": "main"
+  },
+  "program": {
+    "title": "THC Cultivation Technician II",
+    "slug": "cultivation-technician-ii",
+    "route": "/learn/learning-hub/cultivation-technician-ii/"
+  },
+  "courses": [
+    {"number":1,"id":"COURSE-LH-TECH2-001","releaseId":"PUBLIC-RELEASE-LH-TECH2-001","slug":"advanced-crop-observation-diagnostic-reasoning"},
+    {"number":2,"id":"COURSE-LH-TECH2-002","releaseId":"PUBLIC-RELEASE-LH-TECH2-002","slug":"environmental-data-sensors-equipment-response"},
+    {"number":3,"id":"COURSE-LH-TECH2-003","releaseId":"PUBLIC-RELEASE-LH-TECH2-003","slug":"fertigation-execution-verification-root-zone-interpretation"},
+    {"number":4,"id":"COURSE-LH-TECH2-004","releaseId":"PUBLIC-RELEASE-LH-TECH2-004","slug":"plant-health-ipm-biosecurity-troubleshooting"},
+    {"number":5,"id":"COURSE-LH-TECH2-005","releaseId":"PUBLIC-RELEASE-LH-TECH2-005","slug":"propagation-canopy-performance-troubleshooting"},
+    {"number":6,"id":"COURSE-LH-TECH2-006","releaseId":"PUBLIC-RELEASE-LH-TECH2-006","slug":"harvest-postharvest-deviations-quality-response"},
+    {"number":7,"id":"COURSE-LH-TECH2-007","releaseId":"PUBLIC-RELEASE-LH-TECH2-007","slug":"traceability-production-metrics-shift-coordination-peer-support"},
+    {"number":8,"id":"COURSE-LH-TECH2-008","releaseId":"PUBLIC-RELEASE-LH-TECH2-008","slug":"integrated-technician-ii-simulation-lab"}
+  ],
+  "boundary": "These routes publish learner-facing Technician II academic training only. Secure credential exams, live practical/capstone forms, evaluator keys, candidate evidence, pilot/calibration evidence, standard setting, credential decisions and issuance controls remain private/restricted."
+}
