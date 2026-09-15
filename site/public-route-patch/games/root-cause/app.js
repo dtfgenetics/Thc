@@ -52,6 +52,16 @@ function prefersReducedMotion() {
   catch { return false; }
 }
 
+function revealStackedResult(target) {
+  let stacked = false;
+  try { stacked = globalThis.matchMedia?.('(max-width: 1050px)').matches ?? false; }
+  catch {}
+  if (!stacked || !target?.scrollIntoView) return;
+  const reveal = () => target.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+  if (typeof globalThis.requestAnimationFrame === 'function') globalThis.requestAnimationFrame(reveal);
+  else reveal();
+}
+
 function diagnosisLabel(id) {
   return diagnosisById.get(id)?.label ?? id;
 }
@@ -117,6 +127,7 @@ function renderInspections(gameCase) {
       state = inspect(state, id, data);
       ui.announce.textContent = `${item.label}: ${item.result}`;
       render();
+      revealStackedResult(ui.evidence.closest('.evidence-card') ?? ui.evidence);
     });
     return button;
   }));
@@ -136,6 +147,7 @@ function renderDiagnoses(gameCase) {
       const wasCorrect = id === gameCase.diagnosisId;
       ui.announce.textContent = wasCorrect ? `Correct: ${diagnosisLabel(id)}.` : `Not the strongest fit: ${diagnosisLabel(id)}.`;
       render();
+      revealStackedResult(ui.feedback);
     });
     return button;
   }));
