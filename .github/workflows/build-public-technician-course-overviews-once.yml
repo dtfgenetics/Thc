@@ -1,0 +1,54 @@
+name: Build public technician course overviews once
+
+on:
+  push:
+    branches:
+      - feat/public-technician-course-overviews
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/public-technician-course-overviews
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Build 14 public development overviews
+        run: node scripts/build-public-technician-course-overviews-v1.mjs
+      - name: Validate publisher and catalog syntax
+        run: |
+          node --check scripts/publish-wordpress-certification-catalog-v4.mjs
+          node scripts/publish-wordpress-certification-catalog-v4.mjs --validate-only
+      - name: Verify overview manifest contract
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const d = JSON.parse(fs.readFileSync('site/wordpress/education/course-catalog-v4.json','utf8'));
+          const pending = d.courses.filter(c => c.publicLessonReleaseAvailable !== true);
+          if (d.courses.length !== 15) throw new Error(`expected 15 courses, got ${d.courses.length}`);
+          if (pending.length !== 14) throw new Error(`expected 14 pending overview courses, got ${pending.length}`);
+          if (new Set(pending.map(c => c.overviewSlug)).size !== 14) throw new Error('overview slugs must be unique');
+          for (const c of pending) {
+            for (const key of ['overviewSlug','overviewHref','performanceEvidence','releaseRequirements','sourceDefinitionUrl','downloadDefinitionUrl','sourceRevision']) if (!c[key]) throw new Error(`${c.id} missing ${key}`);
+            if (c.href) throw new Error(`${c.id} pending course must not expose academic href`);
+            if (!c.overviewHref.startsWith('/courses/')) throw new Error(`${c.id} overview must stay in /courses/ ownership boundary`);
+          }
+          console.log('Public technician development overview manifest passed.');
+          NODE
+      - name: Commit validated overview source
+        run: |
+          rm -f .github/workflows/build-public-technician-course-overviews-once.yml scripts/build-public-technician-course-overviews-v1.mjs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "feat: publish public technician course development overviews"
+          git push origin HEAD:feat/public-technician-course-overviews
