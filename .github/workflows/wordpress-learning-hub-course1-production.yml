@@ -6,6 +6,8 @@ on:
       - site/wordpress/education/learning-hub-course1.json
       - site/wordpress/education/learning-hub-course1-ui-v3.json
       - site/wordpress/education/course-catalog-v4.json
+      - scripts/sync-wordpress-learning-hub-course1-visuals.mjs
+      - scripts/apply-wordpress-learning-hub-course1-supplemental-visuals.mjs
       - scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
       - scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
@@ -13,6 +15,7 @@ on:
       - scripts/publish-wordpress-certification-catalog-v4.mjs
       - scripts/verify-wordpress-learning-hub-course1.mjs
       - scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
+      - scripts/verify-wordpress-learning-hub-course1-canonical-visuals.mjs
       - .github/workflows/wordpress-learning-hub-course1-production.yml
   push:
     branches:
@@ -21,6 +24,8 @@ on:
       - site/wordpress/education/learning-hub-course1.json
       - site/wordpress/education/learning-hub-course1-ui-v3.json
       - site/wordpress/education/course-catalog-v4.json
+      - scripts/sync-wordpress-learning-hub-course1-visuals.mjs
+      - scripts/apply-wordpress-learning-hub-course1-supplemental-visuals.mjs
       - scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
       - scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
@@ -28,6 +33,7 @@ on:
       - scripts/publish-wordpress-certification-catalog-v4.mjs
       - scripts/verify-wordpress-learning-hub-course1.mjs
       - scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
+      - scripts/verify-wordpress-learning-hub-course1-canonical-visuals.mjs
       - .github/workflows/wordpress-learning-hub-course1-production.yml
   workflow_dispatch:
 
@@ -46,17 +52,26 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Validate publisher, guided UI, responsive layout, catalog, navigation and verifiers
+      - name: Build canonical Course 1 lesson visual map
+        shell: bash
+        run: |
+          node --check scripts/sync-wordpress-learning-hub-course1-visuals.mjs
+          node scripts/sync-wordpress-learning-hub-course1-visuals.mjs --output "$RUNNER_TEMP/course1-ui-canonical.json"
+          echo "LEARNING_HUB_COURSE1_UI_PATH=$RUNNER_TEMP/course1-ui-canonical.json" >> "$GITHUB_ENV"
+      - name: Validate publisher, guided UI, canonical visuals, responsive layout, catalog, navigation and verifiers
         run: |
           node --check scripts/publish-wordpress-learning-hub-course1-v2.mjs
           node --check scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
+          node --check scripts/apply-wordpress-learning-hub-course1-supplemental-visuals.mjs
           node --check scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
           node --check scripts/publish-wordpress-courses-navigation-v2.mjs
           node --check scripts/publish-wordpress-certification-catalog-v4.mjs
           node --check scripts/verify-wordpress-learning-hub-course1.mjs
           node --check scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
+          node --check scripts/verify-wordpress-learning-hub-course1-canonical-visuals.mjs
           node scripts/publish-wordpress-learning-hub-course1-v2.mjs --validate-only
           node scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs --validate-only
+          node scripts/apply-wordpress-learning-hub-course1-supplemental-visuals.mjs --validate-only
           node scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs --validate-only
           node scripts/publish-wordpress-courses-navigation-v2.mjs --validate-only
           node scripts/publish-wordpress-certification-catalog-v4.mjs --validate-only
@@ -79,6 +94,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+      - name: Build canonical Course 1 lesson visual map
+        shell: bash
+        run: |
+          node scripts/sync-wordpress-learning-hub-course1-visuals.mjs --output "$RUNNER_TEMP/course1-ui-canonical.json"
+          echo "LEARNING_HUB_COURSE1_UI_PATH=$RUNNER_TEMP/course1-ui-canonical.json" >> "$GITHUB_ENV"
       - name: Require WordPress credentials
         shell: bash
         run: |
@@ -90,6 +110,8 @@ jobs:
         run: node scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
       - name: Apply responsive three-column Course 1 lesson layout
         run: node scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
+      - name: Apply supplemental canonical Course 1 lesson visuals
+        run: node scripts/apply-wordpress-learning-hub-course1-supplemental-visuals.mjs
       - name: Preserve shared Courses navigation behavior
         run: node scripts/publish-wordpress-courses-navigation-v2.mjs
       - name: Publish professional certification catalog V4
@@ -99,10 +121,14 @@ jobs:
         run: |
           mkdir -p "$BACKUP_ROOT"
           node scripts/verify-wordpress-learning-hub-course1.mjs | tee "$BACKUP_ROOT/readback-verification.json"
-      - name: Verify guided Course 1 lesson navigation and visual policy
+      - name: Verify guided Course 1 lesson navigation and canonical visual policy
         shell: bash
         run: |
           node scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs | tee "$BACKUP_ROOT/readback-ui-v3-verification.json"
+      - name: Verify complete canonical Course 1 visual delivery
+        shell: bash
+        run: |
+          node scripts/verify-wordpress-learning-hub-course1-canonical-visuals.mjs | tee "$BACKUP_ROOT/readback-canonical-visual-verification.json"
       - name: Verify public certification catalog and representative lesson after cache convergence
         shell: bash
         run: |
@@ -137,6 +163,7 @@ jobs:
                grep -Fq 'Course outline' "$lesson" && \
                grep -Fq 'Mark lesson complete' "$lesson" && \
                grep -Fq 'raw.githubusercontent.com/dtfgenetics/Thc-learning-courses-' "$lesson" && \
+               grep -Fq 'data-canonical-supplemental-visuals="LESSON-LH-TECH1-001-01"' "$lesson" && \
                ! grep -Fqi 'interactive academic visual' "$lesson"; then
               lesson_ok=1
             fi
@@ -152,7 +179,7 @@ jobs:
             grep -o 'data-issuance-available="[^"]*"' "$courses" | sort | uniq -c >&2 || true
             exit 1
           fi
-          [[ "$lesson_ok" -eq 1 ]] || { echo 'Course 1 V4 lesson visual did not become visitor-facing within the verification window.' >&2; exit 1; }
+          [[ "$lesson_ok" -eq 1 ]] || { echo 'Course 1 canonical lesson visuals did not become visitor-facing within the verification window.' >&2; exit 1; }
       - name: Upload rollback and verification evidence
         if: always()
         uses: actions/upload-artifact@v4
