@@ -61,6 +61,12 @@ const footerStyle=`<style id="dtf-shared-footer-v5-style">
 </style>`;
 const footerBrandLink=`<a class="dtf-footer-brand" href="/" aria-label="DTF Genetics home"><img src="${esc(brand.source_url)}" alt="DTF Genetics cannabis leaf" width="50" height="50"><span><strong>DTF Genetics</strong><small>Dream the Future</small></span></a>`;
 const header=getWordPressSitewideHeaderBlock(`${responsiveLayoutStyle}${uxPolishStyle}${footerStyle}`);
+// The header implementation lives in the shared helper, but this publisher owns
+// the WordPress shell transaction. Validate the composed artifact here so CI and
+// production verify behavior rather than depending on where helper literals live.
+for(const token of ['data-dtf-shell="header-v3"','overflow-x:auto']){
+  if(!header.includes(token)) throw new Error(`Generated shared header is missing required compatibility token: ${token}`);
+}
 const footer=`<!-- wp:html --><footer class="dtf-footer-v3" data-dtf-shell="footer-v3"><div class="inner"><div class="dtf-footer-grid"><div>${footerBrandLink}<p>Documented genetics, Teaching Healthy Cultivation, practical grow tools, original games, and the community connecting them.</p></div><nav aria-label="Site map"><strong>Explore</strong><div class="links"><a href="/">Home</a><a href="/seeds/">Seeds</a><a href="/learn/">Learn</a><a href="/courses/">Courses</a><a href="/tools/">Diagnostic</a><a href="/games/">Games</a><a href="/community/">Community</a><a href="/shop/">Shop</a></div></nav><nav aria-label="Company and community links"><strong>Connect & company</strong><div class="links"><a href="/gallery/">Gallery</a><a href="/about/">About</a><a href="/contact/">Contact</a><a class="discord" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Discord</a></div></nav></div><hr><p class="legal">© 2026 DTF Genetics · Dream the Future · Adults only. Follow applicable local laws.</p></div></footer><!-- /wp:html -->`;
 
 function replaceShell(original,type,replacement){
