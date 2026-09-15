@@ -7,7 +7,7 @@
   "scripts": {
     "build:three-public": "node scripts/build-three-public.mjs",
     "test:three-world": "node test/three-world-state.test.mjs",
-    "test:visual-runtime": "node ../../scripts/validate-seed-man-character-atlas.mjs && node test/visual-runtime.test.mjs && node test/art-registry.test.mjs && node test/approved-art-loader.test.mjs",
+    "test:visual-runtime": "node ../../scripts/validate-seed-man-character-atlas.mjs && node test/visual-runtime.test.mjs && node test/art-registry.test.mjs && node test/approved-art-loader.test.mjs && node test/production-art-motion.test.mjs",
     "test:campaign-20": "node test/campaign-20.test.mjs && node test/production-campaign-20.test.mjs && node test/level-catalog.test.mjs && node test/level-runtime.test.mjs && node test/authored-level-layout.test.mjs && node test/public-authored-runtime-contract.test.mjs && node test/campaign-state-v2.test.mjs && node test/save-state-v2.test.mjs && node test/campaign-progression-chain.test.mjs",
     "test:combat-v2": "node test/phenotype-system.test.mjs && node test/power-drop.test.mjs && node test/combat.test.mjs && node test/enemy-attacks.test.mjs && node test/final-boss-director.test.mjs && node test/world-boss-map.test.mjs && node test/public-enemy-art.test.mjs",
     "test:world-gameplay": "node test/world-gameplay-system.test.mjs && node test/world-mechanics-runtime.test.mjs && node test/public-world-mechanics-browser.test.mjs",
