@@ -6,20 +6,20 @@ import {
   SITEWIDE_HEADER_REFERENCE,
   SITEWIDE_HEADER_VERSION,
   getWordPressSitewideHeaderBlock,
-} from './lib/sitewide-header-template.mjs';
+} from './lib/sitewide-header-template-v6.mjs';
 
 const siteUrl=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const username=process.env.WP_API_USERNAME||'';
 const password=process.env.WP_API_PASSWORD||'';
 const apply=String(process.env.APPLY_SHARED_SHELL_V3||'').toLowerCase()==='true';
-const backupRoot=process.env.BACKUP_ROOT||'/tmp/dtf-shared-shell-v3';
+const backupRoot=process.env.BACKUP_ROOT||'/tmp/dtf-shared-shell-v6';
 const responsiveLayoutPath=process.env.DTF_RESPONSIVE_LAYOUT_CSS||join(process.cwd(),'site/wordpress/assets/responsive-layout-v1.css');
 const uxPolishPath=process.env.DTF_SITEWIDE_UX_POLISH_CSS||join(process.cwd(),'site/wordpress/assets/sitewide-ux-polish-v1.css');
 if(!username||!password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 const auth=`Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-const headers={Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Shared-Shell-V5/1.4'};
+const headers={Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Shared-Shell-V6/1.0'};
 const stamp=new Date().toISOString().replace(/[-:.]/g,'');
-const backupDir=join(backupRoot,`shared-shell-v5-${stamp}`);
+const backupDir=join(backupRoot,`shared-shell-v6-${stamp}`);
 await mkdir(backupDir,{recursive:true});
 const esc=(v='')=>String(v).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');
 const rendered=v=>typeof v==='string'?v:(v?.raw||v?.rendered||'');
@@ -56,20 +56,16 @@ for(const token of ['scroll-padding-top:',':focus-visible','min-height:44px','ov
 const responsiveLayoutStyle=`<style id="dtf-responsive-layout-v1">${responsiveLayoutCss}</style>`;
 const uxPolishStyle=`<style id="dtf-sitewide-ux-polish-v1">${uxPolishCss}</style>`;
 
-const footerStyle=`<style id="dtf-shared-footer-v5-style">
+const footerStyle=`<style id="dtf-shared-footer-v6-style">
 .dtf-footer-v3{margin:0;background:#081b11;color:#dfe9e2}.dtf-footer-v3 *{box-sizing:border-box}.dtf-footer-v3 .inner{width:min(1240px,calc(100% - 36px));margin:auto;padding:52px 0 28px}.dtf-footer-grid{display:grid;grid-template-columns:minmax(280px,1.4fr) repeat(2,minmax(170px,.7fr));gap:36px}.dtf-footer-v3 p{color:#b9ccbf;line-height:1.7}.dtf-footer-v3 .links{display:grid;gap:9px;margin-top:14px}.dtf-footer-v3 .links a{color:#dfe9e2!important;text-decoration:none!important;min-height:32px;display:flex;align-items:center}.dtf-footer-v3 .links a:hover{text-decoration:underline!important}.dtf-footer-v3 .links .discord{color:#d6b75c!important;font-weight:850}.dtf-footer-v3 hr{border:0;border-top:1px solid rgba(255,255,255,.12);margin:34px 0 22px}.dtf-footer-v3 .legal{margin:0;color:#91aa9a;font-size:.86rem}.dtf-footer-brand{display:flex!important;align-items:center;gap:12px;min-width:0;color:#fff!important;text-decoration:none!important}.dtf-footer-brand img{display:block;width:50px!important;height:50px!important;object-fit:contain}.dtf-footer-brand strong{display:block;font-size:1.18rem!important;line-height:1;letter-spacing:.035em;text-transform:uppercase;font-weight:900}.dtf-footer-brand small{display:block;margin-top:5px;color:#d8bd68!important;font-size:.62rem!important;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
 @media(max-width:620px){.dtf-footer-v3 .inner{width:min(100% - 28px,1240px);padding-top:42px}.dtf-footer-grid{grid-template-columns:1fr;gap:25px}.dtf-footer-v3 .links a{min-height:44px}}
 </style>`;
 const footerBrandLink=`<a class="dtf-footer-brand" href="/" aria-label="DTF Genetics home"><img src="${esc(brand.source_url)}" alt="DTF Genetics cannabis leaf" width="50" height="50"><span><strong>DTF Genetics</strong><small>Dream the Future</small></span></a>`;
 const header=getWordPressSitewideHeaderBlock(`${responsiveLayoutStyle}${uxPolishStyle}${footerStyle}`);
-// The header implementation lives in the shared helper, but this publisher owns
-// the WordPress shell transaction. Validate the composed artifact against the
-// helper's canonical version marker so future header revisions cannot be blocked
-// by a stale literal from an older shell generation.
 for(const token of [SITEWIDE_HEADER_MARKER,'overflow-x:auto']){
   if(!header.includes(token)) throw new Error(`Generated shared header is missing required compatibility token: ${token}`);
 }
-const footer=`<!-- wp:html --><footer class="dtf-footer-v3" data-dtf-shell="footer-v3"><div class="inner"><div class="dtf-footer-grid"><div>${footerBrandLink}<p>Documented genetics, Teaching Healthy Cultivation, practical grow tools, original games, and the community connecting them.</p></div><nav aria-label="Site map"><strong>Explore</strong><div class="links"><a href="/">Home</a><a href="/seeds/">Seeds</a><a href="/learn/">Learn</a><a href="/courses/">Courses</a><a href="/tools/">Diagnostic</a><a href="/games/">Games</a><a href="/community/">Community</a><a href="/shop/">Shop</a></div></nav><nav aria-label="Company and community links"><strong>Connect & company</strong><div class="links"><a href="/gallery/">Gallery</a><a href="/about/">About</a><a href="/contact/">Contact</a><a class="discord" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Discord</a></div></nav></div><hr><p class="legal">© 2026 DTF Genetics · Dream the Future · Adults only. Follow applicable local laws.</p></div></footer><!-- /wp:html -->`;
+const footer=`<!-- wp:html --><footer class="dtf-footer-v3" data-dtf-shell="footer-v6"><div class="inner"><div class="dtf-footer-grid"><div>${footerBrandLink}<p>Documented genetics, Teaching Healthy Cultivation, practical grow tools, original games, and the community connecting them.</p></div><nav aria-label="Site map"><strong>Explore</strong><div class="links"><a href="/seeds/">Genetics</a><a href="/learn/">Learn</a><a href="/tools/">Tools</a><a href="/games/">Games</a><a href="/community/">Community</a><a href="/shop/">Shop</a></div></nav><nav aria-label="Company and community links"><strong>Connect & company</strong><div class="links"><a href="/">Home</a><a href="/gallery/">Gallery</a><a href="/about/">About</a><a href="/contact/">Contact</a><a class="discord" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Discord</a></div></nav></div><hr><p class="legal">© 2026 DTF Genetics · Dream the Future · Adults only. Follow applicable local laws.</p></div></footer><!-- /wp:html -->`;
 
 function replaceShell(original,type,replacement){
   const tag=type==='header'?'header':'footer';
@@ -92,7 +88,7 @@ for(const part of targets){
   results.push({id:part.id,slug:part.slug,changed:next!==original,preservedCommerceStyle:next.includes('dtf-commerce-archive-style')||!original.includes('dtf-commerce-archive-style')});
   if(original.includes('dtf-commerce-archive-style')&&!next.includes('dtf-commerce-archive-style')) throw new Error('Shared shell update would remove WooCommerce archive styling');
 }
-const report={generatedAt:new Date().toISOString(),siteUrl,apply,backupDir,headerVersion:SITEWIDE_HEADER_VERSION,responsiveLayout:'v1',sitewideUxPolish:'v1',reference:SITEWIDE_HEADER_REFERENCE,canonicalNav:['Home','Seeds','Learn','Courses','Diagnostic','Games','Community','Shop'],targets:results};
-await writeFile(join(backupDir,'shared-shell-v5-report.json'),`${JSON.stringify(report,null,2)}\n`);
-await writeFile(join(backupRoot,'shared-shell-v5-backup-path.txt'),`${backupDir}\n`);
+const report={generatedAt:new Date().toISOString(),siteUrl,apply,backupDir,headerVersion:SITEWIDE_HEADER_VERSION,responsiveLayout:'v1',sitewideUxPolish:'v1',reference:SITEWIDE_HEADER_REFERENCE,canonicalNav:['Genetics','Learn','Tools','Games','Community','Shop'],targets:results};
+await writeFile(join(backupDir,'shared-shell-v6-report.json'),`${JSON.stringify(report,null,2)}\n`);
+await writeFile(join(backupRoot,'shared-shell-v6-backup-path.txt'),`${backupDir}\n`);
 console.log(JSON.stringify(report,null,2));
