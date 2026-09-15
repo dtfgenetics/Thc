@@ -23,7 +23,8 @@ function replaceRequired(source, pattern, replacement, label) {
   return source.replace(pattern, replacement);
 }
 
-// Canonical deployment registry.
+// Canonical deployment registry. The top-level runtime remains a stable deployment
+// classification; detailed render/gameplay runtime ownership lives in machineData.
 const document = readJson(PUBLIC_APPS);
 const app = document.apps?.find((entry) => entry.id === 'seed-man-platformer');
 if (!app) throw new Error('Seed Man deployment registry entry was not found.');
@@ -39,12 +40,14 @@ app.build = [
   'node games/seed-man-platformer/test/public-runtime.test.mjs',
   'node games/seed-man-platformer/test/public-campaign.test.mjs',
   'node games/seed-man-platformer/test/input-guard.test.mjs',
+  'node games/seed-man-platformer/test/world-mechanics-runtime.test.mjs',
+  'node games/seed-man-platformer/test/public-world-mechanics-browser.test.mjs',
   'node scripts/verify-seed-man-production-v20.mjs',
   'node scripts/validate-seed-man-production-bundle.mjs'
 ].join(' && ');
 
 app.machineData = {
-  release: '20260908-v20',
+  release: '20260915-v20-world-mechanics-v1',
   campaignId: 'seed-man-campaign-20-v1',
   defaultLevelId: '1-1-sprout-steps',
   levelCount: 20,
@@ -56,17 +59,22 @@ app.machineData = {
   phenotypeForms: ['plant','fire','electric','ice'],
   campaignRuntime: 'seed-man-campaign-v20-runtime-v3',
   campaignUi: 'seed-man-campaign-ui-v20',
+  worldMechanicsRuntime: 'seed-man-world-mechanics-browser-v1',
+  dynamicPlatformRuntime: 'seed-man-three-dynamic-platforms-v1',
+  worldRenderer: 'seed-man-three-world-v2',
+  worldRendererBundle: 'seed-man-three-public-v3',
+  worldFallbackRenderer: 'seed-man-canvas-world-gradient-v1',
   approvedArtManifest: 'seed-man-approved-art-v2',
   approvedArtSource: 'approved-showcase-2026-09-08',
   productionCharacterArt: 'seed-man-approved-atlas-renderer-v4',
   characterContract: 'green-armored-plant-hero',
   proceduralFallbackAllowed: false,
   legacyAtlasFallbackAllowed: false,
-  canvasCompat: 'sprout-canvas-compat-v20',
+  canvasCompat: 'seed-man-runtime-health-v21',
   doubleJump: true
 };
-app.notes = 'Canonical Seed Man v20 release on /games/seed-man-platformer/: 20 levels across Greenhouse Valley, Forest Ruins, Desert Canyon, Frozen Peaks and Eco City; six boss encounters; four-phase Blight King finale; 30-second phenotype combat; and the approved 2026-09-08 green armored plant-hero visual system. Retired 11/15-level campaigns, Genome Hydra, Genetic Frontier, seed-man-production-v1, seed-man-locked-v1, legacy sprite ownership and procedural character fallback must not be republished.';
-document.updated = '2026-09-09';
+app.notes = 'Canonical Seed Man v20 release on /games/seed-man-platformer/: 20 levels across Greenhouse Valley, Forest Ruins, Desert Canyon, Frozen Peaks and Eco City; six boss encounters; four-phase Blight King finale; 30-second phenotype combat; browser world mechanics with moving/collapsing/conveyor/bounce/environment systems; synchronized dynamic Three.js platforms; and the approved 2026-09-08 green armored plant-hero visual system. Retired 11/15-level campaigns, Genome Hydra, Genetic Frontier, seed-man-production-v1, seed-man-locked-v1, legacy sprite ownership and procedural character fallback must not be republished.';
+document.updated = '2026-09-15';
 writeJson(PUBLIC_APPS, document);
 
 // Canonical Game Hub card. Replace either the retired 15-level feature card or an
@@ -110,12 +118,18 @@ fs.writeFileSync(HOME_PAGE, home);
 const written = readJson(PUBLIC_APPS);
 const verified = written.apps.find((entry) => entry.id === 'seed-man-platformer');
 if (verified.title !== TITLE) throw new Error('Canonical Seed Man v20 title was not written.');
+if (verified.runtime !== 'static-canvas2d-approved-art' || verified.status !== 'production-v20') throw new Error('Stable Seed Man deployment classification drifted.');
 if (verified.machineData?.levelCount !== 20) throw new Error('Expected 20 Seed Man campaign levels.');
 if (verified.machineData?.worldCount !== 5) throw new Error('Expected five Seed Man worlds.');
 if (verified.machineData?.bossCount !== 6) throw new Error('Expected six Seed Man bosses.');
 if (verified.machineData?.finalBoss !== 'blight-king') throw new Error('Expected Blight King final boss.');
-if (verified.machineData?.release !== '20260908-v20') throw new Error('Unexpected Seed Man v20 release marker.');
+if (verified.machineData?.release !== '20260915-v20-world-mechanics-v1') throw new Error('Unexpected Seed Man world-mechanics release marker.');
 if (verified.machineData?.campaignRuntime !== 'seed-man-campaign-v20-runtime-v3') throw new Error('Unexpected Seed Man campaign runtime marker.');
+if (verified.machineData?.worldMechanicsRuntime !== 'seed-man-world-mechanics-browser-v1') throw new Error('Seed Man browser world-mechanics runtime was not recorded.');
+if (verified.machineData?.dynamicPlatformRuntime !== 'seed-man-three-dynamic-platforms-v1') throw new Error('Seed Man dynamic-platform renderer was not recorded.');
+if (verified.machineData?.worldRenderer !== 'seed-man-three-world-v2' || verified.machineData?.worldRendererBundle !== 'seed-man-three-public-v3') throw new Error('Seed Man Three.js renderer metadata drifted.');
+if (verified.machineData?.worldFallbackRenderer !== 'seed-man-canvas-world-gradient-v1') throw new Error('Seed Man Canvas fallback renderer metadata drifted.');
+if (verified.machineData?.canvasCompat !== 'seed-man-runtime-health-v21') throw new Error('Seed Man runtime-health bridge metadata drifted.');
 if (verified.machineData?.characterContract !== 'green-armored-plant-hero') throw new Error('Approved Seed Man character contract was not recorded.');
 if (verified.machineData?.proceduralFallbackAllowed !== false || verified.machineData?.legacyAtlasFallbackAllowed !== false) throw new Error('Seed Man production fallbacks must remain disabled.');
 
@@ -134,6 +148,9 @@ console.log(JSON.stringify({
   title: verified.title,
   release: verified.machineData.release,
   campaignRuntime: verified.machineData.campaignRuntime,
+  worldMechanicsRuntime: verified.machineData.worldMechanicsRuntime,
+  dynamicPlatformRuntime: verified.machineData.dynamicPlatformRuntime,
+  worldRenderer: verified.machineData.worldRenderer,
   levels: 20,
   worlds: 5,
   bosses: 6,
