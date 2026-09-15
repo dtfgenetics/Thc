@@ -545,6 +545,15 @@ function disarmReset() {
   ui.reset.textContent = 'Reset Artwork';
 }
 
+function revealBoardAfterPaletteSelection() {
+  const stacked = Boolean(globalThis.matchMedia?.('(max-width: 980px)').matches);
+  if (!stacked || !ui.art?.scrollIntoView) return;
+  const reducedMotion = Boolean(globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+  window.requestAnimationFrame(() => {
+    ui.art.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center', inline: 'nearest' });
+  });
+}
+
 ui.palette.addEventListener('click', (event) => {
   const button = event.target.closest('button[data-color]');
   if (!button) return;
@@ -552,6 +561,7 @@ ui.palette.addEventListener('click', (event) => {
   persistExperience();
   renderPalette();
   refreshSvgState();
+  revealBoardAfterPaletteSelection();
   ui.announce.textContent = `${currentColor().label} selected.`;
 });
 

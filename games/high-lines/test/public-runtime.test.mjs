@@ -37,6 +37,12 @@ assert.match(app, /svg\.style\.width = `\$\{Math\.round\(zoom \* 100\)\}%`/);
 assert.match(app, /globalThis\.crypto\?\.getRandomValues/);
 assert.match(app, /globalThis\.history\?\.replaceState/);
 assert.match(app, /navigator\.clipboard\?\.writeText/);
+assert.match(app, /function revealBoardAfterPaletteSelection\(\)/, 'stacked layouts must return to the board after a palette-button choice');
+assert.match(app, /\(max-width: 980px\)/, 'palette return must stay scoped to the existing stacked layout breakpoint');
+assert.match(app, /\(prefers-reduced-motion: reduce\)/, 'palette return must respect reduced motion');
+assert.match(app, /window\.requestAnimationFrame/, 'palette return must wait for selected-state rendering');
+assert.ok(app.includes("ui.art.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center', inline: 'nearest' });"), 'stacked palette selection must reveal the coloring board without horizontal page movement');
+assert.match(app, /refreshSvgState\(\);\s*revealBoardAfterPaletteSelection\(\);/, 'palette-button activation must reveal the board after its selected state renders');
 
 assert.match(visual, /\.board-controls/);
 assert.match(visual, /overflow:auto/);
