@@ -30,7 +30,7 @@ async function fetchText(url) {
     try {
       const response = await fetch(url, {
         signal: AbortSignal.timeout(30000),
-        headers: { 'User-Agent': 'DTF-Course1-Canonical-Visual-Sync/1.0' }
+        headers: { 'User-Agent': 'DTF-Course1-Canonical-Visual-Sync/1.1' }
       });
       if (response.ok) return response.text();
       lastError = new Error(`${url} returned ${response.status}`);
@@ -46,15 +46,29 @@ async function fetchJson(relativePath) {
   return JSON.parse(await fetchText(`${rawBase}/${relativePath}`));
 }
 
-function findCanonicalImageBlock(lesson) {
+function canonicalImageBlocks(lesson) {
   const blocks = Array.isArray(lesson?.content?.blocks) ? lesson.content.blocks : [];
-  const imageBlocks = blocks.filter((block) => block?.type === 'image');
-  must(imageBlocks.length <= 1, `${lesson.id}: guided Course 1 UI supports one canonical lead teaching visual per lesson; found ${imageBlocks.length}.`);
-  return imageBlocks[0] || null;
+  return blocks.filter((block) => block?.type === 'image');
+}
+
+function normalizeImage(route, image, position) {
+  must(image.assetId, `${route.id}: canonical image ${position} is missing assetId.`);
+  must(/^\/assets\/course1\/[a-z0-9._-]+\.(svg|png|webp)$/i.test(image.src || ''), `${route.id}: canonical image ${position} src must use /assets/course1/.`);
+  must(typeof image.alt === 'string' && image.alt.trim().length >= 20, `${route.id}: canonical image ${position} alt text is missing or too short.`);
+  must(typeof image.caption === 'string' && image.caption.trim().length >= 20, `${route.id}: canonical image ${position} caption is missing or too short.`);
+  return {
+    assetId: image.assetId,
+    src: `${rawBase}/apps/web/public${image.src}`,
+    alt: image.alt,
+    caption: image.caption,
+    title: image.title || '',
+    references: Array.isArray(image.references) ? image.references : []
+  };
 }
 
 const generatedLessons = [];
 const uniqueAssets = new Map();
+let canonicalVisualPlacements = 0;
 
 for (let index = 0; index < uiSource.lessons.length; index += 1) {
   const route = uiSource.lessons[index];
@@ -66,8 +80,11 @@ for (let index = 0; index < uiSource.lessons.length; index += 1) {
   must(canonical.id === route.id, `${route.id}: canonical lesson ID mismatch.`);
   must(canonical.status === 'published', `${route.id}: canonical lesson must be published before public visual sync.`);
 
-  const image = findCanonicalImageBlock(canonical);
-  if (!image) {
+  const images = canonicalImageBlocks(canonical).map((image, imageIndex) => normalizeImage(route, image, imageIndex + 1));
+  canonicalVisualPlacements += images.length;
+  for (const image of images) uniqueAssets.set(image.assetId, image.src);
+
+  if (images.length === 0) {
     generatedLessons.push({
       id: route.id,
       slug: route.slug,
@@ -77,20 +94,14 @@ for (let index = 0; index < uiSource.lessons.length; index += 1) {
         status: 'not-required',
         purpose: route.visual?.purpose || `No lead teaching visual is required for ${canonical.title}.`,
         brief: 'Canonical lesson contains no reviewed image block; the public guided UI must not invent a decorative substitute.',
-        alt: route.visual?.alt || 'No instructional image is assigned to this lesson.'
+        alt: route.visual?.alt || 'No instructional image is assigned to this lesson.',
+        items: []
       }
     });
     continue;
   }
 
-  must(image.assetId, `${route.id}: canonical image block is missing assetId.`);
-  must(/^\/assets\/course1\/[a-z0-9._-]+\.(svg|png|webp)$/i.test(image.src || ''), `${route.id}: canonical image src must use /assets/course1/.`);
-  must(typeof image.alt === 'string' && image.alt.trim().length >= 20, `${route.id}: canonical image alt text is missing or too short.`);
-  must(typeof image.caption === 'string' && image.caption.trim().length >= 20, `${route.id}: canonical image caption is missing or too short.`);
-
-  const publicSrc = `${rawBase}/apps/web/public${image.src}`;
-  uniqueAssets.set(image.assetId, publicSrc);
-
+  const lead = images[0];
   generatedLessons.push({
     id: route.id,
     slug: route.slug,
@@ -98,19 +109,21 @@ for (let index = 0; index < uiSource.lessons.length; index += 1) {
     lesson: route.lesson,
     visual: {
       status: 'approved',
-      assetId: image.assetId,
-      purpose: route.visual?.purpose || image.title || image.caption,
-      brief: `Canonical published learner visual ${image.assetId}; generated from ${route.id} rather than maintained as a separate WordPress approval record.`,
-      src: publicSrc,
-      alt: image.alt,
-      caption: image.caption,
-      references: Array.isArray(image.references) ? image.references : []
+      assetId: lead.assetId,
+      purpose: route.visual?.purpose || lead.title || lead.caption,
+      brief: `Canonical published learner visual set generated from ${route.id}; WordPress is not an independent visual approval authority.`,
+      src: lead.src,
+      alt: lead.alt,
+      caption: lead.caption,
+      references: lead.references,
+      items: images
     }
   });
 }
 
 const approvedCount = generatedLessons.filter((lesson) => lesson.visual.status === 'approved').length;
 must(approvedCount > 2, `Canonical visual sync found only ${approvedCount} approved lesson visuals; refusing to preserve the stale two-visual state.`);
+must(canonicalVisualPlacements >= approvedCount, 'Canonical visual placement count is inconsistent.');
 
 if (validateAssets) {
   for (const [assetId, url] of uniqueAssets) {
@@ -123,12 +136,12 @@ if (validateAssets) {
 }
 
 const generated = {
-  schemaVersion: 2,
+  schemaVersion: 3,
   id: uiSource.id,
   courseId: local.course.id,
   visualDataAuthority: `${local.source.repository}@${sourceRef}:content/lessons/LESSON-LH-TECH1-001-*.json`,
   designRule: uiSource.designRule,
-  lessonVisualRule: 'WordPress lesson visuals are generated from each published canonical lesson image block. The site routing map is not an independent approval authority. Missing canonical visuals never receive decorative fallback art.',
+  lessonVisualRule: 'WordPress lesson visuals are generated from every reviewed image block in each published canonical lesson. The site routing map is not an independent approval authority. Missing canonical visuals never receive decorative fallback art.',
   generatedAt: new Date().toISOString(),
   lessons: generatedLessons
 };
@@ -143,7 +156,8 @@ console.log(JSON.stringify({
   sourceRef,
   lessonCount: generatedLessons.length,
   approvedVisualLessons: approvedCount,
-  lessonsWithoutLeadVisual: generatedLessons.length - approvedCount,
+  lessonsWithoutCanonicalVisual: generatedLessons.length - approvedCount,
+  canonicalVisualPlacements,
   uniquePublicAssets: uniqueAssets.size,
   outputPath
 }, null, 2));
