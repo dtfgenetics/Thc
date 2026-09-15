@@ -30,7 +30,7 @@ async function fetchText(url) {
     try {
       const response = await fetch(url, {
         signal: AbortSignal.timeout(30000),
-        headers: { 'User-Agent': 'DTF-Course1-Canonical-Visual-Sync/1.2' }
+        headers: { 'User-Agent': 'DTF-Course1-Canonical-Visual-Sync/1.3' }
       });
       if (response.ok) return response.text();
       lastError = new Error(`${url} returned ${response.status}`);
@@ -110,10 +110,26 @@ function coverageImagesForLesson(route) {
   return [...byAsset.values()];
 }
 
+function controlledProductionBaselineForLesson(route) {
+  const lessonOrdinal = Number(route.id.match(/-(\d{2})$/)?.[1] || 0);
+  if (lessonOrdinal < 13 || lessonOrdinal > 18) return [];
+
+  const candidates = coverageImagesForLesson(route).filter((image) => {
+    const registryAsset = registryById.get(image.assetId);
+    return Array.isArray(registryAsset?.primaryLessons) &&
+      registryAsset.primaryLessons.length === 1 &&
+      registryAsset.primaryLessons[0] === route.id;
+  });
+
+  must(candidates.length === 1, `${route.id}: expected one dedicated controlled production baseline for Course 1 lessons 13-18, found ${candidates.length}.`);
+  return candidates.map((image) => ({ ...image, canonicalSource: 'controlled-production-visual-coverage' }));
+}
+
 const generatedLessons = [];
 const uniqueAssets = new Map();
 let canonicalVisualPlacements = 0;
 let coverageFallbackPlacements = 0;
+let controlledUpgradePlacements = 0;
 
 for (let index = 0; index < uiSource.lessons.length; index += 1) {
   const route = uiSource.lessons[index];
@@ -125,7 +141,13 @@ for (let index = 0; index < uiSource.lessons.length; index += 1) {
   must(canonical.id === route.id, `${route.id}: canonical lesson ID mismatch.`);
   must(canonical.status === 'published', `${route.id}: canonical lesson must be published before public visual sync.`);
 
-  let images = canonicalImageBlocks(canonical).map((image, imageIndex) => normalizeLessonImage(route, image, imageIndex + 1));
+  const controlledBaseline = controlledProductionBaselineForLesson(route);
+  let images = controlledBaseline;
+  if (controlledBaseline.length > 0) {
+    controlledUpgradePlacements += controlledBaseline.length;
+  } else {
+    images = canonicalImageBlocks(canonical).map((image, imageIndex) => normalizeLessonImage(route, image, imageIndex + 1));
+  }
   if (images.length === 0) {
     images = coverageImagesForLesson(route);
     coverageFallbackPlacements += images.length;
@@ -175,6 +197,7 @@ const lessonsWithoutCanonicalVisualIds = generatedLessons.filter((lesson) => les
 must(approvedCount === 18, `Course 1 canonical visual coverage is incomplete: ${approvedCount}/18 lessons have reviewed visuals. Missing: ${lessonsWithoutCanonicalVisualIds.join(', ') || 'unknown'}.`);
 must(lessonsWithoutCanonicalVisualIds.length === 0, 'Course 1 canonical visual mapping must resolve every lesson before public publication.');
 must(canonicalVisualPlacements >= approvedCount, 'Canonical visual placement count is inconsistent.');
+must(controlledUpgradePlacements === 6, `Course 1 controlled production baseline coverage must include exactly six lesson upgrades, found ${controlledUpgradePlacements}.`);
 
 if (validateAssets) {
   for (const [assetId, url] of uniqueAssets) {
@@ -187,7 +210,7 @@ if (validateAssets) {
 }
 
 const generated = {
-  schemaVersion: 4,
+  schemaVersion: 5,
   id: uiSource.id,
   courseId: local.course.id,
   visualDataAuthority: [
@@ -196,7 +219,7 @@ const generated = {
     `${local.source.repository}@${sourceRef}:visuals/ASSET-REGISTRY.json`
   ],
   designRule: uiSource.designRule,
-  lessonVisualRule: 'WordPress lesson visuals are generated from reviewed image blocks in published canonical lessons. When a lesson has no image block, the canonical Course 1 visual concept coverage and produced asset registry may supply its explicitly deployed teaching visual. The site routing map is never an independent visual approval authority.',
+  lessonVisualRule: 'WordPress lesson visuals normally use reviewed image blocks in published canonical lessons. For Course 1 lessons 13 through 18, the dedicated produced baseline mapped by canonical visual concept coverage and the asset registry supersedes the older generic lesson image block. When no lesson image or controlled baseline exists, deployed concept coverage may supply the teaching visual. The site routing map is never an independent visual approval authority.',
   generatedAt: new Date().toISOString(),
   lessons: generatedLessons
 };
@@ -214,6 +237,7 @@ console.log(JSON.stringify({
   lessonsWithoutCanonicalVisual: lessonsWithoutCanonicalVisualIds.length,
   lessonsWithoutCanonicalVisualIds,
   canonicalVisualPlacements,
+  controlledUpgradePlacements,
   coverageFallbackPlacements,
   uniquePublicAssets: uniqueAssets.size,
   outputPath
