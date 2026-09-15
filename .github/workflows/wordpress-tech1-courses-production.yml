@@ -4,9 +4,10 @@ on:
   pull_request:
     paths:
       - site/wordpress/education/tech1-courses-public-v1.json
+      - site/wordpress/education/tech2-courses-public-v1.json
       - site/wordpress/education/course-catalog-v4.json
       - scripts/publish-wordpress-tech1-courses-2-7.mjs
-      - scripts/publish-wordpress-certification-catalog-v5.mjs
+      - scripts/publish-wordpress-certification-catalog-v6.mjs
       - scripts/verify-wordpress-tech1-courses-2-7.mjs
       - scripts/run-wordpress-with-retry.mjs
       - .github/workflows/wordpress-tech1-courses-production.yml
@@ -15,9 +16,10 @@ on:
       - main
     paths:
       - site/wordpress/education/tech1-courses-public-v1.json
+      - site/wordpress/education/tech2-courses-public-v1.json
       - site/wordpress/education/course-catalog-v4.json
       - scripts/publish-wordpress-tech1-courses-2-7.mjs
-      - scripts/publish-wordpress-certification-catalog-v5.mjs
+      - scripts/publish-wordpress-certification-catalog-v6.mjs
       - scripts/verify-wordpress-tech1-courses-2-7.mjs
       - scripts/run-wordpress-with-retry.mjs
       - .github/workflows/wordpress-tech1-courses-production.yml
@@ -41,11 +43,11 @@ jobs:
       - name: Validate public-course publishers
         run: |
           node --check scripts/publish-wordpress-tech1-courses-2-7.mjs
-          node --check scripts/publish-wordpress-certification-catalog-v5.mjs
+          node --check scripts/publish-wordpress-certification-catalog-v6.mjs
           node --check scripts/verify-wordpress-tech1-courses-2-7.mjs
           node --check scripts/run-wordpress-with-retry.mjs
           node scripts/publish-wordpress-tech1-courses-2-7.mjs --validate-only
-          node scripts/publish-wordpress-certification-catalog-v5.mjs --validate-only
+          node scripts/publish-wordpress-certification-catalog-v6.mjs --validate-only
 
   publish:
     if: github.event_name != 'pull_request'
@@ -58,7 +60,7 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       APPLY_TECH1_PUBLIC_COURSES: 'true'
-      APPLY_CERTIFICATION_CATALOG_V5: 'true'
+      APPLY_CERTIFICATION_CATALOG_V6: 'true'
       BACKUP_ROOT: /tmp/dtf-tech1-public-courses
       WP_COMMAND_MAX_ATTEMPTS: '5'
     steps:
@@ -73,15 +75,15 @@ jobs:
           test -n "${WP_API_PASSWORD:-}"
       - name: Publish Technician I Courses 2-7
         run: node scripts/run-wordpress-with-retry.mjs scripts/publish-wordpress-tech1-courses-2-7.mjs
-      - name: Verify all six new course trees and anonymous course roots
+      - name: Verify all six course trees and anonymous course roots
         run: node scripts/run-wordpress-with-retry.mjs scripts/verify-wordpress-tech1-courses-2-7.mjs
-      - name: Publish Certification Catalog V5
-        run: node scripts/run-wordpress-with-retry.mjs scripts/publish-wordpress-certification-catalog-v5.mjs
-      - name: Verify visitor-facing Catalog V5
+      - name: Publish Certification Catalog V6
+        run: node scripts/run-wordpress-with-retry.mjs scripts/publish-wordpress-certification-catalog-v6.mjs
+      - name: Verify visitor-facing Catalog V6
         shell: bash
         run: |
           set -euo pipefail
-          page="$RUNNER_TEMP/courses-v5.html"
+          page="$RUNNER_TEMP/courses-v6.html"
           ok=0
           for attempt in 1 2 3 4 5 6 7 8; do
             nonce="${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)"
@@ -91,18 +93,18 @@ jobs:
             offering_count="$(grep -o 'data-credential-offering=' "$page" | wc -l | tr -d ' ' || true)"
             course_count="$(grep -o 'data-course-id=' "$page" | wc -l | tr -d ' ' || true)"
             open_count="$(grep -o 'data-course-open="true"' "$page" | wc -l | tr -d ' ' || true)"
-            if grep -Fq 'dtf-courses-v5-style' "$page" && \
-               grep -Fq 'data-dtf-courses-catalog="v5"' "$page" && \
+            if grep -Fq 'dtf-courses-v6-style' "$page" && \
+               grep -Fq 'data-dtf-courses-catalog="v6"' "$page" && \
                [[ "$offering_count" -eq 10 ]] && \
                [[ "$course_count" -eq 15 ]] && \
-               [[ "$open_count" -eq 7 ]] && \
+               [[ "$open_count" -eq 15 ]] && \
                ! grep -Fq 'data-issuance-available="true"' "$page"; then
               ok=1
               break
             fi
             sleep 5
           done
-          [[ "$ok" -eq 1 ]] || { echo "Catalog V5 anonymous verification failed. offerings=${offering_count} courses=${course_count} open=${open_count}" >&2; exit 1; }
+          [[ "$ok" -eq 1 ]] || { echo "Catalog V6 anonymous verification failed. offerings=${offering_count} courses=${course_count} open=${open_count}" >&2; exit 1; }
       - name: Upload rollback and verification evidence
         if: always()
         uses: actions/upload-artifact@v4
