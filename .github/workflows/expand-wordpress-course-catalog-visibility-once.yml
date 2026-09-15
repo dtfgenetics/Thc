@@ -1,0 +1,53 @@
+name: Expand WordPress technician course visibility once
+
+on:
+  push:
+    branches:
+      - fix/wordpress-course-catalog-visibility
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/wordpress-course-catalog-visibility
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Expand visible technician course catalog
+        run: node scripts/expand-wordpress-course-catalog-visibility-v4.mjs
+      - name: Validate publisher syntax
+        run: node --check scripts/publish-wordpress-certification-catalog-v4.mjs
+      - name: Validate 15-course catalog render contract
+        run: node scripts/publish-wordpress-certification-catalog-v4.mjs --validate-only
+      - name: Verify generated visibility contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs = require('fs');
+          const data = JSON.parse(fs.readFileSync('site/wordpress/education/course-catalog-v4.json','utf8'));
+          if (data.courses.length !== 15) throw new Error(`expected 15 visible courses, found ${data.courses.length}`);
+          const ids = new Set(data.courses.map(c => c.id));
+          for (let i=1;i<=7;i++) if (!ids.has(`COURSE-LH-TECH1-00${i}`)) throw new Error(`missing Technician I course ${i}`);
+          for (let i=1;i<=8;i++) if (!ids.has(`COURSE-LH-TECH2-00${i}`)) throw new Error(`missing Technician II course ${i}`);
+          if (data.courses.filter(c => c.publicLessonReleaseAvailable === true).length !== 1) throw new Error('exactly one public academic page must remain open');
+          if (data.courses.some(c => c.publicLessonReleaseAvailable !== true && c.href)) throw new Error('unreleased course must not publish a live course href');
+          console.log('15-course public visibility contract passed.');
+          NODE
+      - name: Commit validated catalog visibility changes
+        run: |
+          rm -f .github/workflows/expand-wordpress-course-catalog-visibility-once.yml scripts/expand-wordpress-course-catalog-visibility-v4.mjs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "fix: expose all built technician courses in WordPress catalog"
+          git push origin HEAD:fix/wordpress-course-catalog-visibility
