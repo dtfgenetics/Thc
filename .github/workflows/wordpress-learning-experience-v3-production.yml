@@ -10,6 +10,7 @@ on:
       - scripts/run-learning-v3-connected-production.sh
       - scripts/improve-wordpress-learning-v4.mjs
       - scripts/rebuild-wordpress-shared-shell-v3.mjs
+      - scripts/lib/sitewide-header-template.mjs
       - scripts/reconcile-wordpress-learning-v3-ownership.mjs
       - scripts/wordpress-ipv4-fetch-bootstrap.mjs
       - scripts/fix-wordpress-home-release-visuals.mjs
@@ -71,6 +72,7 @@ jobs:
           test -s scripts/run-learning-v3-connected-production.sh
           test -s scripts/improve-wordpress-learning-v4.mjs
           test -s scripts/rebuild-wordpress-shared-shell-v3.mjs
+          test -s scripts/lib/sitewide-header-template.mjs
           test -s scripts/reconcile-wordpress-learning-v3-ownership.mjs
           test -s scripts/wordpress-ipv4-fetch-bootstrap.mjs
           test -s site/wordpress/education/topic-literature.json
@@ -78,6 +80,7 @@ jobs:
           node --check scripts/run-learning-v3-production.mjs
           node --check scripts/improve-wordpress-learning-v4.mjs
           node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
+          node --check scripts/lib/sitewide-header-template.mjs
           node --check scripts/reconcile-wordpress-learning-v3-ownership.mjs
           node --check scripts/wordpress-ipv4-fetch-bootstrap.mjs
           bash -n scripts/run-learning-v3-connected-production.sh
@@ -91,13 +94,15 @@ jobs:
           grep -Fq 'data-dtf-learning-map="v4"' scripts/improve-wordpress-learning-v4.mjs
           grep -Fq 'Start with the question you are trying to answer.' scripts/improve-wordpress-learning-v4.mjs
           grep -Fq 'data-dtf-layout="learn-v3"' scripts/improve-wordpress-learning-v4.mjs
+          grep -Fq 'SITEWIDE_HEADER_MARKER' scripts/rebuild-wordpress-shared-shell-v3.mjs
           node -e "const fs=require('fs'); const x=JSON.parse(fs.readFileSync('site/wordpress/education/topic-literature.json','utf8')); if(!Array.isArray(x.topics)||x.topics.length<10) process.exit(1); console.log('Canonical topics:',x.topics.length)"
 
-      - name: Check whether V3 shared shell is already live
+      - name: Check whether sitewide shared shell is already live
         id: shell_state
         shell: bash
         run: |
           set -euo pipefail
+          expected_header_marker="$(node --input-type=module -e "import { SITEWIDE_HEADER_MARKER } from './scripts/lib/sitewide-header-template.mjs'; process.stdout.write(SITEWIDE_HEADER_MARKER)")"
           needs_publish=false
           for route in / /learn/ /shop/; do
             body="$RUNNER_TEMP/shell-state-$(echo "$route" | tr '/' '_' | tr -cd '[:alnum:]_').html"
@@ -108,15 +113,15 @@ jobs:
               needs_publish=true
               continue
             fi
-            if ! grep -Fq 'data-dtf-shell="header-v3"' "$body" || ! grep -Fq 'data-dtf-shell="footer-v3"' "$body"; then
+            if ! grep -Fq "$expected_header_marker" "$body" || ! grep -Fq 'data-dtf-shell="footer-v3"' "$body"; then
               needs_publish=true
             fi
           done
           echo "needs_publish=$needs_publish" >> "$GITHUB_OUTPUT"
           if [[ "$needs_publish" == 'true' ]]; then
-            echo 'Shared V3 shell is not fully converged; authenticated template-part reconciliation is required.'
+            echo "Shared sitewide shell is not fully converged on $expected_header_marker; authenticated template-part reconciliation is required."
           else
-            echo 'Shared V3 shell is already visitor-facing on Home, Learn, and Shop; skipping redundant WordPress REST mutation.'
+            echo "Shared sitewide shell is already visitor-facing on Home, Learn, and Shop with $expected_header_marker; skipping redundant WordPress REST mutation."
           fi
 
       - name: Publish responsive shared header and footer
@@ -165,10 +170,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          expected_header_marker="$(node --input-type=module -e "import { SITEWIDE_HEADER_MARKER } from './scripts/lib/sitewide-header-template.mjs'; process.stdout.write(SITEWIDE_HEADER_MARKER)")"
           grep -Fq 'data-dtf-layout="home-v3"' scripts/rebuild-wordpress-learning-experience-v3.mjs
           grep -Fq 'data-dtf-layout="learn-v3"' scripts/rebuild-wordpress-learning-experience-v3.mjs
           grep -Fq 'data-dtf-topic=' scripts/rebuild-wordpress-learning-experience-v3.mjs
-          grep -Fq 'data-dtf-shell="header-v3"' scripts/rebuild-wordpress-shared-shell-v3.mjs
+          grep -Fq 'SITEWIDE_HEADER_MARKER' scripts/rebuild-wordpress-shared-shell-v3.mjs
           grep -Fq 'data-dtf-shell="footer-v3"' scripts/rebuild-wordpress-shared-shell-v3.mjs
           grep -Fq 'overflow-x:auto' scripts/rebuild-wordpress-shared-shell-v3.mjs
           grep -Fq 'water-root-zone' scripts/run-learning-v3-production.mjs
@@ -185,8 +191,8 @@ jobs:
               curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
                 --header 'Cache-Control: no-cache, no-store, max-age=0' \
                 --header 'Pragma: no-cache' \
-                "https://dtfseeds.com${route}?dtf_shell_v3=${GITHUB_RUN_ID}-${attempt}" --output "$body"
-              if grep -Fq 'data-dtf-shell="header-v3"' "$body" && grep -Fq 'data-dtf-shell="footer-v3"' "$body"; then ok=1; break; fi
+                "https://dtfseeds.com${route}?dtf_shell=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+              if grep -Fq "$expected_header_marker" "$body" && grep -Fq 'data-dtf-shell="footer-v3"' "$body"; then ok=1; break; fi
               sleep 5
             done
             test "$ok" -eq 1

@@ -2,6 +2,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
 import {
+  SITEWIDE_HEADER_MARKER,
   SITEWIDE_HEADER_REFERENCE,
   SITEWIDE_HEADER_VERSION,
   getWordPressSitewideHeaderBlock,
@@ -16,7 +17,7 @@ const responsiveLayoutPath=process.env.DTF_RESPONSIVE_LAYOUT_CSS||join(process.c
 const uxPolishPath=process.env.DTF_SITEWIDE_UX_POLISH_CSS||join(process.cwd(),'site/wordpress/assets/sitewide-ux-polish-v1.css');
 if(!username||!password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 const auth=`Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-const headers={Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Shared-Shell-V5/1.3'};
+const headers={Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Shared-Shell-V5/1.4'};
 const stamp=new Date().toISOString().replace(/[-:.]/g,'');
 const backupDir=join(backupRoot,`shared-shell-v5-${stamp}`);
 await mkdir(backupDir,{recursive:true});
@@ -62,9 +63,10 @@ const footerStyle=`<style id="dtf-shared-footer-v5-style">
 const footerBrandLink=`<a class="dtf-footer-brand" href="/" aria-label="DTF Genetics home"><img src="${esc(brand.source_url)}" alt="DTF Genetics cannabis leaf" width="50" height="50"><span><strong>DTF Genetics</strong><small>Dream the Future</small></span></a>`;
 const header=getWordPressSitewideHeaderBlock(`${responsiveLayoutStyle}${uxPolishStyle}${footerStyle}`);
 // The header implementation lives in the shared helper, but this publisher owns
-// the WordPress shell transaction. Validate the composed artifact here so CI and
-// production verify behavior rather than depending on where helper literals live.
-for(const token of ['data-dtf-shell="header-v3"','overflow-x:auto']){
+// the WordPress shell transaction. Validate the composed artifact against the
+// helper's canonical version marker so future header revisions cannot be blocked
+// by a stale literal from an older shell generation.
+for(const token of [SITEWIDE_HEADER_MARKER,'overflow-x:auto']){
   if(!header.includes(token)) throw new Error(`Generated shared header is missing required compatibility token: ${token}`);
 }
 const footer=`<!-- wp:html --><footer class="dtf-footer-v3" data-dtf-shell="footer-v3"><div class="inner"><div class="dtf-footer-grid"><div>${footerBrandLink}<p>Documented genetics, Teaching Healthy Cultivation, practical grow tools, original games, and the community connecting them.</p></div><nav aria-label="Site map"><strong>Explore</strong><div class="links"><a href="/">Home</a><a href="/seeds/">Seeds</a><a href="/learn/">Learn</a><a href="/courses/">Courses</a><a href="/tools/">Diagnostic</a><a href="/games/">Games</a><a href="/community/">Community</a><a href="/shop/">Shop</a></div></nav><nav aria-label="Company and community links"><strong>Connect & company</strong><div class="links"><a href="/gallery/">Gallery</a><a href="/about/">About</a><a href="/contact/">Contact</a><a class="discord" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Discord</a></div></nav></div><hr><p class="legal">© 2026 DTF Genetics · Dream the Future · Adults only. Follow applicable local laws.</p></div></footer><!-- /wp:html -->`;
