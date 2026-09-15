@@ -27,6 +27,7 @@ const expectedCourseIds = [...Array.from({length:7},(_,i)=>`COURSE-LH-TECH1-00${
 must(expectedCourseIds.every(id => data.courses.some(course => course.id === id)), 'Certification catalog is missing one or more canonical Technician I/II course IDs.');
 must(new Set(data.courses.map(course => course.id)).size === 15, 'Certification catalog course IDs must be unique.');
 must(data.courses.filter(course => course.publicLessonReleaseAvailable === true).length === 1, 'Exactly one course is currently released as a public academic page.');
+must(data.courses.every(course => course.publicLessonReleaseAvailable === true || !course.href), 'Unreleased courses must not publish a live course href.');
 const offerings = data.credentialSections.flatMap(section => section.offerings || []);
 must(offerings.length === 10, `Expected exactly 10 visible certificate/certification offerings, found ${offerings.length}.`);
 must(offerings.every(item => item.title && item.type && item.status && item.statusLabel && item.summary), 'Every credential offering requires title, type, status, statusLabel, and summary.');
@@ -103,8 +104,14 @@ must(readback.status === 'publish', 'Courses page is not published.');
 must(html.includes('data-dtf-courses-catalog="v4"'), 'Courses V4 marker missing after write.');
 must((html.match(/data-credential-offering=/g) || []).length === 10, 'WordPress readback does not contain 10 credential offerings.');
 must(!html.includes('data-issuance-available="true"'), 'WordPress readback unexpectedly advertises credential issuance availability.');
-for (const course of data.courses) must(html.includes(course.href), `Course route missing after write: ${course.href}`);
+must((html.match(/data-course-id=/g) || []).length === 15, 'WordPress readback does not contain all 15 Technician I/II course cards.');
+for (const course of data.courses.filter(course => course.publicLessonReleaseAvailable === true)) {
+  must(course.href && html.includes(course.href), `Released course route missing after write: ${course.id} -> ${course.href}`);
+}
+for (const course of data.courses.filter(course => course.publicLessonReleaseAvailable !== true)) {
+  must(!course.href, `Pending course unexpectedly exposes a live href: ${course.id} -> ${course.href}`);
+}
 
-const report = { result: 'success', version: 4, pageId: page.id, credentialOfferings: offerings.length, publicCourses: data.courses.length, bytes: html.length, backupDir };
+const report = { result: 'success', version: 4, pageId: page.id, credentialOfferings: offerings.length, visibleTechnicianCourses: data.courses.length, publicAcademicPages: data.courses.filter(course => course.publicLessonReleaseAvailable === true).length, bytes: html.length, backupDir };
 await writeFile(join(backupDir, 'courses-catalog-v4-report.json'), `${JSON.stringify(report, null, 2)}\n`);
 console.log(JSON.stringify(report, null, 2));
