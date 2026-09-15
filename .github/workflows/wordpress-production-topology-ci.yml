@@ -29,6 +29,7 @@ on:
       - scripts/publish-learning-expanded-references-owner-aware.mjs
       - scripts/verify-learning-owner-storage.mjs
       - scripts/clear-wordpress-home-featured-media.mjs
+      - scripts/verify-public-learning-visual-quarantine.mjs
   push:
     branches: [main]
     paths:
@@ -57,6 +58,7 @@ on:
       - scripts/publish-learning-expanded-references-owner-aware.mjs
       - scripts/verify-learning-owner-storage.mjs
       - scripts/clear-wordpress-home-featured-media.mjs
+      - scripts/verify-public-learning-visual-quarantine.mjs
 
 permissions:
   contents: read
@@ -123,11 +125,19 @@ jobs:
           ! grep -Fq 'APPLY_GALLERY_V2' "$gallery_verify"
           grep -Fq 'Gallery is verified read-only' "$gallery_verify"
 
-          grep -Fq -- '- Publish DTFSeeds WordPress Production' "$legacy_infographics"
-          if grep -Fq -- '- Stage DTFSeeds WordPress Canonical Deployment' "$legacy_infographics"; then
-            echo 'Legacy infographic production must not run directly from canonical staging.' >&2
+          # Legacy infographic publication is intentionally disabled. It must
+          # remain manual-only and enforce the quarantine policy instead of
+          # participating in the automatic WordPress writer chain.
+          grep -Fq 'workflow_dispatch:' "$legacy_infographics"
+          if grep -Fq 'workflow_run:' "$legacy_infographics" || grep -Fq 'push:' "$legacy_infographics"; then
+            echo 'Legacy infographic publisher must remain disabled/manual-only.' >&2
             exit 1
           fi
+          grep -Fq 'Legacy infographic publisher disabled' "$legacy_infographics"
+          grep -Fq 'legacyAutomaticInfographicPublishingAllowed' "$legacy_infographics"
+          grep -Fq 'legacyInfographicReuseAllowed' "$legacy_infographics"
+          grep -Fq 'dtf-approved-visual-*' "$legacy_infographics"
+          grep -Fq 'No WordPress media is uploaded by this workflow.' "$legacy_infographics"
 
           grep -Fq 'name: Publish Approved THC Visual Library' "$approved_visuals"
           grep -Fq 'dtf-approved-visual-library-v2' "$approved_visuals"
@@ -135,9 +145,11 @@ jobs:
           grep -Fq "APPLY_INFOGRAPHIC_GALLERY: 'true'" "$approved_visuals"
           grep -Fq 'Verify public approved-only library' "$approved_visuals"
 
-          grep -Fq -- '- Publish THC Infographics to WordPress Production' "$learning"
+          # Learning may still expose the legacy workflow name as an optional
+          # workflow_run compatibility trigger, but its direct push paths are
+          # authoritative and the legacy lane itself cannot auto-run or write.
           if grep -Fq -- '- Publish DTFSeeds WordPress Production' "$learning"; then
-            echo 'Learning must keep one upstream workflow handoff, not a parallel canonical trigger.' >&2
+            echo 'Learning must not have a parallel canonical production trigger.' >&2
             exit 1
           fi
 
@@ -211,4 +223,4 @@ jobs:
           grep -Fq 'site/wordpress/visual-quality-policy.json' "$verify_visuals"
           grep -Fq 'actions/upload-artifact@v4' "$verify_visuals"
 
-          echo 'Verified WordPress topology: canonical staging -> dedicated writers; approved-only visual library owns public education media; Learning owns serialized Home/Learn V3/V4/expanded/visual storage plus Home featured-media quarantine; final Home release visuals are reusable; Genetics owns /seeds/; recovery and independent visual-verification lanes are manual/read-only; legacy writers remain manual-only.'
+          echo 'Verified WordPress topology: canonical staging -> dedicated writers; legacy infographic publication disabled/manual-only; approved-only visual library owns public education media; Learning owns serialized Home/Learn V3/V4/expanded/visual storage plus Home featured-media quarantine; final Home release visuals are reusable; Genetics owns /seeds/; recovery and independent visual-verification lanes are manual/read-only; legacy writers remain manual-only.'
