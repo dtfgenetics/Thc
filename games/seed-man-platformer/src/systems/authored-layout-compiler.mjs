@@ -30,30 +30,38 @@ export function compileAuthoredRecipe(levelId, recipe, defaults={}, levelMeta={}
     const usableWidth=Math.max(280,endX-startX);
     const surface=section.surface||'grass';
     const sectionId=`${levelId}-section-${index+1}`;
-    platforms.push({id:`${sectionId}-ground`,x:startX,y:groundY,width:usableWidth,height:60,surface});
-
     const sectionMechanics=Array.isArray(section.mechanics)?section.mechanics:[];
+    const sectionHazards=Array.isArray(section.hazards)?section.hazards:[];
+    const ground={id:`${sectionId}-ground`,x:startX,y:groundY,width:usableWidth,height:60,surface};
+    if(sectionMechanics.includes('slippery-ground'))ground.slippery=true;
+    platforms.push(ground);
+
     mechanics.push(...sectionMechanics);
-    if(sectionMechanics.some((m)=>['moving-platforms','vertical-platforms','vine-platforms','wall-routes','crystal-bounce','conveyor-platforms'].includes(m))){
+    const needsTraversalPlatforms=sectionMechanics.some((m)=>['moving-platforms','vertical-platforms','vine-platforms','wall-routes','crystal-bounce','conveyor-platforms','collapsing-platforms','springs'].includes(m));
+    if(needsTraversalPlatforms){
       const count=sectionMechanics.includes('vertical-platforms')?4:3;
       for(let p=0;p<count;p+=1){
         const travel=Math.max(0,usableWidth-440);
-        platforms.push({
+        const platform={
           id:`${sectionId}-platform-${p+1}`,
           x:startX+220+p*(travel/Math.max(1,count-1)),
           y:groundY-100-(p%2)*70,
           width:180,
           height:22,
-          surface:sectionMechanics.includes('crystal-bounce')?'ice':surface,
-          motion:sectionMechanics.includes('moving-platforms')?{axis:p%2?'y':'x',distance:110,durationMs:2200}:undefined,
-          conveyor:sectionMechanics.includes('conveyor-platforms')?{speed:p%2?-55:55}:undefined
-        });
+          surface:sectionMechanics.includes('crystal-bounce')?'ice':surface
+        };
+        if(sectionMechanics.includes('moving-platforms'))platform.motion={axis:p%2?'y':'x',distance:110,durationMs:2200};
+        if(sectionMechanics.includes('conveyor-platforms'))platform.conveyor={speed:p%2?-55:55};
+        if(sectionMechanics.includes('springs'))platform.bounce={multiplier:1.18};
+        if(sectionMechanics.includes('crystal-bounce'))platform.bounce={multiplier:1.28};
+        if(sectionMechanics.includes('collapsing-platforms'))platform.breakaway={cycleMs:2600,activeMs:1550,phaseMs:p*320};
+        platforms.push(platform);
       }
     }
 
-    (section.hazards||[]).forEach((type,h)=>{
+    sectionHazards.forEach((type,h)=>{
       const hx=startX+Math.min(Math.max(90,usableWidth-170),220+h*230);
-      hazards.push({id:`${sectionId}-hazard-${hazardSerial++}`,x:hx,y:groundY+18,width:96,height:42,type});
+      hazards.push({id:`${sectionId}-hazard-${hazardSerial++}`,x:hx,y:groundY+18,width:96,height:42,type,zoneId:sectionId});
     });
 
     for(let px=startX+180;px<endX-110;px+=pickupEvery*scale){
@@ -69,7 +77,8 @@ export function compileAuthoredRecipe(levelId, recipe, defaults={}, levelMeta={}
         x:ex,
         y:groundY-44,
         minX:Math.max(startX+80,ex-150),
-        maxX:Math.min(endX-80,ex+180)
+        maxX:Math.min(endX-80,ex+180),
+        zoneId:sectionId
       });
     });
 
@@ -82,15 +91,24 @@ export function compileAuthoredRecipe(levelId, recipe, defaults={}, levelMeta={}
         x:startX+Math.floor(usableWidth*.68),
         y:groundY-46,
         minX:startX+Math.floor(usableWidth*.48),
-        maxX:startX+Math.floor(usableWidth*.86)
+        maxX:startX+Math.floor(usableWidth*.86),
+        zoneId:sectionId
       });
     }
 
     if(section.boss){
-      bosses.push({id:`${levelId}-${section.boss}`,type:section.boss,x:startX+Math.floor(usableWidth*.68),y:groundY-120,arenaStartX:startX+100,arenaEndX:endX-100});
+      bosses.push({id:`${levelId}-${section.boss}`,type:section.boss,x:startX+Math.floor(usableWidth*.68),y:groundY-120,arenaStartX:startX+100,arenaEndX:endX-100,zoneId:sectionId});
     }
 
-    encounterZones.push({id:sectionId,startX,endX,purpose:section.kind||'traversal'});
+    encounterZones.push({
+      id:sectionId,
+      startX,
+      endX,
+      purpose:section.kind||'traversal',
+      surface,
+      mechanics:[...sectionMechanics],
+      hazards:[...sectionHazards]
+    });
     x=endX+gap;
   });
 
@@ -116,7 +134,7 @@ export function compileAuthoredRecipe(levelId, recipe, defaults={}, levelMeta={}
 
   const finalX=Math.max(180,length-140);
   return Object.freeze({
-    mode:'authored-recipe',revision:2,source:'authored-level-recipes-v1',world:recipe.world,length,
+    mode:'authored-recipe',revision:3,source:'authored-level-recipes-v1',world:recipe.world,length,
     spawn:{x:96,y:groundY-90},platforms,hazards,pickups,checkpoints,enemySpawns,phenotypeCarrierSpawns,bosses,encounterZones,
     mechanics:unique(mechanics),requiredPickups:pickups.length,
     finish:{x:finalX,y:groundY-90,width:50,height:90}
