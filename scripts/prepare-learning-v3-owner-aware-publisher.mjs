@@ -67,8 +67,9 @@ if (apply) {
     const { body } = await request(\`/wp-json/wp/v2/pages?slug=\${encodeURIComponent(slug)}&context=edit&status=publish&per_page=100\`);
     const roots = (Array.isArray(body) ? body : []).filter(page => Number(page.parent || 0) === 0);
     if (roots.length !== 1) return { path: \`wordpress:/\${slug}/\`, status: 409, marker, markerFound: false, bytes: 0, owner: 'wordpress-rest' };
-    const stored = rendered(roots[0]?.content);
-    return { path: \`wordpress:/\${slug}/\`, status: 200, marker, markerFound: stored.includes(marker), bytes: stored.length, owner: 'wordpress-rest', pageId: roots[0].id };
+    const content = roots[0]?.content;
+    const stored = typeof content === 'string' ? content : (content?.raw || content?.rendered || '');
+    return { path: \`wordpress:/\${slug}/\`, status: 200, marker, markerFound: stored.includes(marker), bytes: stored.length, owner: 'wordpress-rest-raw-first', pageId: roots[0].id };
   };
   checks.push(await storedRootCheck('home', 'data-dtf-layout="home-v3"'));
   checks.push(await storedRootCheck('learn', 'data-dtf-layout="learn-v3"'));
@@ -87,8 +88,10 @@ for (const marker of [
   "slug.startsWith('dtf-approved-visual-')",
   "slug.startsWith('dtf-strain-card-')",
   'isApprovedLearningMedia(item) &&',
+  "content?.raw || content?.rendered || ''",
+  "owner: 'wordpress-rest-raw-first'",
 ]) {
-  if (!source.includes(marker)) throw new Error(`Prepared Learning V3 publisher is missing role-safe visual-quality gate marker: ${marker}`);
+  if (!source.includes(marker)) throw new Error(`Prepared Learning V3 publisher is missing required owner/media marker: ${marker}`);
 }
 
 await writeFile(outputPath, source, 'utf8');
@@ -96,6 +99,7 @@ console.log(JSON.stringify({
   sourcePath,
   outputPath,
   rootVerification: 'wordpress-rest',
+  rootStorageRead: 'raw-first',
   topicVerification: 'anonymous-public',
   mediaSelection: 'approved-learning-only',
   strainCardsOwnedBy: 'homepage-release-reconciler',
