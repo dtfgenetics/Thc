@@ -1,22 +1,24 @@
-# Approved Sitewide Header Reference — v1
+# Approved Sitewide Header Reference — v2
 
-Status: APPROVED VISUAL REFERENCE
+Status: APPROVED VISUAL + INFORMATION-ARCHITECTURE REFERENCE
 
-Canonical reference asset: `site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg`
-Drive master: `DTF_Course_Header_Approved_Reference_v1.png` in `DTF Genetics Brand/Website Design References`.
+Canonical visual reference asset: `site/wordpress/assets/design-references/dtf-course-header-approved-reference-v1.jpg`
+Drive visual master: `DTF_Course_Header_Approved_Reference_v1.png` in `DTF Genetics Brand/Website Design References`.
+
+The image remains the visual reference for palette, spacing, active-state treatment, brand hierarchy, and course-site continuity. The current information architecture below supersedes obsolete navigation wording visible in older screenshots.
 
 ## Canonical top-level navigation
 
-The following labels, order, and hierarchy are locked for the shared site header and human-facing sitemap/navigation documentation:
+The following six labels, order, and hierarchy are locked for the shared site header and human-facing sitemap/navigation documentation:
 
-1. Home
-2. Seeds
-3. Learn
-4. Courses
-5. Diagnostic
-6. Games
-7. Community
-8. Shop
+1. Genetics → `/seeds/`
+2. Learn → `/learn/`
+3. Tools → `/tools/`
+4. Games → `/games/`
+5. Community → `/community/`
+6. Shop → `/shop/`
+
+The DTF Genetics brand links to Home (`/`), so `Home` is not duplicated as a primary-navigation label.
 
 Utility actions remain separate from the primary navigation:
 
@@ -25,17 +27,23 @@ Utility actions remain separate from the primary navigation:
 - Cart
 - Teaching Healthy Cultivation brand/education identity
 
-Do not rename `Seeds` to `Genetics` in the primary navigation. Do not rename `Diagnostic` to `Tools` in the primary navigation. Do not collapse `Courses` into `Learn`.
+Section ownership rules:
 
-`Diagnostic` currently routes to `/tools/` because that route owns the diagnostic/tooling surface. The visitor-facing label is still `Diagnostic`.
+- `Courses`, education pages, and learning references belong beneath `Learn`.
+- Diagnostic tools, GrowLens, THC Grow Doc, and related plant-diagnostic utilities belong beneath `Tools`.
+- Product, cart, checkout, and account commerce flows belong beneath `Shop` for active-navigation purposes.
+- Gallery, About, and Contact are secondary/company navigation rather than primary sections.
+
+Do not restore the obsolete primary labels `Home`, `Seeds`, `Courses`, or `Diagnostic` into the six-link top-level row.
 
 ## Required header treatment
 
 - Full-width dark green/near-black header.
-- DTF Genetics brand block at left with `Dream the Future` supporting line.
-- Primary navigation uses the exact canonical row: Home, Seeds, Learn, Courses, Diagnostic, Games, Community, Shop.
-- Courses uses the same header family and receives an active state on `/courses/` and Learning Hub course routes.
-- Diagnostic receives the active state for `/tools/`, GrowLens, THC Grow Doc, and related diagnostic routes.
+- DTF Genetics brand block at left with `Dream the Future` supporting line; the brand links Home.
+- Primary navigation uses the exact canonical row: Genetics, Learn, Tools, Games, Community, Shop.
+- Learn receives the active state for `/learn/`, `/courses/`, `/education/`, and related learning routes.
+- Tools receives the active state for `/tools/`, GrowLens, THC Grow Doc, and related diagnostic routes.
+- Shop receives the active state for `/shop/`, product, cart, checkout, and account routes.
 - Search, account, and cart remain compact utility actions rather than primary-navigation labels.
 - `Teaching Healthy Cultivation` remains visible as the education identity when width permits.
 - Thin green divider/accent at the lower header edge.
@@ -48,14 +56,14 @@ The labels and information architecture do not change by device. Only presentati
 
 ### Desktop
 
-- Keep all eight primary destinations in one horizontal row when they fit comfortably.
+- Keep all six primary destinations in one horizontal row when they fit comfortably.
 - Keep Search, Account, Cart, and Teaching Healthy Cultivation grouped at the right.
 - Do not allow navigation labels to wrap.
 
 ### Tablet / compact desktop
 
 - Preserve the brand and utility icons.
-- Collapse the eight primary destinations behind the Menu control before the row becomes cramped.
+- Collapse the six primary destinations behind the Menu control before the row becomes cramped.
 - Expanded navigation may use a multi-column panel.
 - Touch targets must be at least 44px high.
 
@@ -63,26 +71,25 @@ The labels and information architecture do not change by device. Only presentati
 
 - Keep the DTF Genetics brand visible.
 - Keep Search, Account, Cart, and Menu available in the header.
-- The expanded menu must show all eight canonical destinations with the same wording and order.
+- The expanded menu must show all six canonical destinations with the same wording and order.
 - Use two columns when practical and one column on very narrow screens.
-- Never hide Courses or merge it into Learn.
 
 ## Canonical human-facing sitemap roots
 
 ```text
-DTF Genetics
-├── Home
-├── Seeds
+DTF Genetics (brand → Home)
+├── Genetics
 ├── Learn
-├── Courses
-├── Diagnostic
+│   └── Courses and education
+├── Tools
+│   └── Diagnostic, GrowLens, THC Grow Doc
 ├── Games
 ├── Community
 └── Shop
 ```
 
-Deeper pages live beneath these roots, but every new public page should have one clear primary owner among these sections so breadcrumbs, active navigation, responsive menus, and route auditing stay consistent.
+Deeper pages live beneath these roots, but every new public page should have one clear primary owner among these six sections so breadcrumbs, active navigation, responsive menus, and route auditing stay consistent.
 
 ## Fidelity rule
 
-The approved concept is the visual source of truth for proportions, dark palette, spacing rhythm, nav density, active-state treatment, brand hierarchy, and course-site continuity. The screenshot may be shown in internal design documentation, but production UI must remain semantic HTML/CSS and accessible.
+The approved concept remains the visual source of truth for proportions, dark palette, spacing rhythm, active-state treatment, brand hierarchy, and course-site continuity. The canonical six-section navigation above is the information-architecture source of truth. Production UI must remain semantic HTML/CSS and accessible.
