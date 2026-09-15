@@ -100,12 +100,14 @@ node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/scrub-retired
   | tee /tmp/dtf-retired-visual-scrub-output.json
 
 # Fail the canonical publish if Home or any core Learning route still renders a
-# retired image family. Learning routes additionally fail when a strain-card image
-# appears in a generic educational slot; strain cards are owned by product/release
-# surfaces, not by automatic Learning-media selection.
+# retired image family. Learning routes additionally fail when an actual image or
+# source element contains a strain-card/product-visual identity. Do not scan raw
+# CSS class names for this role check: the shared visual stylesheet intentionally
+# defines .strain-card rules used by Home, and those selectors are embedded in
+# Learn's shared style even when no strain-card image is rendered there.
 blocked_visual='(src|srcset|background)[^>]{0,900}(THC[-_ ]?C[0-9]{3}|THC[-_ ]?ENC[-_ ]?[0-9]{3}|Outdoor[-_ ]?[0-9]{2}|Cannabis[_ -]Plant[_ -]Anatomy[_ -]Infographic|Cannabis[_ -]Plant[_ -]Life[_ -]Cycle[_ -]Seed[_ -]to[_ -]Harvest[_ -]Infographic|Cannabis[_ -]Sex[_ -]Expression[_ -]and[_ -]Chromosome[_ -]Combinations|Beneficial[_ -]Insects[_ -]and[_ -]Biological[_ -]Controls|C[0-9]{3}[_ -]Companion)'
 blocked_alt="alt=[\"'][^\"']*Teaching[ _-]+Healthy[ _-]+Cultivation"
-blocked_learning_role='(Strain[_ -]Card|DTF[ _-]+Genetics[ _-]+strain[ _-]+card|Mystery[_ -]Line[_ -]F1[_ -]Regular|Rainbow[_ -]Bubblegum[_ -]F1[_ -]Regular)'
+blocked_learning_media='<(img|source)[^>]{0,1400}(dtf[-_ ]?strain[-_ ]?card|Strain[_ -]Card|DTF[ _-]+Genetics[ _-]+strain[ _-]+card|Mystery[_ -]Line[_ -]F1[_ -]Regular|Rainbow[_ -]Bubblegum[_ -]F1[_ -]Regular)'
 verify_routes=(
   /
   /learn/
@@ -134,7 +136,7 @@ for route in "${verify_routes[@]}"; do
     echo "Learning publish still renders a retired visual on $route" >&2
     exit 1
   fi
-  if [[ "$route" == /learn/* ]] && grep -Eqi "$blocked_learning_role" "$body"; then
+  if [[ "$route" == /learn/* ]] && grep -Eqi "$blocked_learning_media" "$body"; then
     echo "Learning publish still renders a product/strain-card visual in an educational role on $route" >&2
     exit 1
   fi
