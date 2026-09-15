@@ -38,4 +38,11 @@ assert.match(css, /@media\(max-width:680px\)[\s\S]*\.seed-tutorial\{position:fix
 assert.match(css, /bottom:calc\(max\(\.45rem,env\(safe-area-inset-bottom\)\) \+ 82px\)/, 'mobile prompt must respect touch controls and safe area');
 assert.match(css, /@media\(prefers-reduced-motion:reduce\)/, 'tutorial animation must inherit reduced-motion protection');
 
-console.log('Seed Man authored tutorial UI contract passed.');
+assert.match(css, /2026-09-15 playfield-first mobile polish/, 'mobile gameplay UI pass must stay explicitly versioned in the public stylesheet');
+assert.match(css, /\.hero>\.eyebrow,\.hero>\.lede,\.hero>#seed-ui-release-marker\{display:none!important\}/, 'mobile view must collapse nonessential hero copy before the playfield');
+assert.match(css, /\.hud\{display:grid!important;grid-template-columns:repeat\(2,minmax\(0,1fr\)\);gap:\.34rem!important;max-height:none!important;overflow:visible!important/, 'mobile HUD must be a compact non-scrolling grid');
+assert.match(css, /\.hud span:nth-of-type\(3\),\.hud span:nth-of-type\(5\),\.hud span:nth-of-type\(6\),\.hud span:nth-of-type\(7\)\{display:none!important\}/, 'secondary mobile HUD stats must not crowd the playfield');
+assert.match(css, /\.hud button\{margin:0!important;min-height:44px!important/, 'mobile pause and restart controls must remain touch-accessible');
+assert.match(css, /@media\(orientation:landscape\) and \(max-height:520px\) and \(pointer:coarse\)/, 'short landscape touch screens need a dedicated playfield-first layout');
+
+console.log('Seed Man authored tutorial and mobile UI contracts passed.');
