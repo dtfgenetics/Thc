@@ -57,25 +57,28 @@ jobs:
           const a=d.apps.find(x=>x.id==='seed-man-platformer');
           if(!a)process.exit(1);
           if(a.title!=='Seed Man: Grow. Fight. Restore.')process.exit(2);
-          if(a.runtime!=='static-canvas2d-approved-art'||a.status!=='production-v20')process.exit(3);
-          if(a.machineData.levelCount!==20||a.machineData.worldCount!==5||a.machineData.bossCount!==6)process.exit(4);
+          if(a.runtime!=='html5-browser-canvas2d-threejs-hybrid'||a.status!=='production-v20')process.exit(3);
+          if(a.machineData.levelCount!==20||a.machineData.authoredLevelCount!==20||a.machineData.generatedLevelCount!==0||a.machineData.worldCount!==5||a.machineData.bossCount!==6)process.exit(4);
           if(a.machineData.release!=='20260908-v20'||a.machineData.finalBoss!=='blight-king'||a.machineData.finalBossPhases!==4)process.exit(5);
           if(a.machineData.characterContract!=='green-armored-plant-hero')process.exit(6);
           if(a.machineData.approvedArtManifest!=='seed-man-approved-art-v2'||a.machineData.approvedArtSource!=='approved-showcase-2026-09-08')process.exit(7);
           if(a.machineData.productionCharacterArt!=='seed-man-approved-atlas-renderer-v4')process.exit(8);
           if(a.machineData.campaignRuntime!=='seed-man-campaign-v20-runtime-v3'||a.machineData.campaignUi!=='seed-man-campaign-ui-v20')process.exit(9);
-          if(a.machineData.proceduralFallbackAllowed!==false||a.machineData.legacyAtlasFallbackAllowed!==false)process.exit(10);
-          if(a.machineData.levelCount===15||a.machineData.productionCharacterArt==='seed-man-production-v1'||a.machineData.characterContract==='seed-man-locked-v1')process.exit(11);
+          if(a.machineData.worldRenderer!=='seed-man-three-world-v2'||a.machineData.threePublicApi!=='seed-man-three-public-v3')process.exit(10);
+          if(a.machineData.worldMechanicsRuntime!=='seed-man-world-mechanics-browser-v1'||a.machineData.dynamicPlatformRuntime!=='seed-man-three-dynamic-platforms-v1')process.exit(11);
+          if(a.machineData.proceduralFallbackAllowed!==false||a.machineData.legacyAtlasFallbackAllowed!==false)process.exit(12);
+          if(a.machineData.levelCount===15||a.machineData.productionCharacterArt==='seed-man-production-v1'||a.machineData.characterContract==='seed-man-locked-v1')process.exit(13);
           for(const legacyField of ['ui','visualSystem','authoredSpriteRuntime','threeJsRenderer','threeJsPublicApi','threeJsOptimization']){
-            if(Object.hasOwn(a.machineData,legacyField))process.exit(12);
+            if(Object.hasOwn(a.machineData,legacyField))process.exit(14);
           }
           const hub=fs.readFileSync('site/public-route-patch/games/index.html','utf8');
-          for(const retired of ['Seed Man: Sprout Run','Seed Man: Greenhouse Gauntlet','15 levels']) if(hub.includes(retired)) process.exit(13);
-          for(const marker of ['Seed Man: Grow. Fight. Restore.','20 levels','5 worlds','6 bosses']) if(!hub.includes(marker)) process.exit(14);
+          for(const retired of ['Seed Man: Sprout Run','Seed Man: Greenhouse Gauntlet','15 levels']) if(hub.includes(retired)) process.exit(15);
+          for(const marker of ['Seed Man: Grow. Fight. Restore.','20 levels','5 worlds','6 bosses']) if(!hub.includes(marker)) process.exit(16);
           const nav=JSON.parse(fs.readFileSync('data/public-navigation.json','utf8')).games.find(x=>x.id==='seed-man-platformer');
-          if(!nav||nav.title!=='Seed Man: Grow. Fight. Restore.'||nav.route!=='/games/seed-man-platformer/')process.exit(15);
+          if(!nav||nav.title!=='Seed Man: Grow. Fight. Restore.'||nav.route!=='/games/seed-man-platformer/')process.exit(17);
           const source=JSON.parse(fs.readFileSync('data/game-source-map.json','utf8')).games.find(x=>x.id==='seed-man-platformer');
-          if(!source||source.title!=='Seed Man: Grow. Fight. Restore.')process.exit(16);
+          if(!source||source.title!=='Seed Man: Grow. Fight. Restore.')process.exit(18);
+          if(source.canonical?.worldMechanics!=='games/seed-man-platformer/src/systems/world-mechanics-system.mjs')process.exit(19);
           NODE
       - name: Safely integrate reconciled Seed Man public surfaces when needed
         shell: bash
