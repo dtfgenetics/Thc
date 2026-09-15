@@ -8,6 +8,10 @@ on:
       - site/public-route-patch/assets/release-source-revisions/thc-rpg.txt
       - site/deployment/public-apps.json
       - scripts/validate-thc-rpg-release-source.mjs
+      - scripts/apply-sitewide-header.mjs
+      - scripts/lib/sitewide-header-template-v6.mjs
+      - site/wordpress/assets/responsive-layout-v1.css
+      - site/wordpress/assets/sitewide-ux-polish-v1.css
       - .github/workflows/qualify-thc-rpg-dtfseeds-package.yml
   push:
     branches: [main]
@@ -15,6 +19,10 @@ on:
       - site/public-route-patch/assets/release-source-revisions/thc-rpg.txt
       - site/deployment/public-apps.json
       - scripts/validate-thc-rpg-release-source.mjs
+      - scripts/apply-sitewide-header.mjs
+      - scripts/lib/sitewide-header-template-v6.mjs
+      - site/wordpress/assets/responsive-layout-v1.css
+      - site/wordpress/assets/sitewide-ux-polish-v1.css
       - .github/workflows/qualify-thc-rpg-dtfseeds-package.yml
 
 permissions:
@@ -122,6 +130,13 @@ jobs:
           }
           JSON
 
+      - name: Apply canonical DTFSeeds Header V6
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/apply-sitewide-header.mjs package
+          node scripts/apply-sitewide-header.mjs package --check
+
       - name: Verify packaged route contract
         shell: bash
         run: |
@@ -134,6 +149,17 @@ jobs:
           test -s package/games/thc-rpg/src/grow-journal-ui.js
           test -s package/games/thc-rpg/src/game/GrowJournal.js
           test -s package/games/thc-rpg/src/game/KeeperCuttings.js
+          grep -Fq 'data-dtf-shell="header-v6"' package/games/thc-rpg/index.html
+          grep -Fq 'data-dtf-sitewide-header="canonical-six-v1"' package/games/thc-rpg/index.html
+          grep -Fq 'href="/seeds/"' package/games/thc-rpg/index.html
+          grep -Fq '>Genetics<' package/games/thc-rpg/index.html
+          grep -Fq 'href="/learn/"' package/games/thc-rpg/index.html
+          grep -Fq 'href="/tools/"' package/games/thc-rpg/index.html
+          grep -Fq 'href="/games/"' package/games/thc-rpg/index.html
+          grep -Fq 'href="/community/"' package/games/thc-rpg/index.html
+          grep -Fq 'href="/shop/"' package/games/thc-rpg/index.html
+          grep -Fq 'Teaching' package/games/thc-rpg/index.html
+          grep -Fq 'Healthy Cultivation' package/games/thc-rpg/index.html
           grep -Fq 'route=/games/thc-rpg/' package/games/thc-rpg/source-revision.txt
           grep -Fq 'commit=${{ steps.source.outputs.revision }}' package/games/thc-rpg/source-revision.txt
           grep -Fq '"route": "/games/thc-rpg/"' package/games/thc-rpg/game-release.json
@@ -160,11 +186,12 @@ jobs:
             echo
             echo '- Route: `/games/thc-rpg/`'
             echo '- Canonical repo: `${{ steps.source.outputs.repository }}`'
-            echo '- Canonical revision: `${{ steps.source.outputs.revision }}`'
-            echo '- Version: `${{ steps.source.outputs.version }}`'
+            echo '- Canonical revision: ${{ steps.source.outputs.revision }}'
+            echo '- Version: ${{ steps.source.outputs.version }}'
             echo '- Canonical tests: passed'
             echo '- Deterministic shipped-UI validation: passed'
             echo '- Visitor-only release validation: passed'
+            echo '- Canonical Header V6 packaging: passed'
             echo '- Deployable route artifact: uploaded'
             echo '- Public promotion: still blocked until production publish + exact live-route verification'
           } >> "$GITHUB_STEP_SUMMARY"

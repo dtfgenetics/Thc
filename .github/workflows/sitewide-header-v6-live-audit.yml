@@ -40,6 +40,7 @@ jobs:
           grep -Fq "['/seeds/', 'Genetics']" scripts/audit-sitewide-header-live.mjs
           grep -Fq "['/tools/', 'Tools']" scripts/audit-sitewide-header-live.mjs
           grep -Fq 'site/deployment/public-apps.json' scripts/audit-sitewide-header-live.mjs
+          grep -Fq "key !== 'routePrefix'" scripts/audit-sitewide-header-live.mjs
 
   audit:
     if: github.event_name != 'pull_request' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
