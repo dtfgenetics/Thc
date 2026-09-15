@@ -6,7 +6,7 @@
  * Gameplay state/collision remain owned by simulation. This file only renders.
  */
 
-const SPROUT_ART_VERSION = 'seed-man-approved-atlas-renderer-v5';
+const SPROUT_ART_VERSION = 'seed-man-approved-atlas-renderer-v4';
 const SPROUT_ACTION_FEEDBACK = 'seed-man-approved-action-feedback-v2';
 const SPROUT_MOTION_RIG = 'seed-man-character-motion-rig-v1';
 const SPROUT_VISUAL_PIPELINE = 'approved-showcase-2026-09-08';
