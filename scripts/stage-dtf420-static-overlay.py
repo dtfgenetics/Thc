@@ -5,10 +5,10 @@ The source application remains in dtfgenetics/Dtf420. This importer clones its
 current main branch, builds the explicit static export, requires the source
 ownership manifest to exactly match this repository's production contract, and
 copies only approved child routes/shared assets under an isolated staging
-namespace. Nothing is written directly to /learn, /community, /games, or /.
+namespace. Nothing is written directly to WordPress-owned top-level routes.
 
 After staging, every standalone HTML document is reconciled through the same
-DTFSeeds V5 header/responsive/UX shell used by the rest of the public suite.
+DTFSeeds V6 header/responsive/UX shell used by the rest of the public suite.
 This is intentionally performed after the external Dtf420 build because those
 files do not exist yet when the normal public-suite header pass runs.
 """
@@ -25,7 +25,8 @@ import tempfile
 REPO_URL = "https://github.com/dtfgenetics/Dtf420.git"
 STAGING_NAME = "dtf-content-overlay"
 SHELL_MARKERS = (
-    'data-dtf-shell="header-v5"',
+    'data-dtf-shell="header-v6"',
+    'data-dtf-sitewide-header="canonical-six-v1"',
     'id="dtf-responsive-layout-v1"',
     'id="dtf-sitewide-ux-polish-v1"',
 )
@@ -59,7 +60,7 @@ def copy_path(source_root: Path, destination_root: Path, rel: str) -> None:
 
 
 def verify_shared_shell(staging_root: Path, route_prefixes: list[str]) -> int:
-    """Require the canonical shell on every staged route HTML document."""
+    """Require the canonical V6 shell on every staged route HTML document."""
     checked = 0
     for prefix in route_prefixes:
         prefix_root = staging_root / prefix
@@ -91,7 +92,7 @@ def main() -> None:
     if contract.get("canonicalOrigin") != "https://dtfseeds.com":
         raise SystemExit("production overlay contract has the wrong canonical origin")
 
-    forbidden = {"", "learn", "blog", "journal", "community", "games", "seeds", "tools"}
+    forbidden = {"", "learn", "blog", "journal", "community", "games", "seeds", "tools", "shop", "about", "contact", "gallery", "growlens", "thc-grow-doc", "yellow-leaves", "cart", "checkout", "my-account"}
     for prefix in contract.get("routePrefixes", []):
         normalized = str(prefix).strip("/")
         if normalized in forbidden or "/" not in normalized:
@@ -131,8 +132,6 @@ def main() -> None:
 
         # Seed Ascent is a Next wrapper around the dedicated /seed-ascent.html runtime.
         # The route reconciler verifies canonical ownership as well as the runtime link.
-        # Stamp that ownership into the staged wrapper so a correct HTTP 200 page cannot
-        # be rejected merely because the generated Next HTML used relative URLs only.
         seed_wrapper = staging_root / "games" / "seed-ascent" / "index.html"
         seed_html = seed_wrapper.read_text()
         if "/seed-ascent.html" not in seed_html:
@@ -145,9 +144,9 @@ def main() -> None:
                 seed_html = f"{canonical_marker}\n{seed_html}"
             seed_wrapper.write_text(seed_html)
 
-        # The Dtf420 pages are created after the normal public-suite shell pass. Re-run
-        # the canonical reconciler over only this isolated staging tree so child routes
-        # cannot ship without the approved V5 navigation, responsive system, and UX layer.
+        # Dtf420 child routes are created after the normal public-suite shell pass.
+        # Re-run the canonical reconciler over only this isolated staging tree so
+        # those pages cannot ship without V6 navigation and the responsive/UX layers.
         shell_reconciler = repo_root / "scripts" / "apply-sitewide-header.mjs"
         if not shell_reconciler.is_file():
             raise SystemExit(f"shared shell reconciler is missing: {shell_reconciler}")
@@ -156,7 +155,7 @@ def main() -> None:
         shell_route_count = verify_shared_shell(staging_root, list(contract["routePrefixes"]))
 
         metadata = {
-            "schemaVersion": 2,
+            "schemaVersion": 3,
             "purpose": contract["purpose"],
             "canonicalOrigin": contract["canonicalOrigin"],
             "repository": "dtfgenetics/Dtf420",
@@ -166,7 +165,8 @@ def main() -> None:
             "wordpressOwnedRoutes": contract["wordpressOwnedRoutes"],
             "requiredRoutes": contract["requiredRoutes"],
             "sharedShell": {
-                "header": "v5",
+                "header": "v6",
+                "navigation": "canonical-six-v1",
                 "responsiveLayout": "v1",
                 "sitewideUxPolish": "v1",
                 "verifiedHtmlRoutes": shell_route_count,
