@@ -1,14 +1,7 @@
-name: Publish Certification Catalog V4
+name: Validate Legacy Certification Catalog V4
 
 on:
   pull_request:
-    paths:
-      - site/wordpress/education/course-catalog-v4.json
-      - scripts/publish-wordpress-certification-catalog-v4.mjs
-      - .github/workflows/wordpress-certification-catalog-v4.yml
-  push:
-    branches:
-      - main
     paths:
       - site/wordpress/education/course-catalog-v4.json
       - scripts/publish-wordpress-certification-catalog-v4.mjs
@@ -18,10 +11,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: dtfseeds-certification-catalog-v4
-  cancel-in-progress: false
-
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -30,71 +19,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Validate publisher syntax
-        run: node --check scripts/publish-wordpress-certification-catalog-v4.mjs
-      - name: Validate catalog contract and rendered output
-        run: node scripts/publish-wordpress-certification-catalog-v4.mjs --validate-only
-
-  publish:
-    if: github.event_name != 'pull_request'
-    needs: validate
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    environment: production
-    env:
-      WP_SITE_URL: https://dtfseeds.com
-      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
-      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      APPLY_CERTIFICATION_CATALOG_V4: 'true'
-      BACKUP_ROOT: /tmp/dtf-certification-catalog-v4
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-      - name: Require WordPress credentials
-        shell: bash
+      - name: Validate legacy V4 source only
         run: |
-          test -n "${WP_API_USERNAME:-}"
-          test -n "${WP_API_PASSWORD:-}"
-      - name: Publish certification catalog V4
-        run: node scripts/publish-wordpress-certification-catalog-v4.mjs
-      - name: Verify visitor-facing Courses page
-        shell: bash
-        run: |
-          set -euo pipefail
-          page="$RUNNER_TEMP/courses-v4.html"
-          ok=0
-          for attempt in 1 2 3 4 5 6 7 8; do
-            nonce="${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)"
-            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
-              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
-              "$WP_SITE_URL/courses/?verify=${nonce}" --output "$page"
-            if grep -Fq 'dtf-courses-v4-style' "$page" && \
-               grep -Fq 'data-dtf-courses-catalog="v4"' "$page" && \
-               grep -Fq 'THC Cultivation Technician I' "$page" && \
-               grep -Fq 'THC Cultivation Technician II' "$page" && \
-               grep -Fq 'THC Plant Health, IPM &amp; Biosecurity Specialist' "$page" && \
-               grep -Fq 'THC Cultivation Lead &amp; Operations Professional' "$page" && \
-               grep -Fq 'data-course-id="COURSE-LH-TECH1-007"' "$page" && \
-               grep -Fq 'data-course-id="COURSE-LH-TECH2-008"' "$page" && \
-               ! grep -Fq 'data-issuance-available="true"' "$page"; then
-              offering_count="$(grep -o 'data-credential-offering=' "$page" | wc -l | tr -d ' ')"
-              course_count="$(grep -o 'data-course-id=' "$page" | wc -l | tr -d ' ')"
-              open_count="$(grep -o 'data-course-open="true"' "$page" | wc -l | tr -d ' ')"
-              if [[ "$offering_count" -eq 10 && "$course_count" -eq 15 && "$open_count" -eq 1 ]]; then
-                ok=1
-                break
-              fi
-            fi
-            sleep 5
-          done
-          [[ "$ok" -eq 1 ]] || { echo 'Certification catalog V4 did not become visitor-facing with all 10 credential offerings, all 15 Technician I/II course cards, and exactly one released course link.' >&2; exit 1; }
-      - name: Upload rollback evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: certification-catalog-v4-backup-${{ github.run_id }}
-          path: /tmp/dtf-certification-catalog-v4
-          if-no-files-found: warn
-          retention-days: 30
+          node --check scripts/publish-wordpress-certification-catalog-v4.mjs
+          node scripts/publish-wordpress-certification-catalog-v4.mjs --validate-only
+      - name: Explain production ownership
+        run: echo 'Catalog V4 is retained as legacy source validation only. Catalog V5 owns production publication so public Technician I course links cannot be overwritten.'
