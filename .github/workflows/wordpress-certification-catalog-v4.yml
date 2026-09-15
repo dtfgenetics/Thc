@@ -76,16 +76,20 @@ jobs:
                grep -Fq 'THC Cultivation Technician II' "$page" && \
                grep -Fq 'THC Plant Health, IPM &amp; Biosecurity Specialist' "$page" && \
                grep -Fq 'THC Cultivation Lead &amp; Operations Professional' "$page" && \
+               grep -Fq 'data-course-id="COURSE-LH-TECH1-007"' "$page" && \
+               grep -Fq 'data-course-id="COURSE-LH-TECH2-008"' "$page" && \
                ! grep -Fq 'data-issuance-available="true"' "$page"; then
-              count="$(grep -o 'data-credential-offering=' "$page" | wc -l | tr -d ' ')"
-              if [[ "$count" -eq 10 ]]; then
+              offering_count="$(grep -o 'data-credential-offering=' "$page" | wc -l | tr -d ' ')"
+              course_count="$(grep -o 'data-course-id=' "$page" | wc -l | tr -d ' ')"
+              open_count="$(grep -o 'data-course-open="true"' "$page" | wc -l | tr -d ' ')"
+              if [[ "$offering_count" -eq 10 && "$course_count" -eq 15 && "$open_count" -eq 1 ]]; then
                 ok=1
                 break
               fi
             fi
             sleep 5
           done
-          [[ "$ok" -eq 1 ]] || { echo 'Certification catalog V4 did not become visitor-facing with all 10 offerings.' >&2; exit 1; }
+          [[ "$ok" -eq 1 ]] || { echo 'Certification catalog V4 did not become visitor-facing with all 10 credential offerings, all 15 Technician I/II course cards, and exactly one released course link.' >&2; exit 1; }
       - name: Upload rollback evidence
         if: always()
         uses: actions/upload-artifact@v4
