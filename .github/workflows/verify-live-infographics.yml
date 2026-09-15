@@ -2,14 +2,9 @@ name: Verify Live THC Infographics
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows:
-      - Finalize THC Learning Ownership
-    types: [completed]
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: verify-live-thc-infographics
@@ -17,230 +12,102 @@ concurrency:
 
 jobs:
   verify:
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    name: Verify approved-only THC visual library
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout trusted main
+        uses: actions/checkout@v4
         with:
           ref: main
-          fetch-depth: 0
 
-      - name: Probe guided library over IPv4
+      - name: Probe approved-only visual library over IPv4
         id: probe
         shell: bash
         run: |
           set -euo pipefail
           page_url='https://dtfseeds.com/learn/infographics/'
-          body="$RUNNER_TEMP/live-infographics.html"
+          body="$RUNNER_TEMP/live-approved-visual-library.html"
+          report="$RUNNER_TEMP/live-approved-visual-library.json"
+          ok=0
 
-          fetch_library() {
-            local ok=0
-            for attempt in 1 2 3 4 5 6 7 8; do
-              if curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
-                --header 'Cache-Control: no-cache, no-store, max-age=0' \
-                --header 'Pragma: no-cache' \
-                "${page_url}?verify=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" \
-                --output "$body"; then
-                if \
-                  grep -Fqi 'Searchable Infographic Library' "$body" && \
-                  grep -Fqi 'Use the library as a learning system' "$body" && \
-                  grep -Fqi 'Choose a learning path' "$body" && \
-                  grep -Fqi 'thc-infographic-topic' "$body" && \
-                  grep -Fqi 'Study question:' "$body"; then
+          for attempt in 1 2 3 4 5 6 7 8; do
+            if curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' \
+              --header 'Pragma: no-cache' \
+              "${page_url}?verify_approved=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" \
+              --output "$body"; then
+              if grep -Fqi 'dtf-approved-visual-library-v2' "$body" && grep -Fqi 'Visual plant science library.' "$body"; then
+                if OUTPUT="$body" REPORT="$report" node <<'NODE'
+          const fs = require('fs');
+          const html = fs.readFileSync(process.env.OUTPUT, 'utf8');
+          const lower = html.toLowerCase();
+          const policy = JSON.parse(fs.readFileSync('site/wordpress/visual-quality-policy.json', 'utf8'));
+          const failures = [];
+
+          if (Number(policy.schemaVersion) < 3 || policy.mode !== 'quarantine') failures.push('visual quarantine v3+ is not active');
+          if (policy.replacementPolicy?.legacyInfographicReuseAllowed !== false) failures.push('legacy infographic reuse is not disabled');
+          if (policy.replacementPolicy?.imageLessFallbackPreferred !== true) failures.push('image-less fallback is not the preferred policy');
+
+          for (const value of policy?.bannedMedia?.urlContains || []) {
+            if (value && lower.includes(String(value).toLowerCase())) failures.push(`banned URL rendered: ${value}`);
+          }
+          for (const prefix of policy?.bannedMedia?.slugPrefixes || []) {
+            if (prefix && lower.includes(String(prefix).toLowerCase())) failures.push(`banned slug prefix rendered: ${prefix}`);
+          }
+          for (const prefix of policy?.bannedHtml?.altPrefixes || []) {
+            if (prefix && lower.includes(`alt="${String(prefix).toLowerCase()}`)) failures.push(`banned alt identity rendered: ${prefix}`);
+          }
+
+          const approvedPrefix = 'dtf-approved-visual-';
+          const approvedOccurrences = (lower.match(new RegExp(approvedPrefix, 'g')) || []).length;
+          const emptyState = lower.includes('approved replacement visuals are being rebuilt.');
+          if (approvedOccurrences === 0 && !emptyState) failures.push('zero approved visuals rendered without the intentional quality-gate empty state');
+
+          const result = {
+            verifiedAtUtc: new Date().toISOString(),
+            pageUrl: 'https://dtfseeds.com/learn/infographics/',
+            contract: 'dtf-approved-visual-library-v2',
+            approvedVisualIdentityOccurrences: approvedOccurrences,
+            intentionalEmptyState: emptyState,
+            quarantineMode: policy.mode,
+            legacyReuseAllowed: policy.replacementPolicy?.legacyInfographicReuseAllowed,
+            productionReady: failures.length === 0,
+            failures
+          };
+          fs.writeFileSync(process.env.REPORT, `${JSON.stringify(result, null, 2)}\n`);
+          console.log(JSON.stringify(result, null, 2));
+          if (failures.length) process.exit(1);
+          NODE
+                then
                   ok=1
                   break
                 fi
               fi
-              sleep 7
-            done
-            [[ "$ok" -eq 1 ]]
-          }
-
-          fetch_library || {
-            echo 'Guided infographic library markers did not become visitor-facing.' >&2
-            exit 1
-          }
-
-          python3 - "$body" "$RUNNER_TEMP/live-infographic-media.txt" "$RUNNER_TEMP/live-infographic-parse.json" <<'PY'
-          import html
-          import json
-          import re
-          import sys
-          from html.parser import HTMLParser
-          from urllib.parse import unquote, urljoin
-
-          html_path, media_path, report_path = sys.argv[1:]
-          page_url = 'https://dtfseeds.com/learn/infographics/'
-          text = open(html_path, encoding='utf-8').read()
-
-          class LibraryParser(HTMLParser):
-              def __init__(self):
-                  super().__init__(convert_charrefs=True)
-                  self.in_card = False
-                  self.depth = 0
-                  self.current = None
-                  self.cards = []
-
-              def handle_starttag(self, tag, attrs):
-                  attrs = dict(attrs)
-                  classes = set(attrs.get('class', '').split())
-                  if tag == 'article' and 'thc-library-card' in classes and not self.in_card:
-                      self.in_card = True
-                      self.depth = 1
-                      self.current = {'text': [], 'urls': []}
-                      return
-                  if not self.in_card:
-                      return
-                  if tag == 'article':
-                      self.depth += 1
-                  for key in ('src', 'href'):
-                      value = attrs.get(key)
-                      if value:
-                          self.current['urls'].append(html.unescape(unquote(value)))
-
-              def handle_endtag(self, tag):
-                  if not self.in_card:
-                      return
-                  if tag == 'article':
-                      self.depth -= 1
-                      if self.depth == 0:
-                          self.cards.append(self.current)
-                          self.in_card = False
-                          self.current = None
-
-              def handle_data(self, data):
-                  if self.in_card and self.current is not None:
-                      self.current['text'].append(data)
-
-          parser = LibraryParser()
-          parser.feed(text)
-          cards = parser.cards
-          if len(cards) < 70:
-              raise SystemExit(f'Expected at least 70 infographic cards; found {len(cards)}')
-
-          forbidden = re.compile(r'(thc[\s_/-]*enc[\s_/-]*001[\s_/-]*vis|v04[\s_/-]*sup|pdf[\s_/-]*pages)', re.I)
-          media = []
-          seen = set()
-          for card in cards:
-              text_blob = ' '.join(' '.join(card['text']).split())
-              url_blob = ' '.join(card['urls'])
-              if forbidden.search(text_blob + ' ' + url_blob) or text_blob.strip().lower() == 'page 01':
-                  raise SystemExit(f'Excluded support/reference card found: {(text_blob + " " + url_blob)[:500]}')
-              chosen = next((u for u in card['urls'] if '/wp-content/uploads/' in u), '')
-              if chosen:
-                  absolute = urljoin(page_url, chosen)
-                  if absolute not in seen:
-                      seen.add(absolute)
-                      media.append(absolute)
-
-          if len(media) < 70:
-              raise SystemExit(f'Expected at least 70 distinct rendered WordPress media URLs; found {len(media)}')
-
-          with open(media_path, 'w', encoding='utf-8') as fh:
-              for url in media[:20]:
-                  fh.write(url + '\n')
-
-          report = {
-              'card_count': len(cards),
-              'media_url_count': len(media),
-              'sample_count': min(20, len(media)),
-              'guided_learning_ready': True
-          }
-          open(report_path, 'w', encoding='utf-8').write(json.dumps(report, indent=2) + '\n')
-          print(json.dumps(report, indent=2))
-          PY
-
-          sample_total=0
-          sample_live=0
-          while IFS= read -r media_url; do
-            [[ -n "$media_url" ]] || continue
-            sample_total=$((sample_total + 1))
-            sample_file="$RUNNER_TEMP/media-${sample_total}.bin"
-            meta="$(curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
-              --output "$sample_file" \
-              --write-out '%{http_code}|%{content_type}|%{size_download}' \
-              "$media_url" || true)"
-            IFS='|' read -r status content_type size_download <<< "$meta"
-            if [[ "$status" =~ ^2[0-9][0-9]$ ]] && [[ "$content_type" == image/* ]] && [[ "${size_download:-0}" -ge 1000 ]]; then
-              sample_live=$((sample_live + 1))
-            else
-              echo "Image sample failed: $media_url status=$status type=$content_type bytes=$size_download" >&2
             fi
-          done < "$RUNNER_TEMP/live-infographic-media.txt"
+            sleep 5
+          done
 
-          [[ "$sample_total" -ge 10 ]] || {
-            echo "Expected at least 10 image samples; found $sample_total" >&2
+          [[ "$ok" -eq 1 ]] || {
+            echo 'Approved-only THC visual library verification failed.' >&2
+            test -s "$report" && cat "$report" >&2 || true
+            head -c 5000 "$body" >&2 || true
             exit 1
           }
-          [[ "$sample_live" -eq "$sample_total" ]] || {
-            echo "Only $sample_live/$sample_total infographic samples were live images." >&2
-            exit 1
-          }
 
-          card_count="$(python3 -c "import json;print(json.load(open('$RUNNER_TEMP/live-infographic-parse.json'))['card_count'])")"
-          media_count="$(python3 -c "import json;print(json.load(open('$RUNNER_TEMP/live-infographic-parse.json'))['media_url_count'])")"
-
-          python3 - "$RUNNER_TEMP/live-infographic-parse.json" "$sample_live" "$sample_total" > docs/LIVE_INFOGRAPHIC_STATUS.json <<'PY'
-          import json, sys, time
-          report = json.load(open(sys.argv[1], encoding='utf-8'))
-          report.update({
-              'verified_at_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
-              'page_url': 'https://dtfseeds.com/learn/infographics/',
-              'sampled_rendered_media_live': int(sys.argv[2]),
-              'sampled_rendered_media_count': int(sys.argv[3]),
-              'production_ready': True
-          })
-          print(json.dumps(report, indent=2))
-          PY
-
-          echo "production_ready=true" >> "$GITHUB_OUTPUT"
-          echo "guided_learning_ready=true" >> "$GITHUB_OUTPUT"
-          echo "card_count=$card_count" >> "$GITHUB_OUTPUT"
-          echo "rendered_count=$media_count" >> "$GITHUB_OUTPUT"
-          echo "sample_live=$sample_live" >> "$GITHUB_OUTPUT"
-          echo "sample_total=$sample_total" >> "$GITHUB_OUTPUT"
+          mkdir -p docs
+          cp "$report" docs/LIVE_INFOGRAPHIC_STATUS.json
+          echo 'production_ready=true' >> "$GITHUB_OUTPUT"
 
       - name: Upload independent verification evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: live-thc-infographic-verification-${{ github.run_id }}
-          path: docs/LIVE_INFOGRAPHIC_STATUS.json
+          name: live-thc-approved-visual-verification-${{ github.run_id }}
+          path: |
+            docs/LIVE_INFOGRAPHIC_STATUS.json
+            ${{ runner.temp }}/live-approved-visual-library.html
+            ${{ runner.temp }}/live-approved-visual-library.json
           if-no-files-found: warn
           retention-days: 30
-
-      - name: Report independent verification to advisory issue 220
-        if: always()
-        continue-on-error: true
-        uses: actions/github-script@v7
-        env:
-          PROBE_OUTCOME: ${{ steps.probe.outcome }}
-          PRODUCTION_READY: ${{ steps.probe.outputs.production_ready }}
-          GUIDED_LEARNING_READY: ${{ steps.probe.outputs.guided_learning_ready }}
-          CARD_COUNT: ${{ steps.probe.outputs.card_count }}
-          RENDERED_COUNT: ${{ steps.probe.outputs.rendered_count }}
-          SAMPLE_LIVE: ${{ steps.probe.outputs.sample_live }}
-          SAMPLE_TOTAL: ${{ steps.probe.outputs.sample_total }}
-        with:
-          script: |
-            const body = [
-              '## Independent live THC infographic verification',
-              '',
-              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              `Probe outcome: **${process.env.PROBE_OUTCOME || 'unknown'}**`,
-              `Production ready: **${process.env.PRODUCTION_READY || 'false'}**`,
-              `Guided learning controls live: **${process.env.GUIDED_LEARNING_READY || 'false'}**`,
-              `Rendered infographic cards: **${process.env.CARD_COUNT || '0'}**`,
-              `Rendered WordPress media URLs: **${process.env.RENDERED_COUNT || '0'}**`,
-              `Sampled infographic previews live: **${process.env.SAMPLE_LIVE || '0'}/${process.env.SAMPLE_TOTAL || '0'}**`,
-              '',
-              'The probe uses curl over forced IPv4, validates learning-system introduction, learning paths, subject filtering, study questions, finished-card count, exclusion rules, and live image responses.',
-              'Target: https://dtfseeds.com/learn/infographics/'
-            ].join('\n');
-            try {
-              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 220, body });
-            } catch (error) {
-              core.warning(`Independent infographic advisory report could not be posted: ${error.message}`);
-            }
