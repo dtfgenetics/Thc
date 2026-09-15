@@ -1,6 +1,6 @@
 # DTFSeeds Production Ownership
 
-Updated: 2026-09-11
+Updated: 2026-09-15
 
 This document defines the single-writer rule for public DTFSeeds routes. A route must have one authoritative production writer. Generic publishers may link to a route they do not own, but must not replace its content.
 
@@ -10,7 +10,7 @@ This document defines the single-writer rule for public DTFSeeds routes. A route
 |---|---|---|
 | `/` / Home | Learning Experience V3 with reusable final Home visual handoff | The broad canonical WordPress lane preserves the stored Home content and may verify it read-only; Learning V3 owns automatic Home publication. |
 | `/learn/` | Learning Experience V3 | Sole automatic Learn-root writer. Education publishers may publish child libraries but must never append, replace, or otherwise mutate the Learn root. |
-| `/courses/` | Courses catalog publisher (`scripts/publish-wordpress-courses-catalog-v3.mjs`) | Content-driven course catalog. The catalog may add, remove, reorder, or expand course entries without a hard-coded course-count limit. Generic WordPress and Learning V3 publishers may link here but must not rewrite it. |
+| `/courses/` | Certification Catalog V4 (`scripts/publish-wordpress-certification-catalog-v4.mjs`) | Sole production writer for the public course/certification catalog. It renders the complete two-certificate/eight-professional-credential roadmap, exposes only academically available courses, and must never mark an unfinished credential issuance-available. Legacy Catalog V3 is superseded and must not be used as a production writer. |
 | `/learn/learning-hub/` and program/course descendants | Learning Hub course publishers | Course trees, lessons, workbooks, practicals, and course learning assessments are owned by their course release workflows. Course 1 is published by `.github/workflows/wordpress-learning-hub-course1-production.yml`; the independent `/learn/` root remains owned by Learning Experience V3. |
 | `/community/` | Canonical WordPress publisher | Editorial/community root. |
 | `/shop/` | Canonical WordPress commerce-presentation publisher | Storefront presentation only; transaction data remains protected. |
@@ -36,6 +36,7 @@ The following production conflicts have been removed from `main`:
 - `scripts/update-wordpress-learn-expansion-v1.mjs` is a read-only convergence check; it cannot mutate `/learn/`.
 - `scripts/run-learning-v3-connected-production.sh` publishes the connected Learning V4 map and the expanded THC reference links as part of the same Learning V3 owner transaction.
 - The Course 1 production workflow does not claim ownership of `/learn/`; it verifies and publishes only the Learning Hub hierarchy below it.
+- Certification Catalog V4 is the sole `/courses/` writer. The Course 1 production workflow republishes that same V4 catalog after course/navigation updates so a Course 1 release cannot revert the catalog.
 - The V5 header workflow self-heals after major WordPress publishers and audits discovered public routes without taking content ownership away from those route owners.
 
 Relevant historical commits:
@@ -44,6 +45,8 @@ Relevant historical commits:
 - `6a842e6ccd99e8f773302639277f88bfafc0da91` — stop commerce visuals from rewriting genetics routes.
 - `4be8371f501f92ba0eae7352d631b13cf9a0d8d7` — make genetics publisher the sole Seeds-route owner in canonical production.
 - `71a145ff27ad89cf912adbe3c13e6315747b2bd1` — make Learning Experience V3 the serialized Learn owner.
+- `c271379c171ec2a8d40903b2338d520c1d08c63f` — prevent Course 1 releases from reverting `/courses/` to Catalog V3.
+- `0072eedd1601804422fc4e6aecb1822a89ad6990` — make Course 1 public assessment counts derive from canonical release data.
 
 Together these rules keep each public route on one authoritative production path while allowing the shared navigation, responsive shell, and release verification contracts to span the whole DTFSeeds ecosystem.
 
