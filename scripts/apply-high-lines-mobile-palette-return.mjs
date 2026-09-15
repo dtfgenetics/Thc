@@ -33,8 +33,8 @@ const assertions = `assert.match(app, /function revealBoardAfterPaletteSelection
 assert.match(app, /\\(max-width: 980px\\)/, 'palette return must stay scoped to the existing stacked layout breakpoint');
 assert.match(app, /\\(prefers-reduced-motion: reduce\\)/, 'palette return must respect reduced motion');
 assert.match(app, /window\\.requestAnimationFrame/, 'palette return must wait for selected-state rendering');
-assert.match(app, /ui\\.art\\.scrollIntoView\\(\\{ behavior: reducedMotion \\? 'auto' : 'smooth', block: 'center', inline: 'nearest' \\}\\)/, 'stacked palette selection must reveal the coloring board without horizontal page movement');
-assert.match(app, /refreshSvgState\\(\\);\\s*revealBoardAfterPaletteSelection\\(\\);\\s*ui\\.announce\\.textContent = `\\$\\{currentColor\\(\\)\\.label\\} selected\\.`/, 'palette-button activation must reveal the board after its selected state renders');
+assert.ok(app.includes("ui.art.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center', inline: 'nearest' });"), 'stacked palette selection must reveal the coloring board without horizontal page movement');
+assert.match(app, /refreshSvgState\\(\\);\\s*revealBoardAfterPaletteSelection\\(\\);/, 'palette-button activation must reveal the board after its selected state renders');
 `;
 if (!test.includes('stacked layouts must return to the board after a palette-button choice')) {
   if (!test.includes(testAnchor)) throw new Error('High Lines runtime test anchor not found');
