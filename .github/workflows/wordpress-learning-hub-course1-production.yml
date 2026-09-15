@@ -6,6 +6,7 @@ on:
       - site/wordpress/education/learning-hub-course1.json
       - site/wordpress/education/learning-hub-course1-ui-v3.json
       - site/wordpress/education/course-catalog-v4.json
+      - scripts/sync-wordpress-learning-hub-course1-visuals.mjs
       - scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
       - scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
@@ -21,6 +22,7 @@ on:
       - site/wordpress/education/learning-hub-course1.json
       - site/wordpress/education/learning-hub-course1-ui-v3.json
       - site/wordpress/education/course-catalog-v4.json
+      - scripts/sync-wordpress-learning-hub-course1-visuals.mjs
       - scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
       - scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
@@ -46,6 +48,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+      - name: Build canonical Course 1 lesson visual map
+        shell: bash
+        run: |
+          node --check scripts/sync-wordpress-learning-hub-course1-visuals.mjs
+          node scripts/sync-wordpress-learning-hub-course1-visuals.mjs --output "$RUNNER_TEMP/course1-ui-canonical.json"
+          echo "LEARNING_HUB_COURSE1_UI_PATH=$RUNNER_TEMP/course1-ui-canonical.json" >> "$GITHUB_ENV"
       - name: Validate publisher, guided UI, responsive layout, catalog, navigation and verifiers
         run: |
           node --check scripts/publish-wordpress-learning-hub-course1-v2.mjs
@@ -79,6 +87,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+      - name: Build canonical Course 1 lesson visual map
+        shell: bash
+        run: |
+          node scripts/sync-wordpress-learning-hub-course1-visuals.mjs --output "$RUNNER_TEMP/course1-ui-canonical.json"
+          echo "LEARNING_HUB_COURSE1_UI_PATH=$RUNNER_TEMP/course1-ui-canonical.json" >> "$GITHUB_ENV"
       - name: Require WordPress credentials
         shell: bash
         run: |
@@ -99,7 +112,7 @@ jobs:
         run: |
           mkdir -p "$BACKUP_ROOT"
           node scripts/verify-wordpress-learning-hub-course1.mjs | tee "$BACKUP_ROOT/readback-verification.json"
-      - name: Verify guided Course 1 lesson navigation and visual policy
+      - name: Verify guided Course 1 lesson navigation and canonical visual policy
         shell: bash
         run: |
           node scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs | tee "$BACKUP_ROOT/readback-ui-v3-verification.json"
