@@ -23,6 +23,7 @@ fi
 # rendered content is only a fallback because WordPress can transform markers.
 node --check scripts/prepare-learning-v3-owner-aware-publisher.mjs
 node --check scripts/clear-wordpress-home-featured-media.mjs
+node --check scripts/verify-public-learning-visual-quarantine.mjs
 grep -Fq 'function isApprovedLearningMedia(item)' scripts/prepare-learning-v3-owner-aware-publisher.mjs
 grep -Fq "if (slug.startsWith('dtf-strain-card-')) return false;" scripts/prepare-learning-v3-owner-aware-publisher.mjs
 grep -Fq "slug.startsWith('dtf-approved-visual-')" scripts/prepare-learning-v3-owner-aware-publisher.mjs
@@ -115,15 +116,13 @@ BACKUP_ROOT="$retired_visual_root" \
 node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/scrub-retired-public-visuals.mjs \
   | tee /tmp/dtf-retired-visual-scrub-output.json
 
-# Fail the canonical publish if Home or any core Learning route still renders a
-# retired image family. Learning routes additionally fail when an actual image or
-# source element contains a strain-card/product-visual identity. Do not scan raw
-# CSS class names for this role check: the shared visual stylesheet intentionally
-# defines .strain-card rules used by Home, and those selectors are embedded in
-# Learn's shared style even when no strain-card image is rendered there.
-blocked_visual='(src|srcset|background)[^>]{0,900}(THC[-_ ]?C[0-9]{3}|THC[-_ ]?ENC[-_ ]?[0-9]{3}|Outdoor[-_ ]?[0-9]{2}|Cannabis[_ -]Plant[_ -]Anatomy[_ -]Infographic|Cannabis[_ -]Plant[_ -]Life[_ -]Cycle[_ -]Seed[_ -]to[_ -]Harvest[_ -]Infographic|Cannabis[_ -]Sex[_ -]Expression[_ -]and[_ -]Chromosome[_ -]Combinations|Beneficial[_ -]Insects[_ -]and[_ -]Biological[_ -]Controls|C[0-9]{3}[_ -]Companion)'
-blocked_alt="alt=[\"'][^\"']*Teaching[ _-]+Healthy[ _-]+Cultivation"
-blocked_learning_media='<(img|source)[^>]{0,1400}(dtf[-_ ]?strain[-_ ]?card|Strain[_ -]Card|DTF[ _-]+Genetics[ _-]+strain[ _-]+card|Mystery[_ -]Line[_ -]F1[_ -]Regular|Rainbow[_ -]Bubblegum[_ -]F1[_ -]Regular)'
+# Verify actual visitor-facing media attributes, not raw stylesheet text. The
+# sitewide quarantine CSS intentionally contains selectors like
+# img[src*="Cannabis_Plant_Anatomy_Infographic"] so scanning the entire HTML for
+# banned strings falsely reports the CSS blocklist itself as a rendered image.
+# The verifier strips style/script blocks and inspects real img/source attributes
+# plus inline background styles. Learning routes additionally reject product or
+# strain-card media in educational roles.
 verify_routes=(
   /
   /learn/
@@ -148,25 +147,11 @@ for route in "${verify_routes[@]}"; do
     -H 'Pragma: no-cache' \
     "${WP_SITE_URL:-https://dtfseeds.com}${route}?dtf_learning_visual_gate=${GITHUB_RUN_ID:-local}-$(date +%s%N)" \
     -o "$body"
-  if grep -Eqi "$blocked_visual" "$body"; then
-    echo "Learning publish still renders a retired visual source on $route" >&2
-    grep -Eio "$blocked_visual" "$body" | head -20 >&2 || true
-    exit 1
-  fi
-  if grep -Eqi "$blocked_alt" "$body"; then
-    echo "Learning publish still renders a retired visual alt identity on $route" >&2
-    grep -Eio "$blocked_alt" "$body" | head -20 >&2 || true
-    exit 1
-  fi
-  if [[ "$route" == /learn/* ]] && grep -Eqi "$blocked_learning_media" "$body"; then
-    echo "Learning publish still renders a product/strain-card visual in an educational role on $route" >&2
-    grep -Eio "$blocked_learning_media" "$body" | head -20 >&2 || true
-    exit 1
-  fi
+  node scripts/verify-public-learning-visual-quarantine.mjs "$body" "$route"
 done
 
 test -s "$map_root/learning-v4-backup-path.txt"
 test -s "$map_root/learning-visual-v1-backup-path.txt"
 test -s "$map_root/home-featured-media-guard.json"
 test -s "$retired_visual_root/retired-visual-scrub-backup-path.txt"
-echo "Canonical Learning V3 published with raw-first root storage proof, role-safe approved media selection, connected Learning V4 map, expanded THC references, DTF Visual V1, Home featured-media quarantine, and retired-visual enforcement."
+echo "Canonical Learning V3 published with raw-first root storage proof, role-safe approved media selection, connected Learning V4 map, expanded THC references, DTF Visual V1, Home featured-media quarantine, and rendered-media-only retired-visual enforcement."
