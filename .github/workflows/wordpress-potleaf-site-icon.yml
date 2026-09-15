@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
     paths:
-      - site/wordpress/assets/brand/dtf-potleaf-512.png
+      - scripts/generate-dtf-thc-favicon.mjs
       - scripts/set-dtf-potleaf-site-icon.mjs
       - .github/workflows/wordpress-potleaf-site-icon.yml
   workflow_run:
@@ -42,7 +42,8 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       BACKUP_ROOT: /tmp/dtf-potleaf-site-icon
-      DTF_ICON_CACHE_VERSION: v3-20260823
+      DTF_BRAND_ICON: site/wordpress/assets/brand/dtf-thc-potleaf-512.png
+      DTF_ICON_CACHE_VERSION: v4-20260915-thc
 
     steps:
       - uses: actions/checkout@v4
@@ -53,6 +54,14 @@ jobs:
         with:
           node-version: 22
 
+      - name: Generate THC potleaf favicon
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/generate-dtf-thc-favicon.mjs "$DTF_BRAND_ICON"
+          test -s "$DTF_BRAND_ICON"
+          file "$DTF_BRAND_ICON" | grep -q 'PNG image data, 512 x 512'
+
       - name: Validate potleaf publication package
         shell: bash
         run: |
@@ -60,10 +69,11 @@ jobs:
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
           test -n "${DTF_ICON_CACHE_VERSION:-}"
-          test -s site/wordpress/assets/brand/dtf-potleaf-512.png
+          test -s "$DTF_BRAND_ICON"
+          node --check scripts/generate-dtf-thc-favicon.mjs
           node --check scripts/set-dtf-potleaf-site-icon.mjs
 
-      - name: Set WordPress Site Icon and logo to the versioned DTF potleaf
+      - name: Set WordPress Site Icon and logo to the versioned THC potleaf
         id: publish
         shell: bash
         run: |
@@ -76,7 +86,7 @@ jobs:
           echo "cache_version=$(node -p "require(process.argv[1]).cacheVersion" "$report")" >> "$GITHUB_OUTPUT"
           echo "source_url=$(node -p "require(process.argv[1]).sourceUrl" "$report")" >> "$GITHUB_OUTPUT"
 
-      - name: Verify public head uses only the new potleaf favicon family
+      - name: Verify public head uses only the new THC potleaf favicon family
         id: verify
         shell: bash
         run: |
@@ -89,7 +99,7 @@ jobs:
           const id=Number(process.argv[3]);
           if(Number(s.site_icon)!==id) throw new Error(`site_icon mismatch: ${s.site_icon} != ${id}`);
           if(Object.prototype.hasOwnProperty.call(s,'site_logo') && Number(s.site_logo)!==id) throw new Error(`site_logo mismatch: ${s.site_logo} != ${id}`);
-          console.log(`WordPress settings point to versioned potleaf media ${id}`);
+          console.log(`WordPress settings point to versioned THC potleaf media ${id}`);
           NODE
 
           ok=0
@@ -117,10 +127,10 @@ jobs:
           const staleApple=appleTags.filter(tag=>!versioned(tag));
           const staleTiles=tileTags.filter(tag=>!versioned(tag));
           if(!source.toLowerCase().includes(slug)) throw new Error(`Source URL is not versioned: ${source}`);
-          if(!has32) throw new Error('Missing versioned 32x32 potleaf favicon declaration');
-          if(!has192) throw new Error('Missing versioned 192x192 potleaf favicon declaration');
-          if(!hasApple) throw new Error('Missing versioned potleaf apple-touch-icon declaration');
-          if(staleIcons.length) throw new Error(`Stale non-potleaf favicon declarations remain: ${staleIcons.join(' | ')}`);
+          if(!has32) throw new Error('Missing versioned 32x32 THC potleaf favicon declaration');
+          if(!has192) throw new Error('Missing versioned 192x192 THC potleaf favicon declaration');
+          if(!hasApple) throw new Error('Missing versioned THC potleaf apple-touch-icon declaration');
+          if(staleIcons.length) throw new Error(`Stale non-THC favicon declarations remain: ${staleIcons.join(' | ')}`);
           if(staleApple.length) throw new Error(`Stale apple-touch-icon declarations remain: ${staleApple.join(' | ')}`);
           if(staleTiles.length) throw new Error(`Stale msapplication tile image declarations remain: ${staleTiles.join(' | ')}`);
           if(/assets\/dtf-home\/dtf-mark\.svg/i.test(html)) throw new Error('Legacy DTF mark is still referenced in the public head');
@@ -129,7 +139,7 @@ jobs:
             then ok=1; break; fi
             sleep 8
           done
-          [[ "$ok" -eq 1 ]] || { echo 'Fresh public homepage does not expose only the new DTF potleaf favicon family.' >&2; exit 1; }
+          [[ "$ok" -eq 1 ]] || { echo 'Fresh public homepage does not expose only the new THC potleaf favicon family.' >&2; exit 1; }
 
       - name: Upload rollback evidence
         if: always()
@@ -155,18 +165,18 @@ jobs:
         with:
           script: |
             const body = [
-              '## DTF potleaf favicon regression guard',
+              '## DTF THC potleaf favicon regression guard',
               '',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Result: **${process.env.JOB_STATUS}**`,
-              `WordPress potleaf setting: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
+              `WordPress THC potleaf setting: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
               `Fresh visitor favicon verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
               `Potleaf media ID: **${process.env.MEDIA_ID || 'not-run'}**`,
               `Version: **${process.env.CACHE_VERSION || 'not-run'}**`,
               `Media slug: **${process.env.MEDIA_SLUG || 'not-run'}**`,
               `Versioned source URL: ${process.env.SOURCE_URL || 'not-run'}`,
               '',
-              'The guard reapplies the cannabis-leaf icon after WordPress visual/presentation production workflows so older site-icon media cannot silently replace it again. Success also requires every favicon and Apple touch icon declaration in the public head to use the current versioned potleaf asset.'
+              'The guard generates and reapplies the THC-labeled cannabis-leaf icon after WordPress visual/presentation production workflows so older site-icon media cannot silently replace it again. Success also requires every favicon and Apple touch icon declaration in the public head to use the current versioned THC potleaf asset.'
             ].join('\n');
             try {
               await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 220, body });
