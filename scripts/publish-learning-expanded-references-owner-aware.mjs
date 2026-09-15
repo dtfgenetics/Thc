@@ -9,7 +9,7 @@ const backupRoot = process.env.EXPANDED_REFERENCE_BACKUP_ROOT || '/tmp/dtf-learn
 if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 
 const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-const headers = { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learning-Expanded-References/2.0' };
+const headers = { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learning-Expanded-References/2.1' };
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 async function request(path, options = {}) {
@@ -68,7 +68,7 @@ const end = '<!-- DTF-LEARN-EXPANDED-REFERENCE-V1-END -->';
 const mapEnd = '<!-- DTF-LEARN-GUIDED-V4-END -->';
 const heading = 'Use the expanded reference systems when you need more depth.';
 const ownershipPhrase = 'Learn the plant as a connected system.';
-const section = `${start}\n<section class="section" id="expanded-reference-systems" data-dtf-learning-expanded-reference="v1"><div class="wrap"><div class="heading"><div><p class="eyebrow">Expanded references</p><h2>${heading}</h2></div><p>${ownershipPhrase} These deeper source-controlled libraries extend the guided THC learning path without creating a second Learn-page owner.</p></div><div class="path-grid">${routes.map(([href,title,text]) => `<article class="path-card"><h3>${title}</h3><p>${text}</p><a class="v3-text-link" href="${href}">Open reference <span aria-hidden="true">→</span></a></article>`).join('')}</div></div></section>\n${end}`;
+const section = `${start}\n<section class="section" id="expanded-reference-systems" data-dtf-learning-expanded-reference="v1"><div class="wrap"><div class="heading"><div><p class="eyebrow">Expanded references</p><h2>${heading}</h2></div><p>${ownershipPhrase} These deeper source-controlled libraries extend the guided THC learning path without creating a second Learn-page owner.</p></div><div class="ref-grid">${routes.map(([href,title,text]) => `<article class="ref-card"><span class="pill">Reference</span><h3>${title}</h3><p>${text}</p><a class="v3-text-link" href="${href}">Open reference <span aria-hidden="true">→</span></a></article>`).join('')}</div></div></section>\n${end}`;
 
 const pages = await request('/wp-json/wp/v2/pages?slug=learn&context=edit&status=publish&per_page=100');
 const roots = (Array.isArray(pages) ? pages : []).filter(page => Number(page.parent || 0) === 0);
@@ -103,6 +103,7 @@ const report = {
   generatedAt: new Date().toISOString(),
   pageId: page.id,
   canonicalOwner: 'Learning Experience V3',
+  presentation: 'compact-reference-list',
   routes: routes.map(([href]) => href),
   storageVerification: 'success',
   backupDir
