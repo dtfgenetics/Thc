@@ -75,7 +75,14 @@ includes('site/public-route-patch/games/dtf-route.css', [
   ':focus-visible',
   'scroll-margin-top:96px',
   '@media(prefers-reduced-motion:reduce)',
-  '.card-action{display:inline-flex;min-height:44px'
+  '.card-action{display:inline-flex;min-height:44px',
+  '2026-09-15 shared game-shell mobile navigation polish',
+  'overflow-x:auto',
+  'overscroll-behavior-x:contain',
+  'scrollbar-width:none',
+  'min-height:44px',
+  '.game-copy{min-width:0;overflow-wrap:anywhere}',
+  'img,svg,canvas,video{max-width:100%;height:auto}'
 ]);
 
 for (const path of [
