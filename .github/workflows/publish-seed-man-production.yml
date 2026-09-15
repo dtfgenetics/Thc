@@ -55,19 +55,27 @@ jobs:
           node scripts/validate-seed-man-production-bundle.mjs
           node --check scripts/publish-seed-man-route-via-wordpress.mjs
           root='site/public-route-patch/games/seed-man-platformer'
-          for js in app.js canvas-compat-v1.js player-state-v20.js campaign-v20-runtime.js campaign-ui-v20.js v20-enemy-runtime.js combat-browser-v2.js enemy-attacks-browser-v2.js approved-art-core-v1.js approved-art-runtime-v1.js seed-man-production-art.js three-world-v1.js three-world-adapter-v1.js; do node --check "$root/$js"; done
+          for js in app.js canvas-compat-v1.js player-state-v20.js campaign-v20-runtime.js campaign-ui-v20.js world-mechanics-browser-v1.js v20-enemy-runtime.js combat-browser-v2.js enemy-attacks-browser-v2.js approved-art-core-v1.js approved-art-runtime-v1.js seed-man-production-art.js three-world-v1.js three-world-adapter-v1.js; do node --check "$root/$js"; done
           grep -Fq '20-Level Campaign' "$root/index.html"
           grep -Fq './three-world-v1.js?v=' "$root/index.html"
+          grep -Fq './world-mechanics-browser-v1.js?v=' "$root/index.html"
           ! grep -Fq 'id="seed-man-level"' "$root/index.html"
           ! grep -Fq 'Seed Man: Sprout Run' "$root/index.html"
           grep -Fq 'seed-man-base-runtime-v20' "$root/app.js"
           grep -Fq "campaignAuthority:'campaign-v20-runtime.js'" "$root/app.js"
           ! grep -Fq 'readEmbeddedLevel' "$root/app.js"
           grep -Fq 'seed-man-player-state-v20' "$root/player-state-v20.js"
+          grep -Fq 'seed-man-runtime-health-v21' "$root/canvas-compat-v1.js"
           grep -Fq 'seed-man-runtime-bootstrap-v20' "$root/canvas-compat-v1.js"
           grep -Fq 'three-world-adapter-v1.js' "$root/canvas-compat-v1.js"
+          grep -Fq 'world-mechanics-browser-v1.js' "$root/canvas-compat-v1.js"
+          grep -Fq 'seed-man-world-mechanics-browser-v1' "$root/world-mechanics-browser-v1.js"
+          grep -Fq 'seed-man-world-mechanics-runtime-v1' "$root/world-mechanics-browser-v1.js"
+          grep -Fq 'moving-platforms' "$root/world-mechanics-browser-v1.js"
+          grep -Fq 'heat-updraft' "$root/world-mechanics-browser-v1.js"
           grep -Fq 'seed-man-three-public-v3' "$root/three-world-v1.js"
           grep -Fq 'seed-man-three-world-v2' "$root/three-world-v1.js"
+          grep -Fq 'seed-man-three-dynamic-platforms-v1' "$root/three-world-v1.js"
           bytes="$(wc -c < "$root/three-world-v1.js" | tr -d ' ')"
           test "$bytes" -ge 250000
           grep -Fq 'seed-man-campaign-v20-runtime-v3' "$root/campaign-v20-runtime.js"
@@ -104,6 +112,8 @@ jobs:
           grep -Eq '"worlds"[[:space:]]*:[[:space:]]*5' "$RUNNER_TEMP/seed-man-publish.json"
           grep -Eq '"final_boss"[[:space:]]*:[[:space:]]*"blight-king"' "$RUNNER_TEMP/seed-man-publish.json"
           grep -Eq '"world_renderer"[[:space:]]*:[[:space:]]*"seed-man-three-world-v2"' "$RUNNER_TEMP/seed-man-publish.json"
+          grep -Eq '"world_mechanics"[[:space:]]*:[[:space:]]*"seed-man-world-mechanics-browser-v1"' "$RUNNER_TEMP/seed-man-publish.json"
+          grep -Eq '"dynamic_platforms"[[:space:]]*:[[:space:]]*"seed-man-three-dynamic-platforms-v1"' "$RUNNER_TEMP/seed-man-publish.json"
           grep -Eq '"legacy_sprout_run"[[:space:]]*:[[:space:]]*false' "$RUNNER_TEMP/seed-man-publish.json"
           grep -Eq '"corrupt_master_atlas"[[:space:]]*:[[:space:]]*false' "$RUNNER_TEMP/seed-man-publish.json"
           grep -Eq '"player_state"[[:space:]]*:[[:space:]]*"v20"' "$RUNNER_TEMP/seed-man-publish.json"
@@ -134,6 +144,7 @@ jobs:
           fetch 'player-state-v20.js' "$tmp/player-state.js"
           fetch 'campaign-v20-runtime.js' "$tmp/runtime.js"
           fetch 'campaign-ui-v20.js' "$tmp/ui.js"
+          fetch 'world-mechanics-browser-v1.js' "$tmp/world-mechanics.js"
           fetch 'v20-enemy-runtime.js' "$tmp/enemy-runtime.js"
           fetch 'combat-browser-v2.js' "$tmp/combat.js"
           fetch 'enemy-attacks-browser-v2.js' "$tmp/attacks.js"
@@ -145,7 +156,7 @@ jobs:
           fetch 'assets/approved/seed-man-character-atlas-v2.webp' "$tmp/character.webp"
           fetch 'assets/approved/seed-man-enemy-boss-atlas-v1.webp' "$tmp/enemies.webp"
           fetch 'assets/approved/seed-man-platform-atlas-v1.webp' "$tmp/platforms.webp"
-          for js in player-state runtime ui enemy-runtime combat attacks art-core art-runtime renderer three three-adapter; do node --check "$tmp/$js.js"; done
+          for js in player-state runtime ui world-mechanics enemy-runtime combat attacks art-core art-runtime renderer three three-adapter; do node --check "$tmp/$js.js"; done
           node - "$tmp/character.webp" "$tmp/enemies.webp" "$tmp/platforms.webp" <<'NODE'
           const fs=require('fs');
           for(const file of process.argv.slice(2)){const b=fs.readFileSync(file);if(b.subarray(0,4).toString('ascii')!=='RIFF'||b.subarray(8,12).toString('ascii')!=='WEBP')throw new Error(`invalid live WebP: ${file}`);}
@@ -159,11 +170,16 @@ jobs:
           NODE
           grep -Fq '20-Level Campaign' "$tmp/index.html"
           grep -Fq './three-world-v1.js?v=' "$tmp/index.html"
+          grep -Fq './world-mechanics-browser-v1.js?v=' "$tmp/index.html"
           ! grep -Fq 'id="seed-man-level"' "$tmp/index.html"
           ! grep -Fq 'Seed Man: Sprout Run' "$tmp/index.html"
           grep -Fq 'seed-man-player-state-v20' "$tmp/player-state.js"
           grep -Fq 'seed-man-campaign-v20-runtime-v3' "$tmp/runtime.js"
           grep -Fq "phenotypeForms:['plant','fire','electric','ice']" "$tmp/runtime.js"
+          grep -Fq 'seed-man-world-mechanics-browser-v1' "$tmp/world-mechanics.js"
+          grep -Fq 'seed-man-world-mechanics-runtime-v1' "$tmp/world-mechanics.js"
+          grep -Fq 'moving-platforms' "$tmp/world-mechanics.js"
+          grep -Fq 'heat-updraft' "$tmp/world-mechanics.js"
           grep -Fq 'seed-man-v20-enemy-runtime-v2' "$tmp/enemy-runtime.js"
           grep -Fq 'seed-man-combat-browser-v2' "$tmp/combat.js"
           grep -Fq 'syncBossState' "$tmp/combat.js"
@@ -172,12 +188,13 @@ jobs:
           ! grep -Fq 'seed-man-approved-master-atlas-v1.webp' "$tmp/art-core.js"
           grep -Fq 'seed-man-three-public-v3' "$tmp/three.js"
           grep -Fq 'seed-man-three-world-v2' "$tmp/three.js"
+          grep -Fq 'seed-man-three-dynamic-platforms-v1' "$tmp/three.js"
           bytes="$(wc -c < "$tmp/three.js" | tr -d ' ')"
           test "$bytes" -ge 250000
           grep -Fq 'approved-showcase-2026-09-08' "$tmp/renderer.js"
           grep -Fq 'green-armored-plant-hero' "$tmp/renderer.js"
           for retired in data/level-01.json data/levels-12-15.json campaign-v1.js gameplay-v2.js physics.mjs campaign-combat-v20.js campaign-progress-v20.js campaign-runtime-v20.js campaign-ui-v15.js world-five-v1.js combat-browser-v1.js enemy-attacks-browser-v1.js seed-man-ui-v3.js assets/approved/seed-man-approved-master-atlas-v1.webp assets/approved/seed-man-cover-banner-approved-v1.webp; do expect_missing "$retired"; done
-          echo 'Seed Man canonical v20 campaign + Three.js worlds + standalone approved art + combat v2 is live and verified.'
+          echo 'Seed Man canonical v20 campaign + browser world mechanics + synchronized Three.js dynamic platforms + standalone approved art + combat v2 is live and verified.'
 
       - name: Release summary
         if: always()
@@ -186,10 +203,11 @@ jobs:
             echo '## Seed Man production release'
             echo '- Campaign: 20 levels / 5 worlds / 6 bosses'
             echo '- World renderer: canonical generated Three.js v2 runtime / public bundle v3'
+            echo '- World mechanics: browser v1 with synchronized dynamic-platform renderer'
             echo '- Character: approved green armored plant hero'
             echo '- Combat: Plant / Fire / Electric / Ice with 30-second absorbed forms'
             echo '- Boss progression: exits remain locked until boss defeat; Blight King finale state is synchronized'
             echo '- Retired Sprout Run bootstrap and corrupt master/cover assets: physically absent'
-            echo '- Verification: deterministic Node + build + live HTTP checks'
+            echo '- Verification: deterministic Node + build + explicit live mechanics/runtime HTTP checks'
             echo '- Playwright: not used'
           } >> "$GITHUB_STEP_SUMMARY"
