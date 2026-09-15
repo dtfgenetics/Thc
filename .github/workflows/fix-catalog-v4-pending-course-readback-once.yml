@@ -1,0 +1,44 @@
+name: Fix Catalog V4 pending-course readback once
+
+on:
+  push:
+    branches:
+      - fix/catalog-visible-pending-course-readback
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/catalog-visible-pending-course-readback
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Repair Catalog V4 readback contract
+        run: node scripts/fix-catalog-v4-pending-course-readback.mjs
+      - name: Validate publisher syntax
+        run: node --check scripts/publish-wordpress-certification-catalog-v4.mjs
+      - name: Validate rendered catalog contract
+        run: node scripts/publish-wordpress-certification-catalog-v4.mjs --validate-only
+      - name: Verify pending-course publication boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq "WordPress readback does not contain all 15 Technician I/II course cards" scripts/publish-wordpress-certification-catalog-v4.mjs
+          grep -Fq "Released course route missing after write" scripts/publish-wordpress-certification-catalog-v4.mjs
+          grep -Fq "Pending course unexpectedly exposes a live href" scripts/publish-wordpress-certification-catalog-v4.mjs
+      - name: Commit validated publisher repair only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/publish-wordpress-certification-catalog-v4.mjs
+          git diff --cached --quiet && exit 0
+          git commit -m "fix: allow visible pending courses in Catalog V4 readback"
+          git push origin HEAD:fix/catalog-visible-pending-course-readback
