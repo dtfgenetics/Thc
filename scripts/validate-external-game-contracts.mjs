@@ -7,6 +7,16 @@ const errors = [];
 const ids = new Set();
 const routes = new Set();
 
+const promotionRuntime = await readFile(new URL('./promote-public-game-routes-via-wordpress.mjs', import.meta.url), 'utf8');
+for (const [pattern, message] of [
+  [/spawnSync\(process\.execPath, \['scripts\/verify-external-release-candidates-live\.mjs'\]/, 'production route promotion must invoke the exact external live verifier'],
+  [/attempt <= 5/, 'external live verification must use bounded retry attempts'],
+  [/DTF_SITE_URL: siteUrl/, 'external live verification must target the active production site URL'],
+  [/applied = false;\s*await verifyExternalReleaseCandidates\(\);/, 'exact external live verification must run after route promotion finalization'],
+]) {
+  if (!pattern.test(promotionRuntime)) errors.push(message);
+}
+
 if (entries.length === 0) errors.push('no external game contracts found');
 
 function satisfiesPromotionGate(value) {

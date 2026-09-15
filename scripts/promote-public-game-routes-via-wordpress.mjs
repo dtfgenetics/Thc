@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { spawnSync } from 'node:child_process';
 
 const siteUrl = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
 const username = process.env.WP_API_USERNAME || '';
@@ -452,6 +453,21 @@ async function verifyPromotion() {
   }
 }
 
+async function verifyExternalReleaseCandidates() {
+  let lastStatus = null;
+  for (let attempt = 1; attempt <= 5; attempt += 1) {
+    console.log(`[external-live-verify] attempt ${attempt}/5`);
+    const result = spawnSync(process.execPath, ['scripts/verify-external-release-candidates-live.mjs'], {
+      stdio: 'inherit',
+      env: { ...process.env, DTF_SITE_URL: siteUrl },
+    });
+    lastStatus = result.status;
+    if (result.status === 0) return;
+    if (attempt < 5) await sleep(10_000);
+  }
+  throw new Error(`External game exact live verification failed after 5 attempts (last status ${String(lastStatus)}).`);
+}
+
 async function cleanup() {
   if (snippetId && !rollbackFailed) {
     let suffix = '';
@@ -500,6 +516,7 @@ try {
   const finalized = await callPromotion('finalize');
   if (finalized.body?.ok !== true) throw new Error(`Route promotion finalization failed: ${JSON.stringify(finalized.body).slice(0, 700)}`);
   applied = false;
+  await verifyExternalReleaseCandidates();
   console.log(JSON.stringify({
     ok: true,
     routePromotion: 'finalized',
