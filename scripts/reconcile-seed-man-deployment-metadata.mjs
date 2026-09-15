@@ -23,13 +23,12 @@ function replaceRequired(source, pattern, replacement, label) {
   return source.replace(pattern, replacement);
 }
 
-// Canonical deployment registry.
 const document = readJson(PUBLIC_APPS);
 const app = document.apps?.find((entry) => entry.id === 'seed-man-platformer');
 if (!app) throw new Error('Seed Man deployment registry entry was not found.');
 
 app.title = TITLE;
-app.runtime = 'static-canvas2d-approved-art';
+app.runtime = 'html5-browser-canvas2d-threejs-hybrid';
 app.status = 'production-v20';
 app.build = [
   'node games/seed-man-platformer/test/physics.test.mjs',
@@ -38,6 +37,7 @@ app.build = [
   'node games/seed-man-platformer/test/art-registry.test.mjs',
   'node games/seed-man-platformer/test/public-runtime.test.mjs',
   'node games/seed-man-platformer/test/public-campaign.test.mjs',
+  'node games/seed-man-platformer/test/public-world-mechanics-browser.test.mjs',
   'node games/seed-man-platformer/test/input-guard.test.mjs',
   'node scripts/verify-seed-man-production-v20.mjs',
   'node scripts/validate-seed-man-production-bundle.mjs'
@@ -48,6 +48,8 @@ app.machineData = {
   campaignId: 'seed-man-campaign-20-v1',
   defaultLevelId: '1-1-sprout-steps',
   levelCount: 20,
+  authoredLevelCount: 20,
+  generatedLevelCount: 0,
   worldCount: 5,
   bossCount: 6,
   finalBoss: 'blight-king',
@@ -56,6 +58,10 @@ app.machineData = {
   phenotypeForms: ['plant','fire','electric','ice'],
   campaignRuntime: 'seed-man-campaign-v20-runtime-v3',
   campaignUi: 'seed-man-campaign-ui-v20',
+  worldRenderer: 'seed-man-three-world-v2',
+  threePublicApi: 'seed-man-three-public-v3',
+  dynamicPlatformRuntime: 'seed-man-three-dynamic-platforms-v1',
+  worldMechanicsRuntime: 'seed-man-world-mechanics-browser-v1',
   approvedArtManifest: 'seed-man-approved-art-v2',
   approvedArtSource: 'approved-showcase-2026-09-08',
   productionCharacterArt: 'seed-man-approved-atlas-renderer-v4',
@@ -65,19 +71,16 @@ app.machineData = {
   canvasCompat: 'sprout-canvas-compat-v20',
   doubleJump: true
 };
-app.notes = 'Canonical Seed Man v20 release on /games/seed-man-platformer/: 20 levels across Greenhouse Valley, Forest Ruins, Desert Canyon, Frozen Peaks and Eco City; six boss encounters; four-phase Blight King finale; 30-second phenotype combat; and the approved 2026-09-08 green armored plant-hero visual system. Retired 11/15-level campaigns, Genome Hydra, Genetic Frontier, seed-man-production-v1, seed-man-locked-v1, legacy sprite ownership and procedural character fallback must not be republished.';
-document.updated = '2026-09-09';
+app.notes = 'Canonical Seed Man v20 release on /games/seed-man-platformer/: 20 authored levels across five worlds; six boss encounters; four-phase Blight King finale; 30-second phenotype combat; deterministic moving/breakaway/conveyor/bounce/world-hazard mechanics; and the approved 2026-09-08 visual system. Retired 11/15-level campaigns, Genome Hydra, Genetic Frontier, seed-man-production-v1, seed-man-locked-v1, legacy sprite ownership and procedural character fallback must not be republished.';
+document.updated = '2026-09-15';
 writeJson(PUBLIC_APPS, document);
 
-// Canonical Game Hub card. Replace either the retired 15-level feature card or an
-// already-v20 card so this remains idempotent as copy evolves elsewhere.
 let hub = fs.readFileSync(GAME_HUB, 'utf8');
 const hubCard = `<article class="card feature-card seed-man-feature"><div class="feature-art seed-man" role="img" aria-label="Seed Man v20 campaign preview"><strong>SEED<br>MAN</strong></div><div class="feature-copy"><span class="status">Play now</span><h3>${TITLE}</h3><p>${HUB_DESCRIPTION}</p><div class="pill-row"><span class="pill">Platform adventure</span><span class="pill">20 levels</span><span class="pill">5 worlds</span><span class="pill">Phenotype powers</span><span class="pill">6 bosses</span></div><a class="card-link" href="${ROUTE}">Play Seed Man →</a></div></article>`;
 const hubPattern = /<article class="card feature-card seed-man-feature">[\s\S]*?<a class="card-link" href="\/games\/seed-man-platformer\/">Play Seed Man →<\/a><\/div><\/article>/;
 hub = replaceRequired(hub, hubPattern, hubCard, 'Game Hub Seed Man feature card');
 fs.writeFileSync(GAME_HUB, hub);
 
-// Public navigation metadata.
 const navigation = readJson(PUBLIC_NAV);
 const navEntry = navigation.games?.find((entry) => entry.id === 'seed-man-platformer');
 if (!navEntry) throw new Error('Seed Man public-navigation entry was not found.');
@@ -87,7 +90,6 @@ navEntry.status = 'play-now';
 navEntry.public = true;
 writeJson(PUBLIC_NAV, navigation);
 
-// Canonical game source map metadata.
 const sourceMap = readJson(GAME_SOURCE_MAP);
 const sourceEntry = sourceMap.games?.find((entry) => entry.id === 'seed-man-platformer');
 if (!sourceEntry) throw new Error('Seed Man game-source-map entry was not found.');
@@ -96,26 +98,31 @@ sourceEntry.route = ROUTE;
 if (sourceEntry.canonical && typeof sourceEntry.canonical === 'object') {
   sourceEntry.canonical.campaign = 'games/seed-man-platformer/data/campaign.json';
   sourceEntry.canonical.levelCatalog = 'games/seed-man-platformer/data/levels-20-v1.json';
+  sourceEntry.canonical.authoredRecipes = 'games/seed-man-platformer/data/authored-level-recipes-v1.json';
+  sourceEntry.canonical.worldGameplay = 'games/seed-man-platformer/data/world-gameplay-v1.json';
+  sourceEntry.canonical.powerups = 'games/seed-man-platformer/data/powerup-catalog-v1.json';
+  sourceEntry.canonical.worldMechanics = 'games/seed-man-platformer/src/systems/world-mechanics-system.mjs';
   sourceEntry.canonical.artManifest = 'games/seed-man-platformer/data/seed-man-art-manifest-v1.json';
 }
 writeJson(GAME_SOURCE_MAP, sourceMap);
 
-// Homepage game reference. Keep surrounding editorial copy intact.
 let home = fs.readFileSync(HOME_PAGE, 'utf8');
 home = home.replace(/<a href="\/games\/seed-man-platformer\/">\s*<strong>[^<]*<\/strong><\/a>\s*—\s*[^<\n]*/g,
   `<a href="${ROUTE}"><strong>${TITLE}</strong></a> — 20-level five-world platform adventure with phenotype combat and six bosses.`);
 fs.writeFileSync(HOME_PAGE, home);
 
-// Verify public identity and reject retired product copy from active surfaces.
 const written = readJson(PUBLIC_APPS);
 const verified = written.apps.find((entry) => entry.id === 'seed-man-platformer');
 if (verified.title !== TITLE) throw new Error('Canonical Seed Man v20 title was not written.');
-if (verified.machineData?.levelCount !== 20) throw new Error('Expected 20 Seed Man campaign levels.');
+if (verified.runtime !== 'html5-browser-canvas2d-threejs-hybrid') throw new Error('Seed Man runtime must remain the Canvas2D/Three.js hybrid.');
+if (verified.machineData?.levelCount !== 20 || verified.machineData?.authoredLevelCount !== 20 || verified.machineData?.generatedLevelCount !== 0) throw new Error('Expected 20 authored Seed Man campaign levels and zero generated normal-path levels.');
 if (verified.machineData?.worldCount !== 5) throw new Error('Expected five Seed Man worlds.');
 if (verified.machineData?.bossCount !== 6) throw new Error('Expected six Seed Man bosses.');
 if (verified.machineData?.finalBoss !== 'blight-king') throw new Error('Expected Blight King final boss.');
 if (verified.machineData?.release !== '20260908-v20') throw new Error('Unexpected Seed Man v20 release marker.');
 if (verified.machineData?.campaignRuntime !== 'seed-man-campaign-v20-runtime-v3') throw new Error('Unexpected Seed Man campaign runtime marker.');
+if (verified.machineData?.worldMechanicsRuntime !== 'seed-man-world-mechanics-browser-v1') throw new Error('Seed Man world mechanics runtime was not recorded.');
+if (verified.machineData?.dynamicPlatformRuntime !== 'seed-man-three-dynamic-platforms-v1') throw new Error('Seed Man dynamic Three.js platform runtime was not recorded.');
 if (verified.machineData?.characterContract !== 'green-armored-plant-hero') throw new Error('Approved Seed Man character contract was not recorded.');
 if (verified.machineData?.proceduralFallbackAllowed !== false || verified.machineData?.legacyAtlasFallbackAllowed !== false) throw new Error('Seed Man production fallbacks must remain disabled.');
 
@@ -134,7 +141,10 @@ console.log(JSON.stringify({
   title: verified.title,
   release: verified.machineData.release,
   campaignRuntime: verified.machineData.campaignRuntime,
+  worldMechanicsRuntime: verified.machineData.worldMechanicsRuntime,
+  dynamicPlatformRuntime: verified.machineData.dynamicPlatformRuntime,
   levels: 20,
+  authoredLevels: 20,
   worlds: 5,
   bosses: 6,
   finalBoss: 'blight-king',
