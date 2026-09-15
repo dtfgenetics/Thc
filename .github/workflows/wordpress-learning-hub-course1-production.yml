@@ -7,13 +7,14 @@ on:
       - site/wordpress/education/learning-hub-course1-ui-v3.json
       - site/wordpress/education/course-catalog-v4.json
       - site/wordpress/education/tech1-courses-public-v1.json
+      - site/wordpress/education/tech2-courses-public-v1.json
       - scripts/sync-wordpress-learning-hub-course1-visuals.mjs
       - scripts/apply-wordpress-learning-hub-course1-supplemental-visuals.mjs
       - scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
       - scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
       - scripts/publish-wordpress-courses-navigation-v2.mjs
-      - scripts/publish-wordpress-certification-catalog-v5.mjs
+      - scripts/publish-wordpress-certification-catalog-v6.mjs
       - scripts/verify-wordpress-learning-hub-course1.mjs
       - scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
       - scripts/verify-wordpress-learning-hub-course1-canonical-visuals.mjs
@@ -26,13 +27,14 @@ on:
       - site/wordpress/education/learning-hub-course1-ui-v3.json
       - site/wordpress/education/course-catalog-v4.json
       - site/wordpress/education/tech1-courses-public-v1.json
+      - site/wordpress/education/tech2-courses-public-v1.json
       - scripts/sync-wordpress-learning-hub-course1-visuals.mjs
       - scripts/apply-wordpress-learning-hub-course1-supplemental-visuals.mjs
       - scripts/publish-wordpress-learning-hub-course1-v2.mjs
       - scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
       - scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
       - scripts/publish-wordpress-courses-navigation-v2.mjs
-      - scripts/publish-wordpress-certification-catalog-v5.mjs
+      - scripts/publish-wordpress-certification-catalog-v6.mjs
       - scripts/verify-wordpress-learning-hub-course1.mjs
       - scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
       - scripts/verify-wordpress-learning-hub-course1-canonical-visuals.mjs
@@ -67,7 +69,7 @@ jobs:
           node --check scripts/apply-wordpress-learning-hub-course1-supplemental-visuals.mjs
           node --check scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs
           node --check scripts/publish-wordpress-courses-navigation-v2.mjs
-          node --check scripts/publish-wordpress-certification-catalog-v5.mjs
+          node --check scripts/publish-wordpress-certification-catalog-v6.mjs
           node --check scripts/verify-wordpress-learning-hub-course1.mjs
           node --check scripts/verify-wordpress-learning-hub-course1-ui-v3.mjs
           node --check scripts/verify-wordpress-learning-hub-course1-canonical-visuals.mjs
@@ -76,7 +78,7 @@ jobs:
           node scripts/apply-wordpress-learning-hub-course1-supplemental-visuals.mjs --validate-only
           node scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs --validate-only
           node scripts/publish-wordpress-courses-navigation-v2.mjs --validate-only
-          node scripts/publish-wordpress-certification-catalog-v5.mjs --validate-only
+          node scripts/publish-wordpress-certification-catalog-v6.mjs --validate-only
 
   publish:
     if: github.event_name != 'pull_request'
@@ -89,7 +91,7 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       APPLY_LEARNING_HUB_COURSE1: 'true'
-      APPLY_CERTIFICATION_CATALOG_V5: 'true'
+      APPLY_CERTIFICATION_CATALOG_V6: 'true'
       BACKUP_ROOT: /tmp/dtf-learning-hub-course1
     steps:
       - uses: actions/checkout@v4
@@ -116,8 +118,8 @@ jobs:
         run: node scripts/apply-wordpress-learning-hub-course1-supplemental-visuals.mjs
       - name: Preserve shared Courses navigation behavior
         run: node scripts/publish-wordpress-courses-navigation-v2.mjs
-      - name: Publish professional certification catalog V5
-        run: node scripts/publish-wordpress-certification-catalog-v5.mjs
+      - name: Publish professional certification catalog V6
+        run: node scripts/publish-wordpress-certification-catalog-v6.mjs
       - name: Verify published Course 1 base release by WordPress readback
         shell: bash
         run: |
@@ -140,6 +142,7 @@ jobs:
           courses_ok=0
           lesson_ok=0
           offering_count=0
+          course_count=0
           open_count=0
           for attempt in 1 2 3 4 5 6 7 8; do
             nonce="${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)"
@@ -147,13 +150,15 @@ jobs:
               --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
               "$WP_SITE_URL/courses/?verify=${nonce}" --output "$courses"
             offering_count="$(grep -o 'data-credential-offering=' "$courses" | wc -l | tr -d ' ' || true)"
+            course_count="$(grep -o 'data-course-id=' "$courses" | wc -l | tr -d ' ' || true)"
             open_count="$(grep -o 'data-course-open="true"' "$courses" | wc -l | tr -d ' ' || true)"
-            if grep -Fq 'dtf-courses-v5-style' "$courses" && \
-               grep -Fq 'data-dtf-courses-catalog="v5"' "$courses" && \
+            if grep -Fq 'dtf-courses-v6-style' "$courses" && \
+               grep -Fq 'data-dtf-courses-catalog="v6"' "$courses" && \
                grep -Fq 'THC Cultivation Technician I' "$courses" && \
                grep -Fq 'THC Cultivation Technician II' "$courses" && \
                [[ "$offering_count" -eq 10 ]] && \
-               [[ "$open_count" -eq 7 ]] && \
+               [[ "$course_count" -eq 15 ]] && \
+               [[ "$open_count" -eq 15 ]] && \
                ! grep -Fq 'data-issuance-available="true"' "$courses"; then
               courses_ok=1
             fi
@@ -173,7 +178,7 @@ jobs:
             if [[ "$courses_ok" -eq 1 && "$lesson_ok" -eq 1 ]]; then break; fi
             sleep 5
           done
-          [[ "$courses_ok" -eq 1 ]] || { echo "Catalog V5 anonymous verification failed. offering_count=${offering_count} open_count=${open_count}" >&2; exit 1; }
+          [[ "$courses_ok" -eq 1 ]] || { echo "Catalog V6 anonymous verification failed. offering_count=${offering_count} course_count=${course_count} open_count=${open_count}" >&2; exit 1; }
           [[ "$lesson_ok" -eq 1 ]] || { echo 'Course 1 representative lesson did not become visitor-facing within the verification window.' >&2; exit 1; }
       - name: Upload rollback and verification evidence
         if: always()
