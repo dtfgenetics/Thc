@@ -1,36 +1,48 @@
 /* DTFSeeds sitewide UX polish v1
  * Shared visual/readability/accessibility layer for WordPress and static surfaces.
- * This file intentionally complements page-specific art direction instead of replacing it.
+ * Pass 1 (2026-09-15): reduce card soup, strengthen hierarchy, unify spacing,
+ * improve responsive behavior, and keep the approved header/navigation contract.
  */
 :root{
-  --dtf-ux-ink:#112b1c;
-  --dtf-ux-muted:#5f7065;
-  --dtf-ux-line:rgba(17,43,28,.12);
-  --dtf-ux-surface:#fffdf7;
-  --dtf-ux-surface-soft:#f4f1e8;
-  --dtf-ux-leaf:#26784a;
+  --dtf-ux-ink:#102b1a;
+  --dtf-ux-deep:#06170e;
+  --dtf-ux-muted:#526357;
+  --dtf-ux-line:rgba(16,43,26,.13);
+  --dtf-ux-line-strong:rgba(16,43,26,.21);
+  --dtf-ux-surface:#fffdf8;
+  --dtf-ux-surface-soft:#f2f4ed;
+  --dtf-ux-cream:#f8f5ec;
+  --dtf-ux-leaf:#216c3d;
+  --dtf-ux-gold:#d6b75c;
   --dtf-ux-focus:#8fea76;
-  --dtf-ux-shadow:0 14px 34px rgba(17,43,28,.08);
-  --dtf-ux-shadow-hover:0 22px 48px rgba(17,43,28,.13);
+  --dtf-ux-shadow:0 12px 30px rgba(12,39,23,.07);
+  --dtf-ux-shadow-hover:0 20px 44px rgba(12,39,23,.12);
   --dtf-ux-radius:20px;
   --dtf-ux-radius-small:12px;
+  --dtf-ux-max:1280px;
+  --dtf-ux-reading:72ch;
+  --dtf-ux-section:clamp(56px,7vw,92px);
 }
 
 html{
   scroll-padding-top:calc(var(--dtf-global-header-height,92px) + 18px);
   text-size-adjust:100%;
   -webkit-text-size-adjust:100%;
+  overflow-x:clip;
+}
+
+body{
+  min-width:0;
+  overflow-x:clip;
+  color:var(--dtf-ux-ink);
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
 }
 
 :where(main,section,article,aside,nav,footer)[id],
 :where(h1,h2,h3,h4,h5,h6)[id],
-:where(.dtf-page,.lhv3,.game-hub-page,.tool-chooser) [id]{
+:where(.dtf-page,.v3,.lhv3,.game-hub-page,.tool-chooser) [id]{
   scroll-margin-top:calc(var(--dtf-global-header-height,92px) + 18px);
-}
-
-body{
-  text-rendering:optimizeLegibility;
-  -webkit-font-smoothing:antialiased;
 }
 
 :where(a,button,input,select,textarea,summary,[role="button"],[tabindex]):focus-visible{
@@ -39,14 +51,8 @@ body{
   box-shadow:none;
 }
 
-:where(button,input,select,textarea){
-  font:inherit;
-}
-
-:where(button,[role="button"],input[type="button"],input[type="submit"],input[type="reset"]){
-  min-height:44px;
-}
-
+:where(button,input,select,textarea){font:inherit}
+:where(button,[role="button"],input[type="button"],input[type="submit"],input[type="reset"]){min-height:44px}
 :where(input:not([type="checkbox"]):not([type="radio"]),select,textarea){
   max-width:100%;
   min-height:44px;
@@ -55,109 +61,165 @@ body{
   background:#fff;
   color:var(--dtf-ux-ink);
 }
+:where(input:not([type="checkbox"]):not([type="radio"]),select,textarea):focus{border-color:var(--dtf-ux-leaf)}
 
-:where(input:not([type="checkbox"]):not([type="radio"]),select,textarea):focus{
-  border-color:var(--dtf-ux-leaf);
-}
+/* Remove duplicate theme page titles when the generated visual system owns the H1. */
+body:has(.v3) :where(.wp-block-post-title,.entry-title,.page-title),
+body:has(.dtf-page) :where(.wp-block-post-title,.entry-title,.page-title){display:none!important}
+
+/* Keep generated surfaces edge-to-edge instead of inheriting narrow theme content widths. */
+body:has(.v3) :where(main,.wp-site-blocks main),
+body:has(.dtf-page) :where(main,.wp-site-blocks main){margin:0!important;padding:0!important;max-width:none!important}
+body:has(.v3) :where(.entry-content,.wp-block-post-content),
+body:has(.dtf-page) :where(.entry-content,.wp-block-post-content){margin:0!important;padding:0!important;max-width:none!important}
 
 /* Shared reading rhythm. */
-.dtf-page,
-.lhv3,
-.game-hub-page,
-body:has(.tool-chooser){
-  color:var(--dtf-ux-ink);
-}
+.dtf-page,.v3,.lhv3,.game-hub-page,body:has(.tool-chooser){color:var(--dtf-ux-ink)}
+.dtf-page :where(p,li),.v3 :where(p,li),.lhv3 :where(p,li),.game-hub-page :where(p,li),body:has(.tool-chooser) :where(p,li){line-height:1.68}
+.dtf-page :where(p,li),.v3 :where(p,li),.lhv3 :where(p,li){text-wrap:pretty}
+.dtf-page :where(h1,h2,h3),.v3 :where(h1,h2,h3),.lhv3 :where(h1,h2,h3),.game-hub-page :where(h1,h2,h3),body:has(.tool-chooser) :where(h1,h2,h3){text-wrap:balance}
 
-.dtf-page :where(p,li),
-.lhv3 :where(p,li),
-.game-hub-page :where(p,li),
-body:has(.tool-chooser) :where(p,li){
-  line-height:1.7;
-}
+/* Stronger section hierarchy: fewer identical white boxes, more whitespace and editorial rhythm. */
+.v3 .wrap,
+.dtf-page .dtf-wrap,
+.game-hub-page .wrap,
+body:has(.tool-chooser) .wrap{width:min(var(--dtf-ux-max),calc(100% - clamp(28px,6vw,72px)))!important;margin-inline:auto!important}
+.v3 .section,.dtf-page .dtf-section{padding-block:var(--dtf-ux-section)!important}
+.v3 .heading,.dtf-page .dtf-heading,.game-hub-page .section-heading,body:has(.tool-chooser) .section-heading{margin-bottom:clamp(28px,4vw,46px)!important}
+.v3 .heading h2,.dtf-page .dtf-heading h2,.game-hub-page .section-heading h2,body:has(.tool-chooser) .section-heading h2{letter-spacing:-.045em!important;line-height:.99!important}
+.v3 .heading>p,.dtf-page .dtf-heading>p,.game-hub-page .section-heading>p,body:has(.tool-chooser) .section-heading>p{color:var(--dtf-ux-muted)!important;max-width:52ch!important}
+.v3 .eyebrow,.v3 .kicker,.dtf-page .dtf-kicker{letter-spacing:.15em!important}
 
-.dtf-page :where(p,li),
-.lhv3 :where(p,li){
-  text-wrap:pretty;
-}
+/* V3 home + Learn system. */
+.v3{background:var(--dtf-ux-cream)!important}
+.v3 .hero{padding-block:clamp(64px,8vw,104px)!important}
+.v3 .hero-grid{gap:clamp(34px,6vw,76px)!important}
+.v3 .hero h1{max-width:13ch!important;font-size:clamp(3rem,6vw,5.7rem)!important;line-height:.92!important}
+.v3 .lede{max-width:66ch!important;font-size:clamp(1.05rem,1.4vw,1.2rem)!important;line-height:1.7!important}
+.v3 .hero-media{max-width:520px!important;justify-self:end!important}
+.v3 .hero-media img{box-shadow:0 24px 58px rgba(0,0,0,.24)!important}
+.v3 .actions{gap:10px!important}
+.v3-btn{min-height:46px!important;padding-inline:18px!important;border-radius:12px!important}
+.v3 .soft{background:linear-gradient(180deg,#eef2ea 0%,#f7f4eb 100%)!important}
+.v3 .dark{background:radial-gradient(circle at 80% 8%,rgba(214,183,92,.08),transparent 28%),linear-gradient(145deg,#07190f,#0d2a19)!important}
 
-.dtf-page :where(h1,h2,h3),
-.lhv3 :where(h1,h2,h3),
-.game-hub-page :where(h1,h2,h3),
-body:has(.tool-chooser) :where(h1,h2,h3){
-  text-wrap:balance;
-}
-
-.dtf-page .dtf-heading,
-.game-hub-page .section-heading,
-body:has(.tool-chooser) .section-heading{
-  margin-bottom:clamp(26px,4vw,46px)!important;
-}
-
-.dtf-page .dtf-heading>p,
-.game-hub-page .section-heading>p,
-body:has(.tool-chooser) .section-heading>p{
-  color:var(--dtf-ux-muted)!important;
-}
-
-/* Interactive surfaces should look tappable and share one elevation language. */
-.dtf-page .dtf-card,
-.dtf-page .dtf-path-card,
-.dtf-page .dtf-flow>article,
+/* Cards only where visual grouping is useful. */
+.v3 .feature,.v3 .release,.v3 .path,.v3 .lesson,.v3 .visual,
+.dtf-page .dtf-card,.dtf-page .dtf-path-card,
 .game-hub-page .card,
 body:has(.tool-chooser) .tool-feature,
-body:has(.tool-chooser) .flow>article,
-body:has(.tool-chooser) .learn-rail>article{
+body:has(.tool-chooser) .flow>article{
   border-color:var(--dtf-ux-line)!important;
   box-shadow:var(--dtf-ux-shadow)!important;
 }
+.v3 .feature,.v3 .release,.v3 .path,.v3 .lesson,.v3 .visual{border-radius:18px!important}
+.v3 .feature{min-height:470px!important}
+.v3 .feature-copy{padding:clamp(24px,4vw,38px)!important}
+.v3 .release-copy{padding:20px 22px 22px!important}
+.v3 .release-grid{gap:20px!important}
 
+/* Learn page: stop rendering every destination as the same large card. */
+.v3[data-dtf-layout="learn-v3"] .path-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important}
+.v3[data-dtf-layout="learn-v3"] .path{
+  min-height:210px!important;
+  padding:clamp(24px,3vw,34px)!important;
+  border-radius:18px!important;
+}
+.v3[data-dtf-layout="learn-v3"] .path h3{font-size:clamp(1.3rem,2vw,1.65rem)!important}
+.v3[data-dtf-layout="learn-v3"] .all-subjects{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  column-gap:36px!important;
+  row-gap:0!important;
+  border-top:1px solid var(--dtf-ux-line)!important;
+}
+.v3[data-dtf-layout="learn-v3"] .subject-mini{
+  min-height:0!important;
+  padding:22px 2px!important;
+  border:0!important;
+  border-bottom:1px solid var(--dtf-ux-line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.v3[data-dtf-layout="learn-v3"] .subject-mini .pill{background:transparent!important;padding:0!important;color:var(--dtf-ux-leaf)!important}
+.v3[data-dtf-layout="learn-v3"] .subject-mini h3{margin-top:7px!important;font-size:1.22rem!important}
+.v3[data-dtf-layout="learn-v3"] .subject-mini p{max-width:58ch!important}
+.v3[data-dtf-layout="learn-v3"] .ref-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+.v3[data-dtf-layout="learn-v3"] .ref-card{
+  padding:20px 22px 20px 26px!important;
+  border:0!important;
+  border-left:3px solid rgba(33,108,61,.38)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.v3[data-dtf-layout="learn-v3"] .ref-card h3{font-size:1.14rem!important}
+.v3[data-dtf-layout="learn-v3"] .route-strip{gap:7px!important}
+.v3[data-dtf-layout="learn-v3"] .route-strip a{background:rgba(255,255,255,.72)!important}
+
+/* Topic pages: protect reading width and make lesson cards calmer. */
+.v3[data-dtf-topic] .lesson-grid{gap:18px!important}
+.v3[data-dtf-topic] .lesson{padding:clamp(22px,3vw,32px)!important}
+.v3[data-dtf-topic] .lesson p{max-width:var(--dtf-ux-reading)!important}
+.v3[data-dtf-topic] .checks{margin-top:20px!important}
+.v3[data-dtf-topic] .checks li{background:#eef3ec!important;border:1px solid rgba(16,43,26,.06)!important}
+
+/* Interactive surfaces should feel intentional without floating off the page. */
 @media (hover:hover) and (pointer:fine){
-  .dtf-page .dtf-card:hover,
-  .dtf-page .dtf-path-card:hover,
-  .dtf-page .dtf-flow>article:hover,
-  .game-hub-page .card:hover,
-  body:has(.tool-chooser) .tool-feature:hover,
-  body:has(.tool-chooser) .flow>article:hover,
-  body:has(.tool-chooser) .learn-rail>article:hover{
+  .v3 .release:hover,.v3 .path:hover,.v3 .visual:hover,
+  .dtf-page .dtf-card:hover,.dtf-page .dtf-path-card:hover,
+  .game-hub-page .card:hover,body:has(.tool-chooser) .tool-feature:hover{
     box-shadow:var(--dtf-ux-shadow-hover)!important;
   }
 }
 
-.dtf-page :where(.dtf-btn,.dtf-text-link),
-.game-hub-page :where(.button,.card-link),
-body:has(.tool-chooser) :where(.button,.text-link),
-.lhv3 :where(.lhv3-button,.lhv3-complete,.lhv3-nextprev a){
-  font-weight:800;
-  text-underline-offset:3px;
-}
-
-.dtf-page .dtf-btn,
-.game-hub-page .button,
-body:has(.tool-chooser) .button,
-.lhv3 .lhv3-button,
-.lhv3 .lhv3-complete{
-  min-height:46px!important;
-}
+.dtf-page :where(.dtf-btn,.dtf-text-link),.v3 :where(.v3-btn,.v3-text-link),.game-hub-page :where(.button,.card-link),body:has(.tool-chooser) :where(.button,.text-link),.lhv3 :where(.lhv3-button,.lhv3-complete,.lhv3-nextprev a){font-weight:800;text-underline-offset:3px}
+.dtf-page .dtf-btn,.v3 .v3-btn,.game-hub-page .button,body:has(.tool-chooser) .button,.lhv3 .lhv3-button,.lhv3 .lhv3-complete{min-height:46px!important}
 
 /* Stable image frames reduce visual jitter while content loads. */
-.dtf-page .dtf-image-card>.dtf-img,
-.game-hub-page .card img,
-body:has(.tool-chooser) .tool-feature img{
-  display:block;
-  width:100%;
-}
+.dtf-page .dtf-image-card>.dtf-img,.game-hub-page .card img,body:has(.tool-chooser) .tool-feature img{display:block;width:100%}
+.dtf-page img,.v3 img,.game-hub-page img,body:has(.tool-chooser) img,.lhv3 img{vertical-align:middle}
 
-.dtf-page img,
-.game-hub-page img,
-body:has(.tool-chooser) img,
-.lhv3 img{
-  vertical-align:middle;
-}
+/* Static Tools and Games: consistent editorial spacing without flattening their identity. */
+.game-hub-page .content,body:has(.tool-chooser) .section{padding-block:var(--dtf-ux-section)!important}
+.game-hub-page .grid,body:has(.tool-chooser) .tool-chooser,body:has(.tool-chooser) .flow,body:has(.tool-chooser) .measure-panel,body:has(.tool-chooser) .learn-rail{gap:clamp(14px,2vw,22px)!important}
+.game-hub-page .card,body:has(.tool-chooser) .tool-feature{border-radius:18px!important}
+.game-hub-page .card p,body:has(.tool-chooser) .tool-feature p{max-width:68ch}
+.game-hub-page .list{box-shadow:none!important;border-color:var(--dtf-ux-line)!important}
+.game-hub-page .list article{padding-block:22px!important}
 
-/* Quarantine layer: these legacy infographic families are never allowed to render.
- * The content scrubber removes the markup; this CSS is the fail-closed visitor layer
- * if a stale publisher or cache briefly reintroduces a forbidden URL or alt identity.
- */
+/* Long content and data stay usable without forcing the page wider than the viewport. */
+.dtf-page :where(table,pre),.v3 :where(table,pre),.lhv3 :where(table,pre),.game-hub-page :where(table,pre),body:has(.tool-chooser) :where(table,pre){max-width:100%}
+.dtf-page :where(pre,.dtf-table-scroll),.v3 pre,.lhv3 :where(pre,.lhv3-table),.game-hub-page pre,body:has(.tool-chooser) pre{overflow-x:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+
+/* Course workspace: keep the lesson dominant and rails visually quiet. */
+.lhv3 .lhv3-sidebar,.lhv3 .lhv3-right-rail{scrollbar-width:thin;scrollbar-color:rgba(38,120,74,.35) transparent}
+.lhv3 .lhv3-content{line-height:1.72}
+.lhv3 .lhv3-content :where(h2,h3){scroll-margin-top:calc(var(--dtf-global-header-height,92px) + 24px)}
+.lhv3 .lhv3-content :where(figure,table,blockquote,.lhv3-visual){margin-block:clamp(24px,4vw,40px)}
+
+/* Approved sitewide header: premium, compact, consistent. */
+.dtf-global-header{
+  background:linear-gradient(180deg,rgba(2,21,13,.985),rgba(4,27,17,.985))!important;
+  border-bottom-color:rgba(82,176,88,.46)!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.16)!important;
+  -webkit-backdrop-filter:saturate(130%) blur(9px);
+  backdrop-filter:saturate(130%) blur(9px);
+}
+@media(min-width:1121px){
+  .dtf-global-header__inner{min-height:84px!important;width:min(1440px,calc(100% - 34px))!important;gap:14px!important}
+  .dtf-global-nav a{min-height:42px!important;padding-inline:10px!important}
+  .dtf-global-icon{width:40px!important;height:40px!important}
+}
+.dtf-global-nav a,.dtf-global-icon,.dtf-global-menu{-webkit-tap-highlight-color:transparent}
+.dtf-global-nav a[aria-current="page"]{cursor:default!important;box-shadow:inset 0 -2px 0 var(--dtf-ux-gold)!important}
+.dtf-footer-v3 .links a{border-radius:8px;padding-inline:6px;margin-inline:-6px}
+.dtf-footer-v3 .links a:focus-visible{background:rgba(255,255,255,.08)}
+
+/* Quarantine layer: legacy low-quality educational image families must never render. */
 :where(img,source)[alt^="Teaching Healthy Cultivation —"],
 :where(img,source)[alt^="Teaching Healthy Cultivation -"],
 img[src*="Cannabis_Plant_Anatomy_Infographic"],
@@ -184,9 +246,7 @@ source[srcset*="Cloning_Guide_with_Environment_Targets"],
 source[srcset*="Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic"],
 source[srcset*="THC-ENC-"],
 source[srcset*="THC-C"],
-source[srcset*="Cannabis_Sex_Expression_and_Chromosome_Combinations"]{
-  display:none!important;
-}
+source[srcset*="Cannabis_Sex_Expression_and_Chromosome_Combinations"]{display:none!important}
 
 :where(figure,picture):has(>img[alt^="Teaching Healthy Cultivation —"]),
 :where(figure,picture):has(>img[alt^="Teaching Healthy Cultivation -"]),
@@ -195,139 +255,55 @@ source[srcset*="Cannabis_Sex_Expression_and_Chromosome_Combinations"]{
 :where(figure,picture):has(>img[src*="THC-ENC-"]),
 :where(figure,picture):has(>img[src*="Beneficial_Insects_and_Biological_Controls"]),
 :where(figure,picture):has(>img[src*="Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic"]),
-:where(figure,picture):has(>img[src*="Cannabis_Sex_Expression_and_Chromosome_Combinations"]){
-  display:none!important;
-}
+:where(figure,picture):has(>img[src*="Cannabis_Sex_Expression_and_Chromosome_Combinations"]){display:none!important}
 
 .v3 .hero-media:has(>img[alt^="Teaching Healthy Cultivation —"]),
 .v3 .hero-media:has(>img[alt^="Teaching Healthy Cultivation -"]),
 .v3 .hero-media:has(>img[src*="THC-C"]),
 .v3 .hero-media:has(>img[src*="THC-ENC-"]),
 .v3 .hero-media:has(>img[src*="Cannabis_Plant_Anatomy_Infographic"]),
-.v3 .hero-media:has(>img[src*="Beneficial_Insects_and_Biological_Controls"]){
-  display:none!important;
-}
+.v3 .hero-media:has(>img[src*="Beneficial_Insects_and_Biological_Controls"]){display:none!important}
 
 .v3 .hero-grid:has(.hero-media>img[alt^="Teaching Healthy Cultivation —"]),
 .v3 .hero-grid:has(.hero-media>img[alt^="Teaching Healthy Cultivation -"]),
 .v3 .hero-grid:has(.hero-media>img[src*="THC-C"]),
 .v3 .hero-grid:has(.hero-media>img[src*="THC-ENC-"]),
-.v3 .hero-grid:has(.hero-media>img[src*="Cannabis_Plant_Anatomy_Infographic"]){
-  grid-template-columns:minmax(0,1fr)!important;
+.v3 .hero-grid:has(.hero-media>img[src*="Cannabis_Plant_Anatomy_Infographic"]){grid-template-columns:minmax(0,1fr)!important}
+
+@media(max-width:1120px){
+  .v3 .hero-media{max-width:600px!important;justify-self:start!important}
+  .v3 .heading,.dtf-page .dtf-heading,.game-hub-page .section-heading,body:has(.tool-chooser) .section-heading{align-items:start!important}
 }
 
-/* Long content and data stay usable without forcing the page wider than the viewport. */
-.dtf-page :where(table,pre),
-.lhv3 :where(table,pre),
-.game-hub-page :where(table,pre),
-body:has(.tool-chooser) :where(table,pre){
-  max-width:100%;
+@media(max-width:900px){
+  .v3[data-dtf-layout="learn-v3"] .all-subjects,.v3[data-dtf-layout="learn-v3"] .ref-grid{grid-template-columns:1fr!important}
+  .v3 .hero h1{max-width:15ch!important}
 }
 
-.dtf-page :where(pre,.dtf-table-scroll),
-.lhv3 :where(pre,.lhv3-table),
-.game-hub-page pre,
-body:has(.tool-chooser) pre{
-  overflow-x:auto;
-  overscroll-behavior-inline:contain;
-  -webkit-overflow-scrolling:touch;
-}
-
-/* Course workspace: make side rails calmer and keep reading priority on the lesson. */
-.lhv3 .lhv3-sidebar,
-.lhv3 .lhv3-right-rail{
-  scrollbar-width:thin;
-  scrollbar-color:rgba(38,120,74,.35) transparent;
-}
-
-.lhv3 .lhv3-content{
-  line-height:1.72;
-}
-
-.lhv3 .lhv3-content :where(h2,h3){
-  scroll-margin-top:calc(var(--dtf-global-header-height,92px) + 24px);
-}
-
-.lhv3 .lhv3-content :where(figure,table,blockquote,.lhv3-visual){
-  margin-block:clamp(24px,4vw,40px);
-}
-
-/* Header and footer interaction polish without changing the approved reference composition. */
-.dtf-global-header{
-  -webkit-backdrop-filter:saturate(130%) blur(8px);
-  backdrop-filter:saturate(130%) blur(8px);
-}
-
-.dtf-global-nav a,
-.dtf-global-icon,
-.dtf-global-menu{
-  -webkit-tap-highlight-color:transparent;
-}
-
-.dtf-global-nav a[aria-current="page"]{
-  cursor:default;
-}
-
-.dtf-footer-v3 .links a{
-  border-radius:8px;
-  padding-inline:6px;
-  margin-inline:-6px;
-}
-
-.dtf-footer-v3 .links a:focus-visible{
-  background:rgba(255,255,255,.08);
-}
-
-/* Small screens: prioritize scanning, touch comfort, and clean one-column reading. */
-@media (max-width:700px){
+@media(max-width:700px){
+  :root{--dtf-ux-section:clamp(46px,11vw,66px)}
   html{scroll-padding-top:calc(var(--dtf-global-header-height,74px) + 12px)}
-
-  .dtf-page .dtf-heading,
-  .game-hub-page .section-heading,
-  body:has(.tool-chooser) .section-heading{
-    margin-bottom:26px!important;
-  }
-
-  .dtf-page :where(p,li),
-  .lhv3 :where(p,li),
-  .game-hub-page :where(p,li),
-  body:has(.tool-chooser) :where(p,li){
-    line-height:1.66;
-  }
-
-  .dtf-global-nav a,
-  .dtf-global-menu,
-  .dtf-global-icon,
-  .dtf-footer-v3 .links a{
-    min-height:44px!important;
-  }
-
-  .dtf-global-nav{
-    max-height:calc(100dvh - 86px);
-    overflow-y:auto;
-    overscroll-behavior:contain;
-    padding-bottom:max(8px,env(safe-area-inset-bottom))!important;
-  }
-
-  .lhv3 .lhv3-content{
-    font-size:1rem;
-  }
+  .v3 .wrap,.dtf-page .dtf-wrap,.game-hub-page .wrap,body:has(.tool-chooser) .wrap{width:min(100% - 28px,var(--dtf-ux-max))!important}
+  .v3 .hero{padding-block:clamp(52px,12vw,76px)!important}
+  .v3 .hero h1{font-size:clamp(2.55rem,12vw,4rem)!important;line-height:.96!important;max-width:none!important}
+  .v3 .heading,.dtf-page .dtf-heading,.game-hub-page .section-heading,body:has(.tool-chooser) .section-heading{margin-bottom:26px!important}
+  .v3 :where(p,li),.dtf-page :where(p,li),.lhv3 :where(p,li),.game-hub-page :where(p,li),body:has(.tool-chooser) :where(p,li){line-height:1.64}
+  .v3[data-dtf-layout="learn-v3"] .path-grid{grid-template-columns:1fr!important}
+  .v3[data-dtf-layout="learn-v3"] .path{min-height:0!important}
+  .v3 .actions{display:grid!important;grid-template-columns:1fr!important;width:100%!important}
+  .v3 .actions>*{width:100%!important;justify-content:center!important;text-align:center!important}
+  .dtf-global-nav a,.dtf-global-menu,.dtf-global-icon,.dtf-footer-v3 .links a{min-height:44px!important}
+  .dtf-global-nav{max-height:calc(100dvh - 86px);overflow-y:auto;overscroll-behavior:contain;padding-bottom:max(8px,env(safe-area-inset-bottom))!important}
+  .lhv3 .lhv3-content{font-size:1rem}
 }
 
-@media (max-width:420px){
-  .dtf-page .dtf-actions,
-  .game-hub-page .actions,
-  body:has(.tool-chooser) .actions{
-    gap:10px!important;
-  }
-
-  .dtf-global-actions__icons .dtf-global-icon:nth-child(2){
-    display:none!important;
-  }
+@media(max-width:420px){
+  .v3 .wrap,.dtf-page .dtf-wrap,.game-hub-page .wrap,body:has(.tool-chooser) .wrap{width:min(100% - 22px,var(--dtf-ux-max))!important}
+  .v3 .feature-copy,.v3 .path,.v3 .lesson{padding:20px!important}
+  .dtf-page .dtf-actions,.game-hub-page .actions,body:has(.tool-chooser) .actions{gap:10px!important}
+  .dtf-global-actions__icons .dtf-global-icon:nth-child(2){display:none!important}
 }
 
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{
-    scroll-behavior:auto!important;
-  }
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important}
 }
