@@ -22,9 +22,12 @@ fi
 # happen to match. Root-owner storage verification must read authenticated edit-
 # context raw content first; rendered content is only a fallback because
 # WordPress can transform markers.
+node --check scripts/prepare-learning-v3-atlas-publisher.mjs
 node --check scripts/prepare-learning-v3-owner-aware-publisher.mjs
 node --check scripts/clear-wordpress-home-featured-media.mjs
 node --check scripts/verify-public-learning-visual-quarantine.mjs
+grep -Fq 'progressiveDisclosure: true' scripts/prepare-learning-v3-atlas-publisher.mjs
+grep -Fq 'data-progressive-disclosure="true"' scripts/prepare-learning-v3-atlas-publisher.mjs
 grep -Fq 'function isApprovedLearningMedia(item)' scripts/prepare-learning-v3-owner-aware-publisher.mjs
 grep -Fq "if (slug.startsWith('dtf-strain-card-')) return false;" scripts/prepare-learning-v3-owner-aware-publisher.mjs
 grep -Fq "slug.startsWith('dtf-approved-visual-')" scripts/prepare-learning-v3-owner-aware-publisher.mjs
@@ -47,6 +50,10 @@ LEARNING_V3_BASE_PUBLISHER="${LEARNING_V3_PUBLISHER_PATH:-scripts/rebuild-wordpr
 LEARNING_V3_ATLAS_PUBLISHER="$atlas_v3" \
 node scripts/prepare-learning-v3-atlas-publisher.mjs \
   | tee /tmp/dtf-learning-v3-atlas-prepare.json
+
+grep -Fq 'data-progressive-disclosure="true"' "$atlas_v3"
+grep -Fq '<details class="lesson" data-progressive-disclosure="true">' "$atlas_v3"
+grep -Fq "checks.push(await publicCheck(topic.route, 'data-progressive-disclosure=\"true\"'))" "$atlas_v3"
 
 LEARNING_V3_SOURCE_PUBLISHER="$atlas_v3" \
 LEARNING_V3_OWNER_AWARE_PUBLISHER="$owner_v3" \
@@ -153,8 +160,31 @@ for route in "${verify_routes[@]}"; do
   node scripts/verify-public-learning-visual-quarantine.mjs "$body" "$route"
 done
 
+# Final visitor-facing structure gate: downstream V4/expanded-reference passes
+# must preserve the compact native disclosure controls on every canonical THC
+# subject page rather than restoring the old always-open literature cards.
+subject_routes=(
+  /learn/plant-biology/
+  /learn/genetics-breeding/
+  /learn/lifecycle-propagation/
+  /learn/environment-vpd/
+  /learn/lighting/
+  /learn/water-ph-ec/
+  /learn/nutrition-media/
+  /learn/ipm/
+  /learn/training-canopy/
+  /learn/harvest-postharvest/
+  /learn/outdoor/
+  /learn/research-methods/
+)
+for route in "${subject_routes[@]}"; do
+  body="/tmp/dtf-learning-retired-visual-check-$(printf '%s' "$route" | tr '/' '_').html"
+  grep -Fq 'data-progressive-disclosure="true"' "$body"
+  grep -Fq '<details class="lesson" data-progressive-disclosure="true">' "$body"
+done
+
 test -s "$map_root/learning-v4-backup-path.txt"
 test -s "$map_root/learning-visual-v1-backup-path.txt"
 test -s "$map_root/home-featured-media-guard.json"
 test -s "$retired_visual_root/retired-visual-scrub-backup-path.txt"
-echo "Canonical Learning V3 published with raw-first root storage proof, role-safe approved media selection for hero and related visual references, connected Learning V4 map, expanded THC references, DTF Visual V1, Home featured-media quarantine, and rendered-media-only retired-visual enforcement."
+echo "Canonical Learning V3 published with progressive-disclosure subject literature, raw-first root storage proof, role-safe approved media selection for hero and related visual references, connected Learning V4 map, expanded THC references, DTF Visual V1, Home featured-media quarantine, and rendered-media-only retired-visual enforcement."
