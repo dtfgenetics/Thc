@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "id": "simple-user-guide-batch1",
+  "route": "/learn/beginner-guides/simple-user-guide/",
+  "title": "THC Simple User Guide",
+  "subtitle": "A starter path from setup to cure.",
+  "intro": "What stage you are in → what the plant needs → what to do → what to avoid → what comes next.",
+  "audience": "First-time lawful home growers.",
+  "visualStatus": "Final infographic images are not included in this source batch; the page intentionally publishes the approved scripts without broken or placeholder art.",
+  "pages": [
+    {
+      "number": 1,
+      "slug": "setup",
+      "title": "Setup",
+      "lead": "Get ready before you start seeds.",
+      "sections": [{"label":"Have ready","items":["Light or sun","Pot with drainage","Simple grow mix","Water","Airflow","Drying and curing space"]}],
+      "avoid": "Starting seeds with no plan.",
+      "simpleRule": "Set up first. Start seeds second."
+    },
+    {
+      "number": 2,
+      "slug": "seeds",
+      "title": "Seeds",
+      "lead": "A seed wakes up with moisture and warmth.",
+      "sections": [{"label":"Needs","items":["Moisture","Warmth","Gentle handling","Time"]}],
+      "avoid": "Drowning it or checking too much.",
+      "moveOnLabel": "Move on when",
+      "moveOn": "The first white root appears.",
+      "simpleRule": "Moist. Warm. Gentle. Patient."
+    },
+    {
+      "number": 3,
+      "slug": "seedling",
+      "title": "Seedling",
+      "lead": "A seedling is a baby plant.",
+      "sections": [{"label":"Needs","items":["Gentle light","Light watering","Clean air","Time to grow roots"]}],
+      "avoid": "Too much water, food, or strong light.",
+      "moveOnLabel": "Move on when",
+      "moveOn": "It has several healthy leaves.",
+      "simpleRule": "Baby plants need gentle care."
+    },
+    {
+      "number": 4,
+      "slug": "veg",
+      "title": "Veg",
+      "lead": "Veg is when the plant grows bigger.",
+      "sections": [
+        {"label":"The plant builds","items":["Roots","Stems","Leaves","Branches"]},
+        {"label":"Do","text":"Water when the pot starts to dry."}
+      ],
+      "avoid": "Overwatering and overfeeding.",
+      "simpleRule": "Veg builds the plant’s body."
+    },
+    {
+      "number": 5,
+      "slug": "flower",
+      "title": "Flower",
+      "lead": "Flower is when buds begin to form.",
+      "sections": [{"label":"Needs","items":["Steady light schedule","Good airflow","Careful watering","Patience"]}],
+      "avoid": "Wet, stale air around buds.",
+      "moveOnLabel": "Watch for",
+      "moveOn": "Buds getting bigger and smell getting stronger.",
+      "simpleRule": "Patience protects quality."
+    },
+    {
+      "number": 6,
+      "slug": "harvest",
+      "title": "Harvest",
+      "lead": "Harvest means cutting the plant when buds are ready.",
+      "sections": [
+        {"label":"Look for","items":["Full buds","Strong smell","Darker curled hairs","Mature trichomes"]},
+        {"label":"Do","text":"Use clean tools."}
+      ],
+      "avoid": "Cutting early because you are excited.",
+      "simpleRule": "Harvest when the plant is ready."
+    },
+    {
+      "number": 7,
+      "slug": "dry",
+      "title": "Dry",
+      "lead": "Drying slowly removes moisture after harvest.",
+      "sections": [{"label":"Needs","items":["Darkness","Gentle airflow","Moderate temperature","Time"]}],
+      "avoid": "Heat, bright light, and direct fan blast.",
+      "moveOnLabel": "Move on when",
+      "moveOn": "Buds feel dry outside and small stems bend or snap.",
+      "simpleRule": "Fast drying can ruin good flower."
+    },
+    {
+      "number": 8,
+      "slug": "cure",
+      "title": "Cure",
+      "lead": "Curing is the final step after drying.",
+      "sections": [
+        {"label":"Needs","items":["Clean jars or containers","Cool storage","Darkness","Mold checks"]},
+        {"label":"Do","text":"Open containers early if moisture builds up."}
+      ],
+      "avoid": "Jarring wet buds.",
+      "simpleRule": "Dry first. Cure second."
+    },
+    {
+      "number": 9,
+      "slug": "pests",
+      "title": "Pests",
+      "lead": "Pests are problems that can damage plants.",
+      "sections": [
+        {"label":"Check for","items":["Tiny bugs","Eggs","Webbing","Leaf spots","Chewed leaves"]},
+        {"label":"Do","text":"Look under leaves often."}
+      ],
+      "avoid": "Spraying random products on buds.",
+      "simpleRule": "Catch pests early."
+    },
+    {
+      "number": 10,
+      "slug": "tips",
+      "title": "Tips",
+      "lead": "Beginner rules that matter most:",
+      "sections": [{"label":"Beginner rules that matter most","items":["Start small","Check before watering","Feed lightly","Keep air moving","Keep it clean","Change one thing at a time","Take pictures","Be patient"]}],
+      "simpleRule": "Healthy basics beat complicated tricks."
+    }
+  ],
+  "nextAsset": {
+    "title": "THC Simple User Terms",
+    "status": "deferred-until-batch1-is-built",
+    "rule": "Identify the words that actually appear in the first 10 pages, then build the Terms page."
+  }
+}
