@@ -9,6 +9,15 @@ const ui = JSON.parse(await readFile(process.env.LEARNING_HUB_COURSE1_UI_PATH ||
 const auth = `Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}`;
 const must = (value, message) => { if (!value) throw new Error(message); };
 const rendered = (value) => typeof value === 'string' ? value : (value?.raw || value?.rendered || '');
+const decodeHtmlEntities = (value = '') => String(value)
+  .replaceAll('&quot;', '"')
+  .replaceAll('&#039;', "'")
+  .replaceAll('&#39;', "'")
+  .replaceAll('&apos;', "'")
+  .replaceAll('&amp;', '&')
+  .replaceAll('&lt;', '<')
+  .replaceAll('&gt;', '>');
+const includesSemanticText = (html, text) => decodeHtmlEntities(html).includes(String(text));
 
 must(user && pass, 'WordPress credentials are required.');
 must(local?.course?.id === 'COURSE-LH-TECH1-001', 'Unexpected Course 1 package.');
@@ -17,7 +26,7 @@ must(Array.isArray(ui?.lessons) && ui.lessons.length === 18, 'Canonical UI map m
 async function wp(path) {
   const response = await fetch(`${site}/wp-json/wp/v2/${path}`, {
     signal: AbortSignal.timeout(30000),
-    headers: { Authorization: auth, 'User-Agent': 'DTF-Course1-Canonical-Visual-Verify/1.0' }
+    headers: { Authorization: auth, 'User-Agent': 'DTF-Course1-Canonical-Visual-Verify/1.1' }
   });
   const text = await response.text();
   if (!response.ok) throw new Error(`WordPress ${path} returned ${response.status}: ${text.slice(0, 300)}`);
@@ -50,7 +59,7 @@ for (const mod of local.modules) {
       must(items.length >= 1, `${lesson.id}: approved visual lesson has no canonical items.`);
       for (const item of items) {
         must(html.includes(item.src), `${lesson.id}: canonical visual ${item.assetId} source missing.`);
-        must(html.includes(item.alt), `${lesson.id}: canonical visual ${item.assetId} alt text missing.`);
+        must(includesSemanticText(html, item.alt), `${lesson.id}: canonical visual ${item.assetId} alt text missing.`);
         uniqueAssets.add(item.assetId);
         visualPlacements += 1;
       }
@@ -69,7 +78,8 @@ for (const mod of local.modules) {
 }
 
 must(verifiedLessons.length === 18, 'Expected 18 verified Course 1 lessons.');
-must(visualPlacements > 2, `Only ${visualPlacements} canonical visual placements were verified; stale two-visual state detected.`);
+must(visualPlacements === 19, `Expected 19 canonical visual placements; verified ${visualPlacements}.`);
+must(uniqueAssets.size === 14, `Expected 14 unique canonical visual assets; verified ${uniqueAssets.size}.`);
 
 console.log(JSON.stringify({
   result: 'success',
