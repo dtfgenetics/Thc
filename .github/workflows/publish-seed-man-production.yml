@@ -89,6 +89,8 @@ jobs:
           ! grep -Fq 'seed-man-approved-master-atlas-v1.webp' "$root/approved-art-core-v1.js"
           grep -Fq 'approved-showcase-2026-09-08' "$root/seed-man-production-art.js"
           grep -Fq 'green-armored-plant-hero' "$root/seed-man-production-art.js"
+          grep -Fq 'seed-man-character-motion-rig-v1' "$root/seed-man-production-art.js"
+          grep -Fq 'seed-man-approved-action-feedback-v2' "$root/seed-man-production-art.js"
           grep -Fq '"schemaVersion": 3' "$root/data/seed-man-art-manifest-v1.json"
           ! grep -Fq 'seed-man-approved-master-atlas-v1.webp' "$root/data/seed-man-art-manifest-v1.json"
           for asset in seed-man-character-atlas-v2.webp seed-man-enemy-boss-atlas-v1.webp seed-man-platform-atlas-v1.webp; do
@@ -193,8 +195,10 @@ jobs:
           test "$bytes" -ge 250000
           grep -Fq 'approved-showcase-2026-09-08' "$tmp/renderer.js"
           grep -Fq 'green-armored-plant-hero' "$tmp/renderer.js"
+          grep -Fq 'seed-man-character-motion-rig-v1' "$tmp/renderer.js"
+          grep -Fq 'seed-man-approved-action-feedback-v2' "$tmp/renderer.js"
           for retired in data/level-01.json data/levels-12-15.json campaign-v1.js gameplay-v2.js physics.mjs campaign-combat-v20.js campaign-progress-v20.js campaign-runtime-v20.js campaign-ui-v15.js world-five-v1.js combat-browser-v1.js enemy-attacks-browser-v1.js seed-man-ui-v3.js assets/approved/seed-man-approved-master-atlas-v1.webp assets/approved/seed-man-cover-banner-approved-v1.webp; do expect_missing "$retired"; done
-          echo 'Seed Man canonical v20 campaign + browser world mechanics + synchronized Three.js dynamic platforms + standalone approved art + combat v2 is live and verified.'
+          echo 'Seed Man canonical v20 campaign + browser world mechanics + synchronized Three.js dynamic platforms + approved character motion rig + combat v2 is live and verified.'
 
       - name: Release summary
         if: always()
@@ -204,10 +208,10 @@ jobs:
             echo '- Campaign: 20 levels / 5 worlds / 6 bosses'
             echo '- World renderer: canonical generated Three.js v2 runtime / public bundle v3'
             echo '- World mechanics: browser v1 with synchronized dynamic-platform renderer'
-            echo '- Character: approved green armored plant hero'
+            echo '- Character: approved green armored plant hero + renderer motion rig v1'
             echo '- Combat: Plant / Fire / Electric / Ice with 30-second absorbed forms'
             echo '- Boss progression: exits remain locked until boss defeat; Blight King finale state is synchronized'
             echo '- Retired Sprout Run bootstrap and corrupt master/cover assets: physically absent'
-            echo '- Verification: deterministic Node + build + explicit live mechanics/runtime HTTP checks'
+            echo '- Verification: deterministic Node + build + explicit live mechanics/runtime/motion-rig HTTP checks'
             echo '- Playwright: not used'
           } >> "$GITHUB_STEP_SUMMARY"
