@@ -8,10 +8,12 @@ const html = await readFile(resolve(runtime, 'index.html'), 'utf8');
 const app = await readFile(resolve(runtime, 'app-v3.js'), 'utf8');
 const core = await readFile(resolve(runtime, 'game-core.mjs'), 'utf8');
 const css = await readFile(resolve(runtime, 'high-iq-v3.css'), 'utf8');
+const focusCss = await readFile(resolve(runtime, 'high-iq-v3-4.css'), 'utf8');
 const manifest = JSON.parse(await readFile(resolve(runtime, 'data/manifest.json'), 'utf8'));
 
 assert.match(html, /<script type="module" src="\.\/app-v3\.js"><\/script>/);
 assert.match(html, /<link rel="stylesheet" href="\.\/high-iq-v3\.css"/);
+assert.match(html, /<link rel="stylesheet" href="\.\/high-iq-v3-4\.css"/);
 assert.match(app, /from '\.\/game-core\.mjs'/);
 assert.match(app, /High IQ v3 runtime initialized/);
 assert.match(app, /balancedSample/);
@@ -22,6 +24,11 @@ assert.match(app, /localStorage/);
 assert.match(core, /export function balancedSample/);
 assert.match(css, /prefers-reduced-motion/);
 assert.match(css, /forced-colors/);
+assert.match(focusCss, /:has\(#quiz-panel:not\(\[hidden\]\)\)/);
+assert.match(focusCss, /min-height:\s*44px/i);
+assert.match(focusCss, /touch-action:\s*manipulation/i);
+assert.match(focusCss, /prefers-reduced-motion/);
+assert.match(focusCss, /forced-colors/);
 
 const idSelectors = [...app.matchAll(/\$\('#([A-Za-z0-9_-]+)'\)/g)].map((match) => match[1]);
 assert(idSelectors.length >= 35, `Expected a substantial High IQ UI contract, found only ${idSelectors.length} ID selectors.`);
@@ -71,5 +78,6 @@ console.log(JSON.stringify({
   sources: sourceCount,
   questionChunks: manifest.questionChunks.length,
   sourceChunks: manifest.sourceChunks.length,
-  datasetVersion: manifest.datasetVersion
+  datasetVersion: manifest.datasetVersion,
+  gameplayFocusLayer: true
 }, null, 2));
