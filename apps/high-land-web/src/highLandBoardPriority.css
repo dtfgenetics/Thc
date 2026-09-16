@@ -1,0 +1,119 @@
+/* High Land production board-priority overrides.
+   Keep the approved board visually dominant while preserving readable status,
+   player identity, safe-area controls, and desktop/tablet behavior. */
+
+:root {
+  --hl-min-target: 44px;
+}
+
+button,
+.player-select button {
+  min-height: var(--hl-min-target);
+}
+
+@media (max-width: 760px) {
+  .app-shell:has(.game-stage) .game-panel {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'brand status'
+      'players players';
+    align-items: stretch;
+  }
+
+  .app-shell:has(.game-stage) .title-card {
+    min-width: 0;
+    max-width: 12.5rem;
+    padding: 0.55rem 0.68rem;
+  }
+
+  .app-shell:has(.game-stage) .title-card h1 {
+    overflow: hidden;
+    font-size: 0.92rem;
+    line-height: 1.12;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .app-shell:has(.game-stage) .game-panel > .message-card:not([aria-label='Game rules']) {
+    min-height: var(--hl-min-target);
+    padding: 0.52rem 0.68rem;
+  }
+
+  .app-shell:has(.game-stage) .game-panel > .message-card:not([aria-label='Game rules']) strong {
+    font-size: 0.62rem;
+  }
+
+  .app-shell:has(.game-stage) .game-panel > .message-card:not([aria-label='Game rules']) p {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 0.78rem;
+    line-height: 1.28;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .app-shell:has(.game-stage) .players-card {
+    max-height: 58px;
+    padding: 0.34rem;
+  }
+
+  .app-shell:has(.game-stage) .player-chip {
+    min-width: 132px;
+    min-height: 48px;
+    padding: 0.38rem 0.48rem;
+  }
+
+  .app-shell:has(.game-stage) .player-chip p {
+    margin-top: 0.08rem;
+    font-size: 0.64rem;
+    line-height: 1.18;
+  }
+
+  .phaser-board,
+  .phaser-board canvas {
+    width: 100%;
+  }
+
+  .phaser-board canvas {
+    max-height: min(70svh, 660px);
+  }
+
+  .board-controls-card {
+    padding-bottom: max(0.55rem, env(safe-area-inset-bottom));
+  }
+
+  .board-button-row button:not(.roll-button) {
+    min-height: var(--hl-min-target);
+  }
+}
+
+@media (max-width: 420px) {
+  .app-shell:has(.game-stage) .title-card {
+    max-width: 9.5rem;
+  }
+
+  .app-shell:has(.game-stage) .title-card h1 {
+    font-size: 0.84rem;
+  }
+
+  .app-shell:has(.game-stage) .player-chip {
+    min-width: 122px;
+  }
+
+  .phaser-board canvas {
+    max-height: min(68svh, 590px);
+  }
+}
+
+@media (orientation: landscape) and (max-height: 690px) {
+  .app-shell:has(.game-stage) .game-panel {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'brand status'
+      'players players';
+  }
+
+  .app-shell:has(.game-stage) .players-card {
+    max-height: 52px;
+  }
+}
