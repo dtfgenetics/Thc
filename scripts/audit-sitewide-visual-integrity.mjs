@@ -12,20 +12,19 @@ const JSON_REPORT=process.env.DTF_VISUAL_AUDIT_JSON||'sitewide-visual-integrity.
 const MARKDOWN_REPORT=process.env.DTF_VISUAL_AUDIT_MD||'sitewide-visual-integrity.md';
 
 const expectedNav=[
-  ['Home','/'],
-  ['Seeds','/seeds/'],
+  ['Genetics','/seeds/'],
   ['Learn','/learn/'],
-  ['Courses','/courses/'],
-  ['Diagnostic','/tools/'],
+  ['Tools','/tools/'],
   ['Games','/games/'],
   ['Community','/community/'],
   ['Shop','/shop/']
 ];
-const seedRoutes=['/','/seeds/','/learn/','/courses/','/tools/','/games/','/community/','/shop/'];
+const obsoletePrimaryLabels=['Home','Seeds','Courses','Diagnostic'];
+const seedRoutes=['/','/seeds/','/learn/','/tools/','/games/','/projects/','/community/','/shop/'];
+const densityRoutes=new Set(['/learn/','/tools/','/games/','/projects/']);
 const ignoredPrefixes=['/wp-admin/','/wp-json/','/wp-login.php','/feed/','/comments/feed/','/xmlrpc.php'];
 const ignoredExtensions=/\.(?:css|js|mjs|map|json|xml|txt|pdf|zip|gz|tgz|rar|7z|png|jpe?g|gif|webp|avif|svg|ico|mp4|webm|mov|mp3|wav|woff2?|ttf|eot)$/i;
 
-const unique=values=>[...new Set(values)];
 const esc=value=>String(value).replaceAll('|','\\|').replace(/\s+/g,' ').trim();
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 
@@ -40,7 +39,6 @@ function normalizeInternal(raw,base){
   for(const key of [...url.searchParams.keys()]){
     if(/^utm_/i.test(key)||['fbclid','gclid','dtf_audit','dtf_visual_audit'].includes(key)) url.searchParams.delete(key);
   }
-  // Query/action URLs should not become crawl nodes. Their canonical page is enough for visual QA.
   if(url.search&&/[?&](?:add-to-cart|remove_item|wc-ajax|s|orderby|filter_|attribute_|replytocom|rest_route)=/i.test(url.search)) return null;
   if(url.search) return null;
   const path=url.pathname.replace(/\/{2,}/g,'/');
@@ -59,8 +57,12 @@ function stripTags(value=''){
 }
 
 function extractHeader(html){
-  const matches=[...html.matchAll(/<header\b[^>]*data-dtf-shell=["']header-v5["'][^>]*>[\s\S]*?<\/header>/gi)];
+  const matches=[...html.matchAll(/<header\b[^>]*data-dtf-shell=["']header-v6["'][^>]*>[\s\S]*?<\/header>/gi)];
   return {count:matches.length,html:matches[0]?.[0]||''};
+}
+
+function extractPrimaryNav(headerHtml){
+  return headerHtml.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>[\s\S]*?<\/nav>/i)?.[0]||'';
 }
 
 function extractLinks(html,base){
@@ -109,7 +111,7 @@ async function fetchHtml(path){
       const url=new URL(path,`${BASE_URL}/`);
       url.searchParams.set('dtf_visual_audit',`${Date.now()}-${attempt}`);
       const started=Date.now();
-      const response=await fetch(url,{redirect:'follow',signal:AbortSignal.timeout(25_000),headers:{accept:'text/html,*/*','cache-control':'no-cache, no-store, max-age=0',pragma:'no-cache','user-agent':'DTFSeeds-Visual-Integrity/1.0'}});
+      const response=await fetch(url,{redirect:'follow',signal:AbortSignal.timeout(25_000),headers:{accept:'text/html,*/*','cache-control':'no-cache, no-store, max-age=0',pragma:'no-cache','user-agent':'DTFSeeds-Visual-Integrity/2.0'}});
       const body=await response.text();
       return {path,status:response.status,ok:response.ok,contentType:response.headers.get('content-type')||'',finalUrl:response.url,body,durationMs:Date.now()-started,error:null};
     }catch(error){lastError=error;await sleep(250*attempt);}
@@ -127,21 +129,29 @@ function inspectPage(fetched,depth){
   if(fetched.status!==200||!fetched.contentType.toLowerCase().includes('text/html')) return {path:fetched.path,depth,...fetched,issues,warnings,links:[],images:[],passed:issues.length===0};
 
   const shell=extractHeader(html);
-  if(shell.count!==1) issues.push(`Expected exactly one V5 header; found ${shell.count}`);
+  if(shell.count!==1) issues.push(`Expected exactly one V6 header; found ${shell.count}`);
+  const canonicalCount=count(html,/data-dtf-sitewide-header=["']canonical-six-v1["']/gi);
+  if(canonicalCount!==1) issues.push(`Expected exactly one canonical-six-v1 marker; found ${canonicalCount}`);
   const uxCount=count(html,/id=["']dtf-sitewide-ux-polish-v1["']/gi);
   if(uxCount!==1) issues.push(`Expected exactly one shared UX polish marker; found ${uxCount}`);
   const responsiveCount=count(html,/id=["']dtf-responsive-layout-v1["']/gi);
   if(responsiveCount!==1) issues.push(`Expected exactly one responsive layout marker; found ${responsiveCount}`);
+  if(densityRoutes.has(fetched.path)){
+    const densityStyle=count(html,/id=["']dtf-content-density-v1-style["']/gi);
+    const densityScript=count(html,/id=["']dtf-content-density-v1-script["']/gi);
+    if(densityStyle!==1) issues.push(`Expected exactly one content-density style marker; found ${densityStyle}`);
+    if(densityScript!==1) issues.push(`Expected exactly one content-density script marker; found ${densityScript}`);
+  }
   if(!hasViewport(html)) issues.push('Missing width=device-width viewport meta');
 
   if(shell.html){
-    const headerLinks=extractLinks(shell.html,base);
-    for(const [label,href] of expectedNav){
-      const found=headerLinks.some(link=>link.label===label&&link.internal===href);
-      if(!found) issues.push(`V5 navigation missing ${label} → ${href}`);
-    }
-    for(const stale of ['Genetics','Tools']){
-      if(headerLinks.some(link=>link.label===stale)) issues.push(`Stale primary navigation label remains: ${stale}`);
+    const primary=extractPrimaryNav(shell.html);
+    if(!primary) issues.push('Canonical V6 primary navigation fragment missing');
+    const headerLinks=extractLinks(primary,base);
+    const observed=headerLinks.map(link=>[link.label,link.internal]);
+    if(JSON.stringify(observed)!==JSON.stringify(expectedNav)) issues.push(`Unexpected V6 primary navigation: ${JSON.stringify(observed)}`);
+    for(const stale of obsoletePrimaryLabels){
+      if(headerLinks.some(link=>link.label===stale)) issues.push(`Obsolete primary navigation label remains: ${stale}`);
     }
   }
 
@@ -207,8 +217,8 @@ async function inspectImages(pages){
     const batch=candidates.slice(offset,offset+CONCURRENCY);
     const checked=await Promise.all(batch.map(async item=>{
       try{
-        let response=await fetch(item.url,{method:'HEAD',redirect:'follow',signal:AbortSignal.timeout(15_000),headers:{'cache-control':'no-cache','user-agent':'DTFSeeds-Visual-Integrity/1.0'}});
-        if(response.status===405||response.status===403) response=await fetch(item.url,{method:'GET',redirect:'follow',signal:AbortSignal.timeout(15_000),headers:{range:'bytes=0-0','cache-control':'no-cache','user-agent':'DTFSeeds-Visual-Integrity/1.0'}});
+        let response=await fetch(item.url,{method:'HEAD',redirect:'follow',signal:AbortSignal.timeout(15_000),headers:{'cache-control':'no-cache','user-agent':'DTFSeeds-Visual-Integrity/2.0'}});
+        if(response.status===405||response.status===403) response=await fetch(item.url,{method:'GET',redirect:'follow',signal:AbortSignal.timeout(15_000),headers:{range:'bytes=0-0','cache-control':'no-cache','user-agent':'DTFSeeds-Visual-Integrity/2.0'}});
         return {...item,status:response.status,ok:response.ok,contentType:response.headers.get('content-type')||'',error:null};
       }catch(error){return {...item,status:0,ok:false,contentType:'',error:error?.message||String(error)};}
     }));
@@ -238,6 +248,7 @@ for(const image of brokenImages){
 
 const report={
   generatedAt:new Date().toISOString(),baseUrl:BASE_URL,
+  headerVersion:'v6',canonicalNavigation:expectedNav.map(([label,href])=>({label,href})),
   config:{maxPages:MAX_PAGES,maxDepth:MAX_DEPTH,concurrency:CONCURRENCY,maxImages:MAX_IMAGES},
   passed:pages.length>0&&pages.every(page=>page.passed)&&brokenImages.length===0,
   summary:{total:pages.length,passed:pages.filter(page=>page.passed).length,failed:pages.filter(page=>!page.passed).length,warnings:pages.reduce((sum,page)=>sum+page.warnings.length,0)},
