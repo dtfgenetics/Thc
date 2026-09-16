@@ -6,7 +6,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/polish-wordpress-visual-site-v3.mjs'
-      - 'scripts/lib/sitewide-header-template.mjs'
+      - 'scripts/lib/sitewide-header-template-v6.mjs'
       - 'scripts/rebuild-wordpress-shared-shell-v3.mjs'
       - 'scripts/flush-hostinger-litespeed-mcp.mjs'
       - 'site/wordpress/assets/sitewide-ux-polish-v1.css'
@@ -19,7 +19,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: dtfseeds-wordpress-visual-polish-v3
@@ -63,9 +62,11 @@ jobs:
           test -s site/wordpress/assets/sitewide-ux-polish-v1.css
           grep -Fq 'DTFSeeds sitewide UX polish v1' site/wordpress/assets/sitewide-ux-polish-v1.css
           node --check scripts/polish-wordpress-visual-site-v3.mjs
-          node --check scripts/lib/sitewide-header-template.mjs
+          node --check scripts/lib/sitewide-header-template-v6.mjs
           node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
           node --check scripts/flush-hostinger-litespeed-mcp.mjs
+          grep -Fq 'data-dtf-shell="header-v6"' scripts/lib/sitewide-header-template-v6.mjs
+          grep -Fq 'data-dtf-sitewide-header="canonical-six-v1"' scripts/lib/sitewide-header-template-v6.mjs
 
       - name: Confirm WordPress REST path
         shell: bash
@@ -95,12 +96,12 @@ jobs:
           echo "spotlight=$(node -p "require(process.argv[1]).spotlightInjected" "$report")" >> "$GITHUB_OUTPUT"
           echo "brand_id=$(node -p "require(process.argv[1]).shell.brandMediaId || ''" "$report")" >> "$GITHUB_OUTPUT"
 
-      - name: Restore approved V5 shared header, sitemap shell, and UX polish
+      - name: Restore canonical V6 shared header, sitemap shell, and UX polish
         if: always()
         shell: bash
         run: |
           set -euo pipefail
-          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs | tee "$RUNNER_TEMP/shared-shell-v5.log"
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs | tee "$RUNNER_TEMP/shared-shell-v6.log"
 
       - name: Purge WordPress and LiteSpeed shell cache
         shell: bash
@@ -115,7 +116,7 @@ jobs:
             sleep $((attempt * 5))
           done
 
-      - name: Verify visitor-facing V3 experience, V5 navigation, and UX polish
+      - name: Verify visitor-facing V3 experience, V6 navigation, and UX polish
         id: verify
         shell: bash
         run: |
@@ -134,7 +135,8 @@ jobs:
                 "$WP_SITE_URL${path}?dtf_v3=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" -o "$body"
               if grep -Fqi -- "$marker" "$body" && \
                  grep -Fqi 'dtf-visual-polish-v3' "$body" && \
-                 grep -Fqi 'data-dtf-shell="header-v5"' "$body" && \
+                 grep -Fqi 'data-dtf-shell="header-v6"' "$body" && \
+                 grep -Fqi 'data-dtf-sitewide-header="canonical-six-v1"' "$body" && \
                  grep -Fqi 'id="dtf-sitewide-ux-polish-v1"' "$body"; then
                 ok=1
                 break
@@ -142,8 +144,8 @@ jobs:
               if [[ "$attempt" -lt 8 ]]; then sleep 7; fi
             done
             if [[ "$ok" -ne 1 ]]; then
-              echo "V3/V5/UX marker not observed on $path" >&2
-              for required_marker in "$marker" 'dtf-visual-polish-v3' 'data-dtf-shell="header-v5"' 'id="dtf-sitewide-ux-polish-v1"'; do
+              echo "V3/V6/UX marker not observed on $path" >&2
+              for required_marker in "$marker" 'dtf-visual-polish-v3' 'data-dtf-shell="header-v6"' 'data-dtf-sitewide-header="canonical-six-v1"' 'id="dtf-sitewide-ux-polish-v1"'; do
                 grep -Fqi -- "$required_marker" "$body" || echo "Missing marker on $path: $required_marker" >&2
               done
               head -c 3500 "$body" >&2 || true
@@ -153,33 +155,41 @@ jobs:
             node - "$body" "$header" <<'NODE'
           const fs = require('node:fs');
           const source = fs.readFileSync(process.argv[2], 'utf8');
-          const match = source.match(/<header\b[^>]*data-dtf-shell=["']header-v5["'][^>]*>[\s\S]*?<\/header>/i);
+          const match = source.match(/<header\b[^>]*data-dtf-shell=["']header-v6["'][^>]*>[\s\S]*?<\/header>/i);
           if (!match) {
-            console.error('Canonical V5 header fragment could not be isolated');
+            console.error('Canonical V6 header fragment could not be isolated');
             process.exit(1);
           }
           fs.writeFileSync(process.argv[3], match[0]);
           NODE
 
-            for required in '>Home</a>' '>Seeds</a>' '>Learn</a>' '>Courses</a>' '>Diagnostic</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
-              grep -Fqi -- "$required" "$header" || { echo "Required approved navigation label missing from V5 header on $path: $required" >&2; exit 1; }
+            expected='Genetics|Learn|Tools|Games|Community|Shop'
+            actual="$(node - "$header" <<'NODE'
+          const fs = require('node:fs');
+          const source = fs.readFileSync(process.argv[2], 'utf8');
+          const nav = source.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>([\s\S]*?)<\/nav>/i)?.[1] || '';
+          const labels = [...nav.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)].map(m => m[1].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim());
+          process.stdout.write(labels.join('|'));
+          NODE
+            )"
+            [[ "$actual" == "$expected" ]] || { echo "Unexpected V6 primary navigation on $path: $actual" >&2; exit 1; }
+            for forbidden_label in '>Home</a>' '>Seeds</a>' '>Courses</a>' '>Diagnostic</a>'; do
+              ! grep -Fqi -- "$forbidden_label" "$header" || { echo "Obsolete primary label remains on $path: $forbidden_label" >&2; exit 1; }
             done
-            ! grep -Fqi -- '>Tools</a>' "$header" || { echo "Stale Tools label remains inside V5 primary navigation on $path" >&2; exit 1; }
-            ! grep -Fqi -- '>Genetics</a>' "$header" || { echo "Stale Genetics label remains inside V5 primary navigation on $path" >&2; exit 1; }
             for forbidden in 'email@email.com' '+123456789' '© 2025 DTF Genetics' '&copy; 2025 DTF Genetics'; do
               ! grep -Fqi -- "$forbidden" "$body" || { echo "Forbidden stale presentation remains on $path: $forbidden" >&2; exit 1; }
             done
           }
 
           check_page '/' 'dtf-v3-spotlight'
-          check_page '/learn/' 'Start with the question you are trying to answer.'
+          check_page '/learn/' 'Explore by subject'
 
           home="$RUNNER_TEMP/_.html"
-          grep -Fqi 'data-dtf-shell="header-v5"' "$home"
+          grep -Fqi 'data-dtf-shell="header-v6"' "$home"
           grep -Fqi 'id="dtf-sitewide-ux-polish-v1"' "$home"
           grep -Fqi 'dtf-footer-v3' "$home"
           grep -Fqi 'discord.gg/xJbUeHFPMt' "$home"
-          echo 'V3 visual experience, approved V5 navigation, and UX polish verification passed.'
+          echo 'V3 visual experience, canonical V6 navigation, and UX polish verification passed.'
 
       - name: Upload rollback package
         if: always()
@@ -190,32 +200,25 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report V3 production result
+      - name: Publish V3 production summary
         if: always()
-        continue-on-error: true
-        uses: actions/github-script@v7
+        shell: bash
         env:
           JOB_STATUS: ${{ job.status }}
           POLISH_OUTCOME: ${{ steps.polish.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
           SPOTLIGHT: ${{ steps.polish.outputs.spotlight }}
           BRAND_ID: ${{ steps.polish.outputs.brand_id }}
-        with:
-          script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## DTFSeeds visual polish V3',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Result: **${process.env.JOB_STATUS}**`,
-                `V3 polish write: **${process.env.POLISH_OUTCOME || 'not-run'}**`,
-                `Live verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
-                `Homepage experience spotlight: **${process.env.SPOTLIGHT || 'not-run'}**`,
-                `Cannabis-leaf brand media ID: **${process.env.BRAND_ID || 'not-reported'}**`,
-                '',
-                'V3 visual polish restores the approved V5 sitewide navigation and shared UX polish after page styling, purges the visitor cache, and validates the refreshed public shell.'
-              ].join('\n')
-            });
+        run: |
+          {
+            echo '## DTFSeeds visual polish V3'
+            echo
+            echo "Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            echo "Result: **${JOB_STATUS}**"
+            echo "V3 polish write: **${POLISH_OUTCOME:-not-run}**"
+            echo "Live V6 verification: **${VERIFY_OUTCOME:-not-run}**"
+            echo "Homepage experience spotlight: **${SPOTLIGHT:-not-run}**"
+            echo "Cannabis-leaf brand media ID: **${BRAND_ID:-not-reported}**"
+            echo
+            echo 'V3 visual polish restores the canonical V6 sitewide navigation and shared UX polish after page styling, purges the visitor cache, and validates the refreshed public shell.'
+          } >> "$GITHUB_STEP_SUMMARY"
