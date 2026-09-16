@@ -8,23 +8,26 @@ const index = read('index.html');
 const gameplay = read('gameplay-v3.js');
 const combatA11y = read('combat-a11y-v1.js');
 const css = read('gameplay-v3.css');
+const focusCss = read('gameplay-v4.css');
 const presence = read('presence.php');
 const sw = read('sw.js');
 
-for (const asset of ['gameplay-v3.js', 'gameplay-v3.css', 'combat-a11y-v1.js', 'runtime-sync-v1.js', 'presence.php']) {
+for (const asset of ['gameplay-v3.js', 'gameplay-v3.css', 'gameplay-v4.css', 'combat-a11y-v1.js', 'runtime-sync-v1.js', 'presence.php']) {
   assert.ok(fs.existsSync(path.join(root, asset)), `Missing Burn Buds gameplay asset: ${asset}`);
 }
 
 assert.ok(index.includes('./gameplay-v3.css'));
+assert.ok(index.includes('./gameplay-v4.css'));
 assert.ok(index.includes('./gameplay-v3.js'));
 assert.ok(index.includes('./combat-a11y-v1.js'));
 assert.ok(index.includes('./runtime-sync-v1.js'));
 assert.ok(sw.includes('./gameplay-v3.css'));
+assert.ok(sw.includes('./gameplay-v4.css'));
 assert.ok(sw.includes('./gameplay-v3.js'));
 assert.ok(sw.includes('./combat-a11y-v1.js'));
 assert.ok(sw.includes('./runtime-sync-v1.js'));
 assert.ok(sw.includes("url.pathname.endsWith('/presence.php')"));
-assert.ok(sw.includes('ptp-shell-v9-burn-buds-v5-responsive-20260913'));
+assert.ok(sw.includes('ptp-shell-v10-burn-buds-v6-gameplay-focus-20260916'));
 assert.ok(sw.includes('./battle-feedback-v1.js'));
 assert.ok(sw.includes('./placement-v1.js'));
 assert.ok(sw.includes('./targeting-v1.js'));
@@ -95,6 +98,18 @@ for (const marker of [
 }
 
 for (const marker of [
+  'body.burn-my-turn > section[data-public-product="Burn Buds"]',
+  'min-height: 44px',
+  'touch-action: manipulation',
+  '.cell:focus-visible',
+  '.mobile-tabs',
+  '@media (prefers-reduced-motion: reduce)',
+  '@media (forced-colors: active)'
+]) {
+  assert.ok(focusCss.includes(marker), `Missing Burn Buds gameplay focus marker: ${marker}`);
+}
+
+for (const marker of [
   'BURN_BUDS_PRESENCE_TTL',
   'BURN_BUDS_ONLINE_WINDOW_MS',
   "'ptp_player_' . $playerId",
@@ -114,4 +129,4 @@ for (const forbidden of [
   assert.ok(!presence.includes(forbidden), `Presence endpoint leaks or weakens auth: ${forbidden}`);
 }
 
-console.log('Burn Buds gameplay v3 presence, telemetry, combat accessibility, targeting, and burn feedback checks passed.');
+console.log('Burn Buds gameplay v3/v4 presence, telemetry, combat accessibility, targeting, focus, and burn feedback checks passed.');
