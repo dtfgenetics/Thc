@@ -27,8 +27,9 @@ subprocess.run(
 )
 
 # Fail closed before archive construction if a suite-owned top-level hub ever
-# drifts away from the canonical six-section shell. This keeps the production
-# transaction from publishing a mixed V5/V6 navigation state.
+# drifts away from the canonical six-section shell or the shared progressive-
+# disclosure layer. This keeps production from publishing a mixed shell or a
+# long hub page without the content-density behavior validated by V6.
 expected_labels = ['Genetics', 'Learn', 'Tools', 'Games', 'Community', 'Shop']
 for relative in ('tools/index.html', 'games/index.html', 'projects/index.html'):
     candidate = release_dir / relative
@@ -41,9 +42,11 @@ for relative in ('tools/index.html', 'games/index.html', 'projects/index.html'):
         'id="dtf-sitewide-header-v6-script"',
         'id="dtf-responsive-layout-v1"',
         'id="dtf-sitewide-ux-polish-v1"',
+        'id="dtf-content-density-v1-style"',
+        'id="dtf-content-density-v1-script"',
     ):
         if marker not in html:
-            raise SystemExit(f'{relative} is missing canonical V6 shell marker: {marker}')
+            raise SystemExit(f'{relative} is missing canonical V6/content-density marker: {marker}')
 
     nav_match = re.search(
         r'<nav\b[^>]*id=["\']dtf-global-primary-nav["\'][^>]*>([\s\S]*?)</nav>',
