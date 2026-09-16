@@ -19,17 +19,24 @@ on:
       - 'package-lock.json'
       - '.github/workflows/high-land-ci.yml'
 
+permissions:
+  contents: read
+
+concurrency:
+  group: high-land-ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node.js 22
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -37,14 +44,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run High Land deterministic tests
-        run: npm run test
+      - name: Enforce browser tool policy
+        run: node scripts/verify-browser-tool-policy.mjs
 
-      - name: Build High Land
-        run: npm run build
+      - name: Run canonical High Land deterministic tests
+        run: npm run test:high-land
 
-      - name: Verify room API security
-        run: node apps/high-land-web/scripts/verify-room-api-security.mjs
+      - name: Build canonical High Land app
+        run: npm run build:high-land
 
       - name: Lint PHP room API files
         shell: bash
@@ -65,12 +72,14 @@ jobs:
           set -euo pipefail
           test -f apps/high-land-web/dist/index.html
           test -d apps/high-land-web/dist/assets
-          test -n "$(find apps/high-land-web/dist/assets -type f -maxdepth 1 -print -quit)"
+          test -n "$(find apps/high-land-web/dist/assets -maxdepth 1 -type f -print -quit)"
+          grep -Fq 'High Land: The Sweet Escape' apps/high-land-web/dist/index.html
 
       - name: Upload High Land build artifact
         if: success()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: high-land-dist
+          name: high-land-dist-${{ github.sha }}
           path: apps/high-land-web/dist
           if-no-files-found: error
+          retention-days: 14
