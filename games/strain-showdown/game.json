@@ -21,6 +21,13 @@
     "familyPassives": 8,
     "effectPolicy": "prototype-family-passives-only-until-final-card-effects-are-approved"
   },
+  "draftEffects": {
+    "status": "authoring-draft",
+    "profiles": 24,
+    "coveredCards": 96,
+    "machineValidated": true,
+    "activeInBrowserRules": false
+  },
   "machineData": {
     "manifest": "games/strain-showdown/data/roster-manifest.json",
     "familyDirectory": "games/strain-showdown/data/roster",
@@ -52,7 +59,7 @@
     "browser-prototype": true,
     "balance-simulation-tooling": true,
     "effect-text-complete": false,
-    "effect-validation": false,
+    "effect-validation": true,
     "automated-balance-range": true,
     "balance-approved": false,
     "rules-playtest": false,
