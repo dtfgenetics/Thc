@@ -9,6 +9,7 @@ on:
       - 'scripts/polish-wordpress-visual-site-v3.mjs'
       - 'scripts/fix-wordpress-visual-polish-v3-cascade.mjs'
       - 'scripts/lib/sitewide-header-template.mjs'
+      - 'scripts/lib/sitewide-header-template-v6.mjs'
       - 'scripts/rebuild-wordpress-shared-shell-v3.mjs'
   issue_comment:
     types: [created]
@@ -59,7 +60,9 @@ jobs:
           node --check scripts/polish-wordpress-visual-site-v3.mjs
           node --check scripts/fix-wordpress-visual-polish-v3-cascade.mjs
           node --check scripts/lib/sitewide-header-template.mjs
+          node --check scripts/lib/sitewide-header-template-v6.mjs
           node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
+          node --check scripts/verify-sitewide-header-v6-live.mjs
 
       - name: Reconcile canonical WordPress page records
         run: |
@@ -110,7 +113,7 @@ jobs:
           set -euo pipefail
           node scripts/fix-wordpress-visual-polish-v3-cascade.mjs
 
-      - name: Restore approved V5 shared header and sitemap shell
+      - name: Restore canonical V6 shared header and sitemap shell
         run: |
           set -euo pipefail
           node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs
@@ -133,7 +136,7 @@ jobs:
           NODE
           echo "site_icon=$site_icon" >> "$GITHUB_OUTPUT"
 
-      - name: Verify live V3 site is image-driven and approved navigation is intact
+      - name: Verify live V3 site and canonical V6 navigation
         id: verify
         run: |
           set -euo pipefail
@@ -146,21 +149,27 @@ jobs:
               curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
                 "$WP_SITE_URL${path}?dtf_rebuild=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" -o "$body"
-              if grep -Fqi -- "$required" "$body" && grep -Fqi 'data-dtf-shell="header-v5"' "$body"; then ok=1; break; fi
+              if grep -Fqi -- "$required" "$body" && grep -Fqi 'data-dtf-shell="header-v6"' "$body" && grep -Fqi 'data-dtf-sitewide-header="canonical-six-v1"' "$body"; then ok=1; break; fi
               sleep 8
             done
-            [[ "$ok" -eq 1 ]] || { echo "Missing required marker or approved V5 header on $path: $required" >&2; head -c 3000 "$body" >&2 || true; exit 1; }
+            [[ "$ok" -eq 1 ]] || { echo "Missing required marker or canonical V6 header on $path: $required" >&2; head -c 3000 "$body" >&2 || true; exit 1; }
             count="$(grep -Eo '/wp-content/uploads/[^"'"' )]+' "$body" | sort -u | wc -l | tr -d ' ')"
             [[ "$count" -ge "$minimum" ]] || { echo "$path has $count WordPress-hosted image URLs; expected at least $minimum" >&2; exit 1; }
             for forbidden in 'email@email.com' '+123456789' 'being rebuilt' 'Reserved strain card' 'Tool-ready rebuild' 'Grow education belongs in a clean, readable library.' 'MOPS, cultivation notes, THC basics'; do
               ! grep -Fqi -- "$forbidden" "$body" || { echo "Stale phrase remains on $path: $forbidden" >&2; exit 1; }
             done
-            for navLabel in '>Home</a>' '>Seeds</a>' '>Learn</a>' '>Courses</a>' '>Diagnostic</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
-              grep -Fqi -- "$navLabel" "$body" || { echo "Approved navigation label missing on $path: $navLabel" >&2; exit 1; }
-            done
-            ! grep -Fqi -- '>Tools</a>' "$body" || { echo "Stale Tools primary-navigation label remains on $path" >&2; exit 1; }
-            ! grep -Fqi -- '>Genetics</a>' "$body" || { echo "Stale Genetics primary-navigation label remains on $path" >&2; exit 1; }
-            echo "$path verified with $count WordPress-hosted images and V5 navigation"
+            node - "$body" "$path" <<'NODE'
+          const fs=require('fs');
+          const [file,path]=process.argv.slice(2);
+          const html=fs.readFileSync(file,'utf8');
+          const header=html.match(/<header\b[^>]*data-dtf-shell=["']header-v6["'][^>]*>[\s\S]*?<\/header>/i)?.[0]||'';
+          if(!header) throw new Error(`${path}: V6 header missing`);
+          const nav=header.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>([\s\S]*?)<\/nav>/i)?.[1]||'';
+          const labels=[...nav.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)].map(m=>m[1].replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim());
+          const expected=['Genetics','Learn','Tools','Games','Community','Shop'];
+          if(JSON.stringify(labels)!==JSON.stringify(expected)) throw new Error(`${path}: unexpected primary navigation ${JSON.stringify(labels)}`);
+          NODE
+            echo "$path verified with $count WordPress-hosted images and canonical V6 navigation"
           }
           check_page '/' 'Breeding projects with documented lineage' 8
           check_page '/learn/' 'Explore by subject' 10
@@ -171,7 +180,7 @@ jobs:
           grep -Fqi 'dtf-v3-spotlight' "$home"
           grep -Fqi 'Measure. Diagnose. Document.' "$home"
           grep -Fqi 'Original DTF games' "$home"
-          grep -Fqi 'data-dtf-shell="header-v5"' "$home"
+          grep -Fqi 'data-dtf-shell="header-v6"' "$home"
           grep -Fqi 'dtf-footer-v3' "$home"
           grep -Fqi 'dtf-visual-polish-v3' "$learn"
           grep -Eqi '<link[^>]+rel=["'"'](shortcut )?icon["'"']' "$home"
@@ -218,9 +227,9 @@ jobs:
                 `V3 final cascade: **${process.env.V3_CASCADE || 'not-run'}**`,
                 `V3 homepage spotlight: **${process.env.V3_SPOTLIGHT || 'not-run'}**`,
                 `V3 cannabis-leaf brand media ID: **${process.env.V3_BRAND_ID || 'not-run'}**`,
-                `Live V3 visual verification: **${process.env.VERIFY || 'not-run'}**`,
+                `Live V3 + V6 verification: **${process.env.VERIFY || 'not-run'}**`,
                 `Optional unmatched visual slots: **${process.env.MISSING || 'none'}**`,
                 '',
-                'This protected command rebuilds the visual site, then restores and verifies the approved V5 Home / Seeds / Learn / Courses / Diagnostic / Games / Community / Shop navigation so visual rebuilds cannot regress the shared shell.'
+                'This protected command rebuilds the visual site, then restores and verifies the canonical V6 Genetics / Learn / Tools / Games / Community / Shop shell so visual rebuilds cannot regress global navigation.'
               ].join('\n')
             });
