@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 const read = (relative) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const overflowFixes = read('./overflowFixes.css');
 const siteShell = read('./siteShellV5.css');
+const boardPriority = read('./highLandBoardPriority.css');
 const main = read('./main.tsx');
 
 describe('High Land responsive production shell', () => {
@@ -22,16 +23,27 @@ describe('High Land responsive production shell', () => {
     expect(siteShell).toContain('100svh');
   });
 
-  it('loads the site-shell integration after all presentation layers', () => {
+  it('loads board-priority production polish after the site-shell layer', () => {
     const controlsIndex = main.indexOf("import './productionControls.css';");
     const shellIndex = main.indexOf("import './siteShellV5.css';");
+    const priorityIndex = main.indexOf("import './highLandBoardPriority.css';");
     expect(controlsIndex).toBeGreaterThan(-1);
     expect(shellIndex).toBeGreaterThan(controlsIndex);
+    expect(priorityIndex).toBeGreaterThan(shellIndex);
   });
 
   it('preserves narrow-screen board containment without disabling the board', () => {
     expect(siteShell).toContain('max-height: min(66svh, 620px)');
     expect(siteShell).toContain('.phaser-board canvas');
     expect(siteShell).not.toMatch(/display\s*:\s*none[^}]*phaser-board/i);
+  });
+
+  it('makes the board the mobile visual priority and keeps touch targets usable', () => {
+    expect(boardPriority).toContain('--hl-min-target: 44px');
+    expect(boardPriority).toContain("'brand status'");
+    expect(boardPriority).toContain("'players players'");
+    expect(boardPriority).toContain('max-height: min(70svh, 660px)');
+    expect(boardPriority).toContain('max-height: min(68svh, 590px)');
+    expect(boardPriority).toContain('env(safe-area-inset-bottom)');
   });
 });
