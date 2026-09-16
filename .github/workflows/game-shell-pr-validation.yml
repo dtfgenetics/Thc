@@ -1,0 +1,46 @@
+name: Shared Game Shell PR Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - site/public-route-patch/games/dtf-route.css
+      - games/test/cross-game-polish.test.mjs
+      - site/public-route-patch/games/high-life/**
+      - site/public-route-patch/games/grower-conversations/**
+      - site/public-route-patch/games/seed-man-platformer/**
+      - site/public-route-patch/games/strain-showdown/**
+      - site/public-route-patch/games/bud-or-bluff/**
+      - apps/high-land-web/src/overflowFixes.css
+      - .github/workflows/game-shell-pr-validation.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: game-shell-pr-${{ github.event.pull_request.number || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate shared game shell regression contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run cross-game deterministic polish checks
+        run: node games/test/cross-game-polish.test.mjs
+
+      - name: Confirm public game shell assets exist
+        run: |
+          set -euo pipefail
+          test -s site/public-route-patch/games/dtf-route.css
+          test -s site/public-route-patch/games/index.html
+          grep -Fq '25 playable browser games' site/public-route-patch/games/index.html
