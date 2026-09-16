@@ -29,13 +29,14 @@ concurrency:
 jobs:
   test:
     name: Validate 96-card browser prototype
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
+          package-manager-cache: false
       - name: Validate canonical roster
         run: node games/strain-showdown/scripts/validate-roster.mjs
       - name: Validate draft 96-card effect coverage
@@ -58,3 +59,6 @@ jobs:
           test -s games/strain-showdown/data/effect-profiles.json
           test -s site/public-route-patch/games/strain-showdown/data/browser-bundle.json
           test -s site/public-route-patch/games/strain-showdown/runtime-v2.css
+          test -s site/public-route-patch/games/strain-showdown/runtime-v3.css
+          test -s site/public-route-patch/games/strain-showdown/runtime-v4.css
+          grep -Fq './runtime-v4.css' site/public-route-patch/games/strain-showdown/index.html
