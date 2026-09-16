@@ -1,0 +1,57 @@
+name: High IQ Canonical CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'games/high-iq/**'
+      - 'site/public-route-patch/games/high-iq/**'
+      - 'scripts/validate-high-iq-domain-icons.mjs'
+      - 'configuration/orchestrator/verification-profiles.json'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/high-iq-ci.yml'
+  pull_request:
+    paths:
+      - 'games/high-iq/**'
+      - 'site/public-route-patch/games/high-iq/**'
+      - 'scripts/validate-high-iq-domain-icons.mjs'
+      - 'configuration/orchestrator/verification-profiles.json'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/high-iq-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: high-iq-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate canonical High IQ
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Enforce browser tool policy
+        run: node scripts/verify-browser-tool-policy.mjs
+
+      - name: Validate High IQ data runtime and gameplay contract
+        run: npm run hiq:validate
+
+      - name: Validate game release registry and route preflight
+        run: npm run games:preflight
