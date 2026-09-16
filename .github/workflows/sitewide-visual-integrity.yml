@@ -8,7 +8,8 @@ on:
     paths:
       - scripts/audit-sitewide-visual-integrity.mjs
       - .github/workflows/sitewide-visual-integrity.yml
-      - scripts/lib/sitewide-header-template.mjs
+      - scripts/lib/sitewide-header-template-v6.mjs
+      - scripts/lib/sitewide-content-density-v1.mjs
       - scripts/apply-sitewide-header.mjs
       - site/wordpress/assets/responsive-layout-v1.css
       - site/wordpress/assets/sitewide-ux-polish-v1.css
@@ -33,13 +34,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate deterministic visual-integrity crawler
+      - name: Validate deterministic V6 visual-integrity crawler
         run: |
           set -euo pipefail
           node --check scripts/audit-sitewide-visual-integrity.mjs
-          grep -Fq 'header-v5' scripts/audit-sitewide-visual-integrity.mjs
+          grep -Fq 'header-v6' scripts/audit-sitewide-visual-integrity.mjs
+          grep -Fq 'canonical-six-v1' scripts/audit-sitewide-visual-integrity.mjs
+          grep -Fq 'dtf-content-density-v1' scripts/audit-sitewide-visual-integrity.mjs
           grep -Fq 'dtf-sitewide-ux-polish-v1' scripts/audit-sitewide-visual-integrity.mjs
-          grep -Fq 'DTFSeeds-Visual-Integrity/1.0' scripts/audit-sitewide-visual-integrity.mjs
+          grep -Fq 'DTFSeeds-Visual-Integrity/2.0' scripts/audit-sitewide-visual-integrity.mjs
+          ! grep -Fq "['Home','/']" scripts/audit-sitewide-visual-integrity.mjs
+          ! grep -Fq "['Courses','/courses/']" scripts/audit-sitewide-visual-integrity.mjs
 
   audit:
     if: >-
@@ -55,7 +60,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Crawl public routes, canonical navigation, shared visual shell, and images
+      - name: Crawl public routes, V6 navigation, shared visual shell, density controls, and images
         id: audit
         env:
           DTF_SITE_URL: https://dtfseeds.com
