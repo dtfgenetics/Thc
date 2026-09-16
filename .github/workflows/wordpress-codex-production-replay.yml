@@ -10,6 +10,9 @@ on:
       - 'scripts/repair-wordpress-presentation-rest.mjs'
       - 'scripts/rebuild-wordpress-visual-site.mjs'
       - 'scripts/rebuild-wordpress-infographic-gallery.mjs'
+      - 'scripts/lib/sitewide-header-template-v6.mjs'
+      - 'scripts/rebuild-wordpress-shared-shell-v3.mjs'
+      - 'scripts/verify-sitewide-header-v6-live.mjs'
       - 'site/wordpress/pages/**'
       - 'site/wordpress/assets/infographics/**'
       - 'site/wordpress/assets/brand/**'
@@ -35,6 +38,7 @@ jobs:
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       CONTENT_DIR: ${{ github.workspace }}/site/wordpress/pages
       BACKUP_ROOT: /tmp/dtfseeds-codex-replay
+      APPLY_SHARED_SHELL_V3: 'true'
 
     steps:
       - name: Checkout trusted main
@@ -57,6 +61,9 @@ jobs:
           node --check scripts/repair-wordpress-presentation-rest.mjs
           node --check scripts/rebuild-wordpress-visual-site.mjs
           node --check scripts/rebuild-wordpress-infographic-gallery.mjs
+          node --check scripts/lib/sitewide-header-template-v6.mjs
+          node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
+          node --check scripts/verify-sitewide-header-v6-live.mjs
           test -s site/wordpress/assets/brand/dtf-potleaf-512.png
 
       - name: Reconcile canonical WordPress pages through REST
@@ -99,6 +106,15 @@ jobs:
           set -euo pipefail
           node scripts/rebuild-wordpress-infographic-gallery.mjs
 
+      - name: Reapply canonical V6 shared shell after all visual writers
+        id: shell
+        shell: bash
+        env:
+          BACKUP_ROOT: /tmp/dtfseeds-codex-replay/shell
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs
+
       - name: Verify WordPress database content directly
         id: restverify
         shell: bash
@@ -130,9 +146,12 @@ jobs:
           check_rest_page learn 'Explore by subject'
           check_rest_page infographics 'Visual plant science and cultivation library.'
 
-      - name: Verify visitor-facing routes using the same Codex cache-busted method
+      - name: Verify visitor-facing routes and canonical V6 shell
         id: liveverify
         shell: bash
+        env:
+          HEADER_V6_ROUTES: '/,/seeds/,/learn/,/learn/infographics/'
+          HEADER_AUDIT_CONCURRENCY: '4'
         run: |
           set -euo pipefail
 
@@ -147,7 +166,7 @@ jobs:
                 -H 'Pragma: no-cache' \
                 "$WP_SITE_URL${path}?dtf_codex_replay=${GITHUB_RUN_ID}-${attempt}" \
                 -o "$body"; then
-                if grep -Fqi -- "$marker" "$body"; then
+                if grep -Fqi -- "$marker" "$body" && grep -Fqi 'data-dtf-shell="header-v6"' "$body"; then
                   ok=1
                   break
                 fi
@@ -155,7 +174,7 @@ jobs:
               sleep 5
             done
             [[ "$ok" -eq 1 ]] || {
-              echo "Current WordPress marker not visible on $path: $marker" >&2
+              echo "Current WordPress marker or V6 shell not visible on $path: $marker" >&2
               head -c 2500 "$body" >&2 || true
               exit 1
             }
@@ -172,12 +191,13 @@ jobs:
                 exit 1
               }
             done
-            echo "$path exposes current WordPress output"
+            echo "$path exposes current WordPress output and V6 shell"
           }
 
           check_live '/' 'Genetics. Plant science. Tools. Games. Community.'
           check_live '/learn/' 'Explore by subject'
           check_live '/learn/infographics/' 'Visual plant science and cultivation library.'
+          node scripts/verify-sitewide-header-v6-live.mjs
 
       - name: Upload rollback evidence
         if: always()
@@ -197,6 +217,7 @@ jobs:
           PRESENTATION: ${{ steps.presentation.outcome }}
           VISUAL: ${{ steps.visual.outcome }}
           INFOGRAPHICS: ${{ steps.infographics.outcome }}
+          SHELL: ${{ steps.shell.outcome }}
           REST_VERIFY: ${{ steps.restverify.outcome }}
           LIVE_VERIFY: ${{ steps.liveverify.outcome }}
         with:
@@ -210,10 +231,11 @@ jobs:
               `Presentation repair: **${process.env.PRESENTATION || 'not-run'}**`,
               `Visual rebuild: **${process.env.VISUAL || 'not-run'}**`,
               `Infographic rebuild: **${process.env.INFOGRAPHICS || 'not-run'}**`,
+              `Canonical V6 shell finalization: **${process.env.SHELL || 'not-run'}**`,
               `WordPress REST verification: **${process.env.REST_VERIFY || 'not-run'}**`,
-              `Visitor-facing verification: **${process.env.LIVE_VERIFY || 'not-run'}**`,
+              `Visitor-facing V6 verification: **${process.env.LIVE_VERIFY || 'not-run'}**`,
               '',
-              'This workflow intentionally recreates the previously successful Codex deployment path and requires no Hostinger SSH credentials.'
+              'This REST-only production path now finishes every visual/content mutation by restoring and verifying the canonical V6 Genetics / Learn / Tools / Games / Community / Shop shell.'
             ].join('\n');
             await github.rest.issues.createComment({
               owner: context.repo.owner,
@@ -222,4 +244,4 @@ jobs:
               body
             });
 
-# Final uninterrupted replay trigger: 2026-08-21.
+# Canonical V6 replay trigger: 2026-09-16.
