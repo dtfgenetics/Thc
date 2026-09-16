@@ -1,0 +1,77 @@
+/* Strain Showdown v4 — production interaction layer.
+   Keep rules in the deterministic engine; this file only improves the player surface. */
+
+:root{--showdown-focus:#f2d87d}
+html{overscroll-behavior-y:none}
+body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+
+button,.hub-link,.family-choice{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.ghost-button,.icon-button,.primary-button,.feed-head button,.dialog-close,.result-actions button{min-height:44px}
+.hub-link{display:inline-flex;align-items:center;min-height:44px;padding:.45rem .2rem}
+.dialog-close{width:44px;height:44px}
+.feed-head button{padding:.55rem .5rem;border-radius:.65rem}
+
+:where(button,a,[tabindex]):focus-visible{outline:3px solid var(--showdown-focus);outline-offset:3px}
+.family-choice:focus-visible{border-color:var(--showdown-focus);box-shadow:0 0 0 3px rgba(242,216,125,.18),0 18px 44px rgba(0,0,0,.24)}
+.hand .card:focus-visible{outline:3px solid var(--showdown-focus);outline-offset:3px}
+.lane.valid-target:focus-visible{outline:3px solid #bdf58f;outline-offset:3px}
+
+/* Make selection state legible without relying on color alone. */
+.lane.valid-target::after{content:"SELECT";position:absolute;right:8px;top:7px;padding:.2rem .35rem;border-radius:.35rem;background:#173d27;color:#dfffc7;font-size:.52rem;font-weight:950;letter-spacing:.08em;pointer-events:none}
+.card.selected::after{content:"SELECTED";position:absolute;left:9px;bottom:8px;z-index:4;padding:.22rem .38rem;border-radius:.35rem;background:#173d27;color:#dfffc7;font-size:.54rem;font-weight:950;letter-spacing:.07em;pointer-events:none}
+
+@media(max-width:720px){
+  .showdown-shell{padding-bottom:calc(28px + env(safe-area-inset-bottom))}
+  .game-header{grid-template-columns:1fr auto;gap:10px;padding-bottom:14px}
+  .brand-lockup{grid-column:1/-1;grid-row:1;text-align:left}
+  .brand-lockup p{margin-top:.35rem}
+  .hub-link{grid-column:1;grid-row:2}
+  .header-actions{grid-column:2;grid-row:2;gap:6px}
+  .header-actions .ghost-button,.header-actions .icon-button{padding:.62rem .75rem}
+  .family-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .family-choice{min-height:176px;padding:14px;border-radius:18px}
+  .family-choice .family-name{font-size:1.25rem}
+  .family-choice p{min-height:0;font-size:.84rem}
+  .scoreboard{gap:7px}
+  .fighter-summary,.round-core{padding:10px;border-radius:16px}
+  .round-core{min-width:112px}
+  .passive-ribbon{gap:7px}
+  .passive-ribbon>div{padding:8px 9px}
+  .hand-panel,.battle-feed{padding:10px;border-radius:16px}
+  .hand-head{align-items:flex-start}
+  .turn-actions{flex-wrap:wrap;justify-content:flex-end}
+  .turn-actions button{min-height:48px}
+  .battle-feed ol{max-height:132px}
+  .rules-dialog{padding:22px 16px calc(20px + env(safe-area-inset-bottom))}
+}
+
+@media(max-width:430px){
+  .showdown-shell{padding-inline:8px}
+  .eyebrow{font-size:.66rem}
+  .brand-lockup h1{font-size:2.25rem}
+  .header-actions .ghost-button,.header-actions .icon-button{font-size:.76rem}
+  .intro-panel p{font-size:.9rem;line-height:1.5}
+  .family-meta-row{gap:6px}
+  .record-strip,.runtime-strip{width:100%;max-width:100%;font-size:.72rem}
+  .family-choice{min-height:156px;padding:12px}
+  .family-choice p{font-size:.78rem;line-height:1.35}
+  .scoreboard{grid-template-columns:1fr 92px 1fr}
+  .fighter-summary>strong{font-size:.96rem}
+  .meter-row{gap:5px;font-size:.65rem}
+  .mini-stats{gap:5px;font-size:.62rem;flex-wrap:wrap}
+  .round-core b{font-size:1rem}
+  .round-core small{font-size:.58rem}
+  .passive-ribbon small{display:none}
+  .hand .card{min-width:164px}
+  .feed-head{align-items:center}
+  .feed-head button{font-size:.74rem}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .family-choice,.card,.garden-meter i,.lane,.ghost-button,.icon-button,.primary-button{transition:none!important;animation:none!important}
+}
+
+@media(forced-colors:active){
+  .lane.valid-target,.card.selected,.family-choice:focus-visible{outline:3px solid Highlight}
+  .lane.valid-target::after,.card.selected::after{border:1px solid ButtonText}
+}
