@@ -9,7 +9,9 @@ const bundlePath = 'site/public-route-patch/games/strain-showdown/data/browser-b
 const bundle = JSON.parse(fs.readFileSync(bundlePath, 'utf8'));
 const app = fs.readFileSync('site/public-route-patch/games/strain-showdown/app.js', 'utf8');
 const html = fs.readFileSync('site/public-route-patch/games/strain-showdown/index.html', 'utf8');
-const css = fs.readFileSync('site/public-route-patch/games/strain-showdown/runtime-v2.css', 'utf8');
+const runtimeV2 = fs.readFileSync('site/public-route-patch/games/strain-showdown/runtime-v2.css', 'utf8');
+const runtimeV3 = fs.readFileSync('site/public-route-patch/games/strain-showdown/runtime-v3.css', 'utf8');
+const runtimeV4 = fs.readFileSync('site/public-route-patch/games/strain-showdown/runtime-v4.css', 'utf8');
 
 assert.equal(bundle.schemaVersion, 1);
 assert.equal(bundle.cardCount, 96);
@@ -34,13 +36,29 @@ assert.match(app, /Rival turn in progress/);
 
 assert.match(html, /id="runtimeStatus"/);
 assert.match(html, /runtime-v2\.css/);
+assert.match(html, /runtime-v3\.css/);
+assert.match(html, /runtime-v4\.css/);
 assert.match(html, /data-selecting="false"/);
-assert.match(css, /body\[data-battle-turn="cpu"\]/);
-assert.match(css, /\.arena\[data-selecting="true"\]/);
-assert.match(css, /\.hand \.card\.unplayable/);
-assert.match(css, /@media\(max-width:760px\)/);
-assert.match(css, /min-width:680px/);
-assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
+
+assert.match(runtimeV2, /body\[data-battle-turn="cpu"\]/);
+assert.match(runtimeV2, /\.arena\[data-selecting="true"\]/);
+assert.match(runtimeV2, /\.hand \.card\.unplayable/);
+assert.match(runtimeV2, /@media\(max-width:760px\)/);
+assert.match(runtimeV2, /min-width:680px/);
+assert.match(runtimeV2, /@media\(prefers-reduced-motion:reduce\)/);
+
+assert.match(runtimeV3, /grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+assert.match(runtimeV3, /\.lane \.attack-button\{min-height:44px/);
+assert.match(runtimeV3, /@media\(max-width:430px\)/);
+
+assert.match(runtimeV4, /min-height:44px/);
+assert.match(runtimeV4, /touch-action:manipulation/);
+assert.match(runtimeV4, /:focus-visible/);
+assert.match(runtimeV4, /\.lane\.valid-target::after\{content:"SELECT"/);
+assert.match(runtimeV4, /\.card\.selected::after\{content:"SELECTED"/);
+assert.match(runtimeV4, /env\(safe-area-inset-bottom\)/);
+assert.match(runtimeV4, /@media\(forced-colors:active\)/);
+assert.match(runtimeV4, /@media\(prefers-reduced-motion:reduce\)/);
 
 fs.rmSync(bundlePath, { force: true });
-console.log('Strain Showdown bundled runtime, match isolation, restart guard and mobile UI checks passed.');
+console.log('Strain Showdown bundled runtime, match isolation, restart guard, final responsive UI and accessibility checks passed.');
