@@ -1,0 +1,119 @@
+/* Burn Buds gameplay v4 — active battle focus and touch ergonomics.
+   The server-authoritative rules and targeting runtime remain unchanged. */
+
+.btn,
+.mobile-tab,
+input,
+select,
+textarea {
+  min-height: 44px;
+}
+
+button,
+.btn,
+.mobile-tab,
+.cell,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+/* Once a multiplayer battle is active, the board is the product. */
+body.burn-my-turn > section[data-public-product="Burn Buds"],
+body.burn-opponent-turn > section[data-public-product="Burn Buds"] {
+  display: none;
+}
+
+body.burn-my-turn .main,
+body.burn-opponent-turn .main {
+  padding-top: clamp(8px, 1vw, 14px);
+}
+
+body.burn-my-turn .boards .board-card:nth-child(2) {
+  outline: 2px solid rgba(255, 198, 94, .36);
+  outline-offset: 2px;
+}
+
+body.burn-opponent-turn .boards .board-card:first-child {
+  outline: 2px solid rgba(130, 174, 255, .22);
+  outline-offset: 2px;
+}
+
+body.burn-my-turn .boards .board-card:nth-child(2) .board-title h3,
+body.burn-opponent-turn .boards .board-card:first-child .board-title h3 {
+  color: #fff3c2;
+}
+
+.cell:focus-visible {
+  z-index: 4;
+  outline: 3px solid #ffd278;
+  outline-offset: -3px;
+}
+
+@media (max-width: 720px) {
+  body.burn-my-turn .battle-top,
+  body.burn-opponent-turn .battle-top {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+  }
+
+  .burn-turn-banner {
+    min-height: 44px;
+    margin-bottom: 7px;
+  }
+
+  .burn-telemetry {
+    margin-bottom: 7px;
+  }
+
+  .burn-telemetry section {
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      'label label'
+      'left stat';
+  }
+
+  .burn-telemetry small {
+    display: none;
+  }
+
+  .burn-telemetry strong {
+    font-size: 1.18rem;
+  }
+
+  .burn-telemetry b {
+    justify-self: end;
+    align-self: center;
+  }
+
+  .mobile-tabs {
+    position: sticky;
+    top: max(4px, env(safe-area-inset-top));
+    z-index: 24;
+    padding: 5px;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 10px;
+    background: rgba(5, 11, 8, .94);
+    backdrop-filter: blur(12px);
+  }
+
+  .mobile-tab {
+    padding-block: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.burn-my-turn .boards .board-card:nth-child(2),
+  body.burn-opponent-turn .boards .board-card:first-child {
+    transition: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  body.burn-my-turn .boards .board-card:nth-child(2),
+  body.burn-opponent-turn .boards .board-card:first-child,
+  .mobile-tabs {
+    outline: 2px solid Highlight;
+  }
+}
