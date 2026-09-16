@@ -15,6 +15,8 @@ const manifest = JSON.parse(read('manifest.webmanifest'));
 const serviceWorker = read('sw.js');
 const game = JSON.parse(fs.readFileSync('games/protect-the-plants/game.json', 'utf8'));
 
+const CURRENT_CACHE = 'ptp-shell-v10-burn-buds-v6-gameplay-focus-20260916';
+
 assert.equal(game.title, 'Burn Buds');
 assert.equal(game.board, '15x15');
 assert.equal(game.players, 2);
@@ -76,7 +78,7 @@ assert.ok(index.includes('./placement-v1.js'));
 assert.ok(index.includes('./targeting-v1.js'));
 assert.ok(branding.includes("const PRODUCT='Burn Buds'"));
 assert.ok(combatA11y.includes("setAttribute('aria-live','polite')"));
-assert.ok(serviceWorker.includes('ptp-shell-v9-burn-buds-v5-responsive-20260913'));
+assert.ok(serviceWorker.includes(CURRENT_CACHE), `Service worker must expose current Burn Buds cache identity: ${CURRENT_CACHE}`);
 for (const asset of ['./runtime-sync-v1.js','./combat-a11y-v1.js','./battle-feedback-v1.js','./battle-feedback-v1.css','./placement-v1.js','./placement-v1.css','./targeting-v1.js','./targeting-v1.css']) assert.ok(serviceWorker.includes(asset), `Service worker must cache ${asset}`);
 
-console.log('Burn Buds native branding, migration, cache, accessibility, and multiplayer contract checks passed.');
+console.log('Burn Buds native branding, migration, V10 cache, accessibility, and multiplayer contract checks passed.');
