@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react';
 import { canStartRoom, type HighLandRoomState } from '../game/multiplayer/roomState';
 import { maxPlayers } from '../game/systems/playerSystem';
 
@@ -11,19 +12,32 @@ type RoomLobbyProps = {
   onAddLocalGuest?: () => void;
 };
 
+type CopyState = 'idle' | 'copied' | 'manual';
+
 export function RoomLobby({ room, localPlayerId, inviteUrl, onStartGame, onLeave, onCopyInvite, onAddLocalGuest }: RoomLobbyProps) {
   const startAllowed = canStartRoom(room, localPlayerId);
   const localPlayer = room.players.find((player) => player.id === localPlayerId) ?? null;
   const roomIsFull = room.players.length >= maxPlayers;
+  const inviteInputRef = useRef<HTMLInputElement>(null);
+  const [copyState, setCopyState] = useState<CopyState>('idle');
 
-  function copyInvite(): void {
+  async function copyInvite(): Promise<void> {
+    setCopyState('idle');
+
     if (onCopyInvite) {
       onCopyInvite(inviteUrl);
+      setCopyState('copied');
       return;
     }
 
-    if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      void navigator.clipboard.writeText(inviteUrl);
+    try {
+      if (!navigator?.clipboard?.writeText) throw new Error('Clipboard API unavailable');
+      await navigator.clipboard.writeText(inviteUrl);
+      setCopyState('copied');
+    } catch {
+      inviteInputRef.current?.focus();
+      inviteInputRef.current?.select();
+      setCopyState('manual');
     }
   }
 
@@ -42,15 +56,22 @@ export function RoomLobby({ room, localPlayerId, inviteUrl, onStartGame, onLeave
 
       <label className="setup-field">
         <span>Invite link</span>
-        <input readOnly type="text" value={inviteUrl} />
+        <input ref={inviteInputRef} readOnly type="text" value={inviteUrl} />
       </label>
 
       <div className="button-row">
-        <button onClick={copyInvite} type="button">Copy Invite</button>
+        <button onClick={() => void copyInvite()} type="button">
+          {copyState === 'copied' ? 'Invite Copied' : 'Copy Invite'}
+        </button>
         {onAddLocalGuest ? <button disabled={roomIsFull} onClick={onAddLocalGuest} type="button">Add Test Player</button> : null}
         <button className="primary" disabled={!startAllowed} onClick={onStartGame} type="button">Start Game</button>
         <button onClick={onLeave} type="button">Leave</button>
       </div>
+
+      <p className="form-note room-copy-status" aria-live="polite">
+        {copyState === 'copied' ? 'Invite link copied. Send it to the players you want in this room.' : null}
+        {copyState === 'manual' ? 'Automatic copy is unavailable. The invite link is selected above so you can copy it manually.' : null}
+      </p>
 
       {roomIsFull ? <p className="form-note">Room is full at {maxPlayers} players.</p> : null}
 
