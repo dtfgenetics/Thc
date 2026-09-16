@@ -7,6 +7,7 @@ const runtime=read('runtime-sync-v1.js');
 const index=read('index.html');
 const sw=read('sw.js');
 const helpers=['battle-feedback-v1.js','combat-a11y-v1.js','placement-v1.js','targeting-v1.js','gameplay-v3.js'];
+const CURRENT_CACHE='ptp-shell-v10-burn-buds-v6-gameplay-focus-20260916';
 
 assert.ok(runtime.includes('window.BurnBudsSync=Object.freeze({request,subscribe})'),'Shared Burn Buds sync API missing.');
 assert.equal((runtime.match(/new MutationObserver/g)||[]).length,1,'Shared sync runtime should own exactly one MutationObserver.');
@@ -17,7 +18,7 @@ assert.ok(index.includes('./runtime-sync-v1.js'),'Production page must load shar
 assert.ok(index.indexOf('./runtime-sync-v1.js')>index.indexOf('./app.js'),'Shared sync runtime must load after core app.');
 assert.ok(index.indexOf('./runtime-sync-v1.js')<index.indexOf('./gameplay-v3.js'),'Shared sync runtime must load before gameplay helpers.');
 assert.ok(sw.includes('./runtime-sync-v1.js'),'Service worker must cache shared sync runtime.');
-assert.ok(sw.includes('ptp-shell-v9-burn-buds-v5-responsive-20260913'),'Service worker cache version must identify the current V5 responsive battle-shell release.');
+assert.ok(sw.includes(CURRENT_CACHE),`Service worker cache version must identify current V6 gameplay-focus release: ${CURRENT_CACHE}`);
 
 for(const file of helpers){
   const text=read(file);
@@ -29,4 +30,4 @@ assert.ok(read('gameplay-v3.js').includes("document.addEventListener('visibility
 assert.ok(read('targeting-v1.js').includes("const coarsePointer=()=>window.matchMedia?.('(pointer: coarse)').matches===true"),'Coarse-pointer targeting contract must remain intact.');
 assert.ok(read('targeting-v1.js').includes("if(coarsePointer())"),'Two-step coarse-pointer targeting behavior must remain intact.');
 
-console.log('Burn Buds shared render-sync contract passed.');
+console.log('Burn Buds shared render-sync and V10 cache contract passed.');
