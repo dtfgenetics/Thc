@@ -1,0 +1,80 @@
+/* High IQ v3.4 — active-session focus and touch ergonomics.
+   Keeps the verified question/data runtime unchanged while giving the game surface
+   priority once a run or results screen is active. */
+
+.quiz-action,
+.button,
+.field select,
+.source-drawer summary {
+  min-height: 44px !important;
+}
+
+button,
+select,
+.button,
+.source-drawer summary {
+  touch-action: manipulation;
+}
+
+.source-drawer summary {
+  display: flex;
+  align-items: center;
+}
+
+.high-iq-shell:has(#quiz-panel:not([hidden])) .high-iq-hero,
+.high-iq-shell:has(#results-panel:not([hidden])) .high-iq-hero {
+  display: none !important;
+}
+
+.high-iq-shell:has(#quiz-panel:not([hidden])) .quiz-console,
+.high-iq-shell:has(#results-panel:not([hidden])) .quiz-console {
+  margin-top: 0;
+}
+
+.high-iq-shell:has(#quiz-panel:not([hidden])) .quiz-console-header,
+.high-iq-shell:has(#results-panel:not([hidden])) .quiz-console-header {
+  padding-block: 10px !important;
+}
+
+.high-iq-shell:has(#quiz-panel:not([hidden])) .quiz-console-header h2,
+.high-iq-shell:has(#results-panel:not([hidden])) .quiz-console-header h2 {
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+}
+
+.high-iq-shell:has(#quiz-panel:not([hidden])) .quiz-console-header .eyebrow,
+.high-iq-shell:has(#results-panel:not([hidden])) .quiz-console-header .eyebrow {
+  display: none;
+}
+
+@media (max-width: 680px) {
+  .high-iq-shell:has(#quiz-panel:not([hidden])),
+  .high-iq-shell:has(#results-panel:not([hidden])) {
+    padding-top: .45rem;
+  }
+
+  .high-iq-shell:has(#quiz-panel:not([hidden])) .quiz-console-header,
+  .high-iq-shell:has(#results-panel:not([hidden])) .quiz-console-header {
+    padding: 9px 12px !important;
+  }
+
+  .high-iq-shell:has(#quiz-panel:not([hidden])) .data-health,
+  .high-iq-shell:has(#results-panel:not([hidden])) .data-health {
+    font-size: .72rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .high-iq-shell,
+  .quiz-console,
+  .quiz-action,
+  .button {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .source-drawer summary {
+    border: 1px solid ButtonText;
+  }
+}
