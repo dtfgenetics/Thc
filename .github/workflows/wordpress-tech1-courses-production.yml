@@ -6,9 +6,9 @@ on:
       - site/wordpress/education/tech1-courses-public-v1.json
       - site/wordpress/education/tech2-courses-public-v1.json
       - site/wordpress/education/course-catalog-v4.json
-      - scripts/publish-wordpress-tech1-courses-2-7.mjs
+      - scripts/publish-wordpress-tech1-courses-2-7-v2.mjs
       - scripts/publish-wordpress-certification-catalog-v6.mjs
-      - scripts/verify-wordpress-tech1-courses-2-7.mjs
+      - scripts/verify-wordpress-tech1-courses-2-7-v2.mjs
       - scripts/run-wordpress-with-retry.mjs
       - .github/workflows/wordpress-tech1-courses-production.yml
   push:
@@ -18,9 +18,9 @@ on:
       - site/wordpress/education/tech1-courses-public-v1.json
       - site/wordpress/education/tech2-courses-public-v1.json
       - site/wordpress/education/course-catalog-v4.json
-      - scripts/publish-wordpress-tech1-courses-2-7.mjs
+      - scripts/publish-wordpress-tech1-courses-2-7-v2.mjs
       - scripts/publish-wordpress-certification-catalog-v6.mjs
-      - scripts/verify-wordpress-tech1-courses-2-7.mjs
+      - scripts/verify-wordpress-tech1-courses-2-7-v2.mjs
       - scripts/run-wordpress-with-retry.mjs
       - .github/workflows/wordpress-tech1-courses-production.yml
   workflow_dispatch:
@@ -42,11 +42,11 @@ jobs:
           node-version: 24
       - name: Validate public-course publishers
         run: |
-          node --check scripts/publish-wordpress-tech1-courses-2-7.mjs
+          node --check scripts/publish-wordpress-tech1-courses-2-7-v2.mjs
           node --check scripts/publish-wordpress-certification-catalog-v6.mjs
-          node --check scripts/verify-wordpress-tech1-courses-2-7.mjs
+          node --check scripts/verify-wordpress-tech1-courses-2-7-v2.mjs
           node --check scripts/run-wordpress-with-retry.mjs
-          node scripts/publish-wordpress-tech1-courses-2-7.mjs --validate-only
+          node scripts/publish-wordpress-tech1-courses-2-7-v2.mjs --validate-only
           node scripts/publish-wordpress-certification-catalog-v6.mjs --validate-only
 
   publish:
@@ -74,9 +74,9 @@ jobs:
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
       - name: Publish Technician I Courses 2-7
-        run: node scripts/run-wordpress-with-retry.mjs scripts/publish-wordpress-tech1-courses-2-7.mjs
-      - name: Verify all six course trees and anonymous course roots
-        run: node scripts/run-wordpress-with-retry.mjs scripts/verify-wordpress-tech1-courses-2-7.mjs
+        run: node scripts/run-wordpress-with-retry.mjs scripts/publish-wordpress-tech1-courses-2-7-v2.mjs
+      - name: Verify all six course trees, governed assets and anonymous learner pages
+        run: node scripts/run-wordpress-with-retry.mjs scripts/verify-wordpress-tech1-courses-2-7-v2.mjs
       - name: Publish Certification Catalog V6
         run: node scripts/run-wordpress-with-retry.mjs scripts/publish-wordpress-certification-catalog-v6.mjs
       - name: Verify visitor-facing Catalog V6
