@@ -7,10 +7,12 @@ on:
     paths:
       - scripts/lib/sitewide-header-template.mjs
       - scripts/lib/sitewide-header-template-v6.mjs
+      - scripts/lib/sitewide-content-density-v1.mjs
       - scripts/apply-sitewide-header.mjs
       - scripts/rebuild-wordpress-shared-shell-v3.mjs
       - scripts/verify-sitewide-header-v6-live.mjs
       - scripts/verify-responsive-layout-live.mjs
+      - scripts/verify-content-density-v1.mjs
       - site/wordpress/assets/responsive-layout-v1.css
       - site/wordpress/assets/sitewide-ux-polish-v1.css
       - .github/workflows/sitewide-header-v4-production.yml
@@ -18,10 +20,12 @@ on:
     paths:
       - scripts/lib/sitewide-header-template.mjs
       - scripts/lib/sitewide-header-template-v6.mjs
+      - scripts/lib/sitewide-content-density-v1.mjs
       - scripts/apply-sitewide-header.mjs
       - scripts/rebuild-wordpress-shared-shell-v3.mjs
       - scripts/verify-sitewide-header-v6-live.mjs
       - scripts/verify-responsive-layout-live.mjs
+      - scripts/verify-content-density-v1.mjs
       - site/wordpress/assets/responsive-layout-v1.css
       - site/wordpress/assets/sitewide-ux-polish-v1.css
       - .github/workflows/sitewide-header-v4-production.yml
@@ -45,20 +49,25 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate canonical V6 header package
+      - name: Validate canonical V6 header and content-density package
         shell: bash
         run: |
           set -euo pipefail
           node --check scripts/lib/sitewide-header-template.mjs
           node --check scripts/lib/sitewide-header-template-v6.mjs
+          node --check scripts/lib/sitewide-content-density-v1.mjs
           node --check scripts/apply-sitewide-header.mjs
           node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
           node --check scripts/verify-sitewide-header-v6-live.mjs
           node --check scripts/verify-responsive-layout-live.mjs
+          node --check scripts/verify-content-density-v1.mjs
+          node scripts/verify-content-density-v1.mjs
           test -s site/wordpress/assets/responsive-layout-v1.css
           test -s site/wordpress/assets/sitewide-ux-polish-v1.css
           grep -Fq 'data-dtf-shell="header-v6"' scripts/lib/sitewide-header-template-v6.mjs
           grep -Fq 'data-dtf-sitewide-header="canonical-six-v1"' scripts/lib/sitewide-header-template-v6.mjs
+          grep -Fq 'dtf-content-density-v1-style' scripts/lib/sitewide-content-density-v1.mjs
+          grep -Fq 'dtf-content-density-v1-script' scripts/lib/sitewide-content-density-v1.mjs
           for required in '>Genetics</a>' '>Learn</a>' '>Tools</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
             grep -Fq "$required" scripts/lib/sitewide-header-template-v6.mjs || { echo "Missing canonical nav label: $required" >&2; exit 1; }
           done
@@ -79,6 +88,9 @@ jobs:
           node scripts/apply-sitewide-header.mjs "$RUNNER_TEMP/header-fixture" --check
           count="$(grep -RFl 'data-dtf-shell="header-v6"' "$RUNNER_TEMP/header-fixture" --include='*.html' | wc -l | tr -d ' ')"
           test "$count" -gt 10
+          grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/tools/index.html"
+          grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/games/index.html"
+          grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/projects/index.html"
 
   publish:
     if: ${{ github.event_name != 'pull_request' }}
@@ -126,9 +138,10 @@ jobs:
                 --header 'Cache-Control: no-cache, no-store, max-age=0' \
                 --header 'Pragma: no-cache' \
                 "${WP_SITE_URL}${route}?dtf_header_v6=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" --output "$out"
-              if node - "$out" <<'NODE'
+              if node - "$out" "$route" <<'NODE'
           const fs=require('fs');
-          const html=fs.readFileSync(process.argv[2],'utf8');
+          const [file,route]=process.argv.slice(2);
+          const html=fs.readFileSync(file,'utf8');
           const header=html.match(/<header\b[^>]*data-dtf-shell=["']header-v6["'][^>]*>[\s\S]*?<\/header>/i)?.[0]||'';
           if(!header) process.exit(1);
           const nav=header.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>([\s\S]*?)<\/nav>/i)?.[1]||'';
@@ -136,6 +149,7 @@ jobs:
           const expected=['Genetics','Learn','Tools','Games','Community','Shop'];
           if(JSON.stringify(labels)!==JSON.stringify(expected)) throw new Error(`Unexpected V6 navigation: ${JSON.stringify(labels)}`);
           if(!/dtf-sitewide-header-v6-script/.test(html)) throw new Error('V6 script missing');
+          if(route==='/learn/' && (!/dtf-content-density-v1-style/.test(html)||!/dtf-content-density-v1-script/.test(html))) throw new Error('Learn content-density V1 assets missing');
           NODE
               then ok=1; break; fi
               sleep 4
