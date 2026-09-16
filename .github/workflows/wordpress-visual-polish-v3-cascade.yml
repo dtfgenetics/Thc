@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/fix-wordpress-visual-polish-v3-cascade.mjs'
+      - 'scripts/lib/sitewide-header-template-v6.mjs'
       - '.github/workflows/wordpress-visual-polish-v3-cascade.yml'
   workflow_run:
     workflows: ['Polish DTFSeeds Visual System V3']
@@ -13,7 +14,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: dtfseeds-wordpress-visual-polish-v3-cascade
@@ -50,7 +50,7 @@ jobs:
           node scripts/fix-wordpress-visual-polish-v3-cascade.mjs | tee "$RUNNER_TEMP/cascade.log"
           found="$(node -e "const s=require('fs').readFileSync(process.argv[1],'utf8');const m=s.match(/\"found\"\s*:\s*(\d+)/);console.log(m?m[1]:'0')" "$RUNNER_TEMP/cascade.log")"
           echo "found=$found" >> "$GITHUB_OUTPUT"
-      - name: Verify final style ordering and canonical site shell
+      - name: Verify final style ordering and canonical V6 site shell
         id: verify
         run: |
           set -euo pipefail
@@ -59,25 +59,24 @@ jobs:
           curl -4 -fsSL --retry 3 --retry-delay 2 -H 'Cache-Control: no-cache, no-store' "$WP_SITE_URL/?dtf_v3_final=$GITHUB_RUN_ID" -o "$home"
           if grep -Fqi 'dtf-visual-polish-v3' "$home"; then
             grep -Fqi 'dtf-v3-spotlight' "$home"
-            grep -Fqi 'data-dtf-shell="header-v5"' "$home"
+            grep -Fqi 'data-dtf-shell="header-v6"' "$home"
+            grep -Fqi 'data-dtf-sitewide-header="canonical-six-v1"' "$home"
             grep -Fqi 'id="dtf-sitewide-ux-polish-v1"' "$home"
             node - "$home" "$header" <<'NODE'
           const fs = require('node:fs');
           const source = fs.readFileSync(process.argv[2], 'utf8');
-          const match = source.match(/<header\b[^>]*data-dtf-shell=["']header-v5["'][^>]*>[\s\S]*?<\/header>/i);
+          const match = source.match(/<header\b[^>]*data-dtf-shell=["']header-v6["'][^>]*>[\s\S]*?<\/header>/i);
           if (!match) process.exit(1);
           fs.writeFileSync(process.argv[3], match[0]);
           NODE
-            grep -Fqi '>Home</a>' "$header"
-            grep -Fqi '>Seeds</a>' "$header"
-            grep -Fqi '>Learn</a>' "$header"
-            grep -Fqi '>Courses</a>' "$header"
-            grep -Fqi '>Diagnostic</a>' "$header"
-            grep -Fqi '>Games</a>' "$header"
-            grep -Fqi '>Community</a>' "$header"
-            grep -Fqi '>Shop</a>' "$header"
-            ! grep -Fqi '>Tools</a>' "$header"
-            ! grep -Fqi '>Genetics</a>' "$header"
+            node - "$header" <<'NODE'
+          const fs=require('fs');
+          const header=fs.readFileSync(process.argv[2],'utf8');
+          const nav=header.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>([\s\S]*?)<\/nav>/i)?.[1]||'';
+          const labels=[...nav.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)].map(m=>m[1].replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim());
+          const expected=['Genetics','Learn','Tools','Games','Community','Shop'];
+          if(JSON.stringify(labels)!==JSON.stringify(expected)) throw new Error(`Unexpected V6 navigation: ${JSON.stringify(labels)}`);
+          NODE
           fi
       - name: Upload rollback package
         if: always()
@@ -87,22 +86,21 @@ jobs:
           path: ${{ runner.temp }}/dtf-v3-cascade-fix
           if-no-files-found: warn
           retention-days: 30
-      - name: Report cascade finalization
+      - name: Publish cascade summary
         if: always()
-        continue-on-error: true
-        uses: actions/github-script@v7
+        shell: bash
         env:
           STATUS: ${{ job.status }}
           FOUND: ${{ steps.fix.outputs.found }}
           VERIFY: ${{ steps.verify.outcome }}
-        with:
-          script: |
-            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
-              '## DTFSeeds V3 cascade finalization','',
-              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              `Result: **${process.env.STATUS}**`,
-              `Pages with V3 style finalized: **${process.env.FOUND || '0'}**`,
-              `Live verification: **${process.env.VERIFY || 'not-run'}**`,
-              '',
-              'Verification requires the approved V5 navigation and shared UX polish. Reporting is non-blocking because production correctness must not depend on issue-comment availability.'
-            ].join('\n')});
+        run: |
+          {
+            echo '## DTFSeeds V3 cascade finalization'
+            echo
+            echo "Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            echo "Result: **${STATUS}**"
+            echo "Pages with V3 style finalized: **${FOUND:-0}**"
+            echo "Live V6 verification: **${VERIFY:-not-run}**"
+            echo
+            echo 'Verification requires the canonical V6 Genetics / Learn / Tools / Games / Community / Shop shell plus shared UX polish.'
+          } >> "$GITHUB_STEP_SUMMARY"
