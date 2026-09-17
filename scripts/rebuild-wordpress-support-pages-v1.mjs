@@ -7,13 +7,15 @@ const username=process.env.WP_API_USERNAME||'';
 const password=process.env.WP_API_PASSWORD||'';
 const apply=String(process.env.APPLY_SUPPORT_VISUALS||'').toLowerCase()==='true';
 const cssPath=process.env.DTF_VISUAL_CSS||join(process.cwd(),'site/design-system/dtf-visual-v1.css');
+const rulesPath=process.env.RETIRED_VISUAL_RULES||join(process.cwd(),'site/wordpress/visual-quality/retired-public-visuals.json');
 const backupRoot=process.env.BACKUP_ROOT||'/tmp/dtf-support-visuals';
 if(!username||!password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 
 const css=await readFile(cssPath,'utf8');
+const rules=JSON.parse(await readFile(rulesPath,'utf8'));
 const styleTag=`<style id="dtf-visual-v1">${css}</style>`;
 const auth=`Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-const headers={Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Support-Visuals/1.0'};
+const headers={Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Support-Visuals/1.1'};
 const stamp=new Date().toISOString().replace(/[-:.]/g,'');
 const backupDir=join(backupRoot,`support-visuals-${stamp}`);
 await mkdir(backupDir,{recursive:true});
@@ -22,12 +24,18 @@ const esc=(v='')=>String(v).replaceAll('&','&amp;').replaceAll('<','&lt;').repla
 const rendered=v=>typeof v==='string'?v:(v?.rendered||v?.raw||'');
 const plain=(v='')=>String(v).replace(/<[^>]+>/g,' ').replace(/&[^;]+;/g,' ').replace(/\s+/g,' ').trim();
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const normalize=(v='')=>{let text=String(v);try{text=decodeURIComponent(text)}catch{}return text.replace(/&(?:amp|quot|apos|#039|#39);/gi,' ').replace(/[_/\\-]+/g,' ').replace(/[^a-zA-Z0-9]+/g,' ').replace(/\s+/g,' ').trim().toLowerCase()};
+const approvalMarker=normalize(rules.approvalMarker||'DTF_APPROVED_PUBLIC_VISUAL');
+const retireContains=(rules.retireTextContains||[]).map(normalize).filter(Boolean);
+const retireRegex=(rules.retireRegex||[]).map(value=>new RegExp(value,'i'));
 
 async function request(path,options={}){let last;for(let i=1;i<=5;i+=1){try{const response=await fetch(`${siteUrl}${path}`,{...options,headers:{...headers,...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})},redirect:'follow',signal:AbortSignal.timeout(60000)});const text=await response.text();let body=text;try{body=text?JSON.parse(text):null}catch{}if((response.status===429||response.status>=500)&&i<5){await sleep(1200*i);continue}if(!response.ok)throw new Error(`${options.method||'GET'} ${path} failed (${response.status}): ${typeof body==='string'?body.slice(0,500):JSON.stringify(body).slice(0,500)}`);return body}catch(error){last=error;if(i<5)await sleep(1200*i)}}throw last}
 async function getPage(slug){const rows=await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&context=edit&per_page=10`);if(!Array.isArray(rows)||!rows.length)throw new Error(`Missing WordPress page ${slug}`);return rows[0]}
 async function fetchMedia(){const rows=[];for(let page=1;page<=7;page+=1){try{const batch=await request(`/wp-json/wp/v2/media?context=edit&per_page=100&page=${page}`);if(!Array.isArray(batch)||!batch.length)break;rows.push(...batch);if(batch.length<100)break}catch(error){if(/invalid_page_number|400/i.test(error.message))break;throw error}}return rows}
-function mediaText(item){return [item?.slug,rendered(item?.title),item?.alt_text,rendered(item?.caption),rendered(item?.description),item?.source_url].join(' ').toLowerCase()}
-function choose(media,groups,used=new Set()){for(const group of groups){const terms=Array.isArray(group)?group:[group];const item=media.find(row=>row?.source_url&&!used.has(row.id)&&terms.every(term=>mediaText(row).includes(String(term).toLowerCase())));if(item){used.add(item.id);return item}}return null}
+function mediaText(item){return [item?.slug,rendered(item?.title),item?.alt_text,rendered(item?.caption),rendered(item?.description),item?.source_url].filter(Boolean).join(' ')}
+function isApprovedPublicVisual(item){const slug=String(item?.slug||'').toLowerCase();const text=normalize(mediaText(item));return slug.startsWith('dtf-approved-visual-')||(approvalMarker&&text.includes(approvalMarker))||text.includes('dtf approved public visual')}
+function isRetiredMedia(item){const raw=mediaText(item);if(!raw||isApprovedPublicVisual(item))return false;const normalized=normalize(raw);if(retireContains.some(needle=>normalized.includes(needle)))return true;return retireRegex.some(regex=>regex.test(raw)||regex.test(normalized))}
+function choose(media,groups,used=new Set(),{approvedOnly=false}={}){for(const group of groups){const terms=Array.isArray(group)?group:[group];const item=media.find(row=>row?.source_url&&!used.has(row.id)&&!isRetiredMedia(row)&&(!approvedOnly||isApprovedPublicVisual(row))&&terms.every(term=>normalize(mediaText(row)).includes(normalize(term))));if(item){used.add(item.id);return item}}return null}
 function image(item,alt,{eager=false}={}){if(!item)return '<div class="panel" style="min-height:100%;background:linear-gradient(145deg,#143622,#2e5239)" aria-hidden="true"></div>';const src=item.source_url||item?.guid?.rendered||'';const finalAlt=plain(item.alt_text||rendered(item.title)||alt);return `<img src="${esc(src)}" alt="${esc(finalAlt)}" ${eager?'loading="eager" fetchpriority="high"':'loading="lazy"'} decoding="async">`}
 const btn=(href,label,primary=false)=>`<a class="btn ${primary?'btn-primary':'btn-secondary'}" href="${esc(href)}">${esc(label)}</a>`;
 const card=(title,copy,href,label='Open')=>`<article class="panel" style="padding:22px"><h3>${esc(title)}</h3><p class="muted">${esc(copy)}</p><a class="card-link" href="${esc(href)}">${esc(label)} →</a></article>`;
@@ -44,23 +52,24 @@ function contact(){return `${styleTag}<main class="dtf-v1" data-dtf-layout="cont
 function gallery(p){const rows=[p.blueMango,p.mangoBubbles,p.blueBubblegum,p.education,p.plant,p.game,p.community,p.genetics,p.trichome].filter(Boolean);return `${styleTag}<main class="dtf-v1" data-dtf-layout="gallery-visual-v1"><style>.dtf-gallery-grid{columns:3 280px;column-gap:16px}.dtf-gallery-item{break-inside:avoid;margin:0 0 16px;border:1px solid var(--dtf-border);border-radius:16px;overflow:hidden;background:#102d1d}.dtf-gallery-item img{display:block;width:100%;height:auto}.dtf-gallery-item figcaption{padding:12px 14px;color:var(--dtf-muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}</style><section class="site-hero"><div class="wrap"><div class="hero-copy"><h1>DTF gallery.</h1><p>Genetics, plants, education, games, community, and brand work presented visually first.</p><div class="actions">${btn('/seeds/','Genetics',true)}${btn('/learn/infographics/','Education visuals')}${btn('/games/','Game art')}</div></div></div></section><section class="section"><div class="wrap"><div class="dtf-gallery-grid">${rows.map((item,index)=>`<figure class="dtf-gallery-item">${image(item,`DTF gallery image ${index+1}`)}<figcaption>${esc(plain(item.alt_text||rendered(item.title)||'DTF visual'))}</figcaption></figure>`).join('')}</div></div></section>${footer()}</main>`}
 
 const media=await fetchMedia();
+const eligibleMedia=media.filter(item=>item?.source_url&&!isRetiredMedia(item));
 const used=new Set();
 const picks={
-  community:choose(media,[['community'],['grow','event'],['grower']],used),
-  shop:choose(media,[['blue','mango'],['mango','bubbles'],['product']],used),
-  blueMango:choose(media,[['blue','mango']],used),
-  blueMango2:choose(media,[['blue','mango']],used),
-  blueBubblegum:choose(media,[['blue','bubblegum'],['bubblegum']],used),
-  mangoBubbles:choose(media,[['mango','bubbles'],['mango','bubble']],used),
-  about:choose(media,[['whole','plant'],['breeding'],['plant','science']],used),
-  genetics:choose(media,[['genetics'],['breeding'],['phenotype']],used),
-  education:choose(media,[['infographic'],['plant','anatomy'],['vpd']],used),
-  plant:choose(media,[['flower','anatomy'],['leaf','anatomy'],['whole','plant']],used),
-  game:choose(media,[['high','life'],['weedopolis'],['game']],used),
-  trichome:choose(media,[['trichome']],used)
+  community:choose(eligibleMedia,[['community'],['grow','event'],['grower']],used),
+  shop:choose(eligibleMedia,[['blue','mango'],['mango','bubbles'],['product']],used),
+  blueMango:choose(eligibleMedia,[['blue','mango']],used),
+  blueMango2:choose(eligibleMedia,[['blue','mango']],used),
+  blueBubblegum:choose(eligibleMedia,[['blue','bubblegum'],['bubblegum']],used),
+  mangoBubbles:choose(eligibleMedia,[['mango','bubbles'],['mango','bubble']],used),
+  about:choose(eligibleMedia,[['whole','plant'],['breeding'],['plant','science']],used),
+  genetics:choose(eligibleMedia,[['genetics'],['breeding'],['phenotype']],used),
+  education:choose(eligibleMedia,[['infographic'],['plant','anatomy'],['vpd']],used,{approvedOnly:true}),
+  plant:choose(eligibleMedia,[['flower','anatomy'],['leaf','anatomy'],['whole','plant']],used,{approvedOnly:true}),
+  game:choose(eligibleMedia,[['high','life'],['weedopolis'],['game']],used),
+  trichome:choose(eligibleMedia,[['trichome']],used,{approvedOnly:true})
 };
 
 const pages={community:await getPage('community'),shop:await getPage('shop'),about:await getPage('about'),contact:await getPage('contact'),gallery:await getPage('gallery')};
 const output={community:community(picks),shop:shop(picks),about:about(picks),contact:contact(),gallery:gallery(picks)};
 for(const [key,page] of Object.entries(pages)){await writeFile(join(backupDir,`${key}-before.json`),`${JSON.stringify(page,null,2)}\n`);await writeFile(join(backupDir,`${key}-preview.html`),`${output[key]}\n`);if(apply){await request(`/wp-json/wp/v2/pages/${page.id}`,{method:'POST',body:JSON.stringify({title:key[0].toUpperCase()+key.slice(1),content:output[key],status:'publish'})})}}
-console.log(JSON.stringify({ok:true,apply,pages:Object.fromEntries(Object.entries(pages).map(([key,page])=>[key,page.id])),mediaAvailable:media.length,markers:['community-visual-v1','shop-visual-v1','about-visual-v1','contact-visual-v1','gallery-visual-v1'],backupDir},null,2));
+console.log(JSON.stringify({ok:true,apply,pages:Object.fromEntries(Object.entries(pages).map(([key,page])=>[key,page.id])),mediaAvailable:media.length,eligibleMedia:eligibleMedia.length,approvedVisuals:eligibleMedia.filter(isApprovedPublicVisual).length,markers:['community-visual-v1','shop-visual-v1','about-visual-v1','contact-visual-v1','gallery-visual-v1'],backupDir},null,2));
