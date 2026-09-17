@@ -7,7 +7,8 @@ const html = await readFile(new URL('index.html', publicRoot), 'utf8');
 
 assert.doesNotMatch(html, /gameplay-polish-v1\.css/, 'gameplay polish must not depend on a file omitted by the dedicated publisher');
 assert.doesNotMatch(html, /touch-combat-controls-v1\.js/, 'touch combat must not depend on a file omitted by the dedicated publisher');
-assert.match(html, /data-seed-gameplay-polish=["']20260912-v20-touch-combat-v1["']/, 'release-safe inline gameplay polish marker missing');
+assert.match(html, /data-seed-gameplay-polish=["']20260916-v20-mobile-play-v2["']/, 'current release-safe inline gameplay polish marker missing');
+assert.doesNotMatch(html, /data-seed-gameplay-polish=["']20260912-v20-touch-combat-v1["']/, 'retired touch-combat gameplay polish marker must not return');
 assert.match(html, /data-seed-inline-touch-combat=["']seed-man-touch-combat-controls-v1["']/, 'release-safe inline touch combat marker missing');
 assert.match(html, /data-combat-feedback=\"fired\"/, 'touch combat must provide immediate fired feedback');
 assert.match(html, /data-seed-pheno-active=\"true\"/, 'visual polish must expose active phenotype state');
@@ -73,4 +74,4 @@ attackButton.disabled = true;
 attackButton.click();
 assert.equal(attackCount, 1, 'disabled ATTACK must not fire');
 
-console.log('Seed Man release-safe touch combat and gameplay polish checks passed.');
+console.log('Seed Man release-safe touch combat and current gameplay polish checks passed.');
