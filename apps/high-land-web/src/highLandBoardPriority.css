@@ -11,6 +11,33 @@ button,
   min-height: var(--hl-min-target);
 }
 
+/* Current turn must remain obvious even when player colors are hard to distinguish. */
+.player-chip {
+  position: relative;
+}
+
+.player-chip.active {
+  padding-right: 3.7rem;
+  box-shadow: inset 0 0 0 2px rgba(255, 238, 161, 0.34), 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.player-chip.active::after {
+  content: 'TURN';
+  position: absolute;
+  top: 50%;
+  right: 0.48rem;
+  transform: translateY(-50%);
+  padding: 0.25rem 0.42rem;
+  border: 1px solid rgba(255, 238, 161, 0.62);
+  border-radius: 999px;
+  background: rgba(27, 48, 31, 0.94);
+  color: #fff0a6;
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
 @media (max-width: 760px) {
   .app-shell:has(.game-stage) .game-panel {
     grid-template-columns: auto minmax(0, 1fr);
@@ -63,6 +90,16 @@ button,
     padding: 0.38rem 0.48rem;
   }
 
+  .app-shell:has(.game-stage) .player-chip.active {
+    min-width: 156px;
+    padding-right: 3.35rem;
+  }
+
+  .app-shell:has(.game-stage) .player-chip.active::after {
+    right: 0.36rem;
+    font-size: 0.54rem;
+  }
+
   .app-shell:has(.game-stage) .player-chip p {
     margin-top: 0.08rem;
     font-size: 0.64rem;
@@ -100,6 +137,10 @@ button,
     min-width: 122px;
   }
 
+  .app-shell:has(.game-stage) .player-chip.active {
+    min-width: 148px;
+  }
+
   .phaser-board canvas {
     max-height: min(68svh, 590px);
   }
@@ -115,5 +156,17 @@ button,
 
   .app-shell:has(.game-stage) .players-card {
     max-height: 52px;
+  }
+}
+
+@media (forced-colors: active) {
+  .player-chip.active {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  .player-chip.active::after {
+    border-color: Highlight;
+    color: HighlightText;
   }
 }
