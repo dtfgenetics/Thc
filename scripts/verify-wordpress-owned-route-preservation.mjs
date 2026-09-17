@@ -21,7 +21,7 @@ const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}
 const headers = {
   Authorization: auth,
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-Owned-Route-Preservation-Verify/2.1'
+  'User-Agent': 'DTFSeeds-Owned-Route-Preservation-Verify/2.2'
 };
 
 // This verifier runs inside canonical WordPress production before the Education
@@ -29,9 +29,21 @@ const headers = {
 // no-write evidence. Connected Learning V4, expanded references and visual
 // finalization are downstream Learning-stage obligations and are verified by
 // the dedicated Learning owner transaction.
-const ownerMarkers = {
-  home: ['data-dtf-layout="home-v3"'],
-  learn: ['data-dtf-layout="learn-v3"']
+//
+// Home has two legitimate base identities in current production history:
+// - the legacy Learning V3 owner marker; and
+// - the newer visual-site owner, identified by its visual-system marker plus a
+//   Home-only heading. Requiring both markers in the newer signature avoids
+//   mistaking another dtf-page for Home while allowing the canonical lane to
+//   preserve the current owner instead of failing on an obsolete marker.
+const ownerMarkerAlternatives = {
+  home: [
+    ['data-dtf-layout="home-v3"'],
+    ['id="dtf-visual-system-v2"', 'Genetics first. Cultivation science behind it.']
+  ],
+  learn: [
+    ['data-dtf-layout="learn-v3"']
+  ]
 };
 const ownerStage = 'base-learning-owner';
 const downstreamStageVerification = 'delegated-to-learning-production';
@@ -128,6 +140,11 @@ function sha256(content) {
   return createHash('sha256').update(normalizedContent(content), 'utf8').digest('hex');
 }
 
+function matchedOwnerMarkers(slug, content) {
+  const alternatives = ownerMarkerAlternatives[slug] || [];
+  return alternatives.find((markers) => markers.every((marker) => content.includes(marker))) || null;
+}
+
 const report = JSON.parse(await readFile(preservationReport, 'utf8'));
 if (report?.schemaVersion !== 2 || !report.routes || typeof report.routes !== 'object') {
   throw new Error(`Invalid ownership-preservation report: ${preservationReport}`);
@@ -186,11 +203,13 @@ for (const slug of ['home', 'learn']) {
   if (!content) {
     throw new Error(`WordPress /${slug}/ page ${page.id} became empty`);
   }
-  for (const marker of ownerMarkers[slug] || []) {
-    if (!content.includes(marker)) {
-      throw new Error(`WordPress /${slug}/ page ${page.id} is missing canonical base owner marker: ${marker}`);
-    }
+
+  const requiredOwnerMarkers = matchedOwnerMarkers(slug, content);
+  if (!requiredOwnerMarkers) {
+    const accepted = (ownerMarkerAlternatives[slug] || []).map((markers) => markers.join(' + ')).join(' OR ');
+    throw new Error(`WordPress /${slug}/ page ${page.id} is missing every accepted canonical base owner signature: ${accepted}`);
   }
+
   if (slug === 'home' && expectedHomeFeaturedMedia > 0 && Number(page.featured_media || 0) !== expectedHomeFeaturedMedia) {
     throw new Error(`WordPress Home featured_media ${page.featured_media || 0} does not match DTF brand media ${expectedHomeFeaturedMedia}`);
   }
@@ -211,7 +230,7 @@ for (const slug of ['home', 'learn']) {
     snapshotContentSha256: expected.snapshotContentSha256,
     currentContentLength: actualLength,
     currentContentSha256: actualSha256,
-    requiredOwnerMarkers: ownerMarkers[slug] || [],
+    requiredOwnerMarkers,
     featuredMedia: Number(page.featured_media || 0)
   });
 }
