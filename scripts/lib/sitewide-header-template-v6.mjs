@@ -19,7 +19,9 @@ export const SITEWIDE_HEADER_STYLE_TAG = `${V5_BASE_STYLE_TAG}<style id="dtf-sit
 @media(max-width:1120px){.dtf-global-nav{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
 @media(max-width:700px){.dtf-global-nav{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:480px){.dtf-global-nav{grid-template-columns:1fr!important}}
-</style><style id="dtf-sitewide-mobile-polish-v1-style">
+</style>${SITEWIDE_CONTENT_DENSITY_STYLE_TAG}${SITEWIDE_VISUAL_REPAIR_STYLE_TAG}`;
+
+export const SITEWIDE_MOBILE_POLISH_STYLE_TAG = String.raw`<style id="dtf-sitewide-mobile-polish-v1-style">
 @media(max-width:700px){
 :root{--dtf-mobile-gutter:16px;--dtf-mobile-section:clamp(38px,10vw,54px);--dtf-mobile-radius:16px;--dtf-global-header-height:66px}
 html{scroll-padding-top:calc(var(--dtf-global-header-height) + 12px)!important}
@@ -47,13 +49,15 @@ body{font-size:16px!important;overflow-x:clip!important}
 .v3 .feature-copy,.v3 .release-copy,.v3 .path,.v3 .lesson,.dtf-page .dtf-card-copy,.dtf-page .dtf-path-card,.dtf-page .dtf-flow>article,.dtf-v1 .collection-card,.dtf-v1 .line-card,.game-hub-page .card,body:has(.tool-chooser) .tool-feature,body:has(.tool-chooser) .flow>article{padding:18px!important}
 .v3 .actions,.dtf-page .dtf-actions,.dtf-v1 .actions,.dtf-v1 .genetics-actions,.game-hub-page .actions,body:has(.tool-chooser) .actions{display:grid!important;grid-template-columns:1fr!important;width:100%!important;gap:9px!important}
 .v3 .actions>*,.dtf-page .dtf-actions>*,.dtf-v1 .actions>*,.dtf-v1 .genetics-actions>*,.game-hub-page .actions>*,body:has(.tool-chooser) .actions>*{width:100%!important;min-height:48px!important;justify-content:center!important;text-align:center!important;border-radius:12px!important}
-.dtf-v1 .hero-grid,.dtf-v1 .genetics-hero,.dtf-v1 .gallery-standard,.dtf-v1 .parent-panel,.dtf-v1 .release-panel,.dtf-v1 .catalog-standard{grid-template-columns:1fr!important;gap:22px!important}
-.dtf-v1 .collection-grid,.dtf-v1 .line-grid{grid-template-columns:1fr!important;gap:14px!important}
-.dtf-v1 .genetics-board,.dtf-v1 .gallery-stage,.dtf-v1 .standard-intro,.dtf-v1 .parent-panel,.dtf-v1 .release-copy,.dtf-v1 .standard-copy{padding:20px!important;border-radius:18px!important}
+.dtf-v1 .hero-grid,.dtf-v1 .contact-hero,.dtf-v1 .genetics-hero,.dtf-v1 .gallery-standard,.dtf-v1 .parent-panel,.dtf-v1 .release-panel,.dtf-v1 .catalog-standard,.dtf-v1 .standard-grid,.dtf-v1 .privacy-wrap{grid-template-columns:1fr!important;gap:22px!important}
+.dtf-v1 .collection-grid,.dtf-v1 .line-grid,.dtf-v1 .about-system-grid,.dtf-v1 .about-grid,.dtf-v1 .principle-grid,.dtf-v1 .community-signal-grid,.dtf-v1 .participation-grid,.dtf-v1 .record-flow,.dtf-v1 .route-grid{grid-template-columns:1fr!important;gap:14px!important}
+.dtf-v1 .genetics-board,.dtf-v1 .gallery-stage,.dtf-v1 .standard-intro,.dtf-v1 .parent-panel,.dtf-v1 .release-copy,.dtf-v1 .standard-copy,.dtf-v1 .about-hero-panel,.dtf-v1 .about-cta,.dtf-v1 .community-command,.dtf-v1 .contact-router-preview,.dtf-v1 .privacy-intro{min-height:0!important;padding:20px!important;border-radius:18px!important}
+.dtf-v1 .collection-card,.dtf-v1 .line-card,.dtf-v1 .about-card,.dtf-v1 .participation-card,.dtf-v1 .route-card,.dtf-v1 .record-step{min-height:0!important;padding:18px!important}
 .dtf-v1 .gallery-stage{min-height:0!important}
 .dtf-v1 .board-stats{grid-template-columns:1fr!important;gap:8px!important}
-.dtf-v1 .standard-intro,.dtf-v1 .standard-title{position:relative!important;top:auto!important}
+.dtf-v1 .standard-intro,.dtf-v1 .standard-title,.dtf-v1 .privacy-intro{position:relative!important;top:auto!important}
 .dtf-v1 .release-list li a{padding:15px 16px!important;align-items:flex-start!important}
+.dtf-v1 .record-step+.record-step{border-left:0!important;border-top:1px solid rgba(16,43,26,.14)!important}
 .dtf-page .dtf-quickgrid,.game-hub-page .quicknav,body:has(.tool-chooser) .quicknav{margin-inline:calc(var(--dtf-mobile-gutter) * -1)!important;width:calc(100% + (var(--dtf-mobile-gutter) * 2))!important;padding:8px var(--dtf-mobile-gutter) 10px!important;scroll-padding-inline:var(--dtf-mobile-gutter)!important}
 .dtf-page .dtf-quickgrid a,.game-hub-page .quicknav a,body:has(.tool-chooser) .quicknav a{min-width:126px!important;border-radius:12px!important}
 .dtf-page :where(figure,picture),.v3 :where(figure,picture),.dtf-v1 :where(figure,picture),.lhv3 :where(figure,picture){max-width:100%!important;margin-inline:0!important}
@@ -76,10 +80,10 @@ body{font-size:16px!important;overflow-x:clip!important}
 .dtf-global-nav,.dtf-global-nav.is-open{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 .dtf-global-nav a{min-height:44px!important;padding:9px 8px!important;font-size:.78rem!important}
 .v3 .hero h1,.dtf-page .dtf-hero h1,.dtf-v1 h1,.game-hub-page .hero h1{font-size:clamp(2rem,10.5vw,2.8rem)!important}
-.v3 .feature-copy,.v3 .release-copy,.v3 .path,.v3 .lesson,.dtf-page .dtf-card-copy,.dtf-page .dtf-path-card,.dtf-page .dtf-flow>article,.dtf-v1 .collection-card,.dtf-v1 .line-card,.game-hub-page .card,body:has(.tool-chooser) .tool-feature,body:has(.tool-chooser) .flow>article{padding:16px!important}
-.dtf-v1 .genetics-board,.dtf-v1 .gallery-stage,.dtf-v1 .standard-intro,.dtf-v1 .parent-panel,.dtf-v1 .release-copy,.dtf-v1 .standard-copy{padding:18px!important}
+.v3 .feature-copy,.v3 .release-copy,.v3 .path,.v3 .lesson,.dtf-page .dtf-card-copy,.dtf-page .dtf-path-card,.dtf-page .dtf-flow>article,.dtf-v1 .collection-card,.dtf-v1 .line-card,.dtf-v1 .about-card,.dtf-v1 .participation-card,.dtf-v1 .route-card,.dtf-v1 .record-step,.game-hub-page .card,body:has(.tool-chooser) .tool-feature,body:has(.tool-chooser) .flow>article{padding:16px!important}
+.dtf-v1 .genetics-board,.dtf-v1 .gallery-stage,.dtf-v1 .standard-intro,.dtf-v1 .parent-panel,.dtf-v1 .release-copy,.dtf-v1 .standard-copy,.dtf-v1 .about-hero-panel,.dtf-v1 .about-cta,.dtf-v1 .community-command,.dtf-v1 .contact-router-preview,.dtf-v1 .privacy-intro{padding:18px!important}
 }
-</style>${SITEWIDE_CONTENT_DENSITY_STYLE_TAG}${SITEWIDE_VISUAL_REPAIR_STYLE_TAG}`;
+</style>`;
 
 const searchIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.8-3.8"></path></svg>';
 const userIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0"></path><circle cx="12" cy="7" r="4"></circle></svg>';
@@ -90,5 +94,5 @@ export const SITEWIDE_HEADER_HTML = String.raw`<header class="dtf-global-header"
 export const SITEWIDE_HEADER_SCRIPT_TAG = `${String.raw`<script id="dtf-sitewide-header-v6-script">(function(){function norm(p){return p==='/'?'/':'/'+String(p||'/').split('/').filter(Boolean).join('/')+'/';}function enhanceCourseLayout(){var root=document.querySelector('.lhv3');if(!root||root.querySelector('.lhv3-right-rail'))return;var main=root.querySelector('.lhv3-main');var layout=root.querySelector('.lhv3-layout');if(!main||!layout)return;var toc=null,objective=null;Array.prototype.slice.call(main.children).forEach(function(child){if(child.classList.contains('lhv3-toc'))toc=child;if(child.classList.contains('lhv3-objective'))objective=child;});if(!toc&&!objective)return;var rail=document.createElement('aside');rail.className='lhv3-right-rail';rail.setAttribute('aria-label','Lesson context');if(toc)rail.appendChild(toc);if(objective)rail.appendChild(objective);layout.appendChild(rail);}function boot(){var header=document.querySelector('[data-dtf-shell="header-v6"]');if(!header)return;var menu=header.querySelector('.dtf-global-menu');var nav=header.querySelector('.dtf-global-nav');function setOpen(open){if(!menu||!nav)return;nav.classList.toggle('is-open',open);menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Close primary navigation':'Open primary navigation');}if(menu&&nav&&!menu.dataset.bound){menu.dataset.bound='1';menu.addEventListener('click',function(){setOpen(!nav.classList.contains('is-open'));});nav.addEventListener('click',function(event){if(event.target&&event.target.closest('a'))setOpen(false);});document.addEventListener('keydown',function(event){if(event.key==='Escape'&&nav.classList.contains('is-open')){setOpen(false);menu.focus();}});window.addEventListener('resize',function(){if(window.innerWidth>1120)setOpen(false);});}var path=norm(location.pathname);header.querySelectorAll('.dtf-global-nav a').forEach(function(a){var href=norm(a.getAttribute('href')||'/');var group=a.dataset.dtfNavGroup||'';var active=false;if(group==='home')active=path==='/';else if(group==='courses')active=/^\/courses\//.test(path)||/^\/learn\/learning-hub\//.test(path);else if(group==='learn')active=(/^\/(learn|education|yellow-leaves)\//.test(path)&&!/^\/learn\/learning-hub\//.test(path));else if(group==='diagnostic')active=/^\/(tools|growlens|thc-grow-doc)\//.test(path);else if(group==='shop')active=/^\/(shop|product|cart|checkout|my-account)\//.test(path);else active=path.indexOf(href)===0;a.classList.toggle('is-active',active);if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});setOpen(false);enhanceCourseLayout();}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();})();</script>`}${SITEWIDE_CONTENT_DENSITY_SCRIPT_TAG}${SITEWIDE_VISUAL_REPAIR_SCRIPT_TAG}`;
 
 export function getWordPressSitewideHeaderBlock(extraStyle = '') {
-  return `<!-- wp:html -->${SITEWIDE_HEADER_STYLE_TAG}${extraStyle}${SITEWIDE_HEADER_HTML}${SITEWIDE_HEADER_SCRIPT_TAG}<!-- /wp:html -->`;
+  return `<!-- wp:html -->${SITEWIDE_HEADER_STYLE_TAG}${extraStyle}${SITEWIDE_MOBILE_POLISH_STYLE_TAG}${SITEWIDE_HEADER_HTML}${SITEWIDE_HEADER_SCRIPT_TAG}<!-- /wp:html -->`;
 }
