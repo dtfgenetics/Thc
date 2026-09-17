@@ -36,6 +36,7 @@ const report = {
   checkOnly,
   responsiveLayout: 'v1',
   sitewideUxPolish: 'v1',
+  visualRepair: 'v2',
   scanned: 0,
   changed: 0,
   replacedLegacyHeaders: 0,
@@ -63,9 +64,13 @@ function verifyDocument(source, rel) {
   const expected = [
     ['data-dtf-sitewide-header="canonical-six-v1"', 'header'],
     ['id="dtf-sitewide-header-v6-style"', 'header style'],
+    ['id="dtf-content-density-v1-style"', 'content-density style'],
+    ['id="dtf-sitewide-visual-repair-v2-style"', 'visual-repair style'],
     ['id="dtf-responsive-layout-v1"', 'responsive layout style'],
     ['id="dtf-sitewide-ux-polish-v1"', 'sitewide UX polish style'],
-    ['id="dtf-sitewide-header-v6-script"', 'script'],
+    ['id="dtf-sitewide-header-v6-script"', 'header script'],
+    ['id="dtf-content-density-v1-script"', 'content-density script'],
+    ['id="dtf-sitewide-visual-repair-v2-script"', 'visual-repair script'],
   ];
   for (const [needle, label] of expected) {
     const count = occurrences(source, needle);
@@ -138,10 +143,14 @@ function reconcileDocument(source) {
   output = output.replace(/<!--\s*dtf-build-gate-compat-v6:[\s\S]*?-->\s*/gi, '');
   output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-sitewide-header-v5-style["'][^>]*>[\s\S]*?<\/style>\s*/gi);
   output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-sitewide-header-v6-style["'][^>]*>[\s\S]*?<\/style>\s*/gi);
+  output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-content-density-v1-style["'][^>]*>[\s\S]*?<\/style>\s*/gi);
+  output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-sitewide-visual-repair-v2-style["'][^>]*>[\s\S]*?<\/style>\s*/gi);
   output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-responsive-layout-v1["'][^>]*>[\s\S]*?<\/style>\s*/gi);
   output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-sitewide-ux-polish-v1["'][^>]*>[\s\S]*?<\/style>\s*/gi);
   output = removeOwnedFragment(output, /<script\b[^>]*id=["']dtf-sitewide-header-v5-script["'][^>]*>[\s\S]*?<\/script>\s*/gi);
   output = removeOwnedFragment(output, /<script\b[^>]*id=["']dtf-sitewide-header-v6-script["'][^>]*>[\s\S]*?<\/script>\s*/gi);
+  output = removeOwnedFragment(output, /<script\b[^>]*id=["']dtf-content-density-v1-script["'][^>]*>[\s\S]*?<\/script>\s*/gi);
+  output = removeOwnedFragment(output, /<script\b[^>]*id=["']dtf-sitewide-visual-repair-v2-script["'][^>]*>[\s\S]*?<\/script>\s*/gi);
   output = removeOwnedFragment(output, /<header\b[^>]*data-dtf-sitewide-header=["'][^"']+["'][^>]*>[\s\S]*?<\/header>\s*/gi);
 
   const legacy = removeLegacyGlobalHeader(output);
@@ -174,9 +183,12 @@ for (const file of files) {
   if (result.skipped) { report.skipped += 1; continue; }
   if (!result.output.includes('data-dtf-shell="header-v6"') ||
       !result.output.includes('dtf-sitewide-header-v6-style') ||
+      !result.output.includes('dtf-content-density-v1-style') ||
+      !result.output.includes('dtf-sitewide-visual-repair-v2-style') ||
       !result.output.includes('dtf-responsive-layout-v1') ||
-      !result.output.includes('dtf-sitewide-ux-polish-v1')) {
-    report.failures.push(`${rel}: canonical header, responsive layout, or UX polish markers missing after reconciliation`);
+      !result.output.includes('dtf-sitewide-ux-polish-v1') ||
+      !result.output.includes('dtf-sitewide-visual-repair-v2-script')) {
+    report.failures.push(`${rel}: canonical header, content density, visual repair, responsive layout, or UX polish markers missing after reconciliation`);
     continue;
   }
   if (result.removedLegacy) report.replacedLegacyHeaders += 1;
