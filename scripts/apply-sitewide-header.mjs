@@ -5,6 +5,7 @@ import {
   SITEWIDE_HEADER_HTML,
   SITEWIDE_HEADER_SCRIPT_TAG,
   SITEWIDE_HEADER_STYLE_TAG,
+  SITEWIDE_MOBILE_POLISH_STYLE_TAG,
 } from './lib/sitewide-header-template-v6.mjs';
 
 const root = resolve(process.argv[2] || 'release');
@@ -33,6 +34,7 @@ const report = {
   checkOnly,
   responsiveLayout: 'v1',
   sitewideUxPolish: 'v1',
+  mobilePolish: 'v1',
   visualRepair: 'v2',
   scanned: 0,
   changed: 0,
@@ -65,6 +67,7 @@ function verifyDocument(source, rel) {
     ['id="dtf-sitewide-visual-repair-v2-style"', 'visual-repair style'],
     ['id="dtf-responsive-layout-v1"', 'responsive layout style'],
     ['id="dtf-sitewide-ux-polish-v1"', 'sitewide UX polish style'],
+    ['id="dtf-sitewide-mobile-polish-v1-style"', 'sitewide mobile polish style'],
     ['id="dtf-sitewide-header-v6-script"', 'header script'],
     ['id="dtf-content-density-v1-script"', 'content-density script'],
     ['id="dtf-sitewide-visual-repair-v2-script"', 'visual-repair script'],
@@ -104,6 +107,15 @@ function verifyDocument(source, rel) {
   ];
   for (const token of uxTokens) {
     if (!source.includes(token)) report.failures.push(`${rel}: sitewide UX polish token missing: ${token}`);
+  }
+  const mobileTokens = [
+    '--dtf-mobile-gutter:16px',
+    '--dtf-mobile-section:clamp(38px,10vw,54px)',
+    '.dtf-v1 .contact-hero',
+    '.dtf-global-nav.is-open',
+  ];
+  for (const token of mobileTokens) {
+    if (!source.includes(token)) report.failures.push(`${rel}: sitewide mobile polish token missing: ${token}`);
   }
   return { skipped: false };
 }
@@ -157,6 +169,7 @@ function reconcileDocument(source) {
   output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-sitewide-visual-repair-v2-style["'][^>]*>[\s\S]*?<\/style>\s*/gi);
   output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-responsive-layout-v1["'][^>]*>[\s\S]*?<\/style>\s*/gi);
   output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-sitewide-ux-polish-v1["'][^>]*>[\s\S]*?<\/style>\s*/gi);
+  output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-sitewide-mobile-polish-v1-style["'][^>]*>[\s\S]*?<\/style>\s*/gi);
   output = removeOwnedFragment(output, /<script\b[^>]*id=["']dtf-sitewide-header-v5-script["'][^>]*>[\s\S]*?<\/script>\s*/gi);
   output = removeOwnedFragment(output, /<script\b[^>]*id=["']dtf-sitewide-header-v6-script["'][^>]*>[\s\S]*?<\/script>\s*/gi);
   output = removeOwnedFragment(output, /<script\b[^>]*id=["']dtf-content-density-v1-script["'][^>]*>[\s\S]*?<\/script>\s*/gi);
@@ -166,7 +179,7 @@ function reconcileDocument(source) {
   const legacy = removeLegacyGlobalHeader(output);
   output = legacy.html;
 
-  const sharedStyles = `${SITEWIDE_HEADER_STYLE_TAG}\n${RESPONSIVE_LAYOUT_STYLE_TAG}\n${SITEWIDE_UX_POLISH_STYLE_TAG}`;
+  const sharedStyles = `${SITEWIDE_HEADER_STYLE_TAG}\n${RESPONSIVE_LAYOUT_STYLE_TAG}\n${SITEWIDE_UX_POLISH_STYLE_TAG}\n${SITEWIDE_MOBILE_POLISH_STYLE_TAG}`;
   if (/<\/head>/i.test(output)) output = output.replace(/<\/head>/i, `${sharedStyles}\n</head>`);
   else output = `${sharedStyles}\n${output}`;
 
@@ -197,8 +210,9 @@ for (const file of files) {
       !result.output.includes('dtf-sitewide-visual-repair-v2-style') ||
       !result.output.includes('dtf-responsive-layout-v1') ||
       !result.output.includes('dtf-sitewide-ux-polish-v1') ||
+      !result.output.includes('dtf-sitewide-mobile-polish-v1-style') ||
       !result.output.includes('dtf-sitewide-visual-repair-v2-script')) {
-    report.failures.push(`${rel}: canonical header, content density, visual repair, responsive layout, or UX polish markers missing after reconciliation`);
+    report.failures.push(`${rel}: canonical header, content density, visual repair, responsive layout, UX polish, or mobile polish markers missing after reconciliation`);
     continue;
   }
   if (result.removedLegacy) report.replacedLegacyHeaders += 1;
