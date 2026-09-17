@@ -14,13 +14,18 @@ const textAssets = [
   { path: 'approved-assets.css', minBytes: 5000 },
   { path: 'runtime-assets.css', minBytes: 500 },
   { path: 'master-board-overlay.css', minBytes: 800, marker: 'assets/board/weedopolis-master-board.webp' },
+  { path: 'trading.css', minBytes: 1000 },
+  { path: 'production-interactions.css', minBytes: 1000, marker: 'env(safe-area-inset-bottom)' },
   { path: 'js/weedopolis-edition.js', minBytes: 3000 },
   { path: 'js/weedopolis-master-overrides.js', minBytes: 500 },
   { path: 'js/weedopolis-assets.js', minBytes: 1500 },
   { path: 'js/weedopolis-approved-decks.js', minBytes: 5000, marker: 'webReady' },
   { path: 'js/weedopolis-engine.js', minBytes: 7000 },
+  { path: 'js/weedopolis-solvency.js', minBytes: 1000 },
+  { path: 'js/weedopolis-trading.js', minBytes: 1000 },
   { path: 'js/weedopolis-ui.js', minBytes: 8000 },
-  { path: 'js/weedopolis-tests.js', minBytes: 1000 },
+  { path: 'js/weedopolis-mobile-turn-dock.js', minBytes: 1000 },
+  { path: 'js/weedopolis-trade-ui.js', minBytes: 1000 },
 ];
 
 const requiredHtmlMarkers = [
@@ -28,17 +33,27 @@ const requiredHtmlMarkers = [
   'data-ui-standard="premium-responsive-shell-v1"',
   'data-art-standard="weedopolis-v1-master"',
   'data-art-status="v1-master-loaded"',
-  'styles.css',
-  'approved-assets.css',
-  'runtime-assets.css',
-  'master-board-overlay.css',
+  'production-interactions.css',
+  'Deed artwork ready',
+  'Board artwork, interactive spaces, player tokens, and property actions stay synchronized throughout the match.',
+  'class="mobile-game-dock"',
+  'id="mobileRollBtn"',
   'js/weedopolis-edition.js',
   'js/weedopolis-master-overrides.js',
   'js/weedopolis-assets.js',
   'js/weedopolis-approved-decks.js',
   'js/weedopolis-engine.js',
+  'js/weedopolis-solvency.js',
+  'js/weedopolis-trading.js',
   'js/weedopolis-ui.js',
-  'js/weedopolis-tests.js',
+  'js/weedopolis-mobile-turn-dock.js',
+  'js/weedopolis-trade-ui.js',
+];
+
+const forbiddenHtmlMarkers = [
+  'Gameplay uses the Weedopolis V1 square-board master as the visual authority.',
+  'Verified V1 deed mapping',
+  'Weedopolis V1 production master board',
 ];
 
 function makeUrl(relative = '') {
@@ -61,7 +76,7 @@ async function fetchStrict(relative, accept = '*/*') {
           Accept: accept,
           'Cache-Control': 'no-cache, no-store, max-age=0',
           Pragma: 'no-cache',
-          'User-Agent': 'DTFSeeds-Weedopolis-Live-Asset-Audit/1.0',
+          'User-Agent': 'DTFSeeds-Weedopolis-Live-Asset-Audit/2.0',
         },
       });
       if (response.status !== 200) throw new Error(`${relative || 'index.html'} returned HTTP ${response.status}`);
@@ -95,6 +110,9 @@ const htmlBytes = Buffer.byteLength(html);
 if (htmlBytes < 5000) throw new Error(`Weedopolis HTML is unexpectedly small: ${htmlBytes} bytes`);
 for (const marker of requiredHtmlMarkers) {
   if (!html.includes(marker)) throw new Error(`Weedopolis HTML missing required marker: ${marker}`);
+}
+for (const marker of forbiddenHtmlMarkers) {
+  if (html.includes(marker)) throw new Error(`Weedopolis HTML still exposes retired production copy: ${marker}`);
 }
 results.push({ asset: 'index.html', bytes: htmlBytes, ok: true });
 
