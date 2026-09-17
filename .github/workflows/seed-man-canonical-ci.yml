@@ -42,8 +42,11 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install locked dependencies
+      - name: Install root dependencies
         run: npm ci --no-audit --no-fund
+
+      - name: Install Seed Man local renderer dependencies
+        run: npm install --prefix games/seed-man-platformer --ignore-scripts --no-audit --no-fund
 
       - name: Enforce browser tool policy
         run: node scripts/verify-browser-tool-policy.mjs
