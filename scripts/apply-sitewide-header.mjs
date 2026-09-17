@@ -61,7 +61,7 @@ function occurrences(source, needle) {
 function verifyDocument(source, rel) {
   if (!/<html\b/i.test(source) || !/<body\b/i.test(source)) return { skipped: true };
   const expected = [
-    ['data-dtf-sitewide-header="canonical-six-v1"', 'header'],
+    ['data-dtf-sitewide-header="canonical-eight-v1"', 'header'],
     ['id="dtf-sitewide-header-v6-style"', 'header style'],
     ['id="dtf-responsive-layout-v1"', 'responsive layout style'],
     ['id="dtf-sitewide-ux-polish-v1"', 'sitewide UX polish style'],
@@ -70,6 +70,19 @@ function verifyDocument(source, rel) {
   for (const [needle, label] of expected) {
     const count = occurrences(source, needle);
     if (count !== 1) report.failures.push(`${rel}: expected exactly one canonical ${label}; found ${count}`);
+  }
+  const canonicalNavTokens = [
+    ['href="/" data-dtf-nav-group="home">Home</a>', 'Home'],
+    ['href="/seeds/">Seeds</a>', 'Seeds'],
+    ['href="/learn/" data-dtf-nav-group="learn">Learn</a>', 'Learn'],
+    ['href="/courses/" data-dtf-nav-group="courses">Courses</a>', 'Courses'],
+    ['href="/tools/" data-dtf-nav-group="diagnostic">Diagnostic</a>', 'Diagnostic'],
+    ['href="/games/">Games</a>', 'Games'],
+    ['href="/community/">Community</a>', 'Community'],
+    ['href="/shop/" data-dtf-nav-group="shop">Shop</a>', 'Shop'],
+  ];
+  for (const [needle, label] of canonicalNavTokens) {
+    if (!source.includes(needle)) report.failures.push(`${rel}: canonical Header V6 navigation is missing ${label}`);
   }
   const responsiveTokens = [
     '--dtf-layout-max:1360px',
@@ -173,10 +186,11 @@ for (const file of files) {
   const result = reconcileDocument(source);
   if (result.skipped) { report.skipped += 1; continue; }
   if (!result.output.includes('data-dtf-shell="header-v6"') ||
+      !result.output.includes('data-dtf-sitewide-header="canonical-eight-v1"') ||
       !result.output.includes('dtf-sitewide-header-v6-style') ||
       !result.output.includes('dtf-responsive-layout-v1') ||
       !result.output.includes('dtf-sitewide-ux-polish-v1')) {
-    report.failures.push(`${rel}: canonical header, responsive layout, or UX polish markers missing after reconciliation`);
+    report.failures.push(`${rel}: canonical header, eight-item navigation, responsive layout, or UX polish markers missing after reconciliation`);
     continue;
   }
   if (result.removedLegacy) report.replacedLegacyHeaders += 1;
