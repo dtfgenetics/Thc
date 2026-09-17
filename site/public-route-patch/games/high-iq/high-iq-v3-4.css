@@ -78,3 +78,63 @@ select,
     border: 1px solid ButtonText;
   }
 }
+
+
+/* v3.5 — player-facing finish pass. */
+.legacy-fallback{
+  align-items:center;
+  gap:16px;
+}
+.legacy-fallback strong{
+  font-size:clamp(1rem,2vw,1.2rem);
+}
+.legacy-fallback p{
+  max-width:68ch;
+  line-height:1.5;
+}
+.answer-option{
+  min-height:72px;
+  touch-action:manipulation;
+}
+.answer-option .answer-letter{
+  flex:0 0 auto;
+}
+.quiz-controls .quiz-action{
+  min-width:148px;
+}
+#next-question:not([hidden]){
+  min-width:168px;
+}
+@media (max-width:680px){
+  .answer-grid{
+    gap:10px !important;
+  }
+  .answer-option{
+    min-height:80px !important;
+    padding:14px !important;
+  }
+  .quiz-controls{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:8px !important;
+    padding-bottom:max(8px,env(safe-area-inset-bottom)) !important;
+  }
+  .quiz-controls .note{
+    order:3;
+    margin:0;
+  }
+  .quiz-controls .quiz-action{
+    width:100%;
+    min-width:0;
+  }
+  .legacy-fallback .quiz-actions{
+    display:grid;
+    grid-template-columns:1fr;
+    width:100%;
+  }
+  .legacy-fallback .quiz-actions .button,
+  .legacy-fallback .quiz-actions .quiz-action{
+    width:100%;
+    justify-content:center;
+  }
+}
