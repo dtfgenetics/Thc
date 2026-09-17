@@ -5,6 +5,7 @@ import {
   SITEWIDE_HEADER_HTML,
   SITEWIDE_HEADER_SCRIPT_TAG,
   SITEWIDE_HEADER_STYLE_TAG,
+  SITEWIDE_MOBILE_POLISH_STYLE_TAG,
 } from './lib/sitewide-header-template-v6.mjs';
 
 const root = resolve(process.argv[2] || 'release');
@@ -24,11 +25,8 @@ if (!uxPolishCss.includes('DTFSeeds sitewide UX polish v1')) {
 const RESPONSIVE_LAYOUT_STYLE_TAG = `<style id="dtf-responsive-layout-v1">${responsiveLayoutCss}</style>`;
 const SITEWIDE_UX_POLISH_STYLE_TAG = `<style id="dtf-sitewide-ux-polish-v1">${uxPolishCss}</style>`;
 
-// Transitional build-gate bridge. The public-suite workflow and Seed Ascent route
-// promoter still contain raw string assertions for the retired V5 shell. Keep
-// those strings in a comment, never in rendered navigation, until those large
-// transactional paths are migrated. V6 live audits inspect the actual primary
-// <nav>, so this cannot make V5 pass as visitor-facing UI.
+// Transitional build-gate bridge. Retain only until every legacy V5 raw-string
+// gate has been migrated to the rendered Header V6 contract.
 const LEGACY_BUILD_GATE_COMPAT_COMMENT = '<!-- dtf-build-gate-compat-v6: data-dtf-shell="header-v5" data-dtf-sitewide-header="approved-reference-v1" >Diagnostic</a> dtf-sitewide-header-v5-script -->';
 
 const report = {
@@ -36,6 +34,7 @@ const report = {
   checkOnly,
   responsiveLayout: 'v1',
   sitewideUxPolish: 'v1',
+  mobilePolish: 'v1',
   visualRepair: 'v2',
   scanned: 0,
   changed: 0,
@@ -62,12 +61,13 @@ function occurrences(source, needle) {
 function verifyDocument(source, rel) {
   if (!/<html\b/i.test(source) || !/<body\b/i.test(source)) return { skipped: true };
   const expected = [
-    ['data-dtf-sitewide-header="canonical-six-v1"', 'header'],
+    ['data-dtf-sitewide-header="canonical-eight-v1"', 'header'],
     ['id="dtf-sitewide-header-v6-style"', 'header style'],
     ['id="dtf-content-density-v1-style"', 'content-density style'],
     ['id="dtf-sitewide-visual-repair-v2-style"', 'visual-repair style'],
     ['id="dtf-responsive-layout-v1"', 'responsive layout style'],
     ['id="dtf-sitewide-ux-polish-v1"', 'sitewide UX polish style'],
+    ['id="dtf-sitewide-mobile-polish-v1-style"', 'sitewide mobile polish style'],
     ['id="dtf-sitewide-header-v6-script"', 'header script'],
     ['id="dtf-content-density-v1-script"', 'content-density script'],
     ['id="dtf-sitewide-visual-repair-v2-script"', 'visual-repair script'],
@@ -75,6 +75,19 @@ function verifyDocument(source, rel) {
   for (const [needle, label] of expected) {
     const count = occurrences(source, needle);
     if (count !== 1) report.failures.push(`${rel}: expected exactly one canonical ${label}; found ${count}`);
+  }
+  const canonicalNavTokens = [
+    ['href="/" data-dtf-nav-group="home">Home</a>', 'Home'],
+    ['href="/seeds/">Seeds</a>', 'Seeds'],
+    ['href="/learn/" data-dtf-nav-group="learn">Learn</a>', 'Learn'],
+    ['href="/courses/" data-dtf-nav-group="courses">Courses</a>', 'Courses'],
+    ['href="/tools/" data-dtf-nav-group="diagnostic">Diagnostic</a>', 'Diagnostic'],
+    ['href="/games/">Games</a>', 'Games'],
+    ['href="/community/">Community</a>', 'Community'],
+    ['href="/shop/" data-dtf-nav-group="shop">Shop</a>', 'Shop'],
+  ];
+  for (const [needle, label] of canonicalNavTokens) {
+    if (!source.includes(needle)) report.failures.push(`${rel}: canonical Header V6 navigation is missing ${label}`);
   }
   const responsiveTokens = [
     '--dtf-layout-max:1360px',
@@ -94,6 +107,15 @@ function verifyDocument(source, rel) {
   ];
   for (const token of uxTokens) {
     if (!source.includes(token)) report.failures.push(`${rel}: sitewide UX polish token missing: ${token}`);
+  }
+  const mobileTokens = [
+    '--dtf-mobile-gutter:16px',
+    '--dtf-mobile-section:clamp(38px,10vw,54px)',
+    '.dtf-v1 .contact-hero',
+    '.dtf-global-nav.is-open',
+  ];
+  for (const token of mobileTokens) {
+    if (!source.includes(token)) report.failures.push(`${rel}: sitewide mobile polish token missing: ${token}`);
   }
   return { skipped: false };
 }
@@ -147,6 +169,7 @@ function reconcileDocument(source) {
   output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-sitewide-visual-repair-v2-style["'][^>]*>[\s\S]*?<\/style>\s*/gi);
   output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-responsive-layout-v1["'][^>]*>[\s\S]*?<\/style>\s*/gi);
   output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-sitewide-ux-polish-v1["'][^>]*>[\s\S]*?<\/style>\s*/gi);
+  output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-sitewide-mobile-polish-v1-style["'][^>]*>[\s\S]*?<\/style>\s*/gi);
   output = removeOwnedFragment(output, /<script\b[^>]*id=["']dtf-sitewide-header-v5-script["'][^>]*>[\s\S]*?<\/script>\s*/gi);
   output = removeOwnedFragment(output, /<script\b[^>]*id=["']dtf-sitewide-header-v6-script["'][^>]*>[\s\S]*?<\/script>\s*/gi);
   output = removeOwnedFragment(output, /<script\b[^>]*id=["']dtf-content-density-v1-script["'][^>]*>[\s\S]*?<\/script>\s*/gi);
@@ -156,7 +179,7 @@ function reconcileDocument(source) {
   const legacy = removeLegacyGlobalHeader(output);
   output = legacy.html;
 
-  const sharedStyles = `${SITEWIDE_HEADER_STYLE_TAG}\n${RESPONSIVE_LAYOUT_STYLE_TAG}\n${SITEWIDE_UX_POLISH_STYLE_TAG}`;
+  const sharedStyles = `${SITEWIDE_HEADER_STYLE_TAG}\n${RESPONSIVE_LAYOUT_STYLE_TAG}\n${SITEWIDE_UX_POLISH_STYLE_TAG}\n${SITEWIDE_MOBILE_POLISH_STYLE_TAG}`;
   if (/<\/head>/i.test(output)) output = output.replace(/<\/head>/i, `${sharedStyles}\n</head>`);
   else output = `${sharedStyles}\n${output}`;
 
@@ -187,8 +210,9 @@ for (const file of files) {
       !result.output.includes('dtf-sitewide-visual-repair-v2-style') ||
       !result.output.includes('dtf-responsive-layout-v1') ||
       !result.output.includes('dtf-sitewide-ux-polish-v1') ||
+      !result.output.includes('dtf-sitewide-mobile-polish-v1-style') ||
       !result.output.includes('dtf-sitewide-visual-repair-v2-script')) {
-    report.failures.push(`${rel}: canonical header, content density, visual repair, responsive layout, or UX polish markers missing after reconciliation`);
+    report.failures.push(`${rel}: canonical header, content density, visual repair, responsive layout, UX polish, or mobile polish markers missing after reconciliation`);
     continue;
   }
   if (result.removedLegacy) report.replacedLegacyHeaders += 1;

@@ -59,7 +59,10 @@ jobs:
           test -s site/wordpress/assets/responsive-layout-v1.css
           test -s site/wordpress/assets/sitewide-ux-polish-v1.css
           grep -Fq 'Apply approved sitewide header to release HTML' .github/workflows/build-dtfseeds-public-suite.yml
-          grep -Fq 'data-dtf-sitewide-header="canonical-six-v1"' scripts/lib/sitewide-header-template-v6.mjs
+          grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' scripts/lib/sitewide-header-template-v6.mjs
+          for required in '>Home</a>' '>Seeds</a>' '>Learn</a>' '>Courses</a>' '>Diagnostic</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
+            grep -Fq "$required" scripts/lib/sitewide-header-template-v6.mjs || { echo "Missing canonical nav label: $required" >&2; exit 1; }
+          done
           grep -Fq 'dtf-content-density-v1-style' scripts/lib/sitewide-content-density-v1.mjs
           grep -Fq 'dtf-sitewide-visual-repair-v2-style' scripts/lib/sitewide-visual-repair-v2.mjs
           grep -Fq 'dtf-sitewide-visual-repair-v2-script' scripts/lib/sitewide-visual-repair-v2.mjs

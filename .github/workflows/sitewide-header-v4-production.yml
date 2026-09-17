@@ -68,20 +68,18 @@ jobs:
           test -s site/wordpress/assets/responsive-layout-v1.css
           test -s site/wordpress/assets/sitewide-ux-polish-v1.css
           grep -Fq 'data-dtf-shell="header-v6"' scripts/lib/sitewide-header-template-v6.mjs
-          grep -Fq 'data-dtf-sitewide-header="canonical-six-v1"' scripts/lib/sitewide-header-template-v6.mjs
+          grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' scripts/lib/sitewide-header-template-v6.mjs
           grep -Fq 'dtf-content-density-v1-style' scripts/lib/sitewide-content-density-v1.mjs
           grep -Fq 'dtf-content-density-v1-script' scripts/lib/sitewide-content-density-v1.mjs
           grep -Fq 'dtf-sitewide-visual-repair-v2-style' scripts/lib/sitewide-visual-repair-v2.mjs
           grep -Fq 'dtf-sitewide-visual-repair-v2-script' scripts/lib/sitewide-visual-repair-v2.mjs
           grep -Fq 'SITEWIDE_VISUAL_REPAIR_STYLE_TAG' scripts/lib/sitewide-header-template-v6.mjs
           grep -Fq 'SITEWIDE_VISUAL_REPAIR_SCRIPT_TAG' scripts/lib/sitewide-header-template-v6.mjs
-          for required in '>Genetics</a>' '>Learn</a>' '>Tools</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
+          for required in '>Home</a>' '>Seeds</a>' '>Learn</a>' '>Courses</a>' '>Diagnostic</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
             grep -Fq "$required" scripts/lib/sitewide-header-template-v6.mjs || { echo "Missing canonical nav label: $required" >&2; exit 1; }
           done
-          ! grep -Fq '>Home</a>' scripts/lib/sitewide-header-template-v6.mjs
-          ! grep -Fq '>Seeds</a>' scripts/lib/sitewide-header-template-v6.mjs
-          ! grep -Fq '>Courses</a>' scripts/lib/sitewide-header-template-v6.mjs
-          ! grep -Fq '>Diagnostic</a>' scripts/lib/sitewide-header-template-v6.mjs
+          ! grep -Fq '>Genetics</a>' scripts/lib/sitewide-header-template-v6.mjs
+          ! grep -Fq '>Tools</a>' scripts/lib/sitewide-header-template-v6.mjs
           grep -Fq "./lib/sitewide-header-template-v6.mjs" scripts/apply-sitewide-header.mjs
           grep -Fq "./lib/sitewide-header-template-v6.mjs" scripts/rebuild-wordpress-shared-shell-v3.mjs
 
@@ -165,8 +163,9 @@ jobs:
           if(!header) throw new Error(`V6 header fragment missing on ${route}`);
           const nav=header.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>([\s\S]*?)<\/nav>/i)?.[1]||'';
           const labels=[...nav.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)].map(m=>m[1].replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim());
-          const expected=['Genetics','Learn','Tools','Games','Community','Shop'];
+          const expected=['Home','Seeds','Learn','Courses','Diagnostic','Games','Community','Shop'];
           if(JSON.stringify(labels)!==JSON.stringify(expected)) throw new Error(`Unexpected V6 navigation on ${route}: ${JSON.stringify(labels)}`);
+          if(!/canonical-eight-v1/.test(header)) throw new Error(`canonical-eight-v1 marker missing on ${route}`);
           if(!/dtf-sitewide-header-v6-script/.test(html)) throw new Error(`V6 script missing on ${route}`);
           if(!/dtf-sitewide-visual-repair-v2-style/.test(html)||!/dtf-sitewide-visual-repair-v2-script/.test(html)) throw new Error(`Sitewide visual repair V2 assets missing on ${route}`);
           if((route==='/learn/'||route==='/learn/nutrition-media/')&&(!/dtf-content-density-v1-style/.test(html)||!/dtf-content-density-v1-script/.test(html))) throw new Error(`Learn content-density V1 assets missing on ${route}`);
