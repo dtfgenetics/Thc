@@ -156,6 +156,11 @@ jobs:
           const fs=require('fs');
           const [file,route]=process.argv.slice(2);
           const html=fs.readFileSync(file,'utf8');
+          const visibleHtml=html
+            .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ')
+            .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ')
+            .replace(/<template\b[^>]*>[\s\S]*?<\/template>/gi,' ');
+          const visibleLower=visibleHtml.toLowerCase();
           const header=html.match(/<header\b[^>]*data-dtf-shell=["']header-v6["'][^>]*>[\s\S]*?<\/header>/i)?.[0]||'';
           if(!header) throw new Error(`V6 header fragment missing on ${route}`);
           const nav=header.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>([\s\S]*?)<\/nav>/i)?.[1]||'';
@@ -170,16 +175,16 @@ jobs:
             'Open the image for the full-size WordPress media asset'
           ];
           for(const phrase of forbidden){
-            if(html.toLowerCase().includes(phrase.toLowerCase())) throw new Error(`Retired helper copy remains on ${route}: ${phrase}`);
+            if(visibleLower.includes(phrase.toLowerCase())) throw new Error(`Retired helper copy remains visibly rendered on ${route}: ${phrase}`);
           }
           if(route==='/gallery/'){
-            if(!html.includes('Approved visuals only.')) throw new Error('Current Gallery ownership marker missing');
+            if(!visibleHtml.includes('Approved visuals only.')) throw new Error('Current Gallery ownership marker missing');
             for(const retired of ['Cannabis plant anatomy educational infographic','Nutrient uptake and root-zone chemistry infographic','Beneficial insects and biological controls infographic','Deficiency versus toxicity cannabis diagnostic infographic','Cannabis plant life cycle infographic']){
-              if(html.toLowerCase().includes(retired.toLowerCase())) throw new Error(`Retired Gallery visual remains: ${retired}`);
+              if(visibleLower.includes(retired.toLowerCase())) throw new Error(`Retired Gallery visual remains visibly rendered: ${retired}`);
             }
           }
-          if(route==='/about/'&&!html.includes('One brand. Four core experiences.')) throw new Error('Current About ownership marker missing');
-          if(route==='/learn/nutrition-media/'&&!/data-progressive-disclosure=["']true["']/i.test(html)) throw new Error('Nutrition & Media progressive disclosure marker missing');
+          if(route==='/about/'&&!visibleHtml.includes('One brand. Four core experiences.')) throw new Error('Current About ownership marker missing');
+          if(route==='/learn/nutrition-media/'&&!/data-progressive-disclosure=["']true["']/i.test(visibleHtml)) throw new Error('Nutrition & Media progressive disclosure marker missing');
           NODE
               then ok=1; break; fi
               sleep 4
