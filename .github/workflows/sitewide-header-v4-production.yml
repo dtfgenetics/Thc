@@ -8,6 +8,7 @@ on:
       - scripts/lib/sitewide-header-template.mjs
       - scripts/lib/sitewide-header-template-v6.mjs
       - scripts/lib/sitewide-content-density-v1.mjs
+      - scripts/lib/sitewide-visual-repair-v2.mjs
       - scripts/apply-sitewide-header.mjs
       - scripts/rebuild-wordpress-shared-shell-v3.mjs
       - scripts/verify-sitewide-header-v6-live.mjs
@@ -21,6 +22,7 @@ on:
       - scripts/lib/sitewide-header-template.mjs
       - scripts/lib/sitewide-header-template-v6.mjs
       - scripts/lib/sitewide-content-density-v1.mjs
+      - scripts/lib/sitewide-visual-repair-v2.mjs
       - scripts/apply-sitewide-header.mjs
       - scripts/rebuild-wordpress-shared-shell-v3.mjs
       - scripts/verify-sitewide-header-v6-live.mjs
@@ -56,6 +58,7 @@ jobs:
           node --check scripts/lib/sitewide-header-template.mjs
           node --check scripts/lib/sitewide-header-template-v6.mjs
           node --check scripts/lib/sitewide-content-density-v1.mjs
+          node --check scripts/lib/sitewide-visual-repair-v2.mjs
           node --check scripts/apply-sitewide-header.mjs
           node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
           node --check scripts/verify-sitewide-header-v6-live.mjs
@@ -68,6 +71,10 @@ jobs:
           grep -Fq 'data-dtf-sitewide-header="canonical-six-v1"' scripts/lib/sitewide-header-template-v6.mjs
           grep -Fq 'dtf-content-density-v1-style' scripts/lib/sitewide-content-density-v1.mjs
           grep -Fq 'dtf-content-density-v1-script' scripts/lib/sitewide-content-density-v1.mjs
+          grep -Fq 'dtf-sitewide-visual-repair-v2-style' scripts/lib/sitewide-visual-repair-v2.mjs
+          grep -Fq 'dtf-sitewide-visual-repair-v2-script' scripts/lib/sitewide-visual-repair-v2.mjs
+          grep -Fq 'SITEWIDE_VISUAL_REPAIR_STYLE_TAG' scripts/lib/sitewide-header-template-v6.mjs
+          grep -Fq 'SITEWIDE_VISUAL_REPAIR_SCRIPT_TAG' scripts/lib/sitewide-header-template-v6.mjs
           for required in '>Genetics</a>' '>Learn</a>' '>Tools</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
             grep -Fq "$required" scripts/lib/sitewide-header-template-v6.mjs || { echo "Missing canonical nav label: $required" >&2; exit 1; }
           done
@@ -91,6 +98,9 @@ jobs:
           grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/tools/index.html"
           grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/games/index.html"
           grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/projects/index.html"
+          grep -Fq 'dtf-sitewide-visual-repair-v2-script' "$RUNNER_TEMP/tools/index.html"
+          grep -Fq 'dtf-sitewide-visual-repair-v2-script' "$RUNNER_TEMP/games/index.html"
+          grep -Fq 'dtf-sitewide-visual-repair-v2-script' "$RUNNER_TEMP/projects/index.html"
 
   publish:
     if: ${{ github.event_name != 'pull_request' }}
@@ -149,6 +159,7 @@ jobs:
           const expected=['Genetics','Learn','Tools','Games','Community','Shop'];
           if(JSON.stringify(labels)!==JSON.stringify(expected)) throw new Error(`Unexpected V6 navigation: ${JSON.stringify(labels)}`);
           if(!/dtf-sitewide-header-v6-script/.test(html)) throw new Error('V6 script missing');
+          if(!/dtf-sitewide-visual-repair-v2-style/.test(html)||!/dtf-sitewide-visual-repair-v2-script/.test(html)) throw new Error('Sitewide visual repair V2 assets missing');
           if(route==='/learn/' && (!/dtf-content-density-v1-style/.test(html)||!/dtf-content-density-v1-script/.test(html))) throw new Error('Learn content-density V1 assets missing');
           NODE
               then ok=1; break; fi
