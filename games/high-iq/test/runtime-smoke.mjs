@@ -29,6 +29,13 @@ assert.match(focusCss, /min-height:\s*44px/i);
 assert.match(focusCss, /touch-action:\s*manipulation/i);
 assert.match(focusCss, /prefers-reduced-motion/);
 assert.match(focusCss, /forced-colors/);
+assert.match(focusCss, /player-facing finish pass/);
+assert.match(focusCss, /safe-area-inset-bottom/);
+assert.match(focusCss, /\.answer-option\{[\s\S]*min-height:\s*72px/i);
+assert.match(html, /Verified question bank/);
+assert.match(html, /Retry question bank/);
+assert.doesNotMatch(html, /rollback-only/i);
+assert.doesNotMatch(html, /Legacy development build/i);
 
 const idSelectors = [...app.matchAll(/\$\('#([A-Za-z0-9_-]+)'\)/g)].map((match) => match[1]);
 assert(idSelectors.length >= 35, `Expected a substantial High IQ UI contract, found only ${idSelectors.length} ID selectors.`);
