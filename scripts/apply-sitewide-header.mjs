@@ -24,11 +24,8 @@ if (!uxPolishCss.includes('DTFSeeds sitewide UX polish v1')) {
 const RESPONSIVE_LAYOUT_STYLE_TAG = `<style id="dtf-responsive-layout-v1">${responsiveLayoutCss}</style>`;
 const SITEWIDE_UX_POLISH_STYLE_TAG = `<style id="dtf-sitewide-ux-polish-v1">${uxPolishCss}</style>`;
 
-// Transitional build-gate bridge. The public-suite workflow and Seed Ascent route
-// promoter still contain raw string assertions for the retired V5 shell. Keep
-// those strings in a comment, never in rendered navigation, until those large
-// transactional paths are migrated. V6 live audits inspect the actual primary
-// <nav>, so this cannot make V5 pass as visitor-facing UI.
+// Transitional build-gate bridge. Retain only until every legacy V5 raw-string
+// gate has been migrated to the rendered Header V6 contract.
 const LEGACY_BUILD_GATE_COMPAT_COMMENT = '<!-- dtf-build-gate-compat-v6: data-dtf-shell="header-v5" data-dtf-sitewide-header="approved-reference-v1" >Diagnostic</a> dtf-sitewide-header-v5-script -->';
 
 const report = {
@@ -62,7 +59,7 @@ function occurrences(source, needle) {
 function verifyDocument(source, rel) {
   if (!/<html\b/i.test(source) || !/<body\b/i.test(source)) return { skipped: true };
   const expected = [
-    ['data-dtf-sitewide-header="canonical-six-v1"', 'header'],
+    ['data-dtf-sitewide-header="canonical-eight-v1"', 'header'],
     ['id="dtf-sitewide-header-v6-style"', 'header style'],
     ['id="dtf-content-density-v1-style"', 'content-density style'],
     ['id="dtf-sitewide-visual-repair-v2-style"', 'visual-repair style'],
@@ -75,6 +72,19 @@ function verifyDocument(source, rel) {
   for (const [needle, label] of expected) {
     const count = occurrences(source, needle);
     if (count !== 1) report.failures.push(`${rel}: expected exactly one canonical ${label}; found ${count}`);
+  }
+  const canonicalNavTokens = [
+    ['href="/" data-dtf-nav-group="home">Home</a>', 'Home'],
+    ['href="/seeds/">Seeds</a>', 'Seeds'],
+    ['href="/learn/" data-dtf-nav-group="learn">Learn</a>', 'Learn'],
+    ['href="/courses/" data-dtf-nav-group="courses">Courses</a>', 'Courses'],
+    ['href="/tools/" data-dtf-nav-group="diagnostic">Diagnostic</a>', 'Diagnostic'],
+    ['href="/games/">Games</a>', 'Games'],
+    ['href="/community/">Community</a>', 'Community'],
+    ['href="/shop/" data-dtf-nav-group="shop">Shop</a>', 'Shop'],
+  ];
+  for (const [needle, label] of canonicalNavTokens) {
+    if (!source.includes(needle)) report.failures.push(`${rel}: canonical Header V6 navigation is missing ${label}`);
   }
   const responsiveTokens = [
     '--dtf-layout-max:1360px',
