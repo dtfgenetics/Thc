@@ -1,11 +1,43 @@
-<main class="dtf-v1" data-dtf-layout="gallery-visual-v2">
+<main class="dtf-v1 gallery-v3" data-dtf-layout="gallery-visual-v3">
   <style>
-    .dtf-v1 .gallery-placeholder{display:grid;place-items:center;min-height:240px;padding:32px;border:1px solid var(--dtf-border);border-radius:18px;background:linear-gradient(145deg,#0d2a19,#133c26);color:#fff;text-align:center}.dtf-v1 .gallery-placeholder strong{display:block;font-size:clamp(1.5rem,4vw,2.4rem);line-height:1.05}.dtf-v1 .gallery-placeholder p{max-width:620px;margin:12px auto 0;color:#cbd9cf;line-height:1.65}.dtf-v1 .collection-card{min-height:240px;padding:26px;border:1px solid var(--dtf-border);border-radius:18px;background:var(--dtf-surface);display:flex;flex-direction:column;justify-content:flex-end}.dtf-v1 .collection-card p{color:var(--dtf-muted);line-height:1.65}.dtf-v1 .collection-card .eyebrow{margin:0 0 10px;color:#a88424;font-size:.75rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+    .gallery-v3{--gallery-deep:#07190f;--gallery-leaf:#216c3d;--gallery-gold:#d6b75c;--gallery-line:rgba(16,43,26,.14);--gallery-muted:#5a685e}
+    .gallery-v3 .gallery-stage{position:relative;overflow:hidden;min-height:390px;padding:clamp(26px,5vw,46px);border:1px solid rgba(214,183,92,.23);border-radius:26px;background:linear-gradient(145deg,#07190f 0%,#0e2e1d 52%,#17472d 100%);color:#fff;box-shadow:0 28px 68px rgba(4,24,14,.22)}
+    .gallery-v3 .gallery-stage:before{content:"";position:absolute;inset:-18% -14% auto 44%;height:76%;background:radial-gradient(circle,rgba(214,183,92,.24),rgba(79,166,99,.08) 42%,transparent 70%);pointer-events:none}
+    .gallery-v3 .gallery-stage:after{content:"";position:absolute;inset:auto 6% 8% auto;width:120px;height:120px;border:1px solid rgba(255,255,255,.08);border-radius:28px;transform:rotate(12deg);box-shadow:-140px -40px 0 -1px rgba(255,255,255,.025),-70px -130px 0 -1px rgba(214,183,92,.04)}
+    .gallery-v3 .gallery-stage-copy{position:relative;z-index:2;max-width:560px}
+    .gallery-v3 .gallery-stage-kicker{margin:0 0 14px;color:#efd679;font-size:.72rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase}
+    .gallery-v3 .gallery-stage strong{display:block;max-width:10ch;font-size:clamp(2.3rem,5vw,4.4rem);line-height:.94;letter-spacing:-.055em}
+    .gallery-v3 .gallery-stage p{max-width:52ch;margin:18px 0 0;color:#c8d7cb;line-height:1.68}
+    .gallery-v3 .gallery-badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+    .gallery-v3 .gallery-badges span{display:inline-flex;align-items:center;min-height:34px;padding:7px 11px;border:1px solid rgba(255,255,255,.1);border-radius:999px;background:rgba(255,255,255,.055);color:#e5eee7;font-size:.78rem;font-weight:800}
+    .gallery-v3 .collection-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+    .gallery-v3 .collection-card{position:relative;display:flex;min-height:300px;flex-direction:column;overflow:hidden;padding:26px;border:1px solid var(--gallery-line);border-radius:20px;background:linear-gradient(180deg,#fff,#faf8f1);box-shadow:0 15px 36px rgba(10,37,21,.07);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+    .gallery-v3 .collection-card:before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,#216c3d,#d6b75c,transparent 84%)}
+    .gallery-v3 .collection-card .eyebrow{margin:0 0 34px;color:#8a732f;font-size:.73rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+    .gallery-v3 .collection-card h3{max-width:13ch;margin:0 0 10px;font-size:clamp(1.45rem,2.2vw,1.9rem);line-height:1.02;letter-spacing:-.035em}
+    .gallery-v3 .collection-card p:not(.eyebrow){margin:0;color:var(--gallery-muted);line-height:1.68}
+    .gallery-v3 .collection-card .card-link{margin-top:auto;padding-top:24px;font-weight:850}
+    .gallery-v3 .gallery-standard{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(24px,5vw,64px);align-items:start}
+    .gallery-v3 .standard-intro{position:sticky;top:110px;padding:26px;border-radius:22px;background:linear-gradient(145deg,#0b2818,#153c25);color:#fff}
+    .gallery-v3 .standard-intro .eyebrow{margin:0 0 16px;color:#efd679;font-size:.72rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+    .gallery-v3 .standard-intro h2{max-width:9ch;margin:0;font-size:clamp(2.2rem,4.5vw,4rem);line-height:.95;letter-spacing:-.05em;color:#fff}
+    .gallery-v3 .standard-intro p{margin:16px 0 0;color:#c9d7cc;line-height:1.68}
+    .gallery-v3 .standard-list{display:grid;gap:10px}
+    .gallery-v3 .standard-row{display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:22px 0;border-bottom:1px solid var(--gallery-line)}
+    .gallery-v3 .standard-row:first-child{padding-top:0}
+    .gallery-v3 .standard-row span{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:#eaf0e9;color:#216c3d;font-weight:900}
+    .gallery-v3 .standard-row h3{margin:2px 0 7px;font-size:1.25rem}
+    .gallery-v3 .standard-row p{margin:0;color:var(--gallery-muted);line-height:1.65}
+    @media(hover:hover) and (pointer:fine){.gallery-v3 .collection-card:hover{transform:translateY(-3px);border-color:rgba(33,108,61,.3);box-shadow:0 24px 52px rgba(10,37,21,.12)}}
+    @media(max-width:960px){.gallery-v3 .collection-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.gallery-v3 .gallery-standard{grid-template-columns:1fr}.gallery-v3 .standard-intro{position:relative;top:auto}}
+    @media(max-width:680px){.gallery-v3 .collection-grid{grid-template-columns:1fr}.gallery-v3 .collection-card{min-height:0}.gallery-v3 .gallery-stage{min-height:320px}.gallery-v3 .standard-row{grid-template-columns:46px minmax(0,1fr);gap:12px}.gallery-v3 .standard-row span{width:38px;height:38px}}
+    @media(prefers-reduced-motion:reduce){.gallery-v3 .collection-card{transition:none}.gallery-v3 .collection-card:hover{transform:none}}
   </style>
 
   <section class="site-hero" aria-labelledby="gallery-title">
     <div class="wrap hero-grid">
       <div class="hero-copy">
+        <p class="eyebrow">DTF visual library</p>
         <h1 id="gallery-title">DTF gallery.</h1>
         <p>Genetics, education, games, community, and brand work organized by the place each asset belongs.</p>
         <div class="actions">
@@ -14,34 +46,39 @@
           <a class="btn btn-secondary" href="/games/">Game art</a>
         </div>
       </div>
-      <div class="gallery-placeholder" aria-label="DTF Genetics visual standard">
-        <div><strong>Approved visuals only.</strong><p>Public imagery is shown only when it has been reviewed for the exact page, subject, crop, and responsive layout where it appears.</p></div>
-      </div>
+      <aside class="gallery-stage" aria-label="DTF Genetics visual standard">
+        <div class="gallery-stage-copy">
+          <p class="gallery-stage-kicker">Production visual policy</p>
+          <strong>Approved visuals only.</strong>
+          <p>Public imagery is shown only when it has been reviewed for the exact page, subject, crop, and responsive layout where it appears.</p>
+          <div class="gallery-badges" aria-label="Visual approval criteria"><span>Page-specific</span><span>Production quality</span><span>Responsive</span><span>Accurate context</span></div>
+        </div>
+      </aside>
     </div>
   </section>
 
   <section class="section">
     <div class="wrap">
       <div class="section-heading"><h2>Browse by destination.</h2><p>Visuals should support the content they belong to, not act as generic filler.</p></div>
-      <div class="grid-3">
-        <article class="collection-card"><p class="eyebrow">Genetics</p><h3>Breeding projects & releases</h3><p>Lineage, generations, selection context, release pages, and approved strain artwork.</p><a class="card-link" href="/seeds/">Open genetics →</a></article>
-        <article class="collection-card"><p class="eyebrow">Education</p><h3>Teaching Healthy Cultivation</h3><p>Plant science, cultivation subjects, courses, reference material, and approved instructional visuals.</p><a class="card-link" href="/learn/">Start learning →</a></article>
-        <article class="collection-card"><p class="eyebrow">Games</p><h3>DTF game art</h3><p>Characters, environments, interfaces, cards, boards, animation assets, and playable releases.</p><a class="card-link" href="/games/">Open games →</a></article>
-        <article class="collection-card"><p class="eyebrow">Tools</p><h3>Grow & diagnostic tools</h3><p>Measurement interfaces, grow records, diagnostic workflows, charts, and decision-support visuals.</p><a class="card-link" href="/tools/">Open tools →</a></article>
-        <article class="collection-card"><p class="eyebrow">Community</p><h3>Events & community</h3><p>Grow-offs, community projects, educational events, announcements, and approved event graphics.</p><a class="card-link" href="/community/">Open community →</a></article>
-        <article class="collection-card"><p class="eyebrow">Shop</p><h3>Current products</h3><p>Customer-facing releases use product-specific artwork rather than unrelated educational diagrams.</p><a class="card-link" href="/shop/">Open shop →</a></article>
+      <div class="collection-grid">
+        <article class="collection-card"><p class="eyebrow">01 · Genetics</p><h3>Breeding projects & releases</h3><p>Lineage, generations, selection context, release pages, and approved strain artwork.</p><a class="card-link" href="/seeds/">Open genetics →</a></article>
+        <article class="collection-card"><p class="eyebrow">02 · Education</p><h3>Teaching Healthy Cultivation</h3><p>Plant science, cultivation subjects, courses, reference material, and approved instructional visuals.</p><a class="card-link" href="/learn/">Start learning →</a></article>
+        <article class="collection-card"><p class="eyebrow">03 · Games</p><h3>DTF game art</h3><p>Characters, environments, interfaces, cards, boards, animation assets, and playable releases.</p><a class="card-link" href="/games/">Open games →</a></article>
+        <article class="collection-card"><p class="eyebrow">04 · Tools</p><h3>Grow & diagnostic tools</h3><p>Measurement interfaces, grow records, diagnostic workflows, charts, and decision-support visuals.</p><a class="card-link" href="/tools/">Open tools →</a></article>
+        <article class="collection-card"><p class="eyebrow">05 · Community</p><h3>Events & community</h3><p>Grow-offs, community projects, educational events, announcements, and approved event graphics.</p><a class="card-link" href="/community/">Open community →</a></article>
+        <article class="collection-card"><p class="eyebrow">06 · Shop</p><h3>Current products</h3><p>Customer-facing releases use product-specific artwork rather than unrelated educational diagrams.</p><a class="card-link" href="/shop/">Open shop →</a></article>
       </div>
     </div>
   </section>
 
   <section class="section section-light">
-    <div class="wrap">
-      <div class="section-heading"><h2>Visual standard.</h2><p>Every public image must be accurate, relevant to its exact placement, readable at the rendered size, and reviewed across phone, tablet, and desktop layouts.</p></div>
-      <div class="grid-4">
-        <article class="card"><div class="card-body"><h3>Purpose</h3><p>Every asset needs a defined job and page destination. No decorative filler.</p></div></article>
-        <article class="card"><div class="card-body"><h3>Quality</h3><p>Use production-resolution artwork with legible text, clean crops, and no screenshot-like full sheets inside cards.</p></div></article>
-        <article class="card"><div class="card-body"><h3>Context</h3><p>Do not present generic or educational imagery as a specific DTF cultivar, product, grow, or diagnostic result.</p></div></article>
-        <article class="card"><div class="card-body"><h3>Responsive</h3><p>Approve the rendered result on mobile, tablet, laptop, and wide desktop before public use.</p></div></article>
+    <div class="wrap gallery-standard">
+      <div class="standard-intro"><p class="eyebrow">Visual standard</p><h2>Quality before quantity.</h2><p>Every public image must be accurate, relevant to its exact placement, readable at the rendered size, and reviewed across phone, tablet, and desktop layouts.</p></div>
+      <div class="standard-list">
+        <article class="standard-row"><span>01</span><div><h3>Purpose</h3><p>Every asset needs a defined job and page destination. No decorative filler just to make a section look occupied.</p></div></article>
+        <article class="standard-row"><span>02</span><div><h3>Quality</h3><p>Use production-resolution artwork with legible text, clean crops, and no screenshot-like full sheets inside cards.</p></div></article>
+        <article class="standard-row"><span>03</span><div><h3>Context</h3><p>Do not present generic or educational imagery as a specific DTF cultivar, product, grow, or diagnostic result.</p></div></article>
+        <article class="standard-row"><span>04</span><div><h3>Responsive</h3><p>Approve the rendered result on mobile, tablet, laptop, and wide desktop before public use.</p></div></article>
       </div>
     </div>
   </section>
