@@ -12,15 +12,17 @@ const JSON_REPORT=process.env.DTF_VISUAL_AUDIT_JSON||'sitewide-visual-integrity.
 const MARKDOWN_REPORT=process.env.DTF_VISUAL_AUDIT_MD||'sitewide-visual-integrity.md';
 
 const expectedNav=[
-  ['Genetics','/seeds/'],
+  ['Home','/'],
+  ['Seeds','/seeds/'],
   ['Learn','/learn/'],
-  ['Tools','/tools/'],
+  ['Courses','/courses/'],
+  ['Diagnostic','/tools/'],
   ['Games','/games/'],
   ['Community','/community/'],
   ['Shop','/shop/']
 ];
-const obsoletePrimaryLabels=['Home','Seeds','Courses','Diagnostic'];
-const seedRoutes=['/','/seeds/','/learn/','/tools/','/games/','/projects/','/community/','/shop/'];
+const obsoletePrimaryLabels=['Genetics','Tools'];
+const seedRoutes=['/','/seeds/','/learn/','/courses/','/tools/','/games/','/projects/','/community/','/shop/'];
 const densityRoutes=new Set(['/learn/','/tools/','/games/','/projects/']);
 const ignoredPrefixes=['/wp-admin/','/wp-json/','/wp-login.php','/feed/','/comments/feed/','/xmlrpc.php'];
 const ignoredExtensions=/\.(?:css|js|mjs|map|json|xml|txt|pdf|zip|gz|tgz|rar|7z|png|jpe?g|gif|webp|avif|svg|ico|mp4|webm|mov|mp3|wav|woff2?|ttf|eot)$/i;
@@ -111,7 +113,7 @@ async function fetchHtml(path){
       const url=new URL(path,`${BASE_URL}/`);
       url.searchParams.set('dtf_visual_audit',`${Date.now()}-${attempt}`);
       const started=Date.now();
-      const response=await fetch(url,{redirect:'follow',signal:AbortSignal.timeout(25_000),headers:{accept:'text/html,*/*','cache-control':'no-cache, no-store, max-age=0',pragma:'no-cache','user-agent':'DTFSeeds-Visual-Integrity/2.0'}});
+      const response=await fetch(url,{redirect:'follow',signal:AbortSignal.timeout(25_000),headers:{accept:'text/html,*/*','cache-control':'no-cache, no-store, max-age=0',pragma:'no-cache','user-agent':'DTFSeeds-Visual-Integrity/2.1'}});
       const body=await response.text();
       return {path,status:response.status,ok:response.ok,contentType:response.headers.get('content-type')||'',finalUrl:response.url,body,durationMs:Date.now()-started,error:null};
     }catch(error){lastError=error;await sleep(250*attempt);}
@@ -130,8 +132,8 @@ function inspectPage(fetched,depth){
 
   const shell=extractHeader(html);
   if(shell.count!==1) issues.push(`Expected exactly one V6 header; found ${shell.count}`);
-  const canonicalCount=count(html,/data-dtf-sitewide-header=["']canonical-six-v1["']/gi);
-  if(canonicalCount!==1) issues.push(`Expected exactly one canonical-six-v1 marker; found ${canonicalCount}`);
+  const canonicalCount=count(html,/data-dtf-sitewide-header=["']canonical-eight-v1["']/gi);
+  if(canonicalCount!==1) issues.push(`Expected exactly one canonical-eight-v1 marker; found ${canonicalCount}`);
   const uxCount=count(html,/id=["']dtf-sitewide-ux-polish-v1["']/gi);
   if(uxCount!==1) issues.push(`Expected exactly one shared UX polish marker; found ${uxCount}`);
   const responsiveCount=count(html,/id=["']dtf-responsive-layout-v1["']/gi);
@@ -217,8 +219,8 @@ async function inspectImages(pages){
     const batch=candidates.slice(offset,offset+CONCURRENCY);
     const checked=await Promise.all(batch.map(async item=>{
       try{
-        let response=await fetch(item.url,{method:'HEAD',redirect:'follow',signal:AbortSignal.timeout(15_000),headers:{'cache-control':'no-cache','user-agent':'DTFSeeds-Visual-Integrity/2.0'}});
-        if(response.status===405||response.status===403) response=await fetch(item.url,{method:'GET',redirect:'follow',signal:AbortSignal.timeout(15_000),headers:{range:'bytes=0-0','cache-control':'no-cache','user-agent':'DTFSeeds-Visual-Integrity/2.0'}});
+        let response=await fetch(item.url,{method:'HEAD',redirect:'follow',signal:AbortSignal.timeout(15_000),headers:{'cache-control':'no-cache','user-agent':'DTFSeeds-Visual-Integrity/2.1'}});
+        if(response.status===405||response.status===403) response=await fetch(item.url,{method:'GET',redirect:'follow',signal:AbortSignal.timeout(15_000),headers:{range:'bytes=0-0','cache-control':'no-cache','user-agent':'DTFSeeds-Visual-Integrity/2.1'}});
         return {...item,status:response.status,ok:response.ok,contentType:response.headers.get('content-type')||'',error:null};
       }catch(error){return {...item,status:0,ok:false,contentType:'',error:error?.message||String(error)};}
     }));
