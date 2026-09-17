@@ -1,7 +1,45 @@
-<main class="dtf-v1" data-dtf-layout="contact-visual-v1">
+<main class="dtf-v1 contact-v2" data-dtf-layout="contact-visual-v2">
+  <style>
+    .contact-v2{--contact-deep:#07190f;--contact-leaf:#216c3d;--contact-gold:#d6b75c;--contact-line:rgba(16,43,26,.14);--contact-muted:#5a685e}
+    .contact-v2 .contact-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(330px,.82fr);gap:clamp(28px,6vw,72px);align-items:center}
+    .contact-v2 .contact-router-preview{position:relative;overflow:hidden;padding:clamp(28px,4vw,40px);border:1px solid rgba(214,183,92,.23);border-radius:25px;background:linear-gradient(145deg,#07190f,#103220 64%,#17492e);color:#fff;box-shadow:0 28px 68px rgba(4,24,14,.21)}
+    .contact-v2 .contact-router-preview:before{content:"";position:absolute;inset:-22% -12% auto 44%;height:82%;background:radial-gradient(circle,rgba(214,183,92,.24),rgba(79,166,99,.08) 42%,transparent 70%);pointer-events:none}
+    .contact-v2 .contact-router-preview .eyebrow{position:relative;margin:0 0 18px;color:#efd679;font-size:.72rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+    .contact-v2 .contact-router-preview h2{position:relative;max-width:10ch;margin:0;color:#fff;font-size:clamp(2.1rem,4.4vw,3.9rem);line-height:.96;letter-spacing:-.05em}
+    .contact-v2 .contact-router-preview p{position:relative;margin:16px 0 0;color:#c7d6ca;line-height:1.65}
+    .contact-v2 .contact-mini-paths{position:relative;display:grid;gap:8px;margin-top:26px}
+    .contact-v2 .contact-mini-path{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid rgba(255,255,255,.09);border-radius:13px;background:rgba(255,255,255,.05);color:#eef5ef;font-weight:800;font-size:.88rem}
+    .contact-v2 .contact-mini-path span:last-child{color:#efd679}
+    .contact-v2 .route-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .contact-v2 .route-card{position:relative;display:grid;grid-template-columns:52px minmax(0,1fr);gap:18px;min-height:190px;padding:24px;border:1px solid var(--contact-line);border-radius:19px;background:linear-gradient(180deg,#fff,#faf8f1);box-shadow:0 13px 32px rgba(10,37,21,.065);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+    .contact-v2 .route-card:before{content:"";position:absolute;inset:0 0 auto;height:3px;border-radius:19px 19px 0 0;background:linear-gradient(90deg,#216c3d,#d6b75c,transparent 84%)}
+    .contact-v2 .route-icon{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:#e9f0e8;color:#216c3d;font-weight:950;font-size:.78rem}
+    .contact-v2 .route-copy{display:flex;min-width:0;flex-direction:column}
+    .contact-v2 .route-copy .eyebrow{margin:1px 0 8px;color:#8a732f;font-size:.68rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+    .contact-v2 .route-copy h3{margin:0 0 8px;font-size:1.28rem;letter-spacing:-.025em}
+    .contact-v2 .route-copy p{margin:0;color:var(--contact-muted);line-height:1.62}
+    .contact-v2 .route-copy .card-link{margin-top:auto;padding-top:17px;font-weight:850}
+    .contact-v2 .privacy-wrap{display:grid;grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);gap:clamp(24px,5vw,58px);align-items:start}
+    .contact-v2 .privacy-intro{position:sticky;top:110px;padding:clamp(27px,4vw,40px);border-radius:24px;background:linear-gradient(145deg,#0a2818,#143b25);color:#fff}
+    .contact-v2 .privacy-intro .eyebrow{margin:0 0 15px;color:#efd679;font-size:.72rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+    .contact-v2 .privacy-intro h2{max-width:9ch;margin:0;color:#fff;font-size:clamp(2.1rem,4vw,3.6rem);line-height:.96;letter-spacing:-.05em}
+    .contact-v2 .privacy-intro p{margin:17px 0 0;color:#c8d6cb;line-height:1.68}
+    .contact-v2 .privacy-list{display:grid;gap:0}
+    .contact-v2 .privacy-item{display:grid;grid-template-columns:52px minmax(0,1fr);gap:15px;padding:22px 0;border-bottom:1px solid var(--contact-line)}
+    .contact-v2 .privacy-item:first-child{padding-top:0}
+    .contact-v2 .privacy-item span{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:#e9f0e8;color:#216c3d;font-weight:900}
+    .contact-v2 .privacy-item h3{margin:2px 0 7px;font-size:1.22rem}
+    .contact-v2 .privacy-item p{margin:0;color:var(--contact-muted);line-height:1.65}
+    @media(hover:hover) and (pointer:fine){.contact-v2 .route-card:hover{transform:translateY(-3px);border-color:rgba(33,108,61,.3);box-shadow:0 22px 48px rgba(10,37,21,.11)}}
+    @media(max-width:900px){.contact-v2 .contact-hero,.contact-v2 .privacy-wrap{grid-template-columns:1fr}.contact-v2 .privacy-intro{position:relative;top:auto}}
+    @media(max-width:700px){.contact-v2 .route-grid{grid-template-columns:1fr}.contact-v2 .route-card{min-height:0;grid-template-columns:44px minmax(0,1fr);gap:14px;padding:21px}.contact-v2 .route-icon{width:40px;height:40px}.contact-v2 .privacy-item{grid-template-columns:44px minmax(0,1fr);gap:12px}.contact-v2 .privacy-item span{width:38px;height:38px}}
+    @media(prefers-reduced-motion:reduce){.contact-v2 .route-card{transition:none}.contact-v2 .route-card:hover{transform:none}}
+  </style>
+
   <section class="site-hero" aria-labelledby="contact-title">
-    <div class="wrap">
+    <div class="wrap contact-hero">
       <div class="hero-copy">
+        <p class="eyebrow">DTF contact routing</p>
         <h1 id="contact-title">Get to the right place.</h1>
         <p>Choose the reason you are reaching out so genetics questions, learning questions, game feedback, collaboration, and community conversation do not all collapse into one generic contact page.</p>
         <div class="actions">
@@ -9,30 +47,41 @@
           <a class="btn btn-secondary" href="/community/">Community information</a>
         </div>
       </div>
+      <aside class="contact-router-preview" aria-label="Contact destinations">
+        <p class="eyebrow">Start with intent</p>
+        <h2>One question. One clear route.</h2>
+        <p>Use the part of DTF that owns the subject first. That keeps the right context attached when you move into discussion.</p>
+        <div class="contact-mini-paths">
+          <div class="contact-mini-path"><span>Genetics & lineage</span><span>→</span></div>
+          <div class="contact-mini-path"><span>Plant science & tools</span><span>→</span></div>
+          <div class="contact-mini-path"><span>Games & feedback</span><span>→</span></div>
+          <div class="contact-mini-path"><span>Community & collaboration</span><span>→</span></div>
+        </div>
+      </aside>
     </div>
   </section>
 
   <section class="section section-light">
     <div class="wrap">
       <div class="section-heading"><h2>Route your question.</h2><p>Different questions need different context. Start from the section that owns the subject.</p></div>
-      <div class="grid-3">
-        <article class="card"><div class="card-body"><h3>Genetics question</h3><p>Open the genetics profile first so lineage and generation context stay attached to the question.</p><a class="card-link" href="/seeds/">Open genetics →</a></div></article>
-        <article class="card"><div class="card-body"><h3>Cultivation education</h3><p>Use the learning center or Grow Doc when the question is about plant science or plant-health reasoning.</p><a class="card-link" href="/learn/">Open learning →</a></div></article>
-        <article class="card"><div class="card-body"><h3>Game feedback</h3><p>Find the game in the hub, then bring browser details, steps, and screenshots into the community.</p><a class="card-link" href="/games/">Open games →</a></div></article>
-        <article class="card"><div class="card-body"><h3>Community</h3><p>Use the official Discord for discussion, grow-offs, testing, events, and general participation.</p><a class="card-link" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Join Discord →</a></div></article>
-        <article class="card"><div class="card-body"><h3>Tools</h3><p>Open GrowLens or Grow Doc for tool-specific workflows, records, measurements, and diagnosis.</p><a class="card-link" href="/tools/">Open tools →</a></div></article>
-        <article class="card"><div class="card-body"><h3>Brand & collaboration</h3><p>Use the verified community channel as the public starting point for project and collaboration conversations.</p><a class="card-link" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Open community →</a></div></article>
+      <div class="route-grid">
+        <article class="route-card"><div class="route-icon">01</div><div class="route-copy"><p class="eyebrow">Genetics</p><h3>Lineage or breeding question</h3><p>Open the genetics profile first so lineage, generation, and project context stay attached to the question.</p><a class="card-link" href="/seeds/">Open genetics →</a></div></article>
+        <article class="route-card"><div class="route-icon">02</div><div class="route-copy"><p class="eyebrow">Education</p><h3>Cultivation or plant science</h3><p>Use the learning center or Grow Doc when the question is about plant biology, environment, or plant-health reasoning.</p><a class="card-link" href="/learn/">Open learning →</a></div></article>
+        <article class="route-card"><div class="route-icon">03</div><div class="route-copy"><p class="eyebrow">Games</p><h3>Game feedback or bug report</h3><p>Find the game in the hub first, then bring browser details, steps, and screenshots into the community discussion.</p><a class="card-link" href="/games/">Open games →</a></div></article>
+        <article class="route-card"><div class="route-icon">04</div><div class="route-copy"><p class="eyebrow">Community</p><h3>Discussion, grow-offs, events</h3><p>Use the official Discord for community conversation, testing, grow-offs, events, and general participation.</p><a class="card-link" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Join Discord →</a></div></article>
+        <article class="route-card"><div class="route-icon">05</div><div class="route-copy"><p class="eyebrow">Tools</p><h3>GrowLens or Grow Doc</h3><p>Open the tool first for records, measurements, plant context, and diagnostic workflows before reporting an issue.</p><a class="card-link" href="/tools/">Open tools →</a></div></article>
+        <article class="route-card"><div class="route-icon">06</div><div class="route-copy"><p class="eyebrow">Projects</p><h3>Brand & collaboration</h3><p>Use the verified community channel as the public starting point for project and collaboration conversations.</p><a class="card-link" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Open community →</a></div></article>
       </div>
     </div>
   </section>
 
   <section class="section section-mid">
-    <div class="wrap">
-      <div class="section-heading"><h2>Protect your information.</h2><p>Verified routing is part of the site structure, not just a footer note.</p></div>
-      <div class="grid-3">
-        <article class="panel" style="padding:20px"><h3>Never send credentials</h3><p class="muted">Passwords, recovery codes, private keys, and payment-card numbers do not belong in Discord or direct messages.</p></article>
-        <article class="panel" style="padding:20px"><h3>Verify the destination</h3><p class="muted">Checkout and account pages should remain on a DTF-controlled website or the verified service shown by that page.</p></article>
-        <article class="panel" style="padding:20px"><h3>Use published links</h3><p class="muted">Use the Discord invitation published on dtfseeds.com instead of unsolicited links claiming to represent DTF Genetics.</p></article>
+    <div class="wrap privacy-wrap">
+      <div class="privacy-intro"><p class="eyebrow">Information safety</p><h2>Protect what should stay private.</h2><p>Verified routing is part of the site structure, not just a footer note. Use published DTF destinations and keep credentials out of community conversations.</p></div>
+      <div class="privacy-list">
+        <article class="privacy-item"><span>01</span><div><h3>Never send credentials</h3><p>Passwords, recovery codes, private keys, and payment-card numbers do not belong in Discord or direct messages.</p></div></article>
+        <article class="privacy-item"><span>02</span><div><h3>Verify the destination</h3><p>Checkout and account pages should remain on a DTF-controlled website or the verified service shown by that page.</p></div></article>
+        <article class="privacy-item"><span>03</span><div><h3>Use published links</h3><p>Use the Discord invitation published on dtfseeds.com instead of unsolicited links claiming to represent DTF Genetics.</p></div></article>
       </div>
     </div>
   </section>
