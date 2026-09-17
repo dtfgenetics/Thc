@@ -16,12 +16,14 @@ concurrency:
 jobs:
   smoke:
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       BASE: https://dtfseeds.com/games/protect-the-plants
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Verify live Burn Buds shell and required production assets
         shell: bash
@@ -34,7 +36,8 @@ jobs:
 
           grep -Fqi 'Burn Buds' "$RUNNER_TEMP/index.html"
           grep -Fq 'id="burn-buds-title"' "$RUNNER_TEMP/index.html"
-          required=(app.js styles.css burn-buds-branding.js burn-buds.css runtime-sync-v1.js gameplay-v3.js gameplay-v3.css combat-a11y-v1.js battle-feedback-v1.js battle-feedback-v1.css placement-v1.js placement-v1.css targeting-v1.js targeting-v1.css gamefeel-v1.css manifest.webmanifest sw.js)
+          grep -Fq './gameplay-v4.css' "$RUNNER_TEMP/index.html"
+          required=(app.js styles.css burn-buds-branding.js burn-buds.css runtime-sync-v1.js gameplay-v3.js gameplay-v3.css gameplay-v4.css combat-a11y-v1.js battle-feedback-v1.js battle-feedback-v1.css placement-v1.js placement-v1.css targeting-v1.js targeting-v1.css gamefeel-v1.css manifest.webmanifest sw.js)
           for asset in "${required[@]}"; do
             curl -4 -fsSL --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 45 \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
@@ -46,6 +49,9 @@ jobs:
           grep -Fq 'Tap once to aim. Tap the same cell again to fire.' "$RUNNER_TEMP/targeting-v1.js"
           grep -Fq 'burn-primary-board' "$RUNNER_TEMP/gamefeel-v1.css"
           grep -Fq 'burn-secondary-board' "$RUNNER_TEMP/gamefeel-v1.css"
+          grep -Fq 'min-height: 44px' "$RUNNER_TEMP/gameplay-v4.css"
+          grep -Fq 'env(safe-area-inset-top)' "$RUNNER_TEMP/gameplay-v4.css"
+          grep -Fq 'prefers-reduced-motion' "$RUNNER_TEMP/gameplay-v4.css"
           jq -e '.name == "Burn Buds" and .short_name == "Burn Buds" and .display == "standalone" and .start_url == "./" and .scope == "./"' "$RUNNER_TEMP/manifest.webmanifest" >/dev/null
 
       - name: Exercise live two-player API contract
@@ -91,7 +97,7 @@ jobs:
           {
             echo '## Burn Buds production verification'
             echo
-            echo '- Live shell and required assets: contract checked'
+            echo '- Live shell and required assets, including gameplay v4 touch/turn polish: contract checked'
             echo '- Multiplayer create/join/state/chat API: contract checked'
             echo '- Production route and API reachability: checked'
             if [ -n "${ROOM:-}" ]; then echo "- Temporary smoke-test room: \`$ROOM\`"; fi
