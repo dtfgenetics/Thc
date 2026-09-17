@@ -5,6 +5,7 @@ import {
   SITEWIDE_HEADER_HTML,
   SITEWIDE_HEADER_SCRIPT_TAG,
   SITEWIDE_HEADER_STYLE_TAG,
+  SITEWIDE_MOBILE_POLISH_STYLE_TAG,
 } from './lib/sitewide-header-template-v6.mjs';
 
 const suiteRoot = resolve(process.argv[2] || 'release');
@@ -18,7 +19,7 @@ const [responsiveLayoutCss, uxPolishCss] = await Promise.all([
 if (!responsiveLayoutCss.includes('DTFSeeds shared responsive layout system v1')) throw new Error('Responsive layout stylesheet marker missing');
 if (!uxPolishCss.includes('DTFSeeds sitewide UX polish v1')) throw new Error('Sitewide UX polish stylesheet marker missing');
 
-const sharedStyles = `${SITEWIDE_HEADER_STYLE_TAG}\n<style id="dtf-responsive-layout-v1">${responsiveLayoutCss}</style>\n<style id="dtf-sitewide-ux-polish-v1">${uxPolishCss}</style>`;
+const sharedStyles = `${SITEWIDE_HEADER_STYLE_TAG}\n<style id="dtf-responsive-layout-v1">${responsiveLayoutCss}</style>\n<style id="dtf-sitewide-ux-polish-v1">${uxPolishCss}</style>\n${SITEWIDE_MOBILE_POLISH_STYLE_TAG}`;
 const targets = ['tools/index.html', 'games/index.html', 'projects/index.html'];
 
 function stripOwnedShell(source) {
@@ -26,6 +27,7 @@ function stripOwnedShell(source) {
     .replace(/<style\b[^>]*id=["']dtf-sitewide-header-v[56]-style["'][^>]*>[\s\S]*?<\/style>\s*/gi, '')
     .replace(/<style\b[^>]*id=["']dtf-responsive-layout-v1["'][^>]*>[\s\S]*?<\/style>\s*/gi, '')
     .replace(/<style\b[^>]*id=["']dtf-sitewide-ux-polish-v1["'][^>]*>[\s\S]*?<\/style>\s*/gi, '')
+    .replace(/<style\b[^>]*id=["']dtf-sitewide-mobile-polish-v1-style["'][^>]*>[\s\S]*?<\/style>\s*/gi, '')
     .replace(/<script\b[^>]*id=["']dtf-sitewide-header-v[56]-script["'][^>]*>[\s\S]*?<\/script>\s*/gi, '')
     .replace(/<header\b[^>]*data-dtf-sitewide-header=["'][^"']+["'][^>]*>[\s\S]*?<\/header>\s*/gi, '');
 
@@ -61,6 +63,7 @@ function normalize(source, rel) {
 
   const header = html.match(/<header\b[^>]*data-dtf-shell=["']header-v6["'][^>]*>[\s\S]*?<\/header>/i)?.[0] || '';
   if (!header.includes('data-dtf-sitewide-header="canonical-eight-v1"')) throw new Error(`${rel}: canonical V6 marker missing after normalization`);
+  if (!html.includes('id="dtf-sitewide-mobile-polish-v1-style"')) throw new Error(`${rel}: mobile polish marker missing after normalization`);
   const nav = header.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>([\s\S]*?)<\/nav>/i)?.[1] || '';
   const labels = [...nav.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)].map((m) => m[1].replace(/<[^>]+>/g, '').trim());
   const expected = ['Home', 'Seeds', 'Learn', 'Courses', 'Diagnostic', 'Games', 'Community', 'Shop'];
@@ -82,4 +85,4 @@ for (const rel of targets) {
   report.push({ rel, changed: output !== source, bytes: Buffer.byteLength(output) });
 }
 
-console.log(JSON.stringify({ ok: true, suiteRoot, shell: 'header-v6', navigation: 'canonical-eight-v1', targets: report }, null, 2));
+console.log(JSON.stringify({ ok: true, suiteRoot, shell: 'header-v6', navigation: 'canonical-eight-v1', mobilePolish: 'v1', targets: report }, null, 2));
