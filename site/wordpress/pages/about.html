@@ -1,7 +1,38 @@
-<main class="dtf-v1" data-dtf-layout="about-visual-v1">
+<main class="dtf-v1 about-v2" data-dtf-layout="about-visual-v2">
+  <style>
+    .about-v2{--about-deep:#07190f;--about-leaf:#216c3d;--about-gold:#d6b75c;--about-cream:#f7f3e7;--about-line:rgba(16,43,26,.14)}
+    .about-v2 .about-hero-panel{position:relative;overflow:hidden;padding:clamp(24px,4vw,38px);border:1px solid rgba(214,183,92,.25);border-radius:24px;background:linear-gradient(145deg,#07190f,#103322 66%,#17452c);color:#fff;box-shadow:0 26px 64px rgba(4,24,14,.2)}
+    .about-v2 .about-hero-panel:before{content:"";position:absolute;inset:-35% -10% auto 48%;height:90%;background:radial-gradient(circle,rgba(214,183,92,.24),transparent 66%);pointer-events:none}
+    .about-v2 .about-panel-kicker{margin:0 0 18px;color:#efd679;font-size:.74rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase}
+    .about-v2 .about-hero-panel h2{max-width:10ch;margin:0;font-size:clamp(2.1rem,4.5vw,4rem);line-height:.94;letter-spacing:-.05em;color:#fff}
+    .about-v2 .about-system-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:28px}
+    .about-v2 .about-system{min-height:132px;padding:18px;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:rgba(255,255,255,.055);backdrop-filter:blur(4px)}
+    .about-v2 .about-system span{display:inline-grid;place-items:center;width:30px;height:30px;margin-bottom:20px;border-radius:50%;background:rgba(214,183,92,.15);color:#efd679;font-weight:900;font-size:.78rem}
+    .about-v2 .about-system h3{margin:0 0 6px;color:#fff;font-size:1.08rem}
+    .about-v2 .about-system p{margin:0;color:#c8d6cb;line-height:1.55;font-size:.9rem}
+    .about-v2 .about-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+    .about-v2 .about-card{display:flex;min-height:260px;flex-direction:column;padding:24px;border:1px solid var(--about-line);border-radius:20px;background:linear-gradient(180deg,#fff,#faf8f1);box-shadow:0 14px 34px rgba(10,37,21,.07)}
+    .about-v2 .about-card-index{display:inline-flex;align-items:center;gap:8px;margin-bottom:28px;color:#8a732f;font-size:.74rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+    .about-v2 .about-card-index:before{content:"";width:28px;height:1px;background:var(--about-gold)}
+    .about-v2 .about-card h3{margin:0 0 10px;font-size:1.35rem;letter-spacing:-.025em}
+    .about-v2 .about-card p{margin:0;color:#5a685e;line-height:1.68}
+    .about-v2 .about-card .card-link{margin-top:auto;padding-top:22px;font-weight:850}
+    .about-v2 .principle-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .about-v2 .principle{position:relative;padding:26px 24px 24px;border-top:3px solid rgba(33,108,61,.52);border-radius:0 0 18px 18px;background:rgba(255,255,255,.68)}
+    .about-v2 .principle strong{display:block;margin-bottom:9px;font-size:1.16rem;color:#173322}
+    .about-v2 .principle p{margin:0;color:#5a685e;line-height:1.68}
+    .about-v2 .about-cta{position:relative;overflow:hidden;padding:clamp(28px,5vw,48px);border-radius:24px;background:linear-gradient(120deg,#0b2818,#153c25);color:#fff}
+    .about-v2 .about-cta:after{content:"DTF";position:absolute;right:3%;bottom:-18%;font-size:clamp(6rem,16vw,14rem);font-weight:950;letter-spacing:-.08em;color:rgba(255,255,255,.035);pointer-events:none}
+    .about-v2 .about-cta .section-heading h2,.about-v2 .about-cta .section-heading p{color:#fff}
+    .about-v2 .about-cta .section-heading p{color:#c8d6cb}
+    @media(max-width:1000px){.about-v2 .about-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:760px){.about-v2 .about-system-grid,.about-v2 .principle-grid,.about-v2 .about-grid{grid-template-columns:1fr}.about-v2 .about-system{min-height:0}.about-v2 .about-card{min-height:0}.about-v2 .about-hero-panel h2{max-width:12ch}}
+  </style>
+
   <section class="site-hero" aria-labelledby="about-title">
     <div class="wrap hero-grid">
       <div class="hero-copy">
+        <p class="eyebrow">DTF Genetics · Dream the Future</p>
         <h1 id="about-title">Dream the future.</h1>
         <p>DTF Genetics brings breeding, plant-science education, practical cultivation tools, original games, and community into one connected ecosystem.</p>
         <div class="actions">
@@ -10,26 +41,27 @@
           <a class="btn btn-secondary" href="/community/">Join community</a>
         </div>
       </div>
-      <div class="panel" style="padding:26px">
-        <h2 style="font-size:2.25rem">One brand. Four core experiences.</h2>
-        <div class="grid-2" style="margin-top:18px">
-          <article class="panel" style="padding:17px"><h3>Genetics</h3><p class="muted">Lineage, generations, selection direction, and project history.</p></article>
-          <article class="panel" style="padding:17px"><h3>Education</h3><p class="muted">Teaching Healthy Cultivation and plant-science references.</p></article>
-          <article class="panel" style="padding:17px"><h3>Tools</h3><p class="muted">Grow records, measurements, and plant-health reasoning.</p></article>
-          <article class="panel" style="padding:17px"><h3>Games</h3><p class="muted">Original browser and tabletop experiences with independent identities.</p></article>
+      <aside class="about-hero-panel" aria-label="DTF core experiences">
+        <p class="about-panel-kicker">One connected ecosystem</p>
+        <h2>One brand. Four core experiences.</h2>
+        <div class="about-system-grid">
+          <article class="about-system"><span>01</span><h3>Genetics</h3><p>Lineage, generations, selection direction, and project history.</p></article>
+          <article class="about-system"><span>02</span><h3>Education</h3><p>Teaching Healthy Cultivation and plant-science references.</p></article>
+          <article class="about-system"><span>03</span><h3>Tools</h3><p>Grow records, measurements, and plant-health reasoning.</p></article>
+          <article class="about-system"><span>04</span><h3>Games</h3><p>Original browser and tabletop experiences with independent identities.</p></article>
         </div>
-      </div>
+      </aside>
     </div>
   </section>
 
   <section class="section section-light">
     <div class="wrap">
       <div class="section-heading"><h2>Built as one system.</h2><p>Each part of DTF should reinforce the others instead of feeling like unrelated microsites.</p></div>
-      <div class="grid-4">
-        <article class="card"><div class="card-body"><h3>Genetics</h3><p>Document the line, generation, selection direction, and project history.</p><a class="card-link" href="/seeds/">Explore genetics →</a></div></article>
-        <article class="card"><div class="card-body"><h3>Education</h3><p>Teach the biology and cultivation science behind the decisions.</p><a class="card-link" href="/learn/">Start learning →</a></div></article>
-        <article class="card"><div class="card-body"><h3>Tools</h3><p>Turn observations and measurements into better records and reasoning.</p><a class="card-link" href="/tools/">Open tools →</a></div></article>
-        <article class="card"><div class="card-body"><h3>Games</h3><p>Build memorable interactive experiences around the DTF world.</p><a class="card-link" href="/games/">Play games →</a></div></article>
+      <div class="about-grid">
+        <article class="about-card"><div class="about-card-index">01 · Genetics</div><h3>Document the breeding work.</h3><p>Keep the line, generation, selection direction, and project history visible without turning expectations into guarantees.</p><a class="card-link" href="/seeds/">Explore genetics →</a></article>
+        <article class="about-card"><div class="about-card-index">02 · Education</div><h3>Teach the plant behind the pack.</h3><p>Connect biology, environment, roots, nutrition, plant health, harvest, outdoor work, and measurement in one learning system.</p><a class="card-link" href="/learn/">Start learning →</a></article>
+        <article class="about-card"><div class="about-card-index">03 · Tools</div><h3>Turn observations into records.</h3><p>Use GrowLens and Grow Doc to preserve context, compare evidence, and make better-supported cultivation decisions.</p><a class="card-link" href="/tools/">Open tools →</a></article>
+        <article class="about-card"><div class="about-card-index">04 · Games</div><h3>Make the world interactive.</h3><p>Build original browser and tabletop experiences that feel connected to DTF without making every game look the same.</p><a class="card-link" href="/games/">Play games →</a></article>
       </div>
     </div>
   </section>
@@ -37,16 +69,16 @@
   <section class="section section-mid">
     <div class="wrap">
       <div class="section-heading"><h2>Evidence before hype.</h2><p>The same working principles carry through genetics, education, software, games, and community work.</p></div>
-      <div class="grid-3">
-        <article class="panel" style="padding:21px"><h3>Document what happened</h3><p class="muted">Keep lineage, grow records, project history, and observations visible.</p></article>
-        <article class="panel" style="padding:21px"><h3>Separate observation from expectation</h3><p class="muted">Do not turn a trait direction or one result into a guarantee.</p></article>
-        <article class="panel" style="padding:21px"><h3>Build for reuse</h3><p class="muted">Use shared systems so pages, tools, and games can improve without overwriting each other.</p></article>
+      <div class="principle-grid">
+        <article class="principle"><strong>Document what happened.</strong><p>Keep lineage, grow records, project history, and observations visible enough to audit later.</p></article>
+        <article class="principle"><strong>Separate observation from expectation.</strong><p>Do not turn a trait direction, one phenotype, or one result into a universal guarantee.</p></article>
+        <article class="principle"><strong>Build systems that can improve.</strong><p>Use shared components and clear route ownership so new work can land without breaking what already works.</p></article>
       </div>
     </div>
   </section>
 
   <section class="section">
-    <div class="wrap">
+    <div class="wrap about-cta">
       <div class="section-heading"><h2>Explore DTF.</h2><p>Move from the brand story into the part of the site you actually need.</p></div>
       <div class="actions">
         <a class="btn btn-primary" href="/seeds/">Genetics</a>
