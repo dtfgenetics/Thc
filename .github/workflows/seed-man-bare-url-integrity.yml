@@ -50,6 +50,7 @@ jobs:
           }
 
           verify_downloaded_contract() {
+            check_contains "$body" 'data-seed-man-release="20260909-v20-runtime-v4"'
             check_contains "$body" 'data-seed-ui-release="20260909-v20-runtime-v5"'
             check_contains "$body" 'data-seed-man-approved-art="approved-showcase-2026-09-08"'
             check_contains "$body" 'player-state-v20.js?v=20260909-v20-runtime-v5'
@@ -65,12 +66,16 @@ jobs:
             check_contains "$tmp/v20-enemy-runtime.js" 'seed-man-v20-enemy-runtime-v2'
             check_contains "$tmp/combat-browser-v2.js" 'seed-man-combat-browser-v2'
             check_contains "$tmp/enemy-attacks-browser-v2.js" 'seed-man-enemy-attacks-browser-v2'
-            check_contains "$tmp/approved-art-core-v1.js" 'seed-man-approved-art-core-v3'
+            check_contains "$tmp/approved-art-core-v1.js" 'seed-man-approved-art-core-v4'
+            check_contains "$tmp/approved-art-core-v1.js" 'seed-man-character-atlas-v2.webp'
+            check_contains "$tmp/approved-art-core-v1.js" 'seed-man-enemy-boss-atlas-v1.webp'
+            check_contains "$tmp/approved-art-core-v1.js" 'seed-man-platform-atlas-v1.webp'
             check_contains "$tmp/approved-art-core-v1.js" 'world.greenhouse-valley.background'
             check_contains "$tmp/approved-art-core-v1.js" 'world.eco-city.background'
             check_not_contains_re "$tmp/approved-art-runtime-v1.js" 'solar-flare|static-haze|frost-resin|shield-bounce'
             check_contains "$tmp/seed-man-production-art.js" 'approved-showcase-2026-09-08'
             check_contains "$tmp/seed-man-production-art.js" 'green-armored-plant-hero'
+            check_contains "$tmp/seed-man-production-art.js" 'fallbackAllowed:false'
           }
 
           ok=0
@@ -88,7 +93,7 @@ jobs:
           echo '--- response headers ---'
           cat "$headers" || true
           if [[ "$ok" != 1 ]]; then
-            echo 'Seed Man bare URL did not converge on canonical player-state v20, campaign v3, combat v2, and approved world art.' >&2
+            echo 'Seed Man bare URL did not converge on canonical player-state v20, campaign v3, combat v2, approved art core v4, and current v5 UI.' >&2
             exit 1
           fi
-          echo 'Bare Seed Man URL serves canonical player-state v20, campaign v3, combat v2, and approved world art.'
+          echo 'Bare Seed Man URL serves canonical player-state v20, campaign v3, combat v2, approved art core v4, and current v5 UI.'
