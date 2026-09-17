@@ -1,0 +1,159 @@
+/* High Land production gamefeel v2.
+   Player-facing polish only: rules, movement, room state, and board geometry remain unchanged. */
+
+:root {
+  --hl-action-target: 44px;
+}
+
+.roll-button:not(:disabled) {
+  position: relative;
+  isolation: isolate;
+  border: 2px solid rgba(250, 204, 21, 0.72);
+  box-shadow:
+    0 14px 34px rgba(250, 204, 21, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+}
+
+.roll-button:not(:disabled)::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  z-index: -1;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  pointer-events: none;
+}
+
+.card-reveal {
+  padding:
+    max(1rem, env(safe-area-inset-top))
+    max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom))
+    max(1rem, env(safe-area-inset-left));
+}
+
+.hit-card {
+  position: relative;
+  isolation: isolate;
+  width: min(94vw, 540px);
+  max-height: min(92svh, 820px);
+  overscroll-behavior: contain;
+}
+
+.hit-card::before {
+  content: '';
+  position: absolute;
+  inset: 10px;
+  z-index: -1;
+  border: 1px solid rgba(17, 24, 39, 0.22);
+  border-radius: 19px;
+  pointer-events: none;
+}
+
+.hit-label {
+  min-height: 32px;
+  align-items: center;
+}
+
+.hit-effect-status {
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+}
+
+.hit-effect-status.applied::before {
+  content: '✓';
+  margin-right: 0.4rem;
+  font-size: 0.95rem;
+}
+
+.hit-card-player-choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+}
+
+.hit-card-player-choices button,
+.hit-card-close {
+  min-height: var(--hl-action-target);
+}
+
+.hit-card-player-choices button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 2px solid rgba(17, 24, 39, 0.18);
+  color: #f8fafc;
+  background: rgba(17, 24, 39, 0.88);
+}
+
+.hit-card-close {
+  width: 100%;
+  margin-top: 0.85rem;
+  border: 2px solid rgba(17, 24, 39, 0.88);
+  color: #111827;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 8px 20px rgba(17, 24, 39, 0.18);
+}
+
+.hit-card-close:hover:not(:disabled),
+.hit-card-close:focus-visible {
+  background: #ffffff;
+}
+
+.hit-card-close:focus-visible,
+.hit-card-player-choices button:focus-visible,
+.roll-button:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+}
+
+@media (max-width: 520px) {
+  .hit-card {
+    width: 100%;
+    max-height: calc(100svh - max(1rem, env(safe-area-inset-top)) - max(1rem, env(safe-area-inset-bottom)) - 1rem);
+    border-width: 3px;
+    border-radius: 22px;
+    padding: 0.9rem;
+  }
+
+  .hit-card-art {
+    max-height: 38svh;
+  }
+
+  .hit-card-player-choices {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-reveal,
+  .hit-card,
+  .player-chip.active,
+  .dice-display.rolling .dice-face {
+    animation: none !important;
+  }
+
+  button,
+  .roll-button,
+  .hit-card-close,
+  .hit-card-player-choices button {
+    transition: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .roll-button:not(:disabled),
+  .hit-card,
+  .hit-card-close,
+  .hit-card-player-choices button {
+    border: 2px solid ButtonText;
+  }
+
+  .hit-effect-status.applied {
+    border: 2px solid Highlight;
+  }
+}
