@@ -23,7 +23,7 @@ const baseHeaders = {
   Authorization: auth,
   Accept: 'application/json',
   'Cache-Control': 'no-cache',
-  'User-Agent': 'DTFSeeds-Retired-Visual-Guard/2.0'
+  'User-Agent': 'DTFSeeds-Retired-Visual-Guard/2.1'
 };
 
 function normalizeText(value = '') {
@@ -144,25 +144,60 @@ function blockContainsRetired(block, fingerprints) {
   if (fingerprints.filenames.some((name) => lower.includes(String(name).toLowerCase()))) return true;
   return fingerprints.ids.some((id) =>
     lower.includes(`wp-image-${id}`) ||
-    lower.includes(`"id":${id}`) ||
-    lower.includes(`"id": ${id}`) ||
-    lower.includes(`data-id="${id}"`) ||
+    lower.includes(`\"id\":${id}`) ||
+    lower.includes(`\"id\": ${id}`) ||
+    lower.includes(`data-id=\"${id}\"`) ||
     lower.includes(`data-id='${id}'`)
   );
+}
+
+function visibleText(value) {
+  return String(value || '')
+    .replace(/<!--([\s\S]*?)-->/g, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;|&#160;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function scrubHtml(html, fingerprints) {
   let next = String(html || '');
   let removed = 0;
   let directPatternRemovals = 0;
-  const removeMatchingBlocks = (regex) => {
+  let visualContainerRemovals = 0;
+  let orphanCopyRemovals = 0;
+  let emptyContainerRemovals = 0;
+
+  const recordRemoval = (block, kind = 'media') => {
+    removed += 1;
+    if (isRetiredText(block)) directPatternRemovals += 1;
+    if (kind === 'container') visualContainerRemovals += 1;
+    if (kind === 'orphan-copy') orphanCopyRemovals += 1;
+    if (kind === 'empty-container') emptyContainerRemovals += 1;
+  };
+
+  const removeMatchingBlocks = (regex, kind = 'media') => {
     next = next.replace(regex, (block) => {
       if (!blockContainsRetired(block, fingerprints)) return block;
-      removed += 1;
-      if (isRetiredText(block)) directPatternRemovals += 1;
+      recordRemoval(block, kind);
       return '';
     });
   };
+
+  // Remove an entire known visual card while its retired-media fingerprint is
+  // still present. This prevents titles, captions, badges and helper copy from
+  // surviving as dead cards after the image node itself is removed. The div
+  // matcher is intentionally limited to shallow cards so it cannot consume a
+  // parent grid or whole section with nested layout containers.
+  removeMatchingBlocks(
+    /<article\b[^>]*class=["'][^"']*(?:image-card|media-card|infographic-card|dtf-gallery-item|visual-card)[^"']*["'][^>]*>[\s\S]*?<\/article>/gi,
+    'container'
+  );
+  removeMatchingBlocks(
+    /<div\b[^>]*class=["'][^"']*(?:image-card|media-card|infographic-card|dtf-gallery-item|visual-card)[^"']*["'][^>]*>(?:(?!<div\b)[\s\S])*?<\/div>/gi,
+    'container'
+  );
 
   removeMatchingBlocks(/<figure\b[^>]*>[\s\S]*?<\/figure>/gi);
   removeMatchingBlocks(/<picture\b[^>]*>[\s\S]*?<\/picture>/gi);
@@ -173,17 +208,44 @@ function scrubHtml(html, fingerprints) {
 
   next = next.replace(/background(?:-image)?\s*:\s*url\(([^)]*)\)\s*;?/gi, (declaration) => {
     if (!blockContainsRetired(declaration, fingerprints)) return declaration;
-    removed += 1;
-    if (isRetiredText(declaration)) directPatternRemovals += 1;
+    recordRemoval(declaration);
+    return '';
+  });
+
+  // Legacy Learning visual cards used this as standalone helper copy. Once a
+  // retired image is removed the sentence has no action and must not remain in
+  // the stored WordPress body. Restrict removal to blocks whose visible text is
+  // exactly the helper sentence so nearby educational copy is preserved.
+  next = next.replace(/<(p|small|figcaption)\b[^>]*>([\s\S]*?)<\/\1>/gi, (block, _tag, body) => {
+    const text = visibleText(body).replace(/[.!?]+$/, '').trim().toLowerCase();
+    if (text !== 'open the image for the full-size wordpress media asset') return block;
+    recordRemoval(block, 'orphan-copy');
     return '';
   });
 
   next = next
-    .replace(/<figure\b[^>]*>\s*<\/figure>/gi, '')
-    .replace(/<picture\b[^>]*>\s*<\/picture>/gi, '')
+    .replace(/<figure\b[^>]*>\s*<\/figure>/gi, (block) => {
+      recordRemoval(block, 'empty-container');
+      return '';
+    })
+    .replace(/<picture\b[^>]*>\s*<\/picture>/gi, (block) => {
+      recordRemoval(block, 'empty-container');
+      return '';
+    })
+    .replace(/<(article|div)\b([^>]*)class=["'][^"']*(?:image-card|media-card|infographic-card|dtf-gallery-item|visual-card)[^"']*["']([^>]*)>\s*<\/\1>/gi, (block) => {
+      recordRemoval(block, 'empty-container');
+      return '';
+    })
     .replace(/\n{3,}/g, '\n\n');
 
-  return { html: next, removed, directPatternRemovals };
+  return {
+    html: next,
+    removed,
+    directPatternRemovals,
+    visualContainerRemovals,
+    orphanCopyRemovals,
+    emptyContainerRemovals
+  };
 }
 
 function itemDescriptor(typeName, item) {
@@ -221,6 +283,9 @@ const publicTypes = await discoverPublicTypes();
 const changed = [];
 const inspected = [];
 let totalDirectPatternRemovals = 0;
+let totalVisualContainerRemovals = 0;
+let totalOrphanCopyRemovals = 0;
+let totalEmptyContainerRemovals = 0;
 
 for (const type of publicTypes) {
   let items;
@@ -233,7 +298,14 @@ for (const type of publicTypes) {
 
   for (const item of items) {
     const content = rendered(item.content);
-    const { html, removed, directPatternRemovals } = scrubHtml(content, fingerprints);
+    const {
+      html,
+      removed,
+      directPatternRemovals,
+      visualContainerRemovals,
+      orphanCopyRemovals,
+      emptyContainerRemovals
+    } = scrubHtml(content, fingerprints);
     const featuredRetired = fingerprints.ids.includes(Number(item.featured_media || 0));
     inspected.push(itemDescriptor(type.name, item));
     if (!removed && !featuredRetired) continue;
@@ -254,10 +326,16 @@ for (const type of publicTypes) {
     }
 
     totalDirectPatternRemovals += directPatternRemovals;
+    totalVisualContainerRemovals += visualContainerRemovals;
+    totalOrphanCopyRemovals += orphanCopyRemovals;
+    totalEmptyContainerRemovals += emptyContainerRemovals;
     changed.push({
       ...itemDescriptor(type.name, item),
       removedBlocks: removed,
       directPatternRemovals,
+      visualContainerRemovals,
+      orphanCopyRemovals,
+      emptyContainerRemovals,
       clearedFeaturedMedia: featuredRetired
     });
   }
@@ -285,6 +363,9 @@ const report = {
   mediaInspected: media.length,
   retiredMediaMatched: retired.length,
   directPatternRemovals: totalDirectPatternRemovals,
+  visualContainerRemovals: totalVisualContainerRemovals,
+  orphanCopyRemovals: totalOrphanCopyRemovals,
+  emptyContainerRemovals: totalEmptyContainerRemovals,
   publicTypesInspected: publicTypes,
   contentItemsInspected: inspected.length,
   contentItemsChanged: changed.length,
