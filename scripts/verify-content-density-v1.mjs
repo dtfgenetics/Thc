@@ -4,7 +4,10 @@ import process from 'node:process';
 const read = (path) => fs.readFileSync(path, 'utf8');
 const density = read('scripts/lib/sitewide-content-density-v1.mjs');
 const shell = read('scripts/lib/sitewide-header-template-v6.mjs');
-const learnSource = read('scripts/rebuild-wordpress-visual-site.mjs');
+const learnSource = [
+  read('scripts/rebuild-wordpress-learning-experience-v3.mjs'),
+  read('scripts/publish-learning-expanded-references-owner-aware.mjs'),
+].join('\n');
 const tools = read('site/public-route-patch/tools/index.html');
 const games = read('site/public-route-patch/games/index.html');
 const projects = read('site/public-route-patch/projects/index.html');
