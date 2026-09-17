@@ -52,7 +52,7 @@ jobs:
           test -s site/wordpress/assets/responsive-layout-v1.css
           test -s site/wordpress/assets/sitewide-ux-polish-v1.css
           grep -Fq 'data-dtf-shell="header-v6"' scripts/lib/sitewide-header-template-v6.mjs
-          grep -Fq 'data-dtf-sitewide-header="canonical-six-v1"' scripts/lib/sitewide-header-template-v6.mjs
+          grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' scripts/lib/sitewide-header-template-v6.mjs
           grep -Fq 'DTFSeeds shared responsive layout system v1' site/wordpress/assets/responsive-layout-v1.css
           grep -Fq 'DTFSeeds sitewide UX polish v1' site/wordpress/assets/sitewide-ux-polish-v1.css
 
@@ -84,24 +84,27 @@ jobs:
             file="$root/$rel"
             test -s "$file"
             grep -Fq 'data-dtf-shell="header-v6"' "$file"
-            grep -Fq 'data-dtf-sitewide-header="canonical-six-v1"' "$file"
+            grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' "$file"
             grep -Fq 'id="dtf-sitewide-header-v6-style"' "$file"
             grep -Fq 'id="dtf-responsive-layout-v1"' "$file"
             grep -Fq 'id="dtf-sitewide-ux-polish-v1"' "$file"
-            grep -Fq '>Genetics</a>' "$file"
+            grep -Fq '>Home</a>' "$file"
+            grep -Fq '>Seeds</a>' "$file"
             grep -Fq '>Learn</a>' "$file"
-            grep -Fq '>Tools</a>' "$file"
+            grep -Fq '>Courses</a>' "$file"
+            grep -Fq '>Diagnostic</a>' "$file"
             grep -Fq '>Games</a>' "$file"
             grep -Fq '>Community</a>' "$file"
             grep -Fq '>Shop</a>' "$file"
-            ! grep -Fq '>Diagnostic</a>' "$file"
+            ! grep -Fq '>Genetics</a>' "$file"
+            ! grep -Fq '>Tools</a>' "$file"
           done
           node - "$root/overlay-manifest.json" <<'NODE'
           const fs = require('node:fs');
           const report = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
           if (report.schemaVersion !== 3) throw new Error('overlay manifest schema must be v3');
           if (report.sharedShell?.header !== 'v6') throw new Error('V6 shell metadata missing');
-          if (report.sharedShell?.navigation !== 'canonical-six-v1') throw new Error('canonical six-link navigation metadata missing');
+          if (report.sharedShell?.navigation !== 'canonical-eight-v1') throw new Error('canonical eight-item navigation metadata missing');
           if (report.sharedShell?.responsiveLayout !== 'v1') throw new Error('responsive-layout metadata missing');
           if (report.sharedShell?.sitewideUxPolish !== 'v1') throw new Error('UX-polish metadata missing');
           if (!(report.sharedShell?.verifiedHtmlRoutes >= 200)) throw new Error('too few verified shell routes');
