@@ -95,12 +95,12 @@ jobs:
           node scripts/apply-sitewide-header.mjs "$RUNNER_TEMP/header-fixture" --check
           count="$(grep -RFl 'data-dtf-shell="header-v6"' "$RUNNER_TEMP/header-fixture" --include='*.html' | wc -l | tr -d ' ')"
           test "$count" -gt 10
-          grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/tools/index.html"
-          grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/games/index.html"
-          grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/projects/index.html"
-          grep -Fq 'dtf-sitewide-visual-repair-v2-script' "$RUNNER_TEMP/tools/index.html"
-          grep -Fq 'dtf-sitewide-visual-repair-v2-script' "$RUNNER_TEMP/games/index.html"
-          grep -Fq 'dtf-sitewide-visual-repair-v2-script' "$RUNNER_TEMP/projects/index.html"
+          grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/header-fixture/tools/index.html"
+          grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/header-fixture/games/index.html"
+          grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/header-fixture/projects/index.html"
+          grep -Fq 'dtf-sitewide-visual-repair-v2-script' "$RUNNER_TEMP/header-fixture/tools/index.html"
+          grep -Fq 'dtf-sitewide-visual-repair-v2-script' "$RUNNER_TEMP/header-fixture/games/index.html"
+          grep -Fq 'dtf-sitewide-visual-repair-v2-script' "$RUNNER_TEMP/header-fixture/projects/index.html"
 
   publish:
     if: ${{ github.event_name != 'pull_request' }}
