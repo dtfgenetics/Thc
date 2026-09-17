@@ -1,0 +1,61 @@
+name: Verify Strain Showdown Production
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - scripts/verify-strain-showdown-live.mjs
+      - .github/workflows/verify-strain-showdown-production.yml
+      - site/public-route-patch/games/strain-showdown/**
+      - games/strain-showdown/**
+  workflow_run:
+    workflows: ["Deploy DTFSeeds Public Suite via WordPress V2"]
+    types: [completed]
+  schedule:
+    - cron: '37 9 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-strain-showdown-production-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout verification source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
+          persist-credentials: false
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          package-manager-cache: false
+
+      - name: Validate live audit script
+        run: node --check scripts/verify-strain-showdown-live.mjs
+
+      - name: Verify live 96-card browser battle
+        env:
+          SITE: https://dtfseeds.com
+        run: node scripts/verify-strain-showdown-live.mjs
+
+      - name: Summarize verification
+        if: always()
+        run: |
+          {
+            echo '## Strain Showdown production verification'
+            echo
+            echo '- Route: https://dtfseeds.com/games/strain-showdown/'
+            echo '- Requires the current 96-card / 8-family browser bundle.'
+            echo '- Requires runtime v2, v3, and v4 CSS, including the current mobile and accessibility interaction layer.'
+            echo '- Rejects retired Battle Lab / experimental player-facing wording.'
+            echo '- Runs after successful public-suite deployments, on relevant pull requests, on demand, and daily.'
+          } >> "$GITHUB_STEP_SUMMARY"
