@@ -21,7 +21,7 @@ const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}
 const headers = {
   Authorization: auth,
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-Owned-Route-Preservation-Verify/2.2'
+  'User-Agent': 'DTFSeeds-Owned-Route-Preservation-Verify/2.3'
 };
 
 // This verifier runs inside canonical WordPress production before the Education
@@ -36,13 +36,20 @@ const headers = {
 //   Home-only heading. Requiring both markers in the newer signature avoids
 //   mistaking another dtf-page for Home while allowing the canonical lane to
 //   preserve the current owner instead of failing on an obsolete marker.
+//
+// Learn can likewise be observed at more than one legitimate owner stage. The
+// legacy V3 marker remains accepted for rollback/recovery compatibility, while
+// the connected V4 map plus its unique heading identifies the newer Learning
+// owner without requiring the older wrapper marker to survive downstream
+// owner-aware transformations.
 const ownerMarkerAlternatives = {
   home: [
     ['data-dtf-layout="home-v3"'],
     ['id="dtf-visual-system-v2"', 'Genetics first. Cultivation science behind it.']
   ],
   learn: [
-    ['data-dtf-layout="learn-v3"']
+    ['data-dtf-layout="learn-v3"'],
+    ['data-dtf-learning-map="v4"', 'See how the systems connect before you go deep.']
   ]
 };
 const ownerStage = 'base-learning-owner';
