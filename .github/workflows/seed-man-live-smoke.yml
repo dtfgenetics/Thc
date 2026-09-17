@@ -15,10 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
       - name: Verify Seed Man v20 live runtime
@@ -30,6 +30,21 @@ jobs:
           node scripts/verify-seed-man-production-v20.mjs
           base='https://dtfseeds.com/games/seed-man-platformer/'
           tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
+
+          check_contains(){
+            local file="$1" needle="$2"
+            if ! grep -Fq "$needle" "$file"; then
+              echo "Missing expected Seed Man marker in $(basename "$file"): $needle" >&2
+              exit 1
+            fi
+          }
+          check_not_contains_re(){
+            local file="$1" pattern="$2"
+            if grep -Eq "$pattern" "$file"; then
+              echo "Found retired Seed Man marker in $(basename "$file"): $pattern" >&2
+              exit 1
+            fi
+          }
           fetch(){ local rel="$1" out="$2" status; status="$(curl -sS --retry 6 --retry-all-errors --retry-delay 5 --connect-timeout 10 --max-time 35 -H 'Cache-Control: no-cache, no-store, max-age=0' -o "$out" -w '%{http_code}' "${base}${rel}?smoke=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" || true)"; [[ "$status" == 200 ]] || { echo "$rel HTTP ${status:-request-failed}" >&2; exit 1; }; test -s "$out" || { echo "$rel returned an empty body" >&2; exit 1; }; }
           fetch '' "$tmp/index.html"
           fetch 'data/campaign.json' "$tmp/campaign.json"
@@ -43,9 +58,10 @@ jobs:
           fetch 'approved-art-core-v1.js' "$tmp/core.js"
           fetch 'approved-art-runtime-v1.js' "$tmp/art-runtime.js"
           fetch 'seed-man-production-art.js' "$tmp/art.js"
-          grep -Fq 'data-seed-man-release="20260909-v20-runtime-v4"' "$tmp/index.html"
-          grep -Fq 'content="20260909-v20-runtime-v4"' "$tmp/index.html"
-          grep -Fq 'data-seed-man-approved-art="approved-showcase-2026-09-08"' "$tmp/index.html"
+          check_contains "$tmp/index.html" 'data-seed-man-release="20260909-v20-runtime-v4"'
+          check_contains "$tmp/index.html" 'content="20260909-v20-runtime-v4"'
+          check_contains "$tmp/index.html" 'data-seed-ui-release="20260909-v20-runtime-v5"'
+          check_contains "$tmp/index.html" 'data-seed-man-approved-art="approved-showcase-2026-09-08"'
           node --check "$tmp/player-state.js"
           node --check "$tmp/runtime.js"
           node --check "$tmp/ui.js"
@@ -60,21 +76,24 @@ jobs:
           if(c.levelCount!==20||c.worlds?.length!==5||c.finalBoss!=='blight-king')throw new Error('live campaign contract mismatch');
           if(l.levels?.length!==20||l.levels.find(x=>x.order===20)?.boss!=='blight-king')throw new Error('live level catalog mismatch');
           NODE
-          grep -Fq 'seed-man-player-state-v20' "$tmp/player-state.js"
-          grep -Fq 'seed-man-campaign-v20-runtime-v3' "$tmp/runtime.js"
-          grep -Fq 'approvedWorldBackgrounds:true' "$tmp/runtime.js"
-          grep -Fq "phenotypeForms:['plant','fire','electric','ice']" "$tmp/runtime.js"
-          grep -Fq 'seed-man-campaign-ui-v20' "$tmp/ui.js"
-          grep -Fq 'seed-man-v20-enemy-runtime-v2' "$tmp/enemy.js"
-          grep -Fq 'seed-man-combat-browser-v2' "$tmp/combat.js"
-          grep -Fq 'seed-man-enemy-attacks-browser-v2' "$tmp/attacks.js"
-          grep -Fq 'seed-man-approved-art-core-v3' "$tmp/core.js"
+          check_contains "$tmp/player-state.js" 'seed-man-player-state-v20'
+          check_contains "$tmp/runtime.js" 'seed-man-campaign-v20-runtime-v3'
+          check_contains "$tmp/runtime.js" 'approvedWorldBackgrounds:true'
+          check_contains "$tmp/runtime.js" "phenotypeForms:['plant','fire','electric','ice']"
+          check_contains "$tmp/ui.js" 'seed-man-campaign-ui-v20'
+          check_contains "$tmp/enemy.js" 'seed-man-v20-enemy-runtime-v2'
+          check_contains "$tmp/combat.js" 'seed-man-combat-browser-v2'
+          check_contains "$tmp/attacks.js" 'seed-man-enemy-attacks-browser-v2'
+          check_contains "$tmp/core.js" 'seed-man-approved-art-core-v4'
+          check_contains "$tmp/core.js" 'seed-man-character-atlas-v2.webp'
+          check_contains "$tmp/core.js" 'seed-man-enemy-boss-atlas-v1.webp'
+          check_contains "$tmp/core.js" 'seed-man-platform-atlas-v1.webp'
           for world in greenhouse-valley forest-ruins desert-canyon frozen-peaks eco-city; do
-            grep -Fq "world.${world}.background" "$tmp/core.js"
+            check_contains "$tmp/core.js" "world.${world}.background"
           done
-          grep -Fq 'approved-showcase-2026-09-08' "$tmp/art.js"
-          grep -Fq 'green-armored-plant-hero' "$tmp/art.js"
-          ! grep -Eq 'solar-flare|static-haze|frost-resin|shield-bounce' "$tmp/art-runtime.js"
-          ! grep -Fq 'seed-man-production-v1' "$tmp/art.js"
-          ! grep -Fq 'seed-man-locked-v1' "$tmp/art.js"
-          echo 'Seed Man v20 player-state + campaign v3 + combat v2 live smoke passed.'
+          check_contains "$tmp/art.js" 'approved-showcase-2026-09-08'
+          check_contains "$tmp/art.js" 'green-armored-plant-hero'
+          check_contains "$tmp/art.js" 'fallbackAllowed:false'
+          check_not_contains_re "$tmp/art-runtime.js" 'solar-flare|static-haze|frost-resin|shield-bounce'
+          check_not_contains_re "$tmp/art.js" 'seed-man-production-v1|seed-man-locked-v1'
+          echo 'Seed Man v20 player-state + campaign v3 + combat v2 + approved art core v4 live smoke passed.'
