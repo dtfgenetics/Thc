@@ -26,24 +26,25 @@ concurrency:
 jobs:
   verify:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - name: Checkout verification source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
           persist-credentials: false
 
       - name: Use Node.js 22
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: '22'
+          package-manager-cache: false
 
       - name: Validate strict audit script
         run: node --check scripts/verify-weedopolis-live-assets.mjs
 
-      - name: Verify Weedopolis route, runtime assets, and master board
+      - name: Verify Weedopolis route, production interactions, assets, and board
         env:
           SITE: https://dtfseeds.com
         run: node scripts/verify-weedopolis-live-assets.mjs
@@ -55,8 +56,8 @@ jobs:
             echo '## Weedopolis live release verification'
             echo
             echo '- Canonical route: https://dtfseeds.com/games/weedopolis/'
-            echo '- Requires the premium responsive shell and V1 master-art markers.'
-            echo '- Requires all four production CSS files and all six core JavaScript files.'
-            echo '- Requires the live master board to be a nontrivial RIFF/WEBP asset.'
+            echo '- Requires the production interaction layer, mobile turn dock, synchronized board copy, and current deed-state copy.'
+            echo '- Rejects retired V1/developer-facing production language in visitor HTML.'
+            echo '- Requires the gameplay CSS/JavaScript stack plus the master board, deed, and High Chance WebP assets.'
             echo '- Runs for relevant PRs, after successful production-suite deployments, on demand, and daily.'
           } >> "$GITHUB_STEP_SUMMARY"
