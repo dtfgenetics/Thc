@@ -64,14 +64,14 @@ var RETIRED_RE=[
   /Cloning[ _-]+Guide[ _-]+with[ _-]+Environment[ _-]+Targets/i,
   /Cannabis[ _-]+Plant[ _-]+Life[ _-]+Cycle[ _-]+Seed[ _-]+to[ _-]+Harvest[ _-]+Infographic/i,
   /Cannabis[ _-]+Sex[ _-]+Expression[ _-]+and[ _-]+Chromosome[ _-]+Combinations/i,
-  /(?:^|[\\/_ .-])(?:THC[ _-]?)?C\\d{3}(?:[\\/_ .-]|$)/i,
-  /(?:^|[\\/_ .-])(?:THC[ _-]?)?ENC[ _-]?\\d{3}(?:[\\/_ .-]|$)/i,
-  /(?:^|[\\/_ .-])Outdoor[ _-]?\\d{2}(?:[\\/_ .-]|$)/i,
-  /Stage[ _-]?\\d+.*Infographic/i
+  /(?:^|[\/_ .-])(?:THC[ _-]?)?C\d{3}(?:[\/_ .-]|$)/i,
+  /(?:^|[\/_ .-])(?:THC[ _-]?)?ENC[ _-]?\d{3}(?:[\/_ .-]|$)/i,
+  /(?:^|[\/_ .-])Outdoor[ _-]?\d{2}(?:[\/_ .-]|$)/i,
+  /Stage[ _-]?\d+.*Infographic/i
 ];
 var DISCLOSURE_LABELS=['encyclopedia depth','core literature','visual references','continue learning','core visuals','related visuals','references','sources & further reading','further reading','downloads & references'];
-function txt(node){return String(node&&node.textContent||'').replace(/\\s+/g,' ').trim();}
-function norm(value){return String(value||'').replace(/\\s+/g,' ').trim().toLowerCase();}
+function txt(node){return String(node&&node.textContent||'').replace(/\s+/g,' ').trim();}
+function norm(value){return String(value||'').replace(/\s+/g,' ').trim().toLowerCase();}
 function signature(node){if(!node)return '';return [node.getAttribute&&node.getAttribute('src'),node.getAttribute&&node.getAttribute('srcset'),node.getAttribute&&node.getAttribute('alt'),node.getAttribute&&node.getAttribute('title'),node.getAttribute&&node.getAttribute('data-dtf-visual-status'),node.className].filter(Boolean).join(' ');}
 function isApproved(node){var source=signature(node);var parent=node&&node.closest?node.closest('[data-dtf-approved-public-visual],.dtf-approved-public-visual'):null;return !!parent||APPROVED_RE.test(source);}
 function isRetired(node){if(!node||isApproved(node))return false;var source=signature(node);return RETIRED_RE.some(function(re){return re.test(source);});}
@@ -103,7 +103,7 @@ function repairRetiredVisuals(){
 }
 function cleanOrphanVisualCopy(){
   Array.prototype.slice.call(document.querySelectorAll('p,small,figcaption')).forEach(function(node){
-    if(!/Open the image for the full-size WordPress media asset\\.?/i.test(txt(node)))return;
+    if(!/Open the image for the full-size WordPress media asset\.?/i.test(txt(node)))return;
     var card=node.closest('article,.dtf-card,.visual,.image-card,.media-card,.wp-block-group,li');
     if(card&&txt(card).length<420&&!card.querySelector('img')){
       card.classList.add('dtf-retired-copy-only');
@@ -132,7 +132,7 @@ function enhanceDisclosure(section,index){
   var bodyNodes=children.slice(start+1).filter(function(node){return !(node.classList&&node.classList.contains('dtf-disclosure__controls'));});
   if(!bodyNodes.length)return;
   var label=sectionLabel(section)||norm(txt(directTitle));
-  var pretty=label?label.replace(/(^|\\s)\\S/g,function(ch){return ch.toUpperCase();}):'details';
+  var pretty=label?label.replace(/(^|\s)\S/g,function(ch){return ch.toUpperCase();}):'details';
   var id='dtf-v2-disclosure-'+index;
   var body=document.createElement('div');body.className='dtf-disclosure__body';body.id=id;body.hidden=true;
   bodyNodes.forEach(function(node){body.appendChild(node);});
