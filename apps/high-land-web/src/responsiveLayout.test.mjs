@@ -5,6 +5,7 @@ const read = (relative) => readFileSync(new URL(relative, import.meta.url), 'utf
 const overflowFixes = read('./overflowFixes.css');
 const siteShell = read('./siteShellV5.css');
 const boardPriority = read('./highLandBoardPriority.css');
+const gamefeel = read('./highLandGamefeelV2.css');
 const main = read('./main.tsx');
 
 describe('High Land responsive production shell', () => {
@@ -23,13 +24,15 @@ describe('High Land responsive production shell', () => {
     expect(siteShell).toContain('100svh');
   });
 
-  it('loads board-priority production polish after the site-shell layer', () => {
+  it('loads production polish after the site-shell and board-priority layers', () => {
     const controlsIndex = main.indexOf("import './productionControls.css';");
     const shellIndex = main.indexOf("import './siteShellV5.css';");
     const priorityIndex = main.indexOf("import './highLandBoardPriority.css';");
+    const gamefeelIndex = main.indexOf("import './highLandGamefeelV2.css';");
     expect(controlsIndex).toBeGreaterThan(-1);
     expect(shellIndex).toBeGreaterThan(controlsIndex);
     expect(priorityIndex).toBeGreaterThan(shellIndex);
+    expect(gamefeelIndex).toBeGreaterThan(priorityIndex);
   });
 
   it('preserves narrow-screen board containment without disabling the board', () => {
@@ -52,5 +55,16 @@ describe('High Land responsive production shell', () => {
     expect(boardPriority).toContain("content: 'TURN'");
     expect(boardPriority).toContain('@media (forced-colors: active)');
     expect(boardPriority).toContain('outline: 2px solid Highlight');
+  });
+
+  it('keeps HIT-card actions accessible and motion preferences respected', () => {
+    expect(gamefeel).toContain('--hl-action-target: 44px');
+    expect(gamefeel).toContain('.hit-card-player-choices button');
+    expect(gamefeel).toContain('.hit-card-close');
+    expect(gamefeel).toContain('max-height: min(92svh, 820px)');
+    expect(gamefeel).toContain('env(safe-area-inset-top)');
+    expect(gamefeel).toContain('@media (prefers-reduced-motion: reduce)');
+    expect(gamefeel).toContain('@media (forced-colors: active)');
+    expect(gamefeel).toContain("content: '✓'");
   });
 });
