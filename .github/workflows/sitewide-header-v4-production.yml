@@ -37,6 +37,9 @@ permissions:
 
 env:
   WP_SITE_URL: https://dtfseeds.com
+  # /tools/ and /games/ are static Public Suite hubs. Their owning publisher
+  # assembles, reconciles, and verifies those routes after its serialized deploy.
+  WORDPRESS_HEADER_VERIFY_ROUTES: "/,/seeds/,/learn/,/learn/nutrition-media/,/community/,/shop/,/courses/,/gallery/,/about/,/contact/"
 
 concurrency:
   group: dtfseeds-canonical-sitewide-header-v6
@@ -83,6 +86,21 @@ jobs:
           grep -Fq "./lib/sitewide-header-template-v6.mjs" scripts/apply-sitewide-header.mjs
           grep -Fq "./lib/sitewide-header-template-v6.mjs" scripts/rebuild-wordpress-shared-shell-v3.mjs
 
+          # Fail closed if static Public Suite hubs drift back into the WordPress
+          # publisher's immediate verification scope. Their owner still verifies
+          # the exact Header V6/mobile contract before packaging and deployment.
+          case ",$WORDPRESS_HEADER_VERIFY_ROUTES," in
+            *,/tools/,*|*,/games/,*)
+              echo "Static Public Suite hubs must not be verified by the WordPress header publisher." >&2
+              exit 1
+              ;;
+          esac
+          test -s .github/workflows/build-dtfseeds-public-suite.yml
+          grep -Fq 'release/tools/index.html' .github/workflows/build-dtfseeds-public-suite.yml
+          grep -Fq 'release/games/index.html' .github/workflows/build-dtfseeds-public-suite.yml
+          grep -Fq 'canonical-eight-v1' .github/workflows/build-dtfseeds-public-suite.yml
+          grep -Fq 'dtf-sitewide-header-v6-script' .github/workflows/build-dtfseeds-public-suite.yml
+
       - name: Prove static V6 header reconciler is idempotent
         shell: bash
         run: |
@@ -99,6 +117,8 @@ jobs:
           grep -Fq 'dtf-sitewide-visual-repair-v2-script' "$RUNNER_TEMP/header-fixture/tools/index.html"
           grep -Fq 'dtf-sitewide-visual-repair-v2-script' "$RUNNER_TEMP/header-fixture/games/index.html"
           grep -Fq 'dtf-sitewide-visual-repair-v2-script' "$RUNNER_TEMP/header-fixture/projects/index.html"
+          grep -Fq 'dtf-sitewide-mobile-polish-v1-style' "$RUNNER_TEMP/header-fixture/tools/index.html"
+          grep -Fq 'dtf-sitewide-mobile-polish-v1-style' "$RUNNER_TEMP/header-fixture/games/index.html"
 
   publish:
     if: ${{ github.event_name != 'pull_request' }}
@@ -134,14 +154,11 @@ jobs:
           mkdir -p "$BACKUP_ROOT"
           node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs | tee /tmp/dtf-canonical-header-v6.json
 
-      - name: Verify V6 on representative and previously failing public routes
+      - name: Verify V6 on WordPress-owned representative public routes
         shell: bash
         run: |
           set -euo pipefail
-          routes=(
-            / /seeds/ /learn/ /learn/nutrition-media/ /tools/ /games/
-            /community/ /shop/ /courses/ /gallery/ /about/ /contact/
-          )
+          IFS=',' read -r -a routes <<< "$WORDPRESS_HEADER_VERIFY_ROUTES"
           for route in "${routes[@]}"; do
             out="$RUNNER_TEMP/header-v6-$(echo "$route" | tr '/' '_' | tr -cd '[:alnum:]_').html"
             ok=0
@@ -167,6 +184,7 @@ jobs:
           if(JSON.stringify(labels)!==JSON.stringify(expected)) throw new Error(`Unexpected V6 navigation on ${route}: ${JSON.stringify(labels)}`);
           if(!/canonical-eight-v1/.test(header)) throw new Error(`canonical-eight-v1 marker missing on ${route}`);
           if(!/dtf-sitewide-header-v6-script/.test(html)) throw new Error(`V6 script missing on ${route}`);
+          if(!/dtf-sitewide-mobile-polish-v1-style/.test(html)) throw new Error(`Mobile polish V1 style missing on ${route}`);
           if(!/dtf-sitewide-visual-repair-v2-style/.test(html)||!/dtf-sitewide-visual-repair-v2-script/.test(html)) throw new Error(`Sitewide visual repair V2 assets missing on ${route}`);
           if((route==='/learn/'||route==='/learn/nutrition-media/')&&(!/dtf-content-density-v1-style/.test(html)||!/dtf-content-density-v1-script/.test(html))) throw new Error(`Learn content-density V1 assets missing on ${route}`);
           const forbidden=[
@@ -191,8 +209,10 @@ jobs:
             [[ "$ok" -eq 1 ]] || { echo "Canonical header/visual contract was not visitor-facing on ${route}" >&2; exit 1; }
           done
 
-      - name: Audit canonical V6 header across public routes
+      - name: Audit canonical V6 header across WordPress-owned routes
         shell: bash
+        env:
+          HEADER_V6_ROUTES: ${{ env.WORDPRESS_HEADER_VERIFY_ROUTES }}
         run: |
           set -euo pipefail
           node scripts/verify-sitewide-header-v6-live.mjs | tee /tmp/dtf-header-v6-live-audit.json
