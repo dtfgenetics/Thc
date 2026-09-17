@@ -46,4 +46,11 @@ describe('High Land responsive production shell', () => {
     expect(boardPriority).toContain('max-height: min(68svh, 590px)');
     expect(boardPriority).toContain('env(safe-area-inset-bottom)');
   });
+
+  it('identifies the current player without relying on player color alone', () => {
+    expect(boardPriority).toContain(".player-chip.active::after");
+    expect(boardPriority).toContain("content: 'TURN'");
+    expect(boardPriority).toContain('@media (forced-colors: active)');
+    expect(boardPriority).toContain('outline: 2px solid Highlight');
+  });
 });
