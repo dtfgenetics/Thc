@@ -43,9 +43,11 @@ function hasNavLink(text, href, label) {
 }
 
 const CANONICAL_NAV = [
-  ['/seeds/', 'Genetics'],
+  ['/', 'Home'],
+  ['/seeds/', 'Seeds'],
   ['/learn/', 'Learn'],
-  ['/tools/', 'Tools'],
+  ['/courses/', 'Courses'],
+  ['/tools/', 'Diagnostic'],
   ['/games/', 'Games'],
   ['/community/', 'Community'],
   ['/shop/', 'Shop']
@@ -53,16 +55,14 @@ const CANONICAL_NAV = [
 
 const REQUIRED = [
   { label: 'data-dtf-shell="header-v6"', test: body => body.includes('data-dtf-shell="header-v6"') },
-  { label: 'data-dtf-sitewide-header="canonical-six-v1"', test: body => body.includes('data-dtf-sitewide-header="canonical-six-v1"') },
+  { label: 'data-dtf-sitewide-header="canonical-eight-v1"', test: body => body.includes('data-dtf-sitewide-header="canonical-eight-v1"') },
   ...CANONICAL_NAV.map(([href, label]) => ({ label: `<a href="${href}">${label}</a>`, test: body => hasNavLink(body, href, label) })),
   { label: 'Teaching', test: body => body.includes('Teaching') },
   { label: 'Healthy Cultivation', test: body => body.includes('Healthy Cultivation') }
 ];
 const OBSOLETE_PRIMARY = [
-  ['/', 'Home'],
-  ['/seeds/', 'Seeds'],
-  ['/courses/', 'Courses'],
-  ['/tools/', 'Diagnostic']
+  ['/seeds/', 'Genetics'],
+  ['/tools/', 'Tools']
 ];
 const seeds = new Set([
   '/', '/seeds/', '/learn/', '/courses/', '/tools/', '/games/', '/community/', '/shop/',
@@ -116,7 +116,7 @@ async function fetchText(url, accept = 'text/html,*/*') {
       const response = await fetch(`${url}${bust}`, {
         redirect: 'follow',
         signal: AbortSignal.timeout(25_000),
-        headers: { 'user-agent': 'DTFSeeds-Sitewide-Header-Audit/1.3', 'cache-control': 'no-cache, no-store', pragma: 'no-cache', accept }
+        headers: { 'user-agent': 'DTFSeeds-Sitewide-Header-Audit/1.4', 'cache-control': 'no-cache, no-store', pragma: 'no-cache', accept }
       });
       return { response, body: await response.text(), error: null };
     } catch (error) { lastError = error; }
@@ -254,7 +254,7 @@ const md = [
   `Discovered same-origin routes: **${report.discoveredRoutes}**`,'',
   `Skipped out-of-scope routes: **${report.skippedRoutes}**`,'',
   failures.length ? '## Failures' : '## Result','',
-  failures.length ? failures.map(x => `- \`${x.path}\` — ${x.issues.join('; ')}`).join('\n') : 'Every managed public HTML route exposes the canonical V6 six-section header contract.'
+  failures.length ? failures.map(x => `- \`${x.path}\` — ${x.issues.join('; ')}`).join('\n') : 'Every managed public HTML route exposes the canonical V6 eight-item header contract.'
 ].join('\n');
 await writeFile(MD_PATH, `${md}\n`);
 console.log(md);
