@@ -1,0 +1,246 @@
+name: Clear DTFSeeds Support Page Shadows V2
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/hostinger-support-shadow-cleanup-v2.yml
+      - site/wordpress/pages/about.html
+      - site/wordpress/pages/gallery.html
+      - site/wordpress/visual-quality/retired-public-visuals.json
+
+permissions:
+  contents: read
+
+# Mutate Hostinger only inside the same serialized production lane used by the
+# public-suite publisher. This prevents support-shadow cleanup from racing an
+# application/game directory activation.
+concurrency:
+  group: dtfseeds-hostinger-production
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    name: Retire stale About and Gallery static shadows
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: production
+    env:
+      SSH_HOST: ${{ secrets.HOSTINGER_HOST || secrets.HOSTINGER_SSH_HOST || secrets.SSH_HOST || secrets.SFTP_HOST }}
+      SSH_PORT: ${{ secrets.HOSTINGER_PORT || secrets.HOSTINGER_SSH_PORT || secrets.SSH_PORT || secrets.SFTP_PORT }}
+      SSH_USER: ${{ secrets.HOSTINGER_USER || secrets.HOSTINGER_SSH_USER || secrets.SSH_USER || secrets.SFTP_USER }}
+      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY || secrets.HOSTINGER_SSH_KEY || secrets.SSH_PRIVATE_KEY || secrets.DEPLOY_KEY }}
+      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS || secrets.HOSTINGER_SSH_KNOWN_HOSTS || secrets.SSH_KNOWN_HOSTS }}
+      SITE_ROOT: ${{ vars.HOSTINGER_WORDPRESS_PATH || vars.WORDPRESS_PATH || vars.WP_PATH }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate canonical support sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq 'data-dtf-layout="about-visual-v1"' site/wordpress/pages/about.html
+          grep -Fq 'One brand. Four core experiences.' site/wordpress/pages/about.html
+          grep -Fq 'data-dtf-layout="gallery-visual-v2"' site/wordpress/pages/gallery.html
+          grep -Fq 'Approved visuals only.' site/wordpress/pages/gallery.html
+          ! grep -Fqi '<img' site/wordpress/pages/gallery.html
+
+      - name: Configure verified Hostinger production transport
+        shell: bash
+        run: |
+          set -euo pipefail
+          SSH_HOST="${SSH_HOST:-147.93.42.1}"
+          SSH_PORT="${SSH_PORT:-22}"
+          : "${SSH_USER:?Missing Hostinger SSH/SFTP user alias}"
+          : "${SSH_PRIVATE_KEY:?Missing Hostinger SSH private-key alias}"
+          [[ "$SSH_PORT" =~ ^[0-9]+$ ]]
+          echo "SSH_HOST=$SSH_HOST" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$SSH_PORT" >> "$GITHUB_ENV"
+
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > "$HOME/.ssh/dtf_hostinger"
+          chmod 600 "$HOME/.ssh/dtf_hostinger"
+          if [[ -n "${SSH_KNOWN_HOSTS:-}" ]]; then
+            printf '%s\n' "$SSH_KNOWN_HOSTS" | tr -d '\r' > "$HOME/.ssh/known_hosts"
+          else
+            ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" > "$HOME/.ssh/known_hosts"
+          fi
+          test -s "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+          ssh -i "$HOME/.ssh/dtf_hostinger" -p "$SSH_PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" 'printf "Hostinger SSH connection verified.\n"'
+
+      - name: Resolve dtfseeds.com WordPress root
+        id: root
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "${SITE_ROOT:-}" ]]; then
+            root="${SITE_ROOT%/}"
+          else
+            root="$(ssh -i "$HOME/.ssh/dtf_hostinger" -p "$SSH_PORT" \
+              -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+              "$SSH_USER@$SSH_HOST" 'bash -s' <<'REMOTE'
+          set -euo pipefail
+          while IFS= read -r config; do
+            directory="$(dirname "$config")"
+            [[ -s "$directory/index.php" ]] || continue
+            if command -v wp >/dev/null 2>&1; then
+              home_url="$(wp --path="$directory" option get home --skip-plugins --skip-themes 2>/dev/null || true)"
+              case "${home_url%/}" in
+                https://dtfseeds.com|http://dtfseeds.com|https://www.dtfseeds.com|http://www.dtfseeds.com)
+                  printf '%s\n' "$directory"
+                  exit 0
+                  ;;
+              esac
+            fi
+          done < <(find "$HOME" -maxdepth 8 -type f -name wp-config.php -print 2>/dev/null)
+          exit 1
+          REMOTE
+          )"
+          fi
+
+          [[ -n "$root" && "$root" == /* && "$root" != "/" && "$root" != *'..'* ]]
+          [[ "$(basename "$root")" == 'public_html' ]]
+          ssh -i "$HOME/.ssh/dtf_hostinger" -p "$SSH_PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" "ROOT='$root' bash -s" <<'REMOTE'
+          set -euo pipefail
+          [[ -d "$ROOT" && -s "$ROOT/wp-config.php" && -s "$ROOT/index.php" ]]
+          REMOTE
+          echo "path=$root" >> "$GITHUB_OUTPUT"
+
+      - name: Back up and retire positively identified shadows
+        id: cleanup
+        env:
+          ROOT: ${{ steps.root.outputs.path }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          stamp="$(date -u +%Y%m%dT%H%M%SZ)"
+          backup="$HOME/dtfseeds-support-shadow-backups/$stamp"
+          result="$(ssh -i "$HOME/.ssh/dtf_hostinger" -p "$SSH_PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" "ROOT='$ROOT' BACKUP='$backup' bash -s" <<'REMOTE'
+          set -euo pipefail
+          mkdir -p "$BACKUP"
+          removed=0
+
+          retire_dir_if_stale() {
+            rel="$1"
+            shift
+            dir="$ROOT/$rel"
+            index="$dir/index.html"
+            [[ -d "$dir" && -f "$index" ]] || return 0
+            stale=0
+            for marker in "$@"; do
+              if grep -Fqi -- "$marker" "$index"; then stale=1; break; fi
+            done
+            [[ "$stale" -eq 1 ]] || return 0
+            [[ ! -e "$BACKUP/$rel" ]] || { echo "Backup target already exists: $BACKUP/$rel" >&2; exit 1; }
+            mkdir -p "$(dirname "$BACKUP/$rel")"
+            mv "$dir" "$BACKUP/$rel"
+            printf 'retired-directory:%s\n' "$rel"
+            removed=$((removed + 1))
+          }
+
+          retire_dir_if_stale gallery \
+            '/assets/dtf-home/dtf-home.css' \
+            'Character Art' \
+            'Grow Media' \
+            'Cannabis Plant Anatomy' \
+            'Nutrient Uptake' \
+            'Beneficial Insects' \
+            'Deficiency vs Toxicity' \
+            'Cannabis Life Cycle'
+
+          retire_dir_if_stale about \
+            '/assets/dtf-home/dtf-home.css' \
+            'Dream the Future with genetics, games, and education.' \
+            'THC Grow Doc' \
+            'Game Hub'
+
+          if command -v wp >/dev/null 2>&1; then
+            wp --path="$ROOT" rewrite flush --hard >/dev/null 2>&1 || true
+            wp --path="$ROOT" cache flush >/dev/null 2>&1 || true
+            wp --path="$ROOT" eval 'do_action("litespeed_purge_all");' >/dev/null 2>&1 || true
+          fi
+
+          printf 'removed=%s\n' "$removed"
+          printf 'backup=%s\n' "$BACKUP"
+          REMOTE
+          )"
+          printf '%s\n' "$result"
+          removed="$(printf '%s\n' "$result" | awk -F= '/^removed=/{print $2}' | tail -1)"
+          backup_path="$(printf '%s\n' "$result" | awk -F= '/^backup=/{sub(/^backup=/,""); print}' | tail -1)"
+          echo "removed=${removed:-0}" >> "$GITHUB_OUTPUT"
+          echo "backup=${backup_path:-unknown}" >> "$GITHUB_OUTPUT"
+          echo "Retired support shadows: ${removed:-0}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Rollback backup: ${backup_path:-unknown}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Verify canonical visitor-facing support pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          check_page() {
+            path="$1"
+            required="$2"
+            body="$RUNNER_TEMP/support-$(printf '%s' "$path" | tr '/?' '__').html"
+            ok=0
+            for attempt in 1 2 3 4 5 6 7 8; do
+              if curl -4 --fail --silent --show-error --location --retry 2 --retry-all-errors --retry-delay 2 \
+                --connect-timeout 15 --max-time 60 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
+                "https://dtfseeds.com${path}?dtf_support_shadow_v2=${GITHUB_RUN_ID}-${attempt}" \
+                -o "$body" && grep -Fqi -- "$required" "$body"; then
+                ok=1
+                break
+              fi
+              sleep 5
+            done
+            [[ "$ok" -eq 1 ]] || {
+              echo "Current support-page marker missing on $path: $required" >&2
+              head -c 3000 "$body" >&2 || true
+              exit 1
+            }
+            for stale in \
+              '/assets/dtf-home/dtf-home.css' \
+              'Cannabis Plant Anatomy' \
+              'Nutrient Uptake and Root-Zone Chemistry' \
+              'Beneficial Insects' \
+              'Deficiency vs Toxicity' \
+              'Cannabis Life Cycle' \
+              'Dream the Future with genetics, games, and education.'; do
+              ! grep -Fqi -- "$stale" "$body" || {
+                echo "Retired support content remains on $path: $stale" >&2
+                exit 1
+              }
+            done
+          }
+
+          check_page '/gallery/' 'Approved visuals only.'
+          check_page '/about/' 'One brand. Four core experiences.'
+
+      - name: Restore removed shadows if canonical verification fails
+        if: ${{ failure() && steps.cleanup.outcome == 'success' && steps.cleanup.outputs.backup != '' }}
+        env:
+          ROOT: ${{ steps.root.outputs.path }}
+          BACKUP: ${{ steps.cleanup.outputs.backup }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ -n "$ROOT" && "$ROOT" != "/" && "$ROOT" != *'..'* ]]
+          ssh -i "$HOME/.ssh/dtf_hostinger" -p "$SSH_PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" "ROOT='$ROOT' BACKUP='$BACKUP' bash -s" <<'REMOTE'
+          set -euo pipefail
+          for rel in gallery about; do
+            [[ -d "$BACKUP/$rel" ]] || continue
+            [[ ! -e "$ROOT/$rel" ]] || continue
+            mv "$BACKUP/$rel" "$ROOT/$rel"
+          done
+          REMOTE
