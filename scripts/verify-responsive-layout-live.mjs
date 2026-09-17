@@ -47,7 +47,7 @@ async function fetchRoute(route,attempt){
       'cache-control':'no-cache, no-store, max-age=0',
       pragma:'no-cache',
       accept:'text/html',
-      'user-agent':'DTFSeeds-Responsive-Layout-Live/1.6'
+      'user-agent':'DTFSeeds-Responsive-Layout-Live/1.7'
     },
     signal:AbortSignal.timeout(30_000)
   });
@@ -63,6 +63,12 @@ function inspect(route,body){
   if(!body.includes(marker)) missing.push('responsive layout style marker');
   if(!body.includes(uxMarker)) missing.push('sitewide UX polish style marker');
   if(!body.includes(mobileMarker)) missing.push('sitewide mobile polish style marker');
+  const responsiveIndex=body.indexOf(marker);
+  const uxIndex=body.indexOf(uxMarker);
+  const mobileIndex=body.indexOf(mobileMarker);
+  if(responsiveIndex>=0&&uxIndex>=0&&mobileIndex>=0&&!(mobileIndex>responsiveIndex&&mobileIndex>uxIndex)) {
+    missing.push('mobile polish must be the final shared responsive style layer');
+  }
   for(const token of requiredCssTokens){
     if(!body.includes(token)) missing.push(`responsive CSS token ${JSON.stringify(token)}`);
   }
@@ -93,7 +99,7 @@ for(const route of routes){
       if(finalMissing.length===0){
         passed=true;
         results.push({route,ok:true,attempt});
-        console.log(`PASS responsive layout, UX polish, and mobile polish ${route}`);
+        console.log(`PASS responsive layout, UX polish, and final mobile polish ${route}`);
         break;
       }
       lastError=new Error(`${route} missing ${finalMissing.join(', ')}`);
@@ -104,10 +110,10 @@ for(const route of routes){
   }
   if(!passed){
     results.push({route,ok:false,missing:finalMissing,error:lastError?.message||'unknown error'});
-    console.error(`FAIL responsive layout, UX polish, and mobile polish ${route}: ${lastError?.message||'unknown error'}`);
+    console.error(`FAIL responsive layout, UX polish, and final mobile polish ${route}: ${lastError?.message||'unknown error'}`);
   }
 }
 
 const failed=results.filter(row=>!row.ok);
-console.log(JSON.stringify({siteUrl,header:'v6',navigation:'canonical-eight-v1',marker,uxMarker,mobileMarker,routes:results,ok:failed.length===0},null,2));
+console.log(JSON.stringify({siteUrl,header:'v6',navigation:'canonical-eight-v1',marker,uxMarker,mobileMarker,mobilePolishFinal:true,routes:results,ok:failed.length===0},null,2));
 if(failed.length) process.exit(1);
