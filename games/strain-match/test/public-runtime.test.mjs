@@ -51,6 +51,9 @@ assert.match(polishCss, /\.match-card\.revealed\[data-kind=clue\]/);
 assert.match(polishCss, /html\[data-deck=terpenes\]/);
 assert.match(polishCss, /@media\(hover:none\)/);
 assert.match(polishCss, /@media\(prefers-reduced-motion:reduce\)/);
+assert.match(polishCss, /@media\(forced-colors:active\)/);
+assert.match(polishCss, /\.match-card\.matched\{[\s\S]*border-color:Highlight/);
+assert.match(polishCss, /outline:3px solid Highlight/);
 
 for (const deck of canonical.decks) {
   assert.equal(deck.pairs.length, 8, `${deck.id} must keep eight pairs`);
