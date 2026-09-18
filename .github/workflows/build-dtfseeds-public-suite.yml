@@ -94,10 +94,12 @@ jobs:
         run: |
           set -euo pipefail
           node games/grower-conversations/scripts/validate-prompt-bank.mjs
+          node games/grower-conversations/test/public-runtime.test.mjs
           node --check site/public-route-patch/games/grower-conversations/app.js
           cmp games/grower-conversations/data/prompt-bank.json site/public-route-patch/games/grower-conversations/data/prompt-bank.json
           test -s site/public-route-patch/games/grower-conversations/index.html
           test -s site/public-route-patch/games/grower-conversations/grower-conversations.css
+          test -s site/public-route-patch/games/grower-conversations/grower-conversations-v2.css
           grep -Fq 'https://dtfseeds.com/games/grower-conversations/' site/public-route-patch/games/grower-conversations/index.html
 
       - name: Validate Grow Room Defense browser game
