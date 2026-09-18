@@ -103,7 +103,7 @@ jobs:
           grep -Fq 'High IQ — Test Higher Cognition' site/public-route-patch/games/high-iq/index.html
           grep -Fq 'https://dtfseeds.com/games/high-iq/' site/public-route-patch/games/high-iq/index.html
 
-      - name: Validate High Life browser prototype
+      - name: Validate High Life browser game
         run: |
           set -euo pipefail
           node games/high-life/test/engine.test.mjs
@@ -301,7 +301,7 @@ jobs:
           test -s site/public-route-patch/games/seed-man-platformer/seed-man.css
           grep -Fq 'https://dtfseeds.com/games/seed-man-platformer/' site/public-route-patch/games/seed-man-platformer/index.html
 
-      - name: Validate Strain Showdown browser prototype
+      - name: Validate Strain Showdown browser game
         run: |
           set -euo pipefail
           node games/strain-showdown/scripts/validate-roster.mjs
@@ -1016,10 +1016,10 @@ jobs:
             echo ''
             echo '- 25 registered browser games via the canonical Game Hub'
             echo '- /games/high-iq/ (self-hosted validated browser game)'
-            echo '- /games/high-life/ (tested browser prototype)'
+            echo '- /games/high-life/ (tested career strategy game)'
             echo '- /games/grower-conversations/ (96-card browser deck)'
             echo '- /games/seed-man-platformer/ (canonical 20-level / 5-world v20 campaign)'
-            echo '- /games/strain-showdown/ (solo card-battle prototype)'
+            echo '- /games/strain-showdown/ (96-card solo CPU battle game)'
             echo '- /games/bud-or-bluff/ (multiplayer party game)'
             echo '- /games/terpocalypse/ (validated browser vertical slice)'
             echo "- /games/phenoquest/ (canonical pinned $PHENOQUEST_SHA)"
@@ -1068,7 +1068,7 @@ jobs:
                 ? 'The complete DTFSeeds public suite built and validated successfully. A 30-day immutable artifact is attached to this workflow run and is ready for the production deployer.'
                 : 'The public-suite package did not complete successfully. Inspect this workflow run before attempting production deployment.',
               '',
-              'Build scope: the canonical 25-game Hub plus validated High IQ, High Life, Grower Conversations, Seed Man, Strain Showdown, Bud or Bluff, Terpocalypse, PhenoQuest, Burn Buds, High Land, Weedopolis, pinned THC Crossword, Who Took It?, GrowLens, THC Grow Doc, Tools, Projects, and puzzle data.',
+              'Build scope: the canonical 25-game Hub plus validated High IQ, High Life, Grower Conversations, Seed Man, Strain Showdown, Bud or Bluff, Terpocalypse, PhenoQuest, Burn Buds, High Land, Weedopolis, pinned THC Crossword, Who Took It?, Ganjumanji, THC RPG, GrowLens, THC Grow Doc, Tools, Projects, and puzzle data.',
               'No production mutation is performed by this build-only workflow.'
             ].join('\n');
             await github.rest.issues.createComment({
