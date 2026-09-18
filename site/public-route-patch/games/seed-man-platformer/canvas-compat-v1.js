@@ -3,14 +3,14 @@
 (() => {
   const VERSION = 'seed-man-runtime-health-v21';
   const LEGACY_VERSION = 'seed-man-runtime-health-v20';
-  const RELEASE = '20260915-v20-world-mechanics-v1';
+  const RELEASE = '20260918-v20-world-mechanics-v2';
   const EXPECTED = Object.freeze({
     campaignLevels: 20,
     campaignUi: 'seed-man-campaign-ui-v20',
     playerState: 'seed-man-player-state-v20',
     combat: 'seed-man-combat-browser-v2',
     enemyAttacks: 'seed-man-enemy-attacks-browser-v2',
-    worldMechanics: 'seed-man-world-mechanics-browser-v1',
+    worldMechanics: 'seed-man-world-mechanics-browser-v2',
     threeApi: 'seed-man-three-public-v3',
     threeRenderer: 'seed-man-three-world-v2',
     approvedArt: 'approved-showcase-2026-09-08'
