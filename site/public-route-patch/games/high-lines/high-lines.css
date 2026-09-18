@@ -38,7 +38,7 @@ h1{margin:0;font-size:clamp(2.6rem,7vw,6.4rem);line-height:.86;letter-spacing:-.
 .code-field{display:grid;gap:5px;min-width:180px}.code-field span{color:var(--muted);font-size:.7rem;font-weight:850;text-transform:uppercase;letter-spacing:.08em}
 .code-field input{padding:.75rem .9rem;border:1px solid #3c5c4d;border-radius:10px;background:#07100d;color:var(--text);font-weight:900;letter-spacing:.17em;text-transform:uppercase;outline:0}
 .code-field input[aria-invalid="true"]{border-color:var(--danger)}
-.codebar button,.tool-card button{min-height:43px;padding:.7rem .95rem;border:1px solid #345645;border-radius:10px;background:#1b3429;font-weight:850;cursor:pointer;transition:transform .15s ease,background .15s ease,border-color .15s ease}
+.codebar button,.tool-card button{min-height:44px;padding:.7rem .95rem;border:1px solid #345645;border-radius:10px;background:#1b3429;font-weight:850;cursor:pointer;transition:transform .15s ease,background .15s ease,border-color .15s ease}
 .codebar button:hover,.tool-card button:hover{transform:translateY(-1px);background:#264737;border-color:#5c8b70}
 button:disabled{opacity:.42;cursor:not-allowed;transform:none!important}
 .load-status{margin-left:auto;padding:.66rem;color:var(--muted);font-size:.8rem}
@@ -92,4 +92,17 @@ kbd{padding:.12rem .34rem;border:1px solid #4b6256;border-radius:5px;background:
 }
 @media(prefers-reduced-motion:reduce){
   *,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}
+}
+
+@media(forced-colors:active){
+  .codebar button,.tool-card button,.swatch-button,.code-field input,.footer-nav a,.playfield,.rail-card,.art-mount{
+    border:1px solid ButtonText;
+  }
+  .codebar button:focus-visible,.tool-card button:focus-visible,.swatch-button:focus-visible,.code-field input:focus-visible,.footer-nav a:focus-visible,#art-mount [data-region]:focus-visible,#art-mount [data-hidden]:focus-visible{
+    outline:3px solid Highlight;
+    outline-offset:3px;
+  }
+  .swatch-button[aria-pressed="true"],.hidden-list li.found{
+    border-color:Highlight;
+  }
 }
