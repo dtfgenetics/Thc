@@ -38,6 +38,7 @@ jobs:
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/mystery-strain/app.js
+          node --check site/public-route-patch/games/mystery-strain/runtime.mjs
           node --check site/public-route-patch/games/mystery-strain/guess-confirm-v2.js
           node --check site/public-route-patch/games/mystery-strain/engine.mjs
           node --check site/public-route-patch/games/mystery-strain/analysis.mjs
@@ -67,9 +68,9 @@ jobs:
           grep -Fq 'id="mystery-strain-data"' "$root/index.html"
           grep -Fq '<script src="./app.js" defer></script>' "$root/index.html"
           grep -Fq '<script src="./guess-confirm-v2.js" defer></script>' "$root/index.html"
-          grep -Fq 'rankedQuestionOptions(state, data)' "$root/app.js"
-          grep -Fq 'Information ${question.informationScore}%' "$root/app.js"
-          grep -Fq 'BEST SPLIT' "$root/app.js"
+          grep -Fq 'rankedQuestionOptions(state, data)' "$root/runtime.mjs"
+          grep -Fq 'Information ${question.informationScore}%' "$root/runtime.mjs"
+          grep -Fq 'BEST SPLIT' "$root/runtime.mjs"
           grep -Fq '.question-card.best-split' "$root/analysis.css"
           grep -Fq 'event.stopImmediatePropagation()' "$root/guess-confirm-v2.js"
           grep -Fq 'Confirm Guess' "$root/guess-confirm-v2.js"
@@ -78,7 +79,7 @@ jobs:
             echo 'Mystery Strain must not depend on module MIME handling in production.' >&2
             exit 1
           fi
-          if grep -Fq "fetch('./data/strains.json'" "$root/app.js"; then
+          if grep -Fq "fetch('./data/strains.json'" "$root/runtime.mjs"; then
             echo 'Mystery Strain must not fetch data JSON at runtime.' >&2
             exit 1
           fi
