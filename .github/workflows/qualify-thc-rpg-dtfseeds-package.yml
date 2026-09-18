@@ -150,7 +150,7 @@ jobs:
           test -s package/games/thc-rpg/src/game/GrowJournal.js
           test -s package/games/thc-rpg/src/game/KeeperCuttings.js
           grep -Fq 'data-dtf-shell="header-v6"' package/games/thc-rpg/index.html
-          grep -Fq 'data-dtf-sitewide-header="canonical-six-v1"' package/games/thc-rpg/index.html
+          grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' package/games/thc-rpg/index.html
           ! grep -Fq 'href="/" data-dtf-nav-group="home">Home<' package/games/thc-rpg/index.html
           grep -Fq 'href="/seeds/">Genetics<' package/games/thc-rpg/index.html
           grep -Fq 'href="/learn/" data-dtf-nav-group="learn">Learn<' package/games/thc-rpg/index.html
