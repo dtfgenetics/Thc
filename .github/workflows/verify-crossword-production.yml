@@ -1,0 +1,60 @@
+name: Verify Crossword Production
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - scripts/verify-crossword-live.mjs
+      - .github/workflows/verify-crossword-production.yml
+      - site/public-route-patch/games/crossword/source-revision.txt
+      - .github/workflows/build-dtfseeds-public-suite.yml
+  workflow_run:
+    workflows: ["Deploy DTFSeeds Public Suite via WordPress V2"]
+    types: [completed]
+  schedule:
+    - cron: '37 10 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-crossword-production-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout verifier source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          package-manager-cache: false
+
+      - name: Validate verifier
+        run: node --check scripts/verify-crossword-live.mjs
+
+      - name: Verify live Crossword app and puzzle data
+        env:
+          SITE: https://dtfseeds.com
+        run: node scripts/verify-crossword-live.mjs
+
+      - name: Summarize
+        if: always()
+        run: |
+          {
+            echo '## THC Daily Crossword production verification'
+            echo
+            echo '- App: https://dtfseeds.com/games/crossword/'
+            echo '- Puzzle data: https://dtfseeds.com/puzzles/current.json'
+            echo '- Requires the exact pinned dtfgenetics/Thc-crossword- revision.'
+            echo '- Verifies production Vite assets, mobile/keyboard solver markers, 44px/touch behavior, archive routing, and current puzzle integrity.'
+          } >> "$GITHUB_STEP_SUMMARY"
