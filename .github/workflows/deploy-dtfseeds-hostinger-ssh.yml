@@ -58,7 +58,7 @@ jobs:
           grep -Fq 'Upload public suite artifact' .github/workflows/build-dtfseeds-public-suite.yml
           grep -Fq 'dtfseeds-public-suite-' .github/workflows/build-dtfseeds-public-suite.yml
           grep -Fq '/games/bud-or-bluff/' site/public-route-patch/games/bud-or-bluff/index.html
-          grep -Fq '25 playable browser games' site/public-route-patch/games/index.html
+          grep -Fq '23 playable browser games' site/public-route-patch/games/index.html
           # /learn is Learning Experience-owned and must never enter this mutation lane.
           ! grep -Eq '^[[:space:]]+learn$' scripts/deploy/hostinger-overlay.sh
           ! grep -Eq 'required=\([^)]*learn' .github/workflows/deploy-dtfseeds-hostinger-ssh.yml
@@ -161,7 +161,7 @@ jobs:
           for file in "${required[@]}"; do
             test -s "$file"
           done
-          grep -Fq '25 playable browser games' release/games/index.html
+          grep -Fq '23 playable browser games' release/games/index.html
           grep -Fq '/games/bud-or-bluff/' release/games/bud-or-bluff/index.html
           SOURCE_SHA="$SOURCE_SHA" node --input-type=module <<'NODE'
           import fs from 'node:fs';
@@ -317,7 +317,7 @@ jobs:
           curl -fsSL --retry 3 --retry-delay 2 \
             "https://dtfseeds.com/games/?${cache_bust}" \
             -o /tmp/dtf-games.html
-          grep -Fq '25 playable browser games' /tmp/dtf-games.html
+          grep -Fq '23 playable browser games' /tmp/dtf-games.html
 
           effective="$(curl -fsSL --retry 3 --retry-delay 2 \
             -o /tmp/dtf-bob.html \
