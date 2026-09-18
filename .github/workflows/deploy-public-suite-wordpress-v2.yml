@@ -23,6 +23,13 @@ on:
       - scripts/assemble-wordpress-suite-v2.py
       - scripts/assemble-wordpress-suite-resource-aware.py
       - scripts/promote-public-game-routes-via-wordpress.mjs
+      - scripts/apply-sitewide-header.mjs
+      - scripts/lib/sitewide-header-template.mjs
+      - scripts/lib/sitewide-header-template-v6.mjs
+      - scripts/lib/sitewide-content-density-v1.mjs
+      - scripts/lib/sitewide-visual-repair-v2.mjs
+      - site/wordpress/assets/responsive-layout-v1.css
+      - site/wordpress/assets/sitewide-ux-polish-v1.css
       - scripts/wordpress-suite-v2/**
 
 permissions:
