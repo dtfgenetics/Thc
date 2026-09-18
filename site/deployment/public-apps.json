@@ -116,7 +116,7 @@
       "route": "/games/high-life/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/high-life/test/engine.test.mjs",
+      "build": "node games/high-life/test/engine.test.mjs && node games/high-life/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-life/app.js && cmp games/high-life/src/engine.mjs site/public-route-patch/games/high-life/engine.mjs && cmp games/high-life/data/events.json site/public-route-patch/games/high-life/data/events.json",
       "machineData": {
         "turns": 18,
         "eras": 3,
@@ -124,7 +124,7 @@
         "deterministic": true,
         "balanceSimulationSeedsPerStrategy": 120
       },
-      "notes": "Self-hosted seeded browser prototype with tested rules engine, event system, era transitions, Legacy scoring, and canonical/public data synchronization. Human balance playtesting remains open."
+      "notes": "Self-hosted seeded 18-turn career strategy game across Underground, Medical, and Legal eras with a tested canonical rules engine, exact-resume autosave, deterministic event stream, era transitions, Legacy scoring, mobile layout safeguards, 44px controls, reduced motion, forced colors, and canonical/public data synchronization. Included in the central public-suite validation gate. Human balance playtesting and exact post-deploy live-route verification remain open."
     },
     {
       "id": "grower-conversations",
@@ -288,7 +288,7 @@
           "elite": 2
         }
       },
-      "notes": "Self-hosted playable browser prototype with a tested deterministic three-lane battle engine, CPU rival, Base/Select/Elite evolution, eight family passives, Focus economy, Garden health, 96-card canonical roster synchronization, result tracking, and deterministic balance simulation tooling. Final per-card effects, balance approval, human rules playtesting, final art, and print proof remain open release gates."
+      "notes": "Self-hosted 96-card browser battle game with a tested deterministic three-lane engine, CPU rival, Base/Select/Elite evolution, eight family passives, Focus economy, Garden health, synchronized canonical roster data, result tracking, mobile three-lane visibility, 44px attack controls, and deterministic 32-seed balance simulation. Player-facing prototype/development wording has been removed. Final per-card effect activation, balance approval, human rules playtesting, final art, print proof, and exact post-deploy live-route verification remain open."
     },
     {
       "id": "cannabis-fleet-battle",
