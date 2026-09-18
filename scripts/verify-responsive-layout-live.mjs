@@ -59,7 +59,7 @@ async function fetchRoute(route,attempt){
 function inspect(route,body){
   const missing=[];
   if(!body.includes('data-dtf-shell="header-v6"')) missing.push('canonical V6 header');
-  if(!body.includes('data-dtf-sitewide-header="canonical-eight-v1"')) missing.push('canonical eight-link navigation marker');
+  if(!body.includes('data-dtf-sitewide-header="canonical-six-v1"')) missing.push('canonical six-link navigation marker');
   if(!body.includes(marker)) missing.push('responsive layout style marker');
   if(!body.includes(uxMarker)) missing.push('sitewide UX polish style marker');
   if(!body.includes(mobileMarker)) missing.push('sitewide mobile polish style marker');
@@ -115,5 +115,5 @@ for(const route of routes){
 }
 
 const failed=results.filter(row=>!row.ok);
-console.log(JSON.stringify({siteUrl,header:'v6',navigation:'canonical-eight-v1',marker,uxMarker,mobileMarker,mobilePolishFinal:true,routes:results,ok:failed.length===0},null,2));
+console.log(JSON.stringify({siteUrl,header:'v6',navigation:'canonical-six-v1',marker,uxMarker,mobileMarker,mobilePolishFinal:true,routes:results,ok:failed.length===0},null,2));
 if(failed.length) process.exit(1);
