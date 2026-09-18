@@ -41,10 +41,10 @@ concurrency:
 jobs:
   observe:
     name: Confirm trusted visual production package
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
 
@@ -80,7 +80,7 @@ jobs:
             test -s "site/wordpress/pages/$slug.html"
           done
           for slug in community gallery about contact; do
-            grep -Fq 'class="dtf-v1"' "site/wordpress/pages/$slug.html"
+            grep -Eq 'class="[^"]*(^|[[:space:]])dtf-v1([[:space:]]|$)[^"]*"' "site/wordpress/pages/$slug.html"
           done
           test -d site/wordpress/assets/infographics
           count="$(find site/wordpress/assets/infographics -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' \) | wc -l | tr -d ' ')"
