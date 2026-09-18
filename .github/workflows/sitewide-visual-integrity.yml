@@ -41,15 +41,15 @@ jobs:
           node --check scripts/audit-sitewide-visual-integrity.mjs
           node --check scripts/audit-sitewide-link-integrity.mjs
           grep -Fq 'header-v6' scripts/audit-sitewide-visual-integrity.mjs
-          grep -Fq 'canonical-eight-v1' scripts/audit-sitewide-visual-integrity.mjs
+          grep -Fq 'canonical-six-v1' scripts/audit-sitewide-visual-integrity.mjs
           grep -Fq 'dtf-content-density-v1' scripts/audit-sitewide-visual-integrity.mjs
           grep -Fq 'dtf-sitewide-ux-polish-v1' scripts/audit-sitewide-visual-integrity.mjs
           grep -Fq 'DTFSeeds-Visual-Integrity/2.1' scripts/audit-sitewide-visual-integrity.mjs
           grep -Fq 'DTFSeeds-Link-Integrity/1.0' scripts/audit-sitewide-link-integrity.mjs
-          grep -Fq "['Home','/']" scripts/audit-sitewide-visual-integrity.mjs
-          grep -Fq "['Seeds','/seeds/']" scripts/audit-sitewide-visual-integrity.mjs
+          ! grep -Fq "['Home','/']" scripts/audit-sitewide-visual-integrity.mjs
+          grep -Fq "['Genetics','/seeds/']" scripts/audit-sitewide-visual-integrity.mjs
           grep -Fq "['Courses','/courses/']" scripts/audit-sitewide-visual-integrity.mjs
-          grep -Fq "['Diagnostic','/tools/']" scripts/audit-sitewide-visual-integrity.mjs
+          grep -Fq "['Tools','/tools/']" scripts/audit-sitewide-visual-integrity.mjs
           ! grep -Fq "['Genetics','/seeds/']" scripts/audit-sitewide-visual-integrity.mjs
           ! grep -Fq "['Tools','/tools/']" scripts/audit-sitewide-visual-integrity.mjs
 
