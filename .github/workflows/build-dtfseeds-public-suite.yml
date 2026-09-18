@@ -163,6 +163,21 @@ jobs:
           test -s site/public-route-patch/games/mystery-strain/guess-confirm-v2.css
           grep -Fq 'https://dtfseeds.com/games/mystery-strain/' site/public-route-patch/games/mystery-strain/index.html
 
+      - name: Validate Pheno Draft browser game
+        run: |
+          set -euo pipefail
+          node games/pheno-draft/scripts/validate-data.mjs
+          node games/pheno-draft/test/engine.test.mjs
+          node games/pheno-draft/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/pheno-draft/app.js
+          node --check site/public-route-patch/games/pheno-draft/runtime.mjs
+          node --check site/public-route-patch/games/pheno-draft/engine.mjs
+          cmp games/pheno-draft/src/engine.mjs site/public-route-patch/games/pheno-draft/engine.mjs
+          test -s site/public-route-patch/games/pheno-draft/index.html
+          test -s site/public-route-patch/games/pheno-draft/pheno-draft.css
+          test -s site/public-route-patch/games/pheno-draft/pheno-draft-v2.css
+          grep -Fq 'https://dtfseeds.com/games/pheno-draft/' site/public-route-patch/games/pheno-draft/index.html
+
       - name: Validate Seed Man v20 campaign
         run: |
           set -euo pipefail
