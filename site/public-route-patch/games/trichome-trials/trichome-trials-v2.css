@@ -40,7 +40,7 @@
 .score-control input[type="range"]::-moz-range-progress{height:9px;border-radius:999px;background:var(--lime)}
 .score-control input[type="range"]::-moz-range-thumb{width:20px;height:20px;border:3px solid #102014;border-radius:50%;background:var(--gold)}
 
-.confidence-button{min-height:38px;transition:transform .14s ease,border-color .14s ease,background .14s ease}
+.confidence-button{min-height:44px;transition:transform .14s ease,border-color .14s ease,background .14s ease}
 .confidence-button[aria-pressed="true"]{box-shadow:0 0 18px rgba(239,200,111,.12)}
 .submit-button{min-height:58px;font-size:1rem;transition:transform .16s ease,box-shadow .16s ease}
 .submit-button:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 13px 30px rgba(0,0,0,.2),0 0 24px rgba(185,239,107,.13)}
@@ -97,4 +97,24 @@
 @media(prefers-reduced-motion:reduce){
   .review-panel:not([hidden]){animation:none}
   .score-row,.confidence-button,.submit-button{transition:none!important}
+}
+
+
+@media(forced-colors:active){
+  .score-row,.confidence-button,.submit-button,.next-button,.primary-button,.secondary-button,.review-panel,.benchmark-row,.code-input{
+    border:1px solid ButtonText;
+  }
+  .score-stepper button,.score-control input[type="range"]{
+    forced-color-adjust:auto;
+  }
+  .confidence-button[aria-pressed="true"],.benchmark-row.diff-0,.benchmark-row.diff-1,.benchmark-row.confident{
+    border-color:Highlight;
+  }
+  .score-row.reviewed::before{
+    background:Highlight;
+  }
+  :focus-visible{
+    outline:3px solid Highlight;
+    outline-offset:3px;
+  }
 }
