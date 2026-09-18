@@ -87,7 +87,7 @@ for (const mapped of sourceGames) {
     typeof navGame?.candidateRoute === 'string' &&
     mapped.route === navGame.candidateRoute &&
     app?.route === navGame.candidateRoute &&
-    app?.status === 'runtime-integration';
+    ['runtime-integration', 'release-candidate', 'ready-to-package'].includes(app?.status);
   if (!allowedCandidate) {
     fail(`game-source-map contains non-public mapping without an approved runtime-integration candidate: ${mapped.id || '<missing>'}.`);
   }
@@ -206,7 +206,8 @@ for (const app of apps) {
   if (nonPublicReady.has(app.status)) continue;
   if (!publicGames.some((game) => game.id === app.id)) {
     const navGame = (nav.games || []).find((game) => game.id === app.id);
-    if (app.status === 'runtime-integration' && navGame?.candidateRoute === app.route && navGame?.public === false) continue;
+    if (navGame?.candidateRoute === app.route && navGame?.public === false &&
+        ['runtime-integration', 'release-candidate', 'ready-to-package'].includes(app.status)) continue;
     warnings.push(`${app.id} has a deployable game route (${app.route}) but is not promoted in public-navigation.json.`);
   }
 }
