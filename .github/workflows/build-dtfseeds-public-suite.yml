@@ -556,6 +556,41 @@ jobs:
           cd "$repo"
           echo "WHO_TOOK_IT_SHA=$revision" >> "$GITHUB_ENV"
 
+      - name: Build pinned Ganjumanji
+        shell: bash
+        run: |
+          set -euo pipefail
+          revision_file="$GITHUB_WORKSPACE/site/public-route-patch/games/ganjumanji/source-revision.txt"
+          test -s "$revision_file"
+          repo_name="$(sed -n 's/^repository=//p' "$revision_file")"
+          revision="$(sed -n 's/^commit=//p' "$revision_file")"
+          route="$(sed -n 's/^route=//p' "$revision_file")"
+          release_version="$(sed -n 's/^release=//p' "$revision_file")"
+          test "$repo_name" = "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple"
+          test "$route" = "/games/ganjumanji/"
+          test "$release_version" = "0.4.1"
+          [[ "$revision" =~ ^[0-9a-f]{40}$ ]]
+
+          repo="$RUNNER_TEMP/ganjumanji"
+          git init "$repo"
+          cd "$repo"
+          git remote add origin "https://github.com/${repo_name}.git"
+          git fetch --depth=1 origin "$revision"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$revision"
+
+          npm install --ignore-scripts
+          npm test
+          npm run validate:ui
+          npm run build
+          npm run validate:release
+          test -s dist/index.html
+          test -s dist/game-release.json
+          grep -Fq '"route": "/games/ganjumanji/"' dist/game-release.json
+          grep -Fq '"version": "0.4.1"' dist/game-release.json
+          grep -Fq '"saveVersion": 5' dist/game-release.json
+          echo "GANJUMANJI_SHA=$revision" >> "$GITHUB_ENV"
+
       - name: Build pinned THC RPG
         shell: bash
         run: |
@@ -655,6 +690,10 @@ jobs:
           cp -a "$RUNNER_TEMP/who-took-it/03_digital-game/dist/." release/games/who-took-it/
           cp site/public-route-patch/games/who-took-it/source-revision.txt release/games/who-took-it/source-revision.txt
 
+          mkdir -p release/games/ganjumanji
+          cp -a "$RUNNER_TEMP/ganjumanji/dist/." release/games/ganjumanji/
+          cp site/public-route-patch/games/ganjumanji/source-revision.txt release/games/ganjumanji/source-revision.txt
+
           mkdir -p release/games/thc-rpg
           cp -a "$RUNNER_TEMP/thc-rpg/dist/." release/games/thc-rpg/
           cp site/public-route-patch/games/thc-rpg/source-revision.txt release/games/thc-rpg/source-revision.txt
@@ -682,6 +721,7 @@ jobs:
               "weedopolis": "$WEEDOPOLIS_SHA",
               "crossword": "$CROSSWORD_SHA",
               "whoTookIt": "$WHO_TOOK_IT_SHA",
+              "ganjumanji": "$GANJUMANJI_SHA",
               "thcRpg": "$THC_RPG_SHA",
               "thcGrowDoc": "$THC_GROW_DOC_SHA"
             }
@@ -853,6 +893,9 @@ jobs:
             release/games/crossword/source-revision.txt
             release/games/who-took-it/index.html
             release/games/who-took-it/source-revision.txt
+            release/games/ganjumanji/index.html
+            release/games/ganjumanji/game-release.json
+            release/games/ganjumanji/source-revision.txt
             release/games/thc-rpg/index.html
             release/games/thc-rpg/game-release.json
             release/games/thc-rpg/src/main.js
@@ -942,6 +985,12 @@ jobs:
           grep -Fq "commit=$WHO_TOOK_IT_SHA" release/games/who-took-it/source-revision.txt
           grep -Fq 'route=/games/who-took-it/' release/games/who-took-it/source-revision.txt
           grep -Fq "\"whoTookIt\": \"$WHO_TOOK_IT_SHA\"" release/dtf-build.json
+          grep -Fq '/games/ganjumanji/' release/games/ganjumanji/game-release.json
+          grep -Fq '"version": "0.4.1"' release/games/ganjumanji/game-release.json
+          grep -Fq '"saveVersion": 5' release/games/ganjumanji/game-release.json
+          grep -Fq 'repository=dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple' release/games/ganjumanji/source-revision.txt
+          grep -Fq "commit=$GANJUMANJI_SHA" release/games/ganjumanji/source-revision.txt
+          grep -Fq "\"ganjumanji\": \"$GANJUMANJI_SHA\"" release/dtf-build.json
           grep -Fq '/games/thc-rpg/' release/games/thc-rpg/game-release.json
           grep -Fq 'repository=dtfgenetics/Thc-rpg' release/games/thc-rpg/source-revision.txt
           grep -Fq "commit=$THC_RPG_SHA" release/games/thc-rpg/source-revision.txt
@@ -979,6 +1028,7 @@ jobs:
             echo "- /games/weedopolis/ (pinned $WEEDOPOLIS_SHA)"
             echo "- /games/crossword/ (canonical pinned $CROSSWORD_SHA)"
             echo "- /games/who-took-it/ (canonical pinned $WHO_TOOK_IT_SHA)"
+            echo "- /games/ganjumanji/ (canonical pinned $GANJUMANJI_SHA)"
             echo "- /games/thc-rpg/ (canonical pinned $THC_RPG_SHA)"
             echo '- /growlens/'
             echo "- /thc-grow-doc/ (canonical pinned $THC_GROW_DOC_SHA)"
