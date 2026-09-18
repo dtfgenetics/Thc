@@ -338,16 +338,40 @@ codeInput.addEventListener('input', () => {
 codeInput.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') loadEnteredCode();
 });
+async function copyText(value) {
+  const text = String(value || '');
+  if (!text) return false;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {}
+  try {
+    const field = document.createElement('textarea');
+    field.value = text;
+    field.setAttribute('readonly', '');
+    field.style.position = 'fixed';
+    field.style.opacity = '0';
+    field.style.pointerEvents = 'none';
+    document.body.append(field);
+    field.select();
+    field.setSelectionRange(0, text.length);
+    const copied = document.execCommand?.('copy') === true;
+    field.remove();
+    return copied;
+  } catch {
+    return false;
+  }
+}
+
 copyButton.addEventListener('click', async () => {
   const url = `${location.origin}${location.pathname}?mode=${encodeURIComponent(mode)}&card=${encodeURIComponent(code)}`;
   const text = `Grow Room Bingo card ${code} · mode ${mode}\n${url}`;
-  try {
-    if (!navigator.clipboard?.writeText) throw new Error('Clipboard API unavailable.');
-    await navigator.clipboard.writeText(text);
-    announce.textContent = 'Card code and link copied.';
-  } catch {
-    announce.textContent = `Share card code: ${code}`;
-  }
+  const copied = await copyText(text);
+  announce.textContent = copied
+    ? 'Card code and link copied.'
+    : `Copy failed. Share card code ${code} and this page address manually.`;
 });
 
 try {
