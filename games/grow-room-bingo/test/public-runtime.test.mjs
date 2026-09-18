@@ -29,6 +29,9 @@ assert.match(app, /function normalizeCardCode\(/, 'public runtime must include c
 assert.match(app, /function isValidCardCode\(/, 'public runtime must include card-code validation');
 assert.match(app, /globalThis\.crypto\?\.getRandomValues/, 'public runtime must guard random-code generation');
 assert.match(app, /navigator\.clipboard\?\.writeText/, 'public runtime must guard clipboard access');
+assert.match(app, /async function copyText\(/, 'public runtime must expose a clipboard fallback helper');
+assert.match(app, /document\.execCommand\?\.\('copy'\) === true/, 'clipboard fallback must support older/restricted browsers');
+assert.match(app, /Copy failed\. Share card code/, 'clipboard failure must keep useful manual-share feedback');
 assert.match(app, /globalThis\.history\?\.replaceState/, 'public runtime must keep shareable card URLs safely');
 
 assert.match(app, /const SAVE_VERSION = 1;/, 'saved-card payloads must be versioned');
@@ -76,6 +79,8 @@ assert.match(css, /html\[data-mode=mixed\]/, 'Mixed mode must have its own visua
 assert.match(css, /@media\(max-width:430px\)/, 'small-screen bingo controls must be explicitly tuned');
 assert.match(css, /@media\(hover:none\)/, 'touch devices must not inherit hover-only movement');
 assert.match(css, /@media\(prefers-reduced-motion:reduce\)/, 'motion feedback must respect reduced-motion preferences');
+assert.match(css, /@media\(forced-colors:active\)/, 'high-contrast mode must retain playable board states');
+assert.match(css, /outline:3px solid Highlight/, 'high-contrast focus must remain visible');
 
 const modeIds = new Set(canonical.modes.map((item) => item.id));
 assert.ok(modeIds.has('grow-room') && modeIds.has('bongwater') && modeIds.has('mixed'), 'all three bingo modes must remain available');
