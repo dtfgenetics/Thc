@@ -53,7 +53,7 @@ const markerSets=[
   ['approved-art-runtime-v1.js',['seed-man-approved-art-runtime-v2',"phenotypeForms:Object.freeze(['plant','fire','electric','ice'])"]],
   ['campaign-v20-runtime.js',['seed-man-campaign-v20-runtime-v3',"phenotypeForms:['plant','fire','electric','ice']"]],
   ['campaign-ui-v20.js',['seed-man-campaign-ui-v20','seed-man-scoreboard-v1','function tickCompletion','function selectNextLevel','function scoreForRun','dtf-seed-man-high-scores-v1','SCORE_LIMIT=10']],
-  ['world-mechanics-browser-v1.js',['seed-man-world-mechanics-browser-v2','seed-man-world-mechanics-runtime-v1','moving-platforms','collapsing-platforms','conveyor-platforms','heat-updraft']],
+  ['world-mechanics-browser-v1.js',['seed-man-world-mechanics-browser-v3','seed-man-world-mechanics-runtime-v1','moving-platforms','collapsing-platforms','conveyor-platforms','heat-updraft']],
   ['v20-enemy-runtime.js',['seed-man-v20-enemy-runtime-v2','PHENOTYPE_DURATION_MS = 30000']],
   ['combat-browser-v2.js',['seed-man-combat-browser-v2','syncBossState','seedman:boss-defeated']],
   ['enemy-attacks-browser-v2.js',['seed-man-enemy-attacks-browser-v2']],
@@ -88,6 +88,6 @@ const publisher=fs.readFileSync(publisherPath,'utf8');
 const localScriptRefs=[...index.matchAll(/<script[^>]+src="\.\/([^"?]+)(?:\?[^"}]*)?"[^>]*><\/script>/g)].map((match)=>match[1]);
 if(localScriptRefs.length===0)throw new Error('publisher-guard:no-local-script-refs-found');
 for(const rel of localScriptRefs)if(!publisher.includes(`'${rel}'`))throw new Error(`publisher-missing-index-script:${rel}`);
-for(const marker of ["'world-mechanics-browser-v1.js'",'seed-man-world-mechanics-browser-v2','seed-man-three-dynamic-platforms-v1'])if(!publisher.includes(marker))throw new Error(`publisher-world-mechanics-marker-missing:${marker}`);
+for(const marker of ["'world-mechanics-browser-v1.js'",'seed-man-world-mechanics-browser-v3','seed-man-three-dynamic-platforms-v1'])if(!publisher.includes(marker))throw new Error(`publisher-world-mechanics-marker-missing:${marker}`);
 
-console.log(JSON.stringify({ok:true,release:'20260918-v20-world-mechanics-v2',campaignId:campaign.id,levels:20,worlds:5,bosses:6,enemies:10,phenotypeCarriers:3,finalBoss:'blight-king',approvedArt:true,worldRenderer:'seed-man-three-world-v2',worldMechanics:'seed-man-world-mechanics-browser-v2',dynamicPlatforms:'seed-man-three-dynamic-platforms-v1',worldAdapter:'explicit',runtimeBridge:'health-only',playerState:'v20',combatRuntime:'v2',inputGuard:'v20',levelProgression:'flag-to-next-level',scoreboard:'local-top-10-per-level',scoreboardStyles:'seed-man.css',publisherRuntimeCoverage:true,legacyDynamicLoaderRemoved:true,legacyCanvasMonkeyPatchRemoved:true,legacySproutRunRemoved:true,corruptAssetsRemoved:true,retiredArtifactsRemoved:retired.length}));
+console.log(JSON.stringify({ok:true,release:'20260918-v20-world-mechanics-v3',campaignId:campaign.id,levels:20,worlds:5,bosses:6,enemies:10,phenotypeCarriers:3,finalBoss:'blight-king',approvedArt:true,worldRenderer:'seed-man-three-world-v2',worldMechanics:'seed-man-world-mechanics-browser-v3',dynamicPlatforms:'seed-man-three-dynamic-platforms-v1',worldAdapter:'explicit',runtimeBridge:'health-only',playerState:'v20',combatRuntime:'v2',inputGuard:'v20',levelProgression:'flag-to-next-level',scoreboard:'local-top-10-per-level',scoreboardStyles:'seed-man.css',publisherRuntimeCoverage:true,legacyDynamicLoaderRemoved:true,legacyCanvasMonkeyPatchRemoved:true,legacySproutRunRemoved:true,corruptAssetsRemoved:true,retiredArtifactsRemoved:retired.length}));

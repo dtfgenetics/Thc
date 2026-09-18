@@ -79,7 +79,7 @@ assert.equal(resources['seed-man-platformer'].publisher.sharedProductionTarget, 
 assert.equal(resources['seed-man-platformer'].verifyMarker, '20-Level Campaign');
 assert.notEqual(resources['seed-man-platformer'].publisher.sharedProductionTarget, resources['high-iq'].publisher.sharedProductionTarget);
 assert.ok(resources['seed-man-platformer'].requiredFiles.includes('games/seed-man-platformer/world-mechanics-browser-v1.js'), 'Seed Man public resource must require the browser world-mechanics runtime');
-assert.equal(resources['seed-man-platformer'].releasePolicy.worldMechanicsRuntime, 'seed-man-world-mechanics-browser-v2');
+assert.equal(resources['seed-man-platformer'].releasePolicy.worldMechanicsRuntime, 'seed-man-world-mechanics-browser-v3');
 assert.equal(resources['seed-man-platformer'].releasePolicy.dynamicPlatformRuntime, 'seed-man-three-dynamic-platforms-v1');
 assert.equal(resources['seed-man-platformer'].releasePolicy.runtimeHealthBridge, 'seed-man-runtime-health-v21');
 

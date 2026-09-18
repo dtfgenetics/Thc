@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const VERSION = 'seed-man-world-mechanics-browser-v2';
+  const VERSION = 'seed-man-world-mechanics-browser-v3';
   const SOURCE_CONTRACT = 'seed-man-world-mechanics-runtime-v1';
   const RECIPE_URL = './data/authored-level-recipes-v1.json';
   const PHENOTYPE_HAZARD_IMMUNITIES = Object.freeze({
@@ -38,6 +38,8 @@
   let activeLevelId = '';
   let teleportCooldownMs = 0;
   let lastTeleportEvent = null;
+  let arenaLockEngaged = false;
+  let arenaLockZoneId = '';
   const preparedLevels = new WeakSet();
   const TELEPORT_ROOT_DEF = Object.freeze({ triggerRadius:46, exitOffset:92, cooldownMs:900 });
   const TIMED_DOOR_DEF = Object.freeze({ cycleMs:2400, openMs:1350 });
@@ -112,6 +114,56 @@
     const open=Math.max(0,Math.min(cycle,finite(door?.openMs,TIMED_DOOR_DEF.openMs)));
     const phase=finite(door?.phaseMs,0);
     return ((((timeMs+phase)%cycle)+cycle)%cycle)<open;
+  }
+
+  function arenaLockForZone(zone) {
+    if(!zone || !(zone.mechanics || []).includes('arena-lock')) return null;
+    const start=finite(zone.startX);
+    const end=Math.max(start+160,finite(zone.endX,start+160));
+    const inset=Math.min(42,Math.max(28,(end-start)*.025));
+    return Object.freeze({
+      zoneId:zone.id || 'arena',
+      leftX:start+inset,
+      rightX:end-inset
+    });
+  }
+
+  function applyArenaLock(next,prior,levelData) {
+    const zone=(levelData?.encounterZones || []).find((entry)=>(entry.mechanics || []).includes('arena-lock')) || null;
+    const gate=arenaLockForZone(zone);
+    if(!gate){
+      arenaLockEngaged=false;
+      arenaLockZoneId='';
+      return next;
+    }
+    if(levelData?.boss?.defeated){
+      if(arenaLockEngaged){
+        window.dispatchEvent(new CustomEvent('seedman:arena-unlocked',{detail:{levelId:levelData.id||'',zoneId:arenaLockZoneId||gate.zoneId}}));
+      }
+      arenaLockEngaged=false;
+      arenaLockZoneId='';
+      return next;
+    }
+    const center=finite(next.x)+finite(next.width)/2;
+    if(!arenaLockEngaged&&center>=gate.leftX&&center<=gate.rightX){
+      arenaLockEngaged=true;
+      arenaLockZoneId=gate.zoneId;
+      window.dispatchEvent(new CustomEvent('seedman:arena-locked',{detail:{levelId:levelData.id||'',zoneId:gate.zoneId,leftX:gate.leftX,rightX:gate.rightX}}));
+    }
+    if(!arenaLockEngaged) return next;
+    const width=finite(next.width);
+    const minX=gate.leftX+2;
+    const maxX=Math.max(minX,gate.rightX-width-2);
+    if(finite(next.x)<minX){
+      next.x=minX;
+      next.vx=Math.max(0,finite(next.vx));
+      next.__seedArenaBlocked='left';
+    }else if(finite(next.x)>maxX){
+      next.x=maxX;
+      next.vx=Math.min(0,finite(next.vx));
+      next.__seedArenaBlocked='right';
+    }
+    return next;
   }
 
   function applyTimedDoors(next,prior,levelData) {
@@ -316,6 +368,7 @@
     }
     applyTimedDoors(next,prior,levelData);
     applyTeleportRoots(next,inputState,levelData,step);
+    applyArenaLock(next,prior,levelData);
     next.x=clamp(finite(next.x),0,Math.max(0,finite(levelData.worldWidth)-finite(next.width)));
     return next;
   }
@@ -351,6 +404,23 @@
     drawCtx.restore();
   }
 
+  function drawArenaGate(drawCtx,x,height,active,label) {
+    const top=92, bottom=Math.min(height-34,492);
+    drawCtx.save();
+    drawCtx.lineWidth=active?9:3;
+    drawCtx.strokeStyle=active?'rgba(255,155,124,.94)':'rgba(243,200,103,.28)';
+    drawCtx.shadowColor=active?'rgba(255,93,93,.55)':'transparent';
+    drawCtx.shadowBlur=active?14:0;
+    drawCtx.beginPath(); drawCtx.moveTo(x,top); drawCtx.lineTo(x,bottom); drawCtx.stroke();
+    if(active){
+      drawCtx.fillStyle='rgba(255,221,188,.94)';
+      drawCtx.font='900 10px system-ui';
+      drawCtx.textAlign='center';
+      drawCtx.fillText(label,x,top-10);
+    }
+    drawCtx.restore();
+  }
+
   function drawWorldMechanicOverlay() {
     try {
       if(typeof ctx==='undefined'||typeof canvas==='undefined'||typeof level==='undefined'||typeof player==='undefined'||!ctx||!canvas||!level||!player) return;
@@ -368,6 +438,13 @@
         ctx.fillStyle=darkness; ctx.fillRect(0,0,canvas.width,canvas.height);
       }
       for(const zone of level.encounterZones || []){
+        const arena=arenaLockForZone(zone);
+        if(arena && !level?.boss?.defeated){
+          const active=arenaLockEngaged&&arenaLockZoneId===arena.zoneId;
+          const left=arena.leftX-camera, right=arena.rightX-camera;
+          if(left>-30&&left<canvas.width+30) drawArenaGate(ctx,left,canvas.height,active,'ARENA LOCK');
+          if(right>-30&&right<canvas.width+30) drawArenaGate(ctx,right,canvas.height,true,'BOSS GATE');
+        }
         const pair=teleportRootPair(zone);
         if(pair){
           const ax=pair.entry.x-camera, bx=pair.exit.x-camera;
@@ -385,7 +462,7 @@
     const baseStep=stepPlayer;
     stepPlayer=function seedManWorldMechanicsStep(inputPlayer,inputState,levelData,dt,config){
       if(!levelData) return baseStep(inputPlayer,inputState,levelData,dt,config);
-      if(levelData.id!==activeLevelId){activeLevelId=levelData.id||'';elapsedMs=0;teleportCooldownMs=0;lastTeleportEvent=null;}
+      if(levelData.id!==activeLevelId){activeLevelId=levelData.id||'';elapsedMs=0;teleportCooldownMs=0;lastTeleportEvent=null;arenaLockEngaged=false;arenaLockZoneId='';}
       elapsedMs+=clamp(finite(dt),0,.05)*1000;
       enrichLevelFromRecipe(levelData);
       updateDynamicPlatforms(levelData,elapsedMs);
@@ -428,10 +505,11 @@
     teleportRootPair,
     timedDoorsForZone,
     timedDoorIsOpen,
-    snapshot:()=>Object.freeze({version:VERSION,installed,recipesReady:Boolean(recipeCatalog),activeLevelId,elapsedMs,teleportCooldownMs,lastTeleportEvent})
+    arenaLockForZone,
+    snapshot:()=>Object.freeze({version:VERSION,installed,recipesReady:Boolean(recipeCatalog),activeLevelId,elapsedMs,teleportCooldownMs,lastTeleportEvent,arenaLockEngaged,arenaLockZoneId})
   });
 
   install();
   loadRecipes();
-  window.addEventListener('sprout:level-selected',()=>{activeLevelId='';elapsedMs=0;teleportCooldownMs=0;lastTeleportEvent=null;try{if(typeof level!=='undefined'&&level)enrichLevelFromRecipe(level);}catch{}});
+  window.addEventListener('sprout:level-selected',()=>{activeLevelId='';elapsedMs=0;teleportCooldownMs=0;lastTeleportEvent=null;arenaLockEngaged=false;arenaLockZoneId='';try{if(typeof level!=='undefined'&&level)enrichLevelFromRecipe(level);}catch{}});
 })();

@@ -13,9 +13,9 @@ const index=fs.readFileSync(path.join(publicDir,'index.html'),'utf8');
 const entry=fs.readFileSync(path.join(here,'../src/render/three-world-public-entry.mjs'),'utf8');
 const dynamicRenderer=fs.readFileSync(path.join(here,'../src/render/three-world-dynamic.mjs'),'utf8');
 
-assert.match(source,/seed-man-world-mechanics-browser-v2/);
+assert.match(source,/seed-man-world-mechanics-browser-v3/);
 assert.match(source,/seed-man-world-mechanics-runtime-v1/);
-for(const marker of ['moving-platforms','collapsing-platforms','conveyor-platforms','crystal-bounce','slippery-ground','wind-zones','heat-updraft','dark-zones','teleport-roots','timed-doors']){
+for(const marker of ['moving-platforms','collapsing-platforms','conveyor-platforms','crystal-bounce','slippery-ground','wind-zones','heat-updraft','dark-zones','teleport-roots','timed-doors','arena-lock']){
   assert.match(source,new RegExp(marker),`public mechanics runtime missing ${marker}`);
 }
 for(const phenotype of ['fire','electric','ice']) assert.match(source,new RegExp(`${phenotype}:`));
@@ -51,7 +51,7 @@ const context=vm.createContext({
 });
 vm.runInContext(source,context,{filename:'world-mechanics-browser-v1.js'});
 
-assert.equal(fakeWindow.__SEED_MAN_WORLD_MECHANICS__.version,'seed-man-world-mechanics-browser-v2');
+assert.equal(fakeWindow.__SEED_MAN_WORLD_MECHANICS__.version,'seed-man-world-mechanics-browser-v3');
 assert.equal(fakeWindow.__SEED_MAN_WORLD_MECHANICS__.installed(),true);
 assert.equal(fakeWindow.__SEED_MAN_WORLD_MECHANICS__.phenotypeImmuneToHazard('fire','lava'),true);
 assert.equal(fakeWindow.__SEED_MAN_WORLD_MECHANICS__.phenotypeImmuneToHazard('electric','energy-beam'),true);
@@ -74,6 +74,14 @@ assert.match(source,/createRadialGradient\(px,py,40,px,py,radius\)/,'dark zones 
 assert.match(source,/seedman:teleport-root/,'teleport roots should emit a gameplay event');
 assert.match(source,/applyTimedDoors\(next,prior,levelData\)/,'timed doors should participate in player collision resolution');
 
+const arenaZone={id:'boss-arena',startX:200,endX:800,mechanics:['arena-lock']};
+const arenaGate=fakeWindow.__SEED_MAN_WORLD_MECHANICS__.arenaLockForZone(arenaZone);
+assert.ok(arenaGate.leftX>200&&arenaGate.rightX<800,'arena lock should inset visible collision gates from the authored zone bounds');
+assert.match(source,/seedman:arena-locked/,'arena lock should emit an engagement event');
+assert.match(source,/seedman:arena-unlocked/,'arena lock should emit an unlock event');
+assert.match(source,/applyArenaLock\(next,prior,levelData\)/,'arena lock must participate in player collision resolution');
+assert.match(source,/drawArenaGate/,'arena lock must have visible gate feedback');
+
 const level={
   id:'vm-moving-platform',worldWidth:1800,worldHeight:540,mechanics:['moving-platforms'],encounterZones:[],
   platforms:[{id:'lift',x:300,y:380,width:180,height:22,surface:'metal',motion:{axis:'x',distance:110,durationMs:2200}}],
@@ -84,7 +92,7 @@ const beforeX=level.platforms[0].x;
 const next=context.stepPlayer(player,{left:false,right:false,jumpPressed:false,jumpHeld:false},level,1/60,{});
 assert.notEqual(level.platforms[0].x,beforeX,'browser mechanics must move authored motion platforms');
 assert.ok(Number.isFinite(next.x)&&Number.isFinite(next.y),'browser mechanics step must preserve finite player coordinates');
-assert.equal(dataset.seedManWorldMechanics,'seed-man-world-mechanics-browser-v2');
+assert.equal(dataset.seedManWorldMechanics,'seed-man-world-mechanics-browser-v3');
 
 const teleportLevel={
   id:'vm-root-portals',worldWidth:1200,worldHeight:540,mechanics:['teleport-roots'],
@@ -95,5 +103,20 @@ const teleported=context.stepPlayer(teleportPlayer,{left:false,right:true,jumpPr
 assert.ok(teleported.x>700,'stepping into the first root portal should move the player to the far side of the zone');
 assert.equal(teleported.grounded,false,'root teleport should launch the player out of the destination portal');
 assert.equal(fakeWindow.__SEED_MAN_WORLD_MECHANICS__.snapshot().lastTeleportEvent?.levelId,'vm-root-portals');
+
+const arenaLevel={
+  id:'vm-boss-arena',worldWidth:1000,worldHeight:540,mechanics:['arena-lock'],
+  encounterZones:[arenaZone],platforms:[],hazards:[],pickups:[],checkpoints:[],
+  boss:{id:'test-boss',name:'Test Boss',defeated:false},finish:{x:940,y:390,width:50,height:90}
+};
+const arenaEntry=context.stepPlayer({...player,x:260,y:434,grounded:true},{left:false,right:true,jumpPressed:false,jumpHeld:false},arenaLevel,1/60,{});
+assert.equal(fakeWindow.__SEED_MAN_WORLD_MECHANICS__.snapshot().arenaLockEngaged,true,'entering an undefeated boss arena should engage the arena lock');
+const retreat=context.stepPlayer({...arenaEntry,x:120,vx:-180,grounded:true},{left:true,right:false,jumpPressed:false,jumpHeld:false},arenaLevel,1/60,{});
+assert.ok(retreat.x>=arenaGate.leftX,'engaged arena lock should prevent retreat through the entrance');
+const escape=context.stepPlayer({...arenaEntry,x:780,vx:180,grounded:true},{left:false,right:true,jumpPressed:false,jumpHeld:false},arenaLevel,1/60,{});
+assert.ok(escape.x+escape.width<=arenaGate.rightX,'engaged arena lock should prevent bypassing the boss arena exit');
+arenaLevel.boss.defeated=true;
+context.stepPlayer({...arenaEntry,x:400,grounded:true},{left:false,right:false,jumpPressed:false,jumpHeld:false},arenaLevel,1/60,{});
+assert.equal(fakeWindow.__SEED_MAN_WORLD_MECHANICS__.snapshot().arenaLockEngaged,false,'defeating the boss should unlock the arena immediately');
 
 console.log(JSON.stringify({ok:true,version:fakeWindow.__SEED_MAN_WORLD_MECHANICS__.version,dynamicRenderer:'seed-man-three-dynamic-platforms-v1'},null,2));
