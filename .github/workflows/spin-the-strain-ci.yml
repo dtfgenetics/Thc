@@ -1,6 +1,12 @@
 name: Spin the Strain CI
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - games/spin-the-strain/**
+      - site/public-route-patch/games/spin-the-strain/**
+      - .github/workflows/spin-the-strain-ci.yml
   pull_request:
     branches: [main]
     paths:
@@ -14,11 +20,11 @@ permissions:
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
 
