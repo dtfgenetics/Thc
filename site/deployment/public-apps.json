@@ -96,7 +96,7 @@
       "route": "/games/high-iq/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/high-iq/scripts/validate-data.mjs",
+      "build": "npm run hiq:validate",
       "machineData": {
         "version": "2.4",
         "questions": 200,
@@ -105,7 +105,7 @@
         "publicRuntimeValidator": "node games/high-iq/scripts/validate-public-runtime.mjs",
         "manifestDriven": true
       },
-      "notes": "Self-hosted manifest-driven High IQ runtime. Dataset v2.4 currently declares 200 Approved/PASS questions and 50 registered sources. The older Base44 build is legacy fallback only."
+      "notes": "Self-hosted manifest-driven High IQ runtime. Dataset v2.4 declares 200 Approved/PASS questions and 50 registered sources. The canonical aggregate validator now runs in both dedicated High IQ CI and the central public-suite build, covering data validation, runtime-shell synchronization, public-runtime validation, question-bank tooling, game-core tests, and the player-facing runtime smoke test. Exact post-deploy live-route verification remains required."
     },
     {
       "id": "high-life",
@@ -196,7 +196,7 @@
       "route": "/games/protect-the-plants/",
       "runtime": "static-php",
       "status": "ready-to-package",
-      "build": "node --check site/public-route-patch/games/protect-the-plants/app.js && php -l site/public-route-patch/games/protect-the-plants/api.php",
+      "build": "node games/protect-the-plants/test/burn-buds-branding.test.mjs && node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs && node games/protect-the-plants/test/api-copy-contract.test.mjs && node games/protect-the-plants/test/runtime-sync-v1.test.mjs && node games/protect-the-plants/test/v2-extras-sync.test.mjs && node games/protect-the-plants/test/native-targeting-source.test.mjs && node games/protect-the-plants/test/gamefeel-v1.test.mjs && php -l site/public-route-patch/games/protect-the-plants/api.php && php -l site/public-route-patch/games/protect-the-plants/presence.php",
       "machineData": {
         "board": "15x15",
         "players": 2,
@@ -204,7 +204,7 @@
         "storage": "wordpress-transients",
         "networkAuthority": "php-server"
       },
-      "notes": "Burn Buds is the public identity of the tested two-player hidden-grid strategy game. The legacy protect-the-plants route and machine ID remain intentionally stable for active-room, invite-link, persistence, and WordPress compatibility. It includes authenticated room sessions, hidden opponent state, server-authoritative turns, active-game recovery, room chat, mobile board tabs, same-origin PHP API, WordPress transient persistence, leaf formations, and burn feedback."
+      "notes": "Burn Buds is the public identity of the tested two-player hidden-grid strategy game; /games/protect-the-plants/ remains the compatibility route for active rooms and invite links. Dedicated CI exercises authenticated opponent presence. The central public-suite gate now also protects branding, gameplay-v4, API copy contracts, runtime sync, targeting source, gamefeel, service-worker assets, PHP syntax, mobile board behavior, and compatibility identity. Exact post-deploy live-route verification remains required."
     },
     {
       "id": "thc-u-know",
