@@ -19,7 +19,7 @@ make_archive() {
   rm -rf "$payload"
   mkdir -p "$payload/games/bud-or-bluff"
 
-  printf '%s\n' '25 playable browser games - replacement' > "$payload/games/index.html"
+  printf '%s\n' '23 playable browser games - replacement' > "$payload/games/index.html"
   printf '%s\n' '<title>Bud or Bluff</title>' > "$payload/games/bud-or-bluff/index.html"
   if [[ "$complete" == "yes" ]]; then
     printf '%s\n' '<?php echo "ok";' > "$payload/games/bud-or-bluff/api-v2.php"
@@ -46,7 +46,7 @@ make_public_suite_archive() {
     "$payload/learn/infographics"
 
   printf '%s\n' 'asset replacement' > "$payload/assets/marker.txt"
-  printf '%s\n' '25 playable browser games - public suite replacement' > "$payload/games/index.html"
+  printf '%s\n' '23 playable browser games - public suite replacement' > "$payload/games/index.html"
   printf '%s\n' '<title>Bud or Bluff</title>' > "$payload/games/bud-or-bluff/index.html"
   printf '%s\n' '<?php echo "ok";' > "$payload/games/bud-or-bluff/api-v2.php"
   printf '%s\n' 'projects replacement' > "$payload/projects/index.html"
