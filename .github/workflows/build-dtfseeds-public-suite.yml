@@ -70,10 +70,12 @@ jobs:
       - name: Validate self-hosted High IQ
         run: |
           set -euo pipefail
-          node games/high-iq/scripts/validate-data.mjs
+          npm run hiq:validate
           test -s site/public-route-patch/games/high-iq/index.html
-          test -s site/public-route-patch/games/high-iq/app.js
+          test -s site/public-route-patch/games/high-iq/app-v3.js
+          test -s site/public-route-patch/games/high-iq/game-core.mjs
           test -s site/public-route-patch/games/high-iq/high-iq.css
+          test -s site/public-route-patch/games/high-iq/high-iq-v3-4.css
           test -s site/public-route-patch/games/high-iq/data/manifest.json
           grep -Fq 'High IQ — Test Higher Cognition' site/public-route-patch/games/high-iq/index.html
           grep -Fq 'https://dtfseeds.com/games/high-iq/' site/public-route-patch/games/high-iq/index.html
