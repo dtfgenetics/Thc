@@ -47,6 +47,8 @@ assert.match(app, /maxAirJumps:\s*1/, 'public runtime must preserve one mid-air 
 assert.match(app, /function\s+approach\s*\(/, 'public runtime must include acceleration/deceleration helper');
 assert.match(app, /function\s+guardedReset\s*\(/, 'active levels should guard destructive restart');
 assert.match(app, /function\s+retryCheckpoint\s*\(/, 'public runtime should provide immediate checkpoint retry');
+assert.match(app, /seedman:player-respawned/, 'all checkpoint recovery paths must emit the shared respawn event');
+assert.match(app, /invulnerableTimer = 0\.45/, 'base respawn must preserve short player invulnerability');
 assert.match(app, /function\s+pollGamepad\s*\(/, 'public runtime should poll standard gamepads');
 assert.match(app, /navigator\.getGamepads/, 'controller support must use the browser gamepad API');
 assert.match(app, /GAMEPAD_DEADZONE\s*=\s*0\.22/, 'controller movement must use the canonical deadzone');
