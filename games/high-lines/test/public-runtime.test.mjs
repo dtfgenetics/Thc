@@ -34,7 +34,7 @@ assert.match(runtime, /SAVE_KEY_PREFIX = 'dtf-high-lines:v1:'/);
 assert.match(runtime, /Confirm Reset/);
 assert.match(runtime, /copyText\(text\)/);
 assert.match(runtime, /Copy failed\. Share scene code/);
-assert.match(runtime, /\^\[1-8\]\$/.source ? runtime : runtime);
+assert.match(runtime, /\/\^\[1-8\]\$\/\.test\(event\.key\)/);
 assert.match(runtime, /prefers-reduced-motion: reduce/);
 assert.match(runtime, /Scene SVG failed the safe-inline contract/);
 assert.match(runtime, /script, foreignObject/);
