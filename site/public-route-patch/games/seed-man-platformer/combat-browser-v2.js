@@ -29,6 +29,7 @@
   let simTime=0;
   let activeLevelId='';
   let defeated=0;
+  let stomps=0;
   let notice=null;
   let enemyBossImage=null;
   let enemyBossReady=false;
@@ -130,7 +131,7 @@
     activeLevelId=typeof level!=='undefined'?(level?.id||''):'';
     const factory=runtime()?.buildEncounter;
     enemies=typeof factory==='function'&&level?factory(level).map((enemy,index)=>({...enemy,maxHealth:enemy.health,dir:index%2?-1:1,defeated:false,hitFlash:0,freeze:0,burn:0,burnTick:0.5,burnPhenotype:null,baseY:enemy.y})):[];
-    projectiles=[];activePhenotype=null;phenotypeRemaining=0;weaponCooldown=0;abilityCooldown=0;actionPose=null;actionPoseRemaining=0;facing=1;simTime=0;defeated=0;
+    projectiles=[];activePhenotype=null;phenotypeRemaining=0;weaponCooldown=0;abilityCooldown=0;actionPose=null;actionPoseRemaining=0;facing=1;simTime=0;defeated=0;stomps=0;
     if(level?.boss?.id==='blight-king')setNotice('Blight King · weakness cycle: Plant → Fire → Electric → Ice',3.4);
     else if(level)setNotice('Seed Slinger ready · defeat phenotype carriers for 30s powers',2.8);
     syncHud();
@@ -228,6 +229,31 @@
     if(enemy.health<=0){enemy.defeated=true;rewardEnemy(enemy);}
   }
 
+  function tryStomp(playerState,step){
+    if(!playerState||playerState.finished||Number(playerState.vy)<=120)return false;
+    const feet=Number(playerState.y)+Number(playerState.height);
+    const previousFeet=feet-Number(playerState.vy)*step;
+    const target=enemies.find((enemy)=>{
+      if(enemy.defeated)return false;
+      const horizontal=playerState.x<enemy.x+enemy.width&&playerState.x+playerState.width>enemy.x;
+      const crossedTop=previousFeet<=enemy.y+10&&feet>=enemy.y;
+      return horizontal&&crossedTop&&playerState.y<enemy.y;
+    });
+    if(!target)return false;
+
+    playerState.y=target.y-playerState.height-1;
+    playerState.vy=-460;
+    playerState.grounded=false;
+    playerState.state='jump';
+    playerState.power=playerState.power||{};
+    playerState.power.invulnerableTimer=Math.max(Number(playerState.power.invulnerableTimer)||0,0.2);
+    damageEnemy(target,{damage:target.role==='boss'?1:2,phenotype:'plant',effect:null});
+    stomps+=1;
+    setNotice(target.defeated?`STOMP KO · ${target.name}`:`STOMP HIT · ${target.name}`,0.9);
+    window.dispatchEvent(new CustomEvent('seedman:stomp',{detail:{enemyId:target.id,enemy:target.name,defeated:target.defeated,levelId:activeLevelId}}));
+    return true;
+  }
+
   function tickEnemy(enemy,step){
     enemy.hitFlash=Math.max(0,enemy.hitFlash-step);enemy.freeze=Math.max(0,enemy.freeze-step);
     if(enemy.burn>0){
@@ -246,7 +272,7 @@
     if(enemy.blink&&Math.sin(simTime*2.1+enemy.x*0.001)>0.985)enemy.x=Math.max(enemy.minX,Math.min(enemy.maxX-enemy.width,enemy.x+enemy.dir*125));
   }
 
-  function tickCombat(dt){
+  function tickCombat(dt,playerState=null){
     const step=Math.max(0,Math.min(Number(dt)||0,0.05));
     const current=typeof level!=='undefined'?(level?.id||''):'';
     if(current!==activeLevelId)resetCombat();
@@ -254,8 +280,10 @@
     weaponCooldown=Math.max(0,weaponCooldown-step);abilityCooldown=Math.max(0,abilityCooldown-step);
     actionPoseRemaining=Math.max(0,actionPoseRemaining-step);if(actionPoseRemaining<=0)actionPose=null;
     if(activePhenotype){phenotypeRemaining=Math.max(0,phenotypeRemaining-step);if(phenotypeRemaining<=0){activePhenotype=null;setNotice('Phenotype expired · Plant restored',1.4);}}
-    if(typeof player!=='undefined'&&player&&Math.abs(Number(player.vx)||0)>1)facing=player.vx<0?-1:1;
+    const actor=playerState||(typeof player!=='undefined'?player:null);
+    if(actor&&Math.abs(Number(actor.vx)||0)>1)facing=actor.vx<0?-1:1;
     for(const enemy of enemies)if(!enemy.defeated)tickEnemy(enemy,step);
+    tryStomp(actor,step);
     for(const projectile of projectiles){projectile.x+=projectile.vx*step;projectile.life-=step;if(projectile.life<=0)continue;const enemy=enemies.find((candidate)=>!candidate.defeated&&overlap(projectile,candidate));if(enemy){damageEnemy(enemy,projectile);projectile.life=0;}}
     const worldWidth=typeof level!=='undefined'?(level?.worldWidth||8000):8000;
     projectiles=projectiles.filter((projectile)=>projectile.life>0&&projectile.x>-80&&projectile.x<worldWidth+80);
@@ -328,7 +356,7 @@
 
   function installHooks(){
     if(typeof stepPlayer!=='function'||typeof render!=='function'||typeof reset!=='function')return false;
-    const baseStep=stepPlayer;stepPlayer=function seedManCombatV2Step(inputPlayer,inputState,levelData,dt,config){const next=baseStep(inputPlayer,inputState,levelData,dt,config);const isPaused=typeof paused!=='undefined'?paused:false;if(!isPaused&&!next.finished)tickCombat(dt);return next;};
+    const baseStep=stepPlayer;stepPlayer=function seedManCombatV2Step(inputPlayer,inputState,levelData,dt,config){const next=baseStep(inputPlayer,inputState,levelData,dt,config);const isPaused=typeof paused!=='undefined'?paused:false;if(!isPaused&&!next.finished)tickCombat(dt,next);return next;};
     const baseRender=render;render=function seedManCombatV2Render(){baseRender();drawCombat();};
     const baseReset=reset;reset=function seedManCombatV2Reset(){baseReset();resetCombat();};return true;
   }
@@ -356,6 +384,7 @@
       actionPoseRemaining,
       finalBossWeakness:blightWeakness(),
       defeated,
+      stomps,
       enemyArtReady:enemyBossReady,
       enemyArtFailed:enemyBossFailed,
       enemies:enemies.map(({id,name,archetype,x,y,minX,maxX,width,height,speed,health,maxHealth,defeated:down,phenotype,phenotypeForm,flying,blink,elite,role,phase,approvedVisual})=>({id,name,archetype,x,y,minX,maxX,width,height,speed,health,maxHealth,defeated:down,phenotype,phenotypeForm,flying:Boolean(flying),blink:Boolean(blink),elite:Boolean(elite),role,phase,approvedVisual}))

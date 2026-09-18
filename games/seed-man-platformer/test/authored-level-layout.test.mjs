@@ -28,6 +28,7 @@ assert.deepEqual(level.layout.phenotypeCarrierSpawns.map((spawn) => spawn.form),
 assert.equal(level.layout.finish.x, 6060);
 assert.ok(level.mechanics.includes('authored-layout'));
 assert.ok(level.mechanics.includes('combat-intro'));
+assert.ok(level.layout.tutorials.some((tutorial)=>tutorial.action==='stomp'), 'Sprout Steps must teach the stomp mechanic it declares');
 assert.ok(level.mechanics.includes('phenotype-intro'));
 
 const allObjects = [
