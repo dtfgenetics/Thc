@@ -30,6 +30,9 @@ assert.match(app, /restartTimer = window\.setTimeout\(disarmRestart, 4500\)/);
 assert.match(app, /globalThis\.crypto\?\.getRandomValues/);
 assert.match(app, /globalThis\.history\?\.replaceState/);
 assert.match(app, /navigator\.clipboard\?\.writeText/);
+assert.match(app, /async function copyText\(/, 'share behavior must expose a clipboard fallback helper');
+assert.match(app, /document\.execCommand\?\.\('copy'\) === true/, 'share behavior must retain a legacy clipboard fallback');
+assert.match(app, /Copy failed\. Share run code/, 'share failure must preserve the full manual challenge path');
 assert.match(app, /projected-up/);
 assert.match(app, /pheno-card improving/);
 assert.match(app, /function resetChoiceViewport\(/, 'runtime must reset the horizontal decision rail between decision sets');
@@ -47,5 +50,8 @@ assert.match(visual, /#new-run\.restart-armed/);
 assert.match(visual, /scroll-snap-type:x mandatory/);
 assert.match(visual, /@media\(max-width:640px\)/);
 assert.match(visual, /@media\(prefers-reduced-motion:reduce\)/);
+const baseCss = fs.readFileSync('site/public-route-patch/games/pheno-draft/pheno-draft.css', 'utf8');
+assert.match(baseCss, /@media\(forced-colors:active\)/, 'draft controls must remain visible in forced-colors mode');
+assert.match(baseCss, /outline:3px solid Highlight/, 'forced-colors focus must remain visible');
 
 console.log('Pheno Draft self-contained runtime, comparison UI, and mobile decision-viewport regression checks passed.');
