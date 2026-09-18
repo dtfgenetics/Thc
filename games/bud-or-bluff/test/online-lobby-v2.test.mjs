@@ -8,12 +8,23 @@ import { setTimeout as delay } from 'node:timers/promises';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '../../..');
 const publicDir = path.join(root, 'site/public-route-patch/games/bud-or-bluff');
-const appSource = await import('node:fs/promises').then(fs => fs.readFile(path.join(publicDir, 'app-v2.js'), 'utf8'));
+const fsPromises = await import('node:fs/promises');
+const appSource = await fsPromises.then(fs => fs.readFile(path.join(publicDir, 'app-v2.js'), 'utf8'));
+const htmlSource = await fsPromises.then(fs => fs.readFile(path.join(publicDir, 'index.html'), 'utf8'));
+const cssSource = await fsPromises.then(fs => fs.readFile(path.join(publicDir, 'styles.css'), 'utf8'));
 const visualCss = await import('node:fs/promises').then(fs => fs.readFile(path.join(publicDir, 'visual-state-v3.css'), 'utf8'));
 assert.match(appSource, /async function copyText/);
 assert.match(appSource, /document\.execCommand\?\.\('copy'\)/);
 assert.match(appSource, /Copy failed\. Use Share invite or copy the room code\./);
 assert.match(visualCss, /@media\(forced-colors:active\)/);
+assert.match(htmlSource, /id="timerText" role="timer" aria-label="Seconds remaining"/, 'rapid countdown must not be an aria-live region');
+assert.doesNotMatch(htmlSource, /id="timerText"[^>]*aria-live=/, 'timer must stay non-live');
+assert.doesNotMatch(htmlSource, /id="chatMessages"[^>]*aria-live=/, 'visible chat history must not be re-announced wholesale');
+assert.match(htmlSource, /id="chatAnnounce" class="sr-only" aria-live="polite" aria-atomic="true"/, 'chat needs a dedicated incremental live announcer');
+assert.match(appSource, /let lastAnnouncedChatId = null;/, 'chat announcer must track the last announced server message id');
+assert.match(appSource, /announceNewChat\(messages\)/, 'chat render must announce only new messages');
+assert.match(appSource, /messages\.findIndex\(message=>message\.id===lastAnnouncedChatId\)/, 'chat announcer must use stable message ids');
+assert.match(cssSource, /\.sr-only\{[\s\S]*clip:rect\(0,0,0,0\)/, 'chat announcer must remain visually hidden');
 
 async function openPort() {
   return await new Promise((resolve, reject) => {
