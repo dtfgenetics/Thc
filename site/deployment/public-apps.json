@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
   "sourceOfTruth": "dtfgenetics/Thc",
-  "updated": "2026-09-15",
+  "updated": "2026-09-17",
   "apps": [
     {
       "id": "high-land",
@@ -446,8 +446,8 @@
       "route": "/games/grow-room-defense/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/grow-room-defense/scripts/validate-data.mjs && node games/grow-room-defense/test/engine.test.mjs && node --check site/public-route-patch/games/grow-room-defense/app.js && node --check site/public-route-patch/games/grow-room-defense/engine.mjs",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/grow-room-defense/scripts/validate-data.mjs && node games/grow-room-defense/test/engine.test.mjs && node games/grow-room-defense/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-defense/app.js && node --check site/public-route-patch/games/grow-room-defense/runtime.mjs && cmp games/grow-room-defense/src/engine.mjs site/public-route-patch/games/grow-room-defense/engine.mjs",
+      "notes": "Self-hosted deterministic IPM strategy game. Browser runtime now imports the canonical tested engine instead of duplicating rules; public-runtime regression covers mobile tool return, keyboard shortcuts, semantic health meters, forced colors, reduced motion, clipboard fallback, and visual states. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
     },
     {
       "id": "harvest-hustle",
@@ -458,8 +458,8 @@
       "route": "/games/harvest-hustle/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/harvest-hustle/scripts/validate-data.mjs && node games/harvest-hustle/test/engine.test.mjs && node --check site/public-route-patch/games/harvest-hustle/app.js && node --check site/public-route-patch/games/harvest-hustle/engine.mjs",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/harvest-hustle/scripts/validate-data.mjs && node games/harvest-hustle/test/engine.test.mjs && node games/harvest-hustle/test/public-runtime.test.mjs && node --check site/public-route-patch/games/harvest-hustle/app.js && node --check site/public-route-patch/games/harvest-hustle/runtime.mjs && cmp games/harvest-hustle/src/engine.mjs site/public-route-patch/games/harvest-hustle/engine.mjs",
+      "notes": "Self-hosted deterministic 75-second arcade shift game. Browser runtime now imports the canonical tested engine; regression coverage protects pause/resume timing, mobile decision controls, keyboard shortcuts, challenge sharing fallbacks, reduced motion, and forced-colors states. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
     },
     {
       "id": "high-lines",
@@ -494,8 +494,8 @@
       "route": "/games/mystery-strain/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/mystery-strain/scripts/validate-data.mjs && node games/mystery-strain/test/engine.test.mjs && node --check site/public-route-patch/games/mystery-strain/app.js && node --check site/public-route-patch/games/mystery-strain/engine.mjs",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/mystery-strain/scripts/validate-data.mjs && node games/mystery-strain/test/engine.test.mjs && node games/mystery-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/mystery-strain/app.js && node --check site/public-route-patch/games/mystery-strain/runtime.mjs && cmp games/mystery-strain/src/engine.mjs site/public-route-patch/games/mystery-strain/engine.mjs",
+      "notes": "Self-hosted deterministic deduction game with 20 fictional profiles, 12 questions, optional Wild Card modifiers, Best Split UI analysis, and explicit two-step guess confirmation. Browser runtime now imports the canonical tested engine while Best Split remains a presentation helper. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
     },
     {
       "id": "pheno-draft",
@@ -506,8 +506,8 @@
       "route": "/games/pheno-draft/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/pheno-draft/scripts/validate-data.mjs && node games/pheno-draft/test/engine.test.mjs && node --check site/public-route-patch/games/pheno-draft/app.js && node --check site/public-route-patch/games/pheno-draft/engine.mjs",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/pheno-draft/scripts/validate-data.mjs && node games/pheno-draft/test/engine.test.mjs && node games/pheno-draft/test/public-runtime.test.mjs && node --check site/public-route-patch/games/pheno-draft/app.js && node --check site/public-route-patch/games/pheno-draft/runtime.mjs && cmp games/pheno-draft/src/engine.mjs site/public-route-patch/games/pheno-draft/engine.mjs",
+      "notes": "Self-hosted deterministic six-round fictional genetics card draft. Browser runtime now imports the canonical tested engine; regression coverage protects restart confirmation, share fallback, keyboard controls, mobile decision-rail reset, forced colors, and reduced motion. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
     },
     {
       "id": "spin-the-strain",
@@ -554,8 +554,8 @@
       "route": "/games/root-cause/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/root-cause/scripts/validate-data.mjs && node games/root-cause/test/engine.test.mjs && node --check site/public-route-patch/games/root-cause/app.js && node --check site/public-route-patch/games/root-cause/engine.mjs",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/root-cause/scripts/validate-data.mjs && node games/root-cause/test/engine.test.mjs && node games/root-cause/test/public-runtime.test.mjs && node --check site/public-route-patch/games/root-cause/app.js && node --check site/public-route-patch/games/root-cause/engine.js && cmp games/root-cause/src/engine.mjs site/public-route-patch/games/root-cause/engine.mjs",
+      "notes": "Self-hosted deterministic six-case cultivation diagnostics deduction game. Canonical module engine parity is protected through the classic browser bridge; runtime regression covers V5 header/admin-bar offsets, stacked-result reveal, 44px targets, reduced motion, and resilient challenge-link clipboard/manual fallback. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
     }
   ]
 }
