@@ -365,6 +365,21 @@ jobs:
           test -s site/public-route-patch/games/trichome-trials/confidence.css
           test -s site/public-route-patch/games/trichome-trials/frost-layout.css
 
+      - name: Validate Root Cause canonical browser runtime
+        run: |
+          set -euo pipefail
+          node games/root-cause/scripts/validate-data.mjs
+          node games/root-cause/test/engine.test.mjs
+          node games/root-cause/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/root-cause/app.js
+          node --check site/public-route-patch/games/root-cause/runtime.mjs
+          node --check site/public-route-patch/games/root-cause/engine.mjs
+          test -s site/public-route-patch/games/root-cause/index.html
+          test -s site/public-route-patch/games/root-cause/root-cause.css
+          test -s site/public-route-patch/games/root-cause/root-cause-v2.css
+          test -s site/public-route-patch/games/root-cause/root-cause-responsive-v3.css
+          test ! -e site/public-route-patch/games/root-cause/engine-browser-required.marker
+
       - name: Validate Seed Man v20 campaign
         run: |
           set -euo pipefail
@@ -825,6 +840,13 @@ jobs:
             release/games/trichome-trials/trichome-trials-v2.css
             release/games/trichome-trials/confidence.css
             release/games/trichome-trials/frost-layout.css
+            release/games/root-cause/index.html
+            release/games/root-cause/app.js
+            release/games/root-cause/runtime.mjs
+            release/games/root-cause/engine.mjs
+            release/games/root-cause/root-cause.css
+            release/games/root-cause/root-cause-v2.css
+            release/games/root-cause/root-cause-responsive-v3.css
             release/games/seed-man-platformer/index.html
             release/games/seed-man-platformer/app.js
             release/games/seed-man-platformer/seed-man.css
@@ -928,6 +950,12 @@ jobs:
           cmp games/trichome-trials/src/engine.mjs release/games/trichome-trials/engine.mjs
           grep -Fq '.confidence-button{min-height:44px' release/games/trichome-trials/trichome-trials-v2.css
           grep -Fq '@media(forced-colors:active)' release/games/trichome-trials/trichome-trials-v2.css
+          grep -Fq '/games/root-cause/' release/games/root-cause/index.html
+          ! grep -Fq 'src="./engine.js"' release/games/root-cause/index.html
+          grep -Fq "import('./runtime.mjs')" release/games/root-cause/app.js
+          cmp games/root-cause/src/engine.mjs release/games/root-cause/engine.mjs
+          grep -Fq "from './engine.mjs';" release/games/root-cause/runtime.mjs
+          grep -Fq '@media (forced-colors: active)' release/games/root-cause/root-cause-responsive-v3.css
           grep -Fq '/games/seed-man-platformer/' release/games/seed-man-platformer/index.html
           grep -Fq 'data-seed-man-release="20260909-v20-runtime-v4"' release/games/seed-man-platformer/index.html
           test ! -e release/games/seed-man-platformer/physics.mjs
