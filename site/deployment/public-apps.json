@@ -314,8 +314,8 @@
       "status": "ready-to-package",
       "sourcePath": "site/public-route-patch/games/terpocalypse",
       "route": "/games/terpocalypse/",
-      "build": "node --check site/public-route-patch/games/terpocalypse/main.js && node --check site/public-route-patch/games/terpocalypse/game-data.js",
-      "notes": "Playable original The Veg Lab browser vertical slice with keyboard/mouse and touch controls, three weapons, three enemy types, pickups, keycard objective, doors, score, win/lose states, pause handling and code-drawn art. Dedicated project repository remains canonical for future gameplay development."
+      "build": "node games/terpocalypse-integration/validate.mjs && node games/terpocalypse/test/public-runtime.test.mjs && node --check site/public-route-patch/games/terpocalypse/main.js && node --check site/public-route-patch/games/terpocalypse/game-data.js && node --check site/public-route-patch/games/terpocalypse/visibility-pause-v1.js",
+      "notes": "Self-hosted Level 01 action game with desktop/touch controls. Browser zoom is enabled, top/touch controls retain 44px minimum targets, forced-colors and reduced-motion states are protected, and visibility pause clears held keyboard input. Dedicated CI now uses current GitHub Actions/Ubuntu 24.04 and the central public-suite gate runs integration plus public-runtime verification. Exact post-deploy live-route verification remains required."
     },
     {
       "id": "phenoquest",
