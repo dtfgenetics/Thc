@@ -32,3 +32,13 @@ footer{background:rgba(5,13,8,.48)}
 @media(max-width:430px){main{width:min(100% - 16px,1040px);padding-top:1rem}.deck-meter{grid-template-columns:1fr 1fr}.deck-stat:first-child{grid-column:1/-1}.prompt-card{min-height:360px;border-radius:20px}.prompt-card:before{inset:9px;border-radius:14px}.card-stage::before,.card-stage::after{display:none}.card-top,.card-bottom{gap:.5rem;flex-wrap:wrap}.deck-actions{display:grid;grid-template-columns:1fr}.deck-actions button{width:100%}}
 @media(hover:none){.controls button:hover:not(:disabled),.deck-actions button:hover:not(:disabled){transform:none}}
 @media(prefers-reduced-motion:reduce){.prompt-card,.controls button,.deck-actions button,.deck-progress span{transition:none!important}.prompt-card.draw-pop{animation:none!important}}
+
+@media(forced-colors:active){
+  .controls select,.controls button,.deck-actions button,.prompt-card,.panel{
+    border:1px solid ButtonText;
+  }
+  .controls select:focus-visible,.controls button:focus-visible,.deck-actions button:focus-visible,#card-prompt:focus-visible{
+    outline:3px solid Highlight;
+    outline-offset:3px;
+  }
+}
