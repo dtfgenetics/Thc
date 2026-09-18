@@ -59,12 +59,12 @@ jobs:
           if(a.title!=='Seed Man: Grow. Fight. Restore.')process.exit(2);
           if(a.runtime!=='static-canvas2d-approved-art'||a.status!=='production-v20')process.exit(3);
           if(a.machineData.levelCount!==20||a.machineData.worldCount!==5||a.machineData.bossCount!==6)process.exit(4);
-          if(a.machineData.release!=='20260918-v20-world-mechanics-v2'||a.machineData.finalBoss!=='blight-king'||a.machineData.finalBossPhases!==4)process.exit(5);
+          if(a.machineData.release!=='20260918-v20-world-mechanics-v3'||a.machineData.finalBoss!=='blight-king'||a.machineData.finalBossPhases!==4)process.exit(5);
           if(a.machineData.characterContract!=='green-armored-plant-hero')process.exit(6);
           if(a.machineData.approvedArtManifest!=='seed-man-approved-art-v2'||a.machineData.approvedArtSource!=='approved-showcase-2026-09-08')process.exit(7);
           if(a.machineData.productionCharacterArt!=='seed-man-approved-atlas-renderer-v4')process.exit(8);
           if(a.machineData.campaignRuntime!=='seed-man-campaign-v20-runtime-v3'||a.machineData.campaignUi!=='seed-man-campaign-ui-v20')process.exit(9);
-          if(a.machineData.worldMechanicsRuntime!=='seed-man-world-mechanics-browser-v2')process.exit(10);
+          if(a.machineData.worldMechanicsRuntime!=='seed-man-world-mechanics-browser-v3')process.exit(10);
           if(a.machineData.dynamicPlatformRuntime!=='seed-man-three-dynamic-platforms-v1')process.exit(11);
           if(a.machineData.worldRenderer!=='seed-man-three-world-v2'||a.machineData.worldRendererBundle!=='seed-man-three-public-v3'||a.machineData.worldFallbackRenderer!=='seed-man-canvas-world-gradient-v1')process.exit(12);
           if(a.machineData.canvasCompat!=='seed-man-runtime-health-v21')process.exit(13);
@@ -78,7 +78,7 @@ jobs:
           const mechanics=fs.readFileSync(`${routeRoot}/world-mechanics-browser-v1.js`,'utf8');
           const dynamicRenderer=fs.readFileSync('games/seed-man-platformer/src/render/three-world-dynamic.mjs','utf8');
           if(!index.includes('world-mechanics-browser-v1.js'))process.exit(17);
-          if(!mechanics.includes('seed-man-world-mechanics-browser-v2')||!mechanics.includes('seed-man-world-mechanics-runtime-v1'))process.exit(18);
+          if(!mechanics.includes('seed-man-world-mechanics-browser-v3')||!mechanics.includes('seed-man-world-mechanics-runtime-v1'))process.exit(18);
           if(!dynamicRenderer.includes('seed-man-three-dynamic-platforms-v1'))process.exit(19);
           const hub=fs.readFileSync('site/public-route-patch/games/index.html','utf8');
           for(const retired of ['Seed Man: Sprout Run','Seed Man: Greenhouse Gauntlet','15 levels']) if(hub.includes(retired)) process.exit(20);
