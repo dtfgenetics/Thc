@@ -46,6 +46,12 @@ assert.match(app, /jumpCutGravityMultiplier:\s*2\.35/, 'public runtime must incl
 assert.match(app, /maxAirJumps:\s*1/, 'public runtime must preserve one mid-air jump');
 assert.match(app, /function\s+approach\s*\(/, 'public runtime must include acceleration/deceleration helper');
 assert.match(app, /function\s+guardedReset\s*\(/, 'active levels should guard destructive restart');
+assert.match(app, /function\s+retryCheckpoint\s*\(/, 'public runtime should provide immediate checkpoint retry');
+assert.match(app, /function\s+pollGamepad\s*\(/, 'public runtime should poll standard gamepads');
+assert.match(app, /navigator\.getGamepads/, 'controller support must use the browser gamepad API');
+assert.match(app, /GAMEPAD_DEADZONE\s*=\s*0\.22/, 'controller movement must use the canonical deadzone');
+assert.match(app, /key === 'escape'/, 'Escape must pause alongside P');
+assert.match(app, /Checkpoint activated/, 'checkpoint activation needs immediate gameplay feedback');
 assert.match(app, /function\s+drawProgressRail\s*\(/, 'campaign levels need visible course progress');
 assert.match(app, /function\s+writeBest\s*\(/, 'public runtime should guard best-time persistence');
 assert.match(app, /function\s+focusCanvas\s*\(/, 'public runtime should guard canvas focus');
