@@ -371,8 +371,10 @@ async function verifySeedAscent() {
         && wrapper.text.includes('/_next/static/')
         && wrapper.text.includes('https://dtfseeds.com')
         && !/https?:\/\/(?:www\.)?dtf420\.com/i.test(wrapper.text)
-        && wrapper.text.includes('data-dtf-shell="header-v5"')
-        && wrapper.text.includes('data-dtf-sitewide-header="approved-reference-v1"')
+        && wrapper.text.includes('data-dtf-shell="header-v6"')
+        && wrapper.text.includes('data-dtf-sitewide-header="canonical-eight-v1"')
+        && wrapper.text.includes('data-dtf-shell="footer-v6"')
+        && wrapper.text.includes('data-dtf-sitewide-footer="canonical-eight-v1"')
         && wrapper.text.includes('id="dtf-sitewide-ux-polish-v1"');
       const launcherOk = launcher.response.status === 200
         && !launcher.response.headers.get('location')
