@@ -55,6 +55,11 @@ assert.match(runtime, /storageRemove\(/);
 assert.match(runtime, /Confirm New Career/);
 assert.match(runtime, /Confirm Discard/);
 assert.match(runtime, /globalThis\.matchMedia\?\./);
+assert.match(runtime, /function safeFocus\(element\)/, 'High Life should guard focus transitions');
+assert.match(runtime, /safeFocus\(ui\.continue\)/, 'resolved turns should move focus to Continue');
+assert.match(runtime, /safeFocus\(document\.querySelector\('\.action-card\.available'\)\)/, 'continuing should return focus to the next available action');
+assert.doesNotMatch(html, /id="event-panel"[^>]*aria-live=/, 'event panel should not duplicate the dedicated live announcer');
+assert.match(html, /id="event-panel"[^>]*aria-labelledby="event-title"/, 'event panel should keep an accessible name');
 
 for (const forbidden of [
   'function takeTurn(',
