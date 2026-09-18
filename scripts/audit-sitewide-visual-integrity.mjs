@@ -132,8 +132,8 @@ function inspectPage(fetched,depth){
 
   const shell=extractHeader(html);
   if(shell.count!==1) issues.push(`Expected exactly one V6 header; found ${shell.count}`);
-  const canonicalCount=count(html,/data-dtf-sitewide-header=["']canonical-eight-v1["']/gi);
-  if(canonicalCount!==1) issues.push(`Expected exactly one canonical-eight-v1 marker; found ${canonicalCount}`);
+  const canonicalCount=count(html,/data-dtf-sitewide-header=["']canonical-six-v1["']/gi);
+  if(canonicalCount!==1) issues.push(`Expected exactly one canonical-six-v1 marker; found ${canonicalCount}`);
   const uxCount=count(html,/id=["']dtf-sitewide-ux-polish-v1["']/gi);
   if(uxCount!==1) issues.push(`Expected exactly one shared UX polish marker; found ${uxCount}`);
   const responsiveCount=count(html,/id=["']dtf-responsive-layout-v1["']/gi);
