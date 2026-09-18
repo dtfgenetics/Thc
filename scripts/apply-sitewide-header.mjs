@@ -7,6 +7,10 @@ import {
   SITEWIDE_HEADER_STYLE_TAG,
   SITEWIDE_MOBILE_POLISH_STYLE_TAG,
 } from './lib/sitewide-header-template-v6.mjs';
+import {
+  SITEWIDE_FOOTER_HTML,
+  SITEWIDE_FOOTER_STYLE_TAG,
+} from './lib/sitewide-footer-template-v6.mjs';
 
 const root = resolve(process.argv[2] || 'release');
 const checkOnly = process.argv.includes('--check');
@@ -39,6 +43,7 @@ const report = {
   scanned: 0,
   changed: 0,
   replacedLegacyHeaders: 0,
+  replacedLegacyFooters: 0,
   skipped: 0,
   failures: [],
 };
@@ -62,6 +67,8 @@ function verifyDocument(source, rel) {
   if (!/<html\b/i.test(source) || !/<body\b/i.test(source)) return { skipped: true };
   const expected = [
     ['data-dtf-sitewide-header="canonical-eight-v1"', 'header'],
+    ['data-dtf-sitewide-footer="canonical-eight-v1"', 'footer'],
+    ['id="dtf-shared-footer-v6-style"', 'footer style'],
     ['id="dtf-sitewide-header-v6-style"', 'header style'],
     ['id="dtf-content-density-v1-style"', 'content-density style'],
     ['id="dtf-sitewide-visual-repair-v2-style"', 'visual-repair style'],
@@ -158,6 +165,33 @@ function removeLegacyGlobalHeader(html) {
   return { html, removed: false };
 }
 
+function legacyFooterScore(fragment) {
+  const lower = fragment.toLowerCase();
+  const signals = [
+    'dtf genetics',
+    'dream the future',
+    'href="/seeds/',
+    'href="/learn/',
+    'href="/tools/',
+    'href="/games/',
+    'href="/community/',
+    'href="/shop/',
+  ];
+  return signals.reduce((score, signal) => score + (lower.includes(signal) ? 1 : 0), 0);
+}
+
+function removeLegacyGlobalFooter(html) {
+  const matches = [...html.matchAll(/<footer\b[^>]*>[\s\S]*?<\/footer>/gi)].reverse();
+  for (const match of matches) {
+    const fragment = match[0];
+    if (fragment.includes('data-dtf-sitewide-footer') || fragment.includes('data-dtf-shell="footer-v6"')) continue;
+    if (legacyFooterScore(fragment) < 4) continue;
+    const start = match.index;
+    return { html: html.slice(0, start) + html.slice(start + fragment.length), removed: true };
+  }
+  return { html, removed: false };
+}
+
 function reconcileDocument(source) {
   if (!/<html\b/i.test(source) || !/<body\b/i.test(source)) return { output: source, changed: false, removedLegacy: false, skipped: true };
 
@@ -170,24 +204,28 @@ function reconcileDocument(source) {
   output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-responsive-layout-v1["'][^>]*>[\s\S]*?<\/style>\s*/gi);
   output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-sitewide-ux-polish-v1["'][^>]*>[\s\S]*?<\/style>\s*/gi);
   output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-sitewide-mobile-polish-v1-style["'][^>]*>[\s\S]*?<\/style>\s*/gi);
+  output = removeOwnedFragment(output, /<style\b[^>]*id=["']dtf-shared-footer-v6-style["'][^>]*>[\s\S]*?<\/style>\s*/gi);
   output = removeOwnedFragment(output, /<script\b[^>]*id=["']dtf-sitewide-header-v5-script["'][^>]*>[\s\S]*?<\/script>\s*/gi);
   output = removeOwnedFragment(output, /<script\b[^>]*id=["']dtf-sitewide-header-v6-script["'][^>]*>[\s\S]*?<\/script>\s*/gi);
   output = removeOwnedFragment(output, /<script\b[^>]*id=["']dtf-content-density-v1-script["'][^>]*>[\s\S]*?<\/script>\s*/gi);
   output = removeOwnedFragment(output, /<script\b[^>]*id=["']dtf-sitewide-visual-repair-v2-script["'][^>]*>[\s\S]*?<\/script>\s*/gi);
   output = removeOwnedFragment(output, /<header\b[^>]*data-dtf-sitewide-header=["'][^"']+["'][^>]*>[\s\S]*?<\/header>\s*/gi);
+  output = removeOwnedFragment(output, /<footer\b[^>]*data-dtf-sitewide-footer=["'][^"']+["'][^>]*>[\s\S]*?<\/footer>\s*/gi);
 
   const legacy = removeLegacyGlobalHeader(output);
   output = legacy.html;
+  const legacyFooter = removeLegacyGlobalFooter(output);
+  output = legacyFooter.html;
 
-  const sharedStyles = `${SITEWIDE_HEADER_STYLE_TAG}\n${RESPONSIVE_LAYOUT_STYLE_TAG}\n${SITEWIDE_UX_POLISH_STYLE_TAG}\n${SITEWIDE_MOBILE_POLISH_STYLE_TAG}`;
+  const sharedStyles = `${SITEWIDE_HEADER_STYLE_TAG}\n${SITEWIDE_FOOTER_STYLE_TAG}\n${RESPONSIVE_LAYOUT_STYLE_TAG}\n${SITEWIDE_UX_POLISH_STYLE_TAG}\n${SITEWIDE_MOBILE_POLISH_STYLE_TAG}`;
   if (/<\/head>/i.test(output)) output = output.replace(/<\/head>/i, `${sharedStyles}\n</head>`);
   else output = `${sharedStyles}\n${output}`;
 
   output = output.replace(/<body\b([^>]*)>/i, `<body$1>\n${SITEWIDE_HEADER_HTML}`);
-  if (/<\/body>/i.test(output)) output = output.replace(/<\/body>/i, `${LEGACY_BUILD_GATE_COMPAT_COMMENT}\n${SITEWIDE_HEADER_SCRIPT_TAG}\n</body>`);
-  else output += `\n${LEGACY_BUILD_GATE_COMPAT_COMMENT}\n${SITEWIDE_HEADER_SCRIPT_TAG}\n`;
+  if (/<\/body>/i.test(output)) output = output.replace(/<\/body>/i, `${SITEWIDE_FOOTER_HTML}\n${LEGACY_BUILD_GATE_COMPAT_COMMENT}\n${SITEWIDE_HEADER_SCRIPT_TAG}\n</body>`);
+  else output += `\n${SITEWIDE_FOOTER_HTML}\n${LEGACY_BUILD_GATE_COMPAT_COMMENT}\n${SITEWIDE_HEADER_SCRIPT_TAG}\n`;
 
-  return { output, changed: output !== source, removedLegacy: legacy.removed, skipped: false };
+  return { output, changed: output !== source, removedLegacy: legacy.removed, removedLegacyFooter: legacyFooter.removed, skipped: false };
 }
 
 const files = await walk(root);
@@ -211,11 +249,14 @@ for (const file of files) {
       !result.output.includes('dtf-responsive-layout-v1') ||
       !result.output.includes('dtf-sitewide-ux-polish-v1') ||
       !result.output.includes('dtf-sitewide-mobile-polish-v1-style') ||
+      !result.output.includes('dtf-shared-footer-v6-style') ||
+      !result.output.includes('data-dtf-sitewide-footer="canonical-eight-v1"') ||
       !result.output.includes('dtf-sitewide-visual-repair-v2-script')) {
-    report.failures.push(`${rel}: canonical header, content density, visual repair, responsive layout, UX polish, or mobile polish markers missing after reconciliation`);
+    report.failures.push(`${rel}: canonical header/footer, content density, visual repair, responsive layout, UX polish, or mobile polish markers missing after reconciliation`);
     continue;
   }
   if (result.removedLegacy) report.replacedLegacyHeaders += 1;
+  if (result.removedLegacyFooter) report.replacedLegacyFooters += 1;
   if (result.changed) {
     report.changed += 1;
     await writeFile(file, result.output);
