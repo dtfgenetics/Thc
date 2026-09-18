@@ -3,9 +3,12 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 
 const publicRoot = new URL('../../../site/public-route-patch/games/seed-man-platformer/', import.meta.url);
-const [enemyRuntimeSource, combatSource, productionArtSource] = await Promise.all([
+const [enemyRuntimeSource, combatSource, enemyAttackSource, playerStateSource, publicHtml, productionArtSource] = await Promise.all([
   readFile(new URL('v20-enemy-runtime.js', publicRoot), 'utf8'),
   readFile(new URL('combat-browser-v2.js', publicRoot), 'utf8'),
+  readFile(new URL('enemy-attacks-browser-v2.js', publicRoot), 'utf8'),
+  readFile(new URL('player-state-v20.js', publicRoot), 'utf8'),
+  readFile(new URL('index.html', publicRoot), 'utf8'),
   readFile(new URL('seed-man-production-art.js', publicRoot), 'utf8')
 ]);
 
@@ -99,4 +102,17 @@ assert.match(productionArtSource, /combat\?\.actionPoseRemaining/, 'approved cha
 assert.match(productionArtSource, /drawPhenotypeAura/, 'powered forms must render phenotype action feedback without substituting unapproved art');
 assert.match(productionArtSource, /pose==='ability'/, 'approved renderer must distinguish phenotype ability feedback');
 
-console.log('Seed Man enemy platform support, approved atlas geometry, finale carriers, combat feedback, and Blight King weakness contract passed');
+assert.match(combatSource, /archetype,x,y,minX,maxX,width,height,speed,health,maxHealth/, 'combat snapshot must expose authoritative enemy geometry to attack runtime');
+assert.match(enemyAttackSource, /function syncCombatState\(\)/, 'enemy attacks must synchronize to visible combat enemies');
+assert.match(enemyAttackSource, /if\(!enemy\.combatSynced\)moveAttacker/, 'independent enemy movement must only be a degraded fallback');
+assert.match(enemyAttackSource, /function applyPlayerHit\(/, 'enemy attacks must own real player damage handling');
+assert.match(enemyAttackSource, /overlapsRect\(enemy,next\).*applyPlayerHit/s, 'direct enemy contact must damage Seed Man');
+assert.match(enemyAttackSource, /seedman:player-defeated/, 'zero health must emit a deterministic knockout event');
+assert.match(playerStateSource, /HEALTH_VERSION='seed-man-health-v1'/, 'browser player state must expose the health contract');
+assert.match(playerStateSource, /DEFAULT_MAX_HEALTH=3/, 'Seed Man browser health must default to three');
+assert.match(playerStateSource, /function applyDamage\(/, 'browser player state must apply damage');
+assert.match(playerStateSource, /function restoreHealth\(/, 'checkpoint recovery must restore health');
+assert.match(publicHtml, /id="health-count">3 \/ 3</, 'public HUD must show three-health state');
+assert.match(publicHtml, /3 HP · knockout returns to checkpoint/, 'control help must explain combat stakes');
+
+console.log('Seed Man enemy platform support, synchronized combat geometry, 3-HP damage loop, approved atlas geometry, finale carriers, combat feedback, and Blight King weakness contract passed');

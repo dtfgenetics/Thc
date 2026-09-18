@@ -358,7 +358,7 @@
       defeated,
       enemyArtReady:enemyBossReady,
       enemyArtFailed:enemyBossFailed,
-      enemies:enemies.map(({id,name,archetype,health,maxHealth,defeated:down,phenotype,phenotypeForm,flying,blink,elite,role,phase,approvedVisual})=>({id,name,archetype,health,maxHealth,defeated:down,phenotype,phenotypeForm,flying:Boolean(flying),blink:Boolean(blink),elite:Boolean(elite),role,phase,approvedVisual}))
+      enemies:enemies.map(({id,name,archetype,x,y,minX,maxX,width,height,speed,health,maxHealth,defeated:down,phenotype,phenotypeForm,flying,blink,elite,role,phase,approvedVisual})=>({id,name,archetype,x,y,minX,maxX,width,height,speed,health,maxHealth,defeated:down,phenotype,phenotypeForm,flying:Boolean(flying),blink:Boolean(blink),elite:Boolean(elite),role,phase,approvedVisual}))
     })
   });
 })();

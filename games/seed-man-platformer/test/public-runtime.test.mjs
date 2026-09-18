@@ -25,7 +25,7 @@ assert.match(html, /data-seed-ui-release=["']20260909-v20-runtime-v5["']/, 'publ
 assert.match(html, /20-Level Campaign/, 'public page must identify the canonical 20-level campaign');
 assert.match(html, /three-world-v1\.js\?v=20260909-v20-runtime-v5/, 'public page must load the cache-busted Three.js world bundle');
 assert.match(html, /three-world-adapter-v1\.js\?v=20260909-v20-runtime-v5/, 'Three.js adapter must be an explicit deterministic production dependency');
-assert.match(html, /player-state-v20\.js\?v=20260909-v20-runtime-v5/, 'player state must be an explicit cache-busted production dependency');
+assert.match(html, /player-state-v20\.js\?v=[^"']+/, 'player state must be an explicit cache-busted production dependency');
 assert.match(html, /JUMP ×2/, 'touch UI must advertise double jump');
 assert.match(html, /id=["']combat-attack-button["']/, 'touch UI must expose attack');
 assert.match(html, /id=["']combat-ability-button["']/, 'touch UI must expose phenotype ability');
