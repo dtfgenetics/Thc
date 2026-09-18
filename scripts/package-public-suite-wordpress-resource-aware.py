@@ -27,10 +27,10 @@ subprocess.run(
 )
 
 # Fail closed before archive construction if a suite-owned top-level hub ever
-# drifts away from the canonical eight-section shell or the shared progressive-
+# drifts away from the canonical six-section shell or the shared progressive-
 # disclosure layer. This keeps production from publishing a mixed shell or a
 # long hub page without the content-density behavior validated by V6.
-expected_labels = ['Home', 'Seeds', 'Learn', 'Courses', 'Diagnostic', 'Games', 'Community', 'Shop']
+expected_labels = ['Genetics', 'Learn', 'Tools', 'Games', 'Community', 'Shop']
 for relative in ('tools/index.html', 'games/index.html', 'projects/index.html'):
     candidate = release_dir / relative
     if not candidate.is_file() or candidate.stat().st_size < 1:
@@ -38,7 +38,7 @@ for relative in ('tools/index.html', 'games/index.html', 'projects/index.html'):
     html = candidate.read_text(errors='replace')
     for marker in (
         'data-dtf-shell="header-v6"',
-        'data-dtf-sitewide-header="canonical-eight-v1"',
+        'data-dtf-sitewide-header="canonical-six-v1"',
         'id="dtf-sitewide-header-v6-script"',
         'id="dtf-responsive-layout-v1"',
         'id="dtf-sitewide-ux-polish-v1"',
