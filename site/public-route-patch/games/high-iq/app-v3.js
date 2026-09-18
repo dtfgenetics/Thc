@@ -831,6 +831,7 @@ function handleKeyboard(event) {
   if (ui.quiz.hidden) return;
   const tag = document.activeElement?.tagName?.toLowerCase();
   if (tag === 'input' || tag === 'select' || tag === 'textarea') return;
+  if (state.locked && event.key === 'Enter' && (tag === 'a' || tag === 'button')) return;
   if (!state.locked) {
     const key = event.key.toUpperCase();
     const digitMap = { '1': 'A', '2': 'B', '3': 'C', '4': 'D' };
