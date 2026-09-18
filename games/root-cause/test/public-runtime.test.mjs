@@ -15,6 +15,7 @@ assert.match(bootstrap, /import\('\.\/runtime\.mjs'\)/);
 assert.ok(bootstrap.length < 1500, 'Root Cause app.js must remain a thin bootstrap');
 assert.match(runtime, /from '\.\/engine\.mjs';/);
 assert.doesNotMatch(html, /src="\.\/engine\.js"/, 'public route must not load the duplicated browser engine');
+assert.equal(fs.existsSync('site/public-route-patch/games/root-cause/engine.js'), false, 'obsolete browser engine duplicate must not be shipped');
 for (const forbidden of ['function createRun(', 'function inspect(', 'function diagnose(', 'function advanceCase(']) {
   assert.equal(runtime.includes(forbidden), false, `runtime must not duplicate canonical rules: ${forbidden}`);
 }
