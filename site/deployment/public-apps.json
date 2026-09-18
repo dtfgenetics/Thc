@@ -434,8 +434,8 @@
       "route": "/games/grow-room-bingo/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/grow-room-bingo/scripts/validate-data.mjs && node --check site/public-route-patch/games/grow-room-bingo/app.js",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/grow-room-bingo/scripts/validate-data.mjs && node games/grow-room-bingo/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-bingo/app.js && node --check site/public-route-patch/games/grow-room-bingo/keyboard-nav.js",
+      "notes": "Self-hosted three-mode community bingo game with deterministic cards, local autosave, guarded clear/reset, resilient challenge sharing, roving 5×5 keyboard navigation, touch feedback, reduced motion, and forced-colors support. Its existing deterministic browser-runtime test is now included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
     },
     {
       "id": "grow-room-defense",
