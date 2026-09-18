@@ -11,9 +11,11 @@ const errors = [];
 const assert = (condition, message) => { if (!condition) errors.push(message); };
 
 const canonicalPrimary = [
-  { id: 'genetics', label: 'Genetics', route: '/seeds/' },
+  { id: 'home', label: 'Home', route: '/' },
+  { id: 'seeds', label: 'Seeds', route: '/seeds/' },
   { id: 'learn', label: 'Learn', route: '/learn/' },
-  { id: 'tools', label: 'Tools', route: '/tools/' },
+  { id: 'courses', label: 'Courses', route: '/courses/' },
+  { id: 'diagnostic', label: 'Diagnostic', route: '/tools/' },
   { id: 'games', label: 'Games', route: '/games/' },
   { id: 'community', label: 'Community', route: '/community/' },
   { id: 'shop', label: 'Shop', route: '/shop/' }
@@ -33,17 +35,21 @@ for (let index = 0; index < canonicalPrimary.length; index += 1) {
 }
 
 const primaryLabels = shell.primaryNavigation.map((item) => item.label);
-for (const obsolete of ['Home', 'Seeds', 'Courses', 'Diagnostic']) {
-  assert(!primaryLabels.includes(obsolete), `obsolete primary label '${obsolete}' must not appear in the V6 primary navigation`);
+for (const required of ['Home', 'Seeds', 'Learn', 'Courses', 'Diagnostic', 'Games', 'Community', 'Shop']) {
+  assert(primaryLabels.includes(required), `required primary label '${required}' must appear in the V6 primary navigation`);
 }
-assert(shell.sectionOwnership?.learn?.includes('/courses/'), 'Courses must be owned by Learn');
-assert(shell.sectionOwnership?.tools?.includes('/growlens/'), 'Tools must own GrowLens');
-assert(shell.sectionOwnership?.tools?.includes('/thc-grow-doc/'), 'Tools must own THC Grow Doc');
+for (const obsolete of ['Genetics', 'Tools']) {
+  assert(!primaryLabels.includes(obsolete), `retired primary label '${obsolete}' must not appear in the V6 primary navigation`);
+}
+assert(shell.sectionOwnership?.courses?.includes('/courses/'), 'Courses must own /courses/');
+assert(shell.sectionOwnership?.courses?.includes('/learn/learning-hub/'), 'Courses must own historical Learning Hub course URLs');
+assert(shell.sectionOwnership?.diagnostic?.includes('/growlens/'), 'Diagnostic must own GrowLens');
+assert(shell.sectionOwnership?.diagnostic?.includes('/thc-grow-doc/'), 'Diagnostic must own THC Grow Doc');
 assert(shell.sectionOwnership?.shop?.includes('/cart/'), 'Shop must own Cart');
 assert(shell.sectionOwnership?.shop?.includes('/my-account/'), 'Shop must own Account');
 
-// data/public-navigation.json remains the detailed public games/tools registry during
-// the V6 migration. Its legacy primaryNavigation field is not a site-shell authority.
+// Both navigation registries are authoritative and must agree on the eight-item primary row.
+assert(JSON.stringify(nav.primaryNavigation) === JSON.stringify(shell.primaryNavigation), 'public-navigation and site-navigation-v6 primary navigation must match exactly');
 assert(nav.learn?.route === '/learn/', 'Learn registry root must remain /learn/');
 assert(nav.courses?.route === '/courses/', 'Courses registry root must remain /courses/');
 assert(nav.diagnostic?.route === '/tools/', 'Diagnostic registry data must remain owned by /tools/');
