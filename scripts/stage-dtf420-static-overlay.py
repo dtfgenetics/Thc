@@ -26,7 +26,7 @@ REPO_URL = "https://github.com/dtfgenetics/Dtf420.git"
 STAGING_NAME = "dtf-content-overlay"
 SHELL_MARKERS = (
     'data-dtf-shell="header-v6"',
-    'data-dtf-sitewide-header="canonical-eight-v1"',
+    'data-dtf-sitewide-header="canonical-six-v1"',
     'id="dtf-responsive-layout-v1"',
     'id="dtf-sitewide-ux-polish-v1"',
 )
@@ -166,7 +166,7 @@ def main() -> None:
             "requiredRoutes": contract["requiredRoutes"],
             "sharedShell": {
                 "header": "v6",
-                "navigation": "canonical-eight-v1",
+                "navigation": "canonical-six-v1",
                 "responsiveLayout": "v1",
                 "sitewideUxPolish": "v1",
                 "verifiedHtmlRoutes": shell_route_count,
