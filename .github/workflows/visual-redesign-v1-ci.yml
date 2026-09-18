@@ -83,12 +83,15 @@ jobs:
           grep -Fq "site/design-system/dtf-visual-v1.css" "$owner"
           grep -Fq "for (const slug of ['community', 'gallery', 'about', 'contact'])" "$owner"
           grep -Fq "for (const slug of ['home', 'learn'])" "$owner"
-          for page in community gallery about contact; do
-            file="site/wordpress/pages/$page.html"
-            test -s "$file"
-            grep -Fq 'class="dtf-v1"' "$file"
-            grep -Fq "data-dtf-layout=\"$page-visual-v1\"" "$file"
-          done
+          test -s site/wordpress/pages/community.html
+          test -s site/wordpress/pages/gallery.html
+          test -s site/wordpress/pages/about.html
+          test -s site/wordpress/pages/contact.html
+          grep -Fq 'data-dtf-layout="community-visual-v2"' site/wordpress/pages/community.html
+          grep -Fq 'data-dtf-layout="gallery-visual-v3"' site/wordpress/pages/gallery.html
+          grep -Fq 'data-dtf-layout="about-visual-v2"' site/wordpress/pages/about.html
+          grep -Fq 'data-dtf-layout="contact-visual-v2"' site/wordpress/pages/contact.html
+          grep -Fq 'Deprecated support visual V1 writer is blocked' scripts/rebuild-wordpress-support-pages-v1.mjs
           grep -Fq 'Join the official DTF / Teaching Healthy Cultivation Discord' site/wordpress/pages/community.html
           grep -Fq 'Join the official DTF / Teaching Healthy Cultivation Discord' site/wordpress/pages/contact.html
 
@@ -170,11 +173,11 @@ jobs:
           grep -Fq 'data-dtf-layout="home-visual-v4"' "$core"
           grep -Fq 'data-dtf-layout="learn-visual-v4"' "$core"
           grep -Fq 'data-dtf-layout="genetics-visual-v4"' "$core"
-          grep -Fq 'community-visual-v1' "$support"
-          grep -Fq 'shop-visual-v1' "$support"
-          grep -Fq 'about-visual-v1' "$support"
-          grep -Fq 'contact-visual-v1' "$support"
-          grep -Fq 'gallery-visual-v1' "$support"
+          grep -Fq 'Deprecated support visual V1 writer is blocked' "$support"
+          grep -Fq 'data-dtf-layout="community-visual-v2"' site/wordpress/pages/community.html
+          grep -Fq 'data-dtf-layout="gallery-visual-v3"' site/wordpress/pages/gallery.html
+          grep -Fq 'data-dtf-layout="about-visual-v2"' site/wordpress/pages/about.html
+          grep -Fq 'data-dtf-layout="contact-visual-v2"' site/wordpress/pages/contact.html
           for route in '/seeds/' '/learn/' '/tools/' '/games/' '/community/' '/shop/'; do
             grep -Fq "$route" "$core"
           done
