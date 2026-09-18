@@ -214,8 +214,8 @@
       "apiTarget": "https://api.dtfseeds.com",
       "runtime": "node-full-stack",
       "status": "runtime-integration",
-      "build": "pnpm -r lint && pnpm -r build && pnpm test",
-      "notes": "Web, multiplayer server, shared package, Discord bot, deployment docs, and end-to-end tests exist. Preserve server-authoritative multiplayer instead of publishing a static-only shell."
+      "build": "pnpm verify && pnpm test:production-runtime",
+      "notes": "Canonical full-stack multiplayer source is dtfgenetics/thc-u-know-card-game-. Preserve the persistent Node/Socket.IO server, server-authoritative 2–8 player rules, hidden-hand contract, invite links, and /games/thc-u-know/socket.io subpath. Owner CI now runs on Ubuntu 24.04 with current checkout/setup-node actions and validates lint, all builds, shared engine tests, production runtime, hand visibility, lobby UI, runtime manifest, and static-only deployment prohibition. Production still requires live health plus two-browser multiplayer QA."
     },
     {
       "id": "kush-kings",
@@ -226,8 +226,8 @@
       "apiTarget": "https://chess-api.dtfseeds.com",
       "runtime": "node-full-stack-postgres",
       "status": "runtime-integration",
-      "build": "pnpm check:rebrand && pnpm build:client && pnpm build:server",
-      "notes": "3D Next.js client and server-authoritative Express/Socket.io multiplayer are merged and CI verified. PostgreSQL supports either PG* variables or DATABASE_URL. Preferred managed path is two Hostinger Web Apps (chess.dtfseeds.com + chess-api.dtfseeds.com) with managed/external PostgreSQL such as Hostinger-connected Supabase; Docker/VPS/Caddy remains a supported fallback. Do not replace legal-move authority with the legacy PHP shell. Cut over the public route only after two-browser and mobile/WebGL QA."
+      "build": "pnpm check:rebrand && pnpm --filter client lint && pnpm build:client && pnpm build:server && pnpm test:production-runtime",
+      "notes": "Canonical full-stack source is dtfgenetics/Thc-chess-git. Preserve chess.js legal-move authority, Express/Socket.IO rooms, PostgreSQL sessions, spectators, chat, archives, resign/draw/abandon/rematch behavior, and the separate chess.dtfseeds.com / chess-api.dtfseeds.com targets. Owner CI now runs on Ubuntu 24.04/current GitHub actions and additionally verifies seat/observer/resignation/draw/abandonment/chat/room/auth/query/result persistence contracts plus production Postgres/Socket runtime. Do not cut over the public route until two-browser and mobile/WebGL QA is completed."
     },
     {
       "id": "thc-grow-hub",
