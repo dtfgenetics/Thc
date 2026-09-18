@@ -72,7 +72,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          blocked='(src|srcset|background)[^>]{0,800}(THC[-_ ]?C[0-9]{3}|THC[-_ ]?ENC[-_ ]?[0-9]{3}|Outdoor[-_ ]?[0-9]{2}|Cannabis[_ -]Plant[_ -]Anatomy[_ -]Infographic|Cannabis[_ -]Plant[_ -]Life[_ -]Cycle[_ -]Seed[_ -]to[_ -]Harvest[_ -]Infographic|Cannabis[_ -]Sex[_ -]Expression[_ -]and[_ -]Chromosome[_ -]Combinations|Beneficial[_ -]Insects[_ -]and[_ -]Biological[_ -]Controls)'
+          blocked='<(img|source)[^>]{0,800}(src|srcset)[[:space:]]*=[[:space:]]*["'"'][^"'"']*(THC[-_ ]?C[0-9]{3}|THC[-_ ]?ENC[-_ ]?[0-9]{3}|Outdoor[-_ ]?[0-9]{2}|Cannabis[_ -]Plant[_ -]Anatomy[_ -]Infographic|Cannabis[_ -]Plant[_ -]Life[_ -]Cycle[_ -]Seed[_ -]to[_ -]Harvest[_ -]Infographic|Cannabis[_ -]Sex[_ -]Expression[_ -]and[_ -]Chromosome[_ -]Combinations|Beneficial[_ -]Insects[_ -]and[_ -]Biological[_ -]Controls)'
           for path in / /learn/ /seeds/ /tools/; do
             body="$RUNNER_TEMP/verify-$(printf '%s' "$path" | tr '/' '_').html"
             curl -4 --fail --silent --show-error --location \
