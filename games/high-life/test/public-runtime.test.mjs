@@ -11,8 +11,8 @@ const publicEngine = fs.readFileSync('site/public-route-patch/games/high-life/en
 const canonicalEvents = JSON.parse(fs.readFileSync('games/high-life/data/events.json', 'utf8'));
 
 assert.match(html, /<script id="high-life-events" type="application\/json">/);
-assert.match(html, /<script defer src="\.\/app\.js\?v=20260909-visual-v1"><\/script>/);
-assert.match(html, /<script defer src="\.\/high-life-enhancements\.js\?v=20260909-visual-v1"><\/script>/);
+assert.match(html, /<script defer src="\.\/app\.js\?v=20260917-visual-v2"><\/script>/);
+assert.match(html, /<script defer src="\.\/high-life-enhancements\.js\?v=20260917-visual-v2"><\/script>/);
 assert.match(html, /high-life-v2\.css/);
 assert.match(html, /class="era-roadmap"/);
 assert.match(html, /assets\/high-life-era-journey-v1\.webp/);
@@ -81,5 +81,12 @@ assert.match(visual, /\.career-log-panel \.log-toggle\{min-height:44px/, 'career
 assert.match(visual, /scroll-margin-top:calc\(var\(--dtf-global-header-height,92px\) \+ 16px\)/, 'turn-resolution anchors must clear the global header');
 assert.doesNotMatch(visual, /\.era-roadmap\{[^}]*position:sticky;top:\.35rem/, 'legacy sticky roadmap offset must not return');
 assert.match(visual, /@media\(prefers-reduced-motion:reduce\)/);
+assert.match(visual, /@media\(forced-colors:active\)/);
+assert.match(visual, /touch-action:manipulation/);
+assert.match(visual, /outline:3px solid var\(--gold\)/);
+assert.match(html, /<h2>How to play<\/h2>/);
+assert.doesNotMatch(html, /browser prototype/i);
+assert.doesNotMatch(html, /Prototype rules/i);
+assert.doesNotMatch(html, /playtest values/i);
 
 console.log('High Life canonical engine runtime, exact resume, event parity, V5 mobile layout, and three-era visual regression checks passed.');
