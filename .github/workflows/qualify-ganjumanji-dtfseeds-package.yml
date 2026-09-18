@@ -61,7 +61,7 @@ jobs:
           route="$(sed -n 's/^route=//p' "$revision_file")"
           test "$repo_name" = "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple"
           [[ "$revision" =~ ^[0-9a-f]{40}$ ]]
-          test "$version" = "0.4.0"
+          test "$version" = "0.4.1"
           test "$route" = "/games/ganjumanji/"
           echo "repository=$repo_name" >> "$GITHUB_OUTPUT"
           echo "revision=$revision" >> "$GITHUB_OUTPUT"
@@ -178,6 +178,6 @@ jobs:
             echo '- Deterministic shipped-UI validation: passed'
             echo '- Route-safe build validation: passed'
             echo '- Canonical Header V6 packaging: passed'
-            echo '- Deployable route artifact: uploaded'
+            echo '- Deployable route artifact: uploaded'\n            echo '- Candidate status: production-candidate'
             echo '- Public promotion: still blocked until production publish + exact live-route verification'
           } >> "$GITHUB_STEP_SUMMARY"
