@@ -242,6 +242,20 @@ jobs:
           test -s site/public-route-patch/games/strain-match/strain-match-v2.css
           grep -Fq 'https://dtfseeds.com/games/strain-match/' site/public-route-patch/games/strain-match/index.html
 
+      - name: Validate Spin the Strain browser game
+        run: |
+          set -euo pipefail
+          node games/spin-the-strain/scripts/validate-data.mjs
+          node games/spin-the-strain/test/engine.test.mjs
+          node games/spin-the-strain/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/spin-the-strain/app.js
+          node --check site/public-route-patch/games/spin-the-strain/runtime.mjs
+          node --check site/public-route-patch/games/spin-the-strain/engine.mjs
+          cmp games/spin-the-strain/src/engine.mjs site/public-route-patch/games/spin-the-strain/engine.mjs
+          test -s site/public-route-patch/games/spin-the-strain/index.html
+          test -s site/public-route-patch/games/spin-the-strain/spin-the-strain.css
+          grep -Fq 'https://dtfseeds.com/games/spin-the-strain/' site/public-route-patch/games/spin-the-strain/index.html
+
       - name: Validate Seed Man v20 campaign
         run: |
           set -euo pipefail
