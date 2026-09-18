@@ -116,6 +116,21 @@ jobs:
           test -s site/public-route-patch/games/grow-room-defense/accessibility-v1.css
           grep -Fq 'https://dtfseeds.com/games/grow-room-defense/' site/public-route-patch/games/grow-room-defense/index.html
 
+      - name: Validate Harvest Hustle browser game
+        run: |
+          set -euo pipefail
+          node games/harvest-hustle/scripts/validate-data.mjs
+          node games/harvest-hustle/test/engine.test.mjs
+          node games/harvest-hustle/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/harvest-hustle/app.js
+          node --check site/public-route-patch/games/harvest-hustle/runtime.mjs
+          node --check site/public-route-patch/games/harvest-hustle/engine.mjs
+          cmp games/harvest-hustle/src/engine.mjs site/public-route-patch/games/harvest-hustle/engine.mjs
+          test -s site/public-route-patch/games/harvest-hustle/index.html
+          test -s site/public-route-patch/games/harvest-hustle/harvest-hustle.css
+          test -s site/public-route-patch/games/harvest-hustle/harvest-hustle-v2.css
+          grep -Fq 'https://dtfseeds.com/games/harvest-hustle/' site/public-route-patch/games/harvest-hustle/index.html
+
       - name: Validate Seed Man v20 campaign
         run: |
           set -euo pipefail
