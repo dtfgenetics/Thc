@@ -208,6 +208,7 @@ const ui = {
   power: document.querySelector('#power-count'),
   jump: document.querySelector('#jump-count'),
   progress: document.querySelector('#progress-count'),
+  health: document.querySelector('#health-count'),
   restart: document.querySelector('#restart'),
   pause: document.querySelector('#pause'),
   finish: document.querySelector('#finish-panel'),
@@ -336,6 +337,7 @@ function queueJump() {
 function retryCheckpoint() {
   if (!level || !player || player.finished || paused) return false;
   respawn(player, DEFAULTS);
+  window.__SEED_MAN_PLAYER_STATE__?.restoreHealth?.(player);
   accumulator = 0;
   cameraX = cameraTargetFor(player);
   const label = player.checkpoint?.id && player.checkpoint.id !== 'start' ? 'checkpoint' : 'level start';
@@ -454,6 +456,10 @@ function updateHud() {
   const required = requiredSprouts();
   const remaining = Math.max(0, required - collected);
   if (ui.sprouts) ui.sprouts.textContent = `${collected} / ${required}`;
+  const maxHealth=Math.max(1,Number(player?.maxHealth)||3);
+  const health=Math.max(0,Math.min(maxHealth,Number(player?.health ?? maxHealth)));
+  if (ui.health) ui.health.textContent = `${health} / ${maxHealth}`;
+  document.documentElement.dataset.seedHealthState=health<=1?'critical':health<maxHealth?'hurt':'healthy';
   if (ui.deaths) ui.deaths.textContent = String(player?.deaths || 0);
   if (ui.time) ui.time.textContent = `${elapsed.toFixed(1)}s`;
   const best = readBest();
