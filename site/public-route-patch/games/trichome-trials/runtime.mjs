@@ -139,6 +139,12 @@ function safeScroll(element) {
   try { element?.scrollIntoView?.({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' }); } catch { element?.scrollIntoView?.(); }
 }
 
+function safeFocus(element) {
+  if (!element?.focus) return;
+  try { element.focus({ preventScroll: true }); }
+  catch { element.focus(); }
+}
+
 function resetDraft() {
   draftScores = Object.fromEntries(data.categories.map((category) => [category.id, 5]));
   confidenceIds = new Set();
@@ -286,6 +292,7 @@ function renderReview() {
     return;
   }
   ui.review.hidden = false;
+  if (!ui.review.hasAttribute('tabindex')) ui.review.setAttribute('tabindex', '-1');
   if (state.status === 'complete') {
     ui.review.innerHTML = `<div class="review-summary complete-summary"><span class="accuracy-ring" style="--accuracy:${averageAccuracy(state)}"><strong>${averageAccuracy(state)}%</strong><small>AVG</small></span><div><p class="eyebrow">Final ruling</p><h2>${escapeHtml(judgeRank(state))}</h2><p>${state.totalPoints} trial points · ${state.exactCalls} exact calls · ${state.nearCalls} near calls.</p></div></div>`;
     ui.next.hidden = true;
@@ -386,6 +393,7 @@ ui.submit.addEventListener('click', () => {
     state = submitConfidentScorecard(state, draftScores, [...confidenceIds], data);
     render();
     safeScroll(ui.review);
+    safeFocus(ui.review);
     ui.announce.textContent = `Scorecard submitted. ${state.lastResult.accuracy} percent accuracy, ${state.lastResult.exactCount} exact calls, ${state.lastResult.confidenceBonus} confidence bonus points.`;
   } catch (error) {
     console.error(error);
@@ -398,7 +406,9 @@ ui.next.addEventListener('click', () => {
   state = advanceTrial(state, data);
   if (state.status === 'judging') resetDraft();
   render();
+  if (!ui.sample.hasAttribute('tabindex')) ui.sample.setAttribute('tabindex', '-1');
   safeScroll(ui.sample);
+  safeFocus(ui.sample);
   ui.announce.textContent = state.status === 'complete' ? `Trial complete. Rank ${judgeRank(state)}, average accuracy ${averageAccuracy(state)} percent.` : `Round ${state.round}. New blind sample ready. Confidence calls reset.`;
 });
 
