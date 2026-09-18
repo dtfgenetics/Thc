@@ -98,6 +98,11 @@ assert.match(combatSource, /ACTION_FEEDBACK_VERSION = 'seed-man-combat-action-fe
 assert.match(combatSource, /setActionPose\('attack',0\.16\)/, 'Seed Slinger must expose an attack pose window');
 assert.match(combatSource, /setActionPose\('ability',0\.24\)/, 'phenotype ability must expose an ability pose window');
 assert.match(combatSource, /actionPoseRemaining=Math\.max\(0,actionPoseRemaining-step\)/, 'combat action pose must expire deterministically');
+assert.match(combatSource, /function tryStomp\(playerState,step\)/, 'browser combat must implement the declared stomp mechanic');
+assert.match(combatSource, /Number\(playerState\.vy\)<=120/, 'stomp must require meaningful downward velocity');
+assert.match(combatSource, /playerState\.vy=-460/, 'successful stomp must bounce Seed Man upward');
+assert.match(combatSource, /damage:target\.role==='boss'\?1:2/, 'stomp damage must be stronger on normal enemies than bosses');
+assert.match(combatSource, /seedman:stomp/, 'stomp must emit deterministic feedback event');
 assert.match(productionArtSource, /combat\?\.actionPoseRemaining/, 'approved character renderer must read combat action state');
 assert.match(productionArtSource, /drawPhenotypeAura/, 'powered forms must render phenotype action feedback without substituting unapproved art');
 assert.match(productionArtSource, /pose==='ability'/, 'approved renderer must distinguish phenotype ability feedback');
@@ -115,4 +120,4 @@ assert.match(playerStateSource, /function restoreHealth\(/, 'checkpoint recovery
 assert.match(publicHtml, /id="health-count">3 \/ 3</, 'public HUD must show three-health state');
 assert.match(publicHtml, /3 HP · knockout returns to checkpoint/, 'control help must explain combat stakes');
 
-console.log('Seed Man enemy platform support, synchronized combat geometry, 3-HP damage loop, approved atlas geometry, finale carriers, combat feedback, and Blight King weakness contract passed');
+console.log('Seed Man enemy platform support, synchronized combat geometry, stomp combat, 3-HP damage loop, approved atlas geometry, finale carriers, combat feedback, and Blight King weakness contract passed');
