@@ -89,6 +89,11 @@ const finaleCarrierForms = Array.from(finaleEncounter, (enemy)=>enemy.phenotype)
 assert.deepStrictEqual(finaleCarrierForms, ['electric','fire','ice'], 'Level 20 must provide all three temporary phenotype carriers');
 
 assert.match(combatSource, /const BLIGHT_WEAKNESSES = Object\.freeze\(\['plant','fire','electric','ice'\]\)/, 'browser combat must use canonical final-boss weakness cycle');
+assert.match(combatSource, /let unlockedPhenotypes=new Set\(\['plant'\]\)/, 'combat runtime must persist absorbed phenotype unlocks for the active level');
+assert.match(combatSource, /function activatePhenotype\(form,\{reason='PHENOTYPE ABSORBED',seconds=3\}=\{\}\)/, 'combat runtime must centralize phenotype activation and refresh');
+assert.match(combatSource, /function handleBossPhenotypeCycle\(weakness,phase\)/, 'final boss must restore previously absorbed phenotype forms on phase change');
+assert.match(combatSource, /seedman:phenotype-cycle/, 'final boss phenotype cycling must emit deterministic feedback');
+assert.match(combatSource, /unlockedPhenotypes:\[\.\.\.unlockedPhenotypes\]/, 'combat diagnostics must expose unlocked phenotype forms');
 assert.match(combatSource, /phenotype===blightWeakness\(enemy\)\?1\.5:0\.65/, 'browser combat must use canonical weakness/resistance multipliers');
 assert.match(combatSource, /const phenotype=ability\?\(activePhenotype\|\|def\.form\|\|'plant'\):'plant'/, 'browser projectiles must carry phenotype identity');
 assert.match(combatSource, /const BOSS_FRAME_COLS = 4/, 'browser renderer must know approved boss row has four cells');
