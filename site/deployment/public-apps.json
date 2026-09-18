@@ -295,7 +295,7 @@
       "title": "Cannabis Fleet Battle (merged into Burn Buds)",
       "repository": "dtfgenetics/Thc",
       "sourcePath": "games/cannabis-fleet-battle",
-      "runtime": "archive-pointer",
+      "runtime": "merged-archive-pointer",
       "status": "do-not-develop",
       "build": "node games/cannabis-fleet-battle/test/engine.test.mjs",
       "machineData": {
@@ -303,12 +303,11 @@
         "fleetPieces": 6,
         "occupiedCells": 21,
         "networkAuthority": "server",
-        "canonicalGame": "protect-the-plants",
-        "canonicalTitle": "Burn Buds",
-        "separatePublicReleaseAllowed": false
+        "canonicalGameId": "protect-the-plants",
+        "canonicalRoute": "/games/protect-the-plants/",
+        "publicReleaseAllowed": false
       },
-      "notes": "Tested 15×15 fleet-battle engine retained only as design/engine history. All browser gameplay, multiplayer, branding, deployment, assets, reconnect work, mobile QA, and future production development belong to canonical Burn Buds at /games/protect-the-plants/. Separate public release is forbidden by games/cannabis-fleet-battle/game.json.",
-      "route": "/games/protect-the-plants/"
+      "notes": "Tested 15×15 fleet-battle engine retained only as design/engine history. It does not own a public route. All browser gameplay, multiplayer, branding, deployment, assets, reconnect work, mobile QA, and future production development belong to canonical Burn Buds at /games/protect-the-plants/."
     },
     {
       "id": "terpocalypse",
