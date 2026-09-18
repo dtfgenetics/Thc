@@ -155,6 +155,20 @@ if (cannabisFleetDeployment?.machineData?.canonicalGameId !== 'protect-the-plant
 if (burnBudsDeployment?.route !== '/games/protect-the-plants/' || burnBudsDeployment?.title !== 'Burn Buds') {
   errors.push('protect-the-plants: Burn Buds must remain the canonical public hidden-fleet game');
 }
+
+for (const candidateId of ['thc-u-know', 'kush-kings']) {
+  const app = deploymentApps.find((entry) => entry.id === candidateId);
+  const navGame = (navigationDoc.games || []).find((entry) => entry.id === candidateId);
+  if (app?.status !== 'runtime-integration') {
+    errors.push(`${candidateId}: full-stack candidate must remain runtime-integration until live promotion gates pass`);
+  }
+  if (navGame?.public !== false || navGame?.status !== 'development' || navGame?.route) {
+    errors.push(`${candidateId}: unverified runtime candidate must not be counted as a public playable game`);
+  }
+  if (!navGame?.candidateRoute || navGame.candidateRoute !== app?.route) {
+    errors.push(`${candidateId}: candidateRoute must match the deployment runtime route`);
+  }
+}
 if (fleetArchiveDoc?.type !== 'archive-pointer' ||
     fleetArchiveDoc?.status !== 'archive-candidate' ||
     fleetArchiveDoc?.developmentPolicy !== 'do-not-develop-separately' ||
