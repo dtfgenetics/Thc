@@ -179,5 +179,6 @@ jobs:
             echo '- Route-safe build validation: passed'
             echo '- Canonical Header V6 packaging: passed'
             echo '- Deployable route artifact: uploaded'
-            echo '- Candidate status: production-candidate'\n            echo '- Public promotion: still blocked until production publish + exact live-route verification'
+            echo '- Candidate status: production-candidate'
+            echo '- Public promotion: still blocked until production publish + exact live-route verification'
           } >> "$GITHUB_STEP_SUMMARY"
