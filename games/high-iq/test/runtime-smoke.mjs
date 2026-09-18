@@ -21,6 +21,8 @@ assert.match(app, /startDaily/);
 assert.match(app, /practiceMissedQuestions/);
 assert.match(app, /navigator\.share/);
 assert.match(app, /localStorage/);
+assert.match(app, /state\.locked && event\.key === 'Enter' && \(tag === 'a' \|\| tag === 'button'\)/, 'locked-answer Enter shortcut must not hijack native links or buttons');
+assert.match(app, /link\.href = source\.url;/, 'answer explanations must keep source links keyboard reachable');
 assert.match(core, /export function balancedSample/);
 assert.match(css, /prefers-reduced-motion/);
 assert.match(css, /forced-colors/);
