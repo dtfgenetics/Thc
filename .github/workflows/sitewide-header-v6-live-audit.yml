@@ -37,10 +37,10 @@ jobs:
           node --check scripts/audit-sitewide-header-live.mjs
           grep -Fq 'data-dtf-shell="header-v6"' scripts/audit-sitewide-header-live.mjs
           grep -Fq 'canonical-eight-v1' scripts/audit-sitewide-header-live.mjs
-          ! grep -Fq "['/', 'Home']" scripts/audit-sitewide-header-live.mjs
-          grep -Fq "['/seeds/', 'Genetics']" scripts/audit-sitewide-header-live.mjs
+          grep -Fq "['/', 'Home']" scripts/audit-sitewide-header-live.mjs
+          grep -Fq "['/seeds/', 'Seeds']" scripts/audit-sitewide-header-live.mjs
           grep -Fq "['/courses/', 'Courses']" scripts/audit-sitewide-header-live.mjs
-          grep -Fq "['/tools/', 'Tools']" scripts/audit-sitewide-header-live.mjs
+          grep -Fq "['/tools/', 'Diagnostic']" scripts/audit-sitewide-header-live.mjs
           grep -Fq 'site/deployment/public-apps.json' scripts/audit-sitewide-header-live.mjs
           grep -Fq "key !== 'routePrefix'" scripts/audit-sitewide-header-live.mjs
 
