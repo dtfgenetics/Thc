@@ -85,6 +85,8 @@ for (const mapped of sourceGames) {
   const allowedCandidate = navGame?.public === false &&
     navGame?.status === 'development' &&
     typeof navGame?.candidateRoute === 'string' &&
+    mapped.route === navGame.candidateRoute &&
+    app?.route === navGame.candidateRoute &&
     app?.status === 'runtime-integration';
   if (!allowedCandidate) {
     fail(`game-source-map contains non-public mapping without an approved runtime-integration candidate: ${mapped.id || '<missing>'}.`);
