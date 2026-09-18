@@ -23,12 +23,12 @@ concurrency:
 
 jobs:
   test:
-    name: Validate The Veg Lab browser prototype
-    runs-on: ubuntu-latest
+    name: Validate The Veg Lab browser game
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
       - name: Validate production package
