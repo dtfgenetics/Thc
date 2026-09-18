@@ -124,10 +124,11 @@ jobs:
           expect(project('grower-conversations')?.status === 'browser-deck-alpha', 'Grower Conversations registry state drift');
           expect(app('grower-conversations')?.runtime === 'static' && app('grower-conversations')?.status === 'ready-to-package', 'Grower Conversations deployment state drift');
 
-          expect(project('cannabis-fleet-battle')?.status === 'server-engine-alpha', 'Fleet Battle registry state drift');
-          expect(app('cannabis-fleet-battle')?.runtime === 'server-engine' && app('cannabis-fleet-battle')?.status === 'server-engine-alpha', 'Fleet Battle deployment state drift');
-
+          expect(project('protect-the-plants')?.status === 'canonical', 'Burn Buds registry state drift');
           expect(app('protect-the-plants')?.runtime === 'static-php' && app('protect-the-plants')?.status === 'ready-to-package', 'Burn Buds deployment state drift');
+
+          expect(project('cannabis-fleet-battle')?.status === 'archive-candidate', 'Fleet Battle archive registry state drift');
+          expect(app('cannabis-fleet-battle')?.runtime === 'merged-archive-pointer' && app('cannabis-fleet-battle')?.status === 'do-not-develop', 'Fleet Battle archive deployment state drift');
 
           expect(project('strain-showdown')?.status === 'browser-prototype', 'Strain Showdown registry state drift');
           expect(app('strain-showdown')?.runtime === 'static' && app('strain-showdown')?.status === 'ready-to-package', 'Strain Showdown deployment state drift');
