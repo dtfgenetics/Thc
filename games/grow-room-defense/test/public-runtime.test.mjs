@@ -34,6 +34,9 @@ assert.match(app, /button\.deploy-button\[data-lane\]/, 'bench click delegation 
 assert.match(app, /globalThis\.crypto\?\.getRandomValues/, 'random code generation must tolerate missing crypto APIs');
 assert.match(app, /function safeReplaceUrl\(/, 'history mutation must be guarded');
 assert.match(app, /navigator\.clipboard\?\.writeText/, 'share behavior must tolerate unavailable clipboard APIs');
+assert.match(app, /async function copyText\(/, 'share behavior must expose a clipboard fallback helper');
+assert.match(app, /document\.execCommand\?\.\('copy'\) === true/, 'share behavior must retain a legacy clipboard fallback');
+assert.match(app, /Copy failed\. Share defense code/, 'share failure must preserve the full manual challenge path');
 
 assert.match(accessibility, /grow-room-defense-accessibility-v1/, 'accessibility layer must expose a stable version marker');
 assert.match(accessibility, /role', 'progressbar'/, 'plant health tracks must become semantic progressbars');
@@ -50,6 +53,8 @@ assert.match(accessibility, /prefers-reduced-motion: reduce/, 'mobile return mus
 assert.match(accessibility, /lanes\.style\.scrollMarginTop = '88px'/, 'mobile return must clear the sticky site header');
 assert.match(accessibility, /mobileToolReturn: true/, 'enhancement contract must expose mobile tool return');
 assert.match(accessibilityCss, /\.tool-shortcut/, 'visible shortcut badges must have styling');
+assert.match(accessibilityCss, /@media\(forced-colors:active\)/, 'defense controls must remain visible in forced-colors mode');
+assert.match(accessibilityCss, /outline:3px solid Highlight/, 'forced-colors focus must remain visible');
 
 assert.match(baseCss, /\.lane-card\.lost/, 'lost bench state must remain represented by the base game layer');
 assert.match(baseCss, /\.feedback-card\.strong/, 'strong counter feedback must remain represented by the base game layer');
