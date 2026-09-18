@@ -30,7 +30,7 @@
     @keyframes seedCombatFlash{0%{opacity:.32}100%{opacity:0}}@keyframes seedCombatBlocked{0%,100%{transform:translateX(0)}35%{transform:translateX(-3px)}70%{transform:translateX(3px)}}
     @media(max-width:900px){main{width:min(100%,760px);padding-top:.75rem}.hero{grid-template-columns:1fr;grid-template-areas:"eyebrow" "title" "lede" "status" "marker";padding-inline:1rem}.seed-world-route{grid-template-columns:repeat(3,minmax(0,1fr))}.hero>h1{font-size:clamp(2.7rem,12vw,4.25rem);line-height:.9}.hero>.lede{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}.game-shell::before{margin-bottom:.5rem}.feature-strip{margin-inline:1rem}.panel{margin-inline:1rem}}
     @media(max-width:680px){main{width:100%;padding-top:.45rem}.seed-world-route{grid-template-columns:1fr 1fr}.seed-world-route span:last-child{grid-column:1/-1}.seed-hero-actions{display:grid;grid-template-columns:1fr 1fr}.seed-hero-actions a:first-child{grid-column:1/-1;justify-content:center}.seed-hero-actions a{justify-content:center}.hero{margin-bottom:.45rem}.hero>.eyebrow{font-size:.64rem;letter-spacing:.09em}.hero>h1{font-size:clamp(2.45rem,14vw,3.5rem);margin:.05rem 0 .2rem}.hero>.lede{font-size:.82rem;line-height:1.35;-webkit-line-clamp:2}.hero>#load-status{font-size:.8rem;margin:.15rem 0}.hero>#seed-ui-release-marker{font-size:.58rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.game-shell{margin-top:.4rem}.game-shell::before{font-size:.58rem;letter-spacing:.09em}.hud{max-height:92px;overflow:auto;scrollbar-width:thin}.hud span{font-size:.7rem;padding:.32rem .45rem}.hud button{min-height:44px;margin-left:0!important}.touch-controls{box-shadow:0 -10px 28px #0008}.touch-controls .attack,.touch-controls .ability{font-size:.66rem}.control-copy{display:none}}
-    @media(max-width:420px){.seed-world-route{display:none}.seed-hero-actions{grid-template-columns:1fr}.seed-hero-actions a:first-child{grid-column:auto}.hero>.lede{display:none}.hero>#seed-ui-release-marker{display:none}.hud span:nth-of-type(5),.hud span:nth-of-type(6),.hud span:nth-of-type(7){display:none}.touch-controls{grid-template-columns:1fr 1fr 1.18fr 1.12fr 1.12fr}.touch-controls button{min-width:0}}
+    @media(max-width:420px){.seed-world-route{display:none}.seed-hero-actions{grid-template-columns:1fr}.seed-hero-actions a:first-child{grid-column:auto}.hero>.lede{display:none}.hero>#seed-ui-release-marker{display:none}.hud .hud-secondary{display:none}.touch-controls{grid-template-columns:1fr 1fr 1.18fr 1.12fr 1.12fr}.touch-controls button{min-width:0}}
     @media(prefers-reduced-motion:reduce){.touch-controls button[data-combat-feedback="fired"]::after,.touch-controls button[data-combat-feedback="blocked"]{animation:none}}
   </style>
 </head>
@@ -58,9 +58,9 @@
         <span>Health <strong id="health-count">3 / 3</strong></span>
         <span>Jumps <strong id="jump-count">2 jumps ready</strong></span>
         <span>Phenotype <strong id="power-count">Plant</strong></span>
-        <span>Falls <strong id="death-count">0</strong></span>
-        <span>Time <strong id="time-count">0.0s</strong></span>
-        <span>Best <strong id="best-count">—</strong></span>
+        <span class="hud-secondary">Falls <strong id="death-count">0</strong></span>
+        <span class="hud-secondary">Time <strong id="time-count">0.0s</strong></span>
+        <span class="hud-secondary">Best <strong id="best-count">—</strong></span>
         <button id="pause" type="button" aria-pressed="false">Pause</button>
         <button id="restart" type="button">Restart</button>
       </div>

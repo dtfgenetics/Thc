@@ -13,6 +13,9 @@ assert.match(html, /data-seed-inline-touch-combat=["']seed-man-touch-combat-cont
 assert.match(html, /data-combat-feedback=\"fired\"/, 'touch combat must provide immediate fired feedback');
 assert.match(html, /data-seed-pheno-active=\"true\"/, 'visual polish must expose active phenotype state');
 assert.match(html, /@media\(max-width:680px\)/, 'gameplay polish must contain a phone layout');
+assert.match(html, /\.hud \.hud-secondary\{display:none\}/, 'small-phone HUD must hide only explicitly secondary stats');
+assert.match(html, /class="hud-secondary">Falls/, 'Falls must be marked as a secondary mobile HUD stat');
+assert.doesNotMatch(html, /\.hud span:nth-of-type\(5\)/, 'mobile HUD visibility must not depend on brittle span ordering');
 assert.match(html, /bind\(attackButton,'fireWeapon'\)/, 'ATTACK must bind to fireWeapon');
 assert.match(html, /bind\(abilityButton,'fireAbility'\)/, 'PHENO must bind to fireAbility');
 assert.match(html, /addEventListener\('pointerdown'/, 'touch combat must fire on pointerdown for responsive touch and pen input');
