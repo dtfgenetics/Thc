@@ -8,6 +8,17 @@ on:
     branches:
       - main
     paths:
+      - games/grow-room-defense/**
+      - games/grow-room-bingo/**
+      - games/lost-in-the-terps/**
+      - games/mystery-strain/**
+      - games/pheno-draft/**
+      - games/high-lines/**
+      - games/strain-match/**
+      - games/trichome-trials/**
+      - games/root-cause/**
+      - games/harvest-hustle/**
+      - games/spin-the-strain/**
       - site/public-route-patch/games/phenoquest/**
       - site/public-route-patch/games/crossword/source-revision.txt
       - scripts/validate-crossword-release-source.mjs
@@ -24,6 +35,17 @@ on:
       - games/high-iq/**
       - games/high-life/**
       - games/grower-conversations/**
+      - games/grow-room-defense/**
+      - games/grow-room-bingo/**
+      - games/lost-in-the-terps/**
+      - games/mystery-strain/**
+      - games/pheno-draft/**
+      - games/high-lines/**
+      - games/strain-match/**
+      - games/trichome-trials/**
+      - games/root-cause/**
+      - games/harvest-hustle/**
+      - games/spin-the-strain/**
       - games/seed-man-platformer/**
       - games/strain-showdown/**
       - games/bud-or-bluff/**
@@ -118,6 +140,7 @@ jobs:
           test -s site/public-route-patch/games/grow-room-defense/grow-room-defense.css
           test -s site/public-route-patch/games/grow-room-defense/grow-room-defense-v2.css
           test -s site/public-route-patch/games/grow-room-defense/accessibility-v1.css
+          test -s site/public-route-patch/games/grow-room-defense/accessibility-v1.js
           grep -Fq 'https://dtfseeds.com/games/grow-room-defense/' site/public-route-patch/games/grow-room-defense/index.html
 
       - name: Validate Harvest Hustle browser game
@@ -142,7 +165,6 @@ jobs:
           node games/root-cause/test/engine.test.mjs
           node games/root-cause/test/public-runtime.test.mjs
           node --check site/public-route-patch/games/root-cause/app.js
-          node --check site/public-route-patch/games/root-cause/engine.js
           node --check site/public-route-patch/games/root-cause/engine.mjs
           cmp games/root-cause/src/engine.mjs site/public-route-patch/games/root-cause/engine.mjs
           test -s site/public-route-patch/games/root-cause/index.html
@@ -211,6 +233,7 @@ jobs:
           test -s site/public-route-patch/games/trichome-trials/trichome-trials.css
           test -s site/public-route-patch/games/trichome-trials/trichome-trials-v2.css
           test -s site/public-route-patch/games/trichome-trials/confidence.css
+          test -s site/public-route-patch/games/trichome-trials/frost-layout.css
           grep -Fq 'https://dtfseeds.com/games/trichome-trials/' site/public-route-patch/games/trichome-trials/index.html
 
       - name: Validate Grow Room Bingo browser game
@@ -259,139 +282,6 @@ jobs:
           test -s site/public-route-patch/games/spin-the-strain/index.html
           test -s site/public-route-patch/games/spin-the-strain/spin-the-strain.css
           grep -Fq 'https://dtfseeds.com/games/spin-the-strain/' site/public-route-patch/games/spin-the-strain/index.html
-
-      - name: Validate Grow Room Defense canonical browser runtime
-        run: |
-          set -euo pipefail
-          node games/grow-room-defense/scripts/validate-data.mjs
-          node games/grow-room-defense/test/engine.test.mjs
-          node games/grow-room-defense/test/public-runtime.test.mjs
-          node --check site/public-route-patch/games/grow-room-defense/app.js
-          node --check site/public-route-patch/games/grow-room-defense/runtime.mjs
-          node --check site/public-route-patch/games/grow-room-defense/engine.mjs
-          test -s site/public-route-patch/games/grow-room-defense/index.html
-          test -s site/public-route-patch/games/grow-room-defense/grow-room-defense.css
-          test -s site/public-route-patch/games/grow-room-defense/grow-room-defense-v2.css
-          test -s site/public-route-patch/games/grow-room-defense/accessibility-v1.css
-          test -s site/public-route-patch/games/grow-room-defense/accessibility-v1.js
-
-      - name: Validate Grow Room Bingo browser runtime
-        run: |
-          set -euo pipefail
-          node games/grow-room-bingo/scripts/validate-data.mjs
-          node games/grow-room-bingo/test/public-runtime.test.mjs
-          node --check site/public-route-patch/games/grow-room-bingo/app.js
-          node --check site/public-route-patch/games/grow-room-bingo/keyboard-nav.js
-          test -s site/public-route-patch/games/grow-room-bingo/index.html
-          test -s site/public-route-patch/games/grow-room-bingo/bingo.css
-          test -s site/public-route-patch/games/grow-room-bingo/data/prompts.json
-
-      - name: Validate Lost in the Terps browser runtime
-        run: |
-          set -euo pipefail
-          node games/lost-in-the-terps/scripts/validate-data.mjs
-          node games/lost-in-the-terps/test/public-runtime.test.mjs
-          node --check site/public-route-patch/games/lost-in-the-terps/app.js
-          node --check site/public-route-patch/games/lost-in-the-terps/keyboard-nav-v1.js
-          test -s site/public-route-patch/games/lost-in-the-terps/index.html
-          test -s site/public-route-patch/games/lost-in-the-terps/terps.css
-          test -s site/public-route-patch/games/lost-in-the-terps/data/puzzles.json
-
-      - name: Validate Mystery Strain canonical browser runtime
-        run: |
-          set -euo pipefail
-          node games/mystery-strain/scripts/validate-data.mjs
-          node games/mystery-strain/test/engine.test.mjs
-          node games/mystery-strain/test/public-runtime.test.mjs
-          node --check site/public-route-patch/games/mystery-strain/app.js
-          node --check site/public-route-patch/games/mystery-strain/runtime.mjs
-          node --check site/public-route-patch/games/mystery-strain/engine.mjs
-          node --check site/public-route-patch/games/mystery-strain/guess-confirm-v2.js
-          test -s site/public-route-patch/games/mystery-strain/index.html
-          test -s site/public-route-patch/games/mystery-strain/mystery-strain.css
-          test -s site/public-route-patch/games/mystery-strain/analysis.css
-          test -s site/public-route-patch/games/mystery-strain/guess-confirm-v2.css
-
-      - name: Validate Pheno Draft canonical browser runtime
-        run: |
-          set -euo pipefail
-          node games/pheno-draft/scripts/validate-data.mjs
-          node games/pheno-draft/test/engine.test.mjs
-          node games/pheno-draft/test/public-runtime.test.mjs
-          node --check site/public-route-patch/games/pheno-draft/app.js
-          node --check site/public-route-patch/games/pheno-draft/runtime.mjs
-          node --check site/public-route-patch/games/pheno-draft/engine.mjs
-          test -s site/public-route-patch/games/pheno-draft/index.html
-          test -s site/public-route-patch/games/pheno-draft/pheno-draft.css
-          test -s site/public-route-patch/games/pheno-draft/pheno-draft-v2.css
-
-      - name: Validate High Lines canonical browser runtime
-        run: |
-          set -euo pipefail
-          node games/high-lines/scripts/validate-data.mjs
-          node games/high-lines/test/engine.test.mjs
-          node games/high-lines/test/public-runtime.test.mjs
-          node --check site/public-route-patch/games/high-lines/app.js
-          node --check site/public-route-patch/games/high-lines/runtime.mjs
-          node --check site/public-route-patch/games/high-lines/engine.mjs
-          test -s site/public-route-patch/games/high-lines/index.html
-          test -s site/public-route-patch/games/high-lines/high-lines.css
-          test -s site/public-route-patch/games/high-lines/high-lines-v2.css
-          test -s site/public-route-patch/games/high-lines/data/scenes.json
-
-      - name: Validate Strain Match browser runtime
-        run: |
-          set -euo pipefail
-          node games/strain-match/scripts/validate-data.mjs
-          node games/strain-match/test/public-runtime.test.mjs
-          node --check site/public-route-patch/games/strain-match/app.js
-          test -s site/public-route-patch/games/strain-match/index.html
-          test -s site/public-route-patch/games/strain-match/strain-match.css
-          test -s site/public-route-patch/games/strain-match/strain-match-v2.css
-          test -s site/public-route-patch/games/strain-match/data/decks.json
-
-      - name: Validate Trichome Trials canonical browser runtime
-        run: |
-          set -euo pipefail
-          node games/trichome-trials/scripts/validate-data.mjs
-          node games/trichome-trials/test/engine.test.mjs
-          node games/trichome-trials/test/public-runtime.test.mjs
-          node --check site/public-route-patch/games/trichome-trials/app.js
-          node --check site/public-route-patch/games/trichome-trials/runtime.mjs
-          node --check site/public-route-patch/games/trichome-trials/engine.mjs
-          test -s site/public-route-patch/games/trichome-trials/index.html
-          test -s site/public-route-patch/games/trichome-trials/trichome-trials.css
-          test -s site/public-route-patch/games/trichome-trials/trichome-trials-v2.css
-          test -s site/public-route-patch/games/trichome-trials/confidence.css
-          test -s site/public-route-patch/games/trichome-trials/frost-layout.css
-
-      - name: Validate Root Cause canonical browser runtime
-        run: |
-          set -euo pipefail
-          node games/root-cause/scripts/validate-data.mjs
-          node games/root-cause/test/engine.test.mjs
-          node games/root-cause/test/public-runtime.test.mjs
-          node --check site/public-route-patch/games/root-cause/app.js
-          node --check site/public-route-patch/games/root-cause/runtime.mjs
-          node --check site/public-route-patch/games/root-cause/engine.mjs
-          test -s site/public-route-patch/games/root-cause/index.html
-          test -s site/public-route-patch/games/root-cause/root-cause.css
-          test -s site/public-route-patch/games/root-cause/root-cause-v2.css
-          test -s site/public-route-patch/games/root-cause/root-cause-responsive-v3.css
-          test ! -e site/public-route-patch/games/root-cause/engine-browser-required.marker
-
-      - name: Validate Harvest Hustle canonical browser runtime
-        run: |
-          set -euo pipefail
-          node games/harvest-hustle/scripts/validate-data.mjs
-          node games/harvest-hustle/test/engine.test.mjs
-          node games/harvest-hustle/test/public-runtime.test.mjs
-          node --check site/public-route-patch/games/harvest-hustle/app.js
-          node --check site/public-route-patch/games/harvest-hustle/runtime.mjs
-          node --check site/public-route-patch/games/harvest-hustle/engine.mjs
-          test -s site/public-route-patch/games/harvest-hustle/index.html
-          test -s site/public-route-patch/games/harvest-hustle/harvest-hustle.css
-          test -s site/public-route-patch/games/harvest-hustle/harvest-hustle-v2.css
 
       - name: Validate Seed Man v20 campaign
         run: |
