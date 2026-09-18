@@ -38,8 +38,10 @@ async function canonicalTarget(slug){
   const canonical=await readFile(canonicalPath,'utf8');
   const match=canonical.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i);
   const marker=textFromHtml(match?.[1]);
+  const layout=canonical.match(/data-dtf-layout=["']([^"']+)["']/i)?.[1]||'';
   if(!marker) throw new Error(`${slug}: canonical page has no usable H1 marker at ${canonicalPath}.`);
-  return {slug,canonicalPath,marker};
+  if(!layout) throw new Error(`${slug}: canonical page has no data-dtf-layout owner marker at ${canonicalPath}.`);
+  return {slug,canonicalPath,marker,layout};
 }
 
 const targets=await Promise.all(targetSlugs.map(canonicalTarget));
@@ -70,7 +72,13 @@ async function request(path,options={}){
   throw last;
 }
 function rendered(value){return typeof value==='string'?value:(value?.raw||value?.rendered||'');}
-function hasCanonicalMarker(content,target){return String(content).includes(target.marker);}
+function ownedLayout(content,target){
+  const exact=new RegExp(`data-dtf-layout=["']${target.layout.replace(/[.*+?^${}()|[\]\\]/g,'\\function hasCanonicalMarker(content,target){return String(content).includes(target.marker);}
+function normalizeThemeTitle(content){')}["']`,'i');
+  const versioned=new RegExp(`data-dtf-layout=["']${target.slug}-visual-v\\d+["']`,'i');
+  return exact.test(String(content))||versioned.test(String(content));
+}
+function customH1(content){return textFromHtml(String(content).match(/<h1\\b[^>]*>([\\s\\S]*?)<\\/h1>/i)?.[1]);}
 function normalizeThemeTitle(content){
   const re=new RegExp(`<style\\s+id=["']${STYLE_ID}["'][^>]*>[\\s\\S]*?<\\/style>\\s*`,'i');
   return `${STYLE}\n${String(content).replace(re,'').trimStart()}`;
@@ -82,8 +90,9 @@ for(const target of targets){
   if(!Array.isArray(rows)||rows.length!==1) throw new Error(`${target.slug}: expected exactly one page, found ${Array.isArray(rows)?rows.length:'invalid'}.`);
   const page=rows[0];
   const before=rendered(page.content);
-  if(!hasCanonicalMarker(before,target)) throw new Error(`${target.slug}: live page does not contain canonical H1 marker "${target.marker}" from ${target.canonicalPath}; refusing title normalization.`);
-  if(!/<h1\b/i.test(before)) throw new Error(`${target.slug}: no custom H1 found; refusing to hide the theme title.`);
+  if(!ownedLayout(before,target)) throw new Error(`${target.slug}: live page is missing a DTF-owned ${target.slug}-visual layout marker; refusing title normalization.`);
+  const beforeH1=customH1(before);
+  if(!beforeH1) throw new Error(`${target.slug}: no custom H1 found; refusing to hide the theme title.`);
   const after=normalizeThemeTitle(before);
 
   await writeFile(join(backupDir,`page-${page.id}-${target.slug}-before.json`),`${JSON.stringify(page,null,2)}\n`);
@@ -91,8 +100,10 @@ for(const target of targets){
   const check=await request(`/wp-json/wp/v2/pages/${page.id}?context=edit`);
   const current=rendered(check.content);
   if(apply&&!current.includes(`id="${STYLE_ID}"`)) throw new Error(`${target.slug}: scoped title suppression was not persisted.`);
-  if(!hasCanonicalMarker(current,target)) throw new Error(`${target.slug}: canonical H1 marker changed unexpectedly after normalization.`);
-  results.push({slug:target.slug,pageId:page.id,changed:after!==before,applied:apply,marker:target.marker,canonicalPath:target.canonicalPath});
+  if(!ownedLayout(current,target)) throw new Error(`${target.slug}: DTF-owned layout marker changed unexpectedly after normalization.`);
+  const currentH1=customH1(current);
+  if(!currentH1) throw new Error(`${target.slug}: custom H1 disappeared after normalization.`);
+  results.push({slug:target.slug,pageId:page.id,changed:after!==before,applied:apply,canonicalH1:target.marker,liveH1:currentH1,layout:target.layout,canonicalPath:target.canonicalPath});
 }
 
 const report={generatedAt:new Date().toISOString(),siteUrl,apply,backupDir,styleId:STYLE_ID,targets:results};
