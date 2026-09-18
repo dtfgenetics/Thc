@@ -62,5 +62,8 @@ assert.match(responsive, /min-height:\s*44px/, 'interactive controls must preser
 assert.match(responsive, /min-width:\s*0/, 'responsive shell must use intrinsic-width containment');
 assert.match(responsive, /@media \(max-width: 430px\)/, 'narrow-phone shell contract must remain explicit');
 assert.doesNotMatch(responsive, /overflow-x\s*:\s*hidden/, 'responsive integration must not hide page-level horizontal overflow regressions');
+assert.match(responsive, /@media \(forced-colors: active\)/, 'diagnostic controls and result states must remain visible in forced-colors mode');
+assert.match(responsive, /outline: 3px solid Highlight/, 'forced-colors focus must remain visible');
+assert.match(responsive, /\.diagnosis-button\.guessed[\s\S]*border-color: Mark/, 'incorrect diagnosis state must remain distinguishable without color alone');
 
 console.log('Root Cause classic runtime, V2 presentation, and V5 responsive integration regression checks passed.');
