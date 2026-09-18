@@ -76,7 +76,9 @@ const publicGames = nav.games.filter((game) => game.public);
 const privateGames = nav.games.filter((game) => !game.public);
 const hubPlayableCount = hub.match(/<strong>(\d+)<\/strong><span>playable browser games<\/span>/i);
 const hubLiveMultiplayerCount = hub.match(/<strong>(\d+)<\/strong><span>live multiplayer tables<\/span>/i);
+const hubCandidateCount = hub.match(/<strong>(\d+)<\/strong><span>release\/runtime candidates<\/span>/i);
 const publicMultiplayerGames = publicGames.filter((game) => game.status === 'multiplayer');
+const releaseCandidates = privateGames.filter((game) => typeof game.candidateRoute === 'string' && game.candidateRoute.length > 0);
 
 assert(Boolean(hubPlayableCount), 'Game Hub must expose its playable-game count');
 if (hubPlayableCount) {
@@ -85,6 +87,10 @@ if (hubPlayableCount) {
 assert(Boolean(hubLiveMultiplayerCount), 'Game Hub must expose its live-multiplayer count');
 if (hubLiveMultiplayerCount) {
   assert(Number(hubLiveMultiplayerCount[1]) === publicMultiplayerGames.length, `Game Hub live multiplayer count ${hubLiveMultiplayerCount[1]} does not match ${publicMultiplayerGames.length} public multiplayer games`);
+}
+assert(Boolean(hubCandidateCount), 'Game Hub must expose its release/runtime candidate count');
+if (hubCandidateCount) {
+  assert(Number(hubCandidateCount[1]) === releaseCandidates.length, `Game Hub candidate count ${hubCandidateCount[1]} does not match ${releaseCandidates.length} registered candidates`);
 }
 
 for (const game of publicGames) {
