@@ -137,7 +137,7 @@ jobs:
           expect(project('seed-man-platformer')?.status === 'canonical', 'Seed Man registry state drift');
           expect(seedMan?.runtime === 'static-canvas2d-approved-art' && seedMan?.status === 'production-v20', 'Seed Man deployment classification drift');
           expect(seedMan?.machineData?.levelCount === 20 && seedMan?.machineData?.finalBoss === 'blight-king', 'Seed Man v20 machine metadata drift');
-          expect(seedMan?.machineData?.worldMechanicsRuntime === 'seed-man-world-mechanics-browser-v2', 'Seed Man world mechanics metadata drift');
+          expect(seedMan?.machineData?.worldMechanicsRuntime === 'seed-man-world-mechanics-browser-v3', 'Seed Man world mechanics metadata drift');
           expect(seedMan?.machineData?.dynamicPlatformRuntime === 'seed-man-three-dynamic-platforms-v1', 'Seed Man dynamic platform metadata drift');
           expect(seedMan?.machineData?.worldRenderer === 'seed-man-three-world-v2' && seedMan?.machineData?.worldRendererBundle === 'seed-man-three-public-v3', 'Seed Man Three.js renderer metadata drift');
           expect(seedMan?.machineData?.worldFallbackRenderer === 'seed-man-canvas-world-gradient-v1', 'Seed Man fallback renderer metadata drift');
@@ -159,7 +159,7 @@ jobs:
           test -s site/public-route-patch/games/protect-the-plants/plant.svg
           test -s site/public-route-patch/projects/index.html
           test -s site/public-route-patch/games/seed-man-platformer/world-mechanics-browser-v1.js
-          grep -Fq 'seed-man-world-mechanics-browser-v2' site/public-route-patch/games/seed-man-platformer/world-mechanics-browser-v1.js
+          grep -Fq 'seed-man-world-mechanics-browser-v3' site/public-route-patch/games/seed-man-platformer/world-mechanics-browser-v1.js
           grep -Fq 'seed-man-three-dynamic-platforms-v1' games/seed-man-platformer/src/render/three-world-dynamic.mjs
           grep -Fq 'Cannabis Fleet Battle' site/public-route-patch/projects/index.html
           grep -Fq 'Strain Showdown' site/public-route-patch/games/index.html
