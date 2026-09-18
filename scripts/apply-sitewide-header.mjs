@@ -77,9 +77,11 @@ function verifyDocument(source, rel) {
     if (count !== 1) report.failures.push(`${rel}: expected exactly one canonical ${label}; found ${count}`);
   }
   const canonicalNavTokens = [
-    ['href="/seeds/">Genetics</a>', 'Genetics'],
+    ['href="/" data-dtf-nav-group="home">Home</a>', 'Home'],
+    ['href="/seeds/">Seeds</a>', 'Seeds'],
     ['href="/learn/" data-dtf-nav-group="learn">Learn</a>', 'Learn'],
-    ['href="/tools/" data-dtf-nav-group="tools">Tools</a>', 'Tools'],
+    ['href="/courses/" data-dtf-nav-group="courses">Courses</a>', 'Courses'],
+    ['href="/tools/" data-dtf-nav-group="diagnostic">Diagnostic</a>', 'Diagnostic'],
     ['href="/games/">Games</a>', 'Games'],
     ['href="/community/">Community</a>', 'Community'],
     ['href="/shop/" data-dtf-nav-group="shop">Shop</a>', 'Shop'],
