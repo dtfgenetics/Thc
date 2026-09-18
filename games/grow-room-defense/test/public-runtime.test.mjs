@@ -4,6 +4,9 @@ import fs from 'node:fs';
 const canonical = JSON.parse(fs.readFileSync('games/grow-room-defense/data/ipm.json', 'utf8'));
 const html = fs.readFileSync('site/public-route-patch/games/grow-room-defense/index.html', 'utf8');
 const app = fs.readFileSync('site/public-route-patch/games/grow-room-defense/app.js', 'utf8');
+const runtime = fs.readFileSync('site/public-route-patch/games/grow-room-defense/runtime.mjs', 'utf8');
+const publicEngine = fs.readFileSync('site/public-route-patch/games/grow-room-defense/engine.mjs', 'utf8');
+const canonicalEngine = fs.readFileSync('games/grow-room-defense/src/engine.mjs', 'utf8');
 const accessibility = fs.readFileSync('site/public-route-patch/games/grow-room-defense/accessibility-v1.js', 'utf8');
 const baseCss = fs.readFileSync('site/public-route-patch/games/grow-room-defense/grow-room-defense.css', 'utf8');
 const visualCss = fs.readFileSync('site/public-route-patch/games/grow-room-defense/grow-room-defense-v2.css', 'utf8');
@@ -15,28 +18,31 @@ assert.match(html, /<script\s+src="\.\/accessibility-v1\.js"\s+defer><\/script>/
 assert.match(html, /accessibility-v1\.css/i, 'public page must load visible shortcut styling');
 assert.match(html, /Keyboard shortcuts 1 through 7 select tools in order/i, 'tool group must explain keyboard selection');
 assert.match(html, /grow-room-defense-v2\.css/i, 'public page must load the V2 tactical visual layer');
-assert.doesNotMatch(html, /type="module"/i, 'public page must not depend on ES-module serving');
 
 const embedded = html.match(/<script\s+id="grow-room-defense-data"\s+type="application\/json">([\s\S]*?)<\/script>/i);
 assert.ok(embedded, 'embedded defense data block missing');
 assert.deepEqual(JSON.parse(embedded[1]), canonical, 'embedded public defense data must exactly match canonical ipm.json');
 
-assert.doesNotMatch(app, /^\s*import\s/m, 'public runtime must not depend on browser imports');
-assert.doesNotMatch(app, /fetch\(['"]\.\/data\/ipm\.json/i, 'public runtime must not fetch IPM JSON at runtime');
-assert.match(app, /function readEmbeddedData\(/, 'runtime must read embedded defense data');
-assert.match(app, /function validateData\(/, 'runtime must validate embedded defense data');
-assert.match(app, /function createGame\(/, 'runtime must preserve the deterministic game engine');
-assert.match(app, /function applyAction\(/, 'runtime must preserve action resolution rules');
-assert.match(app, /function renderThreat\(active, laneId, tool, laneAlive\)/, 'threat rendering must know whether the bench is alive');
-assert.match(app, /!tool \|\| !laneAlive \|\| state\.status !== 'playing'/, 'dead bench threat buttons must be disabled');
-assert.match(app, /const laneAlive = lane\.health > 0/, 'lane render must derive targetability from health');
-assert.match(app, /button\.deploy-button\[data-lane\]/, 'bench click delegation must target deploy buttons explicitly');
-assert.match(app, /globalThis\.crypto\?\.getRandomValues/, 'random code generation must tolerate missing crypto APIs');
-assert.match(app, /function safeReplaceUrl\(/, 'history mutation must be guarded');
-assert.match(app, /navigator\.clipboard\?\.writeText/, 'share behavior must tolerate unavailable clipboard APIs');
-assert.match(app, /async function copyText\(/, 'share behavior must expose a clipboard fallback helper');
-assert.match(app, /document\.execCommand\?\.\('copy'\) === true/, 'share behavior must retain a legacy clipboard fallback');
-assert.match(app, /Copy failed\. Share defense code/, 'share failure must preserve the full manual challenge path');
+assert.equal(publicEngine, canonicalEngine, 'public engine.mjs must exactly match the canonical Grow Room Defense engine');
+assert.match(app, /import\('\.\/runtime\.mjs'\)/, 'app.js must delegate to runtime.mjs');
+assert.ok(app.length < 1500, 'app.js must remain a thin compatibility bootstrap');
+assert.match(runtime, /from '\.\/engine\.mjs';/, 'runtime must import the canonical public engine');
+assert.doesNotMatch(runtime, /fetch\(['"]\.\/data\/ipm\.json/i, 'runtime must not fetch IPM JSON at runtime');
+assert.match(runtime, /function readEmbeddedData\(/, 'runtime must read embedded defense data');
+assert.match(runtime, /function validateData\(/, 'runtime must validate embedded defense data');
+for (const forbidden of ['function createGame(', 'function applyAction(', 'function counterQuality(', 'function counterPower(', 'function spawnThreat(', 'function hash(', 'function clone(']) {
+  assert.equal(runtime.includes(forbidden), false, `runtime must not duplicate canonical rules: ${forbidden}`);
+}
+assert.match(runtime, /function renderThreat\(active, laneId, tool, laneAlive\)/, 'threat rendering must know whether the bench is alive');
+assert.match(runtime, /!tool \|\| !laneAlive \|\| state\.status !== 'playing'/, 'dead bench threat buttons must be disabled');
+assert.match(runtime, /const laneAlive = lane\.health > 0/, 'lane render must derive targetability from health');
+assert.match(runtime, /button\.deploy-button\[data-lane\]/, 'bench click delegation must target deploy buttons explicitly');
+assert.match(runtime, /globalThis\.crypto\?\.getRandomValues/, 'random code generation must tolerate missing crypto APIs');
+assert.match(runtime, /function safeReplaceUrl\(/, 'history mutation must be guarded');
+assert.match(runtime, /navigator\.clipboard\?\.writeText/, 'share behavior must tolerate unavailable clipboard APIs');
+assert.match(runtime, /async function copyText\(/, 'share behavior must expose a clipboard fallback helper');
+assert.match(runtime, /document\.execCommand\?\.\('copy'\) === true/, 'share behavior must retain a legacy clipboard fallback');
+assert.match(runtime, /Copy failed\. Share defense code/, 'share failure must preserve the full manual challenge path');
 
 assert.match(accessibility, /grow-room-defense-accessibility-v1/, 'accessibility layer must expose a stable version marker');
 assert.match(accessibility, /role', 'progressbar'/, 'plant health tracks must become semantic progressbars');
@@ -81,4 +87,4 @@ assert.equal(new Set(canonical.lanes.map((item) => item.id)).size, 3, 'lane IDs 
 assert.equal(new Set(canonical.threats.map((item) => item.id)).size, 8, 'threat IDs must remain unique');
 assert.equal(new Set(canonical.tools.map((item) => item.id)).size, 7, 'tool IDs must remain unique');
 
-console.log('Grow Room Defense public runtime, accessibility layer, mobile tool return, and V2 tactical visual-state regression checks passed.');
+console.log('Grow Room Defense canonical engine runtime, accessibility layer, mobile tool return, and V2 tactical visual-state regression checks passed.');
