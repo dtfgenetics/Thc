@@ -47,7 +47,7 @@ jobs:
           set -euo pipefail
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
-          grep -Fq 'data-dtf-layout="about-visual-v1"' site/wordpress/pages/about.html
+          grep -Fq 'data-dtf-layout="about-visual-v2"' site/wordpress/pages/about.html
           grep -Fq 'One brand. Four core experiences.' site/wordpress/pages/about.html
           grep -Fq 'data-dtf-layout="gallery-visual-v2"' site/wordpress/pages/gallery.html
           grep -Fq 'Approved visuals only.' site/wordpress/pages/gallery.html
