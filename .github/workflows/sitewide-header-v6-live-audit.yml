@@ -8,6 +8,7 @@ on:
     workflows:
       - Deploy DTFSeeds Public Suite via WordPress V2
       - Publish Canonical Sitewide Header V6
+      - Repair External Sitewide Shell V6
     types: [completed]
   pull_request:
     paths:
@@ -42,7 +43,9 @@ jobs:
           grep -Fq "['/courses/', 'Courses']" scripts/audit-sitewide-header-live.mjs
           grep -Fq "['/tools/', 'Diagnostic']" scripts/audit-sitewide-header-live.mjs
           grep -Fq 'site/deployment/public-apps.json' scripts/audit-sitewide-header-live.mjs
-          grep -Fq "key !== 'routePrefix'" scripts/audit-sitewide-header-live.mjs
+          grep -Fq "REGISTRY_ROUTE_KEYS = new Set(['route', 'candidateRoute', 'publicRoute', 'url'])" scripts/audit-sitewide-header-live.mjs
+          grep -Fq 'REGISTRY_ROUTE_KEYS.has(key)' scripts/audit-sitewide-header-live.mjs
+          ! grep -Fq "key !== 'routePrefix'" scripts/audit-sitewide-header-live.mjs
 
   audit:
     if: github.event_name != 'pull_request' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
