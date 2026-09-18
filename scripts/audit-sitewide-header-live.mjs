@@ -43,9 +43,11 @@ function hasNavLink(text, href, label) {
 }
 
 const CANONICAL_NAV = [
-  ['/seeds/', 'Genetics'],
+  ['/', 'Home'],
+  ['/seeds/', 'Seeds'],
   ['/learn/', 'Learn'],
-  ['/tools/', 'Tools'],
+  ['/courses/', 'Courses'],
+  ['/tools/', 'Diagnostic'],
   ['/games/', 'Games'],
   ['/community/', 'Community'],
   ['/shop/', 'Shop']
@@ -59,10 +61,8 @@ const REQUIRED = [
   { label: 'Healthy Cultivation', test: body => body.includes('Healthy Cultivation') }
 ];
 const OBSOLETE_PRIMARY = [
-  ['/', 'Home'],
-  ['/seeds/', 'Seeds'],
-  ['/courses/', 'Courses'],
-  ['/tools/', 'Diagnostic']
+  ['/seeds/', 'Genetics'],
+  ['/tools/', 'Tools']
 ];
 const seeds = new Set([
   '/', '/seeds/', '/learn/', '/courses/', '/tools/', '/games/', '/community/', '/shop/',
