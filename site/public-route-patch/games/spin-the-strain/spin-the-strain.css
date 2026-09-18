@@ -27,3 +27,16 @@ button:disabled,input:disabled{cursor:not-allowed;opacity:.58}
 @media(max-width:520px){.site-bar{padding:.8rem 1rem}.brand small{display:none}.game-shell{width:min(100% - 1rem,1240px);padding-top:.7rem}.hero,.wheel-card{border-radius:1rem}.hero{padding:1.3rem}.mode-tab{flex:1 1 9rem;min-height:48px}.segment-label{font-size:0;padding-left:1.35rem;width:40%}.segment-label::after{content:attr(data-short);font-size:.47rem;font-weight:950;letter-spacing:.04em}.wheel-stage{--wheel-size:min(92vw,480px)}.pointer{border-left-width:14px;border-right-width:14px;border-bottom-width:28px}.spin-button{width:92px;min-width:92px}.secondary-button,.primary-button{min-height:48px}.history-list{max-height:300px}.result-card{min-height:128px}.result-card::after{font-size:3.6rem}.rules-grid p{padding:.8rem}}
 @media(hover:none){.mode-tab:hover:not(:disabled),.spin-button:hover:not(:disabled),.secondary-button:hover:not(:disabled),.primary-button:hover:not(:disabled){transform:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.wheel,.result-card,.mode-tab,.secondary-button,.primary-button,.spin-button{transition:none!important;animation:none!important}.wheel-stage[aria-busy="true"] .pointer{animation:none!important}}
+
+@media(forced-colors:active){
+  .mode-tab,.spin-button,.secondary-button,.primary-button,.code-input,.control-card,.history-card,.rules-card,.wheel-card,.result-card{
+    border:1px solid ButtonText;
+  }
+  .mode-tab:focus-visible,.spin-button:focus-visible,.secondary-button:focus-visible,.primary-button:focus-visible,.code-input:focus-visible,.hub-link:focus-visible,.brand:focus-visible{
+    outline:3px solid Highlight;
+    outline-offset:3px;
+  }
+  .mode-tab[aria-pressed="true"],.result-card.revealed{
+    border-color:Highlight;
+  }
+}
