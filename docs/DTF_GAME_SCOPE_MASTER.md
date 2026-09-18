@@ -12,7 +12,7 @@ This file is the durable scope ledger for DTF Genetics games. A title should not
 
 ## Public playable catalog
 
-The current Game Hub exposes 25 playable browser games:
+The current Game Hub exposes 23 playable browser games:
 
 1. High IQ — Test Higher Cognition
 2. High Life: From Bagseed to Legacy
@@ -25,20 +25,18 @@ The current Game Hub exposes 25 playable browser games:
 9. Who Took It?
 10. Burn Buds
 11. Bud or Bluff
-12. THC U Know
-13. Kush Kings Chess
-14. Terpocalypse: Grow Room From Hell
-15. PhenoQuest: The Living Seed Vault
-16. Strain Match
-17. Grow Room Bingo / Bongwater Bingo
-18. Lost in the Terps
-19. Mystery Strain
-20. Spin the Strain
-21. Grow Room Defense
-22. Harvest Hustle
-23. Trichome Trials
-24. Pheno Draft
-25. High Lines
+12. Terpocalypse: Grow Room From Hell
+13. PhenoQuest: The Living Seed Vault
+14. Strain Match
+15. Grow Room Bingo / Bongwater Bingo
+16. Lost in the Terps
+17. Mystery Strain
+18. Spin the Strain
+19. Grow Room Defense
+20. Harvest Hustle
+21. Trichome Trials
+22. Pheno Draft
+23. High Lines
 
 ## Existing development projects
 
@@ -66,6 +64,8 @@ Their current ownership/status is recorded in `data/project-registry.json`; visi
 
 ## Built prototype not yet promoted
 
+- **THC U Know** — the 2–8 player server-authoritative card table is built, but the persistent Node/Socket.IO production origin and live multiplayer verification are still pending. It is intentionally excluded from the public playable count until those checks pass.
+- **Kush Kings Chess** — the room, spectator, chat, archive, and chess runtime is built around persistent Node/Postgres/Socket.IO services. It is intentionally excluded from the public playable count until live health plus multiplayer/mobile verification pass.
 - **Root Cause** — a tested browser vertical slice currently exists in this repository and currently remains outside the public Game Hub. It may be promoted, rebuilt, migrated, renamed, merged into another title, or otherwise changed when that serves current project direction. Public status must remain represented truthfully.
 
 ## Future concept bank
