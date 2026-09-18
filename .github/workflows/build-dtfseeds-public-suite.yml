@@ -100,6 +100,22 @@ jobs:
           test -s site/public-route-patch/games/grower-conversations/grower-conversations.css
           grep -Fq 'https://dtfseeds.com/games/grower-conversations/' site/public-route-patch/games/grower-conversations/index.html
 
+      - name: Validate Grow Room Defense browser game
+        run: |
+          set -euo pipefail
+          node games/grow-room-defense/scripts/validate-data.mjs
+          node games/grow-room-defense/test/engine.test.mjs
+          node games/grow-room-defense/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/grow-room-defense/app.js
+          node --check site/public-route-patch/games/grow-room-defense/runtime.mjs
+          node --check site/public-route-patch/games/grow-room-defense/engine.mjs
+          cmp games/grow-room-defense/src/engine.mjs site/public-route-patch/games/grow-room-defense/engine.mjs
+          test -s site/public-route-patch/games/grow-room-defense/index.html
+          test -s site/public-route-patch/games/grow-room-defense/grow-room-defense.css
+          test -s site/public-route-patch/games/grow-room-defense/grow-room-defense-v2.css
+          test -s site/public-route-patch/games/grow-room-defense/accessibility-v1.css
+          grep -Fq 'https://dtfseeds.com/games/grow-room-defense/' site/public-route-patch/games/grow-room-defense/index.html
+
       - name: Validate Seed Man v20 campaign
         run: |
           set -euo pipefail
