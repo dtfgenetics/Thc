@@ -50,6 +50,21 @@
   function saveSession(data){session=data;if(data)localStorage.setItem(SESSION_KEY,JSON.stringify(data));else localStorage.removeItem(SESSION_KEY);}
   function loadSession(){try{return JSON.parse(localStorage.getItem(SESSION_KEY)||'null')}catch{return null}}
   function inviteUrl(code=room?.code){const url=new URL(location.href);url.searchParams.set('room',code||'');return url.toString();}
+  async function copyText(value){
+    const text=String(value||'');
+    if(!text)return false;
+    try{
+      if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(text);return true;}
+    }catch{}
+    try{
+      const field=document.createElement('textarea');
+      field.value=text;field.setAttribute('readonly','');field.style.position='fixed';field.style.opacity='0';field.style.pointerEvents='none';
+      document.body.appendChild(field);field.select();field.setSelectionRange(0,text.length);
+      const copied=document.execCommand?.('copy')===true;
+      field.remove();
+      return copied;
+    }catch{return false;}
+  }
   function syncUrl(code){const url=new URL(location.href);if(code)url.searchParams.set('room',code);else url.searchParams.delete('room');history.replaceState(null,'',url);}
 
   async function request(action,options={}){
@@ -87,8 +102,8 @@
   function renderChat(){const nearBottom=els.chatMessages.scrollHeight-els.chatMessages.scrollTop-els.chatMessages.clientHeight<80;els.chatMessages.innerHTML=(room.chat||[]).map(m=>m.kind==='system'?`<div class="chat-line system">${esc(m.text)}</div>`:`<div class="chat-line"><b>${esc(m.name)}</b> ${esc(m.text)}</div>`).join('');if(nearBottom)els.chatMessages.scrollTop=els.chatMessages.scrollHeight;}
   function updateTimer(){if(!room||!['voting','reveal'].includes(room.status))return;const seconds=room.status==='voting'?room.voteSeconds:room.revealSeconds;const end=room.status==='voting'?room.voteEndsAt:room.revealEndsAt;if(end===null){els.timerText.textContent='∞';els.timerFill.style.transform='scaleX(1)';return}const total=Math.max(1,seconds*1000);const left=Math.max(0,end-(Date.now()+clockOffset));els.timerText.textContent=String(Math.ceil(left/1000));els.timerFill.style.transform=`scaleX(${Math.max(0,Math.min(1,left/total))})`;}
 
-  async function shareRoom(){const url=inviteUrl();try{if(navigator.share){await navigator.share({title:'Bud or Bluff',text:`Join my Bud or Bluff room ${room.code}`,url});}else{await navigator.clipboard.writeText(url);showError(els.roomError,'Invite link copied.')}}catch(err){if(err.name!=='AbortError')showError(els.roomError,'Could not share the invite.')}}
-  async function copyRoom(){try{await navigator.clipboard.writeText(inviteUrl());showError(els.roomError,'Invite link copied.');audioPulse('tap')}catch{showError(els.roomError,'Could not copy the invite.')}}
+  async function shareRoom(){const url=inviteUrl();try{if(navigator.share){await navigator.share({title:'Bud or Bluff',text:`Join my Bud or Bluff room ${room.code}`,url});}else{const copied=await copyText(url);showError(els.roomError,copied?'Invite link copied.':'Could not share the invite.')}}catch(err){if(err.name!=='AbortError')showError(els.roomError,'Could not share the invite.')}}
+  async function copyRoom(){const copied=await copyText(inviteUrl());showError(els.roomError,copied?'Invite link copied.':'Copy failed. Use Share invite or copy the room code.');if(copied)audioPulse('tap')}
   async function kickPlayer(id){try{room=await request('kick',{method:'POST',body:{playerId:id}});lastRevision=-1;render()}catch(err){showError(els.roomError,err.message)}}
   async function hostAction(action,body={}){try{room=await request(action,{method:'POST',body});lastRevision=-1;clockOffset=(room.serverNow||Date.now())-Date.now();render()}catch(err){showError(els.roomError,err.message)}}
 
@@ -96,7 +111,7 @@
   els.createForm.addEventListener('submit',async e=>{e.preventDefault();setHidden(els.homeError,true);try{const auth=await request('create',{method:'POST',body:{name:els.createName.value,rounds:Number(els.roundCount.value),voteSeconds:24,revealSeconds:9,autoAdvance:true}});await enterSession(auth)}catch(err){showError(els.homeError,err.message)}});
   els.joinForm.addEventListener('submit',async e=>{e.preventDefault();setHidden(els.homeError,true);try{const auth=await request('join',{method:'POST',body:{name:els.joinName.value,code:els.joinCode.value.trim().toUpperCase()}});await enterSession(auth)}catch(err){showError(els.homeError,err.message)}});
   els.joinCode.addEventListener('input',()=>{els.joinCode.value=els.joinCode.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6)});
-  els.copyCode.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(room.code);const old=room.code;els.copyCode.textContent='COPIED';setTimeout(()=>{if(room)els.copyCode.textContent=old},900);audioPulse('tap')}catch{}});
+  els.copyCode.addEventListener('click',async()=>{const copied=await copyText(room.code);if(copied){const old=room.code;els.copyCode.textContent='COPIED';setTimeout(()=>{if(room)els.copyCode.textContent=old},900);audioPulse('tap')}else{showError(els.roomError,'Copy failed. Press and hold the room code to share it manually.')}});
   els.start.addEventListener('click',()=>hostAction('start'));
   document.querySelectorAll('.vote-button').forEach(btn=>btn.addEventListener('click',async()=>{const vote=btn.dataset.vote;document.querySelectorAll('.vote-button').forEach(b=>b.disabled=true);audioPulse(vote==='BUD'?'bud':'bluff');try{room=await request('vote',{method:'POST',body:{vote,double:els.doubleToggle.checked}});lastRevision=-1;render()}catch(err){showError(els.roomError,err.message)}finally{document.querySelectorAll('.vote-button').forEach(b=>b.disabled=false)}}));
   els.next.addEventListener('click',()=>hostAction('next'));els.hostReveal.addEventListener('click',()=>hostAction('reveal'));els.lockLobby.addEventListener('click',()=>hostAction('lock'));els.saveSettings.addEventListener('click',()=>hostAction('settings',{rounds:Number(els.settingRounds.value),voteSeconds:Number(els.settingVote.value),revealSeconds:Number(els.settingReveal.value),autoAdvance:els.settingAuto.checked}));
