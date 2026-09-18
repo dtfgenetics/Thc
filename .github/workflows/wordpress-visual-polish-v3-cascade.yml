@@ -60,7 +60,7 @@ jobs:
           if grep -Fqi 'dtf-visual-polish-v3' "$home"; then
             grep -Fqi 'dtf-v3-spotlight' "$home"
             grep -Fqi 'data-dtf-shell="header-v6"' "$home"
-            grep -Fqi 'data-dtf-sitewide-header="canonical-six-v1"' "$home"
+            grep -Fqi 'data-dtf-sitewide-header="canonical-eight-v1"' "$home"
             grep -Fqi 'id="dtf-sitewide-ux-polish-v1"' "$home"
             node - "$home" "$header" <<'NODE'
           const fs = require('node:fs');
