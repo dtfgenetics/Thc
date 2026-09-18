@@ -116,6 +116,11 @@ assert.match(combatSource, /archetype,x,y,minX,maxX,width,height,speed,health,ma
 assert.match(enemyAttackSource, /function syncCombatState\(\)/, 'enemy attacks must synchronize to visible combat enemies');
 assert.match(enemyAttackSource, /if\(!enemy\.combatSynced\)moveAttacker/, 'independent enemy movement must only be a degraded fallback');
 assert.match(enemyAttackSource, /function applyPlayerHit\(/, 'enemy attacks must own real player damage handling');
+assert.match(enemyAttackSource, /RESPAWN_ATTACK_GRACE = 0\.65/, 'checkpoint recovery must pause hostile attack generation beyond the base respawn invulnerability');
+assert.match(enemyAttackSource, /function clearTransientAttacks\(/, 'checkpoint recovery must clear hostile projectiles, hitboxes, and telegraphs');
+assert.match(enemyAttackSource, /seedman:player-respawned/, 'enemy attack runtime must listen for every checkpoint recovery path');
+assert.match(enemyAttackSource, /recoveryGrace>0/, 'attack simulation must honor the recovery grace window');
+assert.match(enemyAttackSource, /recoveryGrace\}\)\}\);/, 'enemy attack diagnostics must expose recovery grace state');
 assert.match(enemyAttackSource, /overlapsRect\(enemy,next\).*applyPlayerHit/s, 'direct enemy contact must damage Seed Man');
 assert.match(enemyAttackSource, /seedman:player-defeated/, 'zero health must emit a deterministic knockout event');
 assert.match(playerStateSource, /HEALTH_VERSION='seed-man-health-v1'/, 'browser player state must expose the health contract');

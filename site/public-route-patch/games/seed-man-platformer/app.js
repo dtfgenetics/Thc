@@ -84,6 +84,13 @@ function respawn(player, config) {
   player.deaths += 1;
   player.finishBlocked = false;
   player.state = 'hurt';
+  if (typeof window !== 'undefined' && typeof CustomEvent === 'function') {
+    window.dispatchEvent(new CustomEvent('seedman:player-respawned', { detail: {
+      checkpointId: player.checkpoint?.id || 'start',
+      deaths: player.deaths,
+      levelId: typeof level !== 'undefined' ? (level?.id || '') : ''
+    } }));
+  }
 }
 
 function pickupRequirement(level) {
