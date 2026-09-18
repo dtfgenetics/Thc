@@ -358,7 +358,7 @@
       "repository": "dtfgenetics/Thc-rpg",
       "runtime": "static-es-modules",
       "status": "release-candidate",
-      "notes": "Canonical source remains dtfgenetics/Thc-rpg at pinned revision de6c26d9073d9154bbcade43b64768cf6a7ba2a0. The 2.1.0 six-chapter campaign retains deterministic phenotype variation, Keeper selection/cutting progression, Zestberry trial, save v6 compatibility, guarded gameplay shortcuts, deterministic UI validation, visitor-only build, and release validation. DTFSeeds central packaging now rebuilds this exact pinned revision into /games/thc-rpg/ and records the SHA in dtf-build.json. Exact post-deploy live-route verification remains required before production-ready promotion.",
+      "notes": "Canonical code remains in dtfgenetics/Thc-rpg. Revision de6c26d9073d9154bbcade43b64768cf6a7ba2a0 is the green 2.1.0 release-candidate source after production launch-screen, compact-control and forced-color polish. The six-chapter campaign retains deterministic phenotype variation, Keeper selection/cutting progression, Zestberry trial, save v6 compatibility, guarded gameplay shortcuts, deterministic shipped-UI validation, visitor-only build, and release validation. Central packaging and exact post-deploy live-route verification remain required before production-ready promotion.",
       "route": "/games/thc-rpg/",
       "build": "npm test && npm run validate:ui && npm run build && npm run validate:release",
       "machineData": {
@@ -399,7 +399,7 @@
       "repository": "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple",
       "runtime": "static-phaser",
       "status": "ready-to-package",
-      "notes": "Canonical source remains dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple at pinned revision b1cbf9b9627586b7277813b6a7c6f85a98830d58. The green 0.4.1 five-region campaign includes 10 relic seeds, save v5, separate autosave/safe-checkpoint recovery, deterministic campaign/content/input/storage/solvability tests, shipped UI-contract validation, TypeScript/Vite build, and release validation. DTFSeeds central packaging now rebuilds this exact pinned revision into /games/ganjumanji/ and records the SHA in dtf-build.json. Exact post-deploy live-route verification remains required before production-ready promotion.",
+      "notes": "Canonical code remains in the standalone Ganjumanji repository. Revision b1cbf9b9627586b7277813b6a7c6f85a98830d58 is the green 0.4.1 five-region production candidate with 10 relic seeds, save v5, separate autosave/safe-checkpoint recovery, deterministic campaign/content/input/storage/solvability tests, shipped UI-contract validation, TypeScript/Vite build, release validation, current GitHub Actions CI, and production artifact generation. DTFSeeds packaging must rebuild this exact pinned revision and run validate:ui before promotion. Exact post-deploy live-route verification remains required before production-ready status.",
       "route": "/games/ganjumanji/",
       "build": "npm test && npm run validate:ui && npm run build && npm run validate:release",
       "machineData": {
