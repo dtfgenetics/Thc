@@ -1,0 +1,61 @@
+name: Verify THC RPG Production
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - scripts/verify-thc-rpg-live.mjs
+      - .github/workflows/verify-thc-rpg-production.yml
+      - site/public-route-patch/games/thc-rpg/source-revision.txt
+      - .github/workflows/build-dtfseeds-public-suite.yml
+  workflow_run:
+    workflows: ["Deploy DTFSeeds Public Suite via WordPress V2"]
+    types: [completed]
+  schedule:
+    - cron: '47 9 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-thc-rpg-production-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout verification source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
+          persist-credentials: false
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          package-manager-cache: false
+
+      - name: Validate live audit script
+        run: node --check scripts/verify-thc-rpg-live.mjs
+
+      - name: Verify live THC RPG release
+        env:
+          SITE: https://dtfseeds.com
+        run: node scripts/verify-thc-rpg-live.mjs
+
+      - name: Summarize verification
+        if: always()
+        run: |
+          {
+            echo '## THC RPG production verification'
+            echo
+            echo '- Route: https://dtfseeds.com/games/thc-rpg/'
+            echo '- Requires the exact pinned standalone source revision and 2.1.0 release manifest.'
+            echo '- Requires six-chapter campaign HTML plus local ES-module runtime assets.'
+            echo '- Protects 44px touch targets, safe-area controls, reduced motion, forced colors, and save v6.'
+            echo '- Runs after successful public-suite deployments, on relevant pull requests, on demand, and daily.'
+          } >> "$GITHUB_STEP_SUMMARY"
