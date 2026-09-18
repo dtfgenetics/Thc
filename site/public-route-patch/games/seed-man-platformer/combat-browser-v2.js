@@ -21,6 +21,7 @@
   let projectiles=[];
   let activePhenotype=null;
   let phenotypeRemaining=0;
+  let unlockedPhenotypes=new Set(['plant']);
   let weaponCooldown=0;
   let abilityCooldown=0;
   let actionPose=null;
@@ -38,6 +39,7 @@
   const overlap=(a,b)=>a.x<b.x+b.width&&a.x+a.width>b.x&&a.y<b.y+b.height&&a.y+a.height>b.y;
   const runtime=()=>window.__SEED_MAN_V20_ENEMY_RUNTIME__;
   const currentForm=()=>activePhenotype||'plant';
+  const levelUsesPhenotypeCycle=()=>{try{return typeof level!=='undefined'&&Boolean(level?.mechanics?.includes?.('phenotype-cycle'));}catch{return false;}};
 
   function setActionPose(pose,seconds){
     actionPose=pose;
@@ -127,11 +129,34 @@
 
   function setNotice(text,seconds=1.8){notice={text,until:simTime+seconds};}
 
+  function activatePhenotype(form,{reason='PHENOTYPE ABSORBED',seconds=3}={}) {
+    const def=PHENOTYPES[form];
+    if(!def)return false;
+    unlockedPhenotypes.add(form);
+    activePhenotype=form;
+    phenotypeRemaining=PHENOTYPE_DURATION;
+    setNotice(`${reason} · ${def.label.toUpperCase()} · 30s`,seconds);
+    window.dispatchEvent(new CustomEvent('seedman:phenotype-activated',{detail:{form,reason,levelId:activeLevelId,duration:PHENOTYPE_DURATION}}));
+    return true;
+  }
+
+  function handleBossPhenotypeCycle(weakness,phase) {
+    if(!levelUsesPhenotypeCycle()||weakness==='plant')return false;
+    if(unlockedPhenotypes.has(weakness)){
+      activatePhenotype(weakness,{reason:`PHASE ${phase} PHENOTYPE RESTORED`,seconds:2.8});
+      window.dispatchEvent(new CustomEvent('seedman:phenotype-cycle',{detail:{boss:'blight-king',phase,weakness,restored:true}}));
+      return true;
+    }
+    setNotice(`BLIGHT KING PHASE ${phase} · ABSORB ${String(weakness).toUpperCase()} CARRIER`,2.8);
+    window.dispatchEvent(new CustomEvent('seedman:phenotype-cycle',{detail:{boss:'blight-king',phase,weakness,restored:false}}));
+    return true;
+  }
+
   function resetCombat(){
     activeLevelId=typeof level!=='undefined'?(level?.id||''):'';
     const factory=runtime()?.buildEncounter;
     enemies=typeof factory==='function'&&level?factory(level).map((enemy,index)=>({...enemy,maxHealth:enemy.health,dir:index%2?-1:1,defeated:false,hitFlash:0,freeze:0,burn:0,burnTick:0.5,burnPhenotype:null,baseY:enemy.y})):[];
-    projectiles=[];activePhenotype=null;phenotypeRemaining=0;weaponCooldown=0;abilityCooldown=0;actionPose=null;actionPoseRemaining=0;facing=1;simTime=0;defeated=0;stomps=0;
+    projectiles=[];activePhenotype=null;phenotypeRemaining=0;unlockedPhenotypes=new Set(['plant']);weaponCooldown=0;abilityCooldown=0;actionPose=null;actionPoseRemaining=0;facing=1;simTime=0;defeated=0;stomps=0;
     if(level?.boss?.id==='blight-king')setNotice('Blight King · weakness cycle: Plant → Fire → Electric → Ice',3.4);
     else if(level)setNotice('Seed Slinger ready · defeat phenotype carriers for 30s powers',2.8);
     syncHud();
@@ -174,7 +199,8 @@
       document.documentElement.dataset.seedManFinalBossPhase=String(boss.phase);
       document.documentElement.dataset.seedManFinalBossWeakness=weakness;
       if(boss.phase!==priorPhase){
-        setNotice(`BLIGHT KING PHASE ${boss.phase} · WEAKNESS: ${weakness.toUpperCase()}`,2.8);
+        const cycleHandled=handleBossPhenotypeCycle(weakness,boss.phase);
+        if(!cycleHandled)setNotice(`BLIGHT KING PHASE ${boss.phase} · WEAKNESS: ${weakness.toUpperCase()}`,2.8);
         window.dispatchEvent(new CustomEvent('seedman:boss-phase',{detail:{boss:'blight-king',phase:boss.phase,weakness}}));
       }
     }
@@ -191,8 +217,7 @@
     defeated+=1;
     syncBossState(enemy);
     if(enemy.phenotype&&PHENOTYPES[enemy.phenotype]){
-      activePhenotype=enemy.phenotype;phenotypeRemaining=PHENOTYPE_DURATION;
-      setNotice(`PHENOTYPE ABSORBED · ${PHENOTYPES[enemy.phenotype].label.toUpperCase()} · 30s`,3);
+      activatePhenotype(enemy.phenotype);
     }else if(enemy.role==='boss') setNotice(`${enemy.name} defeated · exit unlocked`,2.5);
     else setNotice(`${enemy.name} defeated`,1.1);
     syncHud();
@@ -380,6 +405,8 @@
       activePhenotype,
       phenotypeForm:currentForm(),
       phenotypeRemaining,
+      unlockedPhenotypes:[...unlockedPhenotypes],
+      phenotypeCycleEnabled:levelUsesPhenotypeCycle(),
       actionPose,
       actionPoseRemaining,
       finalBossWeakness:blightWeakness(),
