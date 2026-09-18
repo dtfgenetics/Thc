@@ -284,6 +284,33 @@ function replaceChallengeUrl() {
   try { globalThis.history?.replaceState?.(null, '', challengeUrl()); } catch { /* optional browser feature */ }
 }
 
+async function copyText(value) {
+  const text = String(value || '');
+  if (!text) return false;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {}
+  try {
+    const field = document.createElement('textarea');
+    field.value = text;
+    field.setAttribute('readonly', '');
+    field.style.position = 'fixed';
+    field.style.opacity = '0';
+    field.style.pointerEvents = 'none';
+    document.body.append(field);
+    field.select();
+    field.setSelectionRange(0, text.length);
+    const copied = document.execCommand?.('copy') === true;
+    field.remove();
+    return copied;
+  } catch {
+    return false;
+  }
+}
+
 function setCode(value) {
   const normalized = normalizeSceneCode(value);
   ui.code.value = normalized;
@@ -603,13 +630,10 @@ ui.newScene.addEventListener('click', () => resetExperience(randomCode()));
 ui.share.addEventListener('click', async () => {
   const url = challengeUrl();
   const text = `High Lines · ${currentScene().title} · code ${state.code}\n${url}`;
-  try {
-    if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
-    await navigator.clipboard.writeText(text);
-    ui.announce.textContent = 'High Lines scene challenge copied.';
-  } catch {
-    ui.announce.textContent = `Share scene code ${state.code}: ${url}`;
-  }
+  const copied = await copyText(text);
+  ui.announce.textContent = copied
+    ? 'High Lines scene challenge copied.'
+    : `Copy failed. Share scene code ${state.code}: ${url}`;
 });
 
 function shortcutTarget(target) {
