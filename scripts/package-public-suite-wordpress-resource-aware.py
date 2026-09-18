@@ -38,7 +38,7 @@ for relative in ('tools/index.html', 'games/index.html', 'projects/index.html'):
     html = candidate.read_text(errors='replace')
     for marker in (
         'data-dtf-shell="header-v6"',
-        'data-dtf-sitewide-header="canonical-six-v1"',
+        'data-dtf-sitewide-header="canonical-eight-v1"',
         'id="dtf-sitewide-header-v6-script"',
         'id="dtf-responsive-layout-v1"',
         'id="dtf-sitewide-ux-polish-v1"',
