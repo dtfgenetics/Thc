@@ -257,7 +257,7 @@ jobs:
               echo "Game route returned implausibly small body: $route" >&2
               exit 1
             fi
-            if [[ "$route" != "/games/" ]] && grep -Fqi '25 playable browser games' "$body"; then
+            if [[ "$route" != "/games/" ]] && grep -Fqi '23 playable browser games' "$body"; then
               echo "Game route appears to be serving the Game Hub instead of its own application: $route" >&2
               exit 1
             fi
@@ -265,7 +265,7 @@ jobs:
           done < "$RUNNER_TEMP/public-game-routes.txt"
 
           hub="$(curl -fsSL --retry 5 --retry-delay 5 -H 'Cache-Control: no-cache, no-store, max-age=0' "https://dtfseeds.com/games/?dtf_games_deploy=${GITHUB_RUN_ID}")"
-          grep -Fqi '25 playable browser games' <<<"$hub"
+          grep -Fqi '23 playable browser games' <<<"$hub"
 
       - name: Record deployed revision
         shell: bash
