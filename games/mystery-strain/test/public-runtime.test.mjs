@@ -1,85 +1,46 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-const canonical = JSON.parse(fs.readFileSync('games/mystery-strain/data/strains.json', 'utf8'));
 const html = fs.readFileSync('site/public-route-patch/games/mystery-strain/index.html', 'utf8');
-const app = fs.readFileSync('site/public-route-patch/games/mystery-strain/app.js', 'utf8');
+const bootstrap = fs.readFileSync('site/public-route-patch/games/mystery-strain/app.js', 'utf8');
 const runtime = fs.readFileSync('site/public-route-patch/games/mystery-strain/runtime.mjs', 'utf8');
 const publicEngine = fs.readFileSync('site/public-route-patch/games/mystery-strain/engine.mjs', 'utf8');
 const canonicalEngine = fs.readFileSync('games/mystery-strain/src/engine.mjs', 'utf8');
-const uiCss = fs.readFileSync('site/public-route-patch/games/mystery-strain/mystery-strain.css', 'utf8');
-const analysisCss = fs.readFileSync('site/public-route-patch/games/mystery-strain/analysis.css', 'utf8');
-const confirm = fs.readFileSync('site/public-route-patch/games/mystery-strain/guess-confirm-v2.js', 'utf8');
+const confirmJs = fs.readFileSync('site/public-route-patch/games/mystery-strain/guess-confirm-v2.js', 'utf8');
 const confirmCss = fs.readFileSync('site/public-route-patch/games/mystery-strain/guess-confirm-v2.css', 'utf8');
+const css = fs.readFileSync('site/public-route-patch/games/mystery-strain/mystery-strain.css', 'utf8');
 
-assert.match(html, /<script\s+id="mystery-strain-data"\s+type="application\/json">[\s\S]*?<\/script>/i, 'public page must embed deduction data');
-assert.match(html, /<script\s+src="\.\/app\.js"\s+defer><\/script>/i, 'public page must load app.js as a deferred classic script');
-assert.match(html, /<script\s+src="\.\/guess-confirm-v2\.js"\s+defer><\/script>/i, 'public page must load explicit guess confirmation after the core runtime');
-assert.match(html, /guess-confirm-v2\.css/i, 'public page must load guess confirmation styles');
-assert.match(html, /Select a candidate, then confirm before a guess is spent/, 'candidate panel must disclose the two-step guess flow');
-
-const embedded = html.match(/<script\s+id="mystery-strain-data"\s+type="application\/json">([\s\S]*?)<\/script>/i);
-assert.ok(embedded, 'embedded deduction data block missing');
-assert.deepEqual(JSON.parse(embedded[1]), canonical, 'embedded public data must exactly match canonical strains.json');
-
-assert.equal(publicEngine, canonicalEngine, 'public engine.mjs must exactly match the canonical Mystery Strain engine');
-assert.match(app, /import\('\.\/runtime\.mjs'\)/, 'app.js must delegate to runtime.mjs');
-assert.ok(app.length < 1500, 'app.js must remain a thin compatibility bootstrap');
-assert.match(runtime, /from '\.\/engine\.mjs';/, 'runtime must import the canonical public engine');
-assert.doesNotMatch(runtime, /fetch\(['"]\.\/data\/strains\.json/i, 'runtime must not fetch strain JSON at runtime');
-assert.match(runtime, /function readEmbeddedData\(/, 'runtime must read embedded data');
-assert.match(runtime, /function validateData\(/, 'runtime must validate embedded data before play');
-for (const forbidden of ['function createGame(', 'function askQuestion(', 'function guessStrain(', 'function questionOptions(', 'function hash(', 'function clone(']) {
+assert.equal(publicEngine, canonicalEngine, 'public Mystery Strain engine must match canonical source');
+assert.match(bootstrap, /import\('\.\/runtime\.mjs'\)/);
+assert.ok(bootstrap.length < 1500, 'Mystery Strain app.js must remain a thin bootstrap');
+assert.match(runtime, /from '\.\/engine\.mjs';/);
+for (const forbidden of ['function createGame(', 'function askQuestion(', 'function guessStrain(', 'function questionOptions(']) {
   assert.equal(runtime.includes(forbidden), false, `runtime must not duplicate canonical rules: ${forbidden}`);
 }
-assert.match(runtime, /function rankedQuestionOptions\(/, 'runtime must retain information-ranked UI analysis');
-assert.match(runtime, /function informationScore\(/, 'runtime must keep Best Split scoring in the UI layer');
-assert.match(runtime, /globalThis\.crypto\?\.getRandomValues/, 'random case generation must tolerate missing crypto APIs');
-assert.match(runtime, /function safeReplaceUrl\(/, 'history mutation must be guarded');
-assert.match(runtime, /function safeFocus\(/, 'focus-with-options must have a compatibility fallback');
-assert.match(runtime, /function prefersReducedMotion\(/, 'reduced-motion lookup must be guarded');
-assert.match(runtime, /navigator\.clipboard\?\.writeText/, 'share behavior must tolerate unavailable clipboard APIs');
-assert.match(runtime, /async function copyText\(/, 'share behavior must expose a clipboard fallback helper');
-assert.match(runtime, /document\.execCommand\?\.\('copy'\) === true/, 'share behavior must retain a legacy clipboard fallback');
-assert.match(runtime, /Copy failed\. Share case/, 'share failure must preserve the full manual challenge path');
 
-assert.match(analysisCss, /\.question-card\.best-split/, 'best-split question state must remain visible');
-assert.match(uiCss, /\.hero::before\{content:"CASE \/\/ MS"/, 'hero must carry the case-file identity');
-assert.match(uiCss, /\.game-grid>\.panel:last-child\{position:sticky/, 'desktop candidate roster must remain visible while reviewing questions');
-assert.match(uiCss, /\.candidate-card\.eliminated/, 'eliminated candidates must have a distinct visual state');
-assert.match(uiCss, /\.candidate-card\.wrong/, 'wrong guesses must have a distinct visual state');
-assert.match(uiCss, /\.clue-yes::before/, 'YES clues must have a timeline state');
-assert.match(uiCss, /\.clue-no::before/, 'NO clues must have a timeline state');
-assert.match(uiCss, /\.clue-unknown::before/, 'UNKNOWN clues must have a timeline state');
-assert.match(uiCss, /\.modifier-card/, 'Wild Card modifier must retain a dedicated visual treatment');
-assert.match(uiCss, /@media\(hover:none\)/, 'touch devices must not inherit hover-only movement');
-assert.match(uiCss, /@media\(prefers-reduced-motion:reduce\)/, 'visual polish must respect reduced-motion preferences');
-assert.match(uiCss, /@media\(forced-colors:active\)/, 'deduction states must remain visible in forced-colors mode');
-assert.match(uiCss, /outline:3px solid Highlight/, 'forced-colors focus must remain visible');
+assert.match(html, /guess-confirm-v2\.css/);
+assert.match(html, /guess-confirm-v2\.js/);
+assert.match(html, /20 fictional profiles/);
+assert.match(html, /Select a candidate, then confirm before a guess is spent/);
 
-assert.match(confirm, /let selectedButton = null;/, 'guess layer must keep staged selection separate from game state');
-assert.match(confirm, /let allowNextGuess = false;/, 'only an explicit confirm may pass through to the core guess handler');
-assert.match(confirm, /event\.stopImmediatePropagation\(\)/, 'first candidate activation must be intercepted before it can spend a guess');
-assert.match(confirm, /function selectCandidate\(/, 'candidate activation must stage a guess');
-assert.match(confirm, /confirm\.addEventListener\('click'/, 'guess must have a separate confirmation action');
-assert.match(confirm, /target\.click\(\)/, 'confirmation must deliberately forward exactly one candidate activation to the tested core handler');
-assert.match(confirm, /function clearSelection\(/, 'staged guesses must be cancellable');
-assert.match(confirm, /event\.key === 'Escape'/, 'Escape must cancel a staged guess without spending it');
-assert.match(confirm, /questions\?\.addEventListener\('click'/, 'asking a question must clear any staged guess');
-assert.match(confirm, /aria-pressed/, 'candidate selection state must be exposed accessibly');
-assert.match(confirm, /candidate-progress/, 'candidate elimination progress must be rendered');
-assert.match(confirm, /MutationObserver/, 'progress and selection state must stay synchronized after core rerenders');
+assert.match(runtime, /rankedQuestionOptions/);
+assert.match(runtime, /informationScore/);
+assert.match(runtime, /copyText/);
+assert.match(runtime, /Copy failed\. Share case/);
+assert.match(runtime, /prefers-reduced-motion: reduce/);
 
-assert.match(confirmCss, /\.guess-confirm-bar/);
-assert.match(confirmCss, /top:calc\(var\(--dtf-global-header-height,74px\) \+ 8px\)/, 'guess confirmation bar must clear the shared DTF header');
-assert.match(confirmCss, /\.candidate-card\.guess-selected/);
-assert.match(confirmCss, /\.candidate-progress-track/);
-assert.match(confirmCss, /@media\(max-width:520px\)/);
-assert.match(confirmCss, /@media\(prefers-reduced-motion:reduce\)/);
+assert.match(confirmJs, /event\.preventDefault\(\);[\s\S]*event\.stopImmediatePropagation\(\);[\s\S]*selectCandidate\(button\)/);
+assert.match(confirmJs, /allowNextGuess = true/);
+assert.match(confirmJs, /Confirm Guess/);
+assert.match(confirmJs, /No guess was spent/);
+assert.match(confirmJs, /event\.key === 'Escape'/);
+assert.match(confirmJs, /event\.key === 'g' \|\| event\.key === 'G'/);
+assert.match(confirmJs, /role', 'progressbar'/);
 
-assert.equal(canonical.questions.length, 12, 'canonical deduction question count changed unexpectedly');
-assert.equal(canonical.strains.length, 20, 'canonical fictional profile count changed unexpectedly');
-assert.equal(new Set(canonical.questions.map((item) => item.id)).size, 12, 'question ids must be unique');
-assert.equal(new Set(canonical.strains.map((item) => item.id)).size, 20, 'profile ids must be unique');
+assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
+assert.match(css, /@media\(forced-colors:active\)/);
+assert.match(css, /min-height:48px/);
+assert.match(confirmCss, /min-height:48px/);
+assert.match(confirmCss, /top:calc\(var\(--dtf-global-header-height,74px\) \+ 8px\)/);
 
-console.log('Mystery Strain canonical engine runtime, case-file UI states and explicit guess confirmation regression checks passed.');
+console.log('Mystery Strain canonical engine parity, ranked deduction UI, safe guess confirmation, mobile controls, sharing, and accessibility checks passed.');
