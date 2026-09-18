@@ -8,8 +8,8 @@
   display: none !important;
 }
 
-/* Preview HIT controls are developer/demo helpers, not player actions. */
-.controls-card .button-row > button:last-child,
+/* Restart remains hidden in the compact production HUD to prevent accidental
+   local-session resets. Setup and mode-selection controls must stay visible. */
 .board-button-row > button:nth-child(2) {
   display: none !important;
 }
