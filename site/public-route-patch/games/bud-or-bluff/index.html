@@ -64,7 +64,7 @@
           </div>
 
           <div id="playStage" class="game-stage hidden">
-            <div class="round-meta"><span id="roundLabel">Round 1 / 12</span><div class="timer-track" aria-hidden="true"><i id="timerFill"></i></div><strong id="timerText" aria-live="polite">24</strong></div>
+            <div class="round-meta"><span id="roundLabel">Round 1 / 12</span><div class="timer-track" aria-hidden="true"><i id="timerFill"></i></div><strong id="timerText" role="timer" aria-label="Seconds remaining">24</strong></div>
             <article id="strainCard" class="strain-card">
               <div class="card-noise"></div>
               <div class="card-top"><span id="difficulty">Hard</span><span id="voteCount">0 / 0 locked</span></div>
@@ -89,7 +89,7 @@
 
         <aside class="sidebar">
           <section class="panel score-panel"><div class="panel-title"><h3>Scoreboard</h3><span id="playerCounter">1 / 10</span></div><div id="scoreboard" class="scoreboard"></div></section>
-          <section class="panel chat-panel"><div class="panel-title"><h3>Room chat</h3><span class="live-dot">Live</span></div><div id="chatMessages" class="chat-messages" aria-live="polite"></div><form id="chatForm" class="chat-form"><input id="chatInput" maxlength="240" placeholder="Say something…" autocomplete="off" /><button type="submit" aria-label="Send message">Send</button></form></section>
+          <section class="panel chat-panel"><div class="panel-title"><h3>Room chat</h3><span class="live-dot">Live</span></div><div id="chatMessages" class="chat-messages"></div><p id="chatAnnounce" class="sr-only" aria-live="polite" aria-atomic="true"></p><form id="chatForm" class="chat-form"><input id="chatInput" maxlength="240" placeholder="Say something…" autocomplete="off" /><button type="submit" aria-label="Send message">Send</button></form></section>
         </aside>
       </div>
       <div id="roomError" class="toast hidden" role="alert"></div>
