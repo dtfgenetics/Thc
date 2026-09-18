@@ -62,7 +62,7 @@ const footerStyle=`<style id="dtf-shared-footer-v6-style">
 </style>`;
 const footerBrandLink=`<a class="dtf-footer-brand" href="/" aria-label="DTF Genetics home"><img src="${esc(brand.source_url)}" alt="DTF Genetics cannabis leaf" width="50" height="50"><span><strong>DTF Genetics</strong><small>Dream the Future</small></span></a>`;
 const header=getWordPressSitewideHeaderBlock(`${responsiveLayoutStyle}${uxPolishStyle}${footerStyle}`);
-for(const token of [SITEWIDE_HEADER_MARKER,'overflow-x:auto','canonical-eight-v1','>Home</a>','>Seeds</a>','>Courses</a>','>Diagnostic</a>']){
+for(const token of [SITEWIDE_HEADER_MARKER,'overflow-x:auto','canonical-six-v1','>Home</a>','>Seeds</a>','>Courses</a>','>Diagnostic</a>']){
   if(!header.includes(token)) throw new Error(`Generated shared header is missing required compatibility token: ${token}`);
 }
 const footer=`<!-- wp:html --><footer class="dtf-footer-v3" data-dtf-shell="footer-v6"><div class="inner"><div class="dtf-footer-grid"><div>${footerBrandLink}<p>Documented genetics, Teaching Healthy Cultivation, practical grow tools, original games, and the community connecting them.</p></div><nav aria-label="Site map"><strong>Explore</strong><div class="links"><a href="/">Home</a><a href="/seeds/">Seeds</a><a href="/learn/">Learn</a><a href="/courses/">Courses</a><a href="/tools/">Diagnostic</a><a href="/games/">Games</a><a href="/community/">Community</a><a href="/shop/">Shop</a></div></nav><nav aria-label="Company and community links"><strong>Connect & company</strong><div class="links"><a href="/gallery/">Gallery</a><a href="/about/">About</a><a href="/contact/">Contact</a><a class="discord" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Discord</a></div></nav></div><hr><p class="legal">© 2026 DTF Genetics · Dream the Future · Adults only. Follow applicable local laws.</p></div></footer><!-- /wp:html -->`;
@@ -88,7 +88,7 @@ for(const part of targets){
   results.push({id:part.id,slug:part.slug,changed:next!==original,preservedCommerceStyle:next.includes('dtf-commerce-archive-style')||!original.includes('dtf-commerce-archive-style')});
   if(original.includes('dtf-commerce-archive-style')&&!next.includes('dtf-commerce-archive-style')) throw new Error('Shared shell update would remove WooCommerce archive styling');
 }
-const report={generatedAt:new Date().toISOString(),siteUrl,apply,backupDir,headerVersion:SITEWIDE_HEADER_VERSION,responsiveLayout:'v1',sitewideUxPolish:'v1',reference:SITEWIDE_HEADER_REFERENCE,canonicalNav:['Home','Seeds','Learn','Courses','Diagnostic','Games','Community','Shop'],targets:results};
+const report={generatedAt:new Date().toISOString(),siteUrl,apply,backupDir,headerVersion:SITEWIDE_HEADER_VERSION,responsiveLayout:'v1',sitewideUxPolish:'v1',reference:SITEWIDE_HEADER_REFERENCE,canonicalNav:['Genetics','Learn','Tools','Games','Community','Shop'],targets:results};
 await writeFile(join(backupDir,'shared-shell-v6-report.json'),`${JSON.stringify(report,null,2)}\n`);
 await writeFile(join(backupRoot,'shared-shell-v6-backup-path.txt'),`${backupDir}\n`);
 console.log(JSON.stringify(report,null,2));
