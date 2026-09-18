@@ -60,7 +60,7 @@ jobs:
           if grep -Fqi 'dtf-visual-polish-v3' "$home"; then
             grep -Fqi 'dtf-v3-spotlight' "$home"
             grep -Fqi 'data-dtf-shell="header-v6"' "$home"
-            grep -Fqi 'data-dtf-sitewide-header="canonical-six-v1"' "$home"
+            grep -Fqi 'data-dtf-sitewide-header="canonical-eight-v1"' "$home"
             grep -Fqi 'id="dtf-sitewide-ux-polish-v1"' "$home"
             node - "$home" "$header" <<'NODE'
           const fs = require('node:fs');
@@ -74,7 +74,7 @@ jobs:
           const header=fs.readFileSync(process.argv[2],'utf8');
           const nav=header.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>([\s\S]*?)<\/nav>/i)?.[1]||'';
           const labels=[...nav.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)].map(m=>m[1].replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim());
-          const expected=['Genetics','Learn','Tools','Games','Community','Shop'];
+          const expected=['Home','Seeds','Learn','Courses','Diagnostic','Games','Community','Shop'];
           if(JSON.stringify(labels)!==JSON.stringify(expected)) throw new Error(`Unexpected V6 navigation: ${JSON.stringify(labels)}`);
           NODE
           fi
