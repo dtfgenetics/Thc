@@ -60,7 +60,7 @@
   .hero-panel{padding:1rem}
   h1{font-size:clamp(2.6rem,18vw,4.4rem)}
   .hero-badges{gap:.3rem}.hero-badges span{font-size:.6rem}
-  .run-toolbar{position:sticky;top:.35rem;z-index:20;background:rgba(13,25,21,.96);backdrop-filter:blur(10px);box-shadow:0 8px 22px rgba(0,0,0,.18)}
+  .run-toolbar{position:sticky;top:calc(var(--dtf-global-header-height,74px) + 8px);z-index:20;background:rgba(13,25,21,.96);backdrop-filter:blur(10px);box-shadow:0 8px 22px rgba(0,0,0,.18)}
   .stat-strip{gap:.42rem}.stat-strip>div{padding:.65rem .72rem}.stat-strip strong{font-size:1.28rem}
   .draft-actions{display:grid;width:100%;margin-top:.75rem}.phase-state{text-align:center}.refresh-button{margin:0}
   .choice-grid{grid-template-columns:repeat(3,minmax(82vw,1fr));gap:.7rem}
@@ -69,7 +69,7 @@
   .card-action{min-height:56px;font-size:.9rem}
   .trait-label{font-size:.72rem}.trait-track{height:7px}
   .fit-delta{min-height:54px}
-  .selected-parent{position:sticky;top:8.5rem;z-index:10;background:rgba(13,25,21,.96);backdrop-filter:blur(8px)}
+  .selected-parent{position:sticky;top:calc(var(--dtf-global-header-height,74px) + 94px);z-index:10;background:rgba(13,25,21,.96);backdrop-filter:blur(8px)}
   .archive-list li{padding:.75rem}
 }
 
