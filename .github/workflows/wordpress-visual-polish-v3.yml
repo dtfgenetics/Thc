@@ -173,7 +173,7 @@ jobs:
           NODE
             )"
             [[ "$actual" == "$expected" ]] || { echo "Unexpected V6 primary navigation on $path: $actual" >&2; exit 1; }
-            for forbidden_label in '>Home</a>' '>Seeds</a>' '>Courses</a>' '>Diagnostic</a>'; do
+            for forbidden_label in '>Genetics</a>' '>Tools</a>'; do
               ! grep -Fqi -- "$forbidden_label" "$header" || { echo "Obsolete primary label remains on $path: $forbidden_label" >&2; exit 1; }
             done
             for forbidden in 'email@email.com' '+123456789' '© 2025 DTF Genetics' '&copy; 2025 DTF Genetics'; do
