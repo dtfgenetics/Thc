@@ -32,8 +32,8 @@ assert.match(runtime, /prefers-reduced-motion: reduce/);
 assert.match(runtime, /revealStackedResult/);
 
 assert.match(baseCss, /@media\(prefers-reduced-motion:reduce\)/);
-assert.match(visualCss, /min-height:52px/);
-assert.match(responsiveCss, /min-height:44px/);
+assert.match(visualCss, /min-height:\s*52px/);
+assert.match(responsiveCss, /min-height:\s*44px/);
 assert.match(responsiveCss, /body:has\(> \.dtf-global-header\) \.site-bar/);
 assert.match(responsiveCss, /top:calc\(var\(--dtf-global-header-height, 92px\) \+ 88px\)/);
 assert.match(responsiveCss, /@media \(forced-colors: active\)/);
