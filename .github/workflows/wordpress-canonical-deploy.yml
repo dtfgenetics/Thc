@@ -80,7 +80,7 @@ jobs:
             test -s "site/wordpress/pages/$slug.html"
           done
           for slug in community gallery about contact; do
-            grep -Eq 'class="[^"]*(^|[[:space:]])dtf-v1([[:space:]]|$)[^"]*"' "site/wordpress/pages/$slug.html"
+            grep -Eq 'class="dtf-v1([[:space:]]|")' "site/wordpress/pages/$slug.html"
           done
           test -d site/wordpress/assets/infographics
           count="$(find site/wordpress/assets/infographics -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' \) | wc -l | tr -d ' ')"
