@@ -14,7 +14,7 @@
 <body>
   <header class="site-header">
     <a class="brand" href="/">DTF Genetics <span>Dream the Future</span></a>
-    <nav aria-label="Primary"><a href="/games/">Games</a><a href="/learn/">Learn</a><a href="/community/">Community</a></nav>
+    <nav aria-label="Primary navigation"><a href="/seeds/">Genetics</a><a href="/learn/">Learn</a><a href="/tools/">Tools</a><a href="/games/" aria-current="page">Games</a><a href="/community/">Community</a><a href="/shop/">Shop</a></nav>
   </header>
 
   <main>
@@ -24,6 +24,7 @@
       <h1>From Bagseed to Legacy</h1>
       <p class="lede">Build a career through three changing eras. Every turn you choose where to invest your time, then a seeded era event tests the strengths and weaknesses of the path you built.</p>
       <div class="hero-badges" aria-label="Game features"><span>18 turns</span><span>3 eras</span><span>Seeded events</span><span>Autosave + exact resume</span></div>
+      <div class="hero-actions"><a class="primary" href="#setup-panel">Start a career</a><a href="#game-panel">Career board</a><a href="#how-to-play">How to play</a></div>
       <p class="status" id="load-status">Preparing career data…</p>
     </section>
 
@@ -90,7 +91,7 @@
       <div class="actions"><button class="primary" id="play-again">Play another career</button><a class="button" href="/games/">Back to Game Hub</a></div>
     </section>
 
-    <section class="panel about">
+    <section class="panel about" id="how-to-play">
       <h2>How to play</h2>
       <p>A career lasts 18 turns: six Underground, six Medical, and six Legal. Choose one action each turn. The action changes your resources, then one event from the current era resolves. The random stream is seeded, so identical seeds and choices are reproducible.</p>
       <p>Legacy score values reputation, knowledge, assets, compliance, brand, operations, genetics, and remaining cash, with a bonus for a balanced career. Different paths can succeed, but neglected systems make later-era events harder to absorb.</p>
