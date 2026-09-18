@@ -75,10 +75,16 @@ const appById = new Map(apps.apps.map((app) => [app.id, app]));
 const publicGames = nav.games.filter((game) => game.public);
 const privateGames = nav.games.filter((game) => !game.public);
 const hubPlayableCount = hub.match(/<strong>(\d+)<\/strong><span>playable browser games<\/span>/i);
+const hubLiveMultiplayerCount = hub.match(/<strong>(\d+)<\/strong><span>live multiplayer tables<\/span>/i);
+const publicMultiplayerGames = publicGames.filter((game) => game.status === 'multiplayer');
 
 assert(Boolean(hubPlayableCount), 'Game Hub must expose its playable-game count');
 if (hubPlayableCount) {
   assert(Number(hubPlayableCount[1]) === publicGames.length, `Game Hub playable count ${hubPlayableCount[1]} does not match ${publicGames.length} public games`);
+}
+assert(Boolean(hubLiveMultiplayerCount), 'Game Hub must expose its live-multiplayer count');
+if (hubLiveMultiplayerCount) {
+  assert(Number(hubLiveMultiplayerCount[1]) === publicMultiplayerGames.length, `Game Hub live multiplayer count ${hubLiveMultiplayerCount[1]} does not match ${publicMultiplayerGames.length} public multiplayer games`);
 }
 
 for (const game of publicGames) {
@@ -89,7 +95,16 @@ for (const game of publicGames) {
   if (game.route) assert(hub.includes(`href=\"${game.route}\"`) || hub.includes(`href='${game.route}'`), `${game.id} is public but Game Hub does not link ${game.route}`);
 }
 
-for (const game of privateGames) assert(!game.route, `${game.id} is not public but still has a public route`);
+for (const game of privateGames) {
+  assert(!game.route, `${game.id} is not public but still has a public route`);
+  if (game.candidateRoute) {
+    const app = appById.get(game.id);
+    assert(game.status === 'development', `${game.id} has candidateRoute but is not marked development`);
+    assert(app?.status === 'runtime-integration' || app?.status === 'release-candidate' || app?.status === 'ready-to-package', `${game.id} candidateRoute has unexpected deployment status ${app?.status || '<missing>'}`);
+    assert(app?.route === game.candidateRoute, `${game.id} candidateRoute mismatch: nav=${game.candidateRoute} deployment=${app?.route || '<none>'}`);
+    assert(!hub.includes(`href="${game.candidateRoute}"`) && !hub.includes(`href='${game.candidateRoute}'`), `${game.id} is not public but Game Hub still links candidate route ${game.candidateRoute}`);
+  }
+}
 
 const validStatuses = new Set(nav.principles.statusLabels);
 for (const game of nav.games) assert(validStatuses.has(game.status), `${game.id} has unknown status ${game.status}`);
