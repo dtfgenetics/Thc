@@ -193,6 +193,22 @@ jobs:
           test -s site/public-route-patch/games/high-lines/high-lines-v2.css
           grep -Fq 'https://dtfseeds.com/games/high-lines/' site/public-route-patch/games/high-lines/index.html
 
+      - name: Validate Trichome Trials browser game
+        run: |
+          set -euo pipefail
+          node games/trichome-trials/scripts/validate-data.mjs
+          node games/trichome-trials/test/engine.test.mjs
+          node games/trichome-trials/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/trichome-trials/app.js
+          node --check site/public-route-patch/games/trichome-trials/runtime.mjs
+          node --check site/public-route-patch/games/trichome-trials/engine.mjs
+          cmp games/trichome-trials/src/engine.mjs site/public-route-patch/games/trichome-trials/engine.mjs
+          test -s site/public-route-patch/games/trichome-trials/index.html
+          test -s site/public-route-patch/games/trichome-trials/trichome-trials.css
+          test -s site/public-route-patch/games/trichome-trials/trichome-trials-v2.css
+          test -s site/public-route-patch/games/trichome-trials/confidence.css
+          grep -Fq 'https://dtfseeds.com/games/trichome-trials/' site/public-route-patch/games/trichome-trials/index.html
+
       - name: Validate Seed Man v20 campaign
         run: |
           set -euo pipefail
