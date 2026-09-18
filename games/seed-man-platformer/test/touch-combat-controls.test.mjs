@@ -15,6 +15,8 @@ assert.match(html, /data-seed-pheno-active=\"true\"/, 'visual polish must expose
 assert.match(html, /@media\(max-width:680px\)/, 'gameplay polish must contain a phone layout');
 assert.match(html, /bind\(attackButton,'fireWeapon'\)/, 'ATTACK must bind to fireWeapon');
 assert.match(html, /bind\(abilityButton,'fireAbility'\)/, 'PHENO must bind to fireAbility');
+assert.match(html, /addEventListener\('pointerdown'/, 'touch combat must fire on pointerdown for responsive touch and pen input');
+assert.match(html, /<div class="hud" aria-label="Game status">/, 'rapidly changing HUD values must not be an aria-live region');
 
 const inline = html.match(/<script data-seed-inline-touch-combat="seed-man-touch-combat-controls-v1">([\s\S]*?)<\/script>/)?.[1];
 assert.ok(inline, 'could not isolate inline touch-combat runtime');
@@ -25,6 +27,8 @@ function makeButton() {
     disabled: false,
     dataset: {},
     addEventListener(type, listener) { listeners.set(type, listener); },
+    pointerDown(event = { pointerType: 'touch', preventDefault() {} }) { listeners.get('pointerdown')?.(event); },
+    pointerCancel(event = { preventDefault() {} }) { listeners.get('pointercancel')?.(event); },
     click(event = { preventDefault() {} }) { listeners.get('click')?.(event); },
     listeners
   };
@@ -64,14 +68,21 @@ domReady();
 
 assert.equal(documentElement.dataset.seedTouchCombat, 'ready', 'both touch combat controls must bind');
 assert.equal(window.__SEED_MAN_TOUCH_COMBAT__.snapshot().combatReady, true, 'touch bridge must report the combat runtime ready');
+attackButton.pointerDown();
 attackButton.click();
+abilityButton.pointerDown();
 abilityButton.click();
-assert.equal(attackCount, 1, 'touch ATTACK must invoke fireWeapon exactly once');
-assert.equal(abilityCount, 1, 'touch PHENO must invoke fireAbility exactly once');
-assert.equal(focusCount, 2, 'combat taps should return focus to the game canvas');
+assert.equal(attackCount, 1, 'touch ATTACK must fire immediately and suppress its synthetic click');
+assert.equal(abilityCount, 1, 'touch PHENO must fire immediately and suppress its synthetic click');
+assert.equal(focusCount, 2, 'touch combat presses should return focus to the game canvas');
+
+attackButton.click();
+assert.equal(attackCount, 2, 'keyboard or mouse click activation must remain available');
+assert.equal(focusCount, 3, 'click activation should also return focus to the game canvas');
 
 attackButton.disabled = true;
+attackButton.pointerDown();
 attackButton.click();
-assert.equal(attackCount, 1, 'disabled ATTACK must not fire');
+assert.equal(attackCount, 2, 'disabled ATTACK must not fire');
 
 console.log('Seed Man release-safe touch combat and current gameplay polish checks passed.');

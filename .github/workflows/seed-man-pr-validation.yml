@@ -1,0 +1,76 @@
+name: Seed Man PR Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - games/seed-man-platformer/**
+      - site/public-route-patch/games/seed-man-platformer/**
+      - scripts/verify-seed-man-production-v20.mjs
+      - scripts/validate-seed-man-production-bundle.mjs
+      - scripts/validate-seed-man-character-atlas.mjs
+      - .github/workflows/seed-man-pr-validation.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: seed-man-pr-${{ github.event.pull_request.number || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate Seed Man source and public runtime
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Seed Man build dependencies
+        run: npm install --prefix games/seed-man-platformer --ignore-scripts --no-audit --no-fund
+
+      - name: Build canonical Three.js bundle for validation
+        run: npm run --prefix games/seed-man-platformer build:three-public
+
+      - name: Validate canonical Seed Man production architecture
+        run: |
+          set -euo pipefail
+          node scripts/verify-seed-man-production-v20.mjs
+          node scripts/validate-seed-man-production-bundle.mjs
+
+      - name: Run deterministic gameplay and public-runtime tests
+        run: |
+          set -euo pipefail
+          node games/seed-man-platformer/test/physics.test.mjs
+          node games/seed-man-platformer/test/progression-systems.test.mjs
+          node games/seed-man-platformer/test/campaign.test.mjs
+          node games/seed-man-platformer/test/public-runtime.test.mjs
+          node games/seed-man-platformer/test/public-campaign.test.mjs
+          node games/seed-man-platformer/test/tutorial-ui.test.mjs
+          node games/seed-man-platformer/test/touch-combat-controls.test.mjs
+
+      - name: Validate browser JavaScript syntax
+        run: |
+          set -euo pipefail
+          node --check site/public-route-patch/games/seed-man-platformer/app.js
+          node --check site/public-route-patch/games/seed-man-platformer/campaign-v20-runtime.js
+          node --check site/public-route-patch/games/seed-man-platformer/campaign-ui-v20.js
+          node --check site/public-route-patch/games/seed-man-platformer/combat-browser-v2.js
+          node --check site/public-route-patch/games/seed-man-platformer/enemy-attacks-browser-v2.js
+          node --check site/public-route-patch/games/seed-man-platformer/input-guard-v1.js
+          node --check site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
+
+      - name: Validate production bundle contracts
+        run: |
+          set -euo pipefail
+          node scripts/verify-seed-man-production-v20.mjs
+          node scripts/validate-seed-man-production-bundle.mjs
+          test -s site/public-route-patch/games/seed-man-platformer/index.html
+          test -s site/public-route-patch/games/seed-man-platformer/seed-man.css
+          grep -Fq 'https://dtfseeds.com/games/seed-man-platformer/' site/public-route-patch/games/seed-man-platformer/index.html

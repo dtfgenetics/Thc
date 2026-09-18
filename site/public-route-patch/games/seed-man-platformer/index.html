@@ -52,7 +52,7 @@
     </section>
 
     <section class="game-shell" aria-label="Seed Man platformer" data-seed-production-ui="v20">
-      <div class="hud" aria-live="polite">
+      <div class="hud" aria-label="Game status">
         <span>Seeds <strong id="sprout-count">0 / 0</strong></span>
         <span>Progress <strong id="progress-count">0%</strong></span>
         <span>Jumps <strong id="jump-count">2 jumps ready</strong></span>
@@ -155,16 +155,28 @@
       const combatApi=()=>window.__SPROUT_COMBAT_BROWSER__||null;
       const refocusGame=()=>{if(!gameCanvas)return;try{gameCanvas.focus({preventScroll:true})}catch{gameCanvas.focus()}};
       const flash=(button,result)=>{if(!button)return;button.dataset.combatFeedback=result===false?'blocked':'fired';window.setTimeout(()=>{delete button.dataset.combatFeedback},150)};
+      const invoke=(button,method,event)=>{
+        event?.preventDefault?.();
+        if(!button||button.disabled)return false;
+        const api=combatApi();
+        const action=api?.[method];
+        if(typeof action!=='function'){console.warn(`[Seed Man] ${method} is unavailable; combat runtime is not ready.`);flash(button,false);return false}
+        flash(button,action.call(api));
+        refocusGame();
+        return true;
+      };
       const bind=(button,method)=>{
         if(!button)return false;
+        let suppressClick=false;
+        button.addEventListener('pointerdown',event=>{
+          if(event.pointerType==='mouse')return;
+          suppressClick=true;
+          invoke(button,method,event);
+        });
+        button.addEventListener('pointercancel',()=>{suppressClick=false});
         button.addEventListener('click',event=>{
-          event.preventDefault();
-          if(button.disabled)return;
-          const api=combatApi();
-          const action=api?.[method];
-          if(typeof action!=='function'){console.warn(`[Seed Man] ${method} is unavailable; combat runtime is not ready.`);flash(button,false);return}
-          flash(button,action.call(api));
-          refocusGame();
+          if(suppressClick){suppressClick=false;event.preventDefault();return}
+          invoke(button,method,event);
         });
         return true;
       };
