@@ -91,7 +91,6 @@ jobs:
             grep -Fq '>Home</a>' "$file"
             grep -Fq '>Seeds</a>' "$file"
             grep -Fq '>Learn</a>' "$file"
-            ! grep -Fq '>Courses</a>' "$file"
             grep -Fq '>Courses</a>' "$file"
             grep -Fq '>Diagnostic</a>' "$file"
             grep -Fq '>Games</a>' "$file"
