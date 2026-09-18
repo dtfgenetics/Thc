@@ -20,9 +20,13 @@ for (const forbidden of ['function createGame(', 'function askQuestion(', 'funct
 
 assert.match(html, /guess-confirm-v2\.css/);
 assert.match(html, /guess-confirm-v2\.js/);
-const embeddedDataMatch = html.match(/<script id="mystery-strain-data" type="application\\/json">\\s*([\\s\\S]*?)\\s*<\\/script>/);
-assert.ok(embeddedDataMatch, 'Mystery Strain must embed its canonical public game data');
-const embeddedData = JSON.parse(embeddedDataMatch[1]);
+const embeddedDataMarker = '<script id="mystery-strain-data" type="application/json">';
+const embeddedDataStart = html.indexOf(embeddedDataMarker);
+assert.notEqual(embeddedDataStart, -1, 'Mystery Strain must embed its canonical public game data');
+const embeddedDataBodyStart = embeddedDataStart + embeddedDataMarker.length;
+const embeddedDataEnd = html.indexOf('</script>', embeddedDataBodyStart);
+assert.notEqual(embeddedDataEnd, -1, 'Mystery Strain embedded game data script must close');
+const embeddedData = JSON.parse(html.slice(embeddedDataBodyStart, embeddedDataEnd).trim());
 assert.equal(embeddedData.strains.length, 20, 'Mystery Strain public runtime must expose all 20 fictional profiles');
 assert.equal(embeddedData.questions.length, 12, 'Mystery Strain public runtime must expose all 12 deduction questions');
 assert.match(html, /Select a candidate, then confirm before a guess is spent/);
