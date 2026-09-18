@@ -17,7 +17,7 @@ Use only **PASS**, **FAIL**, or **NOT TESTED** in the Status column. Add concret
 | Check | Status | Evidence |
 | --- | --- | --- |
 | `boardPath` has continuous indexes `0` through `108` | PASS | High Land CI #3447: `boardPath.test.ts` 5/5 passed; continuous index assertion plus approved 109-space count. |
-| The route is single, connected, and visits the seven locations in locked order | NOT TESTED | |
+| The route is single, connected, and visits the seven locations in locked order | PASS | High Land CI #3450 @ `df644dc`: `boardPath.test.ts` 6/6 passed, including exact seven-zone order and calibrated consecutive-space continuity. |
 | Space types are limited to start, normal, action, and finish | PASS | High Land CI #3447: `gameEngine.test.ts` passed the approved board-image/type contract. |
 | Exactly 22 indexes are gameplay HIT/action triggers | PASS | High Land CI #3447: `boardPath.test.ts` and `gameEngine.test.ts` both verify the approved 22 HIT/action indexes. |
 | Die results are integers from 1 through 6 | PASS | High Land CI #3447: `gameEngine.test.ts` verifies die clamping/results from 1 through 6. |
@@ -56,7 +56,7 @@ Use only **PASS**, **FAIL**, or **NOT TESTED** in the Status column. Add concret
 | Check | Status | Evidence |
 | --- | --- | --- |
 | `npm ci` | PASS | High Land CI #3447 step `Install dependencies` passed. |
-| `npm run test:high-land` | PASS | High Land CI #3447: 32 test files / 123 tests passed; room API security verification also passed. |
+| `npm run test:high-land` | PASS | High Land CI #3450: 32 test files / 124 tests passed; room API security verification also passed. |
 | `npm run build:high-land` | PASS | High Land CI #3447: TypeScript + Vite production build passed. |
 | `node scripts/verify-browser-tool-policy.mjs` | PASS | High Land CI #3447 browser-tool policy step passed. |
 | PHP room API lint passes when PHP files exist | PASS | High Land CI #3447 linted public, dist, and test-router PHP room API files with no syntax errors. |
@@ -77,10 +77,10 @@ Use only **PASS**, **FAIL**, or **NOT TESTED** in the Status column. Add concret
 
 ## Result
 
-- Commit/branch: evidence source `6928a0e245ef22cdb2df1cd4c2c9c1f7e957b8a6` / checklist branch `codex/high-land-acceptance-evidence-20260917`
-- Local verification date: 2026-09-17 (High Land CI #3447 and Room Security CI #241)
+- Commit/branch: baseline evidence `6928a0e245ef22cdb2df1cd4c2c9c1f7e957b8a6`; route-continuity evidence `df644dc77bdd8f200599901807d015b85498ed27`; checklist branch `codex/high-land-acceptance-evidence-20260917`
+- Local verification date: 2026-09-17 (High Land CI #3450 and Room Security CI on the same PR)
 - Live verification date:
 - Overall status: NOT TESTED
-- Remaining issues: locked seven-location route-order assertion, movement-animation verification, card-text/effect semantic review, remaining setup/synchronization/reconnect coverage, and all real live/mobile/two-device deployment checks.
+- Remaining issues: movement-animation verification, card-text/effect semantic review, remaining setup/synchronization/reconnect coverage, and all real live/mobile/two-device deployment checks.
 
 Use **local validation passed; live deployment NOT TESTED** when the repository checks pass but the public site was not deployed and exercised.
