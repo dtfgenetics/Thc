@@ -18,7 +18,7 @@ const candidates = [
     route: '/games/ganjumanji/',
     title: 'Ganjumanji',
     pin: readPin('site/public-route-patch/games/ganjumanji/source-revision.txt'),
-    expectedRelease: { route: '/games/ganjumanji/', status: 'release-candidate' }
+    expectedRelease: { route: '/games/ganjumanji/', status: 'production-candidate' }
   },
   {
     id: 'thc-rpg',
@@ -54,6 +54,10 @@ for (const candidate of candidates) {
   assert.match(contentType, /text\/html/i, `${candidate.id} live route is not HTML`);
   const html = await pageResponse.text();
   assert.match(html, new RegExp(candidate.title, 'i'), `${candidate.id} title marker missing from live route`);
+  assert.match(html, /data-dtf-shell=["']header-v6["']/i, `${candidate.id} canonical Header V6 marker missing`);
+  assert.match(html, /data-dtf-sitewide-header=["']canonical-eight-v1["']/i, `${candidate.id} canonical eight-link header marker missing`);
+  assert.match(html, /data-dtf-shell=["']footer-v6["']/i, `${candidate.id} canonical Footer V6 marker missing`);
+  assert.match(html, /data-dtf-sitewide-footer=["']canonical-eight-v1["']/i, `${candidate.id} canonical footer navigation marker missing`);
 
   const releaseResponse = await fetchNoRedirect(`${candidate.route}game-release.json`);
   const release = await releaseResponse.json();
@@ -81,5 +85,5 @@ console.log(JSON.stringify({
   ok: true,
   siteUrl,
   candidates: candidates.map(({ id, route, pin }) => ({ id, route, commit: pin.commit })),
-  verification: ['canonical HTTP status', 'no redirects', 'release metadata', 'source pin', 'local runtime assets']
+  verification: ['canonical HTTP status', 'no redirects', 'Header V6', 'Footer V6', 'release metadata', 'source pin', 'local runtime assets']
 }, null, 2));
