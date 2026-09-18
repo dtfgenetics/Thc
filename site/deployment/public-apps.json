@@ -530,8 +530,8 @@
       "route": "/games/strain-match/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/strain-match/scripts/validate-data.mjs && node --check site/public-route-patch/games/strain-match/app.js",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/strain-match/scripts/validate-data.mjs && node games/strain-match/test/public-runtime.test.mjs && node --check site/public-route-patch/games/strain-match/app.js",
+      "notes": "Self-hosted four-deck educational memory game with eight pairs per deck. Existing deterministic browser-runtime coverage protects visible-play timer accounting, hidden-page pause/resume, stale mismatch isolation, guarded restart, local best scores, streak/HUD states, touch feedback, reduced motion, and forced colors. The runtime test is now included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
     },
     {
       "id": "trichome-trials",
