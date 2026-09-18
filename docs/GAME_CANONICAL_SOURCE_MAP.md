@@ -51,7 +51,7 @@ Never begin a game repair from the deployed HTML, a copied integration bundle, o
 
 The public product is **Burn Buds** and the stable route/machine compatibility ID remains `protect-the-plants`. The canonical implementation is `games/protect-the-plants`.
 
-`data/project-registry.json` still contains the older `cannabis-fleet-battle` project identity for the earlier engine scaffold. `data/game-source-map.json` explicitly overrides the production source path so agents do not repair the retired scaffold. The registry should be migrated carefully in a follow-up without breaking active room, route, persistence, or deployment compatibility.
+`data/project-registry.json` now preserves `cannabis-fleet-battle` only as an archive pointer and registers `protect-the-plants` as the canonical Burn Buds project. `data/game-source-map.json` points the public route to that canonical project while the stable `/games/protect-the-plants/` compatibility identity remains unchanged for active rooms, persistence, and deployment.
 
 ### Terpocalypse V1 vs V2
 
