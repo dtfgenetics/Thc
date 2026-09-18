@@ -61,7 +61,7 @@ function occurrences(source, needle) {
 function verifyDocument(source, rel) {
   if (!/<html\b/i.test(source) || !/<body\b/i.test(source)) return { skipped: true };
   const expected = [
-    ['data-dtf-sitewide-header="canonical-six-v1"', 'header'],
+    ['data-dtf-sitewide-header="canonical-eight-v1"', 'header'],
     ['id="dtf-sitewide-header-v6-style"', 'header style'],
     ['id="dtf-content-density-v1-style"', 'content-density style'],
     ['id="dtf-sitewide-visual-repair-v2-style"', 'visual-repair style'],

@@ -60,7 +60,7 @@ assert.notEqual(resources['high-iq'].publisher.sharedProductionTarget, resources
 assert.ok(Array.isArray(resources['high-iq'].verifyTokens) && resources['high-iq'].verifyTokens.length >= 7, 'High IQ must lock canonical V6 visitor verification tokens');
 for (const token of [
   'data-dtf-shell="header-v6"',
-  'data-dtf-sitewide-header="canonical-six-v1"',
+  'data-dtf-sitewide-header="canonical-eight-v1"',
   'id="dtf-sitewide-header-v6-style"',
   'id="dtf-responsive-layout-v1"',
   'id="dtf-sitewide-ux-polish-v1"',
@@ -135,7 +135,7 @@ const helperTriggerCount = (builderWorkflow.match(/scripts\/run-workflow-and-wai
 assert.ok(helperTriggerCount >= 2, 'resource builder must run on helper changes for both PR and main push events');
 assert.match(builderWorkflow, /node scripts\/apply-sitewide-header\.mjs release-resource\/games\/high-iq/, 'High IQ resource build must reconcile the canonical V6 shell before packaging');
 assert.match(builderWorkflow, /data-dtf-shell=\"header-v6\"/, 'High IQ resource build must gate the canonical V6 shell');
-assert.match(builderWorkflow, /canonical-six-v1/, 'High IQ resource build must gate the canonical eight-item navigation');
+assert.match(builderWorkflow, /canonical-eight-v1/, 'High IQ resource build must gate the canonical eight-item navigation');
 assert.match(builderWorkflow, /id=\"dtf-responsive-layout-v1\"/, 'High IQ resource build must gate the shared responsive layer');
 
 console.log('DTF resource release isolation and High IQ V6 eight-item production contract tests passed.');
