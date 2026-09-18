@@ -32,7 +32,11 @@ jobs:
         with:
           node-version: 22
       - name: Validate production package
-        run: node games/terpocalypse-integration/validate.mjs
+        run: |
+          node games/terpocalypse-integration/validate.mjs
+          node games/terpocalypse/test/public-runtime.test.mjs
+          test -s site/public-route-patch/games/terpocalypse/mobile-gameplay-v2.css
+          test -s site/public-route-patch/games/terpocalypse/source-revision.txt
       - name: Check JavaScript syntax
         run: |
           node --check site/public-route-patch/games/terpocalypse/main.js
