@@ -470,8 +470,8 @@
       "route": "/games/high-lines/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/high-lines/scripts/validate-data.mjs && node games/high-lines/test/engine.test.mjs && node --check site/public-route-patch/games/high-lines/app.js && node --check site/public-route-patch/games/high-lines/engine.mjs",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/high-lines/scripts/validate-data.mjs && node games/high-lines/test/engine.test.mjs && node games/high-lines/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-lines/app.js && node --check site/public-route-patch/games/high-lines/runtime.mjs && cmp games/high-lines/src/engine.mjs site/public-route-patch/games/high-lines/engine.mjs",
+      "notes": "Self-hosted deterministic coloring/hidden-object game with four original SVG scenes, local autosave, zoom controls, keyboard/touch play, and shareable scene codes. Browser runtime now imports the canonical tested coloring engine while persistence, SVG sanitization/retry, zoom, and reset confirmation remain browser-layer concerns. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
     },
     {
       "id": "lost-in-the-terps",
