@@ -17,8 +17,8 @@ const lines = Object.fromEntries(
 
 assert.equal(lines.repository, 'dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple');
 assert.match(lines.commit || '', /^[0-9a-f]{40}$/);
-assert.equal(lines.commit, '54df2e0331ba9930899b4e11cb40e5c5f09235f1');
-assert.equal(lines.version, '0.4.0');
+assert.equal(lines.commit, 'b1cbf9b9627586b7277813b6a7c6f85a98830d58');
+assert.equal(lines.version, '0.4.1');
 assert.equal(lines.route, '/games/ganjumanji/');
 assert.equal(lines.status, 'release-candidate');
 
@@ -30,8 +30,8 @@ assert.equal(app.route, lines.route, 'registry route must match the pinned relea
 assert.equal(app.verifiedRevision, lines.commit, 'registry verifiedRevision must match the pinned source');
 assert.ok(['ready-to-package', 'release-candidate'].includes(app.status), `unexpected Ganjumanji registry status: ${app.status}`);
 assert.equal(app.runtime, 'static-phaser');
-assert.equal(app.machineData?.regions, 5, 'Ganjumanji registry must describe all five 0.4.0 regions');
-assert.equal(app.machineData?.relicSeeds, 10, 'Ganjumanji registry must describe all ten 0.4.0 relic seeds');
+assert.equal(app.machineData?.regions, 5, 'Ganjumanji registry must describe all five 0.4.1 regions');
+assert.equal(app.machineData?.relicSeeds, 10, 'Ganjumanji registry must describe all ten 0.4.1 relic seeds');
 assert.equal(app.machineData?.saveVersion, 5, 'Ganjumanji registry must require save v5');
 assert.doesNotMatch(String(app.build || ''), /playwright|test:e2e/i, 'Ganjumanji packaging must not restore Playwright');
 assert.match(String(app.build || ''), /validate:ui/, 'Ganjumanji packaging must run deterministic UI validation');

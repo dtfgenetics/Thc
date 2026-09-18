@@ -61,7 +61,7 @@ jobs:
           route="$(sed -n 's/^route=//p' "$revision_file")"
           test "$repo_name" = "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple"
           [[ "$revision" =~ ^[0-9a-f]{40}$ ]]
-          test "$version" = "0.4.0"
+          test "$version" = "0.4.1"
           test "$route" = "/games/ganjumanji/"
           echo "repository=$repo_name" >> "$GITHUB_OUTPUT"
           echo "revision=$revision" >> "$GITHUB_OUTPUT"
@@ -153,7 +153,7 @@ jobs:
           grep -Fq 'route=/games/ganjumanji/' package/games/ganjumanji/source-revision.txt
           grep -Fq 'commit=${{ steps.source.outputs.revision }}' package/games/ganjumanji/source-revision.txt
           grep -Fq '"route": "/games/ganjumanji/"' package/games/ganjumanji/game-release.json
-          grep -Fq '"status": "release-candidate"' package/games/ganjumanji/game-release.json
+          grep -Fq '"status": "production-candidate"' package/games/ganjumanji/game-release.json
           ! grep -RFiq '/src/main.ts' package/games/ganjumanji
 
       - name: Upload deployable Ganjumanji route
@@ -179,5 +179,6 @@ jobs:
             echo '- Route-safe build validation: passed'
             echo '- Canonical Header V6 packaging: passed'
             echo '- Deployable route artifact: uploaded'
+            echo '- Candidate status: production-candidate'
             echo '- Public promotion: still blocked until production publish + exact live-route verification'
           } >> "$GITHUB_STEP_SUMMARY"
