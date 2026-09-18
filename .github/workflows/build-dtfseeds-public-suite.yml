@@ -88,7 +88,7 @@ jobs:
           set -euo pipefail
           npm run verify:portfolio
           node scripts/validate-public-navigation.mjs
-          grep -Fq '25 playable browser games' site/public-route-patch/games/index.html
+          grep -Fq '23 playable browser games' site/public-route-patch/games/index.html
 
       - name: Validate self-hosted High IQ
         run: |
@@ -353,7 +353,7 @@ jobs:
           test -s site/public-route-patch/games/phenoquest/source-revision.txt
           grep -Fq 'repository=dtfgenetics/Catching-phenos' site/public-route-patch/games/phenoquest/source-revision.txt
           grep -Eq '^commit=[0-9a-f]{40}$' site/public-route-patch/games/phenoquest/source-revision.txt
-          grep -Fq '25 playable browser games' site/public-route-patch/games/index.html
+          grep -Fq '23 playable browser games' site/public-route-patch/games/index.html
           grep -Fq '/games/terpocalypse/' site/public-route-patch/games/index.html
           grep -Fq '/games/phenoquest/' site/public-route-patch/games/index.html
 
@@ -1001,7 +1001,7 @@ jobs:
           test -d release/thc-grow-doc/reference-media/crops
           test ! -e release/thc-grow-doc/reference-media/original
           test "$(find release/thc-grow-doc/reference-media/crops -type f | wc -l | tr -d ' ')" = "66"
-          grep -Fq '25 playable browser games' release/games/index.html
+          grep -Fq '23 playable browser games' release/games/index.html
 
           ! grep -RFiq 'email@email.com' release
           ! grep -RFiq '+123456789' release
@@ -1014,7 +1014,7 @@ jobs:
           {
             echo '## DTFSeeds public suite'
             echo ''
-            echo '- 25 registered browser games via the canonical Game Hub'
+            echo '- 23 verified playable browser games via the canonical Game Hub'
             echo '- /games/high-iq/ (self-hosted validated browser game)'
             echo '- /games/high-life/ (tested career strategy game)'
             echo '- /games/grower-conversations/ (96-card browser deck)'
@@ -1068,7 +1068,7 @@ jobs:
                 ? 'The complete DTFSeeds public suite built and validated successfully. A 30-day immutable artifact is attached to this workflow run and is ready for the production deployer.'
                 : 'The public-suite package did not complete successfully. Inspect this workflow run before attempting production deployment.',
               '',
-              'Build scope: the canonical 25-game Hub plus validated High IQ, High Life, Grower Conversations, Seed Man, Strain Showdown, Bud or Bluff, Terpocalypse, PhenoQuest, Burn Buds, High Land, Weedopolis, pinned THC Crossword, Who Took It?, Ganjumanji, THC RPG, GrowLens, THC Grow Doc, Tools, Projects, and puzzle data.',
+              'Build scope: the canonical 23-game playable Hub plus tracked release/runtime candidates plus validated High IQ, High Life, Grower Conversations, Seed Man, Strain Showdown, Bud or Bluff, Terpocalypse, PhenoQuest, Burn Buds, High Land, Weedopolis, pinned THC Crossword, Who Took It?, Ganjumanji, THC RPG, GrowLens, THC Grow Doc, Tools, Projects, and puzzle data.',
               'No production mutation is performed by this build-only workflow.'
             ].join('\n');
             await github.rest.issues.createComment({
