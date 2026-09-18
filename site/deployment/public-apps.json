@@ -135,13 +135,13 @@
       "route": "/games/grower-conversations/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/grower-conversations/scripts/validate-prompt-bank.mjs",
+      "build": "node games/grower-conversations/scripts/validate-prompt-bank.mjs && node games/grower-conversations/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grower-conversations/app.js && cmp games/grower-conversations/data/prompt-bank.json site/public-route-patch/games/grower-conversations/data/prompt-bank.json",
       "machineData": {
         "cards": 96,
         "categories": 8,
         "depths": 3
       },
-      "notes": "Self-hosted 96-card browser discussion deck with category/depth filters, no-repeat draws, clipboard copy, and canonical/public prompt-bank synchronization."
+      "notes": "Self-hosted 96-card discussion deck with eight topics, three depth bands, local progress persistence, filtered deck progress, keyboard draw/copy/shuffle shortcuts, resilient clipboard fallback, responsive containment, 44px controls, reduced motion, and forced-colors support. Dedicated CI is modernized to current GitHub Actions and the full browser-runtime regression now runs in the central public-suite gate; exact post-deploy live-route verification remains required."
     },
     {
       "id": "seed-man-platformer",
