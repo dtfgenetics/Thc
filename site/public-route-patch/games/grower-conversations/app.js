@@ -214,21 +214,47 @@ function shuffleDeck() {
   draw();
 }
 
+async function copyText(value) {
+  const text = String(value || '');
+  if (!text) return false;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {}
+  try {
+    const field = document.createElement('textarea');
+    field.value = text;
+    field.setAttribute('readonly', '');
+    field.style.position = 'fixed';
+    field.style.opacity = '0';
+    field.style.pointerEvents = 'none';
+    document.body.append(field);
+    field.select();
+    field.setSelectionRange(0, text.length);
+    const copied = document.execCommand?.('copy') === true;
+    field.remove();
+    return copied;
+  } catch {
+    return false;
+  }
+}
+
 async function copyPrompt() {
   if (!current) return;
   const text = `${current.prompt}\n\n— Grower Conversations · DTF Genetics`;
-  try {
-    if (!navigator.clipboard?.writeText) throw new Error('Clipboard API unavailable.');
-    await navigator.clipboard.writeText(text);
+  const copied = await copyText(text);
+  if (copied) {
     ui.copy.textContent = 'Copied';
     ui.status.textContent = 'Prompt copied to clipboard.';
     setTimeout(() => {
       ui.copy.textContent = 'Copy prompt';
       updateStatus();
     }, 1300);
-  } catch {
-    ui.status.textContent = 'Clipboard access was blocked by the browser. Select the prompt text to copy it manually.';
+    return;
   }
+  ui.status.textContent = 'Copy failed. Select the prompt text to copy it manually.';
 }
 
 function populateCategories() {
