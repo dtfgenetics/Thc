@@ -73,7 +73,14 @@ async function request(path,options={}){
 }
 function rendered(value){return typeof value==='string'?value:(value?.raw||value?.rendered||'');}
 function ownedLayout(content,target){
-  const exact=new RegExp(`data-dtf-layout=["']${target.layout.replace(/[.*+?^${}()|[\]\\]/g,'\\function hasCanonicalMarker(content,target){return String(content).includes(target.marker);}
+  const text=String(content);
+  const exact=text.includes(`data-dtf-layout="${target.layout}"`)||text.includes(`data-dtf-layout='${target.layout}'`);
+  const versioned=new RegExp(`data-dtf-layout=["']${target.slug}-visual-v\\d+["']`,'i').test(text);
+  return exact||versioned;
+}
+function customH1(content){
+  return textFromHtml(String(content).match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1]);
+}
 function normalizeThemeTitle(content){')}["']`,'i');
   const versioned=new RegExp(`data-dtf-layout=["']${target.slug}-visual-v\\d+["']`,'i');
   return exact.test(String(content))||versioned.test(String(content));
