@@ -1,13 +1,24 @@
 import crypto from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import process from 'node:process';
+import {
+  SITEWIDE_HEADER_HTML,
+  SITEWIDE_HEADER_SCRIPT_TAG,
+  SITEWIDE_HEADER_STYLE_TAG,
+  SITEWIDE_MOBILE_POLISH_STYLE_TAG,
+} from './lib/sitewide-header-template-v6.mjs';
+import {
+  SITEWIDE_FOOTER_HTML,
+  SITEWIDE_FOOTER_STYLE_TAG,
+} from './lib/sitewide-footer-template-v6.mjs';
 
 const siteUrl=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const username=process.env.WP_API_USERNAME||'';
 const password=process.env.WP_API_PASSWORD||'';
 const configPath=process.env.EXTERNAL_HEADER_SOURCE_CONFIG||'site/deployment/external-header-sources.json';
 const surfaceName=process.env.EXTERNAL_HEADER_SURFACE||'kushKingsChess';
-if(!username||!password) throw new Error('WordPress credentials are required.');
+const validateOnly=process.argv.includes('--validate-only');
+if(!validateOnly&&(!username||!password)) throw new Error('WordPress credentials are required.');
 
 const config=JSON.parse(await readFile(configPath,'utf8'));
 if(config?.schemaVersion!==1) throw new Error('Unsupported external-header source schema.');
@@ -19,6 +30,18 @@ if(!Array.isArray(surface.files)||surface.files.length<1) throw new Error('Exter
 const generatedFiles=Array.isArray(surface.generatedFiles)?surface.generatedFiles:[];
 const htmlReplacements=Array.isArray(surface.htmlReplacements)?surface.htmlReplacements:[];
 if(surface.files.length+generatedFiles.length>12) throw new Error('External source file list is invalid.');
+
+const responsiveLayoutPath=process.env.DTF_RESPONSIVE_LAYOUT_CSS||'site/wordpress/assets/responsive-layout-v1.css';
+const uxPolishPath=process.env.DTF_SITEWIDE_UX_POLISH_CSS||'site/wordpress/assets/sitewide-ux-polish-v1.css';
+const [responsiveLayoutCss,uxPolishCss]=await Promise.all([
+  readFile(responsiveLayoutPath,'utf8'),
+  readFile(uxPolishPath,'utf8'),
+]);
+if(!responsiveLayoutCss.includes('DTFSeeds shared responsive layout system v1')) throw new Error('Responsive layout marker is missing.');
+if(!uxPolishCss.includes('DTFSeeds sitewide UX polish v1')) throw new Error('Sitewide UX polish marker is missing.');
+const RESPONSIVE_LAYOUT_STYLE_TAG=`<style id="dtf-responsive-layout-v1">${responsiveLayoutCss}</style>`;
+const SITEWIDE_UX_POLISH_STYLE_TAG=`<style id="dtf-sitewide-ux-polish-v1">${uxPolishCss}</style>`;
+const SHARED_SHELL_STYLES=`${SITEWIDE_HEADER_STYLE_TAG}\n${SITEWIDE_FOOTER_STYLE_TAG}\n${RESPONSIVE_LAYOUT_STYLE_TAG}\n${SITEWIDE_UX_POLISH_STYLE_TAG}\n${SITEWIDE_MOBILE_POLISH_STYLE_TAG}`;
 
 const auth=`Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -63,21 +86,46 @@ function assertSafeFile(file){
 function joinRel(root,file){return `${String(root||'').replace(/^\/+|\/+$/g,'')}/${String(file||'').replace(/^\/+/, '')}`;}
 function sourceUrl(file){return `https://raw.githubusercontent.com/${surface.repository}/${surface.commit}/${joinRel(surface.sourceRoot,file)}`;}
 async function sourceFile(file){
-  const response=await fetch(sourceUrl(file),{headers:{'User-Agent':'DTFSeeds-External-Header-Repair/1.1','Cache-Control':'no-cache'},signal:AbortSignal.timeout(45_000)});
+  const response=await fetch(sourceUrl(file),{headers:{'User-Agent':'DTFSeeds-External-Shell-Repair/2.0','Cache-Control':'no-cache'},signal:AbortSignal.timeout(45_000)});
   if(!response.ok) throw new Error(`Pinned source fetch failed for ${file}: HTTP ${response.status}`);
   const raw=Buffer.from(await response.arrayBuffer());
   if(raw.length<1||raw.length>260_000) throw new Error(`Pinned source file size rejected: ${file} (${raw.length})`);
   return raw;
 }
+function reconcileExternalShell(text,file){
+  if(file!=='index.html'&&file!=='play.php') return text;
+  let output=text;
+  output=output.replace(/<link\b[^>]*href=["'][^"']*dtf-sitewide-header-v5\.css[^"']*["'][^>]*>\s*/gi,'');
+  output=output.replace(/<style\b[^>]*id=["']dtf-sitewide-header-v5-style["'][^>]*>[\s\S]*?<\/style>\s*/gi,'');
+  output=output.replace(/<style\b[^>]*id=["']dtf-sitewide-header-v6-style["'][^>]*>[\s\S]*?<\/style>\s*/gi,'');
+  output=output.replace(/<style\b[^>]*id=["']dtf-shared-footer-v6-style["'][^>]*>[\s\S]*?<\/style>\s*/gi,'');
+  output=output.replace(/<style\b[^>]*id=["']dtf-responsive-layout-v1["'][^>]*>[\s\S]*?<\/style>\s*/gi,'');
+  output=output.replace(/<style\b[^>]*id=["']dtf-sitewide-ux-polish-v1["'][^>]*>[\s\S]*?<\/style>\s*/gi,'');
+  output=output.replace(/<style\b[^>]*id=["']dtf-sitewide-mobile-polish-v1-style["'][^>]*>[\s\S]*?<\/style>\s*/gi,'');
+  output=output.replace(/<script\b[^>]*id=["']dtf-sitewide-header-v5-script["'][^>]*>[\s\S]*?<\/script>\s*/gi,'');
+  output=output.replace(/<script\b[^>]*id=["']dtf-sitewide-header-v6-script["'][^>]*>[\s\S]*?<\/script>\s*/gi,'');
+  output=output.replace(/<script\b[^>]*id=["']dtf-content-density-v1-script["'][^>]*>[\s\S]*?<\/script>\s*/gi,'');
+  output=output.replace(/<script\b[^>]*id=["']dtf-sitewide-visual-repair-v2-script["'][^>]*>[\s\S]*?<\/script>\s*/gi,'');
+  output=output.replace(/<header\b[^>]*data-dtf-shell=["']header-(?:v5|v6)["'][^>]*>[\s\S]*?<\/header>\s*/gi,'');
+  output=output.replace(/<footer\b[^>]*data-dtf-shell=["']footer-v6["'][^>]*>[\s\S]*?<\/footer>\s*/gi,'');
+  if(!/<\/head>/i.test(output)||!/<body\b[^>]*>/i.test(output)||!/<\/body>/i.test(output)) throw new Error(`Pinned source ${file} is missing a complete HTML document shell.`);
+  output=output.replace(/<\/head>/i,`${SHARED_SHELL_STYLES}\n</head>`);
+  output=output.replace(/<body\b([^>]*)>/i,`<body$1>\n${SITEWIDE_HEADER_HTML}`);
+  output=output.replace(/<\/body>/i,`${SITEWIDE_FOOTER_HTML}\n${SITEWIDE_HEADER_SCRIPT_TAG}\n</body>`);
+  for(const marker of ['data-dtf-shell="header-v6"','data-dtf-sitewide-header="canonical-eight-v1"','data-dtf-shell="footer-v6"','data-dtf-sitewide-footer="canonical-eight-v1"','dtf-sitewide-header-v6-script']){
+    if(!output.includes(marker)) throw new Error(`Canonical V6 shell marker missing from transformed ${file}: ${marker}`);
+  }
+  return output;
+}
 function transformedSource(file,raw){
   const transforms=htmlReplacements.filter(item=>item&&item.file===file);
-  if(!transforms.length) return raw;
   let text=raw.toString('utf8');
   for(const item of transforms){
     if(typeof item.from!=='string'||typeof item.to!=='string'||item.from==='') throw new Error(`Invalid HTML replacement for ${file}.`);
     if(!text.includes(item.from)) throw new Error(`Pinned source ${file} is missing configured replacement marker.`);
     text=text.split(item.from).join(item.to);
   }
+  text=reconcileExternalShell(text,file);
   return Buffer.from(text,'utf8');
 }
 
@@ -87,7 +135,13 @@ for(const file of surface.files){
   let raw=await sourceFile(file);
   raw=transformedSource(file,raw);
   const rel=joinRel(surface.publicRoot,file);
-  if((file==='index.html'||file==='play.php')&&!raw.toString('utf8').includes('data-dtf-shell="header-v5"')) throw new Error(`Pinned source ${file} does not contain the approved V5 header marker.`);
+  if(file==='index.html'||file==='play.php'){
+    const text=raw.toString('utf8');
+    if(!text.includes('data-dtf-shell="header-v6"')||!text.includes('data-dtf-sitewide-footer="canonical-eight-v1"')) throw new Error(`Transformed source ${file} does not contain the canonical V6 shared shell.`);
+    for(const marker of surface.requiredMarkers||[]){
+      if(!text.includes(marker)) throw new Error(`Transformed source ${file} is missing required visitor marker: ${marker}`);
+    }
+  }
   payload.push({rel,sha256:crypto.createHash('sha256').update(raw).digest('hex'),content_b64:raw.toString('base64'),bytes:raw.length});
 }
 for(const item of generatedFiles){
@@ -101,7 +155,11 @@ for(const item of generatedFiles){
 }
 const totalBytes=payload.reduce((n,x)=>n+x.bytes,0);
 if(totalBytes>700_000) throw new Error(`External header payload too large: ${totalBytes}`);
-console.log(`Prepared ${payload.length} pinned files from ${surface.repository}@${surface.commit} (${totalBytes} bytes).`);
+console.log(`Prepared ${payload.length} pinned files from ${surface.repository}@${surface.commit} with canonical V6 shell (${totalBytes} bytes).`);
+if(validateOnly){
+  console.log(JSON.stringify({ok:true,validateOnly:true,surface:surfaceName,repository:surface.repository,commit:surface.commit,files:payload.map(x=>x.rel),requiredMarkers:surface.requiredMarkers||[]},null,2));
+  process.exit(0);
+}
 
 const allowed=payload.map(x=>x.rel);
 const snippetCode=String.raw`
@@ -199,7 +257,7 @@ async function verifyLive(){
       }catch{}
       await sleep(2500+attempt*700);
     }
-    if(!ok) throw new Error(`Visitor-facing V5 header verification failed: ${route}`);
+    if(!ok) throw new Error(`Visitor-facing V6 shared-shell verification failed: ${route}`);
     console.log(`Verified ${route}`);
   }
 }
@@ -211,7 +269,7 @@ try{
   if(!pluginInitiallyActive){await wpRequest(pluginEndpoint(pluginRestId),{method:'POST',json:{status:'active'}});pluginActivated=true;}
   for(let i=0;i<10&&!(await snippetApiReady());i++) await sleep(1500+i*500);
   if(!(await snippetApiReady())) throw new Error('Code Snippets REST API did not become available.');
-  const created=await wpRequest('/wp-json/code-snippets/v1/snippets',{method:'POST',json:{name:`DTF External Header Repair ${deploymentId}`,desc:`Temporary protected V5 header repair for ${surfaceName}`,code:snippetCode,tags:['dtf-repair','temporary','sitewide-header-v5'],scope:'global',priority:1,active:false,network:false}});
+  const created=await wpRequest('/wp-json/code-snippets/v1/snippets',{method:'POST',json:{name:`DTF External Shell V6 Repair ${deploymentId}`,desc:`Temporary protected V6 shared-shell repair for ${surfaceName}`,code:snippetCode,tags:['dtf-repair','temporary','sitewide-shell-v6'],scope:'global',priority:1,active:false,network:false}});
   snippetId=Number(created.body?.id||0); if(!snippetId) throw new Error('Temporary repair snippet was created without an ID.');
   await wpRequest(`/wp-json/code-snippets/v1/snippets/${snippetId}/activate`,{method:'POST'});
   const write=await callBridge('write',{files:payload});
@@ -222,7 +280,7 @@ try{
   console.log(JSON.stringify({ok:true,surface:surfaceName,repository:surface.repository,commit:surface.commit,changed:write.body.changed||[],unchanged:write.body.unchanged||[],verifiedRoutes:surface.verifyRoutes||[]},null,2));
 }catch(error){
   if(wrote&&snippetId){
-    try{const rolled=await callBridge('rollback');if(rolled.body?.ok!==true)throw new Error('Rollback endpoint did not report success.');console.error('Live verification failed; previous external route files were restored.');}
+    try{const rolled=await callBridge('rollback');if(rolled.body?.ok!==true)throw new Error('Rollback endpoint did not report success.');console.error('Live V6 shell verification failed; previous external route files were restored.');}
     catch(rollbackError){rollbackFailed=true;console.error(`AUTOMATIC ROLLBACK FAILED: ${rollbackError.message}`);}
   }
   throw error;
