@@ -24,3 +24,28 @@
 .hero>*:not(.hero-art){position:relative;z-index:1}.hero .eyebrow,.hero h1,.hero .lede,.hero .status{max-width:760px;text-shadow:0 2px 16px rgba(0,0,0,.82)}
 .hero-badges span{border-color:rgba(240,201,107,.35);background:rgba(6,15,9,.72);backdrop-filter:blur(6px);color:#f1f5e9}
 @media(max-width:650px){.hero{min-height:480px}.hero-art{object-position:66% center}.hero:before{background:linear-gradient(0deg,rgba(4,10,7,.98) 0%,rgba(4,10,7,.78) 52%,rgba(4,10,7,.12) 100%)}}
+
+
+/* High Life production finish pass. */
+button,.button,input{touch-action:manipulation}
+button:focus-visible,.button:focus-visible,input:focus-visible,.action-card:focus-visible{
+  outline:3px solid var(--gold);
+  outline-offset:3px;
+}
+.action-card,.setup input,.actions button,.actions .button{min-height:44px}
+@media(max-width:650px){
+  .action-panel{
+    scroll-margin-top:calc(var(--dtf-global-header-height,74px) + 70px);
+  }
+  .action-card{
+    min-height:144px;
+  }
+}
+@media(forced-colors:active){
+  .panel,.action-card,.resource,.era-roadmap>div,button,.button,input{
+    border:1px solid ButtonText;
+  }
+  .resource-meter i,.era-roadmap>div.current span{
+    background:Highlight;
+  }
+}
