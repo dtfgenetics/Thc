@@ -6,6 +6,11 @@ const siteUrl=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,''
 const username=process.env.WP_API_USERNAME||'';
 const password=process.env.WP_API_PASSWORD||'';
 const apply=String(process.env.APPLY_SUPPORT_VISUALS||'').toLowerCase()==='true';
+// Deprecated writer guard: current support-page bodies are owned by the canonical
+// site/wordpress/pages/{community,gallery,about,contact}.html sources and their
+// dedicated publication lane. This legacy visual-v1 generator must never write
+// those routes again, because it contains superseded v1 layouts.
+if(apply) throw new Error('Deprecated support visual V1 writer is blocked. Publish current canonical support pages through the owned-routes pipeline.');
 const cssPath=process.env.DTF_VISUAL_CSS||join(process.cwd(),'site/design-system/dtf-visual-v1.css');
 const rulesPath=process.env.RETIRED_VISUAL_RULES||join(process.cwd(),'site/wordpress/visual-quality/retired-public-visuals.json');
 const backupRoot=process.env.BACKUP_ROOT||'/tmp/dtf-support-visuals';
