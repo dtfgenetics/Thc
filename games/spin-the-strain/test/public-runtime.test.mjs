@@ -45,6 +45,9 @@ assert.match(app, /globalThis\.crypto\?\.getRandomValues/, 'random code generati
 assert.match(app, /globalThis\.history\?\.replaceState/, 'history mutation must be guarded');
 assert.match(app, /function prefersReducedMotion\(/, 'reduced-motion lookup must be guarded');
 assert.match(app, /navigator\.clipboard\?\.writeText/, 'share behavior must tolerate unavailable clipboard APIs');
+assert.match(app, /async function copyText\(/, 'share behavior must expose a clipboard fallback helper');
+assert.match(app, /document\.execCommand\?\.\('copy'\) === true/, 'share behavior must retain a legacy clipboard fallback');
+assert.match(app, /Copy failed\. Share wheel/, 'share failure must preserve the full manual challenge path');
 
 assert.match(css, /\.segment-label::after\{content:attr\(data-short\)/, 'mobile wheel must render compact category abbreviations');
 assert.match(css, /\.wheel-stage\[aria-busy="true"\] \.wheel/, 'wheel must expose a stronger visual spinning state');
@@ -57,6 +60,8 @@ assert.match(css, /@media\(max-width:520px\)/, 'mobile wheel layout must be expl
 assert.match(css, /\.spin-button\{width:92px;min-width:92px\}/, 'mobile spin target must remain comfortably tappable');
 assert.match(css, /@media\(hover:none\)/, 'touch devices must not inherit hover-only movement');
 assert.match(css, /@media\(prefers-reduced-motion:reduce\)/, 'spin polish must respect reduced-motion preferences');
+assert.match(css, /@media\(forced-colors:active\)/, 'wheel controls and states must remain visible in forced-colors mode');
+assert.match(css, /outline:3px solid Highlight/, 'forced-colors focus must remain visible');
 
 assert.equal(canonical.modes.length, 3, 'mode count changed unexpectedly');
 assert.equal(canonical.entries.length, 54, 'entry count changed unexpectedly');
