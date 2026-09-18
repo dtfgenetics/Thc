@@ -182,27 +182,27 @@
     },
     {
       "id": "ganjumanji",
-      "name": "Ganjumanji",
+      "name": "Ganjumanji: The Lost Grower's Temple",
       "type": "game",
-      "status": "placeholder",
+      "status": "canonical-preproduction",
       "repo": "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple",
-      "repo_role": "controlled preproduction placeholder; the project tracker explicitly keeps GitHub empty until canonical approved code exists",
+      "repo_role": "canonical standalone Phaser/TypeScript/Vite implementation with a playable five-region campaign, 10 relic seeds, save v5, separate autosave/safe-checkpoint recovery, deterministic campaign/content/input/storage/solvability tests, shipped UI validation, route-safe build validation, and release-candidate QA; DTFSeeds promotion still requires exact pinned packaging and live-route verification",
       "drive_path": "04 Games/Ganjumanji",
       "library_path": "DTF Working Projects/02 Games/Jumangi",
       "release_path": "04 Games/Ganjumanji/07 Approved Release",
-      "source_of_truth_doc": "docs/PROJECT_SOURCE_OF_TRUTH.md"
+      "source_of_truth_doc": "repo:README.md"
     },
     {
       "id": "thc-rpg",
-      "name": "THC RPG",
+      "name": "THC RPG — The First Seed",
       "type": "game",
-      "status": "placeholder",
+      "status": "canonical-preproduction",
       "repo": "dtfgenetics/Thc-rpg",
-      "repo_role": "controlled concept placeholder; Drive contains project folder structure but no canonical Rules or Game Data records were available to migrate during the 2026-08-18 source-control sweep",
+      "repo_role": "canonical standalone 2.1.0 browser cultivation RPG with six connected chapters, deterministic phenotype variation, Keeper selection and preserved cutting progression, Zestberry trial, save v6 migration, responsive keyboard/touch UI, engine regression tests, shipped UI validation, route-safe visitor build, and release-candidate QA; DTFSeeds promotion still requires pinned packaging and exact live-route verification",
       "drive_path": "04 Games/THC RPG",
       "library_path": "DTF Working Projects/02 Games/Thc rpg mash up",
       "release_path": "04 Games/THC RPG/07 Approved Release",
-      "source_of_truth_doc": "docs/PROJECT_SOURCE_OF_TRUTH.md"
+      "source_of_truth_doc": "repo:README.md"
     },
     {
       "id": "terpocalypse",
