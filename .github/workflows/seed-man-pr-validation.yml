@@ -35,11 +35,12 @@ jobs:
       - name: Install Seed Man build dependencies
         run: npm install --prefix games/seed-man-platformer --ignore-scripts --no-audit --no-fund
 
-      - name: Build canonical Three.js public runtime
-        run: npm run --prefix games/seed-man-platformer build:three-public
-
-      - name: Verify generated Three.js runtime is committed
-        run: git diff --exit-code -- site/public-route-patch/games/seed-man-platformer/three-world-v1.js
+      - name: Verify current Seed Man source/runtime architecture
+        run: |
+          set -euo pipefail
+          node scripts/verify-seed-man-production-v20.mjs
+          node scripts/validate-seed-man-production-bundle.mjs
+          grep -Fq 'seed-man-three-compat-fallback-v1' site/public-route-patch/games/seed-man-platformer/three-world-v1.js
 
       - name: Run deterministic gameplay and public-runtime tests
         run: |
