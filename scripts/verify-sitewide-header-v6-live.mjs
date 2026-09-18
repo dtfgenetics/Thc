@@ -29,7 +29,7 @@ function inspect(html,route){
   const match=html.match(/<header\b[^>]*data-dtf-shell=["']header-v6["'][^>]*>[\s\S]*?<\/header>/i);
   if(!match) throw new Error(`${route}: canonical header-v6 not found`);
   const header=match[0];
-  if(!/data-dtf-sitewide-header=["']canonical-six-v1["']/i.test(header)) throw new Error(`${route}: canonical-six-v1 marker missing`);
+  if(!/data-dtf-sitewide-header=["']canonical-eight-v1["']/i.test(header)) throw new Error(`${route}: canonical-eight-v1 marker missing`);
   const navMatch=header.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>([\s\S]*?)<\/nav>/i);
   if(!navMatch) throw new Error(`${route}: primary navigation not found`);
   const anchors=[...navMatch[1].matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)].map((m)=>{
