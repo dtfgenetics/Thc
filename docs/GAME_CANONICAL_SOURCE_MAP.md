@@ -1,6 +1,6 @@
 # DTFSeeds Game Canonical Source Map
 
-Updated: 2026-09-09
+Updated: 2026-09-17
 
 This document is the human-readable companion to `data/game-source-map.json`.
 
@@ -42,7 +42,7 @@ Never begin a game repair from the deployed HTML, a copied integration bundle, o
 
 | Project | Canonical repository | Current gate |
 | --- | --- | --- |
-| Ganjumanji | `dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple` | canonical release candidate `0.3.0`; standalone tests, build, route validation, desktop/mobile Playwright, screenshot evidence, and production artifact are green at `e82580d`; DTFSeeds packaging and exact live-route verification remain required |
+| Ganjumanji | `dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple` | canonical release candidate `0.4.1` pinned at `b1cbf9b`; deterministic campaign/content/input/storage/solvability tests, UI-contract validation, TypeScript/Vite build, release validation, current GitHub Actions CI, and production artifact are green; DTFSeeds packaging and exact live-route verification remain required |
 | THC RPG | `dtfgenetics/Thc-rpg` | canonical release candidate `2.0.0` pinned at `15fe22d`; standalone tests, visitor-only build, release validation, desktop/mobile Chromium, and `thc-rpg-production-build` are green; central DTFSeeds packaging and exact live-route verification remain required before public promotion |
 
 ## Known ownership defects being corrected
@@ -65,7 +65,7 @@ The stable playable source currently packaged by DTFSeeds is `dtfgenetics/Terpoc
 
 ### Ganjumanji status
 
-`dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple` is no longer a design-only placeholder. Canonical `main` now contains a complete three-region release-candidate campaign with deterministic model/storage/records, solvability validation, desktop/mobile browser acceptance, and a production build artifact. Central integration pins the exact passing revision and must not promote the game to the public playable count until DTFSeeds packaging plus live-route verification pass.
+`dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple` is no longer a design-only placeholder. Canonical `main` now contains a complete five-region 0.4.1 release-candidate campaign with 10 relic seeds, save v5, separate autosave/safe-checkpoint recovery, deterministic campaign/content/input/storage/solvability validation, deterministic UI-contract validation, and a production build artifact. Central integration pins the exact passing revision and must not promote the game to the public playable count until DTFSeeds packaging plus live-route verification pass.
 
 ### THC RPG status
 
