@@ -191,6 +191,33 @@ function prefersReducedMotion() {
   catch { return false; }
 }
 
+async function copyText(value) {
+  const text = String(value || '');
+  if (!text) return false;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {}
+  try {
+    const field = document.createElement('textarea');
+    field.value = text;
+    field.setAttribute('readonly', '');
+    field.style.position = 'fixed';
+    field.style.opacity = '0';
+    field.style.pointerEvents = 'none';
+    document.body.append(field);
+    field.select();
+    field.setSelectionRange(0, text.length);
+    const copied = document.execCommand?.('copy') === true;
+    field.remove();
+    return copied;
+  } catch {
+    return false;
+  }
+}
+
 function wheelGradient(count) {
   const colors = ['var(--seg-a)', 'var(--seg-b)', 'var(--seg-c)', 'var(--seg-d)', 'var(--seg-e)', 'var(--seg-f)'];
   const size = 100 / count;
@@ -363,13 +390,10 @@ ui.spin.addEventListener('click', startSpin);
 ui.share.addEventListener('click', async () => {
   const url = challengeUrl();
   const text = `Spin the Strain · ${currentMode().title} · wheel ${state.code}\n${url}`;
-  try {
-    if (!navigator.clipboard?.writeText) throw new Error('Clipboard API unavailable.');
-    await navigator.clipboard.writeText(text);
-    ui.announce.textContent = 'Wheel challenge copied.';
-  } catch {
-    ui.announce.textContent = `Share wheel ${state.code}: ${url}`;
-  }
+  const copied = await copyText(text);
+  ui.announce.textContent = copied
+    ? 'Wheel challenge copied.'
+    : `Copy failed. Share wheel ${state.code}: ${url}`;
 });
 
 document.addEventListener('keydown', (event) => {
