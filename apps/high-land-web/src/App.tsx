@@ -349,9 +349,16 @@ export default function App() {
     <main className="app-shell">
       <section className="game-panel">
         <div className="title-card">
-          <p className="eyebrow">Browser Board Game</p>
-          <h1>High Land: The Sweet Escape</h1>
-          <p className="subtitle">Roll, move, draw HIT cards, handle card effects, and race to the finish with up to 10 players.</p>
+          <div className="highland-title-copy">
+            <p className="eyebrow">DTF Browser Board Game</p>
+            <h1>High Land: The Sweet Escape</h1>
+            <p className="subtitle">Race from Rolling Hills to Cloud 9 through seven cannabis-fantasy regions, colorful road spaces, and unpredictable HIT cards.</p>
+            <div className="highland-meta" aria-label="High Land game features"><span>2–10 players</span><span>Local + room play</span><span>HIT card events</span></div>
+          </div>
+          <ol className="highland-world-route" aria-label="High Land journey">
+            <li>Rolling Hills</li><li>Dankwood Forest</li><li>Rosin Rail Station</li><li>Munchie Mountain</li><li>Kief Caves</li><li>Trichome Towers</li><li>Cloud 9 Citadel</li>
+          </ol>
+          <a className="highland-hub-link" href="/games/">← DTF Game Hub</a>
         </div>
 
         {screenMode === 'landing' ? (
@@ -360,10 +367,9 @@ export default function App() {
             <h2>Start High Land</h2>
             <p className="subtitle">Play together on one device or create an online invite room for friends.</p>
             <div className="button-row">
-              <button className="primary" onClick={() => setScreenMode('local')} type="button">Local Play</button>
-              <button onClick={() => setScreenMode('create_room')} type="button">Create Room</button>
-              <button onClick={() => setScreenMode('join_room')} type="button">Join Room</button>
-              <button onClick={previewHitAnimation} type="button">Preview HIT Animation</button>
+              <button className="primary" onClick={() => setScreenMode('local')} type="button">Play on This Device</button>
+              <button onClick={() => setScreenMode('create_room')} type="button">Create Online Room</button>
+              <button onClick={() => setScreenMode('join_room')} type="button">Join a Room</button>
             </div>
           </div>
         ) : null}
@@ -466,7 +472,6 @@ export default function App() {
               <button className="primary roll-button" disabled={!canRollNow || diceAnimating || gameState.phase === 'game_over'} onClick={roll} type="button">
                 {gameState.phase === 'choosing_player' ? 'Choose a Player' : 'Roll Dice'}
               </button>
-              <button onClick={previewHitAnimation} type="button">Preview HIT Animation</button>
               <button disabled={!canRestartNow} onClick={restart} type="button">Restart</button>
               <button onClick={toggleMute} type="button">{muted ? 'Unmute' : 'Mute'}</button>
             </div>
