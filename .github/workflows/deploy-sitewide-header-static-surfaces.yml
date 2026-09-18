@@ -7,6 +7,7 @@ on:
     paths:
       - scripts/lib/sitewide-header-template.mjs
       - scripts/lib/sitewide-header-template-v6.mjs
+      - scripts/lib/sitewide-footer-template-v6.mjs
       - scripts/lib/sitewide-content-density-v1.mjs
       - scripts/lib/sitewide-visual-repair-v2.mjs
       - scripts/apply-sitewide-header.mjs
@@ -20,6 +21,7 @@ on:
     paths:
       - scripts/lib/sitewide-header-template.mjs
       - scripts/lib/sitewide-header-template-v6.mjs
+      - scripts/lib/sitewide-footer-template-v6.mjs
       - scripts/lib/sitewide-content-density-v1.mjs
       - scripts/lib/sitewide-visual-repair-v2.mjs
       - scripts/apply-sitewide-header.mjs
@@ -51,6 +53,7 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/lib/sitewide-header-template-v6.mjs
+          node --check scripts/lib/sitewide-footer-template-v6.mjs
           node --check scripts/lib/sitewide-content-density-v1.mjs
           node --check scripts/lib/sitewide-visual-repair-v2.mjs
           node --check scripts/apply-sitewide-header.mjs
@@ -60,6 +63,9 @@ jobs:
           test -s site/wordpress/assets/sitewide-ux-polish-v1.css
           grep -Fq 'Apply approved sitewide header to release HTML' .github/workflows/build-dtfseeds-public-suite.yml
           grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' scripts/lib/sitewide-header-template-v6.mjs
+          grep -Fq 'data-dtf-sitewide-footer="canonical-eight-v1"' scripts/lib/sitewide-footer-template-v6.mjs
+          grep -Fq 'data-dtf-shell="footer-v6"' scripts/lib/sitewide-footer-template-v6.mjs
+          grep -Fq "./lib/sitewide-footer-template-v6.mjs" scripts/apply-sitewide-header.mjs
           for required in '>Home</a>' '>Seeds</a>' '>Learn</a>' '>Courses</a>' '>Diagnostic</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
             grep -Fq "$required" scripts/lib/sitewide-header-template-v6.mjs || { echo "Missing canonical nav label: $required" >&2; exit 1; }
           done
@@ -104,7 +110,7 @@ jobs:
         run: |
           set -euo pipefail
           gh workflow run deploy-public-suite-wordpress-v2.yml --repo "$GITHUB_REPOSITORY" --ref main
-          echo 'Dispatched Deploy DTFSeeds Public Suite via WordPress V2 from the merged V6 header/responsive/UX/visual-repair source.'
+          echo 'Dispatched Deploy DTFSeeds Public Suite via WordPress V2 from the merged V6 header/footer/responsive/UX/visual-repair source.'
       - name: Wait for visitor-facing responsive shell and UX polish across primary navigation
         shell: bash
         env:
