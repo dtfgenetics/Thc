@@ -3,6 +3,17 @@ const CARRIER_ARCHETYPE = Object.freeze({ fire:'fire-carrier', electric:'electri
 function finite(value,fallback=0){const n=Number(value);return Number.isFinite(n)?n:fallback;}
 function unique(values=[]){return [...new Set(values.filter(Boolean))];}
 
+export function hazardGeometry(type,groundY=480){
+  const surfaceY=finite(groundY,480);
+  if(type==='sandstorm')return {y:0,height:surfaceY};
+  if(['spore-cloud','root-cage'].includes(type))return {y:surfaceY-104,height:104};
+  if(['rockfall','falling-rocks','falling-icicles','laser-grid','crusher','energy-beam'].includes(type))return {y:surfaceY-124,height:124};
+  if(type==='waterfall-gap')return {y:surfaceY-20,height:62};
+  if(type==='freeze-floor')return {y:surfaceY-8,height:18};
+  if(['falling-bridges','breakaway-ice'].includes(type))return {y:surfaceY+18,height:42};
+  return {y:surfaceY-18,height:38};
+}
+
 export function compileAuthoredRecipe(levelId, recipe, defaults={}, levelMeta={}) {
   if (!recipe?.world || !Array.isArray(recipe.sections) || recipe.sections.length === 0) {
     throw new Error(`Invalid authored recipe for ${levelId}`);
@@ -61,7 +72,8 @@ export function compileAuthoredRecipe(levelId, recipe, defaults={}, levelMeta={}
 
     sectionHazards.forEach((type,h)=>{
       const hx=startX+Math.min(Math.max(90,usableWidth-170),220+h*230);
-      hazards.push({id:`${sectionId}-hazard-${hazardSerial++}`,x:hx,y:groundY+18,width:96,height:42,type,zoneId:sectionId});
+      const geometry=hazardGeometry(type,groundY);
+      hazards.push({id:`${sectionId}-hazard-${hazardSerial++}`,x:hx,y:geometry.y,width:96,height:geometry.height,type,zoneId:sectionId});
     });
 
     for(let px=startX+180;px<endX-110;px+=pickupEvery*scale){
@@ -134,7 +146,7 @@ export function compileAuthoredRecipe(levelId, recipe, defaults={}, levelMeta={}
 
   const finalX=Math.max(180,length-140);
   return Object.freeze({
-    mode:'authored-recipe',revision:3,source:'authored-level-recipes-v1',world:recipe.world,length,
+    mode:'authored-recipe',revision:4,source:'authored-level-recipes-v1',world:recipe.world,length,
     spawn:{x:96,y:groundY-90},platforms,hazards,pickups,checkpoints,enemySpawns,phenotypeCarrierSpawns,bosses,encounterZones,
     mechanics:unique(mechanics),requiredPickups:pickups.length,
     finish:{x:finalX,y:groundY-90,width:50,height:90}
