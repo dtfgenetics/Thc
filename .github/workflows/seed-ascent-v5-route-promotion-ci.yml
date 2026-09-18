@@ -1,4 +1,4 @@
-name: Seed Ascent V5 Route Promotion CI
+name: Seed Ascent V6 Route Promotion CI
 
 on:
   pull_request:
@@ -31,7 +31,9 @@ jobs:
           grep -Fq "wrapper.text.includes('<iframe')" scripts/promote-public-game-routes-via-wordpress.mjs
           grep -Fq "wrapper.text.includes('/seed-ascent.html')" scripts/promote-public-game-routes-via-wordpress.mjs
           grep -Fq "wrapper.text.includes('/_next/static/')" scripts/promote-public-game-routes-via-wordpress.mjs
-          grep -Fq 'data-dtf-shell="header-v5"' scripts/promote-public-game-routes-via-wordpress.mjs
-          grep -Fq 'data-dtf-sitewide-header="approved-reference-v1"' scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq 'data-dtf-shell="header-v6"' scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq 'data-dtf-shell="footer-v6"' scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq 'data-dtf-sitewide-footer="canonical-eight-v1"' scripts/promote-public-game-routes-via-wordpress.mjs
           grep -Fq 'id="dtf-sitewide-ux-polish-v1"' scripts/promote-public-game-routes-via-wordpress.mjs
           ! grep -Fq '!/wp-content|wp-includes|wordpress/i.test(wrapper.text)' scripts/promote-public-game-routes-via-wordpress.mjs
