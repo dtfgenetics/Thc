@@ -25,3 +25,13 @@ body{min-width:0;overflow-x:visible}
 @media(max-width:720px){.stage{min-height:0}.game-stage{padding-top:18px}.strain-card{margin-top:14px;min-height:315px}.strain-main{padding:22px 0 12px}.strain-main h2{font-size:clamp(2.35rem,13vw,4.4rem)}.vote-controls{position:sticky;bottom:max(8px,env(safe-area-inset-bottom));z-index:8;padding:7px;margin-inline:-7px;border:1px solid rgba(137,183,147,.16);border-radius:18px;background:rgba(5,17,10,.92);backdrop-filter:blur(14px);box-shadow:0 -12px 36px rgba(0,0,0,.28)}.vote-button{min-height:88px}.double-hit{margin-top:9px}.sidebar{grid-template-columns:minmax(0,1fr);margin-top:2px}.chat-panel{min-height:300px}.chat-messages{max-height:220px}}
 @media(max-width:430px){.topbar,.shell{width:min(100% - 20px,1320px)}.topbar{gap:10px}.top-actions{min-width:0;flex-wrap:wrap;justify-content:flex-end}.strain-card{min-height:300px;padding:17px}.strain-main h2{font-size:clamp(2.15rem,14vw,3.35rem)}.vote-controls{gap:7px}.vote-button{min-height:82px;padding:10px 7px}.vote-button>span{font-size:1.35rem}.vote-button small{font-size:.68rem}.locked-vote{padding:14px 15px}.round-meta{gap:8px}.round-meta strong{min-width:2ch;text-align:right}}
 @media(prefers-reduced-motion:reduce){.locked-vote{transition:none}.round-meta[data-urgency="critical"]{filter:none}}
+
+@media(forced-colors:active){
+  .vote-button,.primary-action,.secondary-action,.icon-button,.seg,.room-code,.chat-form button{
+    border:2px solid ButtonText;
+  }
+  .vote-button:focus-visible,.primary-action:focus-visible,.secondary-action:focus-visible,.icon-button:focus-visible,.seg:focus-visible,.room-code:focus-visible{
+    outline:3px solid Highlight;
+    outline-offset:2px;
+  }
+}
