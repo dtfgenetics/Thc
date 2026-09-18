@@ -31,6 +31,9 @@ assert.match(app, /function safeReplaceUrl\(/, 'history mutation must be guarded
 assert.match(app, /function safeFocus\(/, 'focus-with-options must have a compatibility fallback');
 assert.match(app, /function prefersReducedMotion\(/, 'reduced-motion lookup must be guarded');
 assert.match(app, /navigator\.clipboard\?\.writeText/, 'share behavior must tolerate unavailable clipboard APIs');
+assert.match(app, /async function copyText\(/, 'share behavior must expose a clipboard fallback helper');
+assert.match(app, /document\.execCommand\?\.\('copy'\) === true/, 'share behavior must retain a legacy clipboard fallback');
+assert.match(app, /Copy failed\. Share case/, 'share failure must preserve the full manual challenge path');
 
 assert.match(analysisCss, /\.question-card\.best-split/, 'best-split question state must remain visible');
 assert.match(uiCss, /\.hero::before\{content:"CASE \/\/ MS"/, 'hero must carry the case-file identity');
@@ -43,6 +46,8 @@ assert.match(uiCss, /\.clue-unknown::before/, 'UNKNOWN clues must have a timelin
 assert.match(uiCss, /\.modifier-card/, 'Wild Card modifier must retain a dedicated visual treatment');
 assert.match(uiCss, /@media\(hover:none\)/, 'touch devices must not inherit hover-only movement');
 assert.match(uiCss, /@media\(prefers-reduced-motion:reduce\)/, 'visual polish must respect reduced-motion preferences');
+assert.match(uiCss, /@media\(forced-colors:active\)/, 'deduction states must remain visible in forced-colors mode');
+assert.match(uiCss, /outline:3px solid Highlight/, 'forced-colors focus must remain visible');
 
 assert.match(confirm, /let selectedButton = null;/, 'guess layer must keep staged selection separate from game state');
 assert.match(confirm, /let allowNextGuess = false;/, 'only an explicit confirm may pass through to the core guess handler');
@@ -58,6 +63,7 @@ assert.match(confirm, /candidate-progress/, 'candidate elimination progress must
 assert.match(confirm, /MutationObserver/, 'progress and selection state must stay synchronized after core rerenders');
 
 assert.match(confirmCss, /\.guess-confirm-bar/);
+assert.match(confirmCss, /top:calc\(var\(--dtf-global-header-height,74px\) \+ 8px\)/, 'guess confirmation bar must clear the shared DTF header');
 assert.match(confirmCss, /\.candidate-card\.guess-selected/);
 assert.match(confirmCss, /\.candidate-progress-track/);
 assert.match(confirmCss, /@media\(max-width:520px\)/);
