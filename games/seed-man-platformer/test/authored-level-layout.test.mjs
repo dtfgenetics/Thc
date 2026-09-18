@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { compileAuthoredRecipe, hazardGeometry } from '../src/systems/authored-layout-compiler.mjs';
 
 const root = new URL('../', import.meta.url);
 const publicRoot = new URL('../../../site/public-route-patch/games/seed-man-platformer/', import.meta.url);
@@ -60,4 +61,38 @@ assert.match(enemyRuntime, /function buildAuthoredEnemies\(/, 'enemy runtime mus
 assert.match(enemyRuntime, /phenotypeCarrierSpawns/, 'enemy runtime must honor authored phenotype carrier placements');
 assert.match(enemyRuntime, /authoredPlacement:Boolean\(options\.authored\)/, 'enemy runtime must expose authored placement state');
 
-console.log('Sprout Steps authored production layout contract passed.');
+const recipeCatalog = JSON.parse(await readFile(new URL('data/authored-level-recipes-v1.json', root), 'utf8'));
+const compile = (id) => {
+  const meta=catalog.levels.find((entry)=>entry.id===id);
+  assert.ok(meta, `missing level metadata for ${id}`);
+  assert.ok(recipeCatalog.levels[id], `missing authored recipe for ${id}`);
+  return compileAuthoredRecipe(id,recipeCatalog.levels[id],recipeCatalog.defaults,meta);
+};
+
+assert.deepEqual(hazardGeometry('spikes',480),{y:462,height:38},'contact hazards must rise through the walkable surface');
+assert.deepEqual(hazardGeometry('waterfall-gap',480),{y:460,height:62},'pit strips must be jumpable collision zones instead of buried decorations');
+assert.deepEqual(hazardGeometry('sandstorm',480),{y:0,height:480},'force zones must span the playable vertical space');
+
+const industrial=compile('5-2-industrial-zone');
+assert.equal(industrial.revision,4,'authored recipe compiler revision must expose playability geometry v4');
+assert.ok(industrial.encounterZones.every((zone)=>Array.isArray(zone.mechanics)&&Array.isArray(zone.hazards)),'encounter zones must preserve mechanic and hazard metadata');
+for(const hazard of industrial.hazards.filter((item)=>['laser-grid','crusher'].includes(item.type))){
+  assert.ok(hazard.y<480, `${hazard.type} must extend above the ground surface`);
+  assert.ok(hazard.y+hazard.height>=480, `${hazard.type} must reach the player standing plane`);
+}
+
+const dusty=compile('3-3-dusty-winds');
+const sandstorm=dusty.hazards.find((hazard)=>hazard.type==='sandstorm');
+assert.ok(sandstorm,'Dusty Winds must compile a sandstorm hazard');
+assert.equal(sandstorm.y,0);
+assert.equal(sandstorm.y+sandstorm.height,480);
+
+const waterfall=compile('1-3-waterfall-way');
+const waterfallGap=waterfall.hazards.find((hazard)=>hazard.type==='waterfall-gap');
+assert.ok(waterfallGap,'Waterfall Way must compile a waterfall gap');
+assert.ok(waterfallGap.y<480&&waterfallGap.y+waterfallGap.height>480,'waterfall gap must cross the standing collision plane');
+
+assert.match(campaignRuntime, /const hazardGeometry = /, 'public campaign compiler must own the same hazard geometry policy');
+assert.match(campaignRuntime, /revision:4/, 'public authored recipe compiler must expose revision 4');
+
+console.log('Seed Man authored production layout and playability geometry contracts passed.');
