@@ -26,7 +26,7 @@
     .hud button,.panel button,select{min-height:44px}
     html[data-seed-pheno-active="true"] .combat-pheno-chip{border-color:var(--seed-pheno-accent)!important;box-shadow:0 0 18px color-mix(in srgb,var(--seed-pheno-accent) 20%,transparent)}
     .touch-controls{overscroll-behavior:contain}.touch-controls .attack,.touch-controls .ability{position:relative;overflow:hidden}.touch-controls .attack::after,.touch-controls .ability::after{content:"";position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}.touch-controls button[data-combat-feedback="fired"]::after{animation:seedCombatFlash .15s ease-out}.touch-controls button[data-combat-feedback="blocked"]{animation:seedCombatBlocked .15s ease-out}.touch-controls .ability[data-active="true"]{border-color:var(--seed-pheno-accent);background:linear-gradient(135deg,color-mix(in srgb,#231d34 60%,var(--seed-pheno-accent) 40%),color-mix(in srgb,#493d69 62%,var(--seed-pheno-accent) 38%));box-shadow:inset 0 -4px 0 #0003,0 0 22px color-mix(in srgb,var(--seed-pheno-accent) 28%,transparent)}
-    .status[data-state="boss"]{color:var(--danger);font-weight:900}
+    .status[data-state="boss"]{color:var(--danger);font-weight:900}.status[data-state="checkpoint"],.status[data-state="retry"]{color:var(--accent);font-weight:900}
     @keyframes seedCombatFlash{0%{opacity:.32}100%{opacity:0}}@keyframes seedCombatBlocked{0%,100%{transform:translateX(0)}35%{transform:translateX(-3px)}70%{transform:translateX(3px)}}
     @media(max-width:900px){main{width:min(100%,760px);padding-top:.75rem}.hero{grid-template-columns:1fr;grid-template-areas:"eyebrow" "title" "lede" "status" "marker";padding-inline:1rem}.seed-world-route{grid-template-columns:repeat(3,minmax(0,1fr))}.hero>h1{font-size:clamp(2.7rem,12vw,4.25rem);line-height:.9}.hero>.lede{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}.game-shell::before{margin-bottom:.5rem}.feature-strip{margin-inline:1rem}.panel{margin-inline:1rem}}
     @media(max-width:680px){main{width:100%;padding-top:.45rem}.seed-world-route{grid-template-columns:1fr 1fr}.seed-world-route span:last-child{grid-column:1/-1}.seed-hero-actions{display:grid;grid-template-columns:1fr 1fr}.seed-hero-actions a:first-child{grid-column:1/-1;justify-content:center}.seed-hero-actions a{justify-content:center}.hero{margin-bottom:.45rem}.hero>.eyebrow{font-size:.64rem;letter-spacing:.09em}.hero>h1{font-size:clamp(2.45rem,14vw,3.5rem);margin:.05rem 0 .2rem}.hero>.lede{font-size:.82rem;line-height:1.35;-webkit-line-clamp:2}.hero>#load-status{font-size:.8rem;margin:.15rem 0}.hero>#seed-ui-release-marker{font-size:.58rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.game-shell{margin-top:.4rem}.game-shell::before{font-size:.58rem;letter-spacing:.09em}.hud{max-height:92px;overflow:auto;scrollbar-width:thin}.hud span{font-size:.7rem;padding:.32rem .45rem}.hud button{min-height:44px;margin-left:0!important}.touch-controls{box-shadow:0 -10px 28px #0008}.touch-controls .attack,.touch-controls .ability{font-size:.66rem}.control-copy{display:none}}
@@ -63,7 +63,7 @@
         <button id="pause" type="button" aria-pressed="false">Pause</button>
         <button id="restart" type="button">Restart</button>
       </div>
-      <canvas id="game" width="960" height="540" tabindex="0" aria-label="Seed Man game canvas. Move with A and D or the arrow keys. Jump with Space, W, or Up. Press J to attack, K for phenotype ability, and P to pause."></canvas>
+      <canvas id="game" width="960" height="540" tabindex="0" aria-label="Seed Man game canvas. Move with A and D or the arrow keys. Jump with Space, W, or Up. Press J or X to attack, K or C for phenotype ability, P to pause (Escape also pauses), and R to retry from the last checkpoint. Standard gamepads are supported."></canvas>
       <div class="touch-controls controls" aria-label="Touch controls">
         <button type="button" data-control="left" aria-label="Move left">◀</button>
         <button type="button" data-control="right" aria-label="Move right">▶</button>
@@ -71,7 +71,7 @@
         <button type="button" id="combat-attack-button" class="attack" aria-label="Attack with Seed Slinger">ATTACK</button>
         <button type="button" id="combat-ability-button" class="ability" aria-label="Use absorbed phenotype ability">PHENO</button>
       </div>
-      <p class="controls control-copy"><strong>Movement:</strong> A/D or ←/→ · Space/W/↑ · double jump. <strong>Combat:</strong> J/X attack · K/C phenotype ability · P pause. Defeat phenotype carriers to absorb temporary Fire, Electric, or Ice powers.</p>
+      <p class="controls control-copy"><strong>Movement:</strong> A/D or ←/→ · Space/W/↑ · double jump. <strong>Combat:</strong> J/X attack · K/C phenotype · P to pause · Esc also pauses · R retry checkpoint. <strong>Controller:</strong> left stick/D-pad · bottom face button jump · left face attack · right face phenotype · Menu pause.</p>
     </section>
 
     <section class="feature-strip" aria-label="Seed Man campaign features">
@@ -133,11 +133,11 @@
 
   <script src="./approved-art-core-v1.js?v=20260909-v20-runtime-v5" defer></script>
   <script src="./approved-art-runtime-v1.js?v=20260909-v20-runtime-v5" defer></script>
-  <script src="./app.js?v=20260909-v20-runtime-v5" defer></script>
+  <script src="./app.js?v=20260918-v20-playability-v1" defer></script>
   <script src="./player-state-v20.js?v=20260909-v20-runtime-v5" defer></script>
   <script src="./seed-man-production-art.js?v=20260909-v20-runtime-v5" defer></script>
   <script src="./three-world-v1.js?v=20260909-v20-runtime-v5" defer></script>
-  <script src="./campaign-v20-runtime.js?v=20260909-v20-runtime-v5" defer></script>
+  <script src="./campaign-v20-runtime.js?v=20260918-v20-playability-v1" defer></script>
   <script src="./campaign-ui-v20.js?v=20260911-v20-runtime-v6" defer></script>
   <script src="./world-mechanics-browser-v1.js?v=20260915-v20-world-mechanics-v1" defer></script>
   <script src="./three-world-adapter-v1.js?v=20260909-v20-runtime-v5" defer></script>
