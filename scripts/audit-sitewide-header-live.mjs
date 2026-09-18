@@ -53,7 +53,7 @@ const CANONICAL_NAV = [
 
 const REQUIRED = [
   { label: 'data-dtf-shell="header-v6"', test: body => body.includes('data-dtf-shell="header-v6"') },
-  { label: 'data-dtf-sitewide-header="canonical-six-v1"', test: body => body.includes('data-dtf-sitewide-header="canonical-six-v1"') },
+  { label: 'data-dtf-sitewide-header="canonical-eight-v1"', test: body => body.includes('data-dtf-sitewide-header="canonical-eight-v1"') },
   ...CANONICAL_NAV.map(([href, label]) => ({ label: `<a href="${href}">${label}</a>`, test: body => hasNavLink(body, href, label) })),
   { label: 'Teaching', test: body => body.includes('Teaching') },
   { label: 'Healthy Cultivation', test: body => body.includes('Healthy Cultivation') }
