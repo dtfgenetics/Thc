@@ -231,6 +231,17 @@ jobs:
           test -s site/public-route-patch/games/lost-in-the-terps/terps.css
           grep -Fq 'https://dtfseeds.com/games/lost-in-the-terps/' site/public-route-patch/games/lost-in-the-terps/index.html
 
+      - name: Validate Strain Match browser game
+        run: |
+          set -euo pipefail
+          node games/strain-match/scripts/validate-data.mjs
+          node games/strain-match/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/strain-match/app.js
+          test -s site/public-route-patch/games/strain-match/index.html
+          test -s site/public-route-patch/games/strain-match/strain-match.css
+          test -s site/public-route-patch/games/strain-match/strain-match-v2.css
+          grep -Fq 'https://dtfseeds.com/games/strain-match/' site/public-route-patch/games/strain-match/index.html
+
       - name: Validate Seed Man v20 campaign
         run: |
           set -euo pipefail
