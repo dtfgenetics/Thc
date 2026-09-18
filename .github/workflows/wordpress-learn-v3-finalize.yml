@@ -110,7 +110,7 @@ jobs:
           NODE
           )"
           [[ "$actual" == "$expected" ]] || { echo "Unexpected Learn V6 nav: $actual" >&2; exit 1; }
-          for obsolete in '>Home</a>' '>Seeds</a>' '>Courses</a>' '>Diagnostic</a>'; do
+          for obsolete in '>Genetics</a>' '>Tools</a>'; do
             ! grep -Fqi -- "$obsolete" "$header" || { echo "Obsolete primary navigation label remains: $obsolete" >&2; exit 1; }
           done
           echo 'outcome=success' >> "$GITHUB_OUTPUT"
@@ -134,5 +134,5 @@ jobs:
             echo "V3-owned title normalization: **${APPLY:-not-completed}**"
             echo "Live V6 verification: **${VERIFY:-not-completed}**"
             echo
-            echo 'This workflow restores the V3 Learn presentation, then reapplies and verifies the canonical V6 Genetics / Learn / Tools / Games / Community / Shop shell so Learn finalization cannot regress the global header.'
+            echo 'This workflow restores the V3 Learn presentation, then reapplies and verifies the canonical V6 Home / Seeds / Learn / Courses / Diagnostic / Games / Community / Shop shell so Learn finalization cannot regress the global header.'
           } >> "$GITHUB_STEP_SUMMARY"
