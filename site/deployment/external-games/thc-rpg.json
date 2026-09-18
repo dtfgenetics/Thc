@@ -10,14 +10,18 @@
   "machineData": {
     "players": 1,
     "saveVersion": 6,
-    "input": ["keyboard", "mouse", "touch"],
+    "input": [
+      "keyboard",
+      "mouse",
+      "touch"
+    ],
     "deterministicPhenotypes": true,
     "growJournal": true,
     "keeperSelection": true,
     "keeperCuttings": true,
     "modalGameplayShortcutGuard": true
   },
-  "verifiedRevision": "bff31f0d6425f822a2647a7601c09cbd1b30a01d",
+  "verifiedRevision": "de6c26d9073d9154bbcade43b64768cf6a7ba2a0",
   "promotionGate": {
     "standaloneCI": "passed",
     "deterministicUiValidation": "passed",
@@ -25,5 +29,5 @@
     "centralPackaging": "required",
     "liveVerification": "required-before-production-ready"
   },
-  "notes": "Canonical code remains in dtfgenetics/Thc-rpg. Revision bff31f0d6425f822a2647a7601c09cbd1b30a01d is the v2.1.0 release-candidate source after deterministic shipped-UI validation replaced Playwright and gameplay shortcuts were blocked behind dialog, inventory, and Grow Journal overlays. Canonical CI passed engine/campaign tests, syntax checks, deterministic UI validation, visitor-only build, and release validation. Central packaging and exact post-deploy live-route verification remain required before production-ready promotion."
+  "notes": "Canonical code remains in dtfgenetics/Thc-rpg. Revision de6c26d9073d9154bbcade43b64768cf6a7ba2a0 is the green 2.1.0 release-candidate source after production launch-screen, compact-control and forced-color polish. The six-chapter campaign retains deterministic phenotype variation, Keeper selection/cutting progression, Zestberry trial, save v6 compatibility, guarded gameplay shortcuts, deterministic shipped-UI validation, visitor-only build, and release validation. Central packaging and exact post-deploy live-route verification remain required before production-ready promotion."
 }
