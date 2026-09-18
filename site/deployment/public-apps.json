@@ -247,7 +247,7 @@
       "route": "/games/bud-or-bluff/",
       "runtime": "static-php",
       "status": "ready-to-package",
-      "build": "node games/bud-or-bluff/test/engine.test.mjs && node games/bud-or-bluff/scripts/build-private-deck.mjs && node --check site/public-route-patch/games/bud-or-bluff/app-v2.js && php -l site/public-route-patch/games/bud-or-bluff/api-v2.php && node games/bud-or-bluff/test/online-lobby-v2.test.mjs",
+      "build": "node games/bud-or-bluff/test/engine.test.mjs && node games/bud-or-bluff/scripts/build-private-deck.mjs && node games/bud-or-bluff/test/keyboard-v1.test.mjs && node games/bud-or-bluff/test/visual-state-v3.test.mjs && node games/bud-or-bluff/test/online-lobby.test.mjs && node games/bud-or-bluff/test/online-lobby-v2.test.mjs",
       "machineData": {
         "players": "2-10",
         "cards": 40,
@@ -261,7 +261,7 @@
         "networkAuthority": "php-server",
         "transport": "polling"
       },
-      "notes": "Self-hosted 2–10 player online party game with six-character rooms, simultaneous server-authoritative BUD/BLUFF voting, hidden answers until reveal, Double Hit scoring, lobby lock/settings, chat, reconnectable sessions, vote-split reveal stats, rematches, host transfer, and same-origin PHP persistence."
+      "notes": "Self-hosted 2–10 player server-authoritative party game with simultaneous hidden voting, Double Hit scoring, lobby locking/settings, room chat, reconnect, rematches, host transfer, keyboard controls, visual-state feedback, and private answer data. Dedicated CI now uses Ubuntu 24.04/current GitHub actions. The central public-suite gate verifies both 10-player lobby generations, keyboard/visual contracts, API v2→durable-v3 routing, PHP syntax, and private-answer exclusion. Exact post-deploy live-route verification remains required."
     },
     {
       "id": "strain-showdown",
