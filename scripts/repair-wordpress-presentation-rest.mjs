@@ -41,17 +41,18 @@ async function request(path, options = {}) {
   return body;
 }
 
-// Canonical V6 visitor-facing primary navigation. Home is owned by the DTF Genetics
-// brand link. Courses belongs under Learn; diagnostic surfaces belong under Tools.
+// Canonical V6 visitor-facing primary navigation.
 const canonicalNavigation = [
-  ['Genetics', '/seeds/'],
+  ['Home', '/'],
+  ['Seeds', '/seeds/'],
   ['Learn', '/learn/'],
-  ['Tools', '/tools/'],
+  ['Courses', '/courses/'],
+  ['Diagnostic', '/tools/'],
   ['Games', '/games/'],
   ['Community', '/community/'],
   ['Shop', '/shop/']
 ];
-const obsoletePrimaryLabels = ['Home', 'Seeds', 'Courses', 'Diagnostic'];
+const obsoletePrimaryLabels = ['Genetics', 'Tools'];
 
 function navBlockContent(items) {
   return items.map(([label, url]) =>
@@ -63,8 +64,8 @@ const footerContent = `<!-- wp:group {"tagName":"footer","layout":{"type":"const
 <footer class="wp-block-group">
 <!-- wp:heading {"level":3} --><h3 class="wp-block-heading">DTF Genetics</h3><!-- /wp:heading -->
 <!-- wp:paragraph --><p>Dream the Future. Genetics, cultivation education, practical tools, original games, and community.</p><!-- /wp:paragraph -->
-<!-- wp:paragraph --><p><a href="/seeds/">Genetics</a> · <a href="/learn/">Learn</a> · <a href="/tools/">Tools</a> · <a href="/games/">Games</a> · <a href="/community/">Community</a> · <a href="/shop/">Shop</a></p><!-- /wp:paragraph -->
-<!-- wp:paragraph --><p><a href="/">Home</a> · <a href="/gallery/">Gallery</a> · <a href="/about/">About</a> · <a href="/contact/">Contact</a></p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p><a href="/">Home</a> · <a href="/seeds/">Seeds</a> · <a href="/learn/">Learn</a> · <a href="/courses/">Courses</a> · <a href="/tools/">Diagnostic</a> · <a href="/games/">Games</a> · <a href="/community/">Community</a> · <a href="/shop/">Shop</a></p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p><a href="/gallery/">Gallery</a> · <a href="/about/">About</a> · <a href="/contact/">Contact</a></p><!-- /wp:paragraph -->
 <!-- wp:paragraph --><p><a href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Join the DTF / Teaching Healthy Cultivation Discord</a></p><!-- /wp:paragraph -->
 <!-- wp:paragraph --><p>© 2026 DTF Genetics. All rights reserved.</p><!-- /wp:paragraph -->
 </footer>
@@ -106,7 +107,7 @@ if (!Array.isArray(navigations)) throw new Error('Unexpected navigation response
 const staleNavigations = navigations.filter((nav) => {
   const slug = String(nav?.slug || '');
   const content = rawText(nav?.content).toLowerCase();
-  return slug === 'navigation' || slug.startsWith('ai-menu') || content.includes('blog') || content.includes('knowledge') || content.includes('"label":"courses"') || content.includes('"label":"diagnostic"');
+  return slug === 'navigation' || slug.startsWith('ai-menu') || content.includes('blog') || content.includes('knowledge') || content.includes('"label":"genetics"') || content.includes('"label":"tools"');
 });
 await writeFile(join(backupDir, 'navigation-before.json'), `${JSON.stringify(staleNavigations, null, 2)}\n`, 'utf8');
 

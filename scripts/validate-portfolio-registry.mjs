@@ -179,9 +179,11 @@ if (fleetArchiveDoc?.type !== 'archive-pointer' ||
 }
 
 const canonicalNavigation = [
-  { id: 'genetics', label: 'Genetics', route: '/seeds/' },
+  { id: 'home', label: 'Home', route: '/' },
+  { id: 'seeds', label: 'Seeds', route: '/seeds/' },
   { id: 'learn', label: 'Learn', route: '/learn/' },
-  { id: 'tools', label: 'Tools', route: '/tools/' },
+  { id: 'courses', label: 'Courses', route: '/courses/' },
+  { id: 'diagnostic', label: 'Diagnostic', route: '/tools/' },
   { id: 'games', label: 'Games', route: '/games/' },
   { id: 'community', label: 'Community', route: '/community/' },
   { id: 'shop', label: 'Shop', route: '/shop/' }
@@ -215,23 +217,26 @@ if (Array.isArray(siteNavigation)) {
 }
 
 const labels = Array.isArray(siteNavigation) ? siteNavigation.map((item) => item.label) : [];
-for (const obsolete of ['Home', 'Seeds', 'Courses', 'Diagnostic']) {
-  if (labels.includes(obsolete)) errors.push(`site-navigation-v6: obsolete primary label '${obsolete}' is not allowed`);
+for (const required of canonicalNavigation.map((item) => item.label)) {
+  if (!labels.includes(required)) errors.push(`site-navigation-v6: required primary label '${required}' is missing`);
 }
-if (!shellDoc.sectionOwnership?.learn?.includes('/courses/')) errors.push('site-navigation-v6: Courses must be owned by Learn');
-if (!shellDoc.sectionOwnership?.tools?.includes('/growlens/')) errors.push('site-navigation-v6: Tools must own GrowLens');
-if (!shellDoc.sectionOwnership?.tools?.includes('/thc-grow-doc/')) errors.push('site-navigation-v6: Tools must own THC Grow Doc');
+for (const obsolete of ['Genetics', 'Tools']) {
+  if (labels.includes(obsolete)) errors.push(`site-navigation-v6: retired primary label '${obsolete}' is not allowed`);
+}
+if (!shellDoc.sectionOwnership?.courses?.includes('/courses/')) errors.push('site-navigation-v6: Courses must own /courses/');
+if (!shellDoc.sectionOwnership?.courses?.includes('/learn/learning-hub/')) errors.push('site-navigation-v6: Courses must own historical Learning Hub course URLs');
+if (!shellDoc.sectionOwnership?.diagnostic?.includes('/growlens/')) errors.push('site-navigation-v6: Diagnostic must own GrowLens');
+if (!shellDoc.sectionOwnership?.diagnostic?.includes('/thc-grow-doc/')) errors.push('site-navigation-v6: Diagnostic must own THC Grow Doc');
 
-// data/site-registry.json and data/public-navigation.json still contain legacy
-// embedded navigation arrays used by older registry consumers. They are no longer
-// authoritative for the shared header; data/site-navigation-v6.json is.
+// The visitor-facing public-navigation registry and the V6 shell registry are both
+// authoritative for the primary row and must remain byte-for-byte equivalent in
+// id, label, route, and order. site-registry retains a legacy embedded copy.
 const legacySiteNav = sitesDoc.information_architecture?.canonical_primary_navigation;
-const legacyPublicNav = navigationDoc.primaryNavigation;
 if (Array.isArray(legacySiteNav) && legacySiteNav.length) {
-  warnings.push('site-registry: embedded canonical_primary_navigation is legacy; site-navigation-v6.json is authoritative');
+  warnings.push('site-registry: embedded canonical_primary_navigation is legacy; public-navigation + site-navigation-v6 are authoritative');
 }
-if (Array.isArray(legacyPublicNav) && legacyPublicNav.length) {
-  warnings.push('public-navigation: embedded primaryNavigation is legacy; site-navigation-v6.json is authoritative');
+if (JSON.stringify(navigationDoc.primaryNavigation) !== JSON.stringify(siteNavigation)) {
+  errors.push('public-navigation: primaryNavigation must exactly match site-navigation-v6 primaryNavigation');
 }
 
 if (warnings.length) {

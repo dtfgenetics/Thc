@@ -149,7 +149,7 @@ jobs:
               curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
                 "$WP_SITE_URL${path}?dtf_rebuild=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" -o "$body"
-              if grep -Fqi -- "$required" "$body" && grep -Fqi 'data-dtf-shell="header-v6"' "$body" && grep -Fqi 'data-dtf-sitewide-header="canonical-six-v1"' "$body"; then ok=1; break; fi
+              if grep -Fqi -- "$required" "$body" && grep -Fqi 'data-dtf-shell="header-v6"' "$body" && grep -Fqi 'data-dtf-sitewide-header="canonical-eight-v1"' "$body"; then ok=1; break; fi
               sleep 8
             done
             [[ "$ok" -eq 1 ]] || { echo "Missing required marker or canonical V6 header on $path: $required" >&2; head -c 3000 "$body" >&2 || true; exit 1; }
@@ -166,7 +166,7 @@ jobs:
           if(!header) throw new Error(`${path}: V6 header missing`);
           const nav=header.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>([\s\S]*?)<\/nav>/i)?.[1]||'';
           const labels=[...nav.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)].map(m=>m[1].replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim());
-          const expected=['Genetics','Learn','Tools','Games','Community','Shop'];
+          const expected=['Home','Seeds','Learn','Courses','Diagnostic','Games','Community','Shop'];
           if(JSON.stringify(labels)!==JSON.stringify(expected)) throw new Error(`${path}: unexpected primary navigation ${JSON.stringify(labels)}`);
           NODE
             echo "$path verified with $count WordPress-hosted images and canonical V6 navigation"

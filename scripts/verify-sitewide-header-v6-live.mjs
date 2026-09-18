@@ -3,14 +3,16 @@ import process from 'node:process';
 const siteUrl=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const routes=(process.env.HEADER_V6_ROUTES||'/,/seeds/,/learn/,/courses/,/tools/,/games/,/community/,/shop/,/gallery/,/about/,/contact/,/learn/start-here/,/learn/infographics/').split(',').map(v=>v.trim()).filter(Boolean);
 const expected=[
-  ['/seeds/','Genetics'],
+  ['/','Home'],
+  ['/seeds/','Seeds'],
   ['/learn/','Learn'],
-  ['/tools/','Tools'],
+  ['/courses/','Courses'],
+  ['/tools/','Diagnostic'],
   ['/games/','Games'],
   ['/community/','Community'],
   ['/shop/','Shop'],
 ];
-const forbiddenLabels=new Set(['Home','Seeds','Courses','Diagnostic']);
+const forbiddenLabels=new Set(['Genetics','Tools']);
 const concurrency=Math.max(1,Math.min(10,Number(process.env.HEADER_AUDIT_CONCURRENCY||5)));
 
 function normalizeHref(value=''){
@@ -29,7 +31,7 @@ function inspect(html,route){
   const match=html.match(/<header\b[^>]*data-dtf-shell=["']header-v6["'][^>]*>[\s\S]*?<\/header>/i);
   if(!match) throw new Error(`${route}: canonical header-v6 not found`);
   const header=match[0];
-  if(!/data-dtf-sitewide-header=["']canonical-six-v1["']/i.test(header)) throw new Error(`${route}: canonical-six-v1 marker missing`);
+  if(!/data-dtf-sitewide-header=["']canonical-eight-v1["']/i.test(header)) throw new Error(`${route}: canonical-eight-v1 marker missing`);
   const navMatch=header.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>([\s\S]*?)<\/nav>/i);
   if(!navMatch) throw new Error(`${route}: primary navigation not found`);
   const anchors=[...navMatch[1].matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)].map((m)=>{

@@ -139,12 +139,12 @@ jobs:
           grep -Fq '/games/ganjumanji/assets/' package/games/ganjumanji/index.html
           grep -Fq 'Ganjumanji' package/games/ganjumanji/index.html
           grep -Fq 'data-dtf-shell="header-v6"' package/games/ganjumanji/index.html
-          grep -Fq 'data-dtf-sitewide-header="canonical-six-v1"' package/games/ganjumanji/index.html
-          ! grep -Fq 'href="/" data-dtf-nav-group="home">Home<' package/games/ganjumanji/index.html
-          grep -Fq 'href="/seeds/">Genetics<' package/games/ganjumanji/index.html
+          grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' package/games/ganjumanji/index.html
+          grep -Fq 'href="/" data-dtf-nav-group="home">Home<' package/games/ganjumanji/index.html
+          grep -Fq 'href="/seeds/">Seeds<' package/games/ganjumanji/index.html
           grep -Fq 'href="/learn/" data-dtf-nav-group="learn">Learn<' package/games/ganjumanji/index.html
           ! grep -Fq 'href="/courses/" data-dtf-nav-group="courses">Courses<' package/games/ganjumanji/index.html
-          grep -Fq 'href="/tools/" data-dtf-nav-group="tools">Tools<' package/games/ganjumanji/index.html
+          grep -Fq 'href="/tools/" data-dtf-nav-group="diagnostic">Diagnostic<' package/games/ganjumanji/index.html
           grep -Fq 'href="/games/">Games<' package/games/ganjumanji/index.html
           grep -Fq 'href="/community/">Community<' package/games/ganjumanji/index.html
           grep -Fq 'href="/shop/" data-dtf-nav-group="shop">Shop<' package/games/ganjumanji/index.html

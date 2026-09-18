@@ -43,26 +43,26 @@ function hasNavLink(text, href, label) {
 }
 
 const CANONICAL_NAV = [
-  ['/seeds/', 'Genetics'],
+  ['/', 'Home'],
+  ['/seeds/', 'Seeds'],
   ['/learn/', 'Learn'],
-  ['/tools/', 'Tools'],
+  ['/courses/', 'Courses'],
+  ['/tools/', 'Diagnostic'],
   ['/games/', 'Games'],
   ['/community/', 'Community'],
-  ['/shop/', 'Shop']
+  ['/shop/', 'Shop'],
 ];
 
 const REQUIRED = [
   { label: 'data-dtf-shell="header-v6"', test: body => body.includes('data-dtf-shell="header-v6"') },
-  { label: 'data-dtf-sitewide-header="canonical-six-v1"', test: body => body.includes('data-dtf-sitewide-header="canonical-six-v1"') },
+  { label: 'data-dtf-sitewide-header="canonical-eight-v1"', test: body => body.includes('data-dtf-sitewide-header="canonical-eight-v1"') },
   ...CANONICAL_NAV.map(([href, label]) => ({ label: `<a href="${href}">${label}</a>`, test: body => hasNavLink(body, href, label) })),
   { label: 'Teaching', test: body => body.includes('Teaching') },
   { label: 'Healthy Cultivation', test: body => body.includes('Healthy Cultivation') }
 ];
 const OBSOLETE_PRIMARY = [
-  ['/', 'Home'],
-  ['/seeds/', 'Seeds'],
-  ['/courses/', 'Courses'],
-  ['/tools/', 'Diagnostic']
+  ['/seeds/', 'Genetics'],
+  ['/tools/', 'Tools'],
 ];
 const seeds = new Set([
   '/', '/seeds/', '/learn/', '/courses/', '/tools/', '/games/', '/community/', '/shop/',
