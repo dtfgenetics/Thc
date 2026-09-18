@@ -312,6 +312,19 @@ jobs:
           test -s site/public-route-patch/games/mystery-strain/analysis.css
           test -s site/public-route-patch/games/mystery-strain/guess-confirm-v2.css
 
+      - name: Validate Pheno Draft canonical browser runtime
+        run: |
+          set -euo pipefail
+          node games/pheno-draft/scripts/validate-data.mjs
+          node games/pheno-draft/test/engine.test.mjs
+          node games/pheno-draft/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/pheno-draft/app.js
+          node --check site/public-route-patch/games/pheno-draft/runtime.mjs
+          node --check site/public-route-patch/games/pheno-draft/engine.mjs
+          test -s site/public-route-patch/games/pheno-draft/index.html
+          test -s site/public-route-patch/games/pheno-draft/pheno-draft.css
+          test -s site/public-route-patch/games/pheno-draft/pheno-draft-v2.css
+
       - name: Validate Seed Man v20 campaign
         run: |
           set -euo pipefail
@@ -714,6 +727,12 @@ jobs:
             release/games/mystery-strain/analysis.css
             release/games/mystery-strain/guess-confirm-v2.js
             release/games/mystery-strain/guess-confirm-v2.css
+            release/games/pheno-draft/index.html
+            release/games/pheno-draft/app.js
+            release/games/pheno-draft/runtime.mjs
+            release/games/pheno-draft/engine.mjs
+            release/games/pheno-draft/pheno-draft.css
+            release/games/pheno-draft/pheno-draft-v2.css
             release/games/seed-man-platformer/index.html
             release/games/seed-man-platformer/app.js
             release/games/seed-man-platformer/seed-man.css
@@ -799,6 +818,11 @@ jobs:
           grep -Fq "import('./runtime.mjs')" release/games/mystery-strain/app.js
           cmp games/mystery-strain/src/engine.mjs release/games/mystery-strain/engine.mjs
           grep -Fq 'guess-confirm-v2.js' release/games/mystery-strain/index.html
+          grep -Fq '/games/pheno-draft/' release/games/pheno-draft/index.html
+          grep -Fq "import('./runtime.mjs')" release/games/pheno-draft/app.js
+          cmp games/pheno-draft/src/engine.mjs release/games/pheno-draft/engine.mjs
+          grep -Fq 'DTF GENETICS · SELECTION STRATEGY' release/games/pheno-draft/index.html
+          grep -Fq 'top:calc(var(--dtf-global-header-height,74px) + 8px)' release/games/pheno-draft/pheno-draft-v2.css
           grep -Fq '/games/seed-man-platformer/' release/games/seed-man-platformer/index.html
           grep -Fq 'data-seed-man-release="20260909-v20-runtime-v4"' release/games/seed-man-platformer/index.html
           test ! -e release/games/seed-man-platformer/physics.mjs
