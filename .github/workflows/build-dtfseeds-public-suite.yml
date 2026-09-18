@@ -339,6 +339,17 @@ jobs:
           test -s site/public-route-patch/games/high-lines/high-lines-v2.css
           test -s site/public-route-patch/games/high-lines/data/scenes.json
 
+      - name: Validate Strain Match browser runtime
+        run: |
+          set -euo pipefail
+          node games/strain-match/scripts/validate-data.mjs
+          node games/strain-match/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/strain-match/app.js
+          test -s site/public-route-patch/games/strain-match/index.html
+          test -s site/public-route-patch/games/strain-match/strain-match.css
+          test -s site/public-route-patch/games/strain-match/strain-match-v2.css
+          test -s site/public-route-patch/games/strain-match/data/decks.json
+
       - name: Validate Seed Man v20 campaign
         run: |
           set -euo pipefail
@@ -772,6 +783,11 @@ jobs:
             release/games/high-lines/high-lines.css
             release/games/high-lines/high-lines-v2.css
             release/games/high-lines/data/scenes.json
+            release/games/strain-match/index.html
+            release/games/strain-match/app.js
+            release/games/strain-match/strain-match.css
+            release/games/strain-match/strain-match-v2.css
+            release/games/strain-match/data/decks.json
             release/games/seed-man-platformer/index.html
             release/games/seed-man-platformer/app.js
             release/games/seed-man-platformer/seed-man.css
@@ -867,6 +883,9 @@ jobs:
           cmp games/high-lines/src/engine.mjs release/games/high-lines/engine.mjs
           grep -Fq 'DTF GENETICS · CREATIVE ACTIVITY' release/games/high-lines/index.html
           grep -Fq 'top:calc(var(--dtf-global-header-height,74px) + 8px)' release/games/high-lines/high-lines-v2.css
+          grep -Fq '/games/strain-match/' release/games/strain-match/index.html
+          grep -Fq 'grid-template-columns:repeat(5,minmax(0,1fr))' release/games/strain-match/strain-match.css
+          grep -Fq '@media(forced-colors:active)' release/games/strain-match/strain-match.css
           grep -Fq '/games/seed-man-platformer/' release/games/seed-man-platformer/index.html
           grep -Fq 'data-seed-man-release="20260909-v20-runtime-v4"' release/games/seed-man-platformer/index.html
           test ! -e release/games/seed-man-platformer/physics.mjs
