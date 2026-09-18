@@ -28,14 +28,15 @@ import {
   setMuted as setAudioMuted,
   startBackgroundMusic
 } from './game/systems/audioSystem';
-import { maxPlayers, minPlayers } from './game/systems/playerSystem';
+import { localMinPlayers, maxPlayers } from './game/systems/playerSystem';
 import { canPlayerRoll } from './game/multiplayer/roomState';
 import { createRoomTransport, resolveDefaultRoomTransportMode } from './game/multiplayer/roomTransportFactory';
 import { getSavedLocalPlayerName } from './game/players/playerIdentity';
 import type { HighLandRoomState } from './game/multiplayer/roomState';
 import type { GameState } from './game/types/gameTypes';
+import { describeDiceMove } from './ui/turnFeedback';
 
-const playerOptions = Array.from({ length: maxPlayers - minPlayers + 1 }, (_, index) => minPlayers + index);
+const playerOptions = Array.from({ length: maxPlayers - localMinPlayers + 1 }, (_, index) => localMinPlayers + index);
 type ScreenMode = 'landing' | PlayerSetupMode | 'lobby' | 'playing';
 
 export default function App() {
@@ -353,7 +354,7 @@ export default function App() {
             <p className="eyebrow">DTF Browser Board Game</p>
             <h1>High Land: The Sweet Escape</h1>
             <p className="subtitle">Race from Rolling Hills to Cloud 9 through seven cannabis-fantasy regions, colorful road spaces, and unpredictable HIT cards.</p>
-            <div className="highland-meta" aria-label="High Land game features"><span>2–10 players</span><span>Local + room play</span><span>HIT card events</span></div>
+            <div className="highland-meta" aria-label="High Land game features"><span>1–10 local</span><span>2–10 online</span><span>HIT card events</span></div>
           </div>
           <ol className="highland-world-route" aria-label="High Land journey">
             <li>Rolling Hills</li><li>Dankwood Forest</li><li>Rosin Rail Station</li><li>Munchie Mountain</li><li>Kief Caves</li><li>Trichome Towers</li><li>Cloud 9 Citadel</li>
@@ -499,13 +500,6 @@ export default function App() {
       ) : null}
     </main>
   );
-}
-
-function describeDiceMove(playerName: string, state: GameState): string {
-  const roll = state.lastRoll;
-  if (!roll) return 'No movement this turn.';
-  const hitText = state.lastCard ? ' Landed on HIT — card effect applies.' : '';
-  return `${playerName} rolled ${roll}. Move ${roll} space${roll === 1 ? '' : 's'}.${hitText}`;
 }
 
 function getInitialInviteRoomCode(): string | null {
