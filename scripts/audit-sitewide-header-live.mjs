@@ -139,16 +139,17 @@ async function addResourceOwnedRouteExclusions(path) {
   }
 }
 
+const REGISTRY_ROUTE_KEYS = new Set(['route', 'candidateRoute', 'publicRoute', 'url']);
+
 async function addRegistrySeeds(path) {
   const raw = await readJson(path);
   if (!raw) return;
   const visit = (value, key = '') => {
     if (Array.isArray(value)) return value.forEach(item => visit(item, key));
     if (!value || typeof value !== 'object') {
-      if (typeof value === 'string' && value.startsWith('/') && key !== 'routePrefix') {
-        const route = cleanPath(value);
-        if (route && !exclusionReason(route)) seeds.add(route);
-      }
+      if (typeof value !== 'string' || !REGISTRY_ROUTE_KEYS.has(key)) return;
+      const route = cleanPath(value);
+      if (route && !exclusionReason(route)) seeds.add(route);
       return;
     }
     for (const [childKey, item] of Object.entries(value)) visit(item, childKey);
@@ -242,6 +243,7 @@ const report = {
   skippedRoutes: skippedResults.length,
   resourceOwnedRoutesExcluded: [...RESOURCE_OWNED_ROUTES].sort(),
   contentEnginePrefixesExcluded: CONTENT_ENGINE_PREFIXES,
+  registryRouteKeys: [...REGISTRY_ROUTE_KEYS],
   failures, results: results.sort((a,b) => a.path.localeCompare(b.path))
 };
 await writeFile(JSON_PATH, `${JSON.stringify(report, null, 2)}\n`);
