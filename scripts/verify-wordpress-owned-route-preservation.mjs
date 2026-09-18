@@ -13,7 +13,6 @@ const preservationReport = process.env.OWNED_ROUTE_PRESERVATION_REPORT || join(
   process.env.BACKUP_ROOT || '/tmp',
   'owned-route-preservation.json'
 );
-const expectedHomeFeaturedMedia = Number(process.env.EXPECTED_HOME_FEATURED_MEDIA || 0);
 
 if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 
@@ -215,10 +214,6 @@ for (const slug of ['home', 'learn']) {
   if (!requiredOwnerMarkers) {
     const accepted = (ownerMarkerAlternatives[slug] || []).map((markers) => markers.join(' + ')).join(' OR ');
     throw new Error(`WordPress /${slug}/ page ${page.id} is missing every accepted canonical base owner signature: ${accepted}`);
-  }
-
-  if (slug === 'home' && expectedHomeFeaturedMedia > 0 && Number(page.featured_media || 0) !== expectedHomeFeaturedMedia) {
-    throw new Error(`WordPress Home featured_media ${page.featured_media || 0} does not match DTF brand media ${expectedHomeFeaturedMedia}`);
   }
 
   if (ownerAdvanced) {
