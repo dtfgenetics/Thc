@@ -29,10 +29,10 @@ concurrency:
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
       - name: Validate deterministic V6 integrity crawlers
@@ -47,9 +47,9 @@ jobs:
           grep -Fq 'DTFSeeds-Visual-Integrity/2.1' scripts/audit-sitewide-visual-integrity.mjs
           grep -Fq 'DTFSeeds-Link-Integrity/1.0' scripts/audit-sitewide-link-integrity.mjs
           ! grep -Fq "['Home','/']" scripts/audit-sitewide-visual-integrity.mjs
-          grep -Fq "['Genetics','/seeds/']" scripts/audit-sitewide-visual-integrity.mjs
+          grep -Fq "['Seeds','/seeds/']" scripts/audit-sitewide-visual-integrity.mjs
           grep -Fq "['Courses','/courses/']" scripts/audit-sitewide-visual-integrity.mjs
-          grep -Fq "['Tools','/tools/']" scripts/audit-sitewide-visual-integrity.mjs
+          grep -Fq "['Diagnostic','/tools/']" scripts/audit-sitewide-visual-integrity.mjs
           ! grep -Fq "['Genetics','/seeds/']" scripts/audit-sitewide-visual-integrity.mjs
           ! grep -Fq "['Tools','/tools/']" scripts/audit-sitewide-visual-integrity.mjs
 
@@ -61,10 +61,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
       - name: Crawl public routes, V6 navigation, shared visual shell, density controls, and images
@@ -99,7 +99,7 @@ jobs:
           fi
       - name: Upload sitewide integrity evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: sitewide-integrity-${{ github.run_id }}
           path: |
