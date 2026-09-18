@@ -4,7 +4,7 @@ import fs from 'node:fs';
 const revisionPath = 'site/public-route-patch/assets/release-source-revisions/thc-rpg.txt';
 const registryPath = 'site/deployment/public-apps.json';
 const contractPath = 'site/deployment/external-games/thc-rpg.json';
-const expectedRevision = 'bff31f0d6425f822a2647a7601c09cbd1b30a01d';
+const expectedRevision = 'de6c26d9073d9154bbcade43b64768cf6a7ba2a0';
 
 const lines = Object.fromEntries(
   fs.readFileSync(revisionPath, 'utf8')
