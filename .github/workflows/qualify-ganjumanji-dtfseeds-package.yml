@@ -153,7 +153,7 @@ jobs:
           grep -Fq 'route=/games/ganjumanji/' package/games/ganjumanji/source-revision.txt
           grep -Fq 'commit=${{ steps.source.outputs.revision }}' package/games/ganjumanji/source-revision.txt
           grep -Fq '"route": "/games/ganjumanji/"' package/games/ganjumanji/game-release.json
-          grep -Fq '"status": "release-candidate"' package/games/ganjumanji/game-release.json
+          grep -Fq '"status": "production-candidate"' package/games/ganjumanji/game-release.json
           ! grep -RFiq '/src/main.ts' package/games/ganjumanji
 
       - name: Upload deployable Ganjumanji route
@@ -178,6 +178,7 @@ jobs:
             echo '- Deterministic shipped-UI validation: passed'
             echo '- Route-safe build validation: passed'
             echo '- Canonical Header V6 packaging: passed'
-            echo '- Deployable route artifact: uploaded'\n            echo '- Candidate status: production-candidate'
+            echo '- Deployable route artifact: uploaded'
+            echo '- Candidate status: production-candidate'
             echo '- Public promotion: still blocked until production publish + exact live-route verification'
           } >> "$GITHUB_STEP_SUMMARY"
