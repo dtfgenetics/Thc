@@ -37,6 +37,9 @@ assert.match(app, /svg\.style\.width = `\$\{Math\.round\(zoom \* 100\)\}%`/);
 assert.match(app, /globalThis\.crypto\?\.getRandomValues/);
 assert.match(app, /globalThis\.history\?\.replaceState/);
 assert.match(app, /navigator\.clipboard\?\.writeText/);
+assert.match(app, /async function copyText\(/, 'share behavior must expose a clipboard fallback helper');
+assert.match(app, /document\.execCommand\?\.\('copy'\) === true/, 'share behavior must retain a legacy clipboard fallback');
+assert.match(app, /Copy failed\. Share scene code/, 'share failure must preserve the full manual challenge path');
 
 assert.match(visual, /\.board-controls/);
 assert.match(visual, /overflow:auto/);
@@ -44,5 +47,9 @@ assert.match(visual, /touch-action:pan-x pan-y/);
 assert.match(visual, /#reset-art\.reset-armed/);
 assert.match(visual, /@media\(max-width:650px\)/);
 assert.match(visual, /@media\(prefers-reduced-motion:reduce\)/);
+const baseCss = fs.readFileSync('site/public-route-patch/games/high-lines/high-lines.css', 'utf8');
+assert.match(baseCss, /\.codebar button,\.tool-card button\{min-height:44px/, 'code and tool controls must retain 44px touch targets');
+assert.match(baseCss, /@media\(forced-colors:active\)/, 'High Lines controls must remain visible in forced-colors mode');
+assert.match(baseCss, /outline:3px solid Highlight/, 'forced-colors focus must remain visible');
 
 console.log('High Lines self-contained startup, persistence and zoom UI regression checks passed.');
