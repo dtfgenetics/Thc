@@ -307,6 +307,33 @@ function replaceChallengeUrl() {
   try { globalThis.history?.replaceState?.(null, '', challengeUrl()); } catch { /* gameplay is independent of History API */ }
 }
 
+async function copyText(value) {
+  const text = String(value || '');
+  if (!text) return false;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {}
+  try {
+    const field = document.createElement('textarea');
+    field.value = text;
+    field.setAttribute('readonly', '');
+    field.style.position = 'fixed';
+    field.style.opacity = '0';
+    field.style.pointerEvents = 'none';
+    document.body.append(field);
+    field.select();
+    field.setSelectionRange(0, text.length);
+    const copied = document.execCommand?.('copy') === true;
+    field.remove();
+    return copied;
+  } catch {
+    return false;
+  }
+}
+
 function setCode(value) {
   const normalized = normalizeRunCode(value);
   ui.code.value = normalized;
@@ -593,13 +620,10 @@ ui.newRun.addEventListener('click', () => {
 ui.share.addEventListener('click', async () => {
   const url = challengeUrl();
   const text = `Pheno Draft · run ${state.code}\n${url}`;
-  try {
-    if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
-    await navigator.clipboard.writeText(text);
-    ui.announce.textContent = 'Pheno Draft challenge copied.';
-  } catch {
-    ui.announce.textContent = `Share run code ${state.code}: ${url}`;
-  }
+  const copied = await copyText(text);
+  ui.announce.textContent = copied
+    ? 'Pheno Draft challenge copied.'
+    : `Copy failed. Share run code ${state.code}: ${url}`;
 });
 
 function shortcutTarget(target) {
