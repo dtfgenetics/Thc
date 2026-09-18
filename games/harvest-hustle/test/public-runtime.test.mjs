@@ -28,6 +28,10 @@ assert.match(app, /ui\.start\.textContent = state\.status === 'complete' \? 'Shi
 assert.match(app, /ui\.code\.disabled = running/);
 assert.match(app, /clockId = window\.setInterval\(settleClock, 250\)/);
 assert.match(app, /navigator\.vibrate/);
+assert.match(app, /navigator\.clipboard\?\.writeText/, 'share behavior must guard clipboard access');
+assert.match(app, /async function copyText\(/, 'share behavior must expose a clipboard fallback helper');
+assert.match(app, /document\.execCommand\?\.\('copy'\) === true/, 'share behavior must retain a legacy clipboard fallback');
+assert.match(app, /Copy failed\. Share shift code/, 'share failure must retain the full manual challenge path');
 assert.match(app, /next-station/);
 assert.match(app, /document\.addEventListener\('visibilitychange'/);
 
@@ -37,5 +41,7 @@ assert.match(visual, /\.combo-hot/);
 assert.match(visual, /\.station-button\.next-station/);
 assert.match(visual, /@media\(max-width:640px\)/);
 assert.match(visual, /@media\(prefers-reduced-motion:reduce\)/);
+assert.match(fs.readFileSync('site/public-route-patch/games/harvest-hustle/harvest-hustle.css','utf8'), /@media\(forced-colors:active\)/);
+assert.match(fs.readFileSync('site/public-route-patch/games/harvest-hustle/harvest-hustle.css','utf8'), /outline:3px solid Highlight/);
 
 console.log('Harvest Hustle self-contained runtime and arcade UI regression checks passed.');
