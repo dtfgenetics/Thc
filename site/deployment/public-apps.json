@@ -215,7 +215,17 @@
       "runtime": "node-full-stack",
       "status": "runtime-integration",
       "build": "pnpm verify && pnpm test:production-runtime",
-      "notes": "Canonical full-stack multiplayer source is dtfgenetics/thc-u-know-card-game-. Preserve the persistent Node/Socket.IO server, server-authoritative 2–8 player rules, hidden-hand contract, invite links, and /games/thc-u-know/socket.io subpath. Owner CI now runs on Ubuntu 24.04 with current checkout/setup-node actions and validates lint, all builds, shared engine tests, production runtime, hand visibility, lobby UI, runtime manifest, and static-only deployment prohibition. Production still requires live health plus two-browser multiplayer QA."
+      "notes": "Canonical full-stack multiplayer source is dtfgenetics/thc-u-know-card-game-. Persistent Node/Socket.IO remains required; static-only deployment is forbidden. The owner build now ships the canonical V6 six-link DTFSeeds header, CI validates the V6 production shell plus hidden-hand/lobby/runtime contracts, and a scheduled/manual live checker verifies the public game route, game-scoped health endpoint, and Socket.IO handshake. Keep this game nonpublic in data/public-navigation.json until the live checker and manual two-browser multiplayer gate pass.",
+      "machineData": {
+        "players": "2-8",
+        "runtime": "Node + Socket.IO",
+        "socketPath": "/games/thc-u-know/socket.io",
+        "healthPath": "/games/thc-u-know/healthz",
+        "siteShell": "header-v6",
+        "liveCheck": "npm run live:check",
+        "manualGate": "two-browser-multiplayer",
+        "publicPromotion": false
+      }
     },
     {
       "id": "kush-kings",
@@ -227,7 +237,18 @@
       "runtime": "node-full-stack-postgres",
       "status": "runtime-integration",
       "build": "pnpm check:rebrand && pnpm --filter client lint && pnpm build:client && pnpm build:server && pnpm test:production-runtime",
-      "notes": "Canonical full-stack source is dtfgenetics/Thc-chess-git. Preserve chess.js legal-move authority, Express/Socket.IO rooms, PostgreSQL sessions, spectators, chat, archives, resign/draw/abandon/rematch behavior, and the separate chess.dtfseeds.com / chess-api.dtfseeds.com targets. Owner CI now runs on Ubuntu 24.04/current GitHub actions and additionally verifies seat/observer/resignation/draw/abandonment/chat/room/auth/query/result persistence contracts plus production Postgres/Socket runtime. Do not cut over the public route until two-browser and mobile/WebGL QA is completed."
+      "notes": "Canonical full-stack source is dtfgenetics/Thc-chess-git. Preserve chess.js legal-move authority, Express/Socket.IO rooms, PostgreSQL sessions, spectators, chat, archives, resign/draw/abandon/rematch behavior, and the chess.dtfseeds.com / chess-api.dtfseeds.com targets. The Next.js client, Hostinger fallback, CI and deployment checks now use the canonical V6 six-link DTFSeeds header. A post-deploy live checker verifies frontend identity, API /health, Socket.IO transport, and the DTFSeeds proxy. Keep this game nonpublic in data/public-navigation.json until the live checker plus two-browser/mobile QA pass.",
+      "machineData": {
+        "players": 2,
+        "runtime": "Next.js + Express + Socket.IO + PostgreSQL",
+        "frontend": "https://chess.dtfseeds.com",
+        "api": "https://chess-api.dtfseeds.com",
+        "healthPath": "/health",
+        "siteShell": "header-v6",
+        "liveCheck": "npm run live:check",
+        "manualGate": "two-browser-mobile",
+        "publicPromotion": false
+      }
     },
     {
       "id": "thc-grow-hub",
