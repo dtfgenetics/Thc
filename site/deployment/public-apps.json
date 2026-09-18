@@ -557,8 +557,8 @@
       "route": "/games/root-cause/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/root-cause/scripts/validate-data.mjs && node games/root-cause/test/engine.test.mjs && node games/root-cause/test/public-runtime.test.mjs && node --check site/public-route-patch/games/root-cause/app.js && node --check site/public-route-patch/games/root-cause/engine.js && cmp games/root-cause/src/engine.mjs site/public-route-patch/games/root-cause/engine.mjs",
-      "notes": "Self-hosted deterministic six-case cultivation diagnostics deduction game. Canonical module engine parity is protected through the classic browser bridge; runtime regression covers V5 header/admin-bar offsets, stacked-result reveal, 44px targets, reduced motion, and resilient challenge-link clipboard/manual fallback. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      "build": "node games/root-cause/scripts/validate-data.mjs && node games/root-cause/test/engine.test.mjs && node games/root-cause/test/public-runtime.test.mjs && node --check site/public-route-patch/games/root-cause/app.js && node --check site/public-route-patch/games/root-cause/runtime.mjs && node --check site/public-route-patch/games/root-cause/engine.mjs && cmp games/root-cause/src/engine.mjs site/public-route-patch/games/root-cause/engine.mjs",
+      "notes": "Self-hosted deterministic six-case cultivation diagnostics deduction game. Browser runtime now imports the canonical tested module engine through a thin app bootstrap; the duplicate browser rules engine is no longer loaded. Regression coverage protects diagnostic limits, challenge sharing fallback, V5 header/admin-bar offsets, stacked-result reveal, 44px controls, reduced motion, and forced colors. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
     }
   ]
 }
