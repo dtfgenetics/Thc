@@ -178,6 +178,21 @@ jobs:
           test -s site/public-route-patch/games/pheno-draft/pheno-draft-v2.css
           grep -Fq 'https://dtfseeds.com/games/pheno-draft/' site/public-route-patch/games/pheno-draft/index.html
 
+      - name: Validate High Lines browser game
+        run: |
+          set -euo pipefail
+          node games/high-lines/scripts/validate-data.mjs
+          node games/high-lines/test/engine.test.mjs
+          node games/high-lines/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/high-lines/app.js
+          node --check site/public-route-patch/games/high-lines/runtime.mjs
+          node --check site/public-route-patch/games/high-lines/engine.mjs
+          cmp games/high-lines/src/engine.mjs site/public-route-patch/games/high-lines/engine.mjs
+          test -s site/public-route-patch/games/high-lines/index.html
+          test -s site/public-route-patch/games/high-lines/high-lines.css
+          test -s site/public-route-patch/games/high-lines/high-lines-v2.css
+          grep -Fq 'https://dtfseeds.com/games/high-lines/' site/public-route-patch/games/high-lines/index.html
+
       - name: Validate Seed Man v20 campaign
         run: |
           set -euo pipefail
