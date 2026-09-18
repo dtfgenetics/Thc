@@ -42,7 +42,7 @@ The current Game Hub exposes 25 playable browser games:
 
 ## Existing development projects
 
-- **Ganjumanji: The Lost Grower’s Temple** — current dedicated-repository release candidate `0.3.0`, with its existing campaign, deterministic rules/storage, solvability validation, route-safe build, browser acceptance evidence, and production artifact. Its ownership, architecture, tooling, and promotion path may be changed if that better serves the product goal.
+- **Ganjumanji: The Lost Grower’s Temple** — current dedicated-repository release candidate `0.4.1` at `b1cbf9b`, with a five-region campaign, 10 relic seeds, deterministic campaign/content/input/storage/solvability validation, deterministic UI-contract validation, save v5 with separate autosave/safe-checkpoint recovery, route-safe TypeScript/Vite build, current GitHub Actions CI, and a production artifact. Exact DTFSeeds live-route verification remains required before public promotion.
 - **THC RPG** — current dedicated-repository release candidate `2.0.0` in `dtfgenetics/Thc-rpg`, with environment/equipment simulation, quests, deterministic phenotypes, persistent Pheno Grow Journal, Keeper systems, visitor build validation, browser acceptance evidence, and a production artifact. Its ownership, architecture, tooling, and promotion path may be changed if that better serves the product goal.
 
 A title's current repository or release-candidate state describes where it is today; it does not lock future development.
