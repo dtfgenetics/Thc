@@ -214,7 +214,6 @@ jobs:
             dist/weedopolis/js/weedopolis-assets.js
             dist/weedopolis/js/weedopolis-engine.js
             dist/weedopolis/js/weedopolis-ui.js
-            dist/weedopolis/js/weedopolis-tests.js
             dist/weedopolis/assets/board/weedopolis-master-board.webp
           )
           for file in "${required[@]}"; do test -s "$file"; done
@@ -226,7 +225,7 @@ jobs:
           node --check dist/weedopolis/js/weedopolis-assets.js
           node --check dist/weedopolis/js/weedopolis-engine.js
           node --check dist/weedopolis/js/weedopolis-ui.js
-          node --check dist/weedopolis/js/weedopolis-tests.js
+          test ! -e dist/weedopolis/js/weedopolis-tests.js
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
           const board = fs.readFileSync('dist/weedopolis/assets/board/weedopolis-master-board.webp');
@@ -523,7 +522,6 @@ jobs:
             release/games/weedopolis/js/weedopolis-assets.js
             release/games/weedopolis/js/weedopolis-engine.js
             release/games/weedopolis/js/weedopolis-ui.js
-            release/games/weedopolis/js/weedopolis-tests.js
             release/games/weedopolis/assets/board/weedopolis-master-board.webp
             release/games/weedopolis/source-revision.txt
             release/games/crossword/index.html
@@ -559,6 +557,7 @@ jobs:
           grep -Fq '/games/weedopolis/' release/games/weedopolis/index.html
           grep -Fq 'data-ui-standard="premium-responsive-shell-v1"' release/games/weedopolis/index.html
           grep -Fq 'data-art-standard="weedopolis-v1-master"' release/games/weedopolis/index.html
+          test ! -e release/games/weedopolis/js/weedopolis-tests.js
           grep -Fq "commit=$WEEDOPOLIS_SHA" release/games/weedopolis/source-revision.txt
           grep -Fq "\"weedopolis\": \"$WEEDOPOLIS_SHA\"" release/dtf-build.json
           grep -Fq '/games/crossword/' release/games/crossword/index.html
