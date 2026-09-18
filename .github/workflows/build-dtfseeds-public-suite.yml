@@ -336,11 +336,15 @@ jobs:
       - name: Validate promoted Terpocalypse route and PhenoQuest source pin
         run: |
           set -euo pipefail
+          node games/terpocalypse-integration/validate.mjs
           node games/terpocalypse/test/public-runtime.test.mjs
           node --check site/public-route-patch/games/terpocalypse/main.js
           node --check site/public-route-patch/games/terpocalypse/game-data.js
+          node --check site/public-route-patch/games/terpocalypse/visibility-pause-v1.js
           test -s site/public-route-patch/games/terpocalypse/index.html
           test -s site/public-route-patch/games/terpocalypse/styles.css
+          test -s site/public-route-patch/games/terpocalypse/mobile-gameplay-v2.css
+          test -s site/public-route-patch/games/terpocalypse/source-revision.txt
           grep -Fq 'LEVEL 01 · THE VEG LAB' site/public-route-patch/games/terpocalypse/index.html
           test -s site/public-route-patch/games/phenoquest/source-revision.txt
           grep -Fq 'repository=dtfgenetics/Catching-phenos' site/public-route-patch/games/phenoquest/source-revision.txt
