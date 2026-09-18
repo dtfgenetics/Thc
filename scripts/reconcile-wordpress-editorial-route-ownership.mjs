@@ -323,7 +323,7 @@ const preserveChecks = [
   ['/learn/infographics/', ['Infographic']],
   ['/learn/plant-health/', ['Teaching Healthy Cultivation']],
   ['/community/grow-offs/solo-cup-grow-off/', ['Solo Cup']],
-  ['/games/', ['25 playable browser games']],
+  ['/games/', ['23 playable browser games']],
   ['/growlens/', ['GrowLens']],
   ['/thc-grow-doc/', ['Grow Doc']],
 ];
