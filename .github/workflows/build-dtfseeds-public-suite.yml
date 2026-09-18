@@ -147,6 +147,22 @@ jobs:
           test -s site/public-route-patch/games/root-cause/root-cause-responsive-v3.css
           grep -Fq 'https://dtfseeds.com/games/root-cause/' site/public-route-patch/games/root-cause/index.html
 
+      - name: Validate Mystery Strain browser game
+        run: |
+          set -euo pipefail
+          node games/mystery-strain/scripts/validate-data.mjs
+          node games/mystery-strain/test/engine.test.mjs
+          node games/mystery-strain/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/mystery-strain/app.js
+          node --check site/public-route-patch/games/mystery-strain/runtime.mjs
+          node --check site/public-route-patch/games/mystery-strain/engine.mjs
+          cmp games/mystery-strain/src/engine.mjs site/public-route-patch/games/mystery-strain/engine.mjs
+          test -s site/public-route-patch/games/mystery-strain/index.html
+          test -s site/public-route-patch/games/mystery-strain/mystery-strain.css
+          test -s site/public-route-patch/games/mystery-strain/analysis.css
+          test -s site/public-route-patch/games/mystery-strain/guess-confirm-v2.css
+          grep -Fq 'https://dtfseeds.com/games/mystery-strain/' site/public-route-patch/games/mystery-strain/index.html
+
       - name: Validate Seed Man v20 campaign
         run: |
           set -euo pipefail
