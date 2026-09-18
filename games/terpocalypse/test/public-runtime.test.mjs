@@ -7,13 +7,12 @@ const css = fs.readFileSync('site/public-route-patch/games/terpocalypse/styles.c
 
 assert.match(html, /LEVEL 01 · THE VEG LAB/);
 assert.match(html, /Original DTF Genetics browser action game/);
+assert.match(html, /visibility-pause-v1\.js/);
 assert.doesNotMatch(html, /playable browser prototype/i);
 assert.doesNotMatch(html, /user-scalable=no/);
 
 assert.match(main, /mode==="running"\|\|mode==="paused"/);
 assert.match(main, /mode=mode==="running"\?"paused":"running"/);
-assert.match(main, /visibility-pause-v1/).catch?.(()=>{});
-
 assert.match(css, /\.hub-back,\.sound-toggle\{min-height:44px/);
 assert.match(css, /\.touch-right \.small-action\{height:44px/);
 assert.match(css, /\.touch-right>div:first-child button\{height:44px/);
