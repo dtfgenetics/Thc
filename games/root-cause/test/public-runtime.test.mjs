@@ -23,6 +23,9 @@ assert.match(app, /const engine = globalThis\.RootCauseEngine;/, 'public control
 assert.match(app, /globalThis\.crypto\?\.getRandomValues/, 'random code generation must tolerate missing crypto APIs');
 assert.match(app, /globalThis\.history\?\.replaceState/, 'shareable case URLs must tolerate restricted history APIs');
 assert.match(app, /navigator\.clipboard\?\.writeText/, 'challenge sharing must tolerate unavailable clipboard APIs');
+assert.match(app, /async function copyText\(/, 'challenge sharing must expose a clipboard fallback helper');
+assert.match(app, /document\.execCommand\?\.\('copy'\) === true/, 'challenge sharing must retain a legacy clipboard fallback');
+assert.match(app, /Copy failed\. Share case code/, 'share failure must preserve the full manual challenge path');
 assert.match(app, /function prefersReducedMotion\(/, 'reduced-motion lookup must be guarded');
 assert.match(app, /function revealStackedResult\(/, 'stacked layouts must expose result panels after actions');
 assert.match(app, /\(max-width: 1050px\)/, 'result reveal must stay scoped to the one-column layout breakpoint');
