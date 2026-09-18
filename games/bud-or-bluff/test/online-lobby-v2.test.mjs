@@ -8,6 +8,12 @@ import { setTimeout as delay } from 'node:timers/promises';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '../../..');
 const publicDir = path.join(root, 'site/public-route-patch/games/bud-or-bluff');
+const appSource = await import('node:fs/promises').then(fs => fs.readFile(path.join(publicDir, 'app-v2.js'), 'utf8'));
+const visualCss = await import('node:fs/promises').then(fs => fs.readFile(path.join(publicDir, 'visual-state-v3.css'), 'utf8'));
+assert.match(appSource, /async function copyText/);
+assert.match(appSource, /document\.execCommand\?\.\('copy'\)/);
+assert.match(appSource, /Copy failed\. Use Share invite or copy the room code\./);
+assert.match(visualCss, /@media\(forced-colors:active\)/);
 
 async function openPort() {
   return await new Promise((resolve, reject) => {
