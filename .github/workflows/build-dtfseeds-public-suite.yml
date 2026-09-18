@@ -295,6 +295,21 @@ jobs:
           test -s site/public-route-patch/games/lost-in-the-terps/terps.css
           test -s site/public-route-patch/games/lost-in-the-terps/data/puzzles.json
 
+      - name: Validate Mystery Strain canonical browser runtime
+        run: |
+          set -euo pipefail
+          node games/mystery-strain/scripts/validate-data.mjs
+          node games/mystery-strain/test/engine.test.mjs
+          node games/mystery-strain/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/mystery-strain/app.js
+          node --check site/public-route-patch/games/mystery-strain/runtime.mjs
+          node --check site/public-route-patch/games/mystery-strain/engine.mjs
+          node --check site/public-route-patch/games/mystery-strain/guess-confirm-v2.js
+          test -s site/public-route-patch/games/mystery-strain/index.html
+          test -s site/public-route-patch/games/mystery-strain/mystery-strain.css
+          test -s site/public-route-patch/games/mystery-strain/analysis.css
+          test -s site/public-route-patch/games/mystery-strain/guess-confirm-v2.css
+
       - name: Validate Seed Man v20 campaign
         run: |
           set -euo pipefail
@@ -689,6 +704,14 @@ jobs:
             release/games/lost-in-the-terps/keyboard-nav-v1.js
             release/games/lost-in-the-terps/terps.css
             release/games/lost-in-the-terps/data/puzzles.json
+            release/games/mystery-strain/index.html
+            release/games/mystery-strain/app.js
+            release/games/mystery-strain/runtime.mjs
+            release/games/mystery-strain/engine.mjs
+            release/games/mystery-strain/mystery-strain.css
+            release/games/mystery-strain/analysis.css
+            release/games/mystery-strain/guess-confirm-v2.js
+            release/games/mystery-strain/guess-confirm-v2.css
             release/games/seed-man-platformer/index.html
             release/games/seed-man-platformer/app.js
             release/games/seed-man-platformer/seed-man.css
@@ -770,6 +793,10 @@ jobs:
           grep -Fq '/games/lost-in-the-terps/' release/games/lost-in-the-terps/index.html
           grep -Fq 'keyboard-nav-v1.js' release/games/lost-in-the-terps/index.html
           grep -Fq '@media(forced-colors:active)' release/games/lost-in-the-terps/terps.css
+          grep -Fq '/games/mystery-strain/' release/games/mystery-strain/index.html
+          grep -Fq "import('./runtime.mjs')" release/games/mystery-strain/app.js
+          cmp games/mystery-strain/src/engine.mjs release/games/mystery-strain/engine.mjs
+          grep -Fq 'guess-confirm-v2.js' release/games/mystery-strain/index.html
           grep -Fq '/games/seed-man-platformer/' release/games/seed-man-platformer/index.html
           grep -Fq 'data-seed-man-release="20260909-v20-runtime-v4"' release/games/seed-man-platformer/index.html
           test ! -e release/games/seed-man-platformer/physics.mjs
