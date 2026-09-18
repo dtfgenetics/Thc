@@ -60,4 +60,11 @@ assert.match(baseCss, /\.codebar button,\.tool-card button\{min-height:44px/, 'c
 assert.match(baseCss, /@media\(forced-colors:active\)/, 'High Lines controls must remain visible in forced-colors mode');
 assert.match(baseCss, /outline:3px solid Highlight/, 'forced-colors focus must remain visible');
 
+assert.match(runtime, /function revealBoardAfterPaletteSelection\(/, 'stacked mobile palette choices must expose a board-return helper');
+assert.match(runtime, /max-width: 980px/, 'board return must stay scoped to the stacked layout breakpoint');
+assert.match(runtime, /prefers-reduced-motion: reduce/, 'board return must respect reduced-motion preference');
+assert.match(runtime, /window\.requestAnimationFrame\(\(\) => \{/, 'board return must wait until selected-state rendering completes');
+assert.match(runtime, /scrollIntoView\(\{ behavior: reduceMotion \? 'auto' : 'smooth', block: 'start' \}\)/, 'palette click must return the coloring board into view');
+assert.match(runtime, /ui\.announce\.textContent = `\$\{currentColor\(\)\.label\} selected\.`;\n  revealBoardAfterPaletteSelection\(\);/, 'palette click flow must trigger board return after rendering');
+
 console.log('High Lines canonical engine runtime, persistence and zoom UI regression checks passed.');
