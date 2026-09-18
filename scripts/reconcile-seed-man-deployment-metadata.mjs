@@ -47,7 +47,7 @@ app.build = [
 ].join(' && ');
 
 app.machineData = {
-  release: '20260915-v20-world-mechanics-v1',
+  release: '20260918-v20-world-mechanics-v2',
   campaignId: 'seed-man-campaign-20-v1',
   defaultLevelId: '1-1-sprout-steps',
   levelCount: 20,
@@ -59,7 +59,7 @@ app.machineData = {
   phenotypeForms: ['plant','fire','electric','ice'],
   campaignRuntime: 'seed-man-campaign-v20-runtime-v3',
   campaignUi: 'seed-man-campaign-ui-v20',
-  worldMechanicsRuntime: 'seed-man-world-mechanics-browser-v1',
+  worldMechanicsRuntime: 'seed-man-world-mechanics-browser-v2',
   dynamicPlatformRuntime: 'seed-man-three-dynamic-platforms-v1',
   worldRenderer: 'seed-man-three-world-v2',
   worldRendererBundle: 'seed-man-three-public-v3',
@@ -123,9 +123,9 @@ if (verified.machineData?.levelCount !== 20) throw new Error('Expected 20 Seed M
 if (verified.machineData?.worldCount !== 5) throw new Error('Expected five Seed Man worlds.');
 if (verified.machineData?.bossCount !== 6) throw new Error('Expected six Seed Man bosses.');
 if (verified.machineData?.finalBoss !== 'blight-king') throw new Error('Expected Blight King final boss.');
-if (verified.machineData?.release !== '20260915-v20-world-mechanics-v1') throw new Error('Unexpected Seed Man world-mechanics release marker.');
+if (verified.machineData?.release !== '20260918-v20-world-mechanics-v2') throw new Error('Unexpected Seed Man world-mechanics release marker.');
 if (verified.machineData?.campaignRuntime !== 'seed-man-campaign-v20-runtime-v3') throw new Error('Unexpected Seed Man campaign runtime marker.');
-if (verified.machineData?.worldMechanicsRuntime !== 'seed-man-world-mechanics-browser-v1') throw new Error('Seed Man browser world-mechanics runtime was not recorded.');
+if (verified.machineData?.worldMechanicsRuntime !== 'seed-man-world-mechanics-browser-v2') throw new Error('Seed Man browser world-mechanics runtime was not recorded.');
 if (verified.machineData?.dynamicPlatformRuntime !== 'seed-man-three-dynamic-platforms-v1') throw new Error('Seed Man dynamic-platform renderer was not recorded.');
 if (verified.machineData?.worldRenderer !== 'seed-man-three-world-v2' || verified.machineData?.worldRendererBundle !== 'seed-man-three-public-v3') throw new Error('Seed Man Three.js renderer metadata drifted.');
 if (verified.machineData?.worldFallbackRenderer !== 'seed-man-canvas-world-gradient-v1') throw new Error('Seed Man Canvas fallback renderer metadata drifted.');
