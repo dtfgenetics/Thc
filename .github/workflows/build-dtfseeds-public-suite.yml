@@ -284,6 +284,17 @@ jobs:
           test -s site/public-route-patch/games/grow-room-bingo/bingo.css
           test -s site/public-route-patch/games/grow-room-bingo/data/prompts.json
 
+      - name: Validate Lost in the Terps browser runtime
+        run: |
+          set -euo pipefail
+          node games/lost-in-the-terps/scripts/validate-data.mjs
+          node games/lost-in-the-terps/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/lost-in-the-terps/app.js
+          node --check site/public-route-patch/games/lost-in-the-terps/keyboard-nav-v1.js
+          test -s site/public-route-patch/games/lost-in-the-terps/index.html
+          test -s site/public-route-patch/games/lost-in-the-terps/terps.css
+          test -s site/public-route-patch/games/lost-in-the-terps/data/puzzles.json
+
       - name: Validate Seed Man v20 campaign
         run: |
           set -euo pipefail
@@ -669,6 +680,11 @@ jobs:
             release/games/grow-room-bingo/keyboard-nav.js
             release/games/grow-room-bingo/bingo.css
             release/games/grow-room-bingo/data/prompts.json
+            release/games/lost-in-the-terps/index.html
+            release/games/lost-in-the-terps/app.js
+            release/games/lost-in-the-terps/keyboard-nav-v1.js
+            release/games/lost-in-the-terps/terps.css
+            release/games/lost-in-the-terps/data/puzzles.json
             release/games/seed-man-platformer/index.html
             release/games/seed-man-platformer/app.js
             release/games/seed-man-platformer/seed-man.css
@@ -747,6 +763,9 @@ jobs:
           grep -Fq '/games/grow-room-bingo/' release/games/grow-room-bingo/index.html
           grep -Fq 'keyboard-nav.js' release/games/grow-room-bingo/index.html
           grep -Fq '@media(forced-colors:active)' release/games/grow-room-bingo/bingo.css
+          grep -Fq '/games/lost-in-the-terps/' release/games/lost-in-the-terps/index.html
+          grep -Fq 'keyboard-nav-v1.js' release/games/lost-in-the-terps/index.html
+          grep -Fq '@media(forced-colors:active)' release/games/lost-in-the-terps/terps.css
           grep -Fq '/games/seed-man-platformer/' release/games/seed-man-platformer/index.html
           grep -Fq 'data-seed-man-release="20260909-v20-runtime-v4"' release/games/seed-man-platformer/index.html
           test ! -e release/games/seed-man-platformer/physics.mjs
