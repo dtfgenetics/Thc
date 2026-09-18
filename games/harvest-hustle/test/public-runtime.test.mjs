@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const html = fs.readFileSync('site/public-route-patch/games/harvest-hustle/index.html', 'utf8');
-const app = fs.readFileSync('site/public-route-patch/games/harvest-hustle/app.js', 'utf8');
+const bootstrap = fs.readFileSync('site/public-route-patch/games/harvest-hustle/app.js', 'utf8');
+const app = fs.readFileSync('site/public-route-patch/games/harvest-hustle/runtime.mjs', 'utf8');
 const runtime = fs.readFileSync('site/public-route-patch/games/harvest-hustle/runtime.mjs', 'utf8');
 const publicEngine = fs.readFileSync('site/public-route-patch/games/harvest-hustle/engine.mjs', 'utf8');
 const canonicalEngine = fs.readFileSync('games/harvest-hustle/src/engine.mjs', 'utf8');
