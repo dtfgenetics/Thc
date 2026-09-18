@@ -37,7 +37,7 @@ requireToken(shell, 'SITEWIDE_CONTENT_DENSITY_SCRIPT_TAG', 'V6 shell');
 const expected = {
   '/learn/': ['expanded references', 'specialized subjects', 'choose the depth', 'plant-health reasoning'],
   '/tools/': ['connected workflow', 'measure before guessing', 'diagnose with context', 'teaching healthy cultivation'],
-  '/games/': ['quick play & puzzles', 'longer strategy', 'new releases', 'live rooms', 'coming later'],
+  '/games/': ['quick play & puzzles', 'longer strategy', 'new releases', 'live rooms', 'release candidates'],
   '/projects/': ['public game registry', 'multiplayer', 'development roadmap', 'supporting projects', 'release gate'],
 };
 for (const [route, labels] of Object.entries(expected)) {
@@ -48,7 +48,7 @@ for (const [route, labels] of Object.entries(expected)) {
 const sourceChecks = [
   ['Learn', learnSource, ['Expanded references', 'Specialized subjects', 'Choose the depth', 'Plant-health reasoning']],
   ['Tools', tools, ['Connected workflow', 'Measure before guessing', 'Diagnose with context', 'Teaching Healthy Cultivation']],
-  ['Games', games, ['Quick play & puzzles', 'Longer strategy', 'New releases', 'Live rooms', 'Coming later']],
+  ['Games', games, ['Quick play & puzzles', 'Longer strategy', 'New releases', 'Live rooms', 'Release candidates']],
   ['Projects', projects, ['Public game registry', 'Multiplayer', 'Development roadmap', 'Supporting projects', 'Release gate']],
 ];
 for (const [name, source, labels] of sourceChecks) {
