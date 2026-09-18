@@ -209,6 +209,17 @@ jobs:
           test -s site/public-route-patch/games/trichome-trials/confidence.css
           grep -Fq 'https://dtfseeds.com/games/trichome-trials/' site/public-route-patch/games/trichome-trials/index.html
 
+      - name: Validate Grow Room Bingo browser game
+        run: |
+          set -euo pipefail
+          node games/grow-room-bingo/scripts/validate-data.mjs
+          node games/grow-room-bingo/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/grow-room-bingo/app.js
+          node --check site/public-route-patch/games/grow-room-bingo/keyboard-nav.js
+          test -s site/public-route-patch/games/grow-room-bingo/index.html
+          test -s site/public-route-patch/games/grow-room-bingo/bingo.css
+          grep -Fq 'https://dtfseeds.com/games/grow-room-bingo/' site/public-route-patch/games/grow-room-bingo/index.html
+
       - name: Validate Seed Man v20 campaign
         run: |
           set -euo pipefail
