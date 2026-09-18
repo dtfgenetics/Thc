@@ -28,25 +28,25 @@ for (const forbidden of ['function createWheel(', 'function spinWheel(', 'functi
   assert.equal(runtime.includes(forbidden), false, `runtime must not duplicate canonical rules: ${forbidden}`);
 }
 assert.match(runtime, /All 18 entries appear once before this mode starts a new cycle\./, 'ready state must disclose the no-repeat cycle rule');
-assert.match(app, /Cycle \$\{result\.cycleNumber\}, \$\{result\.cyclePosition\} of \$\{result\.cycleSize\}/, 'ARIA result announcement must include cycle progress');
-assert.match(app, /ui\.category\.textContent = 'SPINNING'/, 'result card must hide the selected result during animation');
-assert.match(app, /ui\.label\.textContent = 'Wheel in motion'/, 'spinning state must not leak the answer');
+assert.match(runtime, /Cycle \$\{result\.cycleNumber\}, \$\{result\.cyclePosition\} of \$\{result\.cycleSize\}/, 'ARIA result announcement must include cycle progress');
+assert.match(runtime, /ui\.category\.textContent = 'SPINNING'/, 'result card must hide the selected result during animation');
+assert.match(runtime, /ui\.label\.textContent = 'Wheel in motion'/, 'spinning state must not leak the answer');
 assert.match(runtime, /let spinGeneration = 0;/, 'spin generation must isolate delayed reveal callbacks');
 assert.match(runtime, /function cancelPendingReveal\(/, 'runtime must invalidate prior reveal work before resets and new spins');
 assert.match(runtime, /function finishSpin\(generation\)/, 'finishSpin must identify the spin generation it is resolving');
 assert.match(runtime, /generation !== spinGeneration \|\| !spinning/, 'stale or duplicate reveal callbacks must be ignored');
-assert.match(app, /window\.setTimeout\(\(\) => finishSpin\(generation\)/, 'reveal timer must be bound to the current spin generation');
-assert.match(app, /if \(!document\.hidden \|\| !spinning\) return;/, 'visibility handler must resolve when the page becomes hidden, not when it returns');
+assert.match(runtime, /window\.setTimeout\(\(\) => finishSpin\(generation\)/, 'reveal timer must be bound to the current spin generation');
+assert.match(runtime, /if \(!document\.hidden \|\| !spinning\) return;/, 'visibility handler must resolve when the page becomes hidden, not when it returns');
 assert.match(runtime, /finishSpin\(generation\)/, 'hidden-page resolution must use the current generation guard');
 assert.match(runtime, /function compactCategory\(/, 'wheel segments must provide compact mobile labels');
-assert.match(app, /label\.dataset\.short = compactCategory/, 'wheel segment elements must expose compact label text to CSS');
-assert.match(app, /event\.key === 's' \|\| event\.key === 'S'/, 'S keyboard shortcut must spin outside interactive controls');
-assert.match(app, /globalThis\.crypto\?\.getRandomValues/, 'random code generation must tolerate missing crypto APIs');
-assert.match(app, /globalThis\.history\?\.replaceState/, 'history mutation must be guarded');
+assert.match(runtime, /label\.dataset\.short = compactCategory/, 'wheel segment elements must expose compact label text to CSS');
+assert.match(runtime, /event\.key === 's' \|\| event\.key === 'S'/, 'S keyboard shortcut must spin outside interactive controls');
+assert.match(runtime, /globalThis\.crypto\?\.getRandomValues/, 'random code generation must tolerate missing crypto APIs');
+assert.match(runtime, /globalThis\.history\?\.replaceState/, 'history mutation must be guarded');
 assert.match(runtime, /function prefersReducedMotion\(/, 'reduced-motion lookup must be guarded');
-assert.match(app, /navigator\.clipboard\?\.writeText/, 'share behavior must tolerate unavailable clipboard APIs');
+assert.match(runtime, /navigator\.clipboard\?\.writeText/, 'share behavior must tolerate unavailable clipboard APIs');
 assert.match(runtime, /async function copyText\(/, 'share behavior must expose a clipboard fallback helper');
-assert.match(app, /document\.execCommand\?\.\('copy'\) === true/, 'share behavior must retain a legacy clipboard fallback');
+assert.match(runtime, /document\.execCommand\?\.\('copy'\) === true/, 'share behavior must retain a legacy clipboard fallback');
 assert.match(runtime, /Copy failed\. Share wheel/, 'share failure must preserve the full manual challenge path');
 
 assert.match(css, /\.segment-label::after\{content:attr\(data-short\)/, 'mobile wheel must render compact category abbreviations');
