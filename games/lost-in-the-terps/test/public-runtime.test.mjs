@@ -32,6 +32,8 @@ assert.match(app, /function requestReset\(/, 'mission reset with progress must b
 assert.match(app, /function showWrongPath\(/, 'wrong selections must provide board-level feedback');
 assert.match(app, /classList\.add\('wrong'\)/, 'wrong path cells must be marked');
 assert.match(app, /grid-viewport/, 'runtime must wrap large grids in a scrollable mobile viewport');
+assert.match(app, /const minimumTouchGridWidth = puzzle\.size \* 36/, 'runtime must preserve practical touch width for larger word-search grids');
+assert.match(app, /gridEl\.style\.minWidth = \`max\(100%, \$\{minimumTouchGridWidth\}px\)\`/, 'runtime must apply the puzzle-size touch width to the scrollable grid');
 assert.match(app, /event\.key === 'Escape'/, 'runtime must allow keyboard cancellation of a start selection');
 assert.match(app, /event\.key === 'h' \|\| event\.key === 'H'/, 'H keyboard shortcut must activate a hint');
 assert.match(app, /aria-pressed/, 'runtime must expose selected and found cell state');
@@ -65,6 +67,8 @@ assert.match(css, /min-width:max\(100%,476px\)/, 'mobile grid must keep usable c
 assert.match(css, /\[data-armed=true\]/, 'guarded destructive controls need a visible armed state');
 assert.match(css, /@media\(hover:none\)/, 'touch devices must not inherit hover-only movement');
 assert.match(css, /@media\(prefers-reduced-motion:reduce\)/, 'word-search polish must respect reduced-motion preferences');
+assert.match(css, /@media\(forced-colors:active\)/, 'word-search states must remain visible in forced-colors mode');
+assert.match(css, /outline:3px solid Highlight/, 'forced-colors focus must remain visible');
 
 for (const puzzle of canonical.puzzles) {
   assert.equal(puzzle.words.length, 8, `${puzzle.id} must retain eight hidden words`);
