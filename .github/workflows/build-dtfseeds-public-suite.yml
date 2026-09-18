@@ -737,14 +737,16 @@ jobs:
           for file in release/games/index.html release/growlens/index.html release/thc-grow-doc/index.html release/tools/index.html release/projects/index.html; do
             grep -Fq 'data-dtf-shell="header-v6"' "$file"
             grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' "$file"
-            ! grep -Fq '>Home</a>' "$file"
-            grep -Fq '>Genetics</a>' "$file"
+            grep -Fq '>Home</a>' "$file"
+            grep -Fq '>Seeds</a>' "$file"
             grep -Fq '>Learn</a>' "$file"
-            ! grep -Fq '>Courses</a>' "$file"
-            grep -Fq '>Tools</a>' "$file"
+            grep -Fq '>Courses</a>' "$file"
+            grep -Fq '>Diagnostic</a>' "$file"
             grep -Fq '>Games</a>' "$file"
             grep -Fq '>Community</a>' "$file"
             grep -Fq '>Shop</a>' "$file"
+            ! grep -Fq '>Genetics</a>' "$file"
+            ! grep -Fq '>Tools</a>' "$file"
             grep -Fq 'dtf-sitewide-header-v6-script' "$file"
           done
 
