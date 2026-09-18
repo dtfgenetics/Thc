@@ -134,7 +134,7 @@ jobs:
           expect(app('strain-showdown')?.runtime === 'static' && app('strain-showdown')?.status === 'ready-to-package', 'Strain Showdown deployment state drift');
 
           const seedMan=app('seed-man-platformer');
-          expect(project('seed-man-platformer')?.status === 'browser-vertical-slice', 'Seed Man registry state drift');
+          expect(project('seed-man-platformer')?.status === 'canonical', 'Seed Man registry state drift');
           expect(seedMan?.runtime === 'static-canvas2d-approved-art' && seedMan?.status === 'production-v20', 'Seed Man deployment classification drift');
           expect(seedMan?.machineData?.levelCount === 20 && seedMan?.machineData?.finalBoss === 'blight-king', 'Seed Man v20 machine metadata drift');
           expect(seedMan?.machineData?.worldMechanicsRuntime === 'seed-man-world-mechanics-browser-v1', 'Seed Man world mechanics metadata drift');
