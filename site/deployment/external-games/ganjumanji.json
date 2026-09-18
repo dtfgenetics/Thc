@@ -12,18 +12,27 @@
     "regions": 5,
     "relicSeeds": 10,
     "saveVersion": 5,
-    "input": ["keyboard", "touch"],
+    "input": [
+      "keyboard",
+      "touch"
+    ],
     "persistentBestRun": true,
     "checkpointSave": true,
     "separateAutosaveAndCheckpoint": true,
-    "pressureCurve": [9, 7, 5, 6, 5]
+    "pressureCurve": [
+      9,
+      7,
+      5,
+      6,
+      5
+    ]
   },
-  "verifiedRevision": "54df2e0331ba9930899b4e11cb40e5c5f09235f1",
+  "verifiedRevision": "b1cbf9b9627586b7277813b6a7c6f85a98830d58",
   "promotionGate": {
     "standaloneCI": "passed",
     "deterministicUiValidation": "passed",
     "routeValidation": "passed",
     "liveVerification": "required-before-production-ready"
   },
-  "notes": "Canonical code remains in the standalone Ganjumanji repository. Revision 54df2e0331ba9930899b4e11cb40e5c5f09235f1 is the merged 0.4.0 five-region campaign with 10 relic seeds, save v5, separate autosave/safe-checkpoint recovery, deterministic campaign/content/input/storage/solvability tests, shipped UI-contract validation, TypeScript/Vite build, release-route validation, and production artifact generation. DTFSeeds packaging must rebuild this exact pinned revision and run validate:ui before promotion. Live route verification remains required before production-ready status."
+  "notes": "Canonical code remains in the standalone Ganjumanji repository. Revision b1cbf9b9627586b7277813b6a7c6f85a98830d58 is the green 0.4.1 five-region production candidate with 10 relic seeds, save v5, separate autosave/safe-checkpoint recovery, deterministic campaign/content/input/storage/solvability tests, shipped UI-contract validation, TypeScript/Vite build, release validation, current GitHub Actions CI, and production artifact generation. DTFSeeds packaging must rebuild this exact pinned revision and run validate:ui before promotion. Exact post-deploy live-route verification remains required before production-ready status."
 }
