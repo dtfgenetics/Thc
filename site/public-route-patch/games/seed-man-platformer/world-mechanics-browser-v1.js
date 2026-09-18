@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const VERSION = 'seed-man-world-mechanics-browser-v1';
+  const VERSION = 'seed-man-world-mechanics-browser-v2';
   const SOURCE_CONTRACT = 'seed-man-world-mechanics-runtime-v1';
   const RECIPE_URL = './data/authored-level-recipes-v1.json';
   const PHENOTYPE_HAZARD_IMMUNITIES = Object.freeze({
@@ -36,7 +36,11 @@
   let installed = false;
   let elapsedMs = 0;
   let activeLevelId = '';
+  let teleportCooldownMs = 0;
+  let lastTeleportEvent = null;
   const preparedLevels = new WeakSet();
+  const TELEPORT_ROOT_DEF = Object.freeze({ triggerRadius:46, exitOffset:92, cooldownMs:900 });
+  const TIMED_DOOR_DEF = Object.freeze({ cycleMs:2400, openMs:1350 });
 
   const finite = (value,fallback=0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
   const clamp = (value,min,max) => Math.max(min,Math.min(max,value));
@@ -75,6 +79,86 @@
     const zone=zoneForX(levelData,x);
     const mechanics=Array.isArray(zone?.mechanics)&&zone.mechanics.length ? zone.mechanics : (levelData?.mechanics || []);
     return [...new Set(mechanics.filter(Boolean))];
+  }
+
+  function teleportRootPair(zone) {
+    if(!zone || !(zone.mechanics || []).includes('teleport-roots')) return null;
+    const start=finite(zone.startX);
+    const end=Math.max(start+1,finite(zone.endX,start+1));
+    const width=end-start;
+    const inset=Math.min(360,Math.max(180,width*.22));
+    return Object.freeze({
+      entry:Object.freeze({id:`${zone.id || 'zone'}-root-a`,x:start+inset}),
+      exit:Object.freeze({id:`${zone.id || 'zone'}-root-b`,x:end-inset})
+    });
+  }
+
+  function timedDoorsForZone(zone) {
+    if(!zone || !(zone.mechanics || []).includes('timed-doors')) return Object.freeze([]);
+    const start=finite(zone.startX);
+    const end=Math.max(start+1,finite(zone.endX,start+1));
+    const width=end-start;
+    return Object.freeze([.38,.7].map((ratio,index)=>Object.freeze({
+      id:`${zone.id || 'zone'}-door-${index+1}`,
+      x:start+width*ratio,
+      cycleMs:TIMED_DOOR_DEF.cycleMs,
+      openMs:TIMED_DOOR_DEF.openMs,
+      phaseMs:index*(TIMED_DOOR_DEF.cycleMs/2)
+    })));
+  }
+
+  function timedDoorIsOpen(door,timeMs=elapsedMs) {
+    const cycle=Math.max(1,finite(door?.cycleMs,TIMED_DOOR_DEF.cycleMs));
+    const open=Math.max(0,Math.min(cycle,finite(door?.openMs,TIMED_DOOR_DEF.openMs)));
+    const phase=finite(door?.phaseMs,0);
+    return ((((timeMs+phase)%cycle)+cycle)%cycle)<open;
+  }
+
+  function applyTimedDoors(next,prior,levelData) {
+    const zones=levelData?.encounterZones || [];
+    for(const zone of zones){
+      for(const door of timedDoorsForZone(zone)){
+        if(timedDoorIsOpen(door)) continue;
+        const doorX=finite(door.x);
+        const priorLeft=finite(prior?.x);
+        const priorRight=priorLeft+finite(prior?.width,next.width);
+        const nextLeft=finite(next.x);
+        const nextRight=nextLeft+finite(next.width);
+        if(priorRight<=doorX&&nextRight>doorX){
+          next.x=doorX-finite(next.width)-2;
+          next.vx=Math.min(0,finite(next.vx));
+          next.__seedTimedDoorBlocked=door.id;
+        }else if(priorLeft>=doorX&&nextLeft<doorX){
+          next.x=doorX+2;
+          next.vx=Math.max(0,finite(next.vx));
+          next.__seedTimedDoorBlocked=door.id;
+        }
+      }
+    }
+    return next;
+  }
+
+  function applyTeleportRoots(next,inputState,levelData,step) {
+    teleportCooldownMs=Math.max(0,teleportCooldownMs-step*1000);
+    if(teleportCooldownMs>0||!next?.grounded) return next;
+    const centerX=finite(next.x)+finite(next.width)/2;
+    const zone=zoneForX(levelData,centerX);
+    const pair=teleportRootPair(zone);
+    if(!pair) return next;
+    const triggerRadius=TELEPORT_ROOT_DEF.triggerRadius;
+    const nearEntry=Math.abs(centerX-pair.entry.x)<=triggerRadius;
+    const nearExit=Math.abs(centerX-pair.exit.x)<=triggerRadius;
+    if(!nearEntry&&!nearExit) return next;
+    const direction=nearEntry?1:-1;
+    const destination=nearEntry?pair.exit:pair.entry;
+    next.x=clamp(destination.x+direction*TELEPORT_ROOT_DEF.exitOffset-finite(next.width)/2,0,Math.max(0,finite(levelData.worldWidth)-finite(next.width)));
+    next.vy=-210;
+    next.grounded=false;
+    next.state='jump';
+    teleportCooldownMs=TELEPORT_ROOT_DEF.cooldownMs;
+    lastTeleportEvent={from:nearEntry?pair.entry.id:pair.exit.id,to:destination.id,levelId:levelData.id||'',timeMs:elapsedMs};
+    window.dispatchEvent(new CustomEvent('seedman:teleport-root',{detail:{...lastTeleportEvent}}));
+    return next;
   }
 
   function platformInZone(platform,zone) {
@@ -230,8 +314,70 @@
         if(feet>=finite(hazard.y)-28&&!inputState?.left&&!inputState?.right) next.vx=finite(prior?.vx,next.vx)*finite(def.friction,.22);
       }
     }
+    applyTimedDoors(next,prior,levelData);
+    applyTeleportRoots(next,inputState,levelData,step);
     next.x=clamp(finite(next.x),0,Math.max(0,finite(levelData.worldWidth)-finite(next.width)));
     return next;
+  }
+
+  function drawPortal(drawCtx,x,height,label) {
+    const baseY=Math.min(height-36,480);
+    const gradient=drawCtx.createRadialGradient(x,baseY,4,x,baseY,34);
+    gradient.addColorStop(0,'rgba(216,197,255,.22)');
+    gradient.addColorStop(.58,'rgba(113,240,157,.32)');
+    gradient.addColorStop(1,'rgba(43,129,84,0)');
+    drawCtx.fillStyle=gradient;
+    drawCtx.beginPath(); drawCtx.arc(x,baseY,34,0,Math.PI*2); drawCtx.fill();
+    drawCtx.strokeStyle='rgba(183,255,205,.86)'; drawCtx.lineWidth=4;
+    drawCtx.beginPath(); drawCtx.arc(x,baseY,24,Math.PI*.15,Math.PI*1.85); drawCtx.stroke();
+    drawCtx.fillStyle='rgba(245,247,244,.92)'; drawCtx.font='800 10px system-ui'; drawCtx.textAlign='center';
+    drawCtx.fillText(label,x,baseY-39);
+  }
+
+  function drawTimedDoor(drawCtx,door,camera,height) {
+    const screenX=Math.round(finite(door.x)-camera);
+    if(screenX<-30||screenX>960+30) return;
+    const open=timedDoorIsOpen(door);
+    const top=116, bottom=Math.min(height-42,486);
+    drawCtx.save();
+    drawCtx.lineWidth=open?3:8;
+    drawCtx.strokeStyle=open?'rgba(101,242,209,.34)':'rgba(255,155,124,.9)';
+    drawCtx.setLineDash(open?[8,10]:[]);
+    drawCtx.beginPath(); drawCtx.moveTo(screenX,top); drawCtx.lineTo(screenX,bottom); drawCtx.stroke();
+    if(!open){
+      drawCtx.strokeStyle='rgba(243,200,103,.72)'; drawCtx.lineWidth=2;
+      for(let y=top+8;y<bottom;y+=18){drawCtx.beginPath();drawCtx.moveTo(screenX-12,y);drawCtx.lineTo(screenX+12,y+10);drawCtx.stroke();}
+    }
+    drawCtx.restore();
+  }
+
+  function drawWorldMechanicOverlay() {
+    try {
+      if(typeof ctx==='undefined'||typeof canvas==='undefined'||typeof level==='undefined'||typeof player==='undefined'||!ctx||!canvas||!level||!player) return;
+      const centerX=finite(player.x)+finite(player.width)/2;
+      const activeMechanics=new Set(mechanicsAtX(level,centerX));
+      const camera=typeof cameraX==='undefined'?0:finite(cameraX);
+      if(activeMechanics.has('dark-zones')){
+        const px=finite(player.x)-camera+finite(player.width)/2;
+        const py=finite(player.y)+finite(player.height)/2;
+        const radius=Math.max(150,canvas.height*.34);
+        const darkness=ctx.createRadialGradient(px,py,40,px,py,radius);
+        darkness.addColorStop(0,'rgba(0,0,0,.08)');
+        darkness.addColorStop(.45,'rgba(0,0,0,.34)');
+        darkness.addColorStop(1,'rgba(0,0,0,.62)');
+        ctx.fillStyle=darkness; ctx.fillRect(0,0,canvas.width,canvas.height);
+      }
+      for(const zone of level.encounterZones || []){
+        const pair=teleportRootPair(zone);
+        if(pair){
+          const ax=pair.entry.x-camera, bx=pair.exit.x-camera;
+          if(ax>-50&&ax<canvas.width+50) drawPortal(ctx,ax,canvas.height,'ROOT A');
+          if(bx>-50&&bx<canvas.width+50) drawPortal(ctx,bx,canvas.height,'ROOT B');
+        }
+        for(const door of timedDoorsForZone(zone)) drawTimedDoor(ctx,door,camera,canvas.height);
+      }
+      ctx.textAlign='start';
+    } catch {}
   }
 
   function install() {
@@ -239,7 +385,7 @@
     const baseStep=stepPlayer;
     stepPlayer=function seedManWorldMechanicsStep(inputPlayer,inputState,levelData,dt,config){
       if(!levelData) return baseStep(inputPlayer,inputState,levelData,dt,config);
-      if(levelData.id!==activeLevelId){activeLevelId=levelData.id||'';elapsedMs=0;}
+      if(levelData.id!==activeLevelId){activeLevelId=levelData.id||'';elapsedMs=0;teleportCooldownMs=0;lastTeleportEvent=null;}
       elapsedMs+=clamp(finite(dt),0,.05)*1000;
       enrichLevelFromRecipe(levelData);
       updateDynamicPlatforms(levelData,elapsedMs);
@@ -249,6 +395,10 @@
       const next=baseStep(carried,inputState,frameLevel,dt,config);
       return applyEnvironmentEffects(next,carried,inputState,levelData,phenotype,dt);
     };
+    if(typeof render==='function'){
+      const baseRender=render;
+      render=function seedManWorldMechanicsRender(){baseRender();drawWorldMechanicOverlay();};
+    }
     installed=true;
     document.documentElement.dataset.seedManWorldMechanics=VERSION;
     window.dispatchEvent(new CustomEvent('seedman:world-mechanics-ready',{detail:{version:VERSION}}));
@@ -275,10 +425,13 @@
     phenotypeImmuneToHazard,
     hazardIsActive,
     mechanicsAtX,
-    snapshot:()=>Object.freeze({version:VERSION,installed,recipesReady:Boolean(recipeCatalog),activeLevelId,elapsedMs})
+    teleportRootPair,
+    timedDoorsForZone,
+    timedDoorIsOpen,
+    snapshot:()=>Object.freeze({version:VERSION,installed,recipesReady:Boolean(recipeCatalog),activeLevelId,elapsedMs,teleportCooldownMs,lastTeleportEvent})
   });
 
   install();
   loadRecipes();
-  window.addEventListener('sprout:level-selected',()=>{activeLevelId='';elapsedMs=0;try{if(typeof level!=='undefined'&&level)enrichLevelFromRecipe(level);}catch{}});
+  window.addEventListener('sprout:level-selected',()=>{activeLevelId='';elapsedMs=0;teleportCooldownMs=0;lastTeleportEvent=null;try{if(typeof level!=='undefined'&&level)enrichLevelFromRecipe(level);}catch{}});
 })();
