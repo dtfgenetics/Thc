@@ -518,8 +518,8 @@
       "route": "/games/spin-the-strain/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/spin-the-strain/scripts/validate-data.mjs && node games/spin-the-strain/test/engine.test.mjs && node --check site/public-route-patch/games/spin-the-strain/app.js && node --check site/public-route-patch/games/spin-the-strain/engine.mjs",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/spin-the-strain/scripts/validate-data.mjs && node games/spin-the-strain/test/engine.test.mjs && node games/spin-the-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/spin-the-strain/app.js && node --check site/public-route-patch/games/spin-the-strain/runtime.mjs && cmp games/spin-the-strain/src/engine.mjs site/public-route-patch/games/spin-the-strain/engine.mjs",
+      "notes": "Self-hosted deterministic three-mode wheel game with 18-entry no-repeat cycles per mode, shareable codes, animation-isolated result reveal, hidden-page completion, keyboard spin shortcut, clipboard fallback, reduced motion, and forced-colors support. Browser runtime now imports the canonical tested wheel engine. Dedicated title CI and the central public-suite validation gate both enforce the runtime contract. browserTested remains false until actual browser QA is completed; exact post-deploy live-route verification is still required."
     },
     {
       "id": "strain-match",
