@@ -42,9 +42,11 @@ const sitesDoc = loadJson('data/site-registry.json');
 const assetsDoc = loadJson('data/asset-manifest.json');
 const navigationDoc = loadJson('data/public-navigation.json');
 const shellDoc = loadJson('data/site-navigation-v6.json');
+const deploymentDoc = loadJson('site/deployment/public-apps.json');
+const fleetArchiveDoc = loadJson('games/cannabis-fleet-battle/game.json');
 loadJson('data/asset-manifest.schema.json');
 
-if (!projectsDoc || !sitesDoc || !assetsDoc || !navigationDoc || !shellDoc) {
+if (!projectsDoc || !sitesDoc || !assetsDoc || !navigationDoc || !shellDoc || !deploymentDoc || !fleetArchiveDoc) {
   console.error(errors.join('\n'));
   process.exit(1);
 }
@@ -129,6 +131,37 @@ for (const repo of siteRepos) {
   if (!projects.some((project) => project.repo === repo)) {
     warnings.push(`site-registry: repository '${repo}' has no project-registry owner`);
   }
+}
+
+const deploymentApps = Array.isArray(deploymentDoc.apps) ? deploymentDoc.apps : [];
+const cannabisFleetProject = projects.find((project) => project.id === 'cannabis-fleet-battle');
+const cannabisFleetDeployment = deploymentApps.find((app) => app.id === 'cannabis-fleet-battle');
+const burnBudsDeployment = deploymentApps.find((app) => app.id === 'protect-the-plants');
+
+if (cannabisFleetProject?.type !== 'archive-pointer' || cannabisFleetProject?.status !== 'archive-candidate') {
+  errors.push('cannabis-fleet-battle: project registry must remain an archive-pointer/archive-candidate');
+}
+if (cannabisFleetDeployment?.status !== 'do-not-develop' || cannabisFleetDeployment?.runtime !== 'merged-archive-pointer') {
+  errors.push('cannabis-fleet-battle: deployment registry must remain a do-not-develop merged archive pointer');
+}
+if (typeof cannabisFleetDeployment?.route === 'string' && cannabisFleetDeployment.route.trim()) {
+  errors.push('cannabis-fleet-battle: archived scaffold must not own a public route');
+}
+if (cannabisFleetDeployment?.machineData?.canonicalGameId !== 'protect-the-plants' ||
+    cannabisFleetDeployment?.machineData?.canonicalRoute !== '/games/protect-the-plants/' ||
+    cannabisFleetDeployment?.machineData?.publicReleaseAllowed !== false) {
+  errors.push('cannabis-fleet-battle: deployment pointer must target canonical Burn Buds and prohibit separate release');
+}
+if (burnBudsDeployment?.route !== '/games/protect-the-plants/' || burnBudsDeployment?.title !== 'Burn Buds') {
+  errors.push('protect-the-plants: Burn Buds must remain the canonical public hidden-fleet game');
+}
+if (fleetArchiveDoc?.type !== 'archive-pointer' ||
+    fleetArchiveDoc?.status !== 'archive-candidate' ||
+    fleetArchiveDoc?.developmentPolicy !== 'do-not-develop-separately' ||
+    fleetArchiveDoc?.canonicalGame?.id !== 'protect-the-plants' ||
+    fleetArchiveDoc?.canonicalGame?.route !== '/games/protect-the-plants/' ||
+    fleetArchiveDoc?.releaseGates?.separatePublicReleaseAllowed !== false) {
+  errors.push('games/cannabis-fleet-battle/game.json: archive manifest must remain merged into Burn Buds');
 }
 
 const canonicalNavigation = [
