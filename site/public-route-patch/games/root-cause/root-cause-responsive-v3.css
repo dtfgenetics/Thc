@@ -130,3 +130,43 @@ body.admin-bar:has(> .dtf-global-header) .control-column > .control-card:first-c
     padding-inline: .35rem;
   }
 }
+
+@media (forced-colors: active) {
+  .case-card,
+  .evidence-card,
+  .control-card,
+  .rules-card,
+  .inspection-button,
+  .diagnosis-button,
+  .primary-button,
+  .secondary-button,
+  .code-row input,
+  .reading-chip,
+  .evidence-item,
+  .feedback-card {
+    border: 1px solid ButtonText;
+  }
+
+  .inspection-button:focus-visible,
+  .diagnosis-button:focus-visible,
+  .primary-button:focus-visible,
+  .secondary-button:focus-visible,
+  .code-row input:focus-visible,
+  .hub-link:focus-visible,
+  .brand:focus-visible {
+    outline: 3px solid Highlight;
+    outline-offset: 3px;
+  }
+
+  .inspection-button.used,
+  .feedback-card.success,
+  .history-list li.solved {
+    border-color: Highlight;
+  }
+
+  .diagnosis-button.guessed,
+  .feedback-card.danger,
+  .history-list li.failed {
+    border-color: Mark;
+  }
+}
