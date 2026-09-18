@@ -482,8 +482,8 @@
       "route": "/games/lost-in-the-terps/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/lost-in-the-terps/scripts/validate-data.mjs && node --check site/public-route-patch/games/lost-in-the-terps/app.js",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/lost-in-the-terps/scripts/validate-data.mjs && node games/lost-in-the-terps/test/public-runtime.test.mjs && node --check site/public-route-patch/games/lost-in-the-terps/app.js && node --check site/public-route-patch/games/lost-in-the-terps/keyboard-nav-v1.js",
+      "notes": "Self-hosted three-mission word-search game with eight hidden words per mission, guarded mission/reset actions, three-use hints, isolated delayed feedback, roving keyboard grid navigation, scrollable mobile grids, reduced motion, and forced-colors support. Its existing deterministic browser-runtime test is now included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
     },
     {
       "id": "mystery-strain",
