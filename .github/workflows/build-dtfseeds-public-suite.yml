@@ -379,14 +379,28 @@ jobs:
       - name: Validate Bud or Bluff multiplayer game
         run: |
           set -euo pipefail
+          root=site/public-route-patch/games/bud-or-bluff
           node games/bud-or-bluff/test/engine.test.mjs
           node games/bud-or-bluff/scripts/build-private-deck.mjs
-          node --check site/public-route-patch/games/bud-or-bluff/app-v2.js
-          node --check site/public-route-patch/games/bud-or-bluff/keyboard-v1.js
-          php -l site/public-route-patch/games/bud-or-bluff/api-v2.php
-          php -l site/public-route-patch/games/bud-or-bluff/deck.php
+          node games/bud-or-bluff/test/keyboard-v1.test.mjs
+          node games/bud-or-bluff/test/visual-state-v3.test.mjs
+          node games/bud-or-bluff/test/online-lobby.test.mjs
           node games/bud-or-bluff/test/online-lobby-v2.test.mjs
-          test -s site/public-route-patch/games/bud-or-bluff/index.html
+          node --check "$root/app.js"
+          node --check "$root/app-v2.js"
+          node --check "$root/player-pref-v1.js"
+          node --check "$root/keyboard-v1.js"
+          node --check "$root/visual-state-v3.js"
+          php -l "$root/api.php"
+          php -l "$root/api-v2.php"
+          php -l "$root/api-v3.php"
+          php -l "$root/deck.php"
+          for asset in index.html styles.css v2.css visual-state-v3.css app-v2.js api-v2.php api-v3.php .htaccess keyboard-v1.js visual-state-v3.js; do
+            test -s "$root/$asset"
+          done
+          grep -Fq 'RewriteRule ^api-v2\.php$ api-v3.php [L]' "$root/.htaccess"
+          grep -Fq 'X-DTF-Bud-Or-Bluff-Storage: durable-v3' "$root/api-v3.php"
+          ! grep -Fq "'answer'=>'BUD'" "$root/index.html"
 
       - name: Validate promoted Terpocalypse route and PhenoQuest source pin
         run: |
