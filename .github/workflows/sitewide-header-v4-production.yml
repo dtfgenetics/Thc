@@ -7,6 +7,7 @@ on:
     paths:
       - scripts/lib/sitewide-header-template.mjs
       - scripts/lib/sitewide-header-template-v6.mjs
+      - scripts/lib/sitewide-footer-template-v6.mjs
       - scripts/lib/sitewide-content-density-v1.mjs
       - scripts/lib/sitewide-visual-repair-v2.mjs
       - scripts/apply-sitewide-header.mjs
@@ -21,6 +22,7 @@ on:
     paths:
       - scripts/lib/sitewide-header-template.mjs
       - scripts/lib/sitewide-header-template-v6.mjs
+      - scripts/lib/sitewide-footer-template-v6.mjs
       - scripts/lib/sitewide-content-density-v1.mjs
       - scripts/lib/sitewide-visual-repair-v2.mjs
       - scripts/apply-sitewide-header.mjs
@@ -60,6 +62,7 @@ jobs:
           set -euo pipefail
           node --check scripts/lib/sitewide-header-template.mjs
           node --check scripts/lib/sitewide-header-template-v6.mjs
+          node --check scripts/lib/sitewide-footer-template-v6.mjs
           node --check scripts/lib/sitewide-content-density-v1.mjs
           node --check scripts/lib/sitewide-visual-repair-v2.mjs
           node --check scripts/apply-sitewide-header.mjs
@@ -72,6 +75,8 @@ jobs:
           test -s site/wordpress/assets/sitewide-ux-polish-v1.css
           grep -Fq 'data-dtf-shell="header-v6"' scripts/lib/sitewide-header-template-v6.mjs
           grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' scripts/lib/sitewide-header-template-v6.mjs
+          grep -Fq 'data-dtf-sitewide-footer="canonical-eight-v1"' scripts/lib/sitewide-footer-template-v6.mjs
+          grep -Fq 'data-dtf-shell="footer-v6"' scripts/lib/sitewide-footer-template-v6.mjs
           grep -Fq 'dtf-content-density-v1-style' scripts/lib/sitewide-content-density-v1.mjs
           grep -Fq 'dtf-content-density-v1-script' scripts/lib/sitewide-content-density-v1.mjs
           grep -Fq 'dtf-sitewide-visual-repair-v2-style' scripts/lib/sitewide-visual-repair-v2.mjs
@@ -84,7 +89,9 @@ jobs:
           ! grep -Fq '>Genetics</a>' scripts/lib/sitewide-header-template-v6.mjs
           ! grep -Fq '>Tools</a>' scripts/lib/sitewide-header-template-v6.mjs
           grep -Fq "./lib/sitewide-header-template-v6.mjs" scripts/apply-sitewide-header.mjs
+          grep -Fq "./lib/sitewide-footer-template-v6.mjs" scripts/apply-sitewide-header.mjs
           grep -Fq "./lib/sitewide-header-template-v6.mjs" scripts/rebuild-wordpress-shared-shell-v3.mjs
+          grep -Fq "./lib/sitewide-footer-template-v6.mjs" scripts/rebuild-wordpress-shared-shell-v3.mjs
 
           # Fail closed if static Public Suite hubs drift back into the WordPress
           # publisher's immediate verification scope. Their owner still verifies
@@ -110,7 +117,9 @@ jobs:
           node scripts/apply-sitewide-header.mjs "$RUNNER_TEMP/header-fixture"
           node scripts/apply-sitewide-header.mjs "$RUNNER_TEMP/header-fixture" --check
           count="$(grep -RFl 'data-dtf-shell="header-v6"' "$RUNNER_TEMP/header-fixture" --include='*.html' | wc -l | tr -d ' ')"
+          footer_count="$(grep -RFl 'data-dtf-shell="footer-v6"' "$RUNNER_TEMP/header-fixture" --include='*.html' | wc -l | tr -d ' ')"
           test "$count" -gt 10
+          test "$footer_count" -eq "$count"
           grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/header-fixture/tools/index.html"
           grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/header-fixture/games/index.html"
           grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/header-fixture/projects/index.html"
@@ -119,6 +128,9 @@ jobs:
           grep -Fq 'dtf-sitewide-visual-repair-v2-script' "$RUNNER_TEMP/header-fixture/projects/index.html"
           grep -Fq 'dtf-sitewide-mobile-polish-v1-style' "$RUNNER_TEMP/header-fixture/tools/index.html"
           grep -Fq 'dtf-sitewide-mobile-polish-v1-style' "$RUNNER_TEMP/header-fixture/games/index.html"
+          grep -Fq 'data-dtf-sitewide-footer="canonical-eight-v1"' "$RUNNER_TEMP/header-fixture/tools/index.html"
+          grep -Fq 'data-dtf-sitewide-footer="canonical-eight-v1"' "$RUNNER_TEMP/header-fixture/games/index.html"
+          grep -Fq 'data-dtf-sitewide-footer="canonical-eight-v1"' "$RUNNER_TEMP/header-fixture/projects/index.html"
 
   publish:
     if: ${{ github.event_name != 'pull_request' }}

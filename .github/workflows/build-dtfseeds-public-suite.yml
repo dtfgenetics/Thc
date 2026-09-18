@@ -23,6 +23,7 @@ on:
       - site/public-route-patch/games/crossword/source-revision.txt
       - scripts/validate-crossword-release-source.mjs
       - scripts/lib/sitewide-header-template-v6.mjs
+      - scripts/lib/sitewide-footer-template-v6.mjs
       - scripts/apply-sitewide-header.mjs
       - .github/workflows/validate-crossword-release-source.yml
       - .github/workflows/build-dtfseeds-public-suite.yml
@@ -55,6 +56,7 @@ on:
       - data/public-navigation.json
       - scripts/validate-crossword-release-source.mjs
       - scripts/lib/sitewide-header-template-v6.mjs
+      - scripts/lib/sitewide-footer-template-v6.mjs
       - scripts/apply-sitewide-header.mjs
       - .github/workflows/validate-crossword-release-source.yml
       - .github/workflows/build-dtfseeds-public-suite.yml
@@ -737,10 +739,12 @@ jobs:
           for file in release/games/index.html release/growlens/index.html release/thc-grow-doc/index.html release/tools/index.html release/projects/index.html; do
             grep -Fq 'data-dtf-shell="header-v6"' "$file"
             grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' "$file"
+            grep -Fq 'data-dtf-shell="footer-v6"' "$file"
+            grep -Fq 'data-dtf-sitewide-footer="canonical-eight-v1"' "$file"
+            grep -Fq 'dtf-shared-footer-v6-style' "$file"
             grep -Fq '>Home</a>' "$file"
             grep -Fq '>Seeds</a>' "$file"
             grep -Fq '>Learn</a>' "$file"
-            ! grep -Fq '>Courses</a>' "$file"
             grep -Fq '>Courses</a>' "$file"
             grep -Fq '>Diagnostic</a>' "$file"
             grep -Fq '>Games</a>' "$file"
