@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
   <meta name="theme-color" content="#030704">
   <meta name="description" content="Terpocalypse: Grow Room From Hell — an original DTF Genetics retro browser action game. Fight through The Veg Lab, recover the green keycard, clear grow-room threats, and reach extraction.">
   <link rel="canonical" href="https://dtfseeds.com/games/terpocalypse/">
   <title>Terpocalypse: Grow Room From Hell | DTF Game Hub</title>
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./mobile-gameplay-v2.css">
 </head>
 <body>
   <canvas id="game" aria-label="Terpocalypse: Grow Room From Hell playable game canvas"></canvas>
@@ -22,18 +23,34 @@
       <h2>Grow Room From Hell</h2>
       <div class="mission-chip">LEVEL 01 · THE VEG LAB</div>
       <p class="copy">The room is contaminated. Clear the Spider Mite Swarms, Powdery Mildew Ghouls, and Nute Burn Imps. Recover the green keycard, unlock containment, and reach extraction.</p>
+      <div class="mission-briefing" aria-label="Mission sequence"><span><b>01</b><strong>Clear threats</strong><small>Break the infestation before extraction opens.</small></span><span><b>02</b><strong>Find keycard</strong><small>Recover the green access card inside the lab.</small></span><span><b>03</b><strong>Extract</strong><small>Unlock containment and reach the marked exit.</small></span></div>
       <div class="loadout-preview" aria-label="Mission loadout">
         <span>✂ Trim Shears</span><span>pH Blaster</span><span>Neem Cannon</span><span>✦ Trichome Burst</span>
       </div>
       <button id="startButton" class="start-button" type="button">Enter The Veg Lab</button>
       <p class="controls desktop-controls">WASD move · Mouse aim · Click/Space fire · 1/2/3 weapons · E interact · Q special · Esc pause</p>
       <p class="controls mobile-copy">Touch controls activate in-game. Rotate with ◀ ▶, move with the pad, and use FIRE / USE / BURST.</p>
-      <p class="prototype-note">Original DTF Genetics browser action game · code-drawn game art · no external game assets</p>
+      <p class="prototype-note">Original DTF Genetics browser action game · Level 01: The Veg Lab · desktop + touch controls</p>
     </div>
   </section>
 
   <div id="objective" class="objective" aria-live="polite"><b>OBJECTIVE</b><span id="objectiveText">Secure The Veg Lab</span></div>
   <div id="toast" class="toast" aria-live="polite"></div>
+
+  <details class="control-guide">
+    <summary>Controls</summary>
+    <div class="control-guide-panel">
+      <strong>Mission controls</strong>
+      <span><kbd>WASD</kbd> Move</span>
+      <span><kbd>Mouse</kbd> Aim</span>
+      <span><kbd>Click</kbd>/<kbd>Space</kbd> Fire</span>
+      <span><kbd>1–3</kbd> Switch weapon</span>
+      <span><kbd>E</kbd> Use / interact</span>
+      <span><kbd>Q</kbd> Trichome Burst</span>
+      <span><kbd>Esc</kbd> Pause</span>
+      <small>On touch devices, use the on-screen movement, turn, FIRE, USE, WPN, and BURST controls.</small>
+    </div>
+  </details>
 
   <section id="touchControls" class="touch-controls" aria-label="Touch controls" hidden>
     <div class="touch-left">
