@@ -350,6 +350,21 @@ jobs:
           test -s site/public-route-patch/games/strain-match/strain-match-v2.css
           test -s site/public-route-patch/games/strain-match/data/decks.json
 
+      - name: Validate Trichome Trials canonical browser runtime
+        run: |
+          set -euo pipefail
+          node games/trichome-trials/scripts/validate-data.mjs
+          node games/trichome-trials/test/engine.test.mjs
+          node games/trichome-trials/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/trichome-trials/app.js
+          node --check site/public-route-patch/games/trichome-trials/runtime.mjs
+          node --check site/public-route-patch/games/trichome-trials/engine.mjs
+          test -s site/public-route-patch/games/trichome-trials/index.html
+          test -s site/public-route-patch/games/trichome-trials/trichome-trials.css
+          test -s site/public-route-patch/games/trichome-trials/trichome-trials-v2.css
+          test -s site/public-route-patch/games/trichome-trials/confidence.css
+          test -s site/public-route-patch/games/trichome-trials/frost-layout.css
+
       - name: Validate Seed Man v20 campaign
         run: |
           set -euo pipefail
@@ -802,6 +817,14 @@ jobs:
             release/games/strain-match/strain-match.css
             release/games/strain-match/strain-match-v2.css
             release/games/strain-match/data/decks.json
+            release/games/trichome-trials/index.html
+            release/games/trichome-trials/app.js
+            release/games/trichome-trials/runtime.mjs
+            release/games/trichome-trials/engine.mjs
+            release/games/trichome-trials/trichome-trials.css
+            release/games/trichome-trials/trichome-trials-v2.css
+            release/games/trichome-trials/confidence.css
+            release/games/trichome-trials/frost-layout.css
             release/games/seed-man-platformer/index.html
             release/games/seed-man-platformer/app.js
             release/games/seed-man-platformer/seed-man.css
@@ -900,6 +923,11 @@ jobs:
           grep -Fq '/games/strain-match/' release/games/strain-match/index.html
           grep -Fq 'grid-template-columns:repeat(5,minmax(0,1fr))' release/games/strain-match/strain-match.css
           grep -Fq '@media(forced-colors:active)' release/games/strain-match/strain-match.css
+          grep -Fq '/games/trichome-trials/' release/games/trichome-trials/index.html
+          grep -Fq "import('./runtime.mjs')" release/games/trichome-trials/app.js
+          cmp games/trichome-trials/src/engine.mjs release/games/trichome-trials/engine.mjs
+          grep -Fq '.confidence-button{min-height:44px' release/games/trichome-trials/trichome-trials-v2.css
+          grep -Fq '@media(forced-colors:active)' release/games/trichome-trials/trichome-trials-v2.css
           grep -Fq '/games/seed-man-platformer/' release/games/seed-man-platformer/index.html
           grep -Fq 'data-seed-man-release="20260909-v20-runtime-v4"' release/games/seed-man-platformer/index.html
           test ! -e release/games/seed-man-platformer/physics.mjs
