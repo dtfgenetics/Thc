@@ -21,7 +21,7 @@ The current Game Hub exposes 25 playable browser games:
 5. High Land: The Sweet Escape
 6. Weedopolis: Strain City Edition
 7. Strain Showdown
-8. THC Weekly Crossword
+8. THC Daily Crossword
 9. Who Took It?
 10. Burn Buds
 11. Bud or Bluff
