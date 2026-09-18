@@ -141,6 +141,7 @@ jobs:
       - name: Validate promoted Terpocalypse route and PhenoQuest source pin
         run: |
           set -euo pipefail
+          node games/terpocalypse/test/public-runtime.test.mjs
           node --check site/public-route-patch/games/terpocalypse/main.js
           node --check site/public-route-patch/games/terpocalypse/game-data.js
           test -s site/public-route-patch/games/terpocalypse/index.html
