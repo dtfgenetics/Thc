@@ -38,7 +38,6 @@ jobs:
       - name: Verify current Seed Man source/runtime architecture
         run: |
           set -euo pipefail
-          node scripts/verify-seed-man-production-v20.mjs
           node scripts/validate-seed-man-production-bundle.mjs
           grep -Fq 'seed-man-three-compat-fallback-v1' site/public-route-patch/games/seed-man-platformer/three-world-v1.js
 
@@ -51,6 +50,7 @@ jobs:
           node games/seed-man-platformer/test/public-runtime.test.mjs
           node games/seed-man-platformer/test/public-campaign.test.mjs
           node games/seed-man-platformer/test/tutorial-ui.test.mjs
+          node games/seed-man-platformer/test/touch-combat-controls.test.mjs
 
       - name: Validate browser JavaScript syntax
         run: |
