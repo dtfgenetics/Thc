@@ -138,6 +138,9 @@ for(const file of surface.files){
   if(file==='index.html'||file==='play.php'){
     const text=raw.toString('utf8');
     if(!text.includes('data-dtf-shell="header-v6"')||!text.includes('data-dtf-sitewide-footer="canonical-eight-v1"')) throw new Error(`Transformed source ${file} does not contain the canonical V6 shared shell.`);
+    for(const marker of surface.requiredMarkers||[]){
+      if(!text.includes(marker)) throw new Error(`Transformed source ${file} is missing required visitor marker: ${marker}`);
+    }
   }
   payload.push({rel,sha256:crypto.createHash('sha256').update(raw).digest('hex'),content_b64:raw.toString('base64'),bytes:raw.length});
 }
