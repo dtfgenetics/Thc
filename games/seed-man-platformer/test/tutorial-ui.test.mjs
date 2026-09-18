@@ -12,9 +12,10 @@ const [levelsText, ui, css] = await Promise.all([
 const catalog = JSON.parse(levelsText);
 const sproutSteps = catalog.levels.find((entry) => entry.id === '1-1-sprout-steps');
 assert.ok(sproutSteps?.layout?.tutorials, 'Sprout Steps authored layout must expose tutorial metadata');
-assert.equal(sproutSteps.layout.tutorials.length, 4, 'Sprout Steps should introduce four core actions');
-assert.deepEqual(sproutSteps.layout.tutorials.map((entry) => entry.action), ['move','jump','attack','phenotype']);
-assert.deepEqual([...sproutSteps.layout.tutorials].map((entry) => entry.x), [150,560,930,4380]);
+assert.equal(sproutSteps.layout.tutorials.length, 5, 'Sprout Steps should introduce five core actions');
+assert.deepEqual(sproutSteps.layout.tutorials.map((entry) => entry.action), ['move','jump','attack','stomp','phenotype']);
+assert.deepEqual([...sproutSteps.layout.tutorials].map((entry) => entry.x), [150,560,930,1280,4380]);
+assert.match(sproutSteps.layout.tutorials.find((entry) => entry.action === 'stomp')?.text || '', /STOMP.*damage.*bounce/i, 'stomp tutorial should explain damage and bounce');
 assert.ok(sproutSteps.layout.tutorials.every((entry) => entry.id && entry.text), 'every tutorial needs a stable id and player-facing text');
 
 assert.match(ui, /seed-man-tutorial-ui-v1/, 'campaign UI must expose tutorial controller version');
