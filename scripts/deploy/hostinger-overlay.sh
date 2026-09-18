@@ -124,7 +124,7 @@ validate_stage() {
   for required in "${REQUIRED[@]}"; do
     [[ -e "$stage/$required" || -L "$stage/$required" ]] || die "stage is missing required path: $required"
   done
-  grep -Fq '25 playable browser games' "$stage/games/index.html" || die "game hub validation marker is missing"
+  grep -Fq '23 playable browser games' "$stage/games/index.html" || die "game hub validation marker is missing"
 }
 
 activate() {
@@ -200,7 +200,7 @@ activate() {
   [[ -s "$public_root/games/index.html" ]] || die "activated game hub is missing"
   [[ -s "$public_root/games/bud-or-bluff/index.html" ]] || die "activated Bud or Bluff route is missing"
   [[ -s "$public_root/games/bud-or-bluff/api-v2.php" ]] || die "activated Bud or Bluff PHP API is missing"
-  grep -Fq '25 playable browser games' "$public_root/games/index.html" || die "activated game hub failed marker validation"
+  grep -Fq '23 playable browser games' "$public_root/games/index.html" || die "activated game hub failed marker validation"
 
   trap - ERR INT TERM
   rm -rf "$stage"

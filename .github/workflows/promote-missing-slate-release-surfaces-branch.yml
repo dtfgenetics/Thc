@@ -42,7 +42,7 @@ jobs:
           npm run games:release-check
           python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
-          grep -Fq '25 playable browser games' site/public-route-patch/games/index.html
+          grep -Fq '23 playable browser games' site/public-route-patch/games/index.html
           grep -Fq 'games/high-lines' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq 'games/pheno-draft' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
 

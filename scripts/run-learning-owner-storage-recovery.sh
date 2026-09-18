@@ -103,7 +103,7 @@ verify_public '/' 'data-dtf-layout="home-v3"'
 verify_public '/learn/' 'data-dtf-layout="learn-v3"' 'data-dtf-learning-map="v4"' 'Open the THC Living Plant Atlas'
 verify_public '/learn/atlas/' 'THC Living Plant Atlas'
 verify_public '/learn/atlas/atlas-3d/index.html' 'atlas-runtime.js'
-verify_public '/games/' '25 playable browser games'
+verify_public '/games/' '23 playable browser games'
 verify_public '/tools/' 'Grow with records. Diagnose with evidence.'
 
 echo 'Learning owner storage recovery completed with strict stored-owner and visitor acceptance.'

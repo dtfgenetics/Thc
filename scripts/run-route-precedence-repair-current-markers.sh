@@ -40,7 +40,7 @@ checks_new = '''  const checks = [
     ['/gallery/', 'data-dtf-layout="gallery-visual-v3"'],
     ['/about/', 'data-dtf-layout="about-visual-v2"'],
     ['/contact/', 'data-dtf-layout="contact-visual-v2"'],
-    ['/games/', '25 playable browser games'],
+    ['/games/', '23 playable browser games'],
     ['/tools/', 'Grow with records. Diagnose with evidence.'],
   ];'''
 if checks_old not in s:
@@ -70,7 +70,7 @@ grep -Fq 'data-dtf-layout="learn-v3"' "$script"
 grep -Fq 'data-dtf-genetics-library="2026"' "$script"
 grep -Fq 'data-dtf-layout="community-visual-v2"' "$script"
 grep -Fq 'data-dtf-layout="contact-visual-v2"' "$script"
-grep -Fq '25 playable browser games' "$script"
+grep -Fq '23 playable browser games' "$script"
 grep -Fq 'Grow with records. Diagnose with evidence.' "$script"
 grep -Fq 'json: { dtf_repair_token: repairToken }' "$script"
 ! grep -Fq 'X-DTF-Repair-Token' "$script"

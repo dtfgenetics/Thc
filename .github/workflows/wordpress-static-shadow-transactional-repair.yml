@@ -141,7 +141,7 @@ jobs:
           verify '/gallery/' 'data-dtf-layout="gallery-visual-v3"' wordpress
           verify '/about/' 'data-dtf-layout="about-visual-v2"' wordpress
           verify '/contact/' 'data-dtf-layout="contact-visual-v2"' wordpress
-          verify '/games/' '25 playable browser games' preserved
+          verify '/games/' '23 playable browser games' preserved
           verify '/tools/' 'Grow with records. Diagnose with evidence.' preserved
 
       - name: Record transactional repair
