@@ -96,10 +96,38 @@ function mediaText(item) {
   return [item?.slug, rendered(item?.title), item?.alt_text, rendered(item?.caption), rendered(item?.description), item?.source_url].join(' ').toLowerCase();
 }
 
+const retiredMediaTokens = [
+  'dtf-edu-',
+  'thc-c00',
+  'thc_c00',
+  'thc-enc-',
+  'cannabis_plant_anatomy_infographic',
+  'cannabis plant anatomy infographic',
+  'cannabis_nutrition_science_behind_healthy_growth',
+  'cannabis nutrition science behind healthy growth',
+  'diagnosing_deficiency_vs_toxicity_infographic',
+  'diagnosing deficiency vs toxicity infographic',
+  'beneficial_insects_and_biological_controls',
+  'beneficial insects and biological controls',
+  'cloning_guide_with_environment_targets',
+  'cloning guide with environment targets',
+  'cannabis_plant_life_cycle_seed_to_harvest_infographic',
+  'cannabis plant life cycle seed to harvest infographic',
+  'cannabis_sex_expression_and_chromosome_combinations',
+  'cannabis sex expression and chromosome combinations',
+  'outdoor_0',
+  'outdoor-0'
+];
+
+function isRetiredMedia(item) {
+  const text = mediaText(item);
+  return retiredMediaTokens.some(token => text.includes(token));
+}
+
 function chooseMedia(media, groups, used = new Set()) {
   for (const group of groups) {
     const terms = Array.isArray(group) ? group : [group];
-    const match = media.find(item => item?.source_url && !used.has(item.id) && terms.every(term => mediaText(item).includes(String(term).toLowerCase())));
+    const match = media.find(item => item?.source_url && !isRetiredMedia(item) && !used.has(item.id) && terms.every(term => mediaText(item).includes(String(term).toLowerCase())));
     if (match) {
       used.add(match.id);
       return match;
@@ -211,7 +239,7 @@ function buildLearn() {
 
 function findRelatedMedia(topic, count = 3) {
   const terms = [topic.title, ...(topic.keywords || [])].map(v => String(v).toLowerCase());
-  const scored = media.filter(item => item?.source_url).map(item => {
+  const scored = media.filter(item => item?.source_url && !isRetiredMedia(item)).map(item => {
     const hay = mediaText(item);
     const score = terms.reduce((sum, term) => sum + (term && hay.includes(term) ? Math.min(4, term.split(/\s+/).length + 1) : 0), 0);
     return { item, score };
