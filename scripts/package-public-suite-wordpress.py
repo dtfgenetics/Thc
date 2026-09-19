@@ -281,6 +281,7 @@ required = [
     "atlas/downloads/index.html",
     "assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg",
     "dtf-content-overlay/overlay-manifest.json",
+    "dtf-content-overlay/favicon",
     "dtf-content-overlay/learn/academy/index.html",
     "dtf-content-overlay/learn/atlas/seed-germination/seed-anatomy/index.html",
     "dtf-content-overlay/learn/cultivation-science/outdoor-site-and-sun-mapping/index.html",
