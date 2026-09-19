@@ -54,9 +54,10 @@ jobs:
           }
 
           const normalizeRoute = (route) => {
-            const value = String(route || '').trim();
+            let value = String(route || '').trim();
             if (!value.startsWith('/')) throw new Error(`public route must start with '/': ${value}`);
-            return value === '/' ? '/' : `${value.replace(/\\/+$/, '')}/`;
+            while (value.length > 1 && value.endsWith('/')) value = value.slice(0, -1);
+            return value === '/' ? '/' : `${value}/`;
           };
 
           const plannedRoutes = new Set(plan.routes.map(row => normalizeRoute(row.route)));
