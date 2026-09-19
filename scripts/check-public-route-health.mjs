@@ -93,6 +93,31 @@ async function request(url, { method = 'GET', readBody = false } = {}) {
   }
 }
 
+function expectedAssetFamily(url) {
+  let pathname = '';
+  try { pathname = new URL(url).pathname.toLowerCase(); } catch { return null; }
+  if (/\.(?:avif|gif|ico|jpe?g|png|svg|webp)$/.test(pathname)) return 'image';
+  if (/\.css$/.test(pathname)) return 'style';
+  if (/\.(?:js|mjs)$/.test(pathname)) return 'script';
+  if (/\.json$/.test(pathname)) return 'json';
+  if (/\.(?:woff2?|ttf|otf)$/.test(pathname)) return 'font';
+  if (/\.(?:mp3|ogg|wav)$/.test(pathname)) return 'audio';
+  if (/\.(?:mp4|webm)$/.test(pathname)) return 'video';
+  return null;
+}
+
+function assetContentTypeMatches(family, contentType) {
+  const type = String(contentType || '').toLowerCase();
+  if (!family) return true;
+  if (family === 'image') return type.startsWith('image/');
+  if (family === 'style') return type.includes('text/css');
+  if (family === 'script') return /(?:javascript|ecmascript)/.test(type);
+  if (family === 'json') return /(?:application|text)\/json/.test(type);
+  if (family === 'font') return /^(?:font\/|application\/(?:font|octet-stream))/.test(type);
+  if (family === 'audio') return type.startsWith('audio/');
+  if (family === 'video') return type.startsWith('video/');
+  return true;
+}
 async function checkAsset(url) {
   let result = await request(url, { method: 'HEAD' });
   if (!result.ok && [0, 403, 405, 501].includes(result.status)) {
@@ -101,6 +126,15 @@ async function checkAsset(url) {
   if (!result.ok) {
     return `${result.status || 'fetch-error'} ${url}${result.error ? ` (${result.error})` : ''}`;
   }
+
+  const family = expectedAssetFamily(url);
+  if (family && /\btext\/html\b/i.test(result.contentType)) {
+    return `HTML fallback for ${family} asset: ${url} (content-type ${result.contentType})`;
+  }
+  if (family && !assetContentTypeMatches(family, result.contentType)) {
+    return `unexpected ${family} asset content-type ${result.contentType || '<missing>'}: ${url}`;
+  }
+
   return null;
 }
 
