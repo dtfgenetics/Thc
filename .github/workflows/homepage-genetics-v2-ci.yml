@@ -110,6 +110,9 @@ jobs:
           # canonical state is proved from WordPress storage instead of hidden
           # implementation attributes on the anonymous visitor renderer.
           grep -Fq 'prepare-learning-v3-owner-aware-publisher.mjs' "$learning_wrapper"
+          grep -Fq '!isRetiredMedia(item) && isApprovedLearningMedia(item)' "$learning_wrapper"
+          grep -Fq 'media.filter(item => item?.source_url && !isRetiredMedia(item) && isApprovedLearningMedia(item))' "$learning_wrapper"
+          ! grep -Fq 'media.filter(item => item?.source_url && isApprovedLearningMedia(item))' "$learning_wrapper"
           grep -Fq 'prepare-learning-owner-aware-followup-publishers.mjs' "$learning_wrapper"
           grep -Fq 'LEARNING_V3_PUBLISHER_PATH="$owner_v3"' "$learning_wrapper"
           grep -Fq 'APPLY_LEARNING_V4=true' "$learning_wrapper"

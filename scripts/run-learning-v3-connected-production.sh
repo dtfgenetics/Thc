@@ -33,7 +33,8 @@ grep -Fq 'data-progressive-disclosure="true"' scripts/prepare-learning-v3-atlas-
 grep -Fq 'function isApprovedLearningMedia(item)' scripts/prepare-learning-v3-owner-aware-publisher.mjs
 grep -Fq "if (slug.startsWith('dtf-strain-card-')) return false;" scripts/prepare-learning-v3-owner-aware-publisher.mjs
 grep -Fq "slug.startsWith('dtf-approved-visual-')" scripts/prepare-learning-v3-owner-aware-publisher.mjs
-grep -Fq 'media.filter(item => item?.source_url && isApprovedLearningMedia(item))' scripts/prepare-learning-v3-owner-aware-publisher.mjs
+grep -Fq 'approvedGuardedRelatedFilter' scripts/prepare-learning-v3-owner-aware-publisher.mjs
+grep -Fq '!isRetiredMedia(item) && isApprovedLearningMedia(item)' scripts/prepare-learning-v3-owner-aware-publisher.mjs
 grep -Fq "rootStorageRead: 'raw-first'" scripts/prepare-learning-v3-owner-aware-publisher.mjs
 grep -Fq "content?.raw || content?.rendered || ''" scripts/prepare-learning-v3-owner-aware-publisher.mjs
 grep -Fq "render_block_core/post-title" site/wordpress/snippets/dtf-learning-semantic-heading.php
@@ -66,8 +67,8 @@ node scripts/prepare-learning-v3-owner-aware-publisher.mjs \
 
 grep -Fq 'function isApprovedLearningMedia(item)' "$owner_v3"
 grep -Fq "if (slug.startsWith('dtf-strain-card-')) return false;" "$owner_v3"
-grep -Fq 'isApprovedLearningMedia(item) &&' "$owner_v3"
-grep -Fq 'media.filter(item => item?.source_url && isApprovedLearningMedia(item))' "$owner_v3"
+grep -Fq '!isRetiredMedia(item) && isApprovedLearningMedia(item)' "$owner_v3"
+grep -Fq 'media.filter(item => item?.source_url && !isRetiredMedia(item) && isApprovedLearningMedia(item))' "$owner_v3"
 grep -Fq "owner: 'wordpress-rest-raw-first'" "$owner_v3"
 grep -Fq "content?.raw || content?.rendered || ''" "$owner_v3"
 
