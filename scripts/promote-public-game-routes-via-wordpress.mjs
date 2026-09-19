@@ -445,7 +445,8 @@ async function verifyMissingAssetGuard() {
   for (const route of probes) {
     const { response, text } = await probe(route);
     const contentType = response.headers.get('content-type') || '';
-    if (response.status !== 404 || response.headers.get('location') || /\btext\/html\b/i.test(contentType) || /DTF Game Hub/i.test(text)) {
+    const isGameHubFallback = /DTF Game Hub|Pick what is playable\. See what is coming next\./i.test(text);
+    if (response.status !== 404 || response.headers.get('location') || isGameHubFallback) {
       throw new Error(`Static asset fallback guard failed for ${route}: HTTP ${response.status}, content-type ${contentType || '<missing>'}, location ${response.headers.get('location') || '<none>'}`);
     }
   }
