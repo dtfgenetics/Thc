@@ -47,12 +47,53 @@ jobs:
           node - <<'NODE'
           const fs = require('fs');
           const plan = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + '/dtf-feature-plan.json', 'utf8'));
-          if (!Array.isArray(plan.routes) || plan.routes.length < 6) throw new Error('Feature plan is unexpectedly small.');
-          const routes = new Set(plan.routes.map(row => row.route));
-          for (const required of ['/projects/','/games/terpocalypse/','/games/phenoquest/','/games/kush-kings-chess/','/atlas/']) {
-            if (!routes.has(required)) throw new Error(`Registry-backed audit plan is missing ${required}`);
+          const registry = JSON.parse(fs.readFileSync('data/public-navigation.json', 'utf8'));
+
+          if (!Array.isArray(plan.routes) || plan.routes.length < 6) {
+            throw new Error('Feature plan is unexpectedly small.');
           }
-          console.log(`Validated ${plan.routes.length} public feature routes from the registry.`);
+
+          const normalizeRoute = (route) => {
+            const value = String(route || '').trim();
+            if (!value.startsWith('/')) throw new Error(`public route must start with '/': ${value}`);
+            return value === '/' ? '/' : `${value.replace(/\\/+$/, '')}/`;
+          };
+
+          const plannedRoutes = new Set(plan.routes.map(row => normalizeRoute(row.route)));
+          const expectedPublicRoutes = [
+            '/games/',
+            '/tools/',
+            '/projects/',
+            ...(registry.tools || [])
+              .filter(item => item && item.public === true && item.route)
+              .map(item => item.route),
+            ...(registry.games || [])
+              .filter(item => item && item.public === true && item.route)
+              .map(item => item.route),
+          ].map(normalizeRoute);
+
+          for (const route of expectedPublicRoutes) {
+            if (!plannedRoutes.has(route)) {
+              throw new Error(`Registry-backed audit plan is missing public route ${route}`);
+            }
+          }
+
+          for (const item of registry.games || []) {
+            if (!item || item.public === true || !item.candidateRoute) continue;
+            const candidateRoute = normalizeRoute(item.candidateRoute);
+            if (plannedRoutes.has(candidateRoute)) {
+              throw new Error(`Non-public game leaked into production audit plan: ${item.id || candidateRoute} (${candidateRoute})`);
+            }
+          }
+
+          for (const required of ['/projects/', '/games/high-iq/', '/games/high-land/', '/games/weedopolis/', '/games/seed-man-platformer/', '/games/protect-the-plants/', '/games/terpocalypse/', '/games/phenoquest/', '/atlas/']) {
+            const route = normalizeRoute(required);
+            if (!plannedRoutes.has(route)) {
+              throw new Error(`Canonical public feature route is missing from audit plan: ${route}`);
+            }
+          }
+
+          console.log(`Validated ${plan.routes.length} public feature routes from the registry; non-public candidate routes remain excluded.`);
           NODE
 
       - name: Audit registry-backed production routes from fresh runner
@@ -107,5 +148,5 @@ jobs:
               lines.push(`- \`${row.route || '?'}\` — HTTP ${row.status || '000'}, marker=${row.markerSeen ? 'yes' : 'no'}, identity=${row.routeIdentity ? 'yes' : 'no'}, error=${row.error || '-'}`);
             }
           }
-          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${lines.join('\n')}\n`);
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${lines.join('\\n')}\\n`);
           NODE
