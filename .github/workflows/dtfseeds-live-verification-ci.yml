@@ -53,9 +53,10 @@ jobs:
             + (registry.games || []).filter(item => item?.public === true).length;
           if (plan.total !== expected) throw new Error(`Plan total ${plan.total} does not match registry-derived total ${expected}.`);
           const normalizeRoute = (route) => {
-            const value = String(route || '').trim();
+            let value = String(route || '').trim();
             if (!value.startsWith('/')) throw new Error(`public route must start with '/': ${value}`);
-            return value === '/' ? '/' : `${value.replace(/\\/+$/, '')}/`;
+            while (value.length > 1 && value.endsWith('/')) value = value.slice(0, -1);
+            return value === '/' ? '/' : `${value}/`;
           };
           const routes = new Set(plan.routes.map(row => normalizeRoute(row.route)));
           if (routes.size !== plan.routes.length) throw new Error('Duplicate routes entered the public verification plan.');
