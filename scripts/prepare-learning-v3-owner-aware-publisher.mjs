@@ -24,6 +24,17 @@ const originalMediaChooser = `function chooseMedia(media, groups, used = new Set
   return null;
 }`;
 
+const guardedMediaChooser = `function chooseMedia(media, groups, used = new Set()) {
+  for (const group of groups) {
+    const terms = Array.isArray(group) ? group : [group];
+    const match = media.find(item => item?.source_url && !isRetiredMedia(item) && !used.has(item.id) && terms.every(term => mediaText(item).includes(String(term).toLowerCase())));
+    if (match) {
+      used.add(match.id);
+      return match;
+    }
+  }
+  return null;
+}`;
 const approvedMediaChooser = `function isApprovedLearningMedia(item) {
   const slug = String(item?.slug || '').toLowerCase();
   const text = mediaText(item);
@@ -45,23 +56,52 @@ function chooseMedia(media, groups, used = new Set()) {
   return null;
 }`;
 
+const approvedGuardedMediaChooser = `function isApprovedLearningMedia(item) {
+  const slug = String(item?.slug || '').toLowerCase();
+  const text = mediaText(item);
+  if (slug.startsWith('dtf-strain-card-')) return false;
+  return slug.startsWith('dtf-approved-visual-') ||
+    text.includes('dtf_approved_public_visual') ||
+    text.includes('dtf-approved-public-visual');
+}
+
+function chooseMedia(media, groups, used = new Set()) {
+  for (const group of groups) {
+    const terms = Array.isArray(group) ? group : [group];
+    const match = media.find(item => item?.source_url && !isRetiredMedia(item) && isApprovedLearningMedia(item) && !used.has(item.id) && terms.every(term => mediaText(item).includes(String(term).toLowerCase())));
+    if (match) {
+      used.add(match.id);
+      return match;
+    }
+  }
+  return null;
+}`;
+
 const chooserOriginalCount = source.split(originalMediaChooser).length - 1;
+const chooserGuardedCount = source.split(guardedMediaChooser).length - 1;
 const chooserApprovedCount = source.split(approvedMediaChooser).length - 1;
-if (chooserOriginalCount === 1) source = source.replace(originalMediaChooser, approvedMediaChooser);
-else if (chooserApprovedCount !== 1) {
-  throw new Error(`Could not locate exactly one Learning V3 automatic media chooser; original=${chooserOriginalCount}, approved=${chooserApprovedCount}`);
+const chooserApprovedGuardedCount = source.split(approvedGuardedMediaChooser).length - 1;
+if (chooserGuardedCount === 1) source = source.replace(guardedMediaChooser, approvedGuardedMediaChooser);
+else if (chooserOriginalCount === 1) source = source.replace(originalMediaChooser, approvedMediaChooser);
+else if (chooserApprovedGuardedCount !== 1 && chooserApprovedCount !== 1) {
+  throw new Error(`Could not locate exactly one Learning V3 automatic media chooser; original=${chooserOriginalCount}, guarded=${chooserGuardedCount}, approved=${chooserApprovedCount}, approvedGuarded=${chooserApprovedGuardedCount}`);
 }
 
 // The topic-page "Visual references" rail has its own media search. It must use
 // the same role-safe approval predicate as hero/topic media; otherwise keyword
 // matches can pull product strain cards from the shared WordPress media library.
 const originalRelatedFilter = `const scored = media.filter(item => item?.source_url).map(item => {`;
+const guardedRelatedFilter = `const scored = media.filter(item => item?.source_url && !isRetiredMedia(item)).map(item => {`;
 const approvedRelatedFilter = `const scored = media.filter(item => item?.source_url && isApprovedLearningMedia(item)).map(item => {`;
+const approvedGuardedRelatedFilter = `const scored = media.filter(item => item?.source_url && !isRetiredMedia(item) && isApprovedLearningMedia(item)).map(item => {`;
 const relatedOriginalCount = source.split(originalRelatedFilter).length - 1;
+const relatedGuardedCount = source.split(guardedRelatedFilter).length - 1;
 const relatedApprovedCount = source.split(approvedRelatedFilter).length - 1;
-if (relatedOriginalCount === 1) source = source.replace(originalRelatedFilter, approvedRelatedFilter);
-else if (relatedApprovedCount !== 1) {
-  throw new Error(`Could not locate exactly one Learning V3 related-media selector; original=${relatedOriginalCount}, approved=${relatedApprovedCount}`);
+const relatedApprovedGuardedCount = source.split(approvedGuardedRelatedFilter).length - 1;
+if (relatedGuardedCount === 1) source = source.replace(guardedRelatedFilter, approvedGuardedRelatedFilter);
+else if (relatedOriginalCount === 1) source = source.replace(originalRelatedFilter, approvedRelatedFilter);
+else if (relatedApprovedGuardedCount !== 1 && relatedApprovedCount !== 1) {
+  throw new Error(`Could not locate exactly one Learning V3 related-media selector; original=${relatedOriginalCount}, guarded=${relatedGuardedCount}, approved=${relatedApprovedCount}, approvedGuarded=${relatedApprovedGuardedCount}`);
 }
 
 const original = `const checks = [];
@@ -132,13 +172,20 @@ for (const marker of [
   "slug.startsWith('dtf-approved-visual-')",
   "slug.startsWith('dtf-strain-card-')",
   'isApprovedLearningMedia(item) &&',
-  'media.filter(item => item?.source_url && isApprovedLearningMedia(item))',
   "content?.raw || content?.rendered || ''",
   "owner: 'wordpress-rest-raw-first'",
 ]) {
   if (!source.includes(marker)) throw new Error(`Prepared Learning V3 publisher is missing required owner/media marker: ${marker}`);
 }
 
+if (!source.includes(approvedRelatedFilter) && !source.includes(approvedGuardedRelatedFilter)) {
+  throw new Error('Prepared Learning V3 publisher is missing an approved related-media selector.');
+}
+if (source.includes('function isRetiredMedia(item)')) {
+  if (!source.includes('!isRetiredMedia(item) && isApprovedLearningMedia(item)')) {
+    throw new Error('Prepared Learning V3 publisher lost the retired-media guard while applying approved-only selection.');
+  }
+}
 if (progressiveOriginalCount === 1 || progressiveOwnerAwareCount === 1) {
   if (!source.includes('data-progressive-disclosure="true"')) throw new Error('Progressive Learning V3 source lost its progressive-disclosure verification during owner-aware preparation.');
 }
