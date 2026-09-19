@@ -106,15 +106,15 @@ async function ensureSnippetApi() {
   if (!(await waitForSnippetApi())) throw new Error('Code Snippets REST API did not become available.');
 }
 
-const rootOverlayLegacyBlock = \`# DTFSeeds managed application child-route overlay v1
+const rootOverlayLegacyBlock = `# DTFSeeds managed application child-route overlay v1
 RewriteRule ^games/future-slots(?:/|$) /games/ [R=301,L]
 RewriteRule ^learn/(academy|atlas|cultivation-science|glossary|plant-health|search|sops|sources|symptoms|tools)(?:/(.*))?/?$ /dtf-content-overlay/learn/$1/$2 [L]
 RewriteRule ^community/grow-offs(?:/(.*))?/?$ /dtf-content-overlay/community/grow-offs/$1 [L]
 RewriteRule ^games/seed-ascent(?:/(.*))?/?$ /dtf-content-overlay/games/seed-ascent/$1 [L]
 RewriteRule ^_next/static/(.*)$ /dtf-content-overlay/_next/static/$1 [L]
 RewriteRule ^seed-ascent\\.html$ /dtf-content-overlay/seed-ascent.html [L]
-RewriteRule ^seed-ascent/(.*)$ /dtf-content-overlay/seed-ascent/$1 [L]\`;
-const rootOverlayBlock = \`# DTFSeeds managed application child-route overlay v2
+RewriteRule ^seed-ascent/(.*)$ /dtf-content-overlay/seed-ascent/$1 [L]`;
+const rootOverlayBlock = `# DTFSeeds managed application child-route overlay v2
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(?:games/.+|growlens/.+|thc-grow-doc/.+|atlas/.+)\\.(?:avif|css|gif|ico|jpe?g|js|json|mjs|mp3|mp4|ogg|otf|png|svg|ttf|wav|webm|webp|woff2?)$ - [R=404,L,NC]
 RewriteRule ^games/future-slots(?:/|$) /games/ [R=301,L]
@@ -123,18 +123,18 @@ RewriteRule ^community/grow-offs(?:/(.*))?/?$ /dtf-content-overlay/community/gro
 RewriteRule ^games/seed-ascent(?:/(.*))?/?$ /dtf-content-overlay/games/seed-ascent/$1 [L]
 RewriteRule ^_next/static/(.*)$ /dtf-content-overlay/_next/static/$1 [L]
 RewriteRule ^seed-ascent\\.html$ /dtf-content-overlay/seed-ascent.html [L]
-RewriteRule ^seed-ascent/(.*)$ /dtf-content-overlay/seed-ascent/$1 [L]\`;
+RewriteRule ^seed-ascent/(.*)$ /dtf-content-overlay/seed-ascent/$1 [L]`;
 const rootOverlayLegacyBase64 = Buffer.from(rootOverlayLegacyBlock, 'utf8').toString('base64');
 const rootOverlayBase64 = Buffer.from(rootOverlayBlock, 'utf8').toString('base64');
 
-const gamesOverlayLegacyBlock = \`# DTFSeeds managed game-directory child-route overlay v2
+const gamesOverlayLegacyBlock = `# DTFSeeds managed game-directory child-route overlay v2
 RewriteRule ^seed-ascent(?:/(.*))?/?$ /dtf-content-overlay/games/seed-ascent/$1 [L]
-RewriteRule ^(?:future-slots)(?:/|$) /games/ [R=301,L]\`;
-const gamesOverlayBlock = \`# DTFSeeds managed game-directory child-route overlay v3
+RewriteRule ^(?:future-slots)(?:/|$) /games/ [R=301,L]`;
+const gamesOverlayBlock = `# DTFSeeds managed game-directory child-route overlay v3
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^.+\\.(?:avif|css|gif|ico|jpe?g|js|json|mjs|mp3|mp4|ogg|otf|png|svg|ttf|wav|webm|webp|woff2?)$ - [R=404,L,NC]
 RewriteRule ^seed-ascent(?:/(.*))?/?$ /dtf-content-overlay/games/seed-ascent/$1 [L]
-RewriteRule ^(?:future-slots)(?:/|$) /games/ [R=301,L]\`;
+RewriteRule ^(?:future-slots)(?:/|$) /games/ [R=301,L]`;
 const gamesOverlayLegacyBase64 = Buffer.from(gamesOverlayLegacyBlock, 'utf8').toString('base64');
 const gamesOverlayBase64 = Buffer.from(gamesOverlayBlock, 'utf8').toString('base64');
 
@@ -142,10 +142,10 @@ const snippetCode = String.raw`
 add_action('rest_api_init', function () {
     $token = ${tokenLiteral};
     $namespace = ${namespaceLiteral};
-    $root_overlay_legacy = base64_decode(\${JSON.stringify(rootOverlayLegacyBase64)}, true);
-    $root_overlay = base64_decode(\${JSON.stringify(rootOverlayBase64)}, true);
-    $games_overlay_legacy = base64_decode(\${JSON.stringify(gamesOverlayLegacyBase64)}, true);
-    $games_overlay = base64_decode(\${JSON.stringify(gamesOverlayBase64)}, true);
+    $root_overlay_legacy = base64_decode(${JSON.stringify(rootOverlayLegacyBase64)}, true);
+    $root_overlay = base64_decode(${JSON.stringify(rootOverlayBase64)}, true);
+    $games_overlay_legacy = base64_decode(${JSON.stringify(gamesOverlayLegacyBase64)}, true);
+    $games_overlay = base64_decode(${JSON.stringify(gamesOverlayBase64)}, true);
     if (!is_string($root_overlay_legacy) || $root_overlay_legacy === ''
         || !is_string($root_overlay) || $root_overlay === ''
         || !is_string($games_overlay_legacy) || $games_overlay_legacy === ''
