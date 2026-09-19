@@ -68,7 +68,7 @@ let publisher = await readFile(publisherPath, 'utf8');
 
 const requiredRetiredMediaGuards = [
   'function isRetiredMedia(item)',
-  '!isRetiredMedia(item) && !used.has(item.id)',
+  '!isRetiredMedia(item)',
   'item?.source_url && !isRetiredMedia(item)'
 ];
 for (const guard of requiredRetiredMediaGuards) {
