@@ -115,6 +115,7 @@ RewriteRule ^_next/static/(.*)$ /dtf-content-overlay/_next/static/$1 [L]
 RewriteRule ^seed-ascent\\.html$ /dtf-content-overlay/seed-ascent.html [L]
 RewriteRule ^seed-ascent/(.*)$ /dtf-content-overlay/seed-ascent/$1 [L]`;
 const rootOverlayBlock = `# DTFSeeds managed application child-route overlay v2
+RewriteRule ^favicon$ /dtf-content-overlay/favicon [L,T=image/png]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(?:games/.+|growlens/.+|thc-grow-doc/.+|atlas/.+)\\.(?:avif|css|gif|ico|jpe?g|js|json|mjs|mp3|mp4|ogg|otf|png|svg|ttf|wav|webm|webp|woff2?)$ - [R=404,L,NC]
 RewriteRule ^games/future-slots(?:/|$) /games/ [R=301,L]
@@ -240,6 +241,7 @@ add_action('rest_api_init', function () {
                 'dtf-content-overlay/community/grow-offs/solo-cup-grow-off/index.html',
                 'dtf-content-overlay/games/seed-ascent/index.html',
                 'dtf-content-overlay/seed-ascent.html',
+                'dtf-content-overlay/favicon',
             ] as $required) {
                 $path = $safe_path($required);
                 if ($path === false || !is_file($path) || filesize($path) < 1) {
@@ -433,6 +435,13 @@ async function verifySeedAscent() {
   throw new Error(`Seed Ascent wrapper/runtime verification failed after promotion (${last}).`);
 }
 
+async function verifyOverlayFavicon() {
+  const { response } = await probe('/favicon');
+  const contentType = response.headers.get('content-type') || '';
+  if (response.status !== 200 || response.headers.get('location') || !/^image\/png(?:;|$)/i.test(contentType)) {
+    throw new Error(`Overlay favicon verification failed: HTTP ${response.status}, content-type ${contentType || '<missing>'}, location ${response.headers.get('location') || '<none>'}`);
+  }
+}
 async function verifyMissingAssetGuard() {
   const probes = [
     '/games/weedopolis/__dtf_missing_asset__.jpg',
@@ -452,6 +461,7 @@ async function verifyMissingAssetGuard() {
   }
 }
 async function verifyPromotion() {
+  await verifyOverlayFavicon();
   await verifyMissingAssetGuard();
 
   let budOk = false;
