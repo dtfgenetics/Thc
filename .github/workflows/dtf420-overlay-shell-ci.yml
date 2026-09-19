@@ -68,6 +68,7 @@ jobs:
         run: |
           set -euo pipefail
           root="$RUNNER_TEMP/dtf-release/dtf-content-overlay"
+          test -s "$root/favicon"
           routes=(
             learn/academy/index.html
             learn/atlas/index.html
