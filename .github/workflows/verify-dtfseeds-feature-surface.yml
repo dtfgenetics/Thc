@@ -149,5 +149,5 @@ jobs:
               lines.push(`- \`${row.route || '?'}\` — HTTP ${row.status || '000'}, marker=${row.markerSeen ? 'yes' : 'no'}, identity=${row.routeIdentity ? 'yes' : 'no'}, error=${row.error || '-'}`);
             }
           }
-          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${lines.join('\\n')}\\n`);
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${lines.join('\n')}\n`);
           NODE
