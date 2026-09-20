@@ -39,6 +39,9 @@ assert.doesNotMatch(app, /readEmbeddedLevel|validateLevel\s*\(/, 'public app mus
 assert.doesNotMatch(app, /candidate\.id\s*!==\s*['"]sprout-run['"]|worldWidth\s*!==\s*7800|pickups\.length\s*!==\s*24/, 'Sprout Run boot assumptions must stay removed');
 assert.match(app, /campaignAuthority:'campaign-v20-runtime\.js'/, 'v20 campaign runtime must be the only level authority');
 assert.match(app, /seed-man-base-runtime-v20/, 'public base runtime marker must be current');
+assert.match(app, /Loading Seed Man adventure…/, 'canvas loading state must use player-facing language');
+assert.match(app, /Preparing your next Seed Man adventure…/, 'objective loading state must use player-facing language');
+assert.doesNotMatch(app, /Loading (?:canonical )?Seed Man v20 campaign/, 'player-facing loading states must not expose internal release terminology');
 assert.match(app, /level\.boss\s*&&\s*!level\.boss\.defeated/, 'boss exits must remain locked until boss defeat');
 assert.match(app, /doubleJumpSpeed:\s*590/, 'public runtime must contain the stronger double jump');
 assert.match(app, /groundAcceleration:\s*2600/, 'public runtime must include progressive ground acceleration');
