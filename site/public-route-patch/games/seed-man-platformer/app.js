@@ -589,7 +589,7 @@ function render() {
   if (!level || !player) {
     ctx.fillStyle = '#0d2419'; ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = '#e9f3e5'; ctx.textAlign = 'center'; ctx.font = '700 22px system-ui';
-    ctx.fillText('Loading Seed Man v20 campaign…', canvas.width / 2, canvas.height / 2);
+    ctx.fillText('Loading Seed Man adventure…', canvas.width / 2, canvas.height / 2);
     ctx.textAlign = 'start';
     return;
   }
@@ -671,7 +671,7 @@ function bootV20Shell() {
   player = null;
   running = false;
   paused = false;
-  setObjectiveStatus('Loading canonical Seed Man v20 campaign…', 'loading');
+  setObjectiveStatus('Preparing your next Seed Man adventure…', 'loading');
   document.documentElement.dataset.seedManBaseRuntime = 'seed-man-base-runtime-v20';
 }
 
