@@ -66,6 +66,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+      - name: Resolve exact THC learning source SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_sha="$(git ls-remote https://github.com/dtfgenetics/Thc-learning-courses-.git refs/heads/main | awk 'NR==1{print $1}')"
+          [[ "$source_sha" =~ ^[0-9a-f]{40}$ ]]
+          echo "THC_LEARNING_SOURCE_SHA=$source_sha" >> "$GITHUB_ENV"
+          echo "Pinned curriculum source: $source_sha"
       - name: Require WordPress credentials
         shell: bash
         run: |
