@@ -1,4 +1,4 @@
-import { copyFile, mkdir, readFile, stat } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import process from 'node:process';
 import { build } from 'esbuild';
@@ -28,7 +28,11 @@ await build({
   }
 });
 
-const output = await readFile(outfile, 'utf8');
+const generatedOutput = await readFile(outfile, 'utf8');
+const output = generatedOutput
+  .replace(/[\t ]+$/gm, '')
+  .replace(/^ +(?=\t)/gm, '');
+if (output !== generatedOutput) await writeFile(outfile, output, 'utf8');
 const metadata = await stat(outfile);
 
 const requiredMarkers = [
