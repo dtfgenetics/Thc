@@ -32,6 +32,8 @@ assert.match(css,/@media\(max-width:900px\)[\s\S]*body:has\(> \.dtf-global-heade
 assert.match(css,/body:has\(> \.dtf-global-header\) \.mobile-tabs\{top:calc\(var\(--dtf-global-header-height,74px\) \+ 64px\)\}/,'mobile board tabs must remain below the V6 header and battle HUD');
 assert.match(css,/body:has\(> \.dtf-global-header\) \.burn-target-readout\{top:calc\(var\(--dtf-global-header-height,74px\) \+ 108px\)\}/,'mobile targeting readout must remain below the stacked sticky controls');
 assert.match(css,/@media\(max-width:430px\)[\s\S]*\.board-card\{padding:6px\}/,'narrow-phone board spacing must preserve the 15×15 playfield');
+assert.match(css,/@media\\(max-width:640px\\)[\\s\\S]*safe-area-inset-bottom/,'narrow-phone game padding must clear the bottom safe area');
+assert.match(css,/@media\\(max-width:430px\\)[\\s\\S]*safe-area-inset-left[\\s\\S]*safe-area-inset-right/,'small-phone game and sitebar padding must clear horizontal safe areas');
 
 assert.ok(sw.includes(CURRENT_CACHE),`service-worker cache identity must refresh the current V6 gameplay-focus shell: ${CURRENT_CACHE}`);
 assert.match(sw,/\.\/gamefeel-v1\.css/,'game-feel layer must be available offline');
