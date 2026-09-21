@@ -42,7 +42,22 @@ jobs:
       - name: Validate verifier
         run: node --check scripts/verify-who-took-it-live.mjs
 
+      - name: Validate proposed Who Took It pin
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          revision_file='site/public-route-patch/games/who-took-it/source-revision.txt'
+          test -s "$revision_file"
+          grep -Fqx 'repository=dtfgenetics/Thc-guess-who' "$revision_file"
+          grep -Fqx 'route=/games/who-took-it/' "$revision_file"
+          grep -Fqx 'sourcePath=03_digital-game' "$revision_file"
+          revision="$(sed -n 's/^commit=//p' "$revision_file")"
+          [[ "$revision" =~ ^[0-9a-f]{40}$ ]]
+          echo "Proposed Who Took It source pin is structurally valid: $revision"
+
       - name: Verify live Who Took It build
+        if: github.event_name != 'pull_request'
         env:
           SITE: https://dtfseeds.com
         run: node scripts/verify-who-took-it-live.mjs
@@ -54,7 +69,8 @@ jobs:
             echo '## Who Took It production verification'
             echo
             echo '- Route: https://dtfseeds.com/games/who-took-it/'
-            echo '- Requires the exact pinned dtfgenetics/Thc-guess-who revision.'
+            echo '- Pull requests validate the proposed exact source pin without requiring unmerged code to already be live.'
+            echo '- Post-deploy/manual/scheduled runs require the exact pinned dtfgenetics/Thc-guess-who revision on production.'
             echo '- Verifies Vite production assets, accusation flow, 21+ gate, 44px controls, reduced motion, and forced colors.'
             echo '- Rejects the development /src/main.jsx entry.'
           } >> "$GITHUB_STEP_SUMMARY"
