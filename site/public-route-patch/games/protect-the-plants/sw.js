@@ -1,4 +1,4 @@
-const CACHE='ptp-shell-v11-burn-buds-v7-battlefield-20260920';
+const CACHE='ptp-shell-v12-burn-buds-v8-safe-area-20260921';
 const SHELL=['./','./index.html','./styles.css','./visual-fixes.css','./enhancements.css','./v2-extras.css','./burn-buds.css','./gameplay-v3.css','./battle-feedback-v1.css','./placement-v1.css','./targeting-v1.css','./gamefeel-v1.css','./gameplay-v4.css','./app.js','./runtime-sync-v1.js','./enhancements.js','./v2-extras.js','./burn-buds-branding.js','./gameplay-v3.js','./combat-a11y-v1.js','./battle-feedback-v1.js','./placement-v1.js','./targeting-v1.js','./plant.svg','./manifest.webmanifest'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('ptp-shell-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()))});
