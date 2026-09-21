@@ -7,7 +7,7 @@ const username=process.env.WP_API_USERNAME||'';
 const password=process.env.WP_API_PASSWORD||'';
 if(!username||!password)throw new Error('WordPress credentials are required.');
 
-const root=path.resolve('site/public-route-patch/games/seed-man-platformer');
+const root=path.resolve(process.env.SEED_MAN_RELEASE_ROOT||'site/public-route-patch/games/seed-man-platformer');
 const releaseFiles=[
   '.htaccess','index.html','app.js','canvas-compat-v1.js','player-state-v20.js','campaign-v20-runtime.js','campaign-ui-v20.js','world-mechanics-browser-v1.js',
   'approved-art-core-v1.js','approved-art-runtime-v1.js','seed-man-production-art.js','three-world-v1.js','three-world-adapter-v1.js',
