@@ -129,6 +129,8 @@ try {
   const seedsPage = await getSinglePage('seeds');
   const seedsContent = editableContent(seedsPage);
   if (!seedsContent.includes('DTF Genetics library')) throw new Error('Authoritative /seeds/ REST content is missing the DTF Genetics library marker.');
+  if (!seedsContent.includes('data-dtf-genetics-structure="release-first-v2"')) throw new Error('Authoritative /seeds/ REST content is missing the release-first structure marker.');
+  if (!seedsContent.includes('Current release projects') || !seedsContent.includes('dtf-genetics-library-disclosure')) throw new Error('Authoritative /seeds/ REST content is missing the new visual hierarchy.');
   if (Number(seedsPage.parent || 0) !== 0) throw new Error(`Authoritative /seeds/ page ${seedsPage.id} unexpectedly has parent ${seedsPage.parent}.`);
   if (countWordPressImages(seedsContent) < catalog.lines.length) {
     throw new Error(`Authoritative /seeds/ REST content exposes ${countWordPressImages(seedsContent)} WordPress images; expected at least ${catalog.lines.length}.`);
@@ -249,7 +251,8 @@ async function waitForPublicPage(path, required, minImages, attempts, delayMs) {
 }
 
 try {
-  const seedsBody = await waitForPublicPage('/seeds/', 'DTF Genetics library', catalog.lines.length, 12, 10_000);
+  const seedsBody = await waitForPublicPage('/seeds/', 'data-dtf-genetics-structure="release-first-v2"', catalog.lines.length, 12, 10_000);
+  if (!seedsBody.includes('Current release projects') || !seedsBody.includes('dtf-genetics-library-disclosure')) throw new Error('Converged public /seeds/ is missing the release-first visual hierarchy.');
   for (const line of catalog.lines) {
     if (!seedsBody.includes(`/seeds/${line.slug}/`)) throw new Error(`Converged public /seeds/ is missing /seeds/${line.slug}/.`);
   }
