@@ -4,24 +4,28 @@ on:
   pull_request:
     paths:
       - site/wordpress/education/tech2-courses-public-v1.json
+      - site/wordpress/education/academy-deployment-target.json
       - site/wordpress/education/course-catalog-v4.json
       - scripts/publish-wordpress-tech2-courses-1-8.mjs
       - scripts/publish-wordpress-certification-catalog-v6.mjs
       - scripts/verify-wordpress-tech2-courses-1-8.mjs
       - scripts/run-wordpress-with-retry.mjs
       - scripts/publish-wordpress-academy-build-identity.mjs
+      - scripts/resolve-academy-deployment-target.mjs
       - .github/workflows/wordpress-tech2-courses-production.yml
   push:
     branches:
       - main
     paths:
       - site/wordpress/education/tech2-courses-public-v1.json
+      - site/wordpress/education/academy-deployment-target.json
       - site/wordpress/education/course-catalog-v4.json
       - scripts/publish-wordpress-tech2-courses-1-8.mjs
       - scripts/publish-wordpress-certification-catalog-v6.mjs
       - scripts/verify-wordpress-tech2-courses-1-8.mjs
       - scripts/run-wordpress-with-retry.mjs
       - scripts/publish-wordpress-academy-build-identity.mjs
+      - scripts/resolve-academy-deployment-target.mjs
       - .github/workflows/wordpress-tech2-courses-production.yml
   workflow_dispatch:
 
@@ -47,6 +51,8 @@ jobs:
           node --check scripts/verify-wordpress-tech2-courses-1-8.mjs
           node --check scripts/run-wordpress-with-retry.mjs
           node --check scripts/publish-wordpress-academy-build-identity.mjs
+          node --check scripts/resolve-academy-deployment-target.mjs
+          node scripts/resolve-academy-deployment-target.mjs
           node scripts/publish-wordpress-tech2-courses-1-8.mjs --validate-only
           node scripts/publish-wordpress-certification-catalog-v6.mjs --validate-only
 
@@ -70,13 +76,7 @@ jobs:
         with:
           node-version: 24
       - name: Resolve exact THC learning source SHA
-        shell: bash
-        run: |
-          set -euo pipefail
-          source_sha="$(git ls-remote https://github.com/dtfgenetics/Thc-learning-courses-.git refs/heads/main | awk 'NR==1{print $1}')"
-          [[ "$source_sha" =~ ^[0-9a-f]{40}$ ]]
-          echo "THC_LEARNING_SOURCE_SHA=$source_sha" >> "$GITHUB_ENV"
-          echo "Pinned curriculum source: $source_sha"
+        run: node scripts/resolve-academy-deployment-target.mjs --github-env
       - name: Require WordPress credentials
         shell: bash
         run: |
