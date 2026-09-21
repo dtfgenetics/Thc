@@ -3,6 +3,7 @@ import fs from 'node:fs';
 
 const html = fs.readFileSync('site/public-route-patch/games/terpocalypse/index.html', 'utf8');
 const main = fs.readFileSync('site/public-route-patch/games/terpocalypse/main.js', 'utf8');
+const gameData = fs.readFileSync('site/public-route-patch/games/terpocalypse/game-data.js', 'utf8');
 const css = fs.readFileSync('site/public-route-patch/games/terpocalypse/styles.css', 'utf8');
 const mobileCss = fs.readFileSync('site/public-route-patch/games/terpocalypse/mobile-gameplay-v2.css', 'utf8');
 const visibilityPause = fs.readFileSync('site/public-route-patch/games/terpocalypse/visibility-pause-v1.js', 'utf8');
@@ -30,9 +31,12 @@ assert.match(css, /outline:3px solid Highlight/);
 assert.match(css, /\.mission-briefing\{/);
 assert.match(mobileCss, /--terp-mobile-hud-reserve: 96px/);
 assert.match(mobileCss, /bottom: calc\(var\(--terp-mobile-hud-reserve\)/);
+assert.match(main, /const mobileKey=player\.keys\.green\?"GREEN":"---"/, 'compact HUD must expose the Green Key state');
+assert.match(main, /hudText\(`KEY \$\{mobileKey\}`,135,height-h\+48/, 'compact HUD must render the Green Key state');
+assert.match(gameData, /"#\.\.H\.\.\.#\.\.\.N\.\.\.#"/, 'Veg Lab containment wall must remain sealed at the former x=7 y=5 bypass');
 assert.match(visibilityPause, /releaseHeldKeyboardControls/);
 assert.match(visibilityPause, /visibilitychange/);
 assert.match(sourceRevision, /repository=dtfgenetics\/Terpocalapse/);
-assert.match(sourceRevision, /commit=112c4c78ed53eaeb433d50dfe87d43f05746d233/);
+assert.match(sourceRevision, /commit=b71cb4477a8aa908881b03e26fbf3fad7c95e049/);
 
 console.log('Terpocalypse public runtime contracts passed.');
