@@ -5,6 +5,8 @@ import {
   approvedHitSpaceCount,
   approvedNonHitRoadSpaceCount,
   boardPath,
+  boardWidth,
+  boardHeight,
   finishIndex
 } from '../data/boardPath';
 import type { ActionCard, SpaceColor } from '../types/gameTypes';
@@ -55,6 +57,32 @@ describe('game engine', () => {
   it('has start and finish spaces', () => {
     expect(boardPath[0].type).toBe('start');
     expect(boardPath[finishIndex].type).toBe('finish');
+  });
+
+  it('visits the seven locked locations in route order', () => {
+    const zoneOrder = boardPath.reduce<string[]>((zones, space) => {
+      if (zones.at(-1) !== space.zone) zones.push(space.zone);
+      return zones;
+    }, []);
+
+    expect(zoneOrder).toEqual([
+      'Rolling Hills',
+      'Dankwood Forest',
+      'Rosin Rail Station',
+      'Munchie Mountain',
+      'Kief Caves',
+      'Trichome Towers',
+      'Cloud 9 Citadel'
+    ]);
+  });
+
+  it('keeps every playable board-space bound inside the calibrated board image', () => {
+    boardPath.forEach((space) => {
+      expect(space.bounds.x).toBeGreaterThanOrEqual(0);
+      expect(space.bounds.y).toBeGreaterThanOrEqual(0);
+      expect(space.bounds.x + space.bounds.width).toBeLessThanOrEqual(boardWidth);
+      expect(space.bounds.y + space.bounds.height).toBeLessThanOrEqual(boardHeight);
+    });
   });
 
   it('matches the approved board image counts', () => {
