@@ -9,6 +9,7 @@ on:
       - scripts/publish-wordpress-certification-catalog-v6.mjs
       - scripts/verify-wordpress-tech2-courses-1-8.mjs
       - scripts/run-wordpress-with-retry.mjs
+      - scripts/publish-wordpress-academy-build-identity.mjs
       - .github/workflows/wordpress-tech2-courses-production.yml
   push:
     branches:
@@ -20,6 +21,7 @@ on:
       - scripts/publish-wordpress-certification-catalog-v6.mjs
       - scripts/verify-wordpress-tech2-courses-1-8.mjs
       - scripts/run-wordpress-with-retry.mjs
+      - scripts/publish-wordpress-academy-build-identity.mjs
       - .github/workflows/wordpress-tech2-courses-production.yml
   workflow_dispatch:
 
@@ -27,7 +29,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: dtfseeds-tech2-public-courses
+  group: dtfseeds-academy-publication
   cancel-in-progress: false
 
 jobs:
@@ -44,6 +46,7 @@ jobs:
           node --check scripts/publish-wordpress-certification-catalog-v6.mjs
           node --check scripts/verify-wordpress-tech2-courses-1-8.mjs
           node --check scripts/run-wordpress-with-retry.mjs
+          node --check scripts/publish-wordpress-academy-build-identity.mjs
           node scripts/publish-wordpress-tech2-courses-1-8.mjs --validate-only
           node scripts/publish-wordpress-certification-catalog-v6.mjs --validate-only
 
@@ -111,6 +114,8 @@ jobs:
             sleep 5
           done
           [[ "$ok" -eq 1 ]] || { echo "Catalog V6 anonymous verification failed. offerings=${offering_count} courses=${course_count} open=${open_count}" >&2; exit 1; }
+      - name: Publish and verify Academy build identity
+        run: node scripts/publish-wordpress-academy-build-identity.mjs
       - name: Upload rollback and verification evidence
         if: always()
         uses: actions/upload-artifact@v4
