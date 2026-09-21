@@ -5,11 +5,13 @@ on:
     branches: [main]
     paths:
       - 'scripts/promote-public-game-routes-via-wordpress.mjs'
+      - 'site/deployment/dtf420-static-overlay.json'
       - '.github/workflows/seed-ascent-v5-route-promotion-ci.yml'
   push:
     branches: [main]
     paths:
       - 'scripts/promote-public-game-routes-via-wordpress.mjs'
+      - 'site/deployment/dtf420-static-overlay.json'
       - '.github/workflows/seed-ascent-v5-route-promotion-ci.yml'
 
 permissions:
@@ -28,6 +30,10 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq 'dtf420-static-overlay.json' scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq '$expected_routes = ${overlayRoutePrefixesLiteral};' scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq '$expected_shared = ${overlaySharedPathsLiteral};' scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq '$expected_required = ${overlayRequiredRoutesLiteral};' scripts/promote-public-game-routes-via-wordpress.mjs
           grep -Fq "wrapper.text.includes('<iframe')" scripts/promote-public-game-routes-via-wordpress.mjs
           grep -Fq "wrapper.text.includes('/seed-ascent.html')" scripts/promote-public-game-routes-via-wordpress.mjs
           grep -Fq "wrapper.text.includes('/_next/static/')" scripts/promote-public-game-routes-via-wordpress.mjs

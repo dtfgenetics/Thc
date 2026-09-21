@@ -1,7 +1,24 @@
 import crypto from 'node:crypto';
 import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 
 const siteUrl = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
+const overlayContract = JSON.parse(
+  readFileSync(new URL('../site/deployment/dtf420-static-overlay.json', import.meta.url), 'utf8')
+);
+if (overlayContract?.canonicalOrigin !== 'https://dtfseeds.com') {
+  throw new Error('Dtf420 overlay contract canonical origin is invalid.');
+}
+for (const key of ['routePrefixes', 'sharedPaths', 'requiredRoutes']) {
+  if (!Array.isArray(overlayContract?.[key]) || overlayContract[key].length === 0 || overlayContract[key].some((value) => typeof value !== 'string' || !value.trim())) {
+    throw new Error(`Dtf420 overlay contract ${key} is invalid.`);
+  }
+}
+const overlayCanonicalOriginLiteral = JSON.stringify(overlayContract.canonicalOrigin);
+const overlayRoutePrefixesLiteral = JSON.stringify(overlayContract.routePrefixes);
+const overlaySharedPathsLiteral = JSON.stringify(overlayContract.sharedPaths);
+const overlayRequiredRoutesLiteral = JSON.stringify(overlayContract.requiredRoutes);
+
 const username = process.env.WP_API_USERNAME || '';
 const password = process.env.WP_API_PASSWORD || '';
 if (!username || !password) throw new Error('WordPress credentials are required.');
@@ -195,27 +212,20 @@ add_action('rest_api_init', function () {
         'callback' => static function () use ($targets, $backup_key, $safe_path, $state_key, $restore_all, $overlay_manifest) {
             $manifest_raw = file_get_contents($overlay_manifest);
             $manifest = is_string($manifest_raw) ? json_decode($manifest_raw, true) : null;
-            $expected_routes = ['learn/academy','learn/atlas','learn/cultivation-science','learn/glossary','learn/plant-health','learn/search','learn/sops','learn/sources','learn/symptoms','learn/tools','community/grow-offs','games/seed-ascent'];
-            $expected_shared = ['_next/static','seed-ascent','seed-ascent.html'];
+            $expected_origin = ${overlayCanonicalOriginLiteral};
+            $expected_routes = ${overlayRoutePrefixesLiteral};
+            $expected_shared = ${overlaySharedPathsLiteral};
+            $expected_required = ${overlayRequiredRoutesLiteral};
             if (!is_array($manifest)
-                || ($manifest['canonicalOrigin'] ?? '') !== 'https://dtfseeds.com'
+                || ($manifest['canonicalOrigin'] ?? '') !== $expected_origin
                 || ($manifest['repository'] ?? '') !== 'dtfgenetics/Dtf420'
                 || ($manifest['routePrefixes'] ?? null) !== $expected_routes
-                || ($manifest['sharedPaths'] ?? null) !== $expected_shared) {
+                || ($manifest['sharedPaths'] ?? null) !== $expected_shared
+                || ($manifest['requiredRoutes'] ?? null) !== $expected_required) {
                 return new WP_Error('dtf_overlay_manifest', 'Dtf420 overlay manifest does not match the approved production contract.', ['status' => 409]);
             }
-            foreach ([
-                'dtf-content-overlay/learn/academy/index.html',
-                'dtf-content-overlay/learn/atlas/seed-germination/seed-anatomy/index.html',
-                'dtf-content-overlay/learn/cultivation-science/outdoor-site-and-sun-mapping/index.html',
-                'dtf-content-overlay/learn/plant-health/two-spotted-spider-mite/index.html',
-                'dtf-content-overlay/learn/sops/ph-meter-calibration-and-measurement/index.html',
-                'dtf-content-overlay/learn/symptoms/lower-leaf-yellowing/index.html',
-                'dtf-content-overlay/learn/tools/plant-health-intake/index.html',
-                'dtf-content-overlay/community/grow-offs/solo-cup-grow-off/index.html',
-                'dtf-content-overlay/games/seed-ascent/index.html',
-                'dtf-content-overlay/seed-ascent.html',
-            ] as $required) {
+            foreach ($expected_required as $required_rel) {
+                $required = 'dtf-content-overlay/' . ltrim($required_rel, '/');
                 $path = $safe_path($required);
                 if ($path === false || !is_file($path) || filesize($path) < 1) {
                     return new WP_Error('dtf_overlay_required', 'Dtf420 overlay is incomplete.', ['status' => 409, 'path' => $required]);
