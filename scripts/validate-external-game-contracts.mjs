@@ -14,9 +14,9 @@ for (const [pattern, message] of [
   [/DTF_SITE_URL: siteUrl/, 'external live verification must target the active production site URL'],
   [/applied = false;\s*await verifyExternalReleaseCandidates\(\);/, 'exact external live verification must run after route promotion finalization'],
   [/dtf420-static-overlay\.json/, 'production route promotion must load the reviewed Dtf420 overlay contract'],
-  [/overlayRoutePrefixesLiteral/, 'production route promotion must derive route prefixes from the reviewed Dtf420 contract'],
-  [/overlaySharedPathsLiteral/, 'production route promotion must derive shared paths from the reviewed Dtf420 contract'],
-  [/overlayRequiredRoutesLiteral/, 'production route promotion must derive required routes from the reviewed Dtf420 contract'],
+  [/\$expected_routes = \$\{overlayRoutePrefixesLiteral\};/, 'production route promotion must interpolate route prefixes from the reviewed Dtf420 contract'],
+  [/\$expected_shared = \$\{overlaySharedPathsLiteral\};/, 'production route promotion must interpolate shared paths from the reviewed Dtf420 contract'],
+  [/\$expected_required = \$\{overlayRequiredRoutesLiteral\};/, 'production route promotion must interpolate required routes from the reviewed Dtf420 contract'],
 ]) {
   if (!pattern.test(promotionRuntime)) errors.push(message);
 }
