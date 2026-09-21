@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { getTokenOffset, getTokenRadius } from './tokenLayoutSystem';
+import { boardPath } from '../data/boardPath';
+import { getTokenOffset, getTokenRadius, getTokenTarget } from './tokenLayoutSystem';
 
 describe('token layout system', () => {
   it('keeps colocated tokens within the center of a painted board space', () => {
@@ -10,6 +11,23 @@ describe('token layout system', () => {
 
         expect(Math.abs(offset.x) + radius).toBeLessThanOrEqual(17);
         expect(Math.abs(offset.y) + radius).toBeLessThanOrEqual(17);
+      }
+    }
+  });
+
+  it('keeps every rendered token circle inside every calibrated board-space bound', () => {
+    for (const space of boardPath) {
+      for (let playerCount = 1; playerCount <= 10; playerCount += 1) {
+        const radius = getTokenRadius(playerCount);
+        for (let playerIndex = 0; playerIndex < playerCount; playerIndex += 1) {
+          const offset = getTokenOffset(playerIndex, playerCount);
+          const target = getTokenTarget(space, offset.x, offset.y, radius);
+
+          expect(target.x - radius).toBeGreaterThanOrEqual(space.bounds.x);
+          expect(target.x + radius).toBeLessThanOrEqual(space.bounds.x + space.bounds.width);
+          expect(target.y - radius).toBeGreaterThanOrEqual(space.bounds.y);
+          expect(target.y + radius).toBeLessThanOrEqual(space.bounds.y + space.bounds.height);
+        }
       }
     }
   });
