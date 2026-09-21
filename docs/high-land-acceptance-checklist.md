@@ -16,27 +16,27 @@ Use only **PASS**, **FAIL**, or **NOT TESTED** in the Status column. Add concret
 
 | Check | Status | Evidence |
 | --- | --- | --- |
-| `boardPath` has continuous indexes `0` through `108` | NOT TESTED | |
-| The route is single, connected, and visits the seven locations in locked order | NOT TESTED | |
-| Space types are limited to start, normal, action, and finish | NOT TESTED | |
-| Exactly 22 indexes are gameplay HIT/action triggers | NOT TESTED | |
-| Die results are integers from 1 through 6 | NOT TESTED | |
-| Normal movement equals the rolled number and clamps at START/FINISH | NOT TESTED | |
-| Movement animates through every traversed index | NOT TESTED | |
-| Tokens and colocated-token offsets remain inside board spaces | NOT TESTED | |
-| Reaching Cloud 9 Citadel declares the correct winner | NOT TESTED | |
+| `boardPath` has continuous indexes `0` through `108` | PASS | `gameEngine.test.ts` verifies continuous indexes; approved board length is 109. High Land CI run 35552372237 passed. |
+| The route is single, connected, and visits the seven locations in locked order | PASS | `gameEngine.test.ts` verifies the seven locked zones occur once in path order from Rolling Hills through Cloud 9 Citadel. High Land CI run 35552372237 passed. |
+| Space types are limited to start, normal, action, and finish | PASS | `gameEngine.test.ts` checks the complete path against the four allowed space types. High Land CI run 35552372237 passed. |
+| Exactly 22 indexes are gameplay HIT/action triggers | PASS | `gameEngine.test.ts` checks `approvedHitSpaceCount`, `actionSpaceIndexes`, and every indexed space type. High Land CI run 35552372237 passed. |
+| Die results are integers from 1 through 6 | PASS | `gameEngine.test.ts` exercises lower/upper/random clamps through `rollDie`. High Land CI run 35552372237 passed. |
+| Normal movement equals the rolled number and clamps at START/FINISH | PASS | `gameEngine.test.ts` and `turnFeedback.test.ts` verify exact traversed indexes, rolled distance, and START/FINISH clamping. High Land CI run 35552372237 passed. |
+| Movement animates through every traversed index | PASS | `tokenAnimationSystem.test.ts` verifies forward/backward paths, exact dice traversal, and appended card-effect traversal; `BoardScene.ts` renders that tested path. High Land CI run 35552736470 passed. |
+| Tokens and colocated-token offsets remain inside board spaces | PASS | `tokenLayoutSystem.test.ts` verifies 1–10 player offsets remain distinct and every rendered token circle stays inside every calibrated board-space bound. High Land CI run 35552736470 passed. |
+| Reaching Cloud 9 Citadel declares the correct winner | PASS | `gameEngine.test.ts` plus `fullGameContract.test.ts` verify FINISH winners and complete deterministic games. High Land CI run 35552372237 passed. |
 
 ## HIT cards and turns
 
 | Check | Status | Evidence |
 | --- | --- | --- |
-| Landing on every HIT index draws and immediately applies a card | NOT TESTED | |
-| Card text exactly matches each coded effect | NOT TESTED | |
-| Forward, backward, color, swap, leader, group, and choice effects are correct | NOT TESTED | |
-| Skip turn, roll again, and draw again resolve without stuck or infinite turns | NOT TESTED | |
-| Backward protection is consumed correctly | NOT TESTED | |
-| Reverse turn order works across dice turns, HIT-card turns, and pending choices | NOT TESTED | |
-| All card movement remains within START and FINISH | NOT TESTED | |
+| Landing on every HIT index draws and immediately applies a card | PASS | `gameEngine.test.ts` checks every approved HIT trigger, rejects draws elsewhere, and verifies an applied production card effect. High Land CI run 35552372237 passed. |
+| Card text exactly matches each coded effect | PASS | `actionCards.test.ts` locks all 39 approved visible instructions, validates effect shapes/values, resolves every production card, and exercises the multi-target/extra-turn families. High Land CI run 35552372237 passed. |
+| Forward, backward, color, swap, leader, group, and choice effects are correct | PASS | `gameEngine.test.ts`, `effectResolver.choice.test.ts`, and `actionCards.test.ts` exercise these effect families using deterministic positions and production cards. High Land CI run 35552372237 passed. |
+| Skip turn, roll again, and draw again resolve without stuck or infinite turns | PASS | `actionCards.test.ts` exercises production skip/roll/draw cards; `cardSystemRegression.test.ts` and `fullGameContract.test.ts` prove chained draws and complete deterministic games terminate. High Land CI run 35552372237 passed. |
+| Backward protection is consumed correctly | PASS | `gameEngine.test.ts` verifies one backward-protection use blocks movement and decrements to zero. High Land CI run 35552372237 passed. |
+| Reverse turn order works across dice turns, HIT-card turns, and pending choices | PASS | `gameEngine.test.ts` and `reverseRotationCardTurns.test.ts` verify reversed dice turns, HIT-card advancement, pending-choice resolution, and clockwise restoration. High Land CI run 35552372237 passed. |
+| All card movement remains within START and FINISH | PASS | `actionCards.test.ts` resolves every production HIT card and asserts every resulting player position stays within `0..finishIndex`; `fullGameContract.test.ts` repeats the invariant during long games. High Land CI run 35552372237 passed. |
 
 ## Players and invite multiplayer
 
@@ -55,12 +55,12 @@ Use only **PASS**, **FAIL**, or **NOT TESTED** in the Status column. Add concret
 
 | Check | Status | Evidence |
 | --- | --- | --- |
-| `npm ci` | NOT TESTED | |
-| `npm run test:high-land` | NOT TESTED | |
-| `npm run build:high-land` | NOT TESTED | |
-| `node scripts/verify-browser-tool-policy.mjs` | NOT TESTED | |
-| PHP room API lint passes when PHP files exist | NOT TESTED | |
-| CI runs deterministic tests, build, room API security, PHP lint, and static asset checks | NOT TESTED | |
+| `npm ci` | PASS | High Land CI run 35552372237 completed the dependency-install step successfully. |
+| `npm run test:high-land` | PASS | High Land CI run 35552372237 completed the canonical deterministic test step successfully. |
+| `npm run build:high-land` | PASS | High Land CI run 35552372237 completed the canonical app build successfully. |
+| `node scripts/verify-browser-tool-policy.mjs` | PASS | High Land CI run 35552372237 completed the browser-tool policy step successfully; Playwright remains retired from this workflow. |
+| PHP room API lint passes when PHP files exist | PASS | High Land CI run 35552372237 completed the PHP room-API lint step successfully. |
+| CI runs deterministic tests, build, room API security, PHP lint, and static asset checks | PASS | High Land CI run 35552372237 and High Land Room Security CI run 35552372246 both passed; the canonical workflow also verifies the built entrypoint/assets. |
 | Datadog skips successfully when required secrets are absent | NOT TESTED | |
 
 ## Presentation and live deployment
@@ -77,10 +77,10 @@ Use only **PASS**, **FAIL**, or **NOT TESTED** in the Status column. Add concret
 
 ## Result
 
-- Commit/branch:
-- Local verification date:
-- Live verification date:
-- Overall status: PASS / FAIL / NOT TESTED
-- Remaining issues:
+- Commit/branch: `test/high-land-acceptance-v1` (`616cc7a3bb080125f3da6ec460fac88e3ce170d7` acceptance-test head before checklist evidence update)
+- Local verification date: 2026-09-20 (America/Chicago)
+- Live verification date: NOT TESTED
+- Overall status: NOT TESTED
+- Remaining issues: browser/device invite validation, live deployment verification, mobile/browser-console review, deployed commit/rollback record, and other rows still marked NOT TESTED.
 
 Use **local validation passed; live deployment NOT TESTED** when the repository checks pass but the public site was not deployed and exercised.
