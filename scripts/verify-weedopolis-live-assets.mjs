@@ -34,7 +34,7 @@ const requiredHtmlMarkers = [
   'data-art-standard="weedopolis-v1-master"',
   'data-art-status="v1-master-loaded"',
   'production-interactions.css',
-  'Deed artwork ready',
+  'id="propertyAssetChip">Property card</span>',
   'Board artwork, interactive spaces, player tokens, and property actions stay synchronized throughout the match.',
   'class="mobile-game-dock"',
   'id="mobileRollBtn"',
