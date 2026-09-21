@@ -11,7 +11,7 @@ const publicEngine = fs.readFileSync('site/public-route-patch/games/high-life/en
 const canonicalEvents = JSON.parse(fs.readFileSync('games/high-life/data/events.json', 'utf8'));
 
 assert.match(html, /<script id="high-life-events" type="application\/json">/);
-assert.match(html, /<script defer src="\.\/app\.js\?v=20260917-visual-v2"><\/script>/);
+assert.match(html, /<script defer src="\.\/app\.js\?v=20260920-era-journey-v3"><\/script>/);
 assert.match(html, /<script defer src="\.\/high-life-enhancements\.js\?v=20260917-visual-v2"><\/script>/);
 assert.match(html, /high-life-v2\.css/);
 assert.match(html, /class="era-roadmap"/);
@@ -39,7 +39,7 @@ assert.ok(embeddedMatch, 'embedded High Life event data must be present');
 assert.deepEqual(JSON.parse(embeddedMatch[1]), canonicalEvents, 'public embedded High Life events must exactly match canonical events.json');
 
 assert.equal(publicEngine, canonicalEngine, 'public engine.mjs must exactly match the canonical High Life engine');
-assert.match(bootstrap, /import\('\.\/runtime\.mjs'\)/, 'app.js must delegate to runtime.mjs');
+assert.match(bootstrap, /import\('\.\/runtime\.mjs\?v=20260920-era-journey-v3'\)/, 'app.js must delegate to the versioned runtime.mjs');
 assert.ok(bootstrap.length < 1500, 'app.js must remain a thin compatibility bootstrap, not another rules engine');
 assert.match(runtime, /from '\.\/engine\.mjs';/, 'browser runtime must import the canonical public engine module');
 assert.match(runtime, /const SAVE_VERSION = 3/);
@@ -55,6 +55,8 @@ assert.match(runtime, /storageRemove\(/);
 assert.match(runtime, /Confirm New Career/);
 assert.match(runtime, /Confirm Discard/);
 assert.match(runtime, /globalThis\.matchMedia\?\./);
+assert.match(runtime, /ui\.game\.dataset\.eraState = era/, 'High Life must expose the current era to the journey renderer');
+assert.match(runtime, /document\.body\.dataset\.highLifeEra = era/, 'High Life must expose current era state at document level');
 assert.match(runtime, /function safeFocus\(element\)/, 'High Life should guard focus transitions');
 assert.match(runtime, /safeFocus\(ui\.continue\)/, 'resolved turns should move focus to Continue');
 assert.match(runtime, /safeFocus\(document\.querySelector\('\.action-card\.available'\)\)/, 'continuing should return focus to the next available action');
@@ -82,6 +84,11 @@ assert.match(visual, /object-position:66% center/);
 assert.match(visual, /@media\(max-width:650px\)/);
 assert.match(visual, /@media\(max-width:480px\)\{\.dashboard\{grid-template-columns:1fr\}/, 'narrow-phone dashboard must collapse to one column');
 assert.match(visual, /top:calc\(var\(--dtf-global-header-height,74px\) \+ 8px\)/, 'sticky era roadmap must clear the V5 site header');
+assert.match(visual, /High Life three-era journey v3/, 'three-era journey presentation must remain active');
+assert.match(visual, /#game-panel\[data-era-state="underground"\]/, 'Underground era must have a dedicated visual state');
+assert.match(visual, /#game-panel\[data-era-state="medical"\]/, 'Medical era must have a dedicated visual state');
+assert.match(visual, /#game-panel\[data-era-state="legal"\]/, 'Legal era must have a dedicated visual state');
+assert.match(visual, /#game-panel\[data-era-state\] \.event-panel/, 'event presentation must inherit the active era state');
 assert.match(visual, /\.career-log-panel \.log-toggle\{min-height:44px/, 'career log control must retain a 44px touch target');
 assert.match(visual, /scroll-margin-top:calc\(var\(--dtf-global-header-height,92px\) \+ 16px\)/, 'turn-resolution anchors must clear the global header');
 assert.doesNotMatch(visual, /\.era-roadmap\{[^}]*position:sticky;top:\.35rem/, 'legacy sticky roadmap offset must not return');
