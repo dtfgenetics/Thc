@@ -191,6 +191,8 @@ await writeFile(join(backupDir, `template-${String(archive.id).replaceAll('/', '
 
 const next = insertStorefront(before);
 if ((next.match(/data-dtf-shop-storefront-v5=/g) || []).length !== 1) throw new Error('Shop V5 storefront marker must occur exactly once before write.');
+if (!next.includes('data-dtf-shop-structure="context-first-v7"')) throw new Error('Shop V5 storefront is missing the context-first structure marker.');
+if (!next.includes('Price, availability & checkout')) throw new Error('Shop V5 transactional handoff is missing.');
 if (!next.includes('<h1 id="dtf-shop-v5-title">Shop the release. Read the breeding story.</h1>')) throw new Error('Shop V5 storefront must own the semantic H1.');
 if (!next.includes('body:has(.dtf-shop-storefront-v5) .woocommerce-products-header__title.page-title')) throw new Error('Shop V5 storefront must suppress only the redundant Woo archive title.');
 if (!next.includes('/product/10-regular-f2-blue-mango-seeds/') || !next.includes('/product/10-feminized-f2-blue-mango-x/') || !next.includes('/product/10-reg-f1-blueberry-bubblegum/')) throw new Error('Shop V5 storefront is missing a canonical current product route.');
