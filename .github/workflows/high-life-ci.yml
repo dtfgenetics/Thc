@@ -76,7 +76,7 @@ jobs:
           grep -Fq 'class="era-roadmap"' "$root/index.html"
           grep -Fq 'high-life-v2.css' "$root/index.html"
 
-          grep -Fq "import('./runtime.mjs')" "$root/app.js"
+          grep -Fq "import('./runtime.mjs?v=20260920-era-journey-v3')" "$root/app.js"
           grep -Fq "from './engine.mjs';" "$root/runtime.mjs"
           grep -Fq 'const SAVE_VERSION = 3;' "$root/runtime.mjs"
           grep -Fq 'pendingEvent: Boolean(pendingEvent)' "$root/runtime.mjs"
@@ -93,6 +93,9 @@ jobs:
           grep -Fq '.resource-meter' "$root/high-life-v2.css"
           grep -Fq '.danger-arm' "$root/high-life-v2.css"
           grep -Fq '.hero-art' "$root/high-life-v2.css"
+          grep -Fq 'High Life three-era journey v3' "$root/high-life-v2.css"
+          grep -Fq 'data-era-state="medical"' "$root/high-life-v2.css"
+          grep -Fq 'ui.game.dataset.eraState = era' "$root/runtime.mjs"
           grep -Fq '@media(max-width:650px)' "$root/high-life-v2.css"
 
           test "$(wc -c < "$root/app.js")" -lt 1500
