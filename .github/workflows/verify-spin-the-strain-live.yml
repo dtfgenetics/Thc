@@ -42,20 +42,25 @@ jobs:
           grep -Fqi 'Complete cycles. Reproducible sessions.' <<<"$html"
 
           app="$(fetch "$base/app.js")"
-          grep -Fq 'cycleSeenEntryIds' <<<"$app"
-          grep -Fq 'const unseenEntries = entries.filter' <<<"$app"
-          grep -Fq 'cyclePosition' <<<"$app"
-          grep -Fq 'cycleSize' <<<"$app"
+          grep -Fq "import('./runtime.mjs')" <<<"$app"
+          grep -Fq 'canonical runtime failed to load' <<<"$app"
+
+          runtime="$(fetch "$base/runtime.mjs")"
+          grep -Fq "from './engine.mjs'" <<<"$runtime"
+          grep -Fq 'entriesForMode(candidate, mode.id).length !== 18' <<<"$runtime"
+          grep -Fq 'spinWheel(state, data)' <<<"$runtime"
 
           engine="$(fetch "$base/engine.mjs")"
           grep -Fq 'cycleSeenEntryIds' <<<"$engine"
           grep -Fq 'const unseenEntries = entries.filter' <<<"$engine"
+          grep -Fq 'cyclePosition' <<<"$engine"
+          grep -Fq 'cycleSize' <<<"$engine"
 
           css="$(fetch "$base/spin-the-strain.css")"
           grep -Fq '.segment-label::after' <<<"$css"
           grep -Fq '@media(max-width:520px)' <<<"$css"
 
-          echo 'Spin the Strain live route, no-repeat runtime, engine, and mobile CSS verified.'
+          echo 'Spin the Strain live route, bootstrap, runtime boundary, no-repeat engine, and mobile CSS verified.'
 
       - name: Summarize verification
         if: always()
@@ -66,5 +71,5 @@ jobs:
             echo
             echo '- Route: https://dtfseeds.com/games/spin-the-strain/'
             echo '- Required behavior: 18-entry no-repeat deterministic cycles'
-            echo '- Runtime checks: public HTML, app.js, engine.mjs, mobile CSS'
+            echo '- Runtime checks: public HTML, compatibility bootstrap, runtime-to-engine boundary, engine, mobile CSS'
           } >> "$GITHUB_STEP_SUMMARY"
