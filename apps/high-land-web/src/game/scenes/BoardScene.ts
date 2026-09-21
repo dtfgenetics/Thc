@@ -2,8 +2,9 @@ import Phaser from 'phaser';
 import { boardHeight, boardPath, boardWidth } from '../data/boardPath';
 import { gameAssetPath } from '../systems/assetPath';
 import { playMoveTickSound } from '../systems/audioSystem';
-import { getMoveDuration, getTokenOffset, getTokenRadius } from '../systems/tokenLayoutSystem';
-import type { BoardSpace, GameState, Player } from '../types/gameTypes';
+import { buildTokenAnimationPath } from '../systems/tokenAnimationSystem';
+import { getMoveDuration, getTokenOffset, getTokenRadius, getTokenTarget } from '../systems/tokenLayoutSystem';
+import type { GameState, Player } from '../types/gameTypes';
 
 type Point = { x: number; y: number };
 
@@ -174,7 +175,7 @@ export class BoardScene extends Phaser.Scene {
 
     const fromIndex = this.lastPositions.get(player.id) ?? player.positionIndex;
     this.lastPositions.set(player.id, player.positionIndex);
-    const targets = buildAnimationPath(player.id, fromIndex, player.positionIndex, state).map((index) => {
+    const targets = buildTokenAnimationPath(player.id, fromIndex, player.positionIndex, state).map((index) => {
       const space = boardPath[index] ?? currentSpace;
       return getTokenTarget(space, offset.x, offset.y, radius);
     });
@@ -222,35 +223,6 @@ function showDebugSpaces(): boolean {
 
 function showCalibrationMode(): boolean {
   return typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('calibratePath');
-}
-
-function getTokenTarget(space: BoardSpace, offsetX: number, offsetY: number, radius: number): Point {
-  const padding = radius + 3;
-  return {
-    x: Phaser.Math.Clamp(space.x + offsetX, space.bounds.x + padding, space.bounds.x + space.bounds.width - padding),
-    y: Phaser.Math.Clamp(space.y + offsetY, space.bounds.y + padding, space.bounds.y + space.bounds.height - padding)
-  };
-}
-
-function buildAnimationPath(playerId: string, fromIndex: number, finalIndex: number, state: GameState): number[] {
-  const lastMove = state.lastMove;
-  if (lastMove?.playerId !== playerId || lastMove.fromIndex !== fromIndex) {
-    return buildPathIndexes(fromIndex, finalIndex);
-  }
-
-  const dicePath = lastMove.traversedIndexes;
-  if (lastMove.toIndex === finalIndex) return dicePath;
-  return [...dicePath, ...buildPathIndexes(lastMove.toIndex, finalIndex)];
-}
-
-function buildPathIndexes(fromIndex: number, toIndex: number): number[] {
-  if (fromIndex === toIndex) return [];
-  const step = toIndex > fromIndex ? 1 : -1;
-  const indexes: number[] = [];
-  for (let index = fromIndex + step; step > 0 ? index <= toIndex : index >= toIndex; index += step) {
-    indexes.push(index);
-  }
-  return indexes;
 }
 
 function nearestBoardSpace(x: number, y: number): { index: number; distance: number } {
