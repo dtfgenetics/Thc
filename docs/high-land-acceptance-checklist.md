@@ -22,8 +22,8 @@ Use only **PASS**, **FAIL**, or **NOT TESTED** in the Status column. Add concret
 | Exactly 22 indexes are gameplay HIT/action triggers | PASS | `gameEngine.test.ts` checks `approvedHitSpaceCount`, `actionSpaceIndexes`, and every indexed space type. High Land CI run 35552372237 passed. |
 | Die results are integers from 1 through 6 | PASS | `gameEngine.test.ts` exercises lower/upper/random clamps through `rollDie`. High Land CI run 35552372237 passed. |
 | Normal movement equals the rolled number and clamps at START/FINISH | PASS | `gameEngine.test.ts` and `turnFeedback.test.ts` verify exact traversed indexes, rolled distance, and START/FINISH clamping. High Land CI run 35552372237 passed. |
-| Movement animates through every traversed index | NOT TESTED | |
-| Tokens and colocated-token offsets remain inside board spaces | NOT TESTED | |
+| Movement animates through every traversed index | PASS | `tokenAnimationSystem.test.ts` verifies forward/backward paths, exact dice traversal, and appended card-effect traversal; `BoardScene.ts` renders that tested path. High Land CI run 35552736470 passed. |
+| Tokens and colocated-token offsets remain inside board spaces | PASS | `tokenLayoutSystem.test.ts` verifies 1–10 player offsets remain distinct and every rendered token circle stays inside every calibrated board-space bound. High Land CI run 35552736470 passed. |
 | Reaching Cloud 9 Citadel declares the correct winner | PASS | `gameEngine.test.ts` plus `fullGameContract.test.ts` verify FINISH winners and complete deterministic games. High Land CI run 35552372237 passed. |
 
 ## HIT cards and turns
@@ -81,6 +81,6 @@ Use only **PASS**, **FAIL**, or **NOT TESTED** in the Status column. Add concret
 - Local verification date: 2026-09-20 (America/Chicago)
 - Live verification date: NOT TESTED
 - Overall status: NOT TESTED
-- Remaining issues: browser/device invite validation, token-offset presentation, live deployment verification, mobile/browser-console review, deployed commit/rollback record, and other rows still marked NOT TESTED.
+- Remaining issues: browser/device invite validation, live deployment verification, mobile/browser-console review, deployed commit/rollback record, and other rows still marked NOT TESTED.
 
 Use **local validation passed; live deployment NOT TESTED** when the repository checks pass but the public site was not deployed and exercised.
