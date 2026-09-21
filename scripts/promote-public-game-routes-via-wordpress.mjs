@@ -212,10 +212,10 @@ add_action('rest_api_init', function () {
         'callback' => static function () use ($targets, $backup_key, $safe_path, $state_key, $restore_all, $overlay_manifest) {
             $manifest_raw = file_get_contents($overlay_manifest);
             $manifest = is_string($manifest_raw) ? json_decode($manifest_raw, true) : null;
-            $expected_origin = "https://dtfseeds.com";
-            $expected_routes = ["learn/academy","learn/atlas","learn/cultivation-science","learn/glossary","learn/plant-health","learn/search","learn/sops","learn/sources","learn/symptoms","learn/tools","community/grow-offs","games/seed-ascent"];
-            $expected_shared = ["_next/static","seed-ascent","seed-ascent.html","favicon"];
-            $expected_required = ["learn/academy/index.html","learn/atlas/index.html","learn/atlas/seed-germination/seed-anatomy/index.html","learn/cultivation-science/outdoor-site-and-sun-mapping/index.html","learn/glossary/index.html","learn/plant-health/two-spotted-spider-mite/index.html","learn/sops/ph-meter-calibration-and-measurement/index.html","learn/symptoms/lower-leaf-yellowing/index.html","learn/tools/plant-health-intake/index.html","community/grow-offs/solo-cup-grow-off/index.html","games/seed-ascent/index.html","seed-ascent.html","seed-ascent/engine.js","seed-ascent/levels.js","seed-ascent/styles.css","favicon"];
+            $expected_origin = ${overlayCanonicalOriginLiteral};
+            $expected_routes = ${overlayRoutePrefixesLiteral};
+            $expected_shared = ${overlaySharedPathsLiteral};
+            $expected_required = ${overlayRequiredRoutesLiteral};
             if (!is_array($manifest)
                 || ($manifest['canonicalOrigin'] ?? '') !== $expected_origin
                 || ($manifest['repository'] ?? '') !== 'dtfgenetics/Dtf420'
