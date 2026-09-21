@@ -117,3 +117,127 @@ body.burn-opponent-turn .boards .board-card:first-child .board-title h3 {
     outline: 2px solid Highlight;
   }
 }
+
+
+/* Burn Buds battlefield v4.1 — tactical garden presentation.
+   Visual-only layer: room state, server-authoritative turns and targeting logic stay unchanged. */
+.board{
+  position:relative;
+  overflow:hidden;
+  background:
+    linear-gradient(rgba(255,255,255,.018),rgba(255,255,255,.018)),
+    repeating-linear-gradient(0deg,rgba(233,200,106,.035) 0 1px,transparent 1px 7px),
+    repeating-linear-gradient(90deg,rgba(233,200,106,.028) 0 1px,transparent 1px 7px),
+    radial-gradient(circle at 50% 0,rgba(96,142,67,.12),transparent 52%),
+    #0b0d09;
+}
+.board-card{
+  position:relative;
+  overflow:hidden;
+}
+.board-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.34;
+  background:linear-gradient(115deg,transparent 0 58%,rgba(255,255,255,.018) 58% 59%,transparent 59% 100%);
+}
+.board-card>*{position:relative;z-index:1}
+.cell:not(.hit):not(.miss):not(.lost){
+  background:linear-gradient(145deg,rgba(19,31,19,.92),rgba(10,15,10,.96));
+  box-shadow:inset 0 0 0 1px rgba(233,200,106,.035);
+}
+.boards .board-card:first-child .cell:not(.hit):not(.miss):not(.lost){
+  background:linear-gradient(145deg,rgba(22,43,24,.94),rgba(10,20,12,.97));
+}
+.boards .board-card:nth-child(2) .cell:not(.hit):not(.miss):not(.lost){
+  background:linear-gradient(145deg,rgba(34,28,15,.9),rgba(14,14,9,.97));
+}
+body.burn-my-turn .boards .board-card:nth-child(2){
+  box-shadow:
+    0 0 0 1px rgba(255,205,99,.12),
+    0 22px 56px rgba(0,0,0,.42),
+    0 0 42px rgba(255,154,61,.1)!important;
+}
+body.burn-opponent-turn .boards .board-card:first-child{
+  box-shadow:
+    0 0 0 1px rgba(118,163,255,.08),
+    0 22px 56px rgba(0,0,0,.42),
+    0 0 34px rgba(90,132,224,.08)!important;
+}
+.burn-turn-banner{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+}
+.burn-turn-banner::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  opacity:.5;
+  background:linear-gradient(90deg,transparent 0 35%,rgba(255,255,255,.035) 50%,transparent 65% 100%);
+  transform:translateX(-85%);
+}
+.burn-turn-banner.fire::before{animation:burn-buds-scan 2.8s ease-in-out infinite}
+.burn-turn-banner.hold::before{animation:burn-buds-scan 4.4s ease-in-out infinite}
+.burn-turn-banner.fire{
+  text-shadow:0 0 18px rgba(255,190,96,.12);
+}
+.burn-telemetry section{
+  position:relative;
+  overflow:hidden;
+}
+.burn-telemetry section::after{
+  content:"";
+  position:absolute;
+  left:9px;
+  right:9px;
+  bottom:5px;
+  height:2px;
+  border-radius:999px;
+  opacity:.45;
+  background:linear-gradient(90deg,rgba(133,221,154,.52),rgba(233,200,106,.26));
+}
+.burn-telemetry section:last-child::after{
+  background:linear-gradient(90deg,rgba(111,160,231,.42),rgba(233,200,106,.22));
+}
+.fleet-chip{
+  position:relative;
+  overflow:hidden;
+  border-radius:999px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.018);
+}
+.fleet-chip:not(.sunk)::after{
+  content:"";
+  position:absolute;
+  inset:auto 10px 4px 10px;
+  height:2px;
+  border-radius:999px;
+  background:linear-gradient(90deg,rgba(134,217,87,.18),rgba(134,217,87,.55),rgba(134,217,87,.18));
+}
+.fleet-chip.sunk{
+  filter:saturate(.5) brightness(.82);
+  text-decoration-thickness:2px;
+}
+@keyframes burn-buds-scan{
+  0%,14%{transform:translateX(-88%);opacity:0}
+  38%{opacity:.6}
+  74%{transform:translateX(88%);opacity:.28}
+  100%{transform:translateX(88%);opacity:0}
+}
+@media(max-width:720px){
+  .board-card::after{opacity:.22}
+  .cell:not(.hit):not(.miss):not(.lost){box-shadow:inset 0 0 0 1px rgba(233,200,106,.025)}
+  .burn-telemetry section::after{left:7px;right:7px}
+}
+@media(prefers-reduced-motion:reduce){
+  .burn-turn-banner.fire::before,.burn-turn-banner.hold::before{animation:none!important;transform:none!important;opacity:.16}
+}
+@media(forced-colors:active){
+  .board,.cell:not(.hit):not(.miss):not(.lost),.board-card::after,.burn-turn-banner::before,.burn-telemetry section::after,.fleet-chip::after{
+    background:none!important;
+  }
+}
