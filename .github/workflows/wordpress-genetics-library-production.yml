@@ -9,6 +9,7 @@ on:
       - 'data/genetics/catalog.json'
       - 'data/genetics/release-control.json'
       - 'site/wordpress/pages/seeds.html'
+      - 'site/design-system/dtf-genetics-owner-v1.css'
       - 'site/wordpress/products/genetics.json'
       - 'site/wordpress/products/seed-line-catalog.json'
       - 'site/wordpress/products/genetics-cdn-identities.json'
@@ -82,6 +83,7 @@ jobs:
           test -n "${WP_API_PASSWORD:-}"
           node --check scripts/wordpress-ipv4-fetch-bootstrap.mjs
           node --check scripts/publish-wordpress-genetics-library-cdn.mjs
+          node --check scripts/publish-wordpress-genetics-library-cdn-core.mjs
           node --check scripts/publish-woocommerce-strain-card-images-cdn.mjs
           node --check scripts/audit-genetics-cdn-sources.mjs
           node --check scripts/validate-genetics-library-coherence.mjs
@@ -90,6 +92,8 @@ jobs:
           node --check scripts/verify-wordpress-genetics-library-production.mjs
           node scripts/validate-genetics-library-coherence.mjs
           node scripts/validate-genetics-commerce.mjs
+          grep -Fq 'data-dtf-genetics-structure="release-first-v2"' scripts/publish-wordpress-genetics-library-cdn-core.mjs
+          grep -Fq 'Release-first Genetics structure' site/design-system/dtf-genetics-owner-v1.css
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
           const catalog=JSON.parse(fs.readFileSync(process.env.SEED_LINE_CATALOG,'utf8'));

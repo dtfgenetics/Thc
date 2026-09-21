@@ -7,6 +7,7 @@ on:
       - 'site/wordpress/products/seed-line-catalog.json'
       - 'site/wordpress/products/genetics-cdn-identities.json'
       - 'site/wordpress/pages/seeds.html'
+      - 'site/design-system/dtf-genetics-owner-v1.css'
       - 'scripts/publish-wordpress-genetics-library-cdn.mjs'
       - 'scripts/publish-wordpress-genetics-library-cdn-core.mjs'
       - 'scripts/force-original-image-accept.mjs'
@@ -94,6 +95,11 @@ jobs:
           grep -Fq "import './force-original-image-accept.mjs'" scripts/publish-wordpress-genetics-library-cdn.mjs
           grep -Fq "publish-wordpress-genetics-library-cdn-core.mjs" scripts/publish-wordpress-genetics-library-cdn.mjs
           grep -Fq 'expectedCardCount' scripts/publish-wordpress-genetics-library-cdn-core.mjs
+          grep -Fq 'data-dtf-genetics-structure="release-first-v2"' scripts/publish-wordpress-genetics-library-cdn-core.mjs
+          grep -Fq 'currentProjects' scripts/publish-wordpress-genetics-library-cdn-core.mjs
+          grep -Fq 'libraryProjects' scripts/publish-wordpress-genetics-library-cdn-core.mjs
+          grep -Fq 'dtf-genetics-library-disclosure' scripts/publish-wordpress-genetics-library-cdn-core.mjs
+          grep -Fq 'Release-first Genetics structure' site/design-system/dtf-genetics-owner-v1.css
           grep -Fq 'catalog.lines.length' .github/workflows/wordpress-genetics-library-production.yml
           grep -Fq 'genetics-cdn-identities.json' .github/workflows/wordpress-genetics-library-production.yml
           grep -Fq 'genetics-cdn-identities.json' .github/workflows/wordpress-genetics-library-push.yml
