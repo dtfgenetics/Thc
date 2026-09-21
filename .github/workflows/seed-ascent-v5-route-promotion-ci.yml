@@ -31,9 +31,9 @@ jobs:
           set -euo pipefail
           node --check scripts/promote-public-game-routes-via-wordpress.mjs
           grep -Fq 'dtf420-static-overlay.json' scripts/promote-public-game-routes-via-wordpress.mjs
-          grep -Fq 'overlayRoutePrefixesLiteral' scripts/promote-public-game-routes-via-wordpress.mjs
-          grep -Fq 'overlaySharedPathsLiteral' scripts/promote-public-game-routes-via-wordpress.mjs
-          grep -Fq 'overlayRequiredRoutesLiteral' scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq '$expected_routes = ${overlayRoutePrefixesLiteral};' scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq '$expected_shared = ${overlaySharedPathsLiteral};' scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq '$expected_required = ${overlayRequiredRoutesLiteral};' scripts/promote-public-game-routes-via-wordpress.mjs
           grep -Fq "wrapper.text.includes('<iframe')" scripts/promote-public-game-routes-via-wordpress.mjs
           grep -Fq "wrapper.text.includes('/seed-ascent.html')" scripts/promote-public-game-routes-via-wordpress.mjs
           grep -Fq "wrapper.text.includes('/_next/static/')" scripts/promote-public-game-routes-via-wordpress.mjs
