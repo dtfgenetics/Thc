@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 
 const ownerVisualCss = await readFile('site/design-system/dtf-genetics-owner-v1.css', 'utf8');
-if (!ownerVisualCss.includes('premium catalog presentation') || !ownerVisualCss.includes('data-dtf-genetics-library') || !ownerVisualCss.includes('REVIEWED STRAIN CARD')) {
+if (!ownerVisualCss.includes('premium catalog presentation') || !ownerVisualCss.includes('data-dtf-genetics-library') || !ownerVisualCss.includes('REVIEWED STRAIN CARD') || !ownerVisualCss.includes('Release-first Genetics structure')) {
   throw new Error('Premium Genetics owner visual layer is missing or incomplete; refusing to publish a downgraded catalog.');
 }
 
