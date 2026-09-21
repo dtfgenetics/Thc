@@ -224,6 +224,8 @@ function updateEraRoadmap() {
 
 function render() {
   const era = currentEra(state);
+  ui.game.dataset.eraState = era;
+  document.body.dataset.highLifeEra = era;
   ui.eraName.textContent = eraLabels[era];
   ui.turn.textContent = state.complete
     ? `Career complete · ${MAX_TURNS} of ${MAX_TURNS} turns`

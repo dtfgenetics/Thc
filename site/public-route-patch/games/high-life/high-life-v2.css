@@ -49,3 +49,102 @@ button:focus-visible,.button:focus-visible,input:focus-visible,.action-card:focu
     background:Highlight;
   }
 }
+
+
+/* High Life three-era journey v3.
+   State-driven atmosphere only; deterministic career rules remain in engine.mjs. */
+#game-panel[data-era-state]{
+  --era-accent:var(--accent);
+  --era-accent-soft:rgba(201,243,106,.14);
+  --era-panel-top:rgba(20,55,34,.96);
+  --era-panel-bottom:rgba(8,24,15,.98);
+}
+#game-panel[data-era-state="underground"]{
+  --era-accent:#c9f36a;
+  --era-accent-soft:rgba(201,243,106,.13);
+  --era-panel-top:rgba(17,51,29,.96);
+  --era-panel-bottom:rgba(6,22,13,.98);
+}
+#game-panel[data-era-state="medical"]{
+  --era-accent:#8fd6d0;
+  --era-accent-soft:rgba(143,214,208,.13);
+  --era-panel-top:rgba(16,48,48,.96);
+  --era-panel-bottom:rgba(7,23,25,.98);
+}
+#game-panel[data-era-state="legal"]{
+  --era-accent:#f0c96b;
+  --era-accent-soft:rgba(240,201,107,.14);
+  --era-panel-top:rgba(52,43,20,.96);
+  --era-panel-bottom:rgba(24,19,9,.98);
+}
+#game-panel[data-era-state] .era-card,
+#game-panel[data-era-state] .resource-panel,
+#game-panel[data-era-state] .action-panel{
+  position:relative;
+  overflow:hidden;
+  border-color:color-mix(in srgb,var(--era-accent) 30%,var(--line));
+  background:
+    radial-gradient(circle at 88% 12%,var(--era-accent-soft),transparent 18rem),
+    linear-gradient(150deg,var(--era-panel-top),var(--era-panel-bottom));
+  transition:border-color .22s ease,background .22s ease,box-shadow .22s ease;
+}
+#game-panel[data-era-state] .era-card::after{
+  content:attr(data-era-label);
+  position:absolute;
+  right:1rem;
+  bottom:-.28rem;
+  max-width:60%;
+  color:var(--era-accent);
+  opacity:.07;
+  font-size:clamp(2rem,7vw,5rem);
+  font-weight:950;
+  letter-spacing:-.05em;
+  line-height:.9;
+  text-transform:uppercase;
+  pointer-events:none;
+}
+#game-panel[data-era-state] .resource-meter i{
+  background:linear-gradient(90deg,var(--era-accent),var(--gold));
+}
+#game-panel[data-era-state] .action-card.available{
+  border-color:color-mix(in srgb,var(--era-accent) 22%,var(--line));
+}
+#game-panel[data-era-state] .action-card.available:hover{
+  border-color:var(--era-accent);
+  box-shadow:0 12px 28px rgba(0,0,0,.22),0 0 24px var(--era-accent-soft);
+}
+#game-panel[data-era-state] .action-state,
+#game-panel[data-era-state] .era-roadmap>div.current strong{
+  color:var(--era-accent)!important;
+}
+#game-panel[data-era-state] .era-roadmap>div.current{
+  border-color:color-mix(in srgb,var(--era-accent) 56%,transparent);
+  box-shadow:0 0 26px var(--era-accent-soft);
+}
+#game-panel[data-era-state] .era-roadmap>div.current span{
+  background:var(--era-accent);
+}
+#game-panel[data-era-state] .event-panel{
+  border-color:color-mix(in srgb,var(--era-accent) 58%,var(--line));
+}
+#game-panel[data-era-state] .event-panel::before{
+  background:linear-gradient(var(--era-accent),var(--gold));
+}
+#game-panel[data-era-state="underground"] .era-card::after{content:"UNDERGROUND"}
+#game-panel[data-era-state="medical"] .era-card::after{content:"MEDICAL"}
+#game-panel[data-era-state="legal"] .era-card::after{content:"LEGAL"}
+@media(max-width:650px){
+  #game-panel[data-era-state] .era-card::after{right:.7rem;font-size:clamp(2rem,16vw,3.6rem)}
+}
+@media(prefers-reduced-motion:reduce){
+  #game-panel[data-era-state] .era-card,
+  #game-panel[data-era-state] .resource-panel,
+  #game-panel[data-era-state] .action-panel{transition:none!important}
+}
+@media(forced-colors:active){
+  #game-panel[data-era-state] .era-card,
+  #game-panel[data-era-state] .resource-panel,
+  #game-panel[data-era-state] .action-panel,
+  #game-panel[data-era-state] .event-panel{background:Canvas!important;border:1px solid CanvasText!important}
+  #game-panel[data-era-state] .era-card::after{display:none!important}
+}
