@@ -35,3 +35,89 @@ body{min-width:0;overflow-x:visible}
     outline-offset:2px;
   }
 }
+
+
+/* Bud or Bluff mobile player rail v1.
+   Presentation-only mirror of the public scoreboard; room/scoring state remains authoritative. */
+.mobile-player-rail{
+  display:none;
+}
+@media(max-width:720px){
+  .mobile-player-rail{
+    position:relative;
+    z-index:3;
+    display:flex;
+    gap:7px;
+    overflow-x:auto;
+    margin:10px -2px 0;
+    padding:2px 2px 8px;
+    scrollbar-width:none;
+    scroll-snap-type:x proximity;
+    -webkit-overflow-scrolling:touch;
+  }
+  .mobile-player-rail::-webkit-scrollbar{display:none}
+  .mobile-player-chip{
+    flex:0 0 auto;
+    min-width:88px;
+    max-width:126px;
+    min-height:48px;
+    display:grid;
+    grid-template-columns:28px minmax(0,1fr);
+    gap:7px;
+    align-items:center;
+    padding:7px 8px;
+    border:1px solid var(--line);
+    border-radius:13px;
+    background:rgba(255,255,255,.035);
+    scroll-snap-align:start;
+  }
+  .mobile-player-chip.me{
+    border-color:rgba(134,239,118,.32);
+    background:rgba(134,239,118,.07);
+    box-shadow:0 0 20px rgba(134,239,118,.06);
+  }
+  .mobile-player-avatar{
+    width:28px;
+    height:28px;
+    display:grid;
+    place-items:center;
+    border-radius:50%;
+    background:rgba(134,239,118,.13);
+    color:var(--green);
+    font-size:.64rem;
+    letter-spacing:.01em;
+  }
+  .mobile-player-chip>span{
+    min-width:0;
+    display:grid;
+    line-height:1.08;
+  }
+  .mobile-player-chip i{
+    overflow:hidden;
+    color:#d9e2da;
+    font-size:.67rem;
+    font-style:normal;
+    font-weight:800;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .mobile-player-chip strong{
+    color:#fff;
+    font-size:.92rem;
+    font-weight:950;
+  }
+  .score-panel{
+    display:none;
+  }
+}
+@media(forced-colors:active){
+  .mobile-player-chip{
+    border:2px solid CanvasText;
+    background:Canvas;
+    color:CanvasText;
+  }
+  .mobile-player-chip.me{
+    outline:2px solid Highlight;
+    outline-offset:1px;
+  }
+}
