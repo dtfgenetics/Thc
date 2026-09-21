@@ -8,6 +8,13 @@ on:
       - '.github/workflows/publish-seed-man-production.yml'
       - 'site/deployment/release-resources.json'
       - 'scripts/publish-seed-man-route-via-wordpress.mjs'
+      - 'scripts/apply-sitewide-header.mjs'
+      - 'scripts/lib/sitewide-header-template-v6.mjs'
+      - 'scripts/lib/sitewide-footer-template-v6.mjs'
+      - 'scripts/lib/sitewide-content-density-v1.mjs'
+      - 'scripts/lib/sitewide-visual-repair-v2.mjs'
+      - 'site/wordpress/assets/responsive-layout-v1.css'
+      - 'site/wordpress/assets/sitewide-ux-polish-v1.css'
       - 'scripts/verify-seed-man-production-v20.mjs'
       - 'scripts/validate-seed-man-production-bundle.mjs'
       - 'site/public-route-patch/games/seed-man-platformer/**'
@@ -103,9 +110,31 @@ jobs:
             test ! -e "$root/$retired" || { echo "retired artifact still present: $retired" >&2; exit 1; }
           done
 
+      - name: Stage Seed Man with canonical DTFSeeds shell
+        id: shell
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_root='site/public-route-patch/games/seed-man-platformer'
+          release_root="$RUNNER_TEMP/seed-man-release"
+          rm -rf "$release_root"
+          mkdir -p "$(dirname "$release_root")"
+          cp -a "$source_root" "$release_root"
+          node scripts/apply-sitewide-header.mjs "$release_root"
+          node scripts/apply-sitewide-header.mjs "$release_root" --check
+          grep -Fq 'data-dtf-shell="header-v6"' "$release_root/index.html"
+          grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' "$release_root/index.html"
+          grep -Fq 'data-dtf-shell="footer-v6"' "$release_root/index.html"
+          grep -Fq 'data-dtf-sitewide-footer="canonical-eight-v1"' "$release_root/index.html"
+          grep -Fq 'id="dtf-responsive-layout-v1"' "$release_root/index.html"
+          grep -Fq 'id="dtf-sitewide-ux-polish-v1"' "$release_root/index.html"
+          echo "root=$release_root" >> "$GITHUB_OUTPUT"
+
       - name: Publish canonical Seed Man route through dedicated WordPress publisher
         id: deploy
         shell: bash
+        env:
+          SEED_MAN_RELEASE_ROOT: ${{ steps.shell.outputs.root }}
         run: |
           set -euo pipefail
           node scripts/publish-seed-man-route-via-wordpress.mjs | tee "$RUNNER_TEMP/seed-man-publish.json"
@@ -171,6 +200,12 @@ jobs:
           if(art.policy?.characterReference!=='green-armored-plant-hero'||art.policy?.worldRenderer!=='seed-man-three-world-v2')throw new Error('live visual ownership mismatch');
           NODE
           grep -Fq '20-Level Campaign' "$tmp/index.html"
+          grep -Fq 'data-dtf-shell="header-v6"' "$tmp/index.html"
+          grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' "$tmp/index.html"
+          grep -Fq 'data-dtf-shell="footer-v6"' "$tmp/index.html"
+          grep -Fq 'data-dtf-sitewide-footer="canonical-eight-v1"' "$tmp/index.html"
+          grep -Fq 'id="dtf-responsive-layout-v1"' "$tmp/index.html"
+          grep -Fq 'id="dtf-sitewide-ux-polish-v1"' "$tmp/index.html"
           grep -Fq './three-world-v1.js?v=' "$tmp/index.html"
           grep -Fq './world-mechanics-browser-v1.js?v=' "$tmp/index.html"
           ! grep -Fq 'id="seed-man-level"' "$tmp/index.html"
@@ -212,6 +247,7 @@ jobs:
             echo '- Combat: Plant / Fire / Electric / Ice with 30-second absorbed forms'
             echo '- Boss progression: exits remain locked until boss defeat; Blight King finale state is synchronized'
             echo '- Retired Sprout Run bootstrap and corrupt master/cover assets: physically absent'
-            echo '- Verification: deterministic Node + build + explicit live mechanics/runtime/motion-rig HTTP checks'
+            echo '- Shared shell: staged with canonical Header/Footer V6 + responsive/UX layers before dedicated publication'
+            echo '- Verification: deterministic Node + build + explicit live shell/mechanics/runtime/motion-rig HTTP checks'
             echo '- Playwright: not used'
           } >> "$GITHUB_STEP_SUMMARY"
