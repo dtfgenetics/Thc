@@ -39,7 +39,7 @@ assert.ok(embeddedMatch, 'embedded High Life event data must be present');
 assert.deepEqual(JSON.parse(embeddedMatch[1]), canonicalEvents, 'public embedded High Life events must exactly match canonical events.json');
 
 assert.equal(publicEngine, canonicalEngine, 'public engine.mjs must exactly match the canonical High Life engine');
-assert.match(bootstrap, /import\('\.\/runtime\.mjs\?v=20260920-era-journey-v3'\)/, 'app.js must delegate to the versioned runtime.mjs');
+assert.match(bootstrap, /import\('\.\/runtime\.mjs'\)/, 'app.js must delegate to runtime.mjs');
 assert.ok(bootstrap.length < 1500, 'app.js must remain a thin compatibility bootstrap, not another rules engine');
 assert.match(runtime, /from '\.\/engine\.mjs';/, 'browser runtime must import the canonical public engine module');
 assert.match(runtime, /const SAVE_VERSION = 3/);
