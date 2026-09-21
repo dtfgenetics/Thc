@@ -5,6 +5,8 @@ import { finishIndex } from './boardPath';
 import { starterActionCards } from './actionCards';
 import { createNamedLocalGame } from '../multiplayer/roomGameFactory';
 import { applyActionCard } from '../systems/cardSystem';
+import { resolvePendingPlayerChoice } from '../systems/effectResolver';
+import { rollCurrentTurn } from '../systems/gameEngine';
 import type { ActionCard } from '../types/gameTypes';
 
 const supportedEffectTypes = new Set<ActionCard['effect']['type']>([
@@ -67,6 +69,54 @@ const expectedApprovedFiles = [
   'card-039-second-hit.svg'
 ];
 
+const expectedApprovedText = [
+  'Move forward 3 spaces.',
+  'Lose your next turn.',
+  'Move forward 3 spaces and draw again.',
+  'Move back to the last green space.',
+  'Move forward 2 spaces.',
+  'Move back 5 spaces.',
+  'Move to the next purple space.',
+  'Move forward 5 spaces.',
+  'Move forward 2 spaces.',
+  'Move forward to the next yellow space.',
+  'Move forward 5 spaces.',
+  'Move forward to the next green space.',
+  'Move back 2 spaces.',
+  'Move back 4 spaces.',
+  'Move back to the last yellow space.',
+  'Stay here until your next turn.',
+  'Switch places with the player behind you.',
+  'Everyone moves forward 1 space.',
+  'Everyone skips their next move except you.',
+  'Move forward 2 spaces, then choose one player to move forward 1.',
+  'Every player ahead of you moves back 1 space.',
+  'The player in first place moves back 3 spaces.',
+  'Turn order reverses for one round.',
+  'Choose one player. You both move forward 2 spaces.',
+  'Move forward 4 spaces.',
+  'Move back 3 spaces.',
+  'Keep this card. Ignore the next card that makes you move backward.',
+  'Roll again and move that many extra spaces.',
+  'Move forward 6 spaces.',
+  'Move forward 3 spaces, then stop.',
+  'Move back 3 spaces and draw again.',
+  'Move forward 1 space.',
+  'Lose your next turn.',
+  'Move forward 4 spaces.',
+  'Move back 2 spaces.',
+  'Move forward 3 spaces.',
+  'Move back 5 spaces.',
+  'Move forward 4 spaces.',
+  'Draw another Hit Card.'
+] as const;
+
+function cardById(id: string): ActionCard {
+  const card = starterActionCards.find((candidate) => candidate.id === id);
+  if (!card) throw new Error(`Missing approved HIT card ${id}`);
+  return card;
+}
+
 const temporarySvgMasterIds = [
   'card-032',
   'card-033',
@@ -94,6 +144,65 @@ describe('High Land HIT card deck', () => {
     expect(starterActionCards.map((card) => card.imageSrc)).toEqual(
       expectedApprovedFiles.map((file) => `assets/images/cards/hit/master/${file}`)
     );
+  });
+
+  it('locks the approved visible instructions in card order', () => {
+    expect(starterActionCards.map((card) => card.text)).toEqual(expectedApprovedText);
+  });
+
+  it('resolves approved swap, group, leader, choice, skip, roll-again, and draw-again cards as written', () => {
+    const base = createNamedLocalGame(4, 'Tester');
+    const positioned = {
+      ...base,
+      players: base.players.map((player, index) => ({
+        ...player,
+        positionIndex: [20, 15, 25, 5][index] ?? 0
+      }))
+    };
+
+    const swapped = applyActionCard(positioned, cardById('card-017'), 0, () => 0);
+    expect(swapped.players.map((player) => player.positionIndex)).toEqual([15, 20, 25, 5]);
+
+    const everyoneMoved = applyActionCard(positioned, cardById('card-018'), 0, () => 0);
+    expect(everyoneMoved.players.map((player) => player.positionIndex)).toEqual([21, 16, 26, 6]);
+
+    const aheadMovedBack = applyActionCard(positioned, cardById('card-021'), 0, () => 0);
+    expect(aheadMovedBack.players.map((player) => player.positionIndex)).toEqual([20, 15, 24, 5]);
+
+    const leaderMovedBack = applyActionCard(positioned, cardById('card-022'), 0, () => 0);
+    expect(leaderMovedBack.players.map((player) => player.positionIndex)).toEqual([20, 15, 22, 5]);
+
+    const choosing = applyActionCard(positioned, cardById('card-024'), 0, () => 0);
+    expect(choosing.phase).toBe('choosing_player');
+    expect(choosing.players[0].positionIndex).toBe(22);
+    expect(choosing.pendingChoice).toEqual({
+      sourcePlayerId: positioned.players[0].id,
+      targetAmount: 2
+    });
+    const choiceResolved = resolvePendingPlayerChoice(choosing, positioned.players[1].id);
+    expect(choiceResolved.phase).toBe('ready');
+    expect(choiceResolved.players[1].positionIndex).toBe(17);
+    expect(choiceResolved.currentPlayerIndex).toBe(1);
+
+    const skipped = applyActionCard(positioned, cardById('card-002'), 0, () => 0);
+    expect(skipped.players[0].skipTurns).toBe(1);
+    const skippedTurn = rollCurrentTurn({ ...skipped, currentPlayerIndex: 0 }, () => 0);
+    expect(skippedTurn.players[0].skipTurns).toBe(0);
+    expect(skippedTurn.currentPlayerIndex).toBe(1);
+
+    const rollAgain = applyActionCard(positioned, cardById('card-028'), 0, () => 0);
+    expect(rollAgain.phase).toBe('ready');
+    expect(rollAgain.currentPlayerIndex).toBe(0);
+
+    const drawAgain = applyActionCard(positioned, cardById('card-039'), 0, () => 0);
+    expect(drawAgain.lastCard?.id).toBe('card-001');
+    expect(drawAgain.players[0].positionIndex).toBe(23);
+    expect(drawAgain.currentPlayerIndex).toBe(1);
+
+    const moveAndDrawAgain = applyActionCard(positioned, cardById('card-003'), 0, () => 0);
+    expect(moveAndDrawAgain.lastCard?.id).toBe('card-001');
+    expect(moveAndDrawAgain.players[0].positionIndex).toBe(26);
+    expect(moveAndDrawAgain.currentPlayerIndex).toBe(1);
   });
 
   it('points every HIT card at a committed master asset', () => {
