@@ -25,10 +25,14 @@ const targets = ['tools/index.html', 'games/index.html', 'projects/index.html'];
 function stripOwnedShell(source) {
   let html = source
     .replace(/<style\b[^>]*id=["']dtf-sitewide-header-v[56]-style["'][^>]*>[\s\S]*?<\/style>\s*/gi, '')
+    .replace(/<style\b[^>]*id=["']dtf-content-density-v1-style["'][^>]*>[\s\S]*?<\/style>\s*/gi, '')
+    .replace(/<style\b[^>]*id=["']dtf-sitewide-visual-repair-v2-style["'][^>]*>[\s\S]*?<\/style>\s*/gi, '')
     .replace(/<style\b[^>]*id=["']dtf-responsive-layout-v1["'][^>]*>[\s\S]*?<\/style>\s*/gi, '')
     .replace(/<style\b[^>]*id=["']dtf-sitewide-ux-polish-v1["'][^>]*>[\s\S]*?<\/style>\s*/gi, '')
     .replace(/<style\b[^>]*id=["']dtf-sitewide-mobile-polish-v1-style["'][^>]*>[\s\S]*?<\/style>\s*/gi, '')
     .replace(/<script\b[^>]*id=["']dtf-sitewide-header-v[56]-script["'][^>]*>[\s\S]*?<\/script>\s*/gi, '')
+    .replace(/<script\b[^>]*id=["']dtf-content-density-v1-script["'][^>]*>[\s\S]*?<\/script>\s*/gi, '')
+    .replace(/<script\b[^>]*id=["']dtf-sitewide-visual-repair-v2-script["'][^>]*>[\s\S]*?<\/script>\s*/gi, '')
     .replace(/<header\b[^>]*data-dtf-sitewide-header=["'][^"']+["'][^>]*>[\s\S]*?<\/header>\s*/gi, '');
 
   const body = html.match(/<body\b[^>]*>/i);
@@ -64,6 +68,10 @@ function normalize(source, rel) {
   const header = html.match(/<header\b[^>]*data-dtf-shell=["']header-v6["'][^>]*>[\s\S]*?<\/header>/i)?.[0] || '';
   if (!header.includes('data-dtf-sitewide-header="canonical-eight-v1"')) throw new Error(`${rel}: canonical V6 marker missing after normalization`);
   if (!html.includes('id="dtf-sitewide-mobile-polish-v1-style"')) throw new Error(`${rel}: mobile polish marker missing after normalization`);
+  for (const marker of ['dtf-content-density-v1-style', 'dtf-content-density-v1-script', 'dtf-sitewide-visual-repair-v2-style', 'dtf-sitewide-visual-repair-v2-script']) {
+    const count = html.split(marker).length - 1;
+    if (count !== 1) throw new Error(`${rel}: expected one ${marker} after normalization, found ${count}`);
+  }
   const nav = header.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>([\s\S]*?)<\/nav>/i)?.[1] || '';
   const labels = [...nav.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)].map((m) => m[1].replace(/<[^>]+>/g, '').trim());
   const expected = ['Home', 'Seeds', 'Learn', 'Courses', 'Diagnostic', 'Games', 'Community', 'Shop'];
