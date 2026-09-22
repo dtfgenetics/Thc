@@ -7,7 +7,7 @@ const runtime=read('runtime-sync-v1.js');
 const index=read('index.html');
 const sw=read('sw.js');
 const helpers=['battle-feedback-v1.js','combat-a11y-v1.js','placement-v1.js','targeting-v1.js','gameplay-v3.js'];
-const CURRENT_CACHE='ptp-shell-v12-burn-buds-v8-safe-area-20260921';
+const CURRENT_CACHE='ptp-shell-v13-burn-buds-v9-premium-social-20260921';
 
 assert.ok(runtime.includes('window.BurnBudsSync=Object.freeze({request,subscribe})'),'Shared Burn Buds sync API missing.');
 assert.equal((runtime.match(/new MutationObserver/g)||[]).length,1,'Shared sync runtime should own exactly one MutationObserver.');
