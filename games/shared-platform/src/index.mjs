@@ -32,4 +32,9 @@ export {
   createGameAudioManager,
 } from './audio.mjs';
 
-export const DTF_GAME_PLATFORM_VERSION = '1.1.0';
+export {
+  DETERMINISTIC_RNG_ALGORITHM,
+  createDeterministicRng,
+} from './random.mjs';
+
+export const DTF_GAME_PLATFORM_VERSION = '1.2.0';

@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sourceDir = path.join(root, 'games/shared-platform/src');
 const publicDir = path.join(root, 'site/public-route-patch/games/shared-platform');
-const files = ['index.mjs', 'settings.mjs', 'replay.mjs', 'telemetry.mjs', 'input.mjs', 'audio.mjs'];
+const files = ['index.mjs', 'settings.mjs', 'replay.mjs', 'telemetry.mjs', 'input.mjs', 'audio.mjs', 'random.mjs'];
 const check = process.argv.includes('--check');
 
 function normalize(text) {
@@ -14,7 +14,7 @@ function normalize(text) {
 
 const manifest = {
   schemaVersion: 1,
-  platformVersion: '1.1.0',
+  platformVersion: '1.2.0',
   source: 'games/shared-platform/src',
   files,
 };
