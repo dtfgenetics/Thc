@@ -15,7 +15,7 @@ const manifest = JSON.parse(read('manifest.webmanifest'));
 const serviceWorker = read('sw.js');
 const game = JSON.parse(fs.readFileSync('games/protect-the-plants/game.json', 'utf8'));
 
-const CURRENT_CACHE = 'ptp-shell-v12-burn-buds-v8-safe-area-20260921';
+const CURRENT_CACHE = 'ptp-shell-v13-burn-buds-v9-premium-social-20260921';
 
 assert.equal(game.title, 'Burn Buds');
 assert.equal(game.board, '15x15');
