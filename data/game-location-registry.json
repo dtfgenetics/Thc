@@ -126,7 +126,9 @@
         "integrationMode": "local-static-php",
         "runtimePath": "site/public-route-patch/games/bud-or-bluff",
         "deploymentStatus": "ready-to-package",
-        "build": "node games/bud-or-bluff/test/engine.test.mjs && node games/bud-or-bluff/scripts/build-private-deck.mjs && node games/bud-or-bluff/test/keyboard-v1.test.mjs && node games/bud-or-bluff/test/visual-state-v3.test.mjs && node games/bud-or-bluff/test/online-lobby.test.mjs && node games/bud-or-bluff/test/online-lobby-v2.test.mjs"
+        "build": "node games/bud-or-bluff/test/engine.test.mjs && node games/bud-or-bluff/scripts/build-private-deck.mjs && node games/bud-or-bluff/test/keyboard-v1.test.mjs && node games/bud-or-bluff/test/visual-state-v3.test.mjs && node games/bud-or-bluff/test/online-lobby.test.mjs && node games/bud-or-bluff/test/online-lobby-v2.test.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [
         {
@@ -136,7 +138,9 @@
             "app/games/bud-or-bluff",
             "lib/games/bud-or-bluff-engine.ts"
           ],
-          "notes": "React migration implementation; current production release remains owned through Thc."
+          "notes": "React migration implementation; current production release remains owned through Thc.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22"
         }
       ],
       "assets": {
@@ -176,7 +180,9 @@
         "integrationMode": "external-build",
         "runtimePath": null,
         "deploymentStatus": "ready-to-package",
-        "build": "npm test && npm run verify && npm run build"
+        "build": "npm test && npm run verify && npm run build",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [],
       "assets": {
@@ -212,7 +218,9 @@
         "integrationMode": "external-pinned-static-build",
         "runtimePath": "site/public-route-patch/games/ganjumanji/source-revision.txt",
         "deploymentStatus": "ready-to-package",
-        "build": "npm test && npm run validate:ui && npm run build && npm run validate:release"
+        "build": "npm test && npm run validate:ui && npm run build && npm run validate:release",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [],
       "assets": {
@@ -246,7 +254,9 @@
         "integrationMode": "local-static",
         "runtimePath": "site/public-route-patch/games/grow-room-bingo",
         "deploymentStatus": "ready-to-package",
-        "build": "node games/grow-room-bingo/scripts/validate-data.mjs && node games/grow-room-bingo/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-bingo/app.js && node --check site/public-route-patch/games/grow-room-bingo/keyboard-nav.js"
+        "build": "node games/grow-room-bingo/scripts/validate-data.mjs && node games/grow-room-bingo/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-bingo/app.js && node --check site/public-route-patch/games/grow-room-bingo/keyboard-nav.js",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [],
       "assets": {
@@ -280,7 +290,9 @@
         "integrationMode": "local-static",
         "runtimePath": "site/public-route-patch/games/grow-room-defense",
         "deploymentStatus": "ready-to-package",
-        "build": "node games/grow-room-defense/scripts/validate-data.mjs && node games/grow-room-defense/test/engine.test.mjs && node games/grow-room-defense/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-defense/app.js && node --check site/public-route-patch/games/grow-room-defense/runtime.mjs && cmp games/grow-room-defense/src/engine.mjs site/public-route-patch/games/grow-room-defense/engine.mjs"
+        "build": "node games/grow-room-defense/scripts/validate-data.mjs && node games/grow-room-defense/test/engine.test.mjs && node games/grow-room-defense/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-defense/app.js && node --check site/public-route-patch/games/grow-room-defense/runtime.mjs && cmp games/grow-room-defense/src/engine.mjs site/public-route-patch/games/grow-room-defense/engine.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [],
       "assets": {
@@ -314,7 +326,9 @@
         "integrationMode": "local-static",
         "runtimePath": "site/public-route-patch/games/grower-conversations",
         "deploymentStatus": "ready-to-package",
-        "build": "node games/grower-conversations/scripts/validate-prompt-bank.mjs && node games/grower-conversations/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grower-conversations/app.js && cmp games/grower-conversations/data/prompt-bank.json site/public-route-patch/games/grower-conversations/data/prompt-bank.json"
+        "build": "node games/grower-conversations/scripts/validate-prompt-bank.mjs && node games/grower-conversations/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grower-conversations/app.js && cmp games/grower-conversations/data/prompt-bank.json site/public-route-patch/games/grower-conversations/data/prompt-bank.json",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [
         {
@@ -323,7 +337,9 @@
           "paths": [
             "app/games/grower-conversations"
           ],
-          "notes": "React migration implementation."
+          "notes": "React migration implementation.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22"
         }
       ],
       "assets": {
@@ -357,7 +373,9 @@
         "integrationMode": "local-static",
         "runtimePath": "site/public-route-patch/games/harvest-hustle",
         "deploymentStatus": "ready-to-package",
-        "build": "node games/harvest-hustle/scripts/validate-data.mjs && node games/harvest-hustle/test/engine.test.mjs && node games/harvest-hustle/test/public-runtime.test.mjs && node --check site/public-route-patch/games/harvest-hustle/app.js && node --check site/public-route-patch/games/harvest-hustle/runtime.mjs && cmp games/harvest-hustle/src/engine.mjs site/public-route-patch/games/harvest-hustle/engine.mjs"
+        "build": "node games/harvest-hustle/scripts/validate-data.mjs && node games/harvest-hustle/test/engine.test.mjs && node games/harvest-hustle/test/public-runtime.test.mjs && node --check site/public-route-patch/games/harvest-hustle/app.js && node --check site/public-route-patch/games/harvest-hustle/runtime.mjs && cmp games/harvest-hustle/src/engine.mjs site/public-route-patch/games/harvest-hustle/engine.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [],
       "assets": {
@@ -394,7 +412,9 @@
         "integrationMode": "local-static",
         "runtimePath": "site/public-route-patch/games/high-iq",
         "deploymentStatus": "ready-to-package",
-        "build": "npm run hiq:validate"
+        "build": "npm run hiq:validate",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [
         {
@@ -403,7 +423,9 @@
           "paths": [
             "app/games/high-iq"
           ],
-          "notes": "React migration implementation."
+          "notes": "React migration implementation.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22"
         }
       ],
       "assets": {
@@ -439,7 +461,9 @@
         "integrationMode": "local-build",
         "runtimePath": "apps/high-land-web",
         "deploymentStatus": "ready-to-package",
-        "build": "npm run test:high-land && npm run build:high-land"
+        "build": "npm run test:high-land && npm run build:high-land",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [],
       "assets": {
@@ -473,7 +497,9 @@
         "integrationMode": "local-static",
         "runtimePath": "site/public-route-patch/games/high-life",
         "deploymentStatus": "ready-to-package",
-        "build": "node games/high-life/test/engine.test.mjs && node games/high-life/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-life/app.js && cmp games/high-life/src/engine.mjs site/public-route-patch/games/high-life/engine.mjs && cmp games/high-life/data/events.json site/public-route-patch/games/high-life/data/events.json"
+        "build": "node games/high-life/test/engine.test.mjs && node games/high-life/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-life/app.js && cmp games/high-life/src/engine.mjs site/public-route-patch/games/high-life/engine.mjs && cmp games/high-life/data/events.json site/public-route-patch/games/high-life/data/events.json",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [],
       "assets": {
@@ -507,7 +533,9 @@
         "integrationMode": "local-static",
         "runtimePath": "site/public-route-patch/games/high-lines",
         "deploymentStatus": "ready-to-package",
-        "build": "node games/high-lines/scripts/validate-data.mjs && node games/high-lines/test/engine.test.mjs && node games/high-lines/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-lines/app.js && node --check site/public-route-patch/games/high-lines/runtime.mjs && cmp games/high-lines/src/engine.mjs site/public-route-patch/games/high-lines/engine.mjs"
+        "build": "node games/high-lines/scripts/validate-data.mjs && node games/high-lines/test/engine.test.mjs && node games/high-lines/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-lines/app.js && node --check site/public-route-patch/games/high-lines/runtime.mjs && cmp games/high-lines/src/engine.mjs site/public-route-patch/games/high-lines/engine.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [],
       "assets": {
@@ -544,7 +572,9 @@
         "integrationMode": "external-full-stack",
         "runtimePath": null,
         "deploymentStatus": "runtime-integration",
-        "build": "pnpm check:rebrand && pnpm --filter client lint && pnpm build:client && pnpm build:server && pnpm test:production-runtime"
+        "build": "pnpm check:rebrand && pnpm --filter client lint && pnpm build:client && pnpm build:server && pnpm test:production-runtime",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [],
       "assets": {
@@ -578,7 +608,9 @@
         "integrationMode": "local-static",
         "runtimePath": "site/public-route-patch/games/lost-in-the-terps",
         "deploymentStatus": "ready-to-package",
-        "build": "node games/lost-in-the-terps/scripts/validate-data.mjs && node games/lost-in-the-terps/test/public-runtime.test.mjs && node --check site/public-route-patch/games/lost-in-the-terps/app.js && node --check site/public-route-patch/games/lost-in-the-terps/keyboard-nav-v1.js"
+        "build": "node games/lost-in-the-terps/scripts/validate-data.mjs && node games/lost-in-the-terps/test/public-runtime.test.mjs && node --check site/public-route-patch/games/lost-in-the-terps/app.js && node --check site/public-route-patch/games/lost-in-the-terps/keyboard-nav-v1.js",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [],
       "assets": {
@@ -612,7 +644,9 @@
         "integrationMode": "local-static",
         "runtimePath": "site/public-route-patch/games/mystery-strain",
         "deploymentStatus": "ready-to-package",
-        "build": "node games/mystery-strain/scripts/validate-data.mjs && node games/mystery-strain/test/engine.test.mjs && node games/mystery-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/mystery-strain/app.js && node --check site/public-route-patch/games/mystery-strain/runtime.mjs && cmp games/mystery-strain/src/engine.mjs site/public-route-patch/games/mystery-strain/engine.mjs"
+        "build": "node games/mystery-strain/scripts/validate-data.mjs && node games/mystery-strain/test/engine.test.mjs && node games/mystery-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/mystery-strain/app.js && node --check site/public-route-patch/games/mystery-strain/runtime.mjs && cmp games/mystery-strain/src/engine.mjs site/public-route-patch/games/mystery-strain/engine.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [],
       "assets": {
@@ -646,7 +680,9 @@
         "integrationMode": "local-static",
         "runtimePath": "site/public-route-patch/games/pheno-draft",
         "deploymentStatus": "ready-to-package",
-        "build": "node games/pheno-draft/scripts/validate-data.mjs && node games/pheno-draft/test/engine.test.mjs && node games/pheno-draft/test/public-runtime.test.mjs && node --check site/public-route-patch/games/pheno-draft/app.js && node --check site/public-route-patch/games/pheno-draft/runtime.mjs && cmp games/pheno-draft/src/engine.mjs site/public-route-patch/games/pheno-draft/engine.mjs"
+        "build": "node games/pheno-draft/scripts/validate-data.mjs && node games/pheno-draft/test/engine.test.mjs && node games/pheno-draft/test/public-runtime.test.mjs && node --check site/public-route-patch/games/pheno-draft/app.js && node --check site/public-route-patch/games/pheno-draft/runtime.mjs && cmp games/pheno-draft/src/engine.mjs site/public-route-patch/games/pheno-draft/engine.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [],
       "assets": {
@@ -683,7 +719,9 @@
         "integrationMode": "external-build",
         "runtimePath": "site/public-route-patch/games/phenoquest",
         "deploymentStatus": "ready-to-package",
-        "build": "canonical repo: npm run check (includes self-contained production build)"
+        "build": "canonical repo: npm run check (includes self-contained production build)",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [
         {
@@ -693,7 +731,9 @@
             "app/games/phenoquest",
             "public/phenoquest"
           ],
-          "notes": "Next route shell + preview runtime; standalone Catching-phenos remains canonical."
+          "notes": "Next route shell + preview runtime; standalone Catching-phenos remains canonical.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22"
         }
       ],
       "assets": {
@@ -731,7 +771,9 @@
         "integrationMode": "local-static-php",
         "runtimePath": "site/public-route-patch/games/protect-the-plants",
         "deploymentStatus": "ready-to-package",
-        "build": "node games/protect-the-plants/test/burn-buds-branding.test.mjs && node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs && node games/protect-the-plants/test/api-copy-contract.test.mjs && node games/protect-the-plants/test/runtime-sync-v1.test.mjs && node games/protect-the-plants/test/v2-extras-sync.test.mjs && node games/protect-the-plants/test/native-targeting-source.test.mjs && node games/protect-the-plants/test/gamefeel-v1.test.mjs && php -l site/public-route-patch/games/protect-the-plants/api.php && php -l site/public-route-patch/games/protect-the-plants/presence.php"
+        "build": "node games/protect-the-plants/test/burn-buds-branding.test.mjs && node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs && node games/protect-the-plants/test/api-copy-contract.test.mjs && node games/protect-the-plants/test/runtime-sync-v1.test.mjs && node games/protect-the-plants/test/v2-extras-sync.test.mjs && node games/protect-the-plants/test/native-targeting-source.test.mjs && node games/protect-the-plants/test/gamefeel-v1.test.mjs && php -l site/public-route-patch/games/protect-the-plants/api.php && php -l site/public-route-patch/games/protect-the-plants/presence.php",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [
         {
@@ -741,7 +783,9 @@
             "app/games/burn-buds",
             "game/burn-buds"
           ],
-          "notes": "Dtf420 route/prototype. Production Burn Buds is Thc games/protect-the-plants + site/public-route-patch/games/protect-the-plants."
+          "notes": "Dtf420 route/prototype. Production Burn Buds is Thc games/protect-the-plants + site/public-route-patch/games/protect-the-plants.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22"
         }
       ],
       "assets": {
@@ -788,7 +832,9 @@
         "integrationMode": "static",
         "runtimePath": "site/public-route-patch/games/root-cause",
         "deploymentStatus": "ready-to-package",
-        "build": "node games/root-cause/scripts/validate-data.mjs && node games/root-cause/test/engine.test.mjs && node games/root-cause/test/public-runtime.test.mjs && node --check site/public-route-patch/games/root-cause/app.js && node --check site/public-route-patch/games/root-cause/runtime.mjs && node --check site/public-route-patch/games/root-cause/engine.mjs && cmp games/root-cause/src/engine.mjs site/public-route-patch/games/root-cause/engine.mjs"
+        "build": "node games/root-cause/scripts/validate-data.mjs && node games/root-cause/test/engine.test.mjs && node games/root-cause/test/public-runtime.test.mjs && node --check site/public-route-patch/games/root-cause/app.js && node --check site/public-route-patch/games/root-cause/runtime.mjs && node --check site/public-route-patch/games/root-cause/engine.mjs && cmp games/root-cause/src/engine.mjs site/public-route-patch/games/root-cause/engine.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [],
       "assets": null,
@@ -818,7 +864,9 @@
             "public/seed-ascent",
             "public/seed-ascent.html"
           ],
-          "notes": "Dtf420 route + Canvas2D runtime. Related to Seed Man, but not current production Seed Man v20 owner."
+          "notes": "Dtf420 route + Canvas2D runtime. Related to Seed Man, but not current production Seed Man v20 owner.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22"
         }
       ],
       "assets": null,
@@ -849,7 +897,9 @@
         "integrationMode": "local-static",
         "runtimePath": "site/public-route-patch/games/seed-man-platformer",
         "deploymentStatus": "production-v20",
-        "build": "node games/seed-man-platformer/test/physics.test.mjs && node games/seed-man-platformer/test/progression-systems.test.mjs && node games/seed-man-platformer/test/campaign.test.mjs && node games/seed-man-platformer/test/art-registry.test.mjs && node games/seed-man-platformer/test/public-runtime.test.mjs && node games/seed-man-platformer/test/public-campaign.test.mjs && node games/seed-man-platformer/test/input-guard.test.mjs && node games/seed-man-platformer/test/world-mechanics-runtime.test.mjs && node games/seed-man-platformer/test/public-world-mechanics-browser.test.mjs && node scripts/verify-seed-man-production-v20.mjs && node scripts/validate-seed-man-production-bundle.mjs"
+        "build": "node games/seed-man-platformer/test/physics.test.mjs && node games/seed-man-platformer/test/progression-systems.test.mjs && node games/seed-man-platformer/test/campaign.test.mjs && node games/seed-man-platformer/test/art-registry.test.mjs && node games/seed-man-platformer/test/public-runtime.test.mjs && node games/seed-man-platformer/test/public-campaign.test.mjs && node games/seed-man-platformer/test/input-guard.test.mjs && node games/seed-man-platformer/test/world-mechanics-runtime.test.mjs && node games/seed-man-platformer/test/public-world-mechanics-browser.test.mjs && node scripts/verify-seed-man-production-v20.mjs && node scripts/validate-seed-man-production-bundle.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [],
       "assets": {
@@ -883,7 +933,9 @@
         "integrationMode": "local-static",
         "runtimePath": "site/public-route-patch/games/spin-the-strain",
         "deploymentStatus": "ready-to-package",
-        "build": "node games/spin-the-strain/scripts/validate-data.mjs && node games/spin-the-strain/test/engine.test.mjs && node games/spin-the-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/spin-the-strain/app.js && node --check site/public-route-patch/games/spin-the-strain/runtime.mjs && cmp games/spin-the-strain/src/engine.mjs site/public-route-patch/games/spin-the-strain/engine.mjs"
+        "build": "node games/spin-the-strain/scripts/validate-data.mjs && node games/spin-the-strain/test/engine.test.mjs && node games/spin-the-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/spin-the-strain/app.js && node --check site/public-route-patch/games/spin-the-strain/runtime.mjs && cmp games/spin-the-strain/src/engine.mjs site/public-route-patch/games/spin-the-strain/engine.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [],
       "assets": {
@@ -920,7 +972,9 @@
             "components/game/StonerDuckRaceGame.tsx",
             "services/stoner-duck-race-server"
           ],
-          "notes": "Next route + Phaser game + React shell + Colyseus server."
+          "notes": "Next route + Phaser game + React shell + Colyseus server.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22"
         }
       ],
       "assets": null,
@@ -947,7 +1001,9 @@
         "integrationMode": "local-static",
         "runtimePath": "site/public-route-patch/games/strain-match",
         "deploymentStatus": "ready-to-package",
-        "build": "node games/strain-match/scripts/validate-data.mjs && node games/strain-match/test/public-runtime.test.mjs && node --check site/public-route-patch/games/strain-match/app.js"
+        "build": "node games/strain-match/scripts/validate-data.mjs && node games/strain-match/test/public-runtime.test.mjs && node --check site/public-route-patch/games/strain-match/app.js",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [],
       "assets": {
@@ -982,7 +1038,9 @@
         "integrationMode": "local-static",
         "runtimePath": "site/public-route-patch/games/strain-showdown",
         "deploymentStatus": "ready-to-package",
-        "build": "node games/strain-showdown/scripts/validate-roster.mjs && node games/strain-showdown/test/engine.test.mjs && node games/strain-showdown/scripts/simulate-balance.mjs --seeds=32 --assert-balanced && node games/strain-showdown/scripts/validate-browser-build.mjs"
+        "build": "node games/strain-showdown/scripts/validate-roster.mjs && node games/strain-showdown/test/engine.test.mjs && node games/strain-showdown/scripts/simulate-balance.mjs --seeds=32 --assert-balanced && node games/strain-showdown/scripts/validate-browser-build.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [
         {
@@ -991,7 +1049,9 @@
           "paths": [
             "app/games/strain-showdown"
           ],
-          "notes": "React migration implementation."
+          "notes": "React migration implementation.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22"
         }
       ],
       "assets": {
@@ -1026,7 +1086,9 @@
         "integrationMode": "verified-snapshot",
         "runtimePath": "site/public-route-patch/games/terpocalypse",
         "deploymentStatus": "ready-to-package",
-        "build": "node games/terpocalypse-integration/validate.mjs && node games/terpocalypse/test/public-runtime.test.mjs && node --check site/public-route-patch/games/terpocalypse/main.js && node --check site/public-route-patch/games/terpocalypse/game-data.js && node --check site/public-route-patch/games/terpocalypse/visibility-pause-v1.js"
+        "build": "node games/terpocalypse-integration/validate.mjs && node games/terpocalypse/test/public-runtime.test.mjs && node --check site/public-route-patch/games/terpocalypse/main.js && node --check site/public-route-patch/games/terpocalypse/game-data.js && node --check site/public-route-patch/games/terpocalypse/visibility-pause-v1.js",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [],
       "assets": {
@@ -1074,7 +1136,9 @@
         "integrationMode": "external-pinned-static-build",
         "runtimePath": "site/public-route-patch/games/thc-rpg/source-revision.txt",
         "deploymentStatus": "release-candidate",
-        "build": "npm test && npm run validate:ui && npm run build && npm run validate:release"
+        "build": "npm test && npm run validate:ui && npm run build && npm run validate:release",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [
         {
@@ -1084,7 +1148,9 @@
             "app/games/thc-rpg",
             "public/thc-rpg"
           ],
-          "notes": "Migration host/build copy; standalone Thc-rpg remains canonical."
+          "notes": "Migration host/build copy; standalone Thc-rpg remains canonical.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22"
         }
       ],
       "assets": {
@@ -1120,7 +1186,9 @@
         "integrationMode": "external-full-stack",
         "runtimePath": null,
         "deploymentStatus": "runtime-integration",
-        "build": "pnpm verify && pnpm test:production-runtime"
+        "build": "pnpm verify && pnpm test:production-runtime",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [],
       "assets": {
@@ -1154,7 +1222,9 @@
         "integrationMode": "local-static",
         "runtimePath": "site/public-route-patch/games/trichome-trials",
         "deploymentStatus": "ready-to-package",
-        "build": "node games/trichome-trials/scripts/validate-data.mjs && node games/trichome-trials/test/engine.test.mjs && node games/trichome-trials/test/public-runtime.test.mjs && node --check site/public-route-patch/games/trichome-trials/app.js && node --check site/public-route-patch/games/trichome-trials/runtime.mjs && cmp games/trichome-trials/src/engine.mjs site/public-route-patch/games/trichome-trials/engine.mjs"
+        "build": "node games/trichome-trials/scripts/validate-data.mjs && node games/trichome-trials/test/engine.test.mjs && node games/trichome-trials/test/public-runtime.test.mjs && node --check site/public-route-patch/games/trichome-trials/app.js && node --check site/public-route-patch/games/trichome-trials/runtime.mjs && cmp games/trichome-trials/src/engine.mjs site/public-route-patch/games/trichome-trials/engine.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [],
       "assets": {
@@ -1192,7 +1262,9 @@
         "integrationMode": "external-build",
         "runtimePath": null,
         "deploymentStatus": "ready-to-package",
-        "build": "npm run validate && npm run check:preview && npm run build:preview"
+        "build": "npm run validate && npm run check:preview && npm run build:preview",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [
         {
@@ -1202,7 +1274,9 @@
             "app/games/weedopolis",
             "public/weedopolis"
           ],
-          "notes": "Next route shell + iframe runtime; production owner remains standalone Weedopolis repo plus Thc integration."
+          "notes": "Next route shell + iframe runtime; production owner remains standalone Weedopolis repo plus Thc integration.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22"
         }
       ],
       "assets": {
@@ -1236,7 +1310,9 @@
         "integrationMode": "external-build",
         "runtimePath": "03_digital-game",
         "deploymentStatus": "ready-to-package",
-        "build": "npm run check"
+        "build": "npm run check",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [
         {
@@ -1245,7 +1321,9 @@
           "paths": [
             "app/games/who-took-it"
           ],
-          "notes": "React migration implementation; standalone canonical repo remains production source."
+          "notes": "React migration implementation; standalone canonical repo remains production source.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22"
         }
       ],
       "assets": {
@@ -1296,5 +1374,20 @@
         "docs/games/GAME_PLATFORM_FOUNDATION.md"
       ]
     }
-  ]
+  ],
+  "verification": {
+    "lastFullLocationAudit": "2026-09-22",
+    "externalCanonicalRepositoriesVerified": [
+      "dtfgenetics/Weedopolis-strain-Edition",
+      "dtfgenetics/Thc-crossword-",
+      "dtfgenetics/Thc-guess-who",
+      "dtfgenetics/thc-u-know-card-game-",
+      "dtfgenetics/Thc-chess-git",
+      "dtfgenetics/Terpocalapse",
+      "dtfgenetics/Catching-phenos",
+      "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple",
+      "dtfgenetics/Thc-rpg"
+    ],
+    "note": "Recorded canonical sourcePaths existed on each repository's default main branch when audited."
+  }
 }
