@@ -28,13 +28,18 @@ export function normalizeActionMap(actionMap = {}) {
 export function createInputActionMap({
   actionMap = {},
   target = globalThis.document,
+  lifecycleTarget = globalThis.window,
+  visibilityTarget = globalThis.document,
   enabled = true,
   preventDefault = true,
   ignoreEditable = true,
+  releaseOnBlur = true,
+  releaseOnHidden = true,
 } = {}) {
   const map = normalizeActionMap(actionMap);
   const listeners = new Map();
   const pressed = new Set();
+  const virtualPressed = new Map();
   let active = Boolean(enabled);
   let attached = false;
 
@@ -57,27 +62,61 @@ export function createInputActionMap({
 
   function keydown(event) {
     if (!active || isEditableTarget(event.target)) return;
-    const actions = actionsForCode(event.code || event.key);
+    const code = event.code || event.key;
+    const actions = actionsForCode(code);
     if (!actions.length) return;
     if (preventDefault) event.preventDefault();
-    const repeat = pressed.has(event.code) || event.repeat;
-    pressed.add(event.code);
+    const repeat = pressed.has(code) || event.repeat;
+    pressed.add(code);
     for (const action of actions) emit(action, { phase: 'press', repeat, source: 'keyboard', originalEvent: event });
   }
 
   function keyup(event) {
-    if (!active || isEditableTarget(event.target)) return;
-    const actions = actionsForCode(event.code || event.key);
+    if (!active) return;
+    const code = event.code || event.key;
+    if (isEditableTarget(event.target) && !pressed.has(code)) return;
+    const actions = actionsForCode(code);
     if (!actions.length) return;
     if (preventDefault) event.preventDefault();
-    pressed.delete(event.code);
+    pressed.delete(code);
     for (const action of actions) emit(action, { phase: 'release', repeat: false, source: 'keyboard', originalEvent: event });
+  }
+
+  function releaseAll(reason = 'reset') {
+    if (!pressed.size && !virtualPressed.size) return 0;
+
+    const releases = new Map();
+    for (const code of pressed) {
+      for (const action of actionsForCode(code)) {
+        if (!releases.has(action)) releases.set(action, 'keyboard');
+      }
+    }
+    for (const [action, source] of virtualPressed) {
+      if (!releases.has(action)) releases.set(action, source);
+    }
+
+    pressed.clear();
+    virtualPressed.clear();
+    for (const [action, source] of releases) {
+      emit(action, { phase: 'release', repeat: false, source, reason, originalEvent: null });
+    }
+    return releases.size;
+  }
+
+  function onBlur() {
+    if (releaseOnBlur) releaseAll('blur');
+  }
+
+  function onVisibilityChange() {
+    if (releaseOnHidden && visibilityTarget?.hidden) releaseAll('hidden');
   }
 
   function attach() {
     if (attached || !target?.addEventListener) return false;
     target.addEventListener('keydown', keydown);
     target.addEventListener('keyup', keyup);
+    if (releaseOnBlur) lifecycleTarget?.addEventListener?.('blur', onBlur);
+    if (releaseOnHidden) visibilityTarget?.addEventListener?.('visibilitychange', onVisibilityChange);
     attached = true;
     return true;
   }
@@ -86,7 +125,9 @@ export function createInputActionMap({
     if (!attached || !target?.removeEventListener) return false;
     target.removeEventListener('keydown', keydown);
     target.removeEventListener('keyup', keyup);
-    pressed.clear();
+    if (releaseOnBlur) lifecycleTarget?.removeEventListener?.('blur', onBlur);
+    if (releaseOnHidden) visibilityTarget?.removeEventListener?.('visibilitychange', onVisibilityChange);
+    releaseAll('detach');
     attached = false;
     return true;
   }
@@ -98,11 +139,24 @@ export function createInputActionMap({
     return () => listeners.get(action)?.delete(listener);
   }
 
-  function trigger(action, payload = {}) {
+  function dispatchVirtual(action, phase, payload = {}) {
     if (!active) return false;
     if (!Object.prototype.hasOwnProperty.call(map, action)) throw new Error(`Unknown input action: ${action}`);
-    emit(action, { phase: 'press', repeat: false, source: payload.source || 'virtual', ...payload });
+    const source = payload.source || 'virtual';
+    if (phase === 'press') virtualPressed.set(action, source);
+    else virtualPressed.delete(action);
+    emit(action, { phase, repeat: false, source, ...payload });
     return true;
+  }
+
+  function trigger(action, payload = {}) {
+    return dispatchVirtual(action, payload.phase === 'release' ? 'release' : 'press', payload);
+  }
+
+  function setEnabled(value) {
+    const next = Boolean(value);
+    if (active && !next) releaseAll('disabled');
+    active = next;
   }
 
   return {
@@ -111,10 +165,17 @@ export function createInputActionMap({
     detach,
     subscribe,
     trigger,
-    setEnabled(value) { active = Boolean(value); if (!active) pressed.clear(); },
+    press: (action, payload = {}) => dispatchVirtual(action, 'press', payload),
+    release: (action, payload = {}) => dispatchVirtual(action, 'release', payload),
+    releaseAll,
+    setEnabled,
     isEnabled: () => active,
     isAttached: () => attached,
     pressedCodes: () => [...pressed],
+    pressedActions: () => [...new Set([
+      ...[...pressed].flatMap(actionsForCode),
+      ...virtualPressed.keys(),
+    ])],
   };
 }
 
