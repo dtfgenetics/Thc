@@ -34,7 +34,7 @@
     "games:platform:test": "node games/shared-platform/test/runtime.test.mjs",
     "games:platform:sync": "node scripts/sync-game-shared-platform.mjs",
     "games:platform:sync-check": "node scripts/sync-game-shared-platform.mjs --check",
-    "games:preflight": "npm run games:scaffold-check && npm run games:status-check && npm run games:verify && npm run games:external-check && npm run games:qa:catalog-check && npm run games:platform:test && npm run games:platform:sync-check && npm run verify:seed-man && npm run verify:navigation && npm run verify:game-scope && npm run verify:release-integrity && node games/test/cross-game-polish.test.mjs",
+    "games:preflight": "npm run games:scaffold-check && npm run games:status-check && npm run games:verify && npm run games:external-check && npm run games:qa:catalog-check && npm run games:locations:check && npm run games:platform:test && npm run games:platform:sync-check && npm run verify:seed-man && npm run verify:navigation && npm run verify:game-scope && npm run verify:release-integrity && node games/test/cross-game-polish.test.mjs",
     "games:reconcile-release": "node scripts/reconcile-local-game-release-registry.mjs",
     "games:release-check": "node scripts/reconcile-local-game-release-registry.mjs --check && npm run games:preflight",
     "hiq:questions": "node games/high-iq/scripts/question-bank.mjs",
@@ -54,6 +54,7 @@
     "test:live:growlens": "node scripts/growlens-live-acceptance.mjs",
     "recover:growlens:acceptance": "node scripts/growlens-live-acceptance-recover.mjs",
     "validate:plant-atlas:v4": "node --check apps/growlens-web/public/atlas/atlas-3d-v4.js && node --check apps/growlens-web/public/atlas/atlas-3d-bootstrap.js && node scripts/validate-plant-atlas-v4.mjs",
-    "verify:growlens": "npm run test:growlens && npm run test:growlens:live-client && npm run build:growlens && npm run validate:plant-atlas:v4"
+    "verify:growlens": "npm run test:growlens && npm run test:growlens:live-client && npm run build:growlens && npm run validate:plant-atlas:v4",
+    "games:locations:check": "node scripts/validate-game-location-registry.mjs"
   }
 }
