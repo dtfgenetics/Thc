@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updated": "2026-09-22",
+  "updated": "2026-09-05",
   "site": "https://dtfseeds.com",
   "rule": "Every public game route must map to exactly one canonical code owner before integration or deployment work begins.",
   "games": [
@@ -505,24 +505,6 @@
         "repository": "dtfgenetics/Thc",
         "path": "site/public-route-patch/games/thc-rpg/source-revision.txt",
         "mode": "external-pinned-static-build"
-      }
-    },
-    {
-      "id": "root-cause",
-      "title": "Root Cause",
-      "route": "/games/root-cause/",
-      "canonical": {
-        "projectId": "root-cause",
-        "repository": "dtfgenetics/Thc",
-        "sourcePaths": [
-          "games/root-cause"
-        ],
-        "sourceOfTruth": "games/root-cause/README.md"
-      },
-      "integration": {
-        "repository": "dtfgenetics/Thc",
-        "path": "site/public-route-patch/games/root-cause",
-        "mode": "local-static"
       }
     }
   ]
