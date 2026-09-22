@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - site/wordpress/education/learning-hub-course1.json
+      - site/wordpress/education/academy-deployment-target.json
+      - scripts/resolve-academy-deployment-target.mjs
       - site/wordpress/education/learning-hub-course1-ui-v3.json
       - site/wordpress/education/course-catalog-v4.json
       - site/wordpress/education/tech1-courses-public-v1.json
@@ -24,6 +26,8 @@ on:
       - main
     paths:
       - site/wordpress/education/learning-hub-course1.json
+      - site/wordpress/education/academy-deployment-target.json
+      - scripts/resolve-academy-deployment-target.mjs
       - site/wordpress/education/learning-hub-course1-ui-v3.json
       - site/wordpress/education/course-catalog-v4.json
       - site/wordpress/education/tech1-courses-public-v1.json
@@ -56,9 +60,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+      - name: Resolve exact THC learning source SHA
+        run: node scripts/resolve-academy-deployment-target.mjs --github-env
       - name: Build canonical Course 1 lesson visual map
         shell: bash
         run: |
+          node --check scripts/resolve-academy-deployment-target.mjs
           node --check scripts/sync-wordpress-learning-hub-course1-visuals.mjs
           node scripts/sync-wordpress-learning-hub-course1-visuals.mjs --output "$RUNNER_TEMP/course1-ui-canonical.json"
           echo "LEARNING_HUB_COURSE1_UI_PATH=$RUNNER_TEMP/course1-ui-canonical.json" >> "$GITHUB_ENV"
@@ -98,6 +105,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+      - name: Resolve exact THC learning source SHA
+        run: node scripts/resolve-academy-deployment-target.mjs --github-env
       - name: Build canonical Course 1 lesson visual map
         shell: bash
         run: |
