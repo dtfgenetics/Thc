@@ -133,10 +133,10 @@
           "repository": "dtfgenetics/Dtf420",
           "role": "migration-runtime",
           "paths": [
-            "app/games/bud-or-bluff/BudOrBluffGame.tsx",
+            "app/games/bud-or-bluff",
             "lib/games/bud-or-bluff-engine.ts"
           ],
-          "notes": "React migration copy; current production release remains owned through Thc."
+          "notes": "React migration implementation; current production release remains owned through Thc."
         }
       ],
       "assets": {
@@ -321,9 +321,9 @@
           "repository": "dtfgenetics/Dtf420",
           "role": "migration-runtime",
           "paths": [
-            "app/games/grower-conversations/GrowerConversationsGame.tsx"
+            "app/games/grower-conversations"
           ],
-          "notes": "React migration copy."
+          "notes": "React migration implementation."
         }
       ],
       "assets": {
@@ -401,9 +401,9 @@
           "repository": "dtfgenetics/Dtf420",
           "role": "migration-runtime",
           "paths": [
-            "app/games/high-iq/HighIqGame.tsx"
+            "app/games/high-iq"
           ],
-          "notes": "React migration copy."
+          "notes": "React migration implementation."
         }
       ],
       "assets": {
@@ -690,9 +690,10 @@
           "repository": "dtfgenetics/Dtf420",
           "role": "migration-preview",
           "paths": [
+            "app/games/phenoquest",
             "public/phenoquest"
           ],
-          "notes": "Preview copy; standalone Catching-phenos remains canonical."
+          "notes": "Next route shell + preview runtime; standalone Catching-phenos remains canonical."
         }
       ],
       "assets": {
@@ -737,9 +738,10 @@
           "repository": "dtfgenetics/Dtf420",
           "role": "prototype-do-not-confuse-with-production",
           "paths": [
+            "app/games/burn-buds",
             "game/burn-buds"
           ],
-          "notes": "Phaser prototype. Production Burn Buds is Thc games/protect-the-plants + site/public-route-patch/games/protect-the-plants."
+          "notes": "Dtf420 route/prototype. Production Burn Buds is Thc games/protect-the-plants + site/public-route-patch/games/protect-the-plants."
         }
       ],
       "assets": {
@@ -755,6 +757,16 @@
       "notes": [
         "Public product and canonical implementation are Burn Buds under protect-the-plants. The older cannabis-fleet-battle registry ID is a legacy scaffold identity and must not be used as the production source path.",
         "Burn Buds is the public identity of the tested two-player hidden-grid strategy game; /games/protect-the-plants/ remains the compatibility route for active rooms and invite links. Dedicated CI exercises authenticated opponent presence. The central public-suite gate now also protects branding, gameplay-v4, API copy contracts, runtime sync, targeting source, gamefeel, service-worker assets, PHP syntax, mobile board behavior, and compatibility identity. Exact post-deploy live-route verification remains required."
+      ],
+      "legacyLocations": [
+        {
+          "repository": "dtfgenetics/Thc",
+          "role": "merged-archive-history",
+          "paths": [
+            "games/cannabis-fleet-battle"
+          ],
+          "notes": "Do not develop as production Burn Buds."
+        }
       ]
     },
     {
@@ -802,10 +814,11 @@
           "repository": "dtfgenetics/Dtf420",
           "role": "active-migration-runtime",
           "paths": [
+            "app/games/seed-ascent",
             "public/seed-ascent",
             "public/seed-ascent.html"
           ],
-          "notes": "Standalone Dtf420 Canvas2D runtime. Related to Seed Man, but not the current production Seed Man v20 owner."
+          "notes": "Dtf420 route + Canvas2D runtime. Related to Seed Man, but not current production Seed Man v20 owner."
         }
       ],
       "assets": null,
@@ -902,11 +915,12 @@
           "repository": "dtfgenetics/Dtf420",
           "role": "active-development",
           "paths": [
+            "app/games/stoner-duck-race",
             "game/stoner-duck-race",
             "components/game/StonerDuckRaceGame.tsx",
             "services/stoner-duck-race-server"
           ],
-          "notes": "Deterministic Phaser + Colyseus development game. Not yet mapped as a production owner in Thc."
+          "notes": "Next route + Phaser game + React shell + Colyseus server."
         }
       ],
       "assets": null,
@@ -975,9 +989,9 @@
           "repository": "dtfgenetics/Dtf420",
           "role": "migration-runtime",
           "paths": [
-            "app/games/strain-showdown/StrainShowdownGame.tsx"
+            "app/games/strain-showdown"
           ],
-          "notes": "React migration copy."
+          "notes": "React migration implementation."
         }
       ],
       "assets": {
@@ -1026,6 +1040,16 @@
       "notes": [
         "prototypes/web-fps is the stable playable source currently packaged by DTFSeeds. prototypes/web-fps-v2 remains experimental until it reaches feature parity.",
         "Self-hosted Level 01 action game with desktop/touch controls. Browser zoom is enabled, top/touch controls retain 44px minimum targets, forced-colors and reduced-motion states are protected, and visibility pause clears held keyboard input. Dedicated CI now uses current GitHub Actions/Ubuntu 24.04 and the central public-suite gate runs integration plus public-runtime verification. Exact post-deploy live-route verification remains required."
+      ],
+      "supportLocations": [
+        {
+          "repository": "dtfgenetics/Thc",
+          "role": "verified-snapshot-integration",
+          "paths": [
+            "games/terpocalypse-integration",
+            "site/public-route-patch/games/terpocalypse"
+          ]
+        }
       ]
     },
     {
@@ -1178,7 +1202,7 @@
             "app/games/weedopolis",
             "public/weedopolis"
           ],
-          "notes": "Next/iframe migration copy; production owner remains standalone Weedopolis repo plus Thc release integration."
+          "notes": "Next route shell + iframe runtime; production owner remains standalone Weedopolis repo plus Thc integration."
         }
       ],
       "assets": {
@@ -1219,9 +1243,9 @@
           "repository": "dtfgenetics/Dtf420",
           "role": "migration-runtime",
           "paths": [
-            "app/games/who-took-it/WhoTookItGame.tsx"
+            "app/games/who-took-it"
           ],
-          "notes": "React migration copy; standalone canonical repo remains production source."
+          "notes": "React migration implementation; standalone canonical repo remains production source."
         }
       ],
       "assets": {
@@ -1234,6 +1258,42 @@
       },
       "notes": [
         "Canonical standalone React/Vite build from dtfgenetics/Thc-guess-who/03_digital-game. Production visual art is approved: 25 suspect portraits, 5 canonical missing-item assets, 20 UI/HUD assets, and one case-room environment. The full npm run check gate includes deterministic data/art registry validation, UI and environment validation, production-asset auditing, smoke and balance checks, dependency audit, production build, and mystery-privacy verification. No Playwright is used."
+      ]
+    }
+  ],
+  "sharedInfrastructure": [
+    {
+      "id": "thc-shared-game-platform",
+      "repository": "dtfgenetics/Thc",
+      "role": "production-shared-browser-game-primitives",
+      "paths": [
+        "games/shared-platform/src",
+        "site/public-route-patch/games/shared-platform"
+      ],
+      "relatedPaths": [
+        "scripts/sync-game-shared-platform.mjs",
+        "docs/GAME_SHARED_PLATFORM.md"
+      ]
+    },
+    {
+      "id": "thc-portfolio-qa",
+      "repository": "dtfgenetics/Thc",
+      "role": "portfolio-qa-and-cross-game-tests",
+      "paths": [
+        "configuration/game-qa",
+        "scripts/game-portfolio-browser-qa.mjs",
+        "scripts/game-asset-performance-audit.mjs",
+        "games/test"
+      ]
+    },
+    {
+      "id": "dtf420-game-core",
+      "repository": "dtfgenetics/Dtf420",
+      "role": "migration-shared-game-core",
+      "paths": [
+        "game/core",
+        "lib/game-runtime-registry.ts",
+        "docs/games/GAME_PLATFORM_FOUNDATION.md"
       ]
     }
   ]
