@@ -4,7 +4,6 @@ on:
   pull_request:
     paths:
       - apps/growlens-web/public/atlas/**
-      - apps/growlens-web/e2e/plant-atlas-3d.spec.ts
       - site/public-route-patch/atlas/**
       - scripts/validate-plant-atlas-v3.mjs
       - scripts/validate-plant-atlas-v4.mjs
@@ -15,7 +14,6 @@ on:
     branches: [main]
     paths:
       - apps/growlens-web/public/atlas/**
-      - apps/growlens-web/e2e/plant-atlas-3d.spec.ts
       - site/public-route-patch/atlas/**
       - scripts/validate-plant-atlas-v3.mjs
       - scripts/validate-plant-atlas-v4.mjs
