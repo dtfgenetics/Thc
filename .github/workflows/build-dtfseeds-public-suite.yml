@@ -370,9 +370,11 @@ jobs:
           node games/protect-the-plants/test/v2-extras-sync.test.mjs
           node games/protect-the-plants/test/native-targeting-source.test.mjs
           node games/protect-the-plants/test/gamefeel-v1.test.mjs
+          node games/protect-the-plants/test/premium-social-v1.test.mjs
           node --check "$root/app.js"
           node --check "$root/gameplay-v3.js"
           node --check "$root/burn-buds-branding.js"
+          node --check "$root/social-feedback-v1.js"
           node --check "$root/runtime-sync-v1.js"
           node --check "$root/combat-a11y-v1.js"
           node --check "$root/battle-feedback-v1.js"
@@ -382,11 +384,16 @@ jobs:
           node --check "$root/sw.js"
           php -l "$root/api.php"
           php -l "$root/presence.php"
-          for asset in index.html styles.css burn-buds.css gamefeel-v1.css gameplay-v3.css gameplay-v4.css plant.svg; do
+          for asset in index.html styles.css burn-buds.css premium-lobby-v1.css social-feedback-v1.css social-feedback-v1.js gamefeel-v1.css gameplay-v3.css gameplay-v4.css plant.svg; do
             test -s "$root/$asset"
           done
           grep -Fq './gameplay-v4.css' "$root/index.html"
+          grep -Fq './premium-lobby-v1.css' "$root/index.html"
+          grep -Fq './social-feedback-v1.css' "$root/index.html"
+          grep -Fq './social-feedback-v1.js' "$root/index.html"
           grep -Fq 'gameplay-v4.css' "$root/sw.js"
+          grep -Fq 'premium-lobby-v1.css' "$root/sw.js"
+          grep -Fq 'social-feedback-v1.js' "$root/sw.js"
 
       - name: Test and build High Land
         run: |
