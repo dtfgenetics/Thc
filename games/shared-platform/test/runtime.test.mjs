@@ -10,6 +10,8 @@ import {
   validateTelemetryEvent,
   createInputActionMap,
   createGameAudioManager,
+  DETERMINISTIC_RNG_ALGORITHM,
+  createDeterministicRng,
 } from '../src/index.mjs';
 
 function memoryStorage() {
@@ -21,9 +23,10 @@ function memoryStorage() {
   };
 }
 
-function eventTarget() {
+function eventTarget(extra = {}) {
   const handlers = new Map();
   return {
+    ...extra,
     handlers,
     addEventListener(type, listener) { handlers.set(type, listener); },
     removeEventListener(type, listener) { if (handlers.get(type) === listener) handlers.delete(type); },
@@ -134,7 +137,14 @@ class FakeAudioContext {
 
 {
   const target = eventTarget();
-  const input = createInputActionMap({ actionMap: { confirm: ['KeyX'] }, target });
+  const lifecycleTarget = eventTarget();
+  const visibilityTarget = eventTarget({ hidden: false });
+  const input = createInputActionMap({
+    actionMap: { confirm: ['KeyX'] },
+    target,
+    lifecycleTarget,
+    visibilityTarget,
+  });
   const events = [];
   input.subscribe('confirm', (event) => events.push(event));
   assert.equal(input.attach(), true);
@@ -145,11 +155,64 @@ class FakeAudioContext {
   assert.equal(events.length, 2);
   assert.equal(events[0].phase, 'press');
   assert.equal(events[1].phase, 'release');
+
+  target.handlers.get('keydown')({ code: 'KeyX', repeat: false, target: {}, preventDefault() {} });
+  assert.deepEqual(input.pressedCodes(), ['KeyX']);
+  lifecycleTarget.handlers.get('blur')();
+  assert.deepEqual(input.pressedCodes(), []);
+  assert.equal(events.at(-1).phase, 'release');
+  assert.equal(events.at(-1).reason, 'blur');
+
+  input.press('confirm', { source: 'touch' });
+  assert.deepEqual(input.pressedActions(), ['confirm']);
+  visibilityTarget.hidden = true;
+  visibilityTarget.handlers.get('visibilitychange')();
+  assert.deepEqual(input.pressedActions(), []);
+  assert.equal(events.at(-1).phase, 'release');
+  assert.equal(events.at(-1).source, 'touch');
+  assert.equal(events.at(-1).reason, 'hidden');
+
   input.trigger('confirm', { source: 'touch' });
   assert.equal(events.at(-1).source, 'touch');
+  input.release('confirm', { source: 'touch' });
+  assert.equal(events.at(-1).phase, 'release');
+
   input.setEnabled(false);
   assert.equal(input.trigger('confirm'), false);
   assert.equal(input.detach(), true);
+  assert.equal(lifecycleTarget.handlers.has('blur'), false);
+  assert.equal(visibilityTarget.handlers.has('visibilitychange'), false);
+}
+
+{
+  const expected = [
+    0.1330479981843382,
+    0.9552457584068179,
+    0.6820800814311951,
+    0.5836122329346836,
+    0.3880935769993812,
+  ];
+  const rng = createDeterministicRng('DTF-420');
+  for (const value of expected) assert.equal(rng.next(), value);
+
+  const snapshot = rng.snapshot();
+  assert.equal(snapshot.algorithm, DETERMINISTIC_RNG_ALGORITHM);
+  const nextValue = rng.next();
+  rng.restore(snapshot);
+  assert.equal(rng.next(), nextValue, 'restoring RNG state must reproduce the next draw');
+
+  const source = ['a', 'b', 'c', 'd', 'e'];
+  const shuffledA = createDeterministicRng('shuffle').shuffle(source);
+  const shuffledB = createDeterministicRng('shuffle').shuffle(source);
+  assert.deepEqual(shuffledA, shuffledB);
+  assert.deepEqual(source, ['a', 'b', 'c', 'd', 'e'], 'shuffle must not mutate source arrays');
+
+  const parent = createDeterministicRng('parent');
+  const beforeFork = parent.snapshot();
+  const forkA = parent.fork('cosmetic');
+  const forkB = parent.fork('cosmetic');
+  assert.equal(forkA.next(), forkB.next());
+  assert.deepEqual(parent.snapshot(), beforeFork, 'fork must not consume the parent stream');
 }
 
 {
