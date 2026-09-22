@@ -52,8 +52,8 @@ jobs:
           grep -Fq 'data-dtf-layout="home-v3"' scripts/run-route-precedence-repair-current-markers.sh
           grep -Fq 'data-dtf-layout="learn-v3"' scripts/run-route-precedence-repair-current-markers.sh
           grep -Fq 'data-dtf-genetics-library="2026"' scripts/run-route-precedence-repair-current-markers.sh
-          grep -Fq 'data-dtf-layout="community-visual-v1"' scripts/run-route-precedence-repair-current-markers.sh
-          grep -Fq '25 playable browser games' scripts/run-route-precedence-repair-current-markers.sh
+          grep -Fq 'data-dtf-layout="community-visual-v2"' scripts/run-route-precedence-repair-current-markers.sh
+          grep -Fq '23 playable browser games' scripts/run-route-precedence-repair-current-markers.sh
           grep -Fq 'Grow with records. Diagnose with evidence.' scripts/run-route-precedence-repair-current-markers.sh
           grep -Fq "get_param('dtf_repair_token')" scripts/run-route-precedence-repair-current-markers.sh
           grep -Fq 'wordpress-ipv4-fetch-bootstrap.mjs' scripts/run-route-precedence-repair-current-markers.sh
@@ -144,11 +144,11 @@ jobs:
           verify '/seeds/' 'data-dtf-genetics-library="2026"' wordpress
           verify '/seeds/mango-bubbles/' 'data-dtf-genetics-line="mango-bubbles"' wordpress
           verify '/shop/' 'dtf-commerce-archive-style' wordpress
-          verify '/community/' 'data-dtf-layout="community-visual-v1"' wordpress
-          verify '/gallery/' 'data-dtf-layout="gallery-visual-v1"' wordpress
-          verify '/about/' 'data-dtf-layout="about-visual-v1"' wordpress
-          verify '/contact/' 'data-dtf-layout="contact-visual-v1"' wordpress
-          verify '/games/' '25 playable browser games' preserved
+          verify '/community/' 'data-dtf-layout="community-visual-v2"' wordpress
+          verify '/gallery/' 'data-dtf-layout="gallery-visual-v3"' wordpress
+          verify '/about/' 'data-dtf-layout="about-visual-v2"' wordpress
+          verify '/contact/' 'data-dtf-layout="contact-visual-v2"' wordpress
+          verify '/games/' '23 playable browser games' preserved
           verify '/tools/' 'Grow with records. Diagnose with evidence.' preserved
 
       - name: Record route-precedence repair

@@ -93,6 +93,9 @@ jobs:
           grep -Fq '.resource-meter' "$root/high-life-v2.css"
           grep -Fq '.danger-arm' "$root/high-life-v2.css"
           grep -Fq '.hero-art' "$root/high-life-v2.css"
+          grep -Fq 'High Life three-era journey v3' "$root/high-life-v2.css"
+          grep -Fq 'data-era-state="medical"' "$root/high-life-v2.css"
+          grep -Fq 'ui.game.dataset.eraState = era' "$root/runtime.mjs"
           grep -Fq '@media(max-width:650px)' "$root/high-life-v2.css"
 
           test "$(wc -c < "$root/app.js")" -lt 1500

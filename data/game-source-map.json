@@ -179,7 +179,7 @@
       "title": "Burn Buds",
       "route": "/games/protect-the-plants/",
       "canonical": {
-        "projectId": "cannabis-fleet-battle",
+        "projectId": "protect-the-plants",
         "repository": "dtfgenetics/Thc",
         "sourcePaths": [
           "games/protect-the-plants"
@@ -467,6 +467,44 @@
         "repository": "dtfgenetics/Thc",
         "path": "site/public-route-patch/games/high-lines",
         "mode": "local-static"
+      }
+    },
+    {
+      "id": "ganjumanji",
+      "title": "Ganjumanji: The Lost Grower's Temple",
+      "route": "/games/ganjumanji/",
+      "canonical": {
+        "projectId": "ganjumanji",
+        "repository": "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple",
+        "sourcePaths": [
+          "src",
+          "public"
+        ],
+        "sourceOfTruth": "README.md"
+      },
+      "integration": {
+        "repository": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/games/ganjumanji/source-revision.txt",
+        "mode": "external-pinned-static-build"
+      }
+    },
+    {
+      "id": "thc-rpg",
+      "title": "THC RPG — The First Seed",
+      "route": "/games/thc-rpg/",
+      "canonical": {
+        "projectId": "thc-rpg",
+        "repository": "dtfgenetics/Thc-rpg",
+        "sourcePaths": [
+          "src",
+          "public"
+        ],
+        "sourceOfTruth": "README.md"
+      },
+      "integration": {
+        "repository": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/games/thc-rpg/source-revision.txt",
+        "mode": "external-pinned-static-build"
       }
     }
   ]

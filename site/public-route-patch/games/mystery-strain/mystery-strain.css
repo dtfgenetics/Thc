@@ -98,3 +98,19 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;op
 @media(max-width:430px){.candidate-grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.stat strong{font-size:1.14rem}.candidate-card,.question-card,.control{min-height:48px}}
 @media(hover:none){.control:hover:not(:disabled),.question-card:hover:not(:disabled),.candidate-card:not(.eliminated):hover:not(:disabled){transform:none}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}.control:hover:not(:disabled),.question-card:hover:not(:disabled),.candidate-card:not(.eliminated):hover:not(:disabled){transform:none}}
+
+@media(forced-colors:active){
+  .panel,.stat,.question-card,.candidate-card,.control,input,.wild-toggle,.clue{
+    border:1px solid ButtonText;
+  }
+  .question-card:focus-visible,.candidate-card:focus-visible,.control:focus-visible,input:focus-visible,.back:focus-visible{
+    outline:3px solid Highlight;
+    outline-offset:3px;
+  }
+  .candidate-card.eliminated,.candidate-card.wrong{
+    text-decoration:line-through;
+  }
+  .question-card.best-split,.candidate-card.guess-selected{
+    border-color:Highlight;
+  }
+}

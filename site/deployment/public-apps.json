@@ -96,7 +96,7 @@
       "route": "/games/high-iq/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/high-iq/scripts/validate-data.mjs",
+      "build": "npm run hiq:validate",
       "machineData": {
         "version": "2.4",
         "questions": 200,
@@ -105,7 +105,7 @@
         "publicRuntimeValidator": "node games/high-iq/scripts/validate-public-runtime.mjs",
         "manifestDriven": true
       },
-      "notes": "Self-hosted manifest-driven High IQ runtime. Dataset v2.4 currently declares 200 Approved/PASS questions and 50 registered sources. The older Base44 build is legacy fallback only."
+      "notes": "Self-hosted manifest-driven High IQ runtime. Dataset v2.4 declares 200 Approved/PASS questions and 50 registered sources. The canonical aggregate validator now runs in both dedicated High IQ CI and the central public-suite build, covering data validation, runtime-shell synchronization, public-runtime validation, question-bank tooling, game-core tests, and the player-facing runtime smoke test. Exact post-deploy live-route verification remains required."
     },
     {
       "id": "high-life",
@@ -116,7 +116,7 @@
       "route": "/games/high-life/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/high-life/test/engine.test.mjs",
+      "build": "node games/high-life/test/engine.test.mjs && node games/high-life/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-life/app.js && cmp games/high-life/src/engine.mjs site/public-route-patch/games/high-life/engine.mjs && cmp games/high-life/data/events.json site/public-route-patch/games/high-life/data/events.json",
       "machineData": {
         "turns": 18,
         "eras": 3,
@@ -124,7 +124,7 @@
         "deterministic": true,
         "balanceSimulationSeedsPerStrategy": 120
       },
-      "notes": "Self-hosted seeded browser prototype with tested rules engine, event system, era transitions, Legacy scoring, and canonical/public data synchronization. Human balance playtesting remains open."
+      "notes": "Self-hosted seeded 18-turn career strategy game across Underground, Medical, and Legal eras with a tested canonical rules engine, exact-resume autosave, deterministic event stream, era transitions, Legacy scoring, mobile layout safeguards, 44px controls, reduced motion, forced colors, and canonical/public data synchronization. Included in the central public-suite validation gate. Human balance playtesting and exact post-deploy live-route verification remain open."
     },
     {
       "id": "grower-conversations",
@@ -135,13 +135,13 @@
       "route": "/games/grower-conversations/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/grower-conversations/scripts/validate-prompt-bank.mjs",
+      "build": "node games/grower-conversations/scripts/validate-prompt-bank.mjs && node games/grower-conversations/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grower-conversations/app.js && cmp games/grower-conversations/data/prompt-bank.json site/public-route-patch/games/grower-conversations/data/prompt-bank.json",
       "machineData": {
         "cards": 96,
         "categories": 8,
         "depths": 3
       },
-      "notes": "Self-hosted 96-card browser discussion deck with category/depth filters, no-repeat draws, clipboard copy, and canonical/public prompt-bank synchronization."
+      "notes": "Self-hosted 96-card discussion deck with eight topics, three depth bands, local progress persistence, filtered deck progress, keyboard draw/copy/shuffle shortcuts, resilient clipboard fallback, responsive containment, 44px controls, reduced motion, and forced-colors support. Dedicated CI is modernized to current GitHub Actions and the full browser-runtime regression now runs in the central public-suite gate; exact post-deploy live-route verification remains required."
     },
     {
       "id": "seed-man-platformer",
@@ -154,7 +154,7 @@
       "status": "production-v20",
       "build": "node games/seed-man-platformer/test/physics.test.mjs && node games/seed-man-platformer/test/progression-systems.test.mjs && node games/seed-man-platformer/test/campaign.test.mjs && node games/seed-man-platformer/test/art-registry.test.mjs && node games/seed-man-platformer/test/public-runtime.test.mjs && node games/seed-man-platformer/test/public-campaign.test.mjs && node games/seed-man-platformer/test/input-guard.test.mjs && node games/seed-man-platformer/test/world-mechanics-runtime.test.mjs && node games/seed-man-platformer/test/public-world-mechanics-browser.test.mjs && node scripts/verify-seed-man-production-v20.mjs && node scripts/validate-seed-man-production-bundle.mjs",
       "machineData": {
-        "release": "20260915-v20-world-mechanics-v1",
+        "release": "20260918-v20-world-mechanics-v3",
         "campaignId": "seed-man-campaign-20-v1",
         "defaultLevelId": "1-1-sprout-steps",
         "levelCount": 20,
@@ -171,7 +171,7 @@
         ],
         "campaignRuntime": "seed-man-campaign-v20-runtime-v3",
         "campaignUi": "seed-man-campaign-ui-v20",
-        "worldMechanicsRuntime": "seed-man-world-mechanics-browser-v1",
+        "worldMechanicsRuntime": "seed-man-world-mechanics-browser-v3",
         "dynamicPlatformRuntime": "seed-man-three-dynamic-platforms-v1",
         "worldRenderer": "seed-man-three-world-v2",
         "worldRendererBundle": "seed-man-three-public-v3",
@@ -196,7 +196,7 @@
       "route": "/games/protect-the-plants/",
       "runtime": "static-php",
       "status": "ready-to-package",
-      "build": "node --check site/public-route-patch/games/protect-the-plants/app.js && php -l site/public-route-patch/games/protect-the-plants/api.php",
+      "build": "node games/protect-the-plants/test/burn-buds-branding.test.mjs && node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs && node games/protect-the-plants/test/api-copy-contract.test.mjs && node games/protect-the-plants/test/runtime-sync-v1.test.mjs && node games/protect-the-plants/test/v2-extras-sync.test.mjs && node games/protect-the-plants/test/native-targeting-source.test.mjs && node games/protect-the-plants/test/gamefeel-v1.test.mjs && php -l site/public-route-patch/games/protect-the-plants/api.php && php -l site/public-route-patch/games/protect-the-plants/presence.php",
       "machineData": {
         "board": "15x15",
         "players": 2,
@@ -204,7 +204,7 @@
         "storage": "wordpress-transients",
         "networkAuthority": "php-server"
       },
-      "notes": "Burn Buds is the public identity of the tested two-player hidden-grid strategy game. The legacy protect-the-plants route and machine ID remain intentionally stable for active-room, invite-link, persistence, and WordPress compatibility. It includes authenticated room sessions, hidden opponent state, server-authoritative turns, active-game recovery, room chat, mobile board tabs, same-origin PHP API, WordPress transient persistence, leaf formations, and burn feedback."
+      "notes": "Burn Buds is the public identity of the tested two-player hidden-grid strategy game; /games/protect-the-plants/ remains the compatibility route for active rooms and invite links. Dedicated CI exercises authenticated opponent presence. The central public-suite gate now also protects branding, gameplay-v4, API copy contracts, runtime sync, targeting source, gamefeel, service-worker assets, PHP syntax, mobile board behavior, and compatibility identity. Exact post-deploy live-route verification remains required."
     },
     {
       "id": "thc-u-know",
@@ -214,8 +214,18 @@
       "apiTarget": "https://api.dtfseeds.com",
       "runtime": "node-full-stack",
       "status": "runtime-integration",
-      "build": "pnpm -r lint && pnpm -r build && pnpm test",
-      "notes": "Web, multiplayer server, shared package, Discord bot, deployment docs, and end-to-end tests exist. Preserve server-authoritative multiplayer instead of publishing a static-only shell."
+      "build": "pnpm verify && pnpm test:production-runtime",
+      "notes": "Canonical full-stack multiplayer source is dtfgenetics/thc-u-know-card-game-. Persistent Node/Socket.IO remains required; static-only deployment is forbidden. The owner build now ships the canonical V6 six-link DTFSeeds header, CI validates the V6 production shell plus hidden-hand/lobby/runtime contracts, and a scheduled/manual live checker verifies the public game route, game-scoped health endpoint, and Socket.IO handshake. Keep this game nonpublic in data/public-navigation.json until the live checker and manual two-browser multiplayer gate pass.",
+      "machineData": {
+        "players": "2-8",
+        "runtime": "Node + Socket.IO",
+        "socketPath": "/games/thc-u-know/socket.io",
+        "healthPath": "/games/thc-u-know/healthz",
+        "siteShell": "header-v6",
+        "liveCheck": "npm run live:check",
+        "manualGate": "two-browser-multiplayer",
+        "publicPromotion": false
+      }
     },
     {
       "id": "kush-kings",
@@ -226,8 +236,19 @@
       "apiTarget": "https://chess-api.dtfseeds.com",
       "runtime": "node-full-stack-postgres",
       "status": "runtime-integration",
-      "build": "pnpm check:rebrand && pnpm build:client && pnpm build:server",
-      "notes": "3D Next.js client and server-authoritative Express/Socket.io multiplayer are merged and CI verified. PostgreSQL supports either PG* variables or DATABASE_URL. Preferred managed path is two Hostinger Web Apps (chess.dtfseeds.com + chess-api.dtfseeds.com) with managed/external PostgreSQL such as Hostinger-connected Supabase; Docker/VPS/Caddy remains a supported fallback. Do not replace legal-move authority with the legacy PHP shell. Cut over the public route only after two-browser and mobile/WebGL QA."
+      "build": "pnpm check:rebrand && pnpm --filter client lint && pnpm build:client && pnpm build:server && pnpm test:production-runtime",
+      "notes": "Canonical full-stack source is dtfgenetics/Thc-chess-git. Preserve chess.js legal-move authority, Express/Socket.IO rooms, PostgreSQL sessions, spectators, chat, archives, resign/draw/abandon/rematch behavior, and the chess.dtfseeds.com / chess-api.dtfseeds.com targets. The Next.js client, Hostinger fallback, CI and deployment checks now use the canonical V6 six-link DTFSeeds header. A post-deploy live checker verifies frontend identity, API /health, Socket.IO transport, and the DTFSeeds proxy. Keep this game nonpublic in data/public-navigation.json until the live checker plus two-browser/mobile QA pass.",
+      "machineData": {
+        "players": 2,
+        "runtime": "Next.js + Express + Socket.IO + PostgreSQL",
+        "frontend": "https://chess.dtfseeds.com",
+        "api": "https://chess-api.dtfseeds.com",
+        "healthPath": "/health",
+        "siteShell": "header-v6",
+        "liveCheck": "npm run live:check",
+        "manualGate": "two-browser-mobile",
+        "publicPromotion": false
+      }
     },
     {
       "id": "thc-grow-hub",
@@ -247,7 +268,7 @@
       "route": "/games/bud-or-bluff/",
       "runtime": "static-php",
       "status": "ready-to-package",
-      "build": "node games/bud-or-bluff/test/engine.test.mjs && node games/bud-or-bluff/scripts/build-private-deck.mjs && node --check site/public-route-patch/games/bud-or-bluff/app-v2.js && php -l site/public-route-patch/games/bud-or-bluff/api-v2.php && node games/bud-or-bluff/test/online-lobby-v2.test.mjs",
+      "build": "node games/bud-or-bluff/test/engine.test.mjs && node games/bud-or-bluff/scripts/build-private-deck.mjs && node games/bud-or-bluff/test/keyboard-v1.test.mjs && node games/bud-or-bluff/test/visual-state-v3.test.mjs && node games/bud-or-bluff/test/online-lobby.test.mjs && node games/bud-or-bluff/test/online-lobby-v2.test.mjs",
       "machineData": {
         "players": "2-10",
         "cards": 40,
@@ -261,7 +282,7 @@
         "networkAuthority": "php-server",
         "transport": "polling"
       },
-      "notes": "Self-hosted 2–10 player online party game with six-character rooms, simultaneous server-authoritative BUD/BLUFF voting, hidden answers until reveal, Double Hit scoring, lobby lock/settings, chat, reconnectable sessions, vote-split reveal stats, rematches, host transfer, and same-origin PHP persistence."
+      "notes": "Self-hosted 2–10 player server-authoritative party game with simultaneous hidden voting, Double Hit scoring, lobby locking/settings, room chat, reconnect, rematches, host transfer, keyboard controls, visual-state feedback, and private answer data. Dedicated CI now uses Ubuntu 24.04/current GitHub actions. The central public-suite gate verifies both 10-player lobby generations, keyboard/visual contracts, API v2→durable-v3 routing, PHP syntax, and private-answer exclusion. Exact post-deploy live-route verification remains required."
     },
     {
       "id": "strain-showdown",
@@ -288,23 +309,26 @@
           "elite": 2
         }
       },
-      "notes": "Self-hosted playable browser prototype with a tested deterministic three-lane battle engine, CPU rival, Base/Select/Elite evolution, eight family passives, Focus economy, Garden health, 96-card canonical roster synchronization, result tracking, and deterministic balance simulation tooling. Final per-card effects, balance approval, human rules playtesting, final art, and print proof remain open release gates."
+      "notes": "Self-hosted 96-card browser battle game with a tested deterministic three-lane engine, CPU rival, Base/Select/Elite evolution, eight family passives, Focus economy, Garden health, synchronized canonical roster data, result tracking, mobile three-lane visibility, 44px attack controls, and deterministic 32-seed balance simulation. Player-facing prototype/development wording has been removed. Final per-card effect activation, balance approval, human rules playtesting, final art, print proof, and exact post-deploy live-route verification remain open."
     },
     {
       "id": "cannabis-fleet-battle",
-      "title": "Cannabis Fleet Battle",
+      "title": "Cannabis Fleet Battle (merged into Burn Buds)",
       "repository": "dtfgenetics/Thc",
       "sourcePath": "games/cannabis-fleet-battle",
-      "runtime": "server-engine",
-      "status": "server-engine-alpha",
+      "runtime": "merged-archive-pointer",
+      "status": "do-not-develop",
       "build": "node games/cannabis-fleet-battle/test/engine.test.mjs",
       "machineData": {
         "board": "15x15",
         "fleetPieces": 6,
         "occupiedCells": 21,
-        "networkAuthority": "server"
+        "networkAuthority": "server",
+        "canonicalGameId": "protect-the-plants",
+        "canonicalRoute": "/games/protect-the-plants/",
+        "publicReleaseAllowed": false
       },
-      "notes": "Server-authoritative placement, hidden-state serialization, turns, hits, sinks, wins, duplicate-shot protection, and disconnect/reconnect state are tested. Lobby transport, authenticated reconnect, multiplayer E2E, mobile QA, and art remain open."
+      "notes": "Tested 15×15 fleet-battle engine retained only as design/engine history. It does not own a public route. All browser gameplay, multiplayer, branding, deployment, assets, reconnect work, mobile QA, and future production development belong to canonical Burn Buds at /games/protect-the-plants/."
     },
     {
       "id": "terpocalypse",
@@ -314,8 +338,8 @@
       "status": "ready-to-package",
       "sourcePath": "site/public-route-patch/games/terpocalypse",
       "route": "/games/terpocalypse/",
-      "build": "node --check site/public-route-patch/games/terpocalypse/main.js && node --check site/public-route-patch/games/terpocalypse/game-data.js",
-      "notes": "Playable original The Veg Lab browser vertical slice with keyboard/mouse and touch controls, three weapons, three enemy types, pickups, keycard objective, doors, score, win/lose states, pause handling and code-drawn art. Dedicated project repository remains canonical for future gameplay development."
+      "build": "node games/terpocalypse-integration/validate.mjs && node games/terpocalypse/test/public-runtime.test.mjs && node --check site/public-route-patch/games/terpocalypse/main.js && node --check site/public-route-patch/games/terpocalypse/game-data.js && node --check site/public-route-patch/games/terpocalypse/visibility-pause-v1.js",
+      "notes": "Self-hosted Level 01 action game with desktop/touch controls. Browser zoom is enabled, top/touch controls retain 44px minimum targets, forced-colors and reduced-motion states are protected, and visibility pause clears held keyboard input. Dedicated CI now uses current GitHub Actions/Ubuntu 24.04 and the central public-suite gate runs integration plus public-runtime verification. Exact post-deploy live-route verification remains required."
     },
     {
       "id": "phenoquest",
@@ -334,7 +358,7 @@
       "repository": "dtfgenetics/Thc-rpg",
       "runtime": "static-es-modules",
       "status": "release-candidate",
-      "notes": "Canonical code remains in dtfgenetics/Thc-rpg. Revision bff31f0d6425f822a2647a7601c09cbd1b30a01d is the v2.1.0 release-candidate source after deterministic shipped-UI validation replaced Playwright and gameplay shortcuts were blocked behind dialog, inventory, and Grow Journal overlays. Canonical CI passed engine/campaign tests, syntax checks, deterministic UI validation, visitor-only build, and release validation. Central packaging and exact post-deploy live-route verification remain required before production-ready promotion.",
+      "notes": "Canonical code remains in dtfgenetics/Thc-rpg. Revision de6c26d9073d9154bbcade43b64768cf6a7ba2a0 is the green 2.1.0 release-candidate source after production launch-screen, compact-control and forced-color polish. The six-chapter campaign retains deterministic phenotype variation, Keeper selection/cutting progression, Zestberry trial, save v6 compatibility, guarded gameplay shortcuts, deterministic shipped-UI validation, visitor-only build, and release validation. Central packaging and exact post-deploy live-route verification remain required before production-ready promotion.",
       "route": "/games/thc-rpg/",
       "build": "npm test && npm run validate:ui && npm run build && npm run validate:release",
       "machineData": {
@@ -351,7 +375,7 @@
         "keeperCuttings": true,
         "modalGameplayShortcutGuard": true
       },
-      "verifiedRevision": "bff31f0d6425f822a2647a7601c09cbd1b30a01d"
+      "verifiedRevision": "de6c26d9073d9154bbcade43b64768cf6a7ba2a0"
     },
     {
       "id": "happy-seed-stories",
@@ -375,7 +399,7 @@
       "repository": "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple",
       "runtime": "static-phaser",
       "status": "ready-to-package",
-      "notes": "Canonical code remains in the standalone Ganjumanji repository. Revision 54df2e0331ba9930899b4e11cb40e5c5f09235f1 is the merged 0.4.0 five-region campaign with 10 relic seeds, save v5, separate autosave/safe-checkpoint recovery, deterministic campaign/content/input/storage/solvability tests, shipped UI-contract validation, TypeScript/Vite build, release-route validation, and production artifact generation. DTFSeeds packaging must rebuild this exact pinned revision and run validate:ui before promotion. Live route verification remains required before production-ready status.",
+      "notes": "Canonical code remains in the standalone Ganjumanji repository. Revision b1cbf9b9627586b7277813b6a7c6f85a98830d58 is the green 0.4.1 five-region production candidate with 10 relic seeds, save v5, separate autosave/safe-checkpoint recovery, deterministic campaign/content/input/storage/solvability tests, shipped UI-contract validation, TypeScript/Vite build, release validation, current GitHub Actions CI, and production artifact generation. DTFSeeds packaging must rebuild this exact pinned revision and run validate:ui before promotion. Exact post-deploy live-route verification remains required before production-ready status.",
       "route": "/games/ganjumanji/",
       "build": "npm test && npm run validate:ui && npm run build && npm run validate:release",
       "machineData": {
@@ -398,7 +422,7 @@
           5
         ]
       },
-      "verifiedRevision": "54df2e0331ba9930899b4e11cb40e5c5f09235f1"
+      "verifiedRevision": "b1cbf9b9627586b7277813b6a7c6f85a98830d58"
     },
     {
       "id": "all-in-one-grow",
@@ -434,8 +458,8 @@
       "route": "/games/grow-room-bingo/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/grow-room-bingo/scripts/validate-data.mjs && node --check site/public-route-patch/games/grow-room-bingo/app.js",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/grow-room-bingo/scripts/validate-data.mjs && node games/grow-room-bingo/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-bingo/app.js && node --check site/public-route-patch/games/grow-room-bingo/keyboard-nav.js",
+      "notes": "Self-hosted three-mode community bingo game with deterministic cards, local autosave, guarded clear/reset, resilient challenge sharing, roving 5×5 keyboard navigation, touch feedback, reduced motion, and forced-colors support. Its existing deterministic browser-runtime test is now included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
     },
     {
       "id": "grow-room-defense",
@@ -446,8 +470,8 @@
       "route": "/games/grow-room-defense/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/grow-room-defense/scripts/validate-data.mjs && node games/grow-room-defense/test/engine.test.mjs && node --check site/public-route-patch/games/grow-room-defense/app.js && node --check site/public-route-patch/games/grow-room-defense/engine.mjs",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/grow-room-defense/scripts/validate-data.mjs && node games/grow-room-defense/test/engine.test.mjs && node games/grow-room-defense/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-defense/app.js && node --check site/public-route-patch/games/grow-room-defense/runtime.mjs && cmp games/grow-room-defense/src/engine.mjs site/public-route-patch/games/grow-room-defense/engine.mjs",
+      "notes": "Self-hosted deterministic IPM strategy game. Browser runtime now imports the canonical tested engine instead of duplicating rules; public-runtime regression covers mobile tool return, keyboard shortcuts, semantic health meters, forced colors, reduced motion, clipboard fallback, and visual states. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
     },
     {
       "id": "harvest-hustle",
@@ -458,8 +482,8 @@
       "route": "/games/harvest-hustle/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/harvest-hustle/scripts/validate-data.mjs && node games/harvest-hustle/test/engine.test.mjs && node --check site/public-route-patch/games/harvest-hustle/app.js && node --check site/public-route-patch/games/harvest-hustle/engine.mjs",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/harvest-hustle/scripts/validate-data.mjs && node games/harvest-hustle/test/engine.test.mjs && node games/harvest-hustle/test/public-runtime.test.mjs && node --check site/public-route-patch/games/harvest-hustle/app.js && node --check site/public-route-patch/games/harvest-hustle/runtime.mjs && cmp games/harvest-hustle/src/engine.mjs site/public-route-patch/games/harvest-hustle/engine.mjs",
+      "notes": "Self-hosted deterministic 75-second arcade shift game. Browser runtime now imports the canonical tested engine; regression coverage protects pause/resume timing, mobile decision controls, keyboard shortcuts, challenge sharing fallbacks, reduced motion, and forced-colors states. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
     },
     {
       "id": "high-lines",
@@ -470,8 +494,8 @@
       "route": "/games/high-lines/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/high-lines/scripts/validate-data.mjs && node games/high-lines/test/engine.test.mjs && node --check site/public-route-patch/games/high-lines/app.js && node --check site/public-route-patch/games/high-lines/engine.mjs",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/high-lines/scripts/validate-data.mjs && node games/high-lines/test/engine.test.mjs && node games/high-lines/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-lines/app.js && node --check site/public-route-patch/games/high-lines/runtime.mjs && cmp games/high-lines/src/engine.mjs site/public-route-patch/games/high-lines/engine.mjs",
+      "notes": "Self-hosted deterministic coloring/hidden-object game with four original SVG scenes, local autosave, zoom controls, keyboard/touch play, and shareable scene codes. Browser runtime now imports the canonical tested coloring engine while persistence, SVG sanitization/retry, zoom, and reset confirmation remain browser-layer concerns. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
     },
     {
       "id": "lost-in-the-terps",
@@ -482,8 +506,8 @@
       "route": "/games/lost-in-the-terps/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/lost-in-the-terps/scripts/validate-data.mjs && node --check site/public-route-patch/games/lost-in-the-terps/app.js",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/lost-in-the-terps/scripts/validate-data.mjs && node games/lost-in-the-terps/test/public-runtime.test.mjs && node --check site/public-route-patch/games/lost-in-the-terps/app.js && node --check site/public-route-patch/games/lost-in-the-terps/keyboard-nav-v1.js",
+      "notes": "Self-hosted three-mission word-search game with eight hidden words per mission, guarded mission/reset actions, three-use hints, isolated delayed feedback, roving keyboard grid navigation, scrollable mobile grids, reduced motion, and forced-colors support. Its existing deterministic browser-runtime test is now included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
     },
     {
       "id": "mystery-strain",
@@ -494,8 +518,8 @@
       "route": "/games/mystery-strain/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/mystery-strain/scripts/validate-data.mjs && node games/mystery-strain/test/engine.test.mjs && node --check site/public-route-patch/games/mystery-strain/app.js && node --check site/public-route-patch/games/mystery-strain/engine.mjs",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/mystery-strain/scripts/validate-data.mjs && node games/mystery-strain/test/engine.test.mjs && node games/mystery-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/mystery-strain/app.js && node --check site/public-route-patch/games/mystery-strain/runtime.mjs && cmp games/mystery-strain/src/engine.mjs site/public-route-patch/games/mystery-strain/engine.mjs",
+      "notes": "Self-hosted deterministic deduction game with 20 fictional profiles, 12 questions, optional Wild Card modifiers, Best Split UI analysis, and explicit two-step guess confirmation. Browser runtime now imports the canonical tested engine while Best Split remains a presentation helper. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
     },
     {
       "id": "pheno-draft",
@@ -506,8 +530,8 @@
       "route": "/games/pheno-draft/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/pheno-draft/scripts/validate-data.mjs && node games/pheno-draft/test/engine.test.mjs && node --check site/public-route-patch/games/pheno-draft/app.js && node --check site/public-route-patch/games/pheno-draft/engine.mjs",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/pheno-draft/scripts/validate-data.mjs && node games/pheno-draft/test/engine.test.mjs && node games/pheno-draft/test/public-runtime.test.mjs && node --check site/public-route-patch/games/pheno-draft/app.js && node --check site/public-route-patch/games/pheno-draft/runtime.mjs && cmp games/pheno-draft/src/engine.mjs site/public-route-patch/games/pheno-draft/engine.mjs",
+      "notes": "Self-hosted deterministic six-round fictional genetics card draft. Browser runtime now imports the canonical tested engine; regression coverage protects restart confirmation, share fallback, keyboard controls, mobile decision-rail reset, forced colors, and reduced motion. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
     },
     {
       "id": "spin-the-strain",
@@ -518,8 +542,8 @@
       "route": "/games/spin-the-strain/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/spin-the-strain/scripts/validate-data.mjs && node games/spin-the-strain/test/engine.test.mjs && node --check site/public-route-patch/games/spin-the-strain/app.js && node --check site/public-route-patch/games/spin-the-strain/engine.mjs",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/spin-the-strain/scripts/validate-data.mjs && node games/spin-the-strain/test/engine.test.mjs && node games/spin-the-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/spin-the-strain/app.js && node --check site/public-route-patch/games/spin-the-strain/runtime.mjs && cmp games/spin-the-strain/src/engine.mjs site/public-route-patch/games/spin-the-strain/engine.mjs",
+      "notes": "Self-hosted deterministic three-mode wheel game with 18-entry no-repeat cycles per mode, shareable codes, animation-isolated result reveal, hidden-page completion, keyboard spin shortcut, clipboard fallback, reduced motion, and forced-colors support. Browser runtime now imports the canonical tested wheel engine. Dedicated title CI and the central public-suite validation gate both enforce the runtime contract. browserTested remains false until actual browser QA is completed; exact post-deploy live-route verification is still required."
     },
     {
       "id": "strain-match",
@@ -530,8 +554,8 @@
       "route": "/games/strain-match/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/strain-match/scripts/validate-data.mjs && node --check site/public-route-patch/games/strain-match/app.js",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/strain-match/scripts/validate-data.mjs && node games/strain-match/test/public-runtime.test.mjs && node --check site/public-route-patch/games/strain-match/app.js",
+      "notes": "Self-hosted four-deck educational memory game with eight pairs per deck. Existing deterministic browser-runtime coverage protects visible-play timer accounting, hidden-page pause/resume, stale mismatch isolation, guarded restart, local best scores, streak/HUD states, touch feedback, reduced motion, and forced colors. The runtime test is now included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
     },
     {
       "id": "trichome-trials",
@@ -542,8 +566,8 @@
       "route": "/games/trichome-trials/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/trichome-trials/scripts/validate-data.mjs && node games/trichome-trials/test/engine.test.mjs && node --check site/public-route-patch/games/trichome-trials/app.js && node --check site/public-route-patch/games/trichome-trials/engine.mjs",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/trichome-trials/scripts/validate-data.mjs && node games/trichome-trials/test/engine.test.mjs && node games/trichome-trials/test/public-runtime.test.mjs && node --check site/public-route-patch/games/trichome-trials/app.js && node --check site/public-route-patch/games/trichome-trials/runtime.mjs && cmp games/trichome-trials/src/engine.mjs site/public-route-patch/games/trichome-trials/engine.mjs",
+      "notes": "Self-hosted deterministic five-round judging game with a seven-category scorecard and UI-layer confidence-call bonuses. Browser runtime now imports the canonical tested scoring engine; regression coverage protects reviewed-state submission, mobile score controls, reduced motion, confidence calls, and resilient clipboard/manual challenge sharing. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
     },
     {
       "id": "root-cause",
@@ -554,8 +578,8 @@
       "route": "/games/root-cause/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/root-cause/scripts/validate-data.mjs && node games/root-cause/test/engine.test.mjs && node --check site/public-route-patch/games/root-cause/app.js && node --check site/public-route-patch/games/root-cause/engine.mjs",
-      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+      "build": "node games/root-cause/scripts/validate-data.mjs && node games/root-cause/test/engine.test.mjs && node games/root-cause/test/public-runtime.test.mjs && node --check site/public-route-patch/games/root-cause/app.js && node --check site/public-route-patch/games/root-cause/runtime.mjs && node --check site/public-route-patch/games/root-cause/engine.mjs && cmp games/root-cause/src/engine.mjs site/public-route-patch/games/root-cause/engine.mjs",
+      "notes": "Self-hosted deterministic six-case cultivation diagnostics deduction game. Browser runtime now imports the canonical tested module engine through a thin app bootstrap; the duplicate browser rules engine is no longer loaded. Regression coverage protects diagnostic limits, challenge sharing fallback, V5 header/admin-bar offsets, stacked-result reveal, 44px controls, reduced motion, and forced colors. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
     }
   ]
 }

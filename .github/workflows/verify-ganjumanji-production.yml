@@ -1,0 +1,61 @@
+name: Verify Ganjumanji Production
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - scripts/verify-ganjumanji-live.mjs
+      - .github/workflows/verify-ganjumanji-production.yml
+      - site/public-route-patch/games/ganjumanji/source-revision.txt
+      - .github/workflows/build-dtfseeds-public-suite.yml
+  workflow_run:
+    workflows: ["Deploy DTFSeeds Public Suite via WordPress V2"]
+    types: [completed]
+  schedule:
+    - cron: '57 9 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-ganjumanji-production-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout verification source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
+          persist-credentials: false
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          package-manager-cache: false
+
+      - name: Validate live audit script
+        run: node --check scripts/verify-ganjumanji-live.mjs
+
+      - name: Verify live Ganjumanji release
+        env:
+          SITE: https://dtfseeds.com
+        run: node scripts/verify-ganjumanji-live.mjs
+
+      - name: Summarize verification
+        if: always()
+        run: |
+          {
+            echo '## Ganjumanji production verification'
+            echo
+            echo '- Route: https://dtfseeds.com/games/ganjumanji/'
+            echo '- Requires exact pinned standalone source revision and 0.4.1 release manifest.'
+            echo '- Requires five regions, 10 relic seeds, save v5, safe-checkpoint recovery, and production asset paths.'
+            echo '- Rejects TypeScript-source leakage in the deployed HTML.'
+            echo '- Runs after successful public-suite deployments, on relevant pull requests, on demand, and daily.'
+          } >> "$GITHUB_STEP_SUMMARY"

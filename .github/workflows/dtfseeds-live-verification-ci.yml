@@ -52,12 +52,42 @@ jobs:
             + (registry.tools || []).filter(item => item?.public === true).length
             + (registry.games || []).filter(item => item?.public === true).length;
           if (plan.total !== expected) throw new Error(`Plan total ${plan.total} does not match registry-derived total ${expected}.`);
-          const routes = new Set(plan.routes.map(row => row.route));
+          const normalizeRoute = (route) => {
+            let value = String(route || '').trim();
+            if (!value.startsWith('/')) throw new Error(`public route must start with '/': ${value}`);
+            while (value.length > 1 && value.endsWith('/')) value = value.slice(0, -1);
+            return value === '/' ? '/' : `${value}/`;
+          };
+          const routes = new Set(plan.routes.map(row => normalizeRoute(row.route)));
           if (routes.size !== plan.routes.length) throw new Error('Duplicate routes entered the public verification plan.');
-          for (const required of ['/projects/','/atlas/','/games/terpocalypse/','/games/phenoquest/','/games/kush-kings-chess/']) {
-            if (!routes.has(required)) throw new Error(`Missing required current public route ${required}`);
+
+          const expectedPublicRoutes = [
+            '/games/',
+            '/tools/',
+            '/projects/',
+            ...(registry.tools || [])
+              .filter(item => item?.public === true && item.route)
+              .map(item => item.route),
+            ...(registry.games || [])
+              .filter(item => item?.public === true && item.route)
+              .map(item => item.route),
+          ].map(normalizeRoute);
+
+          for (const route of expectedPublicRoutes) {
+            if (!routes.has(route)) throw new Error(`Missing registry-public route ${route}`);
           }
-          console.log(`Registry-backed plan contains ${plan.total} unique public surfaces.`);
+
+          for (const item of registry.games || []) {
+            if (!item || item.public === true || !item.candidateRoute) continue;
+            const route = normalizeRoute(item.candidateRoute);
+            if (routes.has(route)) throw new Error(`Non-public candidate route leaked into verification plan: ${item.id || route} (${route})`);
+          }
+
+          for (const required of ['/projects/','/atlas/','/games/high-iq/','/games/high-land/','/games/weedopolis/','/games/seed-man-platformer/','/games/protect-the-plants/','/games/terpocalypse/','/games/phenoquest/']) {
+            const route = normalizeRoute(required);
+            if (!routes.has(route)) throw new Error(`Missing canonical current public route ${route}`);
+          }
+          console.log(`Registry-backed plan contains ${plan.total} unique public surfaces; development-only candidate routes remain excluded.`);
           NODE
 
       - name: Assemble transactional deployer with durable route markers

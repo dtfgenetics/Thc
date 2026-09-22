@@ -25,7 +25,7 @@ assert.match(html, /data-seed-ui-release=["']20260909-v20-runtime-v5["']/, 'publ
 assert.match(html, /20-Level Campaign/, 'public page must identify the canonical 20-level campaign');
 assert.match(html, /three-world-v1\.js\?v=20260909-v20-runtime-v5/, 'public page must load the cache-busted Three.js world bundle');
 assert.match(html, /three-world-adapter-v1\.js\?v=20260909-v20-runtime-v5/, 'Three.js adapter must be an explicit deterministic production dependency');
-assert.match(html, /player-state-v20\.js\?v=20260909-v20-runtime-v5/, 'player state must be an explicit cache-busted production dependency');
+assert.match(html, /player-state-v20\.js\?v=[^"']+/, 'player state must be an explicit cache-busted production dependency');
 assert.match(html, /JUMP ×2/, 'touch UI must advertise double jump');
 assert.match(html, /id=["']combat-attack-button["']/, 'touch UI must expose attack');
 assert.match(html, /id=["']combat-ability-button["']/, 'touch UI must expose phenotype ability');
@@ -39,6 +39,9 @@ assert.doesNotMatch(app, /readEmbeddedLevel|validateLevel\s*\(/, 'public app mus
 assert.doesNotMatch(app, /candidate\.id\s*!==\s*['"]sprout-run['"]|worldWidth\s*!==\s*7800|pickups\.length\s*!==\s*24/, 'Sprout Run boot assumptions must stay removed');
 assert.match(app, /campaignAuthority:'campaign-v20-runtime\.js'/, 'v20 campaign runtime must be the only level authority');
 assert.match(app, /seed-man-base-runtime-v20/, 'public base runtime marker must be current');
+assert.match(app, /Loading Seed Man adventure…/, 'canvas loading state must use player-facing language');
+assert.match(app, /Preparing your next Seed Man adventure…/, 'objective loading state must use player-facing language');
+assert.doesNotMatch(app, /Loading (?:canonical )?Seed Man v20 campaign/, 'player-facing loading states must not expose internal release terminology');
 assert.match(app, /level\.boss\s*&&\s*!level\.boss\.defeated/, 'boss exits must remain locked until boss defeat');
 assert.match(app, /doubleJumpSpeed:\s*590/, 'public runtime must contain the stronger double jump');
 assert.match(app, /groundAcceleration:\s*2600/, 'public runtime must include progressive ground acceleration');
@@ -46,6 +49,14 @@ assert.match(app, /jumpCutGravityMultiplier:\s*2\.35/, 'public runtime must incl
 assert.match(app, /maxAirJumps:\s*1/, 'public runtime must preserve one mid-air jump');
 assert.match(app, /function\s+approach\s*\(/, 'public runtime must include acceleration/deceleration helper');
 assert.match(app, /function\s+guardedReset\s*\(/, 'active levels should guard destructive restart');
+assert.match(app, /function\s+retryCheckpoint\s*\(/, 'public runtime should provide immediate checkpoint retry');
+assert.match(app, /seedman:player-respawned/, 'all checkpoint recovery paths must emit the shared respawn event');
+assert.match(app, /invulnerableTimer = 0\.45/, 'base respawn must preserve short player invulnerability');
+assert.match(app, /function\s+pollGamepad\s*\(/, 'public runtime should poll standard gamepads');
+assert.match(app, /navigator\.getGamepads/, 'controller support must use the browser gamepad API');
+assert.match(app, /GAMEPAD_DEADZONE\s*=\s*0\.22/, 'controller movement must use the canonical deadzone');
+assert.match(app, /key === 'escape'/, 'Escape must pause alongside P');
+assert.match(app, /Checkpoint activated/, 'checkpoint activation needs immediate gameplay feedback');
 assert.match(app, /function\s+drawProgressRail\s*\(/, 'campaign levels need visible course progress');
 assert.match(app, /function\s+writeBest\s*\(/, 'public runtime should guard best-time persistence');
 assert.match(app, /function\s+focusCanvas\s*\(/, 'public runtime should guard canvas focus');

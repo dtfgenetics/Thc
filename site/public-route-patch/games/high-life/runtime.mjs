@@ -98,6 +98,15 @@ function safeScroll(element, block = 'start') {
   }
 }
 
+function safeFocus(element) {
+  try {
+    element?.focus?.({ preventScroll: true });
+  } catch {
+    element?.focus?.();
+  }
+}
+
+
 function validateEvents(sourceEvents) {
   if (!Array.isArray(sourceEvents) || sourceEvents.length !== 18) {
     throw new Error('High Life event data is incomplete.');
@@ -215,6 +224,8 @@ function updateEraRoadmap() {
 
 function render() {
   const era = currentEra(state);
+  ui.game.dataset.eraState = era;
+  document.body.dataset.highLifeEra = era;
   ui.eraName.textContent = eraLabels[era];
   ui.turn.textContent = state.complete
     ? `Career complete · ${MAX_TURNS} of ${MAX_TURNS} turns`
@@ -288,6 +299,7 @@ function renderTurnResolution(record) {
   document.querySelectorAll('.action-card').forEach((button) => { button.disabled = true; });
   ui.continue.textContent = state.complete ? 'See Legacy score' : 'Continue';
   safeScroll(ui.eventPanel, 'nearest');
+  safeFocus(ui.continue);
 }
 
 function resolveTurn(actionId) {
@@ -330,6 +342,7 @@ function continueGame() {
   saveGame({ pendingEvent: false });
   render();
   safeScroll(document.querySelector('#choices-title'));
+  safeFocus(document.querySelector('.action-card.available'));
 }
 
 function enterGame(nextState, { pendingEvent = false } = {}) {

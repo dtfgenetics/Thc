@@ -7,7 +7,9 @@ on:
     paths:
       - scripts/lib/sitewide-header-template.mjs
       - scripts/lib/sitewide-header-template-v6.mjs
+      - scripts/lib/sitewide-footer-template-v6.mjs
       - scripts/lib/sitewide-content-density-v1.mjs
+      - scripts/lib/sitewide-visual-repair-v2.mjs
       - scripts/apply-sitewide-header.mjs
       - scripts/rebuild-wordpress-shared-shell-v3.mjs
       - scripts/verify-sitewide-header-v6-live.mjs
@@ -20,7 +22,9 @@ on:
     paths:
       - scripts/lib/sitewide-header-template.mjs
       - scripts/lib/sitewide-header-template-v6.mjs
+      - scripts/lib/sitewide-footer-template-v6.mjs
       - scripts/lib/sitewide-content-density-v1.mjs
+      - scripts/lib/sitewide-visual-repair-v2.mjs
       - scripts/apply-sitewide-header.mjs
       - scripts/rebuild-wordpress-shared-shell-v3.mjs
       - scripts/verify-sitewide-header-v6-live.mjs
@@ -35,6 +39,9 @@ permissions:
 
 env:
   WP_SITE_URL: https://dtfseeds.com
+  # /tools/ and /games/ are static Public Suite hubs. Their owning publisher
+  # assembles, reconciles, and verifies those routes after its serialized deploy.
+  WORDPRESS_HEADER_VERIFY_ROUTES: "/,/seeds/,/learn/,/learn/nutrition-media/,/community/,/shop/,/courses/,/gallery/,/about/,/contact/"
 
 concurrency:
   group: dtfseeds-canonical-sitewide-header-v6
@@ -55,7 +62,9 @@ jobs:
           set -euo pipefail
           node --check scripts/lib/sitewide-header-template.mjs
           node --check scripts/lib/sitewide-header-template-v6.mjs
+          node --check scripts/lib/sitewide-footer-template-v6.mjs
           node --check scripts/lib/sitewide-content-density-v1.mjs
+          node --check scripts/lib/sitewide-visual-repair-v2.mjs
           node --check scripts/apply-sitewide-header.mjs
           node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
           node --check scripts/verify-sitewide-header-v6-live.mjs
@@ -65,18 +74,39 @@ jobs:
           test -s site/wordpress/assets/responsive-layout-v1.css
           test -s site/wordpress/assets/sitewide-ux-polish-v1.css
           grep -Fq 'data-dtf-shell="header-v6"' scripts/lib/sitewide-header-template-v6.mjs
-          grep -Fq 'data-dtf-sitewide-header="canonical-six-v1"' scripts/lib/sitewide-header-template-v6.mjs
+          grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' scripts/lib/sitewide-header-template-v6.mjs
+          grep -Fq 'data-dtf-sitewide-footer="canonical-eight-v1"' scripts/lib/sitewide-footer-template-v6.mjs
+          grep -Fq 'data-dtf-shell="footer-v6"' scripts/lib/sitewide-footer-template-v6.mjs
           grep -Fq 'dtf-content-density-v1-style' scripts/lib/sitewide-content-density-v1.mjs
           grep -Fq 'dtf-content-density-v1-script' scripts/lib/sitewide-content-density-v1.mjs
-          for required in '>Genetics</a>' '>Learn</a>' '>Tools</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
+          grep -Fq 'dtf-sitewide-visual-repair-v2-style' scripts/lib/sitewide-visual-repair-v2.mjs
+          grep -Fq 'dtf-sitewide-visual-repair-v2-script' scripts/lib/sitewide-visual-repair-v2.mjs
+          grep -Fq 'SITEWIDE_VISUAL_REPAIR_STYLE_TAG' scripts/lib/sitewide-header-template-v6.mjs
+          grep -Fq 'SITEWIDE_VISUAL_REPAIR_SCRIPT_TAG' scripts/lib/sitewide-header-template-v6.mjs
+          for required in '>Home</a>' '>Seeds</a>' '>Learn</a>' '>Courses</a>' '>Diagnostic</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
             grep -Fq "$required" scripts/lib/sitewide-header-template-v6.mjs || { echo "Missing canonical nav label: $required" >&2; exit 1; }
           done
-          ! grep -Fq '>Home</a>' scripts/lib/sitewide-header-template-v6.mjs
-          ! grep -Fq '>Seeds</a>' scripts/lib/sitewide-header-template-v6.mjs
-          ! grep -Fq '>Courses</a>' scripts/lib/sitewide-header-template-v6.mjs
-          ! grep -Fq '>Diagnostic</a>' scripts/lib/sitewide-header-template-v6.mjs
+          ! grep -Fq '>Genetics</a>' scripts/lib/sitewide-header-template-v6.mjs
+          ! grep -Fq '>Tools</a>' scripts/lib/sitewide-header-template-v6.mjs
           grep -Fq "./lib/sitewide-header-template-v6.mjs" scripts/apply-sitewide-header.mjs
+          grep -Fq "./lib/sitewide-footer-template-v6.mjs" scripts/apply-sitewide-header.mjs
           grep -Fq "./lib/sitewide-header-template-v6.mjs" scripts/rebuild-wordpress-shared-shell-v3.mjs
+          grep -Fq "./lib/sitewide-footer-template-v6.mjs" scripts/rebuild-wordpress-shared-shell-v3.mjs
+
+          # Fail closed if static Public Suite hubs drift back into the WordPress
+          # publisher's immediate verification scope. Their owner still verifies
+          # the exact Header V6/mobile contract before packaging and deployment.
+          case ",$WORDPRESS_HEADER_VERIFY_ROUTES," in
+            *,/tools/,*|*,/games/,*)
+              echo "Static Public Suite hubs must not be verified by the WordPress header publisher." >&2
+              exit 1
+              ;;
+          esac
+          test -s .github/workflows/build-dtfseeds-public-suite.yml
+          grep -Fq 'release/tools/index.html' .github/workflows/build-dtfseeds-public-suite.yml
+          grep -Fq 'release/games/index.html' .github/workflows/build-dtfseeds-public-suite.yml
+          grep -Fq 'canonical-eight-v1' .github/workflows/build-dtfseeds-public-suite.yml
+          grep -Fq 'dtf-sitewide-header-v6-script' .github/workflows/build-dtfseeds-public-suite.yml
 
       - name: Prove static V6 header reconciler is idempotent
         shell: bash
@@ -87,10 +117,20 @@ jobs:
           node scripts/apply-sitewide-header.mjs "$RUNNER_TEMP/header-fixture"
           node scripts/apply-sitewide-header.mjs "$RUNNER_TEMP/header-fixture" --check
           count="$(grep -RFl 'data-dtf-shell="header-v6"' "$RUNNER_TEMP/header-fixture" --include='*.html' | wc -l | tr -d ' ')"
+          footer_count="$(grep -RFl 'data-dtf-shell="footer-v6"' "$RUNNER_TEMP/header-fixture" --include='*.html' | wc -l | tr -d ' ')"
           test "$count" -gt 10
-          grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/tools/index.html"
-          grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/games/index.html"
-          grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/projects/index.html"
+          test "$footer_count" -eq "$count"
+          grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/header-fixture/tools/index.html"
+          grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/header-fixture/games/index.html"
+          grep -Fq 'dtf-content-density-v1-script' "$RUNNER_TEMP/header-fixture/projects/index.html"
+          grep -Fq 'dtf-sitewide-visual-repair-v2-script' "$RUNNER_TEMP/header-fixture/tools/index.html"
+          grep -Fq 'dtf-sitewide-visual-repair-v2-script' "$RUNNER_TEMP/header-fixture/games/index.html"
+          grep -Fq 'dtf-sitewide-visual-repair-v2-script' "$RUNNER_TEMP/header-fixture/projects/index.html"
+          grep -Fq 'dtf-sitewide-mobile-polish-v1-style' "$RUNNER_TEMP/header-fixture/tools/index.html"
+          grep -Fq 'dtf-sitewide-mobile-polish-v1-style' "$RUNNER_TEMP/header-fixture/games/index.html"
+          grep -Fq 'data-dtf-sitewide-footer="canonical-eight-v1"' "$RUNNER_TEMP/header-fixture/tools/index.html"
+          grep -Fq 'data-dtf-sitewide-footer="canonical-eight-v1"' "$RUNNER_TEMP/header-fixture/games/index.html"
+          grep -Fq 'data-dtf-sitewide-footer="canonical-eight-v1"' "$RUNNER_TEMP/header-fixture/projects/index.html"
 
   publish:
     if: ${{ github.event_name != 'pull_request' }}
@@ -126,11 +166,12 @@ jobs:
           mkdir -p "$BACKUP_ROOT"
           node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs | tee /tmp/dtf-canonical-header-v6.json
 
-      - name: Verify V6 on representative public routes
+      - name: Verify V6 on WordPress-owned representative public routes
         shell: bash
         run: |
           set -euo pipefail
-          for route in / /seeds/ /learn/ /tools/ /games/ /community/ /shop/; do
+          IFS=',' read -r -a routes <<< "$WORDPRESS_HEADER_VERIFY_ROUTES"
+          for route in "${routes[@]}"; do
             out="$RUNNER_TEMP/header-v6-$(echo "$route" | tr '/' '_' | tr -cd '[:alnum:]_').html"
             ok=0
             for attempt in 1 2 3 4 5 6; do
@@ -142,23 +183,48 @@ jobs:
           const fs=require('fs');
           const [file,route]=process.argv.slice(2);
           const html=fs.readFileSync(file,'utf8');
+          const visibleHtml=html
+            .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ')
+            .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ')
+            .replace(/<template\b[^>]*>[\s\S]*?<\/template>/gi,' ');
+          const visibleLower=visibleHtml.toLowerCase();
           const header=html.match(/<header\b[^>]*data-dtf-shell=["']header-v6["'][^>]*>[\s\S]*?<\/header>/i)?.[0]||'';
-          if(!header) process.exit(1);
+          if(!header) throw new Error(`V6 header fragment missing on ${route}`);
           const nav=header.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>([\s\S]*?)<\/nav>/i)?.[1]||'';
-          const labels=[...nav.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)].map(m=>m[1].replace(/<[^>]+>/g,'').trim());
-          const expected=['Genetics','Learn','Tools','Games','Community','Shop'];
-          if(JSON.stringify(labels)!==JSON.stringify(expected)) throw new Error(`Unexpected V6 navigation: ${JSON.stringify(labels)}`);
-          if(!/dtf-sitewide-header-v6-script/.test(html)) throw new Error('V6 script missing');
-          if(route==='/learn/' && (!/dtf-content-density-v1-style/.test(html)||!/dtf-content-density-v1-script/.test(html))) throw new Error('Learn content-density V1 assets missing');
+          const labels=[...nav.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)].map(m=>m[1].replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim());
+          const expected=['Home','Seeds','Learn','Courses','Diagnostic','Games','Community','Shop'];
+          if(JSON.stringify(labels)!==JSON.stringify(expected)) throw new Error(`Unexpected V6 navigation on ${route}: ${JSON.stringify(labels)}`);
+          if(!/canonical-eight-v1/.test(header)) throw new Error(`canonical-eight-v1 marker missing on ${route}`);
+          if(!/dtf-sitewide-header-v6-script/.test(html)) throw new Error(`V6 script missing on ${route}`);
+          if(!/dtf-sitewide-mobile-polish-v1-style/.test(html)) throw new Error(`Mobile polish V1 style missing on ${route}`);
+          if(!/dtf-sitewide-visual-repair-v2-style/.test(html)||!/dtf-sitewide-visual-repair-v2-script/.test(html)) throw new Error(`Sitewide visual repair V2 assets missing on ${route}`);
+          if((route==='/learn/'||route==='/learn/nutrition-media/')&&(!/dtf-content-density-v1-style/.test(html)||!/dtf-content-density-v1-script/.test(html))) throw new Error(`Learn content-density V1 assets missing on ${route}`);
+          const forbidden=[
+            'Open the image for the full-size WordPress media asset.',
+            'Open the image for the full-size WordPress media asset'
+          ];
+          for(const phrase of forbidden){
+            if(visibleLower.includes(phrase.toLowerCase())) throw new Error(`Retired helper copy remains visibly rendered on ${route}: ${phrase}`);
+          }
+          if(route==='/gallery/'){
+            if(!visibleHtml.includes('Approved visuals only.')) throw new Error('Current Gallery ownership marker missing');
+            for(const retired of ['Cannabis plant anatomy educational infographic','Nutrient uptake and root-zone chemistry infographic','Beneficial insects and biological controls infographic','Deficiency versus toxicity cannabis diagnostic infographic','Cannabis plant life cycle infographic']){
+              if(visibleLower.includes(retired.toLowerCase())) throw new Error(`Retired Gallery visual remains visibly rendered: ${retired}`);
+            }
+          }
+          if(route==='/about/'&&!visibleHtml.includes('One brand. Four core experiences.')) throw new Error('Current About ownership marker missing');
+          if(route==='/learn/nutrition-media/'&&!/data-progressive-disclosure=["']true["']/i.test(visibleHtml)) throw new Error('Nutrition & Media progressive disclosure marker missing');
           NODE
               then ok=1; break; fi
               sleep 4
             done
-            [[ "$ok" -eq 1 ]] || { echo "Canonical header V6 was not visitor-facing on ${route}" >&2; exit 1; }
+            [[ "$ok" -eq 1 ]] || { echo "Canonical header/visual contract was not visitor-facing on ${route}" >&2; exit 1; }
           done
 
-      - name: Audit canonical V6 header across public routes
+      - name: Audit canonical V6 header across WordPress-owned routes
         shell: bash
+        env:
+          HEADER_V6_ROUTES: ${{ env.WORDPRESS_HEADER_VERIFY_ROUTES }}
         run: |
           set -euo pipefail
           node scripts/verify-sitewide-header-v6-live.mjs | tee /tmp/dtf-header-v6-live-audit.json

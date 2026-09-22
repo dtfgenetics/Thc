@@ -110,6 +110,9 @@ jobs:
           # canonical state is proved from WordPress storage instead of hidden
           # implementation attributes on the anonymous visitor renderer.
           grep -Fq 'prepare-learning-v3-owner-aware-publisher.mjs' "$learning_wrapper"
+          grep -Fq '!isRetiredMedia(item) && isApprovedLearningMedia(item)' "$learning_wrapper"
+          grep -Fq 'media.filter(item => item?.source_url && !isRetiredMedia(item) && isApprovedLearningMedia(item))' "$learning_wrapper"
+          ! grep -Fq 'media.filter(item => item?.source_url && isApprovedLearningMedia(item))' "$learning_wrapper"
           grep -Fq 'prepare-learning-owner-aware-followup-publishers.mjs' "$learning_wrapper"
           grep -Fq 'LEARNING_V3_PUBLISHER_PATH="$owner_v3"' "$learning_wrapper"
           grep -Fq 'APPLY_LEARNING_V4=true' "$learning_wrapper"
@@ -137,6 +140,24 @@ jobs:
           grep -Fq 'Blue Bubblegum F1 Regular DTF Genetics strain card' "$legacy"
           grep -Fq 'Mango Bubbles F1 Regular DTF Genetics strain card' "$legacy"
           echo 'Homepage genetics ownership validated: Learning V3 owns Home/Learn through an owner-aware storage transaction and the reusable final Home handoff; Topic Literature remains independently serialized; automatic legacy Home mutation is retired.'
+
+      - name: Exercise the exact Learning V3 transform chain
+        shell: bash
+        run: |
+          set -euo pipefail
+          atlas="$RUNNER_TEMP/rebuild-wordpress-learning-experience-v3-atlas.mjs"
+          owner="$RUNNER_TEMP/rebuild-wordpress-learning-experience-v3-owner-aware.mjs"
+          LEARNING_V3_BASE_PUBLISHER=scripts/rebuild-wordpress-learning-experience-v3.mjs \
+            LEARNING_V3_ATLAS_PUBLISHER="$atlas" \
+            node scripts/prepare-learning-v3-atlas-publisher.mjs
+          LEARNING_V3_SOURCE_PUBLISHER="$atlas" \
+            LEARNING_V3_OWNER_AWARE_PUBLISHER="$owner" \
+            node scripts/prepare-learning-v3-owner-aware-publisher.mjs
+          node --check "$owner"
+          grep -Fq 'function isRetiredMedia(item)' "$owner"
+          grep -Fq '!isRetiredMedia(item) && isApprovedLearningMedia(item)' "$owner"
+          grep -Fq 'media.filter(item => item?.source_url && !isRetiredMedia(item) && isApprovedLearningMedia(item))' "$owner"
+          grep -Fq 'data-progressive-disclosure="true"' "$owner"
 
       - name: Prove V3 runtime patch still matches canonical publisher
         shell: bash

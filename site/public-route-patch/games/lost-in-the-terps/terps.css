@@ -12,3 +12,20 @@ aside{position:sticky;top:84px;border:1px solid var(--line-soft);border-radius:1
 @media(max-width:390px){.words{grid-template-columns:1fr 1fr}.letter{font-size:.68rem}.hud strong{font-size:1rem}}
 @media(hover:none){.letter:hover:not(:disabled),.missions button:hover:not(:disabled),.hud button:hover:not(:disabled),.complete button:hover:not(:disabled){transform:none}}
 @media(prefers-reduced-motion:reduce){.letter,.word,.missions button,.hud button,.complete button{transition:none}.letter.wrong,.letter.hint{animation:none}.letter.start{transform:none}}
+
+@media(forced-colors:active){
+  .letter,.missions button,.hud button,.complete button,.grid-viewport,aside,#message{
+    border:1px solid ButtonText;
+  }
+  .letter:focus-visible,.missions button:focus-visible,.hud button:focus-visible,.complete button:focus-visible,.back:focus-visible{
+    outline:3px solid Highlight;
+    outline-offset:3px;
+  }
+  .letter.start,.letter.hint{
+    outline-color:Highlight;
+    border-color:Highlight;
+  }
+  .letter.found{
+    border-color:Highlight;
+  }
+}

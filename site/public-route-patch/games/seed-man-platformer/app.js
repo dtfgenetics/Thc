@@ -84,6 +84,13 @@ function respawn(player, config) {
   player.deaths += 1;
   player.finishBlocked = false;
   player.state = 'hurt';
+  if (typeof window !== 'undefined' && typeof CustomEvent === 'function') {
+    window.dispatchEvent(new CustomEvent('seedman:player-respawned', { detail: {
+      checkpointId: player.checkpoint?.id || 'start',
+      deaths: player.deaths,
+      levelId: typeof level !== 'undefined' ? (level?.id || '') : ''
+    } }));
+  }
 }
 
 function pickupRequirement(level) {
@@ -194,6 +201,9 @@ function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
 const BEST_KEY = 'dtf-seed-man-best-v20';
 const CAMERA_FOLLOW_RATE = 7.7;
 const CAMERA_LOOK_AHEAD_SECONDS = 0.18;
+const GAMEPAD_DEADZONE = 0.22;
+const GAMEPAD_BUTTONS = Object.freeze({ jump:0, phenotype:1, attack:2, left:14, right:15, pause:9 });
+const OBJECTIVE_NOTICE_MS = 1500;
 const canvas = document.querySelector('#game');
 const ctx = canvas?.getContext('2d');
 const ui = {
@@ -205,6 +215,7 @@ const ui = {
   power: document.querySelector('#power-count'),
   jump: document.querySelector('#jump-count'),
   progress: document.querySelector('#progress-count'),
+  health: document.querySelector('#health-count'),
   restart: document.querySelector('#restart'),
   pause: document.querySelector('#pause'),
   finish: document.querySelector('#finish-panel'),
@@ -222,6 +233,8 @@ let running = false;
 let paused = false;
 const STEP = 1 / 60;
 const input = { left: false, right: false, jumpHeld: false, jumpQueued: false };
+const gamepadInput = { left:false, right:false, jumpHeld:false, jumpQueued:false, attackHeld:false, abilityHeld:false, pauseHeld:false, connected:false, index:-1 };
+let objectiveNotice = null;
 
 const WORLD_FALLBACKS = Object.freeze({
   'greenhouse-valley':['#78cfa1','#173d2d','#9dd06c','#426b45'],
@@ -264,6 +277,18 @@ function setObjectiveStatus(text, state = 'progress') {
   if (ui.load.dataset.state !== state) ui.load.dataset.state = state;
 }
 
+function setTemporaryObjective(text, state = 'progress', durationMs = OBJECTIVE_NOTICE_MS) {
+  const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+  objectiveNotice = { text, state, until: now + Math.max(250, Number(durationMs) || OBJECTIVE_NOTICE_MS) };
+  setObjectiveStatus(text, state);
+}
+
+function cameraTargetFor(targetPlayer = player) {
+  if (!level || !canvas || !targetPlayer) return 0;
+  const lookAhead = Math.max(-90, Math.min(120, Number(targetPlayer.vx || 0) * CAMERA_LOOK_AHEAD_SECONDS));
+  return Math.max(0, Math.min(Math.max(0, level.worldWidth - canvas.width), targetPlayer.x + lookAhead - canvas.width * .34));
+}
+
 function clearInput() {
   input.left = false;
   input.right = false;
@@ -281,6 +306,7 @@ function syncPauseButton() {
 function reset() {
   if (!level?.spawn) return;
   player = createPlayer(level.spawn);
+  objectiveNotice = null;
   elapsed = 0;
   accumulator = 0;
   previous = 0;
@@ -315,14 +341,72 @@ function queueJump() {
   input.jumpHeld = true;
 }
 
+function retryCheckpoint() {
+  if (!level || !player || player.finished || paused) return false;
+  respawn(player, DEFAULTS);
+  window.__SEED_MAN_PLAYER_STATE__?.restoreHealth?.(player);
+  accumulator = 0;
+  cameraX = cameraTargetFor(player);
+  const label = player.checkpoint?.id && player.checkpoint.id !== 'start' ? 'checkpoint' : 'level start';
+  setTemporaryObjective(`Retry · ${label} · fall ${player.deaths}`, 'retry', 1200);
+  focusCanvas();
+  return true;
+}
+
+function gamepadButton(pad, index) {
+  const button = pad?.buttons?.[index];
+  return Boolean(button && (button.pressed || Number(button.value) > 0.55));
+}
+
+function pollGamepad() {
+  const pads = typeof navigator !== 'undefined' && typeof navigator.getGamepads === 'function'
+    ? Array.from(navigator.getGamepads() || [])
+    : [];
+  const pad = pads.find((candidate) => candidate?.connected) || null;
+  if (!pad) {
+    gamepadInput.left=false; gamepadInput.right=false; gamepadInput.jumpHeld=false; gamepadInput.jumpQueued=false;
+    gamepadInput.attackHeld=false; gamepadInput.abilityHeld=false; gamepadInput.pauseHeld=false;
+    gamepadInput.connected=false; gamepadInput.index=-1;
+    document.documentElement.dataset.seedManGamepad='disconnected';
+    return;
+  }
+
+  const axis = Number(pad.axes?.[0] || 0);
+  const jumpPressed = gamepadButton(pad, GAMEPAD_BUTTONS.jump);
+  const attackPressed = gamepadButton(pad, GAMEPAD_BUTTONS.attack);
+  const abilityPressed = gamepadButton(pad, GAMEPAD_BUTTONS.phenotype);
+  const pausePressed = gamepadButton(pad, GAMEPAD_BUTTONS.pause);
+
+  gamepadInput.left = axis < -GAMEPAD_DEADZONE || gamepadButton(pad, GAMEPAD_BUTTONS.left);
+  gamepadInput.right = axis > GAMEPAD_DEADZONE || gamepadButton(pad, GAMEPAD_BUTTONS.right);
+  if (jumpPressed && !gamepadInput.jumpHeld) gamepadInput.jumpQueued = true;
+  gamepadInput.jumpHeld = jumpPressed;
+
+  if (attackPressed && !gamepadInput.attackHeld && !paused) window.__SPROUT_COMBAT_BROWSER__?.fireWeapon?.();
+  if (abilityPressed && !gamepadInput.abilityHeld && !paused) window.__SPROUT_COMBAT_BROWSER__?.fireAbility?.();
+  if (pausePressed && !gamepadInput.pauseHeld) togglePause();
+
+  gamepadInput.attackHeld = attackPressed;
+  gamepadInput.abilityHeld = abilityPressed;
+  gamepadInput.pauseHeld = pausePressed;
+  gamepadInput.connected = true;
+  gamepadInput.index = Number.isInteger(pad.index) ? pad.index : 0;
+  document.documentElement.dataset.seedManGamepad='ready';
+}
+
 function keyState(event, down) {
   const key = event.key.toLowerCase();
-  if (down && key === 'p' && !event.repeat) {
+  if (down && (key === 'p' || key === 'escape') && !event.repeat) {
     event.preventDefault();
     togglePause();
     return;
   }
-  if (['arrowleft','arrowright','arrowup',' ','a','d','w'].includes(key)) event.preventDefault();
+  if (down && key === 'r' && !event.repeat) {
+    event.preventDefault();
+    retryCheckpoint();
+    return;
+  }
+  if (['arrowleft','arrowright','arrowup',' ','a','d','w','r'].includes(key)) event.preventDefault();
   if (paused) return;
   if (key === 'arrowleft' || key === 'a') input.left = down;
   if (key === 'arrowright' || key === 'd') input.right = down;
@@ -379,6 +463,10 @@ function updateHud() {
   const required = requiredSprouts();
   const remaining = Math.max(0, required - collected);
   if (ui.sprouts) ui.sprouts.textContent = `${collected} / ${required}`;
+  const maxHealth=Math.max(1,Number(player?.maxHealth)||3);
+  const health=Math.max(0,Math.min(maxHealth,Number(player?.health ?? maxHealth)));
+  if (ui.health) ui.health.textContent = `${health} / ${maxHealth}`;
+  document.documentElement.dataset.seedHealthState=health<=1?'critical':health<maxHealth?'hurt':'healthy';
   if (ui.deaths) ui.deaths.textContent = String(player?.deaths || 0);
   if (ui.time) ui.time.textContent = `${elapsed.toFixed(1)}s`;
   const best = readBest();
@@ -387,6 +475,12 @@ function updateHud() {
   if (ui.jump) ui.jump.textContent = player?.grounded ? '2 jumps ready' : player?.airJumpsRemaining > 0 ? 'Double jump ready' : 'Landing resets';
   if (ui.progress && level?.finish && player) ui.progress.textContent = `${Math.min(100, Math.max(0, Math.round((player.x / level.finish.x) * 100)))}%`;
   if (!level || !player) return;
+  const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+  if (objectiveNotice && now < objectiveNotice.until) {
+    setObjectiveStatus(objectiveNotice.text, objectiveNotice.state);
+    return;
+  }
+  objectiveNotice = null;
   if (player.finished) setObjectiveStatus(`Level complete · ${collected} of ${required} seeds · Dream the Future reached!`, 'complete');
   else if (player.finishBlocked && level.boss && !level.boss.defeated) setObjectiveStatus(`Boss gate locked · defeat ${level.boss.name || level.boss.id} before exiting.`, 'boss');
   else if (remaining === 0) setObjectiveStatus(`All ${required} seeds collected · reach the flag${level.boss ? ' after defeating the boss' : ''}!`, 'ready');
@@ -495,7 +589,7 @@ function render() {
   if (!level || !player) {
     ctx.fillStyle = '#0d2419'; ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = '#e9f3e5'; ctx.textAlign = 'center'; ctx.font = '700 22px system-ui';
-    ctx.fillText('Loading Seed Man v20 campaign…', canvas.width / 2, canvas.height / 2);
+    ctx.fillText('Loading Seed Man adventure…', canvas.width / 2, canvas.height / 2);
     ctx.textAlign = 'start';
     return;
   }
@@ -533,17 +627,33 @@ function frame(timeMs) {
   if (!previous) previous = timeMs;
   const frameTime = Math.min((timeMs - previous) / 1000, .1);
   previous = timeMs;
+  pollGamepad();
   if (running && level && player) {
     accumulator += frameTime;
     elapsed += frameTime;
     while (accumulator >= STEP) {
-      player = stepPlayer(player, { left:input.left, right:input.right, jumpPressed:input.jumpQueued, jumpHeld:input.jumpHeld }, level, STEP);
+      const priorDeaths = player.deaths;
+      const priorCheckpoint = player.checkpoint?.id || 'start';
+      player = stepPlayer(player, {
+        left:input.left || gamepadInput.left,
+        right:input.right || gamepadInput.right,
+        jumpPressed:input.jumpQueued || gamepadInput.jumpQueued,
+        jumpHeld:input.jumpHeld || gamepadInput.jumpHeld
+      }, level, STEP);
       input.jumpQueued = false;
+      gamepadInput.jumpQueued = false;
       accumulator -= STEP;
+
+      if ((player.checkpoint?.id || 'start') !== priorCheckpoint) {
+        setTemporaryObjective('Checkpoint activated · retry will return here', 'checkpoint', 1600);
+      }
+      if (player.deaths > priorDeaths) {
+        cameraX = cameraTargetFor(player);
+        setTemporaryObjective(`Recovered at ${player.checkpoint?.id === 'start' ? 'level start' : 'checkpoint'} · fall ${player.deaths}`, 'retry', 1350);
+      }
       if (player.finished) { finishGame(); break; }
     }
-    const lookAhead = Math.max(-90, Math.min(120, player.vx * CAMERA_LOOK_AHEAD_SECONDS));
-    const targetCamera = Math.max(0, Math.min(level.worldWidth - canvas.width, player.x + lookAhead - canvas.width * .34));
+    const targetCamera = cameraTargetFor(player);
     cameraX += (targetCamera - cameraX) * cameraBlend(frameTime);
     updateHud();
   }
@@ -561,7 +671,7 @@ function bootV20Shell() {
   player = null;
   running = false;
   paused = false;
-  setObjectiveStatus('Loading canonical Seed Man v20 campaign…', 'loading');
+  setObjectiveStatus('Preparing your next Seed Man adventure…', 'loading');
   document.documentElement.dataset.seedManBaseRuntime = 'seed-man-base-runtime-v20';
 }
 
@@ -573,8 +683,9 @@ window.__SEED_MAN_BASE_RUNTIME__ = Object.freeze({
   campaignAuthority:'campaign-v20-runtime.js',
   retiredBootstrap:'sprout-run',
   reset,
+  retryCheckpoint,
   respawnPlayer:(target)=>respawn(target,DEFAULTS),
-  snapshot:()=>({levelId:level?.id||null,running,paused,playerState:player?.state||null})
+  snapshot:()=>({levelId:level?.id||null,running,paused,playerState:player?.state||null,checkpointId:player?.checkpoint?.id||null,gamepadConnected:gamepadInput.connected,gamepadIndex:gamepadInput.index})
 });
 window.requestAnimationFrame(frame);
 bootV20Shell();

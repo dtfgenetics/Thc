@@ -134,6 +134,8 @@ function renderGrid() {
   gridEl.replaceChildren();
   gridEl.style.gridTemplateColumns = `repeat(${puzzle.size},minmax(0,1fr))`;
   gridEl.style.setProperty('--grid-size', String(puzzle.size));
+  const minimumTouchGridWidth = puzzle.size * 36 + Math.max(0, puzzle.size - 1) * 3 + 12;
+  gridEl.style.minWidth = `max(100%, ${minimumTouchGridWidth}px)`;
   for (let row = 0; row < puzzle.size; row += 1) {
     for (let col = 0; col < puzzle.size; col += 1) {
       const button = document.createElement('button');

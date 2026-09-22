@@ -71,7 +71,7 @@ function writeRecord(record) {
 
 function renderRecord() {
   const record = readRecord();
-  els.recordStrip.textContent = `Prototype record: ${record.wins} W / ${record.losses} L${record.draws ? ` / ${record.draws} D` : ''}`;
+  els.recordStrip.textContent = `Match record: ${record.wins} W / ${record.losses} L${record.draws ? ` / ${record.draws} D` : ''}`;
 }
 
 function sound(type = 'tap') {
@@ -467,7 +467,7 @@ async function loadLegacyData() {
   if (!familiesResponse.ok || rosterResponses.some((response) => !response.ok)) throw new Error('Game data failed to load.');
   const loadedFamilies = await familiesResponse.json();
   const rosterGroups = await Promise.all(rosterResponses.map((response) => response.json()));
-  return { families: loadedFamilies, cards: rosterGroups.flat(), source: 'legacy split roster fallback' };
+  return { families: loadedFamilies, cards: rosterGroups.flat(), source: 'backup roster' };
 }
 
 async function loadGameData() {
@@ -478,9 +478,9 @@ async function loadGameData() {
     if (bundle.schemaVersion !== 1 || bundle.cardCount !== 96 || bundle.familyCount !== 8 || bundle.cards?.length !== 96 || bundle.families?.length !== 8) {
       throw new Error('canonical browser bundle is incomplete');
     }
-    return { families: bundle.families, cards: bundle.cards, source: 'canonical one-file roster bundle' };
+    return { families: bundle.families, cards: bundle.cards, source: 'ready' };
   } catch (error) {
-    console.warn('Strain Showdown bundle unavailable; using split development data.', error);
+    console.warn('Strain Showdown primary roster bundle unavailable; using backup roster data.', error);
     return loadLegacyData();
   }
 }
@@ -497,7 +497,7 @@ async function boot() {
     }
     renderRecord();
     renderFamilyChoices();
-    if (els.runtimeStatus) els.runtimeStatus.textContent = `96 cards · 8 families · ${loaded.source}`;
+    if (els.runtimeStatus) els.runtimeStatus.textContent = '96 cards · 8 families · Ready';
   } catch (error) {
     if (els.runtimeStatus) els.runtimeStatus.textContent = 'Roster unavailable';
     els.familyGrid.innerHTML = `<div class="intro-panel"><h2>Game data could not load.</h2><p>${error.message}</p></div>`;

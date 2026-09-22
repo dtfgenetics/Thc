@@ -18,7 +18,7 @@ concurrency:
 jobs:
   publish:
     name: Publish and verify canonical WordPress experience
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 35
     environment: production
     env:
@@ -32,11 +32,11 @@ jobs:
       BACKUP_ROOT: /tmp/wordpress-production-backups
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
 
@@ -151,8 +151,6 @@ jobs:
 
       - name: Verify Learning-owned WordPress route preservation through REST
         id: owned_routes
-        env:
-          EXPECTED_HOME_FEATURED_MEDIA: ${{ steps.icon.outputs.site_icon }}
         shell: bash
         run: |
           set -euo pipefail
@@ -290,7 +288,7 @@ jobs:
 
       - name: Upload rollback and capability package
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wordpress-production-backup-${{ github.run_id }}
           path: |

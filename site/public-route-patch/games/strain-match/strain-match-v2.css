@@ -235,3 +235,19 @@ html[data-deck=tools] .deck-copy{border-left-color:#83d7ff}
 @media(prefers-reduced-motion:reduce){
   .deck-button,.primary-control,.score-strip div,.match-card{transition:none!important}
 }
+
+@media(forced-colors:active){
+  .match-card,.deck-button,.primary-control,.control-panel,.learn-panel,.complete-panel,.score-strip div{
+    border:1px solid ButtonText;
+  }
+  .match-card:focus-visible,.deck-button:focus-visible,.primary-control:focus-visible{
+    outline:3px solid Highlight;
+    outline-offset:3px;
+  }
+  .match-card.matched{
+    border-color:Highlight;
+  }
+  .match-card.mismatch{
+    border-color:Mark;
+  }
+}

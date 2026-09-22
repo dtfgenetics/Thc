@@ -7,8 +7,8 @@ const css=fs.readFileSync('site/public-route-patch/games/bud-or-bluff/visual-sta
 const baseCss=fs.readFileSync('site/public-route-patch/games/bud-or-bluff/styles.css','utf8');
 const html=fs.readFileSync('site/public-route-patch/games/bud-or-bluff/index.html','utf8');
 
-assert.match(html,/visual-state-v3\.css\?v=20260913/,'visual-state stylesheet must load the current responsive revision');
-assert.match(html,/visual-state-v3\.js\?v=20260913/,'visual-state runtime must load with the current cache revision');
+assert.match(html,/visual-state-v3\.css\?v=20260921-mobile-player-rail-v1/,'visual-state stylesheet must load the current responsive revision');
+assert.match(html,/visual-state-v3\.js\?v=20260921-mobile-player-rail-v1/,'visual-state runtime must load with the current cache revision');
 assert.match(css,/locked-vote\[data-vote="BLUFF"\]/,'BLUFF lock needs a distinct visual state');
 assert.match(css,/locked-vote\[data-vote="BUD"\]/,'BUD lock needs a distinct visual state');
 assert.match(css,/data-urgency="critical"/,'critical timer state must be visible');

@@ -1,6 +1,12 @@
 name: High Lines CI
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - games/high-lines/**
+      - site/public-route-patch/games/high-lines/**
+      - .github/workflows/high-lines-ci.yml
   pull_request:
     branches: [main]
     paths:
@@ -14,11 +20,11 @@ permissions:
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
 
@@ -37,6 +43,7 @@ jobs:
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/high-lines/app.js
+          node --check site/public-route-patch/games/high-lines/runtime.mjs
           node --check site/public-route-patch/games/high-lines/engine.mjs
           node --check site/public-route-patch/games/high-lines/persistence.mjs
 
@@ -53,6 +60,7 @@ jobs:
           const css = fs.readFileSync('site/public-route-patch/games/high-lines/high-lines.css','utf8');
           const visual = fs.readFileSync('site/public-route-patch/games/high-lines/high-lines-v2.css','utf8');
           const app = fs.readFileSync('site/public-route-patch/games/high-lines/app.js','utf8');
+          const runtime = fs.readFileSync('site/public-route-patch/games/high-lines/runtime.mjs','utf8');
           const need = (source, text, label) => {
             if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
           };
@@ -63,22 +71,22 @@ jobs:
           need(html, 'Game boundary:', 'content boundary');
           need(html, 'id="zoom-out"', 'zoom-out control');
           need(html, 'id="zoom-in"', 'zoom-in control');
-          need(app, 'globalThis.localStorage?.setItem', 'guarded local autosave write');
-          need(app, 'globalThis.localStorage?.getItem', 'guarded local autosave read');
-          need(app, 'globalThis.localStorage?.removeItem', 'guarded local autosave reset');
-          need(app, 'restoreExperience(', 'validated save restoration');
-          need(app, 'experienceSavePayload(', 'validated save serialization');
-          need(app, 'let sceneLoadToken = 0;', 'scene load token');
-          need(app, 'const requestToken = ++sceneLoadToken;', 'load token increment');
-          need(app, 'requestToken !== sceneLoadToken', 'stale response guard');
-          need(app, 'state.sceneId !== requestedSceneId', 'scene identity guard');
-          need(app, "svg.querySelector('script, foreignObject')", 'safe inline SVG contract');
-          need(app, 'for (let attempt = 1; attempt <= 2; attempt += 1)', 'scene SVG retry');
-          need(app, 'Confirm Reset', 'destructive reset guard');
-          need(app, 'const MAX_ZOOM = 2.5', 'zoom ceiling');
-          need(app, "if (/^[1-8]$/.test(event.key))", 'palette keyboard shortcuts');
-          need(app, "event.key === 'u' || event.key === 'U'", 'undo keyboard shortcut');
-          need(app, "'[data-hidden],[data-region]'", 'keyboard SVG targets');
+          need(runtime, 'globalThis.localStorage?.setItem', 'guarded local autosave write');
+          need(runtime, 'globalThis.localStorage?.getItem', 'guarded local autosave read');
+          need(runtime, 'globalThis.localStorage?.removeItem', 'guarded local autosave reset');
+          need(runtime, 'restoreExperience(', 'validated save restoration');
+          need(runtime, 'experienceSavePayload(', 'validated save serialization');
+          need(runtime, 'let sceneLoadToken = 0;', 'scene load token');
+          need(runtime, 'const requestToken = ++sceneLoadToken;', 'load token increment');
+          need(runtime, 'requestToken !== sceneLoadToken', 'stale response guard');
+          need(runtime, 'state.sceneId !== requestedSceneId', 'scene identity guard');
+          need(runtime, "svg.querySelector('script, foreignObject')", 'safe inline SVG contract');
+          need(runtime, 'for (let attempt = 1; attempt <= 2; attempt += 1)', 'scene SVG retry');
+          need(runtime, 'Confirm Reset', 'destructive reset guard');
+          need(runtime, 'const MAX_ZOOM = 2.5', 'zoom ceiling');
+          need(runtime, "if (/^[1-8]$/.test(event.key))", 'palette keyboard shortcuts');
+          need(runtime, "event.key === 'u' || event.key === 'U'", 'undo keyboard shortcut');
+          need(runtime, "'[data-hidden],[data-region]'", 'keyboard SVG targets');
           need(css, '.playfield{', 'playfield-first layout');
           need(css, '.high-lines-svg', 'interactive SVG styling');
           need(visual, '.board-controls', 'zoom control layout');
@@ -87,7 +95,7 @@ jobs:
           need(visual, '#reset-art.reset-armed', 'destructive reset visual');
           need(visual, '@media(max-width:650px)', 'mobile controls');
           need(visual, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
-          const staleGuards = (app.match(/requestToken !== sceneLoadToken/g) || []).length;
+          const staleGuards = (runtime.match(/requestToken !== sceneLoadToken/g) || []).length;
           if (staleGuards < 3) throw new Error('scene load must guard stale success, pre-render state, and failure paths');
           if (/^\s*import\s/m.test(app)) throw new Error('public startup regressed to browser module imports');
           if (/fetch\(['"]\.\/data\/scenes\.json/.test(app)) throw new Error('public startup regressed to runtime scene-metadata fetch');

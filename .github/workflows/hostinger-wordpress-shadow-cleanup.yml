@@ -6,380 +6,71 @@ on:
     branches: [main]
     paths:
       - .github/workflows/hostinger-wordpress-shadow-cleanup.yml
+      - scripts/retire-support-static-shadows-via-wordpress.mjs
+      - site/wordpress/pages/about.html
+      - site/wordpress/pages/gallery.html
+      - site/wordpress/visual-quality/retired-public-visuals.json
 
 permissions:
   contents: read
 
-# Share the same production mutation lane as the public-suite Hostinger deploy so
-# a static-shadow repair can never race an independent games/tools activation.
+# Compatibility entry point for the original shadow-cleanup workflow name.
+# The SSH implementation was retired because the production environment does
+# not expose those secrets and because its six-image Gallery requirement
+# conflicted with the approved-visual-only policy. Both cleanup entry points now
+# use the same proven, token-protected WordPress bridge and serialization lock.
 concurrency:
-  group: dtfseeds-hostinger-production
+  group: dtf-wordpress-temporary-code-snippets-bridge
   cancel-in-progress: false
 
 jobs:
   cleanup:
-    name: Back up and remove stale static routes that shadow WordPress
+    name: Verify and retire stale support-page shadows
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     environment: production
     env:
-      SSH_HOST: ${{ secrets.HOSTINGER_HOST || secrets.HOSTINGER_SSH_HOST || secrets.SSH_HOST || secrets.SFTP_HOST }}
-      SSH_PORT: ${{ secrets.HOSTINGER_PORT || secrets.HOSTINGER_SSH_PORT || secrets.SSH_PORT || secrets.SFTP_PORT }}
-      SSH_USER: ${{ secrets.HOSTINGER_USER || secrets.HOSTINGER_SSH_USER || secrets.SSH_USER || secrets.SFTP_USER }}
-      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY || secrets.HOSTINGER_SSH_KEY || secrets.SSH_PRIVATE_KEY || secrets.DEPLOY_KEY }}
-      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS || secrets.HOSTINGER_SSH_KNOWN_HOSTS || secrets.SSH_KNOWN_HOSTS }}
-      SITE_ROOT: ${{ vars.HOSTINGER_WORDPRESS_PATH || vars.WORDPRESS_PATH || vars.WP_PATH }}
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Configure verified Hostinger production transport
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate canonical support policy
         shell: bash
         run: |
           set -euo pipefail
-          SSH_HOST="${SSH_HOST:-147.93.42.1}"
-          SSH_PORT="${SSH_PORT:-22}"
-          : "${SSH_USER:?Missing Hostinger SSH/SFTP user alias}"
-          : "${SSH_PRIVATE_KEY:?Missing Hostinger SSH private-key alias}"
-          [[ "$SSH_PORT" =~ ^[0-9]+$ ]]
-          echo "SSH_HOST=$SSH_HOST" >> "$GITHUB_ENV"
-          echo "SSH_PORT=$SSH_PORT" >> "$GITHUB_ENV"
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          grep -Fq 'data-dtf-layout="about-visual-v2"' site/wordpress/pages/about.html
+          grep -Fq 'One brand. Four core experiences.' site/wordpress/pages/about.html
+          grep -Fq 'data-dtf-layout="gallery-visual-v2"' site/wordpress/pages/gallery.html
+          grep -Fq 'Approved visuals only.' site/wordpress/pages/gallery.html
+          ! grep -Fqi '<img' site/wordpress/pages/gallery.html
+          node --check scripts/retire-support-static-shadows-via-wordpress.mjs
 
-          install -d -m 700 "$HOME/.ssh"
-          printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > "$HOME/.ssh/dtf_hostinger"
-          chmod 600 "$HOME/.ssh/dtf_hostinger"
-          if [[ -n "${SSH_KNOWN_HOSTS:-}" ]]; then
-            printf '%s\n' "$SSH_KNOWN_HOSTS" | tr -d '\r' > "$HOME/.ssh/known_hosts"
-          else
-            ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" > "$HOME/.ssh/known_hosts"
-          fi
-          test -s "$HOME/.ssh/known_hosts"
-          chmod 600 "$HOME/.ssh/known_hosts"
-
-          ssh -i "$HOME/.ssh/dtf_hostinger" \
-            -p "$SSH_PORT" \
-            -o BatchMode=yes \
-            -o IdentitiesOnly=yes \
-            -o StrictHostKeyChecking=yes \
-            "$SSH_USER@$SSH_HOST" 'printf "Hostinger SSH connection verified.\n"'
-
-      - name: Locate and verify dtfseeds.com WordPress root
-        id: root
+      - name: Back up, retire, verify, and clean temporary bridge
         shell: bash
         run: |
           set -euo pipefail
-          if [[ -n "${SITE_ROOT:-}" ]]; then
-            root="${SITE_ROOT%/}"
-          else
-            root="$(ssh -i "$HOME/.ssh/dtf_hostinger" -p "$SSH_PORT" \
-              -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
-              "$SSH_USER@$SSH_HOST" 'bash -s' <<'REMOTE'
-          set -euo pipefail
-          while IFS= read -r config; do
-            directory="$(dirname "$config")"
-            [[ -s "$directory/index.php" ]] || continue
-            if command -v wp >/dev/null 2>&1; then
-              home_url="$(wp --path="$directory" option get home --skip-plugins --skip-themes 2>/dev/null || true)"
-              case "${home_url%/}" in
-                https://dtfseeds.com|http://dtfseeds.com|https://www.dtfseeds.com|http://www.dtfseeds.com)
-                  printf '%s\n' "$directory"
-                  exit 0
-                  ;;
-              esac
-            fi
-          done < <(find "$HOME" -maxdepth 8 -type f -name wp-config.php -print 2>/dev/null)
-          exit 1
-          REMOTE
-          )"
-          fi
+          node scripts/retire-support-static-shadows-via-wordpress.mjs | tee "$RUNNER_TEMP/support-shadow-cleanup.json"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/support-shadow-cleanup.json"
 
-          [[ -n "$root" ]]
-          [[ "$root" == /* ]]
-          [[ "$root" != "/" ]]
-          [[ "$root" != *'..'* ]]
-          [[ "$(basename "$root")" == 'public_html' ]] || {
-            echo "::error::Resolved WordPress root must end in /public_html: $root"
-            exit 1
-          }
-
-          ssh -i "$HOME/.ssh/dtf_hostinger" -p "$SSH_PORT" \
-            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
-            "$SSH_USER@$SSH_HOST" "ROOT='$root' bash -s" <<'REMOTE'
-          set -euo pipefail
-          [[ -d "$ROOT" ]]
-          [[ -s "$ROOT/wp-config.php" ]]
-          [[ -s "$ROOT/index.php" ]]
-          if command -v wp >/dev/null 2>&1; then
-            home_url="$(wp --path="$ROOT" option get home --skip-plugins --skip-themes 2>/dev/null || true)"
-            case "${home_url%/}" in
-              https://dtfseeds.com|http://dtfseeds.com|https://www.dtfseeds.com|http://www.dtfseeds.com) ;;
-              *) echo "Resolved public root is not the dtfseeds.com WordPress install: ${home_url:-unknown}" >&2; exit 1 ;;
-            esac
-          fi
-          REMOTE
-
-          echo "path=$root" >> "$GITHUB_OUTPUT"
-          echo "Verified dtfseeds.com WordPress root." >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Back up and remove positively identified stale shadows
-        id: cleanup
-        shell: bash
-        env:
-          ROOT: ${{ steps.root.outputs.path }}
-        run: |
-          set -euo pipefail
-          stamp="$(date -u +%Y%m%dT%H%M%SZ)"
-          backup="$HOME/dtfseeds-route-shadow-backups/$stamp"
-          result="$(ssh -i "$HOME/.ssh/dtf_hostinger" -p "$SSH_PORT" \
-            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
-            "$SSH_USER@$SSH_HOST" "ROOT='$ROOT' BACKUP='$backup' bash -s" <<'REMOTE'
-          set -euo pipefail
-          mkdir -p "$BACKUP"
-          removed=0
-
-          is_stale() {
-            file="$1"
-            shift
-            [[ -f "$file" ]] || return 1
-            for marker in "$@"; do
-              if grep -Fqi -- "$marker" "$file"; then
-                return 0
-              fi
-            done
-            return 1
-          }
-
-          retire_file_if_stale() {
-            rel="$1"
-            shift
-            file="$ROOT/$rel"
-            is_stale "$file" "$@" || return 0
-            mkdir -p "$BACKUP/$(dirname "$rel")"
-            cp -a "$file" "$BACKUP/$rel"
-            rm -f "$file"
-            printf 'retired-file:%s\n' "$rel"
-            removed=$((removed + 1))
-          }
-
-          retire_dir_if_stale() {
-            rel="$1"
-            shift
-            dir="$ROOT/$rel"
-            index="$dir/index.html"
-            [[ -d "$dir" && -f "$index" ]] || return 0
-            is_stale "$index" "$@" || return 0
-            [[ ! -e "$BACKUP/$rel" ]] || { echo "Backup target already exists: $BACKUP/$rel" >&2; exit 1; }
-            mkdir -p "$(dirname "$BACKUP/$rel")"
-            mv "$dir" "$BACKUP/$rel"
-            printf 'retired-directory:%s\n' "$rel"
-            removed=$((removed + 1))
-          }
-
-          retire_file_if_stale index.html \
-            '/assets/dtf-home/dtf-home.css' \
-            'THC Grow Doc, genetics, cultivation education, and games in one home.'
-
-          retire_dir_if_stale learn \
-            '/assets/dtf-home/dtf-home.css' \
-            'Grow education belongs in a clean, readable library.' \
-            'MOPS, cultivation notes, THC basics'
-
-          retire_dir_if_stale shop \
-            '/assets/dtf-home/dtf-home.css' \
-            'DTF Genetics products, seeds, apparel, and printables in one storefront path.'
-
-          retire_dir_if_stale seeds \
-            '/assets/dtf-home/dtf-home.css' \
-            'DTF Genetics catalog pages built around strain identity and grow context.'
-
-          retire_dir_if_stale community \
-            '/assets/dtf-home/dtf-home.css' \
-            'Game Nights' \
-            'Grower Prompts'
-
-          retire_dir_if_stale gallery \
-            '/assets/dtf-home/dtf-home.css' \
-            'Character Art' \
-            'Grow Media'
-
-          retire_dir_if_stale about \
-            '/assets/dtf-home/dtf-home.css' \
-            'Dream the Future with genetics, games, and education.'
-
-          retire_dir_if_stale contact \
-            '/assets/dtf-home/dtf-home.css' \
-            'Game Hub' \
-            'Community'
-
-          if command -v wp >/dev/null 2>&1; then
-            wp --path="$ROOT" rewrite flush --hard >/dev/null 2>&1 || true
-            wp --path="$ROOT" cache flush >/dev/null 2>&1 || true
-            wp --path="$ROOT" eval 'do_action("litespeed_purge_all");' >/dev/null 2>&1 || true
-          fi
-
-          printf 'removed=%s\n' "$removed"
-          printf 'backup=%s\n' "$BACKUP"
-          REMOTE
-          )"
-          printf '%s\n' "$result"
-          removed="$(printf '%s\n' "$result" | awk -F= '/^removed=/{print $2}' | tail -1)"
-          backup_path="$(printf '%s\n' "$result" | awk -F= '/^backup=/{sub(/^backup=/,""); print}' | tail -1)"
-          echo "removed=${removed:-0}" >> "$GITHUB_OUTPUT"
-          echo "backup=${backup_path:-unknown}" >> "$GITHUB_OUTPUT"
-          echo "Retired stale static shadows: ${removed:-0}" >> "$GITHUB_STEP_SUMMARY"
-          echo "Remote rollback backup: ${backup_path:-unknown}" >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Verify visitor-facing WordPress routes and preserved app owners
-        id: verify
-        shell: bash
-        run: |
-          set -euo pipefail
-          check_wordpress() {
-            path="$1"
-            marker="$2"
-            minimum="$3"
-            body="$RUNNER_TEMP/live-$(printf '%s' "$path" | tr '/?' '__').html"
-            ok=0
-            for attempt in 1 2 3 4 5 6 7 8; do
-              if curl -4 --fail --silent --show-error --location --retry 2 --retry-all-errors --retry-delay 2 \
-                --connect-timeout 15 --max-time 60 \
-                -H 'Cache-Control: no-cache, no-store, max-age=0' \
-                -H 'Pragma: no-cache' \
-                "https://dtfseeds.com${path}?dtf_shadow_cleanup=${GITHUB_RUN_ID}-${attempt}" \
-                -o "$body" && grep -Fqi -- "$marker" "$body"; then
-                ok=1
-                break
-              fi
-              sleep 5
-            done
-            [[ "$ok" -eq 1 ]] || {
-              echo "Current WordPress marker missing on $path: $marker" >&2
-              head -c 3000 "$body" >&2 || true
-              exit 1
-            }
-            count="$(grep -o '/wp-content/uploads/' "$body" | wc -l | tr -d ' ')"
-            [[ "$count" -ge "$minimum" ]] || {
-              echo "$path has $count WordPress media references; expected at least $minimum" >&2
-              exit 1
-            }
-            for stale in \
-              '/assets/dtf-home/dtf-home.css' \
-              'Grow education belongs in a clean, readable library.' \
-              'MOPS, cultivation notes, THC basics' \
-              'being rebuilt' \
-              'Reserved strain card' \
-              'Tool-ready rebuild' \
-              'email@email.com' \
-              '+123456789'; do
-              ! grep -Fqi -- "$stale" "$body" || {
-                echo "Stale content remains on $path: $stale" >&2
-                exit 1
-              }
-            done
-            echo "$path verified with $count WordPress media references"
-          }
-
-          check_preserved() {
-            path="$1"
-            marker="$2"
-            body="$RUNNER_TEMP/preserved-$(printf '%s' "$path" | tr '/?' '__').html"
-            curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 2 \
-              --connect-timeout 15 --max-time 60 \
-              -H 'Cache-Control: no-cache, no-store, max-age=0' \
-              -H 'Pragma: no-cache' \
-              "https://dtfseeds.com${path}?dtf_shadow_preserved=${GITHUB_RUN_ID}" -o "$body"
-            grep -Fqi -- "$marker" "$body" || {
-              echo "Preserved owner marker missing on $path: $marker" >&2
-              head -c 3000 "$body" >&2 || true
-              exit 1
-            }
-            echo "$path preserved owner verified"
-          }
-
-          check_wordpress '/' 'Genetics. Plant science. Tools. Games. Community.' 8
-          check_wordpress '/learn/' 'Explore by subject' 10
-          check_wordpress '/learn/infographics/' 'Visual plant science and cultivation library.' 30
-          check_wordpress '/learn/start-here/' 'Learn the plant before chasing the fix.' 1
-          check_wordpress '/seeds/' 'DTF Genetics library' 3
-          check_wordpress '/seeds/mango-bubbles/' 'Mango Bubbles' 1
-          check_wordpress '/shop/' 'dtf-commerce-archive-style' 2
-          check_wordpress '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
-          check_wordpress '/gallery/' 'DTF gallery.' 6
-          check_wordpress '/about/' 'Dream the future.' 0
-          check_wordpress '/contact/' 'Get to the right place.' 0
-
-          check_preserved '/games/' '25 playable browser games'
-          check_preserved '/tools/' 'Grow with records. Diagnose with evidence.'
-
-      - name: Restore retired shadows automatically if visitor verification fails
-        if: ${{ failure() && steps.cleanup.outcome == 'success' && steps.cleanup.outputs.backup != '' }}
-        shell: bash
-        env:
-          ROOT: ${{ steps.root.outputs.path }}
-          BACKUP: ${{ steps.cleanup.outputs.backup }}
-        run: |
-          set -euo pipefail
-          ssh -i "$HOME/.ssh/dtf_hostinger" -p "$SSH_PORT" \
-            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
-            "$SSH_USER@$SSH_HOST" "ROOT='$ROOT' BACKUP='$BACKUP' bash -s" <<'REMOTE'
-          set -euo pipefail
-          case "$BACKUP" in
-            "$HOME"/dtfseeds-route-shadow-backups/*) ;;
-            *) echo "Unsafe rollback backup path: $BACKUP" >&2; exit 1 ;;
-          esac
-          [[ -d "$BACKUP" ]] || { echo "Rollback backup is missing: $BACKUP" >&2; exit 1; }
-
-          restore_file() {
-            rel="$1"
-            src="$BACKUP/$rel"
-            dst="$ROOT/$rel"
-            [[ -f "$src" ]] || return 0
-            [[ ! -e "$dst" ]] || { echo "Refusing to overwrite existing rollback target: $dst" >&2; exit 1; }
-            mkdir -p "$(dirname "$dst")"
-            mv "$src" "$dst"
-            printf 'restored-file:%s\n' "$rel"
-          }
-
-          restore_dir() {
-            rel="$1"
-            src="$BACKUP/$rel"
-            dst="$ROOT/$rel"
-            [[ -d "$src" ]] || return 0
-            [[ ! -e "$dst" ]] || { echo "Refusing to overwrite existing rollback target: $dst" >&2; exit 1; }
-            mkdir -p "$(dirname "$dst")"
-            mv "$src" "$dst"
-            printf 'restored-directory:%s\n' "$rel"
-          }
-
-          restore_file index.html
-          for route in learn shop seeds community gallery about contact; do
-            restore_dir "$route"
-          done
-
-          if command -v wp >/dev/null 2>&1; then
-            wp --path="$ROOT" rewrite flush --hard >/dev/null 2>&1 || true
-            wp --path="$ROOT" cache flush >/dev/null 2>&1 || true
-            wp --path="$ROOT" eval 'do_action("litespeed_purge_all");' >/dev/null 2>&1 || true
-          fi
-          REMOTE
-          echo 'Visitor verification failed; retired legacy route shadows were restored from the rollback backup.' >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Record cleanup result
+      - name: Record compatibility cleanup result
         if: always()
         shell: bash
-        env:
-          JOB_STATUS: ${{ job.status }}
-          REMOVED: ${{ steps.cleanup.outputs.removed }}
-          BACKUP: ${{ steps.cleanup.outputs.backup }}
-          VERIFY: ${{ steps.verify.outcome }}
         run: |
           {
-            echo '## Hostinger static-shadow cleanup'
+            echo '## DTFSeeds static-shadow compatibility cleanup'
             echo
-            echo "Result: **${JOB_STATUS}**"
-            echo "Stale static route entries retired: **${REMOVED:-0}**"
-            echo "Visitor-facing verification: **${VERIFY:-not-run}**"
-            echo "Remote rollback backup: \`${BACKUP:-not-reported}\`"
-            echo
-            echo 'The cleanup uses the production environment Hostinger/SFTP alias contract already used by existing route-retirement workflows, verifies the WordPress root before mutation, preserves Games/Tools ownership, and automatically restores retired shadows if live verification fails.'
+            echo '- Legacy SSH transport: retired'
+            echo '- Legacy Gallery image-count requirement: retired'
+            echo '- Current transport: authenticated temporary WordPress Code Snippets bridge'
+            echo '- Backup-first mutation: yes'
+            echo '- Automatic rollback on visitor verification failure: yes'
           } >> "$GITHUB_STEP_SUMMARY"

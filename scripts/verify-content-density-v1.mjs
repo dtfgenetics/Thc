@@ -4,7 +4,10 @@ import process from 'node:process';
 const read = (path) => fs.readFileSync(path, 'utf8');
 const density = read('scripts/lib/sitewide-content-density-v1.mjs');
 const shell = read('scripts/lib/sitewide-header-template-v6.mjs');
-const learnSource = read('scripts/rebuild-wordpress-visual-site.mjs');
+const learnSource = [
+  read('scripts/rebuild-wordpress-learning-experience-v3.mjs'),
+  read('scripts/publish-learning-expanded-references-owner-aware.mjs'),
+].join('\n');
 const tools = read('site/public-route-patch/tools/index.html');
 const games = read('site/public-route-patch/games/index.html');
 const projects = read('site/public-route-patch/projects/index.html');
@@ -34,7 +37,7 @@ requireToken(shell, 'SITEWIDE_CONTENT_DENSITY_SCRIPT_TAG', 'V6 shell');
 const expected = {
   '/learn/': ['expanded references', 'specialized subjects', 'choose the depth', 'plant-health reasoning'],
   '/tools/': ['connected workflow', 'measure before guessing', 'diagnose with context', 'teaching healthy cultivation'],
-  '/games/': ['quick play & puzzles', 'longer strategy', 'new releases', 'live rooms', 'coming later'],
+  '/games/': ['quick play & puzzles', 'longer strategy', 'new releases', 'live rooms', 'release candidates'],
   '/projects/': ['public game registry', 'multiplayer', 'development roadmap', 'supporting projects', 'release gate'],
 };
 for (const [route, labels] of Object.entries(expected)) {
@@ -45,7 +48,7 @@ for (const [route, labels] of Object.entries(expected)) {
 const sourceChecks = [
   ['Learn', learnSource, ['Expanded references', 'Specialized subjects', 'Choose the depth', 'Plant-health reasoning']],
   ['Tools', tools, ['Connected workflow', 'Measure before guessing', 'Diagnose with context', 'Teaching Healthy Cultivation']],
-  ['Games', games, ['Quick play & puzzles', 'Longer strategy', 'New releases', 'Live rooms', 'Coming later']],
+  ['Games', games, ['Quick play & puzzles', 'Longer strategy', 'New releases', 'Live rooms', 'Release candidates']],
   ['Projects', projects, ['Public game registry', 'Multiplayer', 'Development roadmap', 'Supporting projects', 'Release gate']],
 ];
 for (const [name, source, labels] of sourceChecks) {

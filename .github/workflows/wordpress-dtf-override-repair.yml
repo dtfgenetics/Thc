@@ -53,7 +53,7 @@ jobs:
           grep -Fq 'Open the THC Living Plant Atlas' scripts/run-dtf-wordpress-override-repair-current.sh
           grep -Fq '/learn/atlas/' scripts/run-dtf-wordpress-override-repair-current.sh
           grep -Fq 'atlas-runtime.js' scripts/run-dtf-wordpress-override-repair-current.sh
-          grep -Fq '25 playable browser games' scripts/run-dtf-wordpress-override-repair-current.sh
+          grep -Fq '23 playable browser games' scripts/run-dtf-wordpress-override-repair-current.sh
           grep -Fq 'Grow with records. Diagnose with evidence.' scripts/run-dtf-wordpress-override-repair-current.sh
           auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
           curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 2 \
@@ -109,7 +109,7 @@ jobs:
           verify '/learn/' 'Open the THC Living Plant Atlas' 'Grow education belongs in a clean, readable library.'
           verify '/learn/atlas/' 'THC Living Plant Atlas' '__dtf_no_stale_atlas_marker__'
           verify '/learn/atlas/atlas-3d/index.html' 'atlas-runtime.js' '__dtf_no_stale_atlas_runtime_marker__'
-          verify '/games/' '25 playable browser games' '__dtf_no_stale_games_marker__'
+          verify '/games/' '23 playable browser games' '__dtf_no_stale_games_marker__'
           verify '/tools/' 'Grow with records. Diagnose with evidence.' '__dtf_no_stale_tools_marker__'
 
       - name: Record MU override repair

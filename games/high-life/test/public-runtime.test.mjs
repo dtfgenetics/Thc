@@ -11,8 +11,8 @@ const publicEngine = fs.readFileSync('site/public-route-patch/games/high-life/en
 const canonicalEvents = JSON.parse(fs.readFileSync('games/high-life/data/events.json', 'utf8'));
 
 assert.match(html, /<script id="high-life-events" type="application\/json">/);
-assert.match(html, /<script defer src="\.\/app\.js\?v=20260909-visual-v1"><\/script>/);
-assert.match(html, /<script defer src="\.\/high-life-enhancements\.js\?v=20260909-visual-v1"><\/script>/);
+assert.match(html, /<script defer src="\.\/app\.js\?v=20260920-era-journey-v3"><\/script>/);
+assert.match(html, /<script defer src="\.\/high-life-enhancements\.js\?v=20260917-visual-v2"><\/script>/);
 assert.match(html, /high-life-v2\.css/);
 assert.match(html, /class="era-roadmap"/);
 assert.match(html, /assets\/high-life-era-journey-v1\.webp/);
@@ -55,6 +55,13 @@ assert.match(runtime, /storageRemove\(/);
 assert.match(runtime, /Confirm New Career/);
 assert.match(runtime, /Confirm Discard/);
 assert.match(runtime, /globalThis\.matchMedia\?\./);
+assert.match(runtime, /ui\.game\.dataset\.eraState = era/, 'High Life must expose the current era to the journey renderer');
+assert.match(runtime, /document\.body\.dataset\.highLifeEra = era/, 'High Life must expose current era state at document level');
+assert.match(runtime, /function safeFocus\(element\)/, 'High Life should guard focus transitions');
+assert.match(runtime, /safeFocus\(ui\.continue\)/, 'resolved turns should move focus to Continue');
+assert.match(runtime, /safeFocus\(document\.querySelector\('\.action-card\.available'\)\)/, 'continuing should return focus to the next available action');
+assert.doesNotMatch(html, /id="event-panel"[^>]*aria-live=/, 'event panel should not duplicate the dedicated live announcer');
+assert.match(html, /id="event-panel"[^>]*aria-labelledby="event-title"/, 'event panel should keep an accessible name');
 
 for (const forbidden of [
   'function takeTurn(',
@@ -77,9 +84,21 @@ assert.match(visual, /object-position:66% center/);
 assert.match(visual, /@media\(max-width:650px\)/);
 assert.match(visual, /@media\(max-width:480px\)\{\.dashboard\{grid-template-columns:1fr\}/, 'narrow-phone dashboard must collapse to one column');
 assert.match(visual, /top:calc\(var\(--dtf-global-header-height,74px\) \+ 8px\)/, 'sticky era roadmap must clear the V5 site header');
+assert.match(visual, /High Life three-era journey v3/, 'three-era journey presentation must remain active');
+assert.match(visual, /#game-panel\[data-era-state="underground"\]/, 'Underground era must have a dedicated visual state');
+assert.match(visual, /#game-panel\[data-era-state="medical"\]/, 'Medical era must have a dedicated visual state');
+assert.match(visual, /#game-panel\[data-era-state="legal"\]/, 'Legal era must have a dedicated visual state');
+assert.match(visual, /#game-panel\[data-era-state\] \.event-panel/, 'event presentation must inherit the active era state');
 assert.match(visual, /\.career-log-panel \.log-toggle\{min-height:44px/, 'career log control must retain a 44px touch target');
 assert.match(visual, /scroll-margin-top:calc\(var\(--dtf-global-header-height,92px\) \+ 16px\)/, 'turn-resolution anchors must clear the global header');
 assert.doesNotMatch(visual, /\.era-roadmap\{[^}]*position:sticky;top:\.35rem/, 'legacy sticky roadmap offset must not return');
 assert.match(visual, /@media\(prefers-reduced-motion:reduce\)/);
+assert.match(visual, /@media\(forced-colors:active\)/);
+assert.match(visual, /touch-action:manipulation/);
+assert.match(visual, /outline:3px solid var\(--gold\)/);
+assert.match(html, /<h2>How to play<\/h2>/);
+assert.doesNotMatch(html, /browser prototype/i);
+assert.doesNotMatch(html, /Prototype rules/i);
+assert.doesNotMatch(html, /playtest values/i);
 
 console.log('High Life canonical engine runtime, exact resume, event parity, V5 mobile layout, and three-era visual regression checks passed.');

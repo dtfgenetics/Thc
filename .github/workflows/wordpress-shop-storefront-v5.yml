@@ -68,6 +68,8 @@ jobs:
           node --check scripts/audit-dtfseeds-commerce.mjs
           php -l site/wordpress/mu-plugins/dtf-shop-seo-meta.php
           grep -Fq 'data-dtf-shop-storefront-v5' scripts/polish-wordpress-shop-storefront-v5.mjs
+          grep -Fq 'data-dtf-shop-structure="context-first-v7"' scripts/polish-wordpress-shop-storefront-v5.mjs
+          grep -Fq 'Price, availability & checkout' scripts/polish-wordpress-shop-storefront-v5.mjs
           grep -Fq '/product/10-regular-f2-blue-mango-seeds/' scripts/polish-wordpress-shop-storefront-v5.mjs
           grep -Fq '/product/10-feminized-f2-blue-mango-x/' scripts/polish-wordpress-shop-storefront-v5.mjs
           grep -Fq '/product/10-reg-f1-blueberry-bubblegum/' scripts/polish-wordpress-shop-storefront-v5.mjs
@@ -147,6 +149,8 @@ jobs:
               if \
                 grep -Fqi 'data-dtf-shop-storefront-v5="true"' "$output" && \
                 grep -Fqi 'data-dtf-shop-visual="premium-v6"' "$output" && \
+                grep -Fqi 'data-dtf-shop-structure="context-first-v7"' "$output" && \
+                grep -Fqi 'Price, availability & checkout' "$output" && \
                 grep -Fqi 'Shop the release. Read the breeding story.' "$output" && \
                 grep -Fqi 'dtf-commerce-archive-v4' "$output" && \
                 grep -Fqi 'name="description"' "$output" && \

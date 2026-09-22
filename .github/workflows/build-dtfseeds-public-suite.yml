@@ -8,10 +8,22 @@ on:
     branches:
       - main
     paths:
+      - games/grow-room-defense/**
+      - games/grow-room-bingo/**
+      - games/lost-in-the-terps/**
+      - games/mystery-strain/**
+      - games/pheno-draft/**
+      - games/high-lines/**
+      - games/strain-match/**
+      - games/trichome-trials/**
+      - games/root-cause/**
+      - games/harvest-hustle/**
+      - games/spin-the-strain/**
       - site/public-route-patch/games/phenoquest/**
       - site/public-route-patch/games/crossword/source-revision.txt
       - scripts/validate-crossword-release-source.mjs
-      - scripts/lib/sitewide-header-template.mjs
+      - scripts/lib/sitewide-header-template-v6.mjs
+      - scripts/lib/sitewide-footer-template-v6.mjs
       - scripts/apply-sitewide-header.mjs
       - .github/workflows/validate-crossword-release-source.yml
       - .github/workflows/build-dtfseeds-public-suite.yml
@@ -24,6 +36,17 @@ on:
       - games/high-iq/**
       - games/high-life/**
       - games/grower-conversations/**
+      - games/grow-room-defense/**
+      - games/grow-room-bingo/**
+      - games/lost-in-the-terps/**
+      - games/mystery-strain/**
+      - games/pheno-draft/**
+      - games/high-lines/**
+      - games/strain-match/**
+      - games/trichome-trials/**
+      - games/root-cause/**
+      - games/harvest-hustle/**
+      - games/spin-the-strain/**
       - games/seed-man-platformer/**
       - games/strain-showdown/**
       - games/bud-or-bluff/**
@@ -32,7 +55,8 @@ on:
       - site/deployment/public-apps.json
       - data/public-navigation.json
       - scripts/validate-crossword-release-source.mjs
-      - scripts/lib/sitewide-header-template.mjs
+      - scripts/lib/sitewide-header-template-v6.mjs
+      - scripts/lib/sitewide-footer-template-v6.mjs
       - scripts/apply-sitewide-header.mjs
       - .github/workflows/validate-crossword-release-source.yml
       - .github/workflows/build-dtfseeds-public-suite.yml
@@ -48,12 +72,12 @@ concurrency:
 jobs:
   build:
     name: Build deployable DTFSeeds public applications
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -61,24 +85,27 @@ jobs:
       - name: Install master workspace
         run: npm ci
 
-      - name: Validate canonical public navigation before packaging
+      - name: Validate canonical registries and public navigation before packaging
         run: |
           set -euo pipefail
+          npm run verify:portfolio
           node scripts/validate-public-navigation.mjs
-          grep -Fq '25 playable browser games' site/public-route-patch/games/index.html
+          grep -Fq '23 playable browser games' site/public-route-patch/games/index.html
 
       - name: Validate self-hosted High IQ
         run: |
           set -euo pipefail
-          node games/high-iq/scripts/validate-data.mjs
+          npm run hiq:validate
           test -s site/public-route-patch/games/high-iq/index.html
-          test -s site/public-route-patch/games/high-iq/app.js
+          test -s site/public-route-patch/games/high-iq/app-v3.js
+          test -s site/public-route-patch/games/high-iq/game-core.mjs
           test -s site/public-route-patch/games/high-iq/high-iq.css
+          test -s site/public-route-patch/games/high-iq/high-iq-v3-4.css
           test -s site/public-route-patch/games/high-iq/data/manifest.json
           grep -Fq 'High IQ — Test Higher Cognition' site/public-route-patch/games/high-iq/index.html
           grep -Fq 'https://dtfseeds.com/games/high-iq/' site/public-route-patch/games/high-iq/index.html
 
-      - name: Validate High Life browser prototype
+      - name: Validate High Life browser game
         run: |
           set -euo pipefail
           node games/high-life/test/engine.test.mjs
@@ -94,11 +121,171 @@ jobs:
         run: |
           set -euo pipefail
           node games/grower-conversations/scripts/validate-prompt-bank.mjs
+          node games/grower-conversations/test/public-runtime.test.mjs
           node --check site/public-route-patch/games/grower-conversations/app.js
           cmp games/grower-conversations/data/prompt-bank.json site/public-route-patch/games/grower-conversations/data/prompt-bank.json
           test -s site/public-route-patch/games/grower-conversations/index.html
           test -s site/public-route-patch/games/grower-conversations/grower-conversations.css
+          test -s site/public-route-patch/games/grower-conversations/grower-conversations-v2.css
           grep -Fq 'https://dtfseeds.com/games/grower-conversations/' site/public-route-patch/games/grower-conversations/index.html
+
+      - name: Validate Grow Room Defense browser game
+        run: |
+          set -euo pipefail
+          node games/grow-room-defense/scripts/validate-data.mjs
+          node games/grow-room-defense/test/engine.test.mjs
+          node games/grow-room-defense/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/grow-room-defense/app.js
+          node --check site/public-route-patch/games/grow-room-defense/runtime.mjs
+          node --check site/public-route-patch/games/grow-room-defense/engine.mjs
+          cmp games/grow-room-defense/src/engine.mjs site/public-route-patch/games/grow-room-defense/engine.mjs
+          test -s site/public-route-patch/games/grow-room-defense/index.html
+          test -s site/public-route-patch/games/grow-room-defense/grow-room-defense.css
+          test -s site/public-route-patch/games/grow-room-defense/grow-room-defense-v2.css
+          test -s site/public-route-patch/games/grow-room-defense/accessibility-v1.css
+          test -s site/public-route-patch/games/grow-room-defense/accessibility-v1.js
+          grep -Fq 'https://dtfseeds.com/games/grow-room-defense/' site/public-route-patch/games/grow-room-defense/index.html
+
+      - name: Validate Harvest Hustle browser game
+        run: |
+          set -euo pipefail
+          node games/harvest-hustle/scripts/validate-data.mjs
+          node games/harvest-hustle/test/engine.test.mjs
+          node games/harvest-hustle/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/harvest-hustle/app.js
+          node --check site/public-route-patch/games/harvest-hustle/runtime.mjs
+          node --check site/public-route-patch/games/harvest-hustle/engine.mjs
+          cmp games/harvest-hustle/src/engine.mjs site/public-route-patch/games/harvest-hustle/engine.mjs
+          test -s site/public-route-patch/games/harvest-hustle/index.html
+          test -s site/public-route-patch/games/harvest-hustle/harvest-hustle.css
+          test -s site/public-route-patch/games/harvest-hustle/harvest-hustle-v2.css
+          grep -Fq 'https://dtfseeds.com/games/harvest-hustle/' site/public-route-patch/games/harvest-hustle/index.html
+
+      - name: Validate Root Cause browser game
+        run: |
+          set -euo pipefail
+          node games/root-cause/scripts/validate-data.mjs
+          node games/root-cause/test/engine.test.mjs
+          node games/root-cause/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/root-cause/app.js
+          node --check site/public-route-patch/games/root-cause/engine.mjs
+          cmp games/root-cause/src/engine.mjs site/public-route-patch/games/root-cause/engine.mjs
+          test -s site/public-route-patch/games/root-cause/index.html
+          test -s site/public-route-patch/games/root-cause/root-cause.css
+          test -s site/public-route-patch/games/root-cause/root-cause-v2.css
+          test -s site/public-route-patch/games/root-cause/root-cause-responsive-v3.css
+          test ! -e site/public-route-patch/games/root-cause/engine.js
+          grep -Fq 'https://dtfseeds.com/games/root-cause/' site/public-route-patch/games/root-cause/index.html
+
+      - name: Validate Mystery Strain browser game
+        run: |
+          set -euo pipefail
+          node games/mystery-strain/scripts/validate-data.mjs
+          node games/mystery-strain/test/engine.test.mjs
+          node games/mystery-strain/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/mystery-strain/app.js
+          node --check site/public-route-patch/games/mystery-strain/runtime.mjs
+          node --check site/public-route-patch/games/mystery-strain/engine.mjs
+          cmp games/mystery-strain/src/engine.mjs site/public-route-patch/games/mystery-strain/engine.mjs
+          test -s site/public-route-patch/games/mystery-strain/index.html
+          test -s site/public-route-patch/games/mystery-strain/mystery-strain.css
+          test -s site/public-route-patch/games/mystery-strain/analysis.css
+          test -s site/public-route-patch/games/mystery-strain/guess-confirm-v2.css
+          grep -Fq 'https://dtfseeds.com/games/mystery-strain/' site/public-route-patch/games/mystery-strain/index.html
+
+      - name: Validate Pheno Draft browser game
+        run: |
+          set -euo pipefail
+          node games/pheno-draft/scripts/validate-data.mjs
+          node games/pheno-draft/test/engine.test.mjs
+          node games/pheno-draft/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/pheno-draft/app.js
+          node --check site/public-route-patch/games/pheno-draft/runtime.mjs
+          node --check site/public-route-patch/games/pheno-draft/engine.mjs
+          cmp games/pheno-draft/src/engine.mjs site/public-route-patch/games/pheno-draft/engine.mjs
+          test -s site/public-route-patch/games/pheno-draft/index.html
+          test -s site/public-route-patch/games/pheno-draft/pheno-draft.css
+          test -s site/public-route-patch/games/pheno-draft/pheno-draft-v2.css
+          grep -Fq 'https://dtfseeds.com/games/pheno-draft/' site/public-route-patch/games/pheno-draft/index.html
+
+      - name: Validate High Lines browser game
+        run: |
+          set -euo pipefail
+          node games/high-lines/scripts/validate-data.mjs
+          node games/high-lines/test/engine.test.mjs
+          node games/high-lines/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/high-lines/app.js
+          node --check site/public-route-patch/games/high-lines/runtime.mjs
+          node --check site/public-route-patch/games/high-lines/engine.mjs
+          cmp games/high-lines/src/engine.mjs site/public-route-patch/games/high-lines/engine.mjs
+          test -s site/public-route-patch/games/high-lines/index.html
+          test -s site/public-route-patch/games/high-lines/high-lines.css
+          test -s site/public-route-patch/games/high-lines/high-lines-v2.css
+          grep -Fq 'https://dtfseeds.com/games/high-lines/' site/public-route-patch/games/high-lines/index.html
+
+      - name: Validate Trichome Trials browser game
+        run: |
+          set -euo pipefail
+          node games/trichome-trials/scripts/validate-data.mjs
+          node games/trichome-trials/test/engine.test.mjs
+          node games/trichome-trials/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/trichome-trials/app.js
+          node --check site/public-route-patch/games/trichome-trials/runtime.mjs
+          node --check site/public-route-patch/games/trichome-trials/engine.mjs
+          cmp games/trichome-trials/src/engine.mjs site/public-route-patch/games/trichome-trials/engine.mjs
+          test -s site/public-route-patch/games/trichome-trials/index.html
+          test -s site/public-route-patch/games/trichome-trials/trichome-trials.css
+          test -s site/public-route-patch/games/trichome-trials/trichome-trials-v2.css
+          test -s site/public-route-patch/games/trichome-trials/confidence.css
+          test -s site/public-route-patch/games/trichome-trials/frost-layout.css
+          grep -Fq 'https://dtfseeds.com/games/trichome-trials/' site/public-route-patch/games/trichome-trials/index.html
+
+      - name: Validate Grow Room Bingo browser game
+        run: |
+          set -euo pipefail
+          node games/grow-room-bingo/scripts/validate-data.mjs
+          node games/grow-room-bingo/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/grow-room-bingo/app.js
+          node --check site/public-route-patch/games/grow-room-bingo/keyboard-nav.js
+          test -s site/public-route-patch/games/grow-room-bingo/index.html
+          test -s site/public-route-patch/games/grow-room-bingo/bingo.css
+          grep -Fq 'https://dtfseeds.com/games/grow-room-bingo/' site/public-route-patch/games/grow-room-bingo/index.html
+
+      - name: Validate Lost in the Terps browser game
+        run: |
+          set -euo pipefail
+          node games/lost-in-the-terps/scripts/validate-data.mjs
+          node games/lost-in-the-terps/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/lost-in-the-terps/app.js
+          node --check site/public-route-patch/games/lost-in-the-terps/keyboard-nav-v1.js
+          test -s site/public-route-patch/games/lost-in-the-terps/index.html
+          test -s site/public-route-patch/games/lost-in-the-terps/terps.css
+          grep -Fq 'https://dtfseeds.com/games/lost-in-the-terps/' site/public-route-patch/games/lost-in-the-terps/index.html
+
+      - name: Validate Strain Match browser game
+        run: |
+          set -euo pipefail
+          node games/strain-match/scripts/validate-data.mjs
+          node games/strain-match/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/strain-match/app.js
+          test -s site/public-route-patch/games/strain-match/index.html
+          test -s site/public-route-patch/games/strain-match/strain-match.css
+          test -s site/public-route-patch/games/strain-match/strain-match-v2.css
+          grep -Fq 'https://dtfseeds.com/games/strain-match/' site/public-route-patch/games/strain-match/index.html
+
+      - name: Validate Spin the Strain browser game
+        run: |
+          set -euo pipefail
+          node games/spin-the-strain/scripts/validate-data.mjs
+          node games/spin-the-strain/test/engine.test.mjs
+          node games/spin-the-strain/test/public-runtime.test.mjs
+          node --check site/public-route-patch/games/spin-the-strain/app.js
+          node --check site/public-route-patch/games/spin-the-strain/runtime.mjs
+          node --check site/public-route-patch/games/spin-the-strain/engine.mjs
+          cmp games/spin-the-strain/src/engine.mjs site/public-route-patch/games/spin-the-strain/engine.mjs
+          test -s site/public-route-patch/games/spin-the-strain/index.html
+          test -s site/public-route-patch/games/spin-the-strain/spin-the-strain.css
+          grep -Fq 'https://dtfseeds.com/games/spin-the-strain/' site/public-route-patch/games/spin-the-strain/index.html
 
       - name: Validate Seed Man v20 campaign
         run: |
@@ -116,7 +303,7 @@ jobs:
           test -s site/public-route-patch/games/seed-man-platformer/seed-man.css
           grep -Fq 'https://dtfseeds.com/games/seed-man-platformer/' site/public-route-patch/games/seed-man-platformer/index.html
 
-      - name: Validate Strain Showdown browser prototype
+      - name: Validate Strain Showdown browser game
         run: |
           set -euo pipefail
           node games/strain-showdown/scripts/validate-roster.mjs
@@ -129,40 +316,84 @@ jobs:
       - name: Validate Bud or Bluff multiplayer game
         run: |
           set -euo pipefail
+          root=site/public-route-patch/games/bud-or-bluff
           node games/bud-or-bluff/test/engine.test.mjs
           node games/bud-or-bluff/scripts/build-private-deck.mjs
-          node --check site/public-route-patch/games/bud-or-bluff/app-v2.js
-          node --check site/public-route-patch/games/bud-or-bluff/keyboard-v1.js
-          php -l site/public-route-patch/games/bud-or-bluff/api-v2.php
-          php -l site/public-route-patch/games/bud-or-bluff/deck.php
+          node games/bud-or-bluff/test/keyboard-v1.test.mjs
+          node games/bud-or-bluff/test/visual-state-v3.test.mjs
+          node games/bud-or-bluff/test/online-lobby.test.mjs
           node games/bud-or-bluff/test/online-lobby-v2.test.mjs
-          test -s site/public-route-patch/games/bud-or-bluff/index.html
+          node --check "$root/app.js"
+          node --check "$root/app-v2.js"
+          node --check "$root/player-pref-v1.js"
+          node --check "$root/keyboard-v1.js"
+          node --check "$root/visual-state-v3.js"
+          php -l "$root/api.php"
+          php -l "$root/api-v2.php"
+          php -l "$root/api-v3.php"
+          php -l "$root/deck.php"
+          for asset in index.html styles.css v2.css visual-state-v3.css app-v2.js api-v2.php api-v3.php .htaccess keyboard-v1.js visual-state-v3.js; do
+            test -s "$root/$asset"
+          done
+          grep -Fq 'RewriteRule ^api-v2\.php$ api-v3.php [L]' "$root/.htaccess"
+          grep -Fq 'X-DTF-Bud-Or-Bluff-Storage: durable-v3' "$root/api-v3.php"
+          ! grep -Fq "'answer'=>'BUD'" "$root/index.html"
 
       - name: Validate promoted Terpocalypse route and PhenoQuest source pin
         run: |
           set -euo pipefail
+          node games/terpocalypse-integration/validate.mjs
+          node games/terpocalypse/test/public-runtime.test.mjs
           node --check site/public-route-patch/games/terpocalypse/main.js
           node --check site/public-route-patch/games/terpocalypse/game-data.js
+          node --check site/public-route-patch/games/terpocalypse/visibility-pause-v1.js
           test -s site/public-route-patch/games/terpocalypse/index.html
           test -s site/public-route-patch/games/terpocalypse/styles.css
+          test -s site/public-route-patch/games/terpocalypse/mobile-gameplay-v2.css
+          test -s site/public-route-patch/games/terpocalypse/source-revision.txt
           grep -Fq 'LEVEL 01 · THE VEG LAB' site/public-route-patch/games/terpocalypse/index.html
           test -s site/public-route-patch/games/phenoquest/source-revision.txt
           grep -Fq 'repository=dtfgenetics/Catching-phenos' site/public-route-patch/games/phenoquest/source-revision.txt
           grep -Eq '^commit=[0-9a-f]{40}$' site/public-route-patch/games/phenoquest/source-revision.txt
-          grep -Fq '25 playable browser games' site/public-route-patch/games/index.html
+          grep -Fq '23 playable browser games' site/public-route-patch/games/index.html
           grep -Fq '/games/terpocalypse/' site/public-route-patch/games/index.html
           grep -Fq '/games/phenoquest/' site/public-route-patch/games/index.html
 
       - name: Validate Burn Buds multiplayer game
         run: |
           set -euo pipefail
+          root=site/public-route-patch/games/protect-the-plants
           node games/protect-the-plants/test/burn-buds-branding.test.mjs
           node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs
-          node --check site/public-route-patch/games/protect-the-plants/app.js
-          node --check site/public-route-patch/games/protect-the-plants/gameplay-v3.js
-          node --check site/public-route-patch/games/protect-the-plants/burn-buds-branding.js
-          php -l site/public-route-patch/games/protect-the-plants/api.php
-          test -s site/public-route-patch/games/protect-the-plants/index.html
+          node games/protect-the-plants/test/api-copy-contract.test.mjs
+          node games/protect-the-plants/test/runtime-sync-v1.test.mjs
+          node games/protect-the-plants/test/v2-extras-sync.test.mjs
+          node games/protect-the-plants/test/native-targeting-source.test.mjs
+          node games/protect-the-plants/test/gamefeel-v1.test.mjs
+          node games/protect-the-plants/test/premium-social-v1.test.mjs
+          node --check "$root/app.js"
+          node --check "$root/gameplay-v3.js"
+          node --check "$root/burn-buds-branding.js"
+          node --check "$root/social-feedback-v1.js"
+          node --check "$root/runtime-sync-v1.js"
+          node --check "$root/combat-a11y-v1.js"
+          node --check "$root/battle-feedback-v1.js"
+          node --check "$root/placement-v1.js"
+          node --check "$root/targeting-v1.js"
+          node --check "$root/v2-extras.js"
+          node --check "$root/sw.js"
+          php -l "$root/api.php"
+          php -l "$root/presence.php"
+          for asset in index.html styles.css burn-buds.css premium-lobby-v1.css social-feedback-v1.css social-feedback-v1.js gamefeel-v1.css gameplay-v3.css gameplay-v4.css plant.svg; do
+            test -s "$root/$asset"
+          done
+          grep -Fq './gameplay-v4.css' "$root/index.html"
+          grep -Fq './premium-lobby-v1.css' "$root/index.html"
+          grep -Fq './social-feedback-v1.css' "$root/index.html"
+          grep -Fq './social-feedback-v1.js' "$root/index.html"
+          grep -Fq 'gameplay-v4.css' "$root/sw.js"
+          grep -Fq 'premium-lobby-v1.css' "$root/sw.js"
+          grep -Fq 'social-feedback-v1.js' "$root/sw.js"
 
       - name: Test and build High Land
         run: |
@@ -214,7 +445,6 @@ jobs:
             dist/weedopolis/js/weedopolis-assets.js
             dist/weedopolis/js/weedopolis-engine.js
             dist/weedopolis/js/weedopolis-ui.js
-            dist/weedopolis/js/weedopolis-tests.js
             dist/weedopolis/assets/board/weedopolis-master-board.webp
           )
           for file in "${required[@]}"; do test -s "$file"; done
@@ -226,7 +456,7 @@ jobs:
           node --check dist/weedopolis/js/weedopolis-assets.js
           node --check dist/weedopolis/js/weedopolis-engine.js
           node --check dist/weedopolis/js/weedopolis-ui.js
-          node --check dist/weedopolis/js/weedopolis-tests.js
+          test ! -e dist/weedopolis/js/weedopolis-tests.js
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
           const board = fs.readFileSync('dist/weedopolis/assets/board/weedopolis-master-board.webp');
@@ -335,6 +565,74 @@ jobs:
           cd "$repo"
           echo "WHO_TOOK_IT_SHA=$revision" >> "$GITHUB_ENV"
 
+      - name: Build pinned Ganjumanji
+        shell: bash
+        run: |
+          set -euo pipefail
+          revision_file="$GITHUB_WORKSPACE/site/public-route-patch/games/ganjumanji/source-revision.txt"
+          test -s "$revision_file"
+          repo_name="$(sed -n 's/^repository=//p' "$revision_file")"
+          revision="$(sed -n 's/^commit=//p' "$revision_file")"
+          route="$(sed -n 's/^route=//p' "$revision_file")"
+          release_version="$(sed -n 's/^release=//p' "$revision_file")"
+          test "$repo_name" = "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple"
+          test "$route" = "/games/ganjumanji/"
+          test "$release_version" = "0.4.1"
+          [[ "$revision" =~ ^[0-9a-f]{40}$ ]]
+
+          repo="$RUNNER_TEMP/ganjumanji"
+          git init "$repo"
+          cd "$repo"
+          git remote add origin "https://github.com/${repo_name}.git"
+          git fetch --depth=1 origin "$revision"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$revision"
+
+          npm install --ignore-scripts
+          npm test
+          npm run validate:ui
+          npm run build
+          npm run validate:release
+          test -s dist/index.html
+          test -s dist/game-release.json
+          grep -Fq '"route": "/games/ganjumanji/"' dist/game-release.json
+          grep -Fq '"version": "0.4.1"' dist/game-release.json
+          grep -Fq '"saveVersion": 5' dist/game-release.json
+          echo "GANJUMANJI_SHA=$revision" >> "$GITHUB_ENV"
+
+      - name: Build pinned THC RPG
+        shell: bash
+        run: |
+          set -euo pipefail
+          revision_file="$GITHUB_WORKSPACE/site/public-route-patch/games/thc-rpg/source-revision.txt"
+          test -s "$revision_file"
+          repo_name="$(sed -n 's/^repository=//p' "$revision_file")"
+          revision="$(sed -n 's/^commit=//p' "$revision_file")"
+          route="$(sed -n 's/^route=//p' "$revision_file")"
+          release_version="$(sed -n 's/^release=//p' "$revision_file")"
+          test "$repo_name" = "dtfgenetics/Thc-rpg"
+          test "$route" = "/games/thc-rpg/"
+          test "$release_version" = "2.1.0"
+          [[ "$revision" =~ ^[0-9a-f]{40}$ ]]
+
+          repo="$RUNNER_TEMP/thc-rpg"
+          git init "$repo"
+          cd "$repo"
+          git remote add origin "https://github.com/${repo_name}.git"
+          git fetch --depth=1 origin "$revision"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$revision"
+
+          npm install --ignore-scripts
+          npm run check
+          test -s dist/index.html
+          test -s dist/game-release.json
+          test -s dist/src/main.js
+          test -s dist/src/styles.css
+          grep -Fq '"route": "/games/thc-rpg/"' dist/game-release.json
+          grep -Fq '"version": "2.1.0"' dist/game-release.json
+          echo "THC_RPG_SHA=$revision" >> "$GITHUB_ENV"
+
       - name: Build pinned THC Grow Doc
         shell: bash
         run: |
@@ -401,6 +699,14 @@ jobs:
           cp -a "$RUNNER_TEMP/who-took-it/03_digital-game/dist/." release/games/who-took-it/
           cp site/public-route-patch/games/who-took-it/source-revision.txt release/games/who-took-it/source-revision.txt
 
+          mkdir -p release/games/ganjumanji
+          cp -a "$RUNNER_TEMP/ganjumanji/dist/." release/games/ganjumanji/
+          cp site/public-route-patch/games/ganjumanji/source-revision.txt release/games/ganjumanji/source-revision.txt
+
+          mkdir -p release/games/thc-rpg
+          cp -a "$RUNNER_TEMP/thc-rpg/dist/." release/games/thc-rpg/
+          cp site/public-route-patch/games/thc-rpg/source-revision.txt release/games/thc-rpg/source-revision.txt
+
           mkdir -p release/thc-grow-doc
           cp -a "$RUNNER_TEMP/thc-grow-doc/dist/." release/thc-grow-doc/
           cp site/public-route-patch/assets/release-source-revisions/thc-grow-doc.txt release/thc-grow-doc/source-revision.txt
@@ -424,6 +730,8 @@ jobs:
               "weedopolis": "$WEEDOPOLIS_SHA",
               "crossword": "$CROSSWORD_SHA",
               "whoTookIt": "$WHO_TOOK_IT_SHA",
+              "ganjumanji": "$GANJUMANJI_SHA",
+              "thcRpg": "$THC_RPG_SHA",
               "thcGrowDoc": "$THC_GROW_DOC_SHA"
             }
           }
@@ -436,9 +744,20 @@ jobs:
           node scripts/apply-sitewide-header.mjs release
           node scripts/apply-sitewide-header.mjs release --check
           for file in release/games/index.html release/growlens/index.html release/thc-grow-doc/index.html release/tools/index.html release/projects/index.html; do
-            grep -Fq 'data-dtf-sitewide-header="approved-reference-v1"' "$file"
+            grep -Fq 'data-dtf-shell="header-v6"' "$file"
+            grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' "$file"
+            grep -Fq 'data-dtf-shell="footer-v6"' "$file"
+            grep -Fq 'data-dtf-sitewide-footer="canonical-eight-v1"' "$file"
+            grep -Fq 'dtf-shared-footer-v6-style' "$file"
+            grep -Fq '>Home</a>' "$file"
+            grep -Fq '>Seeds</a>' "$file"
+            grep -Fq '>Learn</a>' "$file"
+            grep -Fq '>Courses</a>' "$file"
             grep -Fq '>Diagnostic</a>' "$file"
-            grep -Fq 'dtf-sitewide-header-v5-script' "$file"
+            grep -Fq '>Games</a>' "$file"
+            grep -Fq '>Community</a>' "$file"
+            grep -Fq '>Shop</a>' "$file"
+            grep -Fq 'dtf-sitewide-header-v6-script' "$file"
           done
 
       - name: Verify release routes and base paths
@@ -464,6 +783,71 @@ jobs:
             release/games/grower-conversations/app.js
             release/games/grower-conversations/grower-conversations.css
             release/games/grower-conversations/data/prompt-bank.json
+            release/games/grow-room-defense/index.html
+            release/games/grow-room-defense/app.js
+            release/games/grow-room-defense/runtime.mjs
+            release/games/grow-room-defense/engine.mjs
+            release/games/grow-room-defense/grow-room-defense.css
+            release/games/grow-room-defense/grow-room-defense-v2.css
+            release/games/grow-room-defense/accessibility-v1.css
+            release/games/grow-room-defense/accessibility-v1.js
+            release/games/grow-room-bingo/index.html
+            release/games/grow-room-bingo/app.js
+            release/games/grow-room-bingo/keyboard-nav.js
+            release/games/grow-room-bingo/bingo.css
+            release/games/grow-room-bingo/data/prompts.json
+            release/games/lost-in-the-terps/index.html
+            release/games/lost-in-the-terps/app.js
+            release/games/lost-in-the-terps/keyboard-nav-v1.js
+            release/games/lost-in-the-terps/terps.css
+            release/games/lost-in-the-terps/data/puzzles.json
+            release/games/mystery-strain/index.html
+            release/games/mystery-strain/app.js
+            release/games/mystery-strain/runtime.mjs
+            release/games/mystery-strain/engine.mjs
+            release/games/mystery-strain/mystery-strain.css
+            release/games/mystery-strain/analysis.css
+            release/games/mystery-strain/guess-confirm-v2.js
+            release/games/mystery-strain/guess-confirm-v2.css
+            release/games/pheno-draft/index.html
+            release/games/pheno-draft/app.js
+            release/games/pheno-draft/runtime.mjs
+            release/games/pheno-draft/engine.mjs
+            release/games/pheno-draft/pheno-draft.css
+            release/games/pheno-draft/pheno-draft-v2.css
+            release/games/high-lines/index.html
+            release/games/high-lines/app.js
+            release/games/high-lines/runtime.mjs
+            release/games/high-lines/engine.mjs
+            release/games/high-lines/high-lines.css
+            release/games/high-lines/high-lines-v2.css
+            release/games/high-lines/data/scenes.json
+            release/games/strain-match/index.html
+            release/games/strain-match/app.js
+            release/games/strain-match/strain-match.css
+            release/games/strain-match/strain-match-v2.css
+            release/games/strain-match/data/decks.json
+            release/games/trichome-trials/index.html
+            release/games/trichome-trials/app.js
+            release/games/trichome-trials/runtime.mjs
+            release/games/trichome-trials/engine.mjs
+            release/games/trichome-trials/trichome-trials.css
+            release/games/trichome-trials/trichome-trials-v2.css
+            release/games/trichome-trials/confidence.css
+            release/games/trichome-trials/frost-layout.css
+            release/games/root-cause/index.html
+            release/games/root-cause/app.js
+            release/games/root-cause/runtime.mjs
+            release/games/root-cause/engine.mjs
+            release/games/root-cause/root-cause.css
+            release/games/root-cause/root-cause-v2.css
+            release/games/root-cause/root-cause-responsive-v3.css
+            release/games/harvest-hustle/index.html
+            release/games/harvest-hustle/app.js
+            release/games/harvest-hustle/runtime.mjs
+            release/games/harvest-hustle/engine.mjs
+            release/games/harvest-hustle/harvest-hustle.css
+            release/games/harvest-hustle/harvest-hustle-v2.css
             release/games/seed-man-platformer/index.html
             release/games/seed-man-platformer/app.js
             release/games/seed-man-platformer/seed-man.css
@@ -515,13 +899,20 @@ jobs:
             release/games/weedopolis/js/weedopolis-assets.js
             release/games/weedopolis/js/weedopolis-engine.js
             release/games/weedopolis/js/weedopolis-ui.js
-            release/games/weedopolis/js/weedopolis-tests.js
             release/games/weedopolis/assets/board/weedopolis-master-board.webp
             release/games/weedopolis/source-revision.txt
             release/games/crossword/index.html
             release/games/crossword/source-revision.txt
             release/games/who-took-it/index.html
             release/games/who-took-it/source-revision.txt
+            release/games/ganjumanji/index.html
+            release/games/ganjumanji/game-release.json
+            release/games/ganjumanji/source-revision.txt
+            release/games/thc-rpg/index.html
+            release/games/thc-rpg/game-release.json
+            release/games/thc-rpg/src/main.js
+            release/games/thc-rpg/src/styles.css
+            release/games/thc-rpg/source-revision.txt
             release/growlens/index.html
             release/thc-grow-doc/index.html
             release/thc-grow-doc/api/visual-observations.php
@@ -535,6 +926,50 @@ jobs:
           grep -Fq '/games/high-iq/' release/games/high-iq/index.html
           grep -Fq '/games/high-life/' release/games/high-life/index.html
           grep -Fq '/games/grower-conversations/' release/games/grower-conversations/index.html
+          grep -Fq '/games/grow-room-defense/' release/games/grow-room-defense/index.html
+          grep -Fq "import('./runtime.mjs')" release/games/grow-room-defense/app.js
+          cmp games/grow-room-defense/src/engine.mjs release/games/grow-room-defense/engine.mjs
+          grep -Fq "from './engine.mjs';" release/games/grow-room-defense/runtime.mjs
+          grep -Fq '@media(forced-colors:active)' release/games/grow-room-defense/accessibility-v1.css
+          grep -Fq '/games/grow-room-bingo/' release/games/grow-room-bingo/index.html
+          grep -Fq 'keyboard-nav.js' release/games/grow-room-bingo/index.html
+          grep -Fq '@media(forced-colors:active)' release/games/grow-room-bingo/bingo.css
+          grep -Fq '/games/lost-in-the-terps/' release/games/lost-in-the-terps/index.html
+          grep -Fq 'keyboard-nav-v1.js' release/games/lost-in-the-terps/index.html
+          grep -Fq '@media(forced-colors:active)' release/games/lost-in-the-terps/terps.css
+          grep -Fq '/games/mystery-strain/' release/games/mystery-strain/index.html
+          grep -Fq "import('./runtime.mjs')" release/games/mystery-strain/app.js
+          cmp games/mystery-strain/src/engine.mjs release/games/mystery-strain/engine.mjs
+          grep -Fq 'guess-confirm-v2.js' release/games/mystery-strain/index.html
+          grep -Fq '/games/pheno-draft/' release/games/pheno-draft/index.html
+          grep -Fq "import('./runtime.mjs')" release/games/pheno-draft/app.js
+          cmp games/pheno-draft/src/engine.mjs release/games/pheno-draft/engine.mjs
+          grep -Fq 'DTF GENETICS · SELECTION STRATEGY' release/games/pheno-draft/index.html
+          grep -Fq 'top:calc(var(--dtf-global-header-height,74px) + 8px)' release/games/pheno-draft/pheno-draft-v2.css
+          grep -Fq '/games/high-lines/' release/games/high-lines/index.html
+          grep -Fq "import('./runtime.mjs')" release/games/high-lines/app.js
+          cmp games/high-lines/src/engine.mjs release/games/high-lines/engine.mjs
+          grep -Fq 'DTF GENETICS · CREATIVE ACTIVITY' release/games/high-lines/index.html
+          grep -Fq 'top:calc(var(--dtf-global-header-height,74px) + 8px)' release/games/high-lines/high-lines-v2.css
+          grep -Fq '/games/strain-match/' release/games/strain-match/index.html
+          grep -Fq 'grid-template-columns:repeat(5,minmax(0,1fr))' release/games/strain-match/strain-match.css
+          grep -Fq '@media(forced-colors:active)' release/games/strain-match/strain-match.css
+          grep -Fq '/games/trichome-trials/' release/games/trichome-trials/index.html
+          grep -Fq "import('./runtime.mjs')" release/games/trichome-trials/app.js
+          cmp games/trichome-trials/src/engine.mjs release/games/trichome-trials/engine.mjs
+          grep -Fq '.confidence-button{min-height:44px' release/games/trichome-trials/trichome-trials-v2.css
+          grep -Fq '@media(forced-colors:active)' release/games/trichome-trials/trichome-trials-v2.css
+          grep -Fq '/games/root-cause/' release/games/root-cause/index.html
+          ! grep -Fq 'src="./engine.js"' release/games/root-cause/index.html
+          test ! -e release/games/root-cause/engine.js
+          grep -Fq "import('./runtime.mjs')" release/games/root-cause/app.js
+          cmp games/root-cause/src/engine.mjs release/games/root-cause/engine.mjs
+          grep -Fq "from './engine.mjs';" release/games/root-cause/runtime.mjs
+          grep -Fq '@media (forced-colors: active)' release/games/root-cause/root-cause-responsive-v3.css
+          grep -Fq '/games/harvest-hustle/' release/games/harvest-hustle/index.html
+          grep -Fq "import('./runtime.mjs')" release/games/harvest-hustle/app.js
+          cmp games/harvest-hustle/src/engine.mjs release/games/harvest-hustle/engine.mjs
+          grep -Fq 'top:calc(var(--dtf-global-header-height,74px) + 8px)' release/games/harvest-hustle/harvest-hustle-v2.css
           grep -Fq '/games/seed-man-platformer/' release/games/seed-man-platformer/index.html
           grep -Fq 'data-seed-man-release="20260909-v20-runtime-v4"' release/games/seed-man-platformer/index.html
           test ! -e release/games/seed-man-platformer/physics.mjs
@@ -551,6 +986,7 @@ jobs:
           grep -Fq '/games/weedopolis/' release/games/weedopolis/index.html
           grep -Fq 'data-ui-standard="premium-responsive-shell-v1"' release/games/weedopolis/index.html
           grep -Fq 'data-art-standard="weedopolis-v1-master"' release/games/weedopolis/index.html
+          test ! -e release/games/weedopolis/js/weedopolis-tests.js
           grep -Fq "commit=$WEEDOPOLIS_SHA" release/games/weedopolis/source-revision.txt
           grep -Fq "\"weedopolis\": \"$WEEDOPOLIS_SHA\"" release/dtf-build.json
           grep -Fq '/games/crossword/' release/games/crossword/index.html
@@ -561,13 +997,23 @@ jobs:
           grep -Fq "commit=$WHO_TOOK_IT_SHA" release/games/who-took-it/source-revision.txt
           grep -Fq 'route=/games/who-took-it/' release/games/who-took-it/source-revision.txt
           grep -Fq "\"whoTookIt\": \"$WHO_TOOK_IT_SHA\"" release/dtf-build.json
+          grep -Fq '/games/ganjumanji/' release/games/ganjumanji/game-release.json
+          grep -Fq '"version": "0.4.1"' release/games/ganjumanji/game-release.json
+          grep -Fq '"saveVersion": 5' release/games/ganjumanji/game-release.json
+          grep -Fq 'repository=dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple' release/games/ganjumanji/source-revision.txt
+          grep -Fq "commit=$GANJUMANJI_SHA" release/games/ganjumanji/source-revision.txt
+          grep -Fq "\"ganjumanji\": \"$GANJUMANJI_SHA\"" release/dtf-build.json
+          grep -Fq '/games/thc-rpg/' release/games/thc-rpg/game-release.json
+          grep -Fq 'repository=dtfgenetics/Thc-rpg' release/games/thc-rpg/source-revision.txt
+          grep -Fq "commit=$THC_RPG_SHA" release/games/thc-rpg/source-revision.txt
+          grep -Fq "\"thcRpg\": \"$THC_RPG_SHA\"" release/dtf-build.json
           grep -Fq '/thc-grow-doc/' release/thc-grow-doc/index.html
           grep -Fq "commit=$THC_GROW_DOC_SHA" release/thc-grow-doc/source-revision.txt
           grep -Fq "\"thcGrowDoc\": \"$THC_GROW_DOC_SHA\"" release/dtf-build.json
           test -d release/thc-grow-doc/reference-media/crops
           test ! -e release/thc-grow-doc/reference-media/original
           test "$(find release/thc-grow-doc/reference-media/crops -type f | wc -l | tr -d ' ')" = "66"
-          grep -Fq '25 playable browser games' release/games/index.html
+          grep -Fq '23 playable browser games' release/games/index.html
 
           ! grep -RFiq 'email@email.com' release
           ! grep -RFiq '+123456789' release
@@ -580,12 +1026,12 @@ jobs:
           {
             echo '## DTFSeeds public suite'
             echo ''
-            echo '- 25 registered browser games via the canonical Game Hub'
+            echo '- 23 verified playable browser games via the canonical Game Hub'
             echo '- /games/high-iq/ (self-hosted validated browser game)'
-            echo '- /games/high-life/ (tested browser prototype)'
+            echo '- /games/high-life/ (tested career strategy game)'
             echo '- /games/grower-conversations/ (96-card browser deck)'
             echo '- /games/seed-man-platformer/ (canonical 20-level / 5-world v20 campaign)'
-            echo '- /games/strain-showdown/ (solo card-battle prototype)'
+            echo '- /games/strain-showdown/ (96-card solo CPU battle game)'
             echo '- /games/bud-or-bluff/ (multiplayer party game)'
             echo '- /games/terpocalypse/ (validated browser vertical slice)'
             echo "- /games/phenoquest/ (canonical pinned $PHENOQUEST_SHA)"
@@ -594,6 +1040,8 @@ jobs:
             echo "- /games/weedopolis/ (pinned $WEEDOPOLIS_SHA)"
             echo "- /games/crossword/ (canonical pinned $CROSSWORD_SHA)"
             echo "- /games/who-took-it/ (canonical pinned $WHO_TOOK_IT_SHA)"
+            echo "- /games/ganjumanji/ (canonical pinned $GANJUMANJI_SHA)"
+            echo "- /games/thc-rpg/ (canonical pinned $THC_RPG_SHA)"
             echo '- /growlens/'
             echo "- /thc-grow-doc/ (canonical pinned $THC_GROW_DOC_SHA)"
             echo '- /tools/'
@@ -605,7 +1053,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload public suite artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dtfseeds-public-suite-${{ github.sha }}
           path: release
@@ -615,7 +1063,7 @@ jobs:
 
       - name: Report public-suite build to issue 63
         if: always() && github.event_name != 'pull_request'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         env:
           JOB_STATUS: ${{ job.status }}
         with:
@@ -632,7 +1080,7 @@ jobs:
                 ? 'The complete DTFSeeds public suite built and validated successfully. A 30-day immutable artifact is attached to this workflow run and is ready for the production deployer.'
                 : 'The public-suite package did not complete successfully. Inspect this workflow run before attempting production deployment.',
               '',
-              'Build scope: the canonical 25-game Hub plus validated High IQ, High Life, Grower Conversations, Seed Man, Strain Showdown, Bud or Bluff, Terpocalypse, PhenoQuest, Burn Buds, High Land, Weedopolis, pinned THC Crossword, Who Took It?, GrowLens, THC Grow Doc, Tools, Projects, and puzzle data.',
+              'Build scope: the canonical 23-game playable Hub plus tracked release/runtime candidates plus validated High IQ, High Life, Grower Conversations, Seed Man, Strain Showdown, Bud or Bluff, Terpocalypse, PhenoQuest, Burn Buds, High Land, Weedopolis, pinned THC Crossword, Who Took It?, Ganjumanji, THC RPG, GrowLens, THC Grow Doc, Tools, Projects, and puzzle data.',
               'No production mutation is performed by this build-only workflow.'
             ].join('\n');
             await github.rest.issues.createComment({

@@ -893,3 +893,150 @@ h2 {
     transform: none;
   }
 }
+
+
+/* High Land world-route identity v3 */
+.highland-title-copy { position: relative; z-index: 1; }
+.highland-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: 1.2rem;
+}
+.highland-meta span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: .42rem .7rem;
+  border: 1px solid rgba(232,255,216,.13);
+  border-radius: 999px;
+  background: rgba(255,255,255,.055);
+  color: var(--hl-muted-strong);
+  font-size: .7rem;
+  font-weight: 850;
+  letter-spacing: .025em;
+}
+.highland-world-route {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: .4rem;
+  width: 100%;
+  margin: 2rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.highland-world-route::before {
+  content: "";
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  top: 17px;
+  height: 4px;
+  z-index: -1;
+  border-radius: 999px;
+  background: linear-gradient(90deg,#ef4444 0 14%,#facc15 14% 29%,#22c55e 29% 43%,#3b82f6 43% 57%,#a855f7 57% 72%,#ec4899 72% 86%,#f8fafc 86%);
+  box-shadow: 0 0 20px rgba(200,255,98,.12);
+}
+.highland-world-route li {
+  min-width: 0;
+  padding-top: 44px;
+  color: var(--hl-muted);
+  font-size: .64rem;
+  font-weight: 850;
+  line-height: 1.25;
+  text-align: center;
+}
+.highland-world-route li::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  width: 22px;
+  height: 22px;
+  margin-left: calc(50% - 11px);
+  border: 3px solid rgba(255,255,255,.88);
+  border-radius: 7px;
+  background: #ef4444;
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+}
+.highland-world-route li { position: relative; }
+.highland-world-route li:nth-child(2)::before { background:#facc15; }
+.highland-world-route li:nth-child(3)::before { background:#22c55e; }
+.highland-world-route li:nth-child(4)::before { background:#3b82f6; }
+.highland-world-route li:nth-child(5)::before { background:#a855f7; }
+.highland-world-route li:nth-child(6)::before { background:#ec4899; }
+.highland-world-route li:nth-child(7)::before { background:linear-gradient(145deg,#f8fafc,#facc15); }
+.highland-hub-link {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-self: flex-start;
+  margin-top: 1.4rem;
+  color: #d5e0d6;
+  text-decoration: none;
+  font-size: .76rem;
+  font-weight: 850;
+}
+.highland-hub-link:hover { color: var(--hl-lime); }
+
+.app-shell:not(:has(.game-stage)) .title-card {
+  justify-content: flex-end;
+}
+.app-shell:not(:has(.game-stage)) .controls-card {
+  border-color: rgba(255,216,105,.18);
+  background:
+    radial-gradient(circle at 90% 8%, rgba(255,216,105,.07), transparent 12rem),
+    var(--hl-surface);
+}
+.app-shell:not(:has(.game-stage)) .controls-card h2 {
+  margin-top: .15rem;
+  font-size: clamp(1.65rem,3vw,2.4rem);
+}
+.app-shell:not(:has(.game-stage)) .controls-card .button-row button {
+  min-height: 54px;
+}
+.app-shell:not(:has(.game-stage)) .controls-card .button-row button.primary {
+  font-size: 1rem;
+}
+
+.app-shell:has(.game-stage) .highland-world-route,
+.app-shell:has(.game-stage) .highland-meta,
+.app-shell:has(.game-stage) .highland-hub-link {
+  display: none;
+}
+.app-shell:has(.game-stage) .highland-title-copy {
+  min-width: 0;
+}
+.app-shell:has(.game-stage) .title-card h1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .highland-world-route {
+    grid-template-columns: repeat(4,minmax(0,1fr));
+    gap: .65rem .4rem;
+  }
+  .highland-world-route::before { display:none; }
+  .highland-world-route li {
+    padding: 34px .2rem .45rem;
+    border: 1px solid rgba(255,255,255,.075);
+    border-radius: 12px;
+    background: rgba(255,255,255,.035);
+  }
+  .highland-world-route li::before { top:7px; }
+}
+
+@media (max-width: 560px) {
+  .highland-meta { display:grid; grid-template-columns:1fr 1fr; }
+  .highland-meta span:last-child { grid-column:1 / -1; }
+  .highland-world-route { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .highland-world-route li:last-child { grid-column:1 / -1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .highland-hub-link,
+  .highland-world-route li { transition:none!important; }
+}

@@ -7,13 +7,28 @@ const shell = JSON.parse(fs.readFileSync(path.join(root, 'data/site-navigation-v
 const apps = JSON.parse(fs.readFileSync(path.join(root, 'site/deployment/public-apps.json'), 'utf8'));
 const hub = fs.readFileSync(path.join(root, 'site/public-route-patch/games/index.html'), 'utf8');
 
+const deployableShellFiles = [
+  'site/public-route-patch/projects/index.html',
+  'site/public-route-patch/tools/index.html',
+  'site/public-route-patch/games/index.html',
+  'site/public-route-patch/games/high-life/index.html',
+  'site/public-route-patch/games/high-iq/index.html',
+  'site/public-route-patch/games/grower-conversations/index.html',
+  'site/public-route-patch/games/seed-man-platformer/index.html',
+];
+
+function primaryNavMarkup(html) {
+  return html.match(/<nav\b[^>]*aria-label=["']Primary(?: navigation)?["'][^>]*>[\s\S]*?<\/nav>/i)?.[0] || '';
+}
 const errors = [];
 const assert = (condition, message) => { if (!condition) errors.push(message); };
 
 const canonicalPrimary = [
-  { id: 'genetics', label: 'Genetics', route: '/seeds/' },
+  { id: 'home', label: 'Home', route: '/' },
+  { id: 'seeds', label: 'Seeds', route: '/seeds/' },
   { id: 'learn', label: 'Learn', route: '/learn/' },
-  { id: 'tools', label: 'Tools', route: '/tools/' },
+  { id: 'courses', label: 'Courses', route: '/courses/' },
+  { id: 'diagnostic', label: 'Diagnostic', route: '/tools/' },
   { id: 'games', label: 'Games', route: '/games/' },
   { id: 'community', label: 'Community', route: '/community/' },
   { id: 'shop', label: 'Shop', route: '/shop/' }
@@ -33,17 +48,43 @@ for (let index = 0; index < canonicalPrimary.length; index += 1) {
 }
 
 const primaryLabels = shell.primaryNavigation.map((item) => item.label);
-for (const obsolete of ['Home', 'Seeds', 'Courses', 'Diagnostic']) {
-  assert(!primaryLabels.includes(obsolete), `obsolete primary label '${obsolete}' must not appear in the V6 primary navigation`);
+for (const required of ['Home', 'Seeds', 'Learn', 'Courses', 'Diagnostic', 'Games', 'Community', 'Shop']) {
+  assert(primaryLabels.includes(required), `required primary label '${required}' must appear in the V6 primary navigation`);
 }
-assert(shell.sectionOwnership?.learn?.includes('/courses/'), 'Courses must be owned by Learn');
-assert(shell.sectionOwnership?.tools?.includes('/growlens/'), 'Tools must own GrowLens');
-assert(shell.sectionOwnership?.tools?.includes('/thc-grow-doc/'), 'Tools must own THC Grow Doc');
+for (const obsolete of ['Genetics', 'Tools']) {
+  assert(!primaryLabels.includes(obsolete), `retired primary label '${obsolete}' must not appear in the V6 primary navigation`);
+}
+
+for (const rel of deployableShellFiles) {
+  const html = fs.readFileSync(path.join(root, rel), 'utf8');
+  const primary = primaryNavMarkup(html);
+  assert(Boolean(primary), `${rel} must expose a canonical primary navigation`);
+  if (!primary) continue;
+
+  const normalizedPrimary = primary.replaceAll("'", '"').replace(/\s+/g, ' ');
+  let lastIndex = -1;
+  for (const item of canonicalPrimary) {
+    const hrefIndex = normalizedPrimary.indexOf(`href="${item.route}"`);
+    assert(hrefIndex >= 0, `${rel} primary navigation is missing route ${item.route}`);
+    if (hrefIndex < 0) continue;
+    const linkTail = normalizedPrimary.slice(hrefIndex, hrefIndex + 220);
+    assert(linkTail.includes(`>${item.label}</a>`), `${rel} primary navigation route ${item.route} must be labeled ${item.label}`);
+    assert(hrefIndex > lastIndex, `${rel} primary navigation order must match the canonical eight-item sequence`);
+    lastIndex = hrefIndex;
+  }
+
+  assert(!/>\s*Genetics\s*<\/a>/i.test(primary), `${rel} still exposes retired primary label Genetics`);
+  assert(!/>\s*Tools\s*<\/a>/i.test(primary), `${rel} still exposes retired primary label Tools`);
+}
+assert(shell.sectionOwnership?.courses?.includes('/courses/'), 'Courses must own /courses/');
+assert(shell.sectionOwnership?.courses?.includes('/learn/learning-hub/'), 'Courses must own historical Learning Hub course URLs');
+assert(shell.sectionOwnership?.diagnostic?.includes('/growlens/'), 'Diagnostic must own GrowLens');
+assert(shell.sectionOwnership?.diagnostic?.includes('/thc-grow-doc/'), 'Diagnostic must own THC Grow Doc');
 assert(shell.sectionOwnership?.shop?.includes('/cart/'), 'Shop must own Cart');
 assert(shell.sectionOwnership?.shop?.includes('/my-account/'), 'Shop must own Account');
 
-// data/public-navigation.json remains the detailed public games/tools registry during
-// the V6 migration. Its legacy primaryNavigation field is not a site-shell authority.
+// Both navigation registries are authoritative and must agree on the eight-item primary row.
+assert(JSON.stringify(nav.primaryNavigation) === JSON.stringify(shell.primaryNavigation), 'public-navigation and site-navigation-v6 primary navigation must match exactly');
 assert(nav.learn?.route === '/learn/', 'Learn registry root must remain /learn/');
 assert(nav.courses?.route === '/courses/', 'Courses registry root must remain /courses/');
 assert(nav.diagnostic?.route === '/tools/', 'Diagnostic registry data must remain owned by /tools/');
@@ -75,10 +116,22 @@ const appById = new Map(apps.apps.map((app) => [app.id, app]));
 const publicGames = nav.games.filter((game) => game.public);
 const privateGames = nav.games.filter((game) => !game.public);
 const hubPlayableCount = hub.match(/<strong>(\d+)<\/strong><span>playable browser games<\/span>/i);
+const hubLiveMultiplayerCount = hub.match(/<strong>(\d+)<\/strong><span>live multiplayer tables<\/span>/i);
+const hubCandidateCount = hub.match(/<strong>(\d+)<\/strong><span>release\/runtime candidates<\/span>/i);
+const publicMultiplayerGames = publicGames.filter((game) => game.status === 'multiplayer');
+const releaseCandidates = privateGames.filter((game) => typeof game.candidateRoute === 'string' && game.candidateRoute.length > 0);
 
 assert(Boolean(hubPlayableCount), 'Game Hub must expose its playable-game count');
 if (hubPlayableCount) {
   assert(Number(hubPlayableCount[1]) === publicGames.length, `Game Hub playable count ${hubPlayableCount[1]} does not match ${publicGames.length} public games`);
+}
+assert(Boolean(hubLiveMultiplayerCount), 'Game Hub must expose its live-multiplayer count');
+if (hubLiveMultiplayerCount) {
+  assert(Number(hubLiveMultiplayerCount[1]) === publicMultiplayerGames.length, `Game Hub live multiplayer count ${hubLiveMultiplayerCount[1]} does not match ${publicMultiplayerGames.length} public multiplayer games`);
+}
+assert(Boolean(hubCandidateCount), 'Game Hub must expose its release/runtime candidate count');
+if (hubCandidateCount) {
+  assert(Number(hubCandidateCount[1]) === releaseCandidates.length, `Game Hub candidate count ${hubCandidateCount[1]} does not match ${releaseCandidates.length} registered candidates`);
 }
 
 for (const game of publicGames) {
@@ -89,7 +142,16 @@ for (const game of publicGames) {
   if (game.route) assert(hub.includes(`href=\"${game.route}\"`) || hub.includes(`href='${game.route}'`), `${game.id} is public but Game Hub does not link ${game.route}`);
 }
 
-for (const game of privateGames) assert(!game.route, `${game.id} is not public but still has a public route`);
+for (const game of privateGames) {
+  assert(!game.route, `${game.id} is not public but still has a public route`);
+  if (game.candidateRoute) {
+    const app = appById.get(game.id);
+    assert(game.status === 'development', `${game.id} has candidateRoute but is not marked development`);
+    assert(app?.status === 'runtime-integration' || app?.status === 'release-candidate' || app?.status === 'ready-to-package', `${game.id} candidateRoute has unexpected deployment status ${app?.status || '<missing>'}`);
+    assert(app?.route === game.candidateRoute, `${game.id} candidateRoute mismatch: nav=${game.candidateRoute} deployment=${app?.route || '<none>'}`);
+    assert(!hub.includes(`href="${game.candidateRoute}"`) && !hub.includes(`href='${game.candidateRoute}'`), `${game.id} is not public but Game Hub still links candidate route ${game.candidateRoute}`);
+  }
+}
 
 const validStatuses = new Set(nav.principles.statusLabels);
 for (const game of nav.games) assert(validStatuses.has(game.status), `${game.id} has unknown status ${game.status}`);

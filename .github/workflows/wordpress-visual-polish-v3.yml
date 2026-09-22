@@ -66,7 +66,7 @@ jobs:
           node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
           node --check scripts/flush-hostinger-litespeed-mcp.mjs
           grep -Fq 'data-dtf-shell="header-v6"' scripts/lib/sitewide-header-template-v6.mjs
-          grep -Fq 'data-dtf-sitewide-header="canonical-six-v1"' scripts/lib/sitewide-header-template-v6.mjs
+          grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' scripts/lib/sitewide-header-template-v6.mjs
 
       - name: Confirm WordPress REST path
         shell: bash
@@ -136,7 +136,7 @@ jobs:
               if grep -Fqi -- "$marker" "$body" && \
                  grep -Fqi 'dtf-visual-polish-v3' "$body" && \
                  grep -Fqi 'data-dtf-shell="header-v6"' "$body" && \
-                 grep -Fqi 'data-dtf-sitewide-header="canonical-six-v1"' "$body" && \
+                 grep -Fqi 'data-dtf-sitewide-header="canonical-eight-v1"' "$body" && \
                  grep -Fqi 'id="dtf-sitewide-ux-polish-v1"' "$body"; then
                 ok=1
                 break
@@ -145,7 +145,7 @@ jobs:
             done
             if [[ "$ok" -ne 1 ]]; then
               echo "V3/V6/UX marker not observed on $path" >&2
-              for required_marker in "$marker" 'dtf-visual-polish-v3' 'data-dtf-shell="header-v6"' 'data-dtf-sitewide-header="canonical-six-v1"' 'id="dtf-sitewide-ux-polish-v1"'; do
+              for required_marker in "$marker" 'dtf-visual-polish-v3' 'data-dtf-shell="header-v6"' 'data-dtf-sitewide-header="canonical-eight-v1"' 'id="dtf-sitewide-ux-polish-v1"'; do
                 grep -Fqi -- "$required_marker" "$body" || echo "Missing marker on $path: $required_marker" >&2
               done
               head -c 3500 "$body" >&2 || true
@@ -163,7 +163,7 @@ jobs:
           fs.writeFileSync(process.argv[3], match[0]);
           NODE
 
-            expected='Genetics|Learn|Tools|Games|Community|Shop'
+            expected='Home|Seeds|Learn|Courses|Diagnostic|Games|Community|Shop'
             actual="$(node - "$header" <<'NODE'
           const fs = require('node:fs');
           const source = fs.readFileSync(process.argv[2], 'utf8');
@@ -173,7 +173,7 @@ jobs:
           NODE
             )"
             [[ "$actual" == "$expected" ]] || { echo "Unexpected V6 primary navigation on $path: $actual" >&2; exit 1; }
-            for forbidden_label in '>Home</a>' '>Seeds</a>' '>Courses</a>' '>Diagnostic</a>'; do
+            for forbidden_label in '>Genetics</a>' '>Tools</a>'; do
               ! grep -Fqi -- "$forbidden_label" "$header" || { echo "Obsolete primary label remains on $path: $forbidden_label" >&2; exit 1; }
             done
             for forbidden in 'email@email.com' '+123456789' '© 2025 DTF Genetics' '&copy; 2025 DTF Genetics'; do

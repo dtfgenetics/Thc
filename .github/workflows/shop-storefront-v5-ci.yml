@@ -32,6 +32,9 @@ jobs:
           grep -Fq 'refusing to rewrite the archive' scripts/polish-wordpress-shop-storefront-v5.mjs
           grep -Fq 'data-dtf-shop-storefront-v5="true"' scripts/polish-wordpress-shop-storefront-v5.mjs
           grep -Fq 'data-dtf-shop-visual="premium-v6"' scripts/polish-wordpress-shop-storefront-v5.mjs
+          grep -Fq 'data-dtf-shop-structure="context-first-v7"' scripts/polish-wordpress-shop-storefront-v5.mjs
+          grep -Fq 'Price, availability & checkout' scripts/polish-wordpress-shop-storefront-v5.mjs
+          grep -Fq 'dtf-shop-v5-compare' scripts/polish-wordpress-shop-storefront-v5.mjs
           grep -Fq 'Shop the release. Read the breeding story.' scripts/polish-wordpress-shop-storefront-v5.mjs
           grep -Fq 'strain-card-images.json' scripts/polish-wordpress-shop-storefront-v5.mjs
           grep -Fq '/seeds/blue-mango/' scripts/polish-wordpress-shop-storefront-v5.mjs
@@ -78,13 +81,15 @@ jobs:
         run: |
           set -euo pipefail
           node <<'NODE'
-          const storefront='<!-- wp:html --><section class="dtf-shop-storefront-v5" data-dtf-shop-storefront-v5="true" data-dtf-shop-visual="premium-v6">Shop the release. Read the breeding story.</section><!-- /wp:html -->';
+          const storefront='<!-- wp:html --><section class="dtf-shop-storefront-v5" data-dtf-shop-storefront-v5="true" data-dtf-shop-visual="premium-v6" data-dtf-shop-structure="context-first-v7">Shop the release. Read the breeding story. Price, availability & checkout</section><!-- /wp:html -->';
           const sample='<!-- wp:template-part {"slug":"header","theme":"hostinger-ai-theme"} /-->\n<!-- wp:woocommerce/store-notices /-->\n<!-- wp:woocommerce/product-collection {"query":{"postType":"product"}} -->PRODUCT_LOOP_SENTINEL<!-- /wp:woocommerce/product-collection -->';
           const header=/<!-- wp:template-part\s+\{[^}]*"slug"\s*:\s*"header"[^}]*\}\s*\/-->/i;
           if(!header.test(sample)) throw new Error('Fixture header is not matched.');
           const next=sample.replace(header,(match)=>`${match}\n${storefront}`);
           if(!next.includes('data-dtf-shop-storefront-v5="true"')) throw new Error('Storefront was not inserted.');
           if(!next.includes('data-dtf-shop-visual="premium-v6"')) throw new Error('Premium visual marker was not inserted.');
+          if(!next.includes('data-dtf-shop-structure="context-first-v7"')) throw new Error('Context-first Shop structure marker was not inserted.');
+          if(!next.includes('Price, availability & checkout')) throw new Error('Transactional handoff was not inserted.');
           if(!next.includes('PRODUCT_LOOP_SENTINEL')) throw new Error('WooCommerce product loop was altered.');
           if((next.match(/data-dtf-shop-storefront-v5=/g)||[]).length!==1) throw new Error('Storefront marker duplicated.');
           console.log('Shop V5 archive insertion preserves the WooCommerce product loop.');

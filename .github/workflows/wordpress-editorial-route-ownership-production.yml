@@ -122,7 +122,7 @@ jobs:
           child_check '/learn/infographics/' 'Infographic'
           child_check '/learn/plant-health/' 'Teaching Healthy Cultivation'
           child_check '/community/grow-offs/solo-cup-grow-off/' 'Solo Cup'
-          child_check '/games/' '25 playable browser games'
+          child_check '/games/' '23 playable browser games'
 
       - name: Upload route ownership rollback evidence
         if: always()

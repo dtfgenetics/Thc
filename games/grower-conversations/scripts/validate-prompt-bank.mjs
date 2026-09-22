@@ -61,6 +61,9 @@ if (filtered.length !== 4 || available.length !== 2 || filtered.length - availab
 }
 
 const runtimeContracts = [
+  ['clipboard fallback helper', 'async function copyText(value)'],
+  ['legacy copy fallback', "document.execCommand?.('copy') === true"],
+  ['copy failure feedback', "Copy failed. Select the prompt text to copy it manually."],
   ['active-filter matcher', 'function matchesActiveFilters(card)'],
   ['filtered used count', 'const usedMatching = filtered.length - available.length;'],
   ['filter/current synchronization', 'function syncCurrentToFilters()'],
@@ -71,6 +74,10 @@ const runtimeContracts = [
 for (const [label, source] of runtimeContracts) {
   if (!runtimeSource.includes(source)) fail(`browser runtime missing ${label}`);
 }
+
+const visualSource = fs.readFileSync(path.resolve(gameRoot, '..', '..', 'site', 'public-route-patch', 'games', 'grower-conversations', 'grower-conversations-v2.css'), 'utf8');
+if (!visualSource.includes('@media(forced-colors:active)')) fail('forced-colors support missing from browser presentation');
+if (!visualSource.includes('outline:3px solid Highlight')) fail('forced-colors focus indicator missing');
 
 console.log('Grower Conversations prompt bank validation passed', {
   cards: materialized.length,

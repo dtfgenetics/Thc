@@ -23,6 +23,15 @@ on:
       - scripts/assemble-wordpress-suite-v2.py
       - scripts/assemble-wordpress-suite-resource-aware.py
       - scripts/promote-public-game-routes-via-wordpress.mjs
+      - scripts/verify-external-release-candidates-live.mjs
+      - scripts/apply-sitewide-header.mjs
+      - scripts/lib/sitewide-header-template.mjs
+      - scripts/lib/sitewide-header-template-v6.mjs
+      - scripts/lib/sitewide-footer-template-v6.mjs
+      - scripts/lib/sitewide-content-density-v1.mjs
+      - scripts/lib/sitewide-visual-repair-v2.mjs
+      - site/wordpress/assets/responsive-layout-v1.css
+      - site/wordpress/assets/sitewide-ux-polish-v1.css
       - scripts/wordpress-suite-v2/**
 
 permissions:
@@ -72,6 +81,10 @@ jobs:
             scripts/assemble-wordpress-suite-resource-aware.py
           node --check scripts/cleanup-stale-wordpress-suite-snippets.mjs
           node --check scripts/promote-public-game-routes-via-wordpress.mjs
+          node --check scripts/verify-external-release-candidates-live.mjs
+          grep -Fq "status: 'production-candidate'" scripts/verify-external-release-candidates-live.mjs
+          grep -Fq 'data-dtf-shell="header-v6"' scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq 'data-dtf-shell="footer-v6"' scripts/promote-public-game-routes-via-wordpress.mjs
           python scripts/assemble-wordpress-suite-resource-aware.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs" | tee "$RUNNER_TEMP/resource-ownership-bridge.json"
           node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq 'resourceOwnedTargetsExcluded' "$RUNNER_TEMP/resource-ownership-bridge.json"
@@ -305,7 +318,7 @@ jobs:
             fi
             rm -f "$body" "$headers"
           }
-          check 'https://dtfseeds.com/games/' '25 playable browser games'
+          check 'https://dtfseeds.com/games/' '23 playable browser games'
           check 'https://dtfseeds.com/projects/' '25 public browser games'
           check 'https://dtfseeds.com/games/high-land/' 'High Land'
           check 'https://dtfseeds.com/games/strain-showdown/' 'Eight play styles. One showdown.'

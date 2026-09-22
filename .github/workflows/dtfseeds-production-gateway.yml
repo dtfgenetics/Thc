@@ -289,7 +289,7 @@ jobs:
             fi
             rm -f "$body"
           }
-          check '/games/' '25 playable browser games'
+          check '/games/' '23 playable browser games'
           check '/games/spin-the-strain/' 'All 18 entries appear once before this mode starts a new cycle.'
           check '/games/high-iq/' 'Build your High IQ run'
           check '/games/strain-showdown/' 'Eight play styles. One showdown.'

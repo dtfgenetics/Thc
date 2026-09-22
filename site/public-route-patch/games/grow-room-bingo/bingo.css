@@ -65,3 +65,20 @@ html[data-mode=mixed] .bingo-hero{background:radial-gradient(circle at 90% 8%,rg
 @media(max-width:430px){.status{gap:6px}.status-card{padding:9px 10px}.status strong{font-size:1.05rem}.cell{min-height:66px;font-size:.62rem;line-height:1.07;padding:4px;border-radius:8px}.cell[aria-pressed=true]:not(.free)::after{width:18px;height:18px;right:4px;bottom:4px;font-size:.62rem}.bingo-columns{gap:4px}.bingo-columns span{min-height:33px;font-size:.98rem}.control-group.share-group{grid-template-columns:1fr}.share-group label,.share-group #copy{grid-column:auto}.controls>*{width:100%}.controls input{width:100%}.board-tip{font-size:.68rem}}
 @media(hover:none){.cell:hover:not(:disabled),.controls button:hover:not(:disabled),.mode-btn:hover:not(:disabled){transform:none}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}.cell.mark-pop{animation:none}.cell:hover:not(:disabled){transform:none}.board.has-bingo{transform:none}}
+
+@media(forced-colors:active){
+  .cell,.controls button,.mode-btn,.controls input,.status-card,.board-stage,.control-group{
+    border:1px solid ButtonText;
+  }
+  .cell:focus-visible,.controls button:focus-visible,.mode-btn:focus-visible,.controls input:focus-visible,.back:focus-visible{
+    outline:3px solid Highlight;
+    outline-offset:3px;
+  }
+  .cell[aria-pressed=true],.cell.line{
+    border-color:Highlight;
+  }
+  .cell[aria-pressed=true]:not(.free)::after{
+    background:Highlight;
+    color:HighlightText;
+  }
+}

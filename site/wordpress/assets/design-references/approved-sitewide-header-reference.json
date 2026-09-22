@@ -1,9 +1,9 @@
 {
-  "schemaVersion": 4,
-  "id": "dtf-approved-sitewide-header-reference-v2",
+  "schemaVersion": 5,
+  "id": "dtf-approved-sitewide-header-reference-v3",
   "status": "approved",
   "purpose": "Canonical visual and information-architecture reference for the DTF Genetics sitewide shared header and structured course-interface direction.",
-  "usage": "Use the approved reference image for visual treatment only. The production information architecture is the canonical six-section navigation defined here; do not restore obsolete labels from older screenshots.",
+  "usage": "Use the approved reference image for visual treatment only. The production information architecture is the canonical eight-section navigation defined here; older six-link wording is retired.",
   "assetContract": {
     "canonicalMaster": "Google Drive stores the full-resolution approved visual master.",
     "repositoryPreview": "GitHub stores a durable optimized preview derivative for versioned design/QA reference.",
@@ -35,12 +35,72 @@
     "sourceOfTruth": "googleDrive.fileId"
   },
   "canonicalNavigation": [
-    { "label": "Genetics", "href": "/seeds/", "owns": ["/seeds/"] },
-    { "label": "Learn", "href": "/learn/", "owns": ["/learn/", "/courses/", "/education/", "/yellow-leaves/"] },
-    { "label": "Tools", "href": "/tools/", "owns": ["/tools/", "/growlens/", "/thc-grow-doc/"] },
-    { "label": "Games", "href": "/games/", "owns": ["/games/"] },
-    { "label": "Community", "href": "/community/", "owns": ["/community/"] },
-    { "label": "Shop", "href": "/shop/", "owns": ["/shop/", "/product/", "/cart/", "/checkout/", "/my-account/"] }
+    {
+      "label": "Home",
+      "href": "/",
+      "owns": [
+        "/"
+      ]
+    },
+    {
+      "label": "Seeds",
+      "href": "/seeds/",
+      "owns": [
+        "/seeds/"
+      ]
+    },
+    {
+      "label": "Learn",
+      "href": "/learn/",
+      "owns": [
+        "/learn/",
+        "/education/",
+        "/yellow-leaves/",
+        "/atlas/"
+      ]
+    },
+    {
+      "label": "Courses",
+      "href": "/courses/",
+      "owns": [
+        "/courses/",
+        "/learn/learning-hub/"
+      ]
+    },
+    {
+      "label": "Diagnostic",
+      "href": "/tools/",
+      "owns": [
+        "/tools/",
+        "/growlens/",
+        "/thc-grow-doc/"
+      ]
+    },
+    {
+      "label": "Games",
+      "href": "/games/",
+      "owns": [
+        "/games/"
+      ]
+    },
+    {
+      "label": "Community",
+      "href": "/community/",
+      "owns": [
+        "/community/"
+      ]
+    },
+    {
+      "label": "Shop",
+      "href": "/shop/",
+      "owns": [
+        "/shop/",
+        "/product/",
+        "/cart/",
+        "/checkout/",
+        "/my-account/"
+      ]
+    }
   ],
   "utilityActions": [
     "Search",
@@ -49,23 +109,32 @@
     "Teaching Healthy Cultivation"
   ],
   "secondaryNavigation": [
-    { "label": "Home", "href": "/", "access": "DTF Genetics brand link" },
-    { "label": "Gallery", "href": "/gallery/" },
-    { "label": "About", "href": "/about/" },
-    { "label": "Contact", "href": "/contact/" }
+    {
+      "label": "Gallery",
+      "href": "/gallery/"
+    },
+    {
+      "label": "About",
+      "href": "/about/"
+    },
+    {
+      "label": "Contact",
+      "href": "/contact/"
+    }
   ],
   "responsiveRequirements": {
-    "desktop": "Show all six canonical destinations in one row when there is sufficient width.",
+    "desktop": "Show all eight canonical destinations in one row when there is sufficient width.",
     "tablet": "Preserve brand and utility icons; collapse primary destinations into the menu before the row becomes cramped.",
-    "mobile": "Preserve brand, Search, Account, Cart, and Menu. Expanded navigation retains all six canonical labels and order.",
+    "mobile": "Preserve brand, Search, Account, Cart, and Menu. Expanded navigation retains all eight canonical labels and order.",
     "touchTargetMinimumPx": 44
   },
   "approvedTraits": [
     "dark evergreen full-width header",
     "DTF Genetics brand at left links to Home",
-    "exact primary order: Genetics, Learn, Tools, Games, Community, Shop",
-    "Courses belongs beneath Learn rather than occupying a primary slot",
-    "Diagnostic, GrowLens, and THC Grow Doc belong beneath Tools rather than occupying a primary slot",
+    "exact primary order: Home, Seeds, Learn, Courses, Diagnostic, Games, Community, Shop",
+    "Seeds is the primary label for the genetics section",
+    "Courses remains a distinct primary visitor journey",
+    "Diagnostic is the primary label for the tools and plant-health utility section",
     "green filled active-navigation state",
     "search, account, and cart utilities at right",
     "Teaching Healthy Cultivation identity at right when space permits",

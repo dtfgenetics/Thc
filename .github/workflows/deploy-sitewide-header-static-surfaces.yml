@@ -6,8 +6,13 @@ on:
     branches: [main]
     paths:
       - scripts/lib/sitewide-header-template.mjs
+      - scripts/lib/sitewide-header-template-v6.mjs
+      - scripts/lib/sitewide-footer-template-v6.mjs
+      - scripts/lib/sitewide-content-density-v1.mjs
+      - scripts/lib/sitewide-visual-repair-v2.mjs
       - scripts/apply-sitewide-header.mjs
       - scripts/verify-responsive-layout-live.mjs
+      - scripts/verify-wordpress-owned-route-preservation.mjs
       - site/wordpress/assets/responsive-layout-v1.css
       - site/wordpress/assets/sitewide-ux-polish-v1.css
       - .github/workflows/build-dtfseeds-public-suite.yml
@@ -15,8 +20,13 @@ on:
   pull_request:
     paths:
       - scripts/lib/sitewide-header-template.mjs
+      - scripts/lib/sitewide-header-template-v6.mjs
+      - scripts/lib/sitewide-footer-template-v6.mjs
+      - scripts/lib/sitewide-content-density-v1.mjs
+      - scripts/lib/sitewide-visual-repair-v2.mjs
       - scripts/apply-sitewide-header.mjs
       - scripts/verify-responsive-layout-live.mjs
+      - scripts/verify-wordpress-owned-route-preservation.mjs
       - site/wordpress/assets/responsive-layout-v1.css
       - site/wordpress/assets/sitewide-ux-polish-v1.css
       - .github/workflows/build-dtfseeds-public-suite.yml
@@ -38,19 +48,38 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate canonical header, responsive layout, and UX polish inputs
+      - name: Validate canonical V6 header, responsive layout, UX polish, and visual repair inputs
         shell: bash
         run: |
           set -euo pipefail
-          node --check scripts/lib/sitewide-header-template.mjs
+          node --check scripts/lib/sitewide-header-template-v6.mjs
+          node --check scripts/lib/sitewide-footer-template-v6.mjs
+          node --check scripts/lib/sitewide-content-density-v1.mjs
+          node --check scripts/lib/sitewide-visual-repair-v2.mjs
           node --check scripts/apply-sitewide-header.mjs
           node --check scripts/verify-responsive-layout-live.mjs
+          node --check scripts/verify-wordpress-owned-route-preservation.mjs
           test -s site/wordpress/assets/responsive-layout-v1.css
           test -s site/wordpress/assets/sitewide-ux-polish-v1.css
           grep -Fq 'Apply approved sitewide header to release HTML' .github/workflows/build-dtfseeds-public-suite.yml
-          grep -Fq 'data-dtf-sitewide-header="approved-reference-v1"' scripts/lib/sitewide-header-template.mjs
+          grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' scripts/lib/sitewide-header-template-v6.mjs
+          grep -Fq 'data-dtf-sitewide-footer="canonical-eight-v1"' scripts/lib/sitewide-footer-template-v6.mjs
+          grep -Fq 'data-dtf-shell="footer-v6"' scripts/lib/sitewide-footer-template-v6.mjs
+          grep -Fq "./lib/sitewide-footer-template-v6.mjs" scripts/apply-sitewide-header.mjs
+          for required in '>Home</a>' '>Seeds</a>' '>Learn</a>' '>Courses</a>' '>Diagnostic</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
+            grep -Fq "$required" scripts/lib/sitewide-header-template-v6.mjs || { echo "Missing canonical nav label: $required" >&2; exit 1; }
+          done
+          ! grep -Fq '>Genetics</a>' scripts/lib/sitewide-header-template-v6.mjs
+          ! grep -Fq '>Tools</a>' scripts/lib/sitewide-header-template-v6.mjs
+          grep -Fq 'dtf-content-density-v1-style' scripts/lib/sitewide-content-density-v1.mjs
+          grep -Fq 'dtf-sitewide-visual-repair-v2-style' scripts/lib/sitewide-visual-repair-v2.mjs
+          grep -Fq 'dtf-sitewide-visual-repair-v2-script' scripts/lib/sitewide-visual-repair-v2.mjs
           grep -Fq 'dtf-responsive-layout-v1' scripts/apply-sitewide-header.mjs
           grep -Fq 'dtf-sitewide-ux-polish-v1' scripts/apply-sitewide-header.mjs
+          grep -Fq 'dtf-sitewide-visual-repair-v2-style' scripts/apply-sitewide-header.mjs
+          grep -Fq 'dtf-sitewide-visual-repair-v2-script' scripts/apply-sitewide-header.mjs
+          grep -Fq 'id="dtf-visual-system-v2"' scripts/verify-wordpress-owned-route-preservation.mjs
+          grep -Fq 'Genetics first. Cultivation science behind it.' scripts/verify-wordpress-owned-route-preservation.mjs
           grep -Fq '@media (min-width:701px) and (max-width:1120px)' site/wordpress/assets/responsive-layout-v1.css
           grep -Fq '@media (max-width:700px)' site/wordpress/assets/responsive-layout-v1.css
           grep -Fq 'scroll-snap-type:x proximity' site/wordpress/assets/responsive-layout-v1.css
@@ -81,7 +110,7 @@ jobs:
         run: |
           set -euo pipefail
           gh workflow run deploy-public-suite-wordpress-v2.yml --repo "$GITHUB_REPOSITORY" --ref main
-          echo 'Dispatched Deploy DTFSeeds Public Suite via WordPress V2 from the merged header/responsive/UX source.'
+          echo 'Dispatched Deploy DTFSeeds Public Suite via WordPress V2 from the merged V6 header/footer/responsive/UX/visual-repair source.'
       - name: Wait for visitor-facing responsive shell and UX polish across primary navigation
         shell: bash
         env:

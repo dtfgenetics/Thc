@@ -1,6 +1,12 @@
 name: Spin the Strain CI
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - games/spin-the-strain/**
+      - site/public-route-patch/games/spin-the-strain/**
+      - .github/workflows/spin-the-strain-ci.yml
   pull_request:
     branches: [main]
     paths:
@@ -14,11 +20,11 @@ permissions:
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
 
@@ -34,6 +40,7 @@ jobs:
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/spin-the-strain/app.js
+          node --check site/public-route-patch/games/spin-the-strain/runtime.mjs
           node --check site/public-route-patch/games/spin-the-strain/engine.mjs
 
       - name: Verify canonical and public engine match
@@ -47,20 +54,22 @@ jobs:
           const html = fs.readFileSync('site/public-route-patch/games/spin-the-strain/index.html','utf8');
           const css = fs.readFileSync('site/public-route-patch/games/spin-the-strain/spin-the-strain.css','utf8');
           const app = fs.readFileSync('site/public-route-patch/games/spin-the-strain/app.js','utf8');
+          const runtime = fs.readFileSync('site/public-route-patch/games/spin-the-strain/runtime.mjs','utf8');
           const requireText = (source, text, label) => {
             if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
           };
           requireText(html, '<link rel="canonical" href="https://dtfseeds.com/games/spin-the-strain/">', 'canonical route');
           requireText(html, 'id="spin-the-strain-data"', 'embedded wheel data');
           requireText(html, '<script src="./app.js" defer></script>', 'classic deferred entrypoint');
-          requireText(app, 'const segmentAngle = 360 / entries.length;', 'dynamic segment angle');
-          requireText(app, "label.style.setProperty('--segment-angle'", 'segment angle handoff');
-          requireText(app, '360 - (state.lastResult.index + 0.5) * segmentAngle', 'top-pointer landing calculation');
-          requireText(app, "ui.category.textContent = 'SPINNING'", 'hidden result during spin');
-          requireText(app, 'function validateData(candidate)', 'runtime data contract');
+          requireText(runtime, 'const segmentAngle = 360 / entries.length;', 'dynamic segment angle');
+          requireText(runtime, "label.style.setProperty('--segment-angle'", 'segment angle handoff');
+          requireText(runtime, '360 - (state.lastResult.index + 0.5) * segmentAngle', 'top-pointer landing calculation');
+          requireText(runtime, "ui.category.textContent = 'SPINNING'", 'hidden result during spin');
+          requireText(runtime, 'function validateData(candidate)', 'runtime data contract');
           requireText(css, 'var(--segment-angle) - 90deg', 'top-axis label alignment');
           if (html.includes('type="module"')) throw new Error('Spin the Strain must not depend on module MIME handling');
-          if (app.includes("fetch('./data/wheels.json'")) throw new Error('Spin the Strain must not fetch wheel data at runtime');
+          requireText(app, "import('./runtime.mjs')", 'thin runtime bootstrap');
+          if (runtime.includes("fetch('./data/wheels.json'")) throw new Error('Spin the Strain must not fetch wheel data at runtime');
           if (css.includes('var(--segment-index)')) throw new Error('stale segment-index renderer contract remains');
           NODE
 

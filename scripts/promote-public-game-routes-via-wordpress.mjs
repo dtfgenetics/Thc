@@ -1,7 +1,24 @@
 import crypto from 'node:crypto';
 import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 
 const siteUrl = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
+const overlayContract = JSON.parse(
+  readFileSync(new URL('../site/deployment/dtf420-static-overlay.json', import.meta.url), 'utf8')
+);
+if (overlayContract?.canonicalOrigin !== 'https://dtfseeds.com') {
+  throw new Error('Dtf420 overlay contract canonical origin is invalid.');
+}
+for (const key of ['routePrefixes', 'sharedPaths', 'requiredRoutes']) {
+  if (!Array.isArray(overlayContract?.[key]) || overlayContract[key].length === 0 || overlayContract[key].some((value) => typeof value !== 'string' || !value.trim())) {
+    throw new Error(`Dtf420 overlay contract ${key} is invalid.`);
+  }
+}
+const overlayCanonicalOriginLiteral = JSON.stringify(overlayContract.canonicalOrigin);
+const overlayRoutePrefixesLiteral = JSON.stringify(overlayContract.routePrefixes);
+const overlaySharedPathsLiteral = JSON.stringify(overlayContract.sharedPaths);
+const overlayRequiredRoutesLiteral = JSON.stringify(overlayContract.requiredRoutes);
+
 const username = process.env.WP_API_USERNAME || '';
 const password = process.env.WP_API_PASSWORD || '';
 if (!username || !password) throw new Error('WordPress credentials are required.');
@@ -106,7 +123,7 @@ async function ensureSnippetApi() {
   if (!(await waitForSnippetApi())) throw new Error('Code Snippets REST API did not become available.');
 }
 
-const rootOverlayBlock = `# DTFSeeds managed application child-route overlay v1
+const rootOverlayLegacyBlock = `# DTFSeeds managed application child-route overlay v1
 RewriteRule ^games/future-slots(?:/|$) /games/ [R=301,L]
 RewriteRule ^learn/(academy|atlas|cultivation-science|glossary|plant-health|search|sops|sources|symptoms|tools)(?:/(.*))?/?$ /dtf-content-overlay/learn/$1/$2 [L]
 RewriteRule ^community/grow-offs(?:/(.*))?/?$ /dtf-content-overlay/community/grow-offs/$1 [L]
@@ -114,19 +131,43 @@ RewriteRule ^games/seed-ascent(?:/(.*))?/?$ /dtf-content-overlay/games/seed-asce
 RewriteRule ^_next/static/(.*)$ /dtf-content-overlay/_next/static/$1 [L]
 RewriteRule ^seed-ascent\\.html$ /dtf-content-overlay/seed-ascent.html [L]
 RewriteRule ^seed-ascent/(.*)$ /dtf-content-overlay/seed-ascent/$1 [L]`;
+const rootOverlayBlock = `# DTFSeeds managed application child-route overlay v2
+RewriteRule ^favicon$ /dtf-content-overlay/favicon [L,T=image/png]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(?:games/.+|growlens/.+|thc-grow-doc/.+|atlas/.+)\\.(?:avif|css|gif|ico|jpe?g|js|json|mjs|mp3|mp4|ogg|otf|png|svg|ttf|wav|webm|webp|woff2?)$ - [R=404,L,NC]
+RewriteRule ^games/future-slots(?:/|$) /games/ [R=301,L]
+RewriteRule ^learn/(academy|atlas|cultivation-science|glossary|plant-health|search|sops|sources|symptoms|tools)(?:/(.*))?/?$ /dtf-content-overlay/learn/$1/$2 [L]
+RewriteRule ^community/grow-offs(?:/(.*))?/?$ /dtf-content-overlay/community/grow-offs/$1 [L]
+RewriteRule ^games/seed-ascent(?:/(.*))?/?$ /dtf-content-overlay/games/seed-ascent/$1 [L]
+RewriteRule ^_next/static/(.*)$ /dtf-content-overlay/_next/static/$1 [L]
+RewriteRule ^seed-ascent\\.html$ /dtf-content-overlay/seed-ascent.html [L]
+RewriteRule ^seed-ascent/(.*)$ /dtf-content-overlay/seed-ascent/$1 [L]`;
+const rootOverlayLegacyBase64 = Buffer.from(rootOverlayLegacyBlock, 'utf8').toString('base64');
 const rootOverlayBase64 = Buffer.from(rootOverlayBlock, 'utf8').toString('base64');
-const gamesOverlayBlock = `# DTFSeeds managed game-directory child-route overlay v2
+
+const gamesOverlayLegacyBlock = `# DTFSeeds managed game-directory child-route overlay v2
 RewriteRule ^seed-ascent(?:/(.*))?/?$ /dtf-content-overlay/games/seed-ascent/$1 [L]
 RewriteRule ^(?:future-slots)(?:/|$) /games/ [R=301,L]`;
+const gamesOverlayBlock = `# DTFSeeds managed game-directory child-route overlay v3
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^.+\\.(?:avif|css|gif|ico|jpe?g|js|json|mjs|mp3|mp4|ogg|otf|png|svg|ttf|wav|webm|webp|woff2?)$ - [R=404,L,NC]
+RewriteRule ^seed-ascent(?:/(.*))?/?$ /dtf-content-overlay/games/seed-ascent/$1 [L]
+RewriteRule ^(?:future-slots)(?:/|$) /games/ [R=301,L]`;
+const gamesOverlayLegacyBase64 = Buffer.from(gamesOverlayLegacyBlock, 'utf8').toString('base64');
 const gamesOverlayBase64 = Buffer.from(gamesOverlayBlock, 'utf8').toString('base64');
 
 const snippetCode = String.raw`
 add_action('rest_api_init', function () {
     $token = ${tokenLiteral};
     $namespace = ${namespaceLiteral};
+    $root_overlay_legacy = base64_decode(${JSON.stringify(rootOverlayLegacyBase64)}, true);
     $root_overlay = base64_decode(${JSON.stringify(rootOverlayBase64)}, true);
+    $games_overlay_legacy = base64_decode(${JSON.stringify(gamesOverlayLegacyBase64)}, true);
     $games_overlay = base64_decode(${JSON.stringify(gamesOverlayBase64)}, true);
-    if (!is_string($root_overlay) || $root_overlay === '' || !is_string($games_overlay) || $games_overlay === '') return;
+    if (!is_string($root_overlay_legacy) || $root_overlay_legacy === ''
+        || !is_string($root_overlay) || $root_overlay === ''
+        || !is_string($games_overlay_legacy) || $games_overlay_legacy === ''
+        || !is_string($games_overlay) || $games_overlay === '') return;
     $permission = static function (WP_REST_Request $request) use ($token) {
         $supplied = (string) $request->get_header('x-dtf-route-promotion-token');
         if ($supplied === '') $supplied = (string) $request->get_param('_dtf_route_promotion_token');
@@ -138,6 +179,7 @@ add_action('rest_api_init', function () {
             'rel' => '.htaccess',
             'desired' => $root_overlay,
             'stale' => [
+                $root_overlay_legacy,
                 'RewriteRule ^games/(?:future-slots)(?:/|$) /games/ [R=301,L]',
                 'RewriteRule ^games/(?:future-slots|bud-or-bluff)(?:/|$) /games/ [R=301,L]',
                 'RewriteRule ^games/(?:future-slots|high-iq|bud-or-bluff|grower-conversations)(?:/|$) /games/ [R=301,L]',
@@ -147,6 +189,7 @@ add_action('rest_api_init', function () {
             'rel' => 'games/.htaccess',
             'desired' => $games_overlay,
             'stale' => [
+                $games_overlay_legacy,
                 'RewriteRule ^(?:future-slots)(?:/|$) /games/ [R=301,L]',
                 'RewriteRule ^(?:future-slots|bud-or-bluff)(?:/|$) /games/ [R=301,L]',
                 'RewriteRule ^(?:future-slots|high-iq|bud-or-bluff|grower-conversations)(?:/|$) /games/ [R=301,L]',
@@ -195,27 +238,20 @@ add_action('rest_api_init', function () {
         'callback' => static function () use ($targets, $backup_key, $safe_path, $state_key, $restore_all, $overlay_manifest) {
             $manifest_raw = file_get_contents($overlay_manifest);
             $manifest = is_string($manifest_raw) ? json_decode($manifest_raw, true) : null;
-            $expected_routes = ['learn/academy','learn/atlas','learn/cultivation-science','learn/glossary','learn/plant-health','learn/search','learn/sops','learn/sources','learn/symptoms','learn/tools','community/grow-offs','games/seed-ascent'];
-            $expected_shared = ['_next/static','seed-ascent','seed-ascent.html'];
+            $expected_origin = ${overlayCanonicalOriginLiteral};
+            $expected_routes = ${overlayRoutePrefixesLiteral};
+            $expected_shared = ${overlaySharedPathsLiteral};
+            $expected_required = ${overlayRequiredRoutesLiteral};
             if (!is_array($manifest)
-                || ($manifest['canonicalOrigin'] ?? '') !== 'https://dtfseeds.com'
+                || ($manifest['canonicalOrigin'] ?? '') !== $expected_origin
                 || ($manifest['repository'] ?? '') !== 'dtfgenetics/Dtf420'
                 || ($manifest['routePrefixes'] ?? null) !== $expected_routes
-                || ($manifest['sharedPaths'] ?? null) !== $expected_shared) {
+                || ($manifest['sharedPaths'] ?? null) !== $expected_shared
+                || ($manifest['requiredRoutes'] ?? null) !== $expected_required) {
                 return new WP_Error('dtf_overlay_manifest', 'Dtf420 overlay manifest does not match the approved production contract.', ['status' => 409]);
             }
-            foreach ([
-                'dtf-content-overlay/learn/academy/index.html',
-                'dtf-content-overlay/learn/atlas/seed-germination/seed-anatomy/index.html',
-                'dtf-content-overlay/learn/cultivation-science/outdoor-site-and-sun-mapping/index.html',
-                'dtf-content-overlay/learn/plant-health/two-spotted-spider-mite/index.html',
-                'dtf-content-overlay/learn/sops/ph-meter-calibration-and-measurement/index.html',
-                'dtf-content-overlay/learn/symptoms/lower-leaf-yellowing/index.html',
-                'dtf-content-overlay/learn/tools/plant-health-intake/index.html',
-                'dtf-content-overlay/community/grow-offs/solo-cup-grow-off/index.html',
-                'dtf-content-overlay/games/seed-ascent/index.html',
-                'dtf-content-overlay/seed-ascent.html',
-            ] as $required) {
+            foreach ($expected_required as $required_rel) {
+                $required = 'dtf-content-overlay/' . ltrim($required_rel, '/');
                 $path = $safe_path($required);
                 if ($path === false || !is_file($path) || filesize($path) < 1) {
                     return new WP_Error('dtf_overlay_required', 'Dtf420 overlay is incomplete.', ['status' => 409, 'path' => $required]);
@@ -243,7 +279,10 @@ add_action('rest_api_init', function () {
                 $stale_matches = [];
                 foreach ($target['stale'] as $stale) {
                     $count = substr_count($stale_scan, $stale);
-                    if ($count > 0) $stale_matches[] = ['marker' => $stale, 'count' => $count];
+                    if ($count > 0) {
+                        $stale_matches[] = ['marker' => $stale, 'count' => $count];
+                        break;
+                    }
                 }
                 if ($desired_count === 1 && count($stale_matches) === 0) { $already[] = $target['rel']; continue; }
                 if ($desired_count !== 0 || count($stale_matches) !== 1 || $stale_matches[0]['count'] !== 1) {
@@ -371,8 +410,10 @@ async function verifySeedAscent() {
         && wrapper.text.includes('/_next/static/')
         && wrapper.text.includes('https://dtfseeds.com')
         && !/https?:\/\/(?:www\.)?dtf420\.com/i.test(wrapper.text)
-        && wrapper.text.includes('data-dtf-shell="header-v5"')
-        && wrapper.text.includes('data-dtf-sitewide-header="approved-reference-v1"')
+        && wrapper.text.includes('data-dtf-shell="header-v6"')
+        && wrapper.text.includes('data-dtf-sitewide-header="canonical-eight-v1"')
+        && wrapper.text.includes('data-dtf-shell="footer-v6"')
+        && wrapper.text.includes('data-dtf-sitewide-footer="canonical-eight-v1"')
         && wrapper.text.includes('id="dtf-sitewide-ux-polish-v1"');
       const launcherOk = launcher.response.status === 200
         && !launcher.response.headers.get('location')
@@ -403,7 +444,35 @@ async function verifySeedAscent() {
   throw new Error(`Seed Ascent wrapper/runtime verification failed after promotion (${last}).`);
 }
 
+async function verifyOverlayFavicon() {
+  const { response } = await probe('/favicon');
+  const contentType = response.headers.get('content-type') || '';
+  if (response.status !== 200 || response.headers.get('location') || !/^image\/png(?:;|$)/i.test(contentType)) {
+    throw new Error(`Overlay favicon verification failed: HTTP ${response.status}, content-type ${contentType || '<missing>'}, location ${response.headers.get('location') || '<none>'}`);
+  }
+}
+async function verifyMissingAssetGuard() {
+  const probes = [
+    '/games/weedopolis/__dtf_missing_asset__.jpg',
+    '/games/high-land/__dtf_missing_asset__.png',
+    '/growlens/__dtf_missing_asset__.png',
+    '/thc-grow-doc/__dtf_missing_asset__.webp',
+    '/atlas/__dtf_missing_asset__.svg',
+  ];
+
+  for (const route of probes) {
+    const { response, text } = await probe(route);
+    const contentType = response.headers.get('content-type') || '';
+    const isGameHubFallback = /DTF Game Hub|Pick what is playable\. See what is coming next\./i.test(text);
+    if (response.status !== 404 || response.headers.get('location') || isGameHubFallback) {
+      throw new Error(`Static asset fallback guard failed for ${route}: HTTP ${response.status}, content-type ${contentType || '<missing>'}, location ${response.headers.get('location') || '<none>'}`);
+    }
+  }
+}
 async function verifyPromotion() {
+  await verifyOverlayFavicon();
+  await verifyMissingAssetGuard();
+
   let budOk = false;
   let lastBud = '';
   for (let attempt = 1; attempt <= 8; attempt += 1) {

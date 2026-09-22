@@ -1,4 +1,4 @@
-name: Verify DTFSeeds Gallery Visual V1
+name: Verify DTFSeeds Gallery Visual V3
 
 on:
   workflow_dispatch:
@@ -28,11 +28,11 @@ jobs:
         run: |
           set -euo pipefail
           test -s site/wordpress/pages/gallery.html
-          grep -Fq 'data-dtf-layout="gallery-visual-v1"' site/wordpress/pages/gallery.html
+          grep -Fq 'data-dtf-layout="gallery-visual-v3"' site/wordpress/pages/gallery.html
           grep -Fq 'class="dtf-v1"' site/wordpress/pages/gallery.html
           grep -Fq 'DTF gallery.' site/wordpress/pages/gallery.html
-          ! grep -Fq 'DTF Visual Library' site/wordpress/pages/gallery.html
-          ! grep -Fq 'dtf-gallery-v2' site/wordpress/pages/gallery.html
+          grep -Fq 'Approved visuals only.' site/wordpress/pages/gallery.html
+          grep -Fq 'class="gallery-v3"' site/wordpress/pages/gallery.html
 
       - name: Verify current visitor-facing Gallery
         shell: bash
@@ -44,6 +44,8 @@ jobs:
             -H 'Pragma: no-cache' \
             "$WP_SITE_URL/gallery/?dtf_gallery_visual=${GITHUB_RUN_ID}" -o "$body"
           grep -Fqi 'DTF gallery.' "$body"
+          grep -Fqi 'data-dtf-layout="gallery-visual-v3"' "$body"
+          grep -Fqi 'Approved visuals only.' "$body"
           grep -Fqi '/learn/infographics/' "$body"
           grep -Fqi '/seeds/' "$body"
           grep -Fqi '/tools/' "$body"

@@ -10,6 +10,7 @@ const attempts=Math.max(1,Number(process.env.RESPONSIVE_LAYOUT_VERIFY_ATTEMPTS||
 const pauseMs=Math.max(250,Number(process.env.RESPONSIVE_LAYOUT_VERIFY_PAUSE_MS||3000));
 const marker='id="dtf-responsive-layout-v1"';
 const uxMarker='id="dtf-sitewide-ux-polish-v1"';
+const mobileMarker='id="dtf-sitewide-mobile-polish-v1-style"';
 const requiredCssTokens=[
   '--dtf-layout-max:1360px',
   '--dtf-global-header-height:92px',
@@ -27,6 +28,13 @@ const requiredUxTokens=[
   'overscroll-behavior:contain',
   '--dtf-ux-focus:#8fea76'
 ];
+const requiredMobileTokens=[
+  '--dtf-mobile-gutter:16px',
+  '--dtf-mobile-section:clamp(38px,10vw,54px)',
+  'grid-template-columns:repeat(2,minmax(0,1fr))!important',
+  'font-size:clamp(2.15rem,10vw,3.25rem)!important',
+  'padding:18px!important'
+];
 
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 
@@ -39,7 +47,7 @@ async function fetchRoute(route,attempt){
       'cache-control':'no-cache, no-store, max-age=0',
       pragma:'no-cache',
       accept:'text/html',
-      'user-agent':'DTFSeeds-Responsive-Layout-Live/1.4'
+      'user-agent':'DTFSeeds-Responsive-Layout-Live/1.7'
     },
     signal:AbortSignal.timeout(30_000)
   });
@@ -51,14 +59,24 @@ async function fetchRoute(route,attempt){
 function inspect(route,body){
   const missing=[];
   if(!body.includes('data-dtf-shell="header-v6"')) missing.push('canonical V6 header');
-  if(!body.includes('data-dtf-sitewide-header="canonical-six-v1"')) missing.push('canonical six-link navigation marker');
+  if(!body.includes('data-dtf-sitewide-header="canonical-eight-v1"')) missing.push('canonical eight-link navigation marker');
   if(!body.includes(marker)) missing.push('responsive layout style marker');
   if(!body.includes(uxMarker)) missing.push('sitewide UX polish style marker');
+  if(!body.includes(mobileMarker)) missing.push('sitewide mobile polish style marker');
+  const responsiveIndex=body.indexOf(marker);
+  const uxIndex=body.indexOf(uxMarker);
+  const mobileIndex=body.indexOf(mobileMarker);
+  if(responsiveIndex>=0&&uxIndex>=0&&mobileIndex>=0&&!(mobileIndex>responsiveIndex&&mobileIndex>uxIndex)) {
+    missing.push('mobile polish must be the final shared responsive style layer');
+  }
   for(const token of requiredCssTokens){
     if(!body.includes(token)) missing.push(`responsive CSS token ${JSON.stringify(token)}`);
   }
   for(const token of requiredUxTokens){
     if(!body.includes(token)) missing.push(`UX CSS token ${JSON.stringify(token)}`);
+  }
+  for(const token of requiredMobileTokens){
+    if(!body.includes(token)) missing.push(`mobile CSS token ${JSON.stringify(token)}`);
   }
   if(!/<meta[^>]+name=["']viewport["'][^>]+width=device-width/i.test(body) && !/<meta[^>]+content=["'][^"']*width=device-width[^"']*["'][^>]+name=["']viewport["']/i.test(body)) {
     missing.push('responsive viewport meta');
@@ -81,7 +99,7 @@ for(const route of routes){
       if(finalMissing.length===0){
         passed=true;
         results.push({route,ok:true,attempt});
-        console.log(`PASS responsive layout and UX polish ${route}`);
+        console.log(`PASS responsive layout, UX polish, and final mobile polish ${route}`);
         break;
       }
       lastError=new Error(`${route} missing ${finalMissing.join(', ')}`);
@@ -92,10 +110,10 @@ for(const route of routes){
   }
   if(!passed){
     results.push({route,ok:false,missing:finalMissing,error:lastError?.message||'unknown error'});
-    console.error(`FAIL responsive layout and UX polish ${route}: ${lastError?.message||'unknown error'}`);
+    console.error(`FAIL responsive layout, UX polish, and final mobile polish ${route}: ${lastError?.message||'unknown error'}`);
   }
 }
 
 const failed=results.filter(row=>!row.ok);
-console.log(JSON.stringify({siteUrl,header:'v6',marker,uxMarker,routes:results,ok:failed.length===0},null,2));
+console.log(JSON.stringify({siteUrl,header:'v6',navigation:'canonical-eight-v1',marker,uxMarker,mobileMarker,mobilePolishFinal:true,routes:results,ok:failed.length===0},null,2));
 if(failed.length) process.exit(1);

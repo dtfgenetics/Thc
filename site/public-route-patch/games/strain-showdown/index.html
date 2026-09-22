@@ -32,9 +32,9 @@
       <div class="intro-panel">
         <span class="section-kicker">Choose your family</span>
         <h2>Eight play styles. One showdown.</h2>
-        <p>This first playable ruleset uses the canonical 96-card Strain Showdown roster. Card-specific effect text is intentionally not finalized yet; family passives drive the prototype battle system.</p>
+        <p>The battle system uses the full 96-card Strain Showdown roster. Family passives define each play style while cards progress from Base to Select to Elite during the match.</p>
         <div class="family-meta-row">
-          <div class="record-strip" id="recordStrip">Prototype record: 0 W / 0 L</div>
+          <div class="record-strip" id="recordStrip">Match record: 0 W / 0 L</div>
           <div class="runtime-strip" id="runtimeStatus" role="status" aria-live="polite">Loading canonical 96-card roster…</div>
         </div>
       </div>
@@ -102,17 +102,17 @@
 
   <dialog id="rulesDialog" class="rules-dialog">
     <button id="closeRules" class="dialog-close" type="button" aria-label="Close rules">×</button>
-    <span class="section-kicker">Prototype ruleset v0.1</span>
+    <span class="section-kicker">Core battle rules</span>
     <h2>How Strain Showdown Works</h2>
     <div class="rules-grid">
       <article><b>1</b><h3>Play a Base</h3><p>Stage 1 Base cards enter an empty lane. They cost 1 Focus.</p></article>
       <article><b>2</b><h3>Make a Selection</h3><p>Replace a same-family Stage 1 card with a Stage 2 Select card. It costs 2 Focus.</p></article>
       <article><b>3</b><h3>Raise an Elite</h3><p>Replace a Stage 2 Select with a Stage 3 Elite. It costs 3 Focus.</p></article>
       <article><b>4</b><h3>Attack the Lane</h3><p>Attacks normally cost 1 Focus. Damage hits the opposing card in that lane; an open lane damages the rival Garden.</p></article>
-      <article><b>5</b><h3>Use Family Identity</h3><p>Each family has one prototype passive based on its locked design identity.</p></article>
+      <article><b>5</b><h3>Use Family Identity</h3><p>Each family has a distinct passive that shapes its battle style.</p></article>
       <article><b>6</b><h3>Break the Garden</h3><p>Reduce the rival Garden from 20 to 0. If the battle reaches 18 rounds, board strength breaks the tie.</p></article>
     </div>
-    <p class="rules-note">This browser build is a gameplay prototype. The canonical 96-card roster is locked, while final per-card effect text, balance, art, and print rules remain separate release gates.</p>
+    <p class="rules-note">The 96-card roster and core browser battle loop are active here. Additional per-card effects, balance refinements, artwork, and print rules can expand without changing the current match structure.</p>
   </dialog>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>

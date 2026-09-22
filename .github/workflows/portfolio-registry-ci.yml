@@ -124,19 +124,20 @@ jobs:
           expect(project('grower-conversations')?.status === 'browser-deck-alpha', 'Grower Conversations registry state drift');
           expect(app('grower-conversations')?.runtime === 'static' && app('grower-conversations')?.status === 'ready-to-package', 'Grower Conversations deployment state drift');
 
-          expect(project('cannabis-fleet-battle')?.status === 'server-engine-alpha', 'Fleet Battle registry state drift');
-          expect(app('cannabis-fleet-battle')?.runtime === 'server-engine' && app('cannabis-fleet-battle')?.status === 'server-engine-alpha', 'Fleet Battle deployment state drift');
-
+          expect(project('protect-the-plants')?.status === 'canonical', 'Burn Buds registry state drift');
           expect(app('protect-the-plants')?.runtime === 'static-php' && app('protect-the-plants')?.status === 'ready-to-package', 'Burn Buds deployment state drift');
+
+          expect(project('cannabis-fleet-battle')?.status === 'archive-candidate', 'Fleet Battle archive registry state drift');
+          expect(app('cannabis-fleet-battle')?.runtime === 'merged-archive-pointer' && app('cannabis-fleet-battle')?.status === 'do-not-develop', 'Fleet Battle archive deployment state drift');
 
           expect(project('strain-showdown')?.status === 'browser-prototype', 'Strain Showdown registry state drift');
           expect(app('strain-showdown')?.runtime === 'static' && app('strain-showdown')?.status === 'ready-to-package', 'Strain Showdown deployment state drift');
 
           const seedMan=app('seed-man-platformer');
-          expect(project('seed-man-platformer')?.status === 'browser-vertical-slice', 'Seed Man registry state drift');
+          expect(project('seed-man-platformer')?.status === 'canonical', 'Seed Man registry state drift');
           expect(seedMan?.runtime === 'static-canvas2d-approved-art' && seedMan?.status === 'production-v20', 'Seed Man deployment classification drift');
           expect(seedMan?.machineData?.levelCount === 20 && seedMan?.machineData?.finalBoss === 'blight-king', 'Seed Man v20 machine metadata drift');
-          expect(seedMan?.machineData?.worldMechanicsRuntime === 'seed-man-world-mechanics-browser-v1', 'Seed Man world mechanics metadata drift');
+          expect(seedMan?.machineData?.worldMechanicsRuntime === 'seed-man-world-mechanics-browser-v3', 'Seed Man world mechanics metadata drift');
           expect(seedMan?.machineData?.dynamicPlatformRuntime === 'seed-man-three-dynamic-platforms-v1', 'Seed Man dynamic platform metadata drift');
           expect(seedMan?.machineData?.worldRenderer === 'seed-man-three-world-v2' && seedMan?.machineData?.worldRendererBundle === 'seed-man-three-public-v3', 'Seed Man Three.js renderer metadata drift');
           expect(seedMan?.machineData?.worldFallbackRenderer === 'seed-man-canvas-world-gradient-v1', 'Seed Man fallback renderer metadata drift');
@@ -158,7 +159,7 @@ jobs:
           test -s site/public-route-patch/games/protect-the-plants/plant.svg
           test -s site/public-route-patch/projects/index.html
           test -s site/public-route-patch/games/seed-man-platformer/world-mechanics-browser-v1.js
-          grep -Fq 'seed-man-world-mechanics-browser-v1' site/public-route-patch/games/seed-man-platformer/world-mechanics-browser-v1.js
+          grep -Fq 'seed-man-world-mechanics-browser-v3' site/public-route-patch/games/seed-man-platformer/world-mechanics-browser-v1.js
           grep -Fq 'seed-man-three-dynamic-platforms-v1' games/seed-man-platformer/src/render/three-world-dynamic.mjs
           grep -Fq 'Cannabis Fleet Battle' site/public-route-patch/projects/index.html
           grep -Fq 'Strain Showdown' site/public-route-patch/games/index.html

@@ -150,14 +150,15 @@ jobs:
           test -s package/games/thc-rpg/src/game/GrowJournal.js
           test -s package/games/thc-rpg/src/game/KeeperCuttings.js
           grep -Fq 'data-dtf-shell="header-v6"' package/games/thc-rpg/index.html
-          grep -Fq 'data-dtf-sitewide-header="canonical-six-v1"' package/games/thc-rpg/index.html
-          grep -Fq 'href="/seeds/"' package/games/thc-rpg/index.html
-          grep -Fq '>Genetics<' package/games/thc-rpg/index.html
-          grep -Fq 'href="/learn/"' package/games/thc-rpg/index.html
-          grep -Fq 'href="/tools/"' package/games/thc-rpg/index.html
-          grep -Fq 'href="/games/"' package/games/thc-rpg/index.html
-          grep -Fq 'href="/community/"' package/games/thc-rpg/index.html
-          grep -Fq 'href="/shop/"' package/games/thc-rpg/index.html
+          grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' package/games/thc-rpg/index.html
+          grep -Fq 'href="/" data-dtf-nav-group="home">Home<' package/games/thc-rpg/index.html
+          grep -Fq 'href="/seeds/">Seeds<' package/games/thc-rpg/index.html
+          grep -Fq 'href="/learn/" data-dtf-nav-group="learn">Learn<' package/games/thc-rpg/index.html
+          ! grep -Fq 'href="/courses/" data-dtf-nav-group="courses">Courses<' package/games/thc-rpg/index.html
+          grep -Fq 'href="/tools/" data-dtf-nav-group="diagnostic">Diagnostic<' package/games/thc-rpg/index.html
+          grep -Fq 'href="/games/">Games<' package/games/thc-rpg/index.html
+          grep -Fq 'href="/community/">Community<' package/games/thc-rpg/index.html
+          grep -Fq 'href="/shop/" data-dtf-nav-group="shop">Shop<' package/games/thc-rpg/index.html
           grep -Fq 'Teaching' package/games/thc-rpg/index.html
           grep -Fq 'Healthy Cultivation' package/games/thc-rpg/index.html
           grep -Fq 'route=/games/thc-rpg/' package/games/thc-rpg/source-revision.txt

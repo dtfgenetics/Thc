@@ -1,0 +1,95 @@
+/* Terpocalypse V1 mobile gameplay spacing
+   Presentation-only. The canvas runtime owns combat/state; this layer keeps
+   touch controls and transient UI from covering the 88px mobile HUD band. */
+
+:root {
+  --terp-mobile-hud-reserve: 96px;
+  --terp-touch-stack-reserve: 154px;
+}
+
+@media (pointer: coarse), (max-width: 760px) {
+  .touch-controls {
+    bottom: calc(var(--terp-mobile-hud-reserve) + max(10px, env(safe-area-inset-bottom)));
+    padding-inline: max(12px, env(safe-area-inset-left)) max(12px, env(safe-area-inset-right));
+  }
+
+  .touch-controls button {
+    border-color: rgba(232, 255, 229, 0.24);
+    background: rgba(3, 11, 6, 0.82);
+    box-shadow:
+      0 10px 26px rgba(0, 0, 0, 0.42),
+      inset 0 1px rgba(255, 255, 255, 0.07);
+  }
+
+  .touch-controls button.active {
+    border-color: rgba(120, 255, 102, 0.78);
+    background: rgba(70, 180, 74, 0.34);
+    box-shadow:
+      0 0 0 2px rgba(120, 255, 102, 0.12),
+      0 8px 24px rgba(0, 0, 0, 0.42);
+  }
+
+  .touch-right .fire-action {
+    border-color: rgba(255, 122, 112, 0.76);
+    background: rgba(125, 31, 29, 0.84);
+  }
+
+  .touch-right .burst-action {
+    border-color: rgba(198, 151, 255, 0.7);
+    background: rgba(71, 40, 105, 0.84);
+  }
+
+  .toast {
+    bottom: calc(
+      var(--terp-mobile-hud-reserve) +
+      var(--terp-touch-stack-reserve) +
+      max(12px, env(safe-area-inset-bottom))
+    );
+    max-width: min(86vw, 520px);
+  }
+
+  .objective {
+    border-color: rgba(120, 255, 102, 0.2);
+    background: rgba(3, 10, 5, 0.88);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  }
+}
+
+@media (pointer: coarse) and (orientation: landscape) and (max-height: 620px) {
+  :root {
+    --terp-mobile-hud-reserve: 80px;
+    --terp-touch-stack-reserve: 118px;
+  }
+
+  .touch-controls button {
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+  }
+
+  .touch-right .small-action {
+    width: 52px;
+    height: 34px;
+  }
+
+  .touch-right .fire-action,
+  .touch-right .burst-action {
+    width: 60px;
+  }
+
+  .touch-left > button {
+    margin-bottom: 4px;
+  }
+
+  .touch-left > div,
+  .touch-right > div {
+    gap: 5px;
+    margin-top: 5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .touch-controls button {
+    transition: none !important;
+  }
+}

@@ -10,7 +10,10 @@ const pass = process.env.WP_API_PASSWORD || '';
 const configPath = process.env.TECH2_PUBLIC_COURSES_PATH || 'site/wordpress/education/tech2-courses-public-v1.json';
 const backupRoot = process.env.BACKUP_ROOT || '/tmp/dtf-tech2-public-courses';
 const config = JSON.parse(await readFile(configPath, 'utf8'));
-const rawBase = `https://raw.githubusercontent.com/${config.source.repository}/${encodeURIComponent(config.source.ref || 'main')}`;
+const configuredSourceRef = String(config.source?.ref || 'main');
+const sourceRef = String(process.env.THC_LEARNING_SOURCE_SHA || configuredSourceRef).trim();
+if (process.env.THC_LEARNING_SOURCE_SHA && !/^[0-9a-f]{40}$/i.test(sourceRef)) throw new Error('THC_LEARNING_SOURCE_SHA must be a full 40-character Git commit SHA.');
+const rawBase = `https://raw.githubusercontent.com/${config.source.repository}/${encodeURIComponent(sourceRef)}`;
 const auth = user && pass ? `Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}` : '';
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const must = (value, message) => { if (!value) throw new Error(message); };
@@ -172,6 +175,20 @@ if (validateOnly) {
   process.exit(0);
 }
 if (!apply) { console.log('Validation passed. Set APPLY_TECH2_PUBLIC_COURSES=true to publish.'); process.exit(0); }
+
+await mkdir(backupRoot, { recursive: true });
+await writeFile(join(backupRoot, 'source-identity.json'), JSON.stringify({
+  sourceRepository: config.source.repository,
+  configuredSourceRef,
+  resolvedSourceRef: sourceRef,
+  exactSourceShaPinned: /^[0-9a-f]{40}$/i.test(sourceRef),
+  siteRepository: process.env.GITHUB_REPOSITORY || 'dtfgenetics/Thc',
+  siteSourceSha: process.env.GITHUB_SHA || null,
+  workflowRunId: process.env.GITHUB_RUN_ID || null,
+  workflowRunAttempt: process.env.GITHUB_RUN_ATTEMPT || null,
+  recordedAt: new Date().toISOString()
+}, null, 2));
+console.log(JSON.stringify({ sourceIdentity: { repository: config.source.repository, resolvedRef: sourceRef, exactSourceShaPinned: /^[0-9a-f]{40}$/i.test(sourceRef) } }));
 
 let program = await findPage(config.program.slug, null);
 if (!program) {

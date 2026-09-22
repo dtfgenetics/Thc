@@ -76,8 +76,8 @@ jobs:
             if [[ "$status" == '200' ]] \
               && grep -Fq 'data-seed-ui-release="20260909-v20-runtime-v5"' "$body" \
               && grep -Fq 'data-seed-man-approved-art="approved-showcase-2026-09-08"' "$body" \
-              && grep -Fq 'combat-browser-v2.js?v=20260909-v20-runtime-v5' "$body" \
-              && grep -Fq 'player-state-v20.js?v=20260909-v20-runtime-v5' "$body" \
+              && grep -Fq 'combat-browser-v2.js?v=20260918-v20-phenotype-cycle-v1' "$body" \
+              && grep -Fq 'player-state-v20.js?v=20260918-v20-combat-stakes-v1' "$body" \
               && ! grep -Fqi 'Original browser vertical slice' "$body" \
               && ! grep -Fq '20260830-r4' "$body"; then
               ok=1

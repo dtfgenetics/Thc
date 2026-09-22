@@ -78,3 +78,168 @@ select,
     border: 1px solid ButtonText;
   }
 }
+
+
+/* v3.5 — player-facing finish pass. */
+.legacy-fallback{
+  align-items:center;
+  gap:16px;
+}
+.legacy-fallback strong{
+  font-size:clamp(1rem,2vw,1.2rem);
+}
+.legacy-fallback p{
+  max-width:68ch;
+  line-height:1.5;
+}
+.answer-option{
+  min-height:72px;
+  touch-action:manipulation;
+}
+.answer-option .answer-letter{
+  flex:0 0 auto;
+}
+.quiz-controls .quiz-action{
+  min-width:148px;
+}
+#next-question:not([hidden]){
+  min-width:168px;
+}
+@media (max-width:680px){
+  .answer-grid{
+    gap:10px !important;
+  }
+  .answer-option{
+    min-height:80px !important;
+    padding:14px !important;
+  }
+  .quiz-controls{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:8px !important;
+    padding-bottom:max(8px,env(safe-area-inset-bottom)) !important;
+  }
+  .quiz-controls .note{
+    order:3;
+    margin:0;
+  }
+  .quiz-controls .quiz-action{
+    width:100%;
+    min-width:0;
+  }
+  .legacy-fallback .quiz-actions{
+    display:grid;
+    grid-template-columns:1fr;
+    width:100%;
+  }
+  .legacy-fallback .quiz-actions .button,
+  .legacy-fallback .quiz-actions .quiz-action{
+    width:100%;
+    justify-content:center;
+  }
+}
+
+
+/* High IQ v3.6 — stage feedback and game-show response.
+   Presentation-only: question data, scoring, verification, and controls stay unchanged. */
+.high-iq-shell[data-hiq-stage="question"] .quiz-console,
+.high-iq-shell[data-hiq-stage="review"] .quiz-console,
+.high-iq-shell[data-hiq-stage="results"] .quiz-console{
+  position:relative;
+  isolation:isolate;
+}
+.high-iq-shell[data-hiq-stage="question"] .quiz-console::after,
+.high-iq-shell[data-hiq-stage="review"] .quiz-console::after,
+.high-iq-shell[data-hiq-stage="results"] .quiz-console::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  opacity:.34;
+  background:
+    radial-gradient(circle at 18% 18%,rgba(143,221,165,.16),transparent 24rem),
+    radial-gradient(circle at 84% 16%,rgba(168,139,232,.15),transparent 25rem),
+    linear-gradient(115deg,transparent 0 48%,rgba(230,197,111,.035) 48% 50%,transparent 50% 100%);
+}
+.high-iq-shell[data-hiq-stage="question"] .quiz-console>*,
+.high-iq-shell[data-hiq-stage="review"] .quiz-console>*,
+.high-iq-shell[data-hiq-stage="results"] .quiz-console>*{
+  position:relative;
+  z-index:1;
+}
+.high-iq-shell[data-hiq-stage="question"][data-hiq-outcome="selected"] .answer-option[aria-pressed="true"]{
+  box-shadow:0 0 0 2px rgba(230,197,111,.13),0 18px 44px rgba(230,197,111,.08)!important;
+}
+.high-iq-shell[data-hiq-stage="review"][data-hiq-outcome="correct"] .quiz-console::after{
+  background:
+    radial-gradient(circle at 50% 34%,rgba(143,221,165,.28),transparent 22rem),
+    radial-gradient(circle at 84% 16%,rgba(168,139,232,.12),transparent 24rem);
+}
+.high-iq-shell[data-hiq-stage="review"][data-hiq-outcome="incorrect"] .quiz-console::after{
+  background:
+    radial-gradient(circle at 50% 34%,rgba(228,147,130,.22),transparent 22rem),
+    radial-gradient(circle at 16% 14%,rgba(168,139,232,.1),transparent 24rem);
+}
+.high-iq-shell[data-hiq-streak-tier="hot"] #live-streak,
+.high-iq-shell[data-hiq-streak-tier="surge"] #live-streak{
+  color:#ffe59a!important;
+  text-shadow:0 0 24px rgba(230,197,111,.28);
+}
+.high-iq-shell[data-hiq-streak-tier="surge"] .quiz-scoreboard{
+  border-color:rgba(230,197,111,.3)!important;
+  box-shadow:0 12px 42px rgba(0,0,0,.3),0 0 32px rgba(230,197,111,.08)!important;
+}
+.high-iq-shell[data-hiq-stage="results"][data-hiq-outcome="strong"] .result-hero{
+  border-color:rgba(143,221,165,.34)!important;
+  box-shadow:0 24px 64px rgba(0,0,0,.34),0 0 36px rgba(143,221,165,.08)!important;
+}
+.high-iq-shell.hiq-pulse-question .question-heading{
+  animation:hiq-question-stage-in .34s cubic-bezier(.2,.7,.2,1) both;
+}
+.high-iq-shell.hiq-pulse-correct .answer-feedback{
+  animation:hiq-correct-stage .55s cubic-bezier(.2,.7,.2,1) both;
+}
+.high-iq-shell.hiq-pulse-incorrect .answer-feedback{
+  animation:hiq-incorrect-stage .48s ease both;
+}
+.high-iq-shell.hiq-pulse-results .result-hero{
+  animation:hiq-results-stage .62s cubic-bezier(.18,.75,.2,1) both;
+}
+@keyframes hiq-question-stage-in{
+  from{opacity:.35;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes hiq-correct-stage{
+  0%{transform:scale(.985);box-shadow:0 0 0 rgba(143,221,165,0)}
+  55%{transform:scale(1.006);box-shadow:0 0 34px rgba(143,221,165,.13)}
+  100%{transform:scale(1);box-shadow:0 0 0 rgba(143,221,165,0)}
+}
+@keyframes hiq-incorrect-stage{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-4px)}
+  55%{transform:translateX(4px)}
+  78%{transform:translateX(-2px)}
+}
+@keyframes hiq-results-stage{
+  from{opacity:.55;transform:translateY(10px) scale(.992)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+@media (max-width:680px){
+  .high-iq-shell[data-hiq-stage="question"] .quiz-console::after,
+  .high-iq-shell[data-hiq-stage="review"] .quiz-console::after,
+  .high-iq-shell[data-hiq-stage="results"] .quiz-console::after{
+    opacity:.24;
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  .high-iq-shell.hiq-pulse-question .question-heading,
+  .high-iq-shell.hiq-pulse-correct .answer-feedback,
+  .high-iq-shell.hiq-pulse-incorrect .answer-feedback,
+  .high-iq-shell.hiq-pulse-results .result-hero{
+    animation:none!important;
+  }
+}
+@media (forced-colors:active){
+  .high-iq-shell[data-hiq-stage] .quiz-console::after{display:none!important}
+}

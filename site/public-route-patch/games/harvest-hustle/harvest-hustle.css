@@ -55,3 +55,16 @@ h1,h2,p{margin-top:0}h1{max-width:10ch;margin-bottom:.6rem;font-size:clamp(2.4re
 @media(max-width:720px){.game-shell{width:min(100% - 1rem,1280px);padding-top:.7rem}.hero{display:grid}.status-chip{justify-self:start}.score-strip{grid-template-columns:repeat(2,1fr)}.batch-grid{grid-template-columns:1fr}.lower-grid{grid-template-columns:1fr}.rules-grid{grid-template-columns:1fr}.room-stage{height:90px}.station-grid{grid-template-columns:1fr}}
 @media(max-width:440px){.site-bar{padding:.8rem 1rem}.brand small{display:none}.hero,.room-panel,.station-panel{border-radius:1rem}.score-strip{padding:.5rem}.stat{min-height:62px}.batch-card{grid-template-columns:64px 1fr;padding:.62rem}.batch-art{width:60px}.station-button{grid-template-columns:2.4rem 2.6rem 1fr}.station-key{width:1.8rem;height:1.8rem}.station-mark{width:2.5rem;height:2.5rem}.room-light{display:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.batch-card,.station-button{transition:none!important}.shift-running .room-light{animation:none!important}}
+
+@media(forced-colors:active){
+  .batch-card,.station-button,.start-button,.secondary-button,.primary-button,.code-input,.score-strip,.room-panel,.station-panel,.control-card,.history-card,.rules-card{
+    border:1px solid ButtonText;
+  }
+  .batch-card:focus-visible,.station-button:focus-visible,.start-button:focus-visible,.secondary-button:focus-visible,.primary-button:focus-visible,.code-input:focus-visible,.hub-link:focus-visible,.brand:focus-visible{
+    outline:3px solid Highlight;
+    outline-offset:3px;
+  }
+  .batch-card.selected,.station-button.next-station{
+    border-color:Highlight;
+  }
+}

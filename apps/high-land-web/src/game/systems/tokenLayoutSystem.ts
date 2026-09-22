@@ -1,3 +1,5 @@
+import type { BoardSpace } from '../types/gameTypes';
+
 export type TokenOffset = {
   x: number;
   y: number;
@@ -39,4 +41,17 @@ export function getMoveDuration(playerCount: number): number {
   if (playerCount >= 8) return 72;
   if (playerCount >= 5) return 92;
   return 120;
+}
+
+
+export function getTokenTarget(space: BoardSpace, offsetX: number, offsetY: number, radius: number): TokenOffset {
+  const padding = radius + 3;
+  return {
+    x: clamp(space.x + offsetX, space.bounds.x + padding, space.bounds.x + space.bounds.width - padding),
+    y: clamp(space.y + offsetY, space.bounds.y + padding, space.bounds.y + space.bounds.height - padding)
+  };
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value));
 }

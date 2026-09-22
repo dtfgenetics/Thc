@@ -39,6 +39,13 @@ for(const level of levels.levels){
   assert.ok(recipes.levels[level.id].sections.length>=5,`${level.id} requires authored pacing sections`);
 }
 
+const finaleRecipe=recipes.levels['5-4-the-last-seed'];
+const finaleCarriers=finaleRecipe.sections.map((section)=>section.carrier).filter(Boolean);
+assert.deepEqual(finaleCarriers,['fire','electric','ice'],'authored Level 20 must stage Fire, Electric, then Ice carriers for the Blight King weakness cycle');
+const blightThrone=finaleRecipe.sections.find((section)=>section.boss==='blight-king');
+assert.ok(blightThrone?.mechanics?.includes('arena-lock'),'Blight throne must retain the arena lock');
+assert.equal(blightThrone?.carrier,'ice','Ice carrier must remain available inside the locked final arena');
+
 for(const world of Object.values(worlds.worlds)){
   assert.equal(world.layers.length,7,`${world.title} must define seven visual layers`);
   assert.equal(Object.keys(world.layerAssetKeys||{}).length,7,`${world.title} must map seven visual layer keys`);

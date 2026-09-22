@@ -52,6 +52,38 @@ if not str(overlay_manifest.get("commit") or "").isalnum() or len(str(overlay_ma
     raise SystemExit("Dtf420 staged overlay does not record a 40-character source revision")
 
 
+def apply_sitewide_shell_to_external_game(destination: Path) -> None:
+    shell_script = repo_root / "scripts" / "apply-sitewide-header.mjs"
+    if not shell_script.is_file():
+        raise SystemExit(f"sitewide shell script is missing: {shell_script}")
+    subprocess.run(
+        ["node", str(shell_script), str(destination)],
+        cwd=repo_root,
+        check=True,
+    )
+    subprocess.run(
+        ["node", str(shell_script), str(destination), "--check"],
+        cwd=repo_root,
+        check=True,
+    )
+    index = destination / "index.html"
+    html = index.read_text() if index.is_file() else ""
+    required_markers = (
+        'data-dtf-shell="header-v6"',
+        'data-dtf-sitewide-header="canonical-eight-v1"',
+        'data-dtf-shell="footer-v6"',
+        'data-dtf-sitewide-footer="canonical-eight-v1"',
+        'id="dtf-responsive-layout-v1"',
+        'id="dtf-sitewide-ux-polish-v1"',
+    )
+    missing = [marker for marker in required_markers if marker not in html]
+    if missing:
+        raise SystemExit(
+            f"external game shell reconciliation failed for {destination}: "
+            + ", ".join(missing)
+        )
+
+
 def parse_revision_file(path: Path) -> dict[str, str]:
     if not path.is_file():
         raise SystemExit(f"external game source revision missing: {path}")
@@ -115,6 +147,10 @@ def stage_external_game(contract_path: Path) -> dict[str, str]:
             shutil.rmtree(destination)
         shutil.copytree(dist, destination)
         shutil.copy2(revision_path, destination / "source-revision.txt")
+        # Canonical external builds intentionally do not carry the DTFSeeds global
+        # shell. Reapply it after restaging so production packaging cannot overwrite
+        # the shell-wrapped public-suite artifact with raw external HTML.
+        apply_sitewide_shell_to_external_game(destination)
 
     return {
         "id": str(contract["id"]),
@@ -281,6 +317,7 @@ required = [
     "atlas/downloads/index.html",
     "assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg",
     "dtf-content-overlay/overlay-manifest.json",
+    "dtf-content-overlay/favicon",
     "dtf-content-overlay/learn/academy/index.html",
     "dtf-content-overlay/learn/atlas/seed-germination/seed-anatomy/index.html",
     "dtf-content-overlay/learn/cultivation-science/outdoor-site-and-sun-mapping/index.html",

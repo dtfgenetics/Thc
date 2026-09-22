@@ -90,7 +90,7 @@ jobs:
           ok=0
           for attempt in 1 2 3 4 5 6 7 8; do
             curl -4 -fsSL --retry 2 --retry-delay 2 -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' "$WP_SITE_URL/learn/?dtf_learn_v3_final=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" -o "$body"
-            if grep -Fqi 'dtf-visual-polish-v3' "$body" && grep -Fqi 'dtf-v3-learn-theme-title-suppression' "$body" && grep -Fqi '/learn/genetics-breeding/' "$body" && grep -Fqi 'data-dtf-shell="header-v6"' "$body" && grep -Fqi 'data-dtf-sitewide-header="canonical-six-v1"' "$body"; then ok=1; break; fi
+            if grep -Fqi 'dtf-visual-polish-v3' "$body" && grep -Fqi 'dtf-v3-learn-theme-title-suppression' "$body" && grep -Fqi '/learn/genetics-breeding/' "$body" && grep -Fqi 'data-dtf-shell="header-v6"' "$body" && grep -Fqi 'data-dtf-sitewide-header="canonical-eight-v1"' "$body"; then ok=1; break; fi
             sleep 6
           done
           [[ "$ok" -eq 1 ]] || { echo 'Final V3 Learn hierarchy or canonical V6 header is not visible.' >&2; exit 1; }
@@ -101,7 +101,7 @@ jobs:
           if(!match) throw new Error('V6 header fragment missing');
           fs.writeFileSync(process.argv[3],match[0]);
           NODE
-          expected='Genetics|Learn|Tools|Games|Community|Shop'
+          expected='Home|Seeds|Learn|Courses|Diagnostic|Games|Community|Shop'
           actual="$(node - "$header" <<'NODE'
           const fs=require('node:fs');
           const source=fs.readFileSync(process.argv[2],'utf8');
@@ -110,7 +110,7 @@ jobs:
           NODE
           )"
           [[ "$actual" == "$expected" ]] || { echo "Unexpected Learn V6 nav: $actual" >&2; exit 1; }
-          for obsolete in '>Home</a>' '>Seeds</a>' '>Courses</a>' '>Diagnostic</a>'; do
+          for obsolete in '>Genetics</a>' '>Tools</a>'; do
             ! grep -Fqi -- "$obsolete" "$header" || { echo "Obsolete primary navigation label remains: $obsolete" >&2; exit 1; }
           done
           echo 'outcome=success' >> "$GITHUB_OUTPUT"
@@ -134,5 +134,5 @@ jobs:
             echo "V3-owned title normalization: **${APPLY:-not-completed}**"
             echo "Live V6 verification: **${VERIFY:-not-completed}**"
             echo
-            echo 'This workflow restores the V3 Learn presentation, then reapplies and verifies the canonical V6 Genetics / Learn / Tools / Games / Community / Shop shell so Learn finalization cannot regress the global header.'
+            echo 'This workflow restores the V3 Learn presentation, then reapplies and verifies the canonical V6 Home / Seeds / Learn / Courses / Diagnostic / Games / Community / Shop shell so Learn finalization cannot regress the global header.'
           } >> "$GITHUB_STEP_SUMMARY"

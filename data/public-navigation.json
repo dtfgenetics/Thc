@@ -374,7 +374,7 @@
     },
     {
       "id": "crossword",
-      "title": "THC Weekly Crossword",
+      "title": "THC Daily Crossword",
       "route": "/games/crossword/",
       "status": "play-now",
       "public": true
@@ -403,16 +403,16 @@
     {
       "id": "thc-u-know",
       "title": "THC U Know",
-      "route": "/games/thc-u-know/",
-      "status": "multiplayer",
-      "public": true
+      "status": "development",
+      "public": false,
+      "candidateRoute": "/games/thc-u-know/"
     },
     {
       "id": "kush-kings",
       "title": "Kush Kings Chess",
-      "route": "/games/kush-kings-chess/",
-      "status": "multiplayer",
-      "public": true
+      "status": "development",
+      "public": false,
+      "candidateRoute": "/games/kush-kings-chess/"
     },
     {
       "id": "terpocalypse",
@@ -497,6 +497,20 @@
       "route": "/games/high-lines/",
       "status": "play-now",
       "public": true
+    },
+    {
+      "id": "ganjumanji",
+      "title": "Ganjumanji: The Lost Grower's Temple",
+      "status": "development",
+      "public": false,
+      "candidateRoute": "/games/ganjumanji/"
+    },
+    {
+      "id": "thc-rpg",
+      "title": "THC RPG — The First Seed",
+      "status": "development",
+      "public": false,
+      "candidateRoute": "/games/thc-rpg/"
     }
   ],
   "external": [

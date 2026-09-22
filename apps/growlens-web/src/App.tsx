@@ -683,10 +683,10 @@ export default function App() {
       <aside className="sidebar">
         <button className="brand" onClick={() => navigate('dashboard')} aria-label="Open GrowLens dashboard"><span className="brand-mark">GL</span><span><strong>GrowLens</strong><small>Teaching Healthy Cultivation</small></span></button>
         <nav aria-label="Primary navigation">{navItems.map((item) => <button key={item.route} className={route === item.route ? 'nav-button active' : 'nav-button'} onClick={() => navigate(item.route)}><span>{item.icon}</span>{item.label}</button>)}</nav>
-        <div className="sidebar-footer"><span className={online ? 'connection-dot online' : 'connection-dot'} />{online ? 'Online' : 'Offline · local mode'}</div>
+        <div className="sidebar-links"><a href="/tools/">DTF Tools</a><a href="/learn/">Learn</a></div><div className="sidebar-footer"><span className={online ? 'connection-dot online' : 'connection-dot'} />{online ? 'Online' : 'Offline · local mode'}</div>
       </aside>
-      <header className="mobile-header"><button className="brand" onClick={() => navigate('dashboard')}><span className="brand-mark">GL</span><span><strong>GrowLens</strong><small>{online ? 'Online' : 'Offline mode'}</small></span></button></header>
-      <main className="main-content">
+      <header className="mobile-header"><button className="brand" onClick={() => navigate('dashboard')}><span className="brand-mark">GL</span><span><strong>GrowLens</strong><small>{online ? 'Online' : 'Offline mode'}</small></span></button><button className={route === 'settings' ? 'mobile-settings active' : 'mobile-settings'} onClick={() => navigate('settings')} aria-label="Open GrowLens settings">⚙</button></header>
+      <main className={`main-content route-${route}`}>
         {notice ? <div className="notice" role="status"><span>{notice}</span><button onClick={() => setNotice('')} aria-label="Dismiss message">×</button></div> : null}
         {content}
       </main>

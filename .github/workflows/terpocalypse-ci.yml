@@ -23,16 +23,20 @@ concurrency:
 
 jobs:
   test:
-    name: Validate The Veg Lab browser prototype
-    runs-on: ubuntu-latest
+    name: Validate The Veg Lab browser game
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
       - name: Validate production package
-        run: node games/terpocalypse-integration/validate.mjs
+        run: |
+          node games/terpocalypse-integration/validate.mjs
+          node games/terpocalypse/test/public-runtime.test.mjs
+          test -s site/public-route-patch/games/terpocalypse/mobile-gameplay-v2.css
+          test -s site/public-route-patch/games/terpocalypse/source-revision.txt
       - name: Check JavaScript syntax
         run: |
           node --check site/public-route-patch/games/terpocalypse/main.js

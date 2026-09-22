@@ -12,9 +12,10 @@ const [levelsText, ui, css] = await Promise.all([
 const catalog = JSON.parse(levelsText);
 const sproutSteps = catalog.levels.find((entry) => entry.id === '1-1-sprout-steps');
 assert.ok(sproutSteps?.layout?.tutorials, 'Sprout Steps authored layout must expose tutorial metadata');
-assert.equal(sproutSteps.layout.tutorials.length, 4, 'Sprout Steps should introduce four core actions');
-assert.deepEqual(sproutSteps.layout.tutorials.map((entry) => entry.action), ['move','jump','attack','phenotype']);
-assert.deepEqual([...sproutSteps.layout.tutorials].map((entry) => entry.x), [150,560,930,4380]);
+assert.equal(sproutSteps.layout.tutorials.length, 5, 'Sprout Steps should introduce five core actions');
+assert.deepEqual(sproutSteps.layout.tutorials.map((entry) => entry.action), ['move','jump','attack','stomp','phenotype']);
+assert.deepEqual([...sproutSteps.layout.tutorials].map((entry) => entry.x), [150,560,930,1280,4380]);
+assert.match(sproutSteps.layout.tutorials.find((entry) => entry.action === 'stomp')?.text || '', /STOMP.*damage.*bounce/i, 'stomp tutorial should explain damage and bounce');
 assert.ok(sproutSteps.layout.tutorials.every((entry) => entry.id && entry.text), 'every tutorial needs a stable id and player-facing text');
 
 assert.match(ui, /seed-man-tutorial-ui-v1/, 'campaign UI must expose tutorial controller version');
@@ -38,4 +39,11 @@ assert.match(css, /@media\(max-width:680px\)[\s\S]*\.seed-tutorial\{position:fix
 assert.match(css, /bottom:calc\(max\(\.45rem,env\(safe-area-inset-bottom\)\) \+ 82px\)/, 'mobile prompt must respect touch controls and safe area');
 assert.match(css, /@media\(prefers-reduced-motion:reduce\)/, 'tutorial animation must inherit reduced-motion protection');
 
-console.log('Seed Man authored tutorial UI contract passed.');
+assert.match(css, /2026-09-15 playfield-first mobile polish/, 'mobile gameplay UI pass must stay explicitly versioned in the public stylesheet');
+assert.match(css, /\.hero>\.eyebrow,\.hero>\.lede,\.hero>#seed-ui-release-marker\{display:none!important\}/, 'mobile view must collapse nonessential hero copy before the playfield');
+assert.match(css, /\.hud\{display:grid!important;grid-template-columns:repeat\(2,minmax\(0,1fr\)\);gap:\.34rem!important;max-height:none!important;overflow:visible!important/, 'mobile HUD must be a compact non-scrolling grid');
+assert.match(css, /\.hud span:nth-of-type\(3\),\.hud span:nth-of-type\(5\),\.hud span:nth-of-type\(6\),\.hud span:nth-of-type\(7\)\{display:none!important\}/, 'secondary mobile HUD stats must not crowd the playfield');
+assert.match(css, /\.hud button\{margin:0!important;min-height:44px!important/, 'mobile pause and restart controls must remain touch-accessible');
+assert.match(css, /@media\(orientation:landscape\) and \(max-height:520px\) and \(pointer:coarse\)/, 'short landscape touch screens need a dedicated playfield-first layout');
+
+console.log('Seed Man authored tutorial and mobile UI contracts passed.');

@@ -66,6 +66,17 @@ process.env.TOPIC_LITERATURE_PATH = normalizedPath;
 // root-pathogen diagram on a general water/pH/EC page).
 let publisher = await readFile(publisherPath, 'utf8');
 
+const requiredRetiredMediaGuards = [
+  'function isRetiredMedia(item)',
+  '!isRetiredMedia(item)',
+  'item?.source_url && !isRetiredMedia(item)'
+];
+for (const guard of requiredRetiredMediaGuards) {
+  if (!publisher.includes(guard)) {
+    throw new Error(`Learning V3 publisher is missing retired-media guard: ${guard}`);
+  }
+}
+
 // WordPress hierarchical pages may legitimately reuse a leaf slug under different parents.
 // Resolve V3 pages by parent namespace instead of taking the first global slug match. This keeps
 // /learn/training-canopy/ separate from /learn/encyclopedia/training-canopy/ and makes every

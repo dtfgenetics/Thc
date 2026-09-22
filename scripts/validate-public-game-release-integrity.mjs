@@ -72,13 +72,24 @@ for (const route of duplicateValues(publicGames, (game) => game.route)) fail(`du
 for (const id of duplicateValues(sourceGames, (game) => game.id)) fail(`duplicate game source-map id: ${id}`);
 for (const route of duplicateValues(sourceGames, (game) => game.route)) fail(`duplicate game source-map route: ${route}`);
 
-if (sourceGames.length !== publicGames.length) {
-  fail(`game-source-map contains ${sourceGames.length} games while public-navigation exposes ${publicGames.length}.`);
+for (const game of publicGames) {
+  if (!sourceGames.some((mapped) => mapped.id === game.id)) {
+    fail(`${game.id} is public but missing from game-source-map.`);
+  }
 }
 
 for (const mapped of sourceGames) {
-  if (!publicGames.some((game) => game.id === mapped.id)) {
-    fail(`game-source-map contains non-public or unknown game id: ${mapped.id || '<missing>'}.`);
+  if (publicGames.some((game) => game.id === mapped.id)) continue;
+  const navGame = (nav.games || []).find((game) => game.id === mapped.id);
+  const app = apps.find((candidate) => candidate.id === mapped.id);
+  const allowedCandidate = navGame?.public === false &&
+    navGame?.status === 'development' &&
+    typeof navGame?.candidateRoute === 'string' &&
+    mapped.route === navGame.candidateRoute &&
+    app?.route === navGame.candidateRoute &&
+    ['runtime-integration', 'release-candidate', 'ready-to-package'].includes(app?.status);
+  if (!allowedCandidate) {
+    fail(`game-source-map contains non-public mapping without an approved runtime-integration candidate: ${mapped.id || '<missing>'}.`);
   }
 }
 
@@ -194,6 +205,9 @@ for (const app of apps) {
   if (!app?.route?.startsWith('/games/')) continue;
   if (nonPublicReady.has(app.status)) continue;
   if (!publicGames.some((game) => game.id === app.id)) {
+    const navGame = (nav.games || []).find((game) => game.id === app.id);
+    if (navGame?.candidateRoute === app.route && navGame?.public === false &&
+        ['runtime-integration', 'release-candidate', 'ready-to-package'].includes(app.status)) continue;
     warnings.push(`${app.id} has a deployable game route (${app.route}) but is not promoted in public-navigation.json.`);
   }
 }

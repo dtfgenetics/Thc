@@ -103,6 +103,30 @@ function announce(message) {
   requestAnimationFrame(() => { ui.live.textContent = message; });
 }
 
+function stageShell() {
+  return document.querySelector('.high-iq-shell');
+}
+
+function setStageState(stage, { outcome = null } = {}) {
+  const shell = stageShell();
+  if (!shell) return;
+  shell.dataset.hiqStage = stage;
+  shell.dataset.hiqStreakTier = state.streak >= 5 ? 'surge' : state.streak >= 3 ? 'hot' : 'base';
+  if (outcome) shell.dataset.hiqOutcome = outcome;
+  else delete shell.dataset.hiqOutcome;
+}
+
+function pulseStage(kind) {
+  const shell = stageShell();
+  if (!shell) return;
+  const pulseClasses = ['hiq-pulse-question', 'hiq-pulse-correct', 'hiq-pulse-incorrect', 'hiq-pulse-results'];
+  shell.classList.remove(...pulseClasses);
+  void shell.offsetWidth;
+  const className = `hiq-pulse-${kind}`;
+  shell.classList.add(className);
+  window.setTimeout(() => shell.classList.remove(className), 720);
+}
+
 function candidateDataBases() {
   const bases = ['/games/high-iq/data'];
   try {
@@ -302,6 +326,7 @@ function selectAnswer(letter, button) {
   for (const option of ui.answers.querySelectorAll('button')) option.setAttribute('aria-pressed', 'false');
   button.setAttribute('aria-pressed', 'true');
   ui.lock.disabled = false;
+  setStageState('question', { outcome: 'selected' });
   announce(`Selected answer ${letter}. Lock your answer when ready.`);
 }
 
@@ -316,6 +341,8 @@ function renderQuestion() {
   ui.lock.hidden = false;
   ui.lock.disabled = true;
   ui.next.hidden = true;
+  setStageState('question');
+  pulseStage('question');
 
   const number = state.index + 1;
   ui.progressText.textContent = `${number} / ${state.session.length}`;
@@ -427,6 +454,8 @@ function lockAnswer() {
   }
 
   updateLiveStats();
+  setStageState('review', { outcome: isCorrect ? 'correct' : 'incorrect' });
+  pulseStage(isCorrect ? 'correct' : 'incorrect');
   ui.feedback.hidden = false;
   ui.feedback.classList.toggle('correct', isCorrect);
   ui.feedback.classList.toggle('incorrect', !isCorrect);
@@ -653,6 +682,8 @@ function showResults() {
   const accuracy = state.answered ? Math.round((state.correct / state.answered) * 100) : 0;
   const rank = rankForPercent(percent);
   const bestPercent = updateBestScore(percent);
+  setStageState('results', { outcome: percent >= 80 ? 'strong' : 'complete' });
+  pulseStage('results');
 
   ui.resultScore.textContent = `${state.score} / ${state.possible} points (${percent}%)`;
   ui.resultRank.textContent = rank;
@@ -706,6 +737,7 @@ function restartQuiz() {
   ui.results.hidden = true;
   ui.quiz.hidden = true;
   ui.setup.hidden = false;
+  setStageState('setup');
   updateCountOptions(10);
   ui.setup.scrollIntoView({ behavior: 'smooth', block: 'start' });
   ui.start.focus({ preventScroll: true });
@@ -784,6 +816,7 @@ function updateHeroStats() {
 }
 
 function showDataError(errors) {
+  setStageState('error');
   ui.dataHealthDot.className = 'data-health-dot error';
   ui.loading.textContent = 'Verified question bank unavailable';
   ui.dataErrorDetail.hidden = false;
@@ -831,6 +864,7 @@ function handleKeyboard(event) {
   if (ui.quiz.hidden) return;
   const tag = document.activeElement?.tagName?.toLowerCase();
   if (tag === 'input' || tag === 'select' || tag === 'textarea') return;
+  if (state.locked && event.key === 'Enter' && (tag === 'a' || tag === 'button')) return;
   if (!state.locked) {
     const key = event.key.toUpperCase();
     const digitMap = { '1': 'A', '2': 'B', '3': 'C', '4': 'D' };
@@ -888,6 +922,7 @@ function wireEvents() {
 async function initialize() {
   assertUi();
   wireEvents();
+  setStageState('setup');
   await loadProductionBank();
   console.info('High IQ v3 runtime initialized');
 }

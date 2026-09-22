@@ -117,7 +117,8 @@ jobs:
           ! grep -Fq "verify_page '/home/'" .github/workflows/wordpress-canonical-production.yml
           grep -Fq 'Verify Learning-owned WordPress route preservation through REST' .github/workflows/wordpress-canonical-production.yml
           grep -Fq 'node scripts/verify-wordpress-owned-route-preservation.mjs' .github/workflows/wordpress-canonical-production.yml
-          grep -Fq 'EXPECTED_HOME_FEATURED_MEDIA' .github/workflows/wordpress-canonical-production.yml
+          ! grep -Fq 'expectedHomeFeaturedMedia' scripts/verify-wordpress-owned-route-preservation.mjs
+          ! grep -Fq 'EXPECTED_HOME_FEATURED_MEDIA' .github/workflows/wordpress-canonical-production.yml
           grep -Fq 'owned-route-preservation.json' scripts/apply-wordpress-public-content-owned-routes.mjs
           grep -Fq 'createHash' scripts/apply-wordpress-public-content-owned-routes.mjs
           grep -Fq "process.env.DTF_PRESERVE_PAGE_SLUGS = delegatedSlugs.join(',')" scripts/apply-wordpress-public-content-owned-routes.mjs

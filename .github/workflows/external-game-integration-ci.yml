@@ -50,6 +50,18 @@ jobs:
         run: node scripts/reconcile-external-game-registry.mjs --check
       - name: Compile packaging and bridge Python
         run: python -m py_compile scripts/package-public-suite-wordpress.py scripts/assemble-wordpress-suite-v2.py scripts/wordpress_suite_registry_patch.py
+      - name: Verify external staging preserves the canonical shell
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq 'def apply_sitewide_shell_to_external_game' scripts/package-public-suite-wordpress.py
+          grep -Fq 'apply_sitewide_shell_to_external_game(destination)' scripts/package-public-suite-wordpress.py
+          grep -Fq 'data-dtf-shell="header-v6"' scripts/package-public-suite-wordpress.py
+          grep -Fq 'data-dtf-shell="footer-v6"' scripts/package-public-suite-wordpress.py
+          grep -Fq 'id="dtf-responsive-layout-v1"' scripts/package-public-suite-wordpress.py
+          grep -Fq 'id="dtf-sitewide-ux-polish-v1"' scripts/package-public-suite-wordpress.py
+          echo 'external game restaging must reapply the DTFSeeds shell'
+
       - name: Assemble and validate transactional bridge
         shell: bash
         run: |

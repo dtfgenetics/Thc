@@ -7,6 +7,8 @@ const siteShell = read('./siteShellV5.css');
 const boardPriority = read('./highLandBoardPriority.css');
 const gamefeel = read('./highLandGamefeelV2.css');
 const main = read('./main.tsx');
+const productionControls = read('./productionControls.css');
+const app = read('./App.tsx');
 
 describe('High Land responsive production shell', () => {
   it('fixes intrinsic layout widths instead of hiding page overflow', () => {
@@ -14,6 +16,13 @@ describe('High Land responsive production shell', () => {
     expect(overflowFixes).toContain('.game-stage > *');
     expect(overflowFixes).toContain('min-width: 0');
     expect(overflowFixes).toContain('grid-template-columns: minmax(0, 1fr) minmax(260px, 340px)');
+  });
+
+  it('keeps room entry and setup navigation visible in production', () => {
+    expect(app).toContain('Join a Room');
+    expect(app).toContain("onCancel={() => setScreenMode('landing')}");
+    expect(productionControls).not.toContain('.controls-card .button-row > button:last-child');
+    expect(productionControls).toContain('.board-button-row > button:nth-child(2)');
   });
 
   it('keeps sticky controls and game overlays below the V5 global header', () => {

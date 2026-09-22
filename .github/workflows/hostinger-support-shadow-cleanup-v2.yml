@@ -1,0 +1,78 @@
+name: Clear DTFSeeds Support Page Shadows V2
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/hostinger-support-shadow-cleanup-v2.yml
+      - scripts/retire-support-static-shadows-via-wordpress.mjs
+      - site/wordpress/pages/about.html
+      - site/wordpress/pages/gallery.html
+      - site/wordpress/visual-quality/retired-public-visuals.json
+
+permissions:
+  contents: read
+
+# The cleanup uses the same temporary authenticated Code Snippets bridge as the
+# proven Public Suite deployer. Serialize those mutations so no two temporary
+# WordPress deployment bridges can race each other.
+concurrency:
+  group: dtf-wordpress-temporary-code-snippets-bridge
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    name: Retire stale About and Gallery static shadows
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate canonical support sources and cleanup bridge
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          grep -Fq 'data-dtf-layout="about-visual-v2"' site/wordpress/pages/about.html
+          grep -Fq 'One brand. Four core experiences.' site/wordpress/pages/about.html
+          grep -Fq 'data-dtf-layout="gallery-visual-v2"' site/wordpress/pages/gallery.html
+          grep -Fq 'Approved visuals only.' site/wordpress/pages/gallery.html
+          ! grep -Fqi '<img' site/wordpress/pages/gallery.html
+          node --check scripts/retire-support-static-shadows-via-wordpress.mjs
+          grep -Fq "'Cannabis Plant Anatomy'" scripts/retire-support-static-shadows-via-wordpress.mjs
+          grep -Fq "register_rest_route" scripts/retire-support-static-shadows-via-wordpress.mjs
+          grep -Fq "rollback" scripts/retire-support-static-shadows-via-wordpress.mjs
+
+      - name: Back up, retire, verify, and clean temporary bridge
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/retire-support-static-shadows-via-wordpress.mjs | tee "$RUNNER_TEMP/support-shadow-cleanup.json"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/support-shadow-cleanup.json"
+
+      - name: Summarize support-page cleanup
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## DTFSeeds Support Shadow Cleanup V2'
+            echo
+            echo "- Trigger commit: $GITHUB_SHA"
+            echo "- Transport: authenticated temporary WordPress Code Snippets bridge"
+            echo "- Backup-first: yes"
+            echo "- Automatic rollback on visitor verification failure: yes"
+            echo "- About canonical marker: One brand. Four core experiences."
+            echo "- Gallery canonical marker: Approved visuals only."
+          } >> "$GITHUB_STEP_SUMMARY"
