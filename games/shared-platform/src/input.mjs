@@ -145,7 +145,7 @@ export function createInputActionMap({
     const source = payload.source || 'virtual';
     if (phase === 'press') virtualPressed.set(action, source);
     else virtualPressed.delete(action);
-    emit(action, { phase, repeat: false, source, ...payload });
+    emit(action, { ...payload, phase, repeat: false, source });
     return true;
   }
 
