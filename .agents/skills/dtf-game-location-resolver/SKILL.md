@@ -46,7 +46,8 @@ If any of these materially conflict, resolve the conflict before changing code.
 ## Special cases
 
 - **Burn Buds** resolves to `protect-the-plants`: production source `dtfgenetics/Thc/games/protect-the-plants`, runtime `site/public-route-patch/games/protect-the-plants`. `games/cannabis-fleet-battle` is legacy history and `dtfgenetics/Dtf420/game/burn-buds` is a prototype/migration copy.
-- **Seed Man** resolves to `seed-man-platformer` for current production. Dtf420 Seed Ascent is an alternate migration runtime, not automatically the production owner.
+- **Seed Man** resolves to `seed-man-platformer` for current production.
+- **Seed Ascent** resolves separately to `seed-ascent` and currently lives only in Dtf420 as a development/migration runtime; do not silently redirect Seed Ascent work into production Seed Man.
 - **Weedopolis**, **Who Took It?**, **Crossword**, **PhenoQuest**, **THC RPG**, **Kush Kings**, and other standalone-repo games must be edited in their recorded canonical owner for production behavior.
 - **Stoner Duck Race** is currently active development in Dtf420 and requires an explicit production-owner mapping before a live-release claim.
 
