@@ -10,7 +10,10 @@ const packagePath = process.env.LEARNING_HUB_COURSE1_PATH || 'site/wordpress/edu
 const uiPath = process.env.LEARNING_HUB_COURSE1_UI_PATH || 'site/wordpress/education/learning-hub-course1-ui-v3.json';
 const local = JSON.parse(await readFile(packagePath, 'utf8'));
 const ui = JSON.parse(await readFile(uiPath, 'utf8'));
-const rawBase = `https://raw.githubusercontent.com/${local.source.repository}/${encodeURIComponent(local.source.ref || 'main')}`;
+const configuredSourceRef = local.source.ref || 'main';
+const sourceRef = String(process.env.THC_LEARNING_SOURCE_SHA || configuredSourceRef).trim();
+if (process.env.THC_LEARNING_SOURCE_SHA && !/^[0-9a-f]{40}$/i.test(sourceRef)) throw new Error('THC_LEARNING_SOURCE_SHA must be a full 40-character Git commit SHA.');
+const rawBase = `https://raw.githubusercontent.com/${local.source.repository}/${encodeURIComponent(sourceRef)}`;
 const auth = user && pass ? `Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}` : '';
 const must = (value, message) => { if (!value) throw new Error(message); };
 const esc = (value='') => String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');
