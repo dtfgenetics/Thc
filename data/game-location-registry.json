@@ -746,9 +746,11 @@
         "registryId": "burn-buds",
         "driveGameFolderId": "11yWoRkU0HTdavEroYkVluVAOFCWldtuu",
         "driveVisualRootId": "18yajn4zbPJgTW32IR8C1X6d4dyUcCd4L",
-        "repoRuntimeRoot": "games/cannabis-fleet-battle",
+        "repoRuntimeRoot": "games/protect-the-plants",
         "priority": "P1",
-        "wave": 2
+        "wave": 2,
+        "siteRuntimeRoot": "site/public-route-patch/games/protect-the-plants",
+        "legacyArchiveRoot": "games/cannabis-fleet-battle"
       },
       "notes": [
         "Public product and canonical implementation are Burn Buds under protect-the-plants. The older cannabis-fleet-battle registry ID is a legacy scaffold identity and must not be used as the production source path.",
@@ -779,7 +781,7 @@
       "developmentLocations": [],
       "assets": null,
       "notes": [
-        "Present in deployment metadata but absent from data/game-source-map.json and public navigation as of 2026-09-22; registry reconciliation required."
+        "Previously present only in deployment metadata; registered into data/game-source-map.json by this location-memory change so ownership is now explicit."
       ]
     },
     {
