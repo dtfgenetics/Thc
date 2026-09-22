@@ -27,6 +27,7 @@ For broad work spanning several projects, repositories, workers, checks, deploym
 Use specialized skills where useful:
 
 - repository/GitHub mechanics: `.agents/skills/github-repo-manager/SKILL.md`
+- pull-request semantic review: `.agents/skills/dtf-pr-reviewer/SKILL.md`
 - concurrent work: `.agents/skills/dtf-parallel-studio/SKILL.md`
 - dtfseeds.com publishing: `.agents/skills/dtfseeds-production-publishing/SKILL.md`
 - portfolio audits/upgrades: `.agents/skills/dtf-game-portfolio-upgrade/SKILL.md`
@@ -46,8 +47,9 @@ A strong default sequence is:
 5. Run tests, builds, browser checks, static checks, route checks, performance checks, or other QA that fit the resulting architecture.
 6. Replace obsolete validators with equivalent or stronger checks when the implementation changes.
 7. Update ownership, navigation, documentation, and deployment metadata to match the new reality.
-8. Integrate validated work.
-9. For production changes, verify the exact visitor-facing route separately before claiming the change is live.
+8. Before merging a substantive pull request, review the exact head SHA with `.agents/skills/dtf-pr-reviewer/SKILL.md`; semantic review supplements rather than replaces deterministic checks.
+9. Integrate validated work.
+10. For production changes, verify the exact visitor-facing route separately before claiming the change is live.
 
 There is no requirement to choose the smallest patch or preserve an existing implementation merely because it already exists.
 
