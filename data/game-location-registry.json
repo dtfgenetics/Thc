@@ -839,7 +839,8 @@
       "developmentLocations": [],
       "assets": null,
       "notes": [
-        "Previously present only in deployment metadata; registered into data/game-source-map.json by this location-memory change so ownership is now explicit."
+        "Deployment metadata and runtime files exist, but Root Cause is intentionally not in data/game-source-map.json or public-navigation.json as of 2026-09-22.",
+        "Treat it as a deployment-only/orphan location record until an explicit portfolio promotion decision is made."
       ]
     },
     {
