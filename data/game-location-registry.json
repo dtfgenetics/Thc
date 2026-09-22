@@ -1,0 +1,1220 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-09-22",
+  "purpose": "Durable game-location memory for DTFSeeds. Resolve a game here before editing code, assets, deployment, or migration copies.",
+  "authority": {
+    "productionControlRepository": "dtfgenetics/Thc",
+    "productionSourceMap": "data/game-source-map.json",
+    "deploymentRegistry": "site/deployment/public-apps.json",
+    "assetRegistry": "data/game-asset-production-registry.json",
+    "migrationRepository": "dtfgenetics/Dtf420",
+    "rule": "A folder with the same game name is not automatically authoritative. Prefer production.repository/sourcePaths for live fixes; use developmentLocations only for migration/prototype work unless an explicit cutover changes ownership."
+  },
+  "aliasMap": {
+    "bud-or-bluff": "bud-or-bluff",
+    "bud or bluff": "bud-or-bluff",
+    "crossword": "crossword",
+    "thc weekly crossword": "crossword",
+    "thc crossword": "crossword",
+    "thc daily crossword": "crossword",
+    "cannabis crossword": "crossword",
+    "thc-crossword": "crossword",
+    "ganjumanji": "ganjumanji",
+    "ganjumanji: the lost grower's temple": "ganjumanji",
+    "lost growers temple": "ganjumanji",
+    "grow-room-bingo": "grow-room-bingo",
+    "grow room bingo / bongwater bingo": "grow-room-bingo",
+    "grow-room-defense": "grow-room-defense",
+    "grow room defense": "grow-room-defense",
+    "grower-conversations": "grower-conversations",
+    "grower conversations": "grower-conversations",
+    "harvest-hustle": "harvest-hustle",
+    "harvest hustle": "harvest-hustle",
+    "high-iq": "high-iq",
+    "high iq — test higher cognition": "high-iq",
+    "high iq": "high-iq",
+    "cannabis trivia": "high-iq",
+    "high-land": "high-land",
+    "high land: the sweet escape": "high-land",
+    "high land": "high-land",
+    "candyland rework": "high-land",
+    "high-life": "high-life",
+    "high life: from bagseed to legacy": "high-life",
+    "high life": "high-life",
+    "bagseed to legacy": "high-life",
+    "high-lines": "high-lines",
+    "high lines": "high-lines",
+    "kush-kings": "kush-kings",
+    "kush kings chess": "kush-kings",
+    "thc chess": "kush-kings",
+    "kush-kings-chess": "kush-kings",
+    "lost-in-the-terps": "lost-in-the-terps",
+    "lost in the terps": "lost-in-the-terps",
+    "mystery-strain": "mystery-strain",
+    "mystery strain": "mystery-strain",
+    "pheno-draft": "pheno-draft",
+    "pheno draft": "pheno-draft",
+    "phenoquest": "phenoquest",
+    "phenoquest: the living seed vault": "phenoquest",
+    "living seed vault": "phenoquest",
+    "protect-the-plants": "protect-the-plants",
+    "burn buds": "protect-the-plants",
+    "cannabis battleship": "protect-the-plants",
+    "cannabis fleet battle": "protect-the-plants",
+    "fleet battle": "protect-the-plants",
+    "burn-buds": "protect-the-plants",
+    "root-cause": "root-cause",
+    "root cause": "root-cause",
+    "seed-man-platformer": "seed-man-platformer",
+    "seed man: grow. fight. restore.": "seed-man-platformer",
+    "seed man": "seed-man-platformer",
+    "seed man run": "seed-man-platformer",
+    "seedman run": "seed-man-platformer",
+    "seed-ascent": "seed-man-platformer",
+    "seed ascent": "seed-man-platformer",
+    "seed-man": "seed-man-platformer",
+    "spin-the-strain": "spin-the-strain",
+    "spin the strain": "spin-the-strain",
+    "stoner-duck-race": "stoner-duck-race",
+    "stoner duck race": "stoner-duck-race",
+    "quack & bake": "stoner-duck-race",
+    "quack and bake": "stoner-duck-race",
+    "duck race": "stoner-duck-race",
+    "strain-match": "strain-match",
+    "strain match": "strain-match",
+    "strain-showdown": "strain-showdown",
+    "strain showdown": "strain-showdown",
+    "tcg": "strain-showdown",
+    "terpocalypse": "terpocalypse",
+    "terpocalypse: grow room from hell": "terpocalypse",
+    "grow room from hell": "terpocalypse",
+    "thc-rpg": "thc-rpg",
+    "thc rpg — the first seed": "thc-rpg",
+    "thc rpg": "thc-rpg",
+    "the first seed": "thc-rpg",
+    "thc-u-know": "thc-u-know",
+    "thc u know": "thc-u-know",
+    "trichome-trials": "trichome-trials",
+    "trichome trials": "trichome-trials",
+    "weedopolis": "weedopolis",
+    "weedopolis: strain city edition": "weedopolis",
+    "weedopolis v2": "weedopolis",
+    "weedopolis strain city edition": "weedopolis",
+    "who-took-it": "who-took-it",
+    "who took it?": "who-took-it",
+    "who took it": "who-took-it",
+    "thc guess who": "who-took-it"
+  },
+  "games": [
+    {
+      "id": "bud-or-bluff",
+      "title": "Bud or Bluff",
+      "aliases": [
+        "bud-or-bluff",
+        "bud or bluff"
+      ],
+      "publicRoute": "/games/bud-or-bluff/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/bud-or-bluff"
+        ],
+        "sourceOfTruth": "docs/BUD_OR_BLUFF_SOURCE_OF_TRUTH.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/bud-or-bluff",
+        "integrationMode": "local-static-php",
+        "runtimePath": "site/public-route-patch/games/bud-or-bluff",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/bud-or-bluff/test/engine.test.mjs && node games/bud-or-bluff/scripts/build-private-deck.mjs && node games/bud-or-bluff/test/keyboard-v1.test.mjs && node games/bud-or-bluff/test/visual-state-v3.test.mjs && node games/bud-or-bluff/test/online-lobby.test.mjs && node games/bud-or-bluff/test/online-lobby-v2.test.mjs"
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-runtime",
+          "paths": [
+            "app/games/bud-or-bluff/BudOrBluffGame.tsx",
+            "lib/games/bud-or-bluff-engine.ts"
+          ],
+          "notes": "React migration copy; current production release remains owned through Thc."
+        }
+      ],
+      "assets": {
+        "registryId": "bud-or-bluff",
+        "driveGameFolderId": "1Ok1MHU0GIoG0cHseR4kQ1LI2fUTxPdq_",
+        "driveVisualRootId": "1cXjrWU62au9DKaG29rKYAgTysLSbOiih",
+        "repoRuntimeRoot": "games/bud-or-bluff",
+        "priority": "P0",
+        "wave": 1
+      },
+      "notes": [
+        "Self-hosted 2–10 player server-authoritative party game with simultaneous hidden voting, Double Hit scoring, lobby locking/settings, room chat, reconnect, rematches, host transfer, keyboard controls, visual-state feedback, and private answer data. Dedicated CI now uses Ubuntu 24.04/current GitHub actions. The central public-suite gate verifies both 10-player lobby generations, keyboard/visual contracts, API v2→durable-v3 routing, PHP syntax, and private-answer exclusion. Exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "crossword",
+      "title": "THC Weekly Crossword",
+      "aliases": [
+        "crossword",
+        "thc weekly crossword",
+        "thc crossword",
+        "thc daily crossword",
+        "cannabis crossword",
+        "thc-crossword"
+      ],
+      "publicRoute": "/games/crossword/",
+      "production": {
+        "repository": "dtfgenetics/Thc-crossword-",
+        "sourcePaths": [
+          "src",
+          "content",
+          "public/puzzles"
+        ],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": null,
+        "integrationMode": "external-build",
+        "runtimePath": null,
+        "deploymentStatus": "ready-to-package",
+        "build": "npm test && npm run verify && npm run build"
+      },
+      "developmentLocations": [],
+      "assets": {
+        "registryId": "thc-crossword",
+        "driveGameFolderId": "1A7qynwW1yK4RbeWw0r3M8tIsR7izgpwB",
+        "driveVisualRootId": "1Gx6bIBkO9eqP0Rc5FwGPwjpsU-TK-VnW",
+        "repoRuntimeRoot": null,
+        "priority": "P2",
+        "wave": 3
+      },
+      "notes": [
+        "Production Vite base is /games/crossword/. The tested puzzle-data contract remains /puzzles/... and is published at the site root by the DTFSeeds suite deployer."
+      ]
+    },
+    {
+      "id": "ganjumanji",
+      "title": "Ganjumanji: The Lost Grower's Temple",
+      "aliases": [
+        "ganjumanji",
+        "ganjumanji: the lost grower's temple",
+        "lost growers temple"
+      ],
+      "publicRoute": "/games/ganjumanji/",
+      "production": {
+        "repository": "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple",
+        "sourcePaths": [
+          "src",
+          "public"
+        ],
+        "sourceOfTruth": "README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/ganjumanji/source-revision.txt",
+        "integrationMode": "external-pinned-static-build",
+        "runtimePath": "site/public-route-patch/games/ganjumanji/source-revision.txt",
+        "deploymentStatus": "ready-to-package",
+        "build": "npm test && npm run validate:ui && npm run build && npm run validate:release"
+      },
+      "developmentLocations": [],
+      "assets": {
+        "registryId": "ganjumanji",
+        "driveGameFolderId": "17xhnXnM36kEPLln6O8rH2lT0zx4-BFQ-",
+        "driveVisualRootId": "1RLSBk687oB4up-_AZ_LhalaeoyTLGEJA",
+        "repoRuntimeRoot": null,
+        "priority": "P3",
+        "wave": 4
+      },
+      "notes": [
+        "Canonical code remains in the standalone Ganjumanji repository. Revision b1cbf9b9627586b7277813b6a7c6f85a98830d58 is the green 0.4.1 five-region production candidate with 10 relic seeds, save v5, separate autosave/safe-checkpoint recovery, deterministic campaign/content/input/storage/solvability tests, shipped UI-contract validation, TypeScript/Vite build, release validation, current GitHub Actions CI, and production artifact generation. DTFSeeds packaging must rebuild this exact pinned revision and run validate:ui before promotion. Exact post-deploy live-route verification remains required before production-ready status."
+      ]
+    },
+    {
+      "id": "grow-room-bingo",
+      "title": "Grow Room Bingo / Bongwater Bingo",
+      "aliases": [
+        "grow-room-bingo",
+        "grow room bingo / bongwater bingo"
+      ],
+      "publicRoute": "/games/grow-room-bingo/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/grow-room-bingo"
+        ],
+        "sourceOfTruth": "games/grow-room-bingo/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/grow-room-bingo",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/grow-room-bingo",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/grow-room-bingo/scripts/validate-data.mjs && node games/grow-room-bingo/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-bingo/app.js && node --check site/public-route-patch/games/grow-room-bingo/keyboard-nav.js"
+      },
+      "developmentLocations": [],
+      "assets": {
+        "registryId": "grow-room-bingo",
+        "driveGameFolderId": "1AMZ4SiWlk7RiVBVeMXkkBH7Fo5FrN_aO",
+        "driveVisualRootId": "1bMpb_n1b79rwHuH59dW9lcErQlg6M4bl",
+        "repoRuntimeRoot": "games/grow-room-bingo",
+        "priority": "P2",
+        "wave": 3
+      },
+      "notes": [
+        "Self-hosted three-mode community bingo game with deterministic cards, local autosave, guarded clear/reset, resilient challenge sharing, roving 5×5 keyboard navigation, touch feedback, reduced motion, and forced-colors support. Its existing deterministic browser-runtime test is now included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "grow-room-defense",
+      "title": "Grow Room Defense",
+      "aliases": [
+        "grow-room-defense",
+        "grow room defense"
+      ],
+      "publicRoute": "/games/grow-room-defense/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/grow-room-defense"
+        ],
+        "sourceOfTruth": "games/grow-room-defense/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/grow-room-defense",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/grow-room-defense",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/grow-room-defense/scripts/validate-data.mjs && node games/grow-room-defense/test/engine.test.mjs && node games/grow-room-defense/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-defense/app.js && node --check site/public-route-patch/games/grow-room-defense/runtime.mjs && cmp games/grow-room-defense/src/engine.mjs site/public-route-patch/games/grow-room-defense/engine.mjs"
+      },
+      "developmentLocations": [],
+      "assets": {
+        "registryId": "grow-room-defense",
+        "driveGameFolderId": "1UVXS-bnnye854aCrBPHjVVPWKzyoLgzj",
+        "driveVisualRootId": "15zk_HWNGnCpl_AQHw9jx5Ym3r8GAUw09",
+        "repoRuntimeRoot": "games/grow-room-defense",
+        "priority": "P2",
+        "wave": 3
+      },
+      "notes": [
+        "Self-hosted deterministic IPM strategy game. Browser runtime now imports the canonical tested engine instead of duplicating rules; public-runtime regression covers mobile tool return, keyboard shortcuts, semantic health meters, forced colors, reduced motion, clipboard fallback, and visual states. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "grower-conversations",
+      "title": "Grower Conversations",
+      "aliases": [
+        "grower-conversations",
+        "grower conversations"
+      ],
+      "publicRoute": "/games/grower-conversations/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/grower-conversations"
+        ],
+        "sourceOfTruth": "games/grower-conversations/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/grower-conversations",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/grower-conversations",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/grower-conversations/scripts/validate-prompt-bank.mjs && node games/grower-conversations/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grower-conversations/app.js && cmp games/grower-conversations/data/prompt-bank.json site/public-route-patch/games/grower-conversations/data/prompt-bank.json"
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-runtime",
+          "paths": [
+            "app/games/grower-conversations/GrowerConversationsGame.tsx"
+          ],
+          "notes": "React migration copy."
+        }
+      ],
+      "assets": {
+        "registryId": "grower-conversations",
+        "driveGameFolderId": "1HCQp4R9xjl9HQL6UvvwDBzASyTw2ees_",
+        "driveVisualRootId": "1gL6wg0Wyh0_F0D4sGehKIpyGC0SOwFMd",
+        "repoRuntimeRoot": "games/grower-conversations",
+        "priority": "P2",
+        "wave": 3
+      },
+      "notes": [
+        "Self-hosted 96-card discussion deck with eight topics, three depth bands, local progress persistence, filtered deck progress, keyboard draw/copy/shuffle shortcuts, resilient clipboard fallback, responsive containment, 44px controls, reduced motion, and forced-colors support. Dedicated CI is modernized to current GitHub Actions and the full browser-runtime regression now runs in the central public-suite gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "harvest-hustle",
+      "title": "Harvest Hustle",
+      "aliases": [
+        "harvest-hustle",
+        "harvest hustle"
+      ],
+      "publicRoute": "/games/harvest-hustle/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/harvest-hustle"
+        ],
+        "sourceOfTruth": "games/harvest-hustle/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/harvest-hustle",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/harvest-hustle",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/harvest-hustle/scripts/validate-data.mjs && node games/harvest-hustle/test/engine.test.mjs && node games/harvest-hustle/test/public-runtime.test.mjs && node --check site/public-route-patch/games/harvest-hustle/app.js && node --check site/public-route-patch/games/harvest-hustle/runtime.mjs && cmp games/harvest-hustle/src/engine.mjs site/public-route-patch/games/harvest-hustle/engine.mjs"
+      },
+      "developmentLocations": [],
+      "assets": {
+        "registryId": "harvest-hustle",
+        "driveGameFolderId": "1xXOiBtGiUW0lFOVEBmeELDD6qZd_Qrui",
+        "driveVisualRootId": "1Z8Kqa1BbGYu7YqIloYQHYOAIGD-ZuHeK",
+        "repoRuntimeRoot": "games/harvest-hustle",
+        "priority": "P2",
+        "wave": 3
+      },
+      "notes": [
+        "Self-hosted deterministic 75-second arcade shift game. Browser runtime now imports the canonical tested engine; regression coverage protects pause/resume timing, mobile decision controls, keyboard shortcuts, challenge sharing fallbacks, reduced motion, and forced-colors states. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "high-iq",
+      "title": "High IQ — Test Higher Cognition",
+      "aliases": [
+        "high-iq",
+        "high iq — test higher cognition",
+        "high iq",
+        "cannabis trivia"
+      ],
+      "publicRoute": "/games/high-iq/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/high-iq",
+          "site/public-route-patch/games/high-iq"
+        ],
+        "sourceOfTruth": "docs/HIGH_IQ_SOURCE_OF_TRUTH.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/high-iq",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/high-iq",
+        "deploymentStatus": "ready-to-package",
+        "build": "npm run hiq:validate"
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-runtime",
+          "paths": [
+            "app/games/high-iq/HighIqGame.tsx"
+          ],
+          "notes": "React migration copy."
+        }
+      ],
+      "assets": {
+        "registryId": "high-iq",
+        "driveGameFolderId": "1WClMjYObsNUyojKoOb_nviBy0AXnATOq",
+        "driveVisualRootId": "1lAF3xNtpm7p_gbI-2b06lXuz9f2Omjqg",
+        "repoRuntimeRoot": "site/public-route-patch/games/high-iq",
+        "priority": "P0",
+        "wave": 1
+      },
+      "notes": [
+        "Self-hosted manifest-driven High IQ runtime. Dataset v2.4 declares 200 Approved/PASS questions and 50 registered sources. The canonical aggregate validator now runs in both dedicated High IQ CI and the central public-suite build, covering data validation, runtime-shell synchronization, public-runtime validation, question-bank tooling, game-core tests, and the player-facing runtime smoke test. Exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "high-land",
+      "title": "High Land: The Sweet Escape",
+      "aliases": [
+        "high-land",
+        "high land: the sweet escape",
+        "high land",
+        "candyland rework"
+      ],
+      "publicRoute": "/games/high-land/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "apps/high-land-web"
+        ],
+        "sourceOfTruth": "docs/HIGH_LAND_SOURCE_OF_TRUTH.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "apps/high-land-web",
+        "integrationMode": "local-build",
+        "runtimePath": "apps/high-land-web",
+        "deploymentStatus": "ready-to-package",
+        "build": "npm run test:high-land && npm run build:high-land"
+      },
+      "developmentLocations": [],
+      "assets": {
+        "registryId": "high-land",
+        "driveGameFolderId": "1kWOX1UYlbEraSFL5UyCOdyzXqMcqcFpZ",
+        "driveVisualRootId": "1EeySYtL4duj-oYhKyfXbi1vEh9fN5URf",
+        "repoRuntimeRoot": "apps/high-land-web",
+        "priority": "P1",
+        "wave": 2
+      },
+      "notes": []
+    },
+    {
+      "id": "high-life",
+      "title": "High Life: From Bagseed to Legacy",
+      "aliases": [
+        "high-life",
+        "high life: from bagseed to legacy",
+        "high life",
+        "bagseed to legacy"
+      ],
+      "publicRoute": "/games/high-life/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/high-life"
+        ],
+        "sourceOfTruth": "games/high-life/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/high-life",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/high-life",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/high-life/test/engine.test.mjs && node games/high-life/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-life/app.js && cmp games/high-life/src/engine.mjs site/public-route-patch/games/high-life/engine.mjs && cmp games/high-life/data/events.json site/public-route-patch/games/high-life/data/events.json"
+      },
+      "developmentLocations": [],
+      "assets": {
+        "registryId": "high-life",
+        "driveGameFolderId": "1O75rPZg2AzA0kE2J1gFnmptKRdm-IZJ1",
+        "driveVisualRootId": "1zLPjubw5rezTeafcTwvL1c5Tr3dKFwnh",
+        "repoRuntimeRoot": "games/high-life",
+        "priority": "P0",
+        "wave": 1
+      },
+      "notes": [
+        "Self-hosted seeded 18-turn career strategy game across Underground, Medical, and Legal eras with a tested canonical rules engine, exact-resume autosave, deterministic event stream, era transitions, Legacy scoring, mobile layout safeguards, 44px controls, reduced motion, forced colors, and canonical/public data synchronization. Included in the central public-suite validation gate. Human balance playtesting and exact post-deploy live-route verification remain open."
+      ]
+    },
+    {
+      "id": "high-lines",
+      "title": "High Lines",
+      "aliases": [
+        "high-lines",
+        "high lines"
+      ],
+      "publicRoute": "/games/high-lines/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/high-lines"
+        ],
+        "sourceOfTruth": "games/high-lines/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/high-lines",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/high-lines",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/high-lines/scripts/validate-data.mjs && node games/high-lines/test/engine.test.mjs && node games/high-lines/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-lines/app.js && node --check site/public-route-patch/games/high-lines/runtime.mjs && cmp games/high-lines/src/engine.mjs site/public-route-patch/games/high-lines/engine.mjs"
+      },
+      "developmentLocations": [],
+      "assets": {
+        "registryId": "high-lines",
+        "driveGameFolderId": "11wiiyc4qaLtbPU9nw7zYEoIY1IZL5h3o",
+        "driveVisualRootId": "1DpbVETGwk2DCnU5NqhiktjYlK2R234Sy",
+        "repoRuntimeRoot": "games/high-lines",
+        "priority": "P2",
+        "wave": 3
+      },
+      "notes": [
+        "Self-hosted deterministic coloring/hidden-object game with four original SVG scenes, local autosave, zoom controls, keyboard/touch play, and shareable scene codes. Browser runtime now imports the canonical tested coloring engine while persistence, SVG sanitization/retry, zoom, and reset confirmation remain browser-layer concerns. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "kush-kings",
+      "title": "Kush Kings Chess",
+      "aliases": [
+        "kush-kings",
+        "kush kings chess",
+        "thc chess",
+        "kush-kings-chess"
+      ],
+      "publicRoute": "/games/kush-kings-chess/",
+      "production": {
+        "repository": "dtfgenetics/Thc-chess-git",
+        "sourcePaths": [
+          "client",
+          "server"
+        ],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": null,
+        "integrationMode": "external-full-stack",
+        "runtimePath": null,
+        "deploymentStatus": "runtime-integration",
+        "build": "pnpm check:rebrand && pnpm --filter client lint && pnpm build:client && pnpm build:server && pnpm test:production-runtime"
+      },
+      "developmentLocations": [],
+      "assets": {
+        "registryId": "kush-kings-chess",
+        "driveGameFolderId": "1tWjfjdhrSl03mPrt2mrTNZ3HjhDP9BSK",
+        "driveVisualRootId": "1fKcjYK2FMommcTaGr5KuSUDQtBNAyLCN",
+        "repoRuntimeRoot": null,
+        "priority": "P2",
+        "wave": 3
+      },
+      "notes": [
+        "Canonical full-stack source is dtfgenetics/Thc-chess-git. Preserve chess.js legal-move authority, Express/Socket.IO rooms, PostgreSQL sessions, spectators, chat, archives, resign/draw/abandon/rematch behavior, and the chess.dtfseeds.com / chess-api.dtfseeds.com targets. The Next.js client, Hostinger fallback, CI and deployment checks now use the canonical V6 six-link DTFSeeds header. A post-deploy live checker verifies frontend identity, API /health, Socket.IO transport, and the DTFSeeds proxy. Keep this game nonpublic in data/public-navigation.json until the live checker plus two-browser/mobile QA pass."
+      ]
+    },
+    {
+      "id": "lost-in-the-terps",
+      "title": "Lost in the Terps",
+      "aliases": [
+        "lost-in-the-terps",
+        "lost in the terps"
+      ],
+      "publicRoute": "/games/lost-in-the-terps/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/lost-in-the-terps"
+        ],
+        "sourceOfTruth": "games/lost-in-the-terps/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/lost-in-the-terps",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/lost-in-the-terps",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/lost-in-the-terps/scripts/validate-data.mjs && node games/lost-in-the-terps/test/public-runtime.test.mjs && node --check site/public-route-patch/games/lost-in-the-terps/app.js && node --check site/public-route-patch/games/lost-in-the-terps/keyboard-nav-v1.js"
+      },
+      "developmentLocations": [],
+      "assets": {
+        "registryId": "lost-in-the-terps",
+        "driveGameFolderId": "1jekptq_dgt8x9D-_kDFW2jxu844RpBUA",
+        "driveVisualRootId": "1TaOTSsImKD8rTzkdZi-txZaj7uM1wW_4",
+        "repoRuntimeRoot": "games/lost-in-the-terps",
+        "priority": "P2",
+        "wave": 3
+      },
+      "notes": [
+        "Self-hosted three-mission word-search game with eight hidden words per mission, guarded mission/reset actions, three-use hints, isolated delayed feedback, roving keyboard grid navigation, scrollable mobile grids, reduced motion, and forced-colors support. Its existing deterministic browser-runtime test is now included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "mystery-strain",
+      "title": "Mystery Strain",
+      "aliases": [
+        "mystery-strain",
+        "mystery strain"
+      ],
+      "publicRoute": "/games/mystery-strain/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/mystery-strain"
+        ],
+        "sourceOfTruth": "games/mystery-strain/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/mystery-strain",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/mystery-strain",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/mystery-strain/scripts/validate-data.mjs && node games/mystery-strain/test/engine.test.mjs && node games/mystery-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/mystery-strain/app.js && node --check site/public-route-patch/games/mystery-strain/runtime.mjs && cmp games/mystery-strain/src/engine.mjs site/public-route-patch/games/mystery-strain/engine.mjs"
+      },
+      "developmentLocations": [],
+      "assets": {
+        "registryId": "mystery-strain",
+        "driveGameFolderId": "1Q6XqJB86sVIcY5KqBTYqnDAPmdwjDEsY",
+        "driveVisualRootId": "1cxXCg8pa3UAo1i7eQrtKlSq5mNzrTzQ6",
+        "repoRuntimeRoot": "games/mystery-strain",
+        "priority": "P2",
+        "wave": 3
+      },
+      "notes": [
+        "Self-hosted deterministic deduction game with 20 fictional profiles, 12 questions, optional Wild Card modifiers, Best Split UI analysis, and explicit two-step guess confirmation. Browser runtime now imports the canonical tested engine while Best Split remains a presentation helper. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "pheno-draft",
+      "title": "Pheno Draft",
+      "aliases": [
+        "pheno-draft",
+        "pheno draft"
+      ],
+      "publicRoute": "/games/pheno-draft/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/pheno-draft"
+        ],
+        "sourceOfTruth": "games/pheno-draft/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/pheno-draft",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/pheno-draft",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/pheno-draft/scripts/validate-data.mjs && node games/pheno-draft/test/engine.test.mjs && node games/pheno-draft/test/public-runtime.test.mjs && node --check site/public-route-patch/games/pheno-draft/app.js && node --check site/public-route-patch/games/pheno-draft/runtime.mjs && cmp games/pheno-draft/src/engine.mjs site/public-route-patch/games/pheno-draft/engine.mjs"
+      },
+      "developmentLocations": [],
+      "assets": {
+        "registryId": "pheno-draft",
+        "driveGameFolderId": "10JxjOnq_n48f98FL1NZIZ56m92jpKNVv",
+        "driveVisualRootId": "1PwRfD2D1BUsAwBBIP5NyjMlN6QsBy9GN",
+        "repoRuntimeRoot": "games/pheno-draft",
+        "priority": "P2",
+        "wave": 3
+      },
+      "notes": [
+        "Self-hosted deterministic six-round fictional genetics card draft. Browser runtime now imports the canonical tested engine; regression coverage protects restart confirmation, share fallback, keyboard controls, mobile decision-rail reset, forced colors, and reduced motion. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "phenoquest",
+      "title": "PhenoQuest: The Living Seed Vault",
+      "aliases": [
+        "phenoquest",
+        "phenoquest: the living seed vault",
+        "living seed vault"
+      ],
+      "publicRoute": "/games/phenoquest/",
+      "production": {
+        "repository": "dtfgenetics/Catching-phenos",
+        "sourcePaths": [
+          "src",
+          "data",
+          "public/games/phenoquest"
+        ],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/phenoquest",
+        "integrationMode": "external-build",
+        "runtimePath": "site/public-route-patch/games/phenoquest",
+        "deploymentStatus": "ready-to-package",
+        "build": "canonical repo: npm run check (includes self-contained production build)"
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-preview",
+          "paths": [
+            "public/phenoquest"
+          ],
+          "notes": "Preview copy; standalone Catching-phenos remains canonical."
+        }
+      ],
+      "assets": {
+        "registryId": "phenoquest",
+        "driveGameFolderId": "1vHn59ch_VPDaWjgP1MN0gTZrDq47HHBx",
+        "driveVisualRootId": "1iaj8twrfNOas1gKr1BAUw6-Te6m_EKP-",
+        "repoRuntimeRoot": null,
+        "priority": "P2",
+        "wave": 3
+      },
+      "notes": [
+        "DTFSeeds route is generated from the verified self-contained build in dtfgenetics/Catching-phenos. Current vertical slice includes starter choice, maps, movement, encounters, combat, inventory, quests, Vault Garden, Keeper tracking, breeding previews, playable Lineage Lab crosses and local save data."
+      ]
+    },
+    {
+      "id": "protect-the-plants",
+      "title": "Burn Buds",
+      "aliases": [
+        "protect-the-plants",
+        "burn buds",
+        "cannabis battleship",
+        "cannabis fleet battle",
+        "fleet battle",
+        "burn-buds"
+      ],
+      "publicRoute": "/games/protect-the-plants/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/protect-the-plants"
+        ],
+        "sourceOfTruth": "games/protect-the-plants/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/protect-the-plants",
+        "integrationMode": "local-static-php",
+        "runtimePath": "site/public-route-patch/games/protect-the-plants",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/protect-the-plants/test/burn-buds-branding.test.mjs && node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs && node games/protect-the-plants/test/api-copy-contract.test.mjs && node games/protect-the-plants/test/runtime-sync-v1.test.mjs && node games/protect-the-plants/test/v2-extras-sync.test.mjs && node games/protect-the-plants/test/native-targeting-source.test.mjs && node games/protect-the-plants/test/gamefeel-v1.test.mjs && php -l site/public-route-patch/games/protect-the-plants/api.php && php -l site/public-route-patch/games/protect-the-plants/presence.php"
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "prototype-do-not-confuse-with-production",
+          "paths": [
+            "game/burn-buds"
+          ],
+          "notes": "Phaser prototype. Production Burn Buds is Thc games/protect-the-plants + site/public-route-patch/games/protect-the-plants."
+        }
+      ],
+      "assets": {
+        "registryId": "burn-buds",
+        "driveGameFolderId": "11yWoRkU0HTdavEroYkVluVAOFCWldtuu",
+        "driveVisualRootId": "18yajn4zbPJgTW32IR8C1X6d4dyUcCd4L",
+        "repoRuntimeRoot": "games/cannabis-fleet-battle",
+        "priority": "P1",
+        "wave": 2
+      },
+      "notes": [
+        "Public product and canonical implementation are Burn Buds under protect-the-plants. The older cannabis-fleet-battle registry ID is a legacy scaffold identity and must not be used as the production source path.",
+        "Burn Buds is the public identity of the tested two-player hidden-grid strategy game; /games/protect-the-plants/ remains the compatibility route for active rooms and invite links. Dedicated CI exercises authenticated opponent presence. The central public-suite gate now also protects branding, gameplay-v4, API copy contracts, runtime sync, targeting source, gamefeel, service-worker assets, PHP syntax, mobile board behavior, and compatibility identity. Exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "root-cause",
+      "title": "Root Cause",
+      "aliases": [
+        "root-cause",
+        "root cause"
+      ],
+      "publicRoute": "/games/root-cause/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/root-cause"
+        ],
+        "sourceOfTruth": "games/root-cause/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/root-cause",
+        "integrationMode": "static",
+        "runtimePath": "site/public-route-patch/games/root-cause",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/root-cause/scripts/validate-data.mjs && node games/root-cause/test/engine.test.mjs && node games/root-cause/test/public-runtime.test.mjs && node --check site/public-route-patch/games/root-cause/app.js && node --check site/public-route-patch/games/root-cause/runtime.mjs && node --check site/public-route-patch/games/root-cause/engine.mjs && cmp games/root-cause/src/engine.mjs site/public-route-patch/games/root-cause/engine.mjs"
+      },
+      "developmentLocations": [],
+      "assets": null,
+      "notes": [
+        "Present in deployment metadata but absent from data/game-source-map.json and public navigation as of 2026-09-22; registry reconciliation required."
+      ]
+    },
+    {
+      "id": "seed-man-platformer",
+      "title": "Seed Man: Grow. Fight. Restore.",
+      "aliases": [
+        "seed-man-platformer",
+        "seed man: grow. fight. restore.",
+        "seed man",
+        "seed man run",
+        "seedman run",
+        "seed-ascent",
+        "seed ascent",
+        "seed-man"
+      ],
+      "publicRoute": "/games/seed-man-platformer/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/seed-man-platformer"
+        ],
+        "sourceOfTruth": "games/seed-man-platformer/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/seed-man-platformer",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/seed-man-platformer",
+        "deploymentStatus": "production-v20",
+        "build": "node games/seed-man-platformer/test/physics.test.mjs && node games/seed-man-platformer/test/progression-systems.test.mjs && node games/seed-man-platformer/test/campaign.test.mjs && node games/seed-man-platformer/test/art-registry.test.mjs && node games/seed-man-platformer/test/public-runtime.test.mjs && node games/seed-man-platformer/test/public-campaign.test.mjs && node games/seed-man-platformer/test/input-guard.test.mjs && node games/seed-man-platformer/test/world-mechanics-runtime.test.mjs && node games/seed-man-platformer/test/public-world-mechanics-browser.test.mjs && node scripts/verify-seed-man-production-v20.mjs && node scripts/validate-seed-man-production-bundle.mjs"
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "alternative-migration-runtime",
+          "paths": [
+            "public/seed-ascent",
+            "public/seed-ascent.html"
+          ],
+          "notes": "Seed Ascent migration runtime. Do not treat it as production Seed Man v20 without an explicit cutover."
+        }
+      ],
+      "assets": {
+        "registryId": "seed-man",
+        "driveGameFolderId": "1NrqkjVWCjw9Cf_6kiHyupYcKfA7uT8vd",
+        "driveVisualRootId": "1KvhKlWp5_PdlpM7CbBSUP1YpjY4m0DDj",
+        "repoRuntimeRoot": "games/seed-man-platformer",
+        "priority": "P0",
+        "wave": 1
+      },
+      "notes": [
+        "Canonical Seed Man v20 release on /games/seed-man-platformer/: 20 levels across Greenhouse Valley, Forest Ruins, Desert Canyon, Frozen Peaks and Eco City; six boss encounters; four-phase Blight King finale; 30-second phenotype combat; browser world mechanics with moving/collapsing/conveyor/bounce/environment systems; synchronized dynamic Three.js platforms; and the approved 2026-09-08 green armored plant-hero visual system. Retired 11/15-level campaigns, Genome Hydra, Genetic Frontier, seed-man-production-v1, seed-man-locked-v1, legacy sprite ownership and procedural character fallback must not be republished."
+      ]
+    },
+    {
+      "id": "spin-the-strain",
+      "title": "Spin the Strain",
+      "aliases": [
+        "spin-the-strain",
+        "spin the strain"
+      ],
+      "publicRoute": "/games/spin-the-strain/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/spin-the-strain"
+        ],
+        "sourceOfTruth": "games/spin-the-strain/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/spin-the-strain",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/spin-the-strain",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/spin-the-strain/scripts/validate-data.mjs && node games/spin-the-strain/test/engine.test.mjs && node games/spin-the-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/spin-the-strain/app.js && node --check site/public-route-patch/games/spin-the-strain/runtime.mjs && cmp games/spin-the-strain/src/engine.mjs site/public-route-patch/games/spin-the-strain/engine.mjs"
+      },
+      "developmentLocations": [],
+      "assets": {
+        "registryId": "spin-the-strain",
+        "driveGameFolderId": "1LQJpzxfJtPj5GlENec-GvNwGpyAGZBp2",
+        "driveVisualRootId": "1qtF2j00NZh6TkunrrvHIlybDUZxMR4e3",
+        "repoRuntimeRoot": "games/spin-the-strain",
+        "priority": "P2",
+        "wave": 3
+      },
+      "notes": [
+        "Self-hosted deterministic three-mode wheel game with 18-entry no-repeat cycles per mode, shareable codes, animation-isolated result reveal, hidden-page completion, keyboard spin shortcut, clipboard fallback, reduced motion, and forced-colors support. Browser runtime now imports the canonical tested wheel engine. Dedicated title CI and the central public-suite validation gate both enforce the runtime contract. browserTested remains false until actual browser QA is completed; exact post-deploy live-route verification is still required."
+      ]
+    },
+    {
+      "id": "stoner-duck-race",
+      "title": "Quack & Bake: Stoner Duck Race",
+      "aliases": [
+        "stoner-duck-race",
+        "stoner duck race",
+        "quack & bake",
+        "quack and bake",
+        "duck race"
+      ],
+      "publicRoute": "/games/stoner-duck-race",
+      "production": null,
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "active-development",
+          "paths": [
+            "game/stoner-duck-race",
+            "components/game/StonerDuckRaceGame.tsx",
+            "services/stoner-duck-race-server"
+          ],
+          "notes": "Deterministic Phaser + Colyseus development game. Not yet mapped as a production owner in Thc."
+        }
+      ],
+      "assets": null,
+      "notes": [
+        "Resolve an explicit production owner/cutover before claiming a live route."
+      ]
+    },
+    {
+      "id": "strain-match",
+      "title": "Strain Match",
+      "aliases": [
+        "strain-match",
+        "strain match"
+      ],
+      "publicRoute": "/games/strain-match/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/strain-match"
+        ],
+        "sourceOfTruth": "games/strain-match/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/strain-match",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/strain-match",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/strain-match/scripts/validate-data.mjs && node games/strain-match/test/public-runtime.test.mjs && node --check site/public-route-patch/games/strain-match/app.js"
+      },
+      "developmentLocations": [],
+      "assets": {
+        "registryId": "strain-match",
+        "driveGameFolderId": "17P0KYTYa7g-rXPN1VxsyZmBpRZR63gEX",
+        "driveVisualRootId": "1Rtq5fSf--Pu9t_y172D_rUFYLnBNlxSI",
+        "repoRuntimeRoot": "games/strain-match",
+        "priority": "P2",
+        "wave": 3
+      },
+      "notes": [
+        "Self-hosted four-deck educational memory game with eight pairs per deck. Existing deterministic browser-runtime coverage protects visible-play timer accounting, hidden-page pause/resume, stale mismatch isolation, guarded restart, local best scores, streak/HUD states, touch feedback, reduced motion, and forced colors. The runtime test is now included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "strain-showdown",
+      "title": "Strain Showdown",
+      "aliases": [
+        "strain-showdown",
+        "strain showdown",
+        "tcg"
+      ],
+      "publicRoute": "/games/strain-showdown/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/strain-showdown"
+        ],
+        "sourceOfTruth": "games/strain-showdown/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/strain-showdown",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/strain-showdown",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/strain-showdown/scripts/validate-roster.mjs && node games/strain-showdown/test/engine.test.mjs && node games/strain-showdown/scripts/simulate-balance.mjs --seeds=32 --assert-balanced && node games/strain-showdown/scripts/validate-browser-build.mjs"
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-runtime",
+          "paths": [
+            "app/games/strain-showdown/StrainShowdownGame.tsx"
+          ],
+          "notes": "React migration copy."
+        }
+      ],
+      "assets": {
+        "registryId": "strain-showdown",
+        "driveGameFolderId": "1jJ1JtWGdNCJ--xfHJbclv7QyaIVr30Fh",
+        "driveVisualRootId": "1yPCJzEveV5hQ03OUMRheAUKWKB1L_x3L",
+        "repoRuntimeRoot": "games/strain-showdown",
+        "priority": "P1",
+        "wave": 2
+      },
+      "notes": [
+        "Self-hosted 96-card browser battle game with a tested deterministic three-lane engine, CPU rival, Base/Select/Elite evolution, eight family passives, Focus economy, Garden health, synchronized canonical roster data, result tracking, mobile three-lane visibility, 44px attack controls, and deterministic 32-seed balance simulation. Player-facing prototype/development wording has been removed. Final per-card effect activation, balance approval, human rules playtesting, final art, print proof, and exact post-deploy live-route verification remain open."
+      ]
+    },
+    {
+      "id": "terpocalypse",
+      "title": "Terpocalypse: Grow Room From Hell",
+      "aliases": [
+        "terpocalypse",
+        "terpocalypse: grow room from hell",
+        "grow room from hell"
+      ],
+      "publicRoute": "/games/terpocalypse/",
+      "production": {
+        "repository": "dtfgenetics/Terpocalapse",
+        "sourcePaths": [
+          "prototypes/web-fps"
+        ],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/terpocalypse",
+        "integrationMode": "verified-snapshot",
+        "runtimePath": "site/public-route-patch/games/terpocalypse",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/terpocalypse-integration/validate.mjs && node games/terpocalypse/test/public-runtime.test.mjs && node --check site/public-route-patch/games/terpocalypse/main.js && node --check site/public-route-patch/games/terpocalypse/game-data.js && node --check site/public-route-patch/games/terpocalypse/visibility-pause-v1.js"
+      },
+      "developmentLocations": [],
+      "assets": {
+        "registryId": "terpocalypse",
+        "driveGameFolderId": "1EODsF4DqxO5G_fd3UajGpTOOe1sVo_fR",
+        "driveVisualRootId": "1fUqEM6zfDz7BOppp6U4vy7GiDKV9QVQT",
+        "repoRuntimeRoot": "assets",
+        "priority": "P0",
+        "wave": 1
+      },
+      "notes": [
+        "prototypes/web-fps is the stable playable source currently packaged by DTFSeeds. prototypes/web-fps-v2 remains experimental until it reaches feature parity.",
+        "Self-hosted Level 01 action game with desktop/touch controls. Browser zoom is enabled, top/touch controls retain 44px minimum targets, forced-colors and reduced-motion states are protected, and visibility pause clears held keyboard input. Dedicated CI now uses current GitHub Actions/Ubuntu 24.04 and the central public-suite gate runs integration plus public-runtime verification. Exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "thc-rpg",
+      "title": "THC RPG — The First Seed",
+      "aliases": [
+        "thc-rpg",
+        "thc rpg — the first seed",
+        "thc rpg",
+        "the first seed"
+      ],
+      "publicRoute": "/games/thc-rpg/",
+      "production": {
+        "repository": "dtfgenetics/Thc-rpg",
+        "sourcePaths": [
+          "src",
+          "public"
+        ],
+        "sourceOfTruth": "README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/thc-rpg/source-revision.txt",
+        "integrationMode": "external-pinned-static-build",
+        "runtimePath": "site/public-route-patch/games/thc-rpg/source-revision.txt",
+        "deploymentStatus": "release-candidate",
+        "build": "npm test && npm run validate:ui && npm run build && npm run validate:release"
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-build",
+          "paths": [
+            "app/games/thc-rpg",
+            "public/thc-rpg"
+          ],
+          "notes": "Migration host/build copy; standalone Thc-rpg remains canonical."
+        }
+      ],
+      "assets": {
+        "registryId": "thc-rpg",
+        "driveGameFolderId": "1_gErE4IGr8ehzOqw8bNOBB73sLN4oVbx",
+        "driveVisualRootId": "1ar4lpZ_x9MmmkVJ1efmI9mAprBA9lTIv",
+        "repoRuntimeRoot": null,
+        "priority": "P3",
+        "wave": 4
+      },
+      "notes": [
+        "Canonical code remains in dtfgenetics/Thc-rpg. Revision de6c26d9073d9154bbcade43b64768cf6a7ba2a0 is the green 2.1.0 release-candidate source after production launch-screen, compact-control and forced-color polish. The six-chapter campaign retains deterministic phenotype variation, Keeper selection/cutting progression, Zestberry trial, save v6 compatibility, guarded gameplay shortcuts, deterministic shipped-UI validation, visitor-only build, and release validation. Central packaging and exact post-deploy live-route verification remain required before production-ready promotion."
+      ]
+    },
+    {
+      "id": "thc-u-know",
+      "title": "THC U Know",
+      "aliases": [
+        "thc-u-know",
+        "thc u know"
+      ],
+      "publicRoute": "/games/thc-u-know/",
+      "production": {
+        "repository": "dtfgenetics/thc-u-know-card-game-",
+        "sourcePaths": [
+          "apps/web",
+          "apps/server",
+          "packages/shared"
+        ],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": null,
+        "integrationMode": "external-full-stack",
+        "runtimePath": null,
+        "deploymentStatus": "runtime-integration",
+        "build": "pnpm verify && pnpm test:production-runtime"
+      },
+      "developmentLocations": [],
+      "assets": {
+        "registryId": "thc-u-know",
+        "driveGameFolderId": "1OcA8WC700CE_IIUim6cYsExDLsFbsAXA",
+        "driveVisualRootId": "1ERL_cXD_Ssnv1pGXuWC-UeoM6z1t-khg",
+        "repoRuntimeRoot": null,
+        "priority": "P2",
+        "wave": 3
+      },
+      "notes": [
+        "Canonical full-stack multiplayer source is dtfgenetics/thc-u-know-card-game-. Persistent Node/Socket.IO remains required; static-only deployment is forbidden. The owner build now ships the canonical V6 six-link DTFSeeds header, CI validates the V6 production shell plus hidden-hand/lobby/runtime contracts, and a scheduled/manual live checker verifies the public game route, game-scoped health endpoint, and Socket.IO handshake. Keep this game nonpublic in data/public-navigation.json until the live checker and manual two-browser multiplayer gate pass."
+      ]
+    },
+    {
+      "id": "trichome-trials",
+      "title": "Trichome Trials",
+      "aliases": [
+        "trichome-trials",
+        "trichome trials"
+      ],
+      "publicRoute": "/games/trichome-trials/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/trichome-trials"
+        ],
+        "sourceOfTruth": "games/trichome-trials/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/trichome-trials",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/trichome-trials",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/trichome-trials/scripts/validate-data.mjs && node games/trichome-trials/test/engine.test.mjs && node games/trichome-trials/test/public-runtime.test.mjs && node --check site/public-route-patch/games/trichome-trials/app.js && node --check site/public-route-patch/games/trichome-trials/runtime.mjs && cmp games/trichome-trials/src/engine.mjs site/public-route-patch/games/trichome-trials/engine.mjs"
+      },
+      "developmentLocations": [],
+      "assets": {
+        "registryId": "trichome-trials",
+        "driveGameFolderId": "1cZxPgTRbEovQOVEHnscPiZoIeE2hRzo_",
+        "driveVisualRootId": "1F4-4uBlwMkDW9Gfm-AjBQpuzm3o4h9Fk",
+        "repoRuntimeRoot": "games/trichome-trials",
+        "priority": "P2",
+        "wave": 3
+      },
+      "notes": [
+        "Self-hosted deterministic five-round judging game with a seven-category scorecard and UI-layer confidence-call bonuses. Browser runtime now imports the canonical tested scoring engine; regression coverage protects reviewed-state submission, mobile score controls, reduced motion, confidence calls, and resilient clipboard/manual challenge sharing. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "weedopolis",
+      "title": "Weedopolis: Strain City Edition",
+      "aliases": [
+        "weedopolis",
+        "weedopolis: strain city edition",
+        "weedopolis v2",
+        "weedopolis strain city edition"
+      ],
+      "publicRoute": "/games/weedopolis/",
+      "production": {
+        "repository": "dtfgenetics/Weedopolis-strain-Edition",
+        "sourcePaths": [
+          "src",
+          "digital",
+          "data"
+        ],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": null,
+        "integrationMode": "external-build",
+        "runtimePath": null,
+        "deploymentStatus": "ready-to-package",
+        "build": "npm run validate && npm run check:preview && npm run build:preview"
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-runtime",
+          "paths": [
+            "app/games/weedopolis",
+            "public/weedopolis"
+          ],
+          "notes": "Next/iframe migration copy; production owner remains standalone Weedopolis repo plus Thc release integration."
+        }
+      ],
+      "assets": {
+        "registryId": "weedopolis",
+        "driveGameFolderId": "1K0amWG5J6nN9820hBxVOpf12HtFrsw_K",
+        "driveVisualRootId": "1gYFcOW-0NQGgN0YEt2fLRn3844GDtuLO",
+        "repoRuntimeRoot": null,
+        "priority": "P1",
+        "wave": 2
+      },
+      "notes": []
+    },
+    {
+      "id": "who-took-it",
+      "title": "Who Took It?",
+      "aliases": [
+        "who-took-it",
+        "who took it?",
+        "who took it",
+        "thc guess who"
+      ],
+      "publicRoute": "/games/who-took-it/",
+      "production": {
+        "repository": "dtfgenetics/Thc-guess-who",
+        "sourcePaths": [
+          "03_digital-game"
+        ],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "03_digital-game",
+        "integrationMode": "external-build",
+        "runtimePath": "03_digital-game",
+        "deploymentStatus": "ready-to-package",
+        "build": "npm run check"
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-runtime",
+          "paths": [
+            "app/games/who-took-it/WhoTookItGame.tsx"
+          ],
+          "notes": "React migration copy; standalone canonical repo remains production source."
+        }
+      ],
+      "assets": {
+        "registryId": "who-took-it",
+        "driveGameFolderId": "18SBSxsGOau4uwWhG1Diwd79hISb_k9AO",
+        "driveVisualRootId": "1QzFBDGjQQIJOEam4KCZws7nQq-MA6qwz",
+        "repoRuntimeRoot": "assets",
+        "priority": "P0",
+        "wave": 1
+      },
+      "notes": [
+        "Canonical standalone React/Vite build from dtfgenetics/Thc-guess-who/03_digital-game. Production visual art is approved: 25 suspect portraits, 5 canonical missing-item assets, 20 UI/HUD assets, and one case-room environment. The full npm run check gate includes deterministic data/art registry validation, UI and environment validation, production-asset auditing, smoke and balance checks, dependency audit, production build, and mystery-privacy verification. No Playwright is used."
+      ]
+    }
+  ]
+}
