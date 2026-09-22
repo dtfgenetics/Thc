@@ -7,7 +7,7 @@ const baseCss=fs.readFileSync(`${root}/styles.css`,'utf8');
 const css=fs.readFileSync(`${root}/gamefeel-v1.css`,'utf8');
 const battleCss=fs.readFileSync(`${root}/gameplay-v4.css`,'utf8');
 const sw=fs.readFileSync(`${root}/sw.js`,'utf8');
-const CURRENT_CACHE='ptp-shell-v12-burn-buds-v8-safe-area-20260921';
+const CURRENT_CACHE='ptp-shell-v13-burn-buds-v9-premium-social-20260921';
 
 assert.match(html,/gamefeel-v1\.css/,'game-feel stylesheet must load');
 assert.match(css,/burn-primary-board/,'active battle board must receive primary emphasis');

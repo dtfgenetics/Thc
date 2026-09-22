@@ -8,7 +8,7 @@ const enhancements=read('enhancements.js');
 const targeting=read('targeting-v1.js');
 const index=read('index.html');
 const sw=read('sw.js');
-const CURRENT_CACHE='ptp-shell-v12-burn-buds-v8-safe-area-20260921';
+const CURRENT_CACHE='ptp-shell-v13-burn-buds-v9-premium-social-20260921';
 
 for(const forbidden of ['confirmShots','armedShotKey','armedShotUntil','ptp-shot-armed','Confirm firing taps']) assert.ok(!enhancements.includes(forbidden),'Legacy shot confirmation source remains: '+forbidden);
 assert.ok(!fs.existsSync(path.join(root,'targeting-policy-v1.js')),'Temporary targeting policy guard must be retired.');

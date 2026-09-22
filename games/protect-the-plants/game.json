@@ -10,11 +10,26 @@
   "runtime": "static-php-wordpress-transients",
   "status": "production-ready",
   "formations": [
-    {"id":"mother-row","size":5},
-    {"id":"trellis-row","size":4},
-    {"id":"tall-pheno","size":3},
-    {"id":"bushy-pheno","size":3},
-    {"id":"solo-pots","size":2}
+    {
+      "id": "mother-row",
+      "size": 5
+    },
+    {
+      "id": "trellis-row",
+      "size": 4
+    },
+    {
+      "id": "tall-pheno",
+      "size": 3
+    },
+    {
+      "id": "bushy-pheno",
+      "size": 3
+    },
+    {
+      "id": "solo-pots",
+      "size": 2
+    }
   ],
   "features": [
     "room-codes",
@@ -46,7 +61,10 @@
     "two-player-rematch-consent",
     "alternating-rematch-starter",
     "post-game-stats",
-    "reduced-motion"
+    "reduced-motion",
+    "premium-lobby-art",
+    "quick-chat-reactions",
+    "art-backed-notifications"
   ],
   "production": {
     "frontEnd": "static",
