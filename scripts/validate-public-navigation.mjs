@@ -7,6 +7,19 @@ const shell = JSON.parse(fs.readFileSync(path.join(root, 'data/site-navigation-v
 const apps = JSON.parse(fs.readFileSync(path.join(root, 'site/deployment/public-apps.json'), 'utf8'));
 const hub = fs.readFileSync(path.join(root, 'site/public-route-patch/games/index.html'), 'utf8');
 
+const deployableShellFiles = [
+  'site/public-route-patch/projects/index.html',
+  'site/public-route-patch/tools/index.html',
+  'site/public-route-patch/games/index.html',
+  'site/public-route-patch/games/high-life/index.html',
+  'site/public-route-patch/games/high-iq/index.html',
+  'site/public-route-patch/games/grower-conversations/index.html',
+  'site/public-route-patch/games/seed-man-platformer/index.html',
+];
+
+function primaryNavMarkup(html) {
+  return html.match(/<nav\b[^>]*aria-label=["']Primary(?: navigation)?["'][^>]*>[\s\S]*?<\/nav>/i)?.[0] || '';
+}
 const errors = [];
 const assert = (condition, message) => { if (!condition) errors.push(message); };
 
@@ -40,6 +53,28 @@ for (const required of ['Home', 'Seeds', 'Learn', 'Courses', 'Diagnostic', 'Game
 }
 for (const obsolete of ['Genetics', 'Tools']) {
   assert(!primaryLabels.includes(obsolete), `retired primary label '${obsolete}' must not appear in the V6 primary navigation`);
+}
+
+for (const rel of deployableShellFiles) {
+  const html = fs.readFileSync(path.join(root, rel), 'utf8');
+  const primary = primaryNavMarkup(html);
+  assert(Boolean(primary), `${rel} must expose a canonical primary navigation`);
+  if (!primary) continue;
+
+  const normalizedPrimary = primary.replaceAll("'", '"').replace(/\s+/g, ' ');
+  let lastIndex = -1;
+  for (const item of canonicalPrimary) {
+    const hrefIndex = normalizedPrimary.indexOf(`href="${item.route}"`);
+    assert(hrefIndex >= 0, `${rel} primary navigation is missing route ${item.route}`);
+    if (hrefIndex < 0) continue;
+    const linkTail = normalizedPrimary.slice(hrefIndex, hrefIndex + 220);
+    assert(linkTail.includes(`>${item.label}</a>`), `${rel} primary navigation route ${item.route} must be labeled ${item.label}`);
+    assert(hrefIndex > lastIndex, `${rel} primary navigation order must match the canonical eight-item sequence`);
+    lastIndex = hrefIndex;
+  }
+
+  assert(!/>\s*Genetics\s*<\/a>/i.test(primary), `${rel} still exposes retired primary label Genetics`);
+  assert(!/>\s*Tools\s*<\/a>/i.test(primary), `${rel} still exposes retired primary label Tools`);
 }
 assert(shell.sectionOwnership?.courses?.includes('/courses/'), 'Courses must own /courses/');
 assert(shell.sectionOwnership?.courses?.includes('/learn/learning-hub/'), 'Courses must own historical Learning Hub course URLs');
