@@ -21,7 +21,9 @@ must(local?.course?.id === 'COURSE-LH-TECH1-001', 'Unexpected Course 1 ID.');
 must(local?.source?.repository, 'Course source repository is required.');
 must(Array.isArray(uiSource?.lessons) && uiSource.lessons.length === 18, 'Course 1 UI routing map must contain 18 lessons.');
 
-const sourceRef = local.source.ref || 'main';
+const configuredSourceRef = local.source.ref || 'main';
+const sourceRef = String(process.env.THC_LEARNING_SOURCE_SHA || configuredSourceRef).trim();
+if (process.env.THC_LEARNING_SOURCE_SHA && !/^[0-9a-f]{40}$/i.test(sourceRef)) throw new Error('THC_LEARNING_SOURCE_SHA must be a full 40-character Git commit SHA.');
 const rawBase = `https://raw.githubusercontent.com/${local.source.repository}/${encodeURIComponent(sourceRef)}`;
 
 async function fetchText(url) {
