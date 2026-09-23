@@ -36,8 +36,17 @@ for relative in ('tools/index.html', 'games/index.html', 'projects/index.html'):
     if not candidate.is_file() or candidate.stat().st_size < 1:
         raise SystemExit(f'canonical public-suite hub is missing: {relative}')
     html = candidate.read_text(errors='replace')
+    shell_headers = re.findall(
+        r'<header\b[^>]*data-dtf-shell=["\']header-v6["\'][^>]*>',
+        html,
+        re.IGNORECASE,
+    )
+    if len(shell_headers) != 1:
+        raise SystemExit(
+            f'{relative} expected exactly one canonical V6 header element; found {len(shell_headers)}'
+        )
+
     required_markers = (
-        'data-dtf-shell="header-v6"',
         'data-dtf-sitewide-header="canonical-eight-v1"',
         'id="dtf-sitewide-header-v6-script"',
         'id="dtf-responsive-layout-v1"',
