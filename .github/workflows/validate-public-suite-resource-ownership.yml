@@ -91,14 +91,23 @@ jobs:
           ! grep -Fq "'/games/seed-man-platformer/'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
           for marker in \
             "'atlas'" \
+            "'terpene-atlas'" \
             "'assets/images/atlas'" \
             "'atlas/index.html'" \
             "'atlas/leaf-module/index.html'" \
             "'atlas/root-system/index.html'" \
             "'atlas/root-system/rhizosphere/index.html'" \
             "'atlas/downloads/index.html'" \
+            "'terpene-atlas/index.html'" \
+            "'terpene-atlas/terpene-atlas-v1.css'" \
+            "'terpene-atlas/terpene-atlas-v1.js'" \
+            "'terpene-atlas/data/terpene-catalog-v1.json'" \
+            "'terpene-atlas/data/sources-v1.json'" \
+            "'terpene-atlas/data/population-summary-v1.json'" \
+            "'terpene-atlas/data/sample-profiles-v1.json'" \
             "'assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg'" \
             "'atlas/'" \
+            "'terpene-atlas/'" \
             "'assets/images/atlas/'"; do
             grep -Fq "$marker" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
           done
@@ -171,6 +180,9 @@ jobs:
           PY
             php -l "$file.php"
             grep -Fq "'games/high-land'" "$file"
+            grep -Fq "'terpene-atlas'" "$file"
+            grep -Fq "'terpene-atlas/'" "$file"
+            grep -Fq "'terpene-atlas/data/population-summary-v1.json'" "$file"
             ! grep -Fq "'games/high-iq'" "$file"
             ! grep -Fq "'games/seed-man-platformer'" "$file"
           done
