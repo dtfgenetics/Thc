@@ -48,7 +48,7 @@ async function main(){
     const record=registry.records.find(r=>r.entityId===descriptor.asset.entityId);
     if(!record) throw new Error(`${file}: unknown entity ${descriptor.asset.entityId}`);
     if(!registry.assetClasses.includes(descriptor.asset.class)) throw new Error(`${file}: unknown class ${descriptor.asset.class}`);
-    const exists=record.assets.some(a=>a.assetId===descriptor.asset.assetId);
+    const existingIndex=record.assets.findIndex(a=>a.assetId===descriptor.asset.assetId);
     const response=await fetch(descriptor.downloadUrl,{headers:{'User-Agent':'DTF-Plant-Atlas-Media-Importer/1.0'}});
     if(!response.ok) throw new Error(`${file}: download failed HTTP ${response.status}`);
     const buf=Buffer.from(await response.arrayBuffer());
@@ -59,12 +59,16 @@ async function main(){
     if(Math.max(size.width,size.height)<2400) throw new Error(`${file}: production asset below 2400px long-edge minimum`);
     const rel=descriptor.asset.src.replace(/^\/atlas\//,'');
     writeBoth(rel,buf);
-    if(!exists){
-      record.assets.push(descriptor.asset);
-      const have=new Set(record.assets.map(a=>a.class));
-      record.status=record.required.every(kind=>have.has(kind))?'approved':'in-production';
-      changed=true;
+    if(existingIndex>=0){
+      const before=JSON.stringify(record.assets[existingIndex]);
+      const after=JSON.stringify(descriptor.asset);
+      if(before!==after){record.assets[existingIndex]=descriptor.asset;changed=true;}
+    }else{
+      record.assets.push(descriptor.asset);changed=true;
     }
+    const have=new Set(record.assets.map(a=>a.class));
+    const nextStatus=record.required.every(kind=>have.has(kind))?'approved':'in-production';
+    if(record.status!==nextStatus){record.status=nextStatus;changed=true;}
     console.log(`Imported ${descriptor.asset.assetId}: ${size.width}x${size.height}, sha1=${sha1}`);
   }
   if(changed){
