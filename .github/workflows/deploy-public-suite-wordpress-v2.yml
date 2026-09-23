@@ -169,6 +169,9 @@ jobs:
             projects/index.html
             puzzles/current.json
             atlas/index.html
+            terpene-atlas/index.html
+            terpene-atlas/terpene-atlas-v1.js
+            terpene-atlas/data/terpene-catalog-v1.json
             atlas/leaf-module/index.html
             atlas/root-system/index.html
             atlas/root-system/rhizosphere/index.html
@@ -204,6 +207,9 @@ jobs:
               assert names.count('.dtf-suite-manifest.json')==1
               required={
                   'atlas/index.html',
+                  'terpene-atlas/index.html',
+                  'terpene-atlas/terpene-atlas-v1.js',
+                  'terpene-atlas/data/terpene-catalog-v1.json',
                   'atlas/leaf-module/index.html',
                   'atlas/root-system/index.html',
                   'atlas/root-system/rhizosphere/index.html',
@@ -274,6 +280,7 @@ jobs:
           set -euo pipefail
           for url in \
             https://dtfseeds.com/atlas/ \
+            https://dtfseeds.com/terpene-atlas/ \
             https://dtfseeds.com/atlas/root-system/ \
             https://dtfseeds.com/atlas/root-system/rhizosphere/ \
             https://dtfseeds.com/atlas/downloads/; do
@@ -281,7 +288,7 @@ jobs:
             body="$(curl -fsSL --retry 5 --retry-delay 6 \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
               "${url}?dtf_atlas_verify=${GITHUB_RUN_ID}")"
-            grep -Eiq 'THC Living Plant Atlas|Rhizosphere|Field Cards|Root System' <<<"$body"
+            grep -Eiq 'THC Living Plant Atlas|THC Terpene Atlas|Rhizosphere|Field Cards|Root System' <<<"$body"
           done
 
       - name: Verify current suite-owned public application surfaces
@@ -327,6 +334,7 @@ jobs:
           check 'https://dtfseeds.com/games/terpocalypse/' 'LEVEL 01 · THE VEG LAB'
           check 'https://dtfseeds.com/games/phenoquest/' 'The Living Seed Vault'
           check 'https://dtfseeds.com/games/who-took-it/' 'The stash is short.'
+          check 'https://dtfseeds.com/terpene-atlas/' 'Terpene Atlas'
           check 'https://dtfseeds.com/growlens/' 'GrowLens'
           check 'https://dtfseeds.com/thc-grow-doc/' 'Grow Doc'
 
