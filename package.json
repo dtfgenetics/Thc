@@ -59,6 +59,8 @@
     "validate:terpene-atlas": "node scripts/validate-terpene-atlas.mjs",
     "verify:asset-states": "node scripts/validate-asset-state-registry.mjs",
     "verify:3d-assets": "node scripts/validate-3d-assets.mjs",
-    "verify:project-os": "npm run verify:portfolio && npm run games:locations:check && npm run verify:asset-states && npm run verify:3d-assets"
+    "verify:project-os": "npm run verify:portfolio && npm run games:locations:check && npm run verify:asset-states && npm run verify:3d-assets",
+    "atlas:media": "node scripts/atlas-media-registry.mjs",
+    "atlas:media:validate": "node scripts/atlas-media-registry.mjs validate"
   }
 }
