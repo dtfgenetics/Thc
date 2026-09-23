@@ -26,6 +26,8 @@ const requiredMirrors = [
   'module.js',
   'data/systems.json',
   'data/hotspots-v4.json',
+  'data/scale-map-v1.json',
+  'data/media-registry-v1.json',
   'models/model-manifest-v4.json',
   'models/README.md',
 ];
@@ -137,7 +139,7 @@ if (systemsData) {
 }
 
 const workspaceRuntime = read(path.join(appRoot, 'atlas-workspace-v5.js'));
-for (const token of ['data-atlas-mode','data-atlas-layer','data-atlas-command-input','plant-atlas:focus','wireWorkspaceChrome','wireStageAndCompare','setStage','renderCompare','data-rail-toggle','data-viewer-action','atlasLabels','data-compare-assign','data-layer-legend','Ctrl','Measurements','Evidence']) ok(workspaceRuntime.includes(token), `Atlas V5 workspace runtime missing: ${token}`);
+for (const token of ['data-atlas-mode','data-atlas-layer','data-atlas-command-input','plant-atlas:focus','wireWorkspaceChrome','wireStageAndCompare','setStage','renderCompare','data-rail-toggle','data-viewer-action','atlasLabels','data-compare-assign','data-layer-legend','scale-map-v1.json','media-registry-v1.json','data-atlas-scale-nav','data-atlas-media-panel','Ctrl','Measurements','Evidence']) ok(workspaceRuntime.includes(token), `Atlas V5 workspace runtime missing: ${token}`);
 const workspaceCss = read(path.join(appRoot, 'atlas-workspace-v5.css'));
 for (const token of ['.atlas-workspace-bar','.atlas-command-results','.atlas-inspector-tabs','.atlas-nav-rail','.atlas-viewer-toolbar','.atlas-stage-bar','.atlas-compare-panel','.atlas-layer-legend','data-system-category','grid-template-columns:240px','data-atlas-mode','max-width:980px']) ok(workspaceCss.includes(token), `Atlas V5 workspace CSS missing: ${token}`);
 for (const token of ['data-atlas-mode="explorer"','data-atlas-mode="research"','data-atlas-layer="anatomy"','data-atlas-layer="diagnostics"','data-atlas-command-input','data-atlas-mobile-tray-toggle','atlas-nav-rail','data-rail-systems','atlas-viewer-toolbar','data-viewer-action="labels"','data-viewer-action="compare"','atlas-layer-legend','atlas-stage-bar','data-atlas-stage="reproductive"','data-atlas-compare']) ok(index.includes(token), `Atlas V5 workspace shell missing: ${token}`);
@@ -149,6 +151,49 @@ for (const token of ['hotspots-v4.json','data-anatomy-search','data-anatomy-scal
 
 const moduleRuntime = read(path.join(appRoot, 'module.js'));
 for (const token of ['measurements','evidenceQuestions','deepDiveTopics','connectedTools','dataset.measurementsRuntime']) ok(moduleRuntime.includes(token), `Plant Atlas module runtime missing enriched contract: ${token}`);
+
+
+let scaleMap = null;
+try { scaleMap = JSON.parse(read(path.join(appRoot, 'data/scale-map-v1.json'))); }
+catch (error) { errors.push(`Invalid scale-map-v1.json: ${error.message}`); }
+if (scaleMap) {
+  ok(scaleMap.schemaVersion === 1, 'scale-map-v1.json must use schemaVersion 1');
+  const paths = Array.isArray(scaleMap.pathways) ? scaleMap.pathways : [];
+  ok(paths.length >= 7, `Expected at least 7 multi-scale pathways; found ${paths.length}`);
+  const hotspotIds = new Set((hotspotData?.hotspots || []).map((entry) => entry.id));
+  for (const pathway of paths) {
+    ok(typeof pathway.id === 'string' && pathway.id.length > 0, 'Every scale pathway needs an id');
+    ok(typeof pathway.label === 'string' && pathway.label.length > 0, `Scale pathway ${pathway.id || '(unknown)'} needs a label`);
+    ok(Array.isArray(pathway.steps) && pathway.steps.length >= 3, `Scale pathway ${pathway.id || '(unknown)'} needs at least 3 steps`);
+    for (const id of pathway.steps || []) ok(hotspotIds.has(id), `Scale pathway ${pathway.id} references unknown hotspot ${id}`);
+    ok(typeof pathway.destination === 'string' && pathway.destination.startsWith('/atlas/'), `Scale pathway ${pathway.id} needs an Atlas destination`);
+  }
+}
+
+let mediaRegistry = null;
+try { mediaRegistry = JSON.parse(read(path.join(appRoot, 'data/media-registry-v1.json'))); }
+catch (error) { errors.push(`Invalid media-registry-v1.json: ${error.message}`); }
+if (mediaRegistry) {
+  ok(mediaRegistry.schemaVersion === 1, 'media-registry-v1.json must use schemaVersion 1');
+  const classes = new Set(Array.isArray(mediaRegistry.assetClasses) ? mediaRegistry.assetClasses : []);
+  const records = Array.isArray(mediaRegistry.records) ? mediaRegistry.records : [];
+  ok(records.length >= 10, `Expected at least 10 initial media registry records; found ${records.length}`);
+  const hotspotIds = new Set((hotspotData?.hotspots || []).map((entry) => entry.id));
+  const seen = new Set();
+  for (const record of records) {
+    ok(hotspotIds.has(record.entityId), `Media registry references unknown entity ${record.entityId}`);
+    ok(!seen.has(record.entityId), `Duplicate media registry entity: ${record.entityId}`);
+    seen.add(record.entityId);
+    ok(Array.isArray(record.required) && record.required.length > 0, `Media record ${record.entityId} needs required asset classes`);
+    for (const kind of record.required || []) ok(classes.has(kind), `Media record ${record.entityId} uses unknown asset class ${kind}`);
+    ok(Array.isArray(record.assets), `Media record ${record.entityId} assets must be an array`);
+    if ((record.assets || []).length === 0) ok(record.status === 'production-needed', `Empty media record ${record.entityId} must remain explicitly production-needed`);
+  }
+  const fields = new Set(mediaRegistry?.provenanceContract?.requiredFields || []);
+  for (const field of ['assetId','entityId','class','src','source','creator','license','captureType','plantStage','organ','illustrativeOrMeasured']) {
+    ok(fields.has(field), `Media provenance contract missing required field: ${field}`);
+  }
+}
 
 let manifest = null;
 try { manifest = JSON.parse(read(path.join(appRoot, 'models/model-manifest-v4.json'))); }
