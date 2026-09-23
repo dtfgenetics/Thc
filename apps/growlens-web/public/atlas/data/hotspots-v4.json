@@ -2,21 +2,676 @@
   "schemaVersion": 4,
   "model": "model-manifest-v4",
   "coordinateSpace": "normalized-model-bounds",
-  "notes": "Anchors use x/y/z values from 0 to 1 after either the built-in PBR specimen or an approved GLB is normalized upright. Recalibrate fine hotspots if the preferred production GLB is enabled.",
+  "notes": "Anchors use x/y/z values from 0 to 1 after either the built-in PBR specimen or an approved GLB is normalized upright. Fine structures are semantic inspection anchors and must be recalibrated against any enabled production GLB. Atlas V4 intentionally routes microscopic structures to their owning system pages until dedicated child routes exist.",
   "hotspots": [
-    {"id":"root-system","label":"Root system","detail":"Primary, lateral & fine absorbing roots","route":"/atlas/root-system/","copy":"Primary and lateral roots branch into fine absorbing roots that anchor the plant, acquire water and ions, respire, and interact with the rhizosphere.","anchors":[[0.5,0.12,0.5]],"radius":0.13,"focus":0.44},
-    {"id":"root-tip","label":"Root tips","detail":"Apical growth and young absorption zones","route":"/atlas/root-system/","copy":"Young root tips contain the root apical meristem and newly differentiating tissues. Just behind the tip, young root surfaces are especially important for water and mineral acquisition.","anchors":[[0.34,0.025,0.58],[0.69,0.04,0.43]],"radius":0.065,"focus":0.25,"priority":12},
-    {"id":"stem-vascular","label":"Stem & vascular system","detail":"Main stem, branches, xylem & phloem pathway","route":"/atlas/stem-vascular/","copy":"The main stem and branches form a continuous vascular skeleton. Xylem moves water and minerals; phloem redistributes sugars and other assimilates among sources and sinks.","anchors":[[0.5,0.38,0.5],[0.5,0.57,0.5]],"radius":0.075,"focus":0.42},
-    {"id":"nodes-branching","label":"Nodes & branching","detail":"Axillary sites and branch junctions","route":"/atlas/nodes-branching/","copy":"Nodes carry leaves, branches, and axillary meristems. Their spacing and bud activity reveal how developmental signaling and environment shape plant architecture.","anchors":[[0.5,0.47,0.5],[0.5,0.61,0.5],[0.5,0.72,0.5]],"radius":0.075,"focus":0.34},
-    {"id":"apical-meristem","label":"Shoot apex","detail":"Apical meristem and newest growth","route":"/atlas/nodes-branching/","copy":"The shoot apex contains actively dividing meristematic tissue that produces new stem, leaf, and later reproductive structures. Its activity strongly influences vertical growth and branching patterns.","anchors":[[0.5,0.965,0.5]],"radius":0.055,"focus":0.22,"priority":18},
-    {"id":"leaf-module","label":"Fan leaves","detail":"Serrated leaflets, petioles, blades & veins","route":"/atlas/leaf-module/","copy":"Fan leaves are major photosynthetic organs. Their blades capture light while stomata regulate gas exchange and transpiration, and petioles connect each leaf to the vascular system.","anchors":[[0.28,0.52,0.5],[0.72,0.55,0.5],[0.31,0.69,0.52],[0.69,0.72,0.48]],"radius":0.12,"focus":0.39},
-    {"id":"petiole","label":"Petiole","detail":"Leaf stalk connecting blade to stem","route":"/atlas/leaf-module/","copy":"The petiole positions the leaf blade and contains vascular bundles that connect leaf tissues with the stem. Its angle and mechanical state also change with water status and development.","anchors":[[0.38,0.53,0.5],[0.62,0.7,0.5]],"radius":0.045,"focus":0.23,"priority":15},
-    {"id":"leaf-venation","label":"Leaf venation","detail":"Midrib and lateral vascular network","route":"/atlas/leaf-module/","copy":"The midrib and lateral veins distribute water and minerals into the blade and export photosynthates through phloem. Venation also provides mechanical support across the thin leaf surface.","anchors":[[0.25,0.57,0.51],[0.74,0.7,0.49]],"radius":0.055,"focus":0.2,"priority":16},
-    {"id":"flower-anatomy","label":"Flowers & inflorescences","detail":"Female floral clusters, bracts & sugar leaves","route":"/atlas/flower-anatomy/","copy":"Female inflorescences contain densely packed floral structures, subtending bracts, sugar leaves, stigmas, and resinous surfaces that change substantially through maturation.","anchors":[[0.5,0.89,0.5],[0.35,0.78,0.51],[0.66,0.79,0.49]],"radius":0.09,"focus":0.29},
-    {"id":"bract","label":"Bracts","detail":"Protective floral structures surrounding ovules","route":"/atlas/flower-anatomy/","copy":"Bracts are small leaf-like floral structures associated with the female flower. They surround reproductive tissues and are among the most conspicuously resinous tissues of the inflorescence.","anchors":[[0.48,0.905,0.53],[0.54,0.87,0.48]],"radius":0.045,"focus":0.18,"priority":22},
-    {"id":"sugar-leaf","label":"Sugar leaves","detail":"Small resinous leaves within flower clusters","route":"/atlas/flower-anatomy/","copy":"Sugar leaves are small leaves embedded within and around the inflorescence. They contribute photosynthesis locally and frequently carry abundant glandular trichomes.","anchors":[[0.43,0.86,0.51],[0.58,0.84,0.49]],"radius":0.05,"focus":0.2,"priority":18},
-    {"id":"reproductive-biology","label":"Reproductive structures","detail":"Female flowers, preflowers & pollen-reception surfaces","route":"/atlas/reproductive-biology/","copy":"Female reproductive structures connect visible flower anatomy to sex expression, pollen reception, fertilization, embryo development, and seed formation.","anchors":[[0.46,0.82,0.51],[0.54,0.85,0.49]],"radius":0.06,"focus":0.23,"priority":14},
-    {"id":"stigma","label":"Stigmas","detail":"Pollen-receptive floral structures","route":"/atlas/reproductive-biology/","copy":"Paired stigmas emerge from each pistillate flower and participate in pollen capture. Their appearance changes with flower age, pollination status, and environmental exposure.","anchors":[[0.5,0.925,0.52]],"radius":0.045,"focus":0.17,"priority":25},
-    {"id":"trichomes-resin","label":"Glandular trichomes","detail":"Stalks and secretory gland heads","route":"/atlas/trichomes-resin/","copy":"Glandular trichomes include stalks, secretory disc cells, and gland heads. Their form and density vary by tissue, developmental stage, genotype, and environmental conditions.","anchors":[[0.52,0.91,0.48]],"radius":0.04,"focus":0.16,"priority":30}
+    {
+      "id": "root-system",
+      "label": "Root system",
+      "detail": "Primary, lateral & fine absorbing roots",
+      "route": "/atlas/root-system/",
+      "copy": "Primary and lateral roots branch into fine absorbing roots that anchor the plant, acquire water and ions, respire, and interact with the rhizosphere.",
+      "anchors": [
+        [
+          0.5,
+          0.12,
+          0.5
+        ]
+      ],
+      "radius": 0.13,
+      "focus": 0.44
+    },
+    {
+      "id": "root-tip",
+      "label": "Root tips",
+      "detail": "Apical growth and young absorption zones",
+      "route": "/atlas/root-system/",
+      "copy": "Young root tips contain the root apical meristem and newly differentiating tissues. Just behind the tip, young root surfaces are especially important for water and mineral acquisition.",
+      "anchors": [
+        [
+          0.34,
+          0.025,
+          0.58
+        ],
+        [
+          0.69,
+          0.04,
+          0.43
+        ]
+      ],
+      "radius": 0.065,
+      "focus": 0.25,
+      "priority": 12
+    },
+    {
+      "id": "stem-vascular",
+      "label": "Stem & vascular system",
+      "detail": "Main stem, branches, xylem & phloem pathway",
+      "route": "/atlas/stem-vascular/",
+      "copy": "The main stem and branches form a continuous vascular skeleton. Xylem moves water and minerals; phloem redistributes sugars and other assimilates among sources and sinks.",
+      "anchors": [
+        [
+          0.5,
+          0.38,
+          0.5
+        ],
+        [
+          0.5,
+          0.57,
+          0.5
+        ]
+      ],
+      "radius": 0.075,
+      "focus": 0.42
+    },
+    {
+      "id": "nodes-branching",
+      "label": "Nodes & branching",
+      "detail": "Axillary sites and branch junctions",
+      "route": "/atlas/nodes-branching/",
+      "copy": "Nodes carry leaves, branches, and axillary meristems. Their spacing and bud activity reveal how developmental signaling and environment shape plant architecture.",
+      "anchors": [
+        [
+          0.5,
+          0.47,
+          0.5
+        ],
+        [
+          0.5,
+          0.61,
+          0.5
+        ],
+        [
+          0.5,
+          0.72,
+          0.5
+        ]
+      ],
+      "radius": 0.075,
+      "focus": 0.34
+    },
+    {
+      "id": "apical-meristem",
+      "label": "Shoot apex",
+      "detail": "Apical meristem and newest growth",
+      "route": "/atlas/nodes-branching/",
+      "copy": "The shoot apex contains actively dividing meristematic tissue that produces new stem, leaf, and later reproductive structures. Its activity strongly influences vertical growth and branching patterns.",
+      "anchors": [
+        [
+          0.5,
+          0.965,
+          0.5
+        ]
+      ],
+      "radius": 0.055,
+      "focus": 0.22,
+      "priority": 18
+    },
+    {
+      "id": "leaf-module",
+      "label": "Fan leaves",
+      "detail": "Serrated leaflets, petioles, blades & veins",
+      "route": "/atlas/leaf-module/",
+      "copy": "Fan leaves are major photosynthetic organs. Their blades capture light while stomata regulate gas exchange and transpiration, and petioles connect each leaf to the vascular system.",
+      "anchors": [
+        [
+          0.28,
+          0.52,
+          0.5
+        ],
+        [
+          0.72,
+          0.55,
+          0.5
+        ],
+        [
+          0.31,
+          0.69,
+          0.52
+        ],
+        [
+          0.69,
+          0.72,
+          0.48
+        ]
+      ],
+      "radius": 0.12,
+      "focus": 0.39
+    },
+    {
+      "id": "petiole",
+      "label": "Petiole",
+      "detail": "Leaf stalk connecting blade to stem",
+      "route": "/atlas/leaf-module/",
+      "copy": "The petiole positions the leaf blade and contains vascular bundles that connect leaf tissues with the stem. Its angle and mechanical state also change with water status and development.",
+      "anchors": [
+        [
+          0.38,
+          0.53,
+          0.5
+        ],
+        [
+          0.62,
+          0.7,
+          0.5
+        ]
+      ],
+      "radius": 0.045,
+      "focus": 0.23,
+      "priority": 15
+    },
+    {
+      "id": "leaf-venation",
+      "label": "Leaf venation",
+      "detail": "Midrib and lateral vascular network",
+      "route": "/atlas/leaf-module/",
+      "copy": "The midrib and lateral veins distribute water and minerals into the blade and export photosynthates through phloem. Venation also provides mechanical support across the thin leaf surface.",
+      "anchors": [
+        [
+          0.25,
+          0.57,
+          0.51
+        ],
+        [
+          0.74,
+          0.7,
+          0.49
+        ]
+      ],
+      "radius": 0.055,
+      "focus": 0.2,
+      "priority": 16
+    },
+    {
+      "id": "flower-anatomy",
+      "label": "Flowers & inflorescences",
+      "detail": "Female floral clusters, bracts & sugar leaves",
+      "route": "/atlas/flower-anatomy/",
+      "copy": "Female inflorescences contain densely packed floral structures, subtending bracts, sugar leaves, stigmas, and resinous surfaces that change substantially through maturation.",
+      "anchors": [
+        [
+          0.5,
+          0.89,
+          0.5
+        ],
+        [
+          0.35,
+          0.78,
+          0.51
+        ],
+        [
+          0.66,
+          0.79,
+          0.49
+        ]
+      ],
+      "radius": 0.09,
+      "focus": 0.29
+    },
+    {
+      "id": "bract",
+      "label": "Bracts",
+      "detail": "Protective floral structures surrounding ovules",
+      "route": "/atlas/flower-anatomy/",
+      "copy": "Bracts are small leaf-like floral structures associated with the female flower. They surround reproductive tissues and are among the most conspicuously resinous tissues of the inflorescence.",
+      "anchors": [
+        [
+          0.48,
+          0.905,
+          0.53
+        ],
+        [
+          0.54,
+          0.87,
+          0.48
+        ]
+      ],
+      "radius": 0.045,
+      "focus": 0.18,
+      "priority": 22
+    },
+    {
+      "id": "sugar-leaf",
+      "label": "Sugar leaves",
+      "detail": "Small resinous leaves within flower clusters",
+      "route": "/atlas/flower-anatomy/",
+      "copy": "Sugar leaves are small leaves embedded within and around the inflorescence. They contribute photosynthesis locally and frequently carry abundant glandular trichomes.",
+      "anchors": [
+        [
+          0.43,
+          0.86,
+          0.51
+        ],
+        [
+          0.58,
+          0.84,
+          0.49
+        ]
+      ],
+      "radius": 0.05,
+      "focus": 0.2,
+      "priority": 18
+    },
+    {
+      "id": "reproductive-biology",
+      "label": "Reproductive structures",
+      "detail": "Female flowers, preflowers & pollen-reception surfaces",
+      "route": "/atlas/reproductive-biology/",
+      "copy": "Female reproductive structures connect visible flower anatomy to sex expression, pollen reception, fertilization, embryo development, and seed formation.",
+      "anchors": [
+        [
+          0.46,
+          0.82,
+          0.51
+        ],
+        [
+          0.54,
+          0.85,
+          0.49
+        ]
+      ],
+      "radius": 0.06,
+      "focus": 0.23,
+      "priority": 14
+    },
+    {
+      "id": "stigma",
+      "label": "Stigmas",
+      "detail": "Pollen-receptive floral structures",
+      "route": "/atlas/reproductive-biology/",
+      "copy": "Paired stigmas emerge from each pistillate flower and participate in pollen capture. Their appearance changes with flower age, pollination status, and environmental exposure.",
+      "anchors": [
+        [
+          0.5,
+          0.925,
+          0.52
+        ]
+      ],
+      "radius": 0.045,
+      "focus": 0.17,
+      "priority": 25
+    },
+    {
+      "id": "trichomes-resin",
+      "label": "Glandular trichomes",
+      "detail": "Stalks and secretory gland heads",
+      "route": "/atlas/trichomes-resin/",
+      "copy": "Glandular trichomes include stalks, secretory disc cells, and gland heads. Their form and density vary by tissue, developmental stage, genotype, and environmental conditions.",
+      "anchors": [
+        [
+          0.52,
+          0.91,
+          0.48
+        ]
+      ],
+      "radius": 0.04,
+      "focus": 0.16,
+      "priority": 30
+    },
+    {
+      "id": "root-crown",
+      "label": "Root crown",
+      "detail": "Transition between stem base and root system",
+      "route": "/atlas/root-system/",
+      "copy": "The root crown is the transition zone where the shoot base meets the root system. It carries vascular continuity between above-ground organs and the major structural roots.",
+      "anchors": [
+        [
+          0.5,
+          0.205,
+          0.5
+        ]
+      ],
+      "radius": 0.055,
+      "focus": 0.22,
+      "priority": 14
+    },
+    {
+      "id": "lateral-root",
+      "label": "Lateral roots",
+      "detail": "Branching structural and absorbing roots",
+      "route": "/atlas/root-system/",
+      "copy": "Lateral roots branch from older root axes and expand the volume of substrate explored by the plant. Their younger branches contribute strongly to water and mineral acquisition.",
+      "anchors": [
+        [
+          0.34,
+          0.105,
+          0.57
+        ],
+        [
+          0.68,
+          0.09,
+          0.43
+        ]
+      ],
+      "radius": 0.055,
+      "focus": 0.24,
+      "priority": 13
+    },
+    {
+      "id": "fine-roots",
+      "label": "Fine absorbing roots",
+      "detail": "Young small-diameter roots at the active root frontier",
+      "route": "/atlas/root-system/",
+      "copy": "Fine roots provide much of the actively absorbing root surface. Their abundance, age, oxygen supply, and rhizosphere conditions strongly affect water and ion uptake.",
+      "anchors": [
+        [
+          0.24,
+          0.055,
+          0.62
+        ],
+        [
+          0.76,
+          0.045,
+          0.38
+        ]
+      ],
+      "radius": 0.045,
+      "focus": 0.2,
+      "priority": 17
+    },
+    {
+      "id": "internode",
+      "label": "Internodes",
+      "detail": "Stem segments between successive nodes",
+      "route": "/atlas/nodes-branching/",
+      "copy": "Internodes are stem segments between nodes. Their length integrates genetics, light environment, temperature, hormones, developmental stage, and competition within the canopy.",
+      "anchors": [
+        [
+          0.5,
+          0.535,
+          0.5
+        ],
+        [
+          0.5,
+          0.665,
+          0.5
+        ]
+      ],
+      "radius": 0.05,
+      "focus": 0.23,
+      "priority": 12
+    },
+    {
+      "id": "axillary-bud",
+      "label": "Axillary buds",
+      "detail": "Meristematic buds formed in leaf axils",
+      "route": "/atlas/nodes-branching/",
+      "copy": "Axillary buds form where leaves meet the stem. Their dormancy or outgrowth controls much of the plant's branching architecture and responds to apical dominance and environmental signals.",
+      "anchors": [
+        [
+          0.47,
+          0.49,
+          0.51
+        ],
+        [
+          0.54,
+          0.62,
+          0.49
+        ]
+      ],
+      "radius": 0.04,
+      "focus": 0.18,
+      "priority": 19
+    },
+    {
+      "id": "xylem-pathway",
+      "label": "Xylem pathway",
+      "detail": "Water-conducting vascular tissue",
+      "route": "/atlas/stem-vascular/",
+      "copy": "Xylem conducts water and dissolved mineral nutrients upward through the plant and also contributes structural support. Flow depends on root uptake, transpiration, hydraulic continuity, and embolism resistance.",
+      "anchors": [
+        [
+          0.495,
+          0.43,
+          0.5
+        ],
+        [
+          0.495,
+          0.64,
+          0.5
+        ]
+      ],
+      "radius": 0.038,
+      "focus": 0.19,
+      "priority": 20
+    },
+    {
+      "id": "phloem-pathway",
+      "label": "Phloem pathway",
+      "detail": "Assimilate-conducting vascular tissue",
+      "route": "/atlas/stem-vascular/",
+      "copy": "Phloem transports sugars and other assimilates from source tissues toward sinks such as growing shoots, roots, flowers, and developing seeds. Direction changes with source-sink relationships.",
+      "anchors": [
+        [
+          0.512,
+          0.43,
+          0.5
+        ],
+        [
+          0.512,
+          0.64,
+          0.5
+        ]
+      ],
+      "radius": 0.038,
+      "focus": 0.19,
+      "priority": 20
+    },
+    {
+      "id": "leaflet",
+      "label": "Leaflets",
+      "detail": "Individual serrated units of a compound fan leaf",
+      "route": "/atlas/leaf-module/",
+      "copy": "Cannabis fan leaves are palmately compound, with multiple serrated leaflets attached around a common point. Leaflet number, size, and shape vary with genetics and developmental conditions.",
+      "anchors": [
+        [
+          0.19,
+          0.565,
+          0.5
+        ],
+        [
+          0.81,
+          0.705,
+          0.5
+        ]
+      ],
+      "radius": 0.055,
+      "focus": 0.2,
+      "priority": 16
+    },
+    {
+      "id": "leaf-margin",
+      "label": "Serrated leaf margin",
+      "detail": "Toothed edge of the leaflet blade",
+      "route": "/atlas/leaf-module/",
+      "copy": "The serrated margin defines the characteristic toothed outline of many Cannabis leaflets. Margin form is useful descriptively but should not be treated as a stand-alone indicator of cultivar identity or plant health.",
+      "anchors": [
+        [
+          0.14,
+          0.59,
+          0.5
+        ],
+        [
+          0.86,
+          0.73,
+          0.5
+        ]
+      ],
+      "radius": 0.04,
+      "focus": 0.17,
+      "priority": 18
+    },
+    {
+      "id": "leaf-blade",
+      "label": "Leaf blade",
+      "detail": "Broad photosynthetic lamina tissue",
+      "route": "/atlas/leaf-module/",
+      "copy": "The leaf blade contains photosynthetic mesophyll, vascular networks, epidermal tissues, and stomata. Its orientation, temperature, hydration, and light environment strongly influence gas exchange.",
+      "anchors": [
+        [
+          0.27,
+          0.6,
+          0.5
+        ],
+        [
+          0.73,
+          0.74,
+          0.5
+        ]
+      ],
+      "radius": 0.07,
+      "focus": 0.24,
+      "priority": 15
+    },
+    {
+      "id": "stomatal-surface",
+      "label": "Stomatal surface",
+      "detail": "Microscopic pores controlling gas exchange",
+      "route": "/atlas/leaf-module/",
+      "copy": "Stomata are microscopic epidermal pores controlled by guard cells. They regulate carbon dioxide entry and water-vapor loss, linking photosynthesis to plant water status and vapor-pressure conditions.",
+      "anchors": [
+        [
+          0.3,
+          0.585,
+          0.52
+        ]
+      ],
+      "radius": 0.032,
+      "focus": 0.14,
+      "priority": 24
+    },
+    {
+      "id": "preflower-site",
+      "label": "Preflower site",
+      "detail": "Early reproductive structures at mature nodes",
+      "route": "/atlas/reproductive-biology/",
+      "copy": "Preflowers develop at nodes as plants reach reproductive maturity. Their anatomy can reveal sex expression before dense inflorescences form, but timing varies with genotype and environment.",
+      "anchors": [
+        [
+          0.49,
+          0.735,
+          0.51
+        ],
+        [
+          0.53,
+          0.77,
+          0.49
+        ]
+      ],
+      "radius": 0.042,
+      "focus": 0.18,
+      "priority": 20
+    },
+    {
+      "id": "pistillate-flower",
+      "label": "Pistillate flower",
+      "detail": "Individual female flower within the inflorescence",
+      "route": "/atlas/reproductive-biology/",
+      "copy": "A pistillate Cannabis flower contains the ovary, ovule, style and paired stigmas, with the flower closely enclosed by a resinous bract. Many individual flowers make up the visible inflorescence.",
+      "anchors": [
+        [
+          0.49,
+          0.885,
+          0.52
+        ]
+      ],
+      "radius": 0.04,
+      "focus": 0.16,
+      "priority": 28
+    },
+    {
+      "id": "ovary-ovule",
+      "label": "Ovary & ovule",
+      "detail": "Female reproductive tissues where fertilization and seed development occur",
+      "route": "/atlas/reproductive-biology/",
+      "copy": "Inside the pistillate flower, the ovary contains an ovule. After successful pollination and fertilization, embryo and seed development proceed while surrounding floral tissues mature.",
+      "anchors": [
+        [
+          0.505,
+          0.872,
+          0.5
+        ]
+      ],
+      "radius": 0.032,
+      "focus": 0.14,
+      "priority": 29
+    },
+    {
+      "id": "inflorescence-axis",
+      "label": "Inflorescence axis",
+      "detail": "Branching framework supporting clustered flowers",
+      "route": "/atlas/flower-anatomy/",
+      "copy": "The inflorescence axis and short branches support many individual flowers, bracts, and sugar leaves. Their spacing and developmental timing shape the density and architecture of the flowering canopy.",
+      "anchors": [
+        [
+          0.5,
+          0.835,
+          0.5
+        ],
+        [
+          0.39,
+          0.775,
+          0.51
+        ],
+        [
+          0.62,
+          0.785,
+          0.49
+        ]
+      ],
+      "radius": 0.05,
+      "focus": 0.2,
+      "priority": 17
+    },
+    {
+      "id": "capitate-stalked-trichome",
+      "label": "Capitate-stalked trichomes",
+      "detail": "Prominent glandular trichomes with stalk and secretory head",
+      "route": "/atlas/trichomes-resin/",
+      "copy": "Capitate-stalked glandular trichomes develop a multicellular stalk and enlarged secretory head. They are abundant on mature female floral tissues and contain specialized secretory cells.",
+      "anchors": [
+        [
+          0.525,
+          0.912,
+          0.49
+        ]
+      ],
+      "radius": 0.028,
+      "focus": 0.12,
+      "priority": 34
+    },
+    {
+      "id": "trichome-gland-head",
+      "label": "Trichome gland head",
+      "detail": "Secretory head containing specialized disc cells and storage cavity",
+      "route": "/atlas/trichomes-resin/",
+      "copy": "The gland head contains secretory disc cells beneath a cuticular storage cavity. Cannabinoids and many volatile compounds accumulate in this glandular system as the trichome develops.",
+      "anchors": [
+        [
+          0.527,
+          0.918,
+          0.49
+        ]
+      ],
+      "radius": 0.022,
+      "focus": 0.1,
+      "priority": 36
+    },
+    {
+      "id": "trichome-stalk",
+      "label": "Trichome stalk",
+      "detail": "Support structure beneath the glandular head",
+      "route": "/atlas/trichomes-resin/",
+      "copy": "The stalk elevates the glandular head above the epidermis and is anatomically distinct from the secretory disc cells. Stalk and head dimensions vary with trichome type and developmental stage.",
+      "anchors": [
+        [
+          0.524,
+          0.907,
+          0.49
+        ]
+      ],
+      "radius": 0.02,
+      "focus": 0.1,
+      "priority": 35
+    }
   ]
 }
