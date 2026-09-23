@@ -24,6 +24,32 @@ const usage=()=>{
   console.log('  node scripts/atlas-media-registry.mjs status');
   console.log('  node scripts/atlas-media-registry.mjs validate');
 };
+function imageDimensions(buf){
+  if(buf.length>=24 && buf[0]===0x89 && buf.toString('ascii',1,4)==='PNG') return {width:buf.readUInt32BE(16),height:buf.readUInt32BE(20)};
+  if(buf.length>=4 && buf[0]===0xff && buf[1]===0xd8){
+    let i=2;
+    while(i+9<buf.length){
+      if(buf[i]!==0xff){i++;continue;}
+      const marker=buf[i+1]; i+=2;
+      if(marker===0xd8||marker===0xd9) continue;
+      if(i+2>buf.length) break;
+      const len=buf.readUInt16BE(i);
+      if([0xc0,0xc1,0xc2,0xc3,0xc5,0xc6,0xc7,0xc9,0xca,0xcb,0xcd,0xce,0xcf].includes(marker) && i+7<buf.length) return {height:buf.readUInt16BE(i+3),width:buf.readUInt16BE(i+5)};
+      i+=len;
+    }
+  }
+  if(buf.length>=30 && buf.toString('ascii',0,4)==='RIFF' && buf.toString('ascii',8,12)==='WEBP'){
+    const kind=buf.toString('ascii',12,16);
+    if(kind==='VP8X') return {width:1+buf.readUIntLE(24,3),height:1+buf.readUIntLE(27,3)};
+    if(kind==='VP8 ' && buf.length>=30) return {width:buf.readUInt16LE(26)&0x3fff,height:buf.readUInt16LE(28)&0x3fff};
+    if(kind==='VP8L' && buf.length>=25){
+      const b0=buf[21],b1=buf[22],b2=buf[23],b3=buf[24];
+      if(b0===0x2f) return {width:1+(b1|((b2&0x3f)<<8)),height:1+((b2>>6)|(b3<<2)|((buf[25]||0)&0x0f)<<10)};
+    }
+  }
+  return null;
+}
+
 const requiredAssetFields=['assetId','entityId','class','src','source','creator','license','captureType','plantStage','organ','illustrativeOrMeasured'];
 function validateAsset(asset,registry){
   const errors=[];
@@ -38,6 +64,11 @@ function validateAsset(asset,registry){
     if(!fs.existsSync(src)) errors.push(`source media missing: ${path.relative(root,src)}`);
     if(!fs.existsSync(mir)) errors.push(`mirror media missing: ${path.relative(root,mir)}`);
     if(fs.existsSync(src)&&fs.existsSync(mir)&&!fs.readFileSync(src).equals(fs.readFileSync(mir))) errors.push(`media mirror mismatch: ${rel}`);
+    if(fs.existsSync(src)){
+      const dimensions=imageDimensions(fs.readFileSync(src));
+      if(!dimensions) errors.push(`unsupported or unreadable raster dimensions: ${rel}`);
+      else if(Math.max(dimensions.width,dimensions.height)<2400) errors.push(`production raster below 2400px long-edge minimum: ${rel} (${dimensions.width}x${dimensions.height})`);
+    }
   }
   return errors;
 }
