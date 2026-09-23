@@ -13,7 +13,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: atlas-media-import-${{ github.ref }}
+  group: atlas-media-write-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
