@@ -10,9 +10,9 @@ const roots = [
 const fail = (message) => { throw new Error(message); };
 const read = (root, rel) => fs.readFileSync(path.join(root, rel), 'utf8');
 
-// This validator protects the schema-v3 educational system and the legacy V3 renderer
-// retained as an emergency fallback. The active hub is V4-first and is validated by
-// validate-plant-atlas-v4.mjs.
+// This validator protects the shared educational system contract and the legacy V3
+// renderer retained as an emergency fallback. The active hub/data contract is V4-first
+// and is validated in full by validate-plant-atlas-v4.mjs.
 const mirrored = ['index.html', 'atlas-v3.css', 'atlas-v3.js', 'atlas-3d.js', 'module.js', 'data/systems.json', 'deploy-version.txt'];
 for (const rel of mirrored) {
   const [a, b] = roots.map((root) => read(root, rel));
@@ -20,7 +20,7 @@ for (const rel of mirrored) {
 }
 
 const data = JSON.parse(read(roots[0], 'data/systems.json'));
-if (data.schemaVersion !== 3) fail(`Expected Atlas schemaVersion 3, got ${data.schemaVersion}`);
+if (![3, 4].includes(data.schemaVersion)) fail(`Expected Atlas schemaVersion 3 or 4, got ${data.schemaVersion}`);
 if (!Array.isArray(data.systems) || data.systems.length !== 16) fail(`Expected 16 Atlas systems, got ${data.systems?.length}`);
 
 const ids = new Set();
