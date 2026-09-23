@@ -1,14 +1,16 @@
-const state={catalog:null,sources:null,query:'',family:'all',scope:'all'};
+const state={catalog:null,sources:null,population:null,profiles:null,query:'',family:'all',scope:'all'};
 const $=(s)=>document.querySelector(s);
 const esc=(v='')=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 async function load(){
-  const [catalog,sources]=await Promise.all([
+  const [catalog,sources,population,profiles]=await Promise.all([
     fetch('/terpene-atlas/data/terpene-catalog-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('catalog '+r.status);return r.json()}),
-    fetch('/terpene-atlas/data/sources-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('sources '+r.status);return r.json()})
+    fetch('/terpene-atlas/data/sources-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('sources '+r.status);return r.json()}),
+    fetch('/terpene-atlas/data/population-summary-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('population '+r.status);return r.json()}),
+    fetch('/terpene-atlas/data/sample-profiles-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('profiles '+r.status);return r.json()})
   ]);
-  state.catalog=catalog;state.sources=sources;
+  state.catalog=catalog;state.sources=sources;state.population=population;state.profiles=profiles;
   $('[data-compound-count]').textContent=`${catalog.compounds.length} compounds`;
-  buildCompareOptions();renderWheel();renderSources();render();
+  buildCompareOptions();renderWheel();renderSources();renderPopulation();render();
 }
 function renderWheel(){
   const counts={};
@@ -35,6 +37,30 @@ function renderSources(){
   const coverage=$('[data-coverage]');
   const c=state.catalog.coverage||{};
   if(coverage)coverage.innerHTML=`<strong>Current curated coverage: ${state.catalog.compounds.length} compounds.</strong> ${esc(c.target||'Catalog expansion continues.')} <span>Completeness claim: ${c.completenessClaim===true?'yes':'no'}.</span>`;
+}
+function renderPopulation(){
+  const data=state.population;
+  if(!data)return;
+  const body=$('[data-population-body]');
+  const count=$('[data-population-count]');
+  const profileCount=$('[data-profile-count]');
+  if(count)count.textContent=data.analytes.length;
+  if(profileCount)profileCount.textContent=(state.profiles?.profiles||[]).length;
+  const byId=new Map(state.catalog.compounds.map(x=>[x.id,x]));
+  const sorted=[...data.analytes].sort((a,b)=>b.meanPpm-a.meanPpm);
+  if(body)body.innerHTML=sorted.map(row=>{
+    const compound=byId.get(row.compoundId);
+    const name=compound?.canonicalName||row.reportedName;
+    const max=`${row.maxQualifier||''}${Number(row.maxPpm).toLocaleString(undefined,{maximumFractionDigits:1})}`;
+    return `<tr><td><a href="#explorer" data-population-compound="${esc(row.compoundId)}">${esc(name)}</a><br><small>${esc(row.reportedName)}</small></td><td>${row.meanPpm.toLocaleString(undefined,{maximumFractionDigits:1})}</td><td>${row.minPpm.toLocaleString(undefined,{maximumFractionDigits:1})}</td><td>${max}</td><td>${row.sdPpm.toLocaleString(undefined,{maximumFractionDigits:1})}</td><td>${row.cvPercent.toLocaleString(undefined,{maximumFractionDigits:1})}</td></tr>`;
+  }).join('');
+  for(const link of document.querySelectorAll('[data-population-compound]'))link.addEventListener('click',()=>{
+    const compound=byId.get(link.dataset.populationCompound);
+    state.query=compound?.canonicalName||link.textContent||'';
+    $('[data-search]').value=state.query;
+    state.family='all';$('[data-class-filter]').value='all';
+    renderWheel();render();
+  });
 }
 function filtered(){
   const q=state.query.trim().toLowerCase();
