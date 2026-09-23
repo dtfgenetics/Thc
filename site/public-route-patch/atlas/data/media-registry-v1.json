@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-09-23",
+  "purpose": "Machine-readable visual asset registry for Plant Atlas structures and systems. Missing production assets are explicit; the UI must never fabricate or silently substitute scientific imagery.",
+  "assetClasses": [
+    "photoreal-reference",
+    "macro-reference",
+    "microscopy-reference",
+    "labeled-botanical-plate",
+    "process-diagram",
+    "diagnostic-comparison",
+    "animation-sequence",
+    "3d-representation"
+  ],
+  "records": [
+    {
+      "entityId": "leaf-module",
+      "required": [
+        "photoreal-reference",
+        "labeled-botanical-plate",
+        "macro-reference"
+      ],
+      "assets": [],
+      "status": "production-needed"
+    },
+    {
+      "entityId": "stomatal-surface",
+      "required": [
+        "microscopy-reference",
+        "labeled-botanical-plate",
+        "animation-sequence"
+      ],
+      "assets": [],
+      "status": "production-needed"
+    },
+    {
+      "entityId": "root-system",
+      "required": [
+        "photoreal-reference",
+        "labeled-botanical-plate",
+        "process-diagram"
+      ],
+      "assets": [],
+      "status": "production-needed"
+    },
+    {
+      "entityId": "root-tip",
+      "required": [
+        "macro-reference",
+        "microscopy-reference",
+        "labeled-botanical-plate"
+      ],
+      "assets": [],
+      "status": "production-needed"
+    },
+    {
+      "entityId": "stem-vascular",
+      "required": [
+        "photoreal-reference",
+        "labeled-botanical-plate",
+        "process-diagram"
+      ],
+      "assets": [],
+      "status": "production-needed"
+    },
+    {
+      "entityId": "xylem-pathway",
+      "required": [
+        "labeled-botanical-plate",
+        "process-diagram"
+      ],
+      "assets": [],
+      "status": "production-needed"
+    },
+    {
+      "entityId": "phloem-pathway",
+      "required": [
+        "labeled-botanical-plate",
+        "process-diagram"
+      ],
+      "assets": [],
+      "status": "production-needed"
+    },
+    {
+      "entityId": "flower-anatomy",
+      "required": [
+        "photoreal-reference",
+        "macro-reference",
+        "labeled-botanical-plate"
+      ],
+      "assets": [],
+      "status": "production-needed"
+    },
+    {
+      "entityId": "bract",
+      "required": [
+        "macro-reference",
+        "labeled-botanical-plate"
+      ],
+      "assets": [],
+      "status": "production-needed"
+    },
+    {
+      "entityId": "stigma",
+      "required": [
+        "macro-reference",
+        "microscopy-reference",
+        "labeled-botanical-plate"
+      ],
+      "assets": [],
+      "status": "production-needed"
+    },
+    {
+      "entityId": "trichomes-resin",
+      "required": [
+        "macro-reference",
+        "microscopy-reference",
+        "labeled-botanical-plate"
+      ],
+      "assets": [],
+      "status": "production-needed"
+    },
+    {
+      "entityId": "capitate-stalked-trichome",
+      "required": [
+        "microscopy-reference",
+        "labeled-botanical-plate",
+        "3d-representation"
+      ],
+      "assets": [],
+      "status": "production-needed"
+    },
+    {
+      "entityId": "trichome-gland-head",
+      "required": [
+        "microscopy-reference",
+        "labeled-botanical-plate",
+        "3d-representation"
+      ],
+      "assets": [],
+      "status": "production-needed"
+    },
+    {
+      "entityId": "reproductive-biology",
+      "required": [
+        "photoreal-reference",
+        "macro-reference",
+        "labeled-botanical-plate"
+      ],
+      "assets": [],
+      "status": "production-needed"
+    }
+  ],
+  "provenanceContract": {
+    "requiredFields": [
+      "assetId",
+      "entityId",
+      "class",
+      "src",
+      "source",
+      "creator",
+      "license",
+      "captureType",
+      "plantStage",
+      "organ",
+      "illustrativeOrMeasured"
+    ],
+    "optionalFields": [
+      "magnification",
+      "cultivar",
+      "date",
+      "notes",
+      "attribution"
+    ]
+  }
+}
