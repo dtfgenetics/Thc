@@ -19,13 +19,24 @@
     "thc daily crossword": "crossword",
     "cannabis crossword": "crossword",
     "thc-crossword": "crossword",
+    "event-night": "event-night",
+    "event night": "event-night",
+    "find-seed-man": "find-seed-man",
+    "find seed man": "find-seed-man",
+    "where's seed man": "find-seed-man",
+    "wheres seed man": "find-seed-man",
+    "where’s seed man": "find-seed-man",
     "ganjumanji": "ganjumanji",
     "ganjumanji: the lost grower's temple": "ganjumanji",
     "lost growers temple": "ganjumanji",
+    "grow-off": "grow-off",
+    "grow off": "grow-off",
     "grow-room-bingo": "grow-room-bingo",
     "grow room bingo / bongwater bingo": "grow-room-bingo",
     "grow-room-defense": "grow-room-defense",
     "grow room defense": "grow-room-defense",
+    "grow-shop-hustle": "grow-shop-hustle",
+    "grow shop hustle": "grow-shop-hustle",
     "grower-conversations": "grower-conversations",
     "grower conversations": "grower-conversations",
     "harvest-hustle": "harvest-hustle",
@@ -44,16 +55,28 @@
     "bagseed to legacy": "high-life",
     "high-lines": "high-lines",
     "high lines": "high-lines",
+    "keeper-or-compost": "keeper-or-compost",
+    "keeper or compost": "keeper-or-compost",
     "kush-kings": "kush-kings",
     "kush kings chess": "kush-kings",
     "thc chess": "kush-kings",
     "kush-kings-chess": "kush-kings",
+    "line-builder": "line-builder",
+    "line builder": "line-builder",
     "lost-in-the-terps": "lost-in-the-terps",
     "lost in the terps": "lost-in-the-terps",
     "mystery-strain": "mystery-strain",
     "mystery strain": "mystery-strain",
+    "pest-patrol": "pest-patrol",
+    "pest patrol": "pest-patrol",
+    "pest-siege": "pest-siege",
+    "pest siege": "pest-siege",
+    "pest-war": "pest-war",
+    "pest war": "pest-war",
     "pheno-draft": "pheno-draft",
     "pheno draft": "pheno-draft",
+    "pheno-hunter": "pheno-hunter",
+    "pheno hunter": "pheno-hunter",
     "phenoquest": "phenoquest",
     "phenoquest: the living seed vault": "phenoquest",
     "living seed vault": "phenoquest",
@@ -63,17 +86,25 @@
     "cannabis fleet battle": "protect-the-plants",
     "fleet battle": "protect-the-plants",
     "burn-buds": "protect-the-plants",
+    "reputation-economy": "reputation-economy",
+    "reputation economy": "reputation-economy",
     "root-cause": "root-cause",
     "root cause": "root-cause",
     "seed-ascent": "seed-ascent",
     "seed ascent": "seed-ascent",
     "seed man seed ascent": "seed-ascent",
+    "seed-bank-builder": "seed-bank-builder",
+    "seed bank builder": "seed-bank-builder",
     "seed-man-platformer": "seed-man-platformer",
     "seed man: grow. fight. restore.": "seed-man-platformer",
     "seed man": "seed-man-platformer",
     "seed man run": "seed-man-platformer",
     "seedman run": "seed-man-platformer",
     "seed-man": "seed-man-platformer",
+    "selection-pressure": "selection-pressure",
+    "selection pressure": "selection-pressure",
+    "solo-cup-showdown": "solo-cup-showdown",
+    "solo cup showdown": "solo-cup-showdown",
     "spin-the-strain": "spin-the-strain",
     "spin the strain": "spin-the-strain",
     "stoner-duck-race": "stoner-duck-race",
@@ -89,12 +120,28 @@
     "terpocalypse": "terpocalypse",
     "terpocalypse: grow room from hell": "terpocalypse",
     "grow room from hell": "terpocalypse",
+    "doom thc parody": "terpocalypse",
+    "doom-style parody": "terpocalypse",
+    "stoner doom": "terpocalypse",
+    "doom parody": "terpocalypse",
     "thc-rpg": "thc-rpg",
     "thc rpg — the first seed": "thc-rpg",
     "thc rpg": "thc-rpg",
     "the first seed": "thc-rpg",
     "thc-u-know": "thc-u-know",
     "thc u know": "thc-u-know",
+    "the-cure-room": "the-cure-room",
+    "the cure room": "the-cure-room",
+    "cure room": "the-cure-room",
+    "the-grow-room": "the-grow-room",
+    "the grow room": "the-grow-room",
+    "grow room game": "the-grow-room",
+    "the-limiting-factor": "the-limiting-factor",
+    "the limiting factor": "the-limiting-factor",
+    "limiting factor game": "the-limiting-factor",
+    "the-perfect-save": "the-perfect-save",
+    "the perfect save": "the-perfect-save",
+    "perfect save game": "the-perfect-save",
     "trichome-trials": "trichome-trials",
     "trichome trials": "trichome-trials",
     "weedopolis": "weedopolis",
@@ -153,7 +200,15 @@
       },
       "notes": [
         "Self-hosted 2–10 player server-authoritative party game with simultaneous hidden voting, Double Hit scoring, lobby locking/settings, room chat, reconnect, rematches, host transfer, keyboard controls, visual-state feedback, and private answer data. Dedicated CI now uses Ubuntu 24.04/current GitHub actions. The central public-suite gate verifies both 10-player lobby generations, keyboard/visual contracts, API v2→durable-v3 routing, PHP syntax, and private-answer exclusion. Exact post-deploy live-route verification remains required."
-      ]
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1Ok1MHU0GIoG0cHseR4kQ1LI2fUTxPdq_",
+        "folderTitle": "Bud or Bluff",
+        "path": "04 Games/Bud or Bluff",
+        "visualRootId": "1cXjrWU62au9DKaG29rKYAgTysLSbOiih",
+        "verifiedAt": "2026-09-22"
+      }
     },
     {
       "id": "crossword",
@@ -195,6 +250,59 @@
       },
       "notes": [
         "Production Vite base is /games/crossword/. The tested puzzle-data contract remains /puzzles/... and is published at the site root by the DTFSeeds suite deployer."
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1A7qynwW1yK4RbeWw0r3M8tIsR7izgpwB",
+        "folderTitle": "THC Crossword",
+        "path": "04 Games/THC Crossword",
+        "visualRootId": "1Gx6bIBkO9eqP0Rc5FwGPwjpsU-TK-VnW",
+        "verifiedAt": "2026-09-22"
+      }
+    },
+    {
+      "id": "event-night",
+      "title": "Event Night",
+      "aliases": [
+        "event-night",
+        "event night"
+      ],
+      "portfolioStage": "concept-only",
+      "publicRoute": null,
+      "production": null,
+      "developmentLocations": [],
+      "drive": {
+        "status": "not-created",
+        "path": null,
+        "verifiedAt": "2026-09-22"
+      },
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "notes": [
+        "Concept retained in the durable portfolio scope. Organization-wide code search on 2026-09-22 found no canonical implementation for this title."
+      ]
+    },
+    {
+      "id": "find-seed-man",
+      "title": "Find / Where’s Seed Man",
+      "aliases": [
+        "find-seed-man",
+        "find seed man",
+        "where's seed man",
+        "wheres seed man",
+        "where’s seed man"
+      ],
+      "portfolioStage": "concept-only",
+      "publicRoute": null,
+      "production": null,
+      "developmentLocations": [],
+      "drive": {
+        "status": "not-created",
+        "path": null,
+        "verifiedAt": "2026-09-22"
+      },
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "notes": [
+        "Concept retained in the durable portfolio scope. Organization-wide code search on 2026-09-22 found no canonical implementation for this title."
       ]
     },
     {
@@ -233,6 +341,36 @@
       },
       "notes": [
         "Canonical code remains in the standalone Ganjumanji repository. Revision b1cbf9b9627586b7277813b6a7c6f85a98830d58 is the green 0.4.1 five-region production candidate with 10 relic seeds, save v5, separate autosave/safe-checkpoint recovery, deterministic campaign/content/input/storage/solvability tests, shipped UI-contract validation, TypeScript/Vite build, release validation, current GitHub Actions CI, and production artifact generation. DTFSeeds packaging must rebuild this exact pinned revision and run validate:ui before promotion. Exact post-deploy live-route verification remains required before production-ready status."
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "17xhnXnM36kEPLln6O8rH2lT0zx4-BFQ-",
+        "folderTitle": "Ganjumanji",
+        "path": "04 Games/Ganjumanji",
+        "visualRootId": "1RLSBk687oB4up-_AZ_LhalaeoyTLGEJA",
+        "verifiedAt": "2026-09-22"
+      }
+    },
+    {
+      "id": "grow-off",
+      "title": "Grow-Off",
+      "aliases": [
+        "grow-off",
+        "grow-off",
+        "grow off"
+      ],
+      "portfolioStage": "concept-only",
+      "publicRoute": null,
+      "production": null,
+      "developmentLocations": [],
+      "drive": {
+        "status": "not-created",
+        "path": null,
+        "verifiedAt": "2026-09-22"
+      },
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "notes": [
+        "Concept retained in the durable portfolio scope. Organization-wide code search on 2026-09-22 found no canonical implementation for this title."
       ]
     },
     {
@@ -269,7 +407,15 @@
       },
       "notes": [
         "Self-hosted three-mode community bingo game with deterministic cards, local autosave, guarded clear/reset, resilient challenge sharing, roving 5×5 keyboard navigation, touch feedback, reduced motion, and forced-colors support. Its existing deterministic browser-runtime test is now included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
-      ]
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1AMZ4SiWlk7RiVBVeMXkkBH7Fo5FrN_aO",
+        "folderTitle": "Grow Room Bingo",
+        "path": "04 Games/Grow Room Bingo",
+        "visualRootId": "1bMpb_n1b79rwHuH59dW9lcErQlg6M4bl",
+        "verifiedAt": "2026-09-22"
+      }
     },
     {
       "id": "grow-room-defense",
@@ -305,6 +451,35 @@
       },
       "notes": [
         "Self-hosted deterministic IPM strategy game. Browser runtime now imports the canonical tested engine instead of duplicating rules; public-runtime regression covers mobile tool return, keyboard shortcuts, semantic health meters, forced colors, reduced motion, clipboard fallback, and visual states. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1UVXS-bnnye854aCrBPHjVVPWKzyoLgzj",
+        "folderTitle": "Grow Room Defense",
+        "path": "04 Games/Grow Room Defense",
+        "visualRootId": "15zk_HWNGnCpl_AQHw9jx5Ym3r8GAUw09",
+        "verifiedAt": "2026-09-22"
+      }
+    },
+    {
+      "id": "grow-shop-hustle",
+      "title": "Grow Shop Hustle",
+      "aliases": [
+        "grow-shop-hustle",
+        "grow shop hustle"
+      ],
+      "portfolioStage": "concept-only",
+      "publicRoute": null,
+      "production": null,
+      "developmentLocations": [],
+      "drive": {
+        "status": "not-created",
+        "path": null,
+        "verifiedAt": "2026-09-22"
+      },
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "notes": [
+        "Concept retained in the durable portfolio scope. Organization-wide code search on 2026-09-22 found no canonical implementation for this title."
       ]
     },
     {
@@ -352,7 +527,15 @@
       },
       "notes": [
         "Self-hosted 96-card discussion deck with eight topics, three depth bands, local progress persistence, filtered deck progress, keyboard draw/copy/shuffle shortcuts, resilient clipboard fallback, responsive containment, 44px controls, reduced motion, and forced-colors support. Dedicated CI is modernized to current GitHub Actions and the full browser-runtime regression now runs in the central public-suite gate; exact post-deploy live-route verification remains required."
-      ]
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1HCQp4R9xjl9HQL6UvvwDBzASyTw2ees_",
+        "folderTitle": "Grower Conversations",
+        "path": "04 Games/Grower Conversations",
+        "visualRootId": "1gL6wg0Wyh0_F0D4sGehKIpyGC0SOwFMd",
+        "verifiedAt": "2026-09-22"
+      }
     },
     {
       "id": "harvest-hustle",
@@ -388,7 +571,15 @@
       },
       "notes": [
         "Self-hosted deterministic 75-second arcade shift game. Browser runtime now imports the canonical tested engine; regression coverage protects pause/resume timing, mobile decision controls, keyboard shortcuts, challenge sharing fallbacks, reduced motion, and forced-colors states. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
-      ]
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1xXOiBtGiUW0lFOVEBmeELDD6qZd_Qrui",
+        "folderTitle": "Harvest Hustle",
+        "path": "04 Games/Harvest Hustle",
+        "visualRootId": "1Z8Kqa1BbGYu7YqIloYQHYOAIGD-ZuHeK",
+        "verifiedAt": "2026-09-22"
+      }
     },
     {
       "id": "high-iq",
@@ -438,7 +629,15 @@
       },
       "notes": [
         "Self-hosted manifest-driven High IQ runtime. Dataset v2.4 declares 200 Approved/PASS questions and 50 registered sources. The canonical aggregate validator now runs in both dedicated High IQ CI and the central public-suite build, covering data validation, runtime-shell synchronization, public-runtime validation, question-bank tooling, game-core tests, and the player-facing runtime smoke test. Exact post-deploy live-route verification remains required."
-      ]
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1WClMjYObsNUyojKoOb_nviBy0AXnATOq",
+        "folderTitle": "High IQ",
+        "path": "04 Games/High IQ",
+        "visualRootId": "1lAF3xNtpm7p_gbI-2b06lXuz9f2Omjqg",
+        "verifiedAt": "2026-09-22"
+      }
     },
     {
       "id": "high-land",
@@ -474,7 +673,15 @@
         "priority": "P1",
         "wave": 2
       },
-      "notes": []
+      "notes": [],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1kWOX1UYlbEraSFL5UyCOdyzXqMcqcFpZ",
+        "folderTitle": "High Land",
+        "path": "04 Games/High Land",
+        "visualRootId": "1EeySYtL4duj-oYhKyfXbi1vEh9fN5URf",
+        "verifiedAt": "2026-09-22"
+      }
     },
     {
       "id": "high-life",
@@ -512,7 +719,15 @@
       },
       "notes": [
         "Self-hosted seeded 18-turn career strategy game across Underground, Medical, and Legal eras with a tested canonical rules engine, exact-resume autosave, deterministic event stream, era transitions, Legacy scoring, mobile layout safeguards, 44px controls, reduced motion, forced colors, and canonical/public data synchronization. Included in the central public-suite validation gate. Human balance playtesting and exact post-deploy live-route verification remain open."
-      ]
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1O75rPZg2AzA0kE2J1gFnmptKRdm-IZJ1",
+        "folderTitle": "High Life",
+        "path": "04 Games/High Life",
+        "visualRootId": "1zLPjubw5rezTeafcTwvL1c5Tr3dKFwnh",
+        "verifiedAt": "2026-09-22"
+      }
     },
     {
       "id": "high-lines",
@@ -548,6 +763,35 @@
       },
       "notes": [
         "Self-hosted deterministic coloring/hidden-object game with four original SVG scenes, local autosave, zoom controls, keyboard/touch play, and shareable scene codes. Browser runtime now imports the canonical tested coloring engine while persistence, SVG sanitization/retry, zoom, and reset confirmation remain browser-layer concerns. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "11wiiyc4qaLtbPU9nw7zYEoIY1IZL5h3o",
+        "folderTitle": "High Lines",
+        "path": "04 Games/High Lines",
+        "visualRootId": "1DpbVETGwk2DCnU5NqhiktjYlK2R234Sy",
+        "verifiedAt": "2026-09-22"
+      }
+    },
+    {
+      "id": "keeper-or-compost",
+      "title": "Keeper or Compost",
+      "aliases": [
+        "keeper-or-compost",
+        "keeper or compost"
+      ],
+      "portfolioStage": "concept-only",
+      "publicRoute": null,
+      "production": null,
+      "developmentLocations": [],
+      "drive": {
+        "status": "not-created",
+        "path": null,
+        "verifiedAt": "2026-09-22"
+      },
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "notes": [
+        "Concept retained in the durable portfolio scope. Organization-wide code search on 2026-09-22 found no canonical implementation for this title."
       ]
     },
     {
@@ -587,6 +831,35 @@
       },
       "notes": [
         "Canonical full-stack source is dtfgenetics/Thc-chess-git. Preserve chess.js legal-move authority, Express/Socket.IO rooms, PostgreSQL sessions, spectators, chat, archives, resign/draw/abandon/rematch behavior, and the chess.dtfseeds.com / chess-api.dtfseeds.com targets. The Next.js client, Hostinger fallback, CI and deployment checks now use the canonical V6 six-link DTFSeeds header. A post-deploy live checker verifies frontend identity, API /health, Socket.IO transport, and the DTFSeeds proxy. Keep this game nonpublic in data/public-navigation.json until the live checker plus two-browser/mobile QA pass."
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1tWjfjdhrSl03mPrt2mrTNZ3HjhDP9BSK",
+        "folderTitle": "THC Chess",
+        "path": "04 Games/THC Chess",
+        "visualRootId": "1fKcjYK2FMommcTaGr5KuSUDQtBNAyLCN",
+        "verifiedAt": "2026-09-22"
+      }
+    },
+    {
+      "id": "line-builder",
+      "title": "Line Builder",
+      "aliases": [
+        "line-builder",
+        "line builder"
+      ],
+      "portfolioStage": "concept-only",
+      "publicRoute": null,
+      "production": null,
+      "developmentLocations": [],
+      "drive": {
+        "status": "not-created",
+        "path": null,
+        "verifiedAt": "2026-09-22"
+      },
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "notes": [
+        "Concept retained in the durable portfolio scope. Organization-wide code search on 2026-09-22 found no canonical implementation for this title."
       ]
     },
     {
@@ -623,7 +896,15 @@
       },
       "notes": [
         "Self-hosted three-mission word-search game with eight hidden words per mission, guarded mission/reset actions, three-use hints, isolated delayed feedback, roving keyboard grid navigation, scrollable mobile grids, reduced motion, and forced-colors support. Its existing deterministic browser-runtime test is now included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
-      ]
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1jekptq_dgt8x9D-_kDFW2jxu844RpBUA",
+        "folderTitle": "Lost in the Terps",
+        "path": "04 Games/Lost in the Terps",
+        "visualRootId": "1TaOTSsImKD8rTzkdZi-txZaj7uM1wW_4",
+        "verifiedAt": "2026-09-22"
+      }
     },
     {
       "id": "mystery-strain",
@@ -659,6 +940,77 @@
       },
       "notes": [
         "Self-hosted deterministic deduction game with 20 fictional profiles, 12 questions, optional Wild Card modifiers, Best Split UI analysis, and explicit two-step guess confirmation. Browser runtime now imports the canonical tested engine while Best Split remains a presentation helper. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1Q6XqJB86sVIcY5KqBTYqnDAPmdwjDEsY",
+        "folderTitle": "Mystery Strain",
+        "path": "04 Games/Mystery Strain",
+        "visualRootId": "1cxXCg8pa3UAo1i7eQrtKlSq5mNzrTzQ6",
+        "verifiedAt": "2026-09-22"
+      }
+    },
+    {
+      "id": "pest-patrol",
+      "title": "Pest Patrol",
+      "aliases": [
+        "pest-patrol",
+        "pest patrol"
+      ],
+      "portfolioStage": "concept-only",
+      "publicRoute": null,
+      "production": null,
+      "developmentLocations": [],
+      "drive": {
+        "status": "not-created",
+        "path": null,
+        "verifiedAt": "2026-09-22"
+      },
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "notes": [
+        "Concept retained in the durable portfolio scope. Organization-wide code search on 2026-09-22 found no canonical implementation for this title."
+      ]
+    },
+    {
+      "id": "pest-siege",
+      "title": "Pest Siege",
+      "aliases": [
+        "pest-siege",
+        "pest siege"
+      ],
+      "portfolioStage": "concept-only",
+      "publicRoute": null,
+      "production": null,
+      "developmentLocations": [],
+      "drive": {
+        "status": "not-created",
+        "path": null,
+        "verifiedAt": "2026-09-22"
+      },
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "notes": [
+        "Concept retained in the durable portfolio scope. Organization-wide code search on 2026-09-22 found no canonical implementation for this title."
+      ]
+    },
+    {
+      "id": "pest-war",
+      "title": "Pest War",
+      "aliases": [
+        "pest-war",
+        "pest war"
+      ],
+      "portfolioStage": "concept-only",
+      "publicRoute": null,
+      "production": null,
+      "developmentLocations": [],
+      "drive": {
+        "status": "not-created",
+        "path": null,
+        "verifiedAt": "2026-09-22"
+      },
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "notes": [
+        "Concept retained in the durable portfolio scope. Organization-wide code search on 2026-09-22 found no canonical implementation for this title."
       ]
     },
     {
@@ -695,6 +1047,35 @@
       },
       "notes": [
         "Self-hosted deterministic six-round fictional genetics card draft. Browser runtime now imports the canonical tested engine; regression coverage protects restart confirmation, share fallback, keyboard controls, mobile decision-rail reset, forced colors, and reduced motion. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "10JxjOnq_n48f98FL1NZIZ56m92jpKNVv",
+        "folderTitle": "Pheno Draft",
+        "path": "04 Games/Pheno Draft",
+        "visualRootId": "1PwRfD2D1BUsAwBBIP5NyjMlN6QsBy9GN",
+        "verifiedAt": "2026-09-22"
+      }
+    },
+    {
+      "id": "pheno-hunter",
+      "title": "Pheno Hunter",
+      "aliases": [
+        "pheno-hunter",
+        "pheno hunter"
+      ],
+      "portfolioStage": "concept-only",
+      "publicRoute": null,
+      "production": null,
+      "developmentLocations": [],
+      "drive": {
+        "status": "not-created",
+        "path": null,
+        "verifiedAt": "2026-09-22"
+      },
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "notes": [
+        "Concept retained in the durable portfolio scope. Organization-wide code search on 2026-09-22 found no canonical implementation for this title."
       ]
     },
     {
@@ -746,7 +1127,15 @@
       },
       "notes": [
         "DTFSeeds route is generated from the verified self-contained build in dtfgenetics/Catching-phenos. Current vertical slice includes starter choice, maps, movement, encounters, combat, inventory, quests, Vault Garden, Keeper tracking, breeding previews, playable Lineage Lab crosses and local save data."
-      ]
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1vHn59ch_VPDaWjgP1MN0gTZrDq47HHBx",
+        "folderTitle": "Catching Phenos",
+        "path": "04 Games/Catching Phenos",
+        "visualRootId": "1iaj8twrfNOas1gKr1BAUw6-Te6m_EKP-",
+        "verifiedAt": "2026-09-22"
+      }
     },
     {
       "id": "protect-the-plants",
@@ -811,6 +1200,35 @@
           ],
           "notes": "Do not develop as production Burn Buds."
         }
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "11yWoRkU0HTdavEroYkVluVAOFCWldtuu",
+        "folderTitle": "Burn Buds",
+        "path": "04 Games/Burn Buds",
+        "visualRootId": "18yajn4zbPJgTW32IR8C1X6d4dyUcCd4L",
+        "verifiedAt": "2026-09-22"
+      }
+    },
+    {
+      "id": "reputation-economy",
+      "title": "Reputation Economy",
+      "aliases": [
+        "reputation-economy",
+        "reputation economy"
+      ],
+      "portfolioStage": "concept-only",
+      "publicRoute": null,
+      "production": null,
+      "developmentLocations": [],
+      "drive": {
+        "status": "not-created",
+        "path": null,
+        "verifiedAt": "2026-09-22"
+      },
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "notes": [
+        "Concept retained in the durable portfolio scope. Organization-wide code search on 2026-09-22 found no canonical implementation for this title."
       ]
     },
     {
@@ -841,7 +1259,23 @@
       "notes": [
         "Deployment metadata and runtime files exist, but Root Cause is intentionally not in data/game-source-map.json or public-navigation.json as of 2026-09-22.",
         "Treat it as a deployment-only/orphan location record until an explicit portfolio promotion decision is made."
-      ]
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1FbybBbaovXJVbZ2iowtbDcnn9qkQ_EPV",
+        "folderTitle": "Root Cause",
+        "path": "04 Games/Root Cause",
+        "controlFolderId": "1srWKC9VjqJwUw7I3asjNIMuCLaznzMh0",
+        "digitalFolderId": "1SYR26ZmzlDNh6RXeU1VDc60e1aDCstyz",
+        "playtestingFolderId": "1jZxuhyUI5JfpqOdMOJ3U6Gooo8rgdrLy",
+        "approvedReleaseFolderId": "1o-_FPDdcoOePlupkRzFeEGxgnxxRh359",
+        "visualRootId": "1X86-DlN_GhvPqRT4WUI8Hf3W6pQvlKWu",
+        "sourceMastersFolderId": "1Gq0ubT8nuzmDojcNhJAdgQ9KN60v5gfS",
+        "approvedMastersFolderId": "1i9rJ2GKNxZnbToClJkoCadXvi97Lq4JD",
+        "audioFolderId": "1CtvzqQoMjQOXywXAV50JmI2bfeW-0Jdu",
+        "runtimeExportsFolderId": "1aPEWyn4devE8McrMCPv8xmu-uLw0QJyI",
+        "verifiedAt": "2026-09-22"
+      }
     },
     {
       "id": "seed-ascent",
@@ -873,6 +1307,36 @@
       "assets": null,
       "notes": [
         "Do not route Seed Ascent requests to the production Seed Man source unless the user explicitly asks to reconcile or cut over the two runtimes."
+      ],
+      "drive": {
+        "status": "related-project",
+        "relatedGameId": "seed-man-platformer",
+        "gameFolderId": "1NrqkjVWCjw9Cf_6kiHyupYcKfA7uT8vd",
+        "folderTitle": "Seed Man",
+        "path": "04 Games/Seed Man",
+        "verifiedAt": "2026-09-22",
+        "note": "No duplicate Drive master created; Seed Ascent remains related to the Seed Man project until an explicit product split."
+      }
+    },
+    {
+      "id": "seed-bank-builder",
+      "title": "Seed Bank Builder",
+      "aliases": [
+        "seed-bank-builder",
+        "seed bank builder"
+      ],
+      "portfolioStage": "concept-only",
+      "publicRoute": null,
+      "production": null,
+      "developmentLocations": [],
+      "drive": {
+        "status": "not-created",
+        "path": null,
+        "verifiedAt": "2026-09-22"
+      },
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "notes": [
+        "Concept retained in the durable portfolio scope. Organization-wide code search on 2026-09-22 found no canonical implementation for this title."
       ]
     },
     {
@@ -913,6 +1377,56 @@
       },
       "notes": [
         "Canonical Seed Man v20 release on /games/seed-man-platformer/: 20 levels across Greenhouse Valley, Forest Ruins, Desert Canyon, Frozen Peaks and Eco City; six boss encounters; four-phase Blight King finale; 30-second phenotype combat; browser world mechanics with moving/collapsing/conveyor/bounce/environment systems; synchronized dynamic Three.js platforms; and the approved 2026-09-08 green armored plant-hero visual system. Retired 11/15-level campaigns, Genome Hydra, Genetic Frontier, seed-man-production-v1, seed-man-locked-v1, legacy sprite ownership and procedural character fallback must not be republished."
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1NrqkjVWCjw9Cf_6kiHyupYcKfA7uT8vd",
+        "folderTitle": "Seed Man",
+        "path": "04 Games/Seed Man",
+        "visualRootId": "1KvhKlWp5_PdlpM7CbBSUP1YpjY4m0DDj",
+        "verifiedAt": "2026-09-22"
+      }
+    },
+    {
+      "id": "selection-pressure",
+      "title": "Selection Pressure",
+      "aliases": [
+        "selection-pressure",
+        "selection pressure"
+      ],
+      "portfolioStage": "concept-only",
+      "publicRoute": null,
+      "production": null,
+      "developmentLocations": [],
+      "drive": {
+        "status": "not-created",
+        "path": null,
+        "verifiedAt": "2026-09-22"
+      },
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "notes": [
+        "Concept retained in the durable portfolio scope. Organization-wide code search on 2026-09-22 found no canonical implementation for this title."
+      ]
+    },
+    {
+      "id": "solo-cup-showdown",
+      "title": "Solo Cup Showdown",
+      "aliases": [
+        "solo-cup-showdown",
+        "solo cup showdown"
+      ],
+      "portfolioStage": "concept-only",
+      "publicRoute": null,
+      "production": null,
+      "developmentLocations": [],
+      "drive": {
+        "status": "not-created",
+        "path": null,
+        "verifiedAt": "2026-09-22"
+      },
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "notes": [
+        "Concept retained in the durable portfolio scope. Organization-wide code search on 2026-09-22 found no canonical implementation for this title."
       ]
     },
     {
@@ -949,7 +1463,15 @@
       },
       "notes": [
         "Self-hosted deterministic three-mode wheel game with 18-entry no-repeat cycles per mode, shareable codes, animation-isolated result reveal, hidden-page completion, keyboard spin shortcut, clipboard fallback, reduced motion, and forced-colors support. Browser runtime now imports the canonical tested wheel engine. Dedicated title CI and the central public-suite validation gate both enforce the runtime contract. browserTested remains false until actual browser QA is completed; exact post-deploy live-route verification is still required."
-      ]
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1LQJpzxfJtPj5GlENec-GvNwGpyAGZBp2",
+        "folderTitle": "Spin the Strain",
+        "path": "04 Games/Spin the Strain",
+        "visualRootId": "1qtF2j00NZh6TkunrrvHIlybDUZxMR4e3",
+        "verifiedAt": "2026-09-22"
+      }
     },
     {
       "id": "stoner-duck-race",
@@ -981,7 +1503,23 @@
       "assets": null,
       "notes": [
         "Resolve an explicit production owner/cutover before claiming a live route."
-      ]
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1k6rwU1PfWB4FVH9OdUPNqwxzgnmqLytf",
+        "folderTitle": "Stoner Duck Race",
+        "path": "04 Games/Stoner Duck Race",
+        "controlFolderId": "1fraz08Wxxu3qdoZTvoBZi5vlerP6LJDj",
+        "digitalFolderId": "1AQQMyusLdkL8DwVKA4-9Geyaq9OvseJT",
+        "playtestingFolderId": "1gW-y7en62PSSq6qJ1rv_XCjQ0JxgvdEs",
+        "approvedReleaseFolderId": "1OR5Y-7Dg9sb0HrXK0baryRL3PZxF2wn9",
+        "visualRootId": "1yE4GNG6P9xmSk-IoKjycHzF47R2Y2GKQ",
+        "sourceMastersFolderId": "1sAMSwMSMqKDCX_kYOal6QMReuU97xA6t",
+        "approvedMastersFolderId": "1XQ1g8kQRfTqlQypo9p3sf6uR3vIWkZrh",
+        "audioFolderId": "1lr4wdy6kQYOYprzPri8kvY2GqiwqNAfj",
+        "runtimeExportsFolderId": "1tggP9eEV8eNe7Iv6lVHKhaooXLAN4DPy",
+        "verifiedAt": "2026-09-22"
+      }
     },
     {
       "id": "strain-match",
@@ -1017,7 +1555,15 @@
       },
       "notes": [
         "Self-hosted four-deck educational memory game with eight pairs per deck. Existing deterministic browser-runtime coverage protects visible-play timer accounting, hidden-page pause/resume, stale mismatch isolation, guarded restart, local best scores, streak/HUD states, touch feedback, reduced motion, and forced colors. The runtime test is now included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
-      ]
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "17P0KYTYa7g-rXPN1VxsyZmBpRZR63gEX",
+        "folderTitle": "Strain Match",
+        "path": "04 Games/Strain Match",
+        "visualRootId": "1Rtq5fSf--Pu9t_y172D_rUFYLnBNlxSI",
+        "verifiedAt": "2026-09-22"
+      }
     },
     {
       "id": "strain-showdown",
@@ -1065,7 +1611,15 @@
       },
       "notes": [
         "Self-hosted 96-card browser battle game with a tested deterministic three-lane engine, CPU rival, Base/Select/Elite evolution, eight family passives, Focus economy, Garden health, synchronized canonical roster data, result tracking, mobile three-lane visibility, 44px attack controls, and deterministic 32-seed balance simulation. Player-facing prototype/development wording has been removed. Final per-card effect activation, balance approval, human rules playtesting, final art, print proof, and exact post-deploy live-route verification remain open."
-      ]
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1jJ1JtWGdNCJ--xfHJbclv7QyaIVr30Fh",
+        "folderTitle": "Strain Showdown",
+        "path": "04 Games/Strain Showdown",
+        "visualRootId": "1yPCJzEveV5hQ03OUMRheAUKWKB1L_x3L",
+        "verifiedAt": "2026-09-22"
+      }
     },
     {
       "id": "terpocalypse",
@@ -1073,7 +1627,11 @@
       "aliases": [
         "terpocalypse",
         "terpocalypse: grow room from hell",
-        "grow room from hell"
+        "grow room from hell",
+        "doom thc parody",
+        "doom-style parody",
+        "stoner doom",
+        "doom parody"
       ],
       "publicRoute": "/games/terpocalypse/",
       "production": {
@@ -1102,7 +1660,8 @@
       },
       "notes": [
         "prototypes/web-fps is the stable playable source currently packaged by DTFSeeds. prototypes/web-fps-v2 remains experimental until it reaches feature parity.",
-        "Self-hosted Level 01 action game with desktop/touch controls. Browser zoom is enabled, top/touch controls retain 44px minimum targets, forced-colors and reduced-motion states are protected, and visibility pause clears held keyboard input. Dedicated CI now uses current GitHub Actions/Ubuntu 24.04 and the central public-suite gate runs integration plus public-runtime verification. Exact post-deploy live-route verification remains required."
+        "Self-hosted Level 01 action game with desktop/touch controls. Browser zoom is enabled, top/touch controls retain 44px minimum targets, forced-colors and reduced-motion states are protected, and visibility pause clears held keyboard input. Dedicated CI now uses current GitHub Actions/Ubuntu 24.04 and the central public-suite gate runs integration plus public-runtime verification. Exact post-deploy live-route verification remains required.",
+        "The prior Doom-style parody direction resolves to Terpocalypse's original retro-FPS grow-room apocalypse; do not treat it as a separate DOOM clone or copy protected DOOM art/assets."
       ],
       "supportLocations": [
         {
@@ -1113,7 +1672,15 @@
             "site/public-route-patch/games/terpocalypse"
           ]
         }
-      ]
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1EODsF4DqxO5G_fd3UajGpTOOe1sVo_fR",
+        "folderTitle": "Terpocalapse",
+        "path": "04 Games/Terpocalapse",
+        "visualRootId": "1fUqEM6zfDz7BOppp6U4vy7GiDKV9QVQT",
+        "verifiedAt": "2026-09-22"
+      }
     },
     {
       "id": "thc-rpg",
@@ -1164,7 +1731,15 @@
       },
       "notes": [
         "Canonical code remains in dtfgenetics/Thc-rpg. Revision de6c26d9073d9154bbcade43b64768cf6a7ba2a0 is the green 2.1.0 release-candidate source after production launch-screen, compact-control and forced-color polish. The six-chapter campaign retains deterministic phenotype variation, Keeper selection/cutting progression, Zestberry trial, save v6 compatibility, guarded gameplay shortcuts, deterministic shipped-UI validation, visitor-only build, and release validation. Central packaging and exact post-deploy live-route verification remain required before production-ready promotion."
-      ]
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1_gErE4IGr8ehzOqw8bNOBB73sLN4oVbx",
+        "folderTitle": "THC RPG",
+        "path": "04 Games/THC RPG",
+        "visualRootId": "1ar4lpZ_x9MmmkVJ1efmI9mAprBA9lTIv",
+        "verifiedAt": "2026-09-22"
+      }
     },
     {
       "id": "thc-u-know",
@@ -1202,6 +1777,102 @@
       },
       "notes": [
         "Canonical full-stack multiplayer source is dtfgenetics/thc-u-know-card-game-. Persistent Node/Socket.IO remains required; static-only deployment is forbidden. The owner build now ships the canonical V6 six-link DTFSeeds header, CI validates the V6 production shell plus hidden-hand/lobby/runtime contracts, and a scheduled/manual live checker verifies the public game route, game-scoped health endpoint, and Socket.IO handshake. Keep this game nonpublic in data/public-navigation.json until the live checker and manual two-browser multiplayer gate pass."
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1OcA8WC700CE_IIUim6cYsExDLsFbsAXA",
+        "folderTitle": "THC U Know",
+        "path": "04 Games/THC U Know",
+        "visualRootId": "1ERL_cXD_Ssnv1pGXuWC-UeoM6z1t-khg",
+        "verifiedAt": "2026-09-22"
+      }
+    },
+    {
+      "id": "the-cure-room",
+      "title": "The Cure Room",
+      "aliases": [
+        "the-cure-room",
+        "the cure room",
+        "cure room"
+      ],
+      "portfolioStage": "concept-only",
+      "publicRoute": null,
+      "production": null,
+      "developmentLocations": [],
+      "drive": {
+        "status": "not-created",
+        "path": null,
+        "verifiedAt": "2026-09-22"
+      },
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "notes": [
+        "Concept retained in the durable portfolio scope. Organization-wide code search on 2026-09-22 found no canonical implementation for this title."
+      ]
+    },
+    {
+      "id": "the-grow-room",
+      "title": "The Grow Room",
+      "aliases": [
+        "the-grow-room",
+        "the grow room",
+        "grow room game"
+      ],
+      "portfolioStage": "concept-only",
+      "publicRoute": null,
+      "production": null,
+      "developmentLocations": [],
+      "drive": {
+        "status": "not-created",
+        "path": null,
+        "verifiedAt": "2026-09-22"
+      },
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "notes": [
+        "Concept retained in the durable portfolio scope. Organization-wide code search on 2026-09-22 found no canonical implementation for this title."
+      ]
+    },
+    {
+      "id": "the-limiting-factor",
+      "title": "The Limiting Factor",
+      "aliases": [
+        "the-limiting-factor",
+        "the limiting factor",
+        "limiting factor game"
+      ],
+      "portfolioStage": "concept-only",
+      "publicRoute": null,
+      "production": null,
+      "developmentLocations": [],
+      "drive": {
+        "status": "not-created",
+        "path": null,
+        "verifiedAt": "2026-09-22"
+      },
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "notes": [
+        "Concept retained in the durable portfolio scope. Organization-wide code search on 2026-09-22 found no canonical implementation for this title."
+      ]
+    },
+    {
+      "id": "the-perfect-save",
+      "title": "The Perfect Save",
+      "aliases": [
+        "the-perfect-save",
+        "the perfect save",
+        "perfect save game"
+      ],
+      "portfolioStage": "concept-only",
+      "publicRoute": null,
+      "production": null,
+      "developmentLocations": [],
+      "drive": {
+        "status": "not-created",
+        "path": null,
+        "verifiedAt": "2026-09-22"
+      },
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "notes": [
+        "Concept retained in the durable portfolio scope. Organization-wide code search on 2026-09-22 found no canonical implementation for this title."
       ]
     },
     {
@@ -1238,7 +1909,15 @@
       },
       "notes": [
         "Self-hosted deterministic five-round judging game with a seven-category scorecard and UI-layer confidence-call bonuses. Browser runtime now imports the canonical tested scoring engine; regression coverage protects reviewed-state submission, mobile score controls, reduced motion, confidence calls, and resilient clipboard/manual challenge sharing. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
-      ]
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1cZxPgTRbEovQOVEHnscPiZoIeE2hRzo_",
+        "folderTitle": "Trichome Trials",
+        "path": "04 Games/Trichome Trials",
+        "visualRootId": "1F4-4uBlwMkDW9Gfm-AjBQpuzm3o4h9Fk",
+        "verifiedAt": "2026-09-22"
+      }
     },
     {
       "id": "weedopolis",
@@ -1288,7 +1967,15 @@
         "priority": "P1",
         "wave": 2
       },
-      "notes": []
+      "notes": [],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1K0amWG5J6nN9820hBxVOpf12HtFrsw_K",
+        "folderTitle": "Weedopolis",
+        "path": "04 Games/Weedopolis",
+        "visualRootId": "1gYFcOW-0NQGgN0YEt2fLRn3844GDtuLO",
+        "verifiedAt": "2026-09-22"
+      }
     },
     {
       "id": "who-took-it",
@@ -1337,7 +2024,15 @@
       },
       "notes": [
         "Canonical standalone React/Vite build from dtfgenetics/Thc-guess-who/03_digital-game. Production visual art is approved: 25 suspect portraits, 5 canonical missing-item assets, 20 UI/HUD assets, and one case-room environment. The full npm run check gate includes deterministic data/art registry validation, UI and environment validation, production-asset auditing, smoke and balance checks, dependency audit, production build, and mystery-privacy verification. No Playwright is used."
-      ]
+      ],
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "18SBSxsGOau4uwWhG1Diwd79hISb_k9AO",
+        "folderTitle": "THC Guess Who",
+        "path": "04 Games/THC Guess Who",
+        "visualRootId": "1QzFBDGjQQIJOEam4KCZws7nQq-MA6qwz",
+        "verifiedAt": "2026-09-22"
+      }
     }
   ],
   "sharedInfrastructure": [
@@ -1390,5 +2085,30 @@
       "dtfgenetics/Thc-rpg"
     ],
     "note": "Recorded canonical sourcePaths existed on each repository's default main branch when audited."
+  },
+  "driveAuthority": {
+    "gamesRoot": {
+      "id": "1XP6Ezpd2xBbD1ZeScGInOM_yUH6V6s3l",
+      "title": "04 Games",
+      "verifiedAt": "2026-09-22"
+    },
+    "sharedGameAssets": {
+      "id": "1Whf7bWmgjgzzOW71dWi2laah4fUZHpGX",
+      "title": "00 Shared Game Assets"
+    },
+    "gamesFolderMap": {
+      "id": "1tzNJ1sSnMQQ7W1OAyJl-DBi3Re4VgVR1y6ZgCGBR3IU",
+      "title": "README - Games Folder Map"
+    },
+    "masterProjectTracker": {
+      "id": "1MLhwAmhrJjDT7kGKsIrlv3AD5G8qBkURGyhhJpUozqI",
+      "title": "DTF Master Project Tracker",
+      "status": "historical-routing-reference",
+      "note": "Useful for Drive migrations and older repo mapping, but several 2026-08-16 project-status rows are stale versus current GitHub and must not override the current location/source registries."
+    },
+    "visualAssetTracker": {
+      "id": "1csjWn1kT8vDG8wcIgN9GAUNdr8Ond4BYSdYpYsvMFZM",
+      "title": "DTF Games — Visual Asset Master Tracker"
+    }
   }
 }
