@@ -33,7 +33,7 @@ for (const relative of requiredMirrors) {
 }
 
 const index = read(path.join(appRoot, 'index.html'));
-for (const token of ['/atlas/atlas-v4.css', '/atlas/atlas-site-shell-v5.css', '/atlas/atlas-3d-bootstrap.js', 'data-plant-model-status', 'CLICK · INSPECT', 'Interactive 3D system V4']) {
+for (const token of ['/atlas/atlas-v4.css', '/atlas/atlas-site-shell-v5.css', '/atlas/atlas-3d-bootstrap.js', 'data-plant-model-status', 'CLICK · INSPECT', 'Interactive 3D system V4', '<b>32</b><span>inspectable structures</span>', '/terpene-atlas/']) {
   ok(index.includes(token), `Atlas index missing V4 wiring: ${token}`);
 }
 ok(!index.includes('type="module" src="/atlas/atlas-3d.js"'), 'Atlas index must not boot V3 directly; V3 is emergency fallback only');
@@ -68,13 +68,21 @@ const requiredHotspots = new Map([
   ['petiole', '/atlas/leaf-module/'], ['leaf-venation', '/atlas/leaf-module/'], ['flower-anatomy', '/atlas/flower-anatomy/'],
   ['bract', '/atlas/flower-anatomy/'], ['sugar-leaf', '/atlas/flower-anatomy/'], ['reproductive-biology', '/atlas/reproductive-biology/'],
   ['stigma', '/atlas/reproductive-biology/'], ['trichomes-resin', '/atlas/trichomes-resin/'],
+  ['root-crown', '/atlas/root-system/'], ['lateral-root', '/atlas/root-system/'], ['fine-roots', '/atlas/root-system/'],
+  ['internode', '/atlas/nodes-branching/'], ['axillary-bud', '/atlas/nodes-branching/'],
+  ['xylem-pathway', '/atlas/stem-vascular/'], ['phloem-pathway', '/atlas/stem-vascular/'],
+  ['leaflet', '/atlas/leaf-module/'], ['leaf-margin', '/atlas/leaf-module/'], ['leaf-blade', '/atlas/leaf-module/'],
+  ['stomatal-surface', '/atlas/leaf-module/'], ['preflower-site', '/atlas/reproductive-biology/'],
+  ['pistillate-flower', '/atlas/reproductive-biology/'], ['ovary-ovule', '/atlas/reproductive-biology/'],
+  ['inflorescence-axis', '/atlas/flower-anatomy/'], ['capitate-stalked-trichome', '/atlas/trichomes-resin/'],
+  ['trichome-gland-head', '/atlas/trichomes-resin/'], ['trichome-stalk', '/atlas/trichomes-resin/'],
 ]);
 
 if (hotspotData) {
   ok(hotspotData.schemaVersion === 4, 'hotspots-v4.json must use schemaVersion 4');
   ok(hotspotData.coordinateSpace === 'normalized-model-bounds', 'hotspot coordinate space must be normalized-model-bounds');
   const hotspots = Array.isArray(hotspotData.hotspots) ? hotspotData.hotspots : [];
-  ok(hotspots.length >= requiredHotspots.size, `Expected at least ${requiredHotspots.size} anatomy hotspots`);
+  ok(hotspots.length >= 32, `Expected at least 32 anatomy hotspots; found ${hotspots.length}`);
   const ids = new Set();
   for (const hotspot of hotspots) {
     ok(typeof hotspot?.id === 'string' && hotspot.id.length > 0, 'Every hotspot needs an id');
@@ -137,4 +145,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Plant Atlas V4 valid: ${requiredHotspots.size} inspectable regions, V4-first bootstrap, V5 responsive site-shell integration, built-in PBR specimen, optional licensed GLB upgrade, and synchronized deployment mirror.`);
+console.log(`Plant Atlas V4 valid: ${requiredHotspots.size} required inspectable structures, V4-first bootstrap, Terpene Atlas bridge, V5 responsive site-shell integration, built-in PBR specimen, optional licensed GLB upgrade, and synchronized deployment mirror.`);
