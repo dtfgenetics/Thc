@@ -90,6 +90,21 @@ for (const token of ['terpene-catalog-v1.json','sources-v1.json','population-sum
   if (!runtime.includes(token)) errors.push(`Terpene Atlas runtime missing contract: ${token}`);
 }
 
+const packageScriptPath = path.join(root, 'scripts/package-public-suite-wordpress.py');
+const packageScript = fs.existsSync(packageScriptPath) ? fs.readFileSync(packageScriptPath, 'utf8') : '';
+for (const token of [
+  '"terpene-atlas",',
+  '"terpene-atlas/index.html",',
+  '"terpene-atlas/terpene-atlas-v1.css",',
+  '"terpene-atlas/terpene-atlas-v1.js",',
+  '"terpene-atlas/data/terpene-catalog-v1.json",',
+  '"terpene-atlas/data/sources-v1.json",',
+  '"terpene-atlas/data/population-summary-v1.json",',
+  '"terpene-atlas/data/sample-profiles-v1.json",',
+]) {
+  if (!packageScript.includes(token)) errors.push(`Public-suite package missing Terpene Atlas contract: ${token}`);
+}
+
 if (errors.length) {
   console.error(`Terpene Atlas validation failed with ${errors.length} issue(s):`);
   for (const error of errors) console.error(` - ${error}`);
