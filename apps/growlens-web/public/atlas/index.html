@@ -31,6 +31,37 @@
     </section>
 
     <section class="plant-lab" id="interactive-plant">
+      <aside class="atlas-nav-rail" aria-label="Plant Atlas navigation">
+        <div class="atlas-rail-head"><span class="eyebrow">Navigate specimen</span><strong>Plant map</strong></div>
+        <div class="atlas-rail-group">
+          <button class="atlas-rail-group-toggle" type="button" data-rail-toggle="anatomy" aria-expanded="true"><span>Anatomy</span><small>7 regions</small></button>
+          <div class="atlas-rail-items" data-rail-anatomy>
+            <button type="button" data-plant-focus="root-system"><span>Roots</span><small>Root system</small></button>
+            <button type="button" data-plant-focus="stem-vascular"><span>Stem</span><small>Vascular axis</small></button>
+            <button type="button" data-plant-focus="nodes-branching"><span>Nodes</span><small>Branching sites</small></button>
+            <button type="button" data-plant-focus="leaf-module"><span>Leaves</span><small>Photosynthetic organs</small></button>
+            <button type="button" data-plant-focus="flower-anatomy"><span>Flowers</span><small>Inflorescences</small></button>
+            <button type="button" data-plant-focus="trichomes-resin"><span>Trichomes</span><small>Secretory surfaces</small></button>
+            <button type="button" data-plant-focus="reproductive-biology"><span>Reproduction</span><small>Sex · pollen · seed</small></button>
+          </div>
+        </div>
+        <div class="atlas-rail-group">
+          <button class="atlas-rail-group-toggle" type="button" data-rail-toggle="systems" aria-expanded="false"><span>Science systems</span><small>16 systems</small></button>
+          <div class="atlas-rail-items" data-rail-systems hidden></div>
+        </div>
+        <div class="atlas-rail-group">
+          <button class="atlas-rail-group-toggle" type="button" data-rail-toggle="scale" aria-expanded="false"><span>Biological scale</span><small>3 levels</small></button>
+          <div class="atlas-rail-items atlas-scale-items" data-rail-scale hidden>
+            <a href="/atlas/nodes-branching/"><span>Whole plant</span><small>Architecture</small></a>
+            <a href="/atlas/leaf-module/"><span>Organ + tissue</span><small>Functional anatomy</small></a>
+            <a href="/atlas/trichomes-resin/"><span>Microscopic</span><small>Surface structures</small></a>
+          </div>
+        </div>
+        <div class="atlas-rail-footer">
+          <a href="/terpene-atlas/"><span>Terpene Atlas</span><small>Chemistry explorer →</small></a>
+          <a href="/growlens/"><span>GrowLens</span><small>Diagnostic tool →</small></a>
+        </div>
+      </aside>
       <div class="plant-lab-copy">\n        <button class="atlas-mobile-tray-toggle" type="button" data-atlas-mobile-tray-toggle aria-expanded="false"><span>Plant inspector</span><span>Expand ↑</span></button>\n        <div class="atlas-layer-status" data-atlas-layer-status data-visible="false"></div>
         <p class="eyebrow">3D anatomy explorer</p>
         <h2>Learn from the plant itself</h2>
@@ -47,6 +78,12 @@
         <div class="plant-tooltip" data-plant-tooltip hidden></div>
         <div class="viewer-hud" aria-hidden="true"><span>DRAG · ROTATE</span><span>WHEEL/PINCH · ZOOM</span><span>CLICK · INSPECT</span></div>
         <div class="viewer-model-status" data-plant-model-status data-state="loading" aria-live="polite">Loading botanical specimen…</div>
+        <div class="atlas-viewer-toolbar" aria-label="Specimen viewer actions">
+          <button type="button" data-viewer-action="reset">Fit specimen</button>
+          <button type="button" data-viewer-action="labels" aria-pressed="true">Labels</button>
+          <button type="button" data-viewer-action="help" aria-pressed="false">Controls</button>
+        </div>
+        <div class="atlas-viewer-help" data-viewer-help hidden><strong>Viewer controls</strong><span>Drag: rotate</span><span>Wheel/pinch: zoom</span><span>Tap/click: inspect</span><span>R: reset view</span></div>
         <button class="viewer-reset" type="button" data-plant-reset>Reset view</button>
         <div class="webgl-fallback" data-plant-fallback hidden><strong>3D view unavailable on this device.</strong><p>Use the anatomy buttons and system library to open the same scientific modules without WebGL.</p></div>
       </div>
