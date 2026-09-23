@@ -169,9 +169,17 @@ jobs:
             projects/index.html
             puzzles/current.json
             atlas/index.html
+            atlas/atlas-anatomy-index-v1.js
+            atlas/atlas-anatomy-index-v1.css
+            atlas/module.js
+            atlas/data/systems.json
             terpene-atlas/index.html
             terpene-atlas/terpene-atlas-v1.js
+            terpene-atlas/terpene-atlas-v1.css
             terpene-atlas/data/terpene-catalog-v1.json
+            terpene-atlas/data/sources-v1.json
+            terpene-atlas/data/population-summary-v1.json
+            terpene-atlas/data/sample-profiles-v1.json
             atlas/leaf-module/index.html
             atlas/root-system/index.html
             atlas/root-system/rhizosphere/index.html
@@ -207,9 +215,17 @@ jobs:
               assert names.count('.dtf-suite-manifest.json')==1
               required={
                   'atlas/index.html',
+                  'atlas/atlas-anatomy-index-v1.js',
+                  'atlas/atlas-anatomy-index-v1.css',
+                  'atlas/module.js',
+                  'atlas/data/systems.json',
                   'terpene-atlas/index.html',
                   'terpene-atlas/terpene-atlas-v1.js',
+                  'terpene-atlas/terpene-atlas-v1.css',
                   'terpene-atlas/data/terpene-catalog-v1.json',
+                  'terpene-atlas/data/sources-v1.json',
+                  'terpene-atlas/data/population-summary-v1.json',
+                  'terpene-atlas/data/sample-profiles-v1.json',
                   'atlas/leaf-module/index.html',
                   'atlas/root-system/index.html',
                   'atlas/root-system/rhizosphere/index.html',
@@ -334,7 +350,7 @@ jobs:
           check 'https://dtfseeds.com/games/terpocalypse/' 'LEVEL 01 · THE VEG LAB'
           check 'https://dtfseeds.com/games/phenoquest/' 'The Living Seed Vault'
           check 'https://dtfseeds.com/games/who-took-it/' 'The stash is short.'
-          check 'https://dtfseeds.com/terpene-atlas/' 'Terpene Atlas'
+          check 'https://dtfseeds.com/terpene-atlas/' 'Variability across 79 inflorescences'
           check 'https://dtfseeds.com/growlens/' 'GrowLens'
           check 'https://dtfseeds.com/thc-grow-doc/' 'Grow Doc'
 
