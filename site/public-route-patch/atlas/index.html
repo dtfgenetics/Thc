@@ -25,6 +25,18 @@
   </header>
 
   <div class="atlas-shell">\n    <section class="atlas-workspace-bar" aria-label="Atlas workspace controls">\n      <div class="atlas-mode-switch" role="group" aria-label="Atlas detail mode"><button type="button" data-atlas-mode="explorer" aria-pressed="true">Explorer</button><button type="button" data-atlas-mode="research" aria-pressed="false">Research</button></div>\n      <div class="atlas-command-search"><label class="sr-only" for="atlas-command-search">Search the complete Plant Atlas</label><input id="atlas-command-search" data-atlas-command-input type="search" autocomplete="off" placeholder="Find xylem, stomata, chlorosis, transpiration, roots…"><kbd>Ctrl K</kbd><div class="atlas-command-results" data-atlas-command-results role="listbox" aria-label="Atlas search results"></div></div>\n      <div class="atlas-layer-switch" role="group" aria-label="Scientific viewing layer"><button type="button" data-atlas-layer="anatomy" aria-pressed="true">Anatomy</button><button type="button" data-atlas-layer="physiology" aria-pressed="false">Physiology</button><button type="button" data-atlas-layer="environment" aria-pressed="false">Environment</button><button type="button" data-atlas-layer="diagnostics" aria-pressed="false">Diagnostics</button><button type="button" data-atlas-layer="development" aria-pressed="false">Development</button></div>\n    </section>
+    <section class="atlas-stage-bar" aria-label="Plant developmental stage">
+      <div class="atlas-stage-heading"><span class="eyebrow">Developmental context</span><strong data-stage-title>Reproductive development</strong></div>
+      <div class="atlas-stage-track" role="group" aria-label="Select developmental stage">
+        <button type="button" data-atlas-stage="seed"><span>01</span><b>Seed</b></button>
+        <button type="button" data-atlas-stage="germination"><span>02</span><b>Germination</b></button>
+        <button type="button" data-atlas-stage="seedling"><span>03</span><b>Seedling</b></button>
+        <button type="button" data-atlas-stage="vegetative"><span>04</span><b>Vegetative</b></button>
+        <button type="button" data-atlas-stage="transition"><span>05</span><b>Transition</b></button>
+        <button type="button" data-atlas-stage="reproductive" aria-pressed="true"><span>06</span><b>Flowering</b></button>
+      </div>
+      <p class="atlas-stage-note" data-stage-note>Flower structures, source–sink priorities, water demand and tissue interpretation differ from vegetative growth.</p>
+    </section>
     <section class="hero">
       <div><p class="eyebrow">Explore · Rotate · Zoom · Inspect · Learn</p><h1>The Living Plant Atlas</h1><p class="hero-copy">Study cannabis as a connected living system. Rotate and zoom a high-detail 3D botanical specimen, inspect anatomical regions directly, and connect each visible structure to the deeper plant-science module behind it.</p></div>
       <aside class="hero-card" aria-label="Atlas summary"><strong>Interactive botanical specimen</strong><p>The specimen connects physical anatomy to 16 searchable science systems and focused deep labs, with the same lessons available when 3D rendering is unavailable.</p><div class="stats"><div class="stat"><b>3D</b><span>rotatable specimen</span></div><div class="stat"><b>16</b><span>science systems</span></div><div class="stat"><b>32</b><span>inspectable structures</span></div></div></aside>
@@ -81,7 +93,16 @@
         <div class="atlas-viewer-toolbar" aria-label="Specimen viewer actions">
           <button type="button" data-viewer-action="reset">Fit specimen</button>
           <button type="button" data-viewer-action="labels" aria-pressed="true">Labels</button>
-          <button type="button" data-viewer-action="help" aria-pressed="false">Controls</button>
+          <button type="button" data-viewer-action="help" aria-pressed="false">Controls</button>\n          <button type="button" data-viewer-action="compare" aria-pressed="false">Compare</button>
+        </div>
+        <div class="atlas-compare-panel" data-atlas-compare hidden>
+          <div class="atlas-compare-head"><strong>Compare structures</strong><button type="button" data-compare-close aria-label="Close comparison">×</button></div>
+          <p>Select a structure, assign it to A or B, then compare scale, function and evidence side by side.</p>
+          <div class="atlas-compare-slots">
+            <section data-compare-slot="a"><small>A</small><strong>Not selected</strong><span>Choose from the inspector</span></section>
+            <section data-compare-slot="b"><small>B</small><strong>Not selected</strong><span>Choose from the inspector</span></section>
+          </div>
+          <div class="atlas-compare-actions"><button type="button" data-compare-assign="a">Use current as A</button><button type="button" data-compare-assign="b">Use current as B</button></div>
         </div>
         <div class="atlas-viewer-help" data-viewer-help hidden><strong>Viewer controls</strong><span>Drag: rotate</span><span>Wheel/pinch: zoom</span><span>Tap/click: inspect</span><span>R: reset view</span></div>
         <button class="viewer-reset" type="button" data-plant-reset>Reset view</button>
