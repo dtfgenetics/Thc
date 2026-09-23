@@ -411,7 +411,6 @@
       "title": "Grow-Off",
       "aliases": [
         "grow-off",
-        "grow-off",
         "grow off"
       ],
       "portfolioStage": "concept-only",
@@ -825,7 +824,15 @@
         "visitorRoute": "/games/high-land/",
         "candidateRoute": null
       },
-      "packageSnapshot": null
+      "packageSnapshot": null,
+      "legacyLocations": [
+        {
+          "repository": "dtfgenetics-dotcom/highland-game-",
+          "role": "superseded-legacy-reference",
+          "paths": [],
+          "notes": "Historical repository reference retained in the DTF Master Project Tracker Drive Migration tab. Do not use; current High Land code is dtfgenetics/Thc/apps/high-land-web."
+        }
+      ]
     },
     {
       "id": "high-life",
@@ -2642,5 +2649,35 @@
       "id": "1csjWn1kT8vDG8wcIgN9GAUNdr8Ond4BYSdYpYsvMFZM",
       "title": "DTF Games — Visual Asset Master Tracker"
     }
+  },
+  "repositoryAudit": {
+    "auditedAt": "2026-09-22",
+    "accessibleRepositoryCount": 21,
+    "gameAndMigrationRepositories": [
+      "dtfgenetics/Thc",
+      "dtfgenetics/Dtf420",
+      "dtfgenetics/thc-u-know-card-game-",
+      "dtfgenetics/Weedopolis-strain-Edition",
+      "dtfgenetics/Thc-crossword-",
+      "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple",
+      "dtfgenetics/Thc-chess-git",
+      "dtfgenetics/Terpocalapse",
+      "dtfgenetics/Thc-guess-who",
+      "dtfgenetics/Thc-rpg",
+      "dtfgenetics/Catching-phenos"
+    ],
+    "nonGameSupportRepositories": [
+      "dtfgenetics/Video-photo-editing-and-communications-posting-",
+      "dtfgenetics/Happy-seed-story-s-",
+      "dtfgenetics/all-in-one-thc-grow-",
+      "dtfgenetics/thc-grow-hub",
+      "dtfgenetics/Thc-dataset",
+      "dtfgenetics/thc-discord-bot-for-music-",
+      "dtfgenetics/thc-music-bot-for-discod",
+      "dtfgenetics/dtf-thc-hub",
+      "dtfgenetics/Thc-learning-courses-",
+      "dtfgenetics/code"
+    ],
+    "result": "All accessible game/migration repositories are represented by the location registry; no additional hidden game repository was found."
   }
 }
