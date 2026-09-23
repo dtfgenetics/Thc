@@ -1,0 +1,68 @@
+name: Atlas Production CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - apps/growlens-web/public/atlas/**
+      - apps/growlens-web/public/terpene-atlas/**
+      - site/public-route-patch/atlas/**
+      - site/public-route-patch/terpene-atlas/**
+      - data/atlas/**
+      - data/public-navigation.json
+      - docs/ATLAS_ROUTE_OWNERSHIP.md
+      - scripts/validate-plant-atlas-v4.mjs
+      - scripts/validate-terpene-atlas.mjs
+      - scripts/validate-atlas-route-ownership.mjs
+      - .github/workflows/atlas-production-ci.yml
+  pull_request:
+    branches: [main]
+    paths:
+      - apps/growlens-web/public/atlas/**
+      - apps/growlens-web/public/terpene-atlas/**
+      - site/public-route-patch/atlas/**
+      - site/public-route-patch/terpene-atlas/**
+      - data/atlas/**
+      - data/public-navigation.json
+      - docs/ATLAS_ROUTE_OWNERSHIP.md
+      - scripts/validate-plant-atlas-v4.mjs
+      - scripts/validate-terpene-atlas.mjs
+      - scripts/validate-atlas-route-ownership.mjs
+      - .github/workflows/atlas-production-ci.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: atlas-production-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate Atlas JavaScript syntax
+        run: |
+          set -euo pipefail
+          node --check apps/growlens-web/public/atlas/atlas-3d-v4.js
+          node --check apps/growlens-web/public/atlas/atlas-3d-bootstrap.js
+          node --check apps/growlens-web/public/atlas/atlas-anatomy-index-v1.js
+          node --check apps/growlens-web/public/atlas/module.js
+          node --check apps/growlens-web/public/terpene-atlas/terpene-atlas-v1.js
+
+      - name: Validate Plant Atlas production contract
+        run: node scripts/validate-plant-atlas-v4.mjs
+
+      - name: Validate Terpene Atlas production contract
+        run: node scripts/validate-terpene-atlas.mjs
+
+      - name: Validate public Atlas route ownership
+        run: node scripts/validate-atlas-route-ownership.mjs
