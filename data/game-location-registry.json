@@ -1554,7 +1554,15 @@
         "locationVerifiedAt": "2026-09-22"
       },
       "developmentLocations": [],
-      "assets": null,
+      "assets": {
+        "registryId": "root-cause",
+        "driveGameFolderId": "1FbybBbaovXJVbZ2iowtbDcnn9qkQ_EPV",
+        "driveVisualRootId": "1X86-DlN_GhvPqRT4WUI8Hf3W6pQvlKWu",
+        "repoRuntimeRoot": "games/root-cause",
+        "siteRuntimeRoot": "site/public-route-patch/games/root-cause",
+        "priority": "P2",
+        "wave": 3
+      },
       "notes": [
         "Deployment metadata and runtime files exist, but Root Cause is intentionally not in data/game-source-map.json or public-navigation.json as of 2026-09-22.",
         "Treat it as a deployment-only/orphan location record until an explicit portfolio promotion decision is made."
@@ -1877,7 +1885,15 @@
           "locationVerifiedAt": "2026-09-22"
         }
       ],
-      "assets": null,
+      "assets": {
+        "registryId": "stoner-duck-race",
+        "driveGameFolderId": "1k6rwU1PfWB4FVH9OdUPNqwxzgnmqLytf",
+        "driveVisualRootId": "1yE4GNG6P9xmSk-IoKjycHzF47R2Y2GKQ",
+        "repoRuntimeRoot": "game/stoner-duck-race",
+        "serverRuntimeRoot": "services/stoner-duck-race-server",
+        "priority": "P1",
+        "wave": 2
+      },
       "notes": [
         "Resolve an explicit production owner/cutover before claiming a live route."
       ],
