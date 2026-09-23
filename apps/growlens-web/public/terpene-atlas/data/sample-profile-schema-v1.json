@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "title": "DTF Terpene Atlas laboratory/sample profile",
+  "required": [
+    "sampleId",
+    "displayName",
+    "source",
+    "measurements"
+  ],
+  "fields": {
+    "sampleId": "stable internal identifier",
+    "displayName": "cultivar or sample label exactly as source reported",
+    "cultivarName": "normalized cultivar name when known; nullable",
+    "source": "lab report, publication or dataset citation",
+    "matrix": "flower | extract | vapor | headspace | other",
+    "method": "GC-MS, GC-FID or other reported analytical method",
+    "unit": "percent-w-w | mg-g | relative-area-percent | other",
+    "measurements": "array of terpene id + value/range + qualifier + detection/quantitation metadata",
+    "harvestedAt": "date when reported",
+    "testedAt": "date when reported",
+    "location": "jurisdiction/region if source permits",
+    "notes": "sample limitations and naming uncertainty"
+  },
+  "rules": [
+    "A cultivar name is not a measurement.",
+    "Never infer a percentage from another sample carrying the same strain name.",
+    "Retain below-LOD, below-LOQ and not-tested states distinctly from zero.",
+    "All measurements must identify their unit and source."
+  ]
+}
