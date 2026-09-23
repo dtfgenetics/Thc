@@ -23,6 +23,7 @@ const requiredMirrors = [
   'atlas-anatomy-index-v1.js',
   'atlas-workspace-v5.css',
   'atlas-workspace-v5.js',
+  'media/README.md',
   'module.js',
   'data/systems.json',
   'data/hotspots-v4.json',
@@ -140,7 +141,7 @@ if (systemsData) {
 }
 
 const workspaceRuntime = read(path.join(appRoot, 'atlas-workspace-v5.js'));
-for (const token of ['data-atlas-mode','data-atlas-layer','data-atlas-command-input','plant-atlas:focus','wireWorkspaceChrome','wireStageAndCompare','setStage','renderCompare','data-rail-toggle','data-viewer-action','atlasLabels','data-compare-assign','data-layer-legend','scale-map-v1.json','media-registry-v1.json','data-atlas-scale-nav','data-atlas-media-panel','data-scale-direction','Go deeper','Ctrl','Measurements','Evidence']) ok(workspaceRuntime.includes(token), `Atlas V5 workspace runtime missing: ${token}`);
+for (const token of ['data-atlas-mode','data-atlas-layer','data-atlas-command-input','plant-atlas:focus','wireWorkspaceChrome','wireStageAndCompare','setStage','renderCompare','data-rail-toggle','data-viewer-action','atlasLabels','data-compare-assign','data-layer-legend','scale-map-v1.json','media-registry-v1.json','data-atlas-scale-nav','data-atlas-media-panel','atlas-media-gallery','data-scale-direction','Go deeper','Ctrl','Measurements','Evidence']) ok(workspaceRuntime.includes(token), `Atlas V5 workspace runtime missing: ${token}`);
 const workspaceCss = read(path.join(appRoot, 'atlas-workspace-v5.css'));
 for (const token of ['.atlas-workspace-bar','.atlas-command-results','.atlas-inspector-tabs','.atlas-nav-rail','.atlas-viewer-toolbar','.atlas-stage-bar','.atlas-compare-panel','.atlas-layer-legend','data-system-category','grid-template-columns:240px','data-atlas-mode','max-width:980px']) ok(workspaceCss.includes(token), `Atlas V5 workspace CSS missing: ${token}`);
 for (const token of ['data-atlas-mode="explorer"','data-atlas-mode="research"','data-atlas-layer="anatomy"','data-atlas-layer="diagnostics"','data-atlas-command-input','data-atlas-mobile-tray-toggle','atlas-nav-rail','data-rail-systems','atlas-viewer-toolbar','data-viewer-action="labels"','data-viewer-action="compare"','atlas-layer-legend','atlas-stage-bar','data-atlas-stage="reproductive"','data-atlas-compare']) ok(index.includes(token), `Atlas V5 workspace shell missing: ${token}`);
@@ -188,6 +189,22 @@ if (mediaRegistry) {
     ok(Array.isArray(record.required) && record.required.length > 0, `Media record ${record.entityId} needs required asset classes`);
     for (const kind of record.required || []) ok(classes.has(kind), `Media record ${record.entityId} uses unknown asset class ${kind}`);
     ok(Array.isArray(record.assets), `Media record ${record.entityId} assets must be an array`);
+    for (const asset of record.assets || []) {
+      for (const field of ['assetId','entityId','class','src','source','creator','license','captureType','plantStage','organ','illustrativeOrMeasured']) {
+        ok(typeof asset[field] === 'string' && asset[field].length > 0, `Media asset ${asset.assetId || '(unknown)'} missing ${field}`);
+      }
+      ok(asset.entityId === record.entityId, `Media asset ${asset.assetId || '(unknown)'} entityId must match owning record`);
+      ok(classes.has(asset.class), `Media asset ${asset.assetId || '(unknown)'} uses unknown class ${asset.class}`);
+      ok(typeof asset.src === 'string' && asset.src.startsWith('/atlas/media/'), `Media asset ${asset.assetId || '(unknown)'} must use /atlas/media/ path`);
+      if (typeof asset.src === 'string' && asset.src.startsWith('/atlas/media/')) {
+        const relativeMedia = asset.src.replace(/^\/atlas\/media\//, '');
+        const sourceMedia = path.join(appRoot, 'media', relativeMedia);
+        const mirrorMedia = path.join(mirrorRoot, 'media', relativeMedia);
+        ok(fs.existsSync(sourceMedia), `Registered media asset missing source file: ${asset.src}`);
+        ok(fs.existsSync(mirrorMedia), `Registered media asset missing mirror file: ${asset.src}`);
+        if (fs.existsSync(sourceMedia) && fs.existsSync(mirrorMedia)) ok(fs.readFileSync(sourceMedia).equals(fs.readFileSync(mirrorMedia)), `Registered media asset mirror mismatch: ${asset.src}`);
+      }
+    }
     if ((record.assets || []).length === 0) ok(record.status === 'production-needed', `Empty media record ${record.entityId} must remain explicitly production-needed`);
   }
   const fields = new Set(mediaRegistry?.provenanceContract?.requiredFields || []);
