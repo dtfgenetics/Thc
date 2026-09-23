@@ -165,5 +165,15 @@
   <!-- Interactive 3D system V4 -->
   <script type="module" src="/atlas/atlas-3d-bootstrap.js"></script>\n  <script type="module" src="/atlas/atlas-anatomy-index-v1.js"></script>
   <script src="/atlas/atlas-v3.js" defer></script>\n  <script src="/atlas/atlas-workspace-v5.js" defer></script>
+  <dialog class="atlas-media-dialog" data-atlas-media-dialog aria-labelledby="atlas-media-dialog-title">
+    <div class="atlas-media-dialog-shell">
+      <div class="atlas-media-dialog-head">
+        <div><small>VERIFIED ATLAS MEDIA</small><strong id="atlas-media-dialog-title" data-media-dialog-title>Reference image</strong></div>
+        <button type="button" data-media-dialog-close aria-label="Close media viewer">×</button>
+      </div>
+      <img data-media-dialog-image alt="">
+      <div class="atlas-media-dialog-meta" data-media-dialog-meta></div>
+    </div>
+  </dialog>
 </body>
 </html>
