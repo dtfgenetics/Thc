@@ -1,0 +1,305 @@
+{
+  "schemaVersion": 1,
+  "status": "seed-catalog-in-expansion",
+  "scopePolicy": {
+    "globalUniverse": "Track the broader terpene/terpenoid universe separately from Cannabis occurrence.",
+    "cannabisSet": "A compound is marked cannabis-reported only when a traceable analytical or review source supports occurrence in Cannabis.",
+    "cultivarProfiles": "Do not assign fixed percentages to a strain name. Percentages belong to individual measured samples or source-reported ranges with provenance.",
+    "stereochemistry": "Preserve stereoisomers and isomer ambiguity when the source distinguishes them.",
+    "effects": "Do not convert preclinical mechanism data into human treatment claims."
+  },
+  "compounds": [
+    {
+      "id": "beta-myrcene",
+      "canonicalName": "β-Myrcene",
+      "aliases": [
+        "myrcene"
+      ],
+      "class": "monoterpene",
+      "subclass": "acyclic hydrocarbon",
+      "formula": "C10H16",
+      "pubchemCid": 31253,
+      "aromaDescriptors": [
+        "herbal",
+        "earthy",
+        "balsamic"
+      ],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "booth-2020-cannabis-terpenes",
+        "radwan-2021-constituents",
+        "pubchem"
+      ],
+      "evidenceGrade": "B",
+      "notes": "Use β-myrcene as the normalized common Cannabis entry; do not merge with α-myrcene."
+    },
+    {
+      "id": "d-limonene",
+      "canonicalName": "Limonene",
+      "aliases": [
+        "d-limonene",
+        "(R)-limonene"
+      ],
+      "class": "monoterpene",
+      "subclass": "cyclic hydrocarbon",
+      "formula": "C10H16",
+      "pubchemCid": null,
+      "aromaDescriptors": [
+        "citrus",
+        "orange",
+        "lemon"
+      ],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "booth-2020-cannabis-terpenes",
+        "radwan-2021-constituents"
+      ],
+      "evidenceGrade": "B",
+      "notes": "Stereochemistry matters; source records should retain enantiomer information when measured."
+    },
+    {
+      "id": "alpha-pinene",
+      "canonicalName": "α-Pinene",
+      "aliases": [
+        "alpha-pinene"
+      ],
+      "class": "monoterpene",
+      "subclass": "bicyclic hydrocarbon",
+      "formula": "C10H16",
+      "pubchemCid": null,
+      "aromaDescriptors": [
+        "pine",
+        "resinous"
+      ],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "booth-2020-cannabis-terpenes",
+        "radwan-2021-constituents"
+      ],
+      "evidenceGrade": "B",
+      "notes": "Keep separate from β-pinene."
+    },
+    {
+      "id": "beta-pinene",
+      "canonicalName": "β-Pinene",
+      "aliases": [
+        "beta-pinene"
+      ],
+      "class": "monoterpene",
+      "subclass": "bicyclic hydrocarbon",
+      "formula": "C10H16",
+      "pubchemCid": null,
+      "aromaDescriptors": [
+        "pine",
+        "woody",
+        "green"
+      ],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "booth-2020-cannabis-terpenes",
+        "radwan-2021-constituents"
+      ],
+      "evidenceGrade": "B",
+      "notes": "Keep separate from α-pinene."
+    },
+    {
+      "id": "terpinolene",
+      "canonicalName": "Terpinolene",
+      "aliases": [
+        "terpinolene"
+      ],
+      "class": "monoterpene",
+      "subclass": "cyclic hydrocarbon",
+      "formula": "C10H16",
+      "pubchemCid": null,
+      "aromaDescriptors": [
+        "fresh",
+        "woody",
+        "herbal",
+        "citrus"
+      ],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "booth-2020-cannabis-terpenes",
+        "radwan-2021-constituents"
+      ],
+      "evidenceGrade": "B",
+      "notes": "Often present at very different abundance among chemovars; abundance must be sample-backed."
+    },
+    {
+      "id": "linalool",
+      "canonicalName": "Linalool",
+      "aliases": [
+        "linalool"
+      ],
+      "class": "monoterpene",
+      "subclass": "alcohol",
+      "formula": "C10H18O",
+      "pubchemCid": null,
+      "aromaDescriptors": [
+        "floral",
+        "lavender-like",
+        "citrus"
+      ],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "booth-2020-cannabis-terpenes",
+        "radwan-2021-constituents"
+      ],
+      "evidenceGrade": "B",
+      "notes": "Enantiomeric composition can alter odor character and should be retained when a laboratory reports it."
+    },
+    {
+      "id": "beta-caryophyllene",
+      "canonicalName": "β-Caryophyllene",
+      "aliases": [
+        "caryophyllene",
+        "trans-caryophyllene"
+      ],
+      "class": "sesquiterpene",
+      "subclass": "bicyclic hydrocarbon",
+      "formula": "C15H24",
+      "pubchemCid": null,
+      "aromaDescriptors": [
+        "peppery",
+        "woody",
+        "spicy"
+      ],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "booth-2020-cannabis-terpenes",
+        "radwan-2021-constituents"
+      ],
+      "evidenceGrade": "B",
+      "notes": "Normalize common-name records carefully; caryophyllene oxide is a different compound."
+    },
+    {
+      "id": "alpha-humulene",
+      "canonicalName": "α-Humulene",
+      "aliases": [
+        "humulene",
+        "alpha-caryophyllene"
+      ],
+      "class": "sesquiterpene",
+      "subclass": "cyclic hydrocarbon",
+      "formula": "C15H24",
+      "pubchemCid": null,
+      "aromaDescriptors": [
+        "woody",
+        "hoppy",
+        "earthy"
+      ],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "booth-2020-cannabis-terpenes",
+        "radwan-2021-constituents"
+      ],
+      "evidenceGrade": "B",
+      "notes": "Alias alpha-caryophyllene can create duplicate records if not normalized."
+    },
+    {
+      "id": "alpha-bisabolol",
+      "canonicalName": "α-Bisabolol",
+      "aliases": [
+        "levomenol",
+        "bisabolol"
+      ],
+      "class": "sesquiterpene",
+      "subclass": "alcohol",
+      "formula": "C15H26O",
+      "pubchemCid": null,
+      "aromaDescriptors": [
+        "floral",
+        "sweet",
+        "woody"
+      ],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "booth-2020-cannabis-terpenes",
+        "radwan-2021-constituents"
+      ],
+      "evidenceGrade": "B",
+      "notes": "Retain stereochemical qualifiers from analytical sources."
+    },
+    {
+      "id": "ocimene",
+      "canonicalName": "Ocimene",
+      "aliases": [
+        "beta-ocimene",
+        "ocimene"
+      ],
+      "class": "monoterpene",
+      "subclass": "acyclic hydrocarbon",
+      "formula": "C10H16",
+      "pubchemCid": null,
+      "aromaDescriptors": [
+        "green",
+        "sweet",
+        "herbal"
+      ],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "booth-2020-cannabis-terpenes",
+        "radwan-2021-constituents"
+      ],
+      "evidenceGrade": "B",
+      "notes": "This umbrella seed entry must later split E/Z and alpha/beta isomer records where source data permits."
+    },
+    {
+      "id": "nerolidol",
+      "canonicalName": "Nerolidol",
+      "aliases": [
+        "nerolidol"
+      ],
+      "class": "sesquiterpene",
+      "subclass": "alcohol",
+      "formula": "C15H26O",
+      "pubchemCid": null,
+      "aromaDescriptors": [
+        "woody",
+        "floral",
+        "green"
+      ],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "radwan-2021-constituents"
+      ],
+      "evidenceGrade": "B",
+      "notes": "Retain cis/trans designation when available."
+    },
+    {
+      "id": "guaiol",
+      "canonicalName": "Guaiol",
+      "aliases": [
+        "guaiol"
+      ],
+      "class": "sesquiterpene",
+      "subclass": "alcohol",
+      "formula": "C15H26O",
+      "pubchemCid": null,
+      "aromaDescriptors": [
+        "woody",
+        "rose-like",
+        "balsamic"
+      ],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "radwan-2021-constituents"
+      ],
+      "evidenceGrade": "B",
+      "notes": "Seed entry; identifier enrichment still required."
+    }
+  ]
+}
