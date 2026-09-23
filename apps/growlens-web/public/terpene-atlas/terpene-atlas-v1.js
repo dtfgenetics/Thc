@@ -8,7 +8,33 @@ async function load(){
   ]);
   state.catalog=catalog;state.sources=sources;
   $('[data-compound-count]').textContent=`${catalog.compounds.length} compounds`;
-  buildCompareOptions();render();
+  buildCompareOptions();renderWheel();renderSources();render();
+}
+function renderWheel(){
+  const counts={};
+  for(const item of state.catalog.compounds) counts[item.class]=(counts[item.class]||0)+1;
+  $('[data-wheel-total]').textContent=`${state.catalog.compounds.length} compounds`;
+  for(const [family,count] of Object.entries(counts)){
+    const el=document.querySelector(`[data-wheel-count="${family}"]`);
+    if(el)el.textContent=count;
+  }
+  for(const button of document.querySelectorAll('[data-wheel-family]')){
+    button.classList.toggle('active',button.dataset.wheelFamily===state.family);
+    button.onclick=()=>{
+      state.family=button.dataset.wheelFamily;
+      const select=$('[data-class-filter]');
+      if(select)select.value=state.family;
+      renderWheel();render();
+      document.querySelector('#explorer')?.scrollIntoView({behavior:'smooth',block:'start'});
+    };
+  }
+}
+function renderSources(){
+  const grid=$('[data-source-grid]');
+  if(grid)grid.innerHTML=(state.sources.sources||[]).map(s=>`<article><small>${esc(s.type)} · ${esc(s.evidenceGrade)}</small><h3>${esc(s.title)}</h3><p>${esc(s.scope||'')}</p><a href="${esc(s.url)}" target="_blank" rel="noopener">Open source →</a></article>`).join('');
+  const coverage=$('[data-coverage]');
+  const c=state.catalog.coverage||{};
+  if(coverage)coverage.innerHTML=`<strong>Current curated coverage: ${state.catalog.compounds.length} compounds.</strong> ${esc(c.target||'Catalog expansion continues.')} <span>Completeness claim: ${c.completenessClaim===true?'yes':'no'}.</span>`;
 }
 function filtered(){
   const q=state.query.trim().toLowerCase();
@@ -41,7 +67,7 @@ function renderCompare(){
   $('[data-compare-grid]').innerHTML=[a,b].map(compareCard).join('');
 }
 $('[data-search]').addEventListener('input',e=>{state.query=e.target.value;render()});
-$('[data-class-filter]').addEventListener('change',e=>{state.family=e.target.value;render()});
+$('[data-class-filter]').addEventListener('change',e=>{state.family=e.target.value;renderWheel();render()});
 $('[data-scope-filter]').addEventListener('change',e=>{state.scope=e.target.value;render()});
 $('[data-compare-a]').addEventListener('change',renderCompare);
 $('[data-compare-b]').addEventListener('change',renderCompare);
