@@ -13,16 +13,23 @@ from public_suite_resource_ownership import transform_bridge
 if len(sys.argv) != 2:
     raise SystemExit('usage: assemble-wordpress-suite-resource-aware.py OUTPUT_MJS')
 
-ATLAS_TARGETS = ['atlas', 'assets/images/atlas']
+ATLAS_TARGETS = ['atlas', 'terpene-atlas', 'assets/images/atlas']
 ATLAS_REQUIRED = [
     'atlas/index.html',
     'atlas/leaf-module/index.html',
     'atlas/root-system/index.html',
     'atlas/root-system/rhizosphere/index.html',
     'atlas/downloads/index.html',
+    'terpene-atlas/index.html',
+    'terpene-atlas/terpene-atlas-v1.css',
+    'terpene-atlas/terpene-atlas-v1.js',
+    'terpene-atlas/data/terpene-catalog-v1.json',
+    'terpene-atlas/data/sources-v1.json',
+    'terpene-atlas/data/population-summary-v1.json',
+    'terpene-atlas/data/sample-profiles-v1.json',
     'assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg',
 ]
-ATLAS_PREFIXES = ['atlas/', 'assets/images/atlas/']
+ATLAS_PREFIXES = ['atlas/', 'terpene-atlas/', 'assets/images/atlas/']
 RESOURCE_OWNED_GAME_TARGETS = ['games/high-iq', 'games/seed-man-platformer']
 
 
@@ -39,7 +46,7 @@ def extend_php_array(text: str, variable: str, additions: list[str]) -> str:
         if value not in merged:
             merged.append(value)
     if len(merged) != len(set(merged)):
-        raise SystemExit(f'bridge array ${variable} contains duplicate entries after Atlas scope merge')
+        raise SystemExit(f'bridge array ${variable} contains duplicate entries after Plant/Terpene Atlas scope merge')
     body = ''.join(f"        {value!r},\n" for value in merged).rstrip('\n')
     return text[:match.start()] + match.group('head') + body + match.group('tail') + text[match.end():]
 
@@ -61,10 +68,10 @@ with tempfile.TemporaryDirectory(prefix='dtf-suite-resource-aware-') as temp:
 
     for marker in [*ATLAS_TARGETS, *ATLAS_REQUIRED, *ATLAS_PREFIXES]:
         if repr(marker) not in transformed:
-            raise SystemExit(f'Atlas scope marker disappeared from resource-aware bridge: {marker}')
+            raise SystemExit(f'Plant/Terpene Atlas scope marker disappeared from resource-aware bridge: {marker}')
     for target in RESOURCE_OWNED_GAME_TARGETS:
         if repr(target) in transformed:
-            raise SystemExit(f'resource-owned game target remained after Atlas scope merge: {target}')
+            raise SystemExit(f'resource-owned game target remained after Plant/Terpene Atlas scope merge: {target}')
     if "'games/high-land'" not in transformed:
         raise SystemExit('suite-owned High Land target disappeared before its independent publisher is proven')
 
