@@ -69,6 +69,34 @@
       $('[data-module-count]').textContent = `${system.concepts.length} core concepts`;
       $('[data-module-id]').textContent = `Atlas system · ${system.id}`;
 
+      const stack = document.querySelector('.content-stack');
+      if (stack) {
+        const context = document.createElement('section');
+        context.className = 'content-card';
+        context.dataset.measurementsRuntime = '';
+        context.innerHTML = `<h2>Measurements & context</h2><p>Pair structure and symptoms with measurements that describe the plant's actual environment and developmental state.</p><div class="concepts">${pills(system.measurements || [])}</div>`;
+        stack.appendChild(context);
+
+        const questions = document.createElement('section');
+        questions.className = 'content-card';
+        questions.innerHTML = `<h2>Evidence questions</h2><div class="content-stack">${(system.evidenceQuestions || []).map(item => `<div class="warning">${item}</div>`).join('')}</div>`;
+        stack.appendChild(questions);
+
+        const depth = document.createElement('section');
+        depth.className = 'content-card';
+        depth.innerHTML = `<h2>Deep-dive map</h2><p><strong>Scale:</strong> ${(system.scales || []).join(' · ')}</p><div class="concepts">${pills(system.deepDiveTopics || [])}</div>`;
+        stack.appendChild(depth);
+      }
+
+      const connected = system.connectedTools || [];
+      if (connected.length) {
+        const asideStack = document.querySelector('aside.content-stack');
+        const card = document.createElement('section');
+        card.className = 'content-card';
+        card.innerHTML = `<h2>Connected tools</h2><div class="related-list">${connected.map(tool => `<a class="related-link" href="${tool.route}"><strong>${tool.label}</strong><br><span>${tool.note || ''}</span></a>`).join('')}</div>`;
+        asideStack?.prepend(card);
+      }
+
       const deep = $('[data-deep-links]');
       const deepLinks = [];
       if (system.id === 'leaf-module') {
