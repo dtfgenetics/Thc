@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
   "sourceOfTruth": "dtfgenetics/Thc",
-  "updated": "2026-09-15",
+  "updated": "2026-09-23",
   "apps": [
     {
       "id": "high-land",
@@ -24,6 +24,54 @@
       "status": "ready-to-package",
       "build": "npm run test:growlens && npm run build:growlens",
       "notes": "Deploy hidden files and PHP API files with the Vite output. Private-storage backend still requires Hostinger production configuration."
+    },
+    {
+      "id": "terpene-atlas",
+      "title": "THC Terpene Atlas — Chemistry Explorer",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "apps/growlens-web/public/terpene-atlas",
+      "mirrorPath": "site/public-route-patch/terpene-atlas",
+      "route": "/terpene-atlas/",
+      "runtime": "static-data-driven",
+      "status": "ready-to-package",
+      "build": "npm run validate:terpene-atlas && node scripts/validate-atlas-route-ownership.mjs",
+      "machineData": {
+        "schemaVersion": 1,
+        "curatedNamedCompounds": 98,
+        "populationStudySampleCount": 79,
+        "populationSummaryAnalytes": 40,
+        "measuredUnit": "ppm",
+        "interactiveFamilyWheel": true,
+        "comparison": true,
+        "evidenceRegistry": true,
+        "verifiedSampleProfiles": "ingestion-ready",
+        "completenessClaim": false,
+        "connectedPlantAtlas": "/atlas/trichomes-resin/"
+      },
+      "notes": "Learn-owned chemistry explorer. Cultivar names never receive fixed percentages without measured sample provenance. Current ontology is an evidence-backed Cannabis core and explicitly remains expandable rather than claiming the entire global terpene universe is complete."
+    },
+    {
+      "id": "plant-atlas",
+      "title": "THC Living Plant Atlas — 3D Explorer",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "apps/growlens-web/public/atlas",
+      "mirrorPath": "site/public-route-patch/atlas",
+      "route": "/atlas/",
+      "runtime": "static-threejs",
+      "status": "ready-to-package",
+      "build": "npm run validate:plant-atlas:v4 && node scripts/validate-atlas-route-ownership.mjs",
+      "machineData": {
+        "version": "v4",
+        "scienceSystems": 16,
+        "semanticStructures": 32,
+        "anatomyIndex": "atlas-anatomy-index-v1",
+        "renderer": "atlas-3d-v4",
+        "fallback": "procedural-pbr",
+        "preferredExternalModel": "/atlas/models/cannabis-specimen-v1.glb",
+        "externalModelRequired": false,
+        "connectedAtlas": "/terpene-atlas/"
+      },
+      "notes": "Learn-owned specimen-first 3D plant-science explorer. Source/public mirrors, all 16 enriched system routes, 32 semantic anatomy targets, searchable anatomy index, 3D focus wiring, responsive shell and route ownership are enforced by dedicated Atlas Production CI and the central Public Suite build."
     },
     {
       "id": "weedopolis",
