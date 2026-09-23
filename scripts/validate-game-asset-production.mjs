@@ -51,7 +51,7 @@ if (waves.length !== 4) fail(`expected 4 waves, found ${waves.length}`);
 const allWaveGames = waves.flatMap((wave) => wave.games ?? []);
 const uniqueWaveGames = new Set(allWaveGames);
 if (uniqueWaveGames.size !== allWaveGames.length) fail('a game is assigned to more than one asset wave');
-if (allWaveGames.length !== 27) fail(`expected 27 tracked public/incoming games, found ${allWaveGames.length}`);
+if (allWaveGames.length !== 29) fail(`expected 29 tracked public/incoming/development games, found ${allWaveGames.length}`);
 
 const expectedWave1 = ['seed-man', 'who-took-it', 'high-life', 'high-iq', 'terpocalypse', 'bud-or-bluff'];
 const expectedBatches = [
