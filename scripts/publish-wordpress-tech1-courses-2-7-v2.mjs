@@ -38,10 +38,13 @@ async function fetchText(url) {
 }
 const fetchJson = async rel => JSON.parse(await fetchText(`${rawBase}/${rel}`));
 
+function isControlledRasterAssetPath(value) {
+  return /^\/assets\/course\d+\/[A-Za-z0-9._-]+\.(?:png|webp|jpe?g)$/i.test(String(value || ''));
+}
 function sourceAssetUrl(value) {
   if (typeof value !== 'string') return '';
   if (/^https:\/\//i.test(value)) return value;
-  if (/^\/assets\/course\d+\/[A-Za-z0-9._-]+\.svg$/i.test(value)) return `${rawBase}/apps/web/public${value}`;
+  if (isControlledRasterAssetPath(value)) return `${rawBase}/apps/web/public${value}`;
   return value;
 }
 function assetIdFromBlock(block) {
@@ -188,7 +191,7 @@ if (validateOnly) {
   for (const course of courses) for (const lesson of course.lessons) {
     for (const block of lessonAssetBlocks(lesson)) {
       const source = block.type === 'image' ? (block.src || block.url) : block.href;
-      must(/^\/assets\/course\d+\/[A-Za-z0-9._-]+\.svg$/i.test(source), `${lesson.id}: governed learner asset must use a controlled /assets/courseN/*.svg path`);
+      must(isControlledRasterAssetPath(source), `${lesson.id}: governed learner asset must use a controlled raster /assets/courseN/*.(png|webp|jpg|jpeg) path`);
       await fetchText(sourceAssetUrl(source));
       assetRefs.push({ lessonId: lesson.id, assetId: assetIdFromBlock(block), source });
     }
