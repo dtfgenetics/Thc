@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updated": "2026-09-12",
+  "updated": "2026-09-22",
   "policy": {
     "sourceMasterAuthority": "google-drive-for-new-assets",
     "runtimeAuthority": "github",
@@ -11,7 +11,12 @@
   "games": {
     "who-took-it": {
       "canonicalName": "Who Took It?",
-      "aliases": ["Who Took It", "THC Guess Who", "Thc-guess-who", "guess who"],
+      "aliases": [
+        "Who Took It",
+        "THC Guess Who",
+        "Thc-guess-who",
+        "guess who"
+      ],
       "github": {
         "repository": "dtfgenetics/Thc-guess-who",
         "branch": "main",
@@ -70,7 +75,11 @@
     },
     "seed-man-run": {
       "canonicalName": "Seed Man Run",
-      "aliases": ["Seedman Run", "Seed Man Platformer", "seed-man-platformer"],
+      "aliases": [
+        "Seedman Run",
+        "Seed Man Platformer",
+        "seed-man-platformer"
+      ],
       "github": {
         "repository": "dtfgenetics/Thc",
         "branch": "main",
@@ -99,6 +108,70 @@
         "Approved runtime exports must match the repo approved path and site mirror when deployment requires it."
       ],
       "verifiedAt": "2026-09-12"
+    },
+    "stoner-duck-race": {
+      "canonicalName": "Stoner Duck Race",
+      "aliases": [
+        "Quack & Bake",
+        "Stoner Duck Race",
+        "Duck Race"
+      ],
+      "github": {
+        "repository": "dtfgenetics/Dtf420",
+        "branch": "main",
+        "gameRoot": "game/stoner-duck-race",
+        "routeRoot": "app/games/stoner-duck-race",
+        "serverRoot": "services/stoner-duck-race-server",
+        "assetManifest": "game/stoner-duck-race/assets.ts"
+      },
+      "drive": {
+        "gameRootFolderId": "1k6rwU1PfWB4FVH9OdUPNqwxzgnmqLytf",
+        "visualAssetsFolderId": "1yE4GNG6P9xmSk-IoKjycHzF47R2Y2GKQ",
+        "sourceMastersFolderId": "1sAMSwMSMqKDCX_kYOal6QMReuU97xA6t",
+        "approvedMastersFolderId": "1XQ1g8kQRfTqlQypo9p3sf6uR3vIWkZrh",
+        "charactersFolderId": "1miH6yKLRgmyjBZVXLntFqhAc9v--fkgW",
+        "environmentsFolderId": "1WJeMNqHeS-qtQLa5t0g0rI1StVTKg4YM",
+        "gameplayObjectsFolderId": "1WvIua4mLTTng3MwciFF-z_V6LTCsCBbT",
+        "uiHudFolderId": "1R3Wn2b7yrGAN9ETU6AbywPiK23enISxn",
+        "fxAnimationFolderId": "1lwrGoOwwhHfXSmVhZUpWORlbiD3sxJnG",
+        "audioFolderId": "1lr4wdy6kQYOYprzPri8kvY2GqiwqNAfj",
+        "runtimeExportsFolderId": "1tggP9eEV8eNe7Iv6lVHKhaooXLAN4DPy"
+      },
+      "notes": [
+        "Typed runtime manifest currently contains null authored paths for most duck/track/hazard/powerup/audio families; authored asset production should fill those contracts rather than replace the gameplay system.",
+        "Current code is active development in Dtf420; do not claim production ownership without an explicit cutover."
+      ],
+      "verifiedAt": "2026-09-22"
+    },
+    "root-cause": {
+      "canonicalName": "Root Cause",
+      "aliases": [
+        "Root Cause"
+      ],
+      "github": {
+        "repository": "dtfgenetics/Thc",
+        "branch": "main",
+        "gameRoot": "games/root-cause",
+        "runtimeBase": "site/public-route-patch/games/root-cause"
+      },
+      "drive": {
+        "gameRootFolderId": "1FbybBbaovXJVbZ2iowtbDcnn9qkQ_EPV",
+        "visualAssetsFolderId": "1X86-DlN_GhvPqRT4WUI8Hf3W6pQvlKWu",
+        "sourceMastersFolderId": "1Gq0ubT8nuzmDojcNhJAdgQ9KN60v5gfS",
+        "approvedMastersFolderId": "1i9rJ2GKNxZnbToClJkoCadXvi97Lq4JD",
+        "charactersFolderId": "1O_UO9R1oGM82YbW_F32FEwh4epIhmtt5",
+        "environmentsFolderId": "17IdL044g8_EaPcwxKIBj8jnbdbuKUSD1",
+        "gameplayObjectsFolderId": "1mNzOJouR3yi0kgDqv5u9xM3EsfqekC-J",
+        "uiHudFolderId": "1tqcvRwPrX3ZAeMP9gD87fPRx5h6MymIY",
+        "fxAnimationFolderId": "1pONCURMArRGrczHE0_VLSAel9_Aj4A2H",
+        "audioFolderId": "1CtvzqQoMjQOXywXAV50JmI2bfeW-0Jdu",
+        "runtimeExportsFolderId": "1aPEWyn4devE8McrMCPv8xmu-uLw0QJyI"
+      },
+      "notes": [
+        "Packaged/tested browser vertical slice; currently not public navigation.",
+        "Keep publication state separate from asset readiness."
+      ],
+      "verifiedAt": "2026-09-22"
     }
   }
 }
