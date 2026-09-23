@@ -1,0 +1,3643 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-09-22",
+  "purpose": "Subsystem-level routing memory for DTF games. Use after data/game-location-registry.json to jump directly to rules/UI/data/assets/tests/network/build/deploy surfaces.",
+  "sourceRegistries": [
+    "data/game-location-registry.json",
+    "data/game-source-map.json",
+    "site/deployment/public-apps.json",
+    "data/game-asset-production-registry.json"
+  ],
+  "games": [
+    {
+      "id": "bud-or-bluff",
+      "title": "Bud or Bluff",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/bud-or-bluff/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc",
+        "sourceRoots": [
+          "games/bud-or-bluff"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/bud-or-bluff",
+          "site/public-route-patch/games/bud-or-bluff"
+        ],
+        "build": "node games/bud-or-bluff/test/engine.test.mjs && node games/bud-or-bluff/scripts/build-private-deck.mjs && node games/bud-or-bluff/test/keyboard-v1.test.mjs && node games/bud-or-bluff/test/visual-state-v3.test.mjs && node games/bud-or-bluff/test/online-lobby.test.mjs && node games/bud-or-bluff/test/online-lobby-v2.test.mjs",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static-php",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": {
+          "players": "2-10",
+          "cards": 40,
+          "roundOptions": [
+            8,
+            12,
+            16,
+            20
+          ],
+          "storage": "wordpress-transients",
+          "networkAuthority": "php-server",
+          "transport": "polling"
+        }
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1Ok1MHU0GIoG0cHseR4kQ1LI2fUTxPdq_",
+        "folderTitle": "Bud or Bluff",
+        "path": "04 Games/Bud or Bluff",
+        "visualRootId": "1cXjrWU62au9DKaG29rKYAgTysLSbOiih",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [
+          "games/bud-or-bluff/src/rules.mjs",
+          "games/bud-or-bluff/test/engine.test.mjs"
+        ],
+        "uiAndRendering": [
+          "games/bud-or-bluff/scripts/build-private-deck.mjs",
+          "site/public-route-patch/games/bud-or-bluff/app-v2.js",
+          "site/public-route-patch/games/bud-or-bluff/app.js",
+          "site/public-route-patch/games/bud-or-bluff/index.html",
+          "site/public-route-patch/games/bud-or-bluff/styles.css"
+        ],
+        "dataAndContent": [
+          "games/bud-or-bluff/data/drive-snapshot",
+          "games/bud-or-bluff/data/drive-snapshot/cards-001-040.md",
+          "games/bud-or-bluff/data/drive-snapshot/cards-041-080.md",
+          "games/bud-or-bluff/data/drive-snapshot/cards-081-120.md",
+          "games/bud-or-bluff/data/drive-snapshot/index.json",
+          "games/bud-or-bluff/data/playtest-v1.json",
+          "games/bud-or-bluff/data/real-name-groups.json",
+          "games/bud-or-bluff/scripts/build-private-deck.mjs",
+          "site/public-route-patch/games/bud-or-bluff/deck.php"
+        ],
+        "assets": [],
+        "tests": [
+          "games/bud-or-bluff/test/engine.test.mjs",
+          "games/bud-or-bluff/test/keyboard-v1.test.mjs",
+          "games/bud-or-bluff/test/live-api-session.test.mjs",
+          "games/bud-or-bluff/test/online-lobby-v2.test.mjs",
+          "games/bud-or-bluff/test/online-lobby.test.mjs",
+          "games/bud-or-bluff/test/visual-state-v3.test.mjs"
+        ],
+        "scripts": [
+          "games/bud-or-bluff/scripts/build-private-deck.mjs"
+        ],
+        "serverAndNetwork": [
+          "games/bud-or-bluff/test/live-api-session.test.mjs",
+          "site/public-route-patch/games/bud-or-bluff/api-v2.php",
+          "site/public-route-patch/games/bud-or-bluff/api-v3.php",
+          "site/public-route-patch/games/bud-or-bluff/api.php"
+        ],
+        "docs": [
+          "games/bud-or-bluff/README.md"
+        ],
+        "workflows": [
+          ".github/workflows/bud-or-bluff-ci.yml",
+          ".github/workflows/bud-or-bluff-live-api-session.yml"
+        ]
+      },
+      "development": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-runtime",
+          "roots": [
+            "app/games/bud-or-bluff",
+            "lib/games/bud-or-bluff-engine.ts"
+          ],
+          "subsystems": {
+            "rulesAndSimulation": [
+              "lib/games/bud-or-bluff-engine.ts"
+            ],
+            "uiAndRendering": [
+              "app/games/bud-or-bluff",
+              "app/games/bud-or-bluff/BudOrBluffGame.tsx",
+              "app/games/bud-or-bluff/page.module.css",
+              "app/games/bud-or-bluff/page.tsx"
+            ],
+            "dataAndContent": [],
+            "assets": [],
+            "tests": [],
+            "serverAndNetwork": []
+          }
+        }
+      ],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-multiplayer-quality",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "crossword",
+      "title": "THC Weekly Crossword",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/crossword/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc-crossword-",
+        "sourceRoots": [
+          "src",
+          "content",
+          "public/puzzles"
+        ],
+        "runtimeRoots": [],
+        "build": "npm test && npm run verify && npm run build",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": null
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1A7qynwW1yK4RbeWw0r3M8tIsR7izgpwB",
+        "folderTitle": "THC Crossword",
+        "path": "04 Games/THC Crossword",
+        "visualRootId": "1Gx6bIBkO9eqP0Rc5FwGPwjpsU-TK-VnW",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [],
+        "uiAndRendering": [
+          "src/main.js",
+          "src/styles.css"
+        ],
+        "dataAndContent": [
+          "public/puzzles",
+          "public/puzzles/2026-W26.exolve.txt",
+          "public/puzzles/2026-W26.ipuz.json",
+          "public/puzzles/2026-W26.json",
+          "public/puzzles/2026-W27.exolve.txt",
+          "public/puzzles/2026-W27.ipuz.json",
+          "public/puzzles/2026-W27.json",
+          "public/puzzles/2026-W28.exolve.txt",
+          "public/puzzles/2026-W28.ipuz.json",
+          "public/puzzles/2026-W28.json",
+          "public/puzzles/2026-W29.exolve.txt",
+          "public/puzzles/2026-W29.ipuz.json",
+          "public/puzzles/2026-W29.json",
+          "public/puzzles/2026-W30.exolve.txt",
+          "public/puzzles/2026-W30.ipuz.json",
+          "public/puzzles/2026-W30.json",
+          "public/puzzles/2026-W31.exolve.txt",
+          "public/puzzles/2026-W31.ipuz.json",
+          "public/puzzles/2026-W31.json",
+          "public/puzzles/2026-W32.exolve.txt",
+          "public/puzzles/2026-W32.ipuz.json",
+          "public/puzzles/2026-W32.json",
+          "public/puzzles/2026-W33.exolve.txt",
+          "public/puzzles/2026-W33.ipuz.json",
+          "public/puzzles/2026-W33.json",
+          "public/puzzles/2026-W34.exolve.txt",
+          "public/puzzles/2026-W34.ipuz.json",
+          "public/puzzles/2026-W34.json",
+          "public/puzzles/2026-W35.exolve.txt",
+          "public/puzzles/2026-W35.ipuz.json",
+          "public/puzzles/2026-W35.json",
+          "public/puzzles/2026-W36.exolve.txt",
+          "public/puzzles/2026-W36.ipuz.json",
+          "public/puzzles/2026-W36.json",
+          "public/puzzles/2026-W37.exolve.txt",
+          "public/puzzles/2026-W37.ipuz.json",
+          "public/puzzles/2026-W37.json",
+          "public/puzzles/2026-W38.exolve.txt",
+          "public/puzzles/2026-W38.ipuz.json",
+          "public/puzzles/2026-W38.json"
+        ],
+        "assets": [],
+        "tests": [],
+        "scripts": [],
+        "serverAndNetwork": [],
+        "docs": [],
+        "workflows": [
+          ".github/workflows/daily-crossword.yml"
+        ]
+      },
+      "development": [],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "event-night",
+      "title": "Event Night",
+      "portfolioStage": "concept-only",
+      "locationStatus": "concept-only-no-canonical-code",
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-concept-incubator"
+      ]
+    },
+    {
+      "id": "find-seed-man",
+      "title": "Find / Where’s Seed Man",
+      "portfolioStage": "concept-only",
+      "locationStatus": "concept-only-no-canonical-code",
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-concept-incubator"
+      ]
+    },
+    {
+      "id": "ganjumanji",
+      "title": "Ganjumanji: The Lost Grower's Temple",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/ganjumanji/",
+      "canonical": {
+        "repository": "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple",
+        "sourceRoots": [
+          "src",
+          "public"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/ganjumanji/source-revision.txt",
+          "site/public-route-patch/games/ganjumanji/source-revision.txt"
+        ],
+        "build": "npm test && npm run validate:ui && npm run build && npm run validate:release",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static-phaser",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": {
+          "players": 1,
+          "regions": 5,
+          "relicSeeds": 10,
+          "saveVersion": 5,
+          "input": [
+            "keyboard",
+            "touch"
+          ],
+          "persistentBestRun": true,
+          "checkpointSave": true,
+          "separateAutosaveAndCheckpoint": true,
+          "pressureCurve": [
+            9,
+            7,
+            5,
+            6,
+            5
+          ]
+        }
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "17xhnXnM36kEPLln6O8rH2lT0zx4-BFQ-",
+        "folderTitle": "Ganjumanji",
+        "path": "04 Games/Ganjumanji",
+        "visualRootId": "1RLSBk687oB4up-_AZ_LhalaeoyTLGEJA",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [
+          "src/game/model.ts"
+        ],
+        "uiAndRendering": [
+          "src/main.ts",
+          "src/styles.css"
+        ],
+        "dataAndContent": [],
+        "assets": [],
+        "tests": [],
+        "scripts": [],
+        "serverAndNetwork": [],
+        "docs": [
+          "public/game-release.json"
+        ],
+        "workflows": []
+      },
+      "development": [],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-save-replay"
+      ]
+    },
+    {
+      "id": "grow-off",
+      "title": "Grow-Off",
+      "portfolioStage": "concept-only",
+      "locationStatus": "concept-only-no-canonical-code",
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-concept-incubator"
+      ]
+    },
+    {
+      "id": "grow-room-bingo",
+      "title": "Grow Room Bingo / Bongwater Bingo",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/grow-room-bingo/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc",
+        "sourceRoots": [
+          "games/grow-room-bingo"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/grow-room-bingo",
+          "site/public-route-patch/games/grow-room-bingo"
+        ],
+        "build": "node games/grow-room-bingo/scripts/validate-data.mjs && node games/grow-room-bingo/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-bingo/app.js && node --check site/public-route-patch/games/grow-room-bingo/keyboard-nav.js",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": null
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1AMZ4SiWlk7RiVBVeMXkkBH7Fo5FrN_aO",
+        "folderTitle": "Grow Room Bingo",
+        "path": "04 Games/Grow Room Bingo",
+        "visualRootId": "1bMpb_n1b79rwHuH59dW9lcErQlg6M4bl",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [],
+        "uiAndRendering": [
+          "site/public-route-patch/games/grow-room-bingo/app.js",
+          "site/public-route-patch/games/grow-room-bingo/index.html"
+        ],
+        "dataAndContent": [
+          "games/grow-room-bingo/data/prompts.json",
+          "games/grow-room-bingo/test/card-code.test.mjs",
+          "site/public-route-patch/games/grow-room-bingo/data/prompts.json"
+        ],
+        "assets": [],
+        "tests": [
+          "games/grow-room-bingo/test/card-code.test.mjs",
+          "games/grow-room-bingo/test/public-runtime.test.mjs"
+        ],
+        "scripts": [
+          "games/grow-room-bingo/scripts/validate-data.mjs"
+        ],
+        "serverAndNetwork": [
+          "games/grow-room-bingo",
+          "games/grow-room-bingo/README.md",
+          "games/grow-room-bingo/code-utils.mjs",
+          "games/grow-room-bingo/data",
+          "games/grow-room-bingo/data/prompts.json",
+          "games/grow-room-bingo/game.json",
+          "games/grow-room-bingo/scripts",
+          "games/grow-room-bingo/scripts/validate-data.mjs",
+          "games/grow-room-bingo/test",
+          "games/grow-room-bingo/test/card-code.test.mjs",
+          "games/grow-room-bingo/test/public-runtime.test.mjs",
+          "site/public-route-patch/games/grow-room-bingo",
+          "site/public-route-patch/games/grow-room-bingo/app.js",
+          "site/public-route-patch/games/grow-room-bingo/bingo.css",
+          "site/public-route-patch/games/grow-room-bingo/code-utils.mjs",
+          "site/public-route-patch/games/grow-room-bingo/data",
+          "site/public-route-patch/games/grow-room-bingo/data/prompts.json",
+          "site/public-route-patch/games/grow-room-bingo/index.html",
+          "site/public-route-patch/games/grow-room-bingo/keyboard-nav.js"
+        ],
+        "docs": [
+          "games/grow-room-bingo/README.md"
+        ],
+        "workflows": [
+          ".github/workflows/grow-room-bingo-ci.yml"
+        ]
+      },
+      "development": [],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "grow-room-defense",
+      "title": "Grow Room Defense",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/grow-room-defense/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc",
+        "sourceRoots": [
+          "games/grow-room-defense"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/grow-room-defense",
+          "site/public-route-patch/games/grow-room-defense"
+        ],
+        "build": "node games/grow-room-defense/scripts/validate-data.mjs && node games/grow-room-defense/test/engine.test.mjs && node games/grow-room-defense/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-defense/app.js && node --check site/public-route-patch/games/grow-room-defense/runtime.mjs && cmp games/grow-room-defense/src/engine.mjs site/public-route-patch/games/grow-room-defense/engine.mjs",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": null
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1UVXS-bnnye854aCrBPHjVVPWKzyoLgzj",
+        "folderTitle": "Grow Room Defense",
+        "path": "04 Games/Grow Room Defense",
+        "visualRootId": "15zk_HWNGnCpl_AQHw9jx5Ym3r8GAUw09",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [
+          "games/grow-room-defense/src/engine.mjs",
+          "games/grow-room-defense/test/engine.test.mjs",
+          "site/public-route-patch/games/grow-room-defense/engine.mjs"
+        ],
+        "uiAndRendering": [
+          "site/public-route-patch/games/grow-room-defense/app.js",
+          "site/public-route-patch/games/grow-room-defense/index.html"
+        ],
+        "dataAndContent": [
+          "games/grow-room-defense/data/ipm.json",
+          "site/public-route-patch/games/grow-room-defense/data/ipm.json"
+        ],
+        "assets": [],
+        "tests": [
+          "games/grow-room-defense/test/engine.test.mjs",
+          "games/grow-room-defense/test/public-runtime.test.mjs"
+        ],
+        "scripts": [
+          "games/grow-room-defense/scripts/validate-data.mjs"
+        ],
+        "serverAndNetwork": [
+          "games/grow-room-defense",
+          "games/grow-room-defense/README.md",
+          "games/grow-room-defense/data",
+          "games/grow-room-defense/data/ipm.json",
+          "games/grow-room-defense/game.json",
+          "games/grow-room-defense/scripts",
+          "games/grow-room-defense/scripts/validate-data.mjs",
+          "games/grow-room-defense/src",
+          "games/grow-room-defense/src/engine.mjs",
+          "games/grow-room-defense/test",
+          "games/grow-room-defense/test/engine.test.mjs",
+          "games/grow-room-defense/test/public-runtime.test.mjs",
+          "site/public-route-patch/games/grow-room-defense",
+          "site/public-route-patch/games/grow-room-defense/accessibility-v1.css",
+          "site/public-route-patch/games/grow-room-defense/accessibility-v1.js",
+          "site/public-route-patch/games/grow-room-defense/app.js",
+          "site/public-route-patch/games/grow-room-defense/data",
+          "site/public-route-patch/games/grow-room-defense/data/ipm.json",
+          "site/public-route-patch/games/grow-room-defense/engine.mjs",
+          "site/public-route-patch/games/grow-room-defense/grow-room-defense-v2.css",
+          "site/public-route-patch/games/grow-room-defense/grow-room-defense.css",
+          "site/public-route-patch/games/grow-room-defense/index.html",
+          "site/public-route-patch/games/grow-room-defense/runtime.mjs"
+        ],
+        "docs": [
+          "games/grow-room-defense/README.md"
+        ],
+        "workflows": [
+          ".github/workflows/grow-room-defense-ci.yml"
+        ]
+      },
+      "development": [],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "grow-shop-hustle",
+      "title": "Grow Shop Hustle",
+      "portfolioStage": "concept-only",
+      "locationStatus": "concept-only-no-canonical-code",
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-concept-incubator"
+      ]
+    },
+    {
+      "id": "grower-conversations",
+      "title": "Grower Conversations",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/grower-conversations/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc",
+        "sourceRoots": [
+          "games/grower-conversations"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/grower-conversations",
+          "site/public-route-patch/games/grower-conversations"
+        ],
+        "build": "node games/grower-conversations/scripts/validate-prompt-bank.mjs && node games/grower-conversations/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grower-conversations/app.js && cmp games/grower-conversations/data/prompt-bank.json site/public-route-patch/games/grower-conversations/data/prompt-bank.json",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": {
+          "cards": 96,
+          "categories": 8,
+          "depths": 3
+        }
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1HCQp4R9xjl9HQL6UvvwDBzASyTw2ees_",
+        "folderTitle": "Grower Conversations",
+        "path": "04 Games/Grower Conversations",
+        "visualRootId": "1gL6wg0Wyh0_F0D4sGehKIpyGC0SOwFMd",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [],
+        "uiAndRendering": [
+          "site/public-route-patch/games/grower-conversations/app.js",
+          "site/public-route-patch/games/grower-conversations/index.html"
+        ],
+        "dataAndContent": [
+          "games/grower-conversations/data/categories.json",
+          "games/grower-conversations/data/drive-prompt-starter-source.json",
+          "games/grower-conversations/data/prompt-bank.json",
+          "games/grower-conversations/scripts/validate-prompt-bank.mjs",
+          "site/public-route-patch/games/grower-conversations/data/.gitkeep",
+          "site/public-route-patch/games/grower-conversations/data/prompt-bank.json"
+        ],
+        "assets": [],
+        "tests": [
+          "games/grower-conversations/test/public-runtime.test.mjs"
+        ],
+        "scripts": [
+          "games/grower-conversations/scripts/validate-prompt-bank.mjs"
+        ],
+        "serverAndNetwork": [],
+        "docs": [
+          "games/grower-conversations/README.md"
+        ],
+        "workflows": [
+          ".github/workflows/grower-conversations-ci.yml"
+        ]
+      },
+      "development": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-runtime",
+          "roots": [
+            "app/games/grower-conversations"
+          ],
+          "subsystems": {
+            "rulesAndSimulation": [],
+            "uiAndRendering": [
+              "app/games/grower-conversations",
+              "app/games/grower-conversations/GrowerConversationsGame.tsx",
+              "app/games/grower-conversations/page.module.css",
+              "app/games/grower-conversations/page.tsx"
+            ],
+            "dataAndContent": [],
+            "assets": [],
+            "tests": [],
+            "serverAndNetwork": []
+          }
+        }
+      ],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "harvest-hustle",
+      "title": "Harvest Hustle",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/harvest-hustle/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc",
+        "sourceRoots": [
+          "games/harvest-hustle"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/harvest-hustle",
+          "site/public-route-patch/games/harvest-hustle"
+        ],
+        "build": "node games/harvest-hustle/scripts/validate-data.mjs && node games/harvest-hustle/test/engine.test.mjs && node games/harvest-hustle/test/public-runtime.test.mjs && node --check site/public-route-patch/games/harvest-hustle/app.js && node --check site/public-route-patch/games/harvest-hustle/runtime.mjs && cmp games/harvest-hustle/src/engine.mjs site/public-route-patch/games/harvest-hustle/engine.mjs",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": null
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1xXOiBtGiUW0lFOVEBmeELDD6qZd_Qrui",
+        "folderTitle": "Harvest Hustle",
+        "path": "04 Games/Harvest Hustle",
+        "visualRootId": "1Z8Kqa1BbGYu7YqIloYQHYOAIGD-ZuHeK",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [
+          "games/harvest-hustle/src/engine.mjs",
+          "games/harvest-hustle/test/engine.test.mjs",
+          "site/public-route-patch/games/harvest-hustle/engine.mjs"
+        ],
+        "uiAndRendering": [
+          "site/public-route-patch/games/harvest-hustle/app.js",
+          "site/public-route-patch/games/harvest-hustle/index.html"
+        ],
+        "dataAndContent": [
+          "games/harvest-hustle/data/shift.json",
+          "site/public-route-patch/games/harvest-hustle/data/shift.json"
+        ],
+        "assets": [],
+        "tests": [
+          "games/harvest-hustle/test/engine.test.mjs",
+          "games/harvest-hustle/test/public-runtime.test.mjs"
+        ],
+        "scripts": [
+          "games/harvest-hustle/scripts/validate-data.mjs"
+        ],
+        "serverAndNetwork": [],
+        "docs": [
+          "games/harvest-hustle/README.md"
+        ],
+        "workflows": [
+          ".github/workflows/harvest-hustle-ci.yml"
+        ]
+      },
+      "development": [],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "high-iq",
+      "title": "High IQ — Test Higher Cognition",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/high-iq/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc",
+        "sourceRoots": [
+          "games/high-iq",
+          "site/public-route-patch/games/high-iq"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/high-iq",
+          "site/public-route-patch/games/high-iq"
+        ],
+        "build": "npm run hiq:validate",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": {
+          "version": "2.4",
+          "questions": 200,
+          "sources": 50,
+          "validator": "node games/high-iq/scripts/validate-data.mjs",
+          "publicRuntimeValidator": "node games/high-iq/scripts/validate-public-runtime.mjs",
+          "manifestDriven": true
+        }
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1WClMjYObsNUyojKoOb_nviBy0AXnATOq",
+        "folderTitle": "High IQ",
+        "path": "04 Games/High IQ",
+        "visualRootId": "1lAF3xNtpm7p_gbI-2b06lXuz9f2Omjqg",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [],
+        "uiAndRendering": [
+          "site/public-route-patch/games/high-iq/app-v3.js",
+          "site/public-route-patch/games/high-iq/app.js",
+          "site/public-route-patch/games/high-iq/index.html"
+        ],
+        "dataAndContent": [
+          "games/high-iq/authoring/question-template.json",
+          "games/high-iq/data/drive-production-artifacts.json",
+          "games/high-iq/data/manifest.json",
+          "games/high-iq/data/questions-001-010.v2.2.json",
+          "games/high-iq/data/questions-011-020.v2.2.json",
+          "games/high-iq/data/questions-021-030.v2.2.json",
+          "games/high-iq/data/questions-031-040.v2.2.json",
+          "games/high-iq/data/questions-041-050.v2.2.json",
+          "games/high-iq/data/questions-051-060.v2.2.json",
+          "games/high-iq/data/questions-061-070.v2.2.json",
+          "games/high-iq/data/questions-071-080.v2.2.json",
+          "games/high-iq/data/questions-081-090.v2.3.json",
+          "games/high-iq/data/questions-091-110.v2.3.json",
+          "games/high-iq/data/questions-111-135.v2.3.json",
+          "games/high-iq/data/questions-136-160.v2.3.json",
+          "games/high-iq/data/questions-161-200.v2.4.json",
+          "games/high-iq/data/sources-001-025.v2.2.json",
+          "games/high-iq/data/sources-026-050.v2.2.json",
+          "games/high-iq/scripts/question-bank.mjs",
+          "games/high-iq/test/question-bank-tool.test.mjs",
+          "site/public-route-patch/games/high-iq/data/manifest.json",
+          "site/public-route-patch/games/high-iq/data/questions-001-010.v2.2.json",
+          "site/public-route-patch/games/high-iq/data/questions-011-020.v2.2.json",
+          "site/public-route-patch/games/high-iq/data/questions-021-030.v2.2.json",
+          "site/public-route-patch/games/high-iq/data/questions-031-040.v2.2.json",
+          "site/public-route-patch/games/high-iq/data/questions-041-050.v2.2.json",
+          "site/public-route-patch/games/high-iq/data/questions-051-060.v2.2.json",
+          "site/public-route-patch/games/high-iq/data/questions-061-070.v2.2.json",
+          "site/public-route-patch/games/high-iq/data/questions-071-080.v2.2.json",
+          "site/public-route-patch/games/high-iq/data/questions-081-090.v2.3.json",
+          "site/public-route-patch/games/high-iq/data/questions-091-110.v2.3.json",
+          "site/public-route-patch/games/high-iq/data/questions-111-135.v2.3.json",
+          "site/public-route-patch/games/high-iq/data/questions-136-160.v2.3.json",
+          "site/public-route-patch/games/high-iq/data/questions-161-200.v2.4.json",
+          "site/public-route-patch/games/high-iq/data/sources-001-025.v2.2.json",
+          "site/public-route-patch/games/high-iq/data/sources-026-050.v2.2.json"
+        ],
+        "assets": [
+          "site/public-route-patch/games/high-iq/assets/domains/HIQ-DOMAIN-DIAGNOSTICS-v02.svg",
+          "site/public-route-patch/games/high-iq/assets/domains/HIQ-DOMAIN-ENVIRONMENT-CLIMATE-v02.svg",
+          "site/public-route-patch/games/high-iq/assets/domains/HIQ-DOMAIN-GENETICS-BREEDING-v02.svg",
+          "site/public-route-patch/games/high-iq/assets/domains/HIQ-DOMAIN-HARVEST-POSTHARVEST-v02.svg",
+          "site/public-route-patch/games/high-iq/assets/domains/HIQ-DOMAIN-IPM-v02.svg",
+          "site/public-route-patch/games/high-iq/assets/domains/HIQ-DOMAIN-NUTRITION-PH-v02.svg",
+          "site/public-route-patch/games/high-iq/assets/domains/HIQ-DOMAIN-PHOTOBIOLOGY-v02.svg",
+          "site/public-route-patch/games/high-iq/assets/domains/HIQ-DOMAIN-PLANT-BIOLOGY-v02.svg",
+          "site/public-route-patch/games/high-iq/assets/domains/HIQ-DOMAIN-PLANT-PHYSIOLOGY-v02.svg",
+          "site/public-route-patch/games/high-iq/assets/domains/HIQ-DOMAIN-ROOT-ZONE-IRRIGATION-v02.svg",
+          "site/public-route-patch/games/high-iq/assets/domains/manifest.json"
+        ],
+        "tests": [
+          "games/high-iq/test/game-core.test.mjs",
+          "games/high-iq/test/question-bank-tool.test.mjs",
+          "games/high-iq/test/runtime-smoke.mjs"
+        ],
+        "scripts": [
+          "games/high-iq/scripts/question-bank.mjs",
+          "games/high-iq/scripts/sync-deployment-registry.mjs",
+          "games/high-iq/scripts/sync-runtime-shell.mjs",
+          "games/high-iq/scripts/validate-data.mjs",
+          "games/high-iq/scripts/validate-public-runtime.mjs",
+          "games/high-iq/scripts/verify-live-v3.mjs"
+        ],
+        "serverAndNetwork": [],
+        "docs": [
+          "games/high-iq/README.md",
+          "games/high-iq/authoring/README.md"
+        ],
+        "workflows": [
+          ".github/workflows/high-iq-ci.yml",
+          ".github/workflows/high-iq-data-ci.yml",
+          ".github/workflows/reconcile-high-iq-manifest.yml"
+        ]
+      },
+      "development": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-runtime",
+          "roots": [
+            "app/games/high-iq"
+          ],
+          "subsystems": {
+            "rulesAndSimulation": [],
+            "uiAndRendering": [
+              "app/games/high-iq",
+              "app/games/high-iq/HighIqGame.tsx",
+              "app/games/high-iq/page.module.css",
+              "app/games/high-iq/page.tsx"
+            ],
+            "dataAndContent": [],
+            "assets": [],
+            "tests": [],
+            "serverAndNetwork": []
+          }
+        }
+      ],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "high-land",
+      "title": "High Land: The Sweet Escape",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/high-land/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc",
+        "sourceRoots": [
+          "apps/high-land-web"
+        ],
+        "runtimeRoots": [
+          "apps/high-land-web",
+          "apps/high-land-web"
+        ],
+        "build": "npm run test:high-land && npm run build:high-land",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": null
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1kWOX1UYlbEraSFL5UyCOdyzXqMcqcFpZ",
+        "folderTitle": "High Land",
+        "path": "04 Games/High Land",
+        "visualRootId": "1EeySYtL4duj-oYhKyfXbi1vEh9fN5URf",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [
+          "apps/high-land-web/src/game/systems/rulesCheck.ts"
+        ],
+        "uiAndRendering": [
+          "apps/high-land-web",
+          "apps/high-land-web/.env.example",
+          "apps/high-land-web/index.html",
+          "apps/high-land-web/package.json",
+          "apps/high-land-web/public",
+          "apps/high-land-web/public/api",
+          "apps/high-land-web/public/api/_rooms",
+          "apps/high-land-web/public/api/_rooms/.htaccess",
+          "apps/high-land-web/public/api/_rooms/index.php",
+          "apps/high-land-web/public/api/_shared.php",
+          "apps/high-land-web/public/api/append-event.php",
+          "apps/high-land-web/public/api/create-room.php",
+          "apps/high-land-web/public/api/get-room.php",
+          "apps/high-land-web/public/api/index.php",
+          "apps/high-land-web/public/api/join-room.php",
+          "apps/high-land-web/public/api/update-room.php",
+          "apps/high-land-web/public/assets",
+          "apps/high-land-web/public/assets/.gitkeep",
+          "apps/high-land-web/public/assets/audio",
+          "apps/high-land-web/public/assets/audio/.gitkeep",
+          "apps/high-land-web/public/assets/audio/README.md",
+          "apps/high-land-web/public/assets/high-land",
+          "apps/high-land-web/public/assets/high-land/audio",
+          "apps/high-land-web/public/assets/high-land/audio/README.md",
+          "apps/high-land-web/public/assets/high-land/audio/background-loop.mp3",
+          "apps/high-land-web/public/assets/high-land/audio/card-draw.mp3",
+          "apps/high-land-web/public/assets/high-land/audio/dice-roll.mp3",
+          "apps/high-land-web/public/assets/high-land/audio/move-tick.mp3",
+          "apps/high-land-web/public/assets/high-land/audio/win.mp3",
+          "apps/high-land-web/public/assets/images",
+          "apps/high-land-web/public/assets/images/.gitkeep",
+          "apps/high-land-web/public/assets/images/board",
+          "apps/high-land-web/public/assets/images/board/.gitkeep",
+          "apps/high-land-web/public/assets/images/board/README.md",
+          "apps/high-land-web/public/assets/images/board/high-land-board.png",
+          "apps/high-land-web/public/assets/images/cards",
+          "apps/high-land-web/public/assets/images/cards/.gitkeep",
+          "apps/high-land-web/public/assets/images/cards/README.md",
+          "apps/high-land-web/public/assets/images/cards/hit-card-sheet-01.jpg",
+          "apps/high-land-web/public/assets/images/cards/hit-card-sheet-02.jpg"
+        ],
+        "dataAndContent": [
+          "apps/high-land-web/public/assets/high-land/audio/card-draw.mp3",
+          "apps/high-land-web/public/assets/images/cards",
+          "apps/high-land-web/public/assets/images/cards/.gitkeep",
+          "apps/high-land-web/public/assets/images/cards/README.md",
+          "apps/high-land-web/public/assets/images/cards/hit-card-sheet-01.jpg",
+          "apps/high-land-web/public/assets/images/cards/hit-card-sheet-02.jpg",
+          "apps/high-land-web/public/assets/images/cards/hit-card-sheet-03.jpg",
+          "apps/high-land-web/public/assets/images/cards/hit-card-sheet-04.jpg",
+          "apps/high-land-web/public/assets/images/cards/hit-card-sheet-05.jpg",
+          "apps/high-land-web/public/assets/images/cards/hit",
+          "apps/high-land-web/public/assets/images/cards/hit/APPROVED_HIT_CARD_ASSETS.md",
+          "apps/high-land-web/public/assets/images/cards/hit/README.md",
+          "apps/high-land-web/public/assets/images/cards/hit/fallback-hit-card.svg",
+          "apps/high-land-web/public/assets/images/cards/hit/master",
+          "apps/high-land-web/public/assets/images/cards/hit/master/.gitkeep",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-001-perfect-roll.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-002-cough-lock.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-003-rosin-rush.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-004-lost-in-dankwood.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-005-munchie-motivation.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-006-kief-avalanche.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-007-trichome-boost.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-008-cloud-9-drift.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-009-smooth-cruise.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-010-lucky-lighter.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-011-rolling-hills-shortcut.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-012-dankwood-trail.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-013-dropped-the-lighter.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-014-burnt-snack-run.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-015-sticky-fingers.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-016-couch-locked.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-017-pass-the-pack.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-018-rotation-rule.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-019-hot-box.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-020-puff-puff-pass.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-021-snack-tax.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-022-bogart-alert.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-023-reverse-rotation.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-024-friend-boost.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-025-good-vibes-only.png"
+        ],
+        "assets": [
+          "apps/high-land-web/public/assets/high-land/audio/background-loop.mp3",
+          "apps/high-land-web/public/assets/high-land/audio/card-draw.mp3",
+          "apps/high-land-web/public/assets/high-land/audio/dice-roll.mp3",
+          "apps/high-land-web/public/assets/high-land/audio/move-tick.mp3",
+          "apps/high-land-web/public/assets/high-land/audio/win.mp3",
+          "apps/high-land-web/public/assets/images/board/high-land-board.png",
+          "apps/high-land-web/public/assets/images/cards/hit-card-sheet-01.jpg",
+          "apps/high-land-web/public/assets/images/cards/hit-card-sheet-02.jpg",
+          "apps/high-land-web/public/assets/images/cards/hit-card-sheet-03.jpg",
+          "apps/high-land-web/public/assets/images/cards/hit-card-sheet-04.jpg",
+          "apps/high-land-web/public/assets/images/cards/hit-card-sheet-05.jpg",
+          "apps/high-land-web/public/assets/images/cards/hit/fallback-hit-card.svg",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-001-perfect-roll.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-002-cough-lock.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-003-rosin-rush.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-004-lost-in-dankwood.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-005-munchie-motivation.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-006-kief-avalanche.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-007-trichome-boost.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-008-cloud-9-drift.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-009-smooth-cruise.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-010-lucky-lighter.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-011-rolling-hills-shortcut.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-012-dankwood-trail.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-013-dropped-the-lighter.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-014-burnt-snack-run.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-015-sticky-fingers.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-016-couch-locked.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-017-pass-the-pack.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-018-rotation-rule.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-019-hot-box.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-020-puff-puff-pass.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-021-snack-tax.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-022-bogart-alert.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-023-reverse-rotation.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-024-friend-boost.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-025-good-vibes-only.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-026-rosin-spill.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-027-free-pass.png",
+          "apps/high-land-web/public/assets/images/cards/hit/master/card-028-high-roller.png"
+        ],
+        "tests": [],
+        "scripts": [
+          "apps/high-land-web/scripts/import-approved-hit-cards.mjs",
+          "apps/high-land-web/scripts/room-api-test-router.php",
+          "apps/high-land-web/scripts/verify-room-api-security.mjs"
+        ],
+        "serverAndNetwork": [
+          "apps/high-land-web/public/api",
+          "apps/high-land-web/public/api/_rooms",
+          "apps/high-land-web/public/api/_rooms/.htaccess",
+          "apps/high-land-web/public/api/_rooms/index.php",
+          "apps/high-land-web/public/api/_shared.php",
+          "apps/high-land-web/public/api/append-event.php",
+          "apps/high-land-web/public/api/create-room.php",
+          "apps/high-land-web/public/api/get-room.php",
+          "apps/high-land-web/public/api/index.php",
+          "apps/high-land-web/public/api/join-room.php",
+          "apps/high-land-web/public/api/update-room.php",
+          "apps/high-land-web/scripts/room-api-test-router.php",
+          "apps/high-land-web/scripts/verify-room-api-security.mjs",
+          "apps/high-land-web/src/app/highLandRoomModeService.test.ts",
+          "apps/high-land-web/src/app/highLandRoomModeService.ts",
+          "apps/high-land-web/src/app/highLandRoomRuntime.test.ts",
+          "apps/high-land-web/src/app/highLandRoomRuntime.ts",
+          "apps/high-land-web/src/game/multiplayer",
+          "apps/high-land-web/src/game/multiplayer/README.md",
+          "apps/high-land-web/src/game/multiplayer/WEBSITE_ROOM_TRANSPORT_TODO.md",
+          "apps/high-land-web/src/game/multiplayer/inviteLinks.test.ts",
+          "apps/high-land-web/src/game/multiplayer/inviteLinks.ts",
+          "apps/high-land-web/src/game/multiplayer/localRoomEvents.test.ts",
+          "apps/high-land-web/src/game/multiplayer/localRoomEvents.ts",
+          "apps/high-land-web/src/game/multiplayer/localRoomFlow.test.ts",
+          "apps/high-land-web/src/game/multiplayer/localRoomFlow.ts",
+          "apps/high-land-web/src/game/multiplayer/localRoomRepository.test.ts",
+          "apps/high-land-web/src/game/multiplayer/localRoomRepository.ts",
+          "apps/high-land-web/src/game/multiplayer/localRoomStorage.ts",
+          "apps/high-land-web/src/game/multiplayer/localRoomTransport.test.ts",
+          "apps/high-land-web/src/game/multiplayer/localRoomTransport.ts",
+          "apps/high-land-web/src/game/multiplayer/roomActionExecutor.test.ts",
+          "apps/high-land-web/src/game/multiplayer/roomActionExecutor.ts",
+          "apps/high-land-web/src/game/multiplayer/roomCodes.test.ts",
+          "apps/high-land-web/src/game/multiplayer/roomCodes.ts",
+          "apps/high-land-web/src/game/multiplayer/roomGameActions.test.ts",
+          "apps/high-land-web/src/game/multiplayer/roomGameActions.ts",
+          "apps/high-land-web/src/game/multiplayer/roomGameFactory.test.ts",
+          "apps/high-land-web/src/game/multiplayer/roomGameFactory.ts",
+          "apps/high-land-web/src/game/multiplayer/roomSessionController.test.ts"
+        ],
+        "docs": [
+          "apps/high-land-web/public/assets/audio/README.md",
+          "apps/high-land-web/public/assets/high-land/audio/README.md",
+          "apps/high-land-web/public/assets/images/board/README.md",
+          "apps/high-land-web/public/assets/images/cards/README.md",
+          "apps/high-land-web/public/assets/images/cards/hit/README.md",
+          "apps/high-land-web/src/game/multiplayer/README.md",
+          "apps/high-land-web/src/ui/README.md"
+        ],
+        "workflows": [
+          ".github/workflows/high-land-ci.yml",
+          ".github/workflows/high-land-live-room-security.yml",
+          ".github/workflows/high-land-room-security-ci.yml",
+          ".github/workflows/hostinger-high-land-deploy.yml"
+        ]
+      },
+      "development": [],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-multiplayer-quality",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "high-life",
+      "title": "High Life: From Bagseed to Legacy",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/high-life/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc",
+        "sourceRoots": [
+          "games/high-life"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/high-life",
+          "site/public-route-patch/games/high-life"
+        ],
+        "build": "node games/high-life/test/engine.test.mjs && node games/high-life/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-life/app.js && cmp games/high-life/src/engine.mjs site/public-route-patch/games/high-life/engine.mjs && cmp games/high-life/data/events.json site/public-route-patch/games/high-life/data/events.json",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": {
+          "turns": 18,
+          "eras": 3,
+          "events": 18,
+          "deterministic": true,
+          "balanceSimulationSeedsPerStrategy": 120
+        }
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1O75rPZg2AzA0kE2J1gFnmptKRdm-IZJ1",
+        "folderTitle": "High Life",
+        "path": "04 Games/High Life",
+        "visualRootId": "1zLPjubw5rezTeafcTwvL1c5Tr3dKFwnh",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [
+          "games/high-life/src/engine.mjs",
+          "games/high-life/test/engine.test.mjs",
+          "site/public-route-patch/games/high-life/engine.mjs"
+        ],
+        "uiAndRendering": [
+          "site/public-route-patch/games/high-life/app.js",
+          "site/public-route-patch/games/high-life/index.html"
+        ],
+        "dataAndContent": [
+          "games/high-life/data/eras.json",
+          "games/high-life/data/events.json",
+          "site/public-route-patch/games/high-life/data/events.json"
+        ],
+        "assets": [
+          "games/high-life/assets/high-life-era-journey-v1.webp",
+          "site/public-route-patch/games/high-life/assets/high-life-era-journey-v1.webp"
+        ],
+        "tests": [
+          "games/high-life/test/engine.test.mjs",
+          "games/high-life/test/public-runtime.test.mjs",
+          "games/high-life/test/save-state.test.mjs"
+        ],
+        "scripts": [],
+        "serverAndNetwork": [],
+        "docs": [
+          "games/high-life/README.md",
+          "games/high-life/docs/core-system.md"
+        ],
+        "workflows": [
+          ".github/workflows/high-life-ci.yml"
+        ]
+      },
+      "development": [],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "high-lines",
+      "title": "High Lines",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/high-lines/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc",
+        "sourceRoots": [
+          "games/high-lines"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/high-lines",
+          "site/public-route-patch/games/high-lines"
+        ],
+        "build": "node games/high-lines/scripts/validate-data.mjs && node games/high-lines/test/engine.test.mjs && node games/high-lines/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-lines/app.js && node --check site/public-route-patch/games/high-lines/runtime.mjs && cmp games/high-lines/src/engine.mjs site/public-route-patch/games/high-lines/engine.mjs",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": null
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "11wiiyc4qaLtbPU9nw7zYEoIY1IZL5h3o",
+        "folderTitle": "High Lines",
+        "path": "04 Games/High Lines",
+        "visualRootId": "1DpbVETGwk2DCnU5NqhiktjYlK2R234Sy",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [
+          "games/high-lines/src/engine.mjs",
+          "games/high-lines/test/engine.test.mjs",
+          "site/public-route-patch/games/high-lines/engine.mjs"
+        ],
+        "uiAndRendering": [
+          "games/high-lines/data/scenes.json",
+          "site/public-route-patch/games/high-lines/app.js",
+          "site/public-route-patch/games/high-lines/data/scenes.json",
+          "site/public-route-patch/games/high-lines/index.html"
+        ],
+        "dataAndContent": [
+          "games/high-lines/data/scenes.json",
+          "site/public-route-patch/games/high-lines/data/scenes.json"
+        ],
+        "assets": [
+          "games/high-lines/assets/cloud-garden.svg",
+          "games/high-lines/assets/neon-grow-room.svg",
+          "games/high-lines/assets/seed-city.svg",
+          "games/high-lines/assets/trichome-observatory.svg",
+          "site/public-route-patch/games/high-lines/assets/cloud-garden.svg",
+          "site/public-route-patch/games/high-lines/assets/neon-grow-room.svg",
+          "site/public-route-patch/games/high-lines/assets/seed-city.svg",
+          "site/public-route-patch/games/high-lines/assets/trichome-observatory.svg"
+        ],
+        "tests": [
+          "games/high-lines/test/engine.test.mjs",
+          "games/high-lines/test/persistence.test.mjs",
+          "games/high-lines/test/public-runtime.test.mjs"
+        ],
+        "scripts": [
+          "games/high-lines/scripts/validate-data.mjs"
+        ],
+        "serverAndNetwork": [
+          "games/high-lines/assets/neon-grow-room.svg",
+          "site/public-route-patch/games/high-lines/assets/neon-grow-room.svg"
+        ],
+        "docs": [
+          "games/high-lines/README.md"
+        ],
+        "workflows": [
+          ".github/workflows/high-lines-ci.yml"
+        ]
+      },
+      "development": [],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "keeper-or-compost",
+      "title": "Keeper or Compost",
+      "portfolioStage": "concept-only",
+      "locationStatus": "concept-only-no-canonical-code",
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-concept-incubator"
+      ]
+    },
+    {
+      "id": "kush-kings",
+      "title": "Kush Kings Chess",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/kush-kings-chess/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc-chess-git",
+        "sourceRoots": [
+          "client",
+          "server"
+        ],
+        "runtimeRoots": [],
+        "build": "pnpm check:rebrand && pnpm --filter client lint && pnpm build:client && pnpm build:server && pnpm test:production-runtime",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "node-full-stack-postgres",
+        "status": "runtime-integration",
+        "appTarget": "https://chess.dtfseeds.com",
+        "apiTarget": "https://chess-api.dtfseeds.com",
+        "machineData": {
+          "players": 2,
+          "runtime": "Next.js + Express + Socket.IO + PostgreSQL",
+          "frontend": "https://chess.dtfseeds.com",
+          "api": "https://chess-api.dtfseeds.com",
+          "healthPath": "/health",
+          "siteShell": "header-v6",
+          "liveCheck": "npm run live:check",
+          "manualGate": "two-browser-mobile",
+          "publicPromotion": false
+        }
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1tWjfjdhrSl03mPrt2mrTNZ3HjhDP9BSK",
+        "folderTitle": "THC Chess",
+        "path": "04 Games/THC Chess",
+        "visualRootId": "1fKcjYK2FMommcTaGr5KuSUDQtBNAyLCN",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [],
+        "uiAndRendering": [
+          "client/public/apple-touch-icon.png",
+          "client/src/app",
+          "client/src/app/[code]",
+          "client/src/app/[code]/page.tsx",
+          "client/src/app/archive",
+          "client/src/app/archive/[id]",
+          "client/src/app/archive/[id]/not-found.tsx",
+          "client/src/app/archive/[id]/page.tsx",
+          "client/src/app/layout.tsx",
+          "client/src/app/not-found.tsx",
+          "client/src/app/opengraph-image.png",
+          "client/src/app/page.tsx",
+          "client/src/app/robots.txt",
+          "client/src/app/settings",
+          "client/src/app/settings/page.tsx",
+          "client/src/app/user",
+          "client/src/app/user/[name]",
+          "client/src/app/user/[name]/not-found.tsx",
+          "client/src/app/user/[name]/page.tsx",
+          "client/src/components",
+          "client/src/components/DtfSitewideHeader.tsx",
+          "client/src/components/Footer.tsx",
+          "client/src/components/Header.tsx",
+          "client/src/components/ThemeToggle.tsx",
+          "client/src/components/archive",
+          "client/src/components/archive/ArchivedGame.tsx",
+          "client/src/components/auth",
+          "client/src/components/auth/AuthModal.tsx",
+          "client/src/components/auth/Guest.tsx",
+          "client/src/components/auth/Login.tsx",
+          "client/src/components/auth/Register.tsx",
+          "client/src/components/game",
+          "client/src/components/game/CapturedPieces.tsx",
+          "client/src/components/game/GameAuthWrapper.tsx",
+          "client/src/components/game/GamePage.tsx",
+          "client/src/components/game/PromotionPicker.tsx",
+          "client/src/components/game/ThreeChessBoard.tsx",
+          "client/src/components/game/VisibleTurnAlert.tsx",
+          "client/src/components/game/reducers.ts",
+          "client/src/components/game/socketEvents.ts"
+        ],
+        "dataAndContent": [
+          "server/scripts/verify-observer-roster.mjs",
+          "server/src/socket/observerRoster.ts"
+        ],
+        "assets": [
+          "client/public/android-chrome-192x192.png",
+          "client/public/apple-touch-icon.png",
+          "client/public/favicon-16x16.png",
+          "client/public/favicon-32x32.png",
+          "client/public/kush-kings-mark.svg",
+          "client/public/kush-pieces/dark-bishop.svg",
+          "client/public/kush-pieces/dark-king.svg",
+          "client/public/kush-pieces/dark-knight.svg",
+          "client/public/kush-pieces/dark-pawn.svg",
+          "client/public/kush-pieces/dark-queen.svg",
+          "client/public/kush-pieces/dark-rook.svg",
+          "client/public/kush-pieces/light-bishop.svg",
+          "client/public/kush-pieces/light-king.svg",
+          "client/public/kush-pieces/light-knight.svg",
+          "client/public/kush-pieces/light-pawn.svg",
+          "client/public/kush-pieces/light-queen.svg",
+          "client/public/kush-pieces/light-rook.svg"
+        ],
+        "tests": [],
+        "scripts": [
+          "server/scripts/verify-abandonment-claim.mjs",
+          "server/scripts/verify-auth-input.mjs",
+          "server/scripts/verify-chat-guard.mjs",
+          "server/scripts/verify-draw-offers.mjs",
+          "server/scripts/verify-game-creation.mjs",
+          "server/scripts/verify-game-row-mapping.mjs",
+          "server/scripts/verify-observer-roster.mjs",
+          "server/scripts/verify-player-seat.mjs",
+          "server/scripts/verify-profile-contract.mjs",
+          "server/scripts/verify-query-input.mjs",
+          "server/scripts/verify-resignation.mjs",
+          "server/scripts/verify-result-persistence.mjs",
+          "server/scripts/verify-room-code.mjs",
+          "server/scripts/verify-room-selection.mjs"
+        ],
+        "serverAndNetwork": [
+          "client/src/components/game/socketEvents.ts",
+          "client/src/lib/roomCode.ts",
+          "server",
+          "server/.eslintrc",
+          "server/package.json",
+          "server/scripts",
+          "server/scripts/verify-abandonment-claim.mjs",
+          "server/scripts/verify-auth-input.mjs",
+          "server/scripts/verify-chat-guard.mjs",
+          "server/scripts/verify-draw-offers.mjs",
+          "server/scripts/verify-game-creation.mjs",
+          "server/scripts/verify-game-row-mapping.mjs",
+          "server/scripts/verify-observer-roster.mjs",
+          "server/scripts/verify-player-seat.mjs",
+          "server/scripts/verify-profile-contract.mjs",
+          "server/scripts/verify-query-input.mjs",
+          "server/scripts/verify-resignation.mjs",
+          "server/scripts/verify-result-persistence.mjs",
+          "server/scripts/verify-room-code.mjs",
+          "server/scripts/verify-room-selection.mjs",
+          "server/src",
+          "server/src/controllers",
+          "server/src/controllers/auth.controller.ts",
+          "server/src/controllers/authInput.ts",
+          "server/src/controllers/gameCreation.ts",
+          "server/src/controllers/games.controller.ts",
+          "server/src/controllers/queryInput.ts",
+          "server/src/controllers/users.controller.ts",
+          "server/src/db",
+          "server/src/db/index.ts",
+          "server/src/db/models",
+          "server/src/db/models/game.model.ts",
+          "server/src/db/models/gameRow.ts",
+          "server/src/db/models/user.model.ts",
+          "server/src/middleware",
+          "server/src/middleware/session.ts",
+          "server/src/roomCode.ts",
+          "server/src/routes",
+          "server/src/routes/auth.route.ts",
+          "server/src/routes/games.route.ts"
+        ],
+        "docs": [],
+        "workflows": []
+      },
+      "development": [],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-multiplayer-quality",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "line-builder",
+      "title": "Line Builder",
+      "portfolioStage": "concept-only",
+      "locationStatus": "concept-only-no-canonical-code",
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-concept-incubator"
+      ]
+    },
+    {
+      "id": "lost-in-the-terps",
+      "title": "Lost in the Terps",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/lost-in-the-terps/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc",
+        "sourceRoots": [
+          "games/lost-in-the-terps"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/lost-in-the-terps",
+          "site/public-route-patch/games/lost-in-the-terps"
+        ],
+        "build": "node games/lost-in-the-terps/scripts/validate-data.mjs && node games/lost-in-the-terps/test/public-runtime.test.mjs && node --check site/public-route-patch/games/lost-in-the-terps/app.js && node --check site/public-route-patch/games/lost-in-the-terps/keyboard-nav-v1.js",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": null
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1jekptq_dgt8x9D-_kDFW2jxu844RpBUA",
+        "folderTitle": "Lost in the Terps",
+        "path": "04 Games/Lost in the Terps",
+        "visualRootId": "1TaOTSsImKD8rTzkdZi-txZaj7uM1wW_4",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [],
+        "uiAndRendering": [
+          "site/public-route-patch/games/lost-in-the-terps/app.js",
+          "site/public-route-patch/games/lost-in-the-terps/index.html"
+        ],
+        "dataAndContent": [
+          "games/lost-in-the-terps/data/puzzles.json",
+          "site/public-route-patch/games/lost-in-the-terps/data/puzzles.json"
+        ],
+        "assets": [],
+        "tests": [
+          "games/lost-in-the-terps/test/public-runtime.test.mjs"
+        ],
+        "scripts": [
+          "games/lost-in-the-terps/scripts/validate-data.mjs"
+        ],
+        "serverAndNetwork": [],
+        "docs": [
+          "games/lost-in-the-terps/README.md"
+        ],
+        "workflows": [
+          ".github/workflows/lost-in-the-terps-ci.yml"
+        ]
+      },
+      "development": [],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "mystery-strain",
+      "title": "Mystery Strain",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/mystery-strain/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc",
+        "sourceRoots": [
+          "games/mystery-strain"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/mystery-strain",
+          "site/public-route-patch/games/mystery-strain"
+        ],
+        "build": "node games/mystery-strain/scripts/validate-data.mjs && node games/mystery-strain/test/engine.test.mjs && node games/mystery-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/mystery-strain/app.js && node --check site/public-route-patch/games/mystery-strain/runtime.mjs && cmp games/mystery-strain/src/engine.mjs site/public-route-patch/games/mystery-strain/engine.mjs",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": null
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1Q6XqJB86sVIcY5KqBTYqnDAPmdwjDEsY",
+        "folderTitle": "Mystery Strain",
+        "path": "04 Games/Mystery Strain",
+        "visualRootId": "1cxXCg8pa3UAo1i7eQrtKlSq5mNzrTzQ6",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [
+          "games/mystery-strain/src/engine.mjs",
+          "games/mystery-strain/test/engine.test.mjs",
+          "site/public-route-patch/games/mystery-strain/engine.mjs"
+        ],
+        "uiAndRendering": [
+          "site/public-route-patch/games/mystery-strain/app.js",
+          "site/public-route-patch/games/mystery-strain/index.html"
+        ],
+        "dataAndContent": [
+          "games/mystery-strain/data/strains.json",
+          "site/public-route-patch/games/mystery-strain/data/strains.json"
+        ],
+        "assets": [],
+        "tests": [
+          "games/mystery-strain/test/analysis.test.mjs",
+          "games/mystery-strain/test/engine.test.mjs",
+          "games/mystery-strain/test/public-runtime.test.mjs"
+        ],
+        "scripts": [
+          "games/mystery-strain/scripts/validate-data.mjs"
+        ],
+        "serverAndNetwork": [],
+        "docs": [
+          "games/mystery-strain/README.md"
+        ],
+        "workflows": [
+          ".github/workflows/mystery-strain-ci.yml"
+        ]
+      },
+      "development": [],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "pest-patrol",
+      "title": "Pest Patrol",
+      "portfolioStage": "concept-only",
+      "locationStatus": "concept-only-no-canonical-code",
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-concept-incubator"
+      ]
+    },
+    {
+      "id": "pest-siege",
+      "title": "Pest Siege",
+      "portfolioStage": "concept-only",
+      "locationStatus": "concept-only-no-canonical-code",
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-concept-incubator"
+      ]
+    },
+    {
+      "id": "pest-war",
+      "title": "Pest War",
+      "portfolioStage": "concept-only",
+      "locationStatus": "concept-only-no-canonical-code",
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-concept-incubator"
+      ]
+    },
+    {
+      "id": "pheno-draft",
+      "title": "Pheno Draft",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/pheno-draft/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc",
+        "sourceRoots": [
+          "games/pheno-draft"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/pheno-draft",
+          "site/public-route-patch/games/pheno-draft"
+        ],
+        "build": "node games/pheno-draft/scripts/validate-data.mjs && node games/pheno-draft/test/engine.test.mjs && node games/pheno-draft/test/public-runtime.test.mjs && node --check site/public-route-patch/games/pheno-draft/app.js && node --check site/public-route-patch/games/pheno-draft/runtime.mjs && cmp games/pheno-draft/src/engine.mjs site/public-route-patch/games/pheno-draft/engine.mjs",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": null
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "10JxjOnq_n48f98FL1NZIZ56m92jpKNVv",
+        "folderTitle": "Pheno Draft",
+        "path": "04 Games/Pheno Draft",
+        "visualRootId": "1PwRfD2D1BUsAwBBIP5NyjMlN6QsBy9GN",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [
+          "games/pheno-draft/src/engine.mjs",
+          "games/pheno-draft/test/engine.test.mjs",
+          "site/public-route-patch/games/pheno-draft/engine.mjs"
+        ],
+        "uiAndRendering": [
+          "site/public-route-patch/games/pheno-draft/app.js",
+          "site/public-route-patch/games/pheno-draft/index.html"
+        ],
+        "dataAndContent": [
+          "games/pheno-draft/data/cards.json",
+          "site/public-route-patch/games/pheno-draft/data/cards.json"
+        ],
+        "assets": [],
+        "tests": [
+          "games/pheno-draft/test/engine.test.mjs",
+          "games/pheno-draft/test/projection.test.mjs",
+          "games/pheno-draft/test/public-runtime.test.mjs"
+        ],
+        "scripts": [
+          "games/pheno-draft/scripts/validate-data.mjs"
+        ],
+        "serverAndNetwork": [],
+        "docs": [
+          "games/pheno-draft/README.md",
+          "games/pheno-draft/README.projection-note.md"
+        ],
+        "workflows": [
+          ".github/workflows/pheno-draft-ci.yml"
+        ]
+      },
+      "development": [],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "pheno-hunter",
+      "title": "Pheno Hunter",
+      "portfolioStage": "concept-only",
+      "locationStatus": "concept-only-no-canonical-code",
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-concept-incubator"
+      ]
+    },
+    {
+      "id": "phenoquest",
+      "title": "PhenoQuest: The Living Seed Vault",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/phenoquest/",
+      "canonical": {
+        "repository": "dtfgenetics/Catching-phenos",
+        "sourceRoots": [
+          "src",
+          "data",
+          "public/games/phenoquest"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/phenoquest",
+          "site/public-route-patch/games/phenoquest"
+        ],
+        "build": "canonical repo: npm run check (includes self-contained production build)",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static-es-modules",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": null
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1vHn59ch_VPDaWjgP1MN0gTZrDq47HHBx",
+        "folderTitle": "Catching Phenos",
+        "path": "04 Games/Catching Phenos",
+        "visualRootId": "1iaj8twrfNOas1gKr1BAUw6-Te6m_EKP-",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [],
+        "uiAndRendering": [
+          "public/games/phenoquest/index.html",
+          "public/games/phenoquest/style.css",
+          "src/ui",
+          "src/ui/breeding-ui.js",
+          "src/ui/collection-ui.js",
+          "src/ui/combat-ui.js",
+          "src/ui/dialogue-box-ui.js",
+          "src/ui/encounter-ui.js",
+          "src/ui/first-session-ui.js",
+          "src/ui/interaction-ui.js",
+          "src/ui/inventory-ui.js",
+          "src/ui/lineage-lab-ui.js",
+          "src/ui/lineage-restoration-ui.js",
+          "src/ui/map-ui.js",
+          "src/ui/movement-ui.js",
+          "src/ui/phenolog-ui.js",
+          "src/ui/quest-ui.js",
+          "src/ui/recipe-ui.js",
+          "src/ui/render-summary.js",
+          "src/ui/starter-selection-ui.js",
+          "src/ui/vault-garden-ui.js",
+          "src/ui/weather-ui.js"
+        ],
+        "dataAndContent": [
+          "src/data/fetch-json.js",
+          "src/data/index-records.js"
+        ],
+        "assets": [],
+        "tests": [],
+        "scripts": [],
+        "serverAndNetwork": [],
+        "docs": [],
+        "workflows": []
+      },
+      "development": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-preview",
+          "roots": [
+            "app/games/phenoquest",
+            "public/phenoquest"
+          ],
+          "subsystems": {
+            "rulesAndSimulation": [],
+            "uiAndRendering": [
+              "app/games/phenoquest",
+              "app/games/phenoquest/page.tsx",
+              "public/phenoquest/index.html",
+              "public/phenoquest/styles.css"
+            ],
+            "dataAndContent": [
+              "public/phenoquest/game-data.json"
+            ],
+            "assets": [
+              "public/phenoquest/game-data.json"
+            ],
+            "tests": [],
+            "serverAndNetwork": []
+          }
+        }
+      ],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-save-replay",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "protect-the-plants",
+      "title": "Burn Buds",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/protect-the-plants/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc",
+        "sourceRoots": [
+          "games/protect-the-plants"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/protect-the-plants",
+          "site/public-route-patch/games/protect-the-plants"
+        ],
+        "build": "node games/protect-the-plants/test/burn-buds-branding.test.mjs && node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs && node games/protect-the-plants/test/api-copy-contract.test.mjs && node games/protect-the-plants/test/runtime-sync-v1.test.mjs && node games/protect-the-plants/test/v2-extras-sync.test.mjs && node games/protect-the-plants/test/native-targeting-source.test.mjs && node games/protect-the-plants/test/gamefeel-v1.test.mjs && php -l site/public-route-patch/games/protect-the-plants/api.php && php -l site/public-route-patch/games/protect-the-plants/presence.php",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static-php",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": {
+          "board": "15x15",
+          "players": 2,
+          "formations": 5,
+          "storage": "wordpress-transients",
+          "networkAuthority": "php-server"
+        }
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "11yWoRkU0HTdavEroYkVluVAOFCWldtuu",
+        "folderTitle": "Burn Buds",
+        "path": "04 Games/Burn Buds",
+        "visualRootId": "18yajn4zbPJgTW32IR8C1X6d4dyUcCd4L",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [
+          "site/public-route-patch/games/protect-the-plants/gameplay-v3.js"
+        ],
+        "uiAndRendering": [
+          "site/public-route-patch/games/protect-the-plants/app.js",
+          "site/public-route-patch/games/protect-the-plants/assets/ui",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/chat-drawer-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/host-battle-frame-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/join-battle-frame-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/mobile-nav-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/notifications",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/notifications/toast-defeat-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/notifications/toast-player-joined-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/notifications/toast-player-left-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/notifications/toast-victory-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/notifications/toast-your-turn-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/reactions",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/reactions/reaction-fire-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/reactions/reaction-gg-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/reactions/reaction-heart-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/reactions/reaction-laugh-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/reactions/reaction-leaf-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/reactions/reaction-smoke-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/reactions/reaction-target-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/reactions/reaction-trophy-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/room-code-panel-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/index.html",
+          "site/public-route-patch/games/protect-the-plants/styles.css"
+        ],
+        "dataAndContent": [],
+        "assets": [
+          "site/public-route-patch/games/protect-the-plants/assets/ui/chat-drawer-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/host-battle-frame-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/join-battle-frame-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/mobile-nav-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/notifications/toast-defeat-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/notifications/toast-player-joined-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/notifications/toast-player-left-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/notifications/toast-victory-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/notifications/toast-your-turn-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/reactions/reaction-fire-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/reactions/reaction-gg-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/reactions/reaction-heart-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/reactions/reaction-laugh-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/reactions/reaction-leaf-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/reactions/reaction-smoke-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/reactions/reaction-target-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/reactions/reaction-trophy-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/room-code-panel-v1.svg"
+        ],
+        "tests": [
+          "games/protect-the-plants/test/api-copy-contract.test.mjs",
+          "games/protect-the-plants/test/battle-feedback-v1.test.mjs",
+          "games/protect-the-plants/test/burn-buds-branding.test.mjs",
+          "games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs",
+          "games/protect-the-plants/test/enhancements-sync.test.mjs",
+          "games/protect-the-plants/test/gamefeel-v1.test.mjs",
+          "games/protect-the-plants/test/native-targeting-source.test.mjs",
+          "games/protect-the-plants/test/premium-social-v1.test.mjs",
+          "games/protect-the-plants/test/runtime-sync-v1.test.mjs",
+          "games/protect-the-plants/test/targeting-v1.test.mjs",
+          "games/protect-the-plants/test/v2-extras-sync.test.mjs"
+        ],
+        "scripts": [],
+        "serverAndNetwork": [
+          "games/protect-the-plants/test/api-copy-contract.test.mjs",
+          "site/public-route-patch/games/protect-the-plants/api.php",
+          "site/public-route-patch/games/protect-the-plants/assets/ui/room-code-panel-v1.svg",
+          "site/public-route-patch/games/protect-the-plants/presence.php"
+        ],
+        "docs": [
+          "games/protect-the-plants/README.md"
+        ],
+        "workflows": [
+          ".github/workflows/burn-buds-battle-feedback-ci.yml",
+          ".github/workflows/burn-buds-branding-ci.yml",
+          ".github/workflows/burn-buds-enhancements-sync-ci.yml",
+          ".github/workflows/burn-buds-targeting-ci.yml",
+          ".github/workflows/cannabis-fleet-battle-ci.yml",
+          ".github/workflows/protect-the-plants-ci.yml",
+          ".github/workflows/verify-protect-the-plants-production.yml"
+        ]
+      },
+      "development": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "prototype-do-not-confuse-with-production",
+          "roots": [
+            "app/games/burn-buds",
+            "game/burn-buds"
+          ],
+          "subsystems": {
+            "rulesAndSimulation": [
+              "game/burn-buds/model.ts"
+            ],
+            "uiAndRendering": [
+              "app/games/burn-buds",
+              "app/games/burn-buds/page.module.css",
+              "app/games/burn-buds/page.tsx",
+              "game/burn-buds/main.ts",
+              "game/burn-buds/scenes",
+              "game/burn-buds/scenes/BootScene.ts"
+            ],
+            "dataAndContent": [],
+            "assets": [],
+            "tests": [],
+            "serverAndNetwork": []
+          }
+        }
+      ],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-multiplayer-quality"
+      ]
+    },
+    {
+      "id": "reputation-economy",
+      "title": "Reputation Economy",
+      "portfolioStage": "concept-only",
+      "locationStatus": "concept-only-no-canonical-code",
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-concept-incubator"
+      ]
+    },
+    {
+      "id": "root-cause",
+      "title": "Root Cause",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/root-cause/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc",
+        "sourceRoots": [
+          "games/root-cause"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/root-cause",
+          "site/public-route-patch/games/root-cause"
+        ],
+        "build": "node games/root-cause/scripts/validate-data.mjs && node games/root-cause/test/engine.test.mjs && node games/root-cause/test/public-runtime.test.mjs && node --check site/public-route-patch/games/root-cause/app.js && node --check site/public-route-patch/games/root-cause/runtime.mjs && node --check site/public-route-patch/games/root-cause/engine.mjs && cmp games/root-cause/src/engine.mjs site/public-route-patch/games/root-cause/engine.mjs",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": null
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1FbybBbaovXJVbZ2iowtbDcnn9qkQ_EPV",
+        "folderTitle": "Root Cause",
+        "path": "04 Games/Root Cause",
+        "controlFolderId": "1srWKC9VjqJwUw7I3asjNIMuCLaznzMh0",
+        "digitalFolderId": "1SYR26ZmzlDNh6RXeU1VDc60e1aDCstyz",
+        "playtestingFolderId": "1jZxuhyUI5JfpqOdMOJ3U6Gooo8rgdrLy",
+        "approvedReleaseFolderId": "1o-_FPDdcoOePlupkRzFeEGxgnxxRh359",
+        "visualRootId": "1X86-DlN_GhvPqRT4WUI8Hf3W6pQvlKWu",
+        "sourceMastersFolderId": "1Gq0ubT8nuzmDojcNhJAdgQ9KN60v5gfS",
+        "approvedMastersFolderId": "1i9rJ2GKNxZnbToClJkoCadXvi97Lq4JD",
+        "audioFolderId": "1CtvzqQoMjQOXywXAV50JmI2bfeW-0Jdu",
+        "runtimeExportsFolderId": "1aPEWyn4devE8McrMCPv8xmu-uLw0QJyI",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [
+          "games/root-cause/src/engine.mjs",
+          "games/root-cause/test/engine.test.mjs",
+          "site/public-route-patch/games/root-cause/engine.mjs"
+        ],
+        "uiAndRendering": [
+          "site/public-route-patch/games/root-cause/app.js",
+          "site/public-route-patch/games/root-cause/index.html"
+        ],
+        "dataAndContent": [
+          "games/root-cause/data/cases.json",
+          "site/public-route-patch/games/root-cause/data/cases.json"
+        ],
+        "assets": [],
+        "tests": [
+          "games/root-cause/test/engine.test.mjs",
+          "games/root-cause/test/public-runtime.test.mjs"
+        ],
+        "scripts": [
+          "games/root-cause/scripts/validate-data.mjs"
+        ],
+        "serverAndNetwork": [],
+        "docs": [
+          "games/root-cause/README.md"
+        ],
+        "workflows": [
+          ".github/workflows/root-cause-ci.yml"
+        ]
+      },
+      "development": [],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "seed-ascent",
+      "title": "Seed Man: Seed Ascent",
+      "portfolioStage": "development",
+      "publicRoute": "/games/seed-ascent",
+      "canonical": null,
+      "deployment": null,
+      "drive": {
+        "status": "related-project",
+        "relatedGameId": "seed-man-platformer",
+        "gameFolderId": "1NrqkjVWCjw9Cf_6kiHyupYcKfA7uT8vd",
+        "folderTitle": "Seed Man",
+        "path": "04 Games/Seed Man",
+        "verifiedAt": "2026-09-22",
+        "note": "No duplicate Drive master created; Seed Ascent remains related to the Seed Man project until an explicit product split."
+      },
+      "subsystems": {
+        "rulesAndSimulation": [],
+        "uiAndRendering": [],
+        "dataAndContent": [],
+        "assets": [],
+        "tests": [],
+        "scripts": [],
+        "serverAndNetwork": [],
+        "docs": [],
+        "workflows": []
+      },
+      "development": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "active-migration-runtime",
+          "roots": [
+            "app/games/seed-ascent",
+            "public/seed-ascent",
+            "public/seed-ascent.html"
+          ],
+          "subsystems": {
+            "rulesAndSimulation": [
+              "public/seed-ascent/assets/gameplay-sprites.webp",
+              "public/seed-ascent/engine.js"
+            ],
+            "uiAndRendering": [
+              "app/games/seed-ascent",
+              "app/games/seed-ascent/page.tsx",
+              "public/seed-ascent/authored-sprite-renderer.js",
+              "public/seed-ascent/phenotype-ui.css",
+              "public/seed-ascent/styles.css"
+            ],
+            "dataAndContent": [
+              "public/seed-ascent/levels.js"
+            ],
+            "assets": [
+              "public/seed-ascent/assets/electric-enemies.webp",
+              "public/seed-ascent/assets/fire-enemies.webp",
+              "public/seed-ascent/assets/gameplay-sprites.webp",
+              "public/seed-ascent/assets/grow-room-background.webp",
+              "public/seed-ascent/assets/ice-enemies.webp",
+              "public/seed-ascent/assets/seed-man-sprites.webp"
+            ],
+            "tests": [],
+            "serverAndNetwork": [
+              "public/seed-ascent/assets/grow-room-background.webp"
+            ]
+          }
+        }
+      ],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix"
+      ]
+    },
+    {
+      "id": "seed-bank-builder",
+      "title": "Seed Bank Builder",
+      "portfolioStage": "concept-only",
+      "locationStatus": "concept-only-no-canonical-code",
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-concept-incubator"
+      ]
+    },
+    {
+      "id": "seed-man-platformer",
+      "title": "Seed Man: Grow. Fight. Restore.",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/seed-man-platformer/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc",
+        "sourceRoots": [
+          "games/seed-man-platformer"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/seed-man-platformer",
+          "site/public-route-patch/games/seed-man-platformer"
+        ],
+        "build": "node games/seed-man-platformer/test/physics.test.mjs && node games/seed-man-platformer/test/progression-systems.test.mjs && node games/seed-man-platformer/test/campaign.test.mjs && node games/seed-man-platformer/test/art-registry.test.mjs && node games/seed-man-platformer/test/public-runtime.test.mjs && node games/seed-man-platformer/test/public-campaign.test.mjs && node games/seed-man-platformer/test/input-guard.test.mjs && node games/seed-man-platformer/test/world-mechanics-runtime.test.mjs && node games/seed-man-platformer/test/public-world-mechanics-browser.test.mjs && node scripts/verify-seed-man-production-v20.mjs && node scripts/validate-seed-man-production-bundle.mjs",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static-canvas2d-approved-art",
+        "status": "production-v20",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": {
+          "release": "20260918-v20-world-mechanics-v3",
+          "campaignId": "seed-man-campaign-20-v1",
+          "defaultLevelId": "1-1-sprout-steps",
+          "levelCount": 20,
+          "worldCount": 5,
+          "bossCount": 6,
+          "finalBoss": "blight-king",
+          "finalBossPhases": 4,
+          "phenotypeDurationSeconds": 30,
+          "phenotypeForms": [
+            "plant",
+            "fire",
+            "electric",
+            "ice"
+          ],
+          "campaignRuntime": "seed-man-campaign-v20-runtime-v3",
+          "campaignUi": "seed-man-campaign-ui-v20",
+          "worldMechanicsRuntime": "seed-man-world-mechanics-browser-v3",
+          "dynamicPlatformRuntime": "seed-man-three-dynamic-platforms-v1",
+          "worldRenderer": "seed-man-three-world-v2",
+          "worldRendererBundle": "seed-man-three-public-v3",
+          "worldFallbackRenderer": "seed-man-canvas-world-gradient-v1",
+          "approvedArtManifest": "seed-man-approved-art-v2",
+          "approvedArtSource": "approved-showcase-2026-09-08",
+          "productionCharacterArt": "seed-man-approved-atlas-renderer-v4",
+          "characterContract": "green-armored-plant-hero",
+          "proceduralFallbackAllowed": false,
+          "legacyAtlasFallbackAllowed": false,
+          "canvasCompat": "seed-man-runtime-health-v21",
+          "doubleJump": true
+        }
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1NrqkjVWCjw9Cf_6kiHyupYcKfA7uT8vd",
+        "folderTitle": "Seed Man",
+        "path": "04 Games/Seed Man",
+        "visualRootId": "1KvhKlWp5_PdlpM7CbBSUP1YpjY4m0DDj",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [],
+        "uiAndRendering": [
+          "games/seed-man-platformer/assets/approved",
+          "games/seed-man-platformer/assets/approved/.asset-upload-note.txt",
+          "games/seed-man-platformer/assets/approved/seed-man-character-atlas-v2.webp",
+          "games/seed-man-platformer/assets/approved/seed-man-enemy-boss-atlas-v1.webp",
+          "games/seed-man-platformer/assets/approved/seed-man-platform-atlas-v1.webp",
+          "games/seed-man-platformer/scripts/build-three-public.mjs",
+          "games/seed-man-platformer/src/render",
+          "games/seed-man-platformer/src/render/approved-art-loader.mjs",
+          "games/seed-man-platformer/src/render/approved-art-registry.mjs",
+          "games/seed-man-platformer/src/render/art-registry.mjs",
+          "games/seed-man-platformer/src/render/three-world-dynamic.mjs",
+          "games/seed-man-platformer/src/render/three-world-public-entry.mjs",
+          "games/seed-man-platformer/src/render/three-world-state.mjs",
+          "games/seed-man-platformer/src/render/three-world.mjs",
+          "games/seed-man-platformer/src/render/visual-palette.mjs",
+          "games/seed-man-platformer/src/render/visual-runtime-v2.mjs",
+          "games/seed-man-platformer/src/render/visual-runtime.mjs",
+          "games/seed-man-platformer/src/render/visual-world-map.mjs",
+          "games/seed-man-platformer/src/systems/hud-model.mjs",
+          "games/seed-man-platformer/test/approved-art-loader.test.mjs",
+          "games/seed-man-platformer/test/hud-model.test.mjs",
+          "games/seed-man-platformer/test/tutorial-ui.test.mjs",
+          "site/public-route-patch/games/seed-man-platformer/app.js",
+          "site/public-route-patch/games/seed-man-platformer/approved-art-core-v1.js",
+          "site/public-route-patch/games/seed-man-platformer/approved-art-runtime-v1.js",
+          "site/public-route-patch/games/seed-man-platformer/assets/approved",
+          "site/public-route-patch/games/seed-man-platformer/assets/approved/seed-man-character-atlas-v2.webp",
+          "site/public-route-patch/games/seed-man-platformer/assets/approved/seed-man-enemy-boss-atlas-v1.webp",
+          "site/public-route-patch/games/seed-man-platformer/assets/approved/seed-man-platform-atlas-v1.webp",
+          "site/public-route-patch/games/seed-man-platformer/campaign-ui-v20.js",
+          "site/public-route-patch/games/seed-man-platformer/index.html"
+        ],
+        "dataAndContent": [
+          "games/seed-man-platformer/data/authored-level-recipes-v1.json",
+          "games/seed-man-platformer/data/boss-catalog-v1.json",
+          "games/seed-man-platformer/data/campaign-20-v1.json",
+          "games/seed-man-platformer/data/campaign.json",
+          "games/seed-man-platformer/data/enemy-catalog-v1.json",
+          "games/seed-man-platformer/data/level-01.json",
+          "games/seed-man-platformer/data/levels-20-v1.json",
+          "games/seed-man-platformer/data/powerup-catalog-v1.json",
+          "games/seed-man-platformer/data/seed-man-art-manifest-v1.json",
+          "games/seed-man-platformer/data/seed-man-production-audit-v1.json",
+          "games/seed-man-platformer/data/visual-production-backlog-v1.json",
+          "games/seed-man-platformer/data/visual-runtime-v1.json",
+          "games/seed-man-platformer/data/world-gameplay-v1.json",
+          "games/seed-man-platformer/src/systems/collectible-catalog.mjs",
+          "games/seed-man-platformer/src/systems/level-catalog.mjs",
+          "games/seed-man-platformer/src/systems/level-runtime.mjs",
+          "games/seed-man-platformer/src/systems/vfx-catalog.mjs",
+          "games/seed-man-platformer/test/authored-level-layout.test.mjs",
+          "games/seed-man-platformer/test/level-catalog.test.mjs",
+          "games/seed-man-platformer/test/level-runtime.test.mjs",
+          "site/public-route-patch/games/seed-man-platformer/data/authored-level-recipes-v1.json",
+          "site/public-route-patch/games/seed-man-platformer/data/boss-catalog-v1.json",
+          "site/public-route-patch/games/seed-man-platformer/data/campaign-20-v1.json",
+          "site/public-route-patch/games/seed-man-platformer/data/campaign.json",
+          "site/public-route-patch/games/seed-man-platformer/data/enemy-catalog-v1.json",
+          "site/public-route-patch/games/seed-man-platformer/data/levels-20-v1.json",
+          "site/public-route-patch/games/seed-man-platformer/data/powerup-catalog-v1.json",
+          "site/public-route-patch/games/seed-man-platformer/data/seed-man-art-manifest-v1.json",
+          "site/public-route-patch/games/seed-man-platformer/data/world-gameplay-v1.json"
+        ],
+        "assets": [
+          "games/seed-man-platformer/assets/approved/seed-man-character-atlas-v2.webp",
+          "games/seed-man-platformer/assets/approved/seed-man-enemy-boss-atlas-v1.webp",
+          "games/seed-man-platformer/assets/approved/seed-man-platform-atlas-v1.webp",
+          "site/public-route-patch/games/seed-man-platformer/assets/approved/seed-man-character-atlas-v2.webp",
+          "site/public-route-patch/games/seed-man-platformer/assets/approved/seed-man-enemy-boss-atlas-v1.webp",
+          "site/public-route-patch/games/seed-man-platformer/assets/approved/seed-man-platform-atlas-v1.webp",
+          "site/public-route-patch/games/seed-man-platformer/assets/seed-man/seed-man-atlas-v1.svg",
+          "site/public-route-patch/games/seed-man-platformer/assets/seed-man/seed-man-atlas-v2.svg"
+        ],
+        "tests": [
+          "games/seed-man-platformer/test/approved-art-loader.test.mjs",
+          "games/seed-man-platformer/test/art-registry.test.mjs",
+          "games/seed-man-platformer/test/asset-key-guard.test.mjs",
+          "games/seed-man-platformer/test/audio-events.test.mjs",
+          "games/seed-man-platformer/test/authored-level-layout.test.mjs",
+          "games/seed-man-platformer/test/campaign-20.test.mjs",
+          "games/seed-man-platformer/test/campaign-progression-chain.test.mjs",
+          "games/seed-man-platformer/test/campaign-state-v2.test.mjs",
+          "games/seed-man-platformer/test/campaign.test.mjs",
+          "games/seed-man-platformer/test/combat.test.mjs",
+          "games/seed-man-platformer/test/diagnostics.test.mjs",
+          "games/seed-man-platformer/test/enemy-attacks.test.mjs",
+          "games/seed-man-platformer/test/final-boss-director.test.mjs",
+          "games/seed-man-platformer/test/game-contract.test.mjs",
+          "games/seed-man-platformer/test/hud-model.test.mjs",
+          "games/seed-man-platformer/test/input-actions.test.mjs",
+          "games/seed-man-platformer/test/input-guard.test.mjs",
+          "games/seed-man-platformer/test/level-catalog.test.mjs",
+          "games/seed-man-platformer/test/level-runtime.test.mjs",
+          "games/seed-man-platformer/test/phenotype-system.test.mjs",
+          "games/seed-man-platformer/test/physics.test.mjs",
+          "games/seed-man-platformer/test/platform-surface-map.test.mjs",
+          "games/seed-man-platformer/test/player-state.test.mjs",
+          "games/seed-man-platformer/test/power-drop.test.mjs",
+          "games/seed-man-platformer/test/production-art-motion.test.mjs",
+          "games/seed-man-platformer/test/production-assets-runtime.test.mjs",
+          "games/seed-man-platformer/test/production-assets.test.mjs",
+          "games/seed-man-platformer/test/production-campaign-20.test.mjs",
+          "games/seed-man-platformer/test/production-readiness.test.mjs",
+          "games/seed-man-platformer/test/progression-systems.test.mjs",
+          "games/seed-man-platformer/test/public-authored-runtime-contract.test.mjs",
+          "games/seed-man-platformer/test/public-campaign.test.mjs",
+          "games/seed-man-platformer/test/public-enemy-art.test.mjs",
+          "games/seed-man-platformer/test/public-runtime.test.mjs",
+          "games/seed-man-platformer/test/public-world-mechanics-browser.test.mjs",
+          "games/seed-man-platformer/test/save-state-v2.test.mjs",
+          "games/seed-man-platformer/test/three-world-state.test.mjs",
+          "games/seed-man-platformer/test/touch-combat-controls.test.mjs",
+          "games/seed-man-platformer/test/tutorial-ui.test.mjs",
+          "games/seed-man-platformer/test/visual-runtime.test.mjs"
+        ],
+        "scripts": [
+          "games/seed-man-platformer/scripts/build-three-public.mjs"
+        ],
+        "serverAndNetwork": [],
+        "docs": [
+          "games/seed-man-platformer/README.md",
+          "games/seed-man-platformer/docs/branch-note-v3.md",
+          "games/seed-man-platformer/docs/campaign-v3-summary.md",
+          "games/seed-man-platformer/docs/ci-fix-policy.md",
+          "games/seed-man-platformer/docs/do-not-duplicate-branch.md",
+          "games/seed-man-platformer/docs/legacy-runtime-audit-note.md",
+          "games/seed-man-platformer/docs/live-gate-v3.md",
+          "games/seed-man-platformer/docs/merge-gate-v3.md",
+          "games/seed-man-platformer/docs/pr-scope-v3.md",
+          "games/seed-man-platformer/docs/production-fix-plan-2026-09-09.md",
+          "games/seed-man-platformer/docs/qa-plan-v3.md",
+          "games/seed-man-platformer/docs/release-checklist-v3.md",
+          "games/seed-man-platformer/docs/runtime-sot-v3.md",
+          "games/seed-man-platformer/src/systems/release-contract.mjs",
+          "site/public-route-patch/games/seed-man-platformer/release-three-live-20260908.json",
+          "site/public-route-patch/games/seed-man-platformer/visual-runtime-release.txt"
+        ],
+        "workflows": [
+          ".github/workflows/publish-seed-man-approved-art-addon.yml",
+          ".github/workflows/publish-seed-man-production.yml",
+          ".github/workflows/reconcile-seed-man-deployment-metadata.yml",
+          ".github/workflows/repair-seed-man-v20-production.yml",
+          ".github/workflows/seed-man-approved-art-contract.yml",
+          ".github/workflows/seed-man-asset-audit.yml",
+          ".github/workflows/seed-man-bare-url-integrity.yml",
+          ".github/workflows/seed-man-canonical-ci.yml",
+          ".github/workflows/seed-man-combat-ci.yml",
+          ".github/workflows/seed-man-live-qa-release-trigger.yml",
+          ".github/workflows/seed-man-live-smoke.yml",
+          ".github/workflows/seed-man-platformer-ci.yml",
+          ".github/workflows/seed-man-pr-validation.yml",
+          ".github/workflows/seed-man-production-bundle-validation.yml",
+          ".github/workflows/seed-man-source-runtime-alignment.yml",
+          ".github/workflows/seed-man-sprite-visual-ci.yml",
+          ".github/workflows/seed-man-v20-finale-ci.yml",
+          ".github/workflows/seed-man-visual-runtime.yml"
+        ]
+      },
+      "development": [],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-save-replay",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "selection-pressure",
+      "title": "Selection Pressure",
+      "portfolioStage": "concept-only",
+      "locationStatus": "concept-only-no-canonical-code",
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-concept-incubator"
+      ]
+    },
+    {
+      "id": "solo-cup-showdown",
+      "title": "Solo Cup Showdown",
+      "portfolioStage": "concept-only",
+      "locationStatus": "concept-only-no-canonical-code",
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-concept-incubator"
+      ]
+    },
+    {
+      "id": "spin-the-strain",
+      "title": "Spin the Strain",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/spin-the-strain/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc",
+        "sourceRoots": [
+          "games/spin-the-strain"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/spin-the-strain",
+          "site/public-route-patch/games/spin-the-strain"
+        ],
+        "build": "node games/spin-the-strain/scripts/validate-data.mjs && node games/spin-the-strain/test/engine.test.mjs && node games/spin-the-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/spin-the-strain/app.js && node --check site/public-route-patch/games/spin-the-strain/runtime.mjs && cmp games/spin-the-strain/src/engine.mjs site/public-route-patch/games/spin-the-strain/engine.mjs",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": null
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1LQJpzxfJtPj5GlENec-GvNwGpyAGZBp2",
+        "folderTitle": "Spin the Strain",
+        "path": "04 Games/Spin the Strain",
+        "visualRootId": "1qtF2j00NZh6TkunrrvHIlybDUZxMR4e3",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [
+          "games/spin-the-strain/src/engine.mjs",
+          "games/spin-the-strain/test/engine.test.mjs",
+          "site/public-route-patch/games/spin-the-strain/engine.mjs"
+        ],
+        "uiAndRendering": [
+          "site/public-route-patch/games/spin-the-strain/app.js",
+          "site/public-route-patch/games/spin-the-strain/index.html"
+        ],
+        "dataAndContent": [
+          "games/spin-the-strain/data/wheels.json",
+          "site/public-route-patch/games/spin-the-strain/data/wheels.json"
+        ],
+        "assets": [],
+        "tests": [
+          "games/spin-the-strain/test/engine.test.mjs",
+          "games/spin-the-strain/test/public-runtime.test.mjs"
+        ],
+        "scripts": [
+          "games/spin-the-strain/scripts/validate-data.mjs"
+        ],
+        "serverAndNetwork": [],
+        "docs": [
+          "games/spin-the-strain/README.md"
+        ],
+        "workflows": [
+          ".github/workflows/spin-the-strain-ci.yml",
+          ".github/workflows/verify-spin-the-strain-live.yml"
+        ]
+      },
+      "development": [],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "stoner-duck-race",
+      "title": "Quack & Bake: Stoner Duck Race",
+      "portfolioStage": "development",
+      "publicRoute": "/games/stoner-duck-race",
+      "canonical": null,
+      "deployment": null,
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1k6rwU1PfWB4FVH9OdUPNqwxzgnmqLytf",
+        "folderTitle": "Stoner Duck Race",
+        "path": "04 Games/Stoner Duck Race",
+        "controlFolderId": "1fraz08Wxxu3qdoZTvoBZi5vlerP6LJDj",
+        "digitalFolderId": "1AQQMyusLdkL8DwVKA4-9Geyaq9OvseJT",
+        "playtestingFolderId": "1gW-y7en62PSSq6qJ1rv_XCjQ0JxgvdEs",
+        "approvedReleaseFolderId": "1OR5Y-7Dg9sb0HrXK0baryRL3PZxF2wn9",
+        "visualRootId": "1yE4GNG6P9xmSk-IoKjycHzF47R2Y2GKQ",
+        "sourceMastersFolderId": "1sAMSwMSMqKDCX_kYOal6QMReuU97xA6t",
+        "approvedMastersFolderId": "1XQ1g8kQRfTqlQypo9p3sf6uR3vIWkZrh",
+        "audioFolderId": "1lr4wdy6kQYOYprzPri8kvY2GqiwqNAfj",
+        "runtimeExportsFolderId": "1tggP9eEV8eNe7Iv6lVHKhaooXLAN4DPy",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [],
+        "uiAndRendering": [],
+        "dataAndContent": [],
+        "assets": [],
+        "tests": [],
+        "scripts": [],
+        "serverAndNetwork": [],
+        "docs": [],
+        "workflows": []
+      },
+      "development": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "active-development",
+          "roots": [
+            "app/games/stoner-duck-race",
+            "game/stoner-duck-race",
+            "components/game/StonerDuckRaceGame.tsx",
+            "services/stoner-duck-race-server"
+          ],
+          "subsystems": {
+            "rulesAndSimulation": [
+              "game/stoner-duck-race/simulation.ts"
+            ],
+            "uiAndRendering": [
+              "app/games/stoner-duck-race",
+              "app/games/stoner-duck-race/page.module.css",
+              "app/games/stoner-duck-race/page.tsx",
+              "components/game/StonerDuckRaceGame.tsx",
+              "game/stoner-duck-race/main.ts",
+              "game/stoner-duck-race/scenes",
+              "game/stoner-duck-race/scenes/RaceScene.ts"
+            ],
+            "dataAndContent": [],
+            "assets": [],
+            "tests": [],
+            "serverAndNetwork": [
+              "game/stoner-duck-race/network.ts",
+              "services/stoner-duck-race-server",
+              "services/stoner-duck-race-server/DEPLOYMENT.md",
+              "services/stoner-duck-race-server/package.json",
+              "services/stoner-duck-race-server/src",
+              "services/stoner-duck-race-server/src/index.ts",
+              "services/stoner-duck-race-server/src/rooms",
+              "services/stoner-duck-race-server/src/rooms/RaceRoom.ts",
+              "services/stoner-duck-race-server/src/smoke.ts",
+              "services/stoner-duck-race-server/tsconfig.json"
+            ]
+          }
+        }
+      ],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-multiplayer-quality",
+        "dtf-game-save-replay"
+      ]
+    },
+    {
+      "id": "strain-match",
+      "title": "Strain Match",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/strain-match/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc",
+        "sourceRoots": [
+          "games/strain-match"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/strain-match",
+          "site/public-route-patch/games/strain-match"
+        ],
+        "build": "node games/strain-match/scripts/validate-data.mjs && node games/strain-match/test/public-runtime.test.mjs && node --check site/public-route-patch/games/strain-match/app.js",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": null
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "17P0KYTYa7g-rXPN1VxsyZmBpRZR63gEX",
+        "folderTitle": "Strain Match",
+        "path": "04 Games/Strain Match",
+        "visualRootId": "1Rtq5fSf--Pu9t_y172D_rUFYLnBNlxSI",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [],
+        "uiAndRendering": [
+          "site/public-route-patch/games/strain-match/app.js",
+          "site/public-route-patch/games/strain-match/index.html"
+        ],
+        "dataAndContent": [
+          "games/strain-match/data/decks.json",
+          "site/public-route-patch/games/strain-match/data/decks.json"
+        ],
+        "assets": [],
+        "tests": [
+          "games/strain-match/test/public-runtime.test.mjs"
+        ],
+        "scripts": [
+          "games/strain-match/scripts/validate-data.mjs"
+        ],
+        "serverAndNetwork": [],
+        "docs": [
+          "games/strain-match/README.md"
+        ],
+        "workflows": [
+          ".github/workflows/strain-match-ci.yml"
+        ]
+      },
+      "development": [],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "strain-showdown",
+      "title": "Strain Showdown",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/strain-showdown/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc",
+        "sourceRoots": [
+          "games/strain-showdown"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/strain-showdown",
+          "site/public-route-patch/games/strain-showdown"
+        ],
+        "build": "node games/strain-showdown/scripts/validate-roster.mjs && node games/strain-showdown/test/engine.test.mjs && node games/strain-showdown/scripts/simulate-balance.mjs --seeds=32 --assert-balanced && node games/strain-showdown/scripts/validate-browser-build.mjs",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": {
+          "cards": 96,
+          "families": 8,
+          "cardsPerFamily": 12,
+          "lanes": 3,
+          "mode": "solo-vs-cpu",
+          "startingGarden": 20,
+          "maxRounds": 18,
+          "familyPassives": 8,
+          "tiers": {
+            "base": 6,
+            "select": 4,
+            "elite": 2
+          }
+        }
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1jJ1JtWGdNCJ--xfHJbclv7QyaIVr30Fh",
+        "folderTitle": "Strain Showdown",
+        "path": "04 Games/Strain Showdown",
+        "visualRootId": "1yPCJzEveV5hQ03OUMRheAUKWKB1L_x3L",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [
+          "games/strain-showdown/src/engine.mjs",
+          "games/strain-showdown/test/engine.test.mjs",
+          "site/public-route-patch/games/strain-showdown/engine.mjs"
+        ],
+        "uiAndRendering": [
+          "games/strain-showdown/data/roster/fruit.json",
+          "games/strain-showdown/scripts/build-browser-bundle.mjs",
+          "games/strain-showdown/scripts/validate-browser-build.mjs",
+          "site/public-route-patch/games/strain-showdown/app.js",
+          "site/public-route-patch/games/strain-showdown/data/roster/fruit.json",
+          "site/public-route-patch/games/strain-showdown/index.html",
+          "site/public-route-patch/games/strain-showdown/styles.css"
+        ],
+        "dataAndContent": [
+          "games/strain-showdown/data/drive-production-tracker-source.json",
+          "games/strain-showdown/data/effect-profiles.json",
+          "games/strain-showdown/data/families.json",
+          "games/strain-showdown/data/roster-manifest.json",
+          "games/strain-showdown/data/roster-plan.json",
+          "games/strain-showdown/data/roster",
+          "games/strain-showdown/data/roster/cookies.json",
+          "games/strain-showdown/data/roster/frost.json",
+          "games/strain-showdown/data/roster/fruit.json",
+          "games/strain-showdown/data/roster/gas.json",
+          "games/strain-showdown/data/roster/haze.json",
+          "games/strain-showdown/data/roster/kush.json",
+          "games/strain-showdown/data/roster/purple.json",
+          "games/strain-showdown/data/roster/skunk.json",
+          "games/strain-showdown/scripts/validate-roster.mjs",
+          "site/public-route-patch/games/strain-showdown/data/families.json",
+          "site/public-route-patch/games/strain-showdown/data/roster",
+          "site/public-route-patch/games/strain-showdown/data/roster/cookies.json",
+          "site/public-route-patch/games/strain-showdown/data/roster/frost.json",
+          "site/public-route-patch/games/strain-showdown/data/roster/fruit.json",
+          "site/public-route-patch/games/strain-showdown/data/roster/gas.json",
+          "site/public-route-patch/games/strain-showdown/data/roster/haze.json",
+          "site/public-route-patch/games/strain-showdown/data/roster/kush.json",
+          "site/public-route-patch/games/strain-showdown/data/roster/purple.json",
+          "site/public-route-patch/games/strain-showdown/data/roster/skunk.json"
+        ],
+        "assets": [],
+        "tests": [
+          "games/strain-showdown/test/engine.test.mjs",
+          "games/strain-showdown/test/public-runtime.test.mjs"
+        ],
+        "scripts": [
+          "games/strain-showdown/scripts/build-browser-bundle.mjs",
+          "games/strain-showdown/scripts/simulate-balance.mjs",
+          "games/strain-showdown/scripts/validate-browser-build.mjs",
+          "games/strain-showdown/scripts/validate-effects.mjs",
+          "games/strain-showdown/scripts/validate-roster.mjs"
+        ],
+        "serverAndNetwork": [],
+        "docs": [
+          "games/strain-showdown/README.md"
+        ],
+        "workflows": [
+          ".github/workflows/strain-showdown-ci.yml",
+          ".github/workflows/verify-strain-showdown-production.yml"
+        ]
+      },
+      "development": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-runtime",
+          "roots": [
+            "app/games/strain-showdown"
+          ],
+          "subsystems": {
+            "rulesAndSimulation": [],
+            "uiAndRendering": [
+              "app/games/strain-showdown",
+              "app/games/strain-showdown/StrainShowdownGame.tsx",
+              "app/games/strain-showdown/containment.module.css",
+              "app/games/strain-showdown/page.module.css",
+              "app/games/strain-showdown/page.tsx"
+            ],
+            "dataAndContent": [],
+            "assets": [],
+            "tests": [],
+            "serverAndNetwork": []
+          }
+        }
+      ],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "terpocalypse",
+      "title": "Terpocalypse: Grow Room From Hell",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/terpocalypse/",
+      "canonical": {
+        "repository": "dtfgenetics/Terpocalapse",
+        "sourceRoots": [
+          "prototypes/web-fps"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/terpocalypse",
+          "site/public-route-patch/games/terpocalypse"
+        ],
+        "build": "node games/terpocalypse-integration/validate.mjs && node games/terpocalypse/test/public-runtime.test.mjs && node --check site/public-route-patch/games/terpocalypse/main.js && node --check site/public-route-patch/games/terpocalypse/game-data.js && node --check site/public-route-patch/games/terpocalypse/visibility-pause-v1.js",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static-canvas2d",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": null
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1EODsF4DqxO5G_fd3UajGpTOOe1sVo_fR",
+        "folderTitle": "Terpocalapse",
+        "path": "04 Games/Terpocalapse",
+        "visualRootId": "1fUqEM6zfDz7BOppp6U4vy7GiDKV9QVQT",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [],
+        "uiAndRendering": [
+          "prototypes/web-fps/index.html",
+          "prototypes/web-fps/main.js",
+          "prototypes/web-fps/styles.css"
+        ],
+        "dataAndContent": [
+          "prototypes/web-fps/validate-level.mjs"
+        ],
+        "assets": [],
+        "tests": [],
+        "scripts": [],
+        "serverAndNetwork": [],
+        "docs": [],
+        "workflows": [
+          ".github/workflows/terpocalypse-v2-check.yml",
+          ".github/workflows/terpocalypse-v2-pages.yml"
+        ]
+      },
+      "development": [],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "thc-rpg",
+      "title": "THC RPG — The First Seed",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/thc-rpg/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc-rpg",
+        "sourceRoots": [
+          "src",
+          "public"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/thc-rpg/source-revision.txt",
+          "site/public-route-patch/games/thc-rpg/source-revision.txt"
+        ],
+        "build": "npm test && npm run validate:ui && npm run build && npm run validate:release",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static-es-modules",
+        "status": "release-candidate",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": {
+          "players": 1,
+          "saveVersion": 6,
+          "input": [
+            "keyboard",
+            "mouse",
+            "touch"
+          ],
+          "deterministicPhenotypes": true,
+          "growJournal": true,
+          "keeperSelection": true,
+          "keeperCuttings": true,
+          "modalGameplayShortcutGuard": true
+        }
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1_gErE4IGr8ehzOqw8bNOBB73sLN4oVbx",
+        "folderTitle": "THC RPG",
+        "path": "04 Games/THC RPG",
+        "visualRootId": "1ar4lpZ_x9MmmkVJ1efmI9mAprBA9lTIv",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [],
+        "uiAndRendering": [
+          "src/game/Equipment.js",
+          "src/grow-journal-ui.js",
+          "src/main.js",
+          "src/styles.css"
+        ],
+        "dataAndContent": [
+          "src/data/game-data.json"
+        ],
+        "assets": [],
+        "tests": [],
+        "scripts": [],
+        "serverAndNetwork": [],
+        "docs": [
+          "public/game-release.json"
+        ],
+        "workflows": []
+      },
+      "development": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-build",
+          "roots": [
+            "app/games/thc-rpg",
+            "public/thc-rpg"
+          ],
+          "subsystems": {
+            "rulesAndSimulation": [],
+            "uiAndRendering": [
+              "app/games/thc-rpg",
+              "app/games/thc-rpg/page.tsx"
+            ],
+            "dataAndContent": [],
+            "assets": [],
+            "tests": [],
+            "serverAndNetwork": []
+          }
+        }
+      ],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-save-replay",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "thc-u-know",
+      "title": "THC U Know",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/thc-u-know/",
+      "canonical": {
+        "repository": "dtfgenetics/thc-u-know-card-game-",
+        "sourceRoots": [
+          "apps/web",
+          "apps/server",
+          "packages/shared"
+        ],
+        "runtimeRoots": [],
+        "build": "pnpm verify && pnpm test:production-runtime",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "node-full-stack",
+        "status": "runtime-integration",
+        "appTarget": null,
+        "apiTarget": "https://api.dtfseeds.com",
+        "machineData": {
+          "players": "2-8",
+          "runtime": "Node + Socket.IO",
+          "socketPath": "/games/thc-u-know/socket.io",
+          "healthPath": "/games/thc-u-know/healthz",
+          "siteShell": "header-v6",
+          "liveCheck": "npm run live:check",
+          "manualGate": "two-browser-multiplayer",
+          "publicPromotion": false
+        }
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1OcA8WC700CE_IIUim6cYsExDLsFbsAXA",
+        "folderTitle": "THC U Know",
+        "path": "04 Games/THC U Know",
+        "visualRootId": "1ERL_cXD_Ssnv1pGXuWC-UeoM6z1t-khg",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [
+          "packages/shared/src/game/rules.test.ts"
+        ],
+        "uiAndRendering": [
+          "apps/server",
+          "apps/server/.env.example",
+          "apps/server/.env.production.example",
+          "apps/server/package.json",
+          "apps/server/src",
+          "apps/server/src/config",
+          "apps/server/src/config/env.ts",
+          "apps/server/src/index.ts",
+          "apps/server/src/realtime",
+          "apps/server/src/realtime/socketRedisAdapter.ts",
+          "apps/server/src/socket",
+          "apps/server/src/socket/broadcast.ts",
+          "apps/server/src/socket/handlers.ts",
+          "apps/server/src/state",
+          "apps/server/src/state/createSessionStore.ts",
+          "apps/server/src/state/memorySessionStore.ts",
+          "apps/server/src/state/memoryStore.ts",
+          "apps/server/src/state/redisStore.ts",
+          "apps/server/src/state/sessionCode.ts",
+          "apps/server/src/state/store.ts",
+          "apps/server/src/state/types.ts",
+          "apps/server/tsconfig.json",
+          "apps/web",
+          "apps/web/.env.example",
+          "apps/web/.env.production.example",
+          "apps/web/e2e",
+          "apps/web/e2e/multiplayer.spec.ts",
+          "apps/web/index.html",
+          "apps/web/package.json",
+          "apps/web/playwright.config.ts",
+          "apps/web/public",
+          "apps/web/public/assets",
+          "apps/web/public/assets/README.md",
+          "apps/web/public/assets/cards",
+          "apps/web/public/assets/cards/card-back.svg",
+          "apps/web/public/assets/cards/card-front-action.svg",
+          "apps/web/public/assets/cards/card-front-number.svg",
+          "apps/web/public/assets/cards/card-front-party.svg",
+          "apps/web/public/assets/cards/card-front-wild.svg",
+          "apps/web/public/assets/cards/digital"
+        ],
+        "dataAndContent": [
+          "apps/web/public/assets/cards",
+          "apps/web/public/assets/cards/card-back.svg",
+          "apps/web/public/assets/cards/card-front-action.svg",
+          "apps/web/public/assets/cards/card-front-number.svg",
+          "apps/web/public/assets/cards/card-front-party.svg",
+          "apps/web/public/assets/cards/card-front-wild.svg",
+          "apps/web/public/assets/cards/digital",
+          "apps/web/public/assets/cards/digital/bogart.svg",
+          "apps/web/public/assets/cards/digital/card-back.svg",
+          "apps/web/public/assets/cards/digital/couch-lock.svg",
+          "apps/web/public/assets/cards/digital/dealer-choice.svg",
+          "apps/web/public/assets/cards/digital/greener-side.svg",
+          "apps/web/public/assets/cards/digital/hotbox-plus-four.svg",
+          "apps/web/public/assets/cards/digital/munchies.svg",
+          "apps/web/public/assets/cards/digital/mystery-nug.svg",
+          "apps/web/public/assets/cards/digital/number-blue.svg",
+          "apps/web/public/assets/cards/digital/number-gold.svg",
+          "apps/web/public/assets/cards/digital/number-green.svg",
+          "apps/web/public/assets/cards/digital/number-purple.svg",
+          "apps/web/public/assets/cards/digital/pack-two.svg",
+          "apps/web/public/assets/cards/digital/paranoia.svg",
+          "apps/web/public/assets/cards/digital/pass-the-tray.svg",
+          "apps/web/public/assets/cards/digital/puff-puff-pass-back.svg",
+          "apps/web/public/assets/cards/digital/rotation.svg",
+          "apps/web/public/assets/cards/digital/smoke-sesh.svg",
+          "apps/web/public/assets/cards/digital/strain-switch.svg",
+          "apps/web/public/assets/cards/digital/tolerance-break.svg",
+          "apps/web/src/assets/cardVisualAssets.ts",
+          "apps/web/src/components/ThcCard.tsx",
+          "packages/shared/src/game/cardManifest.ts",
+          "packages/shared/src/game/cardNames.ts",
+          "packages/shared/src/game/createDeck.spec.ts",
+          "packages/shared/src/game/createDeck.ts",
+          "packages/shared/src/game/deck.test.ts",
+          "packages/shared/src/game/specialCards.test.ts"
+        ],
+        "assets": [
+          "apps/web/public/assets/cards/card-back.svg",
+          "apps/web/public/assets/cards/card-front-action.svg",
+          "apps/web/public/assets/cards/card-front-number.svg",
+          "apps/web/public/assets/cards/card-front-party.svg",
+          "apps/web/public/assets/cards/card-front-wild.svg",
+          "apps/web/public/assets/cards/digital/bogart.svg",
+          "apps/web/public/assets/cards/digital/card-back.svg",
+          "apps/web/public/assets/cards/digital/couch-lock.svg",
+          "apps/web/public/assets/cards/digital/dealer-choice.svg",
+          "apps/web/public/assets/cards/digital/greener-side.svg",
+          "apps/web/public/assets/cards/digital/hotbox-plus-four.svg",
+          "apps/web/public/assets/cards/digital/munchies.svg",
+          "apps/web/public/assets/cards/digital/mystery-nug.svg",
+          "apps/web/public/assets/cards/digital/number-blue.svg",
+          "apps/web/public/assets/cards/digital/number-gold.svg",
+          "apps/web/public/assets/cards/digital/number-green.svg",
+          "apps/web/public/assets/cards/digital/number-purple.svg",
+          "apps/web/public/assets/cards/digital/pack-two.svg",
+          "apps/web/public/assets/cards/digital/paranoia.svg",
+          "apps/web/public/assets/cards/digital/pass-the-tray.svg",
+          "apps/web/public/assets/cards/digital/puff-puff-pass-back.svg",
+          "apps/web/public/assets/cards/digital/rotation.svg",
+          "apps/web/public/assets/cards/digital/smoke-sesh.svg",
+          "apps/web/public/assets/cards/digital/strain-switch.svg",
+          "apps/web/public/assets/cards/digital/tolerance-break.svg",
+          "apps/web/public/assets/logos/dtf-genetics-logo.svg",
+          "apps/web/public/assets/logos/favicon.svg",
+          "apps/web/public/assets/logos/thc-u-know-logo.svg",
+          "apps/web/public/assets/ui/ashtray-bg.svg",
+          "apps/web/public/assets/ui/player-token.svg",
+          "apps/web/public/assets/ui/stash-bg.svg",
+          "apps/web/public/assets/ui/table-bg.svg",
+          "apps/web/public/assets/ui/winner-badge.svg"
+        ],
+        "tests": [],
+        "scripts": [],
+        "serverAndNetwork": [
+          "apps/server",
+          "apps/server/.env.example",
+          "apps/server/.env.production.example",
+          "apps/server/package.json",
+          "apps/server/src",
+          "apps/server/src/config",
+          "apps/server/src/config/env.ts",
+          "apps/server/src/index.ts",
+          "apps/server/src/realtime",
+          "apps/server/src/realtime/socketRedisAdapter.ts",
+          "apps/server/src/socket",
+          "apps/server/src/socket/broadcast.ts",
+          "apps/server/src/socket/handlers.ts",
+          "apps/server/src/state",
+          "apps/server/src/state/createSessionStore.ts",
+          "apps/server/src/state/memorySessionStore.ts",
+          "apps/server/src/state/memoryStore.ts",
+          "apps/server/src/state/redisStore.ts",
+          "apps/server/src/state/sessionCode.ts",
+          "apps/server/src/state/store.ts",
+          "apps/server/src/state/types.ts",
+          "apps/server/tsconfig.json",
+          "apps/web/e2e/multiplayer.spec.ts",
+          "apps/web/src/realtime/socket.ts"
+        ],
+        "docs": [
+          "apps/web/public/assets/README.md"
+        ],
+        "workflows": []
+      },
+      "development": [],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-multiplayer-quality",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "the-cure-room",
+      "title": "The Cure Room",
+      "portfolioStage": "concept-only",
+      "locationStatus": "concept-only-no-canonical-code",
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-concept-incubator"
+      ]
+    },
+    {
+      "id": "the-grow-room",
+      "title": "The Grow Room",
+      "portfolioStage": "concept-only",
+      "locationStatus": "concept-only-no-canonical-code",
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-concept-incubator"
+      ]
+    },
+    {
+      "id": "the-limiting-factor",
+      "title": "The Limiting Factor",
+      "portfolioStage": "concept-only",
+      "locationStatus": "concept-only-no-canonical-code",
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-concept-incubator"
+      ]
+    },
+    {
+      "id": "the-perfect-save",
+      "title": "The Perfect Save",
+      "portfolioStage": "concept-only",
+      "locationStatus": "concept-only-no-canonical-code",
+      "conceptSource": "docs/DTF_GAME_SCOPE_MASTER.md#future-concept-bank",
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-concept-incubator"
+      ]
+    },
+    {
+      "id": "trichome-trials",
+      "title": "Trichome Trials",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/trichome-trials/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc",
+        "sourceRoots": [
+          "games/trichome-trials"
+        ],
+        "runtimeRoots": [
+          "site/public-route-patch/games/trichome-trials",
+          "site/public-route-patch/games/trichome-trials"
+        ],
+        "build": "node games/trichome-trials/scripts/validate-data.mjs && node games/trichome-trials/test/engine.test.mjs && node games/trichome-trials/test/public-runtime.test.mjs && node --check site/public-route-patch/games/trichome-trials/app.js && node --check site/public-route-patch/games/trichome-trials/runtime.mjs && cmp games/trichome-trials/src/engine.mjs site/public-route-patch/games/trichome-trials/engine.mjs",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": null
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1cZxPgTRbEovQOVEHnscPiZoIeE2hRzo_",
+        "folderTitle": "Trichome Trials",
+        "path": "04 Games/Trichome Trials",
+        "visualRootId": "1F4-4uBlwMkDW9Gfm-AjBQpuzm3o4h9Fk",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [
+          "games/trichome-trials/src/engine.mjs",
+          "games/trichome-trials/test/engine.test.mjs",
+          "site/public-route-patch/games/trichome-trials/data/core.json",
+          "site/public-route-patch/games/trichome-trials/engine.mjs"
+        ],
+        "uiAndRendering": [
+          "site/public-route-patch/games/trichome-trials/app.js",
+          "site/public-route-patch/games/trichome-trials/index.html"
+        ],
+        "dataAndContent": [
+          "games/trichome-trials/data/trials.json",
+          "site/public-route-patch/games/trichome-trials/data/core.json",
+          "site/public-route-patch/games/trichome-trials/data/entries-1.json",
+          "site/public-route-patch/games/trichome-trials/data/entries-2.json",
+          "site/public-route-patch/games/trichome-trials/data/entries-3.json",
+          "site/public-route-patch/games/trichome-trials/data/entries-4.json"
+        ],
+        "assets": [],
+        "tests": [
+          "games/trichome-trials/test/confidence.test.mjs",
+          "games/trichome-trials/test/engine.test.mjs",
+          "games/trichome-trials/test/public-runtime.test.mjs"
+        ],
+        "scripts": [
+          "games/trichome-trials/scripts/validate-data.mjs"
+        ],
+        "serverAndNetwork": [],
+        "docs": [
+          "games/trichome-trials/README.md"
+        ],
+        "workflows": [
+          ".github/workflows/trichome-trials-ci.yml"
+        ]
+      },
+      "development": [],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "weedopolis",
+      "title": "Weedopolis: Strain City Edition",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/weedopolis/",
+      "canonical": {
+        "repository": "dtfgenetics/Weedopolis-strain-Edition",
+        "sourceRoots": [
+          "src",
+          "digital",
+          "data"
+        ],
+        "runtimeRoots": [],
+        "build": "npm run validate && npm run check:preview && npm run build:preview",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": null
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "1K0amWG5J6nN9820hBxVOpf12HtFrsw_K",
+        "folderTitle": "Weedopolis",
+        "path": "04 Games/Weedopolis",
+        "visualRootId": "1gYFcOW-0NQGgN0YEt2fLRn3844GDtuLO",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [
+          "src/games/weedopolis/controller/state-store.js"
+        ],
+        "uiAndRendering": [
+          "data/component_asset_spec.csv",
+          "digital/weedopolis-web/approved-assets.css",
+          "digital/weedopolis-web/index.html",
+          "digital/weedopolis-web/js/weedopolis-approved-decks.js",
+          "digital/weedopolis-web/js/weedopolis-trade-ui.js",
+          "digital/weedopolis-web/js/weedopolis-ui.js",
+          "digital/weedopolis-web/styles.css",
+          "src/games/weedopolis/preview",
+          "src/games/weedopolis/preview/app.js",
+          "src/games/weedopolis/preview/load-preview-data.js",
+          "src/games/weedopolis/ui",
+          "src/games/weedopolis/ui/action-panel-model.js",
+          "src/games/weedopolis/ui/dom.js",
+          "src/games/weedopolis/ui/index.js",
+          "src/games/weedopolis/ui/join-game-model.js",
+          "src/games/weedopolis/ui/lobby-view-model.js",
+          "src/games/weedopolis/ui/main-menu-model.js",
+          "src/games/weedopolis/ui/player-setup-model.js",
+          "src/games/weedopolis/ui/render-actions.js",
+          "src/games/weedopolis/ui/render-lobby-screen.js",
+          "src/games/weedopolis/ui/render-menu-screen.js",
+          "src/games/weedopolis/ui/render-player-list.js",
+          "src/games/weedopolis/ui/render-title.js"
+        ],
+        "dataAndContent": [
+          "data/community_stash_cards.csv",
+          "data/deck_rules.json",
+          "data/high_chance_cards.csv",
+          "data/verified_card_asset_paths.json",
+          "digital/weedopolis-web/assets/decks",
+          "digital/weedopolis-web/assets/decks/source-b64",
+          "digital/weedopolis-web/assets/decks/source-b64/high-chance",
+          "digital/weedopolis-web/assets/decks/source-b64/high-chance/01",
+          "digital/weedopolis-web/assets/decks/source-b64/high-chance/01/part-01.txt",
+          "digital/weedopolis-web/assets/decks/source-b64/high-chance/01/part-02.txt",
+          "digital/weedopolis-web/assets/decks/source-b64/high-chance/01/part-03.txt",
+          "digital/weedopolis-web/assets/decks/source-b64/high-chance/01/part-04.txt",
+          "digital/weedopolis-web/assets/decks/source-b64/high-chance/01/part-05.txt",
+          "digital/weedopolis-web/assets/decks/source-b64/high-chance/01/part-06.txt",
+          "digital/weedopolis-web/assets/property-cards",
+          "digital/weedopolis-web/assets/property-cards/source-b64",
+          "digital/weedopolis-web/assets/property-cards/source-b64/autoflower",
+          "digital/weedopolis-web/assets/property-cards/source-b64/autoflower/part-01.txt",
+          "digital/weedopolis-web/assets/property-cards/source-b64/autoflower/part-02.txt",
+          "digital/weedopolis-web/assets/property-cards/source-b64/autoflower/part-03.txt",
+          "digital/weedopolis-web/assets/property-cards/source-b64/autoflower/part-04.txt",
+          "digital/weedopolis-web/assets/property-cards/source-b64/autoflower/part-05.txt",
+          "digital/weedopolis-web/assets/property-cards/source-b64/autoflower/part-06.txt",
+          "digital/weedopolis-web/assets/property-cards/source-b64/autoflower/part-07.txt",
+          "digital/weedopolis-web/js/weedopolis-approved-decks.js",
+          "src/games/weedopolis/data/load-board-map.js",
+          "src/games/weedopolis/data/parse-csv.js"
+        ],
+        "assets": [
+          "digital/weedopolis-web/assets/asset-manifest.json"
+        ],
+        "tests": [],
+        "scripts": [],
+        "serverAndNetwork": [
+          "data/multiplayer_provider.json",
+          "data/multiplayer_schema.json",
+          "src/games/weedopolis/multiplayer",
+          "src/games/weedopolis/multiplayer/adapter.js",
+          "src/games/weedopolis/multiplayer/config.js",
+          "src/games/weedopolis/multiplayer/online-controller.js",
+          "src/games/weedopolis/multiplayer/room-factory.js",
+          "src/games/weedopolis/multiplayer/supabase-adapter.js",
+          "src/games/weedopolis/multiplayer/wordpress-polling.js",
+          "src/games/weedopolis/multiplayer/wordpress-rest-adapter.js",
+          "src/games/weedopolis/multiplayer/wordpress-rest-client.js",
+          "src/games/weedopolis/multiplayer/wordpress-room-actions.js"
+        ],
+        "docs": [
+          "digital/weedopolis-web/README.md"
+        ],
+        "workflows": [
+          ".github/workflows/weedopolis-canonical-ci.yml"
+        ]
+      },
+      "development": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-runtime",
+          "roots": [
+            "app/games/weedopolis",
+            "public/weedopolis"
+          ],
+          "subsystems": {
+            "rulesAndSimulation": [],
+            "uiAndRendering": [
+              "app/games/weedopolis",
+              "app/games/weedopolis/page.tsx",
+              "public/weedopolis/index.html"
+            ],
+            "dataAndContent": [],
+            "assets": [],
+            "tests": [],
+            "serverAndNetwork": []
+          }
+        }
+      ],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-content-pipeline"
+      ]
+    },
+    {
+      "id": "who-took-it",
+      "title": "Who Took It?",
+      "portfolioStage": "implemented",
+      "publicRoute": "/games/who-took-it/",
+      "canonical": {
+        "repository": "dtfgenetics/Thc-guess-who",
+        "sourceRoots": [
+          "03_digital-game"
+        ],
+        "runtimeRoots": [
+          "03_digital-game",
+          "03_digital-game"
+        ],
+        "build": "npm run check",
+        "defaultBranch": "main"
+      },
+      "deployment": {
+        "runtime": "static",
+        "status": "ready-to-package",
+        "appTarget": null,
+        "apiTarget": null,
+        "machineData": {
+          "modes": [
+            "solo",
+            "shared",
+            "duel"
+          ],
+          "suspects": 25,
+          "missingItems": 5,
+          "artRegistry": "src/data/suspect-art.json",
+          "portraitCount": 25,
+          "itemArtCount": 5,
+          "uiArtCount": 20,
+          "environmentArtCount": 1,
+          "manifestBackedVisualAssets": 51,
+          "blockingVisualAssetsMissing": 0,
+          "artStatus": "production-art-approved",
+          "artValidator": "node scripts/validate-art-registry.mjs",
+          "assetAudit": "node scripts/audit-production-assets.mjs",
+          "fullValidation": "npm run check",
+          "playwright": false
+        }
+      },
+      "drive": {
+        "status": "verified",
+        "gameFolderId": "18SBSxsGOau4uwWhG1Diwd79hISb_k9AO",
+        "folderTitle": "THC Guess Who",
+        "path": "04 Games/THC Guess Who",
+        "visualRootId": "1QzFBDGjQQIJOEam4KCZws7nQq-MA6qwz",
+        "verifiedAt": "2026-09-22"
+      },
+      "subsystems": {
+        "rulesAndSimulation": [],
+        "uiAndRendering": [
+          "03_digital-game/assets/ui",
+          "03_digital-game/assets/ui/banner-empty.webp",
+          "03_digital-game/assets/ui/evidence-frame-active.webp",
+          "03_digital-game/assets/ui/evidence-frame-normal.webp",
+          "03_digital-game/assets/ui/modal-frame.webp",
+          "03_digital-game/assets/ui/mystery-card-frame-hidden.webp",
+          "03_digital-game/assets/ui/question-chip-active.webp",
+          "03_digital-game/assets/ui/question-chip-disabled.webp",
+          "03_digital-game/assets/ui/suspect-card-frame-active.webp",
+          "03_digital-game/assets/ui/suspect-card-frame-eliminated.webp",
+          "03_digital-game/assets/ui/suspect-card-frame-normal.webp",
+          "03_digital-game/index.html",
+          "03_digital-game/public/assets/ui",
+          "03_digital-game/public/assets/ui/banner-empty.webp",
+          "03_digital-game/public/assets/ui/clue-seal-no.svg",
+          "03_digital-game/public/assets/ui/clue-seal-yes.svg",
+          "03_digital-game/public/assets/ui/evidence-frame-active.webp",
+          "03_digital-game/public/assets/ui/evidence-frame-normal.webp",
+          "03_digital-game/public/assets/ui/hud-stat-panel.svg",
+          "03_digital-game/public/assets/ui/modal-frame.webp",
+          "03_digital-game/public/assets/ui/mode-pill-active.svg",
+          "03_digital-game/public/assets/ui/mystery-card-frame-hidden.webp",
+          "03_digital-game/public/assets/ui/primary-button-disabled.svg",
+          "03_digital-game/public/assets/ui/primary-button-hover.svg",
+          "03_digital-game/public/assets/ui/primary-button-normal.svg",
+          "03_digital-game/public/assets/ui/primary-button-pressed.svg",
+          "03_digital-game/public/assets/ui/question-chip-active.webp",
+          "03_digital-game/public/assets/ui/question-chip-disabled.webp",
+          "03_digital-game/public/assets/ui/resolution-frame-loss.svg",
+          "03_digital-game/public/assets/ui/resolution-frame-win.svg",
+          "03_digital-game/public/assets/ui/suspect-card-frame-active.webp",
+          "03_digital-game/public/assets/ui/suspect-card-frame-eliminated.webp",
+          "03_digital-game/public/assets/ui/suspect-card-frame-normal.webp",
+          "03_digital-game/scripts/validate-ui-art.mjs",
+          "03_digital-game/scripts/validate-ui-polish.mjs",
+          "03_digital-game/scripts/verify-production-build.mjs",
+          "03_digital-game/src/App.jsx",
+          "03_digital-game/src/components",
+          "03_digital-game/src/components/AgeGate.jsx",
+          "03_digital-game/src/components/BestLeadAssist.jsx"
+        ],
+        "dataAndContent": [
+          "03_digital-game/assets/ui/mystery-card-frame-hidden.webp",
+          "03_digital-game/assets/ui/question-chip-active.webp",
+          "03_digital-game/assets/ui/question-chip-disabled.webp",
+          "03_digital-game/assets/ui/suspect-card-frame-active.webp",
+          "03_digital-game/assets/ui/suspect-card-frame-eliminated.webp",
+          "03_digital-game/assets/ui/suspect-card-frame-normal.webp",
+          "03_digital-game/public/assets/ui/mystery-card-frame-hidden.webp",
+          "03_digital-game/public/assets/ui/question-chip-active.webp",
+          "03_digital-game/public/assets/ui/question-chip-disabled.webp",
+          "03_digital-game/public/assets/ui/suspect-card-frame-active.webp",
+          "03_digital-game/public/assets/ui/suspect-card-frame-eliminated.webp",
+          "03_digital-game/public/assets/ui/suspect-card-frame-normal.webp",
+          "03_digital-game/src/data/environment-art.json",
+          "03_digital-game/src/data/item-art.json",
+          "03_digital-game/src/data/items.json",
+          "03_digital-game/src/data/questions.json",
+          "03_digital-game/src/data/suspect-art.json",
+          "03_digital-game/src/data/suspects.json",
+          "03_digital-game/src/data/tagTraitMap.js",
+          "03_digital-game/src/data/ui-art.json"
+        ],
+        "assets": [
+          "03_digital-game/assets/ui/banner-empty.webp",
+          "03_digital-game/assets/ui/evidence-frame-active.webp",
+          "03_digital-game/assets/ui/evidence-frame-normal.webp",
+          "03_digital-game/assets/ui/modal-frame.webp",
+          "03_digital-game/assets/ui/mystery-card-frame-hidden.webp",
+          "03_digital-game/assets/ui/question-chip-active.webp",
+          "03_digital-game/assets/ui/question-chip-disabled.webp",
+          "03_digital-game/assets/ui/suspect-card-frame-active.webp",
+          "03_digital-game/assets/ui/suspect-card-frame-eliminated.webp",
+          "03_digital-game/assets/ui/suspect-card-frame-normal.webp",
+          "03_digital-game/public/assets/environment/case-room.svg",
+          "03_digital-game/public/assets/items/item_bag.svg",
+          "03_digital-game/public/assets/items/item_chocolate_bar.svg",
+          "03_digital-game/public/assets/items/item_dabs.svg",
+          "03_digital-game/public/assets/items/item_gummies.svg",
+          "03_digital-game/public/assets/items/item_lighter.svg",
+          "03_digital-game/public/assets/suspects/suspect_001.webp",
+          "03_digital-game/public/assets/suspects/suspect_002.webp",
+          "03_digital-game/public/assets/suspects/suspect_003.webp",
+          "03_digital-game/public/assets/suspects/suspect_004.webp",
+          "03_digital-game/public/assets/suspects/suspect_005.webp",
+          "03_digital-game/public/assets/suspects/suspect_006.webp",
+          "03_digital-game/public/assets/suspects/suspect_007.webp",
+          "03_digital-game/public/assets/suspects/suspect_008.webp",
+          "03_digital-game/public/assets/suspects/suspect_009.webp",
+          "03_digital-game/public/assets/suspects/suspect_010.webp",
+          "03_digital-game/public/assets/suspects/suspect_011.webp",
+          "03_digital-game/public/assets/suspects/suspect_012.webp",
+          "03_digital-game/public/assets/suspects/suspect_013.webp",
+          "03_digital-game/public/assets/suspects/suspect_014.webp",
+          "03_digital-game/public/assets/suspects/suspect_015.webp",
+          "03_digital-game/public/assets/suspects/suspect_016.webp",
+          "03_digital-game/public/assets/suspects/suspect_017.webp",
+          "03_digital-game/public/assets/suspects/suspect_018.webp",
+          "03_digital-game/public/assets/suspects/suspect_019.webp",
+          "03_digital-game/public/assets/suspects/suspect_020.webp",
+          "03_digital-game/public/assets/suspects/suspect_021.webp",
+          "03_digital-game/public/assets/suspects/suspect_022.webp",
+          "03_digital-game/public/assets/suspects/suspect_023.webp",
+          "03_digital-game/public/assets/suspects/suspect_024.webp"
+        ],
+        "tests": [],
+        "scripts": [
+          "03_digital-game/scripts/audit-production-assets.mjs",
+          "03_digital-game/scripts/balance-report.mjs",
+          "03_digital-game/scripts/smoke-test.mjs",
+          "03_digital-game/scripts/source-audit.mjs",
+          "03_digital-game/scripts/validate-art-registry.mjs",
+          "03_digital-game/scripts/validate-data.mjs",
+          "03_digital-game/scripts/validate-environment-art.mjs",
+          "03_digital-game/scripts/validate-ui-art.mjs",
+          "03_digital-game/scripts/validate-ui-polish.mjs",
+          "03_digital-game/scripts/verify-production-build.mjs"
+        ],
+        "serverAndNetwork": [
+          "03_digital-game/public/assets/environment/case-room.svg"
+        ],
+        "docs": [
+          "03_digital-game/README.md",
+          "03_digital-game/docs/DEPLOYMENT.md",
+          "03_digital-game/docs/WHO_TOOK_IT_VISUAL_PRODUCTION_SPEC.md"
+        ],
+        "workflows": []
+      },
+      "development": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-runtime",
+          "roots": [
+            "app/games/who-took-it"
+          ],
+          "subsystems": {
+            "rulesAndSimulation": [],
+            "uiAndRendering": [
+              "app/games/who-took-it",
+              "app/games/who-took-it/WhoTookItGame.tsx",
+              "app/games/who-took-it/page.module.css",
+              "app/games/who-took-it/page.tsx"
+            ],
+            "dataAndContent": [],
+            "assets": [],
+            "tests": [],
+            "serverAndNetwork": []
+          }
+        }
+      ],
+      "recommendedSkills": [
+        "dtf-game-location-resolver",
+        "dtf-game-dossier-resolver",
+        "dtf-game-runtime-quality",
+        "dtf-game-asset-quality",
+        "dtf-game-playtest-matrix",
+        "dtf-game-content-pipeline"
+      ]
+    }
+  ]
+}
