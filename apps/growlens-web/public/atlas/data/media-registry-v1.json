@@ -84,8 +84,43 @@
         "labeled-botanical-plate",
         "animation-sequence"
       ],
-      "assets": [],
-      "status": "production-needed"
+      "assets": [
+        {
+          "assetId": "PA-STOMA-002",
+          "entityId": "stomatal-surface",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/stomatal-surface/PA-STOMA-002-open-closed-stomata-plate.png",
+          "source": "Original THC Living Plant Atlas educational illustration based on standard stomatal anatomy and guard-cell physiology.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "general leaf physiology",
+          "organ": "stomatal complex / leaf epidermis",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative open and closed stomatal complexes showing guard cells, stomatal pore, surrounding epidermal cells, and conceptual gas exchange arrows.",
+          "title": "Open and closed stomata plate",
+          "sourcePage": "/atlas/leaf-module/stomata/",
+          "notes": "Illustrative, not to scale; not measured microscopy."
+        },
+        {
+          "assetId": "PA-STOMA-003",
+          "entityId": "stomatal-surface",
+          "class": "animation-sequence",
+          "src": "/atlas/media/stomatal-surface/PA-STOMA-003-stomatal-response-sequence.png",
+          "source": "Original THC Living Plant Atlas educational sequence based on standard guard-cell physiology.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration sequence",
+          "plantStage": "general leaf physiology",
+          "organ": "stomatal complex / leaf epidermis",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Four-stage illustrative stomatal response sequence from open pore through decreasing guard-cell turgor and partial closure to closed pore.",
+          "title": "Stomatal response sequence",
+          "sourcePage": "/atlas/leaf-module/stomata/",
+          "notes": "Conceptual sequence, not time calibrated and not measured microscopy."
+        }
+      ],
+      "status": "in-production"
     },
     {
       "entityId": "root-system",
