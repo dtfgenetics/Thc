@@ -57,8 +57,8 @@
   },
   "waves": [
     {"wave": 1, "priority": "P0", "games": ["seed-man", "who-took-it", "high-life", "high-iq", "terpocalypse", "bud-or-bluff"]},
-    {"wave": 2, "priority": "P1", "games": ["high-land", "weedopolis", "strain-showdown", "burn-buds"]},
-    {"wave": 3, "priority": "P2", "games": ["grower-conversations", "thc-crossword", "thc-u-know", "kush-kings-chess", "phenoquest", "strain-match", "grow-room-bingo", "lost-in-the-terps", "mystery-strain", "spin-the-strain", "grow-room-defense", "harvest-hustle", "trichome-trials", "pheno-draft", "high-lines"]},
+    {"wave": 2, "priority": "P1", "games": ["high-land", "weedopolis", "strain-showdown", "burn-buds", "stoner-duck-race"]},
+    {"wave": 3, "priority": "P2", "games": ["grower-conversations", "thc-crossword", "thc-u-know", "kush-kings-chess", "phenoquest", "strain-match", "grow-room-bingo", "lost-in-the-terps", "mystery-strain", "spin-the-strain", "grow-room-defense", "harvest-hustle", "trichome-trials", "pheno-draft", "high-lines", "root-cause"]},
     {"wave": 4, "priority": "P3", "games": ["ganjumanji", "thc-rpg"]}
   ],
   "games": {
@@ -87,6 +87,8 @@
     "trichome-trials": {"title":"Trichome Trials","repo":"dtfgenetics/Thc","driveGameFolderId":"1cZxPgTRbEovQOVEHnscPiZoIeE2hRzo_","driveVisualRootId":"1F4-4uBlwMkDW9Gfm-AjBQpuzm3o4h9Fk","repoRuntimeRoot":"games/trichome-trials","publicRoute":"/games/trichome-trials/","wave":3,"priority":"P2"},
     "pheno-draft": {"title":"Pheno Draft","repo":"dtfgenetics/Thc","driveGameFolderId":"10JxjOnq_n48f98FL1NZIZ56m92jpKNVv","driveVisualRootId":"1PwRfD2D1BUsAwBBIP5NyjMlN6QsBy9GN","repoRuntimeRoot":"games/pheno-draft","publicRoute":"/games/pheno-draft/","wave":3,"priority":"P2"},
     "high-lines": {"title":"High Lines","repo":"dtfgenetics/Thc","driveGameFolderId":"11wiiyc4qaLtbPU9nw7zYEoIY1IZL5h3o","driveVisualRootId":"1DpbVETGwk2DCnU5NqhiktjYlK2R234Sy","repoRuntimeRoot":"games/high-lines","publicRoute":"/games/high-lines/","wave":3,"priority":"P2"},
+    "root-cause": {"title":"Root Cause","repo":"dtfgenetics/Thc","driveGameFolderId":"1FbybBbaovXJVbZ2iowtbDcnn9qkQ_EPV","driveVisualRootId":"1X86-DlN_GhvPqRT4WUI8Hf3W6pQvlKWu","repoRuntimeRoot":"games/root-cause","siteRuntimeRoot":"site/public-route-patch/games/root-cause","publicRoute":null,"candidateRoute":"/games/root-cause/","wave":3,"priority":"P2","ownershipNote":"Packaged/tested vertical slice; not public navigation as of 2026-09-22."},
+    "stoner-duck-race": {"title":"Stoner Duck Race","repo":"dtfgenetics/Dtf420","driveGameFolderId":"1k6rwU1PfWB4FVH9OdUPNqwxzgnmqLytf","driveVisualRootId":"1yE4GNG6P9xmSk-IoKjycHzF47R2Y2GKQ","repoRuntimeRoot":"game/stoner-duck-race","serverRuntimeRoot":"services/stoner-duck-race-server","publicRoute":null,"candidateRoute":"/games/stoner-duck-race/","wave":2,"priority":"P1","ownershipNote":"Active Dtf420 development; explicit production owner/cutover required before live claim."},
     "ganjumanji": {"title":"Ganjumanji","repo":"dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple","driveGameFolderId":"17xhnXnM36kEPLln6O8rH2lT0zx4-BFQ-","driveVisualRootId":"1RLSBk687oB4up-_AZ_LhalaeoyTLGEJA","publicRoute":null,"wave":4,"priority":"P3"},
     "thc-rpg": {"title":"THC RPG","repo":"dtfgenetics/Thc-rpg","driveGameFolderId":"1_gErE4IGr8ehzOqw8bNOBB73sLN4oVbx","driveVisualRootId":"1ar4lpZ_x9MmmkVJ1efmI9mAprBA9lTIv","publicRoute":null,"wave":4,"priority":"P3"}
   },
