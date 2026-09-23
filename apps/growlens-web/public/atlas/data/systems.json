@@ -1,7 +1,7 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "title": "THC Living Plant Atlas",
-  "updated": "2026-08-28",
+  "updated": "2026-09-23",
   "principle": "Understand the plant as a connected biological system. Observe first, test the explanation, then act.",
   "systems": [
     {
@@ -12,13 +12,80 @@
       "icon": "◉",
       "summary": "Follow the seed from quiescent embryo through water uptake, metabolic reactivation, radicle emergence, cotyledon expansion, and early seedling establishment.",
       "visual": "Seed anatomy, embryo orientation, germination sequence, and seedling transition.",
-      "concepts": ["Seed coat", "Embryo", "Cotyledons", "Radicle", "Hypocotyl", "Imbibition", "Emergence", "Seedling establishment"],
-      "functions": ["Protects the embryo before favorable conditions arrive", "Stores and mobilizes reserves during early development", "Establishes the first root and shoot axes", "Transitions the young plant from stored reserves to photosynthetic growth"],
-      "observe": ["Seed integrity and visible damage", "Sequence and direction of radicle emergence", "Cotyledon expansion and color", "Stem elongation, posture, and early true-leaf development"],
-      "interactions": ["Water availability controls the start of imbibition", "Temperature affects metabolic rate and emergence timing", "Oxygen availability matters as respiration increases", "Seed vigor and genotype influence uniformity"],
-      "cautions": ["Failure to emerge does not identify one cause by itself", "A seed shell remaining attached can be mechanical, environmental, or vigor-related", "Evaluate seed, moisture, oxygen, temperature, and time together"],
-      "related": ["root-system", "leaf-module", "hormones-signaling", "environmental-physiology"],
-      "searchTerms": ["seed anatomy", "germination", "radicle", "cotyledon", "seedling", "imbibition"]
+      "concepts": [
+        "Seed coat",
+        "Embryo",
+        "Cotyledons",
+        "Radicle",
+        "Hypocotyl",
+        "Imbibition",
+        "Emergence",
+        "Seedling establishment"
+      ],
+      "functions": [
+        "Protects the embryo before favorable conditions arrive",
+        "Stores and mobilizes reserves during early development",
+        "Establishes the first root and shoot axes",
+        "Transitions the young plant from stored reserves to photosynthetic growth"
+      ],
+      "observe": [
+        "Seed integrity and visible damage",
+        "Sequence and direction of radicle emergence",
+        "Cotyledon expansion and color",
+        "Stem elongation, posture, and early true-leaf development"
+      ],
+      "interactions": [
+        "Water availability controls the start of imbibition",
+        "Temperature affects metabolic rate and emergence timing",
+        "Oxygen availability matters as respiration increases",
+        "Seed vigor and genotype influence uniformity"
+      ],
+      "cautions": [
+        "Failure to emerge does not identify one cause by itself",
+        "A seed shell remaining attached can be mechanical, environmental, or vigor-related",
+        "Evaluate seed, moisture, oxygen, temperature, and time together"
+      ],
+      "related": [
+        "root-system",
+        "leaf-module",
+        "hormones-signaling",
+        "environmental-physiology"
+      ],
+      "searchTerms": [
+        "seed anatomy",
+        "germination",
+        "radicle",
+        "cotyledon",
+        "seedling",
+        "imbibition"
+      ],
+      "scales": [
+        "organ",
+        "tissue",
+        "developmental sequence"
+      ],
+      "measurements": [
+        "Seed condition and storage history",
+        "Imbibition time",
+        "Root-zone temperature",
+        "Moisture consistency",
+        "Time to radicle emergence",
+        "Time to cotyledon opening"
+      ],
+      "evidenceQuestions": [
+        "Was the seed viable before the environmental treatment began?",
+        "Were moisture, oxygen and temperature within a plausible germination range throughout the observation period?",
+        "Is failure occurring before radicle emergence, during emergence, or during seedling establishment?"
+      ],
+      "deepDiveTopics": [
+        "Seed coat and embryo anatomy",
+        "Imbibition and metabolic restart",
+        "Radicle emergence",
+        "Cotyledon function",
+        "Seed vigor and storage",
+        "Early seedling failure patterns"
+      ],
+      "connectedTools": []
     },
     {
       "id": "root-system",
@@ -28,13 +95,83 @@
       "icon": "⌁",
       "summary": "Explore primary and lateral roots, fine absorbing roots, root hairs, water and ion uptake, oxygen demand, and the biologically active rhizosphere.",
       "visual": "Root architecture, absorbing zones, vascular connection, and rhizosphere cutaway.",
-      "concepts": ["Primary root", "Lateral roots", "Fine roots", "Root hairs", "Root cap", "Rhizosphere", "Water uptake", "Ion uptake"],
-      "functions": ["Anchors the plant", "Supplies water and mineral ions", "Stores and exchanges carbon compounds", "Interacts with microbes and the physical root-zone environment"],
-      "observe": ["Root color and branching density", "Fine-root abundance", "Root-zone odor and texture", "Moisture distribution, aeration, and recovery after irrigation"],
-      "interactions": ["Transpiration influences water movement through the root-shoot continuum", "Root-zone oxygen affects respiration", "pH and ionic composition affect nutrient availability", "Microbial activity changes rhizosphere chemistry"],
-      "cautions": ["Root color varies with media and staining", "Leaf symptoms can originate below ground", "Root-zone diagnosis should combine roots, irrigation history, oxygen, EC, pH, and plant demand"],
-      "related": ["water-relations", "mineral-nutrition", "environmental-physiology", "diagnostics"],
-      "searchTerms": ["roots", "rhizosphere", "root hairs", "oxygen", "uptake", "dryback"]
+      "concepts": [
+        "Primary root",
+        "Lateral roots",
+        "Fine roots",
+        "Root hairs",
+        "Root cap",
+        "Rhizosphere",
+        "Water uptake",
+        "Ion uptake"
+      ],
+      "functions": [
+        "Anchors the plant",
+        "Supplies water and mineral ions",
+        "Stores and exchanges carbon compounds",
+        "Interacts with microbes and the physical root-zone environment"
+      ],
+      "observe": [
+        "Root color and branching density",
+        "Fine-root abundance",
+        "Root-zone odor and texture",
+        "Moisture distribution, aeration, and recovery after irrigation"
+      ],
+      "interactions": [
+        "Transpiration influences water movement through the root-shoot continuum",
+        "Root-zone oxygen affects respiration",
+        "pH and ionic composition affect nutrient availability",
+        "Microbial activity changes rhizosphere chemistry"
+      ],
+      "cautions": [
+        "Root color varies with media and staining",
+        "Leaf symptoms can originate below ground",
+        "Root-zone diagnosis should combine roots, irrigation history, oxygen, EC, pH, and plant demand"
+      ],
+      "related": [
+        "water-relations",
+        "mineral-nutrition",
+        "environmental-physiology",
+        "diagnostics"
+      ],
+      "searchTerms": [
+        "roots",
+        "rhizosphere",
+        "root hairs",
+        "oxygen",
+        "uptake",
+        "dryback"
+      ],
+      "scales": [
+        "whole root architecture",
+        "organ",
+        "root tip",
+        "rhizosphere"
+      ],
+      "measurements": [
+        "Root-zone temperature",
+        "Substrate water content or mass trend",
+        "Irrigation volume and interval",
+        "Root-zone pH",
+        "Root-zone EC",
+        "Root appearance and odor",
+        "Drainage and aeration context"
+      ],
+      "evidenceQuestions": [
+        "Is the symptom localized to roots or reflected throughout the shoot?",
+        "Is water present but uptake impaired by oxygen, salinity, temperature or damage?",
+        "Do root-zone measurements agree with the visible root condition?"
+      ],
+      "deepDiveTopics": [
+        "Root cap and apical meristem",
+        "Elongation and differentiation zones",
+        "Fine roots and root hairs",
+        "Rhizosphere biology",
+        "Hydraulic uptake",
+        "Ion uptake",
+        "Root respiration and oxygen"
+      ],
+      "connectedTools": []
     },
     {
       "id": "stem-vascular",
@@ -44,13 +181,80 @@
       "icon": "↕",
       "summary": "Connect structural support with xylem water transport, phloem assimilate transport, vascular development, internodes, and the mechanical continuity of the shoot.",
       "visual": "Stem cross-section with vascular tissues plus whole-plant transport pathways.",
-      "concepts": ["Epidermis", "Cortex", "Xylem", "Phloem", "Cambial tissues", "Pith", "Internodes", "Vascular continuity"],
-      "functions": ["Supports leaves and reproductive structures", "Conducts water and dissolved ions", "Redistributes sugars and other assimilates", "Expands and reinforces the shoot as the plant grows"],
-      "observe": ["Stem diameter and taper", "Internode length", "Mechanical damage and lesions", "Branch attachment strength and vascular continuity"],
-      "interactions": ["Xylem flow is coupled to transpiration", "Phloem transport follows source-sink relationships", "Branch architecture changes loading and support", "Wounding can alter local transport and signaling"],
-      "cautions": ["A hollow or pithy stem is not a standalone diagnosis", "Surface color alone does not identify vascular health", "Compare local damage with whole-plant water and growth patterns"],
-      "related": ["nodes-branching", "water-relations", "leaf-module", "stress-defense"],
-      "searchTerms": ["stem", "xylem", "phloem", "vascular", "internode", "transport"]
+      "concepts": [
+        "Epidermis",
+        "Cortex",
+        "Xylem",
+        "Phloem",
+        "Cambial tissues",
+        "Pith",
+        "Internodes",
+        "Vascular continuity"
+      ],
+      "functions": [
+        "Supports leaves and reproductive structures",
+        "Conducts water and dissolved ions",
+        "Redistributes sugars and other assimilates",
+        "Expands and reinforces the shoot as the plant grows"
+      ],
+      "observe": [
+        "Stem diameter and taper",
+        "Internode length",
+        "Mechanical damage and lesions",
+        "Branch attachment strength and vascular continuity"
+      ],
+      "interactions": [
+        "Xylem flow is coupled to transpiration",
+        "Phloem transport follows source-sink relationships",
+        "Branch architecture changes loading and support",
+        "Wounding can alter local transport and signaling"
+      ],
+      "cautions": [
+        "A hollow or pithy stem is not a standalone diagnosis",
+        "Surface color alone does not identify vascular health",
+        "Compare local damage with whole-plant water and growth patterns"
+      ],
+      "related": [
+        "nodes-branching",
+        "water-relations",
+        "leaf-module",
+        "stress-defense"
+      ],
+      "searchTerms": [
+        "stem",
+        "xylem",
+        "phloem",
+        "vascular",
+        "internode",
+        "transport"
+      ],
+      "scales": [
+        "whole shoot",
+        "organ",
+        "vascular tissue"
+      ],
+      "measurements": [
+        "Stem diameter",
+        "Internode length",
+        "Lesion or wound position",
+        "Branch attachment condition",
+        "Plant water-status trend",
+        "Time since training or injury"
+      ],
+      "evidenceQuestions": [
+        "Is transport interrupted locally or is the whole plant affected?",
+        "Does the pattern follow a branch, node or vascular pathway?",
+        "Did symptoms begin after mechanical injury, training or environmental stress?"
+      ],
+      "deepDiveTopics": [
+        "Stem tissues",
+        "Xylem transport",
+        "Phloem transport",
+        "Cambial development",
+        "Mechanical support",
+        "Wound response"
+      ],
+      "connectedTools": []
     },
     {
       "id": "nodes-branching",
@@ -60,13 +264,81 @@
       "icon": "⌘",
       "summary": "Study shoot apices, nodes, internodes, axillary buds, branch initiation, phyllotaxy, and the developmental controls that shape canopy architecture.",
       "visual": "Node and axillary-bud anatomy with branching and meristem map.",
-      "concepts": ["Shoot apical meristem", "Node", "Internode", "Axillary bud", "Branch junction", "Phyllotaxy", "Apical dominance", "Canopy architecture"],
-      "functions": ["Produces new shoot tissues", "Positions leaves and branches", "Coordinates vertical and lateral growth", "Creates the structural framework for light capture and reproduction"],
-      "observe": ["Node spacing", "Branch symmetry and vigor", "Bud activation", "New-growth shape and orientation"],
-      "interactions": ["Hormone gradients influence bud outgrowth", "Light distribution changes branch competition", "Mechanical manipulation changes local growth priorities", "Genotype strongly influences architecture"],
-      "cautions": ["Internode length is context-dependent", "A single unusual node does not define plant health", "Evaluate architecture with light, stage, genetics, and recent manipulation"],
-      "related": ["hormones-signaling", "stem-vascular", "leaf-module", "genetics-phenotype"],
-      "searchTerms": ["nodes", "internodes", "meristem", "branching", "axillary bud", "apical dominance"]
+      "concepts": [
+        "Shoot apical meristem",
+        "Node",
+        "Internode",
+        "Axillary bud",
+        "Branch junction",
+        "Phyllotaxy",
+        "Apical dominance",
+        "Canopy architecture"
+      ],
+      "functions": [
+        "Produces new shoot tissues",
+        "Positions leaves and branches",
+        "Coordinates vertical and lateral growth",
+        "Creates the structural framework for light capture and reproduction"
+      ],
+      "observe": [
+        "Node spacing",
+        "Branch symmetry and vigor",
+        "Bud activation",
+        "New-growth shape and orientation"
+      ],
+      "interactions": [
+        "Hormone gradients influence bud outgrowth",
+        "Light distribution changes branch competition",
+        "Mechanical manipulation changes local growth priorities",
+        "Genotype strongly influences architecture"
+      ],
+      "cautions": [
+        "Internode length is context-dependent",
+        "A single unusual node does not define plant health",
+        "Evaluate architecture with light, stage, genetics, and recent manipulation"
+      ],
+      "related": [
+        "hormones-signaling",
+        "stem-vascular",
+        "leaf-module",
+        "genetics-phenotype"
+      ],
+      "searchTerms": [
+        "nodes",
+        "internodes",
+        "meristem",
+        "branching",
+        "axillary bud",
+        "apical dominance"
+      ],
+      "scales": [
+        "whole-plant architecture",
+        "node",
+        "meristem"
+      ],
+      "measurements": [
+        "Node count",
+        "Internode length",
+        "Branch angle",
+        "Axillary bud activity",
+        "Canopy PPFD distribution",
+        "Time since pruning or training"
+      ],
+      "evidenceQuestions": [
+        "Is the architecture genetically consistent across comparable plants?",
+        "Are branch differences explained by light distribution or recent manipulation?",
+        "Is apical dominance changing after removal or damage of the shoot apex?"
+      ],
+      "deepDiveTopics": [
+        "Shoot apical meristem",
+        "Node anatomy",
+        "Axillary buds",
+        "Phyllotaxy",
+        "Apical dominance",
+        "Branch initiation",
+        "Canopy architecture"
+      ],
+      "connectedTools": []
     },
     {
       "id": "leaf-module",
@@ -76,13 +348,82 @@
       "icon": "◆",
       "summary": "Use healthy leaf anatomy as a baseline for photosynthesis, gas exchange, transpiration, vascular delivery, posture, and symptom pattern language.",
       "visual": "Fan-leaf reference, cross-section, stomata, veins, and symptom comparison plates.",
-      "concepts": ["Leaflets", "Serrations", "Midrib", "Veins", "Epidermis", "Mesophyll", "Stomata", "Trichomes"],
-      "functions": ["Captures light", "Fixes carbon through photosynthesis", "Regulates gas exchange", "Drives much of the transpiration stream"],
-      "observe": ["Color distribution", "Surface texture", "Posture and angle", "Margins, tips, veins, lesions, distortion, and pest evidence"],
-      "interactions": ["Leaf temperature changes vapor exchange", "Stomata connect carbon gain with water loss", "Vascular supply links leaves to roots and sinks", "Age and canopy position change baseline appearance"],
-      "cautions": ["Visible symptoms are evidence, not a nutrient label", "Older and newer leaves have different diagnostic meaning", "Describe location and pattern before assigning cause"],
-      "related": ["photosynthesis-carbon", "water-relations", "mineral-nutrition", "diagnostics"],
-      "searchTerms": ["leaf", "stomata", "chlorosis", "necrosis", "photosynthesis", "transpiration"]
+      "concepts": [
+        "Leaflets",
+        "Serrations",
+        "Midrib",
+        "Veins",
+        "Epidermis",
+        "Mesophyll",
+        "Stomata",
+        "Trichomes"
+      ],
+      "functions": [
+        "Captures light",
+        "Fixes carbon through photosynthesis",
+        "Regulates gas exchange",
+        "Drives much of the transpiration stream"
+      ],
+      "observe": [
+        "Color distribution",
+        "Surface texture",
+        "Posture and angle",
+        "Margins, tips, veins, lesions, distortion, and pest evidence"
+      ],
+      "interactions": [
+        "Leaf temperature changes vapor exchange",
+        "Stomata connect carbon gain with water loss",
+        "Vascular supply links leaves to roots and sinks",
+        "Age and canopy position change baseline appearance"
+      ],
+      "cautions": [
+        "Visible symptoms are evidence, not a nutrient label",
+        "Older and newer leaves have different diagnostic meaning",
+        "Describe location and pattern before assigning cause"
+      ],
+      "related": [
+        "photosynthesis-carbon",
+        "water-relations",
+        "mineral-nutrition",
+        "diagnostics"
+      ],
+      "searchTerms": [
+        "leaf",
+        "stomata",
+        "chlorosis",
+        "necrosis",
+        "photosynthesis",
+        "transpiration"
+      ],
+      "scales": [
+        "organ",
+        "tissue",
+        "cellular surface"
+      ],
+      "measurements": [
+        "Leaf age and canopy position",
+        "Leaf temperature",
+        "PPFD/DLI context",
+        "Air temperature and RH",
+        "VPD context",
+        "Root-zone pH and EC",
+        "Symptom progression over time"
+      ],
+      "evidenceQuestions": [
+        "Does the pattern begin on older, newer or all leaves?",
+        "Does discoloration follow veins, margins, tips, spots or whole tissue?",
+        "Can environmental, root-zone or pest evidence explain the pattern before a nutrient label is assigned?"
+      ],
+      "deepDiveTopics": [
+        "Leaflet and blade anatomy",
+        "Venation",
+        "Mesophyll",
+        "Stomata",
+        "Photosynthesis",
+        "Transpiration",
+        "Symptom pattern language"
+      ],
+      "connectedTools": []
     },
     {
       "id": "photosynthesis-carbon",
@@ -92,13 +433,83 @@
       "icon": "☀",
       "summary": "Trace light capture, carbon dioxide diffusion, biochemical carbon fixation, carbohydrate production, and the movement of assimilates from source leaves to growing sinks.",
       "visual": "Leaf-to-chloroplast carbon pathway and source-sink map.",
-      "concepts": ["Photon capture", "Chlorophyll", "Photosystems", "Electron transport", "Calvin cycle", "CO₂ diffusion", "Carbohydrates", "Source-sink"],
-      "functions": ["Converts light energy into chemical energy", "Fixes atmospheric carbon into organic molecules", "Supplies carbon skeletons for growth", "Feeds roots, meristems, flowers, and storage tissues"],
-      "observe": ["Leaf orientation and light exposure", "Canopy shading", "Growth response over time", "Leaf temperature and gas-exchange context"],
-      "interactions": ["Stomatal conductance affects CO₂ entry", "Water status can constrain carbon gain", "Temperature changes enzyme activity", "Sink demand influences carbohydrate allocation"],
-      "cautions": ["More light does not always mean more photosynthesis", "Leaf greenness is not a direct photosynthesis measurement", "Interpret light with CO₂, temperature, water status, canopy age, and acclimation"],
-      "related": ["leaf-module", "water-relations", "environmental-physiology", "mineral-nutrition"],
-      "searchTerms": ["photosynthesis", "carbon", "chlorophyll", "co2", "source sink", "light"]
+      "concepts": [
+        "Photon capture",
+        "Chlorophyll",
+        "Photosystems",
+        "Electron transport",
+        "Calvin cycle",
+        "CO₂ diffusion",
+        "Carbohydrates",
+        "Source-sink"
+      ],
+      "functions": [
+        "Converts light energy into chemical energy",
+        "Fixes atmospheric carbon into organic molecules",
+        "Supplies carbon skeletons for growth",
+        "Feeds roots, meristems, flowers, and storage tissues"
+      ],
+      "observe": [
+        "Leaf orientation and light exposure",
+        "Canopy shading",
+        "Growth response over time",
+        "Leaf temperature and gas-exchange context"
+      ],
+      "interactions": [
+        "Stomatal conductance affects CO₂ entry",
+        "Water status can constrain carbon gain",
+        "Temperature changes enzyme activity",
+        "Sink demand influences carbohydrate allocation"
+      ],
+      "cautions": [
+        "More light does not always mean more photosynthesis",
+        "Leaf greenness is not a direct photosynthesis measurement",
+        "Interpret light with CO₂, temperature, water status, canopy age, and acclimation"
+      ],
+      "related": [
+        "leaf-module",
+        "water-relations",
+        "environmental-physiology",
+        "mineral-nutrition"
+      ],
+      "searchTerms": [
+        "photosynthesis",
+        "carbon",
+        "chlorophyll",
+        "co2",
+        "source sink",
+        "light"
+      ],
+      "scales": [
+        "canopy",
+        "leaf",
+        "chloroplast/process"
+      ],
+      "measurements": [
+        "PPFD",
+        "DLI",
+        "Photoperiod",
+        "Leaf temperature",
+        "Air temperature",
+        "CO2 concentration when controlled",
+        "Canopy position and shading",
+        "Growth-rate trend"
+      ],
+      "evidenceQuestions": [
+        "Is light actually limiting, or is another factor constraining carbon gain?",
+        "Are leaf temperature, water status and CO2 context compatible with the observed response?",
+        "Is source-sink demand changing with developmental stage?"
+      ],
+      "deepDiveTopics": [
+        "Photon capture",
+        "Photosystems",
+        "Electron transport",
+        "Carbon fixation",
+        "CO2 diffusion",
+        "Carbohydrate production",
+        "Source-sink allocation"
+      ],
+      "connectedTools": []
     },
     {
       "id": "water-relations",
@@ -108,13 +519,83 @@
       "icon": "◌",
       "summary": "Follow water from the root zone through xylem to leaves, then out through stomata as vapor while examining water potential, turgor, transpiration, and hydraulic continuity.",
       "visual": "Root-to-leaf hydraulic pathway with stomatal vapor loss and turgor states.",
-      "concepts": ["Water potential", "Osmosis", "Turgor", "Xylem tension", "Transpiration", "Stomatal conductance", "Hydraulic resistance", "Recovery"],
-      "functions": ["Maintains cell expansion and turgor", "Moves dissolved ions through the xylem", "Supports evaporative cooling", "Couples root supply with atmospheric demand"],
-      "observe": ["Leaf posture across the light cycle", "Recovery after irrigation", "Substrate moisture pattern", "Leaf versus air temperature"],
-      "interactions": ["Humidity and temperature shape vapor demand", "Root-zone oxygen affects water uptake capacity", "Salinity changes osmotic conditions", "Canopy size changes total water demand"],
-      "cautions": ["Wilting can reflect supply, demand, roots, salinity, heat, or damage", "Wet media does not guarantee adequate root water uptake", "Use trend data rather than a single moisture reading"],
-      "related": ["root-system", "leaf-module", "stem-vascular", "environmental-physiology"],
-      "searchTerms": ["water", "transpiration", "turgor", "wilting", "hydraulics", "vpd"]
+      "concepts": [
+        "Water potential",
+        "Osmosis",
+        "Turgor",
+        "Xylem tension",
+        "Transpiration",
+        "Stomatal conductance",
+        "Hydraulic resistance",
+        "Recovery"
+      ],
+      "functions": [
+        "Maintains cell expansion and turgor",
+        "Moves dissolved ions through the xylem",
+        "Supports evaporative cooling",
+        "Couples root supply with atmospheric demand"
+      ],
+      "observe": [
+        "Leaf posture across the light cycle",
+        "Recovery after irrigation",
+        "Substrate moisture pattern",
+        "Leaf versus air temperature"
+      ],
+      "interactions": [
+        "Humidity and temperature shape vapor demand",
+        "Root-zone oxygen affects water uptake capacity",
+        "Salinity changes osmotic conditions",
+        "Canopy size changes total water demand"
+      ],
+      "cautions": [
+        "Wilting can reflect supply, demand, roots, salinity, heat, or damage",
+        "Wet media does not guarantee adequate root water uptake",
+        "Use trend data rather than a single moisture reading"
+      ],
+      "related": [
+        "root-system",
+        "leaf-module",
+        "stem-vascular",
+        "environmental-physiology"
+      ],
+      "searchTerms": [
+        "water",
+        "transpiration",
+        "turgor",
+        "wilting",
+        "hydraulics",
+        "vpd"
+      ],
+      "scales": [
+        "whole plant",
+        "vascular system",
+        "leaf",
+        "root zone"
+      ],
+      "measurements": [
+        "Substrate moisture or mass trend",
+        "Irrigation volume and timing",
+        "Leaf temperature",
+        "Air temperature",
+        "RH/VPD",
+        "Root-zone EC",
+        "Wilt and recovery timing"
+      ],
+      "evidenceQuestions": [
+        "Is demand exceeding root supply, or is uptake impaired despite wet media?",
+        "Does the plant recover after irrigation and on what timescale?",
+        "Could salinity, root damage, heat or airflow explain the same wilting pattern?"
+      ],
+      "deepDiveTopics": [
+        "Water potential",
+        "Osmosis and turgor",
+        "Root uptake",
+        "Xylem tension",
+        "Stomatal conductance",
+        "Transpiration",
+        "Hydraulic recovery"
+      ],
+      "connectedTools": []
     },
     {
       "id": "mineral-nutrition",
@@ -124,13 +605,85 @@
       "icon": "NPK",
       "summary": "Connect essential mineral elements with root uptake, transport, biochemical roles, tissue mobility, root-zone chemistry, and evidence-based interpretation of visible symptoms.",
       "visual": "Root uptake, vascular transport, element roles, and symptom-location decision map.",
-      "concepts": ["Macronutrients", "Micronutrients", "Ion uptake", "pH", "EC", "Mobility", "Chelation", "Root-zone chemistry"],
-      "functions": ["Provides elements required for proteins, nucleic acids, membranes, pigments, and enzymes", "Supports osmotic regulation and charge balance", "Enables energy transfer and metabolism", "Contributes to structural and signaling processes"],
-      "observe": ["Whether symptoms begin in older or newer tissue", "Interveinal versus uniform chlorosis", "Tip, margin, spot, or deformation patterns", "Root-zone pH, EC, irrigation history, and root condition"],
-      "interactions": ["pH changes chemical availability", "Ions compete and interact", "Transpiration affects delivery of some nutrients", "Root health and microbial activity influence uptake"],
-      "cautions": ["Leaf color alone cannot confirm a deficiency", "Excess and deficiency can overlap visually", "Correct diagnosis requires plant pattern plus root-zone and management evidence"],
-      "related": ["root-system", "leaf-module", "diagnostics", "water-relations"],
-      "searchTerms": ["nutrition", "nutrients", "nitrogen", "phosphorus", "potassium", "micronutrients", "ph", "ec"]
+      "concepts": [
+        "Macronutrients",
+        "Micronutrients",
+        "Ion uptake",
+        "pH",
+        "EC",
+        "Mobility",
+        "Chelation",
+        "Root-zone chemistry"
+      ],
+      "functions": [
+        "Provides elements required for proteins, nucleic acids, membranes, pigments, and enzymes",
+        "Supports osmotic regulation and charge balance",
+        "Enables energy transfer and metabolism",
+        "Contributes to structural and signaling processes"
+      ],
+      "observe": [
+        "Whether symptoms begin in older or newer tissue",
+        "Interveinal versus uniform chlorosis",
+        "Tip, margin, spot, or deformation patterns",
+        "Root-zone pH, EC, irrigation history, and root condition"
+      ],
+      "interactions": [
+        "pH changes chemical availability",
+        "Ions compete and interact",
+        "Transpiration affects delivery of some nutrients",
+        "Root health and microbial activity influence uptake"
+      ],
+      "cautions": [
+        "Leaf color alone cannot confirm a deficiency",
+        "Excess and deficiency can overlap visually",
+        "Correct diagnosis requires plant pattern plus root-zone and management evidence"
+      ],
+      "related": [
+        "root-system",
+        "leaf-module",
+        "diagnostics",
+        "water-relations"
+      ],
+      "searchTerms": [
+        "nutrition",
+        "nutrients",
+        "nitrogen",
+        "phosphorus",
+        "potassium",
+        "micronutrients",
+        "ph",
+        "ec"
+      ],
+      "scales": [
+        "root zone",
+        "vascular transport",
+        "organ",
+        "cell metabolism"
+      ],
+      "measurements": [
+        "Input solution pH",
+        "Input EC",
+        "Root-zone or runoff pH when meaningful",
+        "Root-zone or runoff EC when meaningful",
+        "Feed composition and concentration",
+        "Irrigation history",
+        "Symptom location by tissue age"
+      ],
+      "evidenceQuestions": [
+        "Is the pattern consistent with element mobility and tissue age?",
+        "Could pH, salinity, root health or water status be limiting uptake rather than supply?",
+        "Does changing nutrition explain the trend better than environmental or pathogen alternatives?"
+      ],
+      "deepDiveTopics": [
+        "Essential elements",
+        "Ion transport",
+        "pH and chemical availability",
+        "EC and osmotic context",
+        "Element mobility",
+        "Deficiency/excess overlap",
+        "Root-zone interactions"
+      ],
+      "connectedTools": []
     },
     {
       "id": "flower-anatomy",
@@ -140,13 +693,91 @@
       "icon": "✺",
       "summary": "Inspect pistillate and staminate flower structures, bracts, stigmas, anthers, inflorescence organization, glandular surfaces, and developmental change through reproductive growth.",
       "visual": "Pistillate and staminate flower comparison with inflorescence callouts.",
-      "concepts": ["Pistillate flower", "Staminate flower", "Bract", "Stigma", "Anther", "Inflorescence", "Sugar leaf", "Maturation"],
-      "functions": ["Produces reproductive organs", "Receives or releases pollen", "Supports fertilization and seed formation", "Creates specialized tissues rich in glandular trichomes"],
-      "observe": ["Flower type and distribution", "Stigma condition", "Bract development", "Anther or pollen-sac presence", "Tissue damage, mold risk, and maturation patterns"],
-      "interactions": ["Photoperiodic signaling controls developmental transition", "Pollination changes reproductive priorities", "Humidity and airflow affect dense floral tissues", "Genotype shapes inflorescence architecture"],
-      "cautions": ["Stigma color alone is not a complete maturity metric", "Dense flowers create microclimates", "Always distinguish flower anatomy from surrounding leaf tissue"],
-      "related": ["reproductive-biology", "trichomes-resin", "hormones-signaling", "stress-defense"],
-      "searchTerms": ["flower", "bract", "stigma", "anther", "inflorescence", "pistillate", "staminate"]
+      "concepts": [
+        "Pistillate flower",
+        "Staminate flower",
+        "Bract",
+        "Stigma",
+        "Anther",
+        "Inflorescence",
+        "Sugar leaf",
+        "Maturation"
+      ],
+      "functions": [
+        "Produces reproductive organs",
+        "Receives or releases pollen",
+        "Supports fertilization and seed formation",
+        "Creates specialized tissues rich in glandular trichomes"
+      ],
+      "observe": [
+        "Flower type and distribution",
+        "Stigma condition",
+        "Bract development",
+        "Anther or pollen-sac presence",
+        "Tissue damage, mold risk, and maturation patterns"
+      ],
+      "interactions": [
+        "Photoperiodic signaling controls developmental transition",
+        "Pollination changes reproductive priorities",
+        "Humidity and airflow affect dense floral tissues",
+        "Genotype shapes inflorescence architecture"
+      ],
+      "cautions": [
+        "Stigma color alone is not a complete maturity metric",
+        "Dense flowers create microclimates",
+        "Always distinguish flower anatomy from surrounding leaf tissue"
+      ],
+      "related": [
+        "reproductive-biology",
+        "trichomes-resin",
+        "hormones-signaling",
+        "stress-defense"
+      ],
+      "searchTerms": [
+        "flower",
+        "bract",
+        "stigma",
+        "anther",
+        "inflorescence",
+        "pistillate",
+        "staminate"
+      ],
+      "scales": [
+        "inflorescence",
+        "individual flower",
+        "bract",
+        "surface"
+      ],
+      "measurements": [
+        "Developmental day or stage",
+        "Photoperiod",
+        "Flower-zone temperature",
+        "Flower-zone RH",
+        "Airflow context",
+        "Pollination evidence",
+        "Tissue damage or mold observations"
+      ],
+      "evidenceQuestions": [
+        "Which structure is actually being observed: bract, stigma, sugar leaf, anther or other tissue?",
+        "Is the change developmental, pollination-related, environmental or pathological?",
+        "Are dense floral microclimates different from room-average conditions?"
+      ],
+      "deepDiveTopics": [
+        "Inflorescence architecture",
+        "Pistillate flowers",
+        "Staminate flowers",
+        "Bracts",
+        "Stigmas",
+        "Sugar leaves",
+        "Maturation and microclimate"
+      ],
+      "connectedTools": [
+        {
+          "label": "Terpene Atlas",
+          "route": "/terpene-atlas/",
+          "note": "Explore terpene chemistry associated with specialized secretory tissues and measured Cannabis samples."
+        }
+      ]
     },
     {
       "id": "trichomes-resin",
@@ -156,13 +787,89 @@
       "icon": "●",
       "summary": "Compare glandular trichome types, stalk and gland-head structure, secretory-disc cells, surface distribution, development, and consistent microscopy sampling.",
       "visual": "Microscope-scale comparison of capitate-stalked, capitate-sessile, and bulbous glandular trichomes.",
-      "concepts": ["Capitate-stalked", "Capitate-sessile", "Bulbous", "Gland head", "Secretory disc", "Cuticle", "Stalk", "Sampling"],
-      "functions": ["Produces and stores specialized metabolites", "Forms part of the plant surface defense system", "Changes in abundance and morphology across organs and development", "Provides microscopy-visible structures for comparative observation"],
-      "observe": ["Trichome type", "Sampling location", "Gland-head integrity", "Relative clarity and coloration", "Consistency of magnification and lighting"],
-      "interactions": ["Organ type changes trichome populations", "Developmental stage changes gland morphology", "Mechanical contact can damage gland heads", "Environment can influence surface development"],
-      "cautions": ["Different trichome types should not be pooled indiscriminately", "Color is affected by lighting and optics", "Sampling the same tissue location is essential for comparison"],
-      "related": ["flower-anatomy", "leaf-module", "stress-defense", "reproductive-biology"],
-      "searchTerms": ["trichome", "resin", "gland", "capitate", "microscope", "secretory"]
+      "concepts": [
+        "Capitate-stalked",
+        "Capitate-sessile",
+        "Bulbous",
+        "Gland head",
+        "Secretory disc",
+        "Cuticle",
+        "Stalk",
+        "Sampling"
+      ],
+      "functions": [
+        "Produces and stores specialized metabolites",
+        "Forms part of the plant surface defense system",
+        "Changes in abundance and morphology across organs and development",
+        "Provides microscopy-visible structures for comparative observation"
+      ],
+      "observe": [
+        "Trichome type",
+        "Sampling location",
+        "Gland-head integrity",
+        "Relative clarity and coloration",
+        "Consistency of magnification and lighting"
+      ],
+      "interactions": [
+        "Organ type changes trichome populations",
+        "Developmental stage changes gland morphology",
+        "Mechanical contact can damage gland heads",
+        "Environment can influence surface development"
+      ],
+      "cautions": [
+        "Different trichome types should not be pooled indiscriminately",
+        "Color is affected by lighting and optics",
+        "Sampling the same tissue location is essential for comparison"
+      ],
+      "related": [
+        "flower-anatomy",
+        "leaf-module",
+        "stress-defense",
+        "reproductive-biology"
+      ],
+      "searchTerms": [
+        "trichome",
+        "resin",
+        "gland",
+        "capitate",
+        "microscope",
+        "secretory"
+      ],
+      "scales": [
+        "organ surface",
+        "microscopic",
+        "glandular tissue"
+      ],
+      "measurements": [
+        "Sampling location",
+        "Plant developmental stage",
+        "Magnification",
+        "Lighting method",
+        "Trichome type",
+        "Gland-head integrity",
+        "Repeat image conditions"
+      ],
+      "evidenceQuestions": [
+        "Are the same trichome type and tissue position being compared?",
+        "Could lighting, focus or mechanical damage explain apparent color differences?",
+        "Is the observation being used descriptively rather than as a single-variable harvest rule?"
+      ],
+      "deepDiveTopics": [
+        "Capitate-stalked trichomes",
+        "Capitate-sessile trichomes",
+        "Bulbous trichomes",
+        "Secretory disc cells",
+        "Gland-head cavity",
+        "Surface distribution",
+        "Microscopy sampling"
+      ],
+      "connectedTools": [
+        {
+          "label": "Terpene Atlas",
+          "route": "/terpene-atlas/",
+          "note": "Connect secretory anatomy to terpene chemistry and evidence-backed compound occurrence."
+        }
+      ]
     },
     {
       "id": "reproductive-biology",
@@ -172,13 +879,88 @@
       "icon": "✧",
       "summary": "Connect sex expression, staminate and pistillate structures, pollen development, pollination, fertilization, embryo formation, and seed maturation as one reproductive pathway.",
       "visual": "Reproductive pathway from floral sex expression through pollen transfer and seed development.",
-      "concepts": ["Sex expression", "Pollen", "Anther", "Stigma", "Pollination", "Fertilization", "Embryo", "Seed maturation"],
-      "functions": ["Produces male and female gametophytes", "Transfers genetic material through pollen", "Combines parental genomes at fertilization", "Builds the next generation inside the developing seed"],
-      "observe": ["Location and timing of reproductive structures", "Pollen release", "Post-pollination changes", "Seed swelling and maturation"],
-      "interactions": ["Genotype influences sex expression", "Photoperiod and developmental signals regulate flowering", "Stress can alter reproductive development", "Pollination redirects resources toward seed formation"],
-      "cautions": ["Sex expression is a biological trait with genetic and environmental components", "One structure should be identified anatomically before conclusions are drawn", "Pollen movement can occur beyond the immediately visible plant"],
-      "related": ["flower-anatomy", "genetics-phenotype", "seed-germination", "hormones-signaling"],
-      "searchTerms": ["sex", "pollen", "pollination", "fertilization", "seed", "reproduction"]
+      "concepts": [
+        "Sex expression",
+        "Pollen",
+        "Anther",
+        "Stigma",
+        "Pollination",
+        "Fertilization",
+        "Embryo",
+        "Seed maturation"
+      ],
+      "functions": [
+        "Produces male and female gametophytes",
+        "Transfers genetic material through pollen",
+        "Combines parental genomes at fertilization",
+        "Builds the next generation inside the developing seed"
+      ],
+      "observe": [
+        "Location and timing of reproductive structures",
+        "Pollen release",
+        "Post-pollination changes",
+        "Seed swelling and maturation"
+      ],
+      "interactions": [
+        "Genotype influences sex expression",
+        "Photoperiod and developmental signals regulate flowering",
+        "Stress can alter reproductive development",
+        "Pollination redirects resources toward seed formation"
+      ],
+      "cautions": [
+        "Sex expression is a biological trait with genetic and environmental components",
+        "One structure should be identified anatomically before conclusions are drawn",
+        "Pollen movement can occur beyond the immediately visible plant"
+      ],
+      "related": [
+        "flower-anatomy",
+        "genetics-phenotype",
+        "seed-germination",
+        "hormones-signaling"
+      ],
+      "searchTerms": [
+        "sex",
+        "pollen",
+        "pollination",
+        "fertilization",
+        "seed",
+        "reproduction"
+      ],
+      "scales": [
+        "whole plant",
+        "flower",
+        "gametophyte",
+        "seed"
+      ],
+      "measurements": [
+        "Developmental stage",
+        "Photoperiod history",
+        "Location of reproductive structures",
+        "Pollen presence",
+        "Pollination date when known",
+        "Seed development timing"
+      ],
+      "evidenceQuestions": [
+        "Has the structure been anatomically identified before assigning sex expression?",
+        "Is pollen exposure documented or only suspected?",
+        "Do reproductive changes align with stage, genotype and environmental history?"
+      ],
+      "deepDiveTopics": [
+        "Sex expression",
+        "Staminate structures",
+        "Pistillate structures",
+        "Pollen development",
+        "Pollination",
+        "Fertilization",
+        "Embryo and seed development"
+      ],
+      "connectedTools": [
+        {
+          "label": "Terpene Atlas",
+          "route": "/terpene-atlas/",
+          "note": "Explore terpene chemistry associated with specialized secretory tissues and measured Cannabis samples."
+        }
+      ]
     },
     {
       "id": "genetics-phenotype",
@@ -188,13 +970,85 @@
       "icon": "DNA",
       "summary": "Separate inherited genetic information from observed phenotype, then examine how environment, development, epigenetic regulation, and measurement shape the traits we see.",
       "visual": "Genotype × environment × development map with trait and phenotype examples.",
-      "concepts": ["Genotype", "Phenotype", "Alleles", "Segregation", "Heritability", "Environment", "Development", "Epigenetic regulation"],
-      "functions": ["Explains inherited differences among plants", "Provides the basis for trait segregation", "Interacts with environment to produce phenotype", "Creates variation available for selection"],
-      "observe": ["Replicated trait differences", "Developmental timing", "Architecture", "Morphology", "Aroma and other measurable phenotypes with consistent methods"],
-      "interactions": ["Environment changes trait expression", "Age and stage affect phenotype", "Measurement method affects apparent differences", "Selection changes population allele frequencies over generations"],
-      "cautions": ["A phenotype is not the same thing as a genotype", "One plant does not define a stable line", "Use replicated observations before assigning a trait to inheritance"],
-      "related": ["reproductive-biology", "nodes-branching", "stress-defense", "environmental-physiology"],
-      "searchTerms": ["genotype", "phenotype", "variation", "heritability", "allele", "segregation", "breeding"]
+      "concepts": [
+        "Genotype",
+        "Phenotype",
+        "Alleles",
+        "Segregation",
+        "Heritability",
+        "Environment",
+        "Development",
+        "Epigenetic regulation"
+      ],
+      "functions": [
+        "Explains inherited differences among plants",
+        "Provides the basis for trait segregation",
+        "Interacts with environment to produce phenotype",
+        "Creates variation available for selection"
+      ],
+      "observe": [
+        "Replicated trait differences",
+        "Developmental timing",
+        "Architecture",
+        "Morphology",
+        "Aroma and other measurable phenotypes with consistent methods"
+      ],
+      "interactions": [
+        "Environment changes trait expression",
+        "Age and stage affect phenotype",
+        "Measurement method affects apparent differences",
+        "Selection changes population allele frequencies over generations"
+      ],
+      "cautions": [
+        "A phenotype is not the same thing as a genotype",
+        "One plant does not define a stable line",
+        "Use replicated observations before assigning a trait to inheritance"
+      ],
+      "related": [
+        "reproductive-biology",
+        "nodes-branching",
+        "stress-defense",
+        "environmental-physiology"
+      ],
+      "searchTerms": [
+        "genotype",
+        "phenotype",
+        "variation",
+        "heritability",
+        "allele",
+        "segregation",
+        "breeding"
+      ],
+      "scales": [
+        "population",
+        "whole plant",
+        "trait",
+        "molecular concept"
+      ],
+      "measurements": [
+        "Plant identity",
+        "Replicate count",
+        "Trait definition",
+        "Measurement method",
+        "Environment and treatment",
+        "Developmental stage",
+        "Pedigree or cross information"
+      ],
+      "evidenceQuestions": [
+        "Is the observed trait repeatable across genetically related plants?",
+        "Was phenotype measured under comparable environmental conditions?",
+        "Is the claim about inheritance supported by segregation or progeny data rather than one plant?"
+      ],
+      "deepDiveTopics": [
+        "Genotype versus phenotype",
+        "Alleles",
+        "Segregation",
+        "Heritability",
+        "Genotype × environment",
+        "Phenotyping",
+        "Selection records"
+      ],
+      "connectedTools": []
     },
     {
       "id": "hormones-signaling",
@@ -204,13 +1058,85 @@
       "icon": "⇄",
       "summary": "Explore auxin, cytokinin, gibberellin, abscisic acid, ethylene, jasmonate and other signals as interacting regulatory networks rather than single-purpose switches.",
       "visual": "Signal network connecting roots, shoot tips, leaves, branching, stomata, stress, and reproductive development.",
-      "concepts": ["Auxin", "Cytokinin", "Gibberellin", "Abscisic acid", "Ethylene", "Jasmonates", "Signal transduction", "Feedback"],
-      "functions": ["Coordinates growth and development", "Regulates branching and elongation", "Links water status to stomatal behavior", "Mediates defense and stress responses"],
-      "observe": ["Growth direction", "Bud outgrowth", "Internode change", "Leaf posture", "Abscission and stress-response patterns"],
-      "interactions": ["Hormones influence one another", "Signals move locally and systemically", "Environmental cues alter hormone balance", "Developmental stage changes tissue sensitivity"],
-      "cautions": ["Plant hormones are networked signals, not isolated on/off controls", "Visible growth changes can have multiple upstream causes", "Avoid assigning a symptom to one hormone without supporting evidence"],
-      "related": ["nodes-branching", "water-relations", "stress-defense", "reproductive-biology"],
-      "searchTerms": ["hormones", "auxin", "cytokinin", "gibberellin", "aba", "ethylene", "jasmonate"]
+      "concepts": [
+        "Auxin",
+        "Cytokinin",
+        "Gibberellin",
+        "Abscisic acid",
+        "Ethylene",
+        "Jasmonates",
+        "Signal transduction",
+        "Feedback"
+      ],
+      "functions": [
+        "Coordinates growth and development",
+        "Regulates branching and elongation",
+        "Links water status to stomatal behavior",
+        "Mediates defense and stress responses"
+      ],
+      "observe": [
+        "Growth direction",
+        "Bud outgrowth",
+        "Internode change",
+        "Leaf posture",
+        "Abscission and stress-response patterns"
+      ],
+      "interactions": [
+        "Hormones influence one another",
+        "Signals move locally and systemically",
+        "Environmental cues alter hormone balance",
+        "Developmental stage changes tissue sensitivity"
+      ],
+      "cautions": [
+        "Plant hormones are networked signals, not isolated on/off controls",
+        "Visible growth changes can have multiple upstream causes",
+        "Avoid assigning a symptom to one hormone without supporting evidence"
+      ],
+      "related": [
+        "nodes-branching",
+        "water-relations",
+        "stress-defense",
+        "reproductive-biology"
+      ],
+      "searchTerms": [
+        "hormones",
+        "auxin",
+        "cytokinin",
+        "gibberellin",
+        "aba",
+        "ethylene",
+        "jasmonate"
+      ],
+      "scales": [
+        "whole plant",
+        "organ",
+        "tissue",
+        "signaling network"
+      ],
+      "measurements": [
+        "Growth direction and rate",
+        "Bud activation",
+        "Internode change",
+        "Leaf posture",
+        "Water-status context",
+        "Developmental stage",
+        "Timing after environmental change"
+      ],
+      "evidenceQuestions": [
+        "Could the observed response arise from multiple interacting signals rather than one hormone?",
+        "Does developmental stage change tissue sensitivity?",
+        "Is the response correlated with environment, injury or reproductive transition?"
+      ],
+      "deepDiveTopics": [
+        "Auxin",
+        "Cytokinin",
+        "Gibberellin",
+        "Abscisic acid",
+        "Ethylene",
+        "Jasmonate",
+        "Signal integration and feedback"
+      ],
+      "connectedTools": []
     },
     {
       "id": "environmental-physiology",
@@ -220,13 +1146,90 @@
       "icon": "◎",
       "summary": "Map light, temperature, humidity, airflow, carbon dioxide, water supply, root-zone conditions, and time onto the plant processes they influence.",
       "visual": "Whole-plant environment overlay linking canopy and root-zone measurements to biological processes.",
-      "concepts": ["Light", "Leaf temperature", "Humidity", "Vapor pressure", "Airflow", "CO₂", "Root-zone moisture", "Root-zone oxygen"],
-      "functions": ["Sets the physical context for photosynthesis and transpiration", "Changes metabolic rate", "Shapes boundary layers and gas exchange", "Controls root-zone supply and oxygen conditions"],
-      "observe": ["Canopy light distribution", "Leaf and air temperature", "Humidity trend", "Air movement", "Substrate moisture", "Root-zone pH and EC"],
-      "interactions": ["Light changes leaf temperature and demand", "Humidity and temperature jointly shape vapor conditions", "Airflow alters leaf boundary layers", "Root-zone conditions determine how well supply meets shoot demand"],
-      "cautions": ["No single environmental number describes the whole plant", "Canopy averages can hide local extremes", "Interpret measurements in time, space, and developmental context"],
-      "related": ["photosynthesis-carbon", "water-relations", "root-system", "diagnostics"],
-      "searchTerms": ["environment", "light", "temperature", "humidity", "vpd", "airflow", "co2", "root zone"]
+      "concepts": [
+        "Light",
+        "Leaf temperature",
+        "Humidity",
+        "Vapor pressure",
+        "Airflow",
+        "CO₂",
+        "Root-zone moisture",
+        "Root-zone oxygen"
+      ],
+      "functions": [
+        "Sets the physical context for photosynthesis and transpiration",
+        "Changes metabolic rate",
+        "Shapes boundary layers and gas exchange",
+        "Controls root-zone supply and oxygen conditions"
+      ],
+      "observe": [
+        "Canopy light distribution",
+        "Leaf and air temperature",
+        "Humidity trend",
+        "Air movement",
+        "Substrate moisture",
+        "Root-zone pH and EC"
+      ],
+      "interactions": [
+        "Light changes leaf temperature and demand",
+        "Humidity and temperature jointly shape vapor conditions",
+        "Airflow alters leaf boundary layers",
+        "Root-zone conditions determine how well supply meets shoot demand"
+      ],
+      "cautions": [
+        "No single environmental number describes the whole plant",
+        "Canopy averages can hide local extremes",
+        "Interpret measurements in time, space, and developmental context"
+      ],
+      "related": [
+        "photosynthesis-carbon",
+        "water-relations",
+        "root-system",
+        "diagnostics"
+      ],
+      "searchTerms": [
+        "environment",
+        "light",
+        "temperature",
+        "humidity",
+        "vpd",
+        "airflow",
+        "co2",
+        "root zone"
+      ],
+      "scales": [
+        "room",
+        "canopy",
+        "leaf boundary layer",
+        "root zone"
+      ],
+      "measurements": [
+        "PPFD and DLI",
+        "Air temperature",
+        "Leaf temperature",
+        "RH and VPD",
+        "Airflow",
+        "CO2 when controlled",
+        "Substrate moisture",
+        "Root-zone temperature",
+        "pH and EC"
+      ],
+      "evidenceQuestions": [
+        "Are averages hiding local canopy extremes?",
+        "Do measurements represent the plant location and time when symptoms occur?",
+        "Which environmental factor changed first relative to the plant response?"
+      ],
+      "deepDiveTopics": [
+        "Light environment",
+        "Temperature",
+        "Humidity and vapor pressure",
+        "Leaf boundary layer",
+        "Airflow",
+        "CO2 context",
+        "Root-zone environment",
+        "Time-series interpretation"
+      ],
+      "connectedTools": []
     },
     {
       "id": "stress-defense",
@@ -236,13 +1239,87 @@
       "icon": "⚑",
       "summary": "Study how plants perceive and respond to heat, cold, drought, salinity, excess light, mechanical injury, herbivory, and pathogens while distinguishing reversible acclimation from damage.",
       "visual": "Stress-response map from perception and signaling to acclimation, defense, injury, and recovery.",
-      "concepts": ["Acclimation", "Oxidative stress", "Heat", "Cold", "Drought", "Salinity", "Wounding", "Defense signaling"],
-      "functions": ["Protects cellular systems under changing conditions", "Reallocates resources during stress", "Activates structural and chemical defenses", "Supports recovery when conditions improve"],
-      "observe": ["Timing of symptoms", "Affected tissue age and position", "Recovery after conditions change", "Lesion expansion, pest evidence, and mechanical injury"],
-      "interactions": ["Multiple stresses can occur simultaneously", "Water status interacts with heat and salinity", "Defense signaling can reduce growth", "Genotype affects tolerance and acclimation"],
-      "cautions": ["Stress symptoms often overlap", "Damage and acclimation are not the same", "Reconstruct recent environmental and management changes before ranking causes"],
-      "related": ["diagnostics", "environmental-physiology", "hormones-signaling", "leaf-module"],
-      "searchTerms": ["stress", "defense", "heat", "cold", "drought", "salinity", "wound", "pathogen"]
+      "concepts": [
+        "Acclimation",
+        "Oxidative stress",
+        "Heat",
+        "Cold",
+        "Drought",
+        "Salinity",
+        "Wounding",
+        "Defense signaling"
+      ],
+      "functions": [
+        "Protects cellular systems under changing conditions",
+        "Reallocates resources during stress",
+        "Activates structural and chemical defenses",
+        "Supports recovery when conditions improve"
+      ],
+      "observe": [
+        "Timing of symptoms",
+        "Affected tissue age and position",
+        "Recovery after conditions change",
+        "Lesion expansion, pest evidence, and mechanical injury"
+      ],
+      "interactions": [
+        "Multiple stresses can occur simultaneously",
+        "Water status interacts with heat and salinity",
+        "Defense signaling can reduce growth",
+        "Genotype affects tolerance and acclimation"
+      ],
+      "cautions": [
+        "Stress symptoms often overlap",
+        "Damage and acclimation are not the same",
+        "Reconstruct recent environmental and management changes before ranking causes"
+      ],
+      "related": [
+        "diagnostics",
+        "environmental-physiology",
+        "hormones-signaling",
+        "leaf-module"
+      ],
+      "searchTerms": [
+        "stress",
+        "defense",
+        "heat",
+        "cold",
+        "drought",
+        "salinity",
+        "wound",
+        "pathogen"
+      ],
+      "scales": [
+        "whole plant",
+        "organ",
+        "tissue",
+        "cellular response"
+      ],
+      "measurements": [
+        "Stress onset time",
+        "Maximum/minimum environmental excursion",
+        "Affected tissue position",
+        "Progression rate",
+        "Recovery after correction",
+        "Pest/pathogen evidence",
+        "Recent mechanical injury"
+      ],
+      "evidenceQuestions": [
+        "Is the response reversible acclimation or irreversible damage?",
+        "Are several stresses occurring simultaneously?",
+        "Does symptom timing match the suspected stress event?"
+      ],
+      "deepDiveTopics": [
+        "Heat stress",
+        "Cold stress",
+        "Drought",
+        "Salinity",
+        "Excess light",
+        "Oxidative stress",
+        "Wounding",
+        "Defense signaling",
+        "Recovery"
+      ],
+      "connectedTools": []
     },
     {
       "id": "diagnostics",
@@ -252,13 +1329,92 @@
       "icon": "⌕",
       "summary": "Use structured observation to describe where a symptom occurs, how it progresses, what changed, and which measurements can separate competing explanations.",
       "visual": "Observation-first differential workflow connecting symptoms to environment, roots, pests, pathogens, nutrition, and physical damage.",
-      "concepts": ["Baseline", "Distribution", "Progression", "Plant age", "Environment", "Root-zone evidence", "Pest inspection", "Differential diagnosis"],
-      "functions": ["Turns visible patterns into testable observations", "Reduces premature single-cause conclusions", "Connects symptoms with measurements", "Creates a repeatable record for comparison over time"],
-      "observe": ["Old versus new tissue", "Upper versus lower canopy", "Interveinal, marginal, tip, spot, lesion, wilt, or distortion pattern", "One plant versus many plants", "Recent changes and time course"],
-      "interactions": ["Root problems can appear in leaves", "Environment can mimic nutrient symptoms", "Pests and pathogens can overlap with abiotic stress", "Multiple causes can coexist"],
-      "cautions": ["A photograph is a starting point, not a complete diagnosis", "Symptoms should be paired with environmental and root-zone context", "Rank explanations and test them instead of treating a visual chart as proof"],
-      "related": ["leaf-module", "root-system", "mineral-nutrition", "environmental-physiology"],
-      "searchTerms": ["diagnostics", "symptom", "chlorosis", "necrosis", "wilt", "pest", "root", "differential"]
+      "concepts": [
+        "Baseline",
+        "Distribution",
+        "Progression",
+        "Plant age",
+        "Environment",
+        "Root-zone evidence",
+        "Pest inspection",
+        "Differential diagnosis"
+      ],
+      "functions": [
+        "Turns visible patterns into testable observations",
+        "Reduces premature single-cause conclusions",
+        "Connects symptoms with measurements",
+        "Creates a repeatable record for comparison over time"
+      ],
+      "observe": [
+        "Old versus new tissue",
+        "Upper versus lower canopy",
+        "Interveinal, marginal, tip, spot, lesion, wilt, or distortion pattern",
+        "One plant versus many plants",
+        "Recent changes and time course"
+      ],
+      "interactions": [
+        "Root problems can appear in leaves",
+        "Environment can mimic nutrient symptoms",
+        "Pests and pathogens can overlap with abiotic stress",
+        "Multiple causes can coexist"
+      ],
+      "cautions": [
+        "A photograph is a starting point, not a complete diagnosis",
+        "Symptoms should be paired with environmental and root-zone context",
+        "Rank explanations and test them instead of treating a visual chart as proof"
+      ],
+      "related": [
+        "leaf-module",
+        "root-system",
+        "mineral-nutrition",
+        "environmental-physiology"
+      ],
+      "searchTerms": [
+        "diagnostics",
+        "symptom",
+        "chlorosis",
+        "necrosis",
+        "wilt",
+        "pest",
+        "root",
+        "differential"
+      ],
+      "scales": [
+        "whole crop",
+        "whole plant",
+        "organ",
+        "tissue",
+        "time series"
+      ],
+      "measurements": [
+        "Plant identity and stage",
+        "Symptom location",
+        "Distribution among plants",
+        "Progression over time",
+        "Air and leaf temperature",
+        "RH/VPD",
+        "PPFD/DLI",
+        "Root-zone moisture",
+        "pH and EC",
+        "Pest/pathogen observations",
+        "Recent changes"
+      ],
+      "evidenceQuestions": [
+        "What is directly observed versus inferred?",
+        "Which competing explanations fit the location, timing and distribution?",
+        "What measurement or inspection would most efficiently separate the leading explanations?"
+      ],
+      "deepDiveTopics": [
+        "Observation language",
+        "Healthy baseline",
+        "Spatial distribution",
+        "Time course",
+        "Abiotic versus biotic evidence",
+        "Root-zone context",
+        "Differential diagnosis",
+        "Verification and follow-up"
+      ],
+      "connectedTools": []
     }
   ]
 }
