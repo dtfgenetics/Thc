@@ -21,6 +21,8 @@ const requiredMirrors = [
   'atlas-site-shell-v5.css',
   'atlas-anatomy-index-v1.css',
   'atlas-anatomy-index-v1.js',
+  'atlas-workspace-v5.css',
+  'atlas-workspace-v5.js',
   'module.js',
   'data/systems.json',
   'data/hotspots-v4.json',
@@ -37,7 +39,7 @@ for (const relative of requiredMirrors) {
 }
 
 const index = read(path.join(appRoot, 'index.html'));
-for (const token of ['/atlas/atlas-v4.css', '/atlas/atlas-site-shell-v5.css', '/atlas/atlas-anatomy-index-v1.css', '/atlas/atlas-anatomy-index-v1.js', '/atlas/atlas-3d-bootstrap.js', 'data-plant-model-status', 'data-anatomy-index', 'CLICK · INSPECT', 'Interactive 3D system V4', '<b>32</b><span>inspectable structures</span>', '/terpene-atlas/']) {
+for (const token of ['/atlas/atlas-v4.css', '/atlas/atlas-site-shell-v5.css', '/atlas/atlas-anatomy-index-v1.css', '/atlas/atlas-anatomy-index-v1.js', '/atlas/atlas-workspace-v5.css', '/atlas/atlas-workspace-v5.js', '/atlas/atlas-3d-bootstrap.js', 'data-plant-model-status', 'data-anatomy-index', 'CLICK · INSPECT', 'Interactive 3D system V4', '<b>32</b><span>inspectable structures</span>', '/terpene-atlas/']) {
   ok(index.includes(token), `Atlas index missing V4 wiring: ${token}`);
 }
 ok(!index.includes('type="module" src="/atlas/atlas-3d.js"'), 'Atlas index must not boot V3 directly; V3 is emergency fallback only');
@@ -134,6 +136,12 @@ if (systemsData) {
   }
 }
 
+const workspaceRuntime = read(path.join(appRoot, 'atlas-workspace-v5.js'));
+for (const token of ['data-atlas-mode','data-atlas-layer','data-atlas-command-input','plant-atlas:focus','Ctrl','Measurements','Evidence']) ok(workspaceRuntime.includes(token), `Atlas V5 workspace runtime missing: ${token}`);
+const workspaceCss = read(path.join(appRoot, 'atlas-workspace-v5.css'));
+for (const token of ['.atlas-workspace-bar','.atlas-command-results','.atlas-inspector-tabs','data-atlas-mode','max-width:980px']) ok(workspaceCss.includes(token), `Atlas V5 workspace CSS missing: ${token}`);
+for (const token of ['data-atlas-mode="explorer"','data-atlas-mode="research"','data-atlas-layer="anatomy"','data-atlas-layer="diagnostics"','data-atlas-command-input','data-atlas-mobile-tray-toggle']) ok(index.includes(token), `Atlas V5 workspace shell missing: ${token}`);
+
 const anatomyIndex = read(path.join(appRoot, 'atlas-anatomy-index-v1.js'));
 for (const token of ['hotspots-v4.json','data-anatomy-search','data-anatomy-scale','plant-atlas:focus']) ok(anatomyIndex.includes(token), `Anatomy index runtime missing: ${token}`);
 
@@ -181,4 +189,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Plant Atlas V4 valid: 16 enriched systems, ${requiredHotspots.size} required inspectable structures, searchable anatomy index, V4-first 3D focus, Terpene Atlas bridge, synchronized deployment mirror, and optional licensed GLB upgrade.`);
+console.log(`Plant Atlas V4/V5 workspace valid: 16 enriched systems, ${requiredHotspots.size} required inspectable structures, unified workspace search/modes/layers, searchable anatomy index, V4-first 3D focus, Terpene Atlas bridge, synchronized deployment mirror, and optional licensed GLB upgrade.`);
