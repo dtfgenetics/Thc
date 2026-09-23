@@ -1,0 +1,417 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "shapira-79-inflorescence-terpenoid-variability",
+  "title": "Terpenoid variability across 79 Cannabis inflorescences",
+  "sourceId": "shapira-variability-79-inflorescences",
+  "sampleCount": 79,
+  "matrix": "inflorescence",
+  "unit": "ppm",
+  "interpretation": "These are population summary statistics across 79 distinct Cannabis inflorescences, not a fixed profile for any cultivar name.",
+  "notes": [
+    "Values marked with maxQualifier '>' exceeded the reported upper quantitation/detection boundary in the source table.",
+    "The source table marks some analytes as semi-quantified; this compact Atlas subset prioritizes named analytes used in the current ontology.",
+    "Do not convert population means into cultivar-specific expectations."
+  ],
+  "analytes": [
+    {
+      "compoundId": "alpha-pinene",
+      "reportedName": "α-Pinene",
+      "maxPpm": 1903.4,
+      "maxQualifier": null,
+      "minPpm": 2.3,
+      "meanPpm": 181.7,
+      "sdPpm": 357.5,
+      "cvPercent": 196.8
+    },
+    {
+      "compoundId": "camphene",
+      "reportedName": "Camphene",
+      "maxPpm": 161.6,
+      "maxQualifier": null,
+      "minPpm": 1.7,
+      "meanPpm": 18.3,
+      "sdPpm": 34,
+      "cvPercent": 186.3
+    },
+    {
+      "compoundId": "sabinene",
+      "reportedName": "Sabinene",
+      "maxPpm": 3.7,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 0.9,
+      "sdPpm": 1.1,
+      "cvPercent": 126.3
+    },
+    {
+      "compoundId": "beta-pinene",
+      "reportedName": "β-Pinene",
+      "maxPpm": 1705.3,
+      "maxQualifier": null,
+      "minPpm": 2.2,
+      "meanPpm": 132.1,
+      "sdPpm": 259.9,
+      "cvPercent": 196.8
+    },
+    {
+      "compoundId": "beta-myrcene",
+      "reportedName": "β-Myrcene",
+      "maxPpm": 2706,
+      "maxQualifier": ">",
+      "minPpm": 5.1,
+      "meanPpm": 444.3,
+      "sdPpm": 706.4,
+      "cvPercent": 159
+    },
+    {
+      "compoundId": "3-carene",
+      "reportedName": "3δ-Carene",
+      "maxPpm": 530.3,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 10.1,
+      "sdPpm": 62.7,
+      "cvPercent": 622.3
+    },
+    {
+      "compoundId": "alpha-phellandrene",
+      "reportedName": "α-Phellandrene",
+      "maxPpm": 701.5,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 14,
+      "sdPpm": 80.5,
+      "cvPercent": 574.7
+    },
+    {
+      "compoundId": "alpha-terpinene",
+      "reportedName": "α-Terpinene",
+      "maxPpm": 379,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 14.9,
+      "sdPpm": 51.1,
+      "cvPercent": 343.1
+    },
+    {
+      "compoundId": "d-limonene",
+      "reportedName": "Limonene",
+      "maxPpm": 2760,
+      "maxQualifier": ">",
+      "minPpm": 2.7,
+      "meanPpm": 247.5,
+      "sdPpm": 577.7,
+      "cvPercent": 233.5
+    },
+    {
+      "compoundId": "beta-phellandrene",
+      "reportedName": "β-Phellandrene",
+      "maxPpm": 421.1,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 16.9,
+      "sdPpm": 55.8,
+      "cvPercent": 330.6
+    },
+    {
+      "compoundId": "ocimene",
+      "reportedName": "cis-Ocimene",
+      "maxPpm": 101.6,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 4.3,
+      "sdPpm": 12.9,
+      "cvPercent": 302.4
+    },
+    {
+      "compoundId": "eucalyptol",
+      "reportedName": "Eucalyptol",
+      "maxPpm": 63.6,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 7.3,
+      "sdPpm": 11.9,
+      "cvPercent": 162.9
+    },
+    {
+      "compoundId": "p-cymene",
+      "reportedName": "p-Cymene",
+      "maxPpm": 28.7,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 2.2,
+      "sdPpm": 4.3,
+      "cvPercent": 192.5
+    },
+    {
+      "compoundId": "ocimene",
+      "reportedName": "trans-Ocimene",
+      "maxPpm": 1648.5,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 62.9,
+      "sdPpm": 237.6,
+      "cvPercent": 377.8
+    },
+    {
+      "compoundId": "gamma-terpinene",
+      "reportedName": "γ-Terpinene",
+      "maxPpm": 512.2,
+      "maxQualifier": null,
+      "minPpm": 1.5,
+      "meanPpm": 16.4,
+      "sdPpm": 60.7,
+      "cvPercent": 369.2
+    },
+    {
+      "compoundId": "terpinolene",
+      "reportedName": "Terpinolene",
+      "maxPpm": 2433,
+      "maxQualifier": ">",
+      "minPpm": 2.4,
+      "meanPpm": 96.2,
+      "sdPpm": 394.4,
+      "cvPercent": 410.1
+    },
+    {
+      "compoundId": "linalool",
+      "reportedName": "Linalool",
+      "maxPpm": 1204.4,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 214.1,
+      "sdPpm": 249.8,
+      "cvPercent": 116.7
+    },
+    {
+      "compoundId": "fenchone",
+      "reportedName": "Fenchone",
+      "maxPpm": 68,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 8.9,
+      "sdPpm": 12.5,
+      "cvPercent": 139.5
+    },
+    {
+      "compoundId": "fenchol",
+      "reportedName": "Fenchol",
+      "maxPpm": 953.7,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 118.1,
+      "sdPpm": 145.4,
+      "cvPercent": 123.1
+    },
+    {
+      "compoundId": "menthol",
+      "reportedName": "Menthol",
+      "maxPpm": 62.1,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 5.6,
+      "sdPpm": 12.9,
+      "cvPercent": 230.7
+    },
+    {
+      "compoundId": "borneol",
+      "reportedName": "Borneol",
+      "maxPpm": 941,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 59.8,
+      "sdPpm": 123.7,
+      "cvPercent": 206.7
+    },
+    {
+      "compoundId": "camphor",
+      "reportedName": "Camphor",
+      "maxPpm": 20.4,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 1,
+      "sdPpm": 2.6,
+      "cvPercent": 257.5
+    },
+    {
+      "compoundId": "terpinen-4-ol",
+      "reportedName": "Terpinen-4-ol",
+      "maxPpm": 149.3,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 17.9,
+      "sdPpm": 29.3,
+      "cvPercent": 163.2
+    },
+    {
+      "compoundId": "alpha-terpineol",
+      "reportedName": "α-Terpineol",
+      "maxPpm": 1027.8,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 98.1,
+      "sdPpm": 148.3,
+      "cvPercent": 151.1
+    },
+    {
+      "compoundId": "citronellol",
+      "reportedName": "Citronellol",
+      "maxPpm": 129.1,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 12.7,
+      "sdPpm": 25.9,
+      "cvPercent": 204.3
+    },
+    {
+      "compoundId": "nerol",
+      "reportedName": "Nerol",
+      "maxPpm": 26.2,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 2.5,
+      "sdPpm": 5.4,
+      "cvPercent": 218.6
+    },
+    {
+      "compoundId": "geraniol",
+      "reportedName": "Geraniol",
+      "maxPpm": 93.8,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 4.1,
+      "sdPpm": 14.1,
+      "cvPercent": 347.1
+    },
+    {
+      "compoundId": "bornyl-acetate",
+      "reportedName": "Bornyl acetate",
+      "maxPpm": 37.2,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 2.8,
+      "sdPpm": 6.6,
+      "cvPercent": 236.5
+    },
+    {
+      "compoundId": "beta-caryophyllene",
+      "reportedName": "β-Caryophyllene",
+      "maxPpm": 3631.5,
+      "maxQualifier": ">",
+      "minPpm": 9,
+      "meanPpm": 670.8,
+      "sdPpm": 781,
+      "cvPercent": 116.4
+    },
+    {
+      "compoundId": "trans-beta-farnesene",
+      "reportedName": "trans-β-Farnesene",
+      "maxPpm": 617.3,
+      "maxQualifier": null,
+      "minPpm": 3.2,
+      "meanPpm": 44.5,
+      "sdPpm": 71.7,
+      "cvPercent": 161.4
+    },
+    {
+      "compoundId": "alpha-humulene",
+      "reportedName": "α-Humulene",
+      "maxPpm": 2134.2,
+      "maxQualifier": null,
+      "minPpm": 12.5,
+      "meanPpm": 255.8,
+      "sdPpm": 283.9,
+      "cvPercent": 111
+    },
+    {
+      "compoundId": "valencene",
+      "reportedName": "Valencene",
+      "maxPpm": 402.8,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 26.6,
+      "sdPpm": 80.5,
+      "cvPercent": 302.9
+    },
+    {
+      "compoundId": "trans-nerolidol",
+      "reportedName": "trans-Nerolidol",
+      "maxPpm": 1637.2,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 102.1,
+      "sdPpm": 240.3,
+      "cvPercent": 235.3
+    },
+    {
+      "compoundId": "germacrene-b",
+      "reportedName": "Germacrene B",
+      "maxPpm": 923,
+      "maxQualifier": null,
+      "minPpm": 0,
+      "meanPpm": 25.7,
+      "sdPpm": 107.1,
+      "cvPercent": 417
+    },
+    {
+      "compoundId": "guaiol",
+      "reportedName": "Guaiol",
+      "maxPpm": 2099,
+      "maxQualifier": ">",
+      "minPpm": 0,
+      "meanPpm": 568.1,
+      "sdPpm": 765.5,
+      "cvPercent": 134.7
+    },
+    {
+      "compoundId": "caryophyllene-oxide",
+      "reportedName": "Caryophyllene oxide",
+      "maxPpm": 1890,
+      "maxQualifier": ">",
+      "minPpm": 11.2,
+      "meanPpm": 308.5,
+      "sdPpm": 488.4,
+      "cvPercent": 158.3
+    },
+    {
+      "compoundId": "gamma-eudesmol",
+      "reportedName": "γ-Eudesmol",
+      "maxPpm": 1588,
+      "maxQualifier": ">",
+      "minPpm": 0,
+      "meanPpm": 296.1,
+      "sdPpm": 478.4,
+      "cvPercent": 161.6
+    },
+    {
+      "compoundId": "alpha-eudesmol",
+      "reportedName": "α-Eudesmol",
+      "maxPpm": 1588,
+      "maxQualifier": ">",
+      "minPpm": 0,
+      "meanPpm": 377.3,
+      "sdPpm": 541.5,
+      "cvPercent": 143.5
+    },
+    {
+      "compoundId": "beta-eudesmol",
+      "reportedName": "β-Eudesmol",
+      "maxPpm": 1588,
+      "maxQualifier": ">",
+      "minPpm": 0,
+      "meanPpm": 434.2,
+      "sdPpm": 573,
+      "cvPercent": 132
+    },
+    {
+      "compoundId": "alpha-bisabolol",
+      "reportedName": "α-Bisabolol",
+      "maxPpm": 3791,
+      "maxQualifier": ">",
+      "minPpm": 0,
+      "meanPpm": 1515.7,
+      "sdPpm": 1592.2,
+      "cvPercent": 105
+    }
+  ]
+}
