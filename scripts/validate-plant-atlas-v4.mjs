@@ -141,7 +141,7 @@ if (systemsData) {
 }
 
 const workspaceRuntime = read(path.join(appRoot, 'atlas-workspace-v5.js'));
-for (const token of ['data-atlas-mode','data-atlas-layer','data-atlas-command-input','plant-atlas:focus','wireWorkspaceChrome','wireStageAndCompare','setStage','renderCompare','data-rail-toggle','data-viewer-action','atlasLabels','data-compare-assign','data-layer-legend','scale-map-v1.json','media-registry-v1.json','data-atlas-scale-nav','data-atlas-media-panel','atlas-media-gallery','data-scale-direction','Go deeper','metaKey','ctrlKey','Measurements','Evidence']) ok(workspaceRuntime.includes(token), `Atlas V5 workspace runtime missing: ${token}`);
+for (const token of ['data-atlas-mode','data-atlas-layer','data-atlas-command-input','plant-atlas:focus','wireWorkspaceChrome','wireStageAndCompare','setStage','renderCompare','data-rail-toggle','data-viewer-action','atlasLabels','data-compare-assign','data-layer-legend','scale-map-v1.json','media-registry-v1.json','data-atlas-scale-nav','data-atlas-media-panel','atlas-media-gallery','atlas-media-dialog','data-media-asset-id','data-media-state','data-scale-direction','Go deeper','metaKey','ctrlKey','Measurements','Evidence']) ok(workspaceRuntime.includes(token), `Atlas V5 workspace runtime missing: ${token}`);
 const workspaceCss = read(path.join(appRoot, 'atlas-workspace-v5.css'));
 for (const token of ['.atlas-workspace-bar','.atlas-command-results','.atlas-inspector-tabs','.atlas-nav-rail','.atlas-viewer-toolbar','.atlas-stage-bar','.atlas-compare-panel','.atlas-layer-legend','data-system-category','grid-template-columns:240px','data-atlas-mode','max-width:980px']) ok(workspaceCss.includes(token), `Atlas V5 workspace CSS missing: ${token}`);
 for (const token of ['data-atlas-mode="explorer"','data-atlas-mode="research"','data-atlas-layer="anatomy"','data-atlas-layer="diagnostics"','data-atlas-command-input','data-atlas-mobile-tray-toggle','atlas-nav-rail','data-rail-systems','atlas-viewer-toolbar','data-viewer-action="labels"','data-viewer-action="compare"','atlas-layer-legend','atlas-stage-bar','data-atlas-stage="reproductive"','data-atlas-compare']) ok(index.includes(token), `Atlas V5 workspace shell missing: ${token}`);
@@ -213,6 +213,40 @@ if (mediaRegistry) {
   }
 }
 
+
+
+const sourceImportsDir = path.join(appRoot, 'data/media-imports');
+const mirrorImportsDir = path.join(mirrorRoot, 'data/media-imports');
+if (fs.existsSync(sourceImportsDir)) {
+  const importFiles = fs.readdirSync(sourceImportsDir).filter((name) => name.endsWith('.json')).sort();
+  ok(fs.existsSync(mirrorImportsDir), 'Missing public-route media-import descriptor directory');
+  for (const name of importFiles) {
+    const sourceImport = path.join(sourceImportsDir, name);
+    const mirrorImport = path.join(mirrorImportsDir, name);
+    ok(fs.existsSync(mirrorImport), `Missing mirrored media-import descriptor: ${name}`);
+    if (fs.existsSync(mirrorImport)) ok(fs.readFileSync(sourceImport).equals(fs.readFileSync(mirrorImport)), `Media-import descriptor mirror mismatch: ${name}`);
+    let descriptor = null;
+    try { descriptor = JSON.parse(read(sourceImport)); }
+    catch (error) { errors.push(`Invalid media import descriptor ${name}: ${error.message}`); }
+    if (!descriptor) continue;
+    ok(descriptor.schemaVersion === 1, `Media import ${name} must use schemaVersion 1`);
+    ok(descriptor.status === 'approved-for-import', `Media import ${name} must be explicitly approved-for-import`);
+    ok(/^https:\/\//.test(descriptor.downloadUrl || ''), `Media import ${name} needs an HTTPS downloadUrl`);
+    ok(/^https:\/\//.test(descriptor.sourcePage || ''), `Media import ${name} needs an HTTPS sourcePage`);
+    ok(/^[a-f0-9]{40}$/i.test(descriptor.expectedSha1 || ''), `Media import ${name} needs a 40-character SHA-1`);
+    ok(Number(descriptor.expectedWidth) > 0 && Number(descriptor.expectedHeight) > 0, `Media import ${name} needs positive expected dimensions`);
+    ok(Math.max(Number(descriptor.expectedWidth) || 0, Number(descriptor.expectedHeight) || 0) >= 2400, `Media import ${name} must meet the 2400px production minimum`);
+    const asset = descriptor.asset || {};
+    const record = (mediaRegistry?.records || []).find((entry) => entry.entityId === asset.entityId);
+    ok(Boolean(record), `Media import ${name} references unknown entity ${asset.entityId}`);
+    ok((mediaRegistry?.assetClasses || []).includes(asset.class), `Media import ${name} references unknown class ${asset.class}`);
+    ok(typeof asset.assetId === 'string' && asset.assetId.length > 0, `Media import ${name} needs assetId`);
+    ok(typeof asset.src === 'string' && asset.src.startsWith('/atlas/media/'), `Media import ${name} needs /atlas/media/ destination`);
+    for (const field of ['source','creator','license','captureType','plantStage','organ','illustrativeOrMeasured','alt','title']) {
+      ok(typeof asset[field] === 'string' && asset[field].length > 0, `Media import ${name} missing asset.${field}`);
+    }
+  }
+}
 
 let mediaQueue = null;
 try { mediaQueue = JSON.parse(read(path.join(appRoot, 'data/media-production-queue-v1.json'))); }
