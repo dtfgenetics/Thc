@@ -1,0 +1,46 @@
+name: Import approved Atlas media
+
+on:
+  push:
+    paths:
+      - 'apps/growlens-web/public/atlas/data/media-imports/**'
+      - 'site/public-route-patch/atlas/data/media-imports/**'
+      - 'scripts/import-approved-atlas-media.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Import approved Atlas media
+        run: node scripts/import-approved-atlas-media.mjs
+
+      - name: Validate Atlas media and Plant Atlas
+        run: |
+          npm run atlas:media:validate
+          npm run validate:plant-atlas:v4
+
+      - name: Commit imported media
+        run: |
+          if git diff --quiet && [ -z "$(git status --porcelain)" ]; then
+            echo "No import changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/growlens-web/public/atlas/media site/public-route-patch/atlas/media apps/growlens-web/public/atlas/data/media-registry-v1.json site/public-route-patch/atlas/data/media-registry-v1.json
+          git commit -m "feat(atlas): import approved production media"
+          git push origin HEAD:${{ github.ref_name }}
