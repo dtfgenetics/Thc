@@ -68,3 +68,20 @@ body[data-atlas-labels="off"] .viewer-axis,body[data-atlas-labels="off"] .specim
 body[data-atlas-layer="physiology"] .atlas-layer-legend{border-color:rgba(143,221,176,.3)}body[data-atlas-layer="environment"] .atlas-layer-legend{border-color:rgba(131,201,223,.3)}body[data-atlas-layer="diagnostics"] .atlas-layer-legend{border-color:rgba(233,140,120,.32)}body[data-atlas-layer="development"] .atlas-layer-legend{border-color:rgba(217,188,115,.3)}
 .atlas-rail-items a[data-system-category]{position:relative;padding-left:16px}.atlas-rail-items a[data-system-category]:before{content:"";position:absolute;left:7px;top:13px;width:4px;height:4px;border-radius:50%;background:#9fe870}.atlas-rail-items a[data-system-category="Development"]:before{background:#d9bc73}.atlas-rail-items a[data-system-category="Physiology"]:before{background:#8fddb0}.atlas-rail-items a[data-system-category="Reproduction"]:before{background:#d7a7d8}.atlas-rail-items a[data-system-category="Genetics"]:before{background:#a9b5ff}.atlas-rail-items a[data-system-category="Environment"]:before{background:#83c9df}.atlas-rail-items a[data-system-category="Diagnostics"]:before{background:#e98c78}
 @media(max-width:760px){.atlas-layer-legend{left:10px;top:10px;min-width:0;max-width:55%;padding:8px 9px}.atlas-layer-legend div{display:none}}
+/* V5 multi-scale inspector + media registry UI */
+.atlas-inspector-scale,.atlas-inspector-media{margin-top:14px;padding-top:13px;border-top:1px solid rgba(151,213,164,.12)}
+.atlas-inspector-scale>small,.atlas-inspector-media>small{display:block;color:#708579;font-size:.5rem;font-weight:900;letter-spacing:.16em}
+.atlas-inspector-scale>strong,.atlas-inspector-media>strong{display:block;margin-top:5px;color:#dce8df;font-size:.72rem}
+.atlas-inspector-scale>p,.atlas-inspector-media>p{margin:7px 0 0;color:#82958a;font-size:.64rem;line-height:1.45}
+.atlas-scale-steps{display:grid;gap:5px;margin-top:10px;position:relative}
+.atlas-scale-steps:before{content:"";position:absolute;left:12px;top:12px;bottom:12px;width:1px;background:rgba(151,213,164,.12)}
+.atlas-scale-steps button{position:relative;z-index:1;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;width:100%;padding:8px 9px 8px 28px;border:1px solid transparent;border-radius:9px;background:transparent;color:#b8c8bd;text-align:left;cursor:pointer}
+.atlas-scale-steps button:before{content:"";position:absolute;left:8px;top:50%;width:9px;height:9px;transform:translateY(-50%);border:1px solid rgba(151,213,164,.28);border-radius:50%;background:#07120d}
+.atlas-scale-steps button:hover,.atlas-scale-steps button:focus-visible{background:rgba(159,232,112,.055);border-color:rgba(159,232,112,.1)}
+.atlas-scale-steps button[aria-current="true"]{background:rgba(159,232,112,.1);border-color:rgba(159,232,112,.24);color:#e6f2e8}
+.atlas-scale-steps button[aria-current="true"]:before{background:#b9ef8f;border-color:#b9ef8f;box-shadow:0 0 0 3px rgba(185,239,143,.08)}
+.atlas-scale-steps span{font-size:.64rem;font-weight:800}.atlas-scale-steps i{color:#667d6f;font-size:.51rem;font-style:normal;text-transform:uppercase;letter-spacing:.06em}
+.atlas-connected-link{display:inline-flex;margin-top:9px;color:#b9ef8f;font-size:.6rem;font-weight:800;text-decoration:none}.atlas-connected-link:hover{text-decoration:underline}
+.atlas-media-requirements{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}.atlas-media-requirements span{padding:5px 7px;border:1px solid rgba(151,213,164,.12);border-radius:999px;background:rgba(255,255,255,.018);color:#899b90;font-size:.5rem;text-transform:capitalize}
+.atlas-media-status{padding:8px 9px;border:1px dashed rgba(151,213,164,.14);border-radius:9px;background:rgba(255,255,255,.012)}
+@media(max-width:980px){.atlas-inspector-scale{padding-bottom:4px}.atlas-scale-steps{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.atlas-scale-steps:before{display:none}.atlas-scale-steps button{padding-left:9px}.atlas-scale-steps button:before{display:none}}
