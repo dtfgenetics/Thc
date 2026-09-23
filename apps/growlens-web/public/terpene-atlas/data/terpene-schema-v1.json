@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "title": "DTF Terpene Atlas compound record",
+  "required": [
+    "id",
+    "canonicalName",
+    "class",
+    "scope",
+    "evidence"
+  ],
+  "fields": {
+    "id": "stable kebab-case identifier",
+    "canonicalName": "preferred display name",
+    "aliases": "alternate and legacy names",
+    "class": "monoterpene | sesquiterpene | diterpene | triterpene | other-terpene | terpenoid",
+    "subclass": "hydrocarbon, alcohol, oxide, ketone, ester, etc.",
+    "formula": "molecular formula when verified",
+    "pubchemCid": "PubChem CID when verified",
+    "aromaDescriptors": "source-backed sensory vocabulary; never implied medical effects",
+    "scope": "cannabis-reported | global-terpene | both",
+    "cannabisOccurrence": "reported | not-yet-verified | conflicting",
+    "evidence": "array of source ids supporting occurrence/classification",
+    "evidenceGrade": "A primary analytical / B review with traceable primary sources / C secondary reference",
+    "notes": "scientific limitations, stereochemistry, isomer or naming cautions"
+  }
+}
