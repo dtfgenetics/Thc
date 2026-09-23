@@ -8,6 +8,7 @@ const root=process.cwd();
 const appRoot=path.join(root,'apps/growlens-web/public/atlas');
 const mirrorRoot=path.join(root,'site/public-route-patch/atlas');
 const importsRoot=path.join(appRoot,'data/media-imports');
+console.log('THC Plant Atlas approved-media importer: verifying source, checksum, dimensions and mirrors.');
 const registryPath=path.join(appRoot,'data/media-registry-v1.json');
 const mirrorRegistryPath=path.join(mirrorRoot,'data/media-registry-v1.json');
 
