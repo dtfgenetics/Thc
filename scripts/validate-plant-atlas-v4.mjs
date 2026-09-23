@@ -28,6 +28,7 @@ const requiredMirrors = [
   'data/hotspots-v4.json',
   'data/scale-map-v1.json',
   'data/media-registry-v1.json',
+  'data/media-production-queue-v1.json',
   'models/model-manifest-v4.json',
   'models/README.md',
 ];
@@ -139,7 +140,7 @@ if (systemsData) {
 }
 
 const workspaceRuntime = read(path.join(appRoot, 'atlas-workspace-v5.js'));
-for (const token of ['data-atlas-mode','data-atlas-layer','data-atlas-command-input','plant-atlas:focus','wireWorkspaceChrome','wireStageAndCompare','setStage','renderCompare','data-rail-toggle','data-viewer-action','atlasLabels','data-compare-assign','data-layer-legend','scale-map-v1.json','media-registry-v1.json','data-atlas-scale-nav','data-atlas-media-panel','Ctrl','Measurements','Evidence']) ok(workspaceRuntime.includes(token), `Atlas V5 workspace runtime missing: ${token}`);
+for (const token of ['data-atlas-mode','data-atlas-layer','data-atlas-command-input','plant-atlas:focus','wireWorkspaceChrome','wireStageAndCompare','setStage','renderCompare','data-rail-toggle','data-viewer-action','atlasLabels','data-compare-assign','data-layer-legend','scale-map-v1.json','media-registry-v1.json','data-atlas-scale-nav','data-atlas-media-panel','data-scale-direction','Go deeper','Ctrl','Measurements','Evidence']) ok(workspaceRuntime.includes(token), `Atlas V5 workspace runtime missing: ${token}`);
 const workspaceCss = read(path.join(appRoot, 'atlas-workspace-v5.css'));
 for (const token of ['.atlas-workspace-bar','.atlas-command-results','.atlas-inspector-tabs','.atlas-nav-rail','.atlas-viewer-toolbar','.atlas-stage-bar','.atlas-compare-panel','.atlas-layer-legend','data-system-category','grid-template-columns:240px','data-atlas-mode','max-width:980px']) ok(workspaceCss.includes(token), `Atlas V5 workspace CSS missing: ${token}`);
 for (const token of ['data-atlas-mode="explorer"','data-atlas-mode="research"','data-atlas-layer="anatomy"','data-atlas-layer="diagnostics"','data-atlas-command-input','data-atlas-mobile-tray-toggle','atlas-nav-rail','data-rail-systems','atlas-viewer-toolbar','data-viewer-action="labels"','data-viewer-action="compare"','atlas-layer-legend','atlas-stage-bar','data-atlas-stage="reproductive"','data-atlas-compare']) ok(index.includes(token), `Atlas V5 workspace shell missing: ${token}`);
@@ -193,6 +194,29 @@ if (mediaRegistry) {
   for (const field of ['assetId','entityId','class','src','source','creator','license','captureType','plantStage','organ','illustrativeOrMeasured']) {
     ok(fields.has(field), `Media provenance contract missing required field: ${field}`);
   }
+}
+
+
+let mediaQueue = null;
+try { mediaQueue = JSON.parse(read(path.join(appRoot, 'data/media-production-queue-v1.json'))); }
+catch (error) { errors.push(`Invalid media-production-queue-v1.json: ${error.message}`); }
+if (mediaQueue) {
+  ok(mediaQueue.schemaVersion === 1, 'media-production-queue-v1.json must use schemaVersion 1');
+  ok(mediaQueue?.productionRules?.rasterOnly === true, 'Plant Atlas instructional media queue must remain raster-first');
+  const groups = Array.isArray(mediaQueue.priorities) ? mediaQueue.priorities : [];
+  ok(groups.length >= 5, `Expected at least 5 visual production priority groups; found ${groups.length}`);
+  const mediaIds = new Set((mediaRegistry?.records || []).map((record) => record.entityId));
+  const seenPriority = new Set();
+  for (const group of groups) {
+    ok(Number.isInteger(group.priority) && group.priority > 0, 'Each media queue group needs a positive integer priority');
+    ok(!seenPriority.has(group.priority), `Duplicate media queue priority: ${group.priority}`);
+    seenPriority.add(group.priority);
+    ok(Array.isArray(group.entities) && group.entities.length > 0, `Media queue priority ${group.priority} needs entities`);
+    for (const id of group.entities || []) ok(mediaIds.has(id), `Media queue priority ${group.priority} references entity without media registry record: ${id}`);
+    ok(Array.isArray(group.deliverables) && group.deliverables.length > 0, `Media queue priority ${group.priority} needs deliverables`);
+  }
+  ok(Array.isArray(mediaQueue?.productionRules?.preferredFormats) && mediaQueue.productionRules.preferredFormats.includes('png'), 'Media queue must allow PNG production');
+  ok(Number(mediaQueue?.productionRules?.minimumLongEdgePx) >= 2400, 'Media queue minimum long edge must remain at least 2400 px');
 }
 
 let manifest = null;
