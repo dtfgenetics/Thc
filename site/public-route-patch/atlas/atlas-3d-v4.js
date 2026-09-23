@@ -854,6 +854,11 @@ export async function bootPhotorealAtlas() {
   });
 
   focusButtons.forEach((button) => button.addEventListener('click', () => focusSystem(button.dataset.plantFocus)));
+  const externalFocusHandler = (event) => {
+    const id = event?.detail?.id;
+    if (typeof id === 'string' && semantic.has(id)) focusSystem(id);
+  };
+  window.addEventListener('plant-atlas:focus', externalFocusHandler);
   resetButton?.addEventListener('click', resetView);
 
   const resizeObserver = new ResizeObserver(resize);
@@ -904,6 +909,7 @@ export async function bootPhotorealAtlas() {
     resizeObserver.disconnect();
     visibilityObserver.disconnect();
     controls.dispose();
+    window.removeEventListener('plant-atlas:focus', externalFocusHandler);
     anatomyLabel.remove();
     environment.dispose();
     pmrem.dispose();
