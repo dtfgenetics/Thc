@@ -31,3 +31,13 @@ This route should be labeled **Atlas Learning Library** when it appears beside `
 4. Public navigation should expose both surfaces from Learn with distinct labels.
 5. A deployment or verifier must not call `/learn/atlas/` the canonical V4 route or call `/atlas/` the 100-lesson library route.
 6. Any future consolidation must include a child-route migration map, redirects, link updates, search/index updates, and production smoke verification before the old namespace is retired.
+
+## `/terpene-atlas/` — Terpene Atlas
+
+- Purpose: chemistry-first interactive terpene and terpenoid knowledge explorer.
+- Ownership: Learn.
+- Visitor promise: search compounds, compare chemistry/families/aliases, inspect source-backed Cannabis occurrence, and keep quantitative cultivar information tied to measured samples rather than strain-name assumptions.
+- Relationship to Plant Atlas: cross-link directly with `/atlas/trichomes-resin/` and flower/reproductive modules so secretory anatomy and volatile chemistry remain connected.
+- Release rule: source and public-route mirrors, ontology data, sample schema, explorer runtime, and route navigation must validate together.
+
+This route should be labeled **Terpene Atlas** or **THC Terpene Atlas — Chemistry Explorer** depending on navigation context.
