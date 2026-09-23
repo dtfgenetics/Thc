@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dtfseeds.com/schemas/asset-state-registry.schema.json",
+  "title": "DTF Asset State Registry",
+  "type": "object",
+  "required": ["schema_version", "updated", "records"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "updated": { "type": "string", "format": "date" },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["asset_id", "project_id", "state", "reason", "canonical_location", "updated"],
+        "properties": {
+          "asset_id": { "type": "string", "minLength": 1 },
+          "project_id": { "type": "string", "minLength": 1 },
+          "state": {
+            "type": "string",
+            "enum": ["blocked", "quarantined", "superseded", "tombstoned", "rejected", "restored"]
+          },
+          "reason": { "type": "string", "minLength": 1 },
+          "canonical_location": { "type": ["string", "null"] },
+          "replacement_asset_id": { "type": ["string", "null"] },
+          "source_sha": { "type": ["string", "null"] },
+          "evidence": { "type": "array", "items": { "type": "string" } },
+          "owner": { "type": ["string", "null"] },
+          "updated": { "type": "string", "format": "date" },
+          "notes": { "type": ["string", "null"] }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
