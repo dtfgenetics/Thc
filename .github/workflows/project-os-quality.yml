@@ -1,0 +1,51 @@
+name: Project OS Quality Gate
+
+on:
+  pull_request:
+    paths:
+      - "data/asset-state-registry.json"
+      - "data/asset-state-registry.schema.json"
+      - "data/asset-manifest.json"
+      - "data/game-source-map.json"
+      - "data/game-location-registry.json"
+      - "data/project-registry.json"
+      - "scripts/validate-3d-assets.mjs"
+      - "scripts/validate-asset-state-registry.mjs"
+      - "apps/**"
+      - "games/**"
+      - "site/**"
+      - "assets/**"
+      - "package.json"
+      - ".github/workflows/project-os-quality.yml"
+  push:
+    branches: [main]
+    paths:
+      - "data/asset-state-registry.json"
+      - "data/asset-state-registry.schema.json"
+      - "data/asset-manifest.json"
+      - "data/game-source-map.json"
+      - "data/game-location-registry.json"
+      - "data/project-registry.json"
+      - "scripts/validate-3d-assets.mjs"
+      - "scripts/validate-asset-state-registry.mjs"
+      - "apps/**"
+      - "games/**"
+      - "site/**"
+      - "assets/**"
+      - "package.json"
+      - ".github/workflows/project-os-quality.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  project-os:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run Project OS verification
+        run: npm run verify:project-os
