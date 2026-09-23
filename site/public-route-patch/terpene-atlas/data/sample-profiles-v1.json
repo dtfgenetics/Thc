@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "title": "DTF Terpene Atlas measured sample profiles",
+  "profiles": [],
+  "status": "ready-for-verified-sample-ingestion",
+  "rules": [
+    "Each profile represents one measured sample or one explicitly defined pooled sample.",
+    "Cultivar or strain labels are metadata, not a substitute for measurements.",
+    "A profile must record source, matrix, analytical method when available, unit, and measurement values.",
+    "Below-LOD, below-LOQ, not-tested and measured-zero states must remain distinct.",
+    "DTF breeding-line names must not receive percentages until a laboratory or traceable study supplies measurements."
+  ]
+}
