@@ -12,7 +12,7 @@ This skill is the durable location-memory layer for the DTF game portfolio.
 
 ## Mandatory first read
 
-Read `data/game-location-registry.json` before editing a game. Resolve the user's name through `aliasMap` and then use the matching `games[]` entry.
+Read `data/game-location-registry.json` before editing a game. After resolving the identity, read `data/game-dossier-registry.json` through the `dtf-game-dossier-resolver` skill to jump to the exact rules/UI/data/assets/tests/network subsystem. Resolve the user's name through `aliasMap` and then use the matching `games[]` entry.
 
 Never infer authority from a same-named folder.
 
@@ -57,3 +57,7 @@ Run:
 `npm run games:locations:check`
 
 A new game is not fully registered until its canonical source, route/status, aliases, development copies, and asset mapping are represented where applicable.
+
+## Concept-only titles
+
+Concept-bank identities are intentionally resolvable even when they have no code or Drive project yet. Do not guess a repo for them. Route concept work through `dtf-game-concept-incubator` until a canonical project location is deliberately created.
