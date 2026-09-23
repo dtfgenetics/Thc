@@ -138,7 +138,7 @@ const anatomyIndex = read(path.join(appRoot, 'atlas-anatomy-index-v1.js'));
 for (const token of ['hotspots-v4.json','data-anatomy-search','data-anatomy-scale','plant-atlas:focus']) ok(anatomyIndex.includes(token), `Anatomy index runtime missing: ${token}`);
 
 const moduleRuntime = read(path.join(appRoot, 'module.js'));
-for (const token of ['measurements','evidenceQuestions','deepDiveTopics','connectedTools','data-measurements-runtime']) ok(moduleRuntime.includes(token), `Plant Atlas module runtime missing enriched contract: ${token}`);
+for (const token of ['measurements','evidenceQuestions','deepDiveTopics','connectedTools','dataset.measurementsRuntime']) ok(moduleRuntime.includes(token), `Plant Atlas module runtime missing enriched contract: ${token}`);
 
 let manifest = null;
 try { manifest = JSON.parse(read(path.join(appRoot, 'models/model-manifest-v4.json'))); }
