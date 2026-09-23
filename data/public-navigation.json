@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updated": "2026-09-12",
+  "updated": "2026-09-22",
   "site": "https://dtfseeds.com",
   "principles": {
     "maxPrimaryNavItems": 8,
@@ -97,24 +97,29 @@
       "priority": 1
     },
     {
+      "label": "Explore Terpene Atlas",
+      "route": "/terpene-atlas/",
+      "priority": 2
+    },
+    {
       "label": "Diagnose a Plant",
       "route": "/thc-grow-doc/",
-      "priority": 2
+      "priority": 3
     },
     {
       "label": "Browse THC Education",
       "route": "/learn/",
-      "priority": 3
+      "priority": 4
     },
     {
       "label": "Play Games",
       "route": "/games/",
-      "priority": 4
+      "priority": 5
     },
     {
       "label": "Explore Seeds",
       "route": "/seeds/",
-      "priority": 5
+      "priority": 6
     }
   ],
   "informationArchitecture": {
@@ -199,6 +204,11 @@
       {
         "routePrefix": "/product/",
         "root": "shop"
+      },
+      {
+        "route": "/terpene-atlas/",
+        "root": "learn",
+        "note": "Interactive plant-chemistry knowledge tool connected to Plant Atlas secretory biology; quantitative cultivar data must remain sample-backed."
       }
     ]
   },
@@ -208,6 +218,10 @@
       {
         "label": "3D Plant Atlas",
         "route": "/atlas/"
+      },
+      {
+        "label": "Terpene Atlas",
+        "route": "/terpene-atlas/"
       },
       {
         "label": "Atlas Learning Library",
@@ -304,6 +318,13 @@
       "id": "atlas",
       "title": "THC Living Plant Atlas — 3D Explorer",
       "route": "/atlas/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "terpene-atlas",
+      "title": "THC Terpene Atlas — Chemistry Explorer",
+      "route": "/terpene-atlas/",
       "status": "play-now",
       "public": true
     },
