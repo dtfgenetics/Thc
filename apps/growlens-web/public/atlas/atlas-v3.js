@@ -28,7 +28,7 @@
     });
 
     grid.innerHTML = filtered.map((system) => `
-      <a class="system-card${featuredSystems.has(system.id) ? ' system-card--featured' : ''}" href="${system.route}" data-system-id="${system.id}"${featuredSystems.has(system.id) ? ' data-featured="true"' : ''}>
+      <a class="system-card${featuredSystems.has(system.id) ? ' system-card--featured' : ''}" href="${system.route}" data-system-id="${system.id}" data-system-category="${system.category}"${featuredSystems.has(system.id) ? ' data-featured="true"' : ''}>
         <div class="system-top">
           <span class="system-icon" aria-hidden="true">${system.icon}</span>
           <span class="system-category">${system.category}</span>
