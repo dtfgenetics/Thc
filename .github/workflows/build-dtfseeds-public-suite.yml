@@ -8,6 +8,15 @@ on:
     branches:
       - main
     paths:
+      - apps/growlens-web/**
+      - site/public-route-patch/atlas/**
+      - site/public-route-patch/terpene-atlas/**
+      - data/atlas/**
+      - data/public-navigation.json
+      - docs/ATLAS_ROUTE_OWNERSHIP.md
+      - scripts/validate-plant-atlas-v4.mjs
+      - scripts/validate-terpene-atlas.mjs
+      - scripts/validate-atlas-route-ownership.mjs
       - games/grow-room-defense/**
       - games/grow-room-bingo/**
       - games/lost-in-the-terps/**
@@ -54,6 +63,11 @@ on:
       - site/public-route-patch/**
       - site/deployment/public-apps.json
       - data/public-navigation.json
+      - data/atlas/**
+      - docs/ATLAS_ROUTE_OWNERSHIP.md
+      - scripts/validate-plant-atlas-v4.mjs
+      - scripts/validate-terpene-atlas.mjs
+      - scripts/validate-atlas-route-ownership.mjs
       - scripts/validate-crossword-release-source.mjs
       - scripts/lib/sitewide-header-template-v6.mjs
       - scripts/lib/sitewide-footer-template-v6.mjs
@@ -402,11 +416,17 @@ jobs:
           npm run build:high-land
           test -s apps/high-land-web/dist/index.html
 
-      - name: Test and build GrowLens
+      - name: Test, build, and validate GrowLens Atlas surfaces
         run: |
           set -euo pipefail
           npm run test:growlens
           npm run build:growlens
+          npm run validate:plant-atlas:v4
+          npm run validate:terpene-atlas
+          node scripts/validate-atlas-route-ownership.mjs
+          node --check apps/growlens-web/public/atlas/atlas-anatomy-index-v1.js
+          node --check apps/growlens-web/public/atlas/module.js
+          node --check apps/growlens-web/public/terpene-atlas/terpene-atlas-v1.js
           test -s apps/growlens-web/dist/index.html
           test -d apps/growlens-web/dist/api
 
