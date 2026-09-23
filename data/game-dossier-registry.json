@@ -3067,17 +3067,22 @@
       },
       "subsystems": {
         "rulesAndSimulation": [
-          "public/seed-ascent/assets/gameplay-sprites.webp",
-          "public/seed-ascent/player-animation-controller.js"
+          "public/seed-ascent/engine.js",
+          "public/seed-ascent/levels.js",
+          "public/seed-ascent/player-animation-controller.js",
+          "public/seed-ascent/world-animations.js"
         ],
         "uiAndRendering": [
-          "public/seed-ascent/authored-sprite-renderer.js",
+          "app/games/seed-ascent/page.tsx",
+          "public/seed-ascent.html",
+          "public/seed-ascent/styles.css",
           "public/seed-ascent/phenotype-ui.css",
-          "public/seed-ascent/styles.css"
+          "public/seed-ascent/authored-sprite-renderer.js",
+          "public/seed-ascent/player-animation-runtime.js"
         ],
         "dataAndContent": [
           "public/seed-ascent/levels.js",
-          "public/seed-ascent/phenotype-ui.css"
+          "public/seed-ascent/animation-manifest.js"
         ],
         "assets": [
           "public/seed-ascent/assets/electric-enemies.webp",
@@ -3087,12 +3092,23 @@
           "public/seed-ascent/assets/ice-enemies.webp",
           "public/seed-ascent/assets/seed-man-sprites.webp"
         ],
-        "tests": [],
-        "scripts": [],
-        "serverAndNetwork": [
-          "public/seed-ascent/assets/grow-room-background.webp"
+        "tests": [
+          "scripts/verify-seed-ascent.mjs",
+          "scripts/verify-seed-ascent-animations.mjs",
+          "scripts/verify-seed-ascent-authored-sprites.mjs",
+          "tests/browser/seed-ascent.spec.mjs",
+          "tests/browser/seed-ascent-animation.spec.mjs"
         ],
-        "docs": [],
+        "scripts": [
+          "scripts/verify-seed-ascent.mjs",
+          "scripts/verify-seed-ascent-animations.mjs",
+          "scripts/verify-seed-ascent-authored-sprites.mjs"
+        ],
+        "serverAndNetwork": [],
+        "docs": [
+          "docs/seed-ascent-animation-production.md",
+          "docs/seed-ascent-authored-sprite-integration.md"
+        ],
         "workflows": []
       },
       "development": [
@@ -3111,17 +3127,22 @@
           ],
           "subsystems": {
             "rulesAndSimulation": [
-              "public/seed-ascent/assets/gameplay-sprites.webp",
-              "public/seed-ascent/player-animation-controller.js"
+              "public/seed-ascent/engine.js",
+              "public/seed-ascent/levels.js",
+              "public/seed-ascent/player-animation-controller.js",
+              "public/seed-ascent/world-animations.js"
             ],
             "uiAndRendering": [
-              "public/seed-ascent/authored-sprite-renderer.js",
+              "app/games/seed-ascent/page.tsx",
+              "public/seed-ascent.html",
+              "public/seed-ascent/styles.css",
               "public/seed-ascent/phenotype-ui.css",
-              "public/seed-ascent/styles.css"
+              "public/seed-ascent/authored-sprite-renderer.js",
+              "public/seed-ascent/player-animation-runtime.js"
             ],
             "dataAndContent": [
               "public/seed-ascent/levels.js",
-              "public/seed-ascent/phenotype-ui.css"
+              "public/seed-ascent/animation-manifest.js"
             ],
             "assets": [
               "public/seed-ascent/assets/electric-enemies.webp",
@@ -3131,12 +3152,24 @@
               "public/seed-ascent/assets/ice-enemies.webp",
               "public/seed-ascent/assets/seed-man-sprites.webp"
             ],
-            "tests": [],
-            "scripts": [],
-            "serverAndNetwork": [
-              "public/seed-ascent/assets/grow-room-background.webp"
+            "tests": [
+              "scripts/verify-seed-ascent.mjs",
+              "scripts/verify-seed-ascent-animations.mjs",
+              "scripts/verify-seed-ascent-authored-sprites.mjs",
+              "tests/browser/seed-ascent.spec.mjs",
+              "tests/browser/seed-ascent-animation.spec.mjs"
             ],
-            "docs": []
+            "scripts": [
+              "scripts/verify-seed-ascent.mjs",
+              "scripts/verify-seed-ascent-animations.mjs",
+              "scripts/verify-seed-ascent-authored-sprites.mjs"
+            ],
+            "serverAndNetwork": [],
+            "docs": [
+              "docs/seed-ascent-animation-production.md",
+              "docs/seed-ascent-authored-sprite-integration.md"
+            ],
+            "workflows": []
           }
         }
       ],
@@ -3153,7 +3186,12 @@
       "supportRoots": [
         "app/games/seed-ascent",
         "public/seed-ascent",
-        "public/seed-ascent.html"
+        "public/seed-ascent.html",
+        "docs/seed-ascent-animation-production.md",
+        "docs/seed-ascent-authored-sprite-integration.md",
+        "scripts/verify-seed-ascent.mjs",
+        "scripts/verify-seed-ascent-animations.mjs",
+        "scripts/verify-seed-ascent-authored-sprites.mjs"
       ],
       "primaryDevelopment": {
         "repository": "dtfgenetics/Dtf420",
@@ -3674,34 +3712,48 @@
       },
       "subsystems": {
         "rulesAndSimulation": [
-          "components/game/StonerDuckRaceGame.tsx",
-          "game/stoner-duck-race/simulation.ts"
+          "game/stoner-duck-race/simulation.ts",
+          "game/stoner-duck-race/rng.ts",
+          "game/stoner-duck-race/modes.ts",
+          "game/stoner-duck-race/progression.ts",
+          "game/stoner-duck-race/replay.ts",
+          "game/stoner-duck-race/tracks.ts"
         ],
         "uiAndRendering": [
+          "app/games/stoner-duck-race/page.tsx",
           "app/games/stoner-duck-race/page.module.css",
+          "components/game/StonerDuckRaceGame.tsx",
           "game/stoner-duck-race/main.ts",
-          "game/stoner-duck-race/scenes",
           "game/stoner-duck-race/scenes/RaceScene.ts"
         ],
-        "dataAndContent": [],
-        "assets": [],
+        "dataAndContent": [
+          "game/stoner-duck-race/characters.ts",
+          "game/stoner-duck-race/tracks.ts",
+          "game/stoner-duck-race/modes.ts",
+          "game/stoner-duck-race/config.ts"
+        ],
+        "assets": [
+          "game/stoner-duck-race/assets.ts"
+        ],
         "tests": [
+          "scripts/verify-stoner-duck-race.mjs",
           "services/stoner-duck-race-server/src/smoke.ts"
         ],
-        "scripts": [],
+        "scripts": [
+          "scripts/verify-stoner-duck-race.mjs"
+        ],
         "serverAndNetwork": [
           "game/stoner-duck-race/network.ts",
-          "services/stoner-duck-race-server",
-          "services/stoner-duck-race-server/DEPLOYMENT.md",
-          "services/stoner-duck-race-server/package.json",
-          "services/stoner-duck-race-server/src",
           "services/stoner-duck-race-server/src/index.ts",
-          "services/stoner-duck-race-server/src/rooms",
           "services/stoner-duck-race-server/src/rooms/RaceRoom.ts",
-          "services/stoner-duck-race-server/src/smoke.ts",
-          "services/stoner-duck-race-server/tsconfig.json"
+          "services/stoner-duck-race-server/src/smoke.ts"
         ],
-        "docs": [],
+        "docs": [
+          "docs/games/stoner-duck-race/ARCHITECTURE.md",
+          "docs/games/stoner-duck-race/ASSET_PRODUCTION.md",
+          "docs/games/stoner-duck-race/OPEN_SOURCE.md",
+          "services/stoner-duck-race-server/DEPLOYMENT.md"
+        ],
         "workflows": []
       },
       "development": [
@@ -3718,34 +3770,49 @@
           ],
           "subsystems": {
             "rulesAndSimulation": [
-              "components/game/StonerDuckRaceGame.tsx",
-              "game/stoner-duck-race/simulation.ts"
+              "game/stoner-duck-race/simulation.ts",
+              "game/stoner-duck-race/rng.ts",
+              "game/stoner-duck-race/modes.ts",
+              "game/stoner-duck-race/progression.ts",
+              "game/stoner-duck-race/replay.ts",
+              "game/stoner-duck-race/tracks.ts"
             ],
             "uiAndRendering": [
+              "app/games/stoner-duck-race/page.tsx",
               "app/games/stoner-duck-race/page.module.css",
+              "components/game/StonerDuckRaceGame.tsx",
               "game/stoner-duck-race/main.ts",
-              "game/stoner-duck-race/scenes",
               "game/stoner-duck-race/scenes/RaceScene.ts"
             ],
-            "dataAndContent": [],
-            "assets": [],
+            "dataAndContent": [
+              "game/stoner-duck-race/characters.ts",
+              "game/stoner-duck-race/tracks.ts",
+              "game/stoner-duck-race/modes.ts",
+              "game/stoner-duck-race/config.ts"
+            ],
+            "assets": [
+              "game/stoner-duck-race/assets.ts"
+            ],
             "tests": [
+              "scripts/verify-stoner-duck-race.mjs",
               "services/stoner-duck-race-server/src/smoke.ts"
             ],
-            "scripts": [],
+            "scripts": [
+              "scripts/verify-stoner-duck-race.mjs"
+            ],
             "serverAndNetwork": [
               "game/stoner-duck-race/network.ts",
-              "services/stoner-duck-race-server",
-              "services/stoner-duck-race-server/DEPLOYMENT.md",
-              "services/stoner-duck-race-server/package.json",
-              "services/stoner-duck-race-server/src",
               "services/stoner-duck-race-server/src/index.ts",
-              "services/stoner-duck-race-server/src/rooms",
               "services/stoner-duck-race-server/src/rooms/RaceRoom.ts",
-              "services/stoner-duck-race-server/src/smoke.ts",
-              "services/stoner-duck-race-server/tsconfig.json"
+              "services/stoner-duck-race-server/src/smoke.ts"
             ],
-            "docs": []
+            "docs": [
+              "docs/games/stoner-duck-race/ARCHITECTURE.md",
+              "docs/games/stoner-duck-race/ASSET_PRODUCTION.md",
+              "docs/games/stoner-duck-race/OPEN_SOURCE.md",
+              "services/stoner-duck-race-server/DEPLOYMENT.md"
+            ],
+            "workflows": []
           }
         }
       ],
@@ -3765,7 +3832,9 @@
         "app/games/stoner-duck-race",
         "game/stoner-duck-race",
         "components/game/StonerDuckRaceGame.tsx",
-        "services/stoner-duck-race-server"
+        "services/stoner-duck-race-server",
+        "docs/games/stoner-duck-race",
+        "scripts/verify-stoner-duck-race.mjs"
       ],
       "primaryDevelopment": {
         "repository": "dtfgenetics/Dtf420",
