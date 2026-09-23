@@ -87,7 +87,7 @@ jobs:
           test -s "$suite_root/games/terpocalypse/main.js"
           test -s "$suite_root/games/phenoquest/build-meta.json"
           grep -Fq '"selfContained": true' "$suite_root/games/phenoquest/build-meta.json"
-          grep -Fq '15 playable browser games' "$suite_root/games/index.html"
+          grep -Fq '23 playable browser games' "$suite_root/games/index.html"
 
       - name: Build protected WordPress app-only archive
         shell: bash
