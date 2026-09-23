@@ -36,7 +36,7 @@ Before enabling the external model, record creator/source, license, attribution 
 
 ## Interaction contract
 
-`/atlas/data/hotspots-v4.json` stores normalized 0–1 anatomy anchors against whichever specimen is active. V4 currently maps fourteen inspectable regions, including the seven primary systems and finer structures such as root tips, the shoot apex, petioles, leaf venation, bracts, sugar leaves, stigmas, and glandular trichomes.
+`/atlas/data/hotspots-v4.json` stores normalized 0–1 anatomy anchors against whichever specimen is active. V4 currently maps 32 inspectable structures spanning roots, root tips and fine roots; vascular pathways; nodes, internodes and axillary buds; leaf blades, venation, margins and stomatal surfaces; flower and reproductive structures; and multiple glandular-trichome features. Fine semantic targets continue to route into their owning system modules until dedicated microscopic child pages are published.
 
 Every primary system remains selectable by mouse, touch, keyboard-accessible focus buttons, and the existing anatomy controls. Selection must focus the camera, show a persistent anatomy label, populate explanatory copy, and preserve the deep link into the detailed Atlas module.
 
