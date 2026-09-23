@@ -19,6 +19,10 @@ const requiredMirrors = [
   'atlas-3d-bootstrap.js',
   'atlas-v4.css',
   'atlas-site-shell-v5.css',
+  'atlas-anatomy-index-v1.css',
+  'atlas-anatomy-index-v1.js',
+  'module.js',
+  'data/systems.json',
   'data/hotspots-v4.json',
   'models/model-manifest-v4.json',
   'models/README.md',
@@ -33,7 +37,7 @@ for (const relative of requiredMirrors) {
 }
 
 const index = read(path.join(appRoot, 'index.html'));
-for (const token of ['/atlas/atlas-v4.css', '/atlas/atlas-site-shell-v5.css', '/atlas/atlas-3d-bootstrap.js', 'data-plant-model-status', 'CLICK · INSPECT', 'Interactive 3D system V4', '<b>32</b><span>inspectable structures</span>', '/terpene-atlas/']) {
+for (const token of ['/atlas/atlas-v4.css', '/atlas/atlas-site-shell-v5.css', '/atlas/atlas-anatomy-index-v1.css', '/atlas/atlas-anatomy-index-v1.js', '/atlas/atlas-3d-bootstrap.js', 'data-plant-model-status', 'data-anatomy-index', 'CLICK · INSPECT', 'Interactive 3D system V4', '<b>32</b><span>inspectable structures</span>', '/terpene-atlas/']) {
   ok(index.includes(token), `Atlas index missing V4 wiring: ${token}`);
 }
 ok(!index.includes('type="module" src="/atlas/atlas-3d.js"'), 'Atlas index must not boot V3 directly; V3 is emergency fallback only');
@@ -54,7 +58,7 @@ const renderer = read(path.join(appRoot, 'atlas-3d-v4.js'));
 for (const token of [
   'GLTFLoader', 'RoomEnvironment', 'MODEL_MANIFEST_URL', 'buildProceduralSpecimen', 'procedural-pbr', 'external-glb',
   'new THREE.Raycaster()', "canvas.addEventListener('pointerup'", "canvas.addEventListener('keydown'",
-  'webglcontextlost', 'IntersectionObserver', 'ResizeObserver', 'THREE.ACESFilmicToneMapping', 'export const bootPlantAtlasV4',
+  'webglcontextlost', 'IntersectionObserver', 'ResizeObserver', 'THREE.ACESFilmicToneMapping', "plant-atlas:focus", 'export const bootPlantAtlasV4',
 ]) ok(renderer.includes(token), `V4 renderer contract missing: ${token}`);
 ok(/new\s+OrbitControls\s*\(\s*camera\s*,\s*canvas\s*\)/.test(renderer), 'V4 renderer contract missing: OrbitControls(camera, canvas)');
 
@@ -104,6 +108,38 @@ if (hotspotData) {
   }
 }
 
+let systemsData = null;
+try { systemsData = JSON.parse(read(path.join(appRoot, 'data/systems.json'))); }
+catch (error) { errors.push(`Invalid systems.json: ${error.message}`); }
+
+if (systemsData) {
+  ok(systemsData.schemaVersion === 4, 'Plant Atlas systems contract must use schemaVersion 4');
+  const systems = Array.isArray(systemsData.systems) ? systemsData.systems : [];
+  ok(systems.length === 16, `Plant Atlas must expose exactly 16 science systems; found ${systems.length}`);
+  const ids = new Set();
+  for (const system of systems) {
+    ok(typeof system.id === 'string' && system.id.length > 0, 'Every Plant Atlas system needs an id');
+    ok(!ids.has(system.id), `Duplicate Plant Atlas system id: ${system.id}`);
+    ids.add(system.id);
+    ok(typeof system.route === 'string' && /^\/atlas\/.+\/$/.test(system.route), `System ${system.id} needs a canonical /atlas/ route`);
+    for (const field of ['concepts','functions','observe','interactions','cautions','measurements','evidenceQuestions','deepDiveTopics','scales']) {
+      ok(Array.isArray(system[field]) && system[field].length > 0, `System ${system.id} missing enriched field: ${field}`);
+    }
+    const relative = system.route.replace(/^\/atlas\//, '').replace(/\/$/, '');
+    const sourcePage = path.join(appRoot, relative, 'index.html');
+    const mirrorPage = path.join(mirrorRoot, relative, 'index.html');
+    ok(fs.existsSync(sourcePage), `Missing Plant Atlas system page: ${system.route}`);
+    ok(fs.existsSync(mirrorPage), `Missing public mirror for Plant Atlas system: ${system.route}`);
+    if (fs.existsSync(sourcePage) && fs.existsSync(mirrorPage)) ok(fs.readFileSync(sourcePage).equals(fs.readFileSync(mirrorPage)), `System page mirror mismatch: ${system.route}`);
+  }
+}
+
+const anatomyIndex = read(path.join(appRoot, 'atlas-anatomy-index-v1.js'));
+for (const token of ['hotspots-v4.json','data-anatomy-search','data-anatomy-scale','plant-atlas:focus']) ok(anatomyIndex.includes(token), `Anatomy index runtime missing: ${token}`);
+
+const moduleRuntime = read(path.join(appRoot, 'module.js'));
+for (const token of ['measurements','evidenceQuestions','deepDiveTopics','connectedTools','data-measurements-runtime']) ok(moduleRuntime.includes(token), `Plant Atlas module runtime missing enriched contract: ${token}`);
+
 let manifest = null;
 try { manifest = JSON.parse(read(path.join(appRoot, 'models/model-manifest-v4.json'))); }
 catch (error) { errors.push(`Invalid model-manifest-v4.json: ${error.message}`); }
@@ -145,4 +181,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Plant Atlas V4 valid: ${requiredHotspots.size} required inspectable structures, V4-first bootstrap, Terpene Atlas bridge, V5 responsive site-shell integration, built-in PBR specimen, optional licensed GLB upgrade, and synchronized deployment mirror.`);
+console.log(`Plant Atlas V4 valid: 16 enriched systems, ${requiredHotspots.size} required inspectable structures, searchable anatomy index, V4-first 3D focus, Terpene Atlas bridge, synchronized deployment mirror, and optional licensed GLB upgrade.`);
