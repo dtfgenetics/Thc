@@ -42,6 +42,9 @@ const hub = await findPage('learning-hub', 869); must(hub, 'Learning Hub page no
 const program = await findPage(local.program.slug, hub.id); must(program, 'Technician I page not found.');
 const course = await findPage(local.course.slug, program.id); must(course, 'Course 1 page not found.');
 
+const expectedVisualPlacements = ui.lessons.reduce((sum, lesson) => sum + (Array.isArray(lesson?.visual?.items) ? lesson.visual.items.length : 0), 0);
+const expectedUniqueAssets = new Set(ui.lessons.flatMap(lesson => Array.isArray(lesson?.visual?.items) ? lesson.visual.items.map(item => item.assetId).filter(Boolean) : [])).size;
+
 let lessonIndex = 0;
 let visualPlacements = 0;
 const uniqueAssets = new Set();
@@ -78,8 +81,8 @@ for (const mod of local.modules) {
 }
 
 must(verifiedLessons.length === 18, 'Expected 18 verified Course 1 lessons.');
-must(visualPlacements === 19, `Expected 19 canonical visual placements; verified ${visualPlacements}.`);
-must(uniqueAssets.size === 14, `Expected 14 unique canonical visual assets; verified ${uniqueAssets.size}.`);
+must(visualPlacements === expectedVisualPlacements, `Expected ${expectedVisualPlacements} canonical visual placements from the generated canonical map; verified ${visualPlacements}.`);
+must(uniqueAssets.size === expectedUniqueAssets, `Expected ${expectedUniqueAssets} unique canonical visual assets from the generated canonical map; verified ${uniqueAssets.size}.`);
 
 console.log(JSON.stringify({
   result: 'success',
@@ -88,6 +91,8 @@ console.log(JSON.stringify({
   courseId: local.course.id,
   lessonCount: verifiedLessons.length,
   canonicalVisualPlacements: visualPlacements,
+  expectedCanonicalVisualPlacements: expectedVisualPlacements,
   uniqueCanonicalAssets: uniqueAssets.size,
+  expectedUniqueCanonicalAssets: expectedUniqueAssets,
   lessons: verifiedLessons
 }, null, 2));
