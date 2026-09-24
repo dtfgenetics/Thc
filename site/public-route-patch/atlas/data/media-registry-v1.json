@@ -612,8 +612,47 @@
         "macro-reference",
         "labeled-botanical-plate"
       ],
-      "assets": [],
-      "status": "production-needed"
+      "assets": [
+        {
+          "assetId": "PA-REPRO-001",
+          "entityId": "reproductive-biology",
+          "class": "photoreal-reference",
+          "src": "/atlas/media/reproductive-biology/PA-REPRO-001-flowering-male-cannabis.jpg",
+          "source": "Wikimedia Commons; flowering male Cannabis plant (Super Silver Haze hybrid).",
+          "creator": "Rikva",
+          "license": "Public domain",
+          "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Flowering_male_marijuana_plant.jpg",
+          "captureType": "photography",
+          "plantStage": "flowering",
+          "organ": "male Cannabis plant / staminate inflorescences",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Photograph of a flowering male Cannabis plant bearing clusters of staminate flowers.",
+          "title": "Flowering male Cannabis reference",
+          "attribution": "Photo by Rikva; released to the public domain.",
+          "notes": "Photoreal reproductive-sex reference; cultivar is a Cannabis sativa × indica hybrid identified by the source."
+        },
+        {
+          "assetId": "PA-REPRO-002",
+          "entityId": "reproductive-biology",
+          "class": "macro-reference",
+          "src": "/atlas/media/reproductive-biology/PA-REPRO-002-female-flower-macro.jpg",
+          "source": "Wikimedia Commons; original Flickr close-up of a Cannabis flower.",
+          "creator": "Elsa Olofsson",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Marijuana_flower.jpg",
+          "captureType": "photography",
+          "plantStage": "flowering; exact week not specified",
+          "organ": "female Cannabis flower",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Close-up photograph of a female Cannabis flower showing floral tissue and visible stigmas.",
+          "title": "Female Cannabis flower macro reference",
+          "attribution": "Photo by Elsa Olofsson, CC BY 2.0.",
+          "notes": "Macro reproductive reference; not microscopy."
+        }
+      ],
+      "status": "in-production"
     }
   ],
   "provenanceContract": {
