@@ -481,3 +481,208 @@ for recx in (rootrec,tiprec):
 for base in (APP,MIRROR):
     (base/REG_REL).write_text(json.dumps(reg,indent=2)+'\n')
 print('Built root assets:',root_arch,root_flow,root_tip_plate,'root-status=',rootrec['status'],'tip-status=',tiprec['status'])
+
+
+# ---- Flower + trichome educational assets ----
+def build_flower_anatomy_plate():
+    sw,sh=3600,2400
+    img=Image.new('RGBA',(sw,sh),BG);dr=ImageDraw.Draw(img)
+    dr.text((150,105),'THC LIVING PLANT ATLAS',font=font(38,True),fill=ACCENT)
+    dr.text((150,170),'Female flower anatomy',font=font(82,True),fill=TEXT)
+    dr.text((150,280),'Illustrative Cannabis inflorescence map · macroscopic structures · not to scale',font=font(31),fill=MUTED)
+    dr.line((150,350,sw-150,350),fill=LINE,width=2)
+    cx,cy=1800,1330
+    # inflorescence axis
+    dr.line((cx,2050,cx,720),fill=(80,137,73,255),width=74)
+    # stacked bracts + sugar leaves
+    for row,y in enumerate(range(1750,760,-150)):
+        span=420-row*28
+        for side in (-1,1):
+            bx=cx+side*(150+(row%2)*45)
+            pts=[(bx,y+80),(bx+side*span,y),(bx+side*(span*.45),y-145),(bx,y-40)]
+            dr.polygon(pts,fill=(61,126,68,255),outline=(120,181,111,255))
+        # bract bodies
+        for side in (-1,1):
+            bx=cx+side*(95+(row%3)*24)
+            dr.ellipse((bx-115,y-120,bx+115,y+90),fill=(87,139,76,255),outline=(159,200,139,255),width=4)
+            # stigmas
+            for off in (-28,24):
+                sx=bx+off; sy=y-78
+                dr.arc((sx-70,sy-125,sx+70,sy+15),200 if side<0 else -20,330 if side<0 else 110,fill=(225,205,173,255),width=9)
+    # top meristem/floral cluster
+    dr.ellipse((cx-220,570,cx+220,930),fill=(94,150,80,255),outline=(176,211,155,255),width=4)
+    # trichome dots
+    for yy in range(780,1740,70):
+        for xx in range(cx-240,cx+250,70):
+            if (xx+yy)%3:
+                dr.ellipse((xx-8,yy-8,xx+8,yy+8),fill=(220,235,205,230))
+    root_label(dr,(cx,1870),(120,1760),'Inflorescence axis','Central support for clustered floral organs','left')
+    root_label(dr,(cx-180,1410),(120,1290),'Bract','Leaf-like floral structure surrounding pistillate tissue','left')
+    root_label(dr,(cx+430,1210),(2760,1040),'Sugar leaf','Small leaf associated with the floral cluster','right')
+    root_label(dr,(cx+70,970),(2760,710),'Stigma','Pollen-receptive surface extending from the pistillate flower','right',GOLD)
+    root_label(dr,(cx-65,1510),(2760,1390),'Pistillate flower','Female floral unit nested within the inflorescence','right')
+    root_label(dr,(cx+210,1590),(120,820),'Trichome-bearing surface','Resin glands are abundant on bracts and sugar leaves','left')
+    dr.rounded_rectangle((2520,1760,3420,2180),radius=24,fill=PANEL,outline=(74,113,86,255),width=2)
+    dr.text((2580,1810),'STRUCTURE → SCALE',font=font(24,True),fill=ACCENT)
+    for i,t in enumerate(['Flower cluster','Bract / sugar leaf','Stigma / ovary region','Trichome-bearing epidermis','Glandular trichome']):
+        dr.text((2580,1880+i*52),('→ ' if i else '• ')+t,font=font(22),fill=TEXT if i<2 else MUTED)
+    dr.line((150,2280,sw-150,2280),fill=LINE,width=2)
+    dr.text((150,2315),'Teaching Healthy Cultivation · DTF Genetics',font=font(23,True),fill=TEXT)
+    rel=Path('media/flower-anatomy/PA-FLOWER-003-flower-anatomy-plate.png')
+    for base in (APP,MIRROR):
+        out=base/rel;out.parent.mkdir(parents=True,exist_ok=True);img.convert('RGB').save(out,'PNG',optimize=True)
+    return rel
+
+def build_bract_plate():
+    sw,sh=3600,2400
+    img=Image.new('RGBA',(sw,sh),BG);dr=ImageDraw.Draw(img)
+    dr.text((150,105),'THC LIVING PLANT ATLAS',font=font(38,True),fill=ACCENT)
+    dr.text((150,170),'Bract anatomy and context',font=font(82,True),fill=TEXT)
+    dr.text((150,280),'Illustrative Cannabis floral bract · tissue relationships · not to scale',font=font(31),fill=MUTED)
+    dr.line((150,350,sw-150,350),fill=LINE,width=2)
+    cx,cy=1800,1280
+    # bract as teardrop
+    pts=[]
+    for i in range(80):
+        t=i/79
+        y=1950-1350*t
+        half=520*(math.sin(math.pi*t)**0.72)*(1-0.24*t)
+        pts.append((cx-half,y))
+    pts += [(2*cx-x,y) for x,y in pts[::-1]]
+    dr.polygon(pts,fill=(67,128,73,255),outline=(154,199,139,255))
+    dr.line((cx,1900,cx,690),fill=VEIN,width=12)
+    for y in range(900,1750,150):
+        width=400*(1-abs(1325-y)/700)
+        dr.line((cx,y,cx-width,y-90),fill=(139,187,127,210),width=5)
+        dr.line((cx,y,cx+width,y-90),fill=(139,187,127,210),width=5)
+    # ovary/pistillate tissue inside
+    dr.ellipse((cx-170,1280,cx+170,1730),fill=(126,143,88,255),outline=(211,190,132,255),width=5)
+    # stigmas
+    dr.arc((cx-260,860,cx+20,1330),190,330,fill=(231,210,180,255),width=14)
+    dr.arc((cx-20,860,cx+260,1330),210,350,fill=(231,210,180,255),width=14)
+    # trichomes
+    for a in range(-150,151,30):
+        tx=cx+a*2.4; ty=1040+abs(a)*2
+        dr.line((tx,ty,tx,ty-55),fill=(223,236,208,255),width=4)
+        dr.ellipse((tx-12,ty-78,tx+12,ty-54),fill=(232,240,214,255))
+    root_label(dr,(cx,1840),(120,1700),'Bract base','Attachment to the floral axis','left')
+    root_label(dr,(cx-420,1220),(120,1080),'Bract blade','Protective leaf-like floral tissue','left')
+    root_label(dr,(cx,1510),(2780,1450),'Ovary / ovule region','Pistillate reproductive tissue lies within','right',GOLD)
+    root_label(dr,(cx+120,1120),(2780,920),'Stigmas','Extend outward as pollen-receptive surfaces','right')
+    root_label(dr,(cx,990),(2780,610),'Trichome-bearing epidermis','Dense glandular trichomes commonly occur on bract surfaces','right')
+    dr.line((150,2280,sw-150,2280),fill=LINE,width=2)
+    dr.text((150,2315),'Teaching Healthy Cultivation · DTF Genetics',font=font(23,True),fill=TEXT)
+    rel=Path('media/bract/PA-BRACT-002-bract-anatomy-plate.png')
+    for base in (APP,MIRROR):
+        out=base/rel;out.parent.mkdir(parents=True,exist_ok=True);img.convert('RGB').save(out,'PNG',optimize=True)
+    return rel
+
+def build_stigma_plate():
+    sw,sh=3600,2400
+    img=Image.new('RGBA',(sw,sh),BG);dr=ImageDraw.Draw(img)
+    dr.text((150,105),'THC LIVING PLANT ATLAS',font=font(38,True),fill=ACCENT)
+    dr.text((150,170),'Stigma and pistillate context',font=font(82,True),fill=TEXT)
+    dr.text((150,280),'Illustrative reproductive anatomy · stigma morphology changes with age and pollination status',font=font(31),fill=MUTED)
+    dr.line((150,350,sw-150,350),fill=LINE,width=2)
+    cx=1800
+    # ovary and bract
+    dr.ellipse((cx-350,1350,cx+350,2050),fill=(116,136,81,255),outline=(204,189,128,255),width=6)
+    dr.polygon([(cx-720,1900),(cx-520,980),(cx,760),(cx+520,980),(cx+720,1900),(cx,2170)],fill=(58,119,68,190),outline=(140,188,127,255))
+    # two stigmas
+    for side in (-1,1):
+        pts=[(cx+side*70,1420),(cx+side*180,1120),(cx+side*330,900),(cx+side*430,610)]
+        dr.line(pts,fill=(235,218,190,255),width=24,joint='curve')
+        # papillate texture
+        for k in range(10):
+            x=cx+side*(150+28*k);y=1170-55*k
+            dr.ellipse((x-13,y-13,x+13,y+13),fill=(245,228,200,255))
+    root_label(dr,(cx+420,650),(2760,550),'Stigma surface','Pollen-receptive outer tissue','right',GOLD)
+    root_label(dr,(cx+170,1100),(2760,900),'Stigma branch','Extends from the pistillate flower','right')
+    root_label(dr,(cx,1710),(120,1590),'Ovary region','Contains ovule-bearing reproductive tissue','left')
+    root_label(dr,(cx-560,1400),(120,1190),'Bract','Surrounding floral tissue','left')
+    dr.rounded_rectangle((2450,1510,3400,2070),radius=24,fill=PANEL,outline=(74,113,86,255),width=2)
+    dr.text((2510,1560),'OBSERVATION RULE',font=font(24,True),fill=ACCENT)
+    rules=['Color alone does not prove pollination.','Age, humidity and tissue damage alter appearance.','Use flower context and time course.','Microscopy is needed for cellular-scale claims.']
+    for i,t in enumerate(rules):dr.text((2510,1640+i*82),'• '+t,font=font(22),fill=TEXT if i<2 else MUTED)
+    dr.line((150,2280,sw-150,2280),fill=LINE,width=2)
+    dr.text((150,2315),'Teaching Healthy Cultivation · DTF Genetics',font=font(23,True),fill=TEXT)
+    rel=Path('media/stigma/PA-STIGMA-003-stigma-anatomy-plate.png')
+    for base in (APP,MIRROR):
+        out=base/rel;out.parent.mkdir(parents=True,exist_ok=True);img.convert('RGB').save(out,'PNG',optimize=True)
+    return rel
+
+def build_trichome_plate(entity_dir, asset_id, title, focus='whole'):
+    sw,sh=3600,2400
+    img=Image.new('RGBA',(sw,sh),BG);dr=ImageDraw.Draw(img)
+    dr.text((150,105),'THC LIVING PLANT ATLAS',font=font(38,True),fill=ACCENT)
+    dr.text((150,170),title,font=font(78,True),fill=TEXT)
+    dr.text((150,280),'Illustrative glandular trichome anatomy · informed by Cannabis microscopy · not to scale',font=font(31),fill=MUTED)
+    dr.line((150,350,sw-150,350),fill=LINE,width=2)
+    cx=1800
+    # epidermis
+    dr.rounded_rectangle((900,1860,2700,2100),radius=80,fill=(55,110,64,255),outline=(132,178,122,255),width=5)
+    for x in range(1000,2600,190):
+        dr.line((x,1870,x+80,2085),fill=(103,157,103,130),width=3)
+    # stalk
+    dr.rounded_rectangle((1615,960,1985,1885),radius=150,fill=(88,139,82,255),outline=(176,211,158,255),width=6)
+    # cell guides
+    for y in range(1110,1800,150):dr.line((1640,y,1960,y),fill=(145,190,135,170),width=4)
+    # narrow neck
+    dr.rounded_rectangle((1705,830,1895,1080),radius=75,fill=(110,154,91,255),outline=(190,218,170,255),width=5)
+    # gland head
+    dr.ellipse((1280,380,2320,1080),fill=(180,191,122,235),outline=(231,230,182,255),width=8)
+    # disc cells
+    for x in range(1450,2200,180):
+        dr.ellipse((x-90,830,x+90,1010),fill=(112,151,88,255),outline=(193,211,152,255),width=4)
+    # cuticular cavity highlight
+    dr.arc((1370,430,2230,970),190,350,fill=(245,237,194,255),width=14)
+    if focus=='whole':
+        root_label(dr,(1800,1950),(120,1770),'Epidermal base','Trichome emerges from the organ surface','left')
+        root_label(dr,(1800,1450),(120,1300),'Multicellular stalk','Supports the secretory head','left')
+        root_label(dr,(1800,900),(2780,1230),'Neck / stipe region','Constriction between stalk and secretory head','right')
+        root_label(dr,(1800,650),(2780,720),'Glandular head','Secretory disc cells lie beneath the cuticle','right',GOLD)
+    else:
+        root_label(dr,(1800,890),(120,1240),'Secretory disc cells','Specialized cells associated with metabolite biosynthesis','left')
+        root_label(dr,(1800,520),(2780,520),'Cuticle / storage cavity','Secreted metabolites accumulate beneath the cuticular envelope','right',GOLD)
+        root_label(dr,(1800,990),(2780,1180),'Stipe / neck','Connects gland head to stalk','right')
+    dr.rounded_rectangle((240,520,950,970),radius=24,fill=PANEL,outline=(74,113,86,255),width=2)
+    dr.text((290,565),'SCALE NOTE',font=font(24,True),fill=ACCENT)
+    dr.text((290,640),'Use measured microscopy for',font=font(22),fill=TEXT)
+    dr.text((290,690),'size, density, maturity or',font=font(22),fill=TEXT)
+    dr.text((290,740),'cell-count claims.',font=font(22),fill=TEXT)
+    dr.text((290,820),'This plate is explanatory.',font=font(22),fill=MUTED)
+    dr.line((150,2280,sw-150,2280),fill=LINE,width=2)
+    dr.text((150,2315),'Teaching Healthy Cultivation · DTF Genetics',font=font(23,True),fill=TEXT)
+    rel=Path(f'media/{entity_dir}/{asset_id}.png')
+    for base in (APP,MIRROR):
+        out=base/rel;out.parent.mkdir(parents=True,exist_ok=True);img.convert('RGB').save(out,'PNG',optimize=True)
+    return rel
+
+flower_plate=build_flower_anatomy_plate()
+bract_plate=build_bract_plate()
+stigma_plate=build_stigma_plate()
+trich_plate=build_trichome_plate('trichomes-resin','PA-TRICH-003-trichome-anatomy-plate','Glandular trichome anatomy','whole')
+cst_plate=build_trichome_plate('capitate-stalked-trichome','PA-CST-002-capitate-stalked-trichome-plate','Capitate-stalked trichome','whole')
+gland_plate=build_trichome_plate('trichome-gland-head','PA-GLAND-002-gland-head-anatomy-plate','Trichome gland-head anatomy','head')
+
+reg=json.loads((APP/REG_REL).read_text())
+records={r['entityId']:r for r in reg['records']}
+new_assets=[
+ {'assetId':'PA-FLOWER-003','entityId':'flower-anatomy','class':'labeled-botanical-plate','src':'/atlas/'+str(flower_plate).replace('\\','/'),'source':'Original THC Living Plant Atlas educational illustration based on Cannabis pistillate inflorescence anatomy.','creator':'DTF Genetics / Teaching Healthy Cultivation','license':'DTF Genetics original educational asset','captureType':'illustration','plantStage':'flowering','organ':'female Cannabis inflorescence','illustrativeOrMeasured':'illustrative','alt':'Illustrative female Cannabis flower anatomy plate labeling inflorescence axis, bract, sugar leaf, stigma, pistillate flower, and trichome-bearing surfaces.','title':'Female Cannabis flower anatomy','sourcePage':'/atlas/flower-anatomy/','notes':'Illustrative and not to scale.'},
+ {'assetId':'PA-BRACT-002','entityId':'bract','class':'labeled-botanical-plate','src':'/atlas/'+str(bract_plate).replace('\\','/'),'source':'Original THC Living Plant Atlas educational illustration based on Cannabis floral bract anatomy.','creator':'DTF Genetics / Teaching Healthy Cultivation','license':'DTF Genetics original educational asset','captureType':'illustration','plantStage':'flowering','organ':'floral bract','illustrativeOrMeasured':'illustrative','alt':'Illustrative Cannabis bract plate showing bract blade, ovary region, stigmas, and trichome-bearing epidermis.','title':'Cannabis bract anatomy','sourcePage':'/atlas/flower-anatomy/','notes':'Illustrative and not to scale.'},
+ {'assetId':'PA-STIGMA-003','entityId':'stigma','class':'labeled-botanical-plate','src':'/atlas/'+str(stigma_plate).replace('\\','/'),'source':'Original THC Living Plant Atlas educational illustration based on Cannabis pistillate reproductive anatomy.','creator':'DTF Genetics / Teaching Healthy Cultivation','license':'DTF Genetics original educational asset','captureType':'illustration','plantStage':'flowering','organ':'stigma / pistillate flower','illustrativeOrMeasured':'illustrative','alt':'Illustrative Cannabis stigma plate showing stigma surface and branch, ovary region, and surrounding bract.','title':'Cannabis stigma anatomy','sourcePage':'/atlas/reproductive-biology/','notes':'Illustrative and not to scale.'},
+ {'assetId':'PA-TRICH-003','entityId':'trichomes-resin','class':'labeled-botanical-plate','src':'/atlas/'+str(trich_plate).replace('\\','/'),'source':'Original THC Living Plant Atlas educational illustration informed by published Cannabis glandular-trichome microscopy.','creator':'DTF Genetics / Teaching Healthy Cultivation','license':'DTF Genetics original educational asset','captureType':'illustration','plantStage':'flowering','organ':'glandular trichome','illustrativeOrMeasured':'illustrative','alt':'Illustrative glandular trichome anatomy showing epidermal base, multicellular stalk, neck, and glandular head.','title':'Glandular trichome anatomy','sourcePage':'/atlas/trichomes-resin/','notes':'Illustrative; use measured microscopy for quantitative claims.'},
+ {'assetId':'PA-CST-002','entityId':'capitate-stalked-trichome','class':'labeled-botanical-plate','src':'/atlas/'+str(cst_plate).replace('\\','/'),'source':'Original THC Living Plant Atlas educational illustration informed by published Cannabis capitate-stalked trichome microscopy.','creator':'DTF Genetics / Teaching Healthy Cultivation','license':'DTF Genetics original educational asset','captureType':'illustration','plantStage':'flowering','organ':'capitate-stalked glandular trichome','illustrativeOrMeasured':'illustrative','alt':'Illustrative capitate-stalked Cannabis trichome showing epidermal base, multicellular stalk, neck, and glandular head.','title':'Capitate-stalked trichome anatomy','sourcePage':'/atlas/trichomes-resin/','notes':'Illustrative and not to scale.'},
+ {'assetId':'PA-GLAND-002','entityId':'trichome-gland-head','class':'labeled-botanical-plate','src':'/atlas/'+str(gland_plate).replace('\\','/'),'source':'Original THC Living Plant Atlas educational illustration informed by published Cannabis trichome-head microscopy.','creator':'DTF Genetics / Teaching Healthy Cultivation','license':'DTF Genetics original educational asset','captureType':'illustration','plantStage':'flowering','organ':'glandular trichome head','illustrativeOrMeasured':'illustrative','alt':'Illustrative Cannabis trichome gland-head plate showing secretory disc-cell region, cuticular storage cavity, and stipe connection.','title':'Trichome gland-head anatomy','sourcePage':'/atlas/trichomes-resin/','notes':'Illustrative and not to scale.'}
+]
+for asset in new_assets:
+    rec=records[asset['entityId']]
+    idx=next((i for i,a in enumerate(rec['assets']) if a['assetId']==asset['assetId']),None)
+    if idx is None: rec['assets'].append(asset)
+    else: rec['assets'][idx]=asset
+for rec in records.values():
+    have={a['class'] for a in rec['assets']}
+    rec['status']='approved' if all(k in have for k in rec['required']) else ('in-production' if rec['assets'] else 'production-needed')
+for base in (APP,MIRROR):
+    (base/REG_REL).write_text(json.dumps(reg,indent=2)+'\n')
+print('Built flower/trichome plates:',flower_plate,bract_plate,stigma_plate,trich_plate,cst_plate,gland_plate)
