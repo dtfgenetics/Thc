@@ -249,8 +249,26 @@
         "macro-reference",
         "labeled-botanical-plate"
       ],
-      "assets": [],
-      "status": "production-needed"
+      "assets": [
+        {
+          "assetId": "PA-FLOWER-003",
+          "entityId": "flower-anatomy",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/flower-anatomy/PA-FLOWER-003-flower-anatomy-plate.png",
+          "source": "Original THC Living Plant Atlas educational illustration based on Cannabis pistillate inflorescence anatomy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "flowering",
+          "organ": "female Cannabis inflorescence",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative female Cannabis flower anatomy plate labeling inflorescence axis, bract, sugar leaf, stigma, pistillate flower, and trichome-bearing surfaces.",
+          "title": "Female Cannabis flower anatomy",
+          "sourcePage": "/atlas/flower-anatomy/",
+          "notes": "Illustrative and not to scale."
+        }
+      ],
+      "status": "in-production"
     },
     {
       "entityId": "bract",
@@ -258,8 +276,26 @@
         "macro-reference",
         "labeled-botanical-plate"
       ],
-      "assets": [],
-      "status": "production-needed"
+      "assets": [
+        {
+          "assetId": "PA-BRACT-002",
+          "entityId": "bract",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/bract/PA-BRACT-002-bract-anatomy-plate.png",
+          "source": "Original THC Living Plant Atlas educational illustration based on Cannabis floral bract anatomy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "flowering",
+          "organ": "floral bract",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative Cannabis bract plate showing bract blade, ovary region, stigmas, and trichome-bearing epidermis.",
+          "title": "Cannabis bract anatomy",
+          "sourcePage": "/atlas/flower-anatomy/",
+          "notes": "Illustrative and not to scale."
+        }
+      ],
+      "status": "in-production"
     },
     {
       "entityId": "stigma",
@@ -268,8 +304,26 @@
         "microscopy-reference",
         "labeled-botanical-plate"
       ],
-      "assets": [],
-      "status": "production-needed"
+      "assets": [
+        {
+          "assetId": "PA-STIGMA-003",
+          "entityId": "stigma",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/stigma/PA-STIGMA-003-stigma-anatomy-plate.png",
+          "source": "Original THC Living Plant Atlas educational illustration based on Cannabis pistillate reproductive anatomy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "flowering",
+          "organ": "stigma / pistillate flower",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative Cannabis stigma plate showing stigma surface and branch, ovary region, and surrounding bract.",
+          "title": "Cannabis stigma anatomy",
+          "sourcePage": "/atlas/reproductive-biology/",
+          "notes": "Illustrative and not to scale."
+        }
+      ],
+      "status": "in-production"
     },
     {
       "entityId": "trichomes-resin",
@@ -278,8 +332,26 @@
         "microscopy-reference",
         "labeled-botanical-plate"
       ],
-      "assets": [],
-      "status": "production-needed"
+      "assets": [
+        {
+          "assetId": "PA-TRICH-003",
+          "entityId": "trichomes-resin",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/trichomes-resin/PA-TRICH-003-trichome-anatomy-plate.png",
+          "source": "Original THC Living Plant Atlas educational illustration informed by published Cannabis glandular-trichome microscopy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "flowering",
+          "organ": "glandular trichome",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative glandular trichome anatomy showing epidermal base, multicellular stalk, neck, and glandular head.",
+          "title": "Glandular trichome anatomy",
+          "sourcePage": "/atlas/trichomes-resin/",
+          "notes": "Illustrative; use measured microscopy for quantitative claims."
+        }
+      ],
+      "status": "in-production"
     },
     {
       "entityId": "capitate-stalked-trichome",
@@ -288,8 +360,43 @@
         "labeled-botanical-plate",
         "3d-representation"
       ],
-      "assets": [],
-      "status": "production-needed"
+      "assets": [
+        {
+          "assetId": "PA-CST-002",
+          "entityId": "capitate-stalked-trichome",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/capitate-stalked-trichome/PA-CST-002-capitate-stalked-trichome-plate.png",
+          "source": "Original THC Living Plant Atlas educational illustration informed by published Cannabis capitate-stalked trichome microscopy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "flowering",
+          "organ": "capitate-stalked glandular trichome",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative capitate-stalked Cannabis trichome showing epidermal base, multicellular stalk, neck, and glandular head.",
+          "title": "Capitate-stalked trichome anatomy",
+          "sourcePage": "/atlas/trichomes-resin/",
+          "notes": "Illustrative and not to scale."
+        },
+        {
+          "assetId": "PA-CST-003",
+          "entityId": "capitate-stalked-trichome",
+          "class": "3d-representation",
+          "src": "/atlas/media/capitate-stalked-trichome/PA-CST-003-capitate-stalked-trichome-3d.png",
+          "source": "Original THC Living Plant Atlas pseudo-3D educational render informed by published Cannabis capitate-stalked trichome microscopy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "3D-style illustration",
+          "plantStage": "flowering",
+          "organ": "capitate-stalked glandular trichome",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Pseudo-3D educational render of a capitate-stalked Cannabis trichome showing the stalk, stipe, and secretory gland head.",
+          "title": "Capitate-stalked trichome 3D view",
+          "sourcePage": "/atlas/trichomes-resin/",
+          "notes": "Illustrative spatial model; not a measured reconstruction."
+        }
+      ],
+      "status": "in-production"
     },
     {
       "entityId": "trichome-gland-head",
@@ -298,8 +405,43 @@
         "labeled-botanical-plate",
         "3d-representation"
       ],
-      "assets": [],
-      "status": "production-needed"
+      "assets": [
+        {
+          "assetId": "PA-GLAND-002",
+          "entityId": "trichome-gland-head",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/trichome-gland-head/PA-GLAND-002-gland-head-anatomy-plate.png",
+          "source": "Original THC Living Plant Atlas educational illustration informed by published Cannabis trichome-head microscopy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "flowering",
+          "organ": "glandular trichome head",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative Cannabis trichome gland-head plate showing secretory disc-cell region, cuticular storage cavity, and stipe connection.",
+          "title": "Trichome gland-head anatomy",
+          "sourcePage": "/atlas/trichomes-resin/",
+          "notes": "Illustrative and not to scale."
+        },
+        {
+          "assetId": "PA-GLAND-003",
+          "entityId": "trichome-gland-head",
+          "class": "3d-representation",
+          "src": "/atlas/media/trichome-gland-head/PA-GLAND-003-gland-head-3d.png",
+          "source": "Original THC Living Plant Atlas pseudo-3D educational render informed by published Cannabis gland-head microscopy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "3D-style illustration",
+          "plantStage": "flowering",
+          "organ": "glandular trichome head",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Pseudo-3D cutaway-style render of a Cannabis trichome gland head showing secretory disc-cell zone, storage cavity, and cuticular envelope.",
+          "title": "Trichome gland-head 3D cutaway",
+          "sourcePage": "/atlas/trichomes-resin/",
+          "notes": "Illustrative spatial model; not a measured 3D reconstruction."
+        }
+      ],
+      "status": "in-production"
     },
     {
       "entityId": "reproductive-biology",
