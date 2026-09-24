@@ -100,3 +100,11 @@ body[data-atlas-layer="physiology"] .atlas-layer-legend{border-color:rgba(143,22
 @media(max-width:700px){.atlas-media-dialog{width:96vw}.atlas-media-dialog-meta{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .atlas-media-requirements span[data-media-state="verified"]{border-color:rgba(185,239,143,.34);background:rgba(159,232,112,.09);color:#cfeec1}.atlas-media-requirements span[data-media-state="verified"]::before{content:"✓ ";font-weight:900}.atlas-media-requirements span[data-media-state="missing"]{border-style:dashed;color:#7d8f84}.atlas-media-requirements span[data-media-state="missing"]::before{content:"○ ";color:#607268}
 .atlas-media-dialog-meta a{color:#b9ef8f;text-decoration:none}.atlas-media-dialog-meta a:hover,.atlas-media-dialog-meta a:focus-visible{text-decoration:underline}.atlas-media-dialog-meta .atlas-media-source{grid-column:span 2}
+.atlas-media-coverage-badge{position:absolute;right:12px;top:12px;padding:5px 7px;border:1px solid rgba(151,213,164,.15);border-radius:999px;background:rgba(5,15,10,.72);color:#83958a;font-size:.5rem;font-weight:900;letter-spacing:.05em;text-transform:uppercase}
+.atlas-media-coverage-badge[data-status="approved"]{border-color:rgba(185,239,143,.34);background:rgba(159,232,112,.09);color:#cfeec1}
+.atlas-media-coverage-badge[data-status="in-production"]{border-color:rgba(214,186,111,.3);background:rgba(214,186,111,.07);color:#d9bc73}
+.atlas-rail-items a[data-system-link]{grid-template-columns:1fr auto}
+.atlas-rail-items a[data-system-link] span,.atlas-rail-items a[data-system-link] small{grid-column:1}
+.atlas-rail-items a[data-system-link] i[data-media-coverage-mini]{grid-column:2;grid-row:1 / span 2;align-self:center;padding:3px 5px;border:1px solid rgba(151,213,164,.13);border-radius:999px;color:#72867a;font-size:.48rem;font-style:normal;font-weight:900}
+.atlas-rail-items a[data-media-status="approved"] i[data-media-coverage-mini]{border-color:rgba(185,239,143,.3);color:#b9ef8f}
+.atlas-rail-items a[data-media-status="in-production"] i[data-media-coverage-mini]{border-color:rgba(214,186,111,.25);color:#d9bc73}
