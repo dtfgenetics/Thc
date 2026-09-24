@@ -29,6 +29,7 @@ const requiredMirrors = [
   'data/hotspots-v4.json',
   'data/scale-map-v1.json',
   'data/media-registry-v1.json',
+  'data/measured-media-source-queue-v1.json',
   'data/media-production-queue-v1.json',
   'models/model-manifest-v4.json',
   'models/README.md',
@@ -141,7 +142,7 @@ if (systemsData) {
 }
 
 const workspaceRuntime = read(path.join(appRoot, 'atlas-workspace-v5.js'));
-for (const token of ['data-atlas-mode','data-atlas-layer','data-atlas-command-input','plant-atlas:focus','wireWorkspaceChrome','wireStageAndCompare','setStage','renderCompare','data-rail-toggle','data-viewer-action','atlasLabels','data-compare-assign','data-layer-legend','scale-map-v1.json','media-registry-v1.json','data-atlas-scale-nav','data-atlas-media-panel','atlas-media-gallery','mediaCoverage','decorateMediaCoverage','data-media-coverage-badge','atlas-media-dialog','atlas-media-evidence','atlas-evidence-meta','atlas-media-filter','data-media-filter','applyMediaEvidenceFilter','data-media-asset-id','data-media-state','data-scale-direction','Go deeper','metaKey','ctrlKey','Measurements','Evidence']) ok(workspaceRuntime.includes(token), `Atlas V5 workspace runtime missing: ${token}`);
+for (const token of ['data-atlas-mode','data-atlas-layer','data-atlas-command-input','plant-atlas:focus','wireWorkspaceChrome','wireStageAndCompare','setStage','renderCompare','data-rail-toggle','data-viewer-action','atlasLabels','data-compare-assign','data-layer-legend','scale-map-v1.json','media-registry-v1.json','data-atlas-scale-nav','data-atlas-media-panel','atlas-media-gallery','mediaCoverage','decorateMediaCoverage','data-media-coverage-badge','atlas-media-dialog','atlas-media-evidence','atlas-evidence-meta','atlas-media-filter','data-media-filter','applyMediaEvidenceFilter','sourceCandidatesFor','sourceResearchHtml','measured-media-source-queue-v1.json','data-media-asset-id','data-media-state','data-scale-direction','Go deeper','metaKey','ctrlKey','Measurements','Evidence']) ok(workspaceRuntime.includes(token), `Atlas V5 workspace runtime missing: ${token}`);
 const workspaceCss = read(path.join(appRoot, 'atlas-workspace-v5.css'));
 for (const token of ['.atlas-workspace-bar','.atlas-command-results','.atlas-inspector-tabs','.atlas-nav-rail','.atlas-viewer-toolbar','.atlas-stage-bar','.atlas-compare-panel','.atlas-layer-legend','data-system-category','grid-template-columns:240px','data-atlas-mode','max-width:980px']) ok(workspaceCss.includes(token), `Atlas V5 workspace CSS missing: ${token}`);
 for (const token of ['data-atlas-mode="explorer"','data-atlas-mode="research"','data-atlas-layer="anatomy"','data-atlas-layer="diagnostics"','data-atlas-command-input','data-atlas-mobile-tray-toggle','atlas-nav-rail','data-rail-systems','atlas-viewer-toolbar','data-viewer-action="labels"','data-viewer-action="compare"','atlas-layer-legend','atlas-stage-bar','data-atlas-stage="reproductive"','data-atlas-compare']) ok(index.includes(token), `Atlas V5 workspace shell missing: ${token}`);
@@ -246,6 +247,27 @@ if (fs.existsSync(sourceImportsDir)) {
     for (const field of ['source','creator','license','captureType','plantStage','organ','illustrativeOrMeasured','alt','title']) {
       ok(typeof asset[field] === 'string' && asset[field].length > 0, `Media import ${name} missing asset.${field}`);
     }
+  }
+}
+
+
+let measuredSourceQueue = null;
+try { measuredSourceQueue = JSON.parse(read(path.join(appRoot, 'data/measured-media-source-queue-v1.json'))); }
+catch (error) { errors.push(`Measured-media source queue JSON is invalid: ${error.message}`); }
+if (measuredSourceQueue) {
+  ok(measuredSourceQueue.schemaVersion === 1, 'Measured-media source queue must use schemaVersion 1');
+  ok(Array.isArray(measuredSourceQueue.candidates), 'Measured-media source queue candidates must be an array');
+  const candidateIds = new Set();
+  for (const candidate of measuredSourceQueue.candidates || []) {
+    ok(typeof candidate.candidateId === 'string' && candidate.candidateId.length > 0, 'Measured-media candidate needs candidateId');
+    ok(!candidateIds.has(candidate.candidateId), `Duplicate measured-media candidate: ${candidate.candidateId}`);
+    candidateIds.add(candidate.candidateId);
+    ok(Array.isArray(candidate.targetEntities) && candidate.targetEntities.length > 0, `Measured-media candidate ${candidate.candidateId} needs targetEntities`);
+    for (const field of ['speciesOrCultivar','tissue','modality','sourceUrl','license','resolutionStatus','scaleStatus','decision','reason']) {
+      ok(typeof candidate[field] === 'string' && candidate[field].length > 0, `Measured-media candidate ${candidate.candidateId} missing ${field}`);
+    }
+    ok(/^https:\/\//.test(candidate.sourceUrl || ''), `Measured-media candidate ${candidate.candidateId} requires HTTPS sourceUrl`);
+    ok(['research-reference-only','rejected-for-production','high-priority-source-candidate','approved-for-ingestion'].includes(candidate.decision), `Measured-media candidate ${candidate.candidateId} has unsupported decision ${candidate.decision}`);
   }
 }
 
