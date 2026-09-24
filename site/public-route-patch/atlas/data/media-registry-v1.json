@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updated": "2026-09-24",
+  "updated": "2026-09-23",
   "purpose": "Machine-readable visual asset registry for Plant Atlas structures and systems. Missing production assets are explicit; the UI must never fabricate or silently substitute scientific imagery.",
   "assetClasses": [
     "photoreal-reference",
@@ -455,9 +455,28 @@
           "title": "Cannabis bract anatomy",
           "sourcePage": "/atlas/flower-anatomy/",
           "notes": "Illustrative and not to scale."
+        },
+        {
+          "assetId": "PA-BRACT-001",
+          "entityId": "bract",
+          "class": "macro-reference",
+          "src": "/atlas/media/flower-anatomy/PA-FLOWER-002-cannabis-flower-macro.jpg",
+          "source": "Wikimedia Commons; original Flickr close-up of a Cannabis flower.",
+          "creator": "Elsa Olofsson",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Marijuana_flower.jpg",
+          "captureType": "photography",
+          "plantStage": "flowering; exact week not specified",
+          "organ": "Cannabis flower",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Close-up photograph of a female Cannabis flower showing bract-associated floral tissue, visible stigmas, and resinous surface detail.",
+          "title": "Cannabis bract-region macro reference",
+          "attribution": "Photo by Elsa Olofsson, CC BY 2.0.",
+          "notes": "Shared verified flower macro used for bract-context reference; not a dissected bract specimen and not microscopy."
         }
       ],
-      "status": "in-production"
+      "status": "approved"
     },
     {
       "entityId": "stigma",
@@ -483,6 +502,25 @@
           "title": "Cannabis stigma anatomy",
           "sourcePage": "/atlas/reproductive-biology/",
           "notes": "Illustrative and not to scale."
+        },
+        {
+          "assetId": "PA-STIGMA-001",
+          "entityId": "stigma",
+          "class": "macro-reference",
+          "src": "/atlas/media/flower-anatomy/PA-FLOWER-002-cannabis-flower-macro.jpg",
+          "source": "Wikimedia Commons; original Flickr close-up of a Cannabis flower.",
+          "creator": "Elsa Olofsson",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Marijuana_flower.jpg",
+          "captureType": "photography",
+          "plantStage": "flowering; exact week not specified",
+          "organ": "Cannabis flower",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Close-up photograph of a female Cannabis flower showing visible stigmas extending from floral tissue.",
+          "title": "Cannabis stigma macro reference",
+          "attribution": "Photo by Elsa Olofsson, CC BY 2.0.",
+          "notes": "Shared verified flower macro used for stigma appearance context; not microscopy."
         }
       ],
       "status": "in-production"
