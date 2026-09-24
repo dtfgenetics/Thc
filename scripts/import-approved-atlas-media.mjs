@@ -60,12 +60,20 @@ async function main(){
   let changed=false;
   for(const file of files){
     let descriptor=JSON.parse(fs.readFileSync(path.join(importsRoot,file),'utf8'));
-    descriptor=await resolveDescriptor(descriptor,file);
     if(descriptor.status!=='approved-for-import') continue;
     const record=registry.records.find(r=>r.entityId===descriptor.asset.entityId);
     if(!record) throw new Error(`${file}: unknown entity ${descriptor.asset.entityId}`);
     if(!registry.assetClasses.includes(descriptor.asset.class)) throw new Error(`${file}: unknown class ${descriptor.asset.class}`);
     const existingIndex=record.assets.findIndex(a=>a.assetId===descriptor.asset.assetId);
+    const rel=descriptor.asset.src.replace(/^\/atlas\//,'');
+    const localSource=path.join(appRoot,rel),localMirror=path.join(mirrorRoot,rel);
+    const localReady=fs.existsSync(localSource)&&fs.existsSync(localMirror)&&fs.readFileSync(localSource).equals(fs.readFileSync(localMirror));
+    const metadataReady=existingIndex>=0&&JSON.stringify(record.assets[existingIndex])===JSON.stringify(descriptor.asset);
+    if(localReady&&metadataReady){
+      console.log(`Verified local ${descriptor.asset.assetId}; skipping remote fetch.`);
+      continue;
+    }
+    descriptor=await resolveDescriptor(descriptor,file);
     const response=await fetch(descriptor.downloadUrl,{headers:{'User-Agent':'DTF-Plant-Atlas-Media-Importer/1.0'}});
     if(!response.ok) throw new Error(`${file}: download failed HTTP ${response.status}`);
     const buf=Buffer.from(await response.arrayBuffer());
@@ -74,7 +82,6 @@ async function main(){
     const size=dims(buf); if(!size) throw new Error(`${file}: unsupported or unreadable image`);
     if(size.width!==descriptor.expectedWidth||size.height!==descriptor.expectedHeight) throw new Error(`${file}: dimension mismatch ${size.width}x${size.height}`);
     if(Math.max(size.width,size.height)<2400) throw new Error(`${file}: production asset below 2400px long-edge minimum`);
-    const rel=descriptor.asset.src.replace(/^\/atlas\//,'');
     writeBoth(rel,buf);
     if(existingIndex>=0){
       const before=JSON.stringify(record.assets[existingIndex]);
