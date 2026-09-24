@@ -1023,3 +1023,95 @@ for rec in records.values():
 for base in (APP,MIRROR):
   (base/REG_REL).write_text(json.dumps(reg,indent=2)+'\n')
 print('Built stem/vascular assets:',stem_plate,stem_process,xylem_plate,xylem_process,phloem_plate,phloem_process)
+
+
+# ---- Reproductive biology educational plate ----
+def build_reproductive_biology_plate():
+    sw,sh=3600,2400
+    img=Image.new('RGBA',(sw,sh),BG);dr=ImageDraw.Draw(img)
+    dr.text((150,105),'THC LIVING PLANT ATLAS',font=font(38,True),fill=ACCENT)
+    dr.text((150,170),'Cannabis reproductive biology',font=font(82,True),fill=TEXT)
+    dr.text((150,280),'Staminate and pistillate structures · pollination pathway · illustrative, not to scale',font=font(31),fill=MUTED)
+    dr.line((150,350,sw-150,350),fill=LINE,width=2)
+
+    # male/staminate panel
+    dr.rounded_rectangle((120,460,1650,2110),radius=34,fill=PANEL,outline=(74,113,86,255),width=3)
+    dr.text((190,515),'STAMINATE / POLLEN-PRODUCING',font=font(30,True),fill=(126,201,223,255))
+    # branch
+    dr.line((450,1900,720,820),fill=(73,128,71,255),width=50)
+    for i,(x,y) in enumerate([(680,840),(820,910),(610,1080),(900,1190),(560,1390),(780,1510)]):
+        dr.line((650,y+160,x,y),fill=(83,139,76,255),width=20)
+        # pendant flower
+        dr.ellipse((x-90,y-75,x+90,y+105),fill=(157,173,104,255),outline=(220,220,163,255),width=4)
+        for k in range(5):
+            ang=2*math.pi*k/5
+            px=x+65*math.cos(ang);py=y+35+65*math.sin(ang)
+            dr.ellipse((px-22,py-32,px+22,py+32),fill=(219,203,126,255))
+    # anther inset
+    dr.rounded_rectangle((1030,710,1510,1280),radius=24,fill=(6,19,13,255),outline=(83,125,94,255),width=2)
+    dr.text((1080,755),'ANTHER + POLLEN',font=font(24,True),fill=GOLD)
+    dr.ellipse((1160,870,1370,1130),fill=(201,177,94,255),outline=(235,218,161,255),width=5)
+    for i in range(12):
+        ang=2*math.pi*i/12
+        x=1265+160*math.cos(ang);y=1000+160*math.sin(ang)
+        dr.ellipse((x-15,y-15,x+15,y+15),fill=(237,213,109,255))
+    dr.text((180,1980),'Male/staminate expression produces pollen-bearing flowers.',font=font(22),fill=MUTED)
+
+    # female/pistillate panel
+    dr.rounded_rectangle((1950,460,3480,2110),radius=34,fill=PANEL,outline=(74,113,86,255),width=3)
+    dr.text((2020,515),'PISTILLATE / OVULE-BEARING',font=font(30,True),fill=(215,167,217,255))
+    cx=2710
+    # bract
+    pts=[(cx-410,1810),(cx-300,930),(cx,700),(cx+300,930),(cx+410,1810),(cx,2010)]
+    dr.polygon(pts,fill=(61,123,69,255),outline=(151,196,136,255))
+    # ovary
+    dr.ellipse((cx-180,1390,cx+180,1810),fill=(139,141,84,255),outline=(220,198,132,255),width=5)
+    # ovule
+    dr.ellipse((cx-70,1510,cx+70,1680),fill=(218,199,135,255),outline=(245,229,178,255),width=4)
+    # stigmas
+    for side in (-1,1):
+        pts=[(cx+side*55,1450),(cx+side*120,1210),(cx+side*250,980),(cx+side*350,720)]
+        dr.line(pts,fill=(236,220,194,255),width=20,joint='curve')
+        for k in range(8):
+            x=cx+side*(115+32*k);y=1220-62*k
+            dr.ellipse((x-11,y-11,x+11,y+11),fill=(247,232,207,255))
+    root_label(dr,(cx+340,760),(2850,620),'Stigma','Pollen-receptive surface','right',GOLD)
+    root_label(dr,(cx,1570),(2830,1340),'Ovary / ovule','Ovule-bearing reproductive tissue','right',(215,167,217,255))
+    root_label(dr,(cx-330,1320),(1980,1070),'Bract','Protective floral tissue around the pistillate flower','left')
+    dr.text((2020,1980),'After successful pollination and fertilization, ovules develop into seeds.',font=font(22),fill=MUTED)
+
+    # center pollination bridge
+    dr.rounded_rectangle((1510,720,2090,1700),radius=24,fill=(7,20,14,255),outline=(94,133,100,255),width=2)
+    dr.text((1580,770),'POLLINATION',font=font(26,True),fill=ACCENT)
+    for i in range(5):
+        y=930+i*120
+        dr.ellipse((1610,y-18,1646,y+18),fill=(237,213,109,255))
+        arrow(dr,(1680,y),(1960,y),(214,186,111,255),10)
+    steps=['pollen release','air movement','stigma capture','pollen germination','fertilization context']
+    for i,t in enumerate(steps):
+        dr.text((1570,880+i*120),t,font=font(18),fill=MUTED)
+    dr.text((1555,1530),'Wind pollination is the',font=font(18),fill=TEXT)
+    dr.text((1555,1570),'dominant natural pathway.',font=font(18),fill=TEXT)
+
+    dr.rounded_rectangle((1150,2130,2450,2240),radius=18,fill=(7,20,14,255),outline=(66,107,80,255),width=2)
+    dr.text((1200,2165),'Sex expression and reproductive timing are genotype- and environment-dependent; do not infer sex from vegetative appearance alone.',font=font(18),fill=MUTED)
+    dr.line((150,2280,sw-150,2280),fill=LINE,width=2)
+    dr.text((150,2315),'Teaching Healthy Cultivation · DTF Genetics',font=font(23,True),fill=TEXT)
+    rel=Path('media/reproductive-biology/PA-REPRO-003-reproductive-biology-plate.png')
+    for base in (APP,MIRROR):
+        out=base/rel;out.parent.mkdir(parents=True,exist_ok=True);img.convert('RGB').save(out,'PNG',optimize=True)
+    return rel
+
+repro_plate=build_reproductive_biology_plate()
+reg=json.loads((APP/REG_REL).read_text())
+rec=next((r for r in reg['records'] if r['entityId']=='reproductive-biology'),None)
+if not rec: raise SystemExit('reproductive-biology media record missing')
+asset={'assetId':'PA-REPRO-003','entityId':'reproductive-biology','class':'labeled-botanical-plate','src':'/atlas/'+str(repro_plate).replace('\\','/'),'source':'Original THC Living Plant Atlas educational illustration based on Cannabis staminate and pistillate reproductive anatomy and wind-pollination biology.','creator':'DTF Genetics / Teaching Healthy Cultivation','license':'DTF Genetics original educational asset','captureType':'illustration','plantStage':'reproductive development','organ':'male and female Cannabis reproductive structures','illustrativeOrMeasured':'illustrative','alt':'Illustrative Cannabis reproductive biology plate comparing staminate flowers and pollen with pistillate stigma, bract, ovary, ovule, and the pollination pathway.','title':'Cannabis reproductive biology','sourcePage':'/atlas/reproductive-biology/','notes':'Illustrative and not to scale; sex expression and timing vary with genotype and environment.'}
+idx=next((i for i,a in enumerate(rec['assets']) if a['assetId']==asset['assetId']),None)
+if idx is None: rec['assets'].append(asset)
+else: rec['assets'][idx]=asset
+have={a['class'] for a in rec['assets']}
+rec['status']='approved' if all(k in have for k in rec['required']) else 'in-production'
+for base in (APP,MIRROR):
+    (base/REG_REL).write_text(json.dumps(reg,indent=2)+'\n')
+print('Built reproductive biology plate:',repro_plate,'status=',rec['status'])
