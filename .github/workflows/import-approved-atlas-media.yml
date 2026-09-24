@@ -3,7 +3,6 @@ name: Import approved Atlas media
 on:
   push:
     paths:
-      - 'apps/growlens-web/public/atlas/data/media-imports/**'
       - 'site/public-route-patch/atlas/data/media-imports/**'
       - 'scripts/import-approved-atlas-media.mjs'
       - '.github/workflows/import-approved-atlas-media.yml'
