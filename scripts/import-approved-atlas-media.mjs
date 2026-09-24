@@ -37,13 +37,30 @@ function writeBoth(rel,buf){
     const dest=path.join(base,rel);fs.mkdirSync(path.dirname(dest),{recursive:true});fs.writeFileSync(dest,buf);
   }
 }
+async function resolveDescriptor(descriptor,file){
+  if(!descriptor.commonsTitle) return descriptor;
+  const params=new URLSearchParams({
+    action:'query',format:'json',prop:'imageinfo',titles:descriptor.commonsTitle,
+    iiprop:'url|sha1|size|mime'
+  });
+  const response=await fetch('https://commons.wikimedia.org/w/api.php?'+params.toString(),{headers:{'User-Agent':'DTF-Plant-Atlas-Media-Importer/1.0'}});
+  if(!response.ok) throw new Error(`${file}: Commons metadata lookup failed HTTP ${response.status}`);
+  const data=await response.json();
+  const page=Object.values(data.query?.pages||{})[0];
+  const info=page?.imageinfo?.[0];
+  if(!info?.url||!info?.sha1||!info?.width||!info?.height) throw new Error(`${file}: incomplete Commons metadata for ${descriptor.commonsTitle}`);
+  if(descriptor.expectedWidth && Number(descriptor.expectedWidth)!==Number(info.width)) throw new Error(`${file}: Commons width mismatch ${info.width}`);
+  if(descriptor.expectedHeight && Number(descriptor.expectedHeight)!==Number(info.height)) throw new Error(`${file}: Commons height mismatch ${info.height}`);
+  return {...descriptor,downloadUrl:info.url,expectedSha1:String(info.sha1).toLowerCase(),expectedWidth:Number(info.width),expectedHeight:Number(info.height)};
+}
 async function main(){
   if(!fs.existsSync(importsRoot)){console.log('No approved media imports directory.');return;}
   const files=fs.readdirSync(importsRoot).filter(x=>x.endsWith('.json')).sort();
   const registry=JSON.parse(fs.readFileSync(registryPath,'utf8'));
   let changed=false;
   for(const file of files){
-    const descriptor=JSON.parse(fs.readFileSync(path.join(importsRoot,file),'utf8'));
+    let descriptor=JSON.parse(fs.readFileSync(path.join(importsRoot,file),'utf8'));
+    descriptor=await resolveDescriptor(descriptor,file);
     if(descriptor.status!=='approved-for-import') continue;
     const record=registry.records.find(r=>r.entityId===descriptor.asset.entityId);
     if(!record) throw new Error(`${file}: unknown entity ${descriptor.asset.entityId}`);
