@@ -139,3 +139,8 @@ body[data-atlas-layer="physiology"] .atlas-layer-legend{border-color:rgba(143,22
 .atlas-source-research article em{font-style:normal;color:#64776b;font-size:.46rem}
 .atlas-source-research article a{justify-self:start;color:#b9ef8f;font-size:.48rem;text-decoration:none}
 .atlas-source-research article a:hover,.atlas-source-research article a:focus-visible{text-decoration:underline}
+
+.atlas-media-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:8px 0 4px}
+.atlas-media-summary span{display:grid;gap:2px;padding:7px 8px;border:1px solid rgba(151,213,164,.1);border-radius:9px;background:#07120d;color:#718579;font-size:.46rem}
+.atlas-media-summary b{font-size:.72rem;color:#dce8df}
+@media(max-width:520px){.atlas-media-summary{grid-template-columns:1fr 1fr}}
