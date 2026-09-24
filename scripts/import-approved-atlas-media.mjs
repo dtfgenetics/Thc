@@ -102,3 +102,5 @@ async function main(){
   }
 }
 await main();
+
+// atomic retrigger: import approved media against validated V5 runtime head

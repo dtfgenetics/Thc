@@ -785,3 +785,5 @@ for base in (APP,MIRROR):
 print('Built trichome 3D-style renders:',cst_3d,gland_3d)
 
 # retrigger: flower/trichome production after V5 selector fix
+
+# atomic retrigger: validated V5 runtime head
