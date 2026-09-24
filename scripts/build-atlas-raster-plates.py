@@ -783,3 +783,5 @@ for rec in records.values():
 for base in (APP,MIRROR):
     (base/REG_REL).write_text(json.dumps(reg,indent=2)+'\n')
 print('Built trichome 3D-style renders:',cst_3d,gland_3d)
+
+# retrigger: flower/trichome production after V5 selector fix
