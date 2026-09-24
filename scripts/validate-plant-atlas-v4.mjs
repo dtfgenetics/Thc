@@ -231,9 +231,10 @@ if (fs.existsSync(sourceImportsDir)) {
     if (!descriptor) continue;
     ok(descriptor.schemaVersion === 1, `Media import ${name} must use schemaVersion 1`);
     ok(descriptor.status === 'approved-for-import', `Media import ${name} must be explicitly approved-for-import`);
-    ok(/^https:\/\//.test(descriptor.downloadUrl || ''), `Media import ${name} needs an HTTPS downloadUrl`);
+    const hasCommonsResolver = typeof descriptor.commonsTitle === 'string' && descriptor.commonsTitle.startsWith('File:');
+    ok(hasCommonsResolver || /^https:\/\//.test(descriptor.downloadUrl || ''), `Media import ${name} needs an HTTPS downloadUrl or Commons resolver title`);
     ok(/^https:\/\//.test(descriptor.sourcePage || ''), `Media import ${name} needs an HTTPS sourcePage`);
-    ok(/^[a-f0-9]{40}$/i.test(descriptor.expectedSha1 || ''), `Media import ${name} needs a 40-character SHA-1`);
+    if (!hasCommonsResolver) ok(/^[a-f0-9]{40}$/i.test(descriptor.expectedSha1 || ''), `Media import ${name} needs a 40-character SHA-1 when not using Commons metadata resolution`);
     ok(Number(descriptor.expectedWidth) > 0 && Number(descriptor.expectedHeight) > 0, `Media import ${name} needs positive expected dimensions`);
     ok(Math.max(Number(descriptor.expectedWidth) || 0, Number(descriptor.expectedHeight) || 0) >= 2400, `Media import ${name} must meet the 2400px production minimum`);
     const asset = descriptor.asset || {};
