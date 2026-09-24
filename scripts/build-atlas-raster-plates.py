@@ -789,3 +789,237 @@ print('Built trichome 3D-style renders:',cst_3d,gland_3d)
 # atomic retrigger: validated V5 runtime head
 
 # verified-head retrigger: flower/trichome media production
+
+
+# ---- Stem + vascular transport educational assets ----
+def build_stem_cross_section_plate():
+    sw,sh=3600,2400
+    img=Image.new('RGBA',(sw,sh),BG);dr=ImageDraw.Draw(img)
+    dr.text((150,105),'THC LIVING PLANT ATLAS',font=font(38,True),fill=ACCENT)
+    dr.text((150,170),'Stem vascular anatomy',font=font(82,True),fill=TEXT)
+    dr.text((150,280),'Illustrative transverse stem organization · tissue proportions vary with age and secondary growth',font=font(31),fill=MUTED)
+    dr.line((150,350,sw-150,350),fill=LINE,width=2)
+    cx,cy=1800,1310
+    # concentric tissue zones
+    rings=[
+      (800,(56,113,66,255),'epidermis / outer tissues'),
+      (700,(82,126,72,255),'cortex'),
+      (570,(142,122,75,255),'phloem / bast region'),
+      (475,(203,179,105,255),'vascular cambium region'),
+      (425,(146,104,66,255),'secondary xylem / woody core'),
+      (170,(91,132,78,255),'pith')
+    ]
+    for radius,color,label in rings:
+      dr.ellipse((cx-radius,cy-radius,cx+radius,cy+radius),fill=color,outline=(223,223,177,150),width=4)
+    # vascular rays
+    for i in range(18):
+      ang=2*math.pi*i/18
+      x1=cx+170*math.cos(ang); y1=cy+170*math.sin(ang)
+      x2=cx+570*math.cos(ang); y2=cy+570*math.sin(ang)
+      dr.line((x1,y1,x2,y2),fill=(225,205,149,130),width=8)
+    # xylem vessel symbols
+    for i in range(26):
+      ang=2*math.pi*i/26
+      rr=330+45*math.sin(i*2.1)
+      x=cx+rr*math.cos(ang);y=cy+rr*math.sin(ang)
+      dr.ellipse((x-22,y-22,x+22,y+22),outline=(116,200,220,230),width=6)
+    root_label(dr,(cx,cy),(120,1760),'Pith','Central parenchymatous region','left')
+    root_label(dr,(cx-400,cy),(120,1330),'Xylem','Water/mineral-conducting tissue toward the inside','left',(126,201,223,255))
+    root_label(dr,(cx-535,cy-160),(120,850),'Cambial region','Meristematic zone associated with secondary vascular growth','left',GOLD)
+    root_label(dr,(cx+610,cy-50),(2780,930),'Phloem / bast region','Photoassimilate transport toward the outer stem','right',(215,167,217,255))
+    root_label(dr,(cx+730,cy-300),(2780,520),'Cortex + outer tissues','Mechanical protection and living cortical tissues','right')
+    dr.rounded_rectangle((2600,1640,3430,2140),radius=24,fill=PANEL,outline=(74,113,86,255),width=2)
+    dr.text((2660,1690),'INTERPRETATION',font=font(24,True),fill=ACCENT)
+    for i,t in enumerate(['This is a teaching model.','Cannabis stems change with age.','Fiber/bast development can be prominent.','Use microscopy for measured tissue thickness.']):
+      dr.text((2660,1765+i*72),'• '+t,font=font(21),fill=TEXT if i<2 else MUTED)
+    dr.line((150,2280,sw-150,2280),fill=LINE,width=2)
+    dr.text((150,2315),'Teaching Healthy Cultivation · DTF Genetics',font=font(23,True),fill=TEXT)
+    rel=Path('media/stem-vascular/PA-STEM-002-stem-vascular-anatomy.png')
+    for base in (APP,MIRROR):
+      out=base/rel;out.parent.mkdir(parents=True,exist_ok=True);img.convert('RGB').save(out,'PNG',optimize=True)
+    return rel
+
+def build_stem_transport_overview():
+    sw,sh=3600,2400
+    img=Image.new('RGBA',(sw,sh),BG);dr=ImageDraw.Draw(img)
+    dr.text((150,105),'THC LIVING PLANT ATLAS',font=font(38,True),fill=ACCENT)
+    dr.text((150,170),'Stem transport overview',font=font(82,True),fill=TEXT)
+    dr.text((150,280),'Xylem and phloem are distinct transport systems with different cargos and driving mechanisms',font=font(31),fill=MUTED)
+    dr.line((150,350,sw-150,350),fill=LINE,width=2)
+    water=(106,194,222,255); sugar=(215,167,217,255)
+    # central stem
+    dr.rounded_rectangle((1520,520,2080,2110),radius=220,fill=(75,119,70,255),outline=(156,193,139,255),width=5)
+    # xylem tube
+    dr.rounded_rectangle((1620,620,1780,2010),radius=70,fill=(35,79,92,255),outline=water,width=6)
+    # phloem tube
+    dr.rounded_rectangle((1820,620,1980,2010),radius=70,fill=(76,51,77,255),outline=sugar,width=6)
+    # water arrows upward
+    for y in [1840,1480,1120,760]:
+      arrow(dr,(1700,y+180),(1700,y),water,16)
+    # phloem arrows bidirectional/source-sink example
+    arrow(dr,(1900,880),(1900,650),sugar,16)
+    arrow(dr,(1900,1200),(1900,1460),sugar,16)
+    arrow(dr,(1900,1570),(1900,1870),sugar,16)
+    # labels
+    root_label(dr,(1700,1260),(120,1050),'Xylem stream','Water + mineral ions move mainly root → shoot','left',water)
+    root_label(dr,(1900,1260),(2780,1050),'Phloem transport','Sugars and other mobile solutes move source ↔ sink','right',sugar)
+    # source/sink callouts
+    dr.rounded_rectangle((260,480,1180,850),radius=24,fill=PANEL,outline=(74,113,86,255),width=2)
+    dr.text((320,530),'SOURCE',font=font(27,True),fill=sugar)
+    dr.text((320,600),'Mature photosynthetic leaves',font=font(24),fill=TEXT)
+    dr.text((320,660),'can export assimilated carbon',font=font(24),fill=MUTED)
+    dr.rounded_rectangle((2420,1660,3360,2040),radius=24,fill=PANEL,outline=(74,113,86,255),width=2)
+    dr.text((2480,1710),'SINKS',font=font(27,True),fill=sugar)
+    for i,t in enumerate(['growing shoots','roots','developing flowers / seeds','storage tissues']):
+      dr.text((2480,1780+i*56),'• '+t,font=font(22),fill=TEXT if i<2 else MUTED)
+    dr.text((300,2130),'Water movement is coupled to water-potential gradients and transpiration; phloem transport depends on source–sink pressure relationships.',font=font(23),fill=MUTED)
+    dr.line((150,2280,sw-150,2280),fill=LINE,width=2)
+    dr.text((150,2315),'Teaching Healthy Cultivation · DTF Genetics',font=font(23,True),fill=TEXT)
+    rel=Path('media/stem-vascular/PA-STEM-003-stem-transport-overview.png')
+    for base in (APP,MIRROR):
+      out=base/rel;out.parent.mkdir(parents=True,exist_ok=True);img.convert('RGB').save(out,'PNG',optimize=True)
+    return rel
+
+def build_vascular_plate(kind='xylem'):
+    sw,sh=3600,2400
+    img=Image.new('RGBA',(sw,sh),BG);dr=ImageDraw.Draw(img)
+    is_x=kind=='xylem'
+    accent=(106,194,222,255) if is_x else (215,167,217,255)
+    title='Xylem anatomy and flow' if is_x else 'Phloem anatomy and source–sink flow'
+    subtitle='Water-conducting vascular tissue · illustrative vessel/tracheary architecture' if is_x else 'Living transport tissue · illustrative sieve-tube / companion-cell relationships'
+    dr.text((150,105),'THC LIVING PLANT ATLAS',font=font(38,True),fill=ACCENT)
+    dr.text((150,170),title,font=font(76,True),fill=TEXT)
+    dr.text((150,280),subtitle,font=font(29),fill=MUTED)
+    dr.line((150,350,sw-150,350),fill=LINE,width=2)
+    if is_x:
+      # vessel elements
+      x0=1400
+      for col in range(3):
+        x=x0+col*360
+        for row in range(5):
+          y=500+row*310
+          dr.rounded_rectangle((x,y,x+240,y+330),radius=70,fill=(33,74,87,255),outline=accent,width=6)
+          dr.line((x+22,y+300,x+218,y+300),fill=(177,223,230,180),width=7)
+          for k in range(4):
+            yy=y+65+k*55
+            dr.arc((x+40,yy,x+200,yy+80),190,350,fill=(130,195,210,170),width=5)
+      root_label(dr,(1520,800),(120,680),'Vessel element','Dead, lignified conducting cell at maturity','left',accent)
+      root_label(dr,(1880,1440),(2780,1280),'Perforation / end wall','Axial continuity lowers flow resistance','right',accent)
+      root_label(dr,(2240,1000),(2780,730),'Secondary-wall pattern','Lignified wall reinforcement resists collapse','right')
+      arrow(dr,(1100,1940),(1100,620),accent,18)
+      dr.text((820,1980),'root → shoot',font=font(26,True),fill=accent)
+    else:
+      # sieve tube + companion cells
+      x=1520
+      for row in range(5):
+        y=500+row*310
+        dr.rounded_rectangle((x,y,x+330,y+330),radius=60,fill=(74,48,76,255),outline=accent,width=6)
+        # sieve plate
+        dr.line((x+25,y+305,x+305,y+305),fill=(236,199,236,220),width=8)
+        for k in range(7):
+          xx=x+55+k*36
+          dr.ellipse((xx-7,y+294,xx+7,y+308),fill=BG)
+        # companion cell
+        dr.rounded_rectangle((x+390,y+45,x+590,y+280),radius=55,fill=(101,72,103,255),outline=(225,190,226,220),width=4)
+        dr.ellipse((x+455,y+125,x+525,y+195),fill=(229,203,229,180))
+        dr.line((x+330,y+150,x+390,y+150),fill=(225,190,226,190),width=5)
+      root_label(dr,(1680,800),(120,670),'Sieve-tube element','Living conducting cell specialized for assimilate transport','left',accent)
+      root_label(dr,(2020,780),(2780,620),'Companion cell','Metabolically supports adjacent sieve-tube element','right')
+      root_label(dr,(1680,1450),(120,1390),'Sieve plate','Porous interface between sieve-tube elements','left',accent)
+      arrow(dr,(2460,730),(2460,1130),accent,16)
+      arrow(dr,(2460,1650),(2460,1250),accent,16)
+      dr.text((2340,1740),'source ↔ sink',font=font(25,True),fill=accent)
+    dr.rounded_rectangle((250,1920,3350,2160),radius=22,fill=PANEL,outline=(74,113,86,255),width=2)
+    note='Teaching illustration: cell proportions and wall details are simplified. Use histology/microscopy for measured dimensions and developmental anatomy.'
+    dr.text((320,1990),note,font=font(23),fill=MUTED)
+    dr.line((150,2280,sw-150,2280),fill=LINE,width=2)
+    dr.text((150,2315),'Teaching Healthy Cultivation · DTF Genetics',font=font(23,True),fill=TEXT)
+    prefix='PA-XYLEM' if is_x else 'PA-PHLOEM'
+    entity='xylem-pathway' if is_x else 'phloem-pathway'
+    rel=Path(f'media/{entity}/{prefix}-001-anatomy-plate.png')
+    for base in (APP,MIRROR):
+      out=base/rel;out.parent.mkdir(parents=True,exist_ok=True);img.convert('RGB').save(out,'PNG',optimize=True)
+    return rel
+
+def build_vascular_process(kind='xylem'):
+    sw,sh=3600,2400
+    img=Image.new('RGBA',(sw,sh),BG);dr=ImageDraw.Draw(img)
+    is_x=kind=='xylem'; accent=(106,194,222,255) if is_x else (215,167,217,255)
+    title='Xylem: cohesion–tension pathway' if is_x else 'Phloem: source–sink pressure-flow model'
+    dr.text((150,105),'THC LIVING PLANT ATLAS',font=font(38,True),fill=ACCENT)
+    dr.text((150,170),title,font=font(72,True),fill=TEXT)
+    dr.text((150,280),'Conceptual process diagram · qualitative, not a quantitative transport simulation',font=font(29),fill=MUTED)
+    dr.line((150,350,sw-150,350),fill=LINE,width=2)
+    if is_x:
+      steps=[
+        ('1','Water enters roots','Water potential favors uptake into young root tissues'),
+        ('2','Continuous xylem column','Cohesion helps maintain continuity through conduits'),
+        ('3','Leaf evaporation','Water evaporates from moist cell-wall surfaces'),
+        ('4','Transpiration pull','Water-potential gradient transmits tension down the pathway')
+      ]
+    else:
+      steps=[
+        ('1','Source loading','Sugars produced/exported from source tissue enter phloem'),
+        ('2','Water follows osmotically','Local pressure rises in loaded sieve tubes'),
+        ('3','Bulk flow','Pressure gradient drives solution toward lower-pressure sinks'),
+        ('4','Sink unloading','Sugars are used, stored, or incorporated into growing tissue')
+      ]
+    for i,(n,t,bod) in enumerate(steps):
+      x=260+i*835
+      dr.rounded_rectangle((x,650,x+690,1570),radius=28,fill=PANEL,outline=(74,113,86,255),width=3)
+      dr.ellipse((x+45,710,x+125,790),fill=accent)
+      dr.text((x+72,728),n,font=font(25,True),fill=BG)
+      dr.text((x+45,850),t,font=font(27,True),fill=TEXT)
+      words=bod.split();lines=[];line=''
+      for w in words:
+        test=(line+' '+w).strip()
+        if dr.textbbox((0,0),test,font=font(21))[2]>590:
+          lines.append(line);line=w
+        else: line=test
+      if line:lines.append(line)
+      for k,line in enumerate(lines): dr.text((x+45,930+k*42),line,font=font(21),fill=MUTED)
+      if i<3: arrow(dr,(x+690,1110),(x+800,1110),accent,13)
+    dr.rounded_rectangle((450,1740,3150,2070),radius=26,fill=(7,20,14,255),outline=(66,107,80,255),width=2)
+    if is_x:
+      text1='Key context: root-zone water status · hydraulic resistance · leaf temperature · VPD · stomatal conductance · cavitation risk'
+    else:
+      text1='Key context: source strength · sink demand · developmental stage · temperature · vascular continuity · carbon allocation'
+    dr.text((520,1815),text1,font=font(24),fill=TEXT)
+    dr.text((520,1900),'Do not infer a transport failure from one visible symptom alone; integrate tissue position, environment, roots and time course.',font=font(22),fill=MUTED)
+    dr.line((150,2280,sw-150,2280),fill=LINE,width=2)
+    dr.text((150,2315),'Teaching Healthy Cultivation · DTF Genetics',font=font(23,True),fill=TEXT)
+    prefix='PA-XYLEM' if is_x else 'PA-PHLOEM'
+    entity='xylem-pathway' if is_x else 'phloem-pathway'
+    rel=Path(f'media/{entity}/{prefix}-002-process.png')
+    for base in (APP,MIRROR):
+      out=base/rel;out.parent.mkdir(parents=True,exist_ok=True);img.convert('RGB').save(out,'PNG',optimize=True)
+    return rel
+
+stem_plate=build_stem_cross_section_plate()
+stem_process=build_stem_transport_overview()
+xylem_plate=build_vascular_plate('xylem')
+xylem_process=build_vascular_process('xylem')
+phloem_plate=build_vascular_plate('phloem')
+phloem_process=build_vascular_process('phloem')
+
+reg=json.loads((APP/REG_REL).read_text())
+records={r['entityId']:r for r in reg['records']}
+vascular_assets=[
+ {'assetId':'PA-STEM-002','entityId':'stem-vascular','class':'labeled-botanical-plate','src':'/atlas/'+str(stem_plate).replace('\\','/'),'source':'Original THC Living Plant Atlas teaching illustration based on dicot/Cannabis stem vascular organization.','creator':'DTF Genetics / Teaching Healthy Cultivation','license':'DTF Genetics original educational asset','captureType':'illustration','plantStage':'established stem','organ':'Cannabis stem vascular tissues','illustrativeOrMeasured':'illustrative','alt':'Illustrative Cannabis stem cross-section showing pith, xylem, cambial region, phloem/bast region, cortex, and outer tissues.','title':'Cannabis stem vascular anatomy','sourcePage':'/atlas/stem-vascular/','notes':'Illustrative, not to scale; tissue proportions vary with age and secondary growth.'},
+ {'assetId':'PA-STEM-003','entityId':'stem-vascular','class':'process-diagram','src':'/atlas/'+str(stem_process).replace('\\','/'),'source':'Original THC Living Plant Atlas process diagram based on established xylem and phloem transport physiology.','creator':'DTF Genetics / Teaching Healthy Cultivation','license':'DTF Genetics original educational asset','captureType':'illustration','plantStage':'general active growth','organ':'stem vascular transport system','illustrativeOrMeasured':'illustrative','alt':'Conceptual stem transport diagram contrasting upward xylem water/mineral movement with phloem source-to-sink assimilate transport.','title':'Stem transport overview','sourcePage':'/atlas/stem-vascular/','notes':'Conceptual process diagram, not a quantitative flow model.'},
+ {'assetId':'PA-XYLEM-001','entityId':'xylem-pathway','class':'labeled-botanical-plate','src':'/atlas/'+str(xylem_plate).replace('\\','/'),'source':'Original THC Living Plant Atlas teaching illustration based on angiosperm xylem anatomy.','creator':'DTF Genetics / Teaching Healthy Cultivation','license':'DTF Genetics original educational asset','captureType':'illustration','plantStage':'general vascular tissue','organ':'xylem','illustrativeOrMeasured':'illustrative','alt':'Illustrative xylem anatomy plate showing vessel elements, end-wall continuity, and secondary-wall reinforcement.','title':'Xylem anatomy','sourcePage':'/atlas/stem-vascular/','notes':'Illustrative; use histology for measured dimensions.'},
+ {'assetId':'PA-XYLEM-002','entityId':'xylem-pathway','class':'process-diagram','src':'/atlas/'+str(xylem_process).replace('\\','/'),'source':'Original THC Living Plant Atlas process diagram based on the cohesion-tension model of xylem water transport.','creator':'DTF Genetics / Teaching Healthy Cultivation','license':'DTF Genetics original educational asset','captureType':'illustration','plantStage':'general active growth','organ':'xylem transport pathway','illustrativeOrMeasured':'illustrative','alt':'Four-step conceptual xylem pathway from root water entry through continuous xylem column, leaf evaporation, and transpiration-driven tension.','title':'Xylem cohesion–tension pathway','sourcePage':'/atlas/water-relations/','notes':'Qualitative conceptual model.'},
+ {'assetId':'PA-PHLOEM-001','entityId':'phloem-pathway','class':'labeled-botanical-plate','src':'/atlas/'+str(phloem_plate).replace('\\','/'),'source':'Original THC Living Plant Atlas teaching illustration based on angiosperm phloem anatomy.','creator':'DTF Genetics / Teaching Healthy Cultivation','license':'DTF Genetics original educational asset','captureType':'illustration','plantStage':'general vascular tissue','organ':'phloem','illustrativeOrMeasured':'illustrative','alt':'Illustrative phloem anatomy plate showing sieve-tube elements, sieve plates, and companion-cell relationships.','title':'Phloem anatomy','sourcePage':'/atlas/stem-vascular/','notes':'Illustrative; use histology for measured dimensions.'},
+ {'assetId':'PA-PHLOEM-002','entityId':'phloem-pathway','class':'process-diagram','src':'/atlas/'+str(phloem_process).replace('\\','/'),'source':'Original THC Living Plant Atlas process diagram based on the pressure-flow model of phloem transport.','creator':'DTF Genetics / Teaching Healthy Cultivation','license':'DTF Genetics original educational asset','captureType':'illustration','plantStage':'general active growth','organ':'phloem source–sink pathway','illustrativeOrMeasured':'illustrative','alt':'Four-step conceptual phloem source-to-sink process showing loading, osmotic water entry, pressure-driven bulk flow, and sink unloading.','title':'Phloem source–sink pressure flow','sourcePage':'/atlas/photosynthesis-carbon/','notes':'Qualitative conceptual model.'}
+]
+for asset in vascular_assets:
+  rec=records[asset['entityId']]
+  idx=next((i for i,a in enumerate(rec['assets']) if a['assetId']==asset['assetId']),None)
+  if idx is None: rec['assets'].append(asset)
+  else: rec['assets'][idx]=asset
+for rec in records.values():
+  have={a['class'] for a in rec['assets']}
+  rec['status']='approved' if all(k in have for k in rec['required']) else ('in-production' if rec['assets'] else 'production-needed')
+for base in (APP,MIRROR):
+  (base/REG_REL).write_text(json.dumps(reg,indent=2)+'\n')
+print('Built stem/vascular assets:',stem_plate,stem_process,xylem_plate,xylem_process,phloem_plate,phloem_process)
