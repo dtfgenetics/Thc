@@ -104,3 +104,5 @@ async function main(){
 await main();
 
 // atomic retrigger: import approved media against validated V5 runtime head
+
+// verified-head retrigger: approved flower media import
