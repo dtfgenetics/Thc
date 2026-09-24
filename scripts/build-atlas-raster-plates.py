@@ -686,3 +686,100 @@ for rec in records.values():
 for base in (APP,MIRROR):
     (base/REG_REL).write_text(json.dumps(reg,indent=2)+'\n')
 print('Built flower/trichome plates:',flower_plate,bract_plate,stigma_plate,trich_plate,cst_plate,gland_plate)
+
+
+# ---- Trichome 3D-style educational renders ----
+def build_trichome_3d_render(entity_dir, asset_id, title, head_focus=False):
+    sw,sh=3600,2400
+    img=Image.new('RGBA',(sw,sh),BG);dr=ImageDraw.Draw(img)
+    dr.text((150,105),'THC LIVING PLANT ATLAS',font=font(38,True),fill=ACCENT)
+    dr.text((150,170),title,font=font(76,True),fill=TEXT)
+    dr.text((150,280),'Illustrative pseudo-3D educational render · not measured microscopy · not to scale',font=font(30),fill=MUTED)
+    dr.line((150,350,sw-150,350),fill=LINE,width=2)
+
+    # floor / specimen stage
+    dr.ellipse((780,1820,2820,2230),fill=(8,25,17,255),outline=(70,111,82,255),width=4)
+    # cast shadow
+    dr.ellipse((1350,1750,2300,2050),fill=(0,0,0,105))
+
+    cx=1800
+    # stalk gradient simulation via stacked ellipses/rectangles
+    for i in range(42):
+        y=1710-i*22
+        t=i/41
+        w=260-50*t
+        col=(72+int(35*t),126+int(38*t),73+int(25*t),255)
+        dr.rounded_rectangle((cx-w,y-28,cx+w,y+30),radius=28,fill=col)
+        if i%6==0:
+            dr.line((cx-w+25,y,cx+w-25,y),fill=(164,202,150,110),width=3)
+
+    # neck
+    dr.rounded_rectangle((1660,690,1940,880),radius=85,fill=(112,155,92,255),outline=(188,213,170,255),width=5)
+
+    # head: overlapping translucent ellipses for volume
+    if not head_focus:
+        for pad,alpha,col in [(0,255,(192,199,127)),(45,210,(215,219,153)),(90,120,(236,231,184))]:
+            dr.ellipse((1120+pad,280+pad//2,2480-pad,1090-pad//2),fill=(*col,alpha),outline=(240,236,191,220),width=5 if pad==0 else 2)
+        # highlight
+        dr.ellipse((1430,390,1850,610),fill=(255,249,217,115))
+    else:
+        # enlarged gland head cutaway-ish render
+        for pad,alpha,col in [(0,255,(190,197,126)),(60,220,(210,215,145)),(125,130,(239,232,178))]:
+            dr.ellipse((850+pad,300+pad//2,2750-pad,1700-pad//2),fill=(*col,alpha),outline=(241,235,185,220),width=6 if pad==0 else 3)
+        # disc-cell ring
+        for i in range(10):
+            ang=2*math.pi*i/10
+            x=cx+520*math.cos(ang); y=1250+230*math.sin(ang)
+            dr.ellipse((x-95,y-65,x+95,y+65),fill=(105,148,86,235),outline=(190,209,150,255),width=3)
+        dr.ellipse((1290,570,1840,850),fill=(255,250,218,100))
+
+    # orientation axes
+    dr.line((3000,1850,3300,1850),fill=(126,201,223,255),width=7)
+    dr.line((3000,1850,3000,1550),fill=(185,239,143,255),width=7)
+    dr.text((3310,1820),'surface',font=font(21),fill=(126,201,223,255))
+    dr.text((2920,1510),'height',font=font(21),fill=ACCENT)
+
+    # labels
+    if not head_focus:
+        root_label(dr,(cx,1660),(120,1600),'Multicellular stalk','Structural support and transport context','left')
+        root_label(dr,(cx,790),(120,1040),'Stipe / neck','Narrow connection into the gland head','left')
+        root_label(dr,(cx,520),(2750,560),'Secretory head','Disc cells lie below the cuticular envelope','right',GOLD)
+    else:
+        root_label(dr,(cx,1280),(120,1510),'Secretory disc-cell zone','Specialized secretory tissue at the base of the head','left')
+        root_label(dr,(cx,650),(2730,560),'Cuticular envelope','Outer boundary around the storage cavity','right',GOLD)
+        root_label(dr,(cx,940),(2730,1000),'Storage cavity','Extracellular space beneath the cuticle','right')
+
+    dr.rounded_rectangle((2450,1680,3400,2140),radius=24,fill=PANEL,outline=(74,113,86,255),width=2)
+    dr.text((2510,1730),'INTERPRETATION',font=font(24,True),fill=ACCENT)
+    dr.text((2510,1800),'This render explains spatial',font=font(22),fill=TEXT)
+    dr.text((2510,1850),'relationships only.',font=font(22),fill=TEXT)
+    dr.text((2510,1925),'Use microscopy for actual',font=font(22),fill=MUTED)
+    dr.text((2510,1975),'size, maturity and density.',font=font(22),fill=MUTED)
+
+    dr.line((150,2280,sw-150,2280),fill=LINE,width=2)
+    dr.text((150,2315),'Teaching Healthy Cultivation · DTF Genetics',font=font(23,True),fill=TEXT)
+    rel=Path(f'media/{entity_dir}/{asset_id}.png')
+    for base in (APP,MIRROR):
+        out=base/rel;out.parent.mkdir(parents=True,exist_ok=True);img.convert('RGB').save(out,'PNG',optimize=True)
+    return rel
+
+cst_3d=build_trichome_3d_render('capitate-stalked-trichome','PA-CST-003-capitate-stalked-trichome-3d','Capitate-stalked trichome · 3D view',False)
+gland_3d=build_trichome_3d_render('trichome-gland-head','PA-GLAND-003-gland-head-3d','Trichome gland head · 3D cutaway view',True)
+
+reg=json.loads((APP/REG_REL).read_text())
+records={r['entityId']:r for r in reg['records']}
+assets=[
+ {'assetId':'PA-CST-003','entityId':'capitate-stalked-trichome','class':'3d-representation','src':'/atlas/'+str(cst_3d).replace('\\','/'),'source':'Original THC Living Plant Atlas pseudo-3D educational render informed by published Cannabis capitate-stalked trichome microscopy.','creator':'DTF Genetics / Teaching Healthy Cultivation','license':'DTF Genetics original educational asset','captureType':'3D-style illustration','plantStage':'flowering','organ':'capitate-stalked glandular trichome','illustrativeOrMeasured':'illustrative','alt':'Pseudo-3D educational render of a capitate-stalked Cannabis trichome showing the stalk, stipe, and secretory gland head.','title':'Capitate-stalked trichome 3D view','sourcePage':'/atlas/trichomes-resin/','notes':'Illustrative spatial model; not a measured reconstruction.'},
+ {'assetId':'PA-GLAND-003','entityId':'trichome-gland-head','class':'3d-representation','src':'/atlas/'+str(gland_3d).replace('\\','/'),'source':'Original THC Living Plant Atlas pseudo-3D educational render informed by published Cannabis gland-head microscopy.','creator':'DTF Genetics / Teaching Healthy Cultivation','license':'DTF Genetics original educational asset','captureType':'3D-style illustration','plantStage':'flowering','organ':'glandular trichome head','illustrativeOrMeasured':'illustrative','alt':'Pseudo-3D cutaway-style render of a Cannabis trichome gland head showing secretory disc-cell zone, storage cavity, and cuticular envelope.','title':'Trichome gland-head 3D cutaway','sourcePage':'/atlas/trichomes-resin/','notes':'Illustrative spatial model; not a measured 3D reconstruction.'}
+]
+for asset in assets:
+    rec=records[asset['entityId']]
+    idx=next((i for i,a in enumerate(rec['assets']) if a['assetId']==asset['assetId']),None)
+    if idx is None: rec['assets'].append(asset)
+    else: rec['assets'][idx]=asset
+for rec in records.values():
+    have={a['class'] for a in rec['assets']}
+    rec['status']='approved' if all(k in have for k in rec['required']) else ('in-production' if rec['assets'] else 'production-needed')
+for base in (APP,MIRROR):
+    (base/REG_REL).write_text(json.dumps(reg,indent=2)+'\n')
+print('Built trichome 3D-style renders:',cst_3d,gland_3d)
