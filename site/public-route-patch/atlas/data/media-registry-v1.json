@@ -221,8 +221,43 @@
         "labeled-botanical-plate",
         "process-diagram"
       ],
-      "assets": [],
-      "status": "production-needed"
+      "assets": [
+        {
+          "assetId": "PA-STEM-002",
+          "entityId": "stem-vascular",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/stem-vascular/PA-STEM-002-stem-vascular-anatomy.png",
+          "source": "Original THC Living Plant Atlas teaching illustration based on dicot/Cannabis stem vascular organization.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "established stem",
+          "organ": "Cannabis stem vascular tissues",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative Cannabis stem cross-section showing pith, xylem, cambial region, phloem/bast region, cortex, and outer tissues.",
+          "title": "Cannabis stem vascular anatomy",
+          "sourcePage": "/atlas/stem-vascular/",
+          "notes": "Illustrative, not to scale; tissue proportions vary with age and secondary growth."
+        },
+        {
+          "assetId": "PA-STEM-003",
+          "entityId": "stem-vascular",
+          "class": "process-diagram",
+          "src": "/atlas/media/stem-vascular/PA-STEM-003-stem-transport-overview.png",
+          "source": "Original THC Living Plant Atlas process diagram based on established xylem and phloem transport physiology.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "general active growth",
+          "organ": "stem vascular transport system",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Conceptual stem transport diagram contrasting upward xylem water/mineral movement with phloem source-to-sink assimilate transport.",
+          "title": "Stem transport overview",
+          "sourcePage": "/atlas/stem-vascular/",
+          "notes": "Conceptual process diagram, not a quantitative flow model."
+        }
+      ],
+      "status": "in-production"
     },
     {
       "entityId": "xylem-pathway",
@@ -230,8 +265,43 @@
         "labeled-botanical-plate",
         "process-diagram"
       ],
-      "assets": [],
-      "status": "production-needed"
+      "assets": [
+        {
+          "assetId": "PA-XYLEM-001",
+          "entityId": "xylem-pathway",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/xylem-pathway/PA-XYLEM-001-anatomy-plate.png",
+          "source": "Original THC Living Plant Atlas teaching illustration based on angiosperm xylem anatomy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "general vascular tissue",
+          "organ": "xylem",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative xylem anatomy plate showing vessel elements, end-wall continuity, and secondary-wall reinforcement.",
+          "title": "Xylem anatomy",
+          "sourcePage": "/atlas/stem-vascular/",
+          "notes": "Illustrative; use histology for measured dimensions."
+        },
+        {
+          "assetId": "PA-XYLEM-002",
+          "entityId": "xylem-pathway",
+          "class": "process-diagram",
+          "src": "/atlas/media/xylem-pathway/PA-XYLEM-002-process.png",
+          "source": "Original THC Living Plant Atlas process diagram based on the cohesion-tension model of xylem water transport.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "general active growth",
+          "organ": "xylem transport pathway",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Four-step conceptual xylem pathway from root water entry through continuous xylem column, leaf evaporation, and transpiration-driven tension.",
+          "title": "Xylem cohesion\u2013tension pathway",
+          "sourcePage": "/atlas/water-relations/",
+          "notes": "Qualitative conceptual model."
+        }
+      ],
+      "status": "approved"
     },
     {
       "entityId": "phloem-pathway",
@@ -239,8 +309,43 @@
         "labeled-botanical-plate",
         "process-diagram"
       ],
-      "assets": [],
-      "status": "production-needed"
+      "assets": [
+        {
+          "assetId": "PA-PHLOEM-001",
+          "entityId": "phloem-pathway",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/phloem-pathway/PA-PHLOEM-001-anatomy-plate.png",
+          "source": "Original THC Living Plant Atlas teaching illustration based on angiosperm phloem anatomy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "general vascular tissue",
+          "organ": "phloem",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative phloem anatomy plate showing sieve-tube elements, sieve plates, and companion-cell relationships.",
+          "title": "Phloem anatomy",
+          "sourcePage": "/atlas/stem-vascular/",
+          "notes": "Illustrative; use histology for measured dimensions."
+        },
+        {
+          "assetId": "PA-PHLOEM-002",
+          "entityId": "phloem-pathway",
+          "class": "process-diagram",
+          "src": "/atlas/media/phloem-pathway/PA-PHLOEM-002-process.png",
+          "source": "Original THC Living Plant Atlas process diagram based on the pressure-flow model of phloem transport.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "general active growth",
+          "organ": "phloem source\u2013sink pathway",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Four-step conceptual phloem source-to-sink process showing loading, osmotic water entry, pressure-driven bulk flow, and sink unloading.",
+          "title": "Phloem source\u2013sink pressure flow",
+          "sourcePage": "/atlas/photosynthesis-carbon/",
+          "notes": "Qualitative conceptual model."
+        }
+      ],
+      "status": "approved"
     },
     {
       "entityId": "flower-anatomy",
