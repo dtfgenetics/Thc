@@ -273,3 +273,211 @@ srec['status']='approved' if all(k in have for k in srec['required']) else 'in-p
 for base in (APP,MIRROR):
     (base/REG_REL).write_text(json.dumps(reg,indent=2)+'\n')
 print(f'Built stomatal assets: {stoma_plate}, {stoma_sequence}; status={srec["status"]}; missing={[k for k in srec["required"] if k not in have]}')
+
+
+# ---- Root system + uptake educational assets ----
+def root_label(draw, anchor, box, title, body, side='left', accent=ACCENT):
+    x,y=box; bw,bh=700,145
+    draw.rounded_rectangle((x,y,x+bw,y+bh),radius=20,fill=PANEL,outline=(74,113,86,255),width=2)
+    draw.text((x+24,y+18),title,font=font(31,True),fill=accent)
+    draw.text((x+24,y+67),body,font=font(22),fill=MUTED)
+    edge=(x+bw,y+bh//2) if side=='left' else (x,y+bh//2)
+    elbow=((edge[0]+anchor[0])//2,edge[1])
+    draw.line((anchor[0],anchor[1],elbow[0],elbow[1],edge[0],edge[1]),fill=accent,width=4)
+    draw.ellipse((anchor[0]-8,anchor[1]-8,anchor[0]+8,anchor[1]+8),fill=accent)
+
+def branch_root(draw, pts, width, fill, seed=0):
+    draw.line(pts,fill=fill,width=width,joint='curve')
+    # small lateral branches distributed along the main segment
+    for i in range(1,len(pts)-1):
+        x,y=pts[i]
+        for side in (-1,1):
+            dx=(70+22*i)*side
+            dy=90+30*((i+seed)%3)
+            draw.line((x,y,x+dx,y+dy),fill=fill,width=max(3,width//3))
+            if width>18:
+                draw.line((x+dx,y+dy,x+dx+40*side,y+dy+72),fill=(170,196,154,230),width=3)
+
+def build_root_architecture():
+    sw,sh=3600,2400
+    img=Image.new('RGBA',(sw,sh),BG); dr=ImageDraw.Draw(img)
+    for x in range(0,sw,120): dr.line((x,0,x,sh),fill=(17,42,28,90),width=1)
+    for y in range(0,sh,120): dr.line((0,y,sw,y),fill=(17,42,28,90),width=1)
+    dr.text((150,105),'THC LIVING PLANT ATLAS',font=font(38,True),fill=ACCENT)
+    dr.text((150,170),'Cannabis root-system architecture',font=font(82,True),fill=TEXT)
+    dr.text((150,280),'Illustrative architecture · relative proportions vary with genotype, stage, substrate and container geometry',font=font(31),fill=MUTED)
+    dr.line((150,350,sw-150,350),fill=LINE,width=2)
+
+    cx=1830
+    # substrate horizon
+    dr.line((880,660,2780,660),fill=(159,128,89,210),width=7)
+    dr.text((920,610),'ROOT-ZONE / SUBSTRATE INTERFACE',font=font(22,True),fill=GOLD)
+    # stem and crown
+    dr.line((cx,410,cx,680),fill=(77,137,74,255),width=64)
+    dr.ellipse((cx-90,610,cx+90,760),fill=(113,139,92,255),outline=(190,211,168,255),width=4)
+    root=(205,196,169,255); fine=(186,207,172,245)
+    # primary structural root
+    primary=[(cx,700),(cx-20,930),(cx+20,1190),(cx-35,1470),(cx+10,1780),(cx-55,2150)]
+    branch_root(dr,primary,34,root,1)
+    # major laterals
+    laterals=[
+      [(cx-5,900),(1510,1030),(1240,1240),(1020,1510),(870,1810)],
+      [(cx+5,940),(2150,1050),(2400,1270),(2600,1510),(2730,1780)],
+      [(cx-15,1200),(1450,1320),(1270,1530),(1170,1800),(1090,2080)],
+      [(cx+10,1290),(2180,1400),(2370,1600),(2460,1880),(2520,2140)],
+      [(cx-25,1530),(1600,1680),(1510,1930),(1460,2200)],
+      [(cx+10,1600),(2050,1760),(2110,2000),(2140,2220)]
+    ]
+    for i,p in enumerate(laterals): branch_root(dr,p,20,root,i)
+    # fine root web
+    for j in range(22):
+        y=920+j*55
+        side=-1 if j%2==0 else 1
+        x0=cx+side*(80+(j%5)*60)
+        x1=x0+side*(220+35*(j%4))
+        dr.line((x0,y,x1,y+110+(j%3)*30),fill=fine,width=5)
+
+    root_label(dr,(cx,690),(130,560),'Root crown','Stem-to-root transition zone','left')
+    root_label(dr,(cx,1220),(130,930),'Primary structural axis','Major descending root framework','left')
+    root_label(dr,(1190,1450),(130,1300),'Lateral roots','Branches expand explored root-zone volume','left')
+    root_label(dr,(2380,1640),(2780,1210),'Fine roots','High-surface-area absorbing network','right')
+    root_label(dr,(cx-55,2150),(2780,1640),'Root tip','Active growth front at distal root ends','right')
+    root_label(dr,(1070,2040),(2780,1940),'Absorbing region','Young fine-root regions support water/ion uptake','right')
+
+    dr.line((150,2280,sw-150,2280),fill=LINE,width=2)
+    dr.text((150,2315),'Teaching Healthy Cultivation · DTF Genetics',font=font(23,True),fill=TEXT)
+    rel=Path('media/root-system/PA-ROOT-002-root-architecture-plate.png')
+    for base in (APP,MIRROR):
+        out=base/rel;out.parent.mkdir(parents=True,exist_ok=True);img.convert('RGB').save(out,'PNG',optimize=True)
+    return rel
+
+def arrow(draw,a,b,color,width=18):
+    draw.line((a[0],a[1],b[0],b[1]),fill=color,width=width)
+    ang=math.atan2(b[1]-a[1],b[0]-a[0])
+    size=38
+    left=(b[0]-size*math.cos(ang-math.pi/6),b[1]-size*math.sin(ang-math.pi/6))
+    right=(b[0]-size*math.cos(ang+math.pi/6),b[1]-size*math.sin(ang+math.pi/6))
+    draw.polygon([b,left,right],fill=color)
+
+def build_root_to_shoot():
+    sw,sh=3600,2400
+    img=Image.new('RGBA',(sw,sh),BG);dr=ImageDraw.Draw(img)
+    dr.text((150,105),'THC LIVING PLANT ATLAS',font=font(38,True),fill=ACCENT)
+    dr.text((150,170),'Root-to-shoot water pathway',font=font(82,True),fill=TEXT)
+    dr.text((150,280),'Conceptual hydraulic pathway · water potential gradients drive flow; transport is not an active pump',font=font(31),fill=MUTED)
+    dr.line((150,350,sw-150,350),fill=LINE,width=2)
+    water=(106,194,222,255); mineral=(211,184,111,255)
+    steps=[
+      (330,1220,'01','Rhizosphere','Water + dissolved ions'),
+      (900,1220,'02','Fine roots','Radial entry through young absorbing tissue'),
+      (1470,1220,'03','Root xylem','Axial transport enters vascular system'),
+      (2040,1220,'04','Stem xylem','Continuous upward water column'),
+      (2610,1220,'05','Leaf veins','Water distributed through venation'),
+      (3180,1220,'06','Mesophyll → stomata','Evaporation and vapor loss to air')
+    ]
+    for x,y,n,title,body in steps:
+        dr.rounded_rectangle((x-235,y-250,x+235,y+250),radius=28,fill=PANEL,outline=(74,113,86,255),width=3)
+        dr.ellipse((x-44,y-190,x+44,y-102),fill=water)
+        dr.text((x-24,y-176),n,font=font(25,True),fill=BG)
+        dr.text((x-190,y-55),title,font=font(30,True),fill=TEXT)
+        # wrap body manually
+        words=body.split(); lines=[]; line=''
+        for w in words:
+            test=(line+' '+w).strip()
+            if dr.textbbox((0,0),test,font=font(20))[2]>380:
+                lines.append(line);line=w
+            else: line=test
+        if line: lines.append(line)
+        for k,line in enumerate(lines[:3]): dr.text((x-190,y+10+k*34),line,font=font(20),fill=MUTED)
+    for i in range(len(steps)-1):
+        arrow(dr,(steps[i][0]+235,1220),(steps[i+1][0]-235,1220),water,16)
+    # context rows
+    dr.rounded_rectangle((200,520,3400,800),radius=26,fill=(7,20,14,255),outline=(66,107,80,255),width=2)
+    dr.text((260,565),'DRIVING CONTEXT',font=font(24,True),fill=ACCENT)
+    contexts=['substrate water status','root hydraulic conductance','xylem continuity','leaf energy balance','VPD / humidity','stomatal aperture']
+    for i,t in enumerate(contexts):
+        x=260+(i%3)*1040;y=625+(i//3)*75
+        dr.text((x,y),'• '+t,font=font(24),fill=TEXT)
+    dr.rounded_rectangle((240,1640,3360,2050),radius=28,fill=PANEL,outline=(74,113,86,255),width=3)
+    dr.text((300,1690),'NUTRIENT NOTE',font=font(24,True),fill=GOLD)
+    note1='Many mineral ions move toward roots with mass flow and diffusion, cross root tissues selectively, and can enter xylem transport.'
+    note2='Visual wilt, tip burn, or deficiency-like patterns do not by themselves prove where this pathway is failing.'
+    dr.text((300,1760),note1,font=font(26),fill=TEXT)
+    dr.text((300,1825),note2,font=font(26),fill=MUTED)
+    dr.text((300,1935),'Interpret with substrate moisture, pH/EC, root condition, temperature, humidity/VPD, light and time course.',font=font(23),fill=MUTED)
+    dr.line((150,2240,sw-150,2240),fill=LINE,width=2)
+    dr.text((150,2280),'Teaching Healthy Cultivation · DTF Genetics',font=font(23,True),fill=TEXT)
+    rel=Path('media/root-system/PA-ROOT-003-root-to-shoot-water-pathway.png')
+    for base in (APP,MIRROR):
+        out=base/rel;out.parent.mkdir(parents=True,exist_ok=True);img.convert('RGB').save(out,'PNG',optimize=True)
+    return rel
+
+def build_root_tip_plate():
+    sw,sh=3600,2400
+    img=Image.new('RGBA',(sw,sh),BG);dr=ImageDraw.Draw(img)
+    dr.text((150,105),'THC LIVING PLANT ATLAS',font=font(38,True),fill=ACCENT)
+    dr.text((150,170),'Root-tip developmental zones',font=font(82,True),fill=TEXT)
+    dr.text((150,280),'Illustrative longitudinal view · developmental boundaries are gradual, not hard anatomical lines',font=font(31),fill=MUTED)
+    dr.line((150,350,sw-150,350),fill=LINE,width=2)
+    # central root cylinder
+    x0,x1=1370,2230
+    zones=[
+      (1750,2190,(143,126,92,255),'Root cap'),
+      (1430,1750,(99,150,97,255),'Apical meristem'),
+      (1000,1430,(76,139,82,255),'Elongation zone'),
+      (520,1000,(57,119,72,255),'Differentiation / maturation zone')
+    ]
+    for top,bottom,color,label in zones:
+        dr.rounded_rectangle((x0,top,x1,bottom),radius=95,fill=color,outline=(186,211,172,255),width=4)
+        dr.text((x0+80,(top+bottom)//2-25),label,font=font(28,True),fill=TEXT)
+    # tapered tip
+    dr.polygon([(x0,2190),(x1,2190),(1800,2320)],fill=(143,126,92,255))
+    # root hairs in maturation zone
+    for i in range(18):
+        y=570+i*23
+        length=110+(i%4)*36
+        dr.line((x0,y,x0-length,y+(-18 if i%2 else 18)),fill=(203,215,190,255),width=5)
+        dr.line((x1,y,x1+length,y+(18 if i%2 else -18)),fill=(203,215,190,255),width=5)
+    # internal cell guides
+    for y in range(1080,1690,80): dr.line((x0+160,y,x1-160,y),fill=(163,199,152,130),width=3)
+    root_label(dr,(1800,2260),(120,1810),'Root cap','Protective tissue at the advancing tip','left',GOLD)
+    root_label(dr,(1810,1600),(120,1440),'Apical meristem','Region of active cell division','left')
+    root_label(dr,(1810,1190),(120,1030),'Elongation zone','New cells increase in length','left')
+    root_label(dr,(1420,720),(2780,590),'Root-hair region','Differentiated epidermal cells increase surface area','right')
+    root_label(dr,(1810,780),(2780,970),'Maturation zone','Tissues differentiate toward specialized functions','right')
+    dr.rounded_rectangle((2600,1510,3400,2040),radius=24,fill=PANEL,outline=(74,113,86,255),width=2)
+    dr.text((2650,1560),'OBSERVATION RULE',font=font(24,True),fill=ACCENT)
+    rules=['Young tips are often pale/cream.','Root hairs are delicate and transient.','Browning alone is not a diagnosis.','Interpret with oxygen, moisture, temperature, pathogens and time.']
+    for i,t in enumerate(rules): dr.text((2650,1640+i*80),'• '+t,font=font(22),fill=TEXT if i<2 else MUTED)
+    dr.line((150,2280,sw-150,2280),fill=LINE,width=2)
+    dr.text((150,2315),'Teaching Healthy Cultivation · DTF Genetics',font=font(23,True),fill=TEXT)
+    rel=Path('media/root-tip/PA-RTIP-003-root-tip-anatomy-plate.png')
+    for base in (APP,MIRROR):
+        out=base/rel;out.parent.mkdir(parents=True,exist_ok=True);img.convert('RGB').save(out,'PNG',optimize=True)
+    return rel
+
+root_arch=build_root_architecture()
+root_flow=build_root_to_shoot()
+root_tip_plate=build_root_tip_plate()
+reg=json.loads((APP/REG_REL).read_text())
+rootrec=next((r for r in reg['records'] if r['entityId']=='root-system'),None)
+tiprec=next((r for r in reg['records'] if r['entityId']=='root-tip'),None)
+if not rootrec or not tiprec: raise SystemExit('root media records missing')
+root_assets=[
+ {'assetId':'PA-ROOT-002','entityId':'root-system','class':'labeled-botanical-plate','src':'/atlas/'+str(root_arch).replace('\\','/'),'source':'Original THC Living Plant Atlas educational illustration based on general Cannabis/hemp root-system architecture and plant root morphology.','creator':'DTF Genetics / Teaching Healthy Cultivation','license':'DTF Genetics original educational asset','captureType':'illustration','plantStage':'general established plant','organ':'Cannabis root system','illustrativeOrMeasured':'illustrative','alt':'Illustrative Cannabis root-system plate labeling root crown, primary structural axis, lateral roots, fine roots, root tips, and absorbing regions.','title':'Cannabis root-system architecture plate','sourcePage':'/atlas/root-system/','notes':'Illustrative, not to scale; root architecture varies strongly with genotype and growing environment.'},
+ {'assetId':'PA-ROOT-003','entityId':'root-system','class':'process-diagram','src':'/atlas/'+str(root_flow).replace('\\','/'),'source':'Original THC Living Plant Atlas process diagram based on established plant water-transport physiology.','creator':'DTF Genetics / Teaching Healthy Cultivation','license':'DTF Genetics original educational asset','captureType':'illustration','plantStage':'general active growth','organ':'root-to-shoot hydraulic pathway','illustrativeOrMeasured':'illustrative','alt':'Conceptual root-to-shoot water pathway from rhizosphere through fine roots, root and stem xylem, leaf veins, mesophyll, and stomata.','title':'Root-to-shoot water pathway','sourcePage':'/atlas/water-relations/','notes':'Conceptual hydraulic pathway, not a quantitative flow model.'}
+]
+for asset in root_assets:
+    idx=next((i for i,a in enumerate(rootrec['assets']) if a['assetId']==asset['assetId']),None)
+    if idx is None: rootrec['assets'].append(asset)
+    else: rootrec['assets'][idx]=asset
+tipasset={'assetId':'PA-RTIP-003','entityId':'root-tip','class':'labeled-botanical-plate','src':'/atlas/'+str(root_tip_plate).replace('\\','/'),'source':'Original THC Living Plant Atlas educational illustration based on standard angiosperm root-tip developmental anatomy.','creator':'DTF Genetics / Teaching Healthy Cultivation','license':'DTF Genetics original educational asset','captureType':'illustration','plantStage':'actively growing root tip','organ':'root tip / young absorbing root','illustrativeOrMeasured':'illustrative','alt':'Illustrative longitudinal root-tip plate showing root cap, apical meristem, elongation zone, differentiation and maturation zone, and root hairs.','title':'Root-tip developmental zones','sourcePage':'/atlas/root-system/','notes':'Illustrative, not to scale; developmental zone boundaries are gradual.'}
+idx=next((i for i,a in enumerate(tiprec['assets']) if a['assetId']==tipasset['assetId']),None)
+if idx is None: tiprec['assets'].append(tipasset)
+else: tiprec['assets'][idx]=tipasset
+for recx in (rootrec,tiprec):
+    have={a['class'] for a in recx['assets']}
+    recx['status']='approved' if all(k in have for k in recx['required']) else 'in-production'
+for base in (APP,MIRROR):
+    (base/REG_REL).write_text(json.dumps(reg,indent=2)+'\n')
+print('Built root assets:',root_arch,root_flow,root_tip_plate,'root-status=',rootrec['status'],'tip-status=',tiprec['status'])
