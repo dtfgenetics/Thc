@@ -108,3 +108,10 @@ body[data-atlas-layer="physiology"] .atlas-layer-legend{border-color:rgba(143,22
 .atlas-rail-items a[data-system-link] i[data-media-coverage-mini]{grid-column:2;grid-row:1 / span 2;align-self:center;padding:3px 5px;border:1px solid rgba(151,213,164,.13);border-radius:999px;color:#72867a;font-size:.48rem;font-style:normal;font-weight:900}
 .atlas-rail-items a[data-media-status="approved"] i[data-media-coverage-mini]{border-color:rgba(185,239,143,.3);color:#b9ef8f}
 .atlas-rail-items a[data-media-status="in-production"] i[data-media-coverage-mini]{border-color:rgba(214,186,111,.25);color:#d9bc73}
+.atlas-media-gallery figure{position:relative}
+.atlas-media-evidence{position:absolute;z-index:3;left:8px;top:8px;padding:4px 6px;border-radius:999px;border:1px solid rgba(151,213,164,.2);background:rgba(3,10,7,.82);backdrop-filter:blur(4px);font-size:.46rem;font-weight:950;letter-spacing:.1em;color:#8fa097;pointer-events:none}
+.atlas-media-gallery figure[data-evidence-kind="measured"] .atlas-media-evidence{border-color:rgba(126,201,223,.45);color:#9fdcf0;background:rgba(14,45,56,.78)}
+.atlas-media-gallery figure[data-evidence-kind="illustrative"] .atlas-media-evidence{border-color:rgba(214,186,111,.35);color:#d9bc73;background:rgba(56,42,14,.76)}
+.atlas-media-dialog-meta .atlas-evidence-meta{border-radius:8px;padding:7px 9px;border:1px solid rgba(151,213,164,.15)}
+.atlas-media-dialog-meta .atlas-evidence-meta[data-evidence-kind="measured"]{border-color:rgba(126,201,223,.35);color:#b8e7f5}
+.atlas-media-dialog-meta .atlas-evidence-meta[data-evidence-kind="illustrative"]{border-color:rgba(214,186,111,.28);color:#e2c984}
