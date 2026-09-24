@@ -148,9 +148,43 @@
           "title": "Cannabis hydroponic root-system reference",
           "attribution": "Photo by Beeblebrox, CC BY-SA 4.0.",
           "notes": "Hydroponic expanded-clay context; do not treat as representative of soil-grown root architecture."
+        },
+        {
+          "assetId": "PA-ROOT-002",
+          "entityId": "root-system",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/root-system/PA-ROOT-002-root-architecture-plate.png",
+          "source": "Original THC Living Plant Atlas educational illustration based on general Cannabis/hemp root-system architecture and plant root morphology.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "general established plant",
+          "organ": "Cannabis root system",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative Cannabis root-system plate labeling root crown, primary structural axis, lateral roots, fine roots, root tips, and absorbing regions.",
+          "title": "Cannabis root-system architecture plate",
+          "sourcePage": "/atlas/root-system/",
+          "notes": "Illustrative, not to scale; root architecture varies strongly with genotype and growing environment."
+        },
+        {
+          "assetId": "PA-ROOT-003",
+          "entityId": "root-system",
+          "class": "process-diagram",
+          "src": "/atlas/media/root-system/PA-ROOT-003-root-to-shoot-water-pathway.png",
+          "source": "Original THC Living Plant Atlas process diagram based on established plant water-transport physiology.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "general active growth",
+          "organ": "root-to-shoot hydraulic pathway",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Conceptual root-to-shoot water pathway from rhizosphere through fine roots, root and stem xylem, leaf veins, mesophyll, and stomata.",
+          "title": "Root-to-shoot water pathway",
+          "sourcePage": "/atlas/water-relations/",
+          "notes": "Conceptual hydraulic pathway, not a quantitative flow model."
         }
       ],
-      "status": "in-production"
+      "status": "approved"
     },
     {
       "entityId": "root-tip",
@@ -159,8 +193,26 @@
         "microscopy-reference",
         "labeled-botanical-plate"
       ],
-      "assets": [],
-      "status": "production-needed"
+      "assets": [
+        {
+          "assetId": "PA-RTIP-003",
+          "entityId": "root-tip",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/root-tip/PA-RTIP-003-root-tip-anatomy-plate.png",
+          "source": "Original THC Living Plant Atlas educational illustration based on standard angiosperm root-tip developmental anatomy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "actively growing root tip",
+          "organ": "root tip / young absorbing root",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative longitudinal root-tip plate showing root cap, apical meristem, elongation zone, differentiation and maturation zone, and root hairs.",
+          "title": "Root-tip developmental zones",
+          "sourcePage": "/atlas/root-system/",
+          "notes": "Illustrative, not to scale; developmental zone boundaries are gradual."
+        }
+      ],
+      "status": "in-production"
     },
     {
       "entityId": "stem-vascular",
