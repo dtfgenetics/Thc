@@ -115,3 +115,10 @@ body[data-atlas-layer="physiology"] .atlas-layer-legend{border-color:rgba(143,22
 .atlas-media-dialog-meta .atlas-evidence-meta{border-radius:8px;padding:7px 9px;border:1px solid rgba(151,213,164,.15)}
 .atlas-media-dialog-meta .atlas-evidence-meta[data-evidence-kind="measured"]{border-color:rgba(126,201,223,.35);color:#b8e7f5}
 .atlas-media-dialog-meta .atlas-evidence-meta[data-evidence-kind="illustrative"]{border-color:rgba(214,186,111,.28);color:#e2c984}
+
+.atlas-media-filter{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0 2px}
+.atlas-media-filter button{padding:5px 8px;border:1px solid rgba(151,213,164,.14);border-radius:999px;background:#07120d;color:#7f9286;font-size:.5rem;font-weight:900;letter-spacing:.04em;cursor:pointer}
+.atlas-media-filter button[aria-pressed="true"]{border-color:rgba(185,239,143,.34);background:rgba(159,232,112,.09);color:#cfeec1}
+.atlas-media-filter button[data-media-filter="measured"][aria-pressed="true"]{border-color:rgba(126,201,223,.38);background:rgba(126,201,223,.08);color:#a9e2f2}
+.atlas-media-filter button[data-media-filter="illustrative"][aria-pressed="true"]{border-color:rgba(214,186,111,.32);background:rgba(214,186,111,.08);color:#dec47f}
+.atlas-media-gallery figure[hidden]{display:none!important}
