@@ -80,7 +80,10 @@ async function main(){
     const sha1=crypto.createHash('sha1').update(buf).digest('hex');
     if(sha1!==descriptor.expectedSha1.toLowerCase()) throw new Error(`${file}: SHA1 mismatch ${sha1}`);
     const size=dims(buf); if(!size) throw new Error(`${file}: unsupported or unreadable image`);
-    if(size.width!==descriptor.expectedWidth||size.height!==descriptor.expectedHeight) throw new Error(`${file}: dimension mismatch ${size.width}x${size.height}`);
+    const directDimensions=size.width===descriptor.expectedWidth&&size.height===descriptor.expectedHeight;
+    const transposedDimensions=size.width===descriptor.expectedHeight&&size.height===descriptor.expectedWidth;
+    if(!directDimensions&&!transposedDimensions) throw new Error(`${file}: dimension mismatch ${size.width}x${size.height}`);
+    if(transposedDimensions) console.log(`${file}: accepted EXIF/display-orientation dimension transpose ${size.width}x${size.height}.`);
     if(Math.max(size.width,size.height)<2400) throw new Error(`${file}: production asset below 2400px long-edge minimum`);
     writeBoth(rel,buf);
     if(existingIndex>=0){
