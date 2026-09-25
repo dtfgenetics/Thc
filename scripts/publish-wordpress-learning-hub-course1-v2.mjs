@@ -208,8 +208,11 @@ async function loadSources() {
 
 function renderTest(assessment, label) {
   const target = Number(assessment.passingScorePercent || local.course.masteryTarget || 80);
+  if (assessment.purpose === 'summative') {
+    return shell(`${crumb(`<a href="${esc(local.course.route)}">Course 1</a>`)}<p class="lh1-k">${esc(label)}</p><h1>${esc(assessment.title)}</h1><div class="lh1-boundary"><strong>Graded assessment:</strong> final-test answers and rationales are not exposed on this public page. The authenticated assessment runtime records each response, enforces the attempt timer, grades after submission, and writes the result to the learner record.</div><section class="lh1-content"><h2>Take the graded final</h2><p>This ${assessment.items.length}-item final uses a ${assessment.timeLimitMinutes || 60}-minute timed attempt. Sign in through the Academy assessment portal to begin or resume your saved attempt.</p><p><a href="/learn/academy/">Open the Academy assessment portal →</a></p><p><strong>Current academic threshold:</strong> ${target}%.</p></section>`);
+  }
   const questions = assessment.items.map((question, index) => `<article class="lh1-test"><h3>${index + 1}. ${esc(question.stem)}</h3><ol type="A">${question.choices.map((choice) => `<li>${esc(choice)}</li>`).join('')}</ol><details class="lh1-answer"><summary>Check answer and rationale</summary><p><strong>Answer:</strong> ${String.fromCharCode(65 + question.correct)}. ${esc(question.choices[question.correct])}</p><p>${esc(question.rationale)}</p></details></article>`).join('');
-  return shell(`${crumb(`<a href="${esc(local.course.route)}">Course 1</a>`)}<p class="lh1-k">${esc(label)}</p><h1>${esc(assessment.title)}</h1><p>Complete the questions before opening the answer panels. Then review every missed rationale.</p><div class="lh1-boundary"><strong>Course mastery target: ${target}%.</strong> This is a learning target for Course 1, not the passing standard for the separate secure certification examination.</div>${questions}`);
+  return shell(`${crumb(`<a href="${esc(local.course.route)}">Course 1</a>`)}<p class="lh1-k">${esc(label)}</p><h1>${esc(assessment.title)}</h1><p>Complete the questions before opening the answer panels. Then review every missed rationale.</p><div class="lh1-boundary"><strong>Course mastery target: ${target}%.</strong> This is a formative learning test.</div>${questions}`);
 }
 
 function courseIndex(sources) {
