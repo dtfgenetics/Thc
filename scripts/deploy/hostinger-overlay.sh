@@ -34,6 +34,10 @@ scope_items() {
     ITEMS=(
       assets
       atlas
+      terpene-atlas
+      ph-meter
+      tds-meter
+      vpd-chart
       explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art
       exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools
       games
@@ -51,6 +55,11 @@ scope_items() {
       games/bud-or-bluff/api-v2.php
       projects
       tools
+      atlas/index.html
+      terpene-atlas/index.html
+      ph-meter/index.html
+      tds-meter/index.html
+      vpd-chart/index.html
       growlens/index.html
       thc-grow-doc/index.html
       puzzles/current.json
