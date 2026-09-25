@@ -30,6 +30,7 @@ const requiredMirrors = [
   'data/scale-map-v1.json',
   'data/media-registry-v1.json',
   'data/measured-media-source-queue-v1.json',
+  'data/physiology-overlays-v1.json',
   'data/media-production-queue-v1.json',
   'models/model-manifest-v4.json',
   'models/README.md',
@@ -142,7 +143,7 @@ if (systemsData) {
 }
 
 const workspaceRuntime = read(path.join(appRoot, 'atlas-workspace-v5.js'));
-for (const token of ['data-atlas-mode','data-atlas-layer','data-atlas-command-input','plant-atlas:focus','wireWorkspaceChrome','wireStageAndCompare','setStage','renderCompare','data-rail-toggle','data-viewer-action','atlasLabels','data-compare-assign','data-layer-legend','scale-map-v1.json','media-registry-v1.json','data-atlas-scale-nav','data-atlas-media-panel','atlas-media-gallery','mediaCoverage','decorateMediaCoverage','data-media-coverage-badge','atlas-media-dialog','atlas-media-evidence','atlas-evidence-meta','atlas-media-filter','data-media-filter','applyMediaEvidenceFilter','sourceCandidatesFor','sourceResearchHtml','mediaResearchSummary','atlas-media-summary','measured-media-source-queue-v1.json','data-media-asset-id','data-media-state','data-scale-direction','Go deeper','metaKey','ctrlKey','Measurements','Evidence']) ok(workspaceRuntime.includes(token), `Atlas V5 workspace runtime missing: ${token}`);
+for (const token of ['data-atlas-mode','data-atlas-layer','data-atlas-command-input','plant-atlas:focus','wireWorkspaceChrome','wireStageAndCompare','setStage','renderCompare','data-rail-toggle','data-viewer-action','atlasLabels','data-compare-assign','data-layer-legend','scale-map-v1.json','media-registry-v1.json','data-atlas-scale-nav','data-atlas-media-panel','atlas-media-gallery','mediaCoverage','decorateMediaCoverage','data-media-coverage-badge','atlas-media-dialog','atlas-media-evidence','atlas-evidence-meta','atlas-media-filter','data-media-filter','applyMediaEvidenceFilter','sourceCandidatesFor','sourceResearchHtml','mediaResearchSummary','atlas-media-summary','plant-atlas:overlay','data-atlas-overlay-panel','data-overlay-id','physiology-overlays-v1.json','measured-media-source-queue-v1.json','data-media-asset-id','data-media-state','data-scale-direction','Go deeper','metaKey','ctrlKey','Measurements','Evidence']) ok(workspaceRuntime.includes(token), `Atlas V5 workspace runtime missing: ${token}`);
 const workspaceCss = read(path.join(appRoot, 'atlas-workspace-v5.css'));
 for (const token of ['.atlas-workspace-bar','.atlas-command-results','.atlas-inspector-tabs','.atlas-nav-rail','.atlas-viewer-toolbar','.atlas-stage-bar','.atlas-compare-panel','.atlas-layer-legend','data-system-category','grid-template-columns:240px','data-atlas-mode','max-width:980px']) ok(workspaceCss.includes(token), `Atlas V5 workspace CSS missing: ${token}`);
 for (const token of ['data-atlas-mode="explorer"','data-atlas-mode="research"','data-atlas-layer="anatomy"','data-atlas-layer="diagnostics"','data-atlas-command-input','data-atlas-mobile-tray-toggle','atlas-nav-rail','data-rail-systems','atlas-viewer-toolbar','data-viewer-action="labels"','data-viewer-action="compare"','atlas-layer-legend','atlas-stage-bar','data-atlas-stage="reproductive"','data-atlas-compare']) ok(index.includes(token), `Atlas V5 workspace shell missing: ${token}`);
@@ -250,6 +251,24 @@ if (fs.existsSync(sourceImportsDir)) {
   }
 }
 
+
+
+let physiologyOverlays = null;
+try { physiologyOverlays = JSON.parse(read(path.join(appRoot, 'data/physiology-overlays-v1.json'))); }
+catch (error) { errors.push(`Physiology overlay contract JSON is invalid: ${error.message}`); }
+if (physiologyOverlays) {
+  ok(physiologyOverlays.schemaVersion === 1, 'Physiology overlay contract must use schemaVersion 1');
+  ok(Array.isArray(physiologyOverlays.overlays) && physiologyOverlays.overlays.length >= 5, 'Physiology overlay contract needs at least 5 overlays');
+  const hotspotIds = new Set((hotspotData?.hotspots || []).map((entry) => entry.id));
+  for (const overlay of physiologyOverlays.overlays || []) {
+    for (const field of ['id','label','layer','accent','direction','description']) ok(typeof overlay[field] === 'string' && overlay[field].length > 0, `Physiology overlay missing ${field}`);
+    ok(['physiology','environment'].includes(overlay.layer), `Unsupported physiology overlay layer: ${overlay.layer}`);
+    ok(Array.isArray(overlay.focusIds) && overlay.focusIds.length >= 2, `Physiology overlay ${overlay.id} needs focusIds`);
+    for (const id of overlay.focusIds || []) ok(hotspotIds.has(id), `Physiology overlay ${overlay.id} references unknown hotspot ${id}`);
+    ok(Array.isArray(overlay.steps) && overlay.steps.length >= 3, `Physiology overlay ${overlay.id} needs pathway steps`);
+    ok(Array.isArray(overlay.variables) && overlay.variables.length >= 3, `Physiology overlay ${overlay.id} needs interpretation variables`);
+  }
+}
 
 let measuredSourceQueue = null;
 try { measuredSourceQueue = JSON.parse(read(path.join(appRoot, 'data/measured-media-source-queue-v1.json'))); }
