@@ -66,7 +66,7 @@ def add_atlas_scope(text: str) -> str:
     text = extend_php_array(text, 'required', ATLAS_REQUIRED)
     text = extend_php_array(text, 'prefixes', ATLAS_PREFIXES)
 
-    live_match = re.search(r'(?P<head>const liveChecks = \\[\\n)(?P<body>.*?)(?P<tail>\\n\\];)', text, re.S)
+    live_match = re.search(r'(?P<head>const liveChecks = \[\n)(?P<body>.*?)(?P<tail>\n\];)', text, re.S)
     if not live_match:
         raise SystemExit('suite liveChecks array not found while adding Atlas/reference scope')
     body = live_match.group('body')
@@ -87,7 +87,6 @@ with tempfile.TemporaryDirectory(prefix='dtf-suite-resource-aware-') as temp:
     transformed, report = transform_bridge(scoped, repo)
 
     for marker in [*ATLAS_TARGETS, *ATLAS_REQUIRED, *ATLAS_PREFIXES]:
-
         if repr(marker) not in transformed:
             raise SystemExit(f'Plant/Terpene Atlas/reference-tool scope marker disappeared from resource-aware bridge: {marker}')
     for target in RESOURCE_OWNED_GAME_TARGETS:
