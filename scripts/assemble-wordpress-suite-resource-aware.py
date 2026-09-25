@@ -33,6 +33,13 @@ ATLAS_REQUIRED = [
     'assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg',
 ]
 ATLAS_PREFIXES = ['atlas/', 'terpene-atlas/', 'ph-meter/', 'tds-meter/', 'vpd-chart/', 'assets/images/atlas/']
+REFERENCE_LIVE_CHECKS = [
+    ('/atlas/', 'THC Living Plant Atlas'),
+    ('/terpene-atlas/', 'THC Terpene Atlas'),
+    ('/ph-meter/', 'pH Meter'),
+    ('/tds-meter/', 'TDS / EC Meter'),
+    ('/vpd-chart/', 'VPD Chart'),
+]
 RESOURCE_OWNED_GAME_TARGETS = ['games/high-iq', 'games/seed-man-platformer']
 
 
@@ -58,6 +65,16 @@ def add_atlas_scope(text: str) -> str:
     text = extend_php_array(text, 'targets', ATLAS_TARGETS)
     text = extend_php_array(text, 'required', ATLAS_REQUIRED)
     text = extend_php_array(text, 'prefixes', ATLAS_PREFIXES)
+
+    live_match = re.search(r'(?P<head>const liveChecks = \\[\\n)(?P<body>.*?)(?P<tail>\\n\\];)', text, re.S)
+    if not live_match:
+        raise SystemExit('suite liveChecks array not found while adding Atlas/reference scope')
+    body = live_match.group('body')
+    for route, marker in REFERENCE_LIVE_CHECKS:
+        pair = f"  [{route!r}, {marker!r}],"
+        if route not in body:
+            body = body.rstrip() + '\n' + pair
+    text = text[:live_match.start()] + live_match.group('head') + body + live_match.group('tail') + text[live_match.end():]
     return text
 
 
@@ -70,6 +87,7 @@ with tempfile.TemporaryDirectory(prefix='dtf-suite-resource-aware-') as temp:
     transformed, report = transform_bridge(scoped, repo)
 
     for marker in [*ATLAS_TARGETS, *ATLAS_REQUIRED, *ATLAS_PREFIXES]:
+
         if repr(marker) not in transformed:
             raise SystemExit(f'Plant/Terpene Atlas/reference-tool scope marker disappeared from resource-aware bridge: {marker}')
     for target in RESOURCE_OWNED_GAME_TARGETS:
