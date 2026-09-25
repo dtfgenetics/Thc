@@ -10,7 +10,7 @@
     document.body.dataset.atlasProcess=overlay?.id||'none';
     const panel=$('[data-atlas-overlay-panel]');
     const title=$('[data-overlay-title]'),description=$('[data-overlay-description]'),vars=$('[data-overlay-variables]');
-    $('[data-overlay-id]').forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.overlayId===id)));
+    $$('[data-overlay-id]').forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.overlayId===id)));
     if(panel)panel.hidden=!overlay;
     if(title)title.textContent=overlay?.label||'Physiology overlay';
     if(description)description.textContent=overlay?.description||'Select a process to highlight the structures involved.';
