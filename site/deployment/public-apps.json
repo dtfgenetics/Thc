@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
   "sourceOfTruth": "dtfgenetics/Thc",
-  "updated": "2026-09-23",
+  "updated": "2026-09-25",
   "apps": [
     {
       "id": "high-land",
@@ -72,6 +72,39 @@
         "connectedAtlas": "/terpene-atlas/"
       },
       "notes": "Learn-owned specimen-first 3D plant-science explorer. Source/public mirrors, all 16 enriched system routes, 32 semantic anatomy targets, searchable anatomy index, 3D focus wiring, responsive shell and route ownership are enforced by dedicated Atlas Production CI and the central Public Suite build."
+    },
+    {
+      "id": "vpd-chart",
+      "title": "VPD Chart",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/vpd-chart",
+      "route": "/vpd-chart/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node --check site/public-route-patch/vpd-chart/index.html",
+      "notes": "Interactive approximate leaf-VPD calculator and nearby-condition reference table."
+    },
+    {
+      "id": "tds-meter",
+      "title": "TDS / EC Meter Reference",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/tds-meter",
+      "route": "/tds-meter/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node --check site/public-route-patch/tds-meter/index.html",
+      "notes": "Interactive EC/TDS conversion reference supporting 500 and 700 ppm conventions."
+    },
+    {
+      "id": "ph-meter",
+      "title": "pH Meter Reference",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/ph-meter",
+      "route": "/ph-meter/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node --check site/public-route-patch/ph-meter/index.html",
+      "notes": "Interactive reference page for interpreting calibrated pH readings; browser does not directly measure pH."
     },
     {
       "id": "weedopolis",
