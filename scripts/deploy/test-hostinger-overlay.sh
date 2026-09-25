@@ -40,6 +40,11 @@ make_public_suite_archive() {
     "$payload/games/bud-or-bluff" \
     "$payload/projects" \
     "$payload/tools" \
+    "$payload/atlas" \
+    "$payload/terpene-atlas" \
+    "$payload/ph-meter" \
+    "$payload/tds-meter" \
+    "$payload/vpd-chart" \
     "$payload/growlens" \
     "$payload/thc-grow-doc" \
     "$payload/puzzles" \
@@ -51,6 +56,11 @@ make_public_suite_archive() {
   printf '%s\n' '<?php echo "ok";' > "$payload/games/bud-or-bluff/api-v2.php"
   printf '%s\n' 'projects replacement' > "$payload/projects/index.html"
   printf '%s\n' 'tools replacement' > "$payload/tools/index.html"
+  printf '%s\n' 'plant atlas replacement' > "$payload/atlas/index.html"
+  printf '%s\n' 'terpene atlas replacement' > "$payload/terpene-atlas/index.html"
+  printf '%s\n' 'pH meter replacement' > "$payload/ph-meter/index.html"
+  printf '%s\n' 'TDS meter replacement' > "$payload/tds-meter/index.html"
+  printf '%s\n' 'VPD chart replacement' > "$payload/vpd-chart/index.html"
   printf '%s\n' 'growlens replacement' > "$payload/growlens/index.html"
   printf '%s\n' 'grow doc replacement' > "$payload/thc-grow-doc/index.html"
   printf '%s\n' '{}' > "$payload/puzzles/current.json"
@@ -130,6 +140,11 @@ LEARN_AFTER="$(sha256sum "$PUBLIC_ROOT/learn/owner-marker.txt" | awk '{print $1}
 [[ "$LEARN_BEFORE" == "$LEARN_AFTER" ]] || fail "public-suite activation changed the Learning-owned route"
 [[ ! -e "$PUBLIC_ROOT/blog/.htaccess" ]] || fail "staged Blog redirect was incorrectly activated"
 [[ ! -e "$PUBLIC_ROOT/learn/infographics/index.html" ]] || fail "staged Learn content was incorrectly activated"
+grep -Fq 'plant atlas replacement' "$PUBLIC_ROOT/atlas/index.html" || fail "Plant Atlas was not activated"
+grep -Fq 'terpene atlas replacement' "$PUBLIC_ROOT/terpene-atlas/index.html" || fail "Terpene Atlas was not activated"
+grep -Fq 'pH meter replacement' "$PUBLIC_ROOT/ph-meter/index.html" || fail "pH reference was not activated"
+grep -Fq 'TDS meter replacement' "$PUBLIC_ROOT/tds-meter/index.html" || fail "TDS reference was not activated"
+grep -Fq 'VPD chart replacement' "$PUBLIC_ROOT/vpd-chart/index.html" || fail "VPD reference was not activated"
 if grep -Eq '^blog\t' "$DOMAIN/.dtf-backups/$SUITE_BACKUP_ID/manifest.tsv"; then
   fail "Blog entered the public-suite mutation manifest"
 fi
