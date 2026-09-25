@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-09-24",
+  "disclaimer": "Qualitative biological pathway overlay. Not a quantitative simulation, sensor reading, or diagnosis.",
+  "overlays": [
+    {
+      "id": "xylem-flow",
+      "label": "Xylem water flow",
+      "layer": "physiology",
+      "accent": "water",
+      "direction": "root-to-shoot",
+      "focusIds": [
+        "root-system",
+        "stem-vascular",
+        "xylem-pathway",
+        "leaf-venation",
+        "stomatal-surface"
+      ],
+      "steps": [
+        "Root uptake",
+        "Root xylem",
+        "Stem xylem",
+        "Leaf veins",
+        "Evaporation / transpiration"
+      ],
+      "variables": [
+        "substrate water status",
+        "hydraulic resistance",
+        "leaf temperature",
+        "VPD",
+        "stomatal conductance"
+      ],
+      "description": "Trace the qualitative root-to-leaf water pathway through xylem and toward evaporative surfaces."
+    },
+    {
+      "id": "phloem-flow",
+      "label": "Phloem source–sink flow",
+      "layer": "physiology",
+      "accent": "sugar",
+      "direction": "source-to-sink",
+      "focusIds": [
+        "leaf-module",
+        "phloem-pathway",
+        "stem-vascular",
+        "root-system",
+        "flower-anatomy"
+      ],
+      "steps": [
+        "Photosynthetic source",
+        "Phloem loading",
+        "Stem transport",
+        "Sink unloading",
+        "Growth / storage"
+      ],
+      "variables": [
+        "source strength",
+        "sink demand",
+        "developmental stage",
+        "temperature",
+        "vascular continuity"
+      ],
+      "description": "Trace assimilate movement from source leaves toward active sinks such as roots and reproductive growth."
+    },
+    {
+      "id": "transpiration",
+      "label": "Transpiration pathway",
+      "layer": "environment",
+      "accent": "vapor",
+      "direction": "soil-to-air",
+      "focusIds": [
+        "root-system",
+        "xylem-pathway",
+        "leaf-module",
+        "stomatal-surface"
+      ],
+      "steps": [
+        "Root-zone water",
+        "Xylem supply",
+        "Leaf water",
+        "Evaporation",
+        "Stomatal vapor loss"
+      ],
+      "variables": [
+        "light",
+        "leaf temperature",
+        "RH",
+        "VPD",
+        "airflow",
+        "soil/substrate water"
+      ],
+      "description": "Connect root-zone water supply, leaf energy balance and stomatal vapor loss."
+    },
+    {
+      "id": "gas-exchange",
+      "label": "Stomatal gas exchange",
+      "layer": "physiology",
+      "accent": "gas",
+      "direction": "bidirectional",
+      "focusIds": [
+        "leaf-module",
+        "stomatal-surface"
+      ],
+      "steps": [
+        "CO₂ diffusion inward",
+        "Mesophyll exchange",
+        "Water vapor diffusion outward"
+      ],
+      "variables": [
+        "light",
+        "CO₂",
+        "VPD",
+        "ABA/water status",
+        "stomatal aperture"
+      ],
+      "description": "Show the coupled CO₂-entry and water-vapor-exit context of stomatal function."
+    },
+    {
+      "id": "root-uptake",
+      "label": "Root uptake context",
+      "layer": "environment",
+      "accent": "root",
+      "direction": "rhizosphere-to-root",
+      "focusIds": [
+        "root-system",
+        "fine-roots",
+        "root-tip",
+        "xylem-pathway"
+      ],
+      "steps": [
+        "Rhizosphere",
+        "Fine-root surface",
+        "Radial transport",
+        "Root xylem"
+      ],
+      "variables": [
+        "water content",
+        "oxygen",
+        "temperature",
+        "pH",
+        "EC",
+        "ion availability"
+      ],
+      "description": "Trace the qualitative interface between the rhizosphere, absorbing root surfaces and vascular transport."
+    }
+  ]
+}
