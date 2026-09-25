@@ -30,6 +30,7 @@ const canonical = [
   ['/tools/', 'Diagnostic'], ['/games/', 'Games'], ['/community/', 'Community'], ['/shop/', 'Shop'],
 ];
 for (const [fileKey, html] of [['ph', ph], ['tds', tds], ['vpd', vpd]]) {
+  assert(html.includes('href="/tools/"'), `${files[fileKey]} missing central All Tools return link`);
   for (const [route, label] of canonical) {
     assert(html.includes(`href="${route}"`), `${files[fileKey]} missing canonical route ${route} (${label})`);
   }
@@ -49,6 +50,11 @@ assert(tds.includes("(p/s).toFixed(2)"), 'TDS reverse conversion missing ppm-to-
 assert(vpd.includes('0.6108*Math.exp((17.27*t)/(t+237.3))'), 'VPD page missing saturation-vapor-pressure equation');
 assert(vpd.includes('svp(t+o)-svp(t)*(h/100)'), 'VPD page missing leaf-to-air vapor pressure deficit calculation');
 assert(vpd.includes('Relative humidity (%)') && vpd.includes('Leaf temperature offset (°C)'), 'VPD page missing required inputs');
+
+const atlas = fs.readFileSync(path.join(root, 'site/public-route-patch/atlas/index.html'), 'utf8');
+const terpenes = fs.readFileSync(path.join(root, 'site/public-route-patch/terpene-atlas/index.html'), 'utf8');
+assert(atlas.includes('href="/tools/"'), 'Plant Atlas missing central All Tools link');
+assert(terpenes.includes('href="/tools/"'), 'Terpene Atlas missing central All Tools link');
 
 const svp = (t) => 0.6108 * Math.exp((17.27 * t) / (t + 237.3));
 const sample = Math.max(0, svp(25) - svp(26) * 0.60);
