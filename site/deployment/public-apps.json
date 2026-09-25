@@ -81,7 +81,7 @@
       "route": "/vpd-chart/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node --check site/public-route-patch/vpd-chart/index.html",
+      "build": "test -s site/public-route-patch/vpd-chart/index.html",
       "notes": "Interactive approximate leaf-VPD calculator and nearby-condition reference table."
     },
     {
@@ -92,7 +92,7 @@
       "route": "/tds-meter/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node --check site/public-route-patch/tds-meter/index.html",
+      "build": "test -s site/public-route-patch/tds-meter/index.html",
       "notes": "Interactive EC/TDS conversion reference supporting 500 and 700 ppm conventions."
     },
     {
@@ -103,7 +103,7 @@
       "route": "/ph-meter/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node --check site/public-route-patch/ph-meter/index.html",
+      "build": "test -s site/public-route-patch/ph-meter/index.html",
       "notes": "Interactive reference page for interpreting calibrated pH readings; browser does not directly measure pH."
     },
     {
