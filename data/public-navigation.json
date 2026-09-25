@@ -310,6 +310,35 @@
         "status": "play-now",
         "public": true,
         "secondaryRoot": "learn"
+      },
+      {
+        "id": "terpene-atlas",
+        "title": "THC Terpene Atlas — Chemistry Explorer",
+        "route": "/terpene-atlas/",
+        "status": "play-now",
+        "public": true,
+        "secondaryRoot": "learn"
+      },
+      {
+        "id": "ph-meter",
+        "title": "pH Meter Reference",
+        "route": "/ph-meter/",
+        "status": "play-now",
+        "public": true
+      },
+      {
+        "id": "tds-meter",
+        "title": "TDS / EC Meter Reference",
+        "route": "/tds-meter/",
+        "status": "play-now",
+        "public": true
+      },
+      {
+        "id": "vpd-chart",
+        "title": "VPD Chart",
+        "route": "/vpd-chart/",
+        "status": "play-now",
+        "public": true
       }
     ]
   },
@@ -339,6 +368,27 @@
       "id": "grow-doc",
       "title": "THC Grow Doc",
       "route": "/thc-grow-doc/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "ph-meter",
+      "title": "pH Meter Reference",
+      "route": "/ph-meter/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "tds-meter",
+      "title": "TDS / EC Meter Reference",
+      "route": "/tds-meter/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "vpd-chart",
+      "title": "VPD Chart",
+      "route": "/vpd-chart/",
       "status": "play-now",
       "public": true
     }
