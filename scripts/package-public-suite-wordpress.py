@@ -197,6 +197,9 @@ allowed = [
     "puzzles",
     "atlas",
     "terpene-atlas",
+    "ph-meter",
+    "tds-meter",
+    "vpd-chart",
     "assets/images/atlas",
     "dtf-content-overlay",
 ]
@@ -229,6 +232,9 @@ if len(registered_local_game_targets) != len(set(registered_local_game_targets))
     raise SystemExit("duplicate registered local game targets in public-app registry")
 
 required = [
+    "ph-meter/index.html",
+    "tds-meter/index.html",
+    "vpd-chart/index.html",
     "games/index.html",
     "games/dtf-shell.css",
     "games/high-land/index.html",
