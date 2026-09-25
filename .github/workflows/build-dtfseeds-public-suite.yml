@@ -109,18 +109,7 @@ jobs:
       - name: Validate cultivation reference tools
         run: |
           set -euo pipefail
-          for page in ph-meter tds-meter vpd-chart; do
-            test -s "site/public-route-patch/$page/index.html"
-          done
-          grep -Fq 'href="/atlas/"' site/public-route-patch/tools/index.html
-          grep -Fq 'href="/terpene-atlas/"' site/public-route-patch/tools/index.html
-          grep -Fq 'href="/ph-meter/"' site/public-route-patch/tools/index.html
-          grep -Fq 'href="/tds-meter/"' site/public-route-patch/tools/index.html
-          grep -Fq 'href="/vpd-chart/"' site/public-route-patch/tools/index.html
-          grep -Fq 'target="_blank"' site/public-route-patch/tools/index.html
-          grep -Fq 'pH Meter' site/public-route-patch/ph-meter/index.html
-          grep -Fq 'TDS / EC Meter' site/public-route-patch/tds-meter/index.html
-          grep -Fq 'VPD Chart' site/public-route-patch/vpd-chart/index.html
+          npm run verify:cultivation-reference-tools
 
       - name: Validate self-hosted High IQ
         run: |
