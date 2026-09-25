@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-09-23",
+  "description": "Canonical multi-scale navigation graph for the THC Living Plant Atlas. Nodes reference hotspot IDs already present in hotspots-v4.json.",
+  "pathways": [
+    {
+      "id": "root-path",
+      "label": "Root architecture to absorption",
+      "steps": [
+        "root-system",
+        "root-crown",
+        "lateral-root",
+        "fine-roots",
+        "root-tip"
+      ],
+      "destination": "/atlas/root-system/"
+    },
+    {
+      "id": "leaf-path",
+      "label": "Whole leaf to gas exchange",
+      "steps": [
+        "leaf-module",
+        "petiole",
+        "leaflet",
+        "leaf-blade",
+        "leaf-venation",
+        "leaf-margin",
+        "stomatal-surface"
+      ],
+      "destination": "/atlas/leaf-module/"
+    },
+    {
+      "id": "vascular-path",
+      "label": "Stem to transport tissues",
+      "steps": [
+        "stem-vascular",
+        "internode",
+        "xylem-pathway",
+        "phloem-pathway"
+      ],
+      "destination": "/atlas/stem-vascular/"
+    },
+    {
+      "id": "branching-path",
+      "label": "Architecture to meristem",
+      "steps": [
+        "nodes-branching",
+        "internode",
+        "axillary-bud",
+        "apical-meristem"
+      ],
+      "destination": "/atlas/nodes-branching/"
+    },
+    {
+      "id": "flower-path",
+      "label": "Inflorescence to reproductive anatomy",
+      "steps": [
+        "flower-anatomy",
+        "inflorescence-axis",
+        "bract",
+        "sugar-leaf",
+        "pistillate-flower",
+        "stigma",
+        "ovary-ovule"
+      ],
+      "destination": "/atlas/flower-anatomy/"
+    },
+    {
+      "id": "trichome-path",
+      "label": "Flower surface to gland anatomy",
+      "steps": [
+        "flower-anatomy",
+        "bract",
+        "trichomes-resin",
+        "capitate-stalked-trichome",
+        "trichome-stalk",
+        "trichome-gland-head"
+      ],
+      "destination": "/atlas/trichomes-resin/",
+      "connectedAtlas": "/terpene-atlas/"
+    },
+    {
+      "id": "reproduction-path",
+      "label": "Reproductive site to ovule",
+      "steps": [
+        "reproductive-biology",
+        "preflower-site",
+        "pistillate-flower",
+        "stigma",
+        "ovary-ovule"
+      ],
+      "destination": "/atlas/reproductive-biology/"
+    }
+  ]
+}

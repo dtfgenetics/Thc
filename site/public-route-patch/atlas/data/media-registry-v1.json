@@ -1,0 +1,773 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-09-23",
+  "purpose": "Machine-readable visual asset registry for Plant Atlas structures and systems. Missing production assets are explicit; the UI must never fabricate or silently substitute scientific imagery.",
+  "assetClasses": [
+    "photoreal-reference",
+    "macro-reference",
+    "microscopy-reference",
+    "labeled-botanical-plate",
+    "process-diagram",
+    "diagnostic-comparison",
+    "animation-sequence",
+    "3d-representation"
+  ],
+  "records": [
+    {
+      "entityId": "leaf-module",
+      "required": [
+        "photoreal-reference",
+        "labeled-botanical-plate",
+        "macro-reference"
+      ],
+      "assets": [
+        {
+          "assetId": "PA-LEAF-003",
+          "entityId": "leaf-module",
+          "class": "macro-reference",
+          "src": "/atlas/media/leaf-module/PA-LEAF-003-cannabis-leaf-up-close.jpg",
+          "source": "Wikimedia Commons; original Flickr source https://www.flickr.com/photos/189516854@N06/50611456966/",
+          "creator": "Elsa Olofsson",
+          "license": "CC BY 2.0",
+          "captureType": "photography",
+          "plantStage": "mature vegetative/reproductive context not specified",
+          "organ": "Cannabis leaf blade",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Close-up photograph of a green Cannabis leaf showing serrated margin and visible venation.",
+          "title": "Cannabis leaf macro reference",
+          "attribution": "Photo by Elsa Olofsson, CC BY 2.0.",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Cannabis_leaf_up-close.jpg",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0/"
+        },
+        {
+          "assetId": "PA-LEAF-001",
+          "entityId": "leaf-module",
+          "class": "photoreal-reference",
+          "src": "/atlas/media/leaf-module/PA-LEAF-001-healthy-cannabis-leaf-reference.jpg",
+          "source": "Wikimedia Commons; original Flickr source https://www.flickr.com/photos/189516854@N06/50611573817/",
+          "creator": "Elsa Olofsson",
+          "license": "CC BY 2.0",
+          "captureType": "photography",
+          "plantStage": "not specified in source",
+          "organ": "Cannabis fan leaves / leaflets",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Close-up photograph of healthy green Cannabis fan leaves showing serrated margins and prominent venation.",
+          "title": "Healthy Cannabis leaf reference",
+          "attribution": "Photo by Elsa Olofsson, CC BY 2.0.",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Cannabis_plant_leaf.jpg",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0/"
+        },
+        {
+          "assetId": "PA-LEAF-002",
+          "entityId": "leaf-module",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/leaf-module/PA-LEAF-002-leaf-anatomy-plate.png",
+          "source": "Original THC Living Plant Atlas educational illustration based on standard Cannabis macroscopic leaf anatomy terminology.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "general mature leaf anatomy",
+          "organ": "Cannabis compound fan leaf",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative Cannabis fan leaf anatomy plate labeling petiole, leaflets, serrated margins, leaf blade, primary vein, secondary venation, and upper and lower leaf surfaces.",
+          "title": "Cannabis leaf anatomy plate",
+          "sourcePage": "/atlas/leaf-module/",
+          "notes": "Illustrative, not to scale; no measured microscopy claims."
+        }
+      ],
+      "status": "approved"
+    },
+    {
+      "entityId": "stomatal-surface",
+      "required": [
+        "microscopy-reference",
+        "labeled-botanical-plate",
+        "animation-sequence"
+      ],
+      "assets": [
+        {
+          "assetId": "PA-STOMA-002",
+          "entityId": "stomatal-surface",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/stomatal-surface/PA-STOMA-002-open-closed-stomata-plate.png",
+          "source": "Original THC Living Plant Atlas educational illustration based on standard stomatal anatomy and guard-cell physiology.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "general leaf physiology",
+          "organ": "stomatal complex / leaf epidermis",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative open and closed stomatal complexes showing guard cells, stomatal pore, surrounding epidermal cells, and conceptual gas exchange arrows.",
+          "title": "Open and closed stomata plate",
+          "sourcePage": "/atlas/leaf-module/stomata/",
+          "notes": "Illustrative, not to scale; not measured microscopy."
+        },
+        {
+          "assetId": "PA-STOMA-003",
+          "entityId": "stomatal-surface",
+          "class": "animation-sequence",
+          "src": "/atlas/media/stomatal-surface/PA-STOMA-003-stomatal-response-sequence.png",
+          "source": "Original THC Living Plant Atlas educational sequence based on standard guard-cell physiology.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration sequence",
+          "plantStage": "general leaf physiology",
+          "organ": "stomatal complex / leaf epidermis",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Four-stage illustrative stomatal response sequence from open pore through decreasing guard-cell turgor and partial closure to closed pore.",
+          "title": "Stomatal response sequence",
+          "sourcePage": "/atlas/leaf-module/stomata/",
+          "notes": "Conceptual sequence, not time calibrated and not measured microscopy."
+        }
+      ],
+      "status": "in-production"
+    },
+    {
+      "entityId": "root-system",
+      "required": [
+        "photoreal-reference",
+        "labeled-botanical-plate",
+        "process-diagram"
+      ],
+      "assets": [
+        {
+          "assetId": "PA-ROOT-001",
+          "entityId": "root-system",
+          "class": "photoreal-reference",
+          "src": "/atlas/media/root-system/PA-ROOT-001-cannabis-hydroponic-root-ball.jpg",
+          "source": "Wikimedia Commons; Cannabis root structure grown in a hydroponic expanded-clay system.",
+          "creator": "Beeblebrox",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Root_ball.jpg",
+          "captureType": "photography",
+          "plantStage": "mature plant; exact developmental stage not specified",
+          "organ": "Cannabis root system / root ball",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Photograph of a dense Cannabis root ball grown in expanded clay aggregate in a hydroponic system.",
+          "title": "Cannabis hydroponic root-system reference",
+          "attribution": "Photo by Beeblebrox, CC BY-SA 4.0.",
+          "notes": "Hydroponic expanded-clay context; do not treat as representative of soil-grown root architecture."
+        },
+        {
+          "assetId": "PA-ROOT-002",
+          "entityId": "root-system",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/root-system/PA-ROOT-002-root-architecture-plate.png",
+          "source": "Original THC Living Plant Atlas educational illustration based on general Cannabis/hemp root-system architecture and plant root morphology.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "general established plant",
+          "organ": "Cannabis root system",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative Cannabis root-system plate labeling root crown, primary structural axis, lateral roots, fine roots, root tips, and absorbing regions.",
+          "title": "Cannabis root-system architecture plate",
+          "sourcePage": "/atlas/root-system/",
+          "notes": "Illustrative, not to scale; root architecture varies strongly with genotype and growing environment."
+        },
+        {
+          "assetId": "PA-ROOT-003",
+          "entityId": "root-system",
+          "class": "process-diagram",
+          "src": "/atlas/media/root-system/PA-ROOT-003-root-to-shoot-water-pathway.png",
+          "source": "Original THC Living Plant Atlas process diagram based on established plant water-transport physiology.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "general active growth",
+          "organ": "root-to-shoot hydraulic pathway",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Conceptual root-to-shoot water pathway from rhizosphere through fine roots, root and stem xylem, leaf veins, mesophyll, and stomata.",
+          "title": "Root-to-shoot water pathway",
+          "sourcePage": "/atlas/water-relations/",
+          "notes": "Conceptual hydraulic pathway, not a quantitative flow model."
+        }
+      ],
+      "status": "approved"
+    },
+    {
+      "entityId": "root-tip",
+      "required": [
+        "macro-reference",
+        "microscopy-reference",
+        "labeled-botanical-plate"
+      ],
+      "assets": [
+        {
+          "assetId": "PA-RTIP-003",
+          "entityId": "root-tip",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/root-tip/PA-RTIP-003-root-tip-anatomy-plate.png",
+          "source": "Original THC Living Plant Atlas educational illustration based on standard angiosperm root-tip developmental anatomy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "actively growing root tip",
+          "organ": "root tip / young absorbing root",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative longitudinal root-tip plate showing root cap, apical meristem, elongation zone, differentiation and maturation zone, and root hairs.",
+          "title": "Root-tip developmental zones",
+          "sourcePage": "/atlas/root-system/",
+          "notes": "Illustrative, not to scale; developmental zone boundaries are gradual."
+        }
+      ],
+      "status": "in-production"
+    },
+    {
+      "entityId": "stem-vascular",
+      "required": [
+        "photoreal-reference",
+        "labeled-botanical-plate",
+        "process-diagram"
+      ],
+      "assets": [
+        {
+          "assetId": "PA-STEM-002",
+          "entityId": "stem-vascular",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/stem-vascular/PA-STEM-002-stem-vascular-anatomy.png",
+          "source": "Original THC Living Plant Atlas teaching illustration based on dicot/Cannabis stem vascular organization.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "established stem",
+          "organ": "Cannabis stem vascular tissues",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative Cannabis stem cross-section showing pith, xylem, cambial region, phloem/bast region, cortex, and outer tissues.",
+          "title": "Cannabis stem vascular anatomy",
+          "sourcePage": "/atlas/stem-vascular/",
+          "notes": "Illustrative, not to scale; tissue proportions vary with age and secondary growth."
+        },
+        {
+          "assetId": "PA-STEM-003",
+          "entityId": "stem-vascular",
+          "class": "process-diagram",
+          "src": "/atlas/media/stem-vascular/PA-STEM-003-stem-transport-overview.png",
+          "source": "Original THC Living Plant Atlas process diagram based on established xylem and phloem transport physiology.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "general active growth",
+          "organ": "stem vascular transport system",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Conceptual stem transport diagram contrasting upward xylem water/mineral movement with phloem source-to-sink assimilate transport.",
+          "title": "Stem transport overview",
+          "sourcePage": "/atlas/stem-vascular/",
+          "notes": "Conceptual process diagram, not a quantitative flow model."
+        },
+        {
+          "assetId": "PA-STEM-001",
+          "entityId": "stem-vascular",
+          "class": "photoreal-reference",
+          "src": "/atlas/media/stem-vascular/PA-STEM-001-healthy-cannabis-stalk.jpg",
+          "source": "Wikimedia Commons; healthy Cannabis stalk photograph.",
+          "creator": "Cannabis Training University",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Cannabis_Stalk.JPG",
+          "captureType": "photography",
+          "plantStage": "established plant; exact stage not specified",
+          "organ": "Cannabis stem / stalk",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Photograph of a healthy robust Cannabis stalk with visible branching and surrounding leaves.",
+          "title": "Healthy Cannabis stalk reference",
+          "attribution": "Photo by Cannabis Training University, CC BY-SA 3.0.",
+          "notes": "External appearance reference; do not infer internal vascular anatomy from this photograph."
+        }
+      ],
+      "status": "approved"
+    },
+    {
+      "entityId": "xylem-pathway",
+      "required": [
+        "labeled-botanical-plate",
+        "process-diagram"
+      ],
+      "assets": [
+        {
+          "assetId": "PA-XYLEM-001",
+          "entityId": "xylem-pathway",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/xylem-pathway/PA-XYLEM-001-anatomy-plate.png",
+          "source": "Original THC Living Plant Atlas teaching illustration based on angiosperm xylem anatomy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "general vascular tissue",
+          "organ": "xylem",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative xylem anatomy plate showing vessel elements, end-wall continuity, and secondary-wall reinforcement.",
+          "title": "Xylem anatomy",
+          "sourcePage": "/atlas/stem-vascular/",
+          "notes": "Illustrative; use histology for measured dimensions."
+        },
+        {
+          "assetId": "PA-XYLEM-002",
+          "entityId": "xylem-pathway",
+          "class": "process-diagram",
+          "src": "/atlas/media/xylem-pathway/PA-XYLEM-002-process.png",
+          "source": "Original THC Living Plant Atlas process diagram based on the cohesion-tension model of xylem water transport.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "general active growth",
+          "organ": "xylem transport pathway",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Four-step conceptual xylem pathway from root water entry through continuous xylem column, leaf evaporation, and transpiration-driven tension.",
+          "title": "Xylem cohesion–tension pathway",
+          "sourcePage": "/atlas/water-relations/",
+          "notes": "Qualitative conceptual model."
+        }
+      ],
+      "status": "approved"
+    },
+    {
+      "entityId": "phloem-pathway",
+      "required": [
+        "labeled-botanical-plate",
+        "process-diagram"
+      ],
+      "assets": [
+        {
+          "assetId": "PA-PHLOEM-001",
+          "entityId": "phloem-pathway",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/phloem-pathway/PA-PHLOEM-001-anatomy-plate.png",
+          "source": "Original THC Living Plant Atlas teaching illustration based on angiosperm phloem anatomy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "general vascular tissue",
+          "organ": "phloem",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative phloem anatomy plate showing sieve-tube elements, sieve plates, and companion-cell relationships.",
+          "title": "Phloem anatomy",
+          "sourcePage": "/atlas/stem-vascular/",
+          "notes": "Illustrative; use histology for measured dimensions."
+        },
+        {
+          "assetId": "PA-PHLOEM-002",
+          "entityId": "phloem-pathway",
+          "class": "process-diagram",
+          "src": "/atlas/media/phloem-pathway/PA-PHLOEM-002-process.png",
+          "source": "Original THC Living Plant Atlas process diagram based on the pressure-flow model of phloem transport.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "general active growth",
+          "organ": "phloem source–sink pathway",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Four-step conceptual phloem source-to-sink process showing loading, osmotic water entry, pressure-driven bulk flow, and sink unloading.",
+          "title": "Phloem source–sink pressure flow",
+          "sourcePage": "/atlas/photosynthesis-carbon/",
+          "notes": "Qualitative conceptual model."
+        }
+      ],
+      "status": "approved"
+    },
+    {
+      "entityId": "flower-anatomy",
+      "required": [
+        "photoreal-reference",
+        "macro-reference",
+        "labeled-botanical-plate"
+      ],
+      "assets": [
+        {
+          "assetId": "PA-FLOWER-003",
+          "entityId": "flower-anatomy",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/flower-anatomy/PA-FLOWER-003-flower-anatomy-plate.png",
+          "source": "Original THC Living Plant Atlas educational illustration based on Cannabis pistillate inflorescence anatomy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "flowering",
+          "organ": "female Cannabis inflorescence",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative female Cannabis flower anatomy plate labeling inflorescence axis, bract, sugar leaf, stigma, pistillate flower, and trichome-bearing surfaces.",
+          "title": "Female Cannabis flower anatomy",
+          "sourcePage": "/atlas/flower-anatomy/",
+          "notes": "Illustrative and not to scale."
+        },
+        {
+          "assetId": "PA-FLOWER-001",
+          "entityId": "flower-anatomy",
+          "class": "photoreal-reference",
+          "src": "/atlas/media/flower-anatomy/PA-FLOWER-001-cannabis-flower-reference.jpg",
+          "source": "Wikimedia Commons; original Flickr photograph of a Cannabis flower.",
+          "creator": "Elsa Olofsson",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Cannabis_Flower.jpg",
+          "captureType": "photography",
+          "plantStage": "flowering; exact week not specified",
+          "organ": "Cannabis female flower / inflorescence",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Photograph of a Cannabis flower held in a hand, showing compact floral tissue and visible sugar-leaf and stigma detail.",
+          "title": "Cannabis flower photoreal reference",
+          "attribution": "Photo by Elsa Olofsson, CC BY 2.0.",
+          "notes": "Use as appearance reference, not a measured anatomical specimen."
+        },
+        {
+          "assetId": "PA-FLOWER-002",
+          "entityId": "flower-anatomy",
+          "class": "macro-reference",
+          "src": "/atlas/media/flower-anatomy/PA-FLOWER-002-cannabis-flower-macro.jpg",
+          "source": "Wikimedia Commons; original Flickr close-up of a Cannabis flower.",
+          "creator": "Elsa Olofsson",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Marijuana_flower.jpg",
+          "captureType": "photography",
+          "plantStage": "flowering; exact week not specified",
+          "organ": "Cannabis flower",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Close-up photograph of a Cannabis flower showing dense floral tissue, stigmas, and resinous surface detail.",
+          "title": "Cannabis flower macro reference",
+          "attribution": "Photo by Elsa Olofsson, CC BY 2.0.",
+          "notes": "Macro appearance reference; not microscopy and not a quantified trichome-density image."
+        }
+      ],
+      "status": "approved"
+    },
+    {
+      "entityId": "bract",
+      "required": [
+        "macro-reference",
+        "labeled-botanical-plate"
+      ],
+      "assets": [
+        {
+          "assetId": "PA-BRACT-002",
+          "entityId": "bract",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/bract/PA-BRACT-002-bract-anatomy-plate.png",
+          "source": "Original THC Living Plant Atlas educational illustration based on Cannabis floral bract anatomy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "flowering",
+          "organ": "floral bract",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative Cannabis bract plate showing bract blade, ovary region, stigmas, and trichome-bearing epidermis.",
+          "title": "Cannabis bract anatomy",
+          "sourcePage": "/atlas/flower-anatomy/",
+          "notes": "Illustrative and not to scale."
+        },
+        {
+          "assetId": "PA-BRACT-001",
+          "entityId": "bract",
+          "class": "macro-reference",
+          "src": "/atlas/media/flower-anatomy/PA-FLOWER-002-cannabis-flower-macro.jpg",
+          "source": "Wikimedia Commons; original Flickr close-up of a Cannabis flower.",
+          "creator": "Elsa Olofsson",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Marijuana_flower.jpg",
+          "captureType": "photography",
+          "plantStage": "flowering; exact week not specified",
+          "organ": "Cannabis flower",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Close-up photograph of a female Cannabis flower showing bract-associated floral tissue, visible stigmas, and resinous surface detail.",
+          "title": "Cannabis bract-region macro reference",
+          "attribution": "Photo by Elsa Olofsson, CC BY 2.0.",
+          "notes": "Shared verified flower macro used for bract-context reference; not a dissected bract specimen and not microscopy."
+        }
+      ],
+      "status": "approved"
+    },
+    {
+      "entityId": "stigma",
+      "required": [
+        "macro-reference",
+        "microscopy-reference",
+        "labeled-botanical-plate"
+      ],
+      "assets": [
+        {
+          "assetId": "PA-STIGMA-003",
+          "entityId": "stigma",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/stigma/PA-STIGMA-003-stigma-anatomy-plate.png",
+          "source": "Original THC Living Plant Atlas educational illustration based on Cannabis pistillate reproductive anatomy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "flowering",
+          "organ": "stigma / pistillate flower",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative Cannabis stigma plate showing stigma surface and branch, ovary region, and surrounding bract.",
+          "title": "Cannabis stigma anatomy",
+          "sourcePage": "/atlas/reproductive-biology/",
+          "notes": "Illustrative and not to scale."
+        },
+        {
+          "assetId": "PA-STIGMA-001",
+          "entityId": "stigma",
+          "class": "macro-reference",
+          "src": "/atlas/media/flower-anatomy/PA-FLOWER-002-cannabis-flower-macro.jpg",
+          "source": "Wikimedia Commons; original Flickr close-up of a Cannabis flower.",
+          "creator": "Elsa Olofsson",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Marijuana_flower.jpg",
+          "captureType": "photography",
+          "plantStage": "flowering; exact week not specified",
+          "organ": "Cannabis flower",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Close-up photograph of a female Cannabis flower showing visible stigmas extending from floral tissue.",
+          "title": "Cannabis stigma macro reference",
+          "attribution": "Photo by Elsa Olofsson, CC BY 2.0.",
+          "notes": "Shared verified flower macro used for stigma appearance context; not microscopy."
+        }
+      ],
+      "status": "in-production"
+    },
+    {
+      "entityId": "trichomes-resin",
+      "required": [
+        "macro-reference",
+        "microscopy-reference",
+        "labeled-botanical-plate"
+      ],
+      "assets": [
+        {
+          "assetId": "PA-TRICH-003",
+          "entityId": "trichomes-resin",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/trichomes-resin/PA-TRICH-003-trichome-anatomy-plate.png",
+          "source": "Original THC Living Plant Atlas educational illustration informed by published Cannabis glandular-trichome microscopy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "flowering",
+          "organ": "glandular trichome",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative glandular trichome anatomy showing epidermal base, multicellular stalk, neck, and glandular head.",
+          "title": "Glandular trichome anatomy",
+          "sourcePage": "/atlas/trichomes-resin/",
+          "notes": "Illustrative; use measured microscopy for quantitative claims."
+        },
+        {
+          "assetId": "PA-TRICH-001",
+          "entityId": "trichomes-resin",
+          "class": "microscopy-reference",
+          "src": "/atlas/media/trichomes-resin/PA-TRICH-001-cannabis-trichomes-microscope.jpg",
+          "source": "Wikimedia Commons; trichomes of a female Cannabis plant (Super Silver Haze) seen through a microscope.",
+          "creator": "Rikva",
+          "license": "Public domain",
+          "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Super_silver_haze_trichomes.jpg",
+          "captureType": "microscopy photograph",
+          "plantStage": "flowering",
+          "organ": "female Cannabis flower trichomes",
+          "illustrativeOrMeasured": "measured",
+          "alt": "Microscope photograph of trichomes on a female Super Silver Haze Cannabis plant.",
+          "title": "Cannabis trichomes microscope reference",
+          "attribution": "Photo by Rikva; released to the public domain.",
+          "notes": "Source identifies Cannabis trichomes viewed through a microscope; magnification and scale bar are not provided, so do not use for dimensional measurements."
+        },
+        {
+          "assetId": "PA-TRICH-002",
+          "entityId": "trichomes-resin",
+          "class": "macro-reference",
+          "src": "/atlas/media/trichomes-resin/PA-TRICH-002-cannabis-trichome-macro.jpg",
+          "source": "Wikimedia Commons; Cannabis trichome photograph.",
+          "creator": "Cannabis Pictures",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Cannabis_Trichomes_(17276240526).jpg",
+          "captureType": "macro photography",
+          "plantStage": "flowering; exact stage not specified",
+          "organ": "Cannabis trichome-bearing floral surface",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Macro photograph showing dense Cannabis trichomes on floral tissue.",
+          "title": "Cannabis trichome macro reference",
+          "attribution": "Photo by Cannabis Pictures, CC BY 2.0.",
+          "notes": "Appearance reference; no magnification or scale bar is supplied."
+        }
+      ],
+      "status": "approved"
+    },
+    {
+      "entityId": "capitate-stalked-trichome",
+      "required": [
+        "microscopy-reference",
+        "labeled-botanical-plate",
+        "3d-representation"
+      ],
+      "assets": [
+        {
+          "assetId": "PA-CST-002",
+          "entityId": "capitate-stalked-trichome",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/capitate-stalked-trichome/PA-CST-002-capitate-stalked-trichome-plate.png",
+          "source": "Original THC Living Plant Atlas educational illustration informed by published Cannabis capitate-stalked trichome microscopy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "flowering",
+          "organ": "capitate-stalked glandular trichome",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative capitate-stalked Cannabis trichome showing epidermal base, multicellular stalk, neck, and glandular head.",
+          "title": "Capitate-stalked trichome anatomy",
+          "sourcePage": "/atlas/trichomes-resin/",
+          "notes": "Illustrative and not to scale."
+        },
+        {
+          "assetId": "PA-CST-003",
+          "entityId": "capitate-stalked-trichome",
+          "class": "3d-representation",
+          "src": "/atlas/media/capitate-stalked-trichome/PA-CST-003-capitate-stalked-trichome-3d.png",
+          "source": "Original THC Living Plant Atlas pseudo-3D educational render informed by published Cannabis capitate-stalked trichome microscopy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "3D-style illustration",
+          "plantStage": "flowering",
+          "organ": "capitate-stalked glandular trichome",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Pseudo-3D educational render of a capitate-stalked Cannabis trichome showing the stalk, stipe, and secretory gland head.",
+          "title": "Capitate-stalked trichome 3D view",
+          "sourcePage": "/atlas/trichomes-resin/",
+          "notes": "Illustrative spatial model; not a measured reconstruction."
+        }
+      ],
+      "status": "in-production"
+    },
+    {
+      "entityId": "trichome-gland-head",
+      "required": [
+        "microscopy-reference",
+        "labeled-botanical-plate",
+        "3d-representation"
+      ],
+      "assets": [
+        {
+          "assetId": "PA-GLAND-002",
+          "entityId": "trichome-gland-head",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/trichome-gland-head/PA-GLAND-002-gland-head-anatomy-plate.png",
+          "source": "Original THC Living Plant Atlas educational illustration informed by published Cannabis trichome-head microscopy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "flowering",
+          "organ": "glandular trichome head",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative Cannabis trichome gland-head plate showing secretory disc-cell region, cuticular storage cavity, and stipe connection.",
+          "title": "Trichome gland-head anatomy",
+          "sourcePage": "/atlas/trichomes-resin/",
+          "notes": "Illustrative and not to scale."
+        },
+        {
+          "assetId": "PA-GLAND-003",
+          "entityId": "trichome-gland-head",
+          "class": "3d-representation",
+          "src": "/atlas/media/trichome-gland-head/PA-GLAND-003-gland-head-3d.png",
+          "source": "Original THC Living Plant Atlas pseudo-3D educational render informed by published Cannabis gland-head microscopy.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "3D-style illustration",
+          "plantStage": "flowering",
+          "organ": "glandular trichome head",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Pseudo-3D cutaway-style render of a Cannabis trichome gland head showing secretory disc-cell zone, storage cavity, and cuticular envelope.",
+          "title": "Trichome gland-head 3D cutaway",
+          "sourcePage": "/atlas/trichomes-resin/",
+          "notes": "Illustrative spatial model; not a measured 3D reconstruction."
+        }
+      ],
+      "status": "in-production"
+    },
+    {
+      "entityId": "reproductive-biology",
+      "required": [
+        "photoreal-reference",
+        "macro-reference",
+        "labeled-botanical-plate"
+      ],
+      "assets": [
+        {
+          "assetId": "PA-REPRO-001",
+          "entityId": "reproductive-biology",
+          "class": "photoreal-reference",
+          "src": "/atlas/media/reproductive-biology/PA-REPRO-001-flowering-male-cannabis.jpg",
+          "source": "Wikimedia Commons; flowering male Cannabis plant (Super Silver Haze hybrid).",
+          "creator": "Rikva",
+          "license": "Public domain",
+          "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Flowering_male_marijuana_plant.jpg",
+          "captureType": "photography",
+          "plantStage": "flowering",
+          "organ": "male Cannabis plant / staminate inflorescences",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Photograph of a flowering male Cannabis plant bearing clusters of staminate flowers.",
+          "title": "Flowering male Cannabis reference",
+          "attribution": "Photo by Rikva; released to the public domain.",
+          "notes": "Photoreal reproductive-sex reference; cultivar is a Cannabis sativa × indica hybrid identified by the source."
+        },
+        {
+          "assetId": "PA-REPRO-002",
+          "entityId": "reproductive-biology",
+          "class": "macro-reference",
+          "src": "/atlas/media/reproductive-biology/PA-REPRO-002-female-flower-macro.jpg",
+          "source": "Wikimedia Commons; original Flickr close-up of a Cannabis flower.",
+          "creator": "Elsa Olofsson",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Marijuana_flower.jpg",
+          "captureType": "photography",
+          "plantStage": "flowering; exact week not specified",
+          "organ": "female Cannabis flower",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Close-up photograph of a female Cannabis flower showing floral tissue and visible stigmas.",
+          "title": "Female Cannabis flower macro reference",
+          "attribution": "Photo by Elsa Olofsson, CC BY 2.0.",
+          "notes": "Macro reproductive reference; not microscopy."
+        },
+        {
+          "assetId": "PA-REPRO-003",
+          "entityId": "reproductive-biology",
+          "class": "labeled-botanical-plate",
+          "src": "/atlas/media/reproductive-biology/PA-REPRO-003-reproductive-biology-plate.png",
+          "source": "Original THC Living Plant Atlas educational illustration based on Cannabis staminate and pistillate reproductive anatomy and wind-pollination biology.",
+          "creator": "DTF Genetics / Teaching Healthy Cultivation",
+          "license": "DTF Genetics original educational asset",
+          "captureType": "illustration",
+          "plantStage": "reproductive development",
+          "organ": "male and female Cannabis reproductive structures",
+          "illustrativeOrMeasured": "illustrative",
+          "alt": "Illustrative Cannabis reproductive biology plate comparing staminate flowers and pollen with pistillate stigma, bract, ovary, ovule, and the pollination pathway.",
+          "title": "Cannabis reproductive biology",
+          "sourcePage": "/atlas/reproductive-biology/",
+          "notes": "Illustrative and not to scale; sex expression and timing vary with genotype and environment."
+        }
+      ],
+      "status": "approved"
+    }
+  ],
+  "provenanceContract": {
+    "requiredFields": [
+      "assetId",
+      "entityId",
+      "class",
+      "src",
+      "source",
+      "creator",
+      "license",
+      "captureType",
+      "plantStage",
+      "organ",
+      "illustrativeOrMeasured"
+    ],
+    "optionalFields": [
+      "magnification",
+      "cultivar",
+      "date",
+      "notes",
+      "attribution"
+    ]
+  }
+}
