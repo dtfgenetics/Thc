@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>pH Meter Reference | DTF Genetics</title>
+<meta name="description" content="Interactive pH reading reference with calibration guidance and common cultivation interpretation ranges." />
+<link rel="canonical" href="https://dtfseeds.com/ph-meter/" />
+<style>
+:root{--forest:#07170f;--forest2:#0d2d1d;--leaf:#37d66b;--gold:#e0c575;--cream:#f7f3e8;--paper:#fffdf7;--ink:#12281b;--muted:#5e7164;--line:#d8e2da}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--cream);color:var(--ink);line-height:1.55}
+a{color:inherit}.shell{width:min(1100px,calc(100% - 28px));margin:auto}.top{background:linear-gradient(135deg,var(--forest),var(--forest2));color:#fff;border-bottom:1px solid rgba(255,255,255,.12)}
+.topin{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{font-weight:950;text-decoration:none;font-size:1.15rem}.brand span{display:block;color:var(--gold);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;margin-top:3px}
+.nav{display:flex;flex-wrap:wrap;gap:6px}.nav a{padding:9px 11px;border-radius:10px;text-decoration:none;font-weight:800;color:#e9f2ec}.nav a:hover{background:rgba(255,255,255,.08)}
+.hero{padding:64px 0 42px;background:radial-gradient(circle at 90% 10%,rgba(224,197,117,.18),transparent 25%),linear-gradient(145deg,#07170f,#123b26);color:#fff}
+.eyebrow{color:var(--gold);font-weight:900;text-transform:uppercase;letter-spacing:.14em;font-size:.72rem}.hero h1{font-size:clamp(2.5rem,8vw,5.2rem);line-height:.92;letter-spacing:-.05em;margin:.25rem 0 1rem}.hero p{max-width:760px;color:#d5e4da;font-size:1.05rem}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:38px 0}.card{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 12px 30px rgba(17,43,28,.07)}.card h2,.card h3{margin-top:0}
+.inputrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px}.field label{font-weight:850}.field input,.field select{width:100%;padding:13px 14px;border:1px solid #bfcfc3;border-radius:12px;background:#fff;font:inherit}
+.result{margin-top:18px;padding:18px;border-radius:16px;background:#edf6ef;border:1px solid #c9dfcf}.result strong{font-size:1.35rem}
+.note{font-size:.92rem;color:var(--muted)}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}.tabs a{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);padding:10px 13px;border-radius:12px;text-decoration:none;font-weight:850}
+table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px solid var(--line);text-align:left}th{font-size:.82rem;text-transform:uppercase;letter-spacing:.06em}
+.good{background:#dff5e6}.mid{background:#f8efca}.high{background:#f4d9d9}
+footer{padding:28px 0 40px;color:var(--muted)}
+@media(max-width:760px){.nav{display:none}.grid,.inputrow{grid-template-columns:1fr}.hero{padding-top:48px}}
+</style>
+</head>
+<body><header class="top"><div class="shell topin"><a class="brand" href="/">DTF Genetics<span>Dream the Future</span></a><nav class="nav" aria-label="Primary navigation"><a href="/">Home</a><a href="/learn/">Learn</a><a href="/courses/">Courses</a><a href="/tools/">Diagnostic</a><a href="/games/">Games</a><a href="/shop/">Shop</a></nav></div></header>
+<section class="hero"><div class="shell"><p class="eyebrow">Reference Tool</p><h1>pH Meter</h1><p>Enter a reading from a calibrated pH meter to interpret acidity/alkalinity and compare it with common cultivation reference ranges. This page does not measure pH by itself.</p>
+<div class="tabs"><a href="/atlas/" target="_blank" rel="noopener">Plant Atlas</a><a href="/terpene-atlas/" target="_blank" rel="noopener">Terpene Atlas</a><a href="/tds-meter/" target="_blank" rel="noopener">TDS / EC Meter</a><a href="/vpd-chart/" target="_blank" rel="noopener">VPD Chart</a></div></div></section>
+<main class="shell grid">
+<section class="card"><h2>Interpret a pH reading</h2><div class="field"><label for="ph">Meter reading</label><input id="ph" type="number" min="0" max="14" step="0.01" value="6.20"></div><div class="result" id="out"></div><p class="note">A pH value is logarithmic. A one-unit change represents a tenfold change in hydrogen-ion activity.</p></section>
+<section class="card"><h2>Common reference windows</h2><table><thead><tr><th>System</th><th>Reference window</th></tr></thead><tbody><tr><td>Soilless / hydroponic nutrient solution</td><td>about 5.5–6.5</td></tr><tr><td>Container soil / peat-based mixes</td><td>about 6.0–7.0</td></tr></tbody></table><p class="note">Actual targets depend on substrate, fertilizer chemistry, irrigation water alkalinity, crop stage, and the nutrient program. Follow product and substrate guidance when it is more specific.</p></section>
+<section class="card"><h2>Calibration check</h2><ul><li>Use fresh, uncontaminated buffer solutions.</li><li>Calibrate at the frequency required by the meter manufacturer.</li><li>Rinse the probe between standards and samples.</li><li>Store the electrode in the manufacturer-recommended storage solution, not distilled water.</li></ul></section>
+<section class="card"><h2>How to use the reading</h2><p>Record the reading with date, water source, nutrient mix, EC/TDS, temperature, and whether the sample is input solution or root-zone runoff. A single pH number is most useful when tied to trend and context.</p></section>
+</main>
+<script>
+const ph=document.getElementById('ph'),out=document.getElementById('out');
+function render(){const v=Number(ph.value);if(!Number.isFinite(v)||v<0||v>14){out.innerHTML='<strong>Enter a value from 0 to 14.</strong>';return}
+let label=v<7?'acidic':v>7?'alkaline':'neutral';let note=v>=5.5&&v<=6.5?'Within a common soilless/hydro reference window.':v>=6&&v<=7?'Within a common soil/container reference window.':'Outside the broad reference windows shown here.';
+out.innerHTML='<strong>pH '+v.toFixed(2)+'</strong><br>'+label.charAt(0).toUpperCase()+label.slice(1)+'. '+note}
+ph.addEventListener('input',render);render();
+</script><footer><div class="shell">Educational reference tool. Use calibrated instruments and manufacturer instructions for decisions involving water chemistry, nutrients, or equipment.</div></footer></body></html>
