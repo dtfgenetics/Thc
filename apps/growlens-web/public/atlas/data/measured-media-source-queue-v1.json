@@ -148,6 +148,40 @@
       "scaleStatus": "verify per original panel",
       "decision": "high-priority-source-candidate",
       "reason": "Cannabis-specific capitate-stalked head/stalk microscopy and strongest route for the two remaining trichome-specific microscopy slots."
+    },
+    {
+      "candidateId": "MM-CST-MDPI-2026",
+      "targetEntities": [
+        "capitate-stalked-trichome",
+        "trichome-gland-head"
+      ],
+      "speciesOrCultivar": "Cannabis sativa female bract",
+      "tissue": "female bract surface / capitate-stalked glandular trichome",
+      "modality": "microscope photography + schematic",
+      "sourceUrl": "https://www.mdpi.com/2223-7747/15/18/2810",
+      "figure": "Figures 1-2",
+      "license": "MDPI open-access; article license must be verified at figure level before ingestion",
+      "resolutionStatus": "publisher production image not yet ingested",
+      "scaleStatus": "verify original panel scale and image metadata",
+      "decision": "high-priority-source-candidate",
+      "reason": "2026 Cannabis-specific trichome review includes microscope photographs of bract trichome types and a capitate-stalked glandular trichome."
+    },
+    {
+      "candidateId": "MM-CST-WILEY-2020",
+      "targetEntities": [
+        "capitate-stalked-trichome",
+        "trichome-gland-head"
+      ],
+      "speciesOrCultivar": "Cannabis sativa 'Finola'",
+      "tissue": "female flower calyx / glandular trichomes",
+      "modality": "cryo-SEM + conventional SEM",
+      "sourceUrl": "https://doi.org/10.1111/tpj.14516",
+      "figure": "Figure 1c-f",
+      "license": "publisher article; reuse terms require figure-level review",
+      "resolutionStatus": "production image not yet ingested",
+      "scaleStatus": "500 µm conventional SEM and 20 µm cryo-SEM bars reported",
+      "decision": "research-reference-only",
+      "reason": "Excellent morphology source distinguishing stalked, sessile and bulbous glandular trichomes, but reuse terms require verification before Atlas production ingestion."
     }
   ]
 }
