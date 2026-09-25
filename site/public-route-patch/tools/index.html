@@ -61,11 +61,15 @@
     .section.dark .section-heading>p{color:#c5d7ca}
     h2{margin-bottom:0;font-size:clamp(2.35rem,4.4vw,4.25rem);line-height:.96;letter-spacing:-.052em;text-wrap:balance}
     h3{letter-spacing:-.025em}
-    .reference-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:22px}
-    .reference-card{display:flex;flex-direction:column;min-height:188px;padding:20px;border-radius:20px;background:var(--paper);border:1px solid rgba(17,43,28,.11);box-shadow:0 10px 28px rgba(17,43,28,.06);text-decoration:none;transition:transform .18s ease,box-shadow .18s ease}
-    .reference-card:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(17,43,28,.11)}
-    .reference-card .ref-icon{display:grid;place-items:center;width:42px;height:42px;margin-bottom:28px;border-radius:13px;background:#edf3ec;color:var(--leaf);font-weight:950}
-    .reference-card strong{font-size:1.08rem}.reference-card span{display:block;margin-top:5px;color:var(--muted);font-size:.88rem;line-height:1.5}
+    .reference-launcher{margin-top:34px;padding:18px;border:1px solid rgba(255,255,255,.14);border-radius:26px;background:rgba(4,20,12,.48);backdrop-filter:blur(12px);box-shadow:0 24px 58px rgba(0,0,0,.16)}
+    .reference-launcher-head{display:flex;align-items:end;justify-content:space-between;gap:20px;padding:4px 5px 15px}
+    .reference-launcher-head strong{display:block;font-size:1.04rem;color:#fff}.reference-launcher-head span{display:block;margin-top:3px;color:#bcd1c2;font-size:.88rem}
+    .reference-launcher-head small{color:#efd786;font-weight:850;white-space:nowrap}
+    .reference-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+    .reference-card{display:flex;flex-direction:column;min-height:154px;padding:18px;border-radius:18px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.11);text-decoration:none;transition:transform .18s ease,box-shadow .18s ease,background .18s ease}
+    .reference-card:hover,.reference-card:focus-visible{transform:translateY(-3px);background:rgba(255,255,255,.09);box-shadow:0 15px 34px rgba(0,0,0,.2);outline:none}
+    .reference-card .ref-icon{display:grid;place-items:center;width:42px;height:42px;margin-bottom:22px;border-radius:13px;background:rgba(215,185,101,.12);border:1px solid rgba(215,185,101,.18);color:#efd786;font-weight:950}
+    .reference-card strong{font-size:1.04rem;color:#fff}.reference-card span{display:block;margin-top:5px;color:#bcd1c2;font-size:.84rem;line-height:1.45}
     .tool-chooser{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
     .tool-feature{position:relative;min-height:420px;padding:clamp(26px,4vw,42px);border:1px solid rgba(17,43,28,.11);border-radius:26px;background:var(--paper);box-shadow:var(--shadow);overflow:hidden}
     .tool-feature:after{content:"";position:absolute;width:230px;height:230px;border:1px solid rgba(38,120,74,.15);border-radius:50%;right:-92px;bottom:-110px;box-shadow:0 0 0 42px rgba(38,120,74,.035)}
@@ -103,8 +107,8 @@
     footer{background:var(--forest);color:#dfe9e2}
     .footer-inner{width:min(1260px,calc(100% - 42px));margin:auto;padding:48px 0 26px;display:grid;grid-template-columns:1.3fr .7fr .7fr;gap:32px}
     .footer-inner p{max-width:470px;color:#aebfb3}.footer-links{display:flex;flex-direction:column;gap:9px}.footer-links strong{color:#fff}.footer-links a{color:#dfe9e2}.copyright{grid-column:1/-1;padding-top:22px;border-top:1px solid rgba(255,255,255,.11);color:#8fa698;font-size:.88rem}
-    @media(max-width:980px){.hero-grid,.split,.community-callout{grid-template-columns:1fr}.hero-panel{max-width:720px}.quicknav{grid-template-columns:repeat(3,minmax(0,1fr))}.reference-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tool-chooser{grid-template-columns:1fr}.flow{grid-template-columns:repeat(2,minmax(0,1fr))}.learn-rail{grid-template-columns:repeat(2,minmax(0,1fr))}.section-heading{align-items:flex-start;flex-direction:column}.community-callout .actions{justify-content:flex-start}.footer-inner{grid-template-columns:1fr 1fr}}
-    @media(max-width:680px){.wrap,.site-header-inner,.footer-inner{width:min(100% - 28px,1260px)}.reference-grid{grid-template-columns:1fr}.site-header-inner{padding:12px 0;align-items:flex-start}.primary-nav{gap:0}.primary-nav a{padding:8px}.hero{padding:60px 0 72px}.hero h1{font-size:clamp(2.65rem,14vw,4.2rem)}.hero-panel:before{display:none}.quickbar{margin-top:0;padding-top:14px}.quicknav,.flow,.measure-panel,.learn-rail,.footer-inner{grid-template-columns:1fr}.feature-list{grid-template-columns:1fr}.actions .button{width:100%}.tool-feature{min-height:0}.section{padding:56px 0}.community-callout{padding:24px}.copyright{grid-column:1}.primary-nav .shop-link{margin-left:0}}
+    @media(max-width:980px){.hero-grid,.split,.community-callout{grid-template-columns:1fr}.hero-panel{max-width:720px}.quicknav{grid-template-columns:repeat(3,minmax(0,1fr))}.reference-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.tool-chooser{grid-template-columns:1fr}.flow{grid-template-columns:repeat(2,minmax(0,1fr))}.learn-rail{grid-template-columns:repeat(2,minmax(0,1fr))}.section-heading{align-items:flex-start;flex-direction:column}.community-callout .actions{justify-content:flex-start}.footer-inner{grid-template-columns:1fr 1fr}}
+    @media(max-width:680px){.wrap,.site-header-inner,.footer-inner{width:min(100% - 28px,1260px)}.reference-launcher{padding:14px}.reference-launcher-head{align-items:flex-start;flex-direction:column}.reference-grid{grid-template-columns:1fr}.site-header-inner{padding:12px 0;align-items:flex-start}.primary-nav{gap:0}.primary-nav a{padding:8px}.hero{padding:60px 0 72px}.hero h1{font-size:clamp(2.65rem,14vw,4.2rem)}.hero-panel:before{display:none}.quickbar{margin-top:0;padding-top:14px}.quicknav,.flow,.measure-panel,.learn-rail,.footer-inner{grid-template-columns:1fr}.feature-list{grid-template-columns:1fr}.actions .button{width:100%}.tool-feature{min-height:0}.section{padding:56px 0}.community-callout{padding:24px}.copyright{grid-column:1}.primary-nav .shop-link{margin-left:0}}
   </style>
 </head>
 <body>
@@ -124,13 +128,7 @@
           <h1>Grow with records. Diagnose with evidence.</h1>
           <p class="lede">Use THC GrowLens to capture what happened, THC Grow Doc to investigate plant-health problems in context, and open the Plant Atlas, Terpene Atlas, pH, TDS/EC and VPD references without leaving the cultivation workflow.</p>
           <div class="actions"><a class="button primary" href="/growlens/">Open GrowLens</a><a class="button" href="/thc-grow-doc/">Open Grow Doc</a><a class="button" href="/learn/">Open Learning Center</a></div>
-          <div class="reference-grid" aria-label="Reference tools">
-            <a class="reference-card" href="/atlas/" target="_blank" rel="noopener"><b class="ref-icon">3D</b><strong>Plant Atlas</strong><span>Open the interactive plant anatomy explorer.</span></a>
-            <a class="reference-card" href="/terpene-atlas/" target="_blank" rel="noopener"><b class="ref-icon">TR</b><strong>Terpene Atlas</strong><span>Explore terpene chemistry, families, evidence and occurrence.</span></a>
-            <a class="reference-card" href="/ph-meter/" target="_blank" rel="noopener"><b class="ref-icon">pH</b><strong>pH Meter</strong><span>Interpret calibrated pH readings and reference common cultivation ranges.</span></a>
-            <a class="reference-card" href="/tds-meter/" target="_blank" rel="noopener"><b class="ref-icon">EC</b><strong>TDS / EC Meter</strong><span>Convert conductivity and common 500/700 ppm scales.</span></a>
-            <a class="reference-card" href="/vpd-chart/" target="_blank" rel="noopener"><b class="ref-icon">VP</b><strong>VPD Chart</strong><span>Calculate approximate leaf VPD and inspect nearby conditions.</span></a>
-          </div>
+
         </div>
         <aside class="hero-panel" aria-label="Connected cultivation workflow">
           <h2>One connected workflow</h2>
@@ -141,6 +139,21 @@
             <article><b>04</b><div><strong>Learn & verify</strong><span>Check the supporting science, make a defensible change, then track the response.</span></div></article>
           </div>
         </aside>
+      </div>
+      <div class="wrap">
+        <div class="reference-launcher" aria-labelledby="reference-tools-title">
+          <div class="reference-launcher-head">
+            <div><strong id="reference-tools-title">Cultivation reference desk</strong><span>Keep these tools open beside your grow records and diagnostic workflow.</span></div>
+            <small>Each reference opens in a new tab</small>
+          </div>
+          <div class="reference-grid">
+            <a class="reference-card" href="/atlas/" target="_blank" rel="noopener" aria-label="Open Plant Atlas in a new tab"><b class="ref-icon">3D</b><strong>Plant Atlas</strong><span>Interactive plant anatomy and structure explorer.</span></a>
+            <a class="reference-card" href="/terpene-atlas/" target="_blank" rel="noopener" aria-label="Open Terpene Atlas in a new tab"><b class="ref-icon">TR</b><strong>Terpene Atlas</strong><span>Terpene chemistry, families, evidence and occurrence.</span></a>
+            <a class="reference-card" href="/ph-meter/" target="_blank" rel="noopener" aria-label="Open pH Meter in a new tab"><b class="ref-icon">pH</b><strong>pH Meter</strong><span>Interpret calibrated readings and cultivation reference ranges.</span></a>
+            <a class="reference-card" href="/tds-meter/" target="_blank" rel="noopener" aria-label="Open TDS and EC Meter in a new tab"><b class="ref-icon">EC</b><strong>TDS / EC Meter</strong><span>Convert conductivity and common 500/700 ppm scales.</span></a>
+            <a class="reference-card" href="/vpd-chart/" target="_blank" rel="noopener" aria-label="Open VPD Chart in a new tab"><b class="ref-icon">VP</b><strong>VPD Chart</strong><span>Calculate leaf VPD and inspect nearby temperature/RH conditions.</span></a>
+          </div>
+        </div>
       </div>
     </section>
 
