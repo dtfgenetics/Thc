@@ -62,7 +62,15 @@ const publicCourseTitle=(course)=>{
     'Water, Root Zone, Nutrition & Irrigation Fundamentals':'Water, Nutrition & Root-Zone Management',
     'Propagation, Canopy, IPM Scouting & Crop Care':'Propagation, Canopy & Crop Health',
     'Harvest, Postharvest, Traceability & Shift Handoff':'Harvest, Postharvest & Traceability',
-    'Integrated Cultivation Technician Practice Lab':'Technician I Practical Lab'
+    'Integrated Cultivation Technician Practice Lab':'Technician I Practical Lab',
+    'Advanced Crop Observation & Diagnostic Reasoning':'Advanced Crop Diagnostics',
+    'Environmental Data, Sensors & Equipment Response':'Environmental Systems & Equipment Response',
+    'Fertigation Execution, Verification & Root-Zone Interpretation':'Fertigation & Root-Zone Diagnostics',
+    'Plant Health, IPM & Biosecurity Troubleshooting':'Plant Health & IPM Troubleshooting',
+    'Propagation & Canopy Performance Troubleshooting':'Propagation & Canopy Troubleshooting',
+    'Harvest/Postharvest Deviations & Quality Response':'Postharvest Quality & Corrective Action',
+    'Traceability, Production Metrics, Shift Coordination & Peer Support':'Production Records & Shift Leadership',
+    'Integrated Technician II Simulation Lab':'Technician II Simulation Lab'
   };
   return map[course.title]||course.title;
 };
