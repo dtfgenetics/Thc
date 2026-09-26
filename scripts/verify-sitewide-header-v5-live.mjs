@@ -42,8 +42,8 @@ const required = [
     test: text => hasNavLink(text, '/courses/', 'Courses')
   },
   {
-    label: '<a href="/tools/">Diagnostic</a>',
-    test: text => hasNavLink(text, '/tools/', 'Diagnostic')
+    label: '<a href="/tools/">Tools</a>',
+    test: text => hasNavLink(text, '/tools/', 'Tools')
   },
   {
     label: '<a href="/games/">Games</a>',
