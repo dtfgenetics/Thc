@@ -65,13 +65,22 @@ body{
 
 /* Remove duplicate theme page titles when the generated visual system owns the H1. */
 body:has(.v3) :where(.wp-block-post-title,.entry-title,.page-title),
-body:has(.dtf-page) :where(.wp-block-post-title,.entry-title,.page-title){display:none!important}
+body:has(.dtf-page) :where(.wp-block-post-title,.entry-title,.page-title),
+body:has(.dc6) :where(.wp-block-post-title,.entry-title,.page-title),
+body:has(.dtf-courses) :where(.wp-block-post-title,.entry-title,.page-title),
+body:has(.dtf-v1) :where(.wp-block-post-title,.entry-title,.page-title){display:none!important}
 
 /* Keep generated surfaces edge-to-edge instead of inheriting narrow theme content widths. */
 body:has(.v3) :where(main,.wp-site-blocks main),
-body:has(.dtf-page) :where(main,.wp-site-blocks main){margin:0!important;padding:0!important;max-width:none!important}
+body:has(.dtf-page) :where(main,.wp-site-blocks main),
+body:has(.dc6) :where(main,.wp-site-blocks main),
+body:has(.dtf-courses) :where(main,.wp-site-blocks main),
+body:has(.dtf-v1) :where(main,.wp-site-blocks main){margin:0!important;padding:0!important;max-width:none!important}
 body:has(.v3) :where(.entry-content,.wp-block-post-content),
-body:has(.dtf-page) :where(.entry-content,.wp-block-post-content){margin:0!important;padding:0!important;max-width:none!important}
+body:has(.dtf-page) :where(.entry-content,.wp-block-post-content),
+body:has(.dc6) :where(.entry-content,.wp-block-post-content),
+body:has(.dtf-courses) :where(.entry-content,.wp-block-post-content),
+body:has(.dtf-v1) :where(.entry-content,.wp-block-post-content){margin:0!important;padding:0!important;max-width:none!important}
 
 /* Shared reading rhythm. */
 .dtf-page,.v3,.lhv3,.game-hub-page,body:has(.tool-chooser){color:var(--dtf-ux-ink)}
