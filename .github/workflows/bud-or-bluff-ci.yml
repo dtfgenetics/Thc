@@ -42,6 +42,9 @@ jobs:
           php -l site/public-route-patch/games/bud-or-bluff/api-v2.php
           php -l site/public-route-patch/games/bud-or-bluff/api-v3.php
           php -l site/public-route-patch/games/bud-or-bluff/deck.php
+      - name: Verify restricted-storage resilience
+        run: node games/bud-or-bluff/test/storage-safety.test.mjs
+
       - name: Verify keyboard shortcut visibility safety
         run: node games/bud-or-bluff/test/keyboard-v1.test.mjs
       - name: Verify gameplay visual states
