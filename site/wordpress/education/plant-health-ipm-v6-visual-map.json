@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-25",
+  "updatedAt": "2026-09-25",
   "curriculumId": "plant-health-ipm-v6",
   "route": "/learn/ipm/",
   "chapters": {
@@ -14,11 +14,6 @@
         "file": "THC-ENC-001_VIS-06_Measurement_Quality_Chain.jpg",
         "title": "Measurement Quality Chain",
         "alt": "Educational diagram showing how sampling, measurement and interpretation quality affect plant-health decisions."
-      },
-      {
-        "file": "Diagnosing_Deficiency_vs_Toxicity_Infographic.png",
-        "title": "Deficiency Versus Toxicity Diagnostic Reasoning",
-        "alt": "Educational infographic comparing evidence patterns used to separate deficiency and toxicity hypotheses."
       }
     ],
     "exclusion-sanitation-stock": [
@@ -49,11 +44,6 @@
     ],
     "hlvd-systemic-pathogens": [],
     "biological-cultural-product-controls": [
-      {
-        "file": "Beneficial_Insects_and_Biological_Controls.png",
-        "title": "Beneficial Insects & Biological Controls",
-        "alt": "Educational infographic introducing beneficial insects and biological-control concepts within an integrated pest-management program."
-      },
       {
         "file": "THC-ENC-078_Defense_Signaling.jpg",
         "title": "Plant Defense Signaling",
@@ -120,6 +110,18 @@
       "status": "needed",
       "title": "Resistance Management, Biological Compatibility & Post-Treatment Verification",
       "neededVisual": "An IPM planning matrix that separates legal label requirements from mode-of-action rotation, biological-control compatibility, coverage/timing, pre-treatment baseline, post-treatment scouting and recurrence prevention without giving unsafe pesticide mixing instructions."
+    }
+  ],
+  "removedQuarantinedVisuals": [
+    {
+      "file": "Diagnosing_Deficiency_vs_Toxicity_Infographic.png",
+      "title": "Deficiency Versus Toxicity Diagnostic Reasoning",
+      "reason": "Quarantined by site/wordpress/visual-quality-policy.json; replacement requires a role-specific dtf-approved-visual-* asset."
+    },
+    {
+      "file": "Beneficial_Insects_and_Biological_Controls.png",
+      "title": "Beneficial Insects & Biological Controls",
+      "reason": "Quarantined by site/wordpress/visual-quality-policy.json; replacement requires a role-specific dtf-approved-visual-* asset."
     }
   ]
 }
