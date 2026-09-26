@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "batchId": "course-visual-batch02-2026-09-26",
+  "status": "draft-review-candidate",
+  "rasterOnly": true,
+  "master": {"width":2550,"height":3300,"dpi":300,"format":"PNG"},
+  "publicationRule": "Do not mark public or approved until subject accuracy, crop review, mobile, tablet and desktop checks pass.",
+  "assets": [
+    {
+      "id": "THC-ENV-01",
+      "filename": "THC-ENV-01_Sensor_Placement_Dew_Point_Canopy_Microclimates.png",
+      "curriculumId": "environment-vpd-v6",
+      "slotId": "environment-vpd-04",
+      "chapter": "sensor-placement-spatial-variation",
+      "title": "Sensor Placement, Dew Point & Canopy Microclimates",
+      "altText": "Educational canopy diagram comparing representative crop-plane sensors with biased room locations and explaining dew-point condensation risk and transition logging.",
+      "teachingPurpose": "Teach that environmental readings are spatial and time-dependent; explain placement bias, canopy microclimates, dew point, transition logging and sensor verification.",
+      "expandedScience": [
+        "A sensor can be accurate at its own location while failing to represent the canopy because walls, HVAC outlets, humidifiers, lights, doors and foliage create gradients.",
+        "Dense foliage can create leaf-zone temperature, humidity and air-movement conditions that differ materially from room-average measurements.",
+        "Condensation risk rises as a plant surface approaches the air dew-point temperature; dew point reflects atmospheric water-vapor content and temperature rather than a universal crop target.",
+        "Transition periods such as lights-off, irrigation and humidification can create short-lived conditions hidden by daily averages.",
+        "Sensor location, crop-plane height, instrument identity, timestamp and verification state should remain attached to the reading."
+      ],
+      "qa": {"subjectAccuracy":false,"cropReview":false,"mobile":false,"tablet":false,"desktop":false}
+    },
+    {
+      "id": "THC-WATER-03",
+      "filename": "THC-WATER-03_Container_Water_Distribution_Sensor_Placement.png",
+      "curriculumId": "water-root-zone-v6",
+      "slotId": "water-root-zone-01-reference",
+      "chapter": "media-physical-storage",
+      "title": "Container Water Distribution & Sensor Placement",
+      "altText": "Container cross-section showing emitter wetting pattern, roots, local moisture gradients, representative and biased sensor positions, drainage and post-irrigation water-status change.",
+      "teachingPurpose": "Explain spatial water distribution, local sensor bias, water-content versus water-availability concepts and why dryback needs a defined metric and method.",
+      "expandedScience": [
+        "Container water status is spatial because irrigation pattern, substrate structure, geometry, root occupancy and drainage create horizontal and vertical gradients.",
+        "A probe reports its local environment and may systematically misrepresent the crop when it sits beside an emitter, wall, container bottom, saturated pocket or unrooted area.",
+        "Volumetric water content describes amount of water present, while matric forces and salinity influence how difficult that water is for roots to acquire.",
+        "The post-irrigation curve contains drainage, redistribution, evaporation and plant water use; the entire decline should not automatically be attributed to plant uptake.",
+        "Dryback comparisons require the measurement metric, units, start and end points, sensor position, substrate and timing."
+      ],
+      "qa": {"subjectAccuracy":false,"cropReview":false,"mobile":false,"tablet":false,"desktop":false}
+    },
+    {
+      "id": "THC-IPM-01",
+      "filename": "THC-IPM-01_IPM_Scouting_Differential_Diagnosis.png",
+      "curriculumId": "plant-health-ipm-v6",
+      "slotId": "plant-health-ipm-01",
+      "chapter": "scouting-detection-identification",
+      "title": "IPM Scouting & Differential Diagnosis",
+      "altText": "Educational IPM diagram showing a repeatable scouting route, spatial symptom patterns, differential evidence board and evidence-based decision workflow.",
+      "teachingPurpose": "Make scouting repeatable and teach learners to use pattern, supporting and conflicting evidence, confirmation steps and trend data before assigning a diagnosis.",
+      "expandedScience": [
+        "Repeatable scouting should inspect new growth, leaf undersides, stems, media surfaces and monitoring cards using the same route and sampling unit through time.",
+        "Spatial patterns can help distinguish localized biological spread from irrigation-zone, edge, light-footprint or room-wide abiotic patterns.",
+        "A useful differential separates observation, supporting evidence, conflicting evidence and the next confirmation step rather than jumping directly from symptom to cause.",
+        "Detection does not automatically equal treatment; crop stage, population or disease trend, risk and legally available controls influence the action threshold.",
+        "Plant or zone identity, date, counts including zero counts, images, context, intervention and follow-up should remain in the record."
+      ],
+      "qa": {"subjectAccuracy":false,"cropReview":false,"mobile":false,"tablet":false,"desktop":false}
+    }
+  ]
+}
