@@ -169,7 +169,7 @@ h1{font-size:clamp(2.35rem,6vw,4.7rem);line-height:1.02;letter-spacing:-.045em;m
 .actions{display:flex;gap:9px;flex-wrap:wrap;margin:24px 0}.panel{background:var(--deep);color:white;border-radius:24px;padding:28px;margin:30px 0}.panel p{color:#d8e7dc;line-height:1.7}
 .glossary{display:grid;grid-template-columns:repeat(auto-fit,minmax(265px,1fr));gap:13px}.term{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}.term dt{font-weight:900}.term dd{margin:7px 0 0;color:var(--muted);line-height:1.55}
 .record{break-inside:avoid;background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0}.record ul{columns:2;gap:28px}.searchbox{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0}.searchbox input{min-width:min(100%,520px);flex:1;padding:14px 16px;border:1px solid #afc7b6;border-radius:999px;font-size:1rem}.searchbox button{border:0;border-radius:999px;padding:14px 19px;background:var(--green);color:#fff;font-weight:900}
-@media(max-width:640px){main{padding-top:26px}.record ul{columns:1}}@media print{.actions,.searchbox{display:none}body{background:#fff}.record,.card{box-shadow:none}}
+@media(max-width:700px){main{padding-top:26px}.record ul{columns:1}}@media print{.actions,.searchbox{display:none}body{background:#fff}.record,.card{box-shadow:none}}
 </style>`;
 
 function actionsHtml(actions=[]) {
