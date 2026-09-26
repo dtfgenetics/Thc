@@ -90,30 +90,35 @@ jobs:
           echo "units=$(node -p "require(process.argv[1]).units" "$report")" >> "$GITHUB_OUTPUT"
           echo "exercises=$(node -p "require(process.argv[1]).exercises" "$report")" >> "$GITHUB_OUTPUT"
           echo "capstones=$(node -p "require(process.argv[1]).capstones" "$report")" >> "$GITHUB_OUTPUT"
+          echo "page_id=$(node -p "require(process.argv[1]).pageId" "$report")" >> "$GITHUB_OUTPUT"
 
-      - name: Verify fresh visitor Academy page
+      - name: Verify WordPress Academy mirror by authenticated readback
         id: verify
         shell: bash
+        env:
+          ACADEMY_PAGE_ID: ${{ steps.publish.outputs.page_id }}
         run: |
           set -euo pipefail
-          body="$RUNNER_TEMP/academy-v2-live.html"
-          ok=0
-          for attempt in 1 2 3 4 5 6 7 8; do
-            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
-              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
-              "$WP_SITE_URL/learn/academy/?dtf_av2_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
-            if grep -Fq 'data-dtf-academy-v2="true"' "$body"; then ok=1; break; fi
-            sleep 6
-          done
-          [[ "$ok" -eq 1 ]]
-          [[ "$(grep -Fo 'data-av2-course=' "$body" | wc -l | tr -d ' ')" = '12' ]]
-          [[ "$(grep -Fo 'class="av2-unit"' "$body" | wc -l | tr -d ' ')" = '60' ]]
-          [[ "$(grep -Fo 'class="av2-exercise"' "$body" | wc -l | tr -d ' ')" = '24' ]]
-          [[ "$(grep -Fo 'class="av2-capstone"' "$body" | wc -l | tr -d ' ')" = '12' ]]
-          grep -Fq 'Practice the system, not just the vocabulary.' "$body"
-          grep -Fq '/learn/research-methods/' "$body"
-          grep -Fq '/learn/ipm/' "$body"
-          grep -Fq '/learn/harvest-postharvest/' "$body"
+          body="$RUNNER_TEMP/academy-v2-wordpress.json"
+          curl -4 --fail --silent --show-error --retry 4 --retry-all-errors --retry-delay 3 \
+            --user "$WP_API_USERNAME:$WP_API_PASSWORD" \
+            "$WP_SITE_URL/wp-json/wp/v2/pages/$ACADEMY_PAGE_ID?context=edit" --output "$body"
+          node --input-type=module - "$body" <<'NODE'
+          import fs from 'node:fs';
+          const payload = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+          const html = payload?.content?.raw || payload?.content?.rendered || '';
+          const count = (needle) => html.split(needle).length - 1;
+          if (payload?.status !== 'publish') throw new Error('Academy WordPress mirror is not published.');
+          if (!html.includes('data-dtf-academy-v2="true"')) throw new Error('Academy V2 marker missing from WordPress mirror.');
+          if (count('data-av2-course=') !== 12) throw new Error('Academy WordPress mirror must contain 12 courses.');
+          if (count('class="av2-unit"') !== 60) throw new Error('Academy WordPress mirror must contain 60 guided units.');
+          if (count('class="av2-exercise"') !== 24) throw new Error('Academy WordPress mirror must contain 24 exercises.');
+          if (count('class="av2-capstone"') !== 12) throw new Error('Academy WordPress mirror must contain 12 capstones.');
+          for (const marker of ['Practice the system, not just the vocabulary.','/learn/research-methods/','/learn/ipm/','/learn/harvest-postharvest/']) {
+            if (!html.includes(marker)) throw new Error(`Academy WordPress mirror missing marker: ${marker}`);
+          }
+          console.log(JSON.stringify({verified:true,pageId:payload.id,status:payload.status,courses:12,units:60,exercises:24,capstones:12}, null, 2));
+          NODE
 
       - name: Upload publication and rollback evidence
         if: always()
@@ -123,7 +128,7 @@ jobs:
           path: |
             /tmp/dtf-academy-v2
             ${{ runner.temp }}/academy-v2-publish.log
-            ${{ runner.temp }}/academy-v2-live.html
+            ${{ runner.temp }}/academy-v2-wordpress.json
           if-no-files-found: warn
           retention-days: 30
 
@@ -145,13 +150,17 @@ jobs:
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Result: **${process.env.STATUS}**`,
               `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
-              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `WordPress mirror verification: **${process.env.VERIFY || 'not-run'}**`,
               `Courses: **${process.env.COURSES || '0'}**`,
               `Guided units: **${process.env.UNITS || '0'}**`,
               `Practical exercises: **${process.env.EXERCISES || '0'}**`,
               `Capstones: **${process.env.CAPSTONES || '0'}**`, '',
-              'The Academy remains on the canonical /learn/academy/ route and links directly to the live V6 subject system.'
+              'Public /learn/academy/ delivery is owned by the Dtf420 static overlay; this workflow verifies the WordPress Academy mirror only.'
             ].join('\n');
             for (const issue_number of [46,142]) {
-              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
+              try {
+                await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
+              } catch (error) {
+                core.warning(`Could not post Academy report to issue #${issue_number}: ${error.message}`);
+              }
             }
