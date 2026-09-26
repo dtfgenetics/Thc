@@ -126,6 +126,7 @@ const diagnosticCaseLabV2 = read("scripts/publish-wordpress-diagnostic-case-lab-
 const shopStorefrontV5 = read("scripts/polish-wordpress-shop-storefront-v5.mjs");
 const canonicalVisualSite = read("scripts/rebuild-wordpress-visual-site.mjs");
 const visualPolishV3 = read("scripts/polish-wordpress-visual-site-v3.mjs");
+const geneticsVisualsV4 = read("scripts/polish-wordpress-genetics-visuals-v4.mjs");
 const visualLibraryResponsiveFiles = [
   "scripts/publish-wordpress-approved-visual-library.mjs",
   "scripts/rebuild-wordpress-infographic-gallery.mjs",
@@ -270,6 +271,9 @@ if (/@media\(max-width:(?:980|640)px\)/.test(canonicalVisualSite)) {
 }
 if (/@media\(min-width:981px\)|@media\(max-width:(?:980|720)px\)/.test(visualPolishV3)) {
   failures.push("Visual polish v3 must use canonical 901+/900/700 bands.");
+}
+if (/@media\(max-width:(?:980|660)px\)/.test(geneticsVisualsV4)) {
+  failures.push("Genetics Visuals v4 must use canonical 900/700 bands.");
 }
 for (const rel of v6CourseResponsiveFiles) {
   const source = read(rel);
