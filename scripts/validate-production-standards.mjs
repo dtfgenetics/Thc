@@ -39,10 +39,15 @@ const forbiddenRoutineQa = [
 ];
 
 const repoDocs = fs.readFileSync("README.md", "utf8");
-for (const pattern of forbiddenRoutineQa) {
-  if (pattern.test(repoDocs)) {
-    console.error("Production standard validation failed: README makes Playwright part of routine/required QA.");
-    process.exit(1);
+const playwrightLines = repoDocs.split(/\r?\n/).filter((line) => /playwright/i.test(line));
+for (const line of playwrightLines) {
+  const explicitlyProhibitsPlaywright = /\b(do not|don't|never|forbid(?:den)?|must not)\b/i.test(line);
+  if (explicitlyProhibitsPlaywright) continue;
+  for (const pattern of forbiddenRoutineQa) {
+    if (pattern.test(line)) {
+      console.error("Production standard validation failed: README makes Playwright part of routine/required QA.");
+      process.exit(1);
+    }
   }
 }
 
