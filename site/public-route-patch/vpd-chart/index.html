@@ -1,46 +1,56 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>VPD Chart | DTF Genetics</title>
-<meta name="description" content="Interactive vapor pressure deficit calculator and reference chart using air temperature, humidity and leaf temperature offset." />
-<link rel="canonical" href="https://dtfseeds.com/vpd-chart/" />
+<meta name="description" content="Interactive vapor pressure deficit reference using air temperature, relative humidity and leaf-temperature offset with Celsius and Fahrenheit support.">
+<link rel="canonical" href="https://dtfseeds.com/vpd-chart/">
 <style>
-:root{--forest:#07170f;--forest2:#0d2d1d;--leaf:#37d66b;--gold:#e0c575;--cream:#f7f3e8;--paper:#fffdf7;--ink:#12281b;--muted:#5e7164;--line:#d8e2da}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--cream);color:var(--ink);line-height:1.55}
-a{color:inherit}.shell{width:min(1100px,calc(100% - 28px));margin:auto}.top{background:linear-gradient(135deg,var(--forest),var(--forest2));color:#fff;border-bottom:1px solid rgba(255,255,255,.12)}
-.topin{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{font-weight:950;text-decoration:none;font-size:1.15rem}.brand span{display:block;color:var(--gold);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;margin-top:3px}
-.nav{display:flex;flex-wrap:wrap;gap:6px}.nav a{padding:9px 11px;border-radius:10px;text-decoration:none;font-weight:800;color:#e9f2ec}.nav a:hover{background:rgba(255,255,255,.08)}
-.hero{padding:64px 0 42px;background:radial-gradient(circle at 90% 10%,rgba(224,197,117,.18),transparent 25%),linear-gradient(145deg,#07170f,#123b26);color:#fff}
-.eyebrow{color:var(--gold);font-weight:900;text-transform:uppercase;letter-spacing:.14em;font-size:.72rem}.hero h1{font-size:clamp(2.5rem,8vw,5.2rem);line-height:.92;letter-spacing:-.05em;margin:.25rem 0 1rem}.hero p{max-width:760px;color:#d5e4da;font-size:1.05rem}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:38px 0}.card{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 12px 30px rgba(17,43,28,.07)}.card h2,.card h3{margin-top:0}
-.inputrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px}.field label{font-weight:850}.field input,.field select{width:100%;padding:13px 14px;border:1px solid #bfcfc3;border-radius:12px;background:#fff;font:inherit}
-.result{margin-top:18px;padding:18px;border-radius:16px;background:#edf6ef;border:1px solid #c9dfcf}.result strong{font-size:1.35rem}
-.note{font-size:.92rem;color:var(--muted)}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}.tabs a{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);padding:10px 13px;border-radius:12px;text-decoration:none;font-weight:850}
-table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px solid var(--line);text-align:left}th{font-size:.82rem;text-transform:uppercase;letter-spacing:.06em}
-.good{background:#dff5e6}.mid{background:#f8efca}.high{background:#f4d9d9}
-footer{padding:28px 0 40px;color:var(--muted)}
-@media(max-width:760px){.nav{display:none}.grid,.inputrow{grid-template-columns:1fr}.hero{padding-top:48px}}
+:root{--deep:#07170f;--deep2:#113823;--gold:#d7b965;--cream:#f7f3e9;--paper:#fffdf8;--ink:#112b1c;--muted:#5b6d61;--line:#d8e2da;--leaf:#26784a}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.6 Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:inherit}.shell{width:min(1220px,calc(100% - 32px));margin:auto}
+.top{background:linear-gradient(135deg,var(--deep),var(--deep2));color:#fff}.topin{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{font-weight:950;text-decoration:none}.brand span{display:block;color:var(--gold);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase}.nav{display:flex;gap:5px;flex-wrap:wrap}.nav a{padding:9px 10px;border-radius:10px;text-decoration:none;font-weight:800;color:#e8f1eb}
+.hero{padding:66px 0 44px;background:radial-gradient(circle at 88% 12%,rgba(215,185,101,.21),transparent 28%),linear-gradient(145deg,#07170f,#123b26);color:#fff}.eyebrow{margin:0;color:var(--gold);font-size:.72rem;font-weight:950;letter-spacing:.14em;text-transform:uppercase}.hero h1{margin:.2rem 0 .8rem;font-size:clamp(3rem,8vw,6rem);line-height:.9;letter-spacing:-.055em}.hero p{max-width:800px;margin:0;color:#d5e4da}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}.tabs a{padding:9px 12px;border:1px solid rgba(255,255,255,.16);border-radius:11px;background:rgba(255,255,255,.06);text-decoration:none;font-weight:850}
+.workspace{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:20px;padding:38px 0}.panel{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 14px 32px rgba(17,43,28,.06)}.panel h2{margin:0 0 16px;font-size:1.35rem}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-weight:850}.field input,.field select{min-height:48px;width:100%;padding:10px 12px;border:1px solid #bfcfc3;border-radius:12px;background:#fff;font:inherit}.result{margin-top:18px;padding:19px;border:1px solid #cadecf;border-radius:16px;background:#edf5ef}.result strong{font-size:1.55rem}.muted{color:var(--muted);font-size:.91rem}
+.bandline{display:grid;grid-template-columns:repeat(4,1fr);margin-top:20px;border-radius:14px;overflow:hidden;border:1px solid var(--line)}.bandline div{padding:13px 10px;text-align:center;font-size:.82rem}.low{background:#dceaf3}.mod{background:#dff1df}.higher{background:#f4edc5}.very{background:#f3d9d9}.bandline strong{display:block}
+.chart-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px}.chart{width:100%;min-width:620px;border-collapse:collapse}.chart th,.chart td{padding:9px 10px;text-align:center;border-right:1px solid #e2e8e3;border-bottom:1px solid #e2e8e3}.chart th{background:#f5f7f3;font-size:.8rem}.chart td{font-variant-numeric:tabular-nums}.chart td.active{outline:3px solid #173b27;outline-offset:-3px;font-weight:900}
+.ref-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding-bottom:42px}.ref{padding:20px;border-top:3px solid rgba(38,120,74,.45);background:#fff;border-radius:0 0 16px 16px}.ref h3{margin:0 0 8px}.ref p,.ref li{color:var(--muted)}.ref ul{margin:0;padding-left:18px}
+footer{padding:28px 0 42px;color:var(--muted)}
+@media(max-width:850px){.workspace{grid-template-columns:1fr}.ref-grid{grid-template-columns:1fr 1fr}.nav{display:none}}@media(max-width:600px){.shell{width:min(100% - 24px,1220px)}.ref-grid,.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.bandline{grid-template-columns:1fr 1fr}.panel{padding:19px}.tabs a{flex:1 1 140px;text-align:center}}
 </style>
 </head>
-<body><header class="top"><div class="shell topin"><a class="brand" href="/">DTF Genetics<span>Dream the Future</span></a><nav class="nav" aria-label="Primary navigation"><a href="/">Home</a><a href="/seeds/">Seeds</a><a href="/learn/">Learn</a><a href="/courses/">Courses</a><a href="/tools/">Diagnostic</a><a href="/games/">Games</a><a href="/community/">Community</a><a href="/shop/">Shop</a></nav></div></header>
-<section class="hero"><div class="shell"><p class="eyebrow">Reference Tool</p><h1>VPD Chart</h1><p>Calculate approximate leaf VPD from air temperature, relative humidity, and leaf-temperature offset, then compare nearby conditions in an interactive reference table.</p>
-<div class="tabs"><a href="/tools/">All Tools</a><a href="/atlas/" target="_blank" rel="noopener">Plant Atlas</a><a href="/terpene-atlas/" target="_blank" rel="noopener">Terpene Atlas</a><a href="/ph-meter/" target="_blank" rel="noopener">pH Meter</a><a href="/tds-meter/" target="_blank" rel="noopener">TDS / EC Meter</a></div></div></section>
-<main class="shell grid">
-<section class="card"><h2>VPD calculator</h2><div class="inputrow"><div class="field"><label for="temp">Air temperature (°C)</label><input id="temp" type="number" step="0.1" value="26"></div><div class="field"><label for="rh">Relative humidity (%)</label><input id="rh" type="number" min="1" max="100" step="1" value="60"></div></div><div class="field" style="margin-top:12px"><label for="offset">Leaf temperature offset (°C)</label><input id="offset" type="number" step="0.1" value="-1"></div><div class="result" id="vout"></div><p class="note">Approximation uses saturation vapor pressure for leaf temperature minus air vapor pressure. Infrared leaf-temperature measurement improves the estimate.</p></section>
-<section class="card"><h2>Reference bands</h2><table><thead><tr><th>Approx. VPD</th><th>General interpretation</th></tr></thead><tbody><tr><td>&lt; 0.8 kPa</td><td>Low evaporative demand</td></tr><tr><td>0.8–1.2 kPa</td><td>Moderate</td></tr><tr><td>1.2–1.6 kPa</td><td>Higher demand</td></tr><tr><td>&gt; 1.6 kPa</td><td>Very high demand</td></tr></tbody></table><p class="note">These are broad environmental bands, not stage-specific prescriptions. Cultivar, root-zone status, light, airflow, CO₂, and acclimation all affect plant response.</p></section>
-<section class="card" style="grid-column:1/-1"><h2>Nearby VPD table</h2><div style="overflow:auto"><table id="chart"></table></div></section>
+<body>
+<header class="top"><div class="shell topin"><a class="brand" href="/">DTF Genetics<span>Dream the Future</span></a><nav class="nav" aria-label="Primary navigation"><a href="/">Home</a><a href="/seeds/">Seeds</a><a href="/learn/">Learn</a><a href="/courses/">Courses</a><a href="/tools/">Diagnostic</a><a href="/games/">Games</a><a href="/community/">Community</a><a href="/shop/">Shop</a></nav></div></header>
+<section class="hero"><div class="shell"><p class="eyebrow">Cultivation reference</p><h1>VPD Chart</h1><p>Estimate leaf vapor pressure deficit from air temperature, relative humidity, and leaf-temperature offset. Use it as environmental context—not as a one-number diagnosis or a universal stage prescription.</p><div class="tabs"><a href="/tools/">All Tools</a><a href="/ph-meter/" target="_blank" rel="noopener">pH</a><a href="/tds-meter/" target="_blank" rel="noopener">TDS / EC</a><a href="/atlas/" target="_blank" rel="noopener">Plant Atlas</a><a href="/learn/environment-vpd/">Environment & VPD lesson</a></div></div></section>
+<main class="shell">
+<div class="workspace">
+<section class="panel"><h2>Leaf-VPD calculator</h2><div class="fields"><div class="field"><label for="temp">Air temperature</label><input id="temp" type="number" step="0.1" value="26" inputmode="decimal"></div><div class="field"><label for="unit">Temperature unit</label><select id="unit"><option value="c">°C</option><option value="f">°F</option></select></div><div class="field"><label for="rh">Relative humidity (%)</label><input id="rh" type="number" min="1" max="100" step="1" value="60" inputmode="numeric"></div><div class="field"><label for="offset">Leaf offset</label><input id="offset" type="number" step="0.1" value="-1" inputmode="decimal"></div></div><div class="result" id="vout" aria-live="polite"></div><div class="bandline"><div class="low"><strong>&lt;0.8</strong>Low demand</div><div class="mod"><strong>0.8–1.2</strong>Moderate</div><div class="higher"><strong>1.2–1.6</strong>Higher</div><div class="very"><strong>&gt;1.6</strong>Very high</div></div><p class="muted">Broad teaching bands only. Cultivar, root water supply, light, airflow, CO₂, leaf temperature, canopy density, and acclimation all affect plant response.</p></section>
+<section class="panel"><h2>Nearby condition map</h2><p class="muted">This table holds the leaf-temperature offset constant while temperature and RH move around your current reading.</p><div class="chart-wrap"><table class="chart" id="chart"></table></div></section>
+</div>
+<section class="ref-grid">
+<article class="ref"><h3>Air VPD vs leaf VPD</h3><p>Air-based VPD assumes the leaf is at air temperature. Leaf-based VPD uses leaf temperature and better represents the vapor-pressure difference at the leaf surface when a reliable leaf-temperature measurement is available.</p></article>
+<article class="ref"><h3>Sensor placement matters</h3><ul><li>Keep temperature and RH measurements from the same representative zone.</li><li>Record sensor height and location.</li><li>Check canopy interiors and edges instead of relying on one exposed sensor.</li></ul></article>
+<article class="ref"><h3>Transitions matter</h3><p>Lights-off, irrigation, HVAC cycling, dehumidification, door openings, and changing radiation can produce short-lived conditions that daily averages hide. Trend data is often more useful than a single screenshot.</p></article>
+</section>
 </main>
 <script>
-const temp=document.getElementById('temp'),rh=document.getElementById('rh'),offset=document.getElementById('offset'),vout=document.getElementById('vout'),chart=document.getElementById('chart');
+const temp=document.getElementById('temp'),unit=document.getElementById('unit'),rh=document.getElementById('rh'),offset=document.getElementById('offset'),vout=document.getElementById('vout'),chart=document.getElementById('chart');
 const svp=t=>0.6108*Math.exp((17.27*t)/(t+237.3));
-function calc(t,h,o){return Math.max(0,svp(t+o)-svp(t)*(h/100))}
-function cls(v){return v<0.8?'good':v<=1.2?'mid':v<=1.6?'mid':'high'}
-function render(){const t=Number(temp.value),h=Number(rh.value),o=Number(offset.value);if(!Number.isFinite(t)||!Number.isFinite(h)||h<=0||h>100||!Number.isFinite(o)){vout.innerHTML='<strong>Enter valid conditions.</strong>';return}
-const v=calc(t,h,o);vout.innerHTML='<strong>'+v.toFixed(2)+' kPa</strong><br>Leaf temperature: '+(t+o).toFixed(1)+' °C';
-const temps=[t-2,t-1,t,t+1,t+2].map(x=>Math.round(x*10)/10),rhs=[Math.max(20,h-10),Math.max(20,h-5),h,Math.min(95,h+5),Math.min(95,h+10)];
-let html='<thead><tr><th>Temp / RH</th>'+rhs.map(x=>'<th>'+Math.round(x)+'%</th>').join('')+'</tr></thead><tbody>';
-for(const tt of temps){html+='<tr><th>'+tt.toFixed(1)+'°C</th>'+rhs.map(x=>{const z=calc(tt,x,o);return '<td class="'+cls(z)+'">'+z.toFixed(2)+'</td>'}).join('')+'</tr>'}chart.innerHTML=html+'</tbody>'}
-[temp,rh,offset].forEach(el=>el.addEventListener('input',render));render();
-</script><footer><div class="shell">Educational reference tool. Use calibrated instruments and manufacturer instructions for decisions involving water chemistry, nutrients, or equipment.</div></footer></body></html>
+const toC=(v,u)=>u==='f'?(v-32)*5/9:v;
+const deltaC=(v,u)=>u==='f'?v*5/9:v;
+const fromC=(v,u)=>u==='f'?v*9/5+32:v;
+const calc=(air,rhValue,leaf)=>Math.max(0,svp(leaf)-svp(air)*(rhValue/100));
+function band(v){return v<0.8?'low':v<=1.2?'mod':v<=1.6?'higher':'very'}
+function render(){
+ const rawT=Number(temp.value),h=Number(rh.value),rawO=Number(offset.value),u=unit.value;
+ if(!Number.isFinite(rawT)||!Number.isFinite(h)||h<=0||h>100||!Number.isFinite(rawO)){vout.innerHTML='<strong>Enter valid conditions.</strong>';return}
+ const air=toC(rawT,u),o=deltaC(rawO,u),leaf=air+o,v=calc(air,h,leaf);
+ const unitSymbol=u==='f'?'°F':'°C';
+ vout.innerHTML='<strong>'+v.toFixed(2)+' kPa</strong><br>Air '+rawT.toFixed(1)+' '+unitSymbol+' · leaf '+fromC(leaf,u).toFixed(1)+' '+unitSymbol+' · RH '+h.toFixed(0)+'%';
+ const temps=[air-2,air-1,air,air+1,air+2],rhs=[Math.max(20,h-10),Math.max(20,h-5),h,Math.min(95,h+5),Math.min(95,h+10)];
+ let html='<thead><tr><th>Temp / RH</th>'+rhs.map(x=>'<th>'+Math.round(x)+'%</th>').join('')+'</tr></thead><tbody>';
+ temps.forEach((tt,ti)=>{html+='<tr><th>'+fromC(tt,u).toFixed(1)+unitSymbol+'</th>';rhs.forEach((hh,hi)=>{const z=calc(tt,hh,tt+o);const active=ti===2&&hi===2?' active':'';html+='<td class="'+band(z)+active+'">'+z.toFixed(2)+'</td>'});html+='</tr>'});chart.innerHTML=html+'</tbody>';
+}
+[temp,rh,offset].forEach(el=>el.addEventListener('input',render));unit.addEventListener('change',()=>{const current=Number(temp.value),off=Number(offset.value);if(unit.value==='f'){temp.value=(current*9/5+32).toFixed(1);offset.value=(off*9/5).toFixed(1)}else{temp.value=((current-32)*5/9).toFixed(1);offset.value=(off*5/9).toFixed(1)}render()});render();
+</script>
+<footer><div class="shell">Educational environmental reference. For leaf-based VPD, use representative air temperature/RH and a reliable leaf-temperature measurement; do not treat VPD alone as proof of plant stress.</div></footer>
+</body></html>
