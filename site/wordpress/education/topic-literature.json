@@ -137,6 +137,12 @@
           "title": "Plant Physiology and Development",
           "organization": "Sinauer/Oxford University Press",
           "note": "General reference for plant water relations, source–sink biology, hormones, and development."
+        },
+        {
+          "title": "AGRO 807 – Plant Water Relations",
+          "organization": "University of Nebraska–Lincoln",
+          "url": "https://agronomy.unl.edu/agro-807-plant-water-relations/",
+          "note": "University course framework covering water potential, root uptake, xylem/phloem transport, transpiration, stomata, leaf energy balance, and whole-canopy water relations."
         }
       ]
     },
@@ -694,21 +700,24 @@
       ],
       "references": [
         {
+          "title": "Calculating and Using Daily Light Integral (DLI): An Introductory Guide",
+          "organization": "Virginia Tech / Virginia Cooperative Extension",
+          "year": 2025,
+          "url": "https://spes.vt.edu/content/pubs_ext_vt_edu/en/SPES/spes-720/spes-720.html",
+          "note": "Extension reference connecting DLI, PPFD at crop height, greenhouse transmission, and supplemental-light duration."
+        },
+        {
+          "title": "Supplemental Lighting Run Time Worksheet",
+          "organization": "University of New Hampshire Extension",
+          "url": "https://extension.unh.edu/resource/supplemental-lighting-run-time-worksheet",
+          "note": "Practical extension worksheet connecting measured PPFD and DLI to supplemental-light runtime."
+        },
+        {
           "title": "How the Distribution of Photon Delivery Impacts Crops in Indoor Plant Environments: A Review",
           "year": 2023,
           "doi": "10.3390/su15054645",
-          "note": "Reviews equal-DLI treatments delivered through different intensity and photoperiod schedules and shows that delivery pattern can alter crop response."
-        },
-        {
-          "title": "Light emitting diode (LED) lights for the improvement of plant performance and production: A comprehensive review",
-          "year": 2024,
-          "doi": "10.1016/j.crbiot.2024.100184",
-          "note": "Reviews interactions among light quantity, spectrum, photoperiod, plant development, and environmental factors."
-        },
-        {
-          "title": "Daily Light Integral Defined",
-          "organization": "Michigan State University",
-          "note": "Foundational extension explanation of DLI as accumulated photosynthetic light."
+          "url": "https://doi.org/10.3390/su15054645",
+          "note": "Reviews how equal-DLI treatments delivered through different intensity and photoperiod schedules can produce different crop responses."
         }
       ]
     },
@@ -978,9 +987,16 @@
       ],
       "references": [
         {
-          "title": "Greenhouse and nursery substrate physical-property guidance",
-          "organization": "Land-grant university extension",
-          "note": "General reference for air-filled porosity, water-holding capacity, and container effects."
+          "title": "Greenhouse Media Testing",
+          "organization": "University of Illinois Extension",
+          "url": "https://extension.illinois.edu/soil/greenhouse-media-testing",
+          "note": "Extension reference on greenhouse-media testing and the role of exchange capacity and media-specific interpretation."
+        },
+        {
+          "title": "Greenhouse Growing Media",
+          "organization": "Cornell University",
+          "url": "https://courses.cit.cornell.edu/hort494/greenhouse/soil/medialft.html",
+          "note": "Reference on media pH drivers, irrigation-water alkalinity, fertilizer effects, and cation exchange capacity."
         }
       ]
     },
@@ -1113,10 +1129,17 @@
       ],
       "references": [
         {
-          "title": "Scouting 101: catch problems early, grow happier plants",
-          "organization": "University of Minnesota Extension",
-          "year": 2025,
-          "note": "Current extension example emphasizing routine scouting and early detection."
+          "title": "Integrated Pest Management in Greenhouse Crops",
+          "organization": "Michigan State University Extension",
+          "url": "https://www.canr.msu.edu/uploads/resources/pdfs/pest_scouting_in_greenhouses.pdf",
+          "note": "Extension bulletin emphasizing repeatable scouting, life-stage identification, disease signs/symptoms, and quantifying pest populations before intervention."
+        },
+        {
+          "title": "Greenhouse Scout School",
+          "organization": "Cornell Integrated Pest Management",
+          "year": 2026,
+          "url": "https://cals.cornell.edu/integrated-pest-management/outreach-education/events/greenhouse-scout-school",
+          "note": "Current greenhouse scouting curriculum focused on pest and disease identification, efficient scouting, and communication of findings."
         }
       ]
     },
@@ -1380,9 +1403,20 @@
       ],
       "references": [
         {
-          "title": "Water activity and post-harvest quality principles",
-          "organization": "Food and horticultural post-harvest science",
-          "note": "General scientific basis for moisture availability, drying, and storage risk."
+          "title": "Postharvest Operations of Cannabis and Their Effect on Cannabinoid Content: A Review",
+          "organization": "Bioengineering / PubMed Central",
+          "year": 2022,
+          "doi": "10.3390/bioengineering9080364",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9404914/",
+          "note": "Review of cannabis drying, curing, storage, water activity, sorption behavior, packaging, and post-harvest quality."
+        },
+        {
+          "title": "Drying of cannabis—state of the practices and future needs",
+          "organization": "Drying Technology",
+          "year": 2021,
+          "doi": "10.1080/07373937.2020.1752230",
+          "url": "https://doi.org/10.1080/07373937.2020.1752230",
+          "note": "Review of existing cannabis drying practice, limitations, and alternative drying technologies."
         }
       ]
     },
@@ -1812,6 +1846,8 @@
       "/home/runner/work/Thc/Thc/site/wordpress/education/topic-literature-expansions-core-v1.json"
     ],
     "topicsExpanded": 13,
-    "minimumSectionsPerTopic": 8
+    "minimumSectionsPerTopic": 8,
+    "referencesRefreshedAt": "2026-09-25",
+    "referencePolicy": "Prefer land-grant extension, university teaching resources, peer-reviewed reviews, standards bodies, and primary literature. Show organization/year/DOI/URL when available."
   }
 }
