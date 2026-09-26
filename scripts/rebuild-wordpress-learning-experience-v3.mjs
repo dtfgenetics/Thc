@@ -297,7 +297,10 @@ function buildTopic(topic) {
   const tools = (topicToolLinks[topic.id] || [['/tools/','Reference Tools','Open the cultivation reference desk.']]).map(([href,name,copy]) => `<a href="${esc(href)}" target="_blank" rel="noopener"><b>${esc(name)}</b><span>${esc(copy)}</span></a>`).join('');
   const references = (topic.references || []).map(ref => {
     const detail = [ref.organization, ref.year || ref.reviewed, ref.doi ? `DOI ${ref.doi}` : ''].filter(Boolean).join(' · ');
-    return `<article class="ref-card"><span class="pill">Reference</span><h3>${esc(ref.title || 'Reference')}</h3>${detail ? `<p><strong>${esc(detail)}</strong></p>` : ''}${ref.note ? `<p>${esc(ref.note)}</p>` : ''}</article>`;
+    const titleMarkup = ref.url
+      ? `<h3><a href="${esc(ref.url)}" target="_blank" rel="noopener noreferrer">${esc(ref.title || 'Reference')}</a></h3>`
+      : `<h3>${esc(ref.title || 'Reference')}</h3>`;
+    return `<article class="ref-card"><span class="pill">Reference</span>${titleMarkup}${detail ? `<p><strong>${esc(detail)}</strong></p>` : ''}${ref.note ? `<p>${esc(ref.note)}</p>` : ''}</article>`;
   }).join('');
 
   return `${css}<div class="v3" data-dtf-topic="${esc(topic.id)}">
