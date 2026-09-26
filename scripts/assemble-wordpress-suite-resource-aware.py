@@ -13,7 +13,7 @@ from public_suite_resource_ownership import transform_bridge
 if len(sys.argv) != 2:
     raise SystemExit('usage: assemble-wordpress-suite-resource-aware.py OUTPUT_MJS')
 
-ATLAS_TARGETS = ['atlas', 'terpene-atlas', 'ph-meter', 'tds-meter', 'vpd-chart', 'assets/images/atlas']
+ATLAS_TARGETS = ['atlas', 'terpene-atlas', 'ph-meter', 'tds-meter', 'vpd-chart', 'ppfd-chart', 'assets/images/atlas']
 ATLAS_REQUIRED = [
     'atlas/index.html',
     'atlas/leaf-module/index.html',
@@ -30,15 +30,17 @@ ATLAS_REQUIRED = [
     'ph-meter/index.html',
     'tds-meter/index.html',
     'vpd-chart/index.html',
+    'ppfd-chart/index.html',
     'assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg',
 ]
-ATLAS_PREFIXES = ['atlas/', 'terpene-atlas/', 'ph-meter/', 'tds-meter/', 'vpd-chart/', 'assets/images/atlas/']
+ATLAS_PREFIXES = ['atlas/', 'terpene-atlas/', 'ph-meter/', 'tds-meter/', 'vpd-chart/', 'ppfd-chart/', 'assets/images/atlas/']
 REFERENCE_LIVE_CHECKS = [
     ('/atlas/', 'THC Living Plant Atlas'),
     ('/terpene-atlas/', 'THC Terpene Atlas'),
     ('/ph-meter/', 'pH Meter'),
     ('/tds-meter/', 'TDS / EC Meter'),
     ('/vpd-chart/', 'VPD Chart'),
+    ('/ppfd-chart/', 'THC Light Lab'),
 ]
 RESOURCE_OWNED_GAME_TARGETS = ['games/high-iq', 'games/seed-man-platformer']
 
