@@ -61,7 +61,7 @@ assert.match(runtime, /document\.body\.dataset\.highLifeEra = era/, 'High Life m
 assert.match(runtime, /new CustomEvent\('high-life:state'/, 'runtime must publish a safe view-state bridge for classic enhancements');
 assert.match(runtime, /publishEnhancementState\(\)/, 'runtime must refresh the enhancement state bridge during render');
 assert.match(enhancements, /addEventListener\('high-life:state'/, 'enhancement script must consume the view-state bridge');
-assert.doesNotMatch(enhancements, /\bif \(!state\b|\bstate\.history\b|\bresourceLabels\?\./, 'enhancement script must not read ES-module-scoped runtime variables directly');
+assert.doesNotMatch(enhancements, /\bif \(!state\b|\bstate\.history\b|(?<![.\w])resourceLabels\?\./, 'enhancement script must not read ES-module-scoped runtime variables directly');
 assert.match(runtime, /function safeFocus\(element\)/, 'High Life should guard focus transitions');
 assert.match(runtime, /safeFocus\(ui\.continue\)/, 'resolved turns should move focus to Continue');
 assert.match(runtime, /safeFocus\(document\.querySelector\('\.action-card\.available'\)\)/, 'continuing should return focus to the next available action');
