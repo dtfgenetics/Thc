@@ -60,7 +60,7 @@ const responsiveLayoutStyle=`<style id="dtf-responsive-layout-v1">${responsiveLa
 const uxPolishStyle=`<style id="dtf-sitewide-ux-polish-v1">${uxPolishCss}</style>`;
 
 const header=getWordPressSitewideHeaderBlock(`${responsiveLayoutStyle}${uxPolishStyle}${SITEWIDE_FOOTER_STYLE_TAG}`);
-for(const token of [SITEWIDE_HEADER_MARKER,'overflow-x:auto','canonical-eight-v1','>Home</a>','>Seeds</a>','>Courses</a>','>Diagnostic</a>']){
+for(const token of [SITEWIDE_HEADER_MARKER,'overflow-x:auto','canonical-eight-v1','>Home</a>','>Seeds</a>','>Courses</a>','>Tools</a>']){
   if(!header.includes(token)) throw new Error(`Generated shared header is missing required compatibility token: ${token}`);
 }
 const footer=getWordPressSitewideFooterBlock({brandImageUrl:brand.source_url});
@@ -86,7 +86,7 @@ for(const part of targets){
   results.push({id:part.id,slug:part.slug,changed:next!==original,preservedCommerceStyle:next.includes('dtf-commerce-archive-style')||!original.includes('dtf-commerce-archive-style')});
   if(original.includes('dtf-commerce-archive-style')&&!next.includes('dtf-commerce-archive-style')) throw new Error('Shared shell update would remove WooCommerce archive styling');
 }
-const report={generatedAt:new Date().toISOString(),siteUrl,apply,backupDir,headerVersion:SITEWIDE_HEADER_VERSION,footerVersion:'v6',responsiveLayout:'v1',sitewideUxPolish:'v1',reference:SITEWIDE_HEADER_REFERENCE,canonicalNav:['Home','Seeds','Learn','Courses','Diagnostic','Games','Community','Shop'],targets:results};
+const report={generatedAt:new Date().toISOString(),siteUrl,apply,backupDir,headerVersion:SITEWIDE_HEADER_VERSION,footerVersion:'v6',responsiveLayout:'v1',sitewideUxPolish:'v1',reference:SITEWIDE_HEADER_REFERENCE,canonicalNav:['Home','Seeds','Learn','Courses','Tools','Games','Community','Shop'],targets:results};
 await writeFile(join(backupDir,'shared-shell-v6-report.json'),`${JSON.stringify(report,null,2)}\n`);
 await writeFile(join(backupRoot,'shared-shell-v6-backup-path.txt'),`${backupDir}\n`);
 console.log(JSON.stringify(report,null,2));
