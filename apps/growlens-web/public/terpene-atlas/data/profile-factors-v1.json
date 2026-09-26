@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "title": "Terpene profile drivers and stability",
+  "principle": "A terpene profile is a property of a measured sample under a defined biological, post-harvest and analytical context—not a permanent percentage attached to a cultivar name.",
+  "factors": [
+    {
+      "id": "genetic-background",
+      "title": "Genetic background",
+      "category": "biology",
+      "summary": "Genotype influences terpene synthase capacity and the relative pattern of compounds a plant can produce.",
+      "whatToRecord": [
+        "plant or sample identity",
+        "cultivar or breeding-line label",
+        "pedigree when known",
+        "replicate identity"
+      ],
+      "caution": "A commercial name alone is not enough to establish genetic identity or a quantitative terpene profile.",
+      "evidence": [
+        "booth-2020-cannabis-terpenes",
+        "secondary-terpenes-2022"
+      ]
+    },
+    {
+      "id": "tissue-location",
+      "title": "Tissue and sampling location",
+      "category": "biology",
+      "summary": "Terpene abundance and composition vary among flowers, leaves, stems, roots and different positions within reproductive tissues.",
+      "whatToRecord": [
+        "matrix or tissue",
+        "sampling position",
+        "flower vs leaf material",
+        "whole sample vs isolated fraction"
+      ],
+      "caution": "Compare like tissue with like tissue; mixing matrices can make profiles look different even without a genetic difference.",
+      "evidence": [
+        "majeed-2022-medicinal-natural-products",
+        "secondary-terpenes-2022"
+      ]
+    },
+    {
+      "id": "developmental-stage",
+      "title": "Developmental stage",
+      "category": "biology",
+      "summary": "Terpene composition changes through development and floral maturation, so harvest stage is part of the sample identity.",
+      "whatToRecord": [
+        "developmental stage",
+        "days from transition when meaningful",
+        "maturity description",
+        "sampling date"
+      ],
+      "caution": "A later sample from the same plant is not necessarily chemically equivalent to an earlier one.",
+      "evidence": [
+        "booth-2020-cannabis-terpenes",
+        "comprehensive-2024-cannabis-chemistry",
+        "secondary-terpenes-2022"
+      ]
+    },
+    {
+      "id": "growing-environment",
+      "title": "Growing environment",
+      "category": "cultivation",
+      "summary": "Light, temperature, water status and other environmental conditions can interact with genotype and development to influence secondary-metabolite expression.",
+      "whatToRecord": [
+        "light environment",
+        "air and leaf temperature",
+        "water-status context",
+        "root-zone conditions",
+        "major stress events"
+      ],
+      "caution": "Environmental association does not prove a single-factor cause; controlled comparisons are needed to isolate effects.",
+      "evidence": [
+        "booth-2020-cannabis-terpenes",
+        "comprehensive-2024-cannabis-chemistry"
+      ]
+    },
+    {
+      "id": "harvest-handling",
+      "title": "Harvest and handling",
+      "category": "post-harvest",
+      "summary": "Mechanical handling, exposure time and sample preparation can change what volatile compounds remain available for measurement.",
+      "whatToRecord": [
+        "harvest time",
+        "time to processing",
+        "handling method",
+        "sample preparation",
+        "storage before analysis"
+      ],
+      "caution": "Volatile loss during handling can be mistaken for a biological difference if sample workflows are not comparable.",
+      "evidence": [
+        "secondary-terpenes-2022"
+      ]
+    },
+    {
+      "id": "drying-storage",
+      "title": "Drying, curing and storage",
+      "category": "post-harvest",
+      "summary": "Volatile compounds can be lost or transformed after harvest; temperature, time, airflow, oxygen and storage conditions therefore belong in profile interpretation.",
+      "whatToRecord": [
+        "drying temperature",
+        "drying duration",
+        "curing/storage duration",
+        "container/headspace context",
+        "storage temperature",
+        "light/oxygen exposure"
+      ],
+      "caution": "Do not compare fresh, dried, cured and long-stored material as though they represent the same chemical state.",
+      "evidence": [
+        "secondary-terpenes-2022",
+        "booth-2020-cannabis-terpenes"
+      ]
+    },
+    {
+      "id": "analytical-method",
+      "title": "Analytical method",
+      "category": "measurement",
+      "summary": "GC-based methods, sample preparation, calibration strategy, standards and reporting thresholds influence which analytes are resolved and how results are reported.",
+      "whatToRecord": [
+        "laboratory",
+        "method/platform",
+        "calibration or standard information when available",
+        "LOD/LOQ conventions",
+        "unit",
+        "semi-quantified vs fully quantified status"
+      ],
+      "caution": "Results from different methods or units may not be directly comparable without method-aware interpretation.",
+      "evidence": [
+        "shapira-variability-79-inflorescences",
+        "secondary-terpenes-2022"
+      ]
+    },
+    {
+      "id": "naming-provenance",
+      "title": "Cultivar naming and provenance",
+      "category": "identity",
+      "summary": "Samples sharing a market or cultivar name can differ genetically and chemically, while closely related material may be sold under different names.",
+      "whatToRecord": [
+        "supplier/source",
+        "batch or lot",
+        "sample ID",
+        "cultivar label",
+        "chain of custody when available"
+      ],
+      "caution": "Treat the name as metadata. Treat the measured sample as the quantitative evidence.",
+      "evidence": [
+        "shapira-variability-79-inflorescences"
+      ]
+    }
+  ]
+}
