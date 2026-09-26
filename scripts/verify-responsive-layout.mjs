@@ -120,6 +120,11 @@ const academyV2 = read("scripts/publish-wordpress-academy-v2.mjs");
 const learnTaskNavV5 = read("scripts/publish-wordpress-learn-task-nav-v5.mjs");
 const beginnerCourseV5 = read("scripts/publish-wordpress-beginner-course-v5.mjs");
 const learningExperienceV3 = read("scripts/rebuild-wordpress-learning-experience-v3.mjs");
+const visualLibraryResponsiveFiles = [
+  "scripts/publish-wordpress-approved-visual-library.mjs",
+  "scripts/rebuild-wordpress-infographic-gallery.mjs",
+];
+
 const advancedCourseResponsiveFiles = [
   "scripts/publish-wordpress-genetics-evidence-v6.mjs",
   "scripts/publish-wordpress-plant-health-biological-control-v1.mjs",
@@ -246,6 +251,12 @@ for (const rel of v6CourseResponsiveFiles) {
   const source = read(rel);
   if (/@media\(max-width:(?:920|620)px\)/.test(source)) {
     failures.push(`${rel} V6 course publisher reintroduced legacy 920/620 responsive bands.`);
+  }
+}
+for (const rel of visualLibraryResponsiveFiles) {
+  const source = read(rel);
+  if (/@media\(max-width:620px\)/.test(source)) {
+    failures.push(`${rel} visual library publisher reintroduced legacy 620px phone band.`);
   }
 }
 for (const rel of advancedCourseResponsiveFiles) {
