@@ -7,6 +7,21 @@ on:
         description: Optional game ID (leave blank for all)
         required: false
         type: string
+  push:
+    branches: [main]
+    paths:
+      - 'configuration/game-qa/**'
+      - 'data/game-source-map.json'
+      - 'data/project-registry.json'
+      - 'games/**'
+      - 'site/deployment/public-apps.json'
+      - 'site/public-route-patch/games/**'
+      - 'scripts/game-portfolio-browser-qa.mjs'
+      - 'scripts/game-asset-performance-audit.mjs'
+      - 'scripts/sync-game-shared-platform.mjs'
+      - 'scripts/lib/game-qa-catalog.mjs'
+      - 'package.json'
+      - '.github/workflows/game-portfolio-browser-qa.yml'
   pull_request:
     paths:
       - 'configuration/game-qa/**'
