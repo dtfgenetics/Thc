@@ -27,7 +27,11 @@ const htmlEscape = (value = '') => String(value)
 must(user && pass, 'WordPress application credentials are required for readback verification.');
 must(local?.course?.id === 'COURSE-LH-TECH1-001', 'Unexpected Course 1 package.');
 must(Array.isArray(local.modules) && local.modules.length === 6, 'Expected six Course 1 modules.');
-must(Array.isArray(local.learnerDocuments) && local.learnerDocuments.length === 3, 'Expected three learner documents.');
+must(Array.isArray(local.learnerDocuments) && local.learnerDocuments.length >= 3, 'Expected Course 1 learner documents.');
+const requiredLearnerDocumentSlugs = new Set(['workbook', 'workbook-templates', 'integrated-practical']);
+const learnerDocumentSlugs = new Set(local.learnerDocuments.map((document) => document?.slug).filter(Boolean));
+for (const slug of requiredLearnerDocumentSlugs) must(learnerDocumentSlugs.has(slug), `Missing required learner document: ${slug}.`);
+must(learnerDocumentSlugs.size === local.learnerDocuments.length, 'Learner document slugs must be unique.');
 
 async function fetchCanonicalText(relativePath) {
   let last;
@@ -221,10 +225,11 @@ verified.push({ type: 'final-test', id: final.id, slug: 'final-course-test', sec
 const sourceScopedItemCount = publicQuestionCount + expectedFinalCount;
 must(sourceScopedItemCount === canonical.total, `Expected ${canonical.total} canonical course-learning items, verified ${sourceScopedItemCount} across rendered formative checks plus the secured final.`);
 must(sourceScopedItemCount === canonical.release.publicScope.publicCourseItems, `Verified source-scoped total ${sourceScopedItemCount} differs from release manifest ${canonical.release.publicScope.publicCourseItems}.`);
-must(verified.length === 19, `Expected 19 managed base Course 1 pages, verified ${verified.length}.`);
+const expectedManagedPageCount = 3 + local.modules.length + local.learnerDocuments.length + local.modules.length + 1;
+must(verified.length === expectedManagedPageCount, `Expected ${expectedManagedPageCount} managed base Course 1 pages, verified ${verified.length}.`);
 
 const idSet = new Set(verified.map((page) => Number(page.id)));
-must(idSet.size === 19, 'Managed Course 1 base page IDs are not unique.');
+must(idSet.size === expectedManagedPageCount, 'Managed Course 1 base page IDs are not unique.');
 
 console.log(JSON.stringify({
   verifiedAt: new Date().toISOString(),
