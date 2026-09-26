@@ -144,7 +144,23 @@
           "url": "https://agronomy.unl.edu/agro-807-plant-water-relations/",
           "note": "University course framework covering water potential, root uptake, xylem/phloem transport, transpiration, stomata, leaf energy balance, and whole-canopy water relations."
         }
-      ]
+      ],
+      "referenceGuide": {
+        "observe": [
+          "Which organ and tissue show the change first?",
+          "Is the pattern local to one structure or systemic across the plant?",
+          "Is new growth developing differently from older tissue?"
+        ],
+        "measure": [
+          "Root-zone moisture and root condition when water transport is involved",
+          "Leaf and air temperature when wilt or heat response is involved",
+          "Plant stage and timing of the first visible change"
+        ],
+        "avoid": [
+          "Do not infer a nutrient disorder from color alone.",
+          "Do not assume damage on one organ means the cause originated there."
+        ]
+      }
     },
     {
       "id": "genetics-breeding",
@@ -282,7 +298,23 @@
           "organization": "Longman",
           "note": "Foundational framework for quantitative traits, heritability, drift, and selection."
         }
-      ]
+      ],
+      "referenceGuide": {
+        "observe": [
+          "Repeatable phenotype traits across multiple individuals",
+          "Variation within siblings, families, and generations",
+          "Sex expression, flowering behavior, vigor, morphology, aroma, and stress responses"
+        ],
+        "measure": [
+          "Plant ID, pedigree, generation, population size, and selection date",
+          "Trait definitions and scoring method before selection",
+          "Environment and management context for every phenotype record"
+        ],
+        "avoid": [
+          "Do not treat a strain name as genetic verification.",
+          "Do not treat one exceptional plant as proof that a trait is fixed."
+        ]
+      }
     },
     {
       "id": "lifecycle-propagation",
@@ -418,7 +450,23 @@
           "reviewed": 2026,
           "note": "Practical reference for cutting sanitation, humidity, rooting media, and post-rooting acclimation."
         }
-      ]
+      ],
+      "referenceGuide": {
+        "observe": [
+          "Stage-specific morphology from seed through reproductive growth",
+          "Root initiation and root quality in clones",
+          "Acclimation response after transplant or environmental change"
+        ],
+        "measure": [
+          "Dates for sowing, emergence, rooting, transplant, and stage transitions",
+          "Temperature, humidity, light, and root-zone moisture during propagation",
+          "Survival, rooting percentage, uniformity, and abnormal seedlings"
+        ],
+        "avoid": [
+          "Do not compare propagation outcomes without preserving method and environment.",
+          "Do not force stage transitions by calendar alone when plant development disagrees."
+        ]
+      }
     },
     {
       "id": "environment-vpd",
@@ -554,7 +602,23 @@
           "organization": "Cornell University",
           "note": "CEA framework linking horticulture, environmental control, lighting, and engineering."
         }
-      ]
+      ],
+      "referenceGuide": {
+        "observe": [
+          "Canopy-edge versus canopy-interior conditions",
+          "Leaf temperature differences across light and airflow zones",
+          "Condensation, persistent humid pockets, and transition spikes"
+        ],
+        "measure": [
+          "Air temperature and RH from the same representative location",
+          "Leaf temperature when calculating leaf VPD",
+          "Sensor location, height, calibration/comparison date, and equipment state"
+        ],
+        "avoid": [
+          "Do not use VPD as a stand-alone diagnosis.",
+          "Do not assume one room sensor represents every leaf surface."
+        ]
+      }
     },
     {
       "id": "lighting",
@@ -736,7 +800,23 @@
           "organization": "Michigan State University",
           "note": "Foundational extension explanation of DLI as accumulated photosynthetic light."
         }
-      ]
+      ],
+      "referenceGuide": {
+        "observe": [
+          "Canopy uniformity, orientation, stretching, bleaching, and heat response",
+          "Shaded interior tissue versus exposed top growth",
+          "Plant response after fixture height or output changes"
+        ],
+        "measure": [
+          "PPFD on a repeatable crop-plane grid",
+          "Photoperiod and calculated DLI",
+          "Fixture state, measurement height, meter type, and ambient daylight when relevant"
+        ],
+        "avoid": [
+          "Do not substitute fixture wattage for canopy PPFD.",
+          "Do not compare DLI without preserving photoperiod and intensity context."
+        ]
+      }
     },
     {
       "id": "water-ph-ec",
@@ -871,7 +951,23 @@
           "organization": "University Extension systems",
           "note": "General greenhouse-water framework distinguishing pH, alkalinity, EC, and substrate effects."
         }
-      ]
+      ],
+      "referenceGuide": {
+        "observe": [
+          "Root-zone wetness, drainage, root appearance, and irrigation response",
+          "Trend direction rather than one isolated pH or EC reading",
+          "Differences between input solution, runoff, and root-zone samples"
+        ],
+        "measure": [
+          "pH with a maintained calibrated meter",
+          "EC with units and ppm/TDS scale if a conversion is displayed",
+          "Water source, alkalinity when relevant, irrigation volume, drainage, and dryback method"
+        ],
+        "avoid": [
+          "Do not infer alkalinity from pH.",
+          "Do not infer nutrient balance from total EC alone."
+        ]
+      }
     },
     {
       "id": "nutrition-media",
@@ -1020,7 +1116,23 @@
           "organization": "Land-grant university extension",
           "note": "General reference for air-filled porosity, water-holding capacity, and container effects."
         }
-      ]
+      ],
+      "referenceGuide": {
+        "observe": [
+          "Symptom location by tissue age and plant region",
+          "Root health, media structure, drainage, and salt accumulation clues",
+          "Response in new growth after a controlled correction"
+        ],
+        "measure": [
+          "Feed composition, final volume, pH, EC, and mixing record",
+          "Substrate type, container geometry, irrigation history, and root-zone method",
+          "Laboratory media/tissue data when consequences justify analytical testing"
+        ],
+        "avoid": [
+          "Do not call every uptake problem nutrient lockout.",
+          "Do not stack multiple nutrient corrections before verifying root-zone conditions."
+        ]
+      }
     },
     {
       "id": "plant-health-ipm",
@@ -1169,7 +1281,23 @@
           "year": 2025,
           "note": "Current extension example emphasizing routine scouting and early detection."
         }
-      ]
+      ],
+      "referenceGuide": {
+        "observe": [
+          "Whole-crop spatial pattern plus close-up organism or lesion evidence",
+          "Leaf undersides, new growth, flowers, media surface, traps, and high-risk zones",
+          "Change in counts or severity at the same mapped locations"
+        ],
+        "measure": [
+          "Repeated scouting counts using the same sampling unit",
+          "Temperature, humidity, irrigation, and other environmental context",
+          "Treatment date, active ingredient or biological control, and post-treatment result"
+        ],
+        "avoid": [
+          "Do not identify a pest or disease from symptom color alone.",
+          "Do not treat before preserving useful evidence when it is safe to document first."
+        ]
+      }
     },
     {
       "id": "training-canopy",
@@ -1302,7 +1430,23 @@
           "organization": "Horticultural science literature",
           "note": "General basis for apical control, branch response, wound recovery, and canopy management."
         }
-      ]
+      ],
+      "referenceGuide": {
+        "observe": [
+          "Branch angle, node position, stem damage, recovery, and canopy fill",
+          "Light distribution before and after training",
+          "Interior airflow and service access as the canopy thickens"
+        ],
+        "measure": [
+          "Plant height, width, branch positions, and fixed-photo viewpoints",
+          "PPFD grid before and after major canopy changes",
+          "Intervention date and recovery interval before the next major stress"
+        ],
+        "avoid": [
+          "Do not assume more training always improves yield or uniformity.",
+          "Do not repeat high-stress interventions before recovery is documented."
+        ]
+      }
     },
     {
       "id": "harvest-postharvest",
@@ -1451,7 +1595,23 @@
           "organization": "Food and horticultural post-harvest science",
           "note": "General scientific basis for moisture availability, drying, and storage risk."
         }
-      ]
+      ],
+      "referenceGuide": {
+        "observe": [
+          "Whole-plant maturity alongside representative flower development",
+          "Trichomes from defined sampling locations under repeatable magnification and lighting",
+          "Drying-room uniformity, odor, surface moisture, and signs of condensation or microbial growth"
+        ],
+        "measure": [
+          "Harvest batch identity and sampling location",
+          "Room temperature, RH, air exchange/circulation context, and time",
+          "Water activity or other validated moisture measurements when used"
+        ],
+        "avoid": [
+          "Do not use one trichome photograph as a universal harvest rule.",
+          "Do not confuse moisture content with water activity."
+        ]
+      }
     },
     {
       "id": "outdoor",
@@ -1585,7 +1745,23 @@
           "organization": "Land-grant university extension",
           "note": "General basis for site mapping, drainage, irrigation, and weather-risk management."
         }
-      ]
+      ],
+      "referenceGuide": {
+        "observe": [
+          "Sun exposure, shade progression, wind, drainage, runoff paths, and low spots",
+          "Weather damage patterns and microclimate differences across the site",
+          "Pest, wildlife, pollen, and disease pressure over the season"
+        ],
+        "measure": [
+          "Site-specific weather and rainfall",
+          "Irrigation amount, soil/media moisture method, and drainage response",
+          "Plant stage, transplant date, and event history such as storms or heat waves"
+        ],
+        "avoid": [
+          "Do not treat a regional weather station as identical to the crop microclimate.",
+          "Do not copy indoor schedules without accounting for changing outdoor conditions."
+        ]
+      }
     },
     {
       "id": "research-measurement",
@@ -1736,7 +1912,23 @@
           "reviewed": 2022,
           "note": "Extension guidance emphasizing controls, randomization, true replication, avoidance of pseudoreplication, and limits on extrapolation."
         }
-      ]
+      ],
+      "referenceGuide": {
+        "observe": [
+          "What is actually observed versus what is inferred",
+          "Variation among plants, locations, times, and repeated measurements",
+          "Whether a comparison has a real control and true replication"
+        ],
+        "measure": [
+          "Units, instrument identity, calibration state, sampling method, and timestamp",
+          "Replicates and independent experimental units",
+          "Raw measurements before derived averages or scores"
+        ],
+        "avoid": [
+          "Do not confuse repeated measurements on one unit with independent replication.",
+          "Do not present precision beyond what the instrument and method support."
+        ]
+      }
     },
     {
       "id": "general-reference",
@@ -1869,7 +2061,23 @@
           "organization": "NIST",
           "note": "General reference for units, conversions, precision, and measurement communication."
         }
-      ]
+      ],
+      "referenceGuide": {
+        "observe": [
+          "Which system the question belongs to: plant, environment, roots, management, health, or measurement",
+          "Whether the term describes an observation, mechanism, measurement, or conclusion",
+          "What connected subject must be consulted before acting"
+        ],
+        "measure": [
+          "Use the units and method defined by the relevant subject page",
+          "Record context and sample type with every measurement",
+          "Preserve original readings before conversions"
+        ],
+        "avoid": [
+          "Do not use glossary definitions as diagnoses.",
+          "Do not combine measurements from different methods as if they are interchangeable."
+        ]
+      }
     }
   ],
   "expansionMetadata": {
@@ -1879,6 +2087,8 @@
       "/home/runner/work/Thc/Thc/site/wordpress/education/topic-literature-expansions-core-v1.json"
     ],
     "topicsExpanded": 13,
-    "minimumSectionsPerTopic": 8
+    "minimumSectionsPerTopic": 8,
+    "fieldReferenceGuides": "v1",
+    "fieldReferenceGuidesUpdatedAt": "2026-09-25"
   }
 }
