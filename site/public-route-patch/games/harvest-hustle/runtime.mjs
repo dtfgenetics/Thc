@@ -273,6 +273,7 @@ function renderStations() {
     button.className = `station-button station-${station.id}${station.id === nextStationId ? ' next-station' : ''}`;
     button.dataset.station = station.id;
     button.disabled = !running || state.status !== 'playing' || !batch;
+    button.setAttribute('aria-keyshortcuts', String(index + 1));
     button.setAttribute('aria-label', `${index + 1}. ${station.label}${station.id === nextStationId ? '. Next station for the selected batch.' : ''}`);
     button.innerHTML = `
       <span class="station-key" aria-hidden="true">${index + 1}</span>
