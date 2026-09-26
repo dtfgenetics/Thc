@@ -24,6 +24,8 @@ assert.match(html, /Q<\/kbd>–<kbd>R/);
 assert.match(html, /1<\/kbd>–<kbd>4/);
 
 assert.match(runtime, /BATCH_KEYS = \['q', 'w', 'e', 'r'\]/);
+assert.match(runtime, /aria-keyshortcuts', shortcut\.toUpperCase\(\)/, 'batch shortcuts must be exposed to assistive technology');
+assert.match(runtime, /aria-keyshortcuts', String\(index \+ 1\)\)/, 'station shortcuts must be exposed to assistive technology');
 assert.match(runtime, /document\.addEventListener\('visibilitychange'/);
 assert.match(runtime, /stopClock\(\)/);
 assert.match(runtime, /startClock\(\)/);
