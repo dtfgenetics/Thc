@@ -25,6 +25,12 @@ const requiredMirrors = [
   'data/systems.json',
   'data/hotspots-v4.json',
   'data/anatomy-registry-v1.json',
+  'assets/THC-ENC-001_VIS-03_Nodes_Internodes_Branching_v3.0.0.jpg',
+  'assets/THC-ENC-001_VIS-05_Reproductive_Structures_v3.0.0.jpg',
+  'assets/THC-ENC-001_VIS-06_Achene_Embryo_Germination_v3.0.0.jpg',
+  'assets/THC-ENC-001_VIS-07_Trichomes_on_Cannabis_Surfaces_v3.0.0.jpg',
+  'assets/THC-ENC-041_Root_Tip_Development_and_Functional_Zones.jpg',
+  'assets/THC-ENC-068_Stomata_Guard_Cells_and_Gas_Exchange.jpg',
   'models/model-manifest-v4.json',
   'models/README.md',
 ];
@@ -38,7 +44,7 @@ for (const relative of requiredMirrors) {
 }
 
 const index = read(path.join(appRoot, 'index.html'));
-for (const token of ['/atlas/atlas-v4.css', '/atlas/atlas-site-shell-v5.css', '/atlas/atlas-anatomy-index-v1.css', '/atlas/atlas-anatomy-index-v1.js', '/atlas/atlas-3d-bootstrap.js', 'data-plant-model-status', 'data-anatomy-index', 'CLICK · INSPECT', 'Interactive 3D system V4', '<b>32</b><span>inspectable structures</span>', '/terpene-atlas/']) {
+for (const token of ['/atlas/atlas-v4.css', '/atlas/atlas-site-shell-v5.css', '/atlas/atlas-anatomy-index-v1.css', '/atlas/atlas-anatomy-index-v1.js', '/atlas/atlas-3d-bootstrap.js', 'data-plant-model-status', 'data-anatomy-index', 'id="reference-visuals"', 'CLICK · INSPECT', 'Interactive 3D system V4', '<b>32</b><span>inspectable structures</span>', '/terpene-atlas/']) {
   ok(index.includes(token), `Atlas index missing V4 wiring: ${token}`);
 }
 ok(!index.includes('type="module" src="/atlas/atlas-3d.js"'), 'Atlas index must not boot V3 directly; V3 is emergency fallback only');
@@ -151,6 +157,13 @@ if (systemsData) {
     for (const field of ['concepts','functions','observe','interactions','cautions','measurements','evidenceQuestions','deepDiveTopics','scales']) {
       ok(Array.isArray(system[field]) && system[field].length > 0, `System ${system.id} missing enriched field: ${field}`);
     }
+    if (Array.isArray(system.referenceVisuals)) {
+      for (const visual of system.referenceVisuals) {
+        ok(/^\/atlas\/assets\//.test(visual.src || ''), `System ${system.id} reference visual must live in /atlas/assets/`);
+        ok(typeof visual.alt === 'string' && visual.alt.length > 20, `System ${system.id} reference visual needs descriptive alt text`);
+        ok(typeof visual.caption === 'string' && visual.caption.length > 3, `System ${system.id} reference visual needs a caption`);
+      }
+    }
     const relative = system.route.replace(/^\/atlas\//, '').replace(/\/$/, '');
     const sourcePage = path.join(appRoot, relative, 'index.html');
     const mirrorPage = path.join(mirrorRoot, relative, 'index.html');
@@ -164,7 +177,7 @@ const anatomyIndex = read(path.join(appRoot, 'atlas-anatomy-index-v1.js'));
 for (const token of ['hotspots-v4.json','anatomy-registry-v1.json','data-anatomy-search','data-anatomy-scale','data-anatomy-representation','micro-reference','plant-atlas:focus']) ok(anatomyIndex.includes(token), `Anatomy index runtime missing: ${token}`);
 
 const moduleRuntime = read(path.join(appRoot, 'module.js'));
-for (const token of ['measurements','evidenceQuestions','deepDiveTopics','connectedTools','dataset.measurementsRuntime']) ok(moduleRuntime.includes(token), `Plant Atlas module runtime missing enriched contract: ${token}`);
+for (const token of ['measurements','evidenceQuestions','deepDiveTopics','connectedTools','referenceVisuals','dataset.measurementsRuntime']) ok(moduleRuntime.includes(token), `Plant Atlas module runtime missing enriched contract: ${token}`);
 
 let manifest = null;
 try { manifest = JSON.parse(read(path.join(appRoot, 'models/model-manifest-v4.json'))); }
@@ -193,6 +206,16 @@ if (manifest) {
     if (fs.existsSync(sourceModel) && fs.existsSync(mirrorModel)) ok(fs.readFileSync(sourceModel).equals(fs.readFileSync(mirrorModel)), 'Production GLB mirror mismatch');
   } else {
     ok(!renderer.includes('loader.loadAsync(DEFAULT_MODEL_URL)'), 'Disabled model manifest must not trigger an unconditional GLB request');
+  }
+}
+
+const visualPolicy = JSON.parse(read(path.join(root, 'site/wordpress/visual-quality-policy.json')) || '{}');
+const bannedVisuals = visualPolicy?.bannedHtml?.urlContains || [];
+for (const banned of bannedVisuals) {
+  ok(!index.includes(banned), `Atlas index must not reference quarantined visual: ${banned}`);
+  ok(!JSON.stringify(systemsData || {}).includes(banned), `Atlas systems data must not reference quarantined visual: ${banned}`);
+  for (const relative of requiredMirrors.filter(x => x.startsWith('assets/'))) {
+    ok(!relative.includes(banned), `Atlas required visual must not be quarantined: ${banned}`);
   }
 }
 
