@@ -16,6 +16,10 @@ html{overflow-x:clip}
 body{min-width:0;overflow-wrap:break-word}
 img,svg,video,canvas{max-width:100%;height:auto}
 iframe{max-width:100%}
+:where(input,select,textarea,button){max-width:100%}
+:where(pre,code){max-width:100%}
+:where(pre){overflow-x:auto;overscroll-behavior-inline:contain}
+:where(dialog,[role="dialog"]){max-width:min(calc(100% - (var(--dtf-layout-gutter) * 2)),960px);max-height:calc(100dvh - 24px);overflow:auto}
 
 /* Canonical WordPress visual pages. */
 .dtf-page{min-width:0;overflow-x:clip}
@@ -123,6 +127,16 @@ body.admin-bar .high-iq-shell .skip-link{top:calc(var(--dtf-global-header-height
 .lhv3 .lhv3-complete,
 .lhv3 .lhv3-nextprev a{min-height:var(--dtf-layout-touch)!important}
 .dtf-page .dtf-quickgrid a{display:flex!important;align-items:center!important;justify-content:center!important}
+
+/* Content resilience. Shared protection is intentional: local route CSS should not need to re-solve these basics. */
+.dtf-page :where(.dtf-grid-2,.dtf-grid-3,.dtf-grid-4,.dtf-grid-5,.dtf-flow)>*,
+.game-hub-page :where(.grid,.hero-grid,.feature-card)>*,
+body:has(.tool-chooser) :where(.tool-chooser,.flow,.measure-panel,.learn-rail,.hero-grid)>*,
+.lhv3 :where(.lhv3-layout,.lhv3-content,.lhv3-grid)>*{min-width:0}
+.dtf-page :where(p,li,a,span,strong),
+.game-hub-page :where(p,li,a,span,strong),
+body:has(.tool-chooser) :where(p,li,a,span,strong),
+.lhv3 :where(p,li,a,span,strong){overflow-wrap:anywhere}
 
 /* Content resilience. */
 .dtf-page pre,
@@ -265,6 +279,11 @@ body.admin-bar .high-iq-shell .skip-link{top:calc(var(--dtf-global-header-height
   body:has(.tool-chooser) .footer-inner{grid-template-columns:1fr!important;gap:26px!important}
   .high-iq-shell .quiz-scoreboard{top:calc(var(--dtf-global-header-height) + 4px)!important}
   body.admin-bar .high-iq-shell .quiz-scoreboard{top:calc(var(--dtf-global-header-height) + 50px)!important}
+  .dtf-global-nav,
+  .mobile-menu__panel,
+  .menu-panel,
+  [data-mobile-menu]{max-height:calc(100dvh - var(--dtf-global-header-height) - 12px);overflow-y:auto;overscroll-behavior:contain}
+  :where(.dtf-page,.game-hub-page,.lhv3,body:has(.tool-chooser)) :where(table){display:block;max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch}
 }
 
 @media (max-width:420px){
