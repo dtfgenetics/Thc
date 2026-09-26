@@ -49,6 +49,7 @@ body.admin-bar .topbar {
   }
 }
 
+/* responsive-exception: 3D viewport and horizontal control rails need touch-scroll containment before the page-level 700px phone band. */
 @media (max-width: 820px) {
   .top-links,
   .filters,
@@ -79,12 +80,14 @@ body.admin-bar .topbar {
   }
 }
 
+/* responsive-exception: WordPress admin-bar offset changes at the platform's 782px breakpoint. */
 @media (max-width: 782px) {
   body.admin-bar .topbar {
     top: calc(var(--atlas-site-header-offset) + 46px) !important;
   }
 }
 
+/* responsive-exception: compact 3D viewport height tuning for narrow phones. */
 @media (max-width: 520px) {
   .plant-viewport,
   .plant-viewport canvas {
@@ -100,6 +103,7 @@ body.admin-bar .topbar {
   }
 }
 
+/* responsive-exception: constrained-phone Atlas viewport and stat stacking. */
 @media (max-width: 390px) {
   .atlas-shell {
     padding-inline: 12px;
