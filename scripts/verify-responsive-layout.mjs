@@ -107,6 +107,7 @@ const highLinesV2 = read("site/public-route-patch/games/high-lines/high-lines-v2
 const budOrBluffBase = read("site/public-route-patch/games/bud-or-bluff/styles.css");
 const gatewayV7 = read("site/public-route-patch/assets/dtf-gateway-v7.css");
 const atlasV3 = read("site/public-route-patch/atlas/atlas-v3.css");
+const atlasV4 = read("site/public-route-patch/atlas/atlas-v4.css");
 const phenoQuestCss = read("site/public-route-patch/games/phenoquest/style.css");
 const infographicsPage = read("site/public-route-patch/learn/infographics/index.html");
 const tech1Courses = read("scripts/publish-wordpress-tech1-courses-2-7-v2.mjs");
@@ -150,6 +151,9 @@ for (const [label, source, legacyPattern] of [
   if (!/\.tabs a\{[^}]*min-height:44px/.test(source)) failures.push(`${label} tool tabs must keep a 44px touch target.`);
 }
 
+if (/@media\(max-width:(?:1180|820)px\)/.test(atlasV4)) {
+  failures.push("Atlas v4 composition must use canonical 1120/900 bands; compact component breakpoints may remain separate.");
+}
 if (/@media\(max-width:(?:1200|940|680|620)px\)/.test(atlasV3)) {
   failures.push("Atlas v3 base layout must use canonical 1120/900/700 bands.");
 }
