@@ -120,6 +120,13 @@ const academyV2 = read("scripts/publish-wordpress-academy-v2.mjs");
 const learnTaskNavV5 = read("scripts/publish-wordpress-learn-task-nav-v5.mjs");
 const beginnerCourseV5 = read("scripts/publish-wordpress-beginner-course-v5.mjs");
 const learningExperienceV3 = read("scripts/rebuild-wordpress-learning-experience-v3.mjs");
+const advancedCourseResponsiveFiles = [
+  "scripts/publish-wordpress-genetics-evidence-v6.mjs",
+  "scripts/publish-wordpress-plant-health-biological-control-v1.mjs",
+  "scripts/publish-wordpress-plant-health-emerging-pathogens-v1.mjs",
+  "scripts/publish-wordpress-outdoor-v6-owner-only.mjs",
+];
+
 const visualAtlasResponsiveFiles = [
   "scripts/publish-wordpress-lighting-visual-atlas-v6.mjs",
   "scripts/publish-wordpress-water-root-zone-visuals-v6.mjs",
@@ -239,6 +246,12 @@ for (const rel of v6CourseResponsiveFiles) {
   const source = read(rel);
   if (/@media\(max-width:(?:920|620)px\)/.test(source)) {
     failures.push(`${rel} V6 course publisher reintroduced legacy 920/620 responsive bands.`);
+  }
+}
+for (const rel of advancedCourseResponsiveFiles) {
+  const source = read(rel);
+  if (/@media\(max-width:(?:920|820|620)px\)/.test(source)) {
+    failures.push(`${rel} advanced course publisher reintroduced legacy responsive bands.`);
   }
 }
 for (const rel of visualAtlasResponsiveFiles) {
