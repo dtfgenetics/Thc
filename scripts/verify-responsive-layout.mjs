@@ -120,6 +120,8 @@ const academyV2 = read("scripts/publish-wordpress-academy-v2.mjs");
 const learnTaskNavV5 = read("scripts/publish-wordpress-learn-task-nav-v5.mjs");
 const beginnerCourseV5 = read("scripts/publish-wordpress-beginner-course-v5.mjs");
 const learningExperienceV3 = read("scripts/rebuild-wordpress-learning-experience-v3.mjs");
+const publicLearningCenterWave3 = read("scripts/build-public-learning-center-wave3.mjs");
+const learnVisualV4 = read("scripts/rebuild-wordpress-learn-visual-v4.mjs");
 const visualLibraryResponsiveFiles = [
   "scripts/publish-wordpress-approved-visual-library.mjs",
   "scripts/rebuild-wordpress-infographic-gallery.mjs",
@@ -246,6 +248,12 @@ if (/@media\(max-width:620px\)/.test(beginnerCourseV5)) {
 }
 if (/@media\(max-width:(?:980|620)px\)/.test(learningExperienceV3)) {
   failures.push("Learning experience v3 must use canonical 900/700 bands.");
+}
+if (/@media\(max-width:640px\)/.test(publicLearningCenterWave3)) {
+  failures.push("Public learning center wave 3 must use the canonical 700px phone band.");
+}
+if (/@media\(max-width:(?:980|640)px\)/.test(learnVisualV4)) {
+  failures.push("Learn Visual v4 must use canonical 900/700 bands.");
 }
 for (const rel of v6CourseResponsiveFiles) {
   const source = read(rel);
