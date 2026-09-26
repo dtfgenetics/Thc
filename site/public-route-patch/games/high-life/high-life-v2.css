@@ -12,7 +12,7 @@
 .actions button,.actions .button,.career-log-panel .log-toggle{min-height:44px}
 .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 @media(max-width:900px){.resource-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.action-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.era-roadmap{gap:.4rem}.era-roadmap>i{width:14px}.era-roadmap>div{padding:.65rem}.era-roadmap>div small{display:none}}
-@media(max-width:650px){main{width:min(100% - .8rem,1120px);padding-top:.65rem}.site-header{padding:.75rem;position:static}.hero{padding:1.05rem;border-radius:18px}h1{font-size:clamp(2.55rem,16vw,4.2rem)}.hero-badges{gap:.28rem}.hero-badges span{font-size:.59rem}.era-roadmap{grid-template-columns:1fr 1fr 1fr;position:sticky;top:calc(var(--dtf-global-header-height,74px) + 8px);z-index:12;padding:.4rem;border:1px solid var(--line);border-radius:12px;background:rgba(7,18,13,.95);backdrop-filter:blur(9px)}.era-roadmap>i{display:none}.era-roadmap>div{display:flex;justify-content:center;padding:.5rem .35rem}.era-roadmap>div span{width:28px;height:28px;font-size:.7rem}.era-roadmap>div strong{font-size:.68rem}.dashboard{grid-template-columns:1fr 1fr;gap:.5rem}.dashboard .panel{margin:.6rem 0;padding:.8rem}.score-card strong{font-size:2.25rem}.resource-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem}.resource{padding:.65rem}.resource strong{font-size:1.3rem}.action-grid{grid-template-columns:1fr}.action-card{min-height:150px;padding:.9rem}.event-panel{position:relative;z-index:15}.event-panel .primary{width:100%;min-height:54px}.section-title{display:grid}.setup-chip,.choice-state,.resource-hint{justify-self:start}.actions button,.actions .button{min-height:48px;flex:1 1 12rem}.career-log-turn{align-items:flex-start;flex-direction:column}.action-shortcut{display:none}}
+@media(max-width:700px){main{width:min(100% - .8rem,1120px);padding-top:.65rem}.site-header{padding:.75rem;position:static}.hero{padding:1.05rem;border-radius:18px}h1{font-size:clamp(2.55rem,16vw,4.2rem)}.hero-badges{gap:.28rem}.hero-badges span{font-size:.59rem}.era-roadmap{grid-template-columns:1fr 1fr 1fr;position:sticky;top:calc(var(--dtf-global-header-height,74px) + 8px);z-index:12;padding:.4rem;border:1px solid var(--line);border-radius:12px;background:rgba(7,18,13,.95);backdrop-filter:blur(9px)}.era-roadmap>i{display:none}.era-roadmap>div{display:flex;justify-content:center;padding:.5rem .35rem}.era-roadmap>div span{width:28px;height:28px;font-size:.7rem}.era-roadmap>div strong{font-size:.68rem}.dashboard{grid-template-columns:1fr 1fr;gap:.5rem}.dashboard .panel{margin:.6rem 0;padding:.8rem}.score-card strong{font-size:2.25rem}.resource-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem}.resource{padding:.65rem}.resource strong{font-size:1.3rem}.action-grid{grid-template-columns:1fr}.action-card{min-height:150px;padding:.9rem}.event-panel{position:relative;z-index:15}.event-panel .primary{width:100%;min-height:54px}.section-title{display:grid}.setup-chip,.choice-state,.resource-hint{justify-self:start}.actions button,.actions .button{min-height:48px;flex:1 1 12rem}.career-log-turn{align-items:flex-start;flex-direction:column}.action-shortcut{display:none}}
 @media(max-width:480px){.dashboard{grid-template-columns:1fr}.resource-grid{grid-template-columns:1fr 1fr}.era-roadmap>div{min-width:0}.era-roadmap>div strong{font-size:.62rem}.era-roadmap>div span{width:26px;height:26px}}
 @media(prefers-reduced-motion:reduce){.resource,.action-card{transition:none!important}}
 
@@ -23,7 +23,7 @@
 .hero-art{position:absolute!important;z-index:-2!important;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:saturate(.9) contrast(1.04)}
 .hero>*:not(.hero-art){position:relative;z-index:1}.hero .eyebrow,.hero h1,.hero .lede,.hero .status{max-width:760px;text-shadow:0 2px 16px rgba(0,0,0,.82)}
 .hero-badges span{border-color:rgba(240,201,107,.35);background:rgba(6,15,9,.72);backdrop-filter:blur(6px);color:#f1f5e9}
-@media(max-width:650px){.hero-actions{display:grid;grid-template-columns:1fr}.hero{min-height:480px}.hero-art{object-position:66% center}.hero:before{background:linear-gradient(0deg,rgba(4,10,7,.98) 0%,rgba(4,10,7,.78) 52%,rgba(4,10,7,.12) 100%)}}
+@media(max-width:700px){.hero-actions{display:grid;grid-template-columns:1fr}.hero{min-height:480px}.hero-art{object-position:66% center}.hero:before{background:linear-gradient(0deg,rgba(4,10,7,.98) 0%,rgba(4,10,7,.78) 52%,rgba(4,10,7,.12) 100%)}}
 
 
 /* High Life production finish pass. */
@@ -33,7 +33,7 @@ button:focus-visible,.button:focus-visible,input:focus-visible,.action-card:focu
   outline-offset:3px;
 }
 .action-card,.setup input,.actions button,.actions .button{min-height:44px}
-@media(max-width:650px){
+@media(max-width:700px){
   .action-panel{
     scroll-margin-top:calc(var(--dtf-global-header-height,74px) + 70px);
   }
@@ -133,7 +133,7 @@ button:focus-visible,.button:focus-visible,input:focus-visible,.action-card:focu
 #game-panel[data-era-state="underground"] .era-card::after{content:"UNDERGROUND"}
 #game-panel[data-era-state="medical"] .era-card::after{content:"MEDICAL"}
 #game-panel[data-era-state="legal"] .era-card::after{content:"LEGAL"}
-@media(max-width:650px){
+@media(max-width:700px){
   #game-panel[data-era-state] .era-card::after{right:.7rem;font-size:clamp(2rem,16vw,3.6rem)}
 }
 @media(prefers-reduced-motion:reduce){
