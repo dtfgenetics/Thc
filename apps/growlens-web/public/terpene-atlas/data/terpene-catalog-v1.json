@@ -2144,10 +2144,197 @@
       "stereochemistry": "trans / E",
       "parentConceptId": "ocimene",
       "notes": "Resolved trans/E β-ocimene analyte. Keep separate from cis/Z β-ocimene in measured profiles."
+    },
+    {
+      "id": "alpha-thujene",
+      "canonicalName": "α-Thujene",
+      "aliases": [
+        "alpha-thujene",
+        "origanene"
+      ],
+      "class": "monoterpene",
+      "subclass": "bicyclic hydrocarbon",
+      "formula": "C10H16",
+      "pubchemCid": 17868,
+      "aromaDescriptors": [],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "radwan-2021-constituents",
+        "pubchem"
+      ],
+      "evidenceGrade": "B+reference",
+      "notes": "Reported from Cannabis volatile oil in the historical literature summarized by Radwan et al. Formula and identifier are linked to the generic α-thujene PubChem record; specific enantiomeric composition in Cannabis is not asserted here."
+    },
+    {
+      "id": "pulegone",
+      "canonicalName": "Pulegone",
+      "aliases": [
+        "pulegone"
+      ],
+      "class": "monoterpene",
+      "subclass": "ketone",
+      "formula": "C10H16O",
+      "pubchemCid": 442495,
+      "aromaDescriptors": [],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "radwan-2021-constituents",
+        "pubchem"
+      ],
+      "evidenceGrade": "B+reference",
+      "notes": "Reported among oxygenated Cannabis monoterpenes in the review inventory. PubChem identifier shown for (+)-pulegone; the Cannabis occurrence record does not infer an enantiomer ratio."
+    },
+    {
+      "id": "pinocarvone",
+      "canonicalName": "Pinocarvone",
+      "aliases": [
+        "pinocarvone",
+        "2(10)-pinen-3-one"
+      ],
+      "class": "monoterpene",
+      "subclass": "ketone",
+      "formula": "C10H14O",
+      "pubchemCid": 121719,
+      "aromaDescriptors": [],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "radwan-2021-constituents",
+        "pubchem"
+      ],
+      "evidenceGrade": "B+reference",
+      "notes": "Reported from Cannabis essential-oil studies summarized by Radwan et al.; chemistry identifier is from PubChem."
+    },
+    {
+      "id": "ipsdienol",
+      "canonicalName": "Ipsdienol",
+      "aliases": [
+        "ipsdienol"
+      ],
+      "class": "monoterpene",
+      "subclass": "acyclic alcohol",
+      "formula": "C10H16O",
+      "pubchemCid": 92301,
+      "aromaDescriptors": [],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "radwan-2021-constituents",
+        "pubchem"
+      ],
+      "evidenceGrade": "B+reference",
+      "notes": "Reported from fresh and stored Cannabis bud volatile-oil work summarized by Radwan et al. PubChem record is the resolved (S)-ipsdienol entry; the review occurrence is retained without asserting Cannabis stereochemical purity."
+    },
+    {
+      "id": "longifolene",
+      "canonicalName": "Longifolene",
+      "aliases": [
+        "longifolene",
+        "junipene"
+      ],
+      "class": "sesquiterpene",
+      "subclass": "tricyclic hydrocarbon",
+      "formula": "C15H24",
+      "pubchemCid": 1796220,
+      "aromaDescriptors": [],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "radwan-2021-constituents",
+        "pubchem"
+      ],
+      "evidenceGrade": "B+reference",
+      "notes": "Reported as a Cannabis sesquiterpene in the historical essential-oil literature summarized by Radwan et al. PubChem identifier is for (+)-longifolene."
+    },
+    {
+      "id": "calamenene",
+      "canonicalName": "Calamenene",
+      "aliases": [
+        "calamenene",
+        "cis-calamenene"
+      ],
+      "class": "sesquiterpene",
+      "subclass": "aromatic sesquiterpenoid",
+      "formula": "C15H22",
+      "pubchemCid": 6429077,
+      "aromaDescriptors": [],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "radwan-2021-constituents",
+        "pubchem"
+      ],
+      "evidenceGrade": "B+reference",
+      "notes": "Reported from Cannabis essential oil in the review inventory. PubChem entry corresponds to cis-calamenene."
+    },
+    {
+      "id": "alpha-gurjunene",
+      "canonicalName": "α-Gurjunene",
+      "aliases": [
+        "alpha-gurjunene"
+      ],
+      "class": "sesquiterpene",
+      "subclass": "tricyclic hydrocarbon",
+      "formula": "C15H24",
+      "pubchemCid": null,
+      "aromaDescriptors": [],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "radwan-2021-constituents",
+        "pubchem"
+      ],
+      "evidenceGrade": "B+reference",
+      "notes": "Reported from Cannabis resin in the historical literature summarized by Radwan et al. PubChem contains separate (+) and (−) α-gurjunene records; the Atlas does not assign a single stereoisomer to the Cannabis occurrence without source-specific stereochemical evidence."
+    },
+    {
+      "id": "farnesol",
+      "canonicalName": "Farnesol",
+      "aliases": [
+        "farnesol",
+        "farnesyl alcohol"
+      ],
+      "class": "sesquiterpene",
+      "subclass": "acyclic alcohol",
+      "formula": "C15H26O",
+      "pubchemCid": 445070,
+      "aromaDescriptors": [
+        "floral"
+      ],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "radwan-2021-constituents",
+        "pubchem"
+      ],
+      "evidenceGrade": "B+reference",
+      "notes": "Reported among Cannabis sesquiterpenes in the review inventory. PubChem provides the formula, identifier, and a delicate floral odor description."
+    },
+    {
+      "id": "beta-elemene",
+      "canonicalName": "β-Elemene",
+      "aliases": [
+        "beta-elemene"
+      ],
+      "class": "sesquiterpene",
+      "subclass": "cyclic hydrocarbon",
+      "formula": "C15H24",
+      "pubchemCid": 6918391,
+      "aromaDescriptors": [],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "radwan-2021-constituents",
+        "pubchem"
+      ],
+      "evidenceGrade": "B+reference",
+      "notes": "Reported in Cannabis volatile-oil studies summarized by Radwan et al. PubChem identifier corresponds to the commonly indexed β-elemene stereoisomer."
     }
   ],
   "coverage": {
-    "currentCuratedCompounds": 100,
+    "currentCuratedCompounds": 109,
     "target": "Expand toward the full literature-backed Cannabis terpene/terpenoid inventory while preserving compound-level provenance and isomer distinctions.",
     "literatureContext": "Recent reviews describe more than 100 Cannabis terpenes, with one synthesis enumerating 61 monoterpenes and 51 sesquiterpenes; coverage varies by analytical method, plant material, and inclusion criteria.",
     "completenessClaim": false
