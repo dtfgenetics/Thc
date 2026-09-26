@@ -45,6 +45,7 @@ make_public_suite_archive() {
     "$payload/ph-meter" \
     "$payload/tds-meter" \
     "$payload/vpd-chart" \
+    "$payload/ppfd-chart" \
     "$payload/growlens" \
     "$payload/thc-grow-doc" \
     "$payload/puzzles" \
@@ -61,6 +62,7 @@ make_public_suite_archive() {
   printf '%s\n' 'pH meter replacement' > "$payload/ph-meter/index.html"
   printf '%s\n' 'TDS meter replacement' > "$payload/tds-meter/index.html"
   printf '%s\n' 'VPD chart replacement' > "$payload/vpd-chart/index.html"
+  printf '%s\n' 'PPFD Light Lab replacement' > "$payload/ppfd-chart/index.html"
   printf '%s\n' 'growlens replacement' > "$payload/growlens/index.html"
   printf '%s\n' 'grow doc replacement' > "$payload/thc-grow-doc/index.html"
   printf '%s\n' '{}' > "$payload/puzzles/current.json"
@@ -145,6 +147,7 @@ grep -Fq 'terpene atlas replacement' "$PUBLIC_ROOT/terpene-atlas/index.html" || 
 grep -Fq 'pH meter replacement' "$PUBLIC_ROOT/ph-meter/index.html" || fail "pH reference was not activated"
 grep -Fq 'TDS meter replacement' "$PUBLIC_ROOT/tds-meter/index.html" || fail "TDS reference was not activated"
 grep -Fq 'VPD chart replacement' "$PUBLIC_ROOT/vpd-chart/index.html" || fail "VPD reference was not activated"
+grep -Fq 'PPFD Light Lab replacement' "$PUBLIC_ROOT/ppfd-chart/index.html" || fail "PPFD Light Lab was not activated"
 if grep -Eq '^blog\t' "$DOMAIN/.dtf-backups/$SUITE_BACKUP_ID/manifest.tsv"; then
   fail "Blog entered the public-suite mutation manifest"
 fi
