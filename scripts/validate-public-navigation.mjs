@@ -28,7 +28,7 @@ const canonicalPrimary = [
   { id: 'seeds', label: 'Seeds', route: '/seeds/' },
   { id: 'learn', label: 'Learn', route: '/learn/' },
   { id: 'courses', label: 'Courses', route: '/courses/' },
-  { id: 'diagnostic', label: 'Diagnostic', route: '/tools/' },
+  { id: 'diagnostic', label: 'Tools', route: '/tools/' },
   { id: 'games', label: 'Games', route: '/games/' },
   { id: 'community', label: 'Community', route: '/community/' },
   { id: 'shop', label: 'Shop', route: '/shop/' }
@@ -48,10 +48,10 @@ for (let index = 0; index < canonicalPrimary.length; index += 1) {
 }
 
 const primaryLabels = shell.primaryNavigation.map((item) => item.label);
-for (const required of ['Home', 'Seeds', 'Learn', 'Courses', 'Diagnostic', 'Games', 'Community', 'Shop']) {
+for (const required of ['Home', 'Seeds', 'Learn', 'Courses', 'Tools', 'Games', 'Community', 'Shop']) {
   assert(primaryLabels.includes(required), `required primary label '${required}' must appear in the V6 primary navigation`);
 }
-for (const obsolete of ['Genetics', 'Tools']) {
+for (const obsolete of ['Genetics', 'Diagnostic']) {
   assert(!primaryLabels.includes(obsolete), `retired primary label '${obsolete}' must not appear in the V6 primary navigation`);
 }
 
@@ -78,8 +78,8 @@ for (const rel of deployableShellFiles) {
 }
 assert(shell.sectionOwnership?.courses?.includes('/courses/'), 'Courses must own /courses/');
 assert(shell.sectionOwnership?.courses?.includes('/learn/learning-hub/'), 'Courses must own historical Learning Hub course URLs');
-assert(shell.sectionOwnership?.diagnostic?.includes('/growlens/'), 'Diagnostic must own GrowLens');
-assert(shell.sectionOwnership?.diagnostic?.includes('/thc-grow-doc/'), 'Diagnostic must own THC Grow Doc');
+assert(shell.sectionOwnership?.diagnostic?.includes('/growlens/'), 'Tools must own GrowLens');
+assert(shell.sectionOwnership?.diagnostic?.includes('/thc-grow-doc/'), 'Tools must own THC Grow Doc');
 assert(shell.sectionOwnership?.shop?.includes('/cart/'), 'Shop must own Cart');
 assert(shell.sectionOwnership?.shop?.includes('/my-account/'), 'Shop must own Account');
 
@@ -87,13 +87,13 @@ assert(shell.sectionOwnership?.shop?.includes('/my-account/'), 'Shop must own Ac
 assert(JSON.stringify(nav.primaryNavigation) === JSON.stringify(shell.primaryNavigation), 'public-navigation and site-navigation-v6 primary navigation must match exactly');
 assert(nav.learn?.route === '/learn/', 'Learn registry root must remain /learn/');
 assert(nav.courses?.route === '/courses/', 'Courses registry root must remain /courses/');
-assert(nav.diagnostic?.route === '/tools/', 'Diagnostic registry data must remain owned by /tools/');
+assert(nav.diagnostic?.route === '/tools/', 'Tools registry data must remain owned by /tools/');
 assert(!(nav.learn?.sections || []).some((item) => item.route === '/learn/academy/'), 'Legacy /learn/academy/ must not be promoted as the public Courses entry point');
 assert((nav.courses?.sections || []).some((item) => item.route === '/learn/learning-hub/'), 'Courses must expose the Learning Hub as its structured course tree');
 assert((nav.diagnostic?.tools || []).some((item) => item.route === '/growlens/'), 'Tools registry must include GrowLens');
 assert((nav.diagnostic?.tools || []).some((item) => item.route === '/thc-grow-doc/'), 'Tools registry must include THC Grow Doc');
 for (const route of ['/atlas/', '/terpene-atlas/', '/ph-meter/', '/tds-meter/', '/vpd-chart/']) {
-  assert((nav.diagnostic?.tools || []).some((item) => item.route === route), `Diagnostic registry must include reference route ${route}`);
+  assert((nav.diagnostic?.tools || []).some((item) => item.route === route), `Tools registry must include reference route ${route}`);
 }
 const toolsHub = fs.readFileSync(path.join(root, 'site/public-route-patch/tools/index.html'), 'utf8');
 for (const route of ['/atlas/', '/terpene-atlas/', '/ph-meter/', '/tds-meter/', '/vpd-chart/']) {
