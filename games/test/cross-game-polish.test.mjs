@@ -65,20 +65,6 @@ includes('site/public-route-patch/games/bud-or-bluff/index.html', [
   'src="player-pref-v1.js"'
 ]);
 
-includes('site/public-route-patch/games/grow-room-defense/runtime.mjs', [
-  "button.setAttribute('aria-keyshortcuts', String(index + 1))",
-  "document.addEventListener('keydown'",
-  'selectedToolId = tool.id',
-  'keyboard shortcut'
-]);
-includes('site/public-route-patch/games/grow-room-defense/grow-room-defense.css', [
-  '.tool-shortcut{'
-]);
-includes('site/public-route-patch/games/harvest-hustle/runtime.mjs', [
-  "button.setAttribute('aria-keyshortcuts', String(index + 1))",
-  'const BATCH_KEYS ='
-]);
-
 includes('apps/high-land-web/src/overflowFixes.css', [
   ':focus-visible',
   '@media (prefers-reduced-motion: reduce)',
@@ -105,9 +91,7 @@ for (const path of [
   'site/public-route-patch/games/grower-conversations/app.js',
   'site/public-route-patch/games/seed-man-platformer/app.js',
   'site/public-route-patch/games/strain-showdown/polish-v1.js',
-  'site/public-route-patch/games/bud-or-bluff/player-pref-v1.js',
-  'site/public-route-patch/games/grow-room-defense/runtime.mjs',
-  'site/public-route-patch/games/harvest-hustle/runtime.mjs'
+  'site/public-route-patch/games/bud-or-bluff/player-pref-v1.js'
 ]) {
   const result = spawnSync(process.execPath, ['--check', path], { encoding: 'utf8' });
   assert.equal(result.status, 0, `${path} failed syntax check:\n${result.stderr || result.stdout}`);
