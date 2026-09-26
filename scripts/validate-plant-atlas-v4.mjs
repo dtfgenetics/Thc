@@ -50,7 +50,7 @@ ok(!/body\s*\{[^}]*overflow-x\s*:\s*hidden/i.test(siteShell), 'Atlas site-shell 
 ok(/\.topbar\s*\{[^}]*top:\s*var\(--atlas-site-header-offset\)\s*!important/i.test(siteShell), 'Atlas secondary topbar must remain offset below the V5 global header');
 
 const bootstrap = read(path.join(appRoot, 'atlas-3d-bootstrap.js'));
-for (const token of ["import('/atlas/atlas-3d-v4.js')", 'bootPlantAtlasV4', "import('/atlas/atlas-3d.js')", "host.dataset.rendererGeneration = 'v3-fallback'"]) {
+for (const token of ["import('/atlas/atlas-3d-v4.js')", 'bootPlantAtlasV4', "import('/atlas/atlas-3d.js')", "host.dataset.rendererGeneration = 'v3-fallback'", 'shouldUseStaticAuditMode', '/Lighthouse/i', "host.dataset.rendererGeneration = 'audit-static'"]) {
   ok(bootstrap.includes(token), `V4 bootstrap contract missing: ${token}`);
 }
 
