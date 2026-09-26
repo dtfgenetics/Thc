@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
   "sourceOfTruth": "dtfgenetics/Thc",
-  "updated": "2026-09-25",
+  "updated": "2026-09-26",
   "apps": [
     {
       "id": "high-land",
@@ -37,7 +37,7 @@
       "build": "npm run validate:terpene-atlas && node scripts/validate-atlas-route-ownership.mjs",
       "machineData": {
         "schemaVersion": 1,
-        "curatedNamedCompounds": 98,
+        "curatedNamedCompounds": 120,
         "populationStudySampleCount": 79,
         "populationSummaryAnalytes": 40,
         "measuredUnit": "ppm",
@@ -46,9 +46,18 @@
         "evidenceRegistry": true,
         "verifiedSampleProfiles": "ingestion-ready",
         "completenessClaim": false,
-        "connectedPlantAtlas": "/atlas/trichomes-resin/"
+        "connectedPlantAtlas": "/atlas/trichomes-resin/",
+        "minimumCuratedCompoundGate": 120,
+        "registeredSources": 11,
+        "profileDriverFactors": 8,
+        "compoundEvidenceRecords": 3,
+        "safetyContextRecords": 3,
+        "shareableCompoundUrls": true,
+        "stereochemistryAware": true,
+        "dataCompletenessVisible": true,
+        "referenceInventory": "Radwan et al. 2021 reports 120 Cannabis terpenes; Atlas count currently matches 120 but exact one-to-one identity reconciliation remains explicitly unclaimed."
       },
-      "notes": "Learn-owned chemistry explorer. Cultivar names never receive fixed percentages without measured sample provenance. Current ontology is an evidence-backed Cannabis core and explicitly remains expandable rather than claiming the entire global terpene universe is complete."
+      "notes": "Learn-owned chemistry explorer with 120 evidence-backed curated compound records, interactive family wheel, measured-population context, profile-driver interpretation, evidence/safety records, shareable compound URLs, and local verified-sample inspection. Cultivar names never receive fixed percentages without measured sample provenance. The ontology explicitly remains expandable and does not claim the current 120 records are a one-to-one reproduction of every identity in the 2021 historical 120-terpene review inventory or the entire global terpene universe."
     },
     {
       "id": "plant-atlas",
