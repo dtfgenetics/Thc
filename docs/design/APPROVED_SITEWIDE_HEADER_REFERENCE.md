@@ -6,18 +6,18 @@ Canonical visual reference asset: `site/wordpress/assets/design-references/dtf-c
 
 ## Canonical top-level navigation
 
-The shared header uses exactly: **Home, Seeds, Learn, Courses, Diagnostic, Games, Community, Shop**.
+The shared header uses exactly: **Home, Seeds, Learn, Courses, Tools, Games, Community, Shop**.
 
 1. Home → `/`
 2. Seeds → `/seeds/`
 3. Learn → `/learn/`
 4. Courses → `/courses/`
-5. Diagnostic → `/tools/`
+5. Tools → `/tools/`
 6. Games → `/games/`
 7. Community → `/community/`
 8. Shop → `/shop/`
 
-Do not rename Seeds to Genetics, Diagnostic to Tools, or merge Courses into Learn. Gallery, About, Contact, Search, Account, and Cart stay outside the primary row.
+Do not rename Seeds to Genetics, Tools to Diagnostic, or merge Courses into Learn. Gallery, About, Contact, Search, Account, and Cart stay outside the primary row.
 
 ## Responsive behavior
 
