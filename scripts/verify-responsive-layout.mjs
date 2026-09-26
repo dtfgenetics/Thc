@@ -78,6 +78,16 @@ const courseUi = read("scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs"
 const toolsHub = read("site/public-route-patch/tools/index.html");
 const gamesHub = read("site/public-route-patch/games/index.html");
 const visualV1 = read("site/design-system/dtf-visual-v1.css");
+const touchTargetFiles = [
+  ["scripts/publish-wordpress-interface-v7.mjs", [/\.dtf-shell-menu[^}]*min-height:(?:3\d|4[0-3])px/, /\.dtf-shell-nav a[^}]*min-height:(?:3\d|4[0-3])px/]],
+  ["scripts/style-wordpress-woocommerce-archive.mjs", [/woocommerce-ordering select[^}]*min-height:(?:3\d|4[0-3])px/]],
+  ["scripts/publish-wordpress-tech1-courses-2-7-v2.mjs", [/\.t1c-nav a[^}]*min-height:(?:3\d|4[0-3])px/, /\.t1c-crumbs a[^}]*min-height:(?:3\d|4[0-3])px/]],
+  ["scripts/publish-wordpress-tech2-courses-1-8.mjs", [/\.t2c-crumbs a[^}]*min-height:(?:3\d|4[0-3])px/]],
+  ["scripts/publish-wordpress-certification-catalog-v6.mjs", [/\.dc6-jump a[^}]*min-height:(?:3\d|4[0-3])px/]],
+  ["site/public-route-patch/games/strain-showdown/runtime-v2.css", [/#restartButton[^}]*min-height:(?:3\d|4[0-3])px/]],
+  ["site/public-route-patch/games/high-iq/high-iq-v3-3.css", [/\.high-iq-hero \.actions a[^}]*min-height:(?:3\d|4[0-3])px/]],
+];
+
 const dynamicViewportFiles = [
   "apps/growlens-web/src/backup.css",
   "apps/growlens-web/src/camera.css",
@@ -111,6 +121,12 @@ for (const rel of dynamicViewportFiles) {
   const source = read(rel);
   if (/100vh/.test(source)) {
     failures.push(`${rel} uses 100vh; responsive shells and panels must use 100dvh so mobile browser chrome cannot clip content.`);
+  }
+}
+for (const [rel, patterns] of touchTargetFiles) {
+  const source = read(rel);
+  for (const pattern of patterns) {
+    if (pattern.test(source)) failures.push(`${rel} contains an interactive control below the 44px touch-target floor.`);
   }
 }
 
