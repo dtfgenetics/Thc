@@ -794,7 +794,7 @@ jobs:
             grep -Fq '>Seeds</a>' "$file"
             grep -Fq '>Learn</a>' "$file"
             grep -Fq '>Courses</a>' "$file"
-            grep -Fq '>Diagnostic</a>' "$file"
+            grep -Fq '>Tools</a>' "$file"
             grep -Fq '>Games</a>' "$file"
             grep -Fq '>Community</a>' "$file"
             grep -Fq '>Shop</a>' "$file"
