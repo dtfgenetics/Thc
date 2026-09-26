@@ -96,6 +96,12 @@ const phTool = read("site/public-route-patch/ph-meter/index.html");
 const tdsTool = read("site/public-route-patch/tds-meter/index.html");
 const vpdTool = read("site/public-route-patch/vpd-chart/index.html");
 const productionStrainShowdown = read("site/public-route-patch/games/strain-showdown/runtime-v4.css");
+const burnBudsV4 = read("site/public-route-patch/games/protect-the-plants/gameplay-v4.css");
+const strainMatchV2 = read("site/public-route-patch/games/strain-match/strain-match-v2.css");
+const trichomeTrialsV2 = read("site/public-route-patch/games/trichome-trials/trichome-trials-v2.css");
+const harvestHustleV2 = read("site/public-route-patch/games/harvest-hustle/harvest-hustle-v2.css");
+const phenoQuestCss = read("site/public-route-patch/games/phenoquest/style.css");
+const infographicsPage = read("site/public-route-patch/learn/infographics/index.html");
 const tech1Courses = read("scripts/publish-wordpress-tech1-courses-2-7-v2.mjs");
 const tech2Courses = read("scripts/publish-wordpress-tech2-courses-1-8.mjs");
 const course1Layout = read("scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs");
@@ -112,6 +118,12 @@ if (/@media\s*\(max-width:\s*720px\)/.test(productionStrainShowdown)) {
   failures.push("Production Strain Showdown must use the canonical 700px phone band, not the legacy 720px breakpoint.");
 }
 for (const [label, source, legacyPattern] of [
+  ["Burn Buds", burnBudsV4, /@media\s*\(max-width:\s*720px\)|@media\(max-width:720px\)/],
+  ["Strain Match", strainMatchV2, /@media\(max-width:820px\)/],
+  ["Trichome Trials", trichomeTrialsV2, /@media\(max-width:(?:820|640)px\)/],
+  ["Harvest Hustle", harvestHustleV2, /@media\(max-width:(?:980|640)px\)/],
+  ["PhenoQuest", phenoQuestCss, /@media\s*\(max-width:\s*640px\)/],
+  ["Infographics", infographicsPage, /@media\(max-width:620px\)/],
   ["pH tool", phTool, /@media\(max-width:(?:820|600)px\)/],
   ["TDS tool", tdsTool, /@media\(max-width:(?:820|600)px\)/],
   ["VPD tool", vpdTool, /@media\(max-width:(?:850|600)px\)/],
@@ -119,6 +131,13 @@ for (const [label, source, legacyPattern] of [
   if (legacyPattern.test(source)) failures.push(`${label} reintroduced legacy breakpoints outside the shared 900/700 bands.`);
   if (!/\.nav a\{[^}]*min-height:44px/.test(source)) failures.push(`${label} navigation must keep a 44px touch target.`);
   if (!/\.tabs a\{[^}]*min-height:44px/.test(source)) failures.push(`${label} tool tabs must keep a 44px touch target.`);
+}
+
+if (!/\.hub-back\{[^}]*min-height:44px/.test(phenoQuestCss) || !/safe-area-inset-top/.test(phenoQuestCss)) {
+  failures.push("PhenoQuest back navigation must remain touch-safe and top-safe-area aware.");
+}
+if (!/\.search a\{[^}]*min-height:44px/.test(infographicsPage)) {
+  failures.push("Infographics search action must keep a 44px touch target.");
 }
 
 for (const [label, source] of [
