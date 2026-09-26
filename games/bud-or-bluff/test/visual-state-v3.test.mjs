@@ -15,8 +15,8 @@ assert.match(css,/data-urgency="critical"/,'critical timer state must be visible
 assert.match(css,/position:sticky/,'phone vote actions must remain reachable');
 assert.match(css,/@media\(prefers-reduced-motion:reduce\)/,'visual polish must respect reduced motion');
 
-assert.match(baseCss,/body\{[^}]*overflow-x:hidden/is,'test fixture must keep detecting the legacy base overflow mask until it is removed upstream');
-assert.match(css,/body\{min-width:0;overflow-x:visible\}/,'late responsive layer must release the legacy page-root overflow mask');
+assert.doesNotMatch(baseCss,/body\{[^}]*overflow-x:hidden/is,'base layout must not hide page-level horizontal overflow');
+assert.match(css,/body\{min-width:0;overflow-x:visible\}/,'late responsive layer must keep the page root overflow mask released');
 assert.match(css,/\.home-view,.room-grid\{grid-template-columns:minmax\(0,1fr\)\}/,'tablet and phone gameplay must collapse to one intrinsic-width content column');
 assert.match(css,/\.sidebar\{grid-template-columns:minmax\(0,1fr\);margin-top:2px\}/,'phone sidebar must collapse to one column');
 assert.match(css,/\.icon-button,.secondary-action,.primary-action,.seg,.launch-form input,.launch-form select,.chat-form input,.chat-form button\{min-height:44px\}/,'interactive controls must preserve a 44px minimum touch target');
