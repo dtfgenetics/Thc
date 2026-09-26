@@ -82,10 +82,37 @@ function now_ms(): int
     return (int) round(microtime(true) * 1000);
 }
 
-$root = dirname(__DIR__, 2) . '/wp-load.php';
-$useWp = is_file($root);
+function find_wp_bootstrap(): ?string
+{
+    $candidates = [];
+    $documentRoot = rtrim(strval($_SERVER['DOCUMENT_ROOT'] ?? ''), '/\\');
+    if ($documentRoot !== '') {
+        $candidates[] = $documentRoot . '/wp-load.php';
+    }
+
+    $cursor = __DIR__;
+    for ($depth = 0; $depth < 8; $depth++) {
+        $candidates[] = $cursor . '/wp-load.php';
+        $parent = dirname($cursor);
+        if ($parent === $cursor) {
+            break;
+        }
+        $cursor = $parent;
+    }
+
+    foreach (array_unique($candidates) as $candidate) {
+        if (is_file($candidate) && is_readable($candidate)) {
+            return $candidate;
+        }
+    }
+    return null;
+}
+
+$wpBootstrap = find_wp_bootstrap();
+$useWp = $wpBootstrap !== null;
 if ($useWp) {
-    require_once $root;
+    require_once $wpBootstrap;
+    $useWp = function_exists('get_transient') && function_exists('set_transient');
 }
 
 function store_get(string $key)
@@ -107,15 +134,21 @@ function store_get(string $key)
     return $data;
 }
 
-function store_set(string $key, array $value, int $ttl = PTP_TTL): void
+function store_set(string $key, array $value, int $ttl = PTP_TTL): bool
 {
     global $useWp;
     if ($useWp) {
         set_transient($key, $value, $ttl);
-        return;
+        return is_array(get_transient($key));
     }
     $value['_expires'] = time() + $ttl;
-    file_put_contents(sys_get_temp_dir() . '/' . $key . '.json', json_encode($value), LOCK_EX);
+    $encoded = json_encode($value);
+    if (!is_string($encoded)) {
+        return false;
+    }
+    $path = sys_get_temp_dir() . '/' . $key . '.json';
+    $written = @file_put_contents($path, $encoded, LOCK_EX);
+    return $written !== false && is_file($path);
 }
 
 function room_get(string $code): array
@@ -133,9 +166,15 @@ function room_get(string $code): array
 function room_save(array $room): void
 {
     $room['updatedAt'] = now_ms();
-    store_set('ptp_room_' . $room['code'], $room);
+    $roomKey = 'ptp_room_' . $room['code'];
+    if (!store_set($roomKey, $room) || !is_array(store_get($roomKey))) {
+        fail('Game storage is temporarily unavailable. Please try again.', 503);
+    }
     foreach ($room['players'] as $p) {
-        store_set('ptp_player_' . $p['id'], ['code' => $room['code'], 'token' => $p['token']], PTP_TTL);
+        $playerKey = 'ptp_player_' . $p['id'];
+        if (!store_set($playerKey, ['code' => $room['code'], 'token' => $p['token']], PTP_TTL)) {
+            fail('Game storage is temporarily unavailable. Please try again.', 503);
+        }
     }
 }
 
