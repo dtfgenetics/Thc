@@ -90,7 +90,7 @@ for (const factor of factors?.factors || []) {
 }
 
 const index = fs.existsSync(path.join(sourceRoot,'index.html')) ? fs.readFileSync(path.join(sourceRoot,'index.html'),'utf8') : '';
-for (const token of ['/terpene-atlas/terpene-atlas-v1.css','/terpene-atlas/terpene-atlas-v1.js','data-wheel-family','data-search','data-class-filter','data-scope-filter','data-population-body','data-profile-file','data-compound-dialog','data-factor-grid','data-factor-category','data-source-grid','data-compare-a','/atlas/trichomes-resin/']) {
+for (const token of ['/terpene-atlas/terpene-atlas-v1.css','/terpene-atlas/terpene-atlas-v1.js','class="skip-link"','id="main-content"','data-wheel-family','data-search','data-class-filter','data-scope-filter','data-population-body','data-profile-file','data-compound-dialog','aria-modal="true"','aria-live="polite"','data-factor-grid','data-factor-category','data-source-grid','data-compare-a','/atlas/trichomes-resin/']) {
   if (!index.includes(token)) errors.push(`Terpene Atlas index missing UI contract: ${token}`);
 }
 
