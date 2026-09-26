@@ -1,5 +1,8 @@
 name: Publish Learning Hub Course 1
 
+env:
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
 on:
   pull_request:
     paths:
@@ -118,7 +121,19 @@ jobs:
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
       - name: Publish final Course 1 base page tree
-        run: node scripts/publish-wordpress-learning-hub-course1-v2.mjs
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3; do
+            if node scripts/publish-wordpress-learning-hub-course1-v2.mjs; then
+              exit 0
+            fi
+            if [[ "$attempt" -eq 3 ]]; then
+              echo "Course 1 base publisher failed after 3 attempts." >&2
+              exit 1
+            fi
+            sleep $((attempt * 10))
+          done
       - name: Build guided 18-lesson Course 1 learning UI
         run: node scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs
       - name: Apply responsive three-column Course 1 lesson layout
