@@ -235,6 +235,7 @@ required = [
     "ph-meter/index.html",
     "tds-meter/index.html",
     "vpd-chart/index.html",
+    "ppfd-chart/index.html",
     "games/index.html",
     "games/dtf-shell.css",
     "games/high-land/index.html",
