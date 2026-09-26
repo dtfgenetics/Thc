@@ -209,11 +209,13 @@ const final = await pageBySlug('final-course-test', course.id);
 const finalContent = verifyPage(final, {
   label: 'Course 1 final course test',
   minLength: 700,
-  required: ['Graded assessment:', 'answers and rationales are not exposed', '60-minute timed attempt', 'Open the Academy assessment portal', 'dtf-learning-hub-course1-layout-v4'],
+  required: ['Graded assessment:', 'answers and rationales are not exposed', '60-minute timed attempt', 'Open this graded final in the Academy', 'dtf-learning-hub-course1-layout-v4'],
   questionCount: 0
 });
 must(!finalContent.includes('Check answer and rationale'), 'Course 1 summative final must not expose self-check answer panels.');
 must(!/<strong>Answer:<\/strong>/i.test(finalContent), 'Course 1 summative final must not expose its answer key.');
+must(finalContent.includes('course=COURSE-LH-TECH1-001'), 'Course 1 summative final must deep-link to its own Academy course.');
+must(finalContent.includes('view=final'), 'Course 1 summative final deep link must target the graded-final view.');
 verified.push({ type: 'final-test', id: final.id, slug: 'final-course-test', securedQuestionCount: expectedFinalCount });
 
 const sourceScopedItemCount = publicQuestionCount + expectedFinalCount;
