@@ -18,6 +18,13 @@ const auth = user && pass ? `Basic ${Buffer.from(`${user}:${pass}`).toString('ba
 const must = (value, message) => { if (!value) throw new Error(message); };
 const esc = (value='') => String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');
 const sourceAssetUrl = source => source.startsWith('/assets/') ? `${rawBase}/apps/web/public${source}` : source;
+const controlledVisualSource = visual => {
+  const source = visual.src || '';
+  if (/\/cultivation-work-area-hazard-scan\.svg$/i.test(source)) return '/assets/course1/hazard-scan.png';
+  if (/\/ppe-hazcom-decision-map\.svg$/i.test(source)) return '/assets/course1/ppe-task-guide.png';
+  const canonical = source.match(/^https:\/\/raw\.githubusercontent\.com\/dtfgenetics\/Thc-learning-courses-\/[^/]+\/apps\/web\/public(\/assets\/course1\/.+\.(?:png|webp|jpe?g))$/i);
+  return canonical?.[1] || source;
+};
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 must(local.id === 'learning-hub-course1' && local.course.id === 'COURSE-LH-TECH1-001', 'Unexpected Course 1 package.');
@@ -27,7 +34,7 @@ for (let i=0;i<ui.lessons.length;i++) {
   const v=ui.lessons[i];
   must(v.id === `LESSON-LH-TECH1-001-${String(i+1).padStart(2,'0')}`, `Unexpected lesson ID at position ${i+1}.`);
   must(v.visual?.purpose && v.visual?.brief && v.visual?.alt, `${v.id}: instructional visual metadata required.`);
-  if (v.visual.status === 'approved') must(/^\/assets\/course1\/.+\.(png|webp|jpe?g)$/i.test(v.visual.src || ''), `${v.id}: approved visual must use a controlled raster Course 1 asset path.`);
+  if (v.visual.status === 'approved') must(/^\/assets\/course1\/.+\.(png|webp|jpe?g)$/i.test(controlledVisualSource(v.visual)), `${v.id}: approved visual must resolve to a controlled raster Course 1 asset path.`);
 }
 async function fetchText(url) {
   let last;
@@ -120,7 +127,7 @@ const css=`<style id="dtf-learning-hub-course1-ui-v3">
 @media print{.lhv3-sidebar,.lhv3-mobile-outline,.lhv3-complete,.lhv3-nextprev{display:none}.lhv3{background:#fff;padding:0}.lhv3-layout{display:block}}
 </style>`;
 if (validateOnly) {
-  for (const lesson of ui.lessons.filter(x => x.visual.status === 'approved')) await fetchText(sourceAssetUrl(lesson.visual.src));
+  for (const lesson of ui.lessons.filter(x => x.visual.status === 'approved')) await fetchText(sourceAssetUrl(controlledVisualSource(lesson.visual)));
   must(css.includes('object-fit:contain;background:#fff'), 'Approved educational visuals must render uncropped.');
   must(css.includes('@media(max-width:900px)'), 'Tablet-to-mobile single-column breakpoint is missing.');
   must(css.includes('overscroll-behavior-inline:contain'), 'Responsive table scrolling is missing.');
@@ -137,7 +144,7 @@ function outline(currentId,lessonRows){
   return `<h2>Course outline</h2><div class="lhv3-progress" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-course-progress><span style="width:0%"></span></div><p style="font-size:.85rem;color:#5b6b60" data-course-progress-text>0 of 18 lessons marked complete</p><ol class="lhv3-outline">${modules}</ol>`;
 }
 function mobileOutline(currentId,lessonRows){return `<details class="lhv3-mobile-outline"><summary><strong>Course outline & progress</strong></summary>${outline(currentId,lessonRows)}</details>`;}
-function renderVisual(v){if(v?.status!=='approved'||!v.src)return'';return `<figure class="lhv3-visual"><img src="${esc(sourceAssetUrl(v.src))}" alt="${esc(v.alt)}" loading="lazy" decoding="async"><figcaption>${esc(v.caption||v.purpose)}</figcaption></figure>`;}
+function renderVisual(v){if(v?.status!=='approved'||!v.src)return'';return `<figure class="lhv3-visual"><img src="${esc(sourceAssetUrl(controlledVisualSource(v)))}" alt="${esc(v.alt)}" loading="lazy" decoding="async"><figcaption>${esc(v.caption||v.purpose)}</figcaption></figure>`;}
 
 const moduleSources=[];
 for(const m of local.modules){const md=await fetchLearner(m.source);moduleSources.push({...m,...parseModule(md,m.number)});}
