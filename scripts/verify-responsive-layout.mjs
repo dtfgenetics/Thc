@@ -185,6 +185,7 @@ requireMatch(
   /1440\s*[×x]\s*900/,
   "Responsive standard must retain the desktop QA matrix."
 );
+requireMatch(docs, /844\s*[×x]\s*390/, "Responsive standard must retain the landscape-phone QA case.");
 
 const criticalHtml = [
   "site/public-route-patch/tools/index.html",
