@@ -1,0 +1,163 @@
+import fs from "node:fs";
+import path from "node:path";
+
+const root = process.cwd();
+const failures = [];
+const warnings = [];
+
+function read(rel) {
+  const file = path.join(root, rel);
+  if (!fs.existsSync(file)) {
+    failures.push(`Missing required responsive file: ${rel}`);
+    return "";
+  }
+  return fs.readFileSync(file, "utf8");
+}
+
+function requireMatch(content, regex, message) {
+  if (!regex.test(content)) failures.push(message);
+}
+
+const responsivePath = "site/wordpress/assets/responsive-layout-v1.css";
+const responsive = read(responsivePath);
+
+requireMatch(
+  responsive,
+  /--dtf-layout-gutter\s*:\s*clamp\(/,
+  "Shared responsive CSS must keep a fluid page gutter token."
+);
+requireMatch(
+  responsive,
+  /--dtf-layout-touch\s*:\s*44px/,
+  "Shared responsive CSS must keep the 44px minimum touch target token."
+);
+requireMatch(
+  responsive,
+  /@media\s*\(min-width:\s*701px\)\s*and\s*\(max-width:\s*1120px\)/,
+  "Shared responsive CSS must keep the deliberate tablet/compact band (701–1120px)."
+);
+requireMatch(
+  responsive,
+  /@media\s*\(max-width:\s*900px\)/,
+  "Shared responsive CSS must keep the intermediate 900px composition breakpoint."
+);
+requireMatch(
+  responsive,
+  /@media\s*\(max-width:\s*700px\)/,
+  "Shared responsive CSS must keep the phone breakpoint at 700px."
+);
+requireMatch(
+  responsive,
+  /@media\s*\(max-width:\s*420px\)/,
+  "Shared responsive CSS must keep the small-phone breakpoint at 420px."
+);
+requireMatch(
+  responsive,
+  /minmax\(0\s*,\s*1fr\)/,
+  "Shared responsive CSS must use shrink-safe grid columns (minmax(0,1fr))."
+);
+requireMatch(
+  responsive,
+  /min-width\s*:\s*0/,
+  "Shared responsive CSS must preserve min-width:0 overflow protection."
+);
+requireMatch(
+  responsive,
+  /overflow-x\s*:\s*auto/,
+  "Shared responsive CSS must preserve local horizontal scrolling for dense content."
+);
+requireMatch(
+  responsive,
+  /100dvh/,
+  "Shared responsive CSS must account for dynamic mobile viewport height (100dvh)."
+);
+
+const docs = read("docs/RESPONSIVE_LAYOUT_STANDARD.md");
+requireMatch(
+  docs,
+  /360\s*[×x]\s*800/,
+  "Responsive standard must retain the phone QA matrix."
+);
+requireMatch(
+  docs,
+  /768\s*[×x]\s*1024/,
+  "Responsive standard must retain the tablet QA matrix."
+);
+requireMatch(
+  docs,
+  /1440\s*[×x]\s*900/,
+  "Responsive standard must retain the desktop QA matrix."
+);
+
+const criticalHtml = [
+  "site/public-route-patch/tools/index.html",
+  "site/public-route-patch/games/index.html",
+  "site/public-route-patch/games/high-iq/index.html",
+  "site/public-route-patch/atlas/index.html",
+  "site/public-route-patch/terpene-atlas/index.html",
+];
+
+for (const rel of criticalHtml) {
+  const html = read(rel);
+  if (!html) continue;
+  if (!/<meta\s+name=["']viewport["'][^>]*width=device-width/i.test(html)) {
+    failures.push(`${rel} is missing a responsive viewport meta tag.`);
+  }
+}
+
+const localCssRoots = [
+  "site/public-route-patch",
+  "apps/growlens-web",
+  "apps/high-land-web",
+];
+
+const breakpointPattern = /@media[^\{]*(?:max-width|min-width)\s*:\s*(\d+)px/gi;
+const unusualCounts = new Map();
+
+function walk(dir) {
+  if (!fs.existsSync(dir)) return [];
+  const out = [];
+  for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, ent.name);
+    if (ent.isDirectory()) out.push(...walk(full));
+    else if (ent.isFile() && /\.css$/i.test(ent.name)) out.push(full);
+  }
+  return out;
+}
+
+for (const relRoot of localCssRoots) {
+  for (const file of walk(path.join(root, relRoot))) {
+    const css = fs.readFileSync(file, "utf8");
+    let match;
+    while ((match = breakpointPattern.exec(css))) {
+      const width = Number(match[1]);
+      if (![420, 700, 900, 1120, 1121].includes(width)) {
+        const rel = path.relative(root, file).replaceAll("\\", "/");
+        const key = `${rel}:${width}`;
+        unusualCounts.set(key, (unusualCounts.get(key) || 0) + 1);
+      }
+    }
+  }
+}
+
+if (unusualCounts.size) {
+  const examples = [...unusualCounts.keys()].slice(0, 20);
+  warnings.push(
+    "Local component breakpoints outside the canonical shared bands exist. They are allowed only for documented content-driven reasons. Review when touching these files:\n  - " +
+      examples.join("\n  - ") +
+      (unusualCounts.size > examples.length ? `\n  - …and ${unusualCounts.size - examples.length} more` : "")
+  );
+}
+
+if (warnings.length) {
+  console.warn("\nResponsive verifier warnings:");
+  for (const warning of warnings) console.warn(`- ${warning}`);
+}
+
+if (failures.length) {
+  console.error("\nResponsive verifier failed:");
+  for (const failure of failures) console.error(`- ${failure}`);
+  process.exit(1);
+}
+
+console.log("Responsive layout contract verified.");
