@@ -116,6 +116,11 @@ jobs:
           set -euo pipefail
           npm run verify:education-visual-system
 
+      - name: Validate learning content quality
+        run: |
+          set -euo pipefail
+          npm run verify:learning-content-quality
+
       - name: Validate self-hosted High IQ
         run: |
           set -euo pipefail
