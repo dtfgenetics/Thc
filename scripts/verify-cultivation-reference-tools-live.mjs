@@ -10,7 +10,7 @@ const routes = [
   { path: '/terpene-atlas/', markers: ['THC Terpene Atlas', 'All Tools'] },
   { path: '/ph-meter/', markers: ['pH Meter', 'All Tools', 'This page does not measure pH by itself'] },
   { path: '/tds-meter/', markers: ['TDS / EC Meter', 'All Tools', '500 scale', '700 scale'] },
-  { path: '/vpd-chart/', markers: ['VPD Chart', 'All Tools', 'Leaf temperature offset'] },
+  { path: '/vpd-chart/', markers: ['VPD Chart', 'All Tools', 'Leaf offset'] },
   { path: '/ppfd-chart/', markers: ['THC Light Lab', 'PPFD · DLI · Canopy Mapping', 'All Tools'] },
 ];
 
