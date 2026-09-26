@@ -7,6 +7,7 @@ const files = {
   ph: 'site/public-route-patch/ph-meter/index.html',
   tds: 'site/public-route-patch/tds-meter/index.html',
   vpd: 'site/public-route-patch/vpd-chart/index.html',
+  ppfd: 'site/public-route-patch/ppfd-chart/index.html',
 };
 
 const read = (key) => fs.readFileSync(path.join(root, files[key]), 'utf8');
@@ -14,14 +15,15 @@ const hub = read('hub');
 const ph = read('ph');
 const tds = read('tds');
 const vpd = read('vpd');
+const ppfd = read('ppfd');
 const errors = [];
 const assert = (ok, msg) => { if (!ok) errors.push(msg); };
 
-for (const route of ['/atlas/', '/terpene-atlas/', '/ph-meter/', '/tds-meter/', '/vpd-chart/']) {
+for (const route of ['/atlas/', '/terpene-atlas/', '/ph-meter/', '/tds-meter/', '/vpd-chart/', '/ppfd-chart/']) {
   assert(hub.includes(`href="${route}"`) || hub.includes(`href='${route}'`), `tools hub missing ${route}`);
 }
-assert((hub.match(/target="_blank"/g) || []).length >= 5, 'tools hub must open all five reference launchers in a new tab');
-for (const label of ['Plant Atlas', 'Terpene Atlas', 'pH Meter', 'TDS / EC Meter', 'VPD Chart']) {
+assert((hub.match(/target="_blank"/g) || []).length  >= 6, 'tools hub must open all five reference launchers in a new tab');
+for (const label of ['Plant Atlas', 'Terpene Atlas', 'pH Meter', 'TDS / EC Meter', 'VPD Chart', 'PPFD / DLI']) {
   assert(hub.includes(label), `tools hub missing visible label: ${label}`);
 }
 
@@ -54,6 +56,9 @@ assert(vpd.includes("u==='f'?(v-32)*5/9:v") && vpd.includes("v*9/5+32"), 'VPD pa
 
 const atlas = fs.readFileSync(path.join(root, 'site/public-route-patch/atlas/index.html'), 'utf8');
 const terpenes = fs.readFileSync(path.join(root, 'site/public-route-patch/terpene-atlas/index.html'), 'utf8');
+assert(ppfd.includes('DLI = PPFD') && ppfd.includes('3 × 3 canopy PPFD map'), 'PPFD page missing DLI formula or canopy map');
+assert(ppfd.includes('min-to-mean') || ppfd.includes('Min ÷ mean'), 'PPFD page missing uniformity interpretation');
+assert(ppfd.includes('href="/tools/"'), 'PPFD page missing central All Tools link');
 assert(atlas.includes('href="/tools/"'), 'Plant Atlas missing central All Tools link');
 assert(terpenes.includes('href="/tools/"'), 'Terpene Atlas missing central All Tools link');
 
