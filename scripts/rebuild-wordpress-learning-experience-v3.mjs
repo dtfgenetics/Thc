@@ -124,10 +124,19 @@ function isRetiredMedia(item) {
   return retiredMediaTokens.some(token => text.includes(token));
 }
 
+function isApprovedLearningMedia(item) {
+  const slug = String(item?.slug || '').toLowerCase();
+  const text = mediaText(item);
+  if (slug.startsWith('dtf-strain-card-')) return false;
+  return slug.startsWith('dtf-approved-visual-') ||
+    text.includes('dtf_approved_public_visual') ||
+    text.includes('dtf-approved-public-visual');
+}
+
 function chooseMedia(media, groups, used = new Set()) {
   for (const group of groups) {
     const terms = Array.isArray(group) ? group : [group];
-    const match = media.find(item => item?.source_url && !isRetiredMedia(item) && !used.has(item.id) && terms.every(term => mediaText(item).includes(String(term).toLowerCase())));
+    const match = media.find(item => item?.source_url && !isRetiredMedia(item) && isApprovedLearningMedia(item) && !used.has(item.id) && terms.every(term => mediaText(item).includes(String(term).toLowerCase())));
     if (match) {
       used.add(match.id);
       return match;
@@ -241,7 +250,7 @@ function buildLearn() {
 
 function findRelatedMedia(topic, count = 3) {
   const terms = [topic.title, ...(topic.keywords || [])].map(v => String(v).toLowerCase());
-  const scored = media.filter(item => item?.source_url && !isRetiredMedia(item)).map(item => {
+  const scored = media.filter(item => item?.source_url && !isRetiredMedia(item) && isApprovedLearningMedia(item)).map(item => {
     const hay = mediaText(item);
     const score = terms.reduce((sum, term) => sum + (term && hay.includes(term) ? Math.min(4, term.split(/\s+/).length + 1) : 0), 0);
     return { item, score };
