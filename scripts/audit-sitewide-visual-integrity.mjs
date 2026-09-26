@@ -159,14 +159,14 @@ function inspectPage(fetched,depth){
 
   const h1=count(html,/<h1\b/gi);
   if(h1===0) warnings.push('No H1 found');
-  if(h1>1) warnings.push(`Multiple H1 elements found (${h1})`);
+  if(h1>1) issues.push(`Multiple H1 elements found (${h1}); production pages must expose one primary H1`);
 
   const dups=duplicateIds(html);
-  if(dups.length) warnings.push(`Duplicate HTML ids: ${dups.slice(0,8).map(item=>`${item.id}×${item.count}`).join(', ')}${dups.length>8?'…':''}`);
+  if(dups.length) issues.push(`Duplicate HTML ids: ${dups.slice(0,8).map(item=>`${item.id}×${item.count}`).join(', ')}${dups.length>8?'…':''}`);
 
   const images=extractImages(html,base);
   const missingAlt=images.filter(image=>image.alt===null);
-  if(missingAlt.length) warnings.push(`${missingAlt.length} image(s) missing an alt attribute`);
+  if(missingAlt.length) issues.push(`${missingAlt.length} image(s) missing an alt attribute`);
   const emptySrc=images.filter(image=>!image.src);
   if(emptySrc.length) issues.push(`${emptySrc.length} image(s) have no usable src/data-src`);
 
