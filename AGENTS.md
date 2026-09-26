@@ -35,6 +35,7 @@ Use specialized skills where useful:
 - pull-request semantic review: `.agents/skills/dtf-pr-reviewer/SKILL.md`
 - concurrent work: `.agents/skills/dtf-parallel-studio/SKILL.md`
 - dtfseeds.com publishing: `.agents/skills/dtfseeds-production-publishing/SKILL.md`
+- responsive layout/UI work: `.agents/skills/dtf-responsive-layout/SKILL.md`
 - portfolio audits/upgrades: `.agents/skills/dtf-game-portfolio-upgrade/SKILL.md`
 - individual game production: `.agents/skills/dtf-game-production/SKILL.md`
 - release integration: `.agents/skills/dtf-game-canonical-release/SKILL.md`
@@ -49,7 +50,7 @@ A strong default sequence is:
 2. Resolve current ownership and deployment mappings for reference.
 3. Use an isolated branch/session when concurrent work could overlap.
 4. Make the change needed to achieve the requested result. A full rewrite, migration, backend replacement, engine change, route move, or repository consolidation is allowed when justified.
-5. Run tests, builds, browser checks, static checks, route checks, performance checks, or other QA that fit the resulting architecture.
+5. Run tests, builds, browser checks, static checks, route checks, performance checks, or other QA that fit the resulting architecture. For visitor-facing layout/CSS work, read `.agents/skills/dtf-responsive-layout/SKILL.md` first and run `npm run verify:responsive` before release QA.
 6. Replace obsolete validators with equivalent or stronger checks when the implementation changes.
 7. Update ownership, navigation, documentation, and deployment metadata to match the new reality.
 8. Before merging a substantive pull request, review the exact head SHA with `.agents/skills/dtf-pr-reviewer/SKILL.md`; semantic review supplements rather than replaces deterministic checks.
