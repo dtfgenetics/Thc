@@ -1,0 +1,287 @@
+{
+  "schemaVersion": 2,
+  "updatedAt": "2026-09-25",
+  "purpose": "Role-specific production plan for replacing quarantined THC education graphics with higher-quality reference imagery and diagrams.",
+  "policy": {
+    "approvedSlugPrefix": "dtf-approved-visual-",
+    "automaticKeywordSelectionAllowed": false,
+    "legacyInfographicReuseAllowed": false,
+    "rasterPreferred": true,
+    "svgInstructionalAssetsAllowed": false,
+    "minimumRasterWidthPx": 1800,
+    "reviewRequired": [
+      "subject accuracy",
+      "mobile",
+      "tablet",
+      "desktop",
+      "crop safety",
+      "alt text"
+    ]
+  },
+  "topics": {
+    "plant-biology": [
+      [
+        "hero",
+        "Whole-plant botanical reference",
+        "Photorealistic whole cannabis plant with clearly visible roots, stem, nodes, leaves, inflorescences and labeled anatomical regions."
+      ],
+      [
+        "reference",
+        "Leaf anatomy close reference",
+        "Macro botanical reference showing blade, petiole, veins, margin and stomatal surface context."
+      ],
+      [
+        "reference",
+        "Root system architecture",
+        "High-detail root architecture with crown, lateral roots, fine roots and rhizosphere context."
+      ],
+      [
+        "reference",
+        "Flower and trichome anatomy",
+        "Macro flowering reference with bract, stigma, sugar leaf and glandular trichome callouts."
+      ]
+    ],
+    "lifecycle-propagation": [
+      [
+        "hero",
+        "Lifecycle sequence",
+        "Seed, germination, seedling, vegetative growth, transition and reproductive development shown as one clean photographic sequence."
+      ],
+      [
+        "reference",
+        "Germination stages",
+        "Imbibition through radicle emergence, shoot emergence and normal seedling establishment."
+      ],
+      [
+        "reference",
+        "Clone rooting sequence",
+        "Cutting preparation, callus/root initiation, early root growth and acclimation."
+      ],
+      [
+        "reference",
+        "Transplant acclimation",
+        "Root-ball, container transition and early post-transplant recovery reference."
+      ]
+    ],
+    "environment-vpd": [
+      [
+        "hero",
+        "Leaf environment system",
+        "Leaf-level temperature, RH, airflow and vapor exchange visual tied to room environment."
+      ],
+      [
+        "reference",
+        "Air VPD vs leaf VPD",
+        "Diagram contrasting air-temperature-only assumptions with measured leaf-temperature VPD."
+      ],
+      [
+        "reference",
+        "Dew point and condensation",
+        "Canopy microclimate cross-section showing when surface condensation risk develops."
+      ],
+      [
+        "reference",
+        "Sensor placement",
+        "Room map showing representative temperature/RH sensor positions and common bad placements."
+      ]
+    ],
+    "lighting": [
+      [
+        "hero",
+        "Canopy light distribution",
+        "Photorealistic indoor canopy with fixture, measurement plane and visible PPFD grid concept."
+      ],
+      [
+        "reference",
+        "PPFD measurement grid",
+        "Standardized grid and measurement-plane reference."
+      ],
+      [
+        "reference",
+        "DLI relationship",
+        "Photoperiod plus PPFD concept showing how DLI accumulates across a day."
+      ],
+      [
+        "reference",
+        "Light stress evidence",
+        "Reference set showing bleaching, edge stress, tacoing and non-light look-alikes."
+      ]
+    ],
+    "water-root-zone": [
+      [
+        "hero",
+        "Root-zone water system",
+        "Container cross-section showing irrigation, pore water, air space, roots and drainage."
+      ],
+      [
+        "reference",
+        "Dryback curve",
+        "Time-series diagram connecting irrigation event, substrate water content and next irrigation."
+      ],
+      [
+        "reference",
+        "Runoff vs root-zone sampling",
+        "Comparison of input, runoff and representative root-zone measurements."
+      ],
+      [
+        "reference",
+        "Hypoxia evidence",
+        "Healthy vs oxygen-limited root-zone reference with environmental context."
+      ]
+    ],
+    "nutrition-media": [
+      [
+        "hero",
+        "Nutrient transport system",
+        "Root uptake to xylem, leaf demand and media chemistry in one systems visual."
+      ],
+      [
+        "reference",
+        "Essential elements map",
+        "Macronutrients, secondary nutrients and micronutrients with biological functions."
+      ],
+      [
+        "reference",
+        "pH availability mechanisms",
+        "Mechanism-first pH/precipitation/chelation reference without one universal target band."
+      ],
+      [
+        "reference",
+        "Differential diagnosis",
+        "Deficiency-like symptoms compared against salinity, root impairment, pH and environment look-alikes."
+      ]
+    ],
+    "training-canopy": [
+      [
+        "hero",
+        "Canopy architecture",
+        "Before/after plant architecture showing branch positioning and canopy distribution."
+      ],
+      [
+        "reference",
+        "Low-stress bend safety",
+        "Bend radius, tie placement, stem expansion and damage warning signs."
+      ],
+      [
+        "reference",
+        "Trellis load paths",
+        "SCROG support geometry, branch routing and service access."
+      ],
+      [
+        "reference",
+        "Canopy airflow map",
+        "Interior airflow, boundary layer and stagnant microclimate reference."
+      ]
+    ],
+    "plant-health-ipm": [
+      [
+        "hero",
+        "Scouting workflow",
+        "Representative scouting route with inspection points, sticky cards and repeated counts."
+      ],
+      [
+        "reference",
+        "Small pest comparison",
+        "Hemp russet mite, broad mite, aphid and common look-alike evidence at appropriate magnification."
+      ],
+      [
+        "reference",
+        "Powdery mildew vs Botrytis",
+        "Side-by-side disease evidence and favorable microclimate reference."
+      ],
+      [
+        "reference",
+        "Differential evidence board",
+        "Observed pattern, supporting evidence, conflicting evidence and next confirmation step."
+      ]
+    ],
+    "harvest-postharvest": [
+      [
+        "hero",
+        "Harvest readiness evidence",
+        "Multiple-signal harvest assessment using whole plant, representative flowers and magnified trichomes."
+      ],
+      [
+        "reference",
+        "Standardized trichome imaging",
+        "Clear/cloudy/amber gland heads with magnification, lighting and sampling cautions."
+      ],
+      [
+        "reference",
+        "Drying environment system",
+        "Temperature, RH, air exchange, gentle circulation, spacing and room load."
+      ],
+      [
+        "reference",
+        "Batch traceability",
+        "Harvest batch through drying position, sampling, storage and records."
+      ]
+    ],
+    "genetics-breeding": [
+      [
+        "hero",
+        "Breeding lineage system",
+        "Pedigree/lineage visualization tied to generation, selection and population notes."
+      ],
+      [
+        "reference",
+        "Genotype vs phenotype",
+        "Same genotype concept under different environments plus within-population phenotype variation."
+      ],
+      [
+        "reference",
+        "Sex expression evidence",
+        "Male, female and intersex reproductive structures shown as botanical references."
+      ],
+      [
+        "reference",
+        "Selection record",
+        "Plant ID, phenotype observations, traits, photos and selection decision workflow."
+      ]
+    ],
+    "outdoor-cultivation": [
+      [
+        "hero",
+        "Outdoor site system",
+        "Sun path, wind exposure, drainage, access and visibility shown on one site reference."
+      ],
+      [
+        "reference",
+        "Hardening-off sequence",
+        "Protected-to-outdoor transition with increasing light/wind exposure."
+      ],
+      [
+        "reference",
+        "Rain and flower risk",
+        "Canopy wetting, airflow, flower density and drying conditions."
+      ],
+      [
+        "reference",
+        "Microclimate mapping",
+        "Slope, shade, reflective surfaces, wind shelter and low-spot humidity."
+      ]
+    ],
+    "evidence-measurement": [
+      [
+        "hero",
+        "Observation to conclusion",
+        "Photo, measurement, context, alternative hypothesis and monitored decision workflow."
+      ],
+      [
+        "reference",
+        "Measurement quality chain",
+        "Instrument, calibration, sampling, timing, units and interpretation."
+      ],
+      [
+        "reference",
+        "Repeatable photo method",
+        "Fixed camera angle, scale reference, lighting, plant orientation and timestamp."
+      ],
+      [
+        "reference",
+        "Record traceability",
+        "Plant ID, event, measurement, image, intervention and outcome chain."
+      ]
+    ]
+  }
+}
