@@ -16,12 +16,12 @@ const expectedNav=[
   ['Seeds','/seeds/'],
   ['Learn','/learn/'],
   ['Courses','/courses/'],
-  ['Diagnostic','/tools/'],
+  ['Tools','/tools/'],
   ['Games','/games/'],
   ['Community','/community/'],
   ['Shop','/shop/']
 ];
-const obsoletePrimaryLabels=['Genetics','Tools'];
+const obsoletePrimaryLabels=['Genetics','Diagnostic'];
 const seedRoutes=['/','/seeds/','/learn/','/courses/','/tools/','/games/','/projects/','/community/','/shop/'];
 const densityRoutes=new Set(['/learn/','/tools/','/games/','/projects/']);
 const ignoredPrefixes=['/wp-admin/','/wp-json/','/wp-login.php','/feed/','/comments/feed/','/xmlrpc.php'];
