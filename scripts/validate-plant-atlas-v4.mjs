@@ -157,6 +157,14 @@ if (systemsData) {
     for (const field of ['concepts','functions','observe','interactions','cautions','measurements','evidenceQuestions','deepDiveTopics','scales']) {
       ok(Array.isArray(system[field]) && system[field].length > 0, `System ${system.id} missing enriched field: ${field}`);
     }
+    const allowedToolRoutes = new Set(['/terpene-atlas/','/ph-meter/','/tds-meter/','/vpd-chart/']);
+    if (Array.isArray(system.connectedTools)) {
+      for (const tool of system.connectedTools) {
+        ok(typeof tool.label === 'string' && tool.label.length > 2, `System ${system.id} connected tool needs a label`);
+        ok(allowedToolRoutes.has(tool.route), `System ${system.id} has unsupported connected tool route: ${tool.route}`);
+        ok(typeof tool.note === 'string' && tool.note.length > 25, `System ${system.id} connected tool needs explanatory context`);
+      }
+    }
     if (Array.isArray(system.referenceVisuals)) {
       for (const visual of system.referenceVisuals) {
         ok(/^\/atlas\/assets\//.test(visual.src || ''), `System ${system.id} reference visual must live in /atlas/assets/`);
@@ -230,4 +238,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Plant Atlas V4 valid: 16 enriched systems, ${requiredHotspots.size} required structures, explicit direct/semantic/microscopic representation registry, searchable anatomy index, V4-first 3D focus, Terpene Atlas bridge, synchronized deployment mirror, and optional licensed GLB upgrade.`);
+console.log(`Plant Atlas V4 valid: 16 enriched systems, ${requiredHotspots.size} required structures, explicit direct/semantic/microscopic representation registry, searchable anatomy index, cross-tool pH/EC/VPD/Terpene bridges, V4-first 3D focus, synchronized deployment mirror, and optional licensed GLB upgrade.`);
