@@ -78,6 +78,20 @@ const courseUi = read("scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs"
 const toolsHub = read("site/public-route-patch/tools/index.html");
 const gamesHub = read("site/public-route-patch/games/index.html");
 const visualV1 = read("site/design-system/dtf-visual-v1.css");
+const dynamicViewportFiles = [
+  "apps/growlens-web/src/backup.css",
+  "apps/growlens-web/src/camera.css",
+  "apps/growlens-web/src/routines.css",
+  "apps/growlens-web/src/reports.css",
+  "apps/growlens-web/src/photo-comparison.css",
+  "apps/growlens-web/src/styles.css",
+  "apps/high-land-web/src/styles.css",
+  "scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs",
+  "site/public-route-patch/games/high-lines/high-lines.css",
+  "site/public-route-patch/games/phenoquest/style.css",
+  "site/public-route-patch/games/pheno-draft/pheno-draft.css",
+  "site/public-route-patch/games/strain-match/strain-match-v2.css",
+];
 
 if (/lhv3[\s\S]{0,1500}100vh/.test(headerTemplate)) {
   failures.push("Course sticky rails must use 100dvh, not 100vh.");
@@ -92,6 +106,12 @@ const forbiddenLegacy = [
 ];
 for (const [label, source, pattern] of forbiddenLegacy) {
   if (pattern.test(source)) failures.push(`${label} reintroduced a legacy responsive breakpoint that conflicts with the shared bands.`);
+}
+for (const rel of dynamicViewportFiles) {
+  const source = read(rel);
+  if (/100vh/.test(source)) {
+    failures.push(`${rel} uses 100vh; responsive shells and panels must use 100dvh so mobile browser chrome cannot clip content.`);
+  }
 }
 
 const toolsTabletBlock = toolsHub.match(/@media\s*\(max-width:\s*900px\)\s*\{([\s\S]*?)\}\s*\/\* Shared phone breakpoint/);
