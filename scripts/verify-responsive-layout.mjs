@@ -131,6 +131,25 @@ for (const [label, source] of [
   }
 }
 
+const leafAtlasPages = [
+  "site/public-route-patch/atlas/leaf-module/stomata/index.html",
+  "site/public-route-patch/atlas/leaf-module/chlorosis/index.html",
+  "site/public-route-patch/atlas/leaf-module/necrosis/index.html",
+  "site/public-route-patch/atlas/leaf-module/leaf-curl/index.html",
+  "site/public-route-patch/atlas/leaf-module/pest-damage/index.html",
+  "site/public-route-patch/atlas/leaf-module/leaf-anatomy/index.html",
+  "site/public-route-patch/atlas/leaf-module/transpiration/index.html",
+  "site/public-route-patch/atlas/leaf-module/photosynthesis/index.html",
+  "site/public-route-patch/atlas/leaf-module/environmental-stress/index.html",
+  "site/public-route-patch/atlas/leaf-module/nutrient-symptoms/index.html",
+];
+for (const rel of leafAtlasPages) {
+  const source = read(rel);
+  if (!/\.nav a(?:,\.button)?\{[^}]*min-height:44px/.test(source)) {
+    failures.push(`${rel} must keep 44px touch-safe Leaf Atlas navigation.`);
+  }
+}
+
 const dynamicViewportFiles = [
   "apps/growlens-web/src/backup.css",
   "apps/growlens-web/src/camera.css",
