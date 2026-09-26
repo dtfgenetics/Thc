@@ -61,6 +61,12 @@ on:
       - games/bud-or-bluff/**
       - games/protect-the-plants/**
       - site/public-route-patch/**
+      - site/wordpress/visual-quality-policy.json
+      - site/wordpress/education/visual-reference-plan-v2.json
+      - site/wordpress/education/approved-visual-placements-v1.json
+      - site/wordpress/education/*-v6-visual-map.json
+      - scripts/validate-education-visual-system.mjs
+      - scripts/validate-learning-content-quality.mjs
       - site/deployment/public-apps.json
       - data/public-navigation.json
       - data/atlas/**
