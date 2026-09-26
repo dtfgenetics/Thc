@@ -6,14 +6,16 @@ const files = {
   hub: 'site/public-route-patch/tools/index.html',
   ph: 'site/public-route-patch/ph-meter/index.html',
   tds: 'site/public-route-patch/tds-meter/index.html',
-  vpd: 'site/public-route-patch/vpd-chart/index.html',\n  ppfd: 'site/public-route-patch/ppfd-chart/index.html',
+  vpd: 'site/public-route-patch/vpd-chart/index.html',
+  ppfd: 'site/public-route-patch/ppfd-chart/index.html',
 };
 
 const read = (key) => fs.readFileSync(path.join(root, files[key]), 'utf8');
 const hub = read('hub');
 const ph = read('ph');
 const tds = read('tds');
-const vpd = read('vpd');\nconst ppfd = read('ppfd');
+const vpd = read('vpd');
+const ppfd = read('ppfd');
 const errors = [];
 const assert = (ok, msg) => { if (!ok) errors.push(msg); };
 
