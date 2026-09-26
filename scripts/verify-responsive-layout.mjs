@@ -331,6 +331,9 @@ for (const relRoot of localCssRoots) {
     while ((match = breakpointPattern.exec(css))) {
       const width = Number(match[1]);
       if (![420, 700, 900, 1120, 1121].includes(width)) {
+        const nearby = css.slice(Math.max(0, match.index - 220), match.index);
+        const documentedException = /responsive-exception\s*:/i.test(nearby);
+        if (documentedException) continue;
         const rel = path.relative(root, file).replaceAll("\\", "/");
         const key = `${rel}:${width}`;
         unusualCounts.set(key, (unusualCounts.get(key) || 0) + 1);
