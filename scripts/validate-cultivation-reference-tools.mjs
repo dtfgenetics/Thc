@@ -43,9 +43,9 @@ assert(ph.includes('type="number"') && ph.includes('min="0"') && ph.includes('ma
 assert(ph.includes("v<7?'acidic':v>7?'alkaline':'neutral'"), 'pH page must classify acidic/neutral/alkaline readings');
 assert(ph.includes('5.5') && ph.includes('6.5') && ph.includes('6.0') && ph.includes('7.0'), 'pH page missing broad cultivation reference windows');
 
-assert(tds.includes('ppm ≈ EC × 500') && tds.includes('ppm ≈ EC × 700'), 'TDS page missing 500/700 scale explanation');
+assert(tds.includes('500 convention') && tds.includes('700 convention') && tds.includes('× 500') && tds.includes('× 700'), 'TDS page missing 500/700 scale explanation');
 assert(tds.includes("v*500") && tds.includes("v*700"), 'TDS converter missing 500/700 conversion');
-assert(tds.includes("(p/s).toFixed(2)"), 'TDS reverse conversion missing ppm-to-EC calculation');
+assert(tds.includes('const v=p/s') && tds.includes("v.toFixed(2)"), 'TDS reverse conversion missing ppm-to-EC calculation');
 
 assert(vpd.includes('0.6108*Math.exp((17.27*t)/(t+237.3))'), 'VPD page missing saturation-vapor-pressure equation');
 assert(vpd.includes('svp(leaf)-svp(air)*(rhValue/100)'), 'VPD page missing leaf-to-air vapor pressure deficit calculation');
