@@ -1,7 +1,7 @@
 {
   "schemaVersion": 4,
   "title": "THC Living Plant Atlas",
-  "updated": "2026-09-23",
+  "updated": "2026-09-26",
   "principle": "Understand the plant as a connected biological system. Observe first, test the explanation, then act.",
   "systems": [
     {
@@ -183,7 +183,18 @@
         "Ion uptake",
         "Root respiration and oxygen"
       ],
-      "connectedTools": [],
+      "connectedTools": [
+        {
+          "label": "pH Meter",
+          "route": "/ph-meter/",
+          "note": "Interpret calibrated pH readings and sample context without treating pH as a standalone diagnosis."
+        },
+        {
+          "label": "TDS / EC Meter",
+          "route": "/tds-meter/",
+          "note": "Convert EC/TDS conventions and preserve conductivity units, sample method, and meter scale."
+        }
+      ],
       "referenceVisuals": [
         {
           "src": "/atlas/assets/THC-ENC-041_Root_Tip_Development_and_Functional_Zones.jpg",
@@ -449,7 +460,13 @@
         "Transpiration",
         "Symptom pattern language"
       ],
-      "connectedTools": [],
+      "connectedTools": [
+        {
+          "label": "VPD Chart",
+          "route": "/vpd-chart/",
+          "note": "Estimate leaf VPD from air temperature, RH, and leaf-temperature offset as environmental context."
+        }
+      ],
       "referenceVisuals": [
         {
           "src": "/atlas/assets/THC-ENC-068_Stomata_Guard_Cells_and_Gas_Exchange.jpg",
@@ -635,7 +652,18 @@
         "Transpiration",
         "Hydraulic recovery"
       ],
-      "connectedTools": [],
+      "connectedTools": [
+        {
+          "label": "VPD Chart",
+          "route": "/vpd-chart/",
+          "note": "Estimate leaf VPD from air temperature, RH, and leaf-temperature offset as environmental context."
+        },
+        {
+          "label": "TDS / EC Meter",
+          "route": "/tds-meter/",
+          "note": "Convert EC/TDS conventions and preserve conductivity units, sample method, and meter scale."
+        }
+      ],
       "referenceVisuals": [
         {
           "src": "/atlas/assets/THC-ENC-068_Stomata_Guard_Cells_and_Gas_Exchange.jpg",
@@ -735,7 +763,18 @@
         "Deficiency/excess overlap",
         "Root-zone interactions"
       ],
-      "connectedTools": []
+      "connectedTools": [
+        {
+          "label": "pH Meter",
+          "route": "/ph-meter/",
+          "note": "Interpret calibrated pH readings and sample context without treating pH as a standalone diagnosis."
+        },
+        {
+          "label": "TDS / EC Meter",
+          "route": "/tds-meter/",
+          "note": "Convert EC/TDS conventions and preserve conductivity units, sample method, and meter scale."
+        }
+      ]
     },
     {
       "id": "flower-anatomy",
@@ -1314,7 +1353,13 @@
         "Root-zone environment",
         "Time-series interpretation"
       ],
-      "connectedTools": [],
+      "connectedTools": [
+        {
+          "label": "VPD Chart",
+          "route": "/vpd-chart/",
+          "note": "Estimate leaf VPD from air temperature, RH, and leaf-temperature offset as environmental context."
+        }
+      ],
       "referenceVisuals": [
         {
           "src": "/atlas/assets/THC-ENC-068_Stomata_Guard_Cells_and_Gas_Exchange.jpg",
@@ -1506,7 +1551,23 @@
         "Differential diagnosis",
         "Verification and follow-up"
       ],
-      "connectedTools": [],
+      "connectedTools": [
+        {
+          "label": "pH Meter",
+          "route": "/ph-meter/",
+          "note": "Interpret calibrated pH readings and sample context without treating pH as a standalone diagnosis."
+        },
+        {
+          "label": "TDS / EC Meter",
+          "route": "/tds-meter/",
+          "note": "Convert EC/TDS conventions and preserve conductivity units, sample method, and meter scale."
+        },
+        {
+          "label": "VPD Chart",
+          "route": "/vpd-chart/",
+          "note": "Estimate leaf VPD from air temperature, RH, and leaf-temperature offset as environmental context."
+        }
+      ],
       "referenceVisuals": [
         {
           "src": "/atlas/assets/THC-ENC-068_Stomata_Guard_Cells_and_Gas_Exchange.jpg",
