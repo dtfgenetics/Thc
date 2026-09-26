@@ -124,6 +124,7 @@ const publicLearningCenterWave3 = read("scripts/build-public-learning-center-wav
 const learnVisualV4 = read("scripts/rebuild-wordpress-learn-visual-v4.mjs");
 const diagnosticCaseLabV2 = read("scripts/publish-wordpress-diagnostic-case-lab-v2.mjs");
 const shopStorefrontV5 = read("scripts/polish-wordpress-shop-storefront-v5.mjs");
+const commerceArchiveV4 = read("scripts/polish-wordpress-commerce-archive-v4.mjs");
 const canonicalVisualSite = read("scripts/rebuild-wordpress-visual-site.mjs");
 const visualPolishV3 = read("scripts/polish-wordpress-visual-site-v3.mjs");
 const geneticsVisualsV4 = read("scripts/polish-wordpress-genetics-visuals-v4.mjs");
@@ -265,6 +266,9 @@ if (/@media\(max-width:(?:980|650)px\)/.test(diagnosticCaseLabV2)) {
 }
 if (/@media\(max-width:(?:880|600)px\)/.test(shopStorefrontV5)) {
   failures.push("Shop Storefront v5 must use canonical 900/700 bands.");
+}
+if (/@media\(max-width:720px\)/.test(commerceArchiveV4)) {
+  failures.push("Commerce archive v4 must use the canonical 700px phone band.");
 }
 if (/@media\(max-width:(?:980|640)px\)/.test(canonicalVisualSite)) {
   failures.push("Canonical visual site must use canonical 900/700 bands.");
