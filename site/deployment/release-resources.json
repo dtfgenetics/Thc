@@ -43,6 +43,51 @@
         "remotePathVariable": "HOSTINGER_HIGH_LAND_PATH"
       }
     },
+    "plant-atlas": {
+      "studioResource": "app.plant-atlas",
+      "route": "/atlas/",
+      "artifactRoot": "atlas",
+      "suiteDuplicateRoots": ["growlens/atlas"],
+      "productionTarget": "route:/atlas/",
+      "checkpointTag": "dtfseeds-production-app-plant-atlas",
+      "publicSuiteOwnership": "resource",
+      "sourcePrefixes": [
+        "apps/growlens-web/public/atlas/",
+        "site/public-route-patch/atlas/",
+        "data/atlas/",
+        "docs/atlas/",
+        "scripts/atlas-media-registry.mjs",
+        "scripts/build-atlas-raster-plates.py",
+        "scripts/import-approved-atlas-media.mjs",
+        "scripts/validate-plant-atlas-v4.mjs"
+      ],
+      "exactPaths": ["site/deployment/public-apps.json"],
+      "requiredFiles": [
+        "atlas/index.html",
+        "atlas/atlas-3d-bootstrap.js",
+        "atlas/atlas-anatomy-index-v1.js",
+        "atlas/atlas-workspace-v5.css",
+        "atlas/atlas-workspace-v5.js",
+        "atlas/data/systems.json",
+        "atlas/data/media-registry-v1.json"
+      ],
+      "verifyMarker": "THC Living Plant Atlas",
+      "verifyTokens": [
+        "data-atlas-mode=\"explorer\"",
+        "data-atlas-layer=\"anatomy\"",
+        "data-atlas-command-input",
+        "id=\"reference-visuals\"",
+        "data-atlas-media-dialog"
+      ],
+      "publisher": {
+        "type": "wordpress-transactional-resource",
+        "workflow": "deploy-dtfseeds-wordpress-resource.yml",
+        "status": "production",
+        "orchestration": "gateway-managed",
+        "coordinator": "dtfseeds-resource-production-gateway.yml",
+        "sharedProductionTarget": "wordpress:temporary-code-snippets-bridge"
+      }
+    },
     "high-iq": {
       "studioResource": "game.high-iq",
       "route": "/games/high-iq/",

@@ -646,11 +646,18 @@ export async function bootPhotorealAtlas() {
   let active = true;
   let disposed = false;
   let lastRenderAt = -Infinity;
+  let activeOverlayIds = new Set();
+  let activeOverlayAccent = 'water';
+  const overlayColors = {water:0x75d8ef,sugar:0xd7a7d8,vapor:0x9fd8c8,gas:0xb9ef8f,root:0xd9bc73};
 
   function setHaloState(group, state) {
     group?.traverse((object) => {
       if (!object.userData.highlightHalo || !object.material) return;
-      object.material.opacity = state === 'selected' ? 0.32 : state === 'hover' ? 0.18 : 0;
+      const id=group?.userData?.meta?.id;
+      if(state==='selected'){object.material.color.setHex(0xa8f2ce);object.material.opacity=0.32;}
+      else if(state==='hover'){object.material.color.setHex(0xa8f2ce);object.material.opacity=0.18;}
+      else if(id&&activeOverlayIds.has(id)){object.material.color.setHex(overlayColors[activeOverlayAccent]||0xa8f2ce);object.material.opacity=0.14;}
+      else object.material.opacity=0;
     });
   }
 
@@ -859,6 +866,14 @@ export async function bootPhotorealAtlas() {
     if (typeof id === 'string' && semantic.has(id)) focusSystem(id);
   };
   window.addEventListener('plant-atlas:focus', externalFocusHandler);
+  const overlayHandler = (event) => {
+    const detail=event?.detail||{};
+    activeOverlayIds=new Set(Array.isArray(detail.focusIds)?detail.focusIds:[]);
+    activeOverlayAccent=typeof detail.accent==='string'?detail.accent:'water';
+    host.dataset.processOverlay=detail.id||'none';
+    refreshHighlights();
+  };
+  window.addEventListener('plant-atlas:overlay', overlayHandler);
   resetButton?.addEventListener('click', resetView);
 
   const resizeObserver = new ResizeObserver(resize);
@@ -897,6 +912,14 @@ export async function bootPhotorealAtlas() {
         targetGoal = null;
       }
     }
+    if(activeOverlayIds.size&&!reducedMotion){
+      const pulse=0.13+(Math.sin(time*0.004)+1)*0.035;
+      activeOverlayIds.forEach(id=>{
+        const group=semantic.get(id);
+        if(!group||group===selected||group===hovered)return;
+        group.traverse(object=>{if(object.userData.highlightHalo&&object.material)object.material.opacity=pulse;});
+      });
+    }
     controls.update();
     updateAnatomyLabel();
     renderer.render(scene, camera);
@@ -910,6 +933,7 @@ export async function bootPhotorealAtlas() {
     visibilityObserver.disconnect();
     controls.dispose();
     window.removeEventListener('plant-atlas:focus', externalFocusHandler);
+    window.removeEventListener('plant-atlas:overlay', overlayHandler);
     anatomyLabel.remove();
     environment.dispose();
     pmrem.dispose();

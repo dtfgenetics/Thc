@@ -17,7 +17,7 @@ const lines = Object.fromEntries(
 
 assert.equal(lines.repository, 'dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple');
 assert.match(lines.commit || '', /^[0-9a-f]{40}$/);
-assert.equal(lines.commit, 'b1cbf9b9627586b7277813b6a7c6f85a98830d58');
+assert.equal(lines.commit, '253fb8df1ffcec59beaa45c0f8020ae37c6b7d65');
 assert.equal(lines.version, '0.4.1');
 assert.equal(lines.route, '/games/ganjumanji/');
 assert.equal(lines.status, 'release-candidate');

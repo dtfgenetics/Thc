@@ -16,7 +16,10 @@ parts = sorted(PART_DIR.glob("part-*.jsfrag"))
 if [p.name for p in parts] != [f"part-{i:02d}.jsfrag" for i in range(7)]:
     raise SystemExit(f"unexpected v2 fragment set: {[p.name for p in parts]}")
 
-raw = b"".join(p.read_bytes() for p in parts)
+# Git may materialize the fragments with CRLF on Windows. The guarded source
+# transformations and canonical hash are defined over LF bytes so assembly is
+# deterministic on every runner and developer workstation.
+raw = b"".join(p.read_bytes() for p in parts).replace(b"\r\n", b"\n")
 
 def replace_once(payload: bytes, old: bytes, new: bytes, label: str) -> bytes:
     count = payload.count(old)

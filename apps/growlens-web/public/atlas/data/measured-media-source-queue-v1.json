@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-09-24",
+  "purpose": "Measured-media research queue for Cannabis-specific microscopy/macroscopy that must not be represented by generic or illustrative substitutes.",
+  "rules": {
+    "cannabisSpecificPreferred": true,
+    "minimumLongEdgePx": 2400,
+    "measuredRequires": [
+      "speciesOrCultivar",
+      "tissue",
+      "modality",
+      "sourceUrl",
+      "license",
+      "resolutionStatus",
+      "scaleStatus"
+    ],
+    "noUpscalingForApproval": true,
+    "genericPlantFallbackAllowed": false
+  },
+  "candidates": [
+    {
+      "candidateId": "MM-STIGMA-FRONTIERS-2020-F4",
+      "targetEntities": [
+        "stigma"
+      ],
+      "speciesOrCultivar": "Cannabis sativa; hermaphroditic inflorescences",
+      "tissue": "young and mature stigma",
+      "modality": "SEM",
+      "sourceUrl": "https://www.frontiersin.org/journals/plant-science/articles/10.3389/fpls.2020.00718/full",
+      "figure": "Figure 4A-B",
+      "license": "Frontiers open-access article; figure reuse subject to article license/attribution",
+      "resolutionStatus": "publisher web composite below Atlas 2400px master target",
+      "scaleStatus": "scale bars visible in source figure panels",
+      "decision": "research-reference-only",
+      "reason": "Scientifically strong Cannabis stigma SEM, but accessible web figure is not a production-resolution master."
+    },
+    {
+      "candidateId": "MM-STIGMA-FRONTIERS-2019-F4",
+      "targetEntities": [
+        "stigma",
+        "bract"
+      ],
+      "speciesOrCultivar": "Cannabis sativa cv. NB140",
+      "tissue": "developing female flower, stigma and perigonal bract",
+      "modality": "SEM + stereoscope",
+      "sourceUrl": "https://www.frontiersin.org/journals/plant-science/articles/10.3389/fpls.2019.00350/full",
+      "figure": "Figure 4",
+      "license": "Frontiers open-access article; figure reuse subject to article license/attribution",
+      "resolutionStatus": "publisher web composite below Atlas 2400px master target",
+      "scaleStatus": "50 µm, 200 µm and 500 µm bars reported by panel",
+      "decision": "research-reference-only",
+      "reason": "Excellent developmental context and scale bars, but accessible figure file is below the production-master threshold."
+    },
+    {
+      "candidateId": "MM-STOMA-FRONTIERS-2019",
+      "targetEntities": [
+        "stomatal-surface"
+      ],
+      "speciesOrCultivar": "Cannabis sativa",
+      "tissue": "abaxial mature fan-leaf epidermis",
+      "modality": "epidermal impression microscopy",
+      "sourceUrl": "https://www.frontiersin.org/journals/plant-science/articles/10.3389/fpls.2019.00476/full",
+      "figure": "Figure 3",
+      "license": "CC BY",
+      "resolutionStatus": "accessible web composite below Atlas 2400px master target",
+      "scaleStatus": "12 µm scale bars",
+      "decision": "research-reference-only",
+      "reason": "Cannabis-specific and well identified, but web-resolution figure is too small for the production microscopy slot."
+    },
+    {
+      "candidateId": "MM-STOMA-PLANTMETHODS-2024",
+      "targetEntities": [
+        "stomatal-surface"
+      ],
+      "speciesOrCultivar": "Cannabis TA5",
+      "tissue": "abaxial fan leaf",
+      "modality": "SEM + light microscopy",
+      "sourceUrl": "https://link.springer.com/article/10.1186/s13007-024-01265-5",
+      "figure": "Figure 3A-C",
+      "license": "CC BY-NC-ND 4.0",
+      "resolutionStatus": "publisher figure available; not approved for production reuse",
+      "scaleStatus": "50 µm SEM bar; 20 µm light-microscopy bars",
+      "decision": "rejected-for-production",
+      "reason": "Non-commercial/no-derivatives terms conflict with Atlas adaptation and commercial-facing deployment needs."
+    },
+    {
+      "candidateId": "MM-STOMA-PLANTSTRESS-2024",
+      "targetEntities": [
+        "stomatal-surface"
+      ],
+      "speciesOrCultivar": "industrial hemp Cannabis sativa genotypes",
+      "tissue": "leaf epidermis",
+      "modality": "stomatal morphology microscopy",
+      "sourceUrl": "https://www.sciencedirect.com/science/article/pii/S2667064X24003026",
+      "figure": "original article figures require retrieval",
+      "license": "open-access Creative Commons; exact license and figure file must be verified",
+      "resolutionStatus": "original production figure not yet retrieved",
+      "scaleStatus": "to verify from original figure",
+      "decision": "high-priority-source-candidate",
+      "reason": "Cannabis-specific stomatal morphology study under open access; original-resolution figure ingestion remains unresolved."
+    },
+    {
+      "candidateId": "MM-ROOT-ZENODO-2026",
+      "targetEntities": [
+        "root-tip",
+        "root-system"
+      ],
+      "speciesOrCultivar": "industrial hemp Cannabis sativa",
+      "tissue": "excavated roots / root crowns",
+      "modality": "600-dpi flatbed scan + root-crown photography",
+      "sourceUrl": "https://doi.org/10.5281/zenodo.17783092",
+      "figure": "dataset files",
+      "license": "verify dataset record/file license before ingestion",
+      "resolutionStatus": "high-resolution dataset reported",
+      "scaleStatus": "scanner dpi and phenotyping metadata available",
+      "decision": "high-priority-source-candidate",
+      "reason": "Cannabis-specific measured root imagery with quantitative phenotyping context; individual file selection and license check still needed."
+    },
+    {
+      "candidateId": "MM-ROOT-GENERIC-COMMONS",
+      "targetEntities": [
+        "root-tip"
+      ],
+      "speciesOrCultivar": "unidentified plant",
+      "tissue": "root tip",
+      "modality": "optical micrograph, 100×",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Root_tip.JPG",
+      "figure": "single image",
+      "license": "CC BY-SA 2.5",
+      "resolutionStatus": "2592×1944",
+      "scaleStatus": "magnification stated; species unknown",
+      "decision": "rejected-for-production",
+      "reason": "Resolution is acceptable but species is unidentified, violating Cannabis-specific measured-media policy."
+    },
+    {
+      "candidateId": "MM-CST-PLOS-2020",
+      "targetEntities": [
+        "capitate-stalked-trichome",
+        "trichome-gland-head"
+      ],
+      "speciesOrCultivar": "Cannabis sativa",
+      "tissue": "glandular trichome",
+      "modality": "SEM + fluorescence microscopy",
+      "sourceUrl": "https://doi.org/10.1371/journal.pone.0242633",
+      "figure": "Figure 1A-D",
+      "license": "PLOS open-access CC BY",
+      "resolutionStatus": "publisher original TIFF/large figure requires ingestion",
+      "scaleStatus": "verify per original panel",
+      "decision": "high-priority-source-candidate",
+      "reason": "Cannabis-specific capitate-stalked head/stalk microscopy and strongest route for the two remaining trichome-specific microscopy slots."
+    },
+    {
+      "candidateId": "MM-CST-MDPI-2026",
+      "targetEntities": [
+        "capitate-stalked-trichome",
+        "trichome-gland-head"
+      ],
+      "speciesOrCultivar": "Cannabis sativa female bract",
+      "tissue": "female bract surface / capitate-stalked glandular trichome",
+      "modality": "microscope photography + schematic",
+      "sourceUrl": "https://www.mdpi.com/2223-7747/15/18/2810",
+      "figure": "Figures 1-2",
+      "license": "MDPI open-access; article license must be verified at figure level before ingestion",
+      "resolutionStatus": "publisher production image not yet ingested",
+      "scaleStatus": "verify original panel scale and image metadata",
+      "decision": "high-priority-source-candidate",
+      "reason": "2026 Cannabis-specific trichome review includes microscope photographs of bract trichome types and a capitate-stalked glandular trichome."
+    },
+    {
+      "candidateId": "MM-CST-WILEY-2020",
+      "targetEntities": [
+        "capitate-stalked-trichome",
+        "trichome-gland-head"
+      ],
+      "speciesOrCultivar": "Cannabis sativa 'Finola'",
+      "tissue": "female flower calyx / glandular trichomes",
+      "modality": "cryo-SEM + conventional SEM",
+      "sourceUrl": "https://doi.org/10.1111/tpj.14516",
+      "figure": "Figure 1c-f",
+      "license": "publisher article; reuse terms require figure-level review",
+      "resolutionStatus": "production image not yet ingested",
+      "scaleStatus": "500 µm conventional SEM and 20 µm cryo-SEM bars reported",
+      "decision": "research-reference-only",
+      "reason": "Excellent morphology source distinguishing stalked, sessile and bulbous glandular trichomes, but reuse terms require verification before Atlas production ingestion."
+    }
+  ]
+}

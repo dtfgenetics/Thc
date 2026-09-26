@@ -6,6 +6,8 @@ const ownership = fs.readFileSync('docs/ATLAS_ROUTE_OWNERSHIP.md', 'utf8');
 const v4 = fs.readFileSync('site/public-route-patch/atlas/index.html', 'utf8');
 const learningVerifier = fs.readFileSync('scripts/verify-dtf420-atlas-live.mjs', 'utf8');
 const suiteWorkflow = fs.readFileSync('.github/workflows/deploy-public-suite-wordpress-v2.yml', 'utf8');
+const resourceWorkflow = fs.readFileSync('.github/workflows/deploy-dtfseeds-wordpress-resource.yml', 'utf8');
+const resources = JSON.parse(fs.readFileSync('site/deployment/release-resources.json', 'utf8')).resources;
 
 const learnSections = navigation.learn?.sections ?? [];
 const threeD = learnSections.find((entry) => entry.route === '/atlas/');
@@ -41,7 +43,11 @@ assert.equal(toolTerpeneAtlas?.route, '/terpene-atlas/', 'public Terpene Atlas t
 assert.match(toolTerpeneAtlas?.title ?? '', /Chemistry Explorer/i, 'public Terpene Atlas tool title must identify the chemistry explorer');
 
 assert.match(v4, /<link rel="canonical" href="https:\/\/dtfseeds\.com\/atlas\/"/i, 'V4 Atlas must keep /atlas/ canonical metadata');
-assert.ok(suiteWorkflow.includes('https://dtfseeds.com/atlas/'), 'Public Suite must verify /atlas/ after deployment');
+assert.equal(resources['plant-atlas']?.route, '/atlas/', 'Plant Atlas resource must own /atlas/');
+assert.equal(resources['plant-atlas']?.publicSuiteOwnership, 'resource', 'Plant Atlas must be independently released');
+assert.ok(resourceWorkflow.includes('- plant-atlas'), 'WordPress resource publisher must expose Plant Atlas');
+assert.ok(resourceWorkflow.includes('Verify the visitor-facing resource route independently'), 'Plant Atlas resource publisher must verify its visitor route');
+assert.ok(!suiteWorkflow.includes('https://dtfseeds.com/atlas/'), 'Public Suite must not retain live ownership of /atlas/');
 assert.ok(learningVerifier.includes("['/learn/atlas/', 'THC Living Plant Atlas']"), 'Learning Atlas verifier must continue checking /learn/atlas/');
 
 for (const marker of [
@@ -52,4 +58,4 @@ for (const marker of [
   assert.ok(ownership.includes(marker), `Atlas ownership document is missing: ${marker}`);
 }
 
-console.log('Atlas route ownership verified: /atlas/ remains the Learn-owned V4 3D explorer, may be cross-linked from Diagnostic, and /learn/atlas/ remains the lesson library.');
+console.log('Atlas route ownership verified: /atlas/ is an independently released Learn-owned V4/V5 explorer, may be cross-linked from Diagnostic, and /learn/atlas/ remains the lesson library.');

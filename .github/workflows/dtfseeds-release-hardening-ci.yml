@@ -133,7 +133,8 @@ jobs:
           node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq 'games/strain-match' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq 'games/lost-in-the-terps' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
-          grep -Fq "'atlas/leaf-module/index.html'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          ! grep -Fq "'atlas'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          ! grep -Fq "'/atlas/'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq "'games/high-land'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq "'/games/high-land/'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           ! grep -Fq "'games/high-iq'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
@@ -142,6 +143,7 @@ jobs:
           grep -Fq 'games/lost-in-the-terps' scripts/package-public-suite-wordpress.py
           grep -Fq 'resourceOwnedTargetsExcluded' "$RUNNER_TEMP/resource-ownership-bridge.json"
           grep -Fq 'games/high-iq' "$RUNNER_TEMP/resource-ownership-bridge.json"
+          grep -Fq 'plant-atlas' "$RUNNER_TEMP/resource-ownership-bridge.json"
 
       - name: Verify all release lanes remain selected for gateway architecture changes
         if: github.event_name == 'pull_request'

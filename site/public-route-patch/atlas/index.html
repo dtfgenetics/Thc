@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="/atlas/atlas-inspection-fixes.css">
   <link rel="stylesheet" href="/atlas/atlas-site-shell-v5.css">
   <link rel="stylesheet" href="/atlas/atlas-anatomy-index-v1.css">
+  <link rel="stylesheet" href="/atlas/atlas-workspace-v5.css">
   <script type="importmap">
   {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}
   </script>
@@ -26,13 +27,63 @@
   </header>
 
   <div class="atlas-shell">
+    <section class="atlas-workspace-bar" aria-label="Atlas workspace controls">
+      <div class="atlas-mode-switch" role="group" aria-label="Atlas detail mode"><button type="button" data-atlas-mode="explorer" aria-pressed="true">Explorer</button><button type="button" data-atlas-mode="research" aria-pressed="false">Research</button></div>
+      <div class="atlas-command-search"><label class="sr-only" for="atlas-command-search">Search the complete Plant Atlas</label><input id="atlas-command-search" data-atlas-command-input type="search" autocomplete="off" placeholder="Find xylem, stomata, chlorosis, transpiration, roots…"><kbd>Ctrl K</kbd><div class="atlas-command-results" data-atlas-command-results role="listbox" aria-label="Atlas search results"></div></div>
+      <div class="atlas-layer-switch" role="group" aria-label="Scientific viewing layer"><button type="button" data-atlas-layer="anatomy" aria-pressed="true">Anatomy</button><button type="button" data-atlas-layer="physiology" aria-pressed="false">Physiology</button><button type="button" data-atlas-layer="environment" aria-pressed="false">Environment</button><button type="button" data-atlas-layer="diagnostics" aria-pressed="false">Diagnostics</button><button type="button" data-atlas-layer="development" aria-pressed="false">Development</button></div>
+    </section>
+    <section class="atlas-stage-bar" aria-label="Plant developmental stage">
+      <div class="atlas-stage-heading"><span class="eyebrow">Developmental context</span><strong data-stage-title>Reproductive development</strong></div>
+      <div class="atlas-stage-track" role="group" aria-label="Select developmental stage">
+        <button type="button" data-atlas-stage="seed"><span>01</span><b>Seed</b></button>
+        <button type="button" data-atlas-stage="germination"><span>02</span><b>Germination</b></button>
+        <button type="button" data-atlas-stage="seedling"><span>03</span><b>Seedling</b></button>
+        <button type="button" data-atlas-stage="vegetative"><span>04</span><b>Vegetative</b></button>
+        <button type="button" data-atlas-stage="transition"><span>05</span><b>Transition</b></button>
+        <button type="button" data-atlas-stage="reproductive" aria-pressed="true"><span>06</span><b>Flowering</b></button>
+      </div>
+      <p class="atlas-stage-note" data-stage-note>Flower structures, source–sink priorities, water demand and tissue interpretation differ from vegetative growth.</p>
+    </section>
     <section class="hero">
       <div><p class="eyebrow">Explore · Rotate · Zoom · Inspect · Learn</p><h1>The Living Plant Atlas</h1><p class="hero-copy">Study cannabis as a connected living system. Rotate and zoom a high-detail 3D botanical specimen, inspect anatomical regions directly, and connect each visible structure to the deeper plant-science module behind it.</p></div>
       <aside class="hero-card" aria-label="Atlas summary"><strong>Interactive botanical specimen</strong><p>The specimen connects physical anatomy to 16 searchable science systems and focused deep labs, with the same lessons available when 3D rendering is unavailable.</p><div class="stats"><div class="stat"><b>3D</b><span>rotatable specimen</span></div><div class="stat"><b>16</b><span>science systems</span></div><div class="stat"><b>32</b><span>inspectable structures</span></div></div></aside>
     </section>
 
     <section class="plant-lab" id="interactive-plant">
+      <aside class="atlas-nav-rail" aria-label="Plant Atlas navigation">
+        <div class="atlas-rail-head"><span class="eyebrow">Navigate specimen</span><strong>Plant map</strong></div>
+        <div class="atlas-rail-group">
+          <button class="atlas-rail-group-toggle" type="button" data-rail-toggle="anatomy" aria-expanded="true"><span>Anatomy</span><small>7 regions</small></button>
+          <div class="atlas-rail-items" data-rail-anatomy>
+            <button type="button" data-plant-focus="root-system"><span>Roots</span><small>Root system</small></button>
+            <button type="button" data-plant-focus="stem-vascular"><span>Stem</span><small>Vascular axis</small></button>
+            <button type="button" data-plant-focus="nodes-branching"><span>Nodes</span><small>Branching sites</small></button>
+            <button type="button" data-plant-focus="leaf-module"><span>Leaves</span><small>Photosynthetic organs</small></button>
+            <button type="button" data-plant-focus="flower-anatomy"><span>Flowers</span><small>Inflorescences</small></button>
+            <button type="button" data-plant-focus="trichomes-resin"><span>Trichomes</span><small>Secretory surfaces</small></button>
+            <button type="button" data-plant-focus="reproductive-biology"><span>Reproduction</span><small>Sex · pollen · seed</small></button>
+          </div>
+        </div>
+        <div class="atlas-rail-group">
+          <button class="atlas-rail-group-toggle" type="button" data-rail-toggle="systems" aria-expanded="false"><span>Science systems</span><small>16 systems</small></button>
+          <div class="atlas-rail-items" data-rail-systems hidden></div>
+        </div>
+        <div class="atlas-rail-group">
+          <button class="atlas-rail-group-toggle" type="button" data-rail-toggle="scale" aria-expanded="false"><span>Biological scale</span><small>3 levels</small></button>
+          <div class="atlas-rail-items atlas-scale-items" data-rail-scale hidden>
+            <a href="/atlas/nodes-branching/"><span>Whole plant</span><small>Architecture</small></a>
+            <a href="/atlas/leaf-module/"><span>Organ + tissue</span><small>Functional anatomy</small></a>
+            <a href="/atlas/trichomes-resin/"><span>Microscopic</span><small>Surface structures</small></a>
+          </div>
+        </div>
+        <div class="atlas-rail-footer">
+          <a href="/terpene-atlas/"><span>Terpene Atlas</span><small>Chemistry explorer →</small></a>
+          <a href="/growlens/"><span>GrowLens</span><small>Diagnostic tool →</small></a>
+        </div>
+      </aside>
       <div class="plant-lab-copy">
+        <button class="atlas-mobile-tray-toggle" type="button" data-atlas-mobile-tray-toggle aria-expanded="false"><span>Plant inspector</span><span>Expand ↑</span></button>
+        <div class="atlas-layer-status" data-atlas-layer-status data-visible="false"></div>
         <p class="eyebrow">3D anatomy explorer</p>
         <h2>Learn from the plant itself</h2>
         <p>Drag to rotate. Scroll or pinch to zoom. Hover a structure to identify it, then click or tap to focus the camera and read what that structure does. Use the module link in the inspector when you want the full lesson.</p>
@@ -46,8 +97,33 @@
         <div class="specimen-plaque" aria-hidden="true"><span>BOTANICAL SPECIMEN 01</span><strong><em>Cannabis sativa</em> L.</strong><small>Female flowering study · whole-plant anatomy</small></div>
         <div class="viewer-axis" aria-hidden="true"><span>CANOPY</span><i></i><span>ROOT</span></div>
         <div class="plant-tooltip" data-plant-tooltip hidden></div>
+        <div class="atlas-layer-legend" data-layer-legend aria-live="polite">
+          <small>ACTIVE LAYER</small><strong>Anatomy</strong><div><span>Structure</span><span>Scale</span><span>System</span></div>
+        </div>
+        <div class="atlas-overlay-panel" data-atlas-overlay-panel hidden>
+          <div class="atlas-overlay-head"><div><small>QUALITATIVE PATHWAY</small><strong data-overlay-title>Physiology overlay</strong></div><button type="button" data-overlay-clear>Clear</button></div>
+          <div class="atlas-overlay-options" data-overlay-options></div>
+          <p data-overlay-description>Select a process to highlight the structures involved.</p>
+          <div class="atlas-overlay-variables" data-overlay-variables></div>
+        </div>
         <div class="viewer-hud" aria-hidden="true"><span>DRAG · ROTATE</span><span>WHEEL/PINCH · ZOOM</span><span>CLICK · INSPECT</span></div>
         <div class="viewer-model-status" data-plant-model-status data-state="loading" aria-live="polite">Loading botanical specimen…</div>
+        <div class="atlas-viewer-toolbar" aria-label="Specimen viewer actions">
+          <button type="button" data-viewer-action="reset">Fit specimen</button>
+          <button type="button" data-viewer-action="labels" aria-pressed="true">Labels</button>
+          <button type="button" data-viewer-action="help" aria-pressed="false">Controls</button>
+          <button type="button" data-viewer-action="compare" aria-pressed="false">Compare</button>
+        </div>
+        <div class="atlas-compare-panel" data-atlas-compare hidden>
+          <div class="atlas-compare-head"><strong>Compare structures</strong><button type="button" data-compare-close aria-label="Close comparison">×</button></div>
+          <p>Select a structure, assign it to A or B, then compare scale, function and evidence side by side.</p>
+          <div class="atlas-compare-slots">
+            <section data-compare-slot="a"><small>A</small><strong>Not selected</strong><span>Choose from the inspector</span></section>
+            <section data-compare-slot="b"><small>B</small><strong>Not selected</strong><span>Choose from the inspector</span></section>
+          </div>
+          <div class="atlas-compare-actions"><button type="button" data-compare-assign="a">Use current as A</button><button type="button" data-compare-assign="b">Use current as B</button></div>
+        </div>
+        <div class="atlas-viewer-help" data-viewer-help hidden><strong>Viewer controls</strong><span>Drag: rotate</span><span>Wheel/pinch: zoom</span><span>Tap/click: inspect</span><span>R: reset view</span></div>
         <button class="viewer-reset" type="button" data-plant-reset>Reset view</button>
         <div class="webgl-fallback" data-plant-fallback hidden><strong>3D view unavailable on this device.</strong><p>Use the anatomy buttons and system library to open the same scientific modules without WebGL.</p></div>
       </div>
@@ -120,5 +196,16 @@
   <script type="module" src="/atlas/atlas-3d-bootstrap.js"></script>
   <script type="module" src="/atlas/atlas-anatomy-index-v1.js"></script>
   <script src="/atlas/atlas-v3.js" defer></script>
+  <script src="/atlas/atlas-workspace-v5.js" defer></script>
+  <dialog class="atlas-media-dialog" data-atlas-media-dialog aria-labelledby="atlas-media-dialog-title">
+    <div class="atlas-media-dialog-shell">
+      <div class="atlas-media-dialog-head">
+        <div><small>VERIFIED ATLAS MEDIA</small><strong id="atlas-media-dialog-title" data-media-dialog-title>Reference image</strong></div>
+        <button type="button" data-media-dialog-close aria-label="Close media viewer">×</button>
+      </div>
+      <img data-media-dialog-image alt="">
+      <div class="atlas-media-dialog-meta" data-media-dialog-meta></div>
+    </div>
+  </dialog>
 </body>
 </html>

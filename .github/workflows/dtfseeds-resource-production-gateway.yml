@@ -16,7 +16,11 @@ on:
   push:
     branches: [main]
     paths:
+      - 'apps/growlens-web/public/atlas/**'
+      - 'data/atlas/**'
+      - 'docs/atlas/**'
       - 'games/high-iq/**'
+      - 'site/public-route-patch/atlas/**'
       - 'site/public-route-patch/games/high-iq/**'
       - 'site/deployment/public-apps.json'
       - 'site/deployment/release-resources.json'
@@ -24,6 +28,9 @@ on:
       - 'site/wordpress/assets/sitewide-ux-polish-v1.css'
       - 'scripts/apply-sitewide-header.mjs'
       - 'scripts/lib/sitewide-header-template.mjs'
+      - 'scripts/atlas-media-registry.mjs'
+      - 'scripts/validate-atlas-route-ownership.mjs'
+      - 'scripts/validate-plant-atlas-v4.mjs'
       - 'scripts/plan-dtfseeds-resource-release.mjs'
       - 'scripts/run-workflow-and-wait.sh'
       - 'scripts/package-dtf-public-resource.py'
@@ -249,7 +256,7 @@ jobs:
             echo "- Recovery scheduled: ${{ steps.publish.outputs.recovery_scheduled || 'false' }}"
             echo "- Independent visitor verification: ${{ steps.verify.outcome }}"
             echo '- Each successful publisher advances only its own monotonic resource checkpoint; the global DTFSeeds checkpoint is untouched.'
-            echo '- High IQ is the production gateway-managed resource route. High Land remains suite-owned while its independent SSH publisher stays in pilot validation.'
+            echo '- High IQ and Plant Atlas are production gateway-managed resource routes. High Land remains suite-owned while its independent SSH publisher stays in pilot validation.'
           } >> "$GITHUB_STEP_SUMMARY"
 
   no_deploy:

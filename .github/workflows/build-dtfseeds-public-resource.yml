@@ -12,15 +12,20 @@ on:
           - all
           - high-land
           - high-iq
+          - plant-atlas
           - seed-man-platformer
   pull_request:
     branches: [main]
     paths:
       - 'apps/high-land-web/**'
+      - 'apps/growlens-web/public/atlas/**'
+      - 'data/atlas/**'
+      - 'docs/atlas/**'
       - 'games/high-iq/**'
       - 'games/seed-man-platformer/**'
       - 'site/public-route-patch/games/high-iq/**'
       - 'site/public-route-patch/games/seed-man-platformer/**'
+      - 'site/public-route-patch/atlas/**'
       - 'site/deployment/public-apps.json'
       - 'site/deployment/release-resources.json'
       - 'site/wordpress/assets/responsive-layout-v1.css'
@@ -30,6 +35,9 @@ on:
       - 'scripts/lib/sitewide-header-template-v6.mjs'
       - 'scripts/verify-seed-man-production-v20.mjs'
       - 'scripts/validate-seed-man-production-bundle.mjs'
+      - 'scripts/atlas-media-registry.mjs'
+      - 'scripts/validate-atlas-route-ownership.mjs'
+      - 'scripts/validate-plant-atlas-v4.mjs'
       - 'scripts/plan-dtfseeds-resource-release.mjs'
       - 'scripts/run-workflow-and-wait.sh'
       - 'scripts/package-dtf-public-resource.py'
@@ -48,10 +56,14 @@ on:
     branches: [main]
     paths:
       - 'apps/high-land-web/**'
+      - 'apps/growlens-web/public/atlas/**'
+      - 'data/atlas/**'
+      - 'docs/atlas/**'
       - 'games/high-iq/**'
       - 'games/seed-man-platformer/**'
       - 'site/public-route-patch/games/high-iq/**'
       - 'site/public-route-patch/games/seed-man-platformer/**'
+      - 'site/public-route-patch/atlas/**'
       - 'site/deployment/public-apps.json'
       - 'site/deployment/release-resources.json'
       - 'site/wordpress/assets/responsive-layout-v1.css'
@@ -61,6 +73,9 @@ on:
       - 'scripts/lib/sitewide-header-template-v6.mjs'
       - 'scripts/verify-seed-man-production-v20.mjs'
       - 'scripts/validate-seed-man-production-bundle.mjs'
+      - 'scripts/atlas-media-registry.mjs'
+      - 'scripts/validate-atlas-route-ownership.mjs'
+      - 'scripts/validate-plant-atlas-v4.mjs'
       - 'scripts/plan-dtfseeds-resource-release.mjs'
       - 'scripts/run-workflow-and-wait.sh'
       - 'scripts/package-dtf-public-resource.py'
@@ -126,6 +141,11 @@ jobs:
           ! grep -Fq "dtf_suite_deploy_lock" "$RUNNER_TEMP/dtf-high-iq-resource-bridge.mjs"
           ! grep -Fq ".dtf-suite-manifest.json" "$RUNNER_TEMP/dtf-high-iq-resource-bridge.mjs"
           ! grep -Fq "wordPressOwnedRoutesExcluded" "$RUNNER_TEMP/dtf-high-iq-resource-bridge.mjs"
+          python scripts/assemble-wordpress-resource-v2.py "$RUNNER_TEMP/dtf-plant-atlas-resource-bridge.mjs" plant-atlas
+          node --check "$RUNNER_TEMP/dtf-plant-atlas-resource-bridge.mjs"
+          grep -Fq "dtf_resource_plant_atlas_deploy_lock" "$RUNNER_TEMP/dtf-plant-atlas-resource-bridge.mjs"
+          grep -Fq "'atlas'" "$RUNNER_TEMP/dtf-plant-atlas-resource-bridge.mjs"
+          grep -Fq 'THC Living Plant Atlas' "$RUNNER_TEMP/dtf-plant-atlas-resource-bridge.mjs"
           python - <<'PY'
           import os, pathlib, re
           path=pathlib.Path(os.environ['RUNNER_TEMP'])/'dtf-high-iq-resource-bridge.mjs'
@@ -219,6 +239,14 @@ jobs:
               grep -Fq 'id="dtf-responsive-layout-v1"' release-resource/games/high-iq/index.html
               grep -Fq 'id="dtf-sitewide-ux-polish-v1"' release-resource/games/high-iq/index.html
               grep -Fq '.high-iq-shell .quiz-scoreboard{top:calc(var(--dtf-global-header-height) + 8px)!important}' release-resource/games/high-iq/index.html
+              ;;
+            plant-atlas)
+              npm run test:growlens
+              npm run build:growlens
+              npm run validate:plant-atlas:v4
+              node scripts/validate-atlas-route-ownership.mjs
+              mkdir -p release-resource/atlas
+              cp -a site/public-route-patch/atlas/. release-resource/atlas/
               ;;
             seed-man-platformer)
               npm install --prefix games/seed-man-platformer --ignore-scripts --no-audit --no-fund

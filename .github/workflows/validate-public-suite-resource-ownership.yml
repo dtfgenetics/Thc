@@ -89,15 +89,11 @@ jobs:
           ! grep -Fq "'/games/high-iq/'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
           ! grep -Fq "'games/seed-man-platformer'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
           ! grep -Fq "'/games/seed-man-platformer/'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
+          ! grep -Fq "'atlas'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
+          ! grep -Fq "'/atlas/'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
           for marker in \
-            "'atlas'" \
             "'terpene-atlas'" \
             "'assets/images/atlas'" \
-            "'atlas/index.html'" \
-            "'atlas/leaf-module/index.html'" \
-            "'atlas/root-system/index.html'" \
-            "'atlas/root-system/rhizosphere/index.html'" \
-            "'atlas/downloads/index.html'" \
             "'terpene-atlas/index.html'" \
             "'terpene-atlas/terpene-atlas-v1.css'" \
             "'terpene-atlas/terpene-atlas-v1.js'" \
@@ -106,7 +102,6 @@ jobs:
             "'terpene-atlas/data/population-summary-v1.json'" \
             "'terpene-atlas/data/sample-profiles-v1.json'" \
             "'assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg'" \
-            "'atlas/'" \
             "'terpene-atlas/'" \
             "'assets/images/atlas/'"; do
             grep -Fq "$marker" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
@@ -114,7 +109,9 @@ jobs:
           grep -Fq 'resourceOwnedTargetsExcluded' "$RUNNER_TEMP/ownership-report.json"
           grep -Fq 'games/high-iq' "$RUNNER_TEMP/ownership-report.json"
           grep -Fq 'games/seed-man-platformer' "$RUNNER_TEMP/ownership-report.json"
-          grep -Fq 'atlasScope' "$RUNNER_TEMP/ownership-report.json"
+          grep -Fq 'plant-atlas' "$RUNNER_TEMP/ownership-report.json"
+          grep -Fq 'growlens/atlas' "$RUNNER_TEMP/ownership-report.json"
+          grep -Fq 'referenceScope' "$RUNNER_TEMP/ownership-report.json"
 
       - name: Validate production writer and coordinator contracts
         run: |

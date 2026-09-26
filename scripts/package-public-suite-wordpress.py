@@ -30,6 +30,9 @@ if len(sys.argv) != 3:
 root = Path(sys.argv[1]).resolve()
 out = Path(sys.argv[2]).resolve()
 repo_root = Path(__file__).resolve().parents[1]
+NPM = shutil.which("npm.cmd") or shutil.which("npm")
+if not NPM:
+    raise SystemExit("npm executable not found")
 if not root.is_dir():
     raise SystemExit(f"release directory not found: {root}")
 
@@ -129,15 +132,16 @@ def stage_external_game(contract_path: Path) -> dict[str, str]:
         if actual != commit:
             raise SystemExit(f"external game checkout drift for {target}: expected {commit}, got {actual}")
 
-        subprocess.run(["npm", "install", "--ignore-scripts"], cwd=checkout, check=True)
-        subprocess.run(["npm", "test"], cwd=checkout, check=True)
+        install_command = [NPM, "ci", "--ignore-scripts"] if (checkout / "package-lock.json").is_file() else [NPM, "install", "--ignore-scripts"]
+        subprocess.run(install_command, cwd=checkout, check=True)
+        subprocess.run([NPM, "test"], cwd=checkout, check=True)
         package_json_path = checkout / "package.json"
         package_json = json.loads(package_json_path.read_text()) if package_json_path.is_file() else {}
         package_scripts = package_json.get("scripts") if isinstance(package_json.get("scripts"), dict) else {}
         if "validate:ui" in package_scripts:
-            subprocess.run(["npm", "run", "validate:ui"], cwd=checkout, check=True)
-        subprocess.run(["npm", "run", "build"], cwd=checkout, check=True)
-        subprocess.run(["npm", "run", "validate:release"], cwd=checkout, check=True)
+            subprocess.run([NPM, "run", "validate:ui"], cwd=checkout, check=True)
+        subprocess.run([NPM, "run", "build"], cwd=checkout, check=True)
+        subprocess.run([NPM, "run", "validate:release"], cwd=checkout, check=True)
 
         dist = checkout / "dist"
         if not (dist / "index.html").is_file():

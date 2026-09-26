@@ -18,8 +18,11 @@ config = json.loads((repo / 'site/deployment/release-resources.json').read_text(
 resource = config['resources'].get(resource_id)
 if not resource:
     raise SystemExit(f'unknown resource: {resource_id}')
-if resource_id != 'high-iq':
-    raise SystemExit('WordPress resource bridge pilot currently supports high-iq only')
+publisher = resource.get('publisher') or {}
+if publisher.get('type') != 'wordpress-transactional-resource':
+    raise SystemExit(f'resource does not use the WordPress transactional publisher: {resource_id}')
+if publisher.get('status') != 'production':
+    raise SystemExit(f'resource publisher is not production-ready: {resource_id}')
 
 base_assembler = repo / 'scripts/assemble-wordpress-suite-v2.py'
 with tempfile.TemporaryDirectory(prefix='dtf-resource-bridge-') as temp_dir:

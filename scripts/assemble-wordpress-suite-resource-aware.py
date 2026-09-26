@@ -8,18 +8,13 @@ import subprocess
 import sys
 import tempfile
 
-from public_suite_resource_ownership import transform_bridge
+from public_suite_resource_ownership import resource_owned_specs, transform_bridge
 
 if len(sys.argv) != 2:
     raise SystemExit('usage: assemble-wordpress-suite-resource-aware.py OUTPUT_MJS')
 
-ATLAS_TARGETS = ['atlas', 'terpene-atlas', 'ph-meter', 'tds-meter', 'vpd-chart', 'assets/images/atlas']
-ATLAS_REQUIRED = [
-    'atlas/index.html',
-    'atlas/leaf-module/index.html',
-    'atlas/root-system/index.html',
-    'atlas/root-system/rhizosphere/index.html',
-    'atlas/downloads/index.html',
+REFERENCE_TARGETS = ['terpene-atlas', 'ph-meter', 'tds-meter', 'vpd-chart', 'assets/images/atlas']
+REFERENCE_REQUIRED = [
     'terpene-atlas/index.html',
     'terpene-atlas/terpene-atlas-v1.css',
     'terpene-atlas/terpene-atlas-v1.js',
@@ -32,15 +27,13 @@ ATLAS_REQUIRED = [
     'vpd-chart/index.html',
     'assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg',
 ]
-ATLAS_PREFIXES = ['atlas/', 'terpene-atlas/', 'ph-meter/', 'tds-meter/', 'vpd-chart/', 'assets/images/atlas/']
+REFERENCE_PREFIXES = ['terpene-atlas/', 'ph-meter/', 'tds-meter/', 'vpd-chart/', 'assets/images/atlas/']
 REFERENCE_LIVE_CHECKS = [
-    ('/atlas/', 'THC Living Plant Atlas'),
     ('/terpene-atlas/', 'THC Terpene Atlas'),
     ('/ph-meter/', 'pH Meter'),
     ('/tds-meter/', 'TDS / EC Meter'),
     ('/vpd-chart/', 'VPD Chart'),
 ]
-RESOURCE_OWNED_GAME_TARGETS = ['games/high-iq', 'games/seed-man-platformer']
 
 
 def extend_php_array(text: str, variable: str, additions: list[str]) -> str:
@@ -61,10 +54,10 @@ def extend_php_array(text: str, variable: str, additions: list[str]) -> str:
     return text[:match.start()] + match.group('head') + body + match.group('tail') + text[match.end():]
 
 
-def add_atlas_scope(text: str) -> str:
-    text = extend_php_array(text, 'targets', ATLAS_TARGETS)
-    text = extend_php_array(text, 'required', ATLAS_REQUIRED)
-    text = extend_php_array(text, 'prefixes', ATLAS_PREFIXES)
+def add_reference_scope(text: str) -> str:
+    text = extend_php_array(text, 'targets', REFERENCE_TARGETS)
+    text = extend_php_array(text, 'required', REFERENCE_REQUIRED)
+    text = extend_php_array(text, 'prefixes', REFERENCE_PREFIXES)
 
     live_match = re.search(r'(?P<head>const liveChecks = \[\n)(?P<body>.*?)(?P<tail>\n\];)', text, re.S)
     if not live_match:
@@ -83,15 +76,16 @@ output = Path(sys.argv[1]).resolve()
 with tempfile.TemporaryDirectory(prefix='dtf-suite-resource-aware-') as temp:
     base = Path(temp) / 'suite-v2.mjs'
     subprocess.run([sys.executable, str(repo / 'scripts/assemble-wordpress-suite-v2.py'), str(base)], cwd=repo, check=True)
-    scoped = add_atlas_scope(base.read_text())
+    scoped = add_reference_scope(base.read_text())
     transformed, report = transform_bridge(scoped, repo)
 
-    for marker in [*ATLAS_TARGETS, *ATLAS_REQUIRED, *ATLAS_PREFIXES]:
+    for marker in [*REFERENCE_TARGETS, *REFERENCE_REQUIRED, *REFERENCE_PREFIXES]:
         if repr(marker) not in transformed:
-            raise SystemExit(f'Plant/Terpene Atlas/reference-tool scope marker disappeared from resource-aware bridge: {marker}')
-    for target in RESOURCE_OWNED_GAME_TARGETS:
+            raise SystemExit(f'Terpene Atlas/reference-tool scope marker disappeared from resource-aware bridge: {marker}')
+    resource_owned_targets = [str(spec['root']) for spec in resource_owned_specs(repo)]
+    for target in resource_owned_targets:
         if repr(target) in transformed:
-            raise SystemExit(f'resource-owned game target remained after Plant/Terpene Atlas and reference-tool scope merge: {target}')
+            raise SystemExit(f'resource-owned target remained after reference-tool scope merge: {target}')
     if "'games/high-land'" not in transformed:
         raise SystemExit('suite-owned High Land target disappeared before its independent publisher is proven')
 
@@ -100,10 +94,10 @@ with tempfile.TemporaryDirectory(prefix='dtf-suite-resource-aware-') as temp:
 
 print(json.dumps({
     **report,
-    'atlasScope': {
-        'targets': ATLAS_TARGETS,
-        'required': ATLAS_REQUIRED,
-        'prefixes': ATLAS_PREFIXES,
+    'referenceScope': {
+        'targets': REFERENCE_TARGETS,
+        'required': REFERENCE_REQUIRED,
+        'prefixes': REFERENCE_PREFIXES,
     },
     'output': str(output),
 }, indent=2))

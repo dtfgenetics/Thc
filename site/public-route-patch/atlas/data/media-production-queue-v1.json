@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-09-23",
+  "purpose": "Prioritized production queue for Plant Atlas visual assets. Raster-first educational production; no SVG instructional assets.",
+  "priorities": [
+    {
+      "priority": 1,
+      "group": "Leaf + gas exchange",
+      "entities": [
+        "leaf-module",
+        "stomatal-surface"
+      ],
+      "reason": "Highest-frequency anatomy/diagnostic entry point and first deep-lab production system.",
+      "deliverables": [
+        "healthy fan leaf photoreal reference",
+        "labeled leaf anatomy plate",
+        "leaf macro surface reference",
+        "stomatal microscopy reference",
+        "stomata open/closed labeled plate",
+        "stomatal opening/closing animation sequence"
+      ]
+    },
+    {
+      "priority": 2,
+      "group": "Root + uptake",
+      "entities": [
+        "root-system",
+        "root-tip"
+      ],
+      "reason": "Required for water, nutrient, oxygen, dryback and root-zone interpretation.",
+      "deliverables": [
+        "healthy exposed root system photoreal reference",
+        "root architecture labeled plate",
+        "root-to-shoot water uptake process diagram",
+        "root-tip macro reference",
+        "root-tip/root-hair microscopy reference",
+        "root-tip labeled botanical plate"
+      ]
+    },
+    {
+      "priority": 3,
+      "group": "Flower + trichomes",
+      "entities": [
+        "flower-anatomy",
+        "bract",
+        "stigma",
+        "trichomes-resin",
+        "capitate-stalked-trichome",
+        "trichome-gland-head"
+      ],
+      "reason": "Connects reproductive anatomy, microscopy and the Terpene Atlas.",
+      "deliverables": [
+        "female flower photoreal reference",
+        "flower macro anatomy reference",
+        "labeled flower anatomy plate",
+        "bract macro and labeled reference",
+        "stigma macro/microscopy reference",
+        "trichome macro reference",
+        "capitate-stalked trichome microscopy plate",
+        "trichome gland-head microscopy plate",
+        "trichome 3D microstructure representation"
+      ]
+    },
+    {
+      "priority": 4,
+      "group": "Stem + vascular transport",
+      "entities": [
+        "stem-vascular",
+        "xylem-pathway",
+        "phloem-pathway"
+      ],
+      "reason": "Supports water, mineral and source-sink transport explanations.",
+      "deliverables": [
+        "stem photoreal reference",
+        "stem cross-section labeled plate",
+        "xylem/phloem transport process diagram",
+        "xylem labeled botanical plate",
+        "phloem labeled botanical plate"
+      ]
+    },
+    {
+      "priority": 5,
+      "group": "Reproductive biology",
+      "entities": [
+        "reproductive-biology"
+      ],
+      "reason": "Supports sex, pollen, fertilization, seed formation and breeding education.",
+      "deliverables": [
+        "female reproductive structure photoreal reference",
+        "reproductive macro reference",
+        "labeled reproductive anatomy plate"
+      ]
+    }
+  ],
+  "productionRules": {
+    "rasterOnly": true,
+    "preferredFormats": [
+      "png",
+      "webp",
+      "jpeg"
+    ],
+    "minimumLongEdgePx": 2400,
+    "textHandling": "Keep dense labels in controlled HTML/course content where possible; for labeled plates, QA every label before approval.",
+    "photorealRule": "Photoreal references must depict botanically plausible Cannabis anatomy and must not be used as measured evidence unless provenance supports that claim.",
+    "microscopyRule": "Microscopy references require source, scale/magnification when known, license and tissue identity.",
+    "approvalStates": [
+      "production-needed",
+      "in-production",
+      "review-needed",
+      "approved",
+      "rejected"
+    ]
+  }
+}
