@@ -86,7 +86,7 @@ assert.match(visual, /\.delta-list span\.positive/);
 assert.match(visual, /\.danger-arm/);
 assert.match(visual, /\.hero-art/);
 assert.match(visual, /object-position:66% center/);
-assert.match(visual, /@media\(max-width:650px\)/);
+assert.match(visual, /@media\(max-width:700px\)/);
 assert.match(visual, /@media\(max-width:480px\)\{\.dashboard\{grid-template-columns:1fr\}/, 'narrow-phone dashboard must collapse to one column');
 assert.match(visual, /top:calc\(var\(--dtf-global-header-height,74px\) \+ 8px\)/, 'sticky era roadmap must clear the V5 site header');
 assert.match(visual, /High Life three-era journey v3/, 'three-era journey presentation must remain active');
