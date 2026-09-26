@@ -10,6 +10,7 @@ const hub = fs.readFileSync(path.join(root, 'site/public-route-patch/games/index
 const deployableShellFiles = [
   'site/public-route-patch/projects/index.html',
   'site/public-route-patch/tools/index.html',
+  'site/public-route-patch/ppfd-chart/index.html',
   'site/public-route-patch/games/index.html',
   'site/public-route-patch/games/high-life/index.html',
   'site/public-route-patch/games/high-iq/index.html',
@@ -96,7 +97,7 @@ for (const route of ['/atlas/', '/terpene-atlas/', '/ph-meter/', '/tds-meter/', 
   assert((nav.diagnostic?.tools || []).some((item) => item.route === route), `Diagnostic registry must include reference route ${route}`);
 }
 const toolsHub = fs.readFileSync(path.join(root, 'site/public-route-patch/tools/index.html'), 'utf8');
-for (const route of ['/atlas/', '/terpene-atlas/', '/ph-meter/', '/tds-meter/', '/vpd-chart/']) {
+for (const route of ['/atlas/', '/terpene-atlas/', '/ph-meter/', '/tds-meter/', '/vpd-chart/', '/ppfd-chart/']) {
   assert(toolsHub.includes(`href="${route}"`) || toolsHub.includes(`href='${route}'`), `Tools hub must link reference route ${route}`);
 }
 for (const rel of ['site/public-route-patch/ph-meter/index.html', 'site/public-route-patch/tds-meter/index.html', 'site/public-route-patch/vpd-chart/index.html', 'site/public-route-patch/ppfd-chart/index.html']) {
