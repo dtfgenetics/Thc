@@ -17,7 +17,6 @@ on:
       - 'site/deployment/public-apps.json'
       - 'site/public-route-patch/games/**'
       - 'scripts/game-portfolio-browser-qa.mjs'
-      - 'scripts/game-portfolio-browser-qa.mjs'
       - 'scripts/game-asset-performance-audit.mjs'
       - 'scripts/sync-game-shared-platform.mjs'
       - 'scripts/lib/game-qa-catalog.mjs'
@@ -32,6 +31,7 @@ on:
       - 'games/strain-showdown/**'
       - 'site/deployment/public-apps.json'
       - 'site/public-route-patch/games/**'
+      - 'scripts/game-portfolio-browser-qa.mjs'
       - 'scripts/game-asset-performance-audit.mjs'
       - 'scripts/sync-game-shared-platform.mjs'
       - 'scripts/lib/game-qa-catalog.mjs'
@@ -82,6 +82,6 @@ jobs:
           name: game-portfolio-quality
           path: |
             game-qa-catalog.json
-            artifacts/game-qa/assets
+            artifacts/game-qa
           if-no-files-found: warn
           retention-days: 14
