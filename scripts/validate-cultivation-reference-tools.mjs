@@ -27,7 +27,7 @@ for (const label of ['Plant Atlas', 'Terpene Atlas', 'pH Meter', 'TDS / EC Meter
 
 const canonical = [
   ['/', 'Home'], ['/seeds/', 'Seeds'], ['/learn/', 'Learn'], ['/courses/', 'Courses'],
-  ['/tools/', 'Diagnostic'], ['/games/', 'Games'], ['/community/', 'Community'], ['/shop/', 'Shop'],
+  ['/tools/', 'Tools'], ['/games/', 'Games'], ['/community/', 'Community'], ['/shop/', 'Shop'],
 ];
 for (const [fileKey, html] of [['ph', ph], ['tds', tds], ['vpd', vpd]]) {
   assert(html.includes('href="/tools/"'), `${files[fileKey]} missing central All Tools return link`);
@@ -67,4 +67,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('Cultivation reference tool validation passed: hub links, canonical navigation, pH/TDS/VPD calculations, and cross-references are intact.');
+console.log('Cultivation reference tool validation passed: hub links, canonical Tools navigation, pH/TDS/VPD calculations, and cross-references are intact.');
