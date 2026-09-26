@@ -31,7 +31,11 @@ function validateLocalPackage(data) {
   must(data.publicationState === 'publish', 'Course 1 site package must be publish state.');
   must(data.course?.id === 'COURSE-LH-TECH1-001', 'Unexpected Course 1 ID.');
   must(Array.isArray(data.modules) && data.modules.length === 6, 'Course 1 requires six modules.');
-  must(Array.isArray(data.learnerDocuments) && data.learnerDocuments.length === 3, 'Course 1 requires workbook, templates and practical.');
+  must(Array.isArray(data.learnerDocuments) && data.learnerDocuments.length >= 3, 'Course 1 requires learner documents.');
+  const requiredLearnerDocs = new Set(['workbook', 'workbook-templates', 'integrated-practical']);
+  const learnerDocSlugs = new Set(data.learnerDocuments.map((document) => document?.slug).filter(Boolean));
+  for (const slug of requiredLearnerDocs) must(learnerDocSlugs.has(slug), `Course 1 requires learner document '${slug}'.`);
+  must(learnerDocSlugs.size === data.learnerDocuments.length, 'Course 1 learner document slugs must be unique.');
   must(data.finalAssessment === 'ASSESS-LH-TECH1-001-FINAL', 'Unexpected final Course 1 assessment.');
   must(!/\b(draft|preview|tbd|todo|lorem ipsum|not approved)\b/i.test(JSON.stringify(data)), 'Site package contains unfinished public wording.');
 }
