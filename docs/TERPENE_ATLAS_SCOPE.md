@@ -41,3 +41,14 @@ Cultivar names do not have one fixed terpene percentage. Percentages and concent
 - links into Plant Atlas trichome and flower modules.
 
 The current catalog is deliberately marked `seed-catalog-in-expansion`. It must not be represented as complete until the cannabis literature inventory and the global ontology import have both passed validation.
+
+## Current production state (2026-09-26)
+
+- **120-record production floor:** the validator rejects a curated ontology below 120 compounds.
+- **Reference-inventory caution:** Radwan et al. (2021) reports 120 Cannabis terpenes. The Atlas currently also contains 120 curated records, but this numerical match is **not** treated as proof that every identity, synonym, stereoisomer, and miscellaneous terpene maps one-to-one to that review inventory.
+- **Measured data:** 40 mapped analytes summarize variability across 79 Cannabis inflorescences in ppm; these values are population statistics, not cultivar promises.
+- **Sample-first rule:** individual cultivar or breeding-line percentages require a traceable measured sample. Strain names are metadata, not measurements.
+- **Interpretation layer:** profile drivers cover genetics, tissue, development, environment, harvest handling, drying/storage, analytical method, and naming provenance.
+- **Evidence layer:** mechanism and safety records state experimental model, human-evidence status, limitations, and source provenance; preclinical findings are not rendered as proven human treatment effects.
+- **Data-quality visibility:** formula, aroma, stereochemistry, and PubChem identifier coverage are surfaced to users instead of silently inferred.
+- **Shareable records:** compound detail views support direct query links such as `/terpene-atlas/?compound=beta-caryophyllene`.
