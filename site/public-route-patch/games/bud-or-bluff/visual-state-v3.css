@@ -22,7 +22,9 @@ body{min-width:0;overflow-x:visible}
   .home-view{gap:28px;align-items:start}
   .sidebar{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 }
+/* responsive-exception: sticky vote rail and stage controls compact before the page-level phone band. */
 @media(max-width:720px){.stage{min-height:0}.game-stage{padding-top:18px}.strain-card{margin-top:14px;min-height:315px}.strain-main{padding:22px 0 12px}.strain-main h2{font-size:clamp(2.35rem,13vw,4.4rem)}.vote-controls{position:sticky;bottom:max(8px,env(safe-area-inset-bottom));z-index:8;padding:7px;margin-inline:-7px;border:1px solid rgba(137,183,147,.16);border-radius:18px;background:rgba(5,17,10,.92);backdrop-filter:blur(14px);box-shadow:0 -12px 36px rgba(0,0,0,.28)}.vote-button{min-height:88px}.double-hit{margin-top:9px}.sidebar{grid-template-columns:minmax(0,1fr);margin-top:2px}.chat-panel{min-height:300px}.chat-messages{max-height:220px}}
+/* responsive-exception: ultra-narrow vote/card controls need a 430px density adjustment. */
 @media(max-width:430px){.topbar,.shell{width:min(100% - 20px,1320px)}.topbar{gap:10px}.top-actions{min-width:0;flex-wrap:wrap;justify-content:flex-end}.strain-card{min-height:300px;padding:17px}.strain-main h2{font-size:clamp(2.15rem,14vw,3.35rem)}.vote-controls{gap:7px}.vote-button{min-height:82px;padding:10px 7px}.vote-button>span{font-size:1.35rem}.vote-button small{font-size:.68rem}.locked-vote{padding:14px 15px}.round-meta{gap:8px}.round-meta strong{min-width:2ch;text-align:right}}
 @media(prefers-reduced-motion:reduce){.locked-vote{transition:none}.round-meta[data-urgency="critical"]{filter:none}}
 
@@ -42,6 +44,7 @@ body{min-width:0;overflow-x:visible}
 .mobile-player-rail{
   display:none;
 }
+/* responsive-exception: horizontal player rail appears before the page-level phone band to prevent scoreboard crowding. */
 @media(max-width:720px){
   .mobile-player-rail{
     position:relative;
