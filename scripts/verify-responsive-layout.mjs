@@ -100,6 +100,8 @@ const burnBudsV4 = read("site/public-route-patch/games/protect-the-plants/gamepl
 const strainMatchV2 = read("site/public-route-patch/games/strain-match/strain-match-v2.css");
 const trichomeTrialsV2 = read("site/public-route-patch/games/trichome-trials/trichome-trials-v2.css");
 const harvestHustleV2 = read("site/public-route-patch/games/harvest-hustle/harvest-hustle-v2.css");
+const growRoomDefenseV2 = read("site/public-route-patch/games/grow-room-defense/grow-room-defense-v2.css");
+const highLifeV2 = read("site/public-route-patch/games/high-life/high-life-v2.css");
 const phenoQuestCss = read("site/public-route-patch/games/phenoquest/style.css");
 const infographicsPage = read("site/public-route-patch/learn/infographics/index.html");
 const tech1Courses = read("scripts/publish-wordpress-tech1-courses-2-7-v2.mjs");
@@ -122,6 +124,8 @@ for (const [label, source, legacyPattern] of [
   ["Strain Match", strainMatchV2, /@media\(max-width:820px\)/],
   ["Trichome Trials", trichomeTrialsV2, /@media\(max-width:(?:820|640)px\)/],
   ["Harvest Hustle", harvestHustleV2, /@media\(max-width:(?:980|640)px\)/],
+  ["Grow Room Defense", growRoomDefenseV2, /@media\(max-width:(?:980|760)px\)/],
+  ["High Life", highLifeV2, /@media\(max-width:650px\)/],
   ["PhenoQuest", phenoQuestCss, /@media\s*\(max-width:\s*640px\)/],
   ["Infographics", infographicsPage, /@media\(max-width:620px\)/],
   ["pH tool", phTool, /@media\(max-width:(?:820|600)px\)/],
@@ -138,6 +142,9 @@ if (!/\.hub-back\{[^}]*min-height:44px/.test(phenoQuestCss) || !/safe-area-inset
 }
 if (!/\.search a\{[^}]*min-height:44px/.test(infographicsPage)) {
   failures.push("Infographics search action must keep a 44px touch target.");
+}
+if (!/\.tools-card\{[^}]*max-height:calc\(100dvh - 104px\)[^}]*overflow-y:auto/.test(growRoomDefenseV2)) {
+  failures.push("Grow Room Defense sticky tools panel must remain bounded to the dynamic viewport height.");
 }
 
 for (const [label, source] of [
