@@ -62,6 +62,7 @@
     "verify:project-os": "npm run verify:portfolio && npm run games:locations:check && npm run verify:asset-states && npm run verify:3d-assets",
     "verify:cultivation-reference-tools": "node scripts/validate-cultivation-reference-tools.mjs",
     "games:qa:local": "node scripts/game-portfolio-browser-qa.mjs --local",
-    "games:qa:live": "node scripts/game-portfolio-browser-qa.mjs --live"
+    "games:qa:live": "node scripts/game-portfolio-browser-qa.mjs --live",
+    "verify:education-visual-system": "node scripts/validate-education-visual-system.mjs"
   }
 }
