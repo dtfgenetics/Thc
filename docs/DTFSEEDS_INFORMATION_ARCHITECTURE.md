@@ -23,12 +23,12 @@ The primary navigation is locked in this order:
 2. Seeds — `/seeds/`
 3. Learn — `/learn/`
 4. Courses — `/courses/`
-5. Diagnostic — `/tools/`
+5. Tools — `/tools/`
 6. Games — `/games/`
 7. Community — `/community/`
 8. Shop — `/shop/`
 
-Do not rename Seeds to Genetics in the primary navigation. Do not rename Diagnostic to Tools in the primary navigation. Do not merge Courses into Learn. Search, Account, Cart, About, Contact, Gallery, and direct action buttons remain outside the primary navigation.
+Do not rename Seeds to Genetics in the primary navigation. Do not merge Courses into Learn. Search, Account, Cart, About, Contact, Gallery, and direct action buttons remain outside the primary navigation.
 
 ## Root responsibilities
 
@@ -36,7 +36,7 @@ Do not rename Seeds to Genetics in the primary navigation. Do not rename Diagnos
 
 Purpose: orientation, not a warehouse for every feature.
 
-Home should explain what DTF Genetics is, surface the strongest current destinations, and route visitors toward Seeds, Learn, Courses, Diagnostic, Games, Community, or Shop. Detailed reference material belongs deeper in the site.
+Home should explain what DTF Genetics is, surface the strongest current destinations, and route visitors toward Seeds, Learn, Courses, Tools, Games, Community, or Shop. Detailed reference material belongs deeper in the site.
 
 ### Seeds
 
@@ -64,13 +64,13 @@ Existing Learning Hub course URLs below `/learn/learning-hub/` remain stable. Th
 
 Course tests are learning assessments. Professional certification governance and secure certification examinations remain a distinct credential layer.
 
-### Diagnostic
+### Tools
 
 Purpose: record, measure, diagnose, and verify.
 
 Belongs here: GrowLens, THC Grow Doc, diagnostic workflows, calculators, charts, measurement tools, nutrient/pH references used as decision support, and related evidence-oriented utilities.
 
-The visitor-facing label is Diagnostic while the root URL remains `/tools/`.
+The visitor-facing label is Tools. Diagnostics is one capability inside the broader cultivation tools ecosystem rooted at `/tools/`.
 
 ### Games
 
@@ -104,7 +104,7 @@ Account, Cart, Search, and other utility actions are also separate from the eigh
 
 `/learn/learning-hub/` and its course descendants belong to the Courses visitor journey. Keep the established URLs stable unless an explicit migration with redirects is approved.
 
-`/growlens/` and `/thc-grow-doc/` belong beneath Diagnostic even though they are standalone application routes.
+`/growlens/` and `/thc-grow-doc/` belong beneath Tools even though they are standalone application routes.
 
 Individual WooCommerce product routes belong beneath Shop from a visitor-information perspective while their transactional data remains protected by WooCommerce ownership rules.
 
@@ -138,7 +138,7 @@ Never delete a duplicate page before useful unique material is reconciled and th
 
 - One subject should have one obvious canonical landing point.
 - Learn is reference-first; Courses is sequence-first.
-- Diagnostic is task/evidence-first; educational background may link back to Learn rather than being duplicated.
+- Tools is task/evidence-first; educational background may link back to Learn rather than being duplicated.
 - Seeds contains DTF genetics-specific knowledge; broad plant science belongs in Learn.
 - Games remain isolated from educational and commerce ownership even when they teach cannabis concepts.
 - Support/company pages do not compete with primary product and learning destinations.
