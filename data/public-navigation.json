@@ -339,6 +339,13 @@
         "route": "/vpd-chart/",
         "status": "play-now",
         "public": true
+      },
+      {
+        "id": "ppfd-chart",
+        "title": "PPFD / DLI Tool",
+        "route": "/ppfd-chart/",
+        "status": "play-now",
+        "public": true
       }
     ]
   },
@@ -389,6 +396,13 @@
       "id": "vpd-chart",
       "title": "VPD Chart",
       "route": "/vpd-chart/",
+      "status": "play-now",
+      "public": true
+    },
+    {
+      "id": "ppfd-chart",
+      "title": "PPFD / DLI Tool",
+      "route": "/ppfd-chart/",
       "status": "play-now",
       "public": true
     }
