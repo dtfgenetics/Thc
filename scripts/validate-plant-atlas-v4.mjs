@@ -24,6 +24,7 @@ const requiredMirrors = [
   'module.js',
   'data/systems.json',
   'data/hotspots-v4.json',
+  'data/anatomy-registry-v1.json',
   'models/model-manifest-v4.json',
   'models/README.md',
 ];
@@ -108,6 +109,31 @@ if (hotspotData) {
   }
 }
 
+let anatomyRegistry = null;
+try { anatomyRegistry = JSON.parse(read(path.join(appRoot, 'data/anatomy-registry-v1.json'))); }
+catch (error) { errors.push(`Invalid anatomy-registry-v1.json: ${error.message}`); }
+
+if (anatomyRegistry) {
+  ok(anatomyRegistry.schemaVersion === 1, 'anatomy-registry-v1.json must use schemaVersion 1');
+  ok(anatomyRegistry.specimenMode === 'mature-pistillate-cannabis-specimen', 'Anatomy registry must identify the mature pistillate specimen mode');
+  const structures = Array.isArray(anatomyRegistry.structures) ? anatomyRegistry.structures : [];
+  ok(structures.length === 32, `Anatomy registry must contain exactly 32 structures; found ${structures.length}`);
+  const allowedRepresentations = new Set(['direct-3d','semantic-3d-anchor','micro-reference']);
+  const allowedScales = new Set(['whole-plant','organ-tissue','microscopic']);
+  const ids = new Set();
+  for (const structure of structures) {
+    ok(typeof structure.id === 'string' && structure.id.length > 0, 'Every anatomy registry structure needs an id');
+    ok(!ids.has(structure.id), `Duplicate anatomy registry id: ${structure.id}`);
+    ids.add(structure.id);
+    ok(allowedRepresentations.has(structure.representation), `Invalid representation for ${structure.id}`);
+    ok(allowedScales.has(structure.scale), `Invalid scale for ${structure.id}`);
+    ok(typeof structure.limitation === 'string' && structure.limitation.length > 60, `Structure ${structure.id} needs explicit representation limitations`);
+    ok(structure.focusSupported === true, `Structure ${structure.id} must declare focus support`);
+  }
+  for (const id of requiredHotspots.keys()) ok(ids.has(id), `Anatomy registry missing required structure: ${id}`);
+  ok(structures.filter(x => x.representation === 'micro-reference').length >= 6, 'Microscopic structures must remain explicitly separated from direct 3D geometry');
+}
+
 let systemsData = null;
 try { systemsData = JSON.parse(read(path.join(appRoot, 'data/systems.json'))); }
 catch (error) { errors.push(`Invalid systems.json: ${error.message}`); }
@@ -135,7 +161,7 @@ if (systemsData) {
 }
 
 const anatomyIndex = read(path.join(appRoot, 'atlas-anatomy-index-v1.js'));
-for (const token of ['hotspots-v4.json','data-anatomy-search','data-anatomy-scale','plant-atlas:focus']) ok(anatomyIndex.includes(token), `Anatomy index runtime missing: ${token}`);
+for (const token of ['hotspots-v4.json','anatomy-registry-v1.json','data-anatomy-search','data-anatomy-scale','data-anatomy-representation','micro-reference','plant-atlas:focus']) ok(anatomyIndex.includes(token), `Anatomy index runtime missing: ${token}`);
 
 const moduleRuntime = read(path.join(appRoot, 'module.js'));
 for (const token of ['measurements','evidenceQuestions','deepDiveTopics','connectedTools','dataset.measurementsRuntime']) ok(moduleRuntime.includes(token), `Plant Atlas module runtime missing enriched contract: ${token}`);
@@ -181,4 +207,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Plant Atlas V4 valid: 16 enriched systems, ${requiredHotspots.size} required inspectable structures, searchable anatomy index, V4-first 3D focus, Terpene Atlas bridge, synchronized deployment mirror, and optional licensed GLB upgrade.`);
+console.log(`Plant Atlas V4 valid: 16 enriched systems, ${requiredHotspots.size} required structures, explicit direct/semantic/microscopic representation registry, searchable anatomy index, V4-first 3D focus, Terpene Atlas bridge, synchronized deployment mirror, and optional licensed GLB upgrade.`);
