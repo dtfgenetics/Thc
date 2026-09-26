@@ -39,8 +39,17 @@ function renderSources(){
   const grid=$('[data-source-grid]');
   if(grid)grid.innerHTML=(state.sources.sources||[]).map(s=>`<article><small>${esc(s.type)} · ${esc(s.evidenceGrade)}</small><h3>${esc(s.title)}</h3><p>${esc(s.scope||'')}</p><a href="${esc(s.url)}" target="_blank" rel="noopener">Open source →</a></article>`).join('');
   const coverage=$('[data-coverage]');
+  const quality=$('[data-data-quality]');
   const c=state.catalog.coverage||{};
   if(coverage)coverage.innerHTML=`<strong>Current curated coverage: ${state.catalog.compounds.length} compounds.</strong> ${esc(c.target||'Catalog expansion continues.')} <span>Completeness claim: ${c.completenessClaim===true?'yes':'no'}.</span>`;
+  if(quality){
+    const items=state.catalog.compounds||[];
+    const formulas=items.filter(x=>x.formula).length;
+    const identifiers=items.filter(x=>x.pubchemCid).length;
+    const aromas=items.filter(x=>Array.isArray(x.aromaDescriptors)&&x.aromaDescriptors.length).length;
+    const stereo=items.filter(x=>x.stereochemistry).length;
+    quality.innerHTML=`<strong>Field coverage:</strong> formulas ${formulas}/${items.length} · curated aroma descriptors ${aromas}/${items.length} · resolved stereochemistry ${stereo}/${items.length} · PubChem IDs ${identifiers}/${items.length}. Missing fields remain visibly unfilled until a verified source is added; they are not inferred automatically.`;
+  }
 }
 function renderFactors(){
   const grid=$('[data-factor-grid]');
