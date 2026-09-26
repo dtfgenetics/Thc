@@ -91,12 +91,24 @@ const touchTargetFiles = [
 ];
 
 const growLensAccount = read("apps/growlens-web/src/account.css");
+const productionHighIq = read("site/public-route-patch/games/high-iq/high-iq-v3-4.css");
+const productionStrainShowdown = read("site/public-route-patch/games/strain-showdown/runtime-v4.css");
 const tech1Courses = read("scripts/publish-wordpress-tech1-courses-2-7-v2.mjs");
 const tech2Courses = read("scripts/publish-wordpress-tech2-courses-1-8.mjs");
 const course1Layout = read("scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs");
 if (!/height:\s*100dvh/.test(growLensAccount) || !/max-height:\s*100dvh/.test(growLensAccount)) {
   failures.push("GrowLens account drawer must remain bounded to the dynamic viewport height.");
 }
+if (!/@media\s*\(orientation:\s*landscape\)\s*and\s*\(max-height:\s*560px\)/.test(productionHighIq)) {
+  failures.push("Production High IQ must keep a short-landscape gameplay layout in the active v3.4 stylesheet.");
+}
+if (!/@media\s*\(orientation:\s*landscape\)\s*and\s*\(max-height:\s*560px\)/.test(productionStrainShowdown)) {
+  failures.push("Production Strain Showdown must keep a short-landscape gameplay layout in runtime-v4.css.");
+}
+if (/@media\s*\(max-width:\s*720px\)/.test(productionStrainShowdown)) {
+  failures.push("Production Strain Showdown must use the canonical 700px phone band, not the legacy 720px breakpoint.");
+}
+
 for (const [label, source] of [
   ["Tech 1 course navigation", tech1Courses],
   ["Tech 2 course navigation", tech2Courses],
