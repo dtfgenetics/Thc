@@ -104,6 +104,7 @@ const growRoomDefenseV2 = read("site/public-route-patch/games/grow-room-defense/
 const highLifeV2 = read("site/public-route-patch/games/high-life/high-life-v2.css");
 const highLinesCss = read("site/public-route-patch/games/high-lines/high-lines.css");
 const highLinesV2 = read("site/public-route-patch/games/high-lines/high-lines-v2.css");
+const budOrBluffBase = read("site/public-route-patch/games/bud-or-bluff/styles.css");
 const phenoQuestCss = read("site/public-route-patch/games/phenoquest/style.css");
 const infographicsPage = read("site/public-route-patch/learn/infographics/index.html");
 const tech1Courses = read("scripts/publish-wordpress-tech1-courses-2-7-v2.mjs");
@@ -131,6 +132,7 @@ for (const [label, source, legacyPattern] of [
   ["High Life", highLifeV2, /@media\(max-width:650px\)/],
   ["High Lines base", highLinesCss, /@media\(max-width:(?:980|650)px\)/],
   ["High Lines visual", highLinesV2, /@media\(max-width:(?:980|650)px\)/],
+  ["Bud or Bluff base", budOrBluffBase, /@media\(max-width:(?:1050|720)px\)/],
   ["PhenoQuest", phenoQuestCss, /@media\s*\(max-width:\s*640px\)/],
   ["Infographics", infographicsPage, /@media\(max-width:620px\)/],
 ]) {
@@ -144,6 +146,13 @@ for (const [label, source, legacyPattern] of [
   if (legacyPattern.test(source)) failures.push(`${label} reintroduced legacy breakpoints outside the shared 900/700 bands.`);
   if (!/\.nav a\{[^}]*min-height:44px/.test(source)) failures.push(`${label} navigation must keep a 44px touch target.`);
   if (!/\.tabs a\{[^}]*min-height:44px/.test(source)) failures.push(`${label} tool tabs must keep a 44px touch target.`);
+}
+
+if (/100vh/.test(budOrBluffBase)) {
+  failures.push("Bud or Bluff base shell must use 100dvh rather than 100vh.");
+}
+if (/overflow-x\s*:\s*hidden/.test(budOrBluffBase)) {
+  failures.push("Bud or Bluff base shell must not hide page-level horizontal overflow.");
 }
 
 if (!/\.hub-back\{[^}]*min-height:44px/.test(phenoQuestCss) || !/safe-area-inset-top/.test(phenoQuestCss)) {
