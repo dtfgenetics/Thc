@@ -15,12 +15,13 @@ The Diagnostic/Cultivation Tools hub at `/tools/` is the launcher. Reference too
 | pH Meter | `/ph-meter/` | Interpretation of calibrated pH readings and broad cultivation reference windows |
 | TDS / EC Meter | `/tds-meter/` | EC and common 500/700 ppm scale conversion/reference |
 | VPD Chart | `/vpd-chart/` | Leaf-VPD calculation and nearby temperature/RH reference table |
+| THC Light Lab | `/ppfd-chart/` | Interactive PPFD interpretation, DLI calculation, canopy mapping and plant-light education |
 
 ## UX contract
 
-1. `/tools/` must visibly expose all five reference tools in the hero/primary cultivation-tools section.
+1. `/tools/` must visibly expose all six reference tools in the hero/primary cultivation-tools section.
 2. Reference launchers from `/tools/` open in a new browser tab so the grow-management or diagnostic context remains open.
-3. The three meter/chart routes are standalone pages and must not be reduced to modal-only or hidden controls.
+3. The four meter/chart/light routes are standalone pages and must not be reduced to modal-only or hidden controls.
 4. Every standalone reference page must provide a clear route back to `/tools/`.
 5. Plant Atlas and Terpene Atlas remain Learn-owned scientific explorers but are also discoverable from Diagnostic.
 6. pH and TDS pages interpret measurements from external/calibrated instruments; the browser is not presented as a physical sensor.
@@ -37,6 +38,7 @@ Canonical source lives in:
 - `site/public-route-patch/ph-meter/`
 - `site/public-route-patch/tds-meter/`
 - `site/public-route-patch/vpd-chart/`
+- `site/public-route-patch/ppfd-chart/`
 
 The routes are registered in `data/public-navigation.json` and `site/deployment/public-apps.json`. The public-suite packager, resource-aware WordPress publisher and Hostinger public-suite fallback must all preserve these routes.
 
@@ -46,4 +48,4 @@ Run:
 
 `npm run verify:cultivation-reference-tools`
 
-The validation gate protects hub links, new-tab behavior, central return links, canonical navigation, pH/TDS conversion contracts, and the VPD calculation contract.
+The validation gate protects hub links, new-tab behavior, central return links, canonical navigation, pH/TDS conversion contracts, the VPD calculation contract, and PPFD/DLI/canopy-mapping contracts.
