@@ -38,6 +38,7 @@ scope_items() {
       ph-meter
       tds-meter
       vpd-chart
+      ppfd-chart
       explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art
       exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools
       games
