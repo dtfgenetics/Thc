@@ -83,7 +83,7 @@ jobs:
           requireText(confidence, '.confidence-chip', 'confidence review marker');
           requireText(visual, '.score-stepper', 'mobile score stepper styles');
           requireText(visual, '.score-row.unreviewed', 'unreviewed score state');
-          requireText(visual, '@media(max-width:640px)', 'mobile layout');
+          requireText(visual, '@media(max-width:700px)', 'mobile layout');
           requireText(visual, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
           if (/^\s*import\s/m.test(app)) throw new Error('public runtime regressed to browser module imports');
           if (/fetch\s*\(/.test(app)) throw new Error('public runtime regressed to browser-time JSON fetch');
