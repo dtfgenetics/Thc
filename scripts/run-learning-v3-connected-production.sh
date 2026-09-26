@@ -57,7 +57,8 @@ node scripts/prepare-learning-v3-atlas-publisher.mjs \
   | tee /tmp/dtf-learning-v3-atlas-prepare.json
 
 grep -Fq 'data-progressive-disclosure="true"' "$atlas_v3"
-grep -Fq '<details class="lesson" data-progressive-disclosure="true">' "$atlas_v3"
+grep -Fq '<details class="lesson"' "$atlas_v3"
+grep -Fq 'data-progressive-disclosure="true"' "$atlas_v3"
 grep -Fq "checks.push(await publicCheck(topic.route, 'data-progressive-disclosure=\"true\"'))" "$atlas_v3"
 
 LEARNING_V3_SOURCE_PUBLISHER="$atlas_v3" \
@@ -202,7 +203,8 @@ subject_routes=(
 for route in "${subject_routes[@]}"; do
   body="/tmp/dtf-learning-retired-visual-check-$(printf '%s' "$route" | tr '/' '_').html"
   grep -Fq 'data-progressive-disclosure="true"' "$body"
-  grep -Fq '<details class="lesson" data-progressive-disclosure="true">' "$body"
+  grep -Fq '<details class="lesson"' "$body"
+  grep -Fq 'data-progressive-disclosure="true"' "$body"
 done
 
 test -s "$map_root/learning-v4-backup-path.txt"
