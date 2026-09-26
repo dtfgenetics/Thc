@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="/terpene-atlas/terpene-atlas-v1.css">
 </head>
 <body>
-<header class="topbar"><a class="brand" href="/terpene-atlas/"><strong>THC Terpene Atlas</strong><span>DTF GENETICS · PLANT CHEMISTRY</span></a><nav><a href="#wheel">Wheel</a><a href="#explorer">Explorer</a><a href="#population">Measured data</a><a href="#lab-profile">Lab profile</a><a href="#compare">Compare</a><a href="#method">Evidence</a><a href="/atlas/trichomes-resin/">Plant Atlas</a><a href="/learn/">Learning Center</a><a href="/tools/">All Tools</a></nav></header>
+<header class="topbar"><a class="brand" href="/terpene-atlas/"><strong>THC Terpene Atlas</strong><span>DTF GENETICS · PLANT CHEMISTRY</span></a><nav><a href="#wheel">Wheel</a><a href="#explorer">Explorer</a><a href="#population">Measured data</a><a href="#factors">Profile drivers</a><a href="#lab-profile">Lab profile</a><a href="#compare">Compare</a><a href="#method">Evidence</a><a href="/atlas/trichomes-resin/">Plant Atlas</a><a href="/learn/">Learning Center</a><a href="/tools/">All Tools</a></nav></header>
 <main class="shell">
 <section class="hero"><div><p class="kicker">Chemistry · Biology · Evidence · Samples</p><h1>Terpene Atlas</h1><p class="lede">Explore terpene and terpenoid chemistry without flattening cultivar names into fake precision. Cannabis occurrence is source-backed, and quantitative profiles belong to measured samples.</p><div class="hero-actions"><a class="primary" href="#explorer">Explore compounds</a><a href="/atlas/trichomes-resin/">See where glandular trichomes form →</a></div></div><aside><strong data-compound-count>Loading catalog…</strong><span>versioned compounds</span><strong>Sample-first</strong><span>percentages require measurements</span><strong>Evidence-linked</strong><span>occurrence and chemistry stay sourced</span></aside></section>
 <section class="wheel-section" id="wheel">
@@ -35,6 +35,18 @@
 <section class="notice"><strong>Scientific rule:</strong><p>A cultivar name is not a terpene measurement. Different samples sold or grown under the same name can produce different analytical profiles because genetics, environment, maturity, post-harvest handling, laboratory method, and naming practices vary.</p></section>
 <section class="toolbar" id="explorer"><label><span>Search</span><input type="search" data-search placeholder="Search myrcene, alcohol, citrus, sesquiterpene…"></label><label><span>Family</span><select data-class-filter><option value="all">All families</option><option value="monoterpene">Monoterpenes</option><option value="sesquiterpene">Sesquiterpenes</option><option value="diterpene">Diterpenes</option><option value="triterpene">Triterpenes</option><option value="terpenoid">Terpenoids</option></select></label><label><span>Scope</span><select data-scope-filter><option value="all">All scope</option><option value="cannabis-reported">Cannabis reported</option><option value="both">Cannabis + global</option><option value="global-terpene">Global only</option></select></label></section>
 <section class="section"><div class="section-head"><div><p class="kicker">Compound explorer</p><h2>Search the ontology</h2></div><p data-result-count>Loading…</p></div><div class="grid" data-grid></div><div class="empty" data-empty hidden>No compounds match those filters.</div></section>
+<section class="section factors" id="factors">
+  <div class="section-head"><div><p class="kicker">Profile drivers & stability</p><h2>Why terpene profiles change</h2></div><p>A measured profile reflects biology, cultivation, post-harvest handling and analytical method together. Use these factors to interpret differences without over-assigning cause.</p></div>
+  <div class="factor-tabs" role="group" aria-label="Filter profile drivers">
+    <button type="button" data-factor-category="all" class="active">All</button>
+    <button type="button" data-factor-category="biology">Biology</button>
+    <button type="button" data-factor-category="cultivation">Cultivation</button>
+    <button type="button" data-factor-category="post-harvest">Post-harvest</button>
+    <button type="button" data-factor-category="measurement">Measurement</button>
+    <button type="button" data-factor-category="identity">Identity</button>
+  </div>
+  <div class="factor-grid" data-factor-grid></div>
+</section>
 <section class="section population" id="population"><div class="section-head"><div><p class="kicker">Measured Cannabis data</p><h2>Variability across 79 inflorescences</h2></div><p>Population statistics show how widely terpene abundance varies across Cannabis samples. These values are not cultivar-specific promises.</p></div>
 <div class="population-summary"><div><strong data-population-count>—</strong><span>analytes in Atlas subset</span></div><div><strong>79</strong><span>inflorescences in source population</span></div><div><strong>ppm</strong><span>reported concentration unit</span></div><div><strong data-profile-count>0</strong><span>verified individual sample profiles loaded</span></div></div>
 <div class="table-wrap"><table class="population-table"><thead><tr><th>Compound</th><th>Mean ppm</th><th>Min</th><th>Max</th><th>SD</th><th>CV %</th></tr></thead><tbody data-population-body></tbody></table></div>
