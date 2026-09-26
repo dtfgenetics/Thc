@@ -49,22 +49,35 @@ const style = `<style id="${marker}">
 @media(max-width:900px){
  .lhv3-layout.lhv4-lesson-layout{grid-template-columns:minmax(0,1fr)!important;gap:14px!important}
  .lhv3-layout.lhv4-lesson-layout>.lhv3-sidebar{display:none!important}
- .lhv3-layout.lhv4-lesson-layout>.lhv3-main{grid-column:1!important;grid-row:2!important}
- .lhv4-context{grid-column:1!important;grid-row:1!important}
+ .lhv3-layout.lhv4-lesson-layout>.lhv3-main{grid-column:1!important;grid-row:1!important}
+ .lhv4-context{grid-column:1!important;grid-row:2!important}
  .lhv4-context-card{grid-template-columns:1fr!important}
  .lhv4-context .lhv3-toc{padding-left:0!important;padding-top:12px!important;margin-top:2px!important;border-left:0!important;border-top:1px solid var(--line)!important}
  .lhv3-mobile-outline{display:block!important}
 }
 @media(max-width:600px){
- .lhv3-wrap{width:min(100% - 20px,1280px)!important}
- .lhv3-crumb{overflow-x:auto!important;flex-wrap:nowrap!important;white-space:nowrap!important;padding-bottom:5px!important;scrollbar-width:thin}
- .lhv3-hero{padding:22px 18px!important;border-radius:14px!important}
- .lhv3-hero h1{font-size:clamp(1.9rem,10vw,2.8rem)!important;line-height:1.02!important}
- .lhv3-meta{gap:7px!important}.lhv3-pill{font-size:.79rem!important;padding:7px 9px!important}
- .lhv3-content{padding:22px 18px!important}.lhv3-content h2{font-size:1.5rem!important}.lhv3-content h3{font-size:1.18rem!important}
- .lhv4-context-card{padding:13px!important}
- .lhv3-actions{display:grid!important;grid-template-columns:1fr!important}.lhv3-actions>*{width:100%!important}
- .lhv3-nextprev{grid-template-columns:1fr!important}.lhv3-nextprev a:last-child{text-align:left!important}
+ .lhv3{padding-bottom:calc(82px + env(safe-area-inset-bottom))!important}
+ .lhv3-wrap{width:min(100% - 28px,1280px)!important}
+ .lhv3-crumb{overflow-x:auto!important;flex-wrap:nowrap!important;white-space:nowrap!important;padding-bottom:4px!important;scrollbar-width:none}
+ .lhv3-crumb::-webkit-scrollbar{display:none}
+ .lhv3-hero{padding:20px 17px!important;border-radius:14px!important;box-shadow:none!important}
+ .lhv3-hero h1{font-size:clamp(1.95rem,9.8vw,2.75rem)!important;line-height:1!important;letter-spacing:-.035em!important}
+ .lhv3-hero p{font-size:.98rem!important;line-height:1.58!important}
+ .lhv3-meta{gap:6px!important;overflow-x:auto!important;flex-wrap:nowrap!important;scrollbar-width:none}
+ .lhv3-meta::-webkit-scrollbar{display:none}
+ .lhv3-pill{flex:0 0 auto!important;font-size:.74rem!important;padding:6px 8px!important}
+ .lhv3-content{padding:18px 16px!important;border-radius:13px!important;box-shadow:none!important}
+ .lhv3-content p,.lhv3-content li{font-size:1rem!important;line-height:1.62!important}
+ .lhv3-content h2{font-size:1.42rem!important;line-height:1.14!important}
+ .lhv3-content h3{font-size:1.14rem!important;line-height:1.2!important}
+ .lhv4-context{margin-top:6px!important}
+ .lhv4-context-card{padding:12px!important;border-radius:12px!important;box-shadow:none!important}
+ .lhv4-context-title{font-size:.72rem!important}
+ .lhv4-context .lhv3-toc{display:none!important}
+ .lhv3-actions{display:grid!important;grid-template-columns:1fr!important}.lhv3-actions>*{width:100%!important;min-height:46px!important}
+ .lhv3-nextprev{position:fixed!important;z-index:40!important;left:0!important;right:0!important;bottom:0!important;margin:0!important;padding:9px 12px calc(9px + env(safe-area-inset-bottom))!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;background:rgba(250,251,247,.96)!important;border-top:1px solid var(--line)!important;box-shadow:0 -8px 24px rgba(17,45,28,.08)!important;backdrop-filter:blur(12px)!important}
+ .lhv3-nextprev a{min-height:48px!important;padding:9px 10px!important;border-radius:10px!important;justify-content:center!important}
+ .lhv3-nextprev a:last-child{text-align:center!important}
 }
 @media print{.lhv4-context{position:static!important}.lhv3-layout.lhv4-lesson-layout{display:block!important}.lhv3-layout.lhv4-lesson-layout>.lhv3-sidebar,.lhv4-context .lhv3-toc{display:none!important}}
 </style>`;
