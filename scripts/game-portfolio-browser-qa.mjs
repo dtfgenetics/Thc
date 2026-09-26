@@ -367,6 +367,12 @@ async function main() {
   const failed = results.filter((item) => item.status === 'FAIL');
   const warned = results.filter((item) => item.status === 'WARN');
   console.log(`[game-qa] mode=${args.mode} ALL_DEPLOYED=${args.allDeployed ? 'yes' : 'no'} PASS=${results.length - failed.length - warned.length} WARN=${warned.length} FAIL=${failed.length} SKIP=${skipped.length}`);
+  for (const result of failed) {
+    console.error(`[game-qa:FAIL] ${result.id} ${result.route} :: ${result.failures.join(' | ')}`);
+  }
+  for (const result of warned) {
+    console.warn(`[game-qa:WARN] ${result.id} ${result.route} :: ${result.warnings.join(' | ')}`);
+  }
   if (failed.length || (args.strict && warned.length)) process.exitCode = 1;
 }
 
