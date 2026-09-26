@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "batchId": "course-visual-batch03-2026-09-26",
+  "status": "draft-review-candidate",
+  "rasterOnly": true,
+  "master": {"width":2550,"height":3300,"dpi":300,"format":"PNG"},
+  "publicationRule": "Do not mark public or approved until subject accuracy, crop review, mobile, tablet and desktop checks pass.",
+  "assets": [
+    {
+      "id": "THC-LIGHT-02",
+      "filename": "THC-LIGHT-02_How_to_Map_Canopy_Light.png",
+      "curriculumId": "lighting-v6",
+      "slotId": "lighting-02",
+      "chapter": "canopy-light-uniformity",
+      "title": "How to Map Canopy Light",
+      "altText": "Canopy PPFD mapping diagram showing a repeatable crop-plane grid, spatial variation, sensor orientation and remapping triggers.",
+      "teachingPurpose": "Teach learners to preserve the spatial PPFD pattern, keep geometry repeatable, and distinguish useful summary statistics from the underlying map.",
+      "expandedScience": [
+        "A useful light map preserves raw point values rather than only the mean because edge loss, overlap valleys and hot spots can be hidden by an average.",
+        "Crop-plane height, sensor orientation, fixture power, canopy height and grid coordinates should remain fixed or documented between maps.",
+        "Re-map after changes to fixture height, dimming, spacing, reflective geometry or canopy architecture because each can change distribution.",
+        "Minimum, maximum, range and mean help compare maps, but the spatial pattern still matters and two maps with the same mean can distribute light very differently.",
+        "PPFD interpretation must remain contextual to crop stage, genetics, carbon dioxide, temperature, water status, nutrition and canopy geometry."
+      ],
+      "qa": {"subjectAccuracy":false,"cropReview":false,"mobile":false,"tablet":false,"desktop":false}
+    },
+    {
+      "id": "THC-WATER-04",
+      "filename": "THC-WATER-04_Root_Zone_Sampling_Methods.png",
+      "curriculumId": "water-root-zone-v6",
+      "slotId": "water-root-zone-03",
+      "chapter": "sampling-records-change-control",
+      "title": "Root-Zone Sampling Methods",
+      "altText": "Comparison of runoff, pour-through, slurry or dilution, and saturated-media extract root-zone sampling methods with method-specific interpretation cautions.",
+      "teachingPurpose": "Prevent learners from treating method-specific pH and EC values as interchangeable and explain why runoff is not a direct biopsy of the entire rhizosphere.",
+      "expandedScience": [
+        "Runoff, pour-through, slurry or dilution extracts and saturated-media extracts sample different solution fractions and dilution states.",
+        "Changing extraction method can change the reported value even when the crop has not materially changed.",
+        "Drainage chemistry reflects the flow path through the container, so poorly wetted or bypassed regions may contribute little or nothing to the runoff sample.",
+        "Reference ranges must be matched to the sampling method used; method-specific ranges should not be exchanged without explicit validation.",
+        "Sample identity, method, timing relative to irrigation, instrument, units, calibration state and temperature handling should remain attached to the result."
+      ],
+      "qa": {"subjectAccuracy":false,"cropReview":false,"mobile":false,"tablet":false,"desktop":false}
+    },
+    {
+      "id": "THC-HARV-17",
+      "filename": "THC-HARV-17_Trichome_Sampling_Microscope_Technique.png",
+      "curriculumId": "harvest-postharvest-v6",
+      "slotId": "harvest-postharvest-02",
+      "chapter": "harvest-readiness-sampling",
+      "title": "Trichome Sampling & Microscope Technique",
+      "altText": "Representative trichome sampling diagram showing multiple flower positions, flower versus sugar-leaf tissue, standardized microscopy and multiple-field interpretation.",
+      "teachingPurpose": "Teach representative trichome sampling and show why tissue type, canopy position, magnification, illumination and field selection affect harvest interpretation.",
+      "expandedScience": [
+        "One sugar leaf, one flower tip or one microscope field may not represent the maturity of an entire plant or batch.",
+        "Trichomes on sugar leaves can mature differently from glandular trichomes on flower bracts, so tissue identity should be recorded.",
+        "Maturity can vary by canopy position and flower, making multi-location sampling more informative than a single convenient sample.",
+        "Magnification and lighting should be standardized enough that repeat images remain comparable.",
+        "Trichome appearance should be interpreted together with whole-plant development, flower condition, cultivar history and repeated observations rather than as a single absolute harvest trigger."
+      ],
+      "qa": {"subjectAccuracy":false,"cropReview":false,"mobile":false,"tablet":false,"desktop":false}
+    }
+  ],
+  "qaNotes": [
+    "Visual review completed for clipping and hierarchy.",
+    "Root-zone sampling poster revised after top-row text crowding was detected.",
+    "Assets remain review candidates pending subject/crop review and responsive placement checks."
+  ]
+}
