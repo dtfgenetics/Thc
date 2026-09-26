@@ -96,7 +96,7 @@ const css = `<style id="dtf-tech2-public-courses-v1">.t2c{--ink:#14291c;--muted:
 .t2c-hero p{font-size:.98rem;line-height:1.58}
 .t2c-crumbs{margin:4px 0 12px;display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
 .t2c-crumbs::-webkit-scrollbar{display:none}
-.t2c-crumbs a,.t2c-crumbs .t2c-pill{flex:0 0 auto;width:auto;min-height:38px;white-space:nowrap}
+.t2c-crumbs a,.t2c-crumbs .t2c-pill{flex:0 0 auto;width:auto;min-height:44px;white-space:nowrap}
 .t2c-meta{gap:6px;margin:13px 0 0;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
 .t2c-meta::-webkit-scrollbar{display:none}
 .t2c-pill{flex:0 0 auto;font-size:.73rem}
