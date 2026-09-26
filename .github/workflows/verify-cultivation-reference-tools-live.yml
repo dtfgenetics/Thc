@@ -1,0 +1,46 @@
+name: Verify Cultivation Reference Tools Live
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - site/public-route-patch/tools/**
+      - site/public-route-patch/atlas/**
+      - site/public-route-patch/terpene-atlas/**
+      - site/public-route-patch/ph-meter/**
+      - site/public-route-patch/tds-meter/**
+      - site/public-route-patch/vpd-chart/**
+      - apps/growlens-web/public/atlas/**
+      - apps/growlens-web/public/terpene-atlas/**
+      - scripts/validate-cultivation-reference-tools.mjs
+      - scripts/verify-cultivation-reference-tools-live.mjs
+      - .github/workflows/verify-cultivation-reference-tools-live.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-cultivation-reference-tools-live
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install workspace
+        run: npm ci
+
+      - name: Validate repository contract
+        run: npm run verify:cultivation-reference-tools
+
+      - name: Verify visitor-facing routes
+        run: node scripts/verify-cultivation-reference-tools-live.mjs
