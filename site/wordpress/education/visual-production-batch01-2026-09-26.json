@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "batchId": "course-visual-batch01-2026-09-26",
+  "status": "draft-review-candidate",
+  "repoAssetTarget": "site/wordpress/assets/infographics",
+  "approvalPolicy": "Do not publish until subject accuracy and responsive review pass.",
+  "assets": [
+    {
+      "id": "THC-LIGHT-01",
+      "title": "PPFD, DLI & Photoperiod",
+      "filename": "THC-LIGHT-01_PPFD_DLI_Photoperiod_Full_Sheet_Infographic.png",
+      "format": "PNG",
+      "width": 2550,
+      "height": 3300,
+      "dpi": 300,
+      "topicId": "lighting",
+      "placementSlots": [
+        "lighting-01",
+        "lighting-03"
+      ],
+      "driveFileId": "19vyTdRqJ1TopaT1R2FAjehL1-a4Tt0K6",
+      "driveFolderId": "13EtmADI94YU4lo8Jg6lQy8eJhohQsooX",
+      "scientificScope": [
+        "PPF, PPFD and DLI are distinct measurement concepts.",
+        "For constant PPFD, DLI = PPFD × photoperiod_hours × 0.0036.",
+        "Equal DLI does not guarantee equal biological response because spectrum, intensity pattern, temperature, carbon dioxide, water status, crop stage and genetics can differ."
+      ],
+      "qa": {
+        "subjectAccuracy": "pending",
+        "cropReview": "pending",
+        "mobile": "pending",
+        "tablet": "pending",
+        "desktop": "pending"
+      }
+    },
+    {
+      "id": "THC-WATER-01",
+      "title": "pH vs Alkalinity: Why Buffering Matters",
+      "filename": "THC-WATER-01_pH_vs_Alkalinity_Buffering_Full_Sheet_Infographic.png",
+      "format": "PNG",
+      "width": 2550,
+      "height": 3300,
+      "dpi": 300,
+      "topicId": "water-root-zone",
+      "placementSlots": [
+        "water-root-zone-01",
+        "water-root-zone-03"
+      ],
+      "driveFileId": "1xxGpZC3EwtmHDtwuN9bbDygKtpUfX_rm",
+      "driveFolderId": "1hhv_6OM3pD3yU8krj74fh8lmpFWFYmLV",
+      "scientificScope": [
+        "pH describes the current acid-base state; alkalinity describes acid-neutralizing capacity.",
+        "Alkalinity is commonly influenced by bicarbonate, carbonate and hydroxide species.",
+        "Root-zone pH can diverge from input pH through water chemistry, fertilizer form, media buffering, root activity and irrigation history."
+      ],
+      "qa": {
+        "subjectAccuracy": "pending",
+        "cropReview": "pending",
+        "mobile": "pending",
+        "tablet": "pending",
+        "desktop": "pending"
+      }
+    },
+    {
+      "id": "THC-EVID-04",
+      "title": "Measurement Quality & Uncertainty",
+      "filename": "THC-EVID-04_Measurement_Quality_Uncertainty_Full_Sheet_Infographic.png",
+      "format": "PNG",
+      "width": 2550,
+      "height": 3300,
+      "dpi": 300,
+      "topicId": "evidence-measurement",
+      "placementSlots": [
+        "evidence-measurement-02",
+        "evidence-measurement-04"
+      ],
+      "driveFileId": "1HpfFvLlZtoU2DaMQdzJjR5_wYI4uzuO1",
+      "driveFolderId": "1Nl9Va9AhowqXU5yDcd9_n3okScC_V3SK",
+      "scientificScope": [
+        "Accuracy, precision, resolution and uncertainty are different concepts.",
+        "Display decimals do not establish accuracy.",
+        "Measurement interpretation should preserve instrument, calibration/reference checks, sample identity, location, timestamp, units, raw value and method."
+      ],
+      "qa": {
+        "subjectAccuracy": "pending",
+        "cropReview": "pending",
+        "mobile": "pending",
+        "tablet": "pending",
+        "desktop": "pending"
+      }
+    }
+  ]
+}

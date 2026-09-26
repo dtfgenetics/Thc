@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "batchId": "course-visual-batch01-2026-09-26",
+  "lessons": [
+    {
+      "topicId": "lighting",
+      "visualId": "THC-LIGHT-01",
+      "expandedExplanation": [
+        "PPF describes the total photosynthetic photon output of a source, while PPFD describes photon flux density arriving at a surface. DLI integrates photon delivery over the day.",
+        "A single center PPFD reading cannot describe canopy uniformity. A repeatable grid should include center, edge and fixture-overlap zones at the actual crop plane.",
+        "Mathematically equal DLI values can be produced by different intensity and photoperiod combinations, but plant response may differ because the temporal pattern of light and interacting environmental variables are not identical."
+      ],
+      "misconceptions": [
+        "DLI is not a fixture specification by itself.",
+        "Higher PPFD is not automatically better.",
+        "Equal DLI is not proof of equivalent morphology, photosynthesis or yield."
+      ],
+      "appliedCheck": "Create a canopy grid, record raw PPFD values at fixed coordinates and crop-plane height, then calculate mean, minimum, maximum and spatial variability before changing fixture height or dimming.",
+      "altText": "Full-sheet educational infographic defining PPF, PPFD and DLI, showing crop-plane PPFD grid measurement and equal-DLI examples with biological-context warnings.",
+      "references": [
+        "Michigan State University Extension — Daily Light Integral Defined.",
+        "Sustainability 2023, 15, 4645.",
+        "Current Research in Biotechnology 2024, 7, 100184."
+      ]
+    },
+    {
+      "topicId": "water-root-zone",
+      "visualId": "THC-WATER-01",
+      "expandedExplanation": [
+        "pH is a logarithmic measure related to hydrogen-ion activity at the time of measurement. It does not directly quantify how much acid or base a water source can neutralize.",
+        "Alkalinity is acid-neutralizing capacity. Waters with similar starting pH can require very different amounts of acid to shift because their buffering loads differ.",
+        "The substrate/root-zone pH reflects cumulative chemistry and biology, not simply the pH of the most recent irrigation solution."
+      ],
+      "misconceptions": [
+        "Hardness is not the same measurement as alkalinity.",
+        "EC cannot substitute for alkalinity testing.",
+        "Adjusting reservoir pH does not guarantee identical root-zone pH."
+      ],
+      "appliedCheck": "Label every pH result by sample type and method, trend root-zone pH with source-water alkalinity and fertilizer history, and avoid large corrections based on one isolated reading.",
+      "altText": "Full-sheet educational infographic separating pH from alkalinity and showing how source water, fertilizer, media buffering, roots and irrigation history influence root-zone pH.",
+      "references": [
+        "U.S. Geological Survey — Alkalinity and Water.",
+        "USGS National Field Manual, Chapter A6 Section 6.6 — Alkalinity and Acid Neutralizing Capacity."
+      ]
+    },
+    {
+      "topicId": "evidence-measurement",
+      "visualId": "THC-EVID-04",
+      "expandedExplanation": [
+        "Accuracy describes closeness of a measurement result to an accepted reference or measurand value; precision describes closeness among repeated results under stated conditions.",
+        "Resolution is the smallest displayed or detectable increment and should not be confused with accuracy or uncertainty.",
+        "Uncertainty communicates the limits of what a measurement result can support. Instrument state, calibration, sampling, environment, timing and data handling all contribute to interpretation."
+      ],
+      "misconceptions": [
+        "More decimal places do not prove better accuracy.",
+        "A tight cluster of repeated readings can still be systematically biased.",
+        "An unexpected value should be investigated and documented rather than silently overwritten."
+      ],
+      "appliedCheck": "For a repeated cultivation measurement, preserve the raw values, units, instrument ID, calibration/reference check, sample location and timestamp; then separate repeatability from agreement with a reference.",
+      "altText": "Full-sheet educational infographic comparing accuracy and precision with target plots and showing the measurement chain from true condition through sampling, instrument, recorded value and interpretation.",
+      "references": [
+        "NIST Technical Note 1297 — measurement uncertainty terminology.",
+        "NIST glossary — accuracy and precision terminology."
+      ]
+    }
+  ]
+}
