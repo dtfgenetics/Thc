@@ -12,8 +12,7 @@ const ui = {
   reset: document.querySelector('#reset-deck'),
   categoryText: document.querySelector('#card-category'),
   depthText: document.querySelector('#card-depth'),
-  number: document.querySelector('#card-number'),
-  prompt: document.querySelector('#card-prompt'),
+    prompt: document.querySelector('#card-prompt'),
   status: document.querySelector('#deck-status'),
   remaining: document.querySelector('#remaining-stat'),
   used: document.querySelector('#used-stat'),
@@ -39,13 +38,13 @@ const categoryLabels = {
 
 function readEmbeddedBank() {
   const node = document.querySelector('#grower-conversations-data');
-  if (!node) throw new Error('Embedded Grower Conversations data is missing.');
+  if (!node) throw new Error('Embedded Grow Room Confessions data is missing.');
   const bank = JSON.parse(node.textContent || '{}');
   if (bank?.schemaVersion !== 1 || bank?.cardCount !== 96 || !bank?.categories || typeof bank.categories !== 'object') {
-    throw new Error('Grower Conversations data contract mismatch.');
+    throw new Error('Grow Room Confessions data contract mismatch.');
   }
   const categoryIds = Object.keys(bank.categories);
-  if (categoryIds.length !== 8) throw new Error('Grower Conversations requires eight topics.');
+  if (categoryIds.length !== 8) throw new Error('Grow Room Confessions requires eight topics.');
   for (const category of categoryIds) {
     if (!Array.isArray(bank.categories[category]) || bank.categories[category].length !== 12) {
       throw new Error(`${category} must contain twelve prompts.`);
@@ -96,7 +95,7 @@ function saveSession() {
       currentId: current?.id || null
     }));
   } catch (error) {
-    console.warn('Grower Conversations session persistence unavailable.', error);
+    console.warn('Grow Room Confessions session persistence unavailable.', error);
   }
 }
 
@@ -133,7 +132,6 @@ function renderCurrent() {
     document.documentElement.removeAttribute('data-category');
     ui.categoryText.textContent = 'Ready';
     ui.depthText.textContent = 'Mixed deck';
-    ui.number.textContent = '96 cards';
     ui.prompt.textContent = 'Choose a topic or depth, then draw a conversation prompt.';
     return;
   }
@@ -141,7 +139,6 @@ function renderCurrent() {
   document.documentElement.dataset.category = current.category;
   ui.categoryText.textContent = current.categoryLabel;
   ui.depthText.textContent = current.depth;
-  ui.number.textContent = current.id.toUpperCase();
   ui.prompt.textContent = current.prompt;
 }
 
@@ -243,7 +240,7 @@ async function copyText(value) {
 
 async function copyPrompt() {
   if (!current) return;
-  const text = `${current.prompt}\n\n— Grower Conversations · DTF Genetics`;
+  const text = `${current.prompt}\n\n— Grow Room Confessions · DTF Genetics`;
   const copied = await copyText(text);
   if (copied) {
     ui.copy.textContent = 'Copied';
@@ -299,7 +296,7 @@ function load() {
     restoreSession();
   } catch (error) {
     console.error(error);
-    ui.load.textContent = 'The Grower Conversations prompt bank could not be loaded.';
+    ui.load.textContent = 'The Grow Room Confessions prompt bank could not be loaded.';
   }
 }
 

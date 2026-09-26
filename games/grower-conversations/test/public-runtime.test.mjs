@@ -16,6 +16,9 @@ assert.match(html, /id="remaining-stat"/, 'deck HUD must expose remaining cards'
 assert.match(html, /id="used-stat"/, 'deck HUD must expose used cards');
 assert.match(html, /id="pool-stat"/, 'deck HUD must expose the current filtered pool');
 assert.match(html, /id="deck-progress"[^>]*role="progressbar"/, 'deck progress must be exposed accessibly');
+assert.match(html, /<h1>Grow Room Confessions<\/h1>/, 'public page must use the production title');
+assert.doesNotMatch(html, /id="card-number"/, 'public card face must never expose internal IDs');
+assert.doesNotMatch(app, /querySelector\('#card-number'\)/, 'runtime must not bind a visible internal ID element');
 assert.match(html, /id="card-prompt" tabindex="-1"/, 'drawn prompt must be programmatically focusable');
 
 const embedded = html.match(/<script\s+id="grower-conversations-data"\s+type="application\/json">([\s\S]*?)<\/script>/i);
@@ -64,4 +67,4 @@ for (const [category, prompts] of Object.entries(canonical.categories)) {
   assert.equal(prompts.length, 12, `${category} must retain twelve prompts`);
 }
 
-console.log('Grower Conversations embedded runtime, responsive containment, touch-target, prompt reveal, deck progress and V2 visual-state regression checks passed.');
+console.log('Grow Room Confessions preview runtime, no-visible-ID contract, responsive containment, touch-target, prompt reveal, deck progress and visual-state regression checks passed.');

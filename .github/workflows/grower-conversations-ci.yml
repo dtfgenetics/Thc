@@ -27,12 +27,15 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
-      - name: Validate balanced 96-card prompt bank
+      - name: Validate 96-card browser preview bank
         run: node games/grower-conversations/scripts/validate-prompt-bank.mjs
+      - name: Validate 200-card production bank
+        run: node games/grower-conversations/scripts/validate-production-bank.mjs
       - name: Confirm JSON files parse
         run: |
           node -e "JSON.parse(require('node:fs').readFileSync('games/grower-conversations/data/categories.json','utf8'))"
           node -e "JSON.parse(require('node:fs').readFileSync('games/grower-conversations/data/prompt-bank.json','utf8'))"
+          node -e "JSON.parse(require('node:fs').readFileSync('games/grower-conversations/data/prompt-bank-v2.json','utf8'))"
           node -e "JSON.parse(require('node:fs').readFileSync('site/public-route-patch/games/grower-conversations/data/prompt-bank.json','utf8'))"
       - name: Verify browser runtime and canonical data synchronization
         shell: bash
@@ -44,7 +47,11 @@ jobs:
           test -s "$route/index.html"
           test -s "$route/grower-conversations.css"
           test -s "$route/grower-conversations-v2.css"
-          grep -Fq '<h1>Grower Conversations</h1>' "$route/index.html"
+          grep -Fq '<h1>Grow Room Confessions</h1>' "$route/index.html"
+          if grep -Fq 'id="card-number"' "$route/index.html"; then
+            echo 'Internal card IDs must not be visible in the browser card face.' >&2
+            exit 1
+          fi
           grep -Fq 'https://dtfseeds.com/games/grower-conversations/' "$route/index.html"
           grep -Fqi 'rel="canonical"' "$route/index.html"
           grep -Fqi 'name="description"' "$route/index.html"
