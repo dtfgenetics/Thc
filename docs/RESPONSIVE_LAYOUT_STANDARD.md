@@ -187,6 +187,7 @@ Minimum dimensions for responsive QA:
 360x800
 390x844
 430x932
+844x390 (landscape phone)
 768x1024
 820x1180
 1024x768
