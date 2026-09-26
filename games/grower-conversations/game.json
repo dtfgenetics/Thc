@@ -25,7 +25,11 @@
     "cardsPerDepth": 32,
     "previewCards": 96,
     "previewCategoriesCount": 8,
-    "previewCardsPerCategory": 12
+    "previewCardsPerCategory": 12,
+    "productionPromptBank": "games/grower-conversations/data/prompt-bank-v2.json",
+    "productionValidator": "node games/grower-conversations/scripts/validate-production-bank.mjs",
+    "productionCards": 200,
+    "productionCardsPerLane": 25
   },
   "browserRuntime": {
     "path": "site/public-route-patch/games/grower-conversations",
@@ -50,10 +54,13 @@
     "editorial-review": false,
     "print-proof": false,
     "production-spec": true,
-    "200-card-production-bank": false,
+    "200-card-production-bank": true,
     "mode-presets": false,
     "keeper-system": false,
-    "interaction-tokens": false
+    "interaction-tokens": false,
+    "production-bank-validator": true,
+    "production-bank-editorial-review": false,
+    "production-bank-playtest-review": false
   },
   "legacyTitle": "Grower Conversations",
   "tagline": "A conversation game for cultivators, breeders, and growers who have stories.",
