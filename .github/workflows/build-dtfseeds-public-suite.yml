@@ -111,6 +111,11 @@ jobs:
           set -euo pipefail
           npm run verify:cultivation-reference-tools
 
+      - name: Validate education visual system
+        run: |
+          set -euo pipefail
+          npm run verify:education-visual-system
+
       - name: Validate self-hosted High IQ
         run: |
           set -euo pipefail
