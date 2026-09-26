@@ -73,6 +73,15 @@ requireMatch(
 );
 
 const docs = read("docs/RESPONSIVE_LAYOUT_STANDARD.md");
+const headerTemplate = read("scripts/lib/sitewide-header-template.mjs");
+const courseUi = read("scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs");
+
+if (/lhv3[\s\S]{0,1500}100vh/.test(headerTemplate)) {
+  failures.push("Course sticky rails must use 100dvh, not 100vh.");
+}
+if (/@media\s*\(max-width:\s*950px\)/.test(courseUi)) {
+  failures.push("Course UI must not reintroduce the legacy 950px collapse breakpoint; use the canonical 900px band.");
+}
 requireMatch(
   docs,
   /360\s*[×x]\s*800/,
