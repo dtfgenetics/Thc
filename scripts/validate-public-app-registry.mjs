@@ -19,6 +19,7 @@ const requiredRepositories = new Set([
   'dtfgenetics/Happy-seed-story-s-',
   'dtfgenetics/all-in-one-thc-grow-',
   'dtfgenetics/thc-grow-hub',
+  'dtfgenetics/Thc-learning-courses-',
   'dtfgenetics/Thc-dataset',
   'dtfgenetics/thc-discord-bot-for-music-',
   'dtfgenetics/thc-music-bot-for-discod',

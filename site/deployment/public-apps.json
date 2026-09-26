@@ -350,6 +350,15 @@
       "notes": "Private source contains the academy/encyclopedia platform, reader, sources library, SOPs, downloads, diagnostic center, glossary, and production-readiness checks. Do not bypass production/readiness.json."
     },
     {
+      "id": "thc-academy-certification",
+      "title": "THC Academy Certification and Learning Hub",
+      "repository": "dtfgenetics/Thc-learning-courses-",
+      "route": "/courses/",
+      "runtime": "wordpress-controlled-publication",
+      "status": "release-gated-content",
+      "notes": "Canonical course, lesson, assessment, practical, learner-tool and credential-rule source. The dtfgenetics/Thc WordPress publishers pin an exact source SHA, publish /courses/, /learn/academy/ and /learn/learning-hub/ descendants, and must preserve fail-closed professional certification gates."
+    },
+    {
       "id": "bud-or-bluff",
       "title": "Bud or Bluff",
       "repository": "dtfgenetics/Thc",
