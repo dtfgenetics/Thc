@@ -69,9 +69,10 @@ for (const item of catalog?.compounds || []) {
   if (!item.formula) errors.push(`Missing molecular formula for ${item.id}`);
 }
 
-if ((catalog?.compounds || []).length < 90) errors.push('Terpene Atlas curated ontology must contain at least 90 evidence-backed named compounds');
+if ((catalog?.compounds || []).length < 120) errors.push('Terpene Atlas curated ontology must contain at least 120 evidence-backed named compounds');
 if (!String(catalog?.status || '').includes('expansion')) errors.push('Catalog must remain explicitly incomplete until full inventories are imported');
 if (catalog?.coverage?.completenessClaim !== false) errors.push('Terpene Atlas must not claim complete global/Cannabis terpene coverage yet');
+if (!String(catalog?.coverage?.referenceInventoryNote || '').includes('120 Cannabis terpenes')) errors.push('Terpene Atlas coverage must document the 120-terpene review reference without claiming exact one-to-one equivalence');
 if (catalog?.coverage?.currentCuratedCompounds !== catalog?.compounds?.length) errors.push('Terpene Atlas coverage count must equal the actual compound count');
 
 if (population?.schemaVersion !== 1) errors.push('population-summary-v1.json must use schemaVersion 1');
@@ -131,4 +132,4 @@ if (errors.length) {
   for (const error of errors) console.error(` - ${error}`);
   process.exit(1);
 }
-console.log(`Terpene Atlas valid: ${catalog.compounds.length} evidence-backed named compounds, ${population.analytes.length} measured population analytes across n=${population.sampleCount}, ${sourceIds.size} registered sources, interactive family wheel, searchable explorer, comparisons, source/public mirror parity, and verified-sample ingestion contract.`);
+console.log(`Terpene Atlas valid: ${catalog.compounds.length} evidence-backed named compounds, 120-record minimum locked, ${population.analytes.length} measured population analytes across n=${population.sampleCount}, ${sourceIds.size} registered sources, interactive family wheel, searchable explorer, comparisons, source/public mirror parity, and verified-sample ingestion contract.`);
