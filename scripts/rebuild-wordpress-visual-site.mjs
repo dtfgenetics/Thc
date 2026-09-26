@@ -220,8 +220,8 @@ function pageStyles() {
   .dtf-callout{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:32px;align-items:center}
   .dtf-callout h2{margin:0 0 14px;font-size:clamp(2rem,4vw,3.4rem);letter-spacing:-.04em}.dtf-callout p{color:#c8d9ce;line-height:1.75}
   .dtf-link-cluster{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.dtf-link-cluster a{padding:8px 12px;border-radius:999px;background:#eef3ea;color:${palette.greenDark}!important;text-decoration:none!important;font-weight:800;font-size:.9rem}
-  @media(max-width:980px){.dtf-hero-grid,.dtf-callout{grid-template-columns:1fr}.dtf-hero-media{max-width:680px}.dtf-quickgrid{grid-template-columns:repeat(3,minmax(0,1fr))}.dtf-grid-4,.dtf-grid-5{grid-template-columns:repeat(2,minmax(0,1fr))}.dtf-grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}.dtf-flow{grid-template-columns:repeat(2,minmax(0,1fr))}.dtf-heading{align-items:flex-start;flex-direction:column}}
-  @media(max-width:640px){.dtf-wrap{width:min(100% - 28px,1220px)}.dtf-section{padding:54px 0}.dtf-hero{padding:56px 0 48px}.dtf-hero h1{font-size:clamp(2.45rem,14vw,4rem)}.dtf-quickbar{margin-top:0;padding-top:14px}.dtf-quickgrid,.dtf-grid-2,.dtf-grid-3,.dtf-grid-4,.dtf-grid-5,.dtf-flow,.dtf-stats{grid-template-columns:1fr}.dtf-actions .dtf-btn{width:100%}.dtf-hero-media:before{display:none}}
+  @media(max-width:900px){.dtf-hero-grid,.dtf-callout{grid-template-columns:1fr}.dtf-hero-media{max-width:680px}.dtf-quickgrid{grid-template-columns:repeat(3,minmax(0,1fr))}.dtf-grid-4,.dtf-grid-5{grid-template-columns:repeat(2,minmax(0,1fr))}.dtf-grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}.dtf-flow{grid-template-columns:repeat(2,minmax(0,1fr))}.dtf-heading{align-items:flex-start;flex-direction:column}}
+  @media(max-width:700px){.dtf-wrap{width:min(100% - 28px,1220px)}.dtf-section{padding:54px 0}.dtf-hero{padding:56px 0 48px}.dtf-hero h1{font-size:clamp(2.45rem,14vw,4rem)}.dtf-quickbar{margin-top:0;padding-top:14px}.dtf-quickgrid,.dtf-grid-2,.dtf-grid-3,.dtf-grid-4,.dtf-grid-5,.dtf-flow,.dtf-stats{grid-template-columns:1fr}.dtf-actions .dtf-btn{width:100%}.dtf-hero-media:before{display:none}}
   </style>`;
 }
 
