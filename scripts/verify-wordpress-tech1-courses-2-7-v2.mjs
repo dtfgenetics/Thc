@@ -107,6 +107,8 @@ for (const entry of config.courses) {
     must(finalHtml.includes('Graded assessment:'), `${entry.id}: course assessment is not routed to the authenticated graded runtime.`);
     must(!finalHtml.includes('Check answer and rationale'), `${entry.id}: summative assessment exposes self-check answer panels.`);
     must(!/<strong>Answer:<\/strong>/i.test(finalHtml), `${entry.id}: summative assessment exposes answer-key content.`);
+    must(finalHtml.includes(`course=${entry.id}`), `${entry.id}: summative assessment must deep-link to its own Academy course.`);
+    must(finalHtml.includes('view=final'), `${entry.id}: summative assessment deep link must target the graded-final view.`);
   }
 
   verified.push({ courseId: entry.id, route: rootRoute, rootPageId: root.id, lessons: 4, anonymousRoot: true, anonymousLessons: 4, sourceRef, governedAssetReferencesVerified: expectedAssets });
