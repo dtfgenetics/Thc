@@ -239,7 +239,7 @@ pre {
   overflow: auto;
 }
 
-@media (max-width:640px) {
+@media (max-width:700px) {
   .game-shell { padding: 12px; }
   .title-card,
   .panel { padding: 20px; }
@@ -248,5 +248,5 @@ pre {
 }
 
 /* DTFSeeds integration navigation */
-.hub-back{position:fixed;z-index:50;top:14px;left:14px;padding:9px 12px;border:1px solid rgba(180,224,190,.38);border-radius:999px;background:rgba(5,16,10,.86);color:#eaf6ec;text-decoration:none;font:800 13px/1 system-ui,sans-serif;backdrop-filter:blur(8px)}
+.hub-back{position:fixed;z-index:50;top:max(14px,env(safe-area-inset-top));left:max(14px,env(safe-area-inset-left));display:inline-flex;align-items:center;min-height:44px;padding:9px 12px;border:1px solid rgba(180,224,190,.38);border-radius:999px;background:rgba(5,16,10,.86);color:#eaf6ec;text-decoration:none;font:800 13px/1 system-ui,sans-serif;backdrop-filter:blur(8px)}
 .hub-back:hover,.hub-back:focus-visible{border-color:#b7e4bf;background:#102c1a;outline:none}
