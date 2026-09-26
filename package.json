@@ -60,6 +60,8 @@
     "verify:asset-states": "node scripts/validate-asset-state-registry.mjs",
     "verify:3d-assets": "node scripts/validate-3d-assets.mjs",
     "verify:project-os": "npm run verify:portfolio && npm run games:locations:check && npm run verify:asset-states && npm run verify:3d-assets",
-    "verify:cultivation-reference-tools": "node scripts/validate-cultivation-reference-tools.mjs"
+    "verify:cultivation-reference-tools": "node scripts/validate-cultivation-reference-tools.mjs",
+    "games:qa:local": "node scripts/game-portfolio-browser-qa.mjs --local",
+    "games:qa:live": "node scripts/game-portfolio-browser-qa.mjs --live"
   }
 }
