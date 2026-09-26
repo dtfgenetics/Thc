@@ -88,7 +88,7 @@ function verifyDocument(source, rel) {
     ['href="/seeds/">Seeds</a>', 'Seeds'],
     ['href="/learn/" data-dtf-nav-group="learn">Learn</a>', 'Learn'],
     ['href="/courses/" data-dtf-nav-group="courses">Courses</a>', 'Courses'],
-    ['href="/tools/" data-dtf-nav-group="diagnostic">Diagnostic</a>', 'Diagnostic'],
+    ['href="/tools/" data-dtf-nav-group="tools">Tools</a>', 'Diagnostic'],
     ['href="/games/">Games</a>', 'Games'],
     ['href="/community/">Community</a>', 'Community'],
     ['href="/shop/" data-dtf-nav-group="shop">Shop</a>', 'Shop'],

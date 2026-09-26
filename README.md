@@ -4,6 +4,8 @@ This repository is the primary monorepo for DTF Genetics browser games, shared g
 
 Production target: **https://dtfseeds.com**
 
+Mandatory product-wide quality guidance: `docs/PRODUCTION_STANDARDS.md`. Production-facing work is not complete until the relevant standards and deterministic verification gates pass.
+
 ## Repository map
 
 - `games/` — canonical source for games owned by this monorepo. Game logic, data, tests, assets manifests, and game-specific documentation belong here.
