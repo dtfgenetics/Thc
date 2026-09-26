@@ -94,6 +94,17 @@
       "notes": "Interactive approximate leaf-VPD calculator and nearby-condition reference table."
     },
     {
+      "id": "ppfd-chart",
+      "title": "PPFD / DLI Tool",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/ppfd-chart",
+      "route": "/ppfd-chart/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "test -s site/public-route-patch/ppfd-chart/index.html",
+      "notes": "Interactive PPFD↔DLI calculator with 3x3 canopy mapping, min/mean/max and min-to-mean uniformity interpretation."
+    },
+    {
       "id": "tds-meter",
       "title": "TDS / EC Meter Reference",
       "repository": "dtfgenetics/Thc",
