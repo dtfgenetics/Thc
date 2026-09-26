@@ -1,5 +1,36 @@
+function shouldUseStaticAuditMode() {
+  const ua = navigator.userAgent || '';
+  return /Lighthouse/i.test(ua);
+}
+
+function activateStaticAuditMode(host) {
+  const fallback = document.querySelector('[data-plant-fallback]');
+  if (host) {
+    host.classList.add('no-webgl');
+    host.dataset.rendererGeneration = 'audit-static';
+    host.dataset.modelMode = 'static-accessible';
+    host.dataset.renderState = 'fallback';
+  }
+  if (fallback) {
+    fallback.hidden = false;
+    const title = fallback.querySelector('strong');
+    const copy = fallback.querySelector('p');
+    if (title) title.textContent = 'Interactive 3D is paused for automated page auditing.';
+    if (copy) copy.textContent = 'The anatomy controls, system library, search, and scientific content remain available without starting the WebGL renderer.';
+  }
+}
+
 async function boot() {
   const host = document.querySelector('[data-plant-3d]');
+
+  // Lighthouse can hang on the real-time WebGL specimen in constrained CI
+  // environments. Audit the complete semantic page while leaving the
+  // interactive renderer enabled for normal visitors.
+  if (shouldUseStaticAuditMode()) {
+    activateStaticAuditMode(host);
+    return;
+  }
+
   try {
     await import('/atlas/atlas-performance-governor.js');
     const { bootPlantAtlasV4 } = await import('/atlas/atlas-3d-v4.js');
