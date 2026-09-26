@@ -91,8 +91,20 @@ const touchTargetFiles = [
 ];
 
 const growLensAccount = read("apps/growlens-web/src/account.css");
+const tech1Courses = read("scripts/publish-wordpress-tech1-courses-2-7-v2.mjs");
+const tech2Courses = read("scripts/publish-wordpress-tech2-courses-1-8.mjs");
+const course1Layout = read("scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs");
 if (!/height:\s*100dvh/.test(growLensAccount) || !/max-height:\s*100dvh/.test(growLensAccount)) {
   failures.push("GrowLens account drawer must remain bounded to the dynamic viewport height.");
+}
+for (const [label, source] of [
+  ["Tech 1 course navigation", tech1Courses],
+  ["Tech 2 course navigation", tech2Courses],
+  ["Course 1 navigation", course1Layout],
+]) {
+  if (/position:\s*fixed/.test(source) && !/safe-area-inset-bottom/.test(source)) {
+    failures.push(`${label} uses fixed mobile navigation without bottom safe-area protection.`);
+  }
 }
 
 const dynamicViewportFiles = [
