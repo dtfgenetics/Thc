@@ -4,7 +4,7 @@ This repository is the primary monorepo for DTF Genetics browser games, shared g
 
 Production target: **https://dtfseeds.com**
 
-Mandatory product-wide quality guidance: `docs/PRODUCTION_STANDARDS.md`. Production-facing work is not complete until the relevant standards and deterministic verification gates pass.
+Mandatory product-wide quality guidance: `docs/PRODUCTION_STANDARDS.md`. Production-facing work is not complete until the relevant standards and deterministic verification gates pass. Implementation conventions live in `docs/SHARED_UI_IMPLEMENTATION_GUIDE.md`.
 
 ## Repository map
 
