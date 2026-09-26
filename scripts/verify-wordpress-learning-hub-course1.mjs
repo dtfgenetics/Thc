@@ -200,7 +200,7 @@ for (const module of local.modules) {
   verifyPage(page, {
     label: `Module ${module.number} learning test`,
     minLength: 1800,
-    required: ['Course mastery target:', 'not the passing standard for the separate secure certification examination', 'dtf-learning-hub-course1-layout-v4'],
+    required: ['Course mastery target:', 'This is a formative learning test.', 'Course learning assessments are separate from the secure certification examination.', 'dtf-learning-hub-course1-layout-v4'],
     questionCount: expectedCount
   });
   publicQuestionCount += expectedCount;
