@@ -316,3 +316,136 @@ source[srcset*="Cannabis_Sex_Expression_and_Chromosome_Combinations"]{display:no
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important}
 }
+
+
+/* Production composition pass v2: reduce card soup and keep primary tasks visually dominant. */
+.v3[data-dtf-layout="learn-v3"] .path{
+  min-height:0!important;
+  padding:24px 0 24px 22px!important;
+  border:0!important;
+  border-left:3px solid rgba(33,108,61,.34)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.v3[data-dtf-layout="learn-v3"] .path-grid{
+  gap:0 34px!important;
+  border-top:1px solid var(--dtf-ux-line)!important;
+  border-bottom:1px solid var(--dtf-ux-line)!important;
+}
+.v3[data-dtf-layout="learn-v3"] .path h3{font-size:clamp(1.25rem,1.8vw,1.55rem)!important}
+.v3[data-dtf-layout="learn-v3"] .path p{max-width:58ch!important}
+.v3[data-dtf-layout="learn-v3"] .reference-desk{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:0!important;
+  border-block:1px solid var(--dtf-ux-line)!important;
+}
+.v3[data-dtf-layout="learn-v3"] .reference-desk a{
+  min-height:0!important;
+  padding:18px!important;
+  border:0!important;
+  border-right:1px solid var(--dtf-ux-line)!important;
+  border-bottom:1px solid var(--dtf-ux-line)!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+}
+
+/* Tools hub: reference launchers are a compact desk, not another hero-sized card wall. */
+body:has(.tool-chooser) .reference-launcher{
+  padding:18px!important;
+  border-radius:18px!important;
+}
+body:has(.tool-chooser) .reference-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:0!important;
+  border-top:1px solid rgba(255,255,255,.12)!important;
+}
+body:has(.tool-chooser) .reference-card{
+  min-height:0!important;
+  padding:18px!important;
+  border:0!important;
+  border-right:1px solid rgba(255,255,255,.1)!important;
+  border-bottom:1px solid rgba(255,255,255,.1)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+body:has(.tool-chooser) .reference-card .ref-icon{margin-bottom:12px!important}
+body:has(.tool-chooser) .tool-feature{min-height:0!important}
+body:has(.tool-chooser) .flow{
+  grid-template-columns:1fr!important;
+  gap:0!important;
+  border-block:1px solid var(--dtf-ux-line)!important;
+}
+body:has(.tool-chooser) .flow>article{
+  display:grid!important;
+  grid-template-columns:52px minmax(160px,.32fr) minmax(0,1fr)!important;
+  gap:18px!important;
+  align-items:start!important;
+  padding:22px 0!important;
+  border:0!important;
+  border-bottom:1px solid var(--dtf-ux-line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+body:has(.tool-chooser) .flow>article:before{margin:0!important}
+body:has(.tool-chooser) .flow>article h3{margin:7px 0 0!important}
+body:has(.tool-chooser) .flow>article p{margin:7px 0 0!important}
+
+/* Current Courses catalog: one strong hero, then editorial sections instead of nested panels. */
+body:has(.dc6) .dc6{padding-top:0!important}
+body:has(.dc6) .dc6-wrap{width:min(var(--dtf-ux-max),calc(100% - clamp(28px,6vw,72px)))!important}
+body:has(.dc6) .dc6-hero{
+  margin-top:0!important;
+  border-radius:0 0 24px 24px!important;
+  box-shadow:none!important;
+}
+body:has(.dc6) .dc6-section{margin-top:clamp(46px,6vw,76px)!important}
+body:has(.dc6) .dc6-credential-group{
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+body:has(.dc6) .dc6-credential-group+.dc6-credential-group{
+  margin-top:28px!important;
+  padding-top:28px!important;
+  border-top:1px solid var(--dtf-ux-line)!important;
+}
+body:has(.dc6) .dc6-disclosure-list{gap:7px!important}
+body:has(.dc6) .dc6-disclosure{
+  border-radius:11px!important;
+  box-shadow:none!important;
+}
+body:has(.dc6) .dc6-surfaces{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:0!important;
+  border-block:1px solid var(--dtf-ux-line)!important;
+}
+body:has(.dc6) .dc6-surface{
+  padding:22px!important;
+  border:0!important;
+  border-right:1px solid var(--dtf-ux-line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+
+@media(max-width:900px){
+  .v3[data-dtf-layout="learn-v3"] .reference-desk,
+  body:has(.tool-chooser) .reference-grid,
+  body:has(.dc6) .dc6-surfaces{grid-template-columns:1fr 1fr!important}
+}
+@media(max-width:700px){
+  .v3[data-dtf-layout="learn-v3"] .path{padding:20px 0!important;border-left:0!important;border-bottom:1px solid var(--dtf-ux-line)!important}
+  .v3[data-dtf-layout="learn-v3"] .reference-desk,
+  body:has(.tool-chooser) .reference-grid,
+  body:has(.dc6) .dc6-surfaces{grid-template-columns:1fr!important}
+  body:has(.tool-chooser) .flow>article{grid-template-columns:44px minmax(0,1fr)!important;gap:12px!important}
+  body:has(.tool-chooser) .flow>article h3,
+  body:has(.tool-chooser) .flow>article p{grid-column:2!important;margin-top:0!important}
+  body:has(.dc6) .dc6-hero{border-radius:0 0 16px 16px!important}
+  body:has(.dc6) .dc6-surface{border-right:0!important;border-bottom:1px solid var(--dtf-ux-line)!important}
+}
