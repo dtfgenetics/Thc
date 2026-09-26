@@ -101,6 +101,18 @@ Certification and testing UI must remain usable under time pressure on phones, t
 - Review/grading is a distinct post-assessment state; it must not depend on the learner checking correctness while taking the exam.
 - Certificate/print controls are secondary to the result state and must not obstruct completion.
 
+
+### Component-specific breakpoint exceptions
+
+The canonical bands govern page composition. A component may use an additional breakpoint only when its own geometry becomes unusable before the page-level breakpoint.
+
+Current examples:
+- Burn Buds targeting/shot-feedback layers may compact at 720px because coordinate labels and the sticky targeting readout become crowded before the 700px page band.
+- Strain Match may use 560px and 390px card-density breakpoints.
+- Other component-specific breakpoints must be documented beside the media query and must not reverse or contradict the shared page composition.
+
+An exception is not permission to introduce a second page-level mobile system. When the rule changes the whole page, primary columns, major navigation, or route composition, use the canonical 900px/700px bands.
+
 ## CSS load-order rule
 
 Before introducing an override, determine the final cascade.
