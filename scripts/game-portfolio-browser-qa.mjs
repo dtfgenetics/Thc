@@ -5,12 +5,15 @@ import { loadGameQaCatalog, readJson, normalizeRoute } from './lib/game-qa-catal
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
+const STATIC_ROOT = path.join(ROOT, 'site/public-route-patch');
+const MAX_ROUTE_ASSETS = 40;
 
 function parseArgs(argv) {
   const args = {
     mode: 'local',
     strict: false,
     catalogOnly: false,
+    allDeployed: false,
     gameIds: [],
     outputDir: process.env.GAME_QA_OUTPUT_DIR || path.join(ROOT, 'artifacts/game-qa'),
     baseUrl: process.env.GAME_QA_BASE_URL || null,
@@ -21,13 +24,14 @@ function parseArgs(argv) {
     else if (arg === '--local') args.mode = 'local';
     else if (arg === '--strict') args.strict = true;
     else if (arg === '--catalog') args.catalogOnly = true;
+    else if (arg === '--all-deployed') args.allDeployed = true;
     else if (arg === '--game') args.gameIds.push(...String(argv[++i] ?? '').split(',').filter(Boolean));
     else if (arg === '--output') args.outputDir = path.resolve(ROOT, argv[++i]);
     else if (arg === '--base-url') args.baseUrl = argv[++i];
     else if (arg === '--no-screenshots') {
-      // Accepted for backward-compatible CLI calls; deterministic QA does not capture screenshots.
+      // Backward-compatible no-op. This verifier is deterministic and does not use Playwright.
     } else if (arg === '--help' || arg === '-h') {
-      console.log('Usage: node scripts/game-portfolio-browser-qa.mjs [--local|--live] [--game id[,id]] [--strict] [--output path] [--base-url URL] [--catalog]');
+      console.log('Usage: node scripts/game-portfolio-browser-qa.mjs [--local|--live] [--all-deployed] [--game id[,id]] [--strict] [--output path] [--base-url URL] [--catalog]');
       process.exit(0);
     } else {
       throw new Error(`Unknown argument: ${arg}`);
@@ -66,23 +70,97 @@ function simpleSelectorPresent(html, selector) {
   const value = String(selector || '').trim();
   if (/^#[A-Za-z][\w:-]*$/.test(value)) {
     const id = value.slice(1).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return new RegExp(`\\bid\\s*=\\s*['\"]${id}['\"]`, 'i').test(html);
+    return new RegExp(`\\bid\\s*=\\s*['"]${id}['"]`, 'i').test(html);
   }
   if (/^\.[A-Za-z][\w:-]*$/.test(value)) {
     const className = value.slice(1).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return new RegExp(`\\bclass\\s*=\\s*['\"][^'\"]*\\b${className}\\b[^'\"]*['\"]`, 'i').test(html);
+    return new RegExp(`\\bclass\\s*=\\s*['"][^'"]*\\b${className}\\b[^'"]*['"]`, 'i').test(html);
   }
   if (/^[A-Za-z][\w-]*$/.test(value)) return new RegExp(`<${value}(?:\\s|>)`, 'i').test(html);
   return null;
 }
 
+function countToken(html, token) {
+  return html.split(token).length - 1;
+}
+
+function collectRouteAssetRefs(html) {
+  const refs = new Set();
+  for (const match of html.matchAll(/<script\b[^>]*\bsrc\s*=\s*["']([^"']+)["'][^>]*>/gi)) {
+    refs.add(match[1]);
+  }
+  for (const match of html.matchAll(/<link\b([^>]*?)\bhref\s*=\s*["']([^"']+)["']([^>]*)>/gi)) {
+    const attrs = `${match[1]} ${match[3]}`;
+    if (/\brel\s*=\s*["'][^"']*(?:stylesheet|modulepreload|preload)[^"']*["']/i.test(attrs)) refs.add(match[2]);
+  }
+  return [...refs];
+}
+
+function resolveRouteAsset(rawRef, route, baseUrl) {
+  if (!rawRef || /^(?:data:|blob:|javascript:|mailto:|tel:|#)/i.test(rawRef)) return null;
+  let resolved;
+  try {
+    resolved = new URL(rawRef, baseUrl);
+  } catch {
+    return null;
+  }
+  const base = new URL(baseUrl);
+  if (resolved.origin !== base.origin) return null;
+  const routePath = normalizeRoute(route);
+  if (!resolved.pathname.startsWith(routePath)) return null;
+  return resolved;
+}
+
+function localAssetAudit(game, html) {
+  const failures = [];
+  const warnings = [];
+  const refs = collectRouteAssetRefs(html);
+  const baseUrl = `https://dtf.local${normalizeRoute(game.route)}`;
+  const owned = refs
+    .map((ref) => ({ ref, url: resolveRouteAsset(ref, game.route, baseUrl) }))
+    .filter((item) => item.url);
+
+  for (const item of owned.slice(0, MAX_ROUTE_ASSETS)) {
+    const localPath = path.join(STATIC_ROOT, item.url.pathname.replace(/^\/+/, ''));
+    if (!fs.existsSync(localPath)) failures.push(`route-owned asset missing: ${item.ref}`);
+  }
+  if (owned.length > MAX_ROUTE_ASSETS) warnings.push(`route asset audit capped at ${MAX_ROUTE_ASSETS} of ${owned.length} assets`);
+  return { failures, warnings, checked: Math.min(owned.length, MAX_ROUTE_ASSETS) };
+}
+
+async function liveAssetAudit(game, html, finalUrl, timeoutMs) {
+  const failures = [];
+  const warnings = [];
+  const refs = collectRouteAssetRefs(html);
+  const owned = refs
+    .map((ref) => ({ ref, url: resolveRouteAsset(ref, game.route, finalUrl) }))
+    .filter((item) => item.url);
+
+  for (const item of owned.slice(0, MAX_ROUTE_ASSETS)) {
+    try {
+      const response = await fetch(item.url, {
+        headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Pragma: 'no-cache' },
+        redirect: 'follow',
+        signal: AbortSignal.timeout(timeoutMs),
+      });
+      if (response.status >= 400) failures.push(`route-owned asset HTTP ${response.status}: ${item.ref}`);
+      try { await response.body?.cancel(); } catch {}
+    } catch (error) {
+      failures.push(`route-owned asset request failed: ${item.ref} (${error.message})`);
+    }
+  }
+  if (owned.length > MAX_ROUTE_ASSETS) warnings.push(`route asset audit capped at ${MAX_ROUTE_ASSETS} of ${owned.length} assets`);
+  return { failures, warnings, checked: Math.min(owned.length, MAX_ROUTE_ASSETS) };
+}
+
 async function readLocalGame(game) {
-  const staticRoot = path.join(ROOT, 'site/public-route-patch');
   const route = normalizeRoute(game.route);
   const relative = route.replace(/^\/+/, '').replace(/\/$/, '');
-  const indexPath = path.join(staticRoot, relative, 'index.html');
+  const indexPath = path.join(STATIC_ROOT, relative, 'index.html');
   if (!fs.existsSync(indexPath)) return { skipped: true, reason: `no checked-in local index for ${route}` };
-  return { html: fs.readFileSync(indexPath, 'utf8'), url: `file://${indexPath}`, status: 200 };
+  const html = fs.readFileSync(indexPath, 'utf8');
+  const assets = localAssetAudit(game, html);
+  return { html, url: `file://${indexPath}`, status: 200, assetFailures: assets.failures, assetWarnings: assets.warnings, assetsChecked: assets.checked };
 }
 
 async function readLiveGame(game, baseUrl, timeoutMs) {
@@ -93,12 +171,21 @@ async function readLiveGame(game, baseUrl, timeoutMs) {
     signal: AbortSignal.timeout(timeoutMs),
   });
   const html = await response.text();
-  return { html, url: response.url, status: response.status, contentType: response.headers.get('content-type') || '' };
+  const assets = await liveAssetAudit(game, html, response.url, timeoutMs);
+  return {
+    html,
+    url: response.url,
+    status: response.status,
+    contentType: response.headers.get('content-type') || '',
+    assetFailures: assets.failures,
+    assetWarnings: assets.warnings,
+    assetsChecked: assets.checked,
+  };
 }
 
-function evaluateHtml({ game, html, status, finalUrl, contract, mode }) {
-  const failures = [];
-  const warnings = [];
+function evaluateHtml({ game, html, status, finalUrl, contract, mode, assetFailures = [], assetWarnings = [], assetsChecked = 0 }) {
+  const failures = [...assetFailures];
+  const warnings = [...assetWarnings];
   if (status >= 400) failures.push(`HTTP ${status}`);
   if (!/<html\b|<!doctype html/i.test(html)) failures.push('response is not an HTML document');
   const title = titleFromHtml(html);
@@ -113,6 +200,7 @@ function evaluateHtml({ game, html, status, finalUrl, contract, mode }) {
     if (present === false) failures.push(`required selector missing: ${selector}`);
     else if (present === null) warnings.push(`selector requires rendered-DOM review: ${selector}`);
   }
+
   if (mode === 'live') {
     try {
       const pagePath = normalizeRoute(new URL(finalUrl).pathname);
@@ -120,7 +208,18 @@ function evaluateHtml({ game, html, status, finalUrl, contract, mode }) {
     } catch (error) {
       failures.push(`invalid final URL: ${error.message}`);
     }
+
+    if (contract.requireCanonicalShellLive !== false) {
+      for (const marker of [
+        'data-dtf-shell="header-v6"',
+        'data-dtf-sitewide-header="canonical-eight-v1"',
+      ]) {
+        const count = countToken(html, marker);
+        if (count !== 1) failures.push(`expected exactly one live shell marker ${marker}; found ${count}`);
+      }
+    }
   }
+
   return {
     id: game.id,
     title: game.title,
@@ -130,17 +229,19 @@ function evaluateHtml({ game, html, status, finalUrl, contract, mode }) {
     warnings,
     documentTitle: title,
     bodyTextLength: bodyText.length,
+    routeAssetsChecked: assetsChecked,
   };
 }
 
-function writeReports({ outputDir, mode, catalogWarnings, results, skipped, baseUrl }) {
+function writeReports({ outputDir, mode, catalogWarnings, results, skipped, baseUrl, allDeployed }) {
   fs.mkdirSync(outputDir, { recursive: true });
   const summary = {
-    schemaVersion: 2,
+    schemaVersion: 3,
     generatedAt: new Date().toISOString(),
     mode,
-    verifier: 'deterministic-static-and-http',
+    verifier: 'deterministic-static-http-and-route-assets',
     baseUrl,
+    allDeployed,
     catalogWarnings,
     skipped,
     totals: {
@@ -158,17 +259,18 @@ function writeReports({ outputDir, mode, catalogWarnings, results, skipped, base
     `- Generated: ${summary.generatedAt}`,
     `- Mode: ${mode}`,
     `- Base URL: ${baseUrl}`,
+    `- All deployed routes: ${allDeployed ? 'yes' : 'no'}`,
     `- PASS: ${summary.totals.pass}`,
     `- WARN: ${summary.totals.warn}`,
     `- FAIL: ${summary.totals.fail}`,
     `- SKIPPED: ${summary.totals.skipped}`,
     '',
-    '| Game | Status | Findings |',
-    '| --- | --- | --- |',
+    '| Game | Status | Route assets | Findings |',
+    '| --- | --- | ---: | --- |',
   ];
   for (const result of results) {
     const findings = [...result.failures, ...result.warnings].join(' / ').replace(/\|/g, '\\|') || 'none';
-    lines.push(`| ${result.title} (${result.id}) | ${result.status} | ${findings} |`);
+    lines.push(`| ${result.title} (${result.id}) | ${result.status} | ${result.routeAssetsChecked ?? 0} | ${findings} |`);
   }
   if (skipped.length) {
     lines.push('', '## Skipped');
@@ -181,10 +283,28 @@ function writeReports({ outputDir, mode, catalogWarnings, results, skipped, base
   fs.writeFileSync(path.join(outputDir, 'summary.md'), `${lines.join('\n')}\n`);
 }
 
+function deployedOnlyAsGame(app) {
+  return {
+    id: app.id,
+    title: app.title || app.id,
+    route: normalizeRoute(app.route),
+    canonicalRepository: app.repository ?? null,
+    canonicalSourcePaths: [],
+    canonicalSourceOfTruth: null,
+    integrationMode: 'deployment-only',
+    integrationPath: app.sourcePath ?? null,
+    localIndex: null,
+    localStaticAvailable: false,
+    deployment: app,
+  };
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const catalogState = loadGameQaCatalog(ROOT);
-  let games = catalogState.catalog;
+  let games = [...catalogState.catalog];
+  if (args.allDeployed) games.push(...catalogState.deploymentOnly.map(deployedOnlyAsGame));
+
   if (args.gameIds.length) {
     const requested = new Set(args.gameIds);
     games = games.filter((game) => requested.has(game.id));
@@ -194,7 +314,12 @@ async function main() {
   }
 
   if (args.catalogOnly) {
-    console.log(JSON.stringify({ site: catalogState.site, warnings: catalogState.warnings, games }, null, 2));
+    console.log(JSON.stringify({
+      site: catalogState.site,
+      warnings: catalogState.warnings,
+      games,
+      deploymentOnly: catalogState.deploymentOnly,
+    }, null, 2));
     return;
   }
 
@@ -221,16 +346,27 @@ async function main() {
         finalUrl: source.url,
         contract,
         mode: args.mode,
+        assetFailures: source.assetFailures,
+        assetWarnings: source.assetWarnings,
+        assetsChecked: source.assetsChecked,
       }));
     } catch (error) {
-      results.push({ id: game.id, title: game.title, route: game.route, status: 'FAIL', failures: [error.message], warnings: [] });
+      results.push({ id: game.id, title: game.title, route: game.route, status: 'FAIL', failures: [error.message], warnings: [], routeAssetsChecked: 0 });
     }
   }
 
-  writeReports({ outputDir, mode: args.mode, catalogWarnings: catalogState.warnings, results, skipped, baseUrl });
+  writeReports({
+    outputDir,
+    mode: args.mode,
+    catalogWarnings: catalogState.warnings,
+    results,
+    skipped,
+    baseUrl,
+    allDeployed: args.allDeployed,
+  });
   const failed = results.filter((item) => item.status === 'FAIL');
   const warned = results.filter((item) => item.status === 'WARN');
-  console.log(`[game-qa] mode=${args.mode} PASS=${results.length - failed.length - warned.length} WARN=${warned.length} FAIL=${failed.length} SKIP=${skipped.length}`);
+  console.log(`[game-qa] mode=${args.mode} ALL_DEPLOYED=${args.allDeployed ? 'yes' : 'no'} PASS=${results.length - failed.length - warned.length} WARN=${warned.length} FAIL=${failed.length} SKIP=${skipped.length}`);
   if (failed.length || (args.strict && warned.length)) process.exitCode = 1;
 }
 
