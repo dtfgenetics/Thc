@@ -1,0 +1,1662 @@
+{
+  "schemaVersion": 2,
+  "version": "2.0.0-draft.1",
+  "title": "Grow Room Confessions",
+  "tagline": "A conversation game for cultivators, breeders, and growers who have stories.",
+  "cardCount": 200,
+  "visibleCardIds": false,
+  "lanes": [
+    {
+      "id": "confessions",
+      "name": "Confessions",
+      "count": 25
+    },
+    {
+      "id": "hot_takes",
+      "name": "Hot Takes",
+      "count": 25
+    },
+    {
+      "id": "would_you_rather",
+      "name": "Would You Rather",
+      "count": 25
+    },
+    {
+      "id": "debates",
+      "name": "Grow Room Debates",
+      "count": 25
+    },
+    {
+      "id": "psychology",
+      "name": "Grower Psychology",
+      "count": 25
+    },
+    {
+      "id": "call_your_shot",
+      "name": "Call Your Shot",
+      "count": 25
+    },
+    {
+      "id": "strain_talk",
+      "name": "Strain Talk",
+      "count": 25
+    },
+    {
+      "id": "wild_cards",
+      "name": "Wild Cards",
+      "count": 25
+    }
+  ],
+  "intensities": [
+    "chill",
+    "real",
+    "deep"
+  ],
+  "interactionTokens": [
+    "go-deeper",
+    "call-it-out",
+    "respect"
+  ],
+  "cards": [
+    {
+      "id": "grc-confessions-01",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "chill",
+      "cardType": "confession",
+      "prompt": "What is the smallest grow-room mistake that somehow caused the biggest headache?"
+    },
+    {
+      "id": "grc-confessions-02",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "chill",
+      "cardType": "story-required",
+      "prompt": "What is a grow habit you learned the hard way and now do automatically?"
+    },
+    {
+      "id": "grc-confessions-03",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "chill",
+      "cardType": "confession",
+      "prompt": "What is the funniest thing you have done because you were convinced a plant was in trouble?"
+    },
+    {
+      "id": "grc-confessions-04",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "chill",
+      "cardType": "story-required",
+      "prompt": "What piece of gear did you buy too early, barely use, or later realize you never needed?"
+    },
+    {
+      "id": "grc-confessions-05",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "chill",
+      "cardType": "confession",
+      "prompt": "What grow-room task do you procrastinate on even though you know better?"
+    },
+    {
+      "id": "grc-confessions-06",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "chill",
+      "cardType": "story-required",
+      "prompt": "What is the most ridiculous reason a grow session took longer than it should have?"
+    },
+    {
+      "id": "grc-confessions-07",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "chill",
+      "cardType": "confession",
+      "prompt": "What is one beginner belief you can laugh about now?"
+    },
+    {
+      "id": "grc-confessions-08",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "chill",
+      "cardType": "story-required",
+      "prompt": "Tell the story of a plant you underestimated that ended up surprising you."
+    },
+    {
+      "id": "grc-confessions-09",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "real",
+      "cardType": "confession",
+      "prompt": "What mistake did you repeat more than once before you finally changed your process?"
+    },
+    {
+      "id": "grc-confessions-10",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "real",
+      "cardType": "confession",
+      "prompt": "When have you blamed genetics before admitting the problem was probably your own decision?"
+    },
+    {
+      "id": "grc-confessions-11",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "real",
+      "cardType": "story-required",
+      "prompt": "What grow failure taught you something that a successful run never could have?"
+    },
+    {
+      "id": "grc-confessions-12",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "real",
+      "cardType": "confession",
+      "prompt": "What is a shortcut you took once and immediately decided was not worth repeating?"
+    },
+    {
+      "id": "grc-confessions-13",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "real",
+      "cardType": "story-required",
+      "prompt": "Tell the story of a plant you almost gave up on but kept anyway."
+    },
+    {
+      "id": "grc-confessions-14",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "real",
+      "cardType": "confession",
+      "prompt": "What part of your grow have you pretended to understand better than you actually did?"
+    },
+    {
+      "id": "grc-confessions-15",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "real",
+      "cardType": "story-required",
+      "prompt": "What is the most expensive lesson you have learned from a preventable mistake?"
+    },
+    {
+      "id": "grc-confessions-16",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "real",
+      "cardType": "confession",
+      "prompt": "When have you changed too many things at once and made troubleshooting harder?"
+    },
+    {
+      "id": "grc-confessions-17",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "real",
+      "cardType": "story-required",
+      "prompt": "What is a grow-room decision you defended at the time but would make differently now?"
+    },
+    {
+      "id": "grc-confessions-18",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "deep",
+      "cardType": "confession",
+      "prompt": "What mistake changed the way you think about yourself as a grower?"
+    },
+    {
+      "id": "grc-confessions-19",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "deep",
+      "cardType": "story-required",
+      "prompt": "Tell the story of a grow that seriously tested your patience or confidence."
+    },
+    {
+      "id": "grc-confessions-20",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "deep",
+      "cardType": "confession",
+      "prompt": "What is something you still struggle with even though other growers assume you have it mastered?"
+    },
+    {
+      "id": "grc-confessions-21",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "deep",
+      "cardType": "confession",
+      "prompt": "When has ego made it harder for you to accept that your first diagnosis was wrong?"
+    },
+    {
+      "id": "grc-confessions-22",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "deep",
+      "cardType": "story-required",
+      "prompt": "What failure made you rebuild part of your entire process instead of applying another quick fix?"
+    },
+    {
+      "id": "grc-confessions-23",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "deep",
+      "cardType": "confession",
+      "prompt": "What grow-room habit are you most afraid of becoming complacent about?"
+    },
+    {
+      "id": "grc-confessions-24",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "deep",
+      "cardType": "story-required",
+      "prompt": "What is one decision you regret because you ignored your own observations and followed someone else's advice?"
+    },
+    {
+      "id": "grc-confessions-25",
+      "lane": "confessions",
+      "laneLabel": "Confessions",
+      "intensity": "deep",
+      "cardType": "confession",
+      "prompt": "What truth about your own growing style took you the longest to admit?"
+    },
+    {
+      "id": "grc-hot-takes-01",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "chill",
+      "cardType": "hot-take",
+      "prompt": "What grow-room upgrade is the most overrated for the average home grower?"
+    },
+    {
+      "id": "grc-hot-takes-02",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "chill",
+      "cardType": "hot-take",
+      "prompt": "Which matters more for a memorable grow: perfect numbers or a grower who pays close attention?"
+    },
+    {
+      "id": "grc-hot-takes-03",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "chill",
+      "cardType": "hot-take",
+      "prompt": "What piece of common grow advice gets repeated far more confidently than it deserves?"
+    },
+    {
+      "id": "grc-hot-takes-04",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "chill",
+      "cardType": "hot-take",
+      "prompt": "Are beautiful plants sometimes overrated compared with consistent plants? Defend your answer."
+    },
+    {
+      "id": "grc-hot-takes-05",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "chill",
+      "cardType": "hot-take",
+      "prompt": "Is keeping detailed grow notes worth the effort for every grower?"
+    },
+    {
+      "id": "grc-hot-takes-06",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "chill",
+      "cardType": "hot-take",
+      "prompt": "What cultivation trend do you think people care about mostly because other growers care about it?"
+    },
+    {
+      "id": "grc-hot-takes-07",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "chill",
+      "cardType": "hot-take",
+      "prompt": "Should beginners spend more time learning plant observation before buying more equipment?"
+    },
+    {
+      "id": "grc-hot-takes-08",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "chill",
+      "cardType": "hot-take",
+      "prompt": "Is a simple grow executed well more impressive than a highly automated grow?"
+    },
+    {
+      "id": "grc-hot-takes-09",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "real",
+      "cardType": "hot-take",
+      "prompt": "Do growers rely too much on brand loyalty when choosing nutrients, media, or equipment?"
+    },
+    {
+      "id": "grc-hot-takes-10",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "real",
+      "cardType": "hot-take",
+      "prompt": "Does chasing maximum yield usually make a grow less interesting?"
+    },
+    {
+      "id": "grc-hot-takes-11",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "real",
+      "cardType": "hot-take",
+      "prompt": "Are most grow-room arguments really disagreements about priorities rather than facts?"
+    },
+    {
+      "id": "grc-hot-takes-12",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "real",
+      "cardType": "hot-take",
+      "prompt": "Should a breeder prioritize repeatability over rare standout phenotypes?"
+    },
+    {
+      "id": "grc-hot-takes-13",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "real",
+      "cardType": "hot-take",
+      "prompt": "Is 'listen to the plant' useful advice, or is it too vague to help newer growers?"
+    },
+    {
+      "id": "grc-hot-takes-14",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "real",
+      "cardType": "hot-take",
+      "prompt": "Do too many growers change successful routines because they are bored rather than because the plants need it?"
+    },
+    {
+      "id": "grc-hot-takes-15",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "real",
+      "cardType": "hot-take",
+      "prompt": "Is bag appeal given too much weight compared with aroma, structure, or repeatability?"
+    },
+    {
+      "id": "grc-hot-takes-16",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "real",
+      "cardType": "hot-take",
+      "prompt": "Should a grower be willing to remove a favorite plant if the line does not meet the breeding goal?"
+    },
+    {
+      "id": "grc-hot-takes-17",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "real",
+      "cardType": "hot-take",
+      "prompt": "Is experience sometimes used as an excuse to avoid measuring and documenting?"
+    },
+    {
+      "id": "grc-hot-takes-18",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "deep",
+      "cardType": "hot-take",
+      "prompt": "Can a grower become less effective by becoming too attached to one method that once worked well?"
+    },
+    {
+      "id": "grc-hot-takes-19",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "deep",
+      "cardType": "hot-take",
+      "prompt": "Does cultivation culture reward confidence more than accuracy when people give advice?"
+    },
+    {
+      "id": "grc-hot-takes-20",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "deep",
+      "cardType": "hot-take",
+      "prompt": "Should growers publicly admit failed runs as often as they show successful ones?"
+    },
+    {
+      "id": "grc-hot-takes-21",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "deep",
+      "cardType": "hot-take",
+      "prompt": "Is 'dialed in' often a misleading phrase because the environment, genetics, and goals keep changing?"
+    },
+    {
+      "id": "grc-hot-takes-22",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "deep",
+      "cardType": "hot-take",
+      "prompt": "When does optimization stop improving the grow and start making the grower less adaptable?"
+    },
+    {
+      "id": "grc-hot-takes-23",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "deep",
+      "cardType": "hot-take",
+      "prompt": "Is preserving genetic diversity more valuable than aggressively narrowing a line toward one ideal phenotype?"
+    },
+    {
+      "id": "grc-hot-takes-24",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "deep",
+      "cardType": "hot-take",
+      "prompt": "Do grow communities sometimes mistake popularity for evidence?"
+    },
+    {
+      "id": "grc-hot-takes-25",
+      "lane": "hot_takes",
+      "laneLabel": "Hot Takes",
+      "intensity": "deep",
+      "cardType": "hot-take",
+      "prompt": "Is the best grower the person with the best results, or the person who can explain why those results happened?"
+    },
+    {
+      "id": "grc-would-you-rather-01",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "chill",
+      "cardType": "choose-one",
+      "prompt": "Would you rather grow one proven favorite for a year or a different unknown cultivar every run?"
+    },
+    {
+      "id": "grc-would-you-rather-02",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "chill",
+      "cardType": "choose-one",
+      "prompt": "Would you rather have perfect environmental control or unlimited access to interesting genetics?"
+    },
+    {
+      "id": "grc-would-you-rather-03",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "chill",
+      "cardType": "choose-one",
+      "prompt": "Would you rather give up automation or give up most of your grow-room gadgets?"
+    },
+    {
+      "id": "grc-would-you-rather-04",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "chill",
+      "cardType": "choose-one",
+      "prompt": "Would you rather keep a plant with incredible aroma and average structure or great structure and average aroma?"
+    },
+    {
+      "id": "grc-would-you-rather-05",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "chill",
+      "cardType": "choose-one",
+      "prompt": "Would you rather run a small canopy perfectly or a larger canopy that is harder to manage?"
+    },
+    {
+      "id": "grc-would-you-rather-06",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "chill",
+      "cardType": "choose-one",
+      "prompt": "Would you rather repeat your best grow exactly or change one major variable just to learn from it?"
+    },
+    {
+      "id": "grc-would-you-rather-07",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "chill",
+      "cardType": "choose-one",
+      "prompt": "Would you rather have a grow room that is easy to clean or one that is easy to expand?"
+    },
+    {
+      "id": "grc-would-you-rather-08",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "chill",
+      "cardType": "choose-one",
+      "prompt": "Would you rather know the full pedigree of a plant or discover it completely blind?"
+    },
+    {
+      "id": "grc-would-you-rather-09",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "real",
+      "cardType": "choose-one",
+      "prompt": "Would you rather keep a rare standout phenotype that is difficult to work with or an easy plant that is less unique?"
+    },
+    {
+      "id": "grc-would-you-rather-10",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "real",
+      "cardType": "choose-one",
+      "prompt": "Would you rather lose a little yield to improve consistency or accept more variability for a chance at exceptional results?"
+    },
+    {
+      "id": "grc-would-you-rather-11",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "real",
+      "cardType": "choose-one",
+      "prompt": "Would you rather trust your historical grow data or your current visual read when they seem to disagree?"
+    },
+    {
+      "id": "grc-would-you-rather-12",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "real",
+      "cardType": "choose-one",
+      "prompt": "Would you rather make one large correction or several small corrections when a grow begins drifting?"
+    },
+    {
+      "id": "grc-would-you-rather-13",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "real",
+      "cardType": "choose-one",
+      "prompt": "Would you rather select a breeder plant for one exceptional trait or for being strong across every category?"
+    },
+    {
+      "id": "grc-would-you-rather-14",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "real",
+      "cardType": "choose-one",
+      "prompt": "Would you rather document everything and move slower or document less and move faster?"
+    },
+    {
+      "id": "grc-would-you-rather-15",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "real",
+      "cardType": "choose-one",
+      "prompt": "Would you rather be known for one elite line or for many interesting experimental crosses?"
+    },
+    {
+      "id": "grc-would-you-rather-16",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "real",
+      "cardType": "choose-one",
+      "prompt": "Would you rather have an automated system you cannot fully explain or a manual system you understand completely?"
+    },
+    {
+      "id": "grc-would-you-rather-17",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "real",
+      "cardType": "choose-one",
+      "prompt": "Would you rather preserve an old favorite exactly as it is or remake it with modern selection pressure?"
+    },
+    {
+      "id": "grc-would-you-rather-18",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "deep",
+      "cardType": "choose-one",
+      "prompt": "Would you rather abandon a year-long project that no longer fits the goal or finish it because of the time already invested?"
+    },
+    {
+      "id": "grc-would-you-rather-19",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "deep",
+      "cardType": "choose-one",
+      "prompt": "Would you rather choose the plant that best matches your written criteria or the plant you personally love most?"
+    },
+    {
+      "id": "grc-would-you-rather-20",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "deep",
+      "cardType": "choose-one",
+      "prompt": "Would you rather share an unfinished idea early for community feedback or protect it until you have stronger evidence?"
+    },
+    {
+      "id": "grc-would-you-rather-21",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "deep",
+      "cardType": "choose-one",
+      "prompt": "Would you rather lose a favorite clone or lose all the notes explaining why you selected it?"
+    },
+    {
+      "id": "grc-would-you-rather-22",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "deep",
+      "cardType": "choose-one",
+      "prompt": "Would you rather optimize for reliable results across environments or exceptional results in one controlled environment?"
+    },
+    {
+      "id": "grc-would-you-rather-23",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "deep",
+      "cardType": "choose-one",
+      "prompt": "Would you rather prove your favorite cultivation belief wrong or discover that your best results came mostly from luck?"
+    },
+    {
+      "id": "grc-would-you-rather-24",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "deep",
+      "cardType": "choose-one",
+      "prompt": "Would you rather breed toward what the market currently rewards or toward traits you think will matter five years from now?"
+    },
+    {
+      "id": "grc-would-you-rather-25",
+      "lane": "would_you_rather",
+      "laneLabel": "Would You Rather",
+      "intensity": "deep",
+      "cardType": "choose-one",
+      "prompt": "Would you rather have complete data with average plants or extraordinary plants with incomplete records?"
+    },
+    {
+      "id": "grc-debates-01",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "chill",
+      "cardType": "debate",
+      "prompt": "Which improves a grower faster: repeating the same setup or deliberately changing variables between runs?"
+    },
+    {
+      "id": "grc-debates-02",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "chill",
+      "cardType": "debate",
+      "prompt": "What deserves more attention from beginners: the root zone or the canopy?"
+    },
+    {
+      "id": "grc-debates-03",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "chill",
+      "cardType": "debate",
+      "prompt": "Is it better to simplify a grow until it is predictable or add tools until it is measurable?"
+    },
+    {
+      "id": "grc-debates-04",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "chill",
+      "cardType": "debate",
+      "prompt": "Which teaches more: growing one cultivar repeatedly or running several cultivars side by side?"
+    },
+    {
+      "id": "grc-debates-05",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "chill",
+      "cardType": "debate",
+      "prompt": "Should grow-room decisions start with measurements or with direct plant observation?"
+    },
+    {
+      "id": "grc-debates-06",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "chill",
+      "cardType": "debate",
+      "prompt": "Which matters more in a shared grow space: standardized process or individual grower judgment?"
+    },
+    {
+      "id": "grc-debates-07",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "chill",
+      "cardType": "debate",
+      "prompt": "Is consistency more valuable than experimentation during a grower's first few cycles?"
+    },
+    {
+      "id": "grc-debates-08",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "chill",
+      "cardType": "debate",
+      "prompt": "Should a grower upgrade equipment before fixing workflow problems?"
+    },
+    {
+      "id": "grc-debates-09",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "real",
+      "cardType": "debate",
+      "prompt": "When measurements and plant appearance disagree, which should get the benefit of the doubt first?"
+    },
+    {
+      "id": "grc-debates-10",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "real",
+      "cardType": "debate",
+      "prompt": "Should selection decisions be made blind to plant identity when possible to reduce bias?"
+    },
+    {
+      "id": "grc-debates-11",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "real",
+      "cardType": "debate",
+      "prompt": "Is one controlled comparison more useful than dozens of casual observations?"
+    },
+    {
+      "id": "grc-debates-12",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "real",
+      "cardType": "debate",
+      "prompt": "Should breeders remove mediocre plants early or keep more plants longer to avoid missing late traits?"
+    },
+    {
+      "id": "grc-debates-13",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "real",
+      "cardType": "debate",
+      "prompt": "Is environmental uniformity always desirable, or can useful information come from testing plants across slightly different conditions?"
+    },
+    {
+      "id": "grc-debates-14",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "real",
+      "cardType": "debate",
+      "prompt": "Should a grower keep changing a weak plant's environment to help it, or let the plant reveal its limitations?"
+    },
+    {
+      "id": "grc-debates-15",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "real",
+      "cardType": "debate",
+      "prompt": "Is a stable average performer more useful in breeding than an unstable standout?"
+    },
+    {
+      "id": "grc-debates-16",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "real",
+      "cardType": "debate",
+      "prompt": "Should grow communities prioritize practical experience reports or tightly controlled evidence when the two conflict?"
+    },
+    {
+      "id": "grc-debates-17",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "real",
+      "cardType": "debate",
+      "prompt": "Is it better to design a grow around the genetics or choose genetics that fit the existing grow?"
+    },
+    {
+      "id": "grc-debates-18",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "deep",
+      "cardType": "debate",
+      "prompt": "How much evidence should be required before a grower turns a personal success into advice for other people?"
+    },
+    {
+      "id": "grc-debates-19",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "deep",
+      "cardType": "debate",
+      "prompt": "Should a breeding project have a fixed endpoint, or should the target evolve as better phenotypes appear?"
+    },
+    {
+      "id": "grc-debates-20",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "deep",
+      "cardType": "debate",
+      "prompt": "Is eliminating variability a sign of progress, or can too much uniformity erase useful traits?"
+    },
+    {
+      "id": "grc-debates-21",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "deep",
+      "cardType": "debate",
+      "prompt": "When should a grower trust accumulated experience over a new piece of data that challenges it?"
+    },
+    {
+      "id": "grc-debates-22",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "deep",
+      "cardType": "debate",
+      "prompt": "Should selection reward resilience under imperfect conditions or maximum performance under ideal conditions?"
+    },
+    {
+      "id": "grc-debates-23",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "deep",
+      "cardType": "debate",
+      "prompt": "Does automation make growers better observers by freeing attention, or worse observers by reducing hands-on contact?"
+    },
+    {
+      "id": "grc-debates-24",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "deep",
+      "cardType": "debate",
+      "prompt": "Should the person who grew the plants be allowed to make the final selection, or should outside evaluators have equal influence?"
+    },
+    {
+      "id": "grc-debates-25",
+      "lane": "debates",
+      "laneLabel": "Grow Room Debates",
+      "intensity": "deep",
+      "cardType": "debate",
+      "prompt": "What matters more when teaching cultivation: giving a repeatable procedure or teaching someone how to reason when the procedure stops working?"
+    },
+    {
+      "id": "grc-psychology-01",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "chill",
+      "cardType": "psychology",
+      "prompt": "What grow-room task puts you into the best flow state?"
+    },
+    {
+      "id": "grc-psychology-02",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "chill",
+      "cardType": "psychology",
+      "prompt": "Which part of a grow makes you most impatient?"
+    },
+    {
+      "id": "grc-psychology-03",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "chill",
+      "cardType": "psychology",
+      "prompt": "What kind of plant problem is most likely to make you overthink?"
+    },
+    {
+      "id": "grc-psychology-04",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "chill",
+      "cardType": "psychology",
+      "prompt": "Are you naturally more likely to change something too quickly or wait too long?"
+    },
+    {
+      "id": "grc-psychology-05",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "chill",
+      "cardType": "psychology",
+      "prompt": "What part of growing gives you the strongest feeling of progress?"
+    },
+    {
+      "id": "grc-psychology-06",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "chill",
+      "cardType": "psychology",
+      "prompt": "Do you enjoy the planning stage or the hands-on stage more, and why?"
+    },
+    {
+      "id": "grc-psychology-07",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "chill",
+      "cardType": "psychology",
+      "prompt": "What grow-room ritual helps you slow down and actually observe?"
+    },
+    {
+      "id": "grc-psychology-08",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "chill",
+      "cardType": "psychology",
+      "prompt": "Which is harder for you: throwing something away or admitting a plan needs to change?"
+    },
+    {
+      "id": "grc-psychology-09",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "real",
+      "cardType": "psychology",
+      "prompt": "What kind of result makes you most vulnerable to confirmation bias?"
+    },
+    {
+      "id": "grc-psychology-10",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "real",
+      "cardType": "psychology",
+      "prompt": "When a grow is going well, what are you most tempted to change even though you probably should not?"
+    },
+    {
+      "id": "grc-psychology-11",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "real",
+      "cardType": "psychology",
+      "prompt": "How do you know when curiosity has turned into unnecessary tinkering?"
+    },
+    {
+      "id": "grc-psychology-12",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "real",
+      "cardType": "psychology",
+      "prompt": "What is your biggest blind spot when judging your own plants?"
+    },
+    {
+      "id": "grc-psychology-13",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "real",
+      "cardType": "psychology",
+      "prompt": "When do you become emotionally attached enough to a plant that it affects your objectivity?"
+    },
+    {
+      "id": "grc-psychology-14",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "real",
+      "cardType": "psychology",
+      "prompt": "What makes you more likely to trust advice: confidence, evidence, experience, or similarity to your own style?"
+    },
+    {
+      "id": "grc-psychology-15",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "real",
+      "cardType": "psychology",
+      "prompt": "How do you react when someone questions a method that has worked well for you?"
+    },
+    {
+      "id": "grc-psychology-16",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "real",
+      "cardType": "psychology",
+      "prompt": "Which is harder: accepting that a plant is not special or accepting that you selected it for the wrong reasons?"
+    },
+    {
+      "id": "grc-psychology-17",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "real",
+      "cardType": "psychology",
+      "prompt": "What kind of failure makes you want to immediately change everything instead of investigate slowly?"
+    },
+    {
+      "id": "grc-psychology-18",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "deep",
+      "cardType": "psychology",
+      "prompt": "How much of your cultivation style is built around avoiding a failure you experienced in the past?"
+    },
+    {
+      "id": "grc-psychology-19",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "deep",
+      "cardType": "psychology",
+      "prompt": "When does confidence become overconfidence in a grow room?"
+    },
+    {
+      "id": "grc-psychology-20",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "deep",
+      "cardType": "psychology",
+      "prompt": "What part of your identity as a grower would be hardest to let go of if evidence challenged it?"
+    },
+    {
+      "id": "grc-psychology-21",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "deep",
+      "cardType": "psychology",
+      "prompt": "How do sunk costs affect your willingness to abandon a breeding project or a favorite plant?"
+    },
+    {
+      "id": "grc-psychology-22",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "deep",
+      "cardType": "psychology",
+      "prompt": "What do you do when the plant you want to keep is not the plant your written criteria say you should keep?"
+    },
+    {
+      "id": "grc-psychology-23",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "deep",
+      "cardType": "psychology",
+      "prompt": "How do community praise and criticism change the way you judge your own work?"
+    },
+    {
+      "id": "grc-psychology-24",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "deep",
+      "cardType": "psychology",
+      "prompt": "What is more dangerous to good decision-making: fear of failure or fear of missing out?"
+    },
+    {
+      "id": "grc-psychology-25",
+      "lane": "psychology",
+      "laneLabel": "Grower Psychology",
+      "intensity": "deep",
+      "cardType": "psychology",
+      "prompt": "What would make you realize that your grow routine has become tradition rather than evidence-based practice?"
+    },
+    {
+      "id": "grc-call-your-shot-01",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "chill",
+      "cardType": "call-your-shot",
+      "prompt": "You can improve only one thing before the next cycle: environment, irrigation consistency, recordkeeping, or genetics. What do you choose first?"
+    },
+    {
+      "id": "grc-call-your-shot-02",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "chill",
+      "cardType": "call-your-shot",
+      "prompt": "A plant looks different from its siblings but still appears healthy. What do you watch before deciding whether the difference matters?"
+    },
+    {
+      "id": "grc-call-your-shot-03",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "chill",
+      "cardType": "call-your-shot",
+      "prompt": "You inherit a grow with almost no notes. What three pieces of information do you reconstruct first?"
+    },
+    {
+      "id": "grc-call-your-shot-04",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "chill",
+      "cardType": "call-your-shot",
+      "prompt": "Two phenotypes look equally good today. What future observation do you want before choosing between them?"
+    },
+    {
+      "id": "grc-call-your-shot-05",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "chill",
+      "cardType": "call-your-shot",
+      "prompt": "Your room has one unreliable sensor. What do you compare it against before believing the reading?"
+    },
+    {
+      "id": "grc-call-your-shot-06",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "chill",
+      "cardType": "call-your-shot",
+      "prompt": "A favorite cultivar suddenly performs differently than usual. What category of explanation do you investigate first?"
+    },
+    {
+      "id": "grc-call-your-shot-07",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "chill",
+      "cardType": "call-your-shot",
+      "prompt": "You can keep only one backup copy. What trait or history makes a plant earn that spot?"
+    },
+    {
+      "id": "grc-call-your-shot-08",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "chill",
+      "cardType": "call-your-shot",
+      "prompt": "A grower asks for advice but gives almost no context. What question do you ask first?"
+    },
+    {
+      "id": "grc-call-your-shot-09",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "real",
+      "cardType": "call-your-shot",
+      "prompt": "A correction seemed to help for two days and then the problem returned. What do you reconsider first?"
+    },
+    {
+      "id": "grc-call-your-shot-10",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "real",
+      "cardType": "call-your-shot",
+      "prompt": "Two rooms use the same genetics and feed but produce different plant behavior. What differences do you investigate before blaming the cultivar?"
+    },
+    {
+      "id": "grc-call-your-shot-11",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "real",
+      "cardType": "call-your-shot",
+      "prompt": "Your best-looking plant is inconsistent across repeated runs. Do you keep selecting it or move on? Defend the decision."
+    },
+    {
+      "id": "grc-call-your-shot-12",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "real",
+      "cardType": "call-your-shot",
+      "prompt": "A phenotype wins every visual comparison but repeatedly underperforms in one trait you care about. What is your next move?"
+    },
+    {
+      "id": "grc-call-your-shot-13",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "real",
+      "cardType": "call-your-shot",
+      "prompt": "You notice a pattern only after reviewing old photos. What would you change about future documentation?"
+    },
+    {
+      "id": "grc-call-your-shot-14",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "real",
+      "cardType": "call-your-shot",
+      "prompt": "A respected grower gives advice that conflicts with your records. How do you test the disagreement without turning it into an argument?"
+    },
+    {
+      "id": "grc-call-your-shot-15",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "real",
+      "cardType": "call-your-shot",
+      "prompt": "A small experiment contradicts what you expected. What would you need before changing your normal process?"
+    },
+    {
+      "id": "grc-call-your-shot-16",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "real",
+      "cardType": "call-your-shot",
+      "prompt": "One plant needs constant special treatment while its siblings do not. When does accommodation become a selection problem?"
+    },
+    {
+      "id": "grc-call-your-shot-17",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "real",
+      "cardType": "call-your-shot",
+      "prompt": "A breeding project produces one spectacular outlier and many average plants. What do you do with the outlier?"
+    },
+    {
+      "id": "grc-call-your-shot-18",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "deep",
+      "cardType": "call-your-shot",
+      "prompt": "Your favorite line is popular, but your own repeated records show a weakness you can no longer ignore. What do you change first?"
+    },
+    {
+      "id": "grc-call-your-shot-19",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "deep",
+      "cardType": "call-your-shot",
+      "prompt": "You discover that a trait you selected for may have been heavily influenced by one environment. How do you redesign the next evaluation?"
+    },
+    {
+      "id": "grc-call-your-shot-20",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "deep",
+      "cardType": "call-your-shot",
+      "prompt": "A collaborator wants to release a line you think needs another generation of work. What evidence would settle the disagreement?"
+    },
+    {
+      "id": "grc-call-your-shot-21",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "deep",
+      "cardType": "call-your-shot",
+      "prompt": "Your historical notes and your memory tell different stories about why a plant was selected. Which do you trust and how do you resolve it?"
+    },
+    {
+      "id": "grc-call-your-shot-22",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "deep",
+      "cardType": "call-your-shot",
+      "prompt": "You have enough space for only half of the plants planned for a selection run. What principle determines what stays?"
+    },
+    {
+      "id": "grc-call-your-shot-23",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "deep",
+      "cardType": "call-your-shot",
+      "prompt": "A line is becoming more uniform but also less interesting. Do you continue narrowing it or deliberately reopen variation?"
+    },
+    {
+      "id": "grc-call-your-shot-24",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "deep",
+      "cardType": "call-your-shot",
+      "prompt": "A tool gives a confident diagnosis that conflicts with your direct observations. What evidence would you require before acting on it?"
+    },
+    {
+      "id": "grc-call-your-shot-25",
+      "lane": "call_your_shot",
+      "laneLabel": "Call Your Shot",
+      "intensity": "deep",
+      "cardType": "call-your-shot",
+      "prompt": "A project has strong genetics but weak documentation. Do you pause progression to rebuild records or keep moving while the plants are available?"
+    },
+    {
+      "id": "grc-strain-talk-01",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "chill",
+      "cardType": "strain-talk",
+      "prompt": "What cultivar or line do you remember most for aroma alone?"
+    },
+    {
+      "id": "grc-strain-talk-02",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "chill",
+      "cardType": "strain-talk",
+      "prompt": "What trait makes a phenotype instantly memorable to you?"
+    },
+    {
+      "id": "grc-strain-talk-03",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "chill",
+      "cardType": "strain-talk",
+      "prompt": "What classic cultivar do you think still deserves more attention today?"
+    },
+    {
+      "id": "grc-strain-talk-04",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "chill",
+      "cardType": "strain-talk",
+      "prompt": "Which do you notice first in a new plant: structure, vigor, aroma, color, or something else?"
+    },
+    {
+      "id": "grc-strain-talk-05",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "chill",
+      "cardType": "strain-talk",
+      "prompt": "What cultivar surprised you because the finished plant was nothing like you expected from the description?"
+    },
+    {
+      "id": "grc-strain-talk-06",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "chill",
+      "cardType": "strain-talk",
+      "prompt": "What is a trait you enjoy even though you would not necessarily breed for it?"
+    },
+    {
+      "id": "grc-strain-talk-07",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "chill",
+      "cardType": "strain-talk",
+      "prompt": "Which matters more when you first evaluate a line: the best plant or the average plant?"
+    },
+    {
+      "id": "grc-strain-talk-08",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "chill",
+      "cardType": "strain-talk",
+      "prompt": "What is your favorite kind of phenotype variation to see in a seed run?"
+    },
+    {
+      "id": "grc-strain-talk-09",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "real",
+      "cardType": "strain-talk",
+      "prompt": "What trait have you learned not to judge too early in a plant's life?"
+    },
+    {
+      "id": "grc-strain-talk-10",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "real",
+      "cardType": "strain-talk",
+      "prompt": "When a line throws several distinct phenotype groups, what makes the variation exciting instead of frustrating?"
+    },
+    {
+      "id": "grc-strain-talk-11",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "real",
+      "cardType": "strain-talk",
+      "prompt": "What trait would make you reject an otherwise impressive plant from a breeding project?"
+    },
+    {
+      "id": "grc-strain-talk-12",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "real",
+      "cardType": "strain-talk",
+      "prompt": "How much weight should lineage information carry before you have observed the plants yourself?"
+    },
+    {
+      "id": "grc-strain-talk-13",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "real",
+      "cardType": "strain-talk",
+      "prompt": "What is more valuable in a keeper: uniqueness or repeatability?"
+    },
+    {
+      "id": "grc-strain-talk-14",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "real",
+      "cardType": "strain-talk",
+      "prompt": "How do you decide whether an unusual trait is worth preserving or just a one-off curiosity?"
+    },
+    {
+      "id": "grc-strain-talk-15",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "real",
+      "cardType": "strain-talk",
+      "prompt": "What breeder description makes you skeptical unless it is supported by data or repeated observations?"
+    },
+    {
+      "id": "grc-strain-talk-16",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "real",
+      "cardType": "strain-talk",
+      "prompt": "When two sibling plants are equally strong overall, what tie-breaker do you use?"
+    },
+    {
+      "id": "grc-strain-talk-17",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "real",
+      "cardType": "strain-talk",
+      "prompt": "What trait do you think is most often sacrificed while growers chase visual appeal?"
+    },
+    {
+      "id": "grc-strain-talk-18",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "deep",
+      "cardType": "strain-talk",
+      "prompt": "How should a breeder balance preserving the identity of a line with continuing to improve it?"
+    },
+    {
+      "id": "grc-strain-talk-19",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "deep",
+      "cardType": "strain-talk",
+      "prompt": "What would convince you that a famous line no longer deserves its reputation?"
+    },
+    {
+      "id": "grc-strain-talk-20",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "deep",
+      "cardType": "strain-talk",
+      "prompt": "When does selecting toward a market preference start erasing the traits that made a line distinctive?"
+    },
+    {
+      "id": "grc-strain-talk-21",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "deep",
+      "cardType": "strain-talk",
+      "prompt": "How much diversity should remain in a line before you consider it stable enough for your goal?"
+    },
+    {
+      "id": "grc-strain-talk-22",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "deep",
+      "cardType": "strain-talk",
+      "prompt": "What records would you want before claiming that a trait reliably carries across generations?"
+    },
+    {
+      "id": "grc-strain-talk-23",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "deep",
+      "cardType": "strain-talk",
+      "prompt": "Should a breeder ever preserve a difficult trait because it may become valuable later?"
+    },
+    {
+      "id": "grc-strain-talk-24",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "deep",
+      "cardType": "strain-talk",
+      "prompt": "What matters more in a long-term breeding program: remembering every exceptional plant or understanding the population as a whole?"
+    },
+    {
+      "id": "grc-strain-talk-25",
+      "lane": "strain_talk",
+      "laneLabel": "Strain Talk",
+      "intensity": "deep",
+      "cardType": "strain-talk",
+      "prompt": "If you could preserve only one thing from a disappearing line—seeds, clones, pedigree records, or detailed phenotype data—which would you choose and why?"
+    },
+    {
+      "id": "grc-wild-cards-01",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "chill",
+      "cardType": "table-vote",
+      "prompt": "Table vote: who here is most likely to check the grow room one more time before bed?"
+    },
+    {
+      "id": "grc-wild-cards-02",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "chill",
+      "cardType": "story-required",
+      "prompt": "Story required: tell the shortest version of your funniest grow-room surprise."
+    },
+    {
+      "id": "grc-wild-cards-03",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "chill",
+      "cardType": "table-vote",
+      "prompt": "Table vote: who is most likely to turn a simple grow into an experiment?"
+    },
+    {
+      "id": "grc-wild-cards-04",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "chill",
+      "cardType": "callout",
+      "prompt": "Pick another player. Ask them which grow-room habit they would steal from you and which one they would never copy."
+    },
+    {
+      "id": "grc-wild-cards-05",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "chill",
+      "cardType": "wild",
+      "prompt": "Everyone answers in one sentence: what makes a grow worth remembering?"
+    },
+    {
+      "id": "grc-wild-cards-06",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "chill",
+      "cardType": "table-vote",
+      "prompt": "Table vote: who would be most dangerous with unlimited grow-room budget?"
+    },
+    {
+      "id": "grc-wild-cards-07",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "chill",
+      "cardType": "story-required",
+      "prompt": "Tell a story about a plant that refused to follow your plan."
+    },
+    {
+      "id": "grc-wild-cards-08",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "chill",
+      "cardType": "wild",
+      "prompt": "Pass this card to the player with the most different growing style from yours. They answer the next card first."
+    },
+    {
+      "id": "grc-wild-cards-09",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "real",
+      "cardType": "callout",
+      "prompt": "Call it out: name one grow opinion you used to defend that you no longer believe."
+    },
+    {
+      "id": "grc-wild-cards-10",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "real",
+      "cardType": "table-vote",
+      "prompt": "Table vote: who at the table is most likely to keep a plant for sentimental reasons?"
+    },
+    {
+      "id": "grc-wild-cards-11",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "real",
+      "cardType": "story-required",
+      "prompt": "Story required: describe a moment when another grower changed your mind."
+    },
+    {
+      "id": "grc-wild-cards-12",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "real",
+      "cardType": "wild",
+      "prompt": "Everyone names one variable they think growers change too quickly. No repeats."
+    },
+    {
+      "id": "grc-wild-cards-13",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "real",
+      "cardType": "callout",
+      "prompt": "Pick a player and ask them to defend one cultivation habit the rest of the table questions."
+    },
+    {
+      "id": "grc-wild-cards-14",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "real",
+      "cardType": "table-vote",
+      "prompt": "Table vote: whose grow notes would you most trust to reconstruct a forgotten run?"
+    },
+    {
+      "id": "grc-wild-cards-15",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "real",
+      "cardType": "story-required",
+      "prompt": "Tell the story behind one plant you still think about."
+    },
+    {
+      "id": "grc-wild-cards-16",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "real",
+      "cardType": "wild",
+      "prompt": "Everyone gets thirty seconds: explain the biggest lesson from a failed grow without blaming the plant."
+    },
+    {
+      "id": "grc-wild-cards-17",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "real",
+      "cardType": "callout",
+      "prompt": "Choose a player. They must name one thing they think you overvalue in cultivation, then you respond."
+    },
+    {
+      "id": "grc-wild-cards-18",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "deep",
+      "cardType": "wild",
+      "prompt": "Go deeper: the current player must explain not just what they would do, but what evidence could change their mind."
+    },
+    {
+      "id": "grc-wild-cards-19",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "deep",
+      "cardType": "table-vote",
+      "prompt": "Table vote: who is best at separating attachment from selection decisions? Each voter gives one reason."
+    },
+    {
+      "id": "grc-wild-cards-20",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "deep",
+      "cardType": "story-required",
+      "prompt": "Tell a story about a time being wrong made you a better grower."
+    },
+    {
+      "id": "grc-wild-cards-21",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "deep",
+      "cardType": "callout",
+      "prompt": "Respect or challenge: choose one answer from this session that changed how you think, or one you still strongly disagree with."
+    },
+    {
+      "id": "grc-wild-cards-22",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "deep",
+      "cardType": "wild",
+      "prompt": "Everyone answers: what cultivation belief are you least certain about right now?"
+    },
+    {
+      "id": "grc-wild-cards-23",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "deep",
+      "cardType": "story-required",
+      "prompt": "Describe one project you would restart from zero if time and genetics were not a limitation."
+    },
+    {
+      "id": "grc-wild-cards-24",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "deep",
+      "cardType": "callout",
+      "prompt": "Pick another player. Ask them what evidence they would need to abandon one of their favorite cultivation beliefs."
+    },
+    {
+      "id": "grc-wild-cards-25",
+      "lane": "wild_cards",
+      "laneLabel": "Wild Cards",
+      "intensity": "deep",
+      "cardType": "wild",
+      "prompt": "Final round: each player names one lesson from the table worth keeping. The group chooses one Keeper statement for the session."
+    }
+  ]
+}
