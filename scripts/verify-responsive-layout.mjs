@@ -203,6 +203,13 @@ if (!/\.tools-card\{[^}]*max-height:calc\(100dvh - 104px\)[^}]*overflow-y:auto/.
   failures.push("Grow Room Defense sticky tools panel must remain bounded to the dynamic viewport height.");
 }
 
+if (/@media\(max-width:(?:760|640)px\)/.test(tech1Courses)) {
+  failures.push("Technician I courses must use canonical 700px phone band.");
+}
+if (/@media\(max-width:(?:880|620)px\)/.test(tech2Courses)) {
+  failures.push("Technician II courses must use canonical 900/700 tablet and phone bands.");
+}
+
 for (const [label, source] of [
   ["Tech 1 course navigation", tech1Courses],
   ["Tech 2 course navigation", tech2Courses],
