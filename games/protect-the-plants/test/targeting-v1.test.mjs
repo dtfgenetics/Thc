@@ -41,7 +41,7 @@ assert.ok(!js.includes("api('fire'"),'Targeting helper must not submit shots dir
 assert.ok(css.includes('.burn-target-readout'),'Target readout styling missing.');
 assert.ok(css.includes('.target-armed'),'Armed target styling missing.');
 assert.ok(css.includes(':focus-visible'),'Keyboard focus styling missing.');
-assert.ok(css.includes('@media(max-width:720px)'),'Mobile targeting styling missing.');
+assert.ok(css.includes('@media(max-width:700px)'),'Mobile targeting styling missing.');
 assert.ok(index.includes('./targeting-v1.css'),'Burn Buds page must load targeting CSS.');
 assert.ok(index.includes('./targeting-v1.js'),'Burn Buds page must load targeting JavaScript.');
 assert.ok(index.indexOf('./targeting-v1.js')>index.indexOf('./app.js'),'Targeting helper must load after the core game runtime.');
