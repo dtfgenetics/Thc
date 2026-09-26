@@ -13,6 +13,8 @@ async function load(){
   state.catalog=catalog;state.sources=sources;state.population=population;state.profiles=profiles;state.factors=factors;state.evidence=evidence;
   $('[data-compound-count]').textContent=`${catalog.compounds.length} compounds`;
   buildCompareOptions();renderWheel();renderSources();renderFactors();renderEvidenceSafety();renderPopulation();render();
+  const requested=new URLSearchParams(location.search).get('compound');
+  if(requested)showCompound(requested);
 }
 function renderWheel(){
   const counts={};
@@ -94,6 +96,9 @@ function sourceFor(id){
 function showCompound(id){
   const x=state.catalog.compounds.find(item=>item.id===id);
   if(!x)return;
+  const params=new URLSearchParams(location.search);
+  params.set('compound',id);
+  history.replaceState(null,'',`${location.pathname}?${params.toString()}${location.hash}`);
   const rows=populationFor(id);
   const mechanismRows=evidenceFor(id);
   const sources=Array.from(new Set([...(x.evidence||[]),...mechanismRows.flatMap(r=>r.sources||[])])).map(sourceFor).filter(Boolean);
@@ -164,8 +169,15 @@ $('[data-scope-filter]').addEventListener('change',e=>{state.scope=e.target.valu
 $('[data-compare-a]').addEventListener('change',renderCompare);
 $('[data-compare-b]').addEventListener('change',renderCompare);
 load().catch(error=>{$('[data-grid]').innerHTML=`<div class="empty">Terpene Atlas data could not load. ${esc(error.message)}</div>`;console.error('[Terpene Atlas]',error)});
-$('[data-dialog-close]')?.addEventListener('click',()=> $('[data-compound-dialog]')?.close());
-$('[data-compound-dialog]')?.addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.close()});
+function clearCompoundUrl(){
+  const params=new URLSearchParams(location.search);
+  params.delete('compound');
+  const query=params.toString();
+  history.replaceState(null,'',`${location.pathname}${query?'?'+query:''}${location.hash}`);
+}
+$('[data-dialog-close]')?.addEventListener('click',()=>{ $('[data-compound-dialog]')?.close(); clearCompoundUrl(); });
+$('[data-compound-dialog]')?.addEventListener('click',e=>{if(e.target===e.currentTarget){e.currentTarget.close();clearCompoundUrl();}});
+$('[data-compound-dialog]')?.addEventListener('close',clearCompoundUrl);
 $('[data-profile-file]')?.addEventListener('change',async e=>{
   const file=e.target.files?.[0]; if(!file)return;
   try{const profile=JSON.parse(await file.text());renderImportedProfile(profile);}
