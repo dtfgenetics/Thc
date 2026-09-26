@@ -18,6 +18,7 @@ const requiredFiles = [
   'data/sample-profile-schema-v1.json',
   'data/population-summary-v1.json',
   'data/sample-profiles-v1.json',
+  'data/profile-factors-v1.json',
 ];
 
 for (const relative of requiredFiles) {
@@ -40,6 +41,7 @@ const catalog = readJSON('terpene-catalog-v1.json');
 const sampleSchema = readJSON('sample-profile-schema-v1.json');
 const population = readJSON('population-summary-v1.json');
 const profiles = readJSON('sample-profiles-v1.json');
+const factors = readJSON('profile-factors-v1.json');
 const schema = readJSON('terpene-schema-v1.json');
 
 if (schema?.schemaVersion !== 1) errors.push('terpene-schema-v1.json must use schemaVersion 1');
@@ -79,14 +81,21 @@ for (const row of population?.analytes || []) {
   for (const field of ['minPpm','meanPpm','sdPpm','cvPercent']) if (!Number.isFinite(row[field])) errors.push(`Population analyte ${row.compoundId} missing numeric ${field}`);
 }
 if (profiles?.schemaVersion !== 1 || !Array.isArray(profiles?.profiles)) errors.push('sample-profiles-v1.json must provide a versioned profiles array');
+if (factors?.schemaVersion !== 1 || !Array.isArray(factors?.factors) || factors.factors.length < 8) errors.push('profile-factors-v1.json must provide at least eight interpretation factors');
+for (const factor of factors?.factors || []) {
+  if (!factor.id || !factor.title || !factor.category || !factor.summary || !factor.caution) errors.push(`Incomplete profile factor: ${factor?.id || '(unknown)'}`);
+  if (!Array.isArray(factor.whatToRecord) || factor.whatToRecord.length < 3) errors.push(`Profile factor ${factor.id} needs recording guidance`);
+  if (!Array.isArray(factor.evidence) || factor.evidence.length < 1) errors.push(`Profile factor ${factor.id} needs evidence`);
+  for (const sourceId of factor.evidence || []) if (!sourceIds.has(sourceId)) errors.push(`Unknown factor source ${sourceId} for ${factor.id}`);
+}
 
 const index = fs.existsSync(path.join(sourceRoot,'index.html')) ? fs.readFileSync(path.join(sourceRoot,'index.html'),'utf8') : '';
-for (const token of ['/terpene-atlas/terpene-atlas-v1.css','/terpene-atlas/terpene-atlas-v1.js','data-wheel-family','data-search','data-class-filter','data-scope-filter','data-population-body','data-profile-file','data-compound-dialog','data-source-grid','data-compare-a','/atlas/trichomes-resin/']) {
+for (const token of ['/terpene-atlas/terpene-atlas-v1.css','/terpene-atlas/terpene-atlas-v1.js','data-wheel-family','data-search','data-class-filter','data-scope-filter','data-population-body','data-profile-file','data-compound-dialog','data-factor-grid','data-factor-category','data-source-grid','data-compare-a','/atlas/trichomes-resin/']) {
   if (!index.includes(token)) errors.push(`Terpene Atlas index missing UI contract: ${token}`);
 }
 
 const runtime = fs.existsSync(path.join(sourceRoot,'terpene-atlas-v1.js')) ? fs.readFileSync(path.join(sourceRoot,'terpene-atlas-v1.js'),'utf8') : '';
-for (const token of ['terpene-catalog-v1.json','sources-v1.json','population-summary-v1.json','sample-profiles-v1.json','renderWheel','renderPopulation','renderImportedProfile','showCompound','renderSources','renderCompare','data-result-count','cache:\'no-store\'']) {
+for (const token of ['terpene-catalog-v1.json','sources-v1.json','population-summary-v1.json','sample-profiles-v1.json','renderWheel','renderFactors','renderPopulation','renderImportedProfile','showCompound','renderSources','renderCompare','data-result-count','cache:\'no-store\'']) {
   if (!runtime.includes(token)) errors.push(`Terpene Atlas runtime missing contract: ${token}`);
 }
 
