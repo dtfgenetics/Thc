@@ -215,6 +215,7 @@ const courses = [];
 for (const entry of config.courses) courses.push(await loadCourse(entry));
 
 if (validateOnly) {
+  must(css.includes('min-height:44px;white-space:nowrap'), 'Technician II mobile breadcrumbs require touch-sized targets.');
   must(courses.every(c => c.lessons.length === 4), 'Every Technician II public package must resolve four dedicated lessons.');
   must(courses.filter(c => c.number < 8).every(c => c.assessments.length === 2), 'Technician II Courses 1-7 require formative and summative learning assessments.');
   must(courses.find(c => c.number === 8)?.assessments.length === 1, 'Technician II Course 8 requires one public readiness assessment only.');

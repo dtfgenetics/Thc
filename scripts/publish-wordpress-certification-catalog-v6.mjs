@@ -125,6 +125,8 @@ must((content.match(/data-course-id=/g) || []).length === 15, 'Rendered V6 catal
 must((content.match(/data-course-open="true"/g) || []).length === 15, 'Rendered V6 catalog requires all 15 courses open.');
 must((content.match(/<details class="dc6-disclosure/g) || []).length === 25, 'Rendered V6 catalog requires 25 progressive-disclosure records.');
 must(!content.includes('data-issuance-available="true"'), 'Rendered V6 catalog cannot advertise credential issuance.');
+must(content.includes('min-height:44px'), 'Catalog navigation requires touch-sized targets.');
+must(content.includes('@media(max-width:700px)'), 'Catalog mobile breakpoint is missing.');
 
 if (validateOnly) { console.log(JSON.stringify({ result: 'success', version: 6, presentation: 'progressive-disclosure', openCourses: open.map(x => x.id) }, null, 2)); process.exit(0); }
 if (!apply) { console.log('Validation passed. Set APPLY_CERTIFICATION_CATALOG_V6=true to publish.'); process.exit(0); }

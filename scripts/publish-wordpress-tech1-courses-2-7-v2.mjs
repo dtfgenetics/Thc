@@ -227,6 +227,7 @@ const courses = [];
 for (const entry of config.courses) courses.push(await loadCourse(entry));
 
 if (validateOnly) {
+  must(css.includes('min-height:44px;white-space:nowrap'), 'Technician I mobile breadcrumbs require touch-sized targets.');
   must(courses.every(course => course.lessons.length === 4), 'Every Technician I Course 2-7 public package must resolve four dedicated lessons.');
   must(courses.filter(course => course.number < 7).every(course => course.assessments.length === 2), 'Courses 2-6 require formative and summative public learning assessments.');
   must(courses.find(course => course.number === 7)?.assessments.length === 1, 'Course 7 requires one public readiness assessment.');
