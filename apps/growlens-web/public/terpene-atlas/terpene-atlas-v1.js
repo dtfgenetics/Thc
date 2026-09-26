@@ -1,16 +1,17 @@
-const state={catalog:null,sources:null,population:null,profiles:null,query:'',family:'all',scope:'all'};
+const state={catalog:null,sources:null,population:null,profiles:null,factors:null,query:'',family:'all',scope:'all',factorCategory:'all'};
 const $=(s)=>document.querySelector(s);
 const esc=(v='')=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 async function load(){
-  const [catalog,sources,population,profiles]=await Promise.all([
+  const [catalog,sources,population,profiles,factors]=await Promise.all([
     fetch('/terpene-atlas/data/terpene-catalog-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('catalog '+r.status);return r.json()}),
     fetch('/terpene-atlas/data/sources-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('sources '+r.status);return r.json()}),
     fetch('/terpene-atlas/data/population-summary-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('population '+r.status);return r.json()}),
-    fetch('/terpene-atlas/data/sample-profiles-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('profiles '+r.status);return r.json()})
+    fetch('/terpene-atlas/data/sample-profiles-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('profiles '+r.status);return r.json()}),
+    fetch('/terpene-atlas/data/profile-factors-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('factors '+r.status);return r.json()})
   ]);
-  state.catalog=catalog;state.sources=sources;state.population=population;state.profiles=profiles;
+  state.catalog=catalog;state.sources=sources;state.population=population;state.profiles=profiles;state.factors=factors;
   $('[data-compound-count]').textContent=`${catalog.compounds.length} compounds`;
-  buildCompareOptions();renderWheel();renderSources();renderPopulation();render();
+  buildCompareOptions();renderWheel();renderSources();renderFactors();renderPopulation();render();
 }
 function renderWheel(){
   const counts={};
@@ -37,6 +38,16 @@ function renderSources(){
   const coverage=$('[data-coverage]');
   const c=state.catalog.coverage||{};
   if(coverage)coverage.innerHTML=`<strong>Current curated coverage: ${state.catalog.compounds.length} compounds.</strong> ${esc(c.target||'Catalog expansion continues.')} <span>Completeness claim: ${c.completenessClaim===true?'yes':'no'}.</span>`;
+}
+function renderFactors(){
+  const grid=$('[data-factor-grid]');
+  if(!grid||!state.factors)return;
+  const items=(state.factors.factors||[]).filter(x=>state.factorCategory==='all'||x.category===state.factorCategory);
+  grid.innerHTML=items.map(x=>`<article class="factor-card"><span class="factor-category">${esc(x.category)}</span><h3>${esc(x.title)}</h3><p>${esc(x.summary)}</p><p class="factor-caution"><strong>Interpretation caution:</strong> ${esc(x.caution)}</p><details><summary>What to record</summary><ul>${(x.whatToRecord||[]).map(v=>`<li>${esc(v)}</li>`).join('')}</ul></details><details><summary>Evidence</summary><p>${(x.evidence||[]).map(id=>{const s=sourceFor(id);return s?`<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>`:esc(id)}).join(' · ')}</p></details></article>`).join('');
+  for(const button of document.querySelectorAll('[data-factor-category]')){
+    button.classList.toggle('active',button.dataset.factorCategory===state.factorCategory);
+    button.onclick=()=>{state.factorCategory=button.dataset.factorCategory;renderFactors();};
+  }
 }
 function renderPopulation(){
   const data=state.population;
