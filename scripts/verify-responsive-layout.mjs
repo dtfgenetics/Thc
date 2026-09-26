@@ -93,6 +93,16 @@ const forbiddenLegacy = [
 for (const [label, source, pattern] of forbiddenLegacy) {
   if (pattern.test(source)) failures.push(`${label} reintroduced a legacy responsive breakpoint that conflicts with the shared bands.`);
 }
+
+const toolsTabletBlock = toolsHub.match(/@media\s*\(max-width:\s*900px\)\s*\{([\s\S]*?)\}\s*\/\* Shared phone breakpoint/);
+if (toolsTabletBlock && /\.tool-chooser\s*\{[^}]*grid-template-columns\s*:\s*1fr/.test(toolsTabletBlock[1])) {
+  failures.push("Tools hub must keep the tool chooser multi-column through tablet widths; collapse it at the phone band instead.");
+}
+
+const gamesTabletBlock = gamesHub.match(/@media\s*\(max-width:\s*900px\)\s*\{([\s\S]*?)\}\s*\/\* Shared phone breakpoint/);
+if (gamesTabletBlock && /\.grid\.two[^}]*grid-template-columns\s*:\s*1fr/.test(gamesTabletBlock[1])) {
+  failures.push("Games hub must not collapse the library grid to one column at tablet width.");
+}
 requireMatch(
   docs,
   /360\s*[×x]\s*800/,
