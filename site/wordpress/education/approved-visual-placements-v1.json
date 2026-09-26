@@ -1,0 +1,1005 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-09-25",
+  "purpose": "Exact role-to-media placement registry for Teaching Healthy Cultivation. Public education pages may render a reference visual only when this manifest names its approved WordPress media slug for that exact role.",
+  "policy": {
+    "exactSlugRequired": true,
+    "keywordFallbackAllowed": false,
+    "approvedSlugPrefix": "dtf-approved-visual-",
+    "unassignedBehavior": "render-content-without-image",
+    "rasterOnly": true,
+    "requiredApprovalChecks": [
+      "subjectAccuracy",
+      "cropReview",
+      "mobile",
+      "tablet",
+      "desktop"
+    ]
+  },
+  "topics": {
+    "plant-biology": [
+      {
+        "slotId": "plant-biology-01",
+        "role": "hero",
+        "title": "Whole-plant botanical reference",
+        "brief": "Photorealistic whole cannabis plant with clearly visible roots, stem, nodes, leaves, inflorescences and labeled anatomical regions.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "plant-biology-02",
+        "role": "reference",
+        "title": "Leaf anatomy close reference",
+        "brief": "Macro botanical reference showing blade, petiole, veins, margin and stomatal surface context.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "plant-biology-03",
+        "role": "reference",
+        "title": "Root system architecture",
+        "brief": "High-detail root architecture with crown, lateral roots, fine roots and rhizosphere context.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "plant-biology-04",
+        "role": "reference",
+        "title": "Flower and trichome anatomy",
+        "brief": "Macro flowering reference with bract, stigma, sugar leaf and glandular trichome callouts.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      }
+    ],
+    "lifecycle-propagation": [
+      {
+        "slotId": "lifecycle-propagation-01",
+        "role": "hero",
+        "title": "Lifecycle sequence",
+        "brief": "Seed, germination, seedling, vegetative growth, transition and reproductive development shown as one clean photographic sequence.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "lifecycle-propagation-02",
+        "role": "reference",
+        "title": "Germination stages",
+        "brief": "Imbibition through radicle emergence, shoot emergence and normal seedling establishment.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "lifecycle-propagation-03",
+        "role": "reference",
+        "title": "Clone rooting sequence",
+        "brief": "Cutting preparation, callus/root initiation, early root growth and acclimation.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "lifecycle-propagation-04",
+        "role": "reference",
+        "title": "Transplant acclimation",
+        "brief": "Root-ball, container transition and early post-transplant recovery reference.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      }
+    ],
+    "environment-vpd": [
+      {
+        "slotId": "environment-vpd-01",
+        "role": "hero",
+        "title": "Leaf environment system",
+        "brief": "Leaf-level temperature, RH, airflow and vapor exchange visual tied to room environment.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "environment-vpd-02",
+        "role": "reference",
+        "title": "Air VPD vs leaf VPD",
+        "brief": "Diagram contrasting air-temperature-only assumptions with measured leaf-temperature VPD.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "environment-vpd-03",
+        "role": "reference",
+        "title": "Dew point and condensation",
+        "brief": "Canopy microclimate cross-section showing when surface condensation risk develops.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "environment-vpd-04",
+        "role": "reference",
+        "title": "Sensor placement",
+        "brief": "Room map showing representative temperature/RH sensor positions and common bad placements.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      }
+    ],
+    "lighting": [
+      {
+        "slotId": "lighting-01",
+        "role": "hero",
+        "title": "Canopy light distribution",
+        "brief": "Photorealistic indoor canopy with fixture, measurement plane and visible PPFD grid concept.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "lighting-02",
+        "role": "reference",
+        "title": "PPFD measurement grid",
+        "brief": "Standardized grid and measurement-plane reference.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "lighting-03",
+        "role": "reference",
+        "title": "DLI relationship",
+        "brief": "Photoperiod plus PPFD concept showing how DLI accumulates across a day.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "lighting-04",
+        "role": "reference",
+        "title": "Light stress evidence",
+        "brief": "Reference set showing bleaching, edge stress, tacoing and non-light look-alikes.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      }
+    ],
+    "water-root-zone": [
+      {
+        "slotId": "water-root-zone-01",
+        "role": "hero",
+        "title": "Root-zone water system",
+        "brief": "Container cross-section showing irrigation, pore water, air space, roots and drainage.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "water-root-zone-02",
+        "role": "reference",
+        "title": "Dryback curve",
+        "brief": "Time-series diagram connecting irrigation event, substrate water content and next irrigation.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "water-root-zone-03",
+        "role": "reference",
+        "title": "Runoff vs root-zone sampling",
+        "brief": "Comparison of input, runoff and representative root-zone measurements.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "water-root-zone-04",
+        "role": "reference",
+        "title": "Hypoxia evidence",
+        "brief": "Healthy vs oxygen-limited root-zone reference with environmental context.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      }
+    ],
+    "nutrition-media": [
+      {
+        "slotId": "nutrition-media-01",
+        "role": "hero",
+        "title": "Nutrient transport system",
+        "brief": "Root uptake to xylem, leaf demand and media chemistry in one systems visual.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "nutrition-media-02",
+        "role": "reference",
+        "title": "Essential elements map",
+        "brief": "Macronutrients, secondary nutrients and micronutrients with biological functions.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "nutrition-media-03",
+        "role": "reference",
+        "title": "pH availability mechanisms",
+        "brief": "Mechanism-first pH/precipitation/chelation reference without one universal target band.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "nutrition-media-04",
+        "role": "reference",
+        "title": "Differential diagnosis",
+        "brief": "Deficiency-like symptoms compared against salinity, root impairment, pH and environment look-alikes.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      }
+    ],
+    "training-canopy": [
+      {
+        "slotId": "training-canopy-01",
+        "role": "hero",
+        "title": "Canopy architecture",
+        "brief": "Before/after plant architecture showing branch positioning and canopy distribution.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "training-canopy-02",
+        "role": "reference",
+        "title": "Low-stress bend safety",
+        "brief": "Bend radius, tie placement, stem expansion and damage warning signs.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "training-canopy-03",
+        "role": "reference",
+        "title": "Trellis load paths",
+        "brief": "SCROG support geometry, branch routing and service access.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "training-canopy-04",
+        "role": "reference",
+        "title": "Canopy airflow map",
+        "brief": "Interior airflow, boundary layer and stagnant microclimate reference.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      }
+    ],
+    "plant-health-ipm": [
+      {
+        "slotId": "plant-health-ipm-01",
+        "role": "hero",
+        "title": "Scouting workflow",
+        "brief": "Representative scouting route with inspection points, sticky cards and repeated counts.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "plant-health-ipm-02",
+        "role": "reference",
+        "title": "Small pest comparison",
+        "brief": "Hemp russet mite, broad mite, aphid and common look-alike evidence at appropriate magnification.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "plant-health-ipm-03",
+        "role": "reference",
+        "title": "Powdery mildew vs Botrytis",
+        "brief": "Side-by-side disease evidence and favorable microclimate reference.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "plant-health-ipm-04",
+        "role": "reference",
+        "title": "Differential evidence board",
+        "brief": "Observed pattern, supporting evidence, conflicting evidence and next confirmation step.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      }
+    ],
+    "harvest-postharvest": [
+      {
+        "slotId": "harvest-postharvest-01",
+        "role": "hero",
+        "title": "Harvest readiness evidence",
+        "brief": "Multiple-signal harvest assessment using whole plant, representative flowers and magnified trichomes.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "harvest-postharvest-02",
+        "role": "reference",
+        "title": "Standardized trichome imaging",
+        "brief": "Clear/cloudy/amber gland heads with magnification, lighting and sampling cautions.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "harvest-postharvest-03",
+        "role": "reference",
+        "title": "Drying environment system",
+        "brief": "Temperature, RH, air exchange, gentle circulation, spacing and room load.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "harvest-postharvest-04",
+        "role": "reference",
+        "title": "Batch traceability",
+        "brief": "Harvest batch through drying position, sampling, storage and records.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      }
+    ],
+    "genetics-breeding": [
+      {
+        "slotId": "genetics-breeding-01",
+        "role": "hero",
+        "title": "Breeding lineage system",
+        "brief": "Pedigree/lineage visualization tied to generation, selection and population notes.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "genetics-breeding-02",
+        "role": "reference",
+        "title": "Genotype vs phenotype",
+        "brief": "Same genotype concept under different environments plus within-population phenotype variation.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "genetics-breeding-03",
+        "role": "reference",
+        "title": "Sex expression evidence",
+        "brief": "Male, female and intersex reproductive structures shown as botanical references.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "genetics-breeding-04",
+        "role": "reference",
+        "title": "Selection record",
+        "brief": "Plant ID, phenotype observations, traits, photos and selection decision workflow.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      }
+    ],
+    "outdoor-cultivation": [
+      {
+        "slotId": "outdoor-cultivation-01",
+        "role": "hero",
+        "title": "Outdoor site system",
+        "brief": "Sun path, wind exposure, drainage, access and visibility shown on one site reference.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "outdoor-cultivation-02",
+        "role": "reference",
+        "title": "Hardening-off sequence",
+        "brief": "Protected-to-outdoor transition with increasing light/wind exposure.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "outdoor-cultivation-03",
+        "role": "reference",
+        "title": "Rain and flower risk",
+        "brief": "Canopy wetting, airflow, flower density and drying conditions.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "outdoor-cultivation-04",
+        "role": "reference",
+        "title": "Microclimate mapping",
+        "brief": "Slope, shade, reflective surfaces, wind shelter and low-spot humidity.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      }
+    ],
+    "evidence-measurement": [
+      {
+        "slotId": "evidence-measurement-01",
+        "role": "hero",
+        "title": "Observation to conclusion",
+        "brief": "Photo, measurement, context, alternative hypothesis and monitored decision workflow.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "evidence-measurement-02",
+        "role": "reference",
+        "title": "Measurement quality chain",
+        "brief": "Instrument, calibration, sampling, timing, units and interpretation.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "evidence-measurement-03",
+        "role": "reference",
+        "title": "Repeatable photo method",
+        "brief": "Fixed camera angle, scale reference, lighting, plant orientation and timestamp.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      },
+      {
+        "slotId": "evidence-measurement-04",
+        "role": "reference",
+        "title": "Record traceability",
+        "brief": "Plant ID, event, measurement, image, intervention and outcome chain.",
+        "status": "needed",
+        "approvedMediaSlug": null,
+        "placement": [
+          "subject-page"
+        ],
+        "altText": null,
+        "caption": null,
+        "approval": {
+          "subjectAccuracy": false,
+          "cropReview": false,
+          "mobile": false,
+          "tablet": false,
+          "desktop": false
+        }
+      }
+    ]
+  }
+}

@@ -19,29 +19,46 @@ else if (atlasCount !== 1) throw new Error(`Expected one canonical Learn hero ac
 // keyboard accessible, and usable without client-side JavaScript.
 const lessonLine = source.split('\n').find(line => line.includes('const lessonCards ='));
 if (!lessonLine) throw new Error('Could not locate Learning V3 lesson-card renderer for progressive disclosure.');
-if (!lessonLine.includes('data-progressive-disclosure="true"')) {
-  const progressiveLessonLine = lessonLine
-    .replace('<article class="lesson">', '<details class="lesson" data-progressive-disclosure="true"><summary>')
-    .replace('<h2>', '<span class="lesson-title">')
-    .replace('</h2>${(section.paragraphs', '</span></summary><div class="lesson-body">${(section.paragraphs')
-    .replace('</article>`).join', '</div></details>`).join');
-  if (progressiveLessonLine === lessonLine || !progressiveLessonLine.includes('<details class="lesson" data-progressive-disclosure="true">') || !progressiveLessonLine.includes('<div class="lesson-body">')) {
+const canonicalProgressive = source.includes('<details class="lesson"') && source.includes('data-progressive-disclosure="true"') && source.includes('class="lesson-body"');
+if (!canonicalProgressive) {
+  let progressiveLessonLine = lessonLine;
+  if (progressiveLessonLine.includes('<article class="lesson" id="${esc(id)}">')) {
+    progressiveLessonLine = progressiveLessonLine
+      .replace('<article class="lesson" id="${esc(id)}">', '<details class="lesson" id="${esc(id)}" data-progressive-disclosure="true"><summary>')
+      .replace('<h2>', '<span class="lesson-title">')
+      .replace('</h2>${(section.paragraphs', '</span></summary><div class="lesson-body">${(section.paragraphs')
+      .replace('</article>`;', '</div></details>`;');
+  } else {
+    progressiveLessonLine = progressiveLessonLine
+      .replace('<article class="lesson">', '<details class="lesson" data-progressive-disclosure="true"><summary>')
+      .replace('<h2>', '<span class="lesson-title">')
+      .replace('</h2>${(section.paragraphs', '</span></summary><div class="lesson-body">${(section.paragraphs')
+      .replace('</article>`).join', '</div></details>`).join');
+  }
+  if (progressiveLessonLine === lessonLine || !progressiveLessonLine.includes('<details class="lesson"') || !progressiveLessonLine.includes('data-progressive-disclosure="true"') || !progressiveLessonLine.includes('<div class="lesson-body">')) {
     throw new Error('Learning V3 lesson-card renderer did not transform cleanly; refusing a partial accordion patch.');
   }
   source = source.replace(lessonLine, progressiveLessonLine);
 }
 
-const originalLessonGrid = '.v3 .lesson-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}';
-const progressiveLessonGrid = '.v3 .lesson-grid{display:grid;grid-template-columns:1fr;gap:12px}.v3 details.lesson{padding:0;overflow:hidden}.v3 details.lesson>summary{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;min-height:70px;padding:17px 20px;cursor:pointer;list-style:none}.v3 details.lesson>summary::-webkit-details-marker{display:none}.v3 details.lesson>summary:after{content:"+";display:grid;place-items:center;width:30px;height:30px;border:1px solid var(--v3-line);border-radius:999px;background:#f3f6f1;color:var(--v3-green);font-size:1.25rem;font-weight:900;line-height:1}.v3 details.lesson[open]>summary:after{content:"−"}.v3 details.lesson[open]>summary{background:#f7faf6}.v3 details.lesson>summary:focus-visible{outline:3px solid var(--v3-gold);outline-offset:-3px}.v3 .lesson-title{font-size:1.16rem;font-weight:900;line-height:1.25;color:var(--v3-ink)}.v3 .lesson-body{padding:0 20px 20px;border-top:1px solid var(--v3-line)}.v3 .lesson-body>p:first-child{margin-top:18px}@media print{.v3 details.lesson>.lesson-body{display:block!important}}';
-const lessonGridCount = source.split(originalLessonGrid).length - 1;
-const progressiveGridCount = source.split(progressiveLessonGrid).length - 1;
-if (lessonGridCount === 1) source = source.replace(originalLessonGrid, progressiveLessonGrid);
-else if (progressiveGridCount !== 1) throw new Error(`Expected one Learning V3 lesson-grid style, found original=${lessonGridCount}, progressive=${progressiveGridCount}`);
+const progressiveLessonStyles = '.v3 details.lesson{padding:0!important;overflow:hidden!important}.v3 details.lesson>summary{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;min-height:70px;padding:17px 20px;cursor:pointer;list-style:none}.v3 details.lesson>summary::-webkit-details-marker{display:none}.v3 details.lesson>summary:after{content:"+";display:grid;place-items:center;width:30px;height:30px;border:1px solid var(--v3-line);border-radius:999px;background:#f3f6f1;color:var(--v3-green);font-size:1.25rem;font-weight:900;line-height:1}.v3 details.lesson[open]>summary:after{content:"−"}.v3 details.lesson[open]>summary{background:#f7faf6}.v3 details.lesson>summary:focus-visible{outline:3px solid var(--v3-gold);outline-offset:-3px}.v3 .lesson-title{font-size:clamp(1.12rem,2vw,1.35rem);font-weight:900;line-height:1.25;color:var(--v3-ink)}.v3 .lesson-body{padding:0 20px 24px;border-top:1px solid var(--v3-line)}.v3 .lesson-body>p:first-child{margin-top:18px}@media print{.v3 details.lesson>.lesson-body{display:block!important}}';
+if (!source.includes(progressiveLessonStyles)) {
+  const styleClose = '</style>`;';
+  const styleCloseCount = source.split(styleClose).length - 1;
+  if (styleCloseCount < 1) throw new Error('Could not locate Learning V3 style block terminator for progressive-disclosure CSS.');
+  source = source.replace(styleClose, progressiveLessonStyles + styleClose);
+}
 
-const oldLiteratureCopy = 'The sections below keep plant science, observation, and practical checkpoints together so the page works as a usable reference instead of a text dump.';
+const oldLiteratureCopies = [
+  'The sections below keep plant science, observation, and practical checkpoints together so the page works as a usable reference instead of a text dump.',
+  'Use the section navigator to move through the topic as a reference instead of scanning a wall of equal-weight cards.'
+];
 const progressiveLiteratureCopy = 'Scan the section titles first. Expand only the topic you need; full explanations and checkpoints stay available without turning the page into a wall of text.';
-if (source.includes(oldLiteratureCopy)) source = source.replace(oldLiteratureCopy, progressiveLiteratureCopy);
-else if (!source.includes(progressiveLiteratureCopy)) throw new Error('Could not locate Learning V3 core-literature guidance copy.');
+if (!source.includes(progressiveLiteratureCopy)) {
+  const matched = oldLiteratureCopies.find(copy => source.includes(copy));
+  if (!matched) throw new Error('Could not locate Learning V3 core-literature guidance copy.');
+  source = source.replace(matched, progressiveLiteratureCopy);
+}
 
 // Require the public publisher itself to prove the new interaction reached every
 // subject route. This turns a visual-structure regression into a failed release
@@ -63,7 +80,7 @@ for (const marker of [
   "btn('/learn/atlas/', 'Open the THC Living Plant Atlas', true)",
   "btn('/learn/start-here/', 'Start here', false)",
   'data-progressive-disclosure="true"',
-  '<details class="lesson" data-progressive-disclosure="true">',
+  'data-progressive-disclosure="true"',
   progressivePublicCheckMarker,
   progressiveLiteratureCopy,
 ]) {

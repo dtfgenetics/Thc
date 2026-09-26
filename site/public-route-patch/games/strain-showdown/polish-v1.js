@@ -6,18 +6,28 @@ window.addEventListener('DOMContentLoaded', () => {
   const cancelSelection = document.querySelector('#cancelSelection');
 
   if (soundButton) {
-    const saved = localStorage.getItem(SOUND_PREF_KEY);
+    let saved = null;
+    try {
+      saved = globalThis.localStorage?.getItem(SOUND_PREF_KEY) ?? null;
+    } catch {
+      saved = null;
+    }
     if (saved === 'off' && soundButton.getAttribute('aria-pressed') !== 'false') soundButton.click();
     soundButton.addEventListener('click', () => {
       const enabled = soundButton.getAttribute('aria-pressed') === 'true';
-      localStorage.setItem(SOUND_PREF_KEY, enabled ? 'on' : 'off');
+      try {
+        globalThis.localStorage?.setItem(SOUND_PREF_KEY, enabled ? 'on' : 'off');
+      } catch {
+        // Sound preference persistence is optional; controls must keep working without storage.
+      }
     });
   }
 
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') return;
     if (rulesDialog?.open) {
-      rulesDialog.close();
+      if (typeof rulesDialog.close === 'function') rulesDialog.close();
+      else rulesDialog.removeAttribute('open');
       return;
     }
     if (cancelSelection && !cancelSelection.hidden) cancelSelection.click();

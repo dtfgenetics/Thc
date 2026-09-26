@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "updatedAt": "2026-09-09",
+  "updatedAt": "2026-09-25",
   "curriculumId": "lifecycle-propagation-v6",
   "route": "/learn/lifecycle-propagation/",
   "visualPolicy": {
@@ -49,11 +49,6 @@
     ],
     "clonal-propagation": [
       {
-        "file": "Cloning_Guide_with_Environment_Targets.png",
-        "title": "Cloning Guide & Propagation Environment",
-        "alt": "THC cloning guide illustrating cutting propagation and environmental targets."
-      },
-      {
         "file": "Sanitation_and_Biosecurity_Infographic.png",
         "title": "Sanitation & Biosecurity",
         "alt": "THC educational infographic covering sanitation and biosecurity practices relevant to mother stock and clonal propagation."
@@ -95,23 +90,12 @@
         "alt": "Educational diagram explaining photoperiod perception and plant flowering control."
       },
       {
-        "file": "Cannabis_Sex_Expression_and_Chromosome_Combinations.png",
-        "title": "Cannabis Sex Expression",
-        "alt": "THC educational infographic about cannabis sex expression and chromosome combinations."
-      },
-      {
         "file": "THC-ENC-001_VIS-05_Reproductive_Structures_v3.0.0.jpg",
         "title": "Reproductive Structures",
         "alt": "Educational cannabis diagram identifying reproductive structures used in sex-expression and flower-development study."
       }
     ],
-    "maturation-cycle-records": [
-      {
-        "file": "Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic.png",
-        "title": "Cannabis Life Cycle: Seed to Harvest",
-        "alt": "THC educational infographic showing the cannabis plant lifecycle from seed through harvest."
-      }
-    ]
+    "maturation-cycle-records": []
   },
   "removedRejectedVisuals": [
     {
@@ -159,6 +143,23 @@
       "status": "needed",
       "title": "Senescence & Nutrient Remobilization",
       "neededVisual": "A dedicated diagram separating regulated late-stage chlorophyll loss and nutrient remobilization from stress-driven decline."
+    }
+  ],
+  "removedQuarantinedVisuals": [
+    {
+      "file": "Cloning_Guide_with_Environment_Targets.png",
+      "title": "Cloning Guide & Propagation Environment",
+      "reason": "Quarantined by site/wordpress/visual-quality-policy.json; replacement requires a role-specific dtf-approved-visual-* asset."
+    },
+    {
+      "file": "Cannabis_Sex_Expression_and_Chromosome_Combinations.png",
+      "title": "Cannabis Sex Expression",
+      "reason": "Quarantined by site/wordpress/visual-quality-policy.json; replacement requires a role-specific dtf-approved-visual-* asset."
+    },
+    {
+      "file": "Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic.png",
+      "title": "Cannabis Life Cycle: Seed to Harvest",
+      "reason": "Quarantined by site/wordpress/visual-quality-policy.json; replacement requires a role-specific dtf-approved-visual-* asset."
     }
   ]
 }

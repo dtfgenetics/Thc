@@ -16,7 +16,9 @@
   let lastSoundEventId = '';
   let enhanceQueued = false;
 
-  const savePrefs = () => localStorage.setItem(PREF_KEY, JSON.stringify(prefs));
+  const savePrefs = () => {
+    try { globalThis.localStorage?.setItem(PREF_KEY, JSON.stringify(prefs)); } catch {}
+  };
   const coord = (row, col) => `${String.fromCharCode(65 + Number(row))}${Number(col) + 1}`;
 
   function unlockAudio() {

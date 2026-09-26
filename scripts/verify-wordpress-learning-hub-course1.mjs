@@ -206,17 +206,21 @@ for (const module of local.modules) {
 const expectedFinalCount = canonical.counts.get(local.finalAssessment);
 must(Number.isInteger(expectedFinalCount) && expectedFinalCount > 0, `Missing canonical count for ${local.finalAssessment}.`);
 const final = await pageBySlug('final-course-test', course.id);
-verifyPage(final, {
+const finalContent = verifyPage(final, {
   label: 'Course 1 final course test',
-  minLength: 3500,
-  required: ['Course mastery target:', 'not the passing standard for the separate secure certification examination', 'dtf-learning-hub-course1-layout-v4'],
-  questionCount: expectedFinalCount
+  minLength: 700,
+  required: ['Graded assessment:', 'answers and rationales are not exposed', '60-minute timed attempt', 'Open this graded final in the Academy', 'dtf-learning-hub-course1-layout-v4'],
+  questionCount: 0
 });
-publicQuestionCount += expectedFinalCount;
-verified.push({ type: 'final-test', id: final.id, slug: 'final-course-test', questionCount: expectedFinalCount });
+must(!finalContent.includes('Check answer and rationale'), 'Course 1 summative final must not expose self-check answer panels.');
+must(!/<strong>Answer:<\/strong>/i.test(finalContent), 'Course 1 summative final must not expose its answer key.');
+must(finalContent.includes('course=COURSE-LH-TECH1-001'), 'Course 1 summative final must deep-link to its own Academy course.');
+must(finalContent.includes('view=final'), 'Course 1 summative final deep link must target the graded-final view.');
+verified.push({ type: 'final-test', id: final.id, slug: 'final-course-test', securedQuestionCount: expectedFinalCount });
 
-must(publicQuestionCount === canonical.total, `Expected ${canonical.total} canonical public course-learning items, verified ${publicQuestionCount}.`);
-must(publicQuestionCount === canonical.release.publicScope.publicCourseItems, `Verified total ${publicQuestionCount} differs from release manifest ${canonical.release.publicScope.publicCourseItems}.`);
+const sourceScopedItemCount = publicQuestionCount + expectedFinalCount;
+must(sourceScopedItemCount === canonical.total, `Expected ${canonical.total} canonical course-learning items, verified ${sourceScopedItemCount} across rendered formative checks plus the secured final.`);
+must(sourceScopedItemCount === canonical.release.publicScope.publicCourseItems, `Verified source-scoped total ${sourceScopedItemCount} differs from release manifest ${canonical.release.publicScope.publicCourseItems}.`);
 must(verified.length === 19, `Expected 19 managed base Course 1 pages, verified ${verified.length}.`);
 
 const idSet = new Set(verified.map((page) => Number(page.id)));
@@ -229,9 +233,12 @@ console.log(JSON.stringify({
   sourceRelease: canonical.release.id,
   learnPageId: learn.id,
   managedBasePages: verified.length,
-  publicCourseItems: publicQuestionCount,
+  publicCourseItems: canonical.total,
+  renderedFormativeItems: publicQuestionCount,
+  securedFinalItems: expectedFinalCount,
   moduleItemCounts: local.modules.map((module) => ({ module: module.number, assessmentId: module.assessment, items: canonical.counts.get(module.assessment) })),
   finalItemCount: expectedFinalCount,
+  finalDeliveryMode: 'authenticated-graded-runtime',
   guidedUi: true,
   responsiveLayout: 'v4',
   pageIds: verified.map(({ type, number, id, slug, questionCount }) => ({ type, ...(number ? { number } : {}), id, slug, ...(questionCount ? { questionCount } : {}) })),

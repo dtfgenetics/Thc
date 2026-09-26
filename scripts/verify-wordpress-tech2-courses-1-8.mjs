@@ -82,11 +82,18 @@ for (const entry of config.courses) {
   const knowledgeSlug = entry.number === 8 ? 'readiness-check' : 'knowledge-check';
   const knowledge = await find(knowledgeSlug, root.id);
   must(knowledge && knowledge.status === 'publish', `${entry.id}: ${knowledgeSlug} missing.`);
-  must(rendered(knowledge.content).includes('Assessment boundary'), `${entry.id}: assessment boundary missing.`);
+  const knowledgeHtml = rendered(knowledge.content);
+  must(knowledgeHtml.includes('Formative learning check:'), `${entry.id}: formative learning boundary missing.`);
+  must(knowledgeHtml.includes('Check answer and rationale') || entry.number === 8, `${entry.id}: expected formative study feedback is missing.`);
   if (entry.number < 8) {
     const final = await find('course-assessment', root.id);
     must(final && final.status === 'publish', `${entry.id}: course assessment missing.`);
-    must(rendered(final.content).includes('Assessment boundary'), `${entry.id}: final assessment boundary missing.`);
+    const finalHtml = rendered(final.content);
+    must(finalHtml.includes('Graded assessment:'), `${entry.id}: final is not routed to the authenticated graded runtime.`);
+    must(!finalHtml.includes('Check answer and rationale'), `${entry.id}: summative final exposes self-check answer panels.`);
+    must(!/<strong>Answer:<\/strong>/i.test(finalHtml), `${entry.id}: summative final exposes answer-key content.`);
+    must(finalHtml.includes(`course=${entry.id}`), `${entry.id}: summative final must deep-link to its own Academy course.`);
+    must(finalHtml.includes('view=final'), `${entry.id}: summative final deep link must target the graded-final view.`);
   } else {
     const final = await find('course-assessment', root.id);
     must(!final, `${entry.id}: Course 8 must not expose a fabricated course final assessment.`);

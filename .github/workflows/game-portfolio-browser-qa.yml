@@ -7,6 +7,21 @@ on:
         description: Optional game ID (leave blank for all)
         required: false
         type: string
+  push:
+    branches: [main]
+    paths:
+      - 'configuration/game-qa/**'
+      - 'data/game-source-map.json'
+      - 'data/project-registry.json'
+      - 'games/**'
+      - 'site/deployment/public-apps.json'
+      - 'site/public-route-patch/games/**'
+      - 'scripts/game-portfolio-browser-qa.mjs'
+      - 'scripts/game-asset-performance-audit.mjs'
+      - 'scripts/sync-game-shared-platform.mjs'
+      - 'scripts/lib/game-qa-catalog.mjs'
+      - 'package.json'
+      - '.github/workflows/game-portfolio-browser-qa.yml'
   pull_request:
     paths:
       - 'configuration/game-qa/**'
@@ -15,6 +30,7 @@ on:
       - 'games/strain-showdown/**'
       - 'site/deployment/public-apps.json'
       - 'site/public-route-patch/games/**'
+      - 'scripts/game-portfolio-browser-qa.mjs'
       - 'scripts/game-asset-performance-audit.mjs'
       - 'scripts/sync-game-shared-platform.mjs'
       - 'scripts/lib/game-qa-catalog.mjs'
@@ -46,6 +62,11 @@ jobs:
       - run: npm run games:platform:test
       - run: npm run games:platform:sync-check
       - run: npm run games:qa:catalog > game-qa-catalog.json
+      - name: Audit checked-in game routes and runtime assets
+        run: npm run games:qa:local -- --all-deployed --strict
+      - name: Audit every deployed game route live
+        if: github.event_name != 'pull_request'
+        run: npm run games:qa:live -- --all-deployed --strict
       - name: Audit checked-in game payloads
         run: npm run games:qa:assets
       - name: Verify public navigation and game ownership
@@ -60,6 +81,6 @@ jobs:
           name: game-portfolio-quality
           path: |
             game-qa-catalog.json
-            artifacts/game-qa/assets
+            artifacts/game-qa
           if-no-files-found: warn
           retention-days: 14

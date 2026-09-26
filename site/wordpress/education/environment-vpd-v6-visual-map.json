@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-23",
+  "updatedAt": "2026-09-25",
   "curriculumId": "environment-vpd-v6",
   "route": "/learn/environment-vpd/",
   "chapters": {
@@ -40,11 +40,6 @@
         "file": "THC-ENC-085_Vapor_Pressure_Deficit_Meaning_and_Calculation.jpg",
         "title": "Vapor Pressure Deficit: Meaning & Calculation",
         "alt": "Educational diagram explaining vapor pressure deficit and its calculation."
-      },
-      {
-        "file": "THC-ENC-086_Air_VPD_Versus_Leaf_VPD.jpg",
-        "title": "Air VPD Versus Leaf VPD",
-        "alt": "Educational diagram comparing air vapor pressure deficit with leaf-centered vapor pressure deficit."
       }
     ],
     "transpiration-root-supply": [
@@ -120,6 +115,13 @@
       "status": "needed",
       "title": "Control Bands, Alarms, Transitions & Environmental Records",
       "neededVisual": "A dedicated control diagram distinguishing setpoint, normal band, warning, action and emergency limits while showing lights-on/lights-off transitions, equipment state and traceable records."
+    }
+  ],
+  "removedQuarantinedVisuals": [
+    {
+      "file": "THC-ENC-086_Air_VPD_Versus_Leaf_VPD.jpg",
+      "title": "Air VPD Versus Leaf VPD",
+      "reason": "Quarantined by site/wordpress/visual-quality-policy.json; replacement requires a role-specific dtf-approved-visual-* asset."
     }
   ]
 }

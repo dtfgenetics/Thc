@@ -8,6 +8,7 @@ assert.equal(build.status, 0, build.stderr || build.stdout);
 const bundlePath = 'site/public-route-patch/games/strain-showdown/data/browser-bundle.json';
 const bundle = JSON.parse(fs.readFileSync(bundlePath, 'utf8'));
 const app = fs.readFileSync('site/public-route-patch/games/strain-showdown/app.js', 'utf8');
+const polishV1 = fs.readFileSync('site/public-route-patch/games/strain-showdown/polish-v1.js', 'utf8');
 const html = fs.readFileSync('site/public-route-patch/games/strain-showdown/index.html', 'utf8');
 const runtimeV2 = fs.readFileSync('site/public-route-patch/games/strain-showdown/runtime-v2.css', 'utf8');
 const runtimeV3 = fs.readFileSync('site/public-route-patch/games/strain-showdown/runtime-v3.css', 'utf8');
@@ -33,6 +34,9 @@ assert.match(app, /globalThis\.localStorage\?\.getItem/);
 assert.match(app, /class="card[^`]*unplayable|unplayable/);
 assert.match(app, /aria-disabled=/);
 assert.match(app, /Rival turn in progress/);
+assert.match(polishV1, /globalThis\.localStorage\?\.getItem/, 'sound preference read must tolerate restricted storage');
+assert.match(polishV1, /globalThis\.localStorage\?\.setItem/, 'sound preference write must tolerate restricted storage');
+assert.match(polishV1, /typeof rulesDialog\.close === 'function'/, 'Escape-close must tolerate dialog fallbacks');
 
 assert.match(html, /id="runtimeStatus"/);
 assert.match(html, /runtime-v2\.css/);

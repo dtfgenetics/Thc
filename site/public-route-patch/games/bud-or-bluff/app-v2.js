@@ -3,6 +3,9 @@
   const POLL_MS = 1250;
   const SESSION_KEY = 'dtf_bob_session_v2';
   const SOUND_KEY = 'dtf_bob_sound_v2';
+  function storageGet(key){try{return globalThis.localStorage?.getItem(key)??null}catch{return null}}
+  function storageSet(key,value){try{globalThis.localStorage?.setItem(key,value);return true}catch{return false}}
+  function storageRemove(key){try{globalThis.localStorage?.removeItem(key);return true}catch{return false}}
   let session = null;
   let room = null;
   let pollTimer = null;
@@ -10,7 +13,7 @@
   let lastEventId = null;
   let lastRevision = -1;
   let clockOffset = 0;
-  let soundOn = localStorage.getItem(SOUND_KEY) !== 'off';
+  let soundOn = storageGet(SOUND_KEY) !== 'off';
   let reconnecting = false;
   let lastAnnouncedChatId = null;
 
@@ -48,8 +51,8 @@
   Object.assign(els,{connection:$('connectionStatus'),shareTop:$('shareTop'),endGame:$('endGameButton'),lobbyTools:$('lobbyTools'),shareInvite:$('shareInvite'),copyInvite:$('copyInvite'),lockLobby:$('lockLobby'),hostSettings:$('hostSettings'),settingRounds:$('settingRounds'),settingVote:$('settingVote'),settingReveal:$('settingReveal'),settingAuto:$('settingAuto'),saveSettings:$('saveSettings'),settingsSummary:$('settingsSummary'),roundStats:$('roundStats'),hostReveal:$('hostRevealButton'),rematch:$('rematchButton')});
 
   function showError(el,message){if(!el)return;el.textContent=message;setHidden(el,false);setTimeout(()=>setHidden(el,true),4200);}
-  function saveSession(data){session=data;if(data)localStorage.setItem(SESSION_KEY,JSON.stringify(data));else localStorage.removeItem(SESSION_KEY);}
-  function loadSession(){try{return JSON.parse(localStorage.getItem(SESSION_KEY)||'null')}catch{return null}}
+  function saveSession(data){session=data;if(data)storageSet(SESSION_KEY,JSON.stringify(data));else storageRemove(SESSION_KEY);}
+  function loadSession(){try{return JSON.parse(storageGet(SESSION_KEY)||'null')}catch{return null}}
   function inviteUrl(code=room?.code){const url=new URL(location.href);url.searchParams.set('room',code||'');return url.toString();}
   async function copyText(value){
     const text=String(value||'');
@@ -120,7 +123,7 @@
   els.shareInvite.addEventListener('click',shareRoom);els.shareTop.addEventListener('click',shareRoom);els.copyInvite.addEventListener('click',copyRoom);
   els.chatForm.addEventListener('submit',async e=>{e.preventDefault();const text=els.chatInput.value.trim();if(!text)return;els.chatInput.value='';try{room=await request('chat',{method:'POST',body:{text}});lastRevision=-1;render()}catch(err){showError(els.roomError,err.message)}});
   els.rematch.addEventListener('click',()=>hostAction('rematch'));els.newRoom.addEventListener('click',leaveRoom);els.leave.addEventListener('click',leaveRoom);els.endGame.addEventListener('click',()=>{if(confirm('End this game for everyone?'))hostAction('end')});
-  els.sound.addEventListener('click',()=>{soundOn=!soundOn;localStorage.setItem(SOUND_KEY,soundOn?'on':'off');els.sound.textContent=soundOn?'Sound on':'Sound off';if(soundOn)audioPulse('tap')});els.sound.textContent=soundOn?'Sound on':'Sound off';
+  els.sound.addEventListener('click',()=>{soundOn=!soundOn;storageSet(SOUND_KEY,soundOn?'on':'off');els.sound.textContent=soundOn?'Sound on':'Sound off';if(soundOn)audioPulse('tap')});els.sound.textContent=soundOn?'Sound on':'Sound off';
 
   async function boot(){session=loadSession();const invite=new URL(location.href).searchParams.get('room');if(invite&&!session){document.querySelector('[data-tab="join"]').click();els.joinCode.value=invite.toUpperCase().slice(0,6)}if(!session)return;setHidden(els.home,true);setHidden(els.room,false);setHidden(els.leave,false);setHidden(els.shareTop,false);try{await refresh();startPolling()}catch{leaveRoom()}}
   boot();

@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "title": "Terpene mechanism, evidence and safety records",
+  "policy": {
+    "medicalClaimPolicy": "This dataset describes research findings and uncertainty. It does not diagnose, treat, recommend a dose, or establish a therapeutic effect in humans.",
+    "evidenceHierarchy": [
+      "human-clinical",
+      "human-observational",
+      "animal-in-vivo",
+      "in-vitro",
+      "review-synthesis"
+    ],
+    "rule": "A receptor interaction or animal outcome must not be displayed as a proven human therapeutic effect.",
+    "entourageRule": "Do not present cannabinoid-terpene synergy as established clinical fact unless supported by compound-specific human evidence."
+  },
+  "compoundEvidence": [
+    {
+      "compoundId": "beta-caryophyllene",
+      "topic": "CB2 receptor agonism",
+      "finding": "(E)-β-caryophyllene has demonstrated selective CB2 receptor binding and functional agonism in receptor/cellular experiments; animal studies also support CB2-dependent biological effects.",
+      "evidenceModels": [
+        "in-vitro",
+        "animal-in-vivo"
+      ],
+      "humanEvidenceStatus": "mechanism not established as a therapeutic effect in humans",
+      "confidence": "mechanism-supported-preclinical",
+      "sources": [
+        "gertsch-2008-bcp-cb2",
+        "systematic-eo-ecs-2020"
+      ],
+      "limitations": "Receptor activity and animal outcomes do not establish efficacy, dose, safety, or treatment benefit in people."
+    },
+    {
+      "compoundId": "beta-myrcene",
+      "topic": "Reported receptor targets",
+      "finding": "Reviews report preclinical interactions with α2-adrenergic and TRPV1 targets among proposed mechanisms for β-myrcene.",
+      "evidenceModels": [
+        "review-synthesis",
+        "preclinical"
+      ],
+      "humanEvidenceStatus": "insufficient direct clinical evidence",
+      "confidence": "preliminary",
+      "sources": [
+        "secondary-terpenes-2022"
+      ],
+      "limitations": "Target-level or animal findings should not be translated into a predictable human effect from a Cannabis sample."
+    },
+    {
+      "compoundId": "borneol",
+      "topic": "TRPM8 activity",
+      "finding": "Preclinical literature summarized in reviews reports borneol activation of TRPM8 under experimental conditions.",
+      "evidenceModels": [
+        "in-vitro",
+        "review-synthesis"
+      ],
+      "humanEvidenceStatus": "insufficient direct clinical evidence",
+      "confidence": "preliminary",
+      "sources": [
+        "secondary-terpenes-2022"
+      ],
+      "limitations": "Experimental receptor activation does not establish a therapeutic effect, effective dose, or expected outcome from plant material."
+    }
+  ],
+  "generalEvidence": [
+    {
+      "id": "entourage-evidence",
+      "title": "Entourage-effect claims",
+      "finding": "Cannabis terpenes and cannabinoids may share or influence biological targets, but proposed synergy is compound-, model-, dose- and endpoint-dependent. Current literature does not justify treating a generic terpene profile as proof of a predictable clinical entourage effect.",
+      "evidenceModels": [
+        "review-synthesis",
+        "in-vitro",
+        "animal-in-vivo"
+      ],
+      "humanEvidenceStatus": "limited and not broadly established",
+      "sources": [
+        "entourage-review-2025",
+        "secondary-terpenes-2022"
+      ],
+      "limitations": "Do not infer therapeutic synergy from co-occurrence alone."
+    }
+  ],
+  "safety": [
+    {
+      "id": "oxidized-linalool-contact-sensitization",
+      "compoundIds": [
+        "linalool"
+      ],
+      "concern": "Oxidized linalool can contribute to allergic contact dermatitis in susceptible individuals.",
+      "evidenceContext": "dermal/cosmetic exposure literature summarized in review",
+      "sources": [
+        "terpene-pain-safety-review-2025"
+      ],
+      "limitation": "Risk depends on exposure route, oxidation state, concentration and individual susceptibility."
+    },
+    {
+      "id": "limonene-enzyme-interaction",
+      "compoundIds": [
+        "d-limonene"
+      ],
+      "concern": "In vitro literature reports CYP3A4 inhibition by limonene or related preparations, creating a plausible interaction question for drugs metabolized through that pathway.",
+      "evidenceContext": "in-vitro / review synthesis",
+      "sources": [
+        "terpene-pain-safety-review-2025"
+      ],
+      "limitation": "In vitro enzyme inhibition does not establish the magnitude or clinical significance of an interaction at typical Cannabis exposure levels."
+    },
+    {
+      "id": "high-dose-isolated-terpenes",
+      "compoundIds": [],
+      "concern": "High-dose or concentrated isolated-terpene exposure is not equivalent to smelling or handling intact plant material; dose and route can change toxicology substantially.",
+      "evidenceContext": "animal and toxicology literature summarized in review",
+      "sources": [
+        "terpene-pain-safety-review-2025"
+      ],
+      "limitation": "Do not use preclinical high-dose findings to infer toxicity or safety at unrelated exposure levels."
+    }
+  ]
+}

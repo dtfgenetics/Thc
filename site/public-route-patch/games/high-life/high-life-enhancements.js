@@ -18,21 +18,22 @@
 
   const log = panel.querySelector('#career-log');
   const toggle = panel.querySelector('#career-log-toggle');
+  let viewState = { history: [], resourceLabels: {} };
 
   function summarizeDelta(delta = {}) {
     const entries = Object.entries(delta);
     if (!entries.length) return 'No resource change';
-    return entries.map(([key, value]) => `${value > 0 ? '+' : ''}${value} ${resourceLabels?.[key] || key}`).join(' · ');
+    return entries.map(([key, value]) => `${value > 0 ? '+' : ''}${value} ${viewState.resourceLabels?.[key] || key}`).join(' · ');
   }
 
   function renderCareerLog() {
-    if (!state || !Array.isArray(state.history) || !state.history.length) {
+    if (!Array.isArray(viewState.history) || !viewState.history.length) {
       panel.hidden = true;
       return;
     }
 
     panel.hidden = false;
-    const recent = state.history.slice(-4).reverse();
+    const recent = [...viewState.history].slice(-4).reverse();
     log.replaceChildren(...recent.map((record) => {
       const article = document.createElement('article');
       article.className = 'career-log-entry';
@@ -96,6 +97,15 @@
         continueButton.click();
       }
     }
+  });
+
+  window.addEventListener('high-life:state', (event) => {
+    const detail = event?.detail;
+    viewState = {
+      history: Array.isArray(detail?.history) ? detail.history : [],
+      resourceLabels: detail?.resourceLabels && typeof detail.resourceLabels === 'object' ? detail.resourceLabels : {}
+    };
+    refresh();
   });
 
   const observer = new MutationObserver((mutations) => {

@@ -31,6 +31,9 @@ jobs:
           node --check site/public-route-patch/games/protect-the-plants/v2-extras.js
           node --check site/public-route-patch/games/protect-the-plants/sw.js
 
+      - name: Validate restricted-storage and clipboard fallbacks
+        run: node games/protect-the-plants/test/storage-safety.test.mjs
+
       - name: Validate PHP API
         run: php -l site/public-route-patch/games/protect-the-plants/api.php
 

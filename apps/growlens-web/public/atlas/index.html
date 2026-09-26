@@ -11,7 +11,9 @@
   <link rel="stylesheet" href="/atlas/atlas-v3.css">
   <link rel="stylesheet" href="/atlas/atlas-v4.css">
   <link rel="stylesheet" href="/atlas/atlas-inspection-fixes.css">
-  <link rel="stylesheet" href="/atlas/atlas-site-shell-v5.css">\n  <link rel="stylesheet" href="/atlas/atlas-anatomy-index-v1.css">\n  <link rel="stylesheet" href="/atlas/atlas-workspace-v5.css">
+  <link rel="stylesheet" href="/atlas/atlas-site-shell-v5.css">
+  <link rel="stylesheet" href="/atlas/atlas-anatomy-index-v1.css">
+  <link rel="stylesheet" href="/atlas/atlas-workspace-v5.css">
   <script type="importmap">
   {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}
   </script>
@@ -20,11 +22,16 @@
   <header class="topbar">
     <div class="topbar-inner">
       <a class="brand" href="/atlas/" aria-label="THC Living Plant Atlas home"><span class="brand-mark" aria-hidden="true"></span><span><strong>THC Living Plant Atlas</strong><small>DTF GENETICS · PLANT SCIENCE</small></span></a>
-      <nav class="top-links" aria-label="Atlas navigation"><a href="#interactive-plant">3D Plant</a><a href="#anatomy-index">Anatomy</a><a href="#systems">Systems</a><a href="#deep-labs">Deep Labs</a><a href="/terpene-atlas/">Terpene Atlas</a><a href="#lifecycle">Lifecycle</a><a href="/learn/">Learning Center</a><a href="/growlens/">GrowLens</a></nav>
+      <nav class="top-links" aria-label="Atlas navigation"><a href="#interactive-plant">3D Plant</a><a href="#anatomy-index">Anatomy</a><a href="#reference-visuals">Visuals</a><a href="#systems">Systems</a><a href="#deep-labs">Deep Labs</a><a href="/terpene-atlas/">Terpene Atlas</a><a href="#lifecycle">Lifecycle</a><a href="/learn/">Learning Center</a><a href="/tools/">All Tools</a><a href="/growlens/">GrowLens</a></nav>
     </div>
   </header>
 
-  <div class="atlas-shell">\n    <section class="atlas-workspace-bar" aria-label="Atlas workspace controls">\n      <div class="atlas-mode-switch" role="group" aria-label="Atlas detail mode"><button type="button" data-atlas-mode="explorer" aria-pressed="true">Explorer</button><button type="button" data-atlas-mode="research" aria-pressed="false">Research</button></div>\n      <div class="atlas-command-search"><label class="sr-only" for="atlas-command-search">Search the complete Plant Atlas</label><input id="atlas-command-search" data-atlas-command-input type="search" autocomplete="off" placeholder="Find xylem, stomata, chlorosis, transpiration, roots…"><kbd>Ctrl K</kbd><div class="atlas-command-results" data-atlas-command-results role="listbox" aria-label="Atlas search results"></div></div>\n      <div class="atlas-layer-switch" role="group" aria-label="Scientific viewing layer"><button type="button" data-atlas-layer="anatomy" aria-pressed="true">Anatomy</button><button type="button" data-atlas-layer="physiology" aria-pressed="false">Physiology</button><button type="button" data-atlas-layer="environment" aria-pressed="false">Environment</button><button type="button" data-atlas-layer="diagnostics" aria-pressed="false">Diagnostics</button><button type="button" data-atlas-layer="development" aria-pressed="false">Development</button></div>\n    </section>
+  <div class="atlas-shell">
+    <section class="atlas-workspace-bar" aria-label="Atlas workspace controls">
+      <div class="atlas-mode-switch" role="group" aria-label="Atlas detail mode"><button type="button" data-atlas-mode="explorer" aria-pressed="true">Explorer</button><button type="button" data-atlas-mode="research" aria-pressed="false">Research</button></div>
+      <div class="atlas-command-search"><label class="sr-only" for="atlas-command-search">Search the complete Plant Atlas</label><input id="atlas-command-search" data-atlas-command-input type="search" autocomplete="off" placeholder="Find xylem, stomata, chlorosis, transpiration, roots…"><kbd>Ctrl K</kbd><div class="atlas-command-results" data-atlas-command-results role="listbox" aria-label="Atlas search results"></div></div>
+      <div class="atlas-layer-switch" role="group" aria-label="Scientific viewing layer"><button type="button" data-atlas-layer="anatomy" aria-pressed="true">Anatomy</button><button type="button" data-atlas-layer="physiology" aria-pressed="false">Physiology</button><button type="button" data-atlas-layer="environment" aria-pressed="false">Environment</button><button type="button" data-atlas-layer="diagnostics" aria-pressed="false">Diagnostics</button><button type="button" data-atlas-layer="development" aria-pressed="false">Development</button></div>
+    </section>
     <section class="atlas-stage-bar" aria-label="Plant developmental stage">
       <div class="atlas-stage-heading"><span class="eyebrow">Developmental context</span><strong data-stage-title>Reproductive development</strong></div>
       <div class="atlas-stage-track" role="group" aria-label="Select developmental stage">
@@ -74,7 +81,9 @@
           <a href="/growlens/"><span>GrowLens</span><small>Diagnostic tool →</small></a>
         </div>
       </aside>
-      <div class="plant-lab-copy">\n        <button class="atlas-mobile-tray-toggle" type="button" data-atlas-mobile-tray-toggle aria-expanded="false"><span>Plant inspector</span><span>Expand ↑</span></button>\n        <div class="atlas-layer-status" data-atlas-layer-status data-visible="false"></div>
+      <div class="plant-lab-copy">
+        <button class="atlas-mobile-tray-toggle" type="button" data-atlas-mobile-tray-toggle aria-expanded="false"><span>Plant inspector</span><span>Expand ↑</span></button>
+        <div class="atlas-layer-status" data-atlas-layer-status data-visible="false"></div>
         <p class="eyebrow">3D anatomy explorer</p>
         <h2>Learn from the plant itself</h2>
         <p>Drag to rotate. Scroll or pinch to zoom. Hover a structure to identify it, then click or tap to focus the camera and read what that structure does. Use the module link in the inspector when you want the full lesson.</p>
@@ -102,7 +111,8 @@
         <div class="atlas-viewer-toolbar" aria-label="Specimen viewer actions">
           <button type="button" data-viewer-action="reset">Fit specimen</button>
           <button type="button" data-viewer-action="labels" aria-pressed="true">Labels</button>
-          <button type="button" data-viewer-action="help" aria-pressed="false">Controls</button>\n          <button type="button" data-viewer-action="compare" aria-pressed="false">Compare</button>
+          <button type="button" data-viewer-action="help" aria-pressed="false">Controls</button>
+          <button type="button" data-viewer-action="compare" aria-pressed="false">Compare</button>
         </div>
         <div class="atlas-compare-panel" data-atlas-compare hidden>
           <div class="atlas-compare-head"><strong>Compare structures</strong><button type="button" data-compare-close aria-label="Close comparison">×</button></div>
@@ -135,10 +145,12 @@
       <div class="anatomy-index-controls">
         <label class="search"><span class="sr-only">Search anatomy</span><input type="search" data-anatomy-search placeholder="Search xylem, root crown, bract, stigma, trichome…"></label>
         <label><span class="sr-only">Filter anatomy by scale</span><select data-anatomy-scale><option value="all">All scales</option><option value="whole-plant">Whole plant</option><option value="organ-tissue">Organ + tissue</option><option value="microscopic">Microscopic</option></select></label>
+        <label><span class="sr-only">Filter anatomy by representation</span><select data-anatomy-representation><option value="all">All representations</option><option value="direct-3d">Direct 3D</option><option value="semantic-3d-anchor">Semantic anchor</option><option value="micro-reference">Microscopic reference</option></select></label>
       </div>
       <div class="anatomy-index-grid" data-anatomy-grid aria-live="polite"></div>
     </section>
-\n    <section class="toolbar" aria-label="Atlas search and filters">
+
+    <section class="toolbar" aria-label="Atlas search and filters">
       <label class="search"><span class="sr-only">Search the Plant Atlas</span><input data-atlas-search type="search" autocomplete="off" placeholder="Search anatomy, xylem, pollen, chlorosis, hormones, water…"></label>
       <div class="filters" role="group" aria-label="Filter Atlas by category"><button class="filter active" type="button" data-category="All">All</button><button class="filter" type="button" data-category="Development">Development</button><button class="filter" type="button" data-category="Anatomy">Anatomy</button><button class="filter" type="button" data-category="Physiology">Physiology</button><button class="filter" type="button" data-category="Reproduction">Reproduction</button><button class="filter" type="button" data-category="Genetics">Genetics</button><button class="filter" type="button" data-category="Environment">Environment</button><button class="filter" type="button" data-category="Diagnostics">Diagnostics</button></div>
     </section>
@@ -160,6 +172,18 @@
       <div class="deep-grid"><a class="deep-card" href="/atlas/leaf-module/"><small>Deep lab</small><h3>Leaf System</h3><p>Leaf anatomy, stomata, photosynthesis, transpiration, environmental stress, chlorosis, necrosis, curl, nutrient-pattern language, and pest damage.</p><b>Open Leaf Lab →</b></a><a class="deep-card" href="/atlas/root-system/"><small>Deep lab</small><h3>Root System</h3><p>Root anatomy, rhizosphere, water uptake, nutrient uptake, root oxygen, dryback, root-zone diagnostics, and root-rot pattern recognition.</p><b>Open Root Lab →</b></a><a class="deep-card" href="/atlas/flower-anatomy/"><small>Deep lab</small><h3>Flower Anatomy</h3><p>Inflorescences, bracts, sugar leaves, stigmas, reproductive surfaces, maturation, and the anatomy that supports resin-rich floral tissue.</p><b>Open Flower Lab →</b></a><a class="deep-card" href="/terpene-atlas/"><small>Connected atlas</small><h3>Terpene Atlas</h3><p>Move from glandular trichome anatomy into terpene chemistry, compound families, evidence-backed Cannabis occurrence, sample measurements, aroma descriptors, and cultivar comparisons.</p><b>Open Terpene Atlas →</b></a><a class="deep-card" href="/atlas/diagnostics/"><small>Deep lab</small><h3>Diagnostics</h3><p>Pattern language, tissue location, progression, environmental evidence, root-zone context, pests, pathogens, and differential diagnosis.</p><b>Open Diagnostic Lab →</b></a></div>
     </section>
 
+    <section class="section atlas-reference-gallery" id="reference-visuals">
+      <div class="section-head"><div><p class="eyebrow">Approved reference visuals</p><h2>See structures the 3D specimen cannot fully resolve</h2></div><p>These approved references complement the 3D model with seed, root-tip, node, reproductive, stomatal, and trichome-scale detail.</p></div>
+      <div class="reference-visual-grid">
+        <figure><a href="/atlas/assets/THC-ENC-001_VIS-06_Achene_Embryo_Germination_v3.0.0.jpg" target="_blank" rel="noopener"><img src="/atlas/assets/THC-ENC-001_VIS-06_Achene_Embryo_Germination_v3.0.0.jpg" alt="Cannabis achene embryo and germination anatomy reference" loading="lazy" decoding="async"></a><figcaption><strong>Seed & germination</strong><span>Achene, embryo, radicle, and early developmental context.</span></figcaption></figure>
+        <figure><a href="/atlas/assets/THC-ENC-041_Root_Tip_Development_and_Functional_Zones.jpg" target="_blank" rel="noopener"><img src="/atlas/assets/THC-ENC-041_Root_Tip_Development_and_Functional_Zones.jpg" alt="Root tip development and functional zones reference" loading="lazy" decoding="async"></a><figcaption><strong>Root tip</strong><span>Apical growth, elongation, differentiation, and absorbing zones.</span></figcaption></figure>
+        <figure><a href="/atlas/assets/THC-ENC-001_VIS-03_Nodes_Internodes_Branching_v3.0.0.jpg" target="_blank" rel="noopener"><img src="/atlas/assets/THC-ENC-001_VIS-03_Nodes_Internodes_Branching_v3.0.0.jpg" alt="Cannabis nodes internodes and branching reference" loading="lazy" decoding="async"></a><figcaption><strong>Nodes & branching</strong><span>Node, internode, axillary-bud, and architecture reference.</span></figcaption></figure>
+        <figure><a href="/atlas/assets/THC-ENC-001_VIS-05_Reproductive_Structures_v3.0.0.jpg" target="_blank" rel="noopener"><img src="/atlas/assets/THC-ENC-001_VIS-05_Reproductive_Structures_v3.0.0.jpg" alt="Cannabis reproductive structures reference" loading="lazy" decoding="async"></a><figcaption><strong>Reproductive structures</strong><span>Flower and sex-expression anatomy reference.</span></figcaption></figure>
+        <figure><a href="/atlas/assets/THC-ENC-068_Stomata_Guard_Cells_and_Gas_Exchange.jpg" target="_blank" rel="noopener"><img src="/atlas/assets/THC-ENC-068_Stomata_Guard_Cells_and_Gas_Exchange.jpg" alt="Stomata guard cells and gas exchange reference" loading="lazy" decoding="async"></a><figcaption><strong>Stomata & gas exchange</strong><span>Microscopic context for leaf gas exchange and water loss.</span></figcaption></figure>
+        <figure><a href="/atlas/assets/THC-ENC-001_VIS-07_Trichomes_on_Cannabis_Surfaces_v3.0.0.jpg" target="_blank" rel="noopener"><img src="/atlas/assets/THC-ENC-001_VIS-07_Trichomes_on_Cannabis_Surfaces_v3.0.0.jpg" alt="Cannabis trichomes on plant surfaces reference" loading="lazy" decoding="async"></a><figcaption><strong>Trichomes</strong><span>Reference-scale view for glandular structures linked to terpene chemistry.</span></figcaption></figure>
+      </div>
+    </section>
+
     <section class="section" id="lifecycle">
       <div class="section-head"><div><p class="eyebrow">Developmental context</p><h2>The same tissue means different things at different stages</h2></div><p>Development changes source-sink relationships, architecture, reproductive priorities, tissue age, water demand, and the meaning of visible symptoms.</p></div>
       <div class="life-grid"><div class="life"><i>1</i><strong>Seed</strong><span>Embryo protected inside the seed coat.</span></div><div class="life"><i>2</i><strong>Germination</strong><span>Imbibition, radicle emergence, shoot establishment.</span></div><div class="life"><i>3</i><strong>Seedling</strong><span>Cotyledons transition toward true-leaf photosynthesis.</span></div><div class="life"><i>4</i><strong>Vegetative growth</strong><span>Rapid leaf, root, stem, node, and branch expansion.</span></div><div class="life"><i>5</i><strong>Flower transition</strong><span>Meristem identity and source-sink priorities change.</span></div><div class="life"><i>6</i><strong>Reproductive development</strong><span>Flowers, pollen, fertilization, seed, and maturation pathways.</span></div></div>
@@ -169,8 +193,10 @@
     <footer class="footer"><span>THC Living Plant Atlas · DTF Genetics</span><span><a href="/atlas/downloads/">Field cards & downloads</a> · <a href="/learn/">Teaching Healthy Cultivation</a></span></footer>
   </div>
   <!-- Interactive 3D system V4 -->
-  <script type="module" src="/atlas/atlas-3d-bootstrap.js"></script>\n  <script type="module" src="/atlas/atlas-anatomy-index-v1.js"></script>
-  <script src="/atlas/atlas-v3.js" defer></script>\n  <script src="/atlas/atlas-workspace-v5.js" defer></script>
+  <script type="module" src="/atlas/atlas-3d-bootstrap.js"></script>
+  <script type="module" src="/atlas/atlas-anatomy-index-v1.js"></script>
+  <script src="/atlas/atlas-v3.js" defer></script>
+  <script src="/atlas/atlas-workspace-v5.js" defer></script>
   <dialog class="atlas-media-dialog" data-atlas-media-dialog aria-labelledby="atlas-media-dialog-title">
     <div class="atlas-media-dialog-shell">
       <div class="atlas-media-dialog-head">

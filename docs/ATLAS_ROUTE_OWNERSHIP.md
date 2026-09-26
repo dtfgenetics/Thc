@@ -8,9 +8,9 @@ The site currently has two useful Atlas surfaces. They are related, but they are
 
 - Purpose: specimen-first interactive anatomy explorer.
 - Current implementation: Plant Atlas V4 under `site/public-route-patch/atlas/` and the synchronized GrowLens Atlas source.
-- Deployment owner: DTFSeeds Public Suite.
+- Deployment owner: the independent `plant-atlas` production resource, coordinated by the DTFSeeds resource gateway.
 - Visitor promise: rotate, zoom, inspect anatomical regions, use system cards and deep labs, then move into deeper plant-science material.
-- Release proof: Public Suite deployment must verify `/atlas/` and representative Atlas child routes after publication.
+- Release proof: the Plant Atlas resource deployment must verify `/atlas/`, its visitor-contract markers and representative Atlas child routes after publication. The Public Suite archive must exclude both `atlas/` and the duplicate `growlens/atlas/` payload.
 
 This is the canonical route for navigation labels such as **3D Plant Atlas** and **THC Living Plant Atlas — 3D Explorer**.
 

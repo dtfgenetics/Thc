@@ -18,6 +18,8 @@ const requiredFiles = [
   'data/sample-profile-schema-v1.json',
   'data/population-summary-v1.json',
   'data/sample-profiles-v1.json',
+  'data/profile-factors-v1.json',
+  'data/evidence-claims-v1.json',
 ];
 
 for (const relative of requiredFiles) {
@@ -40,6 +42,8 @@ const catalog = readJSON('terpene-catalog-v1.json');
 const sampleSchema = readJSON('sample-profile-schema-v1.json');
 const population = readJSON('population-summary-v1.json');
 const profiles = readJSON('sample-profiles-v1.json');
+const factors = readJSON('profile-factors-v1.json');
+const evidenceClaims = readJSON('evidence-claims-v1.json');
 const schema = readJSON('terpene-schema-v1.json');
 
 if (schema?.schemaVersion !== 1) errors.push('terpene-schema-v1.json must use schemaVersion 1');
@@ -65,10 +69,12 @@ for (const item of catalog?.compounds || []) {
   if (!item.formula) errors.push(`Missing molecular formula for ${item.id}`);
 }
 
-if ((catalog?.compounds || []).length < 90) errors.push('Terpene Atlas curated ontology must contain at least 90 evidence-backed named compounds');
-if (!String(catalog?.status || '').includes('expansion')) errors.push('Catalog must remain explicitly incomplete until full inventories are imported');
+if ((catalog?.compounds || []).length < 120) errors.push('Terpene Atlas curated ontology must contain at least 120 evidence-backed named compounds');
+if (catalog?.status !== 'production-cannabis-core-expandable') errors.push('Catalog status must remain production-cannabis-core-expandable until a broader global ontology is completed');
 if (catalog?.coverage?.completenessClaim !== false) errors.push('Terpene Atlas must not claim complete global/Cannabis terpene coverage yet');
+if (!String(catalog?.coverage?.referenceInventoryNote || '').includes('120 Cannabis terpenes')) errors.push('Terpene Atlas coverage must document the 120-terpene review reference without claiming exact one-to-one equivalence');
 if (catalog?.coverage?.currentCuratedCompounds !== catalog?.compounds?.length) errors.push('Terpene Atlas coverage count must equal the actual compound count');
+if (!String(catalog?.coverage?.catalogState || '').includes('production Cannabis core')) errors.push('Terpene Atlas coverage must identify the current dataset as a production Cannabis core');
 
 if (population?.schemaVersion !== 1) errors.push('population-summary-v1.json must use schemaVersion 1');
 if (population?.sampleCount !== 79) errors.push('Population summary must preserve the published n=79 inflorescence context');
@@ -79,14 +85,31 @@ for (const row of population?.analytes || []) {
   for (const field of ['minPpm','meanPpm','sdPpm','cvPercent']) if (!Number.isFinite(row[field])) errors.push(`Population analyte ${row.compoundId} missing numeric ${field}`);
 }
 if (profiles?.schemaVersion !== 1 || !Array.isArray(profiles?.profiles)) errors.push('sample-profiles-v1.json must provide a versioned profiles array');
+if (factors?.schemaVersion !== 1 || !Array.isArray(factors?.factors) || factors.factors.length < 8) errors.push('profile-factors-v1.json must provide at least eight interpretation factors');
+if (evidenceClaims?.schemaVersion !== 1) errors.push('evidence-claims-v1.json must use schemaVersion 1');
+if (!Array.isArray(evidenceClaims?.compoundEvidence) || evidenceClaims.compoundEvidence.length < 3) errors.push('Evidence claims need compound-specific records');
+if (!Array.isArray(evidenceClaims?.safety) || evidenceClaims.safety.length < 3) errors.push('Evidence claims need safety/context records');
+for (const claim of evidenceClaims?.compoundEvidence || []) {
+  if (!seen.has(claim.compoundId)) errors.push(`Evidence claim maps to unknown compound: ${claim.compoundId}`);
+  if (!Array.isArray(claim.evidenceModels) || claim.evidenceModels.length < 1) errors.push(`Evidence claim ${claim.compoundId} missing evidence model`);
+  if (!claim.humanEvidenceStatus || !claim.limitations) errors.push(`Evidence claim ${claim.compoundId} must state human evidence and limitations`);
+  for (const sourceId of claim.sources || []) if (!sourceIds.has(sourceId)) errors.push(`Unknown evidence source ${sourceId} for ${claim.compoundId}`);
+}
+for (const item of evidenceClaims?.safety || []) for (const sourceId of item.sources || []) if (!sourceIds.has(sourceId)) errors.push(`Unknown safety source ${sourceId} for ${item.id}`);
+for (const factor of factors?.factors || []) {
+  if (!factor.id || !factor.title || !factor.category || !factor.summary || !factor.caution) errors.push(`Incomplete profile factor: ${factor?.id || '(unknown)'}`);
+  if (!Array.isArray(factor.whatToRecord) || factor.whatToRecord.length < 3) errors.push(`Profile factor ${factor.id} needs recording guidance`);
+  if (!Array.isArray(factor.evidence) || factor.evidence.length < 1) errors.push(`Profile factor ${factor.id} needs evidence`);
+  for (const sourceId of factor.evidence || []) if (!sourceIds.has(sourceId)) errors.push(`Unknown factor source ${sourceId} for ${factor.id}`);
+}
 
 const index = fs.existsSync(path.join(sourceRoot,'index.html')) ? fs.readFileSync(path.join(sourceRoot,'index.html'),'utf8') : '';
-for (const token of ['/terpene-atlas/terpene-atlas-v1.css','/terpene-atlas/terpene-atlas-v1.js','data-wheel-family','data-search','data-class-filter','data-scope-filter','data-population-body','data-source-grid','data-compare-a','/atlas/trichomes-resin/']) {
+for (const token of ['/terpene-atlas/terpene-atlas-v1.css','/terpene-atlas/terpene-atlas-v1.js','class="skip-link"','id="main-content"','data-wheel-family','data-search','data-class-filter','data-scope-filter','data-population-body','data-profile-file','data-compound-dialog','aria-modal="true"','aria-live="polite"','data-factor-grid','data-factor-category','data-general-evidence','data-safety-grid','data-source-grid','data-compare-a','/atlas/trichomes-resin/']) {
   if (!index.includes(token)) errors.push(`Terpene Atlas index missing UI contract: ${token}`);
 }
 
 const runtime = fs.existsSync(path.join(sourceRoot,'terpene-atlas-v1.js')) ? fs.readFileSync(path.join(sourceRoot,'terpene-atlas-v1.js'),'utf8') : '';
-for (const token of ['terpene-catalog-v1.json','sources-v1.json','population-summary-v1.json','sample-profiles-v1.json','renderWheel','renderPopulation','renderSources','renderCompare','data-result-count','cache:\'no-store\'']) {
+for (const token of ['terpene-catalog-v1.json','sources-v1.json','population-summary-v1.json','sample-profiles-v1.json','renderWheel','renderFactors','renderEvidenceSafety','renderPopulation','renderImportedProfile','showCompound','catalogState','scopeBoundary',"URLSearchParams(location.search).get('compound')",'history.replaceState','renderSources','renderCompare','data-result-count','cache:\'no-store\'']) {
   if (!runtime.includes(token)) errors.push(`Terpene Atlas runtime missing contract: ${token}`);
 }
 
@@ -110,4 +133,4 @@ if (errors.length) {
   for (const error of errors) console.error(` - ${error}`);
   process.exit(1);
 }
-console.log(`Terpene Atlas valid: ${catalog.compounds.length} evidence-backed named compounds, ${population.analytes.length} measured population analytes across n=${population.sampleCount}, ${sourceIds.size} registered sources, interactive family wheel, searchable explorer, comparisons, source/public mirror parity, and verified-sample ingestion contract.`);
+console.log(`Terpene Atlas valid: ${catalog.compounds.length} evidence-backed named compounds, 120-record minimum locked, ${population.analytes.length} measured population analytes across n=${population.sampleCount}, ${sourceIds.size} registered sources, interactive family wheel, searchable explorer, comparisons, source/public mirror parity, and verified-sample ingestion contract.`);

@@ -32,6 +32,13 @@ const requiredMirrors = [
   'data/measured-media-source-queue-v1.json',
   'data/physiology-overlays-v1.json',
   'data/media-production-queue-v1.json',
+  'data/anatomy-registry-v1.json',
+  'assets/THC-ENC-001_VIS-03_Nodes_Internodes_Branching_v3.0.0.jpg',
+  'assets/THC-ENC-001_VIS-05_Reproductive_Structures_v3.0.0.jpg',
+  'assets/THC-ENC-001_VIS-06_Achene_Embryo_Germination_v3.0.0.jpg',
+  'assets/THC-ENC-001_VIS-07_Trichomes_on_Cannabis_Surfaces_v3.0.0.jpg',
+  'assets/THC-ENC-041_Root_Tip_Development_and_Functional_Zones.jpg',
+  'assets/THC-ENC-068_Stomata_Guard_Cells_and_Gas_Exchange.jpg',
   'models/model-manifest-v4.json',
   'models/README.md',
 ];
@@ -45,7 +52,8 @@ for (const relative of requiredMirrors) {
 }
 
 const index = read(path.join(appRoot, 'index.html'));
-for (const token of ['/atlas/atlas-v4.css', '/atlas/atlas-site-shell-v5.css', '/atlas/atlas-anatomy-index-v1.css', '/atlas/atlas-anatomy-index-v1.js', '/atlas/atlas-workspace-v5.css', '/atlas/atlas-workspace-v5.js', '/atlas/atlas-3d-bootstrap.js', 'data-plant-model-status', 'data-anatomy-index', 'CLICK · INSPECT', 'Interactive 3D system V4', '<b>32</b><span>inspectable structures</span>', '/terpene-atlas/']) {
+ok(!index.includes('\\n'), 'Atlas index must not contain escaped newline text');
+for (const token of ['/atlas/atlas-v4.css', '/atlas/atlas-site-shell-v5.css', '/atlas/atlas-anatomy-index-v1.css', '/atlas/atlas-anatomy-index-v1.js', '/atlas/atlas-workspace-v5.css', '/atlas/atlas-workspace-v5.js', '/atlas/atlas-3d-bootstrap.js', 'data-plant-model-status', 'data-anatomy-index', 'id="reference-visuals"', 'CLICK · INSPECT', 'Interactive 3D system V4', '<b>32</b><span>inspectable structures</span>', '/terpene-atlas/']) {
   ok(index.includes(token), `Atlas index missing V4 wiring: ${token}`);
 }
 ok(!index.includes('type="module" src="/atlas/atlas-3d.js"'), 'Atlas index must not boot V3 directly; V3 is emergency fallback only');
@@ -58,7 +66,7 @@ ok(!/body\s*\{[^}]*overflow-x\s*:\s*hidden/i.test(siteShell), 'Atlas site-shell 
 ok(/\.topbar\s*\{[^}]*top:\s*var\(--atlas-site-header-offset\)\s*!important/i.test(siteShell), 'Atlas secondary topbar must remain offset below the V5 global header');
 
 const bootstrap = read(path.join(appRoot, 'atlas-3d-bootstrap.js'));
-for (const token of ["import('/atlas/atlas-3d-v4.js')", 'bootPlantAtlasV4', "import('/atlas/atlas-3d.js')", "host.dataset.rendererGeneration = 'v3-fallback'"]) {
+for (const token of ["import('/atlas/atlas-3d-v4.js')", 'bootPlantAtlasV4', "import('/atlas/atlas-3d.js')", "host.dataset.rendererGeneration = 'v3-fallback'", 'shouldUseStaticAuditMode', '/Lighthouse/i', "host.dataset.rendererGeneration = 'audit-static'"]) {
   ok(bootstrap.includes(token), `V4 bootstrap contract missing: ${token}`);
 }
 
@@ -116,6 +124,31 @@ if (hotspotData) {
   }
 }
 
+let anatomyRegistry = null;
+try { anatomyRegistry = JSON.parse(read(path.join(appRoot, 'data/anatomy-registry-v1.json'))); }
+catch (error) { errors.push(`Invalid anatomy-registry-v1.json: ${error.message}`); }
+
+if (anatomyRegistry) {
+  ok(anatomyRegistry.schemaVersion === 1, 'anatomy-registry-v1.json must use schemaVersion 1');
+  ok(anatomyRegistry.specimenMode === 'mature-pistillate-cannabis-specimen', 'Anatomy registry must identify the mature pistillate specimen mode');
+  const structures = Array.isArray(anatomyRegistry.structures) ? anatomyRegistry.structures : [];
+  ok(structures.length === 32, `Anatomy registry must contain exactly 32 structures; found ${structures.length}`);
+  const allowedRepresentations = new Set(['direct-3d','semantic-3d-anchor','micro-reference']);
+  const allowedScales = new Set(['whole-plant','organ-tissue','microscopic']);
+  const ids = new Set();
+  for (const structure of structures) {
+    ok(typeof structure.id === 'string' && structure.id.length > 0, 'Every anatomy registry structure needs an id');
+    ok(!ids.has(structure.id), `Duplicate anatomy registry id: ${structure.id}`);
+    ids.add(structure.id);
+    ok(allowedRepresentations.has(structure.representation), `Invalid representation for ${structure.id}`);
+    ok(allowedScales.has(structure.scale), `Invalid scale for ${structure.id}`);
+    ok(typeof structure.limitation === 'string' && structure.limitation.length > 60, `Structure ${structure.id} needs explicit representation limitations`);
+    ok(structure.focusSupported === true, `Structure ${structure.id} must declare focus support`);
+  }
+  for (const id of requiredHotspots.keys()) ok(ids.has(id), `Anatomy registry missing required structure: ${id}`);
+  ok(structures.filter(x => x.representation === 'micro-reference').length >= 6, 'Microscopic structures must remain explicitly separated from direct 3D geometry');
+}
+
 let systemsData = null;
 try { systemsData = JSON.parse(read(path.join(appRoot, 'data/systems.json'))); }
 catch (error) { errors.push(`Invalid systems.json: ${error.message}`); }
@@ -132,6 +165,21 @@ if (systemsData) {
     ok(typeof system.route === 'string' && /^\/atlas\/.+\/$/.test(system.route), `System ${system.id} needs a canonical /atlas/ route`);
     for (const field of ['concepts','functions','observe','interactions','cautions','measurements','evidenceQuestions','deepDiveTopics','scales']) {
       ok(Array.isArray(system[field]) && system[field].length > 0, `System ${system.id} missing enriched field: ${field}`);
+    }
+    const allowedToolRoutes = new Set(['/terpene-atlas/','/ph-meter/','/tds-meter/','/vpd-chart/']);
+    if (Array.isArray(system.connectedTools)) {
+      for (const tool of system.connectedTools) {
+        ok(typeof tool.label === 'string' && tool.label.length > 2, `System ${system.id} connected tool needs a label`);
+        ok(allowedToolRoutes.has(tool.route), `System ${system.id} has unsupported connected tool route: ${tool.route}`);
+        ok(typeof tool.note === 'string' && tool.note.length > 25, `System ${system.id} connected tool needs explanatory context`);
+      }
+    }
+    if (Array.isArray(system.referenceVisuals)) {
+      for (const visual of system.referenceVisuals) {
+        ok(/^\/atlas\/assets\//.test(visual.src || ''), `System ${system.id} reference visual must live in /atlas/assets/`);
+        ok(typeof visual.alt === 'string' && visual.alt.length > 20, `System ${system.id} reference visual needs descriptive alt text`);
+        ok(typeof visual.caption === 'string' && visual.caption.length > 3, `System ${system.id} reference visual needs a caption`);
+      }
     }
     const relative = system.route.replace(/^\/atlas\//, '').replace(/\/$/, '');
     const sourcePage = path.join(appRoot, relative, 'index.html');
@@ -151,10 +199,10 @@ for (const token of ['data-atlas-mode="explorer"','data-atlas-mode="research"','
 ok(!/(?<!\$)\$\('\[data-[^']+\]'\)\.forEach/.test(workspaceRuntime), 'Atlas V5 workspace must use the multi-element selector helper for data-* control collections');
 
 const anatomyIndex = read(path.join(appRoot, 'atlas-anatomy-index-v1.js'));
-for (const token of ['hotspots-v4.json','data-anatomy-search','data-anatomy-scale','plant-atlas:focus']) ok(anatomyIndex.includes(token), `Anatomy index runtime missing: ${token}`);
+for (const token of ['hotspots-v4.json','anatomy-registry-v1.json','data-anatomy-search','data-anatomy-scale','data-anatomy-representation','micro-reference','plant-atlas:focus']) ok(anatomyIndex.includes(token), `Anatomy index runtime missing: ${token}`);
 
 const moduleRuntime = read(path.join(appRoot, 'module.js'));
-for (const token of ['measurements','evidenceQuestions','deepDiveTopics','connectedTools','dataset.measurementsRuntime']) ok(moduleRuntime.includes(token), `Plant Atlas module runtime missing enriched contract: ${token}`);
+for (const token of ['measurements','evidenceQuestions','deepDiveTopics','connectedTools','referenceVisuals','dataset.measurementsRuntime']) ok(moduleRuntime.includes(token), `Plant Atlas module runtime missing enriched contract: ${token}`);
 
 
 let scaleMap = null;
@@ -342,6 +390,16 @@ if (manifest) {
   }
 }
 
+const visualPolicy = JSON.parse(read(path.join(root, 'site/wordpress/visual-quality-policy.json')) || '{}');
+const bannedVisuals = visualPolicy?.bannedHtml?.urlContains || [];
+for (const banned of bannedVisuals) {
+  ok(!index.includes(banned), `Atlas index must not reference quarantined visual: ${banned}`);
+  ok(!JSON.stringify(systemsData || {}).includes(banned), `Atlas systems data must not reference quarantined visual: ${banned}`);
+  for (const relative of requiredMirrors.filter(x => x.startsWith('assets/'))) {
+    ok(!relative.includes(banned), `Atlas required visual must not be quarantined: ${banned}`);
+  }
+}
+
 const modelReadme = read(path.join(appRoot, 'models/README.md'));
 for (const token of ['glTF 2.0', 'exposed root system', '80k–250k', 'mid-range Android phone', 'visual fidelity upgrade', 'procedural-pbr']) {
   ok(modelReadme.includes(token), `Model contract missing release requirement: ${token}`);
@@ -353,4 +411,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Plant Atlas V4/V5 workspace valid: 16 enriched systems, ${requiredHotspots.size} required inspectable structures, unified workspace search/modes/layers, searchable anatomy index, V4-first 3D focus, Terpene Atlas bridge, synchronized deployment mirror, and optional licensed GLB upgrade.`);
+console.log(`Plant Atlas V4/V5 workspace valid: 16 enriched systems, ${requiredHotspots.size} required inspectable structures, explicit direct/semantic/microscopic representation registry, unified workspace search/modes/layers, cross-tool pH/EC/VPD/Terpene bridges, synchronized deployment mirror, and optional licensed GLB upgrade.`);

@@ -53,6 +53,8 @@ jobs:
           node games/strain-showdown/scripts/validate-browser-build.mjs
           node --check games/strain-showdown/scripts/validate-effects.mjs
           node --check site/public-route-patch/games/strain-showdown/app.js
+          node --check site/public-route-patch/games/strain-showdown/polish-v1.js
+          node --check site/public-route-patch/games/strain-showdown/polish-v2.js
           node --check site/public-route-patch/games/strain-showdown/engine.mjs
           node --check games/strain-showdown/scripts/build-browser-bundle.mjs
           cmp games/strain-showdown/src/engine.mjs site/public-route-patch/games/strain-showdown/engine.mjs

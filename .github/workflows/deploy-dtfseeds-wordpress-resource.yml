@@ -11,6 +11,7 @@ on:
         type: choice
         options:
           - high-iq
+          - plant-atlas
       source_sha:
         description: Exact main commit whose validated resource artifact will be published
         required: true
@@ -71,7 +72,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          [[ "$RESOURCE_ID" == 'high-iq' ]] || { echo "Unsupported WordPress resource: $RESOURCE_ID" >&2; exit 2; }
           [[ "$SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]] || { echo 'source_sha must be a full lowercase commit SHA' >&2; exit 2; }
           git fetch --quiet origin main --tags
           git cat-file -e "${SOURCE_SHA}^{commit}"
@@ -96,12 +96,15 @@ jobs:
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in the protected environment}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in the protected environment}"
           python - <<'PY' >> "$GITHUB_OUTPUT"
-          import json
-          c=json.load(open('site/deployment/release-resources.json'))['resources']['high-iq']
+          import json, os
+          resources=json.load(open('site/deployment/release-resources.json'))['resources']
+          resource_id=os.environ['RESOURCE_ID']
+          assert resource_id in resources, f'Unknown WordPress resource: {resource_id}'
+          c=resources[resource_id]
           assert c['publisher']['type']=='wordpress-transactional-resource'
           assert c['publisher']['status']=='production'
           assert c['publisher']['orchestration']=='gateway-managed'
-          assert c.get('verifyTokens'), 'High IQ must declare visitor verification tokens'
+          assert c.get('verifyTokens'), f'{resource_id} must declare visitor verification tokens'
           print('route='+c['route'])
           print('marker='+c['verifyMarker'])
           print('checkpoint='+c['checkpointTag'])
@@ -110,8 +113,8 @@ jobs:
           print('shared_target='+c['publisher']['sharedProductionTarget'])
           PY
           checkpoint="$(python - <<'PY'
-          import json
-          print(json.load(open('site/deployment/release-resources.json'))['resources']['high-iq']['checkpointTag'])
+          import json, os
+          print(json.load(open('site/deployment/release-resources.json'))['resources'][os.environ['RESOURCE_ID']]['checkpointTag'])
           PY
           )"
           if git rev-parse --verify "refs/tags/$checkpoint" >/dev/null 2>&1; then
@@ -124,32 +127,36 @@ jobs:
 
       - name: Assemble and lint fail-closed resource bridge
         shell: bash
+        env:
+          ARTIFACT_ROOT: ${{ steps.resource.outputs.artifact_root }}
+          VERIFY_MARKER: ${{ steps.resource.outputs.marker }}
         run: |
           set -euo pipefail
           python -m py_compile \
             scripts/assemble-wordpress-suite-v2.py \
             scripts/assemble-wordpress-resource-v2.py \
             scripts/verify-dtf-public-resource-artifact.py
-          python scripts/assemble-wordpress-resource-v2.py "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs" high-iq
-          node --check "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
-          grep -Fq "dtf_resource_high_iq_deploy_lock" "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
-          grep -Fq ".dtf-resource-manifest.json" "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
-          grep -Fq "'games/high-iq'" "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
-          grep -Fq 'Build your High IQ run' "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
-          ! grep -Fq "dtf_suite_deploy_lock" "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
-          ! grep -Fq ".dtf-suite-manifest.json" "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
-          ! grep -Fq "wordPressOwnedRoutesExcluded" "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
-          ! grep -Fq "'games/high-land','games/high-iq'" "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
+          bridge="$RUNNER_TEMP/deploy-${RESOURCE_ID}-resource-v2.mjs"
+          python scripts/assemble-wordpress-resource-v2.py "$bridge" "$RESOURCE_ID"
+          node --check "$bridge"
+          grep -Fq "dtf_resource_${RESOURCE_ID//-/_}_deploy_lock" "$bridge"
+          grep -Fq ".dtf-resource-manifest.json" "$bridge"
+          grep -Fq "'$ARTIFACT_ROOT'" "$bridge"
+          grep -Fq "$VERIFY_MARKER" "$bridge"
+          ! grep -Fq "dtf_suite_deploy_lock" "$bridge"
+          ! grep -Fq ".dtf-suite-manifest.json" "$bridge"
+          ! grep -Fq "wordPressOwnedRoutesExcluded" "$bridge"
+          ! grep -Fq "'games/high-land','games/high-iq'" "$bridge"
           python - <<'PY'
           import os, pathlib, re
-          path=pathlib.Path(os.environ['RUNNER_TEMP'])/'deploy-high-iq-resource-v2.mjs'
+          path=pathlib.Path(os.environ['RUNNER_TEMP'])/f"deploy-{os.environ['RESOURCE_ID']}-resource-v2.mjs"
           text=path.read_text()
           m=re.search(r"const snippetCode = String\.raw`(.*?)`\.trim\(\);", text, re.S)
           assert m, 'embedded PHP missing'
           php=m.group(1).replace('${tokenLiteral}', "'0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'")
-          (pathlib.Path(os.environ['RUNNER_TEMP'])/'dtf-high-iq-resource-v2.php').write_text('<?php\n'+php+'\n')
+          (pathlib.Path(os.environ['RUNNER_TEMP'])/f"dtf-{os.environ['RESOURCE_ID']}-resource-v2.php").write_text('<?php\n'+php+'\n')
           PY
-          php -l "$RUNNER_TEMP/dtf-high-iq-resource-v2.php"
+          php -l "$RUNNER_TEMP/dtf-${RESOURCE_ID}-resource-v2.php"
 
       - name: Locate successful exact-source resource build
         id: build
@@ -167,7 +174,7 @@ jobs:
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
           echo "Using resource build run $run_id for exact source $SOURCE_SHA"
 
-      - name: Download and verify exact High IQ artifact
+      - name: Download and verify exact resource artifact
         id: artifact
         shell: bash
         run: |
@@ -185,17 +192,17 @@ jobs:
           python scripts/verify-dtf-public-resource-artifact.py "$RESOURCE_ID" "$archive" "$RUNNER_TEMP/resource-verified" | tee "$RUNNER_TEMP/resource-verification.json"
           echo "archive=$archive" >> "$GITHUB_OUTPUT"
 
-      - name: Publish only High IQ through the transactional bridge
+      - name: Publish only the selected resource through the transactional bridge
         id: publish
         shell: bash
         env:
           DTF_SUITE_ARCHIVE: ${{ steps.artifact.outputs.archive }}
         run: |
           set -euo pipefail
-          node "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs" "$DTF_SUITE_ARCHIVE" | tee "$RUNNER_TEMP/deploy-high-iq-result.log"
-          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/deploy-high-iq-result.log"
+          node "$RUNNER_TEMP/deploy-${RESOURCE_ID}-resource-v2.mjs" "$DTF_SUITE_ARCHIVE" | tee "$RUNNER_TEMP/deploy-resource-result.log"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/deploy-resource-result.log"
 
-      - name: Verify visitor-facing High IQ route independently
+      - name: Verify the visitor-facing resource route independently
         shell: bash
         env:
           ROUTE: ${{ steps.resource.outputs.route }}
@@ -214,16 +221,17 @@ jobs:
           BODY_PATH="$body" python - <<'PY'
           import json, os
           from pathlib import Path
-          resource=json.load(open('site/deployment/release-resources.json'))['resources']['high-iq']
+          resource_id=os.environ['RESOURCE_ID']
+          resource=json.load(open('site/deployment/release-resources.json'))['resources'][resource_id]
           body=Path(os.environ['BODY_PATH']).read_text(encoding='utf-8', errors='replace')
           missing=[token for token in resource.get('verifyTokens', []) if token not in body]
           if missing:
-              raise SystemExit('High IQ visitor verification tokens missing: '+', '.join(repr(token) for token in missing))
-          print(f"Verified {len(resource.get('verifyTokens', []))} High IQ V5/responsive visitor tokens.")
+              raise SystemExit(f'{resource_id} visitor verification tokens missing: '+', '.join(repr(token) for token in missing))
+          print(f"Verified {len(resource.get('verifyTokens', []))} visitor contract tokens for {resource_id}.")
           PY
           rm -f "$body" "$headers"
 
-      - name: Advance only the High IQ production checkpoint
+      - name: Advance only the selected resource production checkpoint
         if: inputs.environment == 'production'
         uses: actions/github-script@v7
         env:

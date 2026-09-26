@@ -7,7 +7,7 @@ const config = JSON.parse(readFileSync('site/deployment/release-resources.json',
 const resources = config.resources;
 
 assert.equal(config.schemaVersion, 1);
-assert.deepEqual(Object.keys(resources).sort(), ['high-iq', 'high-land', 'seed-man-platformer']);
+assert.deepEqual(Object.keys(resources).sort(), ['high-iq', 'high-land', 'plant-atlas', 'seed-man-platformer']);
 
 const targets = Object.values(resources).map((r) => r.productionTarget);
 const checkpoints = Object.values(resources).map((r) => r.checkpointTag);
@@ -29,12 +29,14 @@ assert.equal(affected('scripts/prepare-seed-man-combat-release.mjs', resources['
 assert.equal(affected('games/high-iq/data/questions.json', resources['seed-man-platformer']), false);
 assert.equal(affected('site/deployment/public-apps.json', resources['high-land']), true);
 assert.equal(affected('site/deployment/public-apps.json', resources['high-iq']), true);
+assert.equal(affected('apps/growlens-web/public/atlas/index.html', resources['plant-atlas']), true);
+assert.equal(affected('site/public-route-patch/atlas/index.html', resources['plant-atlas']), true);
 assert.equal(affected('site/deployment/public-apps.json', resources['seed-man-platformer']), true);
 
 for (const [id, resource] of Object.entries(resources)) {
-  assert.ok(resource.route.startsWith('/games/') && resource.route.endsWith('/'), `${id} route must be a game route`);
+  assert.ok(resource.route.startsWith('/') && resource.route.endsWith('/'), `${id} route must be absolute and directory-shaped`);
   assert.equal(resource.productionTarget, `route:${resource.route}`);
-  assert.ok(resource.artifactRoot.startsWith('games/'));
+  assert.equal(resource.artifactRoot, resource.route.slice(1, -1), `${id} artifact root must match its route`);
   assert.ok(resource.requiredFiles.length > 0);
   for (const file of resource.requiredFiles) {
     assert.ok(file.startsWith(`${resource.artifactRoot}/`), `${id} required file escaped artifact root: ${file}`);
@@ -42,6 +44,18 @@ for (const [id, resource] of Object.entries(resources)) {
   assert.ok(['suite', 'resource'].includes(resource.publicSuiteOwnership), `${id} has invalid Public Suite ownership`);
   assert.ok(resource.publisher?.status, `${id} must declare publisher readiness`);
 }
+
+assert.equal(resources['plant-atlas'].publicSuiteOwnership, 'resource');
+assert.equal(resources['plant-atlas'].route, '/atlas/');
+assert.equal(resources['plant-atlas'].artifactRoot, 'atlas');
+assert.deepEqual(resources['plant-atlas'].suiteDuplicateRoots, ['growlens/atlas']);
+assert.equal(resources['plant-atlas'].publisher.type, 'wordpress-transactional-resource');
+assert.equal(resources['plant-atlas'].publisher.status, 'production');
+assert.equal(resources['plant-atlas'].publisher.orchestration, 'gateway-managed');
+assert.equal(resources['plant-atlas'].publisher.workflow, 'deploy-dtfseeds-wordpress-resource.yml');
+assert.ok(resources['plant-atlas'].requiredFiles.includes('atlas/atlas-workspace-v5.js'));
+assert.ok(resources['plant-atlas'].requiredFiles.includes('atlas/data/media-registry-v1.json'));
+assert.ok(resources['plant-atlas'].verifyTokens.includes('data-atlas-command-input'));
 
 assert.equal(resources['high-land'].publicSuiteOwnership, 'suite');
 assert.equal(resources['high-land'].publisher.type, 'hostinger-ssh');
@@ -117,8 +131,9 @@ assert.match(verifier, /resource verification token missing/, 'artifact verifier
 const publisherWorkflow = readFileSync('.github/workflows/deploy-dtfseeds-wordpress-resource.yml', 'utf8');
 assert.match(publisherWorkflow, /^run-name:.*inputs\.source_sha.*$/m, 'WordPress resource publisher must expose its exact source SHA in the run title');
 assert.match(publisherWorkflow, /dtf-wordpress-temporary-code-snippets-bridge/, 'WordPress resource publisher must stay serialized on the shared bridge');
-assert.match(publisherWorkflow, /publisher'\]\['status'\]=='production'/, 'High IQ publisher must identify itself as production-ready');
-assert.match(publisherWorkflow, /High IQ visitor verification tokens missing/, 'High IQ publisher must independently enforce configured visitor tokens');
+assert.match(publisherWorkflow, /publisher'\]\['status'\]=='production'/, 'WordPress resource publisher must require production-ready resources');
+assert.match(publisherWorkflow, /visitor verification tokens missing/, 'WordPress resource publisher must independently enforce configured visitor tokens');
+assert.match(publisherWorkflow, /plant-atlas/, 'WordPress resource publisher must expose Plant Atlas as a selectable route resource');
 
 const gatewayWorkflow = readFileSync('.github/workflows/dtfseeds-resource-production-gateway.yml', 'utf8');
 assert.match(gatewayWorkflow, /^\s+source_sha:\s*$/m, 'resource gateway must accept an exact-source recovery SHA');
@@ -128,6 +143,7 @@ assert.match(gatewayWorkflow, /MAX_RECOVERY_ATTEMPTS: '5'/, 'resource gateway re
 assert.match(gatewayWorkflow, /site\/wordpress\/assets\/responsive-layout-v1\.css/, 'responsive changes must trigger the independent resource gateway');
 assert.match(gatewayWorkflow, /scripts\/lib\/sitewide-header-template\.mjs/, 'base header changes must trigger the independent resource gateway');
 assert.match(gatewayWorkflow, /visitor verification tokens missing/, 'parent gateway must independently enforce configured visitor tokens');
+assert.match(gatewayWorkflow, /site\/public-route-patch\/atlas/, 'Plant Atlas changes must trigger the independent resource gateway');
 assert.doesNotMatch(gatewayWorkflow, /Detect superseded queued resource release/, 'unrelated newer main commits must not discard an exact-source resource release');
 
 const builderWorkflow = readFileSync('.github/workflows/build-dtfseeds-public-resource.yml', 'utf8');
@@ -137,5 +153,7 @@ assert.match(builderWorkflow, /node scripts\/apply-sitewide-header\.mjs release-
 assert.match(builderWorkflow, /data-dtf-shell=\"header-v6\"/, 'High IQ resource build must gate the canonical V6 shell');
 assert.match(builderWorkflow, /canonical-eight-v1/, 'High IQ resource build must gate the canonical eight-item navigation');
 assert.match(builderWorkflow, /id=\"dtf-responsive-layout-v1\"/, 'High IQ resource build must gate the shared responsive layer');
+assert.match(builderWorkflow, /plant-atlas\)/, 'resource builder must build Plant Atlas independently');
+assert.match(builderWorkflow, /cp -a site\/public-route-patch\/atlas\/\. release-resource\/atlas\//, 'Plant Atlas resource build must package the canonical public route');
 
-console.log('DTF resource release isolation and High IQ V6 eight-item production contract tests passed.');
+console.log('DTF resource release isolation, Plant Atlas cutover, and High IQ V6 production contract tests passed.');

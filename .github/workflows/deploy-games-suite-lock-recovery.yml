@@ -177,14 +177,17 @@ jobs:
               assert 'games/high-land/index.html' in names
               assert not [n for n in names if n == 'games/high-iq' or n.startswith('games/high-iq/')]
               assert not [n for n in names if n == 'games/seed-man-platformer' or n.startswith('games/seed-man-platformer/')]
+              assert not [n for n in names if n == 'atlas' or n.startswith('atlas/') or n.startswith('growlens/atlas/')]
               manifest=json.loads(z.read('.dtf-suite-manifest.json'))
               excluded=set(manifest['resourceOwnedRoutesExcluded'])
               assert '/games/high-iq/' in excluded
               assert '/games/seed-man-platformer/' in excluded
+              assert '/atlas/' in excluded
               assert '/games/high-land/' not in excluded
               assert 'games/high-land' in manifest['targets']
               assert 'games/high-iq' not in manifest['targets']
               assert 'games/seed-man-platformer' not in manifest['targets']
+              assert 'atlas' not in manifest['targets']
           PY
           echo "archive=$archive" >> "$GITHUB_OUTPUT"
 

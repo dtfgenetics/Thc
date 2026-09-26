@@ -15,6 +15,7 @@ files do not exist yet when the normal public-suite header pass runs.
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 import re
 import shutil
@@ -24,6 +25,9 @@ import tempfile
 
 REPO_URL = "https://github.com/dtfgenetics/Dtf420.git"
 STAGING_NAME = "dtf-content-overlay"
+NPM = shutil.which("npm.cmd") or shutil.which("npm")
+if not NPM:
+    raise SystemExit("npm executable not found")
 SHELL_MARKERS = (
     'data-dtf-shell="header-v6"',
     'data-dtf-sitewide-header="canonical-eight-v1"',
@@ -32,8 +36,8 @@ SHELL_MARKERS = (
 )
 
 
-def run(*args: str, cwd: Path | None = None) -> None:
-    subprocess.run(args, cwd=cwd, check=True)
+def run(*args: str, cwd: Path | None = None, env: dict[str, str] | None = None) -> None:
+    subprocess.run(args, cwd=cwd, env=env, check=True)
 
 
 def load_json(path: Path) -> dict:
@@ -105,9 +109,14 @@ def main() -> None:
         if not re.fullmatch(r"[0-9a-f]{40}", source_sha):
             raise SystemExit("could not resolve Dtf420 source revision")
 
-        run("npm", "ci", "--no-audit", "--no-fund", cwd=source_repo)
-        run("npm", "run", "build:static-overlay", cwd=source_repo)
-        run("npm", "run", "verify:static-overlay", cwd=source_repo)
+        run(NPM, "ci", "--no-audit", "--no-fund", cwd=source_repo)
+        if os.name == "nt":
+            run(NPM, "run", "prepare:atlas-runtime", cwd=source_repo)
+            build_env = {**os.environ, "DTF_STATIC_EXPORT": "1"}
+            run(NPM, "exec", "--", "next", "build", cwd=source_repo, env=build_env)
+        else:
+            run(NPM, "run", "build:static-overlay", cwd=source_repo)
+        run(NPM, "run", "verify:static-overlay", cwd=source_repo)
 
         source_contract = load_json(source_repo / "deployment" / "static-overlay.json")
         if source_contract != contract:

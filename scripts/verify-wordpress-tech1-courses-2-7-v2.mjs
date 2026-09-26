@@ -102,7 +102,13 @@ for (const entry of config.courses) {
   if (entry.number < 7) {
     const final = await find('course-assessment', root.id);
     must(final && final.status === 'publish', `${entry.id}: course assessment missing.`);
-    must(rendered(final.content).includes('dtf-tech1-public-courses-v2'), `${entry.id}: course assessment does not use v2 publication surface.`);
+    const finalHtml = rendered(final.content);
+    must(finalHtml.includes('dtf-tech1-public-courses-v2'), `${entry.id}: course assessment does not use v2 publication surface.`);
+    must(finalHtml.includes('Graded assessment:'), `${entry.id}: course assessment is not routed to the authenticated graded runtime.`);
+    must(!finalHtml.includes('Check answer and rationale'), `${entry.id}: summative assessment exposes self-check answer panels.`);
+    must(!/<strong>Answer:<\/strong>/i.test(finalHtml), `${entry.id}: summative assessment exposes answer-key content.`);
+    must(finalHtml.includes(`course=${entry.id}`), `${entry.id}: summative assessment must deep-link to its own Academy course.`);
+    must(finalHtml.includes('view=final'), `${entry.id}: summative assessment deep link must target the graded-final view.`);
   }
 
   verified.push({ courseId: entry.id, route: rootRoute, rootPageId: root.id, lessons: 4, anonymousRoot: true, anonymousLessons: 4, sourceRef, governedAssetReferencesVerified: expectedAssets });

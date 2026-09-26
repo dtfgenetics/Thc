@@ -27,12 +27,12 @@
       5
     ]
   },
-  "verifiedRevision": "b1cbf9b9627586b7277813b6a7c6f85a98830d58",
+  "verifiedRevision": "253fb8df1ffcec59beaa45c0f8020ae37c6b7d65",
   "promotionGate": {
     "standaloneCI": "passed",
     "deterministicUiValidation": "passed",
     "routeValidation": "passed",
     "liveVerification": "required-before-production-ready"
   },
-  "notes": "Canonical code remains in the standalone Ganjumanji repository. Revision b1cbf9b9627586b7277813b6a7c6f85a98830d58 is the green 0.4.1 five-region production candidate with 10 relic seeds, save v5, separate autosave/safe-checkpoint recovery, deterministic campaign/content/input/storage/solvability tests, shipped UI-contract validation, TypeScript/Vite build, release validation, current GitHub Actions CI, and production artifact generation. DTFSeeds packaging must rebuild this exact pinned revision and run validate:ui before promotion. Exact post-deploy live-route verification remains required before production-ready status."
+  "notes": "Canonical code remains in the standalone Ganjumanji repository. Revision 253fb8df1ffcec59beaa45c0f8020ae37c6b7d65 is the green 0.4.1 five-region production candidate with 10 relic seeds, save v5, separate autosave/safe-checkpoint recovery, deterministic campaign/content/input/storage/solvability tests, a release-safe weighted campaign proof, a locked dependency graph, shipped UI-contract validation, TypeScript/Vite build, release validation, current GitHub Actions CI, and production artifact generation. DTFSeeds packaging must rebuild this exact pinned revision and run validate:ui before promotion. Exact post-deploy live-route verification remains required before production-ready status."
 }

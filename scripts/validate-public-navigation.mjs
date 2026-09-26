@@ -92,6 +92,16 @@ assert(!(nav.learn?.sections || []).some((item) => item.route === '/learn/academ
 assert((nav.courses?.sections || []).some((item) => item.route === '/learn/learning-hub/'), 'Courses must expose the Learning Hub as its structured course tree');
 assert((nav.diagnostic?.tools || []).some((item) => item.route === '/growlens/'), 'Tools registry must include GrowLens');
 assert((nav.diagnostic?.tools || []).some((item) => item.route === '/thc-grow-doc/'), 'Tools registry must include THC Grow Doc');
+for (const route of ['/atlas/', '/terpene-atlas/', '/ph-meter/', '/tds-meter/', '/vpd-chart/']) {
+  assert((nav.diagnostic?.tools || []).some((item) => item.route === route), `Diagnostic registry must include reference route ${route}`);
+}
+const toolsHub = fs.readFileSync(path.join(root, 'site/public-route-patch/tools/index.html'), 'utf8');
+for (const route of ['/atlas/', '/terpene-atlas/', '/ph-meter/', '/tds-meter/', '/vpd-chart/']) {
+  assert(toolsHub.includes(`href="${route}"`) || toolsHub.includes(`href='${route}'`), `Tools hub must link reference route ${route}`);
+}
+for (const rel of ['site/public-route-patch/ph-meter/index.html', 'site/public-route-patch/tds-meter/index.html', 'site/public-route-patch/vpd-chart/index.html']) {
+  assert(fs.existsSync(path.join(root, rel)), `${rel} must exist as a standalone reference page`);
+}
 
 const allInternal = [
   ...shell.primaryNavigation,

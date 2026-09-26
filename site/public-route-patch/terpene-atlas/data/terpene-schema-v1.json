@@ -21,6 +21,9 @@
     "cannabisOccurrence": "reported | not-yet-verified | conflicting",
     "evidence": "array of source ids supporting occurrence/classification",
     "evidenceGrade": "A primary analytical / B review with traceable primary sources / C secondary reference",
-    "notes": "scientific limitations, stereochemistry, isomer or naming cautions"
+    "notes": "scientific limitations, stereochemistry, isomer or naming cautions",
+    "isomerGroup": "stable identifier linking positional/geometric/stereochemical isomers without collapsing them into one measured analyte",
+    "stereochemistry": "explicit isomer/stereochemical designation when the literature or analytical source resolves it",
+    "parentConceptId": "optional broader concept used for navigation when multiple resolved analytes share a familiar common name"
   }
 }

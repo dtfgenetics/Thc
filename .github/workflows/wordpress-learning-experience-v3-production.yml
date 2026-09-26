@@ -17,6 +17,11 @@ on:
       - scripts/wordpress-transient-fetch-bootstrap.mjs
       - scripts/flush-hostinger-litespeed-mcp.mjs
       - site/wordpress/education/topic-literature.json
+      - site/wordpress/education/visual-reference-plan-v2.json
+      - site/wordpress/education/approved-visual-placements-v1.json
+      - site/wordpress/education/*-v6-visual-map.json
+      - scripts/validate-learning-content-quality.mjs
+      - scripts/validate-education-visual-system.mjs
       - site/wordpress/products/strain-card-images.json
       - .github/workflows/wordpress-learning-experience-v3-production.yml
       - .github/workflows/wordpress-home-release-visuals.yml
@@ -76,6 +81,8 @@ jobs:
           test -s scripts/reconcile-wordpress-learning-v3-ownership.mjs
           test -s scripts/wordpress-ipv4-fetch-bootstrap.mjs
           test -s site/wordpress/education/topic-literature.json
+          test -s site/wordpress/education/visual-reference-plan-v2.json
+          test -s site/wordpress/education/approved-visual-placements-v1.json
           node --check scripts/rebuild-wordpress-learning-experience-v3.mjs
           node --check scripts/run-learning-v3-production.mjs
           node --check scripts/improve-wordpress-learning-v4.mjs
@@ -83,6 +90,8 @@ jobs:
           node --check scripts/lib/sitewide-header-template.mjs
           node --check scripts/reconcile-wordpress-learning-v3-ownership.mjs
           node --check scripts/wordpress-ipv4-fetch-bootstrap.mjs
+          npm run verify:learning-content-quality
+          npm run verify:education-visual-system
           bash -n scripts/run-learning-v3-connected-production.sh
           grep -Fq 'family: 4' scripts/wordpress-ipv4-fetch-bootstrap.mjs
           grep -Fq '[wordpress-ipv4]' scripts/wordpress-ipv4-fetch-bootstrap.mjs

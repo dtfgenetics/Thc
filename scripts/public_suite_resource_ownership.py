@@ -11,24 +11,38 @@ import zipfile
 MANIFEST = '.dtf-suite-manifest.json'
 
 
-def resource_owned_specs(repo_root: Path) -> list[dict[str, str]]:
+def resource_owned_specs(repo_root: Path) -> list[dict[str, object]]:
     config = json.loads((repo_root / 'site/deployment/release-resources.json').read_text())
-    specs: list[dict[str, str]] = []
+    specs: list[dict[str, object]] = []
     for resource_id, resource in config.get('resources', {}).items():
         if resource.get('publicSuiteOwnership') != 'resource':
             continue
         route = str(resource.get('route') or '')
         root = str(resource.get('artifactRoot') or '').rstrip('/')
-        if not route.startswith('/games/') or not route.endswith('/'):
+        if not re.fullmatch(r'/(?:games/)?[a-z0-9][a-z0-9-]*/', route):
             raise SystemExit(f'unsafe resource-owned route: {resource_id}: {route!r}')
-        if not re.fullmatch(r'games/[a-z0-9][a-z0-9-]*', root):
+        if not re.fullmatch(r'(?:games/)?[a-z0-9][a-z0-9-]*', root):
             raise SystemExit(f'unsafe resource-owned artifact root: {resource_id}: {root!r}')
         if route.strip('/') != root:
             raise SystemExit(f'resource route/artifact root mismatch: {resource_id}: {route!r} != {root!r}')
-        specs.append({'id': resource_id, 'route': route, 'root': root})
-    roots = [spec['root'] for spec in specs]
+        duplicate_roots = resource.get('suiteDuplicateRoots') or []
+        if not isinstance(duplicate_roots, list):
+            raise SystemExit(f'suiteDuplicateRoots must be an array: {resource_id}')
+        for duplicate in duplicate_roots:
+            if not isinstance(duplicate, str) or not re.fullmatch(r'[a-z0-9][a-z0-9-]*(?:/[a-z0-9][a-z0-9-]*)+', duplicate):
+                raise SystemExit(f'unsafe suite duplicate root: {resource_id}: {duplicate!r}')
+            if duplicate == root:
+                raise SystemExit(f'suite duplicate root repeats canonical root: {resource_id}: {duplicate!r}')
+        specs.append({
+            'id': resource_id,
+            'route': route,
+            'root': root,
+            'excludedRoots': [root, *duplicate_roots],
+        })
+    roots = [str(spec['root']) for spec in specs]
     routes = [spec['route'] for spec in specs]
-    if len(roots) != len(set(roots)) or len(routes) != len(set(routes)):
+    excluded_roots = [str(value) for spec in specs for value in spec['excludedRoots']]
+    if len(excluded_roots) != len(set(excluded_roots)) or len(routes) != len(set(routes)):
         raise SystemExit('duplicate resource-owned route or artifact root')
     return sorted(specs, key=lambda spec: spec['root'])
 
@@ -53,7 +67,8 @@ def _rewrite_php_array(text: str, variable: str, items: list[str]) -> str:
 
 def transform_bridge(text: str, repo_root: Path) -> tuple[str, dict[str, object]]:
     specs = resource_owned_specs(repo_root)
-    roots = {spec['root'] for spec in specs}
+    roots = {str(spec['root']) for spec in specs}
+    payload_roots = {str(value) for spec in specs for value in spec['excludedRoots']}
     routes = {spec['route'] for spec in specs}
 
     _, targets = _php_array_items(text, 'targets')
@@ -98,6 +113,7 @@ def transform_bridge(text: str, repo_root: Path) -> tuple[str, dict[str, object]
         'ok': True,
         'resourceOwnedRoutesExcluded': [spec['route'] for spec in specs],
         'resourceOwnedTargetsExcluded': [spec['root'] for spec in specs],
+        'resourceOwnedPayloadRootsExcluded': sorted(payload_roots),
         'targets': len(final_targets),
         'required': len(final_required),
         'prefixes': len(final_prefixes),
@@ -111,7 +127,8 @@ def _owned_path(rel: str, roots: set[str]) -> bool:
 
 def filter_archive(source_zip: Path, output_zip: Path, repo_root: Path) -> dict[str, object]:
     specs = resource_owned_specs(repo_root)
-    roots = {spec['root'] for spec in specs}
+    canonical_roots = {str(spec['root']) for spec in specs}
+    roots = {str(value) for spec in specs for value in spec['excludedRoots']}
     routes = [spec['route'] for spec in specs]
 
     with zipfile.ZipFile(source_zip) as source:
@@ -134,7 +151,7 @@ def filter_archive(source_zip: Path, output_zip: Path, repo_root: Path) -> dict[
             retained[name] = source.read(name)
 
     manifest.pop('manifestSha256', None)
-    manifest['targets'] = [value for value in manifest.get('targets', []) if value not in roots]
+    manifest['targets'] = [value for value in manifest.get('targets', []) if value not in canonical_roots]
     manifest['required'] = [value for value in manifest.get('required', []) if not _owned_path(value, roots)]
     manifest['registeredLocalGameTargets'] = [
         value for value in manifest.get('registeredLocalGameTargets', []) if value not in roots
@@ -143,6 +160,7 @@ def filter_archive(source_zip: Path, output_zip: Path, repo_root: Path) -> dict[
         game for game in manifest.get('externalGames', []) if str(game.get('target') or '') not in roots
     ]
     manifest['resourceOwnedRoutesExcluded'] = routes
+    manifest['resourceOwnedPayloadRootsExcluded'] = sorted(roots)
     manifest['files'] = {
         rel: {'size': len(data), 'sha256': hashlib.sha256(data).hexdigest()}
         for rel, data in sorted(retained.items())
@@ -153,9 +171,8 @@ def filter_archive(source_zip: Path, output_zip: Path, repo_root: Path) -> dict[
     required_missing = [rel for rel in manifest['required'] if rel not in retained]
     if required_missing:
         raise SystemExit('filtered suite manifest still requires missing files: ' + ', '.join(required_missing))
-    for spec in specs:
-        if any(_owned_path(rel, {spec['root']}) for rel in retained):
-            raise SystemExit(f'resource-owned payload remained in suite archive: {spec["root"]}')
+    if any(_owned_path(rel, roots) for rel in retained):
+        raise SystemExit('resource-owned payload remained in suite archive')
 
     unhashed = (json.dumps(manifest, sort_keys=True, separators=(',', ':')) + '\n').encode()
     manifest['manifestSha256'] = hashlib.sha256(unhashed).hexdigest()
@@ -181,7 +198,8 @@ def filter_archive(source_zip: Path, output_zip: Path, repo_root: Path) -> dict[
         'archiveSha256': hashlib.sha256(output_zip.read_bytes()).hexdigest(),
         'fileCount': len(retained),
         'resourceOwnedRoutesExcluded': routes,
-        'resourceOwnedTargetsExcluded': sorted(roots),
+        'resourceOwnedTargetsExcluded': sorted(canonical_roots),
+        'resourceOwnedPayloadRootsExcluded': sorted(roots),
     }
 
 

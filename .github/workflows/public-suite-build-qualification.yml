@@ -8,7 +8,12 @@ on:
       - games/**
       - site/public-route-patch/**
       - site/deployment/public-apps.json
+      - site/deployment/release-resources.json
       - data/public-navigation.json
+      - scripts/package-public-suite-wordpress.py
+      - scripts/package-public-suite-wordpress-resource-aware.py
+      - scripts/public_suite_resource_ownership.py
+      - scripts/test-public-suite-resource-ownership.py
       - .github/workflows/build-dtfseeds-public-suite.yml
       - .github/workflows/public-suite-build-qualification.yml
 
@@ -85,7 +90,7 @@ jobs:
         run: |
           set -euo pipefail
           archive="$RUNNER_TEMP/dtf-public-suite-wordpress-v2.zip"
-          python scripts/package-public-suite-wordpress.py "$SUITE_ROOT" "$archive" | tee "$RUNNER_TEMP/package-summary.json"
+          python scripts/package-public-suite-wordpress-resource-aware.py "$SUITE_ROOT" "$archive" | tee "$RUNNER_TEMP/package-summary.json"
           test -s "$archive"
           ARCHIVE="$archive" python - <<'PY'
           import json
@@ -104,11 +109,18 @@ jobs:
                   raise SystemExit(f'Expected 66 reviewed Grow Doc crops in production archive, found {len(crops)}')
               if originals:
                   raise SystemExit(f'Full-resolution Grow Doc originals leaked into production archive: {len(originals)}')
+              atlas_payload = [name for name in names if name.startswith('atlas/') or name.startswith('growlens/atlas/')]
+              if atlas_payload:
+                  raise SystemExit(f'Resource-owned Plant Atlas payload leaked into production archive: {len(atlas_payload)} files')
+              manifest = json.loads(zf.read('.dtf-suite-manifest.json'))
+              if '/atlas/' not in set(manifest.get('resourceOwnedRoutesExcluded') or []):
+                  raise SystemExit('Plant Atlas resource ownership is missing from the production archive manifest')
           print(json.dumps({
               'archiveBytes': size,
               'protectedLimitBytes': limit,
               'remainingBytes': limit - size,
               'growDocReviewedCrops': len(crops),
+              'plantAtlasPayloadFiles': 0,
           }, separators=(',', ':')))
           if size > limit:
               raise SystemExit(f'Production archive {size} bytes exceeds protected 64 MiB limit {limit}')
@@ -129,4 +141,5 @@ jobs:
             echo '- Grow Doc: exact pinned canonical revision verified'
             echo '- Grow Doc reviewed crops: 66'
             echo '- Grow Doc full-resolution originals in release: 0'
+            echo '- Plant Atlas: independently packaged resource (canonical and duplicate suite payloads excluded)'
           } >> "$GITHUB_STEP_SUMMARY"

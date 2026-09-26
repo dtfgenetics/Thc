@@ -7,6 +7,8 @@ on:
     paths:
       - 'scripts/rebuild-wordpress-infographic-gallery.mjs'
       - 'site/wordpress/visual-quality-policy.json'
+      - 'site/wordpress/education/visual-reference-plan-v2.json'
+      - 'site/wordpress/education/approved-visual-placements-v1.json'
       - '.github/workflows/wordpress-approved-visual-library-v2.yml'
 
 permissions:
@@ -50,9 +52,13 @@ jobs:
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured}"
           test -s scripts/rebuild-wordpress-infographic-gallery.mjs
           test -s site/wordpress/visual-quality-policy.json
+          test -s site/wordpress/education/visual-reference-plan-v2.json
+          test -s site/wordpress/education/approved-visual-placements-v1.json
+          test -s scripts/validate-education-visual-system.mjs
           test -s scripts/wordpress-ipv4-fetch-bootstrap.mjs
           test -s scripts/flush-hostinger-litespeed-mcp.mjs
           node --check scripts/rebuild-wordpress-infographic-gallery.mjs
+          npm run verify:education-visual-system
           node --check scripts/wordpress-ipv4-fetch-bootstrap.mjs
           node --check scripts/flush-hostinger-litespeed-mcp.mjs
           grep -Fq 'dtf-approved-visual-library-v2' scripts/rebuild-wordpress-infographic-gallery.mjs
