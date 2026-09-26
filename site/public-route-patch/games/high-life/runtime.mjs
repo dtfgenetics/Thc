@@ -106,6 +106,19 @@ function safeFocus(element) {
   }
 }
 
+function publishEnhancementState() {
+  try {
+    const history = Array.isArray(state?.history) ? state.history.slice(-4) : [];
+    globalThis.dispatchEvent?.(new CustomEvent('high-life:state', {
+      detail: {
+        history,
+        resourceLabels: { ...resourceLabels }
+      }
+    }));
+  } catch {
+    // Optional presentation enhancements must never break the canonical game loop.
+  }
+}
 
 function validateEvents(sourceEvents) {
   if (!Array.isArray(sourceEvents) || sourceEvents.length !== 18) {
@@ -234,6 +247,7 @@ function render() {
   ui.score.textContent = String(calculateLegacyScore(state));
   resourceCards(state.resources, ui.resources);
   updateEraRoadmap();
+  publishEnhancementState();
 
   ui.actions.replaceChildren();
   for (const action of legalActions(state)) {

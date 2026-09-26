@@ -41,6 +41,7 @@ jobs:
         run: |
           node --check site/public-route-patch/games/high-life/app.js
           node --check site/public-route-patch/games/high-life/runtime.mjs
+          node --check site/public-route-patch/games/high-life/high-life-enhancements.js
           node --check site/public-route-patch/games/high-life/engine.mjs
           node --check site/public-route-patch/games/high-life/save-state.mjs
 
