@@ -19,7 +19,8 @@ else if (atlasCount !== 1) throw new Error(`Expected one canonical Learn hero ac
 // keyboard accessible, and usable without client-side JavaScript.
 const lessonLine = source.split('\n').find(line => line.includes('const lessonCards ='));
 if (!lessonLine) throw new Error('Could not locate Learning V3 lesson-card renderer for progressive disclosure.');
-if (!lessonLine.includes('data-progressive-disclosure="true"')) {
+const canonicalProgressive = source.includes('<details class="lesson"') && source.includes('data-progressive-disclosure="true"') && source.includes('class="lesson-body"');
+if (!canonicalProgressive) {
   let progressiveLessonLine = lessonLine;
   if (progressiveLessonLine.includes('<article class="lesson" id="${esc(id)}">')) {
     progressiveLessonLine = progressiveLessonLine
