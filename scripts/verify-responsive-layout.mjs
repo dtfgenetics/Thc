@@ -75,12 +75,23 @@ requireMatch(
 const docs = read("docs/RESPONSIVE_LAYOUT_STANDARD.md");
 const headerTemplate = read("scripts/lib/sitewide-header-template.mjs");
 const courseUi = read("scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs");
+const toolsHub = read("site/public-route-patch/tools/index.html");
+const gamesHub = read("site/public-route-patch/games/index.html");
+const visualV1 = read("site/design-system/dtf-visual-v1.css");
 
 if (/lhv3[\s\S]{0,1500}100vh/.test(headerTemplate)) {
   failures.push("Course sticky rails must use 100dvh, not 100vh.");
 }
 if (/@media\s*\(max-width:\s*950px\)/.test(courseUi)) {
   failures.push("Course UI must not reintroduce the legacy 950px collapse breakpoint; use the canonical 900px band.");
+}
+const forbiddenLegacy = [
+  ["Tools hub", toolsHub, /@media\s*\(max-width:\s*(?:980|680)px\)/],
+  ["Games hub", gamesHub, /@media\s*\(max-width:\s*(?:1050|780)px\)/],
+  ["DTF visual v1", visualV1, /@media\s*\(max-width:\s*(?:980|640)px\)/],
+];
+for (const [label, source, pattern] of forbiddenLegacy) {
+  if (pattern.test(source)) failures.push(`${label} reintroduced a legacy responsive breakpoint that conflicts with the shared bands.`);
 }
 requireMatch(
   docs,
