@@ -105,6 +105,7 @@ const highLifeV2 = read("site/public-route-patch/games/high-life/high-life-v2.cs
 const highLinesCss = read("site/public-route-patch/games/high-lines/high-lines.css");
 const highLinesV2 = read("site/public-route-patch/games/high-lines/high-lines-v2.css");
 const budOrBluffBase = read("site/public-route-patch/games/bud-or-bluff/styles.css");
+const gatewayV7 = read("site/public-route-patch/assets/dtf-gateway-v7.css");
 const phenoQuestCss = read("site/public-route-patch/games/phenoquest/style.css");
 const infographicsPage = read("site/public-route-patch/learn/infographics/index.html");
 const tech1Courses = read("scripts/publish-wordpress-tech1-courses-2-7-v2.mjs");
@@ -146,6 +147,16 @@ for (const [label, source, legacyPattern] of [
   if (legacyPattern.test(source)) failures.push(`${label} reintroduced legacy breakpoints outside the shared 900/700 bands.`);
   if (!/\.nav a\{[^}]*min-height:44px/.test(source)) failures.push(`${label} navigation must keep a 44px touch target.`);
   if (!/\.tabs a\{[^}]*min-height:44px/.test(source)) failures.push(`${label} tool tabs must keep a 44px touch target.`);
+}
+
+if (/@media\(max-width:720px\)/.test(gatewayV7)) {
+  failures.push("Shared gateway must use the canonical 700px phone band for page composition.");
+}
+if (/\.button\{[^}]*min-height:(?:3\d|4[0-3])px/.test(gatewayV7) || /\.primary-nav a\{[^}]*min-height:(?:3\d|4[0-3])px/.test(gatewayV7)) {
+  failures.push("Shared gateway controls must keep the 44px touch-target floor.");
+}
+if (/main\{[^}]*min-height:[^}]*\bvh\b/.test(gatewayV7)) {
+  failures.push("Shared gateway main sizing must use dynamic viewport units.");
 }
 
 if (/100vh/.test(budOrBluffBase)) {
