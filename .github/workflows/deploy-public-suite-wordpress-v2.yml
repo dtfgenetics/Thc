@@ -365,6 +365,12 @@ jobs:
           check 'https://dtfseeds.com/growlens/' 'GrowLens'
           check 'https://dtfseeds.com/thc-grow-doc/' 'Grow Doc'
 
+      - name: Verify cultivation reference tools live
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/verify-cultivation-reference-tools-live.mjs
+
       - name: Dispatch independent feature-surface verification
         if: always()
         shell: bash
