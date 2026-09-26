@@ -58,8 +58,15 @@ includes('site/public-route-patch/games/strain-showdown/index.html', [
 
 includes('site/public-route-patch/games/bud-or-bluff/player-pref-v1.js', [
   "dtf-bud-or-bluff-player-name-v1",
-  'localStorage.setItem(PLAYER_NAME_KEY',
+  'globalThis.localStorage?.getItem(PLAYER_NAME_KEY)',
+  'globalThis.localStorage?.setItem(PLAYER_NAME_KEY, name)',
   "document.querySelector('#createForm')"
+]);
+includes('site/public-route-patch/games/bud-or-bluff/app-v2.js', [
+  'function storageGet(key)',
+  'function storageSet(key,value)',
+  'function storageRemove(key)',
+  "let soundOn = storageGet(SOUND_KEY) !== 'off'"
 ]);
 includes('site/public-route-patch/games/bud-or-bluff/index.html', [
   'src="player-pref-v1.js"'
