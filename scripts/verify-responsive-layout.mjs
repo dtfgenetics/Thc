@@ -92,6 +92,9 @@ const touchTargetFiles = [
 
 const growLensAccount = read("apps/growlens-web/src/account.css");
 const productionHighIq = read("site/public-route-patch/games/high-iq/high-iq-v3-4.css");
+const phTool = read("site/public-route-patch/ph-meter/index.html");
+const tdsTool = read("site/public-route-patch/tds-meter/index.html");
+const vpdTool = read("site/public-route-patch/vpd-chart/index.html");
 const productionStrainShowdown = read("site/public-route-patch/games/strain-showdown/runtime-v4.css");
 const tech1Courses = read("scripts/publish-wordpress-tech1-courses-2-7-v2.mjs");
 const tech2Courses = read("scripts/publish-wordpress-tech2-courses-1-8.mjs");
@@ -107,6 +110,15 @@ if (!/@media\s*\(orientation:\s*landscape\)\s*and\s*\(max-height:\s*560px\)/.tes
 }
 if (/@media\s*\(max-width:\s*720px\)/.test(productionStrainShowdown)) {
   failures.push("Production Strain Showdown must use the canonical 700px phone band, not the legacy 720px breakpoint.");
+}
+for (const [label, source, legacyPattern] of [
+  ["pH tool", phTool, /@media\(max-width:(?:820|600)px\)/],
+  ["TDS tool", tdsTool, /@media\(max-width:(?:820|600)px\)/],
+  ["VPD tool", vpdTool, /@media\(max-width:(?:850|600)px\)/],
+]) {
+  if (legacyPattern.test(source)) failures.push(`${label} reintroduced legacy breakpoints outside the shared 900/700 bands.`);
+  if (!/\.nav a\{[^}]*min-height:44px/.test(source)) failures.push(`${label} navigation must keep a 44px touch target.`);
+  if (!/\.tabs a\{[^}]*min-height:44px/.test(source)) failures.push(`${label} tool tabs must keep a 44px touch target.`);
 }
 
 for (const [label, source] of [
