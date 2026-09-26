@@ -107,7 +107,7 @@ for (const token of ['/terpene-atlas/terpene-atlas-v1.css','/terpene-atlas/terpe
 }
 
 const runtime = fs.existsSync(path.join(sourceRoot,'terpene-atlas-v1.js')) ? fs.readFileSync(path.join(sourceRoot,'terpene-atlas-v1.js'),'utf8') : '';
-for (const token of ['terpene-catalog-v1.json','sources-v1.json','population-summary-v1.json','sample-profiles-v1.json','renderWheel','renderFactors','renderEvidenceSafety','renderPopulation','renderImportedProfile','showCompound','renderSources','renderCompare','data-result-count','cache:\'no-store\'']) {
+for (const token of ['terpene-catalog-v1.json','sources-v1.json','population-summary-v1.json','sample-profiles-v1.json','renderWheel','renderFactors','renderEvidenceSafety','renderPopulation','renderImportedProfile','showCompound',"URLSearchParams(location.search).get('compound')",'history.replaceState','renderSources','renderCompare','data-result-count','cache:\'no-store\'']) {
   if (!runtime.includes(token)) errors.push(`Terpene Atlas runtime missing contract: ${token}`);
 }
 
