@@ -5,6 +5,9 @@ const responsive = read('site/wordpress/assets/responsive-layout-v1.css');
 const ux = read('site/wordpress/assets/sitewide-ux-polish-v1.css');
 const header = read('scripts/lib/sitewide-header-template-v6.mjs');
 const footer = read('scripts/lib/sitewide-footer-template-v6.mjs');
+const publicNav = JSON.parse(read('data/public-navigation.json'));
+const siteNav = JSON.parse(read('data/site-navigation-v6.json'));
+const siteRegistry = JSON.parse(read('data/site-registry.json'));
 
 const failures = [];
 const requireToken = (source, token, label) => {
@@ -31,6 +34,8 @@ for (const token of [
   '--dtf-ux-reading:72ch',
   '--dtf-ux-section:clamp(56px,7vw,92px)',
   'text-wrap:balance',
+  'body:has(.dc6) :where(.wp-block-post-title,.entry-title,.page-title)',
+  'body:has(.dtf-courses) :where(.wp-block-post-title,.entry-title,.page-title)',
 ]) requireToken(ux, token, 'UX system');
 
 for (const token of [
@@ -49,6 +54,12 @@ for (const token of [
   'data-dtf-sitewide-footer="canonical-eight-v1"',
   'href="/tools/">Tools</a>',
 ]) requireToken(footer, token, 'footer');
+
+const canonicalLabels = ['Home','Seeds','Learn','Courses','Tools','Games','Community','Shop'];
+for (const [label, nav] of [['public-navigation', publicNav.primaryNavigation], ['site-navigation-v6', siteNav.primaryNavigation], ['site-registry', siteRegistry.information_architecture?.canonical_primary_navigation]]) {
+  const labels = (nav || []).map(item => item.label);
+  if (JSON.stringify(labels) !== JSON.stringify(canonicalLabels)) failures.push(`${label}: canonical labels drifted: ${JSON.stringify(labels)}`);
+}
 
 if (header.includes('>Diagnostic</a>') || footer.includes('>Diagnostic</a>')) {
   failures.push('canonical shell must label /tools/ as Tools, not Diagnostic');
