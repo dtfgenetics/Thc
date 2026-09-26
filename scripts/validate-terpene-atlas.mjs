@@ -70,10 +70,11 @@ for (const item of catalog?.compounds || []) {
 }
 
 if ((catalog?.compounds || []).length < 120) errors.push('Terpene Atlas curated ontology must contain at least 120 evidence-backed named compounds');
-if (!String(catalog?.status || '').includes('expansion')) errors.push('Catalog must remain explicitly incomplete until full inventories are imported');
+if (catalog?.status !== 'production-cannabis-core-expandable') errors.push('Catalog status must remain production-cannabis-core-expandable until a broader global ontology is completed');
 if (catalog?.coverage?.completenessClaim !== false) errors.push('Terpene Atlas must not claim complete global/Cannabis terpene coverage yet');
 if (!String(catalog?.coverage?.referenceInventoryNote || '').includes('120 Cannabis terpenes')) errors.push('Terpene Atlas coverage must document the 120-terpene review reference without claiming exact one-to-one equivalence');
 if (catalog?.coverage?.currentCuratedCompounds !== catalog?.compounds?.length) errors.push('Terpene Atlas coverage count must equal the actual compound count');
+if (!String(catalog?.coverage?.catalogState || '').includes('production Cannabis core')) errors.push('Terpene Atlas coverage must identify the current dataset as a production Cannabis core');
 
 if (population?.schemaVersion !== 1) errors.push('population-summary-v1.json must use schemaVersion 1');
 if (population?.sampleCount !== 79) errors.push('Population summary must preserve the published n=79 inflorescence context');
