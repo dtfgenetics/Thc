@@ -86,6 +86,21 @@ Game-specific CSS may control the game board/HUD, but it must respect the shared
 
 Application-level styles may use their own component systems, but page-level overflow, navigation, controls, inspector panels, and embedded media must still satisfy this standard.
 
+
+## Assessments, exams, and certification screens
+
+Certification and testing UI must remain usable under time pressure on phones, tablets, compact laptops, and desktop screens.
+
+- Answer choices are primary controls and must keep at least a 44px touch target.
+- Scored exams must preserve the learner's selected answers and grade them after submission; do not require self-verification during the test.
+- Timers, progress, question numbers, and candidate identity must remain visible without covering question or answer content.
+- Fixed/sticky exam navigation must respect `env(safe-area-inset-bottom)` and constrained-height viewports.
+- Submit, Next, Previous, Finish, and Review controls must remain reachable above browser chrome and the virtual keyboard.
+- Long question/answer text, references, and validation messages must wrap without page-level horizontal scrolling.
+- Tables, figures, and diagrams inside questions need local responsive containment.
+- Review/grading is a distinct post-assessment state; it must not depend on the learner checking correctness while taking the exam.
+- Certificate/print controls are secondary to the result state and must not obstruct completion.
+
 ## CSS load-order rule
 
 Before introducing an override, determine the final cascade.
