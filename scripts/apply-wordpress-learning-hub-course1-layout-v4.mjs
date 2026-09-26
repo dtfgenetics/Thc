@@ -18,7 +18,7 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const style = `<style id="${marker}">
 .lhv3{--lhv4-rail:248px;--lhv4-context:248px;--lhv4-gap:20px}
 .lhv3-layout.lhv4-lesson-layout{display:grid!important;grid-template-columns:var(--lhv4-rail) minmax(0,1fr) var(--lhv4-context)!important;gap:var(--lhv4-gap)!important;align-items:start!important}
-.lhv3-layout.lhv4-lesson-layout>.lhv3-sidebar{grid-column:1!important;grid-row:1!important;order:-1!important;position:sticky!important;top:110px!important;max-height:calc(100vh - 132px)!important;overflow:auto!important;overscroll-behavior:contain!important;padding:14px!important;border-radius:14px!important;scrollbar-width:thin}
+.lhv3-layout.lhv4-lesson-layout>.lhv3-sidebar{grid-column:1!important;grid-row:1!important;order:-1!important;position:sticky!important;top:110px!important;max-height:calc(100dvh - 132px)!important;overflow:auto!important;overscroll-behavior:contain!important;padding:14px!important;border-radius:14px!important;scrollbar-width:thin}
 .lhv3-layout.lhv4-lesson-layout>.lhv3-main{grid-column:2!important;grid-row:1!important;min-width:0!important}
 .lhv4-context{grid-column:3;grid-row:1;position:sticky;top:110px;align-self:start;min-width:0}
 .lhv4-context-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 8px 24px rgba(13,42,25,.045)}
@@ -39,7 +39,7 @@ const style = `<style id="${marker}">
 @media(max-width:1180px){
  .lhv3{--lhv4-rail:220px;--lhv4-gap:16px}
  .lhv3-layout.lhv4-lesson-layout{grid-template-columns:var(--lhv4-rail) minmax(0,1fr)!important}
- .lhv3-layout.lhv4-lesson-layout>.lhv3-sidebar{grid-column:1!important;grid-row:1 / span 2!important;top:96px!important;max-height:calc(100vh - 118px)!important}
+ .lhv3-layout.lhv4-lesson-layout>.lhv3-sidebar{grid-column:1!important;grid-row:1 / span 2!important;top:96px!important;max-height:calc(100dvh - 118px)!important}
  .lhv3-layout.lhv4-lesson-layout>.lhv3-main{grid-column:2!important;grid-row:2!important}
  .lhv4-context{grid-column:2!important;grid-row:1!important;position:static!important;display:block!important}
  .lhv4-context-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;padding:14px 16px}
