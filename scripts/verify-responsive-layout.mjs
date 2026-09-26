@@ -109,6 +109,7 @@ const gatewayV7 = read("site/public-route-patch/assets/dtf-gateway-v7.css");
 const atlasV3 = read("site/public-route-patch/atlas/atlas-v3.css");
 const atlasV4 = read("site/public-route-patch/atlas/atlas-v4.css");
 const anatomyIndexCss = read("site/public-route-patch/atlas/atlas-anatomy-index-v1.css");
+const atlasInspectionCss = read("site/public-route-patch/atlas/atlas-inspection-fixes.css");
 const phenoQuestCss = read("site/public-route-patch/games/phenoquest/style.css");
 const infographicsPage = read("site/public-route-patch/learn/infographics/index.html");
 const tech1Courses = read("scripts/publish-wordpress-tech1-courses-2-7-v2.mjs");
@@ -152,6 +153,9 @@ for (const [label, source, legacyPattern] of [
   if (!/\.tabs a\{[^}]*min-height:44px/.test(source)) failures.push(`${label} tool tabs must keep a 44px touch target.`);
 }
 
+if (/\.scale-track a\{[^}]*min-height:(?:3\d|4[0-3])px/.test(atlasInspectionCss) || !/\.scale-track a\{[^}]*min-height:44px/.test(atlasInspectionCss)) {
+  failures.push("Atlas inspection scale links must keep a 44px touch target in the compact inspector layout.");
+}
 if (/@media\(max-width:620px\)/.test(anatomyIndexCss)) {
   failures.push("Atlas anatomy index must use the canonical 700px phone band.");
 }
