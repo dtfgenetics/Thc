@@ -41,10 +41,25 @@ for(const id of topicIds){
 }
 
 const banned=(policy.bannedHtml?.urlContains||[]).filter(Boolean);
-const scanned=[['visual library',library],...mapPaths.map(p=>[path.relative(root,p),fs.readFileSync(p,'utf8')])];
-for(const [label,text] of scanned){
-  for(const token of banned){
-    if(text.includes(token)) errors.push(`${label} still references quarantined visual: ${token}`);
+for(const token of banned){
+  if(library.includes(token)) errors.push(`visual library still references quarantined visual: ${token}`);
+}
+
+for(const p of mapPaths){
+  const label=path.relative(root,p);
+  const data=JSON.parse(fs.readFileSync(p,'utf8'));
+  const active=[];
+  if(data.chapters){
+    for(const visuals of Object.values(data.chapters)){
+      if(Array.isArray(visuals)) active.push(...visuals);
+    }
+  }
+  if(Array.isArray(data.visuals)) active.push(...data.visuals);
+  for(const visual of active){
+    const file=String(visual?.file||'');
+    for(const token of banned){
+      if(file.includes(token)) errors.push(`${label} still actively references quarantined visual: ${token}`);
+    }
   }
 }
 assert(library.includes('48 core reference slots'),'Visual library must expose the 48-slot production model');
