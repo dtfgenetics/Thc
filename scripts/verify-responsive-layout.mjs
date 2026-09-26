@@ -128,6 +128,10 @@ for (const [label, source, legacyPattern] of [
   ["High Life", highLifeV2, /@media\(max-width:650px\)/],
   ["PhenoQuest", phenoQuestCss, /@media\s*\(max-width:\s*640px\)/],
   ["Infographics", infographicsPage, /@media\(max-width:620px\)/],
+]) {
+  if (legacyPattern.test(source)) failures.push(`${label} reintroduced legacy breakpoints outside the shared 900/700 bands.`);
+}
+for (const [label, source, legacyPattern] of [
   ["pH tool", phTool, /@media\(max-width:(?:820|600)px\)/],
   ["TDS tool", tdsTool, /@media\(max-width:(?:820|600)px\)/],
   ["VPD tool", vpdTool, /@media\(max-width:(?:850|600)px\)/],
