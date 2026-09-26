@@ -94,6 +94,17 @@
       "notes": "Interactive approximate leaf-VPD calculator and nearby-condition reference table."
     },
     {
+      "id": "ppfd-chart",
+      "title": "THC Light Lab — PPFD & DLI",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/ppfd-chart",
+      "route": "/ppfd-chart/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "test -s site/public-route-patch/ppfd-chart/index.html",
+      "notes": "Interactive PPFD interpretation, DLI calculation, canopy mapping and evidence-aware plant-light education."
+    },
+    {
       "id": "tds-meter",
       "title": "TDS / EC Meter Reference",
       "repository": "dtfgenetics/Thc",
