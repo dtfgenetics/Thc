@@ -48,8 +48,9 @@ assert(tds.includes("v*500") && tds.includes("v*700"), 'TDS converter missing 50
 assert(tds.includes("(p/s).toFixed(2)"), 'TDS reverse conversion missing ppm-to-EC calculation');
 
 assert(vpd.includes('0.6108*Math.exp((17.27*t)/(t+237.3))'), 'VPD page missing saturation-vapor-pressure equation');
-assert(vpd.includes('svp(t+o)-svp(t)*(h/100)'), 'VPD page missing leaf-to-air vapor pressure deficit calculation');
-assert(vpd.includes('Relative humidity (%)') && vpd.includes('Leaf temperature offset (°C)'), 'VPD page missing required inputs');
+assert(vpd.includes('svp(leaf)-svp(air)*(rhValue/100)'), 'VPD page missing leaf-to-air vapor pressure deficit calculation');
+assert(vpd.includes('Relative humidity (%)') && vpd.includes('Leaf offset'), 'VPD page missing required inputs');
+assert(vpd.includes("u==='f'?(v-32)*5/9:v") && vpd.includes("v*9/5+32"), 'VPD page missing Celsius/Fahrenheit conversion support');
 
 const atlas = fs.readFileSync(path.join(root, 'site/public-route-patch/atlas/index.html'), 'utf8');
 const terpenes = fs.readFileSync(path.join(root, 'site/public-route-patch/terpene-atlas/index.html'), 'utf8');
