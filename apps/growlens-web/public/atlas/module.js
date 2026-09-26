@@ -88,6 +88,16 @@
         stack.appendChild(depth);
       }
 
+      const visuals = system.referenceVisuals || [];
+      if (visuals.length) {
+        const stack = document.querySelector('.content-stack');
+        const card = document.createElement('section');
+        card.className = 'content-card';
+        card.dataset.referenceVisuals = '';
+        card.innerHTML = `<h2>Reference visuals</h2><p>Approved educational references complement the interactive specimen and clarify structures that are difficult to resolve at whole-plant scale.</p><div class="module-visual-grid">${visuals.map(visual => `<figure class="module-visual"><a href="${visual.src}" target="_blank" rel="noopener"><img src="${visual.src}" alt="${visual.alt || ''}" loading="lazy" decoding="async"></a><figcaption>${visual.caption || ''}</figcaption></figure>`).join('')}</div>`;
+        stack?.appendChild(card);
+      }
+
       const connected = system.connectedTools || [];
       if (connected.length) {
         const asideStack = document.querySelector('aside.content-stack');
