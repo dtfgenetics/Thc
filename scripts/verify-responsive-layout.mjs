@@ -102,6 +102,7 @@ const trichomeTrialsV2 = read("site/public-route-patch/games/trichome-trials/tri
 const harvestHustleV2 = read("site/public-route-patch/games/harvest-hustle/harvest-hustle-v2.css");
 const growRoomDefenseV2 = read("site/public-route-patch/games/grow-room-defense/grow-room-defense-v2.css");
 const highLifeV2 = read("site/public-route-patch/games/high-life/high-life-v2.css");
+const highLinesCss = read("site/public-route-patch/games/high-lines/high-lines.css");
 const phenoQuestCss = read("site/public-route-patch/games/phenoquest/style.css");
 const infographicsPage = read("site/public-route-patch/learn/infographics/index.html");
 const tech1Courses = read("scripts/publish-wordpress-tech1-courses-2-7-v2.mjs");
@@ -127,6 +128,7 @@ for (const [label, source, legacyPattern] of [
   ["Harvest Hustle", harvestHustleV2, /@media\(max-width:(?:980|640)px\)/],
   ["Grow Room Defense", growRoomDefenseV2, /@media\(max-width:(?:980|760)px\)/],
   ["High Life", highLifeV2, /@media\(max-width:650px\)/],
+  ["High Lines", highLinesCss, /@media\(max-width:(?:980|650)px\)/],
   ["PhenoQuest", phenoQuestCss, /@media\s*\(max-width:\s*640px\)/],
   ["Infographics", infographicsPage, /@media\(max-width:620px\)/],
 ]) {
