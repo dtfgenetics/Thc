@@ -67,7 +67,9 @@ assert(ppfd.includes("STORAGE_KEY='thc-light-lab-surveys-v1'") && ppfd.includes(
 assert(ppfd.includes('fixtureModel') && ppfd.includes('mountHeight') && ppfd.includes('sensorModel') && ppfd.includes('measurementDate'), 'PPFD page missing survey metadata fields');
 assert(ppfd.includes("lines=['row,column,ppfd']") && ppfd.includes('FileReader') && ppfd.includes('Export map CSV'), 'PPFD page missing CSV round-trip workflow');
 assert(ppfd.includes("window.print()") && ppfd.includes('Print / Save report'), 'PPFD page missing printable Light Report workflow');
-assert(ppfd.includes('compareSession') && ppfd.includes('Average PPFD ') && ppfd.includes('Uniformity '), 'PPFD page missing saved-survey comparison workflow');
+assert(ppfd.includes("'use schedule'") && ppfd.includes('Browser storage is unavailable'), 'PPFD page missing variable-light or storage-failure safeguards');
+assert(ppfd.includes('target low exceeds target high') && ppfd.includes("'fix range'"), 'PPFD page missing invalid target-range handling');
+assert(ppfd.includes('compareSession') && ppfd.includes('renderComparison') && ppfd.includes('Average PPFD ') && ppfd.includes('Uniformity '), 'PPFD page missing live saved-survey comparison workflow');
 assert(ppfd.includes("box.style.background=heat(v)") && ppfd.includes("heat(input.value)"), 'PPFD page must preserve blank map cells as unmeasured');
 assert(ppfd.includes('href="/tools/"'), 'PPFD page missing central All Tools link');
 assert(atlas.includes('href="/tools/"'), 'Plant Atlas missing central All Tools link');
