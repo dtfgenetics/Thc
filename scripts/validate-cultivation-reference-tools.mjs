@@ -62,6 +62,12 @@ assert(ppfd.includes('THC Light Lab') && ppfd.includes('Teaching Healthy Cultiva
 assert(ppfd.includes('href="/vpd-chart/"') && ppfd.includes('href="/tds-meter/"') && ppfd.includes('href="/ph-meter/"'), 'PPFD page missing cultivation cross-links');
 assert(ppfd.includes('targetMin') && ppfd.includes('targetMax') && ppfd.includes('inRange'), 'PPFD page must use user-defined target range analysis');
 assert(ppfd.includes('Apogee DLI measurement guidance') && ppfd.includes('Frontiers 2022') && ppfd.includes('Scientific Reports 2025'), 'PPFD page missing evidence links');
+assert(ppfd.includes("STORAGE_KEY='thc-light-lab-surveys-v1'") && ppfd.includes('localStorage.setItem'), 'PPFD page missing local survey persistence');
+assert(ppfd.includes('fixtureModel') && ppfd.includes('mountHeight') && ppfd.includes('sensorModel') && ppfd.includes('measurementDate'), 'PPFD page missing survey metadata fields');
+assert(ppfd.includes("lines=['row,column,ppfd']") && ppfd.includes('FileReader') && ppfd.includes('Export map CSV'), 'PPFD page missing CSV round-trip workflow');
+assert(ppfd.includes("window.print()") && ppfd.includes('Print / Save report'), 'PPFD page missing printable Light Report workflow');
+assert(ppfd.includes('compareSession') && ppfd.includes('Average PPFD ') && ppfd.includes('Uniformity '), 'PPFD page missing saved-survey comparison workflow');
+assert(ppfd.includes("box.style.background=heat(v)") && ppfd.includes("heat(input.value)"), 'PPFD page must preserve blank map cells as unmeasured');
 
 const atlas = fs.readFileSync(path.join(root, 'site/public-route-patch/atlas/index.html'), 'utf8');
 const terpenes = fs.readFileSync(path.join(root, 'site/public-route-patch/terpene-atlas/index.html'), 'utf8');
