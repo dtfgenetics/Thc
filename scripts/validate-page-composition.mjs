@@ -33,7 +33,7 @@ for(const token of [
   'dc6-disclosure',
   'dc6-course',
   'dc6-surfaces',
-  'Course completion and professional credential issuance are separate stages'
+  'dc6-course-path'
 ]) need(courses,token,'Courses catalog');
 
 if((tools.match(/class="tool-feature"/g)||[]).length!==2) {
@@ -58,7 +58,8 @@ console.log(JSON.stringify({
     'editorial Learn entry rows',
     'compact Tools reference desk',
     'linear Tools workflow',
-    'flattened Courses credential sections',
+    'grouped Technician I and II course paths',
+    'secondary certification roadmap',
     'mobile composition states'
   ]
 },null,2));
