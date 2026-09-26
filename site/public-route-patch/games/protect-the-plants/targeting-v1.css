@@ -8,5 +8,5 @@
 .board .cell[data-fire].can-fire:focus-visible{z-index:4;outline:3px solid #f1c45b;outline-offset:-2px;box-shadow:0 0 0 3px rgba(10,24,15,.92),0 0 20px rgba(241,196,91,.42)}
 .board .cell[data-fire][aria-disabled="true"]:focus{outline:none}
 .burn-fire-pending .board .cell[data-fire]{cursor:wait}
-@media(max-width:720px){.burn-target-readout{position:sticky;top:58px;z-index:12;grid-template-columns:auto 1fr;gap:6px 10px;margin:8px 0 10px;padding:9px 10px;background:rgba(5,15,9,.94);backdrop-filter:blur(10px)}.burn-target-readout>small{grid-column:1/-1}.burn-target-readout>strong{justify-self:end}.board .cell[data-fire].target-armed:after{content:'';inset:3px;border:1px solid rgba(255,221,145,.7);background:transparent;border-radius:2px}}
+@media(max-width:700px){.burn-target-readout{position:sticky;top:58px;z-index:12;grid-template-columns:auto 1fr;gap:6px 10px;margin:8px 0 10px;padding:9px 10px;background:rgba(5,15,9,.94);backdrop-filter:blur(10px)}.burn-target-readout>small{grid-column:1/-1}.burn-target-readout>strong{justify-self:end}.board .cell[data-fire].target-armed:after{content:'';inset:3px;border:1px solid rgba(255,221,145,.7);background:transparent;border-radius:2px}}
 @media(prefers-reduced-motion:reduce){.board .cell[data-fire].target-preview,.board .cell[data-fire].target-armed{transition:none!important}}
