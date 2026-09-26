@@ -5,12 +5,13 @@ const baseUrl = String(process.env.DTF_SITE_URL || 'https://dtfseeds.com').repla
 const tag = process.env.GITHUB_RUN_ID || Date.now().toString();
 
 const routes = [
-  { path: '/tools/', markers: ['Cultivation reference desk', 'Plant Atlas', 'Terpene Atlas', 'pH Meter', 'TDS / EC Meter', 'VPD Chart'] },
+  { path: '/tools/', markers: ['Cultivation reference tools', 'Plant Atlas', 'Terpene Atlas', 'pH Meter', 'TDS / EC Meter', 'VPD Chart', 'PPFD / DLI'] },
   { path: '/atlas/', markers: ['THC Living Plant Atlas', 'All Tools'] },
   { path: '/terpene-atlas/', markers: ['THC Terpene Atlas', 'All Tools'] },
   { path: '/ph-meter/', markers: ['pH Meter', 'All Tools', 'This page does not measure pH by itself'] },
   { path: '/tds-meter/', markers: ['TDS / EC Meter', 'All Tools', '500 scale', '700 scale'] },
   { path: '/vpd-chart/', markers: ['VPD Chart', 'All Tools', 'Leaf temperature offset'] },
+  { path: '/ppfd-chart/', markers: ['PPFD & DLI Tool', 'All Tools', '3 × 3 canopy PPFD map'] },
 ];
 
 const errors = [];
@@ -59,4 +60,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('Cultivation reference live verification passed for /tools/, Plant Atlas, Terpene Atlas, pH, TDS/EC, and VPD routes.');
+console.log('Cultivation reference live verification passed for /tools/, Plant Atlas, Terpene Atlas, pH, TDS/EC, VPD, and PPFD/DLI routes.');
