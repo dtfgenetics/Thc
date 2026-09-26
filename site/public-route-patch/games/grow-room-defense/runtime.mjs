@@ -230,17 +230,16 @@ function renderLanes() {
 
 function renderTools() {
   ui.tools.replaceChildren();
-  data.tools.forEach((tool, index) => {
+  for (const tool of data.tools) {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'tool-button';
     button.dataset.tool = tool.id;
     button.setAttribute('aria-pressed', String(tool.id === selectedToolId));
-    button.setAttribute('aria-keyshortcuts', String(index + 1));
     button.disabled = state.status !== 'playing';
-    button.innerHTML = `<span class="tool-mark">${escapeHtml(tool.mark)}</span><span><strong>${escapeHtml(tool.label)}</strong><small>${escapeHtml(tool.description)}</small><span class="tool-shortcut" aria-hidden="true">Key ${index + 1}</span></span>`;
+    button.innerHTML = `<span class="tool-mark">${escapeHtml(tool.mark)}</span><span><strong>${escapeHtml(tool.label)}</strong><small>${escapeHtml(tool.description)}</small></span>`;
     ui.tools.append(button);
-  });
+  }
 }
 
 function renderSelectedTool() {
@@ -364,22 +363,6 @@ ui.lanes.addEventListener('click', (event) => {
   const benchButton = event.target.closest('button.deploy-button[data-lane]');
   if (!benchButton) return;
   playAction(benchButton.dataset.lane);
-});
-
-document.addEventListener('keydown', (event) => {
-  if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || state?.status !== 'playing') return;
-  const target = event.target;
-  if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement) return;
-  const index = Number(event.key) - 1;
-  if (!Number.isInteger(index) || index < 0 || index >= (data?.tools?.length ?? 0)) return;
-  const tool = data.tools[index];
-  if (!tool) return;
-  event.preventDefault();
-  selectedToolId = tool.id;
-  renderTools();
-  renderSelectedTool();
-  renderLanes();
-  ui.announce.textContent = `${tool.label} selected with keyboard shortcut ${index + 1}. Choose a specific threat or a plant bench.`;
 });
 
 ui.code.addEventListener('input', () => setCode(ui.code.value));
