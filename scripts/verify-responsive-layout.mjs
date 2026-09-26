@@ -107,6 +107,7 @@ const infographicsPage = read("site/public-route-patch/learn/infographics/index.
 const tech1Courses = read("scripts/publish-wordpress-tech1-courses-2-7-v2.mjs");
 const tech2Courses = read("scripts/publish-wordpress-tech2-courses-1-8.mjs");
 const course1Layout = read("scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs");
+const certificationCatalogV6 = read("scripts/publish-wordpress-certification-catalog-v6.mjs");
 if (!/height:\s*100dvh/.test(growLensAccount) || !/max-height:\s*100dvh/.test(growLensAccount)) {
   failures.push("GrowLens account drawer must remain bounded to the dynamic viewport height.");
 }
@@ -146,6 +147,9 @@ if (!/\.hub-back\{[^}]*min-height:44px/.test(phenoQuestCss) || !/safe-area-inset
 }
 if (!/\.search a\{[^}]*min-height:44px/.test(infographicsPage)) {
   failures.push("Infographics search action must keep a 44px touch target.");
+}
+if (/@media\(max-width:640px\)/.test(certificationCatalogV6)) {
+  failures.push("Certification catalog v6 must use the canonical 700px phone band instead of the legacy 640px breakpoint.");
 }
 if (!/\.tools-card\{[^}]*max-height:calc\(100dvh - 104px\)[^}]*overflow-y:auto/.test(growRoomDefenseV2)) {
   failures.push("Grow Room Defense sticky tools panel must remain bounded to the dynamic viewport height.");
