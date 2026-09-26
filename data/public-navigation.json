@@ -12,7 +12,7 @@
       "development",
       "private"
     ],
-    "rule": "The shared primary navigation is fixed to Home, Seeds, Learn, Courses, Diagnostic, Games, Community, Shop. Search, Account, Cart, company/support links, and direct tool CTAs stay outside the primary navigation. Only routes marked public may be rendered as visitor-facing navigation or play buttons."
+    "rule": "The shared primary navigation is fixed to Home, Seeds, Learn, Courses, Tools, Games, Community, Shop. Search, Account, Cart, company/support links, and direct tool CTAs stay outside the primary navigation. Only routes marked public may be rendered as visitor-facing navigation or play buttons."
   },
   "primaryNavigation": [
     {
@@ -37,7 +37,7 @@
     },
     {
       "id": "diagnostic",
-      "label": "Diagnostic",
+      "label": "Tools",
       "route": "/tools/"
     },
     {
@@ -150,7 +150,7 @@
       },
       {
         "id": "diagnostic",
-        "label": "Diagnostic",
+        "label": "Tools",
         "route": "/tools/",
         "purpose": "Grow records, diagnostics, calculators, measurement tools, charts, and evidence-based decision support."
       },
