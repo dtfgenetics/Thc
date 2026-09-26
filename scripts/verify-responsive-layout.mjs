@@ -116,6 +116,10 @@ const tech1Courses = read("scripts/publish-wordpress-tech1-courses-2-7-v2.mjs");
 const tech2Courses = read("scripts/publish-wordpress-tech2-courses-1-8.mjs");
 const course1Layout = read("scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs");
 const certificationCatalogV6 = read("scripts/publish-wordpress-certification-catalog-v6.mjs");
+const academyV2 = read("scripts/publish-wordpress-academy-v2.mjs");
+const learnTaskNavV5 = read("scripts/publish-wordpress-learn-task-nav-v5.mjs");
+const beginnerCourseV5 = read("scripts/publish-wordpress-beginner-course-v5.mjs");
+const learningExperienceV3 = read("scripts/rebuild-wordpress-learning-experience-v3.mjs");
 if (!/height:\s*100dvh/.test(growLensAccount) || !/max-height:\s*100dvh/.test(growLensAccount)) {
   failures.push("GrowLens account drawer must remain bounded to the dynamic viewport height.");
 }
@@ -198,6 +202,18 @@ if (!/\.search a\{[^}]*min-height:44px/.test(infographicsPage)) {
 }
 if (/@media\(max-width:640px\)/.test(certificationCatalogV6)) {
   failures.push("Certification catalog v6 must use the canonical 700px phone band instead of the legacy 640px breakpoint.");
+}
+if (/@media\(max-width:(?:1050|800|620)px\)/.test(academyV2)) {
+  failures.push("Academy v2 must use canonical 1120/900/700 bands.");
+}
+if (/@media\(max-width:(?:980|820|620)px\)/.test(learnTaskNavV5)) {
+  failures.push("Learn task navigation v5 must use canonical 900/700 bands.");
+}
+if (/@media\(max-width:620px\)/.test(beginnerCourseV5)) {
+  failures.push("Beginner course v5 must use the canonical 700px phone band.");
+}
+if (/@media\(max-width:(?:980|620)px\)/.test(learningExperienceV3)) {
+  failures.push("Learning experience v3 must use canonical 900/700 bands.");
 }
 if (!/\.tools-card\{[^}]*max-height:calc\(100dvh - 104px\)[^}]*overflow-y:auto/.test(growRoomDefenseV2)) {
   failures.push("Grow Room Defense sticky tools panel must remain bounded to the dynamic viewport height.");
