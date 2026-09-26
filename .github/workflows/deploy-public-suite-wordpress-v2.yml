@@ -247,6 +247,7 @@ jobs:
                   'ph-meter/index.html',
                   'tds-meter/index.html',
                   'vpd-chart/index.html',
+                  'ppfd-chart/index.html',
                   'atlas/leaf-module/index.html',
                   'atlas/root-system/index.html',
                   'atlas/root-system/rhizosphere/index.html',
@@ -375,11 +376,13 @@ jobs:
           check 'https://dtfseeds.com/ph-meter/' 'pH Meter'
           check 'https://dtfseeds.com/tds-meter/' 'TDS / EC Meter'
           check 'https://dtfseeds.com/vpd-chart/' 'VPD Chart'
+          check 'https://dtfseeds.com/ppfd-chart/' 'THC Light Lab'
           check 'https://dtfseeds.com/tools/' 'Plant Atlas'
           check 'https://dtfseeds.com/tools/' 'Terpene Atlas'
           check 'https://dtfseeds.com/tools/' 'pH Meter'
           check 'https://dtfseeds.com/tools/' 'TDS / EC Meter'
           check 'https://dtfseeds.com/tools/' 'VPD Chart'
+          check 'https://dtfseeds.com/tools/' 'PPFD / Light Lab'
           check 'https://dtfseeds.com/growlens/' 'GrowLens'
           check 'https://dtfseeds.com/thc-grow-doc/' 'Grow Doc'
 
