@@ -52,6 +52,16 @@ body.burn-opponent-turn .boards .board-card:first-child .board-title h3 {
 }
 
 @media (max-width: 700px) {
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  body > section[data-public-product="Burn Buds"] {
+    padding-left: max(14px, env(safe-area-inset-left)) !important;
+    padding-right: max(14px, env(safe-area-inset-right)) !important;
+  }
+
   body.burn-my-turn .battle-top,
   body.burn-opponent-turn .battle-top {
     margin-bottom: 8px;
@@ -100,6 +110,10 @@ body.burn-opponent-turn .boards .board-card:first-child .board-title h3 {
 
   .mobile-tab {
     padding-block: 8px;
+  }
+
+  .toast {
+    max-width: calc(100vw - max(28px, env(safe-area-inset-left) + env(safe-area-inset-right) + 16px));
   }
 }
 
