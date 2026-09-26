@@ -253,7 +253,9 @@
         "radwan-2021-constituents"
       ],
       "evidenceGrade": "B",
-      "notes": "This umbrella seed entry must later split E/Z and alpha/beta isomer records where source data permits."
+      "notes": "Broad ocimene concept retained for search/navigation. Quantitative measurements must map to a resolved isomer when the analytical source distinguishes cis/Z from trans/E forms.",
+      "isomerGroup": "ocimene",
+      "stereochemistry": "unspecified"
     },
     {
       "id": "nerolidol",
@@ -2084,10 +2086,68 @@
       ],
       "evidenceGrade": "A-summary",
       "notes": "Reported in the 79-inflorescence terpenoid variability dataset. Identity and quantitative values should be interpreted with the analytical-method and semi-quantification notes in the source table."
+    },
+    {
+      "id": "cis-beta-ocimene",
+      "canonicalName": "cis-β-Ocimene",
+      "aliases": [
+        "cis-ocimene",
+        "(Z)-β-ocimene",
+        "Z-beta-ocimene"
+      ],
+      "class": "monoterpene",
+      "subclass": "acyclic hydrocarbon",
+      "formula": "C10H16",
+      "pubchemCid": null,
+      "aromaDescriptors": [
+        "green",
+        "floral",
+        "herbal"
+      ],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "shapira-variability-79-inflorescences",
+        "radwan-2021-constituents"
+      ],
+      "evidenceGrade": "A-summary",
+      "isomerGroup": "ocimene",
+      "stereochemistry": "cis / Z",
+      "parentConceptId": "ocimene",
+      "notes": "Resolved cis/Z β-ocimene analyte. Keep separate from trans/E β-ocimene in measured profiles."
+    },
+    {
+      "id": "trans-beta-ocimene",
+      "canonicalName": "trans-β-Ocimene",
+      "aliases": [
+        "trans-ocimene",
+        "(E)-β-ocimene",
+        "E-beta-ocimene"
+      ],
+      "class": "monoterpene",
+      "subclass": "acyclic hydrocarbon",
+      "formula": "C10H16",
+      "pubchemCid": null,
+      "aromaDescriptors": [
+        "green",
+        "floral",
+        "sweet"
+      ],
+      "scope": "both",
+      "cannabisOccurrence": "reported",
+      "evidence": [
+        "shapira-variability-79-inflorescences",
+        "radwan-2021-constituents"
+      ],
+      "evidenceGrade": "A-summary",
+      "isomerGroup": "ocimene",
+      "stereochemistry": "trans / E",
+      "parentConceptId": "ocimene",
+      "notes": "Resolved trans/E β-ocimene analyte. Keep separate from cis/Z β-ocimene in measured profiles."
     }
   ],
   "coverage": {
-    "currentCuratedCompounds": 98,
+    "currentCuratedCompounds": 100,
     "target": "Expand toward the full literature-backed Cannabis terpene/terpenoid inventory while preserving compound-level provenance and isomer distinctions.",
     "literatureContext": "Recent reviews describe more than 100 Cannabis terpenes, with one synthesis enumerating 61 monoterpenes and 51 sesquiterpenes; coverage varies by analytical method, plant material, and inclusion criteria.",
     "completenessClaim": false
