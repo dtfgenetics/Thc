@@ -8,6 +8,7 @@ The existing public route remains `/games/grower-conversations/` for compatibili
 
 - `PRODUCTION_SPEC.md` is the authoritative product definition.
 - `data/prompt-bank.json` is the current 96-card **digital-preview** prompt bank.
+- `data/prompt-bank-v2.json` is the 200-card production-bank candidate; it has deterministic structure/duplicate validation but still requires editorial and playtest review.
 - `data/categories.json` controls the current preview category system.
 - `site/public-route-patch/games/grower-conversations/` contains the self-hosted browser implementation.
 - `data/drive-prompt-starter-source.json` preserves historical starter material and must never overwrite the canonical bank.
@@ -37,8 +38,7 @@ Implemented:
 - no visible internal card IDs.
 
 Still required for production:
-- migrate from the educational preview taxonomy to the eight locked social-game lanes;
-- expand the canonical prompt bank to 200 QA-clean cards;
+- migrate the browser runtime from the educational preview taxonomy to the eight locked social-game lanes and the new 200-card bank;
 - add intensity metadata;
 - add mode presets;
 - add Keeper tracking;
