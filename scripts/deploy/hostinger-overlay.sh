@@ -60,6 +60,7 @@ scope_items() {
       ph-meter/index.html
       tds-meter/index.html
       vpd-chart/index.html
+      ppfd-chart/index.html
       growlens/index.html
       thc-grow-doc/index.html
       puzzles/current.json
