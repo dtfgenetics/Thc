@@ -79,6 +79,8 @@ const toolsHub = read("site/public-route-patch/tools/index.html");
 const gamesHub = read("site/public-route-patch/games/index.html");
 const visualV1 = read("site/design-system/dtf-visual-v1.css");
 const touchTargetFiles = [
+  ["apps/growlens-web/src/account.css", [/\.account-tabs button[^}]*min-height:\s*(?:3\d|4[0-3])px/]],
+  ["apps/high-land-web/src/highLandUiV2.css", [/\.player-select button[^}]*min-height:\s*(?:3\d|4[0-3])px/]],
   ["scripts/publish-wordpress-interface-v7.mjs", [/\.dtf-shell-menu[^}]*min-height:(?:3\d|4[0-3])px/, /\.dtf-shell-nav a[^}]*min-height:(?:3\d|4[0-3])px/]],
   ["scripts/style-wordpress-woocommerce-archive.mjs", [/woocommerce-ordering select[^}]*min-height:(?:3\d|4[0-3])px/]],
   ["scripts/publish-wordpress-tech1-courses-2-7-v2.mjs", [/\.t1c-nav a[^}]*min-height:(?:3\d|4[0-3])px/, /\.t1c-crumbs a[^}]*min-height:(?:3\d|4[0-3])px/]],
@@ -87,6 +89,11 @@ const touchTargetFiles = [
   ["site/public-route-patch/games/strain-showdown/runtime-v2.css", [/#restartButton[^}]*min-height:(?:3\d|4[0-3])px/]],
   ["site/public-route-patch/games/high-iq/high-iq-v3-3.css", [/\.high-iq-hero \.actions a[^}]*min-height:(?:3\d|4[0-3])px/]],
 ];
+
+const growLensAccount = read("apps/growlens-web/src/account.css");
+if (!/height:\s*100dvh/.test(growLensAccount) || !/max-height:\s*100dvh/.test(growLensAccount)) {
+  failures.push("GrowLens account drawer must remain bounded to the dynamic viewport height.");
+}
 
 const dynamicViewportFiles = [
   "apps/growlens-web/src/backup.css",
