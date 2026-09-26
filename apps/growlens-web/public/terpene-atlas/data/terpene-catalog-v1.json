@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "status": "cannabis-core-catalog-v1-in-expansion",
+  "status": "production-cannabis-core-expandable",
   "scopePolicy": {
     "globalUniverse": "Track the broader terpene/terpenoid universe separately from Cannabis occurrence.",
     "cannabisSet": "A compound is marked cannabis-reported only when a traceable analytical or review source supports occurrence in Cannabis.",
@@ -2568,6 +2568,8 @@
     "target": "Expand toward the full literature-backed Cannabis terpene/terpenoid inventory while preserving compound-level provenance and isomer distinctions.",
     "literatureContext": "Recent reviews describe more than 100 Cannabis terpenes, with one synthesis enumerating 61 monoterpenes and 51 sesquiterpenes; coverage varies by analytical method, plant material, and inclusion criteria.",
     "completenessClaim": false,
-    "referenceInventoryNote": "The 2021 Radwan et al. review reports 120 Cannabis terpenes. The Atlas currently also contains 120 curated records, but the two sets are not asserted to be one-to-one identical until every review identity, synonym, and stereoisomer has been reconciled."
+    "referenceInventoryNote": "The 2021 Radwan et al. review reports 120 Cannabis terpenes. The Atlas currently also contains 120 curated records, but the two sets are not asserted to be one-to-one identical until every review identity, synonym, and stereoisomer has been reconciled.",
+    "catalogState": "production Cannabis core; globally expandable",
+    "scopeBoundary": "The current production core contains 120 evidence-backed named records relevant to Cannabis literature and measured-study analytes. It is not presented as the complete global terpene/terpenoid universe."
   }
 }
