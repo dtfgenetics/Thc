@@ -64,6 +64,7 @@
     "games:qa:local": "node scripts/game-portfolio-browser-qa.mjs --local",
     "games:qa:live": "node scripts/game-portfolio-browser-qa.mjs --live",
     "verify:education-visual-system": "node scripts/validate-education-visual-system.mjs",
-    "verify:learning-content-quality": "node scripts/validate-learning-content-quality.mjs"
+    "verify:learning-content-quality": "node scripts/validate-learning-content-quality.mjs",
+    "verify:responsive": "node scripts/verify-responsive-layout.mjs"
   }
 }

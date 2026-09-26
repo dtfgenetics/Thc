@@ -195,8 +195,9 @@ def main() -> int:
     record_map = {record.source: record for record in records}
     library_html = args.library_page.read_text(encoding="utf-8")
     optimized_html, replaced, missing = rewrite_library(library_html, record_map)
-    if replaced == 0:
-        raise RuntimeError("No infographic image references were optimized in the library page")
+    has_canonical_image_refs = ASSET_PREFIX in library_html
+    if replaced == 0 and has_canonical_image_refs:
+        raise RuntimeError("Infographic image references were present but none could be optimized in the library page")
     if missing:
         raise RuntimeError("Library references missing canonical images: " + ", ".join(sorted(set(missing))))
 

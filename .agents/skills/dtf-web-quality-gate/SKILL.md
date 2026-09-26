@@ -9,6 +9,8 @@ metadata:
 
 # DTF Web Quality Gate
 
+For any responsive layout, viewport, CSS cascade, mobile/tablet, navigation, grid, overflow, sticky UI, or device-formatting issue, read `.agents/skills/dtf-responsive-layout/SKILL.md` first and apply `docs/RESPONSIVE_LAYOUT_STANDARD.md` before running this quality gate.
+
 This is the common visitor-facing quality gate for the DTF web portfolio. It applies to site pages, educational routes, games, Plant Atlas, Grow Doc, calculators, libraries, and embedded/public-route applications.
 
 Detailed guidance migrated out of the certification repository is preserved here:
@@ -34,7 +36,7 @@ Do not use Playwright in this skill or as an automatic fallback in any action. B
 Run the narrow changed-route checks first, then the release-scope crawl.
 
 1. **Runtime:** HTTP success, no fatal console/page errors, required assets load, primary interaction works.
-2. **Responsive:** desktop, tablet/compact, and mobile viewport coverage; no clipped controls, overlays, pointer interception, or unusable horizontal overflow.
+2. **Responsive:** use the viewport matrix in `docs/RESPONSIVE_LAYOUT_STANDARD.md`; cover small phone, large phone, tablet, compact desktop/large tablet, desktop, and constrained-height UI where relevant; no clipped controls, overlays, pointer interception, contradictory breakpoint behavior, or unusable horizontal overflow. Run `npm run verify:responsive` before rendered QA.
 3. **Interaction:** keyboard, mouse/pointer, and touch where applicable; visible focus; minimum practical touch targets; deterministic critical-flow assertions using application-level or integration tests rather than Playwright.
 4. **Visual:** stable screenshots at defined checkpoints, layout hierarchy, spacing, typography, image crop/quality, broken placeholders, modal/overlay stacking, and game HUD readability.
 5. **Accessibility:** semantic headings/landmarks, labels/names, contrast, focus order, keyboard reachability, reduced-motion behavior, forced-colors/high-contrast resilience where supported.

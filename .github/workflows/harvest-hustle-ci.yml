@@ -77,7 +77,7 @@ jobs:
           requireText(css, '.station-button', 'station card artwork');
           requireText(visual, '.shift-progress', 'live time progress');
           requireText(visual, '.station-button.next-station', 'next-station visual feedback');
-          requireText(visual, '@media(max-width:640px)', 'mobile control layout');
+          requireText(visual, '@media(max-width:700px)', 'mobile control layout');
           requireText(visual, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
           requireText(app, "from './engine.mjs';", 'canonical engine import');
           if (/fetch\s*\(/.test(app)) throw new Error('public runtime regressed to browser-time JSON fetch');

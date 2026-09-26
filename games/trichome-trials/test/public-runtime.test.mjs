@@ -36,7 +36,7 @@ assert.match(runtime, /tabindex', '-1'/);
 
 assert.match(css, /\.confidence-button\{min-height:44px/);
 assert.match(css, /\.score-stepper button\{[^}]*width:44px;height:44px/);
-assert.match(css, /@media\(max-width:640px\)/);
+assert.match(css, /@media\(max-width:700px\)/);
 assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
 assert.match(css, /@media\(forced-colors:active\)/);
 assert.match(css, /outline:3px solid Highlight/);

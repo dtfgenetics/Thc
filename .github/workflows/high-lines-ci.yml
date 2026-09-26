@@ -93,7 +93,7 @@ jobs:
           need(visual, 'overflow:auto', 'zoom board scrolling');
           need(visual, 'touch-action:pan-x pan-y', 'mobile board pan support');
           need(visual, '#reset-art.reset-armed', 'destructive reset visual');
-          need(visual, '@media(max-width:650px)', 'mobile controls');
+          need(visual, '@media(max-width:700px)', 'mobile controls');
           need(visual, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
           const staleGuards = (runtime.match(/requestToken !== sceneLoadToken/g) || []).length;
           if (staleGuards < 3) throw new Error('scene load must guard stale success, pre-render state, and failure paths');

@@ -40,6 +40,7 @@ jobs:
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/grow-room-defense/app.js
+          node --check site/public-route-patch/games/grow-room-defense/runtime.mjs
           node --check site/public-route-patch/games/grow-room-defense/engine.mjs
 
       - name: Verify canonical and public engine match
@@ -51,7 +52,9 @@ jobs:
           const fs = require('fs');
           const html = fs.readFileSync('site/public-route-patch/games/grow-room-defense/index.html','utf8');
           const css = fs.readFileSync('site/public-route-patch/games/grow-room-defense/grow-room-defense.css','utf8');
-          const app = fs.readFileSync('site/public-route-patch/games/grow-room-defense/app.js','utf8');
+          const bootstrap = fs.readFileSync('site/public-route-patch/games/grow-room-defense/app.js','utf8');
+          const runtime = fs.readFileSync('site/public-route-patch/games/grow-room-defense/runtime.mjs','utf8');
+          const data = JSON.parse(fs.readFileSync('site/public-route-patch/games/grow-room-defense/data/ipm.json','utf8'));
           const requireText = (source, text, label) => {
             if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
           };
@@ -59,17 +62,18 @@ jobs:
           requireText(html, 'id="grow-room-defense-data"', 'embedded IPM data');
           requireText(html, '<script src="./app.js" defer></script>', 'classic deferred entrypoint');
           requireText(html, 'Education boundary:', 'education boundary');
-          requireText(app, 'expected three plant benches', 'lane contract');
-          requireText(app, 'expected eight pressure types', 'threat contract');
-          requireText(app, 'expected seven IPM tools', 'tool contract');
-          requireText(app, 'class="plant-art"', 'CSS plant renderer');
-          requireText(app, 'function renderThreat(active, laneId, tool, laneAlive)', 'dead bench targeting guard');
-          requireText(app, "const laneAlive = lane.health > 0", 'lane health targetability');
+          if (data?.lanes?.length !== 3) throw new Error('lane contract must keep three plant benches');
+          if (data?.threats?.length !== 8) throw new Error('threat contract must keep eight pressure types');
+          if (data?.tools?.length !== 7) throw new Error('tool contract must keep seven IPM tools');
+          requireText(bootstrap, "import('./runtime.mjs')", 'thin runtime bootstrap');
+          requireText(runtime, 'class="plant-art"', 'CSS plant renderer');
+          requireText(runtime, 'function renderThreat(active, laneId, tool, laneAlive)', 'dead bench targeting guard');
+          requireText(runtime, "const laneAlive = lane.health > 0", 'lane health targetability');
           requireText(css, '.plant-art', 'plant asset styles');
           requireText(css, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
           if (html.includes('type="module"')) throw new Error('Grow Room Defense must not depend on module MIME handling');
-          if (app.includes("fetch('./data/ipm.json'")) throw new Error('Grow Room Defense must not fetch IPM data at runtime');
-          if (app.includes('ui.code.disabled')) throw new Error('replay code input must remain available after game over');
+          if (/fetch\s*\(/.test(runtime)) throw new Error('Grow Room Defense runtime must use embedded IPM data instead of browser-time fetch');
+          if (runtime.includes('ui.code.disabled')) throw new Error('replay code input must remain available after game over');
           NODE
 
       - name: Verify truthful release boundary

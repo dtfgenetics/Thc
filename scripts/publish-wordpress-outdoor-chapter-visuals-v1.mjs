@@ -85,7 +85,7 @@ const resolved=manifest.items.map(item=>{
 
 const style=`<style id="thc-outdoor-chapter-visuals-v1-style">
 .outcv1{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(260px,.85fr);gap:0;margin:18px 0 20px;background:#fff;border:1px solid #d7e2dc;border-radius:20px;overflow:hidden;box-shadow:0 12px 28px rgba(20,48,39,.07)}.outcv1>a{display:block;background:#edf3ef;min-height:280px}.outcv1 img{display:block;width:100%;height:100%;object-fit:contain}.outcv1 figcaption{padding:22px 24px;align-self:center}.outcv1 figcaption>span{display:block;margin-bottom:8px;color:#78672f;font-size:.68rem;font-weight:950;letter-spacing:.11em;text-transform:uppercase}.outcv1 figcaption>strong{display:block;color:#143027;font-size:1.28rem;line-height:1.2}.outcv1 figcaption>p{margin:9px 0 0;color:#52665e;line-height:1.6}.outcv1 figcaption>a{display:inline-block;margin-top:12px;color:#1f704f!important;font-weight:900;text-decoration:none!important}
-@media(max-width:760px){.outcv1{grid-template-columns:1fr}.outcv1>a{min-height:0}.outcv1 figcaption{padding:17px 18px}}
+@media(max-width:700px){.outcv1{grid-template-columns:1fr}.outcv1>a{min-height:0}.outcv1 figcaption{padding:17px 18px}}
 </style>`;
 
 function figure(item){

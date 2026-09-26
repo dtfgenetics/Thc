@@ -16,7 +16,7 @@ body[data-battle-turn="player"] .player-summary{box-shadow:inset 0 0 0 1px rgba(
 .hand .card.unplayable::after{content:"NOT PLAYABLE";position:absolute;left:10px;right:10px;bottom:10px;padding:.32rem .42rem;border:1px solid rgba(255,255,255,.1);border-radius:999px;background:rgba(5,10,8,.82);color:#aab8af;text-align:center;font-size:.58rem;font-weight:950;letter-spacing:.1em;z-index:4}
 .hand .card.selected{outline-width:3px;box-shadow:0 0 0 5px rgba(86,208,110,.07),0 20px 45px rgba(70,216,106,.2)}
 
-#restartButton{min-height:38px;padding:.45rem .68rem;border:1px solid transparent;border-radius:9px;transition:background .15s,border-color .15s,color .15s}
+#restartButton{min-height:44px;padding:.45rem .68rem;border:1px solid transparent;border-radius:9px;transition:background .15s,border-color .15s,color .15s}
 #restartButton:hover{border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.04)}
 #restartButton:not(:disabled){touch-action:manipulation}
 #restartButton[aria-pressed="true"]{border-color:rgba(255,107,107,.5);color:#ffb0b0;background:rgba(255,107,107,.08)}

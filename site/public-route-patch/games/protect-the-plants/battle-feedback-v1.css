@@ -9,6 +9,7 @@
 .board .cell.burn-shot-pop{animation:burn-shot-pop .62s cubic-bezier(.18,.8,.2,1) both}
 .board .cell{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 @keyframes burn-shot-pop{0%{transform:scale(.82);filter:brightness(1.8)}45%{transform:scale(1.12);filter:brightness(1.25)}100%{transform:scale(1);filter:brightness(1)}}
+/* responsive-exception: dense 15x15 coordinate labels and shot feedback compact before the canonical phone band. */
 @media(max-width:720px){.board-card.burn-secondary-board{opacity:.72}.board-card.burn-primary-board{opacity:1}.coordinate-grid{grid-template-columns:18px minmax(0,1fr);grid-template-rows:17px minmax(0,1fr)}.col-labels,.row-labels{font-size:.48rem}.board .cell.burn-latest-shot{outline-width:2px;outline-offset:-2px}.board-card{scroll-margin-top:116px}}
 @media(max-width:420px){.board-card{padding:8px}.boards{gap:7px}.burn-turn-banner{margin-bottom:8px}.burn-telemetry{margin-bottom:8px}.board-title{margin-bottom:6px}.board-title h3{font-size:.76rem}}
 @media(prefers-reduced-motion:reduce){.board .cell.burn-shot-pop{animation:none!important}.board-card.burn-primary-board,.board-card.burn-secondary-board{transition:none!important}}

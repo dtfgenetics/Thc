@@ -117,9 +117,9 @@ const block = `<!-- DTF-LEARN-TASK-NAV-V5-START -->
 .taskv5 .tool-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
 .taskv5 .tool{display:flex;min-height:92px;align-items:flex-end;padding:15px;border:1px solid #31543d;border-radius:14px;background:#102f1c;color:#fff!important;text-decoration:none!important;font-weight:800;line-height:1.25}
 .taskv5 .tool:hover,.taskv5 .tool:focus{border-color:#d7b95f;text-decoration:none!important}
-@media(max-width:980px){.taskv5 .tool-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:820px){.taskv5 .primary-grid{grid-template-columns:1fr}.taskv5 .primary-card{min-height:210px}.taskv5 .head{align-items:flex-start;flex-direction:column}}
-@media(max-width:620px){.taskv5{padding:46px 0 50px}.taskv5 .wrap{width:min(100% - 26px,1180px)}.taskv5 .tool-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.taskv5 .tools-head{align-items:flex-start;flex-direction:column}}
+@media(max-width:900px){.taskv5 .tool-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:900px){.taskv5 .primary-grid{grid-template-columns:1fr}.taskv5 .primary-card{min-height:210px}.taskv5 .head{align-items:flex-start;flex-direction:column}}
+@media(max-width:700px){.taskv5{padding:46px 0 50px}.taskv5 .wrap{width:min(100% - 26px,1180px)}.taskv5 .tool-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.taskv5 .tools-head{align-items:flex-start;flex-direction:column}}
 </style>
 <section class="taskv5" data-dtf-learn-task-nav-v5="true">
   <div class="wrap">

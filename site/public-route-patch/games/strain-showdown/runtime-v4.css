@@ -20,7 +20,7 @@ button,.hub-link,.family-choice{touch-action:manipulation;-webkit-tap-highlight-
 .lane.valid-target::after{content:"SELECT";position:absolute;right:8px;top:7px;padding:.2rem .35rem;border-radius:.35rem;background:#173d27;color:#dfffc7;font-size:.52rem;font-weight:950;letter-spacing:.08em;pointer-events:none}
 .card.selected::after{content:"SELECTED";position:absolute;left:9px;bottom:8px;z-index:4;padding:.22rem .38rem;border-radius:.35rem;background:#173d27;color:#dfffc7;font-size:.54rem;font-weight:950;letter-spacing:.07em;pointer-events:none}
 
-@media(max-width:720px){
+@media(max-width:700px){
   .showdown-shell{padding-bottom:calc(28px + env(safe-area-inset-bottom))}
   .game-header{grid-template-columns:1fr auto;gap:10px;padding-bottom:14px}
   .brand-lockup{grid-column:1/-1;grid-row:1;text-align:left}
@@ -65,6 +65,20 @@ button,.hub-link,.family-choice{touch-action:manipulation;-webkit-tap-highlight-
   .hand .card{min-width:164px}
   .feed-head{align-items:center}
   .feed-head button{font-size:.74rem}
+}
+
+@media(orientation:landscape) and (max-height:560px){
+  .showdown-shell{padding-top:8px;padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+  .game-header{gap:6px;padding-bottom:8px}
+  .brand-lockup p{margin-top:.2rem}
+  .intro-panel{padding-block:10px}
+  .scoreboard{gap:5px}
+  .fighter-summary,.round-core{padding:7px 8px}
+  .passive-ribbon>div{padding:6px 8px}
+  .hand-panel,.battle-feed{padding:8px}
+  .battle-feed ol{max-height:min(96px,calc(100dvh - 240px))}
+  .turn-actions{gap:6px}
+  .turn-actions button{min-height:44px}
 }
 
 @media(prefers-reduced-motion:reduce){

@@ -157,7 +157,7 @@ body::before{
 .feedback-card.empty .feedback-kicker{color:#8ed4d2}
 
 .side-column{position:relative}
-.tools-card{position:sticky;top:88px;border-color:rgba(146,223,103,.13);background:linear-gradient(180deg,rgba(18,37,25,.97),rgba(8,20,12,.98))}
+.tools-card{position:sticky;top:88px;max-height:calc(100dvh - 104px);overflow-y:auto;border-color:rgba(146,223,103,.13);background:linear-gradient(180deg,rgba(18,37,25,.97),rgba(8,20,12,.98))}
 .tool-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.52rem}
 .tool-button{position:relative;overflow:hidden;min-height:68px;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease,background .14s ease}
 .tool-button:hover:not(:disabled){transform:translateY(-1px);border-color:#6f9278}
@@ -178,11 +178,11 @@ body::before{
 @media(max-width:1120px){
   .tool-grid{grid-template-columns:1fr}
 }
-@media(max-width:980px){
+@media(max-width:900px){
   .tools-card{position:static}
   .tool-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-@media(max-width:760px){
+@media(max-width:700px){
   .hero::before{position:static;display:inline-flex;margin-bottom:.65rem}
   .hero::after{font-size:8rem}
   .lanes{gap:.65rem}
