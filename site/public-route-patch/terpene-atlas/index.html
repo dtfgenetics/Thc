@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="/terpene-atlas/terpene-atlas-v1.css">
 </head>
 <body>
-<header class="topbar"><a class="brand" href="/terpene-atlas/"><strong>THC Terpene Atlas</strong><span>DTF GENETICS · PLANT CHEMISTRY</span></a><nav><a href="#wheel">Wheel</a><a href="#explorer">Explorer</a><a href="#population">Measured data</a><a href="#compare">Compare</a><a href="#method">Evidence</a><a href="/atlas/trichomes-resin/">Plant Atlas</a><a href="/learn/">Learning Center</a><a href="/tools/">All Tools</a></nav></header>
+<header class="topbar"><a class="brand" href="/terpene-atlas/"><strong>THC Terpene Atlas</strong><span>DTF GENETICS · PLANT CHEMISTRY</span></a><nav><a href="#wheel">Wheel</a><a href="#explorer">Explorer</a><a href="#population">Measured data</a><a href="#lab-profile">Lab profile</a><a href="#compare">Compare</a><a href="#method">Evidence</a><a href="/atlas/trichomes-resin/">Plant Atlas</a><a href="/learn/">Learning Center</a><a href="/tools/">All Tools</a></nav></header>
 <main class="shell">
 <section class="hero"><div><p class="kicker">Chemistry · Biology · Evidence · Samples</p><h1>Terpene Atlas</h1><p class="lede">Explore terpene and terpenoid chemistry without flattening cultivar names into fake precision. Cannabis occurrence is source-backed, and quantitative profiles belong to measured samples.</p><div class="hero-actions"><a class="primary" href="#explorer">Explore compounds</a><a href="/atlas/trichomes-resin/">See where glandular trichomes form →</a></div></div><aside><strong data-compound-count>Loading catalog…</strong><span>versioned compounds</span><strong>Sample-first</strong><span>percentages require measurements</span><strong>Evidence-linked</strong><span>occurrence and chemistry stay sourced</span></aside></section>
 <section class="wheel-section" id="wheel">
@@ -39,6 +39,18 @@
 <div class="population-summary"><div><strong data-population-count>—</strong><span>analytes in Atlas subset</span></div><div><strong>79</strong><span>inflorescences in source population</span></div><div><strong>ppm</strong><span>reported concentration unit</span></div><div><strong data-profile-count>0</strong><span>verified individual sample profiles loaded</span></div></div>
 <div class="table-wrap"><table class="population-table"><thead><tr><th>Compound</th><th>Mean ppm</th><th>Min</th><th>Max</th><th>SD</th><th>CV %</th></tr></thead><tbody data-population-body></tbody></table></div>
 <p class="population-note">A “&gt;” maximum means the reported value exceeded the source table's upper analytical boundary. High coefficients of variation are a direct warning against assigning one universal terpene percentage to a cultivar name.</p></section>
+<section class="section lab-profile" id="lab-profile">
+  <div class="section-head"><div><p class="kicker">Sample profile inspector</p><h2>Inspect a real lab profile locally</h2></div><p>Load a JSON profile that follows the Atlas sample schema. The file stays in your browser; this tool does not upload it.</p></div>
+  <div class="lab-profile-grid">
+    <label class="file-drop"><span>Choose JSON profile</span><input type="file" accept="application/json,.json" data-profile-file><small>Required: sampleId, displayName, source, matrix, method, unit, measurements.</small></label>
+    <div class="profile-status" data-profile-status><strong>No sample loaded</strong><p>Use measured sample data rather than assigning a universal percentage to a cultivar name.</p></div>
+  </div>
+  <div class="profile-result" data-profile-result hidden></div>
+</section>
+<dialog class="compound-dialog" data-compound-dialog>
+  <button class="dialog-close" type="button" data-dialog-close aria-label="Close compound details">×</button>
+  <div data-dialog-content></div>
+</dialog>
 <section class="compare" id="compare"><div class="section-head"><div><p class="kicker">Compare</p><h2>Put compounds side by side</h2></div><p>Select two compounds to compare chemistry, class, sensory descriptors, Cannabis occurrence, aliases, and evidence.</p></div><div class="compare-controls"><select data-compare-a aria-label="First terpene"></select><span>vs</span><select data-compare-b aria-label="Second terpene"></select></div><div class="compare-grid" data-compare-grid></div></section>
 <section class="method" id="method"><div><p class="kicker">Evidence model</p><h2>What the Atlas will and will not claim</h2></div><div class="method-grid"><article><b>A</b><h3>Primary analytical evidence</h3><p>Measured material with reported analytical method, sample identity, unit, and source.</p></article><article><b>B</b><h3>Peer-reviewed synthesis</h3><p>Review evidence used to map occurrence and chemistry when primary references remain traceable.</p></article><article><b>C</b><h3>Secondary orientation</h3><p>Useful for navigation only. It is not enough by itself for a quantitative cultivar claim.</p></article><article><b>≠</b><h3>No fixed “strain percentage”</h3><p>The Atlas stores cultivar labels separately from individual laboratory or publication measurements.</p></article></div></section>
 <section class="section source-panel" id="sources"><div class="section-head"><div><p class="kicker">Evidence registry</p><h2>Sources behind the Atlas</h2></div><p>Occurrence claims are only as strong as their cited analytical or review evidence.</p></div><div class="source-grid" data-source-grid></div><div class="coverage" data-coverage></div></section>
