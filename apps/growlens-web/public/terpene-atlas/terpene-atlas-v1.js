@@ -41,7 +41,7 @@ function renderSources(){
   const coverage=$('[data-coverage]');
   const quality=$('[data-data-quality]');
   const c=state.catalog.coverage||{};
-  if(coverage)coverage.innerHTML=`<strong>Current curated coverage: ${state.catalog.compounds.length} compounds.</strong> ${esc(c.target||'Catalog expansion continues.')} <span>Completeness claim: ${c.completenessClaim===true?'yes':'no'}.</span>`;
+  if(coverage)coverage.innerHTML=`<strong>Current curated coverage: ${state.catalog.compounds.length} compounds.</strong> <span>${esc(c.catalogState||'expandable catalog')}</span><p>${esc(c.scopeBoundary||c.target||'Catalog expansion continues.')}</p><p><strong>Reference inventory:</strong> ${esc(c.referenceInventoryNote||'')}</p><span>Global completeness claim: ${c.completenessClaim===true?'yes':'no'}.</span>`;
   if(quality){
     const items=state.catalog.compounds||[];
     const formulas=items.filter(x=>x.formula).length;
