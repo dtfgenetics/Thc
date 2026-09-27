@@ -52,6 +52,22 @@ describe('GrowLens event/environment windows',()=>{
     expect(buildEventEnvironmentInsights(state,6)).toEqual([]);
   });
 
+  it('refuses ambiguous whole-grow events when readings span multiple spaces',()=>{
+    const state=baseState();
+    state.spaces.push({id:'space-2',name:'Room 2',environment:'indoor',lightHours:18,createdAt:'2026-09-01T00:00:00.000Z'});
+    state.readings=[
+      {id:'r1',spaceId:'space-1',temperatureC:24,humidity:60,ppfd:400,createdAt:'2026-09-10T08:00:00.000Z'},
+      {id:'r2',spaceId:'space-1',temperatureC:25,humidity:58,ppfd:450,createdAt:'2026-09-10T12:00:00.000Z'},
+      {id:'r3',spaceId:'space-2',temperatureC:20,humidity:70,ppfd:300,createdAt:'2026-09-10T08:00:00.000Z'},
+      {id:'r4',spaceId:'space-2',temperatureC:21,humidity:68,ppfd:320,createdAt:'2026-09-10T12:00:00.000Z'},
+    ];
+    state.feedingRecords=[{
+      id:'f1',plantId:null,cycleId:null,reservoirId:null,waterVolumeMl:1000,sourceWater:'',startingEcMsCm:null,finalEcMsCm:null,
+      finalPh:null,ppm:null,ppmScale:null,products:[],additives:[],mixingNotes:'',createdAt:'2026-09-10T10:00:00.000Z',updatedAt:'2026-09-10T10:00:00.000Z'
+    }];
+    expect(buildEventEnvironmentInsights(state,6)).toEqual([]);
+  });
+
   it('requires both a before and after reading',()=>{
     const state=baseState();
     state.readings=[{id:'r1',spaceId:'space-1',temperatureC:24,humidity:60,ppfd:400,createdAt:'2026-09-10T08:00:00.000Z'}];
