@@ -299,3 +299,28 @@ Repository: https://github.com/rexrainbow/phaser3-rex-notes
 License: MIT.
 Use for: reference patterns for virtual joystick/touch controls, UI widgets, camera/input helpers and Phaser-specific interaction problems.
 Decision: reference selectively. Seed Man already has dedicated touch controls, so do not replace working controls merely to adopt a plugin.
+
+## Education search implementation — Fuse.js + Pagefind benchmark
+
+### Fuse.js 7.1.0
+Repository: https://github.com/krisk/Fuse
+License: Apache-2.0.
+Action taken:
+- vendored the pinned 7.1.0 ESM build;
+- restored the missing canonical `/learn/search/` source page;
+- added weighted fuzzy search over title, keywords, summary, type and stable IDs;
+- added resource-type filtering;
+- added a deterministic validator;
+- added `build:education-search` and `validate:education-search` package scripts;
+- added a source-driven index generator that can pull public navigation, encyclopedia JSON, Plant Atlas systems and Terpene Atlas compounds into one shared search index.
+
+This fixes a structural defect: navigation and the WordPress learning publisher referenced `/learn/search/`, but its canonical static source was absent from the repository.
+
+### Pagefind
+Repository: https://github.com/Pagefind/pagefind
+Use for: indexing fully rendered static HTML after build/deploy packaging.
+Strengths: static-site-wide indexing, page filters, no search backend, compact browser delivery.
+Decision: keep as the next benchmark rather than replacing Fuse immediately. DTFSeeds mixes WordPress-owned pages and static/public-route overlays, so a Pagefind index would only be complete if the production pipeline first renders or crawls the combined visitor-facing surface. Fuse plus a source-generated canonical index works across that mixed ownership model today. If the education system moves toward a unified static export, Pagefind becomes a strong candidate for whole-page search.
+
+### FlexSearch / Orama
+FlexSearch and Orama are capable browser search engines. FlexSearch supports document search, workers, persistent indexes and suggestions; Orama supports full-text and vector/hybrid search in a zero-dependency TypeScript engine. They are currently more machinery than the THC education navigation search requires. Revisit them if the project needs large persistent indexes, semantic/vector retrieval or substantially larger datasets.
