@@ -19,7 +19,9 @@
         "Cultivation reference tools",
         "PPFD / DLI"
       ],
-      "growlensBridge": false
+      "growlensBridge": false,
+      "deploymentId": null,
+      "navigationId": null
     },
     {
       "id": "atlas",
@@ -37,7 +39,12 @@
         "THC Living Plant Atlas",
         "All Tools"
       ],
-      "growlensBridge": false
+      "growlensBridge": false,
+      "deploymentId": "plant-atlas",
+      "navigationId": "atlas",
+      "sourceAliases": [
+        "apps/growlens-web/public/atlas"
+      ]
     },
     {
       "id": "terpene-atlas",
@@ -55,7 +62,12 @@
         "THC Terpene Atlas",
         "All Tools"
       ],
-      "growlensBridge": false
+      "growlensBridge": false,
+      "deploymentId": "terpene-atlas",
+      "navigationId": "terpene-atlas",
+      "sourceAliases": [
+        "apps/growlens-web/public/terpene-atlas"
+      ]
     },
     {
       "id": "ph-meter",
@@ -80,7 +92,9 @@
         "pH Meter",
         "This page does not measure pH by itself"
       ],
-      "growlensBridge": false
+      "growlensBridge": false,
+      "deploymentId": "ph-meter",
+      "navigationId": "ph-meter"
     },
     {
       "id": "tds-meter",
@@ -108,7 +122,9 @@
         "500 scale",
         "700 scale"
       ],
-      "growlensBridge": false
+      "growlensBridge": false,
+      "deploymentId": "tds-meter",
+      "navigationId": "tds-meter"
     },
     {
       "id": "vpd-chart",
@@ -133,7 +149,9 @@
         "VPD Chart",
         "Leaf offset"
       ],
-      "growlensBridge": false
+      "growlensBridge": false,
+      "deploymentId": "vpd-chart",
+      "navigationId": "vpd-chart"
     },
     {
       "id": "ppfd-chart",
@@ -159,7 +177,9 @@
         "Canopy mapper",
         "Variable-light DLI schedule"
       ],
-      "growlensBridge": false
+      "growlensBridge": false,
+      "deploymentId": "ppfd-chart",
+      "navigationId": "ppfd-chart"
     },
     {
       "id": "water-quality-lab",
@@ -180,7 +200,9 @@
         "THC Water Quality Lab",
         "Change from prior report"
       ],
-      "growlensBridge": true
+      "growlensBridge": true,
+      "deploymentId": "water-quality-lab",
+      "navigationId": "water-quality-lab"
     },
     {
       "id": "fertigation-lab",
@@ -203,7 +225,9 @@
         "THC Fertigation Lab",
         "Target vs achieved recipe worksheet"
       ],
-      "growlensBridge": true
+      "growlensBridge": true,
+      "deploymentId": "fertigation-lab",
+      "navigationId": "fertigation-lab"
     },
     {
       "id": "dryback-lab",
@@ -226,7 +250,9 @@
         "THC Irrigation & Dryback Lab",
         "Recent dryback trend"
       ],
-      "growlensBridge": true
+      "growlensBridge": true,
+      "deploymentId": "dryback-lab",
+      "navigationId": "dryback-lab"
     },
     {
       "id": "dew-point",
@@ -248,7 +274,9 @@
         "THC Dew Point & Condensation Lab",
         "dew point"
       ],
-      "growlensBridge": false
+      "growlensBridge": false,
+      "deploymentId": "dew-point",
+      "navigationId": "dew-point"
     },
     {
       "id": "environment-control",
@@ -271,7 +299,9 @@
         "THC Environmental Control Center",
         "Recent VPD trend"
       ],
-      "growlensBridge": true
+      "growlensBridge": true,
+      "deploymentId": "environment-control",
+      "navigationId": "environment-control"
     },
     {
       "id": "ipm-scout",
@@ -295,7 +325,9 @@
         "THC IPM Scout",
         "Local scouting history"
       ],
-      "growlensBridge": true
+      "growlensBridge": true,
+      "deploymentId": "ipm-scout",
+      "navigationId": "ipm-scout"
     },
     {
       "id": "dry-cure-lab",
@@ -318,7 +350,9 @@
         "THC Dry & Cure Lab",
         "Save harvest to GrowLens"
       ],
-      "growlensBridge": true
+      "growlensBridge": true,
+      "deploymentId": "dry-cure-lab",
+      "navigationId": "dry-cure-lab"
     },
     {
       "id": "grow-planner",
@@ -340,7 +374,9 @@
         "THC Grow Cycle Planner",
         "Stage calendar"
       ],
-      "growlensBridge": true
+      "growlensBridge": true,
+      "deploymentId": "grow-planner",
+      "navigationId": "grow-planner"
     },
     {
       "id": "substrate-calculator",
@@ -363,7 +399,9 @@
         "THC Substrate & Container Calculator",
         "Purchase overage"
       ],
-      "growlensBridge": false
+      "growlensBridge": false,
+      "deploymentId": "substrate-calculator",
+      "navigationId": "substrate-calculator"
     },
     {
       "id": "breeder-pedigree",
@@ -387,7 +425,9 @@
         "DTF Breeding & Pedigree Builder",
         "Relationship explorer"
       ],
-      "growlensBridge": false
+      "growlensBridge": false,
+      "deploymentId": "breeder-pedigree",
+      "navigationId": "breeder-pedigree"
     },
     {
       "id": "co2-ventilation",
@@ -410,7 +450,9 @@
         "THC Ventilation & CO₂ Reference",
         "target ACH"
       ],
-      "growlensBridge": false
+      "growlensBridge": false,
+      "deploymentId": "co2-ventilation",
+      "navigationId": "co2-ventilation"
     },
     {
       "id": "photoperiod-planner",
@@ -433,7 +475,9 @@
         "THC Photoperiod & Lighting Schedule",
         "Compare saved schedules"
       ],
-      "growlensBridge": false
+      "growlensBridge": false,
+      "deploymentId": "photoperiod-planner",
+      "navigationId": "photoperiod-planner"
     },
     {
       "id": "plant-growth-tracker",
@@ -455,7 +499,9 @@
         "THC Plant Growth Tracker",
         "Growth-rate trend"
       ],
-      "growlensBridge": true
+      "growlensBridge": true,
+      "deploymentId": "plant-growth-tracker",
+      "navigationId": "plant-growth-tracker"
     },
     {
       "id": "root-zone-temperature",
@@ -477,7 +523,9 @@
         "THC Root-Zone Temperature Reference",
         "Root-zone trend"
       ],
-      "growlensBridge": true
+      "growlensBridge": true,
+      "deploymentId": "root-zone-temperature",
+      "navigationId": "root-zone-temperature"
     },
     {
       "id": "dilution-calculator",
@@ -500,7 +548,9 @@
         "THC Solution Dilution Calculator",
         "Serial dilution steps"
       ],
-      "growlensBridge": false
+      "growlensBridge": false,
+      "deploymentId": "dilution-calculator",
+      "navigationId": "dilution-calculator"
     },
     {
       "id": "unit-converter",
@@ -523,7 +573,9 @@
         "THC Cultivation Unit Converter",
         "Conductivity"
       ],
-      "growlensBridge": false
+      "growlensBridge": false,
+      "deploymentId": "unit-converter",
+      "navigationId": "unit-converter"
     }
   ]
 }
