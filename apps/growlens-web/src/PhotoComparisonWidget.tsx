@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { growLensPhotoApi, type RemotePhotoMetadata } from './photoApi';
 import { listPhotos, type LocalPhotoAsset } from './photoStore';
 import { growLensRemoteStore } from './remoteStore';
 import { loadState, STATE_SAVED_EVENT } from './storage';
 import type { Observation } from './types';
 import { compareImageSources } from './photoVisualComparison';
+import { buildPixelDifference } from './photoPixelDifference';
 
 import { useModalFocusTrap } from './useModalFocusTrap';
 
@@ -71,6 +72,10 @@ export default function PhotoComparisonWidget() {
   const [showGuides, setShowGuides] = useState(false);
   const [similarity, setSimilarity] = useState<number | null>(null);
   const [nearDuplicate, setNearDuplicate] = useState(false);
+  const [diffMode, setDiffMode] = useState(false);
+  const [diffPercent, setDiffPercent] = useState<number | null>(null);
+  const [diffBusy, setDiffBusy] = useState(false);
+  const diffCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
     const refreshState = () => setState(loadState());
@@ -204,6 +209,31 @@ export default function PhotoComparisonWidget() {
     return () => { active = false; };
   }, [selectedPhotos]);
 
+  useEffect(() => {
+    let active = true;
+    if (!diffMode || selectedPhotos.length !== 2 || !selectedPhotos[0].source || !selectedPhotos[1].source) {
+      setDiffPercent(null);
+      return () => { active = false; };
+    }
+    setDiffBusy(true);
+    void buildPixelDifference(selectedPhotos[0].source, selectedPhotos[1].source).then((result) => {
+      if (!active) return;
+      const canvas = diffCanvasRef.current;
+      const ctx = canvas?.getContext('2d');
+      if (canvas && ctx) {
+        canvas.width = result.width;
+        canvas.height = result.height;
+        ctx.putImageData(result.imageData, 0, 0);
+      }
+      setDiffPercent(result.mismatchPercent);
+    }).catch(() => {
+      if (active) setDiffPercent(null);
+    }).finally(() => {
+      if (active) setDiffBusy(false);
+    });
+    return () => { active = false; };
+  }, [diffMode, selectedPhotos]);
+
   function toggleSelected(photoId: string): void {
     setSelectedIds((current) => {
       if (current.includes(photoId)) return current.filter((id) => id !== photoId);
@@ -274,7 +304,12 @@ export default function PhotoComparisonWidget() {
                 </div>
               </div>
 
-              {overlayMode && selectedPhotos.length === 2 ? (
+              {diffMode && selectedPhotos.length === 2 ? (
+                <div className="photo-diff-stage">
+                  <canvas ref={diffCanvasRef} aria-label="Pixel difference preview for the selected photos" />
+                  <div><strong>{diffBusy ? 'Building difference preview…' : diffPercent === null ? 'Difference preview unavailable' : diffPercent + '% mismatched sampled pixels'}</strong><span>Use this only to spot pixel-level change after consistent framing. Camera angle, lighting, zoom, background, movement, and alignment can dominate the mismatch.</span></div>
+                </div>
+              ) : overlayMode && selectedPhotos.length === 2 ? (
                 <div className={showGuides ? 'photo-overlay-stage show-guides' : 'photo-overlay-stage'}>
                   <img className="photo-overlay-base" src={selectedPhotos[0].source} alt={'Earlier observation for ' + selectedPhotos[0].plantName} style={{ transform: 'scale(' + zoom + ')' }} />
                   <img className="photo-overlay-top" src={selectedPhotos[1].source} alt={'Later observation for ' + selectedPhotos[1].plantName} style={{ opacity: overlayOpacity, transform: 'scale(' + zoom + ')' }} />
@@ -305,6 +340,7 @@ export default function PhotoComparisonWidget() {
                 <label>Overlay <input type="range" min="0" max="1" step="0.05" value={overlayOpacity} onChange={(event) => setOverlayOpacity(Number(event.target.value))} disabled={!overlayMode} /><span>{Math.round(overlayOpacity * 100)}%</span></label>
                 <button type="button" className={overlayMode ? 'secondary-button active' : 'secondary-button'} aria-pressed={overlayMode} onClick={() => setOverlayMode((value) => !value)}>Overlay</button>
                 <button type="button" className={showGuides ? 'secondary-button active' : 'secondary-button'} aria-pressed={showGuides} onClick={() => setShowGuides((value) => !value)}>Alignment guides</button>
+                <button type="button" className={diffMode ? 'secondary-button active' : 'secondary-button'} aria-pressed={diffMode} onClick={() => { setDiffMode((value) => !value); setOverlayMode(false); }}>Pixel difference</button>
               </div> : null}
               {nearDuplicate ? <div className="photo-duplicate-warning" role="status"><strong>These images may be near-duplicates.</strong><span>{similarity !== null ? similarity + '% visual hash similarity. ' : ''}Choose a more separated time point if you are trying to judge progression.</span></div> : similarity !== null ? <div className="photo-similarity-note">Visual hash similarity: {similarity}%. Use this only as a duplicate-screening aid, not as a measure of plant change.</div> : null}
               <small className="photo-consistency-note">Best comparisons use the same angle, distance, lighting, and background. A visual change does not prove its cause.</small>
