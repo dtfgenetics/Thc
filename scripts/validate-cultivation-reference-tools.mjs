@@ -59,11 +59,11 @@ const terpenes = fs.readFileSync(path.join(root, 'site/public-route-patch/terpen
 assert(ppfd.includes("p*h*0.0036"), 'PPFD page missing PPFD-to-DLI formula');
 assert(ppfd.includes("td/(h*0.0036)"), 'PPFD page missing user-target DLI-to-PPFD formula');
 assert(ppfd.includes('id="ppfdGrid"') && ppfd.includes('min/avg*100') && ppfd.includes('sd/avg*100'), 'PPFD page missing canopy grid, uniformity, or coefficient-of-variation calculation');
-assert(ppfd.includes('Measurement method') && ppfd.includes('Manufacturer PPFD map') && ppfd.includes('Sunlight / variable output'), 'PPFD page missing measurement-method or variable-light context');
+assert(ppfd.includes('Measurement method') && ppfd.includes('Manufacturer PPFD map') && ppfd.includes('variable sunlight or dimming schedules require integrated measurements over time'), 'PPFD page missing measurement-method or variable-light context');
 assert(ppfd.includes('THC Light Lab') && ppfd.includes('Teaching Healthy Cultivation') && ppfd.includes('PAR vs ePAR'), 'PPFD page missing THC educational branding or PAR/ePAR education');
 assert(ppfd.includes('targetMin') && ppfd.includes('targetMax') && ppfd.includes('inRange'), 'PPFD page must use user-defined target range analysis');
-assert(ppfd.includes('Apogee DLI guidance') && ppfd.includes('Frontiers 2022') && ppfd.includes('Scientific Reports 2025'), 'PPFD page missing evidence links');
-assert(ppfd.includes("STORAGE_KEY='thc-light-lab-surveys-v2'") && ppfd.includes('localStorage.setItem'), 'PPFD page missing local survey persistence');
+assert(ppfd.includes('Apogee DLI guidance') && ppfd.includes('LI-COR DLI logging') && ppfd.includes('Frontiers 2022') && ppfd.includes('Scientific Reports 2025'), 'PPFD page missing evidence links');
+assert(ppfd.includes("STORAGE_KEY='thc-light-lab-surveys-v2'") && ppfd.includes("'thc-light-lab-surveys-v1'") && ppfd.includes('localStorage.setItem'), 'PPFD page missing v2 local survey persistence or v1 migration support');
 assert(ppfd.includes('fixtureModel') && ppfd.includes('mountHeight') && ppfd.includes('sensorModel') && ppfd.includes('measurementDate'), 'PPFD page missing survey metadata fields');
 assert(ppfd.includes("lines=['row,column,ppfd']") && ppfd.includes('FileReader') && ppfd.includes('Export map CSV'), 'PPFD page missing CSV round-trip workflow');
 assert(ppfd.includes("window.print()") && ppfd.includes('Print / Save report'), 'PPFD page missing printable Light Report workflow');
@@ -80,6 +80,10 @@ assert(ppfd.includes('Import full survey') && ppfd.includes('jsonFile') && ppfd.
 assert(ppfd.includes("thc-light-lab-surveys-v1") && ppfd.includes("thc-light-lab-surveys-v2"), 'PPFD page must preserve legacy saved surveys during schema migration');
 assert(ppfd.includes('Measurement protocol') && ppfd.includes('cosine response') && ppfd.includes('LI-COR DLI logging'), 'PPFD page missing professional measurement protocol guidance');
 assert(ppfd.includes('validChoice') && ppfd.includes('boundedValue'), 'PPFD page missing imported-survey validation safeguards');
+assert(ppfd.includes('within10') && ppfd.includes('within20') && ppfd.includes('edgeCenter') && ppfd.includes('pointSpacing'), 'PPFD page missing distribution, perimeter/center, or point-spacing map analysis');
+assert(ppfd.includes('Min ÷ average (legacy)') && ppfd.includes('Uniformity needs more than one metric'), 'PPFD page must label min/average as a legacy metric and explain its limitations');
+assert(ppfd.includes("Math.abs(v-stats.avg)<=stats.avg*.10") && ppfd.includes("Math.abs(v-stats.avg)<=stats.avg*.20"), 'PPFD page missing normalized distribution coverage calculations');
+assert(ppfd.includes('edgeCenterStats') && ppfd.includes('spacingStats'), 'PPFD page missing edge/center or grid-spacing calculation helpers');
 assert(ppfd.includes("box.style.background=heat(v)") && ppfd.includes("heat(input.value)"), 'PPFD page must preserve blank map cells as unmeasured');
 assert(ppfd.includes('href="/tools/"'), 'PPFD page missing central All Tools link');
 assert(atlas.includes('href="/tools/"'), 'Plant Atlas missing central All Tools link');
@@ -87,9 +91,8 @@ assert(terpenes.includes('href="/tools/"'), 'Terpene Atlas missing central All T
 
 const svp = (t) => 0.6108 * Math.exp((17.27 * t) / (t + 237.3));
 const sample = Math.max(0, svp(25) - svp(26) * 0.60);
+const scheduleDli = (300 * 1 * 0.0036) + (700 * 10 * 0.0036) + (300 * 1 * 0.0036);
 assert(sample > 1.0 && sample < 1.3, `VPD formula sanity check failed: ${sample}`);
-const scheduleDli = [[300, 1], [700, 10], [300, 1]]
-  .reduce((total, [ppfdValue, hoursValue]) => total + ppfdValue * hoursValue * 0.0036, 0);
 assert(Math.abs(scheduleDli - 27.36) < 1e-9, `PPFD variable-light DLI sanity check failed: ${scheduleDli}`);
 
 if (errors.length) {
