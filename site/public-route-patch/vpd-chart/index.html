@@ -53,6 +53,7 @@ footer{padding:28px 0 42px;color:var(--muted)}
 <article class="ref"><h3>Transitions matter</h3><p>Lights-off, irrigation, HVAC cycling, dehumidification, door openings, and changing radiation can produce short-lived conditions that daily averages hide. Trend data is often more useful than a single screenshot.</p></article>
 </section>
 </main>
+<script src="/assets/vendor/papaparse-5.7.0.min.js"></script>
 <script>
 const temp=document.getElementById('temp'),unit=document.getElementById('unit'),rh=document.getElementById('rh'),offset=document.getElementById('offset'),vout=document.getElementById('vout'),chart=document.getElementById('chart');
 const trendFile=document.getElementById('trendFile'),trendUnit=document.getElementById('trendUnit'),trendOffset=document.getElementById('trendOffset'),trendStatus=document.getElementById('trendStatus'),trendMetrics=document.getElementById('trendMetrics'),trendCanvasWrap=document.getElementById('trendCanvasWrap'),trendCanvas=document.getElementById('trendCanvas'),trendTableWrap=document.getElementById('trendTableWrap'),trendBody=document.getElementById('trendBody');
@@ -76,7 +77,38 @@ function render(){
 
 const norm=s=>String(s||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
 function splitCsvLine(line){const out=[];let cur='',quoted=false;for(let i=0;i<line.length;i++){const ch=line[i];if(ch==='"'){if(quoted&&line[i+1]==='"'){cur+='"';i++}else quoted=!quoted}else if(ch===','&&!quoted){out.push(cur);cur=''}else cur+=ch}out.push(cur);return out}
-function parseTrendCsv(text){const lines=String(text||'').replace(/\r/g,'').split('\n').filter(line=>line.trim());if(lines.length<2)return[];const headers=splitCsvLine(lines[0]).map(norm);const find=(names)=>headers.findIndex(h=>names.includes(h));const ti=find(['timestamp','time','date','datetime','date_time']);const ai=find(['temperature','temp','air_temp','air_temperature','temperature_c','temperature_f']);const hi=find(['humidity','rh','relative_humidity','humidity_percent']);const li=find(['leaf_temp','leaf_temperature','leaf_temperature_c','leaf_temperature_f']);const oi=find(['leaf_offset','leaf_temp_offset','leaf_temperature_offset']);if(ai<0||hi<0)throw new Error('CSV needs temperature and humidity columns.');const defaultOffset=deltaC(Number(trendOffset.value)||0,trendUnit.value);return lines.slice(1).map((line,index)=>{const cols=splitCsvLine(line);const rawAir=Number(cols[ai]),rawRh=Number(cols[hi]);if(!Number.isFinite(rawAir)||!Number.isFinite(rawRh)||rawRh<=0||rawRh>100)return null;const air=toC(rawAir,trendUnit.value);let leaf;if(li>=0&&Number.isFinite(Number(cols[li])))leaf=toC(Number(cols[li]),trendUnit.value);else if(oi>=0&&Number.isFinite(Number(cols[oi])))leaf=air+deltaC(Number(cols[oi]),trendUnit.value);else leaf=air+defaultOffset;return{label:ti>=0&&cols[ti]?cols[ti]:String(index+1),air,rawRh,leaf,vpd:calc(air,rawRh,leaf)}}).filter(Boolean)}
+function parseTrendCsv(text){
+ const defaultOffset=deltaC(Number(trendOffset.value)||0,trendUnit.value);
+ if(window.Papa?.parse){
+  const parsed=window.Papa.parse(String(text||''),{header:true,skipEmptyLines:'greedy',transformHeader:norm});
+  if(parsed.errors?.length&&(!parsed.data||parsed.data.length===0))throw new Error(parsed.errors[0].message||'Could not parse CSV.');
+  const headers=parsed.meta?.fields||[];
+  const find=(names)=>headers.find(h=>names.includes(h));
+  const tk=find(['timestamp','time','date','datetime','date_time']);
+  const ak=find(['temperature','temp','air_temp','air_temperature','temperature_c','temperature_f']);
+  const hk=find(['humidity','rh','relative_humidity','humidity_percent']);
+  const lk=find(['leaf_temp','leaf_temperature','leaf_temperature_c','leaf_temperature_f']);
+  const ok=find(['leaf_offset','leaf_temp_offset','leaf_temperature_offset']);
+  if(!ak||!hk)throw new Error('CSV needs temperature and humidity columns.');
+  return parsed.data.map((row,index)=>{
+   const rawAir=Number(row[ak]),rawRh=Number(row[hk]);
+   if(!Number.isFinite(rawAir)||!Number.isFinite(rawRh)||rawRh<=0||rawRh>100)return null;
+   const air=toC(rawAir,trendUnit.value);
+   let leaf;
+   if(lk&&Number.isFinite(Number(row[lk])))leaf=toC(Number(row[lk]),trendUnit.value);
+   else if(ok&&Number.isFinite(Number(row[ok])))leaf=air+deltaC(Number(row[ok]),trendUnit.value);
+   else leaf=air+defaultOffset;
+   return{label:tk&&row[tk]?row[tk]:String(index+1),air,rawRh,leaf,vpd:calc(air,rawRh,leaf)}
+  }).filter(Boolean)
+ }
+ const lines=String(text||'').replace(/\r/g,'').split('\n').filter(line=>line.trim());
+ if(lines.length<2)return[];
+ const headers=splitCsvLine(lines[0]).map(norm);
+ const find=(names)=>headers.findIndex(h=>names.includes(h));
+ const ti=find(['timestamp','time','date','datetime','date_time']),ai=find(['temperature','temp','air_temp','air_temperature','temperature_c','temperature_f']),hi=find(['humidity','rh','relative_humidity','humidity_percent']),li=find(['leaf_temp','leaf_temperature','leaf_temperature_c','leaf_temperature_f']),oi=find(['leaf_offset','leaf_temp_offset','leaf_temperature_offset']);
+ if(ai<0||hi<0)throw new Error('CSV needs temperature and humidity columns.');
+ return lines.slice(1).map((line,index)=>{const cols=splitCsvLine(line),rawAir=Number(cols[ai]),rawRh=Number(cols[hi]);if(!Number.isFinite(rawAir)||!Number.isFinite(rawRh)||rawRh<=0||rawRh>100)return null;const air=toC(rawAir,trendUnit.value);let leaf;if(li>=0&&Number.isFinite(Number(cols[li])))leaf=toC(Number(cols[li]),trendUnit.value);else if(oi>=0&&Number.isFinite(Number(cols[oi])))leaf=air+deltaC(Number(cols[oi]),trendUnit.value);else leaf=air+defaultOffset;return{label:ti>=0&&cols[ti]?cols[ti]:String(index+1),air,rawRh,leaf,vpd:calc(air,rawRh,leaf)}}).filter(Boolean)
+}
 function drawTrend(rows){const c=trendCanvas,ctx=c?.getContext('2d');if(!ctx||!rows.length)return;const w=c.width,h=c.height,pad={l:54,r:18,t:18,b:38};ctx.clearRect(0,0,w,h);const vals=rows.map(r=>r.vpd),min=Math.min(...vals),max=Math.max(...vals),lo=Math.max(0,min-.15),hi=Math.max(lo+.25,max+.15);ctx.strokeStyle='#d8e2da';ctx.fillStyle='#5b6d61';ctx.font='12px system-ui';ctx.lineWidth=1;for(let i=0;i<=4;i++){const y=pad.t+(h-pad.t-pad.b)*(i/4),v=hi-(hi-lo)*(i/4);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.fillText(v.toFixed(2),6,y+4)}ctx.strokeStyle='#26784a';ctx.lineWidth=3;ctx.beginPath();rows.forEach((r,i)=>{const x=pad.l+(w-pad.l-pad.r)*(rows.length===1?0:i/(rows.length-1)),y=pad.t+(h-pad.t-pad.b)*(1-(r.vpd-lo)/(hi-lo));if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.stroke();ctx.fillStyle='#112b1c';ctx.fillText(rows[0].label,pad.l,h-10);if(rows.length>1){const end=String(rows.at(-1).label);ctx.fillText(end,Math.max(pad.l,w-pad.r-ctx.measureText(end).width),h-10)}}
 function renderTrend(rows){if(!rows.length){trendStatus.textContent='No valid rows found.';trendMetrics.hidden=true;trendCanvasWrap.hidden=true;trendTableWrap.hidden=true;return}const vals=rows.map(r=>r.vpd),avg=vals.reduce((a,b)=>a+b,0)/vals.length;document.getElementById('trendAvg').textContent=avg.toFixed(2)+' kPa';document.getElementById('trendMin').textContent=Math.min(...vals).toFixed(2)+' kPa';document.getElementById('trendMax').textContent=Math.max(...vals).toFixed(2)+' kPa';document.getElementById('trendCount').textContent=String(rows.length);trendMetrics.hidden=false;trendCanvasWrap.hidden=false;trendTableWrap.hidden=false;trendStatus.textContent='Analyzed '+rows.length+' valid logger rows locally in this browser.';trendBody.innerHTML=rows.slice(0,500).map(r=>'<tr><td>'+String(r.label).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))+'</td><td>'+r.air.toFixed(1)+' °C</td><td>'+r.rawRh.toFixed(1)+'%</td><td>'+r.leaf.toFixed(1)+' °C</td><td>'+r.vpd.toFixed(2)+' kPa</td></tr>').join('');drawTrend(rows)}
 trendFile?.addEventListener('change',async()=>{const file=trendFile.files?.[0];if(!file)return;try{renderTrend(parseTrendCsv(await file.text()))}catch(error){trendStatus.textContent=error?.message||'Could not parse this CSV.'}});
