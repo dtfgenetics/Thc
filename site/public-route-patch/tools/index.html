@@ -107,6 +107,13 @@
     footer{background:var(--forest);color:#dfe9e2}
     .footer-inner{width:min(1260px,calc(100% - 42px));margin:auto;padding:48px 0 26px;display:grid;grid-template-columns:1.3fr .7fr .7fr;gap:32px}
     .footer-inner p{max-width:470px;color:#aebfb3}.footer-links{display:flex;flex-direction:column;gap:9px}.footer-links strong{color:#fff}.footer-links a{color:#dfe9e2}.copyright{grid-column:1/-1;padding-top:22px;border-top:1px solid rgba(255,255,255,.11);color:#8fa698;font-size:.88rem}
+    .tool-group{margin-top:18px;border:1px solid rgba(17,43,28,.11);border-radius:20px;background:rgba(255,253,247,.72);overflow:hidden}
+    .tool-group+ .tool-group{margin-top:14px}
+    .tool-group>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:58px;padding:16px 20px;font-weight:900;font-size:1.12rem;background:rgba(237,243,236,.72)}
+    .tool-group>summary::-webkit-details-marker{display:none}
+    .tool-group>summary:after{content:"+";display:grid;place-items:center;width:34px;height:34px;flex:0 0 34px;border:1px solid rgba(17,43,28,.14);border-radius:10px;background:#fff;color:var(--leaf);font-size:1.2rem}
+    .tool-group[open]>summary:after{content:"−"}
+    .tool-group>.measure-panel{padding:14px}
     @media(max-width:980px){.hero-grid,.split,.community-callout{grid-template-columns:1fr}.hero-panel{max-width:720px}.quicknav{grid-template-columns:repeat(3,minmax(0,1fr))}.reference-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.tool-chooser{grid-template-columns:1fr}.flow{grid-template-columns:repeat(2,minmax(0,1fr))}.learn-rail{grid-template-columns:repeat(2,minmax(0,1fr))}.section-heading{align-items:flex-start;flex-direction:column}.community-callout .actions{justify-content:flex-start}.footer-inner{grid-template-columns:1fr 1fr}}
     @media(max-width:680px){.wrap,.site-header-inner,.footer-inner{width:min(100% - 28px,1260px)}.reference-launcher{padding:14px}.reference-launcher-head{align-items:flex-start;flex-direction:column}.reference-grid{grid-template-columns:1fr}.site-header-inner{padding:12px 0;align-items:flex-start}.primary-nav{gap:0}.primary-nav a{padding:8px}.hero{padding:60px 0 72px}.hero h1{font-size:clamp(2.65rem,14vw,4.2rem)}.hero-panel:before{display:none}.quickbar{margin-top:0;padding-top:14px}.quicknav,.flow,.measure-panel,.learn-rail,.footer-inner{grid-template-columns:1fr}.feature-list{grid-template-columns:1fr}.actions .button{width:100%}.tool-feature{min-height:0}.section{padding:56px 0}.community-callout{padding:24px}.copyright{grid-column:1}.primary-nav .shop-link{margin-left:0}}
   </style>
@@ -173,27 +180,27 @@
     <section class="section" id="expanded-tools">
       <div class="wrap">
         <div class="section-heading"><div><p class="eyebrow">THC Tool Suite</p><h2>Choose the job, not the acronym.</h2></div><p>Browse the full toolbox by task: water and irrigation, environment and light, plant health, lifecycle, and genetics. Start with GrowLens or Grow Doc if you are not sure which tool you need.</p></div><div class="community-callout" style="margin-bottom:34px"><div><p class="eyebrow">Shared cultivation context</p><h3 style="font-size:1.7rem;margin-bottom:8px">Select the grow once. Carry the context across tools.</h3><p>Grow, room, zone, plant, cultivar and stage follow the user through the new tool suite. When a matching GrowLens record exists, supported tools can save directly into the existing GrowLens environment, irrigation, observation, feeding, reservoir and harvest record families without inventing IDs.</p></div><div class="actions"><a class="button primary" href="/growlens/">Open GrowLens</a></div></div>
-        <h3>Water, nutrition & irrigation</h3><div class="measure-panel">
+        <details class="tool-group" open><summary>Water, nutrition & irrigation</summary><div class="measure-panel">
         <article><strong>Water Quality Lab</strong><p>Keep pH, EC, alkalinity, hardness and major ions together.</p><a class="text-link" href="/water-quality-lab/">Open Water Lab →</a></article>
         <article><strong>Fertigation Lab</strong><p>Mass-balance fertilizer calculations with explicit units and assumptions.</p><a class="text-link" href="/fertigation-lab/">Open Fertigation Lab →</a></article>
         <article><strong>Irrigation & Dryback Lab</strong><p>Calculate weight-based dryback, rate and measured drainage percentage.</p><a class="text-link" href="/dryback-lab/">Open Dryback Lab →</a></article>
         <article><strong>Substrate & Container Calculator</strong><p>Plan media volume, blend components and bag counts.</p><a class="text-link" href="/substrate-calculator/">Open Substrate Calculator →</a></article>
         <article><strong>Solution Dilution Calculator</strong><p>Use C₁V₁ = C₂V₂ with visible assumptions.</p><a class="text-link" href="/dilution-calculator/">Open Dilution Calculator →</a></article>
-        <article><strong>Cultivation Unit Converter</strong><p>Convert common cultivation temperature, volume, length and EC units.</p><a class="text-link" href="/unit-converter/">Open Unit Converter →</a></article></div>
-        <h3 style="margin-top:34px">Environment & light</h3><div class="measure-panel">
+        <article><strong>Cultivation Unit Converter</strong><p>Convert common cultivation temperature, volume, length and EC units.</p><a class="text-link" href="/unit-converter/">Open Unit Converter →</a></article></div></details>
+        <details class="tool-group"><summary>Environment & light</summary><div class="measure-panel">
         <article><strong>Environmental Control Center</strong><p>View leaf VPD, dew point, DLI and root-zone context together.</p><a class="text-link" href="/environment-control/">Open Environment Center →</a></article>
         <article><strong>Dew Point & Condensation Lab</strong><p>Compare dew point with measured leaf or surface temperature.</p><a class="text-link" href="/dew-point/">Open Dew Point Lab →</a></article>
         <article><strong>Ventilation & CO₂ Reference</strong><p>Calculate room volume and theoretical air changes with an explicit safety boundary.</p><a class="text-link" href="/co2-ventilation/">Open Ventilation Tool →</a></article>
         <article><strong>Photoperiod & Lighting Schedule</strong><p>Compare clock timing, photoperiod and calculated DLI.</p><a class="text-link" href="/photoperiod-planner/">Open Photoperiod Tool →</a></article>
         <article><strong>Root-Zone Temperature Reference</strong><p>Compare root-zone, air and irrigation temperatures.</p><a class="text-link" href="/root-zone-temperature/">Open Root-Zone Tool →</a></article>
-        <article><strong>PPFD / DLI Light Lab</strong><p>Measure, map and compare canopy light exposure.</p><a class="text-link" href="/ppfd-chart/">Open Light Lab →</a></article></div>
-        <h3 style="margin-top:34px">Plant health, lifecycle & genetics</h3><div class="measure-panel">
+        <article><strong>PPFD / DLI Light Lab</strong><p>Measure, map and compare canopy light exposure.</p><a class="text-link" href="/ppfd-chart/">Open Light Lab →</a></article></div></details>
+        <details class="tool-group"><summary>Plant health, lifecycle & genetics</summary><div class="measure-panel">
         <article><strong>IPM Scout</strong><p>Build repeatable scouting records and trend counts.</p><a class="text-link" href="/ipm-scout/">Open IPM Scout →</a></article>
         <article><strong>Dry & Cure Lab</strong><p>Track drying weight loss, time and environment.</p><a class="text-link" href="/dry-cure-lab/">Open Dry & Cure Lab →</a></article>
         <article><strong>Grow Cycle Planner</strong><p>Turn lifecycle durations into a stage calendar.</p><a class="text-link" href="/grow-planner/">Open Grow Planner →</a></article>
         <article><strong>Plant Growth Tracker</strong><p>Calculate growth and node-rate changes from repeatable observations.</p><a class="text-link" href="/plant-growth-tracker/">Open Growth Tracker →</a></article>
         <article><strong>DTF Breeding & Pedigree Builder</strong><p>Preserve parents, generations, seed type and selection purpose.</p><a class="text-link" href="/breeder-pedigree/">Open Pedigree Builder →</a></article>
-        <article><strong>Grow Doc</strong><p>Escalate suspicious observations into the evidence-guided diagnostic workflow.</p><a class="text-link" href="/thc-grow-doc/">Open Grow Doc →</a></article></div>
+        <article><strong>Grow Doc</strong><p>Escalate suspicious observations into the evidence-guided diagnostic workflow.</p><a class="text-link" href="/thc-grow-doc/">Open Grow Doc →</a></article></div></details>
       </div>
     </section>
 
