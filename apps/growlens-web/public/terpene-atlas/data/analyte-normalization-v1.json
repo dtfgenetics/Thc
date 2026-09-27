@@ -390,6 +390,42 @@
       "url": "https://pubchem.ncbi.nlm.nih.gov/compound/24473",
       "cid": 24473,
       "inchikey": "AZOCECCLWFDTAP-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-fenchone",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/14525",
+      "cid": 14525,
+      "inchikey": "LHXDLQBQYFFVNW-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-alpha-longipinene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/12311396",
+      "cid": 12311396,
+      "inchikey": "HICYDYJTCDBHMZ-COMQUAJESA-N"
+    },
+    {
+      "id": "pubchem-alpha-cadinene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/96843146",
+      "cid": 96843146,
+      "inchikey": "QMAYBMKBYCGXDH-RBSFLKMASA-N"
+    },
+    {
+      "id": "pubchem-epi-alpha-bisabolol",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/1616126",
+      "cid": 1616126,
+      "inchikey": "RGZSQWQPBWRIAQ-HUUCEWRRSA-N"
+    },
+    {
+      "id": "pubchem-caryophyllene-alcohol",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/11746218",
+      "cid": 11746218,
+      "inchikey": "FUQAYSQLAOJBBC-PAPYEOQZSA-N"
+    },
+    {
+      "id": "pubchem-ledol",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/11074994",
+      "cid": 11074994,
+      "inchikey": "AYXPYQRXGNDJFU-AQEIEYEASA-N"
     }
   ],
   "aliases": [
@@ -1402,6 +1438,105 @@
       "pubchemCid": 24473,
       "inchikey": "AZOCECCLWFDTAP-UHFFFAOYSA-N",
       "authorityId": "pubchem-dihydrocarvone"
+    },
+    {
+      "reported": "α-Longipinene",
+      "normalized": "alpha-longipinene",
+      "identityResolution": "partial",
+      "reason": "catalog label is broad; PubChem CID is (+)-alpha-longipinene",
+      "pubchemCid": 12311396,
+      "inchikey": "HICYDYJTCDBHMZ-COMQUAJESA-N",
+      "authorityId": "pubchem-alpha-longipinene"
+    },
+    {
+      "reported": "alpha-longipinene",
+      "normalized": "alpha-longipinene",
+      "identityResolution": "partial",
+      "reason": "catalog label is broad; PubChem CID is (+)-alpha-longipinene",
+      "pubchemCid": 12311396,
+      "inchikey": "HICYDYJTCDBHMZ-COMQUAJESA-N",
+      "authorityId": "pubchem-alpha-longipinene"
+    },
+    {
+      "reported": "longipinene",
+      "normalized": "alpha-longipinene",
+      "identityResolution": "partial",
+      "reason": "catalog label is broad; PubChem CID is (+)-alpha-longipinene",
+      "pubchemCid": 12311396,
+      "inchikey": "HICYDYJTCDBHMZ-COMQUAJESA-N",
+      "authorityId": "pubchem-alpha-longipinene"
+    },
+    {
+      "reported": "α-Cadinene",
+      "normalized": "alpha-cadinene",
+      "identityResolution": "partial",
+      "reason": "catalog label is broad; PubChem record represents the indexed (+/-)-alpha-cadinene concept with a defined structure",
+      "pubchemCid": 96843146,
+      "inchikey": "QMAYBMKBYCGXDH-RBSFLKMASA-N",
+      "authorityId": "pubchem-alpha-cadinene"
+    },
+    {
+      "reported": "alpha-cadinene",
+      "normalized": "alpha-cadinene",
+      "identityResolution": "partial",
+      "reason": "catalog label is broad; PubChem record represents the indexed (+/-)-alpha-cadinene concept with a defined structure",
+      "pubchemCid": 96843146,
+      "inchikey": "QMAYBMKBYCGXDH-RBSFLKMASA-N",
+      "authorityId": "pubchem-alpha-cadinene"
+    },
+    {
+      "reported": "epi-α-Bisabolol",
+      "normalized": "epi-alpha-bisabolol",
+      "identityResolution": "partial",
+      "reason": "catalog label is broad; PubChem CID is (-)-epi-alpha-bisabolol",
+      "pubchemCid": 1616126,
+      "inchikey": "RGZSQWQPBWRIAQ-HUUCEWRRSA-N",
+      "authorityId": "pubchem-epi-alpha-bisabolol"
+    },
+    {
+      "reported": "epi-alpha-bisabolol",
+      "normalized": "epi-alpha-bisabolol",
+      "identityResolution": "partial",
+      "reason": "catalog label is broad; PubChem CID is (-)-epi-alpha-bisabolol",
+      "pubchemCid": 1616126,
+      "inchikey": "RGZSQWQPBWRIAQ-HUUCEWRRSA-N",
+      "authorityId": "pubchem-epi-alpha-bisabolol"
+    },
+    {
+      "reported": "Caryophyllene alcohol",
+      "normalized": "caryophyllene-alcohol",
+      "identityResolution": "partial",
+      "reason": "catalog label is broad; PubChem record has a defined caryophyllene-alcohol stereostructure",
+      "pubchemCid": 11746218,
+      "inchikey": "FUQAYSQLAOJBBC-PAPYEOQZSA-N",
+      "authorityId": "pubchem-caryophyllene-alcohol"
+    },
+    {
+      "reported": "caryophyllenol",
+      "normalized": "caryophyllene-alcohol",
+      "identityResolution": "partial",
+      "reason": "catalog label is broad; PubChem record has a defined caryophyllene-alcohol stereostructure",
+      "pubchemCid": 11746218,
+      "inchikey": "FUQAYSQLAOJBBC-PAPYEOQZSA-N",
+      "authorityId": "pubchem-caryophyllene-alcohol"
+    },
+    {
+      "reported": "Ledol",
+      "normalized": "ledol",
+      "identityResolution": "partial",
+      "reason": "catalog label is broad; PubChem CID is (+)-ledol",
+      "pubchemCid": 11074994,
+      "inchikey": "AYXPYQRXGNDJFU-AQEIEYEASA-N",
+      "authorityId": "pubchem-ledol"
+    },
+    {
+      "reported": "ledum camphor",
+      "normalized": "ledol",
+      "identityResolution": "partial",
+      "reason": "catalog label is broad; PubChem CID is (+)-ledol",
+      "pubchemCid": 11074994,
+      "inchikey": "AYXPYQRXGNDJFU-AQEIEYEASA-N",
+      "authorityId": "pubchem-ledol"
     }
   ],
   "lastVerifiedOn": "2026-09-27"
