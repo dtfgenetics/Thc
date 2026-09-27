@@ -21,7 +21,7 @@ near(ppfdFromDli(30.24,12),700);
 near(integrateDli([{ppfd:0,hours:1},{ppfd:700,hours:10},{ppfd:350,hours:2}]),27.72);
 near(saturationVaporPressure(25),3.1678,0.002);
 near(airVpd(25,60),1.267,0.01);
-near(leafVpd(25,60,23),0.997,0.02);
+near(leafVpd(25,60,23),0.909,0.02);
 near(dilutionStockVolume(1000,100,10),1);
 assert.deepEqual(serialDilution({initialConcentration:1000,targetConcentration:1,stepFactor:10,finalVolume:10}),[
  {from:1000,to:100,stockVolume:1,diluentVolume:9,finalVolume:10},
