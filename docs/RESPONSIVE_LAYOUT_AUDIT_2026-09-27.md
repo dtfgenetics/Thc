@@ -93,3 +93,9 @@ Many static public pages carry local CSS, so shared WordPress fixes do not autom
 
 ## Production rule
 Do not fix a repeated responsive defect separately on each page. Repair the highest shared owner first, then page-specific exceptions only when necessary.
+
+## CI repair and branch reconciliation
+
+After the responsive/composition repairs, CI exposed several stale validation assumptions rather than user-facing regressions. The course catalog again states post-submit grading behavior explicitly; Pheno Draft validation follows the canonical runtime module; the education image-derivative builder treats a visual library with no current image tags as a valid no-op while still failing missing referenced assets; and the PhenoQuest live verifier tolerates the 74px-to-66px header fallback migration while still requiring header clearance.
+
+The branch was then reconciled with the latest `main` commits. The upstream Public Suite shared-asset allowlist and pinned Grow Doc source revision were merged without replacing the responsive/tool work. After reconciliation the branch is zero commits behind `main` and ready for a fresh validation run.
