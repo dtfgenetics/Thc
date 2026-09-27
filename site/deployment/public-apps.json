@@ -199,9 +199,9 @@
       "sourcePath": "site/public-route-patch/breeder-pedigree",
       "route": "/breeder-pedigree/",
       "runtime": "static",
-      "status": "in-development",
+      "status": "ready-to-package",
       "build": "test -s site/public-route-patch/breeder-pedigree/index.html",
-      "notes": "THC Tool Suite v1 shared-shell implementation; production promotion requires deterministic suite validation and post-deploy live verification."
+      "notes": "THC Tool Suite v1 shared-shell implementation; promoted after deterministic feature validation; Public Suite packaging and live verification are required."
     },
     {
       "id": "substrate-calculator",
@@ -221,9 +221,9 @@
       "sourcePath": "site/public-route-patch/grow-planner",
       "route": "/grow-planner/",
       "runtime": "static",
-      "status": "in-development",
+      "status": "ready-to-package",
       "build": "test -s site/public-route-patch/grow-planner/index.html",
-      "notes": "THC Tool Suite v1 shared-shell implementation; production promotion requires deterministic suite validation and post-deploy live verification."
+      "notes": "THC Tool Suite v1 shared-shell implementation; promoted after deterministic feature validation; Public Suite packaging and live verification are required."
     },
     {
       "id": "dry-cure-lab",
@@ -243,9 +243,9 @@
       "sourcePath": "site/public-route-patch/ipm-scout",
       "route": "/ipm-scout/",
       "runtime": "static",
-      "status": "in-development",
+      "status": "ready-to-package",
       "build": "test -s site/public-route-patch/ipm-scout/index.html",
-      "notes": "THC Tool Suite v1 shared-shell implementation; production promotion requires deterministic suite validation and post-deploy live verification."
+      "notes": "THC Tool Suite v1 shared-shell implementation; promoted after deterministic feature validation; Public Suite packaging and live verification are required."
     },
     {
       "id": "environment-control",
