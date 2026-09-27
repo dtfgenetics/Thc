@@ -96,20 +96,28 @@ jobs:
             if (fs.existsSync(process.env.REPORT_PATH)) report = fs.readFileSync(process.env.REPORT_PATH, 'utf8').trim();
             const max = 55000;
             if (report.length > max) report = report.slice(0, max) + '\n\n[truncated in issue comment; full report is in the workflow artifact]';
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## Google Antigravity independent deployment audit',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Commit: \`${context.sha}\``,
-                `Gemini API credential configured: **${process.env.CREDENTIAL_CONFIGURED || 'unknown'}**`,
-                `Agent exit code: **${process.env.AG_EXIT || 'unknown'}**`,
-                '',
-                report,
-                '',
-                '_Antigravity runs in an ephemeral checkout with no WordPress/Hostinger credentials and checkout push credentials disabled. The Gemini API credential is removed from the shell environment before autonomous tools are exposed._'
-              ].join('\n')
-            });
+            const body = [
+              '## Google Antigravity independent deployment audit',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Commit: \`${context.sha}\``,
+              `Gemini API credential configured: **${process.env.CREDENTIAL_CONFIGURED || 'unknown'}**`,
+              `Agent exit code: **${process.env.AG_EXIT || 'unknown'}**`,
+              '',
+              report,
+              '',
+              '_Antigravity runs in an ephemeral checkout with no WordPress/Hostinger credentials and checkout push credentials disabled. The Gemini API credential is removed from the shell environment before autonomous tools are exposed._'
+            ].join('\n');
+            await core.summary.addRaw(body).write();
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: 46,
+                body
+              });
+            } catch (error) {
+              const saturated = Number(error?.status) === 403 && /more than 2500 comments/i.test(String(error?.message || ''));
+              if (!saturated) throw error;
+              core.warning('Issue #46 has reached GitHub\'s comment limit; Antigravity report remains available in the workflow summary and artifact.');
+            }
