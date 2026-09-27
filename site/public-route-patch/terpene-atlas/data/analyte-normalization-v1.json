@@ -102,6 +102,84 @@
       "cid": 2537,
       "inchikey": "DSSYKIVIOFKYAU-UHFFFAOYSA-N",
       "url": "https://pubchem.ncbi.nlm.nih.gov/compound/camphor"
+    },
+    {
+      "id": "pubchem-guaiol",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/227829",
+      "cid": 227829,
+      "inchikey": "TWVJWDMOZJXUID-SDDRHHMPSA-N"
+    },
+    {
+      "id": "pubchem-alpha-eudesmol",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/A-Eudesmol",
+      "cid": 92762,
+      "inchikey": "FCSRUSQUAVXUKK-VNHYZAJKSA-N"
+    },
+    {
+      "id": "pubchem-beta-eudesmol",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/beta-Eudesmol",
+      "cid": 91457,
+      "inchikey": "BOPIMTNSYWYZOC-VNHYZAJKSA-N"
+    },
+    {
+      "id": "pubchem-gamma-eudesmol",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/gamma-EUDESMOL",
+      "cid": 6432005,
+      "inchikey": "WMOPMQRJLLIEJV-IUODEOHRSA-N"
+    },
+    {
+      "id": "pubchem-caryophyllene-oxide",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Caryophyllene-oxide",
+      "cid": 1742210,
+      "inchikey": "NVEQFIOZRFFVFW-RGCMKSIDSA-N"
+    },
+    {
+      "id": "pubchem-humulene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Humulene",
+      "cid": 5281520,
+      "inchikey": "FAMPSKZZVDUYOS-HRGUGZIWSA-N"
+    },
+    {
+      "id": "pubchem-terpinolene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Terpinolene",
+      "cid": 11463,
+      "inchikey": "MOYAFQVGZZPNRA-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-trans-beta-farnesene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/beta-farnesene",
+      "cid": 5281517,
+      "inchikey": "JSNRRGGBADWTMC-NTCAYCPXSA-N"
+    },
+    {
+      "id": "pubchem-camphene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/6616",
+      "cid": 6616,
+      "inchikey": "CRPUJAZIXJMDBK-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-beta-phellandrene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/beta-phellandrene",
+      "cid": 11142,
+      "inchikey": "LFJQCDVYDGGFCH-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-gamma-terpinene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/gamma-terpinene",
+      "cid": 7461,
+      "inchikey": "YKFLAYDHMOASIY-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-alpha-terpinene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/alpha-terpinene",
+      "cid": 7462,
+      "inchikey": "YHQGMYUVUMAZJR-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-alpha-phellandrene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/alpha-phellandrene",
+      "cid": 7460,
+      "inchikey": "OGLDWXZKYODSOB-UHFFFAOYSA-N"
     }
   ],
   "aliases": [
@@ -154,12 +232,44 @@
       "inchikey": "RGZSQWQPBWRIAQ-UHFFFAOYSA-N"
     },
     {
+      "reported": "alpha-eudesmol",
+      "normalized": "alpha-eudesmol",
+      "identityResolution": "resolved",
+      "reason": "α-Eudesmol maps to a verified PubChem structure.",
+      "pubchemCid": 92762,
+      "inchikey": "FCSRUSQUAVXUKK-VNHYZAJKSA-N"
+    },
+    {
+      "reported": "alpha-humulene",
+      "normalized": "alpha-humulene",
+      "identityResolution": "resolved",
+      "reason": "α-Humulene maps to the verified (1E,4E,8E) PubChem structure.",
+      "pubchemCid": 5281520,
+      "inchikey": "FAMPSKZZVDUYOS-HRGUGZIWSA-N"
+    },
+    {
+      "reported": "alpha-phellandrene",
+      "normalized": "alpha-phellandrene",
+      "identityResolution": "partial",
+      "reason": "Broad α-phellandrene identity does not resolve optical configuration.",
+      "pubchemCid": 7460,
+      "inchikey": "OGLDWXZKYODSOB-UHFFFAOYSA-N"
+    },
+    {
       "reported": "alpha-pinene",
       "normalized": "alpha-pinene",
       "identityResolution": "partial",
       "reason": "Common α-pinene label does not resolve optical configuration.",
       "pubchemCid": 6654,
       "inchikey": "GRWFGVWFFZKLTI-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "alpha-terpinene",
+      "normalized": "alpha-terpinene",
+      "identityResolution": "resolved",
+      "reason": "α-Terpinene maps to the verified PubChem structure.",
+      "pubchemCid": 7462,
+      "inchikey": "YHQGMYUVUMAZJR-UHFFFAOYSA-N"
     },
     {
       "reported": "alpha-terpineol",
@@ -178,12 +288,36 @@
       "inchikey": "NPNUFJAVOOONJE-GFUGXAQUSA-N"
     },
     {
+      "reported": "beta-caryophyllene oxide",
+      "normalized": "caryophyllene-oxide",
+      "identityResolution": "resolved",
+      "reason": "β-Caryophyllene oxide is a PubChem synonym for the Atlas caryophyllene oxide record.",
+      "pubchemCid": 1742210,
+      "inchikey": "NVEQFIOZRFFVFW-RGCMKSIDSA-N"
+    },
+    {
+      "reported": "beta-eudesmol",
+      "normalized": "beta-eudesmol",
+      "identityResolution": "resolved",
+      "reason": "β-Eudesmol maps to a verified PubChem structure.",
+      "pubchemCid": 91457,
+      "inchikey": "BOPIMTNSYWYZOC-VNHYZAJKSA-N"
+    },
+    {
       "reported": "beta-ocimene",
       "normalized": "ocimene",
       "identityResolution": "partial",
       "reason": "Bare β-ocimene does not resolve 3E/trans versus 3Z/cis configuration.",
       "pubchemCid": 18756,
       "inchikey": "IHPKGUQCSIINRJ-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "beta-phellandrene",
+      "normalized": "beta-phellandrene",
+      "identityResolution": "partial",
+      "reason": "Broad β-phellandrene identity does not resolve optical configuration.",
+      "pubchemCid": 11142,
+      "inchikey": "LFJQCDVYDGGFCH-UHFFFAOYSA-N"
     },
     {
       "reported": "beta-pinene",
@@ -202,12 +336,28 @@
       "inchikey": "DTGKSKDOIYIVQL-UHFFFAOYSA-N"
     },
     {
+      "reported": "camphene",
+      "normalized": "camphene",
+      "identityResolution": "partial",
+      "reason": "Broad camphene identity does not resolve optical configuration.",
+      "pubchemCid": 6616,
+      "inchikey": "CRPUJAZIXJMDBK-UHFFFAOYSA-N"
+    },
+    {
       "reported": "camphor",
       "normalized": "camphor",
       "identityResolution": "partial",
       "reason": "Broad camphor record is non-stereospecific; do not infer an enantiomer.",
       "pubchemCid": 2537,
       "inchikey": "DSSYKIVIOFKYAU-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "caryophyllene oxide",
+      "normalized": "caryophyllene-oxide",
+      "identityResolution": "resolved",
+      "reason": "Caryophyllene oxide maps to the verified PubChem structure.",
+      "pubchemCid": 1742210,
+      "inchikey": "NVEQFIOZRFFVFW-RGCMKSIDSA-N"
     },
     {
       "reported": "cis-beta-ocimene",
@@ -250,6 +400,38 @@
       "inchikey": "IAIHUHQCLTYTSF-UHFFFAOYSA-N"
     },
     {
+      "reported": "gamma-eudesmol",
+      "normalized": "gamma-eudesmol",
+      "identityResolution": "resolved",
+      "reason": "γ-Eudesmol maps to the verified (+)-γ-eudesmol PubChem structure.",
+      "pubchemCid": 6432005,
+      "inchikey": "WMOPMQRJLLIEJV-IUODEOHRSA-N"
+    },
+    {
+      "reported": "gamma-terpinene",
+      "normalized": "gamma-terpinene",
+      "identityResolution": "resolved",
+      "reason": "γ-Terpinene maps to the verified PubChem structure.",
+      "pubchemCid": 7461,
+      "inchikey": "YKFLAYDHMOASIY-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "guaiol",
+      "normalized": "guaiol",
+      "identityResolution": "resolved",
+      "reason": "Guaiol maps to the verified PubChem structure used by the Atlas.",
+      "pubchemCid": 227829,
+      "inchikey": "TWVJWDMOZJXUID-SDDRHHMPSA-N"
+    },
+    {
+      "reported": "humulene",
+      "normalized": "alpha-humulene",
+      "identityResolution": "resolved",
+      "reason": "PubChem's common humulene record maps to α-humulene/(1E,4E,8E)-humulene.",
+      "pubchemCid": 5281520,
+      "inchikey": "FAMPSKZZVDUYOS-HRGUGZIWSA-N"
+    },
+    {
       "reported": "limonene",
       "normalized": "d-limonene",
       "identityResolution": "partial",
@@ -282,6 +464,22 @@
       "inchikey": "WRYLYDPHFGVWKC-UHFFFAOYSA-N"
     },
     {
+      "reported": "terpinolene",
+      "normalized": "terpinolene",
+      "identityResolution": "resolved",
+      "reason": "Terpinolene maps to the verified PubChem structure.",
+      "pubchemCid": 11463,
+      "inchikey": "MOYAFQVGZZPNRA-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "trans-beta-farnesene",
+      "normalized": "trans-beta-farnesene",
+      "identityResolution": "resolved",
+      "reason": "trans-β-Farnesene maps to verified (6E)-β-farnesene.",
+      "pubchemCid": 5281517,
+      "inchikey": "JSNRRGGBADWTMC-NTCAYCPXSA-N"
+    },
+    {
       "reported": "trans-beta-ocimene",
       "normalized": "trans-beta-ocimene",
       "identityResolution": "resolved",
@@ -304,6 +502,14 @@
       "inchikey": "FQTLCLSUCSAZDY-SDNWHVSQSA-N"
     },
     {
+      "reported": "trans-β-farnesene",
+      "normalized": "trans-beta-farnesene",
+      "identityResolution": "resolved",
+      "reason": "trans-β-Farnesene maps to verified (6E)-β-farnesene.",
+      "pubchemCid": 5281517,
+      "inchikey": "JSNRRGGBADWTMC-NTCAYCPXSA-N"
+    },
+    {
       "reported": "trans-β-ocimene",
       "normalized": "trans-beta-ocimene",
       "identityResolution": "resolved",
@@ -320,12 +526,44 @@
       "inchikey": "RGZSQWQPBWRIAQ-UHFFFAOYSA-N"
     },
     {
+      "reported": "α-eudesmol",
+      "normalized": "alpha-eudesmol",
+      "identityResolution": "resolved",
+      "reason": "α-Eudesmol maps to a verified PubChem structure.",
+      "pubchemCid": 92762,
+      "inchikey": "FCSRUSQUAVXUKK-VNHYZAJKSA-N"
+    },
+    {
+      "reported": "α-humulene",
+      "normalized": "alpha-humulene",
+      "identityResolution": "resolved",
+      "reason": "α-Humulene maps to the verified (1E,4E,8E) PubChem structure.",
+      "pubchemCid": 5281520,
+      "inchikey": "FAMPSKZZVDUYOS-HRGUGZIWSA-N"
+    },
+    {
+      "reported": "α-phellandrene",
+      "normalized": "alpha-phellandrene",
+      "identityResolution": "partial",
+      "reason": "Broad α-phellandrene identity does not resolve optical configuration.",
+      "pubchemCid": 7460,
+      "inchikey": "OGLDWXZKYODSOB-UHFFFAOYSA-N"
+    },
+    {
       "reported": "α-pinene",
       "normalized": "alpha-pinene",
       "identityResolution": "partial",
       "reason": "Common α-pinene label does not resolve optical configuration.",
       "pubchemCid": 6654,
       "inchikey": "GRWFGVWFFZKLTI-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "α-terpinene",
+      "normalized": "alpha-terpinene",
+      "identityResolution": "resolved",
+      "reason": "α-Terpinene maps to the verified PubChem structure.",
+      "pubchemCid": 7462,
+      "inchikey": "YHQGMYUVUMAZJR-UHFFFAOYSA-N"
     },
     {
       "reported": "α-terpineol",
@@ -344,6 +582,14 @@
       "inchikey": "NPNUFJAVOOONJE-GFUGXAQUSA-N"
     },
     {
+      "reported": "β-eudesmol",
+      "normalized": "beta-eudesmol",
+      "identityResolution": "resolved",
+      "reason": "β-Eudesmol maps to a verified PubChem structure.",
+      "pubchemCid": 91457,
+      "inchikey": "BOPIMTNSYWYZOC-VNHYZAJKSA-N"
+    },
+    {
       "reported": "β-ocimene",
       "normalized": "ocimene",
       "identityResolution": "partial",
@@ -352,12 +598,36 @@
       "inchikey": "IHPKGUQCSIINRJ-UHFFFAOYSA-N"
     },
     {
+      "reported": "β-phellandrene",
+      "normalized": "beta-phellandrene",
+      "identityResolution": "partial",
+      "reason": "Broad β-phellandrene identity does not resolve optical configuration.",
+      "pubchemCid": 11142,
+      "inchikey": "LFJQCDVYDGGFCH-UHFFFAOYSA-N"
+    },
+    {
       "reported": "β-pinene",
       "normalized": "beta-pinene",
       "identityResolution": "partial",
       "reason": "Common β-pinene label does not resolve optical configuration.",
       "pubchemCid": 14896,
       "inchikey": "WTARULDDTDQWMU-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "γ-eudesmol",
+      "normalized": "gamma-eudesmol",
+      "identityResolution": "resolved",
+      "reason": "γ-Eudesmol maps to the verified (+)-γ-eudesmol PubChem structure.",
+      "pubchemCid": 6432005,
+      "inchikey": "WMOPMQRJLLIEJV-IUODEOHRSA-N"
+    },
+    {
+      "reported": "γ-terpinene",
+      "normalized": "gamma-terpinene",
+      "identityResolution": "resolved",
+      "reason": "γ-Terpinene maps to the verified PubChem structure.",
+      "pubchemCid": 7461,
+      "inchikey": "YKFLAYDHMOASIY-UHFFFAOYSA-N"
     }
   ],
   "lastVerifiedOn": "2026-09-27"
