@@ -238,8 +238,8 @@ payload = replace_once(
 )
 payload = replace_once(
     payload,
-    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grower Conversations'], ['/games/high-land/', 'High Land'],",
-    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grower Conversations'], ['/games/protect-the-plants/', 'Protect the Plants'], ['/games/high-land/', 'High Land'],",
+    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grow Room Confessions'], ['/games/high-land/', 'High Land'],",
+    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grow Room Confessions'], ['/games/protect-the-plants/', 'Protect the Plants'], ['/games/high-land/', 'High Land'],",
     "Protect the Plants live verification",
 )
 
