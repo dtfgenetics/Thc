@@ -88,6 +88,11 @@ assert(ppfd.includes('Metric (m / cm)') && ppfd.includes('Imperial (ft / in)') &
 assert(ppfd.includes('sensorCheckDate') && ppfd.includes('Sensor calibration / check date'), 'PPFD page missing sensor calibration/check documentation');
 assert(ppfd.includes('comparableGeometry') && ppfd.includes('Caution: setup differs'), 'PPFD comparison must warn when survey geometry or equipment differs');
 assert(ppfd.includes("unit:metric?'m':'ft'") && ppfd.includes('renderUnitSystem'), 'PPFD spacing output must follow the selected unit system');
+assert(ppfd.includes('Skip to Light Lab') && ppfd.includes('id="mainContent"'), 'PPFD page missing keyboard skip navigation');
+assert(ppfd.includes('overflow-x:auto;flex-wrap:nowrap') && !ppfd.includes('@media(max-width:900px){.workspace,.mapper{grid-template-columns:1fr}.education,.researchgrid{grid-template-columns:1fr 1fr}.nav{display:none}'), 'PPFD page must preserve primary navigation on narrow viewports');
+assert(ppfd.includes('.nav a{min-height:44px') && ppfd.includes('.tabs a{min-height:44px'), 'PPFD page missing robust touch target sizing');
+assert(ppfd.includes('gridScrollHint') && ppfd.includes('tabindex="0" aria-describedby="gridScrollHint"'), 'PPFD heatmap missing small-screen scroll accessibility guidance');
+assert(ppfd.includes('THC Light Lab — Survey Report') && ppfd.includes('updatePrintSummary') && ppfd.includes("beforeprint"), 'PPFD page missing printable survey summary workflow');
 assert(ppfd.includes("box.style.background=heat(v)") && ppfd.includes("heat(input.value)"), 'PPFD page must preserve blank map cells as unmeasured');
 assert(ppfd.includes('href="/tools/"'), 'PPFD page missing central All Tools link');
 assert(atlas.includes('href="/tools/"'), 'Plant Atlas missing central All Tools link');
