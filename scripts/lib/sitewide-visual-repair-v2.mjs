@@ -1,3 +1,5 @@
+import { getWordPressSafeInlineScriptTag } from './wordpress-safe-inline-script.mjs';
+
 export const SITEWIDE_VISUAL_REPAIR_VERSION = 'v2';
 
 export const SITEWIDE_VISUAL_REPAIR_STYLE_TAG = String.raw`<style id="dtf-sitewide-visual-repair-v2-style">
@@ -189,7 +191,7 @@ body:has(.tool-chooser) .tool-feature:before{
 }
 </style>`;
 
-export const SITEWIDE_VISUAL_REPAIR_SCRIPT_TAG = String.raw`<script id="dtf-sitewide-visual-repair-v2-script">(function(){
+const SITEWIDE_VISUAL_REPAIR_SCRIPT=String.raw`(function(){
 var APPROVED_RE=/(?:DTF_APPROVED_PUBLIC_VISUAL|dtf[-_ ]approved[-_ ]public[-_ ]visual|dtf-approved-visual-)/i;
 var RETIRED_RE=[
   /Teaching[ _-]+Healthy[ _-]+Cultivation/i,
@@ -292,4 +294,5 @@ function applyLearnDensity(){
 }
 function boot(){repairRetiredVisuals();cleanOrphanVisualCopy();applyLearnDensity();}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
-})();</script>`;
+})();`;
+export const SITEWIDE_VISUAL_REPAIR_SCRIPT_TAG=getWordPressSafeInlineScriptTag('dtf-sitewide-visual-repair-v2-script',SITEWIDE_VISUAL_REPAIR_SCRIPT);

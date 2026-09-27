@@ -3,6 +3,8 @@ import {
   assertCanonicalHeaderAssets,
   replaceShell,
 } from './lib/wordpress-shared-shell-reconcile.mjs';
+import { getWordPressSafeInlineScriptTag } from './lib/wordpress-safe-inline-script.mjs';
+import { SITEWIDE_HEADER_SCRIPT_TAG } from './lib/sitewide-header-template-v6.mjs';
 
 const original=`
 <style id="dtf-commerce-archive-style">.shop{display:grid}</style>
@@ -37,4 +39,22 @@ assert.throws(
   /Expected exactly one dtf-sitewide-header-v6-script/,
 );
 
-console.log(JSON.stringify({ok:true,scenario:'bare-header-with-corrupted-owned-scripts'}));
+const originalSource=`(()=>{const open=true;if(open&&document.body){document.body.dataset.test='Seeds & education';}})();`;
+const safeTag=getWordPressSafeInlineScriptTag('dtf-wordpress-safe-script',originalSource);
+const wrapper=safeTag.match(/<script[^>]*>([\s\S]*?)<\/script>/)?.[1]||'';
+const payload=wrapper.match(/atob\('([^']+)'\)/)?.[1]||'';
+assert.ok(wrapper);
+assert.ok(payload);
+assert.doesNotMatch(wrapper,/&/);
+assert.equal(Buffer.from(payload,'base64').toString('utf8'),originalSource);
+new Function(wrapper);
+new Function(Buffer.from(payload,'base64').toString('utf8'));
+
+for(const id of ['dtf-sitewide-header-v6-script','dtf-content-density-v1-script','dtf-sitewide-visual-repair-v2-script']){
+  const scripts=[...SITEWIDE_HEADER_SCRIPT_TAG.matchAll(new RegExp(`<script\\b[^>]*id=["']${id}["'][^>]*>([\\s\\S]*?)<\\/script>`,'gi'))];
+  assert.equal(scripts.length,1);
+  assert.doesNotMatch(scripts[0][1],/&/);
+  new Function(scripts[0][1]);
+}
+
+console.log(JSON.stringify({ok:true,scenarios:['bare-header-with-corrupted-owned-scripts','wordpress-safe-inline-script']}));
