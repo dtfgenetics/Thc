@@ -119,3 +119,45 @@ Reference influence: `clauderic/dnd-kit` direct-manipulation/accessibility patte
 3. audit Seed Man Run Phaser camera/input/animation lifecycle against official Phaser examples;
 4. add runtime schema validation at multiplayer/save boundaries where Zod is justified;
 5. evaluate asset-backed audio titles for selective Howler adoption rather than global dependency use.
+
+
+## Multiplayer browser-experience integration
+
+### High Land
+Integrated in `dtfgenetics/Thc`:
+- added typed `apps/high-land-web/src/game/browserExperience.ts`;
+- native Web Share with clipboard/manual fallback in the room lobby;
+- Screen Wake Lock during active play with visibility-aware reacquisition;
+- unit coverage for share fallback and wake-lock lifecycle;
+- updated lobby production regression contract.
+
+No room authority, transport, board rules, or Phaser gameplay logic was replaced.
+
+### THC U Know
+Integrated in `dtfgenetics/thc-u-know-card-game-`:
+- retained the existing `qrcode.react` QR invite path instead of adding another dependency;
+- centralized native share, clipboard fallback, and Screen Wake Lock in `apps/web/src/browserExperience.ts`;
+- InvitePanel now automatically falls back to copying the invite when native sharing fails;
+- active GameTable requests Screen Wake Lock during play;
+- lobby production contract now enforces QR + share/copy fallback + wake-lock behavior.
+
+Socket.IO room authority and the shared card engine remain unchanged.
+
+### Kush Kings Chess
+Integrated in `dtfgenetics/Thc-chess-git`:
+- added `client/src/lib/browserExperience.ts`;
+- live room links prefer native share and fall back to clipboard;
+- archived match links remain copy-oriented;
+- match view requests Screen Wake Lock and reacquires it on visibility return;
+- added `scripts/browser-experience-contract.mjs` to the production runtime checks.
+
+Chess.js move authority, Socket.IO room events, PostgreSQL persistence, spectators, chat, draw/resign/abandon/rematch behavior, and archive semantics remain unchanged.
+
+### Shared implementation rule
+For future browser games, prefer the same contract:
+1. native share when it improves invite UX;
+2. clipboard fallback;
+3. manual/QR fallback where appropriate;
+4. Screen Wake Lock only during long-running active play;
+5. all APIs remain progressive enhancement and must never block gameplay;
+6. keep game/network authority outside browser-experience helpers.
