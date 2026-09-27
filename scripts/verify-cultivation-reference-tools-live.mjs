@@ -12,6 +12,19 @@ const routes = [
   { path: '/tds-meter/', markers: ['TDS / EC Meter', 'All Tools', '500 scale', '700 scale'] },
   { path: '/vpd-chart/', markers: ['VPD Chart', 'All Tools', 'Leaf offset'] },
   { path: '/ppfd-chart/', markers: ['THC Light Lab', 'All Tools', 'Canopy mapper', 'Survey record', 'Variable-light DLI schedule', 'Import full survey', 'Measurement protocol', 'Metric (m / cm)', 'Sensor calibration / check date', 'Setup differs in', 'Direct comparison caution:', 'Skip to Light Lab', 'THC Light Lab — Survey Report', 'Delta vs baseline', 'paired readings', 'Within ±10% of average', 'Perimeter ÷ center average', 'Approx. point spacing', 'not universal target bands'] },
+  { path: '/unit-converter/', markers: ['THC Cultivation Unit Converter', 'All Tools', 'Conductivity'] },
+  { path: '/dilution-calculator/', markers: ['THC Solution Dilution Calculator', 'All Tools', 'Serial dilution steps'] },
+  { path: '/root-zone-temperature/', markers: ['THC Root-Zone Temperature Reference', 'All Tools', 'Root-zone trend'] },
+  { path: '/plant-growth-tracker/', markers: ['THC Plant Growth Tracker', 'All Tools', 'Growth-rate trend'] },
+  { path: '/photoperiod-planner/', markers: ['THC Photoperiod & Lighting Schedule', 'All Tools', 'Compare saved schedules'] },
+  { path: '/co2-ventilation/', markers: ['THC Ventilation & CO₂ Reference', 'All Tools', 'target ACH'] },
+  { path: '/substrate-calculator/', markers: ['THC Substrate & Container Calculator', 'All Tools', 'Purchase overage'] },
+  { path: '/dry-cure-lab/', markers: ['THC Dry & Cure Lab', 'All Tools', 'Save harvest to GrowLens'] },
+  { path: '/environment-control/', markers: ['THC Environmental Control Center', 'All Tools', 'Recent VPD trend'] },
+  { path: '/dew-point/', markers: ['THC Dew Point & Condensation Lab', 'All Tools', 'dew point'] },
+  { path: '/dryback-lab/', markers: ['THC Irrigation & Dryback Lab', 'All Tools', 'Recent dryback trend'] },
+  { path: '/fertigation-lab/', markers: ['THC Fertigation Lab', 'All Tools', 'Target vs achieved recipe worksheet'] },
+  { path: '/water-quality-lab/', markers: ['THC Water Quality Lab', 'All Tools', 'Change from prior report'] },
 ];
 
 const errors = [];
@@ -60,4 +73,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('Cultivation reference live verification passed for /tools/, Plant Atlas, Terpene Atlas, pH, TDS/EC, VPD, and THC Light Lab routes.');
+console.log('Cultivation reference live verification passed for the tools hub, atlases, and all 16 cultivation tool routes.');
