@@ -48,7 +48,7 @@ const primaryLabels = shell.primaryNavigation.map((item) => item.label);
 for (const required of ['Seeds', 'Learn', 'Tools', 'Games', 'Shop']) {
   assert(primaryLabels.includes(required), `required primary label '${required}' must appear in the V6 primary navigation`);
 }
-for (const obsolete of ['Genetics', 'Diagnostic']) {
+for (const obsolete of ['Home', 'Courses', 'Community', 'Genetics', 'Diagnostic']) {
   assert(!primaryLabels.includes(obsolete), `retired primary label '${obsolete}' must not appear in the V6 primary navigation`);
 }
 
@@ -66,7 +66,7 @@ for (const rel of deployableShellFiles) {
     if (hrefIndex < 0) continue;
     const linkTail = normalizedPrimary.slice(hrefIndex, hrefIndex + 220);
     assert(linkTail.includes(`>${item.label}</a>`), `${rel} primary navigation route ${item.route} must be labeled ${item.label}`);
-    assert(hrefIndex > lastIndex, `${rel} primary navigation order must match the canonical eight-item sequence`);
+    assert(hrefIndex > lastIndex, `${rel} primary navigation order must match the canonical five-item sequence`);
     lastIndex = hrefIndex;
   }
 
