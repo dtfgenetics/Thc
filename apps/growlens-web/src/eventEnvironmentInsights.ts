@@ -65,10 +65,19 @@ export function buildEventEnvironmentInsights(state:GrowLensState, windowHours=6
   for(const event of events){
     const eventTime=Date.parse(event.timestamp);
     if(!Number.isFinite(eventTime))continue;
+    let resolvedSpaceId=event.spaceId;
+    if(!resolvedSpaceId){
+      const candidateSpaces=[...new Set(state.readings
+        .filter((reading)=>Math.abs(Date.parse(reading.createdAt)-eventTime)<=windowMs)
+        .map((reading)=>reading.spaceId)
+        .filter((spaceId):spaceId is string=>Boolean(spaceId)))];
+      if(candidateSpaces.length!==1)continue;
+      [resolvedSpaceId]=candidateSpaces;
+    }
     const readings=state.readings.filter((reading)=>{
       const readingTime=Date.parse(reading.createdAt);
       if(!Number.isFinite(readingTime))return false;
-      if(event.spaceId&&reading.spaceId!==event.spaceId)return false;
+      if(reading.spaceId!==resolvedSpaceId)return false;
       return Math.abs(readingTime-eventTime)<=windowMs;
     });
     const before=readings.filter((reading)=>Date.parse(reading.createdAt)<eventTime);
@@ -78,6 +87,7 @@ export function buildEventEnvironmentInsights(state:GrowLensState, windowHours=6
     const afterSummary=summarize(after);
     insights.push({
       ...event,
+      spaceId:resolvedSpaceId,
       beforeCount:before.length,
       afterCount:after.length,
       before:beforeSummary,
