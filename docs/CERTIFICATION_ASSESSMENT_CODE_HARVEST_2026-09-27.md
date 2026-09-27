@@ -30,6 +30,39 @@ Immediate priority:
 5. use SurveyJS/H5P only where their renderer/accessibility patterns materially improve the existing front end;
 6. use QTI/Open Badges/pdf-lib/qrcode for interoperability and credential artifacts after the core runtime integration is stable.
 
+## Implementation progress — 2026-09-27
+
+A code-hardening branch and draft PR now exist in the canonical learning repository:
+
+- Repository: `dtfgenetics/Thc-learning-courses-`
+- Branch: `assessment-runtime-hardening-2026-09-27`
+- Draft PR: #733 — Harden assessment scoring and certification vendor provenance
+
+Completed in that PR:
+
+- fail-closed validation for invalid passing-score percentages;
+- optional numeric answer tolerance through `extensions.numericTolerance`, while exact numeric scoring remains the default;
+- deterministic regression coverage in `scripts/test-assessment-runtime-hardening.mjs`;
+- npm command `assessment:runtime-hardening:test`;
+- MIT license/provenance notice for the vendored QRCode.js used by printable verification certificates.
+
+Further audit also confirmed that the learning repo already contains:
+
+- server-side attempt expiry enforcement;
+- max-attempt and cooldown rules;
+- answer autosave;
+- server-side scoring;
+- practical evidence submission;
+- credential eligibility logic;
+- signed credential issuance;
+- public credential lookup;
+- learner credential views;
+- printable certificate rendering;
+- QR verification links;
+- credential status lifecycle support.
+
+This narrows the remaining implementation work. Prioritize actual gaps instead of rebuilding existing features.
+
 ## Current repository findings
 
 The THC repository already contains:
