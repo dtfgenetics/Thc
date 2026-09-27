@@ -86,22 +86,27 @@ async function loadCourse(entry) {
     must(lessons.length === release.publicScope.releasedLessonCount, `${entry.id}: released lesson count ${lessons.length} does not match manifest ${release.publicScope.releasedLessonCount}.`);
   }
   const assessments = [];
+  let authorizedItemCount = 0;
   let itemCount = 0;
+  const courseAssessmentPrefix = `ASSESS-${entry.id.replace(/^COURSE-/, '')}`;
   for (const assessmentId of release.publicScope.assessments || []) {
     const assessment = await fetchJson(`content/assessments/${assessmentId}.json`);
     must(['formative', 'summative'].includes(assessment.purpose), `${assessmentId}: credential-purpose assessment blocked.`);
+    const courseOwnedAssessment = assessmentId.startsWith(courseAssessmentPrefix);
     const items = [];
     for (const itemId of assessment.items || []) {
       const question = await fetchJson(`content/questions/${itemId}.json`);
       must(['formative', 'summative'].includes(question.purpose), `${itemId}: credential-purpose item blocked.`);
       must(Array.isArray(question.choices) && Number.isInteger(question.correct), `${itemId}: unsupported public question format.`);
       items.push(question);
-      itemCount++;
+      authorizedItemCount++;
+      if (courseOwnedAssessment) itemCount++;
     }
-    assessments.push({ ...assessment, items });
+    assessments.push({ ...assessment, items, courseOwnedAssessment });
   }
-  must(itemCount === release.publicScope.publicCourseItems, `${entry.id}: public item count ${itemCount} differs from release ${release.publicScope.publicCourseItems}.`);
-  return { ...entry, course, release, modules, lessons, assessments, itemCount, route: `${config.program.route}${entry.slug}/` };
+  must(itemCount === release.publicScope.publicCourseItems, `${entry.id}: course-owned item count ${itemCount} differs from release ${release.publicScope.publicCourseItems}.`);
+  must(authorizedItemCount >= itemCount, `${entry.id}: authorized assessment item accounting is invalid.`);
+  return { ...entry, course, release, modules, lessons, assessments, itemCount, authorizedItemCount, route: `${config.program.route}${entry.slug}/` };
 }
 
 const css = `<style id="dtf-tech1-public-courses-v2">
