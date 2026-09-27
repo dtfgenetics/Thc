@@ -30,7 +30,7 @@ subprocess.run(
 # drifts away from the canonical eight-section shell or the shared progressive-
 # disclosure layer. This keeps production from publishing a mixed shell or a
 # long hub page without the content-density behavior validated by V6.
-expected_labels = ['Home', 'Seeds', 'Learn', 'Courses', 'Tools', 'Games', 'Community', 'Shop']
+expected_labels = ['Seeds', 'Learn', 'Tools', 'Games', 'Shop']
 for relative in ('tools/index.html', 'games/index.html', 'projects/index.html'):
     candidate = release_dir / relative
     if not candidate.is_file() or candidate.stat().st_size < 1:
@@ -47,7 +47,7 @@ for relative in ('tools/index.html', 'games/index.html', 'projects/index.html'):
         )
 
     required_markers = (
-        'data-dtf-sitewide-header="canonical-eight-v1"',
+        'data-dtf-sitewide-header="canonical-five-v1"',
         'id="dtf-sitewide-header-v6-script"',
         'id="dtf-responsive-layout-v1"',
         'id="dtf-sitewide-ux-polish-v1"',
