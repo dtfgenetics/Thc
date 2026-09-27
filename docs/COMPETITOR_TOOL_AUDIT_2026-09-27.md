@@ -211,3 +211,34 @@ Implementation is in the canonical diagnostic repository, PR dtfgenetics/Thc-dat
 - PPFD quick-result and progressive-disclosure markers.
 - Terpene Atlas quick-browse markers and runtime behavior.
 - Existing Terpene Atlas source/public mirror parity remains enforced.
+
+
+## Wave 3 implemented
+
+### pH Reference
+- Keeps the quick meter-reading interpretation and visual scale first.
+- Adds a context-aware next action for nutrient solution, container media, source water and runoff/drainage.
+- Moves calibration history, CSV import/export, trend chart and local journal behind an advanced disclosure.
+
+### EC / TDS
+- Keeps EC ↔ µS/cm ↔ 500/700 ppm conversion immediately visible.
+- Explicitly tells users to preserve EC as the primary measurement record and treat ppm as a display convention.
+- Moves calibration history and the measurement journal behind an advanced disclosure.
+
+### Water Quality Lab
+- Reduces the first decision to pH, EC and alkalinity.
+- Moves hardness and major-ion chemistry into an advanced report section without removing it.
+- Moves saving, GrowLens integration, history comparison and CSV export into an advanced workflow.
+- Quick result tells the user when to escalate from the basic water profile into full mineral chemistry.
+
+### Production standard
+The mandatory Tools UX standard now requires:
+- minimum valid interaction first;
+- dominant result before expert controls;
+- meaning and limitations;
+- one practical next action;
+- progressive disclosure for history, profiles, imports/exports, calibration and specialist workflows;
+- GrowLens / education continuity where supported;
+- user-editable targets when evidence does not justify one universal biological threshold.
+
+Deterministic validators now lock these contracts for pH, EC/TDS and Water Quality.
