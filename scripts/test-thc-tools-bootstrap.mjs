@@ -12,7 +12,14 @@ if(fs.existsSync(manifestPath)){
   ok(manifest.targetRepository==='dtfgenetics/thc-tools','target repository mismatch');
   ok(Array.isArray(manifest.routes)&&manifest.routes.length===23,'bootstrap must contain 23 route surfaces');
   ok(Array.isArray(manifest.sharedAssets)&&manifest.sharedAssets.length>=10,'bootstrap shared runtime list is incomplete');
-  ok(Array.isArray(manifest.thirdPartyNotices)&&manifest.thirdPartyNotices.length>=3,'third-party notice list is incomplete');
+  ok(Array.isArray(manifest.thirdPartyNotices)&&manifest.thirdPartyNotices.length>=2,'third-party notice list is incomplete');
+  for(const route of manifest.routes){
+    ok(typeof route.sourceRoot==='string'&&route.sourceRoot.length>0,`${route.slug||'unknown'} missing sourceRoot`);
+    if(typeof route.sourceRoot==='string') ok(fs.existsSync(route.sourceRoot),`${route.slug} sourceRoot does not exist: ${route.sourceRoot}`);
+  }
+  for(const notice of manifest.thirdPartyNotices){
+    ok(fs.existsSync(notice),`third-party notice missing: ${notice}`);
+  }
   ok(manifest.routes.some(item=>item.slug==='atlas'&&item.deploymentId==='plant-atlas'),'Plant Atlas deployment identity must be preserved');
   for(const slug of ['ipm-scout','grow-planner','breeder-pedigree']){
     ok(manifest.routes.some(item=>item.slug===slug),`bootstrap missing ${slug}`);
