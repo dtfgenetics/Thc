@@ -86,7 +86,7 @@ assert(ppfd.includes("Math.abs(v-stats.avg)<=stats.avg*.10") && ppfd.includes("M
 assert(ppfd.includes('edgeCenterStats') && ppfd.includes('spacingStats'), 'PPFD page missing edge/center or grid-spacing calculation helpers');
 assert(ppfd.includes('Metric (m / cm)') && ppfd.includes('Imperial (ft / in)') && ppfd.includes('convertDimensions'), 'PPFD page missing metric/imperial dimension support');
 assert(ppfd.includes('sensorCheckDate') && ppfd.includes('Sensor calibration / check date'), 'PPFD page missing sensor calibration/check documentation');
-assert(ppfd.includes('comparableGeometry') && ppfd.includes('Caution: setup differs'), 'PPFD comparison must warn when survey geometry or equipment differs');
+assert(ppfd.includes('comparableGeometry') && ppfd.includes('Setup differs in') && ppfd.includes('Direct comparison caution:'), 'PPFD comparison must warn when survey geometry or equipment differs');
 assert(ppfd.includes("unit:metric?'m':'ft'") && ppfd.includes('renderUnitSystem'), 'PPFD spacing output must follow the selected unit system');
 assert(ppfd.includes('Skip to Light Lab') && ppfd.includes('id="mainContent"'), 'PPFD page missing keyboard skip navigation');
 assert(ppfd.includes('overflow-x:auto;flex-wrap:nowrap') && !ppfd.includes('@media(max-width:900px){.workspace,.mapper{grid-template-columns:1fr}.education,.researchgrid{grid-template-columns:1fr 1fr}.nav{display:none}'), 'PPFD page must preserve primary navigation on narrow viewports');
