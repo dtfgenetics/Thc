@@ -211,6 +211,7 @@ for target in external_targets:
 public_apps_path = repo_root / "site" / "deployment" / "public-apps.json"
 public_apps = json.loads(public_apps_path.read_text())
 registered_local_game_targets: list[str] = []
+registered_local_static_targets: list[str] = []
 for app in public_apps.get("apps", []):
     source = str(app.get("sourcePath") or "").rstrip("/")
     route = str(app.get("route") or "")
@@ -228,9 +229,35 @@ for app in public_apps.get("apps", []):
         registered_local_game_targets.append(target)
         if target not in allowed:
             allowed.append(target)
+    elif (
+        app.get("repository") == "dtfgenetics/Thc"
+        and app.get("runtime") == "static"
+        and app.get("status") == "ready-to-package"
+        and source.startswith("site/public-route-patch/")
+        and not source.startswith("site/public-route-patch/games/")
+        and route.startswith("/")
+        and route.endswith("/")
+    ):
+        target = route.strip("/")
+        if not target or "/" in target or target in {"learn", "blog"}:
+            raise SystemExit(f"unsafe registered local static app route: {route}")
+        expected_source = f"site/public-route-patch/{target}"
+        if source != expected_source:
+            raise SystemExit(
+                f"registered local static app source/route mismatch: {source!r} vs {route!r}"
+            )
+        registered_local_static_targets.append(target)
+        if target not in allowed:
+            allowed.append(target)
 
 if len(registered_local_game_targets) != len(set(registered_local_game_targets)):
     raise SystemExit("duplicate registered local game targets in public-app registry")
+if len(registered_local_static_targets) != len(set(registered_local_static_targets)):
+    raise SystemExit("duplicate registered local static app targets in public-app registry")
+
+for shared_asset in ("assets/thc-tool-suite-v1.css", "assets/thc-tool-suite-v1.js"):
+    if shared_asset not in allowed:
+        allowed.append(shared_asset)
 
 required = [
     "ph-meter/index.html",
@@ -351,6 +378,13 @@ for target in registered_local_game_targets:
     index_path = f"{target}/index.html"
     if index_path not in required:
         required.append(index_path)
+for target in registered_local_static_targets:
+    index_path = f"{target}/index.html"
+    if index_path not in required:
+        required.append(index_path)
+for shared_asset in ("assets/thc-tool-suite-v1.css", "assets/thc-tool-suite-v1.js"):
+    if shared_asset not in required:
+        required.append(shared_asset)
 for target in external_targets:
     for rel in (f"{target}/index.html", f"{target}/source-revision.txt"):
         if rel not in required:
@@ -406,6 +440,7 @@ manifest = {
     "wordPressOwnedRoutesExcluded": ["/", "/learn/", "/blog/"],
     "targets": allowed,
     "registeredLocalGameTargets": sorted(registered_local_game_targets),
+    "registeredLocalStaticTargets": sorted(registered_local_static_targets),
     "externalGames": external_games,
     "dtf420Overlay": {
         "repository": overlay_manifest["repository"],
@@ -443,6 +478,7 @@ summary = {
     "uncompressedBytes": manifest["uncompressedBytes"],
     "targets": allowed,
     "registeredLocalGameTargets": sorted(registered_local_game_targets),
+    "registeredLocalStaticTargets": sorted(registered_local_static_targets),
     "externalGames": external_games,
     "dtf420Overlay": manifest["dtf420Overlay"],
 }
