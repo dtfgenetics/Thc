@@ -12,7 +12,7 @@ const tools=[
  ['ipm-scout','THC IPM Scout',['thc-ipm-scout-v1','Export CSV']],
  ['dry-cure-lab','THC Dry & Cure Lab',['weight loss','dew point']],
  ['grow-planner','THC Grow Cycle Planner',['Stage calendar','Flowering']],
- ['substrate-calculator','THC Substrate & Container Calculator',['purchase target','3.785411784']],
+ ['substrate-calculator','THC Substrate & Container Calculator',['purchase target','gallonsToLiters']],
  ['breeder-pedigree','DTF Breeding & Pedigree Builder',['dtf-breeder-pedigree-v1','parent_a']],
  ['co2-ventilation','THC Ventilation & CO₂ Reference',['air changes/hour','airChangesPerHour']],
  ['photoperiod-planner','THC Photoperiod & Lighting Schedule',['calculated DLI','dliFromPpfd']],
