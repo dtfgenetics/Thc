@@ -22,7 +22,7 @@ const assert = (ok, msg) => { if (!ok) errors.push(msg); };
 for (const route of ['/atlas/', '/terpene-atlas/', '/ph-meter/', '/tds-meter/', '/vpd-chart/', '/ppfd-chart/']) {
   assert(hub.includes(`href="${route}"`) || hub.includes(`href='${route}'`), `tools hub missing ${route}`);
 }
-assert((hub.match(/target="_blank"/g) || []).length  >= 6, 'tools hub must open all five reference launchers in a new tab');
+assert((hub.match(/target="_blank"/g) || []).length  >= 6, 'tools hub must open all six reference launchers in a new tab');
 for (const label of ['Plant Atlas', 'Terpene Atlas', 'pH Meter', 'TDS / EC Meter', 'VPD Chart', 'PPFD / DLI']) {
   assert(hub.includes(label), `tools hub missing visible label: ${label}`);
 }
@@ -93,7 +93,7 @@ const svp = (t) => 0.6108 * Math.exp((17.27 * t) / (t + 237.3));
 const sample = Math.max(0, svp(25) - svp(26) * 0.60);
 const scheduleDli = (300 * 1 * 0.0036) + (700 * 10 * 0.0036) + (300 * 1 * 0.0036);
 assert(sample > 1.0 && sample < 1.3, `VPD formula sanity check failed: ${sample}`);
-assert(Math.abs(scheduleDli - 27.36) < 1e-9, `PPFD variable-light DLI sanity check failed: ${scheduleDli}`);
+const scheduleDli = (300 * 2 * 0.0036) + (700 * 8 * 0.0036) + (500 * 3 * 0.0036);\nassert(Math.abs(scheduleDli - 28.44) < 1e-9, `PPFD variable-light DLI sanity check failed: ${scheduleDli}`);
 
 if (errors.length) {
   console.error(`Cultivation reference tool validation failed with ${errors.length} issue(s):`);
