@@ -1,0 +1,364 @@
+{
+  "schemaVersion": 1,
+  "generatedOn": "2026-09-27",
+  "policy": {
+    "rule": "Preserve the laboratory/source-reported analyte name. Normalize only to the most specific Atlas record justified by that name and verified identity evidence.",
+    "noStereoInference": "Do not infer enantiomer or geometric configuration from a broad/common analyte label.",
+    "parentConceptFallback": "When a label is chemically broader than an Atlas stereospecific record, map to a parent/broad concept and mark identityResolution='partial'."
+  },
+  "authorities": [
+    {
+      "id": "pubchem-alpha-pinene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/alpha-pinene",
+      "cid": 6654,
+      "inchikey": "GRWFGVWFFZKLTI-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-beta-pinene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/127-91-3",
+      "cid": 14896,
+      "inchikey": "WTARULDDTDQWMU-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-d-limonene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/D-LIMONENE",
+      "cid": 440917,
+      "inchikey": "XMGQYMWWDOXHJM-JTQLQIEISA-N"
+    },
+    {
+      "id": "pubchem-linalool",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/6549",
+      "cid": 6549,
+      "inchikey": "CDOSHBSSFJOMGT-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-beta-caryophyllene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/beta-Caryophyllene",
+      "cid": 5281515,
+      "inchikey": "NPNUFJAVOOONJE-GFUGXAQUSA-N"
+    },
+    {
+      "id": "pubchem-beta-ocimene",
+      "cid": 18756,
+      "inchikey": "IHPKGUQCSIINRJ-UHFFFAOYSA-N",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/beta-OCIMENE"
+    },
+    {
+      "id": "pubchem-cis-beta-ocimene",
+      "cid": 5320250,
+      "inchikey": "IHPKGUQCSIINRJ-NTMALXAHSA-N",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/beta-Ocimene_-_3Z"
+    },
+    {
+      "id": "pubchem-trans-beta-ocimene",
+      "cid": 5281553,
+      "inchikey": "IHPKGUQCSIINRJ-CSKARUKUSA-N",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/trans-beta-Ocimene"
+    },
+    {
+      "id": "pubchem-trans-nerolidol",
+      "cid": 5284507,
+      "inchikey": "FQTLCLSUCSAZDY-SDNWHVSQSA-N",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/trans-Nerolidol"
+    },
+    {
+      "id": "pubchem-cis-nerolidol",
+      "cid": 5320128,
+      "inchikey": "FQTLCLSUCSAZDY-KAMYIIQDSA-N",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/cis-Nerolidol"
+    },
+    {
+      "id": "pubchem-alpha-bisabolol",
+      "cid": 10586,
+      "inchikey": "RGZSQWQPBWRIAQ-UHFFFAOYSA-N",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/alpha-Bisabolol"
+    },
+    {
+      "id": "pubchem-borneol",
+      "cid": 64685,
+      "inchikey": "DTGKSKDOIYIVQL-UHFFFAOYSA-N",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Borneol"
+    },
+    {
+      "id": "pubchem-alpha-terpineol",
+      "cid": 17100,
+      "inchikey": "WUOACPNHFRMFPN-UHFFFAOYSA-N",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/alpha-TERPINEOL"
+    },
+    {
+      "id": "pubchem-terpinen-4-ol",
+      "cid": 11230,
+      "inchikey": "WRYLYDPHFGVWKC-UHFFFAOYSA-N",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Terpinen-4-ol"
+    },
+    {
+      "id": "pubchem-fenchol",
+      "cid": 15406,
+      "inchikey": "IAIHUHQCLTYTSF-UHFFFAOYSA-N",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/15406"
+    },
+    {
+      "id": "pubchem-camphor",
+      "cid": 2537,
+      "inchikey": "DSSYKIVIOFKYAU-UHFFFAOYSA-N",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/camphor"
+    }
+  ],
+  "aliases": [
+    {
+      "reported": "(+)-limonene",
+      "normalized": "d-limonene",
+      "identityResolution": "resolved",
+      "reason": "(+)-limonene maps to the verified D/(R) record.",
+      "pubchemCid": 440917,
+      "inchikey": "XMGQYMWWDOXHJM-JTQLQIEISA-N"
+    },
+    {
+      "reported": "(3e)-beta-ocimene",
+      "normalized": "trans-beta-ocimene",
+      "identityResolution": "resolved",
+      "reason": "(3E)-β-ocimene is the trans record.",
+      "pubchemCid": 5281553,
+      "inchikey": "IHPKGUQCSIINRJ-CSKARUKUSA-N"
+    },
+    {
+      "reported": "(3z)-beta-ocimene",
+      "normalized": "cis-beta-ocimene",
+      "identityResolution": "resolved",
+      "reason": "(3Z)-β-ocimene is the cis record.",
+      "pubchemCid": 5320250,
+      "inchikey": "IHPKGUQCSIINRJ-NTMALXAHSA-N"
+    },
+    {
+      "reported": "(6e)-nerolidol",
+      "normalized": "trans-nerolidol",
+      "identityResolution": "resolved",
+      "reason": "(6E)-nerolidol is trans-nerolidol.",
+      "pubchemCid": 5284507,
+      "inchikey": "FQTLCLSUCSAZDY-SDNWHVSQSA-N"
+    },
+    {
+      "reported": "(r)-limonene",
+      "normalized": "d-limonene",
+      "identityResolution": "resolved",
+      "reason": "R-limonene is D/(+)-limonene.",
+      "pubchemCid": 440917,
+      "inchikey": "XMGQYMWWDOXHJM-JTQLQIEISA-N"
+    },
+    {
+      "reported": "alpha-bisabolol",
+      "normalized": "alpha-bisabolol",
+      "identityResolution": "partial",
+      "reason": "Broad α-bisabolol record does not resolve stereochemistry.",
+      "pubchemCid": 10586,
+      "inchikey": "RGZSQWQPBWRIAQ-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "alpha-pinene",
+      "normalized": "alpha-pinene",
+      "identityResolution": "partial",
+      "reason": "Common α-pinene label does not resolve optical configuration.",
+      "pubchemCid": 6654,
+      "inchikey": "GRWFGVWFFZKLTI-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "alpha-terpineol",
+      "normalized": "alpha-terpineol",
+      "identityResolution": "partial",
+      "reason": "Broad α-terpineol record is non-stereospecific.",
+      "pubchemCid": 17100,
+      "inchikey": "WUOACPNHFRMFPN-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "beta-caryophyllene",
+      "normalized": "beta-caryophyllene",
+      "identityResolution": "resolved",
+      "reason": "Common β-caryophyllene PubChem record corresponds to (-)-trans-caryophyllene.",
+      "pubchemCid": 5281515,
+      "inchikey": "NPNUFJAVOOONJE-GFUGXAQUSA-N"
+    },
+    {
+      "reported": "beta-ocimene",
+      "normalized": "ocimene",
+      "identityResolution": "partial",
+      "reason": "Bare β-ocimene does not resolve 3E/trans versus 3Z/cis configuration.",
+      "pubchemCid": 18756,
+      "inchikey": "IHPKGUQCSIINRJ-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "beta-pinene",
+      "normalized": "beta-pinene",
+      "identityResolution": "partial",
+      "reason": "Common β-pinene label does not resolve optical configuration.",
+      "pubchemCid": 14896,
+      "inchikey": "WTARULDDTDQWMU-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "borneol",
+      "normalized": "borneol",
+      "identityResolution": "partial",
+      "reason": "Broad borneol record is non-stereospecific; do not infer (+)- or (-)-borneol.",
+      "pubchemCid": 64685,
+      "inchikey": "DTGKSKDOIYIVQL-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "camphor",
+      "normalized": "camphor",
+      "identityResolution": "partial",
+      "reason": "Broad camphor record is non-stereospecific; do not infer an enantiomer.",
+      "pubchemCid": 2537,
+      "inchikey": "DSSYKIVIOFKYAU-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "cis-beta-ocimene",
+      "normalized": "cis-beta-ocimene",
+      "identityResolution": "resolved",
+      "reason": "cis-β-ocimene is the verified (3Z) structure.",
+      "pubchemCid": 5320250,
+      "inchikey": "IHPKGUQCSIINRJ-NTMALXAHSA-N"
+    },
+    {
+      "reported": "cis-nerolidol",
+      "normalized": "nerolidol",
+      "identityResolution": "partial",
+      "reason": "A verified cis/(6Z) identity exists, but the current Atlas catalog has no dedicated cis-nerolidol record; preserve the reported name and map only to the parent concept until that record is added.",
+      "pubchemCid": 5320128,
+      "inchikey": "FQTLCLSUCSAZDY-KAMYIIQDSA-N"
+    },
+    {
+      "reported": "cis-β-ocimene",
+      "normalized": "cis-beta-ocimene",
+      "identityResolution": "resolved",
+      "reason": "cis-β-ocimene is the verified (3Z) structure.",
+      "pubchemCid": 5320250,
+      "inchikey": "IHPKGUQCSIINRJ-NTMALXAHSA-N"
+    },
+    {
+      "reported": "d-limonene",
+      "normalized": "d-limonene",
+      "identityResolution": "resolved",
+      "reason": "D-limonene/(R)-(+)-limonene identity is structure-resolved in PubChem.",
+      "pubchemCid": 440917,
+      "inchikey": "XMGQYMWWDOXHJM-JTQLQIEISA-N"
+    },
+    {
+      "reported": "fenchol",
+      "normalized": "fenchol",
+      "identityResolution": "partial",
+      "reason": "Broad fenchol record has unspecified isomeric designation.",
+      "pubchemCid": 15406,
+      "inchikey": "IAIHUHQCLTYTSF-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "limonene",
+      "normalized": "d-limonene",
+      "identityResolution": "partial",
+      "reason": "Bare 'limonene' does not by itself resolve optical configuration; use Atlas record for navigation only and preserve original label.",
+      "pubchemCid": null,
+      "inchikey": null
+    },
+    {
+      "reported": "linalool",
+      "normalized": "linalool",
+      "identityResolution": "partial",
+      "reason": "Broad linalool record is non-stereospecific; enantiomer must not be inferred.",
+      "pubchemCid": 6549,
+      "inchikey": "CDOSHBSSFJOMGT-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "nerolidol",
+      "normalized": "nerolidol",
+      "identityResolution": "partial",
+      "reason": "Bare nerolidol does not resolve cis/trans configuration.",
+      "pubchemCid": null,
+      "inchikey": null
+    },
+    {
+      "reported": "terpinen-4-ol",
+      "normalized": "terpinen-4-ol",
+      "identityResolution": "partial",
+      "reason": "Parent terpinen-4-ol record does not resolve optical configuration.",
+      "pubchemCid": 11230,
+      "inchikey": "WRYLYDPHFGVWKC-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "trans-beta-ocimene",
+      "normalized": "trans-beta-ocimene",
+      "identityResolution": "resolved",
+      "reason": "trans-β-ocimene is the verified (3E) structure.",
+      "pubchemCid": 5281553,
+      "inchikey": "IHPKGUQCSIINRJ-CSKARUKUSA-N"
+    },
+    {
+      "reported": "trans-caryophyllene",
+      "normalized": "beta-caryophyllene",
+      "identityResolution": "partial",
+      "reason": "'trans-caryophyllene' alone can be insufficient to establish optical configuration; preserve source label."
+    },
+    {
+      "reported": "trans-nerolidol",
+      "normalized": "trans-nerolidol",
+      "identityResolution": "resolved",
+      "reason": "trans-nerolidol is the verified (6E) structure.",
+      "pubchemCid": 5284507,
+      "inchikey": "FQTLCLSUCSAZDY-SDNWHVSQSA-N"
+    },
+    {
+      "reported": "trans-β-ocimene",
+      "normalized": "trans-beta-ocimene",
+      "identityResolution": "resolved",
+      "reason": "trans-β-ocimene is the verified (3E) structure.",
+      "pubchemCid": 5281553,
+      "inchikey": "IHPKGUQCSIINRJ-CSKARUKUSA-N"
+    },
+    {
+      "reported": "α-bisabolol",
+      "normalized": "alpha-bisabolol",
+      "identityResolution": "partial",
+      "reason": "Broad α-bisabolol record does not resolve stereochemistry.",
+      "pubchemCid": 10586,
+      "inchikey": "RGZSQWQPBWRIAQ-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "α-pinene",
+      "normalized": "alpha-pinene",
+      "identityResolution": "partial",
+      "reason": "Common α-pinene label does not resolve optical configuration.",
+      "pubchemCid": 6654,
+      "inchikey": "GRWFGVWFFZKLTI-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "α-terpineol",
+      "normalized": "alpha-terpineol",
+      "identityResolution": "partial",
+      "reason": "Broad α-terpineol record is non-stereospecific.",
+      "pubchemCid": 17100,
+      "inchikey": "WUOACPNHFRMFPN-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "β-caryophyllene",
+      "normalized": "beta-caryophyllene",
+      "identityResolution": "resolved",
+      "reason": "Common β-caryophyllene PubChem record corresponds to (-)-trans-caryophyllene.",
+      "pubchemCid": 5281515,
+      "inchikey": "NPNUFJAVOOONJE-GFUGXAQUSA-N"
+    },
+    {
+      "reported": "β-ocimene",
+      "normalized": "ocimene",
+      "identityResolution": "partial",
+      "reason": "Bare β-ocimene does not resolve 3E/trans versus 3Z/cis configuration.",
+      "pubchemCid": 18756,
+      "inchikey": "IHPKGUQCSIINRJ-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "β-pinene",
+      "normalized": "beta-pinene",
+      "identityResolution": "partial",
+      "reason": "Common β-pinene label does not resolve optical configuration.",
+      "pubchemCid": 14896,
+      "inchikey": "WTARULDDTDQWMU-UHFFFAOYSA-N"
+    }
+  ],
+  "lastVerifiedOn": "2026-09-27"
+}
