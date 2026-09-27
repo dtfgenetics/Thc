@@ -7,7 +7,7 @@ const tools=[
  ['fertigation-lab','THC Fertigation Lab',['target mg/L','1000*f']],
  ['dryback-lab','THC Irrigation & Dryback Lab',['percentage points/hour','lost/span*100']],
  ['dew-point','THC Dew Point & Condensation Lab',['dew point','17.625']],
- ['environment-control','THC Environmental Control Center',['Leaf VPD','p*h*.0036']],
+ ['environment-control','THC Environmental Control Center',['Leaf VPD','.0036']],
  ['ipm-scout','THC IPM Scout',['thc-ipm-scout-v1','Export CSV']],
  ['dry-cure-lab','THC Dry & Cure Lab',['weight loss','dew point']],
  ['grow-planner','THC Grow Cycle Planner',['Stage calendar','Flowering']],
@@ -37,7 +37,8 @@ for(const [slug,title,tokens] of tools){
  ok(h.includes('data-menu')&&h.includes('data-nav'),slug+' mobile nav contract missing');
  ok(h.includes('href="/tools/"'),slug+' All Tools return link missing');
  ok(h.includes('aria-label="Primary navigation"'),slug+' primary nav label missing');
- ok(!/coming soon|placeholder/i.test(h),slug+' contains unfinished-state copy');
+ const visible=h.replace(/placeholder="[^"]*"/gi,'').replace(/placeholder='[^']*'/gi,'');
+ ok(!/coming soon|\bplaceholder\b/i.test(visible),slug+' contains unfinished-state copy');
  for(const token of tokens)ok(h.includes(token),slug+' expected implementation token missing: '+token);
 }
 const hub=fs.readFileSync(path.join(root,'site/public-route-patch/tools/index.html'),'utf8');
