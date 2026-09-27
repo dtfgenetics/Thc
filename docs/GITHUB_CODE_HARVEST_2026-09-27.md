@@ -227,3 +227,29 @@ Why this is higher fidelity than the former parser:
 - battle-tested browser CSV behavior.
 
 Production validators now require the vendored parser integration on both measurement tools.
+
+
+## Additional harvest — audio + validation
+
+### howler.js 2.2.4
+License: MIT.
+Action taken: vendored `howler.core-2.2.4.min.js` into High Land and replaced its one-HTMLAudio-element-per-effect manager behind the existing API.
+Benefits now used:
+- reliable Web Audio / HTML5 fallback behavior from Howler;
+- pooled/reusable effect objects instead of allocating a new audio element on every SFX play;
+- looping background music;
+- overlapping effects;
+- global mute;
+- playback/load error hooks;
+- mobile/browser audio handling.
+High Land's existing CC0 audio assets and game call sites were preserved.
+
+### Zod / Ajv validation research
+Both are MIT-licensed, mature validators. A full dependency is justified for large network/API contracts, but would be unnecessary weight for the small static save/import shapes currently being fixed.
+Action taken: added a compact DTF shared `validation.mjs` with safe JSON parsing, structured issues, explicit object shapes, literal/string/number/string-array rules, and unknown-key rejection. Shared platform bumped to v1.6.0.
+Seed Man save v2 now rejects malformed JSON, wrong save versions, invalid arrays, out-of-range percentages, and unexpected fields before restoring state.
+
+### idb-keyval
+License: Apache-2.0.
+Useful future target: IndexedDB-backed local persistence for larger histories/media-capable tools where localStorage becomes too small or synchronous.
+Decision: do not migrate small settings/saves yet. Evaluate for GrowLens, image-heavy journals, large measurement histories, and offline tool records.
