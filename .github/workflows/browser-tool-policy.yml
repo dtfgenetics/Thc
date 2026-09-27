@@ -29,6 +29,14 @@ on:
       - 'apps/high-land-web/e2e/**'
       - 'apps/high-land-web/e2e-live/**'
       - 'scripts/verify-browser-tool-policy.mjs'
+      - 'scripts/validate-breeder-pedigree-graph.mjs'
+      - 'scripts/validate-grow-planner-timeline.mjs'
+      - 'scripts/validate-ipm-scout-trend.mjs'
+      - 'site/public-route-patch/breeder-pedigree/**'
+      - 'site/public-route-patch/grow-planner/**'
+      - 'site/public-route-patch/ipm-scout/**'
+      - 'site/public-route-patch/assets/breeder-pedigree-graph-v1.js'
+      - 'site/public-route-patch/assets/vendor/cytoscape-3.34.3*'
   workflow_dispatch:
 
 permissions:
