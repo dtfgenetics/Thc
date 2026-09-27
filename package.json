@@ -76,7 +76,9 @@
     "test:grow-doc-production-verifier": "node scripts/test-grow-doc-production-verifier.mjs",
     "validate:public-suite-qualification-workflow": "node scripts/validate-public-suite-qualification-workflow.mjs",
     "audit:responsive-source": "node scripts/audit-responsive-source.mjs",
-    "verify:tool-registry": "node scripts/test-tool-registry.mjs && node scripts/test-tool-registry-validation.mjs && node scripts/validate-thc-tool-suite-v1.mjs",
-    "verify:tool-registry:live": "node scripts/verify-cultivation-reference-tools-live.mjs"
+    "verify:tool-registry": "node scripts/test-tool-registry.mjs && node scripts/test-tool-registry-validation.mjs && node scripts/test-thc-tools-bootstrap.mjs && node scripts/validate-thc-tool-suite-v1.mjs",
+    "verify:tool-registry:live": "node scripts/verify-cultivation-reference-tools-live.mjs",
+    "test:thc-tools-bootstrap": "node scripts/test-thc-tools-bootstrap.mjs",
+    "build:thc-tools-bootstrap": "node scripts/build-thc-tools-bootstrap.mjs"
   }
 }
