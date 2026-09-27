@@ -49,9 +49,9 @@ jobs:
           grep -Fq "['Home','/']" scripts/audit-sitewide-visual-integrity.mjs
           grep -Fq "['Seeds','/seeds/']" scripts/audit-sitewide-visual-integrity.mjs
           grep -Fq "['Courses','/courses/']" scripts/audit-sitewide-visual-integrity.mjs
-          grep -Fq "['Diagnostic','/tools/']" scripts/audit-sitewide-visual-integrity.mjs
+          grep -Fq "['Tools','/tools/']" scripts/audit-sitewide-visual-integrity.mjs
           ! grep -Fq "['Genetics','/seeds/']" scripts/audit-sitewide-visual-integrity.mjs
-          ! grep -Fq "['Tools','/tools/']" scripts/audit-sitewide-visual-integrity.mjs
+          ! grep -Fq "['Diagnostic','/tools/']" scripts/audit-sitewide-visual-integrity.mjs
 
   audit:
     if: >-
