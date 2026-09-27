@@ -291,7 +291,7 @@ source[srcset*="Cannabis_Sex_Expression_and_Chromosome_Combinations"]{display:no
 
 @media(max-width:700px){
   :root{--dtf-ux-section:clamp(46px,11vw,66px)}
-  html{scroll-padding-top:calc(var(--dtf-global-header-height,74px) + 12px)}
+  html{scroll-padding-top:calc(var(--dtf-global-header-height,66px) + 12px)}
   .v3 .wrap,.dtf-page .dtf-wrap,.game-hub-page .wrap,body:has(.tool-chooser) .wrap{width:min(100% - 28px,var(--dtf-ux-max))!important}
   .v3 .hero{padding-block:clamp(52px,12vw,76px)!important}
   .v3 .hero h1{font-size:clamp(2.55rem,12vw,4rem)!important;line-height:.96!important;max-width:none!important}
