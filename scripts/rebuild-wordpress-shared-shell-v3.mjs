@@ -11,6 +11,10 @@ import {
   SITEWIDE_FOOTER_STYLE_TAG,
   getWordPressSitewideFooterBlock,
 } from './lib/sitewide-footer-template-v6.mjs';
+import {
+  assertCanonicalHeaderAssets,
+  replaceShell,
+} from './lib/wordpress-shared-shell-reconcile.mjs';
 
 const siteUrl=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const username=process.env.WP_API_USERNAME||'';
@@ -65,15 +69,6 @@ for(const token of [SITEWIDE_HEADER_MARKER,'overflow-x:auto','canonical-eight-v1
 }
 const footer=getWordPressSitewideFooterBlock({brandImageUrl:brand.source_url});
 
-function replaceShell(original,type,replacement){
-  const tag=type==='header'?'header':'footer';
-  const block=new RegExp(`<!-- wp:html -->\\s*(?:<style[\\s\\S]*?<\\/style>\\s*)*<${tag}[\\s\\S]*?<\\/${tag}>[\\s\\S]*?<!-- \\/wp:html -->`,'i');
-  if(block.test(original)) return original.replace(block,replacement);
-  const bare=new RegExp(`<${tag}[\\s\\S]*?<\\/${tag}>`,'i');
-  if(bare.test(original)) return original.replace(bare,replacement.replace(/^<!-- wp:html -->|<!-- \/wp:html -->$/g,''));
-  throw new Error(`Could not safely locate existing ${tag} shell block`);
-}
-
 const parts=await request('/wp-json/wp/v2/template-parts?context=edit&per_page=100');
 const targets=(parts||[]).filter(p=>p.theme==='hostinger-ai-theme'&&(p.slug==='header'||String(p.slug).startsWith('footer')));
 if(!targets.some(p=>p.slug==='header')) throw new Error('Active Hostinger header template part is missing');
@@ -82,6 +77,7 @@ for(const part of targets){
   const original=rendered(part.content);
   await writeFile(join(backupDir,`template-part-${String(part.id).replaceAll('/','_')}-before.json`),`${JSON.stringify(part,null,2)}\n`);
   const next=replaceShell(original,part.slug==='header'?'header':'footer',part.slug==='header'?header:footer);
+  if(part.slug==='header') assertCanonicalHeaderAssets(next);
   if(apply&&next!==original) await request(`/wp-json/wp/v2/template-parts/${encodeURIComponent(part.id)}`,{method:'POST',body:JSON.stringify({content:next,status:'publish'})});
   results.push({id:part.id,slug:part.slug,changed:next!==original,preservedCommerceStyle:next.includes('dtf-commerce-archive-style')||!original.includes('dtf-commerce-archive-style')});
   if(original.includes('dtf-commerce-archive-style')&&!next.includes('dtf-commerce-archive-style')) throw new Error('Shared shell update would remove WooCommerce archive styling');
