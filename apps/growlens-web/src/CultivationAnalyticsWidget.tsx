@@ -9,6 +9,7 @@ import {
 import { loadState, STATE_SAVED_EVENT } from './storage';
 import { calculateVpdKpa } from './calculations';
 import { distribution, linearTrendByTime, pearsonCorrelation } from './statisticalInsights';
+import { buildEventEnvironmentInsights } from './eventEnvironmentInsights';
 
 import { useModalFocusTrap } from './useModalFocusTrap';
 
@@ -130,6 +131,7 @@ export default function CultivationAnalyticsWidget() {
     const ppfdVpd = pearsonCorrelation(readings.flatMap((reading, index) => reading.ppfd === null ? [] : [[reading.ppfd, vpd[index]] as [number, number]]));
     const tempTrend = linearTrendByTime(readings.map((reading) => ({ timestamp: reading.createdAt, value: reading.temperatureC })));
     const humidityTrend = linearTrendByTime(readings.map((reading) => ({ timestamp: reading.createdAt, value: reading.humidity })));
+    const eventInsights = buildEventEnvironmentInsights(state, 6, 8);
     const correlationLabel = (result: ReturnType<typeof pearsonCorrelation>) =>
       result.r === null ? `Insufficient data (n=${result.count})` : `${result.r.toFixed(2)} · ${result.strength} ${result.direction}`;
     const range = (summary: ReturnType<typeof distribution>, suffix: string) =>
@@ -148,6 +150,19 @@ export default function CultivationAnalyticsWidget() {
         <article><span>Temperature trend</span><strong>{tempTrend.slopePerDay === null ? 'Insufficient timeline' : `${tempTrend.slopePerDay >= 0 ? '+' : ''}${tempTrend.slopePerDay.toFixed(2)} °C/day`}</strong><small>Simple least-squares slope across saved timestamps.</small></article>
         <article><span>Humidity trend</span><strong>{humidityTrend.slopePerDay === null ? 'Insufficient timeline' : `${humidityTrend.slopePerDay >= 0 ? '+' : ''}${humidityTrend.slopePerDay.toFixed(2)} %RH/day`}</strong><small>Long gaps and uneven sampling can distort the apparent slope.</small></article>
       </div>
+      {eventInsights.length ? <section className="analytics-event-window">
+        <header><h4>Environment around irrigation/feed events</h4><p>Average readings in the six hours before and six hours after each event, matched to the same grow space when possible.</p></header>
+        <div className="analytics-event-list">{eventInsights.map((insight) => <article key={insight.kind + insight.id}>
+          <div><strong>{insight.title}</strong><span>{new Date(insight.timestamp).toLocaleString()} · {insight.beforeCount} before / {insight.afterCount} after readings</span></div>
+          <dl>
+            <div><dt>Δ Temp</dt><dd>{insight.delta.temperatureC >= 0 ? '+' : ''}{insight.delta.temperatureC.toFixed(1)} °C</dd></div>
+            <div><dt>Δ RH</dt><dd>{insight.delta.humidity >= 0 ? '+' : ''}{insight.delta.humidity.toFixed(1)}%</dd></div>
+            <div><dt>Δ VPD</dt><dd>{insight.delta.vpdKpa >= 0 ? '+' : ''}{insight.delta.vpdKpa.toFixed(2)} kPa</dd></div>
+            <div><dt>Δ PPFD</dt><dd>{insight.delta.ppfd === null ? '—' : (insight.delta.ppfd >= 0 ? '+' : '') + insight.delta.ppfd.toFixed(0)}</dd></div>
+          </dl>
+        </article>)}</div>
+        <small>These before/after windows show temporal association only. Lighting schedules, HVAC cycles, time of day, weather, sensor placement, and other events can explain the same changes.</small>
+      </section> : null}
       <p className="analytics-caution"><strong>Interpretation boundary:</strong> these are descriptive statistics from your saved readings. They do not control for plant stage, cultivar, irrigation, equipment changes, sensor movement, day/night cycles, or other confounders.</p>
     </AnalyticsSection>;
   }
