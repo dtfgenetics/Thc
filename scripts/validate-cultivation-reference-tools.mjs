@@ -93,7 +93,7 @@ const svp = (t) => 0.6108 * Math.exp((17.27 * t) / (t + 237.3));
 const sample = Math.max(0, svp(25) - svp(26) * 0.60);
 const scheduleDli = (300 * 1 * 0.0036) + (700 * 10 * 0.0036) + (300 * 1 * 0.0036);
 assert(sample > 1.0 && sample < 1.3, `VPD formula sanity check failed: ${sample}`);
-const scheduleDli = (300 * 2 * 0.0036) + (700 * 8 * 0.0036) + (500 * 3 * 0.0036);\nassert(Math.abs(scheduleDli - 28.44) < 1e-9, `PPFD variable-light DLI sanity check failed: ${scheduleDli}`);
+const scheduleDli = (300 * 2 * 0.0036) + (700 * 8 * 0.0036) + (500 * 3 * 0.0036);\nassert(Math.abs(scheduleDli - 27.72) < 1e-9, `PPFD variable-light DLI sanity check failed: ${scheduleDli}`);
 
 if (errors.length) {
   console.error(`Cultivation reference tool validation failed with ${errors.length} issue(s):`);
