@@ -49,4 +49,10 @@ export {
   createStateMachine,
 } from './state-machine.mjs';
 
-export const DTF_GAME_PLATFORM_VERSION = '1.4.0';
+export {
+  LoadingTaskError,
+  runLoadTasks,
+  loadingResultsToObject,
+} from './loading.mjs';
+
+export const DTF_GAME_PLATFORM_VERSION = '1.5.0';
