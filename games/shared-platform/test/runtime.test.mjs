@@ -21,6 +21,9 @@ import {
   LoadingTaskError,
   runLoadTasks,
   loadingResultsToObject,
+  safeParseJson,
+  validateObjectShape,
+  field,
 } from '../src/index.mjs';
 
 function memoryStorage() {
@@ -400,6 +403,24 @@ class FakeAudioContext {
     () => runLoadTasks([{ id: 'broken', load: async () => { throw new Error('nope'); } }]),
     (error) => error instanceof LoadingTaskError && error.failed[0].id === 'broken',
   );
+}
+
+{
+  const schema = {
+    version: field.literal('v1'),
+    name: field.string({ min: 1, max: 20 }),
+    score: field.number({ min: 0, max: 100 }),
+    tags: field.stringArray({ maxItems: 3 }),
+  };
+  const ok = safeParseJson('{"version":"v1","name":"Seed Man","score":42,"tags":["a"]}', (value) =>
+    validateObjectShape(value, schema, { allowUnknown: false }));
+  assert.equal(ok.success, true);
+  assert.equal(ok.data.score, 42);
+
+  const bad = safeParseJson('{"version":"v1","name":"","score":999,"tags":"nope"}', (value) =>
+    validateObjectShape(value, schema, { allowUnknown: false }));
+  assert.equal(bad.success, false);
+  assert.equal(bad.error.issues.length, 3);
 }
 
 console.log('shared game platform runtime tests passed');
