@@ -72,6 +72,24 @@ includes('site/public-route-patch/games/bud-or-bluff/index.html', [
   'src="player-pref-v1.js"'
 ]);
 
+includes('site/public-route-patch/games/protect-the-plants/placement-drag-v1.js', [
+  'const DRAG_THRESHOLD = 7',
+  "closest?.('.plant-pick[data-plant]')",
+  "closest?.('.cell[data-place]')",
+  'setPointerCapture',
+  'elementFromPoint',
+  'stopImmediatePropagation'
+]);
+includes('site/public-route-patch/games/protect-the-plants/placement-drag-v1.css', [
+  'touch-action:none',
+  '.burn-placement-dragging',
+  '@media (prefers-reduced-motion:reduce)'
+]);
+includes('site/public-route-patch/games/protect-the-plants/index.html', [
+  'placement-drag-v1.css',
+  'placement-drag-v1.js'
+]);
+
 includes('apps/high-land-web/src/overflowFixes.css', [
   ':focus-visible',
   '@media (prefers-reduced-motion: reduce)',
@@ -98,7 +116,8 @@ for (const path of [
   'site/public-route-patch/games/grower-conversations/app.js',
   'site/public-route-patch/games/seed-man-platformer/app.js',
   'site/public-route-patch/games/strain-showdown/polish-v1.js',
-  'site/public-route-patch/games/bud-or-bluff/player-pref-v1.js'
+  'site/public-route-patch/games/bud-or-bluff/player-pref-v1.js',
+  'site/public-route-patch/games/protect-the-plants/placement-drag-v1.js'
 ]) {
   const result = spawnSync(process.execPath, ['--check', path], { encoding: 'utf8' });
   assert.equal(result.status, 0, `${path} failed syntax check:\n${result.stderr || result.stdout}`);
