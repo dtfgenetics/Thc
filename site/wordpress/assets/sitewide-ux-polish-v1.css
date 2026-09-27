@@ -19,9 +19,9 @@
   --dtf-ux-shadow-hover:0 20px 44px rgba(12,39,23,.12);
   --dtf-ux-radius:20px;
   --dtf-ux-radius-small:12px;
-  --dtf-ux-max:1280px;
+  --dtf-ux-max:var(--dtf-layout-max,1360px);
   --dtf-ux-reading:72ch;
-  --dtf-ux-section:clamp(56px,7vw,92px);
+  --dtf-ux-section:var(--dtf-layout-section,clamp(56px,7vw,92px));
 }
 
 html{
