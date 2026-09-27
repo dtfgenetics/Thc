@@ -290,11 +290,11 @@ source[srcset*="Cannabis_Sex_Expression_and_Chromosome_Combinations"]{display:no
 }
 
 @media(max-width:700px){
-  :root{--dtf-ux-section:clamp(46px,11vw,66px)}
+  :root{--dtf-ux-section:var(--dtf-layout-section,clamp(42px,11vw,64px))}
   html{scroll-padding-top:calc(var(--dtf-global-header-height,66px) + 12px)}
   .v3 .wrap,.dtf-page .dtf-wrap,.game-hub-page .wrap,body:has(.tool-chooser) .wrap{width:min(100% - 28px,var(--dtf-ux-max))!important}
-  .v3 .hero{padding-block:clamp(52px,12vw,76px)!important}
-  .v3 .hero h1{font-size:clamp(2.55rem,12vw,4rem)!important;line-height:.96!important;max-width:none!important}
+  .v3 .hero{padding-block:clamp(42px,10vw,62px)!important}
+  .v3 .hero h1{font-size:clamp(2.2rem,10vw,3.25rem)!important;line-height:.98!important;max-width:none!important}
   .v3 .heading,.dtf-page .dtf-heading,.game-hub-page .section-heading,body:has(.tool-chooser) .section-heading{margin-bottom:26px!important}
   .v3 :where(p,li),.dtf-page :where(p,li),.lhv3 :where(p,li),.game-hub-page :where(p,li),body:has(.tool-chooser) :where(p,li){line-height:1.64}
   .v3[data-dtf-layout="learn-v3"] .path-grid{grid-template-columns:1fr!important}
