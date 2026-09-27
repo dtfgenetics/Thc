@@ -74,8 +74,8 @@ if (!runtimeV3.includes('.lane-grid{min-width:0!important;grid-template-columns:
 }
 if (!runtimeV3.includes('.arena{overflow-x:hidden}')) throw new Error('Mobile battlefield must not require horizontal scrolling for lane selection.');
 if (!runtimeV3.includes('.lane .attack-button{min-height:44px')) throw new Error('Mobile lane attack actions must retain a 44px touch target.');
-if (!runtimeV3.includes('top:calc(var(--dtf-global-header-height,74px) + 8px)')) {
-  throw new Error('Mobile tactical strip must clear the V5 site header.');
+if (!runtimeV3.includes('top:calc(var(--dtf-global-header-height,66px) + 8px)')) {
+  throw new Error('Mobile tactical strip must clear the V6 mobile site header.');
 }
 if (/\.tactical-strip\{[^}]*position:sticky;top:\.25rem/.test(runtimeV3)) {
   throw new Error('Legacy Strain Showdown sticky offset would hide the tactical strip under the V5 header.');
