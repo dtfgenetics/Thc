@@ -15,7 +15,7 @@ const tools=[
  ['substrate-calculator','THC Substrate & Container Calculator',['purchase target','3.785411784']],
  ['breeder-pedigree','DTF Breeding & Pedigree Builder',['dtf-breeder-pedigree-v1','parent_a']],
  ['co2-ventilation','THC Ventilation & CO₂ Reference',['air changes/hour','airChangesPerHour']],
- ['photoperiod-planner','THC Photoperiod & Lighting Schedule',['calculated DLI','p*h*.0036']],
+ ['photoperiod-planner','THC Photoperiod & Lighting Schedule',['calculated DLI','dliFromPpfd']],
  ['plant-growth-tracker','THC Plant Growth Tracker',['nodes/day','heightRate']],
  ['root-zone-temperature','THC Root-Zone Temperature Reference',['Root-air difference','Irrigation solution temperature']],
  ['dilution-calculator','THC Solution Dilution Calculator',['C₁V₁ = C₂V₂','dilutionStockVolume']],
