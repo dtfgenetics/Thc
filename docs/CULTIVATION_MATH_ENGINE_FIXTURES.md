@@ -20,5 +20,12 @@ These fixtures make unit assumptions explicit and prevent accidental formula dri
 | Mass | 28.349523125 g | 1 oz |
 | Conductivity | 1.8 mS/cm | 1800 µS/cm |
 | Airflow | 100 CFM | 169.901082 m³/h |
+| EC→ppm | 1.8 mS/cm, 500 scale | 900 ppm |
+| ppm→EC | 900 ppm, 500 scale | 1.8 mS/cm |
+| Dryback | high 5, low 2, current 4.1 | 30% of defined span |
+| Rate | 30 percentage points over 6 h | 5 pp/h |
+| Fertilizer mass | 150 mg/L, 100 L, 10% element | 150 g product |
+| P₂O₅→P | 10% P₂O₅ | 4.364% elemental P |
+| K₂O→K | 20% K₂O | 16.602% elemental K |
 
 VPD outputs are physical vapor-pressure calculations, not cultivar-specific prescriptions. Interpretation belongs in the educational/tool layer.
