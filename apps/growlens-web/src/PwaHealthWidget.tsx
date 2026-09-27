@@ -57,33 +57,32 @@ export default function PwaHealthWidget() {
     void refreshStorage();
 
     let active = true;
-    let stateListener: (() => void) | null = null;
+    let registrationCleanup: (() => void) | null = null;
+    let installingCleanup: (() => void) | null = null;
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.ready.then((reg) => {
         if (!active) return;
         setRegistration(reg);
         if (reg.waiting && navigator.serviceWorker.controller) setWaiting(reg.waiting);
         const onUpdateFound = () => {
+          installingCleanup?.();
           const worker = reg.installing;
           if (!worker) return;
           const onStateChange = () => {
             if (worker.state === 'installed' && navigator.serviceWorker.controller) setWaiting(worker);
           };
           worker.addEventListener('statechange', onStateChange);
-          stateListener = () => worker.removeEventListener('statechange', onStateChange);
+          installingCleanup = () => worker.removeEventListener('statechange', onStateChange);
         };
         reg.addEventListener('updatefound', onUpdateFound);
-        const previousCleanup = stateListener;
-        stateListener = () => {
-          previousCleanup?.();
-          reg.removeEventListener('updatefound', onUpdateFound);
-        };
+        registrationCleanup = () => reg.removeEventListener('updatefound', onUpdateFound);
       }).catch(() => {});
     }
 
     return () => {
       active = false;
-      stateListener?.();
+      installingCleanup?.();
+      registrationCleanup?.();
       window.removeEventListener('online', onOnline);
       window.removeEventListener('offline', onOffline);
     };
@@ -112,8 +111,14 @@ export default function PwaHealthWidget() {
     }
     try {
       await registration.update();
-      setWaiting(registration.waiting && navigator.serviceWorker.controller ? registration.waiting : null);
-      setMessage(registration.waiting ? 'A GrowLens update is ready to install.' : 'GrowLens is using the latest downloaded app shell.');
+      if (registration.waiting && navigator.serviceWorker.controller) {
+        setWaiting(registration.waiting);
+        setMessage('A GrowLens update is ready to install.');
+      } else if (registration.installing) {
+        setMessage('GrowLens found an update and is downloading it. The install action will appear when it is ready.');
+      } else {
+        setMessage('GrowLens is using the latest downloaded app shell.');
+      }
     } catch {
       setMessage('GrowLens could not check for an app-shell update while offline or restricted.');
     }
