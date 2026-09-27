@@ -70,6 +70,9 @@ assert(vpd.includes('Analyzed '+"'"+'+rows.length+'+"'"+' valid logger rows loca
 assert(vpd.includes('/assets/vendor/papaparse-5.7.0.min.js') && vpd.includes('window.Papa?.parse'), 'VPD page must use vendored Papa Parse with fallback support');
 assert(vpd.includes('/assets/vendor/uplot-1.6.32.min.js') && vpd.includes('/assets/vendor/uplot-1.6.32.min.css') && vpd.includes('window.uPlot'), 'VPD logger must use vendored uPlot with canvas fallback');
 assert(vpd.includes("cursor:{drag:{x:true,y:false,setScale:true}}") && vpd.includes("fallback.hidden=false"), 'VPD uPlot integration must preserve zoom/cursor interaction and fallback rendering');
+assert(vpd.includes('quickTargetLow') && vpd.includes('quickTargetHigh') && vpd.includes('Inside your selected target band'), 'VPD quick calculator must preserve editable target-band interpretation');
+assert(vpd.includes('Advanced: saved profiles and logger trend analysis') && vpd.includes('<details class="advanced-tools">'), 'VPD advanced workflows must remain progressively disclosed');
+assert(hub.includes('What are you trying to do right now?') && hub.includes('Something looks wrong with my plant') && hub.includes('Check PPFD, DLI or canopy uniformity'), 'tools hub missing task-first entry points');
 
 const journalRuntime = fs.readFileSync(path.join(root, 'site/public-route-patch/assets/thc-measurement-journal-v1.js'), 'utf8');
 assert(journalRuntime.includes('THCMeasurementJournal') && journalRuntime.includes('localStorage.setItem') && journalRuntime.includes('window.Papa?.parse') && journalRuntime.includes('window.uPlot'), 'shared measurement journal runtime missing persistence, CSV, or chart contracts');
