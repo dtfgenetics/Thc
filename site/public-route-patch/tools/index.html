@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DTF Cultivation Tools | GrowLens, Grow Doc & Reference Tools</title>
-  <meta name="description" content="Open THC GrowLens, Grow Doc, Plant Atlas, Terpene Atlas, pH, TDS/EC and VPD reference tools from one cultivation workspace." />
+  <meta name="description" content="Open THC GrowLens, Grow Doc, Plant Atlas, Terpene Atlas and a connected suite of water, nutrition, irrigation, environment, lighting, IPM, harvest, planning and breeding tools from one cultivation workspace." />
   <meta name="robots" content="index,follow,max-image-preview:large" />
   <meta name="theme-color" content="#07170f" />
   <link rel="canonical" href="https://dtfseeds.com/tools/" />
@@ -65,7 +65,7 @@
     .reference-launcher-head{display:flex;align-items:end;justify-content:space-between;gap:20px;padding:4px 5px 15px}
     .reference-launcher-head strong{display:block;font-size:1.04rem;color:#fff}.reference-launcher-head span{display:block;margin-top:3px;color:#bcd1c2;font-size:.88rem}
     .reference-launcher-head small{color:#efd786;font-weight:850;white-space:nowrap}
-    .reference-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+    .reference-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
     .reference-card{display:flex;flex-direction:column;min-height:154px;padding:18px;border-radius:18px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.11);text-decoration:none;transition:transform .18s ease,box-shadow .18s ease,background .18s ease}
     .reference-card:hover,.reference-card:focus-visible{transform:translateY(-3px);background:rgba(255,255,255,.09);box-shadow:0 15px 34px rgba(0,0,0,.2);outline:none}
     .reference-card .ref-icon{display:grid;place-items:center;width:42px;height:42px;margin-bottom:22px;border-radius:13px;background:rgba(215,185,101,.12);border:1px solid rgba(215,185,101,.18);color:#efd786;font-weight:950}
@@ -157,7 +157,40 @@
       </div>
     </section>
 
-    <div class="wrap quickbar"><nav class="quicknav" aria-label="Tool shortcuts"><a href="#choose-tool">Choose a tool</a><a href="#workflow">Workflow</a><a href="#measure">Measure</a><a href="#diagnose">Diagnose</a><a href="#learn">Learn</a></nav></div>
+    <div class="wrap quickbar"><nav class="quicknav" aria-label="Tool shortcuts"><a href="#expanded-tools">Tool Suite</a><a href="#choose-tool">Choose a tool</a><a href="#workflow">Workflow</a><a href="#measure">Measure</a><a href="#diagnose">Diagnose</a></nav></div>
+
+    <section class="section" id="expanded-tools">
+      <div class="wrap">
+        <div class="section-heading"><div><p class="eyebrow">THC Tool Suite</p><h2>Choose the job, not the acronym.</h2></div><p>The expanded suite connects measurement, planning, scouting and documentation. New v1 tools are feature-branch implementations until deterministic validation and live deployment verification are complete.</p></div>
+        <h3>Water, nutrition & irrigation</h3>
+        <div class="measure-panel">
+          <article><strong>Water Quality Lab</strong><p>Keep pH, EC, alkalinity, hardness and major ions together.</p><a class="text-link" href="/water-quality-lab/">Open Water Lab →</a></article>
+          <article><strong>Fertigation Lab</strong><p>Mass-balance fertilizer calculations with explicit units and assumptions.</p><a class="text-link" href="/fertigation-lab/">Open Fertigation Lab →</a></article>
+          <article><strong>Irrigation & Dryback Lab</strong><p>Calculate weight-based dryback, rate and measured drainage percentage.</p><a class="text-link" href="/dryback-lab/">Open Dryback Lab →</a></article>
+          <article><strong>Substrate & Container Calculator</strong><p>Plan media volume, blend components and bag counts.</p><a class="text-link" href="/substrate-calculator/">Open Substrate Calculator →</a></article>
+          <article><strong>Solution Dilution Calculator</strong><p>Use C₁V₁ = C₂V₂ with visible concentration and volume assumptions.</p><a class="text-link" href="/dilution-calculator/">Open Dilution Calculator →</a></article>
+          <article><strong>Unit Converter</strong><p>Convert common cultivation temperature, volume, length and EC units.</p><a class="text-link" href="/unit-converter/">Open Unit Converter →</a></article>
+        </div>
+        <h3 style="margin-top:34px">Environment & light</h3>
+        <div class="measure-panel">
+          <article><strong>Environmental Control Center</strong><p>View leaf VPD, dew point, DLI and root-zone context together.</p><a class="text-link" href="/environment-control/">Open Environment Center →</a></article>
+          <article><strong>Dew Point & Condensation Lab</strong><p>Compare dew point with measured leaf or surface temperature.</p><a class="text-link" href="/dew-point/">Open Dew Point Lab →</a></article>
+          <article><strong>Ventilation & CO₂ Reference</strong><p>Calculate room volume and theoretical air changes with an explicit CO₂ safety boundary.</p><a class="text-link" href="/co2-ventilation/">Open Ventilation Tool →</a></article>
+          <article><strong>Photoperiod & Lighting Schedule</strong><p>Compare clock timing, photoperiod and calculated DLI.</p><a class="text-link" href="/photoperiod-planner/">Open Photoperiod Tool →</a></article>
+          <article><strong>Root-Zone Temperature</strong><p>Compare root-zone, air and irrigation temperatures directly.</p><a class="text-link" href="/root-zone-temperature/">Open Root-Zone Tool →</a></article>
+          <article><strong>PPFD / DLI Light Lab</strong><p>Measure, map and compare canopy light exposure.</p><a class="text-link" href="/ppfd-chart/">Open Light Lab →</a></article>
+        </div>
+        <h3 style="margin-top:34px">Plant health, lifecycle & genetics</h3>
+        <div class="measure-panel">
+          <article><strong>IPM Scout</strong><p>Build repeatable zone/trap scouting records and trend counts.</p><a class="text-link" href="/ipm-scout/">Open IPM Scout →</a></article>
+          <article><strong>Dry & Cure Lab</strong><p>Track drying weight loss, time and environment.</p><a class="text-link" href="/dry-cure-lab/">Open Dry & Cure Lab →</a></article>
+          <article><strong>Grow Cycle Planner</strong><p>Turn lifecycle durations into a stage calendar.</p><a class="text-link" href="/grow-planner/">Open Grow Planner →</a></article>
+          <article><strong>Plant Growth Tracker</strong><p>Calculate growth and node-rate changes from repeatable observations.</p><a class="text-link" href="/plant-growth-tracker/">Open Growth Tracker →</a></article>
+          <article><strong>Breeding & Pedigree Builder</strong><p>Preserve parents, generations, seed type and selection purpose.</p><a class="text-link" href="/breeder-pedigree/">Open Pedigree Builder →</a></article>
+          <article><strong>Grow Doc</strong><p>Escalate suspicious observations into the evidence-guided diagnostic workflow.</p><a class="text-link" href="/thc-grow-doc/">Open Grow Doc →</a></article>
+        </div>
+      </div>
+    </section>
 
     <section class="section" id="choose-tool">
       <div class="wrap">
