@@ -9,8 +9,10 @@ const cases=[
   {slug:'environment-control',functions:['leafVpd','dewPoint','dliFromPpfd'],legacy:/0\.6108\*Math\.exp|17\.625|243\.04|p\*ph\*\.0036/},
   {slug:'photoperiod-planner',functions:['dliFromPpfd'],legacy:/p\*h\*\.0036/},
   {slug:'dry-cure-lab',functions:['dewPoint'],legacy:/17\.625|243\.04/},
-  {slug:'fertigation-lab',functions:['gallonsToLiters'],legacy:/3\.785411784/},
+  {slug:'fertigation-lab',functions:['gallonsToLiters','fertilizerMassGrams','p2o5PercentToElementalP','k2oPercentToElementalK'],legacy:/3\.785411784|ppm\*L\/\(1000\*f\)|0\.4364|0\.8301/},
   {slug:'substrate-calculator',functions:['gallonsToLiters'],legacy:/3\.785411784/},
+  {slug:'tds-meter',functions:['ecToDisplayedPpm','displayedPpmToEc','millisiemensToMicrosiemens','microsiemensToMillisiemens'],legacy:/v\*500|v\*700|const v=p\/s/},
+  {slug:'dryback-lab',functions:['drybackPercent','ratePerHour'],legacy:/lost\/span\*100|pct\/hrs/},
 ];
 const errors=[];
 for(const {slug,functions,legacy} of cases){
@@ -26,4 +28,4 @@ if(errors.length){
   for(const error of errors) console.error(' - '+error);
   process.exit(1);
 }
-console.log('Shared math migration validation passed for ten cultivation tool routes.');
+console.log('Shared math migration validation passed for twelve cultivation tool routes.');
