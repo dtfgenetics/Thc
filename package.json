@@ -60,7 +60,7 @@
     "verify:asset-states": "node scripts/validate-asset-state-registry.mjs",
     "verify:3d-assets": "node scripts/validate-3d-assets.mjs",
     "verify:project-os": "npm run verify:production-standards && npm run verify:shared-ui-standard && npm run verify:page-composition && npm run verify:cultivation-reference-tools && npm run validate:growlens-release-contract && npm run validate:grow-doc-release-pin && npm run verify:portfolio && npm run games:locations:check && npm run verify:asset-states && npm run verify:3d-assets",
-    "verify:cultivation-reference-tools": "node scripts/validate-cultivation-reference-tools.mjs && node scripts/validate-thc-tool-suite-v1.mjs && node scripts/validate-breeder-pedigree-graph.mjs && node scripts/validate-grow-planner-timeline.mjs && node scripts/validate-ipm-scout-trend.mjs && node scripts/validate-shared-math-tool-migrations.mjs && node scripts/validate-light-lab-shared-math-integration.mjs",
+    "verify:cultivation-reference-tools": "node scripts/validate-cultivation-reference-tools.mjs && node scripts/validate-thc-tool-suite-v1.mjs && node scripts/validate-breeder-pedigree-graph.mjs && node scripts/validate-grow-planner-timeline.mjs && node scripts/validate-ipm-scout-trend.mjs && node scripts/validate-shared-math-tool-migrations.mjs && node scripts/validate-light-lab-shared-math-integration.mjs && node scripts/validate-growlens-tool-diary-bridges.mjs",
     "games:qa:local": "node scripts/game-portfolio-browser-qa.mjs --local",
     "games:qa:live": "node scripts/game-portfolio-browser-qa.mjs --live",
     "verify:education-visual-system": "node scripts/validate-education-visual-system.mjs",
