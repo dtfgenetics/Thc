@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "generatedOn": "2026-09-27",
+  "policy": {
+    "rule": "Preserve the laboratory/source-reported analyte name. Normalize only to the most specific Atlas record justified by that name and verified identity evidence.",
+    "noStereoInference": "Do not infer enantiomer or geometric configuration from a broad/common analyte label.",
+    "parentConceptFallback": "When a label is chemically broader than an Atlas stereospecific record, map to a parent/broad concept and mark identityResolution='partial'."
+  },
+  "authorities": [
+    {
+      "id": "pubchem-alpha-pinene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/alpha-pinene",
+      "cid": 6654,
+      "inchikey": "GRWFGVWFFZKLTI-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-beta-pinene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/127-91-3",
+      "cid": 14896,
+      "inchikey": "WTARULDDTDQWMU-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-d-limonene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/D-LIMONENE",
+      "cid": 440917,
+      "inchikey": "XMGQYMWWDOXHJM-JTQLQIEISA-N"
+    },
+    {
+      "id": "pubchem-linalool",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/6549",
+      "cid": 6549,
+      "inchikey": "CDOSHBSSFJOMGT-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-beta-caryophyllene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/beta-Caryophyllene",
+      "cid": 5281515,
+      "inchikey": "NPNUFJAVOOONJE-GFUGXAQUSA-N"
+    }
+  ],
+  "aliases": [
+    {
+      "reported": "alpha-pinene",
+      "normalized": "alpha-pinene",
+      "identityResolution": "partial",
+      "reason": "Common α-pinene label does not resolve optical configuration.",
+      "pubchemCid": 6654,
+      "inchikey": "GRWFGVWFFZKLTI-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "α-pinene",
+      "normalized": "alpha-pinene",
+      "identityResolution": "partial",
+      "reason": "Common α-pinene label does not resolve optical configuration.",
+      "pubchemCid": 6654,
+      "inchikey": "GRWFGVWFFZKLTI-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "beta-pinene",
+      "normalized": "beta-pinene",
+      "identityResolution": "partial",
+      "reason": "Common β-pinene label does not resolve optical configuration.",
+      "pubchemCid": 14896,
+      "inchikey": "WTARULDDTDQWMU-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "β-pinene",
+      "normalized": "beta-pinene",
+      "identityResolution": "partial",
+      "reason": "Common β-pinene label does not resolve optical configuration.",
+      "pubchemCid": 14896,
+      "inchikey": "WTARULDDTDQWMU-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "d-limonene",
+      "normalized": "d-limonene",
+      "identityResolution": "resolved",
+      "reason": "D-limonene/(R)-(+)-limonene identity is structure-resolved in PubChem.",
+      "pubchemCid": 440917,
+      "inchikey": "XMGQYMWWDOXHJM-JTQLQIEISA-N"
+    },
+    {
+      "reported": "(r)-limonene",
+      "normalized": "d-limonene",
+      "identityResolution": "resolved",
+      "reason": "R-limonene is D/(+)-limonene.",
+      "pubchemCid": 440917,
+      "inchikey": "XMGQYMWWDOXHJM-JTQLQIEISA-N"
+    },
+    {
+      "reported": "(+)-limonene",
+      "normalized": "d-limonene",
+      "identityResolution": "resolved",
+      "reason": "(+)-limonene maps to the verified D/(R) record.",
+      "pubchemCid": 440917,
+      "inchikey": "XMGQYMWWDOXHJM-JTQLQIEISA-N"
+    },
+    {
+      "reported": "limonene",
+      "normalized": "d-limonene",
+      "identityResolution": "partial",
+      "reason": "Bare 'limonene' does not by itself resolve optical configuration; use Atlas record for navigation only and preserve original label.",
+      "pubchemCid": null,
+      "inchikey": null
+    },
+    {
+      "reported": "linalool",
+      "normalized": "linalool",
+      "identityResolution": "partial",
+      "reason": "Broad linalool record is non-stereospecific; enantiomer must not be inferred.",
+      "pubchemCid": 6549,
+      "inchikey": "CDOSHBSSFJOMGT-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "beta-caryophyllene",
+      "normalized": "beta-caryophyllene",
+      "identityResolution": "resolved",
+      "reason": "Common β-caryophyllene PubChem record corresponds to (-)-trans-caryophyllene.",
+      "pubchemCid": 5281515,
+      "inchikey": "NPNUFJAVOOONJE-GFUGXAQUSA-N"
+    },
+    {
+      "reported": "β-caryophyllene",
+      "normalized": "beta-caryophyllene",
+      "identityResolution": "resolved",
+      "reason": "Common β-caryophyllene PubChem record corresponds to (-)-trans-caryophyllene.",
+      "pubchemCid": 5281515,
+      "inchikey": "NPNUFJAVOOONJE-GFUGXAQUSA-N"
+    },
+    {
+      "reported": "trans-caryophyllene",
+      "normalized": "beta-caryophyllene",
+      "identityResolution": "partial",
+      "reason": "'trans-caryophyllene' alone can be insufficient to establish optical configuration; preserve source label."
+    }
+  ]
+}
