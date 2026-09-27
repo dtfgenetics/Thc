@@ -26,7 +26,7 @@ The sync checker and runtime tests are part of `games:preflight`.
 
 ## Current version
 
-Shared runtime version: **1.5.0**
+Shared runtime version: **1.6.0**
 
 Modules:
 
@@ -39,6 +39,7 @@ Modules:
 - `experience.mjs` — native share/copy fallback, fullscreen, optional vibration, and Screen Wake Lock lifecycle helpers;
 - `state-machine.mjs` — queued finite-state transitions for reusable player/enemy/UI controllers;
 - `loading.mjs` — engine-neutral parallel loading tasks with progress, bounded retry, and aggregated failures;
+- `validation.mjs` — safe JSON parsing plus small explicit object/field validators for untrusted saves/imports;
 - `index.mjs` — stable public export surface.
 
 ## Browser import
@@ -115,6 +116,14 @@ Do not scatter raw key checks throughout rendering/gameplay code when the game a
 - `createWakeLockController()` requests a screen wake lock during active play and reacquires it after visibility changes when appropriate.
 
 Games should treat all of these as progressive enhancement. A missing browser API must never block gameplay.
+
+## Validation contract
+
+`safeParseJson()`, `validateObjectShape()`, and `field` provide a small dependency-free validation layer for simple game saves and imports. The API follows the safe-parse discipline popularized by libraries such as Zod: untrusted data produces structured issues instead of partially-valid state.
+
+Use the shared layer for small fixed schemas. For large API contracts, deeply nested datasets, or TypeScript services where inferred types materially reduce risk, use a dedicated validator such as Zod/Ajv instead of growing this module into a full schema language.
+
+Seed Man save v2 now validates version, current level ID, arrays, percentage bounds, unknown keys, and malformed JSON before restoring state.
 
 ## Loading contract
 
