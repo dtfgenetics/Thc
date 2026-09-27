@@ -59,7 +59,7 @@
     "validate:terpene-atlas": "node scripts/validate-terpene-atlas.mjs",
     "verify:asset-states": "node scripts/validate-asset-state-registry.mjs",
     "verify:3d-assets": "node scripts/validate-3d-assets.mjs",
-    "verify:project-os": "npm run verify:production-standards && npm run verify:shared-ui-standard && npm run verify:page-composition && npm run verify:cultivation-reference-tools && npm run verify:portfolio && npm run games:locations:check && npm run verify:asset-states && npm run verify:3d-assets",
+    "verify:project-os": "npm run verify:production-standards && npm run verify:shared-ui-standard && npm run verify:page-composition && npm run verify:cultivation-reference-tools && npm run validate:growlens-release-contract && npm run validate:grow-doc-release-pin && npm run verify:portfolio && npm run games:locations:check && npm run verify:asset-states && npm run verify:3d-assets",
     "verify:cultivation-reference-tools": "node scripts/validate-cultivation-reference-tools.mjs && node scripts/validate-thc-tool-suite-v1.mjs",
     "games:qa:local": "node scripts/game-portfolio-browser-qa.mjs --local",
     "games:qa:live": "node scripts/game-portfolio-browser-qa.mjs --live",
@@ -70,6 +70,9 @@
     "verify:page-composition": "node scripts/validate-page-composition.mjs",
     "verify:thc-tool-suite": "node scripts/validate-thc-tool-suite-v1.mjs",
     "build:education-search": "node scripts/build-thc-education-search-index.mjs",
-    "validate:education-search": "node scripts/validate-thc-education-search.mjs"
+    "validate:education-search": "node scripts/validate-thc-education-search.mjs",
+    "validate:grow-doc-release-pin": "node scripts/validate-grow-doc-release-pin.mjs",
+    "validate:growlens-release-contract": "node scripts/validate-growlens-release-contract.mjs",
+    "test:grow-doc-production-verifier": "node scripts/test-grow-doc-production-verifier.mjs"
   }
 }
