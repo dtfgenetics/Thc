@@ -53,6 +53,9 @@ assert(vpd.includes('0.6108*Math.exp((17.27*t)/(t+237.3))'), 'VPD page missing s
 assert(vpd.includes('svp(leaf)-svp(air)*(rhValue/100)'), 'VPD page missing leaf-to-air vapor pressure deficit calculation');
 assert(vpd.includes('Relative humidity (%)') && vpd.includes('Leaf offset'), 'VPD page missing required inputs');
 assert(vpd.includes("u==='f'?(v-32)*5/9:v") && vpd.includes("v*9/5+32"), 'VPD page missing Celsius/Fahrenheit conversion support');
+assert(vpd.includes('Logger CSV trend analysis') && vpd.includes('parseTrendCsv') && vpd.includes('drawTrend'), 'VPD page missing local CSV trend-analysis workflow');
+assert(vpd.includes("['temperature','temp','air_temp','air_temperature'") && vpd.includes("['humidity','rh','relative_humidity'"), 'VPD CSV import missing flexible temperature/RH header mapping');
+assert(vpd.includes('Analyzed '+"'"+'+rows.length+'+"'"+' valid logger rows locally in this browser.') && vpd.includes('Average VPD'), 'VPD trend workflow missing local-processing disclosure or summary metrics');
 
 const atlas = fs.readFileSync(path.join(root, 'site/public-route-patch/atlas/index.html'), 'utf8');
 const terpenes = fs.readFileSync(path.join(root, 'site/public-route-patch/terpene-atlas/index.html'), 'utf8');
