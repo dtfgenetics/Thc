@@ -17,7 +17,7 @@ The current Game Hub exposes 23 playable browser games:
 1. High IQ — Test Higher Cognition
 2. High Life: From Bagseed to Legacy
 3. Seed Man: Grow. Fight. Restore.
-4. Grower Conversations
+4. Grow Room Confessions
 5. High Land: The Sweet Escape
 6. Weedopolis: Strain City Edition
 7. Strain Showdown

@@ -593,7 +593,7 @@ const liveChecks = [
   ['/games/high-iq/', 'High IQ'],
   ['/games/high-life/', 'High Life'],
   ['/games/seed-man-platformer/', 'Seed Man'],
-  ['/games/grower-conversations/', 'Grower Conversations'],
+  ['/games/grower-conversations/', 'Grow Room Confessions'],
   ['/games/high-land/', 'High Land'],
   ['/games/weedopolis/', 'Weedopolis'],
   ['/games/crossword/', 'Crossword'],
