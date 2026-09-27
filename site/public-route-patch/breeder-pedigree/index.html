@@ -1,8 +1,147 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DTF Breeding & Pedigree Builder | DTF Genetics</title><meta name="description" content="Create local breeding records that preserve parent identities, generation labels, cross purpose and selection notes as the foundation for the DTF Breeder Handbook system."><link rel="canonical" href="https://dtfseeds.com/breeder-pedigree/"><link rel="stylesheet" href="/assets/thc-tool-suite-v1.css"><style>.pedigree-graph{height:520px;min-height:360px;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}.pedigree-graph-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:.75rem 0}.pedigree-legend{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:.82rem}.pedigree-legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;background:#245f3d}.pedigree-legend .ancestor::before{background:#486c94}.pedigree-legend .descendant::before{background:#9b6b22}@media(max-width:680px){.pedigree-graph{height:420px}}</style></head><body><header class="top"><div class="shell topin"><a class="brand" href="/">DTF Genetics<span>Dream the Future</span></a><button class="menu" data-menu aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="nav" data-nav id="site-nav" aria-label="Primary navigation"><a href="/">Home</a><a href="/seeds/">Seeds</a><a href="/learn/">Learn</a><a href="/courses/">Courses</a><a aria-current="page" href="/tools/">Tools</a><a href="/games/">Games</a><a href="/community/">Community</a><a href="/shop/">Shop</a></nav></div></header><section class="hero"><div class="shell"><div class="crumbs"><a href="/tools/">Tools</a><span>›</span><span>DTF Breeding & Pedigree Builder</span></div><p class="eyebrow">Genetics documentation</p><h1>DTF Breeding & Pedigree Builder</h1><p>Create local breeding records that preserve parent identities, generation labels, cross purpose and selection notes as the foundation for the DTF Breeder Handbook system.</p><div class="tabs"><a href="/tools/">All Tools</a><a href="/atlas/">Plant Atlas</a><a href="/growlens/">GrowLens</a><a href="/learn/">Learn</a></div></div></section><main class="shell main">
-<div class="grid2"><section class="panel"><h2>New breeding record</h2><div class="fields"><div class="field full"><label for="child">Offspring / line name</label><input id="child" placeholder="e.g. Mango Bubbles"></div><div class="field"><label for="pa">Parent A</label><input id="pa" placeholder="Selected female / seed parent"></div><div class="field"><label for="pb">Parent B</label><input id="pb" placeholder="Selected pollen parent"></div><div class="field"><label for="gen">Generation</label><select id="gen"><option>F1</option><option>F2</option><option>F3</option><option>F4</option><option>F5</option><option>BX1</option><option>BX2</option><option>S1</option><option>IBL</option><option>Other</option></select></div><div class="field"><label for="seedType">Seed type</label><select id="seedType"><option>Regular</option><option>Feminized</option><option>Auto</option><option>Mixed / experimental</option></select></div><div class="field"><label for="population">Population size</label><input id="population" type="number" min="0" step="1" placeholder="Plants evaluated"></div><div class="field"><label for="selectionIds">Selected plant IDs</label><input id="selectionIds" placeholder="e.g. BM3-07, BM3-18"></div><div class="field full"><label for="purpose">Selection / cross purpose</label><textarea id="purpose" placeholder="Traits selected, population size, phenotype IDs, reason for cross…"></textarea></div></div><div class="toolbar"><button class="btn primary" id="saveRec">Save record</button><button class="btn" id="exportRec">Export CSV</button></div></section><section class="panel"><h2>Pedigree rule</h2><p class="muted">Generation labels only have value when the parentage and selection history are preserved. Record actual parent IDs and population context whenever possible instead of relying on a strain name alone.</p></section></div><section class="section grid2"><div class="panel"><h2>Relationship explorer</h2><div class="fields"><div class="field full"><label for="focusLine">Focus line</label><input id="focusLine" list="lineOptions" placeholder="Choose an offspring/line name"><datalist id="lineOptions"></datalist></div></div><div class="result" id="relationshipOut" aria-live="polite"></div></div><div class="panel"><h2>Lineage view</h2><div class="list" id="lineageView"></div></div></section><section class="section panel"><div class="split-head"><div><p class="eyebrow">Interactive lineage network</p><h2>Pedigree graph</h2><p class="muted">Pan, zoom and tap a line to inspect its connected ancestry and descendants. The graph uses your browser-local records only.</p></div><div class="pedigree-graph-toolbar"><button class="btn" id="fitGraph" type="button">Fit graph</button></div></div><div class="pedigree-legend"><span>Focus line</span><span class="ancestor">Ancestors</span><span class="descendant">Descendants</span></div><div id="pedigreeGraph" class="pedigree-graph" role="application" aria-label="Interactive breeding pedigree relationship graph"></div></section><section class="section panel"><h2>Local pedigree records</h2><div class="table-wrap" tabindex="0"><table><thead><tr><th>Offspring / line</th><th>Cross</th><th>Generation</th><th>Type</th><th>Population</th><th>Selections</th><th>Purpose</th></tr></thead><tbody id="pedRows"></tbody></table></div></section></main><footer><div class="shell">Teaching Healthy Cultivation · Educational decision-support. Preserve measurement method, units, time and context with every record.</div></footer><script src="/assets/thc-tool-suite-v1.js"></script><script src="/assets/vendor/cytoscape-3.34.3.min.js"></script><script src="/assets/breeder-pedigree-graph-v1.js"></script><script>
-const key='dtf-breeder-pedigree-v1';let data=THC.load(key,[]);
-function relationship(){const q=focusLine.value.trim().toLowerCase();if(!q){relationshipOut.innerHTML='<strong>Select a line.</strong><br><span class="muted">The explorer will show its immediate parents and direct descendants.</span>';globalThis.THCBreederGraph?.render?.(pedigreeGraph,data,'');return}const node=data.find(x=>String(x.child||'').toLowerCase()===q),kids=data.filter(x=>String(x.a||'').toLowerCase()===q||String(x.b||'').toLowerCase()===q);if(!node&&!kids.length){relationshipOut.innerHTML='<strong>No exact line match.</strong><br><span class="muted">Use an offspring/line name already saved in the pedigree.</span>';globalThis.THCBreederGraph?.render?.(pedigreeGraph,data,'');return}const parents=node?(node.a+' × '+node.b):'No saved parent cross';const descendants=kids.length?kids.map(x=>x.child||'Unnamed line').join(', '):'No direct descendants saved';relationshipOut.innerHTML='<strong>'+focusLine.value+'</strong><br>Parents: '+parents+'<br>Direct descendants: '+descendants+(node&&node.selections?'<br>Selections: '+node.selections:'')+(node&&node.population?'<br>Population: '+node.population:'');globalThis.THCBreederGraph?.render?.(pedigreeGraph,data,focusLine.value)}}
-function draw(){pedRows.innerHTML=data.slice().reverse().map(x=>'<tr><td><strong>'+(x.child||'Unnamed line')+'</strong></td><td>'+x.a+' × '+x.b+'</td><td>'+x.gen+'</td><td>'+x.type+'</td><td>'+(x.population||'—')+'</td><td>'+(x.selections||'—')+'</td><td>'+x.purpose+'</td></tr>').join('');lineageView.innerHTML=data.slice().reverse().map(x=>'<div class="item"><small>'+x.gen+' · '+x.type+(x.population?' · population '+x.population:'')+'</small><strong>'+x.a+' × '+x.b+' → '+(x.child||'Unnamed line')+'</strong><small>'+(x.selections?'Selections: '+x.selections+' · ':'')+(x.purpose||'No selection notes recorded.')+'</small></div>').join('');lineOptions.innerHTML=[...new Set(data.map(x=>x.child).filter(Boolean))].sort().map(x=>'<option value="'+x.replaceAll('"','&quot;')+'"></option>').join('');relationship()}
-saveRec.onclick=()=>{if(!child.value.trim()||!pa.value.trim()||!pb.value.trim())return;data.push({id:'cross-'+(crypto.randomUUID?crypto.randomUUID():Date.now()),child:child.value.trim(),a:pa.value.trim(),b:pb.value.trim(),gen:gen.value,type:seedType.value,population:Number(population.value)||null,selections:selectionIds.value.trim(),purpose:purpose.value,context:THC.context.get(),createdAt:new Date().toISOString()});THC.save(key,data);focusLine.value=child.value.trim();draw()};
-focusLine.addEventListener('input',relationship);pedigreeGraph.addEventListener('dtf:pedigree-focus',event=>{focusLine.value=event.detail?.label||'';relationship()});fitGraph.onclick=()=>globalThis.THCBreederGraph?.fit?.(pedigreeGraph);exportRec.onclick=()=>THC.csv('breeding-pedigree.csv',['record_id,offspring,parent_a,parent_b,generation,seed_type,population_size,selection_ids,purpose,created_at',...data.map(x=>[x.id,x.child,x.a,x.b,x.gen,x.type,x.population??'',x.selections,x.purpose,x.createdAt].map(v=>'"'+String(v).replaceAll('"','""')+'"').join(','))]);draw();
+<div class="grid2"><section class="panel"><h2>New breeding record</h2><div class="fields"><div class="field full"><label for="child">Offspring / line name</label><input id="child" placeholder="e.g. Mango Bubbles"></div><div class="field"><label for="pa">Parent A</label><input id="pa" placeholder="Selected female / seed parent"></div><div class="field"><label for="pb">Parent B</label><input id="pb" placeholder="Selected pollen parent"></div><div class="field"><label for="gen">Generation</label><select id="gen"><option>F1</option><option>F2</option><option>F3</option><option>F4</option><option>F5</option><option>BX1</option><option>BX2</option><option>S1</option><option>IBL</option><option>Other</option></select></div><div class="field"><label for="seedType">Seed type</label><select id="seedType"><option>Regular</option><option>Feminized</option><option>Auto</option><option>Mixed / experimental</option></select></div><div class="field"><label for="population">Population size</label><input id="population" type="number" min="0" step="1" placeholder="Plants evaluated"></div><div class="field"><label for="selectionIds">Selected plant IDs</label><input id="selectionIds" placeholder="e.g. BM3-07, BM3-18"></div><div class="field full"><label for="purpose">Selection / cross purpose</label><textarea id="purpose" placeholder="Traits selected, population size, phenotype IDs, reason for cross…"></textarea></div></div><div class="toolbar"><button class="btn primary" id="saveRec" type="button">Save record</button><button class="btn" id="clearForm" type="button">Clear form</button><button class="btn" id="exportRec" type="button">Export CSV</button><button class="btn" id="exportJson" type="button">Backup JSON</button><label class="btn" for="importJson">Restore JSON<input id="importJson" type="file" accept="application/json,.json" hidden></label></div><div class="result" id="recordStatus" aria-live="polite"></div></section><section class="panel"><h2>Pedigree rule</h2><p class="muted">Generation labels only have value when the parentage and selection history are preserved. Record actual parent IDs and population context whenever possible instead of relying on a strain name alone.</p></section></div><section class="section grid2"><div class="panel"><h2>Relationship explorer</h2><div class="fields"><div class="field full"><label for="focusLine">Focus line</label><input id="focusLine" list="lineOptions" placeholder="Choose an offspring/line name"><datalist id="lineOptions"></datalist></div></div><div class="result" id="relationshipOut" aria-live="polite"></div></div><div class="panel"><h2>Lineage view</h2><div class="list" id="lineageView"></div></div></section><section class="section panel"><div class="split-head"><div><p class="eyebrow">Interactive lineage network</p><h2>Pedigree graph</h2><p class="muted">Pan, zoom and tap a line to inspect its connected ancestry and descendants. The graph uses your browser-local records only.</p></div><div class="pedigree-graph-toolbar"><button class="btn" id="fitGraph" type="button">Fit graph</button></div></div><div class="pedigree-legend"><span>Focus line</span><span class="ancestor">Ancestors</span><span class="descendant">Descendants</span></div><div id="pedigreeGraph" class="pedigree-graph" role="application" aria-label="Interactive breeding pedigree relationship graph"></div></section><section class="section grid2"><div class="panel"><h2>Documentation health</h2><div class="metric-grid"><div class="metric"><b id="recordCount">0</b><span>cross records</span></div><div class="metric"><b id="namedParentCount">0</b><span>unique parents</span></div><div class="metric"><b id="selectionCoverage">0%</b><span>records with selection IDs</span></div><div class="metric"><b id="populationCoverage">0%</b><span>records with population size</span></div></div><p class="muted">These are documentation-completeness signals, not genetic-quality scores.</p></div><div class="panel"><h2>Ancestry summary</h2><div class="result" id="ancestryOut" aria-live="polite"><strong>Select a line.</strong><br><span class="muted">Up to three saved ancestry levels will be summarized here.</span></div></div></section><section class="section panel"><h2>Local pedigree records</h2><div class="table-wrap" tabindex="0"><table><thead><tr><th>Offspring / line</th><th>Cross</th><th>Generation</th><th>Type</th><th>Population</th><th>Selections</th><th>Purpose</th><th>Actions</th></tr></thead><tbody id="pedRows"></tbody></table></div></section></main><footer><div class="shell">Teaching Healthy Cultivation · Educational decision-support. Preserve measurement method, units, time and context with every record.</div></footer><script src="/assets/thc-tool-suite-v1.js"></script><script src="/assets/vendor/cytoscape-3.34.3.min.js"></script><script src="/assets/breeder-pedigree-graph-v1.js"></script><script>
+const key='dtf-breeder-pedigree-v1';
+const backupVersion=2;
+let data=THC.load(key,[]);
+let editingId=null;
+const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const norm=value=>String(value||'').trim().toLowerCase();
+
+function setStatus(message,kind='muted'){
+  recordStatus.innerHTML='<span class="'+kind+'">'+esc(message)+'</span>';
+}
+function recordByLine(name){const q=norm(name);return data.find(x=>norm(x.child)===q)}
+function descendantsOf(name){const q=norm(name);return data.filter(x=>norm(x.a)===q||norm(x.b)===q)}
+function ancestryLevels(name,maxDepth=3){
+  const out=[],seen=new Set();
+  let frontier=[String(name||'').trim()].filter(Boolean);
+  for(let depth=1;depth<=maxDepth&&frontier.length;depth++){
+    const next=[],level=[];
+    for(const label of frontier){
+      const node=recordByLine(label);
+      if(!node) continue;
+      for(const parent of [node.a,node.b].filter(Boolean)){
+        const k=norm(parent);
+        if(!k||seen.has(k)) continue;
+        seen.add(k); level.push(parent); next.push(parent);
+      }
+    }
+    if(level.length) out.push({depth,lines:level});
+    frontier=next;
+  }
+  return out;
+}
+function documentationHealth(){
+  const parents=new Set(data.flatMap(x=>[x.a,x.b]).filter(Boolean).map(norm));
+  const pct=fn=>data.length?Math.round(data.filter(fn).length/data.length*100):0;
+  recordCount.textContent=data.length;
+  namedParentCount.textContent=parents.size;
+  selectionCoverage.textContent=pct(x=>String(x.selections||'').trim())+'%';
+  populationCoverage.textContent=pct(x=>Number(x.population)>0)+'%';
+}
+function relationship(){
+  const q=norm(focusLine.value);
+  if(!q){
+    relationshipOut.innerHTML='<strong>Select a line.</strong><br><span class="muted">The explorer will show its immediate parents and direct descendants.</span>';
+    ancestryOut.innerHTML='<strong>Select a line.</strong><br><span class="muted">Up to three saved ancestry levels will be summarized here.</span>';
+    globalThis.THCBreederGraph?.render?.(pedigreeGraph,data,'');
+    return;
+  }
+  const node=recordByLine(focusLine.value),kids=descendantsOf(focusLine.value);
+  if(!node&&!kids.length){
+    relationshipOut.innerHTML='<strong>No exact line match.</strong><br><span class="muted">Use an offspring/line name already saved in the pedigree.</span>';
+    ancestryOut.innerHTML='<strong>No saved ancestry found.</strong>';
+    globalThis.THCBreederGraph?.render?.(pedigreeGraph,data,'');
+    return;
+  }
+  const parents=node?(esc(node.a)+' × '+esc(node.b)):'No saved parent cross';
+  const descendants=kids.length?kids.map(x=>esc(x.child||'Unnamed line')).join(', '):'No direct descendants saved';
+  relationshipOut.innerHTML='<strong>'+esc(focusLine.value)+'</strong><br>Parents: '+parents+'<br>Direct descendants: '+descendants+(node&&node.selections?'<br>Selections: '+esc(node.selections):'')+(node&&node.population?'<br>Population: '+esc(node.population):'');
+  const levels=ancestryLevels(focusLine.value,3);
+  ancestryOut.innerHTML=levels.length
+    ? '<strong>Saved ancestry</strong>'+levels.map(level=>'<br>Level '+level.depth+': '+level.lines.map(esc).join(', ')).join('')
+    : '<strong>No deeper saved ancestry.</strong><br><span class="muted">Parents without their own saved breeding records remain terminal nodes.</span>';
+  globalThis.THCBreederGraph?.render?.(pedigreeGraph,data,focusLine.value);
+}
+function draw(){
+  pedRows.innerHTML=data.slice().reverse().map(x=>'<tr><td><strong>'+esc(x.child||'Unnamed line')+'</strong></td><td>'+esc(x.a)+' × '+esc(x.b)+'</td><td>'+esc(x.gen)+'</td><td>'+esc(x.type)+'</td><td>'+(x.population||'—')+'</td><td>'+esc(x.selections||'—')+'</td><td>'+esc(x.purpose||'')+'</td><td><button class="btn" type="button" data-edit="'+esc(x.id)+'">Edit</button> <button class="btn" type="button" data-delete="'+esc(x.id)+'">Delete</button></td></tr>').join('');
+  lineageView.innerHTML=data.slice().reverse().map(x=>'<div class="item"><small>'+esc(x.gen)+' · '+esc(x.type)+(x.population?' · population '+esc(x.population):'')+'</small><strong>'+esc(x.a)+' × '+esc(x.b)+' → '+esc(x.child||'Unnamed line')+'</strong><small>'+(x.selections?'Selections: '+esc(x.selections)+' · ':'')+esc(x.purpose||'No selection notes recorded.')+'</small></div>').join('');
+  lineOptions.innerHTML=[...new Set(data.map(x=>x.child).filter(Boolean))].sort().map(x=>'<option value="'+esc(x)+'"></option>').join('');
+  documentationHealth();
+  relationship();
+}
+function clearEditor(){
+  editingId=null;
+  child.value=''; pa.value=''; pb.value=''; population.value=''; selectionIds.value=''; purpose.value='';
+  gen.value='F1'; seedType.value='Regular'; saveRec.textContent='Save record';
+}
+function recordFromForm(){
+  return {
+    child:child.value.trim(),a:pa.value.trim(),b:pb.value.trim(),gen:gen.value,type:seedType.value,
+    population:Number(population.value)||null,selections:selectionIds.value.trim(),purpose:purpose.value.trim(),
+    context:THC.context.get()
+  };
+}
+function saveRecord(){
+  const next=recordFromForm();
+  if(!next.child||!next.a||!next.b){setStatus('Offspring and both parent names are required.','error');return}
+  const duplicate=data.find(x=>norm(x.child)===norm(next.child)&&x.id!==editingId);
+  if(duplicate){setStatus('A record for this offspring / line name already exists. Edit that record or use a distinct line identifier.','error');return}
+  if(norm(next.child)===norm(next.a)||norm(next.child)===norm(next.b)){setStatus('Offspring / line name cannot be identical to either parent identifier.','error');return}
+  if(editingId){
+    const index=data.findIndex(x=>x.id===editingId);
+    if(index<0){setStatus('The record being edited no longer exists.','error');clearEditor();return}
+    data[index]={...data[index],...next,updatedAt:new Date().toISOString()};
+    setStatus('Breeding record updated.');
+  }else{
+    data.push({id:'cross-'+(crypto.randomUUID?crypto.randomUUID():Date.now()),...next,createdAt:new Date().toISOString()});
+    setStatus('Breeding record saved locally.');
+  }
+  THC.save(key,data);focusLine.value=next.child;clearEditor();draw();
+}
+function editRecord(id){
+  const x=data.find(row=>row.id===id); if(!x)return;
+  editingId=id; child.value=x.child||''; pa.value=x.a||''; pb.value=x.b||''; gen.value=x.gen||'F1'; seedType.value=x.type||'Regular';
+  population.value=x.population??''; selectionIds.value=x.selections||''; purpose.value=x.purpose||''; saveRec.textContent='Update record';
+  setStatus('Editing '+(x.child||'record')+'.');
+  child.focus();
+}
+function deleteRecord(id){
+  const x=data.find(row=>row.id===id); if(!x)return;
+  if(!confirm('Delete the local breeding record for '+(x.child||'this line')+'? This cannot be undone unless you have a JSON backup.'))return;
+  data=data.filter(row=>row.id!==id); THC.save(key,data);
+  if(editingId===id)clearEditor();
+  if(norm(focusLine.value)===norm(x.child))focusLine.value='';
+  setStatus('Breeding record deleted.'); draw();
+}
+function exportBackup(){
+  const payload={schema:'dtf-breeder-pedigree',version:backupVersion,exportedAt:new Date().toISOString(),records:data};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='dtf-breeder-pedigree-backup.json';a.click();URL.revokeObjectURL(url);
+}
+async function importBackup(file){
+  try{
+    const parsed=JSON.parse(await file.text());
+    if(parsed?.schema!=='dtf-breeder-pedigree'||parsed?.version!==backupVersion||!Array.isArray(parsed.records))throw new Error('Unsupported breeder backup format.');
+    const cleaned=parsed.records.filter(x=>x&&typeof x==='object'&&String(x.child||'').trim()&&String(x.a||'').trim()&&String(x.b||'').trim()).map(x=>({
+      id:String(x.id||('cross-'+(crypto.randomUUID?crypto.randomUUID():Date.now()))),child:String(x.child).trim(),a:String(x.a).trim(),b:String(x.b).trim(),
+      gen:String(x.gen||'Other'),type:String(x.type||'Mixed / experimental'),population:Number(x.population)||null,selections:String(x.selections||''),
+      purpose:String(x.purpose||''),context:x.context&&typeof x.context==='object'?x.context:{},createdAt:String(x.createdAt||new Date().toISOString()),updatedAt:x.updatedAt?String(x.updatedAt):undefined
+    }));
+    const names=new Set();
+    for(const row of cleaned){const n=norm(row.child);if(names.has(n))throw new Error('Backup contains duplicate offspring / line names.');names.add(n)}
+    if(!confirm('Replace the current local pedigree with '+cleaned.length+' records from this backup?'))return;
+    data=cleaned;THC.save(key,data);clearEditor();focusLine.value='';setStatus('JSON backup restored.');draw();
+  }catch(error){setStatus(error instanceof Error?error.message:'Could not restore backup.','error')}
+}
+saveRec.onclick=saveRecord;
+clearForm.onclick=()=>{clearEditor();setStatus('Editor cleared.')};
+pedRows.addEventListener('click',event=>{const edit=event.target.closest('[data-edit]'),del=event.target.closest('[data-delete]');if(edit)editRecord(edit.dataset.edit);if(del)deleteRecord(del.dataset.delete)});
+focusLine.addEventListener('input',relationship);
+pedigreeGraph.addEventListener('dtf:pedigree-focus',event=>{focusLine.value=event.detail?.label||'';relationship()});
+fitGraph.onclick=()=>globalThis.THCBreederGraph?.fit?.(pedigreeGraph);
+exportRec.onclick=()=>THC.csv('breeding-pedigree.csv',['record_id,offspring,parent_a,parent_b,generation,seed_type,population_size,selection_ids,purpose,created_at,updated_at',...data.map(x=>[x.id,x.child,x.a,x.b,x.gen,x.type,x.population??'',x.selections,x.purpose,x.createdAt,x.updatedAt??''].map(v=>'"'+String(v).replaceAll('"','""')+'"').join(','))]);
+exportJson.onclick=exportBackup;
+importJson.addEventListener('change',async event=>{const file=event.target.files?.[0];if(file)await importBackup(file);event.target.value=''});
+draw();
 </script></body></html>
