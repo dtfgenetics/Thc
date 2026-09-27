@@ -61,3 +61,17 @@ Used by the VPD logger for interactive local time-series visualization, cursor i
 Copyright (c) 2021 Leon Sorokin
 
 Licensed under the MIT License. The upstream distribution header and this notice preserve attribution for the vendored build.
+
+
+## Fuse.js 7.1.0
+
+Repository: https://github.com/krisk/Fuse
+
+Vendored browser module:
+- `site/public-route-patch/assets/vendor/fuse-7.1.0.min.mjs`
+
+Used by `/learn/search/` for local fuzzy search across THC education resources, including weighted title, keyword, summary, type and ID fields.
+
+Copyright (c) Kiro Risk
+
+Licensed under the Apache License 2.0. The upstream distribution header is preserved in the vendored module. See the upstream LICENSE for full terms.
