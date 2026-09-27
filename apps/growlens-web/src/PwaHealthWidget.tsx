@@ -43,6 +43,7 @@ export default function PwaHealthWidget() {
   const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
   const [waiting, setWaiting] = useState<ServiceWorker | null>(null);
   const [message, setMessage] = useState('');
+  const serviceWorkerSupported = 'serviceWorker' in navigator;
   const modalRef = useModalFocusTrap<HTMLElement>(open, () => setOpen(false));
 
   const refreshStorage = useCallback(async () => {
@@ -144,8 +145,8 @@ export default function PwaHealthWidget() {
   return (
     <>
       <button className={`pwa-health-launcher ${online ? 'online' : 'offline'} ${waiting ? 'update' : ''}`} type="button" onClick={() => { setOpen(true); void refreshStorage(); }} aria-label="Open GrowLens offline and storage status">
-        <span aria-hidden="true">{waiting ? '↑' : online ? '◉' : '○'}</span>
-        <strong>{waiting ? 'Update ready' : online ? 'Offline ready' : 'Offline'}</strong>
+        <span aria-hidden="true">{waiting ? '↑' : registration ? '◉' : serviceWorkerSupported ? '…' : '!'}</span>
+        <strong>{waiting ? 'Update ready' : registration ? (online ? 'Offline ready' : 'Offline') : serviceWorkerSupported ? 'Checking app shell' : 'Offline unavailable'}</strong>
       </button>
 
       {open ? (
@@ -160,7 +161,7 @@ export default function PwaHealthWidget() {
 
             <div className="pwa-health-grid">
               <article><span>Connection</span><strong>{online ? 'Online' : 'Offline'}</strong><small>{online ? 'Network features can run.' : 'Local records and cached app shell remain available.'}</small></article>
-              <article><span>App shell</span><strong>{waiting ? 'Update ready' : registration ? 'Registered' : 'Checking'}</strong><small>{waiting ? 'A downloaded version is waiting for approval.' : 'GrowLens uses a service worker for offline shell recovery.'}</small></article>
+              <article><span>App shell</span><strong>{waiting ? 'Update ready' : registration ? 'Registered' : serviceWorkerSupported ? 'Checking' : 'Unsupported'}</strong><small>{waiting ? 'A downloaded version is waiting for approval.' : registration ? 'GrowLens uses a service worker for offline shell recovery.' : serviceWorkerSupported ? 'GrowLens is waiting for service-worker registration.' : 'This browser does not expose service-worker support, so offline shell recovery is unavailable.'}</small></article>
               <article><span>Storage policy</span><strong>{storage.persisted === true ? 'Persistent' : storage.persisted === false ? 'Best effort' : 'Unknown'}</strong><small>Complete backups remain the disaster-recovery source regardless of browser policy.</small></article>
             </div>
 
