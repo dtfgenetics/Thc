@@ -238,8 +238,8 @@ payload = replace_once(
 )
 payload = replace_once(
     payload,
-    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grower Conversations'], ['/games/high-land/', 'High Land'],",
-    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grower Conversations'], ['/games/protect-the-plants/', 'Protect the Plants'], ['/games/high-land/', 'High Land'],",
+    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grow Room Confessions'], ['/games/high-land/', 'High Land'],",
+    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grow Room Confessions'], ['/games/protect-the-plants/', 'Protect the Plants'], ['/games/high-land/', 'High Land'],",
     "Protect the Plants live verification",
 )
 
@@ -264,8 +264,8 @@ payload = replace_once(
 )
 payload = replace_once(
     payload,
-    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grower Conversations'], ['/games/protect-the-plants/', 'Protect the Plants'], ['/games/high-land/', 'High Land'],",
-    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grower Conversations'], ['/games/bud-or-bluff/', 'Bud or Bluff'], ['/games/strain-showdown/', 'Strain Showdown'], ['/games/terpocalypse/', 'Terpocalypse'], ['/games/phenoquest/', 'The Living Seed Vault'], ['/games/strain-match/', 'Strain Match'], ['/games/lost-in-the-terps/', 'Lost in the Terps'], ['/games/protect-the-plants/', 'Protect the Plants'], ['/games/high-land/', 'High Land'],",
+    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grow Room Confessions'], ['/games/protect-the-plants/', 'Protect the Plants'], ['/games/high-land/', 'High Land'],",
+    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grow Room Confessions'], ['/games/bud-or-bluff/', 'Bud or Bluff'], ['/games/strain-showdown/', 'Strain Showdown'], ['/games/terpocalypse/', 'Terpocalypse'], ['/games/phenoquest/', 'The Living Seed Vault'], ['/games/strain-match/', 'Strain Match'], ['/games/lost-in-the-terps/', 'Lost in the Terps'], ['/games/protect-the-plants/', 'Protect the Plants'], ['/games/high-land/', 'High Land'],",
     "new playable game live verification",
 )
 
