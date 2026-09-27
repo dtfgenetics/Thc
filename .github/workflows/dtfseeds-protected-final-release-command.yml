@@ -1,0 +1,94 @@
+name: DTFSeeds Protected Final Release Command
+
+on:
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-protected-final-release
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.issue.number == 1174 &&
+       github.event.comment.body == '/release-site' &&
+       github.event.comment.user.login == github.repository_owner)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Validate production targets
+        shell: bash
+        run: |
+          set -euo pipefail
+          for workflow in             deploy-public-suite-wordpress-v2.yml             wordpress-learning-hub-course1-production.yml             verify-cultivation-reference-tools-live.yml; do
+            test -s ".github/workflows/$workflow"
+            grep -Fq 'workflow_dispatch:' ".github/workflows/$workflow"
+          done
+          test -s site/public-route-patch/ppfd-chart/index.html
+          grep -Fq '/ppfd-chart/' data/public-navigation.json
+          grep -Fq '/ppfd-chart/' site/deployment/public-apps.json
+          grep -Fq 'Start with the technician learning path' scripts/publish-wordpress-certification-catalog-v6.mjs
+
+      - name: Dispatch Public Suite production
+        id: public_suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="$(gh workflow run deploy-public-suite-wordpress-v2.yml --ref main)"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      - name: Dispatch Courses production
+        id: courses
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="$(gh workflow run wordpress-learning-hub-course1-production.yml --ref main)"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      - name: Dispatch cultivation live verification
+        id: tools_verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="$(gh workflow run verify-cultivation-reference-tools-live.yml --ref main)"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      - name: Report dispatch
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          PUBLIC_SUITE: ${{ steps.public_suite.outputs.url }}
+          COURSES: ${{ steps.courses.outputs.url }}
+          TOOLS_VERIFY: ${{ steps.tools_verify.outputs.url }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 1174,
+              body: [
+                '## Protected final production release',
+                '',
+                `Status: **${process.env.JOB_STATUS}**`,
+                `Public Suite: ${process.env.PUBLIC_SUITE || 'not-dispatched'}`,
+                `Courses: ${process.env.COURSES || 'not-dispatched'}`,
+                `Cultivation live verification: ${process.env.TOOLS_VERIFY || 'not-dispatched'}`,
+                '',
+                'The child workflows retain their own production validation, environment, rollback, and live-verification gates.'
+              ].join('\n')
+            });
