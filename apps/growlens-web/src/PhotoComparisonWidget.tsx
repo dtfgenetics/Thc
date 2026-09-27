@@ -185,10 +185,10 @@ export default function PhotoComparisonWidget() {
     ? photos.filter((photo) => photo.plantId === selectedPlantId)
     : photos;
 
-  const selectedPhotos = selectedIds
+  const selectedPhotos = useMemo(() => selectedIds
     .map((id) => photos.find((photo) => photo.id === id))
     .filter((photo): photo is PhotoView => Boolean(photo))
-    .sort((first, second) => first.capturedAt.localeCompare(second.capturedAt));
+    .sort((first, second) => first.capturedAt.localeCompare(second.capturedAt)), [photos, selectedIds]);
 
   const comparisonDays = selectedPhotos.length === 2
     ? daysBetween(selectedPhotos[0].capturedAt, selectedPhotos[1].capturedAt)
