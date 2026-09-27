@@ -117,6 +117,11 @@ jobs:
           set -euo pipefail
           npm run verify:cultivation-reference-tools
 
+      - name: Validate Grow Doc release source pin
+        run: |
+          set -euo pipefail
+          npm run validate:grow-doc-release-pin
+
       - name: Validate education visual system
         run: |
           set -euo pipefail
@@ -1124,9 +1129,19 @@ jobs:
               'Build scope: the canonical 23-game playable Hub plus tracked release/runtime candidates plus validated High IQ, High Life, Grower Conversations, Seed Man, Strain Showdown, Bud or Bluff, Terpocalypse, PhenoQuest, Burn Buds, High Land, Weedopolis, pinned THC Crossword, Who Took It?, Ganjumanji, THC RPG, GrowLens, THC Grow Doc, Tools, Projects, and puzzle data.',
               'No production mutation is performed by this build-only workflow.'
             ].join('\n');
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 63,
-              body
-            });
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: 63,
+                body
+              });
+            } catch (error) {
+              const saturated = Number(error?.status) === 403 && /more than 2500 comments/i.test(String(error?.message || ''));
+              if (!saturated) throw error;
+              core.warning('Issue #63 has reached GitHub\'s comment limit; build reporting is skipped without failing the verified package.');
+              await core.summary
+                .addHeading('Build report delivery skipped')
+                .addRaw('Issue #63 has exceeded GitHub\'s comment limit. The package result above remains authoritative for this run.')
+                .write();
+            }
