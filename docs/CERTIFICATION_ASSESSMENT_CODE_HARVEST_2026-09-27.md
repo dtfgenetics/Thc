@@ -3,6 +3,33 @@
 Status: implementation research / architecture lock candidate  
 Scope: THC Academy course assessments, certification exams, attempt tracking, scoring, certificate issuance, verification, and interoperability.
 
+## Critical discovery after cross-repo audit
+
+The canonical learning repository `dtfgenetics/Thc-learning-courses-` already contains a substantial first-party assessment implementation. This changes the implementation priority.
+
+Existing reusable code includes:
+
+- `packages/domain/assessment-runtime.mjs`
+- `packages/domain/course-assessment-runtime.mjs`
+- `apps/api/src/course-assessment-service.mjs`
+- `apps/api/src/secure-assessment-store-adapter.mjs`
+- `schemas/question.schema.json`
+- `schemas/exam-form.schema.json`
+- `docs/ASSESSMENT-MODEL.md`
+- `docs/operations/SECURE-ASSESSMENT-RUNTIME-INTEGRATION.md`
+- `docs/academy-v2/TECHNICIAN_I_ASSESSMENT_BLUEPRINT.md`
+
+Therefore, **do not replace the THC assessment engine with SurveyJS/H5P**. Treat the learning-repo runtime as canonical. External projects are now gap-fillers and interoperability references.
+
+Immediate priority:
+
+1. audit the existing runtime/service/store code against production requirements;
+2. identify missing persistence, authentication, timing, attempt-rule, scoring-type, practical-evidence, credential-decision, certificate, and verification features;
+3. package the learning-repo runtime for reuse by the dtfseeds.com delivery surface instead of duplicating it inside WordPress publishing scripts;
+4. keep secure operational item banks private and never promote public development `ITEM-*` content into live credential forms;
+5. use SurveyJS/H5P only where their renderer/accessibility patterns materially improve the existing front end;
+6. use QTI/Open Badges/pdf-lib/qrcode for interoperability and credential artifacts after the core runtime integration is stable.
+
 ## Current repository findings
 
 The THC repository already contains:
