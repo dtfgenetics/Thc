@@ -35,6 +35,7 @@ import { getSavedLocalPlayerName } from './game/players/playerIdentity';
 import type { HighLandRoomState } from './game/multiplayer/roomState';
 import type { GameState } from './game/types/gameTypes';
 import { describeDiceMove } from './ui/turnFeedback';
+import { createScreenWakeLockController } from './game/browserExperience';
 
 const playerOptions = Array.from({ length: maxPlayers - localMinPlayers + 1 }, (_, index) => localMinPlayers + index);
 type ScreenMode = 'landing' | PlayerSetupMode | 'lobby' | 'playing';
@@ -60,6 +61,7 @@ export default function App() {
   );
   const roomTransport = useMemo(() => createRoomTransport(), []);
   const roomTransportMode = useMemo(() => resolveDefaultRoomTransportMode(), []);
+  const wakeLockController = useMemo(() => (typeof window === 'undefined' ? null : createScreenWakeLockController()), []);
 
   const gameStarted = screenMode === 'playing';
   const currentPlayer = gameState.players[gameState.currentPlayerIndex];
@@ -85,6 +87,17 @@ export default function App() {
   const waitingForChoice = gameState.phase === 'choosing_player' && !isChoiceOwner && previewHitCard === null;
   const canRollNow = gameState.phase !== 'choosing_player' && (!room || canPlayerRoll(room, localPlayerId));
   const canRestartNow = !room || room.hostPlayerId === localPlayerId;
+
+  useEffect(() => {
+    if (!wakeLockController) return;
+    wakeLockController.attach();
+    if (gameStarted) void wakeLockController.acquire();
+    else void wakeLockController.release();
+    return () => {
+      void wakeLockController.release();
+      wakeLockController.detach();
+    };
+  }, [gameStarted, wakeLockController]);
 
   useEffect(() => {
     if (!initialInviteRoomCode || !localPlayerName || screenMode !== 'join_room') return;
