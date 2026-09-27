@@ -1,0 +1,21 @@
+name: Cultivation Math Release Qualification
+
+on:
+  pull_request:
+    paths:
+      - 'site/public-route-patch/assets/thc-cultivation-math-v1.mjs'
+      - 'scripts/*cultivation-math*'
+      - 'scripts/validate-thc-tool-suite-v1.mjs'
+      - 'docs/CULTIVATION_MATH_ENGINE*'
+      - 'docs/CODE_HARVEST_ATTRIBUTION.md'
+      - '.github/workflows/cultivation-math-release.yml'
+
+jobs:
+  release-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node scripts/run-cultivation-math-release-checks.mjs
