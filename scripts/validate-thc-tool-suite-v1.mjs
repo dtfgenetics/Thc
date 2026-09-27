@@ -26,6 +26,10 @@ const css=path.join(root,'site/public-route-patch/assets/thc-tool-suite-v1.css')
 const js=path.join(root,'site/public-route-patch/assets/thc-tool-suite-v1.js');
 ok(fs.existsSync(css)&&fs.statSync(css).size>3000,'shared tool-suite CSS missing or too small');
 ok(fs.existsSync(js)&&fs.statSync(js).size>300,'shared tool-suite JS missing or too small');
+const sharedJs=fs.readFileSync(js,'utf8');
+for(const token of ['thc-cultivation-context-v1','thc-growlens-state-v1','addEnvironmentReading','addIrrigationRecord','addObservation','addFeedingRecord','addReservoirRecord']){
+ ok(sharedJs.includes(token),'shared tool-suite JS missing integration token: '+token);
+}
 for(const [slug,title,tokens] of tools){
  const p=path.join(root,'site/public-route-patch',slug,'index.html');
  ok(fs.existsSync(p),slug+' page missing');
@@ -40,6 +44,10 @@ for(const [slug,title,tokens] of tools){
  const visible=h.replace(/placeholder="[^"]*"/gi,'').replace(/placeholder='[^']*'/gi,'');
  ok(!/coming soon|\bplaceholder\b/i.test(visible),slug+' contains unfinished-state copy');
  for(const token of tokens)ok(h.includes(token),slug+' expected implementation token missing: '+token);
+}
+for(const [slug,token] of [['environment-control','Save to GrowLens'],['dryback-lab','Save to GrowLens'],['ipm-scout','Save to GrowLens'],['water-quality-lab','Save to GrowLens'],['fertigation-lab','Save to GrowLens']]){
+ const h=fs.readFileSync(path.join(root,'site/public-route-patch',slug,'index.html'),'utf8');
+ ok(h.includes(token),slug+' missing GrowLens bridge action');
 }
 const hub=fs.readFileSync(path.join(root,'site/public-route-patch/tools/index.html'),'utf8');
 for(const [slug,title] of tools){
