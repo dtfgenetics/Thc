@@ -183,6 +183,7 @@ if (systemsData) {
 
 const anatomyIndex = read(path.join(appRoot, 'atlas-anatomy-index-v1.js'));
 for (const token of ['hotspots-v4.json','anatomy-registry-v1.json','data-anatomy-search','data-anatomy-scale','data-anatomy-representation','micro-reference','plant-atlas:focus']) ok(anatomyIndex.includes(token), `Anatomy index runtime missing: ${token}`);
+ok(anatomyIndex.includes('relatedItem?.label') && anatomyIndex.includes("items.find(x=>x.id===relatedId)"), 'Anatomy related-structure controls must resolve canonical labels instead of slug text');
 
 const moduleRuntime = read(path.join(appRoot, 'module.js'));
 for (const token of ['measurements','evidenceQuestions','deepDiveTopics','connectedTools','referenceVisuals','dataset.measurementsRuntime']) ok(moduleRuntime.includes(token), `Plant Atlas module runtime missing enriched contract: ${token}`);
