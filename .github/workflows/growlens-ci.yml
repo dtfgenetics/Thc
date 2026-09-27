@@ -43,6 +43,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Validate GrowLens release contract
+        run: npm run validate:growlens-release-contract
+
       - name: Lint GrowLens PHP API
         shell: bash
         run: |
