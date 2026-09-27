@@ -20,6 +20,8 @@ const requiredFiles = [
   'data/sample-profiles-v1.json',
   'data/profile-factors-v1.json',
   'data/evidence-claims-v1.json',
+  'data/identity-audit-v1.json',
+  'data/analyte-normalization-v1.json',
 ];
 
 for (const relative of requiredFiles) {
@@ -45,8 +47,10 @@ const profiles = readJSON('sample-profiles-v1.json');
 const factors = readJSON('profile-factors-v1.json');
 const evidenceClaims = readJSON('evidence-claims-v1.json');
 const schema = readJSON('terpene-schema-v1.json');
+const identityAudit = readJSON('identity-audit-v1.json');
+const normalization = readJSON('analyte-normalization-v1.json');
 
-if (schema?.schemaVersion !== 1) errors.push('terpene-schema-v1.json must use schemaVersion 1');
+if (schema?.schemaVersion !== 2) errors.push('terpene-schema-v1.json must use schemaVersion 2');
 if (catalog?.schemaVersion !== 1) errors.push('terpene-catalog-v1.json must use schemaVersion 1');
 if (sampleSchema?.schemaVersion !== 1) errors.push('sample-profile-schema-v1.json must use schemaVersion 1');
 
@@ -75,6 +79,35 @@ if (catalog?.coverage?.completenessClaim !== false) errors.push('Terpene Atlas m
 if (!String(catalog?.coverage?.referenceInventoryNote || '').includes('120 Cannabis terpenes')) errors.push('Terpene Atlas coverage must document the 120-terpene review reference without claiming exact one-to-one equivalence');
 if (catalog?.coverage?.currentCuratedCompounds !== catalog?.compounds?.length) errors.push('Terpene Atlas coverage count must equal the actual compound count');
 if (!String(catalog?.coverage?.catalogState || '').includes('production Cannabis core')) errors.push('Terpene Atlas coverage must identify the current dataset as a production Cannabis core');
+
+if (identityAudit?.schemaVersion !== 1) errors.push('identity-audit-v1.json must use schemaVersion 1');
+if (identityAudit?.counts?.compounds !== catalog?.compounds?.length) errors.push('Identity audit compound count must match the catalog');
+if (identityAudit?.counts?.formulasVerified !== (catalog?.compounds || []).filter((x) => x.formula).length) errors.push('Identity audit formula coverage is stale');
+if (identityAudit?.counts?.pubchemCidResolved !== (catalog?.compounds || []).filter((x) => x.pubchemCid).length) errors.push('Identity audit PubChem CID coverage is stale');
+
+if (normalization?.schemaVersion !== 1) errors.push('analyte-normalization-v1.json must use schemaVersion 1');
+if (!Array.isArray(normalization?.aliases) || normalization.aliases.length < 20) errors.push('Analyte normalization registry is unexpectedly small');
+if (!Array.isArray(normalization?.authorities) || normalization.authorities.length < 10) errors.push('Analyte normalization authority registry is unexpectedly small');
+const authorityIds = new Set();
+for (const authority of normalization?.authorities || []) {
+  if (!authority.id || authorityIds.has(authority.id)) errors.push(`Duplicate or missing normalization authority id: ${authority?.id || '(missing)'}`);
+  authorityIds.add(authority.id);
+  if (!Number.isInteger(authority.cid) || authority.cid <= 0) errors.push(`Invalid PubChem CID for normalization authority ${authority.id}`);
+  if (!/^[A-Z]{14}-[A-Z]{10}-[A-Z]$/.test(authority.inchikey || '')) errors.push(`Invalid InChIKey for normalization authority ${authority.id}`);
+  if (!/^https:\/\/pubchem\.ncbi\.nlm\.nih\.gov\//.test(authority.url || '')) errors.push(`Normalization authority ${authority.id} must use an official PubChem URL`);
+}
+const aliasKeys = new Map();
+for (const row of normalization?.aliases || []) {
+  const key = String(row.reported || '').trim().toLowerCase().replace(/\s+/g, ' ');
+  if (!key) { errors.push('Analyte normalization row is missing reported label'); continue; }
+  if (aliasKeys.has(key)) errors.push(`Duplicate normalized analyte alias: ${row.reported}`);
+  aliasKeys.set(key, row.normalized);
+  if (!seen.has(row.normalized)) errors.push(`Analyte normalization target is not present in catalog: ${row.reported} -> ${row.normalized}`);
+  if (!['resolved','partial','unresolved'].includes(row.identityResolution)) errors.push(`Invalid identityResolution for ${row.reported}`);
+  if (row.identityResolution === 'resolved' && (!Number.isInteger(row.pubchemCid) || !row.inchikey)) errors.push(`Resolved normalization ${row.reported} requires PubChem CID and InChIKey`);
+  if (row.inchikey && !/^[A-Z]{14}-[A-Z]{10}-[A-Z]$/.test(row.inchikey)) errors.push(`Invalid analyte InChIKey for ${row.reported}`);
+}
+
 
 if (population?.schemaVersion !== 1) errors.push('population-summary-v1.json must use schemaVersion 1');
 if (population?.sampleCount !== 79) errors.push('Population summary must preserve the published n=79 inflorescence context');
@@ -124,6 +157,9 @@ for (const token of [
   '"terpene-atlas/data/sources-v1.json",',
   '"terpene-atlas/data/population-summary-v1.json",',
   '"terpene-atlas/data/sample-profiles-v1.json",',
+  '"terpene-atlas/data/terpene-schema-v1.json",',
+  '"terpene-atlas/data/identity-audit-v1.json",',
+  '"terpene-atlas/data/analyte-normalization-v1.json",',
 ]) {
   if (!packageScript.includes(token)) errors.push(`Public-suite package missing Terpene Atlas contract: ${token}`);
 }
