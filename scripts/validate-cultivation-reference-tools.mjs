@@ -60,6 +60,10 @@ assert(tds.includes('Last calibration / check') && tds.includes('Sample temp (°
 assert(tds.includes('ecCalibrationStatus') && tds.includes('ecCalibrationStandard') && tds.includes('calibrationAgeDays') && tds.includes('1.413 mS/cm (1413 µS/cm)') && tds.includes('There is no universal calibration interval'), 'TDS/EC journal missing calibration-age status or conductivity-standard guidance');
 assert(tds.includes("header:'calibration_standard'"), 'TDS/EC CSV journal must preserve calibration standard identity');
 assert(tds.includes('/assets/vendor/uplot-1.6.32.min.js') && tds.includes('/assets/vendor/papaparse-5.7.0.min.js') && tds.includes('/assets/thc-measurement-journal-v1.js'), 'TDS/EC journal must use shared uPlot/Papa Parse measurement stack');
+assert(ph.includes('Advanced: calibration record, trend chart & pH journal') && ph.includes('quick-result-note'), 'pH tool must preserve quick-first interpretation with advanced journal disclosure');
+assert(ph.includes('Check alkalinity and EC next') && ph.includes('Verify meter calibration and sampling method first'), 'pH quick result missing context-aware next action');
+assert(tds.includes('Advanced: calibration record, trend chart & EC/TDS journal') && tds.includes('quick-result-note'), 'EC/TDS tool must preserve quick-first conversion with advanced journal disclosure');
+assert(tds.includes('Keep EC as the primary record') && tds.includes('meter convention together'), 'EC/TDS quick result missing measurement-record guidance');
 
 assert(vpd.includes("/assets/thc-cultivation-math-v1.mjs") && vpd.includes('leafVpd'), 'VPD page missing shared leaf-VPD calculation');
 assert(vpd.includes('Relative humidity (%)') && vpd.includes('Leaf offset'), 'VPD page missing required inputs');
