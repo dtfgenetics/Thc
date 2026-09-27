@@ -25,7 +25,6 @@ for (const marker of [
 
 for (const semantic of [
   'Teaching Healthy Cultivation',
-  'Learn in a sequence that makes the plant easier to understand.',
   'Open the THC Living Plant Atlas',
   'See how the systems connect before you go deep.',
   'Learn the plant as a connected system.',
