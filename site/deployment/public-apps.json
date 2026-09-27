@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
   "sourceOfTruth": "dtfgenetics/Thc",
-  "updated": "2026-09-26",
+  "updated": "2026-09-27",
   "apps": [
     {
       "id": "high-land",
@@ -22,7 +22,7 @@
       "route": "/growlens/",
       "runtime": "static-php",
       "status": "ready-to-package",
-      "build": "npm run test:growlens && npm run build:growlens",
+      "build": "npm run verify:growlens",
       "notes": "Deploy hidden files and PHP API files with the Vite output. Private-storage backend still requires Hostinger production configuration."
     },
     {
@@ -361,7 +361,7 @@
       "route": "/thc-grow-doc/",
       "runtime": "static-php",
       "status": "ready-to-package",
-      "build": "npm run validate:sources && npm run validate:acquisition && npm run validate:transfer && npm run check && npm test && npm run build",
+      "build": "npm run validate:sources && npm run validate:acquisition && npm run validate:transfer && npm run validate:model-eval && npm run check && npm test && npm run build",
       "notes": "Plant-health evidence and diagnostic-reference application; current differential ranking is structured/rule-based rather than a validated pixel classifier. Preserve its PHP proxy in the production bundle."
     },
     {
