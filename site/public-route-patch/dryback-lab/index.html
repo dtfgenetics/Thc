@@ -24,7 +24,7 @@ function values(){const d=THC.num('dry'),w=THC.num('wet'),c=THC.num('current'),h
 function render(){const x=values(),label=mode.value==='vwc'?'sensor-scale dryback':'weight-span dryback';dryOut.innerHTML='<strong>'+THC.fmt(x.pct,1)+'% '+label+'</strong><br>'+THC.fmt(x.rate,2)+' percentage points/hour · '+THC.fmt(x.shot,1)+'% shot size by substrate volume · '+THC.fmt(x.drain,1)+'% measured drainage.<p class="muted">Interpret alongside substrate, EC, environment, plant stage and repeated crop response.</p>'}
 function draw(){dryRows.innerHTML=events.slice(-20).reverse().map(x=>'<tr><td>'+new Date(x.at).toLocaleString()+'</td><td>'+x.zone+'</td><td>'+x.phase+'</td><td>'+THC.fmt(x.pct,1)+'%</td><td>'+THC.fmt(x.shot,1)+'%</td><td>'+THC.fmt(x.drain,1)+'%</td></tr>').join('')}
 document.querySelectorAll('input,select').forEach(x=>x.addEventListener('input',render));
-saveDry.onclick=()=>{events.push({...values(),zone:zone.value.trim()||'Unspecified',phase:phase.value,mode:mode.value,at:new Date().toISOString()});events=events.slice(-500);THC.save(key,events);draw()};
+saveDry.onclick=()=>{events.push({...values(),zone:zone.value.trim()||THC.context.get().zone||'Unspecified',phase:phase.value,mode:mode.value,context:THC.context.get(),at:new Date().toISOString()});events=events.slice(-500);THC.save(key,events);draw()};
 exportDry.onclick=()=>THC.csv('dryback-events.csv',['timestamp,zone,phase,mode,dryback_percent,rate_pp_per_hour,shot_percent,drainage_percent',...events.map(x=>[x.at,x.zone,x.phase,x.mode,x.pct,x.rate,x.shot,x.drain].join(','))]);
 render();draw();
 </script></body></html>
