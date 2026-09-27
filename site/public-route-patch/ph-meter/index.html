@@ -32,7 +32,7 @@ footer{padding:28px 0 42px;color:var(--muted)}.journal{margin-bottom:38px}.journ
 <article class="ref"><h3>Sample method matters</h3><p>Input solution, runoff, slurry, pour-through, and laboratory extracts are different methods. Do not exchange reference ranges between methods without validating the comparison.</p></article>
 <article class="ref"><h3>Read the system, not one number</h3><p>Connect pH with EC, irrigation history, alkalinity when relevant, substrate, root condition, temperature, plant stage, and trend over time before making a correction.</p></article>
 </section>
-<section class="panel journal" aria-labelledby="ph-journal-title">
+<details class="advanced-workflow"><summary>Advanced: calibration record, trend chart & pH journal</summary><section class="panel journal" aria-labelledby="ph-journal-title">
 <h2 id="ph-journal-title">pH measurement journal</h2>
 <p class="muted">Save repeatable readings with meter and calibration context. Records stay in this browser unless exported.</p>
 <div class="journal-meta">
@@ -54,7 +54,7 @@ footer{padding:28px 0 42px;color:var(--muted)}.journal{margin-bottom:38px}.journ
 <div class="journal-chart-wrap" id="phChartWrap" hidden><div id="phChart" class="journal-chart" role="img" aria-label="Saved pH trend"></div></div>
 <div class="journal-table-wrap"><table class="journal-table"><thead><tr><th>Date</th><th>pH</th><th>Context</th><th>Meter</th><th>Calibration</th><th>Notes</th></tr></thead><tbody id="phJournalBody"></tbody></table></div>
 <p class="muted"><strong id="phSavedCount">0</strong> saved records. Trend lines help reveal drift; they do not replace a defined sampling method or calibration checks.</p>
-</section>
+</section></details>
 </main>
 <script src="/assets/vendor/papaparse-5.7.0.min.js"></script>
 <script src="/assets/vendor/uplot-1.6.32.min.js"></script>
@@ -68,7 +68,7 @@ function message(v,c){
  if(c==='source') return 'Source-water pH alone does not describe alkalinity, hardness, EC, sodium, chloride, or the buffering load that can affect the root zone.';
  return 'Runoff is a method-specific drainage sample, not a direct measurement of every location around every root. Compare only with a consistent method and defined reference.';
 }
-function render(){const v=Number(ph.value);if(!Number.isFinite(v)||v<0||v>14){out.innerHTML='<strong>Enter a value from 0 to 14.</strong>';marker.style.left='0%';return}marker.style.left=(v/14*100)+'%';out.innerHTML='<strong>pH '+v.toFixed(2)+'</strong><br>'+classify(v).replace(/^./,m=>m.toUpperCase())+'. '+message(v,ctx.value)}
+function render(){const v=Number(ph.value);if(!Number.isFinite(v)||v<0||v>14){out.innerHTML='<strong>Enter a value from 0 to 14.</strong>';marker.style.left='0%';return}marker.style.left=(v/14*100)+'%';const interpretation=message(v,ctx.value);let next='Record the sample type and calibration state before making a correction.';if(ctx.value==='source')next='Check alkalinity and EC next; source-water pH alone does not describe buffering load.';else if(ctx.value==='runoff')next='Compare only with the same runoff or drainage method and look at the trend before changing the root zone.';else if(/Within the broad/.test(interpretation))next='Keep the method consistent and watch the trend instead of chasing small single-reading changes.';else next='Verify meter calibration and sampling method first, then compare substrate or fertilizer guidance before adjusting.';out.innerHTML='<strong>pH '+v.toFixed(2)+'</strong><br>'+classify(v).replace(/^./,m=>m.toUpperCase())+'. '+interpretation+'<span class="quick-result-note">'+next+'</span>'}
 ph.addEventListener('input',render);ctx.addEventListener('change',render);render();
 const localNow=()=>{const d=new Date(Date.now()-new Date().getTimezoneOffset()*60000);return d.toISOString().slice(0,16)};
 const phDate=document.getElementById('phDate');if(phDate&&!phDate.value)phDate.value=localNow();
