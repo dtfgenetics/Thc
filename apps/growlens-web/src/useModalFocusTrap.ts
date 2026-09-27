@@ -16,6 +16,8 @@ export function useModalFocusTrap<T extends HTMLElement>(
   onClose: () => void,
 ): RefObject<T | null> {
   const ref = useRef<T | null>(null);
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
 
   useEffect(() => {
     if (!open || !ref.current) return;
@@ -31,7 +33,7 @@ export function useModalFocusTrap<T extends HTMLElement>(
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault();
-        onClose();
+        closeRef.current();
         return;
       }
       if (event.key !== 'Tab') return;
@@ -60,7 +62,7 @@ export function useModalFocusTrap<T extends HTMLElement>(
       document.removeEventListener('keydown', onKeyDown, true);
       window.requestAnimationFrame(() => previous?.focus({ preventScroll: true }));
     };
-  }, [open, onClose]);
+  }, [open]);
 
   return ref;
 }
