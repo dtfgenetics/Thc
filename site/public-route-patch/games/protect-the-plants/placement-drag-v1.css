@@ -1,0 +1,30 @@
+.plant-pick[data-plant]{
+  touch-action:none;
+  cursor:grab;
+}
+.plant-pick[data-dragging="true"],
+.burn-placement-dragging .plant-pick.active{
+  cursor:grabbing;
+  transform:translateY(-1px);
+}
+.burn-placement-dragging{
+  user-select:none;
+}
+.burn-placement-dragging .board .cell[data-place]{
+  cursor:crosshair;
+}
+.burn-placement-dragging .burn-placement-guide{
+  border-color:rgba(166,255,77,.55);
+  box-shadow:0 0 0 1px rgba(166,255,77,.12),0 14px 36px rgba(0,0,0,.28);
+}
+@media (pointer:coarse){
+  .plant-pick[data-plant]{
+    min-height:48px;
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  .plant-pick[data-dragging="true"],
+  .burn-placement-dragging .plant-pick.active{
+    transform:none!important;
+  }
+}
