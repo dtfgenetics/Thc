@@ -71,6 +71,10 @@ for(const slug of ['ph-meter','tds-meter','vpd-chart','ppfd-chart']){
 const ppfdCore=fs.readFileSync(path.join(root,'site/public-route-patch/ppfd-chart/index.html'),'utf8');
 ok(ppfdCore.includes('.cell input:focus-visible'), 'PPFD canopy cells must expose a visible keyboard focus state');
 const hub=fs.readFileSync(path.join(root,'site/public-route-patch/tools/index.html'),'utf8');
+for(const token of ['/assets/thc-tool-suite-v1.js','Active cultivation workspace','hubContextGrid','hubGrowLensStatus','hubNextTools','THC.context.get()','THC.growlens.available()','THC.growlens.resolve()','thc:contextchange','growlens:state-saved']){
+ ok(hub.includes(token),'tools hub missing active-workspace token: '+token);
+}
+
 for(const [slug,title] of tools){
  ok(hub.includes('href="/'+slug+'/"'), 'tools hub missing '+slug);
  ok(hub.includes(title.replace('THC ','').split(' — ')[0])||hub.includes(title), 'tools hub missing label '+title);
