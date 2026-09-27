@@ -10,12 +10,14 @@ import ErrorBoundary from './ErrorBoundary';
 import ExternalStateBridge from './ExternalStateBridge';
 import PhotoComparisonWidget from './PhotoComparisonWidget';
 import ReportsHistoryWidget from './ReportsHistoryWidget';
+import PwaHealthWidget from './PwaHealthWidget';
 import SafeAutoSyncWidget from './SafeAutoSyncWidget';
 import TaskRoutineWidget from './TaskRoutineWidget';
 import './styles.css';
 import './account.css';
 import './camera.css';
 import './reports.css';
+import './pwa-health.css';
 import './backup.css';
 import './routines.css';
 import './photo-comparison.css';
@@ -34,6 +36,7 @@ createRoot(document.getElementById('root')!).render(
       <TaskRoutineWidget />
       <CompleteBackupWidget />
       <ReportsHistoryWidget />
+      <PwaHealthWidget />
       <CameraObservationWidget />
       <PhotoComparisonWidget />
       <SafeAutoSyncWidget />
