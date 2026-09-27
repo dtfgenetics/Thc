@@ -117,6 +117,18 @@ for (const row of population?.analytes || []) {
   if (!seen.has(row.compoundId)) errors.push(`Population analyte is not present in ontology: ${row.compoundId}`);
   for (const field of ['minPpm','meanPpm','sdPpm','cvPercent']) if (!Number.isFinite(row[field])) errors.push(`Population analyte ${row.compoundId} missing numeric ${field}`);
 }
+const catalogById = new Map((catalog?.compounds || []).map((x) => [x.id, x]));
+const measuredWithoutCid = (population?.analytes || []).filter((row) => !catalogById.get(row.compoundId)?.pubchemCid);
+for (const row of measuredWithoutCid) {
+  const explicit = (normalization?.aliases || []).find((x) => String(x.reported || '').trim().toLowerCase() === String(row.reportedName || '').trim().toLowerCase());
+  if (!explicit || explicit.normalized !== row.compoundId || explicit.identityResolution !== 'unresolved') {
+    errors.push(`Measured analyte without PubChem identity must have an explicit unresolved normalization record: ${row.compoundId}`);
+  }
+}
+if (measuredWithoutCid.length > 1) errors.push(`Measured population identity coverage regressed: ${measuredWithoutCid.length} analytes lack PubChem IDs (expected at most the explicitly unresolved Germacrene B record)`);
+if (measuredWithoutCid.length === 1 && measuredWithoutCid[0].compoundId !== 'germacrene-b') errors.push('The sole allowed measured-analyte identity exception must remain germacrene-b until its source resolves a geometric isomer.');
+if (identityAudit?.measuredPopulation?.withoutPubchemCid !== measuredWithoutCid.length) errors.push('Identity audit measured-population coverage is stale');
+
 if (profiles?.schemaVersion !== 1 || !Array.isArray(profiles?.profiles)) errors.push('sample-profiles-v1.json must provide a versioned profiles array');
 if (factors?.schemaVersion !== 1 || !Array.isArray(factors?.factors) || factors.factors.length < 8) errors.push('profile-factors-v1.json must provide at least eight interpretation factors');
 if (evidenceClaims?.schemaVersion !== 1) errors.push('evidence-claims-v1.json must use schemaVersion 1');
