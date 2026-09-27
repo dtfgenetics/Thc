@@ -20,10 +20,14 @@ const lines=[
 
 for(const tool of registry.tools){
   const sourceExists=fs.existsSync(path.join(root,tool.sourcePath));
+  const aliases=(tool.sourceAliases||[]).map(alias=>`${fs.existsSync(path.join(root,alias))?'✓':'MISSING'} \`${alias}\``).join('<br>');
+  const sourceLabel=`${sourceExists?'✓':'MISSING'} \`${tool.sourcePath}\`${aliases?'<br>'+aliases:''}`;
+  const deployment=tool.deploymentId===null?'site route':(appIds.has(tool.deploymentId)?`✓ \`${tool.deploymentId}\``:`MISSING \`${tool.deploymentId}\``);
+  const navigation=tool.navigationId===null?'root route':(navIds.has(tool.navigationId)?`✓ \`${tool.navigationId}\``:`MISSING \`${tool.navigationId}\``);
   const assetStatus=tool.requiredAssets.length
     ? tool.requiredAssets.map(asset=>fs.existsSync(path.join(root,asset))?'✓':'MISSING').join(' ')
     : 'route-local / none declared';
-  lines.push(`| ${tool.title} | /${tool.slug}/ | ${sourceExists?'✓':'MISSING'} \`${tool.sourcePath}\` | ${appIds.has(tool.id)?'✓':'MISSING'} | ${navIds.has(tool.id)?'✓':'MISSING'} | ${tool.growlensBridge?'yes':'no'} | ${assetStatus} |`);
+  lines.push(`| ${tool.title} | /${tool.slug}/ | ${sourceLabel} | ${deployment} | ${navigation} | ${tool.growlensBridge?'yes':'no'} | ${assetStatus} |`);
 }
 
 lines.push('','## Shared runtime ownership','');
