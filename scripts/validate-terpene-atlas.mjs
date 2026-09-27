@@ -112,6 +112,9 @@ const runtime = fs.existsSync(path.join(sourceRoot,'terpene-atlas-v1.js')) ? fs.
 for (const token of ['terpene-catalog-v1.json','sources-v1.json','population-summary-v1.json','sample-profiles-v1.json','renderWheel','renderFactors','renderEvidenceSafety','renderPopulation','renderImportedProfile','showCompound','catalogState','scopeBoundary',"URLSearchParams(location.search).get('compound')",'history.replaceState','renderSources','renderCompare','data-result-count','cache:\'no-store\'']) {
   if (!runtime.includes(token)) errors.push(`Terpene Atlas runtime missing contract: ${token}`);
 }
+for (const token of ["import Fuse from '/assets/vendor/fuse-7.1.0.min.mjs'","threshold:.34","includeScore:true"]) {
+  if (!runtime.includes(token)) errors.push(`Terpene Atlas fuzzy-search runtime missing contract: ${token}`);
+}
 
 const packageScriptPath = path.join(root, 'scripts/package-public-suite-wordpress.py');
 const packageScript = fs.existsSync(packageScriptPath) ? fs.readFileSync(packageScriptPath, 'utf8') : '';
