@@ -41,6 +41,6 @@ assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
 assert.match(css, /@media\(forced-colors:active\)/);
 assert.match(css, /min-height:48px/);
 assert.match(confirmCss, /min-height:48px/);
-assert.match(confirmCss, /top:calc\(var\(--dtf-global-header-height,74px\) \+ 8px\)/);
+assert.match(confirmCss, /top:calc\(var\(--dtf-global-header-height,66px\) \+ 8px\)/);
 
 console.log('Mystery Strain canonical engine parity, ranked deduction UI, safe guess confirmation, mobile controls, sharing, and accessibility checks passed.');
