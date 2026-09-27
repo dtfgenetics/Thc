@@ -180,6 +180,66 @@
       "url": "https://pubchem.ncbi.nlm.nih.gov/compound/alpha-phellandrene",
       "cid": 7460,
       "inchikey": "OGLDWXZKYODSOB-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-valencene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Valencene",
+      "cid": 9855795,
+      "inchikey": "QEBNYNLSCGVZOH-NFAWXSAZSA-N"
+    },
+    {
+      "id": "pubchem-citronellol",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/beta-citronellol",
+      "cid": 8842,
+      "inchikey": "QMVPMAAFGQKVCJ-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-3-carene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/3-Carene",
+      "cid": 26049,
+      "inchikey": "BQOFWKZOCNGFEC-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-eucalyptol",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/2758",
+      "cid": 2758,
+      "inchikey": "WEEGYLXZBRQIMU-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-menthol",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/menthol",
+      "cid": 1254,
+      "inchikey": "NOOLISFMXDJSKH-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-geraniol",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/geraniol",
+      "cid": 637566,
+      "inchikey": "GLZPCOQZEFWAFX-JXMROGBWSA-N"
+    },
+    {
+      "id": "pubchem-bornyl-acetate",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/12097317",
+      "cid": 12097317,
+      "inchikey": "KGEKLUUHTZCSIP-RTYFJBAXSA-N"
+    },
+    {
+      "id": "pubchem-nerol",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Nerol",
+      "cid": 643820,
+      "inchikey": "GLZPCOQZEFWAFX-YFHOEESVSA-N"
+    },
+    {
+      "id": "pubchem-p-cymene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/p-Cymene",
+      "cid": 7463,
+      "inchikey": "HFPZCAJZSCWRBC-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-sabinene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Sabinen",
+      "cid": 18818,
+      "inchikey": "NDVASEGYNIMXJL-UHFFFAOYSA-N"
     }
   ],
   "aliases": [
@@ -222,6 +282,30 @@
       "reason": "R-limonene is D/(+)-limonene.",
       "pubchemCid": 440917,
       "inchikey": "XMGQYMWWDOXHJM-JTQLQIEISA-N"
+    },
+    {
+      "reported": "1,8-cineole",
+      "normalized": "eucalyptol",
+      "identityResolution": "resolved",
+      "reason": "1,8-Cineole and eucalyptol are the same verified PubChem record.",
+      "pubchemCid": 2758,
+      "inchikey": "WEEGYLXZBRQIMU-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "3-carene",
+      "normalized": "3-carene",
+      "identityResolution": "partial",
+      "reason": "Broad 3-carene does not resolve optical configuration.",
+      "pubchemCid": 26049,
+      "inchikey": "BQOFWKZOCNGFEC-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "3δ-carene",
+      "normalized": "3-carene",
+      "identityResolution": "partial",
+      "reason": "Population-source label is normalized to the 3-carene parent identity without inferring optical configuration.",
+      "pubchemCid": 26049,
+      "inchikey": "BQOFWKZOCNGFEC-UHFFFAOYSA-N"
     },
     {
       "reported": "alpha-bisabolol",
@@ -336,6 +420,14 @@
       "inchikey": "DTGKSKDOIYIVQL-UHFFFAOYSA-N"
     },
     {
+      "reported": "bornyl acetate",
+      "normalized": "bornyl-acetate",
+      "identityResolution": "partial",
+      "reason": "Broad bornyl acetate record does not fully resolve stereochemistry.",
+      "pubchemCid": 12097317,
+      "inchikey": "KGEKLUUHTZCSIP-RTYFJBAXSA-N"
+    },
+    {
       "reported": "camphene",
       "normalized": "camphene",
       "identityResolution": "partial",
@@ -358,6 +450,14 @@
       "reason": "Caryophyllene oxide maps to the verified PubChem structure.",
       "pubchemCid": 1742210,
       "inchikey": "NVEQFIOZRFFVFW-RGCMKSIDSA-N"
+    },
+    {
+      "reported": "cineole",
+      "normalized": "eucalyptol",
+      "identityResolution": "resolved",
+      "reason": "Cineole is normalized to the 1,8-cineole/eucalyptol Atlas record.",
+      "pubchemCid": 2758,
+      "inchikey": "WEEGYLXZBRQIMU-UHFFFAOYSA-N"
     },
     {
       "reported": "cis-beta-ocimene",
@@ -384,6 +484,14 @@
       "inchikey": "IHPKGUQCSIINRJ-NTMALXAHSA-N"
     },
     {
+      "reported": "citronellol",
+      "normalized": "citronellol",
+      "identityResolution": "partial",
+      "reason": "Broad citronellol does not resolve optical configuration.",
+      "pubchemCid": 8842,
+      "inchikey": "QMVPMAAFGQKVCJ-UHFFFAOYSA-N"
+    },
+    {
       "reported": "d-limonene",
       "normalized": "d-limonene",
       "identityResolution": "resolved",
@@ -392,12 +500,36 @@
       "inchikey": "XMGQYMWWDOXHJM-JTQLQIEISA-N"
     },
     {
+      "reported": "delta-3-carene",
+      "normalized": "3-carene",
+      "identityResolution": "partial",
+      "reason": "Delta-3-carene is a synonym of the 3-carene parent identity; optical configuration remains unresolved.",
+      "pubchemCid": 26049,
+      "inchikey": "BQOFWKZOCNGFEC-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "eucalyptol",
+      "normalized": "eucalyptol",
+      "identityResolution": "resolved",
+      "reason": "Eucalyptol maps directly to 1,8-cineole.",
+      "pubchemCid": 2758,
+      "inchikey": "WEEGYLXZBRQIMU-UHFFFAOYSA-N"
+    },
+    {
       "reported": "fenchol",
       "normalized": "fenchol",
       "identityResolution": "partial",
       "reason": "Broad fenchol record has unspecified isomeric designation.",
       "pubchemCid": 15406,
       "inchikey": "IAIHUHQCLTYTSF-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "fenchone",
+      "normalized": "fenchone",
+      "identityResolution": "partial",
+      "reason": "Broad fenchone maps to the racemic/unspecified PubChem parent record; do not infer (+) or (-) configuration.",
+      "pubchemCid": 14525,
+      "inchikey": null
     },
     {
       "reported": "gamma-eudesmol",
@@ -414,6 +546,22 @@
       "reason": "γ-Terpinene maps to the verified PubChem structure.",
       "pubchemCid": 7461,
       "inchikey": "YKFLAYDHMOASIY-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "geraniol",
+      "normalized": "geraniol",
+      "identityResolution": "resolved",
+      "reason": "Geraniol maps to the verified (2E) structure.",
+      "pubchemCid": 637566,
+      "inchikey": "GLZPCOQZEFWAFX-JXMROGBWSA-N"
+    },
+    {
+      "reported": "germacrene b",
+      "normalized": "germacrene-b",
+      "identityResolution": "unresolved",
+      "reason": "Multiple geometric Germacrene B structures exist; the broad lab/source label is preserved without assigning a PubChem structure.",
+      "pubchemCid": null,
+      "inchikey": null
     },
     {
       "reported": "guaiol",
@@ -448,12 +596,52 @@
       "inchikey": "CDOSHBSSFJOMGT-UHFFFAOYSA-N"
     },
     {
+      "reported": "menthol",
+      "normalized": "menthol",
+      "identityResolution": "partial",
+      "reason": "Broad menthol does not resolve stereochemistry.",
+      "pubchemCid": 1254,
+      "inchikey": "NOOLISFMXDJSKH-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "nerol",
+      "normalized": "nerol",
+      "identityResolution": "resolved",
+      "reason": "Nerol maps to the verified (2Z) geometric isomer.",
+      "pubchemCid": 643820,
+      "inchikey": "GLZPCOQZEFWAFX-YFHOEESVSA-N"
+    },
+    {
       "reported": "nerolidol",
       "normalized": "nerolidol",
       "identityResolution": "partial",
       "reason": "Bare nerolidol does not resolve cis/trans configuration.",
       "pubchemCid": null,
       "inchikey": null
+    },
+    {
+      "reported": "p-cymene",
+      "normalized": "p-cymene",
+      "identityResolution": "resolved",
+      "reason": "p-Cymene maps to the verified PubChem structure.",
+      "pubchemCid": 7463,
+      "inchikey": "HFPZCAJZSCWRBC-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "p-cymol",
+      "normalized": "p-cymene",
+      "identityResolution": "resolved",
+      "reason": "p-Cymol is a PubChem synonym of p-cymene.",
+      "pubchemCid": 7463,
+      "inchikey": "HFPZCAJZSCWRBC-UHFFFAOYSA-N"
+    },
+    {
+      "reported": "sabinene",
+      "normalized": "sabinene",
+      "identityResolution": "partial",
+      "reason": "Broad sabinene identity does not resolve optical configuration.",
+      "pubchemCid": 18818,
+      "inchikey": "NDVASEGYNIMXJL-UHFFFAOYSA-N"
     },
     {
       "reported": "terpinen-4-ol",
@@ -516,6 +704,14 @@
       "reason": "trans-β-ocimene is the verified (3E) structure.",
       "pubchemCid": 5281553,
       "inchikey": "IHPKGUQCSIINRJ-CSKARUKUSA-N"
+    },
+    {
+      "reported": "valencene",
+      "normalized": "valencene",
+      "identityResolution": "resolved",
+      "reason": "Valencene maps to the verified PubChem structure.",
+      "pubchemCid": 9855795,
+      "inchikey": "QEBNYNLSCGVZOH-NFAWXSAZSA-N"
     },
     {
       "reported": "α-bisabolol",
