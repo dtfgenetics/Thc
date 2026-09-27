@@ -15,7 +15,7 @@ The Cultivation Tools hub at `/tools/` is the launcher. Reference tools that nee
 | pH Meter | `/ph-meter/` | Interpretation of calibrated pH readings and broad cultivation reference windows |
 | TDS / EC Meter | `/tds-meter/` | EC and common 500/700 ppm scale conversion/reference |
 | VPD Chart | `/vpd-chart/` | Leaf-VPD calculation and nearby temperature/RH reference table |
-| PPFD / DLI Tool | `/ppfd-chart/` | PPFD↔DLI calculation, target-DLI reverse calculation and 3×3 canopy-uniformity mapping |
+| PPFD / DLI Tool | `/ppfd-chart/` | PPFD↔DLI calculation, variable-light integration, target-DLI reverse calculation and configurable 3×3 through 9×9 canopy mapping |
 
 ## UX contract
 
@@ -28,6 +28,8 @@ The Cultivation Tools hub at `/tools/` is the launcher. Reference tools that nee
 7. PPFD/DLI calculations must show the exact time-conversion relationship and canopy-map context without presenting universal cannabis stage targets as biological law.
 8. VPD calculations must expose air temperature, RH and leaf-temperature context rather than presenting one universal target as a diagnosis.
 9. Canonical Header V6, responsive layout, accessibility/focus behavior and public route verification apply to every route.
+10. pH, TDS/EC, VPD and PPFD/DLI share the THC cultivation-context shell so Grow/Room/Zone/Plant/Cultivar/Stage context remains available across the reference workflow.
+11. PPFD canopy mapping must preserve configurable row/column grids rather than regressing to a fixed 3×3 implementation.
 
 ## Release ownership
 
