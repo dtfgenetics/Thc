@@ -87,6 +87,7 @@ jobs:
           grep -Fq 'data-dtf-shell="footer-v6"' scripts/promote-public-game-routes-via-wordpress.mjs
           python scripts/assemble-wordpress-suite-resource-aware.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs" | tee "$RUNNER_TEMP/resource-ownership-bridge.json"
           node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq 'Deployment lock is active; waiting before init retry' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq 'resourceOwnedTargetsExcluded' "$RUNNER_TEMP/resource-ownership-bridge.json"
           grep -Fq "'atlas'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq "'atlas/leaf-module/index.html'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
