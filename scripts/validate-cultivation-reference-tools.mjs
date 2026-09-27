@@ -46,6 +46,8 @@ assert(ph.includes("v<7?'acidic':v>7?'alkaline':'neutral'"), 'pH page must class
 assert(ph.includes('5.5') && ph.includes('6.5') && ph.includes('6.0') && ph.includes('7.0'), 'pH page missing broad cultivation reference windows');
 assert(ph.includes('pH measurement journal') && ph.includes("thc-ph-measurements-v1"), 'pH page missing local measurement journal');
 assert(ph.includes('Meter / probe ID') && ph.includes('Last calibration') && ph.includes('Export CSV') && ph.includes('Import CSV'), 'pH journal missing meter/calibration or CSV workflow');
+assert(ph.includes('phCalibrationStatus') && ph.includes('phCalibrationRefs') && ph.includes('calibrationAgeDays') && ph.includes('Common pH reference buffers include 4.00, 7.00 and 10.00'), 'pH journal missing calibration-age status or buffer reference tracking');
+assert(ph.includes("header:'calibration_refs'"), 'pH CSV journal must preserve calibration reference buffers');
 assert(ph.includes('/assets/vendor/uplot-1.6.32.min.js') && ph.includes('/assets/vendor/papaparse-5.7.0.min.js') && ph.includes('/assets/thc-measurement-journal-v1.js'), 'pH journal must use shared uPlot/Papa Parse measurement stack');
 
 assert(tds.includes('500 convention') && tds.includes('700 convention') && tds.includes('× 500') && tds.includes('× 700'), 'TDS page missing 500/700 scale explanation');
@@ -53,6 +55,8 @@ assert(tds.includes("v*500") && tds.includes("v*700"), 'TDS converter missing 50
 assert(tds.includes('const v=p/s') && tds.includes("v.toFixed(2)"), 'TDS reverse conversion missing ppm-to-EC calculation');
 assert(tds.includes('EC / TDS measurement journal') && tds.includes("thc-ec-measurements-v1"), 'TDS/EC page missing local measurement journal');
 assert(tds.includes('Last calibration / check') && tds.includes('Sample temp (°C, optional)') && tds.includes('Export CSV') && tds.includes('Import CSV'), 'TDS/EC journal missing calibration, temperature, or CSV workflow');
+assert(tds.includes('ecCalibrationStatus') && tds.includes('ecCalibrationStandard') && tds.includes('calibrationAgeDays') && tds.includes('1.413 mS/cm (1413 µS/cm)') && tds.includes('There is no universal calibration interval'), 'TDS/EC journal missing calibration-age status or conductivity-standard guidance');
+assert(tds.includes("header:'calibration_standard'"), 'TDS/EC CSV journal must preserve calibration standard identity');
 assert(tds.includes('/assets/vendor/uplot-1.6.32.min.js') && tds.includes('/assets/vendor/papaparse-5.7.0.min.js') && tds.includes('/assets/thc-measurement-journal-v1.js'), 'TDS/EC journal must use shared uPlot/Papa Parse measurement stack');
 
 assert(vpd.includes('0.6108*Math.exp((17.27*t)/(t+237.3))'), 'VPD page missing saturation-vapor-pressure equation');
