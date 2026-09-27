@@ -386,3 +386,63 @@ Decision after audit: do not migrate GrowLens yet. The current service worker ha
 ### vite-plugin-pwa
 Repository: https://github.com/vite-pwa/vite-plugin-pwa
 Decision: benchmark only. GrowLens already has a custom service worker with privacy-specific request handling and deployment expectations. Revisit if the build pipeline is standardized around generated manifests and service-worker injection.
+
+
+## Cultivation tool measurement-journal harvest
+
+### Shared measurement journal
+Action taken: added `site/public-route-patch/assets/thc-measurement-journal-v1.js` and reused the already-vetted vendored Papa Parse + uPlot stack rather than adding another CSV/chart dependency.
+
+Capabilities:
+- capped browser-local measurement history;
+- explicit storage-failure disclosure;
+- CSV export/import;
+- destructive-action confirmation;
+- reusable uPlot trend rendering;
+- responsive chart resizing;
+- configurable field schemas and normalization.
+
+### pH Reference
+Action taken:
+- local pH measurement journal;
+- date/time, meter/probe ID, last calibration date, sample context and notes;
+- CSV import/export;
+- interactive saved-reading trend;
+- pH values validated to 0–14 before persistence/import.
+
+This changes the pH surface from a one-reading reference calculator into a repeatable measurement-record workflow without pretending the browser measures pH.
+
+### TDS / EC Reference
+Action taken:
+- local EC measurement journal;
+- original EC preserved alongside derived 500/700 ppm values;
+- date/time, meter ID, calibration/check date, sample temperature, sample context and notes;
+- CSV import/export;
+- interactive saved-EC trend;
+- imported readings validated before local persistence.
+
+The journal deliberately treats ppm values as meter-display conventions derived from EC; it does not infer nutrient identity.
+
+### Fuse.js reuse in Terpene Atlas
+The Terpene Atlas previously used literal `String.includes()` matching across concatenated compound fields.
+Action taken: reused the existing vendored Fuse.js 7.1.0 ESM build for weighted fuzzy search across:
+- canonical compound name;
+- aliases;
+- aroma descriptors;
+- formula;
+- terpene family/class;
+- subclass;
+- stereochemistry;
+- isomer group.
+
+Family and evidence-scope filters remain explicit filters after fuzzy ranking.
+
+### simple-statistics
+Repository: https://github.com/simple-statistics/simple-statistics
+Potential use: robust reusable descriptive statistics, quantiles, linear regression, correlation and distribution summaries for GrowLens histories, environmental logger analysis and future cultivation comparison tools.
+Decision: research target only. Existing PPFD calculations are intentionally transparent and small; do not replace simple formulas. Consider adoption when GrowLens trend analysis needs median/quantiles/regression/correlation across larger datasets.
+
+### Observable Plot
+Repository: https://github.com/observablehq/plot
+Potential use: richer exploratory scientific charts for Atlas/sample-comparison dashboards where declarative multi-variable plots would materially improve analysis.
+Decision: do not add to the meter tools. uPlot remains the better small time-series runtime. Revisit for Terpene Atlas population/sample comparisons or research dashboards if those views become multi-dimensional.
