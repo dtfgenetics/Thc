@@ -449,3 +449,30 @@ body:has(.dc6) .dc6-surface{
   body:has(.dc6) .dc6-hero{border-radius:0 0 16px 16px!important}
   body:has(.dc6) .dc6-surface{border-right:0!important;border-bottom:1px solid var(--dtf-ux-line)!important}
 }
+
+
+/* Course lesson shell: preserve reading width and move context into flow on compact screens. */
+@media(max-width:900px){
+  .lhv3 .lhv3-layout{grid-template-columns:1fr!important;gap:14px!important}
+  .lhv3 .lhv3-sidebar{display:none!important}
+  .lhv3 .lhv3-mobile-outline{display:block!important}
+  .lhv3 .lhv3-right-rail{
+    grid-column:1!important;
+    grid-row:1!important;
+    position:static!important;
+    max-height:none!important;
+    overflow:visible!important;
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:10px!important;
+  }
+  .lhv3 .lhv3-main{grid-column:1!important;grid-row:2!important}
+  .lhv3 .lhv3-content{max-width:900px!important;margin-inline:auto!important}
+}
+@media(max-width:620px){
+  .lhv3 .lhv3-right-rail{grid-template-columns:1fr!important}
+  .lhv3 .lhv3-objective,.lhv3 .lhv3-toc{padding:15px 16px!important}
+  .lhv3 .lhv3-content{padding:18px 15px!important;border-radius:12px!important}
+  .lhv3 .lhv3-nextprev{grid-template-columns:1fr!important}
+  .lhv3 .lhv3-nextprev a:last-child{text-align:left!important}
+}
