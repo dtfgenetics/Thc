@@ -5,6 +5,7 @@
   const DRAG_THRESHOLD = 7;
   let gesture = null;
   let suppressClickUntil = 0;
+  let syntheticPlacement = false;
 
   function placementActive() {
     return Boolean(
@@ -99,7 +100,12 @@
     if (!target?.dataset.place) return;
 
     suppressClickUntil = performance.now() + 450;
-    target.click();
+    syntheticPlacement = true;
+    try {
+      target.click();
+    } finally {
+      syntheticPlacement = false;
+    }
   }
 
   root.addEventListener('pointerdown', (event) => {
@@ -123,7 +129,7 @@
   });
 
   root.addEventListener('click', (event) => {
-    if (performance.now() > suppressClickUntil) return;
+    if (syntheticPlacement || performance.now() > suppressClickUntil) return;
     if (event.target.closest?.('.cell[data-place]')) {
       event.preventDefault();
       event.stopImmediatePropagation();
