@@ -5,6 +5,7 @@ const tools=fs.readFileSync('site/public-route-patch/tools/index.html','utf8');
 const courses=fs.readFileSync('scripts/publish-wordpress-certification-catalog-v6.mjs','utf8');
 const games=fs.readFileSync('site/public-route-patch/games/index.html','utf8');
 const seeds=fs.readFileSync('site/wordpress/pages/seeds.html','utf8');
+const courseUi=fs.readFileSync('scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs','utf8');
 const failures=[];
 const need=(src,token,label)=>{if(!src.includes(token)) failures.push(`${label}: missing ${token}`);};
 
@@ -37,6 +38,22 @@ for(const token of [
   'dc6-surfaces',
   'dc6-course-path'
 ]) need(courses,token,'Courses catalog');
+
+
+for(const token of [
+  '<details class="dc6-guide">',
+  '>Start courses</a>',
+  '.dc6-guide:not([open]) .dc6-flow',
+  'Start with the technician learning path'
+]) need(courses,token,'Courses guided entry');
+
+for(const token of [
+  'grid-template-columns:1fr;gap:0;border-block:1px solid var(--line)',
+  '>Start module</a>',
+  'Start with Module 1',
+  'Workbook, practical, and final test',
+  'How to use this course'
+]) need(courseUi,token,'Course workspace guided sequence');
 
 for(const token of [
   'UX simplicity pass: keep navigation and reference choices compact',
@@ -83,6 +100,8 @@ console.log(JSON.stringify({
     'mobile composition states',
     'scrollable mobile navigation rails',
     'compact mobile reference tools',
-    'release-first genetics hierarchy'
+    'release-first genetics hierarchy',
+    'guided Academy entry',
+    'linear course module sequence'
   ]
 },null,2));
