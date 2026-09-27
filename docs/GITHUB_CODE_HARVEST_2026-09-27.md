@@ -161,3 +161,34 @@ For future browser games, prefer the same contract:
 4. Screen Wake Lock only during long-running active play;
 5. all APIs remain progressive enhancement and must never block gameplay;
 6. keep game/network authority outside browser-experience helpers.
+
+
+## Additional GitHub harvest — platformer + cultivation tools
+
+### ourcade/sidescrolling-platformer-template-phaser3
+License: MIT.
+Useful pattern: explicit finite-state-machine controller with enter/update/exit lifecycle and queued transitions.
+Action taken: adapted the state-machine utility into `games/shared-platform/src/state-machine.mjs`, preserved attribution in `docs/THIRD_PARTY_NOTICES.md`, added runtime tests, synced the public module, and bumped the shared game platform to v1.4.0.
+Do not copy the template's character art or map assets.
+
+### yandeu/phaser3-typescript-platformer-example
+License: MIT.
+Useful as a secondary reference for PWA/platformer project structure. No code copied in this pass because Seed Man already has stronger movement fundamentals than the example: fixed timestep, coyote time, jump buffering, jump-cut gravity, double jump, look-ahead camera, checkpoints, gamepad support, and deterministic tests.
+
+### Current Seed Man conclusion
+Do not replace Seed Man with a Phaser starter simply for framework fidelity. The current canonical runtime already contains the platformer mechanics those templates would provide. Future harvest work should target missing controller/state organization, animation/event separation, loading/error boundaries, and reusable VFX/audio patterns rather than rewriting movement physics.
+
+### VPD logger workflow research
+A GitHub VPD calculator example demonstrated the value of CSV sensor-history analysis, but no reusable license was present on that repo, so none of its code was copied.
+Action taken: independently implemented a native local CSV workflow in `/vpd-chart/`:
+- flexible timestamp / temperature / RH / leaf-temperature or leaf-offset headers;
+- row-by-row leaf-VPD calculation;
+- average/min/max summaries;
+- native canvas trend chart;
+- bounded trend table;
+- browser-local processing with no upload or CDN dependency;
+- production validation markers added.
+
+### Nutrient-calculator repositories reviewed
+`dstrelnikov/hydrosolver`, `nikitapn/nscalc`, and `onethree7/Horticalc` are GPL-family references. Treat them as research/benchmark sources only unless the licensing implications are intentionally accepted for a separate compatible component.
+`DanielEnki420/dwc-grower-edition` is MIT and is a useful benchmark for local-first grow records, sensor warnings, refill workflows, and mobile calculator UX. Do not copy manufacturer nutrient schedules or claims without independently verifying current official source data.
