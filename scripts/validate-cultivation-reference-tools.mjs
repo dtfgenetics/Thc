@@ -22,7 +22,7 @@ const assert = (ok, msg) => { if (!ok) errors.push(msg); };
 for (const route of ['/atlas/', '/terpene-atlas/', '/ph-meter/', '/tds-meter/', '/vpd-chart/', '/ppfd-chart/']) {
   assert(hub.includes(`href="${route}"`) || hub.includes(`href='${route}'`), `tools hub missing ${route}`);
 }
-assert((hub.match(/target="_blank"/g) || []).length  >= 6, 'tools hub must open all five reference launchers in a new tab');
+assert((hub.match(/target="_blank"/g) || []).length  >= 6, 'tools hub must open all six reference launchers in a new tab');
 for (const label of ['Plant Atlas', 'Terpene Atlas', 'pH Meter', 'TDS / EC Meter', 'VPD Chart', 'PPFD / DLI']) {
   assert(hub.includes(label), `tools hub missing visible label: ${label}`);
 }
@@ -59,6 +59,7 @@ const terpenes = fs.readFileSync(path.join(root, 'site/public-route-patch/terpen
 assert(ppfd.includes("p*h*0.0036"), 'PPFD page missing PPFD-to-DLI formula');
 assert(ppfd.includes("td/(h*0.0036)"), 'PPFD page missing user-target DLI-to-PPFD formula');
 assert(ppfd.includes('id="ppfdGrid"') && ppfd.includes('min/avg*100') && ppfd.includes('sd/avg*100'), 'PPFD page missing canopy grid, uniformity, or coefficient-of-variation calculation');
+assert(ppfd.includes('id="rows"') && ppfd.includes('id="cols"') && ppfd.includes('<option>3</option>') && ppfd.includes('<option>9</option>') && ppfd.includes('r*c'), 'PPFD page must preserve configurable 3×3 through 9×9 canopy mapping');
 assert(ppfd.includes('Measurement method') && ppfd.includes('Manufacturer PPFD map') && ppfd.includes('variable sunlight or dimming schedules require integrated measurements over time'), 'PPFD page missing measurement-method or variable-light context');
 assert(ppfd.includes('THC Light Lab') && ppfd.includes('Teaching Healthy Cultivation') && ppfd.includes('PAR vs ePAR'), 'PPFD page missing THC educational branding or PAR/ePAR education');
 assert(ppfd.includes('targetMin') && ppfd.includes('targetMax') && ppfd.includes('inRange'), 'PPFD page must use user-defined target range analysis');
