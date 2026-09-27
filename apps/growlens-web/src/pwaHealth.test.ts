@@ -28,6 +28,12 @@ describe('GrowLens PWA health controls', () => {
     expect(serviceWorker).toContain("const CACHE_NAME = 'growlens-shell-v3'");
   });
 
+  it('does not claim offline readiness before registration', () => {
+    expect(widget).toContain("serviceWorkerSupported ? 'Checking app shell' : 'Offline unavailable'");
+    expect(widget).toContain("registration ? (online ? 'Offline ready' : 'Offline')");
+    expect(widget).toContain("serviceWorkerSupported ? 'Checking' : 'Unsupported'");
+  });
+
   it('cleans up both registration and installing-worker listeners', () => {
     expect(widget).toContain('let registrationCleanup');
     expect(widget).toContain('let installingCleanup');
