@@ -1357,9 +1357,10 @@
       "identityStatus": "partially-resolved",
       "identitySource": "pubchem",
       "identityVerifiedOn": "2026-09-27",
-      "analyteResolution": "racemic/unspecified fenchone parent identity",
+      "analyteResolution": "non-stereospecific / racemic fenchone parent record",
       "stereochemistry": "unspecified / racemic parent",
-      "isomerGroup": "fenchone"
+      "isomerGroup": "fenchone",
+      "inchikey": "LHXDLQBQYFFVNW-UHFFFAOYSA-N"
     },
     {
       "id": "fenchol",
@@ -2917,7 +2918,14 @@
         "pubchem"
       ],
       "evidenceGrade": "B+reference",
-      "notes": "Reported as a Cannabis sesquiterpene in the review inventory. PubChem identifier is the indexed (+)-α-longipinene record; Cannabis stereochemical composition is not inferred."
+      "notes": "Reported as a Cannabis sesquiterpene in the review inventory. PubChem identifier is the indexed (+)-α-longipinene record; Cannabis stereochemical composition is not inferred.",
+      "inchikey": "HICYDYJTCDBHMZ-COMQUAJESA-N",
+      "identityStatus": "partially-resolved",
+      "identitySource": "pubchem",
+      "identityVerifiedOn": "2026-09-27",
+      "analyteResolution": "catalog label is broad; PubChem CID is (+)-alpha-longipinene",
+      "stereochemistry": "PubChem authority is (+)-alpha-longipinene; source label is broader",
+      "isomerGroup": "alpha-longipinene"
     },
     {
       "id": "alpha-cadinene",
@@ -2937,7 +2945,14 @@
         "pubchem"
       ],
       "evidenceGrade": "B+reference",
-      "notes": "Reported as a Cannabis sesquiterpene. PubChem identifier is the (+/−) α-cadinene record so the Atlas does not overstate stereochemical resolution."
+      "notes": "Reported as a Cannabis sesquiterpene. PubChem identifier is the (+/−) α-cadinene record so the Atlas does not overstate stereochemical resolution.",
+      "inchikey": "QMAYBMKBYCGXDH-RBSFLKMASA-N",
+      "identityStatus": "partially-resolved",
+      "identitySource": "pubchem",
+      "identityVerifiedOn": "2026-09-27",
+      "analyteResolution": "catalog label is broad; PubChem record represents the indexed (+/-)-alpha-cadinene concept with a defined structure",
+      "stereochemistry": "PubChem authority is a defined alpha-cadinene stereostructure; source label is broader",
+      "isomerGroup": "alpha-cadinene"
     },
     {
       "id": "epi-alpha-bisabolol",
@@ -2958,7 +2973,14 @@
         "pubchem"
       ],
       "evidenceGrade": "B+reference",
-      "notes": "Reported in Cannabis volatile-oil studies summarized by Radwan et al. PubChem identifier corresponds to (−)-epi-α-bisabolol; the Atlas does not assert that all Cannabis occurrence is this single stereoisomer."
+      "notes": "Reported in Cannabis volatile-oil studies summarized by Radwan et al. PubChem identifier corresponds to (−)-epi-α-bisabolol; the Atlas does not assert that all Cannabis occurrence is this single stereoisomer.",
+      "inchikey": "RGZSQWQPBWRIAQ-HUUCEWRRSA-N",
+      "identityStatus": "partially-resolved",
+      "identitySource": "pubchem",
+      "identityVerifiedOn": "2026-09-27",
+      "analyteResolution": "catalog label is broad; PubChem CID is (-)-epi-alpha-bisabolol",
+      "stereochemistry": "PubChem authority is (-)-epi-alpha-bisabolol; source label is broader",
+      "isomerGroup": "epi-alpha-bisabolol"
     },
     {
       "id": "caryophyllene-alcohol",
@@ -2979,7 +3001,14 @@
         "pubchem"
       ],
       "evidenceGrade": "B+reference",
-      "notes": "Reported as caryophyllenol/caryophyllene alcohol in the historical Cannabis sesquiterpene literature summarized by Radwan et al.; chemistry identifier is from PubChem."
+      "notes": "Reported as caryophyllenol/caryophyllene alcohol in the historical Cannabis sesquiterpene literature summarized by Radwan et al.; chemistry identifier is from PubChem.",
+      "inchikey": "FUQAYSQLAOJBBC-PAPYEOQZSA-N",
+      "identityStatus": "partially-resolved",
+      "identitySource": "pubchem",
+      "identityVerifiedOn": "2026-09-27",
+      "analyteResolution": "catalog label is broad; PubChem record has a defined caryophyllene-alcohol stereostructure",
+      "stereochemistry": "PubChem authority is stereospecific; source label is broader",
+      "isomerGroup": "caryophyllene-alcohol"
     },
     {
       "id": "ledol",
@@ -3000,7 +3029,14 @@
         "pubchem"
       ],
       "evidenceGrade": "B+reference",
-      "notes": "Reported among Cannabis sesquiterpenes in the review inventory. PubChem identifier is the indexed (+)-ledol record; the Cannabis occurrence is not used to infer a single stereoisomer."
+      "notes": "Reported among Cannabis sesquiterpenes in the review inventory. PubChem identifier is the indexed (+)-ledol record; the Cannabis occurrence is not used to infer a single stereoisomer.",
+      "inchikey": "AYXPYQRXGNDJFU-AQEIEYEASA-N",
+      "identityStatus": "partially-resolved",
+      "identitySource": "pubchem",
+      "identityVerifiedOn": "2026-09-27",
+      "analyteResolution": "catalog label is broad; PubChem CID is (+)-ledol",
+      "stereochemistry": "PubChem authority is (+)-ledol; source label is broader",
+      "isomerGroup": "ledol"
     }
   ],
   "coverage": {
