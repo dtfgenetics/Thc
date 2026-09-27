@@ -1,12 +1,13 @@
 {
-  "schemaVersion": 1,
-  "title": "DTF Terpene Atlas compound record",
+  "schemaVersion": 2,
+  "title": "DTF Terpene Atlas compound record — identity-safe v2",
   "required": [
     "id",
     "canonicalName",
     "class",
     "scope",
-    "evidence"
+    "evidence",
+    "formula"
   ],
   "fields": {
     "id": "stable kebab-case identifier",
@@ -24,6 +25,19 @@
     "notes": "scientific limitations, stereochemistry, isomer or naming cautions",
     "isomerGroup": "stable identifier linking positional/geometric/stereochemical isomers without collapsing them into one measured analyte",
     "stereochemistry": "explicit isomer/stereochemical designation when the literature or analytical source resolves it",
-    "parentConceptId": "optional broader concept used for navigation when multiple resolved analytes share a familiar common name"
+    "parentConceptId": "optional broader concept used for navigation when multiple resolved analytes share a familiar common name",
+    "inchikey": "PubChem/standard InChIKey when verified; preferred stable structure identity key",
+    "iupacName": "verified systematic name when useful for disambiguation",
+    "canonicalSmiles": "structure string including stereochemical information when the verified source resolves it",
+    "identityStatus": "verified | partially-resolved | unresolved | parent-concept",
+    "identitySource": "source id supporting CID/InChIKey/name/structure identity",
+    "identityVerifiedOn": "ISO date of identity verification",
+    "analyteResolution": "what the record actually resolves: parent concept, constitutional isomer, geometric isomer, enantiomer, or fully specified analyte"
+  },
+  "identityPolicy": {
+    "rule": "Do not merge analytical records solely by common name when positional, geometric, optical, or other stereochemical ambiguity exists.",
+    "preferredAuthority": "PubChem identifiers and structure properties are used as chemical-identity references when verified.",
+    "unresolvedState": "Missing identifiers remain explicitly unresolved; the Atlas must not infer stereochemistry from aroma, cultivar name, or a broad common name.",
+    "measurementRule": "A measured analyte may map to a broad parent concept for navigation, but quantitative results must preserve the resolution reported by the laboratory or source."
   }
 }
