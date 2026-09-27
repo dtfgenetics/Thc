@@ -5,6 +5,7 @@
 <title>VPD Chart | DTF Genetics</title>
 <meta name="description" content="Interactive vapor pressure deficit reference using air temperature, relative humidity and leaf-temperature offset with Celsius and Fahrenheit support.">
 <link rel="canonical" href="https://dtfseeds.com/vpd-chart/">
+<link rel="stylesheet" href="/assets/vendor/uplot-1.6.32.min.css">
 <link rel="stylesheet" href="/assets/thc-tool-suite-v1.css">
 <style>
 :root{--deep:#07170f;--deep2:#113823;--gold:#d7b965;--cream:#f7f3e9;--paper:#fffdf8;--ink:#112b1c;--muted:#5b6d61;--line:#d8e2da;--leaf:#26784a}
@@ -14,7 +15,7 @@
 .workspace{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:20px;padding:38px 0}.panel{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 14px 32px rgba(17,43,28,.06)}.panel h2{margin:0 0 16px;font-size:1.35rem}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-weight:850}.field input,.field select{min-height:48px;width:100%;padding:10px 12px;border:1px solid #bfcfc3;border-radius:12px;background:#fff;font:inherit}.result{margin-top:18px;padding:19px;border:1px solid #cadecf;border-radius:16px;background:#edf5ef}.result strong{font-size:1.55rem}.muted{color:var(--muted);font-size:.91rem}
 .bandline{display:grid;grid-template-columns:repeat(4,1fr);margin-top:20px;border-radius:14px;overflow:hidden;border:1px solid var(--line)}.bandline div{padding:13px 10px;text-align:center;font-size:.82rem}.low{background:#dceaf3}.mod{background:#dff1df}.higher{background:#f4edc5}.very{background:#f3d9d9}.bandline strong{display:block}
 .chart-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px}.chart{width:100%;min-width:620px;border-collapse:collapse}.chart th,.chart td{padding:9px 10px;text-align:center;border-right:1px solid #e2e8e3;border-bottom:1px solid #e2e8e3}.chart th{background:#f5f7f3;font-size:.8rem}.chart td{font-variant-numeric:tabular-nums}.chart td.active{outline:3px solid #173b27;outline-offset:-3px;font-weight:900}
-.trend-panel{margin:0 0 30px}.trend-controls{display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:12px;align-items:end}.trend-controls input,.trend-controls select{min-height:46px;width:100%;padding:9px 10px;border:1px solid #bfcfc3;border-radius:12px;background:#fff;font:inherit}.trend-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.trend-actions button{min-height:44px;padding:9px 13px;border:1px solid #bfcfc3;border-radius:12px;background:#fff;color:var(--ink);font:inherit;font-weight:900;cursor:pointer}.trend-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}.trend-metric{padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff}.trend-metric b{display:block;font-size:1.3rem}.trend-canvas-wrap{position:relative;min-height:280px;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}.trend-canvas{display:block;width:100%;height:280px}.trend-table-wrap{margin-top:12px;overflow:auto;max-height:340px;border:1px solid var(--line);border-radius:14px}.trend-table{width:100%;border-collapse:collapse;min-width:680px}.trend-table th,.trend-table td{padding:8px 10px;border-bottom:1px solid #e2e8e3;text-align:right;font-variant-numeric:tabular-nums}.trend-table th:first-child,.trend-table td:first-child{text-align:left}.trend-table th{position:sticky;top:0;background:#f5f7f3;z-index:1}.ref-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding-bottom:42px}.ref{padding:20px;border-top:3px solid rgba(38,120,74,.45);background:#fff;border-radius:0 0 16px 16px}.ref h3{margin:0 0 8px}.ref p,.ref li{color:var(--muted)}.ref ul{margin:0;padding-left:18px}
+.trend-panel{margin:0 0 30px}.trend-controls{display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:12px;align-items:end}.trend-controls input,.trend-controls select{min-height:46px;width:100%;padding:9px 10px;border:1px solid #bfcfc3;border-radius:12px;background:#fff;font:inherit}.trend-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.trend-actions button{min-height:44px;padding:9px 13px;border:1px solid #bfcfc3;border-radius:12px;background:#fff;color:var(--ink);font:inherit;font-weight:900;cursor:pointer}.trend-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}.trend-metric{padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff}.trend-metric b{display:block;font-size:1.3rem}.trend-canvas-wrap{position:relative;min-height:280px;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}.trend-plot{width:100%;min-height:280px}.trend-plot .uplot{margin:auto}.trend-canvas{display:block;width:100%;height:280px}.trend-table-wrap{margin-top:12px;overflow:auto;max-height:340px;border:1px solid var(--line);border-radius:14px}.trend-table{width:100%;border-collapse:collapse;min-width:680px}.trend-table th,.trend-table td{padding:8px 10px;border-bottom:1px solid #e2e8e3;text-align:right;font-variant-numeric:tabular-nums}.trend-table th:first-child,.trend-table td:first-child{text-align:left}.trend-table th{position:sticky;top:0;background:#f5f7f3;z-index:1}.ref-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding-bottom:42px}.ref{padding:20px;border-top:3px solid rgba(38,120,74,.45);background:#fff;border-radius:0 0 16px 16px}.ref h3{margin:0 0 8px}.ref p,.ref li{color:var(--muted)}.ref ul{margin:0;padding-left:18px}
 footer{padding:28px 0 42px;color:var(--muted)}
 @media(max-width:850px){.workspace{grid-template-columns:1fr}.trend-controls,.trend-metrics{grid-template-columns:1fr 1fr}.ref-grid{grid-template-columns:1fr 1fr}.nav{display:none}}@media(max-width:600px){.shell{width:min(100% - 24px,1220px)}.ref-grid,.fields,.trend-controls,.trend-metrics{grid-template-columns:1fr}.field.full{grid-column:auto}.bandline{grid-template-columns:1fr 1fr}.panel{padding:19px}.tabs a{flex:1 1 140px;text-align:center}}
 </style>
@@ -43,7 +44,7 @@ footer{padding:28px 0 42px;color:var(--muted)}
     <div class="trend-metric"><span>Maximum</span><b id="trendMax">—</b></div>
     <div class="trend-metric"><span>Rows analyzed</span><b id="trendCount">—</b></div>
   </div>
-  <div class="trend-canvas-wrap" id="trendCanvasWrap" hidden><canvas class="trend-canvas" id="trendCanvas" width="1100" height="280" aria-label="Leaf VPD trend chart"></canvas></div>
+  <div class="trend-canvas-wrap" id="trendCanvasWrap" hidden><div class="trend-plot" id="trendPlot" role="img" aria-label="Interactive leaf VPD trend chart with cursor and zoom"></div><canvas class="trend-canvas" id="trendCanvas" width="1100" height="280" aria-label="Leaf VPD trend chart fallback"></canvas></div>
   <div class="trend-table-wrap" id="trendTableWrap" hidden><table class="trend-table"><thead><tr><th>Time</th><th>Air temp</th><th>RH</th><th>Leaf temp</th><th>Leaf VPD</th></tr></thead><tbody id="trendBody"></tbody></table></div>
   <p class="muted">Trend interpretation matters more than a single peak. Correlate excursions with lights, irrigation, HVAC/dehumidification cycles, canopy temperature, and sensor placement before changing setpoints.</p>
 </section>
@@ -54,6 +55,7 @@ footer{padding:28px 0 42px;color:var(--muted)}
 </section>
 </main>
 <script src="/assets/vendor/papaparse-5.7.0.min.js"></script>
+<script src="/assets/vendor/uplot-1.6.32.min.js"></script>
 <script>
 const temp=document.getElementById('temp'),unit=document.getElementById('unit'),rh=document.getElementById('rh'),offset=document.getElementById('offset'),vout=document.getElementById('vout'),chart=document.getElementById('chart');
 const trendFile=document.getElementById('trendFile'),trendUnit=document.getElementById('trendUnit'),trendOffset=document.getElementById('trendOffset'),trendStatus=document.getElementById('trendStatus'),trendMetrics=document.getElementById('trendMetrics'),trendCanvasWrap=document.getElementById('trendCanvasWrap'),trendCanvas=document.getElementById('trendCanvas'),trendTableWrap=document.getElementById('trendTableWrap'),trendBody=document.getElementById('trendBody');
@@ -109,7 +111,38 @@ function parseTrendCsv(text){
  if(ai<0||hi<0)throw new Error('CSV needs temperature and humidity columns.');
  return lines.slice(1).map((line,index)=>{const cols=splitCsvLine(line),rawAir=Number(cols[ai]),rawRh=Number(cols[hi]);if(!Number.isFinite(rawAir)||!Number.isFinite(rawRh)||rawRh<=0||rawRh>100)return null;const air=toC(rawAir,trendUnit.value);let leaf;if(li>=0&&Number.isFinite(Number(cols[li])))leaf=toC(Number(cols[li]),trendUnit.value);else if(oi>=0&&Number.isFinite(Number(cols[oi])))leaf=air+deltaC(Number(cols[oi]),trendUnit.value);else leaf=air+defaultOffset;return{label:ti>=0&&cols[ti]?cols[ti]:String(index+1),air,rawRh,leaf,vpd:calc(air,rawRh,leaf)}}).filter(Boolean)
 }
-function drawTrend(rows){const c=trendCanvas,ctx=c?.getContext('2d');if(!ctx||!rows.length)return;const w=c.width,h=c.height,pad={l:54,r:18,t:18,b:38};ctx.clearRect(0,0,w,h);const vals=rows.map(r=>r.vpd),min=Math.min(...vals),max=Math.max(...vals),lo=Math.max(0,min-.15),hi=Math.max(lo+.25,max+.15);ctx.strokeStyle='#d8e2da';ctx.fillStyle='#5b6d61';ctx.font='12px system-ui';ctx.lineWidth=1;for(let i=0;i<=4;i++){const y=pad.t+(h-pad.t-pad.b)*(i/4),v=hi-(hi-lo)*(i/4);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.fillText(v.toFixed(2),6,y+4)}ctx.strokeStyle='#26784a';ctx.lineWidth=3;ctx.beginPath();rows.forEach((r,i)=>{const x=pad.l+(w-pad.l-pad.r)*(rows.length===1?0:i/(rows.length-1)),y=pad.t+(h-pad.t-pad.b)*(1-(r.vpd-lo)/(hi-lo));if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.stroke();ctx.fillStyle='#112b1c';ctx.fillText(rows[0].label,pad.l,h-10);if(rows.length>1){const end=String(rows.at(-1).label);ctx.fillText(end,Math.max(pad.l,w-pad.r-ctx.measureText(end).width),h-10)}}
+let trendPlotInstance=null;
+function drawTrend(rows){
+ const host=document.getElementById('trendPlot'),fallback=trendCanvas;
+ if(!rows.length)return;
+ if(window.uPlot&&host){
+  if(trendPlotInstance){trendPlotInstance.destroy();trendPlotInstance=null}
+  host.replaceChildren();
+  host.hidden=false;
+  fallback.hidden=true;
+  const x=rows.map((_,i)=>i),vpd=rows.map(r=>r.vpd);
+  const width=Math.max(320,Math.floor(trendCanvasWrap.clientWidth||host.clientWidth||900));
+  const labels=rows.map(r=>String(r.label));
+  trendPlotInstance=new window.uPlot({
+   width,
+   height:280,
+   cursor:{drag:{x:true,y:false,setScale:true}},
+   scales:{x:{time:false},y:{auto:true}},
+   axes:[
+    {values:(u,ticks)=>ticks.map(v=>labels[Math.max(0,Math.min(labels.length-1,Math.round(v)))]||'')},
+    {label:'Leaf VPD (kPa)',size:58}
+   ],
+   series:[{}, {label:'Leaf VPD',width:2,points:{show:rows.length<=120}}],
+   legend:{show:true}
+  },[x,vpd],host);
+  return;
+ }
+ if(host)host.hidden=true;
+ fallback.hidden=false;
+ const c=fallback,ctx=c?.getContext('2d');if(!ctx)return;
+ const w=c.width,h=c.height,pad={l:54,r:18,t:18,b:38};ctx.clearRect(0,0,w,h);const vals=rows.map(r=>r.vpd),min=Math.min(...vals),max=Math.max(...vals),lo=Math.max(0,min-.15),hi=Math.max(lo+.25,max+.15);ctx.strokeStyle='#d8e2da';ctx.fillStyle='#5b6d61';ctx.font='12px system-ui';ctx.lineWidth=1;for(let i=0;i<=4;i++){const y=pad.t+(h-pad.t-pad.b)*(i/4),v=hi-(hi-lo)*(i/4);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.fillText(v.toFixed(2),6,y+4)}ctx.strokeStyle='#26784a';ctx.lineWidth=3;ctx.beginPath();rows.forEach((r,i)=>{const x=pad.l+(w-pad.l-pad.r)*(rows.length===1?0:i/(rows.length-1)),y=pad.t+(h-pad.t-pad.b)*(1-(r.vpd-lo)/(hi-lo));if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.stroke();ctx.fillStyle='#112b1c';ctx.fillText(rows[0].label,pad.l,h-10);if(rows.length>1){const end=String(rows.at(-1).label);ctx.fillText(end,Math.max(pad.l,w-pad.r-ctx.measureText(end).width),h-10)}
+}
+window.addEventListener('resize',()=>{if(trendPlotInstance&&trendCanvasWrap&&!trendCanvasWrap.hidden){trendPlotInstance.setSize({width:Math.max(320,Math.floor(trendCanvasWrap.clientWidth||900)),height:280})}});
 function renderTrend(rows){if(!rows.length){trendStatus.textContent='No valid rows found.';trendMetrics.hidden=true;trendCanvasWrap.hidden=true;trendTableWrap.hidden=true;return}const vals=rows.map(r=>r.vpd),avg=vals.reduce((a,b)=>a+b,0)/vals.length;document.getElementById('trendAvg').textContent=avg.toFixed(2)+' kPa';document.getElementById('trendMin').textContent=Math.min(...vals).toFixed(2)+' kPa';document.getElementById('trendMax').textContent=Math.max(...vals).toFixed(2)+' kPa';document.getElementById('trendCount').textContent=String(rows.length);trendMetrics.hidden=false;trendCanvasWrap.hidden=false;trendTableWrap.hidden=false;trendStatus.textContent='Analyzed '+rows.length+' valid logger rows locally in this browser.';trendBody.innerHTML=rows.slice(0,500).map(r=>'<tr><td>'+String(r.label).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))+'</td><td>'+r.air.toFixed(1)+' °C</td><td>'+r.rawRh.toFixed(1)+'%</td><td>'+r.leaf.toFixed(1)+' °C</td><td>'+r.vpd.toFixed(2)+' kPa</td></tr>').join('');drawTrend(rows)}
 trendFile?.addEventListener('change',async()=>{const file=trendFile.files?.[0];if(!file)return;try{renderTrend(parseTrendCsv(await file.text()))}catch(error){trendStatus.textContent=error?.message||'Could not parse this CSV.'}});
 document.getElementById('trendExample')?.addEventListener('click',()=>{const rows=[];for(let i=0;i<24;i++){const air=24+Math.sin(i/4)*2,rhValue=62-Math.sin(i/4)*8,leaf=air+deltaC(Number(trendOffset.value)||-1,trendUnit.value);rows.push({label:String(i).padStart(2,'0')+':00',air,rawRh:rhValue,leaf,vpd:calc(air,rhValue,leaf)})}renderTrend(rows)});
