@@ -28,9 +28,9 @@ assert.match(css,/body\{min-width:0;overflow-x:visible/,'late game-feel layer mu
 assert.match(css,/\.shell,.main,.sitebar,.navlinks,.lobby-stage,.game-layout,.play-zone,.boards,.board-card,.coordinate-grid,.side-panel,.chat,.battle-log,.formation-strip\{min-width:0\}/,'Burn Buds surfaces must allow intrinsic shrinking');
 assert.match(css,/\.btn,.input,.navlink,.mobile-tab\{min-height:44px\}/,'non-grid game controls must preserve a 44px touch target');
 assert.match(css,/body:has\(> \.dtf-global-header\) \.sitebar,[\s\S]*body:has\(> \.dtf-global-header\) \.battle-top\{top:var\(--dtf-global-header-height,92px\)\}/,'desktop local sticky bars must clear the canonical V6 header');
-assert.match(css,/@media\(max-width:900px\)[\s\S]*body:has\(> \.dtf-global-header\) \.sitebar,body:has\(> \.dtf-global-header\) \.battle-top\{top:var\(--dtf-global-header-height,74px\)\}/,'tablet/mobile battle HUD must use the compact V6 header contract');
-assert.match(css,/body:has\(> \.dtf-global-header\) \.mobile-tabs\{top:calc\(var\(--dtf-global-header-height,74px\) \+ 64px\)\}/,'mobile board tabs must remain below the V6 header and battle HUD');
-assert.match(css,/body:has\(> \.dtf-global-header\) \.burn-target-readout\{top:calc\(var\(--dtf-global-header-height,74px\) \+ 108px\)\}/,'mobile targeting readout must remain below the stacked sticky controls');
+assert.match(css,/@media\(max-width:900px\)[\s\S]*body:has\(> \.dtf-global-header\) \.sitebar,body:has\(> \.dtf-global-header\) \.battle-top\{top:var\(--dtf-global-header-height,66px\)\}/,'tablet/mobile battle HUD must use the canonical 66px mobile V6 header contract');
+assert.match(css,/body:has\(> \.dtf-global-header\) \.mobile-tabs\{top:calc\(var\(--dtf-global-header-height,66px\) \+ 64px\)\}/,'mobile board tabs must remain below the V6 header and battle HUD');
+assert.match(css,/body:has\(> \.dtf-global-header\) \.burn-target-readout\{top:calc\(var\(--dtf-global-header-height,66px\) \+ 108px\)\}/,'mobile targeting readout must remain below the stacked sticky controls');
 assert.match(css,/@media\(max-width:430px\)[\s\S]*\.board-card\{padding:6px\}/,'narrow-phone board spacing must preserve the 15×15 playfield');
 assert.match(css,/@media\(max-width:640px\)[\s\S]*safe-area-inset-bottom/,'narrow-phone game padding must clear the bottom safe area');
 assert.match(css,/@media\(max-width:430px\)[\s\S]*safe-area-inset-left[\s\S]*safe-area-inset-right/,'small-phone game and sitebar padding must clear horizontal safe areas');
