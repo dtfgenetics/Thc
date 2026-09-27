@@ -74,6 +74,7 @@
     "validate:grow-doc-release-pin": "node scripts/validate-grow-doc-release-pin.mjs",
     "validate:growlens-release-contract": "node scripts/validate-growlens-release-contract.mjs",
     "test:grow-doc-production-verifier": "node scripts/test-grow-doc-production-verifier.mjs",
-    "validate:public-suite-qualification-workflow": "node scripts/validate-public-suite-qualification-workflow.mjs"
+    "validate:public-suite-qualification-workflow": "node scripts/validate-public-suite-qualification-workflow.mjs",
+    "audit:responsive-source": "node scripts/audit-responsive-source.mjs"
   }
 }
