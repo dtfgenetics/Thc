@@ -17,6 +17,7 @@ import {
   toggleFullscreen,
   vibrateGame,
   createWakeLockController,
+  createStateMachine,
 } from '../src/index.mjs';
 
 function memoryStorage() {
@@ -332,6 +333,37 @@ class FakeAudioContext {
   assert.equal(releases, 1);
   assert.equal(wake.desired(), false);
   assert.equal(wake.detach(), true);
+}
+
+
+{
+  const events = [];
+  const context = { entered: 0 };
+  const machine = createStateMachine({
+    id: 'player',
+    context,
+    logger: (event) => events.push(event),
+  });
+  machine
+    .addState('idle', {
+      onEnter() { this.entered += 1; },
+    })
+    .addState('run', {
+      onEnter() { machine.setState('jump'); },
+    })
+    .addState('jump');
+
+  assert.equal(machine.setState('idle'), true);
+  assert.equal(context.entered, 1);
+  assert.equal(machine.isCurrentState('idle'), true);
+  assert.equal(machine.setState('run'), true);
+  assert.equal(machine.isCurrentState('run'), true);
+  assert.deepEqual(machine.snapshot().queued, ['jump']);
+  machine.update(1 / 60);
+  assert.equal(machine.isCurrentState('jump'), true);
+  assert.equal(machine.previousStateName(), 'run');
+  assert.equal(machine.setState('missing'), false);
+  assert.equal(events.length >= 3, true);
 }
 
 console.log('shared game platform runtime tests passed');
