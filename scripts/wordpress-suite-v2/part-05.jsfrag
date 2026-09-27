@@ -1,8 +1,25 @@
 2/${action}`, { method: 'POST', headers: { 'X-DTF-Suite-Token': suiteToken }, json: { deployment_id: deploymentId, ...payload } });
 }
 
+async function initWithLockRetry() {
+  let last;
+  for (let attempt = 1; attempt <= 40; attempt++) {
+    try {
+      return await postSuite('init', { archive_bytes: archiveBytes, archive_sha256: archiveSha256 });
+    } catch (error) {
+      last = error;
+      const message = String(error?.message || '');
+      const locked = message.includes('dtf_locked') || message.includes('Another deployment holds the server lock');
+      if (!locked || attempt === 40) throw error;
+      console.warn(`Deployment lock is active; waiting before init retry ${attempt}/40.`);
+      await sleep(15000);
+    }
+  }
+  throw last || new Error('Deployment init lock retry exhausted.');
+}
+
 async function uploadArchive() {
-  await postSuite('init', { archive_bytes: archiveBytes, archive_sha256: archiveSha256 });
+  await initWithLockRetry();
   const chunkSize = 384 * 1024;
   let offset = 0;
   while (offset < archiveBytes) {
