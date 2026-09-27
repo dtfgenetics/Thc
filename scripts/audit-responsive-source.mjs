@@ -4,11 +4,13 @@ import { extname, join, relative } from 'node:path';
 const roots = [
   'site/public-route-patch',
   'site/wordpress/pages',
-  'apps/growlens-web/public'
+  'site/wordpress/assets',
+  'apps/growlens-web/public',
+  'scripts'
 ];
 
 const findings = [];
-const stats = { files: 0, html: 0, css: 0 };
+const stats = { files: 0, html: 0, css: 0, generators: 0 };
 
 async function walk(dir) {
   let entries = [];
@@ -26,12 +28,14 @@ function add(file, severity, code, detail) {
 
 async function inspect(file) {
   const ext = extname(file).toLowerCase();
-  if (!['.html', '.css'].includes(ext)) return;
+  if (!['.html', '.css', '.mjs'].includes(ext)) return;
+  if (ext === '.mjs' && !/(?:publish|rebuild|polish|enhance|apply)-wordpress/i.test(file)) return;
   const text = await readFile(file, 'utf8');
   const rel = relative(process.cwd(), file).replaceAll('\\', '/');
   stats.files += 1;
   if (ext === '.html') stats.html += 1;
   if (ext === '.css') stats.css += 1;
+  if (ext === '.mjs') stats.generators += 1;
 
   if (ext === '.html') {
     if (!/<meta[^>]+name=["']viewport["'][^>]+width=device-width/i.test(text) &&
@@ -42,7 +46,11 @@ async function inspect(file) {
 
   const cssText = ext === '.css'
     ? text
-    : [...text.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)].map(m => m[1]).join('\n');
+    : ext === '.html'
+      ? [...text.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)].map(m => m[1]).join('\n')
+      : /(?:<style|@media\s*\(|grid-template-columns|--dtf-global-header-height)/i.test(text)
+        ? text
+        : '';
 
   if (!cssText.trim()) return;
 
