@@ -45,6 +45,7 @@ jobs:
           node --check site/public-route-patch/games/pheno-draft/app.js
           node --check site/public-route-patch/games/pheno-draft/engine.mjs
           node --check site/public-route-patch/games/pheno-draft/projection.mjs
+          node --check site/public-route-patch/games/pheno-draft/runtime.mjs
 
       - name: Verify canonical and public rules modules match
         run: |
@@ -59,7 +60,7 @@ jobs:
           const css = fs.readFileSync('site/public-route-patch/games/pheno-draft/pheno-draft.css','utf8');
           const visual = fs.readFileSync('site/public-route-patch/games/pheno-draft/pheno-draft-v2.css','utf8');
           const app = fs.readFileSync('site/public-route-patch/games/pheno-draft/app.js','utf8');
-const runtime = fs.readFileSync('site/public-route-patch/games/pheno-draft/runtime.mjs','utf8');
+          const runtime = fs.readFileSync('site/public-route-patch/games/pheno-draft/runtime.mjs','utf8');
           const requireText = (source, text, label) => {
             if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
           };
