@@ -324,3 +324,33 @@ Decision: keep as the next benchmark rather than replacing Fuse immediately. DTF
 
 ### FlexSearch / Orama
 FlexSearch and Orama are capable browser search engines. FlexSearch supports document search, workers, persistent indexes and suggestions; Orama supports full-text and vector/hybrid search in a zero-dependency TypeScript engine. They are currently more machinery than the THC education navigation search requires. Revisit them if the project needs large persistent indexes, semantic/vector retrieval or substantially larger datasets.
+
+## GrowLens modal accessibility harvest
+
+### focus-trap
+Repository: https://github.com/focus-trap/focus-trap
+License: MIT.
+Reference patterns reviewed: initial focus, Tab/Shift+Tab containment, Escape handling, and restoration of focus to the element that launched the modal.
+Action taken: implemented the small subset GrowLens needs as a dependency-free React hook in `apps/growlens-web/src/useModalFocusTrap.ts` rather than adding the full library to the bundle.
+Integrated into:
+- Complete Backup;
+- Account Sync;
+- Safe Auto-Sync.
+
+The shared hook now:
+- focuses the first usable control when a dialog opens;
+- keeps keyboard focus inside the active modal;
+- cycles forward/backward at the first/last focusable element;
+- closes on Escape;
+- restores focus to the prior launcher after close;
+- falls back to focusing the dialog panel if it contains no usable controls.
+
+A deterministic source-contract test in `apps/growlens-web/src/modalAccessibility.test.ts` protects this behavior.
+
+Decision: continue migrating the remaining GrowLens modal widgets to this shared hook before considering a direct `focus-trap` dependency. The current requirement is small enough that the local implementation is easier to audit and avoids unnecessary runtime weight.
+
+### idb
+Repository: https://github.com/jakearchibald/idb
+License: ISC.
+Current GrowLens photo storage already has a narrow, working native IndexedDB wrapper with one `photos` store and two indexes. Replacing it immediately would add migration risk without adding user-visible capability.
+Next trigger for adoption: multiple object stores, cursor/range queries, schema migrations beyond the current photo store, or transaction coordination across record families. Until then, keep the existing photoStore API stable and benchmark future storage work against `idb` rather than rewriting it preemptively.
