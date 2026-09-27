@@ -87,3 +87,35 @@ This intentionally absorbs patterns that were duplicated across multiple DTF gam
 4. Seed Man Run and Phaser games — harvest animation/camera/input/loading patterns from official Phaser examples; never copy example art.
 5. Multiplayer services — tighten message/save validation with Zod where TypeScript service boundaries justify the dependency.
 6. Asset-backed audio — adopt Howler per game only where the current shared audio layer is insufficient.
+
+
+## Integration update — continued pass
+
+### THC Crossword
+Implemented in `dtfgenetics/Thc-crossword-`:
+- added `src/crossword/keyboardNavigation.js` with testable navigation intent and word-edge helpers;
+- added Vitest coverage for arrows, Home/End, Space direction switching, and word boundary resolution;
+- updated `src/keyboard-polish.js` so Home/End jump to the active word edge and Space switches across/down at crossings;
+- retained native Tab behavior and existing mobile input handling;
+- syntax/navigation smoke verification passed.
+
+Reference influence: `JaredReisinger/react-crossword` keyboard/current-clue interaction patterns. No React migration was introduced.
+
+### Burn Buds
+Implemented in canonical Burn Buds runtime:
+- added `placement-drag-v1.js` as progressive pointer/touch drag-to-place behavior;
+- added `placement-drag-v1.css` with coarse-pointer targets and reduced-motion handling;
+- added public shell loading and cross-game regression gates;
+- preserved existing click/tap, keyboard, randomize, rotate, undo, clear, and server-authoritative placement validation;
+- added selected-formation `aria-pressed` state and clearer drag/tap instructions;
+- fixed synthetic-click suppression so a drag release actually commits exactly one placement;
+- syntax verification passed.
+
+Reference influence: `clauderic/dnd-kit` direct-manipulation/accessibility patterns, adapted dependency-free because Burn Buds is a vanilla browser runtime.
+
+### Next harvest queue
+1. standardize multiplayer invite/share behavior across High Land, THC U Know, Kush Kings Chess, and Burn Buds;
+2. add Screen Wake Lock where long-running board/platform games benefit;
+3. audit Seed Man Run Phaser camera/input/animation lifecycle against official Phaser examples;
+4. add runtime schema validation at multiplayer/save boundaries where Zod is justified;
+5. evaluate asset-backed audio titles for selective Howler adoption rather than global dependency use.
