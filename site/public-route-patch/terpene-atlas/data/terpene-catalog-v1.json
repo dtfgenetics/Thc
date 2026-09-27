@@ -44,7 +44,7 @@
       "class": "monoterpene",
       "subclass": "cyclic hydrocarbon",
       "formula": "C10H16",
-      "pubchemCid": null,
+      "pubchemCid": 440917,
       "aromaDescriptors": [
         "citrus",
         "orange",
@@ -57,7 +57,13 @@
         "radwan-2021-constituents"
       ],
       "evidenceGrade": "B",
-      "notes": "Stereochemistry matters; source records should retain enantiomer information when measured."
+      "notes": "Stereochemistry matters; source records should retain enantiomer information when measured.",
+      "inchikey": "XMGQYMWWDOXHJM-JTQLQIEISA-N",
+      "identityStatus": "verified",
+      "identitySource": "pubchem",
+      "identityVerifiedOn": "2026-09-27",
+      "analyteResolution": "enantiomer",
+      "stereochemistry": "(R) / D / (+)-limonene"
     },
     {
       "id": "alpha-pinene",
@@ -68,7 +74,7 @@
       "class": "monoterpene",
       "subclass": "bicyclic hydrocarbon",
       "formula": "C10H16",
-      "pubchemCid": null,
+      "pubchemCid": 6654,
       "aromaDescriptors": [
         "pine",
         "resinous"
@@ -80,7 +86,14 @@
         "radwan-2021-constituents"
       ],
       "evidenceGrade": "B",
-      "notes": "Keep separate from β-pinene."
+      "notes": "Keep separate from β-pinene.",
+      "inchikey": "GRWFGVWFFZKLTI-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "identitySource": "pubchem",
+      "identityVerifiedOn": "2026-09-27",
+      "analyteResolution": "constitutional isomer; optical configuration unresolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "alpha-pinene"
     },
     {
       "id": "beta-pinene",
@@ -91,7 +104,7 @@
       "class": "monoterpene",
       "subclass": "bicyclic hydrocarbon",
       "formula": "C10H16",
-      "pubchemCid": null,
+      "pubchemCid": 14896,
       "aromaDescriptors": [
         "pine",
         "woody",
@@ -104,7 +117,14 @@
         "radwan-2021-constituents"
       ],
       "evidenceGrade": "B",
-      "notes": "Keep separate from α-pinene."
+      "notes": "Keep separate from α-pinene.",
+      "inchikey": "WTARULDDTDQWMU-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "identitySource": "pubchem",
+      "identityVerifiedOn": "2026-09-27",
+      "analyteResolution": "constitutional isomer; optical configuration unresolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "beta-pinene"
     },
     {
       "id": "terpinolene",
@@ -140,7 +160,7 @@
       "class": "monoterpene",
       "subclass": "alcohol",
       "formula": "C10H18O",
-      "pubchemCid": null,
+      "pubchemCid": 6549,
       "aromaDescriptors": [
         "floral",
         "lavender-like",
@@ -153,7 +173,14 @@
         "radwan-2021-constituents"
       ],
       "evidenceGrade": "B",
-      "notes": "Enantiomeric composition can alter odor character and should be retained when a laboratory reports it."
+      "notes": "Enantiomeric composition can alter odor character and should be retained when a laboratory reports it.",
+      "inchikey": "CDOSHBSSFJOMGT-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "identitySource": "pubchem",
+      "identityVerifiedOn": "2026-09-27",
+      "analyteResolution": "constitutional identity; optical configuration unresolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "linalool"
     },
     {
       "id": "beta-caryophyllene",
@@ -165,7 +192,7 @@
       "class": "sesquiterpene",
       "subclass": "bicyclic hydrocarbon",
       "formula": "C15H24",
-      "pubchemCid": null,
+      "pubchemCid": 5281515,
       "aromaDescriptors": [
         "peppery",
         "woody",
@@ -178,7 +205,14 @@
         "radwan-2021-constituents"
       ],
       "evidenceGrade": "B",
-      "notes": "Normalize common-name records carefully; caryophyllene oxide is a different compound."
+      "notes": "Normalize common-name records carefully; caryophyllene oxide is a different compound.",
+      "inchikey": "NPNUFJAVOOONJE-GFUGXAQUSA-N",
+      "identityStatus": "verified",
+      "identitySource": "pubchem",
+      "identityVerifiedOn": "2026-09-27",
+      "analyteResolution": "stereochemically specified β-caryophyllene",
+      "stereochemistry": "(-)-trans / (E)-β-caryophyllene",
+      "isomerGroup": "caryophyllene"
     },
     {
       "id": "alpha-humulene",
@@ -215,7 +249,7 @@
       "class": "sesquiterpene",
       "subclass": "alcohol",
       "formula": "C15H26O",
-      "pubchemCid": null,
+      "pubchemCid": 10586,
       "aromaDescriptors": [
         "floral",
         "sweet",
@@ -228,7 +262,14 @@
         "radwan-2021-constituents"
       ],
       "evidenceGrade": "B",
-      "notes": "Retain stereochemical qualifiers from analytical sources."
+      "notes": "Retain stereochemical qualifiers from analytical sources.",
+      "inchikey": "RGZSQWQPBWRIAQ-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "identitySource": "pubchem",
+      "identityVerifiedOn": "2026-09-27",
+      "analyteResolution": "α-bisabolol parent identity; stereochemistry unresolved",
+      "stereochemistry": "unspecified stereochemistry",
+      "isomerGroup": "alpha-bisabolol"
     },
     {
       "id": "ocimene",
@@ -240,7 +281,7 @@
       "class": "monoterpene",
       "subclass": "acyclic hydrocarbon",
       "formula": "C10H16",
-      "pubchemCid": null,
+      "pubchemCid": 18756,
       "aromaDescriptors": [
         "green",
         "sweet",
@@ -255,7 +296,12 @@
       "evidenceGrade": "B",
       "notes": "Broad ocimene concept retained for search/navigation. Quantitative measurements must map to a resolved isomer when the analytical source distinguishes cis/Z from trans/E forms.",
       "isomerGroup": "ocimene",
-      "stereochemistry": "unspecified"
+      "stereochemistry": "unspecified",
+      "inchikey": "IHPKGUQCSIINRJ-UHFFFAOYSA-N",
+      "identityStatus": "parent-concept",
+      "identitySource": "pubchem",
+      "identityVerifiedOn": "2026-09-27",
+      "analyteResolution": "β-ocimene parent concept; 3E/3Z unresolved"
     },
     {
       "id": "nerolidol",
@@ -456,7 +502,7 @@
       "class": "monoterpene",
       "subclass": "alcohol",
       "formula": "C10H18O",
-      "pubchemCid": null,
+      "pubchemCid": 17100,
       "aromaDescriptors": [
         "floral",
         "lilac-like",
@@ -469,7 +515,14 @@
         "radwan-2021-constituents"
       ],
       "evidenceGrade": "B",
-      "notes": "Cannabis occurrence is supported at review level. Quantitative abundance, plant-part distribution, stereochemistry, and analytical-method details require sample- or study-level records before display as measurements."
+      "notes": "Cannabis occurrence is supported at review level. Quantitative abundance, plant-part distribution, stereochemistry, and analytical-method details require sample- or study-level records before display as measurements.",
+      "inchikey": "WUOACPNHFRMFPN-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "identitySource": "pubchem",
+      "identityVerifiedOn": "2026-09-27",
+      "analyteResolution": "α-terpineol parent identity; optical configuration unresolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "alpha-terpineol"
     },
     {
       "id": "terpinen-4-ol",
@@ -480,7 +533,7 @@
       "class": "monoterpene",
       "subclass": "alcohol",
       "formula": "C10H18O",
-      "pubchemCid": null,
+      "pubchemCid": 11230,
       "aromaDescriptors": [
         "herbal",
         "peppery",
@@ -493,7 +546,14 @@
         "radwan-2021-constituents"
       ],
       "evidenceGrade": "B",
-      "notes": "Cannabis occurrence is supported at review level. Quantitative abundance, plant-part distribution, stereochemistry, and analytical-method details require sample- or study-level records before display as measurements."
+      "notes": "Cannabis occurrence is supported at review level. Quantitative abundance, plant-part distribution, stereochemistry, and analytical-method details require sample- or study-level records before display as measurements.",
+      "inchikey": "WRYLYDPHFGVWKC-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "identitySource": "pubchem",
+      "identityVerifiedOn": "2026-09-27",
+      "analyteResolution": "terpinen-4-ol parent identity; optical configuration unresolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "terpinen-4-ol"
     },
     {
       "id": "borneol",
@@ -504,7 +564,7 @@
       "class": "monoterpene",
       "subclass": "alcohol",
       "formula": "C10H18O",
-      "pubchemCid": null,
+      "pubchemCid": 64685,
       "aromaDescriptors": [
         "camphoraceous",
         "minty",
@@ -517,7 +577,14 @@
         "radwan-2021-constituents"
       ],
       "evidenceGrade": "B",
-      "notes": "Cannabis occurrence is supported at review level. Quantitative abundance, plant-part distribution, stereochemistry, and analytical-method details require sample- or study-level records before display as measurements."
+      "notes": "Cannabis occurrence is supported at review level. Quantitative abundance, plant-part distribution, stereochemistry, and analytical-method details require sample- or study-level records before display as measurements.",
+      "inchikey": "DTGKSKDOIYIVQL-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "identitySource": "pubchem",
+      "identityVerifiedOn": "2026-09-27",
+      "analyteResolution": "borneol parent identity; stereochemistry unresolved",
+      "stereochemistry": "unspecified stereochemistry",
+      "isomerGroup": "borneol"
     },
     {
       "id": "geraniol",
@@ -1107,7 +1174,7 @@
       "class": "monoterpene",
       "subclass": "alcohol",
       "formula": "C10H18O",
-      "pubchemCid": null,
+      "pubchemCid": 15406,
       "aromaDescriptors": [],
       "scope": "both",
       "cannabisOccurrence": "reported",
@@ -1115,7 +1182,14 @@
         "shapira-variability-79-inflorescences"
       ],
       "evidenceGrade": "A-summary",
-      "notes": "Reported in the 79-inflorescence terpenoid variability dataset. Identity and quantitative values should be interpreted with the analytical-method and semi-quantification notes in the source table."
+      "notes": "Reported in the 79-inflorescence terpenoid variability dataset. Identity and quantitative values should be interpreted with the analytical-method and semi-quantification notes in the source table.",
+      "inchikey": "IAIHUHQCLTYTSF-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "identitySource": "pubchem",
+      "identityVerifiedOn": "2026-09-27",
+      "analyteResolution": "fenchol parent identity; isomeric designation unresolved",
+      "stereochemistry": "unspecified isomeric designation",
+      "isomerGroup": "fenchol"
     },
     {
       "id": "menthol",
@@ -1145,7 +1219,7 @@
       "class": "monoterpene",
       "subclass": "ketone",
       "formula": "C10H16O",
-      "pubchemCid": null,
+      "pubchemCid": 2537,
       "aromaDescriptors": [],
       "scope": "both",
       "cannabisOccurrence": "reported",
@@ -1153,7 +1227,14 @@
         "shapira-variability-79-inflorescences"
       ],
       "evidenceGrade": "A-summary",
-      "notes": "Reported in the 79-inflorescence terpenoid variability dataset. Identity and quantitative values should be interpreted with the analytical-method and semi-quantification notes in the source table."
+      "notes": "Reported in the 79-inflorescence terpenoid variability dataset. Identity and quantitative values should be interpreted with the analytical-method and semi-quantification notes in the source table.",
+      "inchikey": "DSSYKIVIOFKYAU-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "identitySource": "pubchem",
+      "identityVerifiedOn": "2026-09-27",
+      "analyteResolution": "camphor parent identity; optical configuration unresolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "camphor"
     },
     {
       "id": "nerol",
@@ -1982,7 +2063,7 @@
       "class": "sesquiterpene",
       "subclass": "alcohol",
       "formula": "C15H26O",
-      "pubchemCid": null,
+      "pubchemCid": 5284507,
       "aromaDescriptors": [],
       "scope": "both",
       "cannabisOccurrence": "reported",
@@ -1990,7 +2071,14 @@
         "shapira-variability-79-inflorescences"
       ],
       "evidenceGrade": "A-summary",
-      "notes": "Reported in the 79-inflorescence terpenoid variability dataset. Identity and quantitative values should be interpreted with the analytical-method and semi-quantification notes in the source table."
+      "notes": "Reported in the 79-inflorescence terpenoid variability dataset. Identity and quantitative values should be interpreted with the analytical-method and semi-quantification notes in the source table.",
+      "inchikey": "FQTLCLSUCSAZDY-SDNWHVSQSA-N",
+      "identityStatus": "verified",
+      "identitySource": "pubchem",
+      "identityVerifiedOn": "2026-09-27",
+      "analyteResolution": "geometric isomer",
+      "stereochemistry": "trans / (6E)",
+      "isomerGroup": "nerolidol"
     },
     {
       "id": "globulol",
@@ -2098,7 +2186,7 @@
       "class": "monoterpene",
       "subclass": "acyclic hydrocarbon",
       "formula": "C10H16",
-      "pubchemCid": null,
+      "pubchemCid": 5320250,
       "aromaDescriptors": [
         "green",
         "floral",
@@ -2112,9 +2200,14 @@
       ],
       "evidenceGrade": "A-summary",
       "isomerGroup": "ocimene",
-      "stereochemistry": "cis / Z",
+      "stereochemistry": "cis / (3Z)",
       "parentConceptId": "ocimene",
-      "notes": "Resolved cis/Z β-ocimene analyte. Keep separate from trans/E β-ocimene in measured profiles."
+      "notes": "Resolved cis/Z β-ocimene analyte. Keep separate from trans/E β-ocimene in measured profiles.",
+      "inchikey": "IHPKGUQCSIINRJ-NTMALXAHSA-N",
+      "identityStatus": "verified",
+      "identitySource": "pubchem",
+      "identityVerifiedOn": "2026-09-27",
+      "analyteResolution": "geometric isomer"
     },
     {
       "id": "trans-beta-ocimene",
@@ -2127,7 +2220,7 @@
       "class": "monoterpene",
       "subclass": "acyclic hydrocarbon",
       "formula": "C10H16",
-      "pubchemCid": null,
+      "pubchemCid": 5281553,
       "aromaDescriptors": [
         "green",
         "floral",
@@ -2141,9 +2234,14 @@
       ],
       "evidenceGrade": "A-summary",
       "isomerGroup": "ocimene",
-      "stereochemistry": "trans / E",
+      "stereochemistry": "trans / (3E)",
       "parentConceptId": "ocimene",
-      "notes": "Resolved trans/E β-ocimene analyte. Keep separate from cis/Z β-ocimene in measured profiles."
+      "notes": "Resolved trans/E β-ocimene analyte. Keep separate from cis/Z β-ocimene in measured profiles.",
+      "inchikey": "IHPKGUQCSIINRJ-CSKARUKUSA-N",
+      "identityStatus": "verified",
+      "identitySource": "pubchem",
+      "identityVerifiedOn": "2026-09-27",
+      "analyteResolution": "geometric isomer"
     },
     {
       "id": "alpha-thujene",
@@ -2571,5 +2669,10 @@
     "referenceInventoryNote": "The 2021 Radwan et al. review reports 120 Cannabis terpenes. The Atlas currently also contains 120 curated records, but the two sets are not asserted to be one-to-one identical until every review identity, synonym, and stereoisomer has been reconciled.",
     "catalogState": "production Cannabis core; globally expandable",
     "scopeBoundary": "The current production core contains 120 evidence-backed named records relevant to Cannabis literature and measured-study analytes. It is not presented as the complete global terpene/terpenoid universe."
+  },
+  "identityEnrichment": {
+    "updatedOn": "2026-09-27",
+    "authority": "PubChem",
+    "policy": "Verified structure identifiers are added only when the record resolution matches the authority. Parent/common-name records remain explicitly partial when stereochemistry is unresolved."
   }
 }
