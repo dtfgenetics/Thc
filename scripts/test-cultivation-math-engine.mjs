@@ -23,7 +23,14 @@ import {
   millisiemensToMicrosiemens,
   microsiemensToMillisiemens,
   cfmToCubicMetersPerHour,
-  cubicMetersPerHourToCfm
+  cubicMetersPerHourToCfm,
+  ecToDisplayedPpm,
+  displayedPpmToEc,
+  drybackPercent,
+  ratePerHour,
+  fertilizerMassGrams,
+  p2o5PercentToElementalP,
+  k2oPercentToElementalK
 } from '../site/public-route-patch/assets/thc-cultivation-math-v1.mjs';
 
 const near=(actual,expected,tol=1e-6)=>assert.ok(Math.abs(actual-expected)<=tol,`${actual} != ${expected}`);
@@ -56,6 +63,16 @@ near(millisiemensToMicrosiemens(1.8),1800);
 near(microsiemensToMillisiemens(1800),1.8);
 near(cfmToCubicMetersPerHour(100),169.901082);
 near(cubicMetersPerHourToCfm(169.901082),100);
+near(ecToDisplayedPpm(1.8,500),900);
+near(ecToDisplayedPpm(1.8,700),1260);
+near(displayedPpmToEc(900,500),1.8);
+near(drybackPercent(5,2,4.1),30);
+near(ratePerHour(30,6),5);
+near(fertilizerMassGrams(150,100,10),150);
+near(p2o5PercentToElementalP(10),4.364);
+near(k2oPercentToElementalK(20),16.602);
+assert.throws(()=>ecToDisplayedPpm(1.8,600),/500 or 700/);
+assert.throws(()=>drybackPercent(2,5,4),/High reference/);
 assert.throws(()=>dliFromPpfd(-1,12),/PPFD/);
 assert.throws(()=>airVpd(25,101),/humidity/i);
 assert.throws(()=>dilutionStockVolume(0,100,10),/concentration/i);

@@ -31,3 +31,10 @@ export function millisiemensToMicrosiemens(ms){return nonnegative(ms,'mS/cm')*10
 export function microsiemensToMillisiemens(us){return nonnegative(us,'µS/cm')/1000}
 export function cfmToCubicMetersPerHour(cfm){return nonnegative(cfm,'CFM')*1.69901082}
 export function cubicMetersPerHourToCfm(m3h){return nonnegative(m3h,'m³/h')/1.69901082}
+export function ecToDisplayedPpm(ecMsCm,scale){const ec=nonnegative(ecMsCm,'EC');const s=finite(scale,'PPM scale');if(s!==500&&s!==700)throw new RangeError('PPM scale must be 500 or 700');return ec*s}
+export function displayedPpmToEc(ppm,scale){const value=nonnegative(ppm,'Displayed ppm');const s=finite(scale,'PPM scale');if(s!==500&&s!==700)throw new RangeError('PPM scale must be 500 or 700');return value/s}
+export function drybackPercent(highReference,lowReference,current){const high=finite(highReference,'High reference');const low=finite(lowReference,'Low reference');const now=finite(current,'Current reading');const span=high-low;if(span<=0)throw new RangeError('High reference must be greater than low reference');return (high-now)/span*100}
+export function ratePerHour(change,hours){return finite(change,'Change')/positive(hours,'Hours')}
+export function fertilizerMassGrams(targetMgL,finalLiters,nutrientPercent){const target=nonnegative(targetMgL,'Target concentration');const liters=positive(finalLiters,'Final liters');const pct=positive(nutrientPercent,'Nutrient percent');if(pct>100)throw new RangeError('Nutrient percent cannot exceed 100');return target*liters/(1000*(pct/100))}
+export function p2o5PercentToElementalP(percent){return nonnegative(percent,'P₂O₅ percent')*0.4364}
+export function k2oPercentToElementalK(percent){return nonnegative(percent,'K₂O percent')*0.8301}

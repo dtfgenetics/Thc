@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import {leafVpd} from '../site/public-route-patch/assets/thc-cultivation-math-v1.mjs';
+import {leafVpd,ecToDisplayedPpm,displayedPpmToEc} from '../site/public-route-patch/assets/thc-cultivation-math-v1.mjs';
 import {calculateVariableLight} from '../site/public-route-patch/assets/thc-light-lab-math-v1.mjs';
 
 const root = process.cwd();
@@ -53,8 +53,8 @@ assert(ph.includes("header:'calibration_refs'"), 'pH CSV journal must preserve c
 assert(ph.includes('/assets/vendor/uplot-1.6.32.min.js') && ph.includes('/assets/vendor/papaparse-5.7.0.min.js') && ph.includes('/assets/thc-measurement-journal-v1.js'), 'pH journal must use shared uPlot/Papa Parse measurement stack');
 
 assert(tds.includes('500 convention') && tds.includes('700 convention') && tds.includes('× 500') && tds.includes('× 700'), 'TDS page missing 500/700 scale explanation');
-assert(tds.includes("v*500") && tds.includes("v*700"), 'TDS converter missing 500/700 conversion');
-assert(tds.includes('const v=p/s') && tds.includes("v.toFixed(2)"), 'TDS reverse conversion missing ppm-to-EC calculation');
+assert(tds.includes('/assets/thc-cultivation-math-v1.mjs') && tds.includes('ecToDisplayedPpm'), 'TDS converter missing shared EC-to-ppm conversion');
+assert(tds.includes('displayedPpmToEc') && tds.includes("v.toFixed(2)"), 'TDS reverse conversion missing shared ppm-to-EC calculation');
 assert(tds.includes('EC / TDS measurement journal') && tds.includes("thc-ec-measurements-v1"), 'TDS/EC page missing local measurement journal');
 assert(tds.includes('Last calibration / check') && tds.includes('Sample temp (°C, optional)') && tds.includes('Export CSV') && tds.includes('Import CSV'), 'TDS/EC journal missing calibration, temperature, or CSV workflow');
 assert(tds.includes('ecCalibrationStatus') && tds.includes('ecCalibrationStandard') && tds.includes('calibrationAgeDays') && tds.includes('1.413 mS/cm (1413 µS/cm)') && tds.includes('There is no universal calibration interval'), 'TDS/EC journal missing calibration-age status or conductivity-standard guidance');
@@ -125,8 +125,11 @@ assert(atlas.includes('href="/tools/"'), 'Plant Atlas missing central All Tools 
 assert(terpenes.includes('href="/tools/"'), 'Terpene Atlas missing central All Tools link');
 
 const sample = Math.max(0, leafVpd(26,60,25));
+const ppm500 = ecToDisplayedPpm(1.8,500);
+const ecBack = displayedPpmToEc(900,500);
 const scheduleDli = calculateVariableLight([{ppfd:300,hours:1},{ppfd:700,hours:10},{ppfd:300,hours:1}]).dli;
 assert(sample > 0.9 && sample < 1.2, `Shared VPD sanity check failed: ${sample}`);
+assert(ppm500===900 && Math.abs(ecBack-1.8)<1e-9, 'Shared EC/TDS conversion sanity check failed');
 assert(Math.abs(scheduleDli - 27.36) < 1e-9, `Shared PPFD variable-light DLI sanity check failed: ${scheduleDli}`);
 
 if (errors.length) {
