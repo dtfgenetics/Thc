@@ -19,3 +19,15 @@ export function airChangesPerHour(deliveredCfm,roomVolumeCubicFeet){return nonne
 
 export function gallonsToLiters(gallons){return nonnegative(gallons,'Gallons')*3.785411784}
 export function litersToGallons(liters){return nonnegative(liters,'Liters')/3.785411784}
+export function celsiusToFahrenheit(celsius){return finite(celsius,'Celsius')*9/5+32}
+export function fahrenheitToCelsius(fahrenheit){return (finite(fahrenheit,'Fahrenheit')-32)*5/9}
+export function centimetersToInches(centimeters){return nonnegative(centimeters,'Centimeters')/2.54}
+export function inchesToCentimeters(inches){return nonnegative(inches,'Inches')*2.54}
+export function squareMetersToSquareFeet(squareMeters){return nonnegative(squareMeters,'Square meters')*10.7639104167}
+export function squareFeetToSquareMeters(squareFeet){return nonnegative(squareFeet,'Square feet')/10.7639104167}
+export function gramsToOunces(grams){return nonnegative(grams,'Grams')/28.349523125}
+export function ouncesToGrams(ounces){return nonnegative(ounces,'Ounces')*28.349523125}
+export function millisiemensToMicrosiemens(ms){return nonnegative(ms,'mS/cm')*1000}
+export function microsiemensToMillisiemens(us){return nonnegative(us,'µS/cm')/1000}
+export function cfmToCubicMetersPerHour(cfm){return nonnegative(cfm,'CFM')*1.69901082}
+export function cubicMetersPerHourToCfm(m3h){return nonnegative(m3h,'m³/h')/1.69901082}
