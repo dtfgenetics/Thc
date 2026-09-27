@@ -202,6 +202,10 @@ allowed = [
     "vpd-chart",
     "ppfd-chart",
     "assets/images/atlas",
+    "assets/thc-measurement-journal-v1.js",
+    "assets/thc-tool-suite-v1.js",
+    "assets/thc-tool-suite-v1.css",
+    "assets/vendor",
     "dtf-content-overlay",
 ]
 for target in external_targets:
@@ -335,6 +339,12 @@ required = [
     "atlas/root-system/rhizosphere/index.html",
     "atlas/downloads/index.html",
     "assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg",
+    "assets/thc-measurement-journal-v1.js",
+    "assets/thc-tool-suite-v1.js",
+    "assets/thc-tool-suite-v1.css",
+    "assets/vendor/papaparse-5.7.0.min.js",
+    "assets/vendor/uplot-1.6.32.min.js",
+    "assets/vendor/uplot-1.6.32.min.css",
     "dtf-content-overlay/overlay-manifest.json",
     "dtf-content-overlay/favicon",
     "dtf-content-overlay/learn/academy/index.html",

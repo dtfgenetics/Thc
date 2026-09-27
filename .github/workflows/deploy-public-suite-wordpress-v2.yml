@@ -194,6 +194,12 @@ jobs:
             atlas/root-system/rhizosphere/index.html
             atlas/downloads/index.html
             assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg
+            assets/thc-measurement-journal-v1.js
+            assets/thc-tool-suite-v1.js
+            assets/thc-tool-suite-v1.css
+            assets/vendor/papaparse-5.7.0.min.js
+            assets/vendor/uplot-1.6.32.min.js
+            assets/vendor/uplot-1.6.32.min.css
           )
           for file in "${required[@]}"; do
             test -s "$suite_root/$file" || { echo "Missing required release file: $file" >&2; exit 1; }
@@ -253,6 +259,12 @@ jobs:
                   'atlas/root-system/rhizosphere/index.html',
                   'atlas/downloads/index.html',
                   'assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg',
+                  'assets/thc-measurement-journal-v1.js',
+                  'assets/thc-tool-suite-v1.js',
+                  'assets/thc-tool-suite-v1.css',
+                  'assets/vendor/papaparse-5.7.0.min.js',
+                  'assets/vendor/uplot-1.6.32.min.js',
+                  'assets/vendor/uplot-1.6.32.min.css',
                   'growlens/index.html',
                   'thc-grow-doc/index.html',
                   'games/high-land/index.html',
