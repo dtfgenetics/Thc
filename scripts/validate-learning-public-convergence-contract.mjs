@@ -4,10 +4,12 @@ import { readFileSync } from 'node:fs';
 
 const sourcePath = 'scripts/update-wordpress-learn-expansion-v1.mjs';
 const normalizerPath = 'scripts/normalize-html-visible-text.mjs';
+const learningV3Path = 'scripts/rebuild-wordpress-learning-experience-v3.mjs';
 const visualRebuildPath = 'scripts/rebuild-wordpress-visual-site.mjs';
 const workflowPath = '.github/workflows/deploy-thc-learning-center-expansion-v1.yml';
 const source = readFileSync(sourcePath, 'utf8');
 const normalizer = readFileSync(normalizerPath, 'utf8');
+const learningV3 = readFileSync(learningV3Path, 'utf8');
 const visualRebuild = readFileSync(visualRebuildPath, 'utf8');
 const workflow = readFileSync(workflowPath, 'utf8');
 const failures = [];
@@ -29,6 +31,7 @@ for (const semantic of [
   'Teaching Healthy Cultivation',
   'Open the THC Living Plant Atlas',
   'See how the systems connect before you go deep.',
+  'Learn in a sequence that makes the plant easier to understand.',
   'Learn the plant as a connected system.',
   'Plant Health & IPM',
   'Cultivation Science',
@@ -55,6 +58,12 @@ for (const semantic of [
 ]) {
   requireText(visualRebuild, semantic, `visual-site rebuild would remove required Learn semantic: ${semantic}`);
 }
+
+requireText(
+  learningV3,
+  'Learn in a sequence that makes the plant easier to understand.',
+  'Learning V3 rebuild would remove the required sequence-oriented Learn semantic'
+);
 
 for (const token of [
   'LEARNING_ROOT_CONVERGENCE_ATTEMPTS',
