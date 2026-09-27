@@ -10,6 +10,7 @@ import {
   serialDilution,
   dewPoint,
   airChangesPerHour,
+  deliveredCfmForAirChanges,
   gallonsToLiters,
   litersToGallons,
   celsiusToFahrenheit,
@@ -49,6 +50,7 @@ assert.deepEqual(serialDilution({initialConcentration:1000,targetConcentration:1
 ]);
 near(dewPoint(24,65),17.0,0.3);
 near(airChangesPerHour(300,10*10*8),22.5);
+near(deliveredCfmForAirChanges(22.5,10*10*8),300);
 near(gallonsToLiters(1),3.785411784);
 near(litersToGallons(3.785411784),1);
 near(celsiusToFahrenheit(25),77);
