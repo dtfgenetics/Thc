@@ -446,3 +446,42 @@ Decision: research target only. Existing PPFD calculations are intentionally tra
 Repository: https://github.com/observablehq/plot
 Potential use: richer exploratory scientific charts for Atlas/sample-comparison dashboards where declarative multi-variable plots would materially improve analysis.
 Decision: do not add to the meter tools. uPlot remains the better small time-series runtime. Revisit for Terpene Atlas population/sample comparisons or research dashboards if those views become multi-dimensional.
+
+
+## GrowLens photo comparison harvest
+
+### @panzoom/panzoom
+Repository: https://github.com/timmywil/panzoom
+Reviewed package version: 4.6.2
+License: MIT.
+Use for: native-transform pan/zoom interaction if GrowLens later needs draggable synchronized inspection panes.
+
+Decision: do not add the dependency yet. GrowLens currently needs synchronized zoom, overlay, and alignment guidance more than free-form panning. Those controls were implemented with small first-party transforms so both comparison panes remain deterministic and easier to keep synchronized. Revisit Panzoom if drag/pinch pan becomes a validated requirement.
+
+### blockhash-js
+Repository: https://github.com/commonsmachinery/blockhash-js
+License: MIT.
+Use for: perceptual image hashing / near-duplicate screening.
+
+Decision: reference algorithm family rather than add the full dependency. Added a small local difference-hash implementation in `apps/growlens-web/src/photoVisualComparison.ts` for user-facing duplicate screening only.
+
+Implemented:
+- synchronized 1×–2.5× zoom across selected before/after views;
+- opacity overlay mode;
+- alignment guides;
+- local 64-bit difference-hash comparison;
+- near-duplicate warning at a conservative high-similarity threshold;
+- explicit language that hash similarity is not a measure of plant improvement or decline;
+- deterministic hash-distance tests.
+
+### Cropper.js
+Repository: https://github.com/fengyuanchen/cropperjs
+License: MIT.
+Potential use: deliberate crop/rotation normalization for repeat-photo records.
+Decision: do not add until GrowLens stores non-destructive crop/alignment metadata separately from the original photo. Source photos must remain unchanged.
+
+### OpenCV.js
+Repository: https://github.com/opencv/opencv
+License: Apache-2.0.
+Potential use: feature matching, geometric registration, or advanced image comparison.
+Decision: keep lazy/optional. Current manual overlay and alignment workflow should be validated before adding the much larger WebAssembly runtime.
