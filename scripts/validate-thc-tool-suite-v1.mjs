@@ -28,6 +28,17 @@ const js=path.join(root,'site/public-route-patch/assets/thc-tool-suite-v1.js');
 ok(fs.existsSync(css)&&fs.statSync(css).size>3000,'shared tool-suite CSS missing or too small');
 ok(fs.existsSync(js)&&fs.statSync(js).size>300,'shared tool-suite JS missing or too small');
 const sharedJs=fs.readFileSync(js,'utf8');
+const sharedCss=fs.readFileSync(css,'utf8');
+for(const token of [
+  'grid2:has(> :nth-child(2):last-child)',
+  'scroll-snap-type:x proximity',
+  '.toolbar{display:grid;grid-template-columns:1fr;width:100%}',
+  '.hero h1{max-width:18ch',
+  '.nav.open{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))'
+]){
+  ok(sharedCss.includes(token),'shared tool-suite CSS missing responsive UX token: '+token);
+}
+
 for(const token of ['thc-cultivation-context-v1','thc-growlens-state-v1','addEnvironmentReading','addIrrigationRecord','addObservation','addDiaryEntry','addFeedingRecord','addReservoirRecord','addHarvestRecord','addCycle','addTasks']){
  ok(sharedJs.includes(token),'shared tool-suite JS missing integration token: '+token);
 }
