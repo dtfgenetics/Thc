@@ -50,7 +50,7 @@ function renderSources(){
     const identifiers=items.filter(x=>x.pubchemCid).length;
     const aromas=items.filter(x=>Array.isArray(x.aromaDescriptors)&&x.aromaDescriptors.length).length;
     const stereo=items.filter(x=>x.identityStatus==='verified').length;
-    const a=state.identityAudit?.counts||{};quality.innerHTML=`<strong>Identity QA:</strong> formulas ${formulas}/${items.length} · PubChem IDs ${identifiers}/${items.length} · resolved stereochemistry ${stereo}/${items.length}. <strong>${a.pubchemCidMissing??(items.length-identifiers)} records still need structure-level identifier review</strong>; ${a.stereochemistryMissingOrUnspecified??(items.length-stereo)} remain stereochemically unresolved or unspecified. Missing identity fields are not inferred automatically. Quantitative lab analytes must preserve the resolution actually reported by the source.`;
+    const a=state.identityAudit?.counts||{};const mp=state.identityAudit?.measuredPopulation||{};quality.innerHTML=`<strong>Identity QA:</strong> formulas ${formulas}/${items.length} · PubChem IDs ${identifiers}/${items.length} · verified identities ${stereo}/${items.length}. <strong>Measured population:</strong> ${Math.max(0,(mp.analytes||0)-(mp.withoutPubchemCid||0))}/${mp.analytes||0} analytes carry PubChem IDs; ${mp.withoutPubchemCid||0} remains explicitly unresolved. <strong>${a.pubchemCidMissing??(items.length-identifiers)} catalog records still need structure-level identifier review.</strong> Missing identity fields are not inferred automatically. Quantitative lab analytes preserve the resolution actually reported by the source.`;
   }
 }
 function renderFactors(){
