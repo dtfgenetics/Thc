@@ -36,14 +36,19 @@ A code-hardening branch and draft PR now exist in the canonical learning reposit
 
 - Repository: `dtfgenetics/Thc-learning-courses-`
 - Branch: `assessment-runtime-hardening-2026-09-27`
-- Draft PR: #733 — Harden assessment scoring and certification vendor provenance
+- Superseded draft PR: #733 — closed after the branch became stale behind newer certificate/QR work.
+- Current draft PR: #734 — Harden certification scoring and credential verification
+- Current branch: `certification-runtime-hardening-v2-2026-09-27`
 
-Completed in that PR:
+Current PR #734 includes:
 
 - fail-closed validation for invalid passing-score percentages;
 - optional numeric answer tolerance through `extensions.numericTolerance`, while exact numeric scoring remains the default;
 - deterministic regression coverage in `scripts/test-assessment-runtime-hardening.mjs`;
-- npm command `assessment:runtime-hardening:test`;
+- computed public credential `valid` state from lifecycle status plus `expiresAt`;
+- certificate-printing and verification UI guards that require `record.valid === true`;
+- deterministic credential verification UI coverage in `scripts/test-credential-verification-ui.mjs`;
+- npm commands `assessment:runtime-hardening:test` and `credential:verification-ui:test`;
 - MIT license/provenance notice for the vendored QRCode.js used by printable verification certificates.
 
 Further audit also confirmed that the learning repo already contains:
