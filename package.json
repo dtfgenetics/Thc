@@ -75,6 +75,8 @@
     "validate:growlens-release-contract": "node scripts/validate-growlens-release-contract.mjs",
     "test:grow-doc-production-verifier": "node scripts/test-grow-doc-production-verifier.mjs",
     "validate:public-suite-qualification-workflow": "node scripts/validate-public-suite-qualification-workflow.mjs",
-    "audit:responsive-source": "node scripts/audit-responsive-source.mjs"
+    "audit:responsive-source": "node scripts/audit-responsive-source.mjs",
+    "verify:tool-registry": "node scripts/test-tool-registry.mjs && node scripts/test-tool-registry-validation.mjs && node scripts/validate-thc-tool-suite-v1.mjs",
+    "verify:tool-registry:live": "node scripts/verify-cultivation-reference-tools-live.mjs"
   }
 }
