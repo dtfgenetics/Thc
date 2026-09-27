@@ -27,7 +27,7 @@ const js=path.join(root,'site/public-route-patch/assets/thc-tool-suite-v1.js');
 ok(fs.existsSync(css)&&fs.statSync(css).size>3000,'shared tool-suite CSS missing or too small');
 ok(fs.existsSync(js)&&fs.statSync(js).size>300,'shared tool-suite JS missing or too small');
 const sharedJs=fs.readFileSync(js,'utf8');
-for(const token of ['thc-cultivation-context-v1','thc-growlens-state-v1','addEnvironmentReading','addIrrigationRecord','addObservation','addFeedingRecord','addReservoirRecord','addHarvestRecord']){
+for(const token of ['thc-cultivation-context-v1','thc-growlens-state-v1','addEnvironmentReading','addIrrigationRecord','addObservation','addFeedingRecord','addReservoirRecord','addHarvestRecord','addTasks']){
  ok(sharedJs.includes(token),'shared tool-suite JS missing integration token: '+token);
 }
 for(const [slug,title,tokens] of tools){
@@ -56,7 +56,7 @@ for(const [slug,tokens] of [
  ['water-quality-lab',['thc-water-quality-history-v1','Change from prior report']],
  ['fertigation-lab',['recipeMatrix','Target vs achieved recipe worksheet']],
  ['dry-cure-lab',['thc-dry-cure-checkpoints-v1','Save harvest to GrowLens']],
- ['breeder-pedigree',['Offspring / line name','Population size','Selected plant IDs']]
+ ['breeder-pedigree',['Offspring / line name','Population size','Selected plant IDs','Relationship explorer','Direct descendants']],['grow-planner',['Create GrowLens stage tasks','THC.growlens.addTasks']]
 ]){
  const h=fs.readFileSync(path.join(root,'site/public-route-patch',slug,'index.html'),'utf8');
  for(const token of tokens) ok(h.includes(token),slug+' missing upgraded workflow token: '+token);
