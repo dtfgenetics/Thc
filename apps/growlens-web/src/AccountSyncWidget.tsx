@@ -25,6 +25,7 @@ import {
   summarizeGrowLensState,
 } from './syncMerge';
 import type { GrowLensState } from './types';
+import { useModalFocusTrap } from './useModalFocusTrap';
 
 type ServiceStatus = 'checking' | 'local' | 'available' | 'authenticated' | 'unavailable';
 type AuthMode = 'login' | 'register';
@@ -60,6 +61,7 @@ function readableError(error: unknown): string {
 
 export default function AccountSyncWidget({ remoteStore = growLensRemoteStore }: Props) {
   const [open, setOpen] = useState(false);
+  const modalRef = useModalFocusTrap<HTMLElement>(open, () => setOpen(false));
   const [serviceStatus, setServiceStatus] = useState<ServiceStatus>('checking');
   const [session, setSession] = useState<AuthenticatedSession | null>(null);
   const [authMode, setAuthMode] = useState<AuthMode>('login');
@@ -364,7 +366,7 @@ export default function AccountSyncWidget({ remoteStore = growLensRemoteStore }:
         <div className="account-overlay" role="presentation" onMouseDown={(event) => {
           if (event.currentTarget === event.target) setOpen(false);
         }}>
-          <aside className="account-panel" role="dialog" aria-modal="true" aria-labelledby="account-title">
+          <aside ref={modalRef} className="account-panel" role="dialog" aria-modal="true" aria-labelledby="account-title">
             <div className="account-panel-header">
               <div>
                 <span className="eyebrow">Optional cross-device backup</span>
