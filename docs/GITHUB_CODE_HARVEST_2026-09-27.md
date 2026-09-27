@@ -515,3 +515,61 @@ For irrigation and feeding events GrowLens can now:
 The UI explicitly calls these temporal associations, not causal effects. Lighting schedule, HVAC cycling, weather, sensor placement, time of day and concurrent changes remain plausible confounders.
 
 Deterministic coverage: `apps/growlens-web/src/eventEnvironmentInsights.test.ts`.
+
+
+## Additional tool harvest — implementation decisions
+
+### Cytoscape.js 3.34.3
+Repository: https://github.com/cytoscape/cytoscape.js  
+License: MIT.
+
+Adopted for `/breeder-pedigree/` because the existing breeding data is inherently graph-shaped. The implementation vendors the browser build locally, preserves the upstream MIT notice, adds parent→offspring lineage rendering, pan/zoom, focus highlighting, ancestor/descendant highlighting, node selection, mobile sizing, and a safe text fallback. Canonical breeding records remain first-party DTF data.
+
+Validation:
+- `scripts/validate-breeder-pedigree-graph.mjs`
+- `npm run validate:breeder-pedigree-graph`
+
+### Plant Atlas — model-viewer decision
+Repository reviewed: https://github.com/google/model-viewer  
+License: Apache-2.0.
+
+Decision: do not replace the current Plant Atlas Three.js runtime. The existing Atlas already provides anatomy raycasting, semantic targets, keyboard/pointer handling, responsive observers, and WebGL context recovery. A generic model viewer would duplicate or reduce capability.
+
+### FullCalendar benchmark → native Grow Planner timeline
+Repository: https://github.com/fullcalendar/fullcalendar  
+License: MIT for the standard open-source core.
+
+Decision: use FullCalendar as an interaction benchmark only. The Grow Planner has six sequential lifecycle stages, so a full event/calendar engine is unnecessary. A native proportional timeline was added with exact dates, relative stage widths, current-day position, zero-day omission, mobile horizontal scrolling, and the existing GrowLens task bridge intact.
+
+Validation:
+- `scripts/validate-grow-planner-timeline.mjs`
+- `npm run validate:grow-planner-timeline`
+
+### uPlot reuse — IPM Scout route trends
+Existing vendored dependency: uPlot 1.6.32.
+
+Adopted by reuse rather than adding another chart dependency. IPM Scout now graphs repeated route/trap counts over time against the user-entered action threshold, retains numeric history, and falls back to a table if charting is unavailable. Trend output remains descriptive evidence and is not presented as diagnosis.
+
+Validation:
+- `scripts/validate-ipm-scout-trend.mjs`
+- `npm run validate:ipm-scout-trend`
+
+### GrowLens source-integrity repair
+The repository contained a duplicated `CameraObservationWidget.tsx` implementation that blocked TypeScript builds and therefore blocked GrowLens CI and Public Suite packaging. The duplicate source was removed, the required modal-focus-trap import retained, and a deterministic guard was added.
+
+Validation:
+- `scripts/validate-growlens-camera-widget-source.mjs`
+- `npm run validate:growlens-camera-source`
+- the guard is wired into GrowLens CI before build.
+
+### Cropper.js 2.2.0
+Repository: https://github.com/fengyuanchen/cropperjs  
+License: MIT.
+
+Decision: benchmark for Grow Doc diagnostic preprocessing. The diagnostic repository implements the needed crop/zoom/rotate subset natively for now to avoid an unsafe lockfile update, while retaining Cropper.js as a future upgrade path.
+
+### PPFD interpolation libraries
+Decision: do not adopt blurred/interpolated heatmap engines for the canopy mapper. PPFD measurements are discrete sensor observations; interpolation can imply unmeasured values. Keep numeric grid points authoritative and color secondary.
+
+### simple-statistics
+Decision: conditional future adoption for GrowLens multi-variable analytics only when quantiles/correlation/regression are genuinely needed. Do not add it to simple cultivation calculators where transparent first-party formulas are easier to audit.
