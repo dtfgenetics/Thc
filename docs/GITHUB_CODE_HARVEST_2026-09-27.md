@@ -354,3 +354,35 @@ Repository: https://github.com/jakearchibald/idb
 License: ISC.
 Current GrowLens photo storage already has a narrow, working native IndexedDB wrapper with one `photos` store and two indexes. Replacing it immediately would add migration risk without adding user-visible capability.
 Next trigger for adoption: multiple object stores, cursor/range queries, schema migrations beyond the current photo store, or transaction coordination across record families. Until then, keep the existing photoStore API stable and benchmark future storage work against `idb` rather than rewriting it preemptively.
+
+## GrowLens offline/PWA resilience harvest
+
+### Service-worker update UX
+Reference patterns reviewed from open-source PWA helpers and service-worker update implementations: detect `registration.waiting`, observe `updatefound`, and activate a downloaded worker only after explicit user action via `SKIP_WAITING`.
+Action taken:
+- added `PwaHealthWidget.tsx` to GrowLens;
+- shows online/offline status and current service-worker registration state;
+- detects a waiting service worker;
+- provides an explicit “Install downloaded update” action;
+- listens for `controllerchange` and reloads only after the user approves activation;
+- added a `SKIP_WAITING` message handler to `public/sw.js`.
+
+This avoids forcing an app-shell reload while a grow record or form may be in progress.
+
+### Browser Storage API
+Patterns reviewed from StorageManager examples using `navigator.storage.estimate()`, `persisted()`, and user-triggered `persist()`.
+Action taken:
+- GrowLens now reports approximate site-origin storage usage and quota when the browser exposes them;
+- reports whether browser storage is persistent or best-effort;
+- allows the user to request persistent storage explicitly;
+- clearly states that the estimate covers the whole site origin, not only GrowLens;
+- keeps complete backups as the disaster-recovery boundary rather than implying persistent storage is guaranteed.
+
+### Workbox
+Repository: https://github.com/GoogleChrome/workbox
+License: MIT.
+Decision after audit: do not migrate GrowLens yet. The current service worker has a narrow shell cache and an explicit privacy boundary for `/api/` requests. Workbox becomes justified when precache manifests, routing rules, cache expiration, background strategies, or multiple runtime cache classes become materially more complex. A framework migration now would add more surface area than capability.
+
+### vite-plugin-pwa
+Repository: https://github.com/vite-pwa/vite-plugin-pwa
+Decision: benchmark only. GrowLens already has a custom service worker with privacy-specific request handling and deployment expectations. Revisit if the build pipeline is standardized around generated manifests and service-worker injection.
