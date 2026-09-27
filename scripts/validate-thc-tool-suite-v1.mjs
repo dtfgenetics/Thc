@@ -26,6 +26,8 @@ const ok=(v,m)=>{if(!v)errors.push(m)};
 const css=path.join(root,'site/public-route-patch/assets/thc-tool-suite-v1.css');
 const js=path.join(root,'site/public-route-patch/assets/thc-tool-suite-v1.js');
 ok(fs.existsSync(css)&&fs.statSync(css).size>3000,'shared tool-suite CSS missing or too small');
+const sharedCss=fs.readFileSync(css,'utf8');
+for(const token of ['.advanced-workflow{','.quick-result-note{']) ok(sharedCss.includes(token),'shared tool-suite CSS missing progressive-disclosure token: '+token);
 ok(fs.existsSync(js)&&fs.statSync(js).size>300,'shared tool-suite JS missing or too small');
 const sharedJs=fs.readFileSync(js,'utf8');
 for(const token of ['thc-cultivation-context-v1','thc-growlens-state-v1','addEnvironmentReading','addIrrigationRecord','addObservation','addDiaryEntry','addFeedingRecord','addReservoirRecord','addHarvestRecord','addCycle','addTasks']){
@@ -54,7 +56,7 @@ for(const token of ['Shared cultivation context','Grow','Room','Zone','Plant / g
  ok(sharedJs.includes(token),'shared cultivation context UI missing token: '+token);
 }
 for(const [slug,tokens] of [
- ['water-quality-lab',['thc-water-quality-history-v1','Change from prior report']],
+ ['water-quality-lab',['thc-water-quality-history-v1','Change from prior report','Advanced report chemistry: hardness, calcium, magnesium, sodium & chloride','Advanced: save, compare & export water reports','quick-result-note','Start interpretation with pH, EC and alkalinity together']],
  ['fertigation-lab',['recipeMatrix','Target vs achieved recipe worksheet']],
  ['dry-cure-lab',['thc-dry-cure-checkpoints-v1','Save harvest to GrowLens']],
  ['breeder-pedigree',['Offspring / line name','Population size','Selected plant IDs','Relationship explorer','Direct descendants']],['grow-planner',['Create GrowLens stage tasks','THC.growlens.addTasks','Create GrowLens cycle','THC.growlens.addCycle','Saved grow plans','Backup JSON','Restore JSON','data-load','data-delete']],['environment-control',['Recent VPD trend','history-chart']],['dryback-lab',['Recent dryback trend','history-chart']],['root-zone-temperature',['thc-root-zone-history-v1','Root-zone trend']],['plant-growth-tracker',['thc-plant-growth-history-v1','Growth-rate trend','Plant / group ID','Cultivar / line','Review one plant / group','Backup JSON','Restore JSON','data-load','data-delete']],['photoperiod-planner',['thc-photoperiod-schedules-v1','Compare saved schedules']],['substrate-calculator',['thc-substrate-plans-v1','Purchase overage','Plan name','Review one zone / room','Backup JSON','Restore JSON','data-load','data-delete','thc-substrate-plans']],['co2-ventilation',['Delivered airflow factor','target ACH']],['dilution-calculator',['Serial dilution steps','Diluent amount']],['unit-converter',['Airflow','m³/h','Area','Mass']]
