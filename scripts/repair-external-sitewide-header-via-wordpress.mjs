@@ -112,7 +112,7 @@ function reconcileExternalShell(text,file){
   output=output.replace(/<\/head>/i,`${SHARED_SHELL_STYLES}\n</head>`);
   output=output.replace(/<body\b([^>]*)>/i,`<body$1>\n${SITEWIDE_HEADER_HTML}`);
   output=output.replace(/<\/body>/i,`${SITEWIDE_FOOTER_HTML}\n${SITEWIDE_HEADER_SCRIPT_TAG}\n</body>`);
-  for(const marker of ['data-dtf-shell="header-v6"','data-dtf-sitewide-header="canonical-eight-v1"','data-dtf-shell="footer-v6"','data-dtf-sitewide-footer="canonical-eight-v1"','dtf-sitewide-header-v6-script']){
+  for(const marker of ['data-dtf-shell="header-v6"','data-dtf-sitewide-header="canonical-five-v1"','data-dtf-shell="footer-v6"','data-dtf-sitewide-footer="canonical-eight-v1"','dtf-sitewide-header-v6-script']){
     if(!output.includes(marker)) throw new Error(`Canonical V6 shell marker missing from transformed ${file}: ${marker}`);
   }
   return output;
