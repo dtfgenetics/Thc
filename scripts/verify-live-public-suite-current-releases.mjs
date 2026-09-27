@@ -15,7 +15,7 @@ const routes = [
   },
   {
     path: '/games/grower-conversations/',
-    markers: ['Grower Conversations', '96-card community deck']
+    markers: ['Grow Room Confessions', '96 digital preview prompts']
   },
   {
     path: '/games/seed-man-platformer/',
