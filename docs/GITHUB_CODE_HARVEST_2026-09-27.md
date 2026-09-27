@@ -519,3 +519,21 @@ Potential libraries reviewed conceptually: canvas heatmap/interpolation engines 
 
 Decision:
 Do not add interpolated/blurred heatmap rendering to the PPFD canopy mapper. The tool measures discrete sensor points. Interpolating color between measured points could visually imply PPFD values that were never observed. Keep numeric grid points authoritative and keep color as a bounded visual aid.
+
+
+### uPlot reuse — IPM Scout route trends
+Existing vendored dependency: uPlot 1.6.32.
+
+Action taken:
+- reused the already-vendored uPlot runtime and CSS from the VPD/measurement stack;
+- added a date-based route/trap trend chart to `/ipm-scout/`;
+- plots observed scouting count against the user-entered threshold;
+- preserves all numeric records and the existing scouting-history table;
+- provides a table fallback if uPlot is unavailable;
+- requires at least two repeated observations before presenting a line trend;
+- destroys prior chart instances before redraw and supports viewport resize;
+- explicitly labels trend output as descriptive evidence, not organism diagnosis;
+- added `scripts/validate-ipm-scout-trend.mjs` and `npm run validate:ipm-scout-trend`.
+
+Why reuse instead of another library:
+uPlot is already locally vendored, production-used, lightweight, and sufficient for sparse longitudinal scouting counts. Adding another chart package would duplicate capability and expand maintenance surface.
