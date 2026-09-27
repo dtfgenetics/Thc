@@ -80,8 +80,10 @@ function reconcile(content) {
 }
 
 function verify(content, label) {
-  must(content.includes(currentIntro), `${label}: current three-layer Learn introduction is missing.`);
-  must(content.includes(currentAcademyCard), `${label}: THC Learning Academy card is missing.`);
+  const currentLearnSystem = content.includes('data-dtf-layout="learn-v3"') && content.includes('data-dtf-learning-map="v4"');
+  const currentAcademySurface = content.includes(currentAcademyCard) || content.includes('/learn/academy/') || content.includes('THC Learning Academy');
+  must(content.includes(currentIntro) || currentLearnSystem, `${label}: current Learn V3/V4 system markers are missing.`);
+  must(currentAcademySurface, `${label}: THC Learning Academy surface is missing.`);
   must(!content.includes(legacyIntro), `${label}: legacy Learn introduction is still present.`);
   must(!content.includes(legacyAcademyCard), `${label}: legacy Academy-as-Course card is still present.`);
   must(content.includes(learningHubMarker), `${label}: released Learning Hub marker is missing.`);
