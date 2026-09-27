@@ -89,9 +89,11 @@ if (normalization?.schemaVersion !== 1) errors.push('analyte-normalization-v1.js
 if (!Array.isArray(normalization?.aliases) || normalization.aliases.length < 20) errors.push('Analyte normalization registry is unexpectedly small');
 if (!Array.isArray(normalization?.authorities) || normalization.authorities.length < 10) errors.push('Analyte normalization authority registry is unexpectedly small');
 const authorityIds = new Set();
+const authoritiesById = new Map();
 for (const authority of normalization?.authorities || []) {
   if (!authority.id || authorityIds.has(authority.id)) errors.push(`Duplicate or missing normalization authority id: ${authority?.id || '(missing)'}`);
   authorityIds.add(authority.id);
+  authoritiesById.set(authority.id, authority);
   if (!Number.isInteger(authority.cid) || authority.cid <= 0) errors.push(`Invalid PubChem CID for normalization authority ${authority.id}`);
   if (!/^[A-Z]{14}-[A-Z]{10}-[A-Z]$/.test(authority.inchikey || '')) errors.push(`Invalid InChIKey for normalization authority ${authority.id}`);
   if (!/^https:\/\/pubchem\.ncbi\.nlm\.nih\.gov\//.test(authority.url || '')) errors.push(`Normalization authority ${authority.id} must use an official PubChem URL`);
@@ -106,6 +108,20 @@ for (const row of normalization?.aliases || []) {
   if (!['resolved','partial','unresolved'].includes(row.identityResolution)) errors.push(`Invalid identityResolution for ${row.reported}`);
   if (row.identityResolution === 'resolved' && (!Number.isInteger(row.pubchemCid) || !row.inchikey)) errors.push(`Resolved normalization ${row.reported} requires PubChem CID and InChIKey`);
   if (row.inchikey && !/^[A-Z]{14}-[A-Z]{10}-[A-Z]$/.test(row.inchikey)) errors.push(`Invalid analyte InChIKey for ${row.reported}`);
+  if (Number.isInteger(row.pubchemCid) && row.inchikey) {
+    if (!row.authorityId) {
+      errors.push(`Normalization alias with complete PubChem identity must link authorityId: ${row.reported}`);
+    } else {
+      const authority = authoritiesById.get(row.authorityId);
+      if (!authority) errors.push(`Unknown authorityId for normalization alias ${row.reported}: ${row.authorityId}`);
+      else {
+        if (authority.cid !== row.pubchemCid) errors.push(`Authority CID mismatch for normalization alias ${row.reported}`);
+        if (authority.inchikey !== row.inchikey) errors.push(`Authority InChIKey mismatch for normalization alias ${row.reported}`);
+      }
+    }
+  } else if (row.authorityId) {
+    errors.push(`Normalization alias cannot claim authorityId without CID and InChIKey: ${row.reported}`);
+  }
 }
 
 
