@@ -18,6 +18,9 @@ import {
   vibrateGame,
   createWakeLockController,
   createStateMachine,
+  LoadingTaskError,
+  runLoadTasks,
+  loadingResultsToObject,
 } from '../src/index.mjs';
 
 function memoryStorage() {
@@ -364,6 +367,39 @@ class FakeAudioContext {
   assert.equal(machine.previousStateName(), 'run');
   assert.equal(machine.setState('missing'), false);
   assert.equal(events.length >= 3, true);
+}
+
+
+{
+  const progress = [];
+  let flakyAttempts = 0;
+  const results = await runLoadTasks([
+    { id: 'manifest', load: async () => ({ ok: true }) },
+    { id: 'levels', load: async () => [1, 2, 3] },
+    { id: 'flaky', load: async () => {
+      flakyAttempts += 1;
+      if (flakyAttempts === 1) throw new Error('temporary');
+      return 'recovered';
+    } },
+  ], {
+    retries: 1,
+    onProgress: (event) => progress.push(event),
+  });
+  assert.deepEqual(loadingResultsToObject(results), {
+    manifest: { ok: true },
+    levels: [1, 2, 3],
+    flaky: 'recovered',
+  });
+  assert.equal(flakyAttempts, 2);
+  assert.equal(progress[0].phase, 'start');
+  assert.equal(progress.some((event) => event.phase === 'retry' && event.id === 'flaky'), true);
+  assert.equal(progress.at(-1).phase, 'ready');
+  assert.equal(progress.at(-1).progress, 1);
+
+  await assert.rejects(
+    () => runLoadTasks([{ id: 'broken', load: async () => { throw new Error('nope'); } }]),
+    (error) => error instanceof LoadingTaskError && error.failed[0].id === 'broken',
+  );
 }
 
 console.log('shared game platform runtime tests passed');
