@@ -165,12 +165,12 @@ for (const factor of factors?.factors || []) {
 }
 
 const index = fs.existsSync(path.join(sourceRoot,'index.html')) ? fs.readFileSync(path.join(sourceRoot,'index.html'),'utf8') : '';
-for (const token of ['/terpene-atlas/terpene-atlas-v1.css','/terpene-atlas/terpene-atlas-v1.js','class="skip-link"','id="main-content"','data-wheel-family','data-search','data-class-filter','data-scope-filter','data-population-body','data-profile-file','data-compound-dialog','aria-modal="true"','aria-live="polite"','data-factor-grid','data-factor-category','data-general-evidence','data-safety-grid','data-source-grid','data-compare-a','/atlas/trichomes-resin/']) {
+for (const token of ['/terpene-atlas/terpene-atlas-v1.css','/terpene-atlas/terpene-atlas-v1.js','class="skip-link"','id="main-content"','data-wheel-family','data-search','data-class-filter','data-scope-filter','data-population-body','data-profile-file','data-compound-dialog','aria-modal="true"','aria-live="polite"','data-factor-grid','data-factor-category','data-general-evidence','data-safety-grid','data-source-grid','data-compare-a','data-quick-query="citrus"','data-quick-query="myrcene"','Start with what you know','/atlas/trichomes-resin/']) {
   if (!index.includes(token)) errors.push(`Terpene Atlas index missing UI contract: ${token}`);
 }
 
 const runtime = fs.existsSync(path.join(sourceRoot,'terpene-atlas-v1.js')) ? fs.readFileSync(path.join(sourceRoot,'terpene-atlas-v1.js'),'utf8') : '';
-for (const token of ['terpene-catalog-v1.json','sources-v1.json','population-summary-v1.json','sample-profiles-v1.json','renderWheel','renderFactors','renderEvidenceSafety','renderPopulation','renderImportedProfile','showCompound','catalogState','scopeBoundary',"URLSearchParams(location.search).get('compound')",'history.replaceState','renderSources','renderCompare','data-result-count','cache:\'no-store\'']) {
+for (const token of ['terpene-catalog-v1.json','sources-v1.json','population-summary-v1.json','sample-profiles-v1.json','renderWheel','renderFactors','renderEvidenceSafety','renderPopulation','renderImportedProfile','showCompound','catalogState','scopeBoundary',"URLSearchParams(location.search).get('compound')",'history.replaceState','renderSources','renderCompare','data-result-count','data-quick-query','scrollIntoView','cache:\'no-store\'']) {
   if (!runtime.includes(token)) errors.push(`Terpene Atlas runtime missing contract: ${token}`);
 }
 
