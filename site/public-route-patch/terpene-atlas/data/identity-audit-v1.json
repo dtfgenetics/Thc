@@ -10,8 +10,8 @@
     "pubchemCidMissing": 51,
     "stereochemistryResolved": 29,
     "stereochemistryMissingOrUnspecified": 91,
-    "isomerGroupResolved": 58,
-    "isomerGroupMissing": 62
+    "isomerGroupResolved": 63,
+    "isomerGroupMissing": 57
   },
   "measuredPopulation": {
     "sampleCount": 79,
@@ -319,7 +319,7 @@
       "id": "fenchone",
       "canonicalName": "Fenchone",
       "pubchemCid": 14525,
-      "inchikey": null,
+      "inchikey": "LHXDLQBQYFFVNW-UHFFFAOYSA-N",
       "identityStatus": "partially-resolved",
       "stereochemistry": "unspecified / racemic parent",
       "isomerGroup": "fenchone"
@@ -886,51 +886,51 @@
       "id": "alpha-longipinene",
       "canonicalName": "α-Longipinene",
       "pubchemCid": 12311396,
-      "inchikey": null,
-      "identityStatus": null,
-      "stereochemistry": null,
-      "isomerGroup": null
+      "inchikey": "HICYDYJTCDBHMZ-COMQUAJESA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "PubChem authority is (+)-alpha-longipinene; source label is broader",
+      "isomerGroup": "alpha-longipinene"
     },
     {
       "id": "alpha-cadinene",
       "canonicalName": "α-Cadinene",
       "pubchemCid": 96843146,
-      "inchikey": null,
-      "identityStatus": null,
-      "stereochemistry": null,
-      "isomerGroup": null
+      "inchikey": "QMAYBMKBYCGXDH-RBSFLKMASA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "PubChem authority is a defined alpha-cadinene stereostructure; source label is broader",
+      "isomerGroup": "alpha-cadinene"
     },
     {
       "id": "epi-alpha-bisabolol",
       "canonicalName": "epi-α-Bisabolol",
       "pubchemCid": 1616126,
-      "inchikey": null,
-      "identityStatus": null,
-      "stereochemistry": null,
-      "isomerGroup": null
+      "inchikey": "RGZSQWQPBWRIAQ-HUUCEWRRSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "PubChem authority is (-)-epi-alpha-bisabolol; source label is broader",
+      "isomerGroup": "epi-alpha-bisabolol"
     },
     {
       "id": "caryophyllene-alcohol",
       "canonicalName": "Caryophyllene alcohol",
       "pubchemCid": 11746218,
-      "inchikey": null,
-      "identityStatus": null,
-      "stereochemistry": null,
-      "isomerGroup": null
+      "inchikey": "FUQAYSQLAOJBBC-PAPYEOQZSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "PubChem authority is stereospecific; source label is broader",
+      "isomerGroup": "caryophyllene-alcohol"
     },
     {
       "id": "ledol",
       "canonicalName": "Ledol",
       "pubchemCid": 11074994,
-      "inchikey": null,
-      "identityStatus": null,
-      "stereochemistry": null,
-      "isomerGroup": null
+      "inchikey": "AYXPYQRXGNDJFU-AQEIEYEASA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "PubChem authority is (+)-ledol; source label is broader",
+      "isomerGroup": "ledol"
     }
   ],
   "normalizationCoverage": {
-    "aliases": 113,
-    "authorities": 64
+    "aliases": 124,
+    "authorities": 70
   },
   "requiredNextFields": [
     "pubchemCid",
