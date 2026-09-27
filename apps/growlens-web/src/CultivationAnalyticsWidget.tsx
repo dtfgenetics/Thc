@@ -8,6 +8,8 @@ import {
 } from './cultivationAnalytics';
 import { loadState, STATE_SAVED_EVENT } from './storage';
 
+import { useModalFocusTrap } from './useModalFocusTrap';
+
 type Tab = 'overview' | 'plants' | 'cultivars' | 'cycles' | 'spaces';
 
 const tabs: Array<{ id: Tab; label: string }> = [
@@ -69,6 +71,7 @@ function PlantRow({ plant }: { plant: PlantCultivationAnalytics }) {
 
 export default function CultivationAnalyticsWidget() {
   const [open, setOpen] = useState(false);
+  const modalRef = useModalFocusTrap<HTMLElement>(open, () => setOpen(false));
   const [tab, setTab] = useState<Tab>('overview');
   const [state, setState] = useState(() => loadState());
   const [query, setQuery] = useState('');
@@ -130,7 +133,7 @@ export default function CultivationAnalyticsWidget() {
   return <>
     <button className="analytics-launcher" type="button" aria-label="Open cultivation analytics" onClick={() => { setState(loadState()); setOpen(true); }}><span aria-hidden="true">▥</span><strong>Analytics</strong></button>
     {open ? <div className="analytics-overlay" role="presentation" onMouseDown={(event) => { if (event.currentTarget === event.target) setOpen(false); }}>
-      <section className="analytics-panel" role="dialog" aria-modal="true" aria-labelledby="analytics-title">
+      <section ref={modalRef} className="analytics-panel" role="dialog" aria-modal="true" aria-labelledby="analytics-title">
         <header className="analytics-header"><div><span className="eyebrow">Measured history, grouped carefully</span><h2 id="analytics-title">Cultivation analytics</h2><p>Descriptive summaries of saved records. These comparisons do not prove that a treatment, cultivar, or environment caused an outcome.</p></div><button className="account-close" type="button" aria-label="Close cultivation analytics" onClick={() => setOpen(false)}>×</button></header>
         <nav className="analytics-tabs" aria-label="Cultivation analytics sections">{tabs.map((item) => <button type="button" key={item.id} className={tab === item.id ? 'active' : ''} aria-pressed={tab === item.id} onClick={() => setTab(item.id)}>{item.label}</button>)}</nav>
         <div className="analytics-body">{content}</div>
