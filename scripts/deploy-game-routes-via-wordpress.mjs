@@ -519,7 +519,7 @@ async function verifyPage(path, required, forbidden = []) {
 async function verifyLive() {
   await verifyPage('/games/', ['Pick what is playable. See what is coming next.', 'href="/seeds/"', 'href="/shop/"'], ['server-engine alpha', 'implementation gates']);
   await verifyPage('/games/high-iq/', ['High IQ — Test Higher Cognition', 'href="/games/dtf-route.css"', 'href="./high-iq.css"', 'src="./app.js"'], ['/assets/dtf-gateway-v2.css']);
-  await verifyPage('/games/grower-conversations/', ['Grower Conversations', 'href="./grower-conversations.css"', 'src="./app.js"'], ['/assets/dtf-gateway-v2.css']);
+  await verifyPage('/games/grower-conversations/', ['Grow Room Confessions', 'href="./grower-conversations.css"', 'src="./app.js"'], ['/assets/dtf-gateway-v2.css']);
   const assets = [
     '/games/dtf-route.css', '/games/high-iq/high-iq.css', '/games/high-iq/app.js', '/games/high-iq/data/manifest.json',
     '/games/grower-conversations/grower-conversations.css', '/games/grower-conversations/app.js', '/games/grower-conversations/data/prompt-bank.json',
