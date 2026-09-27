@@ -105,6 +105,7 @@ body.burn-opponent-turn .boards .board-card:first-child .board-title h3 {
     border: 1px solid rgba(255,255,255,.08);
     border-radius: 10px;
     background: rgba(5, 11, 8, .94);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
   }
 
