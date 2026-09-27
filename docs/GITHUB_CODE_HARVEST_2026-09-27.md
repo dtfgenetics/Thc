@@ -485,3 +485,33 @@ Repository: https://github.com/opencv/opencv
 License: Apache-2.0.
 Potential use: feature matching, geometric registration, or advanced image comparison.
 Decision: keep lazy/optional. Current manual overlay and alignment workflow should be validated before adding the much larger WebAssembly runtime.
+
+
+## Event-linked environment timeline harvest
+
+### vis-timeline
+Repository: https://github.com/visjs/vis-timeline
+License: dual Apache-2.0 OR MIT.
+Use for: dense interactive timelines with ranges, groups, zooming and many event types.
+
+Decision: do not add yet. GrowLens already has a plant timeline and the current need is analytical context around measured events, not a general-purpose timeline framework. Revisit when the product needs large multi-lane timelines, range selection, or synchronized event/chart navigation.
+
+### TimelineJS3
+Repository: https://github.com/NUKnightLab/TimelineJS3
+License: MPL-2.0.
+Decision: not a good fit for GrowLens. It is optimized for narrative/story timelines rather than high-frequency private cultivation records and analytical before/after comparisons.
+
+### Action taken: event/environment windows
+Added `apps/growlens-web/src/eventEnvironmentInsights.ts`.
+
+For irrigation and feeding events GrowLens can now:
+- resolve the relevant grow space from the record, plant, or linked reservoir;
+- collect readings in a configurable window before and after the event;
+- refuse a comparison unless both sides have data;
+- keep readings scoped to the same grow space;
+- compare average temperature, RH, VPD and PPFD before vs after;
+- surface recent event-linked deltas in Cultivation Analytics.
+
+The UI explicitly calls these temporal associations, not causal effects. Lighting schedule, HVAC cycling, weather, sensor placement, time of day and concurrent changes remain plausible confounders.
+
+Deterministic coverage: `apps/growlens-web/src/eventEnvironmentInsights.test.ts`.
