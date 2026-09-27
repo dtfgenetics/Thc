@@ -253,3 +253,49 @@ Seed Man save v2 now rejects malformed JSON, wrong save versions, invalid arrays
 License: Apache-2.0.
 Useful future target: IndexedDB-backed local persistence for larger histories/media-capable tools where localStorage becomes too small or synchronous.
 Decision: do not migrate small settings/saves yet. Evaluate for GrowLens, image-heavy journals, large measurement histories, and offline tool records.
+
+
+## Additional harvest — interactive trends + next candidates
+
+### uPlot 1.6.32
+License: MIT.
+Action taken: vendored the official browser build and stylesheet under `site/public-route-patch/assets/vendor/` and upgraded the VPD logger trend visualization.
+Benefits now used:
+- cursor inspection;
+- drag-to-zoom on the x axis;
+- responsive resizing;
+- compact time-series runtime;
+- existing native canvas chart retained as the failure fallback.
+
+The VPD equations, CSV import rules, local-only processing, metrics and results table remain authoritative and unchanged.
+
+### MiniSearch
+Repository: https://github.com/lucaong/minisearch
+License: MIT.
+Use for: client-side full-text search across the large Learn/Encyclopedia/course/atlas catalog where substring filtering is no longer sufficient.
+Why it fits: fuzzy search, prefix search, ranking, field boosting and suggestions with zero runtime dependencies; it can run locally/offline in the browser.
+Decision: high-priority next research target. Build one shared education index rather than adding separate search implementations to each surface.
+
+### focus-trap
+Repository: https://github.com/focus-trap/focus-trap
+License: MIT.
+Use for: complex dialogs, game setup overlays, invite modals and certification dialogs that currently need reliable keyboard focus containment.
+Decision: adopt only where a real modal exists; do not add globally just to replace simple menu focus behavior.
+
+### Workbox
+Repository: https://github.com/GoogleChrome/workbox
+License: MIT.
+Use for: service-worker generation, cache versioning and offline asset strategies where current hand-written service workers become difficult to maintain.
+Decision: benchmark GrowLens/offline tools first. Do not introduce it to static pages that do not need offline behavior.
+
+### Jake Archibald idb
+Repository: https://github.com/jakearchibald/idb
+License: ISC.
+Use for: structured IndexedDB state where GrowLens or other journals outgrow direct IndexedDB/localStorage helpers.
+Decision: stronger future choice than idb-keyval when transactions, multiple stores, migrations and indexed queries become necessary; no migration until a concrete storage boundary needs it.
+
+### Phaser Rex plugins
+Repository: https://github.com/rexrainbow/phaser3-rex-notes
+License: MIT.
+Use for: reference patterns for virtual joystick/touch controls, UI widgets, camera/input helpers and Phaser-specific interaction problems.
+Decision: reference selectively. Seed Man already has dedicated touch controls, so do not replace working controls merely to adopt a plugin.
