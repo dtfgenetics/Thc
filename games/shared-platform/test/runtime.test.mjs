@@ -12,6 +12,11 @@ import {
   createGameAudioManager,
   DETERMINISTIC_RNG_ALGORITHM,
   createDeterministicRng,
+  copyText,
+  shareGameLink,
+  toggleFullscreen,
+  vibrateGame,
+  createWakeLockController,
 } from '../src/index.mjs';
 
 function memoryStorage() {
@@ -228,6 +233,105 @@ class FakeAudioContext {
   assert.equal(effectiveAudioGain(store.get(), 'music'), 0);
   await audio.close();
   assert.equal(audio.contextState(), 'unavailable');
+}
+
+
+{
+  const copied = [];
+  const navigatorObject = {
+    clipboard: {
+      async writeText(value) { copied.push(value); },
+    },
+  };
+  assert.deepEqual(await copyText('ROOM-420', { navigatorObject, documentObject: null }), { ok: true, method: 'clipboard' });
+  assert.deepEqual(copied, ['ROOM-420']);
+
+  const shared = [];
+  navigatorObject.share = async (payload) => shared.push(payload);
+  assert.deepEqual(
+    await shareGameLink({ title: 'High Land', text: 'Join my room', url: 'https://dtfseeds.com/games/high-land/?room=420' }, { navigatorObject }),
+    { ok: true, method: 'share' },
+  );
+  assert.equal(shared[0].title, 'High Land');
+
+  navigatorObject.share = async () => {
+    const error = new Error('cancelled');
+    error.name = 'AbortError';
+    throw error;
+  };
+  assert.deepEqual(
+    await shareGameLink({ text: 'Join', url: 'https://example.test' }, { navigatorObject }),
+    { ok: false, method: 'cancelled' },
+  );
+}
+
+{
+  let requestedFullscreen = 0;
+  let exitedFullscreen = 0;
+  const element = { async requestFullscreen() { requestedFullscreen += 1; } };
+  const documentObject = {
+    fullscreenElement: null,
+    documentElement: element,
+    async exitFullscreen() {
+      exitedFullscreen += 1;
+      this.fullscreenElement = null;
+    },
+  };
+
+  assert.deepEqual(await toggleFullscreen({ documentObject }), { ok: true, active: true });
+  assert.equal(requestedFullscreen, 1);
+  documentObject.fullscreenElement = element;
+  assert.deepEqual(await toggleFullscreen({ documentObject }), { ok: true, active: false });
+  assert.equal(exitedFullscreen, 1);
+
+  const vibrations = [];
+  assert.equal(vibrateGame([12, 20, 12], { navigatorObject: { vibrate(pattern) { vibrations.push(pattern); return true; } } }), true);
+  assert.deepEqual(vibrations, [[12, 20, 12]]);
+}
+
+{
+  const documentObject = eventTarget({ visibilityState: 'visible' });
+  let requests = 0;
+  let releases = 0;
+  const sentinel = {
+    released: false,
+    addEventListener() {},
+    async release() {
+      releases += 1;
+      this.released = true;
+    },
+  };
+  const navigatorObject = {
+    wakeLock: {
+      async request(type) {
+        assert.equal(type, 'screen');
+        requests += 1;
+        sentinel.released = false;
+        return sentinel;
+      },
+    },
+  };
+
+  const wake = createWakeLockController({ navigatorObject, documentObject });
+  assert.equal(wake.supported(), true);
+  assert.equal(wake.attach(), true);
+  assert.equal(await wake.acquire(), true);
+  assert.equal(wake.active(), true);
+  assert.equal(requests, 1);
+
+  documentObject.visibilityState = 'hidden';
+  documentObject.handlers.get('visibilitychange')();
+  assert.equal(requests, 1);
+
+  sentinel.released = true;
+  documentObject.visibilityState = 'visible';
+  await documentObject.handlers.get('visibilitychange')();
+  assert.equal(requests, 2, 'visible games should reacquire the requested screen wake lock');
+
+  assert.equal(await wake.release(), true);
+  assert.equal(releases, 1);
+  assert.equal(wake.desired(), false);
+  assert.equal(wake.detach(), true);
 }
 
 console.log('shared game platform runtime tests passed');
