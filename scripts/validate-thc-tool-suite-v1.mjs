@@ -8,7 +8,7 @@ const tools=[
  ['dryback-lab','THC Irrigation & Dryback Lab',['percentage points/hour','lost/span*100']],
  ['dew-point','THC Dew Point & Condensation Lab',['dew point','17.625']],
  ['environment-control','THC Environmental Control Center',['Leaf VPD','.0036']],
- ['ipm-scout','THC IPM Scout',['thc-ipm-scout-v1','Export CSV']],
+ ['ipm-scout','THC IPM Scout',['thc-ipm-scout-v1','Export CSV','Backup JSON','Restore JSON','Review one route / trap','data-edit','data-delete','backupVersion=2','thc-ipm-scout']],
  ['dry-cure-lab','THC Dry & Cure Lab',['weight loss','dew point']],
  ['grow-planner','THC Grow Cycle Planner',['Stage calendar','Flowering']],
  ['substrate-calculator','THC Substrate & Container Calculator',['purchase target','3.785411784']],
