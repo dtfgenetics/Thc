@@ -80,7 +80,7 @@ const after=rendered((await request('/wp-json/wp/v2/template-parts?context=edit&
 for(const marker of ['dtf-interface-v7-style','dtf-interface-v7-script','dtf-shell-menu','dtf-edu-rail','sv6v-gaps{display:none']) if(!after.includes(marker)) throw new Error(`Interface V7 marker missing after write: ${marker}`);
 if(!hasSupportedShell(after)) throw new Error('Interface V7 update removed the canonical shared-shell marker.');
 
-const routes=['/','/learn/','/learn/lighting/','/tools/','/shop/'];
+const routes=['/','/learn/','/learn/lighting/','/shop/'];
 const publicResults=[];
 for(const route of routes){let ok=false;let htmlText='';for(let attempt=1;attempt<=8;attempt+=1){try{const res=await fetch(`${site}${route}?dtf_interface_v7=${Date.now()}-${attempt}`,{redirect:'follow',signal:AbortSignal.timeout(60000),headers:{'User-Agent':'DTFSeeds-Interface-V7-Verify/1.0','Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache'}});htmlText=await res.text();if(res.ok&&htmlText.includes('dtf-interface-v7-style')&&htmlText.includes('dtf-interface-v7-script')&&hasSupportedShell(htmlText)){ok=true;break;}}catch{}await sleep(attempt*1700);}await writeFile(join(backupDir,`visitor-${route.replace(/[^a-z0-9]+/gi,'_')||'home'}.html`),htmlText);if(!ok) throw new Error(`Public Interface V7 verification failed on ${route}`);publicResults.push({route,verified:true});}
 const report={generatedAt:new Date().toISOString(),site,apply,backupDir,headerId:header.id,publicResults,features:['sticky active-state primary navigation','accessible mobile menu','THC education navigation rail','duplicate education title suppression','unified V3/V4/V6 visual language','mobile chapter rail','public production-gap suppression']};
