@@ -192,3 +192,38 @@ Action taken: independently implemented a native local CSV workflow in `/vpd-cha
 ### Nutrient-calculator repositories reviewed
 `dstrelnikov/hydrosolver`, `nikitapn/nscalc`, and `onethree7/Horticalc` are GPL-family references. Treat them as research/benchmark sources only unless the licensing implications are intentionally accepted for a separate compatible component.
 `DanielEnki420/dwc-grower-edition` is MIT and is a useful benchmark for local-first grow records, sensor warnings, refill workflows, and mobile calculator UX. Do not copy manufacturer nutrient schedules or claims without independently verifying current official source data.
+
+
+## Additional harvest — loading + CSV infrastructure
+
+### Phaser official Vite template
+License: MIT.
+Useful pattern: Boot → Preloader → progress event → gameplay scene.
+Action taken: extracted the useful lifecycle concept into an engine-neutral DTF shared loader rather than converting existing games to Phaser.
+- `games/shared-platform/src/loading.mjs`
+- parallel task loading
+- progress callbacks
+- bounded retry
+- aggregated failures
+- deterministic runtime tests
+- shared platform bumped to v1.5.0
+
+Seed Man's production bootstrap now uses this loader for its eight canonical JSON resources and exposes progress/retry behavior without changing its movement, renderer, combat, or campaign systems.
+
+### Papa Parse 5.7.0
+Repository: https://github.com/mholt/PapaParse
+License: MIT.
+Action taken: vendored the official browser build at `site/public-route-patch/assets/vendor/papaparse-5.7.0.min.js`, preserved attribution, and adopted it in:
+- `/vpd-chart/` logger CSV imports;
+- `/ppfd-chart/` canopy-map CSV imports.
+
+Both tools retain lightweight fallback parsing so CSV workflows degrade gracefully if the vendor asset fails to load.
+
+Why this is higher fidelity than the former parser:
+- RFC 4180-style quoted-field handling;
+- embedded commas/line breaks;
+- structured header parsing;
+- empty-row handling;
+- battle-tested browser CSV behavior.
+
+Production validators now require the vendored parser integration on both measurement tools.
