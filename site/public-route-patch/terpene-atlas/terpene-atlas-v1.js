@@ -1,16 +1,17 @@
-const state={catalog:null,sources:null,population:null,profiles:null,factors:null,evidence:null,query:'',family:'all',scope:'all',factorCategory:'all'};
+const state={catalog:null,sources:null,population:null,profiles:null,factors:null,evidence:null,identityAudit:null,query:'',family:'all',scope:'all',factorCategory:'all'};
 const $=(s)=>document.querySelector(s);
 const esc=(v='')=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 async function load(){
-  const [catalog,sources,population,profiles,factors,evidence]=await Promise.all([
+  const [catalog,sources,population,profiles,factors,evidence,identityAudit]=await Promise.all([
     fetch('/terpene-atlas/data/terpene-catalog-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('catalog '+r.status);return r.json()}),
     fetch('/terpene-atlas/data/sources-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('sources '+r.status);return r.json()}),
     fetch('/terpene-atlas/data/population-summary-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('population '+r.status);return r.json()}),
     fetch('/terpene-atlas/data/sample-profiles-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('profiles '+r.status);return r.json()}),
     fetch('/terpene-atlas/data/profile-factors-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('factors '+r.status);return r.json()}),
-    fetch('/terpene-atlas/data/evidence-claims-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('evidence '+r.status);return r.json()})
+    fetch('/terpene-atlas/data/evidence-claims-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('evidence '+r.status);return r.json()}),
+    fetch('/terpene-atlas/data/identity-audit-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('identity audit '+r.status);return r.json()})
   ]);
-  state.catalog=catalog;state.sources=sources;state.population=population;state.profiles=profiles;state.factors=factors;state.evidence=evidence;
+  state.catalog=catalog;state.sources=sources;state.population=population;state.profiles=profiles;state.factors=factors;state.evidence=evidence;state.identityAudit=identityAudit;
   $('[data-compound-count]').textContent=`${catalog.compounds.length} compounds`;
   buildCompareOptions();renderWheel();renderSources();renderFactors();renderEvidenceSafety();renderPopulation();render();
   const requested=new URLSearchParams(location.search).get('compound');
@@ -48,7 +49,7 @@ function renderSources(){
     const identifiers=items.filter(x=>x.pubchemCid).length;
     const aromas=items.filter(x=>Array.isArray(x.aromaDescriptors)&&x.aromaDescriptors.length).length;
     const stereo=items.filter(x=>x.stereochemistry).length;
-    quality.innerHTML=`<strong>Field coverage:</strong> formulas ${formulas}/${items.length} · curated aroma descriptors ${aromas}/${items.length} · resolved stereochemistry ${stereo}/${items.length} · PubChem IDs ${identifiers}/${items.length}. Missing fields remain visibly unfilled until a verified source is added; they are not inferred automatically.`;
+    const a=state.identityAudit?.counts||{};quality.innerHTML=`<strong>Identity QA:</strong> formulas ${formulas}/${items.length} · PubChem IDs ${identifiers}/${items.length} · resolved stereochemistry ${stereo}/${items.length}. <strong>${a.pubchemCidMissing??(items.length-identifiers)} records still need structure-level identifier review</strong>; ${a.stereochemistryMissingOrUnspecified??(items.length-stereo)} remain stereochemically unresolved or unspecified. Missing identity fields are not inferred automatically. Quantitative lab analytes must preserve the resolution actually reported by the source.`;
   }
 }
 function renderFactors(){
@@ -137,7 +138,7 @@ function renderImportedProfile(profile){
   }
   const known=new Map(state.catalog.compounds.map(x=>[x.id,x]));
   status.innerHTML=`<strong>${esc(profile.displayName)}</strong><p>${esc(profile.sampleId)} · ${esc(profile.matrix)} · ${esc(profile.method)} · ${esc(profile.unit)}</p>`;
-  result.innerHTML=`<h3>Measured sample</h3><p><strong>Source:</strong> ${esc(typeof profile.source==='string'?profile.source:JSON.stringify(profile.source))}</p><table><thead><tr><th>Compound</th><th>Result</th><th>Atlas status</th></tr></thead><tbody>${profile.measurements.map(row=>{const item=known.get(row.compoundId);const resultText=row.value!==undefined?`${esc(row.value)} ${esc(profile.unit)}`:esc(row.qualifier||'reported');return `<tr><td>${esc(item?.canonicalName||row.compoundId)}</td><td>${resultText}</td><td>${item?'mapped':'unmapped analyte'}</td></tr>`;}).join('')}</tbody></table><p class="population-note">This browser view does not convert or reinterpret laboratory units. Compare only profiles that use compatible matrices, methods, units, and reporting conventions.</p>`;
+  result.innerHTML=`<h3>Measured sample</h3><p><strong>Source:</strong> ${esc(typeof profile.source==='string'?profile.source:JSON.stringify(profile.source))}</p><table><thead><tr><th>Compound</th><th>Result</th><th>Atlas status</th></tr></thead><tbody>${profile.measurements.map(row=>{const item=known.get(row.compoundId);const resultText=row.value!==undefined?`${esc(row.value)} ${esc(profile.unit)}`:esc(row.qualifier||'reported');const identityStatus=!item?'unmapped analyte':item.pubchemCid&&item.stereochemistry&&item.stereochemistry!=='unspecified'?'identity resolved':'mapped · identity review needed';return `<tr><td>${esc(item?.canonicalName||row.compoundId)}</td><td>${resultText}</td><td>${esc(identityStatus)}</td></tr>`;}).join('')}</tbody></table><p class="population-note">This browser view does not convert or reinterpret laboratory units. Compare only profiles that use compatible matrices, methods, units, and reporting conventions.</p>`;
   result.hidden=false;
 }
 function filtered(){
