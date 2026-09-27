@@ -31,7 +31,7 @@ const canonical = [
   ['/', 'Home'], ['/seeds/', 'Seeds'], ['/learn/', 'Learn'], ['/courses/', 'Courses'],
   ['/tools/', 'Tools'], ['/games/', 'Games'], ['/community/', 'Community'], ['/shop/', 'Shop'],
 ];
-for (const [fileKey, html] of [['ph', ph], ['tds', tds], ['vpd', vpd]]) {
+for (const [fileKey, html] of [['ph', ph], ['tds', tds], ['vpd', vpd], ['ppfd', ppfd]]) {
   assert(html.includes('href="/tools/"'), `${files[fileKey]} missing central All Tools return link`);
   for (const [route, label] of canonical) {
     assert(html.includes(`href="${route}"`), `${files[fileKey]} missing canonical route ${route} (${label})`);
@@ -56,8 +56,21 @@ assert(vpd.includes("u==='f'?(v-32)*5/9:v") && vpd.includes("v*9/5+32"), 'VPD pa
 
 const atlas = fs.readFileSync(path.join(root, 'site/public-route-patch/atlas/index.html'), 'utf8');
 const terpenes = fs.readFileSync(path.join(root, 'site/public-route-patch/terpene-atlas/index.html'), 'utf8');
-assert(ppfd.includes('DLI = PPFD') && ppfd.includes('3 × 3 canopy PPFD map'), 'PPFD page missing DLI formula or canopy map');
-assert(ppfd.includes('min-to-mean') || ppfd.includes('Min ÷ mean'), 'PPFD page missing uniformity interpretation');
+assert(ppfd.includes("p*h*0.0036"), 'PPFD page missing PPFD-to-DLI formula');
+assert(ppfd.includes("td/(h*0.0036)"), 'PPFD page missing user-target DLI-to-PPFD formula');
+assert(ppfd.includes('id="ppfdGrid"') && ppfd.includes('min/avg*100') && ppfd.includes('sd/avg*100'), 'PPFD page missing canopy grid, uniformity, or coefficient-of-variation calculation');
+assert(ppfd.includes('Measurement method') && ppfd.includes('Manufacturer PPFD map') && ppfd.includes('Variable sunlight or scheduled dimming'), 'PPFD page missing measurement-method or variable-light context');
+assert(ppfd.includes('THC Light Lab') && ppfd.includes('Teaching Healthy Cultivation') && ppfd.includes('PAR vs ePAR'), 'PPFD page missing THC educational branding or PAR/ePAR education');
+assert(ppfd.includes('targetMin') && ppfd.includes('targetMax') && ppfd.includes('inRange'), 'PPFD page must use user-defined target range analysis');
+assert(ppfd.includes('Apogee DLI measurement guidance') && ppfd.includes('Frontiers 2022') && ppfd.includes('Scientific Reports 2025'), 'PPFD page missing evidence links');
+assert(ppfd.includes("STORAGE_KEY='thc-light-lab-surveys-v1'") && ppfd.includes('localStorage.setItem'), 'PPFD page missing local survey persistence');
+assert(ppfd.includes('fixtureModel') && ppfd.includes('mountHeight') && ppfd.includes('sensorModel') && ppfd.includes('measurementDate'), 'PPFD page missing survey metadata fields');
+assert(ppfd.includes("lines=['row,column,ppfd']") && ppfd.includes('FileReader') && ppfd.includes('Export map CSV'), 'PPFD page missing CSV round-trip workflow');
+assert(ppfd.includes("window.print()") && ppfd.includes('Print / Save report'), 'PPFD page missing printable Light Report workflow');
+assert(ppfd.includes("'use schedule'") && ppfd.includes('Browser storage is unavailable'), 'PPFD page missing variable-light or storage-failure safeguards');
+assert(ppfd.includes('target low exceeds target high') && ppfd.includes("'fix range'"), 'PPFD page missing invalid target-range handling');
+assert(ppfd.includes('compareSession') && ppfd.includes('renderComparison') && ppfd.includes('Average PPFD ') && ppfd.includes('Uniformity '), 'PPFD page missing live saved-survey comparison workflow');
+assert(ppfd.includes("box.style.background=heat(v)") && ppfd.includes("heat(input.value)"), 'PPFD page must preserve blank map cells as unmeasured');
 assert(ppfd.includes('href="/tools/"'), 'PPFD page missing central All Tools link');
 assert(atlas.includes('href="/tools/"'), 'Plant Atlas missing central All Tools link');
 assert(terpenes.includes('href="/tools/"'), 'Terpene Atlas missing central All Tools link');
@@ -72,4 +85,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('Cultivation reference tool validation passed: hub links, canonical Tools navigation, pH/TDS/VPD calculations, and cross-references are intact.');
+console.log('Cultivation reference tool validation passed: hub links, canonical Tools navigation, pH/TDS/VPD/PPFD calculations, Light Lab survey workflows, and cross-references are intact.');
