@@ -6,6 +6,8 @@ const nav = JSON.parse(fs.readFileSync(path.join(root, 'data/public-navigation.j
 const shell = JSON.parse(fs.readFileSync(path.join(root, 'data/site-navigation-v6.json'), 'utf8'));
 const apps = JSON.parse(fs.readFileSync(path.join(root, 'site/deployment/public-apps.json'), 'utf8'));
 const hub = fs.readFileSync(path.join(root, 'site/public-route-patch/games/index.html'), 'utf8');
+const headerV5 = fs.readFileSync(path.join(root, 'scripts/lib/sitewide-header-template.mjs'), 'utf8');
+const headerV6 = fs.readFileSync(path.join(root, 'scripts/lib/sitewide-header-template-v6.mjs'), 'utf8');
 
 const deployableShellFiles = [
   'site/public-route-patch/projects/index.html',
@@ -73,6 +75,19 @@ for (const rel of deployableShellFiles) {
   assert(!/>\s*Genetics\s*<\/a>/i.test(primary), `${rel} still exposes retired primary label Genetics`);
   assert(!/>\s*Diagnostic\s*<\/a>/i.test(primary), `${rel} still exposes retired primary label Diagnostic`);
 }
+
+for (const [label, source] of [['v5 WordPress header', headerV5], ['v6 WordPress header', headerV6]]) {
+  assert(source.includes('data-dtf-sitewide-header="canonical-five-v1"'), `${label} must declare the canonical five-item header`);
+  for (const item of canonicalPrimary) {
+    assert(source.includes(`href="${item.route}"`), `${label} must include primary route ${item.route}`);
+  }
+  for (const retired of ['>Home</a>', '>Courses</a>', '>Community</a>']) {
+    assert(!source.includes(retired), `${label} must not expose retired primary item ${retired}`);
+  }
+}
+assert(headerV6.includes("if(group==='learn')active=/^\\/(learn|courses|education|yellow-leaves)\\//.test(path);"), 'v6 WordPress header must map Courses and Learning routes into Learn');
+assert(headerV5.includes("if(a.dataset.dtfNavGroup==='learn')active=/^\\/(learn|courses)\\//.test(path);"), 'v5 WordPress header must map Courses and Learning routes into Learn');
+
 assert(shell.sectionOwnership?.courses?.includes('/courses/'), 'Courses must own /courses/');
 assert(shell.sectionOwnership?.courses?.includes('/learn/learning-hub/'), 'Courses must own historical Learning Hub course URLs');
 assert(shell.sectionOwnership?.diagnostic?.includes('/growlens/'), 'Tools must own GrowLens');
@@ -80,7 +95,7 @@ assert(shell.sectionOwnership?.diagnostic?.includes('/thc-grow-doc/'), 'Tools mu
 assert(shell.sectionOwnership?.shop?.includes('/cart/'), 'Shop must own Cart');
 assert(shell.sectionOwnership?.shop?.includes('/my-account/'), 'Shop must own Account');
 
-// Both navigation registries are authoritative and must agree on the eight-item primary row.
+// Both navigation registries are authoritative and must agree on the five-item primary row.
 assert(JSON.stringify(nav.primaryNavigation) === JSON.stringify(shell.primaryNavigation), 'public-navigation and site-navigation-v6 primary navigation must match exactly');
 assert(shell.brandHome?.route === '/', 'brand must remain the Home control');
 assert((shell.secondaryNavigation || []).some((item) => item.route === '/courses/'), 'Courses must remain visible in secondary navigation');
