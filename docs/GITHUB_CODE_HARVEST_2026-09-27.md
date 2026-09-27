@@ -253,3 +253,127 @@ Seed Man save v2 now rejects malformed JSON, wrong save versions, invalid arrays
 License: Apache-2.0.
 Useful future target: IndexedDB-backed local persistence for larger histories/media-capable tools where localStorage becomes too small or synchronous.
 Decision: do not migrate small settings/saves yet. Evaluate for GrowLens, image-heavy journals, large measurement histories, and offline tool records.
+
+
+## Additional harvest — public-site search + certification infrastructure
+
+### Pagefind 1.5.x
+Repository: `Pagefind/pagefind`.
+License: MIT.
+Decision: **preferred search architecture for the public THC knowledge corpus**.
+
+Why it fits this project:
+- Dtf420 already produces a static child-route overlay, so Pagefind can index the generated HTML after build;
+- the current Dtf420 EducationSearch client imports many Academy, Atlas, plant-health, cultivation, symptom, tool, evidence, glossary and SOP JSON datasets directly into the client search component;
+- Pagefind shifts indexing to build time and serves segmented search assets on demand;
+- this scales better as the encyclopedia/course corpus expands and avoids making the search route carry the source corpus.
+
+Integration rule:
+1. preserve the branded existing THC search UI;
+2. replace only the corpus/ranking backend;
+3. attach content-type/category metadata to generated pages;
+4. exclude account, assessment-answer, cart/checkout, draft and duplicate-print routes;
+5. add deterministic search fixture tests for VPD, PPFD, pH meter, root-zone hypoxia, edema, yellow lower leaves, HLVd, rhizosphere, breeding and water activity;
+6. keep MiniSearch only as a fallback for small in-memory application datasets.
+
+### Better Auth
+Repository: `better-auth/better-auth`.
+License: MIT.
+Decision: preferred authentication/authorization candidate for the future authenticated learner and certification runtime.
+
+Use for:
+- learner identity;
+- secure sessions;
+- verified account flows;
+- authorization around assessment attempts and credential records.
+
+Do not bolt authentication onto the existing static assessment pages independently. Authentication must land with the persistent assessment/learner schema and server runtime. Public course content remains readable without requiring an account unless a specific protected action needs identity.
+
+### Drizzle ORM
+Repository: `drizzle-team/drizzle-orm`.
+License: Apache-2.0.
+Decision: preferred typed SQL layer once the production database target is selected.
+
+Target records:
+- learners/users (linked to auth identity);
+- course enrollment/progress;
+- assessment definitions and immutable versions;
+- assessment attempts;
+- answer selections;
+- grading results;
+- credential awards;
+- certificate issuance/revocation;
+- verification events/audit records.
+
+The database target must be selected before installing Drizzle. Do not introduce an embedded SQLite file on a deployment model where multiple stateless instances need shared authoritative state.
+
+### Zod
+Repository: `colinhacks/zod`.
+License: MIT.
+Decision: use at certification/API trust boundaries once that TypeScript runtime is built.
+
+High-value schemas:
+- start-attempt request;
+- answer-save request;
+- final submission;
+- grader result;
+- credential issuance input;
+- verification lookup response;
+- imported question-bank records.
+
+This does not replace the lightweight dependency-free validators already added to tiny static game/save formats.
+
+### pdf-lib
+Repository: `Hopding/pdf-lib`.
+License: MIT.
+Decision: preferred candidate for generated printable certificate PDFs after successful credential issuance.
+
+Use server-side where possible to:
+- fill a controlled certificate template;
+- render learner display name;
+- render credential title;
+- render issue date;
+- render unique credential/reference ID;
+- embed a QR image pointing to the canonical verification route;
+- set PDF metadata.
+
+Important: the PDF is an output artifact, not the authoritative credential record. Regenerating the document must be possible from the immutable server-side credential record.
+
+### Nano ID
+Repository: `ai/nanoid`.
+License: MIT.
+Decision: suitable for opaque, URL-safe public credential/reference IDs if the database does not already issue an appropriate public identifier.
+
+Do not use a short human-friendly identifier as the sole secret or authorization token. Public verification IDs are identifiers, not authentication credentials.
+
+### Credential QR generation
+Use a maintained MIT/ISC QR implementation only to encode the canonical verification URL, for example:
+`https://dtfseeds.com/verify/<public-credential-id>`.
+
+The verification page must read the authoritative server record and show status (valid/revoked/expired where applicable), credential title, issue date and the minimum learner identity needed for verification. The QR itself must never contain private learner records or answer data.
+
+### Certification implementation boundary
+The existing WordPress course publishers correctly hide summative answer keys and describe an authenticated assessment runtime, but repository search does not show a complete Dtf420 learner/auth/attempt/credential implementation yet.
+
+Do not copy a generic quiz application to fill this gap. Build the certification subsystem around:
+1. authenticated identity;
+2. versioned question banks;
+3. server-authoritative attempt clocks;
+4. persisted learner selections;
+5. locked submission;
+6. server-side grading;
+7. immutable result records;
+8. credential issuance only after required gates pass;
+9. verifiable certificate output;
+10. revocation/audit support.
+
+## Site/education adoption order
+
+1. Pagefind search index behind the existing branded search UI.
+2. Database target decision for authoritative learner/certification state.
+3. Better Auth + Drizzle integration on the selected runtime/database.
+4. Zod schemas on all assessment/credential API boundaries.
+5. Persistent learner progress and attempt engine.
+6. Credential issuance/verification records.
+7. pdf-lib certificate generation.
+8. QR verification links.
