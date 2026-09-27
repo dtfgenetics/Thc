@@ -65,6 +65,9 @@ jobs:
       - name: Run GrowLens private image storage smoke test
         run: php apps/growlens-web/tests/php-image-storage-smoke.php
 
+      - name: Validate GrowLens camera source contract
+        run: npm run validate:growlens-camera-source
+
       - name: Run GrowLens unit tests
         run: npm run test:growlens
 
