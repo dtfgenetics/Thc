@@ -93,6 +93,10 @@ const packager=fs.readFileSync(path.join(root,'scripts/package-public-suite-word
 for(const token of ['registered_local_static_targets','assets/thc-tool-suite-v1.css','assets/thc-tool-suite-v1.js','ready-to-package']){
  ok(packager.includes(token),'public-suite packager missing THC tool release token: '+token);
 }
+const assembler=fs.readFileSync(path.join(root,'scripts/assemble-wordpress-suite-resource-aware.py'),'utf8');
+for(const token of ['TOOL_SUITE_SLUGS','TOOL_SUITE_EXACT_FILES','assets/thc-tool-suite-v1.css','assets/thc-tool-suite-v1.js','THC Water Quality Lab','THC Cultivation Unit Converter']){
+ ok(assembler.includes(token),'production bridge assembler missing THC tool release token: '+token);
+}
 
 const dew=(t,rh)=>{const a=17.625,b=243.04,g=Math.log(rh/100)+(a*t)/(b+t);return b*g/(a-g)};
 ok(Math.abs(dew(24,65)-17.0)<0.3,'dew-point formula sanity check failed');
