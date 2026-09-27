@@ -1,4 +1,5 @@
-const state={catalog:null,sources:null,population:null,profiles:null,factors:null,evidence:null,query:'',family:'all',scope:'all',factorCategory:'all'};
+import Fuse from '/assets/vendor/fuse-7.1.0.min.mjs';
+const state={catalog:null,sources:null,population:null,profiles:null,factors:null,evidence:null,fuse:null,query:'',family:'all',scope:'all',factorCategory:'all'};
 const $=(s)=>document.querySelector(s);
 const esc=(v='')=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 async function load(){
@@ -11,6 +12,19 @@ async function load(){
     fetch('/terpene-atlas/data/evidence-claims-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('evidence '+r.status);return r.json()})
   ]);
   state.catalog=catalog;state.sources=sources;state.population=population;state.profiles=profiles;state.factors=factors;state.evidence=evidence;
+  state.fuse=new Fuse(catalog.compounds,{
+    includeScore:true,shouldSort:true,ignoreLocation:true,threshold:.34,minMatchCharLength:2,
+    keys:[
+      {name:'canonicalName',weight:.34},
+      {name:'aliases',weight:.22},
+      {name:'aromaDescriptors',weight:.16},
+      {name:'formula',weight:.08},
+      {name:'class',weight:.07},
+      {name:'subclass',weight:.05},
+      {name:'stereochemistry',weight:.04},
+      {name:'isomerGroup',weight:.04}
+    ]
+  });
   $('[data-compound-count]').textContent=`${catalog.compounds.length} compounds`;
   buildCompareOptions();renderWheel();renderSources();renderFactors();renderEvidenceSafety();renderPopulation();render();
   const requested=new URLSearchParams(location.search).get('compound');
@@ -141,11 +155,11 @@ function renderImportedProfile(profile){
   result.hidden=false;
 }
 function filtered(){
-  const q=state.query.trim().toLowerCase();
-  return state.catalog.compounds.filter(x=>{
-    const hay=[x.canonicalName,x.id,x.class,x.subclass,x.formula,x.stereochemistry,x.isomerGroup,...(x.aliases||[]),...(x.aromaDescriptors||[])].join(' ').toLowerCase();
-    return (!q||hay.includes(q))&&(state.family==='all'||x.class===state.family)&&(state.scope==='all'||x.scope===state.scope);
-  });
+  const q=state.query.trim();
+  const base=q&&state.fuse
+    ? state.fuse.search(q,{limit:Math.min(120,state.catalog.compounds.length)}).map(result=>result.item)
+    : state.catalog.compounds;
+  return base.filter(x=>(state.family==='all'||x.class===state.family)&&(state.scope==='all'||x.scope===state.scope));
 }
 function card(x){
   const measured=populationFor(x.id).length>0?'<span class="measured-badge">measured data</span>':'';
