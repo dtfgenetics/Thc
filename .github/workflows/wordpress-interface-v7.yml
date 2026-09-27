@@ -65,17 +65,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$BACKUP_ROOT"
-          set +e
           node scripts/publish-wordpress-interface-v7.mjs 2>&1 | tee "$RUNNER_TEMP/interface-v7.log"
-          publisher_status=${PIPESTATUS[0]}
-          set -e
-          # The publisher currently also probes /tools/, but /tools/ is owned by the
-          # separately deployed static public suite and does not inherit WordPress
-          # template parts. Accept that one known ownership-boundary failure only;
-          # all WordPress-owned routes are independently verified below.
-          if [[ "$publisher_status" -ne 0 ]]; then
-            grep -Fq 'Public Interface V7 verification failed on /tools/' "$RUNNER_TEMP/interface-v7.log" || exit "$publisher_status"
-          fi
           echo 'outcome=success' >> "$GITHUB_OUTPUT"
 
       - name: Independent WordPress-route verification
