@@ -74,14 +74,14 @@ jobs:
           grep -Fq 'verify-wordpress-owned-route-preservation.mjs' .github/workflows/wordpress-canonical-production.yml
           ! grep -Fq 'Genetics first. Cultivation science behind it.' .github/workflows/wordpress-canonical-production.yml
 
-          grep -Fq 'group: dtfseeds-wordpress-infographics-production' .github/workflows/wordpress-infographic-production.yml
-          grep -Fq 'cancel-in-progress: false' .github/workflows/wordpress-infographic-production.yml
-          grep -Fq 'Remote queue items quarantined:' .github/workflows/wordpress-infographic-production.yml
-          count="$(grep -Fc 'continue-on-error: true' .github/workflows/wordpress-infographic-production.yml)"
-          [[ "$count" -ge 2 ]] || { echo 'Infographic launch/final reporting must both be advisory.' >&2; exit 1; }
+          grep -Fq 'group: dtfseeds-wordpress-infographics-production-disabled' .github/workflows/wordpress-infographic-production.yml
+          grep -Fq 'legacyAutomaticInfographicPublishingAllowed' .github/workflows/wordpress-infographic-production.yml
+          grep -Fq 'Legacy WordPress infographic publication is intentionally disabled.' .github/workflows/wordpress-infographic-production.yml
+          grep -Fq 'dtf-approved-visual-*' .github/workflows/wordpress-infographic-production.yml
 
           grep -Fq 'Dedicated genetics library publisher' .github/workflows/wordpress-public-content-ci.yml
-          grep -Fq "! grep -Eq \"\\['seeds'" .github/workflows/wordpress-public-content-ci.yml
+          grep -Fq 'genetics publisher the sole Seeds-route owner' .github/workflows/wordpress-public-content-ci.yml
+          grep -Fq 'test ! -e site/wordpress/pages/games.html' .github/workflows/wordpress-public-content-ci.yml
 
       - name: Prove unavailable infographic URLs are quarantined without blocking canonical assets
         shell: bash
