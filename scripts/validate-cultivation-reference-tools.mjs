@@ -101,6 +101,8 @@ assert(ppfd.includes('µmol·m⁻²·s⁻¹') && ppfd.includes('mol·m⁻²·day
 assert(ppfd.includes('600, 800 and 1,000') && ppfd.includes('150–700') && ppfd.includes('not universal target bands'), 'PPFD research context must distinguish tested study conditions from universal targets');
 assert(ppfd.includes('fillReading') && ppfd.includes('clearMap') && ppfd.includes("stats.max/stats.min"), 'PPFD page missing map utility controls or spread analysis');
 assert(ppfd.includes('Variable-light DLI schedule') && ppfd.includes('calculateVariableLight') && ppfd.includes('scheduleStats'), 'PPFD page missing shared variable-light DLI integration');
+assert(ppfd.includes('Advanced: variable-light DLI schedule') && ppfd.includes('Advanced: fixture calibration, survey records & canopy mapping'), 'PPFD advanced workflows must remain progressively disclosed');
+assert(ppfd.includes('below your target range') && ppfd.includes('Measure several canopy points before increasing output') && ppfd.includes('inside your target range'), 'PPFD quick result must provide target-aware next-step guidance');
 assert(ppfd.includes('Import full survey') && ppfd.includes('jsonFile') && ppfd.includes('formatVersion:2'), 'PPFD page missing full-survey JSON round trip');
 assert(ppfd.includes("thc-light-lab-surveys-v1") && ppfd.includes("thc-light-lab-surveys-v2"), 'PPFD page must preserve legacy saved surveys during schema migration');
 assert(ppfd.includes('Measurement protocol') && ppfd.includes('cosine response') && ppfd.includes('LI-COR DLI logging'), 'PPFD page missing professional measurement protocol guidance');
