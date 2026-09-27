@@ -11,7 +11,7 @@ const routes = [
   { path: '/ph-meter/', markers: ['pH Meter', 'All Tools', 'This page does not measure pH by itself'] },
   { path: '/tds-meter/', markers: ['TDS / EC Meter', 'All Tools', '500 scale', '700 scale'] },
   { path: '/vpd-chart/', markers: ['VPD Chart', 'All Tools', 'Leaf offset'] },
-  { path: '/ppfd-chart/', markers: ['THC Light Lab', 'All Tools', 'Canopy mapper', 'Survey record', 'Export full survey', 'Points mapped', 'not universal target bands'] },
+  { path: '/ppfd-chart/', markers: ['THC Light Lab', 'All Tools', 'Canopy mapper', 'Survey record', 'Variable-light DLI schedule', 'Import full survey', 'Measurement protocol', 'Points mapped', 'not universal target bands'] },
 ];
 
 const errors = [];
