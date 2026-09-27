@@ -106,7 +106,7 @@ def main() -> None:
             raise SystemExit("could not resolve Dtf420 source revision")
 
         run("npm", "ci", "--no-audit", "--no-fund", cwd=source_repo)
-        run("npm", "run", "build:static-overlay", cwd=source_repo)
+        run("npm", "run", "build:static-overlay:search", cwd=source_repo)
         run("npm", "run", "verify:static-overlay", cwd=source_repo)
 
         source_contract = load_json(source_repo / "deployment" / "static-overlay.json")
