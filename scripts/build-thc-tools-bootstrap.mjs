@@ -18,6 +18,7 @@ fs.mkdirSync(out,{recursive:true});
 copyRequired(path.join(root,'data/tool-registry.json'),path.join(out,'data/tool-registry.json'));
 copyRequired(path.join(root,'migration/thc-tools-bootstrap/repo-package.json'),path.join(out,'package.json'));
 copyRequired(path.join(root,'migration/thc-tools-bootstrap/repo-README.md'),path.join(out,'README.md'));
+copyRequired(path.join(root,'migration/thc-tools-bootstrap/seed'),out);
 copyRequired(path.join(root,'docs/THC_TOOLS_MIGRATION_INVENTORY.md'),path.join(out,'docs/THC_TOOLS_MIGRATION_INVENTORY.md'));
 
 for(const route of manifest.routes){
