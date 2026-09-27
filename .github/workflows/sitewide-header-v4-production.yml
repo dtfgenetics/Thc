@@ -74,7 +74,7 @@ jobs:
           test -s site/wordpress/assets/responsive-layout-v1.css
           test -s site/wordpress/assets/sitewide-ux-polish-v1.css
           grep -Fq 'data-dtf-shell="header-v6"' scripts/lib/sitewide-header-template-v6.mjs
-          grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' scripts/lib/sitewide-header-template-v6.mjs
+          grep -Fq 'data-dtf-sitewide-header="canonical-five-v1"' scripts/lib/sitewide-header-template-v6.mjs
           grep -Fq 'data-dtf-sitewide-footer="canonical-eight-v1"' scripts/lib/sitewide-footer-template-v6.mjs
           grep -Fq 'data-dtf-shell="footer-v6"' scripts/lib/sitewide-footer-template-v6.mjs
           grep -Fq 'dtf-content-density-v1-style' scripts/lib/sitewide-content-density-v1.mjs
@@ -83,11 +83,10 @@ jobs:
           grep -Fq 'dtf-sitewide-visual-repair-v2-script' scripts/lib/sitewide-visual-repair-v2.mjs
           grep -Fq 'SITEWIDE_VISUAL_REPAIR_STYLE_TAG' scripts/lib/sitewide-header-template-v6.mjs
           grep -Fq 'SITEWIDE_VISUAL_REPAIR_SCRIPT_TAG' scripts/lib/sitewide-header-template-v6.mjs
-          for required in '>Home</a>' '>Seeds</a>' '>Learn</a>' '>Courses</a>' '>Tools</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
+          for required in '>Seeds</a>' '>Learn</a>' '>Tools</a>' '>Games</a>' '>Shop</a>'; do
             grep -Fq "$required" scripts/lib/sitewide-header-template-v6.mjs || { echo "Missing canonical nav label: $required" >&2; exit 1; }
           done
           ! grep -Fq '>Genetics</a>' scripts/lib/sitewide-header-template-v6.mjs
-          ! grep -Fq '>Tools</a>' scripts/lib/sitewide-header-template-v6.mjs
           grep -Fq "./lib/sitewide-header-template-v6.mjs" scripts/apply-sitewide-header.mjs
           grep -Fq "./lib/sitewide-footer-template-v6.mjs" scripts/apply-sitewide-header.mjs
           grep -Fq "./lib/sitewide-header-template-v6.mjs" scripts/rebuild-wordpress-shared-shell-v3.mjs
@@ -105,7 +104,7 @@ jobs:
           test -s .github/workflows/build-dtfseeds-public-suite.yml
           grep -Fq 'release/tools/index.html' .github/workflows/build-dtfseeds-public-suite.yml
           grep -Fq 'release/games/index.html' .github/workflows/build-dtfseeds-public-suite.yml
-          grep -Fq 'canonical-eight-v1' .github/workflows/build-dtfseeds-public-suite.yml
+          grep -Fq 'canonical-five-v1' .github/workflows/build-dtfseeds-public-suite.yml
           grep -Fq 'dtf-sitewide-header-v6-script' .github/workflows/build-dtfseeds-public-suite.yml
 
       - name: Prove static V6 header reconciler is idempotent
@@ -194,7 +193,7 @@ jobs:
           const labels=[...nav.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)].map(m=>m[1].replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim());
           const expected=['Home','Seeds','Learn','Courses','Tools','Games','Community','Shop'];
           if(JSON.stringify(labels)!==JSON.stringify(expected)) throw new Error(`Unexpected V6 navigation on ${route}: ${JSON.stringify(labels)}`);
-          if(!/canonical-eight-v1/.test(header)) throw new Error(`canonical-eight-v1 marker missing on ${route}`);
+          if(!/canonical-five-v1/.test(header)) throw new Error(`canonical-five-v1 marker missing on ${route}`);
           if(!/dtf-sitewide-header-v6-script/.test(html)) throw new Error(`V6 script missing on ${route}`);
           if(!/dtf-sitewide-mobile-polish-v1-style/.test(html)) throw new Error(`Mobile polish V1 style missing on ${route}`);
           if(!/dtf-sitewide-visual-repair-v2-style/.test(html)||!/dtf-sitewide-visual-repair-v2-script/.test(html)) throw new Error(`Sitewide visual repair V2 assets missing on ${route}`);
