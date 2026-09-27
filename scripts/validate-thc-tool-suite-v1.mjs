@@ -77,9 +77,22 @@ for(const [slug,title] of tools){
 const apps=JSON.parse(fs.readFileSync(path.join(root,'site/deployment/public-apps.json'),'utf8'));
 const appIds=new Set(apps.apps.map(x=>x.id));
 for(const [slug] of tools)ok(appIds.has(slug),'public-apps missing '+slug);
+const appById=new Map(apps.apps.map(x=>[x.id,x]));
+for(const [slug] of tools){
+ const app=appById.get(slug);
+ ok(app?.status==='ready-to-package',slug+' must be ready-to-package before production release');
+}
 const nav=JSON.parse(fs.readFileSync(path.join(root,'data/public-navigation.json'),'utf8'));
 const navIds=new Set((nav.tools||[]).map(x=>x.id));
-for(const [slug] of tools)ok(navIds.has(slug),'public-navigation missing '+slug);
+for(const [slug] of tools){
+ ok(navIds.has(slug),'public-navigation missing '+slug);
+ const item=(nav.tools||[]).find(x=>x.id===slug);
+ ok(item?.public===true&&item?.status==='play-now',slug+' must be public/play-now in navigation for production release');
+}
+const packager=fs.readFileSync(path.join(root,'scripts/package-public-suite-wordpress.py'),'utf8');
+for(const token of ['registered_local_static_targets','assets/thc-tool-suite-v1.css','assets/thc-tool-suite-v1.js','ready-to-package']){
+ ok(packager.includes(token),'public-suite packager missing THC tool release token: '+token);
+}
 
 const dew=(t,rh)=>{const a=17.625,b=243.04,g=Math.log(rh/100)+(a*t)/(b+t);return b*g/(a-g)};
 ok(Math.abs(dew(24,65)-17.0)<0.3,'dew-point formula sanity check failed');
