@@ -37,7 +37,7 @@ assert.match(runtime, /window\.addEventListener\('pagehide', stopClock\)/);
 
 assert.match(baseCss, /@media\(forced-colors:active\)/);
 assert.match(baseCss, /@media\(prefers-reduced-motion:reduce\)/);
-assert.match(visualCss, /top:calc\(var\(--dtf-global-header-height,74px\) \+ 8px\)/);
+assert.match(visualCss, /top:calc\(var\(--dtf-global-header-height,66px\) \+ 8px\)/);
 assert.doesNotMatch(visualCss, /\.selected-batch\{position:sticky;top:64px/);
 assert.match(visualCss, /min-height:82px/);
 assert.match(visualCss, /@media\(prefers-reduced-motion:reduce\)/);
