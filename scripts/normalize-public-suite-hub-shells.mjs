@@ -74,7 +74,7 @@ function normalize(source, rel) {
   }
   const nav = header.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>([\s\S]*?)<\/nav>/i)?.[1] || '';
   const labels = [...nav.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)].map((m) => m[1].replace(/<[^>]+>/g, '').trim());
-  const expected = ['Home', 'Seeds', 'Learn', 'Courses', 'Diagnostic', 'Games', 'Community', 'Shop'];
+  const expected = ['Home', 'Seeds', 'Learn', 'Courses', 'Tools', 'Games', 'Community', 'Shop'];
   if (JSON.stringify(labels) !== JSON.stringify(expected)) throw new Error(`${rel}: unexpected canonical navigation ${JSON.stringify(labels)}`);
   return html;
 }
