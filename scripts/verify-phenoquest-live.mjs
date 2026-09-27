@@ -6,19 +6,37 @@ const revisionText=fs.readFileSync('site/public-route-patch/games/phenoquest/sou
 const expectedRevision=revisionText.match(/^commit=([0-9a-f]{40})$/m)?.[1];
 if(!expectedRevision) throw new Error('Pinned PhenoQuest revision is missing.');
 
+const transientCodes=new Set(['ETIMEDOUT','ECONNRESET','ECONNREFUSED','EHOSTUNREACH','ENETUNREACH','EAI_AGAIN']);
+const transientStatuses=new Set([408,425,429,500,502,503,504]);
+const sleep=(ms)=>new Promise(resolve=>setTimeout(resolve,ms));
+
 async function get(path,label){
-  const response=await fetch(new URL(path,base),{
-    redirect:'follow',
-    cache:'no-store',
-    signal:AbortSignal.timeout(15000),
-    headers:{
-      'user-agent':'DTFSeeds-PhenoQuest-live-verifier/1.0',
-      'cache-control':'no-cache, no-store, max-age=0',
-      pragma:'no-cache'
+  const url=new URL(path,base);
+  let lastError;
+  for(let attempt=1;attempt<=5;attempt++){
+    try{
+      const response=await fetch(url,{
+        redirect:'follow',
+        cache:'no-store',
+        signal:AbortSignal.timeout(15000),
+        headers:{
+          'user-agent':'DTFSeeds-PhenoQuest-live-verifier/1.1',
+          'cache-control':'no-cache, no-store, max-age=0',
+          pragma:'no-cache'
+        }
+      });
+      if(response.ok) return {text:await response.text(),type:response.headers.get('content-type')||'',url:response.url};
+      if(!transientStatuses.has(response.status)) throw new Error(`${label} returned HTTP ${response.status}`);
+      lastError=new Error(`${label} returned transient HTTP ${response.status}`);
+    }catch(error){
+      const code=error?.cause?.code||error?.code||'';
+      if(!transientCodes.has(code) && error?.name!=='TimeoutError' && !String(error?.message||'').includes('fetch failed')) throw error;
+      lastError=error;
     }
-  });
-  if(!response.ok) throw new Error(`${label} returned HTTP ${response.status}`);
-  return {text:await response.text(),type:response.headers.get('content-type')||'',url:response.url};
+    if(attempt<5) await sleep(500*attempt);
+  }
+  const detail=lastError?.cause?.code||lastError?.code||lastError?.message||'unknown network error';
+  throw new Error(`${label} could not be verified after 5 attempts: ${detail}`);
 }
 
 const [page,metaResult,sourceResult,style,experienceCss,experienceJs,gameJs,lineageJs,starterData]=await Promise.all([
