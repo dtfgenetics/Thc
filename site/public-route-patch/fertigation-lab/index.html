@@ -9,14 +9,14 @@
 <div class="field"><label for="volume">Final solution volume</label><input id="volume" type="number" min=".01" step=".1" value="100"></div>
 <div class="field"><label for="volunit">Volume unit</label><select id="volunit"><option value="l">Liters</option><option value="gal">US gallons</option></select></div>
 </div><div class="result" id="fertOut" aria-live="polite"></div><div class="callout"><strong>Formula</strong> fertilizer g = target mg/L × final liters ÷ (1000 × nutrient fraction).</div>
-</section></div>
-<details class="advanced-workflow"><summary>Advanced: injector stock tanks, multi-product recipe worksheet & records</summary><section class="section panel"><h2>Injector / stock-tank mode</h2><div class="fields">
+</section>
+<section class="panel"><h2>Injector / stock-tank mode</h2><div class="fields">
 <div class="field"><label for="injTarget">Target element at irrigation line (ppm)</label><input id="injTarget" type="number" min="0" step="1" value="200"></div>
 <div class="field"><label for="injAnalysis">Product analysis for element (%)</label><input id="injAnalysis" type="number" min=".01" max="100" step=".1" value="15"></div>
 <div class="field"><label for="ratio">Injector ratio (1:X)</label><input id="ratio" type="number" min="1" step="1" value="100"></div>
 <div class="field"><label for="stockVol">Final stock volume (L)</label><input id="stockVol" type="number" min=".01" step=".1" value="10"></div>
 </div><div class="result" id="stockOut" aria-live="polite"></div><div class="callout"><strong>Important:</strong> a 1:100 injector ratio describes dilution, not “100 ppm.” The stock must be concentrated enough that the diluted output reaches the target.</div>
-</section>
+</section></div>
 
 <section class="section panel"><h2>Target vs achieved recipe worksheet</h2><p class="muted">Enter final solution volume, nutrient targets and up to three products. Product P and K fields use fertilizer-label P₂O₅ and K₂O conventions; the worksheet converts them to elemental P and K before calculating mg/L.</p>
 <div class="fields"><div class="field"><label for="recipeLiters">Final solution volume (L)</label><input id="recipeLiters" type="number" min=".01" step=".1" value="100"></div></div>
@@ -54,12 +54,12 @@
 <div class="field full"><label for="mixNotes">Mixing notes</label><textarea id="mixNotes" placeholder="Order of addition, stock tank used, verification notes…"></textarea></div>
 </div><div class="toolbar"><button class="btn primary" id="saveFeedGrowLens" type="button">Save to GrowLens</button></div></section>
 
-</details>
+<section class="section panel"><h2>Recipe development direction</h2><p>The next version will use the HydroBuddy-style model: choose source products/salts, enter multi-element targets, include source-water ions, and compare target versus achieved N, P, K, Ca, Mg, S and micronutrients. It will remain a transparent mass-balance solver rather than a black-box “feed recommendation.”</p></section>
 </main><footer><div class="shell">Teaching Healthy Cultivation · Educational decision-support. Preserve measurement method, units, time and context with every record.</div></footer><script src="/assets/thc-tool-suite-v1.js"></script><script type="module">
 import {gallonsToLiters,fertilizerMassGrams,p2o5PercentToElementalP,k2oPercentToElementalK} from '/assets/thc-cultivation-math-v1.mjs';
 const THC=window.THC,$=id=>document.getElementById(id),volunit=$('volunit'),fertOut=$('fertOut'),stockOut=$('stockOut'),oxideOut=$('oxideOut'),saveFeedGrowLens=$('saveFeedGrowLens'),sourceWaterName=$('sourceWaterName'),startingEc=$('startingEc'),finalEc=$('finalEc'),finalPh=$('finalPh'),productName=$('productName'),mixNotes=$('mixNotes');
 function liters(){const v=THC.num('volume');return volunit.value==='gal'?gallonsToLiters(v):v}
-function direct(){const ppm=THC.num('target'),pct=THC.num('analysis'),L=liters();let g=NaN;try{g=fertilizerMassGrams(ppm,L,pct)}catch{};fertOut.innerHTML='<strong>'+THC.fmt(g,2)+' g fertilizer</strong><br>For '+THC.fmt(L,2)+' L final solution at '+THC.fmt(ppm,0)+' mg/L using '+THC.fmt(pct,2)+'% elemental analysis.<span class="quick-result-note">This is a single-element mass-balance result, not a complete feed recipe. Verify the product label, source-water contribution, final EC/pH and compatibility before mixing or applying.</span>'}
+function direct(){const ppm=THC.num('target'),pct=THC.num('analysis'),L=liters();let g=NaN;try{g=fertilizerMassGrams(ppm,L,pct)}catch{};fertOut.innerHTML='<strong>'+THC.fmt(g,2)+' g fertilizer</strong><br>For '+THC.fmt(L,2)+' L final solution at '+THC.fmt(ppm,0)+' mg/L using '+THC.fmt(pct,2)+'% elemental analysis.<p class="muted">Mass-balance only; not a complete nutrient recipe.</p>'}
 function stock(){const ppm=THC.num('injTarget'),pct=THC.num('injAnalysis'),r=THC.num('ratio'),L=THC.num('stockVol'),fraction=pct/100;let g=NaN;try{g=fertilizerMassGrams(ppm*r,L,pct)}catch{}const stockPpm=L>0&&Number.isFinite(g)?g*1000*fraction/L:NaN;stockOut.innerHTML='<strong>'+THC.fmt(g,1)+' g product in '+THC.fmt(L,1)+' L final stock</strong><br>Stock elemental concentration '+THC.fmt(stockPpm,0)+' mg/L · diluted 1:'+THC.fmt(r,0)+' → '+THC.fmt(ppm,0)+' mg/L target.'}
 function oxide(){const p=p2o5PercentToElementalP(THC.num('p2o5')),k=k2oPercentToElementalK(THC.num('k2o'));oxideOut.innerHTML='<strong>'+THC.fmt(p,2)+'% elemental P · '+THC.fmt(k,2)+'% elemental K</strong><br>Converted from entered P₂O₅ and K₂O label percentages.'}
 function recipeMatrix(){const L=THC.num('recipeLiters'),ach={N:0,P:0,K:0,Ca:0,Mg:0};for(let i=1;i<=3;i++){const g=THC.num('rp'+i+'g'),factor=L>0?g*1000/L:0;ach.N+=factor*(THC.num('rp'+i+'N')/100);ach.P+=factor*(p2o5PercentToElementalP(THC.num('rp'+i+'P'))/100);ach.K+=factor*(k2oPercentToElementalK(THC.num('rp'+i+'K'))/100);ach.Ca+=factor*(THC.num('rp'+i+'Ca')/100);ach.Mg+=factor*(THC.num('rp'+i+'Mg')/100)}for(const k of ['N','P','K','Ca','Mg']){const target=THC.num('t'+k),a=document.getElementById('a'+k),d=document.getElementById('d'+k);a.textContent=THC.fmt(ach[k],1);d.textContent=(ach[k]-target>=0?'+':'')+THC.fmt(ach[k]-target,1)}}

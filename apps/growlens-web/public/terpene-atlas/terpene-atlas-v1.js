@@ -194,17 +194,6 @@ function renderCompare(){
 $('[data-search]').addEventListener('input',e=>{state.query=e.target.value;render()});
 $('[data-class-filter]').addEventListener('change',e=>{state.family=e.target.value;renderWheel();render()});
 $('[data-scope-filter]').addEventListener('change',e=>{state.scope=e.target.value;render()});
-for(const button of document.querySelectorAll('[data-quick-query]'))button.addEventListener('click',()=>{
-  state.query=button.dataset.quickQuery||'';
-  state.family='all';
-  state.scope='all';
-  $('[data-search]').value=state.query;
-  $('[data-class-filter]').value='all';
-  $('[data-scope-filter]').value='all';
-  renderWheel();
-  render();
-  document.querySelector('#explorer')?.scrollIntoView({behavior:'smooth',block:'start'});
-});
 $('[data-compare-a]').addEventListener('change',renderCompare);
 $('[data-compare-b]').addEventListener('change',renderCompare);
 load().catch(error=>{$('[data-grid]').innerHTML=`<div class="empty">Terpene Atlas data could not load. ${esc(error.message)}</div>`;console.error('[Terpene Atlas]',error)});

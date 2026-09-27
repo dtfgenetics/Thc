@@ -41,7 +41,7 @@ assert.match(runtime, /script, foreignObject/);
 
 assert.match(baseCss, /@media\(forced-colors:active\)/);
 assert.match(baseCss, /@media\(prefers-reduced-motion:reduce\)/);
-assert.match(visualCss, /top:calc\(var\(--dtf-global-header-height,74px\) \+ 8px\)/);
+assert.match(visualCss, /top:calc\(var\(--dtf-global-header-height,66px\) \+ 8px\)/);
 assert.doesNotMatch(visualCss, /position:sticky;top:\.25rem/);
 assert.match(visualCss, /min-height:54px/);
 assert.match(visualCss, /touch-action:pan-x pan-y/);

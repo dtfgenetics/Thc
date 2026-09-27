@@ -1,21 +1,21 @@
 <main class="dtf-v1 community-v2" data-dtf-layout="community-visual-v2">
   <style>
     .community-v2{--community-deep:#07190f;--community-leaf:#216c3d;--community-gold:#d6b75c;--community-line:rgba(16,43,26,.14);--community-muted:#5a685e}
-    .community-v2 .community-command{position:relative;overflow:hidden;min-height:390px;padding:clamp(28px,5vw,48px);border:1px solid rgba(214,183,92,.24);border-radius:26px;background:linear-gradient(145deg,#07190f,#0f3320 58%,#195033);color:#fff;box-shadow:0 28px 68px rgba(4,24,14,.22)}
+    .community-v2 .community-command{position:relative;overflow:hidden;min-height:0;padding:clamp(24px,4vw,38px);border:1px solid rgba(214,183,92,.24);border-radius:26px;background:linear-gradient(145deg,#07190f,#0f3320 58%,#195033);color:#fff;box-shadow:0 28px 68px rgba(4,24,14,.22)}
     .community-v2 .community-command:before{content:"";position:absolute;inset:-28% -8% auto 40%;height:92%;background:radial-gradient(circle,rgba(214,183,92,.23),rgba(79,166,99,.08) 42%,transparent 69%);pointer-events:none}
     .community-v2 .community-command:after{content:"DTF";position:absolute;right:3%;bottom:-16%;font-size:clamp(6rem,16vw,12rem);font-weight:950;letter-spacing:-.08em;color:rgba(255,255,255,.035);pointer-events:none}
     .community-v2 .community-command-copy{position:relative;z-index:2;max-width:590px}
     .community-v2 .community-kicker{margin:0 0 15px;color:#efd679;font-size:.72rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase}
-    .community-v2 .community-command h2{max-width:10ch;margin:0;color:#fff;font-size:clamp(2.25rem,5vw,4.3rem);line-height:.94;letter-spacing:-.055em}
+    .community-v2 .community-command h2{max-width:12ch;margin:0;color:#fff;font-size:clamp(2rem,4vw,3.4rem);line-height:.94;letter-spacing:-.055em}
     .community-v2 .community-command p{max-width:54ch;margin:18px 0 0;color:#c9d8cc;line-height:1.68}
-    .community-v2 .community-signal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:28px}
-    .community-v2 .community-signal{min-height:112px;padding:17px;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:rgba(255,255,255,.055);backdrop-filter:blur(4px)}
+    .community-v2 .community-signal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:22px}
+    .community-v2 .community-signal{min-height:0;padding:14px 15px;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:rgba(255,255,255,.055);backdrop-filter:blur(4px)}
     .community-v2 .community-signal strong{display:block;margin-bottom:6px;color:#fff;font-size:1rem}
     .community-v2 .community-signal span{display:block;color:#bfcfc2;font-size:.88rem;line-height:1.5}
     .community-v2 .participation-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-    .community-v2 .participation-card{position:relative;display:flex;min-height:310px;flex-direction:column;overflow:hidden;padding:26px;border:1px solid var(--community-line);border-radius:20px;background:linear-gradient(180deg,#fff,#faf8f1);box-shadow:0 15px 36px rgba(10,37,21,.07);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+    .community-v2 .participation-card{position:relative;display:flex;min-height:260px;flex-direction:column;overflow:hidden;padding:26px;border:1px solid var(--community-line);border-radius:20px;background:linear-gradient(180deg,#fff,#faf8f1);box-shadow:0 15px 36px rgba(10,37,21,.07);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
     .community-v2 .participation-card:before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,#216c3d,#d6b75c,transparent 84%)}
-    .community-v2 .participation-index{display:inline-flex;align-items:center;gap:8px;margin-bottom:30px;color:#8a732f;font-size:.72rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+    .community-v2 .participation-index{display:inline-flex;align-items:center;gap:8px;margin-bottom:20px;color:#8a732f;font-size:.72rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
     .community-v2 .participation-index:before{content:"";width:28px;height:1px;background:#d6b75c}
     .community-v2 .participation-card h3{max-width:13ch;margin:0 0 10px;font-size:clamp(1.45rem,2.1vw,1.85rem);line-height:1.02;letter-spacing:-.035em}
     .community-v2 .participation-card p{margin:0;color:var(--community-muted);line-height:1.68}
@@ -39,7 +39,7 @@
     .community-v2 .standard-item p{margin:0;color:var(--community-muted);line-height:1.62}
     @media(hover:hover) and (pointer:fine){.community-v2 .participation-card:hover{transform:translateY(-3px);border-color:rgba(33,108,61,.3);box-shadow:0 24px 52px rgba(10,37,21,.12)}}
     @media(max-width:920px){.community-v2 .participation-grid{grid-template-columns:1fr}.community-v2 .participation-card{min-height:0}.community-v2 .record-flow{grid-template-columns:1fr}.community-v2 .record-step+.record-step{border-left:0;border-top:1px solid var(--community-line)}.community-v2 .standard-grid{grid-template-columns:1fr}}
-    @media(max-width:680px){.community-v2 .community-signal-grid{grid-template-columns:1fr}.community-v2 .community-signal{min-height:0}.community-v2 .community-command{min-height:0}.community-v2 .record-step{min-height:0;padding:23px}.community-v2 .record-step span{margin-bottom:22px}}
+    @media(max-width:680px){.community-v2 .community-command{padding:20px 18px;border-radius:18px}.community-v2 .community-command h2{max-width:none;font-size:clamp(1.85rem,9vw,2.65rem)}.community-v2 .community-command p{margin-top:12px}.community-v2 .community-signal-grid{display:flex;grid-template-columns:none;margin-inline:-18px;padding:0 18px 6px;gap:9px;overflow-x:auto;scroll-snap-type:x proximity;overscroll-behavior-inline:contain}.community-v2 .community-signal{flex:0 0 min(76vw,260px);scroll-snap-align:start}.community-v2 .record-step{min-height:0;padding:20px}.community-v2 .record-step span{margin-bottom:18px}.community-v2 .participation-card{padding:20px;border-radius:16px}.community-v2 .participation-index{margin-bottom:14px}}
     @media(prefers-reduced-motion:reduce){.community-v2 .participation-card{transition:none}.community-v2 .participation-card:hover{transform:none}}
   </style>
 

@@ -6,13 +6,13 @@
     .about-v2 .about-panel-kicker{margin:0 0 18px;color:#efd679;font-size:.74rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase}
     .about-v2 .about-hero-panel h2{max-width:10ch;margin:0;font-size:clamp(2.1rem,4.5vw,4rem);line-height:.94;letter-spacing:-.05em;color:#fff}
     .about-v2 .about-system-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:28px}
-    .about-v2 .about-system{min-height:132px;padding:18px;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:rgba(255,255,255,.055);backdrop-filter:blur(4px)}
+    .about-v2 .about-system{min-height:0;padding:15px 16px;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:rgba(255,255,255,.055);backdrop-filter:blur(4px)}
     .about-v2 .about-system span{display:inline-grid;place-items:center;width:30px;height:30px;margin-bottom:20px;border-radius:50%;background:rgba(214,183,92,.15);color:#efd679;font-weight:900;font-size:.78rem}
     .about-v2 .about-system h3{margin:0 0 6px;color:#fff;font-size:1.08rem}
     .about-v2 .about-system p{margin:0;color:#c8d6cb;line-height:1.55;font-size:.9rem}
     .about-v2 .about-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
-    .about-v2 .about-card{display:flex;min-height:260px;flex-direction:column;padding:24px;border:1px solid var(--about-line);border-radius:20px;background:linear-gradient(180deg,#fff,#faf8f1);box-shadow:0 14px 34px rgba(10,37,21,.07)}
-    .about-v2 .about-card-index{display:inline-flex;align-items:center;gap:8px;margin-bottom:28px;color:#8a732f;font-size:.74rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+    .about-v2 .about-card{display:flex;min-height:220px;flex-direction:column;padding:24px;border:1px solid var(--about-line);border-radius:20px;background:linear-gradient(180deg,#fff,#faf8f1);box-shadow:0 14px 34px rgba(10,37,21,.07)}
+    .about-v2 .about-card-index{display:inline-flex;align-items:center;gap:8px;margin-bottom:18px;color:#8a732f;font-size:.74rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
     .about-v2 .about-card-index:before{content:"";width:28px;height:1px;background:var(--about-gold)}
     .about-v2 .about-card h3{margin:0 0 10px;font-size:1.35rem;letter-spacing:-.025em}
     .about-v2 .about-card p{margin:0;color:#5a685e;line-height:1.68}
@@ -26,7 +26,7 @@
     .about-v2 .about-cta .section-heading h2,.about-v2 .about-cta .section-heading p{color:#fff}
     .about-v2 .about-cta .section-heading p{color:#c8d6cb}
     @media(max-width:1000px){.about-v2 .about-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media(max-width:760px){.about-v2 .about-system-grid,.about-v2 .principle-grid,.about-v2 .about-grid{grid-template-columns:1fr}.about-v2 .about-system{min-height:0}.about-v2 .about-card{min-height:0}.about-v2 .about-hero-panel h2{max-width:12ch}}
+    @media(max-width:760px){.about-v2 .about-system-grid{display:flex;grid-template-columns:none;gap:9px;margin-inline:-18px;padding:0 18px 6px;overflow-x:auto;scroll-snap-type:x proximity;overscroll-behavior-inline:contain}.about-v2 .about-system{flex:0 0 min(76vw,250px);scroll-snap-align:start}.about-v2 .principle-grid,.about-v2 .about-grid{grid-template-columns:1fr}.about-v2 .about-card{min-height:0;padding:20px;border-radius:16px}.about-v2 .about-hero-panel{padding:20px 18px;border-radius:18px}.about-v2 .about-hero-panel h2{max-width:none;font-size:clamp(1.9rem,9vw,2.7rem)}}
   </style>
 
   <section class="site-hero" aria-labelledby="about-title">

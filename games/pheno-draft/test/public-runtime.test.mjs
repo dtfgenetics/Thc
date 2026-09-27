@@ -33,8 +33,8 @@ assert.match(runtime, /prefers-reduced-motion: reduce/);
 
 assert.match(visualCss, /grid-template-columns:repeat\(3,minmax\(82vw,1fr\)\)/);
 assert.match(visualCss, /scroll-snap-type:x mandatory/);
-assert.match(visualCss, /top:calc\(var\(--dtf-global-header-height,74px\) \+ 8px\)/);
-assert.match(visualCss, /top:calc\(var\(--dtf-global-header-height,74px\) \+ 94px\)/);
+assert.match(visualCss, /top:calc\(var\(--dtf-global-header-height,66px\) \+ 8px\)/);
+assert.match(visualCss, /top:calc\(var\(--dtf-global-header-height,66px\) \+ 94px\)/);
 assert.doesNotMatch(visualCss, /position:sticky;top:\.35rem/);
 assert.match(baseCss, /@media\(forced-colors:active\)/);
 assert.match(visualCss, /@media\(prefers-reduced-motion:reduce\)/);

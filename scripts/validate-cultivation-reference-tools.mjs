@@ -60,10 +60,6 @@ assert(tds.includes('Last calibration / check') && tds.includes('Sample temp (°
 assert(tds.includes('ecCalibrationStatus') && tds.includes('ecCalibrationStandard') && tds.includes('calibrationAgeDays') && tds.includes('1.413 mS/cm (1413 µS/cm)') && tds.includes('There is no universal calibration interval'), 'TDS/EC journal missing calibration-age status or conductivity-standard guidance');
 assert(tds.includes("header:'calibration_standard'"), 'TDS/EC CSV journal must preserve calibration standard identity');
 assert(tds.includes('/assets/vendor/uplot-1.6.32.min.js') && tds.includes('/assets/vendor/papaparse-5.7.0.min.js') && tds.includes('/assets/thc-measurement-journal-v1.js'), 'TDS/EC journal must use shared uPlot/Papa Parse measurement stack');
-assert(ph.includes('Advanced: calibration record, trend chart & pH journal') && ph.includes('quick-result-note'), 'pH tool must preserve quick-first interpretation with advanced journal disclosure');
-assert(ph.includes('Check alkalinity and EC next') && ph.includes('Verify meter calibration and sampling method first'), 'pH quick result missing context-aware next action');
-assert(tds.includes('Advanced: calibration record, trend chart & EC/TDS journal') && tds.includes('quick-result-note'), 'EC/TDS tool must preserve quick-first conversion with advanced journal disclosure');
-assert(tds.includes('Keep EC as the primary record') && tds.includes('meter convention together'), 'EC/TDS quick result missing measurement-record guidance');
 
 assert(vpd.includes("/assets/thc-cultivation-math-v1.mjs") && vpd.includes('leafVpd'), 'VPD page missing shared leaf-VPD calculation');
 assert(vpd.includes('Relative humidity (%)') && vpd.includes('Leaf offset'), 'VPD page missing required inputs');
@@ -74,9 +70,6 @@ assert(vpd.includes('Analyzed '+"'"+'+rows.length+'+"'"+' valid logger rows loca
 assert(vpd.includes('/assets/vendor/papaparse-5.7.0.min.js') && vpd.includes('window.Papa?.parse'), 'VPD page must use vendored Papa Parse with fallback support');
 assert(vpd.includes('/assets/vendor/uplot-1.6.32.min.js') && vpd.includes('/assets/vendor/uplot-1.6.32.min.css') && vpd.includes('window.uPlot'), 'VPD logger must use vendored uPlot with canvas fallback');
 assert(vpd.includes("cursor:{drag:{x:true,y:false,setScale:true}}") && vpd.includes("fallback.hidden=false"), 'VPD uPlot integration must preserve zoom/cursor interaction and fallback rendering');
-assert(vpd.includes('quickTargetLow') && vpd.includes('quickTargetHigh') && vpd.includes('Inside your selected target band'), 'VPD quick calculator must preserve editable target-band interpretation');
-assert(vpd.includes('Advanced: saved profiles and logger trend analysis') && vpd.includes('<details class="advanced-tools">'), 'VPD advanced workflows must remain progressively disclosed');
-assert(hub.includes('What are you trying to do right now?') && hub.includes('Something looks wrong with my plant') && hub.includes('Check PPFD, DLI or canopy uniformity'), 'tools hub missing task-first entry points');
 
 const journalRuntime = fs.readFileSync(path.join(root, 'site/public-route-patch/assets/thc-measurement-journal-v1.js'), 'utf8');
 assert(journalRuntime.includes('THCMeasurementJournal') && journalRuntime.includes('localStorage.setItem') && journalRuntime.includes('window.Papa?.parse') && journalRuntime.includes('window.uPlot'), 'shared measurement journal runtime missing persistence, CSV, or chart contracts');
@@ -105,8 +98,6 @@ assert(ppfd.includes('µmol·m⁻²·s⁻¹') && ppfd.includes('mol·m⁻²·day
 assert(ppfd.includes('600, 800 and 1,000') && ppfd.includes('150–700') && ppfd.includes('not universal target bands'), 'PPFD research context must distinguish tested study conditions from universal targets');
 assert(ppfd.includes('fillReading') && ppfd.includes('clearMap') && ppfd.includes("stats.max/stats.min"), 'PPFD page missing map utility controls or spread analysis');
 assert(ppfd.includes('Variable-light DLI schedule') && ppfd.includes('calculateVariableLight') && ppfd.includes('scheduleStats'), 'PPFD page missing shared variable-light DLI integration');
-assert(ppfd.includes('Advanced: variable-light DLI schedule') && ppfd.includes('Advanced: fixture calibration, survey records & canopy mapping'), 'PPFD advanced workflows must remain progressively disclosed');
-assert(ppfd.includes('below your target range') && ppfd.includes('Measure several canopy points before increasing output') && ppfd.includes('inside your target range'), 'PPFD quick result must provide target-aware next-step guidance');
 assert(ppfd.includes('Import full survey') && ppfd.includes('jsonFile') && ppfd.includes('formatVersion:2'), 'PPFD page missing full-survey JSON round trip');
 assert(ppfd.includes("thc-light-lab-surveys-v1") && ppfd.includes("thc-light-lab-surveys-v2"), 'PPFD page must preserve legacy saved surveys during schema migration');
 assert(ppfd.includes('Measurement protocol') && ppfd.includes('cosine response') && ppfd.includes('LI-COR DLI logging'), 'PPFD page missing professional measurement protocol guidance');

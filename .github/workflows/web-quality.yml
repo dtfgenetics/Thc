@@ -9,6 +9,7 @@ on:
       - 'site/**'
       - 'scripts/discover-public-routes.mjs'
       - 'scripts/check-public-route-health.mjs'
+      - 'scripts/audit-responsive-source.mjs'
       - 'web-qa.config.mjs'
       - 'lighthouserc.cjs'
       - '.github/workflows/web-quality.yml'
@@ -61,6 +62,9 @@ jobs:
 
       - name: Install repository dependencies
         run: npm ci
+
+      - name: Audit responsive source contracts
+        run: npm run audit:responsive-source
 
       - name: Discover public routes
         run: node scripts/discover-public-routes.mjs

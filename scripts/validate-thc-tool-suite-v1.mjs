@@ -26,10 +26,19 @@ const ok=(v,m)=>{if(!v)errors.push(m)};
 const css=path.join(root,'site/public-route-patch/assets/thc-tool-suite-v1.css');
 const js=path.join(root,'site/public-route-patch/assets/thc-tool-suite-v1.js');
 ok(fs.existsSync(css)&&fs.statSync(css).size>3000,'shared tool-suite CSS missing or too small');
-const sharedCss=fs.readFileSync(css,'utf8');
-for(const token of ['.advanced-workflow{','.quick-result-note{']) ok(sharedCss.includes(token),'shared tool-suite CSS missing progressive-disclosure token: '+token);
 ok(fs.existsSync(js)&&fs.statSync(js).size>300,'shared tool-suite JS missing or too small');
 const sharedJs=fs.readFileSync(js,'utf8');
+const sharedCss=fs.readFileSync(css,'utf8');
+for(const token of [
+  'grid2:has(> :nth-child(2):last-child)',
+  'scroll-snap-type:x proximity',
+  '.toolbar{display:grid;grid-template-columns:1fr;width:100%}',
+  '.hero h1{max-width:18ch',
+  '.nav.open{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))'
+]){
+  ok(sharedCss.includes(token),'shared tool-suite CSS missing responsive UX token: '+token);
+}
+
 for(const token of ['thc-cultivation-context-v1','thc-growlens-state-v1','addEnvironmentReading','addIrrigationRecord','addObservation','addDiaryEntry','addFeedingRecord','addReservoirRecord','addHarvestRecord','addCycle','addTasks']){
  ok(sharedJs.includes(token),'shared tool-suite JS missing integration token: '+token);
 }
@@ -56,22 +65,7 @@ for(const token of ['Shared cultivation context','Grow','Room','Zone','Plant / g
  ok(sharedJs.includes(token),'shared cultivation context UI missing token: '+token);
 }
 for(const [slug,tokens] of [
- ['water-quality-lab',['thc-water-quality-history-v1','Change from prior report','Advanced report chemistry: hardness, calcium, magnesium, sodium & chloride','Advanced: save, compare & export water reports','quick-result-note','Start interpretation with pH, EC and alkalinity together']],
- ['fertigation-lab',['Advanced: injector stock tanks, multi-product recipe worksheet & records','quick-result-note','single-element mass-balance result']],
- ['dryback-lab',['Advanced: irrigation volume, drainage, phase, saving & history','Advanced: saved trends, irrigation history & measurement notes','quick-result-note','Use repeated measurements from the same method']],
- ['environment-control',['Advanced: lighting, root zone, room context & saved readings','Advanced: user guardrails','Advanced: VPD trend, day/night summary & history','quick-result-note','core environmental check']],
- ['dew-point',['quick-result-note','coldest relevant surface during transitions']],
- ['dry-cure-lab',['Advanced: lot identity, water activity, notes, saving & export','Advanced: drying checkpoint history','quick-result-note','Use the change over repeated checkpoints']],
- ['ipm-scout',['Advanced: inspection context, severity, notes, saving & export','Advanced: selected-route trend & escalation path','Advanced: local scouting history','quick-result-note','program-defined, not a universal biological action threshold']],
- ['photoperiod-planner',['Advanced: save, compare & export schedules','Advanced: saved schedule comparison','quick-result-note','Re-check DLI whenever either light hours or PPFD changes']],
- ['root-zone-temperature',['Advanced: irrigation temperature, timing, saving & export','Advanced: root-zone trend & saved readings','quick-result-note','Room air is context, not a substitute']],
- ['co2-ventilation',['Advanced: delivered-airflow correction & target ACH','Advanced: reverse airflow planning & unit reference','quick-result-note','not a CO₂ enrichment or life-safety design']],
- ['substrate-calculator',['Advanced: plan identity, cost & component recipe','Advanced: save, backup & export plans','Advanced: saved media plans','quick-result-note','Nominal container size is a planning input']],
- ['dilution-calculator',['Advanced: serial dilution planning','Advanced: diluent amount & serial dilution preview','quick-result-note','C₁ and C₂ must use the same concentration basis']],
- ['plant-growth-tracker',['Advanced: plant identity, saving, GrowLens, backup & export','Advanced: growth-rate trend & saved intervals','quick-result-note','Training or posture changes can alter height']],
- ['grow-planner',['Advanced: plan identity, GrowLens, saving, backup & export','Advanced: saved grow plans & integration notes','quick-result-note','planning anchors, not fixed biological deadlines']],
- ['breeder-pedigree',['Minimum pedigree record:','Advanced: population, selections, purpose, saving & export','Advanced: relationship explorer, lineage graph & local records']],
- ['unit-converter',['Temperature','Volume','Length','Area','Mass','Conductivity','Airflow']],
+ ['water-quality-lab',['thc-water-quality-history-v1','Change from prior report']],
  ['fertigation-lab',['recipeMatrix','Target vs achieved recipe worksheet']],
  ['dry-cure-lab',['thc-dry-cure-checkpoints-v1','Save harvest to GrowLens']],
  ['breeder-pedigree',['Offspring / line name','Population size','Selected plant IDs','Relationship explorer','Direct descendants']],['grow-planner',['Create GrowLens stage tasks','THC.growlens.addTasks','Create GrowLens cycle','THC.growlens.addCycle','Saved grow plans','Backup JSON','Restore JSON','data-load','data-delete']],['environment-control',['Recent VPD trend','history-chart']],['dryback-lab',['Recent dryback trend','history-chart']],['root-zone-temperature',['thc-root-zone-history-v1','Root-zone trend']],['plant-growth-tracker',['thc-plant-growth-history-v1','Growth-rate trend','Plant / group ID','Cultivar / line','Review one plant / group','Backup JSON','Restore JSON','data-load','data-delete']],['photoperiod-planner',['thc-photoperiod-schedules-v1','Compare saved schedules']],['substrate-calculator',['thc-substrate-plans-v1','Purchase overage','Plan name','Review one zone / room','Backup JSON','Restore JSON','data-load','data-delete','thc-substrate-plans']],['co2-ventilation',['Delivered airflow factor','target ACH']],['dilution-calculator',['Serial dilution steps','Diluent amount']],['unit-converter',['Airflow','m³/h','Area','Mass']]
