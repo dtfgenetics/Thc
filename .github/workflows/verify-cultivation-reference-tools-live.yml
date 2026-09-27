@@ -2,40 +2,9 @@ name: Verify Cultivation Reference Tools Live
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - site/public-route-patch/tools/**
-      - site/public-route-patch/atlas/**
-      - site/public-route-patch/terpene-atlas/**
-      - site/public-route-patch/ph-meter/**
-      - site/public-route-patch/tds-meter/**
-      - site/public-route-patch/vpd-chart/**
-      - site/public-route-patch/ppfd-chart/**
-      - site/public-route-patch/water-quality-lab/**
-      - site/public-route-patch/fertigation-lab/**
-      - site/public-route-patch/dryback-lab/**
-      - site/public-route-patch/dew-point/**
-      - site/public-route-patch/environment-control/**
-      - site/public-route-patch/ipm-scout/**
-      - site/public-route-patch/dry-cure-lab/**
-      - site/public-route-patch/grow-planner/**
-      - site/public-route-patch/substrate-calculator/**
-      - site/public-route-patch/breeder-pedigree/**
-      - site/public-route-patch/co2-ventilation/**
-      - site/public-route-patch/photoperiod-planner/**
-      - site/public-route-patch/plant-growth-tracker/**
-      - site/public-route-patch/root-zone-temperature/**
-      - site/public-route-patch/dilution-calculator/**
-      - site/public-route-patch/unit-converter/**
-      - site/public-route-patch/assets/thc-tool-suite-v1.css
-      - site/public-route-patch/assets/thc-tool-suite-v1.js
-      - scripts/validate-thc-tool-suite-v1.mjs
-      - apps/growlens-web/public/atlas/**
-      - apps/growlens-web/public/terpene-atlas/**
-      - scripts/validate-cultivation-reference-tools.mjs
-      - scripts/verify-cultivation-reference-tools-live.mjs
-      - .github/workflows/verify-cultivation-reference-tools-live.yml
+  workflow_run:
+    workflows: ["Deploy DTFSeeds Public Suite via WordPress V2"]
+    types: [completed]
 
 permissions:
   contents: read
@@ -46,6 +15,7 @@ concurrency:
 
 jobs:
   verify:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
