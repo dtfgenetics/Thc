@@ -37,10 +37,10 @@ const headers = {
 //   preserve the current owner instead of failing on an obsolete marker.
 //
 // Learn can likewise be observed at more than one legitimate owner stage. The
-// legacy V3 marker remains accepted for rollback/recovery compatibility, while
-// the connected V4 map plus its unique heading identifies the newer Learning
-// owner without requiring the older wrapper marker to survive downstream
-// owner-aware transformations.
+// legacy V3 marker remains accepted for rollback/recovery compatibility. When
+// downstream owner-aware transformations replace that wrapper, the persistent
+// Atlas + Start Here affordances identify the canonical Learning root without
+// depending on V4/expanded storage internals that belong to the Education lane.
 const ownerMarkerAlternatives = {
   home: [
     ['data-dtf-layout="home-v3"'],
@@ -48,7 +48,7 @@ const ownerMarkerAlternatives = {
   ],
   learn: [
     ['data-dtf-layout="learn-v3"'],
-    ['data-dtf-learning-map="v4"', 'See how the systems connect before you go deep.']
+    ['/learn/atlas/', 'Open the THC Living Plant Atlas', '/learn/start-here/']
   ]
 };
 const ownerStage = 'base-learning-owner';
