@@ -23,7 +23,8 @@
         "Cultivation reference tools",
         "PPFD / DLI"
       ],
-      "requiredAssets": []
+      "requiredAssets": [],
+      "sourceRoot": "site/public-route-patch/tools"
     },
     {
       "id": "atlas",
@@ -45,7 +46,8 @@
         "THC Living Plant Atlas",
         "All Tools"
       ],
-      "requiredAssets": []
+      "requiredAssets": [],
+      "sourceRoot": "site/public-route-patch/atlas"
     },
     {
       "id": "terpene-atlas",
@@ -67,7 +69,8 @@
         "THC Terpene Atlas",
         "All Tools"
       ],
-      "requiredAssets": []
+      "requiredAssets": [],
+      "sourceRoot": "site/public-route-patch/terpene-atlas"
     },
     {
       "id": "ph-meter",
@@ -94,7 +97,8 @@
         "site/public-route-patch/assets/vendor/uplot-1.6.32.min.js",
         "site/public-route-patch/assets/vendor/uplot-1.6.32.min.css",
         "site/public-route-patch/assets/thc-measurement-journal-v1.js"
-      ]
+      ],
+      "sourceRoot": "site/public-route-patch/ph-meter"
     },
     {
       "id": "tds-meter",
@@ -124,7 +128,8 @@
         "site/public-route-patch/assets/vendor/uplot-1.6.32.min.js",
         "site/public-route-patch/assets/vendor/uplot-1.6.32.min.css",
         "site/public-route-patch/assets/thc-measurement-journal-v1.js"
-      ]
+      ],
+      "sourceRoot": "site/public-route-patch/tds-meter"
     },
     {
       "id": "vpd-chart",
@@ -151,7 +156,8 @@
         "site/public-route-patch/assets/vendor/papaparse-5.7.0.min.js",
         "site/public-route-patch/assets/vendor/uplot-1.6.32.min.js",
         "site/public-route-patch/assets/vendor/uplot-1.6.32.min.css"
-      ]
+      ],
+      "sourceRoot": "site/public-route-patch/vpd-chart"
     },
     {
       "id": "ppfd-chart",
@@ -179,7 +185,8 @@
         "site/public-route-patch/assets/thc-cultivation-math-v1.mjs",
         "site/public-route-patch/assets/thc-light-lab-math-v1.mjs",
         "site/public-route-patch/assets/vendor/papaparse-5.7.0.min.js"
-      ]
+      ],
+      "sourceRoot": "site/public-route-patch/ppfd-chart"
     },
     {
       "id": "water-quality-lab",
@@ -202,7 +209,8 @@
       "requiredAssets": [
         "site/public-route-patch/assets/thc-tool-suite-v1.css",
         "site/public-route-patch/assets/thc-tool-suite-v1.js"
-      ]
+      ],
+      "sourceRoot": "site/public-route-patch/water-quality-lab"
     },
     {
       "id": "fertigation-lab",
@@ -227,7 +235,8 @@
         "site/public-route-patch/assets/thc-tool-suite-v1.css",
         "site/public-route-patch/assets/thc-tool-suite-v1.js",
         "site/public-route-patch/assets/thc-cultivation-math-v1.mjs"
-      ]
+      ],
+      "sourceRoot": "site/public-route-patch/fertigation-lab"
     },
     {
       "id": "dryback-lab",
@@ -252,7 +261,8 @@
         "site/public-route-patch/assets/thc-tool-suite-v1.css",
         "site/public-route-patch/assets/thc-tool-suite-v1.js",
         "site/public-route-patch/assets/thc-cultivation-math-v1.mjs"
-      ]
+      ],
+      "sourceRoot": "site/public-route-patch/dryback-lab"
     },
     {
       "id": "dew-point",
@@ -276,7 +286,8 @@
         "site/public-route-patch/assets/thc-tool-suite-v1.css",
         "site/public-route-patch/assets/thc-tool-suite-v1.js",
         "site/public-route-patch/assets/thc-cultivation-math-v1.mjs"
-      ]
+      ],
+      "sourceRoot": "site/public-route-patch/dew-point"
     },
     {
       "id": "environment-control",
@@ -301,7 +312,8 @@
         "site/public-route-patch/assets/thc-tool-suite-v1.css",
         "site/public-route-patch/assets/thc-tool-suite-v1.js",
         "site/public-route-patch/assets/thc-cultivation-math-v1.mjs"
-      ]
+      ],
+      "sourceRoot": "site/public-route-patch/environment-control"
     },
     {
       "id": "ipm-scout",
@@ -327,7 +339,8 @@
         "site/public-route-patch/assets/thc-tool-suite-v1.js",
         "site/public-route-patch/assets/vendor/uplot-1.6.32.min.js",
         "site/public-route-patch/assets/vendor/uplot-1.6.32.min.css"
-      ]
+      ],
+      "sourceRoot": "site/public-route-patch/ipm-scout"
     },
     {
       "id": "dry-cure-lab",
@@ -352,7 +365,8 @@
         "site/public-route-patch/assets/thc-tool-suite-v1.css",
         "site/public-route-patch/assets/thc-tool-suite-v1.js",
         "site/public-route-patch/assets/thc-cultivation-math-v1.mjs"
-      ]
+      ],
+      "sourceRoot": "site/public-route-patch/dry-cure-lab"
     },
     {
       "id": "grow-planner",
@@ -376,7 +390,8 @@
       "requiredAssets": [
         "site/public-route-patch/assets/thc-tool-suite-v1.css",
         "site/public-route-patch/assets/thc-tool-suite-v1.js"
-      ]
+      ],
+      "sourceRoot": "site/public-route-patch/grow-planner"
     },
     {
       "id": "substrate-calculator",
@@ -401,7 +416,8 @@
         "site/public-route-patch/assets/thc-tool-suite-v1.css",
         "site/public-route-patch/assets/thc-tool-suite-v1.js",
         "site/public-route-patch/assets/thc-cultivation-math-v1.mjs"
-      ]
+      ],
+      "sourceRoot": "site/public-route-patch/substrate-calculator"
     },
     {
       "id": "breeder-pedigree",
@@ -427,7 +443,8 @@
         "site/public-route-patch/assets/thc-tool-suite-v1.js",
         "site/public-route-patch/assets/breeder-pedigree-graph-v1.js",
         "site/public-route-patch/assets/vendor/cytoscape-3.34.3.min.js"
-      ]
+      ],
+      "sourceRoot": "site/public-route-patch/breeder-pedigree"
     },
     {
       "id": "co2-ventilation",
@@ -452,7 +469,8 @@
         "site/public-route-patch/assets/thc-tool-suite-v1.css",
         "site/public-route-patch/assets/thc-tool-suite-v1.js",
         "site/public-route-patch/assets/thc-cultivation-math-v1.mjs"
-      ]
+      ],
+      "sourceRoot": "site/public-route-patch/co2-ventilation"
     },
     {
       "id": "photoperiod-planner",
@@ -477,7 +495,8 @@
         "site/public-route-patch/assets/thc-tool-suite-v1.css",
         "site/public-route-patch/assets/thc-tool-suite-v1.js",
         "site/public-route-patch/assets/thc-cultivation-math-v1.mjs"
-      ]
+      ],
+      "sourceRoot": "site/public-route-patch/photoperiod-planner"
     },
     {
       "id": "plant-growth-tracker",
@@ -501,7 +520,8 @@
       "requiredAssets": [
         "site/public-route-patch/assets/thc-tool-suite-v1.css",
         "site/public-route-patch/assets/thc-tool-suite-v1.js"
-      ]
+      ],
+      "sourceRoot": "site/public-route-patch/plant-growth-tracker"
     },
     {
       "id": "root-zone-temperature",
@@ -525,7 +545,8 @@
       "requiredAssets": [
         "site/public-route-patch/assets/thc-tool-suite-v1.css",
         "site/public-route-patch/assets/thc-tool-suite-v1.js"
-      ]
+      ],
+      "sourceRoot": "site/public-route-patch/root-zone-temperature"
     },
     {
       "id": "dilution-calculator",
@@ -550,7 +571,8 @@
         "site/public-route-patch/assets/thc-tool-suite-v1.css",
         "site/public-route-patch/assets/thc-tool-suite-v1.js",
         "site/public-route-patch/assets/thc-cultivation-math-v1.mjs"
-      ]
+      ],
+      "sourceRoot": "site/public-route-patch/dilution-calculator"
     },
     {
       "id": "unit-converter",
@@ -575,7 +597,8 @@
         "site/public-route-patch/assets/thc-tool-suite-v1.css",
         "site/public-route-patch/assets/thc-tool-suite-v1.js",
         "site/public-route-patch/assets/thc-cultivation-math-v1.mjs"
-      ]
+      ],
+      "sourceRoot": "site/public-route-patch/unit-converter"
     }
   ],
   "sharedAssets": [
@@ -592,8 +615,7 @@
   ],
   "thirdPartyNotices": [
     "docs/THIRD_PARTY_NOTICES.md",
-    "site/public-route-patch/assets/vendor/cytoscape-3.34.3.LICENSE.txt",
-    "site/public-route-patch/assets/vendor/uplot-1.6.32.LICENSE.txt"
+    "site/public-route-patch/assets/vendor/cytoscape-3.34.3.LICENSE.txt"
   ],
   "retainedInThc": [
     "deployment adapter/integration code",
