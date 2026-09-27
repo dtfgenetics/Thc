@@ -1,30 +1,18 @@
-import Fuse from '/assets/vendor/fuse-7.1.0.min.mjs';
-const state={catalog:null,sources:null,population:null,profiles:null,factors:null,evidence:null,fuse:null,query:'',family:'all',scope:'all',factorCategory:'all'};
+const state={catalog:null,sources:null,population:null,profiles:null,factors:null,evidence:null,query:'',family:'all',scope:'all',factorCategory:'all'};
 const $=(s)=>document.querySelector(s);
 const esc=(v='')=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 async function load(){
-  const [catalog,sources,population,profiles,factors,evidence]=await Promise.all([
+  const [catalog,sources,population,profiles,factors,evidence,identityAudit,normalization]=await Promise.all([
     fetch('/terpene-atlas/data/terpene-catalog-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('catalog '+r.status);return r.json()}),
     fetch('/terpene-atlas/data/sources-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('sources '+r.status);return r.json()}),
     fetch('/terpene-atlas/data/population-summary-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('population '+r.status);return r.json()}),
     fetch('/terpene-atlas/data/sample-profiles-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('profiles '+r.status);return r.json()}),
     fetch('/terpene-atlas/data/profile-factors-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('factors '+r.status);return r.json()}),
-    fetch('/terpene-atlas/data/evidence-claims-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('evidence '+r.status);return r.json()})
+    fetch('/terpene-atlas/data/evidence-claims-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('evidence '+r.status);return r.json()}),
+    fetch('/terpene-atlas/data/identity-audit-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('identity audit '+r.status);return r.json()}),
+    fetch('/terpene-atlas/data/analyte-normalization-v1.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('normalization '+r.status);return r.json()})
   ]);
-  state.catalog=catalog;state.sources=sources;state.population=population;state.profiles=profiles;state.factors=factors;state.evidence=evidence;
-  state.fuse=new Fuse(catalog.compounds,{
-    includeScore:true,shouldSort:true,ignoreLocation:true,threshold:.34,minMatchCharLength:2,
-    keys:[
-      {name:'canonicalName',weight:.34},
-      {name:'aliases',weight:.22},
-      {name:'aromaDescriptors',weight:.16},
-      {name:'formula',weight:.08},
-      {name:'class',weight:.07},
-      {name:'subclass',weight:.05},
-      {name:'stereochemistry',weight:.04},
-      {name:'isomerGroup',weight:.04}
-    ]
-  });
+  state.catalog=catalog;state.sources=sources;state.population=population;state.profiles=profiles;state.factors=factors;state.evidence=evidence;state.identityAudit=identityAudit;state.normalization=normalization;
   $('[data-compound-count]').textContent=`${catalog.compounds.length} compounds`;
   buildCompareOptions();renderWheel();renderSources();renderFactors();renderEvidenceSafety();renderPopulation();render();
   const requested=new URLSearchParams(location.search).get('compound');
@@ -61,8 +49,9 @@ function renderSources(){
     const formulas=items.filter(x=>x.formula).length;
     const identifiers=items.filter(x=>x.pubchemCid).length;
     const aromas=items.filter(x=>Array.isArray(x.aromaDescriptors)&&x.aromaDescriptors.length).length;
-    const stereo=items.filter(x=>x.stereochemistry).length;
-    quality.innerHTML=`<strong>Field coverage:</strong> formulas ${formulas}/${items.length} · curated aroma descriptors ${aromas}/${items.length} · resolved stereochemistry ${stereo}/${items.length} · PubChem IDs ${identifiers}/${items.length}. Missing fields remain visibly unfilled until a verified source is added; they are not inferred automatically.`;
+    const verified=items.filter(x=>x.identityStatus==='verified').length;
+    const a=state.identityAudit?.counts||{},mp=state.identityAudit?.measuredPopulation||{};
+    quality.innerHTML=`<strong>Identity QA:</strong> formulas ${formulas}/${items.length} · PubChem IDs ${identifiers}/${items.length} · verified identities ${verified}/${items.length}. <strong>Measured population:</strong> ${Math.max(0,(mp.analytes||0)-(mp.withoutPubchemCid||0))}/${mp.analytes||0} analytes carry PubChem IDs; ${mp.withoutPubchemCid||0} remains explicitly unresolved. <strong>${a.pubchemCidMissing??(items.length-identifiers)} catalog records still need structure-level identifier review.</strong> Missing identity fields are not inferred automatically. Quantitative lab analytes preserve the resolution actually reported by the source.`;
   }
 }
 function renderFactors(){
@@ -132,12 +121,25 @@ function showCompound(id){
   const dialog=$('[data-compound-dialog]');
   if(typeof dialog.showModal==='function')dialog.showModal(); else dialog.setAttribute('open','');
 }
+function normalizeAnalyteLabel(label){
+  const raw=String(label||'').trim(),key=raw.toLowerCase().replace(/\s+/g,' ');
+  const row=(state.normalization?.aliases||[]).find(x=>String(x.reported||'').trim().toLowerCase().replace(/\s+/g,' ')===key);
+  return row?{...row,reportedOriginal:raw}:null;
+}
+function resolveProfileMeasurement(row,known){
+  const direct=row.compoundId?known.get(row.compoundId):null;
+  if(direct)return{item:direct,mode:'direct-id',identityResolution:direct.identityStatus==='verified'?'resolved':direct.identityStatus==='unresolved'?'unresolved':'partial',reportedName:row.reportedName||row.analyte||row.compoundId};
+  const reported=row.reportedName||row.analyte||row.name||row.compoundName||'';
+  const norm=normalizeAnalyteLabel(reported);
+  if(norm){const item=known.get(norm.normalized);return{item,mode:'normalized-name',identityResolution:norm.identityResolution||'partial',reportedName:reported,norm};}
+  return{item:null,mode:'unmapped',identityResolution:'unresolved',reportedName:reported||row.compoundId||'unmapped analyte'};
+}
 function validateProfile(profile){
   const errors=[];
   for(const key of ['sampleId','displayName','source','matrix','method','unit','measurements']) if(profile?.[key]===undefined||profile?.[key]===null||profile?.[key]==='')errors.push(`Missing ${key}`);
   if(!Array.isArray(profile?.measurements)||profile.measurements.length===0)errors.push('measurements must be a non-empty array');
   for(const [index,row] of (profile?.measurements||[]).entries()){
-    if(!row.compoundId)errors.push(`measurement ${index+1}: missing compoundId`);
+    if(!row.compoundId&&!row.reportedName&&!row.analyte&&!row.name&&!row.compoundName)errors.push(`measurement ${index+1}: provide compoundId or reported analyte name`);
     if(row.value===undefined&&row.qualifier===undefined)errors.push(`measurement ${index+1}: provide value or qualifier`);
   }
   return errors;
@@ -151,15 +153,15 @@ function renderImportedProfile(profile){
   }
   const known=new Map(state.catalog.compounds.map(x=>[x.id,x]));
   status.innerHTML=`<strong>${esc(profile.displayName)}</strong><p>${esc(profile.sampleId)} · ${esc(profile.matrix)} · ${esc(profile.method)} · ${esc(profile.unit)}</p>`;
-  result.innerHTML=`<h3>Measured sample</h3><p><strong>Source:</strong> ${esc(typeof profile.source==='string'?profile.source:JSON.stringify(profile.source))}</p><table><thead><tr><th>Compound</th><th>Result</th><th>Atlas status</th></tr></thead><tbody>${profile.measurements.map(row=>{const item=known.get(row.compoundId);const resultText=row.value!==undefined?`${esc(row.value)} ${esc(profile.unit)}`:esc(row.qualifier||'reported');return `<tr><td>${esc(item?.canonicalName||row.compoundId)}</td><td>${resultText}</td><td>${item?'mapped':'unmapped analyte'}</td></tr>`;}).join('')}</tbody></table><p class="population-note">This browser view does not convert or reinterpret laboratory units. Compare only profiles that use compatible matrices, methods, units, and reporting conventions.</p>`;
+  result.innerHTML=`<h3>Measured sample</h3><p><strong>Source:</strong> ${esc(typeof profile.source==='string'?profile.source:JSON.stringify(profile.source))}</p><table><thead><tr><th>Compound</th><th>Result</th><th>Atlas status</th></tr></thead><tbody>${profile.measurements.map(row=>{const resolved=resolveProfileMeasurement(row,known),item=resolved.item;const resultText=row.value!==undefined?`${esc(row.value)} ${esc(profile.unit)}`:esc(row.qualifier||'reported');const identityStatus=resolved.mode==='unmapped'?'unmapped analyte':resolved.identityResolution==='resolved'?'identity resolved':resolved.identityResolution==='unresolved'?'mapped · identity unresolved':resolved.mode==='normalized-name'?'normalized · identity partial':'mapped · identity review needed';const label=item?.canonicalName||resolved.reportedName||row.compoundId;const original=resolved.mode==='normalized-name'&&resolved.reportedName?`<br><small>reported as: ${esc(resolved.reportedName)}</small>`:'';return `<tr><td>${esc(label)}${original}</td><td>${resultText}</td><td>${esc(identityStatus)}</td></tr>`;}).join('')}</tbody></table><p class="population-note">This browser view does not convert or reinterpret laboratory units. Compare only profiles that use compatible matrices, methods, units, and reporting conventions. Name normalization preserves the original reported analyte label and never infers unreported stereochemistry.</p>`;
   result.hidden=false;
 }
 function filtered(){
-  const q=state.query.trim();
-  const base=q&&state.fuse
-    ? state.fuse.search(q,{limit:Math.min(120,state.catalog.compounds.length)}).map(result=>result.item)
-    : state.catalog.compounds;
-  return base.filter(x=>(state.family==='all'||x.class===state.family)&&(state.scope==='all'||x.scope===state.scope));
+  const q=state.query.trim().toLowerCase();
+  return state.catalog.compounds.filter(x=>{
+    const hay=[x.canonicalName,x.id,x.class,x.subclass,x.formula,x.stereochemistry,x.isomerGroup,...(x.aliases||[]),...(x.aromaDescriptors||[])].join(' ').toLowerCase();
+    return (!q||hay.includes(q))&&(state.family==='all'||x.class===state.family)&&(state.scope==='all'||x.scope===state.scope);
+  });
 }
 function card(x){
   const measured=populationFor(x.id).length>0?'<span class="measured-badge">measured data</span>':'';
