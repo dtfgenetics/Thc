@@ -17,6 +17,7 @@ import {
   type LocalPhotoAsset,
 } from './photoStore';
 import { loadState, saveState } from './storage';
+import { useModalFocusTrap } from './useModalFocusTrap';
 import { summarizeGrowLensState } from './syncMerge';
 import type { GrowLensState } from './types';
 
@@ -46,6 +47,7 @@ function readableError(error: unknown): string {
 
 export default function CompleteBackupWidget() {
   const [open, setOpen] = useState(false);
+  const modalRef = useModalFocusTrap<HTMLElement>(open, () => setOpen(false));
   const [busy, setBusy] = useState(false);
   const [localPhotos, setLocalPhotos] = useState<LocalPhotoAsset[]>([]);
   const [pending, setPending] = useState<ParsedCompleteBackup | null>(null);
@@ -167,7 +169,7 @@ export default function CompleteBackupWidget() {
         <div className="backup-overlay" role="presentation" onMouseDown={(event) => {
           if (event.currentTarget === event.target) setOpen(false);
         }}>
-          <section className="backup-panel" role="dialog" aria-modal="true" aria-labelledby="backup-title">
+          <section ref={modalRef} className="backup-panel" role="dialog" aria-modal="true" aria-labelledby="backup-title">
             <header className="backup-header">
               <div><span className="eyebrow">Records and local photo recovery</span><h2 id="backup-title">Complete backups</h2></div>
               <button className="account-close" type="button" onClick={() => setOpen(false)} aria-label="Close complete backups">×</button>
