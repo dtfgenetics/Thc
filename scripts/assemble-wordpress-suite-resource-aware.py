@@ -40,7 +40,7 @@ REFERENCE_LIVE_CHECKS = [
     ('/ph-meter/', 'pH Meter'),
     ('/tds-meter/', 'TDS / EC Meter'),
     ('/vpd-chart/', 'VPD Chart'),
-    ('/ppfd-chart/', 'PPFD & DLI Tool'),
+    ('/ppfd-chart/', 'THC Light Lab'),
 ]
 RESOURCE_OWNED_GAME_TARGETS = ['games/high-iq', 'games/seed-man-platformer']
 
