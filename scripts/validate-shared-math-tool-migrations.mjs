@@ -4,7 +4,7 @@ const cases=[
   {slug:'dew-point',functions:['dewPoint'],legacy:/17\.625|243\.04/},
   {slug:'dilution-calculator',functions:['dilutionStockVolume'],legacy:/b\*v\/a/},
   {slug:'co2-ventilation',functions:['airChangesPerHour'],legacy:/delivered\*60\/v/},
-  {slug:'unit-converter',functions:['gallonsToLiters','litersToGallons'],legacy:/3\.785411784/},
+  {slug:'unit-converter',functions:['gallonsToLiters','litersToGallons','celsiusToFahrenheit','fahrenheitToCelsius','centimetersToInches','inchesToCentimeters','squareMetersToSquareFeet','squareFeetToSquareMeters','gramsToOunces','ouncesToGrams','millisiemensToMicrosiemens','microsiemensToMillisiemens','cfmToCubicMetersPerHour','cubicMetersPerHourToCfm'],legacy:/3\.785411784|2\.54|10\.7639104167|28\.349523125|1\.69901082|x\*9\/5\+32|\(x-32\)\*5\/9/},
   {slug:'vpd-chart',functions:['leafVpd'],legacy:/0\.6108\*Math\.exp|17\.27\*t|237\.3/},
   {slug:'environment-control',functions:['leafVpd','dewPoint','dliFromPpfd'],legacy:/0\.6108\*Math\.exp|17\.625|243\.04|p\*ph\*\.0036/},
 ];
