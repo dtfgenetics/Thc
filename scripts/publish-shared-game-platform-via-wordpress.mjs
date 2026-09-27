@@ -17,14 +17,16 @@ const releaseFiles = [
   'telemetry.mjs',
   'input.mjs',
   'audio.mjs',
+  'random.mjs',
+  'experience.mjs',
 ];
 
 const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
-if (manifest.platformVersion !== '1.1.0') {
+if (manifest.platformVersion !== '1.3.0') {
   throw new Error(`Unexpected shared platform version: ${manifest.platformVersion}`);
 }
-if (!Array.isArray(manifest.files) || manifest.files.length !== 6) {
-  throw new Error('Shared platform manifest must declare six runtime modules.');
+if (!Array.isArray(manifest.files) || manifest.files.length !== 8) {
+  throw new Error('Shared platform manifest must declare eight runtime modules.');
 }
 for (const rel of releaseFiles) {
   const filePath = path.join(sourceRoot, rel);
