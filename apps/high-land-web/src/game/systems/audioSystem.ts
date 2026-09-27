@@ -9,72 +9,56 @@ const audioFiles = {
 } as const;
 
 let muted = false;
-let backgroundMusic: HTMLAudioElement | null = null;
-const activeEffects = new Set<HTMLAudioElement>();
+let backgroundMusic: HighLandHowl | null = null;
+const effects = new Map<keyof typeof audioFiles, HighLandHowl>();
 
-function createAudio(path: string, volume: number): HTMLAudioElement | null {
-  if (typeof Audio === 'undefined') return null;
-
-  const audio = new Audio(gameAssetPath(path));
-  audio.preload = 'auto';
-  audio.volume = volume;
-  audio.muted = muted;
-  return audio;
-}
-
-function safelyPlay(audio: HTMLAudioElement, onFailure?: () => void): void {
-  try {
-    const playResult = audio.play();
-    if (playResult && typeof playResult.catch === 'function') {
-      void playResult.catch(() => onFailure?.());
+function createHowl(path: string, volume: number, loop = false): HighLandHowl | null {
+  const Howl = window.Howl;
+  if (!Howl) return null;
+  return new Howl({
+    src: [gameAssetPath(path)],
+    volume,
+    loop,
+    preload: true,
+    onplayerror: (id) => {
+      try { effects.forEach((sound) => sound.stop(id)); } catch {}
     }
-  } catch {
-    onFailure?.();
-  }
+  });
 }
 
-function playEffect(path: string, volume: number): void {
-  if (muted) return;
-  const audio = createAudio(path, volume);
-  if (!audio) return;
+function effect(name: Exclude<keyof typeof audioFiles, 'background'>, volume: number): HighLandHowl | null {
+  let sound = effects.get(name) || null;
+  if (!sound) {
+    sound = createHowl(audioFiles[name], volume);
+    if (sound) effects.set(name, sound);
+  }
+  return sound;
+}
 
-  const release = () => activeEffects.delete(audio);
-  audio.addEventListener?.('ended', release, { once: true });
-  audio.addEventListener?.('error', release, { once: true });
-  activeEffects.add(audio);
-  safelyPlay(audio, release);
+function play(sound: HighLandHowl | null): void {
+  if (muted || !sound) return;
+  try { sound.play(); } catch {}
 }
 
 export function startBackgroundMusic(): void {
   if (muted) return;
-
-  if (!backgroundMusic) {
-    backgroundMusic = createAudio(audioFiles.background, 0.2);
-    if (!backgroundMusic) return;
-    backgroundMusic.loop = true;
-  }
-
-  backgroundMusic.muted = false;
-  safelyPlay(backgroundMusic);
+  if (!backgroundMusic) backgroundMusic = createHowl(audioFiles.background, 0.2, true);
+  if (!backgroundMusic) return;
+  try {
+    backgroundMusic.mute(false);
+    if (!backgroundMusic.playing()) backgroundMusic.play();
+  } catch {}
 }
 
 export function setMuted(value: boolean): void {
   muted = value;
-
-  if (backgroundMusic) {
-    backgroundMusic.muted = value;
-    if (value) backgroundMusic.pause();
+  try { window.Howler?.mute(value); } catch {}
+  if (value) {
+    try { backgroundMusic?.pause(); } catch {}
+    effects.forEach((sound) => {
+      try { sound.stop(); } catch {}
+    });
   }
-
-  activeEffects.forEach((audio) => {
-    audio.muted = value;
-    if (value) {
-      audio.pause();
-      audio.currentTime = 0;
-    }
-  });
-
-  if (value) activeEffects.clear();
 }
 
 export function isMuted(): boolean {
@@ -83,18 +67,27 @@ export function isMuted(): boolean {
 
 export function playRollSound(): void {
   startBackgroundMusic();
-  playEffect(audioFiles.roll, 0.72);
+  play(effect('roll', 0.72));
 }
 
 export function playCardSound(): void {
-  playEffect(audioFiles.card, 0.62);
+  play(effect('card', 0.62));
 }
 
 export function playMoveTickSound(): void {
-  playEffect(audioFiles.move, 0.34);
+  play(effect('move', 0.34));
 }
 
 export function playWinSound(): void {
-  backgroundMusic?.pause();
-  playEffect(audioFiles.win, 0.8);
+  try { backgroundMusic?.pause(); } catch {}
+  play(effect('win', 0.8));
+}
+
+export function unloadAudio(): void {
+  try { backgroundMusic?.unload(); } catch {}
+  backgroundMusic = null;
+  effects.forEach((sound) => {
+    try { sound.unload(); } catch {}
+  });
+  effects.clear();
 }
