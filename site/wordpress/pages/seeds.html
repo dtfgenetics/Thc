@@ -81,6 +81,38 @@
     @media(max-width:980px){.genetics-v2 .genetics-hero,.genetics-v2 .parent-panel,.genetics-v2 .release-panel,.genetics-v2 .catalog-standard{grid-template-columns:1fr}.genetics-v2 .line-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.genetics-v2 .current-line-grid{grid-template-columns:1fr}.genetics-v2 .gen-heading{grid-template-columns:1fr}.genetics-v2 .standard-title{position:relative;top:auto}}
     @media(max-width:700px){.genetics-v2 .genetics-hero{padding:38px 0}.genetics-v2 .gen-wrap,.genetics-v2 .adult-note{width:min(100% - 28px,1180px)}.genetics-v2 .line-grid{grid-template-columns:1fr}.genetics-v2 .line-card{min-height:0}.genetics-v2 .board-stats{grid-template-columns:1fr}.genetics-v2 .genetics-actions{display:grid}.genetics-v2 .genetics-actions a{justify-content:center;border-radius:14px}.genetics-v2 .release-list li a{align-items:flex-start}.genetics-v2 .library-disclosure>summary{grid-template-columns:1fr;padding:18px}.genetics-v2 .library-disclosure .line-grid{padding:0 12px 12px}}
     @media(prefers-reduced-motion:reduce){.genetics-v2 .line-card{transition:none}.genetics-v2 .line-card:hover{transform:none}}
+
+    /* UX simplicity pass: keep release-first hierarchy clear and reduce mobile visual overload. */
+    @media(max-width:700px){
+      .genetics-v2 .genetics-hero{gap:22px;padding:30px 0 34px}
+      .genetics-v2 .genetics-hero h1{font-size:clamp(2.7rem,13vw,4.3rem);line-height:.92}
+      .genetics-v2 .genetics-hero-copy>p:not(:first-child){line-height:1.62}
+      .genetics-v2 .genetics-actions{gap:8px;margin-top:20px}
+      .genetics-v2 .genetics-actions a{min-height:46px;padding:10px 13px}
+      .genetics-v2 .genetics-board{padding:22px;border-radius:20px}
+      .genetics-v2 .genetics-board h2{font-size:clamp(1.9rem,9vw,2.8rem);max-width:13ch}
+      .genetics-v2 .board-stats{display:none}
+      .genetics-v2 .gen-section{padding:44px 0}
+      .genetics-v2 .gen-heading{gap:12px;margin-bottom:22px}
+      .genetics-v2 .gen-heading h2{font-size:clamp(2rem,10vw,3rem);max-width:15ch}
+      .genetics-v2 .line-card{padding:20px;border-radius:17px}
+      .genetics-v2 .line-meta{margin-bottom:18px}
+      .genetics-v2 .line-card h3{margin-bottom:12px}
+      .genetics-v2 .line-links{padding-top:17px}
+      .genetics-v2 .parent-panel{padding:22px;border-radius:20px}
+      .genetics-v2 .parent-record{padding:18px}
+      .genetics-v2 .release-copy{padding:20px}
+      .genetics-v2 .release-list li a{padding:15px 16px}
+      .genetics-v2 .catalog-standard{gap:18px}
+      .genetics-v2 .standard-copy{padding:20px}
+      .genetics-v2 .library-disclosure{border-radius:18px}
+    }
+    @media(max-width:430px){
+      .genetics-v2 .gen-wrap,.genetics-v2 .adult-note{width:min(100% - 22px,1180px)}
+      .genetics-v2 .genetics-actions a{width:100%}
+      .genetics-v2 .genetics-board>p:not(.board-kicker){font-size:.94rem}
+      .genetics-v2 .library-disclosure>summary strong{font-size:1.35rem}
+    }
   </style>
 
   <section class="gen-wrap genetics-hero" aria-labelledby="genetics-title">
