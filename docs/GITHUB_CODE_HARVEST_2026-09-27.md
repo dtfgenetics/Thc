@@ -446,3 +446,47 @@ Decision: research target only. Existing PPFD calculations are intentionally tra
 Repository: https://github.com/observablehq/plot
 Potential use: richer exploratory scientific charts for Atlas/sample-comparison dashboards where declarative multi-variable plots would materially improve analysis.
 Decision: do not add to the meter tools. uPlot remains the better small time-series runtime. Revisit for Terpene Atlas population/sample comparisons or research dashboards if those views become multi-dimensional.
+
+
+## Additional harvest — breeder graph + diagnostic image preprocessing
+
+### Cytoscape.js 3.34.3
+Repository: https://github.com/cytoscape/cytoscape.js
+License: MIT.
+
+Action taken:
+- vendored the official 3.34.3 browser build at `site/public-route-patch/assets/vendor/cytoscape-3.34.3.min.js`;
+- preserved the upstream MIT notice at `site/public-route-patch/assets/vendor/cytoscape-3.34.3.LICENSE.txt`;
+- added `site/public-route-patch/assets/breeder-pedigree-graph-v1.js` as the DTF-specific graph adapter;
+- upgraded `/breeder-pedigree/` with an interactive parent→offspring network;
+- added pan/zoom, breadth-first lineage layout, focus-line highlighting, ancestor/descendant highlighting, node-to-focus interaction, Fit Graph control and mobile sizing;
+- preserved the existing text relationship explorer and local record table as the fallback;
+- added deterministic integration validation through `scripts/validate-breeder-pedigree-graph.mjs` and `npm run validate:breeder-pedigree-graph`.
+
+Why this is a fit:
+The breeder tool already stores a graph-shaped domain model. Cytoscape adds mature graph rendering/traversal without replacing the canonical DTF breeding record data.
+
+### Plant Atlas — model-viewer decision
+Repository reviewed: https://github.com/google/model-viewer
+License: Apache-2.0.
+
+Decision: do not replace the Plant Atlas Three.js runtime right now.
+The current Atlas already has a dedicated Three.js specimen runtime, raycasting, keyboard/pointer handling, context-loss recovery, responsive observers, and semantic anatomy targets. `<model-viewer>` would simplify generic glTF display, but would remove or duplicate custom anatomy-selection behavior that already exists. Keep it as a fallback/reference candidate only if the Atlas later standardizes around a single glTF/GLB specimen.
+
+### Cropper.js 2.2.0
+Repository: https://github.com/fengyuanchen/cropperjs
+License: MIT.
+
+Potential use: Grow Doc / diagnostic photo preprocessing before analysis:
+- zoom and pan;
+- rotate/orientation correction;
+- crop a symptom region while retaining the original;
+- touch-friendly selection on mobile;
+- generate a second detail crop without discarding the full-plant/context image.
+
+Decision: high-value next diagnostic target, but do not import yet. The current diagnostic evidence uploader has image capture/upload and privacy boundaries but no crop/zoom/rotate preprocessing surfaced by the repository audit. Before adoption, define the evidence contract so the original image is retained and the crop is stored as a derived view, never as a replacement ground-truth image.
+
+### simple-statistics
+Repository: https://github.com/simple-statistics/simple-statistics
+
+Decision remains conditional. Do not add it to simple meter tools. Adopt when GrowLens exposes multi-variable trend analysis that genuinely needs quantiles, correlation or regression and add explicit warnings against reading correlation as causation.
