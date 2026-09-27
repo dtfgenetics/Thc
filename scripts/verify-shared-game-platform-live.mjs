@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 
 const siteUrl = (process.env.DTF_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
-const version = process.env.DTF_GAME_PLATFORM_VERSION || '1.1.0';
+const version = process.env.DTF_GAME_PLATFORM_VERSION || '1.3.0';
 const cacheTag = process.env.GITHUB_RUN_ID || Date.now();
 
 async function fetchText(pathname, expectedType) {
@@ -30,7 +30,7 @@ assert.match(String(manifestResponse.headers.get('content-type') || '').toLowerC
 const manifest = await manifestResponse.json();
 assert.equal(manifest.platformVersion, version, `manifest version ${manifest.platformVersion}; expected ${version}`);
 
-const modules = ['index.mjs', 'settings.mjs', 'replay.mjs', 'telemetry.mjs', 'input.mjs', 'audio.mjs'];
+const modules = ['index.mjs', 'settings.mjs', 'replay.mjs', 'telemetry.mjs', 'input.mjs', 'audio.mjs', 'random.mjs', 'experience.mjs'];
 const sources = new Map();
 for (const file of modules) {
   const { body } = await fetchText(`/games/shared-platform/${file}`, /(javascript|ecmascript)/);
