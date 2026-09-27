@@ -71,6 +71,7 @@
     "verify:thc-tool-suite": "node scripts/validate-thc-tool-suite-v1.mjs",
     "build:education-search": "node scripts/build-thc-education-search-index.mjs",
     "validate:education-search": "node scripts/validate-thc-education-search.mjs",
-    "validate:breeder-pedigree-graph": "node scripts/validate-breeder-pedigree-graph.mjs"
+    "validate:breeder-pedigree-graph": "node scripts/validate-breeder-pedigree-graph.mjs",
+    "validate:growlens-camera-source": "node scripts/validate-growlens-camera-widget-source.mjs"
   }
 }
