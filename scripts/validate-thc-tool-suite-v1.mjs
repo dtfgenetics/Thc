@@ -3,24 +3,11 @@ import path from 'node:path';
 import {dewPoint,airChangesPerHour,deliveredCfmForAirChanges,dliFromPpfd,drybackPercent,fertilizerMassGrams} from '../site/public-route-patch/assets/thc-cultivation-math-v1.mjs';
 
 const root=process.cwd();
-const tools=[
- ['water-quality-lab','THC Water Quality Lab',['Alkalinity','Ca:Mg mass ratio']],
- ['fertigation-lab','THC Fertigation Lab',['target mg/L','fertilizerMassGrams','p2o5PercentToElementalP']],
- ['dryback-lab','THC Irrigation & Dryback Lab',['percentage points/hour','drybackPercent','ratePerHour']],
- ['dew-point','THC Dew Point & Condensation Lab',['dew point','dewPoint']],
- ['environment-control','THC Environmental Control Center',['Leaf VPD','leafVpd','dliFromPpfd']],
- ['ipm-scout','THC IPM Scout',['thc-ipm-scout-v1','Export CSV']],
- ['dry-cure-lab','THC Dry & Cure Lab',['weight loss','dew point']],
- ['grow-planner','THC Grow Cycle Planner',['Stage calendar','Flowering']],
- ['substrate-calculator','THC Substrate & Container Calculator',['purchase target','gallonsToLiters']],
- ['breeder-pedigree','DTF Breeding & Pedigree Builder',['dtf-breeder-pedigree-v1','parent_a']],
- ['co2-ventilation','THC Ventilation & CO₂ Reference',['air changes/hour','airChangesPerHour','deliveredCfmForAirChanges','cfmToCubicMetersPerHour','cubicMetersPerHourToCfm']],
- ['photoperiod-planner','THC Photoperiod & Lighting Schedule',['calculated DLI','dliFromPpfd']],
- ['plant-growth-tracker','THC Plant Growth Tracker',['nodes/day','heightRate']],
- ['root-zone-temperature','THC Root-Zone Temperature Reference',['Root-air difference','Irrigation solution temperature']],
- ['dilution-calculator','THC Solution Dilution Calculator',['C₁V₁ = C₂V₂','dilutionStockVolume','serialDilution','Stock aliquot']],
- ['unit-converter','THC Cultivation Unit Converter',['Conductivity','celsiusToFahrenheit','cfmToCubicMetersPerHour']]
-];
+const registry=JSON.parse(fs.readFileSync(path.join(root,'data/tool-registry.json'),'utf8'));
+const legacySlugs=new Set(['tools','atlas','terpene-atlas','ph-meter','tds-meter','vpd-chart','ppfd-chart']);
+const tools=registry.tools
+ .filter(tool=>tool.public&&!legacySlugs.has(tool.slug))
+ .map(tool=>[tool.slug,tool.title,tool.validationMarkers]);
 const errors=[];
 const ok=(v,m)=>{if(!v)errors.push(m)};
 const css=path.join(root,'site/public-route-patch/assets/thc-tool-suite-v1.css');
