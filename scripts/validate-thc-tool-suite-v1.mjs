@@ -56,7 +56,7 @@ for(const [slug,tokens] of [
  ['water-quality-lab',['thc-water-quality-history-v1','Change from prior report']],
  ['fertigation-lab',['recipeMatrix','Target vs achieved recipe worksheet']],
  ['dry-cure-lab',['thc-dry-cure-checkpoints-v1','Save harvest to GrowLens']],
- ['breeder-pedigree',['Offspring / line name','Population size','Selected plant IDs','Relationship explorer','Direct descendants']],['grow-planner',['Create GrowLens stage tasks','THC.growlens.addTasks']]
+ ['breeder-pedigree',['Offspring / line name','Population size','Selected plant IDs','Relationship explorer','Direct descendants']],['grow-planner',['Create GrowLens stage tasks','THC.growlens.addTasks']],['environment-control',['Recent VPD trend','history-chart']],['dryback-lab',['Recent dryback trend','history-chart']]
 ]){
  const h=fs.readFileSync(path.join(root,'site/public-route-patch',slug,'index.html'),'utf8');
  for(const token of tokens) ok(h.includes(token),slug+' missing upgraded workflow token: '+token);
