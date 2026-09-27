@@ -26,7 +26,7 @@ The sync checker and runtime tests are part of `games:preflight`.
 
 ## Current version
 
-Shared runtime version: **1.3.0**
+Shared runtime version: **1.4.0**
 
 Modules:
 
@@ -37,6 +37,7 @@ Modules:
 - `telemetry.mjs` — opt-in, privacy-safe local telemetry buffering;
 - `random.mjs` — deterministic seeded random streams for reproducible gameplay;
 - `experience.mjs` — native share/copy fallback, fullscreen, optional vibration, and Screen Wake Lock lifecycle helpers;
+- `state-machine.mjs` — queued finite-state transitions for reusable player/enemy/UI controllers;
 - `index.mjs` — stable public export surface.
 
 ## Browser import
@@ -113,6 +114,12 @@ Do not scatter raw key checks throughout rendering/gameplay code when the game a
 - `createWakeLockController()` requests a screen wake lock during active play and reacquires it after visibility changes when appropriate.
 
 Games should treat all of these as progressive enhancement. A missing browser API must never block gameplay.
+
+## State-machine contract
+
+`createStateMachine()` provides a small browser/runtime-neutral finite-state controller with enter/update/exit hooks, queued transitions, snapshots, and optional transition logging. It is adapted from the MIT-licensed state-machine pattern in `ourcade/sidescrolling-platformer-template-phaser3`; attribution is preserved in `docs/THIRD_PARTY_NOTICES.md`.
+
+Use it when a game has mutually exclusive behavioral states such as idle/run/jump/hurt, lobby/playing/complete, or enemy patrol/chase/attack. Do not force it onto simple boolean flags when a state machine would add complexity without reducing bugs.
 
 ## Replay/debug contract
 
