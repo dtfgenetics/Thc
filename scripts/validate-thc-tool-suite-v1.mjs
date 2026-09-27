@@ -52,6 +52,15 @@ for(const [slug,token] of [['environment-control','Save to GrowLens'],['dryback-
 for(const token of ['Shared cultivation context','Grow','Room','Zone','Plant / group','Cultivar / line','Stage']){
  ok(sharedJs.includes(token),'shared cultivation context UI missing token: '+token);
 }
+for(const [slug,tokens] of [
+ ['water-quality-lab',['thc-water-quality-history-v1','Change from prior report']],
+ ['fertigation-lab',['recipeMatrix','Target vs achieved recipe worksheet']],
+ ['dry-cure-lab',['thc-dry-cure-checkpoints-v1','Save harvest to GrowLens']],
+ ['breeder-pedigree',['Offspring / line name','Population size','Selected plant IDs']]
+]){
+ const h=fs.readFileSync(path.join(root,'site/public-route-patch',slug,'index.html'),'utf8');
+ for(const token of tokens) ok(h.includes(token),slug+' missing upgraded workflow token: '+token);
+}
 const hub=fs.readFileSync(path.join(root,'site/public-route-patch/tools/index.html'),'utf8');
 for(const [slug,title] of tools){
  ok(hub.includes('href="/'+slug+'/"'), 'tools hub missing '+slug);
