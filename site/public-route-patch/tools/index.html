@@ -116,6 +116,42 @@
     .tool-group>.measure-panel{padding:14px}
     @media(max-width:980px){.hero-grid,.split,.community-callout{grid-template-columns:1fr}.hero-panel{max-width:720px}.quicknav{grid-template-columns:repeat(3,minmax(0,1fr))}.reference-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.tool-chooser{grid-template-columns:1fr}.flow{grid-template-columns:repeat(2,minmax(0,1fr))}.learn-rail{grid-template-columns:repeat(2,minmax(0,1fr))}.section-heading{align-items:flex-start;flex-direction:column}.community-callout .actions{justify-content:flex-start}.footer-inner{grid-template-columns:1fr 1fr}}
     @media(max-width:680px){.wrap,.site-header-inner,.footer-inner{width:min(100% - 28px,1260px)}.reference-launcher{padding:14px}.reference-launcher-head{align-items:flex-start;flex-direction:column}.reference-grid{grid-template-columns:1fr}.site-header-inner{padding:12px 0;align-items:flex-start}.primary-nav{gap:0}.primary-nav a{padding:8px}.hero{padding:60px 0 72px}.hero h1{font-size:clamp(2.65rem,14vw,4.2rem)}.hero-panel:before{display:none}.quickbar{margin-top:0;padding-top:14px}.quicknav,.flow,.measure-panel,.learn-rail,.footer-inner{grid-template-columns:1fr}.feature-list{grid-template-columns:1fr}.actions .button{width:100%}.tool-feature{min-height:0}.section{padding:56px 0}.community-callout{padding:24px}.copyright{grid-column:1}.primary-nav .shop-link{margin-left:0}}
+/* UX simplicity pass: keep navigation and reference choices compact on small screens. */
+    @media(max-width:760px){
+      .site-header-inner{gap:12px}
+      .primary-nav{width:100%;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:none;padding-bottom:2px}
+      .primary-nav::-webkit-scrollbar{display:none}
+      .primary-nav a{flex:0 0 auto;min-height:42px;padding:8px 12px;white-space:nowrap}
+      .primary-nav .shop-link{margin-left:0}
+      .hero{padding:44px 0 48px}
+      .hero-grid{gap:26px}
+      .hero h1{font-size:clamp(2.55rem,12vw,3.9rem);line-height:.94}
+      .lede{font-size:1rem;line-height:1.65}
+      .hero-panel{padding:14px;border-radius:20px}
+      .workflow-stack article{padding:13px}
+      .quickbar{margin-top:0;padding-top:12px}
+      .quicknav{display:flex;gap:7px;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:none;padding:8px}
+      .quicknav::-webkit-scrollbar{display:none}
+      .quicknav a{flex:0 0 auto;min-height:42px;padding:10px 13px;white-space:nowrap}
+      .reference-launcher{margin-top:24px;padding:12px}
+      .reference-grid{display:flex;gap:9px;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:none;padding-bottom:3px}
+      .reference-grid::-webkit-scrollbar{display:none}
+      .reference-card{flex:0 0 min(78vw,270px);min-height:136px;padding:16px}
+      .reference-card .ref-icon{margin-bottom:14px}
+      .section{padding:48px 0}
+      .section-heading{gap:14px;margin-bottom:24px}
+      h2{font-size:clamp(2rem,9vw,3rem)}
+      .task-card{min-height:0;padding:20px}
+      .tool-feature{padding:22px;border-radius:20px}
+      .community-callout{padding:21px}
+    }
+    @media(max-width:430px){
+      .wrap,.site-header-inner,.footer-inner{width:min(100% - 22px,1260px)}
+      .hero{padding-top:36px}
+      .actions{gap:8px;margin-top:22px}
+      .actions .button{min-height:46px}
+      .workflow-stack span{font-size:.84rem}
+    }
   </style>
 </head>
 <body>
@@ -123,7 +159,7 @@
   <header class="site-header">
     <div class="site-header-inner">
       <a class="brand" href="/" aria-label="DTF Genetics home">DTF Genetics <span>Dream the Future</span></a>
-      <nav class="primary-nav" aria-label="Primary navigation"><a href="/">Home</a><a href="/seeds/">Seeds</a><a href="/learn/">Learn</a><a href="/courses/">Courses</a><a aria-current="page" href="/tools/">Tools</a><a href="/games/">Games</a><a href="/community/">Community</a><a class="shop-link" href="/shop/">Shop</a></nav>
+      <nav class="primary-nav" aria-label="Primary navigation"><a href="/seeds/">Seeds</a><a href="/learn/">Learn</a><a aria-current="page" href="/tools/">Tools</a><a href="/games/">Games</a><a class="shop-link" href="/shop/">Shop</a></nav>
     </div>
   </header>
 
