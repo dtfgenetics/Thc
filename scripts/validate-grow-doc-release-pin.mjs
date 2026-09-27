@@ -32,7 +32,7 @@ else{
   if(growDoc.repository!==lines.repository) fail('Registry repository does not match release-source pin.');
   if(growDoc.route!==lines.route) fail('Registry route does not match release-source pin.');
   if(growDoc.status!=='ready-to-package') fail(`Grow Doc registry status is ${growDoc.status}; expected ready-to-package.`);
-  for(const token of ['npm run check','npm test','npm run build']){
+  for(const token of ['npm run validate:model-eval','npm run check','npm test','npm run build']){
     if(!String(growDoc.build||'').includes(token)) fail(`Grow Doc registry build contract is missing: ${token}`);
   }
 }
