@@ -274,25 +274,32 @@ export default function PhotoComparisonWidget() {
                 </div>
               </div>
 
-              <div className="photo-comparison-grid">
-                {[0, 1].map((index) => {
-                  const photo = selectedPhotos[index];
-                  if (!photo) {
-                    return <div className="photo-comparison-placeholder" key={index}><strong>{index === 0 ? 'Earlier photo' : 'Later photo'}</strong><span>Select a photo from the gallery.</span></div>;
-                  }
-                  return (
-                    <figure className="photo-comparison-figure" key={photo.id}>
-                      {photo.source ? <img src={photo.source} alt={`${index === 0 ? 'Earlier' : 'Later'} observation for ${photo.plantName}`} /> : <div className="photo-comparison-placeholder">Image unavailable in this session</div>}
-                      <figcaption>
-                        <span>{index === 0 ? 'Earlier' : 'Later'}</span>
-                        <strong>{photo.plantName}</strong>
-                        <small>{formatDateTime(photo.capturedAt)}</small>
-                        {photo.observation?.notes ? <p>{photo.observation.notes}</p> : null}
-                      </figcaption>
-                    </figure>
-                  );
-                })}
-              </div>
+              {overlayMode && selectedPhotos.length === 2 ? (
+                <div className={showGuides ? 'photo-overlay-stage show-guides' : 'photo-overlay-stage'}>
+                  <img className="photo-overlay-base" src={selectedPhotos[0].source} alt={'Earlier observation for ' + selectedPhotos[0].plantName} style={{ transform: 'scale(' + zoom + ')' }} />
+                  <img className="photo-overlay-top" src={selectedPhotos[1].source} alt={'Later observation for ' + selectedPhotos[1].plantName} style={{ opacity: overlayOpacity, transform: 'scale(' + zoom + ')' }} />
+                </div>
+              ) : (
+                <div className={showGuides ? 'photo-comparison-grid show-guides' : 'photo-comparison-grid'}>
+                  {[0, 1].map((index) => {
+                    const photo = selectedPhotos[index];
+                    if (!photo) {
+                      return <div className="photo-comparison-placeholder" key={index}><strong>{index === 0 ? 'Earlier photo' : 'Later photo'}</strong><span>Select a photo from the gallery.</span></div>;
+                    }
+                    return (
+                      <figure className="photo-comparison-figure" key={photo.id}>
+                        {photo.source ? <div className="photo-zoom-frame"><img src={photo.source} alt={(index === 0 ? 'Earlier' : 'Later') + ' observation for ' + photo.plantName} style={{ transform: 'scale(' + zoom + ')' }} /></div> : <div className="photo-comparison-placeholder">Image unavailable in this session</div>}
+                        <figcaption>
+                          <span>{index === 0 ? 'Earlier' : 'Later'}</span>
+                          <strong>{photo.plantName}</strong>
+                          <small>{formatDateTime(photo.capturedAt)}</small>
+                          {photo.observation?.notes ? <p>{photo.observation.notes}</p> : null}
+                        </figcaption>
+                      </figure>
+                    );
+                  })}
+                </div>
+              )}
               {selectedPhotos.length === 2 ? <div className="photo-comparison-controls" aria-label="Photo comparison controls">
                 <label>Zoom <input type="range" min="1" max="2.5" step="0.1" value={zoom} onChange={(event) => setZoom(Number(event.target.value))} /><span>{zoom.toFixed(1)}×</span></label>
                 <label>Overlay <input type="range" min="0" max="1" step="0.05" value={overlayOpacity} onChange={(event) => setOverlayOpacity(Number(event.target.value))} disabled={!overlayMode} /><span>{Math.round(overlayOpacity * 100)}%</span></label>
