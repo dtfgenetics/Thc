@@ -16,6 +16,8 @@ const requiredCssTokens=[
   '--dtf-global-header-height:92px',
   '@media (min-width:701px) and (max-width:1120px)',
   '@media (max-width:700px)',
+  '--dtf-global-header-height:66px',
+  '.v3,.dtf-v1{min-width:0;overflow-x:clip}',
   'scroll-snap-type:x proximity',
   '--dtf-layout-touch:44px',
   '.high-iq-shell .quiz-scoreboard{top:calc(var(--dtf-global-header-height) + 8px)!important}'
@@ -26,7 +28,9 @@ const requiredUxTokens=[
   ':focus-visible',
   'min-height:44px',
   'overscroll-behavior:contain',
-  '--dtf-ux-focus:#8fea76'
+  '--dtf-ux-focus:#8fea76',
+  '--dtf-ux-max:var(--dtf-layout-max,1360px)',
+  '--dtf-ux-section:var(--dtf-layout-section,clamp(56px,7vw,92px))'
 ];
 const requiredMobileTokens=[
   '--dtf-mobile-gutter:16px',
@@ -47,7 +51,7 @@ async function fetchRoute(route,attempt){
       'cache-control':'no-cache, no-store, max-age=0',
       pragma:'no-cache',
       accept:'text/html',
-      'user-agent':'DTFSeeds-Responsive-Layout-Live/1.7'
+      'user-agent':'DTFSeeds-Responsive-Layout-Live/1.8'
     },
     signal:AbortSignal.timeout(30_000)
   });
