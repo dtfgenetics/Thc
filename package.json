@@ -68,6 +68,8 @@
     "verify:production-standards": "node scripts/validate-production-standards.mjs",
     "verify:shared-ui-standard": "node scripts/validate-shared-ui-standard.mjs",
     "verify:page-composition": "node scripts/validate-page-composition.mjs",
-    "verify:thc-tool-suite": "node scripts/validate-thc-tool-suite-v1.mjs"
+    "verify:thc-tool-suite": "node scripts/validate-thc-tool-suite-v1.mjs",
+    "build:education-search": "node scripts/build-thc-education-search-index.mjs",
+    "validate:education-search": "node scripts/validate-thc-education-search.mjs"
   }
 }
