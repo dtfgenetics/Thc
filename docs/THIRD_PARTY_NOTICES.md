@@ -46,3 +46,18 @@ Used by High Land for file-backed music and sound effects, mobile/browser audio 
 Copyright (c) 2013-2020 James Simpson and GoldFire Studios, Inc.
 
 Licensed under the MIT License. The upstream copyright and permission notice are preserved in the vendored distribution.
+
+
+## uPlot 1.6.32
+
+Repository: https://github.com/leeoniya/uPlot
+
+Vendored browser build:
+- `site/public-route-patch/assets/vendor/uplot-1.6.32.min.js`
+- `site/public-route-patch/assets/vendor/uplot-1.6.32.min.css`
+
+Used by the VPD logger for interactive local time-series visualization, cursor inspection and x-axis zoom while preserving the existing dependency-free canvas fallback.
+
+Copyright (c) 2021 Leon Sorokin
+
+Licensed under the MIT License. The upstream distribution header and this notice preserve attribution for the vendored build.
