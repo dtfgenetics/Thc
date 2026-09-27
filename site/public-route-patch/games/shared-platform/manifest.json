@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "platformVersion": "1.3.0",
+  "platformVersion": "1.4.0",
   "source": "games/shared-platform/src",
   "files": [
     "index.mjs",
@@ -10,6 +10,7 @@
     "input.mjs",
     "audio.mjs",
     "random.mjs",
-    "experience.mjs"
+    "experience.mjs",
+    "state-machine.mjs"
   ]
 }
