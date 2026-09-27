@@ -23,6 +23,8 @@ import {
 } from './storage';
 import type { GrowLensState } from './types';
 
+import { useModalFocusTrap } from './useModalFocusTrap';
+
 type ReportTab = 'overview' | 'environment' | 'timeline' | 'calibration' | 'exports';
 
 const tabs: Array<{ id: ReportTab; label: string }> = [
@@ -93,6 +95,7 @@ function PanelSection({ title, detail, children }: { title: string; detail?: str
 
 export default function ReportsHistoryWidget() {
   const [open, setOpen] = useState(false);
+  const modalRef = useModalFocusTrap<HTMLElement>(open, () => setOpen(false));
   const [tab, setTab] = useState<ReportTab>('overview');
   const [state, setState] = useState<GrowLensState>(() => loadState());
   const [spaceId, setSpaceId] = useState('');
@@ -271,6 +274,6 @@ export default function ReportsHistoryWidget() {
 
   return <>
     <button className="reports-launcher" type="button" onClick={() => setOpen(true)} aria-label="Open GrowLens reports and history"><span aria-hidden="true">▥</span><strong>Reports</strong></button>
-    {open ? <div className="reports-overlay" role="presentation" onMouseDown={(event) => { if (event.currentTarget === event.target) setOpen(false); }}><section className="reports-panel" role="dialog" aria-modal="true" aria-labelledby="reports-title"><header className="reports-header"><div><span className="eyebrow">Evidence, history, and export</span><h2 id="reports-title">Reports & calibration</h2></div><button className="account-close" type="button" onClick={() => setOpen(false)} aria-label="Close reports and history">×</button></header>{message ? <div className="account-message success" role="status">{message}</div> : null}<nav className="reports-tabs" aria-label="Report sections">{tabs.map((item) => <button key={item.id} type="button" className={tab === item.id ? 'active' : ''} onClick={() => setTab(item.id)}>{item.label}</button>)}</nav><div className="reports-content">{content}</div></section></div> : null}
+    {open ? <div className="reports-overlay" role="presentation" onMouseDown={(event) => { if (event.currentTarget === event.target) setOpen(false); }}><section ref={modalRef} className="reports-panel" role="dialog" aria-modal="true" aria-labelledby="reports-title"><header className="reports-header"><div><span className="eyebrow">Evidence, history, and export</span><h2 id="reports-title">Reports & calibration</h2></div><button className="account-close" type="button" onClick={() => setOpen(false)} aria-label="Close reports and history">×</button></header>{message ? <div className="account-message success" role="status">{message}</div> : null}<nav className="reports-tabs" aria-label="Report sections">{tabs.map((item) => <button key={item.id} type="button" className={tab === item.id ? 'active' : ''} onClick={() => setTab(item.id)}>{item.label}</button>)}</nav><div className="reports-content">{content}</div></section></div> : null}
   </>;
 }
