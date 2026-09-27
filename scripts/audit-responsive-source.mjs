@@ -38,9 +38,11 @@ async function inspect(file) {
   if (ext === '.mjs') stats.generators += 1;
 
   if (ext === '.html') {
-    if (!/<meta[^>]+name=["']viewport["'][^>]+width=device-width/i.test(text) &&
+    const isFullDocument = /<!doctype\s+html|<html\b/i.test(text);
+    if (isFullDocument &&
+        !/<meta[^>]+name=["']viewport["'][^>]+width=device-width/i.test(text) &&
         !/<meta[^>]+content=["'][^"']*width=device-width[^"']*["'][^>]+name=["']viewport["']/i.test(text)) {
-      add(rel, 'error', 'missing-viewport', 'HTML page has no width=device-width viewport meta tag.');
+      add(rel, 'error', 'missing-viewport', 'Full HTML document has no width=device-width viewport meta tag.');
     }
   }
 
