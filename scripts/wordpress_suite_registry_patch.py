@@ -31,6 +31,19 @@ OVERLAY_REQUIRED = "dtf-content-overlay/overlay-manifest.json"
 OVERLAY_PREFIX = "dtf-content-overlay/"
 ATLAS_TARGETS = ("atlas", "assets/images/atlas")
 ATLAS_PREFIXES = ("atlas/", "assets/images/atlas/")
+SHARED_EXACT_FILES = (
+    "assets/thc-measurement-journal-v1.js",
+    "assets/thc-tool-suite-v1.js",
+    "assets/thc-tool-suite-v1.css",
+    "assets/thc-cultivation-math-v1.mjs",
+    "assets/thc-light-lab-math-v1.mjs",
+    "assets/breeder-pedigree-graph-v1.js",
+    "assets/vendor/cytoscape-3.34.3.min.js",
+    "assets/vendor/cytoscape-3.34.3.LICENSE.txt",
+    "assets/vendor/papaparse-5.7.0.min.js",
+    "assets/vendor/uplot-1.6.32.min.js",
+    "assets/vendor/uplot-1.6.32.min.css",
+)
 
 
 def _replace_once(payload: bytes, old: bytes, new: bytes, label: str) -> bytes:
@@ -183,6 +196,20 @@ def _apply_atlas_support_scope(payload: bytes) -> bytes:
     return payload
 
 
+def _apply_shared_exact_files(payload: bytes) -> bytes:
+    """Permit only the reviewed shared cultivation/runtime asset files."""
+    marker = b"$exact_files = ['games/index.html','games/dtf-route.css','games/dtf-shell.css'];"
+    if all(name.encode() in payload for name in SHARED_EXACT_FILES):
+        return payload
+    additions = ",".join(repr(name) for name in SHARED_EXACT_FILES)
+    replacement = (
+        "$exact_files = ['games/index.html','games/dtf-route.css','games/dtf-shell.css',"
+        + additions
+        + "];"
+    ).encode()
+    return _replace_once(payload, marker, replacement, "shared exact-file allowlist")
+
+
 def registered_local_static_games(repo_root: pathlib.Path) -> list[str]:
     registry_path = repo_root / "site" / "deployment" / "public-apps.json"
     registry = json.loads(registry_path.read_text())
@@ -294,6 +321,7 @@ def patch_payload(payload: bytes, repo_root: pathlib.Path) -> bytes:
         )
 
     payload = _apply_atlas_support_scope(payload)
+    payload = _apply_shared_exact_files(payload)
 
     targets = _array_values(payload, b"targets")
     required = _array_values(payload, b"required")
@@ -350,6 +378,9 @@ def validate_payload(payload: bytes, repo_root: pathlib.Path) -> dict[str, objec
         raise SystemExit("bridge/registry parity failure: " + ", ".join(missing))
     if "games/" in prefixes or "learn/" in prefixes:
         raise SystemExit("unsafe broad game/learn prefix is forbidden")
+    missing_shared = [name for name in SHARED_EXACT_FILES if name.encode() not in payload]
+    if missing_shared:
+        raise SystemExit("bridge shared exact-file allowlist missing: " + ", ".join(missing_shared))
 
     lock_markers = (
         b"$lock_recovered = false;",
