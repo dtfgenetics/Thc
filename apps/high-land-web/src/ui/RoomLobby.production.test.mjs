@@ -4,14 +4,16 @@ import { describe, expect, it } from 'vitest';
 const source = readFileSync(new URL('./RoomLobby.tsx', import.meta.url), 'utf8');
 
 describe('High Land room invite handoff', () => {
-  it('reports successful invite copy and preserves a manual fallback', () => {
-    expect(source).toContain("type CopyState = 'idle' | 'copied' | 'manual'");
-    expect(source).toContain('navigator.clipboard.writeText(inviteUrl)');
+  it('uses the shared invite experience and preserves a manual fallback', () => {
+    expect(source).toContain("type CopyState = 'idle' | 'shared' | 'copied' | 'manual'");
+    expect(source).toContain("import { shareOrCopyInvite } from '../game/browserExperience';");
+    expect(source).toContain('await shareOrCopyInvite(inviteUrl');
     expect(source).toContain('inviteInputRef.current?.select()');
     expect(source).toContain("setCopyState('manual')");
     expect(source).toContain('aria-live="polite"');
+    expect(source).toContain('Invite opened in your device sharing menu.');
     expect(source).toContain('Invite link copied.');
-    expect(source).toContain('Automatic copy is unavailable.');
+    expect(source).toContain('Automatic sharing and copy are unavailable.');
   });
 
   it('keeps host start authorization and room capacity messaging intact', () => {
