@@ -490,3 +490,32 @@ Decision: high-value next diagnostic target, but do not import yet. The current 
 Repository: https://github.com/simple-statistics/simple-statistics
 
 Decision remains conditional. Do not add it to simple meter tools. Adopt when GrowLens exposes multi-variable trend analysis that genuinely needs quantiles, correlation or regression and add explicit warnings against reading correlation as causation.
+
+
+### FullCalendar benchmark → native Grow Planner timeline
+Repository: https://github.com/fullcalendar/fullcalendar  
+License: MIT for the standard open-source core.
+
+Reviewed pattern:
+- visual event spans;
+- date-based navigation;
+- responsive calendar/timeline interaction.
+
+Decision:
+Do not import FullCalendar into the current static Grow Planner. The planner has only six sequential lifecycle stages, so a full calendar/event engine would add more bundle/runtime complexity than capability.
+
+Action taken instead:
+- added a proportional visual lifecycle timeline to `/grow-planner/`;
+- exact start/end dates remain visible inside each stage;
+- stage widths communicate planned relative duration;
+- zero-day stages are omitted from visual width rather than inventing duration;
+- a current-day marker is shown only when today falls inside the plan;
+- the timeline scrolls horizontally on mobile;
+- existing GrowLens stage-task creation remains authoritative and unchanged;
+- added `scripts/validate-grow-planner-timeline.mjs` and `npm run validate:grow-planner-timeline`.
+
+### PPFD heatmap-library decision
+Potential libraries reviewed conceptually: canvas heatmap/interpolation engines such as simpleheat/heatmap.js-style renderers.
+
+Decision:
+Do not add interpolated/blurred heatmap rendering to the PPFD canopy mapper. The tool measures discrete sensor points. Interpolating color between measured points could visually imply PPFD values that were never observed. Keep numeric grid points authoritative and keep color as a bounded visual aid.
