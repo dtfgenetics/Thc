@@ -89,6 +89,11 @@ for(const [slug] of tools){
  const item=(nav.tools||[]).find(x=>x.id===slug);
  ok(item?.public===true&&item?.status==='play-now',slug+' must be public/play-now in navigation for production release');
 }
+const releaseLanes=JSON.parse(fs.readFileSync(path.join(root,'site/deployment/release-lanes.json'),'utf8'));
+const publicSuitePrefixes=new Set(releaseLanes?.lanes?.publicSuite?.prefixes||[]);
+for(const [slug] of tools){
+ ok(publicSuitePrefixes.has('site/public-route-patch/'+slug+'/'),slug+' missing from publicSuite release lane');
+}
 const packager=fs.readFileSync(path.join(root,'scripts/package-public-suite-wordpress.py'),'utf8');
 for(const token of ['registered_local_static_targets','assets/thc-tool-suite-v1.css','assets/thc-tool-suite-v1.js','ready-to-package']){
  ok(packager.includes(token),'public-suite packager missing THC tool release token: '+token);
