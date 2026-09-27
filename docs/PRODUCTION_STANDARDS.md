@@ -59,9 +59,20 @@ Required conventions:
 
 Every cultivation tool should follow the same user journey:
 
-**Learn -> Input / interact -> Result -> Interpretation -> Why it matters -> Next action**
+**Input / interact -> Result -> Meaning -> Assumptions / confidence -> Next action -> Save / compare -> Learn why**
+
+The first useful result must not be buried below expert controls. A new user should be able to complete the smallest valid interaction without first configuring history, imports, calibration journals, profiles, advanced maps, or optional metadata.
+
+Required hierarchy:
+- **Quick first:** expose the minimum valid inputs and dominant result immediately.
+- **Meaning:** explain what the result does and does not establish.
+- **Next action:** give one practical next measurement, verification step, or low-risk action.
+- **Advanced second:** progressively disclose logging, import/export, calibration history, profiles, comparison, mapping, or specialist chemistry.
+- **Continuity:** when supported, allow the result or record to move into GrowLens and link to the exact supporting lesson/reference.
 
 Tool controls should share common field labeling, units, reset behavior, help affordances, warnings, result cards, educational explanations, and related-tool links.
+
+User-editable targets are preferred when evidence does not support a single universal biological threshold. Defaults must not be presented as universal prescriptions without evidence.
 
 Tools must live on dedicated routes when their interaction or educational depth exceeds a simple inline calculator.
 
