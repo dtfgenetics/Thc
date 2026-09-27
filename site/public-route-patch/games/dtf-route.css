@@ -4,14 +4,19 @@
   .site-header{position:sticky;top:0;flex-direction:row;align-items:center;justify-content:flex-start;padding:.45rem .7rem;gap:.45rem;min-height:54px;overflow:hidden}
   .site-header>.brand{margin-right:0;flex:0 0 auto;white-space:nowrap}
   .brand span{display:none}
-  .site-header nav{width:auto;flex:1 1 auto;min-width:0;display:flex;grid-template-columns:none;flex-wrap:nowrap;gap:.2rem;margin-left:0;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;padding-bottom:2px}
+  .site-header nav{width:auto;flex:1 1 auto;min-width:0;display:flex;grid-template-columns:none;flex-wrap:nowrap;gap:.2rem;margin-left:0;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;padding-bottom:2px;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
   .site-header nav::-webkit-scrollbar{display:none}
-  .site-header nav a{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.45rem .62rem;text-align:center;white-space:nowrap}
+  .site-header nav a{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:.45rem .72rem;text-align:center;white-space:nowrap;scroll-snap-align:start;touch-action:manipulation}
   main{padding-top:18px}
   .game-copy{min-width:0;overflow-wrap:anywhere}
+  .button,.card-action{min-height:48px;touch-action:manipulation}
   img,svg,canvas,video{max-width:100%;height:auto}
 }
 @media(max-width:430px){
   .site-header nav{display:flex;grid-template-columns:none}
   .hero h1{font-size:clamp(2.15rem,12vw,2.7rem)}
+}
+@media(hover:none),(pointer:coarse){
+  .game-card:hover{transform:none}
+  .button:hover{transform:none}
 }
