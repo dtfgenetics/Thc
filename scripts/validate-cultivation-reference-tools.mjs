@@ -93,6 +93,10 @@ assert(ppfd.includes('overflow-x:auto;flex-wrap:nowrap') && !ppfd.includes('@med
 assert(ppfd.includes('.nav a{min-height:44px') && ppfd.includes('.tabs a{min-height:44px'), 'PPFD page missing robust touch target sizing');
 assert(ppfd.includes('gridScrollHint') && ppfd.includes('tabindex="0" aria-describedby="gridScrollHint"'), 'PPFD heatmap missing small-screen scroll accessibility guidance');
 assert(ppfd.includes('THC Light Lab — Survey Report') && ppfd.includes('updatePrintSummary') && ppfd.includes("beforeprint"), 'PPFD page missing printable survey summary workflow');
+assert(ppfd.includes("const rr=Math.floor(i/c)+1,cc=i%c+1,box=document.createElement('label')"), 'PPFD grid must define row/column coordinates before accessible labels use them');
+assert(ppfd.includes('Delta vs baseline') && ppfd.includes('deltaFor(i)') && ppfd.includes('comparisonCoverage'), 'PPFD page missing point-by-point baseline delta map or paired coverage analysis');
+assert(ppfd.includes('partial survey') && ppfd.includes('paired readings'), 'PPFD page must disclose incomplete current or paired comparison maps');
+assert(ppfd.includes('Delta map requires the same row and column grid'), 'PPFD delta map must reject incompatible baseline grids');
 assert(ppfd.includes("box.style.background=heat(v)") && ppfd.includes("heat(input.value)"), 'PPFD page must preserve blank map cells as unmeasured');
 assert(ppfd.includes('href="/tools/"'), 'PPFD page missing central All Tools link');
 assert(atlas.includes('href="/tools/"'), 'Plant Atlas missing central All Tools link');
