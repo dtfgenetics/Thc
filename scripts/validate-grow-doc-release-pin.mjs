@@ -55,7 +55,7 @@ for(const token of [
 const qualification=fs.readFileSync(qualificationPath,'utf8');
 for(const token of [
   'release-source-revisions/thc-grow-doc.txt',
-  '"thcGrowDoc": "$revision"',
+  '\\"thcGrowDoc\\": \\"$revision\\"',
   'commit=$revision',
   'reference-media/crops',
   'reference-media/original'
