@@ -16,6 +16,7 @@ export function serialDilution({initialConcentration,targetConcentration,stepFac
 
 export function dewPoint(tempC,relativeHumidity){const t=finite(tempC,'Temperature');const rh=humidity(relativeHumidity);const a=17.625,b=243.04,g=Math.log(rh/100)+(a*t)/(b+t);return b*g/(a-g)}
 export function airChangesPerHour(deliveredCfm,roomVolumeCubicFeet){return nonnegative(deliveredCfm,'Delivered airflow')*60/positive(roomVolumeCubicFeet,'Room volume')}
+export function deliveredCfmForAirChanges(targetAirChangesPerHour,roomVolumeCubicFeet){return nonnegative(targetAirChangesPerHour,'Target air changes per hour')*positive(roomVolumeCubicFeet,'Room volume')/60}
 
 export function gallonsToLiters(gallons){return nonnegative(gallons,'Gallons')*3.785411784}
 export function litersToGallons(liters){return nonnegative(liters,'Liters')/3.785411784}
