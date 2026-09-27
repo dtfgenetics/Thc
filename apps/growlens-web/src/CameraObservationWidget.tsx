@@ -21,6 +21,7 @@ import {
   type AuthenticatedSession,
 } from './remoteStore';
 import { createId, loadState, saveState } from './storage';
+import { useModalFocusTrap } from './useModalFocusTrap';
 
 function readableError(error: unknown): string {
   return error instanceof Error ? error.message : 'The photo action failed.';
