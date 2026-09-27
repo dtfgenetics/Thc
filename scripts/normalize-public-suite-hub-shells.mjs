@@ -66,7 +66,7 @@ function normalize(source, rel) {
   else throw new Error(`${rel}: closing body tag missing`);
 
   const header = html.match(/<header\b[^>]*data-dtf-shell=["']header-v6["'][^>]*>[\s\S]*?<\/header>/i)?.[0] || '';
-  if (!header.includes('data-dtf-sitewide-header="canonical-eight-v1"')) throw new Error(`${rel}: canonical V6 marker missing after normalization`);
+  if (!header.includes('data-dtf-sitewide-header="canonical-five-v1"')) throw new Error(`${rel}: canonical V6 marker missing after normalization`);
   if (!html.includes('id="dtf-sitewide-mobile-polish-v1-style"')) throw new Error(`${rel}: mobile polish marker missing after normalization`);
   for (const marker of ['dtf-content-density-v1-style', 'dtf-content-density-v1-script', 'dtf-sitewide-visual-repair-v2-style', 'dtf-sitewide-visual-repair-v2-script']) {
     const count = html.split(marker).length - 1;
@@ -93,4 +93,4 @@ for (const rel of targets) {
   report.push({ rel, changed: output !== source, bytes: Buffer.byteLength(output) });
 }
 
-console.log(JSON.stringify({ ok: true, suiteRoot, shell: 'header-v6', navigation: 'canonical-eight-v1', mobilePolish: 'v1', targets: report }, null, 2));
+console.log(JSON.stringify({ ok: true, suiteRoot, shell: 'header-v6', navigation: 'canonical-five-v1', mobilePolish: 'v1', targets: report }, null, 2));
