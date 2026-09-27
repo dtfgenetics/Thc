@@ -1,0 +1,11 @@
+{
+  "name": "thc-tools",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "test": "node tests/registry.test.mjs && node tests/shared-runtime.test.mjs && node tests/routes.test.mjs",
+    "build": "node scripts/build.mjs",
+    "verify:live": "node scripts/verify-live.mjs"
+  }
+}
