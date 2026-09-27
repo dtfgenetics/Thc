@@ -4,6 +4,7 @@ import { listPhotos, type LocalPhotoAsset } from './photoStore';
 import { growLensRemoteStore } from './remoteStore';
 import { loadState, STATE_SAVED_EVENT } from './storage';
 import type { Observation } from './types';
+import { compareImageSources } from './photoVisualComparison';
 
 import { useModalFocusTrap } from './useModalFocusTrap';
 
@@ -64,6 +65,12 @@ export default function PhotoComparisonWidget() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [zoom, setZoom] = useState(1);
+  const [overlayOpacity, setOverlayOpacity] = useState(0.5);
+  const [overlayMode, setOverlayMode] = useState(false);
+  const [showGuides, setShowGuides] = useState(false);
+  const [similarity, setSimilarity] = useState<number | null>(null);
+  const [nearDuplicate, setNearDuplicate] = useState(false);
 
   useEffect(() => {
     const refreshState = () => setState(loadState());
@@ -182,6 +189,21 @@ export default function PhotoComparisonWidget() {
     ? daysBetween(selectedPhotos[0].capturedAt, selectedPhotos[1].capturedAt)
     : null;
 
+  useEffect(() => {
+    let active = true;
+    if (selectedPhotos.length !== 2 || !selectedPhotos[0].source || !selectedPhotos[1].source) {
+      setSimilarity(null);
+      setNearDuplicate(false);
+      return () => { active = false; };
+    }
+    void compareImageSources(selectedPhotos[0].source, selectedPhotos[1].source).then((result) => {
+      if (!active) return;
+      setSimilarity(result.similarity);
+      setNearDuplicate(result.nearDuplicate);
+    });
+    return () => { active = false; };
+  }, [selectedPhotos]);
+
   function toggleSelected(photoId: string): void {
     setSelectedIds((current) => {
       if (current.includes(photoId)) return current.filter((id) => id !== photoId);
@@ -271,6 +293,13 @@ export default function PhotoComparisonWidget() {
                   );
                 })}
               </div>
+              {selectedPhotos.length === 2 ? <div className="photo-comparison-controls" aria-label="Photo comparison controls">
+                <label>Zoom <input type="range" min="1" max="2.5" step="0.1" value={zoom} onChange={(event) => setZoom(Number(event.target.value))} /><span>{zoom.toFixed(1)}×</span></label>
+                <label>Overlay <input type="range" min="0" max="1" step="0.05" value={overlayOpacity} onChange={(event) => setOverlayOpacity(Number(event.target.value))} disabled={!overlayMode} /><span>{Math.round(overlayOpacity * 100)}%</span></label>
+                <button type="button" className={overlayMode ? 'secondary-button active' : 'secondary-button'} aria-pressed={overlayMode} onClick={() => setOverlayMode((value) => !value)}>Overlay</button>
+                <button type="button" className={showGuides ? 'secondary-button active' : 'secondary-button'} aria-pressed={showGuides} onClick={() => setShowGuides((value) => !value)}>Alignment guides</button>
+              </div> : null}
+              {nearDuplicate ? <div className="photo-duplicate-warning" role="status"><strong>These images may be near-duplicates.</strong><span>{similarity !== null ? similarity + '% visual hash similarity. ' : ''}Choose a more separated time point if you are trying to judge progression.</span></div> : similarity !== null ? <div className="photo-similarity-note">Visual hash similarity: {similarity}%. Use this only as a duplicate-screening aid, not as a measure of plant change.</div> : null}
               <small className="photo-consistency-note">Best comparisons use the same angle, distance, lighting, and background. A visual change does not prove its cause.</small>
             </section>
 
