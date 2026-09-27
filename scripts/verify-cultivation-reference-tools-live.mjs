@@ -10,8 +10,8 @@ const routes = [
   { path: '/terpene-atlas/', markers: ['THC Terpene Atlas', 'All Tools'] },
   { path: '/ph-meter/', markers: ['pH Meter', 'All Tools', 'This page does not measure pH by itself'] },
   { path: '/tds-meter/', markers: ['TDS / EC Meter', 'All Tools', '500 scale', '700 scale'] },
-  { path: '/vpd-chart/', markers: ['VPD Chart', 'All Tools', 'Leaf temperature offset'] },
-  { path: '/ppfd-chart/', markers: ['PPFD & DLI Tool', 'All Tools', '3 × 3 canopy PPFD map'] },
+  { path: '/vpd-chart/', markers: ['VPD Chart', 'All Tools', 'Leaf offset'] },
+  { path: '/ppfd-chart/', markers: ['THC Light Lab', 'All Tools', 'Canopy mapper', 'Survey record'] },
 ];
 
 const errors = [];
@@ -60,4 +60,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('Cultivation reference live verification passed for /tools/, Plant Atlas, Terpene Atlas, pH, TDS/EC, VPD, and PPFD/DLI routes.');
+console.log('Cultivation reference live verification passed for /tools/, Plant Atlas, Terpene Atlas, pH, TDS/EC, VPD, and THC Light Lab routes.');
