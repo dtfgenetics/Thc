@@ -5,6 +5,7 @@
 <title>VPD Chart | DTF Genetics</title>
 <meta name="description" content="Interactive vapor pressure deficit reference using air temperature, relative humidity and leaf-temperature offset with Celsius and Fahrenheit support.">
 <link rel="canonical" href="https://dtfseeds.com/vpd-chart/">
+<link rel="stylesheet" href="/assets/thc-tool-suite-v1.css">
 <style>
 :root{--deep:#07170f;--deep2:#113823;--gold:#d7b965;--cream:#f7f3e9;--paper:#fffdf8;--ink:#112b1c;--muted:#5b6d61;--line:#d8e2da;--leaf:#26784a}
 *{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.6 Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:inherit}.shell{width:min(1220px,calc(100% - 32px));margin:auto}
@@ -19,7 +20,7 @@ footer{padding:28px 0 42px;color:var(--muted)}
 </style>
 </head>
 <body>
-<header class="top"><div class="shell topin"><a class="brand" href="/">DTF Genetics<span>Dream the Future</span></a><nav class="nav" aria-label="Primary navigation"><a href="/">Home</a><a href="/seeds/">Seeds</a><a href="/learn/">Learn</a><a href="/courses/">Courses</a><a href="/tools/">Tools</a><a href="/games/">Games</a><a href="/community/">Community</a><a href="/shop/">Shop</a></nav></div></header>
+<header class="top"><div class="shell topin"><a class="brand" href="/">DTF Genetics<span>Dream the Future</span></a><button class="menu" data-menu aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="nav" data-nav id="site-nav" aria-label="Primary navigation"><a href="/">Home</a><a href="/seeds/">Seeds</a><a href="/learn/">Learn</a><a href="/courses/">Courses</a><a href="/tools/">Tools</a><a href="/games/">Games</a><a href="/community/">Community</a><a href="/shop/">Shop</a></nav></div></header>
 <section class="hero"><div class="shell"><p class="eyebrow">Cultivation reference</p><h1>VPD Chart</h1><p>Estimate leaf vapor pressure deficit from air temperature, relative humidity, and leaf-temperature offset. Use it as environmental context—not as a one-number diagnosis or a universal stage prescription.</p><div class="tabs"><a href="/tools/">All Tools</a><a href="/ph-meter/" target="_blank" rel="noopener">pH</a><a href="/tds-meter/" target="_blank" rel="noopener">TDS / EC</a><a href="/atlas/" target="_blank" rel="noopener">Plant Atlas</a><a href="/terpene-atlas/" target="_blank" rel="noopener">Terpene Atlas</a><a href="/learn/environment-vpd/">Environment & VPD lesson</a></div></div></section>
 <main class="shell">
 <div class="workspace">
@@ -53,4 +54,5 @@ function render(){
 [temp,rh,offset].forEach(el=>el.addEventListener('input',render));unit.addEventListener('change',()=>{const current=Number(temp.value),off=Number(offset.value);if(unit.value==='f'){temp.value=(current*9/5+32).toFixed(1);offset.value=(off*9/5).toFixed(1)}else{temp.value=((current-32)*5/9).toFixed(1);offset.value=(off*5/9).toFixed(1)}render()});render();
 </script>
 <footer><div class="shell">Educational environmental reference. For leaf-based VPD, use representative air temperature/RH and a reliable leaf-temperature measurement; do not treat VPD alone as proof of plant stress.</div></footer>
+<script src="/assets/thc-tool-suite-v1.js"></script>
 </body></html>
