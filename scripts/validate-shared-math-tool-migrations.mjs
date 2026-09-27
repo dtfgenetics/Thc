@@ -10,6 +10,7 @@ const cases=[
   {slug:'photoperiod-planner',functions:['dliFromPpfd'],legacy:/p\*h\*\.0036/},
   {slug:'dry-cure-lab',functions:['dewPoint'],legacy:/17\.625|243\.04/},
   {slug:'fertigation-lab',functions:['gallonsToLiters'],legacy:/3\.785411784/},
+  {slug:'substrate-calculator',functions:['gallonsToLiters'],legacy:/3\.785411784/},
 ];
 const errors=[];
 for(const {slug,functions,legacy} of cases){
@@ -25,4 +26,4 @@ if(errors.length){
   for(const error of errors) console.error(' - '+error);
   process.exit(1);
 }
-console.log('Shared math migration validation passed for nine cultivation tool routes.');
+console.log('Shared math migration validation passed for ten cultivation tool routes.');
