@@ -59,11 +59,11 @@ const terpenes = fs.readFileSync(path.join(root, 'site/public-route-patch/terpen
 assert(ppfd.includes("p*h*0.0036"), 'PPFD page missing PPFD-to-DLI formula');
 assert(ppfd.includes("td/(h*0.0036)"), 'PPFD page missing user-target DLI-to-PPFD formula');
 assert(ppfd.includes('id="ppfdGrid"') && ppfd.includes('min/avg*100') && ppfd.includes('sd/avg*100'), 'PPFD page missing canopy grid, uniformity, or coefficient-of-variation calculation');
-assert(ppfd.includes('Measurement method') && ppfd.includes('Manufacturer PPFD map') && ppfd.includes('Variable sunlight or scheduled dimming'), 'PPFD page missing measurement-method or variable-light context');
+assert(ppfd.includes('Measurement method') && ppfd.includes('Manufacturer PPFD map') && ppfd.includes('Sunlight / variable output'), 'PPFD page missing measurement-method or variable-light context');
 assert(ppfd.includes('THC Light Lab') && ppfd.includes('Teaching Healthy Cultivation') && ppfd.includes('PAR vs ePAR'), 'PPFD page missing THC educational branding or PAR/ePAR education');
 assert(ppfd.includes('targetMin') && ppfd.includes('targetMax') && ppfd.includes('inRange'), 'PPFD page must use user-defined target range analysis');
-assert(ppfd.includes('Apogee DLI measurement guidance') && ppfd.includes('Frontiers 2022') && ppfd.includes('Scientific Reports 2025'), 'PPFD page missing evidence links');
-assert(ppfd.includes("STORAGE_KEY='thc-light-lab-surveys-v1'") && ppfd.includes('localStorage.setItem'), 'PPFD page missing local survey persistence');
+assert(ppfd.includes('Apogee DLI guidance') && ppfd.includes('Frontiers 2022') && ppfd.includes('Scientific Reports 2025'), 'PPFD page missing evidence links');
+assert(ppfd.includes("STORAGE_KEY='thc-light-lab-surveys-v2'") && ppfd.includes('localStorage.setItem'), 'PPFD page missing local survey persistence');
 assert(ppfd.includes('fixtureModel') && ppfd.includes('mountHeight') && ppfd.includes('sensorModel') && ppfd.includes('measurementDate'), 'PPFD page missing survey metadata fields');
 assert(ppfd.includes("lines=['row,column,ppfd']") && ppfd.includes('FileReader') && ppfd.includes('Export map CSV'), 'PPFD page missing CSV round-trip workflow');
 assert(ppfd.includes("window.print()") && ppfd.includes('Print / Save report'), 'PPFD page missing printable Light Report workflow');
@@ -88,6 +88,8 @@ assert(terpenes.includes('href="/tools/"'), 'Terpene Atlas missing central All T
 const svp = (t) => 0.6108 * Math.exp((17.27 * t) / (t + 237.3));
 const sample = Math.max(0, svp(25) - svp(26) * 0.60);
 assert(sample > 1.0 && sample < 1.3, `VPD formula sanity check failed: ${sample}`);
+const scheduleDli = [[300, 1], [700, 10], [300, 1]]
+  .reduce((total, [ppfdValue, hoursValue]) => total + ppfdValue * hoursValue * 0.0036, 0);
 assert(Math.abs(scheduleDli - 27.36) < 1e-9, `PPFD variable-light DLI sanity check failed: ${scheduleDli}`);
 
 if (errors.length) {
