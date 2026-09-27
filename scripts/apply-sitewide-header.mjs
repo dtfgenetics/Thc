@@ -66,7 +66,7 @@ function occurrences(source, needle) {
 function verifyDocument(source, rel) {
   if (!/<html\b/i.test(source) || !/<body\b/i.test(source)) return { skipped: true };
   const expected = [
-    ['data-dtf-sitewide-header="canonical-eight-v1"', 'header'],
+    ['data-dtf-sitewide-header="canonical-five-v1"', 'header'],
     ['data-dtf-sitewide-footer="canonical-eight-v1"', 'footer'],
     ['id="dtf-shared-footer-v6-style"', 'footer style'],
     ['id="dtf-sitewide-header-v6-style"', 'header style'],
@@ -84,13 +84,10 @@ function verifyDocument(source, rel) {
     if (count !== 1) report.failures.push(`${rel}: expected exactly one canonical ${label}; found ${count}`);
   }
   const canonicalNavTokens = [
-    ['href="/" data-dtf-nav-group="home">Home</a>', 'Home'],
     ['href="/seeds/">Seeds</a>', 'Seeds'],
     ['href="/learn/" data-dtf-nav-group="learn">Learn</a>', 'Learn'],
-    ['href="/courses/" data-dtf-nav-group="courses">Courses</a>', 'Courses'],
     ['href="/tools/" data-dtf-nav-group="tools">Tools</a>', 'Diagnostic'],
     ['href="/games/">Games</a>', 'Games'],
-    ['href="/community/">Community</a>', 'Community'],
     ['href="/shop/" data-dtf-nav-group="shop">Shop</a>', 'Shop'],
   ];
   for (const [needle, label] of canonicalNavTokens) {
