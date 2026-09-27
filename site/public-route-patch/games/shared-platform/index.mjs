@@ -37,4 +37,16 @@ export {
   createDeterministicRng,
 } from './random.mjs';
 
-export const DTF_GAME_PLATFORM_VERSION = '1.2.0';
+export {
+  copyText,
+  shareGameLink,
+  toggleFullscreen,
+  vibrateGame,
+  createWakeLockController,
+} from './experience.mjs';
+
+export {
+  createStateMachine,
+} from './state-machine.mjs';
+
+export const DTF_GAME_PLATFORM_VERSION = '1.4.0';
