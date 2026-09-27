@@ -56,6 +56,7 @@ assert(vpd.includes("u==='f'?(v-32)*5/9:v") && vpd.includes("v*9/5+32"), 'VPD pa
 assert(vpd.includes('Logger CSV trend analysis') && vpd.includes('parseTrendCsv') && vpd.includes('drawTrend'), 'VPD page missing local CSV trend-analysis workflow');
 assert(vpd.includes("['temperature','temp','air_temp','air_temperature'") && vpd.includes("['humidity','rh','relative_humidity'"), 'VPD CSV import missing flexible temperature/RH header mapping');
 assert(vpd.includes('Analyzed '+"'"+'+rows.length+'+"'"+' valid logger rows locally in this browser.') && vpd.includes('Average VPD'), 'VPD trend workflow missing local-processing disclosure or summary metrics');
+assert(vpd.includes('/assets/vendor/papaparse-5.7.0.min.js') && vpd.includes('window.Papa?.parse'), 'VPD page must use vendored Papa Parse with fallback support');
 
 const atlas = fs.readFileSync(path.join(root, 'site/public-route-patch/atlas/index.html'), 'utf8');
 const terpenes = fs.readFileSync(path.join(root, 'site/public-route-patch/terpene-atlas/index.html'), 'utf8');
@@ -70,6 +71,7 @@ assert(ppfd.includes('Apogee DLI guidance') && ppfd.includes('LI-COR DLI logging
 assert(ppfd.includes("STORAGE_KEY='thc-light-lab-surveys-v2'") && ppfd.includes("'thc-light-lab-surveys-v1'") && ppfd.includes('localStorage.setItem'), 'PPFD page missing v2 local survey persistence or v1 migration support');
 assert(ppfd.includes('fixtureModel') && ppfd.includes('mountHeight') && ppfd.includes('sensorModel') && ppfd.includes('measurementDate'), 'PPFD page missing survey metadata fields');
 assert(ppfd.includes("lines=['row,column,ppfd']") && ppfd.includes('FileReader') && ppfd.includes('Export map CSV'), 'PPFD page missing CSV round-trip workflow');
+assert(ppfd.includes('/assets/vendor/papaparse-5.7.0.min.js') && ppfd.includes('window.Papa?.parse'), 'PPFD page must use vendored Papa Parse for robust CSV imports');
 assert(ppfd.includes("window.print()") && ppfd.includes('Print / Save report'), 'PPFD page missing printable Light Report workflow');
 assert(ppfd.includes("'use schedule'") && ppfd.includes('Browser storage is unavailable'), 'PPFD page missing variable-light or storage-failure safeguards');
 assert(ppfd.includes('target low exceeds target high') && ppfd.includes("'fix range'"), 'PPFD page missing invalid target-range handling');
