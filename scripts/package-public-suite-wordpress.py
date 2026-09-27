@@ -205,6 +205,8 @@ allowed = [
     "assets/thc-measurement-journal-v1.js",
     "assets/thc-tool-suite-v1.js",
     "assets/thc-tool-suite-v1.css",
+    "assets/thc-cultivation-math-v1.mjs",
+    "assets/thc-light-lab-math-v1.mjs",
     "assets/vendor",
     "dtf-content-overlay",
 ]
@@ -342,6 +344,8 @@ required = [
     "assets/thc-measurement-journal-v1.js",
     "assets/thc-tool-suite-v1.js",
     "assets/thc-tool-suite-v1.css",
+    "assets/thc-cultivation-math-v1.mjs",
+    "assets/thc-light-lab-math-v1.mjs",
     "assets/vendor/papaparse-5.7.0.min.js",
     "assets/vendor/uplot-1.6.32.min.js",
     "assets/vendor/uplot-1.6.32.min.css",
