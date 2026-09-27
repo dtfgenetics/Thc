@@ -70,6 +70,11 @@ assert(ppfd.includes("window.print()") && ppfd.includes('Print / Save report'), 
 assert(ppfd.includes("'use schedule'") && ppfd.includes('Browser storage is unavailable'), 'PPFD page missing variable-light or storage-failure safeguards');
 assert(ppfd.includes('target low exceeds target high') && ppfd.includes("'fix range'"), 'PPFD page missing invalid target-range handling');
 assert(ppfd.includes('compareSession') && ppfd.includes('renderComparison') && ppfd.includes('Average PPFD ') && ppfd.includes('Uniformity '), 'PPFD page missing live saved-survey comparison workflow');
+assert(ppfd.includes('mapProgress') && ppfd.includes('legendbar') && ppfd.includes("'R'+rr+' · C'+cc"), 'PPFD page missing map completion, legend, or coordinate labeling');
+assert(ppfd.includes('Export full survey') && ppfd.includes('application/json;charset=utf-8') && ppfd.includes('Copy summary'), 'PPFD page missing full-survey export or summary workflow');
+assert(ppfd.includes('µmol·m⁻²·s⁻¹') && ppfd.includes('mol·m⁻²·day⁻¹ DLI'), 'PPFD page missing explicit PPFD/DLI units in primary output');
+assert(ppfd.includes('600, 800 and 1,000') && ppfd.includes('150–700') && ppfd.includes('not universal target bands'), 'PPFD research context must distinguish tested study conditions from universal targets');
+assert(ppfd.includes('fillReading') && ppfd.includes('clearMap') && ppfd.includes("stats.max/stats.min"), 'PPFD page missing map utility controls or spread analysis');
 assert(ppfd.includes("box.style.background=heat(v)") && ppfd.includes("heat(input.value)"), 'PPFD page must preserve blank map cells as unmeasured');
 assert(ppfd.includes('href="/tools/"'), 'PPFD page missing central All Tools link');
 assert(atlas.includes('href="/tools/"'), 'Plant Atlas missing central All Tools link');
