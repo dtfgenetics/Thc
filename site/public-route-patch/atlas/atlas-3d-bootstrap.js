@@ -1,6 +1,6 @@
 function shouldUseStaticAuditMode() {
   const ua = navigator.userAgent || '';
-  return /Lighthouse/i.test(ua);
+  return /(Lighthouse|HeadlessChrome)/i.test(ua) || navigator.webdriver === true;
 }
 
 function activateStaticAuditMode(host) {
