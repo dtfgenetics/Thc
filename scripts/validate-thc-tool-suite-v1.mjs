@@ -94,7 +94,7 @@ for(const token of ['registered_local_static_targets','assets/thc-tool-suite-v1.
  ok(packager.includes(token),'public-suite packager missing THC tool release token: '+token);
 }
 const assembler=fs.readFileSync(path.join(root,'scripts/assemble-wordpress-suite-resource-aware.py'),'utf8');
-for(const token of ['TOOL_SUITE_SLUGS','TOOL_SUITE_EXACT_FILES','assets/thc-tool-suite-v1.css','assets/thc-tool-suite-v1.js','THC Water Quality Lab','THC Cultivation Unit Converter']){
+for(const token of ['TOOL_SUITE_SLUGS','TOOL_SUITE_SHARED_ASSET_PREFIXES','assets/thc-tool-suite-v1.css','assets/thc-tool-suite-v1.js','THC Water Quality Lab','THC Cultivation Unit Converter']){
  ok(assembler.includes(token),'production bridge assembler missing THC tool release token: '+token);
 }
 
