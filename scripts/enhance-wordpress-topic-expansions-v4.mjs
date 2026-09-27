@@ -53,9 +53,22 @@ function block(id,item){
 }
 function strip(content){return String(content||'').replace(new RegExp(`<style\\s+id=["']${styleId}["'][^>]*>[\\s\\S]*?<\\/style>\\s*`,'gi'),'').replace(/<!-- dtf-topic-expansion-v4:start -->[\s\S]*?<!-- dtf-topic-expansion-v4:end -->\s*/gi,'')}
 function insertBeforeVisuals(content,newBlock){
-  const anchor='<section class="section soft"><div class="wrap"><div class="heading"><div><p class="eyebrow">Visual references</p>';
-  const at=content.indexOf(anchor);
-  if(at<0) throw new Error('Could not locate the V3 visual-reference section');
+  const exactAnchors=[
+    '<section class="section soft"><div class="wrap"><div class="heading"><div><p class="eyebrow">Visual references</p>',
+    '<section class="section"><div class="wrap"><div class="heading"><div><p class="eyebrow">Visual references</p>'
+  ];
+  let at=-1;
+  for(const anchor of exactAnchors){at=content.indexOf(anchor);if(at>=0)break}
+  if(at<0){
+    const lower=content.toLowerCase();
+    const visualText=lower.indexOf('>visual references<');
+    if(visualText>=0)at=lower.lastIndexOf('<section',visualText);
+  }
+  if(at<0){
+    const lower=content.toLowerCase();
+    const mainEnd=lower.lastIndexOf('</main>');
+    at=mainEnd>=0?mainEnd:content.length;
+  }
   return `${css}${content.slice(0,at)}${newBlock}\n${content.slice(at)}`;
 }
 async function getPage(slug){const rows=await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&context=edit&per_page=10`);if(!Array.isArray(rows)||rows.length!==1)throw new Error(`Expected one page for ${slug}`);return rows[0]}
