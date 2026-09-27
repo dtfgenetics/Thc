@@ -21,6 +21,34 @@ iframe{max-width:100%}
 :where(pre){overflow-x:auto;overscroll-behavior-inline:contain}
 :where(dialog,[role="dialog"]){max-width:min(calc(100% - (var(--dtf-layout-gutter) * 2)),960px);max-height:calc(100dvh - 24px);overflow:auto}
 
+/* Canonical cross-surface sizing. Keep Home/Learn V3 and DTF V1 pages on the same container contract. */
+.v3,.dtf-v1{min-width:0;overflow-x:clip}
+.v3 *,.dtf-v1 *{min-width:0;box-sizing:border-box}
+.v3 .wrap,
+.dtf-v1 :where(.wrap,.gen-wrap,.adult-note){
+  width:min(var(--dtf-layout-max),calc(100% - (var(--dtf-layout-gutter) * 2)))!important;
+  margin-inline:auto!important;
+}
+.v3 :where(.hero-grid,.primary-grid,.split,.topic-hero,.topic-shell),
+.dtf-v1 :where(.hero-grid,.contact-hero,.genetics-hero,.gallery-standard,.parent-panel,.release-panel,.catalog-standard,.standard-grid,.privacy-wrap){
+  min-width:0;
+}
+.v3 :where(img,video,svg,canvas),
+.dtf-v1 :where(img,video,svg,canvas){max-width:100%;height:auto}
+.v3 :where(p,li,a,span,strong),
+.dtf-v1 :where(p,li,a,span,strong){overflow-wrap:anywhere}
+.v3 .hero h1,.dtf-v1 h1{text-wrap:balance}
+.v3 .lede,.dtf-v1 :where(.hero-copy>p,.genetics-hero-copy>p){max-width:var(--dtf-reading-max)}
+.v3 .heading>p,.dtf-v1 :where(.section-heading>p,.gen-heading>p){max-width:58ch}
+
+/* Keep media from becoming the page on wide screens. */
+.v3 .hero-media,
+.dtf-page .dtf-hero-media,
+.dtf-v1 :where(.hero-media,.genetics-hero-media){max-width:min(100%,560px);justify-self:end}
+.v3 .hero-media img,
+.dtf-page .dtf-hero-media img,
+.dtf-v1 :where(.hero-media img,.genetics-hero-media img){width:100%;max-height:620px;object-fit:cover}
+
 /* Canonical WordPress visual pages. */
 .dtf-page{min-width:0;overflow-x:clip}
 .dtf-page *{min-width:0;box-sizing:border-box}
@@ -194,6 +222,12 @@ body:has(.tool-chooser) :where(p,li,a,span,strong),
 }
 
 @media (max-width:900px){
+  .v3 :where(.hero-grid,.primary-grid,.split,.topic-hero,.topic-shell),
+  .dtf-v1 :where(.hero-grid,.contact-hero,.genetics-hero,.gallery-standard,.parent-panel,.release-panel,.catalog-standard,.standard-grid,.privacy-wrap){grid-template-columns:1fr!important}
+  .v3 .hero-media,
+  .dtf-page .dtf-hero-media,
+  .dtf-v1 :where(.hero-media,.genetics-hero-media){justify-self:start;max-width:min(100%,680px)}
+
   .dtf-page .dtf-heading,
   .game-hub-page .section-heading,
   body:has(.tool-chooser) .section-heading{grid-template-columns:1fr!important;align-items:start!important}
@@ -209,7 +243,12 @@ body:has(.tool-chooser) :where(p,li,a,span,strong),
 
 /* Phone: one reading column, horizontal shortcut rail, full-width primary actions. */
 @media (max-width:700px){
-  :root{--dtf-layout-gutter:14px;--dtf-layout-section:clamp(42px,11vw,64px);--dtf-global-header-height:74px}
+  :root{--dtf-layout-gutter:14px;--dtf-layout-section:clamp(42px,11vw,64px);--dtf-global-header-height:66px}
+  .v3 :where(.hero-grid,.primary-grid,.split,.topic-hero,.topic-shell,.release-grid,.path-grid,.all-subjects,.ref-grid,.visual-grid,.reference-desk,.quick-reference,.field-guide),
+  .dtf-v1 :where(.hero-grid,.contact-hero,.genetics-hero,.gallery-standard,.parent-panel,.release-panel,.catalog-standard,.standard-grid,.privacy-wrap,.collection-grid,.line-grid,.about-system-grid,.about-grid,.principle-grid,.community-signal-grid,.participation-grid,.record-flow,.route-grid){grid-template-columns:1fr!important}
+  .v3 .heading,.dtf-v1 :where(.section-heading,.gen-heading){display:grid!important;grid-template-columns:1fr!important;gap:10px!important;align-items:start!important}
+  .v3 .hero-media,.dtf-v1 :where(.hero-media,.genetics-hero-media){max-width:100%;justify-self:stretch}
+  .v3 .hero-media img,.dtf-v1 :where(.hero-media img,.genetics-hero-media img){max-height:460px;object-fit:cover}
   .dtf-page .dtf-hero-grid,
   .dtf-page .dtf-callout,
   .dtf-page .dtf-grid-2,
