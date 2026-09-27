@@ -12,6 +12,7 @@ if(!user||!pass) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are requir
 const auth=`Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}`;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const rendered=v=>typeof v==='string'?v:(v?.raw||v?.rendered||'');
+const hasSupportedShell=value=>/data-dtf-shell="header-v(?:3|6)"/.test(value||'');
 const stamp=new Date().toISOString().replace(/[-:.]/g,'');
 const backupDir=join(backupRoot,`interface-v7-${stamp}`);
 await mkdir(backupDir,{recursive:true});
@@ -68,7 +69,7 @@ const parts=await request('/wp-json/wp/v2/template-parts?context=edit&per_page=1
 const header=(parts||[]).find(p=>p.theme==='hostinger-ai-theme'&&p.slug==='header');
 if(!header?.id) throw new Error('Active Hostinger header template part is missing.');
 const before=rendered(header.content);
-if(!before.includes('data-dtf-shell="header-v3"')) throw new Error('Shared header V3 marker missing; refusing to layer Interface V7 onto an unknown shell.');
+if(!hasSupportedShell(before)) throw new Error('Supported shared header marker missing; refusing to layer Interface V7 onto an unknown shell.');
 await writeFile(join(backupDir,'header-before.json'),`${JSON.stringify(header,null,2)}\n`);
 const rx=/<!-- dtf-interface-v7:start -->[\s\S]*?<!-- dtf-interface-v7:end -->/g;
 const clean=before.replace(rx,'').trim();
@@ -77,11 +78,11 @@ await writeFile(join(backupDir,'header-next.html'),next);
 if(apply) await request(`/wp-json/wp/v2/template-parts/${encodeURIComponent(header.id)}`,{method:'POST',body:JSON.stringify({content:next,status:'publish'})});
 const after=rendered((await request('/wp-json/wp/v2/template-parts?context=edit&per_page=100')).find(p=>p.theme==='hostinger-ai-theme'&&p.slug==='header')?.content);
 for(const marker of ['dtf-interface-v7-style','dtf-interface-v7-script','dtf-shell-menu','dtf-edu-rail','sv6v-gaps{display:none']) if(!after.includes(marker)) throw new Error(`Interface V7 marker missing after write: ${marker}`);
-if(!after.includes('data-dtf-shell="header-v3"')) throw new Error('Interface V7 update removed the canonical shared-shell marker.');
+if(!hasSupportedShell(after)) throw new Error('Interface V7 update removed the canonical shared-shell marker.');
 
 const routes=['/','/learn/','/learn/lighting/','/tools/','/shop/'];
 const publicResults=[];
-for(const route of routes){let ok=false;let htmlText='';for(let attempt=1;attempt<=8;attempt+=1){try{const res=await fetch(`${site}${route}?dtf_interface_v7=${Date.now()}-${attempt}`,{redirect:'follow',signal:AbortSignal.timeout(60000),headers:{'User-Agent':'DTFSeeds-Interface-V7-Verify/1.0','Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache'}});htmlText=await res.text();if(res.ok&&htmlText.includes('dtf-interface-v7-style')&&htmlText.includes('dtf-interface-v7-script')&&htmlText.includes('data-dtf-shell="header-v3"')){ok=true;break;}}catch{}await sleep(attempt*1700);}await writeFile(join(backupDir,`visitor-${route.replace(/[^a-z0-9]+/gi,'_')||'home'}.html`),htmlText);if(!ok) throw new Error(`Public Interface V7 verification failed on ${route}`);publicResults.push({route,verified:true});}
+for(const route of routes){let ok=false;let htmlText='';for(let attempt=1;attempt<=8;attempt+=1){try{const res=await fetch(`${site}${route}?dtf_interface_v7=${Date.now()}-${attempt}`,{redirect:'follow',signal:AbortSignal.timeout(60000),headers:{'User-Agent':'DTFSeeds-Interface-V7-Verify/1.0','Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache'}});htmlText=await res.text();if(res.ok&&htmlText.includes('dtf-interface-v7-style')&&htmlText.includes('dtf-interface-v7-script')&&hasSupportedShell(htmlText)){ok=true;break;}}catch{}await sleep(attempt*1700);}await writeFile(join(backupDir,`visitor-${route.replace(/[^a-z0-9]+/gi,'_')||'home'}.html`),htmlText);if(!ok) throw new Error(`Public Interface V7 verification failed on ${route}`);publicResults.push({route,verified:true});}
 const report={generatedAt:new Date().toISOString(),site,apply,backupDir,headerId:header.id,publicResults,features:['sticky active-state primary navigation','accessible mobile menu','THC education navigation rail','duplicate education title suppression','unified V3/V4/V6 visual language','mobile chapter rail','public production-gap suppression']};
 await writeFile(join(backupDir,'interface-v7-report.json'),`${JSON.stringify(report,null,2)}\n`);
 console.log(JSON.stringify(report,null,2));
