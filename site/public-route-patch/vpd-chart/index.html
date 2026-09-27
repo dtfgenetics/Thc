@@ -72,16 +72,16 @@ footer{padding:28px 0 42px;color:var(--muted)}
 </main>
 <script src="/assets/vendor/papaparse-5.7.0.min.js"></script>
 <script src="/assets/vendor/uplot-1.6.32.min.js"></script>
-<script>
+<script type="module">
+import {leafVpd} from '/assets/thc-cultivation-math-v1.mjs';
 const temp=document.getElementById('temp'),unit=document.getElementById('unit'),rh=document.getElementById('rh'),offset=document.getElementById('offset'),vout=document.getElementById('vout'),chart=document.getElementById('chart');
 const vpdProfileName=document.getElementById('vpdProfileName'),vpdProfiles=document.getElementById('vpdProfiles'),vpdTargetLow=document.getElementById('vpdTargetLow'),vpdTargetHigh=document.getElementById('vpdTargetHigh'),vpdSustainSamples=document.getElementById('vpdSustainSamples'),vpdClearMargin=document.getElementById('vpdClearMargin'),vpdProfileStatus=document.getElementById('vpdProfileStatus');
 const VPD_PROFILE_KEY='thc-vpd-profiles-v1';
 const trendFile=document.getElementById('trendFile'),trendUnit=document.getElementById('trendUnit'),trendOffset=document.getElementById('trendOffset'),trendStatus=document.getElementById('trendStatus'),trendMetrics=document.getElementById('trendMetrics'),trendCanvasWrap=document.getElementById('trendCanvasWrap'),trendCanvas=document.getElementById('trendCanvas'),trendTableWrap=document.getElementById('trendTableWrap'),trendBody=document.getElementById('trendBody');
-const svp=t=>0.6108*Math.exp((17.27*t)/(t+237.3));
 const toC=(v,u)=>u==='f'?(v-32)*5/9:v;
 const deltaC=(v,u)=>u==='f'?v*5/9:v;
 const fromC=(v,u)=>u==='f'?v*9/5+32:v;
-const calc=(air,rhValue,leaf)=>Math.max(0,svp(leaf)-svp(air)*(rhValue/100));
+const calc=(air,rhValue,leaf)=>Math.max(0,leafVpd(air,rhValue,leaf));
 function band(v){return v<0.8?'low':v<=1.2?'mod':v<=1.6?'higher':'very'}
 function render(){
  const rawT=Number(temp.value),h=Number(rh.value),rawO=Number(offset.value),u=unit.value;
