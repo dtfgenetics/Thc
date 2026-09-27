@@ -6,12 +6,12 @@
   "counts": {
     "compounds": 120,
     "formulasVerified": 120,
-    "pubchemCidResolved": 59,
-    "pubchemCidMissing": 61,
-    "stereochemistryResolved": 20,
-    "stereochemistryMissingOrUnspecified": 100,
-    "isomerGroupResolved": 38,
-    "isomerGroupMissing": 82
+    "pubchemCidResolved": 69,
+    "pubchemCidMissing": 51,
+    "stereochemistryResolved": 26,
+    "stereochemistryMissingOrUnspecified": 94,
+    "isomerGroupResolved": 43,
+    "isomerGroupMissing": 77
   },
   "measuredPopulation": {
     "sampleCount": 79,
@@ -165,20 +165,20 @@
     {
       "id": "carvacrol",
       "canonicalName": "Carvacrol",
-      "pubchemCid": null,
-      "inchikey": null,
-      "identityStatus": null,
-      "stereochemistry": null,
+      "pubchemCid": 10364,
+      "inchikey": "RECUKUPTGUEGMW-UHFFFAOYSA-N",
+      "identityStatus": "verified",
+      "stereochemistry": "not stereogenic",
       "isomerGroup": null
     },
     {
       "id": "carvone",
       "canonicalName": "Carvone",
-      "pubchemCid": null,
-      "inchikey": null,
-      "identityStatus": null,
-      "stereochemistry": null,
-      "isomerGroup": null
+      "pubchemCid": 7439,
+      "inchikey": "ULDHMXUKGWMISQ-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified / racemic parent",
+      "isomerGroup": "carvone"
     },
     {
       "id": "cis-carveol",
@@ -210,11 +210,11 @@
     {
       "id": "linalool-oxide",
       "canonicalName": "Linalool oxide",
-      "pubchemCid": null,
-      "inchikey": null,
-      "identityStatus": null,
-      "stereochemistry": null,
-      "isomerGroup": null
+      "pubchemCid": 22310,
+      "inchikey": "BRHDDEIRQPDPMG-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified stereoisomeric configuration",
+      "isomerGroup": "linalool-oxide"
     },
     {
       "id": "sabinene-hydrate",
@@ -230,18 +230,18 @@
       "canonicalName": "Germacrene B",
       "pubchemCid": null,
       "inchikey": null,
-      "identityStatus": null,
-      "stereochemistry": null,
-      "isomerGroup": null
+      "identityStatus": "unresolved",
+      "stereochemistry": "unresolved geometric isomer",
+      "isomerGroup": "germacrene-b"
     },
     {
       "id": "phytol",
       "canonicalName": "Phytol",
-      "pubchemCid": null,
-      "inchikey": null,
-      "identityStatus": null,
-      "stereochemistry": null,
-      "isomerGroup": null
+      "pubchemCid": 5280435,
+      "inchikey": "BOTWFXYSPFMFNR-PYDDKJGSSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "PubChem canonical record is (E,7R,11R); source label may be broader",
+      "isomerGroup": "phytol"
     },
     {
       "id": "neophytadiene",
@@ -255,37 +255,37 @@
     {
       "id": "friedelin",
       "canonicalName": "Friedelin",
-      "pubchemCid": null,
-      "inchikey": null,
-      "identityStatus": null,
-      "stereochemistry": null,
+      "pubchemCid": 91472,
+      "inchikey": "OFMXGFHWLZPCFL-SVRPQWSVSA-N",
+      "identityStatus": "verified",
+      "stereochemistry": "specified in PubChem record",
       "isomerGroup": null
     },
     {
       "id": "epifriedelanol",
       "canonicalName": "Epifriedelanol",
-      "pubchemCid": null,
-      "inchikey": null,
-      "identityStatus": null,
-      "stereochemistry": null,
+      "pubchemCid": 119242,
+      "inchikey": "XCDQFROEGGNAER-PFOIMGGJSA-N",
+      "identityStatus": "verified",
+      "stereochemistry": "specified in PubChem record",
       "isomerGroup": null
     },
     {
       "id": "beta-amyrin",
       "canonicalName": "β-Amyrin",
-      "pubchemCid": null,
-      "inchikey": null,
-      "identityStatus": null,
-      "stereochemistry": null,
+      "pubchemCid": 73145,
+      "inchikey": "JFSHUTJDVKUMTJ-QHPUVITPSA-N",
+      "identityStatus": "verified",
+      "stereochemistry": "specified in PubChem record",
       "isomerGroup": null
     },
     {
       "id": "squalene",
       "canonicalName": "Squalene",
-      "pubchemCid": null,
-      "inchikey": null,
-      "identityStatus": null,
-      "stereochemistry": null,
+      "pubchemCid": 638072,
+      "inchikey": "YYGNTYWPHWGJRM-AAJYLUCBSA-N",
+      "identityStatus": "verified",
+      "stereochemistry": "defined alkene geometry in PubChem record",
       "isomerGroup": null
     },
     {
@@ -354,10 +354,10 @@
     {
       "id": "geranyl-acetate",
       "canonicalName": "Geranyl acetate",
-      "pubchemCid": null,
-      "inchikey": null,
-      "identityStatus": null,
-      "stereochemistry": null,
+      "pubchemCid": 1549026,
+      "inchikey": "HIGQPQRQIQDZMP-DHZHZOJOSA-N",
+      "identityStatus": "verified",
+      "stereochemistry": "(2E) geranyl geometry",
       "isomerGroup": null
     },
     {
@@ -399,11 +399,11 @@
     {
       "id": "alpha-copaene",
       "canonicalName": "α-Copaene",
-      "pubchemCid": null,
-      "inchikey": null,
-      "identityStatus": null,
-      "stereochemistry": null,
-      "isomerGroup": null
+      "pubchemCid": 70678558,
+      "inchikey": "VLXDPFLIRFYIME-XIQJJJERSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "partially specified",
+      "isomerGroup": "alpha-copaene"
     },
     {
       "id": "sesquithujene",
@@ -929,8 +929,8 @@
     }
   ],
   "normalizationCoverage": {
-    "aliases": 73,
-    "authorities": 39
+    "aliases": 83,
+    "authorities": 49
   },
   "requiredNextFields": [
     "pubchemCid",

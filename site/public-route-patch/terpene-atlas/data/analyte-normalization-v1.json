@@ -240,6 +240,66 @@
       "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Sabinen",
       "cid": 18818,
       "inchikey": "NDVASEGYNIMXJL-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-carvacrol",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/10364",
+      "cid": 10364,
+      "inchikey": "RECUKUPTGUEGMW-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-carvone-parent",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/7439",
+      "cid": 7439,
+      "inchikey": "ULDHMXUKGWMISQ-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-linalool-oxide-parent",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/22310",
+      "cid": 22310,
+      "inchikey": "BRHDDEIRQPDPMG-UHFFFAOYSA-N"
+    },
+    {
+      "id": "pubchem-phytol",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/5280435",
+      "cid": 5280435,
+      "inchikey": "BOTWFXYSPFMFNR-PYDDKJGSSA-N"
+    },
+    {
+      "id": "pubchem-friedelin",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/91472",
+      "cid": 91472,
+      "inchikey": "OFMXGFHWLZPCFL-SVRPQWSVSA-N"
+    },
+    {
+      "id": "pubchem-epifriedelanol",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/119242",
+      "cid": 119242,
+      "inchikey": "XCDQFROEGGNAER-PFOIMGGJSA-N"
+    },
+    {
+      "id": "pubchem-beta-amyrin",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/73145",
+      "cid": 73145,
+      "inchikey": "JFSHUTJDVKUMTJ-QHPUVITPSA-N"
+    },
+    {
+      "id": "pubchem-squalene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/638072",
+      "cid": 638072,
+      "inchikey": "YYGNTYWPHWGJRM-AAJYLUCBSA-N"
+    },
+    {
+      "id": "pubchem-geranyl-acetate",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/1549026",
+      "cid": 1549026,
+      "inchikey": "HIGQPQRQIQDZMP-DHZHZOJOSA-N"
+    },
+    {
+      "id": "pubchem-alpha-copaene",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/compound/70678558",
+      "cid": 70678558,
+      "inchikey": "VLXDPFLIRFYIME-XIQJJJERSA-N"
     }
   ],
   "aliases": [
@@ -892,6 +952,96 @@
       "pubchemCid": 7461,
       "inchikey": "YKFLAYDHMOASIY-UHFFFAOYSA-N",
       "authorityId": "pubchem-gamma-terpinene"
+    },
+    {
+      "reported": "Carvacrol",
+      "normalized": "carvacrol",
+      "identityResolution": "resolved",
+      "reason": "constitutional identity",
+      "pubchemCid": 10364,
+      "inchikey": "RECUKUPTGUEGMW-UHFFFAOYSA-N",
+      "authorityId": "pubchem-carvacrol"
+    },
+    {
+      "reported": "Carvone",
+      "normalized": "carvone",
+      "identityResolution": "partial",
+      "reason": "constitutional identity; optical configuration unresolved / racemic or unspecified",
+      "pubchemCid": 7439,
+      "inchikey": "ULDHMXUKGWMISQ-UHFFFAOYSA-N",
+      "authorityId": "pubchem-carvone-parent"
+    },
+    {
+      "reported": "Linalool oxide",
+      "normalized": "linalool-oxide",
+      "identityResolution": "partial",
+      "reason": "constitutional identity; stereoisomeric configuration unresolved",
+      "pubchemCid": 22310,
+      "inchikey": "BRHDDEIRQPDPMG-UHFFFAOYSA-N",
+      "authorityId": "pubchem-linalool-oxide-parent"
+    },
+    {
+      "reported": "Phytol",
+      "normalized": "phytol",
+      "identityResolution": "partial",
+      "reason": "canonical phytol record; source label does not independently establish E/7R/11R configuration",
+      "pubchemCid": 5280435,
+      "inchikey": "BOTWFXYSPFMFNR-PYDDKJGSSA-N",
+      "authorityId": "pubchem-phytol"
+    },
+    {
+      "reported": "Friedelin",
+      "normalized": "friedelin",
+      "identityResolution": "resolved",
+      "reason": "named natural-product stereostructure",
+      "pubchemCid": 91472,
+      "inchikey": "OFMXGFHWLZPCFL-SVRPQWSVSA-N",
+      "authorityId": "pubchem-friedelin"
+    },
+    {
+      "reported": "Epifriedelanol",
+      "normalized": "epifriedelanol",
+      "identityResolution": "resolved",
+      "reason": "named natural-product stereostructure",
+      "pubchemCid": 119242,
+      "inchikey": "XCDQFROEGGNAER-PFOIMGGJSA-N",
+      "authorityId": "pubchem-epifriedelanol"
+    },
+    {
+      "reported": "beta-Amyrin",
+      "normalized": "beta-amyrin",
+      "identityResolution": "resolved",
+      "reason": "named natural-product stereostructure",
+      "pubchemCid": 73145,
+      "inchikey": "JFSHUTJDVKUMTJ-QHPUVITPSA-N",
+      "authorityId": "pubchem-beta-amyrin"
+    },
+    {
+      "reported": "Squalene",
+      "normalized": "squalene",
+      "identityResolution": "resolved",
+      "reason": "canonical squalene structure",
+      "pubchemCid": 638072,
+      "inchikey": "YYGNTYWPHWGJRM-AAJYLUCBSA-N",
+      "authorityId": "pubchem-squalene"
+    },
+    {
+      "reported": "Geranyl acetate",
+      "normalized": "geranyl-acetate",
+      "identityResolution": "resolved",
+      "reason": "geranyl (E) acetate identity",
+      "pubchemCid": 1549026,
+      "inchikey": "HIGQPQRQIQDZMP-DHZHZOJOSA-N",
+      "authorityId": "pubchem-geranyl-acetate"
+    },
+    {
+      "reported": "alpha-Copaene",
+      "normalized": "alpha-copaene",
+      "identityResolution": "partial",
+      "reason": "named alpha-copaene record; one stereochemical center remains unspecified in the PubChem descriptor",
+      "pubchemCid": 70678558,
+      "inchikey": "VLXDPFLIRFYIME-XIQJJJERSA-N",
+      "authorityId": "pubchem-alpha-copaene"
     }
   ],
   "lastVerifiedOn": "2026-09-27"
