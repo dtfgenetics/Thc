@@ -55,7 +55,7 @@ for (const candidate of candidates) {
   const html = await pageResponse.text();
   assert.match(html, new RegExp(candidate.title, 'i'), `${candidate.id} title marker missing from live route`);
   assert.match(html, /data-dtf-shell=["']header-v6["']/i, `${candidate.id} canonical Header V6 marker missing`);
-  assert.match(html, /data-dtf-sitewide-header=["']canonical-eight-v1["']/i, `${candidate.id} canonical eight-link header marker missing`);
+  assert.match(html, /data-dtf-sitewide-header=["']canonical-eight-v1["']/i, `${candidate.id} canonical five-link header marker missing`);
   assert.match(html, /data-dtf-shell=["']footer-v6["']/i, `${candidate.id} canonical Footer V6 marker missing`);
   assert.match(html, /data-dtf-sitewide-footer=["']canonical-eight-v1["']/i, `${candidate.id} canonical footer navigation marker missing`);
 
