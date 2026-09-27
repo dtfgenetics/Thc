@@ -7,13 +7,16 @@ import {
   type PlantCultivationAnalytics,
 } from './cultivationAnalytics';
 import { loadState, STATE_SAVED_EVENT } from './storage';
+import { calculateVpdKpa } from './calculations';
+import { distribution, linearTrendByTime, pearsonCorrelation } from './statisticalInsights';
 
 import { useModalFocusTrap } from './useModalFocusTrap';
 
-type Tab = 'overview' | 'plants' | 'cultivars' | 'cycles' | 'spaces';
+type Tab = 'overview' | 'environment' | 'plants' | 'cultivars' | 'cycles' | 'spaces';
 
 const tabs: Array<{ id: Tab; label: string }> = [
   { id: 'overview', label: 'Overview' },
+  { id: 'environment', label: 'Environment' },
   { id: 'plants', label: 'Plants' },
   { id: 'cultivars', label: 'Cultivars' },
   { id: 'cycles', label: 'Cycles' },
@@ -112,6 +115,43 @@ export default function CultivationAnalyticsWidget() {
     </>;
   }
 
+  function environment(): ReactNode {
+    const readings = state.readings;
+    const temperatures = readings.map((reading) => reading.temperatureC);
+    const humidity = readings.map((reading) => reading.humidity);
+    const ppfd = readings.flatMap((reading) => reading.ppfd === null ? [] : [reading.ppfd]);
+    const vpd = readings.map((reading) => calculateVpdKpa(reading.temperatureC, reading.humidity));
+    const tempDist = distribution(temperatures);
+    const humidityDist = distribution(humidity);
+    const ppfdDist = distribution(ppfd);
+    const vpdDist = distribution(vpd);
+    const tempHumidity = pearsonCorrelation(readings.map((reading) => [reading.temperatureC, reading.humidity] as [number, number]));
+    const tempVpd = pearsonCorrelation(readings.map((reading, index) => [reading.temperatureC, vpd[index]] as [number, number]));
+    const ppfdVpd = pearsonCorrelation(readings.flatMap((reading, index) => reading.ppfd === null ? [] : [[reading.ppfd, vpd[index]] as [number, number]]));
+    const tempTrend = linearTrendByTime(readings.map((reading) => ({ timestamp: reading.createdAt, value: reading.temperatureC })));
+    const humidityTrend = linearTrendByTime(readings.map((reading) => ({ timestamp: reading.createdAt, value: reading.humidity })));
+    const correlationLabel = (result: ReturnType<typeof pearsonCorrelation>) =>
+      result.r === null ? `Insufficient data (n=${result.count})` : `${result.r.toFixed(2)} · ${result.strength} ${result.direction}`;
+    const range = (summary: ReturnType<typeof distribution>, suffix: string) =>
+      summary ? `${summary.minimum.toFixed(1)}–${summary.maximum.toFixed(1)}${suffix}` : '—';
+    return <AnalyticsSection title="Environment analytics" detail="Distribution, trend and correlation summaries from saved environment readings. Correlation describes co-movement only; it does not establish that one variable caused another.">
+      <div className="analytics-metrics">
+        <MetricCard label="Temperature range" value={range(tempDist, ' °C')} detail={tempDist ? `median ${tempDist.median.toFixed(1)} °C · n=${tempDist.count}` : 'No readings'} />
+        <MetricCard label="Humidity range" value={range(humidityDist, '%')} detail={humidityDist ? `median ${humidityDist.median.toFixed(1)}% · n=${humidityDist.count}` : 'No readings'} />
+        <MetricCard label="PPFD range" value={range(ppfdDist, '')} detail={ppfdDist ? `median ${ppfdDist.median.toFixed(0)} · n=${ppfdDist.count}` : 'No PPFD readings'} />
+        <MetricCard label="VPD range" value={range(vpdDist, ' kPa')} detail={vpdDist ? `median ${vpdDist.median.toFixed(2)} kPa · n=${vpdDist.count}` : 'No readings'} />
+      </div>
+      <div className="analytics-insight-grid">
+        <article><span>Temperature ↔ RH</span><strong>{correlationLabel(tempHumidity)}</strong><small>Expected to vary with HVAC, lighting, weather, sensor placement and time of day.</small></article>
+        <article><span>Temperature ↔ VPD</span><strong>{correlationLabel(tempVpd)}</strong><small>VPD is calculated from temperature and RH, so this relationship is mathematically coupled.</small></article>
+        <article><span>PPFD ↔ VPD</span><strong>{correlationLabel(ppfdVpd)}</strong><small>Use as context for light-on/off patterns, not evidence that PPFD alone caused a VPD change.</small></article>
+        <article><span>Temperature trend</span><strong>{tempTrend.slopePerDay === null ? 'Insufficient timeline' : `${tempTrend.slopePerDay >= 0 ? '+' : ''}${tempTrend.slopePerDay.toFixed(2)} °C/day`}</strong><small>Simple least-squares slope across saved timestamps.</small></article>
+        <article><span>Humidity trend</span><strong>{humidityTrend.slopePerDay === null ? 'Insufficient timeline' : `${humidityTrend.slopePerDay >= 0 ? '+' : ''}${humidityTrend.slopePerDay.toFixed(2)} %RH/day`}</strong><small>Long gaps and uneven sampling can distort the apparent slope.</small></article>
+      </div>
+      <p className="analytics-caution"><strong>Interpretation boundary:</strong> these are descriptive statistics from your saved readings. They do not control for plant stage, cultivar, irrigation, equipment changes, sensor movement, day/night cycles, or other confounders.</p>
+    </AnalyticsSection>;
+  }
+
   function plants(): ReactNode {
     return <AnalyticsSection title="Plant analytics" detail="Filter individual measured histories across irrigation, feed, harvest, and observation outcomes.">
       <div className="analytics-toolbar"><label>Search plants<input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Plant, cultivar, cycle, space, or status" /></label><button className="secondary-button" type="button" onClick={() => downloadCsv(`growlens-plant-analytics-${new Date().toISOString().slice(0, 10)}.csv`, createPlantAnalyticsCsv(analytics))}>Download analytics CSV</button></div>
@@ -124,7 +164,8 @@ export default function CultivationAnalyticsWidget() {
   }
 
   let content: ReactNode;
-  if (tab === 'plants') content = plants();
+  if (tab === 'environment') content = environment();
+  else if (tab === 'plants') content = plants();
   else if (tab === 'cultivars') content = groupTab(analytics.cultivars, 'Cultivar analytics', 'Aggregates measured records by the cultivar text saved on each plant.', 'No cultivar analytics yet');
   else if (tab === 'cycles') content = groupTab(analytics.cycles, 'Cycle analytics', 'Compares plant counts, applied water, feed events, harvests, and outcomes by cycle.', 'No cycle analytics yet');
   else if (tab === 'spaces') content = groupTab(analytics.spaces, 'Grow-space analytics', 'Compares records grouped by the plant’s assigned grow space.', 'No grow-space analytics yet');
