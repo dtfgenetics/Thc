@@ -55,4 +55,11 @@ export {
   loadingResultsToObject,
 } from './loading.mjs';
 
-export const DTF_GAME_PLATFORM_VERSION = '1.5.0';
+export {
+  validationIssue,
+  safeParseJson,
+  validateObjectShape,
+  field,
+} from './validation.mjs';
+
+export const DTF_GAME_PLATFORM_VERSION = '1.6.0';
