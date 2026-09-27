@@ -4,9 +4,11 @@ import { readFileSync } from 'node:fs';
 
 const sourcePath = 'scripts/update-wordpress-learn-expansion-v1.mjs';
 const normalizerPath = 'scripts/normalize-html-visible-text.mjs';
+const visualRebuildPath = 'scripts/rebuild-wordpress-visual-site.mjs';
 const workflowPath = '.github/workflows/deploy-thc-learning-center-expansion-v1.yml';
 const source = readFileSync(sourcePath, 'utf8');
 const normalizer = readFileSync(normalizerPath, 'utf8');
+const visualRebuild = readFileSync(visualRebuildPath, 'utf8');
 const workflow = readFileSync(workflowPath, 'utf8');
 const failures = [];
 const requireText = (haystack, text, message) => {
@@ -45,6 +47,13 @@ for (const href of [
   '/learn/sources/'
 ]) {
   requireText(source, href, `anonymous Learn convergence contract is missing route: ${href}`);
+}
+
+for (const semantic of [
+  'Learn in a sequence that makes the plant easier to understand.',
+  'Learn the plant as a connected system.'
+]) {
+  requireText(visualRebuild, semantic, `visual-site rebuild would remove required Learn semantic: ${semantic}`);
 }
 
 for (const token of [
