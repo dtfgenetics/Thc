@@ -49,7 +49,7 @@ function renderSources(){
     const formulas=items.filter(x=>x.formula).length;
     const identifiers=items.filter(x=>x.pubchemCid).length;
     const aromas=items.filter(x=>Array.isArray(x.aromaDescriptors)&&x.aromaDescriptors.length).length;
-    const stereo=items.filter(x=>x.stereochemistry).length;
+    const stereo=items.filter(x=>x.identityStatus==='verified').length;
     const a=state.identityAudit?.counts||{};quality.innerHTML=`<strong>Identity QA:</strong> formulas ${formulas}/${items.length} · PubChem IDs ${identifiers}/${items.length} · resolved stereochemistry ${stereo}/${items.length}. <strong>${a.pubchemCidMissing??(items.length-identifiers)} records still need structure-level identifier review</strong>; ${a.stereochemistryMissingOrUnspecified??(items.length-stereo)} remain stereochemically unresolved or unspecified. Missing identity fields are not inferred automatically. Quantitative lab analytes must preserve the resolution actually reported by the source.`;
   }
 }
@@ -121,7 +121,7 @@ function showCompound(id){
   if(typeof dialog.showModal==='function')dialog.showModal(); else dialog.setAttribute('open','');
 }
 function normalizeAnalyteLabel(label){const raw=String(label||'').trim(),key=raw.toLowerCase().replace(/\s+/g,' ');const row=(state.normalization?.aliases||[]).find(x=>String(x.reported||'').trim().toLowerCase()===key);return row?{...row,reportedOriginal:raw}:null}
-function resolveProfileMeasurement(row,known){const direct=row.compoundId?known.get(row.compoundId):null;if(direct)return{item:direct,mode:'direct-id',identityResolution:direct.pubchemCid&&direct.stereochemistry&&direct.stereochemistry!=='unspecified'?'resolved':'partial',reportedName:row.reportedName||row.analyte||row.compoundId};const reported=row.reportedName||row.analyte||row.name||row.compoundName||'';const norm=normalizeAnalyteLabel(reported);if(norm){const item=known.get(norm.normalized);return{item,mode:'normalized-name',identityResolution:norm.identityResolution||'partial',reportedName:reported,norm}}return{item:null,mode:'unmapped',identityResolution:'unresolved',reportedName:reported||row.compoundId||'unmapped analyte'}}
+function resolveProfileMeasurement(row,known){const direct=row.compoundId?known.get(row.compoundId):null;if(direct)return{item:direct,mode:'direct-id',identityResolution:direct.identityStatus==='verified'?'resolved':'partial',reportedName:row.reportedName||row.analyte||row.compoundId};const reported=row.reportedName||row.analyte||row.name||row.compoundName||'';const norm=normalizeAnalyteLabel(reported);if(norm){const item=known.get(norm.normalized);return{item,mode:'normalized-name',identityResolution:norm.identityResolution||'partial',reportedName:reported,norm}}return{item:null,mode:'unmapped',identityResolution:'unresolved',reportedName:reported||row.compoundId||'unmapped analyte'}}
 function validateProfile(profile){
   const errors=[];
   for(const key of ['sampleId','displayName','source','matrix','method','unit','measurements']) if(profile?.[key]===undefined||profile?.[key]===null||profile?.[key]==='')errors.push(`Missing ${key}`);
