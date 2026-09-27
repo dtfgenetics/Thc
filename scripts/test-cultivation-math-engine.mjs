@@ -11,7 +11,19 @@ import {
   dewPoint,
   airChangesPerHour,
   gallonsToLiters,
-  litersToGallons
+  litersToGallons,
+  celsiusToFahrenheit,
+  fahrenheitToCelsius,
+  centimetersToInches,
+  inchesToCentimeters,
+  squareMetersToSquareFeet,
+  squareFeetToSquareMeters,
+  gramsToOunces,
+  ouncesToGrams,
+  millisiemensToMicrosiemens,
+  microsiemensToMillisiemens,
+  cfmToCubicMetersPerHour,
+  cubicMetersPerHourToCfm
 } from '../site/public-route-patch/assets/thc-cultivation-math-v1.mjs';
 
 const near=(actual,expected,tol=1e-6)=>assert.ok(Math.abs(actual-expected)<=tol,`${actual} != ${expected}`);
@@ -32,6 +44,18 @@ near(dewPoint(24,65),17.0,0.3);
 near(airChangesPerHour(300,10*10*8),22.5);
 near(gallonsToLiters(1),3.785411784);
 near(litersToGallons(3.785411784),1);
+near(celsiusToFahrenheit(25),77);
+near(fahrenheitToCelsius(77),25);
+near(centimetersToInches(2.54),1);
+near(inchesToCentimeters(1),2.54);
+near(squareMetersToSquareFeet(1),10.7639104167);
+near(squareFeetToSquareMeters(10.7639104167),1);
+near(gramsToOunces(28.349523125),1);
+near(ouncesToGrams(1),28.349523125);
+near(millisiemensToMicrosiemens(1.8),1800);
+near(microsiemensToMillisiemens(1800),1.8);
+near(cfmToCubicMetersPerHour(100),169.901082);
+near(cubicMetersPerHourToCfm(169.901082),100);
 assert.throws(()=>dliFromPpfd(-1,12),/PPFD/);
 assert.throws(()=>airVpd(25,101),/humidity/i);
 assert.throws(()=>dilutionStockVolume(0,100,10),/concentration/i);
