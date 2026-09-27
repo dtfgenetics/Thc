@@ -1,0 +1,955 @@
+{
+  "schemaVersion": 1,
+  "generatedFrom": "terpene-catalog-v1.json",
+  "generatedOn": "2026-09-27",
+  "policy": "Identity gaps are explicit QA findings, not values to infer automatically.",
+  "counts": {
+    "compounds": 120,
+    "formulasVerified": 120,
+    "pubchemCidResolved": 59,
+    "pubchemCidMissing": 61,
+    "stereochemistryResolved": 20,
+    "stereochemistryMissingOrUnspecified": 100,
+    "isomerGroupResolved": 38,
+    "isomerGroupMissing": 82
+  },
+  "measuredPopulation": {
+    "sampleCount": 79,
+    "analytes": 40,
+    "withoutPubchemCid": 1,
+    "unresolved": [
+      {
+        "compoundId": "germacrene-b",
+        "reportedName": "Germacrene B",
+        "identityStatus": "unresolved",
+        "pubchemCid": null
+      }
+    ]
+  },
+  "highPriorityReview": [
+    {
+      "id": "beta-myrcene",
+      "canonicalName": "β-Myrcene",
+      "pubchemCid": 31253,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "alpha-pinene",
+      "canonicalName": "α-Pinene",
+      "pubchemCid": 6654,
+      "inchikey": "GRWFGVWFFZKLTI-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "alpha-pinene"
+    },
+    {
+      "id": "beta-pinene",
+      "canonicalName": "β-Pinene",
+      "pubchemCid": 14896,
+      "inchikey": "WTARULDDTDQWMU-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "beta-pinene"
+    },
+    {
+      "id": "linalool",
+      "canonicalName": "Linalool",
+      "pubchemCid": 6549,
+      "inchikey": "CDOSHBSSFJOMGT-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "linalool"
+    },
+    {
+      "id": "alpha-bisabolol",
+      "canonicalName": "α-Bisabolol",
+      "pubchemCid": 10586,
+      "inchikey": "RGZSQWQPBWRIAQ-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified stereochemistry",
+      "isomerGroup": "alpha-bisabolol"
+    },
+    {
+      "id": "ocimene",
+      "canonicalName": "Ocimene",
+      "pubchemCid": 18756,
+      "inchikey": "IHPKGUQCSIINRJ-UHFFFAOYSA-N",
+      "identityStatus": "parent-concept",
+      "stereochemistry": "unspecified",
+      "isomerGroup": "ocimene"
+    },
+    {
+      "id": "nerolidol",
+      "canonicalName": "Nerolidol",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "camphene",
+      "canonicalName": "Camphene",
+      "pubchemCid": 6616,
+      "inchikey": "CRPUJAZIXJMDBK-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "camphene"
+    },
+    {
+      "id": "sabinene",
+      "canonicalName": "Sabinene",
+      "pubchemCid": 18818,
+      "inchikey": "NDVASEGYNIMXJL-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "sabinene"
+    },
+    {
+      "id": "alpha-phellandrene",
+      "canonicalName": "α-Phellandrene",
+      "pubchemCid": 7460,
+      "inchikey": "OGLDWXZKYODSOB-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "phellandrene"
+    },
+    {
+      "id": "beta-phellandrene",
+      "canonicalName": "β-Phellandrene",
+      "pubchemCid": 11142,
+      "inchikey": "LFJQCDVYDGGFCH-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "phellandrene"
+    },
+    {
+      "id": "alpha-terpineol",
+      "canonicalName": "α-Terpineol",
+      "pubchemCid": 17100,
+      "inchikey": "WUOACPNHFRMFPN-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "alpha-terpineol"
+    },
+    {
+      "id": "terpinen-4-ol",
+      "canonicalName": "Terpinen-4-ol",
+      "pubchemCid": 11230,
+      "inchikey": "WRYLYDPHFGVWKC-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "terpinen-4-ol"
+    },
+    {
+      "id": "borneol",
+      "canonicalName": "Borneol",
+      "pubchemCid": 64685,
+      "inchikey": "DTGKSKDOIYIVQL-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified stereochemistry",
+      "isomerGroup": "borneol"
+    },
+    {
+      "id": "citronellol",
+      "canonicalName": "Citronellol",
+      "pubchemCid": 8842,
+      "inchikey": "QMVPMAAFGQKVCJ-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "citronellol"
+    },
+    {
+      "id": "carvacrol",
+      "canonicalName": "Carvacrol",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "carvone",
+      "canonicalName": "Carvone",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "cis-carveol",
+      "canonicalName": "cis-Carveol",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "piperitenone",
+      "canonicalName": "Piperitenone",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "bornyl-acetate",
+      "canonicalName": "Bornyl acetate",
+      "pubchemCid": 12097317,
+      "inchikey": "KGEKLUUHTZCSIP-RTYFJBAXSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "partially specified / unresolved",
+      "isomerGroup": "bornyl-acetate"
+    },
+    {
+      "id": "linalool-oxide",
+      "canonicalName": "Linalool oxide",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "sabinene-hydrate",
+      "canonicalName": "Sabinene hydrate",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "germacrene-b",
+      "canonicalName": "Germacrene B",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "phytol",
+      "canonicalName": "Phytol",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "neophytadiene",
+      "canonicalName": "Neophytadiene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "friedelin",
+      "canonicalName": "Friedelin",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "epifriedelanol",
+      "canonicalName": "Epifriedelanol",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "beta-amyrin",
+      "canonicalName": "β-Amyrin",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "squalene",
+      "canonicalName": "Squalene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "dihydroactinidiolide",
+      "canonicalName": "Dihydroactinidiolide",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "vomifoliol",
+      "canonicalName": "Vomifoliol",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "3-carene",
+      "canonicalName": "3-Carene",
+      "pubchemCid": 26049,
+      "inchikey": "BQOFWKZOCNGFEC-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "3-carene"
+    },
+    {
+      "id": "fenchone",
+      "canonicalName": "Fenchone",
+      "pubchemCid": 14525,
+      "inchikey": null,
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified / racemic parent",
+      "isomerGroup": "fenchone"
+    },
+    {
+      "id": "fenchol",
+      "canonicalName": "Fenchol",
+      "pubchemCid": 15406,
+      "inchikey": "IAIHUHQCLTYTSF-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified isomeric designation",
+      "isomerGroup": "fenchol"
+    },
+    {
+      "id": "menthol",
+      "canonicalName": "Menthol",
+      "pubchemCid": 1254,
+      "inchikey": "NOOLISFMXDJSKH-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified stereochemistry",
+      "isomerGroup": "menthol"
+    },
+    {
+      "id": "camphor",
+      "canonicalName": "Camphor",
+      "pubchemCid": 2537,
+      "inchikey": "DSSYKIVIOFKYAU-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "camphor"
+    },
+    {
+      "id": "geranyl-acetate",
+      "canonicalName": "Geranyl acetate",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "alpha-cubebene",
+      "canonicalName": "α-Cubebene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "isoledene",
+      "canonicalName": "Isoledene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "cyclosativene",
+      "canonicalName": "Cyclosativene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "ylangene",
+      "canonicalName": "Ylangene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "alpha-copaene",
+      "canonicalName": "α-Copaene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "sesquithujene",
+      "canonicalName": "Sesquithujene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "beta-isocomene",
+      "canonicalName": "β-Isocomene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "alpha-santalene",
+      "canonicalName": "α-Santalene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "cis-alpha-bergamotene",
+      "canonicalName": "cis-α-Bergamotene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "alpha-cedrene",
+      "canonicalName": "α-Cedrene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "trans-alpha-bergamotene",
+      "canonicalName": "trans-α-Bergamotene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "beta-cedrene",
+      "canonicalName": "β-Cedrene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "alpha-guaiene",
+      "canonicalName": "α-Guaiene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "gamma-elemene",
+      "canonicalName": "γ-Elemene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "aromadendrene",
+      "canonicalName": "Aromadendrene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "beta-santalene",
+      "canonicalName": "β-Santalene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "guaia-6-9-diene",
+      "canonicalName": "Guaia-6,9-diene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "alloaromadendrene",
+      "canonicalName": "Alloaromadendrene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "gamma-curcumene",
+      "canonicalName": "γ-Curcumene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "sesquisabinene",
+      "canonicalName": "Sesquisabinene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "gamma-muurolene",
+      "canonicalName": "γ-Muurolene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "alpha-amorphene",
+      "canonicalName": "α-Amorphene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "aristolochene",
+      "canonicalName": "Aristolochene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "germacrene-d",
+      "canonicalName": "Germacrene D",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "beta-chamigrene",
+      "canonicalName": "β-Chamigrene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "alpha-selinene",
+      "canonicalName": "α-Selinene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "ledene",
+      "canonicalName": "Ledene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "alpha-curcumene",
+      "canonicalName": "α-Curcumene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "beta-selinene",
+      "canonicalName": "β-Selinene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "alpha-farnesene",
+      "canonicalName": "α-Farnesene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "beta-bisabolene",
+      "canonicalName": "β-Bisabolene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "delta-guaiene",
+      "canonicalName": "δ-Guaiene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "beta-curcumene",
+      "canonicalName": "β-Curcumene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "eremophilene",
+      "canonicalName": "Eremophilene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "beta-sesquiphellandrene",
+      "canonicalName": "β-Sesquiphellandrene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "gamma-cadinene",
+      "canonicalName": "γ-Cadinene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "delta-cadinene",
+      "canonicalName": "δ-Cadinene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "trans-alpha-bisabolene",
+      "canonicalName": "trans-α-Bisabolene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "selina-3-7-11-diene",
+      "canonicalName": "Selina-3,7(11)-diene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "globulol",
+      "canonicalName": "Globulol",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "hinesol",
+      "canonicalName": "Hinesol",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "agarospirol",
+      "canonicalName": "Agarospirol",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "bulnesol",
+      "canonicalName": "Bulnesol",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "alpha-thujene",
+      "canonicalName": "α-Thujene",
+      "pubchemCid": 17868,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "pulegone",
+      "canonicalName": "Pulegone",
+      "pubchemCid": 442495,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "pinocarvone",
+      "canonicalName": "Pinocarvone",
+      "pubchemCid": 121719,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "ipsdienol",
+      "canonicalName": "Ipsdienol",
+      "pubchemCid": 92301,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "longifolene",
+      "canonicalName": "Longifolene",
+      "pubchemCid": 1796220,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "calamenene",
+      "canonicalName": "Calamenene",
+      "pubchemCid": 6429077,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "alpha-gurjunene",
+      "canonicalName": "α-Gurjunene",
+      "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "farnesol",
+      "canonicalName": "Farnesol",
+      "pubchemCid": 445070,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "beta-elemene",
+      "canonicalName": "β-Elemene",
+      "pubchemCid": 6918391,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "beta-terpineol",
+      "canonicalName": "β-Terpineol",
+      "pubchemCid": 8748,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "beta-cyclocitral",
+      "canonicalName": "β-Cyclocitral",
+      "pubchemCid": 9895,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "safranal",
+      "canonicalName": "Safranal",
+      "pubchemCid": 61041,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "alpha-pinene-oxide",
+      "canonicalName": "α-Pinene oxide",
+      "pubchemCid": 91508,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "pinocarveol",
+      "canonicalName": "Pinocarveol",
+      "pubchemCid": 102667,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "dihydrocarvone",
+      "canonicalName": "Dihydrocarvone",
+      "pubchemCid": 24473,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "alpha-longipinene",
+      "canonicalName": "α-Longipinene",
+      "pubchemCid": 12311396,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "alpha-cadinene",
+      "canonicalName": "α-Cadinene",
+      "pubchemCid": 96843146,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "epi-alpha-bisabolol",
+      "canonicalName": "epi-α-Bisabolol",
+      "pubchemCid": 1616126,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "caryophyllene-alcohol",
+      "canonicalName": "Caryophyllene alcohol",
+      "pubchemCid": 11746218,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    },
+    {
+      "id": "ledol",
+      "canonicalName": "Ledol",
+      "pubchemCid": 11074994,
+      "inchikey": null,
+      "identityStatus": null,
+      "stereochemistry": null,
+      "isomerGroup": null
+    }
+  ],
+  "normalizationCoverage": {
+    "aliases": 73,
+    "authorities": 39
+  },
+  "requiredNextFields": [
+    "pubchemCid",
+    "inchikey",
+    "identityStatus",
+    "identitySource",
+    "identityVerifiedOn",
+    "analyteResolution"
+  ],
+  "sourceNotes": [
+    {
+      "id": "pubchem-pug-rest",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest",
+      "use": "Retrieve verified CID-linked MolecularFormula, SMILES, InChI, InChIKey and IUPACName properties."
+    },
+    {
+      "id": "pubchem-data-sources",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/docs/data-sources",
+      "use": "Review contributor-level provenance and licensing where source-specific PubChem contributions matter."
+    }
+  ]
+}
