@@ -134,7 +134,7 @@ must(!content.includes('data-issuance-available="true"'), 'Rendered V6 catalog c
 must(content.includes('min-height:44px'), 'Catalog navigation requires touch-sized targets.');
 must(content.includes('@media(max-width:700px)'), 'Catalog mobile breakpoint is missing.');
 must(content.includes('@media(min-width:701px) and (max-width:900px)'), 'Catalog deliberate tablet breakpoint is missing.');
-must(content.includes('Answers remain learner selections until submission.'), 'Catalog must explain post-submit grading behavior.');
+must(content.includes('<strong>After submission</strong>') && /assessment[^<]{0,120}grades|grades[^<]{0,120}assessment/i.test(content), 'Catalog must explain post-submit grading behavior.');
 
 if (validateOnly) { console.log(JSON.stringify({ result: 'success', version: 6, presentation: 'progressive-disclosure', openCourses: open.map(x => x.id) }, null, 2)); process.exit(0); }
 if (!apply) { console.log('Validation passed. Set APPLY_CERTIFICATION_CATALOG_V6=true to publish.'); process.exit(0); }
