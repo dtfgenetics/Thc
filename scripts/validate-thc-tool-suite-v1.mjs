@@ -6,7 +6,7 @@ const tools=[
  ['water-quality-lab','THC Water Quality Lab',['Alkalinity','Ca:Mg mass ratio']],
  ['fertigation-lab','THC Fertigation Lab',['target mg/L','1000*f']],
  ['dryback-lab','THC Irrigation & Dryback Lab',['percentage points/hour','lost/span*100']],
- ['dew-point','THC Dew Point & Condensation Lab',['dew point','17.625']],
+ ['dew-point','THC Dew Point & Condensation Lab',['dew point','17.625','Saved condensation observations','Backup JSON','Restore JSON','Review one zone / room','data-load','data-delete','thc-dew-point-history-v1']],
  ['environment-control','THC Environmental Control Center',['Leaf VPD','.0036']],
  ['ipm-scout','THC IPM Scout',['thc-ipm-scout-v1','Export CSV']],
  ['dry-cure-lab','THC Dry & Cure Lab',['weight loss','dew point']],
