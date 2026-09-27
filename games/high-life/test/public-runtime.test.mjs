@@ -88,7 +88,7 @@ assert.match(visual, /\.hero-art/);
 assert.match(visual, /object-position:66% center/);
 assert.match(visual, /@media\(max-width:650px\)/);
 assert.match(visual, /@media\(max-width:480px\)\{\.dashboard\{grid-template-columns:1fr\}/, 'narrow-phone dashboard must collapse to one column');
-assert.match(visual, /top:calc\(var\(--dtf-global-header-height,74px\) \+ 8px\)/, 'sticky era roadmap must clear the V5 site header');
+assert.match(visual, /top:calc\(var\(--dtf-global-header-height,66px\) \+ 8px\)/, 'sticky era roadmap must clear the V6 mobile site header');
 assert.match(visual, /High Life three-era journey v3/, 'three-era journey presentation must remain active');
 assert.match(visual, /#game-panel\[data-era-state="underground"\]/, 'Underground era must have a dedicated visual state');
 assert.match(visual, /#game-panel\[data-era-state="medical"\]/, 'Medical era must have a dedicated visual state');
