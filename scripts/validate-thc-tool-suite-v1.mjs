@@ -1,12 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import {dewPoint,airChangesPerHour,dliFromPpfd} from '../site/public-route-patch/assets/thc-cultivation-math-v1.mjs';
+import {dewPoint,airChangesPerHour,dliFromPpfd,drybackPercent,fertilizerMassGrams} from '../site/public-route-patch/assets/thc-cultivation-math-v1.mjs';
 
 const root=process.cwd();
 const tools=[
  ['water-quality-lab','THC Water Quality Lab',['Alkalinity','Ca:Mg mass ratio']],
- ['fertigation-lab','THC Fertigation Lab',['target mg/L','1000*f']],
- ['dryback-lab','THC Irrigation & Dryback Lab',['percentage points/hour','lost/span*100']],
+ ['fertigation-lab','THC Fertigation Lab',['target mg/L','fertilizerMassGrams','p2o5PercentToElementalP']],
+ ['dryback-lab','THC Irrigation & Dryback Lab',['percentage points/hour','drybackPercent','ratePerHour']],
  ['dew-point','THC Dew Point & Condensation Lab',['dew point','dewPoint']],
  ['environment-control','THC Environmental Control Center',['Leaf VPD','leafVpd','dliFromPpfd']],
  ['ipm-scout','THC IPM Scout',['thc-ipm-scout-v1','Export CSV']],
@@ -83,10 +83,10 @@ const navIds=new Set((nav.tools||[]).map(x=>x.id));
 for(const [slug] of tools)ok(navIds.has(slug),'public-navigation missing '+slug);
 
 ok(Math.abs(dewPoint(24,65)-17.0)<0.3,'shared dew-point sanity check failed');
-const fert=150*100/(1000*0.10);
-ok(Math.abs(fert-150)<1e-9,'fertigation mass-balance sanity check failed');
-const dryback=(5-4.1)/(5-2)*100;
-ok(Math.abs(dryback-30)<1e-9,'dryback sanity check failed');
+const fert=fertilizerMassGrams(150,100,10);
+ok(Math.abs(fert-150)<1e-9,'shared fertigation mass-balance sanity check failed');
+const dryback=drybackPercent(5,2,4.1);
+ok(Math.abs(dryback-30)<1e-9,'shared dryback sanity check failed');
 ok(Math.abs(airChangesPerHour(300,10*10*8)-22.5)<1e-9,'shared ventilation ACH sanity check failed');
 ok(Math.abs(dliFromPpfd(700,12)-30.24)<1e-9,'shared DLI sanity check failed');
 
