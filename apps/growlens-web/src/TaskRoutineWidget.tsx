@@ -23,6 +23,8 @@ import type {
   TaskRecurrence,
 } from './types';
 
+import { useModalFocusTrap } from './useModalFocusTrap';
+
 const REMINDERS_ENABLED_KEY = 'growlens-task-reminders-enabled-v1';
 const LAST_REMINDER_KEY = 'growlens-task-reminders-last-date-v1';
 const recurrenceOptions: TaskRecurrence[] = ['none', 'daily', 'weekly', 'monthly'];
@@ -60,6 +62,7 @@ function repairCheckedRecurringTasks(state: GrowLensState): GrowLensState {
 
 export default function TaskRoutineWidget() {
   const [open, setOpen] = useState(false);
+  const modalRef = useModalFocusTrap<HTMLElement>(open, () => setOpen(false));
   const [state, setState] = useState<GrowLensState>(() => loadState());
   const [title, setTitle] = useState('');
   const [dueDate, setDueDate] = useState(localDateInput());
@@ -201,7 +204,7 @@ export default function TaskRoutineWidget() {
   return <>
     <button className="routines-launcher" type="button" onClick={() => { refreshState(); setOpen(true); }} aria-label="Open GrowLens routines and reminders"><span aria-hidden="true">↻</span><strong>Routines</strong></button>
     {open ? <div className="routines-overlay" role="presentation" onMouseDown={(event) => { if (event.currentTarget === event.target) setOpen(false); }}>
-      <section className="routines-panel" role="dialog" aria-modal="true" aria-labelledby="routines-title">
+      <section ref={modalRef} className="routines-panel" role="dialog" aria-modal="true" aria-labelledby="routines-title">
         <header className="routines-header"><div><span className="eyebrow">Repeatable cultivation work</span><h2 id="routines-title">Routines & reminders</h2><p>Recurring tasks advance to their next due date when completed instead of creating duplicate records.</p></div><button className="account-close" type="button" onClick={() => setOpen(false)} aria-label="Close routines">×</button></header>
         {message ? <div className="account-message success" role="status">{message}</div> : null}
         <div className="routines-stats"><article><span>Open</span><strong>{openTasks.length}</strong></article><article><span>Overdue</span><strong>{overdueTasks.length}</strong></article><article><span>Recurring</span><strong>{recurringTasks.length}</strong></article><article><span>Reminders</span><strong>{remindersEnabled ? 'On' : 'Off'}</strong></article></div>
