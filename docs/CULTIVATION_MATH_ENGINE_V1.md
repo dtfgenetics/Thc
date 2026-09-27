@@ -7,7 +7,7 @@ Shared deterministic calculation primitives for THC cultivation tools.
 - PPFD ↔ DLI and segmented/variable-light DLI integration.
 - Saturation vapor pressure, air VPD, measured-leaf VPD and dew point.
 - Stock-solution and serial-dilution math.
-- Ventilation air-changes-per-hour calculation.
+- Ventilation air-changes-per-hour calculation and reverse target-ACH airflow sizing.
 - Gallon/liter conversion.
 
 The engine is intentionally pure: no DOM, storage, network, cultivar recommendations or UI state. Tool pages provide interpretation and education separately.

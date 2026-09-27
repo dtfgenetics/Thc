@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import {dewPoint,airChangesPerHour,dliFromPpfd,drybackPercent,fertilizerMassGrams} from '../site/public-route-patch/assets/thc-cultivation-math-v1.mjs';
+import {dewPoint,airChangesPerHour,deliveredCfmForAirChanges,dliFromPpfd,drybackPercent,fertilizerMassGrams} from '../site/public-route-patch/assets/thc-cultivation-math-v1.mjs';
 
 const root=process.cwd();
 const tools=[
@@ -14,11 +14,11 @@ const tools=[
  ['grow-planner','THC Grow Cycle Planner',['Stage calendar','Flowering']],
  ['substrate-calculator','THC Substrate & Container Calculator',['purchase target','gallonsToLiters']],
  ['breeder-pedigree','DTF Breeding & Pedigree Builder',['dtf-breeder-pedigree-v1','parent_a']],
- ['co2-ventilation','THC Ventilation & CO₂ Reference',['air changes/hour','airChangesPerHour']],
+ ['co2-ventilation','THC Ventilation & CO₂ Reference',['air changes/hour','airChangesPerHour','deliveredCfmForAirChanges','cfmToCubicMetersPerHour','cubicMetersPerHourToCfm']],
  ['photoperiod-planner','THC Photoperiod & Lighting Schedule',['calculated DLI','dliFromPpfd']],
  ['plant-growth-tracker','THC Plant Growth Tracker',['nodes/day','heightRate']],
  ['root-zone-temperature','THC Root-Zone Temperature Reference',['Root-air difference','Irrigation solution temperature']],
- ['dilution-calculator','THC Solution Dilution Calculator',['C₁V₁ = C₂V₂','dilutionStockVolume']],
+ ['dilution-calculator','THC Solution Dilution Calculator',['C₁V₁ = C₂V₂','dilutionStockVolume','serialDilution','Stock aliquot']],
  ['unit-converter','THC Cultivation Unit Converter',['Conductivity','celsiusToFahrenheit','cfmToCubicMetersPerHour']]
 ];
 const errors=[];
@@ -88,6 +88,7 @@ ok(Math.abs(fert-150)<1e-9,'shared fertigation mass-balance sanity check failed'
 const dryback=drybackPercent(5,2,4.1);
 ok(Math.abs(dryback-30)<1e-9,'shared dryback sanity check failed');
 ok(Math.abs(airChangesPerHour(300,10*10*8)-22.5)<1e-9,'shared ventilation ACH sanity check failed');
+ok(Math.abs(deliveredCfmForAirChanges(22.5,10*10*8)-300)<1e-9,'shared reverse ventilation sanity check failed');
 ok(Math.abs(dliFromPpfd(700,12)-30.24)<1e-9,'shared DLI sanity check failed');
 
 if(errors.length){console.error('THC Tool Suite v1 validation failed with '+errors.length+' issue(s):');for(const e of errors)console.error(' - '+e);process.exit(1)}
