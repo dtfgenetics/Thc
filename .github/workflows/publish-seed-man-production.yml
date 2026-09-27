@@ -123,7 +123,7 @@ jobs:
           node scripts/apply-sitewide-header.mjs "$release_root"
           node scripts/apply-sitewide-header.mjs "$release_root" --check
           grep -Fq 'data-dtf-shell="header-v6"' "$release_root/index.html"
-          grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' "$release_root/index.html"
+          grep -Fq 'data-dtf-sitewide-header="canonical-five-v1"' "$release_root/index.html"
           grep -Fq 'data-dtf-shell="footer-v6"' "$release_root/index.html"
           grep -Fq 'data-dtf-sitewide-footer="canonical-eight-v1"' "$release_root/index.html"
           grep -Fq 'id="dtf-responsive-layout-v1"' "$release_root/index.html"
@@ -201,7 +201,7 @@ jobs:
           NODE
           grep -Fq '20-Level Campaign' "$tmp/index.html"
           grep -Fq 'data-dtf-shell="header-v6"' "$tmp/index.html"
-          grep -Fq 'data-dtf-sitewide-header="canonical-eight-v1"' "$tmp/index.html"
+          grep -Fq 'data-dtf-sitewide-header="canonical-five-v1"' "$tmp/index.html"
           grep -Fq 'data-dtf-shell="footer-v6"' "$tmp/index.html"
           grep -Fq 'data-dtf-sitewide-footer="canonical-eight-v1"' "$tmp/index.html"
           grep -Fq 'id="dtf-responsive-layout-v1"' "$tmp/index.html"
