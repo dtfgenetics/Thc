@@ -40,6 +40,7 @@ SHARED_EXACT_FILES = (
     "assets/breeder-pedigree-graph-v1.js",
     "assets/vendor/cytoscape-3.34.3.min.js",
     "assets/vendor/cytoscape-3.34.3.LICENSE.txt",
+    "assets/vendor/fuse-7.1.0.min.mjs",
     "assets/vendor/papaparse-5.7.0.min.js",
     "assets/vendor/uplot-1.6.32.min.js",
     "assets/vendor/uplot-1.6.32.min.css",
