@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { canStartRoom, type HighLandRoomState } from '../game/multiplayer/roomState';
 import { maxPlayers } from '../game/systems/playerSystem';
+import { shareOrCopyInvite } from '../game/browserExperience';
 
 type RoomLobbyProps = {
   room: HighLandRoomState;
@@ -12,7 +13,7 @@ type RoomLobbyProps = {
   onAddLocalGuest?: () => void;
 };
 
-type CopyState = 'idle' | 'copied' | 'manual';
+type CopyState = 'idle' | 'shared' | 'copied' | 'manual';
 
 export function RoomLobby({ room, localPlayerId, inviteUrl, onStartGame, onLeave, onCopyInvite, onAddLocalGuest }: RoomLobbyProps) {
   const startAllowed = canStartRoom(room, localPlayerId);
@@ -21,7 +22,7 @@ export function RoomLobby({ room, localPlayerId, inviteUrl, onStartGame, onLeave
   const inviteInputRef = useRef<HTMLInputElement>(null);
   const [copyState, setCopyState] = useState<CopyState>('idle');
 
-  async function copyInvite(): Promise<void> {
+  async function shareInvite(): Promise<void> {
     setCopyState('idle');
 
     if (onCopyInvite) {
@@ -30,11 +31,19 @@ export function RoomLobby({ room, localPlayerId, inviteUrl, onStartGame, onLeave
       return;
     }
 
-    try {
-      if (!navigator?.clipboard?.writeText) throw new Error('Clipboard API unavailable');
-      await navigator.clipboard.writeText(inviteUrl);
+    const result = await shareOrCopyInvite(inviteUrl, {
+      text: `Join my High Land room ${room.code}.`
+    });
+
+    if (result === 'shared') {
+      setCopyState('shared');
+      return;
+    }
+    if (result === 'copied') {
       setCopyState('copied');
-    } catch {
+      return;
+    }
+    if (result === 'manual') {
       inviteInputRef.current?.focus();
       inviteInputRef.current?.select();
       setCopyState('manual');
@@ -60,8 +69,8 @@ export function RoomLobby({ room, localPlayerId, inviteUrl, onStartGame, onLeave
       </label>
 
       <div className="button-row">
-        <button onClick={() => void copyInvite()} type="button">
-          {copyState === 'copied' ? 'Invite Copied' : 'Copy Invite'}
+        <button onClick={() => void shareInvite()} type="button">
+          {copyState === 'shared' ? 'Invite Shared' : copyState === 'copied' ? 'Invite Copied' : 'Share Invite'}
         </button>
         {onAddLocalGuest ? <button disabled={roomIsFull} onClick={onAddLocalGuest} type="button">Add Test Player</button> : null}
         <button className="primary" disabled={!startAllowed} onClick={onStartGame} type="button">Start Game</button>
@@ -69,8 +78,9 @@ export function RoomLobby({ room, localPlayerId, inviteUrl, onStartGame, onLeave
       </div>
 
       <p className="form-note room-copy-status" aria-live="polite">
+        {copyState === 'shared' ? 'Invite opened in your device sharing menu.' : null}
         {copyState === 'copied' ? 'Invite link copied. Send it to the players you want in this room.' : null}
-        {copyState === 'manual' ? 'Automatic copy is unavailable. The invite link is selected above so you can copy it manually.' : null}
+        {copyState === 'manual' ? 'Automatic sharing and copy are unavailable. The invite link is selected above so you can copy it manually.' : null}
       </p>
 
       {roomIsFull ? <p className="form-note">Room is full at {maxPlayers} players.</p> : null}
