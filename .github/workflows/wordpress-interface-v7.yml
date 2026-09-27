@@ -91,7 +91,7 @@ jobs:
                 --header 'Cache-Control: no-cache, no-store, max-age=0' \
                 --header 'Pragma: no-cache' \
                 "$WP_SITE_URL${route}?dtf_interface_v7_verify=${GITHUB_RUN_ID}-${attempt}" --output "$out"
-              if grep -Fq 'dtf-interface-v7-style' "$out" && grep -Fq 'dtf-interface-v7-script' "$out" && grep -Fq 'data-dtf-shell="header-v3"' "$out"; then
+              if grep -Fq 'dtf-interface-v7-style' "$out" && grep -Fq 'dtf-interface-v7-script' "$out" && grep -Eq 'data-dtf-shell="header-v(3|6)"' "$out"; then
                 ok=1
                 break
               fi
@@ -129,6 +129,7 @@ jobs:
 
       - name: Report Interface V7 result
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
