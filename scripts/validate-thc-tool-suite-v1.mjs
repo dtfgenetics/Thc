@@ -1,24 +1,25 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import {dewPoint,airChangesPerHour,dliFromPpfd} from '../site/public-route-patch/assets/thc-cultivation-math-v1.mjs';
 
 const root=process.cwd();
 const tools=[
  ['water-quality-lab','THC Water Quality Lab',['Alkalinity','Ca:Mg mass ratio']],
  ['fertigation-lab','THC Fertigation Lab',['target mg/L','1000*f']],
  ['dryback-lab','THC Irrigation & Dryback Lab',['percentage points/hour','lost/span*100']],
- ['dew-point','THC Dew Point & Condensation Lab',['dew point','17.625']],
- ['environment-control','THC Environmental Control Center',['Leaf VPD','.0036']],
+ ['dew-point','THC Dew Point & Condensation Lab',['dew point','dewPoint']],
+ ['environment-control','THC Environmental Control Center',['Leaf VPD','leafVpd','dliFromPpfd']],
  ['ipm-scout','THC IPM Scout',['thc-ipm-scout-v1','Export CSV']],
  ['dry-cure-lab','THC Dry & Cure Lab',['weight loss','dew point']],
  ['grow-planner','THC Grow Cycle Planner',['Stage calendar','Flowering']],
  ['substrate-calculator','THC Substrate & Container Calculator',['purchase target','3.785411784']],
  ['breeder-pedigree','DTF Breeding & Pedigree Builder',['dtf-breeder-pedigree-v1','parent_a']],
- ['co2-ventilation','THC Ventilation & CO₂ Reference',['air changes/hour','delivered*60/v']],
+ ['co2-ventilation','THC Ventilation & CO₂ Reference',['air changes/hour','airChangesPerHour']],
  ['photoperiod-planner','THC Photoperiod & Lighting Schedule',['calculated DLI','p*h*.0036']],
  ['plant-growth-tracker','THC Plant Growth Tracker',['nodes/day','heightRate']],
  ['root-zone-temperature','THC Root-Zone Temperature Reference',['Root-air difference','Irrigation solution temperature']],
- ['dilution-calculator','THC Solution Dilution Calculator',['C₁V₁ = C₂V₂','b*v/a']],
- ['unit-converter','THC Cultivation Unit Converter',['Conductivity','3.785411784']]
+ ['dilution-calculator','THC Solution Dilution Calculator',['C₁V₁ = C₂V₂','dilutionStockVolume']],
+ ['unit-converter','THC Cultivation Unit Converter',['Conductivity','celsiusToFahrenheit','cfmToCubicMetersPerHour']]
 ];
 const errors=[];
 const ok=(v,m)=>{if(!v)errors.push(m)};
@@ -81,16 +82,13 @@ const nav=JSON.parse(fs.readFileSync(path.join(root,'data/public-navigation.json
 const navIds=new Set((nav.tools||[]).map(x=>x.id));
 for(const [slug] of tools)ok(navIds.has(slug),'public-navigation missing '+slug);
 
-const dew=(t,rh)=>{const a=17.625,b=243.04,g=Math.log(rh/100)+(a*t)/(b+t);return b*g/(a-g)};
-ok(Math.abs(dew(24,65)-17.0)<0.3,'dew-point formula sanity check failed');
+ok(Math.abs(dewPoint(24,65)-17.0)<0.3,'shared dew-point sanity check failed');
 const fert=150*100/(1000*0.10);
 ok(Math.abs(fert-150)<1e-9,'fertigation mass-balance sanity check failed');
 const dryback=(5-4.1)/(5-2)*100;
 ok(Math.abs(dryback-30)<1e-9,'dryback sanity check failed');
-const ach=300*60/(10*10*8);
-ok(Math.abs(ach-22.5)<1e-9,'ventilation ACH sanity check failed');
-const dli=700*12*.0036;
-ok(Math.abs(dli-30.24)<1e-9,'DLI sanity check failed');
+ok(Math.abs(airChangesPerHour(300,10*10*8)-22.5)<1e-9,'shared ventilation ACH sanity check failed');
+ok(Math.abs(dliFromPpfd(700,12)-30.24)<1e-9,'shared DLI sanity check failed');
 
 if(errors.length){console.error('THC Tool Suite v1 validation failed with '+errors.length+' issue(s):');for(const e of errors)console.error(' - '+e);process.exit(1)}
 console.log('THC Tool Suite v1 validation passed: 16 routes, shared shell, hub/registry wiring and core calculation sanity checks are intact.');

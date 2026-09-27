@@ -1,5 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import {leafVpd} from '../site/public-route-patch/assets/thc-cultivation-math-v1.mjs';
+import {calculateVariableLight} from '../site/public-route-patch/assets/thc-light-lab-math-v1.mjs';
 
 const root = process.cwd();
 const files = {
@@ -59,8 +61,7 @@ assert(tds.includes('ecCalibrationStatus') && tds.includes('ecCalibrationStandar
 assert(tds.includes("header:'calibration_standard'"), 'TDS/EC CSV journal must preserve calibration standard identity');
 assert(tds.includes('/assets/vendor/uplot-1.6.32.min.js') && tds.includes('/assets/vendor/papaparse-5.7.0.min.js') && tds.includes('/assets/thc-measurement-journal-v1.js'), 'TDS/EC journal must use shared uPlot/Papa Parse measurement stack');
 
-assert(vpd.includes('0.6108*Math.exp((17.27*t)/(t+237.3))'), 'VPD page missing saturation-vapor-pressure equation');
-assert(vpd.includes('svp(leaf)-svp(air)*(rhValue/100)'), 'VPD page missing leaf-to-air vapor pressure deficit calculation');
+assert(vpd.includes("/assets/thc-cultivation-math-v1.mjs") && vpd.includes('leafVpd'), 'VPD page missing shared leaf-VPD calculation');
 assert(vpd.includes('Relative humidity (%)') && vpd.includes('Leaf offset'), 'VPD page missing required inputs');
 assert(vpd.includes("u==='f'?(v-32)*5/9:v") && vpd.includes("v*9/5+32"), 'VPD page missing Celsius/Fahrenheit conversion support');
 assert(vpd.includes('Logger CSV trend analysis') && vpd.includes('parseTrendCsv') && vpd.includes('drawTrend'), 'VPD page missing local CSV trend-analysis workflow');
@@ -75,8 +76,8 @@ assert(journalRuntime.includes('THCMeasurementJournal') && journalRuntime.includ
 assert(journalRuntime.includes('Browser storage is unavailable') && journalRuntime.includes('limit') && journalRuntime.includes('confirm('), 'shared measurement journal missing storage failure, record cap, or destructive-action safeguards');
 const atlas = fs.readFileSync(path.join(root, 'site/public-route-patch/atlas/index.html'), 'utf8');
 const terpenes = fs.readFileSync(path.join(root, 'site/public-route-patch/terpene-atlas/index.html'), 'utf8');
-assert(ppfd.includes("p*h*0.0036"), 'PPFD page missing PPFD-to-DLI formula');
-assert(ppfd.includes("td/(h*0.0036)"), 'PPFD page missing user-target DLI-to-PPFD formula');
+assert(ppfd.includes('/assets/thc-light-lab-math-v1.mjs') && ppfd.includes('calculateStableLight'), 'PPFD page missing shared stable-light DLI adapter');
+assert(ppfd.includes('light.requiredPpfd'), 'PPFD page missing shared user-target DLI-to-PPFD result');
 assert(ppfd.includes('id="ppfdGrid"') && ppfd.includes('min/avg*100') && ppfd.includes('sd/avg*100'), 'PPFD page missing canopy grid, uniformity, or coefficient-of-variation calculation');
 assert(ppfd.includes('id="rows"') && ppfd.includes('id="cols"') && ppfd.includes('<option>3</option>') && ppfd.includes('<option>9</option>') && ppfd.includes('r*c'), 'PPFD page must preserve configurable 3×3 through 9×9 canopy mapping');
 assert(ppfd.includes('Measurement method') && ppfd.includes('Manufacturer PPFD map') && ppfd.includes('variable sunlight or dimming schedules require integrated measurements over time'), 'PPFD page missing measurement-method or variable-light context');
@@ -96,7 +97,7 @@ assert(ppfd.includes('Export full survey') && ppfd.includes('application/json;ch
 assert(ppfd.includes('µmol·m⁻²·s⁻¹') && ppfd.includes('mol·m⁻²·day⁻¹ DLI'), 'PPFD page missing explicit PPFD/DLI units in primary output');
 assert(ppfd.includes('600, 800 and 1,000') && ppfd.includes('150–700') && ppfd.includes('not universal target bands'), 'PPFD research context must distinguish tested study conditions from universal targets');
 assert(ppfd.includes('fillReading') && ppfd.includes('clearMap') && ppfd.includes("stats.max/stats.min"), 'PPFD page missing map utility controls or spread analysis');
-assert(ppfd.includes('Variable-light DLI schedule') && ppfd.includes("dli+=p*h*0.0036") && ppfd.includes('scheduleStats'), 'PPFD page missing variable-light DLI integration');
+assert(ppfd.includes('Variable-light DLI schedule') && ppfd.includes('calculateVariableLight') && ppfd.includes('scheduleStats'), 'PPFD page missing shared variable-light DLI integration');
 assert(ppfd.includes('Import full survey') && ppfd.includes('jsonFile') && ppfd.includes('formatVersion:2'), 'PPFD page missing full-survey JSON round trip');
 assert(ppfd.includes("thc-light-lab-surveys-v1") && ppfd.includes("thc-light-lab-surveys-v2"), 'PPFD page must preserve legacy saved surveys during schema migration');
 assert(ppfd.includes('Measurement protocol') && ppfd.includes('cosine response') && ppfd.includes('LI-COR DLI logging'), 'PPFD page missing professional measurement protocol guidance');
@@ -123,11 +124,10 @@ assert(ppfd.includes('href="/tools/"'), 'PPFD page missing central All Tools lin
 assert(atlas.includes('href="/tools/"'), 'Plant Atlas missing central All Tools link');
 assert(terpenes.includes('href="/tools/"'), 'Terpene Atlas missing central All Tools link');
 
-const svp = (t) => 0.6108 * Math.exp((17.27 * t) / (t + 237.3));
-const sample = Math.max(0, svp(25) - svp(26) * 0.60);
-const scheduleDli = (300 * 1 * 0.0036) + (700 * 10 * 0.0036) + (300 * 1 * 0.0036);
-assert(sample > 1.0 && sample < 1.3, `VPD formula sanity check failed: ${sample}`);
-assert(Math.abs(scheduleDli - 27.36) < 1e-9, `PPFD variable-light DLI sanity check failed: ${scheduleDli}`);
+const sample = Math.max(0, leafVpd(26,60,25));
+const scheduleDli = calculateVariableLight([{ppfd:300,hours:1},{ppfd:700,hours:10},{ppfd:300,hours:1}]).dli;
+assert(sample > 0.9 && sample < 1.2, `Shared VPD sanity check failed: ${sample}`);
+assert(Math.abs(scheduleDli - 27.36) < 1e-9, `Shared PPFD variable-light DLI sanity check failed: ${scheduleDli}`);
 
 if (errors.length) {
   console.error(`Cultivation reference tool validation failed with ${errors.length} issue(s):`);
