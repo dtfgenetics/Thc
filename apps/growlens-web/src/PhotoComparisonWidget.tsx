@@ -5,6 +5,8 @@ import { growLensRemoteStore } from './remoteStore';
 import { loadState, STATE_SAVED_EVENT } from './storage';
 import type { Observation } from './types';
 
+import { useModalFocusTrap } from './useModalFocusTrap';
+
 type PhotoView = {
   id: string;
   source: string;
@@ -52,6 +54,7 @@ function daysBetween(first: string, second: string): number | null {
 
 export default function PhotoComparisonWidget() {
   const [open, setOpen] = useState(false);
+  const modalRef = useModalFocusTrap<HTMLElement>(open, () => setOpen(false));
   const [state, setState] = useState(() => loadState());
   const [localPhotos, setLocalPhotos] = useState<LocalPhotoAsset[]>([]);
   const [remotePhotos, setRemotePhotos] = useState<RemotePhotoMetadata[]>([]);
@@ -208,7 +211,7 @@ export default function PhotoComparisonWidget() {
         <div className="photo-history-overlay" role="presentation" onMouseDown={(event) => {
           if (event.currentTarget === event.target) closePanel();
         }}>
-          <section className="photo-history-panel" role="dialog" aria-modal="true" aria-labelledby="photo-history-title">
+          <section ref={modalRef} className="photo-history-panel" role="dialog" aria-modal="true" aria-labelledby="photo-history-title">
             <div className="photo-history-header">
               <div>
                 <span className="eyebrow">Visual progress records</span>
