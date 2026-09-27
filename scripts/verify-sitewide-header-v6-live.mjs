@@ -7,12 +7,12 @@ const expected=[
   ['/seeds/','Seeds'],
   ['/learn/','Learn'],
   ['/courses/','Courses'],
-  ['/tools/','Diagnostic'],
+  ['/tools/','Tools'],
   ['/games/','Games'],
   ['/community/','Community'],
   ['/shop/','Shop'],
 ];
-const forbiddenLabels=new Set(['Genetics','Tools']);
+const forbiddenLabels=new Set(['Genetics','Diagnostic']);
 const concurrency=Math.max(1,Math.min(10,Number(process.env.HEADER_AUDIT_CONCURRENCY||5)));
 
 function normalizeHref(value=''){
