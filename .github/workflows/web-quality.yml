@@ -119,14 +119,39 @@ jobs:
           test -x "${{ steps.setup-chrome.outputs.chrome-path }}"
 
       - name: Discover public routes
-        run: node scripts/discover-public-routes.mjs
+        id: discover
+        shell: bash
+        run: |
+          node scripts/discover-public-routes.mjs
+          count="$(node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync(process.env.WEB_QA_ROUTE_FILE,'utf8'));process.stdout.write(String(Number(p.count||0)))")"
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "Discovered HTML route count: $count"
 
       - name: Run Lighthouse CI
+        if: steps.discover.outputs.count != '0'
         shell: bash
         run: |
           mkdir -p "$WEB_QA_ARTIFACT_DIR"
           set -o pipefail
           npx lhci autorun --config=lighthouserc.cjs 2>&1 | tee "$WEB_QA_ARTIFACT_DIR/lhci.log"
+
+      - name: Record live-origin Lighthouse skip
+        if: steps.discover.outputs.count == '0'
+        shell: bash
+        run: |
+          mkdir -p "$WEB_QA_ARTIFACT_DIR"
+          {
+            echo "Live-origin Lighthouse skipped because route discovery returned zero reachable first-party HTML routes."
+            echo "Base URL: $WEB_QA_BASE_URL"
+            echo "This is treated as external reachability evidence, not a page-quality pass."
+          } | tee "$WEB_QA_ARTIFACT_DIR/lighthouse-skipped.txt"
+          {
+            echo '## Lighthouse live-origin audit skipped'
+            echo
+            echo '- Reachable first-party HTML routes discovered: 0'
+            echo '- Result: external reachability unavailable; no Lighthouse quality score asserted'
+            echo '- Deterministic route-health job remains the code-level gate'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload Lighthouse evidence
         if: always()
