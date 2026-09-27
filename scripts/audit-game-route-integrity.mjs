@@ -131,23 +131,42 @@ const runtimeJsonProbes = {
   ],
   'seed-man-platformer': [
     {
-      path: 'data/level-01.json',
+      path: 'data/campaign.json',
       validate: (data) =>
         data?.schemaVersion === 2 &&
-        data?.id === 'sprout-run' &&
-        isPositiveInteger(data?.worldWidth) &&
-        isPositiveInteger(data?.worldHeight) &&
-        Array.isArray(data?.platforms) &&
-        data.platforms.length >= 12 &&
-        Array.isArray(data?.hazards) &&
-        data.hazards.length >= 10 &&
-        Array.isArray(data?.pickups) &&
-        data.pickups.length === data?.requiredPickups &&
-        data.pickups.length >= 8 &&
-        Array.isArray(data?.powerups) &&
-        data.powerups.length >= 1 &&
-        Boolean(data?.spawn) &&
-        Boolean(data?.finish)
+        data?.id === 'seed-man-campaign-20-v1' &&
+        data?.levelCount === 20 &&
+        data?.newLevelCount === 19 &&
+        data?.finalBoss === 'blight-king' &&
+        Array.isArray(data?.worlds) &&
+        data.worlds.length === 5 &&
+        data.worlds.every((world) =>
+          Array.isArray(world?.levels) &&
+          world.levels.length === 4 &&
+          world.levels.every((level) =>
+            level?.status === 'playable' &&
+            level?.dataPath === 'data/levels-20-v1.json' &&
+            Boolean(level?.dataKey)
+          )
+        )
+    },
+    {
+      path: 'data/levels-20-v1.json',
+      validate: (data) =>
+        data?.schemaVersion === 1 &&
+        data?.id === 'seed-man-levels-20-v1' &&
+        Array.isArray(data?.levels) &&
+        data.levels.length === 20 &&
+        data.levels.every((level, index) =>
+          Boolean(level?.id) &&
+          level?.order === index + 1 &&
+          Boolean(level?.world) &&
+          Boolean(level?.background)
+        ) &&
+        data.levels[0]?.layout?.mode === 'authored' &&
+        Array.isArray(data.levels[0]?.layout?.platforms) &&
+        data.levels[0].layout.platforms.length >= 12 &&
+        data.levels.at(-1)?.boss === 'blight-king'
     }
   ],
   'strain-showdown': [

@@ -45,7 +45,7 @@ function buildPlan(registry) {
       kind: 'tool',
       id: String(item.id || ''),
       route: normalizeRoute(item.route),
-      marker: markerFromTitle(item.title),
+      marker: String(item.verifyMarker || '').trim() || markerFromTitle(item.title),
       title: String(item.title || ''),
     }));
 
@@ -55,7 +55,7 @@ function buildPlan(registry) {
       kind: item.status === 'multiplayer' ? 'multiplayer' : 'game',
       id: String(item.id || ''),
       route: normalizeRoute(item.route),
-      marker: markerFromTitle(item.title),
+      marker: String(item.verifyMarker || '').trim() || markerFromTitle(item.title),
       title: String(item.title || ''),
     }));
 
