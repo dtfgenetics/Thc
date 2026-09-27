@@ -66,7 +66,7 @@
       const orientation=placement.horizontal?'Horizontal':'Vertical';
       copy.querySelector('span').textContent=complete?'STASH READY':'STASH SETUP';
       copy.querySelector('strong').textContent=complete?'All five formations placed':`${spec?.name||'Formation'} · ${orientation}`;
-      copy.querySelector('small').textContent=complete?'Review the grid, then lock your stash.':`${placedIds.size}/5 placed · tap a cell to position this ${spec?.size||0}-cell formation.`;
+      copy.querySelector('small').textContent=complete?'Review the grid, then lock your stash.':`${placedIds.size}/5 placed · tap a cell or drag the selected formation onto the grid.`;
     }
     const progress=panel.querySelector('.burn-placement-progress');
     if(progress&&typeof FORMATIONS!=='undefined'){
@@ -110,6 +110,12 @@
       return;
     }
     const spec=selectedSpec();
+    document.querySelectorAll('.plant-pick[data-plant]').forEach(button=>{
+      const selected=button.dataset.plant===placement.selected;
+      button.setAttribute('aria-pressed',String(selected));
+      const item=typeof FORMATIONS!=='undefined'?FORMATIONS.find(entry=>entry.id===button.dataset.plant):null;
+      if(item)button.setAttribute('aria-label',`${item.name}, ${item.size} cells${selected?', selected':''}. Tap to select or drag onto the stash grid.`);
+    });
     for(const cell of board.querySelectorAll('.cell[data-place]')){
       const [row,col]=cell.dataset.place.split(',').map(Number);
       const status=proposalStatus(row,col);
