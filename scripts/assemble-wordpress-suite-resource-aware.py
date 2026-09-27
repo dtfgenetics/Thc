@@ -46,8 +46,8 @@ TOOL_SUITE_REQUIRED = [f'{slug}/index.html' for slug in TOOL_SUITE_SLUGS] + [
     'assets/thc-tool-suite-v1.css',
     'assets/thc-tool-suite-v1.js',
 ]
-TOOL_SUITE_PREFIXES = [f'{slug}/' for slug in TOOL_SUITE_SLUGS]
-TOOL_SUITE_EXACT_FILES = ['assets/thc-tool-suite-v1.css', 'assets/thc-tool-suite-v1.js']
+TOOL_SUITE_SHARED_ASSET_PREFIXES = ['assets/thc-tool-suite-v1.css', 'assets/thc-tool-suite-v1.js']
+TOOL_SUITE_PREFIXES = [f'{slug}/' for slug in TOOL_SUITE_SLUGS] + TOOL_SUITE_SHARED_ASSET_PREFIXES
 REFERENCE_LIVE_CHECKS = [
     ('/atlas/', 'THC Living Plant Atlas'),
     ('/terpene-atlas/', 'THC Terpene Atlas'),
@@ -97,7 +97,6 @@ def add_atlas_scope(text: str) -> str:
     text = extend_php_array(text, 'targets', [*ATLAS_TARGETS, *TOOL_SUITE_TARGETS])
     text = extend_php_array(text, 'required', [*ATLAS_REQUIRED, *TOOL_SUITE_REQUIRED])
     text = extend_php_array(text, 'prefixes', [*ATLAS_PREFIXES, *TOOL_SUITE_PREFIXES])
-    text = extend_php_array(text, 'exact_files', TOOL_SUITE_EXACT_FILES)
 
     live_match = re.search(r'(?P<head>const liveChecks = \[\n)(?P<body>.*?)(?P<tail>\n\];)', text, re.S)
     if not live_match:
@@ -121,8 +120,7 @@ with tempfile.TemporaryDirectory(prefix='dtf-suite-resource-aware-') as temp:
 
     for marker in [
         *ATLAS_TARGETS, *ATLAS_REQUIRED, *ATLAS_PREFIXES,
-        *TOOL_SUITE_TARGETS, *TOOL_SUITE_REQUIRED, *TOOL_SUITE_PREFIXES,
-        *TOOL_SUITE_EXACT_FILES,
+        *TOOL_SUITE_TARGETS, *TOOL_SUITE_REQUIRED, *TOOL_SUITE_PREFIXES
     ]:
         if repr(marker) not in transformed:
             raise SystemExit(f'Plant/Terpene Atlas/reference-tool scope marker disappeared from resource-aware bridge: {marker}')
@@ -140,8 +138,7 @@ print(json.dumps({
     'atlasScope': {
         'targets': [*ATLAS_TARGETS, *TOOL_SUITE_TARGETS],
         'required': [*ATLAS_REQUIRED, *TOOL_SUITE_REQUIRED],
-        'prefixes': [*ATLAS_PREFIXES, *TOOL_SUITE_PREFIXES],
-        'exactFiles': TOOL_SUITE_EXACT_FILES,
+        'prefixes': [*ATLAS_PREFIXES, *TOOL_SUITE_PREFIXES]
     },
     'output': str(output),
 }, indent=2))
