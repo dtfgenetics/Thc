@@ -9,6 +9,12 @@ dns.setDefaultResultOrder('ipv4first');
 const site = String(process.env.SITE || 'https://dtfseeds.com').replace(/\/+$/, '');
 const reportPath = String(process.env.DTF_GROW_DOC_REPORT || '').trim();
 const route = '/thc-grow-doc/';
+const revisionRoute = '/thc-grow-doc/source-revision.txt';
+const localRevisionPath = path.join(process.cwd(), 'site/public-route-patch/assets/release-source-revisions/thc-grow-doc.txt');
+const localRevision = fs.existsSync(localRevisionPath)
+  ? Object.fromEntries(fs.readFileSync(localRevisionPath, 'utf8').trim().split(/\r?\n/).map(line => line.split('=', 2)))
+  : {};
+const expectedSourceSha = String(process.env.EXPECTED_SOURCE_SHA || localRevision.commit || '').trim();
 const markers = ['Diagnose', 'Plant atlas', 'Issue library', 'Reference images'];
 const attempts = 4;
 
@@ -86,6 +92,17 @@ requireCondition(cssResponse.ok, `Grow Doc stylesheet entry returned HTTP ${cssR
 requireCondition(Buffer.byteLength(js) > 250000, `Grow Doc JavaScript bundle is unexpectedly small (${Buffer.byteLength(js)} bytes).`);
 requireCondition(Buffer.byteLength(css) > 15000, `Grow Doc stylesheet bundle is unexpectedly small (${Buffer.byteLength(css)} bytes).`);
 
+requireCondition(/^[0-9a-f]{40}$/.test(expectedSourceSha), 'Expected Grow Doc source SHA is missing or invalid.');
+const revisionUrl = new URL(revisionRoute, site);
+revisionUrl.searchParams.set('dtf_grow_doc_identity', token);
+const revisionResponse = await fetchStable(revisionUrl);
+const revisionText = await revisionResponse.text();
+requireCondition(revisionResponse.ok, `Grow Doc source revision returned HTTP ${revisionResponse.status}`);
+const liveRevision = Object.fromEntries(revisionText.trim().split(/\r?\n/).map(line => line.split('=', 2)));
+requireCondition(liveRevision.repository === 'dtfgenetics/Thc-dataset', `Unexpected live Grow Doc source repository: ${liveRevision.repository || '(missing)'}`);
+requireCondition(liveRevision.route === route, `Unexpected live Grow Doc source route: ${liveRevision.route || '(missing)'}`);
+requireCondition(liveRevision.commit === expectedSourceSha, `Grow Doc live revision ${liveRevision.commit || '(missing)'} does not match expected ${expectedSourceSha}`);
+
 const missingMarkers = markers.filter(marker => !js.includes(marker));
 requireCondition(missingMarkers.length === 0, `Grow Doc React bundle is missing application markers: ${missingMarkers.join(', ')}`);
 
@@ -103,6 +120,14 @@ const report = {
   assets: {
     javascript: { path: jsMatch[1], status: jsResponse.status, bytes: Buffer.byteLength(js) },
     stylesheet: { path: cssMatch[1], status: cssResponse.status, bytes: Buffer.byteLength(css) },
+  },
+  sourceRevision: {
+    path: revisionRoute,
+    status: revisionResponse.status,
+    repository: liveRevision.repository,
+    commit: liveRevision.commit,
+    expectedCommit: expectedSourceSha,
+    exactMatch: liveRevision.commit === expectedSourceSha,
   },
   markers,
   ok: true,
