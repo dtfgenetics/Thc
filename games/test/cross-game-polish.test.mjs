@@ -105,7 +105,13 @@ includes('site/public-route-patch/games/dtf-route.css', [
   'overflow-x:auto',
   'overscroll-behavior-x:contain',
   'scrollbar-width:none',
-  'min-height:44px',
+  '-webkit-overflow-scrolling:touch',
+  'scroll-snap-type:x proximity',
+  'min-height:48px',
+  'scroll-snap-align:start',
+  'touch-action:manipulation',
+  '.button,.card-action{min-height:48px',
+  '@media(hover:none),(pointer:coarse)',
   '.game-copy{min-width:0;overflow-wrap:anywhere}',
   'img,svg,canvas,video{max-width:100%;height:auto}'
 ]);
