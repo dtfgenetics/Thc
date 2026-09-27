@@ -3,7 +3,7 @@ import {dliFromPpfd,ppfdFromDli,integrateDli,leafVpd,serialDilution,airChangesPe
 
 assert.equal(dliFromPpfd(0,18),0);
 assert.equal(ppfdFromDli(0,18),0);
-assert.equal(integrateDli([{ppfd:500,hours:0},{ppfd:500,hours:12}]),21.6);
+assert.ok(Math.abs(integrateDli([{ppfd:500,hours:0},{ppfd:500,hours:12}])-21.6)<=1e-9);
 assert.ok(leafVpd(25,100,25)===0);
 assert.deepEqual(serialDilution({initialConcentration:10,targetConcentration:10,stepFactor:10,finalVolume:100}),[]);
 assert.equal(airChangesPerHour(0,800),0);
