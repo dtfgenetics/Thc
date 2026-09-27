@@ -32,3 +32,17 @@ Used by cultivation CSV import workflows for standards-compliant parsing of head
 Copyright (c) 2015 Matthew Holt
 
 Licensed under the MIT License. The copyright and permission notice from the upstream project are preserved in the vendored distribution.
+
+
+## howler.js 2.2.4
+
+Repository: https://github.com/goldfire/howler.js
+
+Vendored browser core:
+- `apps/high-land-web/public/vendor/howler.core-2.2.4.min.js`
+
+Used by High Land for file-backed music and sound effects, mobile/browser audio compatibility, looping, pooled overlapping effects, mute control, and playback/load error handling.
+
+Copyright (c) 2013-2020 James Simpson and GoldFire Studios, Inc.
+
+Licensed under the MIT License. The upstream copyright and permission notice are preserved in the vendored distribution.
