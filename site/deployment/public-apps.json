@@ -102,7 +102,7 @@
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/ppfd-chart/index.html",
-      "notes": "Interactive PPFD↔DLI calculator with 3x3 canopy mapping, min/mean/max and min-to-mean uniformity interpretation."
+      "notes": "Interactive THC Light Lab with PPFD↔DLI calculations, variable-light integration, configurable 3×3 through 9×9 canopy mapping, saved-survey comparison, distribution metrics, edge/center analysis, CSV/JSON round-trip, and measurement-protocol guidance."
     },
     {
       "id": "tds-meter",
@@ -125,6 +125,182 @@
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/ph-meter/index.html",
       "notes": "Interactive reference page for interpreting calibrated pH readings; browser does not directly measure pH."
+    },
+    {
+      "id": "unit-converter",
+      "title": "THC Cultivation Unit Converter",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/unit-converter",
+      "route": "/unit-converter/",
+      "runtime": "static",
+      "status": "in-development",
+      "build": "test -s site/public-route-patch/unit-converter/index.html",
+      "notes": "THC Tool Suite v1 shared-shell implementation; production promotion requires deterministic suite validation and post-deploy live verification."
+    },
+    {
+      "id": "dilution-calculator",
+      "title": "THC Solution Dilution Calculator",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/dilution-calculator",
+      "route": "/dilution-calculator/",
+      "runtime": "static",
+      "status": "in-development",
+      "build": "test -s site/public-route-patch/dilution-calculator/index.html",
+      "notes": "THC Tool Suite v1 shared-shell implementation; production promotion requires deterministic suite validation and post-deploy live verification."
+    },
+    {
+      "id": "root-zone-temperature",
+      "title": "THC Root-Zone Temperature Reference",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/root-zone-temperature",
+      "route": "/root-zone-temperature/",
+      "runtime": "static",
+      "status": "in-development",
+      "build": "test -s site/public-route-patch/root-zone-temperature/index.html",
+      "notes": "THC Tool Suite v1 shared-shell implementation; production promotion requires deterministic suite validation and post-deploy live verification."
+    },
+    {
+      "id": "plant-growth-tracker",
+      "title": "THC Plant Growth Tracker",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/plant-growth-tracker",
+      "route": "/plant-growth-tracker/",
+      "runtime": "static",
+      "status": "in-development",
+      "build": "test -s site/public-route-patch/plant-growth-tracker/index.html",
+      "notes": "THC Tool Suite v1 shared-shell implementation; production promotion requires deterministic suite validation and post-deploy live verification."
+    },
+    {
+      "id": "photoperiod-planner",
+      "title": "THC Photoperiod & Lighting Schedule",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/photoperiod-planner",
+      "route": "/photoperiod-planner/",
+      "runtime": "static",
+      "status": "in-development",
+      "build": "test -s site/public-route-patch/photoperiod-planner/index.html",
+      "notes": "THC Tool Suite v1 shared-shell implementation; production promotion requires deterministic suite validation and post-deploy live verification."
+    },
+    {
+      "id": "co2-ventilation",
+      "title": "THC Ventilation & CO₂ Reference",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/co2-ventilation",
+      "route": "/co2-ventilation/",
+      "runtime": "static",
+      "status": "in-development",
+      "build": "test -s site/public-route-patch/co2-ventilation/index.html",
+      "notes": "THC Tool Suite v1 shared-shell implementation; production promotion requires deterministic suite validation and post-deploy live verification."
+    },
+    {
+      "id": "breeder-pedigree",
+      "title": "DTF Breeding & Pedigree Builder",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/breeder-pedigree",
+      "route": "/breeder-pedigree/",
+      "runtime": "static",
+      "status": "in-development",
+      "build": "test -s site/public-route-patch/breeder-pedigree/index.html",
+      "notes": "THC Tool Suite v1 shared-shell implementation; production promotion requires deterministic suite validation and post-deploy live verification."
+    },
+    {
+      "id": "substrate-calculator",
+      "title": "THC Substrate & Container Calculator",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/substrate-calculator",
+      "route": "/substrate-calculator/",
+      "runtime": "static",
+      "status": "in-development",
+      "build": "test -s site/public-route-patch/substrate-calculator/index.html",
+      "notes": "THC Tool Suite v1 shared-shell implementation; production promotion requires deterministic suite validation and post-deploy live verification."
+    },
+    {
+      "id": "grow-planner",
+      "title": "THC Grow Cycle Planner",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/grow-planner",
+      "route": "/grow-planner/",
+      "runtime": "static",
+      "status": "in-development",
+      "build": "test -s site/public-route-patch/grow-planner/index.html",
+      "notes": "THC Tool Suite v1 shared-shell implementation; production promotion requires deterministic suite validation and post-deploy live verification."
+    },
+    {
+      "id": "dry-cure-lab",
+      "title": "THC Dry & Cure Lab",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/dry-cure-lab",
+      "route": "/dry-cure-lab/",
+      "runtime": "static",
+      "status": "in-development",
+      "build": "test -s site/public-route-patch/dry-cure-lab/index.html",
+      "notes": "THC Tool Suite v1 shared-shell implementation; production promotion requires deterministic suite validation and post-deploy live verification."
+    },
+    {
+      "id": "ipm-scout",
+      "title": "THC IPM Scout",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/ipm-scout",
+      "route": "/ipm-scout/",
+      "runtime": "static",
+      "status": "in-development",
+      "build": "test -s site/public-route-patch/ipm-scout/index.html",
+      "notes": "THC Tool Suite v1 shared-shell implementation; production promotion requires deterministic suite validation and post-deploy live verification."
+    },
+    {
+      "id": "environment-control",
+      "title": "THC Environmental Control Center",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/environment-control",
+      "route": "/environment-control/",
+      "runtime": "static",
+      "status": "in-development",
+      "build": "test -s site/public-route-patch/environment-control/index.html",
+      "notes": "THC Tool Suite v1 shared-shell implementation; production promotion requires deterministic suite validation and post-deploy live verification."
+    },
+    {
+      "id": "dew-point",
+      "title": "THC Dew Point & Condensation Lab",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/dew-point",
+      "route": "/dew-point/",
+      "runtime": "static",
+      "status": "in-development",
+      "build": "test -s site/public-route-patch/dew-point/index.html",
+      "notes": "THC Tool Suite v1 shared-shell implementation; production promotion requires deterministic suite validation and post-deploy live verification."
+    },
+    {
+      "id": "dryback-lab",
+      "title": "THC Irrigation & Dryback Lab",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/dryback-lab",
+      "route": "/dryback-lab/",
+      "runtime": "static",
+      "status": "in-development",
+      "build": "test -s site/public-route-patch/dryback-lab/index.html",
+      "notes": "THC Tool Suite v1 shared-shell implementation; production promotion requires deterministic suite validation and post-deploy live verification."
+    },
+    {
+      "id": "fertigation-lab",
+      "title": "THC Fertigation Lab",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/fertigation-lab",
+      "route": "/fertigation-lab/",
+      "runtime": "static",
+      "status": "in-development",
+      "build": "test -s site/public-route-patch/fertigation-lab/index.html",
+      "notes": "THC Tool Suite v1 shared-shell implementation; production promotion requires deterministic suite validation and post-deploy live verification."
+    },
+    {
+      "id": "water-quality-lab",
+      "title": "THC Water Quality Lab",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/water-quality-lab",
+      "route": "/water-quality-lab/",
+      "runtime": "static",
+      "status": "in-development",
+      "build": "test -s site/public-route-patch/water-quality-lab/index.html",
+      "notes": "THC Tool Suite v1 shared-shell implementation; production promotion requires deterministic suite validation and post-deploy live verification."
     },
     {
       "id": "weedopolis",
