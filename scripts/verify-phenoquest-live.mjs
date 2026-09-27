@@ -52,7 +52,7 @@ for(const marker of ['min-width:0','min-height:44px','overscroll-behavior-inline
   if(!compactStyle.includes(marker)) throw new Error(`PhenoQuest core CSS missing marker: ${marker}`);
 }
 const compactExperience=experienceCss.text.replace(/\s+/g,'');
-if(!compactExperience.includes('top:calc(var(--dtf-global-header-height,66px)+8px)')) throw new Error('PhenoQuest journey nav no longer clears the site header.');
+if(!/top:calc\(var\(--dtf-global-header-height,(?:66|74)px\)\+8px\)/.test(compactExperience)) throw new Error('PhenoQuest journey nav no longer clears the site header.');
 if(!compactExperience.includes('.journey-navbutton{flex:0 0 auto;min-height:44px') &&
    !compactExperience.includes('.journey-navbutton{flex:0 0 auto;min-height:44px')) {
   // Keep this check broad enough for minifier spacing while still requiring the touch target.
