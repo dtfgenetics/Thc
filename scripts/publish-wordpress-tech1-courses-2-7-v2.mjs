@@ -62,14 +62,28 @@ async function loadCourse(entry) {
   const release = await fetchJson(`content/public-releases/${entry.releaseId}.json`);
   must(release.courseId === entry.id && release.publicationState === 'published', `${entry.id}: public release missing or not published.`);
   must(release.publicationBoundary?.credentialExam === 'restricted', `${entry.id}: credential exam must remain restricted.`);
-  must(Array.isArray(release.publicScope?.modules) && release.publicScope.modules.length === 1, `${entry.id}: expected one dedicated public module.`);
-  const module = await fetchJson(`content/modules/${release.publicScope.modules[0]}.json`);
+  must(Array.isArray(release.publicScope?.modules) && release.publicScope.modules.length >= 1, `${entry.id}: expected at least one authorized public module.`);
+  if (Number.isInteger(release.publicScope.releasedModuleCount)) {
+    must(release.publicScope.modules.length === release.publicScope.releasedModuleCount, `${entry.id}: released module count does not match public module list.`);
+  }
+  const modules = [];
   const lessons = [];
-  for (const lessonId of module.lessons || []) {
-    must(release.publicScope.studentSources.includes(`content/lessons/${lessonId}.json`), `${entry.id}: ${lessonId} not authorized by public release.`);
-    const lesson = await fetchJson(`content/lessons/${lessonId}.json`);
-    must(lesson.id === lessonId && lesson.content?.overview && lesson.content?.summary, `${lessonId}: incomplete learner lesson source.`);
-    lessons.push(lesson);
+  const lessonIds = new Set();
+  for (const moduleId of release.publicScope.modules) {
+    const module = await fetchJson(`content/modules/${moduleId}.json`);
+    must(module.id === moduleId, `${entry.id}: module identity mismatch for ${moduleId}.`);
+    modules.push(module);
+    for (const lessonId of module.lessons || []) {
+      must(!lessonIds.has(lessonId), `${entry.id}: duplicate public lesson ${lessonId} across authorized modules.`);
+      must(release.publicScope.studentSources.includes(`content/lessons/${lessonId}.json`), `${entry.id}: ${lessonId} not authorized by public release.`);
+      const lesson = await fetchJson(`content/lessons/${lessonId}.json`);
+      must(lesson.id === lessonId && lesson.content?.overview && lesson.content?.summary, `${lessonId}: incomplete learner lesson source.`);
+      lessonIds.add(lessonId);
+      lessons.push(lesson);
+    }
+  }
+  if (Number.isInteger(release.publicScope.releasedLessonCount)) {
+    must(lessons.length === release.publicScope.releasedLessonCount, `${entry.id}: released lesson count ${lessons.length} does not match manifest ${release.publicScope.releasedLessonCount}.`);
   }
   const assessments = [];
   let itemCount = 0;
@@ -87,7 +101,7 @@ async function loadCourse(entry) {
     assessments.push({ ...assessment, items });
   }
   must(itemCount === release.publicScope.publicCourseItems, `${entry.id}: public item count ${itemCount} differs from release ${release.publicScope.publicCourseItems}.`);
-  return { ...entry, course, release, module, lessons, assessments, itemCount, route: `${config.program.route}${entry.slug}/` };
+  return { ...entry, course, release, modules, lessons, assessments, itemCount, route: `${config.program.route}${entry.slug}/` };
 }
 
 const css = `<style id="dtf-tech1-public-courses-v2">
