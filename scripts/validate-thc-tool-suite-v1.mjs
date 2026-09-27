@@ -28,7 +28,7 @@ const js=path.join(root,'site/public-route-patch/assets/thc-tool-suite-v1.js');
 ok(fs.existsSync(css)&&fs.statSync(css).size>3000,'shared tool-suite CSS missing or too small');
 ok(fs.existsSync(js)&&fs.statSync(js).size>300,'shared tool-suite JS missing or too small');
 const sharedJs=fs.readFileSync(js,'utf8');
-for(const token of ['thc-cultivation-context-v1','thc-growlens-state-v1','addEnvironmentReading','addIrrigationRecord','addObservation','addDiaryEntry','addFeedingRecord','addReservoirRecord','addHarvestRecord','addTasks']){
+for(const token of ['thc-cultivation-context-v1','thc-growlens-state-v1','addEnvironmentReading','addIrrigationRecord','addObservation','addDiaryEntry','addFeedingRecord','addReservoirRecord','addHarvestRecord','addCycle','addTasks']){
  ok(sharedJs.includes(token),'shared tool-suite JS missing integration token: '+token);
 }
 for(const [slug,title,tokens] of tools){
@@ -57,7 +57,7 @@ for(const [slug,tokens] of [
  ['water-quality-lab',['thc-water-quality-history-v1','Change from prior report']],
  ['fertigation-lab',['recipeMatrix','Target vs achieved recipe worksheet']],
  ['dry-cure-lab',['thc-dry-cure-checkpoints-v1','Save harvest to GrowLens']],
- ['breeder-pedigree',['Offspring / line name','Population size','Selected plant IDs','Relationship explorer','Direct descendants']],['grow-planner',['Create GrowLens stage tasks','THC.growlens.addTasks']],['environment-control',['Recent VPD trend','history-chart']],['dryback-lab',['Recent dryback trend','history-chart']],['root-zone-temperature',['thc-root-zone-history-v1','Root-zone trend']],['plant-growth-tracker',['thc-plant-growth-history-v1','Growth-rate trend']],['photoperiod-planner',['thc-photoperiod-schedules-v1','Compare saved schedules']],['substrate-calculator',['thc-substrate-plans-v1','Purchase overage','Plan name','Review one zone / room','Backup JSON','Restore JSON','data-load','data-delete','thc-substrate-plans']],['co2-ventilation',['Delivered airflow factor','target ACH']],['dilution-calculator',['Serial dilution steps','Diluent amount']],['unit-converter',['Airflow','m³/h','Area','Mass']]
+ ['breeder-pedigree',['Offspring / line name','Population size','Selected plant IDs','Relationship explorer','Direct descendants']],['grow-planner',['Create GrowLens stage tasks','THC.growlens.addTasks','Create GrowLens cycle','THC.growlens.addCycle','Saved grow plans','Backup JSON','Restore JSON','data-load','data-delete']],['environment-control',['Recent VPD trend','history-chart']],['dryback-lab',['Recent dryback trend','history-chart']],['root-zone-temperature',['thc-root-zone-history-v1','Root-zone trend']],['plant-growth-tracker',['thc-plant-growth-history-v1','Growth-rate trend']],['photoperiod-planner',['thc-photoperiod-schedules-v1','Compare saved schedules']],['substrate-calculator',['thc-substrate-plans-v1','Purchase overage','Plan name','Review one zone / room','Backup JSON','Restore JSON','data-load','data-delete','thc-substrate-plans']],['co2-ventilation',['Delivered airflow factor','target ACH']],['dilution-calculator',['Serial dilution steps','Diluent amount']],['unit-converter',['Airflow','m³/h','Area','Mass']]
 ]){
  const h=fs.readFileSync(path.join(root,'site/public-route-patch',slug,'index.html'),'utf8');
  for(const token of tokens) ok(h.includes(token),slug+' missing upgraded workflow token: '+token);
