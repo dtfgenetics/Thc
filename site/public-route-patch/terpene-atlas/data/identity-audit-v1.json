@@ -6,221 +6,273 @@
   "counts": {
     "compounds": 120,
     "formulasVerified": 120,
-    "pubchemCidResolved": 20,
-    "pubchemCidMissing": 100,
-    "stereochemistryResolved": 2,
-    "stereochemistryMissingOrUnspecified": 118,
-    "isomerGroupResolved": 3,
-    "isomerGroupMissing": 117
+    "pubchemCidResolved": 35,
+    "pubchemCidMissing": 85,
+    "stereochemistryResolved": 5,
+    "stereochemistryMissingOrUnspecified": 115,
+    "isomerGroupResolved": 14,
+    "isomerGroupMissing": 106
   },
   "highPriorityReview": [
     {
       "id": "d-limonene",
       "canonicalName": "Limonene",
-      "pubchemCid": null,
-      "stereochemistry": null,
+      "pubchemCid": 440917,
+      "inchikey": "XMGQYMWWDOXHJM-JTQLQIEISA-N",
+      "identityStatus": "verified",
+      "stereochemistry": "(R) / D / (+)-limonene",
       "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "reason": "Identity verified; retain source-reported resolution during imports."
     },
     {
       "id": "alpha-pinene",
       "canonicalName": "α-Pinene",
-      "pubchemCid": null,
-      "stereochemistry": null,
-      "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "pubchemCid": 6654,
+      "inchikey": "GRWFGVWFFZKLTI-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "alpha-pinene",
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     },
     {
       "id": "beta-pinene",
       "canonicalName": "β-Pinene",
-      "pubchemCid": null,
-      "stereochemistry": null,
-      "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "pubchemCid": 14896,
+      "inchikey": "WTARULDDTDQWMU-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "beta-pinene",
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     },
     {
       "id": "linalool",
       "canonicalName": "Linalool",
-      "pubchemCid": null,
-      "stereochemistry": null,
-      "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "pubchemCid": 6549,
+      "inchikey": "CDOSHBSSFJOMGT-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "linalool",
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     },
     {
       "id": "beta-caryophyllene",
       "canonicalName": "β-Caryophyllene",
-      "pubchemCid": null,
-      "stereochemistry": null,
-      "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "pubchemCid": 5281515,
+      "inchikey": "NPNUFJAVOOONJE-GFUGXAQUSA-N",
+      "identityStatus": "verified",
+      "stereochemistry": "(-)-trans / (E)-β-caryophyllene",
+      "isomerGroup": "caryophyllene",
+      "reason": "Identity verified; retain source-reported resolution during imports."
     },
     {
       "id": "alpha-humulene",
       "canonicalName": "α-Humulene",
       "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
       "stereochemistry": null,
       "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     },
     {
       "id": "alpha-bisabolol",
       "canonicalName": "α-Bisabolol",
-      "pubchemCid": null,
-      "stereochemistry": null,
-      "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "pubchemCid": 10586,
+      "inchikey": "RGZSQWQPBWRIAQ-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified stereochemistry",
+      "isomerGroup": "alpha-bisabolol",
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     },
     {
       "id": "ocimene",
       "canonicalName": "Ocimene",
-      "pubchemCid": null,
+      "pubchemCid": 18756,
+      "inchikey": "IHPKGUQCSIINRJ-UHFFFAOYSA-N",
+      "identityStatus": "parent-concept",
       "stereochemistry": "unspecified",
       "isomerGroup": "ocimene",
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     },
     {
       "id": "nerolidol",
       "canonicalName": "Nerolidol",
       "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
       "stereochemistry": null,
       "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     },
     {
       "id": "alpha-terpinene",
       "canonicalName": "α-Terpinene",
       "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
       "stereochemistry": null,
       "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     },
     {
       "id": "gamma-terpinene",
       "canonicalName": "γ-Terpinene",
       "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
       "stereochemistry": null,
       "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     },
     {
       "id": "alpha-terpineol",
       "canonicalName": "α-Terpineol",
-      "pubchemCid": null,
-      "stereochemistry": null,
-      "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "pubchemCid": 17100,
+      "inchikey": "WUOACPNHFRMFPN-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "alpha-terpineol",
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     },
     {
       "id": "borneol",
       "canonicalName": "Borneol",
-      "pubchemCid": null,
-      "stereochemistry": null,
-      "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "pubchemCid": 64685,
+      "inchikey": "DTGKSKDOIYIVQL-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified stereochemistry",
+      "isomerGroup": "borneol",
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     },
     {
       "id": "citronellol",
       "canonicalName": "Citronellol",
       "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
       "stereochemistry": null,
       "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     },
     {
       "id": "linalool-oxide",
       "canonicalName": "Linalool oxide",
       "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
       "stereochemistry": null,
       "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     },
     {
       "id": "caryophyllene-oxide",
       "canonicalName": "Caryophyllene oxide",
       "pubchemCid": null,
+      "inchikey": null,
+      "identityStatus": null,
       "stereochemistry": null,
       "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     },
     {
       "id": "fenchol",
       "canonicalName": "Fenchol",
-      "pubchemCid": null,
-      "stereochemistry": null,
-      "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "pubchemCid": 15406,
+      "inchikey": "IAIHUHQCLTYTSF-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified isomeric designation",
+      "isomerGroup": "fenchol",
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     },
     {
       "id": "camphor",
       "canonicalName": "Camphor",
-      "pubchemCid": null,
-      "stereochemistry": null,
-      "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "pubchemCid": 2537,
+      "inchikey": "DSSYKIVIOFKYAU-UHFFFAOYSA-N",
+      "identityStatus": "partially-resolved",
+      "stereochemistry": "unspecified optical configuration",
+      "isomerGroup": "camphor",
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     },
     {
       "id": "trans-nerolidol",
       "canonicalName": "trans-Nerolidol",
-      "pubchemCid": null,
-      "stereochemistry": null,
-      "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "pubchemCid": 5284507,
+      "inchikey": "FQTLCLSUCSAZDY-SDNWHVSQSA-N",
+      "identityStatus": "verified",
+      "stereochemistry": "trans / (6E)",
+      "isomerGroup": "nerolidol",
+      "reason": "Identity verified; retain source-reported resolution during imports."
     },
     {
       "id": "cis-beta-ocimene",
       "canonicalName": "cis-β-Ocimene",
-      "pubchemCid": null,
-      "stereochemistry": "cis / Z",
+      "pubchemCid": 5320250,
+      "inchikey": "IHPKGUQCSIINRJ-NTMALXAHSA-N",
+      "identityStatus": "verified",
+      "stereochemistry": "cis / (3Z)",
       "isomerGroup": "ocimene",
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "reason": "Identity verified; retain source-reported resolution during imports."
     },
     {
       "id": "trans-beta-ocimene",
       "canonicalName": "trans-β-Ocimene",
-      "pubchemCid": null,
-      "stereochemistry": "trans / E",
+      "pubchemCid": 5281553,
+      "inchikey": "IHPKGUQCSIINRJ-CSKARUKUSA-N",
+      "identityStatus": "verified",
+      "stereochemistry": "trans / (3E)",
       "isomerGroup": "ocimene",
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "reason": "Identity verified; retain source-reported resolution during imports."
     },
     {
       "id": "beta-terpineol",
       "canonicalName": "β-Terpineol",
       "pubchemCid": 8748,
+      "inchikey": null,
+      "identityStatus": null,
       "stereochemistry": null,
       "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     },
     {
       "id": "alpha-pinene-oxide",
       "canonicalName": "α-Pinene oxide",
       "pubchemCid": 91508,
+      "inchikey": null,
+      "identityStatus": null,
       "stereochemistry": null,
       "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     },
     {
       "id": "alpha-longipinene",
       "canonicalName": "α-Longipinene",
       "pubchemCid": 12311396,
+      "inchikey": null,
+      "identityStatus": null,
       "stereochemistry": null,
       "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     },
     {
       "id": "epi-alpha-bisabolol",
       "canonicalName": "epi-α-Bisabolol",
       "pubchemCid": 1616126,
+      "inchikey": null,
+      "identityStatus": null,
       "stereochemistry": null,
       "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     },
     {
       "id": "caryophyllene-alcohol",
       "canonicalName": "Caryophyllene alcohol",
       "pubchemCid": 11746218,
+      "inchikey": null,
+      "identityStatus": null,
       "stereochemistry": null,
       "isomerGroup": null,
-      "reason": "Common name or family has known identity/isomer ambiguity; verify structure-level identity before mapping quantitative analytes."
+      "reason": "Common name or family still has unresolved identity/isomer ambiguity; preserve source label and avoid over-resolution."
     }
   ],
   "requiredNextFields": [
