@@ -74,6 +74,7 @@ jobs:
           revision_file="site/public-route-patch/assets/release-source-revisions/thc-grow-doc.txt"
           revision="$(sed -n 's/^commit=//p' "$revision_file")"
           [[ "$revision" =~ ^[0-9a-f]{40}$ ]]
+          # release assertion contract: "thcGrowDoc": "$revision"
           grep -Fq "\"thcGrowDoc\": \"$revision\"" "$SUITE_ROOT/dtf-build.json"
           grep -Fq "commit=$revision" "$SUITE_ROOT/thc-grow-doc/source-revision.txt"
           test -d "$SUITE_ROOT/thc-grow-doc/reference-media/crops"
