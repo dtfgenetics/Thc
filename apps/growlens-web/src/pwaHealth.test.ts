@@ -22,6 +22,12 @@ describe('GrowLens PWA health controls', () => {
     expect(serviceWorker).toContain('self.skipWaiting()');
   });
 
+  it('does not call skipWaiting during install', () => {
+    const installBlock = serviceWorker.match(/self\.addEventListener\('install',[\s\S]*?\n\}\);/)?.[0] ?? '';
+    expect(installBlock).not.toContain('skipWaiting');
+    expect(serviceWorker).toContain("const CACHE_NAME = 'growlens-shell-v3'");
+  });
+
   it('mounts the health panel in the GrowLens shell', () => {
     expect(main).toContain("import PwaHealthWidget from './PwaHealthWidget'");
     expect(main).toContain('<PwaHealthWidget />');
