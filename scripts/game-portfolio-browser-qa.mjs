@@ -212,7 +212,7 @@ function evaluateHtml({ game, html, status, finalUrl, contract, mode, assetFailu
     if (contract.requireCanonicalShellLive !== false) {
       for (const marker of [
         'data-dtf-shell="header-v6"',
-        'data-dtf-sitewide-header="canonical-eight-v1"',
+        'data-dtf-sitewide-header="canonical-five-v1"',
       ]) {
         const count = countToken(html, marker);
         if (count !== 1) failures.push(`expected exactly one live shell marker ${marker}; found ${count}`);
