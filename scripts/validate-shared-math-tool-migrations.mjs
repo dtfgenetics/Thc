@@ -7,6 +7,9 @@ const cases=[
   {slug:'unit-converter',functions:['gallonsToLiters','litersToGallons','celsiusToFahrenheit','fahrenheitToCelsius','centimetersToInches','inchesToCentimeters','squareMetersToSquareFeet','squareFeetToSquareMeters','gramsToOunces','ouncesToGrams','millisiemensToMicrosiemens','microsiemensToMillisiemens','cfmToCubicMetersPerHour','cubicMetersPerHourToCfm'],legacy:/3\.785411784|2\.54|10\.7639104167|28\.349523125|1\.69901082|x\*9\/5\+32|\(x-32\)\*5\/9/},
   {slug:'vpd-chart',functions:['leafVpd'],legacy:/0\.6108\*Math\.exp|17\.27\*t|237\.3/},
   {slug:'environment-control',functions:['leafVpd','dewPoint','dliFromPpfd'],legacy:/0\.6108\*Math\.exp|17\.625|243\.04|p\*ph\*\.0036/},
+  {slug:'photoperiod-planner',functions:['dliFromPpfd'],legacy:/p\*h\*\.0036/},
+  {slug:'dry-cure-lab',functions:['dewPoint'],legacy:/17\.625|243\.04/},
+  {slug:'fertigation-lab',functions:['gallonsToLiters'],legacy:/3\.785411784/},
 ];
 const errors=[];
 for(const {slug,functions,legacy} of cases){
@@ -22,4 +25,4 @@ if(errors.length){
   for(const error of errors) console.error(' - '+error);
   process.exit(1);
 }
-console.log('Shared math migration validation passed for six cultivation tool routes.');
+console.log('Shared math migration validation passed for nine cultivation tool routes.');
