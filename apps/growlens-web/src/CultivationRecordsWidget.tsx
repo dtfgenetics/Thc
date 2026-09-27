@@ -17,6 +17,8 @@ import type {
   ReservoirRecord,
 } from './types';
 
+import { useModalFocusTrap } from './useModalFocusTrap';
+
 type Tab = 'irrigation' | 'feeding' | 'reservoirs' | 'harvest' | 'outcomes';
 type DraftBase = { id: string };
 
@@ -206,6 +208,7 @@ function Actions({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => voi
 
 export default function CultivationRecordsWidget() {
   const [open, setOpen] = useState(false);
+  const modalRef = useModalFocusTrap<HTMLElement>(open, () => setOpen(false));
   const [tab, setTab] = useState<Tab>('irrigation');
   const [state, setState] = useState<GrowLensState>(() => loadState());
   const [message, setMessage] = useState('');
@@ -655,7 +658,7 @@ export default function CultivationRecordsWidget() {
   return <>
     <button className="cultivation-launcher" type="button" aria-label="Open structured cultivation records" onClick={() => { setState(loadState()); setMessage(''); setError(''); setOpen(true); }}><span aria-hidden="true">▦</span><strong>Records</strong></button>
     {open ? <div className="cultivation-overlay" role="presentation" onMouseDown={(event) => { if (event.currentTarget === event.target) setOpen(false); }}>
-      <section className="cultivation-panel" role="dialog" aria-modal="true" aria-labelledby="cultivation-title">
+      <section ref={modalRef} className="cultivation-panel" role="dialog" aria-modal="true" aria-labelledby="cultivation-title">
         <header className="cultivation-header"><div><span className="eyebrow">Measured cultivation history</span><h2 id="cultivation-title">Cultivation records</h2><p>Structured water, feed, reservoir, harvest, yield, and observation-outcome records.</p></div><button type="button" className="account-close" aria-label="Close cultivation records" onClick={() => setOpen(false)}>×</button></header>
         {error ? <div className="account-message error" role="alert">{error}</div> : null}
         {message ? <div className="account-message success" role="status">{message}</div> : null}
