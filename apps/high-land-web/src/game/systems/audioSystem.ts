@@ -27,6 +27,7 @@ function createHowl(path: string, volume: number, loop = false): HighLandHowl | 
 }
 
 function effect(name: Exclude<keyof typeof audioFiles, 'background'>, volume: number): HighLandHowl | null {
+  if (muted) return null;
   let sound = effects.get(name) || null;
   if (!sound) {
     sound = createHowl(audioFiles[name], volume);
