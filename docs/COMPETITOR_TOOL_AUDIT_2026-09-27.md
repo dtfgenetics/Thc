@@ -282,3 +282,52 @@ Deterministic validators now lock these contracts for pH, EC/TDS and Water Quali
 
 ### Validation
 The shared deterministic tool-suite validator now locks these quick-first contracts for Fertigation, Dryback, Environment, Dew Point, Dry/Cure and IPM.
+
+
+## Wave 5 implemented
+
+### Photoperiod & Lighting Schedule
+- Keeps lights-on time, light hours, representative PPFD and calculated DLI as the main interaction.
+- Moves schedule saving/export and saved-schedule comparison into advanced disclosures.
+- Quick result explicitly reminds users that photoperiod changes timing and DLI, not PPFD by itself.
+
+### Root-Zone Temperature
+- Keeps root-zone and air temperature as the first comparison.
+- Moves irrigation-solution temperature, measurement timing, saving, GrowLens, export and history into advanced workflows.
+- Result emphasizes that room air is context rather than a substitute for the root-zone measurement.
+
+### Ventilation & CO₂ Reference
+- Keeps room dimensions, airflow and the theoretical air-change result first.
+- Moves delivered-airflow correction, target ACH, reverse planning and unit reference into advanced workflows.
+- Result preserves the safety boundary: airflow math is not a CO₂ enrichment or life-safety design.
+
+### Substrate & Container Calculator
+- Keeps container count/size, bag size, fill factor and purchase overage focused on the first planning result.
+- Moves plan identity, cost, component recipe, persistence, backup/export and saved plans into advanced workflows.
+- Quick result distinguishes nominal container size from measured filled substrate volume.
+
+### Solution Dilution Calculator
+- Keeps C₁, C₂, final volume and stock-volume result first.
+- Moves serial dilution planning and detailed diluent/step preview into advanced workflows.
+- Quick result reinforces concentration-basis compatibility and the limits of simple mass-balance math.
+
+### Plant Growth Tracker
+- Keeps start height, current height, elapsed days, nodes and unit focused on the growth interval result.
+- Moves plant/cultivar identity, persistence, GrowLens, backup/export, trends and saved intervals into advanced workflows.
+- Quick result warns that training/posture can change height independently of biomass or overall vigor.
+
+### Grow Cycle Planner
+- Keeps start date and lifecycle durations focused on the stage calendar/timeline.
+- Adds an immediate total planned span and planning-boundary explanation.
+- Moves plan identity, GrowLens cycle/tasks, save/export/backup and saved-plan history into advanced workflows.
+
+### Breeding & Pedigree Builder
+- Defines a visible minimum pedigree record: offspring/line, both parents, generation and seed type.
+- Moves population size, selected IDs, purpose, persistence/export and relationship graph/history into advanced workflows.
+- Preserves the existing rule that generation labels are only useful when parentage and selection history are documented.
+
+### Unit Converter
+- Retained as the simple reference baseline. Its paired conversions are already low-friction and do not benefit from extra disclosure.
+
+### Validation
+The deterministic tool-suite validator now covers the quick-first or minimum-record contracts for the entire 16-route THC Tool Suite v1.
