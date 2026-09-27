@@ -121,4 +121,10 @@ for (const asset of assets) {
   }
 }
 
+if (errors.length) {
+  console.error(`Cultivation shared-asset live verification failed with ${errors.length} issue(s):`);
+  for (const error of errors) console.error(' - ' + error);
+  process.exit(1);
+}
+
 console.log('Cultivation reference live verification passed for the tools hub, atlases, and all 16 cultivation tool routes plus shared runtime assets.');
