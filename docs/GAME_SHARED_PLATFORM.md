@@ -26,7 +26,7 @@ The sync checker and runtime tests are part of `games:preflight`.
 
 ## Current version
 
-Shared runtime version: **1.4.0**
+Shared runtime version: **1.5.0**
 
 Modules:
 
@@ -38,6 +38,7 @@ Modules:
 - `random.mjs` — deterministic seeded random streams for reproducible gameplay;
 - `experience.mjs` — native share/copy fallback, fullscreen, optional vibration, and Screen Wake Lock lifecycle helpers;
 - `state-machine.mjs` — queued finite-state transitions for reusable player/enemy/UI controllers;
+- `loading.mjs` — engine-neutral parallel loading tasks with progress, bounded retry, and aggregated failures;
 - `index.mjs` — stable public export surface.
 
 ## Browser import
@@ -114,6 +115,12 @@ Do not scatter raw key checks throughout rendering/gameplay code when the game a
 - `createWakeLockController()` requests a screen wake lock during active play and reacquires it after visibility changes when appropriate.
 
 Games should treat all of these as progressive enhancement. A missing browser API must never block gameplay.
+
+## Loading contract
+
+`runLoadTasks()` provides the reusable loading lifecycle that many game engines expose through preload scenes: start, per-task completion, retry/error states, overall progress, and ready. It is engine-neutral so Phaser, canvas, React, and Three.js games can share it without changing their gameplay architecture.
+
+Seed Man's production bootstrap now uses this controller for its eight canonical JSON resources, including one bounded retry and optional progress reporting.
 
 ## State-machine contract
 
