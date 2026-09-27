@@ -70,6 +70,7 @@
     "verify:page-composition": "node scripts/validate-page-composition.mjs",
     "verify:thc-tool-suite": "node scripts/validate-thc-tool-suite-v1.mjs",
     "build:education-search": "node scripts/build-thc-education-search-index.mjs",
-    "validate:education-search": "node scripts/validate-thc-education-search.mjs"
+    "validate:education-search": "node scripts/validate-thc-education-search.mjs",
+    "validate:grow-doc-release-pin": "node scripts/validate-grow-doc-release-pin.mjs"
   }
 }
