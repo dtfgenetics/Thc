@@ -183,3 +183,31 @@ Branch: `tool-ux-benchmark-wave1-20260927`
 3. Rework Terpene Atlas around browse/filter/compare.
 4. Standardize result cards across tools: **Result / Meaning / Confidence & assumptions / Next step / Save to GrowLens / Learn why**.
 5. Add deterministic mobile layout assertions for tool headers, inputs, result cards and advanced disclosures.
+
+
+## Wave 2 implemented
+
+### PPFD / DLI Light Lab
+- The first result now adds plain-language target-aware next-step guidance.
+- Variable-light scheduling is preserved behind an advanced disclosure.
+- Fixture calibration, survey records and canopy mapping remain available under a grouped advanced workspace.
+- The quick workflow stays focused on PPFD, photoperiod, DLI, target interpretation and measurement quality.
+
+### Terpene Atlas
+- Added a browse-first entry point for users who know an aroma descriptor or common terpene but not the chemistry family.
+- Quick filters include citrus, pine, floral, earthy, myrcene, limonene and pinene.
+- Source and public mirrors remain synchronized so production validation can enforce parity.
+- Existing scientific evidence, measured-population, sample-profile, comparison and safety sections remain intact.
+
+### Grow Doc
+Implementation is in the canonical diagnostic repository, PR dtfgenetics/Thc-dataset#311.
+- Explicitly states that one clear photo is enough.
+- Prioritizes affected-area imagery as the fastest start while keeping whole-plant capture valid.
+- Keeps extra views and grow measurements optional.
+- Simplifies the visible workflow to Add photo → Get result → Verify.
+- Preserves ranked differentials, uncertainty, technical evidence, case history and reference workflows.
+
+### Regression contracts added
+- PPFD quick-result and progressive-disclosure markers.
+- Terpene Atlas quick-browse markers and runtime behavior.
+- Existing Terpene Atlas source/public mirror parity remains enforced.
