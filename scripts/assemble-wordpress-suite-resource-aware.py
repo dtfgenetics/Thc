@@ -34,6 +34,20 @@ ATLAS_REQUIRED = [
     'assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg',
 ]
 ATLAS_PREFIXES = ['atlas/', 'terpene-atlas/', 'ph-meter/', 'tds-meter/', 'vpd-chart/', 'ppfd-chart/', 'assets/images/atlas/']
+TOOL_SUITE_SLUGS = [
+    'water-quality-lab', 'fertigation-lab', 'dryback-lab', 'dew-point',
+    'environment-control', 'ipm-scout', 'dry-cure-lab', 'grow-planner',
+    'substrate-calculator', 'breeder-pedigree', 'co2-ventilation',
+    'photoperiod-planner', 'plant-growth-tracker', 'root-zone-temperature',
+    'dilution-calculator', 'unit-converter',
+]
+TOOL_SUITE_TARGETS = TOOL_SUITE_SLUGS
+TOOL_SUITE_REQUIRED = [f'{slug}/index.html' for slug in TOOL_SUITE_SLUGS] + [
+    'assets/thc-tool-suite-v1.css',
+    'assets/thc-tool-suite-v1.js',
+]
+TOOL_SUITE_PREFIXES = [f'{slug}/' for slug in TOOL_SUITE_SLUGS]
+TOOL_SUITE_EXACT_FILES = ['assets/thc-tool-suite-v1.css', 'assets/thc-tool-suite-v1.js']
 REFERENCE_LIVE_CHECKS = [
     ('/atlas/', 'THC Living Plant Atlas'),
     ('/terpene-atlas/', 'THC Terpene Atlas'),
@@ -41,6 +55,22 @@ REFERENCE_LIVE_CHECKS = [
     ('/tds-meter/', 'TDS / EC Meter'),
     ('/vpd-chart/', 'VPD Chart'),
     ('/ppfd-chart/', 'THC Light Lab'),
+    ('/water-quality-lab/', 'THC Water Quality Lab'),
+    ('/fertigation-lab/', 'THC Fertigation Lab'),
+    ('/dryback-lab/', 'THC Irrigation & Dryback Lab'),
+    ('/dew-point/', 'THC Dew Point & Condensation Lab'),
+    ('/environment-control/', 'THC Environmental Control Center'),
+    ('/ipm-scout/', 'THC IPM Scout'),
+    ('/dry-cure-lab/', 'THC Dry & Cure Lab'),
+    ('/grow-planner/', 'THC Grow Cycle Planner'),
+    ('/substrate-calculator/', 'THC Substrate & Container Calculator'),
+    ('/breeder-pedigree/', 'DTF Breeding & Pedigree Builder'),
+    ('/co2-ventilation/', 'THC Ventilation & CO₂ Reference'),
+    ('/photoperiod-planner/', 'THC Photoperiod & Lighting Schedule'),
+    ('/plant-growth-tracker/', 'THC Plant Growth Tracker'),
+    ('/root-zone-temperature/', 'THC Root-Zone Temperature Reference'),
+    ('/dilution-calculator/', 'THC Solution Dilution Calculator'),
+    ('/unit-converter/', 'THC Cultivation Unit Converter'),
 ]
 RESOURCE_OWNED_GAME_TARGETS = ['games/high-iq', 'games/seed-man-platformer']
 
@@ -64,9 +94,10 @@ def extend_php_array(text: str, variable: str, additions: list[str]) -> str:
 
 
 def add_atlas_scope(text: str) -> str:
-    text = extend_php_array(text, 'targets', ATLAS_TARGETS)
-    text = extend_php_array(text, 'required', ATLAS_REQUIRED)
-    text = extend_php_array(text, 'prefixes', ATLAS_PREFIXES)
+    text = extend_php_array(text, 'targets', [*ATLAS_TARGETS, *TOOL_SUITE_TARGETS])
+    text = extend_php_array(text, 'required', [*ATLAS_REQUIRED, *TOOL_SUITE_REQUIRED])
+    text = extend_php_array(text, 'prefixes', [*ATLAS_PREFIXES, *TOOL_SUITE_PREFIXES])
+    text = extend_php_array(text, 'exact_files', TOOL_SUITE_EXACT_FILES)
 
     live_match = re.search(r'(?P<head>const liveChecks = \[\n)(?P<body>.*?)(?P<tail>\n\];)', text, re.S)
     if not live_match:
@@ -88,7 +119,11 @@ with tempfile.TemporaryDirectory(prefix='dtf-suite-resource-aware-') as temp:
     scoped = add_atlas_scope(base.read_text())
     transformed, report = transform_bridge(scoped, repo)
 
-    for marker in [*ATLAS_TARGETS, *ATLAS_REQUIRED, *ATLAS_PREFIXES]:
+    for marker in [
+        *ATLAS_TARGETS, *ATLAS_REQUIRED, *ATLAS_PREFIXES,
+        *TOOL_SUITE_TARGETS, *TOOL_SUITE_REQUIRED, *TOOL_SUITE_PREFIXES,
+        *TOOL_SUITE_EXACT_FILES,
+    ]:
         if repr(marker) not in transformed:
             raise SystemExit(f'Plant/Terpene Atlas/reference-tool scope marker disappeared from resource-aware bridge: {marker}')
     for target in RESOURCE_OWNED_GAME_TARGETS:
@@ -103,9 +138,10 @@ with tempfile.TemporaryDirectory(prefix='dtf-suite-resource-aware-') as temp:
 print(json.dumps({
     **report,
     'atlasScope': {
-        'targets': ATLAS_TARGETS,
-        'required': ATLAS_REQUIRED,
-        'prefixes': ATLAS_PREFIXES,
+        'targets': [*ATLAS_TARGETS, *TOOL_SUITE_TARGETS],
+        'required': [*ATLAS_REQUIRED, *TOOL_SUITE_REQUIRED],
+        'prefixes': [*ATLAS_PREFIXES, *TOOL_SUITE_PREFIXES],
+        'exactFiles': TOOL_SUITE_EXACT_FILES,
     },
     'output': str(output),
 }, indent=2))
