@@ -26,7 +26,7 @@ The sync checker and runtime tests are part of `games:preflight`.
 
 ## Current version
 
-Shared runtime version: **1.1.0**
+Shared runtime version: **1.3.0**
 
 Modules:
 
@@ -35,6 +35,8 @@ Modules:
 - `input.mjs` — named action mapping for keyboard and virtual/touch inputs;
 - `replay.mjs` — deterministic action/debug recording and sanitized export;
 - `telemetry.mjs` — opt-in, privacy-safe local telemetry buffering;
+- `random.mjs` — deterministic seeded random streams for reproducible gameplay;
+- `experience.mjs` — native share/copy fallback, fullscreen, optional vibration, and Screen Wake Lock lifecycle helpers;
 - `index.mjs` — stable public export surface.
 
 ## Browser import
@@ -99,6 +101,18 @@ Prefer action names such as:
 - `secondary-action`
 
 Do not scatter raw key checks throughout rendering/gameplay code when the game adopts this module. Touch/virtual controls can call `trigger(action)` so keyboard and mobile controls converge on the same action path.
+
+## Browser experience contract
+
+`experience.mjs` centralizes browser behaviors that were being reimplemented across individual games:
+
+- `shareGameLink()` prefers the native Web Share API and falls back to clipboard copy;
+- `copyText()` uses the modern Clipboard API with a legacy DOM fallback when available;
+- `toggleFullscreen()` normalizes enter/exit fullscreen handling;
+- `vibrateGame()` provides opt-in haptic feedback without making vibration a gameplay requirement;
+- `createWakeLockController()` requests a screen wake lock during active play and reacquires it after visibility changes when appropriate.
+
+Games should treat all of these as progressive enhancement. A missing browser API must never block gameplay.
 
 ## Replay/debug contract
 
@@ -206,7 +220,7 @@ The portfolio harness verifies visitor-facing fundamentals across many games. Ga
 
 ## Next platform layers
 
-After first-game adoption validates v1.1.0, the next shared systems should be evaluated in this order:
+After first-game adoption validates the shared runtime, the next shared systems should be evaluated in this order:
 
 1. DTF Player Passport / achievements and local progression interface;
 2. shared daily/weekly challenge contract where titles benefit from it;
