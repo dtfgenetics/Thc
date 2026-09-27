@@ -33,7 +33,7 @@ footer{padding:28px 0 42px;color:var(--muted)}.journal{margin-bottom:38px}.journ
 <article class="ref"><h3>Method and temperature matter</h3><ul><li>Keep the meter clean and calibrated as specified.</li><li>Record sample temperature or compensation method when important.</li><li>Use the same sample method when comparing trends.</li></ul></article>
 <article class="ref"><h3>Keep the context</h3><p>Save water source, nutrient recipe, pH, irrigation event, sample type, plant stage, and meter scale beside the reading. A number without method and context is difficult to compare later.</p></article>
 </section>
-<section class="panel journal" aria-labelledby="ec-journal-title">
+<details class="advanced-workflow"><summary>Advanced: calibration record, trend chart & EC/TDS journal</summary><section class="panel journal" aria-labelledby="ec-journal-title">
 <h2 id="ec-journal-title">EC / TDS measurement journal</h2>
 <p class="muted">Save repeatable conductivity readings with meter, scale and sample context. Records stay in this browser unless exported.</p>
 <div class="journal-meta">
@@ -56,7 +56,7 @@ footer{padding:28px 0 42px;color:var(--muted)}.journal{margin-bottom:38px}.journ
 <div class="journal-chart-wrap" id="ecChartWrap" hidden><div id="ecChart" class="journal-chart" role="img" aria-label="Saved EC trend"></div></div>
 <div class="journal-table-wrap"><table class="journal-table"><thead><tr><th>Date</th><th>EC mS/cm</th><th>500 ppm</th><th>700 ppm</th><th>Sample</th><th>Meter</th><th>Calibration</th><th>Temp °C</th><th>Notes</th></tr></thead><tbody id="ecJournalBody"></tbody></table></div>
 <p class="muted"><strong id="ecSavedCount">0</strong> saved records. Record the original conductivity and meter convention whenever displayed ppm is used.</p>
-</section>
+</section></details>
 </main>
 <script src="/assets/vendor/papaparse-5.7.0.min.js"></script>
 <script src="/assets/vendor/uplot-1.6.32.min.js"></script>
@@ -65,8 +65,8 @@ footer{padding:28px 0 42px;color:var(--muted)}.journal{margin-bottom:38px}.journ
 import {ecToDisplayedPpm,displayedPpmToEc,millisiemensToMicrosiemens,microsiemensToMillisiemens} from '/assets/thc-cultivation-math-v1.mjs';
 const ec=document.getElementById('ec'),ecunit=document.getElementById('ecunit'),ppm=document.getElementById('ppm'),scale=document.getElementById('scale'),tdsout=document.getElementById('tdsout'),ecout=document.getElementById('ecout'),pointer=document.getElementById('meterPointer'),fill=document.getElementById('meterFill');
 function ecMs(){const v=Number(ec.value);if(!Number.isFinite(v)||v<0)return NaN;try{return ecunit.value==='us'?microsiemensToMillisiemens(v):v}catch{return NaN}}
-function renderEC(){const v=ecMs();if(!Number.isFinite(v)){tdsout.innerHTML='<strong>Enter a valid conductivity reading.</strong>';return}const p500=Math.round(ecToDisplayedPpm(v,500)),p700=Math.round(ecToDisplayedPpm(v,700));tdsout.innerHTML='<strong>'+v.toFixed(2)+' mS/cm</strong><br>'+millisiemensToMicrosiemens(v).toFixed(0)+' µS/cm · '+p500+' ppm (500) · '+p700+' ppm (700)';const pct=Math.max(0,Math.min(100,v/3*100));pointer.style.left=pct+'%';fill.style.width=pct+'%'}
-function renderPPM(){const p=Number(ppm.value),s=Number(scale.value);if(!Number.isFinite(p)||p<0){ecout.innerHTML='<strong>Enter a valid displayed ppm/TDS value.</strong>';return}let v=NaN;try{v=displayedPpmToEc(p,s)}catch{}ecout.innerHTML='<strong>'+v.toFixed(2)+' mS/cm</strong><br>'+Math.round(millisiemensToMicrosiemens(v))+' µS/cm using the '+s+' convention.'}
+function renderEC(){const v=ecMs();if(!Number.isFinite(v)){tdsout.innerHTML='<strong>Enter a valid conductivity reading.</strong>';return}const p500=Math.round(ecToDisplayedPpm(v,500)),p700=Math.round(ecToDisplayedPpm(v,700));tdsout.innerHTML='<strong>'+v.toFixed(2)+' mS/cm</strong><br>'+millisiemensToMicrosiemens(v).toFixed(0)+' µS/cm · '+p500+' ppm (500) · '+p700+' ppm (700)<span class="quick-result-note">Keep EC as the primary record. Use the 500/700 values only as display conversions, and compare readings only when the sample method is consistent.</span>';const pct=Math.max(0,Math.min(100,v/3*100));pointer.style.left=pct+'%';fill.style.width=pct+'%'}
+function renderPPM(){const p=Number(ppm.value),s=Number(scale.value);if(!Number.isFinite(p)||p<0){ecout.innerHTML='<strong>Enter a valid displayed ppm/TDS value.</strong>';return}let v=NaN;try{v=displayedPpmToEc(p,s)}catch{}ecout.innerHTML='<strong>'+v.toFixed(2)+' mS/cm</strong><br>'+Math.round(millisiemensToMicrosiemens(v))+' µS/cm using the '+s+' convention.<span class="quick-result-note">When possible, save the conductivity value and the meter convention together so future comparisons do not mix incompatible ppm scales.</span>'}
 [ec,ecunit].forEach(el=>el.addEventListener('input',renderEC));ppm.addEventListener('input',renderPPM);scale.addEventListener('change',renderPPM);renderEC();renderPPM();
 const localNow=()=>{const d=new Date(Date.now()-new Date().getTimezoneOffset()*60000);return d.toISOString().slice(0,16)};
 const ecDate=document.getElementById('ecDate');if(ecDate&&!ecDate.value)ecDate.value=localNow();
