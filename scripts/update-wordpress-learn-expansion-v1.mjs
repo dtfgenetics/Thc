@@ -25,6 +25,7 @@ const publicSemantics = [
   'Teaching Healthy Cultivation',
   'Open the THC Living Plant Atlas',
   'See how the systems connect before you go deep.',
+  'Learn in a sequence that makes the plant easier to understand.',
   'Learn the plant as a connected system.',
   'Plant Health & IPM',
   'Cultivation Science',
