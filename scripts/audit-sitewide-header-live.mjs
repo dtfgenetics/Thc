@@ -47,7 +47,7 @@ const CANONICAL_NAV = [
   ['/seeds/', 'Seeds'],
   ['/learn/', 'Learn'],
   ['/courses/', 'Courses'],
-  ['/tools/', 'Diagnostic'],
+  ['/tools/', 'Tools'],
   ['/games/', 'Games'],
   ['/community/', 'Community'],
   ['/shop/', 'Shop'],
@@ -62,7 +62,7 @@ const REQUIRED = [
 ];
 const OBSOLETE_PRIMARY = [
   ['/seeds/', 'Genetics'],
-  ['/tools/', 'Tools'],
+  ['/tools/', 'Diagnostic'],
 ];
 const seeds = new Set([
   '/', '/seeds/', '/learn/', '/courses/', '/tools/', '/games/', '/community/', '/shop/',
