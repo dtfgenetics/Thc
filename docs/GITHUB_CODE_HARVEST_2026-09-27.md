@@ -515,3 +515,20 @@ For irrigation and feeding events GrowLens can now:
 The UI explicitly calls these temporal associations, not causal effects. Lighting schedule, HVAC cycling, weather, sensor placement, time of day and concurrent changes remain plausible confounders.
 
 Deterministic coverage: `apps/growlens-web/src/eventEnvironmentInsights.test.ts`.
+
+
+### Pixelmatch 7.2.0
+Repository: https://github.com/mapbox/pixelmatch
+Reviewed version: 7.2.0
+License: ISC.
+
+Action taken:
+- vendored the upstream ESM source under `apps/growlens-web/src/vendor/pixelmatch-7.2.0.js`;
+- preserved the ISC license;
+- added a typed GrowLens wrapper for browser-local difference rendering;
+- added a selectable Pixel Difference view to the before/after photo comparison panel;
+- added deterministic vendor integration tests.
+
+The preview normalizes both selected photos onto the same comparison canvas and renders a pixel-level difference image. The displayed mismatch percentage is explicitly labeled as a pixel/framing aid only. Camera position, focal length, lighting, plant movement, background and alignment can dominate the result, so it must not be interpreted as disease severity, growth rate, or treatment effectiveness.
+
+Decision: keep Pixelmatch optional within the comparison workflow. Do not run it automatically on every saved image.
