@@ -9,14 +9,14 @@
 <div class="field"><label for="volume">Final solution volume</label><input id="volume" type="number" min=".01" step=".1" value="100"></div>
 <div class="field"><label for="volunit">Volume unit</label><select id="volunit"><option value="l">Liters</option><option value="gal">US gallons</option></select></div>
 </div><div class="result" id="fertOut" aria-live="polite"></div><div class="callout"><strong>Formula</strong> fertilizer g = target mg/L × final liters ÷ (1000 × nutrient fraction).</div>
-</section>
-<details class="advanced-workflow"><summary>Advanced: injector stock tanks, multi-product recipe worksheet & records</summary><section class="panel"><h2>Injector / stock-tank mode</h2><div class="fields">
+</section></div>
+<details class="advanced-workflow"><summary>Advanced: injector stock tanks, multi-product recipe worksheet & records</summary><section class="section panel"><h2>Injector / stock-tank mode</h2><div class="fields">
 <div class="field"><label for="injTarget">Target element at irrigation line (ppm)</label><input id="injTarget" type="number" min="0" step="1" value="200"></div>
 <div class="field"><label for="injAnalysis">Product analysis for element (%)</label><input id="injAnalysis" type="number" min=".01" max="100" step=".1" value="15"></div>
 <div class="field"><label for="ratio">Injector ratio (1:X)</label><input id="ratio" type="number" min="1" step="1" value="100"></div>
 <div class="field"><label for="stockVol">Final stock volume (L)</label><input id="stockVol" type="number" min=".01" step=".1" value="10"></div>
 </div><div class="result" id="stockOut" aria-live="polite"></div><div class="callout"><strong>Important:</strong> a 1:100 injector ratio describes dilution, not “100 ppm.” The stock must be concentrated enough that the diluted output reaches the target.</div>
-</section></div>
+</section>
 
 <section class="section panel"><h2>Target vs achieved recipe worksheet</h2><p class="muted">Enter final solution volume, nutrient targets and up to three products. Product P and K fields use fertilizer-label P₂O₅ and K₂O conventions; the worksheet converts them to elemental P and K before calculating mg/L.</p>
 <div class="fields"><div class="field"><label for="recipeLiters">Final solution volume (L)</label><input id="recipeLiters" type="number" min=".01" step=".1" value="100"></div></div>
