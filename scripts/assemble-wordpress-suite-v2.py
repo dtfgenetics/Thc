@@ -8,7 +8,7 @@ import sys
 # Canonical SHA-256 of the executable v2 deployer after the long-lived guarded
 # source normalizations below. Customer-shell release adjustments are applied
 # only after this base hash passes and each adjustment must match exactly once.
-EXPECTED_SHA256 = "c932d001a580ee186f07312f1a7eb6949a2478623fca5e9e837c7c0fde75e145"
+EXPECTED_SHA256 = "e990706cc40b545f407f7d4026e853b2834488d8b015ee10b5b3b3fc7915bd75"
 PART_DIR = pathlib.Path(__file__).resolve().parent / "wordpress-suite-v2"
 OUTPUT = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "deploy-public-suite-via-wordpress-v2.mjs")
 
@@ -238,8 +238,8 @@ payload = replace_once(
 )
 payload = replace_once(
     payload,
-    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grower Conversations'], ['/games/high-land/', 'High Land'],",
-    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grower Conversations'], ['/games/protect-the-plants/', 'Protect the Plants'], ['/games/high-land/', 'High Land'],",
+    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grow Room Confessions'], ['/games/high-land/', 'High Land'],",
+    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grow Room Confessions'], ['/games/protect-the-plants/', 'Protect the Plants'], ['/games/high-land/', 'High Land'],",
     "Protect the Plants live verification",
 )
 
@@ -264,8 +264,8 @@ payload = replace_once(
 )
 payload = replace_once(
     payload,
-    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grower Conversations'], ['/games/protect-the-plants/', 'Protect the Plants'], ['/games/high-land/', 'High Land'],",
-    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grower Conversations'], ['/games/bud-or-bluff/', 'Bud or Bluff'], ['/games/strain-showdown/', 'Strain Showdown'], ['/games/terpocalypse/', 'Terpocalypse'], ['/games/phenoquest/', 'The Living Seed Vault'], ['/games/strain-match/', 'Strain Match'], ['/games/lost-in-the-terps/', 'Lost in the Terps'], ['/games/protect-the-plants/', 'Protect the Plants'], ['/games/high-land/', 'High Land'],",
+    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grow Room Confessions'], ['/games/protect-the-plants/', 'Protect the Plants'], ['/games/high-land/', 'High Land'],",
+    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grow Room Confessions'], ['/games/bud-or-bluff/', 'Bud or Bluff'], ['/games/strain-showdown/', 'Strain Showdown'], ['/games/terpocalypse/', 'Terpocalypse'], ['/games/phenoquest/', 'The Living Seed Vault'], ['/games/strain-match/', 'Strain Match'], ['/games/lost-in-the-terps/', 'Lost in the Terps'], ['/games/protect-the-plants/', 'Protect the Plants'], ['/games/high-land/', 'High Land'],",
     "new playable game live verification",
 )
 

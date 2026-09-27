@@ -49,6 +49,14 @@ function inspect(html,route){
   for(const utility of ['Search DTF Genetics','Account','Cart']){
     if(!header.includes(`aria-label="${utility}"`)&&!header.includes(`aria-label='${utility}'`)) throw new Error(`${route}: missing utility control ${utility}`);
   }
+  for(const id of ['dtf-sitewide-header-v6-script','dtf-content-density-v1-script','dtf-sitewide-visual-repair-v2-script']){
+    const pattern=new RegExp(`<script\\b[^>]*id=["']${id}["'][^>]*>([\\s\\S]*?)<\\/script>`,'gi');
+    const scripts=[...html.matchAll(pattern)];
+    if(scripts.length!==1) throw new Error(`${route}: expected exactly one ${id}, found ${scripts.length}`);
+    const source=scripts[0][1];
+    if(/&#0*38;|&#x0*26;|&amp;/i.test(source)) throw new Error(`${route}: ${id} contains HTML-entity corruption`);
+    try{new Function(source);}catch(error){throw new Error(`${route}: ${id} is not valid JavaScript: ${error.message}`);}
+  }
   return anchors;
 }
 
