@@ -55,12 +55,18 @@ for(const token of [
 const qualification=fs.readFileSync(qualificationPath,'utf8');
 for(const token of [
   'release-source-revisions/thc-grow-doc.txt',
-  '"thcGrowDoc": "$revision"',
   'commit=$revision',
   'reference-media/crops',
   'reference-media/original'
 ]){
   if(!qualification.includes(token)) fail(`Public-suite qualification is missing Grow Doc release assertion: ${token}`);
+}
+const growDocAssertionForms=[
+  '"thcGrowDoc": "$revision"',
+  '\\"thcGrowDoc\\": \\"$revision\\"'
+];
+if(!growDocAssertionForms.some((token)=>qualification.includes(token))){
+  fail('Public-suite qualification is missing a recognized Grow Doc build-manifest revision assertion.');
 }
 
 if(!process.exitCode){
