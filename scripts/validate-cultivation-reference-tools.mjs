@@ -59,8 +59,10 @@ assert(tds.includes('ecCalibrationStatus') && tds.includes('ecCalibrationStandar
 assert(tds.includes("header:'calibration_standard'"), 'TDS/EC CSV journal must preserve calibration standard identity');
 assert(tds.includes('/assets/vendor/uplot-1.6.32.min.js') && tds.includes('/assets/vendor/papaparse-5.7.0.min.js') && tds.includes('/assets/thc-measurement-journal-v1.js'), 'TDS/EC journal must use shared uPlot/Papa Parse measurement stack');
 
-assert(vpd.includes('0.6108*Math.exp((17.27*t)/(t+237.3))'), 'VPD page missing saturation-vapor-pressure equation');
-assert(vpd.includes('svp(leaf)-svp(air)*(rhValue/100)'), 'VPD page missing leaf-to-air vapor pressure deficit calculation');
+assert(vpd.includes("import {leafVpd} from '/assets/thc-cultivation-math-v1.mjs'") && vpd.includes('leafVpd(air,rhValue,leaf)'), 'VPD page missing shared leaf-VPD engine integration');
+const mathEngine = fs.readFileSync(path.join(root, 'site/public-route-patch/assets/thc-cultivation-math-v1.mjs'), 'utf8');
+assert(mathEngine.includes('0.6108*Math.exp((17.27*t)/(t+237.3))'), 'shared math engine missing saturation-vapor-pressure equation');
+assert(mathEngine.includes('saturationVaporPressure(leafTempC)-saturationVaporPressure(airTempC)*(rh/100)'), 'shared math engine missing leaf-to-air vapor pressure deficit calculation');
 assert(vpd.includes('Relative humidity (%)') && vpd.includes('Leaf offset'), 'VPD page missing required inputs');
 assert(vpd.includes("u==='f'?(v-32)*5/9:v") && vpd.includes("v*9/5+32"), 'VPD page missing Celsius/Fahrenheit conversion support');
 assert(vpd.includes('Logger CSV trend analysis') && vpd.includes('parseTrendCsv') && vpd.includes('drawTrend'), 'VPD page missing local CSV trend-analysis workflow');
