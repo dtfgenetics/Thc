@@ -10,6 +10,7 @@ import { loadSyncMetadata } from './syncMetadata';
 import type { SyncIntent } from './syncIntentStore';
 import { AUTO_SYNC_CHANNEL, AUTO_SYNC_STATUS_EVENT } from './syncEvents';
 import { STATE_SAVED_EVENT } from './storage';
+import { useModalFocusTrap } from './useModalFocusTrap';
 
 const AUTO_SYNC_SETTING_KEY = 'growlens-safe-auto-sync-enabled-v1';
 
@@ -42,6 +43,7 @@ function statusText(intent: SyncIntent | null, enabled: boolean): { label: strin
 
 export default function SafeAutoSyncWidget() {
   const [open, setOpen] = useState(false);
+  const modalRef = useModalFocusTrap<HTMLElement>(open, () => setOpen(false));
   const [enabled, setEnabled] = useState(loadEnabled);
   const [intent, setIntent] = useState<SyncIntent | null>(null);
   const [message, setMessage] = useState('');
@@ -165,7 +167,7 @@ export default function SafeAutoSyncWidget() {
         <div className="safe-sync-overlay" role="presentation" onMouseDown={(event) => {
           if (event.currentTarget === event.target) setOpen(false);
         }}>
-          <section className="safe-sync-panel" role="dialog" aria-modal="true" aria-labelledby="safe-sync-title">
+          <section ref={modalRef} className="safe-sync-panel" role="dialog" aria-modal="true" aria-labelledby="safe-sync-title">
             <header>
               <div><span className="eyebrow">Conflict-safe account automation</span><h2 id="safe-sync-title">Safe auto-sync</h2></div>
               <button className="account-close" type="button" onClick={() => setOpen(false)} aria-label="Close safe auto-sync settings">×</button>
