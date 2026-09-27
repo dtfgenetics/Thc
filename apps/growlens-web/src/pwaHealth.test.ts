@@ -28,6 +28,15 @@ describe('GrowLens PWA health controls', () => {
     expect(serviceWorker).toContain("const CACHE_NAME = 'growlens-shell-v3'");
   });
 
+  it('cleans up both registration and installing-worker listeners', () => {
+    expect(widget).toContain('let registrationCleanup');
+    expect(widget).toContain('let installingCleanup');
+    expect(widget).toContain('installingCleanup?.()');
+    expect(widget).toContain('registrationCleanup?.()');
+    expect(widget).toContain("reg.removeEventListener('updatefound', onUpdateFound)");
+    expect(widget).toContain("worker.removeEventListener('statechange', onStateChange)");
+  });
+
   it('mounts the health panel in the GrowLens shell', () => {
     expect(main).toContain("import PwaHealthWidget from './PwaHealthWidget'");
     expect(main).toContain('<PwaHealthWidget />');
