@@ -242,3 +242,43 @@ The mandatory Tools UX standard now requires:
 - user-editable targets when evidence does not justify one universal biological threshold.
 
 Deterministic validators now lock these contracts for pH, EC/TDS and Water Quality.
+
+
+## Wave 4 implemented
+
+### Fertigation Lab
+- Keeps direct final-solution mass balance as the first interaction.
+- Adds explicit next-step guidance that the result is single-element mass balance, not a complete nutrient prescription.
+- Moves injector stock tanks, the multi-product target-vs-achieved worksheet, oxide conversion, mixing records and GrowLens save flow into an advanced workspace.
+- Removed future-version roadmap copy from the production surface.
+
+### Irrigation & Dryback Lab
+- First-use flow is now measurement mode + low/high/current reference + elapsed time.
+- The immediate result focuses on dryback percentage and rate.
+- Irrigation shot size, drainage, phase, saving, GrowLens, export, trend history and method notes are progressively disclosed.
+
+### Environmental Control Center
+- First-use flow now starts with air temperature, RH and measured leaf temperature.
+- Lighting, root-zone temperature, room/zone context and saved readings are advanced.
+- User-defined guardrails remain available but no longer visually compete with the base environmental result.
+- VPD trend, day/night summary and history are advanced.
+- Result text now emphasizes that guardrails are user operating limits, not universal crop prescriptions.
+
+### Dew Point
+- Keeps the intentionally simple three-input interaction.
+- Adds a direct next action based on surface-to-dew-point margin and emphasizes checking the coldest relevant surface during environmental transitions.
+
+### Dry & Cure Lab
+- First-use checkpoint focuses on wet weight, current weight, elapsed time, temperature and RH.
+- Lot metadata, water activity, notes, saving, GrowLens and export are advanced.
+- Drying history is progressively disclosed.
+- Result explicitly separates a drying trend from validated moisture/water-activity evidence when safety or storage stability is consequential.
+
+### IPM Scout
+- First-use flow now focuses on route/trap ID, observed finding, count and user-entered action threshold.
+- Inspection area, severity, notes, saving, GrowLens and export are advanced.
+- Trend, escalation path and scouting history are progressively disclosed.
+- Result language preserves the distinction between a program threshold and a universal biological threshold.
+
+### Validation
+The shared deterministic tool-suite validator now locks these quick-first contracts for Fertigation, Dryback, Environment, Dew Point, Dry/Cure and IPM.
