@@ -1124,9 +1124,17 @@ jobs:
               'Build scope: the canonical 23-game playable Hub plus tracked release/runtime candidates plus validated High IQ, High Life, Grower Conversations, Seed Man, Strain Showdown, Bud or Bluff, Terpocalypse, PhenoQuest, Burn Buds, High Land, Weedopolis, pinned THC Crossword, Who Took It?, Ganjumanji, THC RPG, GrowLens, THC Grow Doc, Tools, Projects, and puzzle data.',
               'No production mutation is performed by this build-only workflow.'
             ].join('\n');
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 63,
-              body
-            });
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: 63,
+                body
+              });
+            } catch (error) {
+              core.warning(`Public-suite build result could not be posted to issue #63: ${error.message}`);
+              await core.summary
+                .addHeading('Public-suite issue reporting skipped')
+                .addRaw('The package build result remains authoritative. Posting to issue #63 was unavailable, so this reporting-only failure was not allowed to fail the workflow.')
+                .write();
+            }
