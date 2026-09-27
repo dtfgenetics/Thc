@@ -61,6 +61,14 @@ for(const [slug,tokens] of [
  const h=fs.readFileSync(path.join(root,'site/public-route-patch',slug,'index.html'),'utf8');
  for(const token of tokens) ok(h.includes(token),slug+' missing upgraded workflow token: '+token);
 }
+for(const slug of ['ph-meter','tds-meter','vpd-chart','ppfd-chart']){
+ const h=fs.readFileSync(path.join(root,'site/public-route-patch',slug,'index.html'),'utf8');
+ for(const token of ['/assets/thc-tool-suite-v1.css','/assets/thc-tool-suite-v1.js','data-menu','data-nav','id="site-nav"']){
+  ok(h.includes(token),slug+' missing shared legacy integration token: '+token);
+ }
+}
+const ppfdCore=fs.readFileSync(path.join(root,'site/public-route-patch/ppfd-chart/index.html'),'utf8');
+ok(ppfdCore.includes('.cell input:focus-visible'), 'PPFD canopy cells must expose a visible keyboard focus state');
 const hub=fs.readFileSync(path.join(root,'site/public-route-patch/tools/index.html'),'utf8');
 for(const [slug,title] of tools){
  ok(hub.includes('href="/'+slug+'/"'), 'tools hub missing '+slug);
