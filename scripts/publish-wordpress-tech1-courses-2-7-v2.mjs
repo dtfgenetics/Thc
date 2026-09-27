@@ -62,32 +62,51 @@ async function loadCourse(entry) {
   const release = await fetchJson(`content/public-releases/${entry.releaseId}.json`);
   must(release.courseId === entry.id && release.publicationState === 'published', `${entry.id}: public release missing or not published.`);
   must(release.publicationBoundary?.credentialExam === 'restricted', `${entry.id}: credential exam must remain restricted.`);
-  must(Array.isArray(release.publicScope?.modules) && release.publicScope.modules.length === 1, `${entry.id}: expected one dedicated public module.`);
-  const module = await fetchJson(`content/modules/${release.publicScope.modules[0]}.json`);
+  must(Array.isArray(release.publicScope?.modules) && release.publicScope.modules.length >= 1, `${entry.id}: expected at least one authorized public module.`);
+  if (Number.isInteger(release.publicScope.releasedModuleCount)) {
+    must(release.publicScope.modules.length === release.publicScope.releasedModuleCount, `${entry.id}: released module count does not match public module list.`);
+  }
+  const modules = [];
   const lessons = [];
-  for (const lessonId of module.lessons || []) {
-    must(release.publicScope.studentSources.includes(`content/lessons/${lessonId}.json`), `${entry.id}: ${lessonId} not authorized by public release.`);
-    const lesson = await fetchJson(`content/lessons/${lessonId}.json`);
-    must(lesson.id === lessonId && lesson.content?.overview && lesson.content?.summary, `${lessonId}: incomplete learner lesson source.`);
-    lessons.push(lesson);
+  const lessonIds = new Set();
+  for (const moduleId of release.publicScope.modules) {
+    const module = await fetchJson(`content/modules/${moduleId}.json`);
+    must(module.id === moduleId, `${entry.id}: module identity mismatch for ${moduleId}.`);
+    modules.push(module);
+    for (const lessonId of module.lessons || []) {
+      must(!lessonIds.has(lessonId), `${entry.id}: duplicate public lesson ${lessonId} across authorized modules.`);
+      must(release.publicScope.studentSources.includes(`content/lessons/${lessonId}.json`), `${entry.id}: ${lessonId} not authorized by public release.`);
+      const lesson = await fetchJson(`content/lessons/${lessonId}.json`);
+      must(lesson.id === lessonId && lesson.content?.overview && lesson.content?.summary, `${lessonId}: incomplete learner lesson source.`);
+      lessonIds.add(lessonId);
+      lessons.push(lesson);
+    }
+  }
+  if (Number.isInteger(release.publicScope.releasedLessonCount)) {
+    must(lessons.length === release.publicScope.releasedLessonCount, `${entry.id}: released lesson count ${lessons.length} does not match manifest ${release.publicScope.releasedLessonCount}.`);
   }
   const assessments = [];
+  let authorizedItemCount = 0;
   let itemCount = 0;
+  const courseAssessmentPrefix = `ASSESS-${entry.id.replace(/^COURSE-/, '')}`;
   for (const assessmentId of release.publicScope.assessments || []) {
     const assessment = await fetchJson(`content/assessments/${assessmentId}.json`);
     must(['formative', 'summative'].includes(assessment.purpose), `${assessmentId}: credential-purpose assessment blocked.`);
+    const courseOwnedAssessment = assessmentId.startsWith(courseAssessmentPrefix);
     const items = [];
     for (const itemId of assessment.items || []) {
       const question = await fetchJson(`content/questions/${itemId}.json`);
       must(['formative', 'summative'].includes(question.purpose), `${itemId}: credential-purpose item blocked.`);
       must(Array.isArray(question.choices) && Number.isInteger(question.correct), `${itemId}: unsupported public question format.`);
       items.push(question);
-      itemCount++;
+      authorizedItemCount++;
+      if (courseOwnedAssessment) itemCount++;
     }
-    assessments.push({ ...assessment, items });
+    assessments.push({ ...assessment, items, courseOwnedAssessment });
   }
-  must(itemCount === release.publicScope.publicCourseItems, `${entry.id}: public item count ${itemCount} differs from release ${release.publicScope.publicCourseItems}.`);
-  return { ...entry, course, release, module, lessons, assessments, itemCount, route: `${config.program.route}${entry.slug}/` };
+  must(itemCount === release.publicScope.publicCourseItems, `${entry.id}: course-owned item count ${itemCount} differs from release ${release.publicScope.publicCourseItems}.`);
+  must(authorizedItemCount >= itemCount, `${entry.id}: authorized assessment item accounting is invalid.`);
+  return { ...entry, course, release, modules, lessons, assessments, itemCount, authorizedItemCount, route: `${config.program.route}${entry.slug}/` };
 }
 
 const css = `<style id="dtf-tech1-public-courses-v2">
@@ -228,9 +247,17 @@ for (const entry of config.courses) courses.push(await loadCourse(entry));
 
 if (validateOnly) {
   must(css.includes('min-height:44px;white-space:nowrap'), 'Technician I mobile breadcrumbs require touch-sized targets.');
-  must(courses.every(course => course.lessons.length === 4), 'Every Technician I Course 2-7 public package must resolve four dedicated lessons.');
-  must(courses.filter(course => course.number < 7).every(course => course.assessments.length === 2), 'Courses 2-6 require formative and summative public learning assessments.');
-  must(courses.find(course => course.number === 7)?.assessments.length === 1, 'Course 7 requires one public readiness assessment.');
+  must(courses.every(course => course.lessons.length >= 4), 'Every Technician I Course 2-7 public package must resolve at least four authorized lessons.');
+  must(
+    courses.filter(course => course.number < 7).every(
+      course => course.assessments.filter(assessment => assessment.courseOwnedAssessment).length === 2,
+    ),
+    'Courses 2-6 require one course-owned formative assessment and one course-owned summative assessment.',
+  );
+  must(
+    courses.find(course => course.number === 7)?.assessments.filter(assessment => assessment.courseOwnedAssessment).length === 1,
+    'Course 7 requires one course-owned public readiness assessment.',
+  );
   const assetRefs = [];
   for (const course of courses) for (const lesson of course.lessons) {
     for (const block of lessonAssetBlocks(lesson)) {

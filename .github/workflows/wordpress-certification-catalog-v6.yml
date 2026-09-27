@@ -1,0 +1,39 @@
+name: Validate Certification Catalog V6
+
+on:
+  pull_request:
+    paths:
+      - site/wordpress/education/course-catalog-v4.json
+      - site/wordpress/education/tech1-courses-public-v1.json
+      - site/wordpress/education/tech2-courses-public-v1.json
+      - scripts/publish-wordpress-certification-catalog-v6.mjs
+      - .github/workflows/wordpress-certification-catalog-v6.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Syntax check V6 publisher
+        run: node --check scripts/publish-wordpress-certification-catalog-v6.mjs
+
+      - name: Validate current certification catalog presentation
+        run: node scripts/publish-wordpress-certification-catalog-v6.mjs --validate-only
+
+      - name: Confirm production boundary
+        run: |
+          echo "Validation only. This workflow does not write to WordPress."
+          echo "Production publication must use the protected WordPress production lane and separate visitor-facing verification."
