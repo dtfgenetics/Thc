@@ -114,6 +114,9 @@ jobs:
       - name: Validate Plant Atlas runtime files
         run: npm run validate:plant-atlas:v4
 
+      - name: Validate Terpene Atlas runtime and data
+        run: npm run validate:terpene-atlas
+
       - name: Upload GrowLens build artifact
         if: steps.build.outcome == 'success'
         uses: actions/upload-artifact@v4
