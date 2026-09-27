@@ -1,0 +1,612 @@
+{
+  "schemaVersion": 1,
+  "targetRepository": "dtfgenetics/thc-tools",
+  "sourceRepository": "dtfgenetics/Thc",
+  "sourceBranch": "feat/thc-tools-repo-migration",
+  "productionBaseUrl": "https://dtfseeds.com",
+  "routes": [
+    {
+      "id": "tools",
+      "slug": "tools",
+      "title": "Cultivation Tools",
+      "category": "hub",
+      "sourcePath": "site/public-route-patch/tools/index.html",
+      "sourceAliases": [],
+      "deploymentId": null,
+      "navigationId": null,
+      "growlensBridge": false,
+      "validationMarkers": [
+        "Cultivation reference tools",
+        "Plant Atlas"
+      ],
+      "liveMarkers": [
+        "Cultivation reference tools",
+        "PPFD / DLI"
+      ],
+      "requiredAssets": []
+    },
+    {
+      "id": "atlas",
+      "slug": "atlas",
+      "title": "THC Living Plant Atlas",
+      "category": "science-explorer",
+      "sourcePath": "site/public-route-patch/atlas/index.html",
+      "sourceAliases": [
+        "apps/growlens-web/public/atlas"
+      ],
+      "deploymentId": "plant-atlas",
+      "navigationId": "atlas",
+      "growlensBridge": false,
+      "validationMarkers": [
+        "THC Living Plant Atlas",
+        "All Tools"
+      ],
+      "liveMarkers": [
+        "THC Living Plant Atlas",
+        "All Tools"
+      ],
+      "requiredAssets": []
+    },
+    {
+      "id": "terpene-atlas",
+      "slug": "terpene-atlas",
+      "title": "THC Terpene Atlas",
+      "category": "science-explorer",
+      "sourcePath": "site/public-route-patch/terpene-atlas/index.html",
+      "sourceAliases": [
+        "apps/growlens-web/public/terpene-atlas"
+      ],
+      "deploymentId": "terpene-atlas",
+      "navigationId": "terpene-atlas",
+      "growlensBridge": false,
+      "validationMarkers": [
+        "THC Terpene Atlas",
+        "All Tools"
+      ],
+      "liveMarkers": [
+        "THC Terpene Atlas",
+        "All Tools"
+      ],
+      "requiredAssets": []
+    },
+    {
+      "id": "ph-meter",
+      "slug": "ph-meter",
+      "title": "pH Meter",
+      "category": "measurement-reference",
+      "sourcePath": "site/public-route-patch/ph-meter/index.html",
+      "sourceAliases": [],
+      "deploymentId": "ph-meter",
+      "navigationId": "ph-meter",
+      "growlensBridge": false,
+      "validationMarkers": [
+        "pH Meter",
+        "This page does not measure pH by itself"
+      ],
+      "liveMarkers": [
+        "pH Meter",
+        "This page does not measure pH by itself"
+      ],
+      "requiredAssets": [
+        "site/public-route-patch/assets/thc-tool-suite-v1.css",
+        "site/public-route-patch/assets/thc-tool-suite-v1.js",
+        "site/public-route-patch/assets/vendor/papaparse-5.7.0.min.js",
+        "site/public-route-patch/assets/vendor/uplot-1.6.32.min.js",
+        "site/public-route-patch/assets/vendor/uplot-1.6.32.min.css",
+        "site/public-route-patch/assets/thc-measurement-journal-v1.js"
+      ]
+    },
+    {
+      "id": "tds-meter",
+      "slug": "tds-meter",
+      "title": "TDS / EC Meter",
+      "category": "measurement-reference",
+      "sourcePath": "site/public-route-patch/tds-meter/index.html",
+      "sourceAliases": [],
+      "deploymentId": "tds-meter",
+      "navigationId": "tds-meter",
+      "growlensBridge": false,
+      "validationMarkers": [
+        "TDS / EC Meter",
+        "500 scale",
+        "700 scale"
+      ],
+      "liveMarkers": [
+        "TDS / EC Meter",
+        "500 scale",
+        "700 scale"
+      ],
+      "requiredAssets": [
+        "site/public-route-patch/assets/thc-tool-suite-v1.css",
+        "site/public-route-patch/assets/thc-tool-suite-v1.js",
+        "site/public-route-patch/assets/thc-cultivation-math-v1.mjs",
+        "site/public-route-patch/assets/vendor/papaparse-5.7.0.min.js",
+        "site/public-route-patch/assets/vendor/uplot-1.6.32.min.js",
+        "site/public-route-patch/assets/vendor/uplot-1.6.32.min.css",
+        "site/public-route-patch/assets/thc-measurement-journal-v1.js"
+      ]
+    },
+    {
+      "id": "vpd-chart",
+      "slug": "vpd-chart",
+      "title": "VPD Chart",
+      "category": "environment-reference",
+      "sourcePath": "site/public-route-patch/vpd-chart/index.html",
+      "sourceAliases": [],
+      "deploymentId": "vpd-chart",
+      "navigationId": "vpd-chart",
+      "growlensBridge": false,
+      "validationMarkers": [
+        "VPD Chart",
+        "Leaf offset"
+      ],
+      "liveMarkers": [
+        "VPD Chart",
+        "Leaf offset"
+      ],
+      "requiredAssets": [
+        "site/public-route-patch/assets/thc-tool-suite-v1.css",
+        "site/public-route-patch/assets/thc-tool-suite-v1.js",
+        "site/public-route-patch/assets/thc-cultivation-math-v1.mjs",
+        "site/public-route-patch/assets/vendor/papaparse-5.7.0.min.js",
+        "site/public-route-patch/assets/vendor/uplot-1.6.32.min.js",
+        "site/public-route-patch/assets/vendor/uplot-1.6.32.min.css"
+      ]
+    },
+    {
+      "id": "ppfd-chart",
+      "slug": "ppfd-chart",
+      "title": "THC Light Lab",
+      "category": "lighting",
+      "sourcePath": "site/public-route-patch/ppfd-chart/index.html",
+      "sourceAliases": [],
+      "deploymentId": "ppfd-chart",
+      "navigationId": "ppfd-chart",
+      "growlensBridge": false,
+      "validationMarkers": [
+        "THC Light Lab",
+        "Canopy mapper",
+        "Variable-light DLI schedule"
+      ],
+      "liveMarkers": [
+        "THC Light Lab",
+        "Canopy mapper",
+        "Variable-light DLI schedule"
+      ],
+      "requiredAssets": [
+        "site/public-route-patch/assets/thc-tool-suite-v1.css",
+        "site/public-route-patch/assets/thc-tool-suite-v1.js",
+        "site/public-route-patch/assets/thc-cultivation-math-v1.mjs",
+        "site/public-route-patch/assets/thc-light-lab-math-v1.mjs",
+        "site/public-route-patch/assets/vendor/papaparse-5.7.0.min.js"
+      ]
+    },
+    {
+      "id": "water-quality-lab",
+      "slug": "water-quality-lab",
+      "title": "THC Water Quality Lab",
+      "category": "water",
+      "sourcePath": "site/public-route-patch/water-quality-lab/index.html",
+      "sourceAliases": [],
+      "deploymentId": "water-quality-lab",
+      "navigationId": "water-quality-lab",
+      "growlensBridge": true,
+      "validationMarkers": [
+        "Alkalinity",
+        "Ca:Mg mass ratio"
+      ],
+      "liveMarkers": [
+        "THC Water Quality Lab",
+        "Change from prior report"
+      ],
+      "requiredAssets": [
+        "site/public-route-patch/assets/thc-tool-suite-v1.css",
+        "site/public-route-patch/assets/thc-tool-suite-v1.js"
+      ]
+    },
+    {
+      "id": "fertigation-lab",
+      "slug": "fertigation-lab",
+      "title": "THC Fertigation Lab",
+      "category": "nutrition",
+      "sourcePath": "site/public-route-patch/fertigation-lab/index.html",
+      "sourceAliases": [],
+      "deploymentId": "fertigation-lab",
+      "navigationId": "fertigation-lab",
+      "growlensBridge": true,
+      "validationMarkers": [
+        "target mg/L",
+        "fertilizerMassGrams",
+        "Target vs achieved recipe worksheet"
+      ],
+      "liveMarkers": [
+        "THC Fertigation Lab",
+        "Target vs achieved recipe worksheet"
+      ],
+      "requiredAssets": [
+        "site/public-route-patch/assets/thc-tool-suite-v1.css",
+        "site/public-route-patch/assets/thc-tool-suite-v1.js",
+        "site/public-route-patch/assets/thc-cultivation-math-v1.mjs"
+      ]
+    },
+    {
+      "id": "dryback-lab",
+      "slug": "dryback-lab",
+      "title": "THC Irrigation & Dryback Lab",
+      "category": "irrigation",
+      "sourcePath": "site/public-route-patch/dryback-lab/index.html",
+      "sourceAliases": [],
+      "deploymentId": "dryback-lab",
+      "navigationId": "dryback-lab",
+      "growlensBridge": true,
+      "validationMarkers": [
+        "percentage points/hour",
+        "drybackPercent",
+        "Recent dryback trend"
+      ],
+      "liveMarkers": [
+        "THC Irrigation & Dryback Lab",
+        "Recent dryback trend"
+      ],
+      "requiredAssets": [
+        "site/public-route-patch/assets/thc-tool-suite-v1.css",
+        "site/public-route-patch/assets/thc-tool-suite-v1.js",
+        "site/public-route-patch/assets/thc-cultivation-math-v1.mjs"
+      ]
+    },
+    {
+      "id": "dew-point",
+      "slug": "dew-point",
+      "title": "THC Dew Point & Condensation Lab",
+      "category": "environment-reference",
+      "sourcePath": "site/public-route-patch/dew-point/index.html",
+      "sourceAliases": [],
+      "deploymentId": "dew-point",
+      "navigationId": "dew-point",
+      "growlensBridge": false,
+      "validationMarkers": [
+        "dew point",
+        "dewPoint"
+      ],
+      "liveMarkers": [
+        "THC Dew Point & Condensation Lab",
+        "dew point"
+      ],
+      "requiredAssets": [
+        "site/public-route-patch/assets/thc-tool-suite-v1.css",
+        "site/public-route-patch/assets/thc-tool-suite-v1.js",
+        "site/public-route-patch/assets/thc-cultivation-math-v1.mjs"
+      ]
+    },
+    {
+      "id": "environment-control",
+      "slug": "environment-control",
+      "title": "THC Environmental Control Center",
+      "category": "environment",
+      "sourcePath": "site/public-route-patch/environment-control/index.html",
+      "sourceAliases": [],
+      "deploymentId": "environment-control",
+      "navigationId": "environment-control",
+      "growlensBridge": true,
+      "validationMarkers": [
+        "Leaf VPD",
+        "leafVpd",
+        "Recent VPD trend"
+      ],
+      "liveMarkers": [
+        "THC Environmental Control Center",
+        "Recent VPD trend"
+      ],
+      "requiredAssets": [
+        "site/public-route-patch/assets/thc-tool-suite-v1.css",
+        "site/public-route-patch/assets/thc-tool-suite-v1.js",
+        "site/public-route-patch/assets/thc-cultivation-math-v1.mjs"
+      ]
+    },
+    {
+      "id": "ipm-scout",
+      "slug": "ipm-scout",
+      "title": "THC IPM Scout",
+      "category": "ipm",
+      "sourcePath": "site/public-route-patch/ipm-scout/index.html",
+      "sourceAliases": [],
+      "deploymentId": "ipm-scout",
+      "navigationId": "ipm-scout",
+      "growlensBridge": true,
+      "validationMarkers": [
+        "thc-ipm-scout-v1",
+        "Export CSV",
+        "Observed count"
+      ],
+      "liveMarkers": [
+        "THC IPM Scout",
+        "Local scouting history"
+      ],
+      "requiredAssets": [
+        "site/public-route-patch/assets/thc-tool-suite-v1.css",
+        "site/public-route-patch/assets/thc-tool-suite-v1.js",
+        "site/public-route-patch/assets/vendor/uplot-1.6.32.min.js",
+        "site/public-route-patch/assets/vendor/uplot-1.6.32.min.css"
+      ]
+    },
+    {
+      "id": "dry-cure-lab",
+      "slug": "dry-cure-lab",
+      "title": "THC Dry & Cure Lab",
+      "category": "post-harvest",
+      "sourcePath": "site/public-route-patch/dry-cure-lab/index.html",
+      "sourceAliases": [],
+      "deploymentId": "dry-cure-lab",
+      "navigationId": "dry-cure-lab",
+      "growlensBridge": true,
+      "validationMarkers": [
+        "weight loss",
+        "dew point",
+        "Save harvest to GrowLens"
+      ],
+      "liveMarkers": [
+        "THC Dry & Cure Lab",
+        "Save harvest to GrowLens"
+      ],
+      "requiredAssets": [
+        "site/public-route-patch/assets/thc-tool-suite-v1.css",
+        "site/public-route-patch/assets/thc-tool-suite-v1.js",
+        "site/public-route-patch/assets/thc-cultivation-math-v1.mjs"
+      ]
+    },
+    {
+      "id": "grow-planner",
+      "slug": "grow-planner",
+      "title": "THC Grow Cycle Planner",
+      "category": "planning",
+      "sourcePath": "site/public-route-patch/grow-planner/index.html",
+      "sourceAliases": [],
+      "deploymentId": "grow-planner",
+      "navigationId": "grow-planner",
+      "growlensBridge": true,
+      "validationMarkers": [
+        "Stage calendar",
+        "Flowering",
+        "Create GrowLens cycle"
+      ],
+      "liveMarkers": [
+        "THC Grow Cycle Planner",
+        "Stage calendar"
+      ],
+      "requiredAssets": [
+        "site/public-route-patch/assets/thc-tool-suite-v1.css",
+        "site/public-route-patch/assets/thc-tool-suite-v1.js"
+      ]
+    },
+    {
+      "id": "substrate-calculator",
+      "slug": "substrate-calculator",
+      "title": "THC Substrate & Container Calculator",
+      "category": "substrate",
+      "sourcePath": "site/public-route-patch/substrate-calculator/index.html",
+      "sourceAliases": [],
+      "deploymentId": "substrate-calculator",
+      "navigationId": "substrate-calculator",
+      "growlensBridge": false,
+      "validationMarkers": [
+        "purchase target",
+        "gallonsToLiters",
+        "Purchase overage"
+      ],
+      "liveMarkers": [
+        "THC Substrate & Container Calculator",
+        "Purchase overage"
+      ],
+      "requiredAssets": [
+        "site/public-route-patch/assets/thc-tool-suite-v1.css",
+        "site/public-route-patch/assets/thc-tool-suite-v1.js",
+        "site/public-route-patch/assets/thc-cultivation-math-v1.mjs"
+      ]
+    },
+    {
+      "id": "breeder-pedigree",
+      "slug": "breeder-pedigree",
+      "title": "DTF Breeding & Pedigree Builder",
+      "category": "breeding",
+      "sourcePath": "site/public-route-patch/breeder-pedigree/index.html",
+      "sourceAliases": [],
+      "deploymentId": "breeder-pedigree",
+      "navigationId": "breeder-pedigree",
+      "growlensBridge": false,
+      "validationMarkers": [
+        "parent_a",
+        "Relationship explorer",
+        "Direct descendants"
+      ],
+      "liveMarkers": [
+        "DTF Breeding & Pedigree Builder",
+        "Relationship explorer"
+      ],
+      "requiredAssets": [
+        "site/public-route-patch/assets/thc-tool-suite-v1.css",
+        "site/public-route-patch/assets/thc-tool-suite-v1.js",
+        "site/public-route-patch/assets/breeder-pedigree-graph-v1.js",
+        "site/public-route-patch/assets/vendor/cytoscape-3.34.3.min.js"
+      ]
+    },
+    {
+      "id": "co2-ventilation",
+      "slug": "co2-ventilation",
+      "title": "THC Ventilation & CO₂ Reference",
+      "category": "environment",
+      "sourcePath": "site/public-route-patch/co2-ventilation/index.html",
+      "sourceAliases": [],
+      "deploymentId": "co2-ventilation",
+      "navigationId": "co2-ventilation",
+      "growlensBridge": false,
+      "validationMarkers": [
+        "air changes/hour",
+        "airChangesPerHour",
+        "target ACH"
+      ],
+      "liveMarkers": [
+        "THC Ventilation & CO₂ Reference",
+        "target ACH"
+      ],
+      "requiredAssets": [
+        "site/public-route-patch/assets/thc-tool-suite-v1.css",
+        "site/public-route-patch/assets/thc-tool-suite-v1.js",
+        "site/public-route-patch/assets/thc-cultivation-math-v1.mjs"
+      ]
+    },
+    {
+      "id": "photoperiod-planner",
+      "slug": "photoperiod-planner",
+      "title": "THC Photoperiod & Lighting Schedule",
+      "category": "lighting",
+      "sourcePath": "site/public-route-patch/photoperiod-planner/index.html",
+      "sourceAliases": [],
+      "deploymentId": "photoperiod-planner",
+      "navigationId": "photoperiod-planner",
+      "growlensBridge": false,
+      "validationMarkers": [
+        "calculated DLI",
+        "dliFromPpfd",
+        "Compare saved schedules"
+      ],
+      "liveMarkers": [
+        "THC Photoperiod & Lighting Schedule",
+        "Compare saved schedules"
+      ],
+      "requiredAssets": [
+        "site/public-route-patch/assets/thc-tool-suite-v1.css",
+        "site/public-route-patch/assets/thc-tool-suite-v1.js",
+        "site/public-route-patch/assets/thc-cultivation-math-v1.mjs"
+      ]
+    },
+    {
+      "id": "plant-growth-tracker",
+      "slug": "plant-growth-tracker",
+      "title": "THC Plant Growth Tracker",
+      "category": "tracking",
+      "sourcePath": "site/public-route-patch/plant-growth-tracker/index.html",
+      "sourceAliases": [],
+      "deploymentId": "plant-growth-tracker",
+      "navigationId": "plant-growth-tracker",
+      "growlensBridge": true,
+      "validationMarkers": [
+        "nodes/day",
+        "heightRate",
+        "Growth-rate trend"
+      ],
+      "liveMarkers": [
+        "THC Plant Growth Tracker",
+        "Growth-rate trend"
+      ],
+      "requiredAssets": [
+        "site/public-route-patch/assets/thc-tool-suite-v1.css",
+        "site/public-route-patch/assets/thc-tool-suite-v1.js"
+      ]
+    },
+    {
+      "id": "root-zone-temperature",
+      "slug": "root-zone-temperature",
+      "title": "THC Root-Zone Temperature Reference",
+      "category": "environment-reference",
+      "sourcePath": "site/public-route-patch/root-zone-temperature/index.html",
+      "sourceAliases": [],
+      "deploymentId": "root-zone-temperature",
+      "navigationId": "root-zone-temperature",
+      "growlensBridge": true,
+      "validationMarkers": [
+        "Root-air difference",
+        "Irrigation solution temperature",
+        "Root-zone trend"
+      ],
+      "liveMarkers": [
+        "THC Root-Zone Temperature Reference",
+        "Root-zone trend"
+      ],
+      "requiredAssets": [
+        "site/public-route-patch/assets/thc-tool-suite-v1.css",
+        "site/public-route-patch/assets/thc-tool-suite-v1.js"
+      ]
+    },
+    {
+      "id": "dilution-calculator",
+      "slug": "dilution-calculator",
+      "title": "THC Solution Dilution Calculator",
+      "category": "nutrition",
+      "sourcePath": "site/public-route-patch/dilution-calculator/index.html",
+      "sourceAliases": [],
+      "deploymentId": "dilution-calculator",
+      "navigationId": "dilution-calculator",
+      "growlensBridge": false,
+      "validationMarkers": [
+        "C₁V₁ = C₂V₂",
+        "dilutionStockVolume",
+        "Serial dilution steps"
+      ],
+      "liveMarkers": [
+        "THC Solution Dilution Calculator",
+        "Serial dilution steps"
+      ],
+      "requiredAssets": [
+        "site/public-route-patch/assets/thc-tool-suite-v1.css",
+        "site/public-route-patch/assets/thc-tool-suite-v1.js",
+        "site/public-route-patch/assets/thc-cultivation-math-v1.mjs"
+      ]
+    },
+    {
+      "id": "unit-converter",
+      "slug": "unit-converter",
+      "title": "THC Cultivation Unit Converter",
+      "category": "reference",
+      "sourcePath": "site/public-route-patch/unit-converter/index.html",
+      "sourceAliases": [],
+      "deploymentId": "unit-converter",
+      "navigationId": "unit-converter",
+      "growlensBridge": false,
+      "validationMarkers": [
+        "Conductivity",
+        "celsiusToFahrenheit",
+        "Airflow"
+      ],
+      "liveMarkers": [
+        "THC Cultivation Unit Converter",
+        "Conductivity"
+      ],
+      "requiredAssets": [
+        "site/public-route-patch/assets/thc-tool-suite-v1.css",
+        "site/public-route-patch/assets/thc-tool-suite-v1.js",
+        "site/public-route-patch/assets/thc-cultivation-math-v1.mjs"
+      ]
+    }
+  ],
+  "sharedAssets": [
+    "site/public-route-patch/assets/breeder-pedigree-graph-v1.js",
+    "site/public-route-patch/assets/thc-cultivation-math-v1.mjs",
+    "site/public-route-patch/assets/thc-light-lab-math-v1.mjs",
+    "site/public-route-patch/assets/thc-measurement-journal-v1.js",
+    "site/public-route-patch/assets/thc-tool-suite-v1.css",
+    "site/public-route-patch/assets/thc-tool-suite-v1.js",
+    "site/public-route-patch/assets/vendor/cytoscape-3.34.3.min.js",
+    "site/public-route-patch/assets/vendor/papaparse-5.7.0.min.js",
+    "site/public-route-patch/assets/vendor/uplot-1.6.32.min.css",
+    "site/public-route-patch/assets/vendor/uplot-1.6.32.min.js"
+  ],
+  "thirdPartyNotices": [
+    "docs/THIRD_PARTY_NOTICES.md",
+    "site/public-route-patch/assets/vendor/cytoscape-3.34.3.LICENSE.txt",
+    "site/public-route-patch/assets/vendor/uplot-1.6.32.LICENSE.txt"
+  ],
+  "retainedInThc": [
+    "deployment adapter/integration code",
+    "site navigation integration",
+    "source-of-truth cross-repository references"
+  ],
+  "excluded": [
+    "Academy course content",
+    "encyclopedia content",
+    "certification curriculum",
+    "games",
+    "game assets",
+    "Grow Doc diagnostic dataset/model ownership",
+    "unrelated WordPress/site pages"
+  ]
+}
