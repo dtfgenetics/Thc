@@ -1,19 +1,14 @@
 {
   "schemaVersion": 1,
-  "updated": "2026-09-18",
+  "updated": "2026-09-27",
   "status": "canonical",
   "site": "https://dtfseeds.com",
   "brandHome": {
     "label": "DTF Genetics",
     "route": "/",
-    "note": "The brand links Home, and Home is also the first canonical primary destination for explicit orientation."
+    "note": "The brand is the Home control; Home is intentionally not duplicated in the primary row."
   },
   "primaryNavigation": [
-    {
-      "id": "home",
-      "label": "Home",
-      "route": "/"
-    },
     {
       "id": "seeds",
       "label": "Seeds",
@@ -25,11 +20,6 @@
       "route": "/learn/"
     },
     {
-      "id": "courses",
-      "label": "Courses",
-      "route": "/courses/"
-    },
-    {
       "id": "diagnostic",
       "label": "Tools",
       "route": "/tools/"
@@ -38,11 +28,6 @@
       "id": "games",
       "label": "Games",
       "route": "/games/"
-    },
-    {
-      "id": "community",
-      "label": "Community",
-      "route": "/community/"
     },
     {
       "id": "shop",
@@ -89,6 +74,16 @@
   },
   "secondaryNavigation": [
     {
+      "id": "courses",
+      "label": "Courses",
+      "route": "/courses/"
+    },
+    {
+      "id": "community",
+      "label": "Community",
+      "route": "/community/"
+    },
+    {
       "id": "gallery",
       "label": "Gallery",
       "route": "/gallery/"
@@ -122,10 +117,10 @@
     }
   ],
   "rules": [
-    "Primary navigation is exactly Home, Seeds, Learn, Courses, Tools, Games, Community, Shop in that order.",
-    "Seeds is the visitor-facing primary label for /seeds/; Genetics remains subject language inside that section.",
-    "Courses is a separate primary visitor journey while historical /learn/learning-hub/ course URLs remain stable.",
-    "Tools is the visitor-facing label for /tools/; the internal diagnostic section owns GrowLens and THC Grow Doc.",
-    "Search, Account, Cart, Gallery, About, and Contact remain outside the eight primary destinations."
+    "Primary navigation is exactly Seeds, Learn, Tools, Games, Shop in that order.",
+    "The DTF Genetics brand is the Home control; do not duplicate Home in the primary row.",
+    "Courses is a secondary learning destination; historical /learn/learning-hub/ course URLs remain stable.",
+    "Community is a secondary participation destination and stays visible outside the core five-task row.",
+    "Search, Account, Cart, Courses, Community, Gallery, About, and Contact remain outside the five primary destinations."
   ]
 }
