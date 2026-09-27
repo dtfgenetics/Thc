@@ -2,9 +2,9 @@
 <main class="dtf-v1 genetics-v2" data-dtf-layout="genetics-library-v2" data-dtf-genetics-structure="release-first-v2">
   <style>
     .genetics-v2{--gen-deep:#07190f;--gen-leaf:#216c3d;--gen-gold:#d6b75c;--gen-line:rgba(16,43,26,.14);--gen-muted:#5a685e;--gen-cream:#f7f3e7}
-    .genetics-v2 .genetics-hero{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(340px,.96fr);gap:clamp(28px,6vw,76px);align-items:center;padding:clamp(42px,7vw,86px) 0}
+    .genetics-v2 .genetics-hero{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(300px,.88fr);gap:clamp(24px,4vw,52px);align-items:center;padding:clamp(34px,5vw,62px) 0}
     .genetics-v2 .genetics-hero-copy>p:first-child{margin:0 0 14px;color:#8a732f;font-size:.74rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
-    .genetics-v2 .genetics-hero h1{max-width:11ch;margin:0;font-size:clamp(3rem,7vw,6.8rem);line-height:.88;letter-spacing:-.065em;color:#102b1a}
+    .genetics-v2 .genetics-hero h1{max-width:13ch;margin:0;font-size:clamp(2.55rem,5.4vw,4.8rem);line-height:.94;letter-spacing:-.065em;color:#102b1a}
     .genetics-v2 .genetics-hero-copy>p:not(:first-child){max-width:64ch;color:var(--gen-muted);line-height:1.72}
     .genetics-v2 .genetics-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:25px}
     .genetics-v2 .genetics-actions a{display:inline-flex;align-items:center;min-height:44px;padding:10px 15px;border-radius:999px;border:1px solid rgba(16,43,26,.16);background:#fff;color:#173322;font-weight:850;text-decoration:none;box-shadow:0 8px 20px rgba(10,37,21,.05)}
@@ -20,11 +20,11 @@
     .genetics-v2 .board-stat span{display:block;margin-top:4px;color:#bfcfc2;font-size:.78rem;line-height:1.4}
     .genetics-v2 .gen-section{padding:clamp(52px,7vw,88px) 0;border-top:1px solid rgba(16,43,26,.08)}
     .genetics-v2 .gen-wrap{width:min(1180px,calc(100% - 40px));margin:0 auto}
-    .genetics-v2 .gen-heading{display:grid;grid-template-columns:minmax(0,.8fr) minmax(280px,.7fr);gap:28px;align-items:end;margin-bottom:30px}
+    .genetics-v2 .gen-heading{display:grid;grid-template-columns:minmax(0,.9fr) minmax(260px,.7fr);gap:24px;align-items:end;margin-bottom:24px}
     .genetics-v2 .gen-heading h2{max-width:13ch;margin:0;font-size:clamp(2.2rem,5vw,4.3rem);line-height:.95;letter-spacing:-.055em;color:#102b1a}
     .genetics-v2 .gen-heading p{margin:0;color:var(--gen-muted);line-height:1.7}
     .genetics-v2 .line-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-    .genetics-v2 .line-card{--line-a:#216c3d;--line-b:#d6b75c;position:relative;display:flex;min-height:390px;flex-direction:column;overflow:hidden;padding:25px;border:1px solid var(--gen-line);border-radius:21px;background:linear-gradient(180deg,#fff,#faf8f1);box-shadow:0 15px 38px rgba(10,37,21,.075);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+    .genetics-v2 .line-card{--line-a:#216c3d;--line-b:#d6b75c;position:relative;display:flex;min-height:330px;flex-direction:column;overflow:hidden;padding:25px;border:1px solid var(--gen-line);border-radius:21px;background:linear-gradient(180deg,#fff,#faf8f1);box-shadow:0 15px 38px rgba(10,37,21,.075);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
     .genetics-v2 .line-card:before{content:"";position:absolute;inset:0 0 auto;height:5px;background:linear-gradient(90deg,var(--line-a),var(--line-b))}
     .genetics-v2 .line-card:after{content:"";position:absolute;right:-48px;top:-38px;width:138px;height:138px;border-radius:50%;background:radial-gradient(circle,var(--line-a),transparent 68%);opacity:.08;pointer-events:none}
     .genetics-v2 .line-card[data-line="blue-mango"]{--line-a:#3156a8;--line-b:#e0a94a}
@@ -37,7 +37,7 @@
     .genetics-v2 .line-card[data-line="rainbow"]{--line-a:#9a56a4;--line-b:#dfa844}
     .genetics-v2 .line-card[data-line="mystery"]{--line-a:#202820;--line-b:#707970}
     .genetics-v2 .line-card[data-line="bx"]{--line-a:#2e628f;--line-b:#db9a3e}
-    .genetics-v2 .line-meta{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin:5px 0 26px}
+    .genetics-v2 .line-meta{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin:5px 0 18px}
     .genetics-v2 .line-stage{display:inline-flex;align-items:center;min-height:30px;padding:6px 9px;border-radius:999px;background:#edf1eb;color:#3d5644;font-size:.68rem;font-weight:900;letter-spacing:.09em;text-transform:uppercase}
     .genetics-v2 .line-chip{width:38px;height:38px;border-radius:13px;background:linear-gradient(145deg,var(--line-a),var(--line-b));box-shadow:inset 0 0 0 1px rgba(255,255,255,.28),0 7px 18px rgba(10,37,21,.12)}
     .genetics-v2 .line-card h3{max-width:12ch;margin:0 0 16px;font-size:clamp(1.55rem,2.5vw,2.1rem);line-height:.98;letter-spacing:-.04em;color:#102b1a}
@@ -79,7 +79,7 @@
     .genetics-v2 .library-disclosure .line-grid{padding:0 20px 20px}
     @media(hover:hover) and (pointer:fine){.genetics-v2 .line-card:hover{transform:translateY(-4px);border-color:rgba(33,108,61,.28);box-shadow:0 25px 54px rgba(10,37,21,.13)}.genetics-v2 .release-list li a:hover{border-color:rgba(33,108,61,.3);background:#fff}}
     @media(max-width:980px){.genetics-v2 .genetics-hero,.genetics-v2 .parent-panel,.genetics-v2 .release-panel,.genetics-v2 .catalog-standard{grid-template-columns:1fr}.genetics-v2 .line-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.genetics-v2 .current-line-grid{grid-template-columns:1fr}.genetics-v2 .gen-heading{grid-template-columns:1fr}.genetics-v2 .standard-title{position:relative;top:auto}}
-    @media(max-width:700px){.genetics-v2 .genetics-hero{padding:38px 0}.genetics-v2 .gen-wrap,.genetics-v2 .adult-note{width:min(100% - 28px,1180px)}.genetics-v2 .line-grid{grid-template-columns:1fr}.genetics-v2 .line-card{min-height:0}.genetics-v2 .board-stats{grid-template-columns:1fr}.genetics-v2 .genetics-actions{display:grid}.genetics-v2 .genetics-actions a{justify-content:center;border-radius:14px}.genetics-v2 .release-list li a{align-items:flex-start}.genetics-v2 .library-disclosure>summary{grid-template-columns:1fr;padding:18px}.genetics-v2 .library-disclosure .line-grid{padding:0 12px 12px}}
+    @media(max-width:700px){.genetics-v2 .genetics-hero{padding:30px 0}.genetics-v2 .genetics-hero h1{font-size:clamp(2.15rem,10vw,3.2rem);max-width:none}.genetics-v2 .gen-wrap,.genetics-v2 .adult-note{width:min(100% - 28px,1180px)}.genetics-v2 .line-grid{grid-template-columns:1fr}.genetics-v2 .line-card{min-height:0;padding:20px;border-radius:17px}.genetics-v2 .board-stats{display:flex;grid-template-columns:none;gap:8px;margin-inline:-18px;padding:0 18px 6px;overflow-x:auto;scroll-snap-type:x proximity;overscroll-behavior-inline:contain}.genetics-v2 .board-stat{flex:0 0 min(74vw,240px);scroll-snap-align:start}.genetics-v2 .genetics-actions{display:grid}.genetics-v2 .genetics-actions a{justify-content:center;border-radius:14px}.genetics-v2 .release-list li a{align-items:flex-start}.genetics-v2 .library-disclosure>summary{grid-template-columns:1fr;padding:18px}.genetics-v2 .library-disclosure .line-grid{padding:0 12px 12px}}
     @media(prefers-reduced-motion:reduce){.genetics-v2 .line-card{transition:none}.genetics-v2 .line-card:hover{transform:none}}
   </style>
 
