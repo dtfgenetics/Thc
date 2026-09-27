@@ -1,40 +1,47 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-class FakeAudio {
-  static instances: FakeAudio[] = [];
+class FakeHowl {
+  static instances: FakeHowl[] = [];
+  static options: any[] = [];
 
-  currentTime = 0;
-  loop = false;
-  muted = false;
-  pause = vi.fn();
-  play = vi.fn(() => Promise.resolve());
-  preload = '';
-  volume = 1;
+  play = vi.fn(() => 1);
+  pause = vi.fn(() => this);
+  stop = vi.fn(() => this);
+  mute = vi.fn(() => this);
+  volume = vi.fn(() => this);
+  playing = vi.fn(() => false);
+  unload = vi.fn();
 
-  constructor(public readonly src: string) {
-    FakeAudio.instances.push(this);
+  constructor(options: any) {
+    FakeHowl.instances.push(this);
+    FakeHowl.options.push(options);
   }
-
-  addEventListener(): void {}
 }
+
+const howlerMute = vi.fn();
 
 describe('file-backed audio system', () => {
   beforeEach(() => {
-    FakeAudio.instances = [];
+    FakeHowl.instances = [];
+    FakeHowl.options = [];
+    howlerMute.mockReset();
     vi.resetModules();
-    vi.stubGlobal('Audio', FakeAudio);
+    vi.stubGlobal('window', {
+      Howl: FakeHowl,
+      Howler: { mute: howlerMute }
+    });
   });
 
   afterEach(() => {
     vi.unstubAllGlobals();
   });
 
-  it('does not create or play audio before a user-triggered call', async () => {
+  it('does not instantiate audio before a user-triggered call', async () => {
     await import('./audioSystem');
-    expect(FakeAudio.instances).toHaveLength(0);
+    expect(FakeHowl.instances).toHaveLength(0);
   });
 
-  it('plays the background loop and real roll, card, movement, and win files', async () => {
+  it('uses the real High Land music and SFX files with a looping background track', async () => {
     const audio = await import('./audioSystem');
 
     audio.playRollSound();
@@ -42,18 +49,31 @@ describe('file-backed audio system', () => {
     audio.playMoveTickSound();
     audio.playWinSound();
 
-    expect(FakeAudio.instances.map((instance) => instance.src)).toEqual([
+    expect(FakeHowl.options.map((options) => options.src[0])).toEqual([
       '/assets/high-land/audio/background-loop.mp3',
       '/assets/high-land/audio/dice-roll.mp3',
       '/assets/high-land/audio/card-draw.mp3',
       '/assets/high-land/audio/move-tick.mp3',
       '/assets/high-land/audio/win.mp3'
     ]);
-    expect(FakeAudio.instances[0].loop).toBe(true);
-    expect(FakeAudio.instances.every((instance) => instance.play.mock.calls.length === 1)).toBe(true);
+    expect(FakeHowl.options[0].loop).toBe(true);
+    expect(FakeHowl.options[0].volume).toBe(0.2);
+    expect(FakeHowl.instances.every((instance) => instance.play.mock.calls.length >= 1)).toBe(true);
   });
 
-  it('mutes and pauses all active audio', async () => {
+  it('reuses effect pools instead of allocating a new audio object for every play', async () => {
+    const audio = await import('./audioSystem');
+
+    audio.playCardSound();
+    audio.playCardSound();
+    audio.playCardSound();
+
+    const cardHowls = FakeHowl.options.filter((options) => options.src[0].includes('card-draw'));
+    expect(cardHowls).toHaveLength(1);
+    expect(FakeHowl.instances[0].play).toHaveBeenCalledTimes(3);
+  });
+
+  it('uses Howler global mute and stops active effects', async () => {
     const audio = await import('./audioSystem');
 
     audio.playRollSound();
@@ -61,16 +81,16 @@ describe('file-backed audio system', () => {
     audio.setMuted(true);
 
     expect(audio.isMuted()).toBe(true);
-    expect(FakeAudio.instances.every((instance) => instance.muted)).toBe(true);
-    expect(FakeAudio.instances.every((instance) => instance.pause.mock.calls.length === 1)).toBe(true);
+    expect(howlerMute).toHaveBeenCalledWith(true);
+    expect(FakeHowl.instances.slice(1).every((instance) => instance.stop.mock.calls.length === 1)).toBe(true);
 
-    const instanceCount = FakeAudio.instances.length;
+    const count = FakeHowl.instances.length;
     audio.playCardSound();
-    expect(FakeAudio.instances).toHaveLength(instanceCount);
+    expect(FakeHowl.instances).toHaveLength(count);
   });
 
-  it('does not throw when the browser Audio API is unavailable', async () => {
-    vi.stubGlobal('Audio', undefined);
+  it('degrades safely if the vendored Howler runtime is unavailable', async () => {
+    vi.stubGlobal('window', { Howl: undefined, Howler: undefined });
     const audio = await import('./audioSystem');
 
     expect(() => audio.playRollSound()).not.toThrow();
