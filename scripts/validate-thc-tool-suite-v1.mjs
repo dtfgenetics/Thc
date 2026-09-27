@@ -6,19 +6,19 @@ const tools=[
  ['water-quality-lab','THC Water Quality Lab',['Alkalinity','Ca:Mg mass ratio']],
  ['fertigation-lab','THC Fertigation Lab',['target mg/L','1000*f']],
  ['dryback-lab','THC Irrigation & Dryback Lab',['percentage points/hour','lost/span*100']],
- ['dew-point','THC Dew Point & Condensation Lab',['dew point','17.625']],
- ['environment-control','THC Environmental Control Center',['Leaf VPD','.0036']],
+ ['dew-point','THC Dew Point & Condensation Lab',['dew point','dewPoint']],
+ ['environment-control','THC Environmental Control Center',['Leaf VPD','dliFromPpfd']],
  ['ipm-scout','THC IPM Scout',['thc-ipm-scout-v1','Export CSV']],
  ['dry-cure-lab','THC Dry & Cure Lab',['weight loss','dew point']],
  ['grow-planner','THC Grow Cycle Planner',['Stage calendar','Flowering']],
  ['substrate-calculator','THC Substrate & Container Calculator',['purchase target','3.785411784']],
  ['breeder-pedigree','DTF Breeding & Pedigree Builder',['dtf-breeder-pedigree-v1','parent_a']],
- ['co2-ventilation','THC Ventilation & CO₂ Reference',['air changes/hour','delivered*60/v']],
+ ['co2-ventilation','THC Ventilation & CO₂ Reference',['air changes/hour','airChangesPerHour']],
  ['photoperiod-planner','THC Photoperiod & Lighting Schedule',['calculated DLI','p*h*.0036']],
  ['plant-growth-tracker','THC Plant Growth Tracker',['nodes/day','heightRate']],
  ['root-zone-temperature','THC Root-Zone Temperature Reference',['Root-air difference','Irrigation solution temperature']],
- ['dilution-calculator','THC Solution Dilution Calculator',['C₁V₁ = C₂V₂','b*v/a']],
- ['unit-converter','THC Cultivation Unit Converter',['Conductivity','3.785411784']]
+ ['dilution-calculator','THC Solution Dilution Calculator',['C₁V₁ = C₂V₂','dilutionStockVolume']],
+ ['unit-converter','THC Cultivation Unit Converter',['Conductivity','gallonsToLiters']]
 ];
 const errors=[];
 const ok=(v,m)=>{if(!v)errors.push(m)};
