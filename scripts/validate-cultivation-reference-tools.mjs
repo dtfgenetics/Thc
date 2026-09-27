@@ -22,7 +22,7 @@ const assert = (ok, msg) => { if (!ok) errors.push(msg); };
 for (const route of ['/atlas/', '/terpene-atlas/', '/ph-meter/', '/tds-meter/', '/vpd-chart/', '/ppfd-chart/']) {
   assert(hub.includes(`href="${route}"`) || hub.includes(`href='${route}'`), `tools hub missing ${route}`);
 }
-assert((hub.match(/target="_blank"/g) || []).length  >= 6, 'tools hub must open all five reference launchers in a new tab');
+assert((hub.match(/target="_blank"/g) || []).length  >= 6, 'tools hub must open all six reference launchers in a new tab');
 for (const label of ['Plant Atlas', 'Terpene Atlas', 'pH Meter', 'TDS / EC Meter', 'VPD Chart', 'PPFD / DLI']) {
   assert(hub.includes(label), `tools hub missing visible label: ${label}`);
 }
