@@ -15,7 +15,7 @@ const routes = [
   },
   {
     path: '/games/grower-conversations/',
-    markers: ['Grow Room Confessions', '96 digital preview prompts']
+    markers: ['Grow Room Confessions', '<strong>96</strong> digital preview prompts']
   },
   {
     path: '/games/seed-man-platformer/',
@@ -23,7 +23,7 @@ const routes = [
       'data-seed-man-release="20260909-v20-runtime-v4"',
       'data-seed-ui-release="20260909-v20-runtime-v5"',
       'data-seed-man-approved-art="approved-showcase-2026-09-08"',
-      'LIVE UI · 20 LEVELS · APPROVED ART · THREE.JS WORLDS · PHENOTYPE COMBAT',
+      '20 LEVELS · 5 WORLDS · 6 BOSSES · PLANT / FIRE / ELECTRIC / ICE',
       './three-world-v1.js?v=',
       './campaign-v20-runtime.js?v=',
       './three-world-adapter-v1.js?v=',
