@@ -66,7 +66,8 @@ const expectedApprovedFiles = [
   'card-036-crystal-tunnel.svg',
   'card-037-trichome-slide.svg',
   'card-038-cloud-lift.svg',
-  'card-039-second-hit.svg'
+  'card-039-second-hit.svg',
+  'card-040-citadel-tailwind.svg'
 ];
 
 const expectedApprovedText = [
@@ -108,7 +109,8 @@ const expectedApprovedText = [
   'Move forward 3 spaces.',
   'Move back 5 spaces.',
   'Move forward 4 spaces.',
-  'Draw another Hit Card.'
+  'Draw another Hit Card.',
+  'Move forward 2 spaces, then roll again.'
 ] as const;
 
 function cardById(id: string): ActionCard {
@@ -125,7 +127,8 @@ const temporarySvgMasterIds = [
   'card-036',
   'card-037',
   'card-038',
-  'card-039'
+  'card-039',
+  'card-040'
 ];
 
 function appRoot(): string {
@@ -139,8 +142,8 @@ function publicAssetPath(imageSrc: string): string {
 }
 
 describe('High Land HIT card deck', () => {
-  it('uses the locked 39-card deck with card-specific artwork paths', () => {
-    expect(starterActionCards).toHaveLength(39);
+  it('uses the complete 40-card deck with card-specific artwork paths', () => {
+    expect(starterActionCards).toHaveLength(40);
     expect(starterActionCards.map((card) => card.imageSrc)).toEqual(
       expectedApprovedFiles.map((file) => `assets/images/cards/hit/master/${file}`)
     );
@@ -198,6 +201,11 @@ describe('High Land HIT card deck', () => {
     expect(drawAgain.lastCard?.id).toBe('card-001');
     expect(drawAgain.players[0].positionIndex).toBe(23);
     expect(drawAgain.currentPlayerIndex).toBe(1);
+
+    const moveAndRollAgain = applyActionCard(positioned, cardById('card-040'), 0, () => 0);
+    expect(moveAndRollAgain.players[0].positionIndex).toBe(22);
+    expect(moveAndRollAgain.phase).toBe('ready');
+    expect(moveAndRollAgain.currentPlayerIndex).toBe(0);
 
     const moveAndDrawAgain = applyActionCard(positioned, cardById('card-003'), 0, () => 0);
     expect(moveAndDrawAgain.lastCard?.id).toBe('card-001');
