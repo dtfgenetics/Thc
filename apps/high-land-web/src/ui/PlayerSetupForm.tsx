@@ -9,6 +9,7 @@ export type PlayerSetupMode = 'local' | 'create_room' | 'join_room';
 export type PlayerSetupSubmit = {
   mode: PlayerSetupMode;
   playerName: string;
+  playerNames: string[];
   playerCount: number;
   roomCode: string | null;
 };
@@ -36,13 +37,20 @@ export function PlayerSetupForm({
 }: PlayerSetupFormProps) {
   const [playerName, setPlayerName] = useState(initialPlayerName);
   const [playerCount, setPlayerCount] = useState(defaultPlayerCount);
+  const [localPlayerNames, setLocalPlayerNames] = useState<string[]>(() =>
+    Array.from({ length: maxPlayers }, (_, index) => index === 0 ? initialPlayerName : `Player ${index + 1}`)
+  );
   const [roomCode, setRoomCode] = useState(initialRoomCode ? normalizeRoomCode(initialRoomCode) : '');
   const [submitted, setSubmitted] = useState(false);
 
   const nameValidation = useMemo(() => validatePlayerName(playerName), [playerName]);
   const roomCodeRequired = mode === 'join_room';
   const roomCodeValid = !roomCodeRequired || isValidRoomCode(roomCode);
-  const canSubmit = nameValidation.valid && roomCodeValid;
+  const localNamesValid = mode !== 'local' || localPlayerNames.slice(0, playerCount).every((name) => {
+    const normalized = name.trim();
+    return normalized.length === 0 || validatePlayerName(normalized).valid;
+  });
+  const canSubmit = (mode === 'local' ? localNamesValid : nameValidation.valid) && roomCodeValid;
 
   function submit(event: FormEvent<HTMLFormElement>): void {
     event.preventDefault();
@@ -50,9 +58,14 @@ export function PlayerSetupForm({
 
     if (!canSubmit) return;
 
+    const submittedNames = mode === 'local'
+      ? localPlayerNames.slice(0, playerCount).map((name, index) => name.trim() || `Player ${index + 1}`)
+      : [nameValidation.value];
+
     onSubmit({
       mode,
-      playerName: nameValidation.value,
+      playerName: submittedNames[0] ?? nameValidation.value,
+      playerNames: submittedNames,
       playerCount,
       roomCode: roomCode ? normalizeRoomCode(roomCode) : null
     });
@@ -64,29 +77,56 @@ export function PlayerSetupForm({
       <h2>{getSetupTitle(mode)}</h2>
       <p className="subtitle">{getSetupSubtitle(mode)}</p>
 
-      <label className="setup-field">
-        <span>Player name</span>
-        <input
-          autoComplete="nickname"
-          maxLength={24}
-          onChange={(event) => setPlayerName(event.target.value)}
-          placeholder="Enter your player name"
-          type="text"
-          value={playerName}
-        />
-      </label>
-      {submitted && !nameValidation.valid ? <p className="form-error">{nameValidation.error}</p> : null}
-
-      {mode === 'local' ? (
-        <label className="setup-field">
-          <span>Players</span>
-          <select onChange={(event) => setPlayerCount(Number(event.target.value))} value={playerCount}>
-            {playerCountOptions.map((count) => (
-              <option key={count} value={count}>{count === 1 ? '1 Player' : `${count} Players`}</option>
-            ))}
-          </select>
-        </label>
-      ) : null}
+      {mode !== 'local' ? (
+        <>
+          <label className="setup-field">
+            <span>Player name</span>
+            <input
+              autoComplete="nickname"
+              maxLength={24}
+              onChange={(event) => setPlayerName(event.target.value)}
+              placeholder="Enter your player name"
+              type="text"
+              value={playerName}
+            />
+          </label>
+          {submitted && !nameValidation.valid ? <p className="form-error">{nameValidation.error}</p> : null}
+        </>
+      ) : (
+        <>
+          <label className="setup-field">
+            <span>Players</span>
+            <select onChange={(event) => setPlayerCount(Number(event.target.value))} value={playerCount}>
+              {playerCountOptions.map((count) => (
+                <option key={count} value={count}>{count === 1 ? '1 Player' : `${count} Players`}</option>
+              ))}
+            </select>
+          </label>
+          <div className="local-player-name-grid" aria-label="Local player names">
+            {localPlayerNames.slice(0, playerCount).map((name, index) => {
+              const validation = name.trim() ? validatePlayerName(name) : { valid: true, error: null };
+              return (
+                <label className="setup-field" key={index}>
+                  <span>Player {index + 1} name</span>
+                  <input
+                    autoComplete={index === 0 ? 'nickname' : 'off'}
+                    maxLength={24}
+                    onChange={(event) => {
+                      const next = [...localPlayerNames];
+                      next[index] = event.target.value;
+                      setLocalPlayerNames(next);
+                    }}
+                    placeholder={`Player ${index + 1}`}
+                    type="text"
+                    value={name}
+                  />
+                  {submitted && !validation.valid ? <small className="form-error">{validation.error}</small> : null}
+                </label>
+              );
+            })}
+          </div>
+        </>
+      )}
 
       {mode === 'join_room' ? (
         <label className="setup-field">
