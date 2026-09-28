@@ -17,6 +17,8 @@ on:
       - "assets/**"
       - "package.json"
       - ".github/workflows/project-os-quality.yml"
+      - ".github/workflows/growlens-ci.yml"
+      - ".github/workflows/build-dtfseeds-public-suite.yml"
   push:
     branches: [main]
     paths:
@@ -34,6 +36,8 @@ on:
       - "assets/**"
       - "package.json"
       - ".github/workflows/project-os-quality.yml"
+      - ".github/workflows/growlens-ci.yml"
+      - ".github/workflows/build-dtfseeds-public-suite.yml"
 
 permissions:
   contents: read
