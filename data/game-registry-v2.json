@@ -115,7 +115,8 @@
     "who-took-it": "who-took-it",
     "who took it?": "who-took-it",
     "who took it": "who-took-it",
-    "thc guess who": "who-took-it"
+    "thc guess who": "who-took-it",
+    "grow room confessions": "grower-conversations"
   },
   "games": [
     {
@@ -270,7 +271,7 @@
     },
     {
       "id": "crossword",
-      "title": "THC Weekly Crossword",
+      "title": "THC Daily Crossword",
       "aliases": [
         "crossword",
         "thc weekly crossword",
@@ -279,13 +280,15 @@
         "cannabis crossword",
         "thc-crossword"
       ],
-      "formerNames": [],
+      "formerNames": [
+        "THC Weekly Crossword"
+      ],
       "relatedGameIds": [],
       "legacyIds": [],
       "publicRoute": "/games/crossword/",
       "goal": {
         "summary": "daily cannabis crossword",
-        "playerFantasy": "daily cannabis crossword",
+        "playerFantasy": "Solve a fresh source-controlled cannabis-themed crossword with newspaper-quality keyboard and mobile interaction.",
         "primaryVerbs": [
           "solve",
           "navigate",
@@ -830,12 +833,15 @@
     },
     {
       "id": "grower-conversations",
-      "title": "Grower Conversations",
+      "title": "Grow Room Confessions",
       "aliases": [
         "grower-conversations",
-        "grower conversations"
+        "grower conversations",
+        "grow room confessions"
       ],
-      "formerNames": [],
+      "formerNames": [
+        "Grower Conversations"
+      ],
       "relatedGameIds": [],
       "legacyIds": [],
       "publicRoute": "/games/grower-conversations/",
