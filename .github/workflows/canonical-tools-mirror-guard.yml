@@ -1,0 +1,35 @@
+name: Canonical tool mirror guard
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'site/public-route-patch/**'
+      - 'scripts/validate-canonical-tools-mirror.mjs'
+      - '.github/workflows/canonical-tools-mirror-guard.yml'
+      - '.github/workflows/sync-canonical-tools.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'site/public-route-patch/**'
+      - 'scripts/validate-canonical-tools-mirror.mjs'
+      - '.github/workflows/canonical-tools-mirror-guard.yml'
+      - '.github/workflows/sync-canonical-tools.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout THC integration repository
+        uses: actions/checkout@v4
+
+      - name: Clone canonical Tools repository
+        run: git clone --depth 1 https://github.com/dtfgenetics/Tools.git /tmp/tools
+
+      - name: Verify THC deployment mirror equals canonical Tools
+        run: node scripts/validate-canonical-tools-mirror.mjs /tmp/tools

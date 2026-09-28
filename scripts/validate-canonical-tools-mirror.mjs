@@ -1,11 +1,26 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 
 const root=process.cwd();
 const errors=[];
 const ok=(v,m)=>{if(!v)errors.push(m)};
 const readJson=file=>JSON.parse(fs.readFileSync(path.join(root,file),'utf8'));
+const canonicalRootArg=process.argv[2] || process.env.TOOLS_REPO_DIR || null;
+
+const walk=(base,rel='')=>{
+  const dir=path.join(base,rel);
+  if(!fs.existsSync(dir)) return [];
+  const out=[];
+  for(const entry of fs.readdirSync(dir,{withFileTypes:true}).sort((a,b)=>a.name.localeCompare(b.name))){
+    const child=path.join(rel,entry.name);
+    if(entry.isDirectory()) out.push(...walk(base,child));
+    else if(entry.isFile()) out.push(child.replaceAll('\\','/'));
+  }
+  return out;
+};
+const sha256=file=>crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 
 const registry=readJson('site/deployment/public-apps.json');
 const owned=(registry.apps||[]).filter(app=>app.canonicalRepository==='dtfgenetics/Tools');
@@ -57,6 +72,40 @@ for(const duplicate of [
   'scripts/run-cultivation-math-release-checks.mjs'
 ]) ok(!fs.existsSync(path.join(root,duplicate)),`canonical Tools validator still duplicated in THC: ${duplicate}`);
 
+if(canonicalRootArg){
+  const canonicalManifestPath=path.join(canonicalRootArg,'migration','manifest.json');
+  ok(fs.existsSync(canonicalManifestPath),`canonical Tools manifest missing: ${canonicalManifestPath}`);
+  if(fs.existsSync(canonicalManifestPath)){
+    const manifest=JSON.parse(fs.readFileSync(canonicalManifestPath,'utf8'));
+    ok(manifest.sourceOfTruth==='dtfgenetics/Tools','canonical manifest sourceOfTruth mismatch');
+    const canonicalPatch=path.join(canonicalRootArg,'site','public-route-patch');
+    const mirrorPatch=path.join(root,'site','public-route-patch');
+    const ownedRoots=[...(manifest.canonicalToolSlugs||[]),'assets'];
+
+    for(const ownedRoot of ownedRoots){
+      const canonicalFiles=walk(canonicalPatch,ownedRoot);
+      const mirrorFiles=walk(mirrorPatch,ownedRoot);
+      const canonicalSet=new Set(canonicalFiles);
+      const mirrorSet=new Set(mirrorFiles);
+
+      for(const rel of canonicalFiles){
+        ok(mirrorSet.has(rel),`missing mirror file: ${rel}`);
+        if(mirrorSet.has(rel)){
+          ok(
+            sha256(path.join(canonicalPatch,rel))===sha256(path.join(mirrorPatch,rel)),
+            `content drift from canonical Tools: ${rel}`
+          );
+        }
+      }
+      if(ownedRoot!=='assets'){
+        for(const rel of mirrorFiles){
+          ok(canonicalSet.has(rel),`non-canonical file inside Tools-owned route mirror: ${rel}`);
+        }
+      }
+    }
+  }
+}
+
 const sync=fs.readFileSync(path.join(root,'.github/workflows/sync-canonical-tools.yml'),'utf8');
 ok(sync.includes('canonicalToolSlugs'),'sync workflow must derive routes from the canonical Tools manifest');
 ok(sync.includes('cp -a /tmp/tools/site/public-route-patch/assets/. site/public-route-patch/assets/'),'sync workflow must mirror the full canonical shared asset tree');
@@ -66,4 +115,4 @@ if(errors.length){
   for(const e of errors)console.error(' - '+e);
   process.exit(1);
 }
-console.log(`Canonical Tools integration mirror valid: ${owned.length} Tools-owned public apps, no legacy GrowLens Atlas source trees, and no duplicated canonical validators.`);
+console.log(`Canonical Tools integration mirror valid: ${owned.length} Tools-owned public apps, no legacy GrowLens Atlas source trees, no duplicated canonical validators${canonicalRootArg ? ', and byte-for-byte parity with dtfgenetics/Tools' : ''}.`);
