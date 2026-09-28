@@ -108,3 +108,18 @@ Decision:
 - retain the old package only as historical provenance until `dtf-thc-hub` reaches archive readiness.
 
 This lane is complete.
+
+
+### WordPress / deployment tooling — canonical deployment stack supersedes legacy hub
+
+Reviewed legacy `dtf-thc-hub/.github/workflows/deploy-dtfseeds.yml`, `scripts/publish-dtfseeds-live.mjs`, and `scripts/dtfseeds-remote-release.sh` against the current `dtfgenetics/Thc` deployment workflows and `scripts/deploy/hostinger-overlay.sh`.
+
+Decision:
+- keep `dtfgenetics/Thc` as the deployment authority;
+- the newer deployer preserves the legacy safety properties: explicit production confirmation, safe `public_html` root validation, backups outside `public_html`, manifest-driven replacement, rollback, and post-deploy verification;
+- the newer deployer additionally validates immutable build artifacts, enforces route ownership boundaries, protects WordPress-/Learning-owned roots from Public Suite mutation, records deployed SHA/scope/backup metadata, and has deterministic activation/rollback tests;
+- the WordPress Public Suite path adds serialized transaction locks, stale-transaction recovery, protected rollback/finalization routes, and resource-aware ownership exclusions;
+- do not migrate the old release shell scripts or old full-site artifact directories into the canonical repo;
+- retain legacy deployment scripts and built artifacts as historical release provenance until `dtf-thc-hub` is archived.
+
+This lane is complete. Production deployments should originate from `dtfgenetics/Thc` only.
