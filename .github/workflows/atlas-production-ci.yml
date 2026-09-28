@@ -50,11 +50,11 @@ jobs:
       - name: Validate Atlas JavaScript syntax
         run: |
           set -euo pipefail
-          node --check apps/growlens-web/public/atlas/atlas-3d-v4.js
-          node --check apps/growlens-web/public/atlas/atlas-3d-bootstrap.js
-          node --check apps/growlens-web/public/atlas/atlas-anatomy-index-v1.js
-          node --check apps/growlens-web/public/atlas/module.js
-          node --check apps/growlens-web/public/terpene-atlas/terpene-atlas-v1.js
+          node --check site/public-route-patch/atlas/atlas-3d-v4.js
+          node --check site/public-route-patch/atlas/atlas-3d-bootstrap.js
+          node --check site/public-route-patch/atlas/atlas-anatomy-index-v1.js
+          node --check site/public-route-patch/atlas/module.js
+          node --check site/public-route-patch/terpene-atlas/terpene-atlas-v1.js
 
       - name: Validate Plant Atlas production contract
         run: node scripts/validate-plant-atlas-v4.mjs
