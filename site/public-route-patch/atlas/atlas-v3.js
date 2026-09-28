@@ -6,6 +6,10 @@
   const filters = [...document.querySelectorAll('[data-category]')];
   const count = document.querySelector('[data-result-count]');
   const featuredSystems = new Set(['root-system', 'leaf-module', 'flower-anatomy']);
+  const compareA = document.querySelector('[data-compare-system-a]');
+  const compareB = document.querySelector('[data-compare-system-b]');
+  const compareGrid = document.querySelector('[data-system-compare]');
+  const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
   const norm = (value) => String(value || '').toLowerCase().trim();
   const searchable = (system) => norm([
@@ -43,6 +47,57 @@
     if (count) count.textContent = `${filtered.length} of ${state.systems.length} systems`;
   }
 
+  function systemLabel(id) {
+    return state.systems.find((item) => item.id === id)?.title || id;
+  }
+
+  function list(items = []) {
+    return items.length ? '<ul>'+items.map((item) => '<li>'+esc(item)+'</li>').join('')+'</ul>' : '<p class="atlas-compare-empty">No entries recorded.</p>';
+  }
+
+  function connectedTools(system) {
+    const tools = Array.isArray(system?.connectedTools) ? system.connectedTools : [];
+    return tools.length ? '<ul>'+tools.map((tool) => '<li><a href="'+esc(tool.route)+'">'+esc(tool.label)+'</a><span>'+esc(tool.note || '')+'</span></li>').join('')+'</ul>' : '<p class="atlas-compare-empty">No dedicated tool links recorded.</p>';
+  }
+
+  function compareCard(system) {
+    if (!system) return '<article class="atlas-compare-card"><p class="atlas-compare-empty">Choose a system.</p></article>';
+    return '<article class="atlas-compare-card">'+
+      '<div class="atlas-compare-card-head"><span>'+esc(system.category)+'</span><h3>'+esc(system.title)+'</h3><p>'+esc(system.summary)+'</p><a href="'+esc(system.route)+'">Open full system →</a></div>'+
+      '<section><h4>Core concepts</h4>'+list(system.concepts)+'</section>'+
+      '<section><h4>What to measure</h4>'+list(system.measurements)+'</section>'+
+      '<section><h4>Evidence questions</h4>'+list(system.evidenceQuestions)+'</section>'+
+      '<section><h4>Cautions</h4>'+list(system.cautions)+'</section>'+
+      '<section><h4>Related systems</h4>'+list((system.related || []).map(systemLabel))+'</section>'+
+      '<section><h4>Connected tools</h4>'+connectedTools(system)+'</section>'+
+    '</article>';
+  }
+
+  function renderCompare() {
+    if (!compareA || !compareB || !compareGrid || !state.systems.length) return;
+    const a = state.systems.find((system) => system.id === compareA.value) || state.systems[0];
+    const b = state.systems.find((system) => system.id === compareB.value) || state.systems[1] || state.systems[0];
+    compareGrid.innerHTML = compareCard(a) + compareCard(b);
+  }
+
+  function populateCompare() {
+    if (!compareA || !compareB) return;
+    const options = state.systems.map((system) => '<option value="'+esc(system.id)+'">'+esc(system.title)+'</option>').join('');
+    compareA.innerHTML = options;
+    compareB.innerHTML = options;
+    const params = new URLSearchParams(location.search);
+    const requestedA = params.get('compareA');
+    const requestedB = params.get('compareB');
+    compareA.value = state.systems.some((system) => system.id === requestedA) ? requestedA : 'root-system';
+    compareB.value = state.systems.some((system) => system.id === requestedB) ? requestedB : 'leaf-module';
+    if (compareA.value === compareB.value && state.systems.length > 1) compareB.value = state.systems.find((system) => system.id !== compareA.value)?.id || compareB.value;
+    for (const select of [compareA, compareB]) select.addEventListener('change', () => {
+      renderCompare();
+      syncUrl();
+    });
+    renderCompare();
+  }
+
   function applyUrlState() {
     const params = new URLSearchParams(location.search);
     const query = params.get('q');
@@ -61,6 +116,8 @@
     const params = new URLSearchParams();
     if (state.query) params.set('q', state.query);
     if (state.category !== 'All') params.set('category', state.category);
+    if (compareA?.value) params.set('compareA', compareA.value);
+    if (compareB?.value) params.set('compareB', compareB.value);
     const next = params.toString() ? `${location.pathname}?${params}` : location.pathname;
     history.replaceState(null, '', next);
   }
@@ -74,6 +131,7 @@
       state.systems = data.systems;
       applyUrlState();
       render();
+      populateCompare();
 
       if (search) {
         search.addEventListener('input', () => {

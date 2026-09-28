@@ -1,7 +1,7 @@
 {
   "schemaVersion": 4,
   "title": "THC Living Plant Atlas",
-  "updated": "2026-09-26",
+  "updated": "2026-09-28",
   "principle": "Understand the plant as a connected biological system. Observe first, test the explanation, then act.",
   "systems": [
     {
@@ -85,7 +85,18 @@
         "Seed vigor and storage",
         "Early seedling failure patterns"
       ],
-      "connectedTools": [],
+      "connectedTools": [
+        {
+          "label": "Root-Zone Temperature",
+          "route": "/root-zone-temperature/",
+          "note": "Record root-zone and irrigation-solution temperature during emergence and early establishment instead of inferring conditions from room air alone."
+        },
+        {
+          "label": "Grow Planner",
+          "route": "/grow-planner/",
+          "note": "Place germination and seedling observations on a dated crop-stage timeline while keeping durations explicitly user-defined."
+        }
+      ],
       "referenceVisuals": [
         {
           "src": "/atlas/assets/THC-ENC-001_VIS-06_Achene_Embryo_Germination_v3.0.0.jpg",
@@ -284,7 +295,13 @@
         "Mechanical support",
         "Wound response"
       ],
-      "connectedTools": []
+      "connectedTools": [
+        {
+          "label": "Plant Growth Tracker",
+          "route": "/plant-growth-tracker/",
+          "note": "Trend stem-associated growth, height, node development, and repeated plant measurements over time."
+        }
+      ]
     },
     {
       "id": "nodes-branching",
@@ -368,7 +385,18 @@
         "Branch initiation",
         "Canopy architecture"
       ],
-      "connectedTools": [],
+      "connectedTools": [
+        {
+          "label": "Plant Growth Tracker",
+          "route": "/plant-growth-tracker/",
+          "note": "Record node count, height, and repeated architecture measurements before and after training."
+        },
+        {
+          "label": "PPFD / Light Lab",
+          "route": "/ppfd-chart/",
+          "note": "Map canopy light distribution when interpreting branch competition, internode development, and asymmetric growth."
+        }
+      ],
       "referenceVisuals": [
         {
           "src": "/atlas/assets/THC-ENC-001_VIS-03_Nodes_Internodes_Branching_v3.0.0.jpg",
@@ -559,7 +587,23 @@
         "Carbohydrate production",
         "Source-sink allocation"
       ],
-      "connectedTools": [],
+      "connectedTools": [
+        {
+          "label": "PPFD / Light Lab",
+          "route": "/ppfd-chart/",
+          "note": "Measure or map PPFD and calculate DLI while preserving sensor, geometry, photoperiod, and fixture context."
+        },
+        {
+          "label": "Photoperiod Planner",
+          "route": "/photoperiod-planner/",
+          "note": "Compare light-duration schedules without confusing photoperiod with photon intensity."
+        },
+        {
+          "label": "Ventilation & CO₂ Reference",
+          "route": "/co2-ventilation/",
+          "note": "Document room-volume airflow planning and CO₂/ventilation context alongside light and carbon-assimilation questions."
+        }
+      ],
       "referenceVisuals": [
         {
           "src": "/atlas/assets/THC-ENC-068_Stomata_Guard_Cells_and_Gas_Exchange.jpg",
@@ -1165,7 +1209,18 @@
         "Phenotyping",
         "Selection records"
       ],
-      "connectedTools": [],
+      "connectedTools": [
+        {
+          "label": "Breeder & Pedigree Builder",
+          "route": "/breeder-pedigree/",
+          "note": "Preserve parentage, generation, population size, selections, and breeding-purpose records behind phenotype claims."
+        },
+        {
+          "label": "Plant Growth Tracker",
+          "route": "/plant-growth-tracker/",
+          "note": "Compare repeated phenotype measurements instead of relying on one-time visual impressions."
+        }
+      ],
       "referenceVisuals": [
         {
           "src": "/atlas/assets/THC-ENC-001_VIS-05_Reproductive_Structures_v3.0.0.jpg",
@@ -1260,7 +1315,18 @@
         "Jasmonate",
         "Signal integration and feedback"
       ],
-      "connectedTools": []
+      "connectedTools": [
+        {
+          "label": "Plant Growth Tracker",
+          "route": "/plant-growth-tracker/",
+          "note": "Trend measurable growth responses after developmental changes, training, or environmental events without assigning hormone causes from appearance alone."
+        },
+        {
+          "label": "Grow Planner",
+          "route": "/grow-planner/",
+          "note": "Anchor developmental transitions and interventions to dates so signaling explanations can be evaluated against timing."
+        }
+      ]
     },
     {
       "id": "environmental-physiology",
@@ -1456,7 +1522,18 @@
         "Defense signaling",
         "Recovery"
       ],
-      "connectedTools": []
+      "connectedTools": [
+        {
+          "label": "Environmental Control Center",
+          "route": "/environment-control/",
+          "note": "Preserve temperature, RH, leaf-temperature, light, root-zone, and guardrail context before assigning a stress cause."
+        },
+        {
+          "label": "IPM Scout",
+          "route": "/ipm-scout/",
+          "note": "Record repeated pest/pathogen observations, route counts, severity, and user-defined thresholds as an evidence trail."
+        }
+      ]
     },
     {
       "id": "diagnostics",

@@ -155,8 +155,26 @@ function renderImportedProfile(profile){
     result.hidden=true;return;
   }
   const known=new Map(state.catalog.compounds.map(x=>[x.id,x]));
+  const unit=String(profile.unit||'').trim(),canComparePopulation=unit.toLowerCase()==='ppm';
   status.innerHTML=`<strong>${esc(profile.displayName)}</strong><p>${esc(profile.sampleId)} · ${esc(profile.matrix)} · ${esc(profile.method)} · ${esc(profile.unit)}</p>`;
-  result.innerHTML=`<h3>Measured sample</h3><p><strong>Source:</strong> ${esc(typeof profile.source==='string'?profile.source:JSON.stringify(profile.source))}</p><table><thead><tr><th>Compound</th><th>Result</th><th>Atlas status</th></tr></thead><tbody>${profile.measurements.map(row=>{const resolved=resolveProfileMeasurement(row,known),item=resolved.item;const resultText=row.value!==undefined?`${esc(row.value)} ${esc(profile.unit)}`:esc(row.qualifier||'reported');const identityStatus=resolved.mode==='unmapped'?'unmapped analyte':resolved.identityResolution==='resolved'?'identity resolved':resolved.identityResolution==='unresolved'?'mapped · identity unresolved':resolved.mode==='normalized-name'?'normalized · identity partial':'mapped · identity review needed';const label=item?.canonicalName||resolved.reportedName||row.compoundId;const original=resolved.mode==='normalized-name'&&resolved.reportedName?`<br><small>reported as: ${esc(resolved.reportedName)}</small>`:'';return `<tr><td>${esc(label)}${original}</td><td>${resultText}</td><td>${esc(identityStatus)}</td></tr>`;}).join('')}</tbody></table><p class="population-note">This browser view does not convert or reinterpret laboratory units. Compare only profiles that use compatible matrices, methods, units, and reporting conventions. Name normalization preserves the original reported analyte label and never infers unreported stereochemistry.</p>`;
+  const rows=profile.measurements.map(row=>{
+    const resolved=resolveProfileMeasurement(row,known),item=resolved.item;
+    const resultText=row.value!==undefined?`${esc(row.value)} ${esc(profile.unit)}`:esc(row.qualifier||'reported');
+    const identityStatus=resolved.mode==='unmapped'?'unmapped analyte':resolved.identityResolution==='resolved'?'identity resolved':resolved.identityResolution==='unresolved'?'mapped · identity unresolved':resolved.mode==='normalized-name'?'normalized · identity partial':'mapped · identity review needed';
+    const label=item?.canonicalName||resolved.reportedName||row.compoundId;
+    const original=resolved.mode==='normalized-name'&&resolved.reportedName?`<br><small>reported as: ${esc(resolved.reportedName)}</small>`:'';
+    let populationContext='No mapped population record.';
+    if(!canComparePopulation) populationContext='Not compared: Atlas population data are ppm and this profile uses '+unit+'.';
+    else if(item){
+      const population=populationFor(item.id)[0];
+      if(population){
+        const max=`${population.maxQualifier||''}${Number(population.maxPpm).toLocaleString(undefined,{maximumFractionDigits:1})}`;
+        populationContext=`n=${state.population.sampleCount} · mean ${Number(population.meanPpm).toLocaleString(undefined,{maximumFractionDigits:1})} ppm · range ${Number(population.minPpm).toLocaleString(undefined,{maximumFractionDigits:1})}–${max} · CV ${Number(population.cvPercent).toLocaleString(undefined,{maximumFractionDigits:1})}%`;
+      }
+    }
+    return `<tr><td>${esc(label)}${original}</td><td>${resultText}</td><td>${esc(identityStatus)}</td><td>${esc(populationContext)}</td></tr>`;
+  }).join('');
+  result.innerHTML=`<h3>Measured sample</h3><p><strong>Source:</strong> ${esc(typeof profile.source==='string'?profile.source:JSON.stringify(profile.source))}</p><table><thead><tr><th>Compound</th><th>Result</th><th>Atlas status</th><th>Atlas population context</th></tr></thead><tbody>${rows}</tbody></table><p class="population-note">Population context is descriptive, not a cultivar target or acceptance range. This browser view never converts laboratory units: n=79 population statistics are shown only when the imported profile already reports ppm. Compare only compatible matrices, methods, units, and reporting conventions. Name normalization preserves the original reported analyte label and never infers unreported stereochemistry.</p>`;
   result.hidden=false;
 }
 function filtered(){
@@ -180,11 +198,27 @@ function render(){
 }
 function buildCompareOptions(){
   const options=state.catalog.compounds.map(x=>`<option value="${esc(x.id)}">${esc(x.canonicalName)}</option>`).join('');
-  $('[data-compare-a]').innerHTML=options;$('[data-compare-b]').innerHTML=options;
-  if(state.catalog.compounds[1])$('[data-compare-b]').value=state.catalog.compounds[1].id;
+  const a=$('[data-compare-a]'),b=$('[data-compare-b]');
+  a.innerHTML=options;b.innerHTML=options;
+  const params=new URLSearchParams(location.search),requestedA=params.get('compareA'),requestedB=params.get('compareB');
+  a.value=state.catalog.compounds.some(x=>x.id===requestedA)?requestedA:(state.catalog.compounds[0]?.id||'');
+  b.value=state.catalog.compounds.some(x=>x.id===requestedB)?requestedB:(state.catalog.compounds[1]?.id||a.value);
+  if(a.value===b.value&&state.catalog.compounds.length>1)b.value=state.catalog.compounds.find(x=>x.id!==a.value)?.id||b.value;
 }
 function compareCard(x){
-  return `<article class="compare-card"><h3>${esc(x.canonicalName)}</h3><dl><dt>Family</dt><dd>${esc(x.class)}</dd><dt>Subclass</dt><dd>${esc(x.subclass||'—')}</dd><dt>Formula</dt><dd>${esc(x.formula||'—')}</dd><dt>Aroma</dt><dd>${esc((x.aromaDescriptors||[]).join(', ')||'—')}</dd><dt>Aliases</dt><dd>${esc((x.aliases||[]).join(', ')||'—')}</dd><dt>Cannabis</dt><dd>${esc(x.cannabisOccurrence||'—')}</dd><dt>Evidence</dt><dd>${esc(x.evidenceGrade||'—')}</dd></dl><p>${esc(x.notes||'')}</p></article>`;
+  const measured=populationFor(x.id),row=measured[0];
+  const identity=({'verified':'verified structure','partially-resolved':'partial identity','unresolved':'unresolved identity','parent-concept':'parent concept'})[x.identityStatus]||'identity review pending';
+  const sourceTitles=(x.evidence||[]).map(sourceFor).filter(Boolean).map(s=>s.title);
+  const population=row?`${Number(row.meanPpm).toLocaleString(undefined,{maximumFractionDigits:1})} mean ppm · range ${Number(row.minPpm).toLocaleString(undefined,{maximumFractionDigits:1})}–${esc(row.maxQualifier||'')}${Number(row.maxPpm).toLocaleString(undefined,{maximumFractionDigits:1})} · CV ${Number(row.cvPercent).toLocaleString(undefined,{maximumFractionDigits:1})}% (n=${state.population.sampleCount})`:'No mapped quantitative population summary.';
+  const authority=x.pubchemCid?`<a href="https://pubchem.ncbi.nlm.nih.gov/compound/${encodeURIComponent(x.pubchemCid)}" target="_blank" rel="noopener">PubChem CID ${esc(x.pubchemCid)}</a>`:'No PubChem CID assigned';
+  return `<article class="compare-card"><h3>${esc(x.canonicalName)}</h3><dl><dt>Family</dt><dd>${esc(x.class)}</dd><dt>Subclass</dt><dd>${esc(x.subclass||'—')}</dd><dt>Formula</dt><dd>${esc(x.formula||'—')}</dd><dt>Identity</dt><dd>${esc(identity)} · ${authority}</dd><dt>Aroma</dt><dd>${esc((x.aromaDescriptors||[]).join(', ')||'—')}</dd><dt>Aliases</dt><dd>${esc((x.aliases||[]).join(', ')||'—')}</dd><dt>Cannabis</dt><dd>${esc(x.cannabisOccurrence||'—')}</dd><dt>Evidence grade</dt><dd>${esc(x.evidenceGrade||'—')}</dd><dt>Measured population</dt><dd>${population}</dd><dt>Sources</dt><dd>${esc(sourceTitles.join(' · ')||'No resolved source title.')}</dd></dl><p>${esc(x.notes||'')}</p><p class="evidence-limit"><strong>Interpretation:</strong> identity resolution and occurrence evidence are separate from evidence for biological or human effects.</p></article>`;
+}
+function syncCompareUrl(){
+  const params=new URLSearchParams(location.search),a=$('[data-compare-a]')?.value,b=$('[data-compare-b]')?.value;
+  if(a)params.set('compareA',a);else params.delete('compareA');
+  if(b)params.set('compareB',b);else params.delete('compareB');
+  const query=params.toString();
+  history.replaceState(null,'',location.pathname+(query?'?'+query:'')+location.hash);
 }
 function renderCompare(){
   const a=state.catalog.compounds.find(x=>x.id===$('[data-compare-a]').value)||state.catalog.compounds[0];
@@ -194,8 +228,14 @@ function renderCompare(){
 $('[data-search]').addEventListener('input',e=>{state.query=e.target.value;render()});
 $('[data-class-filter]').addEventListener('change',e=>{state.family=e.target.value;renderWheel();render()});
 $('[data-scope-filter]').addEventListener('change',e=>{state.scope=e.target.value;render()});
-$('[data-compare-a]').addEventListener('change',renderCompare);
-$('[data-compare-b]').addEventListener('change',renderCompare);
+$('[data-compare-a]').addEventListener('change',()=>{renderCompare();syncCompareUrl()});
+$('[data-compare-b]').addEventListener('change',()=>{renderCompare();syncCompareUrl()});
+$('[data-copy-compare]')?.addEventListener('click',async()=>{
+  syncCompareUrl();
+  const status=$('[data-compare-status]'),url=location.href;
+  try{await navigator.clipboard.writeText(url);if(status)status.textContent='Comparison link copied.'}
+  catch{if(status)status.textContent='Copy unavailable. Use the current page URL.'}
+});
 load().catch(error=>{$('[data-grid]').innerHTML=`<div class="empty">Terpene Atlas data could not load. ${esc(error.message)}</div>`;console.error('[Terpene Atlas]',error)});
 function clearCompoundUrl(){
   const params=new URLSearchParams(location.search);

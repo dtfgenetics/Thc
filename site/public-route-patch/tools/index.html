@@ -159,7 +159,13 @@
     .tool-search input:focus{outline:3px solid rgba(38,120,74,.18);border-color:var(--leaf)}
     .tool-search-status{min-width:130px;text-align:right;color:var(--muted);font-size:.9rem}
     .tool-hidden{display:none!important}
-    @media(max-width:680px){.tool-search{grid-template-columns:1fr}.tool-search-status{text-align:left}}
+    .workflow-entry-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .workflow-entry{min-height:260px;padding:24px;border:1px solid rgba(17,43,28,.11);border-radius:22px;background:var(--paper);box-shadow:0 12px 32px rgba(17,43,28,.06)}
+    .workflow-entry .label{display:inline-flex;margin-bottom:12px;padding:6px 9px;border-radius:999px;background:#edf3ec;color:var(--leaf);font-size:.72rem;font-weight:900}
+    .workflow-entry h3{margin:0 0 9px;font-size:1.35rem}.workflow-entry>p{margin:0 0 16px;color:var(--muted);font-size:.91rem;line-height:1.6}
+    .workflow-route{display:grid;gap:7px;margin-top:auto}.workflow-route a{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border:1px solid rgba(17,43,28,.09);border-radius:10px;background:#fff;color:var(--ink);font-size:.82rem;font-weight:800}.workflow-route a span{color:var(--muted);font-size:.72rem;font-weight:600}.workflow-route a:hover,.workflow-route a:focus-visible{border-color:rgba(38,120,74,.35);background:#f5f8f4}
+    @media(max-width:980px){.workflow-entry-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:680px){.tool-search{grid-template-columns:1fr}.tool-search-status{text-align:left}.workflow-entry-grid{grid-template-columns:1fr}.workflow-entry{min-height:0}}
 </style>
 </head>
 <body>
@@ -208,7 +214,7 @@
       </div>
     </section>
 
-    <div class="wrap quickbar"><nav class="quicknav" aria-label="Tool shortcuts"><a href="#choose-tool">Start here</a><a href="#expanded-tools">All tools</a><a href="#workflow">How it works</a><a href="#measure">Measure</a><a href="#diagnose">Diagnose</a></nav></div>
+    <div class="wrap quickbar"><nav class="quicknav" aria-label="Tool shortcuts"><a href="#choose-tool">Start here</a><a href="#task-workflows">Choose by task</a><a href="#expanded-tools">All tools</a><a href="#workflow">How it works</a><a href="#measure">Measure</a><a href="#diagnose">Diagnose</a></nav></div>
 
     <section class="section" id="choose-tool">
       <div class="wrap">
@@ -220,6 +226,20 @@
       </div>
     </section>
 
+
+    <section class="section soft" id="task-workflows">
+      <div class="wrap">
+        <div class="section-heading"><div><p class="eyebrow">Task-first workflows</p><h2>Start with what you need to do.</h2></div><p>Each route moves from observation or planning into the next useful tool. These are workflow paths, not biological prescriptions.</p></div>
+        <div class="workflow-entry-grid">
+          <article class="workflow-entry"><span class="label">Environment</span><h3>Diagnose the room before blaming the plant.</h3><p>Start with current environmental evidence, then narrow into condensation/VPD context or escalate plant symptoms into Grow Doc.</p><div class="workflow-route"><a href="/environment-control/">1 · Environment Center <span>combine room signals</span></a><a href="/dew-point/">2 · Dew Point Lab <span>condensation risk</span></a><a href="/vpd-chart/">3 · VPD Chart <span>leaf-air context</span></a><a href="/thc-grow-doc/">4 · Grow Doc <span>compare causes</span></a></div></article>
+          <article class="workflow-entry"><span class="label">Irrigation & root zone</span><h3>Review water delivery, root conditions, then dryback.</h3><p>Keep source water, root temperature, irrigation response, and feed/root-zone EC in the same evidence chain.</p><div class="workflow-route"><a href="/water-quality-lab/">1 · Water Quality Lab <span>source chemistry</span></a><a href="/root-zone-temperature/">2 · Root-Zone Temperature <span>measure root context</span></a><a href="/dryback-lab/">3 · Dryback Lab <span>irrigation response</span></a><a href="/environment-control/">4 · Environment Center <span>connect demand</span></a></div></article>
+          <article class="workflow-entry"><span class="label">Feed formulation</span><h3>Formulate from source water, then verify the mixed result.</h3><p>Build the chemistry transparently and keep measurement records beside the recipe instead of treating one calculator output as proof.</p><div class="workflow-route"><a href="/water-quality-lab/">1 · Water Quality Lab <span>source-water inputs</span></a><a href="/fertigation-lab/">2 · Fertigation Lab <span>mass balance</span></a><a href="/ph-meter/">3 · pH Meter <span>verify pH</span></a><a href="/tds-meter/">4 · EC / TDS Meter <span>verify conductivity</span></a></div></article>
+          <article class="workflow-entry"><span class="label">Crop & light planning</span><h3>Put stage, photoperiod, light, and growth on one timeline.</h3><p>Plan timing first, measure actual canopy light, then track plant response instead of assuming the schedule produced the intended result.</p><div class="workflow-route"><a href="/grow-planner/">1 · Grow Planner <span>stage calendar</span></a><a href="/photoperiod-planner/">2 · Photoperiod Planner <span>clock schedule</span></a><a href="/ppfd-chart/">3 · PPFD / DLI Light Lab <span>measure light</span></a><a href="/plant-growth-tracker/">4 · Growth Tracker <span>trend response</span></a></div></article>
+          <article class="workflow-entry"><span class="label">Harvest & post-harvest</span><h3>Preserve the harvest record through dry and cure.</h3><p>Track checkpoints and environmental transitions, then keep the finished record connected to the crop history and chemistry references.</p><div class="workflow-route"><a href="/dry-cure-lab/">1 · Dry & Cure Lab <span>staged checkpoints</span></a><a href="/growlens/">2 · GrowLens <span>harvest record</span></a><a href="/terpene-atlas/">3 · Terpene Atlas <span>chemistry context</span></a></div></article>
+          <article class="workflow-entry"><span class="label">Breeding & selection</span><h3>Measure phenotype before you preserve lineage.</h3><p>Use repeatable observations and plant-science context to support selections, then preserve the actual parentage and generation record.</p><div class="workflow-route"><a href="/plant-growth-tracker/">1 · Growth Tracker <span>phenotype measurements</span></a><a href="/atlas/?compareA=genetics-phenotype&compareB=nodes-branching#compare-systems">2 · Plant Atlas <span>genetics × architecture</span></a><a href="/breeder-pedigree/">3 · Pedigree Builder <span>lineage record</span></a></div></article>
+        </div>
+      </div>
+    </section>
 
     <section class="section" id="expanded-tools">
       <div class="wrap">
