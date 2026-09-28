@@ -1,6 +1,16 @@
 name: Studio Generated Integration CI
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/studio/integrate-generated-change.mjs'
+      - 'scripts/studio/test-generated-integration.mjs'
+      - 'scripts/studio/test-auto-gateway-handoff.mjs'
+      - 'scripts/plan-dtfseeds-release.mjs'
+      - 'site/deployment/release-lanes.json'
+      - '.github/workflows/dtfseeds-production-gateway.yml'
+      - '.github/workflows/studio-generated-integration-ci.yml'
   pull_request:
     branches: [main]
     paths:
