@@ -1,89 +1,43 @@
 # DTFSeeds Game Canonical Source Map
 
-Updated: 2026-09-09
+> GENERATED FROM data/game-registry-v2.json. Compatibility view only; the JSON registry is authoritative.
 
-This document is the human-readable companion to `data/game-source-map.json`.
+Updated: 2026-09-28
+
+| Game | Public route | Canonical repository | Canonical source | Integration / packaged owner | Release state |
+| --- | --- | --- | --- | --- | --- |
+| Bud or Bluff | /games/bud-or-bluff/ | dtfgenetics/Thc | games/bud-or-bluff | dtfgenetics/Thc · site/public-route-patch/games/bud-or-bluff · local-static-php | `public-unverified` |
+| Burn Buds | /games/protect-the-plants/ | dtfgenetics/Thc | games/protect-the-plants | dtfgenetics/Thc · site/public-route-patch/games/protect-the-plants · local-static-php | `public-unverified` |
+| Ganjumanji: The Lost Grower's Temple | /games/ganjumanji/ | dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple | src, public | dtfgenetics/Thc · site/public-route-patch/games/ganjumanji/source-revision.txt · external-pinned-static-build | `release-candidate` |
+| Grow Room Bingo / Bongwater Bingo | /games/grow-room-bingo/ | dtfgenetics/Thc | games/grow-room-bingo | dtfgenetics/Thc · site/public-route-patch/games/grow-room-bingo · local-static | `public-unverified` |
+| Grow Room Defense | /games/grow-room-defense/ | dtfgenetics/Thc | games/grow-room-defense | dtfgenetics/Thc · site/public-route-patch/games/grow-room-defense · local-static | `public-unverified` |
+| Grower Conversations | /games/grower-conversations/ | dtfgenetics/Thc | games/grower-conversations | dtfgenetics/Thc · site/public-route-patch/games/grower-conversations · local-static | `public-unverified` |
+| Harvest Hustle | /games/harvest-hustle/ | dtfgenetics/Thc | games/harvest-hustle | dtfgenetics/Thc · site/public-route-patch/games/harvest-hustle · local-static | `public-unverified` |
+| High IQ — Test Higher Cognition | /games/high-iq/ | dtfgenetics/Thc | games/high-iq, site/public-route-patch/games/high-iq | dtfgenetics/Thc · site/public-route-patch/games/high-iq · local-static | `public-unverified` |
+| High Land: The Sweet Escape | /games/high-land/ | dtfgenetics/Thc | apps/high-land-web | dtfgenetics/Thc · apps/high-land-web · local-build | `public-unverified` |
+| High Life: From Bagseed to Legacy | /games/high-life/ | dtfgenetics/Thc | games/high-life | dtfgenetics/Thc · site/public-route-patch/games/high-life · local-static | `public-unverified` |
+| High Lines | /games/high-lines/ | dtfgenetics/Thc | games/high-lines | dtfgenetics/Thc · site/public-route-patch/games/high-lines · local-static | `public-unverified` |
+| Kush Kings Chess | /games/kush-kings-chess/ | dtfgenetics/Thc-chess-git | client, server | dtfgenetics/Thc · external-full-stack | `playable-local` |
+| Lost in the Terps | /games/lost-in-the-terps/ | dtfgenetics/Thc | games/lost-in-the-terps | dtfgenetics/Thc · site/public-route-patch/games/lost-in-the-terps · local-static | `public-unverified` |
+| Mystery Strain | /games/mystery-strain/ | dtfgenetics/Thc | games/mystery-strain | dtfgenetics/Thc · site/public-route-patch/games/mystery-strain · local-static | `public-unverified` |
+| Pheno Draft | /games/pheno-draft/ | dtfgenetics/Thc | games/pheno-draft | dtfgenetics/Thc · site/public-route-patch/games/pheno-draft · local-static | `public-unverified` |
+| PhenoQuest: The Living Seed Vault | /games/phenoquest/ | dtfgenetics/Catching-phenos | src, data, public/games/phenoquest | dtfgenetics/Thc · site/public-route-patch/games/phenoquest · external-build | `public-unverified` |
+| Quack & Bake: Stoner Duck Race | /games/stoner-duck-race | dtfgenetics/Dtf420 | app/games/stoner-duck-race, game/stoner-duck-race | dtfgenetics/Thc | `prototype` |
+| Root Cause | /games/root-cause/ | dtfgenetics/Thc | games/root-cause | dtfgenetics/Thc · site/public-route-patch/games/root-cause · static | `vertical-slice` |
+| Seed Man: Grow. Fight. Restore. | /games/seed-man-platformer/ | dtfgenetics/Thc | games/seed-man-platformer | dtfgenetics/Thc · site/public-route-patch/games/seed-man-platformer · local-static | `public-unverified` |
+| Seed Man: Seed Ascent | /games/seed-ascent | dtfgenetics/Dtf420 | app/games/seed-ascent, public/seed-ascent.html, public/seed-ascent | dtfgenetics/Thc | `prototype` |
+| Spin the Strain | /games/spin-the-strain/ | dtfgenetics/Thc | games/spin-the-strain | dtfgenetics/Thc · site/public-route-patch/games/spin-the-strain · local-static | `public-unverified` |
+| Strain Match | /games/strain-match/ | dtfgenetics/Thc | games/strain-match | dtfgenetics/Thc · site/public-route-patch/games/strain-match · local-static | `public-unverified` |
+| Strain Showdown | /games/strain-showdown/ | dtfgenetics/Thc | games/strain-showdown | dtfgenetics/Thc · site/public-route-patch/games/strain-showdown · local-static | `public-unverified` |
+| Terpocalypse: Grow Room From Hell | /games/terpocalypse/ | dtfgenetics/Terpocalapse | prototypes/web-fps | dtfgenetics/Thc · site/public-route-patch/games/terpocalypse · verified-snapshot | `public-unverified` |
+| THC RPG — The First Seed | /games/thc-rpg/ | dtfgenetics/Thc-rpg | src, public | dtfgenetics/Thc · site/public-route-patch/games/thc-rpg/source-revision.txt · external-pinned-static-build | `release-candidate` |
+| THC U Know | /games/thc-u-know/ | dtfgenetics/thc-u-know-card-game- | apps/web, apps/server, packages/shared | dtfgenetics/Thc · external-full-stack | `playable-local` |
+| THC Weekly Crossword | /games/crossword/ | dtfgenetics/Thc-crossword- | src, content, public/puzzles | dtfgenetics/Thc · external-build | `public-unverified` |
+| Trichome Trials | /games/trichome-trials/ | dtfgenetics/Thc | games/trichome-trials | dtfgenetics/Thc · site/public-route-patch/games/trichome-trials · local-static | `public-unverified` |
+| Weedopolis: Strain City Edition | /games/weedopolis/ | dtfgenetics/Weedopolis-strain-Edition | src, digital, data | dtfgenetics/Thc · external-build | `public-unverified` |
+| Who Took It? | /games/who-took-it/ | dtfgenetics/Thc-guess-who | 03_digital-game | dtfgenetics/Thc · 03_digital-game · external-build | `public-unverified` |
 
 ## Rule
 
-Never begin a game repair from the deployed HTML, a copied integration bundle, or `dtfgenetics/dtf-thc-hub` merely because that copy is easy to find. Resolve the canonical owner below first, repair and validate there, then integrate through `dtfgenetics/Thc` and the DTFSeeds release pipeline.
+Use `data/game-registry-v2.json` plus the game entry’s `gameDesignDoc` before editing. This file exists for humans and legacy tooling that expect the historical source-map document name.
 
-## Public game catalog
-
-| Public game | DTFSeeds route | Canonical repository | Canonical source | Integration / packaged route |
-| --- | --- | --- | --- | --- |
-| High IQ | `/games/high-iq/` | `dtfgenetics/Thc` | `games/high-iq` + `site/public-route-patch/games/high-iq` | same repo/runtime |
-| High Life | `/games/high-life/` | `dtfgenetics/Thc` | `games/high-life` | `site/public-route-patch/games/high-life` |
-| Seed Man: Grow. Fight. Restore. | `/games/seed-man-platformer/` | `dtfgenetics/Thc` | `games/seed-man-platformer` | `site/public-route-patch/games/seed-man-platformer` |
-| Grower Conversations | `/games/grower-conversations/` | `dtfgenetics/Thc` | `games/grower-conversations` | `site/public-route-patch/games/grower-conversations` |
-| High Land | `/games/high-land/` | `dtfgenetics/Thc` | `apps/high-land-web` | built by the DTFSeeds public suite |
-| Weedopolis | `/games/weedopolis/` | `dtfgenetics/Weedopolis-strain-Edition` | `src`, `digital`, `data` | external canonical build packaged by `dtfgenetics/Thc` |
-| Strain Showdown | `/games/strain-showdown/` | `dtfgenetics/Thc` | `games/strain-showdown` | `site/public-route-patch/games/strain-showdown` |
-| THC Weekly Crossword | `/games/crossword/` | `dtfgenetics/Thc-crossword-` | `src`, `content`, `public/puzzles` | external canonical build packaged by `dtfgenetics/Thc` |
-| Who Took It? | `/games/who-took-it/` | `dtfgenetics/Thc-guess-who` | `03_digital-game` | external canonical build packaged by `dtfgenetics/Thc` |
-| Burn Buds | `/games/protect-the-plants/` | `dtfgenetics/Thc` | `games/protect-the-plants` | `site/public-route-patch/games/protect-the-plants` |
-| Bud or Bluff | `/games/bud-or-bluff/` | `dtfgenetics/Thc` | `games/bud-or-bluff` | `site/public-route-patch/games/bud-or-bluff` |
-| THC U Know | `/games/thc-u-know/` | `dtfgenetics/thc-u-know-card-game-` | `apps/web`, `apps/server`, `packages/shared` | full-stack external runtime integrated by `dtfgenetics/Thc` |
-| Kush Kings Chess | `/games/kush-kings-chess/` | `dtfgenetics/Thc-chess-git` | `client` + `server` | frontend `chess.dtfseeds.com`, API `chess-api.dtfseeds.com`, public-route integration after QA |
-| Terpocalypse | `/games/terpocalypse/` | `dtfgenetics/Terpocalapse` | `prototypes/web-fps` | verified snapshot at `site/public-route-patch/games/terpocalypse` |
-| PhenoQuest | `/games/phenoquest/` | `dtfgenetics/Catching-phenos` | `src`, `data`, `public/games/phenoquest` | external canonical build packaged by `dtfgenetics/Thc` |
-| Strain Match | `/games/strain-match/` | `dtfgenetics/Thc` | `games/strain-match` | `site/public-route-patch/games/strain-match` |
-| Grow Room Bingo / Bongwater Bingo | `/games/grow-room-bingo/` | `dtfgenetics/Thc` | `games/grow-room-bingo` | `site/public-route-patch/games/grow-room-bingo` |
-| Lost in the Terps | `/games/lost-in-the-terps/` | `dtfgenetics/Thc` | `games/lost-in-the-terps` | `site/public-route-patch/games/lost-in-the-terps` |
-| Mystery Strain | `/games/mystery-strain/` | `dtfgenetics/Thc` | `games/mystery-strain` | `site/public-route-patch/games/mystery-strain` |
-| Spin the Strain | `/games/spin-the-strain/` | `dtfgenetics/Thc` | `games/spin-the-strain` | `site/public-route-patch/games/spin-the-strain` |
-| Grow Room Defense | `/games/grow-room-defense/` | `dtfgenetics/Thc` | `games/grow-room-defense` | `site/public-route-patch/games/grow-room-defense` |
-| Harvest Hustle | `/games/harvest-hustle/` | `dtfgenetics/Thc` | `games/harvest-hustle` | `site/public-route-patch/games/harvest-hustle` |
-| Trichome Trials | `/games/trichome-trials/` | `dtfgenetics/Thc` | `games/trichome-trials` | `site/public-route-patch/games/trichome-trials` |
-| Pheno Draft | `/games/pheno-draft/` | `dtfgenetics/Thc` | `games/pheno-draft` | `site/public-route-patch/games/pheno-draft` |
-| High Lines | `/games/high-lines/` | `dtfgenetics/Thc` | `games/high-lines` | `site/public-route-patch/games/high-lines` |
-
-## Development projects shown on the Game Hub
-
-| Project | Canonical repository | Current gate |
-| --- | --- | --- |
-| Ganjumanji | `dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple` | canonical release candidate `0.3.0`; standalone tests, build, route validation, desktop/mobile Playwright, screenshot evidence, and production artifact are green at `e82580d`; DTFSeeds packaging and exact live-route verification remain required |
-| THC RPG | `dtfgenetics/Thc-rpg` | canonical release candidate `2.0.0` pinned at `15fe22d`; standalone tests, visitor-only build, release validation, desktop/mobile Chromium, and `thc-rpg-production-build` are green; central DTFSeeds packaging and exact live-route verification remain required before public promotion |
-
-## Known ownership defects being corrected
-
-### Burn Buds / Protect the Plants / Cannabis Fleet Battle
-
-The public product is **Burn Buds** and the stable route/machine compatibility ID remains `protect-the-plants`. The canonical implementation is `games/protect-the-plants`.
-
-`data/project-registry.json` still contains the older `cannabis-fleet-battle` project identity for the earlier engine scaffold. `data/game-source-map.json` explicitly overrides the production source path so agents do not repair the retired scaffold. The registry should be migrated carefully in a follow-up without breaking active room, route, persistence, or deployment compatibility.
-
-### Terpocalypse V1 vs V2
-
-The stable playable source currently packaged by DTFSeeds is `dtfgenetics/Terpocalapse/prototypes/web-fps`.
-
-`prototypes/web-fps-v2` is a next-generation experimental implementation and its own content-status file says V1 remains authoritative until V2 reaches feature parity. Any documentation that directs production repairs to V2 before parity is stale and must be corrected.
-
-### PhenoQuest status
-
-`dtfgenetics/Catching-phenos` now contains a playable vertical slice and self-contained website build. Older source-of-truth wording that describes the repository as design-only preproduction is stale; it must be updated without implying the full RPG is finished.
-
-### Ganjumanji status
-
-`dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple` is no longer a design-only placeholder. Canonical `main` now contains a complete three-region release-candidate campaign with deterministic model/storage/records, solvability validation, desktop/mobile browser acceptance, and a production build artifact. Central integration pins the exact passing revision and must not promote the game to the public playable count until DTFSeeds packaging plus live-route verification pass.
-
-### THC RPG status
-
-`dtfgenetics/Thc-rpg` is no longer a concept-only placeholder. It contains a tested executable browser release candidate with a route-safe visitor-only artifact. The current progression reaches persistent phenotype journaling, Keeper selection, and deterministic replanting from preserved Keeper cutting stock. Central integration pins the exact merged candidate revision and reserves `/games/thc-rpg/`, while public playable-count promotion remains blocked until DTFSeeds packaging plus exact live-route verification pass.
-
-## Release path
-
-For every game:
-
-1. resolve this canonical owner;
-2. read that game's source-of-truth document and current `main`;
-3. branch and repair canonical source;
-4. validate in the canonical repository;
-5. build or package the integration artifact;
-6. merge through the normal repository workflow;
-7. publish through the protected DTFSeeds pipeline;
-8. verify the exact public visitor URL after deployment.
-
-## Concurrency rule
-
-If a repository is being changed by more than one task or agent, avoid concurrent edits to the same file. Prefer narrow ownership, re-fetch before write, and integrate through a single PR or controlled merge sequence.
