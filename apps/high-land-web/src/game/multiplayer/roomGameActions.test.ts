@@ -58,7 +58,7 @@ describe('room game actions', () => {
       }
     };
 
-    const result = rollRoomGameplay(roomAtHitApproach, sequenceRandom([0, 0.74]));
+    const result = rollRoomGameplay(roomAtHitApproach, sequenceRandom([0, 0.75]));
 
     expect(result.events.map((event) => event.name)).toEqual(['dice_rolled', 'hit_card_drawn']);
     expect(result.events[0].payload).toMatchObject({ roll: 1, fromIndex: hitIndex - 1, toIndex: hitIndex });
