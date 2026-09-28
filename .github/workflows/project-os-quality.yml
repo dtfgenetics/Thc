@@ -47,5 +47,36 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Run Project OS verification
-        run: npm run verify:project-os
+
+      - name: Verify production standards
+        run: npm run verify:production-standards
+
+      - name: Verify shared UI standard
+        run: npm run verify:shared-ui-standard
+
+      - name: Verify page composition
+        run: npm run verify:page-composition
+
+      - name: Verify canonical cultivation tool mirror
+        run: npm run verify:cultivation-reference-tools
+
+      - name: Validate GrowLens release contract
+        run: npm run validate:growlens-release-contract
+
+      - name: Validate Grow Doc release pin
+        run: npm run validate:grow-doc-release-pin
+
+      - name: Verify portfolio registry
+        run: npm run verify:portfolio
+
+      - name: Verify game location registry
+        run: npm run games:locations:check
+
+      - name: Verify asset states
+        run: npm run verify:asset-states
+
+      - name: Verify 3D assets
+        run: npm run verify:3d-assets
+
+      - name: Validate public-suite qualification workflow
+        run: npm run validate:public-suite-qualification-workflow
