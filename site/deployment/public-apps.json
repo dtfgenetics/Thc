@@ -34,7 +34,7 @@
       "route": "/terpene-atlas/",
       "runtime": "static-data-driven",
       "status": "ready-to-package",
-      "build": "npm run validate:terpene-atlas && node scripts/validate-atlas-route-ownership.mjs",
+      "build": "node scripts/validate-canonical-tools-mirror.mjs && node scripts/validate-atlas-route-ownership.mjs",
       "machineData": {
         "schemaVersion": 1,
         "curatedNamedCompounds": 120,
@@ -57,7 +57,7 @@
         "dataCompletenessVisible": true,
         "referenceInventory": "Radwan et al. 2021 reports 120 Cannabis terpenes; Atlas count currently matches 120 but exact one-to-one identity reconciliation remains explicitly unclaimed."
       },
-      "notes": "Learn-owned chemistry explorer with 120 evidence-backed curated compound records, interactive family wheel, measured-population context, profile-driver interpretation, evidence/safety records, shareable compound URLs, and local verified-sample inspection. Cultivar names never receive fixed percentages without measured sample provenance. The ontology explicitly remains expandable and does not claim the current 120 records are a one-to-one reproduction of every identity in the 2021 historical 120-terpene review inventory or the entire global terpene universe.",
+      "notes": "Learn-owned chemistry explorer with 120 evidence-backed curated compound records, interactive family wheel, measured-population context, profile-driver interpretation, evidence/safety records, shareable compound URLs, and local verified-sample inspection. Cultivar names never receive fixed percentages without measured sample provenance. The ontology explicitly remains expandable and does not claim the current 120 records are a one-to-one reproduction of every identity in the 2021 historical 120-terpene review inventory or the entire global terpene universe. Canonical implementation and deep scientific/runtime validation live in dtfgenetics/Tools; this repository validates only the synchronized deployment mirror and site ownership.",
       "canonicalRepository": "dtfgenetics/Tools",
       "integrationRepository": "dtfgenetics/Thc"
     },
@@ -70,7 +70,7 @@
       "route": "/atlas/",
       "runtime": "static-threejs",
       "status": "ready-to-package",
-      "build": "npm run validate:plant-atlas:v4 && node scripts/validate-atlas-route-ownership.mjs",
+      "build": "node scripts/validate-canonical-tools-mirror.mjs && node scripts/validate-atlas-route-ownership.mjs",
       "machineData": {
         "version": "v4",
         "scienceSystems": 16,
@@ -82,7 +82,7 @@
         "externalModelRequired": false,
         "connectedAtlas": "/terpene-atlas/"
       },
-      "notes": "Learn-owned specimen-first 3D plant-science explorer. Source/public mirrors, all 16 enriched system routes, 32 semantic anatomy targets, searchable anatomy index, 3D focus wiring, responsive shell and route ownership are enforced by dedicated Atlas Production CI and the central Public Suite build.",
+      "notes": "Learn-owned specimen-first 3D plant-science explorer. Source/public mirrors, all 16 enriched system routes, 32 semantic anatomy targets, searchable anatomy index, 3D focus wiring, responsive shell and route ownership are enforced by dedicated Atlas Production CI and the central Public Suite build. Canonical implementation and deep scientific/runtime validation live in dtfgenetics/Tools; this repository validates only the synchronized deployment mirror and site ownership.",
       "canonicalRepository": "dtfgenetics/Tools",
       "integrationRepository": "dtfgenetics/Thc"
     },
