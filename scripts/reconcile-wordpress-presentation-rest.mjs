@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
+import { getWordPressSitewideHeaderBlock } from './lib/sitewide-header-template-v6.mjs';
 
 const siteUrl = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
 const username = process.env.WP_API_USERNAME || '';
@@ -38,8 +39,15 @@ function hasAll(text, needles) {
 }
 
 function headerCompliant(text) {
-  return hasAll(text, ['/seeds/', '/learn/', '/tools/', '/games/', '/community/', '/shop/']) &&
-    !hasAny(text, ['email@email.com', '+123456789']);
+  return hasAll(text, [
+    'data-dtf-sitewide-header="canonical-five-v1"',
+    'href="/seeds/"',
+    'href="/learn/"',
+    'href="/tools/"',
+    'href="/games/"',
+    'href="/shop/"'
+  ]) &&
+    !hasAny(text, ['>home</a>', '>courses</a>', '>community</a>', 'email@email.com', '+123456789']);
 }
 
 function footerCompliant(text) {
@@ -114,20 +122,7 @@ await writeFile(join(backupDir, 'templates.json'), `${JSON.stringify(templates, 
 await writeFile(join(backupDir, 'template-parts.json'), `${JSON.stringify(parts, null, 2)}\n`);
 await writeFile(join(backupDir, 'navigation.json'), `${JSON.stringify(navigation, null, 2)}\n`);
 
-const canonicalHeader = `<!-- wp:group {"tagName":"header","style":{"spacing":{"padding":{"top":"18px","bottom":"18px","left":"24px","right":"24px"}}},"layout":{"type":"constrained"}} -->
-<header class="wp-block-group" style="padding-top:18px;padding-right:24px;padding-bottom:18px;padding-left:24px"><!-- wp:group {"layout":{"type":"flex","flexWrap":"wrap","justifyContent":"space-between"}} -->
-<div class="wp-block-group"><!-- wp:site-title {"level":0} /-->
-<!-- wp:navigation {"overlayMenu":"mobile","layout":{"type":"flex","justifyContent":"right"}} -->
-<!-- wp:navigation-link {"label":"Home","url":"/","kind":"custom","isTopLevelLink":true} /-->
-<!-- wp:navigation-link {"label":"Seeds","url":"/seeds/","kind":"custom","isTopLevelLink":true} /-->
-<!-- wp:navigation-link {"label":"Learn","url":"/learn/","kind":"custom","isTopLevelLink":true} /-->
-<!-- wp:navigation-link {"label":"Tools","url":"/tools/","kind":"custom","isTopLevelLink":true} /-->
-<!-- wp:navigation-link {"label":"Games","url":"/games/","kind":"custom","isTopLevelLink":true} /-->
-<!-- wp:navigation-link {"label":"Community","url":"/community/","kind":"custom","isTopLevelLink":true} /-->
-<!-- wp:navigation-link {"label":"Shop","url":"/shop/","kind":"custom","isTopLevelLink":true} /-->
-<!-- /wp:navigation --></div>
-<!-- /wp:group --></header>
-<!-- /wp:group -->`;
+const canonicalHeader = getWordPressSitewideHeaderBlock();
 
 const canonicalFooter = `<!-- wp:group {"tagName":"footer","style":{"spacing":{"padding":{"top":"32px","bottom":"32px","left":"24px","right":"24px"}}},"layout":{"type":"constrained"}} -->
 <footer class="wp-block-group" style="padding-top:32px;padding-right:24px;padding-bottom:32px;padding-left:24px"><!-- wp:paragraph -->
