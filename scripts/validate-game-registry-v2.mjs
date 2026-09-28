@@ -30,12 +30,23 @@ export function validateGameRegistry(registry) {
 
     if (!nonEmpty(game?.title)) issues.push(`${game.id}: missing title`);
     if (!nonEmpty(game?.goal?.summary)) issues.push(`${label}: missing product goal summary`);
+    if (!Array.isArray(game?.goal?.primaryVerbs) || game.goal.primaryVerbs.length < 2) {
+      issues.push(`${label}: goal.primaryVerbs must contain at least two concrete player verbs`);
+    }
+    if (!nonEmpty(game?.gameDesignDoc)) issues.push(`${label}: missing gameDesignDoc/source-of-truth reference`);
+    if (!Array.isArray(game?.systems) || game.systems.length < 3) {
+      issues.push(`${label}: systems must name at least three concrete game systems`);
+    }
     if (!nonEmpty(game?.production?.repository)) issues.push(`${label}: missing production repository`);
     if (!Array.isArray(game?.production?.sourcePaths) || game.production.sourcePaths.length === 0) {
       issues.push(`${label}: missing production sourcePaths`);
     }
     if (!nonEmpty(game?.architecture?.renderer)) issues.push(`${label}: missing architecture.renderer`);
     if (!nonEmpty(game?.architecture?.simulationOwner)) issues.push(`${label}: missing architecture.simulationOwner`);
+    if (!nonEmpty(game?.architecture?.uiLayer)) issues.push(`${label}: missing architecture.uiLayer`);
+    if (!nonEmpty(game?.architecture?.networkModel)) issues.push(`${label}: missing architecture.networkModel`);
+    if (!nonEmpty(game?.quality?.targetExperience)) issues.push(`${label}: missing quality.targetExperience`);
+    if (!Array.isArray(game?.quality?.knownGaps)) issues.push(`${label}: quality.knownGaps must be an array`);
     if (!nonEmpty(game?.verification?.buildCommand)) issues.push(`${label}: missing verification.buildCommand`);
     if (!Array.isArray(game?.verification?.testCommands) || game.verification.testCommands.length === 0) {
       issues.push(`${label}: missing verification.testCommands`);
