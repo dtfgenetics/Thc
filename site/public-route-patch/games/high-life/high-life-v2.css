@@ -148,3 +148,83 @@ button:focus-visible,.button:focus-visible,input:focus-visible,.action-card:focu
   #game-panel[data-era-state] .event-panel{background:Canvas!important;border:1px solid CanvasText!important}
   #game-panel[data-era-state] .era-card::after{display:none!important}
 }
+
+
+/* High Life mobile journey v3.1 — compact resource ribbon.
+   The eight canonical resources remain visible and selectable as presentation;
+   deterministic turn, event and scoring rules are unchanged. */
+@media (max-width:650px) {
+  .resource-panel {
+    padding:.82rem;
+  }
+
+  .resource-panel .section-title {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:.65rem;
+    margin-bottom:.55rem;
+  }
+
+  .resource-panel .section-title h2 {
+    margin-bottom:0;
+    font-size:1.05rem;
+  }
+
+  .resource-panel .resource-hint {
+    justify-self:auto;
+    flex:0 0 auto;
+  }
+
+  .resource-grid {
+    display:flex;
+    gap:.5rem;
+    padding:.1rem .05rem .45rem;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scroll-snap-type:x proximity;
+    scrollbar-width:thin;
+    overscroll-behavior-inline:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  .resource-grid .resource {
+    min-width:0;
+    flex:0 0 min(42vw,165px);
+    scroll-snap-align:start;
+    padding:.62rem .68rem;
+  }
+
+  .resource-grid .resource span {
+    display:block;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .resource-grid .resource strong {
+    font-size:1.2rem;
+  }
+
+  .resource-meter {
+    margin-top:.4rem;
+  }
+
+  .action-panel {
+    margin-top:.7rem;
+  }
+}
+
+@media (max-width:420px) {
+  .resource-grid .resource {
+    flex-basis:44vw;
+  }
+}
+
+@media (forced-colors:active) {
+  @media (max-width:650px) {
+    .resource-grid .resource {
+      border:1px solid CanvasText;
+    }
+  }
+}
