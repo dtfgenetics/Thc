@@ -1,3 +1,4 @@
+// Route reconciliation replay: verify canonical game promotion after footer-marker contract repair.
 import crypto from 'node:crypto';
 import dns from 'node:dns';
 import fs from 'node:fs';
