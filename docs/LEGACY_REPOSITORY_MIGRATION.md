@@ -94,3 +94,17 @@ Decision:
 - retain legacy High IQ files only for provenance until the parent `dtf-thc-hub` repository is ready for archive.
 
 This lane is complete unless a later asset hash/provenance audit finds a unique approved visual not present in the canonical owner.
+
+
+### Legacy shared game engine — superseded; no code migration required
+
+Reviewed `dtf-thc-hub/packages/game-engine` against `dtfgenetics/Thc/games/shared-platform`.
+
+Decision:
+- the legacy package is not a reusable platform; it is an early High Land-specific prototype with 42 generated spaces, five HIT cards, four fixed players, and basic roll/card state transitions;
+- its High Land rules conflict with the current locked High Land specification and therefore must not be reintroduced;
+- the canonical shared platform already owns cross-game settings, audio lifecycle, input mapping, deterministic replay/debug export, seeded randomness, loading, validation, accessibility preferences, browser experience helpers, and privacy-safe telemetry buffering;
+- no legacy code needs to be ported;
+- retain the old package only as historical provenance until `dtf-thc-hub` reaches archive readiness.
+
+This lane is complete.
