@@ -152,7 +152,15 @@
       .actions .button{min-height:46px}
       .workflow-stack span{font-size:.84rem}
     }
-  </style>
+  
+    .tool-search{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;margin:0 0 18px;padding:14px;border:1px solid rgba(17,43,28,.11);border-radius:18px;background:#fff;box-shadow:0 10px 26px rgba(17,43,28,.05)}
+    .tool-search label{display:block;margin-bottom:6px;font-weight:850}
+    .tool-search input{width:100%;min-height:46px;padding:10px 13px;border:1px solid #cbd7cd;border-radius:12px;background:#fff;color:var(--ink);font:inherit}
+    .tool-search input:focus{outline:3px solid rgba(38,120,74,.18);border-color:var(--leaf)}
+    .tool-search-status{min-width:130px;text-align:right;color:var(--muted);font-size:.9rem}
+    .tool-hidden{display:none!important}
+    @media(max-width:680px){.tool-search{grid-template-columns:1fr}.tool-search-status{text-align:left}}
+</style>
 </head>
 <body>
   <!-- dtf-tools-v4: visual hierarchy aligned with the DTF WordPress V3 presentation -->
@@ -215,7 +223,7 @@
 
     <section class="section" id="expanded-tools">
       <div class="wrap">
-        <div class="section-heading"><div><p class="eyebrow">THC Tool Suite</p><h2>Choose the job, not the acronym.</h2></div><p>Browse the full toolbox by task: water and irrigation, environment and light, plant health, lifecycle, and genetics. Start with GrowLens or Grow Doc if you are not sure which tool you need.</p></div><div class="community-callout" style="margin-bottom:34px"><div><p class="eyebrow">Shared cultivation context</p><h3 style="font-size:1.7rem;margin-bottom:8px">Select the grow once. Carry the context across tools.</h3><p>Grow, room, zone, plant, cultivar and stage follow the user through the new tool suite. When a matching GrowLens record exists, supported tools can save directly into the existing GrowLens environment, irrigation, observation, feeding, reservoir and harvest record families without inventing IDs.</p></div><div class="actions"><a class="button primary" href="/growlens/">Open GrowLens</a></div></div>
+        <div class="section-heading"><div><p class="eyebrow">THC Tool Suite</p><h2>Choose the job, not the acronym.</h2></div><p>Browse the full toolbox by task: water and irrigation, environment and light, plant health, lifecycle, and genetics. Start with GrowLens or Grow Doc if you are not sure which tool you need.</p></div><div class="tool-search"><div><label for="toolSearch">Find a tool</label><input id="toolSearch" type="search" placeholder="Try: pH, irrigation, light, breeding, dryback…" autocomplete="off"></div><div id="toolSearchStatus" class="tool-search-status" aria-live="polite">18 tools shown</div></div><div class="community-callout" style="margin-bottom:34px"><div><p class="eyebrow">Shared cultivation context</p><h3 style="font-size:1.7rem;margin-bottom:8px">Select the grow once. Carry the context across tools.</h3><p>Grow, room, zone, plant, cultivar and stage follow the user through the new tool suite. When a matching GrowLens record exists, supported tools can save directly into the existing GrowLens environment, irrigation, observation, feeding, reservoir and harvest record families without inventing IDs.</p></div><div class="actions"><a class="button primary" href="/growlens/">Open GrowLens</a></div></div>
         <details class="tool-group" open><summary>Water, nutrition & irrigation</summary><div class="measure-panel">
         <article><strong>Water Quality Lab</strong><p>Keep pH, EC, alkalinity, hardness and major ions together.</p><a class="text-link" href="/water-quality-lab/">Open Water Lab →</a></article>
         <article><strong>Fertigation Lab</strong><p>Mass-balance fertilizer calculations with explicit units and assumptions.</p><a class="text-link" href="/fertigation-lab/">Open Fertigation Lab →</a></article>
@@ -275,5 +283,31 @@
   </main>
 
   <footer><div class="footer-inner"><div><a class="brand" href="/">DTF Genetics <span>Dream the Future</span></a><p>Documented genetics, Teaching Healthy Cultivation, practical grow tools, original games, and community projects in one home.</p></div><div class="footer-links"><strong>Explore</strong><a href="/seeds/">Seeds</a><a href="/learn/">Learn</a><a href="/tools/">Tools</a><a href="/games/">Games</a><a href="/community/">Community</a><a href="/shop/">Shop</a></div><div class="footer-links"><strong>Learn & connect</strong><a href="/courses/">Courses</a><a href="/learn/start-here/">Start Here</a><a href="/learn/infographics/">Visual Library</a><a href="/contact/">Contact</a><a href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Discord</a></div><div class="copyright">© 2026 DTF Genetics · Dream the Future · Adults only. Follow applicable local laws.</div></div></footer>
-</body>
+<script>
+(()=>{
+  const input=document.getElementById('toolSearch');
+  const status=document.getElementById('toolSearchStatus');
+  const groups=[...document.querySelectorAll('#expanded-tools .tool-group')];
+  if(!input||!status||!groups.length)return;
+  const cards=groups.flatMap(group=>[...group.querySelectorAll('.measure-panel article')].map(card=>({group,card,text:card.textContent.toLowerCase()})));
+  function apply(){
+    const q=input.value.trim().toLowerCase();
+    let shown=0;
+    for(const {card,text} of cards){
+      const match=!q||text.includes(q);
+      card.classList.toggle('tool-hidden',!match);
+      if(match)shown++;
+    }
+    for(const group of groups){
+      const visible=[...group.querySelectorAll('.measure-panel article')].some(card=>!card.classList.contains('tool-hidden'));
+      group.classList.toggle('tool-hidden',!visible);
+      if(q&&visible)group.open=true;
+    }
+    status.textContent=q?shown+' matching tool'+(shown===1?'':'s'):cards.length+' tools shown';
+  }
+  input.addEventListener('input',apply);
+  input.addEventListener('search',apply);
+  apply();
+})();
+</script></body>
 </html>
