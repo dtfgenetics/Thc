@@ -35,11 +35,11 @@ jobs:
           node-version: 22
       - name: Validate Atlas JavaScript syntax
         run: |
-          node --check apps/growlens-web/public/atlas/atlas-v3.js
-          node --check apps/growlens-web/public/atlas/atlas-3d.js
-          node --check apps/growlens-web/public/atlas/atlas-3d-v4.js
-          node --check apps/growlens-web/public/atlas/atlas-3d-bootstrap.js
-          node --check apps/growlens-web/public/atlas/module.js
+          node --check site/public-route-patch/atlas/atlas-v3.js
+          node --check site/public-route-patch/atlas/atlas-3d.js
+          node --check site/public-route-patch/atlas/atlas-3d-v4.js
+          node --check site/public-route-patch/atlas/atlas-3d-bootstrap.js
+          node --check site/public-route-patch/atlas/module.js
           node --check site/public-route-patch/atlas/atlas-v3.js
           node --check site/public-route-patch/atlas/atlas-3d.js
           node --check site/public-route-patch/atlas/atlas-3d-v4.js
