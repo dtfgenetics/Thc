@@ -4,7 +4,6 @@ import path from 'node:path';
 
 const repo = process.cwd();
 const roots = [
-  path.join(repo, 'apps/growlens-web/public/atlas'),
   path.join(repo, 'site/public-route-patch/atlas'),
 ];
 const fail = (message) => { throw new Error(message); };
