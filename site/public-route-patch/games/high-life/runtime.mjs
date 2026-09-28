@@ -121,15 +121,15 @@ function publishEnhancementState() {
 }
 
 function validateEvents(sourceEvents) {
-  if (!Array.isArray(sourceEvents) || sourceEvents.length !== 18) {
+  if (!Array.isArray(sourceEvents) || sourceEvents.length < ERA_IDS.length * ERA_LENGTH) {
     throw new Error('High Life event data is incomplete.');
   }
   if (new Set(sourceEvents.map((event) => event.id)).size !== sourceEvents.length) {
     throw new Error('High Life event IDs must be unique.');
   }
   for (const era of ERA_IDS) {
-    if (sourceEvents.filter((event) => event.era === era).length !== ERA_LENGTH) {
-      throw new Error(`High Life ${era} era must have ${ERA_LENGTH} events.`);
+    if (sourceEvents.filter((event) => event.era === era).length < ERA_LENGTH) {
+      throw new Error(`High Life ${era} era must have at least ${ERA_LENGTH} events.`);
     }
   }
 }
@@ -437,7 +437,7 @@ function load() {
     if (!embedded?.textContent) throw new Error('Embedded High Life events are missing.');
     events = JSON.parse(embedded.textContent);
     validateEvents(events);
-    ui.load.textContent = 'Ready · canonical engine · 18 seeded events · 3 eras · exact autosave resume';
+    ui.load.textContent = `Ready · canonical engine · ${events.length} seeded events · 3 eras · exact autosave resume`;
     ui.setup.hidden = false;
     refreshSaveControls();
   } catch (error) {
