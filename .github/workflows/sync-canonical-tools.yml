@@ -38,6 +38,9 @@ jobs:
           mkdir -p site/public-route-patch/assets
           cp -a /tmp/tools/site/public-route-patch/assets/. site/public-route-patch/assets/
 
+      - name: Verify exact canonical mirror parity
+        run: node scripts/validate-canonical-tools-mirror.mjs /tmp/tools
+
       - name: Run deterministic tool validation
         run: npm run verify:cultivation-reference-tools
 
