@@ -47,6 +47,24 @@
     if (count) count.textContent = `${filtered.length} of ${state.systems.length} systems`;
   }
 
+  function renderSystemTree() {
+    const root = document.querySelector('[data-system-tree]');
+    if (!root || !state.systems.length) return;
+    const categoryOrder=['Development','Anatomy','Physiology','Reproduction','Genetics','Environment','Diagnostics'];
+    const byId=new Map(state.systems.map(system=>[system.id,system]));
+    root.innerHTML=categoryOrder.map(category=>{
+      const systems=state.systems.filter(system=>system.category===category);
+      if(!systems.length)return '';
+      return '<section class="atlas-tree-category"><h3>'+esc(category)+'</h3>'+systems.map(system=>{
+        const related=(system.related||[]).map(id=>byId.get(id)).filter(Boolean);
+        return '<details class="atlas-tree-item"><summary><span>'+esc(system.title)+'</span><small>'+esc(system.category)+'</small></summary><div class="atlas-tree-body"><p>'+esc(system.summary)+'</p><div class="atlas-tree-links"><a href="'+esc(system.route)+'">Open '+esc(system.title)+' →</a>'+(related.length?'<span>Related: '+related.map(item=>'<a href="'+esc(item.route)+'">'+esc(item.title)+'</a>').join(' · ')+'</span>':'<span>No related-system links recorded.</span>')+'</div><details class="atlas-tree-evidence"><summary>Measurements & evidence questions</summary><div class="atlas-tree-columns"><div><strong>Measure</strong>'+list(system.measurements)+'</div><div><strong>Ask</strong>'+list(system.evidenceQuestions)+'</div></div></details></div></details>';
+      }).join('')+'</section>';
+    }).join('');
+    const items=[...root.querySelectorAll('.atlas-tree-item')];
+    document.querySelector('[data-tree-expand]')?.addEventListener('click',()=>items.forEach(item=>item.open=true));
+    document.querySelector('[data-tree-collapse]')?.addEventListener('click',()=>items.forEach(item=>item.open=false));
+  }
+
   function systemLabel(id) {
     return state.systems.find((item) => item.id === id)?.title || id;
   }
@@ -132,6 +150,7 @@
       applyUrlState();
       render();
       populateCompare();
+      renderSystemTree();
 
       if (search) {
         search.addEventListener('input', () => {
