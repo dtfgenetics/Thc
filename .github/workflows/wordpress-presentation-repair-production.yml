@@ -152,6 +152,12 @@ jobs:
           fetch_page '/learn/'
           fetch_page '/community/'
 
+          for body in /tmp/live-check/*.html; do
+            if ! grep -Fqi 'data-dtf-sitewide-header="canonical-five-v1"' "$body"; then
+              echo "Canonical five-item header marker missing from $body" >&2
+              exit 1
+            fi
+          done
           if ! grep -RFiq 'discord.gg/xJbUeHFPMt' /tmp/live-check; then
             echo 'Official Discord CTA was not observed in checked public pages.' >&2
             exit 1
@@ -187,7 +193,7 @@ jobs:
           else
             status='FAILED'
           fi
-          gh issue comment 46 --repo "$GITHUB_REPOSITORY" --body "### WordPress presentation repair: ${status}\n\n- Run: ${GITHUB_RUN_ID}\n- Canonical pages: **${PAGE_OUTCOME}**\n- Theme repair: **${REPAIR_OUTCOME}**\n- Theme/template mutations: **${MUTATIONS:-0}**\n- Live verification: **${VERIFY_OUTCOME}**\n- Checked live: /, /blog/, /learn/, /community/\n- Required outcome: stale fake email/phone/2025 footer removed, canonical navigation visible, and official Discord CTA present."
+          gh issue comment 46 --repo "$GITHUB_REPOSITORY" --body "### WordPress presentation repair: ${status}\n\n- Run: ${GITHUB_RUN_ID}\n- Canonical pages: **${PAGE_OUTCOME}**\n- Theme repair: **${REPAIR_OUTCOME}**\n- Theme/template mutations: **${MUTATIONS:-0}**\n- Live verification: **${VERIFY_OUTCOME}**\n- Checked live: /, /blog/, /learn/, /community/\n- Required outcome: stale fake email/phone/2025 footer removed, canonical five-item navigation visible, and official Discord CTA present." || echo 'Issue 46 reporting skipped: comment limit or transient GitHub API error.'
 
 # Proven Codex REST-only deployment path, hardened for transient Hostinger HTTPS timeouts.
 # Forced after THC education Wave 2 to reconcile the current public shell and legacy blog presentation.
