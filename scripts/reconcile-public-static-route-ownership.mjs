@@ -1,3 +1,4 @@
+// Route reconciliation replay v3: external verifier aligned with canonical footer contract.
 // Route reconciliation replay v2: run against corrected canonical footer assertion.
 // Route reconciliation replay: verify canonical game promotion after footer-marker contract repair.
 import crypto from 'node:crypto';
