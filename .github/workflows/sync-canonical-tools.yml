@@ -1,0 +1,57 @@
+name: Sync canonical cultivation tools
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-canonical-cultivation-tools
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout THC integration repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Clone canonical Tools repository
+        run: git clone --depth 1 https://github.com/dtfgenetics/Tools.git /tmp/tools
+
+      - name: Synchronize canonical tool paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          for d in tools atlas terpene-atlas ph-meter tds-meter vpd-chart ppfd-chart; do
+            test -d "/tmp/tools/site/public-route-patch/$d"
+            rm -rf "site/public-route-patch/$d"
+            cp -a "/tmp/tools/site/public-route-patch/$d" "site/public-route-patch/$d"
+          done
+          mkdir -p site/public-route-patch/assets
+          for f in             thc-cultivation-math-v1.mjs             thc-light-lab-math-v1.mjs             thc-measurement-journal-v1.js             thc-tool-suite-v1.css             thc-tool-suite-v1.js; do
+            test -f "/tmp/tools/site/public-route-patch/assets/$f"
+            cp -a "/tmp/tools/site/public-route-patch/assets/$f" "site/public-route-patch/assets/$f"
+          done
+
+      - name: Run deterministic tool validation
+        run: node scripts/validate-cultivation-reference-tools.mjs
+
+      - name: Commit mirror update when changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "dtf-tools-sync"
+          git config user.email "actions@users.noreply.github.com"
+          git add site/public-route-patch/tools                   site/public-route-patch/atlas                   site/public-route-patch/terpene-atlas                   site/public-route-patch/ph-meter                   site/public-route-patch/tds-meter                   site/public-route-patch/vpd-chart                   site/public-route-patch/ppfd-chart                   site/public-route-patch/assets/thc-cultivation-math-v1.mjs                   site/public-route-patch/assets/thc-light-lab-math-v1.mjs                   site/public-route-patch/assets/thc-measurement-journal-v1.js                   site/public-route-patch/assets/thc-tool-suite-v1.css                   site/public-route-patch/assets/thc-tool-suite-v1.js
+          if git diff --cached --quiet; then
+            echo "THC tool deployment mirror already matches canonical Tools."
+            exit 0
+          fi
+          git commit -m "Sync canonical cultivation tools from dtfgenetics/Tools"
+          git push origin HEAD:main
