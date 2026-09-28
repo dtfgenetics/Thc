@@ -5,7 +5,11 @@
   "type": "branching-life-path-board-game",
   "status": "browser-prototype",
   "route": "/games/high-life/",
-  "eras": ["underground", "medical", "legal"],
+  "eras": [
+    "underground",
+    "medical",
+    "legal"
+  ],
   "turnsPerEra": 6,
   "totalTurns": 18,
   "coreSystems": [
@@ -33,7 +37,12 @@
     "balanceSpreadCeiling": 38
   },
   "prototypeValidation": {
-    "strategies": ["knowledge", "builder", "genetics", "balanced"],
+    "strategies": [
+      "knowledge",
+      "builder",
+      "genetics",
+      "balanced"
+    ],
     "observedAverageSpreadAtImplementation": 9.0834,
     "browserRouteBuilt": true,
     "browserKeyArtIntegrated": true,
@@ -56,5 +65,7 @@
     "print-layout-reviewed": false,
     "original-art-cleared": false,
     "accessibility-reviewed": false
-  }
+  },
+  "eventsPerEra": 9,
+  "eventPoolSize": 27
 }
