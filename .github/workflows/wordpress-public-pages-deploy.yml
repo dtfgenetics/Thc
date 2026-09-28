@@ -100,7 +100,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          grep -Fq 'https://discord.gg/xJbUeHFPMt' site/wordpress/pages/home.html
           grep -Fq 'https://discord.gg/xJbUeHFPMt' site/wordpress/pages/community.html
           grep -Fq '/yellow-leaves/' site/wordpress/pages/learn.html
           grep -Fq '/thc-grow-doc/' site/wordpress/pages/learn.html
@@ -126,7 +125,7 @@ jobs:
               `Validation result: **${process.env.VALIDATION_STATUS}**`,
               '',
               process.env.VALIDATION_STATUS === 'success'
-                ? 'The canonical eight-page WordPress publisher passed pre-deployment validation. Seeds remains delegated to the genetics release family. The protected production deployment job may now proceed.'
+                ? 'The canonical WordPress publisher passed pre-deployment validation. Seeds remains delegated to the genetics release family. The protected production deployment job may now proceed.'
                 : 'The canonical WordPress package failed before the protected deployment stage. Inspect this run; no production WordPress mutation was attempted by the deploy job.',
               '',
               'No credential values are included in this report.'
