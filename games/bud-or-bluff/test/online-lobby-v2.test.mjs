@@ -17,6 +17,9 @@ const visualJs = await import('node:fs/promises').then(fs => fs.readFile(path.jo
 assert.match(appSource, /async function copyText/);
 assert.match(appSource, /document\.execCommand\?\.\('copy'\)/);
 assert.match(appSource, /Copy failed\. Use Share invite or copy the room code\./);
+assert.match(appSource, /function inviteRoomFromUrl\(\)/, 'invite flow must normalize room links before startup');
+assert.match(appSource, /invite&&session\?\.code\?\.toUpperCase\(\)!==invite/, 'an explicit invite to a different room must override the saved-room resume path');
+assert.match(appSource, /session=null;document\.querySelector\('\[data-tab="join"\]'\)\.click\(\);els\.joinCode\.value=invite;return/, 'different-room invites must enter the join flow without calling the old room leave API');
 assert.match(visualCss, /@media\(forced-colors:active\)/);
 assert.match(htmlSource, /visual-state-v3\.css\?v=20260921-mobile-player-rail-v1/, 'mobile player rail CSS must be cache-versioned');
 assert.match(htmlSource, /visual-state-v3\.js\?v=20260921-mobile-player-rail-v1/, 'mobile player rail JS must be cache-versioned');
