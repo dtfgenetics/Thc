@@ -440,6 +440,8 @@ jobs:
         run: |
           set -euo pipefail
           npm run test:growlens
+          npm run validate:plant-atlas:v4
+          npm run validate:terpene-atlas
           npm run build:growlens
           test -s apps/growlens-web/dist/index.html
           test -d apps/growlens-web/dist/api
