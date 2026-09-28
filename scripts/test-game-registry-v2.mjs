@@ -101,4 +101,22 @@ function baseRegistry() {
   assert.ok(issues.some((x) => x.includes('concept')));
 }
 
+{
+  const registry = baseRegistry();
+  registry.games[0].systems = [];
+  registry.games[0].gameDesignDoc = null;
+  registry.games[0].goal.primaryVerbs = [];
+  registry.games[0].architecture.uiLayer = '';
+  registry.games[0].architecture.networkModel = '';
+  registry.games[0].quality = { targetExperience: '', knownGaps: 'not-an-array' };
+  const issues = validateGameRegistry(registry);
+  assert.ok(issues.some((x) => x.includes('gameDesignDoc')));
+  assert.ok(issues.some((x) => x.includes('systems')));
+  assert.ok(issues.some((x) => x.includes('primaryVerbs')));
+  assert.ok(issues.some((x) => x.includes('architecture.uiLayer')));
+  assert.ok(issues.some((x) => x.includes('architecture.networkModel')));
+  assert.ok(issues.some((x) => x.includes('quality.targetExperience')));
+  assert.ok(issues.some((x) => x.includes('quality.knownGaps')));
+}
+
 console.log('game-registry-v2 tests passed');
