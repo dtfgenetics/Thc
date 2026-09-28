@@ -21,9 +21,11 @@ Production branch: `main`
 Production target: `https://dtfseeds.com`
 
 
-## Mandatory game location resolution
+## Mandatory game registry resolution
 
-Before any DTF game code, asset, QA, migration, or release task, read `.agents/skills/dtf-game-location-resolver/SKILL.md` and resolve the game through `data/game-location-registry.json`. Treat that registry as durable project location memory: it distinguishes the production owner from migration copies, prototypes, archived scaffolds, runtime mirrors, asset locations, aliases, and public routes. If records disagree, use `.agents/skills/dtf-game-registry-reconciler/SKILL.md` and update the registries before continuing.
+Before any DTF game research, code, asset, QA, migration, or release task, read `.agents/skills/dtf-game-development/SKILL.md` and resolve the game through `data/game-registry-v2.json`. Treat v2 as the canonical portfolio authority for game identity, aliases, current production repository/source paths, architecture summary, alternate/deprecated copies, release status, blockers, and next milestone.
+
+Then read the resolved game's own source-of-truth/game contract in its canonical repository. Specialized deployment, navigation, asset, and source-map registries remain domain-specific integration records and must agree with v2 on shared identity/route/owner facts. If records disagree, use `.agents/skills/dtf-game-registry-reconciler/SKILL.md` and reconcile them before implementation.
 
 ## DTF system orchestration
 
