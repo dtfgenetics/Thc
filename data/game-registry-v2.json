@@ -1210,15 +1210,16 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "phaser/canvas",
+        "renderer": "React/Vite browser board with Phaser/audio helpers where adopted",
         "frameworks": [
-          "Phaser"
+          "React",
+          "Vite"
         ],
-        "simulationOwner": "canonical tested game engine/state",
-        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "simulationOwner": "High Land game/room state in apps/high-land-web",
+        "uiLayer": "React DOM board and lobby UI",
+        "networkModel": "room/session multiplayer",
+        "multiplayerAuthority": "High Land room API/service",
+        "persistence": "room/session state plus browser-safe local preferences",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -1229,13 +1230,20 @@
         "audioSystem": "game-specific shared/browser audio layer",
         "assetManifest": "apps/high-land-web",
         "sharedSystems": [
-          "DTF game registry",
-          "DTF shared browser experience where adopted"
+          "DTF browser experience",
+          "Howler audio",
+          "DTF game registry"
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "continuous board path with exact dice-to-space movement",
+        "board-coordinate player tokens",
+        "player naming and room/invite flow",
+        "HIT/action cards",
+        "skip-turn, reverse-turn, finish and win rules",
+        "multiplayer room/session logic",
+        "background audio mute",
+        "approved board/card/token art integration"
       ],
       "assets": {
         "registryId": "high-land",
@@ -1335,13 +1343,15 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
-        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "renderer": "self-hosted DOM browser prototype",
+        "frameworks": [
+          "vanilla JavaScript modules"
+        ],
+        "simulationOwner": "games/high-life/src/engine.mjs",
+        "uiLayer": "site/public-route-patch/games/high-life",
+        "networkModel": "local",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "browser-local session/prototype state as implemented",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -1352,13 +1362,18 @@
         "audioSystem": "game-specific shared/browser audio layer",
         "assetManifest": "games/high-life",
         "sharedSystems": [
-          "DTF game registry",
-          "DTF shared browser experience where adopted"
+          "deterministic seeded engine",
+          "DTF game registry"
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "18-turn career split across Underground, Medical, and Legal eras",
+        "reputation, cash, knowledge, assets, compliance, brand, operations, and genetics resources",
+        "one player action plus one seeded era event per turn",
+        "27-event data set",
+        "era-transition preparation gates",
+        "Legacy scoring with balance bonus",
+        "multi-seed balance simulation"
       ],
       "assets": {
         "registryId": "high-life",
@@ -1398,9 +1413,19 @@
       "developmentLocations": [],
       "deprecatedLocations": [],
       "quality": {
-        "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "competitiveBenchmarks": [
+          "life-path board games",
+          "decision-driven browser simulations"
+        ],
+        "targetExperience": "Readable life-path choices, meaningful era transitions, balanced strategies, strong historical progression, and polished board-game presentation.",
+        "knownGaps": [
+          "human playtesting",
+          "richer branch/path presentation",
+          "complete final art set",
+          "accessibility review",
+          "print-layout review",
+          "final economy approval"
+        ]
       },
       "notes": [
         "Self-hosted seeded 18-turn career strategy game across Underground, Medical, and Legal eras with a tested canonical rules engine, exact-resume autosave, deterministic event stream, era transitions, Legacy scoring, mobile layout safeguards, 44px controls, reduced motion, forced colors, and canonical/public data synchronization. Included in the central public-suite validation gate. Human balance playtesting and exact post-deploy live-route verification remain open."
@@ -1584,13 +1609,19 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "server-authoritative or canonical tested engine as recorded by game source",
-        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "multiplayer",
-        "multiplayerAuthority": "authoritative service/runtime",
-        "persistence": "game-specific serialized browser/server state",
+        "renderer": "React/browser chess client",
+        "frameworks": [
+          "client app",
+          "Node server",
+          "Socket.IO",
+          "PostgreSQL",
+          "chess.js-compatible rule layer"
+        ],
+        "simulationOwner": "server-authoritative chess session and legal-move engine",
+        "uiLayer": "client",
+        "networkModel": "persistent Socket.IO multiplayer",
+        "multiplayerAuthority": "Node server",
+        "persistence": "PostgreSQL archived/live match records plus browser session state",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -1601,13 +1632,20 @@
         "audioSystem": "game-specific shared/browser audio layer",
         "assetManifest": null,
         "sharedSystems": [
-          "DTF game registry",
-          "DTF shared browser experience where adopted"
+          "browserExperience.ts",
+          "production runtime smoke contracts",
+          "DTF game registry"
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "legal chess rules including castling, en passant, promotion, check/checkmate/stalemate",
+        "draw, resign, abandon, and rematch",
+        "rooms and two-player live play",
+        "spectators and chat",
+        "archived games",
+        "turn alerts",
+        "share/copy room links",
+        "screen wake lock"
       ],
       "assets": {
         "registryId": "kush-kings-chess",
@@ -2079,13 +2117,15 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
-        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "renderer": "self-contained browser app",
+        "frameworks": [
+          "canonical source modules plus generated public build"
+        ],
+        "simulationOwner": "dtfgenetics/Catching-phenos src/data modules",
+        "uiLayer": "public/games/phenoquest generated browser build",
+        "networkModel": "local",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "local save data",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -2096,13 +2136,22 @@
         "audioSystem": "game-specific shared/browser audio layer",
         "assetManifest": null,
         "sharedSystems": [
-          "DTF game registry",
-          "DTF shared browser experience where adopted"
+          "canonical build verification",
+          "DTF game registry"
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "starter selection and local saves",
+        "map movement and region transitions",
+        "NPC dialogue choices",
+        "weather/expression controls",
+        "turn-based encounters and enemy AI",
+        "status effects, rewards, and inventory materials",
+        "rooting timers and Vault Garden storage",
+        "Keeper/result tracking and Pheno Log",
+        "quest progression and region unlocks",
+        "breeding compatibility previews",
+        "Lineage Lab crosses and offspring claiming"
       ],
       "assets": {
         "registryId": "phenoquest",
@@ -2154,9 +2203,20 @@
       ],
       "deprecatedLocations": [],
       "quality": {
-        "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "competitiveBenchmarks": [
+          "browser RPG/adventure games with collection and breeding systems"
+        ],
+        "targetExperience": "Clear exploration, meaningful phenotype/keeper decisions, readable combat, reliable saves, and an original genetics-preservation identity.",
+        "knownGaps": [
+          "broader world content",
+          "combat variety",
+          "progression depth",
+          "final original visual/audio assets",
+          "mobile/touch QA",
+          "accessibility QA",
+          "save migration",
+          "human playtesting"
+        ]
       },
       "notes": [
         "DTFSeeds route is generated from the verified self-contained build in dtfgenetics/Catching-phenos. Current vertical slice includes starter choice, maps, movement, encounters, combat, inventory, quests, Vault Garden, Keeper tracking, breeding previews, playable Lineage Lab crosses and local save data."
@@ -2221,13 +2281,16 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "server-authoritative or canonical tested engine as recorded by game source",
-        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "multiplayer",
-        "multiplayerAuthority": "authoritative service/runtime",
-        "persistence": "game-specific serialized browser/server state",
+        "renderer": "static HTML/CSS/vanilla JavaScript DOM grid",
+        "frameworks": [
+          "PHP",
+          "WordPress transients"
+        ],
+        "simulationOwner": "same-origin PHP API authoritative multiplayer state",
+        "uiLayer": "vanilla DOM game shell",
+        "networkModel": "same-origin request/response multiplayer API",
+        "multiplayerAuthority": "PHP server",
+        "persistence": "WordPress transients for rooms/recovery",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -2238,13 +2301,21 @@
         "audioSystem": "game-specific shared/browser audio layer",
         "assetManifest": "games/protect-the-plants",
         "sharedSystems": [
-          "DTF game registry",
-          "DTF shared browser experience where adopted"
+          "Burn Buds render-sync runtime",
+          "DTF browser-experience helpers"
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "15x15 two-player hidden-fleet grid",
+        "five cannabis-leaf formations",
+        "server-authoritative placement and turn validation",
+        "desktop one-click fire and mobile two-tap aim/fire",
+        "keyboard grid navigation",
+        "room chat and quick chat",
+        "reconnect and active/finished game recovery",
+        "battle event history",
+        "two-party rematch with alternating starter",
+        "post-game hit/shot statistics"
       ],
       "assets": {
         "registryId": "burn-buds",
@@ -2309,9 +2380,13 @@
         }
       ],
       "quality": {
-        "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "competitiveBenchmarks": [
+          "Battleship-style hidden-fleet browser games"
+        ],
+        "targetExperience": "Fast room setup, clear placement/targeting, reliable reconnect/recovery, strong hit/miss feedback, and complete mobile/keyboard parity.",
+        "knownGaps": [
+          "exact current public live verification metadata still needs to be recorded in v2"
+        ]
       },
       "notes": [
         "Public product and canonical implementation are Burn Buds under protect-the-plants. The older cannabis-fleet-battle registry ID is a legacy scaffold identity and must not be used as the production source path.",
@@ -2475,7 +2550,7 @@
         "max": 1
       },
       "audience": "DTFSeeds browser-game players; mobile and desktop",
-      "gameDesignDoc": null,
+      "gameDesignDoc": "repo:docs/games/seed-ascent.md",
       "production": {
         "repository": "dtfgenetics/Dtf420",
         "sourcePaths": [
@@ -2488,13 +2563,16 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "canvas/webgl",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
-        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "renderer": "canvas",
+        "frameworks": [
+          "Next.js wrapper",
+          "dedicated static browser runtime"
+        ],
+        "simulationOwner": "Seed Ascent static runtime under public/seed-ascent",
+        "uiLayer": "Next.js product shell plus in-runtime HUD",
+        "networkModel": "local",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "browser-local game/progression state as implemented",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -2506,12 +2584,17 @@
         "assetManifest": null,
         "sharedSystems": [
           "DTF game registry",
-          "DTF shared browser experience where adopted"
+          "Dtf420 static overlay"
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "12-stage campaign across six grow-themed worlds",
+        "Plant base form plus timed Fire, Electric, and Ice phenotype powers",
+        "side-scrolling traversal and hazards",
+        "powered enemies and minor bosses",
+        "keyboard and touch input",
+        "animation/state verification",
+        "Next.js route wrapper around dedicated static runtime"
       ],
       "assets": {
         "registryId": "seed-ascent",
@@ -2561,9 +2644,14 @@
       ],
       "deprecatedLocations": [],
       "quality": {
-        "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "competitiveBenchmarks": [
+          "modern responsive browser platformers"
+        ],
+        "targetExperience": "Responsive side-scrolling controls, readable combat and power feedback, reliable 12-stage progression, smooth mobile/desktop play.",
+        "knownGaps": [
+          "final production ownership still needs an explicit cutover decision",
+          "full stage/progression/game-feel QA remains open"
+        ]
       },
       "notes": [
         "Do not route Seed Ascent requests to the production Seed Man source unless the user explicitly asks to reconcile or cut over the two runtimes."
@@ -2627,14 +2715,17 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "canvas/webgl",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
-        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
-        "saveVersion": null,
+        "renderer": "generated Three.js world renderer with deterministic canvas fallback",
+        "frameworks": [
+          "Three.js",
+          "vanilla browser modules"
+        ],
+        "simulationOwner": "games/seed-man-platformer deterministic campaign/combat/system modules",
+        "uiLayer": "browser DOM HUD and campaign UI over renderer",
+        "networkModel": "local",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "serializable campaign/checkpoint/save state v2",
+        "saveVersion": 2,
         "inputModes": [
           "keyboard",
           "mouse/touch"
@@ -2642,15 +2733,23 @@
         "mobileContract": "responsive browser play with touch targets and safe-area containment",
         "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
         "audioSystem": "game-specific shared/browser audio layer",
-        "assetManifest": "games/seed-man-platformer",
+        "assetManifest": "games/seed-man-platformer/data/seed-man-art-manifest-v1.json",
         "sharedSystems": [
-          "DTF game registry",
-          "DTF shared browser experience where adopted"
+          "DTF shared loading",
+          "DTF shared validation",
+          "DTF game registry"
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "20-level campaign across five worlds",
+        "six boss encounters including four-phase Blight King finale",
+        "Plant, Fire, Electric, and Ice forms",
+        "data-driven enemy catalog",
+        "reusable boss state machine",
+        "campaign/checkpoint/save state v2",
+        "Three.js world renderer with deterministic canvas fallback",
+        "keyboard/touch controls",
+        "manifest-keyed approved art pipeline"
       ],
       "assets": {
         "registryId": "seed-man",
@@ -2690,9 +2789,13 @@
       "developmentLocations": [],
       "deprecatedLocations": [],
       "quality": {
-        "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "competitiveBenchmarks": [
+          "polished browser action-platformers"
+        ],
+        "targetExperience": "Responsive platforming, strong character/world presentation, clear phenotype combat, reliable checkpoints, boss readability, and smooth desktop/mobile play.",
+        "knownGaps": [
+          "exact current public live verification metadata still needs to be recorded in v2"
+        ]
       },
       "notes": [
         "Canonical Seed Man v20 release on /games/seed-man-platformer/: 20 levels across Greenhouse Valley, Forest Ruins, Desert Canyon, Frozen Peaks and Eco City; six boss encounters; four-phase Blight King finale; 30-second phenotype combat; browser world mechanics with moving/collapsing/conveyor/bounce/environment systems; synchronized dynamic Three.js platforms; and the approved 2026-09-08 green armored plant-hero visual system. Retired 11/15-level campaigns, Genome Hydra, Genetic Frontier, seed-man-production-v1, seed-man-locked-v1, legacy sprite ownership and procedural character fallback must not be republished."
@@ -2857,7 +2960,7 @@
         "max": 12
       },
       "audience": "DTFSeeds browser-game players; mobile and desktop",
-      "gameDesignDoc": null,
+      "gameDesignDoc": "repo:docs/games/stoner-duck-race.md",
       "production": {
         "repository": "dtfgenetics/Dtf420",
         "sourcePaths": [
@@ -2869,16 +2972,18 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "phaser/canvas",
+        "renderer": "Phaser/canvas presentation",
         "frameworks": [
-          "Phaser"
+          "Phaser",
+          "Colyseus",
+          "Next.js route shell"
         ],
-        "simulationOwner": "canonical tested game engine/state",
-        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
-        "saveVersion": null,
+        "simulationOwner": "game/stoner-duck-race/simulation.ts",
+        "uiLayer": "browser DOM/React shell plus Phaser race presentation",
+        "networkModel": "local deterministic simulation plus optional online Colyseus rooms",
+        "multiplayerAuthority": "Colyseus room state online",
+        "persistence": "localStorage profile v1 for race progression; server room state for online sessions",
+        "saveVersion": 1,
         "inputModes": [
           "keyboard",
           "mouse/touch"
@@ -2889,12 +2994,21 @@
         "assetManifest": null,
         "sharedSystems": [
           "DTF game registry",
-          "DTF shared browser experience where adopted"
+          "Dtf420 game core",
+          "Colyseus SDK"
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "deterministic seeded race simulation",
+        "Derby, Rally, and Chaos race modes",
+        "eight track catalog",
+        "AI racer personalities",
+        "hazards, current zones, and powerups",
+        "rank and finish calculation",
+        "local progression with wins, podiums, coins, best rank and solo best times",
+        "replay system",
+        "Colyseus room create/join",
+        "host ownership, spectators, reconnect, authoritative snapshots"
       ],
       "assets": {
         "registryId": "stoner-duck-race",
@@ -2944,9 +3058,15 @@
       ],
       "deprecatedLocations": [],
       "quality": {
-        "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "competitiveBenchmarks": [
+          "browser party-racing games",
+          "spectator-friendly race games"
+        ],
+        "targetExperience": "Readable party-race chaos with smooth controls, strong track identity, reliable reconnect, spectator support, and replayable progression.",
+        "knownGaps": [
+          "final production owner/public route is not yet locked",
+          "presentation/game-feel and multiplayer QA remain open"
+        ]
       },
       "notes": [
         "Resolve an explicit production owner/cutover before claiming a live route."
@@ -3265,13 +3385,15 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "canvas/webgl",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
-        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "renderer": "Canvas retro-FPS/raycaster",
+        "frameworks": [
+          "vanilla browser runtime"
+        ],
+        "simulationOwner": "dtfgenetics/Terpocalapse/prototypes/web-fps",
+        "uiLayer": "game HUD embedded in stable V1 runtime",
+        "networkModel": "local",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "local best-score/browser state",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -3282,13 +3404,20 @@
         "audioSystem": "game-specific shared/browser audio layer",
         "assetManifest": "assets",
         "sharedSystems": [
-          "DTF game registry",
-          "DTF shared browser experience where adopted"
+          "verified DTFSeeds integration snapshot",
+          "DTF game registry"
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "Veg Lab retro-FPS vertical slice",
+        "raycaster/canvas FPS presentation",
+        "keyboard/mouse and touch controls",
+        "Trim Shears, pH Blaster, and Neem Cannon",
+        "Spider Mite Swarm, Powdery Mildew Ghoul, and Nute Burn Imp",
+        "health, armor, ammo, keys, pickups",
+        "locked-door/keycard progression",
+        "score and local best score",
+        "mission-complete/death/pause states"
       ],
       "assets": {
         "registryId": "terpocalypse",
@@ -3339,9 +3468,19 @@
         }
       ],
       "quality": {
-        "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "competitiveBenchmarks": [
+          "original retro browser FPS games"
+        ],
+        "targetExperience": "Fast old-school shooter readability with original cultivation-horror identity, solid controls, responsive HUD, and zero copied franchise assets.",
+        "knownGaps": [
+          "full campaign expansion",
+          "final original art/audio",
+          "broader level content",
+          "balance",
+          "accessibility",
+          "human playtesting",
+          "V2 has not yet reached production parity"
+        ]
       },
       "notes": [
         "prototypes/web-fps is the stable playable source currently packaged by DTFSeeds. prototypes/web-fps-v2 remains experimental until it reaches feature parity.",
@@ -3545,13 +3684,19 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "server-authoritative or canonical tested engine as recorded by game source",
-        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "multiplayer",
-        "multiplayerAuthority": "authoritative service/runtime",
-        "persistence": "game-specific serialized browser/server state",
+        "renderer": "React/browser card table",
+        "frameworks": [
+          "pnpm monorepo",
+          "web app",
+          "Node server",
+          "Socket.IO",
+          "shared package"
+        ],
+        "simulationOwner": "packages/shared rule engine plus server authority",
+        "uiLayer": "apps/web",
+        "networkModel": "persistent Socket.IO multiplayer",
+        "multiplayerAuthority": "apps/server",
+        "persistence": "server session/round state plus private resume-token/browser state",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -3562,13 +3707,24 @@
         "audioSystem": "game-specific shared/browser audio layer",
         "assetManifest": null,
         "sharedSystems": [
-          "DTF game registry",
-          "DTF shared browser experience where adopted"
+          "qrcode.react",
+          "browserExperience.ts",
+          "production runtime contracts",
+          "DTF game registry"
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "108-card classic deck",
+        "2–8 player private-room multiplayer",
+        "player naming and invite flow",
+        "server-side rule validation",
+        "private hands",
+        "round scoring/history/summary",
+        "reconnect and resume",
+        "special-card feedback",
+        "responsive table/player rail",
+        "QR/share/copy invite flow",
+        "screen wake lock"
       ],
       "assets": {
         "registryId": "thc-u-know",
@@ -3796,13 +3952,15 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
-        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "renderer": "digital board runtime plus layered print-production sources",
+        "frameworks": [
+          "standalone Weedopolis code/data"
+        ],
+        "simulationOwner": "canonical Weedopolis repo game rules/data",
+        "uiLayer": "digital runtime under canonical repo, packaged by DTFSeeds",
+        "networkModel": "game-specific/local unless canonical runtime states otherwise",
+        "multiplayerAuthority": "game-specific",
+        "persistence": "game-specific",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -3811,15 +3969,22 @@
         "mobileContract": "responsive browser play with touch targets and safe-area containment",
         "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
         "audioSystem": "game-specific shared/browser audio layer",
-        "assetManifest": null,
+        "assetManifest": "data/asset_registry.csv",
         "sharedSystems": [
-          "DTF game registry",
-          "DTF shared browser experience where adopted"
+          "40-space board map",
+          "DTF game registry"
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "40-space property-trading board",
+        "property color groups and prices",
+        "deed/card alignment",
+        "Bud Bucks economy",
+        "High Chance and Community Stash decks",
+        "Grow Tents and Dispensaries",
+        "Indica/Sativa/Hybrid/Auto transportation spaces",
+        "Water Works and Grow Lights utilities",
+        "digital/physical rule consistency"
       ],
       "assets": {
         "registryId": "weedopolis",
@@ -3931,13 +4096,15 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
-        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "renderer": "digital browser deduction UI",
+        "frameworks": [
+          "standalone digital game"
+        ],
+        "simulationOwner": "dtfgenetics/Thc-guess-who/03_digital-game plus structured data",
+        "uiLayer": "digital prototype UI",
+        "networkModel": "local or game-specific",
+        "multiplayerAuthority": "not applicable unless explicit mode adds it",
+        "persistence": "game-specific browser state",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -3953,8 +4120,12 @@
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "structured suspect/item/question data",
+        "clear yes/no clue engine",
+        "digital deduction prototype",
+        "printable prototype sources",
+        "suspect elimination and final guess flow",
+        "mode verification"
       ],
       "assets": {
         "registryId": "who-took-it",
@@ -4007,9 +4178,14 @@
       ],
       "deprecatedLocations": [],
       "quality": {
-        "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "competitiveBenchmarks": [
+          "Guess Who-style deduction games"
+        ],
+        "targetExperience": "Fast, unambiguous yes/no questioning, clear elimination state, distinct original characters, and mobile-friendly deduction flow.",
+        "knownGaps": [
+          "final character art waits on playtest confirmation",
+          "clue balance and mode structure still need final validation"
+        ]
       },
       "notes": [
         "Canonical standalone React/Vite build from dtfgenetics/Thc-guess-who/03_digital-game. Production visual art is approved: 25 suspect portraits, 5 canonical missing-item assets, 20 UI/HUD assets, and one case-room environment. The full npm run check gate includes deterministic data/art registry validation, UI and environment validation, production-asset auditing, smoke and balance checks, dependency audit, production build, and mystery-privacy verification. No Playwright is used."
