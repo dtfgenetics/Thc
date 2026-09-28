@@ -491,6 +491,42 @@
       "library_path": null,
       "release_path": null,
       "source_of_truth_doc": "games/root-cause/README.md"
+    },
+    {
+      "id": "cultivation-tools",
+      "name": "THC Cultivation Tools",
+      "type": "cultivation-tool-suite",
+      "status": "canonical",
+      "repo": "dtfgenetics/Tools",
+      "repo_role": "canonical cultivation tools, Plant Atlas, Terpene Atlas, shared tool runtime/UI, cultivation math, datasets, validators, and deploy-compatible public-route sources; dtfgenetics/Thc contains integration/deployment mirrors only",
+      "drive_path": "07 Websites & Apps/DTFSeeds Platform/Tools",
+      "library_path": null,
+      "release_path": "07 Websites & Apps/DTFSeeds Platform/Tools",
+      "source_of_truth_doc": "repo:README.md"
+    },
+    {
+      "id": "dtf420-unified-cutover",
+      "name": "DTF420 Unified Next.js Cutover Candidate",
+      "type": "migration-platform",
+      "status": "merge-candidate",
+      "repo": "dtfgenetics/Dtf420",
+      "repo_role": "future unified Next.js cutover candidate only; overlapping tool, education, certification, diagnostic, and game implementations must not become alternate canonical sources and unique improvements must be ported to the owning canonical repository",
+      "drive_path": null,
+      "library_path": null,
+      "release_path": null,
+      "source_of_truth_doc": "repo:README.md"
+    },
+    {
+      "id": "dtf-thc-hub-legacy",
+      "name": "DTF THC Hub Legacy Workspace",
+      "type": "legacy-platform-workspace",
+      "status": "archive-candidate",
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "repo_role": "legacy overlapping workspace; audit unique code/assets, migrate unique value to canonical repositories, then archive",
+      "drive_path": null,
+      "library_path": null,
+      "release_path": null,
+      "source_of_truth_doc": "repo:README.md"
     }
   ]
 }
