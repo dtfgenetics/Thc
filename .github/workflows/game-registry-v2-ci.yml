@@ -1,0 +1,48 @@
+name: DTF Game Registry V2 CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/game-registry-v2.json'
+      - 'docs/GAME_REGISTRY_V2.md'
+      - 'scripts/validate-game-registry-v2.mjs'
+      - 'scripts/test-game-registry-v2.mjs'
+      - 'scripts/generate-game-registry-docs.mjs'
+      - 'scripts/test-generate-game-registry-docs.mjs'
+      - 'scripts/test-dtf-game-development-skill.mjs'
+      - 'scripts/test-game-registry-preflight.mjs'
+      - '.agents/skills/dtf-game-development/SKILL.md'
+      - '.agents/skills/dtf-game-location-resolver/SKILL.md'
+      - 'package.json'
+      - '.github/workflows/game-registry-v2-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'data/game-registry-v2.json'
+      - 'docs/GAME_REGISTRY_V2.md'
+      - 'scripts/validate-game-registry-v2.mjs'
+      - 'scripts/generate-game-registry-docs.mjs'
+      - '.agents/skills/dtf-game-development/SKILL.md'
+      - 'package.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  registry:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate registry contracts
+        run: |
+          node scripts/test-game-registry-v2.mjs
+          node scripts/validate-game-registry-v2.mjs
+          node scripts/test-generate-game-registry-docs.mjs
+          node scripts/generate-game-registry-docs.mjs --check
+          node scripts/test-dtf-game-development-skill.mjs
+          node scripts/test-game-registry-preflight.mjs
