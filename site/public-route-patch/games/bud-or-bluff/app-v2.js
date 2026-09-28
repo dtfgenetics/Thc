@@ -125,6 +125,7 @@
   els.rematch.addEventListener('click',()=>hostAction('rematch'));els.newRoom.addEventListener('click',leaveRoom);els.leave.addEventListener('click',leaveRoom);els.endGame.addEventListener('click',()=>{if(confirm('End this game for everyone?'))hostAction('end')});
   els.sound.addEventListener('click',()=>{soundOn=!soundOn;storageSet(SOUND_KEY,soundOn?'on':'off');els.sound.textContent=soundOn?'Sound on':'Sound off';if(soundOn)audioPulse('tap')});els.sound.textContent=soundOn?'Sound on':'Sound off';
 
-  async function boot(){session=loadSession();const invite=new URL(location.href).searchParams.get('room');if(invite&&!session){document.querySelector('[data-tab="join"]').click();els.joinCode.value=invite.toUpperCase().slice(0,6)}if(!session)return;setHidden(els.home,true);setHidden(els.room,false);setHidden(els.leave,false);setHidden(els.shareTop,false);try{await refresh();startPolling()}catch{leaveRoom()}}
+  function inviteRoomFromUrl(){const value=new URL(location.href).searchParams.get('room')?.trim().toUpperCase()||'';return /^[A-Z0-9]{6}$/.test(value)?value:''}
+  async function boot(){session=loadSession();const invite=inviteRoomFromUrl();if(invite&&session?.code?.toUpperCase()!==invite){session=null;document.querySelector('[data-tab="join"]').click();els.joinCode.value=invite;return}if(invite&&!session){document.querySelector('[data-tab="join"]').click();els.joinCode.value=invite;return}if(!session)return;setHidden(els.home,true);setHidden(els.room,false);setHidden(els.leave,false);setHidden(els.shareTop,false);try{await refresh();startPolling()}catch{leaveRoom()}}
   boot();
 })();
