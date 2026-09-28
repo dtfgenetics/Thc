@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "integrationRepository": "dtfgenetics/Thc",
+  "policy": "One canonical repository per product domain. dtfgenetics/Thc integrates, packages, verifies, and deploys external canonical products; it must not become a second authoring source for them.",
+  "domains": [
+    {
+      "id": "cultivation-tools",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "thcRole": "integration-mirror",
+      "allowedMirrorPrefixes": [
+        "site/public-route-patch/",
+        "site/deployment/",
+        "data/",
+        "scripts/",
+        ".github/workflows/",
+        "docs/"
+      ],
+      "routes": [
+        "/tools/",
+        "/atlas/",
+        "/terpene-atlas/",
+        "/ph-meter/",
+        "/tds-meter/",
+        "/vpd-chart/",
+        "/ppfd-chart/",
+        "/unit-converter/",
+        "/dilution-calculator/",
+        "/root-zone-temperature/",
+        "/plant-growth-tracker/",
+        "/photoperiod-planner/",
+        "/co2-ventilation/",
+        "/breeder-pedigree/",
+        "/substrate-calculator/",
+        "/grow-planner/",
+        "/dry-cure-lab/",
+        "/ipm-scout/",
+        "/environment-control/",
+        "/dew-point/",
+        "/dryback-lab/",
+        "/fertigation-lab/",
+        "/water-quality-lab/"
+      ]
+    },
+    {
+      "id": "education-platform",
+      "canonicalRepository": "dtfgenetics/thc-grow-hub",
+      "thcRole": "publication-adapter",
+      "allowedMirrorPrefixes": [
+        "site/",
+        "data/",
+        "scripts/",
+        ".github/workflows/",
+        "docs/",
+        "assets/education/"
+      ]
+    },
+    {
+      "id": "academy-certification",
+      "canonicalRepository": "dtfgenetics/Thc-learning-courses-",
+      "thcRole": "publication-adapter",
+      "allowedMirrorPrefixes": [
+        "site/",
+        "data/",
+        "scripts/",
+        ".github/workflows/",
+        "docs/",
+        "assets/education/"
+      ]
+    },
+    {
+      "id": "plant-diagnostics",
+      "canonicalRepository": "dtfgenetics/Thc-dataset",
+      "thcRole": "integration-adapter",
+      "allowedMirrorPrefixes": [
+        "apps/growlens-web/",
+        "site/",
+        "data/",
+        "scripts/",
+        ".github/workflows/",
+        "docs/"
+      ]
+    }
+  ],
+  "transitionalRepositories": [
+    {
+      "repository": "dtfgenetics/Dtf420",
+      "status": "merge-candidate",
+      "rule": "Do not add new canonical implementations for tools, education, certification, diagnostics, or games. Port unique improvements to the owning canonical repository."
+    },
+    {
+      "repository": "dtfgenetics/dtf-thc-hub",
+      "status": "archive-candidate",
+      "rule": "Audit for unique code/assets, migrate unique value to canonical repositories, then archive."
+    }
+  ],
+  "immediateArchiveCandidates": [
+    "dtfgenetics/code",
+    "dtfgenetics/all-in-one-thc-grow-",
+    "dtfgenetics/thc-music-bot-for-discod"
+  ]
+}
