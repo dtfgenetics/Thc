@@ -46,11 +46,11 @@ apps/growlens-web/dist
 ## Living Plant Atlas source route
 
 ```txt
-apps/growlens-web/public/atlas/index.html
-apps/growlens-web/public/atlas/deploy-version.txt
+site/public-route-patch/atlas/index.html
+site/public-route-patch/atlas/deploy-version.txt
 ```
 
-Because `apps/growlens-web` is a Vite app, files under `public/` are copied into `dist/` at build time.
+The Plant Atlas is owned canonically by `dtfgenetics/Tools` and synchronized into `site/public-route-patch/atlas/` for DTFSeeds packaging. GrowLens no longer carries a second Atlas source tree.
 
 ## Expected built files
 
