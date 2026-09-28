@@ -22,6 +22,13 @@ if (boundary.integrationRepository !== "dtfgenetics/Thc") {
   fail("integrationRepository must remain dtfgenetics/Thc");
 }
 
+const forbiddenPrefixes = (boundary.domains ?? []).flatMap((domain) => domain.forbiddenDuplicatePrefixes ?? []);
+for (const prefix of forbiddenPrefixes) {
+  if (fs.existsSync(path.join(root, prefix))) {
+    fail(`Forbidden duplicate product source exists in integration repository: ${prefix}`);
+  }
+}
+
 const domainIds = new Set();
 const canonicalRepos = new Set();
 for (const domain of boundary.domains ?? []) {
