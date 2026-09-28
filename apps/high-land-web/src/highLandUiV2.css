@@ -296,6 +296,21 @@ h2 {
   border-color: var(--hl-border-strong);
 }
 
+.local-player-name-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.local-player-name-grid .setup-field {
+  min-width: 0;
+}
+
+.local-player-name-grid .form-error {
+  display: block;
+  margin-top: 0.35rem;
+}
+
 .setup-field span {
   color: var(--hl-muted);
   font-size: 0.69rem;
@@ -727,6 +742,10 @@ h2 {
   }
 
   .controls-card .button-row {
+    grid-template-columns: 1fr;
+  }
+
+  .local-player-name-grid {
     grid-template-columns: 1fr;
   }
 
