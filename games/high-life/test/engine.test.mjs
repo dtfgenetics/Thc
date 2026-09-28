@@ -5,8 +5,9 @@ import { ACTIONS, ERA_LENGTH, MAX_TURNS, calculateLegacyScore, createGame, curre
 const events = JSON.parse(fs.readFileSync(new URL('../data/events.json', import.meta.url)));
 
 assert.equal(Object.keys(ACTIONS).length, 6);
-assert.equal(events.length, 18);
+assert.equal(events.length, 27);
 assert.equal(new Set(events.map((event) => event.id)).size, events.length);
+for (const era of ['underground','medical','legal']) assert.equal(events.filter((event) => event.era === era).length, 9);
 
 const sequence = ['learn', 'network', 'genetics', 'document', 'build', 'brand'];
 const runA = playStrategy({ seed: 420, actions: sequence, events });
