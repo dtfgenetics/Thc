@@ -1,51 +1,53 @@
 ---
 name: dtf-game-registry-reconciler
-description: Detect and repair drift between DTF game source, deployment, navigation, asset, migration, and location registries. Use when counts, routes, owners, names, aliases, or production status disagree.
+description: Detect and repair drift between the canonical DTF game-registry-v2 and deployment, navigation, source-map, asset, migration, or standalone-repo records. Use when counts, routes, owners, aliases, architecture, or release status disagree.
 metadata:
   author: dtfgenetics
-  version: "1.0.0"
+  version: "2.0.0"
 ---
 
 # DTF Game Registry Reconciler
 
-Use this skill whenever two project records disagree about where a game lives or whether it is public, deployable, archived, or in development.
+Use this skill whenever game records disagree.
 
-## Inputs
+## Primary authority
 
-Always inspect:
-- `data/game-location-registry.json`
+Always start with:
+- `data/game-registry-v2.json`
+- the matching game's canonical `gameDesignDoc` / source-of-truth
+
+Then reconcile against:
 - `data/game-source-map.json`
+- `data/game-location-registry.json` during migration only
 - `site/deployment/public-apps.json`
 - `data/public-navigation.json`
 - `data/game-asset-production-registry.json`
+- standalone release-pin/integration manifests
 - Dtf420 `lib/game-runtime-registry.ts` when migration copies matter
 
-## Alias policy
-
-Do not compare raw IDs until aliases are normalized. Examples:
-- seed-man -> seed-man-platformer
-- burn-buds -> protect-the-plants
-- thc-crossword -> crossword
-- kush-kings-chess -> kush-kings
-
-Prefer one canonical portfolio ID and preserve old IDs as aliases/legacy references.
+Normalize aliases through v2 before comparing IDs.
 
 ## Reconciliation checks
 
-Find:
-- source-map games absent from location registry;
-- deployable game routes absent from source map;
-- public navigation entries with no canonical owner;
-- asset games that only differ by alias;
-- two repositories both claiming production authority;
-- runtime paths that point to archived scaffolds;
-- public routes whose owner differs from deployment metadata;
-- Dtf420 migration copies being mistaken for live authority;
-- stale build/status notes;
-- orphan projects such as deployable games missing from source/navigation registries.
+Find and repair:
+- a specialized registry that points to a different owner/route than v2 without an explicit cutover;
+- public/deployed games missing from v2;
+- v2 public games missing from navigation/deployment records;
+- migration/prototype copies mistaken for production;
+- archived/deprecated paths used as release sources;
+- stale candidate revisions or release notes;
+- two repositories claiming active production ownership;
+- integration snapshots being edited as canonical source;
+- aliases or legacy IDs resolving to multiple games.
 
-Repair the smallest set of registries necessary to make current reality explicit. Do not erase historical aliases that are still needed for migration or redirects.
+When a deliberate architecture/route/ownership change is made, update v2 first or in the same change, then reconcile specialized registries to the new reality.
 
-## Definition of done
+## Verification
 
-All registries resolve the same canonical identity after alias normalization, and `npm run games:locations:check` passes.
+Run:
+- `npm run games:registry:check`
+- `npm run games:registry:docs:check`
+- `npm run games:locations:check`
+- relevant navigation/deployment/release validators
+
+Definition of done: every shared fact resolves to one canonical identity and current owner/status after alias normalization.
