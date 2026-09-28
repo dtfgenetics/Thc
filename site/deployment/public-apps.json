@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
   "sourceOfTruth": "dtfgenetics/Thc",
-  "updated": "2026-09-27",
+  "updated": "2026-09-28",
   "apps": [
     {
       "id": "high-land",
@@ -28,8 +28,8 @@
     {
       "id": "terpene-atlas",
       "title": "THC Terpene Atlas — Chemistry Explorer",
-      "repository": "dtfgenetics/Thc",
-      "sourcePath": "apps/growlens-web/public/terpene-atlas",
+      "repository": "dtfgenetics/Tools",
+      "sourcePath": "site/public-route-patch/terpene-atlas",
       "mirrorPath": "site/public-route-patch/terpene-atlas",
       "route": "/terpene-atlas/",
       "runtime": "static-data-driven",
@@ -57,13 +57,15 @@
         "dataCompletenessVisible": true,
         "referenceInventory": "Radwan et al. 2021 reports 120 Cannabis terpenes; Atlas count currently matches 120 but exact one-to-one identity reconciliation remains explicitly unclaimed."
       },
-      "notes": "Learn-owned chemistry explorer with 120 evidence-backed curated compound records, interactive family wheel, measured-population context, profile-driver interpretation, evidence/safety records, shareable compound URLs, and local verified-sample inspection. Cultivar names never receive fixed percentages without measured sample provenance. The ontology explicitly remains expandable and does not claim the current 120 records are a one-to-one reproduction of every identity in the 2021 historical 120-terpene review inventory or the entire global terpene universe."
+      "notes": "Learn-owned chemistry explorer with 120 evidence-backed curated compound records, interactive family wheel, measured-population context, profile-driver interpretation, evidence/safety records, shareable compound URLs, and local verified-sample inspection. Cultivar names never receive fixed percentages without measured sample provenance. The ontology explicitly remains expandable and does not claim the current 120 records are a one-to-one reproduction of every identity in the 2021 historical 120-terpene review inventory or the entire global terpene universe.",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "plant-atlas",
       "title": "THC Living Plant Atlas — 3D Explorer",
-      "repository": "dtfgenetics/Thc",
-      "sourcePath": "apps/growlens-web/public/atlas",
+      "repository": "dtfgenetics/Tools",
+      "sourcePath": "site/public-route-patch/atlas",
       "mirrorPath": "site/public-route-patch/atlas",
       "route": "/atlas/",
       "runtime": "static-threejs",
@@ -80,227 +82,289 @@
         "externalModelRequired": false,
         "connectedAtlas": "/terpene-atlas/"
       },
-      "notes": "Learn-owned specimen-first 3D plant-science explorer. Source/public mirrors, all 16 enriched system routes, 32 semantic anatomy targets, searchable anatomy index, 3D focus wiring, responsive shell and route ownership are enforced by dedicated Atlas Production CI and the central Public Suite build."
+      "notes": "Learn-owned specimen-first 3D plant-science explorer. Source/public mirrors, all 16 enriched system routes, 32 semantic anatomy targets, searchable anatomy index, 3D focus wiring, responsive shell and route ownership are enforced by dedicated Atlas Production CI and the central Public Suite build.",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "vpd-chart",
       "title": "VPD Chart",
-      "repository": "dtfgenetics/Thc",
+      "repository": "dtfgenetics/Tools",
       "sourcePath": "site/public-route-patch/vpd-chart",
       "route": "/vpd-chart/",
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/vpd-chart/index.html",
-      "notes": "Interactive approximate leaf-VPD calculator and nearby-condition reference table."
+      "notes": "Interactive approximate leaf-VPD calculator and nearby-condition reference table.",
+      "mirrorPath": "site/public-route-patch/vpd-chart",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "ppfd-chart",
       "title": "PPFD / DLI Tool",
-      "repository": "dtfgenetics/Thc",
+      "repository": "dtfgenetics/Tools",
       "sourcePath": "site/public-route-patch/ppfd-chart",
       "route": "/ppfd-chart/",
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/ppfd-chart/index.html",
-      "notes": "Interactive THC Light Lab with PPFD↔DLI calculations, variable-light integration, configurable 3×3 through 9×9 canopy mapping, saved-survey comparison, distribution metrics, edge/center analysis, CSV/JSON round-trip, and measurement-protocol guidance."
+      "notes": "Interactive THC Light Lab with PPFD↔DLI calculations, variable-light integration, configurable 3×3 through 9×9 canopy mapping, saved-survey comparison, distribution metrics, edge/center analysis, CSV/JSON round-trip, and measurement-protocol guidance.",
+      "mirrorPath": "site/public-route-patch/ppfd-chart",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "tds-meter",
       "title": "TDS / EC Meter Reference",
-      "repository": "dtfgenetics/Thc",
+      "repository": "dtfgenetics/Tools",
       "sourcePath": "site/public-route-patch/tds-meter",
       "route": "/tds-meter/",
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/tds-meter/index.html",
-      "notes": "Interactive EC/TDS conversion reference supporting 500 and 700 ppm conventions."
+      "notes": "Interactive EC/TDS conversion reference supporting 500 and 700 ppm conventions.",
+      "mirrorPath": "site/public-route-patch/tds-meter",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "ph-meter",
       "title": "pH Meter Reference",
-      "repository": "dtfgenetics/Thc",
+      "repository": "dtfgenetics/Tools",
       "sourcePath": "site/public-route-patch/ph-meter",
       "route": "/ph-meter/",
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/ph-meter/index.html",
-      "notes": "Interactive reference page for interpreting calibrated pH readings; browser does not directly measure pH."
+      "notes": "Interactive reference page for interpreting calibrated pH readings; browser does not directly measure pH.",
+      "mirrorPath": "site/public-route-patch/ph-meter",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "unit-converter",
       "title": "THC Cultivation Unit Converter",
-      "repository": "dtfgenetics/Thc",
+      "repository": "dtfgenetics/Tools",
       "sourcePath": "site/public-route-patch/unit-converter",
       "route": "/unit-converter/",
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/unit-converter/index.html",
-      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required."
+      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required.",
+      "mirrorPath": "site/public-route-patch/unit-converter",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "dilution-calculator",
       "title": "THC Solution Dilution Calculator",
-      "repository": "dtfgenetics/Thc",
+      "repository": "dtfgenetics/Tools",
       "sourcePath": "site/public-route-patch/dilution-calculator",
       "route": "/dilution-calculator/",
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/dilution-calculator/index.html",
-      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required."
+      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required.",
+      "mirrorPath": "site/public-route-patch/dilution-calculator",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "root-zone-temperature",
       "title": "THC Root-Zone Temperature Reference",
-      "repository": "dtfgenetics/Thc",
+      "repository": "dtfgenetics/Tools",
       "sourcePath": "site/public-route-patch/root-zone-temperature",
       "route": "/root-zone-temperature/",
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/root-zone-temperature/index.html",
-      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required."
+      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required.",
+      "mirrorPath": "site/public-route-patch/root-zone-temperature",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "plant-growth-tracker",
       "title": "THC Plant Growth Tracker",
-      "repository": "dtfgenetics/Thc",
+      "repository": "dtfgenetics/Tools",
       "sourcePath": "site/public-route-patch/plant-growth-tracker",
       "route": "/plant-growth-tracker/",
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/plant-growth-tracker/index.html",
-      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required."
+      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required.",
+      "mirrorPath": "site/public-route-patch/plant-growth-tracker",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "photoperiod-planner",
       "title": "THC Photoperiod & Lighting Schedule",
-      "repository": "dtfgenetics/Thc",
+      "repository": "dtfgenetics/Tools",
       "sourcePath": "site/public-route-patch/photoperiod-planner",
       "route": "/photoperiod-planner/",
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/photoperiod-planner/index.html",
-      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required."
+      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required.",
+      "mirrorPath": "site/public-route-patch/photoperiod-planner",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "co2-ventilation",
       "title": "THC Ventilation & CO₂ Reference",
-      "repository": "dtfgenetics/Thc",
+      "repository": "dtfgenetics/Tools",
       "sourcePath": "site/public-route-patch/co2-ventilation",
       "route": "/co2-ventilation/",
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/co2-ventilation/index.html",
-      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required."
+      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required.",
+      "mirrorPath": "site/public-route-patch/co2-ventilation",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "breeder-pedigree",
       "title": "DTF Breeding & Pedigree Builder",
-      "repository": "dtfgenetics/Thc",
+      "repository": "dtfgenetics/Tools",
       "sourcePath": "site/public-route-patch/breeder-pedigree",
       "route": "/breeder-pedigree/",
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/breeder-pedigree/index.html",
-      "notes": "THC Tool Suite v1 shared-shell implementation; promoted after deterministic feature validation; Public Suite packaging and live verification are required."
+      "notes": "THC Tool Suite v1 shared-shell implementation; promoted after deterministic feature validation; Public Suite packaging and live verification are required.",
+      "mirrorPath": "site/public-route-patch/breeder-pedigree",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "substrate-calculator",
       "title": "THC Substrate & Container Calculator",
-      "repository": "dtfgenetics/Thc",
+      "repository": "dtfgenetics/Tools",
       "sourcePath": "site/public-route-patch/substrate-calculator",
       "route": "/substrate-calculator/",
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/substrate-calculator/index.html",
-      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required."
+      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required.",
+      "mirrorPath": "site/public-route-patch/substrate-calculator",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "grow-planner",
       "title": "THC Grow Cycle Planner",
-      "repository": "dtfgenetics/Thc",
+      "repository": "dtfgenetics/Tools",
       "sourcePath": "site/public-route-patch/grow-planner",
       "route": "/grow-planner/",
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/grow-planner/index.html",
-      "notes": "THC Tool Suite v1 shared-shell implementation; promoted after deterministic feature validation; Public Suite packaging and live verification are required."
+      "notes": "THC Tool Suite v1 shared-shell implementation; promoted after deterministic feature validation; Public Suite packaging and live verification are required.",
+      "mirrorPath": "site/public-route-patch/grow-planner",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "dry-cure-lab",
       "title": "THC Dry & Cure Lab",
-      "repository": "dtfgenetics/Thc",
+      "repository": "dtfgenetics/Tools",
       "sourcePath": "site/public-route-patch/dry-cure-lab",
       "route": "/dry-cure-lab/",
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/dry-cure-lab/index.html",
-      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required."
+      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required.",
+      "mirrorPath": "site/public-route-patch/dry-cure-lab",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "ipm-scout",
       "title": "THC IPM Scout",
-      "repository": "dtfgenetics/Thc",
+      "repository": "dtfgenetics/Tools",
       "sourcePath": "site/public-route-patch/ipm-scout",
       "route": "/ipm-scout/",
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/ipm-scout/index.html",
-      "notes": "THC Tool Suite v1 shared-shell implementation; promoted after deterministic feature validation; Public Suite packaging and live verification are required."
+      "notes": "THC Tool Suite v1 shared-shell implementation; promoted after deterministic feature validation; Public Suite packaging and live verification are required.",
+      "mirrorPath": "site/public-route-patch/ipm-scout",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "environment-control",
       "title": "THC Environmental Control Center",
-      "repository": "dtfgenetics/Thc",
+      "repository": "dtfgenetics/Tools",
       "sourcePath": "site/public-route-patch/environment-control",
       "route": "/environment-control/",
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/environment-control/index.html",
-      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required."
+      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required.",
+      "mirrorPath": "site/public-route-patch/environment-control",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "dew-point",
       "title": "THC Dew Point & Condensation Lab",
-      "repository": "dtfgenetics/Thc",
+      "repository": "dtfgenetics/Tools",
       "sourcePath": "site/public-route-patch/dew-point",
       "route": "/dew-point/",
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/dew-point/index.html",
-      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required."
+      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required.",
+      "mirrorPath": "site/public-route-patch/dew-point",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "dryback-lab",
       "title": "THC Irrigation & Dryback Lab",
-      "repository": "dtfgenetics/Thc",
+      "repository": "dtfgenetics/Tools",
       "sourcePath": "site/public-route-patch/dryback-lab",
       "route": "/dryback-lab/",
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/dryback-lab/index.html",
-      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required."
+      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required.",
+      "mirrorPath": "site/public-route-patch/dryback-lab",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "fertigation-lab",
       "title": "THC Fertigation Lab",
-      "repository": "dtfgenetics/Thc",
+      "repository": "dtfgenetics/Tools",
       "sourcePath": "site/public-route-patch/fertigation-lab",
       "route": "/fertigation-lab/",
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/fertigation-lab/index.html",
-      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required."
+      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required.",
+      "mirrorPath": "site/public-route-patch/fertigation-lab",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "water-quality-lab",
       "title": "THC Water Quality Lab",
-      "repository": "dtfgenetics/Thc",
+      "repository": "dtfgenetics/Tools",
       "sourcePath": "site/public-route-patch/water-quality-lab",
       "route": "/water-quality-lab/",
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/water-quality-lab/index.html",
-      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required."
+      "notes": "THC Tool Suite v1 implementation promoted after deterministic suite validation; Public Suite packaging and live route verification are required.",
+      "mirrorPath": "site/public-route-patch/water-quality-lab",
+      "canonicalRepository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "weedopolis",

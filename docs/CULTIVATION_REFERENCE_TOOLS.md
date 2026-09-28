@@ -33,17 +33,9 @@ The Cultivation Tools hub at `/tools/` is the launcher. Reference tools that nee
 
 ## Release ownership
 
-Canonical source lives in:
+Canonical implementation source is `dtfgenetics/Tools`.
 
-- `site/public-route-patch/tools/index.html`
-- `site/public-route-patch/atlas/`
-- `site/public-route-patch/terpene-atlas/`
-- `site/public-route-patch/ph-meter/`
-- `site/public-route-patch/tds-meter/`
-- `site/public-route-patch/vpd-chart/`
-- `site/public-route-patch/ppfd-chart/`
-
-The routes are registered in `data/public-navigation.json` and `site/deployment/public-apps.json`. The public-suite packager, resource-aware WordPress publisher and Hostinger public-suite fallback must all preserve these routes.
+The matching paths under `dtfgenetics/Thc/site/public-route-patch/` are deployment/integration mirrors used by the public-suite packager, resource-aware WordPress publisher, and Hostinger deployment path. Tool features, fixes, datasets, shared runtime changes, and cultivation-math changes must originate in `dtfgenetics/Tools`; the integration mirror must not overwrite the canonical repository.
 
 ## Validation
 
