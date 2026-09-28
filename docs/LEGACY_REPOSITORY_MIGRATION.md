@@ -169,3 +169,16 @@ Decision:
 Canonical certification behavior belongs to `dtfgenetics/Thc-learning-courses-` and its approved runtime/integration layer. Certification must preserve the current requirements for controlled course versions, independent answer selection before submission, grader behavior after submission, time limits where required, saved choices, learner/application identity, reference numbers, pass rules, review/evidence gates, and credential issuance controls.
 
 General course browsing/learning UX may be reimplemented from current canonical education content, but the legacy browser-local certificate logic is explicitly retired.
+
+
+### Legacy Weedopolis shared-UI wrapper — integration-only; no migration required
+
+Reviewed `dtf-thc-hub/packages/shared-ui/src/weedopolis/WeedopolisGame.jsx`.
+
+Decision:
+- this component contains no game rules, state engine, board data, deck data, or persistence logic;
+- it is only an iframe wrapper around `/games/weedopolis/play/`;
+- canonical Weedopolis ownership remains `dtfgenetics/Weedopolis-strain-Edition`;
+- future production integration belongs in `dtfgenetics/Thc` through the deployment/project registries, not through this legacy shared-UI component.
+
+No code migration is required. This wrapper is historical integration evidence only.
