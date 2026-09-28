@@ -53,7 +53,8 @@ for(const asset of [
 
 for(const legacy of [
   'apps/growlens-web/public/atlas',
-  'apps/growlens-web/public/terpene-atlas'
+  'apps/growlens-web/public/terpene-atlas',
+  'apps/growlens-web/public/assets/images/atlas'
 ]) ok(!fs.existsSync(path.join(root,legacy)),`legacy GrowLens-owned tool source must not exist: ${legacy}`);
 
 for(const legacyArtifact of [
@@ -87,7 +88,14 @@ for(const duplicate of [
   'scripts/validate-light-lab-shared-math-integration.mjs',
   'scripts/validate-growlens-tool-diary-bridges.mjs',
   'scripts/run-cultivation-math-engine-checks.mjs',
-  'scripts/run-cultivation-math-release-checks.mjs'
+  'scripts/run-cultivation-math-release-checks.mjs',
+  'scripts/test-cultivation-math-engine.mjs',
+  'scripts/test-cultivation-math-edge-cases.mjs',
+  'scripts/test-light-lab-math-adapter.mjs',
+  'scripts/validate-cultivation-math-engine-static.mjs',
+  'scripts/validate-cultivation-math-engine-integration.mjs',
+  'scripts/validate-cultivation-math-docs.mjs',
+  'scripts/validate-tool-workflow-persistence.mjs'
 ]) ok(!fs.existsSync(path.join(root,duplicate)),`canonical Tools validator still duplicated in THC: ${duplicate}`);
 
 if(canonicalRootArg){
@@ -133,4 +141,4 @@ if(errors.length){
   for(const e of errors)console.error(' - '+e);
   process.exit(1);
 }
-console.log(`Canonical Tools integration mirror valid: ${owned.length} Tools-owned public apps, no legacy GrowLens Atlas source trees, no duplicated canonical validators${canonicalRootArg ? ', and byte-for-byte parity with dtfgenetics/Tools' : ''}.`);
+console.log(`Canonical Tools integration mirror valid: ${owned.length} Tools-owned public apps, no legacy GrowLens Atlas source/assets, no duplicated canonical validators or tests${canonicalRootArg ? ', and byte-for-byte parity with dtfgenetics/Tools' : ''}.`);
