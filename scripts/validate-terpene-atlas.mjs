@@ -3,8 +3,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
-const sourceRoot = path.join(root, 'apps/growlens-web/public/terpene-atlas');
-const mirrorRoot = path.join(root, 'site/public-route-patch/terpene-atlas');
+const sourceRoot = path.join(root, 'site/public-route-patch/terpene-atlas');
+const mirrorRoot = sourceRoot;
 const dataRoot = path.join(sourceRoot, 'data');
 const errors = [];
 
