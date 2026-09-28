@@ -491,7 +491,9 @@ function storageKey(name) {
 function readJsonStorage(key, fallback) {
   try {
     const value = localStorage.getItem(key);
-    return value ? JSON.parse(value) : fallback;
+    const parsed = value ? JSON.parse(value) : fallback;
+    if (Array.isArray(fallback)) return Array.isArray(parsed) ? parsed : fallback;
+    return parsed;
   } catch {
     return fallback;
   }
@@ -509,7 +511,8 @@ function saveHistory(run) {
 function updateBestScore(percent) {
   const key = storageKey('best-percent');
   try {
-    const previous = Number.parseInt(localStorage.getItem(key) || '0', 10);
+    const parsed = Number.parseInt(localStorage.getItem(key) || '0', 10);
+    const previous = Number.isFinite(parsed) && parsed >= 0 && parsed <= 100 ? parsed : 0;
     if (percent > previous) localStorage.setItem(key, String(percent));
     return Math.max(previous, percent);
   } catch {
