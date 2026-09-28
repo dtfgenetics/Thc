@@ -152,7 +152,7 @@ export default function App() {
     resetTransientFeedback();
 
     if (setup.mode === 'local') {
-      beginLocalGame(setup.playerCount, setup.playerName);
+      beginLocalGame(setup.playerCount, setup.playerNames);
       return;
     }
 
@@ -186,15 +186,16 @@ export default function App() {
     }
   }
 
-  function beginLocalGame(count: number, playerName: string): void {
+  function beginLocalGame(count: number, playerNames: string[]): void {
+    const leadName = playerNames[0] ?? 'Player 1';
     setPlayerCount(count);
-    setLocalPlayerName(playerName);
+    setLocalPlayerName(leadName);
     setRoom(null);
     setInviteUrl('');
     resetTransientFeedback();
-    setGameState(createNamedLocalGame(count, playerName));
+    setGameState(createNamedLocalGame(count, playerNames));
     setScreenMode('playing');
-    setStatusMessage(`${playerName}, roll to begin.`);
+    setStatusMessage(`${leadName}, roll to begin.`);
   }
 
   async function startRoomGame(): Promise<void> {
