@@ -11,7 +11,6 @@ on:
       - apps/growlens-web/**
       - site/public-route-patch/atlas/**
       - site/public-route-patch/terpene-atlas/**
-      - data/atlas/**
       - data/public-navigation.json
       - docs/ATLAS_ROUTE_OWNERSHIP.md
       - scripts/validate-atlas-route-ownership.mjs
@@ -67,7 +66,6 @@ on:
       - scripts/validate-learning-content-quality.mjs
       - site/deployment/public-apps.json
       - data/public-navigation.json
-      - data/atlas/**
       - docs/ATLAS_ROUTE_OWNERSHIP.md
       - scripts/validate-atlas-route-ownership.mjs
       - scripts/validate-crossword-release-source.mjs
