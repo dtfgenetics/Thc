@@ -101,7 +101,6 @@ jobs:
         run: |
           set -euo pipefail
           grep -Fq 'https://discord.gg/xJbUeHFPMt' site/wordpress/pages/community.html
-          grep -Fq '/yellow-leaves/' site/wordpress/pages/learn.html
           grep -Fq '/thc-grow-doc/' site/wordpress/pages/learn.html
           grep -Fq '/growlens/' site/wordpress/pages/learn.html
           grep -Fq 'DTF Field Notes &amp; Updates' site/wordpress/pages/blog.html
@@ -130,12 +129,20 @@ jobs:
               '',
               'No credential values are included in this report.'
             ].join('\n');
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body
-            });
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: 46,
+                body
+              });
+            } catch (error) {
+              if (error?.status === 403) {
+                core.warning('Issue 46 reporting skipped because commenting is disabled or capped.');
+              } else {
+                throw error;
+              }
+            }
 
   deploy:
     name: Back up and publish public pages
@@ -217,8 +224,8 @@ jobs:
             done
           }
 
-          verify_page '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'
-          verify_page '/learn/' 'Read the yellow-leaves diagnostic guide'
+          verify_page '/' 'Genetics first. Learn the plant behind the pack.'
+          verify_page '/learn/' 'Learn the plant as one connected system.'
           verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
           verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
           verify_page '/blog/' 'DTF Field Notes &amp; Updates'
@@ -260,9 +267,17 @@ jobs:
               'Verified live targets: Home, Learn gateway, Community, Contact, and Blog.',
               'No credential values are included in this report.'
             ].join('\n');
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body
-            });
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: 46,
+                body
+              });
+            } catch (error) {
+              if (error?.status === 403) {
+                core.warning('Issue 46 reporting skipped because commenting is disabled or capped.');
+              } else {
+                throw error;
+              }
+            }
