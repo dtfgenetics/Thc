@@ -62,7 +62,7 @@ describe('room game actions', () => {
 
     expect(result.events.map((event) => event.name)).toEqual(['dice_rolled', 'hit_card_drawn']);
     expect(result.events[0].payload).toMatchObject({ roll: 1, fromIndex: hitIndex - 1, toIndex: hitIndex });
-    expect(result.events[1].payload).toMatchObject({ card: { id: 'card-030' } });
+    expect(result.events[1].payload).toMatchObject({ card: { id: 'card-031' } });
     expect(result.room.gameState?.players[0].positionIndex).toBe(hitIndex + 3);
   });
 
