@@ -110,6 +110,10 @@ assert.match(handoffScript, /queue_replaced_exit=75/, 'workflow handoff must exp
 assert.match(handoffScript, /displayTitle/, 'workflow handoff must correlate dispatches by exact-source run title when main has advanced');
 assert.match(handoffScript, /contains\(\$sha\)/, 'workflow handoff must match the expected source SHA embedded in a run title');
 
+const externalCandidateVerifier = readFileSync('scripts/verify-external-release-candidates-live.mjs', 'utf8');
+assert.match(externalCandidateVerifier, /data-dtf-sitewide-footer=\["'\]canonical-eight-v1/, 'external release candidates must verify the canonical eight-link Footer V6 marker');
+assert.doesNotMatch(externalCandidateVerifier, /data-dtf-sitewide-footer=\["'\]canonical-five-v1/, 'external release candidate verifier must not require the retired five-link footer marker');
+
 const verifier = readFileSync('scripts/verify-dtf-public-resource-artifact.py', 'utf8');
 assert.match(verifier, /verify_tokens = resource\.get\('verifyTokens'\) or \[\]/, 'artifact verifier must read per-resource verification tokens');
 assert.match(verifier, /resource verification token missing/, 'artifact verifier must fail closed when configured visitor tokens disappear');
