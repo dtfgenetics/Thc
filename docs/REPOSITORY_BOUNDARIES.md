@@ -40,3 +40,9 @@ Archive candidate. Audit for unique source/assets, migrate unique value, then ar
 5. Do not add a second implementation of a canonical external product without an explicit migration plan.
 6. Archive completed one-off migration scripts and obsolete workflows.
 7. Every active project must have a source-of-truth entry in the project registry or repository-boundary registry.
+
+## Duplicate-source guard
+
+GrowLens must not carry its own Plant Atlas or Terpene Atlas trees under `apps/growlens-web/public/atlas/` or `apps/growlens-web/public/terpene-atlas/`. Those products are authored in `dtfgenetics/Tools`, synchronized into `site/public-route-patch/`, and packaged from that integration mirror.
+
+The repository-boundary validator fails if either retired duplicate path returns.
