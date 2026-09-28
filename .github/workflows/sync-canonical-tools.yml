@@ -2,8 +2,10 @@ name: Sync canonical cultivation tools
 
 on:
   workflow_dispatch:
+  repository_dispatch:
+    types: [sync-canonical-tools]
   schedule:
-    - cron: '17 * * * *'
+    - cron: '*/15 * * * *'
 
 permissions:
   contents: write
