@@ -1,4 +1,4 @@
-// Production replay trigger: deploy merged five-item shell to static public-suite routes.
+// Production replay trigger v2: deploy corrected five-item static-suite normalizer.
 import process from 'node:process';
 
 const siteUrl=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
