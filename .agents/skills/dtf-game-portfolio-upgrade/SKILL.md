@@ -1,7 +1,7 @@
 ---
 name: dtf-game-portfolio-upgrade
 description: Portfolio-wide audit and upgrade orchestration for all DTFSeeds games. Use when asked to review every game, identify value-adding fixes/features/tools, prioritize work across the catalog, find shared systems worth building once, or turn game-by-game findings into an implementation roadmap. Resolves canonical ownership before judging a title, scores every game on one rubric, separates blockers from polish, and hands implementation to dtf-game-production plus dtf-game-canonical-release.
-compatibility: Works with dtfgenetics/Thc as the portfolio control repo and external canonical game repositories recorded in the source map. Designed for ChatGPT/Codex GitHub connector workflows and local worktrees.
+compatibility: Works with dtfgenetics/Thc as the portfolio control repo and external canonical game repositories recorded in data/game-registry-v2.json. Designed for ChatGPT/Codex GitHub connector workflows and local worktrees.
 metadata:
   author: dtfgenetics
   version: "1.0.0"
@@ -31,15 +31,15 @@ Never audit from memory, the public Game Hub alone, a copied route bundle, or an
 
 Before scoring a game:
 
-1. Read current `docs/GAME_CANONICAL_SOURCE_MAP.md` and `data/game-source-map.json`.
-2. Read `docs/DTF_GAME_SCOPE_MASTER.md` for the current portfolio scope and concept bank.
-3. Resolve the canonical repository/path for the title.
-4. Read that canonical repo's current README, game manifest, source-of-truth docs, release notes, and obvious open gates.
-5. Inspect the actual implementation before calling a feature missing.
-6. Treat stale registry/status documentation as a defect to reconcile, not as proof that working code is absent.
+1. Read `data/game-registry-v2.json` and resolve the title through `aliasMap`.
+2. Use the matching entry's `goal`, `systems`, `architecture`, `quality.knownGaps`, `release.status`, blockers, next milestone, production repository/source paths, and alternate/deprecated locations as the portfolio baseline.
+3. Read the game's `gameDesignDoc` / canonical source-of-truth in the recorded owner repository.
+4. Inspect the actual implementation before calling a feature missing.
+5. Use `data/game-source-map.json`, deployment/navigation registries, and Dtf420 runtime metadata as compatibility/integration evidence, not competing portfolio authorities.
+6. Treat any disagreement with v2 as registry drift to reconcile before implementation.
 7. Do not create a second implementation because a title is missing from one integration repo.
 
-When two sources disagree, prefer the newer explicit canonical source contract and record the drift.
+When reality intentionally changes, update v2 in the same work rather than preserving stale ownership/status text.
 
 ## Portfolio inventory classes
 
