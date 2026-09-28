@@ -93,6 +93,9 @@ assert.match(v20Ui, /function\s+tickCompletion\s*\(/, 'campaign UI must directly
 assert.match(v20Ui, /player\?\.finished/, 'next-level transition must key off the actual finished player state');
 assert.match(v20Ui, /function\s+selectNextLevel\s*\(/, 'campaign UI must own deterministic next-level selection');
 assert.match(v20Ui, /NEXT_LEVEL_DELAY_MS=1100/, 'campaign UI must preserve a short visible completion transition');
+assert.match(v20Ui, /WORLD_TRANSITION_DELAY_MS=2200/, 'world boundaries must keep the transition visible long enough to read');
+assert.match(v20Ui, /seedman:world-transition/, 'campaign UI must explicitly announce world changes');
+assert.match(v20Ui, /World clear · entering/, 'world changes must read as intentional progression rather than a renderer swap');
 assert.match(v20Ui, /function\s+scoreForRun\s*\(/, 'scoreboard must use deterministic scoring');
 assert.match(v20Ui, /function\s+recordScore\s*\(/, 'completed runs must be recorded');
 assert.match(v20Ui, /dtf-seed-man-high-scores-v1/, 'scoreboard must persist against a versioned storage key');
