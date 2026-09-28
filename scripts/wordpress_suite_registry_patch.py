@@ -241,6 +241,41 @@ def registered_local_static_games(repo_root: pathlib.Path) -> list[str]:
     return sorted(targets)
 
 
+def registered_local_static_apps(repo_root: pathlib.Path) -> list[str]:
+    """Return repo-owned, non-game static public apps that the Public Suite may publish."""
+    registry_path = repo_root / "site" / "deployment" / "public-apps.json"
+    registry = json.loads(registry_path.read_text())
+    wordpress_owned = {"", "home", "learn", "courses", "blog", "community", "seeds", "shop", "gallery", "about", "contact"}
+    targets: list[str] = []
+    for app in registry.get("apps", []):
+        source = str(app.get("sourcePath") or "").rstrip("/")
+        route = str(app.get("route") or "")
+        if not (
+            app.get("repository") == "dtfgenetics/Thc"
+            and app.get("runtime") == "static"
+            and app.get("status") == "ready-to-package"
+            and source.startswith("site/public-route-patch/")
+            and not source.startswith("site/public-route-patch/games/")
+            and route.startswith("/")
+            and route.endswith("/")
+        ):
+            continue
+        target = route.strip("/")
+        if target in wordpress_owned:
+            continue
+        if not SAFE_TARGET.fullmatch(target):
+            raise SystemExit(f"unsafe registered local static app target: {target!r}")
+        expected_source = f"site/public-route-patch/{target}"
+        if source != expected_source:
+            raise SystemExit(
+                f"registry source/route mismatch for static app {target}: source={source!r}, expected={expected_source!r}"
+            )
+        targets.append(target)
+    if len(targets) != len(set(targets)):
+        raise SystemExit("duplicate local static app targets in public-apps registry")
+    return sorted(targets)
+
+
 def registered_external_static_games(repo_root: pathlib.Path) -> list[str]:
     contracts_dir = repo_root / "site" / "deployment" / "external-games"
     if not contracts_dir.is_dir():
@@ -268,11 +303,15 @@ def registered_external_static_games(repo_root: pathlib.Path) -> list[str]:
 
 def registered_static_games(repo_root: pathlib.Path) -> tuple[list[str], list[str], list[str]]:
     local = registered_local_static_games(repo_root)
+    local_apps = registered_local_static_apps(repo_root)
     external = registered_external_static_games(repo_root)
-    overlap = sorted(set(local) & set(external))
+    overlap = sorted((set(local) | set(local_apps)) & set(external))
     if overlap:
-        raise SystemExit("game target registered as both local and external: " + ", ".join(overlap))
-    return local, external, sorted(local + external)
+        raise SystemExit("static target registered as both local and external: " + ", ".join(overlap))
+    duplicate_local = sorted(set(local) & set(local_apps))
+    if duplicate_local:
+        raise SystemExit("static target registered as both game and non-game app: " + ", ".join(duplicate_local))
+    return local, external, sorted(local + local_apps + external)
 
 
 def _array_values(payload: bytes, variable: bytes) -> set[str]:
@@ -399,6 +438,7 @@ def validate_payload(payload: bytes, repo_root: pathlib.Path) -> dict[str, objec
         "dtf420OverlayStaging": True,
         "atlasSupportScope": True,
         "registeredLocalStaticGames": local_targets,
+        "registeredLocalStaticApps": registered_local_static_apps(repo_root),
         "registeredExternalStaticGames": external_targets,
         "targets": len(targets),
         "required": len(required),
