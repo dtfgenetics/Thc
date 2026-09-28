@@ -86,7 +86,7 @@ The source-level review now shows:
 - shared game platform canonical source: `Thc/games/shared-platform`;
 - production deployment authority: `Thc`.
 
-The remaining work is mostly asset/provenance/shared-UI decomposition plus final non-default-branch/history review. Do not archive until those checks are complete.
+The remaining work is asset/provenance/shared-UI decomposition plus non-default-branch/history review. A SHA-level asset comparison found unique legacy High Land source sheets and brand/UI SVGs, and at least three non-default branches are ahead of `main`. See `docs/LEGACY_ASSET_PROVENANCE_HOLD.md` and `docs/LEGACY_REPOSITORY_MIGRATION.md`. Do not archive until those checks are complete.
 
 ### `dtfgenetics/Dtf420`
 
