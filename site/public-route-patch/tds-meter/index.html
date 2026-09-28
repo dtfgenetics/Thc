@@ -49,8 +49,12 @@ footer{padding:28px 0 42px;color:var(--muted)}.journal{margin-bottom:38px}.journ
 <button class="primary" id="saveEcRecord" type="button">Save reading</button>
 <button id="exportEcCsv" type="button">Export CSV</button>
 <button id="importEcCsv" type="button">Import CSV</button>
+<button id="saveEcGrowLens" type="button">Save current to GrowLens</button>
+<button id="backupEcJson" type="button">Backup JSON</button>
+<button id="restoreEcJson" type="button">Restore JSON</button>
 <button id="clearEcLog" type="button">Clear local log</button>
 <input id="ecCsvFile" type="file" accept=".csv,text/csv" hidden>
+<input id="ecJsonFile" type="file" accept="application/json,.json" hidden>
 </div>
 <p id="ecJournalStatus" class="muted" role="status" aria-live="polite">No measurements saved yet.</p>
 <div class="journal-chart-wrap" id="ecChartWrap" hidden><div id="ecChart" class="journal-chart" role="img" aria-label="Saved EC trend"></div></div>
@@ -88,4 +92,14 @@ window.THCMeasurementJournal?.create({
 </script>
 <footer><div class="shell">Educational conversion and interpretation tool. Use calibrated instruments and preserve the original EC, units, sample method, and meter convention in cultivation records.</div></footer>
 <script src="/assets/thc-tool-suite-v1.js"></script>
+<script>
+(()=>{
+ const THC=window.THC,key='thc-ec-measurements-v1',status=document.getElementById('ecJournalStatus'),file=document.getElementById('ecJsonFile');
+ const ecMs=()=>{const raw=Number(document.getElementById('ec').value);if(!Number.isFinite(raw))return NaN;return document.getElementById('ecunit').value==='us'?raw/1000:raw};
+ document.getElementById('saveEcGrowLens').onclick=()=>{const ec=ecMs(),sample=document.getElementById('sample').value,meter=document.getElementById('ecMeterId').value.trim(),cal=document.getElementById('ecCalibrationDate').value,std=document.getElementById('ecCalibrationStandard').value.trim(),temp=document.getElementById('ecSampleTemp').value,notes=document.getElementById('ecNotes').value.trim();const result=THC.growlens.addDiaryEntry({title:'EC/TDS measurement · '+sample,notes:'EC '+THC.fmt(ec,3)+' mS/cm'+(meter?'; meter '+meter:'')+(cal?'; last calibration/check '+cal:'')+(std?'; standard '+std:'')+(temp!==''?'; sample '+temp+' °C':'')+(notes?'; '+notes:'')});status.textContent=result.ok?'Saved current EC/TDS measurement to GrowLens diary.':(result.reason||'GrowLens save failed.')};
+ document.getElementById('backupEcJson').onclick=()=>THC.backupJson('thc-ec-measurements-backup.json','thc-ec-measurements',1,THC.load(key,[]));
+ document.getElementById('restoreEcJson').onclick=()=>file.click();
+ file.addEventListener('change',async()=>{try{const records=await THC.restoreJson(file.files?.[0],'thc-ec-measurements',1,r=>r&&Number.isFinite(Number(r.ec))&&Number(r.ec)>=0&&Number(r.ec)<=20,2000);if(THC.load(key,[]).length&&!confirm('Replace current EC/TDS journal with this JSON backup?'))return;THC.save(key,records);status.textContent='EC/TDS JSON backup restored. Reloading journal…';location.reload()}catch(error){status.textContent=error?.message||'Could not restore EC/TDS backup.'}finally{file.value=''}});
+})();
+</script>
 </body></html>
