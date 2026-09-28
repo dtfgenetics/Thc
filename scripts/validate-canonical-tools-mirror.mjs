@@ -56,6 +56,24 @@ for(const legacy of [
   'apps/growlens-web/public/terpene-atlas'
 ]) ok(!fs.existsSync(path.join(root,legacy)),`legacy GrowLens-owned tool source must not exist: ${legacy}`);
 
+for(const legacyArtifact of [
+  'data/atlas/living-plant-atlas-v1.json',
+  'data/atlas/leaf-module-visual-assets-v1.json',
+  'data/atlas/root-system-visual-assets-v1.json',
+  'docs/atlas/LEAF_MODULE_PRODUCTION_QUEUE.md',
+  'docs/atlas/ROOT_SYSTEM_VISUAL_PRODUCTION_QUEUE.md',
+  'docs/CULTIVATION_MATH_ENGINE_FIXTURES.md',
+  'docs/CULTIVATION_MATH_ENGINE_INTEGRATION_PLAN.md',
+  'docs/CULTIVATION_MATH_ENGINE_TEST_LOG.md',
+  'docs/CULTIVATION_MATH_ENGINE_V1.md',
+  'docs/TERPENE_ATLAS_SCOPE.md',
+  'docs/THC_TOOL_SUITE_BENCHMARKS.md',
+  'docs/TOOL_CODE_HARVEST_2026-09-27.md',
+  '.github/workflows/plant-atlas-v3-ci.yml',
+  '.github/workflows/cultivation-math-engine.yml',
+  '.github/workflows/cultivation-math-release.yml'
+]) ok(!fs.existsSync(path.join(root,legacyArtifact)),`legacy Tool/Atlas authoring artifact must stay in dtfgenetics/Tools: ${legacyArtifact}`);
+
 for(const duplicate of [
   'scripts/validate-plant-atlas-v3.mjs',
   'scripts/validate-plant-atlas-v4.mjs',
