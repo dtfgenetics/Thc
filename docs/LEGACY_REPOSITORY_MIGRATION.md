@@ -151,3 +151,21 @@ The old staging script's lock/backup behavior is useful historical design eviden
 The legacy UI/playability branch contains polish for obsolete High Land and High IQ implementations. Do not port those components wholesale. Canonical High Land and High IQ have since been rebuilt with stronger gameplay, mobile, accessibility, and release contracts. Any visual idea worth reusing must be evaluated against the current canonical implementation, not copied as code.
 
 Archive remains blocked until all ahead/diverged branches are classified as migrated, superseded, or historical-only.
+
+
+### Legacy education UI / certification widgets — historical-only
+
+Reviewed:
+- `dtf-thc-hub/packages/shared-ui/src/education/CourseCatalog.jsx`
+- `QuizRunner.jsx`
+- `CertificateView.jsx`
+
+Decision:
+- do not port these components as the certification runtime;
+- the legacy quiz stores attempts/scores only in browser `localStorage`;
+- the legacy certificate view accepts a locally entered learner name, derives a deterministic browser-side record code, and prints a study record immediately after local quiz thresholds are met;
+- this is useful only as historical UI/prototyping evidence and must not be represented as the current THC Academy credential system.
+
+Canonical certification behavior belongs to `dtfgenetics/Thc-learning-courses-` and its approved runtime/integration layer. Certification must preserve the current requirements for controlled course versions, independent answer selection before submission, grader behavior after submission, time limits where required, saved choices, learner/application identity, reference numbers, pass rules, review/evidence gates, and credential issuance controls.
+
+General course browsing/learning UX may be reimplemented from current canonical education content, but the legacy browser-local certificate logic is explicitly retired.
