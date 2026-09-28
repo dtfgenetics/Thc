@@ -105,6 +105,10 @@ for (const path of config.globalBuildPaths) {
   assert.ok(typeof path === 'string' && path.length > 0);
 }
 
+const cleanupScript = readFileSync('scripts/cleanup-stale-wordpress-suite-snippets.mjs', 'utf8');
+assert.match(cleanupScript, /dns\.setDefaultResultOrder\(['"]ipv4first['"]\)/, 'Public Suite cleanup must prefer IPv4 DNS results for Hostinger');
+assert.match(cleanupScript, /family:\s*4/, 'Public Suite cleanup WordPress transport must force IPv4 instead of falling back to unreachable IPv6');
+
 const handoffScript = readFileSync('scripts/run-workflow-and-wait.sh', 'utf8');
 assert.match(handoffScript, /queue_replaced_exit=75/, 'workflow handoff must expose a retryable queue-replacement status');
 assert.match(handoffScript, /displayTitle/, 'workflow handoff must correlate dispatches by exact-source run title when main has advanced');
