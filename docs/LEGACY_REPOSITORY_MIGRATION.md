@@ -123,3 +123,31 @@ Decision:
 - retain legacy deployment scripts and built artifacts as historical release provenance until `dtf-thc-hub` is archived.
 
 This lane is complete. Production deployments should originate from `dtfgenetics/Thc` only.
+
+
+### Non-default legacy branches — review required before archive
+
+The `dtf-thc-hub` repository still has a large non-default branch inventory. At least these branches are confirmed ahead of `main`:
+
+- `education-reconciliation` — 2 commits ahead; contains the education canonical-source policy and education control metadata. The useful source policy has been recovered into `dtfgenetics/thc-grow-hub` PR #145.
+- `game-studio-v2-isolated-staging` — 4 commits ahead; contains isolated local game-bundle staging with locks/backups.
+- `game-ui-playability-polish-20260905` — 9 commits ahead; contains legacy High Land/High IQ/Weedopolis and shared-UI polish.
+
+#### Game staging decision
+
+Do **not** port `scripts/stage-game-bundle.mjs` from the legacy branch into production.
+
+The current canonical `dtfgenetics/Thc` external-game release system is stronger:
+- external canonical repositories are represented by explicit contracts;
+- registry parity is validated;
+- public-suite packaging stages approved external artifacts;
+- release pins and live verification exist;
+- the development workflow explicitly prohibits hand-copying an external canonical game into the master repo unless ownership is intentionally migrated.
+
+The old staging script's lock/backup behavior is useful historical design evidence but its local-folder copy workflow is superseded by the current external-game contract pipeline.
+
+#### UI polish decision
+
+The legacy UI/playability branch contains polish for obsolete High Land and High IQ implementations. Do not port those components wholesale. Canonical High Land and High IQ have since been rebuilt with stronger gameplay, mobile, accessibility, and release contracts. Any visual idea worth reusing must be evaluated against the current canonical implementation, not copied as code.
+
+Archive remains blocked until all ahead/diverged branches are classified as migrated, superseded, or historical-only.
