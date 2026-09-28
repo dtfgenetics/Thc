@@ -1,0 +1,55 @@
+# Legacy Repository Migration Inventory
+
+Date: 2026-09-28
+Source reviewed: `dtfgenetics/dtf-thc-hub`
+Target ownership authority: `data/repository-registry.json`
+
+## Purpose
+
+`dtf-thc-hub` is a migration/integration repository, not a canonical authoring source. This inventory identifies the material that must be reconciled before the repository can be frozen or archived.
+
+No directory should be bulk-deleted or blindly copied. For each lane, compare the legacy implementation with the canonical owner, retain unique behavior/assets/provenance, port only what is still useful, and validate the target owner before retiring the legacy copy.
+
+## Migration lanes
+
+| Legacy area | Observed material | Canonical target | Action |
+| --- | --- | --- | --- |
+| `apps/thc-grow-doc/` and `data/thc-grow-doc/` | Legacy React Grow Doc, diagnostic signals, issue/course data | `dtfgenetics/Thc-dataset` | Diff against current Grow Doc; port only missing UX/logic/data. |
+| `packages/project-data/src/growDoctorData.js` | Legacy normalized diagnostic data consumed by the hub | `dtfgenetics/Thc-dataset` | Compare taxonomy/rules with canonical data and retire duplicate runtime source after parity. |
+| `data/learning/` | Encyclopedia recovery controls, infographic registry, learning recovery queues/crosswalks | `dtfgenetics/thc-grow-hub` | Reconcile controlled IDs and retain provenance; import only missing records. |
+| `content/public/course1-canonical.json` and education UI | Legacy/public course representations and quiz/certificate components | `dtfgenetics/thc-grow-hub` for general education; `dtfgenetics/Thc-learning-courses-` for certification | Separate publication/UI consumers from curriculum authority. Do not migrate legacy certification answers as canonical without course-version checks. |
+| `packages/shared-ui/src/high-land/` | Restored legacy High Land implementation/assets | `dtfgenetics/Thc` | Compare with `apps/high-land-web`; retain unique cards, coordinates, audio, rules, or assets only if absent upstream. |
+| `packages/shared-ui/src/high-iq/` and `data/high-iq/` | Legacy High IQ engine/question data | `dtfgenetics/Thc` | Compare with canonical High IQ game and question-bank tooling; port unique validated questions/UX only. |
+| `apps/dtfseeds/public/weedopolis/` and deploy copies | Integrated Weedopolis bundles | `dtfgenetics/Weedopolis-strain-Edition` plus `Thc` deployment integration | Compare version/behavior with standalone canonical source. Treat built copies as release artifacts, not source. |
+| `deploy/dtfseeds-public-html-upload/games/*` | Built/release game bundles including THC U Know and Kush Kings | Individual standalone owners plus `Thc` integration | Use for parity/provenance checks only; do not edit as canonical source. |
+| `packages/game-engine/` | Shared game helpers | `dtfgenetics/Thc` | Compare with current shared game platform. Port unique reusable logic or tests, then retire duplicate package. |
+| `packages/shared-ui/` | Legacy site shell, game UI, education UI | `dtfgenetics/Thc`, `thc-grow-hub`, or game owner by feature | Split by ownership; never migrate the package wholesale into one target. |
+| `packages/project-data/` | Mixed navigation, games, genetics, education, diagnostics | Multiple canonical owners | Decompose by domain; preserve only authoritative or unique records. |
+| `deploy/dtfseeds-wordpress/` and deployment scripts | WordPress/static integration and release artifacts | `dtfgenetics/Thc` | Compare with current production deployment/reconciliation logic before moving or retiring. |
+| `assets/` | Brand/game/seed/UI assets and recovered media | Owning canonical feature repo or central approved asset lane | Hash/deduplicate, preserve licensing/provenance, and avoid unnecessary binary copies. |
+| `docs/education/` and recovery docs | Historical recovery decisions and reconciliation records | `dtfgenetics/thc-grow-hub` docs or archive provenance | Preserve decisions that explain content lineage; do not treat old status as current fact. |
+
+## Required completion conditions before archive
+
+1. Every legacy path is assigned to a canonical owner or marked historical-only.
+2. Unique source code, data, assets, licenses, and provenance are migrated or deliberately retained as historical evidence.
+3. Production routes no longer require this repository as the only deployment source.
+4. Deployment and rollback behavior has parity in `dtfgenetics/Thc`.
+5. Games resolve through the current project/deployment registries.
+6. Grow Doc resolves to `Thc-dataset` canonical code/data.
+7. General education resolves to `thc-grow-hub`; certification resolves to `Thc-learning-courses-`.
+8. Built artifacts are reproducible from canonical sources or explicitly retained as historical releases.
+9. The repository ownership registry changes `dtf-thc-hub` from `migration` to `archive_candidate`.
+10. A final branch/history review confirms no unique work exists outside the default branch.
+
+## Immediate next comparisons
+
+The first code-level comparisons should be:
+
+- Grow Doc: legacy `apps/thc-grow-doc` versus `Thc-dataset/src`.
+- High Land: legacy `packages/shared-ui/src/high-land` versus `Thc/apps/high-land-web`.
+- High IQ: legacy `packages/shared-ui/src/high-iq` and `data/high-iq` versus `Thc/games/high-iq`.
+- Shared game helpers: legacy `packages/game-engine` versus `Thc/games/shared-platform`.
+- WordPress/release tooling: legacy `deploy/` and publish scripts versus current `Thc/site` and release scripts.
+
+These comparisons should produce small, reviewable migrations rather than another full-repository copy.
