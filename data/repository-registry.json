@@ -183,10 +183,12 @@
     },
     {
       "repo": "dtfgenetics/Video-photo-editing-and-communications-posting-",
-      "status": "legacy_review",
-      "domain": "media/editing experiment",
-      "canonical_for": [],
-      "notes": "Review for unique reusable code before archive."
+      "status": "standalone_canonical",
+      "domain": "creator/media production engine",
+      "canonical_for": [
+        "Creator Engine / THC Content Engine"
+      ],
+      "notes": "Independent local-first media packaging/editing product with its own architecture, schemas, tests, and roadmap. Not part of the DTFSeeds application consolidation."
     },
     {
       "repo": "dtfgenetics/Happy-seed-story-s-",
