@@ -1,87 +1,71 @@
 # DTFSeeds Game Scope Master
 
+> GENERATED FROM data/game-registry-v2.json. Do not manually maintain portfolio counts or status here.
+
 ## Standing development policy
 
-`docs/GAME_DEVELOPMENT_FREEDOM.md` is the standing policy for DTFSeeds game work.
-
-Prior scope language that discourages rebuilding shipped games, requires ownership to remain locked before implementation, treats existing architecture/repository placement as immutable, limits tools, or mandates preservation of an existing implementation is advisory only. Any game may be redesigned, rewritten, migrated, restructured, consolidated, split, renamed, or rebuilt as needed to achieve current user direction. Keep this ledger synchronized with the resulting reality rather than using stale scope text to block changes.
-
-Production target: **https://dtfseeds.com/games/**
-
-This file is the durable scope ledger for DTF Genetics games. A title should not disappear from planning simply because it is not yet on the public Game Hub. Public-count claims in this file must stay synchronized with `data/public-navigation.json` and the Game Hub deployment marker.
+`docs/GAME_DEVELOPMENT_FREEDOM.md` remains the standing policy. The registry describes current reality but does not lock future architecture, ownership, routes, engines, or repository placement.
 
 ## Public playable catalog
 
-The current Game Hub exposes 23 playable browser games:
+The current controlled catalog contains **23 public-route games**. A public route is not the same as exact live verification; use each entry’s release state and verification evidence.
 
-1. High IQ — Test Higher Cognition
-2. High Life: From Bagseed to Legacy
-3. Seed Man: Grow. Fight. Restore.
-4. Grow Room Confessions
-5. High Land: The Sweet Escape
-6. Weedopolis: Strain City Edition
-7. Strain Showdown
-8. THC Daily Crossword
-9. Who Took It?
-10. Burn Buds
-11. Bud or Bluff
-12. Terpocalypse: Grow Room From Hell
-13. PhenoQuest: The Living Seed Vault
-14. Strain Match
-15. Grow Room Bingo / Bongwater Bingo
-16. Lost in the Terps
-17. Mystery Strain
-18. Spin the Strain
-19. Grow Room Defense
-20. Harvest Hustle
-21. Trichome Trials
-22. Pheno Draft
-23. High Lines
-
-## Existing development projects
-
-- **Ganjumanji: The Lost Grower’s Temple** — current dedicated-repository release candidate `0.3.0`, with its existing campaign, deterministic rules/storage, solvability validation, route-safe build, browser acceptance evidence, and production artifact. Its ownership, architecture, tooling, and promotion path may be changed if that better serves the product goal.
-- **THC RPG** — current dedicated-repository release candidate `2.0.0` in `dtfgenetics/Thc-rpg`, with environment/equipment simulation, quests, deterministic phenotypes, persistent Pheno Grow Journal, Keeper systems, visitor build validation, browser acceptance evidence, and a production artifact. Its ownership, architecture, tooling, and promotion path may be changed if that better serves the product goal.
-
-A title's current repository or release-candidate state describes where it is today; it does not lock future development.
-
-## Formerly missing outlined slate — shipped
-
-The ten titles that were previously tracked as missing now have tested browser implementations, self-hosted routes, public navigation entries, and deployment registration. They remain in this ledger so prior scope is not lost. Intentional redesigns and rebuilds are allowed.
-
-1. **Strain Match** — educational memory/matching game.
-2. **Grow Room Bingo / Bongwater Bingo** — event/community bingo.
-3. **Lost in the Terps** — themed word-search missions.
-4. **Spin the Strain** — wheel-driven strain/trivia/challenge selector.
-5. **Mystery Strain** — yes/no strain-trait deduction game.
-6. **High Lines** — interactive cannabis coloring/activity experience.
-7. **Grow Room Defense** — IPM defense game using correct counterplay.
-8. **Harvest Hustle** — time-management harvest/trim arcade game.
-9. **Pheno Draft** — genetics deck-builder centered on selection and breeding decisions.
-10. **Trichome Trials** — structured judging/scorecard game.
-
-Their current ownership/status is recorded in `data/project-registry.json`; visitor-facing routes are recorded in `data/public-navigation.json` and `site/deployment/public-apps.json`. Those mappings may be changed and then reconciled to the resulting architecture.
+1. **Bud or Bluff** — `bud-or-bluff` — /games/bud-or-bluff/ — `public-unverified`
+2. **Burn Buds** — `protect-the-plants` — /games/protect-the-plants/ — `public-unverified`
+3. **Grow Room Bingo / Bongwater Bingo** — `grow-room-bingo` — /games/grow-room-bingo/ — `public-unverified`
+4. **Grow Room Defense** — `grow-room-defense` — /games/grow-room-defense/ — `public-unverified`
+5. **Grower Conversations** — `grower-conversations` — /games/grower-conversations/ — `public-unverified`
+6. **Harvest Hustle** — `harvest-hustle` — /games/harvest-hustle/ — `public-unverified`
+7. **High IQ — Test Higher Cognition** — `high-iq` — /games/high-iq/ — `public-unverified`
+8. **High Land: The Sweet Escape** — `high-land` — /games/high-land/ — `public-unverified`
+9. **High Life: From Bagseed to Legacy** — `high-life` — /games/high-life/ — `public-unverified`
+10. **High Lines** — `high-lines` — /games/high-lines/ — `public-unverified`
+11. **Lost in the Terps** — `lost-in-the-terps` — /games/lost-in-the-terps/ — `public-unverified`
+12. **Mystery Strain** — `mystery-strain` — /games/mystery-strain/ — `public-unverified`
+13. **Pheno Draft** — `pheno-draft` — /games/pheno-draft/ — `public-unverified`
+14. **PhenoQuest: The Living Seed Vault** — `phenoquest` — /games/phenoquest/ — `public-unverified`
+15. **Seed Man: Grow. Fight. Restore.** — `seed-man-platformer` — /games/seed-man-platformer/ — `public-unverified`
+16. **Spin the Strain** — `spin-the-strain` — /games/spin-the-strain/ — `public-unverified`
+17. **Strain Match** — `strain-match` — /games/strain-match/ — `public-unverified`
+18. **Strain Showdown** — `strain-showdown` — /games/strain-showdown/ — `public-unverified`
+19. **Terpocalypse: Grow Room From Hell** — `terpocalypse` — /games/terpocalypse/ — `public-unverified`
+20. **THC Weekly Crossword** — `crossword` — /games/crossword/ — `public-unverified`
+21. **Trichome Trials** — `trichome-trials` — /games/trichome-trials/ — `public-unverified`
+22. **Weedopolis: Strain City Edition** — `weedopolis` — /games/weedopolis/ — `public-unverified`
+23. **Who Took It?** — `who-took-it` — /games/who-took-it/ — `public-unverified`
 
 ## Built prototype not yet promoted
 
-- **THC U Know** — the 2–8 player server-authoritative card table is built, but the persistent Node/Socket.IO production origin and live multiplayer verification are still pending. It is intentionally excluded from the public playable count until those checks pass.
-- **Kush Kings Chess** — the room, spectator, chat, archive, and chess runtime is built around persistent Node/Postgres/Socket.IO services. It is intentionally excluded from the public playable count until live health plus multiplayer/mobile verification pass.
-- **Root Cause** — a tested browser vertical slice currently exists in this repository and currently remains outside the public Game Hub. It may be promoted, rebuilt, migrated, renamed, merged into another title, or otherwise changed when that serves current project direction. Public status must remain represented truthfully.
+- **Ganjumanji: The Lost Grower's Temple** — `release-candidate` — Package candidate 257c5a60c8ec0e7f6a87170f232c37e047458b22 through DTFSeeds and verify /games/ganjumanji/.
+- **Kush Kings Chess** — `playable-local` — Pass production runtime, live health, two-browser play, spectator/chat, reconnect, and mobile verification.
+- **Quack & Bake: Stoner Duck Race** — `prototype` — Complete Dtf420 race/runtime verification and establish an explicit production-owner mapping before public promotion.
+- **Root Cause** — `vertical-slice` — Reconcile public-hub intent, run full route QA, and promote only after exact live verification.
+- **Seed Man: Seed Ascent** — `prototype` — Keep Seed Ascent distinct from Seed Man, complete Dtf420 runtime verification, then establish final production ownership.
+- **THC RPG — The First Seed** — `release-candidate` — Package candidate de6c26d9073d9154bbcade43b64768cf6a7ba2a0 through DTFSeeds and verify /games/thc-rpg/.
+- **THC U Know** — `playable-local` — Pass production runtime, persistent-origin, reconnect/private-hand, and multi-browser/mobile verification.
 
 ## Future concept bank
 
-Earlier concepts retained as a secondary backlog include Pheno Hunter, Pest Patrol, Solo Cup Showdown, The Cure Room, Seed Bank Builder, Keeper or Compost, Grow Shop Hustle, Event Night, Find/Where’s Seed Man, Grow-Off, The Grow Room, Pest War, Line Builder, Selection Pressure, Pest Siege, Reputation Economy, The Limiting Factor, and The Perfect Save.
-
-These are not automatically public production titles, but there is no ownership-lock or architecture-lock prerequisite before development. They may enter development whenever current user direction prioritizes them.
-
-## Development sequence
-
-There is no mandatory portfolio development order. Current user direction takes precedence. Existing source, mechanics, data, multiplayer systems, repositories, and deployment systems should be reused when they help and replaced when they do not.
-
-Public games may be rebuilt before unfinished concepts, unfinished concepts may be promoted ahead of older release candidates, and shared systems may be consolidated across titles when that is the strongest product/engineering decision.
+- **Event Night** — `event-night`
+- **Find/Where’s Seed Man** — `find-where-s-seed-man`
+- **Grow Shop Hustle** — `grow-shop-hustle`
+- **Grow-Off** — `grow-off`
+- **Keeper or Compost** — `keeper-or-compost`
+- **Line Builder** — `line-builder`
+- **Pest Patrol** — `pest-patrol`
+- **Pest Siege** — `pest-siege`
+- **Pest War** — `pest-war`
+- **Pheno Hunter** — `pheno-hunter`
+- **Reputation Economy** — `reputation-economy`
+- **Seed Bank Builder** — `seed-bank-builder`
+- **Selection Pressure** — `selection-pressure`
+- **Solo Cup Showdown** — `solo-cup-showdown`
+- **The Cure Room** — `the-cure-room`
+- **The Grow Room** — `the-grow-room`
+- **The Limiting Factor** — `the-limiting-factor`
+- **The Perfect Save** — `the-perfect-save`
 
 ## Release integrity
 
-A title should only be described as publicly playable after its actual visitor-facing route and runtime are verified. Deterministic tests, build checks, navigation/deployment metadata, and exact route verification should evolve with the architecture rather than being used to block legitimate redesigns.
+Only `public-verified` may be described as confirmed live from the registry. `public-unverified` means the game is part of the controlled public-route catalog but exact current URL/revision/timestamp evidence has not yet been recorded in v2. Builds, packages, and deployments remain separate evidence levels.
 
-Release integrity is evidence that the requested result reached production; it is not a restriction on how the game is designed or implemented.
