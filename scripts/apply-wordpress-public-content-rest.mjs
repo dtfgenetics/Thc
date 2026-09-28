@@ -1,3 +1,4 @@
+// Production replay trigger: publish merged navigation and learning UX to WordPress-owned routes.
 import dns from 'node:dns';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
