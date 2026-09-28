@@ -14,6 +14,7 @@
   const PLAYER_NAME_KEY='dtf-seed-man-player-name-v1';
   const SCORE_LIMIT=10;
   const NEXT_LEVEL_DELAY_MS=1100;
+  const WORLD_TRANSITION_DELAY_MS=2200;
   const TUTORIAL_PRE_TRIGGER=90;
   const TUTORIAL_POST_TRIGGER=340;
   const TUTORIAL_AUTO_DISMISS_MS=5200;
@@ -233,14 +234,30 @@
       return;
     }
 
+    const current=campaign.getLevel?.(completedId);
     const next=campaign.getLevel?.(nextId);
+    const worldTransition=Boolean(current?.worldId&&next?.worldId&&current.worldId!==next.worldId);
     const status=document.querySelector('#load-status');
-    if(status)status.textContent=`Level cleared · loading Level ${next?.order||''}${next?.title?` — ${next.title}`:''}…`;
-    if(summary)summary.textContent=`${summary.textContent||''} Next: ${next?.title||nextId}.`.trim();
-    if(nextButton){nextButton.textContent=`Next: ${next?.title||'Level'}`;nextButton.dataset.nextLevel=nextId;}
+    if(worldTransition){
+      if(status)status.textContent=`World clear · entering ${next?.worldTitle||'the next world'} · Level ${next?.order||''} — ${next?.title||nextId}…`;
+      if(summary)summary.textContent=`${summary.textContent||''} World complete. Next world: ${next?.worldTitle||'Next World'} · ${next?.title||nextId}.`.trim();
+      window.dispatchEvent(new CustomEvent('seedman:world-transition',{detail:{
+        fromWorld:current.worldId,
+        fromWorldTitle:current.worldTitle||current.worldId,
+        toWorld:next.worldId,
+        toWorldTitle:next.worldTitle||next.worldId,
+        fromLevel:completedId,
+        toLevel:nextId
+      }}));
+    }else{
+      if(status)status.textContent=`Level cleared · loading Level ${next?.order||''}${next?.title?` — ${next.title}`:''}…`;
+      if(summary)summary.textContent=`${summary.textContent||''} Next: ${next?.title||nextId}.`.trim();
+    }
+    if(nextButton){nextButton.textContent=worldTransition?`Enter ${next?.worldTitle||'Next World'}`:`Next: ${next?.title||'Level'}`;nextButton.dataset.nextLevel=nextId;}
 
     clearAdvance();
-    advanceTimer=setTimeout(()=>{advanceTimer=null;selectNextLevel(completedId,nextId);},NEXT_LEVEL_DELAY_MS);
+    const transitionDelay=worldTransition?WORLD_TRANSITION_DELAY_MS:NEXT_LEVEL_DELAY_MS;
+    advanceTimer=setTimeout(()=>{advanceTimer=null;selectNextLevel(completedId,nextId);},transitionDelay);
   }
 
   function handleNextButton(){
