@@ -22,10 +22,6 @@ permissions:
   actions: write
   contents: write
 
-concurrency:
-  group: dtfseeds-production-gateway
-  cancel-in-progress: false
-
 jobs:
   plan:
     name: Plan production release
@@ -83,6 +79,9 @@ jobs:
     name: Publish planned lanes through one coordinator
     needs: plan
     if: needs.plan.outputs.deploy == 'true'
+    concurrency:
+      group: dtfseeds-production-publish
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 180
     environment: production
