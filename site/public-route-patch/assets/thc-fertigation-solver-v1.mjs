@@ -1,4 +1,4 @@
-const NUTRIENTS=Object.freeze(['N','P','K','Ca','Mg']);
+const NUTRIENTS=Object.freeze(['N','P','K','Ca','Mg','S']);
 
 const finite=(v,label)=>{const n=Number(v);if(!Number.isFinite(n))throw new RangeError(label+' must be finite');return n};
 const nonnegative=(v,label)=>{const n=finite(v,label);if(n<0)throw new RangeError(label+' must be non-negative');return n};
@@ -14,6 +14,7 @@ export function normalizedAnalysis(product={}){
     K:kFromK2o(product.K2O??product.K??0),
     Ca:pct(product.Ca??0,'Ca'),
     Mg:pct(product.Mg??0,'Mg'),
+    S:pct(product.S??0,'S'),
   };
 }
 
