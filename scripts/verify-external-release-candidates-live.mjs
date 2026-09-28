@@ -57,7 +57,7 @@ for (const candidate of candidates) {
   assert.match(html, /data-dtf-shell=["']header-v6["']/i, `${candidate.id} canonical Header V6 marker missing`);
   assert.match(html, /data-dtf-sitewide-header=["']canonical-five-v1["']/i, `${candidate.id} canonical five-link header marker missing`);
   assert.match(html, /data-dtf-shell=["']footer-v6["']/i, `${candidate.id} canonical Footer V6 marker missing`);
-  assert.match(html, /data-dtf-sitewide-footer=["']canonical-five-v1["']/i, `${candidate.id} canonical footer navigation marker missing`);
+  assert.match(html, /data-dtf-sitewide-footer=["']canonical-eight-v1["']/i, `${candidate.id} canonical footer navigation marker missing`);
 
   const releaseResponse = await fetchNoRedirect(`${candidate.route}game-release.json`);
   const release = await releaseResponse.json();
