@@ -10,6 +10,7 @@ import {
   finishIndex
 } from '../data/boardPath';
 import type { ActionCard, SpaceColor } from '../types/gameTypes';
+import { starterActionCards } from '../data/actionCards';
 import { applyActionCard } from './cardSystem';
 import { rollDie } from './diceSystem';
 import { calculateMove } from './movementSystem';
@@ -26,6 +27,12 @@ function buildStateAt(positionIndex: number) {
 function sequenceRandom(values: number[]): () => number {
   let index = 0;
   return () => values[index++] ?? values[values.length - 1] ?? 0;
+}
+
+function randomForCard(id: string): number {
+  const index = starterActionCards.findIndex((card) => card.id === id);
+  if (index < 0) throw new Error(`Missing HIT card ${id}`);
+  return (index + 0.5) / starterActionCards.length;
 }
 
 describe('game engine', () => {
