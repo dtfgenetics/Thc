@@ -1,0 +1,4117 @@
+{
+  "schemaVersion": 2,
+  "updated": "2026-09-28",
+  "authority": {
+    "productionControlRepository": "dtfgenetics/Thc",
+    "developmentFreedomPolicy": "docs/GAME_DEVELOPMENT_FREEDOM.md",
+    "legacyLocationRegistry": "data/game-location-registry.json",
+    "rule": "Resolve game identity and current ownership here before DTF game work. The registry describes current reality and must be updated whenever architecture, ownership, route, or status intentionally changes."
+  },
+  "statusDefinitions": [
+    "concept",
+    "design",
+    "prototype",
+    "vertical-slice",
+    "playable-local",
+    "release-candidate",
+    "packaged",
+    "public-unverified",
+    "public-verified",
+    "archived",
+    "superseded",
+    "compatibility-only"
+  ],
+  "aliasMap": {
+    "bud-or-bluff": "bud-or-bluff",
+    "bud or bluff": "bud-or-bluff",
+    "crossword": "crossword",
+    "thc weekly crossword": "crossword",
+    "thc crossword": "crossword",
+    "thc daily crossword": "crossword",
+    "cannabis crossword": "crossword",
+    "thc-crossword": "crossword",
+    "ganjumanji": "ganjumanji",
+    "ganjumanji: the lost grower's temple": "ganjumanji",
+    "lost growers temple": "ganjumanji",
+    "grow-room-bingo": "grow-room-bingo",
+    "grow room bingo / bongwater bingo": "grow-room-bingo",
+    "grow-room-defense": "grow-room-defense",
+    "grow room defense": "grow-room-defense",
+    "grower-conversations": "grower-conversations",
+    "grower conversations": "grower-conversations",
+    "harvest-hustle": "harvest-hustle",
+    "harvest hustle": "harvest-hustle",
+    "high-iq": "high-iq",
+    "high iq — test higher cognition": "high-iq",
+    "high iq": "high-iq",
+    "cannabis trivia": "high-iq",
+    "high-land": "high-land",
+    "high land: the sweet escape": "high-land",
+    "high land": "high-land",
+    "candyland rework": "high-land",
+    "high-life": "high-life",
+    "high life: from bagseed to legacy": "high-life",
+    "high life": "high-life",
+    "bagseed to legacy": "high-life",
+    "high-lines": "high-lines",
+    "high lines": "high-lines",
+    "kush-kings": "kush-kings",
+    "kush kings chess": "kush-kings",
+    "thc chess": "kush-kings",
+    "kush-kings-chess": "kush-kings",
+    "lost-in-the-terps": "lost-in-the-terps",
+    "lost in the terps": "lost-in-the-terps",
+    "mystery-strain": "mystery-strain",
+    "mystery strain": "mystery-strain",
+    "pheno-draft": "pheno-draft",
+    "pheno draft": "pheno-draft",
+    "phenoquest": "phenoquest",
+    "phenoquest: the living seed vault": "phenoquest",
+    "living seed vault": "phenoquest",
+    "protect-the-plants": "protect-the-plants",
+    "burn buds": "protect-the-plants",
+    "cannabis battleship": "protect-the-plants",
+    "cannabis fleet battle": "protect-the-plants",
+    "fleet battle": "protect-the-plants",
+    "burn-buds": "protect-the-plants",
+    "root-cause": "root-cause",
+    "root cause": "root-cause",
+    "seed-ascent": "seed-ascent",
+    "seed ascent": "seed-ascent",
+    "seed man seed ascent": "seed-ascent",
+    "seed-man-platformer": "seed-man-platformer",
+    "seed man: grow. fight. restore.": "seed-man-platformer",
+    "seed man": "seed-man-platformer",
+    "seed man run": "seed-man-platformer",
+    "seedman run": "seed-man-platformer",
+    "seed-man": "seed-man-platformer",
+    "spin-the-strain": "spin-the-strain",
+    "spin the strain": "spin-the-strain",
+    "stoner-duck-race": "stoner-duck-race",
+    "stoner duck race": "stoner-duck-race",
+    "quack & bake": "stoner-duck-race",
+    "quack and bake": "stoner-duck-race",
+    "duck race": "stoner-duck-race",
+    "strain-match": "strain-match",
+    "strain match": "strain-match",
+    "strain-showdown": "strain-showdown",
+    "strain showdown": "strain-showdown",
+    "tcg": "strain-showdown",
+    "terpocalypse": "terpocalypse",
+    "terpocalypse: grow room from hell": "terpocalypse",
+    "grow room from hell": "terpocalypse",
+    "thc-rpg": "thc-rpg",
+    "thc rpg — the first seed": "thc-rpg",
+    "thc rpg": "thc-rpg",
+    "the first seed": "thc-rpg",
+    "thc-u-know": "thc-u-know",
+    "thc u know": "thc-u-know",
+    "trichome-trials": "trichome-trials",
+    "trichome trials": "trichome-trials",
+    "weedopolis": "weedopolis",
+    "weedopolis: strain city edition": "weedopolis",
+    "weedopolis v2": "weedopolis",
+    "weedopolis strain city edition": "weedopolis",
+    "who-took-it": "who-took-it",
+    "who took it?": "who-took-it",
+    "who took it": "who-took-it",
+    "thc guess who": "who-took-it"
+  },
+  "games": [
+    {
+      "id": "bud-or-bluff",
+      "title": "Bud or Bluff",
+      "aliases": [
+        "bud-or-bluff",
+        "bud or bluff"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/bud-or-bluff/",
+      "goal": {
+        "summary": "party bluffing game",
+        "playerFantasy": "party bluffing game",
+        "primaryVerbs": [
+          "answer",
+          "bluff",
+          "vote"
+        ],
+        "coreLoop": "2–10 players answer prompts, bluff, vote, and score across rounds.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "social deduction"
+      ],
+      "players": {
+        "mode": "solo/local/online as supported",
+        "min": 2,
+        "max": 10
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "docs/BUD_OR_BLUFF_SOURCE_OF_TRUTH.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/bud-or-bluff"
+        ],
+        "sourceOfTruth": "docs/BUD_OR_BLUFF_SOURCE_OF_TRUTH.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/bud-or-bluff",
+        "integrationMode": "local-static-php",
+        "runtimePath": "site/public-route-patch/games/bud-or-bluff",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/bud-or-bluff/test/engine.test.mjs && node games/bud-or-bluff/scripts/build-private-deck.mjs && node games/bud-or-bluff/test/keyboard-v1.test.mjs && node games/bud-or-bluff/test/visual-state-v3.test.mjs && node games/bud-or-bluff/test/online-lobby.test.mjs && node games/bud-or-bluff/test/online-lobby-v2.test.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "server-authoritative or canonical tested engine as recorded by game source",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "multiplayer",
+        "multiplayerAuthority": "authoritative service/runtime",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "games/bud-or-bluff",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "bud-or-bluff",
+        "repoRoots": [
+          "games/bud-or-bluff"
+        ],
+        "driveRefs": [
+          "1Ok1MHU0GIoG0cHseR4kQ1LI2fUTxPdq_",
+          "1cXjrWU62au9DKaG29rKYAgTysLSbOiih"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "node games/bud-or-bluff/test/engine.test.mjs && node games/bud-or-bluff/scripts/build-private-deck.mjs && node games/bud-or-bluff/test/keyboard-v1.test.mjs && node games/bud-or-bluff/test/visual-state-v3.test.mjs && node games/bud-or-bluff/test/online-lobby.test.mjs && node games/bud-or-bluff/test/online-lobby-v2.test.mjs",
+        "testCommands": [
+          "node games/bud-or-bluff/test/engine.test.mjs && node games/bud-or-bluff/scripts/build-private-deck.mjs && node games/bud-or-bluff/test/keyboard-v1.test.mjs && node games/bud-or-bluff/test/visual-state-v3.test.mjs && node games/bud-or-bluff/test/online-lobby.test.mjs && node games/bud-or-bluff/test/online-lobby-v2.test.mjs"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/bud-or-bluff/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-runtime",
+          "paths": [
+            "app/games/bud-or-bluff",
+            "lib/games/bud-or-bluff-engine.ts"
+          ],
+          "notes": "React migration implementation; current production release remains owned through Thc.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22",
+          "editable": true,
+          "releasable": false
+        }
+      ],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Self-hosted 2–10 player server-authoritative party game with simultaneous hidden voting, Double Hit scoring, lobby locking/settings, room chat, reconnect, rematches, host transfer, keyboard controls, visual-state feedback, and private answer data. Dedicated CI now uses Ubuntu 24.04/current GitHub actions. The central public-suite gate verifies both 10-player lobby generations, keyboard/visual contracts, API v2→durable-v3 routing, PHP syntax, and private-answer exclusion. Exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "crossword",
+      "title": "THC Weekly Crossword",
+      "aliases": [
+        "crossword",
+        "thc weekly crossword",
+        "thc crossword",
+        "thc daily crossword",
+        "cannabis crossword",
+        "thc-crossword"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/crossword/",
+      "goal": {
+        "summary": "daily cannabis crossword",
+        "playerFantasy": "daily cannabis crossword",
+        "primaryVerbs": [
+          "solve",
+          "navigate",
+          "check"
+        ],
+        "coreLoop": "Solve cannabis-themed crossword clues with keyboard or touch input.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "word puzzle"
+      ],
+      "players": {
+        "mode": "solo",
+        "min": 1,
+        "max": 1
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "docs/SOURCE_OF_TRUTH.md",
+      "production": {
+        "repository": "dtfgenetics/Thc-crossword-",
+        "sourcePaths": [
+          "src",
+          "content",
+          "public/puzzles"
+        ],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": null,
+        "integrationMode": "external-build",
+        "runtimePath": null,
+        "deploymentStatus": "ready-to-package",
+        "build": "npm test && npm run verify && npm run build",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": null,
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "thc-crossword",
+        "repoRoots": [],
+        "driveRefs": [
+          "1A7qynwW1yK4RbeWw0r3M8tIsR7izgpwB",
+          "1Gx6bIBkO9eqP0Rc5FwGPwjpsU-TK-VnW"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "npm test && npm run verify && npm run build",
+        "testCommands": [
+          "npm test && npm run verify && npm run build"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/crossword/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Production Vite base is /games/crossword/. The tested puzzle-data contract remains /puzzles/... and is published at the site root by the DTFSeeds suite deployer."
+      ]
+    },
+    {
+      "id": "ganjumanji",
+      "title": "Ganjumanji: The Lost Grower's Temple",
+      "aliases": [
+        "ganjumanji",
+        "ganjumanji: the lost grower's temple",
+        "lost growers temple"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/ganjumanji/",
+      "goal": {
+        "summary": "temple exploration campaign",
+        "playerFantasy": "temple exploration campaign",
+        "primaryVerbs": [
+          "explore",
+          "collect",
+          "survive"
+        ],
+        "coreLoop": "Explore regions, recover relic seeds, survive hazards, and complete the campaign.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "action-adventure"
+      ],
+      "players": {
+        "mode": "solo",
+        "min": 1,
+        "max": 1
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "README.md",
+      "production": {
+        "repository": "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple",
+        "sourcePaths": [
+          "src",
+          "public"
+        ],
+        "sourceOfTruth": "README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/ganjumanji/source-revision.txt",
+        "integrationMode": "external-pinned-static-build",
+        "runtimePath": "site/public-route-patch/games/ganjumanji/source-revision.txt",
+        "deploymentStatus": "ready-to-package",
+        "build": "npm test && npm run validate:ui && npm run build && npm run validate:release",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "phaser/canvas",
+        "frameworks": [
+          "Phaser"
+        ],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": null,
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "ganjumanji",
+        "repoRoots": [],
+        "driveRefs": [
+          "17xhnXnM36kEPLln6O8rH2lT0zx4-BFQ-",
+          "1RLSBk687oB4up-_AZ_LhalaeoyTLGEJA"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "npm test && npm run validate:ui && npm run build && npm run validate:release",
+        "testCommands": [
+          "npm test && npm run validate:ui && npm run build && npm run validate:release"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/ganjumanji/"
+      },
+      "release": {
+        "status": "release-candidate",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [],
+        "nextMilestone": "Advance the canonical build through its next documented release gate."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Canonical code remains in the standalone Ganjumanji repository. Revision b1cbf9b9627586b7277813b6a7c6f85a98830d58 is the green 0.4.1 five-region production candidate with 10 relic seeds, save v5, separate autosave/safe-checkpoint recovery, deterministic campaign/content/input/storage/solvability tests, shipped UI-contract validation, TypeScript/Vite build, release validation, current GitHub Actions CI, and production artifact generation. DTFSeeds packaging must rebuild this exact pinned revision and run validate:ui before promotion. Exact post-deploy live-route verification remains required before production-ready status."
+      ]
+    },
+    {
+      "id": "grow-room-bingo",
+      "title": "Grow Room Bingo / Bongwater Bingo",
+      "aliases": [
+        "grow-room-bingo",
+        "grow room bingo / bongwater bingo"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/grow-room-bingo/",
+      "goal": {
+        "summary": "community grow-room bingo",
+        "playerFantasy": "community grow-room bingo",
+        "primaryVerbs": [
+          "mark",
+          "share",
+          "complete"
+        ],
+        "coreLoop": "Generate a board, mark matching events, and complete lines or patterns.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "bingo"
+      ],
+      "players": {
+        "mode": "solo/local/online as supported",
+        "min": 1,
+        "max": 99
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "games/grow-room-bingo/README.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/grow-room-bingo"
+        ],
+        "sourceOfTruth": "games/grow-room-bingo/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/grow-room-bingo",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/grow-room-bingo",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/grow-room-bingo/scripts/validate-data.mjs && node games/grow-room-bingo/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-bingo/app.js && node --check site/public-route-patch/games/grow-room-bingo/keyboard-nav.js",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "games/grow-room-bingo",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "grow-room-bingo",
+        "repoRoots": [
+          "games/grow-room-bingo"
+        ],
+        "driveRefs": [
+          "1AMZ4SiWlk7RiVBVeMXkkBH7Fo5FrN_aO",
+          "1bMpb_n1b79rwHuH59dW9lcErQlg6M4bl"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "node games/grow-room-bingo/scripts/validate-data.mjs && node games/grow-room-bingo/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-bingo/app.js && node --check site/public-route-patch/games/grow-room-bingo/keyboard-nav.js",
+        "testCommands": [
+          "node games/grow-room-bingo/scripts/validate-data.mjs && node games/grow-room-bingo/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-bingo/app.js && node --check site/public-route-patch/games/grow-room-bingo/keyboard-nav.js"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/grow-room-bingo/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Self-hosted three-mode community bingo game with deterministic cards, local autosave, guarded clear/reset, resilient challenge sharing, roving 5×5 keyboard navigation, touch feedback, reduced motion, and forced-colors support. Its existing deterministic browser-runtime test is now included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "grow-room-defense",
+      "title": "Grow Room Defense",
+      "aliases": [
+        "grow-room-defense",
+        "grow room defense"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/grow-room-defense/",
+      "goal": {
+        "summary": "cultivation IPM defense strategy",
+        "playerFantasy": "cultivation IPM defense strategy",
+        "primaryVerbs": [
+          "identify",
+          "deploy",
+          "defend"
+        ],
+        "coreLoop": "Identify incoming grow threats and deploy the correct countermeasures before crop health collapses.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "strategy"
+      ],
+      "players": {
+        "mode": "solo",
+        "min": 1,
+        "max": 1
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "games/grow-room-defense/README.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/grow-room-defense"
+        ],
+        "sourceOfTruth": "games/grow-room-defense/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/grow-room-defense",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/grow-room-defense",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/grow-room-defense/scripts/validate-data.mjs && node games/grow-room-defense/test/engine.test.mjs && node games/grow-room-defense/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-defense/app.js && node --check site/public-route-patch/games/grow-room-defense/runtime.mjs && cmp games/grow-room-defense/src/engine.mjs site/public-route-patch/games/grow-room-defense/engine.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "games/grow-room-defense",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "grow-room-defense",
+        "repoRoots": [
+          "games/grow-room-defense"
+        ],
+        "driveRefs": [
+          "1UVXS-bnnye854aCrBPHjVVPWKzyoLgzj",
+          "15zk_HWNGnCpl_AQHw9jx5Ym3r8GAUw09"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "node games/grow-room-defense/scripts/validate-data.mjs && node games/grow-room-defense/test/engine.test.mjs && node games/grow-room-defense/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-defense/app.js && node --check site/public-route-patch/games/grow-room-defense/runtime.mjs && cmp games/grow-room-defense/src/engine.mjs site/public-route-patch/games/grow-room-defense/engine.mjs",
+        "testCommands": [
+          "node games/grow-room-defense/scripts/validate-data.mjs && node games/grow-room-defense/test/engine.test.mjs && node games/grow-room-defense/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-defense/app.js && node --check site/public-route-patch/games/grow-room-defense/runtime.mjs && cmp games/grow-room-defense/src/engine.mjs site/public-route-patch/games/grow-room-defense/engine.mjs"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/grow-room-defense/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Self-hosted deterministic IPM strategy game. Browser runtime now imports the canonical tested engine instead of duplicating rules; public-runtime regression covers mobile tool return, keyboard shortcuts, semantic health meters, forced colors, reduced motion, clipboard fallback, and visual states. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "grower-conversations",
+      "title": "Grower Conversations",
+      "aliases": [
+        "grower-conversations",
+        "grower conversations"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/grower-conversations/",
+      "goal": {
+        "summary": "cultivator conversation card game",
+        "playerFantasy": "cultivator conversation card game",
+        "primaryVerbs": [
+          "draw",
+          "discuss",
+          "share"
+        ],
+        "coreLoop": "Draw prompts that trigger stories, debate, and grow-room discussion.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "party card"
+      ],
+      "players": {
+        "mode": "solo/local/online as supported",
+        "min": 2,
+        "max": 20
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "games/grower-conversations/README.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/grower-conversations"
+        ],
+        "sourceOfTruth": "games/grower-conversations/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/grower-conversations",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/grower-conversations",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/grower-conversations/scripts/validate-prompt-bank.mjs && node games/grower-conversations/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grower-conversations/app.js && cmp games/grower-conversations/data/prompt-bank.json site/public-route-patch/games/grower-conversations/data/prompt-bank.json",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "games/grower-conversations",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "grower-conversations",
+        "repoRoots": [
+          "games/grower-conversations"
+        ],
+        "driveRefs": [
+          "1HCQp4R9xjl9HQL6UvvwDBzASyTw2ees_",
+          "1gL6wg0Wyh0_F0D4sGehKIpyGC0SOwFMd"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "node games/grower-conversations/scripts/validate-prompt-bank.mjs && node games/grower-conversations/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grower-conversations/app.js && cmp games/grower-conversations/data/prompt-bank.json site/public-route-patch/games/grower-conversations/data/prompt-bank.json",
+        "testCommands": [
+          "node games/grower-conversations/scripts/validate-prompt-bank.mjs && node games/grower-conversations/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grower-conversations/app.js && cmp games/grower-conversations/data/prompt-bank.json site/public-route-patch/games/grower-conversations/data/prompt-bank.json"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/grower-conversations/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-runtime",
+          "paths": [
+            "app/games/grower-conversations"
+          ],
+          "notes": "React migration implementation.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22",
+          "editable": true,
+          "releasable": false
+        }
+      ],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Self-hosted 96-card discussion deck with eight topics, three depth bands, local progress persistence, filtered deck progress, keyboard draw/copy/shuffle shortcuts, resilient clipboard fallback, responsive containment, 44px controls, reduced motion, and forced-colors support. Dedicated CI is modernized to current GitHub Actions and the full browser-runtime regression now runs in the central public-suite gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "harvest-hustle",
+      "title": "Harvest Hustle",
+      "aliases": [
+        "harvest-hustle",
+        "harvest hustle"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/harvest-hustle/",
+      "goal": {
+        "summary": "harvest time-management arcade game",
+        "playerFantasy": "harvest time-management arcade game",
+        "primaryVerbs": [
+          "prioritize",
+          "process",
+          "score"
+        ],
+        "coreLoop": "Make fast harvest and processing decisions during a timed shift to maximize quality and score.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "arcade"
+      ],
+      "players": {
+        "mode": "solo",
+        "min": 1,
+        "max": 1
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "games/harvest-hustle/README.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/harvest-hustle"
+        ],
+        "sourceOfTruth": "games/harvest-hustle/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/harvest-hustle",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/harvest-hustle",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/harvest-hustle/scripts/validate-data.mjs && node games/harvest-hustle/test/engine.test.mjs && node games/harvest-hustle/test/public-runtime.test.mjs && node --check site/public-route-patch/games/harvest-hustle/app.js && node --check site/public-route-patch/games/harvest-hustle/runtime.mjs && cmp games/harvest-hustle/src/engine.mjs site/public-route-patch/games/harvest-hustle/engine.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "games/harvest-hustle",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "harvest-hustle",
+        "repoRoots": [
+          "games/harvest-hustle"
+        ],
+        "driveRefs": [
+          "1xXOiBtGiUW0lFOVEBmeELDD6qZd_Qrui",
+          "1Z8Kqa1BbGYu7YqIloYQHYOAIGD-ZuHeK"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "node games/harvest-hustle/scripts/validate-data.mjs && node games/harvest-hustle/test/engine.test.mjs && node games/harvest-hustle/test/public-runtime.test.mjs && node --check site/public-route-patch/games/harvest-hustle/app.js && node --check site/public-route-patch/games/harvest-hustle/runtime.mjs && cmp games/harvest-hustle/src/engine.mjs site/public-route-patch/games/harvest-hustle/engine.mjs",
+        "testCommands": [
+          "node games/harvest-hustle/scripts/validate-data.mjs && node games/harvest-hustle/test/engine.test.mjs && node games/harvest-hustle/test/public-runtime.test.mjs && node --check site/public-route-patch/games/harvest-hustle/app.js && node --check site/public-route-patch/games/harvest-hustle/runtime.mjs && cmp games/harvest-hustle/src/engine.mjs site/public-route-patch/games/harvest-hustle/engine.mjs"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/harvest-hustle/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Self-hosted deterministic 75-second arcade shift game. Browser runtime now imports the canonical tested engine; regression coverage protects pause/resume timing, mobile decision controls, keyboard shortcuts, challenge sharing fallbacks, reduced motion, and forced-colors states. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "high-iq",
+      "title": "High IQ — Test Higher Cognition",
+      "aliases": [
+        "high-iq",
+        "high iq — test higher cognition",
+        "high iq",
+        "cannabis trivia"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/high-iq/",
+      "goal": {
+        "summary": "cannabis knowledge trivia game",
+        "playerFantasy": "cannabis knowledge trivia game",
+        "primaryVerbs": [
+          "answer",
+          "learn",
+          "score"
+        ],
+        "coreLoop": "Answer increasingly difficult cannabis questions and build a high score.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "trivia"
+      ],
+      "players": {
+        "mode": "solo/local/online as supported",
+        "min": 1,
+        "max": 20
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "docs/HIGH_IQ_SOURCE_OF_TRUTH.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/high-iq",
+          "site/public-route-patch/games/high-iq"
+        ],
+        "sourceOfTruth": "docs/HIGH_IQ_SOURCE_OF_TRUTH.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/high-iq",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/high-iq",
+        "deploymentStatus": "ready-to-package",
+        "build": "npm run hiq:validate",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "site/public-route-patch/games/high-iq",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "high-iq",
+        "repoRoots": [
+          "site/public-route-patch/games/high-iq"
+        ],
+        "driveRefs": [
+          "1WClMjYObsNUyojKoOb_nviBy0AXnATOq",
+          "1lAF3xNtpm7p_gbI-2b06lXuz9f2Omjqg"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "npm run hiq:validate",
+        "testCommands": [
+          "npm run hiq:validate"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/high-iq/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-runtime",
+          "paths": [
+            "app/games/high-iq"
+          ],
+          "notes": "React migration implementation.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22",
+          "editable": true,
+          "releasable": false
+        }
+      ],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Self-hosted manifest-driven High IQ runtime. Dataset v2.4 declares 200 Approved/PASS questions and 50 registered sources. The canonical aggregate validator now runs in both dedicated High IQ CI and the central public-suite build, covering data validation, runtime-shell synchronization, public-runtime validation, question-bank tooling, game-core tests, and the player-facing runtime smoke test. Exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "high-land",
+      "title": "High Land: The Sweet Escape",
+      "aliases": [
+        "high-land",
+        "high land: the sweet escape",
+        "high land",
+        "candyland rework"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/high-land/",
+      "goal": {
+        "summary": "cannabis-themed race board game",
+        "playerFantasy": "cannabis-themed race board game",
+        "primaryVerbs": [
+          "move",
+          "draw",
+          "race"
+        ],
+        "coreLoop": "Move through themed board locations, resolve events, and reach Cloud 9 Citadel first.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "board game"
+      ],
+      "players": {
+        "mode": "solo/local/online as supported",
+        "min": 2,
+        "max": 8
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "docs/HIGH_LAND_SOURCE_OF_TRUTH.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "apps/high-land-web"
+        ],
+        "sourceOfTruth": "docs/HIGH_LAND_SOURCE_OF_TRUTH.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "apps/high-land-web",
+        "integrationMode": "local-build",
+        "runtimePath": "apps/high-land-web",
+        "deploymentStatus": "ready-to-package",
+        "build": "npm run test:high-land && npm run build:high-land",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "phaser/canvas",
+        "frameworks": [
+          "Phaser"
+        ],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "apps/high-land-web",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "high-land",
+        "repoRoots": [
+          "apps/high-land-web"
+        ],
+        "driveRefs": [
+          "1kWOX1UYlbEraSFL5UyCOdyzXqMcqcFpZ",
+          "1EeySYtL4duj-oYhKyfXbi1vEh9fN5URf"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "npm run test:high-land && npm run build:high-land",
+        "testCommands": [
+          "npm run test:high-land && npm run build:high-land"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/high-land/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": []
+    },
+    {
+      "id": "high-life",
+      "title": "High Life: From Bagseed to Legacy",
+      "aliases": [
+        "high-life",
+        "high life: from bagseed to legacy",
+        "high life",
+        "bagseed to legacy"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/high-life/",
+      "goal": {
+        "summary": "life-path cannabis legacy game",
+        "playerFantasy": "life-path cannabis legacy game",
+        "primaryVerbs": [
+          "choose",
+          "progress",
+          "build"
+        ],
+        "coreLoop": "Progress from bagseed beginnings through underground, medical, and legal eras while building reputation and assets.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "board/life simulation"
+      ],
+      "players": {
+        "mode": "solo/local/online as supported",
+        "min": 1,
+        "max": 6
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "games/high-life/README.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/high-life"
+        ],
+        "sourceOfTruth": "games/high-life/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/high-life",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/high-life",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/high-life/test/engine.test.mjs && node games/high-life/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-life/app.js && cmp games/high-life/src/engine.mjs site/public-route-patch/games/high-life/engine.mjs && cmp games/high-life/data/events.json site/public-route-patch/games/high-life/data/events.json",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "games/high-life",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "high-life",
+        "repoRoots": [
+          "games/high-life"
+        ],
+        "driveRefs": [
+          "1O75rPZg2AzA0kE2J1gFnmptKRdm-IZJ1",
+          "1zLPjubw5rezTeafcTwvL1c5Tr3dKFwnh"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "node games/high-life/test/engine.test.mjs && node games/high-life/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-life/app.js && cmp games/high-life/src/engine.mjs site/public-route-patch/games/high-life/engine.mjs && cmp games/high-life/data/events.json site/public-route-patch/games/high-life/data/events.json",
+        "testCommands": [
+          "node games/high-life/test/engine.test.mjs && node games/high-life/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-life/app.js && cmp games/high-life/src/engine.mjs site/public-route-patch/games/high-life/engine.mjs && cmp games/high-life/data/events.json site/public-route-patch/games/high-life/data/events.json"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/high-life/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Self-hosted seeded 18-turn career strategy game across Underground, Medical, and Legal eras with a tested canonical rules engine, exact-resume autosave, deterministic event stream, era transitions, Legacy scoring, mobile layout safeguards, 44px controls, reduced motion, forced colors, and canonical/public data synchronization. Included in the central public-suite validation gate. Human balance playtesting and exact post-deploy live-route verification remain open."
+      ]
+    },
+    {
+      "id": "high-lines",
+      "title": "High Lines",
+      "aliases": [
+        "high-lines",
+        "high lines"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/high-lines/",
+      "goal": {
+        "summary": "interactive cannabis coloring and activity game",
+        "playerFantasy": "interactive cannabis coloring and activity game",
+        "primaryVerbs": [
+          "color",
+          "create",
+          "complete"
+        ],
+        "coreLoop": "Complete cannabis-themed coloring and activity pages in an accessible browser surface.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "creative activity"
+      ],
+      "players": {
+        "mode": "solo",
+        "min": 1,
+        "max": 1
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "games/high-lines/README.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/high-lines"
+        ],
+        "sourceOfTruth": "games/high-lines/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/high-lines",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/high-lines",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/high-lines/scripts/validate-data.mjs && node games/high-lines/test/engine.test.mjs && node games/high-lines/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-lines/app.js && node --check site/public-route-patch/games/high-lines/runtime.mjs && cmp games/high-lines/src/engine.mjs site/public-route-patch/games/high-lines/engine.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "games/high-lines",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "high-lines",
+        "repoRoots": [
+          "games/high-lines"
+        ],
+        "driveRefs": [
+          "11wiiyc4qaLtbPU9nw7zYEoIY1IZL5h3o",
+          "1DpbVETGwk2DCnU5NqhiktjYlK2R234Sy"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "node games/high-lines/scripts/validate-data.mjs && node games/high-lines/test/engine.test.mjs && node games/high-lines/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-lines/app.js && node --check site/public-route-patch/games/high-lines/runtime.mjs && cmp games/high-lines/src/engine.mjs site/public-route-patch/games/high-lines/engine.mjs",
+        "testCommands": [
+          "node games/high-lines/scripts/validate-data.mjs && node games/high-lines/test/engine.test.mjs && node games/high-lines/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-lines/app.js && node --check site/public-route-patch/games/high-lines/runtime.mjs && cmp games/high-lines/src/engine.mjs site/public-route-patch/games/high-lines/engine.mjs"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/high-lines/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Self-hosted deterministic coloring/hidden-object game with four original SVG scenes, local autosave, zoom controls, keyboard/touch play, and shareable scene codes. Browser runtime now imports the canonical tested coloring engine while persistence, SVG sanitization/retry, zoom, and reset confirmation remain browser-layer concerns. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "kush-kings",
+      "title": "Kush Kings Chess",
+      "aliases": [
+        "kush-kings",
+        "kush kings chess",
+        "thc chess",
+        "kush-kings-chess"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/kush-kings-chess/",
+      "goal": {
+        "summary": "multiplayer cannabis chess",
+        "playerFantasy": "multiplayer cannabis chess",
+        "primaryVerbs": [
+          "move",
+          "capture",
+          "checkmate"
+        ],
+        "coreLoop": "Play legal chess matches with rooms, spectators, chat, archives, and rematches.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "chess"
+      ],
+      "players": {
+        "mode": "solo/local/online as supported",
+        "min": 2,
+        "max": 2
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "docs/SOURCE_OF_TRUTH.md",
+      "production": {
+        "repository": "dtfgenetics/Thc-chess-git",
+        "sourcePaths": [
+          "client",
+          "server"
+        ],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": null,
+        "integrationMode": "external-full-stack",
+        "runtimePath": null,
+        "deploymentStatus": "runtime-integration",
+        "build": "pnpm check:rebrand && pnpm --filter client lint && pnpm build:client && pnpm build:server && pnpm test:production-runtime",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "server-authoritative or canonical tested engine as recorded by game source",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "multiplayer",
+        "multiplayerAuthority": "authoritative service/runtime",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": null,
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "kush-kings-chess",
+        "repoRoots": [],
+        "driveRefs": [
+          "1tWjfjdhrSl03mPrt2mrTNZ3HjhDP9BSK",
+          "1fKcjYK2FMommcTaGr5KuSUDQtBNAyLCN"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "pnpm check:rebrand && pnpm --filter client lint && pnpm build:client && pnpm build:server && pnpm test:production-runtime",
+        "testCommands": [
+          "pnpm check:rebrand && pnpm --filter client lint && pnpm build:client && pnpm build:server && pnpm test:production-runtime"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/kush-kings-chess/"
+      },
+      "release": {
+        "status": "playable-local",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [],
+        "nextMilestone": "Advance the canonical build through its next documented release gate."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Canonical full-stack source is dtfgenetics/Thc-chess-git. Preserve chess.js legal-move authority, Express/Socket.IO rooms, PostgreSQL sessions, spectators, chat, archives, resign/draw/abandon/rematch behavior, and the chess.dtfseeds.com / chess-api.dtfseeds.com targets. The Next.js client, Hostinger fallback, CI and deployment checks now use the canonical V6 six-link DTFSeeds header. A post-deploy live checker verifies frontend identity, API /health, Socket.IO transport, and the DTFSeeds proxy. Keep this game nonpublic in data/public-navigation.json until the live checker plus two-browser/mobile QA pass."
+      ]
+    },
+    {
+      "id": "lost-in-the-terps",
+      "title": "Lost in the Terps",
+      "aliases": [
+        "lost-in-the-terps",
+        "lost in the terps"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/lost-in-the-terps/",
+      "goal": {
+        "summary": "terpene word-search missions",
+        "playerFantasy": "terpene word-search missions",
+        "primaryVerbs": [
+          "search",
+          "find",
+          "complete"
+        ],
+        "coreLoop": "Find terpene and cultivation terms across themed word-search missions.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "word search"
+      ],
+      "players": {
+        "mode": "solo",
+        "min": 1,
+        "max": 1
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "games/lost-in-the-terps/README.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/lost-in-the-terps"
+        ],
+        "sourceOfTruth": "games/lost-in-the-terps/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/lost-in-the-terps",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/lost-in-the-terps",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/lost-in-the-terps/scripts/validate-data.mjs && node games/lost-in-the-terps/test/public-runtime.test.mjs && node --check site/public-route-patch/games/lost-in-the-terps/app.js && node --check site/public-route-patch/games/lost-in-the-terps/keyboard-nav-v1.js",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "games/lost-in-the-terps",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "lost-in-the-terps",
+        "repoRoots": [
+          "games/lost-in-the-terps"
+        ],
+        "driveRefs": [
+          "1jekptq_dgt8x9D-_kDFW2jxu844RpBUA",
+          "1TaOTSsImKD8rTzkdZi-txZaj7uM1wW_4"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "node games/lost-in-the-terps/scripts/validate-data.mjs && node games/lost-in-the-terps/test/public-runtime.test.mjs && node --check site/public-route-patch/games/lost-in-the-terps/app.js && node --check site/public-route-patch/games/lost-in-the-terps/keyboard-nav-v1.js",
+        "testCommands": [
+          "node games/lost-in-the-terps/scripts/validate-data.mjs && node games/lost-in-the-terps/test/public-runtime.test.mjs && node --check site/public-route-patch/games/lost-in-the-terps/app.js && node --check site/public-route-patch/games/lost-in-the-terps/keyboard-nav-v1.js"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/lost-in-the-terps/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Self-hosted three-mission word-search game with eight hidden words per mission, guarded mission/reset actions, three-use hints, isolated delayed feedback, roving keyboard grid navigation, scrollable mobile grids, reduced motion, and forced-colors support. Its existing deterministic browser-runtime test is now included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "mystery-strain",
+      "title": "Mystery Strain",
+      "aliases": [
+        "mystery-strain",
+        "mystery strain"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/mystery-strain/",
+      "goal": {
+        "summary": "strain-trait deduction game",
+        "playerFantasy": "strain-trait deduction game",
+        "primaryVerbs": [
+          "ask",
+          "deduce",
+          "guess"
+        ],
+        "coreLoop": "Ask trait questions to narrow candidates and correctly identify the mystery strain.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "deduction"
+      ],
+      "players": {
+        "mode": "solo",
+        "min": 1,
+        "max": 1
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "games/mystery-strain/README.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/mystery-strain"
+        ],
+        "sourceOfTruth": "games/mystery-strain/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/mystery-strain",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/mystery-strain",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/mystery-strain/scripts/validate-data.mjs && node games/mystery-strain/test/engine.test.mjs && node games/mystery-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/mystery-strain/app.js && node --check site/public-route-patch/games/mystery-strain/runtime.mjs && cmp games/mystery-strain/src/engine.mjs site/public-route-patch/games/mystery-strain/engine.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "games/mystery-strain",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "mystery-strain",
+        "repoRoots": [
+          "games/mystery-strain"
+        ],
+        "driveRefs": [
+          "1Q6XqJB86sVIcY5KqBTYqnDAPmdwjDEsY",
+          "1cxXCg8pa3UAo1i7eQrtKlSq5mNzrTzQ6"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "node games/mystery-strain/scripts/validate-data.mjs && node games/mystery-strain/test/engine.test.mjs && node games/mystery-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/mystery-strain/app.js && node --check site/public-route-patch/games/mystery-strain/runtime.mjs && cmp games/mystery-strain/src/engine.mjs site/public-route-patch/games/mystery-strain/engine.mjs",
+        "testCommands": [
+          "node games/mystery-strain/scripts/validate-data.mjs && node games/mystery-strain/test/engine.test.mjs && node games/mystery-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/mystery-strain/app.js && node --check site/public-route-patch/games/mystery-strain/runtime.mjs && cmp games/mystery-strain/src/engine.mjs site/public-route-patch/games/mystery-strain/engine.mjs"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/mystery-strain/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Self-hosted deterministic deduction game with 20 fictional profiles, 12 questions, optional Wild Card modifiers, Best Split UI analysis, and explicit two-step guess confirmation. Browser runtime now imports the canonical tested engine while Best Split remains a presentation helper. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "pheno-draft",
+      "title": "Pheno Draft",
+      "aliases": [
+        "pheno-draft",
+        "pheno draft"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/pheno-draft/",
+      "goal": {
+        "summary": "genetics selection deck-builder",
+        "playerFantasy": "genetics selection deck-builder",
+        "primaryVerbs": [
+          "draft",
+          "select",
+          "breed"
+        ],
+        "coreLoop": "Draft phenotypes and make breeding selections that improve a genetics program over successive decisions.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "deck-builder"
+      ],
+      "players": {
+        "mode": "solo/local/online as supported",
+        "min": 1,
+        "max": 4
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "games/pheno-draft/README.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/pheno-draft"
+        ],
+        "sourceOfTruth": "games/pheno-draft/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/pheno-draft",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/pheno-draft",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/pheno-draft/scripts/validate-data.mjs && node games/pheno-draft/test/engine.test.mjs && node games/pheno-draft/test/public-runtime.test.mjs && node --check site/public-route-patch/games/pheno-draft/app.js && node --check site/public-route-patch/games/pheno-draft/runtime.mjs && cmp games/pheno-draft/src/engine.mjs site/public-route-patch/games/pheno-draft/engine.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "games/pheno-draft",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "pheno-draft",
+        "repoRoots": [
+          "games/pheno-draft"
+        ],
+        "driveRefs": [
+          "10JxjOnq_n48f98FL1NZIZ56m92jpKNVv",
+          "1PwRfD2D1BUsAwBBIP5NyjMlN6QsBy9GN"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "node games/pheno-draft/scripts/validate-data.mjs && node games/pheno-draft/test/engine.test.mjs && node games/pheno-draft/test/public-runtime.test.mjs && node --check site/public-route-patch/games/pheno-draft/app.js && node --check site/public-route-patch/games/pheno-draft/runtime.mjs && cmp games/pheno-draft/src/engine.mjs site/public-route-patch/games/pheno-draft/engine.mjs",
+        "testCommands": [
+          "node games/pheno-draft/scripts/validate-data.mjs && node games/pheno-draft/test/engine.test.mjs && node games/pheno-draft/test/public-runtime.test.mjs && node --check site/public-route-patch/games/pheno-draft/app.js && node --check site/public-route-patch/games/pheno-draft/runtime.mjs && cmp games/pheno-draft/src/engine.mjs site/public-route-patch/games/pheno-draft/engine.mjs"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/pheno-draft/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Self-hosted deterministic six-round fictional genetics card draft. Browser runtime now imports the canonical tested engine; regression coverage protects restart confirmation, share fallback, keyboard controls, mobile decision-rail reset, forced colors, and reduced motion. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "phenoquest",
+      "title": "PhenoQuest: The Living Seed Vault",
+      "aliases": [
+        "phenoquest",
+        "phenoquest: the living seed vault",
+        "living seed vault"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/phenoquest/",
+      "goal": {
+        "summary": "phenotype exploration RPG",
+        "playerFantasy": "phenotype exploration RPG",
+        "primaryVerbs": [
+          "explore",
+          "discover",
+          "progress"
+        ],
+        "coreLoop": "Explore a living seed vault, discover phenotypes, and progress through a cultivation-themed adventure.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "adventure"
+      ],
+      "players": {
+        "mode": "solo",
+        "min": 1,
+        "max": 1
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "docs/SOURCE_OF_TRUTH.md",
+      "production": {
+        "repository": "dtfgenetics/Catching-phenos",
+        "sourcePaths": [
+          "src",
+          "data",
+          "public/games/phenoquest"
+        ],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/phenoquest",
+        "integrationMode": "external-build",
+        "runtimePath": "site/public-route-patch/games/phenoquest",
+        "deploymentStatus": "ready-to-package",
+        "build": "canonical repo: npm run check (includes self-contained production build)",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": null,
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "phenoquest",
+        "repoRoots": [],
+        "driveRefs": [
+          "1vHn59ch_VPDaWjgP1MN0gTZrDq47HHBx",
+          "1iaj8twrfNOas1gKr1BAUw6-Te6m_EKP-"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "canonical repo: npm run check (includes self-contained production build)",
+        "testCommands": [
+          "canonical repo: npm run check (includes self-contained production build)"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/phenoquest/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-preview",
+          "paths": [
+            "app/games/phenoquest",
+            "public/phenoquest"
+          ],
+          "notes": "Next route shell + preview runtime; standalone Catching-phenos remains canonical.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22",
+          "editable": true,
+          "releasable": false
+        }
+      ],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "DTFSeeds route is generated from the verified self-contained build in dtfgenetics/Catching-phenos. Current vertical slice includes starter choice, maps, movement, encounters, combat, inventory, quests, Vault Garden, Keeper tracking, breeding previews, playable Lineage Lab crosses and local save data."
+      ]
+    },
+    {
+      "id": "protect-the-plants",
+      "title": "Burn Buds",
+      "aliases": [
+        "protect-the-plants",
+        "burn buds",
+        "cannabis battleship",
+        "cannabis fleet battle",
+        "fleet battle",
+        "burn-buds"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [
+        "cannabis-fleet-battle",
+        "burn-buds"
+      ],
+      "publicRoute": "/games/protect-the-plants/",
+      "goal": {
+        "summary": "two-player hidden-fleet grow-room strategy",
+        "playerFantasy": "two-player hidden-fleet grow-room strategy",
+        "primaryVerbs": [
+          "place",
+          "target",
+          "eliminate"
+        ],
+        "coreLoop": "Place protected grow formations, fire on the opponent grid, and eliminate all opposing formations.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "hidden-fleet strategy"
+      ],
+      "players": {
+        "mode": "solo/local/online as supported",
+        "min": 2,
+        "max": 2
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "games/protect-the-plants/README.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/protect-the-plants"
+        ],
+        "sourceOfTruth": "games/protect-the-plants/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/protect-the-plants",
+        "integrationMode": "local-static-php",
+        "runtimePath": "site/public-route-patch/games/protect-the-plants",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/protect-the-plants/test/burn-buds-branding.test.mjs && node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs && node games/protect-the-plants/test/api-copy-contract.test.mjs && node games/protect-the-plants/test/runtime-sync-v1.test.mjs && node games/protect-the-plants/test/v2-extras-sync.test.mjs && node games/protect-the-plants/test/native-targeting-source.test.mjs && node games/protect-the-plants/test/gamefeel-v1.test.mjs && php -l site/public-route-patch/games/protect-the-plants/api.php && php -l site/public-route-patch/games/protect-the-plants/presence.php",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "server-authoritative or canonical tested engine as recorded by game source",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "multiplayer",
+        "multiplayerAuthority": "authoritative service/runtime",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "games/protect-the-plants",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "burn-buds",
+        "repoRoots": [
+          "games/protect-the-plants"
+        ],
+        "driveRefs": [
+          "11yWoRkU0HTdavEroYkVluVAOFCWldtuu",
+          "18yajn4zbPJgTW32IR8C1X6d4dyUcCd4L"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "node games/protect-the-plants/test/burn-buds-branding.test.mjs && node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs && node games/protect-the-plants/test/api-copy-contract.test.mjs && node games/protect-the-plants/test/runtime-sync-v1.test.mjs && node games/protect-the-plants/test/v2-extras-sync.test.mjs && node games/protect-the-plants/test/native-targeting-source.test.mjs && node games/protect-the-plants/test/gamefeel-v1.test.mjs && php -l site/public-route-patch/games/protect-the-plants/api.php && php -l site/public-route-patch/games/protect-the-plants/presence.php",
+        "testCommands": [
+          "node games/protect-the-plants/test/burn-buds-branding.test.mjs && node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs && node games/protect-the-plants/test/api-copy-contract.test.mjs && node games/protect-the-plants/test/runtime-sync-v1.test.mjs && node games/protect-the-plants/test/v2-extras-sync.test.mjs && node games/protect-the-plants/test/native-targeting-source.test.mjs && node games/protect-the-plants/test/gamefeel-v1.test.mjs && php -l site/public-route-patch/games/protect-the-plants/api.php && php -l site/public-route-patch/games/protect-the-plants/presence.php"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/protect-the-plants/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "prototype-do-not-confuse-with-production",
+          "paths": [
+            "app/games/burn-buds",
+            "game/burn-buds"
+          ],
+          "notes": "Dtf420 route/prototype. Production Burn Buds is Thc games/protect-the-plants + site/public-route-patch/games/protect-the-plants.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22",
+          "editable": true,
+          "releasable": false
+        }
+      ],
+      "deprecatedLocations": [
+        {
+          "repository": "dtfgenetics/Thc",
+          "paths": [
+            "games/cannabis-fleet-battle"
+          ],
+          "role": "archive-history",
+          "relation": "Earlier hidden-fleet scaffold merged into Burn Buds",
+          "editable": false,
+          "releasable": false
+        }
+      ],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Public product and canonical implementation are Burn Buds under protect-the-plants. The older cannabis-fleet-battle registry ID is a legacy scaffold identity and must not be used as the production source path.",
+        "Burn Buds is the public identity of the tested two-player hidden-grid strategy game; /games/protect-the-plants/ remains the compatibility route for active rooms and invite links. Dedicated CI exercises authenticated opponent presence. The central public-suite gate now also protects branding, gameplay-v4, API copy contracts, runtime sync, targeting source, gamefeel, service-worker assets, PHP syntax, mobile board behavior, and compatibility identity. Exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "root-cause",
+      "title": "Root Cause",
+      "aliases": [
+        "root-cause",
+        "root cause"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/root-cause/",
+      "goal": {
+        "summary": "cultivation diagnostics deduction game",
+        "playerFantasy": "cultivation diagnostics deduction game",
+        "primaryVerbs": [
+          "inspect",
+          "diagnose",
+          "solve"
+        ],
+        "coreLoop": "Review symptoms and evidence, choose likely diagnoses, and solve a run of cultivation cases.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "diagnostic deduction"
+      ],
+      "players": {
+        "mode": "solo",
+        "min": 1,
+        "max": 1
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "games/root-cause/README.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/root-cause"
+        ],
+        "sourceOfTruth": "games/root-cause/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/root-cause",
+        "integrationMode": "static",
+        "runtimePath": "site/public-route-patch/games/root-cause",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/root-cause/scripts/validate-data.mjs && node games/root-cause/test/engine.test.mjs && node games/root-cause/test/public-runtime.test.mjs && node --check site/public-route-patch/games/root-cause/app.js && node --check site/public-route-patch/games/root-cause/runtime.mjs && node --check site/public-route-patch/games/root-cause/engine.mjs && cmp games/root-cause/src/engine.mjs site/public-route-patch/games/root-cause/engine.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": null,
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "root-cause",
+        "repoRoots": [],
+        "driveRefs": [],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "node games/root-cause/scripts/validate-data.mjs && node games/root-cause/test/engine.test.mjs && node games/root-cause/test/public-runtime.test.mjs && node --check site/public-route-patch/games/root-cause/app.js && node --check site/public-route-patch/games/root-cause/runtime.mjs && node --check site/public-route-patch/games/root-cause/engine.mjs && cmp games/root-cause/src/engine.mjs site/public-route-patch/games/root-cause/engine.mjs",
+        "testCommands": [
+          "node games/root-cause/scripts/validate-data.mjs && node games/root-cause/test/engine.test.mjs && node games/root-cause/test/public-runtime.test.mjs && node --check site/public-route-patch/games/root-cause/app.js && node --check site/public-route-patch/games/root-cause/runtime.mjs && node --check site/public-route-patch/games/root-cause/engine.mjs && cmp games/root-cause/src/engine.mjs site/public-route-patch/games/root-cause/engine.mjs"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/root-cause/"
+      },
+      "release": {
+        "status": "vertical-slice",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [],
+        "nextMilestone": "Advance the canonical build through its next documented release gate."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Deployment metadata and runtime files exist, but Root Cause is intentionally not in data/game-source-map.json or public-navigation.json as of 2026-09-22.",
+        "Treat it as a deployment-only/orphan location record until an explicit portfolio promotion decision is made."
+      ]
+    },
+    {
+      "id": "seed-ascent",
+      "title": "Seed Man: Seed Ascent",
+      "aliases": [
+        "seed-ascent",
+        "seed ascent",
+        "seed man seed ascent"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [
+        "seed-man-platformer"
+      ],
+      "legacyIds": [],
+      "publicRoute": "/games/seed-ascent",
+      "goal": {
+        "summary": "Seed Man vertical ascent action game",
+        "playerFantasy": "Seed Man vertical ascent action game",
+        "primaryVerbs": [
+          "climb",
+          "jump",
+          "survive"
+        ],
+        "coreLoop": "Climb through increasingly difficult stages with responsive movement while surviving hazards and reaching the top.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "platformer"
+      ],
+      "players": {
+        "mode": "solo",
+        "min": 1,
+        "max": 1
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": null,
+      "production": {
+        "repository": "dtfgenetics/Dtf420",
+        "sourcePaths": [
+          "app/games/seed-ascent",
+          "public/seed-ascent.html",
+          "public/seed-ascent"
+        ],
+        "integrationRepository": "dtfgenetics/Thc"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "canvas/webgl",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": null,
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "seed-ascent",
+        "repoRoots": [],
+        "driveRefs": [],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "canonical repository build/verification command",
+        "testCommands": [
+          "canonical repository verification required"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/seed-ascent"
+      },
+      "release": {
+        "status": "prototype",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [],
+        "nextMilestone": "Advance the canonical build through its next documented release gate."
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "active-migration-runtime",
+          "paths": [
+            "app/games/seed-ascent",
+            "public/seed-ascent",
+            "public/seed-ascent.html"
+          ],
+          "notes": "Dtf420 route + Canvas2D runtime. Related to Seed Man, but not current production Seed Man v20 owner.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22",
+          "editable": true,
+          "releasable": false
+        }
+      ],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Do not route Seed Ascent requests to the production Seed Man source unless the user explicitly asks to reconcile or cut over the two runtimes."
+      ]
+    },
+    {
+      "id": "seed-man-platformer",
+      "title": "Seed Man: Grow. Fight. Restore.",
+      "aliases": [
+        "seed-man-platformer",
+        "seed man: grow. fight. restore.",
+        "seed man",
+        "seed man run",
+        "seedman run",
+        "seed-man"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [
+        "seed-ascent"
+      ],
+      "legacyIds": [],
+      "publicRoute": "/games/seed-man-platformer/",
+      "goal": {
+        "summary": "Seed Man action platformer campaign",
+        "playerFantasy": "Seed Man action platformer campaign",
+        "primaryVerbs": [
+          "run",
+          "jump",
+          "fight"
+        ],
+        "coreLoop": "Run, jump, fight, transform, defeat bosses, and restore five worlds across a 20-level campaign.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "platformer"
+      ],
+      "players": {
+        "mode": "solo",
+        "min": 1,
+        "max": 1
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "games/seed-man-platformer/README.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/seed-man-platformer"
+        ],
+        "sourceOfTruth": "games/seed-man-platformer/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/seed-man-platformer",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/seed-man-platformer",
+        "deploymentStatus": "production-v20",
+        "build": "node games/seed-man-platformer/test/physics.test.mjs && node games/seed-man-platformer/test/progression-systems.test.mjs && node games/seed-man-platformer/test/campaign.test.mjs && node games/seed-man-platformer/test/art-registry.test.mjs && node games/seed-man-platformer/test/public-runtime.test.mjs && node games/seed-man-platformer/test/public-campaign.test.mjs && node games/seed-man-platformer/test/input-guard.test.mjs && node games/seed-man-platformer/test/world-mechanics-runtime.test.mjs && node games/seed-man-platformer/test/public-world-mechanics-browser.test.mjs && node scripts/verify-seed-man-production-v20.mjs && node scripts/validate-seed-man-production-bundle.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "canvas/webgl",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "games/seed-man-platformer",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "seed-man",
+        "repoRoots": [
+          "games/seed-man-platformer"
+        ],
+        "driveRefs": [
+          "1NrqkjVWCjw9Cf_6kiHyupYcKfA7uT8vd",
+          "1KvhKlWp5_PdlpM7CbBSUP1YpjY4m0DDj"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "node games/seed-man-platformer/test/physics.test.mjs && node games/seed-man-platformer/test/progression-systems.test.mjs && node games/seed-man-platformer/test/campaign.test.mjs && node games/seed-man-platformer/test/art-registry.test.mjs && node games/seed-man-platformer/test/public-runtime.test.mjs && node games/seed-man-platformer/test/public-campaign.test.mjs && node games/seed-man-platformer/test/input-guard.test.mjs && node games/seed-man-platformer/test/world-mechanics-runtime.test.mjs && node games/seed-man-platformer/test/public-world-mechanics-browser.test.mjs && node scripts/verify-seed-man-production-v20.mjs && node scripts/validate-seed-man-production-bundle.mjs",
+        "testCommands": [
+          "node games/seed-man-platformer/test/physics.test.mjs && node games/seed-man-platformer/test/progression-systems.test.mjs && node games/seed-man-platformer/test/campaign.test.mjs && node games/seed-man-platformer/test/art-registry.test.mjs && node games/seed-man-platformer/test/public-runtime.test.mjs && node games/seed-man-platformer/test/public-campaign.test.mjs && node games/seed-man-platformer/test/input-guard.test.mjs && node games/seed-man-platformer/test/world-mechanics-runtime.test.mjs && node games/seed-man-platformer/test/public-world-mechanics-browser.test.mjs && node scripts/verify-seed-man-production-v20.mjs && node scripts/validate-seed-man-production-bundle.mjs"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/seed-man-platformer/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Canonical Seed Man v20 release on /games/seed-man-platformer/: 20 levels across Greenhouse Valley, Forest Ruins, Desert Canyon, Frozen Peaks and Eco City; six boss encounters; four-phase Blight King finale; 30-second phenotype combat; browser world mechanics with moving/collapsing/conveyor/bounce/environment systems; synchronized dynamic Three.js platforms; and the approved 2026-09-08 green armored plant-hero visual system. Retired 11/15-level campaigns, Genome Hydra, Genetic Frontier, seed-man-production-v1, seed-man-locked-v1, legacy sprite ownership and procedural character fallback must not be republished."
+      ]
+    },
+    {
+      "id": "spin-the-strain",
+      "title": "Spin the Strain",
+      "aliases": [
+        "spin-the-strain",
+        "spin the strain"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/spin-the-strain/",
+      "goal": {
+        "summary": "strain challenge wheel",
+        "playerFantasy": "strain challenge wheel",
+        "primaryVerbs": [
+          "spin",
+          "answer",
+          "challenge"
+        ],
+        "coreLoop": "Spin a wheel to select strains, trivia, or challenges and resolve the result.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "party selector"
+      ],
+      "players": {
+        "mode": "solo/local/online as supported",
+        "min": 1,
+        "max": 20
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "games/spin-the-strain/README.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/spin-the-strain"
+        ],
+        "sourceOfTruth": "games/spin-the-strain/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/spin-the-strain",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/spin-the-strain",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/spin-the-strain/scripts/validate-data.mjs && node games/spin-the-strain/test/engine.test.mjs && node games/spin-the-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/spin-the-strain/app.js && node --check site/public-route-patch/games/spin-the-strain/runtime.mjs && cmp games/spin-the-strain/src/engine.mjs site/public-route-patch/games/spin-the-strain/engine.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "games/spin-the-strain",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "spin-the-strain",
+        "repoRoots": [
+          "games/spin-the-strain"
+        ],
+        "driveRefs": [
+          "1LQJpzxfJtPj5GlENec-GvNwGpyAGZBp2",
+          "1qtF2j00NZh6TkunrrvHIlybDUZxMR4e3"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "node games/spin-the-strain/scripts/validate-data.mjs && node games/spin-the-strain/test/engine.test.mjs && node games/spin-the-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/spin-the-strain/app.js && node --check site/public-route-patch/games/spin-the-strain/runtime.mjs && cmp games/spin-the-strain/src/engine.mjs site/public-route-patch/games/spin-the-strain/engine.mjs",
+        "testCommands": [
+          "node games/spin-the-strain/scripts/validate-data.mjs && node games/spin-the-strain/test/engine.test.mjs && node games/spin-the-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/spin-the-strain/app.js && node --check site/public-route-patch/games/spin-the-strain/runtime.mjs && cmp games/spin-the-strain/src/engine.mjs site/public-route-patch/games/spin-the-strain/engine.mjs"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/spin-the-strain/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Self-hosted deterministic three-mode wheel game with 18-entry no-repeat cycles per mode, shareable codes, animation-isolated result reveal, hidden-page completion, keyboard spin shortcut, clipboard fallback, reduced motion, and forced-colors support. Browser runtime now imports the canonical tested wheel engine. Dedicated title CI and the central public-suite validation gate both enforce the runtime contract. browserTested remains false until actual browser QA is completed; exact post-deploy live-route verification is still required."
+      ]
+    },
+    {
+      "id": "stoner-duck-race",
+      "title": "Quack & Bake: Stoner Duck Race",
+      "aliases": [
+        "stoner-duck-race",
+        "stoner duck race",
+        "quack & bake",
+        "quack and bake",
+        "duck race"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/stoner-duck-race",
+      "goal": {
+        "summary": "multiplayer duck racing game",
+        "playerFantasy": "multiplayer duck racing game",
+        "primaryVerbs": [
+          "select",
+          "race",
+          "cheer"
+        ],
+        "coreLoop": "Select a duck, join a race, and compete through a synchronized browser race to the finish.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "racing"
+      ],
+      "players": {
+        "mode": "solo/local/online as supported",
+        "min": 1,
+        "max": 12
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": null,
+      "production": {
+        "repository": "dtfgenetics/Dtf420",
+        "sourcePaths": [
+          "app/games/stoner-duck-race",
+          "game/stoner-duck-race"
+        ],
+        "integrationRepository": "dtfgenetics/Thc"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "phaser/canvas",
+        "frameworks": [
+          "Phaser"
+        ],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": null,
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "stoner-duck-race",
+        "repoRoots": [],
+        "driveRefs": [],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "canonical repository build/verification command",
+        "testCommands": [
+          "canonical repository verification required"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/stoner-duck-race"
+      },
+      "release": {
+        "status": "prototype",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [],
+        "nextMilestone": "Advance the canonical build through its next documented release gate."
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "active-development",
+          "paths": [
+            "app/games/stoner-duck-race",
+            "game/stoner-duck-race",
+            "components/game/StonerDuckRaceGame.tsx",
+            "services/stoner-duck-race-server"
+          ],
+          "notes": "Next route + Phaser game + React shell + Colyseus server.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22",
+          "editable": true,
+          "releasable": false
+        }
+      ],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Resolve an explicit production owner/cutover before claiming a live route."
+      ]
+    },
+    {
+      "id": "strain-match",
+      "title": "Strain Match",
+      "aliases": [
+        "strain-match",
+        "strain match"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/strain-match/",
+      "goal": {
+        "summary": "cannabis memory matching game",
+        "playerFantasy": "cannabis memory matching game",
+        "primaryVerbs": [
+          "flip",
+          "match",
+          "learn"
+        ],
+        "coreLoop": "Flip and match strain or cultivation pairs while learning the associated concepts.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "memory"
+      ],
+      "players": {
+        "mode": "solo/local/online as supported",
+        "min": 1,
+        "max": 4
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "games/strain-match/README.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/strain-match"
+        ],
+        "sourceOfTruth": "games/strain-match/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/strain-match",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/strain-match",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/strain-match/scripts/validate-data.mjs && node games/strain-match/test/public-runtime.test.mjs && node --check site/public-route-patch/games/strain-match/app.js",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "games/strain-match",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "strain-match",
+        "repoRoots": [
+          "games/strain-match"
+        ],
+        "driveRefs": [
+          "17P0KYTYa7g-rXPN1VxsyZmBpRZR63gEX",
+          "1Rtq5fSf--Pu9t_y172D_rUFYLnBNlxSI"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "node games/strain-match/scripts/validate-data.mjs && node games/strain-match/test/public-runtime.test.mjs && node --check site/public-route-patch/games/strain-match/app.js",
+        "testCommands": [
+          "node games/strain-match/scripts/validate-data.mjs && node games/strain-match/test/public-runtime.test.mjs && node --check site/public-route-patch/games/strain-match/app.js"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/strain-match/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Self-hosted four-deck educational memory game with eight pairs per deck. Existing deterministic browser-runtime coverage protects visible-play timer accounting, hidden-page pause/resume, stale mismatch isolation, guarded restart, local best scores, streak/HUD states, touch feedback, reduced motion, and forced colors. The runtime test is now included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "strain-showdown",
+      "title": "Strain Showdown",
+      "aliases": [
+        "strain-showdown",
+        "strain showdown",
+        "tcg"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/strain-showdown/",
+      "goal": {
+        "summary": "cannabis strain trading-card battle",
+        "playerFantasy": "cannabis strain trading-card battle",
+        "primaryVerbs": [
+          "build",
+          "play",
+          "battle"
+        ],
+        "coreLoop": "Build a strain lineup, play cards across battle lanes, and use family traits to defeat the opponent.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "card battler"
+      ],
+      "players": {
+        "mode": "solo/local/online as supported",
+        "min": 1,
+        "max": 2
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "games/strain-showdown/README.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/strain-showdown"
+        ],
+        "sourceOfTruth": "games/strain-showdown/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/strain-showdown",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/strain-showdown",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/strain-showdown/scripts/validate-roster.mjs && node games/strain-showdown/test/engine.test.mjs && node games/strain-showdown/scripts/simulate-balance.mjs --seeds=32 --assert-balanced && node games/strain-showdown/scripts/validate-browser-build.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "games/strain-showdown",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "strain-showdown",
+        "repoRoots": [
+          "games/strain-showdown"
+        ],
+        "driveRefs": [
+          "1jJ1JtWGdNCJ--xfHJbclv7QyaIVr30Fh",
+          "1yPCJzEveV5hQ03OUMRheAUKWKB1L_x3L"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "node games/strain-showdown/scripts/validate-roster.mjs && node games/strain-showdown/test/engine.test.mjs && node games/strain-showdown/scripts/simulate-balance.mjs --seeds=32 --assert-balanced && node games/strain-showdown/scripts/validate-browser-build.mjs",
+        "testCommands": [
+          "node games/strain-showdown/scripts/validate-roster.mjs && node games/strain-showdown/test/engine.test.mjs && node games/strain-showdown/scripts/simulate-balance.mjs --seeds=32 --assert-balanced && node games/strain-showdown/scripts/validate-browser-build.mjs"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/strain-showdown/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-runtime",
+          "paths": [
+            "app/games/strain-showdown"
+          ],
+          "notes": "React migration implementation.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22",
+          "editable": true,
+          "releasable": false
+        }
+      ],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Self-hosted 96-card browser battle game with a tested deterministic three-lane engine, CPU rival, Base/Select/Elite evolution, eight family passives, Focus economy, Garden health, synchronized canonical roster data, result tracking, mobile three-lane visibility, 44px attack controls, and deterministic 32-seed balance simulation. Player-facing prototype/development wording has been removed. Final per-card effect activation, balance approval, human rules playtesting, final art, print proof, and exact post-deploy live-route verification remain open."
+      ]
+    },
+    {
+      "id": "terpocalypse",
+      "title": "Terpocalypse: Grow Room From Hell",
+      "aliases": [
+        "terpocalypse",
+        "terpocalypse: grow room from hell",
+        "grow room from hell"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/terpocalypse/",
+      "goal": {
+        "summary": "grow-room horror action shooter",
+        "playerFantasy": "grow-room horror action shooter",
+        "primaryVerbs": [
+          "fight",
+          "explore",
+          "survive"
+        ],
+        "coreLoop": "Fight original cultivation-themed threats through grow-room combat spaces while managing health, weapons, and objectives.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "retro FPS"
+      ],
+      "players": {
+        "mode": "solo",
+        "min": 1,
+        "max": 1
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "docs/SOURCE_OF_TRUTH.md",
+      "production": {
+        "repository": "dtfgenetics/Terpocalapse",
+        "sourcePaths": [
+          "prototypes/web-fps"
+        ],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/terpocalypse",
+        "integrationMode": "verified-snapshot",
+        "runtimePath": "site/public-route-patch/games/terpocalypse",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/terpocalypse-integration/validate.mjs && node games/terpocalypse/test/public-runtime.test.mjs && node --check site/public-route-patch/games/terpocalypse/main.js && node --check site/public-route-patch/games/terpocalypse/game-data.js && node --check site/public-route-patch/games/terpocalypse/visibility-pause-v1.js",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "canvas/webgl",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "assets",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "terpocalypse",
+        "repoRoots": [
+          "assets"
+        ],
+        "driveRefs": [
+          "1EODsF4DqxO5G_fd3UajGpTOOe1sVo_fR",
+          "1fUqEM6zfDz7BOppp6U4vy7GiDKV9QVQT"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "node games/terpocalypse-integration/validate.mjs && node games/terpocalypse/test/public-runtime.test.mjs && node --check site/public-route-patch/games/terpocalypse/main.js && node --check site/public-route-patch/games/terpocalypse/game-data.js && node --check site/public-route-patch/games/terpocalypse/visibility-pause-v1.js",
+        "testCommands": [
+          "node games/terpocalypse-integration/validate.mjs && node games/terpocalypse/test/public-runtime.test.mjs && node --check site/public-route-patch/games/terpocalypse/main.js && node --check site/public-route-patch/games/terpocalypse/game-data.js && node --check site/public-route-patch/games/terpocalypse/visibility-pause-v1.js"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/terpocalypse/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [
+        {
+          "repository": "dtfgenetics/Terpocalapse",
+          "paths": [
+            "prototypes/web-fps-v2"
+          ],
+          "role": "experimental-next-generation",
+          "relation": "Experimental until explicit cutover/feature parity decision",
+          "editable": true,
+          "releasable": false
+        }
+      ],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "prototypes/web-fps is the stable playable source currently packaged by DTFSeeds. prototypes/web-fps-v2 remains experimental until it reaches feature parity.",
+        "Self-hosted Level 01 action game with desktop/touch controls. Browser zoom is enabled, top/touch controls retain 44px minimum targets, forced-colors and reduced-motion states are protected, and visibility pause clears held keyboard input. Dedicated CI now uses current GitHub Actions/Ubuntu 24.04 and the central public-suite gate runs integration plus public-runtime verification. Exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "thc-rpg",
+      "title": "THC RPG — The First Seed",
+      "aliases": [
+        "thc-rpg",
+        "thc rpg — the first seed",
+        "thc rpg",
+        "the first seed"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/thc-rpg/",
+      "goal": {
+        "summary": "cultivation RPG",
+        "playerFantasy": "cultivation RPG",
+        "primaryVerbs": [
+          "grow",
+          "explore",
+          "select"
+        ],
+        "coreLoop": "Progress through cultivation chapters, grow phenotypes, complete quests, and preserve keeper genetics.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "RPG"
+      ],
+      "players": {
+        "mode": "solo",
+        "min": 1,
+        "max": 1
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "README.md",
+      "production": {
+        "repository": "dtfgenetics/Thc-rpg",
+        "sourcePaths": [
+          "src",
+          "public"
+        ],
+        "sourceOfTruth": "README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/thc-rpg/source-revision.txt",
+        "integrationMode": "external-pinned-static-build",
+        "runtimePath": "site/public-route-patch/games/thc-rpg/source-revision.txt",
+        "deploymentStatus": "release-candidate",
+        "build": "npm test && npm run validate:ui && npm run build && npm run validate:release",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": null,
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "thc-rpg",
+        "repoRoots": [],
+        "driveRefs": [
+          "1_gErE4IGr8ehzOqw8bNOBB73sLN4oVbx",
+          "1ar4lpZ_x9MmmkVJ1efmI9mAprBA9lTIv"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "npm test && npm run validate:ui && npm run build && npm run validate:release",
+        "testCommands": [
+          "npm test && npm run validate:ui && npm run build && npm run validate:release"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/thc-rpg/"
+      },
+      "release": {
+        "status": "release-candidate",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [],
+        "nextMilestone": "Advance the canonical build through its next documented release gate."
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-build",
+          "paths": [
+            "app/games/thc-rpg",
+            "public/thc-rpg"
+          ],
+          "notes": "Migration host/build copy; standalone Thc-rpg remains canonical.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22",
+          "editable": true,
+          "releasable": false
+        }
+      ],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Canonical code remains in dtfgenetics/Thc-rpg. Revision de6c26d9073d9154bbcade43b64768cf6a7ba2a0 is the green 2.1.0 release-candidate source after production launch-screen, compact-control and forced-color polish. The six-chapter campaign retains deterministic phenotype variation, Keeper selection/cutting progression, Zestberry trial, save v6 compatibility, guarded gameplay shortcuts, deterministic shipped-UI validation, visitor-only build, and release validation. Central packaging and exact post-deploy live-route verification remain required before production-ready promotion."
+      ]
+    },
+    {
+      "id": "thc-u-know",
+      "title": "THC U Know",
+      "aliases": [
+        "thc-u-know",
+        "thc u know"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/thc-u-know/",
+      "goal": {
+        "summary": "multiplayer cannabis card-table game",
+        "playerFantasy": "multiplayer cannabis card-table game",
+        "primaryVerbs": [
+          "join",
+          "play",
+          "score"
+        ],
+        "coreLoop": "Join a room, play cards under server-authoritative rules, and outplay the table across rounds.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "card game"
+      ],
+      "players": {
+        "mode": "solo/local/online as supported",
+        "min": 2,
+        "max": 8
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "docs/SOURCE_OF_TRUTH.md",
+      "production": {
+        "repository": "dtfgenetics/thc-u-know-card-game-",
+        "sourcePaths": [
+          "apps/web",
+          "apps/server",
+          "packages/shared"
+        ],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": null,
+        "integrationMode": "external-full-stack",
+        "runtimePath": null,
+        "deploymentStatus": "runtime-integration",
+        "build": "pnpm verify && pnpm test:production-runtime",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "server-authoritative or canonical tested engine as recorded by game source",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "multiplayer",
+        "multiplayerAuthority": "authoritative service/runtime",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": null,
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "thc-u-know",
+        "repoRoots": [],
+        "driveRefs": [
+          "1OcA8WC700CE_IIUim6cYsExDLsFbsAXA",
+          "1ERL_cXD_Ssnv1pGXuWC-UeoM6z1t-khg"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "pnpm verify && pnpm test:production-runtime",
+        "testCommands": [
+          "pnpm verify && pnpm test:production-runtime"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/thc-u-know/"
+      },
+      "release": {
+        "status": "playable-local",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [],
+        "nextMilestone": "Advance the canonical build through its next documented release gate."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Canonical full-stack multiplayer source is dtfgenetics/thc-u-know-card-game-. Persistent Node/Socket.IO remains required; static-only deployment is forbidden. The owner build now ships the canonical V6 six-link DTFSeeds header, CI validates the V6 production shell plus hidden-hand/lobby/runtime contracts, and a scheduled/manual live checker verifies the public game route, game-scoped health endpoint, and Socket.IO handshake. Keep this game nonpublic in data/public-navigation.json until the live checker and manual two-browser multiplayer gate pass."
+      ]
+    },
+    {
+      "id": "trichome-trials",
+      "title": "Trichome Trials",
+      "aliases": [
+        "trichome-trials",
+        "trichome trials"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/trichome-trials/",
+      "goal": {
+        "summary": "structured cannabis judging game",
+        "playerFantasy": "structured cannabis judging game",
+        "primaryVerbs": [
+          "inspect",
+          "score",
+          "compare"
+        ],
+        "coreLoop": "Evaluate entries using structured criteria and compare judging outcomes.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "judging/scorecard"
+      ],
+      "players": {
+        "mode": "solo/local/online as supported",
+        "min": 1,
+        "max": 12
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "games/trichome-trials/README.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/trichome-trials"
+        ],
+        "sourceOfTruth": "games/trichome-trials/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/trichome-trials",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/trichome-trials",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/trichome-trials/scripts/validate-data.mjs && node games/trichome-trials/test/engine.test.mjs && node games/trichome-trials/test/public-runtime.test.mjs && node --check site/public-route-patch/games/trichome-trials/app.js && node --check site/public-route-patch/games/trichome-trials/runtime.mjs && cmp games/trichome-trials/src/engine.mjs site/public-route-patch/games/trichome-trials/engine.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "games/trichome-trials",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "trichome-trials",
+        "repoRoots": [
+          "games/trichome-trials"
+        ],
+        "driveRefs": [
+          "1cZxPgTRbEovQOVEHnscPiZoIeE2hRzo_",
+          "1F4-4uBlwMkDW9Gfm-AjBQpuzm3o4h9Fk"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "node games/trichome-trials/scripts/validate-data.mjs && node games/trichome-trials/test/engine.test.mjs && node games/trichome-trials/test/public-runtime.test.mjs && node --check site/public-route-patch/games/trichome-trials/app.js && node --check site/public-route-patch/games/trichome-trials/runtime.mjs && cmp games/trichome-trials/src/engine.mjs site/public-route-patch/games/trichome-trials/engine.mjs",
+        "testCommands": [
+          "node games/trichome-trials/scripts/validate-data.mjs && node games/trichome-trials/test/engine.test.mjs && node games/trichome-trials/test/public-runtime.test.mjs && node --check site/public-route-patch/games/trichome-trials/app.js && node --check site/public-route-patch/games/trichome-trials/runtime.mjs && cmp games/trichome-trials/src/engine.mjs site/public-route-patch/games/trichome-trials/engine.mjs"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/trichome-trials/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Self-hosted deterministic five-round judging game with a seven-category scorecard and UI-layer confidence-call bonuses. Browser runtime now imports the canonical tested scoring engine; regression coverage protects reviewed-state submission, mobile score controls, reduced motion, confidence calls, and resilient clipboard/manual challenge sharing. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "weedopolis",
+      "title": "Weedopolis: Strain City Edition",
+      "aliases": [
+        "weedopolis",
+        "weedopolis: strain city edition",
+        "weedopolis v2",
+        "weedopolis strain city edition"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/weedopolis/",
+      "goal": {
+        "summary": "cannabis property trading board game",
+        "playerFantasy": "cannabis property trading board game",
+        "primaryVerbs": [
+          "move",
+          "acquire",
+          "trade"
+        ],
+        "coreLoop": "Move around Strain City, acquire assets, manage resources, and outlast opponents.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "property board game"
+      ],
+      "players": {
+        "mode": "solo/local/online as supported",
+        "min": 2,
+        "max": 8
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "docs/SOURCE_OF_TRUTH.md",
+      "production": {
+        "repository": "dtfgenetics/Weedopolis-strain-Edition",
+        "sourcePaths": [
+          "src",
+          "digital",
+          "data"
+        ],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": null,
+        "integrationMode": "external-build",
+        "runtimePath": null,
+        "deploymentStatus": "ready-to-package",
+        "build": "npm run validate && npm run check:preview && npm run build:preview",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": null,
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "weedopolis",
+        "repoRoots": [],
+        "driveRefs": [
+          "1K0amWG5J6nN9820hBxVOpf12HtFrsw_K",
+          "1gYFcOW-0NQGgN0YEt2fLRn3844GDtuLO"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "npm run validate && npm run check:preview && npm run build:preview",
+        "testCommands": [
+          "npm run validate && npm run check:preview && npm run build:preview"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/weedopolis/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-runtime",
+          "paths": [
+            "app/games/weedopolis",
+            "public/weedopolis"
+          ],
+          "notes": "Next route shell + iframe runtime; production owner remains standalone Weedopolis repo plus Thc integration.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22",
+          "editable": true,
+          "releasable": false
+        }
+      ],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": []
+    },
+    {
+      "id": "who-took-it",
+      "title": "Who Took It?",
+      "aliases": [
+        "who-took-it",
+        "who took it?",
+        "who took it",
+        "thc guess who"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [],
+      "legacyIds": [],
+      "publicRoute": "/games/who-took-it/",
+      "goal": {
+        "summary": "cannabis character deduction game",
+        "playerFantasy": "cannabis character deduction game",
+        "primaryVerbs": [
+          "ask",
+          "eliminate",
+          "guess"
+        ],
+        "coreLoop": "Ask yes/no questions, eliminate suspects, and identify the hidden character first.",
+        "winCondition": "Complete the game's primary objective as defined by its canonical rules.",
+        "lossCondition": "Fail the game's objective or end the session according to its canonical rules.",
+        "sessionLength": "game-specific"
+      },
+      "genre": [
+        "deduction"
+      ],
+      "players": {
+        "mode": "solo/local/online as supported",
+        "min": 1,
+        "max": 2
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "docs/SOURCE_OF_TRUTH.md",
+      "production": {
+        "repository": "dtfgenetics/Thc-guess-who",
+        "sourcePaths": [
+          "03_digital-game"
+        ],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "03_digital-game",
+        "integrationMode": "external-build",
+        "runtimePath": "03_digital-game",
+        "deploymentStatus": "ready-to-package",
+        "build": "npm run check",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-22"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "dom/canvas as implemented",
+        "frameworks": [],
+        "simulationOwner": "canonical tested game engine/state",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local unless game source documents multiplayer",
+        "multiplayerAuthority": "not required or game-specific",
+        "persistence": "game-specific serialized browser/server state",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "assets",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "core gameplay loop",
+        "progression/scoring as defined by canonical source"
+      ],
+      "assets": {
+        "registryId": "who-took-it",
+        "repoRoots": [
+          "assets"
+        ],
+        "driveRefs": [
+          "18SBSxsGOau4uwWhG1Diwd79hISb_k9AO",
+          "1QzFBDGjQQIJOEam4KCZws7nQq-MA6qwz"
+        ],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "npm run check",
+        "testCommands": [
+          "npm run check"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/who-took-it/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [
+        {
+          "repository": "dtfgenetics/Dtf420",
+          "role": "migration-runtime",
+          "paths": [
+            "app/games/who-took-it"
+          ],
+          "notes": "React migration implementation; standalone canonical repo remains production source.",
+          "defaultBranch": "main",
+          "locationVerifiedAt": "2026-09-22",
+          "editable": true,
+          "releasable": false
+        }
+      ],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
+        "knownGaps": []
+      },
+      "notes": [
+        "Canonical standalone React/Vite build from dtfgenetics/Thc-guess-who/03_digital-game. Production visual art is approved: 25 suspect portraits, 5 canonical missing-item assets, 20 UI/HUD assets, and one case-room environment. The full npm run check gate includes deterministic data/art registry validation, UI and environment validation, production-asset auditing, smoke and balance checks, dependency audit, production build, and mystery-privacy verification. No Playwright is used."
+      ]
+    }
+  ],
+  "concepts": [
+    {
+      "id": "pheno-hunter",
+      "title": "Pheno Hunter",
+      "release": {
+        "status": "concept"
+      }
+    },
+    {
+      "id": "pest-patrol",
+      "title": "Pest Patrol",
+      "release": {
+        "status": "concept"
+      }
+    },
+    {
+      "id": "solo-cup-showdown",
+      "title": "Solo Cup Showdown",
+      "release": {
+        "status": "concept"
+      }
+    },
+    {
+      "id": "the-cure-room",
+      "title": "The Cure Room",
+      "release": {
+        "status": "concept"
+      }
+    },
+    {
+      "id": "seed-bank-builder",
+      "title": "Seed Bank Builder",
+      "release": {
+        "status": "concept"
+      }
+    },
+    {
+      "id": "keeper-or-compost",
+      "title": "Keeper or Compost",
+      "release": {
+        "status": "concept"
+      }
+    },
+    {
+      "id": "grow-shop-hustle",
+      "title": "Grow Shop Hustle",
+      "release": {
+        "status": "concept"
+      }
+    },
+    {
+      "id": "event-night",
+      "title": "Event Night",
+      "release": {
+        "status": "concept"
+      }
+    },
+    {
+      "id": "find-where-s-seed-man",
+      "title": "Find/Where’s Seed Man",
+      "release": {
+        "status": "concept"
+      }
+    },
+    {
+      "id": "grow-off",
+      "title": "Grow-Off",
+      "release": {
+        "status": "concept"
+      }
+    },
+    {
+      "id": "the-grow-room",
+      "title": "The Grow Room",
+      "release": {
+        "status": "concept"
+      }
+    },
+    {
+      "id": "pest-war",
+      "title": "Pest War",
+      "release": {
+        "status": "concept"
+      }
+    },
+    {
+      "id": "line-builder",
+      "title": "Line Builder",
+      "release": {
+        "status": "concept"
+      }
+    },
+    {
+      "id": "selection-pressure",
+      "title": "Selection Pressure",
+      "release": {
+        "status": "concept"
+      }
+    },
+    {
+      "id": "pest-siege",
+      "title": "Pest Siege",
+      "release": {
+        "status": "concept"
+      }
+    },
+    {
+      "id": "reputation-economy",
+      "title": "Reputation Economy",
+      "release": {
+        "status": "concept"
+      }
+    },
+    {
+      "id": "the-limiting-factor",
+      "title": "The Limiting Factor",
+      "release": {
+        "status": "concept"
+      }
+    },
+    {
+      "id": "the-perfect-save",
+      "title": "The Perfect Save",
+      "release": {
+        "status": "concept"
+      }
+    }
+  ]
+}
