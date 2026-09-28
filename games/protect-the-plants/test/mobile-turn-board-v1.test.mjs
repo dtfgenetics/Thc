@@ -23,7 +23,7 @@ assert.match(
 
 assert.match(
   source,
-  /function renderGame\(\)\{syncMobileBoardForState\(\);/,
+  /function renderGame\(\)\{if\(!state\)return;syncMobileBoardForState\(\);/,
   'rendering must synchronize the mobile board before composing the visible battle view'
 );
 
