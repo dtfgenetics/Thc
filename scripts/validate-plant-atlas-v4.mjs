@@ -4,8 +4,8 @@ import path from 'node:path';
 import process from 'node:process';
 
 const root = process.cwd();
-const appRoot = path.join(root, 'apps/growlens-web/public/atlas');
-const mirrorRoot = path.join(root, 'site/public-route-patch/atlas');
+const appRoot = path.join(root, 'site/public-route-patch/atlas');
+const mirrorRoot = appRoot;
 const errors = [];
 const ok = (condition, message) => { if (!condition) errors.push(message); };
 const read = (file) => {
