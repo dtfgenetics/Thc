@@ -5,8 +5,7 @@ on:
   push:
     branches: [main]
     paths:
-      - apps/growlens-web/public/atlas/**
-      - apps/growlens-web/public/terpene-atlas/**
+
       - site/public-route-patch/atlas/**
       - site/public-route-patch/terpene-atlas/**
       - data/atlas/**
@@ -19,8 +18,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - apps/growlens-web/public/atlas/**
-      - apps/growlens-web/public/terpene-atlas/**
+
       - site/public-route-patch/atlas/**
       - site/public-route-patch/terpene-atlas/**
       - data/atlas/**
