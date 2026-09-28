@@ -120,4 +120,15 @@ bossPlayer.x=120;bossPlayer.vx=270;bossPlayer.grounded=true;
 bossPlayer=stepCanonicalPlayer(bossPlayer,{left:false,right:true,jumpPressed:false,jumpHeld:false},bossFixture,1/20);
 assert.equal(bossPlayer.finished,true,'defeated boss must unlock level completion');
 
+const pickupFixture={...canonicalLevel,boss:null,finish:{x:140,y:390,width:50,height:90},platforms:[{x:0,y:480,width:500,height:60}],hazards:[],pickups:[{id:'required-seed',x:320,y:430,width:22,height:22}],requiredPickups:1,worldWidth:500};
+let pickupPlayer=sandbox.createPlayer({x:120,y:434});
+pickupPlayer.grounded=true;
+pickupPlayer=sandbox.stepPlayer(pickupPlayer,{left:false,right:true,jumpPressed:false,jumpHeld:false},pickupFixture,1/20);
+assert.equal(pickupPlayer.finished,false,'missing required pickups must block level completion');
+assert.equal(pickupPlayer.finishBlocked,true,'missing pickup gate should expose blocked state');
+assert.equal(pickupPlayer.missingPickups,1,'missing pickup count should remain visible to HUD/objective logic');
+pickupPlayer.collected=['required-seed'];pickupPlayer.x=120;pickupPlayer.vx=270;pickupPlayer.grounded=true;
+pickupPlayer=sandbox.stepPlayer(pickupPlayer,{left:false,right:true,jumpPressed:false,jumpHeld:false},pickupFixture,1/20);
+assert.equal(pickupPlayer.finished,true,'collecting all required pickups must unlock level completion');
+
 console.log('Seed Man v20 public runtime ownership and regression checks passed.');
