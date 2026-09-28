@@ -256,3 +256,117 @@ body.burn-opponent-turn .boards .board-card:first-child{
     background:none!important;
   }
 }
+
+
+/* Burn Buds gameplay v4.2 — play-first shell and compact mobile battlefield.
+   Presentation-only: authoritative room, placement, turn, targeting and rematch logic are unchanged. */
+body:not(.burn-my-turn):not(.burn-opponent-turn) > section[data-public-product="Burn Buds"] {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  grid-template-areas:
+    "eyebrow back"
+    "title back"
+    "summary back";
+  align-items:center;
+  column-gap:18px;
+  row-gap:3px;
+  max-width:1100px!important;
+  padding:10px 20px 8px!important;
+}
+
+body:not(.burn-my-turn):not(.burn-opponent-turn) > section[data-public-product="Burn Buds"] > p:first-of-type {
+  grid-area:eyebrow;
+  margin:0!important;
+  font-size:.66rem!important;
+}
+
+body:not(.burn-my-turn):not(.burn-opponent-turn) #burn-buds-title {
+  grid-area:title;
+  margin:0!important;
+  font-size:clamp(1.55rem,3.2vw,2.35rem)!important;
+  line-height:1!important;
+}
+
+body:not(.burn-my-turn):not(.burn-opponent-turn) > section[data-public-product="Burn Buds"] > p:nth-of-type(2) {
+  grid-area:summary;
+  max-width:78ch!important;
+  margin:2px 0 0!important;
+  font-size:.78rem!important;
+  line-height:1.4!important;
+}
+
+body:not(.burn-my-turn):not(.burn-opponent-turn) > section[data-public-product="Burn Buds"] > p:nth-of-type(3) {
+  grid-area:back;
+  margin:0!important;
+  align-self:center;
+  white-space:nowrap;
+}
+
+@media (max-width:720px) {
+  body:not(.burn-my-turn):not(.burn-opponent-turn) > section[data-public-product="Burn Buds"] {
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:
+      "eyebrow back"
+      "title back";
+    padding:8px max(10px,env(safe-area-inset-right)) 7px max(10px,env(safe-area-inset-left))!important;
+    column-gap:10px;
+  }
+
+  body:not(.burn-my-turn):not(.burn-opponent-turn) > section[data-public-product="Burn Buds"] > p:nth-of-type(2) {
+    display:none;
+  }
+
+  body:not(.burn-my-turn):not(.burn-opponent-turn) #burn-buds-title {
+    font-size:clamp(1.35rem,7vw,1.85rem)!important;
+  }
+
+  body:not(.burn-my-turn):not(.burn-opponent-turn) > section[data-public-product="Burn Buds"] > p:nth-of-type(3) a {
+    font-size:.72rem;
+  }
+
+  .board-card {
+    padding:6px;
+  }
+
+  .board-title {
+    margin-bottom:5px;
+  }
+
+  .coordinate-grid {
+    grid-template-columns:15px minmax(0,1fr);
+    grid-template-rows:15px minmax(0,1fr);
+    gap:2px;
+  }
+
+  .col-labels,
+  .row-labels {
+    font-size:clamp(.38rem,1.5vw,.54rem);
+  }
+
+  .fleet-legend {
+    gap:4px;
+    margin-top:6px;
+  }
+
+  .fleet-chip {
+    padding:4px 6px;
+  }
+}
+
+@media (pointer:coarse) {
+  .cell.can-fire:active,
+  .board .cell[data-fire].target-preview {
+    filter:brightness(1.2);
+  }
+
+  .mobile-tab,
+  .btn {
+    -webkit-tap-highlight-color:rgba(167,242,109,.16);
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  body:not(.burn-my-turn):not(.burn-opponent-turn) > section[data-public-product="Burn Buds"] {
+    scroll-behavior:auto;
+  }
+}
