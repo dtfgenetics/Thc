@@ -138,7 +138,7 @@
     return Object.freeze({
       mode:'authored',revision:4,source:'authored-level-recipes-v1',world:recipe.world,
       spawn:{x:96,y:groundY-90},platforms,hazards,pickups,checkpoints,enemySpawns,phenotypeCarrierSpawns,encounterZones,
-      mechanics:unique(mechanics),requiredPickups:pickups.length,
+      tutorials:clone(recipe.tutorials||[]),mechanics:unique(mechanics),requiredPickups:pickups.length,
       finish:{x:Math.max(180,length-140),y:groundY-90,width:50,height:90}
     });
   }
