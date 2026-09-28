@@ -1,0 +1,227 @@
+{
+  "schema_version": 1,
+  "updated": "2026-09-28",
+  "authority": "dtfgenetics/Thc",
+  "statuses": {
+    "canonical": "Authoritative source for its declared product domain.",
+    "standalone_canonical": "Authoritative standalone product/game pending or intentionally outside monorepo consolidation.",
+    "migration": "Transitional repository. May contain unique code, but must not receive new canonical implementations for domains owned elsewhere.",
+    "legacy_review": "Legacy or experimental repository requiring provenance/unique-code review before archive.",
+    "archive_candidate": "No known canonical ownership; verify unique content, then archive."
+  },
+  "repositories": [
+    {
+      "repo": "dtfgenetics/Thc",
+      "status": "canonical",
+      "domain": "production integration, games portfolio, deployment orchestration",
+      "canonical_for": [
+        "production integration",
+        "site deployment",
+        "monorepo-owned browser games"
+      ],
+      "notes": "Primary production orchestration repository for dtfseeds.com."
+    },
+    {
+      "repo": "dtfgenetics/Tools",
+      "status": "canonical",
+      "domain": "cultivation tools",
+      "canonical_for": [
+        "cultivation tools",
+        "Plant Atlas",
+        "Terpene Atlas",
+        "cultivation math",
+        "tool UI/runtime"
+      ],
+      "notes": "Tool copies in integration repositories are mirrors only."
+    },
+    {
+      "repo": "dtfgenetics/thc-grow-hub",
+      "status": "canonical",
+      "domain": "THC education and encyclopedia",
+      "canonical_for": [
+        "THC encyclopedia",
+        "general cultivation education",
+        "education runtime",
+        "educational publications"
+      ],
+      "notes": "Certification content remains owned by Thc-learning-courses-."
+    },
+    {
+      "repo": "dtfgenetics/Thc-learning-courses-",
+      "status": "canonical",
+      "domain": "THC Academy certification",
+      "canonical_for": [
+        "certification courses",
+        "assessments",
+        "practicals",
+        "credential definitions",
+        "certification validation"
+      ],
+      "notes": "Professional credential release remains fail-closed behind evidence gates."
+    },
+    {
+      "repo": "dtfgenetics/Thc-dataset",
+      "status": "canonical",
+      "domain": "Grow Doc diagnostics and diagnostic data",
+      "canonical_for": [
+        "Grow Doc application",
+        "diagnostic taxonomy",
+        "diagnostic rules",
+        "reference metadata",
+        "model evaluation/training control"
+      ],
+      "notes": "Human-readable master research/source assets may also be governed by documented Drive rules."
+    },
+    {
+      "repo": "dtfgenetics/Dtf420",
+      "status": "migration",
+      "domain": "future unified Next.js platform / controlled cutover",
+      "canonical_for": [],
+      "superseded_by_domain_owners": [
+        "dtfgenetics/Tools",
+        "dtfgenetics/thc-grow-hub",
+        "dtfgenetics/Thc-learning-courses-",
+        "dtfgenetics/Thc-dataset",
+        "dtfgenetics/Thc"
+      ],
+      "notes": "Do not create duplicate canonical implementations here before explicit cutover."
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "status": "migration",
+      "domain": "legacy combined site workspace",
+      "canonical_for": [],
+      "superseded_by_domain_owners": [
+        "dtfgenetics/Thc",
+        "dtfgenetics/Tools",
+        "dtfgenetics/thc-grow-hub",
+        "dtfgenetics/Thc-learning-courses-",
+        "dtfgenetics/Thc-dataset"
+      ],
+      "notes": "Contains unique/older site, game, Grow Doc, education-recovery, WordPress deployment, and shared UI artifacts. Migrate unique value before archive."
+    },
+    {
+      "repo": "dtfgenetics/thc-u-know-card-game-",
+      "status": "standalone_canonical",
+      "domain": "browser game: THC U Know",
+      "canonical_for": [
+        "THC U Know game"
+      ],
+      "notes": "Keep standalone until explicit migration into Thc game architecture is complete."
+    },
+    {
+      "repo": "dtfgenetics/Weedopolis-strain-Edition",
+      "status": "standalone_canonical",
+      "domain": "browser game: Weedopolis",
+      "canonical_for": [
+        "Weedopolis game"
+      ],
+      "notes": "Verify against legacy bundled copies before any monorepo migration."
+    },
+    {
+      "repo": "dtfgenetics/Thc-crossword-",
+      "status": "standalone_canonical",
+      "domain": "browser game: Cannabis Crossword",
+      "canonical_for": [
+        "Cannabis Crossword game"
+      ],
+      "notes": "Keep standalone until explicit migration is complete."
+    },
+    {
+      "repo": "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple",
+      "status": "standalone_canonical",
+      "domain": "browser game: Ganjumanji",
+      "canonical_for": [
+        "Ganjumanji game"
+      ],
+      "notes": "Keep standalone until explicit migration is complete."
+    },
+    {
+      "repo": "dtfgenetics/Thc-chess-git",
+      "status": "standalone_canonical",
+      "domain": "browser game: THC chess / Kush Kings",
+      "canonical_for": [
+        "THC chess game"
+      ],
+      "notes": "Verify canonical route mapping against Thc registry."
+    },
+    {
+      "repo": "dtfgenetics/Terpocalapse",
+      "status": "standalone_canonical",
+      "domain": "browser game: Terpocalapse",
+      "canonical_for": [
+        "Terpocalapse game"
+      ],
+      "notes": "Keep standalone until explicit migration is complete."
+    },
+    {
+      "repo": "dtfgenetics/Thc-guess-who",
+      "status": "standalone_canonical",
+      "domain": "browser game: THC Guess Who",
+      "canonical_for": [
+        "THC Guess Who game"
+      ],
+      "notes": "Keep standalone until explicit migration is complete."
+    },
+    {
+      "repo": "dtfgenetics/Thc-rpg",
+      "status": "standalone_canonical",
+      "domain": "browser game: THC RPG",
+      "canonical_for": [
+        "THC RPG game"
+      ],
+      "notes": "Dtf420 currently syncs this repo; preserve until ownership is deliberately changed."
+    },
+    {
+      "repo": "dtfgenetics/Catching-phenos",
+      "status": "standalone_canonical",
+      "domain": "browser game: Catching Phenos",
+      "canonical_for": [
+        "Catching Phenos game"
+      ],
+      "notes": "Keep standalone until explicit migration is complete."
+    },
+    {
+      "repo": "dtfgenetics/Video-photo-editing-and-communications-posting-",
+      "status": "legacy_review",
+      "domain": "media/editing experiment",
+      "canonical_for": [],
+      "notes": "Review for unique reusable code before archive."
+    },
+    {
+      "repo": "dtfgenetics/Happy-seed-story-s-",
+      "status": "legacy_review",
+      "domain": "story/content experiment",
+      "canonical_for": [],
+      "notes": "Review for unique reusable content/code before archive."
+    },
+    {
+      "repo": "dtfgenetics/all-in-one-thc-grow-",
+      "status": "archive_candidate",
+      "domain": "legacy grow experiment",
+      "canonical_for": [],
+      "notes": "Very small repository; verify provenance before archive."
+    },
+    {
+      "repo": "dtfgenetics/thc-discord-bot-for-music-",
+      "status": "legacy_review",
+      "domain": "Discord music bot experiment",
+      "canonical_for": [],
+      "notes": "Likely overlaps thc-music-bot-for-discod; compare before archive."
+    },
+    {
+      "repo": "dtfgenetics/thc-music-bot-for-discod",
+      "status": "legacy_review",
+      "domain": "Discord music bot experiment",
+      "canonical_for": [],
+      "notes": "Likely overlaps thc-discord-bot-for-music-; compare before archive."
+    },
+    {
+      "repo": "dtfgenetics/code",
+      "status": "archive_candidate",
+      "domain": "empty/placeholder repository",
+      "canonical_for": [],
+      "notes": "Repository reported size 0; archive after confirming no hidden branch value."
+    }
+  ]
+}
