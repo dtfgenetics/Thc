@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { renderGameRegistryDoc } from './generate-game-registry-docs.mjs';
+import { renderGameRegistryDoc, renderCanonicalSourceMap, renderScopeMaster } from './generate-game-registry-docs.mjs';
 
 const registry = {
   schemaVersion: 2,
@@ -37,4 +37,17 @@ assert.ok(doc.includes('Verify route.'));
 assert.ok(doc.includes('migration-runtime'));
 assert.ok(doc.includes('dtfgenetics/Old'));
 assert.ok(doc.includes('Future'));
+const sourceMap = renderCanonicalSourceMap(registry);
+assert.ok(sourceMap.includes('GENERATED FROM data/game-registry-v2.json'));
+assert.ok(sourceMap.includes('Canonical repository'));
+assert.ok(sourceMap.includes('dtfgenetics/A'));
+assert.ok(sourceMap.includes('/games/a/'));
+
+const scope = renderScopeMaster(registry);
+assert.ok(scope.includes('## Public playable catalog'));
+assert.ok(scope.includes('## Built prototype not yet promoted'));
+assert.ok(scope.includes('## Future concept bank'));
+assert.ok(scope.includes('A Game'));
+assert.ok(scope.includes('Future'));
+
 console.log('game-registry-doc generator tests passed');
