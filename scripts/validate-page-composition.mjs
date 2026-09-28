@@ -3,6 +3,9 @@ import fs from 'node:fs';
 const ux=fs.readFileSync('site/wordpress/assets/sitewide-ux-polish-v1.css','utf8');
 const tools=fs.readFileSync('site/public-route-patch/tools/index.html','utf8');
 const courses=fs.readFileSync('scripts/publish-wordpress-certification-catalog-v6.mjs','utf8');
+const games=fs.readFileSync('site/public-route-patch/games/index.html','utf8');
+const seeds=fs.readFileSync('site/wordpress/pages/seeds.html','utf8');
+const courseUi=fs.readFileSync('scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs','utf8');
 const failures=[];
 const need=(src,token,label)=>{if(!src.includes(token)) failures.push(`${label}: missing ${token}`);};
 
@@ -36,6 +39,40 @@ for(const token of [
   'dc6-course-path'
 ]) need(courses,token,'Courses catalog');
 
+
+for(const token of [
+  '<details class="dc6-guide">',
+  '>Start courses</a>',
+  '.dc6-guide:not([open]) .dc6-flow',
+  'Start with the technician learning path'
+]) need(courses,token,'Courses guided entry');
+
+for(const token of [
+  'grid-template-columns:1fr;gap:0;border-block:1px solid var(--line)',
+  '>Start module</a>',
+  'Start with Module 1',
+  'Workbook, practical, and final test',
+  'How to use this course'
+]) need(courseUi,token,'Course workspace guided sequence');
+
+for(const token of [
+  'UX simplicity pass: keep navigation and reference choices compact',
+  '.primary-nav{width:100%;flex-wrap:nowrap;overflow-x:auto',
+  '.reference-grid{display:flex;gap:9px;overflow-x:auto'
+]) need(tools,token,'Tools responsive simplicity');
+
+for(const token of [
+  'UX simplicity pass: compact controls and keep the first playable choices visible',
+  '.game-hub-page .primary-nav{display:flex;flex-wrap:nowrap;overflow-x:auto',
+  '.game-hub-page .quicknav{display:flex;flex-wrap:nowrap;overflow-x:auto'
+]) need(games,token,'Games responsive simplicity');
+
+for(const token of [
+  'UX simplicity pass: keep release-first hierarchy clear',
+  '.genetics-v2 .board-stats{display:none}',
+  '.genetics-v2 .genetics-actions a{width:100%}'
+]) need(seeds,token,'Genetics responsive simplicity');
+
 if((tools.match(/class="tool-feature"/g)||[]).length!==2) {
   failures.push('Tools hub must keep the two primary job tools visually dominant.');
 }
@@ -53,13 +90,18 @@ if(failures.length){
 }
 console.log(JSON.stringify({
   ok:true,
-  surfaces:['Learn','Tools','Courses'],
+  surfaces:['Learn','Tools','Courses','Games','Seeds'],
   enforced:[
     'editorial Learn entry rows',
     'compact Tools reference desk',
     'linear Tools workflow',
     'grouped Technician I and II course paths',
     'secondary certification roadmap',
-    'mobile composition states'
+    'mobile composition states',
+    'scrollable mobile navigation rails',
+    'compact mobile reference tools',
+    'release-first genetics hierarchy',
+    'guided Academy entry',
+    'linear course module sequence'
   ]
 },null,2));

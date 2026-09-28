@@ -70,7 +70,7 @@ def apply_sitewide_shell_to_external_game(destination: Path) -> None:
     html = index.read_text() if index.is_file() else ""
     required_markers = (
         'data-dtf-shell="header-v6"',
-        'data-dtf-sitewide-header="canonical-eight-v1"',
+        'data-dtf-sitewide-header="canonical-five-v1"',
         'data-dtf-shell="footer-v6"',
         'data-dtf-sitewide-footer="canonical-eight-v1"',
         'id="dtf-responsive-layout-v1"',

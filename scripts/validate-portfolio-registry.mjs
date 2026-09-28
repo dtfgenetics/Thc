@@ -179,13 +179,10 @@ if (fleetArchiveDoc?.type !== 'archive-pointer' ||
 }
 
 const canonicalNavigation = [
-  { id: 'home', label: 'Home', route: '/' },
   { id: 'seeds', label: 'Seeds', route: '/seeds/' },
   { id: 'learn', label: 'Learn', route: '/learn/' },
-  { id: 'courses', label: 'Courses', route: '/courses/' },
   { id: 'diagnostic', label: 'Tools', route: '/tools/' },
   { id: 'games', label: 'Games', route: '/games/' },
-  { id: 'community', label: 'Community', route: '/community/' },
   { id: 'shop', label: 'Shop', route: '/shop/' }
 ];
 const siteNavigation = shellDoc.primaryNavigation;
@@ -220,7 +217,7 @@ const labels = Array.isArray(siteNavigation) ? siteNavigation.map((item) => item
 for (const required of canonicalNavigation.map((item) => item.label)) {
   if (!labels.includes(required)) errors.push(`site-navigation-v6: required primary label '${required}' is missing`);
 }
-for (const obsolete of ['Genetics', 'Diagnostic']) {
+for (const obsolete of ['Home', 'Courses', 'Community', 'Genetics', 'Diagnostic']) {
   if (labels.includes(obsolete)) errors.push(`site-navigation-v6: retired primary label '${obsolete}' is not allowed`);
 }
 if (!shellDoc.sectionOwnership?.courses?.includes('/courses/')) errors.push('site-navigation-v6: Courses must own /courses/');

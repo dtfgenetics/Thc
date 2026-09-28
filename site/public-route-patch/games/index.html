@@ -27,6 +27,39 @@
     @media(max-width:780px){.game-hub-page .site-header-inner{padding:14px 0;align-items:flex-start;flex-direction:column}.game-hub-page .primary-nav{width:100%;display:grid;grid-template-columns:repeat(4,1fr)}.game-hub-page .primary-nav a{text-align:center;justify-content:center}.game-hub-page .hero{padding-top:28px}.game-hub-page .hero-grid{padding:34px 24px}.game-hub-page .grid.two,.game-hub-page .grid.four{grid-template-columns:1fr}.game-hub-page .feature-card{grid-template-columns:1fr}.game-hub-page .feature-art{min-height:190px;border-right:0;border-bottom:1px solid var(--hub-line)}.game-hub-page .footer-inner{grid-template-columns:1fr 1fr}}
     @media(max-width:520px){.game-hub-page .wrap,.game-hub-page .site-header-inner,.game-hub-page .footer-inner{width:min(100% - 28px,1240px)}.game-hub-page .primary-nav{grid-template-columns:repeat(2,1fr)}.game-hub-page .hero-grid{padding:26px 18px;border-radius:18px}.game-hub-page .hero h1{font-size:clamp(2.25rem,11vw,3rem)}.game-hub-page .hero-panel{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:12px}.game-hub-page .hero-panel div{display:grid;gap:3px;text-align:center}.game-hub-page .hero-panel strong{font-size:1.55rem}.game-hub-page .hero-panel span{font-size:.72rem;line-height:1.25}.game-hub-page .quickbar{margin-top:10px}.game-hub-page .quicknav{display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;overscroll-behavior-inline:contain}.game-hub-page .quicknav a{flex:0 0 auto;min-width:126px;text-align:center;scroll-snap-align:start}.game-hub-page .game-finder{grid-template-columns:1fr}.game-hub-page .game-finder label,.game-hub-page .game-finder-status{grid-column:1}.game-hub-page .game-finder .button{width:100%}.game-hub-page .content{padding:44px 0}.game-hub-page .hub-section>summary{padding:20px 0}.game-hub-page .footer-inner{grid-template-columns:1fr}}
     @media(prefers-reduced-motion:reduce){.game-hub-page *{scroll-behavior:auto!important}.game-hub-page .hub-section[open] .hub-section-body{animation:none}}
+/* UX simplicity pass: compact controls and keep the first playable choices visible on mobile. */
+    @media(max-width:780px){
+      .game-hub-page .site-header-inner{gap:12px}
+      .game-hub-page .primary-nav{display:flex;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:none;padding-bottom:2px}
+      .game-hub-page .primary-nav::-webkit-scrollbar{display:none}
+      .game-hub-page .primary-nav a{flex:0 0 auto;min-height:42px;padding:8px 12px;white-space:nowrap}
+      .game-hub-page .hero{padding:22px 0 30px}
+      .game-hub-page .hero-grid{gap:24px;padding:30px 22px}
+      .game-hub-page .hero h1{font-size:clamp(2.55rem,11vw,4rem);line-height:.96}
+      .game-hub-page .lede{font-size:1rem;line-height:1.62}
+      .game-hub-page .hero-panel{max-width:none;padding:18px}
+      .game-hub-page .quickbar{margin-top:10px}
+      .game-hub-page .quicknav{display:flex;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:none;padding:8px}
+      .game-hub-page .quicknav::-webkit-scrollbar{display:none}
+      .game-hub-page .quicknav a{flex:0 0 auto;min-height:40px;padding:9px 12px;white-space:nowrap}
+      .game-hub-page .game-finder{margin-top:12px;padding:14px}
+      .game-hub-page .content{padding:42px 0}
+      .game-hub-page .section-heading{gap:12px;margin-bottom:20px}
+      .game-hub-page .feature-copy,.game-hub-page .card{padding:20px}
+      .game-hub-page .hub-sections{padding-bottom:54px}
+      .game-hub-page .hub-section>summary{padding:20px 0}
+      .game-hub-page .hub-section-body{padding:22px 0 30px}
+    }
+    @media(max-width:520px){
+      .game-hub-page .wrap,.game-hub-page .site-header-inner,.game-hub-page .footer-inner{width:min(100% - 22px,1240px)}
+      .game-hub-page .hero-grid{padding:24px 18px}
+      .game-hub-page .actions{gap:8px}
+      .game-hub-page .actions .button{width:100%}
+      .game-hub-page .feature-art{min-height:160px}
+      .game-hub-page .feature-copy h3{font-size:1.35rem}
+      .game-hub-page .hub-section>summary{grid-template-columns:minmax(0,1fr) 40px}
+      .game-hub-page .hub-section>summary:after{width:34px;height:34px}
+    }
   </style>
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="DTF Genetics" />
@@ -40,9 +73,7 @@
   <header class="site-header">
     <div class="site-header-inner">
       <a class="brand" href="/" aria-label="DTF Genetics home">DTF Genetics <span>Dream the Future</span></a>
-      <nav class="primary-nav" aria-label="Primary navigation">
-        <a href="/">Home</a><a href="/seeds/">Seeds</a><a href="/learn/">Learn</a><a href="/courses/">Courses</a><a href="/tools/">Tools</a><a aria-current="page" href="/games/">Games</a><a href="/community/">Community</a><a class="shop-link" href="/shop/">Shop</a>
-      </nav>
+      <nav class="primary-nav" aria-label="Primary navigation"><a href="/seeds/">Seeds</a><a href="/learn/">Learn</a><a href="/tools/">Tools</a><a aria-current="page" href="/games/">Games</a><a class="shop-link" href="/shop/">Shop</a></nav>
     </div>
   </header>
   <main>
