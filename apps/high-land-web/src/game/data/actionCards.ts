@@ -126,5 +126,6 @@ export const starterActionCards: ActionCard[] = [
   withApprovedHitImage({ id: 'card-036', fileName: 'card-036-crystal-tunnel.svg', title: 'Crystal Tunnel', text: 'Move forward 3 spaces.', effect: { type: 'move', amount: 3 } }),
   withApprovedHitImage({ id: 'card-037', fileName: 'card-037-trichome-slide.svg', title: 'Trichome Slide', text: 'Move back 5 spaces.', effect: { type: 'move', amount: -5 } }),
   withApprovedHitImage({ id: 'card-038', fileName: 'card-038-cloud-lift.svg', title: 'Cloud Lift', text: 'Move forward 4 spaces.', effect: { type: 'move', amount: 4 } }),
-  withApprovedHitImage({ id: 'card-039', fileName: 'card-039-second-hit.svg', title: 'Second Hit', text: 'Draw another Hit Card.', effect: { type: 'draw_again' } })
+  withApprovedHitImage({ id: 'card-039', fileName: 'card-039-second-hit.svg', title: 'Second Hit', text: 'Draw another Hit Card.', effect: { type: 'draw_again' } }),
+  withApprovedHitImage({ id: 'card-040', fileName: 'card-040-citadel-tailwind.svg', title: 'Citadel Tailwind', text: 'Move forward 2 spaces, then roll again.', effect: { type: 'move_and_roll_again', amount: 2 } })
 ];
