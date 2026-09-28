@@ -13,7 +13,7 @@ Concept bank: **18**
 | --- | --- | --- | --- | --- | --- | --- |
 | Bud or Bluff | `bud-or-bluff` | dtfgenetics/Thc | /games/bud-or-bluff/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Burn Buds | `protect-the-plants` | dtfgenetics/Thc | /games/protect-the-plants/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
-| Ganjumanji: The Lost Grower's Temple | `ganjumanji` | dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple | /games/ganjumanji/ | `release-candidate` | dtfgenetics/Thc | Advance the canonical build through its next documented release gate. |
+| Ganjumanji: The Lost Grower's Temple | `ganjumanji` | dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple | /games/ganjumanji/ | `release-candidate` | dtfgenetics/Thc | Package candidate 257c5a60c8ec0e7f6a87170f232c37e047458b22 through DTFSeeds and verify /games/ganjumanji/. |
 | Grow Room Bingo / Bongwater Bingo | `grow-room-bingo` | dtfgenetics/Thc | /games/grow-room-bingo/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Grow Room Defense | `grow-room-defense` | dtfgenetics/Thc | /games/grow-room-defense/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Grower Conversations | `grower-conversations` | dtfgenetics/Thc | /games/grower-conversations/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
@@ -22,21 +22,21 @@ Concept bank: **18**
 | High Land: The Sweet Escape | `high-land` | dtfgenetics/Thc | /games/high-land/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | High Life: From Bagseed to Legacy | `high-life` | dtfgenetics/Thc | /games/high-life/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | High Lines | `high-lines` | dtfgenetics/Thc | /games/high-lines/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
-| Kush Kings Chess | `kush-kings` | dtfgenetics/Thc-chess-git | /games/kush-kings-chess/ | `playable-local` | dtfgenetics/Thc | Advance the canonical build through its next documented release gate. |
+| Kush Kings Chess | `kush-kings` | dtfgenetics/Thc-chess-git | /games/kush-kings-chess/ | `playable-local` | dtfgenetics/Thc | Pass production runtime, live health, two-browser play, spectator/chat, reconnect, and mobile verification. |
 | Lost in the Terps | `lost-in-the-terps` | dtfgenetics/Thc | /games/lost-in-the-terps/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Mystery Strain | `mystery-strain` | dtfgenetics/Thc | /games/mystery-strain/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Pheno Draft | `pheno-draft` | dtfgenetics/Thc | /games/pheno-draft/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | PhenoQuest: The Living Seed Vault | `phenoquest` | dtfgenetics/Catching-phenos | /games/phenoquest/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
-| Quack & Bake: Stoner Duck Race | `stoner-duck-race` | dtfgenetics/Dtf420 | /games/stoner-duck-race | `prototype` | dtfgenetics/Thc | Advance the canonical build through its next documented release gate. |
-| Root Cause | `root-cause` | dtfgenetics/Thc | /games/root-cause/ | `vertical-slice` | dtfgenetics/Thc | Advance the canonical build through its next documented release gate. |
+| Quack & Bake: Stoner Duck Race | `stoner-duck-race` | dtfgenetics/Dtf420 | /games/stoner-duck-race | `prototype` | dtfgenetics/Thc | Complete Dtf420 race/runtime verification and establish an explicit production-owner mapping before public promotion. |
+| Root Cause | `root-cause` | dtfgenetics/Thc | /games/root-cause/ | `vertical-slice` | dtfgenetics/Thc | Reconcile public-hub intent, run full route QA, and promote only after exact live verification. |
 | Seed Man: Grow. Fight. Restore. | `seed-man-platformer` | dtfgenetics/Thc | /games/seed-man-platformer/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
-| Seed Man: Seed Ascent | `seed-ascent` | dtfgenetics/Dtf420 | /games/seed-ascent | `prototype` | dtfgenetics/Thc | Advance the canonical build through its next documented release gate. |
+| Seed Man: Seed Ascent | `seed-ascent` | dtfgenetics/Dtf420 | /games/seed-ascent | `prototype` | dtfgenetics/Thc | Keep Seed Ascent distinct from Seed Man, complete Dtf420 runtime verification, then establish final production ownership. |
 | Spin the Strain | `spin-the-strain` | dtfgenetics/Thc | /games/spin-the-strain/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Strain Match | `strain-match` | dtfgenetics/Thc | /games/strain-match/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Strain Showdown | `strain-showdown` | dtfgenetics/Thc | /games/strain-showdown/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Terpocalypse: Grow Room From Hell | `terpocalypse` | dtfgenetics/Terpocalapse | /games/terpocalypse/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
-| THC RPG — The First Seed | `thc-rpg` | dtfgenetics/Thc-rpg | /games/thc-rpg/ | `release-candidate` | dtfgenetics/Thc | Advance the canonical build through its next documented release gate. |
-| THC U Know | `thc-u-know` | dtfgenetics/thc-u-know-card-game- | /games/thc-u-know/ | `playable-local` | dtfgenetics/Thc | Advance the canonical build through its next documented release gate. |
+| THC RPG — The First Seed | `thc-rpg` | dtfgenetics/Thc-rpg | /games/thc-rpg/ | `release-candidate` | dtfgenetics/Thc | Package candidate de6c26d9073d9154bbcade43b64768cf6a7ba2a0 through DTFSeeds and verify /games/thc-rpg/. |
+| THC U Know | `thc-u-know` | dtfgenetics/thc-u-know-card-game- | /games/thc-u-know/ | `playable-local` | dtfgenetics/Thc | Pass production runtime, persistent-origin, reconnect/private-hand, and multi-browser/mobile verification. |
 | THC Weekly Crossword | `crossword` | dtfgenetics/Thc-crossword- | /games/crossword/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Trichome Trials | `trichome-trials` | dtfgenetics/Thc | /games/trichome-trials/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Weedopolis: Strain City Edition | `weedopolis` | dtfgenetics/Weedopolis-strain-Edition | /games/weedopolis/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
