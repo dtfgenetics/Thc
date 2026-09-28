@@ -7,7 +7,7 @@ base hash passes. It performs narrow post-hash operations:
 1. harden the upload/commit lease so the same untouched transaction can recover
    when Hostinger/WordPress temporarily loses visibility of its option-backed
    deployment lock between requests;
-2. derive exact local static game routes from the canonical public-app registry;
+2. derive exact local static app routes from the canonical public-app registry;
 3. derive exact external static game routes from reviewed release contracts;
 4. allow one isolated Dtf420 staging namespace (`dtf-content-overlay`) that can
    never directly claim `/learn`, `/community`, `/games`, or the site root; and
@@ -25,7 +25,7 @@ import pathlib
 import re
 import sys
 
-SAFE_TARGET = re.compile(r"^games/[a-z0-9][a-z0-9-]*$")
+SAFE_TARGET = re.compile(r"^[a-z0-9][a-z0-9-]*(?:/[a-z0-9][a-z0-9-]*)*$")
 OVERLAY_TARGET = "dtf-content-overlay"
 OVERLAY_REQUIRED = "dtf-content-overlay/overlay-manifest.json"
 OVERLAY_PREFIX = "dtf-content-overlay/"
