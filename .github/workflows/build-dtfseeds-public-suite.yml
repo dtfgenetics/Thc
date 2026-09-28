@@ -405,6 +405,7 @@ jobs:
           root=site/public-route-patch/games/protect-the-plants
           node games/protect-the-plants/test/burn-buds-branding.test.mjs
           node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs
+          node games/protect-the-plants/test/presence-runtime-v1.test.mjs
           node games/protect-the-plants/test/api-copy-contract.test.mjs
           node games/protect-the-plants/test/runtime-sync-v1.test.mjs
           node games/protect-the-plants/test/v2-extras-sync.test.mjs
