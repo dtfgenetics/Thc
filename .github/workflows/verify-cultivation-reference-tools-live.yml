@@ -20,18 +20,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@v4
         with:
-          node-version: 24
-          cache: npm
+          node-version: 22
 
-      - name: Install workspace
-        run: npm ci
+      - name: Validate THC integration mirror
+        run: node scripts/validate-canonical-tools-mirror.mjs
 
-      - name: Validate repository contract
-        run: npm run verify:cultivation-reference-tools
+      - name: Clone canonical Tools repository
+        run: git clone --depth 1 https://github.com/dtfgenetics/Tools.git /tmp/tools
 
-      - name: Verify visitor-facing routes
-        run: node scripts/verify-cultivation-reference-tools-live.mjs
+      - name: Verify visitor-facing canonical tool routes
+        env:
+          DTF_SITE_URL: https://dtfseeds.com
+        run: node /tmp/tools/scripts/verify-cultivation-reference-tools-live.mjs
