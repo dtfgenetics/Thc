@@ -190,38 +190,51 @@
     },
     {
       "repo": "dtfgenetics/Happy-seed-story-s-",
-      "status": "legacy_review",
-      "domain": "story/content experiment",
-      "canonical_for": [],
-      "notes": "Review for unique reusable content/code before archive."
+      "status": "standalone_canonical",
+      "domain": "children's publishing / educational story project",
+      "canonical_for": [
+        "Happy Seed Stories publishing project"
+      ],
+      "notes": "Independent manuscript/art/education publishing project with its own control system. Not part of the THC application monorepo cleanup."
     },
     {
       "repo": "dtfgenetics/all-in-one-thc-grow-",
-      "status": "archive_candidate",
-      "domain": "legacy grow experiment",
+      "status": "migration",
+      "domain": "legacy grow-tool evidence/reference placeholder",
       "canonical_for": [],
-      "notes": "Very small repository; verify provenance before archive."
+      "notes": "No deployable app remains. Reconcile docs/EVIDENCE_REFERENCE_REGISTRY.md into canonical evidence documentation before archive.",
+      "superseded_by_domain_owners": [
+        "dtfgenetics/Tools",
+        "dtfgenetics/Thc",
+        "dtfgenetics/thc-grow-hub",
+        "dtfgenetics/Thc-dataset"
+      ]
     },
     {
       "repo": "dtfgenetics/thc-discord-bot-for-music-",
-      "status": "legacy_review",
-      "domain": "Discord music bot experiment",
-      "canonical_for": [],
-      "notes": "Likely overlaps thc-music-bot-for-discod; compare before archive."
+      "status": "standalone_canonical",
+      "domain": "Discord community music bot",
+      "canonical_for": [
+        "DTF/THC Discord music bot"
+      ],
+      "notes": "Canonical bot implementation; contains runtime, queue, URL policy, tests, CI, and environment template."
     },
     {
       "repo": "dtfgenetics/thc-music-bot-for-discod",
-      "status": "legacy_review",
-      "domain": "Discord music bot experiment",
+      "status": "archive_candidate",
+      "domain": "duplicate Discord music bot pointer",
       "canonical_for": [],
-      "notes": "Likely overlaps thc-discord-bot-for-music-; compare before archive."
+      "notes": "README-only compatibility pointer to the canonical Discord music bot. Update old references, then archive.",
+      "superseded_by_domain_owners": [
+        "dtfgenetics/thc-discord-bot-for-music-"
+      ]
     },
     {
       "repo": "dtfgenetics/code",
       "status": "archive_candidate",
-      "domain": "empty/placeholder repository",
+      "domain": "empty repository",
       "canonical_for": [],
-      "notes": "Repository reported size 0; archive after confirming no hidden branch value."
+      "notes": "Verified repository size 0 and Git tree API reports repository empty. Safe archive candidate after checking no external automation references the repo name."
     }
   ]
 }
