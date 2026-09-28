@@ -21,7 +21,7 @@
   <header class="topbar">
     <div class="topbar-inner">
       <a class="brand" href="/atlas/" aria-label="THC Living Plant Atlas home"><span class="brand-mark" aria-hidden="true"></span><span><strong>THC Living Plant Atlas</strong><small>DTF GENETICS · PLANT SCIENCE</small></span></a>
-      <nav class="top-links" aria-label="Atlas navigation"><a href="#interactive-plant">3D Plant</a><a href="#anatomy-index">Anatomy</a><a href="#reference-visuals">Visuals</a><a href="#systems">Systems</a><a href="#deep-labs">Deep Labs</a><a href="/terpene-atlas/">Terpene Atlas</a><a href="#lifecycle">Lifecycle</a><a href="/learn/">Learning Center</a><a href="/tools/">All Tools</a><a href="/growlens/">GrowLens</a></nav>
+      <nav class="top-links" aria-label="Atlas navigation"><a href="#interactive-plant">3D Plant</a><a href="#anatomy-index">Anatomy</a><a href="#reference-visuals">Visuals</a><a href="#systems">Systems</a><a href="#system-tree">System Tree</a><a href="#deep-labs">Deep Labs</a><a href="/terpene-atlas/">Terpene Atlas</a><a href="#lifecycle">Lifecycle</a><a href="/learn/">Learning Center</a><a href="/tools/">All Tools</a><a href="/growlens/">GrowLens</a></nav>
     </div>
   </header>
 
@@ -103,6 +103,12 @@
       <div class="system-grid" data-system-grid aria-live="polite"><div class="loading">Loading Atlas systems…</div></div>
       <div class="empty" data-empty>No systems match that search. Try a structure, process, observation, or environmental term.</div>
       <noscript><p class="error">JavaScript is required for Atlas search. Direct modules remain available: <a href="/atlas/leaf-module/">Leaf System</a>, <a href="/atlas/root-system/">Root System</a>, <a href="/atlas/flower-anatomy/">Flower Anatomy</a>, <a href="/atlas/diagnostics/">Diagnostics</a>.</p></noscript>
+    </section>
+
+    <section class="section atlas-system-tree" id="system-tree" aria-labelledby="system-tree-title">
+      <div class="section-head"><div><p class="eyebrow">Accessible system navigator</p><h2 id="system-tree-title">Explore the same Atlas without the 3D model</h2></div><p>Browse all 16 plant-science systems by category. Each branch exposes the system summary, related systems, and a direct module link using native keyboard-accessible controls.</p></div>
+      <div class="atlas-tree-actions"><button type="button" data-tree-expand>Expand all</button><button type="button" data-tree-collapse>Collapse all</button></div>
+      <div class="atlas-tree" data-system-tree aria-live="polite"><p class="loading">Loading accessible system navigator…</p></div>
     </section>
 
     <section class="section atlas-compare" id="compare-systems">
