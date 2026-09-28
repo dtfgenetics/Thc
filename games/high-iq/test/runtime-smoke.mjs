@@ -21,6 +21,8 @@ assert.match(app, /startDaily/);
 assert.match(app, /practiceMissedQuestions/);
 assert.match(app, /navigator\.share/);
 assert.match(app, /localStorage/);
+assert.match(app, /if \(Array\.isArray\(fallback\)\) return Array\.isArray\(parsed\) \? parsed : fallback;/, 'history storage must recover when valid JSON has the wrong shape');
+assert.match(app, /Number\.isFinite\(parsed\) && parsed >= 0 && parsed <= 100 \? parsed : 0/, 'best-score storage must reject NaN and out-of-range values');
 assert.match(app, /setStageState\('question'\)/, 'active questions must expose a presentation state');
 assert.match(app, /setStageState\('review', \{ outcome: isCorrect \? 'correct' : 'incorrect' \}\)/, 'answer resolution must expose correct/incorrect presentation state');
 assert.match(app, /setStageState\('results'/, 'results must expose a presentation state');
