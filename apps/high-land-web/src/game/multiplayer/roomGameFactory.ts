@@ -29,13 +29,17 @@ export function createGameFromRoom(room: HighLandRoomState): GameState {
   };
 }
 
-export function createNamedLocalGame(playerCount: number, playerName: string): GameState {
+export function createNamedLocalGame(playerCount: number, playerNames: string | readonly string[]): GameState {
   const game = createInitialGame(playerCount);
-  const leadName = normalizeDisplayName(playerName) ?? 'Player 1';
+  const requestedNames = Array.isArray(playerNames) ? playerNames : [playerNames];
+  const resolvedNames = game.players.map((player, index) =>
+    normalizeDisplayName(requestedNames[index] ?? '') ?? player.name ?? `Player ${index + 1}`
+  );
+  const leadName = resolvedNames[0] ?? 'Player 1';
 
   return {
     ...game,
-    players: game.players.map((player, index) => (index === 0 ? { ...player, name: leadName } : player)),
+    players: game.players.map((player, index) => ({ ...player, name: resolvedNames[index] ?? `Player ${index + 1}` })),
     message: `${leadName}, roll to begin.`
   };
 }
