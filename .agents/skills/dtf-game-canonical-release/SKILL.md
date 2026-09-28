@@ -13,8 +13,8 @@ The release contract is:
 
 ## Non-negotiable rules
 
-1. Resolve the game's owner before editing. Read the current versions of `data/game-source-map.json`, `docs/GAME_CANONICAL_SOURCE_MAP.md`, `docs/PROJECT_SOURCE_OF_TRUTH.md`, `data/project-registry.json`, `data/site-registry.json`, `site/deployment/public-apps.json`, and any game-specific `SOURCE_OF_TRUTH.md` or skill.
-2. `data/game-source-map.json` is the release-time route-to-owner map for public DTFSeeds games. If older project metadata uses a legacy project ID or product name, use the source map to determine the actual canonical implementation and then repair the stale metadata rather than guessing.
+1. Resolve the game's owner before editing. Read `data/game-registry-v2.json` first, resolve the title through `aliasMap`, then read the matching `gameDesignDoc` / canonical source-of-truth. Treat v2 as the primary authority for identity, current production repository/source paths, integration owner, route, architecture summary, release status, blockers, and next milestone.
+2. `data/game-source-map.json`, deployment/navigation registries, and project metadata are specialized compatibility/integration records. They must agree with v2 on shared owner/route facts. If they disagree, reconcile the metadata before release work rather than guessing.
 3. If the source map/registry points to an external canonical game repository, repair that repository first. Do not make `site/public-route-patch/games/<slug>/` the master merely because it is convenient to edit.
 4. If the game is local to `dtfgenetics/Thc`, repair the documented local source, not a generated delivery directory. A route-patch directory may be canonical only when the source map explicitly says so.
 5. Re-read the canonical repository's current `main` immediately before branching and again before merge/pin. Concurrent automation and other agents may move `main`.
@@ -39,7 +39,7 @@ Never promote one level into the next. In particular, do not set or report `brow
 
 ### 1. Resolve canonical ownership
 
-Read the canonical game source map and source-of-truth documents first. Record:
+Read `data/game-registry-v2.json` and the resolved game's canonical source-of-truth first. Record:
 
 - public slug and expected URL,
 - canonical repository or local source path,
@@ -49,7 +49,7 @@ Read the canonical game source map and source-of-truth documents first. Record:
 - required production workflow,
 - existing live verifier or browser acceptance workflow.
 
-When the source map and a copied integration snapshot disagree, the documented canonical source wins unless the source-of-truth contract itself is being intentionally changed. If the source map, project registry, deployment registry, and canonical repo documentation disagree, stop the release and reconcile the ownership metadata before modifying gameplay.
+When v2 and a copied integration snapshot disagree, the v2-resolved canonical source plus the game's source-of-truth wins unless an intentional cutover is being performed. If v2, source-map, deployment, project metadata, and the canonical repo disagree, stop the release and reconcile the ownership metadata before modifying gameplay.
 
 ### 2. Audit the actual failure in canonical source
 
@@ -150,7 +150,7 @@ Terpocalypse is mapped to `dtfgenetics/Terpocalapse`; the current stable playabl
 
 ### Local game source
 
-For a game owned directly by `dtfgenetics/Thc`, edit the exact source path declared by `data/game-source-map.json`, run its dedicated tests/CI, then package through the same suite/deploy/live-verification ladder.
+For a game owned directly by `dtfgenetics/Thc`, edit the exact source path declared by `data/game-registry-v2.json`, confirm compatibility source/deployment metadata agrees, run its dedicated tests/CI, then package through the same suite/deploy/live-verification ladder.
 
 ## Required completion report
 
