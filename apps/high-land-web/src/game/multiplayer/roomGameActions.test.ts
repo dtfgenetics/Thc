@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { actionSpaceIndexes } from '../data/boardPath';
+import { starterActionCards } from '../data/actionCards';
 import { createLocalTestPlayer } from './localRoomFlow';
 import { rollRoomGameplay, startRoomGameplay } from './roomGameActions';
 import type { HighLandRoomState } from './roomState';
@@ -23,6 +24,12 @@ function makeRoom(): HighLandRoomState {
 function sequenceRandom(values: number[]): () => number {
   let index = 0;
   return () => values[index++] ?? values[values.length - 1] ?? 0;
+}
+
+function randomForCard(id: string): number {
+  const index = starterActionCards.findIndex((card) => card.id === id);
+  if (index < 0) throw new Error(`Missing HIT card ${id}`);
+  return (index + 0.5) / starterActionCards.length;
 }
 
 describe('room game actions', () => {
@@ -58,7 +65,7 @@ describe('room game actions', () => {
       }
     };
 
-    const result = rollRoomGameplay(roomAtHitApproach, sequenceRandom([0, 0.75]));
+    const result = rollRoomGameplay(roomAtHitApproach, sequenceRandom([0, randomForCard('card-030')]));
 
     expect(result.events.map((event) => event.name)).toEqual(['dice_rolled', 'hit_card_drawn']);
     expect(result.events[0].payload).toMatchObject({ roll: 1, fromIndex: hitIndex - 1, toIndex: hitIndex });
