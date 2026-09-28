@@ -477,13 +477,16 @@
       "verification": {
         "buildCommand": "npm test && npm run validate:ui && npm run build && npm run validate:release",
         "testCommands": [
-          "npm test && npm run validate:ui && npm run build && npm run validate:release"
+          "npm test",
+          "npm run validate:ui",
+          "npm run build",
+          "npm run validate:release"
         ],
         "registryChecks": [
           "npm run games:registry:check",
           "npm run games:locations:check"
         ],
-        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "browserQa": "Standalone release-candidate UI and campaign validation before DTFSeeds packaging.",
         "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/ganjumanji/"
       },
       "release": {
@@ -491,8 +494,12 @@
         "lastVerifiedRevision": null,
         "lastVerifiedAt": null,
         "lastVerifiedUrl": null,
-        "blockers": [],
-        "nextMilestone": "Advance the canonical build through its next documented release gate."
+        "blockers": [
+          "DTFSeeds exact pinned packaging and exact visitor-route verification remain required."
+        ],
+        "nextMilestone": "Package candidate 257c5a60c8ec0e7f6a87170f232c37e047458b22 through DTFSeeds and verify /games/ganjumanji/.",
+        "candidateRevision": "257c5a60c8ec0e7f6a87170f232c37e047458b22",
+        "candidateVerifiedAt": "2026-09-26T05:11:29Z"
       },
       "developmentLocations": [],
       "deprecatedLocations": [],
@@ -1614,15 +1621,17 @@
         "audioRoot": null
       },
       "verification": {
-        "buildCommand": "pnpm check:rebrand && pnpm --filter client lint && pnpm build:client && pnpm build:server && pnpm test:production-runtime",
+        "buildCommand": "pnpm build:client && pnpm build:server",
         "testCommands": [
-          "pnpm check:rebrand && pnpm --filter client lint && pnpm build:client && pnpm build:server && pnpm test:production-runtime"
+          "pnpm test:production-runtime",
+          "pnpm lint",
+          "pnpm live:check"
         ],
         "registryChecks": [
           "npm run games:registry:check",
           "npm run games:locations:check"
         ],
-        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "browserQa": "Two-browser/mobile multiplayer verification remains required before public promotion.",
         "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/kush-kings-chess/"
       },
       "release": {
@@ -1630,8 +1639,10 @@
         "lastVerifiedRevision": null,
         "lastVerifiedAt": null,
         "lastVerifiedUrl": null,
-        "blockers": [],
-        "nextMilestone": "Advance the canonical build through its next documented release gate."
+        "blockers": [
+          "Persistent Node/Postgres/Socket.IO production origins and live health plus two-browser/mobile verification are required."
+        ],
+        "nextMilestone": "Pass production runtime, live health, two-browser play, spectator/chat, reconnect, and mobile verification."
       },
       "developmentLocations": [],
       "deprecatedLocations": [],
@@ -2393,15 +2404,17 @@
         "audioRoot": null
       },
       "verification": {
-        "buildCommand": "node games/root-cause/scripts/validate-data.mjs && node games/root-cause/test/engine.test.mjs && node games/root-cause/test/public-runtime.test.mjs && node --check site/public-route-patch/games/root-cause/app.js && node --check site/public-route-patch/games/root-cause/runtime.mjs && node --check site/public-route-patch/games/root-cause/engine.mjs && cmp games/root-cause/src/engine.mjs site/public-route-patch/games/root-cause/engine.mjs",
+        "buildCommand": "node games/root-cause/scripts/validate-data.mjs",
         "testCommands": [
-          "node games/root-cause/scripts/validate-data.mjs && node games/root-cause/test/engine.test.mjs && node games/root-cause/test/public-runtime.test.mjs && node --check site/public-route-patch/games/root-cause/app.js && node --check site/public-route-patch/games/root-cause/runtime.mjs && node --check site/public-route-patch/games/root-cause/engine.mjs && cmp games/root-cause/src/engine.mjs site/public-route-patch/games/root-cause/engine.mjs"
+          "node games/root-cause/scripts/validate-data.mjs",
+          "node games/root-cause/test/engine.test.mjs",
+          "node games/root-cause/test/public-runtime.test.mjs"
         ],
         "registryChecks": [
           "npm run games:registry:check",
           "npm run games:locations:check"
         ],
-        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "browserQa": "Existing vertical-slice browser/mobile/accessibility gates must remain green.",
         "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/root-cause/"
       },
       "release": {
@@ -2409,8 +2422,10 @@
         "lastVerifiedRevision": null,
         "lastVerifiedAt": null,
         "lastVerifiedUrl": null,
-        "blockers": [],
-        "nextMilestone": "Advance the canonical build through its next documented release gate."
+        "blockers": [
+          "Not yet promoted to the public Game Hub."
+        ],
+        "nextMilestone": "Reconcile public-hub intent, run full route QA, and promote only after exact live verification."
       },
       "developmentLocations": [],
       "deprecatedLocations": [],
@@ -2507,15 +2522,17 @@
         "audioRoot": null
       },
       "verification": {
-        "buildCommand": "canonical repository build/verification command",
+        "buildCommand": "npm run build:static-overlay",
         "testCommands": [
-          "canonical repository verification required"
+          "npm run verify:seed-ascent",
+          "npm run verify:seed-ascent-animations",
+          "npm run typecheck"
         ],
         "registryChecks": [
           "npm run games:registry:check",
           "npm run games:locations:check"
         ],
-        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "browserQa": "Dtf420 static-overlay and Seed Ascent runtime verification.",
         "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/seed-ascent"
       },
       "release": {
@@ -2524,7 +2541,7 @@
         "lastVerifiedAt": null,
         "lastVerifiedUrl": null,
         "blockers": [],
-        "nextMilestone": "Advance the canonical build through its next documented release gate."
+        "nextMilestone": "Keep Seed Ascent distinct from Seed Man, complete Dtf420 runtime verification, then establish final production ownership."
       },
       "developmentLocations": [
         {
@@ -2888,15 +2905,16 @@
         "audioRoot": null
       },
       "verification": {
-        "buildCommand": "canonical repository build/verification command",
+        "buildCommand": "npm run build:static-overlay",
         "testCommands": [
-          "canonical repository verification required"
+          "npm run verify:stoner-duck-race",
+          "npm run typecheck"
         ],
         "registryChecks": [
           "npm run games:registry:check",
           "npm run games:locations:check"
         ],
-        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "browserQa": "Dtf420 Stoner Duck Race verifier plus responsive/runtime QA.",
         "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/stoner-duck-race"
       },
       "release": {
@@ -2905,7 +2923,7 @@
         "lastVerifiedAt": null,
         "lastVerifiedUrl": null,
         "blockers": [],
-        "nextMilestone": "Advance the canonical build through its next documented release gate."
+        "nextMilestone": "Complete Dtf420 race/runtime verification and establish an explicit production-owner mapping before public promotion."
       },
       "developmentLocations": [
         {
@@ -3422,15 +3440,18 @@
         "audioRoot": null
       },
       "verification": {
-        "buildCommand": "npm test && npm run validate:ui && npm run build && npm run validate:release",
+        "buildCommand": "npm run check",
         "testCommands": [
-          "npm test && npm run validate:ui && npm run build && npm run validate:release"
+          "npm test",
+          "npm run validate:ui",
+          "npm run build",
+          "npm run validate:release"
         ],
         "registryChecks": [
           "npm run games:registry:check",
           "npm run games:locations:check"
         ],
-        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "browserQa": "Standalone visitor build and UI/release validation before DTFSeeds packaging.",
         "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/thc-rpg/"
       },
       "release": {
@@ -3438,8 +3459,12 @@
         "lastVerifiedRevision": null,
         "lastVerifiedAt": null,
         "lastVerifiedUrl": null,
-        "blockers": [],
-        "nextMilestone": "Advance the canonical build through its next documented release gate."
+        "blockers": [
+          "DTFSeeds pinned packaging and exact visitor-route verification remain required."
+        ],
+        "nextMilestone": "Package candidate de6c26d9073d9154bbcade43b64768cf6a7ba2a0 through DTFSeeds and verify /games/thc-rpg/.",
+        "candidateRevision": "de6c26d9073d9154bbcade43b64768cf6a7ba2a0",
+        "candidateVerifiedAt": "2026-09-18T03:21:42Z"
       },
       "developmentLocations": [
         {
@@ -3557,15 +3582,18 @@
         "audioRoot": null
       },
       "verification": {
-        "buildCommand": "pnpm verify && pnpm test:production-runtime",
+        "buildCommand": "pnpm build",
         "testCommands": [
-          "pnpm verify && pnpm test:production-runtime"
+          "pnpm test",
+          "pnpm test:production-runtime",
+          "pnpm lint",
+          "pnpm live:check"
         ],
         "registryChecks": [
           "npm run games:registry:check",
           "npm run games:locations:check"
         ],
-        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "browserQa": "Persistent multiplayer origin plus reconnect/private-hand verification required before public promotion.",
         "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/thc-u-know/"
       },
       "release": {
@@ -3573,8 +3601,10 @@
         "lastVerifiedRevision": null,
         "lastVerifiedAt": null,
         "lastVerifiedUrl": null,
-        "blockers": [],
-        "nextMilestone": "Advance the canonical build through its next documented release gate."
+        "blockers": [
+          "Persistent Node/Socket.IO production origin and live multiplayer verification are required."
+        ],
+        "nextMilestone": "Pass production runtime, persistent-origin, reconnect/private-hand, and multi-browser/mobile verification."
       },
       "developmentLocations": [],
       "deprecatedLocations": [],
