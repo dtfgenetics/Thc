@@ -82,6 +82,7 @@
     "games:registry:docs:check": "node scripts/generate-game-registry-docs.mjs --check",
     "games:registry:docs:test": "node scripts/test-generate-game-registry-docs.mjs",
     "games:skill:check": "node scripts/test-dtf-game-development-skill.mjs",
-    "games:registry:preflight-check": "node scripts/test-game-registry-preflight.mjs"
+    "games:registry:preflight-check": "node scripts/test-game-registry-preflight.mjs",
+    "games:registry:guidance-check": "node scripts/test-game-registry-guidance.mjs"
   }
 }
