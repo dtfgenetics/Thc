@@ -53,3 +53,44 @@ The first code-level comparisons should be:
 - WordPress/release tooling: legacy `deploy/` and publish scripts versus current `Thc/site` and release scripts.
 
 These comparisons should produce small, reviewable migrations rather than another full-repository copy.
+
+
+## Comparison decisions completed
+
+### Grow Doc — canonical wins; selective feature migration
+
+Reviewed legacy `dtf-thc-hub/apps/thc-grow-doc` and related `growDoctorData` against `dtfgenetics/Thc-dataset`.
+
+Decision:
+- keep `Thc-dataset` canonical;
+- do not port the legacy rule engine or duplicate issue dataset;
+- canonical already has materially stronger evidence intake, differential logic, investigation history, reference-media controls, diagnostic data quality, and persistence;
+- portable case/report export was the useful missing legacy behavior and has been migrated in `dtfgenetics/Thc-dataset` PR #321.
+
+Legacy Grow Doc source should remain read-only migration evidence until PR #321 and any remaining deployment-parity checks land.
+
+### High Land — canonical wins; selective preference migration
+
+Reviewed legacy `packages/shared-ui/src/high-land` against `dtfgenetics/Thc/apps/high-land-web`.
+
+Decision:
+- legacy board path has 83 spaces; canonical locked specification has 109 indexes (0–108);
+- legacy HIT deck and room helper are superseded by the canonical 40-card system and secure website room transport;
+- legacy generated-audio implementation is superseded by file-backed Howler audio;
+- persistent audio preference was useful and missing, and has been migrated in `dtfgenetics/Thc` PR #1307;
+- do not port the legacy engine, board coordinates, card rules, or local-only room session.
+
+After the preference migration and asset/provenance checks are complete, the legacy High Land implementation can be classified historical-only.
+
+### High IQ — no code migration required
+
+Reviewed legacy `packages/shared-ui/src/high-iq` and `data/high-iq` against `dtfgenetics/Thc/games/high-iq` and the current public runtime.
+
+Decision:
+- legacy implementation is a small starter engine/UI and its checked-in `data/high-iq/questions.json` is only a draft placeholder;
+- canonical release candidate owns 200 Approved/PASS source-backed questions across 10 domains and 50 registered sources;
+- canonical runtime already includes deterministic Daily 10, Balanced/Random Mix, filters, weighted scoring, explanations/context/source links, missed-question review, practice-missed runs, history, personal bests, sharing, keyboard controls, reduced-motion/forced-colors handling, and data-retry diagnostics;
+- no unique legacy gameplay capability justifies a port;
+- retain legacy High IQ files only for provenance until the parent `dtf-thc-hub` repository is ready for archive.
+
+This lane is complete unless a later asset hash/provenance audit finds a unique approved visual not present in the canonical owner.
