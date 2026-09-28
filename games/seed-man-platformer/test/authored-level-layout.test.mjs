@@ -88,6 +88,18 @@ assert.ok(sandstorm,'Dusty Winds must compile a sandstorm hazard');
 assert.equal(sandstorm.y,0);
 assert.equal(sandstorm.y+sandstorm.height,480);
 
+const mossy=compile('2-1-mossy-paths');
+assert.deepEqual(mossy.tutorials.map((tutorial)=>tutorial.action),['jump','phenotype'],'Forest Ruins entry must teach its recovery and Electric mechanics');
+const redRock=compile('3-1-red-rock-run');
+assert.deepEqual(redRock.tutorials.map((tutorial)=>tutorial.action),['jump','phenotype'],'Desert entry must teach updraft timing and Fire use');
+const icyPass=compile('4-1-icy-pass');
+assert.deepEqual(icyPass.tutorials.map((tutorial)=>tutorial.action),['move','phenotype'],'Frozen Peaks entry must teach ice momentum and Ice use');
+const toxicOutskirts=compile('5-1-toxic-outskirts');
+assert.deepEqual(toxicOutskirts.tutorials.map((tutorial)=>tutorial.action),['move','phenotype'],'Eco City entry must teach conveyor movement and Electric use');
+for(const tutorial of [...mossy.tutorials,...redRock.tutorials,...icyPass.tutorials,...toxicOutskirts.tutorials]){
+  assert.ok(tutorial.id&&Number.isFinite(tutorial.x)&&tutorial.text?.length>20,'world tutorial metadata must be complete');
+}
+
 const waterfall=compile('1-3-waterfall-way');
 const waterfallGap=waterfall.hazards.find((hazard)=>hazard.type==='waterfall-gap');
 assert.ok(waterfallGap,'Waterfall Way must compile a waterfall gap');
@@ -95,5 +107,6 @@ assert.ok(waterfallGap.y<480&&waterfallGap.y+waterfallGap.height>480,'waterfall 
 
 assert.match(campaignRuntime, /const hazardGeometry = /, 'public campaign compiler must own the same hazard geometry policy');
 assert.match(campaignRuntime, /revision:4/, 'public authored recipe compiler must expose revision 4');
+assert.match(campaignRuntime, /tutorials:clone\(recipe\.tutorials\|\|\[\]\)/, 'public authored recipe compiler must preserve world tutorial metadata');
 
 console.log('Seed Man authored production layout and playability geometry contracts passed.');
