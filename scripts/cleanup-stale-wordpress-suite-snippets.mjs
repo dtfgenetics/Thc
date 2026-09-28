@@ -70,7 +70,30 @@ async function discardSnippetBestEffort(id){
   }
 }
 function pluginEndpoint(pluginId){return `/wp-json/wp/v2/plugins/${String(pluginId).split('/').map(encodeURIComponent).join('/')}`;}
-async function queryPlugin(){const r=await request('/wp-json/wp/v2/plugins?search=Code%20Snippets&per_page=100',{allow:[401,403,404]});if(!r.ok||!Array.isArray(r.body))return null;return r.body.find(p=>String(p?.plugin||'').startsWith('code-snippets/'))||null;}
+async function queryPlugin(){
+  let discoveryError=null;
+  try{
+    const r=await request('/wp-json/wp/v2/plugins?search=Code%20Snippets&per_page=100',{allow:[401,403,404]});
+    if(r.ok&&Array.isArray(r.body)){
+      const plugin=r.body.find(p=>String(p?.plugin||'').startsWith('code-snippets/'))||null;
+      if(plugin)return plugin;
+    }
+  }catch(error){
+    discoveryError=error;
+    console.warn(`Code Snippets plugin discovery failed: ${error?.cause?.code||error?.code||error?.message||'unknown'}; probing the plugin REST API before aborting cleanup.`);
+  }
+  try{
+    const probe=await request('/wp-json/code-snippets/v1/snippets/schema',{allow:[400,401,403,404,500],retryServer:false});
+    if(probe.ok){
+      console.warn('Code Snippets REST API is reachable despite plugin-list discovery failure; treating the known production plugin as active for cleanup.');
+      return{plugin:'code-snippets/code-snippets',status:'active',inferredFromApi:true};
+    }
+  }catch(error){
+    console.warn(`Code Snippets API fallback probe failed: ${error?.cause?.code||error?.code||error?.message||'unknown'}.`);
+  }
+  if(discoveryError)throw discoveryError;
+  return null;
+}
 async function setPluginStatus(pluginId,status){return request(pluginEndpoint(pluginId),{method:'POST',json:{status}});}
 async function waitForApi(){for(let attempt=1;attempt<=12;attempt++){const r=await request('/wp-json/code-snippets/v1/snippets/schema',{allow:[404,500]});if(r.ok)return true;await sleep(900+attempt*350)}return false;}
 
