@@ -18,7 +18,7 @@ This directory is the GitHub source-of-truth for machine-readable rules, event d
 ## Implemented source
 
 - `src/engine.mjs` — deterministic game state, legal actions, era transitions, event resolution, simulation, and Legacy scoring.
-- `data/events.json` — 18 current prototype events, six per era.
+- `data/events.json` — 27 seeded career events, nine per era, while each career still lasts six turns per era.
 - `data/eras.json` — era design intent and thematic boundaries.
 - `test/engine.test.mjs` — deterministic regression tests plus multi-seed balance simulation.
 - `site/public-route-patch/games/high-life/` — self-hosted browser prototype packaged by the DTFSeeds public-suite workflow.
