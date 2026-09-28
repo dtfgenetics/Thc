@@ -21,11 +21,22 @@ function makeRoom(): HighLandRoomState {
 
 describe('room game factory', () => {
   it('creates a named local game', () => {
-    const game = createNamedLocalGame(4, 'Blaze Runner');
+    const game = createNamedLocalGame(4, ['Blaze Runner', 'Terp Queen', '', 'Cloud Nine']);
 
     expect(game.players).toHaveLength(4);
-    expect(game.players[0].name).toBe('Blaze Runner');
+    expect(game.players.map((player) => player.name)).toEqual([
+      'Blaze Runner',
+      'Terp Queen',
+      'Player 3',
+      'Cloud Nine'
+    ]);
     expect(game.message).toBe('Blaze Runner, roll to begin.');
+  });
+
+  it('keeps the single-name local factory call backwards compatible', () => {
+    const game = createNamedLocalGame(2, 'Blaze Runner');
+
+    expect(game.players.map((player) => player.name)).toEqual(['Blaze Runner', 'Player 2']);
   });
 
   it('creates a game from room players and preserves identity', () => {
