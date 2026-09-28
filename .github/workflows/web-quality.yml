@@ -14,7 +14,9 @@ on:
       - 'lighthouserc.cjs'
       - '.github/workflows/web-quality.yml'
       - '.agents/skills/dtf-web-quality-gate/**'
-  push:
+  workflow_run:
+    workflows: ['DTFSeeds Production Gateway']
+    types: [completed]
     branches: [main]
   schedule:
     - cron: '23 8 * * *'
@@ -40,6 +42,7 @@ concurrency:
 
 jobs:
   deterministic-health:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     name: Deterministic route health audit
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -47,12 +50,16 @@ jobs:
       WEB_QA_BASE_URL: https://dtfseeds.com
       WEB_QA_ARTIFACT_DIR: .artifacts/web-qa
       WEB_QA_ROUTE_FILE: .artifacts/web-qa/routes.json
-      WEB_QA_ENFORCE: ${{ ((github.event_name == 'workflow_dispatch' && inputs.enforce) || github.ref == 'refs/heads/main') && '1' || '0' }}
+      WEB_QA_ENFORCE: ${{ ((github.event_name == 'workflow_dispatch' && inputs.enforce) || github.event_name == 'schedule' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')) && '1' || '0' }}
       WEB_QA_MAX_ROUTES: ${{ github.event_name == 'pull_request' && '80' || (github.event_name == 'workflow_dispatch' && inputs.max_routes) || '250' }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
 
       - name: Set up Node
         uses: actions/setup-node@v7
@@ -82,6 +89,7 @@ jobs:
           retention-days: 30
 
   lighthouse:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     name: Lighthouse every discovered page
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -89,13 +97,15 @@ jobs:
       WEB_QA_BASE_URL: https://dtfseeds.com
       WEB_QA_ARTIFACT_DIR: .artifacts/web-qa
       WEB_QA_ROUTE_FILE: .artifacts/web-qa/routes.json
-      WEB_QA_ENFORCE: ${{ ((github.event_name == 'workflow_dispatch' && inputs.enforce) || github.ref == 'refs/heads/main') && '1' || '0' }}
+      WEB_QA_ENFORCE: ${{ ((github.event_name == 'workflow_dispatch' && inputs.enforce) || github.event_name == 'schedule' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')) && '1' || '0' }}
       WEB_QA_MAX_ROUTES: ${{ github.event_name == 'pull_request' && '20' || (github.event_name == 'workflow_dispatch' && inputs.max_routes) || '250' }}
       LHCI_RUNS: ${{ github.ref == 'refs/heads/main' && '3' || '1' }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
 
       - name: Set up Node
         uses: actions/setup-node@v7
