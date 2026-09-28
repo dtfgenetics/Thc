@@ -77,6 +77,9 @@
     "validate:public-suite-qualification-workflow": "node scripts/validate-public-suite-qualification-workflow.mjs",
     "audit:responsive-source": "node scripts/audit-responsive-source.mjs",
     "games:registry:check": "node scripts/validate-game-registry-v2.mjs",
-    "games:registry:test": "node scripts/test-game-registry-v2.mjs"
+    "games:registry:test": "node scripts/test-game-registry-v2.mjs",
+    "games:registry:docs": "node scripts/generate-game-registry-docs.mjs",
+    "games:registry:docs:check": "node scripts/generate-game-registry-docs.mjs --check",
+    "games:registry:docs:test": "node scripts/test-generate-game-registry-docs.mjs"
   }
 }
