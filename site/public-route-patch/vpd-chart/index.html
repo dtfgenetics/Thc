@@ -39,7 +39,7 @@ footer{padding:28px 0 42px;color:var(--muted)}
     <div class="field"><label for="vpdSustainSamples">Sustain samples</label><input id="vpdSustainSamples" type="number" min="1" max="60" step="1" value="3"></div>
     <div class="field"><label for="vpdClearMargin">Clear margin (kPa)</label><input id="vpdClearMargin" type="number" min="0" max="1" step="0.01" value="0.05"></div>
   </div>
-  <div class="trend-actions"><button id="saveVpdProfile" type="button">Save profile</button><button id="loadVpdProfile" type="button">Load selected</button><button id="deleteVpdProfile" type="button">Delete selected</button></div>
+  <div class="trend-actions"><button id="saveVpdProfile" type="button">Save profile</button><button id="loadVpdProfile" type="button">Load selected</button><button id="deleteVpdProfile" type="button">Delete selected</button><button id="saveVpdGrowLens" type="button">Save current to GrowLens</button><button id="backupVpdProfiles" type="button">Backup JSON</button><button id="restoreVpdProfiles" type="button">Restore JSON</button><input id="vpdProfileJson" type="file" accept="application/json,.json" hidden></div>
   <p id="vpdProfileStatus" class="muted" role="status" aria-live="polite">Profiles stay in this browser. Logger analysis uses the current target band and sustain settings.</p>
 </section>
 <section class="panel trend-panel" aria-labelledby="trend-heading">
@@ -72,8 +72,10 @@ footer{padding:28px 0 42px;color:var(--muted)}
 </main>
 <script src="/assets/vendor/papaparse-5.7.0.min.js"></script>
 <script src="/assets/vendor/uplot-1.6.32.min.js"></script>
+<script src="/assets/thc-tool-suite-v1.js"></script>
 <script type="module">
 import {leafVpd} from '/assets/thc-cultivation-math-v1.mjs';
+const THC=window.THC;
 const temp=document.getElementById('temp'),unit=document.getElementById('unit'),rh=document.getElementById('rh'),offset=document.getElementById('offset'),vout=document.getElementById('vout'),chart=document.getElementById('chart');
 const vpdProfileName=document.getElementById('vpdProfileName'),vpdProfiles=document.getElementById('vpdProfiles'),vpdTargetLow=document.getElementById('vpdTargetLow'),vpdTargetHigh=document.getElementById('vpdTargetHigh'),vpdSustainSamples=document.getElementById('vpdSustainSamples'),vpdClearMargin=document.getElementById('vpdClearMargin'),vpdProfileStatus=document.getElementById('vpdProfileStatus');
 const VPD_PROFILE_KEY='thc-vpd-profiles-v1';
@@ -101,6 +103,10 @@ function currentVpdProfile(){return{name:vpdProfileName.value.trim(),unit:unit.v
 document.getElementById('saveVpdProfile')?.addEventListener('click',()=>{const p=currentVpdProfile(),lo=Number(p.targetLow),hi=Number(p.targetHigh);if(!Number.isFinite(lo)||!Number.isFinite(hi)||lo<0||hi<=lo){vpdProfileStatus.textContent='Target high must be greater than target low.';return}const items=readVpdProfiles(),x={...p,id:'vpd-'+Date.now(),savedAt:new Date().toISOString()};items.push(x);if(!writeVpdProfiles(items.slice(-25))){vpdProfileStatus.textContent='Browser storage is unavailable.';return}refreshVpdProfiles(x.id);vpdProfileStatus.textContent='Saved '+(x.name||'environment profile')+'.'});
 document.getElementById('loadVpdProfile')?.addEventListener('click',()=>{const x=readVpdProfiles().find(p=>p.id===vpdProfiles.value);if(!x){vpdProfileStatus.textContent='Choose a saved profile first.';return}vpdProfileName.value=String(x.name||'').slice(0,80);unit.value=x.unit==='f'?'f':'c';temp.value=x.temp;rh.value=x.rh;offset.value=x.offset;vpdTargetLow.value=x.targetLow;vpdTargetHigh.value=x.targetHigh;vpdSustainSamples.value=x.sustain||3;vpdClearMargin.value=x.clearMargin??0.05;render();vpdProfileStatus.textContent='Loaded '+(x.name||'environment profile')+'.';if(lastTrendRows.length)renderTrend(lastTrendRows)});
 document.getElementById('deleteVpdProfile')?.addEventListener('click',()=>{const id=vpdProfiles.value;if(!id){vpdProfileStatus.textContent='Choose a saved profile first.';return}if(!writeVpdProfiles(readVpdProfiles().filter(x=>x.id!==id))){vpdProfileStatus.textContent='Browser storage is unavailable; profile was not changed.';return}refreshVpdProfiles();vpdProfileStatus.textContent='Profile deleted.'});
+document.getElementById('saveVpdGrowLens')?.addEventListener('click',()=>{const rawT=Number(temp.value),h=Number(rh.value),u=unit.value,air=toC(rawT,u),result=THC.growlens.addEnvironmentReading({temperatureC:air,humidity:h,createdAt:new Date().toISOString()});vpdProfileStatus.textContent=result.ok?'Saved current temperature/RH to GrowLens environment history.':(result.reason||'GrowLens save failed.')});
+document.getElementById('backupVpdProfiles')?.addEventListener('click',()=>THC.backupJson('thc-vpd-profiles-backup.json','thc-vpd-profiles',1,readVpdProfiles()));
+document.getElementById('restoreVpdProfiles')?.addEventListener('click',()=>document.getElementById('vpdProfileJson').click());
+document.getElementById('vpdProfileJson')?.addEventListener('change',async e=>{try{const records=await THC.restoreJson(e.target.files?.[0],'thc-vpd-profiles',1,x=>x&&typeof x.id==='string'&&typeof x.name==='string',25);if(readVpdProfiles().length&&!confirm('Replace current VPD profiles with this backup?'))return;writeVpdProfiles(records);refreshVpdProfiles();vpdProfileStatus.textContent='VPD profile backup restored.'}catch(error){vpdProfileStatus.textContent=error?.message||'Could not restore VPD profile backup.'}e.target.value=''});
 [temp,rh,offset].forEach(el=>el.addEventListener('input',render));unit.addEventListener('change',()=>{const current=Number(temp.value),off=Number(offset.value);if(unit.value==='f'){temp.value=(current*9/5+32).toFixed(1);offset.value=(off*9/5).toFixed(1)}else{temp.value=((current-32)*5/9).toFixed(1);offset.value=(off*5/9).toFixed(1)}render()});render();
 
 const norm=s=>String(s||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
@@ -179,5 +185,4 @@ refreshVpdProfiles();
 document.getElementById('trendClear')?.addEventListener('click',()=>{if(trendFile)trendFile.value='';trendStatus.textContent='No logger data loaded.';trendMetrics.hidden=true;trendCanvasWrap.hidden=true;trendTableWrap.hidden=true;if(trendBody)trendBody.innerHTML='';const ctx=trendCanvas?.getContext('2d');ctx?.clearRect(0,0,trendCanvas.width,trendCanvas.height)});
 </script>
 <footer><div class="shell">Educational environmental reference. For leaf-based VPD, use representative air temperature/RH and a reliable leaf-temperature measurement; do not treat VPD alone as proof of plant stress.</div></footer>
-<script src="/assets/thc-tool-suite-v1.js"></script>
 </body></html>
