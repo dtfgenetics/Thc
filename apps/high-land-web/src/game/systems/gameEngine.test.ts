@@ -104,7 +104,7 @@ describe('game engine', () => {
   it('draws a random card action when landing on HIT', () => {
     const hitIndex = actionSpaceIndexes[0];
     const state = buildStateAt(hitIndex - 1);
-    const next = rollCurrentTurn(state, sequenceRandom([0, 0.75]));
+    const next = rollCurrentTurn(state, sequenceRandom([0, 0.74]));
 
     expect(boardPath[hitIndex].type).toBe('action');
     expect(next.lastRoll).toBe(1);
@@ -158,23 +158,11 @@ describe('game engine', () => {
 
   it('applies forward and backward card movement', () => {
     const state = buildStateAt(5);
-    const forwardCard: ActionCard = {
-      id: 'test-forward',
-      title: 'Forward',
-      text: 'Move forward.',
-      effect: { type: 'move', amount: 3 }
-    };
-    const backwardCard: ActionCard = {
-      id: 'test-backward',
-      title: 'Backward',
-      text: 'Move backward.',
-      effect: { type: 'move', amount: -2 }
-    };
-
+    const forwardCard: ActionCard = { id: 'test-forward', title: 'Forward', text: 'Move forward.', effect: { type: 'move', amount: 3 } };
+    const backwardCard: ActionCard = { id: 'test-backward', title: 'Backward', text: 'Move backward.', effect: { type: 'move', amount: -2 } };
     const afterForward = applyActionCard(state, forwardCard);
     expect(afterForward.players[0].positionIndex).toBe(8);
     expect(afterForward.currentPlayerIndex).toBe(1);
-
     const samePlayerTurn = { ...afterForward, currentPlayerIndex: 0 };
     const afterBackward = applyActionCard(samePlayerTurn, backwardCard);
     expect(afterBackward.players[0].positionIndex).toBe(6);
@@ -182,17 +170,10 @@ describe('game engine', () => {
 
   it('applies skip turns from cards', () => {
     const state = createInitialGame(2);
-    const skipCard: ActionCard = {
-      id: 'test-skip',
-      title: 'Skip',
-      text: 'Skip next turn.',
-      effect: { type: 'skip_turns', amount: 1 }
-    };
-
+    const skipCard: ActionCard = { id: 'test-skip', title: 'Skip', text: 'Skip next turn.', effect: { type: 'skip_turns', amount: 1 } };
     const skipped = applyActionCard(state, skipCard);
     expect(skipped.players[0].skipTurns).toBe(1);
     expect(skipped.currentPlayerIndex).toBe(1);
-
     const skippedPlayerTurn = { ...skipped, currentPlayerIndex: 0 };
     const next = rollCurrentTurn(skippedPlayerTurn);
     expect(next.players[0].skipTurns).toBe(0);
@@ -201,19 +182,8 @@ describe('game engine', () => {
 
   it('protects from backward movement once', () => {
     const state = buildStateAt(5);
-    const protectCard: ActionCard = {
-      id: 'test-protect',
-      title: 'Protect',
-      text: 'Block backward move.',
-      effect: { type: 'protect_from_backward', uses: 1 }
-    };
-    const backwardCard: ActionCard = {
-      id: 'test-backward',
-      title: 'Backward',
-      text: 'Move backward.',
-      effect: { type: 'move', amount: -2 }
-    };
-
+    const protectCard: ActionCard = { id: 'test-protect', title: 'Protect', text: 'Block backward move.', effect: { type: 'protect_from_backward', uses: 1 } };
+    const backwardCard: ActionCard = { id: 'test-backward', title: 'Backward', text: 'Move backward.', effect: { type: 'move', amount: -2 } };
     const protectedState = applyActionCard(state, protectCard);
     const advanced = { ...protectedState, players: protectedState.players.map((player, index) => (index === 0 ? { ...player, positionIndex: 8 } : player)) };
     const afterBackward = applyActionCard({ ...advanced, currentPlayerIndex: 0 }, backwardCard);
@@ -223,48 +193,27 @@ describe('game engine', () => {
 
   it('supports moving to the next matching color', () => {
     const state = createInitialGame(2);
-    const colorCard: ActionCard = {
-      id: 'test-color',
-      title: 'Color Move',
-      text: 'Move to next green.',
-      effect: { type: 'move_to_color', color: 'green', direction: 'next' }
-    };
+    const colorCard: ActionCard = { id: 'test-color', title: 'Color Move', text: 'Move to next green.', effect: { type: 'move_to_color', color: 'green', direction: 'next' } };
     const next = applyActionCard(state, colorCard);
     expect(boardPath[next.players[0].positionIndex].color).toBe('green');
   });
 
   it('uses controlled randomness for random swap cards', () => {
     const state = createInitialGame(3);
-    const positioned = {
-      ...state,
-      players: state.players.map((player, index) => ({ ...player, positionIndex: index * 10 }))
-    };
-    const randomSwapCard: ActionCard = {
-      id: 'test-random-swap',
-      title: 'Random Swap',
-      text: 'Swap with a random player.',
-      effect: { type: 'swap_position', target: 'random' }
-    };
-
+    const positioned = { ...state, players: state.players.map((player, index) => ({ ...player, positionIndex: index * 10 })) };
+    const randomSwapCard: ActionCard = { id: 'test-random-swap', title: 'Random Swap', text: 'Swap with a random player.', effect: { type: 'swap_position', target: 'random' } };
     const next = applyActionCard(positioned, randomSwapCard, 0, () => 0.999);
-
     expect(next.players[0].positionIndex).toBe(20);
     expect(next.players[2].positionIndex).toBe(0);
   });
 
   it('supports reverse turn order for full rounds', () => {
     const state = createInitialGame(3);
-    const reverseCard: ActionCard = {
-      id: 'test-reverse',
-      title: 'Reverse',
-      text: 'Reverse turns.',
-      effect: { type: 'reverse_turn_order', turns: 2 }
-    };
+    const reverseCard: ActionCard = { id: 'test-reverse', title: 'Reverse', text: 'Reverse turns.', effect: { type: 'reverse_turn_order', turns: 2 } };
     const reversed = applyActionCard(state, reverseCard);
     expect(reversed.turnDirection).toBe(-1);
     expect(reversed.reverseTurnsRemaining).toBe(6);
     expect(reversed.currentPlayerIndex).toBe(2);
-
     const next = rollCurrentTurn(reversed, () => 0);
     expect(next.currentPlayerIndex).toBe(1);
     expect(next.reverseTurnsRemaining).toBe(5);
@@ -272,33 +221,23 @@ describe('game engine', () => {
 
   it('keeps Reverse Rotation reversed through one complete table round', () => {
     const state = createInitialGame(4);
-    const reverseCard: ActionCard = {
-      id: 'card-023',
-      title: 'Reverse Rotation',
-      text: 'Turn order reverses for one round.',
-      effect: { type: 'reverse_turn_order', turns: 1 }
-    };
-
+    const reverseCard: ActionCard = { id: 'card-023', title: 'Reverse Rotation', text: 'Turn order reverses for one round.', effect: { type: 'reverse_turn_order', turns: 1 } };
     let next = applyActionCard(state, reverseCard);
     expect(next.currentPlayerIndex).toBe(3);
     expect(next.turnDirection).toBe(-1);
     expect(next.reverseTurnsRemaining).toBe(4);
-
     next = rollCurrentTurn(next, () => 0);
     expect(next.currentPlayerIndex).toBe(2);
     expect(next.turnDirection).toBe(-1);
     expect(next.reverseTurnsRemaining).toBe(3);
-
     next = rollCurrentTurn(next, () => 0);
     expect(next.currentPlayerIndex).toBe(1);
     expect(next.turnDirection).toBe(-1);
     expect(next.reverseTurnsRemaining).toBe(2);
-
     next = rollCurrentTurn(next, () => 0);
     expect(next.currentPlayerIndex).toBe(0);
     expect(next.turnDirection).toBe(-1);
     expect(next.reverseTurnsRemaining).toBe(1);
-
     next = rollCurrentTurn(next, () => 0);
     expect(next.currentPlayerIndex).toBe(1);
     expect(next.turnDirection).toBe(1);
