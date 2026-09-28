@@ -450,9 +450,9 @@ jobs:
           npm run validate:plant-atlas:v4
           npm run validate:terpene-atlas
           node scripts/validate-atlas-route-ownership.mjs
-          node --check apps/growlens-web/public/atlas/atlas-anatomy-index-v1.js
-          node --check apps/growlens-web/public/atlas/module.js
-          node --check apps/growlens-web/public/terpene-atlas/terpene-atlas-v1.js
+          node --check site/public-route-patch/atlas/atlas-anatomy-index-v1.js
+          node --check site/public-route-patch/atlas/module.js
+          node --check site/public-route-patch/terpene-atlas/terpene-atlas-v1.js
           test -s apps/growlens-web/dist/index.html
           test -d apps/growlens-web/dist/api
 
