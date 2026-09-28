@@ -170,13 +170,16 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "server-authoritative or canonical tested engine as recorded by game source",
-        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "multiplayer",
-        "multiplayerAuthority": "authoritative service/runtime",
-        "persistence": "game-specific serialized browser/server state",
+        "renderer": "self-hosted browser DOM UI",
+        "frameworks": [
+          "vanilla browser runtime",
+          "PHP multiplayer API"
+        ],
+        "simulationOwner": "server-authoritative Bud or Bluff room/game state",
+        "uiLayer": "site/public-route-patch/games/bud-or-bluff",
+        "networkModel": "server-authoritative multiplayer",
+        "multiplayerAuthority": "same-origin server API",
+        "persistence": "room/session state and reconnect recovery",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -192,8 +195,16 @@
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "200 verified real cannabis names with source provenance",
+        "BLUFF-name collision checking against known strain databases",
+        "2–10 player lobby",
+        "simultaneous hidden voting",
+        "BUD vs BLUFF reveal/scoring",
+        "Double Hit scoring",
+        "room chat",
+        "reconnect and rematch",
+        "host transfer",
+        "private answer data exclusion"
       ],
       "assets": {
         "registryId": "bud-or-bluff",
@@ -248,8 +259,10 @@
       "deprecatedLocations": [],
       "quality": {
         "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "targetExperience": "Fast social bluffing with trustworthy real/fake data, private answers, low-friction rooms, readable reveals, and strong replayability.",
+        "knownGaps": [
+          "current research-to-final commercial print gate still requires editorial/legal review of names"
+        ]
       },
       "notes": [
         "Self-hosted 2–10 player server-authoritative party game with simultaneous hidden voting, Double Hit scoring, lobby locking/settings, room chat, reconnect, rematches, host transfer, keyboard controls, visual-state feedback, and private answer data. Dedicated CI now uses Ubuntu 24.04/current GitHub actions. The central public-suite gate verifies both 10-player lobby generations, keyboard/visual contracts, API v2→durable-v3 routing, PHP syntax, and private-answer exclusion. Exact post-deploy live-route verification remains required."
@@ -313,13 +326,16 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
+        "renderer": "Vite/vanilla crossword player",
+        "frameworks": [
+          "Vite",
+          "crossword-layout-generator"
+        ],
+        "simulationOwner": "canonical puzzle JSON and crossword player state",
         "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "networkModel": "static/local",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "localStorage progress with restricted-storage fallback",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -328,15 +344,23 @@
         "mobileContract": "responsive browser play with touch targets and safe-area containment",
         "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
         "audioSystem": "game-specific shared/browser audio layer",
-        "assetManifest": null,
+        "assetManifest": "content/clue-bank.json",
         "sharedSystems": [
           "DTF game registry",
           "DTF shared browser experience where adopted"
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "original approved clue bank",
+        "theme definitions",
+        "daily/current plus archived puzzle JSON",
+        "IPUZ and Exolve exports",
+        "keyboard navigation",
+        "active clue/cell behavior",
+        "check/reveal/clear/print",
+        "local progress persistence",
+        "archive browsing",
+        "daily/weekly generation and validation"
       ],
       "assets": {
         "registryId": "thc-crossword",
@@ -375,8 +399,10 @@
       "deprecatedLocations": [],
       "quality": {
         "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "targetExperience": "Newspaper-quality crossword interaction with original cannabis content, reliable keyboard/mobile controls, resilient storage, archives, and reproducible export/publishing workflows.",
+        "knownGaps": [
+          "daily publishing automation still depends on repository workflow permissions/branch behavior being verified after recent changes"
+        ]
       },
       "notes": [
         "Production Vite base is /games/crossword/. The tested puzzle-data contract remains /puzzles/... and is published at the site root by the DTFSeeds suite deployer."
@@ -436,16 +462,18 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "phaser/canvas",
+        "renderer": "Phaser canvas with DOM HUD",
         "frameworks": [
-          "Phaser"
+          "Phaser 3",
+          "TypeScript",
+          "Vite"
         ],
-        "simulationOwner": "canonical tested game engine/state",
-        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
-        "saveVersion": null,
+        "simulationOwner": "src/game/model.ts",
+        "uiLayer": "thin Phaser renderer plus DOM HUD/journal/results",
+        "networkModel": "local",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "versioned autosave + separate safe-checkpoint storage + records",
+        "saveVersion": 5,
         "inputModes": [
           "keyboard",
           "mouse/touch"
@@ -455,13 +483,23 @@
         "audioSystem": "game-specific shared/browser audio layer",
         "assetManifest": null,
         "sharedSystems": [
-          "DTF game registry",
-          "DTF shared browser experience where adopted"
+          "data-driven campaign content",
+          "deterministic input mapping",
+          "DTF game registry"
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "five-region top-down campaign",
+        "10 relic seeds",
+        "region-specific layouts/palettes/pressure curves",
+        "move-based surge countdown",
+        "traps, wards, kits, guardians, sanctuaries",
+        "max-health progression reward",
+        "autosave separate from safe checkpoint",
+        "save v5 migration",
+        "best-move/completed-expedition records",
+        "deterministic full-campaign solvability search",
+        "keyboard and touch controls"
       ],
       "assets": {
         "registryId": "ganjumanji",
@@ -505,8 +543,15 @@
       "deprecatedLocations": [],
       "quality": {
         "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "targetExperience": "A polished expedition roguelite-adventure with readable pressure, meaningful resource decisions, fair recovery, distinct regions, and deterministic solvability.",
+        "knownGaps": [
+          "richer guardian choices",
+          "region-specific relic mechanics",
+          "optional side chambers",
+          "stronger reward tradeoffs",
+          "richer visual/audio feedback",
+          "exact DTFSeeds live-route verification"
+        ]
       },
       "notes": [
         "Canonical code remains in the standalone Ganjumanji repository. Revision b1cbf9b9627586b7277813b6a7c6f85a98830d58 is the green 0.4.1 five-region production candidate with 10 relic seeds, save v5, separate autosave/safe-checkpoint recovery, deterministic campaign/content/input/storage/solvability tests, shipped UI-contract validation, TypeScript/Vite build, release validation, current GitHub Actions CI, and production artifact generation. DTFSeeds packaging must rebuild this exact pinned revision and run validate:ui before promotion. Exact post-deploy live-route verification remains required before production-ready status."
@@ -564,13 +609,15 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
+        "renderer": "responsive DOM 5x5 board",
+        "frameworks": [
+          "vanilla browser modules"
+        ],
+        "simulationOwner": "deterministic browser card generator/state",
         "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "networkModel": "local/share-code",
+        "multiplayerAuthority": "shared code only; no server authority",
+        "persistence": "local best-line state per mode",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -586,8 +633,14 @@
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "Grow Room Bingo, Bongwater Bingo, and Mixed Garden modes",
+        "deterministic 5x5 cards from six-character codes",
+        "FREE center square",
+        "mark/unmark squares",
+        "automatic row/column/diagonal bingo detection",
+        "line highlighting and line count",
+        "exact-code replay and challenge sharing",
+        "local best line count per mode"
       ],
       "assets": {
         "registryId": "grow-room-bingo",
@@ -628,8 +681,12 @@
       "deprecatedLocations": [],
       "quality": {
         "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "targetExperience": "Instant community-night play with readable boards, deterministic shared cards, easy marking, and strong mobile/tablet usability.",
+        "knownGaps": [
+          "event/community playtesting",
+          "final art direction",
+          "broader prompt expansion"
+        ]
       },
       "notes": [
         "Self-hosted three-mode community bingo game with deterministic cards, local autosave, guarded clear/reset, resilient challenge sharing, roving 5×5 keyboard navigation, touch feedback, reduced motion, and forced-colors support. Its existing deterministic browser-runtime test is now included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
@@ -687,13 +744,15 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
+        "renderer": "responsive DOM lane-defense board",
+        "frameworks": [
+          "vanilla browser modules"
+        ],
+        "simulationOwner": "games/grow-room-defense/src/engine.mjs",
         "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "networkModel": "local deterministic",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "run state/browser session as implemented",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -709,8 +768,15 @@
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "three independent plant lanes",
+        "12 deterministic threat rounds",
+        "eight pest/disease/diagnosis threat profiles",
+        "seven broad IPM tools",
+        "strong/supportive/mismatch/empty-lane outcomes",
+        "persistent unresolved pressure",
+        "scaled plant damage",
+        "score, resolved-threat count, total damage, and history",
+        "perfect-play no-damage path"
       ],
       "assets": {
         "registryId": "grow-room-defense",
@@ -751,8 +817,12 @@
       "deprecatedLocations": [],
       "quality": {
         "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "targetExperience": "Readable turn-based defense where the correct broad IPM response is understandable, educational, deterministic, and satisfying without teaching pesticide recipes.",
+        "knownGaps": [
+          "final browser/mobile QA",
+          "accessibility review",
+          "expanded art/audio pass"
+        ]
       },
       "notes": [
         "Self-hosted deterministic IPM strategy game. Browser runtime now imports the canonical tested engine instead of duplicating rules; public-runtime regression covers mobile tool return, keyboard shortcuts, semantic health meters, forced colors, reduced motion, clipboard fallback, and visual states. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
@@ -810,13 +880,15 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
+        "renderer": "self-hosted DOM card-table preview",
+        "frameworks": [
+          "vanilla browser runtime"
+        ],
+        "simulationOwner": "canonical prompt-bank/session state",
         "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "networkModel": "local/social tabletop",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "local session state",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -832,8 +904,15 @@
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "96-card validated digital-preview deck",
+        "200-card production-bank candidate",
+        "eight locked social-game lanes",
+        "topic/depth filtering and no-repeat draw pool",
+        "six play modes",
+        "Go Deeper, Call It Out, and Respect interaction tokens",
+        "optional Keeper social scoring",
+        "local session persistence",
+        "prompt sharing/copy"
       ],
       "assets": {
         "registryId": "grower-conversations",
@@ -887,8 +966,16 @@
       "deprecatedLocations": [],
       "quality": {
         "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "targetExperience": "Feel like a premium adult tabletop conversation game rather than an educational card browser: strong prompts, clear modes, escalating depth, social tokens, and polished physical/digital parity.",
+        "knownGaps": [
+          "browser still uses preview taxonomy rather than eight locked social lanes",
+          "intensity metadata and mode presets",
+          "Keeper tracking",
+          "interaction-token controls",
+          "premium tabletop visual rebuild",
+          "print components and proof",
+          "editorial/safety/playtest review of 200-card bank"
+        ]
       },
       "notes": [
         "Self-hosted 96-card discussion deck with eight topics, three depth bands, local progress persistence, filtered deck progress, keyboard draw/copy/shuffle shortcuts, resilient clipboard fallback, responsive containment, 44px controls, reduced motion, and forced-colors support. Dedicated CI is modernized to current GitHub Actions and the full browser-runtime regression now runs in the central public-suite gate; exact post-deploy live-route verification remains required."
@@ -946,13 +1033,15 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
+        "renderer": "responsive DOM arcade interface",
+        "frameworks": [
+          "vanilla browser modules"
+        ],
+        "simulationOwner": "games/harvest-hustle/src/engine.mjs",
         "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "networkModel": "local deterministic",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "challenge/run state as implemented",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -968,8 +1057,14 @@
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "deterministic six-character shift codes",
+        "fixed-length timed shift",
+        "fictional batch queue with value/patience/station sequences",
+        "Tag, Trim, Rack, and Pack abstract stations",
+        "combo system",
+        "wrong-station time/quality penalties",
+        "expired-batch quality loss",
+        "completed-batch/quality/combo/time scoring"
       ],
       "assets": {
         "registryId": "harvest-hustle",
@@ -1010,8 +1105,12 @@
       "deprecatedLocations": [],
       "quality": {
         "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "targetExperience": "Fast, readable time-management arcade play with clear queue pressure, satisfying combo feedback, and no ambiguity between game abstraction and real processing guidance.",
+        "knownGaps": [
+          "browser/mobile playtesting",
+          "accessibility review",
+          "production release polish"
+        ]
       },
       "notes": [
         "Self-hosted deterministic 75-second arcade shift game. Browser runtime now imports the canonical tested engine; regression coverage protects pause/resume timing, mobile decision controls, keyboard shortcuts, challenge sharing fallbacks, reduced motion, and forced-colors states. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
@@ -1072,13 +1171,15 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
+        "renderer": "self-hosted HTML/CSS/JavaScript trivia UI",
+        "frameworks": [
+          "manifest-driven vanilla browser runtime"
+        ],
+        "simulationOwner": "High IQ runtime reading canonical manifest-declared question/source chunks",
         "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "networkModel": "local",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "local run history, personal bests, missed-question state",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -1087,15 +1188,24 @@
         "mobileContract": "responsive browser play with touch targets and safe-area containment",
         "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
         "audioSystem": "game-specific shared/browser audio layer",
-        "assetManifest": "site/public-route-patch/games/high-iq",
+        "assetManifest": "games/high-iq/data/manifest.json",
         "sharedSystems": [
           "DTF game registry",
           "DTF shared browser experience where adopted"
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "200 approved PASS questions",
+        "50 registered sources across 10 domains",
+        "Easy/Medium/Hard/Expert difficulty",
+        "Balanced Mix, Random Mix, and deterministic Daily 10",
+        "variable session lengths and category/difficulty filters",
+        "difficulty-weighted scoring",
+        "accuracy and streak tracking",
+        "post-answer explanations/context/source records",
+        "missed-question review and practice reruns",
+        "local run history/personal bests",
+        "topic/source coverage views"
       ],
       "assets": {
         "registryId": "high-iq",
@@ -1149,8 +1259,11 @@
       "deprecatedLocations": [],
       "quality": {
         "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "targetExperience": "A trustworthy, polished cannabis knowledge game where source-backed explanations are as strong as the quiz loop, with excellent filtering, difficulty balance, review, and accessibility.",
+        "knownGaps": [
+          "ongoing human question/source review as the bank expands",
+          "exact current live verification metadata still needs recording in v2"
+        ]
       },
       "notes": [
         "Self-hosted manifest-driven High IQ runtime. Dataset v2.4 declares 200 Approved/PASS questions and 50 registered sources. The canonical aggregate validator now runs in both dedicated High IQ CI and the central public-suite build, covering data validation, runtime-shell synchronization, public-runtime validation, question-bank tooling, game-core tests, and the player-facing runtime smoke test. Exact post-deploy live-route verification remains required."
@@ -1483,13 +1596,15 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
+        "renderer": "interactive SVG + responsive DOM activity rail",
+        "frameworks": [
+          "vanilla browser modules"
+        ],
+        "simulationOwner": "scene-code/activity state",
         "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "networkModel": "local/share-code",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "run/progress state as implemented",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -1505,8 +1620,16 @@
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "four original interactive SVG scenes",
+        "deterministic six-character scene codes",
+        "scene/prompt/palette rotation",
+        "eight-color fill palette",
+        "keyboard-accessible SVG regions",
+        "undo and reset",
+        "three hidden-object bonuses per scene",
+        "completion/progress scoring",
+        "creative prompt per run",
+        "shareable scene-code URLs"
       ],
       "assets": {
         "registryId": "high-lines",
@@ -1547,8 +1670,12 @@
       "deprecatedLocations": [],
       "quality": {
         "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "targetExperience": "A large, unobstructed creative canvas with simple controls, original line art, low-friction coloring, hidden-object discovery, and good keyboard/touch parity.",
+        "knownGaps": [
+          "browser/mobile QA",
+          "accessibility review",
+          "production release polish"
+        ]
       },
       "notes": [
         "Self-hosted deterministic coloring/hidden-object game with four original SVG scenes, local autosave, zoom controls, keyboard/touch play, and shareable scene codes. Browser runtime now imports the canonical tested coloring engine while persistence, SVG sanitization/retry, zoom, and reset confirmation remain browser-layer concerns. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
@@ -1745,13 +1872,15 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
+        "renderer": "DOM/grid word-search interface",
+        "frameworks": [
+          "vanilla browser modules"
+        ],
+        "simulationOwner": "canonical puzzle grids and coordinate solutions",
         "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "networkModel": "local",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "mission progress as implemented",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -1767,8 +1896,13 @@
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "three missions: Terp Jungle, Grow Room Panic, Gas Station Sesh",
+        "eight hidden words per mission",
+        "straight-line first/last-letter selection",
+        "reverse selection support",
+        "persistent found-word highlighting",
+        "mission completion when all words are found",
+        "validated exact solution coordinates"
       ],
       "assets": {
         "registryId": "lost-in-the-terps",
@@ -1809,8 +1943,13 @@
       "deprecatedLocations": [],
       "quality": {
         "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "targetExperience": "Readable word-search play with accurate hit detection, strong themed missions, mobile-friendly selection, and enough mission variety for repeat play.",
+        "knownGaps": [
+          "expanded mission catalog",
+          "final illustration/art direction",
+          "mobile playtesting",
+          "accessibility review"
+        ]
       },
       "notes": [
         "Self-hosted three-mission word-search game with eight hidden words per mission, guarded mission/reset actions, three-use hints, isolated delayed feedback, roving keyboard grid navigation, scrollable mobile grids, reduced motion, and forced-colors support. Its existing deterministic browser-runtime test is now included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
@@ -1868,13 +2007,15 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
+        "renderer": "responsive DOM deduction interface",
+        "frameworks": [
+          "vanilla browser modules"
+        ],
+        "simulationOwner": "games/mystery-strain/src/engine.mjs",
         "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "networkModel": "local/share-code",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "challenge/run state as implemented",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -1890,8 +2031,14 @@
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "20 original fictional cultivar profiles",
+        "12 binary trait questions",
+        "eight standard questions and three guesses",
+        "candidate elimination after useful answers",
+        "deterministic six-character case codes",
+        "Wild Card modifiers: Foggy Jar, Extra Sniff, Risky Read",
+        "shareable challenge URLs",
+        "two-step guess confirmation"
       ],
       "assets": {
         "registryId": "mystery-strain",
@@ -1932,8 +2079,12 @@
       "deprecatedLocations": [],
       "quality": {
         "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "targetExperience": "Clean deduction play with informative question splitting, visible candidate narrowing, strong challenge sharing, and no dependence on disputed real-world strain claims.",
+        "knownGaps": [
+          "browser/mobile playtesting",
+          "accessibility review",
+          "final art direction"
+        ]
       },
       "notes": [
         "Self-hosted deterministic deduction game with 20 fictional profiles, 12 questions, optional Wild Card modifiers, Best Split UI analysis, and explicit two-step guess confirmation. Browser runtime now imports the canonical tested engine while Best Split remains a presentation helper. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
@@ -1991,13 +2142,15 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
+        "renderer": "responsive DOM card-draft interface",
+        "frameworks": [
+          "vanilla browser modules"
+        ],
+        "simulationOwner": "canonical deterministic Pheno Draft engine",
         "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "networkModel": "local deterministic",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "run/archive state as implemented",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -2013,8 +2166,16 @@
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "deterministic six-character run codes",
+        "fictional founder line and target profile",
+        "six draft rounds",
+        "three parent choices per round",
+        "three generated phenotype cards per selected cross",
+        "seven abstract traits",
+        "objective-fit and improvement scoring",
+        "two refresh tokens",
+        "run archive and selected-line history",
+        "final rank from fit/score/improvement"
       ],
       "assets": {
         "registryId": "pheno-draft",
@@ -2055,8 +2216,13 @@
       "deprecatedLocations": [],
       "quality": {
         "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "targetExperience": "A replayable genetics-themed deck-builder where selection tradeoffs are visible and strategic while all breeding outcomes remain clearly fictional game abstractions.",
+        "knownGaps": [
+          "rules testing",
+          "browser/mobile playtesting",
+          "accessibility review",
+          "production release polish"
+        ]
       },
       "notes": [
         "Self-hosted deterministic six-round fictional genetics card draft. Browser runtime now imports the canonical tested engine; regression coverage protects restart confirmation, share fallback, keyboard controls, mobile decision-rail reset, forced colors, and reduced motion. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
@@ -2445,13 +2611,15 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
+        "renderer": "responsive diagnostic DOM interface",
+        "frameworks": [
+          "vanilla browser modules"
+        ],
+        "simulationOwner": "games/root-cause/src/engine.mjs",
         "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "networkModel": "local deterministic",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "run state/share-code replay",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -2467,8 +2635,13 @@
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "six-case deterministic runs from a 12-case bank",
+        "visible symptoms and environmental context",
+        "up to two inspections per case",
+        "four plausible diagnoses in deterministic order",
+        "score decay from inspections/wrong guesses",
+        "two-wrong-diagnosis case failure",
+        "six-character replay/share codes"
       ],
       "assets": {
         "registryId": "root-cause",
@@ -2506,8 +2679,11 @@
       "deprecatedLocations": [],
       "quality": {
         "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "targetExperience": "A concise diagnostic-deduction game that rewards observation and differential diagnosis, clearly communicates uncertainty, and never overstates laboratory certainty.",
+        "knownGaps": [
+          "not yet promoted to public Game Hub",
+          "final public-route/live verification after promotion decision"
+        ]
       },
       "notes": [
         "Deployment metadata and runtime files exist, but Root Cause is intentionally not in data/game-source-map.json or public-navigation.json as of 2026-09-22.",
@@ -2853,13 +3029,15 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
+        "renderer": "animated DOM/canvas-style wheel UI",
+        "frameworks": [
+          "vanilla browser modules"
+        ],
+        "simulationOwner": "deterministic wheel sequence engine",
         "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "networkModel": "local/share-code",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "session history",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -2875,8 +3053,13 @@
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "Strain Picker, Grow Challenge, and Community Wildcard modes",
+        "18 equal-weight entries per mode",
+        "deterministic six-character wheel codes",
+        "no immediate repeat",
+        "animated accessible wheel",
+        "spin count and 12-result history",
+        "shareable mode+code challenge links"
       ],
       "assets": {
         "registryId": "spin-the-strain",
@@ -2917,8 +3100,12 @@
       "deprecatedLocations": [],
       "quality": {
         "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "targetExperience": "Fast event/community wheel play with visibly fair equal weighting, deterministic sharing, accessible announcements, and good tactile animation.",
+        "knownGaps": [
+          "browser/mobile playtesting",
+          "accessibility review",
+          "final art direction"
+        ]
       },
       "notes": [
         "Self-hosted deterministic three-mode wheel game with 18-entry no-repeat cycles per mode, shareable codes, animation-isolated result reveal, hidden-page completion, keyboard spin shortcut, clipboard fallback, reduced motion, and forced-colors support. Browser runtime now imports the canonical tested wheel engine. Dedicated title CI and the central public-suite validation gate both enforce the runtime contract. browserTested remains false until actual browser QA is completed; exact post-deploy live-route verification is still required."
@@ -3124,13 +3311,15 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
+        "renderer": "responsive DOM memory grid",
+        "frameworks": [
+          "vanilla browser modules"
+        ],
+        "simulationOwner": "canonical deck data and local match state",
         "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "networkModel": "local",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "local best moves and times per deck",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -3146,8 +3335,13 @@
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "four 4x4 educational decks",
+        "eight concept pairs per deck",
+        "two-card reveal/match loop",
+        "educational note on successful pair",
+        "moves and elapsed-time scoring",
+        "local best moves/time per deck",
+        "keyboard-operable card buttons"
       ],
       "assets": {
         "registryId": "strain-match",
@@ -3188,8 +3382,13 @@
       "deprecatedLocations": [],
       "quality": {
         "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "targetExperience": "Polished memory play where each match teaches a useful concept without slowing the core flip/match rhythm.",
+        "knownGaps": [
+          "human educational review",
+          "broader deck expansion",
+          "final illustration/art direction",
+          "cross-device playtest"
+        ]
       },
       "notes": [
         "Self-hosted four-deck educational memory game with eight pairs per deck. Existing deterministic browser-runtime coverage protects visible-play timer accounting, hidden-page pause/resume, stale mismatch isolation, guarded restart, local best scores, streak/HUD states, touch feedback, reduced motion, and forced colors. The runtime test is now included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
@@ -3248,13 +3447,15 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
+        "renderer": "responsive DOM card-battle board",
+        "frameworks": [
+          "vanilla browser modules"
+        ],
+        "simulationOwner": "games/strain-showdown deterministic battle engine",
         "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "networkModel": "local solo vs CPU",
+        "multiplayerAuthority": "not applicable in current visitor mode",
+        "persistence": "match/session history as implemented",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -3263,15 +3464,24 @@
         "mobileContract": "responsive browser play with touch targets and safe-area containment",
         "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
         "audioSystem": "game-specific shared/browser audio layer",
-        "assetManifest": "games/strain-showdown",
+        "assetManifest": "games/strain-showdown/data/roster-manifest.json",
         "sharedSystems": [
           "DTF game registry",
           "DTF shared browser experience where adopted"
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "96-card roster across eight families",
+        "Base/Select/Elite three-stage evolution",
+        "Vigor defense and Power attack stats",
+        "three-lane battlefield",
+        "20 Garden and 3 Focus starting resources",
+        "lane attacks/open-lane Garden damage",
+        "eight family passives",
+        "18-round tiebreak",
+        "solo-vs-CPU visitor mode",
+        "24 validated family/stage effect profiles covering all cards",
+        "deterministic balance simulation"
       ],
       "assets": {
         "registryId": "strain-showdown",
@@ -3325,8 +3535,14 @@
       "deprecatedLocations": [],
       "quality": {
         "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "targetExperience": "A deep but readable cannabis TCG prototype with strong family identity, meaningful evolution choices, lane tactics, stable CPU play, and measured balance rather than ad hoc tuning.",
+        "knownGaps": [
+          "draft effect profiles are authored but not active in live browser rules",
+          "human balance approval",
+          "final tournament wording",
+          "final card art/rights clearance",
+          "print proof/production approval"
+        ]
       },
       "notes": [
         "Self-hosted 96-card browser battle game with a tested deterministic three-lane engine, CPU rival, Base/Select/Elite evolution, eight family passives, Focus economy, Garden health, synchronized canonical roster data, result tracking, mobile three-lane visibility, 44px attack controls, and deterministic 32-seed balance simulation. Player-facing prototype/development wording has been removed. Final per-card effect activation, balance approval, human rules playtesting, final art, print proof, and exact post-deploy live-route verification remain open."
@@ -3542,14 +3758,16 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
-        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
-        "saveVersion": null,
+        "renderer": "framework-free browser DOM runtime",
+        "frameworks": [
+          "vanilla JavaScript ES modules"
+        ],
+        "simulationOwner": "src/game/* deterministic game systems",
+        "uiLayer": "src/main.js plus journal/dialog/browser UI",
+        "networkModel": "local",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "local save/load with migration through version 6",
+        "saveVersion": 6,
         "inputModes": [
           "keyboard",
           "mouse/touch"
@@ -3559,13 +3777,24 @@
         "audioSystem": "game-specific shared/browser audio layer",
         "assetManifest": null,
         "sharedSystems": [
-          "DTF game registry",
-          "DTF shared browser experience where adopted"
+          "route-safe static build",
+          "deterministic UI/release validators",
+          "DTF game registry"
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "six connected campaign chapters",
+        "Blue Mango, Blue Bubblegum, Mango Bubbles, and unlockable Zestberry genetics",
+        "deterministic phenotype variation",
+        "growth/hydration/stress/health/yield/quality/resilience simulation",
+        "temperature/humidity/light/pH/EC room controls",
+        "equipment purchasing/equipping and control precision",
+        "quest chain with prerequisites/rewards/unlocks",
+        "inventory, XP, levels, currency, harvesting, NPC dialog, travel",
+        "persistent Pheno Grow Journal",
+        "Keeper marking and preserved cutting stock",
+        "exact-phenotype Keeper replanting",
+        "save migration v1 through v6"
       ],
       "assets": {
         "registryId": "thc-rpg",
@@ -3623,8 +3852,16 @@
       "deprecatedLocations": [],
       "quality": {
         "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "targetExperience": "A coherent cultivation RPG where environmental choices, phenotype variation, Keeper selection, and lineage continuity produce meaningful campaign progression without losing save compatibility.",
+        "knownGaps": [
+          "deeper location progression",
+          "breeding/lineage decisions using Keeper history",
+          "additional genetics trials",
+          "equipment tradeoffs",
+          "richer NPC dialog",
+          "production art/audio feedback",
+          "exact DTFSeeds live-route verification"
+        ]
       },
       "notes": [
         "Canonical code remains in dtfgenetics/Thc-rpg. Revision de6c26d9073d9154bbcade43b64768cf6a7ba2a0 is the green 2.1.0 release-candidate source after production launch-screen, compact-control and forced-color polish. The six-chapter campaign retains deterministic phenotype variation, Keeper selection/cutting progression, Zestberry trial, save v6 compatibility, guarded gameplay shortcuts, deterministic shipped-UI validation, visitor-only build, and release validation. Central packaging and exact post-deploy live-route verification remain required before production-ready promotion."
@@ -3825,13 +4062,15 @@
       "productionHost": "https://dtfseeds.com",
       "apiOrigins": [],
       "architecture": {
-        "renderer": "dom/canvas as implemented",
-        "frameworks": [],
-        "simulationOwner": "canonical tested game engine/state",
+        "renderer": "responsive DOM scorecard/judging interface",
+        "frameworks": [
+          "vanilla browser modules"
+        ],
+        "simulationOwner": "deterministic fictional entry/rubric engine",
         "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
-        "networkModel": "local unless game source documents multiplayer",
-        "multiplayerAuthority": "not required or game-specific",
-        "persistence": "game-specific serialized browser/server state",
+        "networkModel": "local",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "trial/run state as implemented",
         "saveVersion": null,
         "inputModes": [
           "keyboard",
@@ -3847,8 +4086,14 @@
         ]
       },
       "systems": [
-        "core gameplay loop",
-        "progression/scoring as defined by canonical source"
+        "five judging rounds per deterministic trial code",
+        "seven 1–10 judging categories",
+        "fictional evidence packets",
+        "hidden benchmark rubric",
+        "accuracy from absolute-error plus exact-category bonus",
+        "post-submit category explanations",
+        "cumulative points, average accuracy, exact calls, final rank",
+        "original judge-table/loupe/badge/score-meter visuals"
       ],
       "assets": {
         "registryId": "trichome-trials",
@@ -3889,8 +4134,12 @@
       "deprecatedLocations": [],
       "quality": {
         "competitiveBenchmarks": [],
-        "targetExperience": "Fast-loading, understandable, responsive, polished browser gameplay with reliable state, controls, feedback, accessibility, and recovery.",
-        "knownGaps": []
+        "targetExperience": "A polished scorecard/judging experience that rewards consistent observation and documentation, with clear benchmark explanations and strong mobile form usability.",
+        "knownGaps": [
+          "browser/mobile playtesting",
+          "accessibility review",
+          "production release polish"
+        ]
       },
       "notes": [
         "Self-hosted deterministic five-round judging game with a seven-category scorecard and UI-layer confidence-call bonuses. Browser runtime now imports the canonical tested scoring engine; regression coverage protects reviewed-state submission, mobile score controls, reduced motion, confidence calls, and resilient clipboard/manual challenge sharing. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
