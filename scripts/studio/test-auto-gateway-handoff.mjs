@@ -27,6 +27,9 @@ requireText('production gateway', gateway, 'if [[ "$AUTO_RELEASE" != \'true\' ]]
 requireText('production gateway', gateway, "inputs.mode == 'auto'");
 requireText('production gateway', gateway, 'plan cumulatively from the last successful production checkpoint');
 forbidText('production gateway', gateway, 'if [[ "${GITHUB_EVENT_NAME}" != "push" ]]; then');
+forbidText('production gateway', gateway, 'concurrency:\n  group: dtfseeds-production-gateway');
+requireText('production gateway', gateway, '  deploy:\n    name: Publish planned lanes through one coordinator\n    needs: plan\n    if: needs.plan.outputs.deploy == \'true\'\n    concurrency:\n      group: dtfseeds-production-publish\n      cancel-in-progress: false');
+
 
 requireText('generated integrator', integrator, "'workflow', 'run', 'dtfseeds-production-gateway.yml'");
 requireText('generated integrator', integrator, "'-f', 'mode=auto'");
