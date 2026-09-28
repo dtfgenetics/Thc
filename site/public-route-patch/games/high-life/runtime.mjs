@@ -135,11 +135,23 @@ function validateEvents(sourceEvents) {
 }
 
 function isRecoverableState(saved) {
-  if (!saved || !Number.isInteger(saved.turn) || saved.turn < 0 || saved.turn > MAX_TURNS) return false;
+  if (!saved || typeof saved !== 'object') return false;
+  if (!Number.isInteger(saved.turn) || saved.turn < 0 || saved.turn > MAX_TURNS) return false;
+  if (!Number.isInteger(saved.eraIndex) || saved.eraIndex < 0 || saved.eraIndex >= ERA_IDS.length) return false;
+  if (!Number.isInteger(saved.eraTurn) || saved.eraTurn < 0 || saved.eraTurn > ERA_LENGTH) return false;
+  if (!Number.isInteger(saved.rngState) || saved.rngState <= 0 || saved.rngState > 0xffffffff) return false;
   if (!saved.resources || typeof saved.resources !== 'object') return false;
+  for (const key of Object.keys(resourceLabels)) {
+    if (!Number.isFinite(saved.resources[key]) || saved.resources[key] < 0) return false;
+  }
   if (!Array.isArray(saved.history) || !Array.isArray(saved.milestones)) return false;
-  if (saved.complete === true) return saved.turn === MAX_TURNS && Number.isFinite(saved.finalScore);
-  return saved.turn < MAX_TURNS;
+  if (saved.history.length !== saved.turn) return false;
+  if (saved.complete === true) {
+    return saved.turn === MAX_TURNS && saved.eraIndex === ERA_IDS.length - 1 && Number.isFinite(saved.finalScore);
+  }
+  const expectedEraIndex = Math.min(Math.floor(saved.turn / ERA_LENGTH), ERA_IDS.length - 1);
+  const expectedEraTurn = saved.turn % ERA_LENGTH;
+  return saved.turn < MAX_TURNS && saved.eraIndex === expectedEraIndex && saved.eraTurn === expectedEraTurn;
 }
 
 function readSave() {

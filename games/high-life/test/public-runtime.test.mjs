@@ -44,6 +44,12 @@ assert.match(bootstrap, /import\('\.\/runtime\.mjs'\)/, 'app.js must delegate to
 assert.ok(bootstrap.length < 1500, 'app.js must remain a thin compatibility bootstrap, not another rules engine');
 assert.match(runtime, /from '\.\/engine\.mjs';/, 'browser runtime must import the canonical public engine module');
 assert.match(runtime, /const SAVE_VERSION = 3/);
+assert.match(runtime, /Number\.isInteger\(saved\.eraIndex\)/, 'save recovery must validate era index');
+assert.match(runtime, /Number\.isInteger\(saved\.eraTurn\)/, 'save recovery must validate era turn');
+assert.match(runtime, /Number\.isInteger\(saved\.rngState\)/, 'save recovery must validate RNG state');
+assert.match(runtime, /saved\.history\.length !== saved\.turn/, 'save recovery must reject history-turn drift');
+assert.match(runtime, /expectedEraIndex = Math\.min\(Math\.floor\(saved\.turn \/ ERA_LENGTH\)/, 'save recovery must verify turn-to-era alignment');
+assert.match(runtime, /Number\.isFinite\(saved\.resources\[key\]\)/, 'save recovery must validate every canonical resource value');
 assert.match(runtime, /pendingEvent: Boolean\(pendingEvent\)/);
 assert.match(runtime, /payload\.version >= 2 && payload\.pendingEvent === true/);
 assert.match(runtime, /renderTurnResolution\(state\.history\.at\(-1\)\)/);
