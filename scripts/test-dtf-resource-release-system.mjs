@@ -114,6 +114,12 @@ const verifier = readFileSync('scripts/verify-dtf-public-resource-artifact.py', 
 assert.match(verifier, /verify_tokens = resource\.get\('verifyTokens'\) or \[\]/, 'artifact verifier must read per-resource verification tokens');
 assert.match(verifier, /resource verification token missing/, 'artifact verifier must fail closed when configured visitor tokens disappear');
 
+const webQualityWorkflow = readFileSync('.github/workflows/web-quality.yml', 'utf8');
+assert.match(webQualityWorkflow, /workflow_run:\s*\n\s+workflows:\s*\['DTFSeeds Production Gateway'\]/, 'live web quality must run after the production gateway instead of racing a main push');
+assert.doesNotMatch(webQualityWorkflow, /\n\s{2}push:\s*\n\s{4}branches:\s*\[main\]/, 'live web quality must not enforce against an undeployed main push');
+assert.match(webQualityWorkflow, /github\.event\.workflow_run\.conclusion\s*==\s*'success'/, 'post-deploy live QA must only run after a successful production gateway');
+assert.match(webQualityWorkflow, /github\.event\.workflow_run\.head_sha/, 'post-deploy live QA must checkout the exact deployed source SHA');
+
 const publisherWorkflow = readFileSync('.github/workflows/deploy-dtfseeds-wordpress-resource.yml', 'utf8');
 assert.match(publisherWorkflow, /^run-name:.*inputs\.source_sha.*$/m, 'WordPress resource publisher must expose its exact source SHA in the run title');
 assert.match(publisherWorkflow, /dtf-wordpress-temporary-code-snippets-bridge/, 'WordPress resource publisher must stay serialized on the shared bridge');
