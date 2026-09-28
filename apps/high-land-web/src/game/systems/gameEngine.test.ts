@@ -108,7 +108,7 @@ describe('game engine', () => {
 
     expect(boardPath[hitIndex].type).toBe('action');
     expect(next.lastRoll).toBe(1);
-    expect(next.lastCard?.id).toBe('card-030');
+    expect(next.lastCard?.id).toBe('card-031');
     expect(next.players[0].positionIndex).toBe(hitIndex + 3);
     expect(next.cardCursor).toBe(1);
     expect(next.currentPlayerIndex).toBe(1);
