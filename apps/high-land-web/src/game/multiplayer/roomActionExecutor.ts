@@ -3,6 +3,7 @@ import { canPlayerRoll, canStartRoom, type HighLandRoomState } from './roomState
 import type { RoomTransport } from './roomTransport';
 import type { HighLandGameEvent } from '../events/gameEvents';
 
+const inFlightStarts = new Set<string>();
 const inFlightRolls = new Set<string>();
 
 export async function startRoomWithTransport(
@@ -14,15 +15,25 @@ export async function startRoomWithTransport(
     throw new Error('Only the room host can start once at least 2 players have joined.');
   }
 
-  const result = startRoomGameplay(room);
-  const updatedRoom = await transport.updateGameState(room.code, result.room.gameState!, requestingPlayerId);
-  await appendEventsBestEffort(room.code, result.events, transport, requestingPlayerId);
+  const startKey = `${room.code}:${requestingPlayerId}`;
+  if (inFlightStarts.has(startKey)) {
+    throw new Error('A room start is already in progress for this host.');
+  }
 
-  return {
-    ...updatedRoom,
-    status: result.room.status,
-    gameState: result.room.gameState
-  };
+  inFlightStarts.add(startKey);
+  try {
+    const result = startRoomGameplay(room);
+    const updatedRoom = await transport.updateGameState(room.code, result.room.gameState!, requestingPlayerId);
+    await appendEventsBestEffort(room.code, result.events, transport, requestingPlayerId);
+
+    return {
+      ...updatedRoom,
+      status: result.room.status,
+      gameState: result.room.gameState
+    };
+  } finally {
+    inFlightStarts.delete(startKey);
+  }
 }
 
 export async function rollRoomWithTransport(
