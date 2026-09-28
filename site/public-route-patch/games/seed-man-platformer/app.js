@@ -177,7 +177,14 @@ function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
   }
 
   if (level.finish && player.x + player.width >= level.finish.x) {
-    if (level.boss && !level.boss.defeated) {
+    const missingPickups = Math.max(0, requiredPickups - player.collected.length);
+    if (missingPickups > 0) {
+      player.finished = false;
+      player.finishBlocked = true;
+      player.missingPickups = missingPickups;
+      player.x = Math.min(player.x, level.finish.x - player.width - 6);
+      player.vx = Math.min(0, player.vx);
+    } else if (level.boss && !level.boss.defeated) {
       player.finished = false;
       player.finishBlocked = true;
       player.x = Math.min(player.x, level.finish.x - player.width - 6);
