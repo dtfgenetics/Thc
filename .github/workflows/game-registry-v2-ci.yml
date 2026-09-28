@@ -46,3 +46,4 @@ jobs:
           node scripts/generate-game-registry-docs.mjs --check
           node scripts/test-dtf-game-development-skill.mjs
           node scripts/test-game-registry-preflight.mjs
+          node scripts/test-game-registry-guidance.mjs
