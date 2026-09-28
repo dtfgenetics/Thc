@@ -1,5 +1,10 @@
 import process from 'node:process';
 import crypto from 'node:crypto';
+import dns from 'node:dns';
+import http from 'node:http';
+import https from 'node:https';
+
+dns.setDefaultResultOrder('ipv4first');
 
 const siteUrl=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const username=process.env.WP_API_USERNAME||'';
@@ -12,13 +17,42 @@ if(!username||!password)throw new Error('WP_API_USERNAME and WP_API_PASSWORD are
 const auth=`Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
+function requestIpv4(url,{method='GET',headers={},body,timeoutMs=45000,redirects=0}={}){
+  return new Promise((resolve,reject)=>{
+    const target=new URL(url);
+    const transport=target.protocol==='https:'?https:http;
+    const req=transport.request(target,{method,family:4,headers},response=>{
+      const status=response.statusCode||0;
+      const location=response.headers.location;
+      if([301,302,303,307,308].includes(status)&&location&&redirects<5){
+        response.resume();
+        const redirectMethod=[301,302,303].includes(status)&&method!=='GET'?'GET':method;
+        const redirectBody=redirectMethod==='GET'?undefined:body;
+        resolve(requestIpv4(new URL(location,target).toString(),{method:redirectMethod,headers,body:redirectBody,timeoutMs,redirects:redirects+1}));
+        return;
+      }
+      const chunks=[];
+      response.on('data',chunk=>chunks.push(Buffer.from(chunk)));
+      response.on('end',()=>{
+        const text=Buffer.concat(chunks).toString('utf8');
+        resolve({ok:status>=200&&status<300,status,text});
+      });
+    });
+    req.setTimeout(timeoutMs,()=>req.destroy(new Error(`request timed out after ${timeoutMs}ms`)));
+    req.on('error',reject);
+    if(body!==undefined)req.write(body);
+    req.end();
+  });
+}
+
 async function request(path,{method='GET',json,allow=[],retryServer=true,headers={}}={}){
   let last;
   const attempts=retryServer?8:1;
   for(let attempt=1;attempt<=attempts;attempt++){
     try{
-      const response=await fetch(`${siteUrl}${path}`,{method,headers:{Authorization:auth,Accept:'application/json','Cache-Control':'no-cache, no-store, max-age=0',Pragma:'no-cache','User-Agent':'DTFSeeds-Stale-Suite-Bridge-Cleanup/2.0',...(json!==undefined?{'Content-Type':'application/json'}:{}),...headers},body:json!==undefined?JSON.stringify(json):undefined,redirect:'follow',signal:AbortSignal.timeout(45000)});
-      const text=await response.text();let body=text;try{body=text?JSON.parse(text):null}catch{}
+      const requestHeaders={Authorization:auth,Accept:'application/json','Cache-Control':'no-cache, no-store, max-age=0',Pragma:'no-cache','User-Agent':'DTFSeeds-Stale-Suite-Bridge-Cleanup/2.1',...(json!==undefined?{'Content-Type':'application/json'}:{}),...headers};
+      const response=await requestIpv4(`${siteUrl}${path}`,{method,headers:requestHeaders,body:json!==undefined?JSON.stringify(json):undefined,timeoutMs:45000});
+      const text=response.text;let body=text;try{body=text?JSON.parse(text):null}catch{}
       if(retryServer&&!allow.includes(response.status)&&(response.status>=500||response.status===429)&&attempt<attempts){
         const delay=Math.min(15000,2000*attempt+Math.floor(Math.random()*750));
         console.warn(`Cleanup request ${method} ${path} returned HTTP ${response.status}; retrying ${attempt}/${attempts} after ${delay}ms.`);
