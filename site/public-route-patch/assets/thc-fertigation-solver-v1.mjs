@@ -1,4 +1,4 @@
-const NUTRIENTS=Object.freeze(['N','P','K','Ca','Mg','S']);
+const NUTRIENTS=Object.freeze(['N','P','K','Ca','Mg','S','Fe','Mn','Zn','Cu','B','Mo']);
 
 const finite=(v,label)=>{const n=Number(v);if(!Number.isFinite(n))throw new RangeError(label+' must be finite');return n};
 const nonnegative=(v,label)=>{const n=finite(v,label);if(n<0)throw new RangeError(label+' must be non-negative');return n};
@@ -15,6 +15,12 @@ export function normalizedAnalysis(product={}){
     Ca:pct(product.Ca??0,'Ca'),
     Mg:pct(product.Mg??0,'Mg'),
     S:pct(product.S??0,'S'),
+    Fe:pct(product.Fe??0,'Fe'),
+    Mn:pct(product.Mn??0,'Mn'),
+    Zn:pct(product.Zn??0,'Zn'),
+    Cu:pct(product.Cu??0,'Cu'),
+    B:pct(product.B??0,'B'),
+    Mo:pct(product.Mo??0,'Mo'),
   };
 }
 
