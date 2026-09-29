@@ -38,9 +38,9 @@ The current controlled catalog contains **23 public-route games**. A public rout
 
 - **Ganjumanji: The Lost Grower's Temple** — `release-candidate` — Package candidate 257c5a60c8ec0e7f6a87170f232c37e047458b22 through DTFSeeds and verify /games/ganjumanji/.
 - **Kush Kings Chess** — `playable-local` — Pass production runtime, live health, two-browser play, spectator/chat, reconnect, and mobile verification.
-- **Quack & Bake: Stoner Duck Race** — `prototype` — Complete Dtf420 race/runtime verification and establish an explicit production-owner mapping before public promotion.
+- **Quack & Bake: Stoner Duck Race** — `playable-local` — Complete multiplayer/browser presentation QA, lock production ownership/public route, then package through the DTFSeeds release pipeline.
 - **Root Cause** — `vertical-slice` — Reconcile public-hub intent, run full route QA, and promote only after exact live verification.
-- **Seed Man: Seed Ascent** — `prototype` — Keep Seed Ascent distinct from Seed Man, complete Dtf420 runtime verification, then establish final production ownership.
+- **Seed Man: Seed Ascent** — `playable-local` — Complete browser/game-feel QA and establish explicit production ownership/cutover before public promotion.
 - **THC RPG — The First Seed** — `release-candidate` — Package candidate de6c26d9073d9154bbcade43b64768cf6a7ba2a0 through DTFSeeds and verify /games/thc-rpg/.
 - **THC U Know** — `playable-local` — Pass production runtime, persistent-origin, reconnect/private-hand, and multi-browser/mobile verification.
 
