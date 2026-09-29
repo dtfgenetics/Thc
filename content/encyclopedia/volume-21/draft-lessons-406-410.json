@@ -55,8 +55,9 @@
         "V21-SRC-033"
       ],
       "knowledgeCheck": [
-        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
-        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+        "For \"Environmental Data Logging\", explain the mechanism behind this objective: Collect environmental time-series data with controlled sensor identity, placement, timing, missing-data, and aggregation rules. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+        "A learner claims, \"More frequent logging automatically creates more independent information.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+        "Applied case — Build a sensor map and data dictionary. Test the complete path from sensor to database to graph to alarm, including time synchronization, missing-data flags, export, and backup. Build a verification plan using the lesson's record set (Channel and sensor ID; quantity/unit; location/height/orientation; calibration/verification; logger/controller/firmware; interval; timestamp/time zone; raw value; validity flag; missing-data reason; aggregation equation; alarm/action; maintenance/change record.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
       ],
       "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
       "publicationAuthorized": false,
@@ -69,7 +70,13 @@
         "websiteAction": "hold_from_publication"
       },
       "slug": "environmental-data-logging",
-      "route": "/encyclopedia/environmental-data-logging"
+      "route": "/encyclopedia/environmental-data-logging",
+      "assessmentDesign": {
+        "version": 2,
+        "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+        "answerRationaleStatus": "pending_independent_review",
+        "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+      }
     },
     {
       "id": "THC-ENC-407",
@@ -118,8 +125,9 @@
         "V21-SRC-033"
       ],
       "knowledgeCheck": [
-        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
-        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+        "For \"Irrigation and Fertigation Records\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+        "A learner claims, \"A programmed runtime proves every plant received the intended volume.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+        "Applied case — Use a controlled event ID linking recipe, equipment, delivered water, representative root-zone measurements, deviations, and plant response. Build a verification plan using the lesson's record set (Event ID/date/time; water-source and analysis; tank and batch; stock/product IDs and lots; amounts and units; target/measured pH/EC/temperature; zone/pressure/flow/runtime/volume; distribution checks; pre/post moisture; drainage/runoff; plant observations; deviation/correction/approver.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
       ],
       "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
       "publicationAuthorized": false,
@@ -132,7 +140,13 @@
         "websiteAction": "hold_from_publication"
       },
       "slug": "irrigation-and-fertigation-records",
-      "route": "/encyclopedia/irrigation-and-fertigation-records"
+      "route": "/encyclopedia/irrigation-and-fertigation-records",
+      "assessmentDesign": {
+        "version": 2,
+        "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+        "answerRationaleStatus": "pending_independent_review",
+        "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+      }
     },
     {
       "id": "THC-ENC-408",
@@ -180,8 +194,9 @@
         "V21-SRC-033"
       ],
       "knowledgeCheck": [
-        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
-        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+        "For \"pH, EC, and Water-Quality Records\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+        "A learner claims, \"Equal EC means equal nutrient composition.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+        "Applied case — Create separate records for field meter checks and laboratory water analysis, then link both to the source, date, treatment, irrigation event, and decision. Build a verification plan using the lesson's record set (Sample ID/source/location/time; sample type and preservation; temperature; instrument/method; standard IDs/expected/observed; pH/EC and compensation; alkalinity/hardness/ions/metals/microbes where relevant; units; detection limits; lab/method/scope; interpretation and action.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
       ],
       "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
       "publicationAuthorized": false,
@@ -194,7 +209,13 @@
         "websiteAction": "hold_from_publication"
       },
       "slug": "ph-ec-and-water-quality-records",
-      "route": "/encyclopedia/ph-ec-and-water-quality-records"
+      "route": "/encyclopedia/ph-ec-and-water-quality-records",
+      "assessmentDesign": {
+        "version": 2,
+        "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+        "answerRationaleStatus": "pending_independent_review",
+        "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+      }
     },
     {
       "id": "THC-ENC-409",
@@ -241,8 +262,9 @@
         "V21-SRC-034"
       ],
       "knowledgeCheck": [
-        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
-        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+        "For \"Morphology and Growth Measurements\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+        "A learner claims, \"Tall, bushy, frosty, and dense are complete phenotype measurements.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+        "Applied case — Publish a controlled phenotype dictionary before collecting trial data. Train observers using examples and counterexamples, then retain raw measurements and images. Build a verification plan using the lesson's record set (Plant/genetic/treatment IDs; stage/date/time; trait name and definition; anatomy and reference points; position; instrument; units; observer; repeated measurement; image ID/scale/lighting; fresh/dry/trim basis; missing/damaged rule.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
       ],
       "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
       "publicationAuthorized": false,
@@ -255,7 +277,13 @@
         "websiteAction": "hold_from_publication"
       },
       "slug": "morphology-and-growth-measurements",
-      "route": "/encyclopedia/morphology-and-growth-measurements"
+      "route": "/encyclopedia/morphology-and-growth-measurements",
+      "assessmentDesign": {
+        "version": 2,
+        "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+        "answerRationaleStatus": "pending_independent_review",
+        "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+      }
     },
     {
       "id": "THC-ENC-410",
@@ -303,8 +331,9 @@
         "V21-SRC-033"
       ],
       "knowledgeCheck": [
-        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
-        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+        "For \"Scouting and Plant-Health Records\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+        "A learner claims, \"One symptomatic leaf establishes the diagnosis.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+        "Applied case — Use fixed scouting routes plus targeted risk zones. Trend plant, trap, and symptom data over time and link actions to lawful label and quarantine records. Build a verification plan using the lesson's record set (Field/room/zone; route and sampled units; date/time/observer/weather; plant IDs and stage; organ/position; incidence denominator; severity scale; symptom/sign; organism and confidence; photo/specimen/test IDs; environmental/treatment context; threshold/action; outcome.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
       ],
       "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
       "publicationAuthorized": false,
@@ -317,7 +346,13 @@
         "websiteAction": "hold_from_publication"
       },
       "slug": "scouting-and-plant-health-records",
-      "route": "/encyclopedia/scouting-and-plant-health-records"
+      "route": "/encyclopedia/scouting-and-plant-health-records",
+      "assessmentDesign": {
+        "version": 2,
+        "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+        "answerRationaleStatus": "pending_independent_review",
+        "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+      }
     }
   ]
 }
