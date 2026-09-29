@@ -9,6 +9,8 @@ on:
       - 'data/game-source-map.json'
       - 'data/public-navigation.json'
       - 'docs/GAME_REGISTRY_V2.md'
+      - 'docs/GAME_CANONICAL_SOURCE_MAP.md'
+      - 'docs/DTF_GAME_SCOPE_MASTER.md'
       - 'scripts/validate-game-registry-v2.mjs'
       - 'scripts/test-game-registry-v2.mjs'
       - 'scripts/generate-game-registry-docs.mjs'
@@ -24,6 +26,8 @@ on:
     paths:
       - 'data/game-registry-v2.json'
       - 'docs/GAME_REGISTRY_V2.md'
+      - 'docs/GAME_CANONICAL_SOURCE_MAP.md'
+      - 'docs/DTF_GAME_SCOPE_MASTER.md'
       - 'scripts/validate-game-registry-v2.mjs'
       - 'scripts/generate-game-registry-docs.mjs'
       - '.agents/skills/dtf-game-development/SKILL.md'
