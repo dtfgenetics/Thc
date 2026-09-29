@@ -123,10 +123,8 @@ if(canonicalRootArg){
           );
         }
       }
-      if(ownedRoot!=='assets'){
-        for(const rel of mirrorFiles){
-          ok(canonicalSet.has(rel),`non-canonical file inside Tools-owned route mirror: ${rel}`);
-        }
+      for(const rel of mirrorFiles){
+        ok(canonicalSet.has(rel),`non-canonical file inside Tools-owned mirror: ${rel}`);
       }
     }
   }
