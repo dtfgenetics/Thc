@@ -1,0 +1,93 @@
+{
+  "id": "THC-ENC-338",
+  "number": 338,
+  "title": "Isolation, Removal, and Waste Handling",
+  "objective": "Use isolation, plant or material removal, containment, transport, and waste controls to reduce biological spread while preserving identity, worker safety, and traceable records.",
+  "terms": [
+    {
+      "term": "isolation",
+      "definition": "Physical or procedural separation used to limit contact or movement between suspect or confirmed affected material and unaffected production areas."
+    },
+    {
+      "term": "hold",
+      "definition": "A controlled status that prevents movement, use, release, or disposal until a defined decision is made."
+    },
+    {
+      "term": "containment",
+      "definition": "Measures used to prevent pests, pathogens, plant material, liquids, debris, or contaminated equipment from spreading beyond a defined boundary."
+    },
+    {
+      "term": "waste stream",
+      "definition": "A defined route for collecting, identifying, handling, storing, transporting, and disposing of discarded materials."
+    },
+    {
+      "term": "chain of identity",
+      "definition": "Records that preserve which plant, batch, room, or lot generated the removed or discarded material."
+    }
+  ],
+  "termDefinitionsStatus": "controlled_glossary_reconciled_draft",
+  "coreScience": [
+    "Isolation reduces opportunities for contact and transfer but does not prove that unaffected material is pathogen- or pest-free.",
+    "Removal can lower pest abundance or inoculum, yet movement of affected plants or debris can spread arthropods, spores, sap, soil, water, or contaminated tools if handling is poorly controlled.",
+    "Containment planning should account for the target's likely transmission route, including direct contact, sap, tools, vectors, airborne particles, water, media, and personnel movement.",
+    "Waste handling is part of biosecurity. Containers, routes, staging areas, cleanup, and final disposition should be defined so discarded material is not carried through clean zones without control.",
+    "Regulated cannabis waste requirements vary by jurisdiction, so biological-risk handling and legal waste requirements must both be satisfied."
+  ],
+  "cultivationRelevance": [
+    "Define suspect, confirmed, cleared, and waste status visibly enough that workers do not accidentally move held material.",
+    "Use the shortest practical controlled route for removing affected material and clean or disinfect reusable tools and surfaces according to validated procedures.",
+    "Preserve plant and batch identity through removal so incident review can reconstruct where the material came from and what other material may have been exposed.",
+    "Do not assume disposal alone closes an incident; follow-up scouting, testing, sanitation verification, and source investigation may still be needed."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Material identity",
+      "requirement": "Record plant/batch/lot, room or zone, quantity, condition, and reason for isolation or removal."
+    },
+    {
+      "field": "Containment",
+      "requirement": "Record bag/container type, route, staging area, tools, personnel, and sanitation controls used during movement."
+    },
+    {
+      "field": "Disposition",
+      "requirement": "Record final waste or quarantine destination and any jurisdiction-required handling or destruction record."
+    },
+    {
+      "field": "Exposure review",
+      "requirement": "Record adjacent material, shared tools, personnel movement, water, carts, or other plausible pathways that require follow-up."
+    },
+    {
+      "field": "Verification",
+      "requirement": "Record follow-up scouting, testing, sanitation verification, or other evidence used to close or extend the hold."
+    }
+  ],
+  "misconceptions": [
+    "Removing one symptomatic plant proves the incident is over.",
+    "A sealed bag eliminates every contamination risk.",
+    "Waste rules are identical in every jurisdiction.",
+    "Material can be moved through clean areas safely as long as it will be discarded later.",
+    "Isolation is the same as confirmation of diagnosis."
+  ],
+  "evidenceLimits": [
+    "The correct isolation radius, hold duration, testing plan, and waste method depend on the suspected hazard, transmission route, crop system, jurisdiction, and facility controls; no single quarantine or disposal procedure fits every Cannabis incident."
+  ],
+  "crossLinks": "THC-ENC-322–327 for zoning and sanitation; THC-ENC-332 for diagnostic escalation; THC-ENC-339 for CAPA; THC-ENC-340 for program audit.",
+  "sourceNotes": [
+    "University of Missouri Extension. Using Integrated Pest Management in Greenhouses and Herbaceous Nurseries. https://extension.missouri.edu/publications/ipm1026",
+    "THC-ENC-310, THC-ENC-316, and THC-ENC-317 for viroid/pathogen transmission and facility reservoirs."
+  ],
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "Master Content Map v1.1 controlled title plus newly authored canonical draft",
+    "evidenceControl": "existing_volume16_pathogen_transmission_plus_greenhouse_IPM_sources_seeded",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending_not_recorded",
+    "externalReviewType": "biosecurity_isolation_and_waste",
+    "releaseTimeReview": "not_started",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_for_review"
+  },
+  "slug": "isolation-removal-and-waste-handling",
+  "route": "/encyclopedia/isolation-removal-and-waste-handling"
+}

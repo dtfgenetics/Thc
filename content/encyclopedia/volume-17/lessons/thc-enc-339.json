@@ -1,0 +1,93 @@
+{
+  "id": "THC-ENC-339",
+  "number": 339,
+  "title": "Corrective and Preventive Action",
+  "objective": "Use a documented corrective-and-preventive-action process to contain plant-health problems, identify contributing causes, implement proportionate changes, and verify that recurrence risk is actually reduced.",
+  "terms": [
+    {
+      "term": "correction",
+      "definition": "Immediate action taken to address an observed problem or nonconformity."
+    },
+    {
+      "term": "corrective action",
+      "definition": "Action intended to eliminate or reduce the cause of an identified problem so it is less likely to recur."
+    },
+    {
+      "term": "preventive action",
+      "definition": "Action intended to reduce the likelihood of a potential problem before it occurs or spreads."
+    },
+    {
+      "term": "root-cause analysis",
+      "definition": "Structured investigation of contributing causes rather than stopping at the most visible symptom."
+    },
+    {
+      "term": "effectiveness check",
+      "definition": "Predefined follow-up evidence used to determine whether an action achieved its intended result."
+    }
+  ],
+  "termDefinitionsStatus": "controlled_glossary_reconciled_draft",
+  "coreScience": [
+    "A correction fixes the immediate condition; a corrective action addresses why it happened. Removing an infested plant, for example, does not by itself address the intake, scouting, sanitation, environmental, or movement failure that allowed the problem to establish.",
+    "Root-cause analysis should distinguish verified causes from hypotheses and consider interacting contributors such as stock quality, facility design, training, environmental conditions, equipment, procedures, records, and timing.",
+    "Actions should be proportionate to risk and should specify ownership, due dates, required evidence, and how effectiveness will be judged.",
+    "Effectiveness checks need objective evidence such as reduced recurrence, improved scouting metrics, resolved sanitation failures, restored environmental control, completed training, or successful verification testing.",
+    "CAPA becomes useful only when lessons are fed back into SOPs, training, maintenance, purchasing, quarantine, scouting, or design controls rather than archived as paperwork."
+  ],
+  "cultivationRelevance": [
+    "Open CAPA for recurring, systemic, severe, high-risk, or audit-significant failures rather than for every trivial observation.",
+    "Separate immediate containment from long-term corrective action so urgent control does not substitute for causal investigation.",
+    "Assign actions to named owners with deadlines and measurable closure criteria.",
+    "Review similar rooms, crops, tools, or workflows for the same failure mode before assuming the problem is isolated."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Problem statement",
+      "requirement": "Record what happened, where, when, affected material, evidence, and the operational or plant-health consequence."
+    },
+    {
+      "field": "Containment/correction",
+      "requirement": "Record immediate steps taken to control exposure or restore the process."
+    },
+    {
+      "field": "Cause analysis",
+      "requirement": "Record verified contributing causes, unresolved hypotheses, and supporting evidence."
+    },
+    {
+      "field": "Actions",
+      "requirement": "Record corrective/preventive action, owner, due date, implementation evidence, and any SOP/training/equipment changes."
+    },
+    {
+      "field": "Effectiveness",
+      "requirement": "Define and record the follow-up metric, review date, result, and closure or escalation decision."
+    }
+  ],
+  "misconceptions": [
+    "CAPA means writing down what happened after the fact.",
+    "The first plausible cause is the root cause.",
+    "Removing affected plants closes the corrective action.",
+    "More training is always an adequate corrective action.",
+    "A CAPA is complete when the task is marked done rather than when effectiveness is verified."
+  ],
+  "evidenceLimits": [
+    "CAPA is a quality-system method rather than a Cannabis-specific biological law. The depth of investigation and documentation should scale with risk, recurrence, regulatory requirements, and the complexity of the production system."
+  ],
+  "crossLinks": "THC-ENC-332–333 for diagnostic and decision records; THC-ENC-338 for containment/removal; THC-ENC-340 for program audit and continuous improvement; THC-ENC-401–420 future measurement/quality-system layer.",
+  "sourceNotes": [
+    "THC production standard and controlled IPM architecture for documented corrective/preventive action and verification.",
+    "General quality-management CAPA principles applied here to cultivation plant-health operations; specialist review required before public release."
+  ],
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "Master Content Map v1.1 controlled title plus newly authored canonical draft",
+    "evidenceControl": "quality_system_principles_seeded_cannabis_specific_review_required",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending_not_recorded",
+    "externalReviewType": "quality_system_CAPA_in_cultivation",
+    "releaseTimeReview": "not_started",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_for_review"
+  },
+  "slug": "corrective-and-preventive-action",
+  "route": "/encyclopedia/corrective-and-preventive-action"
+}

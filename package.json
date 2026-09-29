@@ -84,6 +84,8 @@
     "games:skill:check": "node scripts/test-dtf-game-development-skill.mjs",
     "games:registry:preflight-check": "node scripts/test-game-registry-preflight.mjs",
     "games:registry:guidance-check": "node scripts/test-game-registry-guidance.mjs",
-    "verify:repository-architecture": "node scripts/validate-repository-registry.mjs"
+    "verify:repository-architecture": "node scripts/validate-repository-registry.mjs",
+    "verify:education-structure": "node scripts/validate-encyclopedia-structure.mjs",
+    "verify:education-420": "node scripts/validate-encyclopedia-structure.mjs --strict-420"
   }
 }

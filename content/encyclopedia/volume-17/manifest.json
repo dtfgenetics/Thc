@@ -1,43 +1,114 @@
 {
-  "schemaVersion":"1.0.0",
-  "volumeId":"THC-ENC-V17",
-  "number":17,
-  "title":"Integrated Pest Management, Biosecurity, and Sanitation",
-  "route":"/encyclopedia/volume-17-integrated-pest-management-biosecurity-and-sanitation",
-  "version":"source-controlled",
-  "status":"active-controlled-production",
-  "sourceControl":{
-    "sourceTitle":"THC Cannabis Encyclopedia — Master 420-Entry Content Map v1.1 — Part 17",
-    "controlledCatalogueVersion":"Master Content Map v1.1",
-    "sourceState":"controlled_catalogue_batch03_evidence_reconciled_for_web_publication",
-    "rule":"Preserve permanent THC-ENC IDs and controlled titles; keep prevention, monitoring, identification, thresholds, biosecurity controls, cultural, mechanical/physical, biological, regulated-product use, and verification as distinct evidence/decision layers; do not convert generic greenhouse guidance into unsupported Cannabis-specific efficacy claims."
+  "schemaVersion": "1.0.0",
+  "volumeId": "THC-ENC-V17",
+  "number": 17,
+  "title": "Integrated Pest Management, Biosecurity, and Sanitation",
+  "route": "/encyclopedia/volume-17-integrated-pest-management-biosecurity-and-sanitation",
+  "version": "source-controlled",
+  "status": "active-controlled-production",
+  "sourceControl": {
+    "sourceTitle": "THC Cannabis Encyclopedia — Master 420-Entry Content Map v1.1 — Part 17",
+    "controlledCatalogueVersion": "Master Content Map v1.1",
+    "sourceState": "controlled_catalogue_full20_source_complete_final5_review_pending",
+    "rule": "Preserve permanent THC-ENC IDs and controlled titles; keep prevention, monitoring, identification, thresholds, biosecurity controls, cultural, mechanical/physical, biological, regulated-product use, and verification as distinct evidence/decision layers; do not convert generic greenhouse guidance into unsupported Cannabis-specific efficacy claims."
   },
-  "audience":["home growers","professional cultivators","students","educators","IPM practitioners","plant-health managers","plant-science readers"],
-  "educationalBoundary":"Plant-health IPM, biosecurity, sanitation, monitoring, diagnosis, thresholds, and lawful control education only. Pesticide, disinfectant, biopesticide, and other regulated-product use remains governed by current labels, registrations, worker-safety requirements, residue rules, equipment compatibility, and jurisdictional law. No universal Cannabis threshold, quarantine duration, disinfectant recipe, facility layout, irrigation treatment, pest-screen specification, environmental setpoint, or diagnostic certainty is implied where evidence does not support one.",
-  "controlledLessonRange":{"start":321,"end":340},
-  "controlledTitles":[
-    {"id":"THC-ENC-321","title":"IPM Principles and the Prevention Hierarchy"},
-    {"id":"THC-ENC-322","title":"Facility Zoning and Clean-to-Dirty Workflow"},
-    {"id":"THC-ENC-323","title":"Plant Intake and Quarantine"},
-    {"id":"THC-ENC-324","title":"Personnel Entry and Clothing Controls"},
-    {"id":"THC-ENC-325","title":"Tool, Bench, and Container Sanitation"},
-    {"id":"THC-ENC-326","title":"Cleaning Versus Disinfection"},
-    {"id":"THC-ENC-327","title":"Disinfectant Contact Time and Surface Preparation"},
-    {"id":"THC-ENC-328","title":"Water-System and Irrigation-Line Hygiene"},
-    {"id":"THC-ENC-329","title":"Pest Exclusion and Structural Sealing"},
-    {"id":"THC-ENC-330","title":"Environmental Management for Disease Prevention"},
-    {"id":"THC-ENC-331","title":"Scouting Routes and Representative Sampling"},
-    {"id":"THC-ENC-332","title":"Pest and Disease Identification Escalation"},
-    {"id":"THC-ENC-333","title":"Thresholds, Tolerances, and Decision Records"},
-    {"id":"THC-ENC-334","title":"Cultural Controls"},
-    {"id":"THC-ENC-335","title":"Mechanical and Physical Controls"},
-    {"id":"THC-ENC-336","title":"Biological Controls"},
-    {"id":"THC-ENC-337","title":"Pesticide Law, Label Compliance, and Resistance Management"},
-    {"id":"THC-ENC-338","title":"Isolation, Removal, and Waste Handling"},
-    {"id":"THC-ENC-339","title":"Corrective and Preventive Action"},
-    {"id":"THC-ENC-340","title":"IPM Program Audit and Continuous Improvement"}
+  "audience": [
+    "home growers",
+    "professional cultivators",
+    "students",
+    "educators",
+    "IPM practitioners",
+    "plant-health managers",
+    "plant-science readers"
   ],
-  "lessonPaths":[
+  "educationalBoundary": "Plant-health IPM, biosecurity, sanitation, monitoring, diagnosis, thresholds, and lawful control education only. Pesticide, disinfectant, biopesticide, and other regulated-product use remains governed by current labels, registrations, worker-safety requirements, residue rules, equipment compatibility, and jurisdictional law. No universal Cannabis threshold, quarantine duration, disinfectant recipe, facility layout, irrigation treatment, pest-screen specification, environmental setpoint, or diagnostic certainty is implied where evidence does not support one.",
+  "controlledLessonRange": {
+    "start": 321,
+    "end": 340
+  },
+  "controlledTitles": [
+    {
+      "id": "THC-ENC-321",
+      "title": "IPM Principles and the Prevention Hierarchy"
+    },
+    {
+      "id": "THC-ENC-322",
+      "title": "Facility Zoning and Clean-to-Dirty Workflow"
+    },
+    {
+      "id": "THC-ENC-323",
+      "title": "Plant Intake and Quarantine"
+    },
+    {
+      "id": "THC-ENC-324",
+      "title": "Personnel Entry and Clothing Controls"
+    },
+    {
+      "id": "THC-ENC-325",
+      "title": "Tool, Bench, and Container Sanitation"
+    },
+    {
+      "id": "THC-ENC-326",
+      "title": "Cleaning Versus Disinfection"
+    },
+    {
+      "id": "THC-ENC-327",
+      "title": "Disinfectant Contact Time and Surface Preparation"
+    },
+    {
+      "id": "THC-ENC-328",
+      "title": "Water-System and Irrigation-Line Hygiene"
+    },
+    {
+      "id": "THC-ENC-329",
+      "title": "Pest Exclusion and Structural Sealing"
+    },
+    {
+      "id": "THC-ENC-330",
+      "title": "Environmental Management for Disease Prevention"
+    },
+    {
+      "id": "THC-ENC-331",
+      "title": "Scouting Routes and Representative Sampling"
+    },
+    {
+      "id": "THC-ENC-332",
+      "title": "Pest and Disease Identification Escalation"
+    },
+    {
+      "id": "THC-ENC-333",
+      "title": "Thresholds, Tolerances, and Decision Records"
+    },
+    {
+      "id": "THC-ENC-334",
+      "title": "Cultural Controls"
+    },
+    {
+      "id": "THC-ENC-335",
+      "title": "Mechanical and Physical Controls"
+    },
+    {
+      "id": "THC-ENC-336",
+      "title": "Biological Controls"
+    },
+    {
+      "id": "THC-ENC-337",
+      "title": "Pesticide Law, Label Compliance, and Resistance Management"
+    },
+    {
+      "id": "THC-ENC-338",
+      "title": "Isolation, Removal, and Waste Handling"
+    },
+    {
+      "id": "THC-ENC-339",
+      "title": "Corrective and Preventive Action"
+    },
+    {
+      "id": "THC-ENC-340",
+      "title": "IPM Program Audit and Continuous Improvement"
+    }
+  ],
+  "lessonPaths": [
     "lessons/thc-enc-321.json",
     "lessons/thc-enc-322.json",
     "lessons/thc-enc-323.json",
@@ -52,6 +123,23 @@
     "lessons/thc-enc-332.json",
     "lessons/thc-enc-333.json",
     "lessons/thc-enc-334.json",
-    "lessons/thc-enc-335.json"
-  ]
+    "lessons/thc-enc-335.json",
+    "lessons/thc-enc-336.json",
+    "lessons/thc-enc-337.json",
+    "lessons/thc-enc-338.json",
+    "lessons/thc-enc-339.json",
+    "lessons/thc-enc-340.json"
+  ],
+  "completion": {
+    "canonicalLessonObjects": 20,
+    "publicationAuthorizedLessons": 15,
+    "reviewHeldLessons": [
+      "THC-ENC-336",
+      "THC-ENC-337",
+      "THC-ENC-338",
+      "THC-ENC-339",
+      "THC-ENC-340"
+    ],
+    "note": "All 20 controlled lesson objects now exist. Lessons 336-340 remain held for secondary/external review and must not be treated as public approval."
+  }
 }

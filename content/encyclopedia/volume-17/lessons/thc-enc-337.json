@@ -1,0 +1,94 @@
+{
+  "id": "THC-ENC-337",
+  "number": 337,
+  "title": "Pesticide Law, Label Compliance, and Resistance Management",
+  "objective": "Interpret pesticide labels, legal use boundaries, worker and environmental protections, and resistance-management principles without turning general IPM guidance into unauthorized product-use instructions.",
+  "terms": [
+    {
+      "term": "pesticide label",
+      "definition": "The legally enforceable directions, restrictions, precautions, and conditions approved for a registered pesticide product."
+    },
+    {
+      "term": "use site",
+      "definition": "The crop, structure, area, or situation on which a pesticide is legally permitted to be used according to its labeling and applicable law."
+    },
+    {
+      "term": "restricted-entry interval",
+      "definition": "A label-defined period after certain agricultural pesticide applications during which worker entry is restricted except under specified conditions."
+    },
+    {
+      "term": "mode of action",
+      "definition": "The biochemical or physiological process through which a pesticide affects its target organism."
+    },
+    {
+      "term": "resistance management",
+      "definition": "Practices intended to reduce selection pressure for heritable pesticide resistance, often including rotation among effective modes of action and integration with nonchemical controls."
+    }
+  ],
+  "termDefinitionsStatus": "controlled_glossary_reconciled_draft",
+  "coreScience": [
+    "In the United States, pesticide labeling is legally enforceable. A registered product must be used consistently with its labeling and applicable federal, state, tribal, and local requirements.",
+    "The label defines critical conditions such as permitted sites and crops, target pests where required, application rates, timing, equipment, personal protective equipment, restricted-entry intervals, preharvest intervals where applicable, and environmental precautions.",
+    "A product being sold legally does not mean it is automatically legal for use on Cannabis or hemp in every jurisdiction; crop and use-site eligibility must be verified from current labeling and state requirements.",
+    "Repeated reliance on the same effective mode of action can increase selection pressure for resistant pest populations. Resistance management therefore combines label-compliant rotations or mixtures where permitted with scouting, thresholds, sanitation, cultural, physical, and biological tactics.",
+    "Treatment success must be measured after application. Poor control can reflect resistance, incorrect identification, timing, coverage, environmental conditions, application error, product degradation, or other causes and should not be attributed to resistance without evidence."
+  ],
+  "cultivationRelevance": [
+    "Verify the current product label and jurisdiction before use; do not rely on an old recommendation, retailer claim, or another state's program.",
+    "Record product name, EPA registration number where applicable, lot or batch when required, applicator identity, target, site, date, rate, volume, method, PPE, reentry constraints, and outcome according to site requirements.",
+    "Use resistance-management group information when available and avoid unnecessary repeated exposure to the same mode of action.",
+    "Escalate uncertainty about legal use, worker protection, residue, or crop eligibility to the qualified responsible person or regulator rather than guessing."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Legal basis",
+      "requirement": "Record the current label and jurisdictional authorization used to confirm the crop/site and application are permitted."
+    },
+    {
+      "field": "Application record",
+      "requirement": "Record product identity, registration information where applicable, rate, volume, method, target, area, date/time, and applicator."
+    },
+    {
+      "field": "Worker/environmental controls",
+      "requirement": "Record required PPE, restricted-entry interval, ventilation or posting requirements, and relevant environmental precautions."
+    },
+    {
+      "field": "Resistance context",
+      "requirement": "Record mode-of-action group where available and recent treatments so repeated selection pressure can be evaluated."
+    },
+    {
+      "field": "Outcome",
+      "requirement": "Record post-treatment pest counts, injury, crop response, and any evidence suggesting misapplication, poor coverage, or possible resistance."
+    }
+  ],
+  "misconceptions": [
+    "If a pesticide is sold in a store, it is legal on Cannabis.",
+    "Using less than the label rate is always legal and effective.",
+    "A failed treatment proves pesticide resistance.",
+    "Rotating brand names automatically rotates modes of action.",
+    "The label is only a recommendation."
+  ],
+  "evidenceLimits": [
+    "Pesticide legality and registration change by product, crop, jurisdiction, and date. This lesson provides regulatory and resistance-management literacy, not product authorization or a treatment recommendation."
+  ],
+  "crossLinks": "THC-ENC-321 for IPM hierarchy; THC-ENC-333 for decision records; THC-ENC-336 for biological-control compatibility; THC-ENC-339 for corrective action; THC-ENC-340 for program audit.",
+  "sourceNotes": [
+    "U.S. EPA. Introduction to Pesticide Labels. https://www.epa.gov/pesticide-labels/introduction-pesticide-labels",
+    "U.S. EPA. About Pesticide Registration. https://www.epa.gov/pesticide-registration/about-pesticide-registration",
+    "U.S. EPA. Pesticide Labeling Questions & Answers. https://www.epa.gov/pesticide-labels/pesticide-labeling-questions-answers"
+  ],
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "Master Content Map v1.1 controlled title plus newly authored canonical draft",
+    "evidenceControl": "current_EPA_label_and_registration_sources_seeded_2026-09-29",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending_not_recorded",
+    "externalReviewType": "pesticide_regulatory_and_resistance_management",
+    "releaseTimeReview": "not_started",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_for_review"
+  },
+  "slug": "pesticide-law-label-compliance-and-resistance-management",
+  "route": "/encyclopedia/pesticide-law-label-compliance-and-resistance-management"
+}
