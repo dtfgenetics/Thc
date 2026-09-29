@@ -17,6 +17,7 @@ const requiredRepositories = new Set([
   'dtfgenetics/Catching-phenos',
   'dtfgenetics/Video-photo-editing-and-communications-posting-',
   'dtfgenetics/Happy-seed-story-s-',
+  'dtfgenetics/Tools',
   'dtfgenetics/all-in-one-thc-grow-',
   'dtfgenetics/thc-grow-hub',
   'dtfgenetics/Thc-learning-courses-',
@@ -83,7 +84,7 @@ for (const [index, app] of (registry.apps || []).entries()) {
   }
 
   for (const field of ['appTarget', 'apiTarget']) {
-    if (app[field] !== undefined && (typeof app[field] !== 'string' || !app[field].startsWith('https://'))) {
+    if (app[field] !== undefined && app[field] !== null && (typeof app[field] !== 'string' || !app[field].startsWith('https://'))) {
       errors.push(`${where}.${field} must use https://`);
     }
   }
