@@ -72,6 +72,10 @@ export function createDeterministicRng(seed, { state } = {}) {
     };
   }
 
+  function getState() {
+    return current >>> 0;
+  }
+
   function restore(nextSnapshot) {
     if (nextSnapshot?.algorithm !== DETERMINISTIC_RNG_ALGORITHM) {
       throw new Error(`unsupported deterministic RNG algorithm: ${nextSnapshot?.algorithm}`);
@@ -92,6 +96,7 @@ export function createDeterministicRng(seed, { state } = {}) {
     pick,
     shuffle,
     snapshot,
+    getState,
     restore,
     fork,
   };
