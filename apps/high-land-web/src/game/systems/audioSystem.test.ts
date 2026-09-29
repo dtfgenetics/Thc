@@ -19,16 +19,25 @@ class FakeHowl {
 }
 
 const howlerMute = vi.fn();
+let storedMuted: string | null = null;
+const localStorageStub = {
+  getItem: vi.fn(() => storedMuted),
+  setItem: vi.fn((_key: string, value: string) => { storedMuted = value; })
+};
 
 describe('file-backed audio system', () => {
   beforeEach(() => {
     FakeHowl.instances = [];
     FakeHowl.options = [];
     howlerMute.mockReset();
+    storedMuted = null;
+    localStorageStub.getItem.mockClear();
+    localStorageStub.setItem.mockClear();
     vi.resetModules();
     vi.stubGlobal('window', {
       Howl: FakeHowl,
-      Howler: { mute: howlerMute }
+      Howler: { mute: howlerMute },
+      localStorage: localStorageStub
     });
   });
 
@@ -89,8 +98,20 @@ describe('file-backed audio system', () => {
     expect(FakeHowl.instances).toHaveLength(count);
   });
 
+  it('restores and persists the mute preference without requiring audio startup', async () => {
+    storedMuted = 'true';
+    const audio = await import('./audioSystem');
+
+    expect(audio.isMuted()).toBe(true);
+    expect(FakeHowl.instances).toHaveLength(0);
+
+    audio.setMuted(false);
+    expect(localStorageStub.setItem).toHaveBeenCalledWith('high-land-audio-muted-v1', 'false');
+    expect(audio.isMuted()).toBe(false);
+  });
+
   it('degrades safely if the vendored Howler runtime is unavailable', async () => {
-    vi.stubGlobal('window', { Howl: undefined, Howler: undefined });
+    vi.stubGlobal('window', { Howl: undefined, Howler: undefined, localStorage: localStorageStub });
     const audio = await import('./audioSystem');
 
     expect(() => audio.playRollSound()).not.toThrow();

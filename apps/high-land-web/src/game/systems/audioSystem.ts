@@ -8,7 +8,27 @@ const audioFiles = {
   win: 'assets/high-land/audio/win.mp3'
 } as const;
 
-let muted = false;
+const AUDIO_MUTED_KEY = 'high-land-audio-muted-v1';
+
+function readMutedPreference(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    return window.localStorage?.getItem(AUDIO_MUTED_KEY) === 'true';
+  } catch {
+    return false;
+  }
+}
+
+function persistMutedPreference(value: boolean): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage?.setItem(AUDIO_MUTED_KEY, String(value));
+  } catch {
+    // Private/restricted storage modes must not break audio controls.
+  }
+}
+
+let muted = readMutedPreference();
 let backgroundMusic: HighLandHowl | null = null;
 const effects = new Map<keyof typeof audioFiles, HighLandHowl>();
 
@@ -53,6 +73,7 @@ export function startBackgroundMusic(): void {
 
 export function setMuted(value: boolean): void {
   muted = value;
+  persistMutedPreference(value);
   try { window.Howler?.mute(value); } catch {}
   if (value) {
     try { backgroundMusic?.pause(); } catch {}
