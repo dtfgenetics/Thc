@@ -1,13 +1,14 @@
 {
   "schema_version": 1,
-  "updated": "2026-09-28",
+  "updated": "2026-09-29",
   "authority": "dtfgenetics/Thc",
   "statuses": {
     "canonical": "Authoritative source for its declared product domain.",
     "standalone_canonical": "Authoritative standalone product/game pending or intentionally outside monorepo consolidation.",
     "migration": "Transitional repository. May contain unique code, but must not receive new canonical implementations for domains owned elsewhere.",
     "legacy_review": "Legacy or experimental repository requiring provenance/unique-code review before archive.",
-    "archive_candidate": "No known canonical ownership; verify unique content, then archive."
+    "archive_candidate": "No known canonical ownership; verify unique content, then archive.",
+    "archive_ready": "Verified no canonical implementation remains in the repository; safe to archive while preserving Git history."
   },
   "repositories": [
     {
@@ -201,10 +202,10 @@
     },
     {
       "repo": "dtfgenetics/all-in-one-thc-grow-",
-      "status": "archive_candidate",
+      "status": "archive_ready",
       "domain": "legacy grow-tool evidence/reference placeholder",
       "canonical_for": [],
-      "notes": "No deployable app remains. Shared evidence registry was migrated to canonical dtfgenetics/Tools and merged in Tools PR #13; archive after external-reference and non-default-branch/history checks.",
+      "notes": "No deployable app remains. Shared evidence registry was migrated to canonical dtfgenetics/Tools and merged in Tools PR #13. The only non-main branch is fully behind main with zero unique commits. Preserve history by archiving rather than deleting.",
       "superseded_by_domain_owners": [
         "dtfgenetics/Tools",
         "dtfgenetics/Thc",
@@ -223,20 +224,20 @@
     },
     {
       "repo": "dtfgenetics/thc-music-bot-for-discod",
-      "status": "archive_candidate",
+      "status": "archive_ready",
       "domain": "duplicate Discord music bot pointer",
       "canonical_for": [],
-      "notes": "README-only compatibility pointer to the canonical Discord music bot. Update old references, then archive.",
+      "notes": "README-only compatibility pointer to canonical dtfgenetics/thc-discord-bot-for-music-. No package/runtime implementation and no alternate branches remain. Preserve the pointer in Git history by archiving rather than deleting.",
       "superseded_by_domain_owners": [
         "dtfgenetics/thc-discord-bot-for-music-"
       ]
     },
     {
       "repo": "dtfgenetics/code",
-      "status": "archive_candidate",
+      "status": "archive_ready",
       "domain": "empty repository",
       "canonical_for": [],
-      "notes": "Verified repository size 0 and Git tree API reports repository empty. Safe archive candidate after checking no external automation references the repo name."
+      "notes": "Repository is empty (size 0) and has no branches/content. No product ownership is assigned. Safe to archive rather than delete."
     }
   ]
 }
