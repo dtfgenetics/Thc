@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1.0",
-  "updated": "2026-09-17",
+  "updated": "2026-09-29",
   "ownership_model": {
     "drive": "Canonical human-readable documents, approved/source assets, research, print masters, controlled evidence, and release packages.",
     "github": "Canonical code, machine-readable data, tests, build/deployment configuration, and automation.",
@@ -21,7 +21,8 @@
     "placeholder",
     "merge-candidate",
     "archive-candidate",
-    "drive-only"
+    "drive-only",
+    "archive-ready"
   ],
   "projects": [
     {
@@ -328,25 +329,25 @@
       "id": "discord-music-bot-duplicate",
       "name": "THC Music Bot for Discord duplicate",
       "type": "archive-pointer",
-      "status": "archive-candidate",
+      "status": "archive-ready",
       "repo": "dtfgenetics/thc-music-bot-for-discod",
-      "repo_role": "compatibility/archive pointer only; all production implementation belongs in dtfgenetics/thc-discord-bot-for-music-",
+      "repo_role": "archive-ready compatibility pointer only; all production implementation belongs in dtfgenetics/thc-discord-bot-for-music-",
       "drive_path": null,
       "library_path": null,
       "release_path": null,
-      "source_of_truth_doc": "repo:README.md"
+      "source_of_truth_doc": "docs/REPOSITORY_ARCHIVE_READINESS.md"
     },
     {
       "id": "all-in-one-thc-grow",
       "name": "All in One THC Grow placeholder",
       "type": "legacy-app-placeholder",
-      "status": "merge-candidate",
+      "status": "archive-ready",
       "repo": "dtfgenetics/all-in-one-thc-grow-",
-      "repo_role": "legacy placeholder with consolidation README; functionality belongs in GrowLens, THC Grow Hub, and THC Grow Doc unless a distinct product is approved",
+      "repo_role": "archive-ready legacy placeholder; no deployable app remains; shared cultivation evidence registry migrated to dtfgenetics/Tools; functionality belongs in the canonical product repositories",
       "drive_path": "07 Websites & Apps/DTFSeeds Platform/03 THC Education Site",
       "library_path": "DTF Working Projects/03 Websites & Apps/All in one grower app",
       "release_path": null,
-      "source_of_truth_doc": "docs/PROJECT_SOURCE_OF_TRUTH.md"
+      "source_of_truth_doc": "docs/REPOSITORY_ARCHIVE_READINESS.md"
     },
     {
       "id": "monetization-os",
