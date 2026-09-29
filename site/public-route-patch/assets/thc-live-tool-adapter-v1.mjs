@@ -1,4 +1,10 @@
-import {normalizeTelemetryPacket,telemetryFreshness,packetToToolFields} from './thc-live-data-core-v1.mjs';
+import {
+  normalizeTelemetryPacket,
+  telemetryFreshness,
+  packetToToolFields,
+  createRestPollingAdapter,
+  createWebSocketAdapter
+} from './thc-live-data-core-v1.mjs';
 
 export function parseLiveJsonPacket(text,options={}){
   let value;
@@ -40,41 +46,82 @@ export function mountLiveToolAdapter({
   container.innerHTML=
     '<section class="panel" data-live-tool-adapter="'+slug+'">'+
     '<h2>'+title+'</h2>'+
-    '<p class="muted">Paste one read-only telemetry JSON packet. Preview it, then apply mapped measurements to this tool. Nothing is saved automatically.</p>'+
+    '<p class="muted">Use one manual JSON packet, a read-only HTTP endpoint, or a WebSocket feed. Incoming measurements update this form only when you apply them or enable auto-apply. Nothing is saved to tool history automatically.</p>'+
     '<div class="fields">'+
     '<div class="field"><label>Source label</label><input data-live-source value="json-adapter" autocomplete="off"></div>'+
     '<div class="field"><label>Device / sensor ID</label><input data-live-device value="sensor-1" autocomplete="off"></div>'+
     '<div class="field"><label>Stale after (minutes)</label><input data-live-stale type="number" min="1" step="1" value="'+Math.max(1,Number(staleMinutes)||10)+'"></div>'+
+    '<div class="field"><label>Transport</label><select data-live-transport><option value="manual">Manual JSON</option><option value="http">HTTP polling · GET only</option><option value="ws">WebSocket</option></select></div>'+
+    '<div class="field" data-live-endpoint-wrap hidden><label>Read-only endpoint</label><input data-live-endpoint type="url" inputmode="url" autocomplete="off" placeholder="https://gateway.example/telemetry"></div>'+
+    '<div class="field" data-live-interval-wrap hidden><label>HTTP poll interval (seconds)</label><input data-live-interval type="number" min="1" step="1" value="10"></div>'+
     '</div>'+
-    '<div class="field"><label>Telemetry JSON</label><textarea data-live-json rows="6" spellcheck="false" placeholder=\'{"createdAt":"2026-09-28T19:00:00Z","temperatureC":25,"humidity":60}\'></textarea></div>'+
-    '<div class="toolbar"><button class="btn" data-live-preview type="button">Preview packet</button><button class="btn primary" data-live-apply type="button">Apply packet</button></div>'+
+    '<div class="field" data-live-json-wrap><label>Telemetry JSON</label><textarea data-live-json rows="6" spellcheck="false" placeholder=\'{"createdAt":"2026-09-28T19:00:00Z","temperatureC":25,"humidity":60}\'></textarea></div>'+
+    '<div class="field"><label><input data-live-auto-apply type="checkbox"> Auto-apply incoming live packets to the form (never auto-save history)</label></div>'+
+    '<div class="toolbar"><button class="btn" data-live-preview type="button">Preview packet</button><button class="btn primary" data-live-apply type="button">Apply latest</button><button class="btn" data-live-start type="button" disabled>Start live connection</button><button class="btn" data-live-stop type="button" disabled>Stop</button></div>'+
     '<div class="result" data-live-status aria-live="polite">No live packet previewed.</div>'+
-    '<p class="muted">No API keys, bearer tokens, passwords, connection URLs, or packets are stored here.</p>'+
+    '<p class="muted">Connection settings and packets are not stored. Do not put API keys, bearer tokens, passwords, or other secrets in endpoint URLs. HTTP mode is forced to GET and is subject to browser CORS. WebSocket mode sends no application messages.</p>'+
     '</section>';
 
   const source=container.querySelector('[data-live-source]');
   const device=container.querySelector('[data-live-device]');
   const stale=container.querySelector('[data-live-stale]');
+  const transport=container.querySelector('[data-live-transport]');
+  const endpointWrap=container.querySelector('[data-live-endpoint-wrap]');
+  const endpoint=container.querySelector('[data-live-endpoint]');
+  const intervalWrap=container.querySelector('[data-live-interval-wrap]');
+  const interval=container.querySelector('[data-live-interval]');
+  const jsonWrap=container.querySelector('[data-live-json-wrap]');
   const json=container.querySelector('[data-live-json]');
+  const autoApply=container.querySelector('[data-live-auto-apply]');
   const status=container.querySelector('[data-live-status]');
   const previewButton=container.querySelector('[data-live-preview]');
   const applyButton=container.querySelector('[data-live-apply]');
-  let packet=null;
+  const startButton=container.querySelector('[data-live-start]');
+  const stopButton=container.querySelector('[data-live-stop]');
+  let packet=null,connection=null;
+
+  const normalizeOptions=()=>({
+    sourceId:source.value.trim()||transport.value||'json-adapter',
+    deviceId:device.value.trim()||undefined,
+    zone:zoneField?.value?.trim?.()||''
+  });
+
+  const packetSummary=current=>{
+    const metrics=Object.keys(current?.metrics||{});
+    const fresh=telemetryFreshness(current,{staleAfterMs:Math.max(1,Number(stale.value)||10)*60*1000});
+    return (current?.sourceId||'source')+' · '+(current?.deviceId||'device')+' · '+fresh.state+' · '+metrics.length+' mapped metric'+(metrics.length===1?'':'s')+(current?.observedAt?' · observed '+new Date(current.observedAt).toLocaleString():' · source timestamp unavailable');
+  };
+
+  const applyCurrent=(current=packet,{announce=true}={})=>{
+    if(!current)return {};
+    const applied=applyPacketFields(current,tool,id=>container.ownerDocument?.getElementById(id));
+    if(current.zone&&zoneField)zoneField.value=current.zone;
+    onApplied({packet:current,applied});
+    const count=Object.keys(applied).length;
+    if(announce)status.textContent='Applied '+count+' mapped field'+(count===1?'':'s')+' from '+current.deviceId+'. Review values and use this tool’s normal save action if you want a permanent record.';
+    return applied;
+  };
+
+  const receivePacket=current=>{
+    packet=current;
+    if(autoApply.checked){
+      const applied=applyCurrent(current,{announce:false});
+      status.textContent=packetSummary(current)+' · auto-applied '+Object.keys(applied).length+' field'+(Object.keys(applied).length===1?'':'s')+' · not saved';
+    }else{
+      status.textContent=packetSummary(current)+' · latest packet ready to apply';
+    }
+  };
 
   const preview=()=>{
     try{
       const raw=JSON.parse(String(json.value||''));
       if(!raw||Array.isArray(raw)||typeof raw!=='object')throw new Error('Telemetry JSON must contain one object packet.');
-      const zone=zoneField?.value?.trim?.()||raw.zone||raw.room||'';
       packet=normalizeTelemetryPacket(raw,{
-        sourceId:source.value.trim()||'json-adapter',
-        deviceId:device.value.trim()||undefined,
-        zone
+        ...normalizeOptions(),
+        zone:zoneField?.value?.trim?.()||raw.zone||raw.room||''
       });
-      const metrics=Object.keys(packet.metrics);
-      if(!metrics.length)throw new Error('No recognized numeric telemetry metrics were found.');
-      const fresh=telemetryFreshness(packet,{staleAfterMs:Math.max(1,Number(stale.value)||10)*60*1000});
-      status.textContent=(packet.sourceId||'source')+' · '+(packet.deviceId||'device')+' · '+fresh.state+' · '+metrics.length+' mapped metric'+(metrics.length===1?'':'s')+(packet.observedAt?' · observed '+new Date(packet.observedAt).toLocaleString():' · source timestamp unavailable');
+      if(!Object.keys(packet.metrics).length)throw new Error('No recognized numeric telemetry metrics were found.');
+      status.textContent=packetSummary(packet);
       return packet;
     }catch(error){
       packet=null;
@@ -83,16 +130,92 @@ export function mountLiveToolAdapter({
     }
   };
 
-  previewButton.addEventListener('click',preview);
-  applyButton.addEventListener('click',()=>{
-    const current=packet||preview();
-    if(!current)return;
-    const applied=applyPacketFields(current,tool,id=>container.ownerDocument?.getElementById(id));
-    if(current.zone&&zoneField)zoneField.value=current.zone;
-    onApplied({packet:current,applied});
-    const count=Object.keys(applied).length;
-    status.textContent='Applied '+count+' mapped field'+(count===1?'':'s')+' from '+current.deviceId+'. Review values and use this tool’s normal save action if you want a permanent record.';
-  });
+  const stopConnection=()=>{
+    if(connection){
+      if(typeof connection.stop==='function')connection.stop();
+      if(typeof connection.close==='function')connection.close();
+    }
+    connection=null;
+    startButton.disabled=transport.value==='manual';
+    stopButton.disabled=true;
+  };
 
-  return {preview,apply:()=>applyButton.click(),getPacket:()=>packet};
+  const startConnection=()=>{
+    stopConnection();
+    const mode=transport.value;
+    if(mode==='manual'){
+      status.textContent='Manual JSON mode does not open a live connection.';
+      return null;
+    }
+    const url=endpoint.value.trim();
+    if(!url){
+      status.textContent='Enter a read-only telemetry endpoint first.';
+      return null;
+    }
+    const onError=error=>{status.textContent=error instanceof Error?error.message:'Live telemetry connection error.'};
+    try{
+      if(mode==='http'){
+        connection=createRestPollingAdapter({
+          url,
+          intervalMs:Math.max(1,Number(interval.value)||10)*1000,
+          normalizeOptions:normalizeOptions(),
+          onPacket:receivePacket,
+          onError
+        });
+        connection.start();
+        status.textContent='HTTP polling started. Waiting for a recognized telemetry packet…';
+      }else{
+        connection=createWebSocketAdapter({
+          url,
+          normalizeOptions:normalizeOptions(),
+          onPacket:receivePacket,
+          onError,
+          onState:state=>{
+            if(state?.state==='stale'||state?.state==='offline')status.textContent='WebSocket '+state.state+'. Waiting for fresh telemetry…';
+          }
+        });
+        connection.connect();
+        status.textContent='WebSocket connection started. Waiting for a recognized telemetry packet…';
+      }
+      startButton.disabled=true;
+      stopButton.disabled=false;
+      return connection;
+    }catch(error){
+      connection=null;
+      startButton.disabled=false;
+      stopButton.disabled=true;
+      status.textContent=error instanceof Error?error.message:'Could not start live telemetry connection.';
+      return null;
+    }
+  };
+
+  const refreshTransportUi=()=>{
+    stopConnection();
+    const mode=transport.value;
+    const manual=mode==='manual';
+    jsonWrap.hidden=!manual;
+    previewButton.hidden=!manual;
+    endpointWrap.hidden=manual;
+    intervalWrap.hidden=mode!=='http';
+    startButton.disabled=manual;
+    endpoint.placeholder=mode==='ws'?'wss://gateway.example/telemetry':'https://gateway.example/telemetry';
+    source.value=manual?'json-adapter':mode==='http'?'http-poll':'websocket';
+    status.textContent=manual?'Manual JSON mode ready.':'Enter a read-only '+(mode==='http'?'HTTP':'WebSocket')+' endpoint, then start the connection.';
+  };
+
+  previewButton.addEventListener('click',preview);
+  applyButton.addEventListener('click',()=>applyCurrent(packet||preview()));
+  startButton.addEventListener('click',startConnection);
+  stopButton.addEventListener('click',()=>{stopConnection();status.textContent='Live connection stopped. Latest packet remains available to apply.'});
+  transport.addEventListener('change',refreshTransportUi);
+  refreshTransportUi();
+
+  return {
+    preview,
+    apply:()=>applyCurrent(packet||preview()),
+    start:startConnection,
+    stop:stopConnection,
+    getPacket:()=>packet,
+    getConnection:()=>connection
+  };
 }
