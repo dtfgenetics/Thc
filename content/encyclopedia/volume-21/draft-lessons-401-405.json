@@ -1,0 +1,328 @@
+{
+  "schemaVersion": "1.0.0",
+  "volumeId": "THC-ENC-V21",
+  "status": "controlled-draft-complete-review-required",
+  "publicationAuthorized": false,
+  "controlledRange": {
+    "start": "THC-ENC-401",
+    "end": "THC-ENC-405"
+  },
+  "lessons": [
+    {
+      "id": "THC-ENC-401",
+      "number": 401,
+      "title": "Measurement Units and Conversion Discipline",
+      "primaryFormat": "Data / QA",
+      "requiredTeachingVisual": "SI quantity, unit, conversion, and basis record",
+      "objective": "Use quantities, units, symbols, prefixes, bases, and dimensional checks consistently so cultivation records can be interpreted and reproduced.",
+      "termsToKnow": [
+        "quantity",
+        "unit",
+        "SI",
+        "unit symbol",
+        "prefix",
+        "dimension",
+        "conversion factor",
+        "mass fraction",
+        "volume fraction",
+        "wet basis",
+        "dry basis"
+      ],
+      "coreScience": [
+        "A number without a defined quantity and unit is not a complete measurement. “500” could mean microlitres, millilitres, litres, milligrams per litre, microsiemens per centimetre, watts, micromoles per square metre per second, or an instrument count. Controlled records name the quantity first, then the value, unit, method, basis, position, and time. SI rules distinguish unit symbols from abbreviations: symbols are not pluralized, are case sensitive, and do not take periods except at the end of a sentence.",
+        "Conversions must preserve dimensions and basis. A conversion factor can change litres to millilitres, but it cannot convert electrical conductivity to dissolved-solids concentration without a model and stated factor. Percent can represent mass fraction, volume fraction, mass per volume, relative change, or percentage points; these are not interchangeable. Moisture content on a wet basis differs from moisture on a dry basis. Cannabinoid concentration in fresh material differs from a dry-mass-corrected result. Records must state numerator, denominator, sample state, and calculation.",
+        "Dimensional analysis is a practical error control. Units should cancel through a calculation, leaving the expected result. Equations should preserve unrounded input values, while reported digits should reflect measurement resolution and uncertainty. Spreadsheets need locked unit columns, validation rules, and explicit conversions rather than mixed units hidden inside formulas. A unit conversion can be mathematically correct while the conclusion remains biologically wrong if sample identity, time, or basis changed."
+      ],
+      "cultivationRelevance": [
+        "Create one approved unit dictionary for the project. Label every field, graph axis, form, sensor channel, and calculation. Reject ambiguous abbreviations and never infer a missing basis from context."
+      ],
+      "measureAndRecord": [
+        "Quantity name; value; unit and symbol; prefix; sample or system basis; wet/dry state; numerator/denominator; conversion equation and source; original value; reported value; rounding rule; reviewer."
+      ],
+      "misconceptions": [
+        "ppm is one universal concentration unit in every context.",
+        "EC can be converted to ppm without naming the instrument factor.",
+        "A percentage is self-explanatory without numerator, denominator, or basis."
+      ],
+      "evidenceLimits": [
+        "Correct units prevent one class of error but do not establish instrument accuracy, sample representativeness, or biological causation."
+      ],
+      "crossLinks": "THC-ENC-402–408; THC-ENC-411–414; all controlled forms and calculators.",
+      "sourceNotes": [
+        "V21-SRC-003",
+        "V21-SRC-004",
+        "V21-SRC-005",
+        "V21-SRC-033"
+      ],
+      "knowledgeCheck": [
+        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
+        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+        "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "measurement-units-and-conversion-discipline",
+      "route": "/encyclopedia/measurement-units-and-conversion-discipline"
+    },
+    {
+      "id": "THC-ENC-402",
+      "number": 402,
+      "title": "Accuracy, Precision, Resolution, and Uncertainty",
+      "primaryFormat": "Science lesson",
+      "requiredTeachingVisual": "Accuracy–precision–resolution–uncertainty comparison diagram",
+      "objective": "Distinguish measurement trueness, precision, repeatability, resolution, bias, variability, and uncertainty.",
+      "termsToKnow": [
+        "accuracy",
+        "trueness",
+        "precision",
+        "repeatability",
+        "reproducibility",
+        "resolution",
+        "bias",
+        "random effect",
+        "uncertainty",
+        "measurand"
+      ],
+      "coreScience": [
+        "Accuracy is a qualitative concept describing closeness between a measured value and the quantity value being measured. It is not a numerical synonym for precision. Trueness concerns systematic difference from a reference, while precision concerns agreement among repeated measurements under stated conditions. A meter can produce tightly clustered values that are consistently biased, or scattered values whose average is near a reference. Neither pattern should be described only as “accurate” without evidence.",
+        "Resolution is the smallest display or scale increment, not proof that the final digit is meaningful. A controller displaying 0.01 °C may have much larger sensor, placement, calibration, response-time, and environmental uncertainty. Repeatability describes variation under closely matched conditions; reproducibility includes changed laboratories, operators, equipment, or conditions. Biological variation, sampling variation, and measurement variation must be separated when possible because adding more instrument repeats does not increase the number of independent plants or samples.",
+        "Measurement uncertainty describes a range of values reasonably attributable to the measurand, based on defined components and a model. Components can include reference standards, calibration, resolution, repeatability, drift, temperature, sampling, preparation, and model assumptions. Uncertainty is not a confession that the result is useless; it defines how strongly the result supports a decision. Comparisons near a specification or action limit need an explicit decision rule rather than treating every displayed difference as real."
+      ],
+      "cultivationRelevance": [
+        "Characterize critical meters and methods using references, repeats, range checks, and documented uncertainty or practical tolerance. Report meaningful digits and avoid ranking plants or treatments by differences smaller than the process can resolve."
+      ],
+      "measureAndRecord": [
+        "Measurand; method; sample; reference value; repeated results; mean/spread; bias estimate; resolution; environmental conditions; uncertainty components; combined/expanded uncertainty where used; coverage statement; decision rule."
+      ],
+      "misconceptions": [
+        "More decimal places mean greater accuracy.",
+        "Three readings from one sample are three independent biological replicates.",
+        "Uncertainty means the true value is guaranteed to lie inside one reported interval."
+      ],
+      "evidenceLimits": [
+        "Uncertainty statements depend on the measurement model, available evidence, coverage method, and intended decision; they do not correct biased sampling or wrong measurand definitions."
+      ],
+      "crossLinks": "THC-ENC-401; THC-ENC-403–404; THC-ENC-412; THC-ENC-414.",
+      "sourceNotes": [
+        "V21-SRC-004",
+        "V21-SRC-005",
+        "V21-SRC-007",
+        "V21-SRC-018",
+        "V21-SRC-019"
+      ],
+      "knowledgeCheck": [
+        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
+        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+        "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "accuracy-precision-resolution-and-uncertainty",
+      "route": "/encyclopedia/accuracy-precision-resolution-and-uncertainty"
+    },
+    {
+      "id": "THC-ENC-403",
+      "number": 403,
+      "title": "Calibration, Verification, and Traceability",
+      "primaryFormat": "Data / QA",
+      "requiredTeachingVisual": "Calibration, verification, traceability, and action record",
+      "objective": "Control instruments through calibration, verification, reference standards, as-found condition, adjustments, and traceable records.",
+      "termsToKnow": [
+        "calibration",
+        "verification",
+        "adjustment",
+        "reference standard",
+        "traceability",
+        "as-found",
+        "as-left",
+        "tolerance",
+        "check standard",
+        "drift"
+      ],
+      "coreScience": [
+        "Calibration establishes a relationship between indications and reference quantity values under stated conditions. It does not automatically adjust an instrument, prove fitness for every use, or create permanent accuracy. Verification checks whether specified requirements are met. Adjustment changes instrument response. These activities must be named correctly because a routine check against a buffer or standard may be verification rather than a full calibration.",
+        "Metrological traceability belongs to a measurement result, not merely to a sticker on an instrument. It requires a documented unbroken chain of calibrations to a reference, with each link contributing uncertainty. Traceability alone does not establish that the uncertainty, range, method, or sample handling is adequate for the decision. A traceable scale can still be inappropriate for a tiny sample, and a calibrated pH meter can still be wrong in a dirty, damaged, poorly stored, or temperature-mismatched electrode.",
+        "Records should preserve as-found and as-left results. When an instrument fails verification, evaluate the affected data window rather than simply recalibrating and continuing. Consider drift direction, magnitude, prior checks, use frequency, environmental exposure, maintenance, and whether a second method or retained sample can bound impact. Reference materials need identity, lot, expiry, storage, preparation, assigned value, uncertainty, and suitability for the instrument range."
+      ],
+      "cultivationRelevance": [
+        "Create instrument-specific schedules based on risk and use, not one universal calendar. Place independent checks around critical measurements and define hold, correction, data review, and return-to-service criteria."
+      ],
+      "measureAndRecord": [
+        "Instrument ID/model/serial/firmware; measurand/range; procedure; reference ID/lot/value/uncertainty/expiry; environmental conditions; as-found results; adjustment; as-left results; tolerance; pass/fail; affected-data review; approver; next due date."
+      ],
+      "misconceptions": [
+        "A calibration sticker proves every result is traceable and fit for purpose.",
+        "Calibration and verification are the same activity.",
+        "A failed check affects only the measurement taken immediately before it."
+      ],
+      "evidenceLimits": [
+        "Calibration evidence cannot compensate for nonrepresentative samples, unsuitable methods, uncontrolled environmental effects, or undocumented data handling."
+      ],
+      "crossLinks": "THC-ENC-402; THC-ENC-406–408; THC-ENC-412–414.",
+      "sourceNotes": [
+        "V21-SRC-004",
+        "V21-SRC-006",
+        "V21-SRC-007",
+        "V21-SRC-008",
+        "V21-SRC-019"
+      ],
+      "knowledgeCheck": [
+        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
+        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+        "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "calibration-verification-and-traceability",
+      "route": "/encyclopedia/calibration-verification-and-traceability"
+    },
+    {
+      "id": "THC-ENC-404",
+      "number": 404,
+      "title": "Sampling Plans and Representative Measurements",
+      "primaryFormat": "Data / QA",
+      "requiredTeachingVisual": "Population-to-increment-to-sample decision record",
+      "objective": "Design sampling that connects the stated population and decision to representative spatial, temporal, and biological observations.",
+      "termsToKnow": [
+        "population",
+        "sampling frame",
+        "sampling unit",
+        "increment",
+        "composite",
+        "random sample",
+        "stratified sample",
+        "systematic sample",
+        "retained sample",
+        "heterogeneity"
+      ],
+      "coreScience": [
+        "A measurement describes the material actually observed or submitted. Extending it to a plant, room, irrigation zone, field, batch, or cultivar requires a sampling design. Begin by defining the target population and decision. A “room average” can refer to sensors, plants, canopy positions, or time points. A “batch sample” can refer to a few selected flowers, randomized increments, a composite, or material chosen for appearance. These designs support different inferences.",
+        "Heterogeneity should guide stratification. Useful strata include cultivar, propagation lot, room zone, canopy height, irrigation line position, soil unit, flowering stage, drying rack, container depth, and time. Random selection reduces conscious preference, while systematic routes improve repeatability but can align with hidden patterns. Composite samples estimate an average but can conceal hotspots; individual increments preserve spatial information but cost more to analyze.",
+        "Sample integrity continues after collection. Tools, containers, labeling, temperature, moisture loss, transport time, grinding, homogenization, subsampling, and chain of custody can alter results. Replicate laboratory analyses do not repair a biased field sample. A sampling plan should state how missing units, damaged samples, outliers, and deviations will be handled before results are known."
+      ],
+      "cultivationRelevance": [
+        "Write the sampling plan before inspection or testing. Include a map, selection rule, number of units, sample mass or volume, handling, retained samples, and inference limits."
+      ],
+      "measureAndRecord": [
+        "Target population and decision; sampling frame; unit/increment/composite definition; strata; randomization or route; sample count and rationale; locations/times; sample mass/volume; tools/containers; preservation; chain of custody; missing/deviation rule; retained sample; inference statement."
+      ],
+      "misconceptions": [
+        "A larger composite always detects localized contamination.",
+        "Several measurements from one plant represent several independent plants.",
+        "The laboratory is responsible for whether the submitted sample represents the batch."
+      ],
+      "evidenceLimits": [
+        "Representative sampling reduces but does not eliminate uncertainty; rare hotspots, changing populations, inaccessible units, and destructive testing can remain unresolved."
+      ],
+      "crossLinks": "THC-ENC-359; THC-ENC-393–397; THC-ENC-409–412; THC-ENC-416.",
+      "sourceNotes": [
+        "V21-SRC-008",
+        "V21-SRC-009",
+        "V21-SRC-019",
+        "V21-SRC-020",
+        "V21-SRC-026"
+      ],
+      "knowledgeCheck": [
+        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
+        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+        "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "sampling-plans-and-representative-measurements",
+      "route": "/encyclopedia/sampling-plans-and-representative-measurements"
+    },
+    {
+      "id": "THC-ENC-405",
+      "number": 405,
+      "title": "Plant, Batch, Room, and Genetic Identifiers",
+      "primaryFormat": "Science lesson",
+      "requiredTeachingVisual": "Hierarchical identity and relationship map",
+      "objective": "Build permanent identifiers that preserve biological identity, location, lineage, treatment, and batch relationships without overwriting history.",
+      "termsToKnow": [
+        "identifier",
+        "identity",
+        "location",
+        "parent-child relationship",
+        "lot",
+        "batch",
+        "accession",
+        "clone",
+        "source",
+        "alias",
+        "immutable record"
+      ],
+      "coreScience": [
+        "Identity and location are different. A plant can move rooms while remaining the same plant, and a room can hold many changing plants. Permanent identifiers should not encode mutable facts that will later become false. Use separate fields for plant ID, genetic-source ID, seed lot, clone batch, mother plant, room, bench, position, treatment, harvest batch, sample, and storage container.",
+        "Relationships create traceability. A clone should link to its mother, cutting batch, propagation event, and later plant ID. A seedling should link to seed lot and germination event. A harvest sub-batch should link to plants or field block, harvest event, drying location, samples, laboratory reports, packaging lot, holds, and disposition. Aliases and commercial names can be retained as labels but should not replace controlled genetic or accession IDs.",
+        "Identifiers must remain unique across time and systems. Reusing a plant tag after harvest can silently connect new observations to the wrong history. Barcodes and QR codes reduce transcription but do not guarantee correct attachment or database logic. Corrections should preserve the original value, reason, author, date, and superseding relationship rather than deleting the evidence."
+      ],
+      "cultivationRelevance": [
+        "Define an ID grammar, issuing authority, uniqueness check, label durability, replacement rule, and parent-child model before scaling data collection."
+      ],
+      "measureAndRecord": [
+        "Entity type; permanent ID; human-readable label; source system; creation date; parent IDs; genetic/source/lot IDs; current location; status; aliases; label replacement; correction/supersession history; responsible person."
+      ],
+      "misconceptions": [
+        "A cultivar name uniquely identifies genetics.",
+        "A room number can serve as the plant identifier.",
+        "Deleting an incorrect ID is cleaner than retaining the correction history."
+      ],
+      "evidenceLimits": [
+        "Identifiers preserve traceability only when labels, relationships, access controls, backups, and human practices remain reliable."
+      ],
+      "crossLinks": "THC-ENC-383; THC-ENC-394–400; THC-ENC-404; THC-ENC-411–413.",
+      "sourceNotes": [
+        "V21-SRC-010",
+        "V21-SRC-011",
+        "V21-SRC-013",
+        "V21-SRC-016",
+        "V21-SRC-033"
+      ],
+      "knowledgeCheck": [
+        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
+        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+        "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "plant-batch-room-and-genetic-identifiers",
+      "route": "/encyclopedia/plant-batch-room-and-genetic-identifiers"
+    }
+  ]
+}

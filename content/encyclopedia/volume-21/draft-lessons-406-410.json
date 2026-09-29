@@ -1,0 +1,323 @@
+{
+  "schemaVersion": "1.0.0",
+  "volumeId": "THC-ENC-V21",
+  "status": "controlled-draft-complete-review-required",
+  "publicationAuthorized": false,
+  "controlledRange": {
+    "start": "THC-ENC-406",
+    "end": "THC-ENC-410"
+  },
+  "lessons": [
+    {
+      "id": "THC-ENC-406",
+      "number": 406,
+      "title": "Environmental Data Logging",
+      "primaryFormat": "Science lesson",
+      "requiredTeachingVisual": "Sensor–location–time–aggregation data pipeline",
+      "objective": "Collect environmental time-series data with controlled sensor identity, placement, timing, missing-data, and aggregation rules.",
+      "termsToKnow": [
+        "time series",
+        "timestamp",
+        "time zone",
+        "sampling interval",
+        "logging interval",
+        "sensor placement",
+        "aggregation",
+        "missing data",
+        "drift",
+        "synchronization"
+      ],
+      "coreScience": [
+        "Environmental data are inseparable from place and time. Temperature, humidity, carbon dioxide, light, soil moisture, pressure, airflow, and leaf wetness can vary across centimetres and seconds. A data channel therefore needs sensor ID, measured quantity, unit, location, height, orientation, shielding, surrounding crop condition, logging interval, controller relationship, and clock basis.",
+        "Timestamps should use a documented time zone and daylight-saving rule or coordinated universal time. Clock drift, power loss, duplicate timestamps, firmware changes, and controller resets can break alignment among sensors, irrigation, lighting, weather, and crop events. Preserve raw data and flag missing, substituted, clipped, or invalid values. Do not silently interpolate a long outage or replace an extreme value because it appears inconvenient.",
+        "Aggregation changes meaning. A daily average can hide a damaging thirty-minute heat spike, condensation event, dark-period light leak, or repeated oscillation. Minimum, maximum, percentile, duration above or below limits, rate of change, and spatial spread may be more relevant than mean. Autocorrelation means thousands of minute readings are not thousands of independent environmental replicates."
+      ],
+      "cultivationRelevance": [
+        "Build a sensor map and data dictionary. Test the complete path from sensor to database to graph to alarm, including time synchronization, missing-data flags, export, and backup."
+      ],
+      "measureAndRecord": [
+        "Channel and sensor ID; quantity/unit; location/height/orientation; calibration/verification; logger/controller/firmware; interval; timestamp/time zone; raw value; validity flag; missing-data reason; aggregation equation; alarm/action; maintenance/change record."
+      ],
+      "misconceptions": [
+        "More frequent logging automatically creates more independent information.",
+        "A daily mean proves the crop never exceeded a limit.",
+        "A wireless dashboard preserves raw data permanently."
+      ],
+      "evidenceLimits": [
+        "Logged values represent sensor exposure and method; they may not represent leaf, flower, root, worker, or room conditions outside the sampled locations."
+      ],
+      "crossLinks": "THC-ENC-083–120; THC-ENC-363–365; THC-ENC-378; THC-ENC-403–404; THC-ENC-414.",
+      "sourceNotes": [
+        "V21-SRC-006",
+        "V21-SRC-009",
+        "V21-SRC-010",
+        "V21-SRC-026",
+        "V21-SRC-033"
+      ],
+      "knowledgeCheck": [
+        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
+        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+        "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "environmental-data-logging",
+      "route": "/encyclopedia/environmental-data-logging"
+    },
+    {
+      "id": "THC-ENC-407",
+      "number": 407,
+      "title": "Irrigation and Fertigation Records",
+      "primaryFormat": "Data / QA",
+      "requiredTeachingVisual": "Source-to-zone irrigation and fertigation batch record",
+      "objective": "Create records that connect water source, mixture, equipment, applied volume, distribution, root-zone response, and corrective action.",
+      "termsToKnow": [
+        "irrigation event",
+        "fertigation batch",
+        "source water",
+        "stock solution",
+        "dilution",
+        "applied volume",
+        "distribution uniformity",
+        "runoff",
+        "leachate",
+        "dryback"
+      ],
+      "coreScience": [
+        "An irrigation record should describe what entered the system, what the system delivered, and what the root zone experienced. A recipe alone is incomplete. Record water source, batch, treatment, temperature, starting chemistry, stock identities, lot numbers, mixing order, target and measured concentrations, tank volume, agitation, pH and EC method, and release decision.",
+        "Delivery records need zone, valve, pressure, emitter or nozzle specification, start and stop time, runtime, flow, applied volume, maintenance condition, and distribution checks. Controller commands are not proof of delivery. A clogged emitter, leaking line, empty stock tank, pressure change, pump fault, or blocked drain can make the logged command biologically false for individual plants.",
+        "Root-zone response should be measured using system-appropriate variables: mass change, substrate water content, soil moisture by depth, drainage volume, runoff or leachate EC and pH, oxygen status, plant response, and time to next event. These measurements answer different questions and require defined sample positions. Corrective additions should be linked to the original event, reason, authorization, and outcome."
+      ],
+      "cultivationRelevance": [
+        "Use a controlled event ID linking recipe, equipment, delivered water, representative root-zone measurements, deviations, and plant response."
+      ],
+      "measureAndRecord": [
+        "Event ID/date/time; water-source and analysis; tank and batch; stock/product IDs and lots; amounts and units; target/measured pH/EC/temperature; zone/pressure/flow/runtime/volume; distribution checks; pre/post moisture; drainage/runoff; plant observations; deviation/correction/approver."
+      ],
+      "misconceptions": [
+        "A programmed runtime proves every plant received the intended volume.",
+        "Input EC is a complete nutrient-composition record.",
+        "Runoff from one container describes the whole zone."
+      ],
+      "evidenceLimits": [
+        "Irrigation metrics and targets depend on root-zone system, geometry, stage, climate, cultivar, sampling, and measurement method."
+      ],
+      "crossLinks": "THC-GROW-042; THC-GROW-070; THC-ENC-369; THC-ENC-403–404; THC-ENC-408.",
+      "sourceNotes": [
+        "V21-SRC-002",
+        "V21-SRC-024",
+        "V21-SRC-025",
+        "V21-SRC-026",
+        "V21-SRC-033"
+      ],
+      "knowledgeCheck": [
+        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
+        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+        "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "irrigation-and-fertigation-records",
+      "route": "/encyclopedia/irrigation-and-fertigation-records"
+    },
+    {
+      "id": "THC-ENC-408",
+      "number": 408,
+      "title": "pH, EC, and Water-Quality Records",
+      "primaryFormat": "Data / QA",
+      "requiredTeachingVisual": "Water-sample, meter-control, and interpretation record",
+      "objective": "Record water and solution measurements with controlled sampling, temperature, instrument checks, chemistry context, and interpretation limits.",
+      "termsToKnow": [
+        "pH",
+        "electrical conductivity",
+        "alkalinity",
+        "hardness",
+        "ion",
+        "total dissolved solids",
+        "temperature compensation",
+        "sample preservation",
+        "charge balance"
+      ],
+      "coreScience": [
+        "pH and electrical conductivity are method-dependent measurements, not complete descriptions of water. pH describes hydrogen-ion activity under the method conditions. EC describes the solution’s ability to conduct current and is influenced by ion concentration, mobility, temperature, and instrument compensation. Two waters can share EC but contain very different ions, alkalinity, sodium, chloride, nutrients, or contaminants.",
+        "Records should distinguish source water, treated water, stock, final solution, input, root-zone extract, runoff, leachate, and laboratory sample. Sample temperature, equilibration, container, storage, aeration, and time can change results. A meter needs electrode or cell identity, cleaning, storage condition, standard lots, verification results, temperature mode, and maintenance. TDS or ppm estimates derived from EC require the instrument factor and should not replace direct chemical analysis.",
+        "Water-quality interpretation often requires alkalinity, hardness, major ions, nutrients, metals, microbiology, treatment history, and seasonal variability. Laboratory reports need method, units, detection limits, sample receipt condition, and accreditation scope. Changes in pH after acid addition depend strongly on alkalinity; pH alone does not predict acid demand."
+      ],
+      "cultivationRelevance": [
+        "Create separate records for field meter checks and laboratory water analysis, then link both to the source, date, treatment, irrigation event, and decision."
+      ],
+      "measureAndRecord": [
+        "Sample ID/source/location/time; sample type and preservation; temperature; instrument/method; standard IDs/expected/observed; pH/EC and compensation; alkalinity/hardness/ions/metals/microbes where relevant; units; detection limits; lab/method/scope; interpretation and action."
+      ],
+      "misconceptions": [
+        "Equal EC means equal nutrient composition.",
+        "Low pH water always requires more base than high-alkalinity water.",
+        "A ppm display is a direct measurement of all dissolved solids."
+      ],
+      "evidenceLimits": [
+        "Field meters provide narrow quantities; complete water fitness depends on intended use, chemistry, treatment, sampling, seasonal variation, and current requirements."
+      ],
+      "crossLinks": "THC-GROW-042; THC-ENC-121–140; THC-ENC-366; THC-ENC-403–404; THC-ENC-407.",
+      "sourceNotes": [
+        "V21-SRC-002",
+        "V21-SRC-004",
+        "V21-SRC-008",
+        "V21-SRC-025",
+        "V21-SRC-033"
+      ],
+      "knowledgeCheck": [
+        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
+        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+        "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "ph-ec-and-water-quality-records",
+      "route": "/encyclopedia/ph-ec-and-water-quality-records"
+    },
+    {
+      "id": "THC-ENC-409",
+      "number": 409,
+      "title": "Morphology and Growth Measurements",
+      "primaryFormat": "Data / QA",
+      "requiredTeachingVisual": "Standardized Cannabis morphology measurement plate",
+      "objective": "Convert descriptive plant appearance into repeatable measurements using defined anatomy, position, stage, reference points, and image methods.",
+      "termsToKnow": [
+        "operational definition",
+        "phenotyping",
+        "landmark",
+        "sampling position",
+        "canopy width",
+        "internode",
+        "biomass",
+        "image scale",
+        "observer agreement"
+      ],
+      "coreScience": [
+        "Morphology becomes comparable data only after the trait is operationally defined. Plant height can mean substrate line to highest natural point, apical tip after straightening, or support height. Canopy width can mean one axis, two perpendicular axes, or projected area. Node count depends on which nodes are included. Stem diameter depends on measurement height and tool. Each definition changes the result.",
+        "Plant measurements must include identity, developmental stage, treatment history, posture, time relative to irrigation and light, and organ position. Leaf dimensions require a defined leaf age and node. Internode measurements require named node pairs. Flower and trichome observations require sample sites and optical method. Fresh mass, dry mass, trimmed mass, and saleable mass answer different questions and must not be mixed.",
+        "Images can improve auditing but introduce perspective, lens distortion, lighting, color, focus, and scale errors. Use a fixed camera position, reference scale, color target where needed, background, orientation, and file naming. Automated image analysis should preserve software, model version, thresholds, training data limits, and manual correction history. Observer training and blinded repeat scoring can reveal ambiguity."
+      ],
+      "cultivationRelevance": [
+        "Publish a controlled phenotype dictionary before collecting trial data. Train observers using examples and counterexamples, then retain raw measurements and images."
+      ],
+      "measureAndRecord": [
+        "Plant/genetic/treatment IDs; stage/date/time; trait name and definition; anatomy and reference points; position; instrument; units; observer; repeated measurement; image ID/scale/lighting; fresh/dry/trim basis; missing/damaged rule."
+      ],
+      "misconceptions": [
+        "Tall, bushy, frosty, and dense are complete phenotype measurements.",
+        "A photograph is objective without a scale and standardized viewpoint.",
+        "Repeated measurements on one plant increase the biological sample size."
+      ],
+      "evidenceLimits": [
+        "Phenotypes depend on genetics, environment, management, stage, observer, and method; measurements describe traits but do not by themselves identify causes."
+      ],
+      "crossLinks": "THC-ENC-009–020; THC-ENC-394; THC-ENC-404–406; THC-ENC-416–418.",
+      "sourceNotes": [
+        "V21-SRC-011",
+        "V21-SRC-012",
+        "V21-SRC-033",
+        "V21-SRC-034"
+      ],
+      "knowledgeCheck": [
+        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
+        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+        "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "morphology-and-growth-measurements",
+      "route": "/encyclopedia/morphology-and-growth-measurements"
+    },
+    {
+      "id": "THC-ENC-410",
+      "number": 410,
+      "title": "Scouting and Plant-Health Records",
+      "primaryFormat": "Data / QA",
+      "requiredTeachingVisual": "Scouting route, incidence, severity, and evidence record",
+      "objective": "Record plant-health observations using repeatable routes, units, severity scales, organism confidence, and diagnostic boundaries.",
+      "termsToKnow": [
+        "scouting unit",
+        "incidence",
+        "severity",
+        "prevalence",
+        "symptom",
+        "sign",
+        "distribution",
+        "specimen",
+        "diagnostic confidence",
+        "differential diagnosis"
+      ],
+      "coreScience": [
+        "Scouting is structured observation, not a casual walk. Define the crop population, route, number and type of units, plant parts, canopy layers, substrate or soil zones, traps, and observation interval. Incidence is the proportion of units affected; severity is the amount of tissue or impact within an affected unit. Counts, ratings, and percentages require an explicit denominator and scale.",
+        "Symptoms are plant responses; signs are physical evidence of an organism. Yellowing, necrosis, wilt, spots, distortion, root discoloration, odor, webbing, frass, spores, and insects can each have several causes. Record distribution, progression, environmental and treatment history, and co-occurring evidence. Identify organisms to the justified level and preserve photographs or specimens when confidence is limited.",
+        "Scouting records should distinguish observation, preliminary interpretation, confirmatory test, action threshold, intervention, and outcome. A positive molecular test may detect an organism without proving that it caused every symptom. A favorable environment does not prove infection. Absence from a limited sample does not prove absence from the crop."
+      ],
+      "cultivationRelevance": [
+        "Use fixed scouting routes plus targeted risk zones. Trend plant, trap, and symptom data over time and link actions to lawful label and quarantine records."
+      ],
+      "measureAndRecord": [
+        "Field/room/zone; route and sampled units; date/time/observer/weather; plant IDs and stage; organ/position; incidence denominator; severity scale; symptom/sign; organism and confidence; photo/specimen/test IDs; environmental/treatment context; threshold/action; outcome."
+      ],
+      "misconceptions": [
+        "One symptomatic leaf establishes the diagnosis.",
+        "A pest present on a trap proves crop damage.",
+        "Zero detections in a small sample proves the room is clean."
+      ],
+      "evidenceLimits": [
+        "Scouting sensitivity depends on timing, distribution, observer, life stage, sampling, symptoms, and diagnostic method."
+      ],
+      "crossLinks": "THC-ENC-261–340; THC-ENC-373; THC-ENC-376; THC-ENC-404–406; THC-ENC-413.",
+      "sourceNotes": [
+        "V21-SRC-002",
+        "V21-SRC-011",
+        "V21-SRC-026",
+        "V21-SRC-033"
+      ],
+      "knowledgeCheck": [
+        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
+        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+        "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "scouting-and-plant-health-records",
+      "route": "/encyclopedia/scouting-and-plant-health-records"
+    }
+  ]
+}
