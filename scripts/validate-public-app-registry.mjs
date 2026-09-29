@@ -6,6 +6,7 @@ const registry = JSON.parse(await readFile(registryPath, 'utf8'));
 
 const requiredRepositories = new Set([
   'dtfgenetics/Thc',
+  'dtfgenetics/Tools',
   'dtfgenetics/thc-u-know-card-game-',
   'dtfgenetics/Weedopolis-strain-Edition',
   'dtfgenetics/Thc-crossword-',
