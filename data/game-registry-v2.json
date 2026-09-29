@@ -2801,12 +2801,14 @@
         "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/seed-ascent"
       },
       "release": {
-        "status": "prototype",
+        "status": "playable-local",
         "lastVerifiedRevision": null,
         "lastVerifiedAt": null,
         "lastVerifiedUrl": null,
         "blockers": [],
-        "nextMilestone": "Keep Seed Ascent distinct from Seed Man, complete Dtf420 runtime verification, then establish final production ownership."
+        "nextMilestone": "Complete browser/game-feel QA and establish explicit production ownership/cutover before public promotion.",
+        "sourceValidatedRevision": "e8075ed46b5d6168d9f5e4673b8aea87476c114e",
+        "sourceValidatedAt": "2026-09-28T23:57:23Z"
       },
       "developmentLocations": [
         {
@@ -3225,12 +3227,14 @@
         "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/stoner-duck-race"
       },
       "release": {
-        "status": "prototype",
+        "status": "playable-local",
         "lastVerifiedRevision": null,
         "lastVerifiedAt": null,
         "lastVerifiedUrl": null,
         "blockers": [],
-        "nextMilestone": "Complete Dtf420 race/runtime verification and establish an explicit production-owner mapping before public promotion."
+        "nextMilestone": "Complete multiplayer/browser presentation QA, lock production ownership/public route, then package through the DTFSeeds release pipeline.",
+        "sourceValidatedRevision": "e8075ed46b5d6168d9f5e4673b8aea87476c114e",
+        "sourceValidatedAt": "2026-09-28T23:57:23Z"
       },
       "developmentLocations": [
         {
