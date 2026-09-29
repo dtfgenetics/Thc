@@ -1,5 +1,11 @@
 import assert from 'node:assert/strict';
 import {
+  browserStorage,
+  storageGet,
+  storageSet,
+  storageRemove,
+  storageReadJson,
+  storageWriteJson,
   DEFAULT_GAME_SETTINGS,
   createGameSettingsStore,
   effectiveAudioGain,
@@ -33,6 +39,37 @@ function memoryStorage() {
     setItem: (key, value) => map.set(key, String(value)),
     removeItem: (key) => map.delete(key),
   };
+}
+
+
+{
+  const throwingGlobal = {};
+  Object.defineProperty(throwingGlobal, 'localStorage', {
+    get() { throw new Error('blocked'); },
+  });
+  assert.equal(browserStorage(throwingGlobal), null, 'storage acquisition must tolerate a throwing browser property');
+
+  const storage = memoryStorage();
+  assert.equal(storageGet(storage, 'missing', 'fallback'), 'fallback');
+  assert.equal(storageSet(storage, 'plain', 42), true);
+  assert.equal(storageGet(storage, 'plain'), '42');
+  assert.equal(storageWriteJson(storage, 'json', { score: 7 }), true);
+  assert.deepEqual(storageReadJson(storage, 'json', { fallback: {} }), { score: 7 });
+  assert.equal(storageRemove(storage, 'plain'), true);
+  assert.equal(storageGet(storage, 'plain'), null);
+
+  const blocked = {
+    getItem() { throw new Error('blocked read'); },
+    setItem() { throw new Error('blocked write'); },
+    removeItem() { throw new Error('blocked remove'); },
+  };
+  assert.equal(storageGet(blocked, 'x', 'safe'), 'safe');
+  assert.equal(storageSet(blocked, 'x', 'y'), false);
+  assert.equal(storageRemove(blocked, 'x'), false);
+  assert.deepEqual(storageReadJson({ getItem: () => '[]' }, 'x', {
+    fallback: {},
+    validate: (value) => value && !Array.isArray(value) && typeof value === 'object',
+  }), {});
 }
 
 function eventTarget(extra = {}) {
