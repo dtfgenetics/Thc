@@ -15,8 +15,8 @@ Concept bank: **18**
 | Burn Buds | `protect-the-plants` | dtfgenetics/Thc | /games/protect-the-plants/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Ganjumanji: The Lost Grower's Temple | `ganjumanji` | dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple | /games/ganjumanji/ | `release-candidate` | dtfgenetics/Thc | Package candidate 257c5a60c8ec0e7f6a87170f232c37e047458b22 through DTFSeeds and verify /games/ganjumanji/. |
 | Grow Room Bingo / Bongwater Bingo | `grow-room-bingo` | dtfgenetics/Thc | /games/grow-room-bingo/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
+| Grow Room Confessions | `grower-conversations` | dtfgenetics/Thc | /games/grower-conversations/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Grow Room Defense | `grow-room-defense` | dtfgenetics/Thc | /games/grow-room-defense/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
-| Grower Conversations | `grower-conversations` | dtfgenetics/Thc | /games/grower-conversations/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Harvest Hustle | `harvest-hustle` | dtfgenetics/Thc | /games/harvest-hustle/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | High IQ — Test Higher Cognition | `high-iq` | dtfgenetics/Thc | /games/high-iq/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | High Land: The Sweet Escape | `high-land` | dtfgenetics/Thc | /games/high-land/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
@@ -35,9 +35,9 @@ Concept bank: **18**
 | Strain Match | `strain-match` | dtfgenetics/Thc | /games/strain-match/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Strain Showdown | `strain-showdown` | dtfgenetics/Thc | /games/strain-showdown/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Terpocalypse: Grow Room From Hell | `terpocalypse` | dtfgenetics/Terpocalapse | /games/terpocalypse/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
+| THC Daily Crossword | `crossword` | dtfgenetics/Thc-crossword- | /games/crossword/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | THC RPG — The First Seed | `thc-rpg` | dtfgenetics/Thc-rpg | /games/thc-rpg/ | `release-candidate` | dtfgenetics/Thc | Package candidate de6c26d9073d9154bbcade43b64768cf6a7ba2a0 through DTFSeeds and verify /games/thc-rpg/. |
 | THC U Know | `thc-u-know` | dtfgenetics/thc-u-know-card-game- | /games/thc-u-know/ | `playable-local` | dtfgenetics/Thc | Pass production runtime, persistent-origin, reconnect/private-hand, and multi-browser/mobile verification. |
-| THC Weekly Crossword | `crossword` | dtfgenetics/Thc-crossword- | /games/crossword/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Trichome Trials | `trichome-trials` | dtfgenetics/Thc | /games/trichome-trials/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Weedopolis: Strain City Edition | `weedopolis` | dtfgenetics/Weedopolis-strain-Edition | /games/weedopolis/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Who Took It? | `who-took-it` | dtfgenetics/Thc-guess-who | /games/who-took-it/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
@@ -54,7 +54,7 @@ Concept bank: **18**
 - Development/migration: prototype-do-not-confuse-with-production: dtfgenetics/Dtf420 (app/games/burn-buds, game/burn-buds)
 - Deprecated/experimental: archive-history: dtfgenetics/Thc (games/cannabis-fleet-battle)
 
-### Grower Conversations
+### Grow Room Confessions
 
 - Development/migration: migration-runtime: dtfgenetics/Dtf420 (app/games/grower-conversations)
 - Deprecated/experimental: —
