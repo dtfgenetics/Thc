@@ -46,7 +46,10 @@ jobs:
           set -euo pipefail
           python -m py_compile scripts/assemble-wordpress-suite-v2.py scripts/wordpress_suite_registry_patch.py
           python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
-          python scripts/wordpress_suite_registry_patch.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          python scripts/wordpress_suite_registry_patch.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs" | tee "$RUNNER_TEMP/registry-parity.json"
+          grep -Fq '"breeder-pedigree"' "$RUNNER_TEMP/registry-parity.json"
+          grep -Fq '"vpd-chart"' "$RUNNER_TEMP/registry-parity.json"
+          grep -Fq '"grow-planner"' "$RUNNER_TEMP/registry-parity.json"
           node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
 
       - name: Lint embedded WordPress bridge
