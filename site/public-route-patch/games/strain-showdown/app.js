@@ -51,9 +51,9 @@ function readRecord() {
     const raw = globalThis.localStorage?.getItem(RECORD_KEY);
     const parsed = raw ? JSON.parse(raw) : null;
     return {
-      wins: Number.isInteger(parsed?.wins) ? parsed.wins : 0,
-      losses: Number.isInteger(parsed?.losses) ? parsed.losses : 0,
-      draws: Number.isInteger(parsed?.draws) ? parsed.draws : 0
+      wins: Number.isInteger(parsed?.wins) && parsed.wins >= 0 ? parsed.wins : 0,
+      losses: Number.isInteger(parsed?.losses) && parsed.losses >= 0 ? parsed.losses : 0,
+      draws: Number.isInteger(parsed?.draws) && parsed.draws >= 0 ? parsed.draws : 0
     };
   } catch {
     return { wins: 0, losses: 0, draws: 0 };

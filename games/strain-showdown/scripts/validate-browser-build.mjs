@@ -62,6 +62,9 @@ if (html.includes('Prototype record:') || html.includes('Prototype ruleset') || 
 if (!html.includes('Match record: 0 W / 0 L')) throw new Error('Player-facing match record label missing.');
 if (!html.includes('Core battle rules')) throw new Error('Player-facing rules label missing.');
 if (!app.includes("Match record:")) throw new Error('Runtime match record must use player-facing wording.');
+if (!app.includes("Number.isInteger(parsed?.wins) && parsed.wins >= 0")) throw new Error('Saved win records must reject negative values.');
+if (!app.includes("Number.isInteger(parsed?.losses) && parsed.losses >= 0")) throw new Error('Saved loss records must reject negative values.');
+if (!app.includes("Number.isInteger(parsed?.draws) && parsed.draws >= 0")) throw new Error('Saved draw records must reject negative values.');
 if (app.includes('split development data')) throw new Error('Runtime must not expose development-data wording.');
 
 // runtime-v2 historically used a 680px mobile battlefield. runtime-v3 is
