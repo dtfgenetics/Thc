@@ -552,11 +552,11 @@
       "title": "THC U Know",
       "repository": "dtfgenetics/thc-u-know-card-game-",
       "route": "/games/thc-u-know/",
-      "apiTarget": "https://api.dtfseeds.com",
+      "apiTarget": null,
       "runtime": "node-full-stack",
       "status": "runtime-integration",
       "build": "pnpm verify && pnpm test:production-runtime",
-      "notes": "Canonical full-stack multiplayer source is dtfgenetics/thc-u-know-card-game-. Persistent Node/Socket.IO remains required; static-only deployment is forbidden. The owner build now ships the canonical V6 six-link DTFSeeds header, CI validates the V6 production shell plus hidden-hand/lobby/runtime contracts, and a scheduled/manual live checker verifies the public game route, game-scoped health endpoint, and Socket.IO handshake. Keep this game nonpublic in data/public-navigation.json until the live checker and manual two-browser multiplayer gate pass.",
+      "notes": "Canonical full-stack multiplayer source is dtfgenetics/thc-u-know-card-game-. Same-origin Node/Socket.IO is the default runtime contract; a separate backend is supported only when THC_U_KNOW_SERVER_ORIGIN / VITE_SERVER_URL is explicitly configured. Static-only deployment is forbidden. The owner build ships the canonical Header V6 five-link DTFSeeds navigation and CI validates hidden-hand/lobby/runtime contracts. The live checker verifies the public frontend, game-scoped health endpoint, and Socket.IO handshake. Keep this game nonpublic in data/public-navigation.json until the Node runtime and manual two-browser multiplayer gate pass.",
       "machineData": {
         "players": "2-8",
         "runtime": "Node + Socket.IO",
@@ -565,7 +565,9 @@
         "siteShell": "header-v6",
         "liveCheck": "npm run live:check",
         "manualGate": "two-browser-multiplayer",
-        "publicPromotion": false
+        "publicPromotion": false,
+        "apiOrigin": "same-origin-default",
+        "splitOriginVariable": "THC_U_KNOW_SERVER_ORIGIN"
       }
     },
     {
@@ -578,7 +580,7 @@
       "runtime": "node-full-stack-postgres",
       "status": "runtime-integration",
       "build": "pnpm check:rebrand && pnpm --filter client lint && pnpm build:client && pnpm build:server && pnpm test:production-runtime",
-      "notes": "Canonical full-stack source is dtfgenetics/Thc-chess-git. Preserve chess.js legal-move authority, Express/Socket.IO rooms, PostgreSQL sessions, spectators, chat, archives, resign/draw/abandon/rematch behavior, and the chess.dtfseeds.com / chess-api.dtfseeds.com targets. The Next.js client, Hostinger fallback, CI and deployment checks now use the canonical V6 six-link DTFSeeds header. A post-deploy live checker verifies frontend identity, API /health, Socket.IO transport, and the DTFSeeds proxy. Keep this game nonpublic in data/public-navigation.json until the live checker plus two-browser/mobile QA pass.",
+      "notes": "Canonical full-stack source is dtfgenetics/Thc-chess-git. Preserve chess.js legal-move authority, Express/Socket.IO rooms, PostgreSQL sessions, spectators, chat, archives, resign/draw/abandon/rematch behavior, and the chess.dtfseeds.com / chess-api.dtfseeds.com targets. The Next.js client, Hostinger fallback, CI and deployment checks now use the canonical Header V6 five-link DTFSeeds navigation. A post-deploy live checker verifies frontend identity, API /health, Socket.IO transport, and the DTFSeeds proxy. Keep this game nonpublic in data/public-navigation.json until the live checker plus two-browser/mobile QA pass.",
       "machineData": {
         "players": 2,
         "runtime": "Next.js + Express + Socket.IO + PostgreSQL",
