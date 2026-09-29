@@ -218,8 +218,12 @@ def registered_local_static_games(repo_root: pathlib.Path) -> list[str]:
     for app in registry.get("apps", []):
         source = str(app.get("sourcePath") or "").rstrip("/")
         route = str(app.get("route") or "")
-        if not (
+        owns_integration = (
             app.get("repository") == "dtfgenetics/Thc"
+            or app.get("integrationRepository") == "dtfgenetics/Thc"
+        )
+        if not (
+            owns_integration
             and app.get("runtime") == "static"
             and app.get("status") == "ready-to-package"
             and source.startswith("site/public-route-patch/games/")
@@ -242,7 +246,13 @@ def registered_local_static_games(repo_root: pathlib.Path) -> list[str]:
 
 
 def registered_local_static_apps(repo_root: pathlib.Path) -> list[str]:
-    """Return repo-owned, non-game static public apps that the Public Suite may publish."""
+    """Return non-game static apps whose validated public integration is owned by Thc.
+
+    Canonical implementation may live in another DTF repository (for example
+    dtfgenetics/Tools). The WordPress bridge publishes the reviewed
+    site/public-route-patch mirror, so integrationRepository is the relevant
+    ownership signal for this deployment allowlist.
+    """
     registry_path = repo_root / "site" / "deployment" / "public-apps.json"
     registry = json.loads(registry_path.read_text())
     wordpress_owned = {"", "home", "learn", "courses", "blog", "community", "seeds", "shop", "gallery", "about", "contact"}
