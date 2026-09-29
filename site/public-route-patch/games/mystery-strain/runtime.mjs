@@ -1,3 +1,4 @@
+import { copyText } from '/games/shared-platform/index.mjs';
 import {
   CASE_CODE_LENGTH,
   CASE_ALPHABET,
@@ -147,32 +148,6 @@ function prefersReducedMotion() {
   catch { return false; }
 }
 
-async function copyText(value) {
-  const text = String(value || '');
-  if (!text) return false;
-  try {
-    if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(text);
-      return true;
-    }
-  } catch {}
-  try {
-    const field = document.createElement('textarea');
-    field.value = text;
-    field.setAttribute('readonly', '');
-    field.style.position = 'fixed';
-    field.style.opacity = '0';
-    field.style.pointerEvents = 'none';
-    document.body.append(field);
-    field.select();
-    field.setSelectionRange(0, text.length);
-    const copied = document.execCommand?.('copy') === true;
-    field.remove();
-    return copied;
-  } catch {
-    return false;
-  }
-}
 
 function renderStats() {
   ui.caseReadout.textContent = state.code;
@@ -343,7 +318,7 @@ ui.share.addEventListener('click', async () => {
     return;
   }
   const url = challengeUrl();
-  const copied = await copyText(`Mystery Strain case ${code}${state?.wild ?? ui.wild.checked ? ' · Wild Card' : ''}\n${url}`);
+  const copied = (await copyText(`Mystery Strain case ${code}${state?.wild ?? ui.wild.checked ? ' · Wild Card' : ''}\n${url}`)).ok;
   ui.announce.textContent = copied
     ? 'Challenge link copied.'
     : `Copy failed. Share case ${code}: ${url}`;
