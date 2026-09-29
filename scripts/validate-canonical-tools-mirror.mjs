@@ -132,7 +132,8 @@ if(canonicalRootArg){
 
 const sync=fs.readFileSync(path.join(root,'.github/workflows/sync-canonical-tools.yml'),'utf8');
 ok(sync.includes('canonicalToolSlugs'),'sync workflow must derive routes from the canonical Tools manifest');
-ok(sync.includes('cp -a /tmp/tools/site/public-route-patch/assets/. site/public-route-patch/assets/'),'sync workflow must mirror the full canonical shared asset tree');
+ok(sync.includes('rm -rf site/public-route-patch/assets'),'sync workflow must remove stale shared assets before mirroring');
+ok(sync.includes('cp -a /tmp/tools/site/public-route-patch/assets site/public-route-patch/assets'),'sync workflow must mirror the full canonical shared asset tree');
 
 if(errors.length){
   console.error('Canonical Tools integration mirror validation failed:');
