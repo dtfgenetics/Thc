@@ -3,7 +3,16 @@
   "game": "Strain Showdown",
   "rosterVersion": "0.1.0",
   "cardCount": 96,
-  "families": ["kush", "haze", "skunk", "gas", "cookies", "fruit", "purple", "frost"],
+  "families": [
+    "kush",
+    "haze",
+    "skunk",
+    "gas",
+    "cookies",
+    "fruit",
+    "purple",
+    "frost"
+  ],
   "files": [
     "roster/kush.json",
     "roster/haze.json",
@@ -14,8 +23,16 @@
     "roster/purple.json",
     "roster/frost.json"
   ],
-  "tierCountsPerFamily": {"1": 6, "2": 4, "3": 2},
-  "tierLabels": {"1": "Base", "2": "Select", "3": "Elite"},
+  "tierCountsPerFamily": {
+    "1": 6,
+    "2": 4,
+    "3": 2
+  },
+  "tierLabels": {
+    "1": "Base",
+    "2": "Select",
+    "3": "Elite"
+  },
   "stageSummonRules": {
     "1": "play-normally",
     "2": "sacrifice-one-same-family-stage-1",
@@ -26,6 +43,6 @@
   "effectAssignment": "family-and-stage-with-roleTag-ability-name",
   "effectRuntimeStatus": "authored-not-active",
   "artStatus": "not-assigned",
-  "releaseStatus": "roster-data-draft",
-  "notes": "Names, IDs, family, tier/stage, Vigor/Power, and role tags remain machine-controlled. Draft effect profiles now cover all 96 cards deterministically and use roleTag as the per-card ability name, but the effects remain inactive in battle resolution until balance integration and human playtesting are approved. Final card-specific wording, art, and tournament balance remain later gates."
+  "releaseStatus": "playable-browser-prototype",
+  "notes": "Names, IDs, family, tier/stage, Vigor/Power, and role tags are machine-controlled. The complete 96-card roster is active in the public browser prototype. Draft effect profiles cover all 96 cards deterministically and use roleTag as the per-card ability name, but those effects remain intentionally inactive in battle resolution until the balance-integration and human-playtest gate is completed. Final card-specific wording, art, and tournament balance remain later gates."
 }
