@@ -13,7 +13,7 @@ Concept bank: **18**
 | --- | --- | --- | --- | --- | --- | --- |
 | Bud or Bluff | `bud-or-bluff` | dtfgenetics/Thc | /games/bud-or-bluff/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Burn Buds | `protect-the-plants` | dtfgenetics/Thc | /games/protect-the-plants/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
-| Ganjumanji: The Lost Grower's Temple | `ganjumanji` | dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple | /games/ganjumanji/ | `release-candidate` | dtfgenetics/Thc | Package candidate 257c5a60c8ec0e7f6a87170f232c37e047458b22 through DTFSeeds and verify /games/ganjumanji/. |
+| Ganjumanji: The Lost Grower's Temple | `ganjumanji` | dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple | /games/ganjumanji/ | `packaged` | dtfgenetics/Thc | Publish the qualified package to the DTFSeeds public suite, then verify /games/ganjumanji/ against exact revision 257c5a60c8ec0e7f6a87170f232c37e047458b22. |
 | Grow Room Bingo / Bongwater Bingo | `grow-room-bingo` | dtfgenetics/Thc | /games/grow-room-bingo/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Grow Room Confessions | `grower-conversations` | dtfgenetics/Thc | /games/grower-conversations/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Grow Room Defense | `grow-room-defense` | dtfgenetics/Thc | /games/grow-room-defense/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
@@ -36,7 +36,7 @@ Concept bank: **18**
 | Strain Showdown | `strain-showdown` | dtfgenetics/Thc | /games/strain-showdown/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Terpocalypse: Grow Room From Hell | `terpocalypse` | dtfgenetics/Terpocalapse | /games/terpocalypse/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | THC Daily Crossword | `crossword` | dtfgenetics/Thc-crossword- | /games/crossword/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
-| THC RPG — The First Seed | `thc-rpg` | dtfgenetics/Thc-rpg | /games/thc-rpg/ | `release-candidate` | dtfgenetics/Thc | Package candidate de6c26d9073d9154bbcade43b64768cf6a7ba2a0 through DTFSeeds and verify /games/thc-rpg/. |
+| THC RPG — The First Seed | `thc-rpg` | dtfgenetics/Thc-rpg | /games/thc-rpg/ | `packaged` | dtfgenetics/Thc | Publish the qualified package to the DTFSeeds public suite, then verify /games/thc-rpg/ against exact revision de6c26d9073d9154bbcade43b64768cf6a7ba2a0. |
 | THC U Know | `thc-u-know` | dtfgenetics/thc-u-know-card-game- | /games/thc-u-know/ | `playable-local` | dtfgenetics/Thc | Pass production runtime, persistent-origin, reconnect/private-hand, and multi-browser/mobile verification. |
 | Trichome Trials | `trichome-trials` | dtfgenetics/Thc | /games/trichome-trials/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Weedopolis: Strain City Edition | `weedopolis` | dtfgenetics/Weedopolis-strain-Edition | /games/weedopolis/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
