@@ -127,7 +127,9 @@ jobs:
                 'MOPS, cultivation notes, THC basics' \
                 'being rebuilt' \
                 'Reserved strain card' \
-                'Tool-ready rebuild'; do
+                'Tool-ready rebuild' \
+                'Draft strain cards and genetics content are ready to organize.' \
+                'DTF Genetics catalog pages built around strain identity and grow context.'; do
                 ! grep -Fqi -- "$stale" "$body" || {
                   echo "Stale route marker remains on $path: $stale" >&2
                   return 1
