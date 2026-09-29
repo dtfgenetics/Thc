@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 2,
-  "purpose": "Canonical companion literature for THC subject pages. Each topic must support beginner orientation, field observation, measurement, decision-making, verification, tools, visuals, and deeper evidence; infographics support the literature and never replace it.",
+  "schemaVersion": 3,
+  "purpose": "Canonical companion literature for THC subject pages. Each topic combines orientation, field observation, measurement, decision-making, verification, practice scenarios, tools, purposeful visuals, and evidence. Infographics support the literature and never replace it.",
   "topics": [
     {
       "id": "plant-biology",
@@ -193,7 +193,31 @@
           "symptom-location decision map"
         ],
         "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
-      }
+      },
+      "practiceScenarios": [
+        {
+          "title": "Wilted canopy after irrigation",
+          "prompt": "A plant is visibly wilted even though the medium was recently irrigated. Build an explanation without assuming the plant needs more water.",
+          "evidenceToCollect": [
+            "root-zone moisture and oxygen context",
+            "root condition",
+            "air and leaf temperature",
+            "symptom distribution and recovery timing"
+          ],
+          "successCheck": "The explanation distinguishes visible water stress from at least two plausible upstream causes and identifies a measurement that could separate them."
+        },
+        {
+          "title": "New growth differs from old growth",
+          "prompt": "New leaves are developing differently while older leaves remain relatively stable. Decide what to inspect before assigning a nutrient or genetic explanation.",
+          "evidenceToCollect": [
+            "affected tissue and age",
+            "root-zone conditions",
+            "recent environment changes",
+            "plant stage and recent interventions"
+          ],
+          "successCheck": "The learner links tissue age and plant function to a prioritized evidence plan rather than diagnosing from color or shape alone."
+        }
+      ]
     },
     {
       "id": "genetics-breeding",
@@ -330,6 +354,21 @@
           "title": "Introduction to Quantitative Genetics",
           "organization": "Longman",
           "note": "Foundational framework for quantitative traits, heritability, drift, and selection."
+        },
+        {
+          "title": "Genetic Advances in Cannabis sativa L.: A Review of Recent Progress and Future Directions",
+          "organization": "Plants (MDPI)",
+          "year": 2026,
+          "doi": "10.3390/plants15132088",
+          "url": "https://www.mdpi.com/2223-7747/15/13/2088",
+          "note": "Recent review of Cannabis genomic diversity, trait genetics, phenotyping limits, genotype-by-environment effects, and molecular breeding."
+        },
+        {
+          "title": "Challenges and potentials of new breeding techniques in Cannabis sativa",
+          "organization": "Frontiers in Plant Science",
+          "year": 2023,
+          "url": "https://www.frontiersin.org/journals/plant-science/articles/10.3389/fpls.2023.1154332/full",
+          "note": "Review of Cannabis breeding biology, genetic improvement methods, and constraints; use alongside crop-specific phenotype data rather than as a release claim."
         }
       ],
       "referenceGuide": {
@@ -380,7 +419,33 @@
           "phenotype selection matrix"
         ],
         "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
-      }
+      },
+      "practiceScenarios": [
+        {
+          "title": "Promising F2 selection",
+          "prompt": "One F2 plant has exceptional aroma and architecture. Decide what evidence is needed before calling the trait combination stable or breeding-worthy.",
+          "evidenceToCollect": [
+            "population size",
+            "trait definitions",
+            "sibling distribution",
+            "environment",
+            "retained clone or progeny plan"
+          ],
+          "successCheck": "The learner separates one phenotype from population-level inheritance and defines a repeatable selection test."
+        },
+        {
+          "title": "Backcross claim review",
+          "prompt": "A line is labeled as a backcross but the pedigree notes are incomplete. Determine what can and cannot be claimed.",
+          "evidenceToCollect": [
+            "verified parent IDs",
+            "cross direction",
+            "generation records",
+            "source uncertainty",
+            "available genetic or progeny evidence"
+          ],
+          "successCheck": "The final statement preserves uncertainty and does not convert a breeder label into verified parentage."
+        }
+      ]
     },
     {
       "id": "lifecycle-propagation",
@@ -515,6 +580,14 @@
           "organization": "University of Missouri Extension",
           "reviewed": 2026,
           "note": "Practical reference for cutting sanitation, humidity, rooting media, and post-rooting acclimation."
+        },
+        {
+          "title": "Morphological Characterization of Cannabis sativa L. Throughout Its Complete Life Cycle",
+          "organization": "Plants",
+          "year": 2023,
+          "doi": "10.3390/plants12203646",
+          "url": "https://www.mdpi.com/2223-7747/12/20/3646",
+          "note": "Cannabis-specific morphological reference for developmental stages; stage timing remains genotype- and environment-dependent."
         }
       ],
       "referenceGuide": {
@@ -565,7 +638,32 @@
           "propagation failure differential"
         ],
         "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
-      }
+      },
+      "practiceScenarios": [
+        {
+          "title": "Rooted cutting stalls after transplant",
+          "prompt": "A clone has visible roots but stops growing after potting up. Determine whether the problem is rooting, acclimation, root-zone condition, or environmental demand.",
+          "evidenceToCollect": [
+            "root quality",
+            "humidity transition",
+            "light change",
+            "root-zone moisture and temperature",
+            "new-growth timeline"
+          ],
+          "successCheck": "The learner defines readiness by continued growth after transition rather than visible roots alone."
+        },
+        {
+          "title": "Seedlings of the same age look different",
+          "prompt": "Two seedlings germinated on the same day but differ in size and development. Decide whether calendar age is enough to choose the next operation.",
+          "evidenceToCollect": [
+            "developmental stage",
+            "root and shoot growth",
+            "environment",
+            "seed lot/genetic identity"
+          ],
+          "successCheck": "The learner uses developmental criteria rather than date alone."
+        }
+      ]
     },
     {
       "id": "environment-vpd",
@@ -700,6 +798,18 @@
           "title": "Controlled Environment Agriculture resources",
           "organization": "Cornell University",
           "note": "CEA framework linking horticulture, environmental control, lighting, and engineering."
+        },
+        {
+          "title": "Botrytis Blight",
+          "organization": "Cornell Greenhouse Horticulture",
+          "url": "https://greenhouse.cornell.edu/pests-diseases/disease-factsheets/botrytis-blight/",
+          "note": "Greenhouse disease reference linking humidity, condensation, sanitation, and ventilation. Transfer the mechanism, not crop-specific treatment instructions."
+        },
+        {
+          "title": "Greenhouses & Growth Chambers",
+          "organization": "Cornell University Agricultural Experiment Station",
+          "url": "https://cals.cornell.edu/agricultural-experiment-station/greenhouses-growth-chambers",
+          "note": "Controlled-environment framework for temperature, light, humidity, CO2, and experimental control."
         }
       ],
       "referenceGuide": {
@@ -751,7 +861,33 @@
           "leaf-versus-air VPD comparison"
         ],
         "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
-      }
+      },
+      "practiceScenarios": [
+        {
+          "title": "Room-average RH looks safe but flowers stay wet",
+          "prompt": "The room controller reports acceptable RH while interior canopy surfaces remain damp overnight.",
+          "evidenceToCollect": [
+            "canopy RH",
+            "leaf/surface temperature",
+            "dew point",
+            "air movement",
+            "time-of-day trend"
+          ],
+          "successCheck": "The learner identifies spatial microclimate and condensation risk rather than trusting one room-average sensor."
+        },
+        {
+          "title": "VPD chart says ideal but plants disagree",
+          "prompt": "Displayed VPD is within a preferred chart band, yet leaves show excessive demand.",
+          "evidenceToCollect": [
+            "leaf temperature",
+            "sensor location",
+            "airflow",
+            "root-zone water status",
+            "light intensity"
+          ],
+          "successCheck": "The learner treats VPD as context and tests whether the measured inputs represent the leaf environment."
+        }
+      ]
     },
     {
       "id": "lighting",
@@ -982,7 +1118,33 @@
           "canopy light-distribution diagram"
         ],
         "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
-      }
+      },
+      "practiceScenarios": [
+        {
+          "title": "Center canopy is thriving, edges are not",
+          "prompt": "A single PPFD reading under the fixture center is high, but edge plants stretch and develop differently.",
+          "evidenceToCollect": [
+            "grid PPFD map",
+            "canopy height",
+            "fixture geometry",
+            "DLI",
+            "leaf temperature"
+          ],
+          "successCheck": "The learner replaces one-point intensity with a spatial light-distribution assessment."
+        },
+        {
+          "title": "Increasing fixture power raises stress",
+          "prompt": "Power is increased to improve growth but leaves become hotter and plant response worsens.",
+          "evidenceToCollect": [
+            "before/after PPFD",
+            "leaf temperature",
+            "VPD",
+            "photoperiod",
+            "root-zone response"
+          ],
+          "successCheck": "The learner separates photons from heat/environment interactions and defines a reversible test."
+        }
+      ]
     },
     {
       "id": "water-ph-ec",
@@ -1116,6 +1278,12 @@
           "title": "Greenhouse irrigation water quality and alkalinity guidance",
           "organization": "University Extension systems",
           "note": "General greenhouse-water framework distinguishing pH, alkalinity, EC, and substrate effects."
+        },
+        {
+          "title": "A Water Quality Toolkit for Greenhouse and Nursery Production",
+          "organization": "Penn State Extension",
+          "url": "https://extension.psu.edu/a-water-quality-toolkit-for-greenhouse-and-nursery-production",
+          "note": "Distinguishes pH, alkalinity, hardness, and EC and emphasizes recordkeeping and water-source testing."
         }
       ],
       "referenceGuide": {
@@ -1167,7 +1335,33 @@
           "dryback/irrigation timeline"
         ],
         "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
-      }
+      },
+      "practiceScenarios": [
+        {
+          "title": "Feed pH looks correct but root-zone performance declines",
+          "prompt": "Irrigation solution pH is stable, but plants and root-zone readings trend worse over several irrigations.",
+          "evidenceToCollect": [
+            "source water pH, alkalinity, hardness and EC",
+            "feed EC",
+            "root-zone/sample location",
+            "irrigation volume and dryback",
+            "meter verification"
+          ],
+          "successCheck": "The learner does not treat source-water pH as a complete water-quality diagnosis."
+        },
+        {
+          "title": "Runoff EC spikes once",
+          "prompt": "One runoff sample has a much higher EC than expected. Decide whether to change the feed immediately.",
+          "evidenceToCollect": [
+            "sample timing and location",
+            "irrigation volume",
+            "dryback",
+            "meter check",
+            "repeat comparable samples"
+          ],
+          "successCheck": "The learner recognizes sampling and concentration context and waits for comparable evidence unless risk requires immediate action."
+        }
+      ]
     },
     {
       "id": "nutrition-media",
@@ -1366,7 +1560,33 @@
           "differential diagnosis matrix"
         ],
         "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
-      }
+      },
+      "practiceScenarios": [
+        {
+          "title": "Yellow leaves after a recipe change",
+          "prompt": "Lower leaves yellow after a nutrient change. Determine whether the recipe is the primary cause.",
+          "evidenceToCollect": [
+            "symptom distribution",
+            "root health",
+            "feed/root-zone pH and EC",
+            "irrigation pattern",
+            "environment and stage"
+          ],
+          "successCheck": "The learner keeps root-zone, watering, environment, and nutrient explanations in the differential."
+        },
+        {
+          "title": "Two media types, same feed, different response",
+          "prompt": "Plants receiving the same solution behave differently in two substrates.",
+          "evidenceToCollect": [
+            "media composition",
+            "water-holding behavior",
+            "CEC/buffering context",
+            "dryback",
+            "root-zone pH/EC"
+          ],
+          "successCheck": "The learner explains why identical irrigation chemistry does not guarantee identical root-zone conditions."
+        }
+      ]
     },
     {
       "id": "plant-health-ipm",
@@ -1565,7 +1785,33 @@
           "IPM prevention-to-verification loop"
         ],
         "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
-      }
+      },
+      "practiceScenarios": [
+        {
+          "title": "Spots appear in one corner of a room",
+          "prompt": "Leaf spots are clustered in one zone. Build an IPM response without assuming disease from appearance alone.",
+          "evidenceToCollect": [
+            "distribution map",
+            "leaf surfaces and roots",
+            "environmental microclimate",
+            "pest signs",
+            "recent movement and sanitation history"
+          ],
+          "successCheck": "The learner separates symptom, suspected cause, containment, confirmation, and follow-up scouting."
+        },
+        {
+          "title": "Control applied but counts do not fall",
+          "prompt": "A treatment was applied, yet target counts remain similar.",
+          "evidenceToCollect": [
+            "target identification",
+            "life stage",
+            "pre/post counts with denominator",
+            "coverage/timing",
+            "compatibility and environmental context"
+          ],
+          "successCheck": "The learner evaluates efficacy before escalating and does not automatically label the failure resistance."
+        }
+      ]
     },
     {
       "id": "training-canopy",
@@ -1697,6 +1943,12 @@
           "title": "Plant architecture and pruning principles",
           "organization": "Horticultural science literature",
           "note": "General basis for apical control, branch response, wound recovery, and canopy management."
+        },
+        {
+          "title": "Peach Tree Pruning — Managing Light and Crop Load",
+          "organization": "Penn State Extension",
+          "url": "https://extension.psu.edu/peach-tree-pruning-managing-light-and-crop-load",
+          "note": "General horticultural evidence for pruning responses and canopy light penetration. Architecture concepts transfer; fruit-tree thresholds do not."
         }
       ],
       "referenceGuide": {
@@ -1747,7 +1999,33 @@
           "light-and-airflow cross-section"
         ],
         "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
-      }
+      },
+      "practiceScenarios": [
+        {
+          "title": "Dense canopy after aggressive topping",
+          "prompt": "Training produced many shoots but lower canopy light and airflow worsened.",
+          "evidenceToCollect": [
+            "canopy dimensions",
+            "PPFD by zone",
+            "branch density",
+            "air movement",
+            "recovery and stage"
+          ],
+          "successCheck": "The learner judges training by the original objective and measured canopy distribution rather than shoot count."
+        },
+        {
+          "title": "One plant recovers slowly after bending",
+          "prompt": "A plant lags after structural training while neighbors recover quickly.",
+          "evidenceToCollect": [
+            "injury location",
+            "plant identity",
+            "root-zone condition",
+            "environment",
+            "pre-intervention vigor"
+          ],
+          "successCheck": "The learner recognizes genotype/plant-condition differences and avoids universal recovery timelines."
+        }
+      ]
     },
     {
       "id": "harvest-postharvest",
@@ -1945,7 +2223,34 @@
           "batch postharvest timeline"
         ],
         "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
-      }
+      },
+      "practiceScenarios": [
+        {
+          "title": "Top flowers look ready before lower flowers",
+          "prompt": "Maturity observations differ strongly by canopy position.",
+          "evidenceToCollect": [
+            "defined sampling positions",
+            "tissue type",
+            "trichome/stigma method",
+            "disease/weather risk",
+            "product goal"
+          ],
+          "successCheck": "The learner builds a representative maturity decision rather than harvesting from one attractive sample."
+        },
+        {
+          "title": "Dry room RH is stable but product dries unevenly",
+          "prompt": "Room RH remains steady while batches from different rack positions finish differently.",
+          "evidenceToCollect": [
+            "product temperature",
+            "rack/location",
+            "airflow",
+            "mass loss",
+            "load geometry",
+            "moisture or water activity where available"
+          ],
+          "successCheck": "The learner distinguishes room setpoint from local product drying behavior."
+        }
+      ]
     },
     {
       "id": "outdoor",
@@ -2078,6 +2383,18 @@
           "title": "Field microclimate and soil-water measurement principles",
           "organization": "Land-grant university extension",
           "note": "General basis for site mapping, drainage, irrigation, and weather-risk management."
+        },
+        {
+          "title": "High-Density Apple Planning Budget — Site Selection",
+          "organization": "University of Missouri Extension",
+          "url": "https://extension.missouri.edu/publications/g712",
+          "note": "General site-selection principles for full sun, drainage, frost, wind, and terrain. Crop-specific economics and thresholds are not transferred to Cannabis."
+        },
+        {
+          "title": "Web Soil Survey",
+          "organization": "USDA Natural Resources Conservation Service",
+          "url": "https://websoilsurvey.nrcs.usda.gov/",
+          "note": "Official soil survey resource for site-level soil and hydrologic context; field verification is still required."
         }
       ],
       "referenceGuide": {
@@ -2129,7 +2446,35 @@
           "weather-risk response matrix"
         ],
         "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
-      }
+      },
+      "practiceScenarios": [
+        {
+          "title": "Two possible planting sites",
+          "prompt": "One site gets more sun but has poor drainage and wind exposure; another is slightly shaded but better protected.",
+          "evidenceToCollect": [
+            "sun/DLI estimate",
+            "soil/drainage",
+            "wind",
+            "water access",
+            "frost/low-area risk",
+            "security/pollen context"
+          ],
+          "successCheck": "The learner makes a documented site tradeoff instead of choosing from sunlight alone."
+        },
+        {
+          "title": "Heavy rain arrives during flowering",
+          "prompt": "A multi-day wet period is forecast during dense flowering.",
+          "evidenceToCollect": [
+            "forecast and duration",
+            "canopy density",
+            "disease history",
+            "air movement",
+            "support and drainage",
+            "inspection plan"
+          ],
+          "successCheck": "The learner creates a site-specific prevention and post-event verification plan rather than relying on a generic calendar."
+        }
+      ]
     },
     {
       "id": "research-measurement",
@@ -2279,6 +2624,21 @@
           "organization": "University of Minnesota Extension",
           "reviewed": 2022,
           "note": "Extension guidance emphasizing controls, randomization, true replication, avoidance of pseudoreplication, and limits on extrapolation."
+        },
+        {
+          "title": "Guide for the Use of the International System of Units (SI)",
+          "organization": "National Institute of Standards and Technology",
+          "year": 2008,
+          "doi": "10.6028/NIST.SP.811e2008",
+          "url": "https://www.nist.gov/publications/guide-use-international-system-units-si",
+          "note": "Authoritative guidance for quantity, unit, symbol, prefix, and reporting discipline."
+        },
+        {
+          "title": "Guidelines for Evaluating and Expressing the Uncertainty of NIST Measurement Results",
+          "organization": "National Institute of Standards and Technology",
+          "year": 1994,
+          "url": "https://www.nist.gov/pml/nist-technical-note-1297/nist-guidelines-evaluating-and-expressing-uncertainty-nist-measurement",
+          "note": "Measurement uncertainty framework used to distinguish repeatability, calibration, and uncertainty from biological variation."
         }
       ],
       "referenceGuide": {
@@ -2329,7 +2689,34 @@
           "measurement uncertainty/control-chart graphic"
         ],
         "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
-      }
+      },
+      "practiceScenarios": [
+        {
+          "title": "A/B nutrient trial",
+          "prompt": "You want to know whether a new nutrient program improves growth.",
+          "evidenceToCollect": [
+            "predefined outcome",
+            "control treatment",
+            "independent replicates",
+            "randomization/blocking",
+            "same seed/clone context",
+            "measurement method"
+          ],
+          "successCheck": "The design avoids pseudoreplication and defines what result would support or fail to support the hypothesis."
+        },
+        {
+          "title": "Meter shows more decimal places after upgrade",
+          "prompt": "A new meter displays 0.01-unit resolution while the old one displayed 0.1. Decide whether measurements are now more accurate.",
+          "evidenceToCollect": [
+            "reference check",
+            "repeatability",
+            "calibration",
+            "environment",
+            "manufacturer performance specifications"
+          ],
+          "successCheck": "The learner separates display resolution from accuracy, bias, precision, and uncertainty."
+        }
+      ]
     },
     {
       "id": "general-reference",
@@ -2461,6 +2848,19 @@
           "title": "SI unit and measurement reporting principles",
           "organization": "NIST",
           "note": "General reference for units, conversions, precision, and measurement communication."
+        },
+        {
+          "title": "How to do research on your farm",
+          "organization": "University of Minnesota Extension",
+          "reviewed": 2022,
+          "url": "https://extension.umn.edu/courses-and-events/for-professionals/on-farm-research/how-to-do-research-on-your-farm",
+          "note": "Practical framework for controls, replication, randomization, confounding, pseudoreplication, and limits on extrapolation."
+        },
+        {
+          "title": "NIST Calibration Policies",
+          "organization": "National Institute of Standards and Technology",
+          "url": "https://www.nist.gov/calibrations/policies",
+          "note": "Clarifies that calibration is only one component of total measurement uncertainty and does not guarantee future instrument performance."
         }
       ],
       "referenceGuide": {
@@ -2512,7 +2912,34 @@
           "observation-measurement-decision loop"
         ],
         "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
-      }
+      },
+      "practiceScenarios": [
+        {
+          "title": "Unknown plant problem",
+          "prompt": "You have one photo and a claim that the plant is nutrient deficient. Route the question through the THC system.",
+          "evidenceToCollect": [
+            "whole-plant context",
+            "stage",
+            "root-zone data",
+            "environment",
+            "recent changes",
+            "pest/disease evidence"
+          ],
+          "successCheck": "The learner chooses an appropriate subject/tool path and does not treat the photo as proof."
+        },
+        {
+          "title": "Conflicting advice online",
+          "prompt": "Two guides recommend different numerical targets for the same cultivation variable.",
+          "evidenceToCollect": [
+            "crop/system context",
+            "measurement method",
+            "source quality",
+            "population/cultivar",
+            "outcome measured"
+          ],
+          "successCheck": "The learner compares applicability and evidence instead of selecting the more confident number."
+        }
+      ]
     }
   ],
   "expansionMetadata": {
