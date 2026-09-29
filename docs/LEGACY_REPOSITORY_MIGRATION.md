@@ -182,3 +182,19 @@ Decision:
 - future production integration belongs in `dtfgenetics/Thc` through the deployment/project registries, not through this legacy shared-UI component.
 
 No code migration is required. This wrapper is historical integration evidence only.
+
+
+### Legacy branch-lifecycle resolution — non-PR branches classified
+
+A focused review of the remaining `dtf-thc-hub` branches with no matching pull-request record found no new canonical production source:
+
+- `docs/clarify-release-workspace-role` — historical documentation. Its core warning that the legacy hub is not whole-site production authority is superseded by the stronger migration/canonical-owner warning now merged on legacy `main`.
+- `fix/visual-structure-genetics-shop-20260921` — checked core `apps/dtfseeds/src/main.jsx` and `packages/shared-ui/src/styles.css`; both are byte-identical to legacy `main`. Treat as absorbed/superseded unless a later path-specific audit proves otherwise.
+- `multiplayer-game-ui-polish-20260905` — checked shared game-experience CSS plus Weedopolis/site entrypoints. The branch CSS is a strict subset of legacy `main`; current `main` adds game-hub discovery/filtering/mobile rules. Treat branch as superseded.
+- `reconcile/education-genetics-current-main` — recovered genetics propagation, genetics/propagation crosswalk, and Grow Doc genetics targets are byte-identical to legacy `main`. Treat as absorbed.
+- `reconcile/branch-inventory-current-main` — branch package metadata lacks the audit commands, extra regression tests, and branch-quality tooling present on legacy `main`. Treat as superseded by later audit work.
+- `system/full-quality-audit-suite` — branch package metadata likewise predates the visual/game/quality/branch/defect audit commands and expanded tests now present on legacy `main`. Treat as superseded by later full-quality-audit work.
+
+Combined with the PR lifecycle review, most named legacy branches are either already merged into `main`, explicitly superseded by later merged branches, or covered by the classifications above.
+
+Branch history therefore no longer blocks archive on known source-code functionality. The remaining archive blockers are asset provenance/retention and any final external-reference/deployment checks.
