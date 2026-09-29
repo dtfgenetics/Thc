@@ -1,0 +1,327 @@
+{
+  "schemaVersion": "1.0.0",
+  "volumeId": "THC-ENC-V21",
+  "status": "controlled-draft-complete-review-required",
+  "publicationAuthorized": false,
+  "controlledRange": {
+    "start": "THC-ENC-411",
+    "end": "THC-ENC-415"
+  },
+  "lessons": [
+    {
+      "id": "THC-ENC-411",
+      "number": 411,
+      "title": "Harvest, Drying, Curing, and Storage Records",
+      "primaryFormat": "Data / QA",
+      "requiredTeachingVisual": "Postharvest batch identity and condition timeline",
+      "objective": "Preserve batch identity and measured conditions from harvest decision through drying, conditioning, storage, sampling, hold, and release.",
+      "termsToKnow": [
+        "harvest batch",
+        "sub-batch",
+        "chain of identity",
+        "incoming mass",
+        "drying load",
+        "water activity",
+        "storage excursion",
+        "hold",
+        "release"
+      ],
+      "coreScience": [
+        "Postharvest records begin before the first cut. Link the harvest decision to crop identity, cultivar or line, field or room, flowering history, plant-health status, treatments, weather, maturity observations, assigned batch, tools, workers, and destination. Whole-plant, branch, wet-trim, dry-trim, and separated-flower workflows create different units and must retain labels through every transfer.",
+        "Drying records need load geometry and position as well as room averages. Record rack, line, height, incoming mass and form, sensor locations, air and product temperature, humidity, dew point, airflow or equipment state, mass change, moisture or water activity samples, inspection findings, interventions, and final transfer. Conditioning or curing records should define the process, starting material state, container, fill, headspace, openings or mixing, sampling, and acceptance evidence.",
+        "Storage records connect package, seal, product form, mass, environment, light, oxygen controls where used, excursions, retained samples, laboratory results, inventory movements, and disposition. A stem snap, jar humidity, calendar day, or one water-activity result is not a complete release decision. Suspect contamination, identity loss, or unexplained wetness requires hold and investigation."
+      ],
+      "cultivationRelevance": [
+        "Use one event timeline and linked IDs so a reviewer can reconstruct who handled each batch, where it was, what conditions occurred, which samples represented it, and who authorized release."
+      ],
+      "measureAndRecord": [
+        "Crop/plant/harvest/sub-batch IDs; decision and approver; cut/trim/transfer times; personnel/tools/cleaning; incoming/final mass; drying location and load map; sensor data; moisture/aW method and sample map; defects/holds; conditioning/storage container; excursions; laboratory and retained samples; release/disposition."
+      ],
+      "misconceptions": [
+        "A dry-room average describes every flower.",
+        "A fixed day count defines drying or curing completion.",
+        "A passing COA erases missing batch identity or uncontrolled exposure."
+      ],
+      "evidenceLimits": [
+        "Postharvest specifications, sampling, tests, storage, remediation, and release authority vary by product and jurisdiction."
+      ],
+      "crossLinks": "THC-ENC-341–360; THC-UG-029–032; THC-ENC-404–406; THC-ENC-412–414.",
+      "sourceNotes": [
+        "V21-SRC-002",
+        "V21-SRC-008",
+        "V21-SRC-019",
+        "V21-SRC-020",
+        "V21-SRC-023",
+        "V21-SRC-033"
+      ],
+      "knowledgeCheck": [
+        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
+        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+        "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "harvest-drying-curing-and-storage-records",
+      "route": "/encyclopedia/harvest-drying-curing-and-storage-records"
+    },
+    {
+      "id": "THC-ENC-412",
+      "number": 412,
+      "title": "Laboratory Sample and Result Tracking",
+      "primaryFormat": "Science lesson",
+      "requiredTeachingVisual": "Sample-to-COA chain-of-custody and result map",
+      "objective": "Connect laboratory results to sample identity, chain of custody, preparation, method, scope, uncertainty, and batch inference.",
+      "termsToKnow": [
+        "chain of custody",
+        "test method",
+        "scope",
+        "matrix",
+        "aliquot",
+        "homogenization",
+        "detection limit",
+        "quantitation limit",
+        "certificate of analysis",
+        "proficiency testing"
+      ],
+      "coreScience": [
+        "A laboratory result belongs to the submitted sample and method. Extending it to a plant, batch, product, or cultivar requires representative sampling and intact identity. The record should link sample ID, source population, increments, composite or individual status, collector, date, mass, container, preservation, transport, receipt condition, laboratory accession, subsampling, preparation, and remaining retained material.",
+        "Method scope matters. A validated cannabinoid method for dried flower may not be valid for roots, extracts, wet tissue, soil, or a different concentration range. Results need units, wet or dry basis, sample preparation, method version, instrument platform, calibration, quality controls, detection and quantitation limits, dilution, uncertainty where available, and accreditation scope. “Not detected” means below the method’s detection capability under the reported conditions—not zero.",
+        "Certificates of analysis should be reviewed for identity, dates, authorized signatures, amendments, qualifiers, calculations, and linked corrections. Interlaboratory variation can arise from sampling, moisture correction, extraction, calibration, chromatography, reference materials, analyte definitions, and decision rules. Retests require a written rationale; selecting the most favorable result without investigating disagreement is not evidence control."
+      ],
+      "cultivationRelevance": [
+        "Maintain a sample manifest and result-review checklist. Preserve original reports, amended reports, machine-readable data where possible, and the decision record that used them."
+      ],
+      "measureAndRecord": [
+        "Sample/source/batch IDs; collection plan and increments; collector/time; container/preservation; custody transfers; lab/accession; matrix; preparation/homogenization; method/version/scope; units/basis; LOD/LOQ; QC/qualifiers; result/uncertainty; report revision; retained sample; review and disposition."
+      ],
+      "misconceptions": [
+        "A COA proves every unit in the batch has the reported value.",
+        "Not detected means the analyte is absent.",
+        "Accreditation means every method and matrix used by the laboratory is within scope."
+      ],
+      "evidenceLimits": [
+        "Laboratory competence and method performance do not repair biased sampling, identity loss, inappropriate inference, or a result outside method scope."
+      ],
+      "crossLinks": "THC-ENC-359; THC-ENC-395; THC-ENC-404–405; THC-ENC-411; THC-ENC-413.",
+      "sourceNotes": [
+        "V21-SRC-008",
+        "V21-SRC-020",
+        "V21-SRC-021",
+        "V21-SRC-022",
+        "V21-SRC-026"
+      ],
+      "knowledgeCheck": [
+        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
+        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+        "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "laboratory-sample-and-result-tracking",
+      "route": "/encyclopedia/laboratory-sample-and-result-tracking"
+    },
+    {
+      "id": "THC-ENC-413",
+      "number": 413,
+      "title": "Deviations, Root-Cause Analysis, and CAPA",
+      "primaryFormat": "Diagnostic",
+      "requiredTeachingVisual": "Deviation containment, investigation, CAPA, and effectiveness workflow",
+      "objective": "Control departures from requirements through containment, evidence preservation, impact assessment, root-cause analysis, corrective action, and effectiveness verification.",
+      "termsToKnow": [
+        "deviation",
+        "nonconformity",
+        "correction",
+        "containment",
+        "root cause",
+        "contributing cause",
+        "CAPA",
+        "effectiveness check",
+        "disposition"
+      ],
+      "coreScience": [
+        "A deviation is a departure from an approved requirement, method, range, identity, process, or record. First protect people, crop, samples, equipment, and data. Containment can include stopping work, isolating material, preserving logs, marking affected units, securing samples, and preventing further processing. A correction restores an immediate condition; it is not automatically a corrective action that prevents recurrence.",
+        "Investigation should reconstruct the event timeline and define the problem precisely: what requirement applied, what occurred, when, where, to which units, for how long, and with what evidence. Review equipment, environment, materials, methods, training, workload, design, software, and prior events. “Operator error” is usually incomplete unless the system explains why the error was possible, undetected, or repeated. Five Whys, fishbone diagrams, fault trees, and change analysis organize questions but do not prove cause.",
+        "CAPA should address verified or strongly supported causes, assign owners and dates, control unintended consequences, update affected documents and training, and define measurable effectiveness checks. More testing can add evidence but cannot always prove an unsampled batch was unaffected. Closure requires authorized disposition of material and data, completion of actions, and evidence that recurrence risk was reduced."
+      ],
+      "cultivationRelevance": [
+        "Use a single controlled deviation record linked to affected plants, batches, instruments, files, samples, SOP versions, and release decisions."
+      ],
+      "measureAndRecord": [
+        "Deviation ID; requirement and version; event date/time/location; reporter; affected entities; immediate safety/containment; raw evidence; timeline; impact and uncertainty; causes and evidence; correction; CAPA owner/due date; change control; effectiveness metric/date; disposition/approver; closure."
+      ],
+      "misconceptions": [
+        "Passing a retest automatically invalidates the original failure.",
+        "Root cause is always one person or one failed component.",
+        "Completing the action item proves the CAPA was effective."
+      ],
+      "evidenceLimits": [
+        "Root-cause certainty can remain incomplete; decisions must state evidence, uncertainty, residual risk, and authority."
+      ],
+      "crossLinks": "THC-ENC-360; THC-ENC-405–412; THC-ENC-414; all controlled release records.",
+      "sourceNotes": [
+        "V21-SRC-008",
+        "V21-SRC-026",
+        "V21-SRC-027",
+        "V21-SRC-028",
+        "V21-SRC-029"
+      ],
+      "knowledgeCheck": [
+        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
+        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+        "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "deviations-root-cause-analysis-and-capa",
+      "route": "/encyclopedia/deviations-root-cause-analysis-and-capa"
+    },
+    {
+      "id": "THC-ENC-414",
+      "number": 414,
+      "title": "Control Charts, Trends, and Alert Limits",
+      "primaryFormat": "Science lesson",
+      "requiredTeachingVisual": "Process trend, control-limit, and specification comparison",
+      "objective": "Use time-series graphics and control charts to distinguish expected variation, unusual signals, drift, and decision limits.",
+      "termsToKnow": [
+        "run chart",
+        "control chart",
+        "center line",
+        "control limit",
+        "specification limit",
+        "common cause",
+        "special cause",
+        "alert limit",
+        "action limit",
+        "autocorrelation"
+      ],
+      "coreScience": [
+        "A run chart preserves values in time order and can reveal shifts, trends, cycles, and sudden changes. A control chart adds statistically derived limits based on a stable process model. Control limits describe expected process variation; specification, alert, and action limits describe requirements or decisions. They are not interchangeable. A process can be stable but consistently outside a specification, or unstable while most individual points remain inside a wide specification.",
+        "Chart choice depends on the data: continuous measurements, counts, proportions, individual values, subgroup means, ranges, or moving ranges. Sampling interval, subgroup definition, measurement resolution, censoring, missing data, seasonality, and autocorrelation affect limits and signals. Recalculating limits after every excursion can hide deterioration. Limits should be established from an appropriate reference period and changed through documented review.",
+        "Rules such as one point beyond a limit, several points on one side, or a sustained trend are prompts for investigation, not proof of a specific cause. Multiple simultaneous charts increase false alarms. Biological growth and seasonal outdoor data may have deliberate trends, so detrending, stage-specific baselines, or model-based residuals may be needed. Preserve raw data and annotate irrigation, maintenance, treatment, weather, and crop-stage events."
+      ],
+      "cultivationRelevance": [
+        "Use charts for stable, repeated processes such as meter checks, irrigation delivery, room conditions, drying mass, laboratory controls, and recurring quality metrics. Define who reviews signals and what action follows."
+      ],
+      "measureAndRecord": [
+        "Process and measurand; data source; sampling/subgroup rule; time base; chart type; center and limit method; reference period; specification/alert/action limits; missing/outlier rule; annotations; signal; investigation; action; effectiveness."
+      ],
+      "misconceptions": [
+        "A point inside control limits is automatically acceptable.",
+        "Specification limits should be used as control limits.",
+        "Every visible trend proves a causal process change."
+      ],
+      "evidenceLimits": [
+        "Control-chart validity depends on a suitable process model, independent or appropriately modeled data, stable measurement, and controlled subgrouping."
+      ],
+      "crossLinks": "THC-ENC-402–406; THC-ENC-413; THC-ENC-416–417.",
+      "sourceNotes": [
+        "V21-SRC-009",
+        "V21-SRC-018",
+        "V21-SRC-019",
+        "V21-SRC-026",
+        "V21-SRC-030"
+      ],
+      "knowledgeCheck": [
+        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
+        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+        "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "control-charts-trends-and-alert-limits",
+      "route": "/encyclopedia/control-charts-trends-and-alert-limits"
+    },
+    {
+      "id": "THC-ENC-415",
+      "number": 415,
+      "title": "Reading a Scientific Paper",
+      "primaryFormat": "Science lesson",
+      "requiredTeachingVisual": "Scientific-paper evidence extraction map",
+      "objective": "Evaluate a paper by connecting its question, material, design, methods, results, uncertainty, limitations, and publication status to the claim being used.",
+      "termsToKnow": [
+        "research question",
+        "hypothesis",
+        "population",
+        "method",
+        "endpoint",
+        "effect size",
+        "confidence interval",
+        "peer review",
+        "conflict of interest",
+        "correction",
+        "retraction"
+      ],
+      "coreScience": [
+        "Begin with the claim you need to evaluate, not the paper’s title. Identify the research question, biological material, cultivar or accession, propagation mode, plant count, experimental unit, environment, treatments, controls, endpoints, sampling positions, methods, and analysis. Abstracts compress evidence and may omit exclusions, null results, protocol details, uncertainty, and limitations.",
+        "Read figures and tables with units, denominators, axes, sample sizes, error bars, and captions. Statistical significance does not state biological importance. Examine effect size, uncertainty, variability, missing data, model assumptions, multiple comparisons, and whether the stated conclusion matches the design. A controlled-environment result may establish mechanism while having limited transfer to commercial rooms or outdoor crops.",
+        "Check the source’s current status. Find the DOI, journal page, PubMed record where available, data and protocol links, corrections, expressions of concern, or retractions. Preprints and reviews can be useful but have different roles. Funding and conflicts do not automatically invalidate work, yet they should inform scrutiny of design, selective reporting, and claims. Record exact page, figure, table, or section supporting each project claim."
+      ],
+      "cultivationRelevance": [
+        "Create a structured evidence-extraction record instead of saving only a citation. Separate what the study observed, what the authors inferred, what the project may publish, and what remains unresolved."
+      ],
+      "measureAndRecord": [
+        "Citation/DOI/version/status; claim; exact evidence location; material and identity; design and experimental unit; treatment/control; sample size; method; endpoint/units; effect/uncertainty; limitations; conflicts; data availability; applicability; project decision; reviewer/date."
+      ],
+      "misconceptions": [
+        "Peer reviewed means the paper is correct and universally applicable.",
+        "A significant p-value proves a large useful effect.",
+        "A review article is always stronger evidence than the primary studies it summarizes."
+      ],
+      "evidenceLimits": [
+        "Paper appraisal reduces misuse but cannot reveal all errors, unpublished data, undisclosed deviations, or future corrections."
+      ],
+      "crossLinks": "THC-ENC-416–420; every lesson claim ledger and source register.",
+      "sourceNotes": [
+        "V21-SRC-009",
+        "V21-SRC-014",
+        "V21-SRC-015",
+        "V21-SRC-030",
+        "V21-SRC-034"
+      ],
+      "knowledgeCheck": [
+        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
+        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+        "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "reading-a-scientific-paper",
+      "route": "/encyclopedia/reading-a-scientific-paper"
+    }
+  ]
+}
