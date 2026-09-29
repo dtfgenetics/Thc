@@ -22,6 +22,28 @@ export function ecComparison(input={}){
   };
 }
 
+export function ionBalanceScreening(input={}){
+  const ca=optionalNumber(input.ca,{min:0}),mg=optionalNumber(input.mg,{min:0}),na=optionalNumber(input.na,{min:0}),k=optionalNumber(input.k,{min:0}),cl=optionalNumber(input.cl,{min:0}),nitrateN=optionalNumber(input.nitrateN??input.no3n,{min:0}),sulfateS=optionalNumber(input.sulfateS??input.so4s,{min:0}),alk=optionalNumber(input.alk,{min:0});
+  const components={
+    calcium:ca===null?null:ca/20.039,
+    magnesium:mg===null?null:mg/12.1525,
+    sodium:na===null?null:na/22.989769,
+    potassium:k===null?null:k/39.0983,
+    chloride:cl===null?null:cl/35.453,
+    nitrate:nitrateN===null?null:nitrateN/14.0067,
+    sulfate:sulfateS===null?null:sulfateS/16.0325,
+    alkalinity:alk===null?null:alk/50
+  };
+  const cationKeys=['calcium','magnesium','sodium','potassium'],anionKeys=['chloride','nitrate','sulfate','alkalinity'];
+  const total=keys=>keys.reduce((sum,key)=>sum+(components[key]??0),0);
+  const cations=total(cationKeys),anions=total(anionKeys),denominator=cations+anions;
+  const missing=[
+    ...(ca===null?['calcium']:[]),...(mg===null?['magnesium']:[]),...(na===null?['sodium']:[]),...(k===null?['potassium']:[]),
+    ...(cl===null?['chloride']:[]),...(nitrateN===null?['nitrate-N']:[]),...(sulfateS===null?['sulfate-S']:[]),...(alk===null?['alkalinity']:[])
+  ];
+  return {components,cationsMeqL:cations,anionsMeqL:anions,balanceErrorPercent:denominator>0?(cations-anions)/denominator*100:null,complete:missing.length===0,missing};
+}
+
 export function irrigationMetrics(input={}){
   const appliedMl=optionalNumber(input.appliedMl,{min:0});
   const runoffMl=optionalNumber(input.runoffMl,{min:0});
@@ -65,6 +87,7 @@ export function normalizeWaterReport(input={}){
     alk:num('alk','alkalinity_as_caco3'),
     hard:num('hard','hardness_as_caco3'),
     n:num('n','n_mg_l'),p:num('p','p_mg_l'),k:num('k','k_mg_l'),
+    no3n:num('no3n','nitrate_n_mg_l'),so4s:num('so4s','sulfate_s_mg_l'),
     ca:num('ca','calcium_mg_l'),mg:num('mg','magnesium_mg_l'),s:num('s','sulfur_mg_l'),
     fe:num('fe','iron_mg_l'),mn:num('mn','manganese_mg_l'),zn:num('zn','zinc_mg_l'),
     cu:num('cu','copper_mg_l'),b:num('b','boron_mg_l'),mo:num('mo','molybdenum_mg_l'),
