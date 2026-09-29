@@ -59,7 +59,7 @@
     "validate:terpene-atlas": "node scripts/validate-canonical-tools-mirror.mjs",
     "verify:asset-states": "node scripts/validate-asset-state-registry.mjs",
     "verify:3d-assets": "node scripts/validate-3d-assets.mjs",
-    "verify:project-os": "npm run verify:production-standards && npm run verify:shared-ui-standard && npm run verify:page-composition && npm run verify:cultivation-reference-tools && npm run validate:growlens-release-contract && npm run validate:grow-doc-release-pin && npm run verify:portfolio && npm run games:locations:check && npm run games:registry:check && npm run verify:asset-states && npm run verify:3d-assets && npm run validate:public-suite-qualification-workflow",
+    "verify:project-os": "npm run verify:repository-architecture && npm run verify:production-standards && npm run verify:shared-ui-standard && npm run verify:page-composition && npm run verify:cultivation-reference-tools && npm run validate:growlens-release-contract && npm run validate:grow-doc-release-pin && npm run verify:portfolio && npm run games:locations:check && npm run games:registry:check && npm run verify:asset-states && npm run verify:3d-assets && npm run validate:public-suite-qualification-workflow",
     "verify:cultivation-reference-tools": "node scripts/validate-canonical-tools-mirror.mjs",
     "games:qa:local": "node scripts/game-portfolio-browser-qa.mjs --local",
     "games:qa:live": "node scripts/game-portfolio-browser-qa.mjs --live",
@@ -83,6 +83,7 @@
     "games:registry:docs:test": "node scripts/test-generate-game-registry-docs.mjs",
     "games:skill:check": "node scripts/test-dtf-game-development-skill.mjs",
     "games:registry:preflight-check": "node scripts/test-game-registry-preflight.mjs",
-    "games:registry:guidance-check": "node scripts/test-game-registry-guidance.mjs"
+    "games:registry:guidance-check": "node scripts/test-game-registry-guidance.mjs",
+    "verify:repository-architecture": "node scripts/validate-repository-registry.mjs"
   }
 }
