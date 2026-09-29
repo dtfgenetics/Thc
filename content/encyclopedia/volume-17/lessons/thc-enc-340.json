@@ -1,0 +1,93 @@
+{
+  "id": "THC-ENC-340",
+  "number": 340,
+  "title": "IPM Program Audit and Continuous Improvement",
+  "objective": "Audit an IPM program as a complete system by reviewing prevention, monitoring, diagnosis, decisions, interventions, records, outcomes, recurring failures, and improvement actions over time.",
+  "terms": [
+    {
+      "term": "program audit",
+      "definition": "Structured review of whether an IPM system is designed, implemented, documented, and effective as intended."
+    },
+    {
+      "term": "leading indicator",
+      "definition": "A measure of preventive or process performance that can change before crop loss occurs, such as scouting completion or quarantine compliance."
+    },
+    {
+      "term": "lagging indicator",
+      "definition": "A measure that reflects outcomes already experienced, such as infestation severity, crop loss, or repeated treatment."
+    },
+    {
+      "term": "trend analysis",
+      "definition": "Comparison of comparable records over time to identify direction, recurrence, seasonality, or persistent weak points."
+    },
+    {
+      "term": "continuous improvement",
+      "definition": "Repeated use of evidence from operations and outcomes to refine procedures, training, monitoring, controls, and resource allocation."
+    }
+  ],
+  "termDefinitionsStatus": "controlled_glossary_reconciled_draft",
+  "coreScience": [
+    "An IPM audit should evaluate the full prevention-to-verification chain rather than counting pesticide applications or checking whether a scouting form exists.",
+    "Useful audits combine leading indicators such as inspection completion, quarantine compliance, sanitation verification, trap servicing, training, and response time with lagging indicators such as pest incidence, disease severity, crop loss, repeat events, and treatment frequency.",
+    "Trend analysis requires comparable denominators and methods. Counts from different room sizes, trap densities, scouting routes, crop stages, or sampling effort should not be compared as though they were equivalent.",
+    "Repeated failures can reveal structural causes such as intake risk, blind spots in scouting, sanitation breakdowns, environmental instability, training gaps, ineffective thresholds, or incompatible control programs.",
+    "Continuous improvement closes the loop by converting audit findings into prioritized actions, assigning owners, verifying completion, and checking whether outcomes improve in subsequent cycles."
+  ],
+  "cultivationRelevance": [
+    "Audit IPM at a defined cadence and after major incidents or crop cycles rather than only when severe problems occur.",
+    "Review records across zones and time so one clean room or successful treatment does not hide system-wide weaknesses.",
+    "Track both process compliance and biological outcome; strong paperwork with worsening pest trends is not a successful program.",
+    "Use findings to update scouting routes, quarantine, sanitation, thresholds, training, environmental controls, vendor controls, and CAPA priorities."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Scope",
+      "requirement": "Record crop cycles, rooms, pests/pathogens, time period, and IPM processes included in the audit."
+    },
+    {
+      "field": "Process indicators",
+      "requirement": "Record compliance and timeliness for scouting, quarantine, sanitation, trap service, training, response, and follow-up."
+    },
+    {
+      "field": "Outcome indicators",
+      "requirement": "Record incidence/severity trends, crop impact, recurrence, intervention frequency, and unresolved incidents using comparable denominators."
+    },
+    {
+      "field": "Findings",
+      "requirement": "Classify strengths, gaps, repeated failure modes, data-quality limitations, and risk priorities."
+    },
+    {
+      "field": "Improvement loop",
+      "requirement": "Record actions, owners, deadlines, effectiveness measures, and the next review date."
+    }
+  ],
+  "misconceptions": [
+    "An IPM audit is the same as checking whether pesticides were applied correctly.",
+    "More completed forms always mean the IPM program is improving.",
+    "Raw trap counts can be compared across any room or time period.",
+    "A crop cycle without a major outbreak proves prevention is adequate.",
+    "Continuous improvement means changing procedures frequently even without evidence."
+  ],
+  "evidenceLimits": [
+    "Audit metrics are only as reliable as the underlying sampling, denominators, definitions, and record quality. Benchmarks should be interpreted within the crop, facility, season, and management system rather than treated as universal Cannabis standards."
+  ],
+  "crossLinks": "THC-ENC-321 for IPM architecture; THC-ENC-331–333 for monitoring and decisions; THC-ENC-339 for CAPA; THC-ENC-401–420 future measurement/data/quality layer.",
+  "sourceNotes": [
+    "University of Missouri Extension. Using Integrated Pest Management in Greenhouses and Herbaceous Nurseries. https://extension.missouri.edu/publications/ipm1026",
+    "DTF/THC production standards for deterministic QA, measurable outcomes, and continuous improvement."
+  ],
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "Master Content Map v1.1 controlled title plus newly authored canonical draft",
+    "evidenceControl": "greenhouse_IPM_and_internal_quality_system_sources_seeded",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending_not_recorded",
+    "externalReviewType": "IPM_program_audit_and_continuous_improvement",
+    "releaseTimeReview": "not_started",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_for_review"
+  },
+  "slug": "ipm-program-audit-and-continuous-improvement",
+  "route": "/encyclopedia/ipm-program-audit-and-continuous-improvement"
+}
