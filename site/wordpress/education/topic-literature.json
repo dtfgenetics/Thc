@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 1,
-  "purpose": "Canonical companion literature for THC subject pages. Infographics support these pages; they do not replace the literature.",
+  "schemaVersion": 2,
+  "purpose": "Canonical companion literature for THC subject pages. Each topic must support beginner orientation, field observation, measurement, decision-making, verification, tools, visuals, and deeper evidence; infographics support the literature and never replace it.",
   "topics": [
     {
       "id": "plant-biology",
@@ -160,6 +160,39 @@
           "Do not infer a nutrient disorder from color alone.",
           "Do not assume damage on one organ means the cause originated there."
         ]
+      },
+      "learnerJourney": {
+        "quickAnswer": "Start with the organ and tissue showing the change, then connect its normal function to root-zone, environment, developmental stage, and whole-plant transport before naming a cause.",
+        "observe": [
+          "Affected organ and tissue",
+          "Local versus systemic pattern",
+          "Old versus new growth",
+          "Root and shoot condition together"
+        ],
+        "measure": [
+          "Plant stage and timeline",
+          "Root-zone moisture/condition",
+          "Leaf and air temperature",
+          "Light at the affected canopy position"
+        ],
+        "decide": [
+          "Describe before diagnosing.",
+          "Test whether the symptom fits a local tissue problem or a whole-plant driver.",
+          "Change only one controllable variable at a time when practical.",
+          "Re-observe new growth and progression before accepting the explanation."
+        ],
+        "verify": "A useful explanation should predict what changes next and should remain consistent with root, canopy, environment, and time-series evidence.",
+        "linkedTools": [
+          "/atlas/",
+          "/thc-grow-doc/",
+          "/growlens/"
+        ],
+        "visualRoles": [
+          "labeled plant anatomy",
+          "transport/source-sink system diagram",
+          "symptom-location decision map"
+        ],
+        "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
       }
     },
     {
@@ -314,6 +347,39 @@
           "Do not treat a strain name as genetic verification.",
           "Do not treat one exceptional plant as proof that a trait is fixed."
         ]
+      },
+      "learnerJourney": {
+        "quickAnswer": "Treat names and pedigrees as provenance, not proof. Define traits before selection, preserve parent and generation identity, measure populations consistently, and separate inherited signal from environmental noise.",
+        "observe": [
+          "Variation within siblings and families",
+          "Sex expression and flowering behavior",
+          "Repeatability across environments",
+          "Unexpected segregation or instability"
+        ],
+        "measure": [
+          "Permanent plant/cross IDs",
+          "Population and selected-parent counts",
+          "Predefined trait scores",
+          "Environment and generation for every phenotype"
+        ],
+        "decide": [
+          "Define the breeding objective before making or evaluating the cross.",
+          "Keep source-reported lineage separate from measured identity.",
+          "Select from comparable measurements rather than memory or appearance alone.",
+          "Retest important traits before describing them as stable."
+        ],
+        "verify": "A selection claim becomes stronger when progeny, repeated environments, retained records, and where appropriate genomic or laboratory evidence agree.",
+        "linkedTools": [
+          "/learn/encyclopedia/",
+          "/growlens/",
+          "/learn/research-methods/"
+        ],
+        "visualRoles": [
+          "pedigree map",
+          "generation/segregation diagram",
+          "phenotype selection matrix"
+        ],
+        "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
       }
     },
     {
@@ -466,6 +532,39 @@
           "Do not compare propagation outcomes without preserving method and environment.",
           "Do not force stage transitions by calendar alone when plant development disagrees."
         ]
+      },
+      "learnerJourney": {
+        "quickAnswer": "Identify the plant's developmental stage first; propagation decisions should match tissue age, rooting status, environmental demand, sanitation risk, and the transition the plant must survive next.",
+        "observe": [
+          "Stage and developmental milestones",
+          "Root initiation and root quality",
+          "Shoot growth and turgor",
+          "Transplant/acclimation response"
+        ],
+        "measure": [
+          "Age and dates",
+          "Root-zone temperature/moisture",
+          "Light and photoperiod",
+          "Propagation success and loss rate"
+        ],
+        "decide": [
+          "Use stage—not calendar age alone—to choose the next operation.",
+          "Separate propagation failure from downstream environmental stress.",
+          "Advance plants only when defined readiness criteria are met.",
+          "Preserve source identity through every propagation event."
+        ],
+        "verify": "Successful propagation is confirmed by continued root and shoot growth after transition, not merely by temporary turgor or a visible root.",
+        "linkedTools": [
+          "/growlens/",
+          "/learn/environment-vpd/",
+          "/learn/plant-biology/"
+        ],
+        "visualRoles": [
+          "seed-to-mature lifecycle",
+          "rooting/acclimation sequence",
+          "propagation failure differential"
+        ],
+        "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
       }
     },
     {
@@ -618,6 +717,40 @@
           "Do not use VPD as a stand-alone diagnosis.",
           "Do not assume one room sensor represents every leaf surface."
         ]
+      },
+      "learnerJourney": {
+        "quickAnswer": "Temperature, RH, leaf temperature, airflow, and VPD describe a coupled environment. Measure where the plant actually is and interpret trends rather than chasing one chart number.",
+        "observe": [
+          "Canopy and leaf response",
+          "Condensation or wet surfaces",
+          "Air movement uniformity",
+          "Day/night transition behavior"
+        ],
+        "measure": [
+          "Air temperature and RH",
+          "Leaf temperature",
+          "VPD/dew point",
+          "Spatial sensor differences and trend duration"
+        ],
+        "decide": [
+          "Check sensor placement and validity before changing equipment.",
+          "Use leaf temperature when leaf VPD matters.",
+          "Treat VPD as context, not a universal target.",
+          "Change environment based on plant stage, disease risk, equipment capacity, and measured response."
+        ],
+        "verify": "After a change, confirm both environmental stability and plant response across representative canopy locations.",
+        "linkedTools": [
+          "/vpd-chart/",
+          "/environment-control/",
+          "/root-zone-temperature/",
+          "/growlens/"
+        ],
+        "visualRoles": [
+          "psychrometric relationship diagram",
+          "sensor placement map",
+          "leaf-versus-air VPD comparison"
+        ],
+        "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
       }
     },
     {
@@ -816,6 +949,39 @@
           "Do not substitute fixture wattage for canopy PPFD.",
           "Do not compare DLI without preserving photoperiod and intensity context."
         ]
+      },
+      "learnerJourney": {
+        "quickAnswer": "Measure light at canopy level, convert intensity and photoperiod into DLI when useful, map spatial uniformity, and interpret plant response instead of relying on fixture wattage or hanging height alone.",
+        "observe": [
+          "Canopy posture and bleaching",
+          "Stretch and internode response",
+          "Shaded versus exposed growth",
+          "Spatial uniformity across the canopy"
+        ],
+        "measure": [
+          "PPFD map",
+          "Photoperiod",
+          "DLI",
+          "Fixture distance/power and leaf temperature"
+        ],
+        "decide": [
+          "Measure before raising intensity.",
+          "Use representative canopy points, not one center reading.",
+          "Separate light quantity from spectrum and heat effects.",
+          "Adjust only within cultivar, stage, environment, and equipment limits."
+        ],
+        "verify": "Repeat the PPFD map after fixture, canopy, or room changes and compare plant response over time.",
+        "linkedTools": [
+          "/ppfd-chart/",
+          "/growlens/",
+          "/learn/environment-vpd/"
+        ],
+        "visualRoles": [
+          "PPFD mapping grid",
+          "DLI calculation graphic",
+          "canopy light-distribution diagram"
+        ],
+        "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
       }
     },
     {
@@ -967,6 +1133,40 @@
           "Do not infer alkalinity from pH.",
           "Do not infer nutrient balance from total EC alone."
         ]
+      },
+      "learnerJourney": {
+        "quickAnswer": "Treat source water, irrigation solution, root-zone condition, pH, EC, alkalinity, moisture, and drainage as related measurements—not interchangeable numbers.",
+        "observe": [
+          "Root vigor and color",
+          "Moisture distribution",
+          "Salt deposits or uneven wetting",
+          "Plant response after irrigation"
+        ],
+        "measure": [
+          "Source and feed pH/EC",
+          "Root-zone or runoff context",
+          "Irrigation volume/frequency",
+          "Water alkalinity and temperature when relevant"
+        ],
+        "decide": [
+          "Verify meters before interpreting small differences.",
+          "Define exactly where each sample came from.",
+          "Do not convert EC to ppm without naming the scale/factor.",
+          "Use trends and plant response rather than one runoff reading as proof."
+        ],
+        "verify": "A correction should improve both measured root-zone conditions and subsequent plant development without creating a new imbalance.",
+        "linkedTools": [
+          "/ph-meter/",
+          "/tds-meter/",
+          "/water-quality-lab/",
+          "/dryback-lab/"
+        ],
+        "visualRoles": [
+          "water-to-root-zone sampling map",
+          "pH/EC measurement workflow",
+          "dryback/irrigation timeline"
+        ],
+        "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
       }
     },
     {
@@ -1132,6 +1332,40 @@
           "Do not call every uptake problem nutrient lockout.",
           "Do not stack multiple nutrient corrections before verifying root-zone conditions."
         ]
+      },
+      "learnerJourney": {
+        "quickAnswer": "Diagnose nutrition through media, water, pH, EC, root health, tissue pattern, stage, and recent inputs together. Leaf color by itself is not a nutrient diagnosis.",
+        "observe": [
+          "Old versus new leaf pattern",
+          "Root health",
+          "Media condition",
+          "Distribution across plants and irrigation zones"
+        ],
+        "measure": [
+          "Feed and root-zone pH/EC",
+          "Water quality",
+          "Irrigation/dryback",
+          "Comparable plant and tissue observations"
+        ],
+        "decide": [
+          "Rule out root-zone and measurement problems before adding nutrients.",
+          "Use mobility patterns only as clues, not proof.",
+          "Change recipes cautiously and document the reason.",
+          "Compare treated and unaffected plants over new growth."
+        ],
+        "verify": "A correct intervention should produce a plausible change in new growth and root-zone measurements, not merely alter the damaged leaf.",
+        "linkedTools": [
+          "/ph-meter/",
+          "/tds-meter/",
+          "/water-quality-lab/",
+          "/thc-grow-doc/"
+        ],
+        "visualRoles": [
+          "nutrient mobility pattern map",
+          "root-zone availability diagram",
+          "differential diagnosis matrix"
+        ],
+        "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
       }
     },
     {
@@ -1297,6 +1531,40 @@
           "Do not identify a pest or disease from symptom color alone.",
           "Do not treat before preserving useful evidence when it is safe to document first."
         ]
+      },
+      "learnerJourney": {
+        "quickAnswer": "Use prevention, representative scouting, identification, thresholds/context, least-disruptive controls, records, and verification as one loop. A photo alone should never trigger a confident treatment decision.",
+        "observe": [
+          "Distribution and progression",
+          "Pest life stages or pathogen signs",
+          "Roots, undersides, stems, and flowers",
+          "Clean versus affected zones"
+        ],
+        "measure": [
+          "Incidence/severity",
+          "Trap or scouting counts with denominator",
+          "Environment and recent movement",
+          "Follow-up counts after intervention"
+        ],
+        "decide": [
+          "Separate symptom from confirmed cause.",
+          "Contain uncertain material before moving it.",
+          "Match controls to verified target biology and legal label requirements.",
+          "Preserve untreated/comparable evidence when feasible to judge effectiveness."
+        ],
+        "verify": "Rescout the same defined locations using the same method and confirm that target pressure or disease progression actually changed.",
+        "linkedTools": [
+          "/thc-grow-doc/",
+          "/ipm-scout/",
+          "/atlas/",
+          "/growlens/"
+        ],
+        "visualRoles": [
+          "scouting route",
+          "pest/disease differential tree",
+          "IPM prevention-to-verification loop"
+        ],
+        "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
       }
     },
     {
@@ -1446,6 +1714,39 @@
           "Do not assume more training always improves yield or uniformity.",
           "Do not repeat high-stress interventions before recovery is documented."
         ]
+      },
+      "learnerJourney": {
+        "quickAnswer": "Training changes plant architecture, light distribution, airflow, support, and source–sink relationships. Define the goal first, measure the canopy, and avoid treating every technique as universally beneficial.",
+        "observe": [
+          "Branch angle and spacing",
+          "Canopy depth and shaded zones",
+          "Airflow and crowding",
+          "Recovery after pruning/bending"
+        ],
+        "measure": [
+          "Canopy dimensions",
+          "PPFD by position",
+          "Plant stage and intervention date",
+          "Yield/quality distribution by canopy zone"
+        ],
+        "decide": [
+          "Choose the technique from the architectural problem you are solving.",
+          "Avoid major structural stress without recovery time.",
+          "Measure light distribution before and after training.",
+          "Stop when added manipulation no longer improves the defined objective."
+        ],
+        "verify": "Compare canopy uniformity, plant recovery, and final zone-by-zone outcomes rather than judging success only by appearance.",
+        "linkedTools": [
+          "/ppfd-chart/",
+          "/growlens/",
+          "/learn/plant-biology/"
+        ],
+        "visualRoles": [
+          "before/after canopy architecture",
+          "training decision tree",
+          "light-and-airflow cross-section"
+        ],
+        "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
       }
     },
     {
@@ -1611,6 +1912,39 @@
           "Do not use one trichome photograph as a universal harvest rule.",
           "Do not confuse moisture content with water activity."
         ]
+      },
+      "learnerJourney": {
+        "quickAnswer": "Harvest and postharvest quality depend on representative maturity assessment, clean handling, controlled drying, measurable moisture/water activity, protected storage, and traceable batches—not one trichome color or room RH number.",
+        "observe": [
+          "Flower position and maturity variation",
+          "Disease/contamination risk",
+          "Drying uniformity",
+          "Physical and aroma changes during storage"
+        ],
+        "measure": [
+          "Representative maturity observations",
+          "Air/product temperature and RH",
+          "Mass loss/moisture/aW where available",
+          "Batch identity and time at each stage"
+        ],
+        "decide": [
+          "Define product and release goals before harvest.",
+          "Separate maturity from weather/disease/logistics risk.",
+          "Validate drying using product measurements, not room setpoint alone.",
+          "Hold suspect or out-of-spec material instead of blending away uncertainty."
+        ],
+        "verify": "Release decisions should be supported by batch identity, stable postharvest measurements, inspection, and required laboratory or compliance evidence.",
+        "linkedTools": [
+          "/dry-cure-lab/",
+          "/growlens/",
+          "/learn/research-methods/"
+        ],
+        "visualRoles": [
+          "maturity sampling map",
+          "drying heat/mass transfer diagram",
+          "batch postharvest timeline"
+        ],
+        "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
       }
     },
     {
@@ -1761,6 +2095,40 @@
           "Do not treat a regional weather station as identical to the crop microclimate.",
           "Do not copy indoor schedules without accounting for changing outdoor conditions."
         ]
+      },
+      "learnerJourney": {
+        "quickAnswer": "Outdoor cultivation is a site-and-season problem: sunlight, daylength, weather, soil/root zone, water, wind, disease pressure, wildlife, pollen, and emergency response must be planned together.",
+        "observe": [
+          "Sun/shade pattern",
+          "Wind and drainage",
+          "Local disease/pest pressure",
+          "Neighboring vegetation and pollen risks"
+        ],
+        "measure": [
+          "Site DLI or sun exposure",
+          "Soil/water tests",
+          "Weather and rainfall",
+          "Irrigation uniformity and soil moisture"
+        ],
+        "decide": [
+          "Choose the site before choosing tactics.",
+          "Use local weather and climate data rather than generic calendars.",
+          "Design irrigation, support, exclusion, and disease response for the actual site.",
+          "Maintain contingency plans for heat, storms, smoke, rain, and early cold."
+        ],
+        "verify": "Review records after major weather events and each season to update the site-specific plan.",
+        "linkedTools": [
+          "/ppfd-chart/",
+          "/water-quality-lab/",
+          "/growlens/",
+          "/thc-grow-doc/"
+        ],
+        "visualRoles": [
+          "site-selection map",
+          "season/daylength timeline",
+          "weather-risk response matrix"
+        ],
+        "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
       }
     },
     {
@@ -1928,6 +2296,39 @@
           "Do not confuse repeated measurements on one unit with independent replication.",
           "Do not present precision beyond what the instrument and method support."
         ]
+      },
+      "learnerJourney": {
+        "quickAnswer": "Define the question, measurement, sample, comparison, and decision before collecting data. Preserve raw observations, uncertainty, and source quality so results can be reproduced and challenged.",
+        "observe": [
+          "What exactly changed",
+          "What comparison or control exists",
+          "What was measured versus inferred",
+          "Potential confounders"
+        ],
+        "measure": [
+          "Units and method",
+          "Sample size and independence",
+          "Calibration/verification status",
+          "Raw values with time and identity"
+        ],
+        "decide": [
+          "Write the question before examining the outcome.",
+          "Separate biological replicates from repeated instrument readings.",
+          "Use source hierarchy and applicability limits.",
+          "Avoid causal language when the design only supports association."
+        ],
+        "verify": "A conclusion should survive a check of units, sampling, controls, alternative explanations, source quality, and repeatability.",
+        "linkedTools": [
+          "/learn/encyclopedia/",
+          "/growlens/",
+          "/tools/"
+        ],
+        "visualRoles": [
+          "evidence hierarchy",
+          "experimental design diagram",
+          "measurement uncertainty/control-chart graphic"
+        ],
+        "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
       }
     },
     {
@@ -2077,6 +2478,40 @@
           "Do not use glossary definitions as diagnoses.",
           "Do not combine measurements from different methods as if they are interchangeable."
         ]
+      },
+      "learnerJourney": {
+        "quickAnswer": "Use this page as the routing layer: identify the plant system, collect the minimum useful observations and measurements, then open the deeper subject, tool, encyclopedia entry, or diagnostic workflow that matches the question.",
+        "observe": [
+          "Plant stage",
+          "Affected system or process",
+          "Spatial pattern",
+          "Recent change"
+        ],
+        "measure": [
+          "Only variables relevant to the question",
+          "Time and location",
+          "Instrument/sample identity",
+          "Before/after values when testing a change"
+        ],
+        "decide": [
+          "Start broad enough to avoid tunnel vision.",
+          "Move to the narrowest relevant subject once the evidence points there.",
+          "Prefer measurement over memory.",
+          "Use deeper references when a decision depends on mechanism or uncertainty."
+        ],
+        "verify": "Return to the original question and confirm that the evidence collected actually answers it.",
+        "linkedTools": [
+          "/learn/search/",
+          "/tools/",
+          "/thc-grow-doc/",
+          "/learn/encyclopedia/"
+        ],
+        "visualRoles": [
+          "education system map",
+          "question-to-resource router",
+          "observation-measurement-decision loop"
+        ],
+        "evidenceBoundary": "Treat observations as evidence, not automatic proof of cause. Prefer measured context, repeatable records, applicable sources, and explicit uncertainty over universal recipes or unsupported certainty."
       }
     }
   ],
