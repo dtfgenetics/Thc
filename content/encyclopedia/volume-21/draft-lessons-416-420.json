@@ -1,0 +1,325 @@
+{
+  "schemaVersion": "1.0.0",
+  "volumeId": "THC-ENC-V21",
+  "status": "controlled-draft-complete-review-required",
+  "publicationAuthorized": false,
+  "controlledRange": {
+    "start": "THC-ENC-416",
+    "end": "THC-ENC-420"
+  },
+  "lessons": [
+    {
+      "id": "THC-ENC-416",
+      "number": 416,
+      "title": "Experimental Design, Controls, and Replication",
+      "primaryFormat": "Science lesson",
+      "requiredTeachingVisual": "Experimental unit, randomization, blocking, and replication diagram",
+      "objective": "Design cultivation experiments with defined experimental units, controls, randomization, replication, blocking, and preplanned analysis.",
+      "termsToKnow": [
+        "experimental unit",
+        "treatment",
+        "control",
+        "randomization",
+        "replication",
+        "block",
+        "pseudoreplication",
+        "factorial",
+        "power",
+        "protocol"
+      ],
+      "coreScience": [
+        "The experimental unit is the smallest independently assigned unit. If one nutrient tank supplies twenty plants and the tank receives the treatment, the tank—not each plant—is generally the experimental unit for that treatment. Measuring many leaves, flowers, or time points creates subsamples or repeated observations, not additional independent treatment replicates. Misidentifying the unit inflates apparent sample size and confidence.",
+        "Randomization reduces systematic allocation bias. Blocking groups similar units by room position, bench, soil zone, planting date, mother plant, or other known source of variation, then randomizes within blocks. Controls define the comparison: untreated, standard practice, vehicle, sham operation, or baseline. Factorial designs estimate interactions, such as light response changing with cultivar, but require enough independent units and a model matching the design.",
+        "Design should precede data collection. Define primary and secondary outcomes, measurement positions, timing, sample-size rationale, exclusion rules, missing-data handling, stopping criteria, and analysis. Pilot studies estimate feasibility and variation but should not be presented as definitive confirmation. Repeating the experiment across cycles, rooms, seasons, or sites tests robustness more effectively than adding technical repeats to one run."
+      ],
+      "cultivationRelevance": [
+        "Use a one-page design map linking question, mechanism, treatment, experimental unit, control, blocks, randomization, measurements, analysis, and transfer limits."
+      ],
+      "measureAndRecord": [
+        "Question/hypothesis; biological material; experimental unit; treatments and doses; control; allocation/randomization; blocks; independent replication; subsamples; endpoints; measurement method; sample-size rationale; exclusions; analysis; protocol deviations; repeat cycles."
+      ],
+      "misconceptions": [
+        "Every plant is an independent replicate even when one shared system receives the treatment.",
+        "Random placement eliminates the need to record room position.",
+        "A large number of measurements can compensate for having one treatment unit."
+      ],
+      "evidenceLimits": [
+        "A well-designed experiment supports the defined population and conditions; external validity still requires replication across genetics, systems, and environments."
+      ],
+      "crossLinks": "THC-ENC-393–397; THC-ENC-404; THC-ENC-409; THC-ENC-417–418.",
+      "sourceNotes": [
+        "V21-SRC-009",
+        "V21-SRC-026",
+        "V21-SRC-030",
+        "V21-SRC-031"
+      ],
+      "knowledgeCheck": [
+        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
+        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+        "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "experimental-design-controls-and-replication",
+      "route": "/encyclopedia/experimental-design-controls-and-replication"
+    },
+    {
+      "id": "THC-ENC-417",
+      "number": 417,
+      "title": "Correlation, Causation, and Confounding",
+      "primaryFormat": "Science lesson",
+      "requiredTeachingVisual": "Causal pathway, confounder, mediator, and collider diagram",
+      "objective": "Separate association from causal evidence by identifying temporal order, confounders, mediators, selection effects, and alternative explanations.",
+      "termsToKnow": [
+        "correlation",
+        "causation",
+        "confounder",
+        "mediator",
+        "collider",
+        "reverse causation",
+        "selection bias",
+        "temporal sequence",
+        "counterfactual"
+      ],
+      "coreScience": [
+        "Correlation describes variables changing together; it does not identify why. Temperature and irrigation volume may rise together because hot weather causes both. Diseased plants may receive more treatment because symptoms prompted intervention, creating an association between treatment and poor outcome even when the treatment did not cause the disease. Reverse causation and management response are common in observational cultivation records.",
+        "A confounder influences both the proposed cause and outcome. Cultivar, plant size, room position, root-zone volume, crop stage, worker, season, and prior health can confound comparisons. A mediator lies on the causal pathway and should not always be “controlled away.” Conditioning on a collider—an outcome influenced by two variables—can create a false association. Causal diagrams help state assumptions before analysis.",
+        "Strong causal evidence combines a defined intervention, suitable control, randomization or credible adjustment, temporal order, mechanism, dose or gradient where relevant, replication, and consistency with alternative evidence. Observational data remain valuable for surveillance and hypothesis generation. Models can adjust only for measured, correctly modeled variables; a high correlation coefficient or predictive accuracy does not prove the intervention will work."
+      ],
+      "cultivationRelevance": [
+        "Before stating “X caused Y,” draw the plausible pathways and list competing explanations. Phrase conclusions at the level supported: observed association, treatment effect under the experiment, mechanism, or transfer hypothesis."
+      ],
+      "measureAndRecord": [
+        "Exposure and outcome definitions; time order; population; candidate confounders/mediators/colliders; allocation; control; repeated measures; missingness; model; effect estimate/uncertainty; sensitivity checks; alternative explanations; causal wording decision."
+      ],
+      "misconceptions": [
+        "A strong correlation proves a strong causal effect.",
+        "Controlling for every available variable always improves causal inference.",
+        "A predictive model identifies which intervention will change the outcome."
+      ],
+      "evidenceLimits": [
+        "Causal conclusions depend on design and assumptions that may be partly untestable; unmeasured confounding and selection can remain."
+      ],
+      "crossLinks": "THC-ENC-415–418; THC-ENC-393; THC-ENC-414.",
+      "sourceNotes": [
+        "V21-SRC-009",
+        "V21-SRC-030",
+        "V21-SRC-032",
+        "V21-SRC-034"
+      ],
+      "knowledgeCheck": [
+        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
+        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+        "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "correlation-causation-and-confounding",
+      "route": "/encyclopedia/correlation-causation-and-confounding"
+    },
+    {
+      "id": "THC-ENC-418",
+      "number": 418,
+      "title": "Cultivar-Specific Evidence and Generalization Limits",
+      "primaryFormat": "Science lesson",
+      "requiredTeachingVisual": "Genotype-by-environment-by-management transfer model",
+      "objective": "Evaluate whether evidence from one cultivar, line, clone, population, stage, and system can support a broader cultivation claim.",
+      "termsToKnow": [
+        "genotype",
+        "cultivar",
+        "accession",
+        "chemotype",
+        "phenotype",
+        "genotype-by-environment interaction",
+        "management interaction",
+        "external validity",
+        "transferability"
+      ],
+      "coreScience": [
+        "Cannabis populations can differ in flowering response, architecture, sex expression, disease susceptibility, nutrient response, water use, cannabinoid-acid profile, volatile composition, and stress tolerance. A commercial cultivar name may not uniquely identify a genotype. Seed-derived plants within a named population can segregate, while clones share a source genotype but can differ through health, epigenetic state, pathogen status, age, and environment.",
+        "Genotype-by-environment interaction occurs when relative performance changes across environments. Genotype-by-management interaction extends the idea to irrigation, density, pruning, lighting, nutrition, and harvest practices. A treatment that increases yield in one cultivar can have no effect or reduce quality in another. Ranking stability requires replicated comparison across relevant conditions rather than assuming the highest performer in one trial is broadly superior.",
+        "Generalization should state the source material and target population. Mechanistic plant physiology may transfer broadly, while numerical thresholds and production claims often require local validation. Genetic markers can support identity, ancestry, or trait prediction only within their validated population and method. Phenotype similarity cannot prove genetic identity, and one laboratory profile cannot establish stable cultivar performance."
+      ],
+      "cultivationRelevance": [
+        "Record source, propagation mode, genetic verification where used, and health status. Replicate critical claims across multiple justified cultivars or clearly label them cultivar-specific."
+      ],
+      "measureAndRecord": [
+        "Controlled genetic ID and aliases; source and chain; seed/clone/tissue-culture mode; parentage evidence; molecular marker method; health/pathogen status; environment and management; stage; phenotype and chemistry; interaction analysis; target population; transfer statement."
+      ],
+      "misconceptions": [
+        "Cultivars with the same name are genetically identical.",
+        "A response observed in one clone applies to all cannabis.",
+        "A genetic marker guarantees the full production phenotype."
+      ],
+      "evidenceLimits": [
+        "Transfer depends on the genetic population, identity quality, environment, management, stage, health, method, and outcome definition."
+      ],
+      "crossLinks": "THC-ENC-141–160; THC-ENC-381–400; THC-ENC-415–417.",
+      "sourceNotes": [
+        "V21-SRC-011",
+        "V21-SRC-012",
+        "V21-SRC-033",
+        "V21-SRC-034"
+      ],
+      "knowledgeCheck": [
+        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
+        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+        "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "cultivar-specific-evidence-and-generalization-limits",
+      "route": "/encyclopedia/cultivar-specific-evidence-and-generalization-limits"
+    },
+    {
+      "id": "THC-ENC-419",
+      "number": 419,
+      "title": "Source Hierarchy, Citation, and Revision Control",
+      "primaryFormat": "Science lesson",
+      "requiredTeachingVisual": "Source hierarchy and revision-state control map",
+      "objective": "Select sources by claim type, cite exact evidence, track versions and corrections, and preserve supersession history.",
+      "termsToKnow": [
+        "primary source",
+        "secondary source",
+        "official source",
+        "standard",
+        "guidance",
+        "citation",
+        "DOI",
+        "version",
+        "correction",
+        "retraction",
+        "supersession"
+      ],
+      "coreScience": [
+        "Source quality depends on the claim. A primary experiment can support what was measured under its design. A systematic review can summarize a body of evidence but inherits differences and weaknesses among studies. Official regulations, pesticide labels, standards, instrument manuals, and government methods control legal or operational requirements within their scope. Extension sources translate knowledge but should not replace primary evidence for high-risk numerical claims.",
+        "A citation should connect an atomic claim to an exact evidence location and use context. Record page, section, table, figure, equation, dataset, or quoted concept; identify the population, method, and limitations. A source URL alone is not a claim ledger. DOI and persistent identifiers improve retrieval, but they do not prove current validity. Check publisher records, Crossmark, PubMed notices, errata, corrections, retractions, and current standard editions.",
+        "Revision control separates created, reviewed, approved, deployed, live, superseded, and archived states. Preserve the prior version, reason for change, changed claims, affected pages and assets, reviewer, approval, effective date, and rollback path. Web pages can change without notice, so record access date and retain lawful controlled extracts or archived references where appropriate. Never overwrite a correction in a way that erases what users previously received."
+      ],
+      "cultivationRelevance": [
+        "Apply a source hierarchy and publication-decision field to every claim. Schedule freshness reviews for law, standards, methods, health and safety, product limits, and fast-moving science."
+      ],
+      "measureAndRecord": [
+        "Claim ID; source type/tier; full citation/identifier; version/date; access date; exact evidence location; evidence role; population/method; limits; correction/retraction check; project decision; reviewer/date; next review; superseded version and affected outputs."
+      ],
+      "misconceptions": [
+        "A DOI means the source is permanent and unchanged.",
+        "The newest source is automatically the strongest source.",
+        "Deleting superseded files prevents users from seeing old information."
+      ],
+      "evidenceLimits": [
+        "Source-control systems reduce stale or misapplied evidence but cannot guarantee that publications are error-free or that all updates are discoverable."
+      ],
+      "crossLinks": "THC-ENC-415–418; THC-ENC-420; all source registers, claim ledgers, and release records.",
+      "sourceNotes": [
+        "V21-SRC-010",
+        "V21-SRC-013",
+        "V21-SRC-014",
+        "V21-SRC-015",
+        "V21-SRC-016",
+        "V21-SRC-034"
+      ],
+      "knowledgeCheck": [
+        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
+        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+        "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "source-hierarchy-citation-and-revision-control",
+      "route": "/encyclopedia/source-hierarchy-citation-and-revision-control"
+    },
+    {
+      "id": "THC-ENC-420",
+      "number": 420,
+      "title": "Building an Evidence-Based Cultivation Knowledge System",
+      "primaryFormat": "Science lesson",
+      "requiredTeachingVisual": "Controlled knowledge-system architecture diagram",
+      "objective": "Integrate permanent identities, claims, evidence, manuscripts, visuals, assessments, downloads, software, reviews, releases, and corrections into one auditable system.",
+      "termsToKnow": [
+        "knowledge system",
+        "controlled ID",
+        "claim ledger",
+        "evidence graph",
+        "canonical source",
+        "derivative",
+        "review gate",
+        "release candidate",
+        "provenance",
+        "rollback"
+      ],
+      "coreScience": [
+        "A knowledge system is more than a folder of documents. Every lesson, course, SOP, guide, visual, form, source, claim, route, download, and release needs a permanent identity and defined relationship. The canonical source should be clear: Drive can control manuscripts, evidence, visual masters, rights, and approval; a repository can control structured website content and code. Copies and exports are derivatives that must retain source version and checksum or revision evidence.",
+        "Claims should be atomic enough to review. A ledger connects each claim to exact sources, evidence class, applicability limits, risk, reviewer decision, review date, and affected outputs. Visuals require the same control because diagrams can introduce unsupported relationships, scales, thresholds, or labels. Assessments need answer rationale and source mapping. Accessibility text, print files, metadata, search terms, routes, and downloads are part of the educational deliverable—not optional decoration.",
+        "Release gates must remain separate. Created is not reviewed; reviewed is not approved; approved is not deployed; deployed is not verified live. A release candidate freezes source versions and collects science, safety, legal, editorial, assessment, visual, accessibility, rights, security, browser, mobile, download, backup, and rollback evidence. Corrections then create a new controlled version while preserving what changed, who approved it, where it was published, and whether users need notification."
+      ],
+      "cultivationRelevance": [
+        "Use the 420 permanent lesson IDs as the spine of the system. Complete one end-to-end reference release, audit it, then scale the proven package rather than producing disconnected drafts."
+      ],
+      "measureAndRecord": [
+        "Permanent IDs and relationships; canonical files and repository paths; versions/revisions/checksums; claim/source/visual/assessment records; review owners and evidence; approval and effective date; build/deployment commit; live verification; downloads; accessibility; backup/rollback; correction and supersession history."
+      ],
+      "misconceptions": [
+        "A finished manuscript is a finished educational product.",
+        "A merged pull request proves scientific approval and public release.",
+        "More files and images automatically create a more complete knowledge system."
+      ],
+      "evidenceLimits": [
+        "Governance can make evidence auditable and correctable, but quality still depends on qualified reviewers, accurate source interpretation, maintained systems, and explicit accountability."
+      ],
+      "crossLinks": "THC-ENC-001–419; THC Academy; THC-GROW SOP Library; Beginner Guides; Visual Asset Library; website and release-control systems.",
+      "sourceNotes": [
+        "V21-SRC-010",
+        "V21-SRC-013",
+        "V21-SRC-016",
+        "V21-SRC-017",
+        "V21-SRC-026",
+        "V21-SRC-034"
+      ],
+      "knowledgeCheck": [
+        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
+        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.\n\n\n\n\nVOLUME 21 COMPLETION RECORD\nLesson count: 20 of 20\nControlled IDs: THC-ENC-401–420\nRequired instructional sections: Present in every lesson\nSource notes: Present in every lesson\nAtomic claim ledger: Not started\nIndependent review: Not started\nPrimary visuals: Not produced\nDownloads/page packages: Not produced\nApproval/publication: Not authorized",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+        "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "building-an-evidence-based-cultivation-knowledge-system",
+      "route": "/encyclopedia/building-an-evidence-based-cultivation-knowledge-system"
+    }
+  ]
+}
