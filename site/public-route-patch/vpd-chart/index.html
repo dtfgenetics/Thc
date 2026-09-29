@@ -186,7 +186,7 @@ document.getElementById('trendExample')?.addEventListener('click',()=>{const row
 refreshVpdProfiles();
 document.getElementById('trendClear')?.addEventListener('click',()=>{if(trendFile)trendFile.value='';trendStatus.textContent='No logger data loaded.';trendMetrics.hidden=true;trendCanvasWrap.hidden=true;trendTableWrap.hidden=true;if(trendBody)trendBody.innerHTML='';const ctx=trendCanvas?.getContext('2d');ctx?.clearRect(0,0,trendCanvas.width,trendCanvas.height)});
 </script>
-<footer><div class="shell">Educational environmental reference. For leaf-based VPD, use representative air temperature/RH and a reliable leaf-temperature measurement; do not treat VPD alone as proof of plant stress.</div></footer>
+<footer><div class="shell">Teaching Healthy Cultivation · Educational environmental reference. For leaf-based VPD, use representative air temperature/RH and a reliable leaf-temperature measurement. VPD alone does not prove plant stress, diagnose a cause, or define one universal target.</div></footer>
 <script type="module">
 import {mountLiveToolAdapter} from '/assets/thc-live-tool-adapter-v1.mjs';
 mountLiveToolAdapter({container:document.getElementById('liveToolAdapter'),tool:'vpd',title:'Live VPD sensor adapter'});

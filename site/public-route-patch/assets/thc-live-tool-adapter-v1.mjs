@@ -57,6 +57,13 @@ export function mountLiveToolAdapter({
     '</div>'+
     '<div class="field" data-live-json-wrap><label>Telemetry JSON</label><textarea data-live-json rows="6" spellcheck="false" placeholder=\'{"createdAt":"2026-09-28T19:00:00Z","temperatureC":25,"humidity":60}\'></textarea></div>'+
     '<div class="field"><label><input data-live-auto-apply type="checkbox"> Auto-apply incoming live packets to the form (never auto-save history)</label></div>'+
+    '<div class="live-status-board" aria-label="Live telemetry connection status">'+
+    '<div class="live-status-card"><span>Connection</span><strong data-live-state>Manual</strong></div>'+
+    '<div class="live-status-card"><span>Source / device</span><strong data-live-identity>Not connected</strong></div>'+
+    '<div class="live-status-card"><span>Last observation</span><strong data-live-observed>—</strong></div>'+
+    '<div class="live-status-card"><span>Packet age</span><strong data-live-age>—</strong></div>'+
+    '<div class="live-status-card"><span>Mapped metrics</span><strong data-live-metrics>0</strong></div>'+
+    '</div>'+
     '<div class="toolbar"><button class="btn" data-live-preview type="button">Preview packet</button><button class="btn primary" data-live-apply type="button">Apply latest</button><button class="btn" data-live-start type="button" disabled>Start live connection</button><button class="btn" data-live-stop type="button" disabled>Stop</button></div>'+
     '<div class="result" data-live-status aria-live="polite">No live packet previewed.</div>'+
     '<p class="muted">Connection settings and packets are not stored. Do not put API keys, bearer tokens, passwords, or other secrets in endpoint URLs. HTTP mode is forced to GET and is subject to browser CORS. WebSocket mode sends no application messages.</p>'+
@@ -74,6 +81,11 @@ export function mountLiveToolAdapter({
   const json=container.querySelector('[data-live-json]');
   const autoApply=container.querySelector('[data-live-auto-apply]');
   const status=container.querySelector('[data-live-status]');
+  const stateOut=container.querySelector('[data-live-state]');
+  const identityOut=container.querySelector('[data-live-identity]');
+  const observedOut=container.querySelector('[data-live-observed]');
+  const ageOut=container.querySelector('[data-live-age]');
+  const metricsOut=container.querySelector('[data-live-metrics]');
   const previewButton=container.querySelector('[data-live-preview]');
   const applyButton=container.querySelector('[data-live-apply]');
   const startButton=container.querySelector('[data-live-start]');
@@ -86,6 +98,26 @@ export function mountLiveToolAdapter({
     zone:zoneField?.value?.trim?.()||''
   });
 
+  const formatAge=ageMs=>{
+    if(!Number.isFinite(ageMs))return 'Unknown';
+    const seconds=Math.round(ageMs/1000);
+    if(seconds<60)return seconds+' sec';
+    const minutes=Math.round(seconds/60);
+    if(minutes<60)return minutes+' min';
+    const hours=Math.round(minutes/60);
+    return hours+' hr';
+  };
+  const updateStatusBoard=(current,{connectionState=null}={})=>{
+    const metrics=Object.keys(current?.metrics||{});
+    const fresh=current?telemetryFreshness(current,{staleAfterMs:Math.max(1,Number(stale.value)||10)*60*1000}):null;
+    const mode=transport.value;
+    stateOut.textContent=connectionState||(!current?(mode==='manual'?'Manual':'Disconnected'):(fresh?.state==='stale'?'Stale':mode==='manual'?'Preview':'Live data'));
+    stateOut.dataset.state=(connectionState||fresh?.state||mode).toLowerCase().replace(/[^a-z]+/g,'-');
+    identityOut.textContent=current?((current.sourceId||'source')+' / '+(current.deviceId||'device')):(source.value.trim()||mode);
+    observedOut.textContent=current?.observedAt?new Date(current.observedAt).toLocaleString():'—';
+    ageOut.textContent=fresh?formatAge(fresh.ageMs):'—';
+    metricsOut.textContent=String(metrics.length);
+  };
   const packetSummary=current=>{
     const metrics=Object.keys(current?.metrics||{});
     const fresh=telemetryFreshness(current,{staleAfterMs:Math.max(1,Number(stale.value)||10)*60*1000});
@@ -104,6 +136,7 @@ export function mountLiveToolAdapter({
 
   const receivePacket=current=>{
     packet=current;
+    updateStatusBoard(current,{connectionState:telemetryFreshness(current,{staleAfterMs:Math.max(1,Number(stale.value)||10)*60*1000}).state==='stale'?'Stale':'Live data'});
     if(autoApply.checked){
       const applied=applyCurrent(current,{announce:false});
       status.textContent=packetSummary(current)+' · auto-applied '+Object.keys(applied).length+' field'+(Object.keys(applied).length===1?'':'s')+' · not saved';
@@ -121,10 +154,12 @@ export function mountLiveToolAdapter({
         zone:zoneField?.value?.trim?.()||raw.zone||raw.room||''
       });
       if(!Object.keys(packet.metrics).length)throw new Error('No recognized numeric telemetry metrics were found.');
+      updateStatusBoard(packet,{connectionState:telemetryFreshness(packet,{staleAfterMs:Math.max(1,Number(stale.value)||10)*60*1000}).state==='stale'?'Stale':'Preview'});
       status.textContent=packetSummary(packet);
       return packet;
     }catch(error){
       packet=null;
+      updateStatusBoard(null,{connectionState:'Invalid packet'});
       status.textContent=error instanceof Error?error.message:'Could not parse telemetry JSON.';
       return null;
     }
@@ -136,6 +171,7 @@ export function mountLiveToolAdapter({
       if(typeof connection.close==='function')connection.close();
     }
     connection=null;
+    if(transport.value!=='manual')updateStatusBoard(packet,{connectionState:'Disconnected'});
     startButton.disabled=transport.value==='manual';
     stopButton.disabled=true;
   };
@@ -163,6 +199,7 @@ export function mountLiveToolAdapter({
           onError
         });
         connection.start();
+        updateStatusBoard(packet,{connectionState:'Connecting'});
         status.textContent='HTTP polling started. Waiting for a recognized telemetry packet…';
       }else{
         connection=createWebSocketAdapter({
@@ -171,10 +208,12 @@ export function mountLiveToolAdapter({
           onPacket:receivePacket,
           onError,
           onState:state=>{
+            if(state?.state)updateStatusBoard(packet,{connectionState:state.state});
             if(state?.state==='stale'||state?.state==='offline')status.textContent='WebSocket '+state.state+'. Waiting for fresh telemetry…';
           }
         });
         connection.connect();
+        updateStatusBoard(packet,{connectionState:'Connecting'});
         status.textContent='WebSocket connection started. Waiting for a recognized telemetry packet…';
       }
       startButton.disabled=true;
@@ -200,6 +239,7 @@ export function mountLiveToolAdapter({
     startButton.disabled=manual;
     endpoint.placeholder=mode==='ws'?'wss://gateway.example/telemetry':'https://gateway.example/telemetry';
     source.value=manual?'json-adapter':mode==='http'?'http-poll':'websocket';
+    updateStatusBoard(packet,{connectionState:manual?'Manual':'Disconnected'});
     status.textContent=manual?'Manual JSON mode ready.':'Enter a read-only '+(mode==='http'?'HTTP':'WebSocket')+' endpoint, then start the connection.';
   };
 
