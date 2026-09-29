@@ -78,7 +78,7 @@ jobs:
             echo '## WordPress Suite registry parity'
             echo
             echo '- Canonical bridge hash check: passed before registry expansion.'
-            echo '- Registry-derived targets: exact local static ready-to-package game routes only.'
-            echo '- Broad games/ wildcard: forbidden.'
+            echo '- Registry-derived targets: exact local games plus non-game static apps whose reviewed public integration is owned by dtfgenetics/Thc.'
+            echo '- External canonical Tools integrations are admitted only through exact registered site/public-route-patch mirrors; broad games/ and learn/ wildcards remain forbidden.'
             echo '- Embedded PHP syntax: valid.'
           } >> "$GITHUB_STEP_SUMMARY"
