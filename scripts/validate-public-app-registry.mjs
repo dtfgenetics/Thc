@@ -6,6 +6,7 @@ const registry = JSON.parse(await readFile(registryPath, 'utf8'));
 
 const requiredRepositories = new Set([
   'dtfgenetics/Thc',
+  'dtfgenetics/Tools',
   'dtfgenetics/thc-u-know-card-game-',
   'dtfgenetics/Weedopolis-strain-Edition',
   'dtfgenetics/Thc-crossword-',
@@ -83,7 +84,7 @@ for (const [index, app] of (registry.apps || []).entries()) {
   }
 
   for (const field of ['appTarget', 'apiTarget']) {
-    if (app[field] !== undefined && (typeof app[field] !== 'string' || !app[field].startsWith('https://'))) {
+    if (app[field] != null && (typeof app[field] !== 'string' || !app[field].startsWith('https://'))) {
       errors.push(`${where}.${field} must use https://`);
     }
   }
