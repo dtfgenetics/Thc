@@ -5,10 +5,18 @@ import { PHENOTYPES } from './phenotype-system.mjs';
 import { INPUT_ACTIONS } from './input-actions.mjs';
 import { buildHudModel } from './hud-model.mjs';
 
+export const LOCKED_CHARACTER_REFERENCE = 'classic-seed-man-oval-v1';
+
 export function productionReadinessReport(input){
   const checks=[];
   const run=(name,fn)=>{try{fn();checks.push({name,ok:true});}catch(error){checks.push({name,ok:false,error:error.message});}};
   run('approved-art-manifest',()=>validateApprovedArtManifest(input.manifest));
+  run('canonical-character-identity',()=>{
+    const actual=input.manifest?.policy?.characterReference;
+    if(actual!==LOCKED_CHARACTER_REFERENCE){
+      throw new Error(`Seed Man character identity mismatch: expected ${LOCKED_CHARACTER_REFERENCE}, received ${actual ?? 'missing'}`);
+    }
+  });
   run('production-game-contract',()=>validateProductionGameContract(input));
   run('twenty-levels',()=>{if(input.levels?.levels?.length!==20)throw new Error('Expected 20 levels');});
   run('five-worlds',()=>{if(input.campaign?.worlds?.length!==5)throw new Error('Expected five worlds');});
