@@ -1,0 +1,93 @@
+{
+  "id": "THC-ENC-336",
+  "number": 336,
+  "title": "Biological Controls",
+  "objective": "Select, deploy, and evaluate biological-control organisms or microbial products by matching the target pest or pathogen, life stage, crop environment, release timing, compatibility, and follow-up monitoring.",
+  "terms": [
+    {
+      "term": "biological control",
+      "definition": "Use of living natural enemies, antagonists, or biologically derived agents to reduce a pest or pathogen population or its impact."
+    },
+    {
+      "term": "augmentative release",
+      "definition": "Deliberate introduction of beneficial organisms to increase natural-enemy pressure in a managed crop."
+    },
+    {
+      "term": "predator",
+      "definition": "A beneficial organism that consumes multiple prey individuals during its lifetime."
+    },
+    {
+      "term": "parasitoid",
+      "definition": "An organism whose immature stage develops on or in a host and ultimately kills that host."
+    },
+    {
+      "term": "compatibility",
+      "definition": "The degree to which biological controls remain effective alongside environmental conditions, pesticides, sanitation practices, and other IPM tactics."
+    }
+  ],
+  "termDefinitionsStatus": "controlled_glossary_reconciled_draft",
+  "coreScience": [
+    "Biological control is most reliable when the beneficial organism is matched to the target species and life stage, because predators, parasitoids, entomopathogens, and antagonists differ in host range and environmental requirements.",
+    "Preventive or early releases can outperform rescue releases after a pest population is already widespread because establishment and reproduction of the beneficial population take time.",
+    "Temperature, humidity, crop architecture, prey density, pesticide residues, sanitation, and release method can strongly alter biological-control performance.",
+    "Biological control is compatible with IPM only when follow-up scouting measures target and beneficial populations separately; releasing a beneficial organism is not evidence that control was achieved.",
+    "A pesticide or disinfectant program can suppress or eliminate beneficial organisms, so label directions and compatibility information must be reviewed before combining tactics."
+  ],
+  "cultivationRelevance": [
+    "Confirm pest identity and life stage before selecting a predator, parasitoid, nematode, fungus, bacterium, or other biological tactic.",
+    "Record release date, product or organism identity, lot where applicable, release density or method, target zone, and environmental conditions.",
+    "Scout both pest and beneficial populations after release and use trend data rather than one observation to decide whether the program is working.",
+    "Treat compatibility with pesticides, sanitation, and climate control as an operational requirement rather than an afterthought."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Target",
+      "requirement": "Record pest/pathogen identity, life stage, abundance, and crop location before release."
+    },
+    {
+      "field": "Biological agent",
+      "requirement": "Record species or product, supplier/lot where applicable, release rate or method, date, and location."
+    },
+    {
+      "field": "Environment",
+      "requirement": "Record temperature, humidity, crop stage, canopy condition, and any factor known to affect establishment or activity."
+    },
+    {
+      "field": "Compatibility",
+      "requirement": "Record recent or planned pesticide, disinfectant, or other interventions that may affect the biological agent."
+    },
+    {
+      "field": "Outcome",
+      "requirement": "Use repeated pest and beneficial counts or other target-specific evidence to evaluate suppression and decide whether to repeat, adjust, or escalate."
+    }
+  ],
+  "misconceptions": [
+    "One beneficial insect controls every greenhouse pest.",
+    "Biological control always works after a severe outbreak has developed.",
+    "Natural enemies are unaffected by pesticide residues.",
+    "Seeing beneficial organisms proves the pest is controlled.",
+    "Biological control removes the need for sanitation and scouting."
+  ],
+  "evidenceLimits": [
+    "Performance is target-, environment-, crop-, timing-, supplier-, and compatibility-dependent. Greenhouse evidence is strong for many biological-control systems, but results should not be generalized into universal Cannabis release rates or efficacy claims without crop- and facility-specific evidence."
+  ],
+  "crossLinks": "THC-ENC-331–333 for scouting and decisions; THC-ENC-334–335 for cultural and physical controls; THC-ENC-337 for pesticide compatibility and legal use; THC-ENC-340 for program audit.",
+  "sourceNotes": [
+    "University of Missouri Extension. Using Integrated Pest Management in Greenhouses and Herbaceous Nurseries. https://extension.missouri.edu/publications/ipm1026",
+    "Cornell University Biological Control Program. Integrated Pest Management and biological-control resources. https://biocontrol.entomology.cornell.edu/ipm.php"
+  ],
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "Master Content Map v1.1 controlled title plus newly authored canonical draft",
+    "evidenceControl": "authoritative_greenhouse_IPM_sources_seeded",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending_not_recorded",
+    "externalReviewType": "biological_control_IPM",
+    "releaseTimeReview": "not_started",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_for_review"
+  },
+  "slug": "biological-controls",
+  "route": "/encyclopedia/biological-controls"
+}
