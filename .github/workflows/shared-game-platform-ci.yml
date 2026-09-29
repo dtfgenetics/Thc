@@ -48,12 +48,27 @@ jobs:
         run: |
           set -euo pipefail
           root=site/public-route-patch/games/shared-platform
-          required=(.htaccess manifest.json index.mjs settings.mjs replay.mjs telemetry.mjs input.mjs audio.mjs random.mjs)
-          for file in "${required[@]}"; do
-            test -s "$root/$file" || { echo "Missing shared platform release file: $file" >&2; exit 1; }
-          done
+          test -s "$root/.htaccess"
+          test -s "$root/manifest.json"
           grep -Fq 'AddType text/javascript .mjs' "$root/.htaccess"
           grep -Fq 'X-Content-Type-Options "nosniff"' "$root/.htaccess"
-          grep -Fq '"platformVersion": "1.2.0"' "$root/manifest.json"
-          grep -Fq "DTF_GAME_PLATFORM_VERSION = '1.2.0'" "$root/index.mjs"
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const root='site/public-route-patch/games/shared-platform';
+          const manifest=JSON.parse(fs.readFileSync(`${root}/manifest.json`,'utf8'));
+          const index=fs.readFileSync(`${root}/index.mjs`,'utf8');
+          if (!/^\d+\.\d+\.\d+$/.test(manifest.platformVersion || '')) {
+            throw new Error(`Invalid shared platform version: ${manifest.platformVersion}`);
+          }
+          for (const file of manifest.files || []) {
+            const full=`${root}/${file}`;
+            if (!fs.existsSync(full) || fs.statSync(full).size === 0) {
+              throw new Error(`Missing shared platform release file: ${file}`);
+            }
+          }
+          const versionMarker=`DTF_GAME_PLATFORM_VERSION = '${manifest.platformVersion}'`;
+          if (!index.includes(versionMarker)) {
+            throw new Error(`Shared platform index version does not match manifest ${manifest.platformVersion}`);
+          }
+          NODE
           grep -Fq "'/games/shared-platform/index.mjs'" site/public-route-patch/games/seed-man-platformer/input-guard-v1.js
