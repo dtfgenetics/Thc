@@ -1,65 +1,49 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { renderScopeMaster } from './generate-game-registry-docs.mjs';
 
 const scope = fs.readFileSync('docs/DTF_GAME_SCOPE_MASTER.md', 'utf8');
+const registry = JSON.parse(fs.readFileSync('data/game-registry-v2.json', 'utf8'));
 const navigation = JSON.parse(fs.readFileSync('data/public-navigation.json', 'utf8'));
-const registry = JSON.parse(fs.readFileSync('data/project-registry.json', 'utf8'));
 const hub = fs.readFileSync('site/public-route-patch/games/index.html', 'utf8');
 
-function section(markdown, heading) {
-  const start = markdown.indexOf(`## ${heading}`);
-  assert.notEqual(start, -1, `missing scope section: ${heading}`);
-  const afterHeading = start + `## ${heading}`.length;
-  const next = markdown.indexOf('\n## ', afterHeading);
-  return markdown.slice(afterHeading, next === -1 ? markdown.length : next);
-}
+const expectedScope = renderScopeMaster(registry) + '\n';
+assert.equal(scope, expectedScope, 'DTF_GAME_SCOPE_MASTER.md is stale; run npm run games:registry:docs');
 
-const publicGames = navigation.games.filter((game) => game.public === true);
-assert.ok(publicGames.length > 0, 'public navigation must contain games');
+const registryPublic = registry.games
+  .filter((game) => ['public-unverified', 'public-verified'].includes(game.release?.status))
+  .sort((a, b) => a.id.localeCompare(b.id));
 
-const publicSection = section(scope, 'Public playable catalog');
-const countMatch = publicSection.match(/exposes\s+(\d+)\s+playable browser games/i);
-assert.ok(countMatch, 'scope must state the public playable-game count');
-const scopeCount = Number(countMatch[1]);
-assert.equal(scopeCount, publicGames.length, `scope says ${scopeCount} public games but navigation has ${publicGames.length}`);
+const navigationPublic = navigation.games
+  .filter((game) => game.public === true)
+  .sort((a, b) => a.id.localeCompare(b.id));
 
-for (const game of publicGames) {
-  assert.ok(publicSection.includes(game.title), `public scope is missing navigation game: ${game.title}`);
+assert.ok(registryPublic.length > 0, 'v2 registry must contain public-route games');
+assert.equal(
+  navigationPublic.length,
+  registryPublic.length,
+  `public navigation has ${navigationPublic.length} games but v2 has ${registryPublic.length} public-route games`
+);
+
+for (let i = 0; i < registryPublic.length; i += 1) {
+  const expected = registryPublic[i];
+  const actual = navigationPublic[i];
+  assert.equal(actual.id, expected.id, `public game id drift at index ${i}`);
+  assert.equal(actual.route, expected.publicRoute, `${expected.id}: navigation route differs from v2`);
+  assert.equal(actual.title, expected.title, `${expected.id}: navigation title differs from v2`);
 }
 
 const markerMatch = hub.match(/deployment-verification-marker:\s*(\d+)\s+playable browser games/i);
 assert.ok(markerMatch, 'Game Hub is missing its playable-count deployment marker');
-assert.equal(Number(markerMatch[1]), publicGames.length, 'Game Hub deployment marker disagrees with public navigation');
+assert.equal(Number(markerMatch[1]), registryPublic.length, 'Game Hub deployment marker disagrees with v2 public-route count');
 
 const heroCountMatch = hub.match(/<strong>(\d+)<\/strong><span>playable browser games<\/span>/i);
 assert.ok(heroCountMatch, 'Game Hub hero is missing its playable-game count');
-assert.equal(Number(heroCountMatch[1]), publicGames.length, 'Game Hub hero count disagrees with public navigation');
+assert.equal(Number(heroCountMatch[1]), registryPublic.length, 'Game Hub hero count disagrees with v2 public-route count');
 
-assert.ok(!scope.includes('## Missing outlined game slate'), 'shipped games must not remain under a Missing outlined game slate heading');
+const rootCause = registry.games.find((game) => game.id === 'root-cause');
+assert.ok(rootCause, 'v2 registry is missing Root Cause');
+assert.notEqual(rootCause.release?.status, 'public-verified', 'Root Cause cannot become confirmed live without exact verification evidence');
+assert.ok(!registryPublic.some((game) => game.id === 'root-cause'), 'Root Cause is in the public-route catalog without an explicit promotion decision');
 
-const shippedSection = section(scope, 'Formerly missing outlined slate — shipped');
-const formerlyMissing = [
-  'Strain Match',
-  'Grow Room Bingo / Bongwater Bingo',
-  'Lost in the Terps',
-  'Spin the Strain',
-  'Mystery Strain',
-  'High Lines',
-  'Grow Room Defense',
-  'Harvest Hustle',
-  'Pheno Draft',
-  'Trichome Trials',
-];
-
-for (const title of formerlyMissing) {
-  assert.ok(publicGames.some((game) => game.title === title), `formerly missing game is not public: ${title}`);
-  assert.ok(shippedSection.includes(title), `shipped scope section is missing: ${title}`);
-}
-
-const rootCause = registry.projects.find((project) => project.id === 'root-cause');
-assert.ok(rootCause, 'project registry is missing root-cause');
-assert.equal(rootCause.status, 'browser-vertical-slice', 'Root Cause registry status changed; review scope before promotion');
-assert.ok(!publicGames.some((game) => game.id === 'root-cause'), 'Root Cause was made public without updating the controlled scope decision');
-assert.ok(section(scope, 'Built prototype not yet promoted').includes('Root Cause'), 'scope must record Root Cause as built but not promoted');
-
-console.log(`Game scope verified: ${publicGames.length} public games; shipped expansion slate and Root Cause gate are synchronized.`);
+console.log(`Game scope verified from v2: ${registryPublic.length} public-route games, ${registry.concepts.length} concepts.`);
