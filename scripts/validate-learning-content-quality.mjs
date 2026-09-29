@@ -9,7 +9,7 @@ const errors=[];
 const warn=[];
 const assert=(ok,msg)=>{if(!ok)errors.push(msg)};
 
-assert(data.schemaVersion>=2,'topic-literature schemaVersion must be at least 2');
+assert(data.schemaVersion>=3,'topic-literature schemaVersion must be at least 3');
 assert(Array.isArray(data.topics),'topic-literature topics must be an array');
 assert((data.topics||[]).length>=13,`Expected at least 13 topic pages; found ${data.topics?.length||0}`);
 
@@ -24,7 +24,7 @@ for(const topic of data.topics||[]){
   assert(paragraphs>=16,`${topic.id}: needs at least 16 substantive paragraphs; found ${paragraphs}`);
   assert(checkpoints>=24,`${topic.id}: needs at least 24 practical checkpoints; found ${checkpoints}`);
   assert(String(topic.summary||'').length>=120,`${topic.id}: summary is too thin`);
-  assert(Array.isArray(topic.references)&&topic.references.length>=1,`${topic.id}: needs at least one supporting reference`);
+  assert(Array.isArray(topic.references)&&topic.references.length>=2,`${topic.id}: needs at least two supporting references`);
   assert(Array.isArray(topic.referenceGuide?.observe)&&topic.referenceGuide.observe.length>=3,`${topic.id}: field guide needs at least 3 observation prompts`);
   assert(Array.isArray(topic.referenceGuide?.measure)&&topic.referenceGuide.measure.length>=3,`${topic.id}: field guide needs at least 3 measurement prompts`);
   assert(Array.isArray(topic.referenceGuide?.avoid)&&topic.referenceGuide.avoid.length>=2,`${topic.id}: field guide needs at least 2 inference cautions`);
@@ -39,6 +39,14 @@ for(const topic of data.topics||[]){
   assert(Array.isArray(journey.visualRoles)&&journey.visualRoles.length>=3,`${topic.id}: learner journey needs at least 3 purposeful visual roles`);
   assert(String(journey.evidenceBoundary||'').length>=100,`${topic.id}: learner journey needs an evidence boundary`);
   for(const href of journey.linkedTools||[]) assert(/^\//.test(href),`${topic.id}: linked tool/resource must use a site-relative route: ${href}`);
+  assert(Array.isArray(topic.practiceScenarios)&&topic.practiceScenarios.length>=2,`${topic.id}: needs at least two applied practice scenarios`);
+  for(const scenario of topic.practiceScenarios||[]){
+    assert(String(scenario.title||'').length>=6,`${topic.id}: practice scenario missing title`);
+    assert(String(scenario.prompt||'').length>=80,`${topic.id}: practice scenario prompt is too thin`);
+    assert(Array.isArray(scenario.evidenceToCollect)&&scenario.evidenceToCollect.length>=4,`${topic.id}: practice scenario needs at least four evidence items`);
+    assert(String(scenario.successCheck||'').length>=80,`${topic.id}: practice scenario needs a success check`);
+  }
+
   for(const ref of topic.references||[]){
     assert(String(ref.title||'').length>4,`${topic.id}: reference missing title`);
     assert(ref.organization||ref.doi||ref.url,`${topic.id}: reference ${ref.title||'(untitled)'} lacks organization, DOI, or URL context`);
@@ -60,4 +68,4 @@ if(warn.length){
   console.warn('Learning content quality warnings:');
   for(const w of warn) console.warn(' - '+w);
 }
-console.log(`Learning content quality valid: ${data.topics.length} topic pages meet depth, field-guide, decision-journey, tool-link, visual-role, and reference coverage.`);
+console.log(`Learning content quality valid: ${data.topics.length} topic pages meet depth, evidence, practice-scenario, field-guide, decision-journey, tool-link, visual-role, and reference coverage.`);
