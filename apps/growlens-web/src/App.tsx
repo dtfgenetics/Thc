@@ -27,6 +27,7 @@ import type {
   GrowLensState,
   PlantStage,
 } from './types';
+import { serializeResearchExport } from './researchExport';
 
 type Route = 'dashboard' | 'grow' | 'diary' | 'tasks' | 'tools' | 'observe' | 'settings';
 
@@ -382,6 +383,22 @@ export default function App() {
     setNotice('Backup downloaded.');
   }
 
+  function downloadResearchExport() {
+    const approved = window.confirm(
+      'Create a sanitized research export for possible inclusion in the public THC dataset repository? This removes account data, private names, free-text notes, raw IDs, absolute timestamps, and photo data. Continue only if you approve public research use of the sanitized package.',
+    );
+    if (!approved) return;
+
+    const blob = new Blob([serializeResearchExport(data, true)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `growlens-research-export-${todayInput()}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    setNotice('Sanitized research export downloaded for review and dataset ingestion.');
+  }
+
   async function importBackup(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -659,10 +676,11 @@ export default function App() {
         <div className="settings-grid">
           <Section title="Export all data" description="Creates a human-readable JSON backup containing every GrowLens record."><button className="primary-button" onClick={downloadBackup}>Download backup</button></Section>
           <Section title="Import a backup" description="Import replaces the current in-browser dataset after validation."><label className="file-button">Choose backup<input type="file" accept="application/json,.json" onChange={importBackup} /></label></Section>
+          <Section title="Research dataset export" description="Creates a privacy-filtered package for review and ingestion into the THC research dataset."><button className="secondary-button" onClick={downloadResearchExport}>Download sanitized research package</button><small>Requires explicit confirmation. Raw account data, names, notes, IDs, absolute dates, and photos are excluded.</small></Section>
           <Section title="Local storage status"><dl className="data-summary"><div><dt>Spaces</dt><dd>{data.spaces.length}</dd></div><div><dt>Plants</dt><dd>{data.plants.length}</dd></div><div><dt>Diary</dt><dd>{data.diary.length}</dd></div><div><dt>Readings</dt><dd>{data.readings.length}</dd></div></dl></Section>
           <Section title="Delete local data" description="This cannot be undone unless you exported a backup."><button className="danger-button" onClick={resetData}>Delete browser data</button></Section>
         </div>
-        <Section title="Current privacy boundary"><div className="privacy-copy"><p><strong>Stored now:</strong> Grow records are stored locally in this browser using a versioned schema.</p><p><strong>Not stored now:</strong> The selected observation photo is previewed in memory but is not persisted in this foundation release.</p><p><strong>Next backend gate:</strong> Hostinger account authentication, private image storage, user-isolated records, synchronization, export, and account deletion must pass a separate security review before activation.</p></div></Section>
+        <Section title="Current privacy boundary"><div className="privacy-copy"><p><strong>Private working data:</strong> GrowLens keeps the complete grow state in local storage and can optionally synchronize it to private account storage. Observation image blobs use private/local image storage rather than the research export.</p><p><strong>Research export:</strong> The public-dataset package is a separate, explicit action. It remaps record IDs, converts time to relative day offsets, and excludes account identity, private names, free-text notes, photo data, authentication material, and private storage paths.</p><p><strong>Publication gate:</strong> Downloading the research package requires confirmation and the dataset repository validates the package again before it can be committed.</p></div></Section>
       </>
     );
   }
