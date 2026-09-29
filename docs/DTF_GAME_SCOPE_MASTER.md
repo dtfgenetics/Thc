@@ -13,8 +13,8 @@ The current controlled catalog contains **23 public-route games**. A public rout
 1. **Bud or Bluff** — `bud-or-bluff` — /games/bud-or-bluff/ — `public-unverified`
 2. **Burn Buds** — `protect-the-plants` — /games/protect-the-plants/ — `public-unverified`
 3. **Grow Room Bingo / Bongwater Bingo** — `grow-room-bingo` — /games/grow-room-bingo/ — `public-unverified`
-4. **Grow Room Defense** — `grow-room-defense` — /games/grow-room-defense/ — `public-unverified`
-5. **Grower Conversations** — `grower-conversations` — /games/grower-conversations/ — `public-unverified`
+4. **Grow Room Confessions** — `grower-conversations` — /games/grower-conversations/ — `public-unverified`
+5. **Grow Room Defense** — `grow-room-defense` — /games/grow-room-defense/ — `public-unverified`
 6. **Harvest Hustle** — `harvest-hustle` — /games/harvest-hustle/ — `public-unverified`
 7. **High IQ — Test Higher Cognition** — `high-iq` — /games/high-iq/ — `public-unverified`
 8. **High Land: The Sweet Escape** — `high-land` — /games/high-land/ — `public-unverified`
@@ -29,7 +29,7 @@ The current controlled catalog contains **23 public-route games**. A public rout
 17. **Strain Match** — `strain-match` — /games/strain-match/ — `public-unverified`
 18. **Strain Showdown** — `strain-showdown` — /games/strain-showdown/ — `public-unverified`
 19. **Terpocalypse: Grow Room From Hell** — `terpocalypse` — /games/terpocalypse/ — `public-unverified`
-20. **THC Weekly Crossword** — `crossword` — /games/crossword/ — `public-unverified`
+20. **THC Daily Crossword** — `crossword` — /games/crossword/ — `public-unverified`
 21. **Trichome Trials** — `trichome-trials` — /games/trichome-trials/ — `public-unverified`
 22. **Weedopolis: Strain City Edition** — `weedopolis` — /games/weedopolis/ — `public-unverified`
 23. **Who Took It?** — `who-took-it` — /games/who-took-it/ — `public-unverified`
