@@ -1,0 +1,319 @@
+{
+  "schemaVersion": "1.0.0",
+  "volumeId": "THC-ENC-V20",
+  "status": "controlled-draft-complete-review-required",
+  "publicationAuthorized": false,
+  "controlledRange": {
+    "start": "THC-ENC-396",
+    "end": "THC-ENC-400"
+  },
+  "lessons": [
+    {
+      "id": "THC-ENC-396",
+      "number": 396,
+      "title": "Disease and Pest Resistance Screening",
+      "primaryFormat": "Diagnostic",
+      "requiredTeachingVisual": "Resistance-screen design and escape-control decision tree",
+      "objective": "Distinguish genetic resistance, tolerance, susceptibility, and disease escape through controlled challenge, replication, pathogen identity, and multi-stage evidence.",
+      "termsToKnow": [
+        "resistance",
+        "susceptibility",
+        "tolerance",
+        "disease escape",
+        "inoculum",
+        "isolate",
+        "disease severity",
+        "area under disease progress curve",
+        "resistance locus"
+      ],
+      "coreScience": [
+        "Resistance reduces infection, colonization, reproduction, or damage by a defined organism under defined conditions. Tolerance allows acceptable performance despite infection or injury. Escape occurs when a plant avoids exposure or favorable conditions. A plant with no visible disease in one room may be resistant, unexposed, younger, spatially protected, or incorrectly scored.",
+        "A resistance screen requires verified pest or pathogen identity, a reproducible challenge, susceptible and resistant checks, adequate inoculum or infestation, randomization, replication, and environmental control. Rate incidence, severity, pathogen reproduction, plant growth, and time. Different isolates can overcome different resistance genes, and development stage can change response. Greenhouse screens and field trials answer complementary questions.",
+        "Cannabis powdery mildew research illustrates multiple architectures: a disrupted susceptibility gene near CsMLO1, a dominant PM2 locus on chromosome 9, additional smaller QTL, and diverse germplasm with low disease across years. A marker is useful only after validation in the breeding population and with the relevant pathogen. Strong single-gene resistance can be introgressed, but durability may require combining mechanisms and monitoring pathogen change."
+      ],
+      "cultivationRelevance": [
+        "Treat promising resistance as a hypothesis until repeated with verified challenge and progeny. Preserve isolates, check reactions, images, raw scores, and marker data."
+      ],
+      "measureAndRecord": [
+        "Host IDs and stage; pathogen/pest species and isolate; inoculum or infestation method/dose; checks; environment; randomization/replication; incidence, severity and reproduction over time; yield/tolerance; markers; escapes; repeat environments."
+      ],
+      "misconceptions": [
+        "No visible disease proves resistance.",
+        "A resistance marker works in every genetic background.",
+        "One resistance gene makes scouting unnecessary."
+      ],
+      "evidenceLimits": [
+        "Resistance is organism-, isolate-, host-stage-, environment-, background-, scoring-, and population-specific."
+      ],
+      "crossLinks": "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems.",
+      "sourceNotes": [
+        "V20-SRC-026",
+        "V20-SRC-027",
+        "V20-SRC-028",
+        "V20-SRC-029"
+      ],
+      "knowledgeCheck": [
+        "Which observations, progeny, markers, environments, or measurements would distinguish the main genetic explanations in this lesson?",
+        "Which population, mating, sampling, method, legal, or environmental limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 20: Breeding, Selection, and Genetic Conservation — DRAFT COMPLETE v0.1",
+        "driveFileId": "1ru6DHiVQ7O-tsY3j7R_rJs_ORwMDfGW9sfZxoiXCq5k",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "disease-and-pest-resistance-screening",
+      "route": "/encyclopedia/disease-and-pest-resistance-screening"
+    },
+    {
+      "id": "THC-ENC-397",
+      "number": 397,
+      "title": "Progeny Testing and Combining Ability",
+      "primaryFormat": "Data / QA",
+      "requiredTeachingVisual": "Parent-by-progeny combining-ability record",
+      "objective": "Estimate parental breeding value from offspring performance across mates, families, environments, and target traits.",
+      "termsToKnow": [
+        "progeny test",
+        "general combining ability",
+        "specific combining ability",
+        "testcross",
+        "half-sib",
+        "full-sib",
+        "breeding value",
+        "family effect"
+      ],
+      "coreScience": [
+        "A progeny test evaluates a parent by measuring its descendants. This is essential when the parent’s own phenotype is misleading, when traits are expressed only in one sex or late stage, or when selection aims at transmission rather than clone performance. Families can be half-sibs, full-sibs, selfs, testcrosses, or structured diallel and factorial sets.",
+        "General combining ability describes average performance across several mates and is often associated with additive effects. Specific combining ability describes an unusually favorable or unfavorable combination relative to parental averages and can include dominance and epistasis. Estimates depend on the mating design, tester choice, environments, family size, and statistical model. A parent tested with one mate does not have a reliable general combining-ability estimate.",
+        "Use common testers and checks, balanced family sizes where possible, and replicated trials. Preserve both mean and within-family variation. A cross with one exceptional offspring may be attractive for clone selection but poor for seed-family uniformity. Conversely, a parent producing consistently acceptable families can be valuable even if it never produces the single most extreme individual."
+      ],
+      "cultivationRelevance": [
+        "Decide whether the program wants elite individual clones, predictable seed families, or parental lines. Design progeny tests to match that objective."
+      ],
+      "measureAndRecord": [
+        "Parent/tester/cross IDs; mating design; family size and balance; environments; trait definitions; family means and variances; parental and check values; GCA/SCA model and uncertainty; selected progeny; fertility and off-types."
+      ],
+      "misconceptions": [
+        "The best parent phenotype always gives the best progeny.",
+        "One exceptional child proves a superior cross.",
+        "Combining ability is a permanent value independent of testers and environments."
+      ],
+      "evidenceLimits": [
+        "Combining-ability estimates apply to the tested parent set, mating design, traits, environments, and model."
+      ],
+      "crossLinks": "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems.",
+      "sourceNotes": [
+        "V20-SRC-004",
+        "V20-SRC-006",
+        "V20-SRC-007",
+        "V20-SRC-025"
+      ],
+      "knowledgeCheck": [
+        "Which observations, progeny, markers, environments, or measurements would distinguish the main genetic explanations in this lesson?",
+        "Which population, mating, sampling, method, legal, or environmental limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 20: Breeding, Selection, and Genetic Conservation — DRAFT COMPLETE v0.1",
+        "driveFileId": "1ru6DHiVQ7O-tsY3j7R_rJs_ORwMDfGW9sfZxoiXCq5k",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "progeny-testing-and-combining-ability",
+      "route": "/encyclopedia/progeny-testing-and-combining-ability"
+    },
+    {
+      "id": "THC-ENC-398",
+      "number": 398,
+      "title": "Population Maintenance and Avoiding Genetic Bottlenecks",
+      "primaryFormat": "Science lesson",
+      "requiredTeachingVisual": "Effective population size and family-contribution diagram",
+      "objective": "Maintain useful allelic diversity by controlling parent number, sex ratio, family contribution, drift, selection, and contamination.",
+      "termsToKnow": [
+        "census population",
+        "effective population size",
+        "genetic drift",
+        "bottleneck",
+        "founder effect",
+        "allele loss",
+        "family contribution",
+        "coancestry"
+      ],
+      "coreScience": [
+        "The number of plants in a population is not the same as its effective population size. Unequal sex ratios, few successful pollen parents, unequal seed contribution, related matings, reproductive failure, and strong selection can make a large grow genetically equivalent to a much smaller breeding population. Small effective size increases drift, inbreeding, and loss of rare alleles.",
+        "Population maintenance requires a defined objective. A conservation population aims to retain diversity and representative allele frequencies; a breeding population deliberately changes them. To conserve, use many unrelated parents, balanced male and female or family contributions, controlled sampling, and sufficient seed from each family. Avoid allowing the earliest, tallest, or most pollen-productive plants to dominate unintentionally.",
+        "Genotyping can estimate relatedness and structure, but sampling and marker density matter. Phenotypic diversity is not a reliable substitute for genomic diversity, and cultivar names may not reflect identity. Maintain base-population seed, selected cycles, and safety duplicates separately. Contamination by stray pollen, volunteers, mixed seed, or mislabeled clones can alter a population as strongly as deliberate selection."
+      ],
+      "cultivationRelevance": [
+        "Calculate and monitor parent and family contributions every cycle. Preserve an unselected base sample and document all bottlenecks."
+      ],
+      "measureAndRecord": [
+        "Population and cycle ID; census size; breeding parents; sex ratio; relationships; pollen and seed contribution by family; mortality and fertility; selection proportion; effective-size estimate; allele/marker diversity; contamination checks; backups."
+      ],
+      "misconceptions": [
+        "A field with hundreds of plants cannot have a bottleneck.",
+        "Visible diversity proves genetic diversity is preserved.",
+        "Using one outstanding male has little effect on population structure."
+      ],
+      "evidenceLimits": [
+        "Effective population size and diversity estimates depend on mating system, family contribution, marker coverage, generation history, and sampling."
+      ],
+      "crossLinks": "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems.",
+      "sourceNotes": [
+        "V20-SRC-006",
+        "V20-SRC-008",
+        "V20-SRC-010",
+        "V20-SRC-011",
+        "V20-SRC-012"
+      ],
+      "knowledgeCheck": [
+        "Which observations, progeny, markers, environments, or measurements would distinguish the main genetic explanations in this lesson?",
+        "Which population, mating, sampling, method, legal, or environmental limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 20: Breeding, Selection, and Genetic Conservation — DRAFT COMPLETE v0.1",
+        "driveFileId": "1ru6DHiVQ7O-tsY3j7R_rJs_ORwMDfGW9sfZxoiXCq5k",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "population-maintenance-and-avoiding-genetic-bottlenecks",
+      "route": "/encyclopedia/population-maintenance-and-avoiding-genetic-bottlenecks"
+    },
+    {
+      "id": "THC-ENC-399",
+      "number": 399,
+      "title": "Seed Storage, Germplasm Backup, and Regeneration",
+      "primaryFormat": "Procedure",
+      "requiredTeachingVisual": "Germplasm conservation and regeneration workflow",
+      "objective": "Preserve seed and living genetic resources through identity control, drying, storage, viability monitoring, safety duplication, and genetically responsible regeneration.",
+      "termsToKnow": [
+        "germplasm",
+        "accession",
+        "orthodox seed",
+        "viability",
+        "vigor",
+        "regeneration",
+        "safety duplicate",
+        "base collection",
+        "active collection",
+        "genetic integrity"
+      ],
+      "coreScience": [
+        "Germplasm conservation protects future breeding options. Seed lots need accession identity, parentage or collection origin, harvest and processing records, initial quality, and legal status. Cannabis seed is generally managed as an orthodox seed under dry, cold genebank practices, but each lot’s moisture response, viability, vigor, and storage behavior should be verified rather than assumed.",
+        "Long-term storage requires controlled drying, moisture-proof packaging, stable low temperature, monitoring, and backup at a separate secure location. Germination percentage alone can hide declining vigor or abnormal seedlings. Establish retest intervals and thresholds based on initial viability, storage conditions, seed quantity, value, and expected longevity. Preserve enough seed that monitoring does not consume the accession.",
+        "Regeneration creates new seed when quantity or viability falls. It can change the accession through small parent number, unequal flowering, pollen contamination, selection, environmental mortality, and accidental mixing. Use adequate effective population size, controlled isolation, representative family contribution, identity checks, and documentation. Clonal, tissue-culture, field, and cryogenic backups have different pathogen, mutation, space, and recovery risks and should complement rather than silently replace seed conservation."
+      ],
+      "cultivationRelevance": [
+        "Create an accession-level conservation plan with active material, long-term base storage, and geographically separate safety duplication."
+      ],
+      "measureAndRecord": [
+        "Accession and origin; legal/ownership records; parentage/population sample; harvest and cleaning; seed count and mass; moisture method; initial germination/vigor; package and storage conditions; monitoring dates/results; regeneration population and isolation; family contribution; backup location."
+      ],
+      "misconceptions": [
+        "A freezer automatically preserves seed indefinitely.",
+        "High germination means genetic integrity was preserved.",
+        "Regeneration simply replaces old seed with identical new seed."
+      ],
+      "evidenceLimits": [
+        "Storage longevity and regeneration fidelity depend on seed condition, moisture, temperature, package, population size, mating, health, and monitoring methods."
+      ],
+      "crossLinks": "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems.",
+      "sourceNotes": [
+        "V20-SRC-030",
+        "V20-SRC-031",
+        "V20-SRC-032",
+        "V20-SRC-011"
+      ],
+      "knowledgeCheck": [
+        "Which observations, progeny, markers, environments, or measurements would distinguish the main genetic explanations in this lesson?",
+        "Which population, mating, sampling, method, legal, or environmental limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 20: Breeding, Selection, and Genetic Conservation — DRAFT COMPLETE v0.1",
+        "driveFileId": "1ru6DHiVQ7O-tsY3j7R_rJs_ORwMDfGW9sfZxoiXCq5k",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "seed-storage-germplasm-backup-and-regeneration",
+      "route": "/encyclopedia/seed-storage-germplasm-backup-and-regeneration"
+    },
+    {
+      "id": "THC-ENC-400",
+      "number": 400,
+      "title": "Pedigrees, Generations, Naming, and Release Claims",
+      "primaryFormat": "Data / QA",
+      "requiredTeachingVisual": "Controlled pedigree, generation, and naming record",
+      "objective": "Use unambiguous pedigree and generation records while preventing names and marketing claims from exceeding the evidence.",
+      "termsToKnow": [
+        "pedigree",
+        "filial generation",
+        "selfed generation",
+        "backcross",
+        "line",
+        "cultivar",
+        "accession",
+        "clone",
+        "seed lot",
+        "release claim"
+      ],
+      "coreScience": [
+        "A pedigree records biological ancestry and mating events. A product name is not a pedigree. Generation labels must state the mating that created them: F1 and F2 describe filial generations from a defined cross; S1 describes selfed offspring from one parent; BC1 describes the first backcross to a named recurrent parent. Industry usage is inconsistent, so every project should publish its controlled definitions and never infer stability from the label alone.",
+        "Individual, family, line, clone, accession, cultivar, and seed lot are different entities. A selected F2 individual can be preserved as a clone while its F3 seed family segregates. Two seed lots with the same cross can differ because of parents, pollen contamination, harvest, storage, and sampling. Reusing a name for changed parents or unverified generations destroys traceability.",
+        "Release claims should be supported by a frozen target product profile, parent and generation records, population sizes, trial environments, laboratory methods, disease or stress tests, uniformity and stability evidence, seed quality, legal status, and known limitations. “Stable,” “IBL,” “true breeding,” “resistant,” “feminized,” “autoflower,” and lineage percentages require definitions and evidence. Corrected pedigrees and failed claims should remain in revision history rather than being silently replaced."
+      ],
+      "cultivationRelevance": [
+        "Assign permanent IDs before names. Link every public description to a versioned release record and retained reference material."
+      ],
+      "measureAndRecord": [
+        "Permanent line/cross/clone/lot IDs; parent IDs and roles; every mating and generation; population and selected counts; seed and clone sources; identity tests; trial and laboratory evidence; name/version; claim wording and scope; corrections, approver and release date."
+      ],
+      "misconceptions": [
+        "A name proves a cultivar is genetically distinct.",
+        "F5 or IBL automatically means uniform and stable.",
+        "A pedigree percentage can be calculated reliably from names alone."
+      ],
+      "evidenceLimits": [
+        "Pedigree records show declared ancestry; they do not by themselves prove genetic identity, trait transmission, uniformity, stability, ownership, or legal status."
+      ],
+      "crossLinks": "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems.",
+      "sourceNotes": [
+        "V20-SRC-008",
+        "V20-SRC-010",
+        "V20-SRC-013",
+        "V20-SRC-030",
+        "V20-SRC-034"
+      ],
+      "knowledgeCheck": [
+        "Which observations, progeny, markers, environments, or measurements would distinguish the main genetic explanations in this lesson?",
+        "Which population, mating, sampling, method, legal, or environmental limits prevent the conclusion from being universal?"
+      ],
+      "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.\n\n\nVOLUME 20 COMPLETION RECORD\nLesson count: 20 of 20\nControlled IDs: THC-ENC-381–400\nRequired instructional sections: Present in every lesson\nSource notes: Present in every lesson\nAtomic claim ledger: Not started\nIndependent review: Not started\nPrimary visuals: Not produced\nDownloads/page packages: Not produced\nApproval/publication: Not authorized",
+      "publicationAuthorized": false,
+      "reviewControl": {
+        "controlledManuscript": "THC Cannabis Encyclopedia — Volume 20: Breeding, Selection, and Genetic Conservation — DRAFT COMPLETE v0.1",
+        "driveFileId": "1ru6DHiVQ7O-tsY3j7R_rJs_ORwMDfGW9sfZxoiXCq5k",
+        "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+        "externalReview": "pending",
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication"
+      },
+      "slug": "pedigrees-generations-naming-and-release-claims",
+      "route": "/encyclopedia/pedigrees-generations-naming-and-release-claims"
+    }
+  ]
+}
