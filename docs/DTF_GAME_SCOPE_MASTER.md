@@ -37,12 +37,12 @@ The current controlled catalog contains **23 public-route games**. A public rout
 ## Built prototype not yet promoted
 
 - **Ganjumanji: The Lost Grower's Temple** — `packaged` — Publish the qualified package to the DTFSeeds public suite, then verify /games/ganjumanji/ against exact revision 257c5a60c8ec0e7f6a87170f232c37e047458b22.
-- **Kush Kings Chess** — `playable-local` — Pass production runtime, live health, two-browser play, spectator/chat, reconnect, and mobile verification.
+- **Kush Kings Chess** — `playable-local` — Configure the five Kush Kings production secrets, run the exact-SHA deploy, pass frontend/API/Socket.IO live verification, then complete two-browser/mobile multiplayer acceptance.
 - **Quack & Bake: Stoner Duck Race** — `playable-local` — Complete multiplayer/browser presentation QA, lock production ownership/public route, then package through the DTFSeeds release pipeline.
 - **Root Cause** — `vertical-slice` — Reconcile public-hub intent, run full route QA, and promote only after exact live verification.
 - **Seed Man: Seed Ascent** — `playable-local` — Complete browser/game-feel QA and establish explicit production ownership/cutover before public promotion.
 - **THC RPG — The First Seed** — `packaged` — Publish the qualified package to the DTFSeeds public suite, then verify /games/thc-rpg/ against exact revision de6c26d9073d9154bbcade43b64768cf6a7ba2a0.
-- **THC U Know** — `playable-local` — Pass production runtime, persistent-origin, reconnect/private-hand, and multi-browser/mobile verification.
+- **THC U Know** — `playable-local` — Configure the THC U Know Node host/origin settings, let deploy-node-runtime.yml deploy the exact green revision, then pass live smoke and two-browser multiplayer acceptance.
 
 ## Future concept bank
 
