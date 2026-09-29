@@ -3,6 +3,8 @@ import fs from 'node:fs';
 
 const revisionPath = 'site/public-route-patch/assets/release-source-revisions/ganjumanji.txt';
 const registryPath = 'site/deployment/public-apps.json';
+const portfolioPath = 'data/game-registry-v2.json';
+const routeRevisionPath = 'site/public-route-patch/games/ganjumanji/source-revision.txt';
 
 const lines = Object.fromEntries(
   fs.readFileSync(revisionPath, 'utf8')
@@ -17,10 +19,30 @@ const lines = Object.fromEntries(
 
 assert.equal(lines.repository, 'dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple');
 assert.match(lines.commit || '', /^[0-9a-f]{40}$/);
-assert.equal(lines.commit, 'b1cbf9b9627586b7277813b6a7c6f85a98830d58');
 assert.equal(lines.version, '0.4.1');
 assert.equal(lines.route, '/games/ganjumanji/');
 assert.equal(lines.status, 'release-candidate');
+
+const portfolio = JSON.parse(fs.readFileSync(portfolioPath, 'utf8'));
+const portfolioGame = portfolio.games.find((candidate) => candidate.id === 'ganjumanji');
+assert.ok(portfolioGame, 'Ganjumanji must remain registered in game-registry-v2.');
+assert.equal(lines.repository, portfolioGame.production?.repository, 'pinned repository must match v2 canonical owner');
+assert.equal(lines.route, portfolioGame.publicRoute, 'pinned route must match v2 route');
+assert.equal(lines.commit, portfolioGame.release?.candidateRevision, 'pinned source must match v2 candidateRevision');
+
+const routeRevision = Object.fromEntries(
+  fs.readFileSync(routeRevisionPath, 'utf8')
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .map((line) => {
+      const index = line.indexOf('=');
+      assert.ok(index > 0, `Invalid route source revision line: ${line}`);
+      return [line.slice(0, index), line.slice(index + 1)];
+    })
+);
+assert.equal(routeRevision.commit, lines.commit, 'route source revision must match central pinned source');
+assert.equal(routeRevision.repository, lines.repository, 'route source repository must match central pinned source');
+assert.equal(routeRevision.route, lines.route, 'route source route must match central pinned source');
 
 const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
 const app = registry.apps.find((candidate) => candidate.id === 'ganjumanji');
