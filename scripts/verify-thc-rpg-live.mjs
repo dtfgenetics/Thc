@@ -12,11 +12,16 @@ async function get(path, label) {
   try {
     const response = await fetch(new URL(path, base), {
       cache: 'no-store',
-      redirect: 'follow',
+      redirect: 'manual',
       signal: controller.signal,
       headers: { 'user-agent': 'DTFSeeds-THC-RPG-live-verifier/1.0' }
     });
+    if (response.status >= 300 && response.status < 400) {
+      throw new Error(`${label} redirected to ${response.headers.get('location') || '<unknown>'}`);
+    }
     if (!response.ok) throw new Error(`${label} returned HTTP ${response.status}`);
+    const expectedUrl = new URL(path, base).href;
+    if (response.url !== expectedUrl) throw new Error(`${label} resolved to unexpected URL ${response.url}`);
     return await response.text();
   } finally {
     clearTimeout(timer);
