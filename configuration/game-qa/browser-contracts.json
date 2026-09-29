@@ -9,57 +9,104 @@
     "failOnPageError": true,
     "failOnSameOriginRequestFailure": true,
     "viewports": {
-      "desktop": { "width": 1440, "height": 900 },
-      "mobile": { "width": 390, "height": 844, "isMobile": true, "hasTouch": true }
+      "desktop": {
+        "width": 1440,
+        "height": 900
+      },
+      "mobile": {
+        "width": 390,
+        "height": 844,
+        "isMobile": true,
+        "hasTouch": true
+      }
     }
   },
   "games": {
     "high-iq": {
-      "requiredSelectors": ["#main-content", "#challenge-title"]
+      "requiredSelectors": [
+        "#main-content",
+        "#challenge-title"
+      ]
     },
     "high-land": {
-      "requiredSelectors": ["#root"]
+      "requiredSelectors": [
+        "#root"
+      ],
+      "requiredText": [
+        "High Land: The Sweet Escape",
+        "Play on This Device",
+        "Create Online Room",
+        "Join a Room"
+      ]
     },
     "weedopolis": {
-      "requiredText": ["Weedopolis"]
+      "requiredText": [
+        "Weedopolis"
+      ]
     },
     "seed-man-platformer": {
-      "requiredText": ["Seed Man"]
+      "requiredText": [
+        "Seed Man"
+      ]
     },
     "strain-showdown": {
-      "requiredText": ["Strain Showdown"],
+      "requiredText": [
+        "Strain Showdown"
+      ],
       "prepare": {
         "command": "node",
-        "args": ["games/strain-showdown/scripts/build-browser-bundle.mjs"]
+        "args": [
+          "games/strain-showdown/scripts/build-browser-bundle.mjs"
+        ]
       },
-      "generatedRuntime": ["site/public-route-patch/games/strain-showdown/data/browser-bundle.json"]
+      "generatedRuntime": [
+        "site/public-route-patch/games/strain-showdown/data/browser-bundle.json"
+      ]
     },
     "protect-the-plants": {
-      "requiredText": ["Burn Buds"]
+      "requiredText": [
+        "Burn Buds"
+      ]
     },
     "crossword": {
-      "requiredText": ["Crossword"]
+      "requiredText": [
+        "Crossword"
+      ]
     },
     "who-took-it": {
-      "requiredText": ["Who Took It"]
+      "requiredText": [
+        "Who Took It"
+      ]
     },
     "thc-u-know": {
-      "requiredText": ["THC U Know"]
+      "requiredText": [
+        "THC U Know"
+      ]
     },
     "kush-kings-chess": {
-      "requiredText": ["Kush Kings"]
+      "requiredText": [
+        "Kush Kings"
+      ]
     },
     "terpocalypse": {
-      "requiredText": ["Terpocalypse"]
+      "requiredText": [
+        "Terpocalypse"
+      ]
     },
     "phenoquest": {
-      "requiredText": ["PhenoQuest"]
+      "requiredText": [
+        "PhenoQuest"
+      ]
     },
     "ganjumanji": {
-      "requiredText": ["Ganjumanji"]
+      "requiredText": [
+        "Ganjumanji"
+      ]
     },
     "thc-rpg": {
-      "requiredText": ["THC RPG"]
+      "requiredText": [
+        "THC RPG"
+      ]
     }
   }
 }
