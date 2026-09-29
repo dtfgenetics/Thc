@@ -27,7 +27,9 @@ assert.match(html, /id="share-run"/);
 
 assert.match(runtime, /MAX_INSPECTIONS/);
 assert.match(runtime, /MAX_GUESSES/);
-assert.match(runtime, /copyText\(value\)/);
+assert.match(runtime, /import \{ copyText \} from '\/games\/shared-platform\/index\.mjs';/);
+assert.doesNotMatch(runtime, /async function copyText\(/, 'Root Cause must use the shared clipboard helper instead of shipping another copy');
+assert.match(runtime, /const copied = \(await copyText\(value\)\)\.ok/);
 assert.match(runtime, /Copy failed\. Share case code/);
 assert.match(runtime, /prefers-reduced-motion: reduce/);
 assert.match(runtime, /revealStackedResult/);
