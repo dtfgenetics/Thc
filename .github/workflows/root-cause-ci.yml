@@ -41,7 +41,7 @@ jobs:
       - name: Validate public JavaScript syntax
         run: |
           node --check site/public-route-patch/games/root-cause/app.js
-          node --check site/public-route-patch/games/root-cause/engine.js
+          node --check site/public-route-patch/games/root-cause/runtime.mjs
           node --check site/public-route-patch/games/root-cause/engine.mjs
 
       - name: Verify canonical and public module engine match
@@ -58,20 +58,22 @@ jobs:
           const css = fs.readFileSync('site/public-route-patch/games/root-cause/root-cause.css','utf8');
           const visual = fs.readFileSync('site/public-route-patch/games/root-cause/root-cause-v2.css','utf8');
           const app = fs.readFileSync('site/public-route-patch/games/root-cause/app.js','utf8');
-          const engine = fs.readFileSync('site/public-route-patch/games/root-cause/engine.js','utf8');
+          const runtime = fs.readFileSync('site/public-route-patch/games/root-cause/runtime.mjs','utf8');
+          const engine = fs.readFileSync('site/public-route-patch/games/root-cause/engine.mjs','utf8');
           const requireText = (source, text, label) => {
             if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
           };
           requireText(html, '<link rel="canonical" href="https://dtfseeds.com/games/root-cause/">', 'canonical route');
-          requireText(html, '<script src="./engine.js" defer></script>', 'classic engine entrypoint');
-          requireText(html, '<script src="./app.js" defer></script>', 'classic controller entrypoint');
-          if (html.includes('type="module"')) throw new Error('public route must not require ES-module serving');
+          requireText(html, '<script src="./app.js" defer></script>', 'bootstrap entrypoint');
+          if (html.includes('src="./engine.js"')) throw new Error('obsolete duplicated browser engine must not be loaded');
           requireText(html, 'root-cause-v2.css', 'V2 case-file visual layer');
           requireText(html, 'Education boundary:', 'education boundary');
-          requireText(app, 'data.cases?.length !== 12', 'case contract');
-          requireText(app, 'data.diagnoses?.length !== 12', 'diagnosis contract');
-          requireText(app, 'MAX_INSPECTIONS', 'inspection limit');
-          requireText(engine, 'globalThis.RootCauseEngine = Object.freeze', 'classic engine namespace');
+          requireText(app, "import('./runtime.mjs')", 'canonical runtime bootstrap');
+          requireText(runtime, "from './engine.mjs';", 'canonical engine import');
+          requireText(runtime, 'data.cases?.length !== 12', 'case contract');
+          requireText(runtime, 'data.diagnoses?.length !== 12', 'diagnosis contract');
+          requireText(runtime, 'MAX_INSPECTIONS', 'inspection limit');
+          requireText(engine, 'export', 'module engine contract');
           requireText(css, '.plant-visual', 'plant renderer');
           requireText(css, '@media(prefers-reduced-motion:reduce)', 'reduced motion support');
           requireText(visual, 'data-case-status="solved"', 'solved presentation state');
