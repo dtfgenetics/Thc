@@ -25,7 +25,18 @@
     "high-iq": {
       "requiredSelectors": [
         "#main-content",
-        "#challenge-title"
+        "#challenge-title",
+        "#start-quiz",
+        "#daily-start",
+        "#lock-answer"
+      ],
+      "requiredText": [
+        "High IQ — Test Higher Cognition",
+        "200",
+        "approved questions",
+        "Start challenge",
+        "Play Daily 10",
+        "Missed-question review"
       ]
     },
     "high-land": {
@@ -41,7 +52,11 @@
     },
     "weedopolis": {
       "requiredText": [
-        "Weedopolis"
+        "Weedopolis",
+        "Bud Bucks",
+        "Start Session",
+        "Load",
+        "New Game"
       ]
     },
     "seed-man-platformer": {
@@ -50,8 +65,18 @@
       ]
     },
     "strain-showdown": {
+      "requiredSelectors": [
+        "#familyScreen",
+        "#battleScreen",
+        "#endTurnButton",
+        "#rulesButton"
+      ],
       "requiredText": [
-        "Strain Showdown"
+        "Strain Showdown",
+        "96-card",
+        "Choose your family",
+        "End Turn",
+        "How to Play"
       ],
       "prepare": {
         "command": "node",
@@ -64,8 +89,18 @@
       ]
     },
     "protect-the-plants": {
+      "requiredSelectors": [
+        "#app",
+        "#toast",
+        "#plantOverlay"
+      ],
       "requiredText": [
-        "Burn Buds"
+        "Burn Buds",
+        "15×15",
+        "two-player strategy",
+        "room codes",
+        "rematches",
+        "mobile play"
       ]
     },
     "crossword": {
@@ -106,6 +141,20 @@
     "thc-rpg": {
       "requiredText": [
         "THC RPG"
+      ]
+    },
+    "high-life": {
+      "requiredSelectors": [
+        "#setup-panel",
+        "#game-panel",
+        "#results-panel"
+      ],
+      "requiredText": [
+        "From Bagseed to Legacy",
+        "Start a career",
+        "Begin Underground Era",
+        "18 turns",
+        "Autosave + exact resume"
       ]
     }
   }
