@@ -10,8 +10,8 @@ Updated: 2026-09-28
 | Burn Buds | /games/protect-the-plants/ | dtfgenetics/Thc | games/protect-the-plants | dtfgenetics/Thc · site/public-route-patch/games/protect-the-plants · local-static-php | `public-unverified` |
 | Ganjumanji: The Lost Grower's Temple | /games/ganjumanji/ | dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple | src, public | dtfgenetics/Thc · site/public-route-patch/games/ganjumanji/source-revision.txt · external-pinned-static-build | `release-candidate` |
 | Grow Room Bingo / Bongwater Bingo | /games/grow-room-bingo/ | dtfgenetics/Thc | games/grow-room-bingo | dtfgenetics/Thc · site/public-route-patch/games/grow-room-bingo · local-static | `public-unverified` |
+| Grow Room Confessions | /games/grower-conversations/ | dtfgenetics/Thc | games/grower-conversations | dtfgenetics/Thc · site/public-route-patch/games/grower-conversations · local-static | `public-unverified` |
 | Grow Room Defense | /games/grow-room-defense/ | dtfgenetics/Thc | games/grow-room-defense | dtfgenetics/Thc · site/public-route-patch/games/grow-room-defense · local-static | `public-unverified` |
-| Grower Conversations | /games/grower-conversations/ | dtfgenetics/Thc | games/grower-conversations | dtfgenetics/Thc · site/public-route-patch/games/grower-conversations · local-static | `public-unverified` |
 | Harvest Hustle | /games/harvest-hustle/ | dtfgenetics/Thc | games/harvest-hustle | dtfgenetics/Thc · site/public-route-patch/games/harvest-hustle · local-static | `public-unverified` |
 | High IQ — Test Higher Cognition | /games/high-iq/ | dtfgenetics/Thc | games/high-iq, site/public-route-patch/games/high-iq | dtfgenetics/Thc · site/public-route-patch/games/high-iq · local-static | `public-unverified` |
 | High Land: The Sweet Escape | /games/high-land/ | dtfgenetics/Thc | apps/high-land-web | dtfgenetics/Thc · apps/high-land-web · local-build | `public-unverified` |
@@ -30,9 +30,9 @@ Updated: 2026-09-28
 | Strain Match | /games/strain-match/ | dtfgenetics/Thc | games/strain-match | dtfgenetics/Thc · site/public-route-patch/games/strain-match · local-static | `public-unverified` |
 | Strain Showdown | /games/strain-showdown/ | dtfgenetics/Thc | games/strain-showdown | dtfgenetics/Thc · site/public-route-patch/games/strain-showdown · local-static | `public-unverified` |
 | Terpocalypse: Grow Room From Hell | /games/terpocalypse/ | dtfgenetics/Terpocalapse | prototypes/web-fps | dtfgenetics/Thc · site/public-route-patch/games/terpocalypse · verified-snapshot | `public-unverified` |
+| THC Daily Crossword | /games/crossword/ | dtfgenetics/Thc-crossword- | src, content, public/puzzles | dtfgenetics/Thc · external-build | `public-unverified` |
 | THC RPG — The First Seed | /games/thc-rpg/ | dtfgenetics/Thc-rpg | src, public | dtfgenetics/Thc · site/public-route-patch/games/thc-rpg/source-revision.txt · external-pinned-static-build | `release-candidate` |
 | THC U Know | /games/thc-u-know/ | dtfgenetics/thc-u-know-card-game- | apps/web, apps/server, packages/shared | dtfgenetics/Thc · external-full-stack | `playable-local` |
-| THC Weekly Crossword | /games/crossword/ | dtfgenetics/Thc-crossword- | src, content, public/puzzles | dtfgenetics/Thc · external-build | `public-unverified` |
 | Trichome Trials | /games/trichome-trials/ | dtfgenetics/Thc | games/trichome-trials | dtfgenetics/Thc · site/public-route-patch/games/trichome-trials · local-static | `public-unverified` |
 | Weedopolis: Strain City Edition | /games/weedopolis/ | dtfgenetics/Weedopolis-strain-Edition | src, digital, data | dtfgenetics/Thc · external-build | `public-unverified` |
 | Who Took It? | /games/who-took-it/ | dtfgenetics/Thc-guess-who | 03_digital-game | dtfgenetics/Thc · 03_digital-game · external-build | `public-unverified` |
