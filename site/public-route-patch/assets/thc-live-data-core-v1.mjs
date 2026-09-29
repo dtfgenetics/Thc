@@ -30,7 +30,8 @@ const defaultMetricAliases={
   rootTemperatureC:['rootTemperatureC','rootTempC','substrateTemperatureC','substrateTempC','substrate.temperature.current'],
   leafTemperatureC:['leafTemperatureC','leafTempC','leafTemperature','leafTemp'],
   solutionTemperatureC:['solutionTemperatureC','solutionTempC'],
-  dewPointC:['dewPointC','dewPoint']
+  dewPointC:['dewPointC','dewPoint'],
+  waterActivity:['waterActivity','aw','water_activity','productWaterActivity']
 };
 
 const firstValue=(input,paths)=>{
@@ -52,6 +53,7 @@ const canonicalMetricName=name=>{
   if(key==='ec'||key.includes('electricalconductivity'))return 'ec';
   if(key==='vwc'||key.includes('volumetricwatercontent')||key.includes('substratemoisture'))return 'vwc';
   if(key.includes('dewpoint'))return 'dewPointC';
+  if(key==='aw'||key.includes('wateractivity'))return 'waterActivity';
   if(key.includes('leaf')&&key.includes('temp'))return 'leafTemperatureC';
   if((key.includes('root')||key.includes('substrate'))&&key.includes('temp'))return 'rootTemperatureC';
   if(key.includes('solution')&&key.includes('temp'))return 'solutionTemperatureC';
@@ -171,7 +173,8 @@ const TOOL_FIELD_MAPS={
   dryback:{ec:'rootEc',vwc:'current'},
   ph:{ph:'ph'},
   tds:{ec:'ec'},
-  ppfd:{ppfd:'ppfd'}
+  ppfd:{ppfd:'ppfd'},
+  'dry-cure':{temperatureC:'dt',humidity:'drh',waterActivity:'aw'}
 };
 
 export function packetToToolFields(packet,tool){
