@@ -1814,13 +1814,14 @@
         "lastVerifiedAt": null,
         "lastVerifiedUrl": null,
         "blockers": [
-          "Production deployment is not configured: KUSH_VPS_HOST, KUSH_VPS_USER, KUSH_VPS_SSH_KEY, KUSH_PG_PASSWORD, and KUSH_SESSION_SECRET are absent from the production environment.",
-          "No production write occurred in deploy run 36508969683; live frontend/API/Socket.IO verification therefore still fails.",
-          "Two-browser/mobile gameplay, spectator/chat, reconnect, and archive verification remain required after the persistent runtime is deployed."
+          "Production deploy gate is correctly blocked until KUSH_VPS_HOST, KUSH_VPS_USER, KUSH_VPS_SSH_KEY, KUSH_PG_PASSWORD, and KUSH_SESSION_SECRET are configured.",
+          "No production write occurs while those secrets are absent; post-deploy live verification is intentionally skipped.",
+          "After deployment, frontend/API/Socket.IO plus two-browser/mobile play, spectator/chat, reconnect, archive, and rematch verification remain required."
         ],
-        "nextMilestone": "Configure the five production deployment secrets, deploy the exact green revision, pass frontend/API/Socket.IO live checks, then complete two-browser/mobile multiplayer acceptance.",
-        "sourceValidatedRevision": "883104b225e541dcb7f34968820e0df696e90fcb",
-        "sourceValidatedAt": "2026-09-29T01:39:59Z"
+        "nextMilestone": "Configure the five Kush Kings production secrets, run the exact-SHA deploy, pass frontend/API/Socket.IO live verification, then complete two-browser/mobile multiplayer acceptance.",
+        "sourceValidatedRevision": "988a0c1634f8f33f3cee3e80706452d7daacd4f9",
+        "sourceValidatedAt": "2026-09-29T01:47:17Z",
+        "lastDeploymentGateRun": 36509627734
       },
       "developmentLocations": [],
       "deprecatedLocations": [],
@@ -4015,16 +4016,17 @@
         "lastVerifiedAt": null,
         "lastVerifiedUrl": null,
         "blockers": [
-          "The public frontend route /games/thc-u-know/ serves the THC U Know app with the current Header V6 shell.",
-          "The same-origin /games/thc-u-know/healthz request currently returns WordPress/static HTML instead of thc-u-know-server JSON, proving the persistent Node service/reverse proxy is not deployed.",
-          "Socket.IO routing cannot be production-verified until the Node service is deployed on the same origin or an explicit separate backend origin is configured.",
-          "Two-browser multiplayer/reconnect/rematch verification remains required after runtime deployment."
+          "Source CI and the persistent Node deployment contract are green on f5c6518841f3c931a97c636c9d5e217622ece1b2.",
+          "Production Node deployment is blocked until THC_U_KNOW_SSH_HOST, THC_U_KNOW_SSH_USER, THC_U_KNOW_SSH_KEY, and THC_U_KNOW_SERVER_ORIGIN are configured; THC_U_KNOW_SSH_PORT and THC_U_KNOW_PORT are optional.",
+          "The current dtfseeds.com game route is a static frontend; /games/thc-u-know/healthz still reaches WordPress/static HTML until the persistent Node runtime is deployed and routed.",
+          "After runtime deployment, public health/Socket.IO and two-browser reconnect/rematch acceptance must pass before promotion."
         ],
-        "nextMilestone": "Deploy a persistent Node/Socket.IO runtime and route /games/thc-u-know/healthz plus /games/thc-u-know/socket.io to it, then pass live smoke and two-browser multiplayer acceptance.",
-        "sourceValidatedRevision": "cb9741fd25b1d15fc0f82e2fc5c302ef9e118f7d",
-        "sourceValidatedAt": "2026-09-29T01:36:50Z",
+        "nextMilestone": "Configure the THC U Know Node host/origin settings, let deploy-node-runtime.yml deploy the exact green revision, then pass live smoke and two-browser multiplayer acceptance.",
+        "sourceValidatedRevision": "f5c6518841f3c931a97c636c9d5e217622ece1b2",
+        "sourceValidatedAt": "2026-09-29T01:50:18Z",
         "liveFrontendVerifiedAt": "2026-09-29T01:38:44Z",
-        "liveFrontendVerificationRun": 36508867050
+        "liveFrontendVerificationRun": 36508867050,
+        "lastDeploymentGateRun": 36509817393
       },
       "developmentLocations": [],
       "deprecatedLocations": [],
