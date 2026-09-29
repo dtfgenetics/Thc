@@ -61,10 +61,10 @@
   "releaseGates": {
     "rules-engine-tested": true,
     "economy-simulated": true,
-    "browser-prototype-tested": "ci-and-human-playtest-pending",
+    "browser-prototype-tested": "deterministic-ci-passed-human-playtest-pending",
     "print-layout-reviewed": false,
     "original-art-cleared": false,
-    "accessibility-reviewed": false
+    "accessibility-reviewed": "automated-coverage-present-human-review-pending"
   },
   "eventsPerEra": 9,
   "eventPoolSize": 27
