@@ -27,10 +27,10 @@ Concept bank: **18**
 | Mystery Strain | `mystery-strain` | dtfgenetics/Thc | /games/mystery-strain/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Pheno Draft | `pheno-draft` | dtfgenetics/Thc | /games/pheno-draft/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | PhenoQuest: The Living Seed Vault | `phenoquest` | dtfgenetics/Catching-phenos | /games/phenoquest/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
-| Quack & Bake: Stoner Duck Race | `stoner-duck-race` | dtfgenetics/Dtf420 | /games/stoner-duck-race | `prototype` | dtfgenetics/Thc | Complete Dtf420 race/runtime verification and establish an explicit production-owner mapping before public promotion. |
+| Quack & Bake: Stoner Duck Race | `stoner-duck-race` | dtfgenetics/Dtf420 | /games/stoner-duck-race | `playable-local` | dtfgenetics/Thc | Complete multiplayer/browser presentation QA, lock production ownership/public route, then package through the DTFSeeds release pipeline. |
 | Root Cause | `root-cause` | dtfgenetics/Thc | /games/root-cause/ | `vertical-slice` | dtfgenetics/Thc | Reconcile public-hub intent, run full route QA, and promote only after exact live verification. |
 | Seed Man: Grow. Fight. Restore. | `seed-man-platformer` | dtfgenetics/Thc | /games/seed-man-platformer/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
-| Seed Man: Seed Ascent | `seed-ascent` | dtfgenetics/Dtf420 | /games/seed-ascent | `prototype` | dtfgenetics/Thc | Keep Seed Ascent distinct from Seed Man, complete Dtf420 runtime verification, then establish final production ownership. |
+| Seed Man: Seed Ascent | `seed-ascent` | dtfgenetics/Dtf420 | /games/seed-ascent | `playable-local` | dtfgenetics/Thc | Complete browser/game-feel QA and establish explicit production ownership/cutover before public promotion. |
 | Spin the Strain | `spin-the-strain` | dtfgenetics/Thc | /games/spin-the-strain/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Strain Match | `strain-match` | dtfgenetics/Thc | /games/strain-match/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Strain Showdown | `strain-showdown` | dtfgenetics/Thc | /games/strain-showdown/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
