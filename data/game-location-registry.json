@@ -853,7 +853,23 @@
         "seed man seed ascent"
       ],
       "publicRoute": "/games/seed-ascent",
-      "production": null,
+      "production": {
+        "repository": "dtfgenetics/Dtf420",
+        "sourcePaths": [
+          "app/games/seed-ascent",
+          "public/seed-ascent.html",
+          "public/seed-ascent"
+        ],
+        "sourceOfTruth": "docs/games/seed-ascent.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/deployment/dtf420-static-overlay.json",
+        "integrationMode": "migration-static-overlay",
+        "runtimePath": "/seed-ascent.html",
+        "deploymentStatus": "development-migration",
+        "build": "npm run verify:seed-ascent && npm run verify:seed-ascent-animations && npm run build:static-overlay",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-28"
+      },
       "relatedGameIds": [
         "seed-man-platformer"
       ],
@@ -963,7 +979,22 @@
         "duck race"
       ],
       "publicRoute": "/games/stoner-duck-race",
-      "production": null,
+      "production": {
+        "repository": "dtfgenetics/Dtf420",
+        "sourcePaths": [
+          "app/games/stoner-duck-race",
+          "game/stoner-duck-race"
+        ],
+        "sourceOfTruth": "docs/games/stoner-duck-race.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": null,
+        "integrationMode": "development-unmapped",
+        "runtimePath": null,
+        "deploymentStatus": "active-development",
+        "build": "npm run verify:stoner-duck-race && npm run build:static-overlay",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-09-28"
+      },
       "developmentLocations": [
         {
           "repository": "dtfgenetics/Dtf420",
