@@ -218,12 +218,8 @@ def registered_local_static_games(repo_root: pathlib.Path) -> list[str]:
     for app in registry.get("apps", []):
         source = str(app.get("sourcePath") or "").rstrip("/")
         route = str(app.get("route") or "")
-        owns_integration = (
-            app.get("repository") == "dtfgenetics/Thc"
-            or app.get("integrationRepository") == "dtfgenetics/Thc"
-        )
         if not (
-            owns_integration
+            app.get("repository") == "dtfgenetics/Thc"
             and app.get("runtime") == "static"
             and app.get("status") == "ready-to-package"
             and source.startswith("site/public-route-patch/games/")
@@ -260,8 +256,12 @@ def registered_local_static_apps(repo_root: pathlib.Path) -> list[str]:
     for app in registry.get("apps", []):
         source = str(app.get("sourcePath") or "").rstrip("/")
         route = str(app.get("route") or "")
-        if not (
+        owns_integration = (
             app.get("repository") == "dtfgenetics/Thc"
+            or app.get("integrationRepository") == "dtfgenetics/Thc"
+        )
+        if not (
+            owns_integration
             and app.get("runtime") == "static"
             and app.get("status") == "ready-to-package"
             and source.startswith("site/public-route-patch/")
