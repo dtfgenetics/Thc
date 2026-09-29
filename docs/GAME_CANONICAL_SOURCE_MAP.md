@@ -22,10 +22,10 @@ Updated: 2026-09-28
 | Mystery Strain | /games/mystery-strain/ | dtfgenetics/Thc | games/mystery-strain | dtfgenetics/Thc · site/public-route-patch/games/mystery-strain · local-static | `public-unverified` |
 | Pheno Draft | /games/pheno-draft/ | dtfgenetics/Thc | games/pheno-draft | dtfgenetics/Thc · site/public-route-patch/games/pheno-draft · local-static | `public-unverified` |
 | PhenoQuest: The Living Seed Vault | /games/phenoquest/ | dtfgenetics/Catching-phenos | src, data, public/games/phenoquest | dtfgenetics/Thc · site/public-route-patch/games/phenoquest · external-build | `public-unverified` |
-| Quack & Bake: Stoner Duck Race | /games/stoner-duck-race | dtfgenetics/Dtf420 | app/games/stoner-duck-race, game/stoner-duck-race | dtfgenetics/Thc | `prototype` |
+| Quack & Bake: Stoner Duck Race | /games/stoner-duck-race | dtfgenetics/Dtf420 | app/games/stoner-duck-race, game/stoner-duck-race | dtfgenetics/Thc | `playable-local` |
 | Root Cause | /games/root-cause/ | dtfgenetics/Thc | games/root-cause | dtfgenetics/Thc · site/public-route-patch/games/root-cause · static | `vertical-slice` |
 | Seed Man: Grow. Fight. Restore. | /games/seed-man-platformer/ | dtfgenetics/Thc | games/seed-man-platformer | dtfgenetics/Thc · site/public-route-patch/games/seed-man-platformer · local-static | `public-unverified` |
-| Seed Man: Seed Ascent | /games/seed-ascent | dtfgenetics/Dtf420 | app/games/seed-ascent, public/seed-ascent.html, public/seed-ascent | dtfgenetics/Thc | `prototype` |
+| Seed Man: Seed Ascent | /games/seed-ascent | dtfgenetics/Dtf420 | app/games/seed-ascent, public/seed-ascent.html, public/seed-ascent | dtfgenetics/Thc | `playable-local` |
 | Spin the Strain | /games/spin-the-strain/ | dtfgenetics/Thc | games/spin-the-strain | dtfgenetics/Thc · site/public-route-patch/games/spin-the-strain · local-static | `public-unverified` |
 | Strain Match | /games/strain-match/ | dtfgenetics/Thc | games/strain-match | dtfgenetics/Thc · site/public-route-patch/games/strain-match · local-static | `public-unverified` |
 | Strain Showdown | /games/strain-showdown/ | dtfgenetics/Thc | games/strain-showdown | dtfgenetics/Thc · site/public-route-patch/games/strain-showdown · local-static | `public-unverified` |
