@@ -5,7 +5,7 @@ const root = process.cwd();
 const registryPath = path.join(root, "data", "repository-registry.json");
 const registry = JSON.parse(fs.readFileSync(registryPath, "utf8"));
 
-const allowedStatuses = new Set(["canonical","standalone_canonical","migration","legacy_review","archive_candidate"]);
+const allowedStatuses = new Set(["canonical","standalone_canonical","migration","legacy_review","archive_candidate","archive_ready"]);
 const repos = registry.repositories ?? [];
 const errors = [];
 const seen = new Set();
@@ -20,7 +20,7 @@ for (const entry of repos) {
   if (!allowedStatuses.has(entry.status)) errors.push(`invalid status for ${entry.repo}: ${entry.status}`);
   if (!Array.isArray(entry.canonical_for)) errors.push(`canonical_for must be an array: ${entry.repo}`);
   if (entry.status === "migration" && entry.canonical_for.length) errors.push(`migration repo cannot claim canonical domains: ${entry.repo}`);
-  if (entry.status === "archive_candidate" && entry.canonical_for.length) errors.push(`archive candidate cannot claim canonical domains: ${entry.repo}`);
+  if ((entry.status === "archive_candidate" || entry.status === "archive_ready") && entry.canonical_for.length) errors.push(`${entry.status} repository cannot claim canonical domains: ${entry.repo}`);
 }
 
 const requiredCanonical = new Map([
