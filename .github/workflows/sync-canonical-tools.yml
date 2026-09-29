@@ -37,8 +37,8 @@ jobs:
             rm -rf "site/public-route-patch/$d"
             cp -a "/tmp/tools/site/public-route-patch/$d" "site/public-route-patch/$d"
           done
-          mkdir -p site/public-route-patch/assets
-          cp -a /tmp/tools/site/public-route-patch/assets/. site/public-route-patch/assets/
+          rm -rf site/public-route-patch/assets
+          cp -a /tmp/tools/site/public-route-patch/assets site/public-route-patch/assets
 
       - name: Run deterministic tool validation
         run: npm run verify:cultivation-reference-tools
