@@ -1,3 +1,5 @@
+import { browserStorage, storageGet, storageRemove, storageSet } from './storage.mjs';
+
 export const SETTINGS_VERSION = 1;
 
 export const DEFAULT_GAME_SETTINGS = Object.freeze({
@@ -39,12 +41,6 @@ export function normalizeGameSettings(input = {}) {
   };
 }
 
-function safeStorage(storage) {
-  return storage && typeof storage.getItem === 'function' && typeof storage.setItem === 'function'
-    ? storage
-    : null;
-}
-
 function storageKey(gameId, namespace) {
   if (!gameId || typeof gameId !== 'string') throw new Error('gameId is required');
   return `${namespace}.${gameId}.v${SETTINGS_VERSION}`;
@@ -77,11 +73,11 @@ export function applyAccessibilityPreferences(target, settings, matchMedia = glo
 
 export function createGameSettingsStore({
   gameId,
-  storage = globalThis.localStorage,
+  storage = browserStorage(),
   namespace = 'dtf.game.settings',
   defaults = DEFAULT_GAME_SETTINGS,
 } = {}) {
-  const backing = safeStorage(storage);
+  const backing = storage;
   const key = storageKey(gameId, namespace);
   const listeners = new Set();
   let current = normalizeGameSettings(defaults);
@@ -89,7 +85,7 @@ export function createGameSettingsStore({
   function load() {
     if (!backing) return current;
     try {
-      const raw = backing.getItem(key);
+      const raw = storageGet(backing, key, null);
       if (!raw) return current;
       const parsed = JSON.parse(raw);
       current = normalizeGameSettings({ ...defaults, ...(parsed?.settings ?? parsed) });
@@ -102,8 +98,7 @@ export function createGameSettingsStore({
   function persist() {
     if (!backing) return false;
     try {
-      backing.setItem(key, JSON.stringify({ version: SETTINGS_VERSION, settings: current }));
-      return true;
+      return storageSet(backing, key, JSON.stringify({ version: SETTINGS_VERSION, settings: current }));
     } catch {
       return false;
     }
@@ -122,9 +117,7 @@ export function createGameSettingsStore({
 
   function reset() {
     current = normalizeGameSettings(defaults);
-    if (backing) {
-      try { backing.removeItem(key); } catch {}
-    }
+    storageRemove(backing, key);
     emit();
     return current;
   }
