@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 1,
+  "status": "controlled-instructional-examples-review-required",
+  "publicationRule": "Worked examples illustrate reasoning paths, not universal prescriptions. Keep numerical values contextual, preserve uncertainty, and do not publish an example as an authoritative answer key until independent review is recorded.",
+  "examples": [
+    {
+      "lessonId": "THC-ENC-085",
+      "title": "VPD reading looks acceptable, leaves still show excessive demand",
+      "scenario": "A room controller reports a VPD inside the facility's preferred operating band, but upper-canopy leaves are curling upward and leaf temperature differs from the controller's assumed value.",
+      "reasoningPath": [
+        "Treat the controller value as a calculated description of the measured air, not proof that every leaf experiences the same vapor-pressure conditions.",
+        "Verify the air-temperature and RH sensors, then measure representative leaf temperature and compare multiple canopy positions.",
+        "Check airflow, light load, root-zone water status, and duration of the excursion because each can change leaf response without changing the room-average display.",
+        "Recalculate leaf-referenced VPD using measured leaf temperature when that is the question being tested.",
+        "Change one primary environmental driver at a time where safe, then re-measure both environment and plant response."
+      ],
+      "evidenceToCollect": [
+        "air temperature and RH at canopy height",
+        "representative leaf temperatures",
+        "sensor locations and calibration/verification status",
+        "airflow differences",
+        "PPFD/light timing",
+        "root-zone water status",
+        "before/after trend duration"
+      ],
+      "weakAnswerPatterns": [
+        "The VPD number is in range, so the environment cannot be the cause.",
+        "Raise humidity immediately without checking sensor placement or leaf temperature.",
+        "Treat one chart band as a universal target for every cultivar and stage."
+      ],
+      "verification": "A stronger conclusion requires representative canopy measurements and a repeatable improvement in plant response after the targeted change, not merely a corrected controller number.",
+      "boundary": "No universal Cannabis VPD target is implied; cultivar, stage, leaf temperature, disease risk, root status, and measurement method affect interpretation."
+    },
+    {
+      "lessonId": "THC-ENC-106",
+      "title": "High center PPFD, weak edge growth",
+      "scenario": "A grow reports strong PPFD directly under the center of each fixture, yet edge plants stretch and yield less.",
+      "reasoningPath": [
+        "Reject the single-point measurement as a description of whole-canopy light distribution.",
+        "Create a repeatable PPFD grid at a defined canopy plane and record fixture height, spacing, dimming, and measurement geometry.",
+        "Calculate distribution metrics and inspect the actual minimums/hotspots instead of relying on the average alone.",
+        "Compare light pattern with plant height, morphology, leaf temperature, and final zone-by-zone outcomes.",
+        "Adjust fixture layout, height, dimming, or canopy geometry only after identifying the spatial problem."
+      ],
+      "evidenceToCollect": [
+        "grid PPFD map",
+        "measurement height and grid spacing",
+        "fixture settings and spacing",
+        "DLI/photoperiod where relevant",
+        "plant response by mapped zone",
+        "leaf temperature by zone"
+      ],
+      "weakAnswerPatterns": [
+        "The fixture is powerful enough because the center reading is high.",
+        "Use one average PPFD value to describe uniformity.",
+        "Raise intensity everywhere without checking hotspots."
+      ],
+      "verification": "Repeat the same mapped measurements after the adjustment and compare edge-to-center uniformity plus plant response.",
+      "boundary": "Uniformity targets depend on crop geometry, fixture design, production goal, and the chosen metric; one map should not be generalized to all rooms."
+    },
+    {
+      "lessonId": "THC-ENC-123",
+      "title": "Yellowing appears after a bloom-booster increase",
+      "scenario": "Lower leaves yellow after phosphorus-heavy bloom inputs are increased. The grower assumes phosphorus deficiency and proposes adding more.",
+      "reasoningPath": [
+        "Separate the visible symptom from the nutrient diagnosis because lower-leaf yellowing is not phosphorus-specific.",
+        "Review root-zone pH/EC, irrigation pattern, root condition, recent recipe changes, and the broader symptom distribution.",
+        "Check whether the nutrient change increased total ionic strength or antagonism risk rather than assuming the named nutrient is missing.",
+        "Compare feed and root-zone context over time instead of interpreting a single runoff value as proof.",
+        "Only change the nutrient program after competing root-zone and environmental explanations are evaluated."
+      ],
+      "evidenceToCollect": [
+        "feed recipe and change history",
+        "feed/root-zone pH and EC with sampling method",
+        "root condition",
+        "irrigation volume/frequency",
+        "symptom position and progression",
+        "relevant tissue/lab data if available"
+      ],
+      "weakAnswerPatterns": [
+        "Yellow lower leaves mean phosphorus deficiency.",
+        "More bloom booster is the safest first response.",
+        "A single runoff number proves the nutrient cause."
+      ],
+      "verification": "New growth and root-zone trends should improve after the targeted correction without creating a new imbalance.",
+      "boundary": "This example does not prescribe a phosphorus target or fertilizer rate; diagnosis depends on system, substrate, stage, sampling, and product formulation."
+    },
+    {
+      "lessonId": "THC-ENC-261",
+      "title": "One photo is labeled a nutrient deficiency",
+      "scenario": "A single close-up photo shows yellow and necrotic leaf tissue. The initial claim is 'magnesium deficiency.'",
+      "reasoningPath": [
+        "Describe the symptom before naming the cause: tissue age, location, pattern, progression, and affected fraction.",
+        "Request whole-plant and crop-context evidence, then compare affected and unaffected plants.",
+        "Inspect roots and irrigation delivery and review pH/EC, environment, recent changes, pests, disease signs, and chemical exposure.",
+        "Keep multiple plausible causes until a measurement or sample discriminates among them.",
+        "Define what observation after correction would support or weaken the leading hypothesis."
+      ],
+      "evidenceToCollect": [
+        "whole-plant images and spatial map",
+        "plant stage and genotype",
+        "root-zone pH/EC/moisture",
+        "air and leaf temperature/RH/light",
+        "pest/disease evidence",
+        "recent input/equipment changes",
+        "progression over time"
+      ],
+      "weakAnswerPatterns": [
+        "Leaf color alone identifies the deficiency.",
+        "The most common cause must be correct.",
+        "Improvement after several simultaneous changes proves the diagnosis."
+      ],
+      "verification": "A strong diagnosis predicts the spatial/temporal pattern and survives comparison with competing explanations, then is supported by a defined response after a controlled correction.",
+      "boundary": "Some cases remain multifactorial or unresolved and may require laboratory or specialist confirmation."
+    },
+    {
+      "lessonId": "THC-ENC-321",
+      "title": "Recurring pest problem despite calendar sprays",
+      "scenario": "A facility applies a pesticide on a fixed schedule, but the same pest keeps returning in the same production zone.",
+      "reasoningPath": [
+        "Treat repeated recurrence as a systems problem rather than automatically escalating spray frequency.",
+        "Confirm pest identity and life stage, map hotspots, and review intake, movement, sanitation, exclusion, crop residues, and environmental conditions.",
+        "Identify which prevention barrier is failing and whether the intervention timing matches pest biology.",
+        "Check legal label requirements, resistance-management considerations, and compatibility with biological controls.",
+        "Use repeated counts and defined thresholds/tolerances to decide whether the revised program is working."
+      ],
+      "evidenceToCollect": [
+        "pest identity/life stage",
+        "scouting counts and spatial map",
+        "intake/quarantine records",
+        "sanitation and movement history",
+        "environmental context",
+        "treatment records and label compliance",
+        "beneficial-organism records if used"
+      ],
+      "weakAnswerPatterns": [
+        "Spray more often because the product did not work.",
+        "Seeing fewer adults once proves control.",
+        "IPM is just rotating pesticides."
+      ],
+      "verification": "The revised program should reduce pest pressure over repeated scouting intervals while preserving compliance and preventing the same pathway from reseeding the problem.",
+      "boundary": "No pesticide, threshold, release rate, or treatment interval is prescribed here; lawful use depends on current labels, jurisdiction, crop context, and facility policy."
+    },
+    {
+      "lessonId": "THC-ENC-385",
+      "title": "Small F2 population misses a rare trait combination",
+      "scenario": "A breeder expects to recover several independent favorable traits in an F2 but only grows a small population and finds none.",
+      "reasoningPath": [
+        "Translate the desired phenotype into an explicit genetic/trait model instead of assuming one plant should appear by chance.",
+        "Estimate how trait number, linkage, dominance, recombination, penetrance, and scoring error affect recovery probability.",
+        "Set population size from the probability of the desired combination and the need for multiple independent candidates.",
+        "Preserve all scored classes and environmental context so absence can be interpreted rather than hidden by selection.",
+        "Revise the population design if the probability of recovery was too low for the chosen sample size."
+      ],
+      "evidenceToCollect": [
+        "cross identity and parent data",
+        "F2 population size",
+        "trait definitions and scoring rules",
+        "all class counts",
+        "linkage/marker information where available",
+        "environment and mortality/selection history"
+      ],
+      "weakAnswerPatterns": [
+        "No selected plant means the trait combination is impossible.",
+        "A small F2 is enough if the parents are strong.",
+        "Only the best plants need to be recorded."
+      ],
+      "verification": "A defensible conclusion compares observed counts with a predeclared model and acknowledges when population size cannot distinguish rarity from absence.",
+      "boundary": "Simple Mendelian probabilities apply only when the underlying assumptions are justified; quantitative traits and linkage can change expected recovery sharply."
+    },
+    {
+      "lessonId": "THC-ENC-402",
+      "title": "New meter shows more decimal places",
+      "scenario": "A replacement meter displays two decimal places instead of one, and the team concludes that measurements are now more accurate.",
+      "reasoningPath": [
+        "Separate display resolution from accuracy, precision, repeatability, bias, and uncertainty.",
+        "Check manufacturer specifications, calibration/verification records, reference standards, and repeat measurements.",
+        "Compare the instrument against a suitable reference across the actual operating range.",
+        "Document as-found condition and any adjustment rather than assuming calibration erases all uncertainty.",
+        "Report only the digits justified by method performance and decision needs."
+      ],
+      "evidenceToCollect": [
+        "instrument model/specification",
+        "resolution",
+        "reference standard and traceability",
+        "replicate readings",
+        "calibration/verification status",
+        "environmental conditions",
+        "acceptance tolerance"
+      ],
+      "weakAnswerPatterns": [
+        "More decimal places always mean more accuracy.",
+        "A recent calibration guarantees every future result.",
+        "Repeat readings close together prove the result is true."
+      ],
+      "verification": "The instrument must meet predefined acceptance criteria against appropriate references and demonstrate suitable repeatability over the intended range.",
+      "boundary": "Measurement uncertainty is method- and use-specific; this example does not establish a universal tolerance."
+    },
+    {
+      "lessonId": "THC-ENC-404",
+      "title": "One sensor is used to represent an entire room",
+      "scenario": "A cultivation room uses one centrally located sensor to support a claim that all plants experienced the same temperature and RH.",
+      "reasoningPath": [
+        "Define the population and decision: whether the claim concerns the whole room, canopy zones, time periods, or a specific crop operation.",
+        "Identify likely spatial and temporal gradients created by fixtures, walls, doors, airflow, irrigation, and canopy density.",
+        "Choose representative sampling locations and times before collecting the data.",
+        "Distinguish repeated readings from one sensor from independent spatial samples.",
+        "Use the resulting variation to decide whether one fixed sensor is representative enough for the intended decision."
+      ],
+      "evidenceToCollect": [
+        "room/canopy map",
+        "sensor positions",
+        "time intervals",
+        "equipment/airflow layout",
+        "independent spatial readings",
+        "sensor verification status",
+        "decision threshold or tolerance"
+      ],
+      "weakAnswerPatterns": [
+        "A central sensor automatically represents the room.",
+        "Many readings from one location equal many independent samples.",
+        "An average proves there were no harmful extremes."
+      ],
+      "verification": "A representative plan should reproduce the important spatial and temporal variation well enough to support the stated decision, with limits documented.",
+      "boundary": "Sampling density depends on room geometry, variability, equipment, risk, and the consequence of missing extremes."
+    }
+  ]
+}
