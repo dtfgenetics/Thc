@@ -55,8 +55,9 @@
         "V21-SRC-033"
       ],
       "knowledgeCheck": [
-        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
-        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+        "For \"Harvest, Drying, Curing, and Storage Records\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+        "A learner claims, \"A dry-room average describes every flower.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+        "Applied case — Use one event timeline and linked IDs so a reviewer can reconstruct who handled each batch, where it was, what conditions occurred, which samples represented it, and who authorized release. Build a verification plan using the lesson's record set (Crop/plant/harvest/sub-batch IDs; decision and approver; cut/trim/transfer times; personnel/tools/cleaning; incoming/final mass; drying location and load map; sensor data; moisture/aW method and sample map; defects/holds; conditioning/storage container; excursions; laboratory and retained samples; release/disposition.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
       ],
       "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
       "publicationAuthorized": false,
@@ -69,7 +70,13 @@
         "websiteAction": "hold_from_publication"
       },
       "slug": "harvest-drying-curing-and-storage-records",
-      "route": "/encyclopedia/harvest-drying-curing-and-storage-records"
+      "route": "/encyclopedia/harvest-drying-curing-and-storage-records",
+      "assessmentDesign": {
+        "version": 2,
+        "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+        "answerRationaleStatus": "pending_independent_review",
+        "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+      }
     },
     {
       "id": "THC-ENC-412",
@@ -118,8 +125,9 @@
         "V21-SRC-026"
       ],
       "knowledgeCheck": [
-        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
-        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+        "For \"Laboratory Sample and Result Tracking\", explain the mechanism behind this objective: Connect laboratory results to sample identity, chain of custody, preparation, method, scope, uncertainty, and batch inference. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+        "A learner claims, \"A COA proves every unit in the batch has the reported value.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+        "Applied case — Maintain a sample manifest and result-review checklist. Preserve original reports, amended reports, machine-readable data where possible, and the decision record that used them. Build a verification plan using the lesson's record set (Sample/source/batch IDs; collection plan and increments; collector/time; container/preservation; custody transfers; lab/accession; matrix; preparation/homogenization; method/version/scope; units/basis; LOD/LOQ; QC/qualifiers; result/uncertainty; report revision; retained sample; review and disposition.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
       ],
       "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
       "publicationAuthorized": false,
@@ -132,7 +140,13 @@
         "websiteAction": "hold_from_publication"
       },
       "slug": "laboratory-sample-and-result-tracking",
-      "route": "/encyclopedia/laboratory-sample-and-result-tracking"
+      "route": "/encyclopedia/laboratory-sample-and-result-tracking",
+      "assessmentDesign": {
+        "version": 2,
+        "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+        "answerRationaleStatus": "pending_independent_review",
+        "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+      }
     },
     {
       "id": "THC-ENC-413",
@@ -180,8 +194,9 @@
         "V21-SRC-029"
       ],
       "knowledgeCheck": [
-        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
-        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+        "For \"Deviations, Root-Cause Analysis, and CAPA\", explain the mechanism behind this objective: Control departures from requirements through containment, evidence preservation, impact assessment, root-cause analysis, corrective action, and effectiveness verification. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+        "A learner claims, \"Passing a retest automatically invalidates the original failure.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+        "Applied case — Use a single controlled deviation record linked to affected plants, batches, instruments, files, samples, SOP versions, and release decisions. Build a verification plan using the lesson's record set (Deviation ID; requirement and version; event date/time/location; reporter; affected entities; immediate safety/containment; raw evidence; timeline; impact and uncertainty; causes and evidence; correction; CAPA owner/due date; change control; effectiveness metric/date; disposition/approver; closure.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
       ],
       "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
       "publicationAuthorized": false,
@@ -194,7 +209,13 @@
         "websiteAction": "hold_from_publication"
       },
       "slug": "deviations-root-cause-analysis-and-capa",
-      "route": "/encyclopedia/deviations-root-cause-analysis-and-capa"
+      "route": "/encyclopedia/deviations-root-cause-analysis-and-capa",
+      "assessmentDesign": {
+        "version": 2,
+        "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+        "answerRationaleStatus": "pending_independent_review",
+        "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+      }
     },
     {
       "id": "THC-ENC-414",
@@ -243,8 +264,9 @@
         "V21-SRC-030"
       ],
       "knowledgeCheck": [
-        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
-        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+        "For \"Control Charts, Trends, and Alert Limits\", explain the mechanism behind this objective: Use time-series graphics and control charts to distinguish expected variation, unusual signals, drift, and decision limits. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+        "A learner claims, \"A point inside control limits is automatically acceptable.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+        "Applied case — Use charts for stable, repeated processes such as meter checks, irrigation delivery, room conditions, drying mass, laboratory controls, and recurring quality metrics. Define who reviews signals and what action follows. Build a verification plan using the lesson's record set (Process and measurand; data source; sampling/subgroup rule; time base; chart type; center and limit method; reference period; specification/alert/action limits; missing/outlier rule; annotations; signal; investigation; action; effectiveness.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
       ],
       "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
       "publicationAuthorized": false,
@@ -257,7 +279,13 @@
         "websiteAction": "hold_from_publication"
       },
       "slug": "control-charts-trends-and-alert-limits",
-      "route": "/encyclopedia/control-charts-trends-and-alert-limits"
+      "route": "/encyclopedia/control-charts-trends-and-alert-limits",
+      "assessmentDesign": {
+        "version": 2,
+        "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+        "answerRationaleStatus": "pending_independent_review",
+        "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+      }
     },
     {
       "id": "THC-ENC-415",
@@ -307,8 +335,9 @@
         "V21-SRC-034"
       ],
       "knowledgeCheck": [
-        "Which measurement, sample, design, or evidence record would be required before accepting the main conclusion of this lesson?",
-        "Which biological, method, population, time, software, legal, or decision limits prevent the conclusion from being universal?"
+        "For \"Reading a Scientific Paper\", explain the mechanism behind this objective: Evaluate a paper by connecting its question, material, design, methods, results, uncertainty, limitations, and publication status to the claim being used. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+        "A learner claims, \"Peer reviewed means the paper is correct and universally applicable.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+        "Applied case — Create a structured evidence-extraction record instead of saving only a citation. Separate what the study observed, what the authors inferred, what the project may publish, and what remains unresolved. Build a verification plan using the lesson's record set (Citation/DOI/version/status; claim; exact evidence location; material and identity; design and experimental unit; treatment/control; sample size; method; endpoint/units; effect/uncertainty; limitations; conflicts; data availability; applicability; project decision; reviewer/date.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
       ],
       "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
       "publicationAuthorized": false,
@@ -321,7 +350,13 @@
         "websiteAction": "hold_from_publication"
       },
       "slug": "reading-a-scientific-paper",
-      "route": "/encyclopedia/reading-a-scientific-paper"
+      "route": "/encyclopedia/reading-a-scientific-paper",
+      "assessmentDesign": {
+        "version": 2,
+        "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+        "answerRationaleStatus": "pending_independent_review",
+        "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+      }
     }
   ]
 }
