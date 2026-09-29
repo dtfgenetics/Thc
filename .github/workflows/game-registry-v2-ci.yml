@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - 'data/game-registry-v2.json'
+      - 'data/game-location-registry.json'
+      - 'data/game-source-map.json'
+      - 'data/public-navigation.json'
       - 'docs/GAME_REGISTRY_V2.md'
       - 'scripts/validate-game-registry-v2.mjs'
       - 'scripts/test-game-registry-v2.mjs'
