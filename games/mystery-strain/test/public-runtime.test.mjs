@@ -25,7 +25,9 @@ assert.match(html, /Select a candidate, then confirm before a guess is spent/);
 
 assert.match(runtime, /rankedQuestionOptions/);
 assert.match(runtime, /informationScore/);
-assert.match(runtime, /copyText/);
+assert.match(runtime, /import \{ copyText \} from '\/games\/shared-platform\/index\.mjs';/);
+assert.doesNotMatch(runtime, /async function copyText\(/, 'Mystery Strain must use the shared clipboard helper instead of shipping another copy');
+assert.match(runtime, /\(await copyText\([\s\S]*\)\)\.ok/);
 assert.match(runtime, /Copy failed\. Share case/);
 assert.match(runtime, /prefers-reduced-motion: reduce/);
 
