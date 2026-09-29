@@ -8,7 +8,7 @@ const data=JSON.parse(fs.readFileSync(path.join(root,'site/wordpress/education/t
 const errors=[];
 const assert=(ok,msg)=>{if(!ok)errors.push(msg)};
 
-assert(data.schemaVersion>=2,'topic literature must remain schemaVersion 2+');
+assert(data.schemaVersion>=3,'topic literature must remain schemaVersion 3+');
 for(const token of [
   'topic.learnerJourney',
   'journey.quickAnswer',
@@ -26,7 +26,10 @@ for(const token of [
   'By problem',
   'By system',
   'By skill',
-  'Every strong lesson should answer eight questions'
+  'Every strong lesson should answer eight questions',
+  'Applied practice',
+  'Use the evidence before choosing the answer',
+  'topic.practiceScenarios'
 ]) assert(source.includes(token),`Learning V3 canonical renderer is missing required decision-first token: ${token}`);
 
 for(const topic of data.topics||[]){
@@ -39,6 +42,7 @@ for(const topic of data.topics||[]){
   assert((j.visualRoles||[]).length>=3,`${topic.id}: purposeful visual roles missing`);
   assert((j.linkedTools||[]).length>=2,`${topic.id}: related tool/resource links missing`);
   assert(String(j.evidenceBoundary||'').length>=100,`${topic.id}: evidence boundary missing/thin`);
+  assert(Array.isArray(topic.practiceScenarios)&&topic.practiceScenarios.length>=2,`${topic.id}: applied practice scenarios missing`);
 }
 
 if(errors.length){
@@ -46,4 +50,4 @@ if(errors.length){
   for(const e of errors) console.error(' - '+e);
   process.exit(1);
 }
-console.log(`Learning V3 decision renderer PASS: ${data.topics.length} topics render quick-answer, observe, measure, decide, verify, visuals, tools, and evidence boundaries.`);
+console.log(`Learning V3 decision renderer PASS: ${data.topics.length} topics render quick-answer, observe, measure, decide, verify, applied practice, visuals, tools, and evidence boundaries.`);
