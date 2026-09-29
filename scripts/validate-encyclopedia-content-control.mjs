@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { effectiveLessonAssessment } from './lib/encyclopedia-assessment-v2.mjs';
 
 const root=process.cwd();
 const strictQuality=process.argv.includes('--strict-quality');
@@ -89,13 +90,16 @@ for(const lesson of lessons){
   if(arr(lesson.sourceNotes).length<2) qualityIssues.push(`${id}: needs at least 2 source notes`);
   if(len(lesson.crossLinks)<10) qualityIssues.push(`${id}: cross-links missing/thin`);
 
-  const checks=arr(lesson.knowledgeCheck);
+  const storedChecks=arr(lesson.knowledgeCheck);
+  const derived=effectiveLessonAssessment(lesson);
+  const checks=arr(derived.prompts);
   if(checks.length<3){
     assessmentMissing.push(id);
   } else {
+    if(storedChecks.length<3 && current.part<=17) warnings.push(`${id}: assessment is generated at render/validation time from canonical lesson fields; stored knowledgeCheck not yet materialized`);
     const signature=checks.map(x=>String(x).toLowerCase().replace(/\s+/g,' ').trim()).join(' || ');
     const prior=checkSignatures.get(signature);
-    if(prior) qualityIssues.push(`${id}: knowledge check duplicates ${prior}`);
+    if(prior) qualityIssues.push(`${id}: effective knowledge check duplicates ${prior}`);
     else checkSignatures.set(signature,id);
   }
 }
@@ -124,7 +128,7 @@ if(errors.length){
 }
 
 console.log(`Encyclopedia content-control PASS: ${lessons.length}/420 controlled lessons resolve with unique IDs and current controlled titles.`);
-console.log(`Assessment coverage: ${420-assessmentMissing.length}/420 lessons have at least 3 lesson-specific knowledge checks; ${assessmentMissing.length} remain.`);
+console.log(`Assessment coverage: ${420-assessmentMissing.length}/420 lessons have at least 3 effective lesson-specific knowledge checks (stored or generated); ${assessmentMissing.length} remain.`);
 console.log(`Quality findings: ${qualityIssues.length} non-identity issue(s)${strictQuality?' (strict)':' (reported as warnings)'}.`);
 if(warnings.length){
   console.warn(`Warnings (${warnings.length}):`);
