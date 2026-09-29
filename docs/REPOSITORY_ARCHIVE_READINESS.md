@@ -1,58 +1,44 @@
 # Repository Archive Readiness
 
-Date: 2026-09-28
+Date: 2026-09-29
 
-This file tracks repositories that are safe to retire versus repositories that merely look old or small.
+This file tracks repositories that are safe to retire versus repositories that merely look old or small. The machine-readable authority is `data/repository-registry.json`.
 
-## Ready after external-reference check
+## Verified archive-ready
 
 ### `dtfgenetics/code`
 
-Status: **archive candidate**
+Status: **archive ready**
 
 Evidence:
-- repository reports size `0`;
-- GitHub tree API reports the repository is empty;
+- repository size is `0`;
+- repository has no branches/content;
 - no canonical product responsibility is assigned.
 
-Remaining blocker:
-- confirm no external automation, documentation, bookmark, or deployment target still references the repository name.
-
-No code/content migration is required.
+No code/content migration is required. Archive rather than delete so repository history/identity remains preserved.
 
 ### `dtfgenetics/thc-music-bot-for-discod`
 
-Status: **archive candidate**
+Status: **archive ready**
 
 Evidence:
-- repository README explicitly identifies it as a duplicate/compatibility pointer;
+- repository is a README-only duplicate/compatibility pointer;
 - canonical implementation is `dtfgenetics/thc-discord-bot-for-music-`;
-- duplicate repository has no separate package/runtime.
+- duplicate repository has no package/runtime and no alternate branches.
 
-Remaining blocker:
-- update old links/issues/docs that still point at the misspelled duplicate repository.
-
-No code migration is required.
-
-## Archive candidate after reference/history check
+No code migration is required. Archive rather than delete.
 
 ### `dtfgenetics/all-in-one-thc-grow-`
 
-Status: **archive candidate**
+Status: **archive ready**
 
 Evidence:
-- README explicitly states it is a legacy placeholder / merge candidate / not deployable;
-- no application exists in the repository;
+- no deployable application remains;
 - product responsibilities already resolve to `Thc`, `Tools`, `thc-grow-hub`, and `Thc-dataset`;
-- only significant retained artifact found is `docs/EVIDENCE_REFERENCE_REGISTRY.md`.
+- the retained evidence registry was migrated to canonical `dtfgenetics/Tools` and merged in Tools PR #13;
+- the only non-main branch, `docs/archive-ready`, compares at `ahead_by: 0` against current `main`.
 
-Migration:
-- evidence registry moved to canonical `dtfgenetics/Tools` and merged in Tools PR #13.
-
-Remaining blockers:
-1. update references to the legacy evidence-registry path;
-2. check non-default branches/history for unique content;
-3. archive only after those checks are clear.
+Archive rather than delete so Git history remains available.
 
 ## Not archive candidates
 
@@ -78,14 +64,16 @@ This is the active DTF/THC Discord music bot. It owns the runtime, per-server qu
 
 ### `dtfgenetics/dtf-thc-hub`
 
-The source-level review now shows:
-- Grow Doc canonical source: `Thc-dataset`;
-- High Land canonical source: `Thc`;
-- High IQ canonical source: `Thc`;
-- shared game platform canonical source: `Thc/games/shared-platform`;
-- production deployment authority: `Thc`.
+The source-level review shows canonical ownership has moved elsewhere, but the repository still contains unique legacy/integration material and divergent branches. Preserve it until those items are reconciled.
 
-The remaining work is asset/provenance/shared-UI decomposition plus non-default-branch/history review. A SHA-level asset comparison found unique legacy High Land source sheets and brand/UI SVGs, and at least three non-default branches are ahead of `main`. See `docs/LEGACY_ASSET_PROVENANCE_HOLD.md` and `docs/LEGACY_REPOSITORY_MIGRATION.md`. Do not archive until those checks are complete.
+Current rules:
+- production deployment authority: `dtfgenetics/Thc`;
+- cultivation tools: `dtfgenetics/Tools`;
+- education: `dtfgenetics/thc-grow-hub`;
+- certification: `dtfgenetics/Thc-learning-courses-`;
+- Grow Doc diagnostics: `dtfgenetics/Thc-dataset`.
+
+Do not archive until unique assets, shared UI, deployment safeguards, game changes, and divergent branches have been reconciled.
 
 ### `dtfgenetics/Dtf420`
 
