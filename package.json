@@ -91,6 +91,7 @@
     "verify:encyclopedia-content-control": "node scripts/validate-encyclopedia-content-control.mjs",
     "verify:encyclopedia-content-strict": "node scripts/validate-encyclopedia-content-control.mjs --strict-quality --strict-assessment",
     "verify:encyclopedia-assessments": "node scripts/validate-encyclopedia-assessments.mjs",
-    "verify:encyclopedia-rubrics": "node scripts/validate-encyclopedia-rubrics.mjs"
+    "verify:encyclopedia-rubrics": "node scripts/validate-encyclopedia-rubrics.mjs",
+    "build:encyclopedia-rubrics": "node scripts/build-encyclopedia-rubric-package.mjs"
   }
 }
