@@ -1,44 +1,36 @@
 # Repository Archive Readiness
 
-Date: 2026-09-28
+Date: 2026-09-29
 
 This file tracks repositories that are safe to retire versus repositories that merely look old or small.
 
-## Ready after external-reference check
+## Verified archive-ready
 
 ### `dtfgenetics/code`
 
-Status: **archive candidate**
+Status: **archive ready**
 
 Evidence:
 - repository reports size `0`;
 - GitHub tree API reports the repository is empty;
 - no canonical product responsibility is assigned.
 
-Remaining blocker:
-- confirm no external automation, documentation, bookmark, or deployment target still references the repository name.
-
-No code/content migration is required.
+No code/content migration is required. Archive rather than delete so repository history remains available.
 
 ### `dtfgenetics/thc-music-bot-for-discod`
 
-Status: **archive candidate**
+Status: **archive ready**
 
 Evidence:
 - repository README explicitly identifies it as a duplicate/compatibility pointer;
 - canonical implementation is `dtfgenetics/thc-discord-bot-for-music-`;
 - duplicate repository has no separate package/runtime.
 
-Remaining blocker:
-- update old links/issues/docs that still point at the misspelled duplicate repository.
-
-No code migration is required.
-
-## Archive candidate after reference/history check
+No code migration is required. Archive rather than delete.
 
 ### `dtfgenetics/all-in-one-thc-grow-`
 
-Status: **archive candidate**
+Status: **archive ready**
 
 Evidence:
 - README explicitly states it is a legacy placeholder / merge candidate / not deployable;
@@ -49,10 +41,11 @@ Evidence:
 Migration:
 - evidence registry moved to canonical `dtfgenetics/Tools` and merged in Tools PR #13.
 
-Remaining blockers:
-1. update references to the legacy evidence-registry path;
-2. check non-default branches/history for unique content;
-3. archive only after those checks are clear.
+Verification complete:
+- the evidence registry was migrated to `dtfgenetics/Tools`;
+- the only non-main branch, `docs/archive-ready`, is `ahead_by: 0` against current `main`.
+
+Archive rather than delete so Git history remains available.
 
 ## Not archive candidates
 
