@@ -59,9 +59,13 @@ Every lesson must ultimately contain or resolve to:
   - hard-fails structural/content-control identity errors;
   - reports quality and assessment gaps as warnings.
 
+- `npm run audit:encyclopedia-substantive-quality`
+  - measures whether lesson fields are substantive rather than merely present;
+  - reports weak instructional depth, measurement guidance, misconceptions, evidence limits, source-authority signals, and cross-links.
+
 - `npm run verify:encyclopedia-content-strict`
-  - additionally fails unresolved content-quality and assessment coverage gaps;
-  - this is the target gate for a future 420/420 production-complete release.
+  - additionally fails unresolved content-quality and assessment-rationale gaps;
+  - this remains the target gate for a future 420/420 production-complete release.
 
 - `npm run verify:encyclopedia-evidence`
   - rebuilds the all-lesson evidence tracking artifact;

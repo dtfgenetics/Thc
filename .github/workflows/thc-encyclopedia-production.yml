@@ -72,6 +72,8 @@ jobs:
         run: npm run verify:encyclopedia-production-queues
       - name: Audit encyclopedia learning quality
         run: npm run audit:encyclopedia-learning-quality
+      - name: Audit substantive lesson quality
+        run: npm run audit:encyclopedia-substantive-quality
       - name: Build rich discovery index
         run: npm run build:encyclopedia-discovery
       - name: Build global education search
@@ -104,6 +106,7 @@ jobs:
             data/encyclopedia-source-resolution-queue.json
             content/encyclopedia/visual-production-queue-v1.json
             data/encyclopedia-learning-quality-audit.json
+            data/encyclopedia-substantive-quality-audit.json
             site/public-route-patch/learn/encyclopedia/encyclopedia-index.json
             site/public-route-patch/learn/search/search-index.json
           if-no-files-found: error
