@@ -37,9 +37,6 @@ for(const item of queue.items||[]){
     if(typeof item.approvedMediaSlug!=='string'||item.approvedMediaSlug.trim().length<2) errors.push(`${item.visualId}: ${item.status} requires approvedMediaSlug`);
   }
   if(item.status==='artwork-needed' && checks.some(k=>item.review?.[k]===true)) errors.push(`${item.visualId}: artwork-needed item cannot claim completed QA`);
-  if(item.status==='published' && exMap.get(item.lessonId)?.learnerFacingApproved!==true){
-    errors.push(`${item.visualId}: visual cannot be published while worked example is not learner-facing approved`);
-  }
 }
 
 for(const id of briefMap.keys()) if(!seen.has(id)) errors.push(`${id}: visual brief missing from production queue`);

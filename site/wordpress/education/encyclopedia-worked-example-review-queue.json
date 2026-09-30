@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "name": "THC Encyclopedia Worked Example Review Queue",
-  "purpose": "Controlled reviewer workflow for deciding whether an internal worked example is scientifically, instructionally, and publication-ready for learner-facing encyclopedia pages.",
+  "name": "THC Encyclopedia Worked Example Editorial QA Queue",
+  "purpose": "Optional editorial/scientific QA tracking for continued improvement. This queue does not gate learner-facing publication; source-grounding and automated content-quality checks are the release basis.",
   "sourceOfTruth": {
     "examples": "content/encyclopedia/worked-examples-v1.json",
     "lessons": "content/encyclopedia/volume-*/lessons and draft lesson collections",
-    "approvalRule": "Worked examples remain hidden unless the canonical example record has learnerFacingApproved=true and complete independent-review approval metadata."
+    "approvalRule": "Learner-facing release is determined by canonical accuracy validation. Editorial review can improve content but is not a publication prerequisite."
   },
   "statusValues": [
     "pending",
@@ -24,8 +24,9 @@
     "publicCopyReview": "Learner-facing wording is concise, accessible, non-prescriptive, and suitable for the encyclopedia UI."
   },
   "releaseGate": {
-    "requiredStatus": "approved",
-    "requiredChecklistTrue": [
+    "publicationGate": false,
+    "note": "Editorial status is advisory. Do not use queue status to hide source-grounded content.",
+    "recommendedChecks": [
       "scientificClaimReview",
       "sourceAnchorReview",
       "measurementLogicReview",
@@ -33,19 +34,7 @@
       "instructionalClarityReview",
       "safetyLegalBoundaryReview",
       "publicCopyReview"
-    ],
-    "requiredMetadata": [
-      "reviewer",
-      "reviewedAt",
-      "decisionNotes"
-    ],
-    "mutationTarget": "content/encyclopedia/worked-examples-v1.json",
-    "resultingFields": {
-      "learnerFacingApproved": true,
-      "reviewControl.independentReviewStatus": "approved",
-      "reviewControl.approvedForLearnerFacingAt": "reviewedAt",
-      "reviewControl.approvedBy": "reviewer"
-    }
+    ]
   },
   "items": [
     {

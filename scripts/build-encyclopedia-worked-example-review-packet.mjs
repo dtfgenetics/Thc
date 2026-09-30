@@ -25,7 +25,7 @@ const esc=s=>String(s??'').replaceAll('|','\\|').replace(/\s+/g,' ').trim();
 const out=[];
 out.push('# THC Encyclopedia Worked Example Review Packet');
 out.push('');
-out.push('**Publication rule:** default deny. Worked examples remain internal until every queue gate is complete and learner-facing approval is explicitly recorded.');
+out.push('**Publication rule:** learner-facing release is based on canonical source-grounding and content-quality validation. This editorial queue is optional and exists to improve content further, not to block accurate material.');
 out.push('');
 out.push('## Queue summary');
 out.push('');

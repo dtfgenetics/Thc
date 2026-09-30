@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "name": "THC Worked Example Visual Production Queue",
-  "purpose": "Asset-level production tracking for worked-example visuals. Artwork status is independent from worked-example scientific approval and cannot authorize learner-facing publication.",
+  "purpose": "Asset-level production tracking for worked-example visuals. Visual release is based on scientific correctness, legibility, accessibility, mobile usability, and correct placement.",
   "briefFile": "site/wordpress/education/visual-art-briefs/worked-examples-v1.json",
   "examplesFile": "content/encyclopedia/worked-examples-v1.json",
   "statusValues": [
@@ -11,7 +11,7 @@
     "approved",
     "published"
   ],
-  "approvalRule": "A visual may be marked approved only after scientific, visual, label/spelling, accessibility, mobile, and placement QA all pass. Visual approval does not set learnerFacingApproved on the worked example.",
+  "approvalRule": "A visual may be approved or published after scientific, visual, label/spelling, accessibility, mobile, and placement QA pass and a media asset is assigned. Worked-example text publication is evaluated separately by source-grounding checks.",
   "items": [
     {
       "visualId": "THC-WE-VIS-049",

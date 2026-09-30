@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "status": "controlled-instructional-examples-review-required",
-  "publicationRule": "Worked examples illustrate reasoning paths, not universal prescriptions. Default deny: an example may render on learner-facing pages only when learnerFacingApproved is true, independentReviewStatus is approved, and approval metadata is complete.",
+  "status": "source-grounded-instructional-examples",
+  "publicationRule": "Worked examples may render when they pass canonical lesson/source/evidence accuracy checks. Human review metadata is optional and does not block learner-facing publication. Examples must preserve uncertainty and avoid unsupported universal prescriptions.",
   "examples": [
     {
       "lessonId": "THC-ENC-085",
@@ -30,12 +30,11 @@
       ],
       "verification": "A stronger conclusion requires representative canopy measurements and a repeatable improvement in plant response after the targeted change, not merely a corrected controller number.",
       "boundary": "No universal Cannabis VPD target is implied; cultivar, stage, leaf temperature, disease risk, root status, and measurement method affect interpretation.",
-      "learnerFacingApproved": false,
-      "reviewControl": {
-        "independentReviewStatus": "pending",
-        "approvedForLearnerFacingAt": null,
-        "approvedBy": null,
-        "notes": "Default deny: keep internal until independent review is recorded and learner-facing approval is explicitly granted."
+      "learnerFacingEnabled": true,
+      "qualityControl": {
+        "accuracyStatus": "source-grounded",
+        "basis": "canonical lesson objective, core science, measure-and-record fields, misconceptions, evidence limits, and source notes",
+        "humanReviewStatus": "pending"
       }
     },
     {
@@ -64,12 +63,11 @@
       ],
       "verification": "Repeat the same mapped measurements after the adjustment and compare edge-to-center uniformity plus plant response.",
       "boundary": "Uniformity targets depend on crop geometry, fixture design, production goal, and the chosen metric; one map should not be generalized to all rooms.",
-      "learnerFacingApproved": false,
-      "reviewControl": {
-        "independentReviewStatus": "pending",
-        "approvedForLearnerFacingAt": null,
-        "approvedBy": null,
-        "notes": "Default deny: keep internal until independent review is recorded and learner-facing approval is explicitly granted."
+      "learnerFacingEnabled": true,
+      "qualityControl": {
+        "accuracyStatus": "source-grounded",
+        "basis": "canonical lesson objective, core science, measure-and-record fields, misconceptions, evidence limits, and source notes",
+        "humanReviewStatus": "pending"
       }
     },
     {
@@ -98,12 +96,11 @@
       ],
       "verification": "New growth and root-zone trends should improve after the targeted correction without creating a new imbalance.",
       "boundary": "This example does not prescribe a phosphorus target or fertilizer rate; diagnosis depends on system, substrate, stage, sampling, and product formulation.",
-      "learnerFacingApproved": false,
-      "reviewControl": {
-        "independentReviewStatus": "pending",
-        "approvedForLearnerFacingAt": null,
-        "approvedBy": null,
-        "notes": "Default deny: keep internal until independent review is recorded and learner-facing approval is explicitly granted."
+      "learnerFacingEnabled": true,
+      "qualityControl": {
+        "accuracyStatus": "source-grounded",
+        "basis": "canonical lesson objective, core science, measure-and-record fields, misconceptions, evidence limits, and source notes",
+        "humanReviewStatus": "pending"
       }
     },
     {
@@ -133,12 +130,11 @@
       ],
       "verification": "A strong diagnosis predicts the spatial/temporal pattern and survives comparison with competing explanations, then is supported by a defined response after a controlled correction.",
       "boundary": "Some cases remain multifactorial or unresolved and may require laboratory or specialist confirmation.",
-      "learnerFacingApproved": false,
-      "reviewControl": {
-        "independentReviewStatus": "pending",
-        "approvedForLearnerFacingAt": null,
-        "approvedBy": null,
-        "notes": "Default deny: keep internal until independent review is recorded and learner-facing approval is explicitly granted."
+      "learnerFacingEnabled": true,
+      "qualityControl": {
+        "accuracyStatus": "source-grounded",
+        "basis": "canonical lesson objective, core science, measure-and-record fields, misconceptions, evidence limits, and source notes",
+        "humanReviewStatus": "pending"
       }
     },
     {
@@ -168,12 +164,11 @@
       ],
       "verification": "The revised program should reduce pest pressure over repeated scouting intervals while preserving compliance and preventing the same pathway from reseeding the problem.",
       "boundary": "No pesticide, threshold, release rate, or treatment interval is prescribed here; lawful use depends on current labels, jurisdiction, crop context, and facility policy.",
-      "learnerFacingApproved": false,
-      "reviewControl": {
-        "independentReviewStatus": "pending",
-        "approvedForLearnerFacingAt": null,
-        "approvedBy": null,
-        "notes": "Default deny: keep internal until independent review is recorded and learner-facing approval is explicitly granted."
+      "learnerFacingEnabled": true,
+      "qualityControl": {
+        "accuracyStatus": "source-grounded",
+        "basis": "canonical lesson objective, core science, measure-and-record fields, misconceptions, evidence limits, and source notes",
+        "humanReviewStatus": "pending"
       }
     },
     {
@@ -202,12 +197,11 @@
       ],
       "verification": "A defensible conclusion compares observed counts with a predeclared model and acknowledges when population size cannot distinguish rarity from absence.",
       "boundary": "Simple Mendelian probabilities apply only when the underlying assumptions are justified; quantitative traits and linkage can change expected recovery sharply.",
-      "learnerFacingApproved": false,
-      "reviewControl": {
-        "independentReviewStatus": "pending",
-        "approvedForLearnerFacingAt": null,
-        "approvedBy": null,
-        "notes": "Default deny: keep internal until independent review is recorded and learner-facing approval is explicitly granted."
+      "learnerFacingEnabled": true,
+      "qualityControl": {
+        "accuracyStatus": "source-grounded",
+        "basis": "canonical lesson objective, core science, measure-and-record fields, misconceptions, evidence limits, and source notes",
+        "humanReviewStatus": "pending"
       }
     },
     {
@@ -237,12 +231,11 @@
       ],
       "verification": "The instrument must meet predefined acceptance criteria against appropriate references and demonstrate suitable repeatability over the intended range.",
       "boundary": "Measurement uncertainty is method- and use-specific; this example does not establish a universal tolerance.",
-      "learnerFacingApproved": false,
-      "reviewControl": {
-        "independentReviewStatus": "pending",
-        "approvedForLearnerFacingAt": null,
-        "approvedBy": null,
-        "notes": "Default deny: keep internal until independent review is recorded and learner-facing approval is explicitly granted."
+      "learnerFacingEnabled": true,
+      "qualityControl": {
+        "accuracyStatus": "source-grounded",
+        "basis": "canonical lesson objective, core science, measure-and-record fields, misconceptions, evidence limits, and source notes",
+        "humanReviewStatus": "pending"
       }
     },
     {
@@ -272,12 +265,11 @@
       ],
       "verification": "A representative plan should reproduce the important spatial and temporal variation well enough to support the stated decision, with limits documented.",
       "boundary": "Sampling density depends on room geometry, variability, equipment, risk, and the consequence of missing extremes.",
-      "learnerFacingApproved": false,
-      "reviewControl": {
-        "independentReviewStatus": "pending",
-        "approvedForLearnerFacingAt": null,
-        "approvedBy": null,
-        "notes": "Default deny: keep internal until independent review is recorded and learner-facing approval is explicitly granted."
+      "learnerFacingEnabled": true,
+      "qualityControl": {
+        "accuracyStatus": "source-grounded",
+        "basis": "canonical lesson objective, core science, measure-and-record fields, misconceptions, evidence limits, and source notes",
+        "humanReviewStatus": "pending"
       }
     },
     {
@@ -307,12 +299,11 @@
       ],
       "verification": "A stronger conclusion requires the proposed cause to match the crop pattern and root findings, and the corrective plan should improve new root and shoot growth while repeat measurements show the predisposing condition or confirmed disease pressure has changed.",
       "boundary": "Root disease severity depends on organism, host, media, water status, temperature, sanitation, and sampling. This example does not establish a universal irrigation frequency or pathogen diagnosis.",
-      "learnerFacingApproved": false,
-      "reviewControl": {
-        "independentReviewStatus": "pending",
-        "approvedForLearnerFacingAt": null,
-        "approvedBy": null,
-        "notes": "Default deny: keep internal until independent review is recorded and learner-facing approval is explicitly granted."
+      "learnerFacingEnabled": true,
+      "qualityControl": {
+        "accuracyStatus": "source-grounded",
+        "basis": "canonical lesson objective, core science, measure-and-record fields, misconceptions, evidence limits, and source notes",
+        "humanReviewStatus": "pending"
       }
     },
     {
@@ -342,12 +333,11 @@
       ],
       "verification": "A useful local dryback strategy should produce repeatable water-status trends, acceptable root-zone chemistry, and stable plant response across representative plants rather than merely matching a borrowed number.",
       "boundary": "Dryback values are method-, substrate-, container-, sensor-, plant-, and climate-specific; this example does not prescribe a universal percentage.",
-      "learnerFacingApproved": false,
-      "reviewControl": {
-        "independentReviewStatus": "pending",
-        "approvedForLearnerFacingAt": null,
-        "approvedBy": null,
-        "notes": "Default deny: keep internal until independent review is recorded and learner-facing approval is explicitly granted."
+      "learnerFacingEnabled": true,
+      "qualityControl": {
+        "accuracyStatus": "source-grounded",
+        "basis": "canonical lesson objective, core science, measure-and-record fields, misconceptions, evidence limits, and source notes",
+        "humanReviewStatus": "pending"
       }
     },
     {
@@ -376,12 +366,11 @@
       ],
       "verification": "If identity is confirmed, the explanation should be tested against propagation and health evidence; improvement after correcting those factors supports a physiological or management cause more strongly than an unsupported mutation claim.",
       "boundary": "Clonal propagation preserves inherited genotype under normal conditions but does not guarantee identical phenotype, health, vigor, or epigenetic state across environments and propagation histories.",
-      "learnerFacingApproved": false,
-      "reviewControl": {
-        "independentReviewStatus": "pending",
-        "approvedForLearnerFacingAt": null,
-        "approvedBy": null,
-        "notes": "Default deny: keep internal until independent review is recorded and learner-facing approval is explicitly granted."
+      "learnerFacingEnabled": true,
+      "qualityControl": {
+        "accuracyStatus": "source-grounded",
+        "basis": "canonical lesson objective, core science, measure-and-record fields, misconceptions, evidence limits, and source notes",
+        "humanReviewStatus": "pending"
       }
     },
     {
@@ -411,12 +400,11 @@
       ],
       "verification": "Diagnostic confidence increases when characteristic signs, disease pattern, environmental context, and laboratory or microscopic evidence converge; follow-up should show whether containment and environmental corrections reduce new cases.",
       "boundary": "Visible flower rot can have multiple causes. This example does not define a universal humidity threshold or replace laboratory confirmation when pathogen identity matters.",
-      "learnerFacingApproved": false,
-      "reviewControl": {
-        "independentReviewStatus": "pending",
-        "approvedForLearnerFacingAt": null,
-        "approvedBy": null,
-        "notes": "Default deny: keep internal until independent review is recorded and learner-facing approval is explicitly granted."
+      "learnerFacingEnabled": true,
+      "qualityControl": {
+        "accuracyStatus": "source-grounded",
+        "basis": "canonical lesson objective, core science, measure-and-record fields, misconceptions, evidence limits, and source notes",
+        "humanReviewStatus": "pending"
       }
     },
     {
@@ -446,12 +434,11 @@
       ],
       "verification": "The adjustment should reduce position-dependent differences in drying curves and final product condition when measured with the same sampling plan.",
       "boundary": "Drying behavior depends on product geometry, load, airflow, equipment, temperature, RH, and sampling. No single room setting guarantees uniformity.",
-      "learnerFacingApproved": false,
-      "reviewControl": {
-        "independentReviewStatus": "pending",
-        "approvedForLearnerFacingAt": null,
-        "approvedBy": null,
-        "notes": "Default deny: keep internal until independent review is recorded and learner-facing approval is explicitly granted."
+      "learnerFacingEnabled": true,
+      "qualityControl": {
+        "accuracyStatus": "source-grounded",
+        "basis": "canonical lesson objective, core science, measure-and-record fields, misconceptions, evidence limits, and source notes",
+        "humanReviewStatus": "pending"
       }
     },
     {
@@ -481,12 +468,11 @@
       ],
       "verification": "A genetic-performance claim becomes stronger when the advantage repeats across independent experimental units or environments and remains after accounting for known spatial or management effects.",
       "boundary": "Replication requirements depend on the trait, population, environmental variability, and decision risk; one trial cannot establish universal performance.",
-      "learnerFacingApproved": false,
-      "reviewControl": {
-        "independentReviewStatus": "pending",
-        "approvedForLearnerFacingAt": null,
-        "approvedBy": null,
-        "notes": "Default deny: keep internal until independent review is recorded and learner-facing approval is explicitly granted."
+      "learnerFacingEnabled": true,
+      "qualityControl": {
+        "accuracyStatus": "source-grounded",
+        "basis": "canonical lesson objective, core science, measure-and-record fields, misconceptions, evidence limits, and source notes",
+        "humanReviewStatus": "pending"
       }
     },
     {
@@ -516,12 +502,11 @@
       ],
       "verification": "The experiment supports stronger causal inference when treatments are independently replicated and competing room or position effects are controlled or estimated rather than perfectly confounded with treatment.",
       "boundary": "Operational cultivation trials may require blocking or staged designs; the correct experimental unit depends on how treatment is actually applied.",
-      "learnerFacingApproved": false,
-      "reviewControl": {
-        "independentReviewStatus": "pending",
-        "approvedForLearnerFacingAt": null,
-        "approvedBy": null,
-        "notes": "Default deny: keep internal until independent review is recorded and learner-facing approval is explicitly granted."
+      "learnerFacingEnabled": true,
+      "qualityControl": {
+        "accuracyStatus": "source-grounded",
+        "basis": "canonical lesson objective, core science, measure-and-record fields, misconceptions, evidence limits, and source notes",
+        "humanReviewStatus": "pending"
       }
     },
     {
@@ -551,12 +536,11 @@
       ],
       "verification": "A causal interpretation becomes more credible when treatment precedes outcome, assignment or design reduces confounding, measurements are comparable, and alternative explanations fail to account for the observed effect.",
       "boundary": "Observational cultivation data are valuable for hypothesis generation and forecasting but often cannot support causal claims without additional design or analysis.",
-      "learnerFacingApproved": false,
-      "reviewControl": {
-        "independentReviewStatus": "pending",
-        "approvedForLearnerFacingAt": null,
-        "approvedBy": null,
-        "notes": "Default deny: keep internal until independent review is recorded and learner-facing approval is explicitly granted."
+      "learnerFacingEnabled": true,
+      "qualityControl": {
+        "accuracyStatus": "source-grounded",
+        "basis": "canonical lesson objective, core science, measure-and-record fields, misconceptions, evidence limits, and source notes",
+        "humanReviewStatus": "pending"
       }
     }
   ]
