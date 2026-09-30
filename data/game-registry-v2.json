@@ -2814,9 +2814,10 @@
         "lastVerifiedAt": null,
         "lastVerifiedUrl": null,
         "blockers": [],
-        "nextMilestone": "Complete browser/game-feel QA and establish explicit production ownership/cutover before public promotion.",
+        "nextMilestone": "Complete game-feel QA and decide final canonical owner/cutover; migration-overlay release remains allowed.",
         "sourceValidatedRevision": "e8075ed46b5d6168d9f5e4673b8aea87476c114e",
-        "sourceValidatedAt": "2026-09-28T23:57:23Z"
+        "sourceValidatedAt": "2026-09-28T23:57:23Z",
+        "overlayEligible": true
       },
       "developmentLocations": [
         {
@@ -2831,7 +2832,7 @@
           "defaultBranch": "main",
           "locationVerifiedAt": "2026-09-22",
           "editable": true,
-          "releasable": false
+          "releasable": true
         }
       ],
       "deprecatedLocations": [],
@@ -2841,7 +2842,7 @@
         ],
         "targetExperience": "Responsive side-scrolling controls, readable combat and power feedback, reliable 12-stage progression, smooth mobile/desktop play.",
         "knownGaps": [
-          "final production ownership still needs an explicit cutover decision",
+          "final canonical ownership still needs an explicit cutover decision; migration-overlay release is allowed",
           "full stage/progression/game-feel QA remains open"
         ]
       },
@@ -3242,7 +3243,8 @@
         "blockers": [],
         "nextMilestone": "Complete multiplayer/browser presentation QA, lock production ownership/public route, then package through the DTFSeeds release pipeline.",
         "sourceValidatedRevision": "e8075ed46b5d6168d9f5e4673b8aea87476c114e",
-        "sourceValidatedAt": "2026-09-28T23:57:23Z"
+        "sourceValidatedAt": "2026-09-28T23:57:23Z",
+        "overlayEligible": false
       },
       "developmentLocations": [
         {
