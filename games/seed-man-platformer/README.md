@@ -119,7 +119,7 @@ Current v20 runtime/release ownership is represented by:
 - `.github/workflows/publish-seed-man-production.yml`
 - `.github/workflows/repair-seed-man-v20-production.yml`
 
-Retired 11-level/15-level workflows are preserved in Git history and registered in `docs/archive/retention-manifest.json`; they must not be restored to `.github/workflows/`.
+Retired 11-level/15-level workflows are preserved in Git history and registered in `data/file-retirement-manifest.json`; they must not be restored to `.github/workflows/`.
 
 ## Combat and phenotype powers
 
