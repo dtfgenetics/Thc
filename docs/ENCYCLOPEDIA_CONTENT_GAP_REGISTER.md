@@ -13,15 +13,7 @@ Updated: 2026-09-29
 
 ## Assessment coverage
 
-After this repair:
-- Volumes 18–21: 80/80 draft lessons contain three lesson-specific checks:
-  - application;
-  - measurement / verification;
-  - misconception or evidence-limit challenge.
-- Volumes 01–17: 340 lessons still require a formal lesson-level knowledge-check layer or linked assessment-bank entry.
-- Answer rationales and independent assessment review remain pending for Volumes 18–21.
-
-This means 420/420 lessons exist, but the encyclopedia is **not yet 420/420 assessment-complete**.
+All 420 lessons have three lesson-specific effective checks and a materialized rationale draft in `data/encyclopedia-assessment-rationale-package.json`. The rationales are internal reviewer aids, not public answer keys. Independent science and assessment review remains pending, so rationale-draft coverage must not be confused with approval.
 
 ## Required lesson content contract
 
@@ -43,10 +35,10 @@ Every lesson must ultimately contain or resolve to:
 
 ## Current priority gaps
 
-1. Build lesson-specific knowledge checks and answer rationales for THC-ENC-001–340.
-2. Run strict content-quality validation across all 420 and repair thin objectives, source coverage, terms, misconceptions, measurement guidance, and cross-links.
-3. Build the controlled visual-production queue from the current registry and volume-specific visual briefs.
-4. Expand exact source-locator / atomic-claim evidence ledgers beyond the initial controlled evidence batch.
+1. Independently review the 420 materialized assessment-rationale drafts and preserve reviewer evidence.
+2. Produce and approve the 420 teaching visuals from the controlled visual queue; briefs are complete, artwork and asset-level QA are not.
+3. Expand exact source-locator / atomic-claim evidence ledgers beyond the initial controlled evidence batch, using the all-source resolution queue to prioritize unresolved references.
+4. Resolve missing Volume 20–21 source-register entries and replace broad source-family placeholders with exact authorities.
 5. Keep encyclopedia assessment complete on its own. Academy/course links are optional navigation only; course curriculum and certification assessments remain independently controlled.
 6. Add/download printable measurement sheets, decision aids, sampling forms, or checklists where the lesson benefits from one.
 7. Maintain release state separately from content existence: draft-complete does not mean independently reviewed, publication-authorized, or live.
@@ -56,6 +48,9 @@ Every lesson must ultimately contain or resolve to:
 - Controlled source registry: `content/encyclopedia/evidence/authoritative-sources.json`.
 - Initial claim evidence batch: `content/encyclopedia/evidence/evidence-batch-001.json`.
 - Generated 420-lesson tracking artifact: `data/encyclopedia-evidence-tracking.json`.
+- All-source resolution queue: `data/encyclopedia-source-resolution-queue.json`.
+- Materialized assessment/rationale package: `data/encyclopedia-assessment-rationale-package.json`.
+- Controlled visual-production queue: `content/encyclopedia/visual-production-queue-v1.json`.
 - Source collection and claim mapping are review-pending by design. They do not approve lessons, change `publicationAuthorized`, or release held drafts.
 
 ## Validation commands
@@ -71,5 +66,9 @@ Every lesson must ultimately contain or resolve to:
 - `npm run verify:encyclopedia-evidence`
   - rebuilds the all-lesson evidence tracking artifact;
   - validates authoritative source IDs, evidence-batch links, 420/420 tracking coverage, and review-state boundaries.
+
+- `npm run verify:encyclopedia-production-queues`
+  - builds and validates 420/420 assessment-rationale drafts, visual briefs, and source-resolution records;
+  - hard-fails any accidental approval or publication-state promotion in generated production queues.
 
 The goal is to make the strict command pass without weakening the standard.
