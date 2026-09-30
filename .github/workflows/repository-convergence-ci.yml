@@ -50,6 +50,7 @@ on:
       - 'scripts/verify-atlas-live.mjs'
       - 'scripts/stage-dtf420-static-overlay.py'
       - 'scripts/validate-repository-file-boundaries.mjs'
+      - 'scripts/validate-workflow-path-parity.mjs'
       - 'docs/archive/workflows/**'
       - 'docs/archive/education/**'
       - 'scripts/archive/education/**'
