@@ -1,0 +1,73 @@
+{
+  "id": "THC-ENC-355",
+  "number": 355,
+  "title": "Mold and Microbial Risk During Drying and Curing",
+  "primaryFormat": "Diagnostic",
+  "requiredTeachingVisual": "Diagnostic decision tree",
+  "objective": "Assess microbial risk through starting load, wetness duration, aW, temperature, sanitation, tissue damage, sampling, and organism/toxin testing.",
+  "termsToKnow": [
+    "microbial load",
+    "mold",
+    "yeast",
+    "water activity",
+    "wetness duration",
+    "mycotoxin",
+    "latent infection",
+    "cross-contamination"
+  ],
+  "coreScience": [
+    "Harvested material can carry field and facility microbes. Slow moisture removal, wet pockets, condensation, warm conditions, damaged flowers, poor sanitation, and dense loads can permit growth.",
+    "Water activity constrains growth but does not erase microbes or toxins formed earlier. A sample below a target aW can still contain spores, DNA, viable organisms adapted to low water, or mycotoxins.",
+    "Visible mold, odor, and heat are serious signs but absence of these signs does not prove compliance. Total counts, species or target tests, mycotoxin analysis, and representative sampling answer different questions."
+  ],
+  "cultivationRelevance": [
+    "Hold suspect lots, protect workers, isolate material, investigate the drying map and sanitation, sample through qualified laboratories, and follow current disposition rules."
+  ],
+  "measureAndRecord": [
+    "Batch/source",
+    "initial disease/microbial status",
+    "drying conditions",
+    "wetness/aW map",
+    "visual/odor/temperature",
+    "microbial methods/counts",
+    "organism and mycotoxin results",
+    "hold/disposition and CAPA."
+  ],
+  "misconceptions": [
+    "Drying kills every microbe.",
+    "Passing water activity proves no mold or toxin.",
+    "Trimming visible mold makes the remaining batch safe."
+  ],
+  "evidenceLimits": [
+    "Microbial limits, methods, remediation, and disposition vary by jurisdiction and product."
+  ],
+  "crossLinks": "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems.",
+  "sourceNotes": [
+    "V18-SRC-024",
+    "V18-SRC-025",
+    "V18-SRC-026"
+  ],
+  "knowledgeCheck": [
+    "For \"Mold and Microbial Risk During Drying and Curing\", explain the mechanism behind this objective: Assess microbial risk through starting load, wetness duration, aW, temperature, sanitation, tissue damage, sampling, and organism/toxin testing. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Drying kills every microbe.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Hold suspect lots, protect workers, isolate material, investigate the drying map and sanitation, sample through qualified laboratories, and follow current disposition rules. Build a verification plan using the lesson's record set (Batch/source; initial disease/microbial status; drying conditions; wetness/aW map; visual/odor/temperature; microbial methods/counts; organism and mycotoxin results; hold/disposition and CAPA.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 18: Harvest and Postharvest Plant Material Science — DRAFT COMPLETE v1.0",
+    "driveFileId": "1b-criVA1-WulMDIo8rFFdtuGuI4RMcE4yCT3jumDlAw",
+    "evidenceControl": "atomic_claim_ledger_not_started",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "mold-and-microbial-risk-during-drying-and-curing",
+  "route": "/encyclopedia/mold-and-microbial-risk-during-drying-and-curing",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

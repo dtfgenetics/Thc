@@ -1,0 +1,73 @@
+{
+  "id": "THC-ENC-349",
+  "number": 349,
+  "title": "Airflow, Loading Density, and Drying Uniformity",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Chart / measurement",
+  "objective": "Map how rack spacing, flower density, obstructions, fan paths, and recirculation create drying distributions.",
+  "termsToKnow": [
+    "loading density",
+    "airflow distribution",
+    "dead zone",
+    "short circuit",
+    "pressure drop",
+    "rack spacing",
+    "uniformity",
+    "edge effect"
+  ],
+  "coreScience": [
+    "Airflow carries heat and vapor, but the load resists and redirects it. Dense hanging plants, trays, bins, racks, walls, and packaging create pressure drops, bypass paths, and sheltered pockets.",
+    "High velocity at one location can overdry surfaces or damage material while other locations remain wet. Visible branch movement does not prove uniform exchange inside flowers or behind racks.",
+    "Uniformity must be assessed across space and time. Mean room mass loss can hide wet sub-batches and overdried edge material."
+  ],
+  "cultivationRelevance": [
+    "Map air movement and product mass/aW across rack levels, corners, center, supply, and return locations under the actual load. Revalidate after layout, fan, filter, or crop-geometry changes."
+  ],
+  "measureAndRecord": [
+    "Room/rack map",
+    "load mass and spacing",
+    "fan/HVAC/filters",
+    "airspeed method",
+    "temperature/RH",
+    "sample mass curves",
+    "final moisture/aW by location",
+    "quality and microbial results."
+  ],
+  "misconceptions": [
+    "More fan speed always creates more uniform drying.",
+    "Equal rack spacing guarantees equal airflow.",
+    "An average final water activity clears every location."
+  ],
+  "evidenceLimits": [
+    "There is no universal airspeed or loading-density target for every room and flower form."
+  ],
+  "crossLinks": "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems.",
+  "sourceNotes": [
+    "V18-SRC-002",
+    "V18-SRC-011",
+    "V18-SRC-016"
+  ],
+  "knowledgeCheck": [
+    "For \"Airflow, Loading Density, and Drying Uniformity\", explain the mechanism behind this objective: Map how rack spacing, flower density, obstructions, fan paths, and recirculation create drying distributions. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"More fan speed always creates more uniform drying.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Map air movement and product mass/aW across rack levels, corners, center, supply, and return locations under the actual load. Revalidate after layout, fan, filter, or crop-geometry changes. Build a verification plan using the lesson's record set (Room/rack map; load mass and spacing; fan/HVAC/filters; airspeed method; temperature/RH; sample mass curves; final moisture/aW by location; quality and microbial results.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 18: Harvest and Postharvest Plant Material Science — DRAFT COMPLETE v1.0",
+    "driveFileId": "1b-criVA1-WulMDIo8rFFdtuGuI4RMcE4yCT3jumDlAw",
+    "evidenceControl": "atomic_claim_ledger_not_started",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "airflow-loading-density-and-drying-uniformity",
+  "route": "/encyclopedia/airflow-loading-density-and-drying-uniformity",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

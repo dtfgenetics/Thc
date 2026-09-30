@@ -1,0 +1,75 @@
+{
+  "id": "THC-ENC-345",
+  "number": 345,
+  "title": "Drying as Heat and Mass Transfer",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Concept diagram",
+  "objective": "Explain drying through energy transfer, internal moisture movement, surface evaporation, air transport, and changing material resistance.",
+  "termsToKnow": [
+    "heat transfer",
+    "mass transfer",
+    "evaporation",
+    "diffusion",
+    "convection",
+    "latent heat",
+    "boundary layer",
+    "internal resistance",
+    "drying front"
+  ],
+  "coreScience": [
+    "Drying removes water by moving moisture from internal tissues toward surfaces and then transferring vapor into surrounding air. Heat supplies energy for evaporation; airflow and vapor-pressure conditions carry moisture away.",
+    "Early drying can include free surface water and rapid mass loss, while later drying increasingly depends on internal diffusion, tissue structure, cuticle, flower density, stems, and equilibrium with air.",
+    "Room temperature and RH are inputs, not a complete process description. Product temperature, airflow, load geometry, recirculation, dehumidification, and moisture generation determine the local driving force."
+  ],
+  "cultivationRelevance": [
+    "Measure product and air conditions, mass change, load geometry, and spatial distribution. Avoid copying a temperature/RH recipe without validating product response and safety."
+  ],
+  "measureAndRecord": [
+    "Wet mass",
+    "air/product/surface temperature",
+    "RH/dew point",
+    "airflow",
+    "rack/location",
+    "load density",
+    "mass versus time",
+    "energy/dehumidification state",
+    "final moisture/aW and chemistry."
+  ],
+  "misconceptions": [
+    "Drying is simply waiting for water to evaporate.",
+    "Room RH alone determines drying rate.",
+    "A constant room setpoint produces a constant product drying rate."
+  ],
+  "evidenceLimits": [
+    "Transfer coefficients and diffusion behavior are material- and system-specific."
+  ],
+  "crossLinks": "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems.",
+  "sourceNotes": [
+    "V18-SRC-002",
+    "V18-SRC-010",
+    "V18-SRC-011"
+  ],
+  "knowledgeCheck": [
+    "For \"Drying as Heat and Mass Transfer\", explain the mechanism behind this objective: Explain drying through energy transfer, internal moisture movement, surface evaporation, air transport, and changing material resistance. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Drying is simply waiting for water to evaporate.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Measure product and air conditions, mass change, load geometry, and spatial distribution. Avoid copying a temperature/RH recipe without validating product response and safety. Build a verification plan using the lesson's record set (Wet mass; air/product/surface temperature; RH/dew point; airflow; rack/location; load density; mass versus time; energy/dehumidification state; final moisture/aW and chemistry.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 18: Harvest and Postharvest Plant Material Science — DRAFT COMPLETE v1.0",
+    "driveFileId": "1b-criVA1-WulMDIo8rFFdtuGuI4RMcE4yCT3jumDlAw",
+    "evidenceControl": "atomic_claim_ledger_not_started",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "drying-as-heat-and-mass-transfer",
+  "route": "/encyclopedia/drying-as-heat-and-mass-transfer",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

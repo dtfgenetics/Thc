@@ -1,0 +1,74 @@
+{
+  "id": "THC-ENC-342",
+  "number": 342,
+  "title": "Whole-Plant Versus Branch Harvest",
+  "primaryFormat": "Comparison",
+  "requiredTeachingVisual": "Comparison plate",
+  "objective": "Compare whole-plant and sectional harvest through handling, drying geometry, spatial maturity, labor, contamination, and traceability.",
+  "termsToKnow": [
+    "whole-plant harvest",
+    "branch harvest",
+    "sectional harvest",
+    "load geometry",
+    "stem-to-flower ratio",
+    "handling damage",
+    "traceability"
+  ],
+  "coreScience": [
+    "Whole-plant harvest preserves large connected structures and can reduce the number of cuts and handling events. Branch or sectional harvest can separate maturity zones, improve loading control, and make damaged or diseased material easier to segregate.",
+    "Geometry changes drying. Large stems, overlapping branches, flower density, hanging orientation, and local airflow affect heat and moisture transfer. A whole plant and separated branches cannot be assumed to follow the same drying curve under the same room setting.",
+    "Sectional harvesting increases labels, cuts, surfaces, labor, and opportunities for mix-ups or cross-contamination. Whole-plant harvesting can conceal interior defects and create uneven load density."
+  ],
+  "cultivationRelevance": [
+    "Choose a method from plant architecture, disease status, room capacity, product objective, labor, support, and traceability. Validate drying uniformity and quality for the actual load form."
+  ],
+  "measureAndRecord": [
+    "Harvest unit and ID",
+    "cut sequence",
+    "plant/branch position",
+    "wet mass and stem fraction",
+    "damage",
+    "load spacing",
+    "drying curve by zone",
+    "labor",
+    "microbial/chemical result",
+    "yield and grade."
+  ],
+  "misconceptions": [
+    "Whole-plant drying is always slower and therefore always better.",
+    "Branch harvest automatically makes every flower uniform.",
+    "Harvest geometry has no effect once room RH is controlled."
+  ],
+  "evidenceLimits": [
+    "Comparisons are cultivar-, architecture-, load-, room-, and airflow-specific."
+  ],
+  "crossLinks": "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems.",
+  "sourceNotes": [
+    "V18-SRC-002",
+    "V18-SRC-005",
+    "V18-SRC-006"
+  ],
+  "knowledgeCheck": [
+    "In \"Whole-Plant Versus Branch Harvest\", what measurements and records would you use to compare the alternatives fairly, and which outcome would count as meaningful rather than merely different?",
+    "A learner claims, \"Whole-plant drying is always slower and therefore always better.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Choose a method from plant architecture, disease status, room capacity, product objective, labor, support, and traceability. Validate drying uniformity and quality for the actual load form. Build a verification plan using the lesson's record set (Harvest unit and ID; cut sequence; plant/branch position; wet mass and stem fraction; damage; load spacing; drying curve by zone; labor; microbial/chemical result; yield and grade.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 18: Harvest and Postharvest Plant Material Science — DRAFT COMPLETE v1.0",
+    "driveFileId": "1b-criVA1-WulMDIo8rFFdtuGuI4RMcE4yCT3jumDlAw",
+    "evidenceControl": "atomic_claim_ledger_not_started",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "whole-plant-versus-branch-harvest",
+  "route": "/encyclopedia/whole-plant-versus-branch-harvest",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

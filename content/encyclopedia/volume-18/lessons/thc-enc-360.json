@@ -1,0 +1,75 @@
+{
+  "id": "THC-ENC-360",
+  "number": 360,
+  "title": "Postharvest Deviation and Release Review",
+  "primaryFormat": "Data / QA",
+  "requiredTeachingVisual": "Record / example",
+  "objective": "Control postharvest deviations through containment, impact assessment, investigation, sampling, CAPA, and authorized release or disposition.",
+  "termsToKnow": [
+    "deviation",
+    "hold",
+    "impact assessment",
+    "out-of-specification",
+    "investigation",
+    "CAPA",
+    "disposition",
+    "release authority"
+  ],
+  "coreScience": [
+    "A postharvest deviation is departure from an approved process, range, identity, sanitation, environmental, sampling, packaging, or storage requirement. Not every deviation makes product unacceptable, but every significant deviation requires controlled assessment.",
+    "Impact assessment considers duration, magnitude, location, affected lots, product state, microbes, chemistry, moisture/aW, contamination, identity, worker safety, and downstream use. Testing can add evidence but cannot always prove an unsampled batch is unaffected.",
+    "Release is a documented decision by an authorized role against current specifications and rules. Reworking, blending, remediation, relabeling, or disposal each requires separate authorization and traceability."
+  ],
+  "cultivationRelevance": [
+    "Place affected material on hold, preserve raw data and samples, define the investigation and additional sampling before testing, record uncertainty, and verify CAPA effectiveness."
+  ],
+  "measureAndRecord": [
+    "Deviation/lot/time/location",
+    "limit and actual",
+    "containment",
+    "affected/exposed material",
+    "investigation",
+    "tests",
+    "risk/uncertainty",
+    "CAPA",
+    "disposition",
+    "approver and release date."
+  ],
+  "misconceptions": [
+    "Passing a retest automatically invalidates the original failure.",
+    "A small excursion can be ignored if product looks normal.",
+    "Production staff can release held product informally after correction."
+  ],
+  "evidenceLimits": [
+    "Specifications, OOS procedures, remediation, and release authority are jurisdiction- and quality-system-specific."
+  ],
+  "crossLinks": "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems.",
+  "sourceNotes": [
+    "V18-SRC-002",
+    "V18-SRC-035",
+    "V18-SRC-036"
+  ],
+  "knowledgeCheck": [
+    "For \"Postharvest Deviation and Release Review\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+    "A learner claims, \"Passing a retest automatically invalidates the original failure.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Place affected material on hold, preserve raw data and samples, define the investigation and additional sampling before testing, record uncertainty, and verify CAPA effectiveness. Build a verification plan using the lesson's record set (Deviation/lot/time/location; limit and actual; containment; affected/exposed material; investigation; tests; risk/uncertainty; CAPA; disposition; approver and release date.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 18: Harvest and Postharvest Plant Material Science — DRAFT COMPLETE v1.0",
+    "driveFileId": "1b-criVA1-WulMDIo8rFFdtuGuI4RMcE4yCT3jumDlAw",
+    "evidenceControl": "atomic_claim_ledger_not_started",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "postharvest-deviation-and-release-review",
+  "route": "/encyclopedia/postharvest-deviation-and-release-review",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}
