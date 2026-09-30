@@ -1,0 +1,96 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-002",
+  "createdAt": "2026-09-30",
+  "scope": "Claim-level evidence for root respiration, root water uptake, and ion transport lessons with direct cultivation decision relevance.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Map sources to scoped claims rather than treating one citation as support for an entire lesson.",
+    "General plant-physiology evidence may support mechanism while cannabis-specific quantitative transfer remains limited.",
+    "Claim evidence does not alter lesson identity, route, or publication state."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0014",
+      "lessonId": "THC-ENC-043",
+      "sourceIds": [
+        "ENC-AUTH-013"
+      ],
+      "claimType": "plant-physiology-review",
+      "supportedClaim": "Plant roots require oxygen for aerobic metabolism, and insufficient oxygen can constrain cellular energy supply, growth, and normal physiological function.",
+      "sourceLocator": "Loreti and Perata 2020 review sections describing plant hypoxia, oxygen sensing, respiration constraints, and responses to waterlogging/submergence.",
+      "applicability": "Supports the root-respiration lesson's mechanism-level explanation of oxygen demand and hypoxia.",
+      "limitations": "General plant physiology; does not establish cannabis-specific dissolved-oxygen targets, irrigation intervals, or symptom thresholds.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0015",
+      "lessonId": "THC-ENC-043",
+      "sourceIds": [
+        "ENC-AUTH-013"
+      ],
+      "claimType": "plant-physiology-review",
+      "supportedClaim": "Visible aboveground stress under low root-zone oxygen is not uniquely diagnostic because hypoxia alters multiple physiological processes and can interact with other stresses.",
+      "sourceLocator": "Loreti and Perata 2020 discussion of hypoxia effects on plant metabolism, development, and plant-microbe interactions.",
+      "applicability": "Supports evidence limits and differential-diagnosis language in the root-respiration lesson.",
+      "limitations": "Does not rank cannabis-specific differential diagnoses or replace root-zone measurement and disease evaluation.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0016",
+      "lessonId": "THC-ENC-044",
+      "sourceIds": [
+        "ENC-AUTH-014"
+      ],
+      "claimType": "root-hydraulics-primary",
+      "supportedClaim": "Root water uptake can occur through apoplastic and cell-to-cell pathways, and pathway contribution depends on root anatomy and hydraulic properties rather than a simple passive-drinking model.",
+      "sourceLocator": "Zarebanadkouki et al. 2019 Scientific Reports study quantifying radial water flow across root tissues with neutron tomography and inverse modeling.",
+      "applicability": "Supports mechanism-level explanation of root water transport pathways and the need for method-aware interpretation.",
+      "limitations": "Primary experiment used lupin roots; quantitative pathway contributions should not be transferred directly to cannabis.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0017",
+      "lessonId": "THC-ENC-044",
+      "sourceIds": [
+        "ENC-AUTH-014"
+      ],
+      "claimType": "root-hydraulics-primary",
+      "supportedClaim": "Root hydraulic behavior is spatially and anatomically structured, so a single substrate moisture reading cannot directly establish whole-root water uptake.",
+      "sourceLocator": "Zarebanadkouki et al. 2019 methods and results resolving water flux across root tissues at cellular scale.",
+      "applicability": "Supports the lesson's warning against inferring whole-root uptake from one local measurement.",
+      "limitations": "The source resolves root pathways under a specific experimental system and does not validate any cannabis irrigation sensor placement rule.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0018",
+      "lessonId": "THC-ENC-045",
+      "sourceIds": [
+        "ENC-AUTH-015"
+      ],
+      "claimType": "plant-membrane-transport-review",
+      "supportedClaim": "Mineral-ion uptake depends on regulated membrane transport and electrochemical gradients; ions present in solution are not automatically absorbed into plant tissues.",
+      "sourceLocator": "Blatt 2024 Plant Physiology review of transmembrane ion transport, voltage-dependent flux, channels, carriers, and energy coupling.",
+      "applicability": "Supports the lesson's distinction between nutrient solution concentration and actual membrane-mediated uptake.",
+      "limitations": "General plant physiology; does not establish cannabis-specific transporter kinetics, nutrient ratios, or target EC values.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0019",
+      "lessonId": "THC-ENC-045",
+      "sourceIds": [
+        "ENC-AUTH-015",
+        "ENC-AUTH-013"
+      ],
+      "claimType": "plant-physiology-synthesis",
+      "supportedClaim": "Root-zone oxygen status can affect nutrient acquisition because membrane transport depends on cellular energy supply and intact physiological function.",
+      "sourceLocator": "Blatt 2024 membrane-transport review combined with Loreti and Perata 2020 hypoxia review.",
+      "applicability": "Supports the lesson's causal chain from hypoxia to reduced transport capacity without implying a cannabis-specific threshold.",
+      "limitations": "Cross-source physiological synthesis; the magnitude of the effect depends on species, tissue, nutrient, oxygen severity, duration, and environment.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
