@@ -1,9 +1,12 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "lessonId": "THC-ENC-###",
   "version": "0.1.0",
   "title": "",
-  "part": {"number": 0, "title": ""},
+  "part": {
+    "number": 0,
+    "title": ""
+  },
   "status": "draft",
   "purpose": "",
   "acceptedTerms": [],
@@ -21,7 +24,14 @@
     "practicalApplication": []
   },
   "measurements": [
-    {"name":"","unit":"","samplingLocation":"","timing":"","methodNote":"","limits":""}
+    {
+      "name": "",
+      "unit": "",
+      "samplingLocation": "",
+      "timing": "",
+      "methodNote": "",
+      "limits": ""
+    }
   ],
   "crossLinks": {
     "prerequisiteLessonIds": [],
@@ -33,18 +43,27 @@
     "downloadIds": []
   },
   "evidence": [
-    {"sourceId":"","citation":"","url":"","sourceType":"","claimSupport":"","applicabilityLimits":"","reviewDate":""}
+    {
+      "sourceId": "",
+      "citation": "",
+      "url": "",
+      "sourceType": "",
+      "claimSupport": "",
+      "applicabilityLimits": "",
+      "reviewDate": ""
+    }
   ],
   "visuals": [
-    {"assetId":"","type":"","purpose":"","caption":"","altText":"","rightsStatus":"pending","qaStatus":"pending"}
+    {
+      "assetId": "",
+      "type": "",
+      "purpose": "",
+      "caption": "",
+      "altText": "",
+      "rightsStatus": "pending",
+      "qaStatus": "pending"
+    }
   ],
-  "courseLayer": {
-    "academyCourseId": null,
-    "knowledgeCheck": [],
-    "misconceptionCheck": [],
-    "practicalExercise": null,
-    "completionCriteria": []
-  },
   "revision": {
     "createdAt": null,
     "lastEvidenceReview": null,
@@ -52,5 +71,18 @@
     "approved": false,
     "deployed": false,
     "live": false
+  },
+  "assessment": {
+    "knowledgeCheck": [],
+    "misconceptionCheck": [],
+    "answerRationales": [],
+    "scoringIntent": "",
+    "completionCriteria": []
+  },
+  "optionalLearningLinks": {
+    "academyCourseIds": [],
+    "subjectRoutes": [],
+    "toolRoutes": [],
+    "atlasRoutes": []
   }
 }
