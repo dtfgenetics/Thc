@@ -59,7 +59,7 @@
     "validate:terpene-atlas": "node scripts/validate-canonical-tools-mirror.mjs",
     "verify:asset-states": "node scripts/validate-asset-state-registry.mjs",
     "verify:3d-assets": "node scripts/validate-3d-assets.mjs",
-    "verify:project-os": "npm run verify:repository-architecture && npm run verify:production-standards && npm run verify:encyclopedia-content-control && npm run verify:encyclopedia-scorecard && npm run verify:learning-v3-decision-renderer && npm run verify:encyclopedia-assessments && npm run verify:encyclopedia-rubrics && npm run verify:encyclopedia-worked-examples && npm run validate:education-search && npm run verify:shared-ui-standard && npm run verify:page-composition && npm run verify:cultivation-reference-tools && npm run validate:growlens-release-contract && npm run validate:grow-doc-release-pin && npm run verify:portfolio && npm run games:locations:check && npm run games:registry:check && npm run verify:asset-states && npm run verify:3d-assets && npm run validate:public-suite-qualification-workflow",
+    "verify:project-os": "npm run verify:repository-architecture && npm run verify:production-standards && npm run verify:encyclopedia-content-control && npm run verify:encyclopedia-scorecard && npm run verify:encyclopedia-renderer && npm run verify:learning-v3-decision-renderer && npm run verify:encyclopedia-assessments && npm run verify:encyclopedia-rubrics && npm run verify:encyclopedia-worked-examples && npm run validate:education-search && npm run verify:shared-ui-standard && npm run verify:page-composition && npm run verify:cultivation-reference-tools && npm run validate:growlens-release-contract && npm run validate:grow-doc-release-pin && npm run verify:portfolio && npm run games:locations:check && npm run games:registry:check && npm run verify:asset-states && npm run verify:3d-assets && npm run validate:public-suite-qualification-workflow",
     "verify:cultivation-reference-tools": "node scripts/validate-canonical-tools-mirror.mjs",
     "games:qa:local": "node scripts/game-portfolio-browser-qa.mjs --local",
     "games:qa:live": "node scripts/game-portfolio-browser-qa.mjs --live",
@@ -95,6 +95,7 @@
     "build:encyclopedia-rubrics": "node scripts/build-encyclopedia-rubric-package.mjs",
     "verify:encyclopedia-worked-examples": "node scripts/validate-encyclopedia-worked-examples.mjs",
     "build:encyclopedia-scorecard": "node scripts/build-encyclopedia-completion-scorecard.mjs",
-    "verify:encyclopedia-scorecard": "npm run build:encyclopedia-scorecard && node scripts/validate-encyclopedia-completion-scorecard.mjs"
+    "verify:encyclopedia-scorecard": "npm run build:encyclopedia-scorecard && node scripts/validate-encyclopedia-completion-scorecard.mjs",
+    "verify:encyclopedia-renderer": "node scripts/validate-encyclopedia-renderer-contract.mjs"
   }
 }
