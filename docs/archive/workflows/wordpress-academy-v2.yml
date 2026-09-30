@@ -1,0 +1,166 @@
+name: Publish THC Academy V2
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/academy-v2.json'
+      - 'scripts/publish-wordpress-academy-v2.mjs'
+      - '.github/workflows/wordpress-academy-v2.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/academy-v2.json'
+      - 'scripts/publish-wordpress-academy-v2.mjs'
+      - '.github/workflows/wordpress-academy-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-academy-v2
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  validate:
+    name: Validate THC Academy V2
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate curriculum and publisher
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/publish-wordpress-academy-v2.mjs
+          node scripts/publish-wordpress-academy-v2.mjs --validate-only | tee "$RUNNER_TEMP/academy-v2-validation.json"
+          grep -Fq '"courses": 12' "$RUNNER_TEMP/academy-v2-validation.json"
+          grep -Fq '"units": 60' "$RUNNER_TEMP/academy-v2-validation.json"
+          grep -Fq '"exercises": 24' "$RUNNER_TEMP/academy-v2-validation.json"
+          grep -Fq '"capstones": 12' "$RUNNER_TEMP/academy-v2-validation.json"
+
+  publish:
+    name: Publish and verify THC Academy V2
+    needs: validate
+    if: ${{ github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_ACADEMY_V2: 'true'
+      BACKUP_ROOT: /tmp/dtf-academy-v2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Confirm production package
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-academy-v2.mjs
+          node scripts/publish-wordpress-academy-v2.mjs --validate-only
+
+      - name: Publish Academy V2
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-academy-v2.mjs | tee "$RUNNER_TEMP/academy-v2-publish.log"
+          report="$(find "$BACKUP_ROOT" -name report.json -type f -print -quit)"
+          test -n "$report"
+          test -s "$report"
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+          echo "courses=$(node -p "require(process.argv[1]).courses" "$report")" >> "$GITHUB_OUTPUT"
+          echo "units=$(node -p "require(process.argv[1]).units" "$report")" >> "$GITHUB_OUTPUT"
+          echo "exercises=$(node -p "require(process.argv[1]).exercises" "$report")" >> "$GITHUB_OUTPUT"
+          echo "capstones=$(node -p "require(process.argv[1]).capstones" "$report")" >> "$GITHUB_OUTPUT"
+          echo "page_id=$(node -p "require(process.argv[1]).pageId" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Verify WordPress Academy mirror by authenticated readback
+        id: verify
+        shell: bash
+        env:
+          ACADEMY_PAGE_ID: ${{ steps.publish.outputs.page_id }}
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/academy-v2-wordpress.json"
+          curl -4 --fail --silent --show-error --retry 4 --retry-all-errors --retry-delay 3 \
+            --user "$WP_API_USERNAME:$WP_API_PASSWORD" \
+            "$WP_SITE_URL/wp-json/wp/v2/pages/$ACADEMY_PAGE_ID?context=edit" --output "$body"
+          node --input-type=module - "$body" <<'NODE'
+          import fs from 'node:fs';
+          const payload = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+          const html = payload?.content?.raw || payload?.content?.rendered || '';
+          const count = (needle) => html.split(needle).length - 1;
+          if (payload?.status !== 'publish') throw new Error('Academy WordPress mirror is not published.');
+          if (!html.includes('data-dtf-academy-v2="true"')) throw new Error('Academy V2 marker missing from WordPress mirror.');
+          if (count('data-av2-course=') !== 12) throw new Error('Academy WordPress mirror must contain 12 courses.');
+          if (count('class="av2-unit"') !== 60) throw new Error('Academy WordPress mirror must contain 60 guided units.');
+          if (count('class="av2-exercise"') !== 24) throw new Error('Academy WordPress mirror must contain 24 exercises.');
+          if (count('class="av2-capstone"') !== 12) throw new Error('Academy WordPress mirror must contain 12 capstones.');
+          for (const marker of ['Practice the system, not just the vocabulary.','/learn/research-methods/','/learn/ipm/','/learn/harvest-postharvest/']) {
+            if (!html.includes(marker)) throw new Error(`Academy WordPress mirror missing marker: ${marker}`);
+          }
+          console.log(JSON.stringify({verified:true,pageId:payload.id,status:payload.status,courses:12,units:60,exercises:24,capstones:12}, null, 2));
+          NODE
+
+      - name: Upload publication and rollback evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: academy-v2-${{ github.run_id }}
+          path: |
+            /tmp/dtf-academy-v2
+            ${{ runner.temp }}/academy-v2-publish.log
+            ${{ runner.temp }}/academy-v2-wordpress.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report Academy V2 result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          COURSES: ${{ steps.publish.outputs.courses }}
+          UNITS: ${{ steps.publish.outputs.units }}
+          EXERCISES: ${{ steps.publish.outputs.exercises }}
+          CAPSTONES: ${{ steps.publish.outputs.capstones }}
+        with:
+          script: |
+            const body = [
+              '## THC Academy V2 production', '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `WordPress mirror verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Courses: **${process.env.COURSES || '0'}**`,
+              `Guided units: **${process.env.UNITS || '0'}**`,
+              `Practical exercises: **${process.env.EXERCISES || '0'}**`,
+              `Capstones: **${process.env.CAPSTONES || '0'}**`, '',
+              'Public /learn/academy/ delivery is owned by the Dtf420 static overlay; this workflow verifies the WordPress Academy mirror only.'
+            ].join('\n');
+            for (const issue_number of [46,142]) {
+              try {
+                await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
+              } catch (error) {
+                core.warning(`Could not post Academy report to issue #${issue_number}: ${error.message}`);
+              }
+            }
