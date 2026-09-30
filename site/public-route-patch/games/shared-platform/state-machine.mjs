@@ -38,14 +38,17 @@ export function createStateMachine({ id, context = null, logger = null } = {}) {
     }
 
     changing = true;
-    logger?.({ type: 'state-change', machineId: machineName, from: current?.name ?? null, to: name });
+    try {
+      logger?.({ type: 'state-change', machineId: machineName, from: current?.name ?? null, to: name });
 
-    current?.onExit?.({ from: current.name, to: name, payload });
-    previous = current;
-    current = states.get(name);
-    current?.onEnter?.({ from: previous?.name ?? null, to: name, payload });
-    changing = false;
-    return true;
+      current?.onExit?.({ from: current.name, to: name, payload });
+      previous = current;
+      current = states.get(name);
+      current?.onEnter?.({ from: previous?.name ?? null, to: name, payload });
+      return true;
+    } finally {
+      changing = false;
+    }
   }
 
   function update(dt, payload) {
