@@ -46,6 +46,8 @@ jobs:
         run: npm run build:encyclopedia-scorecard
       - name: Validate completion scorecard
         run: node scripts/validate-encyclopedia-completion-scorecard.mjs
+      - name: Audit encyclopedia learning quality
+        run: npm run audit:encyclopedia-learning-quality
       - name: Build rich discovery index
         run: npm run build:encyclopedia-discovery
       - name: Build global education search
@@ -69,6 +71,7 @@ jobs:
           name: thc-encyclopedia-generated
           path: |
             data/encyclopedia-completion-scorecard.json
+            data/encyclopedia-learning-quality-audit.json
             site/public-route-patch/learn/encyclopedia/encyclopedia-index.json
             site/public-route-patch/learn/search/search-index.json
           if-no-files-found: error
