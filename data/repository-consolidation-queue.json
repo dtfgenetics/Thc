@@ -155,9 +155,70 @@
           {
             "branch": "cleanup/retire-legacy-diagnostic-project-data-20260930",
             "basis": "legacy diagnostic project-data files already absent on current main"
+          },
+          {
+            "branch": "production-deploy-access-preflight",
+            "basis": "legacy deployment validation superseded by canonical dtfgenetics/Thc deployment controls"
+          },
+          {
+            "branch": "production-deploy-auto-rollback",
+            "basis": "legacy deployment/rollback implementation superseded by canonical dtfgenetics/Thc deployment controls"
+          },
+          {
+            "branch": "production-deploy-workflow",
+            "basis": "legacy production deployment workflow superseded by canonical dtfgenetics/Thc"
+          },
+          {
+            "branch": "release/auto-deploy-after-verified-main",
+            "basis": "0 commits ahead of main; branch is fully behind"
+          },
+          {
+            "branch": "repair/disable-migration-auto-deploy",
+            "basis": "legacy deployment workflow change superseded by current migration-only production boundary"
           }
         ],
-        "reconcileNeeded": [],
+        "reconcileNeeded": [
+          {
+            "branch": "harden-live-kush-kings-audit",
+            "reason": "legacy Kush Kings PHP/runtime branch; verify behavior against canonical dtfgenetics/Thc-chess-git before retirement"
+          },
+          {
+            "branch": "kush-kings-authoritative-moves",
+            "reason": "legacy Kush Kings PHP/runtime branch; verify behavior against canonical dtfgenetics/Thc-chess-git before retirement"
+          },
+          {
+            "branch": "kush-kings-cancel-waiting-room",
+            "reason": "legacy Kush Kings PHP/runtime branch; verify behavior against canonical dtfgenetics/Thc-chess-git before retirement"
+          },
+          {
+            "branch": "kush-kings-http-method-guards",
+            "reason": "legacy Kush Kings PHP/runtime branch; verify behavior against canonical dtfgenetics/Thc-chess-git before retirement"
+          },
+          {
+            "branch": "kush-kings-input-validation",
+            "reason": "legacy Kush Kings PHP/runtime branch; verify behavior against canonical dtfgenetics/Thc-chess-git before retirement"
+          },
+          {
+            "branch": "kush-kings-lifecycle-sync",
+            "reason": "legacy Kush Kings PHP/runtime branch; verify behavior against canonical dtfgenetics/Thc-chess-git before retirement"
+          },
+          {
+            "branch": "kush-kings-observer-polling-fix",
+            "reason": "legacy Kush Kings PHP/runtime branch; verify behavior against canonical dtfgenetics/Thc-chess-git before retirement"
+          },
+          {
+            "branch": "kush-kings-private-poll-token",
+            "reason": "legacy Kush Kings PHP/runtime branch; verify behavior against canonical dtfgenetics/Thc-chess-git before retirement"
+          },
+          {
+            "branch": "kush-kings-rematch-flow",
+            "reason": "legacy Kush Kings PHP/runtime branch; verify behavior against canonical dtfgenetics/Thc-chess-git before retirement"
+          },
+          {
+            "branch": "kush-kings-ux-abuse-hardening",
+            "reason": "legacy Kush Kings PHP/runtime branch; verify behavior against canonical dtfgenetics/Thc-chess-git before retirement"
+          }
+        ],
         "rule": "Do not merge diverged cleanup branches wholesale. Rebase or selectively apply only the retirement changes that remain valid against current main, then validate before classifying delete-safe."
       }
     },
