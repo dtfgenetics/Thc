@@ -14,6 +14,7 @@ on:
       - 'scripts/verify-atlas-live.mjs'
       - 'scripts/stage-dtf420-static-overlay.py'
       - 'scripts/validate-repository-file-boundaries.mjs'
+      - 'scripts/validate-workflow-path-parity.mjs'
       - 'docs/archive/workflows/**'
       - 'docs/archive/education/**'
       - 'scripts/archive/education/**'
@@ -90,5 +91,6 @@ jobs:
           node scripts/test-dtf-parallel-studio.mjs
           node scripts/test-repository-convergence.mjs
           node scripts/validate-repository-file-boundaries.mjs
+          node scripts/validate-workflow-path-parity.mjs
           node --check scripts/studio/lifecycle.mjs
           node --check scripts/normalize-wordpress-premium-page-titles.mjs
