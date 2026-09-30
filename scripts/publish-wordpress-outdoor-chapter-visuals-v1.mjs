@@ -43,6 +43,40 @@ async function request(path,options={}){
   throw last;
 }
 
+async function uploadMedia(item){
+  if(!apply) throw new Error(`Required WordPress media is missing for ${item.file}; rerun with APPLY_OUTDOOR_CHAPTER_VISUALS=true to upload the approved repo asset.`);
+  const filePath=`site/wordpress/assets/infographics/${item.file}`;
+  const bytes=await readFile(filePath);
+  let last;
+  for(let attempt=1;attempt<=5;attempt+=1){
+    try{
+      const response=await fetch(`${site}/wp-json/wp/v2/media`,{
+        method:'POST',
+        body:bytes,
+        redirect:'follow',
+        signal:AbortSignal.timeout(90000),
+        headers:{
+          ...headers,
+          'Content-Type':'image/png',
+          'Content-Disposition':`attachment; filename="${item.file.replaceAll('"','')}"`
+        }
+      });
+      const text=await response.text();
+      let body=text;
+      try{body=text?JSON.parse(text):null}catch{}
+      if((response.status===429||response.status>=500)&&attempt<5){await sleep(attempt*1800);continue;}
+      if(!response.ok) throw new Error(`POST /wp-json/wp/v2/media failed (${response.status}): ${typeof body==='string'?body.slice(0,500):JSON.stringify(body).slice(0,500)}`);
+      if(!body?.id||!body?.source_url) throw new Error(`WordPress media upload returned an incomplete record for ${item.file}.`);
+      await request(`/wp-json/wp/v2/media/${body.id}`,{method:'POST',body:JSON.stringify({title:item.title,alt_text:item.alt,caption:item.caption})});
+      return {...body,title:{...(body.title||{}),raw:item.title},alt_text:item.alt,caption:{...(body.caption||{}),raw:item.caption}};
+    }catch(error){
+      last=error;
+      if(attempt<5) await sleep(attempt*1800);
+    }
+  }
+  throw last;
+}
+
 async function pageBySlug(slug){
   const rows=await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&context=edit&per_page=20`);
   if(!Array.isArray(rows)||rows.length!==1) throw new Error(`${slug}: expected exactly one WordPress page, found ${Array.isArray(rows)?rows.length:'invalid response'}.`);
@@ -77,11 +111,15 @@ for(const item of media){
   try{base=decodeURIComponent(new URL(source).pathname.split('/').pop()||'')}catch{}
   for(const key of [base,item?.slug,item?.title?.raw]) if(key) mediaIndex.set(norm(key),item);
 }
-const resolved=manifest.items.map(item=>{
-  const wp=mediaIndex.get(norm(item.file));
-  if(!wp?.source_url||!wp?.id) throw new Error(`Required WordPress media is missing for ${item.file}; refusing a generic or raw-GitHub substitute.`);
-  return {...item,src:wp.source_url,mediaId:wp.id};
-});
+const resolved=[];
+for(const item of manifest.items){
+  let wp=mediaIndex.get(norm(item.file));
+  if(!wp?.source_url||!wp?.id){
+    wp=await uploadMedia(item);
+    mediaIndex.set(norm(item.file),wp);
+  }
+  resolved.push({...item,src:wp.source_url,mediaId:wp.id});
+}
 
 const style=`<style id="thc-outdoor-chapter-visuals-v1-style">
 .outcv1{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(260px,.85fr);gap:0;margin:18px 0 20px;background:#fff;border:1px solid #d7e2dc;border-radius:20px;overflow:hidden;box-shadow:0 12px 28px rgba(20,48,39,.07)}.outcv1>a{display:block;background:#edf3ef;min-height:280px}.outcv1 img{display:block;width:100%;height:100%;object-fit:contain}.outcv1 figcaption{padding:22px 24px;align-self:center}.outcv1 figcaption>span{display:block;margin-bottom:8px;color:#78672f;font-size:.68rem;font-weight:950;letter-spacing:.11em;text-transform:uppercase}.outcv1 figcaption>strong{display:block;color:#143027;font-size:1.28rem;line-height:1.2}.outcv1 figcaption>p{margin:9px 0 0;color:#52665e;line-height:1.6}.outcv1 figcaption>a{display:inline-block;margin-top:12px;color:#1f704f!important;font-weight:900;text-decoration:none!important}

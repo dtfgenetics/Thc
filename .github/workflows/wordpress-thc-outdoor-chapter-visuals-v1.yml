@@ -134,6 +134,7 @@ jobs:
 
       - name: Report Outdoor chapter visual result
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
