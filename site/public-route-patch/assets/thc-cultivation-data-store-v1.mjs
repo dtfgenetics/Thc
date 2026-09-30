@@ -25,9 +25,11 @@ export function loadCultivationData({storage=null,key=CULTIVATION_DATA_STORAGE_K
 export function saveCultivationData(records,{storage=null,key=CULTIVATION_DATA_STORAGE_KEY,limit=5000}={}){
   const target=storageOrNull(storage);
   if(!target?.setItem)throw new Error('Cultivation data storage is unavailable.');
+  const requestedLimit=Number(limit);
+  const normalizedLimit=Number.isFinite(requestedLimit)?Math.max(1,Math.floor(requestedLimit)):5000;
   const clean=(Array.isArray(records)?records:[])
     .filter(record=>validateCultivationRecord(record).length===0)
-    .slice(-Math.max(1,Number(limit)||5000));
+    .slice(-normalizedLimit);
   target.setItem(key,JSON.stringify({
     schema:'thc-cultivation-data-store',
     version:1,
