@@ -75,7 +75,7 @@ for(const x of Array.isArray(systems)?systems:(systems?.systems||[])){
 const terpenes=readJson('site/public-route-patch/terpene-atlas/data/terpene-catalog-v1.json');
 for(const x of Array.isArray(terpenes)?terpenes:(terpenes?.compounds||terpenes?.terpenes||[])){
   const id=x.id||x.slug||x.name;
-  if(!id||!x.name)return;
+  if(!id||!x.name)continue;
   add({
     id:'terpene-'+id,
     type:'Terpene Atlas',
