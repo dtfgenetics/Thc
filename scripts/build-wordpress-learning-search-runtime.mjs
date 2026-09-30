@@ -6,21 +6,21 @@ const outDir=path.join(root,'site/wordpress/mu-plugins/dtf-learning-search');
 const check=process.argv.includes('--check');
 
 const sources={
-  'fuse-7.1.0.min.mjs':'site/public-route-patch/assets/vendor/fuse-7.1.0.min.mjs',
-  'thc-search-explain-v1.mjs':'site/public-route-patch/learn/search/thc-search-explain-v1.mjs',
-  'search-v1.mjs':'site/public-route-patch/learn/search/search-v1.mjs',
-  'encyclopedia-v1.mjs':'site/public-route-patch/learn/encyclopedia/encyclopedia-v1.mjs'
+  'fuse-7.1.0.min.js':'site/public-route-patch/assets/vendor/fuse-7.1.0.min.mjs',
+  'thc-search-explain-v1.js':'site/public-route-patch/learn/search/thc-search-explain-v1.mjs',
+  'search-v1.js':'site/public-route-patch/learn/search/search-v1.mjs',
+  'encyclopedia-v1.js':'site/public-route-patch/learn/encyclopedia/encyclopedia-v1.mjs'
 };
 
 function transform(name,text){
   let out=text;
-  if(name==='search-v1.mjs'){
-    out=out.replace("import Fuse from '/assets/vendor/fuse-7.1.0.min.mjs';","import Fuse from './fuse-7.1.0.min.mjs';");
+  if(name==='search-v1.js'){
+    out=out.replace("import Fuse from '/assets/vendor/fuse-7.1.0.min.mjs';","import Fuse from './fuse-7.1.0.min.js';");
   }
-  if(name==='encyclopedia-v1.mjs'){
+  if(name==='encyclopedia-v1.js'){
     out=out
       .replace("import Fuse from '/assets/vendor/fuse-7.1.0.min.mjs';","import Fuse from './fuse-7.1.0.min.mjs';")
-      .replace("import {explainSearchMatch} from '../search/thc-search-explain-v1.mjs';","import {explainSearchMatch} from './thc-search-explain-v1.mjs';");
+      .replace("import {explainSearchMatch} from '../search/thc-search-explain-v1.mjs';","import {explainSearchMatch} from './thc-search-explain-v1.js';");
   }
   return out;
 }
