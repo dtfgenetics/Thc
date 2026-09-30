@@ -650,7 +650,7 @@
             "root-zone moisture and temperature",
             "new-growth timeline"
           ],
-          "successCheck": "The learner defines readiness by continued growth after transition rather than visible roots alone."
+          "successCheck": "The learner defines readiness by continued growth after transition rather than visible roots alone, and identifies which follow-up observation would confirm acclimation is progressing normally."
         },
         {
           "title": "Seedlings of the same age look different",
@@ -661,7 +661,7 @@
             "environment",
             "seed lot/genetic identity"
           ],
-          "successCheck": "The learner uses developmental criteria rather than date alone."
+          "successCheck": "The learner uses developmental criteria rather than date alone and names the specific root, shoot, or stage evidence that would justify the next propagation operation."
         }
       ]
     },
@@ -1564,7 +1564,7 @@
       "practiceScenarios": [
         {
           "title": "Yellow leaves after a recipe change",
-          "prompt": "Lower leaves yellow after a nutrient change. Determine whether the recipe is the primary cause.",
+          "prompt": "Lower leaves yellow after a nutrient change. Determine whether the recipe is the primary cause by comparing symptom pattern, root-zone chemistry, watering behavior, plant stage, and recent environmental changes before altering the feed again.",
           "evidenceToCollect": [
             "symptom distribution",
             "root health",
@@ -1576,7 +1576,7 @@
         },
         {
           "title": "Two media types, same feed, different response",
-          "prompt": "Plants receiving the same solution behave differently in two substrates.",
+          "prompt": "Plants receiving the same solution behave differently in two substrates. Explain which physical and chemical properties of each medium could change water availability, aeration, ion retention, dryback, and the root-zone conditions actually experienced by the plants.",
           "evidenceToCollect": [
             "media composition",
             "water-holding behavior",
@@ -1801,7 +1801,7 @@
         },
         {
           "title": "Control applied but counts do not fall",
-          "prompt": "A treatment was applied, yet target counts remain similar.",
+          "prompt": "A treatment was applied, yet target counts remain similar. Evaluate whether identification, life stage, timing, coverage, application conditions, or measurement method can explain the result before escalating treatment or attributing the outcome to resistance.",
           "evidenceToCollect": [
             "target identification",
             "life stage",
@@ -2003,7 +2003,7 @@
       "practiceScenarios": [
         {
           "title": "Dense canopy after aggressive topping",
-          "prompt": "Training produced many shoots but lower canopy light and airflow worsened.",
+          "prompt": "Training produced many shoots but lower canopy light and airflow worsened. Re-evaluate the canopy against the original training objective using measured light distribution, branch density, air movement, plant stage, and recovery rather than assuming more shoots means a better canopy.",
           "evidenceToCollect": [
             "canopy dimensions",
             "PPFD by zone",
@@ -2015,7 +2015,7 @@
         },
         {
           "title": "One plant recovers slowly after bending",
-          "prompt": "A plant lags after structural training while neighbors recover quickly.",
+          "prompt": "A plant lags after structural training while neighbors recover quickly. Compare injury severity, plant identity, pre-intervention vigor, root-zone condition, environment, and recovery trajectory before deciding whether the technique itself caused an abnormal response.",
           "evidenceToCollect": [
             "injury location",
             "plant identity",
@@ -2227,7 +2227,7 @@
       "practiceScenarios": [
         {
           "title": "Top flowers look ready before lower flowers",
-          "prompt": "Maturity observations differ strongly by canopy position.",
+          "prompt": "Maturity observations differ strongly by canopy position. Build a representative sampling plan that defines tissue type, canopy locations, observation method, repeated timing, disease or weather risk, and product goals before making the harvest decision.",
           "evidenceToCollect": [
             "defined sampling positions",
             "tissue type",
@@ -2239,7 +2239,7 @@
         },
         {
           "title": "Dry room RH is stable but product dries unevenly",
-          "prompt": "Room RH remains steady while batches from different rack positions finish differently.",
+          "prompt": "Room RH remains steady while batches from different rack positions finish differently. Investigate product temperature, airflow, rack position, load geometry, mass-loss trajectory, and moisture or water-activity measurements before changing the room setpoint.",
           "evidenceToCollect": [
             "product temperature",
             "rack/location",
@@ -2248,7 +2248,7 @@
             "load geometry",
             "moisture or water activity where available"
           ],
-          "successCheck": "The learner distinguishes room setpoint from local product drying behavior."
+          "successCheck": "The learner distinguishes room setpoint from local product drying behavior and specifies at least one location-specific measurement that can verify why batches are drying at different rates."
         }
       ]
     },
@@ -2450,7 +2450,7 @@
       "practiceScenarios": [
         {
           "title": "Two possible planting sites",
-          "prompt": "One site gets more sun but has poor drainage and wind exposure; another is slightly shaded but better protected.",
+          "prompt": "One site gets more sun but has poor drainage and wind exposure; another is slightly shaded but better protected. Compare light opportunity, soil and drainage, wind, irrigation access, frost exposure, security, and pollen risk before documenting the planting-site tradeoff.",
           "evidenceToCollect": [
             "sun/DLI estimate",
             "soil/drainage",
@@ -2463,7 +2463,7 @@
         },
         {
           "title": "Heavy rain arrives during flowering",
-          "prompt": "A multi-day wet period is forecast during dense flowering.",
+          "prompt": "A multi-day wet period is forecast during dense flowering. Build a prevention and follow-up plan from forecast duration, canopy density, disease history, airflow, support, drainage, and inspection timing rather than relying on a generic harvest calendar.",
           "evidenceToCollect": [
             "forecast and duration",
             "canopy density",
@@ -2693,7 +2693,7 @@
       "practiceScenarios": [
         {
           "title": "A/B nutrient trial",
-          "prompt": "You want to know whether a new nutrient program improves growth.",
+          "prompt": "You want to know whether a new nutrient program improves growth. Design a comparison that defines the outcome in advance, includes an appropriate control, uses independent replicates, limits confounding, and records a consistent measurement method before looking at results.",
           "evidenceToCollect": [
             "predefined outcome",
             "control treatment",
