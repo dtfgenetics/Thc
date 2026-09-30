@@ -7,14 +7,6 @@ const username = process.env.WP_API_USERNAME || '';
 const password = process.env.WP_API_PASSWORD || '';
 const backupRoot = process.env.BACKUP_ROOT || '/tmp/dtf-learning-center';
 const sourceRoot = join(process.cwd(), 'site/public-route-patch/learn');
-const fuseSource = (await readFile(join(process.cwd(),'site/public-route-patch/assets/vendor/fuse-7.1.0.min.mjs'),'utf8'))
-  .replace(/export\{G as default\};?\s*$/,'const Fuse=G;');
-const explainSource = (await readFile(join(sourceRoot,'search/thc-search-explain-v1.mjs'),'utf8'))
-  .replace(/^export\s+/gm,'');
-const searchRuntimeSource = (await readFile(join(sourceRoot,'search/search-v1.mjs'),'utf8'))
-  .replace(/^import\s+[^;]+;\s*$/gm,'');
-const encyclopediaRuntimeSource = (await readFile(join(sourceRoot,'encyclopedia/encyclopedia-v1.mjs'),'utf8'))
-  .replace(/^import\s+[^;]+;\s*$/gm,'');
 const searchIndex = JSON.parse(await readFile(join(sourceRoot,'search/search-index.json'),'utf8'));
 const encyclopediaIndex = JSON.parse(await readFile(join(sourceRoot,'encyclopedia/encyclopedia-index.json'),'utf8'));
 
@@ -69,31 +61,10 @@ function extract(html, pattern, label) {
   return match[1];
 }
 
-function safeJson(value) {
-  return JSON.stringify(value).replace(/</g,'\\u003c').replace(/-->/g,'--\\u003e');
-}
-
-function embeddedSearchApp(slug) {
-  if (!['search','encyclopedia'].includes(slug)) return '';
-  const payload = slug === 'search'
-    ? `window.__THC_SEARCH_INDEX__=${safeJson(searchIndex)};window.__THC_ENCYCLOPEDIA_INDEX__={lessons:[]};`
-    : `window.__THC_ENCYCLOPEDIA_INDEX__=${safeJson(encyclopediaIndex)};`;
-  const runtime = slug === 'search' ? searchRuntimeSource : encyclopediaRuntimeSource;
-  return [
-    '<div data-thc-search-app="embedded-v1" hidden></div>',
-    '<script type="module" data-thc-search-runtime="embedded-v1">',
-    payload,
-    fuseSource,
-    explainSource,
-    runtime,
-    '</script>'
-  ].join('\n');
-}
-
-function sourceContent(html, slug) {
+function sourceContent(html) {
   const style = extract(html, /(<style>[\s\S]*?<\/style>)/i, 'style block');
   const main = extract(html, /<main[^>]*>([\s\S]*?)<\/main>/i, 'main content');
-  return `${style}\n<!-- DTF-PUBLIC-LEARNING-PAGE -->\n${main}\n${embeddedSearchApp(slug)}`;
+  return `${style}\n<!-- DTF-PUBLIC-LEARNING-PAGE -->\n${main}`;
 }
 
 const learnRows = await request('/wp-json/wp/v2/pages?slug=learn&context=edit&per_page=10');
@@ -105,7 +76,7 @@ const learn = learnRows[0];
 const results = [];
 for (const route of routes) {
   const html = await readFile(join(sourceRoot, route.slug, 'index.html'), 'utf8');
-  const content = sourceContent(html, route.slug);
+  const content = sourceContent(html);
   const candidates = await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(route.slug)}&context=edit&per_page=100`);
   const children = Array.isArray(candidates) ? candidates.filter((page) => Number(page.parent) === Number(learn.id)) : [];
   if (children.length > 1) throw new Error(`Multiple /learn/${route.slug}/ child pages exist; refusing ambiguous update.`);
@@ -128,6 +99,19 @@ for (const route of routes) {
   }
 }
 
+const searchIndexResult = await request('/wp-json/dtf-learning/v1/index/search', {
+  method: 'POST',
+  body: JSON.stringify(searchIndex),
+});
+const encyclopediaIndexResult = await request('/wp-json/dtf-learning/v1/index/encyclopedia', {
+  method: 'POST',
+  body: JSON.stringify(encyclopediaIndex),
+});
+const runtimeHealth = await request('/wp-json/dtf-learning/v1/health');
+if (!runtimeHealth?.ok || !runtimeHealth?.searchReady || !runtimeHealth?.encyclopediaReady) {
+  throw new Error('DTF Learning Search runtime health check failed after index publication.');
+}
+
 for (const result of results) {
   let html = '';
   let ok = false;
@@ -146,9 +130,8 @@ for (const result of results) {
   }
   if (!ok) throw new Error(`Visitor-facing verification failed for ${result.url}`);
   if (['search','encyclopedia'].includes(result.slug)) {
-    if (!html.includes('data-thc-search-app="embedded-v1"')) throw new Error(`Embedded search app marker missing on ${result.url}`);
-    if (!html.includes('data-thc-search-runtime="embedded-v1"')) throw new Error(`Embedded search runtime missing on ${result.url}`);
-    if (!html.includes('__THC_ENCYCLOPEDIA_INDEX__')) throw new Error(`Embedded encyclopedia payload missing on ${result.url}`);
+    if (!html.includes('data-dtf-learning-search-runtime="mu-v1"')) throw new Error(`MU-plugin search runtime marker missing on ${result.url}`);
+    if (!html.includes('data-dtf-learning-search-bootstrap="mu-v1"')) throw new Error(`MU-plugin search bootstrap missing on ${result.url}`);
   }
   for (const forbidden of ['email@email.com', '+123456789', 'being rebuilt', 'Needed from owner']) {
     if (html.toLowerCase().includes(forbidden.toLowerCase())) throw new Error(`Stale placeholder content found on ${result.url}: ${forbidden}`);
@@ -164,5 +147,8 @@ console.log(JSON.stringify({
   updated: results.filter((x) => x.action === 'updated').length,
   verified: results.length,
   backupDir,
+  searchIndex: searchIndexResult,
+  encyclopediaIndex: encyclopediaIndexResult,
+  runtimeHealth,
   results,
 }, null, 2));
