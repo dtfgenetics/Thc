@@ -7,10 +7,49 @@ const registry = JSON.parse(fs.readFileSync(registryPath, "utf8"));
 
 const projectRegistryPath = path.join(root, "data", "project-registry.json");
 const publicAppsPath = path.join(root, "site", "deployment", "public-apps.json");
+const retirementManifestPath = path.join(root, "data", "repository-retirement-manifest.json");
 const projectRegistry = JSON.parse(fs.readFileSync(projectRegistryPath, "utf8"));
 const publicApps = JSON.parse(fs.readFileSync(publicAppsPath, "utf8"));
+const retirementManifest = JSON.parse(fs.readFileSync(retirementManifestPath, "utf8"));
 
 const allowedStatuses = new Set(["canonical","standalone_canonical","migration","legacy_review","archive_candidate","archive_ready"]);
+
+if (retirementManifest.schemaVersion !== 1) errors.push("repository retirement manifest schemaVersion must equal 1");
+if (retirementManifest.authority !== "dtfgenetics/Thc") errors.push("repository retirement manifest authority must be dtfgenetics/Thc");
+
+const retirementRepos = Array.isArray(retirementManifest.repositories) ? retirementManifest.repositories : [];
+const retirementBranches = Array.isArray(retirementManifest.branches) ? retirementManifest.branches : [];
+const knownRepos = new Set(repos.map((entry) => entry.repo));
+const retirementRepoKeys = new Set();
+
+for (const entry of retirementRepos) {
+  if (!knownRepos.has(entry.repo)) errors.push(`retirement manifest references unknown repository: ${entry.repo}`);
+  if (retirementRepoKeys.has(entry.repo)) errors.push(`duplicate retirement repository entry: ${entry.repo}`);
+  retirementRepoKeys.add(entry.repo);
+  if (!["archive_ready","migration_keep"].includes(entry.disposition)) {
+    errors.push(`invalid repository retirement disposition: ${entry.repo} -> ${entry.disposition}`);
+  }
+  const registryEntry = repos.find((repo) => repo.repo === entry.repo);
+  if (entry.disposition === "archive_ready" && registryEntry?.status !== "archive_ready") {
+    errors.push(`retirement manifest/archive registry mismatch: ${entry.repo}`);
+  }
+  if (entry.disposition === "migration_keep" && registryEntry?.status !== "migration") {
+    errors.push(`retirement manifest/migration registry mismatch: ${entry.repo}`);
+  }
+  if (typeof entry.reason !== "string" || !entry.reason.trim()) {
+    errors.push(`retirement repository reason is required: ${entry.repo}`);
+  }
+}
+
+const branchKeys = new Set();
+for (const entry of retirementBranches) {
+  const key = `${entry.repo}:${entry.branch}`;
+  if (!knownRepos.has(entry.repo)) errors.push(`retirement branch references unknown repository: ${key}`);
+  if (branchKeys.has(key)) errors.push(`duplicate retirement branch entry: ${key}`);
+  branchKeys.add(key);
+  if (entry.disposition !== "delete_safe") errors.push(`invalid branch retirement disposition: ${key} -> ${entry.disposition}`);
+  if (typeof entry.basis !== "string" || !entry.basis.trim()) errors.push(`retirement branch basis is required: ${key}`);
+}
 const repos = registry.repositories ?? [];
 const errors = [];
 const seen = new Set();
