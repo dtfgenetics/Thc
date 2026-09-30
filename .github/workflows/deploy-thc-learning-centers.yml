@@ -63,6 +63,8 @@ jobs:
           set -euo pipefail
           node scripts/run-public-learning-center-approved-only.mjs
           node scripts/build-public-learning-center-wave3.mjs
+          npm run build:education-search
+          node scripts/validate-thc-education-search.mjs
           routes=(library start-here beginner-guides academy encyclopedia sops glossary records search setup root-zone environment plant-health propagation)
           for route in "${routes[@]}"; do
             file="site/public-route-patch/learn/$route/index.html"
