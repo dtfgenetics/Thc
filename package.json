@@ -99,6 +99,7 @@
     "verify:encyclopedia-renderer": "node scripts/validate-encyclopedia-renderer-contract.mjs",
     "build:encyclopedia-discovery": "node scripts/build-encyclopedia-discovery-index.mjs",
     "verify:encyclopedia-discovery": "npm run build:encyclopedia-discovery && node scripts/validate-thc-education-search.mjs",
-    "verify:encyclopedia-skill": "node scripts/test-thc-encyclopedia-production-skill.mjs"
+    "verify:encyclopedia-skill": "node scripts/test-thc-encyclopedia-production-skill.mjs",
+    "verify:encyclopedia-search-benchmark": "npm run build:encyclopedia-discovery && node scripts/validate-encyclopedia-search-benchmark.mjs"
   }
 }
