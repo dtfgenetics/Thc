@@ -288,6 +288,12 @@
       "branch": "cleanup/retire-scheduled-legacy-production-audit-20260930",
       "disposition": "delete_safe",
       "basis": "obsolete_audit_workflow_removal_superseded_by_merged_PR_pr_69"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/dedupe-high-land-legacy-assets-20260930",
+      "disposition": "delete_safe",
+      "basis": "current_main_uses_canonical_shared_high_land_asset_paths_and_duplicate_legacy_assets_are_absent"
     }
   ]
 }
