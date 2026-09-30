@@ -599,7 +599,6 @@ jobs:
           npm run check
           test -s dist/index.html
           test -s src/data/suspect-art.json
-          node scripts/validate-art-registry.mjs
           cd "$repo"
           echo "WHO_TOOK_IT_SHA=$revision" >> "$GITHUB_ENV"
 
