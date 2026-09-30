@@ -145,7 +145,7 @@ add_action('wp_footer', static function (): void {
     }
 
     $asset_base = content_url('/mu-plugins/dtf-learning-search/');
-    $runtime = $surface === 'search' ? 'search-v1.mjs' : 'encyclopedia-v1.mjs';
+    $runtime = $surface === 'search' ? 'search-v1.js' : 'encyclopedia-v1.js';
     $config = [
         'surface' => $surface,
         'version' => DTF_LEARNING_SEARCH_VERSION,
