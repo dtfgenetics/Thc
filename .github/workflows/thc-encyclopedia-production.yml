@@ -64,6 +64,8 @@ jobs:
         run: npm run build:encyclopedia-scorecard
       - name: Build evidence tracking
         run: npm run build:encyclopedia-evidence
+      - name: Build evidence priority queue
+        run: npm run build:encyclopedia-evidence-priority
       - name: Validate completion scorecard
         run: node scripts/validate-encyclopedia-completion-scorecard.mjs
       - name: Validate evidence tracking
@@ -102,6 +104,7 @@ jobs:
           path: |
             data/encyclopedia-completion-scorecard.json
             data/encyclopedia-evidence-tracking.json
+            data/encyclopedia-evidence-priority.json
             data/encyclopedia-assessment-rationale-package.json
             data/encyclopedia-source-resolution-queue.json
             content/encyclopedia/visual-production-queue-v1.json
