@@ -1,3 +1,4 @@
+import { copyText } from '/games/shared-platform/index.mjs';
 import {
   ROOT_ALPHABET,
   ROOT_CODE_LENGTH,
@@ -262,32 +263,6 @@ ui['case-code'].addEventListener('keydown', (event) => {
   startRun(ui['case-code'].value);
 });
 
-async function copyText(value) {
-  const text = String(value || '');
-  if (!text) return false;
-  try {
-    if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(text);
-      return true;
-    }
-  } catch {}
-  try {
-    const field = document.createElement('textarea');
-    field.value = text;
-    field.setAttribute('readonly', '');
-    field.style.position = 'fixed';
-    field.style.opacity = '0';
-    field.style.pointerEvents = 'none';
-    document.body.append(field);
-    field.select();
-    field.setSelectionRange(0, text.length);
-    const copied = document.execCommand?.('copy') === true;
-    field.remove();
-    return copied;
-  } catch {
-    return false;
-  }
-}
 
 ui['new-code'].addEventListener('click', () => startRun(randomCode()));
 ui['share-run'].addEventListener('click', async () => {
@@ -295,7 +270,7 @@ ui['share-run'].addEventListener('click', async () => {
   url.searchParams.set('case', state.code);
   const value = url.toString();
   const copied = await copyText(value);
-  ui['share-run'].textContent = copied ? 'Link copied' : 'Copy manually';
+  ui['share-run'].textContent = copied.ok ? 'Link copied' : 'Copy manually';
   ui.announce.textContent = copied
     ? 'Root Cause challenge link copied.'
     : `Copy failed. Share case code ${state.code}: ${value}`;
