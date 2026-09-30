@@ -1,0 +1,77 @@
+{
+  "id": "THC-ENC-367",
+  "number": 367,
+  "title": "Raised Beds, Containers, and In-Ground Rooting",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Root-zone geometry comparison plate",
+  "objective": "Compare root-zone volume, buffering, drainage, temperature, irrigation, anchorage, and disease risk among in-ground, raised-bed, and container systems.",
+  "termsToKnow": [
+    "root-zone volume",
+    "perched water",
+    "capillary continuity",
+    "thermal buffering",
+    "root restriction",
+    "drainage outlet",
+    "anchorage",
+    "hydraulic conductivity"
+  ],
+  "coreScience": [
+    "In-ground soil connects roots to a large and heterogeneous volume. It can buffer temperature and drying but may contain compaction, poor drainage, variable fertility, pathogens, or contaminants. Raised beds increase control over depth and amendment but can interrupt capillary continuity, shed or collect water depending on construction, and warm or dry faster than surrounding soil.",
+    "Containers create a finite root zone with strong edge effects. Media height, particle size, container geometry, outlet position, irrigation frequency, and root density shape air-water balance. A large container is not equivalent to field soil, and a shallow wide bed behaves differently from a tall narrow pot with the same volume.",
+    "System choice also changes anchorage and infrastructure. Large outdoor plants in containers can become top-heavy and vulnerable to wind. Beds and pots may need structural support, runoff capture, winter protection, and more frequent monitoring. In-ground systems can be harder to isolate after soilborne disease or contamination."
+  ],
+  "cultivationRelevance": [
+    "Choose a rooting system from site limitations and production goals, then validate drainage, irrigation distribution, temperature, anchorage, and root access under the actual crop size."
+  ],
+  "measureAndRecord": [
+    "System dimensions and volume",
+    "soil/media recipe and analysis",
+    "bed/container material",
+    "drainage outlets",
+    "infiltration or saturation test",
+    "temperature and moisture by depth",
+    "irrigation frequency/volume",
+    "root distribution",
+    "anchorage",
+    "runoff",
+    "disease and corrective actions."
+  ],
+  "misconceptions": [
+    "A larger pot always means fewer irrigation problems.",
+    "Raised beds automatically drain well.",
+    "In-ground plants cannot become root restricted."
+  ],
+  "evidenceLimits": [
+    "Performance depends on geometry, material properties, climate, plant size, irrigation hardware, and management."
+  ],
+  "crossLinks": "THC-ENC-041–060; THC-ENC-366; THC-ENC-369–372.",
+  "sourceNotes": [
+    "V19-SRC-004",
+    "V19-SRC-008",
+    "V19-SRC-018",
+    "V19-SRC-019"
+  ],
+  "knowledgeCheck": [
+    "For \"Raised Beds, Containers, and In-Ground Rooting\", explain the mechanism behind this objective: Compare root-zone volume, buffering, drainage, temperature, irrigation, anchorage, and disease risk among in-ground, raised-bed, and container systems. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"A larger pot always means fewer irrigation problems.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Choose a rooting system from site limitations and production goals, then validate drainage, irrigation distribution, temperature, anchorage, and root access under the actual crop size. Build a verification plan using the lesson's record set (System dimensions and volume; soil/media recipe and analysis; bed/container material; drainage outlets; infiltration or saturation test; temperature and moisture by depth; irrigation frequency/volume; root distribution; anchorage; runoff; disease and corrective actions.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 19: Outdoor, Greenhouse, and Protected Cultivation Ecology — DRAFT COMPLETE v0.1",
+    "driveFileId": "1-qH7O70W9fn0VVK58SAilPwZH-75TJmUl7QkgpmVwBA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "raised-beds-containers-and-in-ground-rooting",
+  "route": "/encyclopedia/raised-beds-containers-and-in-ground-rooting",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

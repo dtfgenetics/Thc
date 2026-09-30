@@ -1,0 +1,78 @@
+{
+  "id": "THC-ENC-378",
+  "number": 378,
+  "title": "Greenhouse Ventilation, Shading, and Humidity",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Greenhouse heat and moisture balance diagram",
+  "objective": "Control greenhouse climate by balancing solar load, ventilation, air movement, shading, heating, cooling, irrigation, and moisture removal.",
+  "termsToKnow": [
+    "ventilation rate",
+    "sensible heat",
+    "latent heat",
+    "solar gain",
+    "shading coefficient",
+    "condensation",
+    "air exchange",
+    "dehumidification",
+    "horizontal airflow"
+  ],
+  "coreScience": [
+    "A greenhouse captures solar energy and restricts air exchange. Temperature and humidity result from radiation, plant transpiration, wet surfaces, ventilation, leakage, heating, cooling, dehumidification, fogging, crop load, and outside air. Opening vents changes both heat and moisture; it may cool effectively in dry wind or bring warm humid air into the structure.",
+    "Shading reduces solar gain but also reduces photosynthetic light. Material, position, deployment timing, cleanliness, and spectral transmission determine the effect. Internal air movement can reduce local gradients and condensation risk but does not remove moisture from the structure. Fans can also spread spores or create damaging jets.",
+    "Cannabis greenhouse studies show that light, humidity, cultivar, and crop stage influence growth, water use, chemistry, and disease. A single room-average RH or VPD value cannot describe dense flowers, cold surfaces, corners, or zones behind curtains. Environmental targets must therefore be measured spatially and adjusted to the crop and outside conditions."
+  ],
+  "cultivationRelevance": [
+    "Map canopy and risk-zone sensors, stage ventilation and shading, maintain drains and screens, inspect condensation, and verify climate after crop loading or structural changes."
+  ],
+  "measureAndRecord": [
+    "Outside and inside temperature/RH/dew point",
+    "solar radiation/DLI",
+    "vent and fan position",
+    "airflow map",
+    "shade material/deployment",
+    "heating/cooling/dehumidification state",
+    "irrigation and leaf wetness",
+    "canopy/flower temperature",
+    "condensation",
+    "disease observations",
+    "alarms/actions."
+  ],
+  "misconceptions": [
+    "More fan speed always lowers humidity.",
+    "Shade cloth only changes temperature.",
+    "One controller sensor represents the whole greenhouse."
+  ],
+  "evidenceLimits": [
+    "Setpoints and equipment performance are structure-, climate-, crop-load-, cultivar-, stage-, sensor-, and control-system-specific."
+  ],
+  "crossLinks": "THC-ENC-081–120; THC-ENC-365; THC-ENC-373; THC-ENC-379.",
+  "sourceNotes": [
+    "V19-SRC-002",
+    "V19-SRC-014",
+    "V19-SRC-015",
+    "V19-SRC-016"
+  ],
+  "knowledgeCheck": [
+    "For \"Greenhouse Ventilation, Shading, and Humidity\", explain the mechanism behind this objective: Control greenhouse climate by balancing solar load, ventilation, air movement, shading, heating, cooling, irrigation, and moisture removal. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"More fan speed always lowers humidity.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Map canopy and risk-zone sensors, stage ventilation and shading, maintain drains and screens, inspect condensation, and verify climate after crop loading or structural changes. Build a verification plan using the lesson's record set (Outside and inside temperature/RH/dew point; solar radiation/DLI; vent and fan position; airflow map; shade material/deployment; heating/cooling/dehumidification state; irrigation and leaf wetness; canopy/flower temperature; condensation; disease observations; alarms/actions.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 19: Outdoor, Greenhouse, and Protected Cultivation Ecology — DRAFT COMPLETE v0.1",
+    "driveFileId": "1-qH7O70W9fn0VVK58SAilPwZH-75TJmUl7QkgpmVwBA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "greenhouse-ventilation-shading-and-humidity",
+  "route": "/encyclopedia/greenhouse-ventilation-shading-and-humidity",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

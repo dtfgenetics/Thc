@@ -1,0 +1,76 @@
+{
+  "id": "THC-ENC-363",
+  "number": 363,
+  "title": "Climate Normals and Local Weather Records",
+  "primaryFormat": "Data / QA",
+  "requiredTeachingVisual": "Climate-normal versus current-weather record",
+  "objective": "Use long-term climate baselines and site weather records without confusing averages with guarantees.",
+  "termsToKnow": [
+    "climate normal",
+    "weather",
+    "percentile",
+    "extreme event",
+    "return period",
+    "growing degree day",
+    "frost-free period",
+    "precipitation distribution"
+  ],
+  "coreScience": [
+    "Climate normals summarize long-term observations, commonly over 30 years. They help compare sites and seasons, but an average monthly temperature or rainfall total does not show the timing, intensity, or sequence that plants experience. Two seasons with the same rainfall can differ biologically if one receives gentle weekly rain and the other receives one storm followed by drought.",
+    "For outdoor cultivation, important variables include minimum and maximum temperature, frost dates, heat waves, rainfall intensity and duration, dew and leaf-wetness periods, solar radiation, wind speed and gusts, humidity, hail, smoke, and drought status. Percentiles and extremes are often more useful for risk planning than means. A site weather station adds local detail but must be installed, maintained, and interpreted correctly.",
+    "Weather records need metadata. Sensor height, shielding, calibration, nearby structures, vegetation growth, station movement, logging interval, missing data, and maintenance affect conclusions. Compare local sensors with a reliable reference station and preserve raw data before calculating summaries."
+  ],
+  "cultivationRelevance": [
+    "Create seasonal thresholds for preparation, warning, action, and recovery. Use forecasts for immediate decisions, normals for planning, and local observations to verify what the crop actually experienced."
+  ],
+  "measureAndRecord": [
+    "Reference station and period",
+    "site sensors and positions",
+    "calibration/verification",
+    "hourly temperature/RH/dew point",
+    "rainfall amount/intensity",
+    "wind/gust/direction",
+    "solar radiation or DLI",
+    "leaf wetness",
+    "frost/hail/smoke events",
+    "missing data",
+    "actions and crop response."
+  ],
+  "misconceptions": [
+    "A 30-year average predicts this year’s weather.",
+    "Monthly rainfall totals describe root-zone water supply.",
+    "A low-cost station is accurate because it reports many decimals."
+  ],
+  "evidenceLimits": [
+    "Station records may not represent canopy, soil, slope, tunnel, or greenhouse microclimates."
+  ],
+  "crossLinks": "THC-ENC-364–365; THC-ENC-371–374; THC-ENC-378–380.",
+  "sourceNotes": [
+    "V19-SRC-003",
+    "V19-SRC-009",
+    "V19-SRC-033"
+  ],
+  "knowledgeCheck": [
+    "For \"Climate Normals and Local Weather Records\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+    "A learner claims, \"A 30-year average predicts this year’s weather.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Create seasonal thresholds for preparation, warning, action, and recovery. Use forecasts for immediate decisions, normals for planning, and local observations to verify what the crop actually experienced. Build a verification plan using the lesson's record set (Reference station and period; site sensors and positions; calibration/verification; hourly temperature/RH/dew point; rainfall amount/intensity; wind/gust/direction; solar radiation or DLI; leaf wetness; frost/hail/smoke events; missing data; actions and crop response.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 19: Outdoor, Greenhouse, and Protected Cultivation Ecology — DRAFT COMPLETE v0.1",
+    "driveFileId": "1-qH7O70W9fn0VVK58SAilPwZH-75TJmUl7QkgpmVwBA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "climate-normals-and-local-weather-records",
+  "route": "/encyclopedia/climate-normals-and-local-weather-records",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

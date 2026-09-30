@@ -1,0 +1,77 @@
+{
+  "id": "THC-ENC-372",
+  "number": 372,
+  "title": "Heat, Drought, and Sunscald",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Heat-drought injury mechanism map",
+  "objective": "Separate atmospheric heat, radiation load, root-zone drought, hydraulic limitation, and tissue sunscald.",
+  "termsToKnow": [
+    "heat stress",
+    "drought stress",
+    "leaf temperature",
+    "vapor-pressure demand",
+    "stomatal closure",
+    "hydraulic conductance",
+    "sunscald",
+    "acclimation"
+  ],
+  "coreScience": [
+    "Air temperature is not leaf temperature. Solar radiation, wind, humidity, transpiration, leaf angle, color, and boundary-layer thickness can make tissues warmer or cooler than the surrounding air. Drought reduces the water available for transpiration and can drive stomatal closure, higher leaf temperature, reduced photosynthesis, wilting, leaf loss, and impaired growth.",
+    "Sunscald is localized tissue injury caused by excessive radiation and temperature, often after sudden exposure, pruning, transplanting, or canopy movement. It should be distinguished from nutrient disorders, pathogens, spray injury, and drought-wide symptoms. Heat and drought interact, but wet soil does not guarantee cooling when roots are diseased, saline, oxygen-limited, or too small.",
+    "Hemp and cannabis studies show strong genotype and system effects. Water-use values reported for one crop density or climate cannot be transferred directly to large isolated outdoor plants. Drought can alter biomass, fibers, chemistry, and plant-arthropod interactions rather than producing one predictable “stress enhancement.”"
+  ],
+  "cultivationRelevance": [
+    "Use leaf and root-zone measurements, not air temperature alone. Maintain reliable irrigation, reduce abrupt exposure, preserve root oxygen, and define emergency actions for pump failure, heat waves, and wildfire-related power loss."
+  ],
+  "measureAndRecord": [
+    "Air/leaf/soil temperature",
+    "RH/VPD",
+    "solar radiation/DLI",
+    "wind",
+    "soil moisture by depth",
+    "irrigation and pressure",
+    "plant water status observations",
+    "EC/salinity",
+    "symptom distribution",
+    "recovery",
+    "biomass and quality effects."
+  ],
+  "misconceptions": [
+    "Heat stress begins at one universal air temperature.",
+    "Wilting proves the soil is dry.",
+    "Drought reliably increases cannabinoid quality."
+  ],
+  "evidenceLimits": [
+    "Thresholds vary with genotype, acclimation, stage, tissue, radiation, humidity, wind, root system, salinity, and measurement method."
+  ],
+  "crossLinks": "THC-ENC-081–100; THC-ENC-261–280; THC-ENC-365; THC-ENC-369.",
+  "sourceNotes": [
+    "V19-SRC-009",
+    "V19-SRC-011",
+    "V19-SRC-012",
+    "V19-SRC-031"
+  ],
+  "knowledgeCheck": [
+    "For \"Heat, Drought, and Sunscald\", explain the mechanism behind this objective: Separate atmospheric heat, radiation load, root-zone drought, hydraulic limitation, and tissue sunscald. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Heat stress begins at one universal air temperature.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Use leaf and root-zone measurements, not air temperature alone. Maintain reliable irrigation, reduce abrupt exposure, preserve root oxygen, and define emergency actions for pump failure, heat waves, and wildfire-related power loss. Build a verification plan using the lesson's record set (Air/leaf/soil temperature; RH/VPD; solar radiation/DLI; wind; soil moisture by depth; irrigation and pressure; plant water status observations; EC/salinity; symptom distribution; recovery; biomass and quality effects.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 19: Outdoor, Greenhouse, and Protected Cultivation Ecology — DRAFT COMPLETE v0.1",
+    "driveFileId": "1-qH7O70W9fn0VVK58SAilPwZH-75TJmUl7QkgpmVwBA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "heat-drought-and-sunscald",
+  "route": "/encyclopedia/heat-drought-and-sunscald",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

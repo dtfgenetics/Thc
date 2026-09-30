@@ -1,0 +1,80 @@
+{
+  "id": "THC-ENC-366",
+  "number": 366,
+  "title": "Field Soil Testing and Preparation",
+  "primaryFormat": "Data / QA",
+  "requiredTeachingVisual": "Field soil sampling and profile record",
+  "objective": "Combine mapped soil information, field profile inspection, representative sampling, and laboratory analysis before amendment or construction.",
+  "termsToKnow": [
+    "soil map unit",
+    "horizon",
+    "texture",
+    "structure",
+    "bulk density",
+    "infiltration",
+    "drainage class",
+    "composite sample",
+    "salinity",
+    "contaminant"
+  ],
+  "coreScience": [
+    "Field soil is spatially variable. A mapped soil unit provides a planning description, not a guarantee that every point has the same texture, depth, drainage, organic matter, pH, salinity, nutrient status, or contamination history. Construction, fill, erosion, compaction, manure piles, former roads, and localized flooding can create conditions not obvious in the map.",
+    "Separate soil physical, chemical, and biological questions. Dig profile pits or cores to examine horizons, rooting depth, restrictive layers, mottling, stones, compaction, and water movement. Collect representative laboratory samples by defined depth and management zone. Keep unusual areas separate rather than diluting them into a large composite.",
+    "Preparation should follow diagnosis. Deep tillage does not permanently fix poor structure when traffic and wet working continue. Adding compost can change nutrients, salts, water retention, and contaminants. Lime, sulfur, gypsum, fertilizers, and organic amendments require rates based on test results, material analysis, incorporation depth, and crop purpose. Product crops require particular caution with metal-contaminated or historically treated soils."
+  ],
+  "cultivationRelevance": [
+    "Reject or isolate unsuitable zones, correct drainage and traffic before planting, and create baseline tests that allow changes to be evaluated later."
+  ],
+  "measureAndRecord": [
+    "Soil survey map",
+    "field history",
+    "sampling zones/depth/date",
+    "cores per composite",
+    "profile description",
+    "texture",
+    "bulk density/penetration",
+    "infiltration/drainage",
+    "pH/EC/organic matter/nutrients",
+    "metals or residues when indicated",
+    "amendment analysis/rate",
+    "post-treatment verification."
+  ],
+  "misconceptions": [
+    "Dark soil is automatically fertile and safe.",
+    "One sample represents an entire field.",
+    "More compost always improves soil."
+  ],
+  "evidenceLimits": [
+    "Laboratory extraction methods and interpretation ranges differ; soil results must be matched to method, crop, product goal, and local guidance."
+  ],
+  "crossLinks": "THC-ENC-041–060; THC-ENC-121–140; THC-ENC-367; THC-ENC-369–370.",
+  "sourceNotes": [
+    "V19-SRC-004",
+    "V19-SRC-010",
+    "V19-SRC-011",
+    "V19-SRC-034"
+  ],
+  "knowledgeCheck": [
+    "For \"Field Soil Testing and Preparation\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+    "A learner claims, \"Dark soil is automatically fertile and safe.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Reject or isolate unsuitable zones, correct drainage and traffic before planting, and create baseline tests that allow changes to be evaluated later. Build a verification plan using the lesson's record set (Soil survey map; field history; sampling zones/depth/date; cores per composite; profile description; texture; bulk density/penetration; infiltration/drainage; pH/EC/organic matter/nutrients; metals or residues when indicated; amendment analysis/rate; post-treatment verification.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 19: Outdoor, Greenhouse, and Protected Cultivation Ecology — DRAFT COMPLETE v0.1",
+    "driveFileId": "1-qH7O70W9fn0VVK58SAilPwZH-75TJmUl7QkgpmVwBA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "field-soil-testing-and-preparation",
+  "route": "/encyclopedia/field-soil-testing-and-preparation",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

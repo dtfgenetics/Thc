@@ -1,0 +1,76 @@
+{
+  "id": "THC-ENC-364",
+  "number": 364,
+  "title": "Microclimates, Slope, Aspect, and Cold-Air Drainage",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Topographic microclimate map",
+  "objective": "Predict and verify small-scale temperature, radiation, wind, and moisture differences across a site.",
+  "termsToKnow": [
+    "microclimate",
+    "aspect",
+    "slope",
+    "cold-air drainage",
+    "frost pocket",
+    "thermal mass",
+    "boundary layer",
+    "inversion"
+  ],
+  "coreScience": [
+    "Microclimate is the environment experienced at the crop rather than at a regional weather station. Elevation differences of only a few meters, slope direction, nearby trees, buildings, water, soil color, surface cover, and wind exposure can change temperature, humidity, radiation, and wetness.",
+    "At night, exposed surfaces radiate heat and cool. Dense cold air can move downslope and collect in low areas, creating frost pockets even when a nearby station remains above freezing. South- and west-facing slopes in the Northern Hemisphere commonly receive more afternoon energy, while north-facing slopes may remain cooler and wetter. These patterns reverse with hemisphere and are modified by terrain and shading.",
+    "Shelter can reduce damaging wind but can also trap humidity and lengthen dew persistence. Bare soil, mulch, vegetation, raised beds, and containers have different heat storage and water behavior. Microclimate mapping requires repeated measurements under the conditions of concern, not one daytime walk."
+  ],
+  "cultivationRelevance": [
+    "Place sensitive cultivars, nurseries, tunnels, and harvest-critical blocks where frost, wind, and wetness risk can be managed. Avoid locating drainage obstructions or dense barriers where cold air and moisture need to move."
+  ],
+  "measureAndRecord": [
+    "Elevation and contour map",
+    "slope/aspect",
+    "sunrise/sunset obstruction",
+    "soil/surface cover",
+    "wind barriers",
+    "nighttime temperature transects",
+    "frost occurrence",
+    "dew/leaf-wetness duration",
+    "canopy and soil temperature",
+    "drainage path",
+    "corrective action."
+  ],
+  "misconceptions": [
+    "The lowest point is always the warmest because heat rises.",
+    "A solid wind barrier improves every microclimate.",
+    "One weather sensor describes the whole property."
+  ],
+  "evidenceLimits": [
+    "Microclimate patterns change with canopy size, season, soil moisture, wind direction, structures, and land management."
+  ],
+  "crossLinks": "THC-ENC-361; THC-ENC-363; THC-ENC-365; THC-ENC-371–373.",
+  "sourceNotes": [
+    "V19-SRC-003",
+    "V19-SRC-004",
+    "V19-SRC-023"
+  ],
+  "knowledgeCheck": [
+    "For \"Microclimates, Slope, Aspect, and Cold-Air Drainage\", explain the mechanism behind this objective: Predict and verify small-scale temperature, radiation, wind, and moisture differences across a site. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"The lowest point is always the warmest because heat rises.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Place sensitive cultivars, nurseries, tunnels, and harvest-critical blocks where frost, wind, and wetness risk can be managed. Avoid locating drainage obstructions or dense barriers where cold air and moisture need to move. Build a verification plan using the lesson's record set (Elevation and contour map; slope/aspect; sunrise/sunset obstruction; soil/surface cover; wind barriers; nighttime temperature transects; frost occurrence; dew/leaf-wetness duration; canopy and soil temperature; drainage path; corrective action.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 19: Outdoor, Greenhouse, and Protected Cultivation Ecology — DRAFT COMPLETE v0.1",
+    "driveFileId": "1-qH7O70W9fn0VVK58SAilPwZH-75TJmUl7QkgpmVwBA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "microclimates-slope-aspect-and-cold-air-drainage",
+  "route": "/encyclopedia/microclimates-slope-aspect-and-cold-air-drainage",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

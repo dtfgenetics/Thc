@@ -1,0 +1,79 @@
+{
+  "id": "THC-ENC-369",
+  "number": 369,
+  "title": "Irrigation Scheduling and Distribution Uniformity",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Irrigation-zone uniformity map",
+  "objective": "Schedule irrigation from measured crop and root-zone conditions while verifying that the system applies water uniformly.",
+  "termsToKnow": [
+    "irrigation schedule",
+    "distribution uniformity",
+    "emitter flow",
+    "application depth",
+    "soil water deficit",
+    "evapotranspiration",
+    "pressure variation",
+    "catch test"
+  ],
+  "coreScience": [
+    "An irrigation schedule answers when to irrigate and how much to apply. It should combine root-zone water storage, crop size, weather demand, rainfall, system capacity, drainage, salinity, and product goals. Plant appearance alone is a late and ambiguous signal, while a fixed calendar ignores changing weather and root depth.",
+    "Distribution uniformity describes how evenly water reaches the managed area. Clogged emitters, pressure loss, elevation, line length, manufacturing variation, leaks, root intrusion, and damaged tubing create dry and wet zones. An average system flow can hide individual plant failure. Surface and subsurface drip alter evaporation, weeds, wetting geometry, inspection, and maintenance; one method is not universally superior.",
+    "Measure applied volume and wetting patterns. Compare emitter flows or catch-can depths at representative high, low, near, far, and pressure-risk positions. Irrigate to a defined soil or media target and verify the result at multiple depths. Rainfall may not recharge the effective root zone uniformly, particularly under dense canopies or plastic."
+  ],
+  "cultivationRelevance": [
+    "Create irrigation zones that match soil, slope, crop size, and hardware. Use warning limits for pressure, emitter flow, soil moisture, runoff, and drainage, and document corrective actions."
+  ],
+  "measureAndRecord": [
+    "Zone/plant/soil",
+    "weather and ET source",
+    "rainfall",
+    "root depth",
+    "pre/post moisture by depth",
+    "system pressure",
+    "emitter specification and measured flow",
+    "run time",
+    "applied volume/depth",
+    "distribution metric",
+    "drainage/runoff",
+    "salinity",
+    "maintenance and crop response."
+  ],
+  "misconceptions": [
+    "The same runtime gives the same water to every plant.",
+    "Rainfall means irrigation can always be skipped.",
+    "Subsurface drip cannot clog because it is protected."
+  ],
+  "evidenceLimits": [
+    "Water use and crop coefficients are system-, climate-, canopy-, genotype-, stage-, and method-specific."
+  ],
+  "crossLinks": "THC-ENC-081–100; THC-ENC-366–367; THC-ENC-370; THC-GROW-042; THC-GROW-070.",
+  "sourceNotes": [
+    "V19-SRC-008",
+    "V19-SRC-009",
+    "V19-SRC-018",
+    "V19-SRC-019"
+  ],
+  "knowledgeCheck": [
+    "For \"Irrigation Scheduling and Distribution Uniformity\", explain the mechanism behind this objective: Schedule irrigation from measured crop and root-zone conditions while verifying that the system applies water uniformly. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"The same runtime gives the same water to every plant.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Create irrigation zones that match soil, slope, crop size, and hardware. Use warning limits for pressure, emitter flow, soil moisture, runoff, and drainage, and document corrective actions. Build a verification plan using the lesson's record set (Zone/plant/soil; weather and ET source; rainfall; root depth; pre/post moisture by depth; system pressure; emitter specification and measured flow; run time; applied volume/depth; distribution metric; drainage/runoff; salinity; maintenance and crop response.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 19: Outdoor, Greenhouse, and Protected Cultivation Ecology — DRAFT COMPLETE v0.1",
+    "driveFileId": "1-qH7O70W9fn0VVK58SAilPwZH-75TJmUl7QkgpmVwBA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "irrigation-scheduling-and-distribution-uniformity",
+  "route": "/encyclopedia/irrigation-scheduling-and-distribution-uniformity",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}
