@@ -44,7 +44,9 @@
       "year": 2023,
       "pmcid": "PMC10071647",
       "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10071647/",
-      "aliases": ["V18-SRC-003"],
+      "aliases": [
+        "V18-SRC-003"
+      ],
       "useAndLimitations": "Use for cannabis-specific trichome-development and maturation evidence. Apply within the studied genotype, tissue, age, and method boundaries.",
       "reviewUse": "claim-level source"
     },
@@ -57,7 +59,9 @@
       "year": 2022,
       "pmcid": "PMC9404914",
       "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9404914/",
-      "aliases": ["V18-SRC-005"],
+      "aliases": [
+        "V18-SRC-005"
+      ],
       "useAndLimitations": "Use for drying, trimming, equilibrium moisture, sorption, curing, storage, packaging, and cannabinoid-context overview. Review-level evidence must be mapped to specific claims and not treated as universal target proof.",
       "reviewUse": "claim-level source"
     },
@@ -70,7 +74,9 @@
       "year": 2022,
       "pmcid": "PMC8911901",
       "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8911901/",
-      "aliases": ["V18-SRC-010"],
+      "aliases": [
+        "V18-SRC-010"
+      ],
       "useAndLimitations": "Use for medicinal-cannabis postharvest quality factors, moisture, light, temperature, duration, and drying-technique context. It does not establish one universal postharvest protocol.",
       "reviewUse": "claim-level source"
     },
@@ -83,7 +89,9 @@
       "year": 2024,
       "pmcid": "PMC11180634",
       "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11180634/",
-      "aliases": ["V18-SRC-018"],
+      "aliases": [
+        "V18-SRC-018"
+      ],
       "useAndLimitations": "Use for controlled drying/storage comparisons and measured volatile/cannabinoid outcomes. Apply only within the tested varieties, storage conditions, and analytical methods.",
       "reviewUse": "claim-level source"
     },
@@ -95,7 +103,9 @@
       "publisher": "National Institute of Standards and Technology",
       "year": 2019,
       "url": "https://www.nist.gov/metrology/metrological-traceability",
-      "aliases": ["V18-SRC-031"],
+      "aliases": [
+        "V18-SRC-031"
+      ],
       "useAndLimitations": "Use for traceability, calibration records, measurement uncertainty, measurand clarity, and fitness-for-purpose boundaries. It is not cannabis-specific and does not validate a particular device.",
       "reviewUse": "measurement authority"
     },
@@ -107,7 +117,9 @@
       "publisher": "National Oceanic and Atmospheric Administration",
       "year": 2021,
       "url": "https://www.ncei.noaa.gov/products/land-based-station/us-climate-normals",
-      "aliases": ["V19-SRC-003"],
+      "aliases": [
+        "V19-SRC-003"
+      ],
       "useAndLimitations": "Use for U.S. station climate-normal baselines. Normals describe historical distributions and are not crop forecasts or site-specific risk guarantees.",
       "reviewUse": "site-planning authority"
     },
@@ -119,7 +131,9 @@
       "publisher": "United States Department of Agriculture Natural Resources Conservation Service",
       "year": 2026,
       "url": "https://www.nrcs.usda.gov/resources/data-and-reports/web-soil-survey",
-      "aliases": ["V19-SRC-004"],
+      "aliases": [
+        "V19-SRC-004"
+      ],
       "useAndLimitations": "Use for mapped U.S. soil-resource planning information. Onsite sampling, current field conditions, drainage, contamination, and engineering constraints still require verification.",
       "reviewUse": "site-planning authority"
     },
@@ -131,7 +145,14 @@
       "publisher": "United States Department of Agriculture Natural Resources Conservation Service",
       "year": 2026,
       "url": "https://www.nrcs.usda.gov/resources/guides-and-instructions/conservation-practice-standards",
-      "aliases": ["V19-SRC-020", "V19-SRC-021", "V19-SRC-022", "V19-SRC-023", "V19-SRC-024", "V19-SRC-034"],
+      "aliases": [
+        "V19-SRC-020",
+        "V19-SRC-021",
+        "V19-SRC-022",
+        "V19-SRC-023",
+        "V19-SRC-024",
+        "V19-SRC-034"
+      ],
       "useAndLimitations": "Use for minimum science-based conservation-practice criteria and as an index to practice-specific standards. Local Field Office Technical Guide, engineering review, law, and site conditions control implementation.",
       "reviewUse": "site-planning authority"
     },
@@ -143,7 +164,9 @@
       "publisher": "United States Department of Agriculture Natural Resources Conservation Service",
       "year": 2026,
       "url": "https://www.nrcs.usda.gov/resources/guides-and-instructions/irrigation-water-management-ac-449-conservation-practice-standard",
-      "aliases": ["V19-SRC-018"],
+      "aliases": [
+        "V19-SRC-018"
+      ],
       "useAndLimitations": "Use for irrigation-water-management planning criteria. It is not a cannabis-specific irrigation schedule and requires local technical review.",
       "reviewUse": "site-planning authority"
     },
@@ -155,9 +178,53 @@
       "publisher": "United States Department of Agriculture Natural Resources Conservation Service",
       "year": 2026,
       "url": "https://www.nrcs.usda.gov/resources/guides-and-instructions/irrigation-system-microirrigation-ac-441-conservation-practice",
-      "aliases": ["V19-SRC-019"],
+      "aliases": [
+        "V19-SRC-019"
+      ],
       "useAndLimitations": "Use for microirrigation planning/design criteria. It does not replace local design, water-quality review, pressure testing, or crop-specific validation.",
       "reviewUse": "site-planning authority"
+    },
+    {
+      "id": "ENC-AUTH-013",
+      "sourceType": "peer_reviewed_review",
+      "authorityClass": "plant_physiology_review",
+      "title": "Loreti and Perata (2020). The Many Facets of Hypoxia in Plants.",
+      "publisher": "Plants",
+      "year": 2020,
+      "doi": "10.3390/plants9060745",
+      "pmcid": "PMC7356549",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7356549/",
+      "aliases": [],
+      "useAndLimitations": "Use for plant oxygen sensing, hypoxia physiology, respiration constraints, waterlogging context, and plant responses to low oxygen. It is general plant physiology rather than cannabis-specific production evidence.",
+      "reviewUse": "claim-level source"
+    },
+    {
+      "id": "ENC-AUTH-014",
+      "sourceType": "peer_reviewed_primary",
+      "authorityClass": "plant_root_hydraulics_primary",
+      "title": "Zarebanadkouki et al. (2019). Root water uptake and its pathways across the root: quantification at the cellular scale.",
+      "publisher": "Scientific Reports",
+      "year": 2019,
+      "doi": "10.1038/s41598-019-49528-9",
+      "pmcid": "PMC6737181",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6737181/",
+      "aliases": [],
+      "useAndLimitations": "Use for apoplastic and cell-to-cell root-water transport pathways and method-aware root hydraulics. The experiment used lupin, so mechanism can inform cannabis physiology but species-specific quantitative transfer is not justified.",
+      "reviewUse": "claim-level source"
+    },
+    {
+      "id": "ENC-AUTH-015",
+      "sourceType": "peer_reviewed_review",
+      "authorityClass": "plant_membrane_transport_review",
+      "title": "Blatt (2024). A charged existence: A century of transmembrane ion transport in plants.",
+      "publisher": "Plant Physiology",
+      "year": 2024,
+      "doi": "10.1093/plphys/kiad630",
+      "pmcid": "PMC11060664",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11060664/",
+      "aliases": [],
+      "useAndLimitations": "Use for plant membrane ion transport, electrochemical gradients, transport proteins, and energy coupling. It is broad plant physiology and does not establish cannabis-specific nutrient targets or transporter kinetics.",
+      "reviewUse": "claim-level source"
     }
   ]
 }
