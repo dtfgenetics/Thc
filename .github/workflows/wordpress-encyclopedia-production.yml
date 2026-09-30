@@ -51,6 +51,14 @@ jobs:
           node --check scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
           node --check scripts/organize-wordpress-encyclopedia-topics.mjs
           node --check scripts/validate-encyclopedia-release-control.mjs
+          npm run build:encyclopedia-scorecard
+          node scripts/validate-encyclopedia-completion-scorecard.mjs
+          npm run build:encyclopedia-discovery
+          node scripts/build-thc-education-search-index.mjs
+          node scripts/validate-thc-education-search.mjs
+          npm run verify:encyclopedia-renderer
+          npm run verify:encyclopedia-skill
+          npm run verify:encyclopedia-assessments
           node scripts/validate-encyclopedia-release-control.mjs "$ENCYCLOPEDIA_BATCH_FILE"
           node - <<'NODE'
           const fs=require('fs');
@@ -145,7 +153,7 @@ jobs:
                 --header 'Pragma: no-cache' \
                 "$WP_SITE_URL${route}?dtf_encyclopedia=${GITHUB_RUN_ID}-${attempt}" \
                 --output "$body"
-              if grep -Fqi -- "$id" "$body" && grep -Fqi -- 'Controlled education content' "$body" && grep -Fqi -- 'Terms to know' "$body"; then found=1; break; fi
+              if grep -Fqi -- "$id" "$body" && grep -Fqi -- 'Educational reference' "$body" && grep -Fqi -- 'Terms to know' "$body" && grep -Fqi -- 'Related tools' "$body"; then found=1; break; fi
               sleep 8
             done
             [[ "$found" -eq 1 ]] || { echo "Visitor verification failed for $route" >&2; head -c 4000 "$body" >&2 || true; exit 1; }
