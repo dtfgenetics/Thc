@@ -38,6 +38,7 @@ jobs:
             test -d "/tmp/tools/site/public-route-patch/$d"
             rm -rf "site/public-route-patch/$d"
             cp -a "/tmp/tools/site/public-route-patch/$d" "site/public-route-patch/$d"
+            find "site/public-route-patch/$d" -type f -name 'README.md' -delete
           done
           mkdir -p site/public-route-patch/assets
           cp -a /tmp/tools/site/public-route-patch/assets/. site/public-route-patch/assets/

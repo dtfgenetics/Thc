@@ -135,9 +135,11 @@ if(canonicalRootArg){
     const mirrorPatch=path.join(root,'site','public-route-patch');
     const ownedRoots=[...(manifest.canonicalToolSlugs||[]),'assets'];
 
+    const deployableMirrorFile=rel=>!/(^|\/)README\.md$/i.test(rel);
+
     for(const ownedRoot of ownedRoots){
-      const canonicalFiles=walk(canonicalPatch,ownedRoot);
-      const mirrorFiles=walk(mirrorPatch,ownedRoot);
+      const canonicalFiles=walk(canonicalPatch,ownedRoot).filter(deployableMirrorFile);
+      const mirrorFiles=walk(mirrorPatch,ownedRoot).filter(deployableMirrorFile);
       const canonicalSet=new Set(canonicalFiles);
       const mirrorSet=new Set(mirrorFiles);
 
@@ -164,6 +166,7 @@ ok(sync.includes('canonicalToolSlugs'),'sync workflow must derive routes from th
 ok(sync.includes('cp -a /tmp/tools/site/public-route-patch/assets/. site/public-route-patch/assets/'),'sync workflow must mirror the full canonical shared asset tree');
 ok(sync.includes('TOOLS_REPO_DIR=/tmp/tools npm run verify:cultivation-reference-tools'),'sync workflow must validate byte-for-byte parity against the cloned canonical Tools checkout');
 ok(sync.includes('release-source-revisions/tools.txt'),'sync workflow must persist the canonical Tools source revision');
+ok(sync.includes("find \"site/public-route-patch/$d\" -type f -name 'README.md' -delete"),'sync workflow must exclude human README files from deployable tool mirrors');
 
 if(errors.length){
   console.error('Canonical Tools integration mirror validation failed:');

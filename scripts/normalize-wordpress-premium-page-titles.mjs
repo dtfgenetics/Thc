@@ -81,11 +81,6 @@ function ownedLayout(content,target){
 function customH1(content){
   return textFromHtml(String(content).match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1]);
 }
-function normalizeThemeTitle(content){')}["']`,'i');
-  const versioned=new RegExp(`data-dtf-layout=["']${target.slug}-visual-v\\d+["']`,'i');
-  return exact.test(String(content))||versioned.test(String(content));
-}
-function customH1(content){return textFromHtml(String(content).match(/<h1\\b[^>]*>([\\s\\S]*?)<\\/h1>/i)?.[1]);}
 function normalizeThemeTitle(content){
   const re=new RegExp(`<style\\s+id=["']${STYLE_ID}["'][^>]*>[\\s\\S]*?<\\/style>\\s*`,'i');
   return `${STYLE}\n${String(content).replace(re,'').trimStart()}`;
