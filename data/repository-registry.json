@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-09-29",
+  "updated": "2026-09-30",
   "authority": "dtfgenetics/Thc",
   "statuses": {
     "canonical": "Authoritative source for its declared product domain.",
@@ -239,5 +239,10 @@
       "canonical_for": [],
       "notes": "Repository is empty (size 0) and has no branches/content. No product ownership is assigned. Safe to archive rather than delete."
     }
-  ]
+  ],
+  "retirement_controls": {
+    "repositoryManifest": "data/repository-retirement-manifest.json",
+    "fileManifest": "data/file-retirement-manifest.json",
+    "historyPolicy": "Preserve retired bytes in Git history; keep only machine-readable retirement decisions and still-relevant provenance in the active tree."
+  }
 }
