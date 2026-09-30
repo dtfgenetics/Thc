@@ -100,6 +100,8 @@
     "build:encyclopedia-discovery": "node scripts/build-encyclopedia-discovery-index.mjs",
     "verify:encyclopedia-discovery": "npm run build:encyclopedia-discovery && node scripts/validate-thc-education-search.mjs",
     "verify:encyclopedia-skill": "node scripts/test-thc-encyclopedia-production-skill.mjs",
-    "verify:encyclopedia-search-benchmark": "npm run build:encyclopedia-discovery && node scripts/validate-encyclopedia-search-benchmark.mjs"
+    "verify:encyclopedia-search-benchmark": "npm run build:encyclopedia-discovery && node scripts/validate-encyclopedia-search-benchmark.mjs",
+    "build:wordpress-learning-search": "node scripts/build-wordpress-learning-search-runtime.mjs",
+    "verify:wordpress-learning-search": "node scripts/build-wordpress-learning-search-runtime.mjs --check"
   }
 }
