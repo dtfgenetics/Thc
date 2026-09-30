@@ -8,6 +8,7 @@ const errors=[];
 const ok=(v,m)=>{if(!v)errors.push(m)};
 const readJson=file=>JSON.parse(fs.readFileSync(path.join(root,file),'utf8'));
 const canonicalRootArg=process.argv[2] || process.env.TOOLS_REPO_DIR || null;
+const sourceRevisionPath=path.join(root,'site/public-route-patch/assets/release-source-revisions/tools.txt');
 
 const walk=(base,rel='')=>{
   const dir=path.join(base,rel);
@@ -50,6 +51,19 @@ for(const asset of [
   'vendor/uplot-1.6.32.min.css',
   'vendor/papaparse-5.7.0.min.js'
 ]) ok(fs.existsSync(path.join(root,'site/public-route-patch/assets',asset)),`shared Tools mirror asset missing: ${asset}`);
+
+ok(fs.existsSync(sourceRevisionPath),'canonical Tools source revision pin is missing');
+let sourceRevision={};
+if(fs.existsSync(sourceRevisionPath)){
+  sourceRevision=Object.fromEntries(
+    fs.readFileSync(sourceRevisionPath,'utf8').trim().split(/\r?\n/)
+      .map(line=>line.split('=',2))
+      .filter(([key,value])=>key&&value)
+  );
+  ok(sourceRevision.repository==='dtfgenetics/Tools','Tools source revision pin repository mismatch');
+  ok(/^[0-9a-f]{40}$/.test(sourceRevision.commit||''),'Tools source revision pin must use a full lowercase 40-character SHA');
+  ok(sourceRevision.lane==='canonicalToolsMirror','Tools source revision pin lane mismatch');
+}
 
 for(const legacy of [
   'apps/growlens-web/public/atlas',
@@ -103,6 +117,16 @@ if(canonicalRootArg){
   ok(fs.existsSync(canonicalManifestPath),`canonical Tools manifest missing: ${canonicalManifestPath}`);
   if(fs.existsSync(canonicalManifestPath)){
     const manifest=JSON.parse(fs.readFileSync(canonicalManifestPath,'utf8'));
+    const canonicalGitHead=path.join(canonicalRootArg,'.git');
+    if(fs.existsSync(canonicalGitHead)){
+      try{
+        const {execFileSync}=await import('node:child_process');
+        const head=execFileSync('git',['-C',canonicalRootArg,'rev-parse','HEAD'],{encoding:'utf8'}).trim();
+        ok(head===sourceRevision.commit,`Tools source revision pin ${sourceRevision.commit||'<missing>'} does not match checked-out canonical HEAD ${head}`);
+      }catch(error){
+        ok(false,`unable to resolve canonical Tools git HEAD: ${error.message}`);
+      }
+    }
     ok(manifest.sourceOfTruth==='dtfgenetics/Tools','canonical manifest sourceOfTruth mismatch');
     const canonicalPatch=path.join(canonicalRootArg,'site','public-route-patch');
     const mirrorPatch=path.join(root,'site','public-route-patch');
@@ -135,6 +159,8 @@ if(canonicalRootArg){
 const sync=fs.readFileSync(path.join(root,'.github/workflows/sync-canonical-tools.yml'),'utf8');
 ok(sync.includes('canonicalToolSlugs'),'sync workflow must derive routes from the canonical Tools manifest');
 ok(sync.includes('cp -a /tmp/tools/site/public-route-patch/assets/. site/public-route-patch/assets/'),'sync workflow must mirror the full canonical shared asset tree');
+ok(sync.includes('TOOLS_REPO_DIR=/tmp/tools npm run verify:cultivation-reference-tools'),'sync workflow must validate byte-for-byte parity against the cloned canonical Tools checkout');
+ok(sync.includes('release-source-revisions/tools.txt'),'sync workflow must persist the canonical Tools source revision');
 
 if(errors.length){
   console.error('Canonical Tools integration mirror validation failed:');
