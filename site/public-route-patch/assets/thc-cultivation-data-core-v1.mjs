@@ -247,7 +247,9 @@ export function appendCultivationRecord(records,record,{limit=5000}={}){
   const next=list.filter(item=>cultivationRecordKey(item)!==key);
   next.push(record);
   next.sort((a,b)=>Date.parse(a.observedAt)-Date.parse(b.observedAt));
-  return next.slice(-Math.max(1,Number(limit)||5000));
+  const requestedLimit=Number(limit);
+  const normalizedLimit=Number.isFinite(requestedLimit)?Math.max(1,Math.floor(requestedLimit)):5000;
+  return next.slice(-normalizedLimit);
 }
 
 export function filterCultivationRecords(records,filters={}){
@@ -274,4 +276,17 @@ export function latestCultivationMetrics(records,{plantId=null,spaceId=null,zone
     }
   }
   return result;
+}
+
+export function cultivationRecordFromMeter({toolId,kind,value,observedAt,plantId=null,cycleId=null,spaceId=null,zone=null,stage=null,deviceModel=null,calibrationId=null,temperatureC=null}={}){
+  const metric=kind==='ph'?'ph':kind==='ec'?'ecMsCm':null;if(!metric)throw new Error('Meter kind must be ph or ec.');
+  return createCultivationRecord({type:'solution',sourceType:'meter',toolId:toolId||((kind==='ph')?'ph-meter':'tds-meter'),plantId,cycleId,spaceId,zone,stage,observedAt,metrics:{[metric]:value,solutionTemperatureC:temperatureC},provenance:{method:'meter',deviceModel,calibrationId}});
+}
+export function cultivationRecordFromDryback({observedAt,plantId=null,cycleId=null,spaceId=null,zone=null,stage=null,rootEcMsCm=null,vwcPercent=null,drybackPercent=null,runoffPercent=null,inputEcMsCm=null,runoffEcMsCm=null,recipeId=null}={}){
+  return createCultivationRecord({type:'root-zone',sourceType:'tool',toolId:'dryback-lab',plantId,cycleId,spaceId,zone,stage,observedAt,metrics:{ecMsCm:rootEcMsCm,vwcPercent,drybackPercent,runoffPercent,inputEcMsCm,runoffEcMsCm},values:{recipeId},provenance:{method:'dryback-lab',derived:true}});
+}
+export function cultivationRecordToGrowLens(record,{title='Cultivation record'}={}){
+  const errors=validateCultivationRecord(record);if(errors.length)throw new Error('Invalid cultivation record: '+errors.join('; '));
+  const m=record.metrics||{},parts=Object.entries(m).map(([key,value])=>key+' '+value+' '+(record.units?.[key]||'')).map(x=>x.trim());
+  return {diary:{title:String(title).slice(0,180),notes:parts.join('; ').slice(0,4000),createdAt:record.observedAt},environment:(Number.isFinite(m.temperatureC)&&Number.isFinite(m.humidityPercent))?{temperatureC:m.temperatureC,humidity:m.humidityPercent,ppfd:Number.isFinite(m.ppfdUmolM2S)?m.ppfdUmolM2S:null,createdAt:record.observedAt}:null,reservoir:(Number.isFinite(m.ph)||Number.isFinite(m.ecMsCm))?{name:String(title).slice(0,180),ph:Number.isFinite(m.ph)?m.ph:null,ecMsCm:Number.isFinite(m.ecMsCm)?m.ecMsCm:null,temperatureC:Number.isFinite(m.solutionTemperatureC)?m.solutionTemperatureC:null,notes:''}:null};
 }
