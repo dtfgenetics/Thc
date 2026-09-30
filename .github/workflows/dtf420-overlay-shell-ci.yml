@@ -29,6 +29,12 @@ on:
       - 'site/wordpress/assets/responsive-layout-v1.css'
       - 'site/wordpress/assets/sitewide-ux-polish-v1.css'
       - 'site/deployment/dtf420-static-overlay.json'
+      - 'data/game-location-registry.json'
+      - 'data/game-registry-v2.json'
+      - 'scripts/validate-dtf420-overlay-game-eligibility.mjs'
+      - 'scripts/validate-learning-route-writer-boundaries.mjs'
+      - 'scripts/publish-wordpress-learning-center-pages.mjs'
+      - 'scripts/publish-wordpress-learning-center-expansion-v1.mjs'
       - '.github/workflows/dtf420-overlay-shell-ci.yml'
 
 permissions:
