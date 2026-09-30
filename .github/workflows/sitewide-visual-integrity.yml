@@ -46,10 +46,14 @@ jobs:
           grep -Fq 'dtf-sitewide-ux-polish-v1' scripts/audit-sitewide-visual-integrity.mjs
           grep -Fq 'DTFSeeds-Visual-Integrity/2.1' scripts/audit-sitewide-visual-integrity.mjs
           grep -Fq 'DTFSeeds-Link-Integrity/1.0' scripts/audit-sitewide-link-integrity.mjs
-          grep -Fq "['Home','/']" scripts/audit-sitewide-visual-integrity.mjs
           grep -Fq "['Seeds','/seeds/']" scripts/audit-sitewide-visual-integrity.mjs
-          grep -Fq "['Courses','/courses/']" scripts/audit-sitewide-visual-integrity.mjs
+          grep -Fq "['Learn','/learn/']" scripts/audit-sitewide-visual-integrity.mjs
           grep -Fq "['Tools','/tools/']" scripts/audit-sitewide-visual-integrity.mjs
+          grep -Fq "['Games','/games/']" scripts/audit-sitewide-visual-integrity.mjs
+          grep -Fq "['Shop','/shop/']" scripts/audit-sitewide-visual-integrity.mjs
+          ! grep -Fq "['Home','/']" scripts/audit-sitewide-visual-integrity.mjs
+          ! grep -Fq "['Courses','/courses/']" scripts/audit-sitewide-visual-integrity.mjs
+          ! grep -Fq "['Community','/community/']" scripts/audit-sitewide-visual-integrity.mjs
           ! grep -Fq "['Genetics','/seeds/']" scripts/audit-sitewide-visual-integrity.mjs
           ! grep -Fq "['Diagnostic','/tools/']" scripts/audit-sitewide-visual-integrity.mjs
 

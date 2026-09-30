@@ -12,6 +12,7 @@ const validScopes = new Set(['all', 'topics-only']);
 const guidePath = process.env.LEARNING_GUIDE_V4_PATH || 'site/wordpress/education/learning-guides-v4.json';
 const literaturePath = process.env.TOPIC_LITERATURE_PATH || 'site/wordpress/education/topic-literature.json';
 const encyclopediaPath = process.env.ENCYCLOPEDIA_TOPIC_FILE || 'configuration/encyclopedia-topics.json';
+const encyclopediaDiscoveryPath = process.env.ENCYCLOPEDIA_DISCOVERY_FILE || 'site/public-route-patch/learn/encyclopedia/encyclopedia-index.json';
 const backupRoot = process.env.BACKUP_ROOT || '/tmp/dtf-learning-v4';
 if (!user || !pass) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 if (!validScopes.has(scope)) throw new Error(`Unsupported LEARNING_V4_SCOPE: ${scope}`);
@@ -57,10 +58,12 @@ async function request(path, options = {}) {
 const guide = JSON.parse(await readFile(guidePath, 'utf8'));
 const literature = JSON.parse(await readFile(literaturePath, 'utf8'));
 const encyclopedia = JSON.parse(await readFile(encyclopediaPath, 'utf8'));
+const encyclopediaDiscovery = JSON.parse(await readFile(encyclopediaDiscoveryPath, 'utf8'));
 if (guide?.schemaVersion !== 1 || !guide?.topics || Object.keys(guide.topics).length !== 12) throw new Error('Learning V4 guide must define exactly 12 topics');
 if (!Array.isArray(guide.tracks) || guide.tracks.length < 4) throw new Error('Learning V4 guide must define at least four learning tracks');
 if (!Array.isArray(literature?.topics) || literature.topics.length < 12) throw new Error('Canonical topic literature is incomplete');
 if (!Array.isArray(encyclopedia?.topics) || encyclopedia.topics.length !== 21) throw new Error('Encyclopedia topic configuration must contain 21 hubs');
+if (!Array.isArray(encyclopediaDiscovery?.topics) || encyclopediaDiscovery.topics.length !== 21) throw new Error('Encyclopedia discovery index must contain 21 topic records');
 
 const rules = [
   { id: 'plant-biology', terms: ['plant biology'] },
@@ -86,6 +89,11 @@ const normalizedTopics = literature.topics.map(topic => {
 });
 const topicIndex = new Map(normalizedTopics.map(topic => [topic.id, topic]));
 const encyclopediaIndex = new Map(encyclopedia.topics.map(topic => [topic.slug, topic]));
+const publishedEncyclopediaHubs = new Set(
+  encyclopediaDiscovery.topics
+    .filter(topic => Number(topic.publishedCount || 0) > 0)
+    .map(topic => topic.slug),
+);
 for (const id of Object.keys(guide.topics)) if (!topicIndex.has(id)) throw new Error(`Learning guide topic ${id} has no canonical subject page`);
 for (const [id, item] of Object.entries(guide.topics)) {
   for (const slug of item.encyclopedia || []) if (!encyclopediaIndex.has(slug)) throw new Error(`${id}: unknown encyclopedia hub ${slug}`);
@@ -112,7 +120,10 @@ function topicLink(id, label = null) {
 function encyclopediaCards(slugs) {
   return (slugs || []).map(slug => {
     const item = encyclopediaIndex.get(slug);
-    return `<a class="e4-deep-card" href="/learn/encyclopedia/${esc(slug)}/"><span>Part ${esc(item.part)}</span><strong>${esc(item.title)}</strong></a>`;
+    const href = publishedEncyclopediaHubs.has(slug)
+      ? `/learn/encyclopedia/${esc(slug)}/`
+      : '/learn/encyclopedia/';
+    return `<a class="e4-deep-card" href="${href}"><span>Part ${esc(item.part)}</span><strong>${esc(item.title)}</strong></a>`;
   }).join('');
 }
 
