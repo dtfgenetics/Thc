@@ -14,8 +14,7 @@
     "learn/symptoms",
     "learn/tools",
     "community/grow-offs",
-    "games/seed-ascent",
-    "games/stoner-duck-race"
+    "games/seed-ascent"
   ],
   "sharedPaths": [
     "_next/static",
@@ -62,8 +61,7 @@
     "seed-ascent/styles.css",
     "favicon",
     "pagefind/pagefind.js",
-    "pagefind/dtf-search-manifest.json",
-    "games/stoner-duck-race/index.html"
+    "pagefind/dtf-search-manifest.json"
   ],
   "legacyCompatibilityRoutes": [
     {
@@ -71,6 +69,13 @@
       "canonicalReplacement": "/courses/",
       "structuredLearningReplacement": "/learn/learning-hub/",
       "reason": "Legacy Academy V2 route retained temporarily for inbound compatibility. Certification/course ownership now belongs to Certification Catalog V4 and Learning Hub."
+    }
+  ],
+  "deferredRoutes": [
+    {
+      "prefix": "games/stoner-duck-race",
+      "reason": "Game registry marks this route development-unmapped / releasable=false with no locked production owner or runtime path.",
+      "releaseCondition": "Set explicit production owner, integration mode, runtime path, and releasable=true in canonical game registries before restoring to production overlay."
     }
   ]
 }

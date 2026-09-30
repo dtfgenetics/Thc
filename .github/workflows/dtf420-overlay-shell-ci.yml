@@ -12,6 +12,9 @@ on:
       - 'site/wordpress/assets/responsive-layout-v1.css'
       - 'site/wordpress/assets/sitewide-ux-polish-v1.css'
       - 'site/deployment/dtf420-static-overlay.json'
+      - 'data/game-location-registry.json'
+      - 'data/game-registry-v2.json'
+      - 'scripts/validate-dtf420-overlay-game-eligibility.mjs'
       - '.github/workflows/dtf420-overlay-shell-ci.yml'
   push:
     branches: [main]
@@ -47,6 +50,7 @@ jobs:
         run: |
           set -euo pipefail
           python -m py_compile scripts/stage-dtf420-static-overlay.py
+          node scripts/validate-dtf420-overlay-game-eligibility.mjs
           node --check scripts/apply-sitewide-header.mjs
           node --check scripts/lib/sitewide-header-template-v6.mjs
           test -s site/wordpress/assets/responsive-layout-v1.css

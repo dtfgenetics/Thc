@@ -865,10 +865,11 @@
         "integrationPath": "site/deployment/dtf420-static-overlay.json",
         "integrationMode": "migration-static-overlay",
         "runtimePath": "/seed-ascent.html",
-        "deploymentStatus": "development-migration",
+        "deploymentStatus": "migration-overlay-release",
         "build": "npm run verify:seed-ascent && npm run verify:seed-ascent-animations && npm run build:static-overlay",
         "defaultBranch": "main",
-        "locationVerifiedAt": "2026-09-28"
+        "locationVerifiedAt": "2026-09-28",
+        "overlayEligible": true
       },
       "relatedGameIds": [
         "seed-man-platformer"
@@ -889,7 +890,8 @@
       ],
       "assets": null,
       "notes": [
-        "Do not route Seed Ascent requests to the production Seed Man source unless the user explicitly asks to reconcile or cut over the two runtimes."
+        "Do not route Seed Ascent requests to the production Seed Man source unless the user explicitly asks to reconcile or cut over the two runtimes.",
+        "Overlay release is allowed through the explicit migration-static-overlay contract; canonical ownership remains unresolved and no new canonical implementation belongs in Dtf420."
       ]
     },
     {
@@ -990,10 +992,11 @@
         "integrationPath": null,
         "integrationMode": "development-unmapped",
         "runtimePath": null,
-        "deploymentStatus": "active-development",
+        "deploymentStatus": "development-unmapped",
         "build": "npm run verify:stoner-duck-race && npm run build:static-overlay",
         "defaultBranch": "main",
-        "locationVerifiedAt": "2026-09-28"
+        "locationVerifiedAt": "2026-09-28",
+        "overlayEligible": false
       },
       "developmentLocations": [
         {
