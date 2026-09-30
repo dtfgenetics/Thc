@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
 
 const root=process.cwd();
 const strict=process.argv.includes('--strict');
@@ -13,23 +14,11 @@ const txt=v=>String(v??'').trim();
 const registry=readJson(registryPath);
 if(!registry?.entries?.length) throw new Error('Missing controlled encyclopedia registry.');
 
-const lessons=new Map();
-function walk(dir){
-  if(!fs.existsSync(dir))return;
-  for(const entry of fs.readdirSync(dir,{withFileTypes:true})){
-    const file=path.join(dir,entry.name);
-    if(entry.isDirectory())walk(file);
-    else if(entry.isFile()&&entry.name.endsWith('.json')){
-      const json=readJson(file);
-      if(!json)continue;
-      if(/^THC-ENC-\d{3,}$/.test(json.id||'')) lessons.set(json.id,{...json,_file:path.relative(root,file)});
-      for(const lesson of arr(json.lessons)){
-        if(/^THC-ENC-\d{3,}$/.test(lesson?.id||'')) lessons.set(lesson.id,{...lesson,_file:path.relative(root,file)});
-      }
-    }
-  }
-}
-walk(encRoot);
+const lessons=new Map(readCanonicalEncyclopediaLessons(root).map(lesson=>[lesson.id,{...lesson,_file:lesson.__path}]));
+const rationalePackage=readJson(path.join(root,'data','encyclopedia-assessment-rationale-package.json'));
+const rationaleById=new Map(arr(rationalePackage?.lessons).map(row=>[row.lessonId,row]));
+const visualQueue=readJson(path.join(encRoot,'visual-production-queue-v1.json'));
+const visualBriefById=new Map(arr(visualQueue?.items).map(row=>[row.lessonId,row]));
 
 const termsOf=l=>arr(l.terms).length?arr(l.terms):arr(l.termsToKnow);
 const measuresOf=l=>arr(l.measureAndRecord).length?arr(l.measureAndRecord):arr(l.measurements);
@@ -60,7 +49,7 @@ const rationaleComplete=l=>{
   return checksOf(l).length>=3&&rationales.length>=checksOf(l).length;
 };
 const approvedVisual=l=>visualsOf(l).some(v=>v?.assetId&&v?.qaStatus==='approved')||Boolean(l.approvedVisualAssetId);
-const sourceCopyIssue=l=>sourcesOf(l).some(s=>/Open sourc(?:\b|ee\b)|\bsourcee\b/i.test(txt(s)));
+const sourceCopyIssue=l=>sourcesOf(l).some(s=>/\b(?:Open|ppen) sourc(?:\b|ee\b)|\bsourcee\b|\babstracte\b/i.test(txt(s)));
 const placeholderIssue=l=>misconceptionRows(l).some(x=>/see the (controlled )?lesson evidence and context/i.test(typeof x==='string'?x:JSON.stringify(x)));
 
 const rows=registry.entries.map(entry=>{
@@ -68,7 +57,8 @@ const rows=registry.entries.map(entry=>{
   const exists=Boolean(l);
   const misconceptionCount=exists?misconceptionRows(l).length:0;
   const checkCount=exists?checksOf(l).length:0;
-  const individualCanonical=Boolean(l?._file?.includes('/lessons/'));
+  const materializedAssessmentCount=arr(rationaleById.get(entry.id)?.prompts).length;
+  const individualCanonical=Boolean(l?._file?.replaceAll('\\','/').includes('/lessons/'));
   const publicationAuthorized=Boolean(l?.reviewControl?.publicationAuthorized??l?.publicationAuthorized??false);
   const record={
     id:entry.id,number:entry.number,part:entry.part,title:entry.title,
@@ -84,14 +74,17 @@ const rows=registry.entries.map(entry=>{
     approvedVisual:exists?approvedVisual(l):false,
     assessmentChecks:checkCount,
     assessmentComplete:checkCount>=3,
+    assessmentMaterialized:materializedAssessmentCount>=3,
+    rationaleDraftComplete:arr(rationaleById.get(entry.id)?.rationales).length>=3,
     rationaleComplete:exists?rationaleComplete(l):false,
+    visualBriefReady:visualBriefById.has(entry.id),
     sourceCopyIssue:exists?sourceCopyIssue(l):false,
     placeholderIssue:exists?placeholderIssue(l):false
   };
   record.complete=Boolean(
     record.exists&&record.objective&&record.terms>=3&&record.coreScience>=2&&record.measurements>=2&&
     record.misconceptions>=2&&record.pairedMisconceptions>=2&&record.crossLinks>=2&&record.sources>=2&&
-    record.approvedVisual&&record.assessmentComplete&&record.rationaleComplete&&!record.sourceCopyIssue&&!record.placeholderIssue
+    record.approvedVisual&&record.assessmentMaterialized&&record.rationaleComplete&&!record.sourceCopyIssue&&!record.placeholderIssue
   );
   return record;
 });
@@ -103,7 +96,10 @@ const summary={
   individualCanonical:count('individualCanonical'),
   publicationAuthorized:count('publicationAuthorized'),
   visualComplete:count('approvedVisual'),
+  visualBriefReady:count('visualBriefReady'),
   assessmentComplete:count('assessmentComplete'),
+  assessmentMaterialized:count('assessmentMaterialized'),
+  rationaleDraftComplete:count('rationaleDraftComplete'),
   rationaleComplete:count('rationaleComplete'),
   fullyComplete:count('complete'),
   sourceCopyIssues:count('sourceCopyIssue'),
@@ -112,7 +108,7 @@ const summary={
 const byPart=[...new Set(rows.map(r=>r.part))].sort((a,b)=>a-b).map(part=>{
   const partRows=rows.filter(r=>r.part===part);
   const c=k=>partRows.filter(r=>r[k]).length;
-  return {part,count:partRows.length,represented:c('exists'),individualCanonical:c('individualCanonical'),visualComplete:c('approvedVisual'),assessmentComplete:c('assessmentComplete'),rationaleComplete:c('rationaleComplete'),fullyComplete:c('complete')};
+  return {part,count:partRows.length,represented:c('exists'),individualCanonical:c('individualCanonical'),visualBriefReady:c('visualBriefReady'),visualComplete:c('approvedVisual'),assessmentComplete:c('assessmentComplete'),assessmentMaterialized:c('assessmentMaterialized'),rationaleDraftComplete:c('rationaleDraftComplete'),rationaleComplete:c('rationaleComplete'),fullyComplete:c('complete')};
 });
 const output={
   schemaVersion:1,
@@ -134,7 +130,7 @@ if(strict){
   if(summary.placeholderIssues)hardErrors.push(summary.placeholderIssues+' lesson(s) contain generic misconception placeholder text.');
   if(summary.individualCanonical!==rows.length)hardErrors.push((rows.length-summary.individualCanonical)+' lesson(s) are not individual canonical files.');
   if(summary.visualComplete!==rows.length)hardErrors.push((rows.length-summary.visualComplete)+' lesson(s) lack an approved teaching visual.');
-  if(summary.assessmentComplete!==rows.length)hardErrors.push((rows.length-summary.assessmentComplete)+' lesson(s) lack three lesson-specific checks.');
+  if(summary.assessmentMaterialized!==rows.length)hardErrors.push((rows.length-summary.assessmentMaterialized)+' lesson(s) lack three materialized lesson-specific checks.');
   if(summary.rationaleComplete!==rows.length)hardErrors.push((rows.length-summary.rationaleComplete)+' lesson(s) lack complete assessment rationale.');
 }
 if(hardErrors.length){

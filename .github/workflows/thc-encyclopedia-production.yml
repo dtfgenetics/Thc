@@ -10,6 +10,8 @@ on:
       - 'configuration/encyclopedia-search-benchmark.json'
       - 'data/encyclopedia-completion-scorecard.json'
       - 'data/encyclopedia-evidence-tracking.json'
+      - 'data/encyclopedia-assessment-rationale-package.json'
+      - 'data/encyclopedia-source-resolution-queue.json'
       - 'site/public-route-patch/learn/encyclopedia/**'
       - 'site/public-route-patch/learn/search/**'
       - 'site/wordpress/education/encyclopedia/**'
@@ -17,6 +19,7 @@ on:
       - 'site/wordpress/mu-plugins/dtf-learning-search/**'
       - 'site/wordpress/mu-plugins/dtf-learning-search.php'
       - 'scripts/*encyclopedia*.mjs'
+      - 'scripts/lib/encyclopedia-*.mjs'
       - 'scripts/*evidence*.mjs'
       - 'scripts/build-thc-education-search-index.mjs'
       - 'scripts/validate-thc-education-search.mjs'
@@ -32,8 +35,11 @@ on:
       - 'configuration/encyclopedia-topics.json'
       - 'configuration/encyclopedia-search-language.json'
       - 'data/encyclopedia-evidence-tracking.json'
+      - 'data/encyclopedia-assessment-rationale-package.json'
+      - 'data/encyclopedia-source-resolution-queue.json'
       - 'site/public-route-patch/learn/encyclopedia/**'
       - 'scripts/*encyclopedia*.mjs'
+      - 'scripts/lib/encyclopedia-*.mjs'
       - 'scripts/*evidence*.mjs'
       - '.agents/skills/thc-encyclopedia-production/**'
       - '.github/workflows/thc-encyclopedia-production.yml'
@@ -62,6 +68,8 @@ jobs:
         run: node scripts/validate-encyclopedia-completion-scorecard.mjs
       - name: Validate evidence tracking
         run: node scripts/validate-encyclopedia-evidence-tracking.mjs
+      - name: Build and validate encyclopedia production queues
+        run: npm run verify:encyclopedia-production-queues
       - name: Audit encyclopedia learning quality
         run: npm run audit:encyclopedia-learning-quality
       - name: Build rich discovery index
@@ -92,6 +100,9 @@ jobs:
           path: |
             data/encyclopedia-completion-scorecard.json
             data/encyclopedia-evidence-tracking.json
+            data/encyclopedia-assessment-rationale-package.json
+            data/encyclopedia-source-resolution-queue.json
+            content/encyclopedia/visual-production-queue-v1.json
             data/encyclopedia-learning-quality-audit.json
             site/public-route-patch/learn/encyclopedia/encyclopedia-index.json
             site/public-route-patch/learn/search/search-index.json
