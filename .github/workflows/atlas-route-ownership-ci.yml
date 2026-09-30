@@ -7,7 +7,7 @@ on:
       - data/public-navigation.json
       - docs/ATLAS_ROUTE_OWNERSHIP.md
       - scripts/validate-atlas-route-ownership.mjs
-      - scripts/verify-dtf420-atlas-live.mjs
+      - scripts/verify-atlas-live.mjs
       - site/public-route-patch/atlas/**
       - .github/workflows/deploy-public-suite-wordpress-v2.yml
       - .github/workflows/atlas-route-ownership-ci.yml
@@ -17,7 +17,7 @@ on:
       - data/public-navigation.json
       - docs/ATLAS_ROUTE_OWNERSHIP.md
       - scripts/validate-atlas-route-ownership.mjs
-      - scripts/verify-dtf420-atlas-live.mjs
+      - scripts/verify-atlas-live.mjs
       - site/public-route-patch/atlas/**
       - .github/workflows/deploy-public-suite-wordpress-v2.yml
       - .github/workflows/atlas-route-ownership-ci.yml

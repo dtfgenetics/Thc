@@ -17,7 +17,7 @@ const pages = [
 
 async function fetchFresh(route) {
   const url = new URL(route, siteUrl);
-  url.searchParams.set('dtf_atlas_live_verify', `${Date.now()}-${Math.random().toString(16).slice(2)}`);
+  url.searchParams.set('thc_atlas_live_verify', `${Date.now()}-${Math.random().toString(16).slice(2)}`);
   return fetch(url, {
     redirect: 'manual',
     headers: {

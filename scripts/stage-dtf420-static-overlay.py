@@ -87,6 +87,16 @@ def main() -> None:
     if not release_root.is_dir():
         raise SystemExit(f"release directory not found: {release_root}")
 
+    registry = load_json(repo_root / "data" / "repository-registry.json")
+    dtf420 = next((entry for entry in registry.get("repositories", []) if entry.get("repo") == "dtfgenetics/Dtf420"), None)
+    if not dtf420:
+        raise SystemExit("repository registry is missing dtfgenetics/Dtf420")
+    if dtf420.get("status") != "migration" or dtf420.get("canonical_for"):
+        raise SystemExit(
+            "dtfgenetics/Dtf420 must remain a migration-only source with no canonical domains "
+            "before its static overlay may be staged"
+        )
+
     contract_path = repo_root / "site" / "deployment" / "dtf420-static-overlay.json"
     contract = load_json(contract_path)
     if contract.get("canonicalOrigin") != "https://dtfseeds.com":
