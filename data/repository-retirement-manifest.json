@@ -234,6 +234,36 @@
       "branch": "cleanup/retire-legacy-audit-workflow-v2-20260930",
       "disposition": "delete_safe",
       "basis": "merged_via_pr_69"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-high-iq-placeholder-v2-20260930",
+      "disposition": "delete_safe",
+      "basis": "target_file_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-legacy-game-engine-20260930",
+      "disposition": "delete_safe",
+      "basis": "legacy_game-engine_files_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-legacy-grow-doc-v3-20260930",
+      "disposition": "delete_safe",
+      "basis": "legacy_Grow_Doc_app_files_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-superseded-legacy-brand-assets-20260930",
+      "disposition": "delete_safe",
+      "basis": "superseded_brand_asset_files_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-generated-preview-tree-20260930",
+      "disposition": "delete_safe",
+      "basis": "generated_preview_tree_already_absent_on_current_main"
     }
   ]
 }
