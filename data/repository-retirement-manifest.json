@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-09-30",
+  "authority": "dtfgenetics/Thc",
+  "policy": "Preserve Git history. Archive repositories rather than delete them. Delete branches only after their useful content is merged, superseded, or explicitly classified as provenance-only.",
+  "repositories": [
+    {
+      "repo": "dtfgenetics/code",
+      "disposition": "archive_ready",
+      "reason": "Empty repository; no branches/content; no canonical ownership."
+    },
+    {
+      "repo": "dtfgenetics/thc-music-bot-for-discod",
+      "disposition": "archive_ready",
+      "reason": "README-only duplicate pointer; canonical runtime is dtfgenetics/thc-discord-bot-for-music-."
+    },
+    {
+      "repo": "dtfgenetics/all-in-one-thc-grow-",
+      "disposition": "archive_ready",
+      "reason": "No deployable app remains; evidence registry migrated to dtfgenetics/Tools; only non-main branch has no unique commits."
+    },
+    {
+      "repo": "dtfgenetics/Dtf420",
+      "disposition": "migration_keep",
+      "reason": "Controlled future cutover candidate; must not own canonical product domains or active deployment routes."
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "disposition": "migration_keep",
+      "reason": "Legacy migration/integration workspace; unique assets/provenance still require reconciliation before archive."
+    }
+  ],
+  "branches": [
+    {
+      "repo": "dtfgenetics/Thc",
+      "branch": "chore/repository-architecture-cleanup-v2",
+      "disposition": "delete_safe",
+      "basis": "ahead_by_0"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "chore/canonical-repo-boundaries",
+      "disposition": "delete_safe",
+      "basis": "ahead_by_0"
+    },
+    {
+      "repo": "dtfgenetics/all-in-one-thc-grow-",
+      "branch": "docs/archive-ready",
+      "disposition": "delete_safe",
+      "basis": "ahead_by_0"
+    },
+    {
+      "repo": "dtfgenetics/Tools",
+      "branch": "cleanup/migration-provenance",
+      "disposition": "delete_safe",
+      "basis": "content_identical_to_main"
+    },
+    {
+      "repo": "dtfgenetics/Tools",
+      "branch": "cleanup/canonical-atlas-metadata",
+      "disposition": "delete_safe",
+      "basis": "content_identical_to_main"
+    },
+    {
+      "repo": "dtfgenetics/Thc",
+      "branch": "cleanup/enforce-tools-canonical-boundary",
+      "disposition": "delete_safe",
+      "basis": "main_has_stricter_current_guard"
+    },
+    {
+      "repo": "dtfgenetics/Thc",
+      "branch": "cleanup/repo-boundaries-wave1",
+      "disposition": "delete_safe",
+      "basis": "useful_removals_already_on_main_and_remaining_registry_is_stale"
+    },
+    {
+      "repo": "dtfgenetics/Thc",
+      "branch": "chore/reconcile-archive-candidates",
+      "disposition": "delete_safe",
+      "basis": "superseded_by_current_archive_ready_registry"
+    },
+    {
+      "repo": "dtfgenetics/Thc",
+      "branch": "chore/reconcile-archive-candidates-v2",
+      "disposition": "delete_safe",
+      "basis": "superseded_by_current_archive_ready_registry"
+    },
+    {
+      "repo": "dtfgenetics/Tools",
+      "branch": "main-bootstrap",
+      "disposition": "delete_safe",
+      "basis": "historical_bootstrap_provenance_superseded_by_current_canonical_tree"
+    },
+    {
+      "repo": "dtfgenetics/Dtf420",
+      "branch": "cleanup/freeze-overlap",
+      "disposition": "delete_safe",
+      "basis": "current_main_contains_same_migration_controls_and_newer_dependencies"
+    },
+    {
+      "repo": "dtfgenetics/Dtf420",
+      "branch": "docs/clarify-current-production-role",
+      "disposition": "delete_safe",
+      "basis": "current_main_has_newer_production_authority_guidance"
+    },
+    {
+      "repo": "dtfgenetics/Dtf420",
+      "branch": "audit-check",
+      "disposition": "delete_safe",
+      "basis": "atlas_audit_work_already_on_main_and_current_checks_are_broader"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "docs/clarify-release-workspace-role",
+      "disposition": "delete_safe",
+      "basis": "superseded_by_migration_only_guidance"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/archive-prep",
+      "disposition": "delete_safe",
+      "basis": "useful_controls_ported_in_pr_48_49_mass_deletions_intentionally_not_merged"
+    },
+    {
+      "repo": "dtfgenetics/Thc",
+      "branch": "chore/repository-architecture-cleanup",
+      "disposition": "delete_safe",
+      "basis": "docs_and_registry_logic_superseded_by_current_main"
+    }
+  ]
+}
