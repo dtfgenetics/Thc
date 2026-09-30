@@ -91,7 +91,7 @@ Retired implementation payloads should not remain in an active repository solely
 The canonical retention rule is now:
 
 - Git history preserves retired file contents and commit lineage.
-- `docs/archive/retention-manifest.json` preserves the explicit retirement decision, retired paths, canonical successor, and reintroduction policy.
+- `data/file-retirement-manifest.json` preserves the explicit retirement decision, retired paths, canonical successor, and reintroduction policy.
 - CI must reject a retired path if it reappears in the active tree.
 - Historical release notes, provenance records, and migration decisions may remain when they still explain current architecture or ownership.
 - Executable scripts, workflows, deploy payloads, generated bundles, and duplicate runtime data should be removed once they are superseded and no active dependency requires them.
