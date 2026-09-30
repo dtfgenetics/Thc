@@ -86,7 +86,8 @@ q.addEventListener('input',()=>{activePart=null;syncUrl();render()});
 clear.addEventListener('click',()=>{q.value='';activePart=null;activeStatus='all';activeFormat='all';const statusAll=document.querySelector('[data-status="all"]');if(statusAll)setPressed(document.querySelector('[data-status-filters]'),statusAll);renderFormats();syncUrl();render();q.focus()});
 
 const params=new URLSearchParams(location.search);const requested=params.get('lesson');const requestedQuery=params.get('q');const requestedTopic=Number(params.get('topic'));const requestedStatus=params.get('status');const requestedFormat=params.get('format');
-fetch('./encyclopedia-index.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('Index failed to load');return r.json()}).then(data=>{
+const loadIndex=window.__THC_ENCYCLOPEDIA_INDEX__?Promise.resolve(window.__THC_ENCYCLOPEDIA_INDEX__):fetch('./encyclopedia-index.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('Index failed to load');return r.json()});
+loadIndex.then(data=>{
  payload=data;
  totalStat.textContent=String(payload.lessons.length);
  publishedStat.textContent=String(payload.lessons.filter(x=>x.status==='published').length);
