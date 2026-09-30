@@ -168,17 +168,6 @@ jobs:
             test -s "$RUNNER_TEMP/$asset"
           done
 
-      - name: Roll back search runtime if activation health fails
-        if: ${{ failure() && steps.search_runtime.outputs.backup_id != '' }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          port="${HOSTINGER_SSH_PORT:-65002}"
-          ssh_opts=(-i "$HOME/.ssh/dtf_hostinger" -p "$port" -o BatchMode=yes -o StrictHostKeyChecking=yes)
-          printf -v remote_cmd 'bash -s -- rollback %q %q %q %q' \
-            "$HOSTINGER_PUBLIC_ROOT" "$GITHUB_SHA" ignored "${{ steps.search_runtime.outputs.backup_id }}"
-          ssh "${ssh_opts[@]}" "$HOSTINGER_SSH_USER@$HOSTINGER_SSH_HOST" "$remote_cmd" < scripts/deploy/wordpress-learning-search-runtime.sh
-
       - name: Create or update WordPress learning-center pages
         id: pages
         shell: bash
