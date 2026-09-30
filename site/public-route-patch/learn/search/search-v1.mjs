@@ -10,6 +10,14 @@ let activeType='all';
 
 const esc=(v)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const normalize=(v)=>String(v??'').trim().toLowerCase();
+function syncUrl(){
+  const params=new URLSearchParams(location.search);
+  const query=input.value.trim();
+  if(query)params.set('q',query);else params.delete('q');
+  if(activeType!=='all')params.set('type',activeType);else params.delete('type');
+  const next=params.toString()?location.pathname+'?'+params.toString():location.pathname;
+  history.replaceState(null,'',next);
+}
 
 function buildFuse(){
   fuse=new Fuse(documents,{
@@ -22,7 +30,8 @@ function buildFuse(){
       {name:'title',weight:.30},
       {name:'keywords',weight:.18},
       {name:'terms',weight:.12},
-      {name:'synonyms',weight:.08},
+      {name:'synonyms',weight:.07},
+      {name:'aliases',weight:.10},
       {name:'summary',weight:.08},
       {name:'objective',weight:.07},
       {name:'measurements',weight:.05},
@@ -63,10 +72,10 @@ for(const button of filters){
   button.addEventListener('click',()=>{
     activeType=button.dataset.searchFilter;
     filters.forEach(x=>x.setAttribute('aria-pressed',String(x===button)));
-    render();
+    syncUrl();render();
   });
 }
-input.addEventListener('input',render);
+input.addEventListener('input',()=>{syncUrl();render()});
 
 Promise.all([
   fetch('./search-index.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('Search index failed to load');return r.json()}),
@@ -87,6 +96,7 @@ Promise.all([
         keywords:[...(item.keywords||[]),item.topic,item.primaryFormat,item.status].filter(Boolean),
         terms:item.terms||[],
         synonyms:item.synonyms||[],
+        aliases:item.aliases||[],
         objective:item.objective||'',
         measurements:item.measurements||[],
         misconceptions:item.misconceptions||[],
@@ -97,6 +107,10 @@ Promise.all([
       seen.add(String(item.id));
     }
     buildFuse();
+    const params=new URLSearchParams(location.search);
+    const requestedQuery=params.get('q');
+    const requestedType=params.get('type');
+    if(requestedQuery)input.value=requestedQuery;
     const types=[...new Set(documents.map(x=>x.type).filter(Boolean))].sort();
     const filterHost=document.querySelector('[data-search-filters]');
     for(const type of types){
@@ -105,10 +119,13 @@ Promise.all([
       b.addEventListener('click',()=>{
         activeType=type;
         [...filterHost.querySelectorAll('[data-search-filter]')].forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
-        render();
+        syncUrl();render();
       });
       filterHost.append(b);
     }
+    if(requestedType&&types.some(type=>normalize(type)===normalize(requestedType)))activeType=requestedType;
+    const requestedButton=[...filterHost.querySelectorAll('[data-search-filter]')].find(x=>normalize(x.dataset.searchFilter)===normalize(activeType));
+    if(requestedButton)[...filterHost.querySelectorAll('[data-search-filter]')].forEach(x=>x.setAttribute('aria-pressed',String(x===requestedButton)));
     render();
   })
   .catch(error=>{

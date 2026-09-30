@@ -43,6 +43,7 @@ Read before editing:
 
 - `content/encyclopedia/current-controlled-registry.json`
 - `configuration/encyclopedia-topics.json`
+- `configuration/encyclopedia-search-language.json`
 - `content/encyclopedia/lesson-template.json`
 - `content/encyclopedia/coverage-baseline.json`
 - `docs/ENCYCLOPEDIA_CONTENT_GAP_REGISTER.md`
@@ -119,6 +120,8 @@ The search document must support more than titles. Index:
 - format and visual type.
 
 Expose filterable facets for topic, format, status, and other stable metadata.
+
+Maintain the controlled search-language map for common grower terms, abbreviations, spelling variants, and symptom descriptions. These aliases are retrieval aids only: never convert a slang phrase into a diagnosis or scientific claim. Search state should remain deep-linkable through URL query/filter parameters.
 
 Search architecture is provider-independent. The canonical search document is the contract; Fuse, MiniSearch, Pagefind, Algolia DocSearch, Typesense, or another frontend may consume it later without changing lesson identity.
 

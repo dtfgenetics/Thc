@@ -5,6 +5,7 @@ const root=process.cwd();
 const registry=JSON.parse(fs.readFileSync(path.join(root,'content/encyclopedia/current-controlled-registry.json'),'utf8'));
 const topics=JSON.parse(fs.readFileSync(path.join(root,'configuration/encyclopedia-topics.json'),'utf8')).topics||[];
 const release=JSON.parse(fs.readFileSync(path.join(root,'site/wordpress/education/encyclopedia/current-production-batch.json'),'utf8'));
+const searchLanguage=JSON.parse(fs.readFileSync(path.join(root,'configuration/encyclopedia-search-language.json'),'utf8'));
 const topicByPart=new Map(topics.map(topic=>[Number(topic.part),topic]));
 
 const clean=v=>String(v??'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
@@ -33,6 +34,15 @@ walk(path.join(root,'content/encyclopedia'));
 
 const releaseNumbers=arr(release.lessonFiles).flatMap(file=>String(file).match(/thc-enc-(\d{3,})/gi)||[]).map(id=>Number(id.match(/\d+/)?.[0]||0));
 const publicationCutoff=Math.max(0,...releaseNumbers);
+
+function aliasesFor(entry){
+  const part=Number(entry.part);
+  return [...new Set((searchLanguage.rules||[])
+    .filter(rule=>(arr(rule.targetParts).includes(part)||arr(rule.targetLessonIds).includes(entry.id)))
+    .flatMap(rule=>arr(rule.aliases))
+    .map(clean)
+    .filter(Boolean))];
+}
 
 function toolIdsFor(part){
   const ids=new Set(['growlens']);
@@ -73,6 +83,7 @@ const lessons=(registry.entries||[]).map(entry=>{
   const published=Number(entry.number)<=publicationCutoff;
   const slug=lesson.slug||slugify(entry.title);
   const tools=toolIdsFor(Number(entry.part));
+  const aliases=aliasesFor(entry);
   return {
     id:entry.id,
     number:Number(entry.number),
@@ -85,8 +96,9 @@ const lessons=(registry.entries||[]).map(entry=>{
     status:published?'published':'catalogued-review',
     route:published?`/learn/encyclopedia/thc-enc-${String(entry.number).padStart(3,'0')}/`:`/learn/encyclopedia/?lesson=${encodeURIComponent(entry.id)}`,
     tools,
+    aliases,
     ...fields,
-    keywords:[topic?.title,entry.primaryFormat,entry.teachingVisual,entry.id,...fields.terms,...fields.synonyms,...tools].map(clean).filter(Boolean)
+    keywords:[topic?.title,entry.primaryFormat,entry.teachingVisual,entry.id,...fields.terms,...fields.synonyms,...aliases,...tools].map(clean).filter(Boolean)
   };
 });
 
@@ -104,6 +116,7 @@ const output={
   generatedAt:new Date().toISOString(),
   publicationCutoff,
   lessonCount:lessons.length,
+  searchLanguageVersion:Number(searchLanguage.schemaVersion||1),
   note:'Generated from the controlled registry and canonical lesson source. Review-only entries stay discoverable without exposing unreleased lesson bodies.',
   facets,
   topics:topicRows,
