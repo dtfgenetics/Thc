@@ -46,7 +46,8 @@ Every lesson must ultimately contain or resolve to:
 ## Evidence/data pipeline
 
 - Controlled source registry: `content/encyclopedia/evidence/authoritative-sources.json`.
-- Initial claim evidence batch: `content/encyclopedia/evidence/evidence-batch-001.json`.
+- Claim evidence batches: `content/encyclopedia/evidence/evidence-batch-001.json` and `content/encyclopedia/evidence/evidence-batch-002.json`.
+- Generated risk-priority queue: `data/encyclopedia-evidence-priority.json`.
 - Generated 420-lesson tracking artifact: `data/encyclopedia-evidence-tracking.json`.
 - All-source resolution queue: `data/encyclopedia-source-resolution-queue.json`.
 - Materialized assessment/rationale package: `data/encyclopedia-assessment-rationale-package.json`.
