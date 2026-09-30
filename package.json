@@ -59,7 +59,7 @@
     "validate:terpene-atlas": "node scripts/validate-canonical-tools-mirror.mjs",
     "verify:asset-states": "node scripts/validate-asset-state-registry.mjs",
     "verify:3d-assets": "node scripts/validate-3d-assets.mjs",
-    "verify:project-os": "npm run verify:repository-architecture && npm run verify:production-standards && npm run verify:encyclopedia-content-control && npm run verify:encyclopedia-evidence && npm run verify:encyclopedia-scorecard && npm run audit:encyclopedia-learning-quality && npm run verify:encyclopedia-renderer && npm run verify:encyclopedia-skill && npm run verify:wordpress-learning-search && npm run verify:learning-v3-decision-renderer && npm run verify:encyclopedia-assessments && npm run verify:encyclopedia-rubrics && npm run verify:encyclopedia-worked-examples && npm run verify:encyclopedia-worked-example-review-queue && npm run validate:education-search && npm run verify:shared-ui-standard && npm run verify:page-composition && npm run verify:cultivation-reference-tools && npm run validate:growlens-release-contract && npm run validate:grow-doc-release-pin && npm run verify:portfolio && npm run games:locations:check && npm run games:registry:check && npm run verify:asset-states && npm run verify:3d-assets && npm run validate:public-suite-qualification-workflow",
+    "verify:project-os": "npm run verify:repository-architecture && npm run verify:production-standards && npm run verify:encyclopedia-content-control && npm run verify:encyclopedia-evidence && npm run verify:encyclopedia-scorecard && npm run audit:encyclopedia-learning-quality && npm run verify:encyclopedia-renderer && npm run verify:encyclopedia-skill && npm run verify:wordpress-learning-search && npm run verify:learning-v3-decision-renderer && npm run verify:encyclopedia-assessments && npm run verify:encyclopedia-rubrics && npm run verify:encyclopedia-worked-examples && npm run verify:encyclopedia-worked-example-review-queue && npm run verify:encyclopedia-worked-example-visuals && npm run verify:encyclopedia-worked-example-visual-queue && npm run validate:education-search && npm run verify:shared-ui-standard && npm run verify:page-composition && npm run verify:cultivation-reference-tools && npm run validate:growlens-release-contract && npm run validate:grow-doc-release-pin && npm run verify:portfolio && npm run games:locations:check && npm run games:registry:check && npm run verify:asset-states && npm run verify:3d-assets && npm run validate:public-suite-qualification-workflow",
     "verify:cultivation-reference-tools": "node scripts/validate-canonical-tools-mirror.mjs",
     "games:qa:local": "node scripts/game-portfolio-browser-qa.mjs --local",
     "games:qa:live": "node scripts/game-portfolio-browser-qa.mjs --live",
@@ -108,6 +108,8 @@
     "build:wordpress-learning-search": "node scripts/build-wordpress-learning-search-runtime.mjs",
     "verify:wordpress-learning-search": "node scripts/build-wordpress-learning-search-runtime.mjs --check",
     "verify:encyclopedia-worked-example-review-queue": "node scripts/validate-encyclopedia-worked-example-review-queue.mjs",
-    "build:encyclopedia-worked-example-review-packet": "node scripts/build-encyclopedia-worked-example-review-packet.mjs"
+    "build:encyclopedia-worked-example-review-packet": "node scripts/build-encyclopedia-worked-example-review-packet.mjs",
+    "verify:encyclopedia-worked-example-visuals": "node scripts/validate-encyclopedia-worked-example-visuals.mjs",
+    "verify:encyclopedia-worked-example-visual-queue": "node scripts/validate-encyclopedia-worked-example-visual-queue.mjs"
   }
 }
