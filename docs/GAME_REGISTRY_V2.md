@@ -22,7 +22,7 @@ Concept bank: **18**
 | High Land: The Sweet Escape | `high-land` | dtfgenetics/Thc | /games/high-land/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | High Life: From Bagseed to Legacy | `high-life` | dtfgenetics/Thc | /games/high-life/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | High Lines | `high-lines` | dtfgenetics/Thc | /games/high-lines/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
-| Kush Kings Chess | `kush-kings` | dtfgenetics/Thc-chess-git | /games/kush-kings-chess/ | `playable-local` | dtfgenetics/Thc | Pass production runtime, live health, two-browser play, spectator/chat, reconnect, and mobile verification. |
+| Kush Kings Chess | `kush-kings` | dtfgenetics/Thc-chess-git | /games/kush-kings-chess/ | `playable-local` | dtfgenetics/Thc | Configure the five Kush Kings production secrets, run the exact-SHA deploy, pass frontend/API/Socket.IO live verification, then complete two-browser/mobile multiplayer acceptance. |
 | Lost in the Terps | `lost-in-the-terps` | dtfgenetics/Thc | /games/lost-in-the-terps/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Mystery Strain | `mystery-strain` | dtfgenetics/Thc | /games/mystery-strain/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Pheno Draft | `pheno-draft` | dtfgenetics/Thc | /games/pheno-draft/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
@@ -37,7 +37,7 @@ Concept bank: **18**
 | Terpocalypse: Grow Room From Hell | `terpocalypse` | dtfgenetics/Terpocalapse | /games/terpocalypse/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | THC Daily Crossword | `crossword` | dtfgenetics/Thc-crossword- | /games/crossword/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | THC RPG — The First Seed | `thc-rpg` | dtfgenetics/Thc-rpg | /games/thc-rpg/ | `packaged` | dtfgenetics/Thc | Publish the qualified package to the DTFSeeds public suite, then verify /games/thc-rpg/ against exact revision de6c26d9073d9154bbcade43b64768cf6a7ba2a0. |
-| THC U Know | `thc-u-know` | dtfgenetics/thc-u-know-card-game- | /games/thc-u-know/ | `playable-local` | dtfgenetics/Thc | Pass production runtime, persistent-origin, reconnect/private-hand, and multi-browser/mobile verification. |
+| THC U Know | `thc-u-know` | dtfgenetics/thc-u-know-card-game- | /games/thc-u-know/ | `playable-local` | dtfgenetics/Thc | Configure the THC U Know Node host/origin settings, let deploy-node-runtime.yml deploy the exact green revision, then pass live smoke and two-browser multiplayer acceptance. |
 | Trichome Trials | `trichome-trials` | dtfgenetics/Thc | /games/trichome-trials/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Weedopolis: Strain City Edition | `weedopolis` | dtfgenetics/Weedopolis-strain-Edition | /games/weedopolis/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Who Took It? | `who-took-it` | dtfgenetics/Thc-guess-who | /games/who-took-it/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |

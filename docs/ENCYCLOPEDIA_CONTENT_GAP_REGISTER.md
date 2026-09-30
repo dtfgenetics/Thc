@@ -46,10 +46,17 @@ Every lesson must ultimately contain or resolve to:
 1. Build lesson-specific knowledge checks and answer rationales for THC-ENC-001–340.
 2. Run strict content-quality validation across all 420 and repair thin objectives, source coverage, terms, misconceptions, measurement guidance, and cross-links.
 3. Build the controlled visual-production queue from the current registry and volume-specific visual briefs.
-4. Produce exact source-locator / atomic-claim evidence ledgers for review-blocked volumes.
+4. Expand exact source-locator / atomic-claim evidence ledgers beyond the initial controlled evidence batch.
 5. Keep encyclopedia assessment complete on its own. Academy/course links are optional navigation only; course curriculum and certification assessments remain independently controlled.
 6. Add/download printable measurement sheets, decision aids, sampling forms, or checklists where the lesson benefits from one.
 7. Maintain release state separately from content existence: draft-complete does not mean independently reviewed, publication-authorized, or live.
+
+## Evidence/data pipeline
+
+- Controlled source registry: `content/encyclopedia/evidence/authoritative-sources.json`.
+- Initial claim evidence batch: `content/encyclopedia/evidence/evidence-batch-001.json`.
+- Generated 420-lesson tracking artifact: `data/encyclopedia-evidence-tracking.json`.
+- Source collection and claim mapping are review-pending by design. They do not approve lessons, change `publicationAuthorized`, or release held drafts.
 
 ## Validation commands
 
@@ -60,5 +67,9 @@ Every lesson must ultimately contain or resolve to:
 - `npm run verify:encyclopedia-content-strict`
   - additionally fails unresolved content-quality and assessment coverage gaps;
   - this is the target gate for a future 420/420 production-complete release.
+
+- `npm run verify:encyclopedia-evidence`
+  - rebuilds the all-lesson evidence tracking artifact;
+  - validates authoritative source IDs, evidence-batch links, 420/420 tracking coverage, and review-state boundaries.
 
 The goal is to make the strict command pass without weakening the standard.

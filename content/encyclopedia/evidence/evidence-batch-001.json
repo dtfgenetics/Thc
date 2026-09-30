@@ -1,0 +1,182 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-001",
+  "createdAt": "2026-09-30",
+  "scope": "Initial conservative claim-level evidence collection for the THC Encyclopedia evidence pipeline. This batch proves the ledger model and seeds external authority for selected evidence, postharvest, outdoor-production, and measurement lessons.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Claim mappings are review-pending and must not be interpreted as approval.",
+    "Existing lesson IDs, routes, publication flags, and review-control states remain authoritative.",
+    "A mapped source supports only the scoped claim and stated applicability, not the entire lesson."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0001",
+      "lessonId": "THC-ENC-001",
+      "sourceIds": ["ENC-AUTH-001"],
+      "claimType": "evidence-method",
+      "supportedClaim": "Cultivation claims should be evaluated through transparent method, context, measurement, and reproducibility checks before being treated as reliable guidance.",
+      "sourceLocator": "NIH reproducibility policy topic page and linked rigor/transparency resources.",
+      "applicability": "General scientific-evidence handling for the encyclopedia's claim-audit method.",
+      "limitations": "Not cannabis-specific and not a substitute for claim-level crop evidence.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0002",
+      "lessonId": "THC-ENC-001",
+      "sourceIds": ["ENC-AUTH-002"],
+      "claimType": "evidence-method",
+      "supportedClaim": "Reusable plant-science evidence depends on metadata about genotype/material, environment, protocol, measurements, and timing.",
+      "sourceLocator": "MIAPPE 1.1 metadata and plant phenomics reporting framework.",
+      "applicability": "Supports the lesson's emphasis on recording tested context before generalizing a result.",
+      "limitations": "Plant phenomics reporting standard; not a cannabis-specific production recommendation.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0003",
+      "lessonId": "THC-ENC-341",
+      "sourceIds": ["ENC-AUTH-003"],
+      "claimType": "cannabis-primary",
+      "supportedClaim": "Trichome observations can inform harvest maturity, but plant age, genotype, tissue position, and observation method limit any universal visual threshold.",
+      "sourceLocator": "Livingston et al. 2023 cannabis trichome development and maturation study.",
+      "applicability": "Cannabis-specific support for multi-signal harvest-maturity reasoning.",
+      "limitations": "Applies within the study's genetics, tissue sampling, developmental windows, and methods; does not approve a fixed amber-trichome target.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0004",
+      "lessonId": "THC-ENC-345",
+      "sourceIds": ["ENC-AUTH-004", "ENC-AUTH-005"],
+      "claimType": "postharvest-review",
+      "supportedClaim": "Drying should be treated as a controlled postharvest process involving moisture removal, temperature, relative humidity, airflow, duration, and product-quality consequences.",
+      "sourceLocator": "Postharvest cannabis review sections covering trimming/drying, equilibrium moisture, sorption, curing, storage, and quality factors.",
+      "applicability": "Supports the lesson's drying-as-process frame and need for measured controls.",
+      "limitations": "Review-level synthesis; actual target conditions remain cultivar-, product-, load-, and equipment-specific.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0005",
+      "lessonId": "THC-ENC-346",
+      "sourceIds": ["ENC-AUTH-004", "ENC-AUTH-005"],
+      "claimType": "postharvest-review",
+      "supportedClaim": "Moisture content and water activity are distinct postharvest concepts that require method-aware measurement before being used as release or storage evidence.",
+      "sourceLocator": "Postharvest cannabis review discussion of moisture, equilibrium moisture, sorption, drying, curing, and storage context.",
+      "applicability": "Supports the lesson's measurement distinction and need for controlled method records.",
+      "limitations": "Review-level source; water-activity instrument control still requires device-specific and standards review.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0006",
+      "lessonId": "THC-ENC-351",
+      "sourceIds": ["ENC-AUTH-006"],
+      "claimType": "cannabis-primary",
+      "supportedClaim": "Drying and storage conditions can change measured volatile profiles in cannabis inflorescences, so terpene-retention claims need treatment- and storage-specific evidence.",
+      "sourceLocator": "Drying/storage comparison study measuring cannabis volatilome and cannabinoid outcomes.",
+      "applicability": "Cannabis-specific support for volatile-loss and storage-condition reasoning.",
+      "limitations": "Study-specific varieties, storage conditions, and analytical method; not a universal drying prescription.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0007",
+      "lessonId": "THC-ENC-352",
+      "sourceIds": ["ENC-AUTH-006"],
+      "claimType": "cannabis-primary",
+      "supportedClaim": "Cannabinoid stability during postharvest handling should be interpreted in relation to the tested drying/storage condition, container, temperature, humidity, light exposure, and analytical method.",
+      "sourceLocator": "Drying/storage comparison study measuring cannabinoid content alongside volatile outcomes.",
+      "applicability": "Cannabis-specific support for storage-condition and method-bound interpretation.",
+      "limitations": "Study-specific conditions; accelerated or alternative storage assumptions still need separate evidence.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0008",
+      "lessonId": "THC-ENC-358",
+      "sourceIds": ["ENC-AUTH-007"],
+      "claimType": "measurement-authority",
+      "supportedClaim": "Water-activity or other release measurements should preserve traceability, measurand clarity, calibration/verification records, uncertainty context, and fitness-for-purpose limits.",
+      "sourceLocator": "NIST metrological traceability policy and FAQ.",
+      "applicability": "Supports instrument-control and measurement-chain requirements.",
+      "limitations": "General metrology authority; cannabis-specific release criteria and device procedures must be reviewed separately.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0009",
+      "lessonId": "THC-ENC-363",
+      "sourceIds": ["ENC-AUTH-008"],
+      "claimType": "official-dataset",
+      "supportedClaim": "Climate normals are useful site-planning baselines because they summarize recent historical climate distributions, but they do not guarantee future weather or crop outcomes.",
+      "sourceLocator": "NOAA NCEI U.S. Climate Normals, 1991-2020 product page.",
+      "applicability": "Supports outdoor site and seasonal-risk planning language.",
+      "limitations": "Station normals require local interpretation; microclimate, extreme events, and future conditions need additional data.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0010",
+      "lessonId": "THC-ENC-366",
+      "sourceIds": ["ENC-AUTH-009"],
+      "claimType": "official-dataset",
+      "supportedClaim": "Mapped soil data can support field planning, but soil preparation decisions still require onsite sampling and current field verification.",
+      "sourceLocator": "USDA NRCS Web Soil Survey public soil-resource data.",
+      "applicability": "Supports field soil planning and the need to pair maps with direct measurement.",
+      "limitations": "Mapped soil survey information may not capture current amendments, compaction, drainage changes, contamination, or bed-specific conditions.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0011",
+      "lessonId": "THC-ENC-369",
+      "sourceIds": ["ENC-AUTH-011", "ENC-AUTH-012"],
+      "claimType": "official-standard",
+      "supportedClaim": "Irrigation scheduling and distribution-uniformity decisions should be documented as water-management and system-performance controls rather than assumed from emitter type alone.",
+      "sourceLocator": "USDA NRCS irrigation water management and microirrigation conservation practice standards.",
+      "applicability": "Supports structured irrigation planning, recordkeeping, and system-verification language.",
+      "limitations": "NRCS standards are conservation-practice frameworks; they do not prescribe cannabis cultivar-specific irrigation setpoints.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0012",
+      "lessonId": "THC-ENC-379",
+      "sourceIds": ["ENC-AUTH-010"],
+      "claimType": "official-standard",
+      "supportedClaim": "High-tunnel and season-extension decisions need local planning controls for structure, drainage, wind/snow, irrigation, pest pressure, and conservation-practice requirements.",
+      "sourceLocator": "USDA NRCS Conservation Practice Standards index, including high tunnel and related practice standards.",
+      "applicability": "Supports high-tunnel planning as a controlled site system rather than a generic yield upgrade.",
+      "limitations": "Local code, local Field Office Technical Guide, engineering, and crop-specific validation still control implementation.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0013",
+      "lessonId": "THC-ENC-403",
+      "sourceIds": ["ENC-AUTH-007"],
+      "claimType": "measurement-authority",
+      "supportedClaim": "Calibration and verification records should identify the measurand, reference, traceability statement, uncertainty where applicable, result, and fitness for intended use.",
+      "sourceLocator": "NIST metrological traceability policy and FAQ.",
+      "applicability": "Supports the measurement-system and calibration-control lesson family.",
+      "limitations": "Does not validate any single cannabis sensor, meter, lab, or release criterion.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0014",
+      "lessonId": "THC-ENC-415",
+      "sourceIds": ["ENC-AUTH-001", "ENC-AUTH-002"],
+      "claimType": "evidence-method",
+      "supportedClaim": "Reading a scientific paper for cultivation use requires method, sample, context, metadata, and reproducibility checks before translating the result into practice.",
+      "sourceLocator": "NIH rigor/transparency resources plus MIAPPE 1.1 plant phenomics metadata framework.",
+      "applicability": "Supports the encyclopedia's evidence-literacy lessons.",
+      "limitations": "General evidence-handling support; individual crop recommendations still need claim-specific cannabis or horticultural evidence.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0015",
+      "lessonId": "THC-ENC-420",
+      "sourceIds": ["ENC-AUTH-001", "ENC-AUTH-002", "ENC-AUTH-007"],
+      "claimType": "evidence-system",
+      "supportedClaim": "An evidence-based cultivation knowledge system should preserve source hierarchy, measurement traceability, metadata, protocol context, revision history, and review state separately from publication state.",
+      "sourceLocator": "NIH reproducibility guidance, MIAPPE 1.1 metadata framework, and NIST metrological traceability policy.",
+      "applicability": "Supports the encyclopedia release-governance and knowledge-system framing.",
+      "limitations": "These are system-design authorities; lesson approval still requires independent content, assessment, legal, visual, and release review.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}

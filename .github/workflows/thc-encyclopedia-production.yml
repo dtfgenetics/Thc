@@ -4,10 +4,12 @@ on:
   pull_request:
     paths:
       - 'content/encyclopedia/**'
+      - 'content/encyclopedia/evidence/**'
       - 'configuration/encyclopedia-topics.json'
       - 'configuration/encyclopedia-search-language.json'
       - 'configuration/encyclopedia-search-benchmark.json'
       - 'data/encyclopedia-completion-scorecard.json'
+      - 'data/encyclopedia-evidence-tracking.json'
       - 'site/public-route-patch/learn/encyclopedia/**'
       - 'site/public-route-patch/learn/search/**'
       - 'site/wordpress/education/encyclopedia/**'
@@ -15,19 +17,26 @@ on:
       - 'site/wordpress/mu-plugins/dtf-learning-search/**'
       - 'site/wordpress/mu-plugins/dtf-learning-search.php'
       - 'scripts/*encyclopedia*.mjs'
+      - 'scripts/*evidence*.mjs'
       - 'scripts/build-thc-education-search-index.mjs'
       - 'scripts/validate-thc-education-search.mjs'
       - '.agents/skills/thc-encyclopedia-production/**'
+      - '.github/workflows/thc-encyclopedia-production.yml'
+      - 'docs/ENCYCLOPEDIA_CONTENT_GAP_REGISTER.md'
       - 'package.json'
   push:
     branches: [main]
     paths:
       - 'content/encyclopedia/**'
+      - 'content/encyclopedia/evidence/**'
       - 'configuration/encyclopedia-topics.json'
       - 'configuration/encyclopedia-search-language.json'
+      - 'data/encyclopedia-evidence-tracking.json'
       - 'site/public-route-patch/learn/encyclopedia/**'
       - 'scripts/*encyclopedia*.mjs'
+      - 'scripts/*evidence*.mjs'
       - '.agents/skills/thc-encyclopedia-production/**'
+      - '.github/workflows/thc-encyclopedia-production.yml'
   workflow_dispatch:
 
 permissions:
@@ -47,8 +56,12 @@ jobs:
           node-version: '22'
       - name: Build completion scorecard
         run: npm run build:encyclopedia-scorecard
+      - name: Build evidence tracking
+        run: npm run build:encyclopedia-evidence
       - name: Validate completion scorecard
         run: node scripts/validate-encyclopedia-completion-scorecard.mjs
+      - name: Validate evidence tracking
+        run: node scripts/validate-encyclopedia-evidence-tracking.mjs
       - name: Audit encyclopedia learning quality
         run: npm run audit:encyclopedia-learning-quality
       - name: Build rich discovery index
@@ -78,6 +91,7 @@ jobs:
           name: thc-encyclopedia-generated
           path: |
             data/encyclopedia-completion-scorecard.json
+            data/encyclopedia-evidence-tracking.json
             data/encyclopedia-learning-quality-audit.json
             site/public-route-patch/learn/encyclopedia/encyclopedia-index.json
             site/public-route-patch/learn/search/search-index.json
@@ -88,5 +102,6 @@ jobs:
           echo "Generated artifacts are build outputs and are uploaded above."
           git diff --stat -- \
             data/encyclopedia-completion-scorecard.json \
+            data/encyclopedia-evidence-tracking.json \
             site/public-route-patch/learn/encyclopedia/encyclopedia-index.json \
             site/public-route-patch/learn/search/search-index.json || true
