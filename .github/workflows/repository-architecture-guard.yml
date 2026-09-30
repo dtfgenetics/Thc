@@ -1,0 +1,41 @@
+name: Repository architecture guard
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'data/repository-registry.json'
+      - 'data/project-registry.json'
+      - 'site/deployment/public-apps.json'
+      - 'docs/REPOSITORY_ARCHIVE_READINESS.md'
+      - 'scripts/validate-repository-registry.mjs'
+      - '.github/workflows/repository-architecture-guard.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'data/repository-registry.json'
+      - 'data/project-registry.json'
+      - 'site/deployment/public-apps.json'
+      - 'docs/REPOSITORY_ARCHIVE_READINESS.md'
+      - 'scripts/validate-repository-registry.mjs'
+      - '.github/workflows/repository-architecture-guard.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify repository architecture
+        run: node scripts/validate-repository-registry.mjs
