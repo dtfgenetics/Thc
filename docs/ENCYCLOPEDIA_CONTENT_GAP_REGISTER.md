@@ -47,7 +47,7 @@ Every lesson must ultimately contain or resolve to:
 2. Run strict content-quality validation across all 420 and repair thin objectives, source coverage, terms, misconceptions, measurement guidance, and cross-links.
 3. Build the controlled visual-production queue from the current registry and volume-specific visual briefs.
 4. Produce exact source-locator / atomic-claim evidence ledgers for review-blocked volumes.
-5. Reconcile encyclopedia lessons with Academy courses so assessments test taught material rather than duplicate generic questions.
+5. Keep encyclopedia assessment complete on its own. Academy/course links are optional navigation only; course curriculum and certification assessments remain independently controlled.
 6. Add/download printable measurement sheets, decision aids, sampling forms, or checklists where the lesson benefits from one.
 7. Maintain release state separately from content existence: draft-complete does not mean independently reviewed, publication-authorized, or live.
 

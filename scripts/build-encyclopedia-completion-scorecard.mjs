@@ -29,7 +29,7 @@ const arr=v=>Array.isArray(v)?v:[];
 const text=v=>String(v??'').trim();
 const termsOf=l=>arr(l.terms).length?arr(l.terms):arr(l.termsToKnow);
 const measureOf=l=>arr(l.measureAndRecord).length?arr(l.measureAndRecord):arr(l.measurements);
-const checksOf=l=>arr(l.knowledgeCheck).length?arr(l.knowledgeCheck):arr(l.courseLayer?.knowledgeCheck);
+const checksOf=l=>arr(l.knowledgeCheck).length?arr(l.knowledgeCheck):arr(l.assessment?.knowledgeCheck);
 const sourcesOf=l=>arr(l.sourceNotes).length?arr(l.sourceNotes):arr(l.evidence);
 const visualsOf=l=>arr(l.visuals);
 const crossOf=l=>{
@@ -60,7 +60,7 @@ function scoreLesson(entry){
     criterion(sourcesOf(l).length>=2,12,'source notes / evidence'),
     criterion(visualsOf(l).some(v=>v?.assetId&&v?.qaStatus==='approved')||Boolean(l.approvedVisualAssetId),8,'approved teaching visual'),
     criterion(checksOf(l).length>=3,7,'lesson-specific assessment'),
-    criterion(Boolean(l.assessmentDesign?.answerRationaleStatus&&l.assessmentDesign.answerRationaleStatus!=='pending_independent_review')||arr(l.courseLayer?.completionCriteria).length>0,3,'assessment rationale / completion'),
+    criterion(Boolean(l.assessmentDesign?.answerRationaleStatus&&l.assessmentDesign.answerRationaleStatus!=='pending_independent_review')||arr(l.assessment?.answerRationales).length>=checksOf(l).length&&checksOf(l).length>=3,3,'assessment rationale / completion'),
     criterion(Boolean(l.reviewControl||l.revision),2,'release control')
   ];
   const score=c.reduce((sum,x)=>sum+x.points,0);
