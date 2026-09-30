@@ -1,0 +1,11 @@
+DTF420 child-route shared-shell release trigger — 2026-09-12
+
+Reason: the production sitewide visual-integrity audit found that the Dtf420 source-controlled child-route overlay was promoted after the normal public-suite V5 header reconciliation step. The routes were valid and content-rich, but they lacked the approved V5 header, responsive-layout v1 marker, and sitewide UX polish v1 marker.
+
+Required release behavior:
+- build the reviewed dtfgenetics/Dtf420 static overlay from the ownership contract;
+- reconcile the isolated dtf-content-overlay tree through scripts/apply-sitewide-header.mjs after the Dtf420 build exists;
+- verify V5 header + responsive v1 + UX polish v1 across every staged standalone HTML route;
+- preserve WordPress ownership of /, /learn/, /community/, /games/, /seeds/, and /tools/ hubs;
+- promote only the existing allowlisted child-route prefixes;
+- run fresh anonymous production verification after deployment.
