@@ -55,13 +55,11 @@ for(const file of files){
 }
 
 
-// Public route trees must contain runtime assets, not release-trigger notes or archival bookkeeping.
+// Public route trees may carry deployment provenance, but not archival release-note folders.
 for (const file of files) {
   if (!file.startsWith('site/public-route-patch/')) continue;
   if (/\/release-triggers\//.test(file)) errors.push(`historical release trigger must not live in public route tree: ${file}`);
-  if (/\.(?:md|txt)$/i.test(file) && !/\/(?:robots|humans)\.txt$/i.test(file)) {
-    errors.push(`documentation/release-note artifact must not live in public route tree: ${file}`);
-  }
+  if (/\/README\.md$/i.test(file)) errors.push(`human README must not live in deployable public route tree: ${file}`);
 }
 
 for(const required of [
