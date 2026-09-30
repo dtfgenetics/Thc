@@ -65,6 +65,28 @@ for (const entry of archiveReadyRepos) {
   }
 }
 
+
+const migrationRepos = repos.filter((entry) => entry.status === "migration");
+const activeDeploymentStatuses = new Set([
+  "release-candidate",
+  "ready-to-package",
+  "production-v20",
+  "public-landing",
+  "runtime-integration"
+]);
+
+for (const entry of migrationRepos) {
+  const migrationApps = deploymentApps.filter((app) => app.repository === entry.repo);
+  for (const app of migrationApps) {
+    if (app.route) {
+      errors.push(`migration repository must not own a public route: ${entry.repo} -> ${app.route}`);
+    }
+    if (activeDeploymentStatuses.has(app.status)) {
+      errors.push(`migration repository has active deployment status: ${entry.repo} -> ${app.status}`);
+    }
+  }
+}
+
 const prohibitedCanonical = new Set(["dtfgenetics/Dtf420","dtfgenetics/dtf-thc-hub"]);
 for (const repo of prohibitedCanonical) {
   const entry = repos.find(r => r.repo === repo);
