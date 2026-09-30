@@ -16,6 +16,8 @@ on:
       - 'scripts/build-encyclopedia-discovery-index.mjs'
       - 'scripts/build-thc-education-search-index.mjs'
       - 'scripts/validate-thc-education-search.mjs'
+      - 'scripts/validate-learning-route-writer-boundaries.mjs'
+      - 'site/deployment/dtf420-static-overlay.json'
       - 'scripts/validate-encyclopedia-search-benchmark.mjs'
       - 'scripts/build-wordpress-learning-search-runtime.mjs'
       - 'scripts/deploy/wordpress-learning-search-runtime.sh'
@@ -71,6 +73,7 @@ jobs:
           node --check scripts/publish-wordpress-learning-center-pages.mjs
           node --check scripts/update-wordpress-learn-learning-center.mjs
           node --check scripts/build-wordpress-learning-search-runtime.mjs
+          node scripts/validate-learning-route-writer-boundaries.mjs
           bash -n scripts/deploy/wordpress-learning-search-runtime.sh
           php -l site/wordpress/mu-plugins/dtf-learning-search.php
           npm run verify:wordpress-learning-search
