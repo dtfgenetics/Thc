@@ -59,7 +59,63 @@
         "Every ahead/diverged branch is migrated, superseded or historical-only.",
         "No production route or deployment authority depends on the repository.",
         "Repository registry may then move from migration to archive_candidate/archive_ready."
-      ]
+      ],
+      "branchReview": {
+        "reviewedAt": "2026-09-30",
+        "deleteSafe": [
+          {
+            "branch": "cleanup/remove-legacy-production-entrypoints-20260930",
+            "basis": "0 commits ahead of main; branch is 11 commits behind main"
+          }
+        ],
+        "reconcileNeeded": [
+          {
+            "branch": "cleanup/remove-generated-preview-tree-20260930",
+            "reason": "1 unique cleanup commit; branch is behind main"
+          },
+          {
+            "branch": "cleanup/remove-grow-doc-data-export-20260930",
+            "reason": "7 commits ahead; touches legacy Grow Doc export and packaging"
+          },
+          {
+            "branch": "cleanup/remove-high-iq-placeholder-v2-20260930",
+            "reason": "2 commits ahead; removes legacy placeholder data"
+          },
+          {
+            "branch": "cleanup/remove-legacy-game-engine-20260930",
+            "reason": "5 commits ahead; removes superseded game-engine package"
+          },
+          {
+            "branch": "cleanup/remove-legacy-grow-doc-v3-20260930",
+            "reason": "12 commits ahead; removes legacy Grow Doc implementation and packaging references"
+          },
+          {
+            "branch": "cleanup/remove-migrated-kush-kings-20260930",
+            "reason": "9 commits ahead; removes copied release bundle and registry references"
+          },
+          {
+            "branch": "cleanup/remove-migrated-thc-u-know-20260930",
+            "reason": "6 commits ahead; removes copied release bundle and registry references"
+          },
+          {
+            "branch": "cleanup/remove-migrated-weedopolis-20260930",
+            "reason": "7 commits ahead; removes copied Weedopolis source/release bundles"
+          },
+          {
+            "branch": "cleanup/remove-superseded-legacy-brand-assets-20260930",
+            "reason": "3 commits ahead; removes legacy brand assets"
+          },
+          {
+            "branch": "cleanup/retire-scheduled-legacy-production-audit-20260930",
+            "reason": "1 commit ahead; removes obsolete scheduled audit workflow"
+          },
+          {
+            "branch": "cleanup/dedupe-high-land-legacy-assets-20260930",
+            "reason": "10 commits ahead; changes legacy High Land code/assets and requires provenance comparison before retirement"
+          }
+        ],
+        "rule": "Do not merge diverged cleanup branches wholesale. Rebase or selectively apply only the retirement changes that remain valid against current main, then validate before classifying delete-safe."
+      }
     },
     {
       "repo": "dtfgenetics/code",
