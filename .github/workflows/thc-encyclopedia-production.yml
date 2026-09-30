@@ -5,6 +5,7 @@ on:
     paths:
       - 'content/encyclopedia/**'
       - 'configuration/encyclopedia-topics.json'
+      - 'configuration/encyclopedia-search-language.json'
       - 'data/encyclopedia-completion-scorecard.json'
       - 'site/public-route-patch/learn/encyclopedia/**'
       - 'site/public-route-patch/learn/search/**'
@@ -19,6 +20,7 @@ on:
     paths:
       - 'content/encyclopedia/**'
       - 'configuration/encyclopedia-topics.json'
+      - 'configuration/encyclopedia-search-language.json'
       - 'site/public-route-patch/learn/encyclopedia/**'
       - 'scripts/*encyclopedia*.mjs'
       - '.agents/skills/thc-encyclopedia-production/**'
