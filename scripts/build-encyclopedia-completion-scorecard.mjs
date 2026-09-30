@@ -16,9 +16,9 @@ const walk=dir=>{
     else if(entry.isFile()&&entry.name.endsWith('.json')){
       const json=readJson(file);
       if(!json)continue;
-      if(/^THC-ENC-\d{3}$/.test(json.id||'')) lessonById.set(json.id,{...json,_file:path.relative(root,file)});
+      if(/^THC-ENC-\d{3,}$/.test(json.id||'')) lessonById.set(json.id,{...json,_file:path.relative(root,file)});
       for(const lesson of Array.isArray(json.lessons)?json.lessons:[]){
-        if(/^THC-ENC-\d{3}$/.test(lesson.id||'')) lessonById.set(lesson.id,{...lesson,_file:path.relative(root,file)});
+        if(/^THC-ENC-\d{3,}$/.test(lesson.id||'')) lessonById.set(lesson.id,{...lesson,_file:path.relative(root,file)});
       }
     }
   }
