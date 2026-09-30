@@ -64,5 +64,13 @@
     "pagefind/pagefind.js",
     "pagefind/dtf-search-manifest.json",
     "games/stoner-duck-race/index.html"
+  ],
+  "legacyCompatibilityRoutes": [
+    {
+      "prefix": "learn/academy",
+      "canonicalReplacement": "/courses/",
+      "structuredLearningReplacement": "/learn/learning-hub/",
+      "reason": "Legacy Academy V2 route retained temporarily for inbound compatibility. Certification/course ownership now belongs to Certification Catalog V4 and Learning Hub."
+    }
   ]
 }
