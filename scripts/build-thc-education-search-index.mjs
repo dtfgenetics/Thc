@@ -36,16 +36,50 @@ for(const item of nav?.learn?.sections||[]) add({id:'learn-'+item.route.replace(
 for(const item of nav?.courses?.sections||[]) add({id:'course-'+item.route.replace(/\W+/g,'-'),type:'Courses',title:item.label,route:item.route,summary:'Structured THC course or learning pathway.',keywords:['course','academy',item.label]});
 for(const item of nav?.tools||[]) if(item.public) add({id:'tool-'+item.id,type:'Tool',title:item.title,route:item.route,summary:'Public THC cultivation reference or workflow tool.',keywords:[item.id,item.title]});
 
+const controlledRegistry=readJson('content/encyclopedia/current-controlled-registry.json');
+const encyclopediaTopics=readJson('configuration/encyclopedia-topics.json');
+const topicByPart=new Map((encyclopediaTopics?.topics||[]).map(topic=>[Number(topic.part),topic]));
+const slugify=(value)=>String(value??'').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+
+for(const entry of controlledRegistry?.entries||[]){
+  const topic=topicByPart.get(Number(entry.part));
+  const published=Number(entry.number)<=335;
+  add({
+    id:entry.id,
+    type:'Encyclopedia',
+    title:entry.title,
+    route:published
+      ? `/encyclopedia/${slugify(entry.title)}/`
+      : `/learn/encyclopedia/?lesson=${encodeURIComponent(entry.id)}`,
+    summary:(topic?.title||`Part ${entry.part}`)+' · '+(entry.primaryFormat||'Reference')+(published?'':' · catalogued; full lesson in review'),
+    keywords:[topic?.title,entry.primaryFormat,entry.teachingVisual,entry.id,published?'published':'in review'].filter(Boolean)
+  });
+}
+
 walk(path.join(root,'content/encyclopedia'),file=>{
   if(!file.endsWith('.json'))return;
   let x;try{x=JSON.parse(fs.readFileSync(file,'utf8'))}catch{return}
   if(!x?.id||!x?.title)return;
+  const existing=docs.get(String(x.id));
+  if(existing){
+    const terms=[
+      ...(Array.isArray(x.terms)?x.terms.map(t=>t?.term):[]),
+      ...(Array.isArray(x.termsToKnow)?x.termsToKnow:[]),
+      ...(Array.isArray(x.cultivationRelevance)?x.cultivationRelevance.slice(0,2):[])
+    ];
+    docs.set(String(x.id),{
+      ...existing,
+      summary:clean(x.objective||(Array.isArray(x.coreScience)?x.coreScience[0]:existing.summary)),
+      keywords:[...new Set([...(existing.keywords||[]),...terms.map(clean).filter(Boolean)])].slice(0,24)
+    });
+    return;
+  }
   const slug=x.slug||String(x.id).toLowerCase();
   add({
     id:x.id,
     type:'Encyclopedia',
     title:x.title,
-    route:`/learn/encyclopedia/${slug}/`,
+    route:`/encyclopedia/${slug}/`,
     summary:x.objective||(Array.isArray(x.coreScience)?x.coreScience[0]:''),
     keywords:[...(x.terms||[]).map(t=>t?.term),...(x.cultivationRelevance||[]).slice(0,2),x.id]
   });

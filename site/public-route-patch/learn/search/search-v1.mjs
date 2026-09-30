@@ -60,10 +60,26 @@ for(const button of filters){
 }
 input.addEventListener('input',render);
 
-fetch('./search-index.json',{cache:'no-store'})
-  .then(r=>{if(!r.ok)throw new Error('Search index failed to load');return r.json()})
-  .then(payload=>{
-    documents=Array.isArray(payload?.documents)?payload.documents:[];
+Promise.all([
+  fetch('./search-index.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('Search index failed to load');return r.json()}),
+  fetch('../encyclopedia/encyclopedia-index.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('Encyclopedia index failed to load');return r.json()})
+]).then(([payload,encyclopedia])=>{
+    documents=Array.isArray(payload?.documents)?payload.documents.slice():[];
+    const seen=new Set(documents.map(x=>String(x.id)));
+    for(const item of Array.isArray(encyclopedia?.lessons)?encyclopedia.lessons:[]){
+      if(seen.has(String(item.id)))continue;
+      documents.push({
+        id:item.id,
+        type:'Encyclopedia',
+        title:item.title,
+        route:item.route,
+        summary:item.status==='published'
+          ? (item.topic+' · '+item.primaryFormat)
+          : (item.topic+' · catalogued entry; full lesson is still in review'),
+        keywords:[...(item.keywords||[]),item.topic,item.primaryFormat,item.status].filter(Boolean)
+      });
+      seen.add(String(item.id));
+    }
     buildFuse();
     const types=[...new Set(documents.map(x=>x.type).filter(Boolean))].sort();
     const filterHost=document.querySelector('[data-search-filters]');
