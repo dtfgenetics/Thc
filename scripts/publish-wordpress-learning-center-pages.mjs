@@ -76,7 +76,7 @@ function safeJson(value) {
 function embeddedSearchApp(slug) {
   if (!['search','encyclopedia'].includes(slug)) return '';
   const payload = slug === 'search'
-    ? `window.__THC_SEARCH_INDEX__=${safeJson(searchIndex)};window.__THC_ENCYCLOPEDIA_INDEX__=${safeJson(encyclopediaIndex)};`
+    ? `window.__THC_SEARCH_INDEX__=${safeJson(searchIndex)};window.__THC_ENCYCLOPEDIA_INDEX__={lessons:[]};`
     : `window.__THC_ENCYCLOPEDIA_INDEX__=${safeJson(encyclopediaIndex)};`;
   const runtime = slug === 'search' ? searchRuntimeSource : encyclopediaRuntimeSource;
   return [
