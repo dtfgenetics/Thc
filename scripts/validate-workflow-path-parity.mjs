@@ -8,12 +8,27 @@ const workflows=[
 const errors=[];
 
 function extractPaths(source,event){
-  const eventRe=new RegExp(`^  ${event}:\\n([\\s\\S]*?)(?=^  [a-zA-Z_][a-zA-Z0-9_-]*:|^permissions:|^jobs:|\\Z)`,'m');
-  const block=source.match(eventRe)?.[1]||'';
-  const pathsBlock=block.match(/^[ ]{4}paths:\n([\s\S]*?)(?=^[ ]{4}[a-zA-Z_][a-zA-Z0-9_-]*:|^\S|\Z)/m)?.[1]||'';
-  return pathsBlock.split('\n')
-    .map(line=>line.match(/^[ ]{6}- ['"](.+?)['"]\s*$/)?.[1])
-    .filter(Boolean);
+  const lines=source.split(/\r?\n/);
+  let active=false;
+  let inPaths=false;
+  const paths=[];
+  for(const line of lines){
+    const top=line.match(/^  ([A-Za-z_][A-Za-z0-9_-]*):\s*$/);
+    if(top){
+      if(active && top[1]!==event) break;
+      active=top[1]===event;
+      inPaths=false;
+      continue;
+    }
+    if(!active) continue;
+    if(/^    paths:\s*$/.test(line)){inPaths=true;continue;}
+    if(inPaths){
+      const item=line.match(/^      - ['"](.+?)['"]\s*$/);
+      if(item){paths.push(item[1]);continue;}
+      if(/^    [A-Za-z_][A-Za-z0-9_-]*:\s*/.test(line)) break;
+    }
+  }
+  return paths;
 }
 
 for(const workflow of workflows){
@@ -25,6 +40,8 @@ for(const workflow of workflows){
   const pushOnly=[...pushSet].filter(x=>!prSet.has(x));
   if(!pr.length) errors.push(`${workflow}: pull_request.paths is empty or unreadable`);
   if(!push.length) errors.push(`${workflow}: push.paths is empty or unreadable`);
+  if(pr.length!==prSet.size) errors.push(`${workflow}: pull_request.paths contains duplicate entries`);
+  if(push.length!==pushSet.size) errors.push(`${workflow}: push.paths contains duplicate entries`);
   if(missingOnPush.length) errors.push(`${workflow}: paths watched on PR but skipped after merge: ${missingOnPush.join(', ')}`);
   if(pushOnly.length) errors.push(`${workflow}: push-only paths drift from PR coverage: ${pushOnly.join(', ')}`);
 }
