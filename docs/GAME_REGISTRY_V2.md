@@ -30,7 +30,7 @@ Concept bank: **18**
 | Quack & Bake: Stoner Duck Race | `stoner-duck-race` | dtfgenetics/Dtf420 | /games/stoner-duck-race | `playable-local` | dtfgenetics/Thc | Complete multiplayer/browser presentation QA, lock production ownership/public route, then package through the DTFSeeds release pipeline. |
 | Root Cause | `root-cause` | dtfgenetics/Thc | /games/root-cause/ | `vertical-slice` | dtfgenetics/Thc | Reconcile public-hub intent, run full route QA, and promote only after exact live verification. |
 | Seed Man: Grow. Fight. Restore. | `seed-man-platformer` | dtfgenetics/Thc | /games/seed-man-platformer/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
-| Seed Man: Seed Ascent | `seed-ascent` | dtfgenetics/Dtf420 | /games/seed-ascent | `playable-local` | dtfgenetics/Thc | Complete browser/game-feel QA and establish explicit production ownership/cutover before public promotion. |
+| Seed Man: Seed Ascent | `seed-ascent` | dtfgenetics/Dtf420 | /games/seed-ascent | `playable-local` | dtfgenetics/Thc | Complete game-feel QA and decide final canonical owner/cutover; migration-overlay release remains allowed. |
 | Spin the Strain | `spin-the-strain` | dtfgenetics/Thc | /games/spin-the-strain/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Strain Match | `strain-match` | dtfgenetics/Thc | /games/strain-match/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Strain Showdown | `strain-showdown` | dtfgenetics/Thc | /games/strain-showdown/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
