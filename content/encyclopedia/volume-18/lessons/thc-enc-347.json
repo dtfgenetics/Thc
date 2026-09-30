@@ -1,0 +1,71 @@
+{
+  "id": "THC-ENC-347",
+  "number": 347,
+  "title": "Equilibrium Moisture and Moisture Sorption",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Concept diagram",
+  "objective": "Explain equilibrium moisture, sorption isotherms, hysteresis, temperature, and moisture redistribution.",
+  "termsToKnow": [
+    "equilibrium moisture content",
+    "sorption isotherm",
+    "adsorption",
+    "desorption",
+    "hysteresis",
+    "equilibrium RH",
+    "hygroscopicity"
+  ],
+  "coreScience": [
+    "At equilibrium, a material has no net moisture exchange with surrounding air under a stable temperature and humidity. Equilibrium moisture content links material water content to environmental relative humidity and temperature.",
+    "Sorption isotherms differ during drying and rewetting, a phenomenon called hysteresis. Flower structure, composition, particle size, prior drying, temperature, and cultivar can change the relation.",
+    "Material rarely reaches perfect equilibrium instantly. Dense flowers and sealed containers can maintain internal gradients while external air or a surface reading appears stable."
+  ],
+  "cultivationRelevance": [
+    "Use sorption concepts to understand why overdried material can reabsorb moisture and why container equilibration takes time. Validate with cannabis material rather than generic plant charts."
+  ],
+  "measureAndRecord": [
+    "Sample form",
+    "initial moisture/aW",
+    "temperature/RH",
+    "adsorption/desorption history",
+    "mass over time",
+    "equilibrium criterion",
+    "replicate and cultivar."
+  ],
+  "misconceptions": [
+    "A product immediately matches room RH when placed in the room.",
+    "Rewetting follows the exact reverse path of drying.",
+    "One equilibrium-moisture value applies to all cannabis flowers."
+  ],
+  "evidenceLimits": [
+    "Published cannabis sorption data remain limited; cultivar and matrix differences require local characterization."
+  ],
+  "crossLinks": "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems.",
+  "sourceNotes": [
+    "V18-SRC-010",
+    "V18-SRC-013",
+    "V18-SRC-014"
+  ],
+  "knowledgeCheck": [
+    "For \"Equilibrium Moisture and Moisture Sorption\", explain the mechanism behind this objective: Explain equilibrium moisture, sorption isotherms, hysteresis, temperature, and moisture redistribution. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"A product immediately matches room RH when placed in the room.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Use sorption concepts to understand why overdried material can reabsorb moisture and why container equilibration takes time. Validate with cannabis material rather than generic plant charts. Build a verification plan using the lesson's record set (Sample form; initial moisture/aW; temperature/RH; adsorption/desorption history; mass over time; equilibrium criterion; replicate and cultivar.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 18: Harvest and Postharvest Plant Material Science — DRAFT COMPLETE v1.0",
+    "driveFileId": "1b-criVA1-WulMDIo8rFFdtuGuI4RMcE4yCT3jumDlAw",
+    "evidenceControl": "atomic_claim_ledger_not_started",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "equilibrium-moisture-and-moisture-sorption",
+  "route": "/encyclopedia/equilibrium-moisture-and-moisture-sorption",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

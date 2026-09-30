@@ -1,0 +1,67 @@
+{
+  "id": "THC-ENC-394",
+  "number": 394,
+  "title": "Phenotyping Morphology, Flowering, and Yield",
+  "primaryFormat": "Data / QA",
+  "requiredTeachingVisual": "Standardized Cannabis phenotype measurement plate",
+  "objective": "Measure plant architecture, development, flowering, biomass, and product yield with controlled definitions and repeatable sampling.",
+  "termsToKnow": [
+    "phenotype",
+    "ontology",
+    "developmental stage",
+    "architecture",
+    "harvest index",
+    "fresh mass",
+    "dry mass",
+    "marketable yield",
+    "observer repeatability"
+  ],
+  "coreScience": [
+    "Phenotyping converts plant observations into data. Terms such as “stretch,” “dense,” “fast,” “branchy,” or “heavy” are not comparable until the measurement, reference point, stage, and unit are defined. Height may be measured from media surface to apex; canopy width may require two perpendicular axes; flowering onset may mean first preflower, first pistillate inflorescence, or a defined proportion of flowering nodes.",
+    "Yield must identify the product and basis. Whole-plant fresh mass, trimmed wet flower, dry inflorescence, marketable flower, seed, fiber, and total analyte yield answer different questions. Moisture correction, stem and leaf fractions, rejected material, sampling, and postharvest losses affect comparisons. Concentration multiplied by representative dry mass can estimate total analyte yield, but both components carry uncertainty.",
+    "Use stage-specific protocols, training images, calibrated instruments, and repeatability checks. Record plant positions and destructive-sampling history. Automated images, lidar, and computer vision can increase throughput but require ground truth and can inherit bias from lighting, occlusion, segmentation, and training data. Preserve raw images and metadata rather than only final scores."
+  ],
+  "cultivationRelevance": [
+    "Create a phenotype dictionary shared across breeding, cultivation, laboratory, and postharvest teams. Pilot it before the main population."
+  ],
+  "measureAndRecord": [
+    "Trait name and definition; unit; instrument/observer; stage/date/time; plant and position; height/width/nodes/branches; flowering milestones; fresh/dry fractions; marketable and rejected yield; moisture basis; images; repeatability and missingness."
+  ],
+  "misconceptions": [
+    "Dry flower weight and harvest yield are interchangeable.",
+    "A photograph is an objective phenotype by itself.",
+    "Every breeder uses generation and flowering terms the same way."
+  ],
+  "evidenceLimits": [
+    "Morphology and yield depend on environment, density, training, stage, harvest definition, moisture basis, and observer or model performance."
+  ],
+  "crossLinks": "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems.",
+  "sourceNotes": [
+    "V20-SRC-005",
+    "V20-SRC-012",
+    "V20-SRC-034"
+  ],
+  "knowledgeCheck": [
+    "For \"Phenotyping Morphology, Flowering, and Yield\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+    "A learner claims, \"Dry flower weight and harvest yield are interchangeable.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Create a phenotype dictionary shared across breeding, cultivation, laboratory, and postharvest teams. Pilot it before the main population. Build a verification plan using the lesson's record set (Trait name and definition; unit; instrument/observer; stage/date/time; plant and position; height/width/nodes/branches; flowering milestones; fresh/dry fractions; marketable and rejected yield; moisture basis; images; repeatability and missingness.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 20: Breeding, Selection, and Genetic Conservation — DRAFT COMPLETE v0.1",
+    "driveFileId": "1ru6DHiVQ7O-tsY3j7R_rJs_ORwMDfGW9sfZxoiXCq5k",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "phenotyping-morphology-flowering-and-yield",
+  "route": "/encyclopedia/phenotyping-morphology-flowering-and-yield",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

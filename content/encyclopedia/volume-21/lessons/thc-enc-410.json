@@ -1,0 +1,69 @@
+{
+  "id": "THC-ENC-410",
+  "number": 410,
+  "title": "Scouting and Plant-Health Records",
+  "primaryFormat": "Data / QA",
+  "requiredTeachingVisual": "Scouting route, incidence, severity, and evidence record",
+  "objective": "Record plant-health observations using repeatable routes, units, severity scales, organism confidence, and diagnostic boundaries.",
+  "termsToKnow": [
+    "scouting unit",
+    "incidence",
+    "severity",
+    "prevalence",
+    "symptom",
+    "sign",
+    "distribution",
+    "specimen",
+    "diagnostic confidence",
+    "differential diagnosis"
+  ],
+  "coreScience": [
+    "Scouting is structured observation, not a casual walk. Define the crop population, route, number and type of units, plant parts, canopy layers, substrate or soil zones, traps, and observation interval. Incidence is the proportion of units affected; severity is the amount of tissue or impact within an affected unit. Counts, ratings, and percentages require an explicit denominator and scale.",
+    "Symptoms are plant responses; signs are physical evidence of an organism. Yellowing, necrosis, wilt, spots, distortion, root discoloration, odor, webbing, frass, spores, and insects can each have several causes. Record distribution, progression, environmental and treatment history, and co-occurring evidence. Identify organisms to the justified level and preserve photographs or specimens when confidence is limited.",
+    "Scouting records should distinguish observation, preliminary interpretation, confirmatory test, action threshold, intervention, and outcome. A positive molecular test may detect an organism without proving that it caused every symptom. A favorable environment does not prove infection. Absence from a limited sample does not prove absence from the crop."
+  ],
+  "cultivationRelevance": [
+    "Use fixed scouting routes plus targeted risk zones. Trend plant, trap, and symptom data over time and link actions to lawful label and quarantine records."
+  ],
+  "measureAndRecord": [
+    "Field/room/zone; route and sampled units; date/time/observer/weather; plant IDs and stage; organ/position; incidence denominator; severity scale; symptom/sign; organism and confidence; photo/specimen/test IDs; environmental/treatment context; threshold/action; outcome."
+  ],
+  "misconceptions": [
+    "One symptomatic leaf establishes the diagnosis.",
+    "A pest present on a trap proves crop damage.",
+    "Zero detections in a small sample proves the room is clean."
+  ],
+  "evidenceLimits": [
+    "Scouting sensitivity depends on timing, distribution, observer, life stage, sampling, symptoms, and diagnostic method."
+  ],
+  "crossLinks": "THC-ENC-261–340; THC-ENC-373; THC-ENC-376; THC-ENC-404–406; THC-ENC-413.",
+  "sourceNotes": [
+    "V21-SRC-002",
+    "V21-SRC-011",
+    "V21-SRC-026",
+    "V21-SRC-033"
+  ],
+  "knowledgeCheck": [
+    "For \"Scouting and Plant-Health Records\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+    "A learner claims, \"One symptomatic leaf establishes the diagnosis.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Use fixed scouting routes plus targeted risk zones. Trend plant, trap, and symptom data over time and link actions to lawful label and quarantine records. Build a verification plan using the lesson's record set (Field/room/zone; route and sampled units; date/time/observer/weather; plant IDs and stage; organ/position; incidence denominator; severity scale; symptom/sign; organism and confidence; photo/specimen/test IDs; environmental/treatment context; threshold/action; outcome.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+    "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "scouting-and-plant-health-records",
+  "route": "/encyclopedia/scouting-and-plant-health-records",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

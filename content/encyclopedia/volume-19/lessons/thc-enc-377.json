@@ -1,0 +1,76 @@
+{
+  "id": "THC-ENC-377",
+  "number": 377,
+  "title": "Pollen Drift and Neighboring Crops",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Pollen source-pathway-receptor map",
+  "objective": "Assess unwanted pollination through source strength, flowering overlap, wind, atmospheric stability, distance, topography, and receptor sensitivity.",
+  "termsToKnow": [
+    "pollen shed",
+    "receptor",
+    "flowering overlap",
+    "dispersal kernel",
+    "deposition",
+    "gene flow",
+    "isolation distance",
+    "male sterility",
+    "wind pollination"
+  ],
+  "coreScience": [
+    "Cannabis is wind pollinated and can release large quantities of small pollen grains. Risk requires a source, viable pollen, overlapping flowering, atmospheric transport, and receptive female flowers. Distance reduces average deposition but does not create a sharp zero-risk boundary.",
+    "Recent U.S. modeling shows that dispersal patterns vary by region, month, time of day, convection, and wind shear. Daytime conditions can transport pollen broadly, while nighttime conditions can favor deposition nearer the source. The model illustrates why one universal isolation distance is scientifically weak. Local male plants, feral hemp, breeding blocks, fiber or grain fields, and contaminated seed lots can all act as sources.",
+    "Screens, tree lines, and border crops cannot guarantee containment. Detection and response should include flowering surveys, wind records, neighbor communication where lawful, genetic-source records, and seed-set monitoring. Removing males after pollen release may reduce future shed but cannot reverse pollination already completed."
+  ],
+  "cultivationRelevance": [
+    "Map potential pollen sources well before flowering, separate seed-production and unpollinated-flower goals, inspect plants early and repeatedly, and document risk decisions."
+  ],
+  "measureAndRecord": [
+    "Crop/line/sex system",
+    "source locations and areas",
+    "male/monoecious/feral observations",
+    "flowering overlap",
+    "wind direction/speed/stability",
+    "distance/topography/barriers",
+    "pollen monitoring if used",
+    "seed set",
+    "affected lots",
+    "communication and corrective action."
+  ],
+  "misconceptions": [
+    "A fixed buffer guarantees no pollen.",
+    "Pollen only moves during strong winds.",
+    "Removing a male after visible pollen release prevents all seed set."
+  ],
+  "evidenceLimits": [
+    "Pollen viability, release, atmospheric transport, deposition, fertilization, and seed set are distinct processes with substantial spatial and temporal variability."
+  ],
+  "crossLinks": "THC-ENC-015–018; THC-ENC-201–220; THC-ENC-361–364; THC-ENC-380.",
+  "sourceNotes": [
+    "V19-SRC-007",
+    "V19-SRC-005",
+    "V19-SRC-034"
+  ],
+  "knowledgeCheck": [
+    "For \"Pollen Drift and Neighboring Crops\", explain the mechanism behind this objective: Assess unwanted pollination through source strength, flowering overlap, wind, atmospheric stability, distance, topography, and receptor sensitivity. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"A fixed buffer guarantees no pollen.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Map potential pollen sources well before flowering, separate seed-production and unpollinated-flower goals, inspect plants early and repeatedly, and document risk decisions. Build a verification plan using the lesson's record set (Crop/line/sex system; source locations and areas; male/monoecious/feral observations; flowering overlap; wind direction/speed/stability; distance/topography/barriers; pollen monitoring if used; seed set; affected lots; communication and corrective action.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 19: Outdoor, Greenhouse, and Protected Cultivation Ecology — DRAFT COMPLETE v0.1",
+    "driveFileId": "1-qH7O70W9fn0VVK58SAilPwZH-75TJmUl7QkgpmVwBA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "pollen-drift-and-neighboring-crops",
+  "route": "/encyclopedia/pollen-drift-and-neighboring-crops",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

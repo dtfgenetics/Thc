@@ -1,0 +1,71 @@
+{
+  "id": "THC-ENC-415",
+  "number": 415,
+  "title": "Reading a Scientific Paper",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Scientific-paper evidence extraction map",
+  "objective": "Evaluate a paper by connecting its question, material, design, methods, results, uncertainty, limitations, and publication status to the claim being used.",
+  "termsToKnow": [
+    "research question",
+    "hypothesis",
+    "population",
+    "method",
+    "endpoint",
+    "effect size",
+    "confidence interval",
+    "peer review",
+    "conflict of interest",
+    "correction",
+    "retraction"
+  ],
+  "coreScience": [
+    "Begin with the claim you need to evaluate, not the paper’s title. Identify the research question, biological material, cultivar or accession, propagation mode, plant count, experimental unit, environment, treatments, controls, endpoints, sampling positions, methods, and analysis. Abstracts compress evidence and may omit exclusions, null results, protocol details, uncertainty, and limitations.",
+    "Read figures and tables with units, denominators, axes, sample sizes, error bars, and captions. Statistical significance does not state biological importance. Examine effect size, uncertainty, variability, missing data, model assumptions, multiple comparisons, and whether the stated conclusion matches the design. A controlled-environment result may establish mechanism while having limited transfer to commercial rooms or outdoor crops.",
+    "Check the source’s current status. Find the DOI, journal page, PubMed record where available, data and protocol links, corrections, expressions of concern, or retractions. Preprints and reviews can be useful but have different roles. Funding and conflicts do not automatically invalidate work, yet they should inform scrutiny of design, selective reporting, and claims. Record exact page, figure, table, or section supporting each project claim."
+  ],
+  "cultivationRelevance": [
+    "Create a structured evidence-extraction record instead of saving only a citation. Separate what the study observed, what the authors inferred, what the project may publish, and what remains unresolved."
+  ],
+  "measureAndRecord": [
+    "Citation/DOI/version/status; claim; exact evidence location; material and identity; design and experimental unit; treatment/control; sample size; method; endpoint/units; effect/uncertainty; limitations; conflicts; data availability; applicability; project decision; reviewer/date."
+  ],
+  "misconceptions": [
+    "Peer reviewed means the paper is correct and universally applicable.",
+    "A significant p-value proves a large useful effect.",
+    "A review article is always stronger evidence than the primary studies it summarizes."
+  ],
+  "evidenceLimits": [
+    "Paper appraisal reduces misuse but cannot reveal all errors, unpublished data, undisclosed deviations, or future corrections."
+  ],
+  "crossLinks": "THC-ENC-416–420; every lesson claim ledger and source register.",
+  "sourceNotes": [
+    "V21-SRC-009",
+    "V21-SRC-014",
+    "V21-SRC-015",
+    "V21-SRC-030",
+    "V21-SRC-034"
+  ],
+  "knowledgeCheck": [
+    "For \"Reading a Scientific Paper\", explain the mechanism behind this objective: Evaluate a paper by connecting its question, material, design, methods, results, uncertainty, limitations, and publication status to the claim being used. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Peer reviewed means the paper is correct and universally applicable.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Create a structured evidence-extraction record instead of saving only a citation. Separate what the study observed, what the authors inferred, what the project may publish, and what remains unresolved. Build a verification plan using the lesson's record set (Citation/DOI/version/status; claim; exact evidence location; material and identity; design and experimental unit; treatment/control; sample size; method; endpoint/units; effect/uncertainty; limitations; conflicts; data availability; applicability; project decision; reviewer/date.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+    "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "reading-a-scientific-paper",
+  "route": "/encyclopedia/reading-a-scientific-paper",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

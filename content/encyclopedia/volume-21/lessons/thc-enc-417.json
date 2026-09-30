@@ -1,0 +1,68 @@
+{
+  "id": "THC-ENC-417",
+  "number": 417,
+  "title": "Correlation, Causation, and Confounding",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Causal pathway, confounder, mediator, and collider diagram",
+  "objective": "Separate association from causal evidence by identifying temporal order, confounders, mediators, selection effects, and alternative explanations.",
+  "termsToKnow": [
+    "correlation",
+    "causation",
+    "confounder",
+    "mediator",
+    "collider",
+    "reverse causation",
+    "selection bias",
+    "temporal sequence",
+    "counterfactual"
+  ],
+  "coreScience": [
+    "Correlation describes variables changing together; it does not identify why. Temperature and irrigation volume may rise together because hot weather causes both. Diseased plants may receive more treatment because symptoms prompted intervention, creating an association between treatment and poor outcome even when the treatment did not cause the disease. Reverse causation and management response are common in observational cultivation records.",
+    "A confounder influences both the proposed cause and outcome. Cultivar, plant size, room position, root-zone volume, crop stage, worker, season, and prior health can confound comparisons. A mediator lies on the causal pathway and should not always be “controlled away.” Conditioning on a collider—an outcome influenced by two variables—can create a false association. Causal diagrams help state assumptions before analysis.",
+    "Strong causal evidence combines a defined intervention, suitable control, randomization or credible adjustment, temporal order, mechanism, dose or gradient where relevant, replication, and consistency with alternative evidence. Observational data remain valuable for surveillance and hypothesis generation. Models can adjust only for measured, correctly modeled variables; a high correlation coefficient or predictive accuracy does not prove the intervention will work."
+  ],
+  "cultivationRelevance": [
+    "Before stating “X caused Y,” draw the plausible pathways and list competing explanations. Phrase conclusions at the level supported: observed association, treatment effect under the experiment, mechanism, or transfer hypothesis."
+  ],
+  "measureAndRecord": [
+    "Exposure and outcome definitions; time order; population; candidate confounders/mediators/colliders; allocation; control; repeated measures; missingness; model; effect estimate/uncertainty; sensitivity checks; alternative explanations; causal wording decision."
+  ],
+  "misconceptions": [
+    "A strong correlation proves a strong causal effect.",
+    "Controlling for every available variable always improves causal inference.",
+    "A predictive model identifies which intervention will change the outcome."
+  ],
+  "evidenceLimits": [
+    "Causal conclusions depend on design and assumptions that may be partly untestable; unmeasured confounding and selection can remain."
+  ],
+  "crossLinks": "THC-ENC-415–418; THC-ENC-393; THC-ENC-414.",
+  "sourceNotes": [
+    "V21-SRC-009",
+    "V21-SRC-030",
+    "V21-SRC-032",
+    "V21-SRC-034"
+  ],
+  "knowledgeCheck": [
+    "For \"Correlation, Causation, and Confounding\", explain the mechanism behind this objective: Separate association from causal evidence by identifying temporal order, confounders, mediators, selection effects, and alternative explanations. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"A strong correlation proves a strong causal effect.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Before stating “X caused Y,” draw the plausible pathways and list competing explanations. Phrase conclusions at the level supported: observed association, treatment effect under the experiment, mechanism, or transfer hypothesis. Build a verification plan using the lesson's record set (Exposure and outcome definitions; time order; population; candidate confounders/mediators/colliders; allocation; control; repeated measures; missingness; model; effect estimate/uncertainty; sensitivity checks; alternative explanations; causal wording decision.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+    "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "correlation-causation-and-confounding",
+  "route": "/encyclopedia/correlation-causation-and-confounding",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

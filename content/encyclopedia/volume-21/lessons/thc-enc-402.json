@@ -1,0 +1,70 @@
+{
+  "id": "THC-ENC-402",
+  "number": 402,
+  "title": "Accuracy, Precision, Resolution, and Uncertainty",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Accuracy–precision–resolution–uncertainty comparison diagram",
+  "objective": "Distinguish measurement trueness, precision, repeatability, resolution, bias, variability, and uncertainty.",
+  "termsToKnow": [
+    "accuracy",
+    "trueness",
+    "precision",
+    "repeatability",
+    "reproducibility",
+    "resolution",
+    "bias",
+    "random effect",
+    "uncertainty",
+    "measurand"
+  ],
+  "coreScience": [
+    "Accuracy is a qualitative concept describing closeness between a measured value and the quantity value being measured. It is not a numerical synonym for precision. Trueness concerns systematic difference from a reference, while precision concerns agreement among repeated measurements under stated conditions. A meter can produce tightly clustered values that are consistently biased, or scattered values whose average is near a reference. Neither pattern should be described only as “accurate” without evidence.",
+    "Resolution is the smallest display or scale increment, not proof that the final digit is meaningful. A controller displaying 0.01 °C may have much larger sensor, placement, calibration, response-time, and environmental uncertainty. Repeatability describes variation under closely matched conditions; reproducibility includes changed laboratories, operators, equipment, or conditions. Biological variation, sampling variation, and measurement variation must be separated when possible because adding more instrument repeats does not increase the number of independent plants or samples.",
+    "Measurement uncertainty describes a range of values reasonably attributable to the measurand, based on defined components and a model. Components can include reference standards, calibration, resolution, repeatability, drift, temperature, sampling, preparation, and model assumptions. Uncertainty is not a confession that the result is useless; it defines how strongly the result supports a decision. Comparisons near a specification or action limit need an explicit decision rule rather than treating every displayed difference as real."
+  ],
+  "cultivationRelevance": [
+    "Characterize critical meters and methods using references, repeats, range checks, and documented uncertainty or practical tolerance. Report meaningful digits and avoid ranking plants or treatments by differences smaller than the process can resolve."
+  ],
+  "measureAndRecord": [
+    "Measurand; method; sample; reference value; repeated results; mean/spread; bias estimate; resolution; environmental conditions; uncertainty components; combined/expanded uncertainty where used; coverage statement; decision rule."
+  ],
+  "misconceptions": [
+    "More decimal places mean greater accuracy.",
+    "Three readings from one sample are three independent biological replicates.",
+    "Uncertainty means the true value is guaranteed to lie inside one reported interval."
+  ],
+  "evidenceLimits": [
+    "Uncertainty statements depend on the measurement model, available evidence, coverage method, and intended decision; they do not correct biased sampling or wrong measurand definitions."
+  ],
+  "crossLinks": "THC-ENC-401; THC-ENC-403–404; THC-ENC-412; THC-ENC-414.",
+  "sourceNotes": [
+    "V21-SRC-004",
+    "V21-SRC-005",
+    "V21-SRC-007",
+    "V21-SRC-018",
+    "V21-SRC-019"
+  ],
+  "knowledgeCheck": [
+    "For \"Accuracy, Precision, Resolution, and Uncertainty\", explain the mechanism behind this objective: Distinguish measurement trueness, precision, repeatability, resolution, bias, variability, and uncertainty. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"More decimal places mean greater accuracy.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Characterize critical meters and methods using references, repeats, range checks, and documented uncertainty or practical tolerance. Report meaningful digits and avoid ranking plants or treatments by differences smaller than the process can resolve. Build a verification plan using the lesson's record set (Measurand; method; sample; reference value; repeated results; mean/spread; bias estimate; resolution; environmental conditions; uncertainty components; combined/expanded uncertainty where used; coverage statement; decision rule.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+    "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "accuracy-precision-resolution-and-uncertainty",
+  "route": "/encyclopedia/accuracy-precision-resolution-and-uncertainty",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "id": "THC-ENC-350",
+  "number": 350,
+  "title": "Drying Curves and Rate-of-Change Interpretation",
+  "primaryFormat": "Data / QA",
+  "requiredTeachingVisual": "Chart / measurement",
+  "objective": "Use mass, moisture, aW, temperature, and time-series data to distinguish drying phases, stalls, overshoot, and spatial variation.",
+  "termsToKnow": [
+    "drying curve",
+    "mass loss",
+    "drying rate",
+    "slope",
+    "plateau",
+    "endpoint",
+    "overshoot",
+    "sample interval",
+    "smoothing"
+  ],
+  "coreScience": [
+    "A drying curve plots a defined moisture-related measure against time. Container or representative-product mass can provide continuous trend, while destructive moisture or aW tests provide periodic endpoints.",
+    "The rate changes as available surface water declines and internal resistance increases. A plateau can indicate approach to equilibrium, sensor resolution, airflow failure, high room humidity, or a sample no longer representing the load.",
+    "Calculated slopes depend on interval, smoothing, missing data, scale drift, product removal, and container changes. An apparent endpoint requires confirmation with the relevant quality and safety measurements."
+  ],
+  "cultivationRelevance": [
+    "Define reference samples and balances, correct for removed samples and hardware, retain raw data, and use warning/action criteria for stalled or excessive rates."
+  ],
+  "measureAndRecord": [
+    "Scale/sensor ID and verification",
+    "sample geometry",
+    "raw mass/time",
+    "temperature/RH",
+    "intervention events",
+    "slope method",
+    "moisture/aW checks",
+    "endpoint and release."
+  ],
+  "misconceptions": [
+    "A flat mass curve proves every flower is dry.",
+    "One plant’s mass curve represents the entire room.",
+    "A faster slope always means a better process."
+  ],
+  "evidenceLimits": [
+    "Mass change includes water and volatile loss and can be affected by handling; it is not a complete composition measurement."
+  ],
+  "crossLinks": "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems.",
+  "sourceNotes": [
+    "V18-SRC-010",
+    "V18-SRC-011",
+    "V18-SRC-017"
+  ],
+  "knowledgeCheck": [
+    "For \"Drying Curves and Rate-of-Change Interpretation\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+    "A learner claims, \"A flat mass curve proves every flower is dry.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Define reference samples and balances, correct for removed samples and hardware, retain raw data, and use warning/action criteria for stalled or excessive rates. Build a verification plan using the lesson's record set (Scale/sensor ID and verification; sample geometry; raw mass/time; temperature/RH; intervention events; slope method; moisture/aW checks; endpoint and release.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 18: Harvest and Postharvest Plant Material Science — DRAFT COMPLETE v1.0",
+    "driveFileId": "1b-criVA1-WulMDIo8rFFdtuGuI4RMcE4yCT3jumDlAw",
+    "evidenceControl": "atomic_claim_ledger_not_started",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "drying-curves-and-rate-of-change-interpretation",
+  "route": "/encyclopedia/drying-curves-and-rate-of-change-interpretation",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

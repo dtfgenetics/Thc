@@ -1,0 +1,72 @@
+{
+  "id": "THC-ENC-419",
+  "number": 419,
+  "title": "Source Hierarchy, Citation, and Revision Control",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Source hierarchy and revision-state control map",
+  "objective": "Select sources by claim type, cite exact evidence, track versions and corrections, and preserve supersession history.",
+  "termsToKnow": [
+    "primary source",
+    "secondary source",
+    "official source",
+    "standard",
+    "guidance",
+    "citation",
+    "DOI",
+    "version",
+    "correction",
+    "retraction",
+    "supersession"
+  ],
+  "coreScience": [
+    "Source quality depends on the claim. A primary experiment can support what was measured under its design. A systematic review can summarize a body of evidence but inherits differences and weaknesses among studies. Official regulations, pesticide labels, standards, instrument manuals, and government methods control legal or operational requirements within their scope. Extension sources translate knowledge but should not replace primary evidence for high-risk numerical claims.",
+    "A citation should connect an atomic claim to an exact evidence location and use context. Record page, section, table, figure, equation, dataset, or quoted concept; identify the population, method, and limitations. A source URL alone is not a claim ledger. DOI and persistent identifiers improve retrieval, but they do not prove current validity. Check publisher records, Crossmark, PubMed notices, errata, corrections, retractions, and current standard editions.",
+    "Revision control separates created, reviewed, approved, deployed, live, superseded, and archived states. Preserve the prior version, reason for change, changed claims, affected pages and assets, reviewer, approval, effective date, and rollback path. Web pages can change without notice, so record access date and retain lawful controlled extracts or archived references where appropriate. Never overwrite a correction in a way that erases what users previously received."
+  ],
+  "cultivationRelevance": [
+    "Apply a source hierarchy and publication-decision field to every claim. Schedule freshness reviews for law, standards, methods, health and safety, product limits, and fast-moving science."
+  ],
+  "measureAndRecord": [
+    "Claim ID; source type/tier; full citation/identifier; version/date; access date; exact evidence location; evidence role; population/method; limits; correction/retraction check; project decision; reviewer/date; next review; superseded version and affected outputs."
+  ],
+  "misconceptions": [
+    "A DOI means the source is permanent and unchanged.",
+    "The newest source is automatically the strongest source.",
+    "Deleting superseded files prevents users from seeing old information."
+  ],
+  "evidenceLimits": [
+    "Source-control systems reduce stale or misapplied evidence but cannot guarantee that publications are error-free or that all updates are discoverable."
+  ],
+  "crossLinks": "THC-ENC-415–418; THC-ENC-420; all source registers, claim ledgers, and release records.",
+  "sourceNotes": [
+    "V21-SRC-010",
+    "V21-SRC-013",
+    "V21-SRC-014",
+    "V21-SRC-015",
+    "V21-SRC-016",
+    "V21-SRC-034"
+  ],
+  "knowledgeCheck": [
+    "For \"Source Hierarchy, Citation, and Revision Control\", explain the mechanism behind this objective: Select sources by claim type, cite exact evidence, track versions and corrections, and preserve supersession history. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"A DOI means the source is permanent and unchanged.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Apply a source hierarchy and publication-decision field to every claim. Schedule freshness reviews for law, standards, methods, health and safety, product limits, and fast-moving science. Build a verification plan using the lesson's record set (Claim ID; source type/tier; full citation/identifier; version/date; access date; exact evidence location; evidence role; population/method; limits; correction/retraction check; project decision; reviewer/date; next review; superseded version and affected outputs.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+    "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "source-hierarchy-citation-and-revision-control",
+  "route": "/encyclopedia/source-hierarchy-citation-and-revision-control",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

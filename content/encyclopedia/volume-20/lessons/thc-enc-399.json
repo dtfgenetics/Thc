@@ -1,0 +1,69 @@
+{
+  "id": "THC-ENC-399",
+  "number": 399,
+  "title": "Seed Storage, Germplasm Backup, and Regeneration",
+  "primaryFormat": "Procedure",
+  "requiredTeachingVisual": "Germplasm conservation and regeneration workflow",
+  "objective": "Preserve seed and living genetic resources through identity control, drying, storage, viability monitoring, safety duplication, and genetically responsible regeneration.",
+  "termsToKnow": [
+    "germplasm",
+    "accession",
+    "orthodox seed",
+    "viability",
+    "vigor",
+    "regeneration",
+    "safety duplicate",
+    "base collection",
+    "active collection",
+    "genetic integrity"
+  ],
+  "coreScience": [
+    "Germplasm conservation protects future breeding options. Seed lots need accession identity, parentage or collection origin, harvest and processing records, initial quality, and legal status. Cannabis seed is generally managed as an orthodox seed under dry, cold genebank practices, but each lot’s moisture response, viability, vigor, and storage behavior should be verified rather than assumed.",
+    "Long-term storage requires controlled drying, moisture-proof packaging, stable low temperature, monitoring, and backup at a separate secure location. Germination percentage alone can hide declining vigor or abnormal seedlings. Establish retest intervals and thresholds based on initial viability, storage conditions, seed quantity, value, and expected longevity. Preserve enough seed that monitoring does not consume the accession.",
+    "Regeneration creates new seed when quantity or viability falls. It can change the accession through small parent number, unequal flowering, pollen contamination, selection, environmental mortality, and accidental mixing. Use adequate effective population size, controlled isolation, representative family contribution, identity checks, and documentation. Clonal, tissue-culture, field, and cryogenic backups have different pathogen, mutation, space, and recovery risks and should complement rather than silently replace seed conservation."
+  ],
+  "cultivationRelevance": [
+    "Create an accession-level conservation plan with active material, long-term base storage, and geographically separate safety duplication."
+  ],
+  "measureAndRecord": [
+    "Accession and origin; legal/ownership records; parentage/population sample; harvest and cleaning; seed count and mass; moisture method; initial germination/vigor; package and storage conditions; monitoring dates/results; regeneration population and isolation; family contribution; backup location."
+  ],
+  "misconceptions": [
+    "A freezer automatically preserves seed indefinitely.",
+    "High germination means genetic integrity was preserved.",
+    "Regeneration simply replaces old seed with identical new seed."
+  ],
+  "evidenceLimits": [
+    "Storage longevity and regeneration fidelity depend on seed condition, moisture, temperature, package, population size, mating, health, and monitoring methods."
+  ],
+  "crossLinks": "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems.",
+  "sourceNotes": [
+    "V20-SRC-030",
+    "V20-SRC-031",
+    "V20-SRC-032",
+    "V20-SRC-011"
+  ],
+  "knowledgeCheck": [
+    "For \"Seed Storage, Germplasm Backup, and Regeneration\", put the decision in operational order: what must be verified before action, what evidence must be recorded during the work, and what condition would require a hold or escalation?",
+    "A learner claims, \"A freezer automatically preserves seed indefinitely.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Create an accession-level conservation plan with active material, long-term base storage, and geographically separate safety duplication. Build a verification plan using the lesson's record set (Accession and origin; legal/ownership records; parentage/population sample; harvest and cleaning; seed count and mass; moisture method; initial germination/vigor; package and storage conditions; monitoring dates/results; regeneration population and isolation; family contribution; backup location.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 20: Breeding, Selection, and Genetic Conservation — DRAFT COMPLETE v0.1",
+    "driveFileId": "1ru6DHiVQ7O-tsY3j7R_rJs_ORwMDfGW9sfZxoiXCq5k",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "seed-storage-germplasm-backup-and-regeneration",
+  "route": "/encyclopedia/seed-storage-germplasm-backup-and-regeneration",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

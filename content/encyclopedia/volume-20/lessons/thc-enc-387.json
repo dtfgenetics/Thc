@@ -1,0 +1,68 @@
+{
+  "id": "THC-ENC-387",
+  "number": 387,
+  "title": "Backcrossing and Recurrent-Parent Recovery",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Backcross genome-recovery and linkage-drag diagram",
+  "objective": "Introgress a defined donor trait while measuring recurrent-parent recovery, linkage drag, trait expression, and background performance.",
+  "termsToKnow": [
+    "backcross",
+    "recurrent parent",
+    "donor parent",
+    "introgression",
+    "linkage drag",
+    "foreground selection",
+    "background selection",
+    "BC1",
+    "BC2"
+  ],
+  "coreScience": [
+    "Backcrossing repeatedly mates selected progeny to a recurrent parent to introduce a donor trait while recovering the recurrent background. Under an idealized model with unlinked neutral loci and no selection, expected recurrent-parent genome proportion rises from about one-half in the F1 to three-quarters in BC1, seven-eighths in BC2, and so forth. Individual progeny vary around those expectations, and regions linked to the donor allele can remain large.",
+    "The donor trait must be verified in every generation. Foreground selection tracks the target allele or phenotype; background selection estimates recovery elsewhere in the genome. Recombinants near the target can reduce linkage drag. A marker associated in one population may fail in another if it is not causal or tightly linked, so validation is essential.",
+    "Backcrossing can lose donor traits controlled by many genes or environmental interactions. It can also restore recurrent-parent defects that the original cross had masked. Reciprocal fertility, sex, cytoplasm, and legal chemotype limits may constrain the design. After the desired introgression, selfing or intercrossing may be needed to fix the allele, followed by replicated performance and quality testing."
+  ],
+  "cultivationRelevance": [
+    "Use backcrossing for a defined introgression goal, not as a generic path to “make it like the parent.” Preserve donor, recurrent parent, intermediates, and flanking-marker data."
+  ],
+  "measureAndRecord": [
+    "Donor/recurrent IDs; target trait and causal/linked evidence; backcross generation; markers and recombination; recurrent genome estimate; phenotype and penetrance; donor segment size; fertility; off-target traits; selected and rejected progeny."
+  ],
+  "misconceptions": [
+    "Each backcross offspring has exactly the expected genome percentage.",
+    "Backcrossing preserves every desirable donor trait.",
+    "A linked marker is equivalent to the causal allele."
+  ],
+  "evidenceLimits": [
+    "Recovery and linkage drag depend on recombination, chromosome location, marker density, selection, population size, and the validity of the trait model."
+  ],
+  "crossLinks": "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems.",
+  "sourceNotes": [
+    "V20-SRC-004",
+    "V20-SRC-007",
+    "V20-SRC-026",
+    "V20-SRC-027"
+  ],
+  "knowledgeCheck": [
+    "For \"Backcrossing and Recurrent-Parent Recovery\", explain the mechanism behind this objective: Introgress a defined donor trait while measuring recurrent-parent recovery, linkage drag, trait expression, and background performance. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Each backcross offspring has exactly the expected genome percentage.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Use backcrossing for a defined introgression goal, not as a generic path to “make it like the parent.” Preserve donor, recurrent parent, intermediates, and flanking-marker data. Build a verification plan using the lesson's record set (Donor/recurrent IDs; target trait and causal/linked evidence; backcross generation; markers and recombination; recurrent genome estimate; phenotype and penetrance; donor segment size; fertility; off-target traits; selected and rejected progeny.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 20: Breeding, Selection, and Genetic Conservation — DRAFT COMPLETE v0.1",
+    "driveFileId": "1ru6DHiVQ7O-tsY3j7R_rJs_ORwMDfGW9sfZxoiXCq5k",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "backcrossing-and-recurrent-parent-recovery",
+  "route": "/encyclopedia/backcrossing-and-recurrent-parent-recovery",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

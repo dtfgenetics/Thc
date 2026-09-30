@@ -1,0 +1,73 @@
+{
+  "id": "THC-ENC-358",
+  "number": 358,
+  "title": "Water-Activity Measurement and Instrument Control",
+  "primaryFormat": "Data / QA",
+  "requiredTeachingVisual": "Record / example",
+  "objective": "Collect defensible aW data through representative samples, temperature equilibration, calibration/verification, cleanliness, and uncertainty.",
+  "termsToKnow": [
+    "water-activity meter",
+    "chilled mirror",
+    "capacitance sensor",
+    "equilibrium",
+    "check standard",
+    "calibration",
+    "verification",
+    "uncertainty"
+  ],
+  "coreScience": [
+    "Water-activity instruments estimate equilibrium vapor pressure above a sample using a defined sensor and chamber. Sample temperature, equilibration, chamber cleanliness, volatile interference, sample depth, and instrument range affect results.",
+    "Verification with appropriate standards checks performance at relevant points. Calibration changes the instrument relationship when permitted. Traceability does not guarantee fitness for purpose unless uncertainty is small enough for the decision.",
+    "Grinding can improve sample averaging but alters structure and exposed area; intact-flower tests preserve geometry but can miss internal variability. The method must match the specification."
+  ],
+  "cultivationRelevance": [
+    "Use a written method, clean chamber, temperature controls, standards, duplicate/replicate plan, outlier rule, and sample map. Hold results when checks fail."
+  ],
+  "measureAndRecord": [
+    "Instrument/model/serial/firmware",
+    "method",
+    "standards/lot/expected/observed",
+    "sample/position/preparation/mass",
+    "temperature/equilibration",
+    "duplicates",
+    "uncertainty",
+    "maintenance and disposition."
+  ],
+  "misconceptions": [
+    "A new water-activity meter is automatically accurate.",
+    "One decimal place proves the result is precise enough for release.",
+    "A check standard and product sample require identical equilibration behavior."
+  ],
+  "evidenceLimits": [
+    "Instrument and standard instructions are current-device controls. Acceptance criteria require laboratory validation."
+  ],
+  "crossLinks": "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems.",
+  "sourceNotes": [
+    "V18-SRC-012",
+    "V18-SRC-031",
+    "V18-SRC-032"
+  ],
+  "knowledgeCheck": [
+    "For \"Water-Activity Measurement and Instrument Control\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+    "A learner claims, \"A new water-activity meter is automatically accurate.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Use a written method, clean chamber, temperature controls, standards, duplicate/replicate plan, outlier rule, and sample map. Hold results when checks fail. Build a verification plan using the lesson's record set (Instrument/model/serial/firmware; method; standards/lot/expected/observed; sample/position/preparation/mass; temperature/equilibration; duplicates; uncertainty; maintenance and disposition.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 18: Harvest and Postharvest Plant Material Science — DRAFT COMPLETE v1.0",
+    "driveFileId": "1b-criVA1-WulMDIo8rFFdtuGuI4RMcE4yCT3jumDlAw",
+    "evidenceControl": "atomic_claim_ledger_not_started",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "water-activity-measurement-and-instrument-control",
+  "route": "/encyclopedia/water-activity-measurement-and-instrument-control",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

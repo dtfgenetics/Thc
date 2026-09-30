@@ -1,0 +1,68 @@
+{
+  "id": "THC-ENC-409",
+  "number": 409,
+  "title": "Morphology and Growth Measurements",
+  "primaryFormat": "Data / QA",
+  "requiredTeachingVisual": "Standardized Cannabis morphology measurement plate",
+  "objective": "Convert descriptive plant appearance into repeatable measurements using defined anatomy, position, stage, reference points, and image methods.",
+  "termsToKnow": [
+    "operational definition",
+    "phenotyping",
+    "landmark",
+    "sampling position",
+    "canopy width",
+    "internode",
+    "biomass",
+    "image scale",
+    "observer agreement"
+  ],
+  "coreScience": [
+    "Morphology becomes comparable data only after the trait is operationally defined. Plant height can mean substrate line to highest natural point, apical tip after straightening, or support height. Canopy width can mean one axis, two perpendicular axes, or projected area. Node count depends on which nodes are included. Stem diameter depends on measurement height and tool. Each definition changes the result.",
+    "Plant measurements must include identity, developmental stage, treatment history, posture, time relative to irrigation and light, and organ position. Leaf dimensions require a defined leaf age and node. Internode measurements require named node pairs. Flower and trichome observations require sample sites and optical method. Fresh mass, dry mass, trimmed mass, and saleable mass answer different questions and must not be mixed.",
+    "Images can improve auditing but introduce perspective, lens distortion, lighting, color, focus, and scale errors. Use a fixed camera position, reference scale, color target where needed, background, orientation, and file naming. Automated image analysis should preserve software, model version, thresholds, training data limits, and manual correction history. Observer training and blinded repeat scoring can reveal ambiguity."
+  ],
+  "cultivationRelevance": [
+    "Publish a controlled phenotype dictionary before collecting trial data. Train observers using examples and counterexamples, then retain raw measurements and images."
+  ],
+  "measureAndRecord": [
+    "Plant/genetic/treatment IDs; stage/date/time; trait name and definition; anatomy and reference points; position; instrument; units; observer; repeated measurement; image ID/scale/lighting; fresh/dry/trim basis; missing/damaged rule."
+  ],
+  "misconceptions": [
+    "Tall, bushy, frosty, and dense are complete phenotype measurements.",
+    "A photograph is objective without a scale and standardized viewpoint.",
+    "Repeated measurements on one plant increase the biological sample size."
+  ],
+  "evidenceLimits": [
+    "Phenotypes depend on genetics, environment, management, stage, observer, and method; measurements describe traits but do not by themselves identify causes."
+  ],
+  "crossLinks": "THC-ENC-009–020; THC-ENC-394; THC-ENC-404–406; THC-ENC-416–418.",
+  "sourceNotes": [
+    "V21-SRC-011",
+    "V21-SRC-012",
+    "V21-SRC-033",
+    "V21-SRC-034"
+  ],
+  "knowledgeCheck": [
+    "For \"Morphology and Growth Measurements\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+    "A learner claims, \"Tall, bushy, frosty, and dense are complete phenotype measurements.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Publish a controlled phenotype dictionary before collecting trial data. Train observers using examples and counterexamples, then retain raw measurements and images. Build a verification plan using the lesson's record set (Plant/genetic/treatment IDs; stage/date/time; trait name and definition; anatomy and reference points; position; instrument; units; observer; repeated measurement; image ID/scale/lighting; fresh/dry/trim basis; missing/damaged rule.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+    "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "morphology-and-growth-measurements",
+  "route": "/encyclopedia/morphology-and-growth-measurements",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

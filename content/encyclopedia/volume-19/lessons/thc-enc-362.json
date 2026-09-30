@@ -1,0 +1,77 @@
+{
+  "id": "THC-ENC-362",
+  "number": 362,
+  "title": "Latitude, Daylength, and Seasonal Flowering",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Daylength and flowering timeline",
+  "objective": "Explain how latitude, date, twilight, cultivar genetics, and plant history interact to control seasonal flowering.",
+  "termsToKnow": [
+    "photoperiod",
+    "critical daylength",
+    "civil twilight",
+    "latitude",
+    "floral initiation",
+    "photoperiod sensitivity",
+    "autoflowering",
+    "genotype-by-environment interaction"
+  ],
+  "coreScience": [
+    "Cannabis flowering is controlled by genetics interacting with the daily light-dark cycle. Many cultivars are quantitative short-day plants: flowering becomes faster or more complete as daylength falls below a cultivar-dependent threshold. The threshold is not universally 12 hours. Controlled studies have found meaningful differences among cultivars and responses to changes as small as minutes near a critical photoperiod. Low-intensity civil twilight can also be biologically effective.",
+    "Latitude changes the seasonal daylength curve, but latitude alone does not provide the date of flowering. Local horizon obstruction, artificial light at night, cloud cover, transplant age, plant size, sex expression, photoperiod history, and cultivar identity can shift observed timing. Cultivars sold under the same name can differ genetically and respond differently.",
+    "Photoperiod-insensitive or “autoflowering” plants carry genetic changes that reduce dependence on shortening days. That trait can support high-latitude production, but it does not guarantee yield, quality, uniformity, or freedom from environmental delay. A planting calendar should use local sunrise, sunset, twilight, and historical frost dates together with direct cultivar observations."
+  ],
+  "cultivationRelevance": [
+    "Build a location-specific flowering record rather than copying a generic calendar. Trial unfamiliar genetics in small numbers, record first preflowers and first sustained floral development, and protect dark periods from artificial light where photoperiod sensitivity matters."
+  ],
+  "measureAndRecord": [
+    "Latitude/longitude",
+    "sunrise/sunset and civil twilight",
+    "horizon obstruction",
+    "artificial-night-light sources",
+    "cultivar/source/propagation mode",
+    "transplant date",
+    "node and age",
+    "first preflower",
+    "first sustained flower",
+    "sex expression",
+    "weather",
+    "frost and harvest dates."
+  ],
+  "misconceptions": [
+    "All photoperiod cannabis begins flowering at exactly 12 hours of light.",
+    "Latitude predicts flowering date without cultivar information.",
+    "Autoflowering means environment no longer matters."
+  ],
+  "evidenceLimits": [
+    "Critical photoperiod values are cultivar-, method-, intensity-, stage-, and history-specific."
+  ],
+  "crossLinks": "THC-ENC-201–220; THC-ENC-368; THC-ENC-373; THC-ENC-380.",
+  "sourceNotes": [
+    "V19-SRC-005",
+    "V19-SRC-006",
+    "V19-SRC-003"
+  ],
+  "knowledgeCheck": [
+    "For \"Latitude, Daylength, and Seasonal Flowering\", explain the mechanism behind this objective: Explain how latitude, date, twilight, cultivar genetics, and plant history interact to control seasonal flowering. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"All photoperiod cannabis begins flowering at exactly 12 hours of light.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Build a location-specific flowering record rather than copying a generic calendar. Trial unfamiliar genetics in small numbers, record first preflowers and first sustained floral development, and protect dark periods from artificial light where photoperiod sensitivity matters. Build a verification plan using the lesson's record set (Latitude/longitude; sunrise/sunset and civil twilight; horizon obstruction; artificial-night-light sources; cultivar/source/propagation mode; transplant date; node and age; first preflower; first sustained flower; sex expression; weather; frost and harvest dates.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 19: Outdoor, Greenhouse, and Protected Cultivation Ecology — DRAFT COMPLETE v0.1",
+    "driveFileId": "1-qH7O70W9fn0VVK58SAilPwZH-75TJmUl7QkgpmVwBA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "latitude-daylength-and-seasonal-flowering",
+  "route": "/encyclopedia/latitude-daylength-and-seasonal-flowering",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": "THC-ENC-414",
+  "number": 414,
+  "title": "Control Charts, Trends, and Alert Limits",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Process trend, control-limit, and specification comparison",
+  "objective": "Use time-series graphics and control charts to distinguish expected variation, unusual signals, drift, and decision limits.",
+  "termsToKnow": [
+    "run chart",
+    "control chart",
+    "center line",
+    "control limit",
+    "specification limit",
+    "common cause",
+    "special cause",
+    "alert limit",
+    "action limit",
+    "autocorrelation"
+  ],
+  "coreScience": [
+    "A run chart preserves values in time order and can reveal shifts, trends, cycles, and sudden changes. A control chart adds statistically derived limits based on a stable process model. Control limits describe expected process variation; specification, alert, and action limits describe requirements or decisions. They are not interchangeable. A process can be stable but consistently outside a specification, or unstable while most individual points remain inside a wide specification.",
+    "Chart choice depends on the data: continuous measurements, counts, proportions, individual values, subgroup means, ranges, or moving ranges. Sampling interval, subgroup definition, measurement resolution, censoring, missing data, seasonality, and autocorrelation affect limits and signals. Recalculating limits after every excursion can hide deterioration. Limits should be established from an appropriate reference period and changed through documented review.",
+    "Rules such as one point beyond a limit, several points on one side, or a sustained trend are prompts for investigation, not proof of a specific cause. Multiple simultaneous charts increase false alarms. Biological growth and seasonal outdoor data may have deliberate trends, so detrending, stage-specific baselines, or model-based residuals may be needed. Preserve raw data and annotate irrigation, maintenance, treatment, weather, and crop-stage events."
+  ],
+  "cultivationRelevance": [
+    "Use charts for stable, repeated processes such as meter checks, irrigation delivery, room conditions, drying mass, laboratory controls, and recurring quality metrics. Define who reviews signals and what action follows."
+  ],
+  "measureAndRecord": [
+    "Process and measurand; data source; sampling/subgroup rule; time base; chart type; center and limit method; reference period; specification/alert/action limits; missing/outlier rule; annotations; signal; investigation; action; effectiveness."
+  ],
+  "misconceptions": [
+    "A point inside control limits is automatically acceptable.",
+    "Specification limits should be used as control limits.",
+    "Every visible trend proves a causal process change."
+  ],
+  "evidenceLimits": [
+    "Control-chart validity depends on a suitable process model, independent or appropriately modeled data, stable measurement, and controlled subgrouping."
+  ],
+  "crossLinks": "THC-ENC-402–406; THC-ENC-413; THC-ENC-416–417.",
+  "sourceNotes": [
+    "V21-SRC-009",
+    "V21-SRC-018",
+    "V21-SRC-019",
+    "V21-SRC-026",
+    "V21-SRC-030"
+  ],
+  "knowledgeCheck": [
+    "For \"Control Charts, Trends, and Alert Limits\", explain the mechanism behind this objective: Use time-series graphics and control charts to distinguish expected variation, unusual signals, drift, and decision limits. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"A point inside control limits is automatically acceptable.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Use charts for stable, repeated processes such as meter checks, irrigation delivery, room conditions, drying mass, laboratory controls, and recurring quality metrics. Define who reviews signals and what action follows. Build a verification plan using the lesson's record set (Process and measurand; data source; sampling/subgroup rule; time base; chart type; center and limit method; reference period; specification/alert/action limits; missing/outlier rule; annotations; signal; investigation; action; effectiveness.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+    "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "control-charts-trends-and-alert-limits",
+  "route": "/encyclopedia/control-charts-trends-and-alert-limits",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

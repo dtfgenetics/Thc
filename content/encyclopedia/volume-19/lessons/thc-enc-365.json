@@ -1,0 +1,75 @@
+{
+  "id": "THC-ENC-365",
+  "number": 365,
+  "title": "Sun Path, Shade, and Outdoor DLI",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Sun-path and DLI mapping chart",
+  "objective": "Measure how solar geometry, weather, obstructions, structures, and canopy development shape outdoor daily light integral.",
+  "termsToKnow": [
+    "sun path",
+    "solar elevation",
+    "azimuth",
+    "photosynthetic photon flux density",
+    "daily light integral",
+    "direct radiation",
+    "diffuse radiation",
+    "shade fraction"
+  ],
+  "coreScience": [
+    "Outdoor light changes continuously with latitude, date, time, cloud cover, smoke, terrain, trees, buildings, greenhouse coverings, and the crop itself. Sun-path diagrams show where the sun can appear, while measurements show how much photosynthetically active radiation reaches a specific position.",
+    "Daily light integral is the total photosynthetic photon exposure over a day. A noon PPFD reading cannot describe DLI, and an unshaded weather-station value cannot describe a plant beside a tree line or under polyethylene. Diffuse light can penetrate canopies differently from direct sun. Greenhouse and tunnel films reduce and redistribute radiation according to material, age, condensation, dust, and structure.",
+    "Cannabis generally responds positively to increasing light within studied ranges, but outdoor responses are constrained by temperature, water, nutrition, wind, disease, canopy architecture, and cultivar. More light is not automatically better when leaves overheat or roots cannot support transpiration."
+  ],
+  "cultivationRelevance": [
+    "Map representative and worst-case positions before planting and as the canopy changes. Use integrated sensors or repeated measurements, record shading events, and evaluate light together with leaf temperature and water status."
+  ],
+  "measureAndRecord": [
+    "Location/date/latitude",
+    "sun-path obstruction",
+    "sensor/model/calibration",
+    "PPFD interval",
+    "calculated DLI",
+    "cloud/smoke",
+    "film/transmission",
+    "canopy position",
+    "leaf temperature",
+    "irrigation and stress response."
+  ],
+  "misconceptions": [
+    "Full sun means the same DLI in every season.",
+    "A single noon reading proves adequate light.",
+    "Shade always reduces quality."
+  ],
+  "evidenceLimits": [
+    "Cannabis light-response findings are cultivar-, stage-, density-, temperature-, water-, and system-specific."
+  ],
+  "crossLinks": "THC-ENC-101–120; THC-ENC-363–364; THC-ENC-372; THC-ENC-378–379.",
+  "sourceNotes": [
+    "V19-SRC-003",
+    "V19-SRC-016",
+    "V19-SRC-017"
+  ],
+  "knowledgeCheck": [
+    "For \"Sun Path, Shade, and Outdoor DLI\", explain the mechanism behind this objective: Measure how solar geometry, weather, obstructions, structures, and canopy development shape outdoor daily light integral. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Full sun means the same DLI in every season.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Map representative and worst-case positions before planting and as the canopy changes. Use integrated sensors or repeated measurements, record shading events, and evaluate light together with leaf temperature and water status. Build a verification plan using the lesson's record set (Location/date/latitude; sun-path obstruction; sensor/model/calibration; PPFD interval; calculated DLI; cloud/smoke; film/transmission; canopy position; leaf temperature; irrigation and stress response.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 19: Outdoor, Greenhouse, and Protected Cultivation Ecology — DRAFT COMPLETE v0.1",
+    "driveFileId": "1-qH7O70W9fn0VVK58SAilPwZH-75TJmUl7QkgpmVwBA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "sun-path-shade-and-outdoor-dli",
+  "route": "/encyclopedia/sun-path-shade-and-outdoor-dli",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

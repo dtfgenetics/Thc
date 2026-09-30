@@ -1,0 +1,70 @@
+{
+  "id": "THC-ENC-411",
+  "number": 411,
+  "title": "Harvest, Drying, Curing, and Storage Records",
+  "primaryFormat": "Data / QA",
+  "requiredTeachingVisual": "Postharvest batch identity and condition timeline",
+  "objective": "Preserve batch identity and measured conditions from harvest decision through drying, conditioning, storage, sampling, hold, and release.",
+  "termsToKnow": [
+    "harvest batch",
+    "sub-batch",
+    "chain of identity",
+    "incoming mass",
+    "drying load",
+    "water activity",
+    "storage excursion",
+    "hold",
+    "release"
+  ],
+  "coreScience": [
+    "Postharvest records begin before the first cut. Link the harvest decision to crop identity, cultivar or line, field or room, flowering history, plant-health status, treatments, weather, maturity observations, assigned batch, tools, workers, and destination. Whole-plant, branch, wet-trim, dry-trim, and separated-flower workflows create different units and must retain labels through every transfer.",
+    "Drying records need load geometry and position as well as room averages. Record rack, line, height, incoming mass and form, sensor locations, air and product temperature, humidity, dew point, airflow or equipment state, mass change, moisture or water activity samples, inspection findings, interventions, and final transfer. Conditioning or curing records should define the process, starting material state, container, fill, headspace, openings or mixing, sampling, and acceptance evidence.",
+    "Storage records connect package, seal, product form, mass, environment, light, oxygen controls where used, excursions, retained samples, laboratory results, inventory movements, and disposition. A stem snap, jar humidity, calendar day, or one water-activity result is not a complete release decision. Suspect contamination, identity loss, or unexplained wetness requires hold and investigation."
+  ],
+  "cultivationRelevance": [
+    "Use one event timeline and linked IDs so a reviewer can reconstruct who handled each batch, where it was, what conditions occurred, which samples represented it, and who authorized release."
+  ],
+  "measureAndRecord": [
+    "Crop/plant/harvest/sub-batch IDs; decision and approver; cut/trim/transfer times; personnel/tools/cleaning; incoming/final mass; drying location and load map; sensor data; moisture/aW method and sample map; defects/holds; conditioning/storage container; excursions; laboratory and retained samples; release/disposition."
+  ],
+  "misconceptions": [
+    "A dry-room average describes every flower.",
+    "A fixed day count defines drying or curing completion.",
+    "A passing COA erases missing batch identity or uncontrolled exposure."
+  ],
+  "evidenceLimits": [
+    "Postharvest specifications, sampling, tests, storage, remediation, and release authority vary by product and jurisdiction."
+  ],
+  "crossLinks": "THC-ENC-341–360; THC-UG-029–032; THC-ENC-404–406; THC-ENC-412–414.",
+  "sourceNotes": [
+    "V21-SRC-002",
+    "V21-SRC-008",
+    "V21-SRC-019",
+    "V21-SRC-020",
+    "V21-SRC-023",
+    "V21-SRC-033"
+  ],
+  "knowledgeCheck": [
+    "For \"Harvest, Drying, Curing, and Storage Records\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+    "A learner claims, \"A dry-room average describes every flower.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Use one event timeline and linked IDs so a reviewer can reconstruct who handled each batch, where it was, what conditions occurred, which samples represented it, and who authorized release. Build a verification plan using the lesson's record set (Crop/plant/harvest/sub-batch IDs; decision and approver; cut/trim/transfer times; personnel/tools/cleaning; incoming/final mass; drying location and load map; sensor data; moisture/aW method and sample map; defects/holds; conditioning/storage container; excursions; laboratory and retained samples; release/disposition.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+    "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "harvest-drying-curing-and-storage-records",
+  "route": "/encyclopedia/harvest-drying-curing-and-storage-records",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

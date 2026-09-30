@@ -1,0 +1,68 @@
+{
+  "id": "THC-ENC-385",
+  "number": 385,
+  "title": "F2 Segregation and Population Size",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "F2 segregation and recovery-probability chart",
+  "objective": "Design F2 populations around trait architecture, recombination, linkage, rare-combination probability, and selection capacity.",
+  "termsToKnow": [
+    "F2",
+    "segregation",
+    "recombination",
+    "linkage",
+    "Mendelian ratio",
+    "transgressive segregation",
+    "population size",
+    "selection differential"
+  ],
+  "coreScience": [
+    "An F2 population is commonly produced by selfing or intercrossing F1 individuals. It exposes new homozygous and recombinant combinations, making it valuable for mapping and selection. Simple 1:2:1 or 3:1 expectations apply only under defined single-locus assumptions with clear phenotypes, adequate sample size, no distortion, and reliable classification. Most horticultural traits involve multiple loci, dominance, epistasis, linkage, genotype-by-environment interaction, and measurement error.",
+    "Population size should be based on the probability of the desired combination and the number of individuals that can be measured accurately. Recovering several independent favorable alleles in one individual can require far more plants than intuition suggests. Linkage can make combinations harder or easier to recover depending on allele phase and recombination distance. Selecting too few plants creates a genetic bottleneck and can fix hidden defects.",
+    "F2 individuals should be permanently identified and, where possible, preserved by clone or seed family before destructive testing. Selection can target individuals, but traits with low heritability often need F3 family confirmation. The rarest-looking phenotype is not automatically transgressive or heritable. Compare against parents and checks under the same conditions, and retain unselected or less selected material when conservation of diversity is part of the objective."
+  ],
+  "cultivationRelevance": [
+    "Calculate a minimum population from trait probabilities, then increase it for mortality, sex ratio, testing losses, recombination uncertainty, and the need for multiple selected families."
+  ],
+  "measureAndRecord": [
+    "F1 source and mating; F2 seed lot; planned and emerged population; trait model and expected frequency; sex and survival; phenotype distributions; genotypes/markers; family preservation; selected count and intensity; reasons for discard."
+  ],
+  "misconceptions": [
+    "A small F2 shows every possible phenotype.",
+    "All F2 ratios follow one-gene Mendelian expectations.",
+    "The most extreme F2 plant will breed true."
+  ],
+  "evidenceLimits": [
+    "Expected ratios and recovery probabilities depend on correct genetic models, linkage, penetrance, environment, sampling, viability, and classification."
+  ],
+  "crossLinks": "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems.",
+  "sourceNotes": [
+    "V20-SRC-004",
+    "V20-SRC-006",
+    "V20-SRC-007",
+    "V20-SRC-020",
+    "V20-SRC-021"
+  ],
+  "knowledgeCheck": [
+    "For \"F2 Segregation and Population Size\", explain the mechanism behind this objective: Design F2 populations around trait architecture, recombination, linkage, rare-combination probability, and selection capacity. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"A small F2 shows every possible phenotype.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Calculate a minimum population from trait probabilities, then increase it for mortality, sex ratio, testing losses, recombination uncertainty, and the need for multiple selected families. Build a verification plan using the lesson's record set (F1 source and mating; F2 seed lot; planned and emerged population; trait model and expected frequency; sex and survival; phenotype distributions; genotypes/markers; family preservation; selected count and intensity; reasons for discard.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 20: Breeding, Selection, and Genetic Conservation — DRAFT COMPLETE v0.1",
+    "driveFileId": "1ru6DHiVQ7O-tsY3j7R_rJs_ORwMDfGW9sfZxoiXCq5k",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "f2-segregation-and-population-size",
+  "route": "/encyclopedia/f2-segregation-and-population-size",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

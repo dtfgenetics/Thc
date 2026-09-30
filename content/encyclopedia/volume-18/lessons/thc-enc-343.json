@@ -1,0 +1,76 @@
+{
+  "id": "THC-ENC-343",
+  "number": 343,
+  "title": "Harvest Sanitation and Batch Segregation",
+  "primaryFormat": "Procedure",
+  "requiredTeachingVisual": "Workflow",
+  "objective": "Protect identity and hygiene from cutting through transport, loading, trim, drying, sampling, and waste disposition.",
+  "termsToKnow": [
+    "batch",
+    "lot",
+    "segregation",
+    "harvest tool",
+    "food-contact surface",
+    "chain of identity",
+    "hold",
+    "contaminated material",
+    "line clearance"
+  ],
+  "coreScience": [
+    "Harvest converts living crop tissue into handled plant material with many new contact surfaces. Tools, gloves, bins, carts, racks, floors, labels, and workers can transfer debris, microbes, allergens, residues, and plant identity.",
+    "Batch segregation is physical and documentary. Adjacent material can mix through fallen flowers, trim, shared bins, air movement, labels, tools, or cleaning gaps even when plants were separate before cutting.",
+    "Sanitation does not make diseased or contaminated material acceptable. Suspect material requires a defined hold, sample, disposition, and movement route independent of routine crop flow."
+  ],
+  "cultivationRelevance": [
+    "Perform line clearance, verify clean equipment, assign batch and sub-batch IDs, use controlled containers, protect product from floor and waste contact, and document every transfer."
+  ],
+  "measureAndRecord": [
+    "Room/batch/sub-batch",
+    "personnel/tools/equipment",
+    "cleaning status",
+    "harvest start/end",
+    "containers/racks",
+    "transfers",
+    "spills/mix-ups",
+    "holds",
+    "waste",
+    "samples and release."
+  ],
+  "misconceptions": [
+    "Harvested flower is safe because the plant was healthy.",
+    "A label on the room is enough to preserve batch identity.",
+    "Routine cleaning can convert suspect product into releasable product."
+  ],
+  "evidenceLimits": [
+    "Product-contact, microbial, allergen, waste, and inventory requirements vary by jurisdiction and production model."
+  ],
+  "crossLinks": "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems.",
+  "sourceNotes": [
+    "V18-SRC-002",
+    "V18-SRC-007",
+    "V18-SRC-008"
+  ],
+  "knowledgeCheck": [
+    "For \"Harvest Sanitation and Batch Segregation\", put the decision in operational order: what must be verified before action, what evidence must be recorded during the work, and what condition would require a hold or escalation?",
+    "A learner claims, \"Harvested flower is safe because the plant was healthy.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Perform line clearance, verify clean equipment, assign batch and sub-batch IDs, use controlled containers, protect product from floor and waste contact, and document every transfer. Build a verification plan using the lesson's record set (Room/batch/sub-batch; personnel/tools/equipment; cleaning status; harvest start/end; containers/racks; transfers; spills/mix-ups; holds; waste; samples and release.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 18: Harvest and Postharvest Plant Material Science — DRAFT COMPLETE v1.0",
+    "driveFileId": "1b-criVA1-WulMDIo8rFFdtuGuI4RMcE4yCT3jumDlAw",
+    "evidenceControl": "atomic_claim_ledger_not_started",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "harvest-sanitation-and-batch-segregation",
+  "route": "/encyclopedia/harvest-sanitation-and-batch-segregation",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

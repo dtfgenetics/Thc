@@ -1,0 +1,70 @@
+{
+  "id": "THC-ENC-403",
+  "number": 403,
+  "title": "Calibration, Verification, and Traceability",
+  "primaryFormat": "Data / QA",
+  "requiredTeachingVisual": "Calibration, verification, traceability, and action record",
+  "objective": "Control instruments through calibration, verification, reference standards, as-found condition, adjustments, and traceable records.",
+  "termsToKnow": [
+    "calibration",
+    "verification",
+    "adjustment",
+    "reference standard",
+    "traceability",
+    "as-found",
+    "as-left",
+    "tolerance",
+    "check standard",
+    "drift"
+  ],
+  "coreScience": [
+    "Calibration establishes a relationship between indications and reference quantity values under stated conditions. It does not automatically adjust an instrument, prove fitness for every use, or create permanent accuracy. Verification checks whether specified requirements are met. Adjustment changes instrument response. These activities must be named correctly because a routine check against a buffer or standard may be verification rather than a full calibration.",
+    "Metrological traceability belongs to a measurement result, not merely to a sticker on an instrument. It requires a documented unbroken chain of calibrations to a reference, with each link contributing uncertainty. Traceability alone does not establish that the uncertainty, range, method, or sample handling is adequate for the decision. A traceable scale can still be inappropriate for a tiny sample, and a calibrated pH meter can still be wrong in a dirty, damaged, poorly stored, or temperature-mismatched electrode.",
+    "Records should preserve as-found and as-left results. When an instrument fails verification, evaluate the affected data window rather than simply recalibrating and continuing. Consider drift direction, magnitude, prior checks, use frequency, environmental exposure, maintenance, and whether a second method or retained sample can bound impact. Reference materials need identity, lot, expiry, storage, preparation, assigned value, uncertainty, and suitability for the instrument range."
+  ],
+  "cultivationRelevance": [
+    "Create instrument-specific schedules based on risk and use, not one universal calendar. Place independent checks around critical measurements and define hold, correction, data review, and return-to-service criteria."
+  ],
+  "measureAndRecord": [
+    "Instrument ID/model/serial/firmware; measurand/range; procedure; reference ID/lot/value/uncertainty/expiry; environmental conditions; as-found results; adjustment; as-left results; tolerance; pass/fail; affected-data review; approver; next due date."
+  ],
+  "misconceptions": [
+    "A calibration sticker proves every result is traceable and fit for purpose.",
+    "Calibration and verification are the same activity.",
+    "A failed check affects only the measurement taken immediately before it."
+  ],
+  "evidenceLimits": [
+    "Calibration evidence cannot compensate for nonrepresentative samples, unsuitable methods, uncontrolled environmental effects, or undocumented data handling."
+  ],
+  "crossLinks": "THC-ENC-402; THC-ENC-406–408; THC-ENC-412–414.",
+  "sourceNotes": [
+    "V21-SRC-004",
+    "V21-SRC-006",
+    "V21-SRC-007",
+    "V21-SRC-008",
+    "V21-SRC-019"
+  ],
+  "knowledgeCheck": [
+    "For \"Calibration, Verification, and Traceability\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+    "A learner claims, \"A calibration sticker proves every result is traceable and fit for purpose.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Create instrument-specific schedules based on risk and use, not one universal calendar. Place independent checks around critical measurements and define hold, correction, data review, and return-to-service criteria. Build a verification plan using the lesson's record set (Instrument ID/model/serial/firmware; measurand/range; procedure; reference ID/lot/value/uncertainty/expiry; environmental conditions; as-found results; adjustment; as-left results; tolerance; pass/fail; affected-data review; approver; next due date.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+    "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "calibration-verification-and-traceability",
+  "route": "/encyclopedia/calibration-verification-and-traceability",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

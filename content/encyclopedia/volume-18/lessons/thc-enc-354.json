@@ -1,0 +1,74 @@
+{
+  "id": "THC-ENC-354",
+  "number": 354,
+  "title": "Container Curing and Moisture Redistribution",
+  "primaryFormat": "Procedure",
+  "requiredTeachingVisual": "Workflow",
+  "objective": "Control container loading, headspace, moisture migration, mixing, sampling, condensation, and release during conditioning.",
+  "termsToKnow": [
+    "container conditioning",
+    "headspace",
+    "moisture migration",
+    "equilibration",
+    "fill ratio",
+    "mixing",
+    "condensation",
+    "wet pocket"
+  ],
+  "coreScience": [
+    "Material placed in a closed or semi-closed container redistributes moisture among wetter interiors, drier surfaces, air, and the container. Average aW can change as the sample equilibrates.",
+    "Large dense flowers, mixed sizes, uneven primary drying, high fill, cold material, and limited mixing can preserve wet pockets. Opening a container changes headspace but does not necessarily equalize internal material.",
+    "Moisture addition or humidification devices can create local over-wetting, microbial risk, residues, or uncontrolled chemistry unless qualified for the product and jurisdiction."
+  ],
+  "cultivationRelevance": [
+    "Load only material meeting a defined precondition, avoid overfill, sample multiple depths, mix under controlled sanitation where appropriate, and hold material with condensation, odor, heat, or elevated aW."
+  ],
+  "measureAndRecord": [
+    "Container/material/lot",
+    "fill mass and volume",
+    "flower size",
+    "start mass/moisture/aW by location",
+    "headspace temperature/RH",
+    "opening/mixing",
+    "condensation",
+    "repeat samples",
+    "release."
+  ],
+  "misconceptions": [
+    "Opening a container once per day makes all flowers uniform.",
+    "A humidity indicator in headspace directly measures internal flower aW.",
+    "Adding moisture is a risk-free way to correct overdrying."
+  ],
+  "evidenceLimits": [
+    "Container conditioning is geometry- and material-specific. Product-contact and moisture-addition rules require current review."
+  ],
+  "crossLinks": "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems.",
+  "sourceNotes": [
+    "V18-SRC-010",
+    "V18-SRC-013",
+    "V18-SRC-023"
+  ],
+  "knowledgeCheck": [
+    "For \"Container Curing and Moisture Redistribution\", put the decision in operational order: what must be verified before action, what evidence must be recorded during the work, and what condition would require a hold or escalation?",
+    "A learner claims, \"Opening a container once per day makes all flowers uniform.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Load only material meeting a defined precondition, avoid overfill, sample multiple depths, mix under controlled sanitation where appropriate, and hold material with condensation, odor, heat, or elevated aW. Build a verification plan using the lesson's record set (Container/material/lot; fill mass and volume; flower size; start mass/moisture/aW by location; headspace temperature/RH; opening/mixing; condensation; repeat samples; release.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 18: Harvest and Postharvest Plant Material Science — DRAFT COMPLETE v1.0",
+    "driveFileId": "1b-criVA1-WulMDIo8rFFdtuGuI4RMcE4yCT3jumDlAw",
+    "evidenceControl": "atomic_claim_ledger_not_started",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "container-curing-and-moisture-redistribution",
+  "route": "/encyclopedia/container-curing-and-moisture-redistribution",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

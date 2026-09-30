@@ -1,0 +1,69 @@
+{
+  "id": "THC-ENC-384",
+  "number": 384,
+  "title": "F1 Populations and Heterozygosity",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "F1 allele and heterozygosity concept diagram",
+  "objective": "Interpret F1 uniformity, heterozygosity, dominance, maternal effects, and hybrid performance without assuming every F1 is identical or superior.",
+  "termsToKnow": [
+    "F1",
+    "homozygous",
+    "heterozygous",
+    "dominance",
+    "heterosis",
+    "maternal effect",
+    "reciprocal cross",
+    "hybrid",
+    "parental phase"
+  ],
+  "coreScience": [
+    "The F1 generation is the first filial generation from two parents. At a locus where the parents are fixed for different alleles, every true F1 is heterozygous. Cannabis parents, however, are often highly heterozygous rather than fully inbred. Their F1 offspring can therefore segregate at many loci and may vary substantially even though they share the same two named parents.",
+    "Uniform F1 hybrids usually require stable, sufficiently homozygous or otherwise predictable parental lines. Heterosis is performance above a defined parental reference, not simply vigor in a healthy seedling. It can arise from dominance, overdominance, epistasis, masking of deleterious alleles, and population divergence. Hybrid vigor in one environment or trait does not prove superior quality, stability, fertility, or transmission.",
+    "Reciprocal crosses can differ because the seed parent contributes cytoplasm, seed size, maternal environment, and early developmental effects. Parent sex also changes which chromosomes and recombination histories can be transmitted in dioecious material. Evaluate both reciprocal directions when the program depends on seed traits, vigor, flowering, or chemistry and when lawful logistics permit. F1 records must distinguish a single selected F1 clone from the entire F1 family."
+  ],
+  "cultivationRelevance": [
+    "Do not market a variable F1 family as uniform without data. Measure within-family variance and preserve individual IDs for selected F1 plants."
+  ],
+  "measureAndRecord": [
+    "Cross and reciprocal direction; parent heterozygosity and relatedness; F1 population size; germination and vigor; trait mean and within-family variance; parental and check performance; heterosis calculation and reference; fertility, sex and off-types."
+  ],
+  "misconceptions": [
+    "All F1 seed from two parents is genetically identical.",
+    "F1 always means uniform and vigorous.",
+    "A selected F1 clone describes every seed in the F1 lot."
+  ],
+  "evidenceLimits": [
+    "F1 variation depends on parental heterozygosity, allele phase, relatedness, cytoplasm, seed environment, and trait architecture."
+  ],
+  "crossLinks": "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems.",
+  "sourceNotes": [
+    "V20-SRC-004",
+    "V20-SRC-006",
+    "V20-SRC-008",
+    "V20-SRC-010",
+    "V20-SRC-016"
+  ],
+  "knowledgeCheck": [
+    "For \"F1 Populations and Heterozygosity\", explain the mechanism behind this objective: Interpret F1 uniformity, heterozygosity, dominance, maternal effects, and hybrid performance without assuming every F1 is identical or superior. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"All F1 seed from two parents is genetically identical.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Do not market a variable F1 family as uniform without data. Measure within-family variance and preserve individual IDs for selected F1 plants. Build a verification plan using the lesson's record set (Cross and reciprocal direction; parent heterozygosity and relatedness; F1 population size; germination and vigor; trait mean and within-family variance; parental and check performance; heterosis calculation and reference; fertility, sex and off-types.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 20: Breeding, Selection, and Genetic Conservation — DRAFT COMPLETE v0.1",
+    "driveFileId": "1ru6DHiVQ7O-tsY3j7R_rJs_ORwMDfGW9sfZxoiXCq5k",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "f1-populations-and-heterozygosity",
+  "route": "/encyclopedia/f1-populations-and-heterozygosity",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

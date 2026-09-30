@@ -1,0 +1,78 @@
+{
+  "id": "THC-ENC-373",
+  "number": 373,
+  "title": "Rain, Dew, and Flower-Disease Pressure",
+  "primaryFormat": "Diagnostic",
+  "requiredTeachingVisual": "Flower wetness and disease-risk decision tree",
+  "objective": "Evaluate how wetness duration, flower architecture, temperature, inoculum, injury, and crop stage influence disease risk.",
+  "termsToKnow": [
+    "leaf wetness",
+    "dew point",
+    "wetness duration",
+    "inoculum",
+    "latent infection",
+    "flower density",
+    "Botrytis",
+    "Fusarium",
+    "disease triangle"
+  ],
+  "coreScience": [
+    "Rain and dew affect disease through more than relative humidity. Free water, tissue wetness duration, splash, wound creation, spore movement, flower density, temperature, and drying rate determine whether a favorable infection window develops. A weather station can report moderate RH while interior flowers remain wet.",
+    "Dense inflorescences create protected microenvironments. Rain can wet outer tissues and enter interior spaces; dew can form when tissue temperature falls to the local dew point. Hail, wind abrasion, insect feeding, senescence, and trapped debris create infection sites. Recent hemp field work detected latent Fusarium before visible disease and found stronger infection around flowering with relationships to rain and RH. Greenhouse Cannabis studies likewise show that Botrytis outcomes depend on stage, cultivar, isolate, and environment.",
+    "Absence of visible mold is not proof of absence. Conversely, wet weather does not prove disease. Diagnosis needs representative inspection, environmental history, organism testing where appropriate, and careful separation of abiotic discoloration from infection."
+  ],
+  "cultivationRelevance": [
+    "Map wetness-prone zones, scout inside representative flowers without spreading contamination, protect clean blocks, improve spacing and drainage, and use documented hold and testing procedures for suspect material."
+  ],
+  "measureAndRecord": [
+    "Rain amount/intensity/time",
+    "dew point and wetness duration",
+    "canopy/flower position",
+    "cultivar and flower density",
+    "temperature/RH",
+    "wind and drying time",
+    "injury/pests",
+    "symptoms/odor",
+    "sample and test method",
+    "hold/disposition",
+    "corrective action."
+  ],
+  "misconceptions": [
+    "Low average RH means flowers cannot stay wet.",
+    "Visible mold can be trimmed away to clear the batch.",
+    "Every brown flower after rain is Botrytis."
+  ],
+  "evidenceLimits": [
+    "Disease risk and test interpretation are pathogen-, cultivar-, tissue-, stage-, weather-, sampling-, and jurisdiction-specific."
+  ],
+  "crossLinks": "THC-ENC-301–340; THC-ENC-371–372; THC-ENC-378–380.",
+  "sourceNotes": [
+    "V19-SRC-013",
+    "V19-SRC-014",
+    "V19-SRC-015",
+    "V19-SRC-033"
+  ],
+  "knowledgeCheck": [
+    "For \"Rain, Dew, and Flower-Disease Pressure\", explain the mechanism behind this objective: Evaluate how wetness duration, flower architecture, temperature, inoculum, injury, and crop stage influence disease risk. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Low average RH means flowers cannot stay wet.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Map wetness-prone zones, scout inside representative flowers without spreading contamination, protect clean blocks, improve spacing and drainage, and use documented hold and testing procedures for suspect material. Build a verification plan using the lesson's record set (Rain amount/intensity/time; dew point and wetness duration; canopy/flower position; cultivar and flower density; temperature/RH; wind and drying time; injury/pests; symptoms/odor; sample and test method; hold/disposition; corrective action.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 19: Outdoor, Greenhouse, and Protected Cultivation Ecology — DRAFT COMPLETE v0.1",
+    "driveFileId": "1-qH7O70W9fn0VVK58SAilPwZH-75TJmUl7QkgpmVwBA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "rain-dew-and-flower-disease-pressure",
+  "route": "/encyclopedia/rain-dew-and-flower-disease-pressure",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

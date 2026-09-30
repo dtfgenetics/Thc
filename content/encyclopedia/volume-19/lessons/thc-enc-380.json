@@ -1,0 +1,82 @@
+{
+  "id": "THC-ENC-380",
+  "number": 380,
+  "title": "Weather Response Plans and Outdoor Crop Records",
+  "primaryFormat": "Data / QA",
+  "requiredTeachingVisual": "Weather-event response and crop record",
+  "objective": "Build a traceable prepare–monitor–respond–recover system for outdoor and protected-crop weather events.",
+  "termsToKnow": [
+    "trigger",
+    "warning level",
+    "action level",
+    "emergency response",
+    "hold",
+    "deviation",
+    "recovery",
+    "change control",
+    "event record"
+  ],
+  "coreScience": [
+    "Outdoor crop management requires decisions before, during, and after weather events. A response plan converts forecast and measured information into named actions. It should define who monitors, which source is authoritative, which crop blocks and systems are vulnerable, what thresholds trigger preparation or shutdown, and who can release work or product afterward.",
+    "Events include frost, heat, drought, pump failure, heavy rain, flooding, hail, high wind, lightning, snow load, smoke, power loss, greenhouse overheating, torn film, and prolonged leaf wetness. One event can create several secondary hazards: a storm can damage supports, contaminate water, interrupt irrigation, spread disease, block access, and mix plant identities.",
+    "Records must preserve the timeline. Capture forecast, actual conditions, sensor status, worker restrictions, actions, deviations, photographs, samples, crop response, repairs, and release decisions. A controller returning to normal does not prove that roots, flowers, structures, water, and product are acceptable."
+  ],
+  "cultivationRelevance": [
+    "Create block-specific checklists and seasonal drills. Pre-stage labels, backup power or water where justified, repair materials, worker communication, sampling supplies, and hold locations."
+  ],
+  "measureAndRecord": [
+    "Event ID/type",
+    "forecast source/time",
+    "trigger and authority",
+    "affected blocks/structures",
+    "pre-event conditions",
+    "actions",
+    "measured weather",
+    "power/water/irrigation status",
+    "injury/contamination/disease",
+    "photographs/samples",
+    "holds",
+    "repairs",
+    "CAPA",
+    "approver and release date."
+  ],
+  "misconceptions": [
+    "A weather alert is a complete response plan.",
+    "If plants look normal after a storm, no record is needed.",
+    "Returning equipment to setpoint automatically clears the crop."
+  ],
+  "evidenceLimits": [
+    "Triggers, worker protections, structural limits, sampling, product holds, and release authority require local rules, qualified review, and current procedures."
+  ],
+  "crossLinks": "THC-ENC-363–379; THC-GROW-150; THC-GROW-160.",
+  "sourceNotes": [
+    "V19-SRC-003",
+    "V19-SRC-018",
+    "V19-SRC-027",
+    "V19-SRC-033",
+    "V19-SRC-034"
+  ],
+  "knowledgeCheck": [
+    "For \"Weather Response Plans and Outdoor Crop Records\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+    "A learner claims, \"A weather alert is a complete response plan.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Create block-specific checklists and seasonal drills. Pre-stage labels, backup power or water where justified, repair materials, worker communication, sampling supplies, and hold locations. Build a verification plan using the lesson's record set (Event ID/type; forecast source/time; trigger and authority; affected blocks/structures; pre-event conditions; actions; measured weather; power/water/irrigation status; injury/contamination/disease; photographs/samples; holds; repairs; CAPA; approver and release date.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 19: Outdoor, Greenhouse, and Protected Cultivation Ecology — DRAFT COMPLETE v0.1",
+    "driveFileId": "1-qH7O70W9fn0VVK58SAilPwZH-75TJmUl7QkgpmVwBA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "weather-response-plans-and-outdoor-crop-records",
+  "route": "/encyclopedia/weather-response-plans-and-outdoor-crop-records",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

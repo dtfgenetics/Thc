@@ -1,0 +1,70 @@
+{
+  "id": "THC-ENC-406",
+  "number": 406,
+  "title": "Environmental Data Logging",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Sensor–location–time–aggregation data pipeline",
+  "objective": "Collect environmental time-series data with controlled sensor identity, placement, timing, missing-data, and aggregation rules.",
+  "termsToKnow": [
+    "time series",
+    "timestamp",
+    "time zone",
+    "sampling interval",
+    "logging interval",
+    "sensor placement",
+    "aggregation",
+    "missing data",
+    "drift",
+    "synchronization"
+  ],
+  "coreScience": [
+    "Environmental data are inseparable from place and time. Temperature, humidity, carbon dioxide, light, soil moisture, pressure, airflow, and leaf wetness can vary across centimetres and seconds. A data channel therefore needs sensor ID, measured quantity, unit, location, height, orientation, shielding, surrounding crop condition, logging interval, controller relationship, and clock basis.",
+    "Timestamps should use a documented time zone and daylight-saving rule or coordinated universal time. Clock drift, power loss, duplicate timestamps, firmware changes, and controller resets can break alignment among sensors, irrigation, lighting, weather, and crop events. Preserve raw data and flag missing, substituted, clipped, or invalid values. Do not silently interpolate a long outage or replace an extreme value because it appears inconvenient.",
+    "Aggregation changes meaning. A daily average can hide a damaging thirty-minute heat spike, condensation event, dark-period light leak, or repeated oscillation. Minimum, maximum, percentile, duration above or below limits, rate of change, and spatial spread may be more relevant than mean. Autocorrelation means thousands of minute readings are not thousands of independent environmental replicates."
+  ],
+  "cultivationRelevance": [
+    "Build a sensor map and data dictionary. Test the complete path from sensor to database to graph to alarm, including time synchronization, missing-data flags, export, and backup."
+  ],
+  "measureAndRecord": [
+    "Channel and sensor ID; quantity/unit; location/height/orientation; calibration/verification; logger/controller/firmware; interval; timestamp/time zone; raw value; validity flag; missing-data reason; aggregation equation; alarm/action; maintenance/change record."
+  ],
+  "misconceptions": [
+    "More frequent logging automatically creates more independent information.",
+    "A daily mean proves the crop never exceeded a limit.",
+    "A wireless dashboard preserves raw data permanently."
+  ],
+  "evidenceLimits": [
+    "Logged values represent sensor exposure and method; they may not represent leaf, flower, root, worker, or room conditions outside the sampled locations."
+  ],
+  "crossLinks": "THC-ENC-083–120; THC-ENC-363–365; THC-ENC-378; THC-ENC-403–404; THC-ENC-414.",
+  "sourceNotes": [
+    "V21-SRC-006",
+    "V21-SRC-009",
+    "V21-SRC-010",
+    "V21-SRC-026",
+    "V21-SRC-033"
+  ],
+  "knowledgeCheck": [
+    "For \"Environmental Data Logging\", explain the mechanism behind this objective: Collect environmental time-series data with controlled sensor identity, placement, timing, missing-data, and aggregation rules. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"More frequent logging automatically creates more independent information.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Build a sensor map and data dictionary. Test the complete path from sensor to database to graph to alarm, including time synchronization, missing-data flags, export, and backup. Build a verification plan using the lesson's record set (Channel and sensor ID; quantity/unit; location/height/orientation; calibration/verification; logger/controller/firmware; interval; timestamp/time zone; raw value; validity flag; missing-data reason; aggregation equation; alarm/action; maintenance/change record.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+    "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "environmental-data-logging",
+  "route": "/encyclopedia/environmental-data-logging",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

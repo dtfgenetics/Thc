@@ -1,0 +1,69 @@
+{
+  "id": "THC-ENC-416",
+  "number": 416,
+  "title": "Experimental Design, Controls, and Replication",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Experimental unit, randomization, blocking, and replication diagram",
+  "objective": "Design cultivation experiments with defined experimental units, controls, randomization, replication, blocking, and preplanned analysis.",
+  "termsToKnow": [
+    "experimental unit",
+    "treatment",
+    "control",
+    "randomization",
+    "replication",
+    "block",
+    "pseudoreplication",
+    "factorial",
+    "power",
+    "protocol"
+  ],
+  "coreScience": [
+    "The experimental unit is the smallest independently assigned unit. If one nutrient tank supplies twenty plants and the tank receives the treatment, the tank—not each plant—is generally the experimental unit for that treatment. Measuring many leaves, flowers, or time points creates subsamples or repeated observations, not additional independent treatment replicates. Misidentifying the unit inflates apparent sample size and confidence.",
+    "Randomization reduces systematic allocation bias. Blocking groups similar units by room position, bench, soil zone, planting date, mother plant, or other known source of variation, then randomizes within blocks. Controls define the comparison: untreated, standard practice, vehicle, sham operation, or baseline. Factorial designs estimate interactions, such as light response changing with cultivar, but require enough independent units and a model matching the design.",
+    "Design should precede data collection. Define primary and secondary outcomes, measurement positions, timing, sample-size rationale, exclusion rules, missing-data handling, stopping criteria, and analysis. Pilot studies estimate feasibility and variation but should not be presented as definitive confirmation. Repeating the experiment across cycles, rooms, seasons, or sites tests robustness more effectively than adding technical repeats to one run."
+  ],
+  "cultivationRelevance": [
+    "Use a one-page design map linking question, mechanism, treatment, experimental unit, control, blocks, randomization, measurements, analysis, and transfer limits."
+  ],
+  "measureAndRecord": [
+    "Question/hypothesis; biological material; experimental unit; treatments and doses; control; allocation/randomization; blocks; independent replication; subsamples; endpoints; measurement method; sample-size rationale; exclusions; analysis; protocol deviations; repeat cycles."
+  ],
+  "misconceptions": [
+    "Every plant is an independent replicate even when one shared system receives the treatment.",
+    "Random placement eliminates the need to record room position.",
+    "A large number of measurements can compensate for having one treatment unit."
+  ],
+  "evidenceLimits": [
+    "A well-designed experiment supports the defined population and conditions; external validity still requires replication across genetics, systems, and environments."
+  ],
+  "crossLinks": "THC-ENC-393–397; THC-ENC-404; THC-ENC-409; THC-ENC-417–418.",
+  "sourceNotes": [
+    "V21-SRC-009",
+    "V21-SRC-026",
+    "V21-SRC-030",
+    "V21-SRC-031"
+  ],
+  "knowledgeCheck": [
+    "For \"Experimental Design, Controls, and Replication\", explain the mechanism behind this objective: Design cultivation experiments with defined experimental units, controls, randomization, replication, blocking, and preplanned analysis. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Every plant is an independent replicate even when one shared system receives the treatment.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Use a one-page design map linking question, mechanism, treatment, experimental unit, control, blocks, randomization, measurements, analysis, and transfer limits. Build a verification plan using the lesson's record set (Question/hypothesis; biological material; experimental unit; treatments and doses; control; allocation/randomization; blocks; independent replication; subsamples; endpoints; measurement method; sample-size rationale; exclusions; analysis; protocol deviations; repeat cycles.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+    "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "experimental-design-controls-and-replication",
+  "route": "/encyclopedia/experimental-design-controls-and-replication",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}
