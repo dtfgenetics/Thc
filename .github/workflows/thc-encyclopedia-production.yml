@@ -9,8 +9,14 @@ on:
       - 'configuration/encyclopedia-search-benchmark.json'
       - 'data/encyclopedia-completion-scorecard.json'
       - 'site/public-route-patch/learn/encyclopedia/**'
+      - 'site/wordpress/mu-plugins/dtf-learning-search.php'
+      - 'site/wordpress/mu-plugins/dtf-learning-search/**'
+      - 'scripts/build-wordpress-learning-search-runtime.mjs'
       - 'site/public-route-patch/learn/search/**'
       - 'site/wordpress/education/encyclopedia/**'
+      - 'site/wordpress/mu-plugins/dtf-learning-search.php'
+      - 'site/wordpress/mu-plugins/dtf-learning-search/**'
+      - 'scripts/build-wordpress-learning-search-runtime.mjs'
       - 'scripts/*encyclopedia*.mjs'
       - 'scripts/build-thc-education-search-index.mjs'
       - 'scripts/validate-thc-education-search.mjs'
@@ -52,6 +58,10 @@ jobs:
         run: node scripts/build-thc-education-search-index.mjs
       - name: Validate encyclopedia and education search
         run: node scripts/validate-thc-education-search.mjs
+      - name: Validate WordPress learning search runtime
+        run: |
+          php -l site/wordpress/mu-plugins/dtf-learning-search.php
+          npm run verify:wordpress-learning-search
       - name: Validate search relevance benchmark
         run: node scripts/validate-encyclopedia-search-benchmark.mjs
       - name: Validate lesson renderer contract
