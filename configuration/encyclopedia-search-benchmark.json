@@ -1,0 +1,297 @@
+{
+  "schemaVersion": 1,
+  "description": "Search relevance regression set for THC encyclopedia. expectedParts means at least one result from one of these subject parts must appear within maxRank. Queries are retrieval tests, not diagnoses.",
+  "defaultMaxRank": 10,
+  "cases": [
+    {
+      "query": "yellow leaves",
+      "expectedParts": [
+        7,
+        14
+      ]
+    },
+    {
+      "query": "purple stems",
+      "expectedParts": [
+        1,
+        7,
+        14
+      ]
+    },
+    {
+      "query": "leaf claw",
+      "expectedParts": [
+        7,
+        14
+      ]
+    },
+    {
+      "query": "curling leaves",
+      "expectedParts": [
+        5,
+        6,
+        7,
+        14
+      ]
+    },
+    {
+      "query": "taco leaves",
+      "expectedParts": [
+        5,
+        6,
+        14
+      ]
+    },
+    {
+      "query": "light burn",
+      "expectedParts": [
+        6,
+        14
+      ]
+    },
+    {
+      "query": "too much stretch",
+      "expectedParts": [
+        6,
+        10,
+        11,
+        14
+      ]
+    },
+    {
+      "query": "foxtailing",
+      "expectedParts": [
+        11,
+        14
+      ]
+    },
+    {
+      "query": "high runoff ec",
+      "expectedParts": [
+        3,
+        7,
+        14
+      ]
+    },
+    {
+      "query": "nutrient lockout",
+      "expectedParts": [
+        7,
+        14
+      ]
+    },
+    {
+      "query": "calmag",
+      "expectedParts": [
+        7,
+        14
+      ]
+    },
+    {
+      "query": "plant not drinking",
+      "expectedParts": [
+        3,
+        5,
+        7,
+        14
+      ]
+    },
+    {
+      "query": "root rot",
+      "expectedParts": [
+        3,
+        16,
+        17
+      ]
+    },
+    {
+      "query": "seed won't sprout",
+      "expectedParts": [
+        2
+      ]
+    },
+    {
+      "query": "clone won't root",
+      "expectedParts": [
+        9
+      ]
+    },
+    {
+      "query": "hermie",
+      "expectedParts": [
+        8,
+        11
+      ]
+    },
+    {
+      "query": "nanners",
+      "expectedParts": [
+        8,
+        11
+      ]
+    },
+    {
+      "query": "powdery mildew",
+      "expectedParts": [
+        16,
+        17
+      ]
+    },
+    {
+      "query": "bud rot",
+      "expectedParts": [
+        16,
+        18
+      ]
+    },
+    {
+      "query": "spider mites",
+      "expectedParts": [
+        15,
+        17
+      ]
+    },
+    {
+      "query": "fungus gnats",
+      "expectedParts": [
+        15,
+        17
+      ]
+    },
+    {
+      "query": "thrips",
+      "expectedParts": [
+        15,
+        17
+      ]
+    },
+    {
+      "query": "aphids",
+      "expectedParts": [
+        15,
+        17
+      ]
+    },
+    {
+      "query": "grow room too hot",
+      "expectedParts": [
+        5,
+        14
+      ]
+    },
+    {
+      "query": "humidity too high",
+      "expectedParts": [
+        5,
+        18
+      ]
+    },
+    {
+      "query": "vapor pressure deficit",
+      "expectedParts": [
+        5
+      ]
+    },
+    {
+      "query": "dryback",
+      "expectedParts": [
+        3,
+        5,
+        7
+      ]
+    },
+    {
+      "query": "ph drift",
+      "expectedParts": [
+        7,
+        21
+      ]
+    },
+    {
+      "query": "ppm",
+      "expectedParts": [
+        7,
+        21
+      ]
+    },
+    {
+      "query": "buds drying too fast",
+      "expectedParts": [
+        18
+      ]
+    },
+    {
+      "query": "buds staying wet",
+      "expectedParts": [
+        18
+      ]
+    },
+    {
+      "query": "hay smell",
+      "expectedParts": [
+        18
+      ]
+    },
+    {
+      "query": "mold during cure",
+      "expectedParts": [
+        16,
+        18
+      ]
+    },
+    {
+      "query": "accidental pollination",
+      "expectedParts": [
+        11,
+        20
+      ]
+    },
+    {
+      "query": "pheno hunt",
+      "expectedParts": [
+        8,
+        20
+      ]
+    },
+    {
+      "query": "backcross",
+      "expectedParts": [
+        20
+      ]
+    },
+    {
+      "query": "s1",
+      "expectedParts": [
+        8,
+        20
+      ]
+    },
+    {
+      "query": "daily light integral",
+      "expectedParts": [
+        6
+      ]
+    },
+    {
+      "query": "par meter",
+      "expectedParts": [
+        6
+      ]
+    },
+    {
+      "query": "co2 enrichment",
+      "expectedParts": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "query": "amber trichomes",
+      "expectedParts": [
+        12,
+        18
+      ]
+    }
+  ]
+}
