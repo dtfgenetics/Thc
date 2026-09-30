@@ -99,25 +99,25 @@
           {
             "branch": "cleanup/remove-generated-preview-tree-20260930",
             "basis": "generated preview tree already absent on current main"
-          }
-        ],
-        "reconcileNeeded": [
+          },
           {
             "branch": "cleanup/remove-grow-doc-data-export-20260930",
-            "reason": "7 commits ahead; touches legacy Grow Doc export and packaging"
+            "basis": "legacy Grow Doc export script/data already absent on current main"
           },
           {
             "branch": "cleanup/remove-migrated-kush-kings-20260930",
-            "reason": "9 commits ahead; removes copied release bundle and registry references"
+            "basis": "copied Kush Kings release bundle already absent on current main"
           },
           {
             "branch": "cleanup/remove-migrated-thc-u-know-20260930",
-            "reason": "6 commits ahead; removes copied release bundle and registry references"
+            "basis": "copied THC U Know release bundle already absent on current main"
           },
           {
             "branch": "cleanup/retire-scheduled-legacy-production-audit-20260930",
-            "reason": "1 commit ahead; removes obsolete scheduled audit workflow"
-          },
+            "basis": "obsolete audit workflow removal superseded by merged PR #69"
+          }
+        ],
+        "reconcileNeeded": [
           {
             "branch": "cleanup/dedupe-high-land-legacy-assets-20260930",
             "reason": "10 commits ahead; changes legacy High Land code/assets and requires provenance comparison before retirement"
