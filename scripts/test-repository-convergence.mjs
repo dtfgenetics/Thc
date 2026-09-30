@@ -17,6 +17,11 @@ const reviewedRetirementScript = read('scripts/studio/retire-reviewed.mjs')
 const retirementRegistry = JSON.parse(read('data/branch-retirements.json'))
 const highLandCI = read('.github/workflows/high-land-ci.yml')
 const datadogCI = read('.github/workflows/datadog-synthetics.yml')
+const overlayCI = read('.github/workflows/dtf420-overlay-shell-ci.yml')
+const atlasLiveCI = read('.github/workflows/verify-atlas-live.yml')
+const atlasOwnershipCI = read('.github/workflows/atlas-route-ownership-ci.yml')
+const atlasOwnershipValidator = read('scripts/validate-atlas-route-ownership.mjs')
+const atlasOperatorDoc = read('docs/operations/ATLAS_LIVE_VERIFIER.md')
 
 assert.match(watch, /push:\n\s+branches: \[main\]\n\s+paths:/)
 assert.match(watch, /pull_request:\n\s+branches: \[main\]\n\s+paths:/)
@@ -100,5 +105,13 @@ assert.ok(datadogCI.includes('push:\n    branches: [main]\n    paths:'), 'Visito
 assert.ok(!datadogCI.includes('\n  pull_request:'), 'Live-site Datadog synthetics must not consume runners on isolated PRs.')
 assert.ok(datadogCI.includes("'site/**'"), 'Visitor synthetics must cover site changes.')
 assert.ok(datadogCI.includes("'apps/**'"), 'Visitor synthetics must cover app/game changes.')
+
+assert.ok(overlayCI.includes("grep -Fq '>Tools</a>'"), 'Overlay shell CI must require the Tools navigation link.')
+assert.ok(!overlayCI.includes("! grep -Fq '>Tools</a>'"), 'Overlay shell CI must not simultaneously forbid the required Tools navigation link.')
+for (const source of [atlasLiveCI, atlasOwnershipCI, atlasOwnershipValidator, atlasOperatorDoc]) {
+  assert.ok(!source.includes('verify-dtf420-atlas-live.mjs'), 'Stale Dtf420-named Atlas verifier reference must not return.')
+}
+assert.ok(atlasLiveCI.includes('scripts/verify-atlas-live.mjs'), 'Atlas live workflow must call the canonical verifier path.')
+assert.ok(atlasOwnershipValidator.includes("scripts/verify-atlas-live.mjs"), 'Atlas ownership validator must read the canonical live verifier.')
 
 console.log('Repository convergence regression tests passed.')
