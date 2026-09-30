@@ -84,6 +84,20 @@ The remaining work is asset/provenance/shared-UI decomposition plus non-default-
 
 Controlled migration/cutover candidate. Keep until an explicit platform cutover decision is made. It must not receive competing canonical implementations in the meantime.
 
+## Active-tree retention policy
+
+Retired implementation payloads should not remain in an active repository solely so CI can prove they once existed.
+
+The canonical retention rule is now:
+
+- Git history preserves retired file contents and commit lineage.
+- `docs/archive/retention-manifest.json` preserves the explicit retirement decision, retired paths, canonical successor, and reintroduction policy.
+- CI must reject a retired path if it reappears in the active tree.
+- Historical release notes, provenance records, and migration decisions may remain when they still explain current architecture or ownership.
+- Executable scripts, workflows, deploy payloads, generated bundles, and duplicate runtime data should be removed once they are superseded and no active dependency requires them.
+
+This reduces active-tree clutter without destroying provenance.
+
 ## Archive operation note
 
 The connected GitHub toolset used for this cleanup does not expose the repository setting that toggles GitHub's archived state. Therefore this register distinguishes **verified archive-ready** from **actually archived**. Do not report a repository as archived until GitHub metadata confirms `archived: true`.
