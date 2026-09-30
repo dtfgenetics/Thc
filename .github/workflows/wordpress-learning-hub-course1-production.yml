@@ -9,6 +9,7 @@ on:
       - site/wordpress/education/learning-hub-course1.json
       - site/wordpress/education/academy-deployment-target.json
       - scripts/resolve-academy-deployment-target.mjs
+      - scripts/validate-academy-source-pin.mjs
       - site/wordpress/education/learning-hub-course1-ui-v3.json
       - site/wordpress/education/course-catalog-v4.json
       - site/wordpress/education/tech1-courses-public-v1.json
@@ -64,7 +65,9 @@ jobs:
         with:
           node-version: 24
       - name: Resolve exact THC learning source SHA
-        run: node scripts/resolve-academy-deployment-target.mjs --github-env
+        run: |
+          node scripts/validate-academy-source-pin.mjs
+          node scripts/resolve-academy-deployment-target.mjs --github-env
       - name: Build canonical Course 1 lesson visual map
         shell: bash
         run: |
