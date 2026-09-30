@@ -11,6 +11,14 @@ on:
       - 'scripts/publish-wordpress-learning-center-pages.mjs'
       - 'scripts/update-wordpress-learn-learning-center.mjs'
       - 'site/wordpress/visual-quality-policy.json'
+      - 'configuration/encyclopedia-search-language.json'
+      - 'configuration/encyclopedia-search-benchmark.json'
+      - 'scripts/build-encyclopedia-discovery-index.mjs'
+      - 'scripts/build-thc-education-search-index.mjs'
+      - 'scripts/validate-thc-education-search.mjs'
+      - 'scripts/validate-encyclopedia-search-benchmark.mjs'
+      - 'site/public-route-patch/learn/search/**'
+      - 'site/public-route-patch/learn/encyclopedia/**'
       - '.github/workflows/deploy-thc-learning-centers.yml'
 
 permissions:
@@ -65,6 +73,7 @@ jobs:
           node scripts/build-public-learning-center-wave3.mjs
           npm run build:education-search
           node scripts/validate-thc-education-search.mjs
+          node scripts/validate-encyclopedia-search-benchmark.mjs
           routes=(library start-here beginner-guides academy encyclopedia sops glossary records search setup root-zone environment plant-health propagation)
           for route in "${routes[@]}"; do
             file="site/public-route-patch/learn/$route/index.html"
@@ -119,6 +128,22 @@ jobs:
             ! grep -Fqi 'Beneficial_Insects_and_Biological_Controls.png' "$body"
             ! grep -Fqi 'Cannabis_Sex_Expression_and_Chromosome_Combinations.png' "$body"
           done
+
+          search_live="$RUNNER_TEMP/learn-search.html"
+          curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 \
+            -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+            "https://dtfseeds.com/learn/search/?dtf_learning=${GITHUB_RUN_ID}" -o "$search_live"
+          grep -Fq 'data-thc-search-app="embedded-v1"' "$search_live"
+          grep -Fq 'data-thc-search-runtime="embedded-v1"' "$search_live"
+          grep -Fq '__THC_ENCYCLOPEDIA_INDEX__' "$search_live"
+
+          encyclopedia_live="$RUNNER_TEMP/learn-encyclopedia.html"
+          curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 \
+            -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+            "https://dtfseeds.com/learn/encyclopedia/?dtf_learning=${GITHUB_RUN_ID}" -o "$encyclopedia_live"
+          grep -Fq 'data-thc-search-app="embedded-v1"' "$encyclopedia_live"
+          grep -Fq 'data-thc-search-runtime="embedded-v1"' "$encyclopedia_live"
+          grep -Fq '__THC_ENCYCLOPEDIA_INDEX__' "$encyclopedia_live"
 
           info="$RUNNER_TEMP/learn-infographics.html"
           curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 \
