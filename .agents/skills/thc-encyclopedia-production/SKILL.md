@@ -13,7 +13,7 @@ Use this skill as the repeatable production system for the THC Cannabis Plant Sc
 
 The target is not a fixed count of pages. The controlled base is THC-ENC-001 through THC-ENC-420, and legitimate non-duplicate topics may expand through THC-ENC-421+ while preserving every existing permanent ID, route, citation, assessment reference, and cross-link.
 
-This skill specializes `dtf-education-production`; use that skill's evidence, assessment, certification, and visual standards rather than creating a conflicting education policy.
+This skill specializes encyclopedia production. The encyclopedia is its own canonical reference system. Academy/courses are separate curriculum products with their own lesson sequencing, progress, assessment, practical, and certification controls. Reuse shared evidence/visual standards where appropriate, but never make Academy/course membership a prerequisite for encyclopedia completeness or publication.
 
 ## Goal
 
@@ -175,10 +175,10 @@ A lesson should connect to the rest of THC when relevant:
 - SOPs;
 - glossary;
 - records/downloads;
-- Academy courses;
+- optional Academy/course links when they genuinely help a learner continue into structured training;
 - related encyclopedia topics.
 
-Prefer deterministic mappings derived from lesson metadata and topic ownership. Hand-authored exceptions are allowed when the science requires them.
+Encyclopedia-to-course links are navigation aids only. A lesson must remain complete, understandable, assessable, and publishable without belonging to a course. Prefer deterministic mappings derived from lesson metadata and topic ownership. Hand-authored exceptions are allowed when the science requires them.
 
 ### 6. Visual production
 
@@ -286,7 +286,7 @@ The encyclopedia system is healthy when:
 - production readiness is measurable;
 - published lessons use the canonical renderer;
 - search covers lesson content, not only titles;
-- relevant tools/atlases/courses connect back to lessons;
+- relevant tools and atlases connect back to lessons, while course links remain optional navigation;
 - review-only content remains protected;
 - new 421+ topics can be added without changing old identities;
 - validation fails closed when required contracts drift;

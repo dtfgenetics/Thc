@@ -9,14 +9,11 @@ on:
       - 'configuration/encyclopedia-search-benchmark.json'
       - 'data/encyclopedia-completion-scorecard.json'
       - 'site/public-route-patch/learn/encyclopedia/**'
-      - 'site/wordpress/mu-plugins/dtf-learning-search.php'
-      - 'site/wordpress/mu-plugins/dtf-learning-search/**'
-      - 'scripts/build-wordpress-learning-search-runtime.mjs'
       - 'site/public-route-patch/learn/search/**'
       - 'site/wordpress/education/encyclopedia/**'
-      - 'site/wordpress/mu-plugins/dtf-learning-search.php'
-      - 'site/wordpress/mu-plugins/dtf-learning-search/**'
       - 'scripts/build-wordpress-learning-search-runtime.mjs'
+      - 'site/wordpress/mu-plugins/dtf-learning-search/**'
+      - 'site/wordpress/mu-plugins/dtf-learning-search.php'
       - 'scripts/*encyclopedia*.mjs'
       - 'scripts/build-thc-education-search-index.mjs'
       - 'scripts/validate-thc-education-search.mjs'
@@ -52,6 +49,8 @@ jobs:
         run: npm run build:encyclopedia-scorecard
       - name: Validate completion scorecard
         run: node scripts/validate-encyclopedia-completion-scorecard.mjs
+      - name: Audit encyclopedia learning quality
+        run: npm run audit:encyclopedia-learning-quality
       - name: Build rich discovery index
         run: npm run build:encyclopedia-discovery
       - name: Build global education search
@@ -79,6 +78,7 @@ jobs:
           name: thc-encyclopedia-generated
           path: |
             data/encyclopedia-completion-scorecard.json
+            data/encyclopedia-learning-quality-audit.json
             site/public-route-patch/learn/encyclopedia/encyclopedia-index.json
             site/public-route-patch/learn/search/search-index.json
           if-no-files-found: error
