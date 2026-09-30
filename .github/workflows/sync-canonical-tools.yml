@@ -42,12 +42,12 @@ jobs:
           mkdir -p site/public-route-patch/assets
           cp -a /tmp/tools/site/public-route-patch/assets/. site/public-route-patch/assets/
           mkdir -p site/public-route-patch/assets/release-source-revisions
-          cat > site/public-route-patch/assets/release-source-revisions/tools.txt <<EOF
-repository=dtfgenetics/Tools
-commit=${tools_sha}
-lane=canonicalToolsMirror
-purpose=byte-for-byte-canonical-tools-deployment-mirror
-EOF
+          printf '%s\n' \
+            'repository=dtfgenetics/Tools' \
+            "commit=${tools_sha}" \
+            'lane=canonicalToolsMirror' \
+            'purpose=byte-for-byte-canonical-tools-deployment-mirror' \
+            > site/public-route-patch/assets/release-source-revisions/tools.txt
 
       - name: Run deterministic tool validation
         run: TOOLS_REPO_DIR=/tmp/tools npm run verify:cultivation-reference-tools
