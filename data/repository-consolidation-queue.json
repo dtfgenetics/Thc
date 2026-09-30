@@ -119,6 +119,42 @@
           {
             "branch": "cleanup/dedupe-high-land-legacy-assets-20260930",
             "basis": "current main already uses canonical shared High Land asset paths and duplicate legacy asset files are absent"
+          },
+          {
+            "branch": "cleanup/mark-legacy-hub-archive-ready-20260930",
+            "basis": "superseded by newer current-main migration controls; do not restore premature archive-ready state"
+          },
+          {
+            "branch": "cleanup/mark-legacy-hub-archive-ready-final-20260930",
+            "basis": "0 commits ahead of main; branch is behind main"
+          },
+          {
+            "branch": "cleanup/mark-legacy-hub-archive-ready-v2-20260930",
+            "basis": "superseded by newer current-main migration controls; do not restore premature archive-ready state"
+          },
+          {
+            "branch": "cleanup/remove-duplicate-dtf420-shell-20260930",
+            "basis": "duplicate apps/dtf420 shell already absent on current main"
+          },
+          {
+            "branch": "cleanup/remove-high-iq-placeholder-20260930",
+            "basis": "High IQ placeholder already absent on current main"
+          },
+          {
+            "branch": "cleanup/remove-legacy-grow-doc-20260930",
+            "basis": "legacy Grow Doc app already absent on current main"
+          },
+          {
+            "branch": "cleanup/remove-legacy-grow-doc-v2-20260930",
+            "basis": "legacy Grow Doc app already absent on current main"
+          },
+          {
+            "branch": "cleanup/remove-orphan-print-generator-20260930",
+            "basis": "orphan print-generator package already absent on current main"
+          },
+          {
+            "branch": "cleanup/retire-legacy-diagnostic-project-data-20260930",
+            "basis": "legacy diagnostic project-data files already absent on current main"
           }
         ],
         "reconcileNeeded": [],
