@@ -112,7 +112,7 @@ jobs:
           grep -Fq 'option update show_on_front page' scripts/apply-wordpress-public-content.sh
           grep -Fq 'option update page_on_front' scripts/apply-wordpress-public-content.sh
 
-          grep -Fq "verify_page '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'" .github/workflows/wordpress-public-pages-deploy.yml
+          grep -Fq "verify_page '/' 'Genetics first. Learn the plant behind the pack.'" .github/workflows/wordpress-public-pages-deploy.yml
 
           ! grep -Fq "verify_page '/home/'" .github/workflows/wordpress-canonical-production.yml
           grep -Fq 'Verify Learning-owned WordPress route preservation through REST' .github/workflows/wordpress-canonical-production.yml
