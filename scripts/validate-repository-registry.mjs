@@ -13,6 +13,9 @@ const publicApps = JSON.parse(fs.readFileSync(publicAppsPath, "utf8"));
 const retirementManifest = JSON.parse(fs.readFileSync(retirementManifestPath, "utf8"));
 
 const allowedStatuses = new Set(["canonical","standalone_canonical","migration","legacy_review","archive_candidate","archive_ready"]);
+const repos = registry.repositories ?? [];
+const errors = [];
+const seen = new Set();
 
 if (retirementManifest.schemaVersion !== 1) errors.push("repository retirement manifest schemaVersion must equal 1");
 if (retirementManifest.authority !== "dtfgenetics/Thc") errors.push("repository retirement manifest authority must be dtfgenetics/Thc");
@@ -50,10 +53,6 @@ for (const entry of retirementBranches) {
   if (entry.disposition !== "delete_safe") errors.push(`invalid branch retirement disposition: ${key} -> ${entry.disposition}`);
   if (typeof entry.basis !== "string" || !entry.basis.trim()) errors.push(`retirement branch basis is required: ${key}`);
 }
-const repos = registry.repositories ?? [];
-const errors = [];
-const seen = new Set();
-
 if (registry.schema_version !== 1) errors.push("schema_version must be 1");
 if (registry.authority !== "dtfgenetics/Thc") errors.push("authority must be dtfgenetics/Thc");
 
