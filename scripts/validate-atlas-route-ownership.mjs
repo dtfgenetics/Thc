@@ -4,7 +4,7 @@ import fs from 'node:fs';
 const navigation = JSON.parse(fs.readFileSync('data/public-navigation.json', 'utf8'));
 const ownership = fs.readFileSync('docs/ATLAS_ROUTE_OWNERSHIP.md', 'utf8');
 const v4 = fs.readFileSync('site/public-route-patch/atlas/index.html', 'utf8');
-const learningVerifier = fs.readFileSync('scripts/verify-dtf420-atlas-live.mjs', 'utf8');
+const learningVerifier = fs.readFileSync('scripts/verify-atlas-live.mjs', 'utf8');
 const suiteWorkflow = fs.readFileSync('.github/workflows/deploy-public-suite-wordpress-v2.yml', 'utf8');
 
 const learnSections = navigation.learn?.sections ?? [];
