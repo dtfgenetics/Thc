@@ -91,11 +91,10 @@ jobs:
             grep -Fq 'id="dtf-sitewide-ux-polish-v1"' "$file"
                         grep -Fq '>Seeds</a>' "$file"
             grep -Fq '>Learn</a>' "$file"
-                        grep -Fq '>Tools</a>' "$file"
+            grep -Fq '>Tools</a>' "$file"
             grep -Fq '>Games</a>' "$file"
-                        grep -Fq '>Shop</a>' "$file"
+            grep -Fq '>Shop</a>' "$file"
             ! grep -Fq '>Genetics</a>' "$file"
-            ! grep -Fq '>Tools</a>' "$file"
           done
           node - "$root/overlay-manifest.json" <<'NODE'
           const fs = require('node:fs');
