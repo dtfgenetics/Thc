@@ -6,6 +6,7 @@ on:
       - 'content/encyclopedia/**'
       - 'configuration/encyclopedia-topics.json'
       - 'configuration/encyclopedia-search-language.json'
+      - 'configuration/encyclopedia-search-benchmark.json'
       - 'data/encyclopedia-completion-scorecard.json'
       - 'site/public-route-patch/learn/encyclopedia/**'
       - 'site/public-route-patch/learn/search/**'
@@ -51,6 +52,8 @@ jobs:
         run: node scripts/build-thc-education-search-index.mjs
       - name: Validate encyclopedia and education search
         run: node scripts/validate-thc-education-search.mjs
+      - name: Validate search relevance benchmark
+        run: node scripts/validate-encyclopedia-search-benchmark.mjs
       - name: Validate lesson renderer contract
         run: npm run verify:encyclopedia-renderer
       - name: Validate encyclopedia production skill

@@ -1,4 +1,5 @@
 import Fuse from '/assets/vendor/fuse-7.1.0.min.mjs';
+import {explainSearchMatch} from './thc-search-explain-v1.mjs';
 
 const input=document.querySelector('[data-search-input]');
 const results=document.querySelector('[data-search-results]');
@@ -57,14 +58,15 @@ function render(){
   status.textContent=q
     ? `${rows.length} result${rows.length===1?'':'s'} for “${q}”`
     : `${rows.length} education resource${rows.length===1?'':'s'} available`;
-  results.innerHTML=rows.length?rows.map(item=>`
+  results.innerHTML=rows.length?rows.map(item=>{const match=q?explainSearchMatch(item,q):null;return `
     <article class="search-card">
       <div class="search-meta"><span>${esc(item.type)}</span><code>${esc(item.id)}</code></div>
       <h2><a href="${esc(item.route)}">${esc(item.title)}</a></h2>
       <p>${esc(item.summary)}</p>
+      ${match?`<p class="search-match"><strong>Why this matched:</strong> ${esc(match.label)} · ${esc(match.snippet)}</p>`:''}
       <div class="search-keywords">${(item.keywords||[]).slice(0,6).map(k=>`<span>${esc(k)}</span>`).join('')}</div>
       <a class="open-link" href="${esc(item.route)}">Open resource →</a>
-    </article>`).join('')
+    </article>`}).join('')
     : '<div class="empty"><strong>No matching resource found.</strong><span>Try a broader term such as roots, VPD, pests, lighting, cloning, pH, EC, trichomes or breeding.</span></div>';
 }
 

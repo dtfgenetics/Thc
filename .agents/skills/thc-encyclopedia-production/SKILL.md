@@ -44,6 +44,7 @@ Read before editing:
 - `content/encyclopedia/current-controlled-registry.json`
 - `configuration/encyclopedia-topics.json`
 - `configuration/encyclopedia-search-language.json`
+- `configuration/encyclopedia-search-benchmark.json`
 - `content/encyclopedia/lesson-template.json`
 - `content/encyclopedia/coverage-baseline.json`
 - `docs/ENCYCLOPEDIA_CONTENT_GAP_REGISTER.md`
@@ -121,7 +122,7 @@ The search document must support more than titles. Index:
 
 Expose filterable facets for topic, format, status, and other stable metadata.
 
-Maintain the controlled search-language map for common grower terms, abbreviations, spelling variants, and symptom descriptions. These aliases are retrieval aids only: never convert a slang phrase into a diagnosis or scientific claim. Search state should remain deep-linkable through URL query/filter parameters.
+Maintain the controlled search-language map for common grower terms, abbreviations, spelling variants, and symptom descriptions. These aliases are retrieval aids only: never convert a slang phrase into a diagnosis or scientific claim. Search state should remain deep-linkable through URL query/filter parameters. Maintain a real-query benchmark and fail CI when representative grower/science queries stop reaching their expected subject areas. Search results should explain why they matched by surfacing the matching field/snippet rather than presenting ranking as a black box.
 
 Search architecture is provider-independent. The canonical search document is the contract; Fuse, MiniSearch, Pagefind, Algolia DocSearch, Typesense, or another frontend may consume it later without changing lesson identity.
 
@@ -242,6 +243,7 @@ npm run verify:encyclopedia-scorecard
 npm run build:encyclopedia-discovery
 npm run build:education-search
 npm run validate:education-search
+npm run verify:encyclopedia-search-benchmark
 npm run verify:encyclopedia-content-control
 npm run verify:encyclopedia-content-strict
 npm run verify:encyclopedia-assessments
