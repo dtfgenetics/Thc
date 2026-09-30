@@ -5,6 +5,11 @@ const root = process.cwd();
 const registryPath = path.join(root, "data", "repository-registry.json");
 const registry = JSON.parse(fs.readFileSync(registryPath, "utf8"));
 
+const projectRegistryPath = path.join(root, "data", "project-registry.json");
+const publicAppsPath = path.join(root, "site", "deployment", "public-apps.json");
+const projectRegistry = JSON.parse(fs.readFileSync(projectRegistryPath, "utf8"));
+const publicApps = JSON.parse(fs.readFileSync(publicAppsPath, "utf8"));
+
 const allowedStatuses = new Set(["canonical","standalone_canonical","migration","legacy_review","archive_candidate","archive_ready"]);
 const repos = registry.repositories ?? [];
 const errors = [];
@@ -35,6 +40,28 @@ for (const [domain, owner] of requiredCanonical) {
   const claims = repos.filter(r => (r.canonical_for ?? []).includes(domain));
   if (claims.length !== 1 || claims[0].repo !== owner) {
     errors.push(`canonical ownership mismatch for "${domain}": expected only ${owner}, found ${claims.map(x=>x.repo).join(", ") || "none"}`);
+  }
+}
+
+
+const archiveReadyRepos = repos.filter((entry) => entry.status === "archive_ready");
+const projects = Array.isArray(projectRegistry.projects) ? projectRegistry.projects : [];
+const deploymentApps = Array.isArray(publicApps.apps) ? publicApps.apps : [];
+
+for (const entry of archiveReadyRepos) {
+  const projectEntries = projects.filter((project) => project.repo === entry.repo);
+  for (const project of projectEntries) {
+    if (project.status !== "archive-ready") {
+      errors.push(`archive-ready repository has non-archive project status: ${entry.repo} -> ${project.status}`);
+    }
+    if (project.release_path !== null && project.release_path !== undefined) {
+      errors.push(`archive-ready repository must not keep a release_path: ${entry.repo}`);
+    }
+  }
+
+  const activeDeploymentEntries = deploymentApps.filter((app) => app.repository === entry.repo);
+  for (const app of activeDeploymentEntries) {
+    errors.push(`archive-ready repository must not appear in public app registry: ${entry.repo} (${app.id || "unknown"})`);
   }
 }
 
