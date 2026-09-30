@@ -66,7 +66,7 @@ jobs:
             php -l "$file"
           done
 
-      - name: Verify built entrypoint and static assets
+      - name: Run High Land browser smoke tests
         shell: bash
         run: |
           set -euo pipefail
