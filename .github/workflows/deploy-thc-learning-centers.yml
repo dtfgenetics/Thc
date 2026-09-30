@@ -162,6 +162,11 @@ jobs:
           if(h.ok!==true || h.version!=='1.0.0') throw new Error('Learning search MU-plugin health endpoint is not active.');
           console.log('Learning search runtime active:', h);
           NODE
+          for asset in search-v1.js encyclopedia-v1.js thc-search-explain-v1.js fuse-7.1.0.min.js; do
+            curl -4 --fail --silent --show-error --location --retry 4 --retry-delay 2 \
+              "$WP_SITE_URL/wp-content/mu-plugins/dtf-learning-search/$asset?dtf_runtime=${GITHUB_RUN_ID}" -o "$RUNNER_TEMP/$asset"
+            test -s "$RUNNER_TEMP/$asset"
+          done
 
       - name: Roll back search runtime if activation health fails
         if: ${{ failure() && steps.search_runtime.outputs.backup_id != '' }}
@@ -256,6 +261,17 @@ jobs:
           done
           echo "outcome=success" >> "$GITHUB_OUTPUT"
 
+      - name: Roll back search runtime if Learning Center release fails
+        if: ${{ failure() && steps.search_runtime.outputs.backup_id != '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          port="${HOSTINGER_SSH_PORT:-65002}"
+          ssh_opts=(-i "$HOME/.ssh/dtf_hostinger" -p "$port" -o BatchMode=yes -o StrictHostKeyChecking=yes)
+          printf -v remote_cmd 'bash -s -- rollback %q %q %q %q' \
+            "$HOSTINGER_PUBLIC_ROOT" "$GITHUB_SHA" ignored "${{ steps.search_runtime.outputs.backup_id }}"
+          ssh "${ssh_opts[@]}" "$HOSTINGER_SSH_USER@$HOSTINGER_SSH_HOST" "$remote_cmd" < scripts/deploy/wordpress-learning-search-runtime.sh
+
       - name: Upload WordPress rollback package
         if: always()
         uses: actions/upload-artifact@v4
@@ -265,30 +281,26 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report learning-center production result
+      - name: Record learning-center production result
         if: always()
-        continue-on-error: true
-        uses: actions/github-script@v7
+        shell: bash
         env:
           JOB_STATUS: ${{ job.status }}
           ROUTE_COUNT: ${{ steps.build.outputs.route_count }}
           PAGE_OUTCOME: ${{ steps.pages.outputs.outcome }}
           NAV_OUTCOME: ${{ steps.navigation.outputs.outcome }}
           LIVE_OUTCOME: ${{ steps.live.outcome }}
-        with:
-          script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## THC customer-facing Learning Center production','',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Result: **${process.env.JOB_STATUS}**`,
-                `Learning routes built: **${process.env.ROUTE_COUNT || 'not-run'}**`,
-                `WordPress child-page publication: **${process.env.PAGE_OUTCOME || 'not-run'}**`,
-                `WordPress Learn navigation update: **${process.env.NAV_OUTCOME || 'not-run'}**`,
-                `Visitor-facing verification: **${process.env.LIVE_OUTCOME || 'not-run'}**`,'',
-                'Learning-center publication now strips quarantined legacy infographic imagery before any public page write. Image-less sections are allowed until role-specific approved replacements exist.'
-              ].join('\n')
-            });
+          SEARCH_BACKUP: ${{ steps.search_runtime.outputs.backup_id }}
+        run: |
+          {
+            echo '## THC customer-facing Learning Center production'
+            echo
+            echo "- Source: $GITHUB_SHA"
+            echo "- Result: ${JOB_STATUS:-unknown}"
+            echo "- Learning routes built: ${ROUTE_COUNT:-not-run}"
+            echo "- WordPress child-page publication: ${PAGE_OUTCOME:-not-run}"
+            echo "- Learn navigation update: ${NAV_OUTCOME:-not-run}"
+            echo "- Visitor-facing verification: ${LIVE_OUTCOME:-not-run}"
+            echo "- Search runtime backup: ${SEARCH_BACKUP:-not-created}"
+            echo '- Deployment evidence is recorded in this Actions run and rollback artifact; issue #46 is no longer used as a telemetry sink.'
+          } >> "$GITHUB_STEP_SUMMARY"
