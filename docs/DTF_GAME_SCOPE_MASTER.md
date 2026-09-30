@@ -40,7 +40,7 @@ The current controlled catalog contains **23 public-route games**. A public rout
 - **Kush Kings Chess** — `playable-local` — Configure the five Kush Kings production secrets, run the exact-SHA deploy, pass frontend/API/Socket.IO live verification, then complete two-browser/mobile multiplayer acceptance.
 - **Quack & Bake: Stoner Duck Race** — `playable-local` — Complete multiplayer/browser presentation QA, lock production ownership/public route, then package through the DTFSeeds release pipeline.
 - **Root Cause** — `vertical-slice` — Reconcile public-hub intent, run full route QA, and promote only after exact live verification.
-- **Seed Man: Seed Ascent** — `playable-local` — Complete browser/game-feel QA and establish explicit production ownership/cutover before public promotion.
+- **Seed Man: Seed Ascent** — `playable-local` — Complete game-feel QA and decide final canonical owner/cutover; migration-overlay release remains allowed.
 - **THC RPG — The First Seed** — `packaged` — Publish the qualified package to the DTFSeeds public suite, then verify /games/thc-rpg/ against exact revision de6c26d9073d9154bbcade43b64768cf6a7ba2a0.
 - **THC U Know** — `playable-local` — Configure the THC U Know Node host/origin settings, let deploy-node-runtime.yml deploy the exact green revision, then pass live smoke and two-browser multiplayer acceptance.
 
