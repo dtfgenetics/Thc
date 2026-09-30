@@ -121,6 +121,7 @@
     "verify:encyclopedia-worked-example-source-grounding": "node scripts/validate-encyclopedia-worked-example-source-grounding.mjs",
     "audit:encyclopedia-substantive-quality": "node scripts/audit-encyclopedia-substantive-quality.mjs",
     "verify:encyclopedia-crosslinks": "node scripts/validate-encyclopedia-crosslinks.mjs",
-    "verify:encyclopedia-answer-rationales": "node scripts/validate-encyclopedia-answer-rationales.mjs"
+    "verify:encyclopedia-answer-rationales": "node scripts/validate-encyclopedia-answer-rationales.mjs",
+    "build:encyclopedia-answer-rationales": "node scripts/build-encyclopedia-answer-rationales.mjs"
   }
 }
