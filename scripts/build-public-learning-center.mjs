@@ -191,7 +191,6 @@ function academyHtml() {
 
 const outputs = [
   ['library', libraryHtml()],
-  ['encyclopedia', encyclopediaHtml()],
   ['academy', academyHtml()],
   ...centers.map(center => [center.slug, centerHtml(center)])
 ];
