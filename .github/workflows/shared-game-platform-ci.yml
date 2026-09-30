@@ -54,6 +54,10 @@ jobs:
           done
           grep -Fq 'AddType text/javascript .mjs' "$root/.htaccess"
           grep -Fq 'X-Content-Type-Options "nosniff"' "$root/.htaccess"
-          grep -Fq '"platformVersion": "1.2.0"' "$root/manifest.json"
-          grep -Fq "DTF_GAME_PLATFORM_VERSION = '1.2.0'" "$root/index.mjs"
+          manifest_version="$(node -p "JSON.parse(require('fs').readFileSync('$root/manifest.json','utf8')).platformVersion")"
+          test -n "$manifest_version" || { echo "Shared platform manifest is missing platformVersion" >&2; exit 1; }
+          grep -Fq "DTF_GAME_PLATFORM_VERSION = '$manifest_version'" "$root/index.mjs" || {
+            echo "Shared platform runtime version does not match manifest version $manifest_version" >&2
+            exit 1
+          }
           grep -Fq "'/games/shared-platform/index.mjs'" site/public-route-patch/games/seed-man-platformer/input-guard-v1.js
