@@ -1,0 +1,24 @@
+DTF420 child-route progressive-disclosure production release
+
+Publish current dtfgenetics/Dtf420 main at or after merge commit 16ff34d38d8894d4af93c7ae4ffc036283c50ad8 through the reviewed Dtf420 static child-route overlay and protected DTFSeeds Public Suite WordPress V2 transactional publisher.
+
+Visitor-facing routes covered by this release:
+- /learn/plant-health/
+- /learn/cultivation-science/
+- /learn/symptoms/
+- /learn/tools/
+- /learn/sources/
+
+Required structure:
+- overview/index pages remain compact and scannable;
+- deep collections are grouped behind native clickable details/summary controls;
+- every individual reference, tool, differential, or external source remains a normal clickable link to its dedicated detail page or source;
+- public HTML exposes data-reference-progressive-disclosure="true", data-reference-group="true", and data-reference-record="true";
+- Dtf420 remains the child-route owner while WordPress retains /learn/ hub ownership;
+- preserve Header V5, responsive-layout v1, and sitewide UX polish v1 during the overlay staging reconciliation;
+- static export must remain valid, including the force-static web manifest repair;
+- purge visitor caches and verify the five public routes after publication.
+
+Reason: the prior THC Learning deployment correctly updated WordPress backing records but final anonymous verification proved that these child routes are served by the Dtf420 static overlay. This release promotes the corrected public owner instead of weakening verification.
+
+Release trigger: dtf420-reference-progressive-disclosure-2026-09-15.
