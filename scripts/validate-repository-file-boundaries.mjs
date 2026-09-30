@@ -69,14 +69,14 @@ for(const required of [
   'docs/archive/releases/dtf420-reference-progressive-disclosure-2026-09-15.txt',
   'docs/archive/releases/seed-ascent-renderer-release-2026-09-08.txt',
   'docs/operations/PLANT_ATLAS_MODEL_CONTRACT.md',
-  'docs/archive/retention-manifest.json'
+  'data/file-retirement-manifest.json'
 ]){
   if(!existsFile(required)) errors.push(`expected controlled documentation missing: ${required}`);
 }
 
-if(existsFile('docs/archive/retention-manifest.json')){
+if(existsFile('data/file-retirement-manifest.json')){
   try{
-    const retention=JSON.parse(fs.readFileSync(path.join(root,'docs/archive/retention-manifest.json'),'utf8'));
+    const retention=JSON.parse(fs.readFileSync(path.join(root,'data/file-retirement-manifest.json'),'utf8'));
     if(retention.schemaVersion!==1) errors.push('retention manifest: schemaVersion must equal 1');
     if(!Array.isArray(retention.records)) errors.push('retention manifest: records must be an array');
     const retirementIds=new Set();
