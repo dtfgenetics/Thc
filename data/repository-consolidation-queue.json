@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-09-30",
+  "authority": "dtfgenetics/Thc",
+  "policy": "Every migration or archive-ready repository must have an explicit cleanup record. Migration repositories remain non-canonical until every blocking lane is resolved. Archive-ready repositories remain non-deployable and should be archived rather than deleted.",
+  "repositories": [
+    {
+      "repo": "dtfgenetics/Dtf420",
+      "state": "migration",
+      "target": "controlled-cutover-or-retire-overlap",
+      "blockers": [
+        "Resolve final ownership for Seed Ascent.",
+        "Resolve final production owner and route for Stoner Duck Race.",
+        "Reconcile any remaining unique Next.js-only behavior into canonical domain owners before cutover.",
+        "Reduce non-default branch inventory after unique-commit review.",
+        "Keep tools, education, certification, diagnostics and current production integration non-canonical here until an explicit cutover decision."
+      ],
+      "canonicalTargets": [
+        "dtfgenetics/Thc",
+        "dtfgenetics/Tools",
+        "dtfgenetics/thc-grow-hub",
+        "dtfgenetics/Thc-learning-courses-",
+        "dtfgenetics/Thc-dataset"
+      ],
+      "exitCriteria": [
+        "Every overlapping route/domain is either cut over explicitly or removed as duplicate migration code.",
+        "All unique branch commits are merged, migrated, superseded or classified as historical-only.",
+        "No canonical domain ownership is claimed until a documented platform cutover.",
+        "No production route is owned directly while repository status is migration."
+      ]
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "state": "migration",
+      "target": "archive-ready",
+      "blockers": [
+        "Classify all non-default branches with commits not present on main.",
+        "Complete legacy asset hash/provenance reconciliation.",
+        "Confirm no production automation or bookmarks require this repository.",
+        "Remove or retire remaining duplicate working-tree implementations after canonical parity is proven."
+      ],
+      "completedLanes": [
+        "Grow Doc comparison and selective export migration.",
+        "High Land comparison and audio-preference migration.",
+        "High IQ comparison; no code migration required.",
+        "Legacy shared game engine classified superseded.",
+        "Legacy WordPress/deployment tooling classified superseded.",
+        "Legacy certification widgets classified historical-only."
+      ],
+      "canonicalTargets": [
+        "dtfgenetics/Thc",
+        "dtfgenetics/Tools",
+        "dtfgenetics/thc-grow-hub",
+        "dtfgenetics/Thc-learning-courses-",
+        "dtfgenetics/Thc-dataset"
+      ],
+      "exitCriteria": [
+        "Every legacy lane is assigned to a canonical owner or historical-only classification.",
+        "Every ahead/diverged branch is migrated, superseded or historical-only.",
+        "No production route or deployment authority depends on the repository.",
+        "Repository registry may then move from migration to archive_candidate/archive_ready."
+      ]
+    },
+    {
+      "repo": "dtfgenetics/code",
+      "state": "archive_ready",
+      "target": "archive",
+      "blockers": [
+        "Confirm no external automation/bookmarks require the empty repository."
+      ],
+      "exitCriteria": [
+        "Archive in GitHub; preserve history/name; do not delete."
+      ]
+    },
+    {
+      "repo": "dtfgenetics/thc-music-bot-for-discod",
+      "state": "archive_ready",
+      "target": "archive",
+      "blockers": [
+        "Update any remaining references to dtfgenetics/thc-discord-bot-for-music-."
+      ],
+      "exitCriteria": [
+        "Archive in GitHub after reference check; preserve history."
+      ]
+    },
+    {
+      "repo": "dtfgenetics/all-in-one-thc-grow-",
+      "state": "archive_ready",
+      "target": "archive",
+      "blockers": [
+        "Confirm no external automation/bookmarks require the legacy placeholder."
+      ],
+      "exitCriteria": [
+        "Archive in GitHub; canonical cultivation evidence remains in dtfgenetics/Tools."
+      ]
+    }
+  ]
+}
