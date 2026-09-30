@@ -19,7 +19,7 @@ function transform(name,text){
   }
   if(name==='encyclopedia-v1.js'){
     out=out
-      .replace("import Fuse from '/assets/vendor/fuse-7.1.0.min.mjs';","import Fuse from './fuse-7.1.0.min.mjs';")
+      .replace("import Fuse from '/assets/vendor/fuse-7.1.0.min.mjs';","import Fuse from './fuse-7.1.0.min.js';")
       .replace("import {explainSearchMatch} from '../search/thc-search-explain-v1.mjs';","import {explainSearchMatch} from './thc-search-explain-v1.js';");
   }
   return out;
