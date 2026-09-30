@@ -1,0 +1,68 @@
+{
+  "id": "THC-ENC-386",
+  "number": 386,
+  "title": "F3 and Later-Generation Family Selection",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Pedigree-family selection sequence",
+  "objective": "Use family means, within-family variation, replication, and advancing-generation records to increase fixation without losing useful diversity.",
+  "termsToKnow": [
+    "F3 family",
+    "pedigree selection",
+    "family mean",
+    "within-family selection",
+    "between-family selection",
+    "line",
+    "fixation",
+    "bulk",
+    "single-seed descent"
+  ],
+  "coreScience": [
+    "F3 and later generations allow breeders to compare descendants of individual F2 selections. Selfing increases homozygosity on average, but each family fixes different segments and retains different residual heterozygosity. A family that looks uniform for one visible trait may still segregate for chemistry, disease response, flowering, or hidden deleterious alleles.",
+    "Family selection separates two questions: which families have useful average performance, and which individuals within those families deserve advancement? For quantitative traits, replicated family means can be more reliable than one F2 plant. Within-family selection is useful when meaningful variation remains. Pedigree selection preserves ancestry and selection decisions; bulk and single-seed-descent methods preserve different amounts of selection and diversity. The method should match labor, traits, generation time, and the target product profile.",
+    "Do not advance only one seed or clone per generation unless a deliberate bottleneck is acceptable. Maintain backup seed, sibling lines, and failed-line records. Confirm stability across environments and generations rather than using “F3,” “F4,” or “F5” as a quality claim. Generation labels describe ancestry and mating history, not uniformity, vigor, or commercial readiness."
+  ],
+  "cultivationRelevance": [
+    "Evaluate several plants per family and several families per cross. Use consistent family IDs, keep selection notes, and confirm important traits with replicated trials and laboratory data."
+  ],
+  "measureAndRecord": [
+    "Family and pedigree ID; generation and mating method; plants per family; environments/replicates; family mean and variance; selected individuals; residual segregation; seed quantity and backup; reasons for advancement; stability across generations."
+  ],
+  "misconceptions": [
+    "F3 automatically means stable.",
+    "One selected plant represents its whole family.",
+    "Later generation always means better quality."
+  ],
+  "evidenceLimits": [
+    "Fixation rate and family reliability depend on mating design, heterozygosity, population size, selection, linkage, and trait architecture."
+  ],
+  "crossLinks": "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems.",
+  "sourceNotes": [
+    "V20-SRC-004",
+    "V20-SRC-005",
+    "V20-SRC-006",
+    "V20-SRC-007"
+  ],
+  "knowledgeCheck": [
+    "For \"F3 and Later-Generation Family Selection\", explain the mechanism behind this objective: Use family means, within-family variation, replication, and advancing-generation records to increase fixation without losing useful diversity. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"F3 automatically means stable.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Evaluate several plants per family and several families per cross. Use consistent family IDs, keep selection notes, and confirm important traits with replicated trials and laboratory data. Build a verification plan using the lesson's record set (Family and pedigree ID; generation and mating method; plants per family; environments/replicates; family mean and variance; selected individuals; residual segregation; seed quantity and backup; reasons for advancement; stability across generations.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 20: Breeding, Selection, and Genetic Conservation — DRAFT COMPLETE v0.1",
+    "driveFileId": "1ru6DHiVQ7O-tsY3j7R_rJs_ORwMDfGW9sfZxoiXCq5k",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "f3-and-later-generation-family-selection",
+  "route": "/encyclopedia/f3-and-later-generation-family-selection",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

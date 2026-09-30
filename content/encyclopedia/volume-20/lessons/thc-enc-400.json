@@ -1,0 +1,70 @@
+{
+  "id": "THC-ENC-400",
+  "number": 400,
+  "title": "Pedigrees, Generations, Naming, and Release Claims",
+  "primaryFormat": "Data / QA",
+  "requiredTeachingVisual": "Controlled pedigree, generation, and naming record",
+  "objective": "Use unambiguous pedigree and generation records while preventing names and marketing claims from exceeding the evidence.",
+  "termsToKnow": [
+    "pedigree",
+    "filial generation",
+    "selfed generation",
+    "backcross",
+    "line",
+    "cultivar",
+    "accession",
+    "clone",
+    "seed lot",
+    "release claim"
+  ],
+  "coreScience": [
+    "A pedigree records biological ancestry and mating events. A product name is not a pedigree. Generation labels must state the mating that created them: F1 and F2 describe filial generations from a defined cross; S1 describes selfed offspring from one parent; BC1 describes the first backcross to a named recurrent parent. Industry usage is inconsistent, so every project should publish its controlled definitions and never infer stability from the label alone.",
+    "Individual, family, line, clone, accession, cultivar, and seed lot are different entities. A selected F2 individual can be preserved as a clone while its F3 seed family segregates. Two seed lots with the same cross can differ because of parents, pollen contamination, harvest, storage, and sampling. Reusing a name for changed parents or unverified generations destroys traceability.",
+    "Release claims should be supported by a frozen target product profile, parent and generation records, population sizes, trial environments, laboratory methods, disease or stress tests, uniformity and stability evidence, seed quality, legal status, and known limitations. “Stable,” “IBL,” “true breeding,” “resistant,” “feminized,” “autoflower,” and lineage percentages require definitions and evidence. Corrected pedigrees and failed claims should remain in revision history rather than being silently replaced."
+  ],
+  "cultivationRelevance": [
+    "Assign permanent IDs before names. Link every public description to a versioned release record and retained reference material."
+  ],
+  "measureAndRecord": [
+    "Permanent line/cross/clone/lot IDs; parent IDs and roles; every mating and generation; population and selected counts; seed and clone sources; identity tests; trial and laboratory evidence; name/version; claim wording and scope; corrections, approver and release date."
+  ],
+  "misconceptions": [
+    "A name proves a cultivar is genetically distinct.",
+    "F5 or IBL automatically means uniform and stable.",
+    "A pedigree percentage can be calculated reliably from names alone."
+  ],
+  "evidenceLimits": [
+    "Pedigree records show declared ancestry; they do not by themselves prove genetic identity, trait transmission, uniformity, stability, ownership, or legal status."
+  ],
+  "crossLinks": "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems.",
+  "sourceNotes": [
+    "V20-SRC-008",
+    "V20-SRC-010",
+    "V20-SRC-013",
+    "V20-SRC-030",
+    "V20-SRC-034"
+  ],
+  "knowledgeCheck": [
+    "For \"Pedigrees, Generations, Naming, and Release Claims\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+    "A learner claims, \"A name proves a cultivar is genetically distinct.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Assign permanent IDs before names. Link every public description to a versioned release record and retained reference material. Build a verification plan using the lesson's record set (Permanent line/cross/clone/lot IDs; parent IDs and roles; every mating and generation; population and selected counts; seed and clone sources; identity tests; trial and laboratory evidence; name/version; claim wording and scope; corrections, approver and release date.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.\n\n\nVOLUME 20 COMPLETION RECORD\nLesson count: 20 of 20\nControlled IDs: THC-ENC-381–400\nRequired instructional sections: Present in every lesson\nSource notes: Present in every lesson\nAtomic claim ledger: Not started\nIndependent review: Not started\nPrimary visuals: Not produced\nDownloads/page packages: Not produced\nApproval/publication: Not authorized",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 20: Breeding, Selection, and Genetic Conservation — DRAFT COMPLETE v0.1",
+    "driveFileId": "1ru6DHiVQ7O-tsY3j7R_rJs_ORwMDfGW9sfZxoiXCq5k",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "pedigrees-generations-naming-and-release-claims",
+  "route": "/encyclopedia/pedigrees-generations-naming-and-release-claims",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

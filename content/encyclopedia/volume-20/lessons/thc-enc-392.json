@@ -1,0 +1,66 @@
+{
+  "id": "THC-ENC-392",
+  "number": 392,
+  "title": "Selection Intensity and Genetic Gain",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Breeder’s equation and retained-diversity diagram",
+  "objective": "Relate selection differential, accuracy, heritability, genetic variation, generation interval, and diversity retention to expected and realized gain.",
+  "termsToKnow": [
+    "selection intensity",
+    "selection differential",
+    "response to selection",
+    "heritability",
+    "accuracy",
+    "genetic variance",
+    "generation interval",
+    "correlated response"
+  ],
+  "coreScience": [
+    "Selection intensity describes how strongly a breeder favors the upper or lower part of a measured population. Stronger selection can increase short-term gain when measurements are accurate and heritable variation exists, but it reduces the number of parents and can accelerate inbreeding, drift, and loss of rare favorable alleles.",
+    "The breeder’s equation is often summarized as response equals narrow-sense heritability multiplied by the selection differential. More complete forms include selection intensity, accuracy, additive genetic variation, and generation interval. These are expectations for a defined population and environment, not promises. Heritability is not a permanent property of a trait; it changes with population, environment, design, and measurement error.",
+    "Selection on one trait can change others because of genetic correlations and physiological tradeoffs. Selecting only concentration may reduce yield, uniformity, fertility, or disease resistance. Index selection combines weighted traits, while independent culling requires minimum standards for each trait. Realized gain must be measured by comparing descendants with a valid base population or check across environments. Selecting the best-looking survivors without recording mortality overestimates progress."
+  ],
+  "cultivationRelevance": [
+    "Define how many individuals and families will be retained before evaluation. Monitor effective parent number and compare predicted gain with realized progeny performance."
+  ],
+  "measureAndRecord": [
+    "Base population; trait mean and variance; heritability/accuracy estimate; selected proportion; selection differential; family contributions; generation interval; predicted response; realized progeny response; correlated traits; inbreeding indicators."
+  ],
+  "misconceptions": [
+    "Selecting only the top plant creates the fastest long-term progress.",
+    "High heritability means the environment does not matter.",
+    "A higher parental value proves genetic gain without progeny comparison."
+  ],
+  "evidenceLimits": [
+    "Predicted gain depends on the validity of variance estimates, relationships, selection model, population, and target environments."
+  ],
+  "crossLinks": "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems.",
+  "sourceNotes": [
+    "V20-SRC-006",
+    "V20-SRC-007",
+    "V20-SRC-025"
+  ],
+  "knowledgeCheck": [
+    "For \"Selection Intensity and Genetic Gain\", explain the mechanism behind this objective: Relate selection differential, accuracy, heritability, genetic variation, generation interval, and diversity retention to expected and realized gain. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Selecting only the top plant creates the fastest long-term progress.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Define how many individuals and families will be retained before evaluation. Monitor effective parent number and compare predicted gain with realized progeny performance. Build a verification plan using the lesson's record set (Base population; trait mean and variance; heritability/accuracy estimate; selected proportion; selection differential; family contributions; generation interval; predicted response; realized progeny response; correlated traits; inbreeding indicators.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 20: Breeding, Selection, and Genetic Conservation — DRAFT COMPLETE v0.1",
+    "driveFileId": "1ru6DHiVQ7O-tsY3j7R_rJs_ORwMDfGW9sfZxoiXCq5k",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "selection-intensity-and-genetic-gain",
+  "route": "/encyclopedia/selection-intensity-and-genetic-gain",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

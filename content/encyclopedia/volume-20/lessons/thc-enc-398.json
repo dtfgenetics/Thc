@@ -1,0 +1,68 @@
+{
+  "id": "THC-ENC-398",
+  "number": 398,
+  "title": "Population Maintenance and Avoiding Genetic Bottlenecks",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Effective population size and family-contribution diagram",
+  "objective": "Maintain useful allelic diversity by controlling parent number, sex ratio, family contribution, drift, selection, and contamination.",
+  "termsToKnow": [
+    "census population",
+    "effective population size",
+    "genetic drift",
+    "bottleneck",
+    "founder effect",
+    "allele loss",
+    "family contribution",
+    "coancestry"
+  ],
+  "coreScience": [
+    "The number of plants in a population is not the same as its effective population size. Unequal sex ratios, few successful pollen parents, unequal seed contribution, related matings, reproductive failure, and strong selection can make a large grow genetically equivalent to a much smaller breeding population. Small effective size increases drift, inbreeding, and loss of rare alleles.",
+    "Population maintenance requires a defined objective. A conservation population aims to retain diversity and representative allele frequencies; a breeding population deliberately changes them. To conserve, use many unrelated parents, balanced male and female or family contributions, controlled sampling, and sufficient seed from each family. Avoid allowing the earliest, tallest, or most pollen-productive plants to dominate unintentionally.",
+    "Genotyping can estimate relatedness and structure, but sampling and marker density matter. Phenotypic diversity is not a reliable substitute for genomic diversity, and cultivar names may not reflect identity. Maintain base-population seed, selected cycles, and safety duplicates separately. Contamination by stray pollen, volunteers, mixed seed, or mislabeled clones can alter a population as strongly as deliberate selection."
+  ],
+  "cultivationRelevance": [
+    "Calculate and monitor parent and family contributions every cycle. Preserve an unselected base sample and document all bottlenecks."
+  ],
+  "measureAndRecord": [
+    "Population and cycle ID; census size; breeding parents; sex ratio; relationships; pollen and seed contribution by family; mortality and fertility; selection proportion; effective-size estimate; allele/marker diversity; contamination checks; backups."
+  ],
+  "misconceptions": [
+    "A field with hundreds of plants cannot have a bottleneck.",
+    "Visible diversity proves genetic diversity is preserved.",
+    "Using one outstanding male has little effect on population structure."
+  ],
+  "evidenceLimits": [
+    "Effective population size and diversity estimates depend on mating system, family contribution, marker coverage, generation history, and sampling."
+  ],
+  "crossLinks": "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems.",
+  "sourceNotes": [
+    "V20-SRC-006",
+    "V20-SRC-008",
+    "V20-SRC-010",
+    "V20-SRC-011",
+    "V20-SRC-012"
+  ],
+  "knowledgeCheck": [
+    "For \"Population Maintenance and Avoiding Genetic Bottlenecks\", explain the mechanism behind this objective: Maintain useful allelic diversity by controlling parent number, sex ratio, family contribution, drift, selection, and contamination. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"A field with hundreds of plants cannot have a bottleneck.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Calculate and monitor parent and family contributions every cycle. Preserve an unselected base sample and document all bottlenecks. Build a verification plan using the lesson's record set (Population and cycle ID; census size; breeding parents; sex ratio; relationships; pollen and seed contribution by family; mortality and fertility; selection proportion; effective-size estimate; allele/marker diversity; contamination checks; backups.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 20: Breeding, Selection, and Genetic Conservation — DRAFT COMPLETE v0.1",
+    "driveFileId": "1ru6DHiVQ7O-tsY3j7R_rJs_ORwMDfGW9sfZxoiXCq5k",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "population-maintenance-and-avoiding-genetic-bottlenecks",
+  "route": "/encyclopedia/population-maintenance-and-avoiding-genetic-bottlenecks",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

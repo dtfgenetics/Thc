@@ -1,0 +1,68 @@
+{
+  "id": "THC-ENC-381",
+  "number": 381,
+  "title": "Breeding Goals and Target Product Profiles",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Breeding objective and target-product profile map",
+  "objective": "Convert a broad breeding idea into measurable, prioritized traits, testing environments, product uses, and release criteria.",
+  "termsToKnow": [
+    "breeding objective",
+    "target product profile",
+    "trait definition",
+    "selection criterion",
+    "constraint",
+    "ideotype",
+    "market class",
+    "release standard"
+  ],
+  "coreScience": [
+    "A breeding program begins with a decision about what population should become better, for whom, and under which environments. “Higher quality,” “better yield,” or “strong genetics” are not testable objectives. A target product profile translates intended lawful use into measurable traits such as flowering response, maturity window, biomass or inflorescence yield, cannabinoid ratio, volatile profile, seed or fiber properties, architecture, disease response, environmental adaptation, uniformity, and postharvest performance.",
+    "Traits can conflict. Later maturity may raise yield in one environment but increase frost or disease exposure. Dense flowers may improve visual yield while increasing drying and microbial risk. High concentration in a small sample may not maximize total analyte yield per plant or per area. A useful profile therefore ranks must-have traits, desired traits, unacceptable traits, and tradeoffs. It also names the testing methods, units, sample positions, environments, and minimum evidence required.",
+    "The objective controls population design. A rare single-gene trait may require marker-assisted introgression and backcrossing; a highly quantitative trait may require large populations, replicated trials, family selection, and genomic prediction. The target must remain version-controlled because regulations, product standards, climates, and customer needs change. Changing the objective after observing the results creates biased selection and makes progress difficult to audit."
+  ],
+  "cultivationRelevance": [
+    "Create the target product profile before making crosses. Use it to choose parents, population sizes, trial environments, laboratory panels, rejection rules, and release evidence."
+  ],
+  "measureAndRecord": [
+    "Program ID and version; intended lawful use; target environments; trait definitions and units; minimum/optimum/maximum values; trait weights; unacceptable traits; testing methods; sample numbers; release and stop criteria; approver and revision history."
+  ],
+  "misconceptions": [
+    "The best-looking plant is automatically the best breeding parent.",
+    "Every desired trait can be maximized at the same time.",
+    "A cultivar can be released from one successful grow."
+  ],
+  "evidenceLimits": [
+    "Trait priorities, legal thresholds, market needs, and environmental risks are program-specific and must be refreshed before each release."
+  ],
+  "crossLinks": "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems.",
+  "sourceNotes": [
+    "V20-SRC-004",
+    "V20-SRC-005",
+    "V20-SRC-007",
+    "V20-SRC-011",
+    "V20-SRC-034"
+  ],
+  "knowledgeCheck": [
+    "For \"Breeding Goals and Target Product Profiles\", explain the mechanism behind this objective: Convert a broad breeding idea into measurable, prioritized traits, testing environments, product uses, and release criteria. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"The best-looking plant is automatically the best breeding parent.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Create the target product profile before making crosses. Use it to choose parents, population sizes, trial environments, laboratory panels, rejection rules, and release evidence. Build a verification plan using the lesson's record set (Program ID and version; intended lawful use; target environments; trait definitions and units; minimum/optimum/maximum values; trait weights; unacceptable traits; testing methods; sample numbers; release and stop criteria; approver and revision history.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 20: Breeding, Selection, and Genetic Conservation — DRAFT COMPLETE v0.1",
+    "driveFileId": "1ru6DHiVQ7O-tsY3j7R_rJs_ORwMDfGW9sfZxoiXCq5k",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "breeding-goals-and-target-product-profiles",
+  "route": "/encyclopedia/breeding-goals-and-target-product-profiles",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

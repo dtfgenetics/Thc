@@ -1,0 +1,67 @@
+{
+  "id": "THC-ENC-393",
+  "number": 393,
+  "title": "Replicated Trials and Environmental Noise",
+  "primaryFormat": "Data / QA",
+  "requiredTeachingVisual": "Replicated multi-environment trial layout",
+  "objective": "Separate genetic signal from position, room, season, management, and measurement effects using replication, randomization, blocking, and checks.",
+  "termsToKnow": [
+    "replication",
+    "randomization",
+    "block",
+    "check cultivar",
+    "experimental unit",
+    "genotype-by-environment interaction",
+    "spatial trend",
+    "pseudoreplication"
+  ],
+  "coreScience": [
+    "A single plant in a single location cannot separate genotype from environment. Replication means independent experimental units receiving the same genotype or family. Repeated measurements on one plant improve temporal detail but are not biological replicates. Clones can provide genetically matched units, while seed families provide a distribution that must be modeled correctly.",
+    "Randomization reduces systematic bias, and blocking groups units that share a known gradient such as bench, room zone, field strip, irrigation line, harvest date, or drying rack. Check cultivars connect trials across time and location. Border plants and guard rows can reduce edge effects. Trial maps must be preserved so spatial trends can be inspected rather than averaged away.",
+    "Genotype-by-environment interaction occurs when relative performance changes across environments. A line can be broadly adapted, specifically adapted, or unstable. Multi-environment trials should represent target production systems, not merely the easiest rooms. Management deviations, missing plants, pest events, instrument failures, and selective harvests belong in the dataset. Statistical significance does not replace effect size, uncertainty, biological relevance, or repeatability."
+  ],
+  "cultivationRelevance": [
+    "Use a written trial protocol and analysis plan before planting. Define the experimental unit, replication, blocks, randomization, checks, exclusions, and primary outcomes."
+  ],
+  "measureAndRecord": [
+    "Trial ID/version; genotypes/families; experimental units; randomization seed and map; blocks/checks; environments; management; measurements and timing; missing/dead units; deviations; statistical model; effect estimates and intervals."
+  ],
+  "misconceptions": [
+    "Ten measurements from one plant are ten replicates.",
+    "Clones eliminate environmental variation.",
+    "A significant result from one room proves broad adaptation."
+  ],
+  "evidenceLimits": [
+    "Inference is limited to sampled genotypes, environments, management, measurement methods, and valid experimental units."
+  ],
+  "crossLinks": "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems.",
+  "sourceNotes": [
+    "V20-SRC-005",
+    "V20-SRC-006",
+    "V20-SRC-007",
+    "V20-SRC-025"
+  ],
+  "knowledgeCheck": [
+    "For \"Replicated Trials and Environmental Noise\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+    "A learner claims, \"Ten measurements from one plant are ten replicates.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Use a written trial protocol and analysis plan before planting. Define the experimental unit, replication, blocks, randomization, checks, exclusions, and primary outcomes. Build a verification plan using the lesson's record set (Trial ID/version; genotypes/families; experimental units; randomization seed and map; blocks/checks; environments; management; measurements and timing; missing/dead units; deviations; statistical model; effect estimates and intervals.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 20: Breeding, Selection, and Genetic Conservation — DRAFT COMPLETE v0.1",
+    "driveFileId": "1ru6DHiVQ7O-tsY3j7R_rJs_ORwMDfGW9sfZxoiXCq5k",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "replicated-trials-and-environmental-noise",
+  "route": "/encyclopedia/replicated-trials-and-environmental-noise",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

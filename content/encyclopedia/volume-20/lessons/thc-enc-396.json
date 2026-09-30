@@ -1,0 +1,68 @@
+{
+  "id": "THC-ENC-396",
+  "number": 396,
+  "title": "Disease and Pest Resistance Screening",
+  "primaryFormat": "Diagnostic",
+  "requiredTeachingVisual": "Resistance-screen design and escape-control decision tree",
+  "objective": "Distinguish genetic resistance, tolerance, susceptibility, and disease escape through controlled challenge, replication, pathogen identity, and multi-stage evidence.",
+  "termsToKnow": [
+    "resistance",
+    "susceptibility",
+    "tolerance",
+    "disease escape",
+    "inoculum",
+    "isolate",
+    "disease severity",
+    "area under disease progress curve",
+    "resistance locus"
+  ],
+  "coreScience": [
+    "Resistance reduces infection, colonization, reproduction, or damage by a defined organism under defined conditions. Tolerance allows acceptable performance despite infection or injury. Escape occurs when a plant avoids exposure or favorable conditions. A plant with no visible disease in one room may be resistant, unexposed, younger, spatially protected, or incorrectly scored.",
+    "A resistance screen requires verified pest or pathogen identity, a reproducible challenge, susceptible and resistant checks, adequate inoculum or infestation, randomization, replication, and environmental control. Rate incidence, severity, pathogen reproduction, plant growth, and time. Different isolates can overcome different resistance genes, and development stage can change response. Greenhouse screens and field trials answer complementary questions.",
+    "Cannabis powdery mildew research illustrates multiple architectures: a disrupted susceptibility gene near CsMLO1, a dominant PM2 locus on chromosome 9, additional smaller QTL, and diverse germplasm with low disease across years. A marker is useful only after validation in the breeding population and with the relevant pathogen. Strong single-gene resistance can be introgressed, but durability may require combining mechanisms and monitoring pathogen change."
+  ],
+  "cultivationRelevance": [
+    "Treat promising resistance as a hypothesis until repeated with verified challenge and progeny. Preserve isolates, check reactions, images, raw scores, and marker data."
+  ],
+  "measureAndRecord": [
+    "Host IDs and stage; pathogen/pest species and isolate; inoculum or infestation method/dose; checks; environment; randomization/replication; incidence, severity and reproduction over time; yield/tolerance; markers; escapes; repeat environments."
+  ],
+  "misconceptions": [
+    "No visible disease proves resistance.",
+    "A resistance marker works in every genetic background.",
+    "One resistance gene makes scouting unnecessary."
+  ],
+  "evidenceLimits": [
+    "Resistance is organism-, isolate-, host-stage-, environment-, background-, scoring-, and population-specific."
+  ],
+  "crossLinks": "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems.",
+  "sourceNotes": [
+    "V20-SRC-026",
+    "V20-SRC-027",
+    "V20-SRC-028",
+    "V20-SRC-029"
+  ],
+  "knowledgeCheck": [
+    "For \"Disease and Pest Resistance Screening\", explain the mechanism behind this objective: Distinguish genetic resistance, tolerance, susceptibility, and disease escape through controlled challenge, replication, pathogen identity, and multi-stage evidence. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"No visible disease proves resistance.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Treat promising resistance as a hypothesis until repeated with verified challenge and progeny. Preserve isolates, check reactions, images, raw scores, and marker data. Build a verification plan using the lesson's record set (Host IDs and stage; pathogen/pest species and isolate; inoculum or infestation method/dose; checks; environment; randomization/replication; incidence, severity and reproduction over time; yield/tolerance; markers; escapes; repeat environments.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 20: Breeding, Selection, and Genetic Conservation — DRAFT COMPLETE v0.1",
+    "driveFileId": "1ru6DHiVQ7O-tsY3j7R_rJs_ORwMDfGW9sfZxoiXCq5k",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "disease-and-pest-resistance-screening",
+  "route": "/encyclopedia/disease-and-pest-resistance-screening",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}
