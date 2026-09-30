@@ -10,6 +10,8 @@ Target ownership authority: `data/repository-registry.json`
 
 No directory should be bulk-deleted or blindly copied. For each lane, compare the legacy implementation with the canonical owner, retain unique behavior/assets/provenance, port only what is still useful, and validate the target owner before retiring the legacy copy.
 
+Retirement no longer requires obsolete executable payloads to remain in an active tree. Once a lane is classified as superseded/historical-only and its canonical successor is verified, preserve the decision in the owning repository's retention manifest and rely on Git history for the retired bytes.
+
 ## Migration lanes
 
 | Legacy area | Observed material | Canonical target | Action |
