@@ -432,22 +432,13 @@ jobs:
           node scripts/verify-thc-rpg-live.mjs
           node scripts/verify-external-release-candidates-live.mjs
 
-      - name: Verify cultivation reference tools live
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [[ -f scripts/verify-cultivation-reference-tools-live.mjs ]]; then
-            node scripts/verify-cultivation-reference-tools-live.mjs
-          else
-            echo "::warning title=Cultivation live verifier unavailable::scripts/verify-cultivation-reference-tools-live.mjs is not present in this checkout; skipping this unrelated post-deploy verification instead of marking a successful suite publication as failed."
-          fi
-
-      - name: Dispatch independent feature-surface verification
+      - name: Dispatch independent post-deploy verifications
         if: always()
         shell: bash
         run: |
           set -euo pipefail
           gh workflow run verify-dtfseeds-feature-surface.yml --ref main || true
+          gh workflow run verify-cultivation-reference-tools-live.yml --ref main || true
 
       - name: Summarize deployment
         if: always()
