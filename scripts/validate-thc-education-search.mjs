@@ -10,7 +10,9 @@ const files={
   encyclopediaRuntime:'site/public-route-patch/learn/encyclopedia/encyclopedia-v1.mjs',
   encyclopediaIndex:'site/public-route-patch/learn/encyclopedia/encyclopedia-index.json',
   learnData:'site/public-route-patch/learn/section-data-v1.json',
-  searchLanguage:'configuration/encyclopedia-search-language.json'
+  searchLanguage:'configuration/encyclopedia-search-language.json',
+  wordpressRuntime:'site/wordpress/mu-plugins/dtf-learning-search.php',
+  wordpressRuntimeBuilder:'scripts/build-wordpress-learning-search-runtime.mjs'
 };
 const errors=[];
 for(const [name,file] of Object.entries(files)) if(!fs.existsSync(file)) errors.push(`${name} missing: ${file}`);
@@ -35,7 +37,11 @@ if(!errors.length){
    if(!index.documents.some(x=>x.route===required)) errors.push(`search index missing ${required}`);
  }
  if(!publisher.includes("slug: 'search'")) errors.push('WordPress learning publisher no longer includes search route');
- if(!publisher.includes('embeddedSearchApp')||!publisher.includes('data-thc-search-app="embedded-v1"')||!publisher.includes('__THC_SEARCH_INDEX__')||!publisher.includes('__THC_ENCYCLOPEDIA_INDEX__')) errors.push('WordPress learning publisher missing self-contained search app contract');
+ if(!publisher.includes('/wp-json/dtf-learning/v1/index/search')||!publisher.includes('/wp-json/dtf-learning/v1/index/encyclopedia')||!publisher.includes('/wp-json/dtf-learning/v1/health')) errors.push('WordPress learning publisher missing MU-plugin search index publication contract');
+ const wordpressRuntime=fs.readFileSync(files.wordpressRuntime,'utf8');
+ const wordpressRuntimeBuilder=fs.readFileSync(files.wordpressRuntimeBuilder,'utf8');
+ for(const marker of ['register_rest_route','wp_footer','data-dtf-learning-search-runtime="mu-v1"','current_user_can(\'manage_options\')']) if(!wordpressRuntime.includes(marker)) errors.push('WordPress learning search runtime missing '+marker);
+ if(!wordpressRuntimeBuilder.includes('build-wordpress-learning-search-runtime')&&!wordpressRuntimeBuilder.includes('dtf-learning-search')) errors.push('WordPress learning search runtime builder contract missing');
  if(!encyclopediaPage.includes('data-q')||!encyclopediaPage.includes('data-topics')||!encyclopediaPage.includes('encyclopedia-v1.mjs')) errors.push('encyclopedia page missing searchable library UI');
  if(!encyclopediaRuntime.includes("Fuse from '/assets/vendor/fuse-7.1.0.min.mjs'")||!encyclopediaRuntime.includes('activePart')) errors.push('encyclopedia runtime missing fuzzy search/topic filtering');
  if(!encyclopediaRuntime.includes("name:'aliases'")||!encyclopediaRuntime.includes('history.replaceState')) errors.push('encyclopedia runtime missing alias/deep-link contract');
@@ -51,6 +57,14 @@ if(!errors.length){
  const aliasCorpus=(encyclopediaIndex.lessons||[]).flatMap(x=>x.aliases||[]).map(x=>String(x).toLowerCase());
  for(const phrase of ['yellow leaves','hermie','bud rot','high runoff ec']) if(!aliasCorpus.includes(phrase)) errors.push('generated encyclopedia aliases missing '+phrase);
  if(encyclopediaIndex.lessons?.filter(x=>x.status==='published').length!==Number(encyclopediaIndex.publicationCutoff||0)) errors.push('encyclopedia published discovery count must match the generated publication cutoff');
+ const privateFields=['objective','terms','coreScience','cultivation','measurements','misconceptions','evidenceLimits','crossLinks','synonyms'];
+ for(const row of encyclopediaIndex.lessons?.filter(x=>x.status==='catalogued-review')||[]){
+   for(const field of privateFields){
+     const value=row[field];
+     const empty=Array.isArray(value)?value.length===0:String(value??'').trim()==='';
+     if(!empty)errors.push(row.id+': review-only public discovery row leaked '+field);
+   }
+ }
  const requiredLearn=['cultivation-science','symptoms'];
  for(const key of requiredLearn) if(!learnData.sections?.[key]) errors.push('learning section data missing '+key);
  for(const key of requiredLearn){const file=`site/public-route-patch/learn/${key}/index.html`;if(!fs.existsSync(file)) errors.push('route-patch learning hub missing file: '+file)}
