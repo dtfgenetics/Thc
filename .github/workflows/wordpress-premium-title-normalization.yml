@@ -65,22 +65,39 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          canonical_h1(){
+            node - "$1" <<'NODE'
+          const fs=require('fs');
+          const html=fs.readFileSync(process.argv[2],'utf8');
+          const match=html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i);
+          if(!match) process.exit(2);
+          const text=match[1]
+            .replace(/<[^>]+>/g,' ')
+            .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>')
+            .replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'")
+            .replace(/\s+/g,' ').trim();
+          if(!text) process.exit(3);
+          process.stdout.write(text);
+          NODE
+          }
           verify(){
-            path="$1"; slug="$2"; body="$RUNNER_TEMP/title-$(echo "$path"|tr '/' '_').html"
+            path="$1"; slug="$2"; canonical="$3"; body="$RUNNER_TEMP/title-$(echo "$path"|tr '/' '_').html"
+            expected_h1="$(canonical_h1 "$canonical")"
             ok=0
             for attempt in 1 2 3 4 5 6; do
               curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
                 "$WP_SITE_URL${path}?dtf_title_verify=${GITHUB_RUN_ID}-${attempt}" -o "$body"
+              live_h1="$(canonical_h1 "$body" || true)"
               if grep -Eqi "data-dtf-layout=[\"']${slug}-visual-v[0-9]+[\"']" "$body" && \
-                 grep -Eqi '<h1\b' "$body" && \
+                 [[ "$live_h1" == "$expected_h1" ]] && \
                  grep -Fqi 'dtf-premium-theme-title-suppression' "$body"; then ok=1; break; fi
               sleep 5
             done
             [[ "$ok" -eq 1 ]] || { echo "Editorial title normalization not visible on $path with owned ${slug}-visual layout." >&2; exit 1; }
           }
-          verify '/community/' 'community'
-          verify '/gallery/' 'gallery'
+          verify '/community/' 'community' 'site/wordpress/pages/community.html'
+          verify '/gallery/' 'gallery' 'site/wordpress/pages/gallery.html'
           echo 'outcome=success' >> "$GITHUB_OUTPUT"
       - name: Upload page snapshots
         if: always()
