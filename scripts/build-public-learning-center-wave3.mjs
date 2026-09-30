@@ -128,28 +128,6 @@ const routes = [
       ['/learn/search/', 'Search Education']
     ]
   },
-  {
-    slug: 'search',
-    title: 'Search THC Education — Teaching Healthy Cultivation',
-    description: 'Search Teaching Healthy Cultivation pages, the plant science encyclopedia, Academy, infographics, diagnostics, grow tools, and cultivation learning centers.',
-    eyebrow: 'Education search',
-    heading: 'Find the right THC resource quickly.',
-    intro: 'Use the site search for a term such as VPD, pH, EC, roots, germination, spider mites, trichomes, cloning, PPFD, DLI, sex expression, or drying. Results may include related DTF pages in addition to education resources.',
-    search: true,
-    sections: [
-      ['Plant science', 'Botany, anatomy, morphology, physiology, roots, leaves, flowers, trichomes, genetics, reproduction, seed biology, and development.', '/learn/encyclopedia/'],
-      ['Cultivation systems', 'Setup, lighting, climate, root zone, irrigation, nutrition, propagation, plant health, IPM, and measurement.', '/learn/library/'],
-      ['Visual references', 'Browse the public source-controlled infographic library.', '/learn/infographics/'],
-      ['Diagnose a plant', 'Use structured evidence and differential reasoning with THC Grow Doc.', '/thc-grow-doc/'],
-      ['Grow records and tools', 'Open GrowLens for cultivation records and calculations.', '/growlens/']
-    ],
-    actions: [
-      ['/learn/', 'Back to Learn'],
-      ['/learn/glossary/', 'Glossary'],
-      ['/learn/academy/', 'Academy'],
-      ['/learn/records/', 'Records']
-    ]
-  }
 ];
 
 function esc(v='') {
