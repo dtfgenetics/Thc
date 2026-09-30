@@ -126,6 +126,84 @@
       "branch": "chore/repository-architecture-cleanup",
       "disposition": "delete_safe",
       "basis": "docs_and_registry_logic_superseded_by_current_main"
+    },
+    {
+      "repo": "dtfgenetics/Thc",
+      "branch": "cleanup/archive-readiness-20260929",
+      "disposition": "delete_safe",
+      "basis": "merged_via_pr_1321"
+    },
+    {
+      "repo": "dtfgenetics/Thc",
+      "branch": "cleanup/archive-ready-validator-fix-20260929",
+      "disposition": "delete_safe",
+      "basis": "superseded_by_corrected_v2_branch_and_pr_1326"
+    },
+    {
+      "repo": "dtfgenetics/Thc",
+      "branch": "cleanup/archive-ready-validator-fix-v2-20260929",
+      "disposition": "delete_safe",
+      "basis": "merged_via_pr_1326"
+    },
+    {
+      "repo": "dtfgenetics/Thc",
+      "branch": "cleanup/archive-registry-alignment-20260929",
+      "disposition": "delete_safe",
+      "basis": "merged_via_pr_1327"
+    },
+    {
+      "repo": "dtfgenetics/Thc",
+      "branch": "cleanup/prevent-archive-regression-20260930",
+      "disposition": "delete_safe",
+      "basis": "merged_via_pr_1379"
+    },
+    {
+      "repo": "dtfgenetics/Thc",
+      "branch": "cleanup/repository-architecture-ci-20260930",
+      "disposition": "delete_safe",
+      "basis": "merged_via_pr_1380"
+    },
+    {
+      "repo": "dtfgenetics/Thc",
+      "branch": "cleanup/prevent-migration-deployment-regression-20260930",
+      "disposition": "delete_safe",
+      "basis": "merged_via_pr_1381"
+    },
+    {
+      "repo": "dtfgenetics/Thc",
+      "branch": "cleanup/retirement-manifest-20260930",
+      "disposition": "delete_safe",
+      "basis": "superseded_by_rebased_v2_branch_and_pr_1384"
+    },
+    {
+      "repo": "dtfgenetics/Thc",
+      "branch": "cleanup/retirement-manifest-v2-20260930",
+      "disposition": "delete_safe",
+      "basis": "merged_via_pr_1384"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/archive-prep-20260929",
+      "disposition": "delete_safe",
+      "basis": "merged_via_pr_46"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/migration-only-agent-guidance-20260929",
+      "disposition": "delete_safe",
+      "basis": "merged_via_pr_47"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/non-destructive-migration-queue-20260929",
+      "disposition": "delete_safe",
+      "basis": "merged_via_pr_48"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/ignore-generated-deploy-output-20260929",
+      "disposition": "delete_safe",
+      "basis": "merged_via_pr_49"
     }
   ]
 }
