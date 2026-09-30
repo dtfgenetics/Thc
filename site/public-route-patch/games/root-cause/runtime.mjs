@@ -1,3 +1,4 @@
+import { copyText } from '/games/shared-platform/index.mjs';
 import {
   ROOT_ALPHABET,
   ROOT_CODE_LENGTH,
@@ -295,8 +296,8 @@ ui['share-run'].addEventListener('click', async () => {
   url.searchParams.set('case', state.code);
   const value = url.toString();
   const copied = await copyText(value);
-  ui['share-run'].textContent = copied ? 'Link copied' : 'Copy manually';
-  ui.announce.textContent = copied
+  ui['share-run'].textContent = copied.ok ? 'Link copied' : 'Copy manually';
+  ui.announce.textContent = copied.ok
     ? 'Root Cause challenge link copied.'
     : `Copy failed. Share case code ${state.code}: ${value}`;
   setTimeout(() => { ui['share-run'].textContent = 'Copy challenge link'; }, 1800);
