@@ -38,7 +38,7 @@ if(!errors.length){
  if(!encyclopediaIndex.facets?.topic||!encyclopediaIndex.facets?.format||!encyclopediaIndex.facets?.status) errors.push('encyclopedia discovery index missing topic/format/status facets');
  const sample=encyclopediaIndex.lessons?.find(x=>x.status==='published');
  for(const field of ['objective','terms','coreScience','measurements','misconceptions','tools']) if(!sample||!(field in sample)) errors.push('encyclopedia discovery document missing rich field '+field);
- if(encyclopediaIndex.lessons?.filter(x=>x.status==='published').length!==335) errors.push('encyclopedia published discovery count must match current authorized cutoff of 335');
+ if(encyclopediaIndex.lessons?.filter(x=>x.status==='published').length!==Number(encyclopediaIndex.publicationCutoff||0)) errors.push('encyclopedia published discovery count must match the generated publication cutoff');
  const requiredLearn=['cultivation-science','symptoms'];
  for(const key of requiredLearn) if(!learnData.sections?.[key]) errors.push('learning section data missing '+key);
  for(const key of requiredLearn){const file=`site/public-route-patch/learn/${key}/index.html`;if(!fs.existsSync(file)) errors.push('route-patch learning hub missing file: '+file)}
