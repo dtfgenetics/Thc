@@ -17,6 +17,10 @@ on:
       - 'scripts/build-thc-education-search-index.mjs'
       - 'scripts/validate-thc-education-search.mjs'
       - 'scripts/validate-encyclopedia-search-benchmark.mjs'
+      - 'scripts/build-wordpress-learning-search-runtime.mjs'
+      - 'scripts/deploy/wordpress-learning-search-runtime.sh'
+      - 'site/wordpress/mu-plugins/dtf-learning-search.php'
+      - 'site/wordpress/mu-plugins/dtf-learning-search/**'
       - 'site/public-route-patch/learn/search/**'
       - 'site/public-route-patch/learn/encyclopedia/**'
       - '.github/workflows/deploy-thc-learning-centers.yml'
@@ -39,6 +43,12 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       BACKUP_ROOT: /tmp/dtf-learning-center
+      HOSTINGER_SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+      HOSTINGER_SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+      HOSTINGER_SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+      HOSTINGER_SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS }}
+      HOSTINGER_SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+      HOSTINGER_PUBLIC_ROOT: ${{ secrets.HOSTINGER_PUBLIC_ROOT }}
 
     steps:
       - name: Checkout canonical site repo
@@ -60,6 +70,10 @@ jobs:
           node --check scripts/build-public-learning-center-wave3.mjs
           node --check scripts/publish-wordpress-learning-center-pages.mjs
           node --check scripts/update-wordpress-learn-learning-center.mjs
+          node --check scripts/build-wordpress-learning-search-runtime.mjs
+          bash -n scripts/deploy/wordpress-learning-search-runtime.sh
+          php -l site/wordpress/mu-plugins/dtf-learning-search.php
+          npm run verify:wordpress-learning-search
           node -e "const p=require('./site/wordpress/visual-quality-policy.json'); if(Number(p.schemaVersion)<3||p.replacementPolicy?.legacyInfographicReuseAllowed!==false) process.exit(1)"
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
@@ -80,6 +94,8 @@ jobs:
           npm run build:education-search
           node scripts/validate-thc-education-search.mjs
           node scripts/validate-encyclopedia-search-benchmark.mjs
+          npm run build:wordpress-learning-search
+          npm run verify:wordpress-learning-search
           routes=(library start-here beginner-guides academy encyclopedia sops glossary records search setup root-zone environment plant-health propagation)
           for route in "${routes[@]}"; do
             file="site/public-route-patch/learn/$route/index.html"
@@ -96,6 +112,61 @@ jobs:
           test -s site/public-route-patch/learn/public-learning-center-manifest.json
           test -s site/public-route-patch/learn/wave3-learning-routes.json
           echo "route_count=${#routes[@]}" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy WordPress learning search runtime
+        id: search_runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${HOSTINGER_SSH_HOST:?HOSTINGER_SSH_HOST is required}"
+          : "${HOSTINGER_SSH_USER:?HOSTINGER_SSH_USER is required}"
+          : "${HOSTINGER_SSH_PRIVATE_KEY:?HOSTINGER_SSH_PRIVATE_KEY is required}"
+          : "${HOSTINGER_SSH_KNOWN_HOSTS:?HOSTINGER_SSH_KNOWN_HOSTS is required}"
+          : "${HOSTINGER_PUBLIC_ROOT:?HOSTINGER_PUBLIC_ROOT is required}"
+          [[ "$HOSTINGER_PUBLIC_ROOT" == /*/public_html ]]
+
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$HOSTINGER_SSH_PRIVATE_KEY" > "$HOME/.ssh/dtf_hostinger"
+          chmod 600 "$HOME/.ssh/dtf_hostinger"
+          printf '%s\n' "$HOSTINGER_SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+          port="${HOSTINGER_SSH_PORT:-65002}"
+          ssh_opts=(-i "$HOME/.ssh/dtf_hostinger" -p "$port" -o BatchMode=yes -o StrictHostKeyChecking=yes)
+
+          rm -rf "$RUNNER_TEMP/learning-search-payload"
+          mkdir -p "$RUNNER_TEMP/learning-search-payload/dtf-learning-search"
+          cp site/wordpress/mu-plugins/dtf-learning-search.php "$RUNNER_TEMP/learning-search-payload/"
+          cp -a site/wordpress/mu-plugins/dtf-learning-search/. "$RUNNER_TEMP/learning-search-payload/dtf-learning-search/"
+          tar -C "$RUNNER_TEMP/learning-search-payload" -czf "$RUNNER_TEMP/dtf-learning-search-${GITHUB_SHA}.tgz" .
+
+          remote_archive=".dtf-deploy/learning-search/incoming/dtf-learning-search-${GITHUB_SHA}.tgz"
+          ssh "${ssh_opts[@]}" "$HOSTINGER_SSH_USER@$HOSTINGER_SSH_HOST" 'mkdir -p "$HOME/.dtf-deploy/learning-search/incoming"'
+          scp -i "$HOME/.ssh/dtf_hostinger" -P "$port" -o BatchMode=yes -o StrictHostKeyChecking=yes \
+            "$RUNNER_TEMP/dtf-learning-search-${GITHUB_SHA}.tgz" \
+            "$HOSTINGER_SSH_USER@$HOSTINGER_SSH_HOST:$remote_archive"
+
+          printf -v remote_cmd 'bash -s -- activate %q %q %q' "$HOSTINGER_PUBLIC_ROOT" "$GITHUB_SHA" "$remote_archive"
+          output="$(ssh "${ssh_opts[@]}" "$HOSTINGER_SSH_USER@$HOSTINGER_SSH_HOST" "$remote_cmd" < scripts/deploy/wordpress-learning-search-runtime.sh)"
+          printf '%s\n' "$output"
+          backup_id="$(printf '%s\n' "$output" | sed -n 's/^backup_id=//p' | tail -n 1)"
+          [[ -n "$backup_id" ]]
+          echo "backup_id=$backup_id" >> "$GITHUB_OUTPUT"
+
+          health="$RUNNER_TEMP/learning-search-health-pre-index.json"
+          curl -4 --fail --silent --show-error --location --retry 6 --retry-all-errors --retry-delay 3 \
+            -H 'Cache-Control: no-cache, no-store, max-age=0' \
+            "$WP_SITE_URL/wp-json/dtf-learning/v1/health?dtf_runtime=${GITHUB_RUN_ID}" -o "$health"
+          HEALTH_PATH="$health" node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const h=JSON.parse(fs.readFileSync(process.env.HEALTH_PATH,'utf8'));
+          if(h.ok!==true || h.version!=='1.0.0') throw new Error('Learning search MU-plugin health endpoint is not active.');
+          console.log('Learning search runtime active:', h);
+          NODE
+          for asset in search-v1.js encyclopedia-v1.js thc-search-explain-v1.js fuse-7.1.0.min.js; do
+            curl -4 --fail --silent --show-error --location --retry 4 --retry-delay 2 \
+              "$WP_SITE_URL/wp-content/mu-plugins/dtf-learning-search/$asset?dtf_runtime=${GITHUB_RUN_ID}" -o "$RUNNER_TEMP/$asset"
+            test -s "$RUNNER_TEMP/$asset"
+          done
 
       - name: Create or update WordPress learning-center pages
         id: pages
@@ -139,17 +210,29 @@ jobs:
           curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 \
             -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
             "https://dtfseeds.com/learn/search/?dtf_learning=${GITHUB_RUN_ID}" -o "$search_live"
-          grep -Fq 'data-thc-search-app="embedded-v1"' "$search_live"
-          grep -Fq 'data-thc-search-runtime="embedded-v1"' "$search_live"
-          grep -Fq '__THC_ENCYCLOPEDIA_INDEX__' "$search_live"
+          grep -Fq 'data-dtf-learning-search-runtime="mu-v1"' "$search_live"
+          grep -Fq 'data-dtf-learning-search-bootstrap="mu-v1"' "$search_live"
+          grep -Fq 'dtf-learning/v1/index/search' "$search_live"
 
           encyclopedia_live="$RUNNER_TEMP/learn-encyclopedia.html"
           curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 \
             -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
             "https://dtfseeds.com/learn/encyclopedia/?dtf_learning=${GITHUB_RUN_ID}" -o "$encyclopedia_live"
-          grep -Fq 'data-thc-search-app="embedded-v1"' "$encyclopedia_live"
-          grep -Fq 'data-thc-search-runtime="embedded-v1"' "$encyclopedia_live"
-          grep -Fq '__THC_ENCYCLOPEDIA_INDEX__' "$encyclopedia_live"
+          grep -Fq 'data-dtf-learning-search-runtime="mu-v1"' "$encyclopedia_live"
+          grep -Fq 'data-dtf-learning-search-bootstrap="mu-v1"' "$encyclopedia_live"
+          grep -Fq 'dtf-learning/v1/index/encyclopedia' "$encyclopedia_live"
+
+          search_health="$RUNNER_TEMP/learning-search-health-final.json"
+          curl -4 --fail --silent --show-error --location --retry 4 --retry-delay 2 \
+            -H 'Cache-Control: no-cache, no-store, max-age=0' \
+            "$WP_SITE_URL/wp-json/dtf-learning/v1/health?dtf_learning=${GITHUB_RUN_ID}" -o "$search_health"
+          HEALTH_PATH="$search_health" node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const h=JSON.parse(fs.readFileSync(process.env.HEALTH_PATH,'utf8'));
+          if(h.ok!==true || h.searchReady!==true || h.encyclopediaReady!==true) throw new Error('Learning search indexes are not ready.');
+          if(Number(h.searchDocuments)<20 || Number(h.encyclopediaLessons)<420) throw new Error('Learning search index counts are incomplete.');
+          console.log('Learning search live health passed:', h);
+          NODE
 
           info="$RUNNER_TEMP/learn-infographics.html"
           curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 \
@@ -167,6 +250,17 @@ jobs:
           done
           echo "outcome=success" >> "$GITHUB_OUTPUT"
 
+      - name: Roll back search runtime if Learning Center release fails
+        if: ${{ failure() && steps.search_runtime.outputs.backup_id != '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          port="${HOSTINGER_SSH_PORT:-65002}"
+          ssh_opts=(-i "$HOME/.ssh/dtf_hostinger" -p "$port" -o BatchMode=yes -o StrictHostKeyChecking=yes)
+          printf -v remote_cmd 'bash -s -- rollback %q %q %q %q' \
+            "$HOSTINGER_PUBLIC_ROOT" "$GITHUB_SHA" ignored "${{ steps.search_runtime.outputs.backup_id }}"
+          ssh "${ssh_opts[@]}" "$HOSTINGER_SSH_USER@$HOSTINGER_SSH_HOST" "$remote_cmd" < scripts/deploy/wordpress-learning-search-runtime.sh
+
       - name: Upload WordPress rollback package
         if: always()
         uses: actions/upload-artifact@v4
@@ -176,30 +270,26 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report learning-center production result
+      - name: Record learning-center production result
         if: always()
-        continue-on-error: true
-        uses: actions/github-script@v7
+        shell: bash
         env:
           JOB_STATUS: ${{ job.status }}
           ROUTE_COUNT: ${{ steps.build.outputs.route_count }}
           PAGE_OUTCOME: ${{ steps.pages.outputs.outcome }}
           NAV_OUTCOME: ${{ steps.navigation.outputs.outcome }}
           LIVE_OUTCOME: ${{ steps.live.outcome }}
-        with:
-          script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## THC customer-facing Learning Center production','',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Result: **${process.env.JOB_STATUS}**`,
-                `Learning routes built: **${process.env.ROUTE_COUNT || 'not-run'}**`,
-                `WordPress child-page publication: **${process.env.PAGE_OUTCOME || 'not-run'}**`,
-                `WordPress Learn navigation update: **${process.env.NAV_OUTCOME || 'not-run'}**`,
-                `Visitor-facing verification: **${process.env.LIVE_OUTCOME || 'not-run'}**`,'',
-                'Learning-center publication now strips quarantined legacy infographic imagery before any public page write. Image-less sections are allowed until role-specific approved replacements exist.'
-              ].join('\n')
-            });
+          SEARCH_BACKUP: ${{ steps.search_runtime.outputs.backup_id }}
+        run: |
+          {
+            echo '## THC customer-facing Learning Center production'
+            echo
+            echo "- Source: $GITHUB_SHA"
+            echo "- Result: ${JOB_STATUS:-unknown}"
+            echo "- Learning routes built: ${ROUTE_COUNT:-not-run}"
+            echo "- WordPress child-page publication: ${PAGE_OUTCOME:-not-run}"
+            echo "- Learn navigation update: ${NAV_OUTCOME:-not-run}"
+            echo "- Visitor-facing verification: ${LIVE_OUTCOME:-not-run}"
+            echo "- Search runtime backup: ${SEARCH_BACKUP:-not-created}"
+            echo '- Deployment evidence is recorded in this Actions run and rollback artifact; issue #46 is no longer used as a telemetry sink.'
+          } >> "$GITHUB_STEP_SUMMARY"
