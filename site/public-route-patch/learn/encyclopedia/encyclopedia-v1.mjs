@@ -70,7 +70,7 @@ document.querySelector('[data-status-filters]').addEventListener('click',e=>{
 q.addEventListener('input',()=>{activePart=null;render()});
 clear.addEventListener('click',()=>{q.value='';activePart=null;activeStatus='all';activeFormat='all';const statusAll=document.querySelector('[data-status="all"]');if(statusAll)setPressed(document.querySelector('[data-status-filters]'),statusAll);renderFormats();render();q.focus()});
 
-const requested=new URLSearchParams(location.search).get('lesson');
+const params=new URLSearchParams(location.search);const requested=params.get('lesson');const requestedQuery=params.get('q');const requestedTopic=Number(params.get('topic'));
 fetch('./encyclopedia-index.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('Index failed to load');return r.json()}).then(data=>{
  payload=data;
  totalStat.textContent=String(payload.lessons.length);
@@ -78,5 +78,7 @@ fetch('./encyclopedia-index.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw ne
  fuse=new Fuse(payload.lessons,{includeScore:true,ignoreLocation:true,threshold:.3,minMatchCharLength:2,keys:[{name:'title',weight:.5},{name:'topic',weight:.2},{name:'keywords',weight:.15},{name:'primaryFormat',weight:.08},{name:'id',weight:.07}]});
  renderTopics();renderFormats();
  if(requested){q.value=requested}
+ else if(requestedQuery){q.value=requestedQuery}
+ if(Number.isInteger(requestedTopic)&&requestedTopic>=1&&requestedTopic<=21)activePart=requestedTopic;
  render();
 }).catch(error=>{console.error('[THC encyclopedia]',error);statusText.textContent='The encyclopedia index could not load.';library.innerHTML='<div class="empty"><strong>Encyclopedia index unavailable.</strong><p>Use the Learning Center while this index is restored.</p></div>'});
