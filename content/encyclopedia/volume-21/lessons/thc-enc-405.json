@@ -1,0 +1,71 @@
+{
+  "id": "THC-ENC-405",
+  "number": 405,
+  "title": "Plant, Batch, Room, and Genetic Identifiers",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Hierarchical identity and relationship map",
+  "objective": "Build permanent identifiers that preserve biological identity, location, lineage, treatment, and batch relationships without overwriting history.",
+  "termsToKnow": [
+    "identifier",
+    "identity",
+    "location",
+    "parent-child relationship",
+    "lot",
+    "batch",
+    "accession",
+    "clone",
+    "source",
+    "alias",
+    "immutable record"
+  ],
+  "coreScience": [
+    "Identity and location are different. A plant can move rooms while remaining the same plant, and a room can hold many changing plants. Permanent identifiers should not encode mutable facts that will later become false. Use separate fields for plant ID, genetic-source ID, seed lot, clone batch, mother plant, room, bench, position, treatment, harvest batch, sample, and storage container.",
+    "Relationships create traceability. A clone should link to its mother, cutting batch, propagation event, and later plant ID. A seedling should link to seed lot and germination event. A harvest sub-batch should link to plants or field block, harvest event, drying location, samples, laboratory reports, packaging lot, holds, and disposition. Aliases and commercial names can be retained as labels but should not replace controlled genetic or accession IDs.",
+    "Identifiers must remain unique across time and systems. Reusing a plant tag after harvest can silently connect new observations to the wrong history. Barcodes and QR codes reduce transcription but do not guarantee correct attachment or database logic. Corrections should preserve the original value, reason, author, date, and superseding relationship rather than deleting the evidence."
+  ],
+  "cultivationRelevance": [
+    "Define an ID grammar, issuing authority, uniqueness check, label durability, replacement rule, and parent-child model before scaling data collection."
+  ],
+  "measureAndRecord": [
+    "Entity type; permanent ID; human-readable label; source system; creation date; parent IDs; genetic/source/lot IDs; current location; status; aliases; label replacement; correction/supersession history; responsible person."
+  ],
+  "misconceptions": [
+    "A cultivar name uniquely identifies genetics.",
+    "A room number can serve as the plant identifier.",
+    "Deleting an incorrect ID is cleaner than retaining the correction history."
+  ],
+  "evidenceLimits": [
+    "Identifiers preserve traceability only when labels, relationships, access controls, backups, and human practices remain reliable."
+  ],
+  "crossLinks": "THC-ENC-383; THC-ENC-394–400; THC-ENC-404; THC-ENC-411–413.",
+  "sourceNotes": [
+    "V21-SRC-010",
+    "V21-SRC-011",
+    "V21-SRC-013",
+    "V21-SRC-016",
+    "V21-SRC-033"
+  ],
+  "knowledgeCheck": [
+    "For \"Plant, Batch, Room, and Genetic Identifiers\", explain the mechanism behind this objective: Build permanent identifiers that preserve biological identity, location, lineage, treatment, and batch relationships without overwriting history. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"A cultivar name uniquely identifies genetics.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Define an ID grammar, issuing authority, uniqueness check, label durability, replacement rule, and parent-child model before scaling data collection. Build a verification plan using the lesson's record set (Entity type; permanent ID; human-readable label; source system; creation date; parent IDs; genetic/source/lot IDs; current location; status; aliases; label replacement; correction/supersession history; responsible person.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+    "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "plant-batch-room-and-genetic-identifiers",
+  "route": "/encyclopedia/plant-batch-room-and-genetic-identifiers",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

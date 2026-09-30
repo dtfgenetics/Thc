@@ -1,0 +1,70 @@
+{
+  "id": "THC-ENC-401",
+  "number": 401,
+  "title": "Measurement Units and Conversion Discipline",
+  "primaryFormat": "Data / QA",
+  "requiredTeachingVisual": "SI quantity, unit, conversion, and basis record",
+  "objective": "Use quantities, units, symbols, prefixes, bases, and dimensional checks consistently so cultivation records can be interpreted and reproduced.",
+  "termsToKnow": [
+    "quantity",
+    "unit",
+    "SI",
+    "unit symbol",
+    "prefix",
+    "dimension",
+    "conversion factor",
+    "mass fraction",
+    "volume fraction",
+    "wet basis",
+    "dry basis"
+  ],
+  "coreScience": [
+    "A number without a defined quantity and unit is not a complete measurement. “500” could mean microlitres, millilitres, litres, milligrams per litre, microsiemens per centimetre, watts, micromoles per square metre per second, or an instrument count. Controlled records name the quantity first, then the value, unit, method, basis, position, and time. SI rules distinguish unit symbols from abbreviations: symbols are not pluralized, are case sensitive, and do not take periods except at the end of a sentence.",
+    "Conversions must preserve dimensions and basis. A conversion factor can change litres to millilitres, but it cannot convert electrical conductivity to dissolved-solids concentration without a model and stated factor. Percent can represent mass fraction, volume fraction, mass per volume, relative change, or percentage points; these are not interchangeable. Moisture content on a wet basis differs from moisture on a dry basis. Cannabinoid concentration in fresh material differs from a dry-mass-corrected result. Records must state numerator, denominator, sample state, and calculation.",
+    "Dimensional analysis is a practical error control. Units should cancel through a calculation, leaving the expected result. Equations should preserve unrounded input values, while reported digits should reflect measurement resolution and uncertainty. Spreadsheets need locked unit columns, validation rules, and explicit conversions rather than mixed units hidden inside formulas. A unit conversion can be mathematically correct while the conclusion remains biologically wrong if sample identity, time, or basis changed."
+  ],
+  "cultivationRelevance": [
+    "Create one approved unit dictionary for the project. Label every field, graph axis, form, sensor channel, and calculation. Reject ambiguous abbreviations and never infer a missing basis from context."
+  ],
+  "measureAndRecord": [
+    "Quantity name; value; unit and symbol; prefix; sample or system basis; wet/dry state; numerator/denominator; conversion equation and source; original value; reported value; rounding rule; reviewer."
+  ],
+  "misconceptions": [
+    "ppm is one universal concentration unit in every context.",
+    "EC can be converted to ppm without naming the instrument factor.",
+    "A percentage is self-explanatory without numerator, denominator, or basis."
+  ],
+  "evidenceLimits": [
+    "Correct units prevent one class of error but do not establish instrument accuracy, sample representativeness, or biological causation."
+  ],
+  "crossLinks": "THC-ENC-402–408; THC-ENC-411–414; all controlled forms and calculators.",
+  "sourceNotes": [
+    "V21-SRC-003",
+    "V21-SRC-004",
+    "V21-SRC-005",
+    "V21-SRC-033"
+  ],
+  "knowledgeCheck": [
+    "For \"Measurement Units and Conversion Discipline\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+    "A learner claims, \"ppm is one universal concentration unit in every context.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Create one approved unit dictionary for the project. Label every field, graph axis, form, sensor channel, and calculation. Reject ambiguous abbreviations and never infer a missing basis from context. Build a verification plan using the lesson's record set (Quantity name; value; unit and symbol; prefix; sample or system basis; wet/dry state; numerator/denominator; conversion equation and source; original value; reported value; rounding rule; reviewer.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+    "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "measurement-units-and-conversion-discipline",
+  "route": "/encyclopedia/measurement-units-and-conversion-discipline",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

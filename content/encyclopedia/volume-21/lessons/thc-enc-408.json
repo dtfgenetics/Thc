@@ -1,0 +1,69 @@
+{
+  "id": "THC-ENC-408",
+  "number": 408,
+  "title": "pH, EC, and Water-Quality Records",
+  "primaryFormat": "Data / QA",
+  "requiredTeachingVisual": "Water-sample, meter-control, and interpretation record",
+  "objective": "Record water and solution measurements with controlled sampling, temperature, instrument checks, chemistry context, and interpretation limits.",
+  "termsToKnow": [
+    "pH",
+    "electrical conductivity",
+    "alkalinity",
+    "hardness",
+    "ion",
+    "total dissolved solids",
+    "temperature compensation",
+    "sample preservation",
+    "charge balance"
+  ],
+  "coreScience": [
+    "pH and electrical conductivity are method-dependent measurements, not complete descriptions of water. pH describes hydrogen-ion activity under the method conditions. EC describes the solution’s ability to conduct current and is influenced by ion concentration, mobility, temperature, and instrument compensation. Two waters can share EC but contain very different ions, alkalinity, sodium, chloride, nutrients, or contaminants.",
+    "Records should distinguish source water, treated water, stock, final solution, input, root-zone extract, runoff, leachate, and laboratory sample. Sample temperature, equilibration, container, storage, aeration, and time can change results. A meter needs electrode or cell identity, cleaning, storage condition, standard lots, verification results, temperature mode, and maintenance. TDS or ppm estimates derived from EC require the instrument factor and should not replace direct chemical analysis.",
+    "Water-quality interpretation often requires alkalinity, hardness, major ions, nutrients, metals, microbiology, treatment history, and seasonal variability. Laboratory reports need method, units, detection limits, sample receipt condition, and accreditation scope. Changes in pH after acid addition depend strongly on alkalinity; pH alone does not predict acid demand."
+  ],
+  "cultivationRelevance": [
+    "Create separate records for field meter checks and laboratory water analysis, then link both to the source, date, treatment, irrigation event, and decision."
+  ],
+  "measureAndRecord": [
+    "Sample ID/source/location/time; sample type and preservation; temperature; instrument/method; standard IDs/expected/observed; pH/EC and compensation; alkalinity/hardness/ions/metals/microbes where relevant; units; detection limits; lab/method/scope; interpretation and action."
+  ],
+  "misconceptions": [
+    "Equal EC means equal nutrient composition.",
+    "Low pH water always requires more base than high-alkalinity water.",
+    "A ppm display is a direct measurement of all dissolved solids."
+  ],
+  "evidenceLimits": [
+    "Field meters provide narrow quantities; complete water fitness depends on intended use, chemistry, treatment, sampling, seasonal variation, and current requirements."
+  ],
+  "crossLinks": "THC-GROW-042; THC-ENC-121–140; THC-ENC-366; THC-ENC-403–404; THC-ENC-407.",
+  "sourceNotes": [
+    "V21-SRC-002",
+    "V21-SRC-004",
+    "V21-SRC-008",
+    "V21-SRC-025",
+    "V21-SRC-033"
+  ],
+  "knowledgeCheck": [
+    "For \"pH, EC, and Water-Quality Records\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+    "A learner claims, \"Equal EC means equal nutrient composition.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Create separate records for field meter checks and laboratory water analysis, then link both to the source, date, treatment, irrigation event, and decision. Build a verification plan using the lesson's record set (Sample ID/source/location/time; sample type and preservation; temperature; instrument/method; standard IDs/expected/observed; pH/EC and compensation; alkalinity/hardness/ions/metals/microbes where relevant; units; detection limits; lab/method/scope; interpretation and action.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+    "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "ph-ec-and-water-quality-records",
+  "route": "/encyclopedia/ph-ec-and-water-quality-records",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

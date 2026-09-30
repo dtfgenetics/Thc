@@ -1,0 +1,68 @@
+{
+  "id": "THC-ENC-418",
+  "number": 418,
+  "title": "Cultivar-Specific Evidence and Generalization Limits",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Genotype-by-environment-by-management transfer model",
+  "objective": "Evaluate whether evidence from one cultivar, line, clone, population, stage, and system can support a broader cultivation claim.",
+  "termsToKnow": [
+    "genotype",
+    "cultivar",
+    "accession",
+    "chemotype",
+    "phenotype",
+    "genotype-by-environment interaction",
+    "management interaction",
+    "external validity",
+    "transferability"
+  ],
+  "coreScience": [
+    "Cannabis populations can differ in flowering response, architecture, sex expression, disease susceptibility, nutrient response, water use, cannabinoid-acid profile, volatile composition, and stress tolerance. A commercial cultivar name may not uniquely identify a genotype. Seed-derived plants within a named population can segregate, while clones share a source genotype but can differ through health, epigenetic state, pathogen status, age, and environment.",
+    "Genotype-by-environment interaction occurs when relative performance changes across environments. Genotype-by-management interaction extends the idea to irrigation, density, pruning, lighting, nutrition, and harvest practices. A treatment that increases yield in one cultivar can have no effect or reduce quality in another. Ranking stability requires replicated comparison across relevant conditions rather than assuming the highest performer in one trial is broadly superior.",
+    "Generalization should state the source material and target population. Mechanistic plant physiology may transfer broadly, while numerical thresholds and production claims often require local validation. Genetic markers can support identity, ancestry, or trait prediction only within their validated population and method. Phenotype similarity cannot prove genetic identity, and one laboratory profile cannot establish stable cultivar performance."
+  ],
+  "cultivationRelevance": [
+    "Record source, propagation mode, genetic verification where used, and health status. Replicate critical claims across multiple justified cultivars or clearly label them cultivar-specific."
+  ],
+  "measureAndRecord": [
+    "Controlled genetic ID and aliases; source and chain; seed/clone/tissue-culture mode; parentage evidence; molecular marker method; health/pathogen status; environment and management; stage; phenotype and chemistry; interaction analysis; target population; transfer statement."
+  ],
+  "misconceptions": [
+    "Cultivars with the same name are genetically identical.",
+    "A response observed in one clone applies to all cannabis.",
+    "A genetic marker guarantees the full production phenotype."
+  ],
+  "evidenceLimits": [
+    "Transfer depends on the genetic population, identity quality, environment, management, stage, health, method, and outcome definition."
+  ],
+  "crossLinks": "THC-ENC-141–160; THC-ENC-381–400; THC-ENC-415–417.",
+  "sourceNotes": [
+    "V21-SRC-011",
+    "V21-SRC-012",
+    "V21-SRC-033",
+    "V21-SRC-034"
+  ],
+  "knowledgeCheck": [
+    "For \"Cultivar-Specific Evidence and Generalization Limits\", explain the mechanism behind this objective: Evaluate whether evidence from one cultivar, line, clone, population, stage, and system can support a broader cultivation claim. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Cultivars with the same name are genetically identical.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Record source, propagation mode, genetic verification where used, and health status. Replicate critical claims across multiple justified cultivars or clearly label them cultivar-specific. Build a verification plan using the lesson's record set (Controlled genetic ID and aliases; source and chain; seed/clone/tissue-culture mode; parentage evidence; molecular marker method; health/pathogen status; environment and management; stage; phenotype and chemistry; interaction analysis; target population; transfer statement.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+    "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "cultivar-specific-evidence-and-generalization-limits",
+  "route": "/encyclopedia/cultivar-specific-evidence-and-generalization-limits",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

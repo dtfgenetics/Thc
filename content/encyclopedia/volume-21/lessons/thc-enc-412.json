@@ -1,0 +1,70 @@
+{
+  "id": "THC-ENC-412",
+  "number": 412,
+  "title": "Laboratory Sample and Result Tracking",
+  "primaryFormat": "Science lesson",
+  "requiredTeachingVisual": "Sample-to-COA chain-of-custody and result map",
+  "objective": "Connect laboratory results to sample identity, chain of custody, preparation, method, scope, uncertainty, and batch inference.",
+  "termsToKnow": [
+    "chain of custody",
+    "test method",
+    "scope",
+    "matrix",
+    "aliquot",
+    "homogenization",
+    "detection limit",
+    "quantitation limit",
+    "certificate of analysis",
+    "proficiency testing"
+  ],
+  "coreScience": [
+    "A laboratory result belongs to the submitted sample and method. Extending it to a plant, batch, product, or cultivar requires representative sampling and intact identity. The record should link sample ID, source population, increments, composite or individual status, collector, date, mass, container, preservation, transport, receipt condition, laboratory accession, subsampling, preparation, and remaining retained material.",
+    "Method scope matters. A validated cannabinoid method for dried flower may not be valid for roots, extracts, wet tissue, soil, or a different concentration range. Results need units, wet or dry basis, sample preparation, method version, instrument platform, calibration, quality controls, detection and quantitation limits, dilution, uncertainty where available, and accreditation scope. “Not detected” means below the method’s detection capability under the reported conditions—not zero.",
+    "Certificates of analysis should be reviewed for identity, dates, authorized signatures, amendments, qualifiers, calculations, and linked corrections. Interlaboratory variation can arise from sampling, moisture correction, extraction, calibration, chromatography, reference materials, analyte definitions, and decision rules. Retests require a written rationale; selecting the most favorable result without investigating disagreement is not evidence control."
+  ],
+  "cultivationRelevance": [
+    "Maintain a sample manifest and result-review checklist. Preserve original reports, amended reports, machine-readable data where possible, and the decision record that used them."
+  ],
+  "measureAndRecord": [
+    "Sample/source/batch IDs; collection plan and increments; collector/time; container/preservation; custody transfers; lab/accession; matrix; preparation/homogenization; method/version/scope; units/basis; LOD/LOQ; QC/qualifiers; result/uncertainty; report revision; retained sample; review and disposition."
+  ],
+  "misconceptions": [
+    "A COA proves every unit in the batch has the reported value.",
+    "Not detected means the analyte is absent.",
+    "Accreditation means every method and matrix used by the laboratory is within scope."
+  ],
+  "evidenceLimits": [
+    "Laboratory competence and method performance do not repair biased sampling, identity loss, inappropriate inference, or a result outside method scope."
+  ],
+  "crossLinks": "THC-ENC-359; THC-ENC-395; THC-ENC-404–405; THC-ENC-411; THC-ENC-413.",
+  "sourceNotes": [
+    "V21-SRC-008",
+    "V21-SRC-020",
+    "V21-SRC-021",
+    "V21-SRC-022",
+    "V21-SRC-026"
+  ],
+  "knowledgeCheck": [
+    "For \"Laboratory Sample and Result Tracking\", explain the mechanism behind this objective: Connect laboratory results to sample identity, chain of custody, preparation, method, scope, uncertainty, and batch inference. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"A COA proves every unit in the batch has the reported value.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Maintain a sample manifest and result-review checklist. Preserve original reports, amended reports, machine-readable data where possible, and the decision record that used them. Build a verification plan using the lesson's record set (Sample/source/batch IDs; collection plan and increments; collector/time; container/preservation; custody transfers; lab/accession; matrix; preparation/homogenization; method/version/scope; units/basis; LOD/LOQ; QC/qualifiers; result/uncertainty; report revision; retained sample; review and disposition.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+    "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "laboratory-sample-and-result-tracking",
+  "route": "/encyclopedia/laboratory-sample-and-result-tracking",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

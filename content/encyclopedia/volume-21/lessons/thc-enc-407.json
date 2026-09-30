@@ -1,0 +1,70 @@
+{
+  "id": "THC-ENC-407",
+  "number": 407,
+  "title": "Irrigation and Fertigation Records",
+  "primaryFormat": "Data / QA",
+  "requiredTeachingVisual": "Source-to-zone irrigation and fertigation batch record",
+  "objective": "Create records that connect water source, mixture, equipment, applied volume, distribution, root-zone response, and corrective action.",
+  "termsToKnow": [
+    "irrigation event",
+    "fertigation batch",
+    "source water",
+    "stock solution",
+    "dilution",
+    "applied volume",
+    "distribution uniformity",
+    "runoff",
+    "leachate",
+    "dryback"
+  ],
+  "coreScience": [
+    "An irrigation record should describe what entered the system, what the system delivered, and what the root zone experienced. A recipe alone is incomplete. Record water source, batch, treatment, temperature, starting chemistry, stock identities, lot numbers, mixing order, target and measured concentrations, tank volume, agitation, pH and EC method, and release decision.",
+    "Delivery records need zone, valve, pressure, emitter or nozzle specification, start and stop time, runtime, flow, applied volume, maintenance condition, and distribution checks. Controller commands are not proof of delivery. A clogged emitter, leaking line, empty stock tank, pressure change, pump fault, or blocked drain can make the logged command biologically false for individual plants.",
+    "Root-zone response should be measured using system-appropriate variables: mass change, substrate water content, soil moisture by depth, drainage volume, runoff or leachate EC and pH, oxygen status, plant response, and time to next event. These measurements answer different questions and require defined sample positions. Corrective additions should be linked to the original event, reason, authorization, and outcome."
+  ],
+  "cultivationRelevance": [
+    "Use a controlled event ID linking recipe, equipment, delivered water, representative root-zone measurements, deviations, and plant response."
+  ],
+  "measureAndRecord": [
+    "Event ID/date/time; water-source and analysis; tank and batch; stock/product IDs and lots; amounts and units; target/measured pH/EC/temperature; zone/pressure/flow/runtime/volume; distribution checks; pre/post moisture; drainage/runoff; plant observations; deviation/correction/approver."
+  ],
+  "misconceptions": [
+    "A programmed runtime proves every plant received the intended volume.",
+    "Input EC is a complete nutrient-composition record.",
+    "Runoff from one container describes the whole zone."
+  ],
+  "evidenceLimits": [
+    "Irrigation metrics and targets depend on root-zone system, geometry, stage, climate, cultivar, sampling, and measurement method."
+  ],
+  "crossLinks": "THC-GROW-042; THC-GROW-070; THC-ENC-369; THC-ENC-403–404; THC-ENC-408.",
+  "sourceNotes": [
+    "V21-SRC-002",
+    "V21-SRC-024",
+    "V21-SRC-025",
+    "V21-SRC-026",
+    "V21-SRC-033"
+  ],
+  "knowledgeCheck": [
+    "For \"Irrigation and Fertigation Records\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+    "A learner claims, \"A programmed runtime proves every plant received the intended volume.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Use a controlled event ID linking recipe, equipment, delivered water, representative root-zone measurements, deviations, and plant response. Build a verification plan using the lesson's record set (Event ID/date/time; water-source and analysis; tank and batch; stock/product IDs and lots; amounts and units; target/measured pH/EC/temperature; zone/pressure/flow/runtime/volume; distribution checks; pre/post moisture; drainage/runoff; plant observations; deviation/correction/approver.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+    "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "irrigation-and-fertigation-records",
+  "route": "/encyclopedia/irrigation-and-fertigation-records",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": "THC-ENC-404",
+  "number": 404,
+  "title": "Sampling Plans and Representative Measurements",
+  "primaryFormat": "Data / QA",
+  "requiredTeachingVisual": "Population-to-increment-to-sample decision record",
+  "objective": "Design sampling that connects the stated population and decision to representative spatial, temporal, and biological observations.",
+  "termsToKnow": [
+    "population",
+    "sampling frame",
+    "sampling unit",
+    "increment",
+    "composite",
+    "random sample",
+    "stratified sample",
+    "systematic sample",
+    "retained sample",
+    "heterogeneity"
+  ],
+  "coreScience": [
+    "A measurement describes the material actually observed or submitted. Extending it to a plant, room, irrigation zone, field, batch, or cultivar requires a sampling design. Begin by defining the target population and decision. A “room average” can refer to sensors, plants, canopy positions, or time points. A “batch sample” can refer to a few selected flowers, randomized increments, a composite, or material chosen for appearance. These designs support different inferences.",
+    "Heterogeneity should guide stratification. Useful strata include cultivar, propagation lot, room zone, canopy height, irrigation line position, soil unit, flowering stage, drying rack, container depth, and time. Random selection reduces conscious preference, while systematic routes improve repeatability but can align with hidden patterns. Composite samples estimate an average but can conceal hotspots; individual increments preserve spatial information but cost more to analyze.",
+    "Sample integrity continues after collection. Tools, containers, labeling, temperature, moisture loss, transport time, grinding, homogenization, subsampling, and chain of custody can alter results. Replicate laboratory analyses do not repair a biased field sample. A sampling plan should state how missing units, damaged samples, outliers, and deviations will be handled before results are known."
+  ],
+  "cultivationRelevance": [
+    "Write the sampling plan before inspection or testing. Include a map, selection rule, number of units, sample mass or volume, handling, retained samples, and inference limits."
+  ],
+  "measureAndRecord": [
+    "Target population and decision; sampling frame; unit/increment/composite definition; strata; randomization or route; sample count and rationale; locations/times; sample mass/volume; tools/containers; preservation; chain of custody; missing/deviation rule; retained sample; inference statement."
+  ],
+  "misconceptions": [
+    "A larger composite always detects localized contamination.",
+    "Several measurements from one plant represent several independent plants.",
+    "The laboratory is responsible for whether the submitted sample represents the batch."
+  ],
+  "evidenceLimits": [
+    "Representative sampling reduces but does not eliminate uncertainty; rare hotspots, changing populations, inaccessible units, and destructive testing can remain unresolved."
+  ],
+  "crossLinks": "THC-ENC-359; THC-ENC-393–397; THC-ENC-409–412; THC-ENC-416.",
+  "sourceNotes": [
+    "V21-SRC-008",
+    "V21-SRC-009",
+    "V21-SRC-019",
+    "V21-SRC-020",
+    "V21-SRC-026"
+  ],
+  "knowledgeCheck": [
+    "For \"Sampling Plans and Representative Measurements\", which records are required to make the result traceable and decision-ready, and which missing field would most weaken the conclusion?",
+    "A learner claims, \"A larger composite always detects localized contamination.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Write the sampling plan before inspection or testing. Include a map, selection rule, number of units, sample mass or volume, handling, retained samples, and inference limits. Build a verification plan using the lesson's record set (Target population and decision; sampling frame; unit/increment/composite definition; strata; randomization or route; sample count and rationale; locations/times; sample mass/volume; tools/containers; preservation; chain of custody; missing/deviation rule; retained sample; inference statement.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
+    "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
+    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
+    "externalReview": "pending",
+    "publicationAuthorized": false,
+    "websiteAction": "hold_from_publication"
+  },
+  "slug": "sampling-plans-and-representative-measurements",
+  "route": "/encyclopedia/sampling-plans-and-representative-measurements",
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "answerRationaleStatus": "pending_independent_review",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
+  }
+}
