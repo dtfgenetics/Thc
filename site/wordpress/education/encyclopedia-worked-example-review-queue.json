@@ -1,0 +1,516 @@
+{
+  "schemaVersion": 1,
+  "name": "THC Encyclopedia Worked Example Review Queue",
+  "purpose": "Controlled reviewer workflow for deciding whether an internal worked example is scientifically, instructionally, and publication-ready for learner-facing encyclopedia pages.",
+  "sourceOfTruth": {
+    "examples": "content/encyclopedia/worked-examples-v1.json",
+    "lessons": "content/encyclopedia/volume-*/lessons and draft lesson collections",
+    "approvalRule": "Worked examples remain hidden unless the canonical example record has learnerFacingApproved=true and complete independent-review approval metadata."
+  },
+  "statusValues": [
+    "pending",
+    "in-review",
+    "changes-requested",
+    "approved",
+    "rejected"
+  ],
+  "reviewChecklistDefinition": {
+    "scientificClaimReview": "Reasoning steps are consistent with the canonical lesson and do not add unsupported causal or quantitative claims.",
+    "sourceAnchorReview": "Canonical lesson source notes adequately support the scientific and instructional claims used by the example.",
+    "measurementLogicReview": "Evidence-to-collect and verification steps use appropriate measurements, sampling, units, and comparison logic.",
+    "uncertaintyBoundaryReview": "Applicability limits, competing explanations, and uncertainty are explicit and proportionate to the evidence.",
+    "instructionalClarityReview": "Scenario and reasoning path are understandable, sequenced, and useful to a learner without requiring hidden assumptions.",
+    "safetyLegalBoundaryReview": "Example does not imply unlawful pesticide use, unsafe handling, medical advice, or unsupported universal operating targets.",
+    "publicCopyReview": "Learner-facing wording is concise, accessible, non-prescriptive, and suitable for the encyclopedia UI."
+  },
+  "releaseGate": {
+    "requiredStatus": "approved",
+    "requiredChecklistTrue": [
+      "scientificClaimReview",
+      "sourceAnchorReview",
+      "measurementLogicReview",
+      "uncertaintyBoundaryReview",
+      "instructionalClarityReview",
+      "safetyLegalBoundaryReview",
+      "publicCopyReview"
+    ],
+    "requiredMetadata": [
+      "reviewer",
+      "reviewedAt",
+      "decisionNotes"
+    ],
+    "mutationTarget": "content/encyclopedia/worked-examples-v1.json",
+    "resultingFields": {
+      "learnerFacingApproved": true,
+      "reviewControl.independentReviewStatus": "approved",
+      "reviewControl.approvedForLearnerFacingAt": "reviewedAt",
+      "reviewControl.approvedBy": "reviewer"
+    }
+  },
+  "items": [
+    {
+      "id": "WE-THC-ENC-049",
+      "lessonId": "THC-ENC-049",
+      "priority": 3,
+      "status": "pending",
+      "exampleLookup": {
+        "file": "content/encyclopedia/worked-examples-v1.json",
+        "key": "THC-ENC-049"
+      },
+      "canonicalLessonLookup": {
+        "lessonId": "THC-ENC-049",
+        "sourceNotesField": "sourceNotes",
+        "objectiveField": "objective",
+        "evidenceLimitsField": "evidenceLimits",
+        "measureAndRecordField": "measureAndRecord"
+      },
+      "review": {
+        "scientificClaimReview": false,
+        "sourceAnchorReview": false,
+        "measurementLogicReview": false,
+        "uncertaintyBoundaryReview": false,
+        "instructionalClarityReview": false,
+        "safetyLegalBoundaryReview": false,
+        "publicCopyReview": false
+      },
+      "reviewer": null,
+      "reviewedAt": null,
+      "decisionNotes": null
+    },
+    {
+      "id": "WE-THC-ENC-085",
+      "lessonId": "THC-ENC-085",
+      "priority": 2,
+      "status": "pending",
+      "exampleLookup": {
+        "file": "content/encyclopedia/worked-examples-v1.json",
+        "key": "THC-ENC-085"
+      },
+      "canonicalLessonLookup": {
+        "lessonId": "THC-ENC-085",
+        "sourceNotesField": "sourceNotes",
+        "objectiveField": "objective",
+        "evidenceLimitsField": "evidenceLimits",
+        "measureAndRecordField": "measureAndRecord"
+      },
+      "review": {
+        "scientificClaimReview": false,
+        "sourceAnchorReview": false,
+        "measurementLogicReview": false,
+        "uncertaintyBoundaryReview": false,
+        "instructionalClarityReview": false,
+        "safetyLegalBoundaryReview": false,
+        "publicCopyReview": false
+      },
+      "reviewer": null,
+      "reviewedAt": null,
+      "decisionNotes": null
+    },
+    {
+      "id": "WE-THC-ENC-092",
+      "lessonId": "THC-ENC-092",
+      "priority": 2,
+      "status": "pending",
+      "exampleLookup": {
+        "file": "content/encyclopedia/worked-examples-v1.json",
+        "key": "THC-ENC-092"
+      },
+      "canonicalLessonLookup": {
+        "lessonId": "THC-ENC-092",
+        "sourceNotesField": "sourceNotes",
+        "objectiveField": "objective",
+        "evidenceLimitsField": "evidenceLimits",
+        "measureAndRecordField": "measureAndRecord"
+      },
+      "review": {
+        "scientificClaimReview": false,
+        "sourceAnchorReview": false,
+        "measurementLogicReview": false,
+        "uncertaintyBoundaryReview": false,
+        "instructionalClarityReview": false,
+        "safetyLegalBoundaryReview": false,
+        "publicCopyReview": false
+      },
+      "reviewer": null,
+      "reviewedAt": null,
+      "decisionNotes": null
+    },
+    {
+      "id": "WE-THC-ENC-106",
+      "lessonId": "THC-ENC-106",
+      "priority": 2,
+      "status": "pending",
+      "exampleLookup": {
+        "file": "content/encyclopedia/worked-examples-v1.json",
+        "key": "THC-ENC-106"
+      },
+      "canonicalLessonLookup": {
+        "lessonId": "THC-ENC-106",
+        "sourceNotesField": "sourceNotes",
+        "objectiveField": "objective",
+        "evidenceLimitsField": "evidenceLimits",
+        "measureAndRecordField": "measureAndRecord"
+      },
+      "review": {
+        "scientificClaimReview": false,
+        "sourceAnchorReview": false,
+        "measurementLogicReview": false,
+        "uncertaintyBoundaryReview": false,
+        "instructionalClarityReview": false,
+        "safetyLegalBoundaryReview": false,
+        "publicCopyReview": false
+      },
+      "reviewer": null,
+      "reviewedAt": null,
+      "decisionNotes": null
+    },
+    {
+      "id": "WE-THC-ENC-123",
+      "lessonId": "THC-ENC-123",
+      "priority": 2,
+      "status": "pending",
+      "exampleLookup": {
+        "file": "content/encyclopedia/worked-examples-v1.json",
+        "key": "THC-ENC-123"
+      },
+      "canonicalLessonLookup": {
+        "lessonId": "THC-ENC-123",
+        "sourceNotesField": "sourceNotes",
+        "objectiveField": "objective",
+        "evidenceLimitsField": "evidenceLimits",
+        "measureAndRecordField": "measureAndRecord"
+      },
+      "review": {
+        "scientificClaimReview": false,
+        "sourceAnchorReview": false,
+        "measurementLogicReview": false,
+        "uncertaintyBoundaryReview": false,
+        "instructionalClarityReview": false,
+        "safetyLegalBoundaryReview": false,
+        "publicCopyReview": false
+      },
+      "reviewer": null,
+      "reviewedAt": null,
+      "decisionNotes": null
+    },
+    {
+      "id": "WE-THC-ENC-161",
+      "lessonId": "THC-ENC-161",
+      "priority": 3,
+      "status": "pending",
+      "exampleLookup": {
+        "file": "content/encyclopedia/worked-examples-v1.json",
+        "key": "THC-ENC-161"
+      },
+      "canonicalLessonLookup": {
+        "lessonId": "THC-ENC-161",
+        "sourceNotesField": "sourceNotes",
+        "objectiveField": "objective",
+        "evidenceLimitsField": "evidenceLimits",
+        "measureAndRecordField": "measureAndRecord"
+      },
+      "review": {
+        "scientificClaimReview": false,
+        "sourceAnchorReview": false,
+        "measurementLogicReview": false,
+        "uncertaintyBoundaryReview": false,
+        "instructionalClarityReview": false,
+        "safetyLegalBoundaryReview": false,
+        "publicCopyReview": false
+      },
+      "reviewer": null,
+      "reviewedAt": null,
+      "decisionNotes": null
+    },
+    {
+      "id": "WE-THC-ENC-261",
+      "lessonId": "THC-ENC-261",
+      "priority": 1,
+      "status": "pending",
+      "exampleLookup": {
+        "file": "content/encyclopedia/worked-examples-v1.json",
+        "key": "THC-ENC-261"
+      },
+      "canonicalLessonLookup": {
+        "lessonId": "THC-ENC-261",
+        "sourceNotesField": "sourceNotes",
+        "objectiveField": "objective",
+        "evidenceLimitsField": "evidenceLimits",
+        "measureAndRecordField": "measureAndRecord"
+      },
+      "review": {
+        "scientificClaimReview": false,
+        "sourceAnchorReview": false,
+        "measurementLogicReview": false,
+        "uncertaintyBoundaryReview": false,
+        "instructionalClarityReview": false,
+        "safetyLegalBoundaryReview": false,
+        "publicCopyReview": false
+      },
+      "reviewer": null,
+      "reviewedAt": null,
+      "decisionNotes": null
+    },
+    {
+      "id": "WE-THC-ENC-303",
+      "lessonId": "THC-ENC-303",
+      "priority": 1,
+      "status": "pending",
+      "exampleLookup": {
+        "file": "content/encyclopedia/worked-examples-v1.json",
+        "key": "THC-ENC-303"
+      },
+      "canonicalLessonLookup": {
+        "lessonId": "THC-ENC-303",
+        "sourceNotesField": "sourceNotes",
+        "objectiveField": "objective",
+        "evidenceLimitsField": "evidenceLimits",
+        "measureAndRecordField": "measureAndRecord"
+      },
+      "review": {
+        "scientificClaimReview": false,
+        "sourceAnchorReview": false,
+        "measurementLogicReview": false,
+        "uncertaintyBoundaryReview": false,
+        "instructionalClarityReview": false,
+        "safetyLegalBoundaryReview": false,
+        "publicCopyReview": false
+      },
+      "reviewer": null,
+      "reviewedAt": null,
+      "decisionNotes": null
+    },
+    {
+      "id": "WE-THC-ENC-321",
+      "lessonId": "THC-ENC-321",
+      "priority": 1,
+      "status": "pending",
+      "exampleLookup": {
+        "file": "content/encyclopedia/worked-examples-v1.json",
+        "key": "THC-ENC-321"
+      },
+      "canonicalLessonLookup": {
+        "lessonId": "THC-ENC-321",
+        "sourceNotesField": "sourceNotes",
+        "objectiveField": "objective",
+        "evidenceLimitsField": "evidenceLimits",
+        "measureAndRecordField": "measureAndRecord"
+      },
+      "review": {
+        "scientificClaimReview": false,
+        "sourceAnchorReview": false,
+        "measurementLogicReview": false,
+        "uncertaintyBoundaryReview": false,
+        "instructionalClarityReview": false,
+        "safetyLegalBoundaryReview": false,
+        "publicCopyReview": false
+      },
+      "reviewer": null,
+      "reviewedAt": null,
+      "decisionNotes": null
+    },
+    {
+      "id": "WE-THC-ENC-349",
+      "lessonId": "THC-ENC-349",
+      "priority": 3,
+      "status": "pending",
+      "exampleLookup": {
+        "file": "content/encyclopedia/worked-examples-v1.json",
+        "key": "THC-ENC-349"
+      },
+      "canonicalLessonLookup": {
+        "lessonId": "THC-ENC-349",
+        "sourceNotesField": "sourceNotes",
+        "objectiveField": "objective",
+        "evidenceLimitsField": "evidenceLimits",
+        "measureAndRecordField": "measureAndRecord"
+      },
+      "review": {
+        "scientificClaimReview": false,
+        "sourceAnchorReview": false,
+        "measurementLogicReview": false,
+        "uncertaintyBoundaryReview": false,
+        "instructionalClarityReview": false,
+        "safetyLegalBoundaryReview": false,
+        "publicCopyReview": false
+      },
+      "reviewer": null,
+      "reviewedAt": null,
+      "decisionNotes": null
+    },
+    {
+      "id": "WE-THC-ENC-385",
+      "lessonId": "THC-ENC-385",
+      "priority": 4,
+      "status": "pending",
+      "exampleLookup": {
+        "file": "content/encyclopedia/worked-examples-v1.json",
+        "key": "THC-ENC-385"
+      },
+      "canonicalLessonLookup": {
+        "lessonId": "THC-ENC-385",
+        "sourceNotesField": "sourceNotes",
+        "objectiveField": "objective",
+        "evidenceLimitsField": "evidenceLimits",
+        "measureAndRecordField": "measureAndRecord"
+      },
+      "review": {
+        "scientificClaimReview": false,
+        "sourceAnchorReview": false,
+        "measurementLogicReview": false,
+        "uncertaintyBoundaryReview": false,
+        "instructionalClarityReview": false,
+        "safetyLegalBoundaryReview": false,
+        "publicCopyReview": false
+      },
+      "reviewer": null,
+      "reviewedAt": null,
+      "decisionNotes": null
+    },
+    {
+      "id": "WE-THC-ENC-393",
+      "lessonId": "THC-ENC-393",
+      "priority": 4,
+      "status": "pending",
+      "exampleLookup": {
+        "file": "content/encyclopedia/worked-examples-v1.json",
+        "key": "THC-ENC-393"
+      },
+      "canonicalLessonLookup": {
+        "lessonId": "THC-ENC-393",
+        "sourceNotesField": "sourceNotes",
+        "objectiveField": "objective",
+        "evidenceLimitsField": "evidenceLimits",
+        "measureAndRecordField": "measureAndRecord"
+      },
+      "review": {
+        "scientificClaimReview": false,
+        "sourceAnchorReview": false,
+        "measurementLogicReview": false,
+        "uncertaintyBoundaryReview": false,
+        "instructionalClarityReview": false,
+        "safetyLegalBoundaryReview": false,
+        "publicCopyReview": false
+      },
+      "reviewer": null,
+      "reviewedAt": null,
+      "decisionNotes": null
+    },
+    {
+      "id": "WE-THC-ENC-402",
+      "lessonId": "THC-ENC-402",
+      "priority": 4,
+      "status": "pending",
+      "exampleLookup": {
+        "file": "content/encyclopedia/worked-examples-v1.json",
+        "key": "THC-ENC-402"
+      },
+      "canonicalLessonLookup": {
+        "lessonId": "THC-ENC-402",
+        "sourceNotesField": "sourceNotes",
+        "objectiveField": "objective",
+        "evidenceLimitsField": "evidenceLimits",
+        "measureAndRecordField": "measureAndRecord"
+      },
+      "review": {
+        "scientificClaimReview": false,
+        "sourceAnchorReview": false,
+        "measurementLogicReview": false,
+        "uncertaintyBoundaryReview": false,
+        "instructionalClarityReview": false,
+        "safetyLegalBoundaryReview": false,
+        "publicCopyReview": false
+      },
+      "reviewer": null,
+      "reviewedAt": null,
+      "decisionNotes": null
+    },
+    {
+      "id": "WE-THC-ENC-404",
+      "lessonId": "THC-ENC-404",
+      "priority": 4,
+      "status": "pending",
+      "exampleLookup": {
+        "file": "content/encyclopedia/worked-examples-v1.json",
+        "key": "THC-ENC-404"
+      },
+      "canonicalLessonLookup": {
+        "lessonId": "THC-ENC-404",
+        "sourceNotesField": "sourceNotes",
+        "objectiveField": "objective",
+        "evidenceLimitsField": "evidenceLimits",
+        "measureAndRecordField": "measureAndRecord"
+      },
+      "review": {
+        "scientificClaimReview": false,
+        "sourceAnchorReview": false,
+        "measurementLogicReview": false,
+        "uncertaintyBoundaryReview": false,
+        "instructionalClarityReview": false,
+        "safetyLegalBoundaryReview": false,
+        "publicCopyReview": false
+      },
+      "reviewer": null,
+      "reviewedAt": null,
+      "decisionNotes": null
+    },
+    {
+      "id": "WE-THC-ENC-416",
+      "lessonId": "THC-ENC-416",
+      "priority": 4,
+      "status": "pending",
+      "exampleLookup": {
+        "file": "content/encyclopedia/worked-examples-v1.json",
+        "key": "THC-ENC-416"
+      },
+      "canonicalLessonLookup": {
+        "lessonId": "THC-ENC-416",
+        "sourceNotesField": "sourceNotes",
+        "objectiveField": "objective",
+        "evidenceLimitsField": "evidenceLimits",
+        "measureAndRecordField": "measureAndRecord"
+      },
+      "review": {
+        "scientificClaimReview": false,
+        "sourceAnchorReview": false,
+        "measurementLogicReview": false,
+        "uncertaintyBoundaryReview": false,
+        "instructionalClarityReview": false,
+        "safetyLegalBoundaryReview": false,
+        "publicCopyReview": false
+      },
+      "reviewer": null,
+      "reviewedAt": null,
+      "decisionNotes": null
+    },
+    {
+      "id": "WE-THC-ENC-417",
+      "lessonId": "THC-ENC-417",
+      "priority": 4,
+      "status": "pending",
+      "exampleLookup": {
+        "file": "content/encyclopedia/worked-examples-v1.json",
+        "key": "THC-ENC-417"
+      },
+      "canonicalLessonLookup": {
+        "lessonId": "THC-ENC-417",
+        "sourceNotesField": "sourceNotes",
+        "objectiveField": "objective",
+        "evidenceLimitsField": "evidenceLimits",
+        "measureAndRecordField": "measureAndRecord"
+      },
+      "review": {
+        "scientificClaimReview": false,
+        "sourceAnchorReview": false,
+        "measurementLogicReview": false,
+        "uncertaintyBoundaryReview": false,
+        "instructionalClarityReview": false,
+        "safetyLegalBoundaryReview": false,
+        "publicCopyReview": false
+      },
+      "reviewer": null,
+      "reviewedAt": null,
+      "decisionNotes": null
+    }
+  ]
+}
