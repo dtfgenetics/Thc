@@ -71,6 +71,12 @@ jobs:
           set -euo pipefail
           node scripts/run-public-learning-center-approved-only.mjs
           node scripts/build-public-learning-center-wave3.mjs
+          # Legacy learning-center builders still own several routes and currently
+          # regenerate older search/encyclopedia shells. Restore the canonical
+          # searchable surfaces from this exact release commit before indexing.
+          git restore --source=HEAD -- \
+            site/public-route-patch/learn/search/index.html \
+            site/public-route-patch/learn/encyclopedia/index.html
           npm run build:education-search
           node scripts/validate-thc-education-search.mjs
           node scripts/validate-encyclopedia-search-benchmark.mjs
@@ -172,6 +178,7 @@ jobs:
 
       - name: Report learning-center production result
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           JOB_STATUS: ${{ job.status }}
