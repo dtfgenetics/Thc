@@ -33,23 +33,38 @@ async function get(path,label){
       if(!transientCodes.has(code) && error?.name!=='TimeoutError' && !String(error?.message||'').includes('fetch failed')) throw error;
       lastError=error;
     }
-    if(attempt<5) await sleep(500*attempt);
+    if(attempt<5) await sleep(750*attempt + Math.min(1000, label.length * 17));
   }
   const detail=lastError?.cause?.code||lastError?.code||lastError?.message||'unknown network error';
   throw new Error(`${label} could not be verified after 5 attempts: ${detail}`);
 }
 
-const [page,metaResult,sourceResult,style,experienceCss,experienceJs,gameJs,lineageJs,starterData]=await Promise.all([
-  get('./','PhenoQuest route'),
-  get('./build-meta.json','PhenoQuest build metadata'),
-  get('./source-revision.txt','PhenoQuest source revision'),
-  get('./style.css','PhenoQuest core styles'),
-  get('./experience-v2.css','PhenoQuest experience styles'),
-  get('./experience-v2.js','PhenoQuest experience runtime'),
-  get('./game.js','PhenoQuest game runtime'),
-  get('./lineage-runtime.js','PhenoQuest lineage runtime'),
-  get('./_runtime/data/phenos/mvp_units.json','PhenoQuest starter data')
-]);
+async function getBatch(entries, concurrency=3){
+  const results=new Array(entries.length);
+  let next=0;
+  async function worker(){
+    while(next<entries.length){
+      const index=next++;
+      const [path,label]=entries[index];
+      results[index]=await get(path,label);
+      await sleep(125);
+    }
+  }
+  await Promise.all(Array.from({length:Math.min(concurrency,entries.length)},()=>worker()));
+  return results;
+}
+
+const [page,metaResult,sourceResult,style,experienceCss,experienceJs,gameJs,lineageJs,starterData]=await getBatch([
+  ['./','PhenoQuest route'],
+  ['./build-meta.json','PhenoQuest build metadata'],
+  ['./source-revision.txt','PhenoQuest source revision'],
+  ['./style.css','PhenoQuest core styles'],
+  ['./experience-v2.css','PhenoQuest experience styles'],
+  ['./experience-v2.js','PhenoQuest experience runtime'],
+  ['./game.js','PhenoQuest game runtime'],
+  ['./lineage-runtime.js','PhenoQuest lineage runtime'],
+  ['./_runtime/data/phenos/mvp_units.json','PhenoQuest starter data']
+],3);
 
 if(!/text\/html/i.test(page.type)) throw new Error('PhenoQuest route did not return HTML.');
 for(const marker of ['The Living Seed Vault','first-session-guide','journey-nav','./game.js','./lineage-runtime.js','./experience-v2.js']){
