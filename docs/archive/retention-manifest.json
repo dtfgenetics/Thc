@@ -17,6 +17,26 @@
       ],
       "historyRetention": "git-history",
       "reintroductionAllowed": false
+    },
+    {
+      "id": "seed-man-legacy-15-level-runtime",
+      "retiredPaths": [
+        "scripts/archive/seed-man/legacy-15-level/apply-seed-man-gameplay-v2.mjs",
+        "scripts/archive/seed-man/legacy-15-level/reconcile-seed-man-base-manifest-identity.mjs",
+        "scripts/archive/seed-man/legacy-15-level/reconcile-seed-man-public-identity.mjs",
+        "scripts/archive/seed-man/legacy-15-level/reconcile-seed-man-public-surfaces.mjs",
+        "docs/archive/seed-man/legacy-15-level/workflows/seed-man-full-integration-ci.yml",
+        "docs/archive/seed-man/legacy-15-level/workflows/seed-man-source-to-production.yml",
+        "docs/archive/seed-man/legacy-15-level/workflows/seed-man-world-five-live.yml"
+      ],
+      "disposition": "removed-from-active-tree",
+      "reason": "Retired 11/15-level Seed Man automation superseded by the canonical v20 20-level runtime and repair/release workflows.",
+      "canonicalOwners": [
+        "dtfgenetics/Thc:games/seed-man-platformer",
+        ".github/workflows/repair-seed-man-v20-production.yml"
+      ],
+      "historyRetention": "git-history",
+      "reintroductionAllowed": false
     }
   ]
 }
