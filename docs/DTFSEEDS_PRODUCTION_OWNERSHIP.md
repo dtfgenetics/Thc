@@ -12,6 +12,7 @@ This document defines the single-writer rule for public DTFSeeds routes. A route
 | `/learn/` | Learning Experience V3 | Sole automatic Learn-root writer. Education publishers may publish child libraries but must never append, replace, or otherwise mutate the Learn root. |
 | `/courses/` | Certification Catalog V4 (`scripts/publish-wordpress-certification-catalog-v4.mjs`) | Sole production writer for the public course/certification catalog. It renders the complete two-certificate/eight-professional-credential roadmap, exposes only academically available courses, and must never mark an unfinished credential issuance-available. Legacy Catalog V3 is superseded and must not be used as a production writer. |
 | `/learn/learning-hub/` and program/course descendants | Learning Hub course publishers | Course trees, lessons, workbooks, practicals, and course learning assessments are owned by their course release workflows. Course 1 is published by `.github/workflows/wordpress-learning-hub-course1-production.yml`; the independent `/learn/` root remains owned by Learning Experience V3. |
+| `/learn/academy/` | Legacy compatibility route only | Retained temporarily through the Dtf420 migration overlay for inbound compatibility. It is not a current authoring surface, is not linked as the canonical course entry point, and must not have an active WordPress publisher. Canonical replacements are `/courses/` and `/learn/learning-hub/`. |
 | `/community/` | Canonical WordPress publisher | Editorial/community root. |
 | `/shop/` | Canonical WordPress commerce-presentation publisher | Storefront presentation only; transaction data remains protected. |
 | `/gallery/` | Canonical WordPress publisher | Editorial/media presentation. |
@@ -37,6 +38,7 @@ The following production conflicts have been removed from `main`:
 - `scripts/run-learning-v3-connected-production.sh` publishes the connected Learning V4 map and the expanded THC reference links as part of the same Learning V3 owner transaction.
 - The Course 1 production workflow does not claim ownership of `/learn/`; it verifies and publishes only the Learning Hub hierarchy below it.
 - Certification Catalog V4 is the sole `/courses/` writer. The Course 1 production workflow republishes that same V4 catalog after course/navigation updates so a Course 1 release cannot revert the catalog.
+- Academy V2's standalone WordPress publisher/workflow has been retired from active production. Its old `/learn/academy/` route remains compatibility-only inside the migration overlay until redirect/cutover work is completed.
 - The V5 header workflow self-heals after major WordPress publishers and audits discovered public routes without taking content ownership away from those route owners.
 
 Relevant historical commits:

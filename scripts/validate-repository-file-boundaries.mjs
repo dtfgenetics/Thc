@@ -68,7 +68,10 @@ for(const required of [
   'docs/archive/releases/dtf420-shared-shell-v1-2026-09-12.txt',
   'docs/archive/releases/dtf420-reference-progressive-disclosure-2026-09-15.txt',
   'docs/archive/releases/seed-ascent-renderer-release-2026-09-08.txt',
-  'docs/operations/PLANT_ATLAS_MODEL_CONTRACT.md'
+  'docs/operations/PLANT_ATLAS_MODEL_CONTRACT.md',
+  'scripts/archive/education/publish-wordpress-academy-v2.mjs',
+  'docs/archive/workflows/wordpress-academy-v2.yml',
+  'docs/archive/education/academy-v2.json'
 ]){
   if(!existsFile(required)) errors.push(`expected moved documentation missing: ${required}`);
 }
@@ -78,7 +81,10 @@ for(const retired of [
   'site/public-route-patch/release-triggers/dtf420-shared-shell-v1-2026-09-12.txt',
   'site/public-route-patch/release-triggers/dtf420-reference-progressive-disclosure-2026-09-15.txt',
   'site/public-route-patch/release-triggers/seed-ascent-renderer-release-2026-09-08.txt',
-  'site/public-route-patch/atlas/models/README.md'
+  'site/public-route-patch/atlas/models/README.md',
+  'scripts/publish-wordpress-academy-v2.mjs',
+  '.github/workflows/wordpress-academy-v2.yml',
+  'site/wordpress/education/academy-v2.json'
 ]){
   if(existsFile(retired)) errors.push(`retired misplaced artifact returned: ${retired}`);
 }
