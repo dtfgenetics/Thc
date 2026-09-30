@@ -264,6 +264,30 @@
       "branch": "cleanup/remove-generated-preview-tree-20260930",
       "disposition": "delete_safe",
       "basis": "generated_preview_tree_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-grow-doc-data-export-20260930",
+      "disposition": "delete_safe",
+      "basis": "legacy_Grow_Doc_export_script/data_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-migrated-kush-kings-20260930",
+      "disposition": "delete_safe",
+      "basis": "copied_Kush_Kings_release_bundle_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-migrated-thc-u-know-20260930",
+      "disposition": "delete_safe",
+      "basis": "copied_THC_U_Know_release_bundle_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/retire-scheduled-legacy-production-audit-20260930",
+      "disposition": "delete_safe",
+      "basis": "obsolete_audit_workflow_removal_superseded_by_merged_PR_pr_69"
     }
   ]
 }
