@@ -45,6 +45,8 @@ if(!errors.length){
  if(Number(encyclopediaIndex.searchLanguageVersion)<1) errors.push('encyclopedia discovery index missing search-language version');
  if(!Array.isArray(searchLanguage.rules)||searchLanguage.rules.length<20) errors.push('controlled encyclopedia search language must contain at least 20 useful alias rules');
  for(const rule of searchLanguage.rules||[]){if(!rule.id||!Array.isArray(rule.aliases)||rule.aliases.length<1)errors.push('invalid encyclopedia search-language rule '+(rule.id||'<missing-id>'));}
+ const aliasCorpus=(encyclopediaIndex.lessons||[]).flatMap(x=>x.aliases||[]).map(x=>String(x).toLowerCase());
+ for(const phrase of ['yellow leaves','hermie','bud rot','high runoff ec']) if(!aliasCorpus.includes(phrase)) errors.push('generated encyclopedia aliases missing '+phrase);
  if(encyclopediaIndex.lessons?.filter(x=>x.status==='published').length!==Number(encyclopediaIndex.publicationCutoff||0)) errors.push('encyclopedia published discovery count must match the generated publication cutoff');
  const requiredLearn=['cultivation-science','symptoms'];
  for(const key of requiredLearn) if(!learnData.sections?.[key]) errors.push('learning section data missing '+key);
