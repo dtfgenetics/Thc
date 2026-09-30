@@ -1,0 +1,163 @@
+{
+  "schemaVersion": "1.0.0",
+  "registryId": "thc-encyclopedia-authoritative-source-registry",
+  "updatedAt": "2026-09-30",
+  "scope": "Controlled external authority and peer-reviewed source registry for THC-ENC claim-level evidence collection. Source inclusion does not approve a lesson, publish a draft, or complete independent science review.",
+  "rules": [
+    "Source records identify authority and applicability; they do not create publication authorization.",
+    "Every lesson-level claim mapping must remain review-pending until independently reviewed.",
+    "Regulatory and standards sources must be rechecked at release time because requirements can change.",
+    "Project-internal source packets may guide architecture, but external source records are preferred for claim-level evidence."
+  ],
+  "sources": [
+    {
+      "id": "ENC-AUTH-001",
+      "sourceType": "official_guidance",
+      "authorityClass": "official_science_policy",
+      "title": "NIH Grants & Funding: Enhancing Reproducibility through Rigor and Transparency",
+      "publisher": "National Institutes of Health",
+      "year": 2026,
+      "url": "https://grants.nih.gov/policy-and-compliance/policy-topics/reproducibility",
+      "aliases": [],
+      "useAndLimitations": "Use for general evidence-discipline, reproducibility, rigor, and transparent-reporting expectations. It is not cannabis-specific and does not rank individual cultivation claims.",
+      "reviewUse": "evidence-method authority"
+    },
+    {
+      "id": "ENC-AUTH-002",
+      "sourceType": "peer_reviewed_standard",
+      "authorityClass": "peer_reviewed_method_standard",
+      "title": "Papoutsoglou et al. (2020). Enabling reusability of plant phenomic datasets with MIAPPE 1.1.",
+      "publisher": "New Phytologist",
+      "year": 2020,
+      "doi": "10.1111/nph.16544",
+      "url": "https://doi.org/10.1111/nph.16544",
+      "aliases": [],
+      "useAndLimitations": "Use for plant-phenotyping metadata, protocol, environmental-context, and reusable dataset requirements. It is a plant phenomics standard, not a cannabis cultivation recipe.",
+      "reviewUse": "evidence-method authority"
+    },
+    {
+      "id": "ENC-AUTH-003",
+      "sourceType": "peer_reviewed_primary",
+      "authorityClass": "cannabis_specific_primary_research",
+      "title": "Livingston et al. (2023). Glandular trichome development, morphology, and maturation are influenced by plant age and genotype in high THC-containing cannabis.",
+      "publisher": "Journal of Cannabis Research",
+      "year": 2023,
+      "pmcid": "PMC10071647",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10071647/",
+      "aliases": ["V18-SRC-003"],
+      "useAndLimitations": "Use for cannabis-specific trichome-development and maturation evidence. Apply within the studied genotype, tissue, age, and method boundaries.",
+      "reviewUse": "claim-level source"
+    },
+    {
+      "id": "ENC-AUTH-004",
+      "sourceType": "peer_reviewed_review",
+      "authorityClass": "cannabis_specific_review",
+      "title": "Postharvest Operations of Cannabis and Their Effect on Cannabinoid Content: A Review.",
+      "publisher": "Peer-reviewed open-access review",
+      "year": 2022,
+      "pmcid": "PMC9404914",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9404914/",
+      "aliases": ["V18-SRC-005"],
+      "useAndLimitations": "Use for drying, trimming, equilibrium moisture, sorption, curing, storage, packaging, and cannabinoid-context overview. Review-level evidence must be mapped to specific claims and not treated as universal target proof.",
+      "reviewUse": "claim-level source"
+    },
+    {
+      "id": "ENC-AUTH-005",
+      "sourceType": "peer_reviewed_review",
+      "authorityClass": "cannabis_specific_review",
+      "title": "Post-Harvest Operations to Generate High-Quality Medicinal Cannabis Products: A Systematic Review.",
+      "publisher": "Peer-reviewed open-access review",
+      "year": 2022,
+      "pmcid": "PMC8911901",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8911901/",
+      "aliases": ["V18-SRC-010"],
+      "useAndLimitations": "Use for medicinal-cannabis postharvest quality factors, moisture, light, temperature, duration, and drying-technique context. It does not establish one universal postharvest protocol.",
+      "reviewUse": "claim-level source"
+    },
+    {
+      "id": "ENC-AUTH-006",
+      "sourceType": "peer_reviewed_primary",
+      "authorityClass": "cannabis_specific_primary_research",
+      "title": "The influence of drying and storage conditions on the volatilome and cannabinoid content of Cannabis sativa L. inflorescences.",
+      "publisher": "Peer-reviewed open-access study",
+      "year": 2024,
+      "pmcid": "PMC11180634",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11180634/",
+      "aliases": ["V18-SRC-018"],
+      "useAndLimitations": "Use for controlled drying/storage comparisons and measured volatile/cannabinoid outcomes. Apply only within the tested varieties, storage conditions, and analytical methods.",
+      "reviewUse": "claim-level source"
+    },
+    {
+      "id": "ENC-AUTH-007",
+      "sourceType": "official_guidance",
+      "authorityClass": "official_measurement_policy",
+      "title": "NIST: Metrological Traceability Frequently Asked Questions and NIST Policy.",
+      "publisher": "National Institute of Standards and Technology",
+      "year": 2019,
+      "url": "https://www.nist.gov/metrology/metrological-traceability",
+      "aliases": ["V18-SRC-031"],
+      "useAndLimitations": "Use for traceability, calibration records, measurement uncertainty, measurand clarity, and fitness-for-purpose boundaries. It is not cannabis-specific and does not validate a particular device.",
+      "reviewUse": "measurement authority"
+    },
+    {
+      "id": "ENC-AUTH-008",
+      "sourceType": "official_dataset",
+      "authorityClass": "official_climate_dataset",
+      "title": "NOAA NCEI: U.S. Climate Normals, 1991-2020.",
+      "publisher": "National Oceanic and Atmospheric Administration",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/products/land-based-station/us-climate-normals",
+      "aliases": ["V19-SRC-003"],
+      "useAndLimitations": "Use for U.S. station climate-normal baselines. Normals describe historical distributions and are not crop forecasts or site-specific risk guarantees.",
+      "reviewUse": "site-planning authority"
+    },
+    {
+      "id": "ENC-AUTH-009",
+      "sourceType": "official_dataset",
+      "authorityClass": "official_soil_dataset",
+      "title": "USDA NRCS: Web Soil Survey.",
+      "publisher": "United States Department of Agriculture Natural Resources Conservation Service",
+      "year": 2026,
+      "url": "https://www.nrcs.usda.gov/resources/data-and-reports/web-soil-survey",
+      "aliases": ["V19-SRC-004"],
+      "useAndLimitations": "Use for mapped U.S. soil-resource planning information. Onsite sampling, current field conditions, drainage, contamination, and engineering constraints still require verification.",
+      "reviewUse": "site-planning authority"
+    },
+    {
+      "id": "ENC-AUTH-010",
+      "sourceType": "official_standard",
+      "authorityClass": "official_conservation_standard_index",
+      "title": "USDA NRCS: Conservation Practice Standards.",
+      "publisher": "United States Department of Agriculture Natural Resources Conservation Service",
+      "year": 2026,
+      "url": "https://www.nrcs.usda.gov/resources/guides-and-instructions/conservation-practice-standards",
+      "aliases": ["V19-SRC-020", "V19-SRC-021", "V19-SRC-022", "V19-SRC-023", "V19-SRC-024", "V19-SRC-034"],
+      "useAndLimitations": "Use for minimum science-based conservation-practice criteria and as an index to practice-specific standards. Local Field Office Technical Guide, engineering review, law, and site conditions control implementation.",
+      "reviewUse": "site-planning authority"
+    },
+    {
+      "id": "ENC-AUTH-011",
+      "sourceType": "official_standard",
+      "authorityClass": "official_irrigation_standard",
+      "title": "USDA NRCS: Irrigation Water Management Conservation Practice Standard 449.",
+      "publisher": "United States Department of Agriculture Natural Resources Conservation Service",
+      "year": 2026,
+      "url": "https://www.nrcs.usda.gov/resources/guides-and-instructions/irrigation-water-management-ac-449-conservation-practice-standard",
+      "aliases": ["V19-SRC-018"],
+      "useAndLimitations": "Use for irrigation-water-management planning criteria. It is not a cannabis-specific irrigation schedule and requires local technical review.",
+      "reviewUse": "site-planning authority"
+    },
+    {
+      "id": "ENC-AUTH-012",
+      "sourceType": "official_standard",
+      "authorityClass": "official_irrigation_standard",
+      "title": "USDA NRCS: Irrigation System, Microirrigation Conservation Practice Standard 441.",
+      "publisher": "United States Department of Agriculture Natural Resources Conservation Service",
+      "year": 2026,
+      "url": "https://www.nrcs.usda.gov/resources/guides-and-instructions/irrigation-system-microirrigation-ac-441-conservation-practice",
+      "aliases": ["V19-SRC-019"],
+      "useAndLimitations": "Use for microirrigation planning/design criteria. It does not replace local design, water-quality review, pressure testing, or crop-specific validation.",
+      "reviewUse": "site-planning authority"
+    }
+  ]
+}
