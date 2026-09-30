@@ -223,6 +223,229 @@
       ],
       "verification": "A representative plan should reproduce the important spatial and temporal variation well enough to support the stated decision, with limits documented.",
       "boundary": "Sampling density depends on room geometry, variability, equipment, risk, and the consequence of missing extremes."
+    },
+    {
+      "lessonId": "THC-ENC-049",
+      "title": "Root decline after repeated wet irrigation",
+      "scenario": "Plants in one irrigation zone lose vigor and develop brown roots after a period of frequent irrigation. The first assumption is that a root pathogen is definitely responsible.",
+      "reasoningPath": [
+        "Treat brown roots and poor vigor as evidence of root decline, not proof of a particular pathogen.",
+        "Compare affected and unaffected plants from the same cohort and map whether the problem follows an irrigation zone, media lot, cultivar, or propagation source.",
+        "Measure root-zone moisture, drainage, temperature, EC, irrigation timing, and oxygen-related context before interpreting pathogen tests.",
+        "Inspect roots for lesion pattern and sample early symptomatic tissue when laboratory confirmation is warranted.",
+        "Keep abiotic predisposition, pathogen involvement, and mixed causes in the differential until the spatial pattern, root-zone data, and diagnostic evidence agree."
+      ],
+      "evidenceToCollect": [
+        "root appearance and lesion distribution",
+        "irrigation frequency/volume and delivery uniformity",
+        "media moisture and drainage",
+        "root-zone temperature and EC",
+        "affected-versus-unaffected spatial map",
+        "propagation/media lot history",
+        "laboratory or microscopy results when used"
+      ],
+      "weakAnswerPatterns": [
+        "Brown roots prove Pythium or another single pathogen.",
+        "Wet media alone proves disease.",
+        "Finding one organism means root-zone stress no longer matters."
+      ],
+      "verification": "A stronger conclusion requires the proposed cause to match the crop pattern and root findings, and the corrective plan should improve new root and shoot growth while repeat measurements show the predisposing condition or confirmed disease pressure has changed.",
+      "boundary": "Root disease severity depends on organism, host, media, water status, temperature, sanitation, and sampling. This example does not establish a universal irrigation frequency or pathogen diagnosis."
+    },
+    {
+      "lessonId": "THC-ENC-092",
+      "title": "A dryback percentage is copied from another facility",
+      "scenario": "A grow adopts a dryback percentage from an online chart but has different containers, substrate, sensor placement, irrigation frequency, and plant size.",
+      "reasoningPath": [
+        "Define exactly what the percentage represents: volumetric water content, sensor output, container mass, or another reference.",
+        "Document the starting reference point and the time interval so the reported dryback is reproducible.",
+        "Compare sensor position and substrate heterogeneity before assuming one reading represents the whole root zone.",
+        "Interpret the change alongside plant demand, root-zone EC, irrigation volume, drainage, environment, and crop stage.",
+        "Use controlled adjustments and plant response to establish a local operating range instead of copying one percentage as a universal target."
+      ],
+      "evidenceToCollect": [
+        "measurement method and units",
+        "sensor position or container mass method",
+        "post-irrigation reference point",
+        "time series between irrigations",
+        "irrigation volume and drainage",
+        "root-zone EC",
+        "plant stage and environment"
+      ],
+      "weakAnswerPatterns": [
+        "A specific dryback percentage is ideal for every setup.",
+        "Sensor percentage and water-content percentage are automatically interchangeable.",
+        "More dryback always improves root health."
+      ],
+      "verification": "A useful local dryback strategy should produce repeatable water-status trends, acceptable root-zone chemistry, and stable plant response across representative plants rather than merely matching a borrowed number.",
+      "boundary": "Dryback values are method-, substrate-, container-, sensor-, plant-, and climate-specific; this example does not prescribe a universal percentage."
+    },
+    {
+      "lessonId": "THC-ENC-161",
+      "title": "Clone matches genotype but performs differently",
+      "scenario": "A cutting from a favored mother is genetically expected to match the donor, but the clone grows poorly after rooting and the team concludes it must have genetically changed.",
+      "reasoningPath": [
+        "Separate inherited genotype from biological state; a cutting normally preserves genotype but also carries age, pathogen status, epigenetic state, reserves, and handling history.",
+        "Verify donor identity and chain of propagation before invoking genetic change.",
+        "Compare rooting quality, sanitation, environment, root-zone conditions, and source-plant health.",
+        "Consider whether disease, physiological stress, or propagation conditions explain the performance difference.",
+        "Use genetic testing only when the question truly concerns identity or sequence variation rather than as a substitute for horticultural diagnosis."
+      ],
+      "evidenceToCollect": [
+        "donor and clone IDs",
+        "propagation dates and handling history",
+        "rooting success/root quality",
+        "donor health and pathogen status",
+        "environment/root-zone records",
+        "genotype/fingerprint data if identity is uncertain"
+      ],
+      "weakAnswerPatterns": [
+        "A clone must perform identically because the DNA is the same.",
+        "Poor clone performance proves a mutation.",
+        "Genetic identity testing explains every performance difference."
+      ],
+      "verification": "If identity is confirmed, the explanation should be tested against propagation and health evidence; improvement after correcting those factors supports a physiological or management cause more strongly than an unsupported mutation claim.",
+      "boundary": "Clonal propagation preserves inherited genotype under normal conditions but does not guarantee identical phenotype, health, vigor, or epigenetic state across environments and propagation histories."
+    },
+    {
+      "lessonId": "THC-ENC-303",
+      "title": "Dense flower rot is assumed to be Botrytis",
+      "scenario": "Brown internal tissue and gray material are found inside dense flowers late in production. The crop team immediately labels the case Botrytis without collecting a diagnostic sample.",
+      "reasoningPath": [
+        "Describe the affected tissue, distribution, progression, and visible signs before assigning the pathogen.",
+        "Inspect nearby flowers and environmental history for prolonged wetness, condensation, injuries, senescent tissue, and canopy microclimates.",
+        "Compare the appearance with other fungal, bacterial, insect, and abiotic causes of flower breakdown.",
+        "Collect representative early-stage symptomatic tissue when confirmation affects disposition or management.",
+        "Separate containment and sanitation actions from the final causal claim so risk can be reduced while diagnosis remains appropriately qualified."
+      ],
+      "evidenceToCollect": [
+        "whole-flower and internal tissue observations",
+        "signs under magnification",
+        "affected-zone map",
+        "RH/temperature/condensation trends",
+        "canopy density and airflow context",
+        "injury/senescence history",
+        "diagnostic lab result where needed"
+      ],
+      "weakAnswerPatterns": [
+        "Any gray or brown flower rot is Botrytis.",
+        "High humidity proves Botrytis infection.",
+        "A photo alone establishes pathogen identity."
+      ],
+      "verification": "Diagnostic confidence increases when characteristic signs, disease pattern, environmental context, and laboratory or microscopic evidence converge; follow-up should show whether containment and environmental corrections reduce new cases.",
+      "boundary": "Visible flower rot can have multiple causes. This example does not define a universal humidity threshold or replace laboratory confirmation when pathogen identity matters."
+    },
+    {
+      "lessonId": "THC-ENC-349",
+      "title": "Drying room setpoint is stable but batches dry unevenly",
+      "scenario": "A drying room holds a stable temperature and RH, yet flowers at different rack positions finish at very different times.",
+      "reasoningPath": [
+        "Treat the room setpoint as an input, not proof of uniform product conditions.",
+        "Map rack position, load density, obstructions, fan paths, and return-air locations.",
+        "Measure representative air and product conditions across the load rather than only at the controller.",
+        "Track mass loss or other validated drying indicators by position over time.",
+        "Adjust loading, spacing, airflow, or room operation based on the observed distribution, then repeat the same spatial measurements."
+      ],
+      "evidenceToCollect": [
+        "rack/location map",
+        "load density and product geometry",
+        "air temperature/RH by position",
+        "product temperature",
+        "airflow or qualitative flow mapping",
+        "mass-loss/drying curve by zone",
+        "final moisture or water activity where appropriate"
+      ],
+      "weakAnswerPatterns": [
+        "Stable room RH means every product zone dries equally.",
+        "One controller sensor describes the entire load.",
+        "The slowest zone only needs more time; spatial airflow does not matter."
+      ],
+      "verification": "The adjustment should reduce position-dependent differences in drying curves and final product condition when measured with the same sampling plan.",
+      "boundary": "Drying behavior depends on product geometry, load, airflow, equipment, temperature, RH, and sampling. No single room setting guarantees uniformity."
+    },
+    {
+      "lessonId": "THC-ENC-393",
+      "title": "One phenotype wins in one room",
+      "scenario": "A breeding candidate outperforms siblings in one room and is immediately declared genetically superior.",
+      "reasoningPath": [
+        "Define the trait and measurement method before interpreting the apparent advantage.",
+        "Identify position, room, season, management, and measurement factors that could explain the result.",
+        "Use replication and appropriate randomization or blocking to separate candidate effects from environmental noise.",
+        "Include checks or reference genotypes when possible and preserve all observations rather than only selected winners.",
+        "Retest the candidate across relevant environments before converting one result into a stable genetic claim."
+      ],
+      "evidenceToCollect": [
+        "candidate and check IDs",
+        "replicate count",
+        "room/position map",
+        "randomization/blocking scheme",
+        "trait measurements with units",
+        "environment/management records",
+        "repeat-trial results"
+      ],
+      "weakAnswerPatterns": [
+        "Best in one room means genetically best.",
+        "Many measurements from one plant equal biological replication.",
+        "A strong phenotype automatically has high breeding value."
+      ],
+      "verification": "A genetic-performance claim becomes stronger when the advantage repeats across independent experimental units or environments and remains after accounting for known spatial or management effects.",
+      "boundary": "Replication requirements depend on the trait, population, environmental variability, and decision risk; one trial cannot establish universal performance."
+    },
+    {
+      "lessonId": "THC-ENC-416",
+      "title": "Testing two irrigation strategies without pseudoreplication",
+      "scenario": "A grow wants to compare two irrigation strategies but assigns one whole room to Strategy A and another room to Strategy B, then treats every plant as an independent replicate.",
+      "reasoningPath": [
+        "Define the experimental unit as the smallest unit independently assigned to treatment.",
+        "Recognize that if treatment is assigned by room, plants within the same room are subsamples rather than independent treatment replicates.",
+        "Identify room-level confounders such as fixtures, airflow, staff practice, cultivar distribution, and equipment.",
+        "Redesign with independent replicated treatment units, randomization, or a defensible blocked/crossover structure where operationally possible.",
+        "Predefine outcomes and analysis before seeing the results."
+      ],
+      "evidenceToCollect": [
+        "treatment assignment unit",
+        "number of independent replicates",
+        "room/bench/block identifiers",
+        "randomization method",
+        "predefined outcomes",
+        "plant/subsample counts",
+        "environment and management covariates"
+      ],
+      "weakAnswerPatterns": [
+        "Twenty plants in one treated room equal twenty treatment replicates.",
+        "A difference between two rooms proves the irrigation treatment caused it.",
+        "More subsamples fix missing independent replication."
+      ],
+      "verification": "The experiment supports stronger causal inference when treatments are independently replicated and competing room or position effects are controlled or estimated rather than perfectly confounded with treatment.",
+      "boundary": "Operational cultivation trials may require blocking or staged designs; the correct experimental unit depends on how treatment is actually applied."
+    },
+    {
+      "lessonId": "THC-ENC-417",
+      "title": "Higher light is correlated with higher yield",
+      "scenario": "Historical production data show that crops with higher measured light also had higher yield, and the team concludes that increasing light caused the yield increase.",
+      "reasoningPath": [
+        "Confirm temporal order and how both light and yield were measured.",
+        "List variables that changed with light, including cultivar, plant density, CO2, nutrition, crop age, room, season, and management.",
+        "Distinguish confounders from mediators and from consequences of the treatment.",
+        "Use a controlled or quasi-experimental comparison when a causal claim matters.",
+        "Phrase the historical result as an association unless the design rules out credible alternative explanations."
+      ],
+      "evidenceToCollect": [
+        "raw light measurements and locations",
+        "yield definition and sampling",
+        "cultivar and crop-stage data",
+        "room/season identifiers",
+        "CO2/nutrition/density records",
+        "management changes",
+        "controlled comparison data if available"
+      ],
+      "weakAnswerPatterns": [
+        "Correlation proves the higher light caused the yield change.",
+        "A statistically strong relationship cannot be confounded.",
+        "Adding more variables after seeing the result automatically establishes causality."
+      ],
+      "verification": "A causal interpretation becomes more credible when treatment precedes outcome, assignment or design reduces confounding, measurements are comparable, and alternative explanations fail to account for the observed effect.",
+      "boundary": "Observational cultivation data are valuable for hypothesis generation and forecasting but often cannot support causal claims without additional design or analysis."
     }
   ]
 }
