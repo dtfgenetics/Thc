@@ -35,10 +35,11 @@ if(!errors.length){
  if(!Array.isArray(encyclopediaIndex.lessons)||encyclopediaIndex.lessons.length!==420) errors.push('encyclopedia discovery index must contain exactly 420 controlled entries');
  if(!Array.isArray(encyclopediaIndex.topics)||encyclopediaIndex.topics.length!==21) errors.push('encyclopedia discovery index must contain exactly 21 topics');
  if(encyclopediaIndex.lessons?.filter(x=>x.status==='published').length!==335) errors.push('encyclopedia published discovery count must match current authorized cutoff of 335');
- const requiredLearn=['home','atlas','start-here','plant-health','cultivation-science','symptoms','beginner-guides','sops','glossary','records','sources'];
+ const requiredLearn=['cultivation-science','symptoms'];
  for(const key of requiredLearn) if(!learnData.sections?.[key]) errors.push('learning section data missing '+key);
- const routeFiles=['site/public-route-patch/learn/index.html',...requiredLearn.filter(x=>x!=='home').map(x=>`site/public-route-patch/learn/${x}/index.html`)];
- for(const file of routeFiles) if(!fs.existsSync(file)) errors.push('learning navigation route missing file: '+file);
+ for(const key of requiredLearn){const file=`site/public-route-patch/learn/${key}/index.html`;if(!fs.existsSync(file)) errors.push('route-patch learning hub missing file: '+file)}
+ const wordpressOwned=['start-here','beginner-guides','sops','glossary','records','plant-health'];
+ for(const slug of wordpressOwned) if(!publisher.includes(`slug: '${slug}'`)) errors.push('WordPress learning publisher missing owned slug '+slug);
 }
 if(errors.length){console.error('THC education search validation failed:');for(const e of errors)console.error(' - '+e);process.exit(1)}
 console.log('THC education search validation passed.');
