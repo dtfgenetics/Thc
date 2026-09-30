@@ -19,7 +19,8 @@ This document defines the single-writer rule for public DTFSeeds routes. A route
 | `/about/` | Canonical WordPress publisher | Editorial root. |
 | `/contact/` | Canonical WordPress publisher | Editorial root. |
 | `/seeds/` and `/seeds/*` | Dedicated genetics library publisher | Sole writer for genetics library and line pages. Generic WordPress and commerce-visual scripts must not rewrite these routes. |
-| `/learn/plant-health/`, `/learn/cultivation-science/`, `/learn/symptoms/`, `/learn/tools/`, `/learn/sources/` | THC education expansion publisher | Child pages are source-controlled education surfaces. Their links into `/learn/` are published by Learning Experience V3, not by the child-page publisher. |
+| `/learn/plant-health/`, `/learn/cultivation-science/`, `/learn/symptoms/`, `/learn/tools/`, `/learn/sources/` | Dtf420 migration static overlay (public) + THC education expansion publisher (WordPress backing records) | Public child pages remain served by the reviewed migration overlay for now. The expansion publisher may maintain safe WordPress backing records and verify public content, but must not become a competing public route writer. |
+| `/learn/search/` | WordPress THC Learning Search publisher + MU-plugin runtime | Full WordPress-owned search page, indexes, and search runtime. Dtf420 must not stage or shadow this route. |
 | `/learn/encyclopedia/` and lesson routes | Dedicated encyclopedia publisher | Publication is controlled by the current production-batch manifest and fresh-visitor verification. |
 | `/learn/infographics/` and infographic/topic routes | Dedicated infographic/education publisher | Only quality-gated finished infographic media belongs on infographic surfaces. |
 | `/games/` | Static public application suite hub | Hub is not owned by WordPress page reconciliation. It links to canonical game runtimes. |
@@ -39,6 +40,7 @@ The following production conflicts have been removed from `main`:
 - The Course 1 production workflow does not claim ownership of `/learn/`; it verifies and publishes only the Learning Hub hierarchy below it.
 - Certification Catalog V4 is the sole `/courses/` writer. The Course 1 production workflow republishes that same V4 catalog after course/navigation updates so a Course 1 release cannot revert the catalog.
 - Academy V2's standalone WordPress publisher/workflow has been retired from active production. Its old `/learn/academy/` route remains compatibility-only inside the migration overlay until redirect/cutover work is completed.
+- `/learn/search/` is now explicitly WordPress-owned and removed from the Dtf420 overlay. The generic Learning Centers publisher is also prevented from rewriting overlay-owned Academy, Glossary, SOP, and Plant Health routes.
 - The V5 header workflow self-heals after major WordPress publishers and audits discovered public routes without taking content ownership away from those route owners.
 
 Relevant historical commits:
