@@ -45,7 +45,8 @@
         "High IQ comparison; no code migration required.",
         "Legacy shared game engine classified superseded.",
         "Legacy WordPress/deployment tooling classified superseded.",
-        "Legacy certification widgets classified historical-only."
+        "Legacy certification widgets classified historical-only.",
+        "Copied Weedopolis implementation and deploy artifacts removed from dtf-thc-hub via PR #72; standalone Weedopolis repo remains canonical."
       ],
       "canonicalTargets": [
         "dtfgenetics/Thc",
@@ -66,6 +67,18 @@
           {
             "branch": "cleanup/remove-legacy-production-entrypoints-20260930",
             "basis": "0 commits ahead of main; branch is 11 commits behind main"
+          },
+          {
+            "branch": "cleanup/remove-migrated-weedopolis-20260930",
+            "basis": "superseded by clean replay merged via dtf-thc-hub PR #72"
+          },
+          {
+            "branch": "cleanup/remove-legacy-weedopolis-v2-20260930",
+            "basis": "conflicted replay superseded by merged PR #72"
+          },
+          {
+            "branch": "cleanup/remove-legacy-weedopolis-v3-20260930",
+            "basis": "merged via dtf-thc-hub PR #72"
           }
         ],
         "reconcileNeeded": [
@@ -96,10 +109,6 @@
           {
             "branch": "cleanup/remove-migrated-thc-u-know-20260930",
             "reason": "6 commits ahead; removes copied release bundle and registry references"
-          },
-          {
-            "branch": "cleanup/remove-migrated-weedopolis-20260930",
-            "reason": "7 commits ahead; removes copied Weedopolis source/release bundles"
           },
           {
             "branch": "cleanup/remove-superseded-legacy-brand-assets-20260930",
