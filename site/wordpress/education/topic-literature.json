@@ -661,7 +661,7 @@
             "environment",
             "seed lot/genetic identity"
           ],
-          "successCheck": "The learner uses developmental criteria rather than date alone."
+          "successCheck": "A strong response documents the observable differences, compares the same measurements across seedlings, checks environment and root-zone context, and avoids assigning a genetic or management cause until the evidence supports that conclusion."
         }
       ]
     },
@@ -1576,7 +1576,7 @@
         },
         {
           "title": "Two media types, same feed, different response",
-          "prompt": "Plants receiving the same solution behave differently in two substrates.",
+          "prompt": "Two media types receive the same nutrient solution but the plants respond differently. Compare root-zone measurements, irrigation behavior, runoff or drainage context, and plant observations before deciding whether the feed itself is the primary cause.",
           "evidenceToCollect": [
             "media composition",
             "water-holding behavior",
@@ -1801,7 +1801,7 @@
         },
         {
           "title": "Control applied but counts do not fall",
-          "prompt": "A treatment was applied, yet target counts remain similar.",
+          "prompt": "A control was applied, but pest counts do not decline on the next scouting cycle. Determine what evidence should be collected about identification, coverage, timing, life stage, environmental conditions, and repeat counts before changing the control plan.",
           "evidenceToCollect": [
             "target identification",
             "life stage",
@@ -2003,7 +2003,7 @@
       "practiceScenarios": [
         {
           "title": "Dense canopy after aggressive topping",
-          "prompt": "Training produced many shoots but lower canopy light and airflow worsened.",
+          "prompt": "A canopy becomes unusually dense after aggressive topping. Evaluate light distribution, airflow, internode spacing, recovery, and crowding before deciding whether additional pruning, spacing, or training is justified.",
           "evidenceToCollect": [
             "canopy dimensions",
             "PPFD by zone",
@@ -2015,7 +2015,7 @@
         },
         {
           "title": "One plant recovers slowly after bending",
-          "prompt": "A plant lags after structural training while neighbors recover quickly.",
+          "prompt": "One plant recovers much more slowly than neighboring plants after bending. Compare stem damage, turgor, root-zone conditions, recent irrigation, light exposure, and recovery time before assigning a cause or repeating the technique.",
           "evidenceToCollect": [
             "injury location",
             "plant identity",
@@ -2227,7 +2227,7 @@
       "practiceScenarios": [
         {
           "title": "Top flowers look ready before lower flowers",
-          "prompt": "Maturity observations differ strongly by canopy position.",
+          "prompt": "Upper flowers appear more mature than lower flowers on the same plant. Compare trichome observations by canopy position, flower condition, light exposure, and harvest goals before deciding whether a single whole-plant harvest date is justified.",
           "evidenceToCollect": [
             "defined sampling positions",
             "tissue type",
@@ -2248,7 +2248,7 @@
             "load geometry",
             "moisture or water activity where available"
           ],
-          "successCheck": "The learner distinguishes room setpoint from local product drying behavior."
+          "successCheck": "A strong response verifies instrument placement and calibration, compares airflow and product density across positions, measures rather than assumes moisture loss, and adjusts the drying environment only after locating the source of the uneven drying pattern."
         }
       ]
     },
@@ -2463,7 +2463,7 @@
         },
         {
           "title": "Heavy rain arrives during flowering",
-          "prompt": "A multi-day wet period is forecast during dense flowering.",
+          "prompt": "Heavy rain arrives during flowering and some flowers stay wet longer than others. Document exposure, drainage, airflow, flower density, damage, and symptom progression before deciding whether intervention or selective removal is warranted.",
           "evidenceToCollect": [
             "forecast and duration",
             "canopy density",
@@ -2693,7 +2693,7 @@
       "practiceScenarios": [
         {
           "title": "A/B nutrient trial",
-          "prompt": "You want to know whether a new nutrient program improves growth.",
+          "prompt": "You are comparing two nutrient programs in an A/B trial. Define the treatment difference, hold major environmental variables as constant as practical, record baseline plant status, choose repeatable measurements, and decide in advance what result would count as meaningful.",
           "evidenceToCollect": [
             "predefined outcome",
             "control treatment",
