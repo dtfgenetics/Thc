@@ -16,6 +16,9 @@ on:
       - 'scripts/prepare-learning-v3-owner-aware-publisher.mjs'
       - 'scripts/prepare-learning-owner-aware-followup-publishers.mjs'
       - 'scripts/verify-learning-owner-storage.mjs'
+      - 'scripts/validate-learning-route-writer-boundaries.mjs'
+      - 'site/deployment/dtf420-static-overlay.json'
+      - 'scripts/publish-wordpress-learning-center-pages.mjs'
       - '.github/workflows/deploy-thc-learning-center-expansion-v1.yml'
 
 permissions:
@@ -71,6 +74,7 @@ jobs:
           node --check scripts/prepare-learning-v3-owner-aware-publisher.mjs
           node --check scripts/prepare-learning-owner-aware-followup-publishers.mjs
           node --check scripts/verify-learning-owner-storage.mjs
+          node scripts/validate-learning-route-writer-boundaries.mjs
           bash -n scripts/run-learning-v3-connected-production.sh
           grep -Fq 'prepare-learning-v3-atlas-publisher.mjs' scripts/run-learning-v3-connected-production.sh
           grep -Fq 'LEARNING_V3_SOURCE_PUBLISHER="$atlas_v3"' scripts/run-learning-v3-connected-production.sh

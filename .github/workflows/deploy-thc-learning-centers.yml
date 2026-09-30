@@ -16,6 +16,8 @@ on:
       - 'scripts/build-encyclopedia-discovery-index.mjs'
       - 'scripts/build-thc-education-search-index.mjs'
       - 'scripts/validate-thc-education-search.mjs'
+      - 'scripts/validate-learning-route-writer-boundaries.mjs'
+      - 'site/deployment/dtf420-static-overlay.json'
       - 'scripts/validate-encyclopedia-search-benchmark.mjs'
       - 'scripts/build-wordpress-learning-search-runtime.mjs'
       - 'scripts/deploy/wordpress-learning-search-runtime.sh'
@@ -71,6 +73,7 @@ jobs:
           node --check scripts/publish-wordpress-learning-center-pages.mjs
           node --check scripts/update-wordpress-learn-learning-center.mjs
           node --check scripts/build-wordpress-learning-search-runtime.mjs
+          node scripts/validate-learning-route-writer-boundaries.mjs
           bash -n scripts/deploy/wordpress-learning-search-runtime.sh
           php -l site/wordpress/mu-plugins/dtf-learning-search.php
           npm run verify:wordpress-learning-search
@@ -96,7 +99,9 @@ jobs:
           node scripts/validate-encyclopedia-search-benchmark.mjs
           npm run build:wordpress-learning-search
           npm run verify:wordpress-learning-search
-          routes=(library start-here beginner-guides academy encyclopedia sops glossary records search setup root-zone environment plant-health propagation)
+          # Publish/verify only routes owned by this WordPress learning-center writer.
+          # Overlay-backed Academy/Glossary/SOP/Plant Health are validated by their own lanes.
+          routes=(library start-here beginner-guides encyclopedia records search setup root-zone environment propagation)
           for route in "${routes[@]}"; do
             file="site/public-route-patch/learn/$route/index.html"
             test -s "$file"
@@ -189,7 +194,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          routes=(library start-here beginner-guides academy encyclopedia sops glossary records search setup root-zone environment plant-health propagation)
+          routes=(library start-here beginner-guides encyclopedia records search setup root-zone environment propagation)
           for route in "${routes[@]}"; do
             body="$RUNNER_TEMP/learn-${route}.html"
             curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 \

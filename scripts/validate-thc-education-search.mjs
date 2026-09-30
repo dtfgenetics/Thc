@@ -68,8 +68,10 @@ if(!errors.length){
  const requiredLearn=['cultivation-science','symptoms'];
  for(const key of requiredLearn) if(!learnData.sections?.[key]) errors.push('learning section data missing '+key);
  for(const key of requiredLearn){const file=`site/public-route-patch/learn/${key}/index.html`;if(!fs.existsSync(file)) errors.push('route-patch learning hub missing file: '+file)}
- const wordpressOwned=['start-here','beginner-guides','sops','glossary','records','plant-health'];
+ const wordpressOwned=['start-here','beginner-guides','records','search','encyclopedia'];
  for(const slug of wordpressOwned) if(!publisher.includes(`slug: '${slug}'`)) errors.push('WordPress learning publisher missing owned slug '+slug);
+ const overlayOwned=['academy','sops','glossary','plant-health'];
+ for(const slug of overlayOwned) if(publisher.includes(`slug: '${slug}'`)) errors.push('generic WordPress learning publisher must not rewrite overlay-owned slug '+slug);
 }
 if(errors.length){console.error('THC education search validation failed:');for(const e of errors)console.error(' - '+e);process.exit(1)}
 console.log('THC education search validation passed.');

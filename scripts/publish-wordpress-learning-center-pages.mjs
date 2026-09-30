@@ -18,20 +18,19 @@ const stamp = new Date().toISOString().replace(/[-:.]/g, '').replace('Z', 'Z');
 const backupDir = join(backupRoot, `learning-pages-${stamp}`);
 await mkdir(backupDir, { recursive: true });
 
+// Full WordPress-owned learning pages only. Dtf420 migration-overlay routes
+// (academy compatibility, glossary, SOPs, plant health and expansion routes)
+// must not be rewritten here; their backing/publication paths are governed separately.
 const routes = [
   { slug: 'library', title: 'Teaching Healthy Cultivation Education Library' },
   { slug: 'start-here', title: 'Start Here — Teaching Healthy Cultivation' },
   { slug: 'beginner-guides', title: 'Beginner Grow Guides — Teaching Healthy Cultivation' },
-  { slug: 'academy', title: 'THC Academy' },
   { slug: 'encyclopedia', title: 'THC Plant Science Encyclopedia' },
-  { slug: 'sops', title: 'SOPs & Measurement — Teaching Healthy Cultivation' },
-  { slug: 'glossary', title: 'Cultivation Glossary — Teaching Healthy Cultivation' },
   { slug: 'records', title: 'Grow Records & Printables — Teaching Healthy Cultivation' },
   { slug: 'search', title: 'Search THC Education — Teaching Healthy Cultivation' },
   { slug: 'setup', title: 'Set Up Before You Grow' },
   { slug: 'root-zone', title: 'Root Zone, Water, and Nutrition' },
   { slug: 'environment', title: 'Light, Climate, and Canopy Environment' },
-  { slug: 'plant-health', title: 'Plant Health, Scouting, Disease, Pests, and IPM' },
   { slug: 'propagation', title: 'Genetics, Crop Planning, Mother Stock, Cloning, and Propagation' },
 ];
 

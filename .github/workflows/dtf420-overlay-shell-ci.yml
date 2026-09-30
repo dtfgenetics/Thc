@@ -15,6 +15,9 @@ on:
       - 'data/game-location-registry.json'
       - 'data/game-registry-v2.json'
       - 'scripts/validate-dtf420-overlay-game-eligibility.mjs'
+      - 'scripts/validate-learning-route-writer-boundaries.mjs'
+      - 'scripts/publish-wordpress-learning-center-pages.mjs'
+      - 'scripts/publish-wordpress-learning-center-expansion-v1.mjs'
       - '.github/workflows/dtf420-overlay-shell-ci.yml'
   push:
     branches: [main]
@@ -51,6 +54,7 @@ jobs:
           set -euo pipefail
           python -m py_compile scripts/stage-dtf420-static-overlay.py
           node scripts/validate-dtf420-overlay-game-eligibility.mjs
+          node scripts/validate-learning-route-writer-boundaries.mjs
           node --check scripts/apply-sitewide-header.mjs
           node --check scripts/lib/sitewide-header-template-v6.mjs
           test -s site/wordpress/assets/responsive-layout-v1.css

@@ -8,7 +8,6 @@
     "learn/cultivation-science",
     "learn/glossary",
     "learn/plant-health",
-    "learn/search",
     "learn/sops",
     "learn/sources",
     "learn/symptoms",
@@ -41,7 +40,8 @@
     "/shop/",
     "/thc-grow-doc/",
     "/tools/",
-    "/yellow-leaves/"
+    "/yellow-leaves/",
+    "/learn/search/"
   ],
   "requiredRoutes": [
     "learn/academy/index.html",
@@ -77,5 +77,8 @@
       "reason": "Game registry marks this route development-unmapped / releasable=false with no locked production owner or runtime path.",
       "releaseCondition": "Set explicit production owner, integration mode, runtime path, and releasable=true in canonical game registries before restoring to production overlay."
     }
-  ]
+  ],
+  "routeOwnershipNotes": {
+    "learn/search": "WordPress/Thc-owned search surface using DTF Learning Search MU-plugin and source-controlled indexes; must not be shadowed by Dtf420 overlay."
+  }
 }
