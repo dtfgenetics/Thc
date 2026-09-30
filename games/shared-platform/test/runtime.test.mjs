@@ -370,6 +370,13 @@ class FakeAudioContext {
   assert.equal(machine.previousStateName(), 'run');
   assert.equal(machine.setState('missing'), false);
   assert.equal(events.length >= 3, true);
+
+  machine.addState('broken', {
+    onEnter() { throw new Error('broken-enter'); },
+  });
+  assert.throws(() => machine.setState('broken'), /broken-enter/);
+  assert.equal(machine.setState('idle'), true, 'callback failures must not leave the machine permanently changing');
+  assert.equal(machine.isCurrentState('idle'), true);
 }
 
 
