@@ -8,9 +8,11 @@ const registry = JSON.parse(fs.readFileSync(registryPath, "utf8"));
 const projectRegistryPath = path.join(root, "data", "project-registry.json");
 const publicAppsPath = path.join(root, "site", "deployment", "public-apps.json");
 const retirementManifestPath = path.join(root, "data", "repository-retirement-manifest.json");
+const fileRetirementManifestPath = path.join(root, "data", "file-retirement-manifest.json");
 const projectRegistry = JSON.parse(fs.readFileSync(projectRegistryPath, "utf8"));
 const publicApps = JSON.parse(fs.readFileSync(publicAppsPath, "utf8"));
 const retirementManifest = JSON.parse(fs.readFileSync(retirementManifestPath, "utf8"));
+const fileRetirementManifest = JSON.parse(fs.readFileSync(fileRetirementManifestPath, "utf8"));
 
 const allowedStatuses = new Set(["canonical","standalone_canonical","migration","legacy_review","archive_candidate","archive_ready"]);
 const repos = registry.repositories ?? [];
@@ -18,6 +20,9 @@ const errors = [];
 const seen = new Set();
 
 if (retirementManifest.schemaVersion !== 1) errors.push("repository retirement manifest schemaVersion must equal 1");
+if (fileRetirementManifest.schemaVersion !== 1) errors.push("file retirement manifest schemaVersion must equal 1");
+if (registry.retirement_controls?.repositoryManifest !== "data/repository-retirement-manifest.json") errors.push("repository registry must link the repository retirement manifest");
+if (registry.retirement_controls?.fileManifest !== "data/file-retirement-manifest.json") errors.push("repository registry must link the file retirement manifest");
 if (retirementManifest.authority !== "dtfgenetics/Thc") errors.push("repository retirement manifest authority must be dtfgenetics/Thc");
 
 const retirementRepos = Array.isArray(retirementManifest.repositories) ? retirementManifest.repositories : [];
