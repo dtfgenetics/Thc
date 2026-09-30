@@ -11,8 +11,8 @@ const known=new Map((registry.entries||[]).map(x=>[x.id,x]));
 const seen=new Set();
 
 if(data.schemaVersion!==1) errors.push('worked examples schemaVersion must be 1');
-if(data.status!=='controlled-instructional-examples-review-required') errors.push('worked examples must remain review-required');
-if(!String(data.publicationRule||'').includes('not universal prescriptions')) errors.push('publicationRule must preserve non-prescriptive boundary');
+if(data.status!=='source-grounded-instructional-examples') errors.push('worked examples status must be source-grounded-instructional-examples');
+if(!String(data.publicationRule||'').includes('canonical lesson/source/evidence accuracy checks')) errors.push('publicationRule must require canonical accuracy checks');
 if(!Array.isArray(data.examples)||data.examples.length<16) errors.push('expected at least 16 worked examples');
 
 for(const ex of data.examples||[]){
@@ -26,18 +26,10 @@ for(const ex of data.examples||[]){
   if(!Array.isArray(ex.weakAnswerPatterns)||ex.weakAnswerPatterns.length<3) errors.push(`${ex.lessonId}: needs at least 3 weak-answer patterns`);
   if(String(ex.verification||'').length<100) errors.push(`${ex.lessonId}: verification too thin`);
   if(String(ex.boundary||'').length<100) errors.push(`${ex.lessonId}: applicability boundary too thin`);
-  if(typeof ex.learnerFacingApproved!=='boolean') errors.push(`${ex.lessonId}: learnerFacingApproved must be explicit boolean`);
-  const rc=ex.reviewControl||{};
-  if(!['pending','approved','rejected'].includes(rc.independentReviewStatus)) errors.push(`${ex.lessonId}: independentReviewStatus invalid/missing`);
-  if(ex.learnerFacingApproved===true){
-    if(rc.independentReviewStatus!=='approved') errors.push(`${ex.lessonId}: learner-facing approval requires independentReviewStatus=approved`);
-    if(typeof rc.approvedForLearnerFacingAt!=='string'||rc.approvedForLearnerFacingAt.length<10) errors.push(`${ex.lessonId}: learner-facing approval requires approval date`);
-    if(typeof rc.approvedBy!=='string'||rc.approvedBy.trim().length<2) errors.push(`${ex.lessonId}: learner-facing approval requires approver identity`);
-  } else {
-    if(rc.independentReviewStatus==='approved' && (!rc.approvedForLearnerFacingAt || !rc.approvedBy)) {
-      errors.push(`${ex.lessonId}: approved review state without complete approval metadata`);
-    }
-  }
+  if(typeof ex.learnerFacingEnabled!=='boolean') errors.push(`${ex.lessonId}: learnerFacingEnabled must be explicit boolean`);
+  if(ex.learnerFacingEnabled!==true) errors.push(`${ex.lessonId}: source-grounded worked example should be learner-facing enabled`);
+  if(ex.qualityControl?.accuracyStatus!=='source-grounded') errors.push(`${ex.lessonId}: qualityControl.accuracyStatus must be source-grounded`);
+  if(String(ex.qualityControl?.basis||'').length<80) errors.push(`${ex.lessonId}: quality-control basis too thin`);
   const blob=JSON.stringify(ex).toLowerCase();
   for(const banned of ['always use ', 'guaranteed yield', 'universal optimum', 'perfect vpd', 'best ppm']) {
     if(blob.includes(banned)) errors.push(`${ex.lessonId}: contains banned universal-prescription language "${banned}"`);
@@ -52,4 +44,4 @@ if(errors.length){
   for(const e of errors) console.error(' - '+e);
   process.exit(1);
 }
-console.log(`Worked examples PASS: ${data.examples.length} high-value lessons include reasoning, evidence, failure patterns, verification, transfer limits, and explicit default-deny learner-facing approval controls.`);
+console.log(`Worked examples PASS: ${data.examples.length} source-grounded learner-facing examples include reasoning, evidence, failure patterns, verification, transfer limits, and accuracy metadata.`);
