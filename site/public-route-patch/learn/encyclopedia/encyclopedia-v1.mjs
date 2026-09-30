@@ -61,7 +61,8 @@ function render(){
  statusText.textContent=rows.length+' entr'+(rows.length===1?'y':'ies')+(parts.length?' · '+parts.join(' · '):'');
  library.innerHTML=rows.length?rows.map(item=>{
   const published=item.status==='published';
-  return '<article class="lesson"><div class="lesson-top"><span class="id">'+esc(item.id)+'</span><span class="badge '+(published?'':'review')+'">'+(published?'Published':'In review')+'</span></div><h3>'+esc(item.title)+'</h3><p>'+esc(item.topic)+'</p><div class="meta"><span>'+esc(item.primaryFormat)+'</span>'+(item.teachingVisual?'<span>'+esc(item.teachingVisual)+'</span>':'')+'</div>'+(published?'<a href="'+esc(item.route)+'">Open lesson →</a>':'<span class="disabled">Catalogued · full lesson not yet released</span>')+'</article>'
+  const summary=item.objective||item.topic;
+  return '<article class="lesson"><div class="lesson-top"><span class="id">'+esc(item.id)+'</span><span class="badge '+(published?'':'review')+'">'+(published?'Published':'In review')+'</span></div><h3>'+esc(item.title)+'</h3><p>'+esc(summary)+'</p><div class="meta"><span>'+esc(item.topic)+'</span><span>'+esc(item.primaryFormat)+'</span>'+(item.teachingVisual?'<span>'+esc(item.teachingVisual)+'</span>':'')+'</div>'+(published?'<a href="'+esc(item.route)+'">Open lesson →</a>':'<span class="disabled">Catalogued · full lesson not yet released</span>')+'</article>'
  }).join(''):'<div class="empty"><strong>No matching encyclopedia entry.</strong><p>Try a broader scientific term, clear a filter, or browse one of the 21 subject areas.</p></div>';
 }
 document.querySelector('[data-status-filters]').addEventListener('click',e=>{
@@ -75,7 +76,27 @@ fetch('./encyclopedia-index.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw ne
  payload=data;
  totalStat.textContent=String(payload.lessons.length);
  publishedStat.textContent=String(payload.lessons.filter(x=>x.status==='published').length);
- fuse=new Fuse(payload.lessons,{includeScore:true,ignoreLocation:true,threshold:.3,minMatchCharLength:2,keys:[{name:'title',weight:.5},{name:'topic',weight:.2},{name:'keywords',weight:.15},{name:'primaryFormat',weight:.08},{name:'id',weight:.07}]});
+ fuse=new Fuse(payload.lessons,{
+ includeScore:true,
+ shouldSort:true,
+ ignoreLocation:true,
+ threshold:.3,
+ minMatchCharLength:2,
+ keys:[
+  {name:'title',weight:.26},
+  {name:'id',weight:.12},
+  {name:'terms',weight:.12},
+  {name:'synonyms',weight:.09},
+  {name:'objective',weight:.09},
+  {name:'topic',weight:.07},
+  {name:'measurements',weight:.06},
+  {name:'misconceptions',weight:.05},
+  {name:'coreScience',weight:.05},
+  {name:'cultivation',weight:.04},
+  {name:'tools',weight:.025},
+  {name:'keywords',weight:.025}
+ ]
+});
  renderTopics();renderFormats();
  if(requested){q.value=requested}
  else if(requestedQuery){q.value=requestedQuery}
