@@ -102,6 +102,16 @@ def main() -> None:
     if contract.get("canonicalOrigin") != "https://dtfseeds.com":
         raise SystemExit("production overlay contract has the wrong canonical origin")
 
+    legacy_compat = contract.get("legacyCompatibilityRoutes", [])
+    academy_compat = next((item for item in legacy_compat if item.get("prefix") == "learn/academy"), None)
+    if "learn/academy" in contract.get("routePrefixes", []):
+        if not academy_compat:
+            raise SystemExit("learn/academy remains staged but is not classified as a legacy compatibility route")
+        if academy_compat.get("canonicalReplacement") != "/courses/":
+            raise SystemExit("learn/academy canonical replacement must be /courses/")
+        if academy_compat.get("structuredLearningReplacement") != "/learn/learning-hub/":
+            raise SystemExit("learn/academy structured-learning replacement must be /learn/learning-hub/")
+
     forbidden = {"", "learn", "blog", "journal", "community", "games", "seeds", "tools", "shop", "about", "contact", "gallery", "growlens", "thc-grow-doc", "yellow-leaves", "cart", "checkout", "my-account"}
     for prefix in contract.get("routePrefixes", []):
         normalized = str(prefix).strip("/")
