@@ -53,6 +53,8 @@ Read before editing:
 - `scripts/build-encyclopedia-completion-scorecard.mjs`
 - `scripts/build-encyclopedia-discovery-index.mjs`
 - `scripts/publish-wordpress-encyclopedia-canonical-batch.mjs`
+- `site/wordpress/mu-plugins/dtf-learning-search.php`
+- `scripts/build-wordpress-learning-search-runtime.mjs`
 - `scripts/validate-encyclopedia-content-control.mjs`
 
 Also read `.agents/skills/dtf-education-production/SKILL.md`, `.agents/skills/dtf-content-preservation/SKILL.md`, and the publishing skill when live state is in scope.
@@ -125,6 +127,20 @@ Expose filterable facets for topic, format, status, and other stable metadata.
 Maintain the controlled search-language map for common grower terms, abbreviations, spelling variants, and symptom descriptions. These aliases are retrieval aids only: never convert a slang phrase into a diagnosis or scientific claim. Search state should remain deep-linkable through URL query/filter parameters. Maintain a real-query benchmark and fail CI when representative grower/science queries stop reaching their expected subject areas. Search results should explain why they matched by surfacing the matching field/snippet rather than presenting ranking as a black box.
 
 Search architecture is provider-independent. The canonical search document is the contract; Fuse, MiniSearch, Pagefind, Algolia DocSearch, Typesense, or another frontend may consume it later without changing lesson identity.
+
+### WordPress search runtime contract
+
+Do not place executable search modules or large search payloads inside WordPress post/page content. WordPress sanitization can strip scripts even when the REST page write succeeds.
+
+The production model is:
+- semantic page HTML remains normal WordPress content;
+- `dtf-learning-search.php` is a repository-managed MU-plugin;
+- the MU-plugin injects the search bootstrap from `wp_footer` only on the search and encyclopedia routes;
+- generated runtime assets live under `wp-content/mu-plugins/dtf-learning-search/`;
+- authenticated publisher requests update the two indexes through `/wp-json/dtf-learning/v1/index/*`;
+- public search reads those indexes through read-only REST endpoints;
+- review-only catalog entries must not expose unreleased lesson body fields in public indexes;
+- runtime deployment, index publication, and visitor verification are separate release gates.
 
 ### 4. Render
 
@@ -244,6 +260,7 @@ npm run build:encyclopedia-discovery
 npm run build:education-search
 npm run validate:education-search
 npm run verify:encyclopedia-search-benchmark
+npm run verify:wordpress-learning-search
 npm run verify:encyclopedia-content-control
 npm run verify:encyclopedia-content-strict
 npm run verify:encyclopedia-assessments
