@@ -67,7 +67,8 @@ for(const required of [
   'docs/archive/releases/sitewide-visual-repair-v2-2026-09-17.txt',
   'docs/archive/releases/dtf420-shared-shell-v1-2026-09-12.txt',
   'docs/archive/releases/dtf420-reference-progressive-disclosure-2026-09-15.txt',
-  'docs/archive/releases/seed-ascent-renderer-release-2026-09-08.txt'
+  'docs/archive/releases/seed-ascent-renderer-release-2026-09-08.txt',
+  'docs/operations/PLANT_ATLAS_MODEL_CONTRACT.md'
 ]){
   if(!existsFile(required)) errors.push(`expected moved documentation missing: ${required}`);
 }
@@ -76,7 +77,8 @@ for(const retired of [
   'scripts/wordpress-suite-v2/sitewide-visual-repair-v2-release.txt',
   'site/public-route-patch/release-triggers/dtf420-shared-shell-v1-2026-09-12.txt',
   'site/public-route-patch/release-triggers/dtf420-reference-progressive-disclosure-2026-09-15.txt',
-  'site/public-route-patch/release-triggers/seed-ascent-renderer-release-2026-09-08.txt'
+  'site/public-route-patch/release-triggers/seed-ascent-renderer-release-2026-09-08.txt',
+  'site/public-route-patch/atlas/models/README.md'
 ]){
   if(existsFile(retired)) errors.push(`retired misplaced artifact returned: ${retired}`);
 }
