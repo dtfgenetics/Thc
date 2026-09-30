@@ -43,12 +43,12 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       BACKUP_ROOT: /tmp/dtf-learning-center
-      HOSTINGER_SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
-      HOSTINGER_SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
-      HOSTINGER_SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
-      HOSTINGER_SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS }}
-      HOSTINGER_SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
-      HOSTINGER_PUBLIC_ROOT: ${{ secrets.HOSTINGER_PUBLIC_ROOT }}
+      HOSTINGER_SSH_HOST: ${{ secrets.HOSTINGER_HOST || secrets.HOSTINGER_SSH_HOST || secrets.SSH_HOST || secrets.SFTP_HOST }}
+      HOSTINGER_SSH_USER: ${{ secrets.HOSTINGER_USER || secrets.HOSTINGER_SSH_USER || secrets.SSH_USER || secrets.SFTP_USER }}
+      HOSTINGER_SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY || secrets.HOSTINGER_SSH_KEY || secrets.SSH_PRIVATE_KEY || secrets.DEPLOY_KEY }}
+      HOSTINGER_SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS || secrets.HOSTINGER_SSH_KNOWN_HOSTS || secrets.SSH_KNOWN_HOSTS }}
+      HOSTINGER_SSH_PORT: ${{ secrets.HOSTINGER_PORT || secrets.HOSTINGER_SSH_PORT || secrets.SSH_PORT || secrets.SFTP_PORT }}
+      HOSTINGER_PUBLIC_ROOT: ${{ secrets.HOSTINGER_PUBLIC_ROOT || vars.HOSTINGER_WORDPRESS_PATH || vars.WORDPRESS_PATH || vars.WP_PATH }}
 
     steps:
       - name: Checkout canonical site repo
