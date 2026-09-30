@@ -79,12 +79,23 @@ if(existsFile('docs/archive/retention-manifest.json')){
     const retention=JSON.parse(fs.readFileSync(path.join(root,'docs/archive/retention-manifest.json'),'utf8'));
     if(retention.schemaVersion!==1) errors.push('retention manifest: schemaVersion must equal 1');
     if(!Array.isArray(retention.records)) errors.push('retention manifest: records must be an array');
+    const retirementIds=new Set();
+    const retiredPaths=new Set();
     for(const [index,record] of (retention.records||[]).entries()){
       const location=`retention manifest records[${index}]`;
-      if(!record?.id) errors.push(`${location}: id is required`);
+      if(typeof record?.id!=='string'||!record.id.trim()) errors.push(`${location}: id is required`);
+      else if(retirementIds.has(record.id)) errors.push(`${location}: duplicate id ${record.id}`);
+      else retirementIds.add(record.id);
+      if(record?.disposition!=='removed-from-active-tree') errors.push(`${location}: disposition must equal removed-from-active-tree`);
+      if(typeof record?.reason!=='string'||record.reason.trim().length<20) errors.push(`${location}: reason must explain the retirement`);
+      if(!Array.isArray(record?.canonicalOwners)||record.canonicalOwners.length===0) errors.push(`${location}: canonicalOwners are required`);
       if(!Array.isArray(record?.retiredPaths)||record.retiredPaths.length===0) errors.push(`${location}: retiredPaths are required`);
       if(record?.historyRetention!=='git-history') errors.push(`${location}: historyRetention must equal git-history`);
+      if(record?.reintroductionAllowed!==false) errors.push(`${location}: reintroductionAllowed must be false`);
       for(const retiredPath of record?.retiredPaths||[]){
+        if(typeof retiredPath!=='string'||!retiredPath.trim()){errors.push(`${location}: retired path must be non-empty`);continue}
+        if(retiredPaths.has(retiredPath)) errors.push(`${location}: retired path is registered more than once: ${retiredPath}`);
+        retiredPaths.add(retiredPath);
         if(existsFile(retiredPath)||existsDir(retiredPath)) errors.push(`${location}: retired path returned to active tree: ${retiredPath}`);
       }
     }
