@@ -1,0 +1,77 @@
+name: THC Encyclopedia Production CI
+
+on:
+  pull_request:
+    paths:
+      - 'content/encyclopedia/**'
+      - 'configuration/encyclopedia-topics.json'
+      - 'data/encyclopedia-completion-scorecard.json'
+      - 'site/public-route-patch/learn/encyclopedia/**'
+      - 'site/public-route-patch/learn/search/**'
+      - 'site/wordpress/education/encyclopedia/**'
+      - 'scripts/*encyclopedia*.mjs'
+      - 'scripts/build-thc-education-search-index.mjs'
+      - 'scripts/validate-thc-education-search.mjs'
+      - '.agents/skills/thc-encyclopedia-production/**'
+      - 'package.json'
+  push:
+    branches: [main]
+    paths:
+      - 'content/encyclopedia/**'
+      - 'configuration/encyclopedia-topics.json'
+      - 'site/public-route-patch/learn/encyclopedia/**'
+      - 'scripts/*encyclopedia*.mjs'
+      - '.agents/skills/thc-encyclopedia-production/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  encyclopedia:
+    name: Validate 420+ encyclopedia production system
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build completion scorecard
+        run: npm run build:encyclopedia-scorecard
+      - name: Validate completion scorecard
+        run: node scripts/validate-encyclopedia-completion-scorecard.mjs
+      - name: Build rich discovery index
+        run: npm run build:encyclopedia-discovery
+      - name: Build global education search
+        run: node scripts/build-thc-education-search-index.mjs
+      - name: Validate encyclopedia and education search
+        run: node scripts/validate-thc-education-search.mjs
+      - name: Validate lesson renderer contract
+        run: npm run verify:encyclopedia-renderer
+      - name: Validate encyclopedia production skill
+        run: npm run verify:encyclopedia-skill
+      - name: Validate controlled lesson structure
+        run: npm run verify:encyclopedia-content-control
+      - name: Validate assessments
+        run: npm run verify:encyclopedia-assessments
+      - name: Upload generated encyclopedia artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thc-encyclopedia-generated
+          path: |
+            data/encyclopedia-completion-scorecard.json
+            site/public-route-patch/learn/encyclopedia/encyclopedia-index.json
+            site/public-route-patch/learn/search/search-index.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Report generated artifact changes
+        run: |
+          echo "Generated artifacts are build outputs and are uploaded above."
+          git diff --stat -- \
+            data/encyclopedia-completion-scorecard.json \
+            site/public-route-patch/learn/encyclopedia/encyclopedia-index.json \
+            site/public-route-patch/learn/search/search-index.json || true

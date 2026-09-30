@@ -32,9 +32,13 @@ if(!errors.length){
  if(!publisher.includes("slug: 'search'")) errors.push('WordPress learning publisher no longer includes search route');
  if(!encyclopediaPage.includes('data-q')||!encyclopediaPage.includes('data-topics')||!encyclopediaPage.includes('encyclopedia-v1.mjs')) errors.push('encyclopedia page missing searchable library UI');
  if(!encyclopediaRuntime.includes("Fuse from '/assets/vendor/fuse-7.1.0.min.mjs'")||!encyclopediaRuntime.includes('activePart')) errors.push('encyclopedia runtime missing fuzzy search/topic filtering');
- if(!Array.isArray(encyclopediaIndex.lessons)||encyclopediaIndex.lessons.length!==420) errors.push('encyclopedia discovery index must contain exactly 420 controlled entries');
- if(!Array.isArray(encyclopediaIndex.topics)||encyclopediaIndex.topics.length!==21) errors.push('encyclopedia discovery index must contain exactly 21 topics');
- if(encyclopediaIndex.lessons?.filter(x=>x.status==='published').length!==335) errors.push('encyclopedia published discovery count must match current authorized cutoff of 335');
+ if(!Array.isArray(encyclopediaIndex.lessons)||encyclopediaIndex.lessons.length<420) errors.push('encyclopedia discovery index must contain at least the 420 controlled entries');
+ if(!Array.isArray(encyclopediaIndex.topics)||encyclopediaIndex.topics.length<21) errors.push('encyclopedia discovery index must contain at least the 21 controlled base topics');
+ if(Number(encyclopediaIndex.schemaVersion)<2) errors.push('encyclopedia discovery index must use rich search schema v2+');
+ if(!encyclopediaIndex.facets?.topic||!encyclopediaIndex.facets?.format||!encyclopediaIndex.facets?.status) errors.push('encyclopedia discovery index missing topic/format/status facets');
+ const sample=encyclopediaIndex.lessons?.find(x=>x.status==='published');
+ for(const field of ['objective','terms','coreScience','measurements','misconceptions','tools']) if(!sample||!(field in sample)) errors.push('encyclopedia discovery document missing rich field '+field);
+ if(encyclopediaIndex.lessons?.filter(x=>x.status==='published').length!==Number(encyclopediaIndex.publicationCutoff||0)) errors.push('encyclopedia published discovery count must match the generated publication cutoff');
  const requiredLearn=['cultivation-science','symptoms'];
  for(const key of requiredLearn) if(!learnData.sections?.[key]) errors.push('learning section data missing '+key);
  for(const key of requiredLearn){const file=`site/public-route-patch/learn/${key}/index.html`;if(!fs.existsSync(file)) errors.push('route-patch learning hub missing file: '+file)}
