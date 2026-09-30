@@ -33,7 +33,7 @@ walk(encRoot);
 
 const termsOf=l=>arr(l.terms).length?arr(l.terms):arr(l.termsToKnow);
 const measuresOf=l=>arr(l.measureAndRecord).length?arr(l.measureAndRecord):arr(l.measurements);
-const checksOf=l=>arr(l.knowledgeCheck).length?arr(l.knowledgeCheck):arr(l.courseLayer?.knowledgeCheck);
+const checksOf=l=>arr(l.knowledgeCheck).length?arr(l.knowledgeCheck):arr(l.assessment?.knowledgeCheck);
 const sourcesOf=l=>arr(l.sourceNotes).length?arr(l.sourceNotes):arr(l.evidence);
 const visualsOf=l=>arr(l.visuals);
 const crossOf=l=>{
