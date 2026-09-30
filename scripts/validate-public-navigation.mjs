@@ -5,6 +5,7 @@ const root = process.cwd();
 const nav = JSON.parse(fs.readFileSync(path.join(root, 'data/public-navigation.json'), 'utf8'));
 const shell = JSON.parse(fs.readFileSync(path.join(root, 'data/site-navigation-v6.json'), 'utf8'));
 const apps = JSON.parse(fs.readFileSync(path.join(root, 'site/deployment/public-apps.json'), 'utf8'));
+const overlay = JSON.parse(fs.readFileSync(path.join(root, 'site/deployment/dtf420-static-overlay.json'), 'utf8'));
 const hub = fs.readFileSync(path.join(root, 'site/public-route-patch/games/index.html'), 'utf8');
 const headerV5 = fs.readFileSync(path.join(root, 'scripts/lib/sitewide-header-template.mjs'), 'utf8');
 const headerV6 = fs.readFileSync(path.join(root, 'scripts/lib/sitewide-header-template-v6.mjs'), 'utf8');
@@ -104,6 +105,10 @@ assert(nav.learn?.route === '/learn/', 'Learn registry root must remain /learn/'
 assert(nav.courses?.route === '/courses/', 'Courses registry root must remain /courses/');
 assert(nav.diagnostic?.route === '/tools/', 'Tools registry data must remain owned by /tools/');
 assert(!(nav.learn?.sections || []).some((item) => item.route === '/learn/academy/'), 'Legacy /learn/academy/ must not be promoted as the public Courses entry point');
+const academyCompatibility = (overlay.legacyCompatibilityRoutes || []).find((item) => item.prefix === 'learn/academy');
+assert(Boolean(academyCompatibility), 'Dtf420 overlay must classify /learn/academy/ as an explicit legacy compatibility route while it remains staged');
+assert(academyCompatibility?.canonicalReplacement === '/courses/', 'Legacy /learn/academy/ must point to /courses/ as the canonical replacement');
+assert(academyCompatibility?.structuredLearningReplacement === '/learn/learning-hub/', 'Legacy /learn/academy/ must point to Learning Hub for structured course content');
 assert((nav.courses?.sections || []).some((item) => item.route === '/learn/learning-hub/'), 'Courses must expose the Learning Hub as its structured course tree');
 assert((nav.diagnostic?.tools || []).some((item) => item.route === '/growlens/'), 'Tools registry must include GrowLens');
 assert((nav.diagnostic?.tools || []).some((item) => item.route === '/thc-grow-doc/'), 'Tools registry must include THC Grow Doc');
