@@ -1,6 +1,6 @@
 # Legacy Asset Provenance Hold
 
-Date: 2026-09-28
+Date: 2026-09-30
 Legacy repository: `dtfgenetics/dtf-thc-hub`
 Canonical integration repository: `dtfgenetics/Thc`
 
@@ -17,18 +17,22 @@ That does **not** mean every file is still production-worthy. Some are older exp
 Legacy files:
 - `assets/games/high-land/high-land-board.jpg`
 - `assets/games/high-land/hit-cards/hit-cards-01.png` through `hit-cards-05.png`
-- duplicate copies under `packages/shared-ui/src/high-land/assets/`
+- former duplicate copies under `packages/shared-ui/src/high-land/assets/` (removed after SHA parity verification in `dtfgenetics/dtf-thc-hub` PR #55)
 
 Observed status:
 - canonical High Land now uses `apps/high-land-web/public/assets/images/board/high-land-board.png`;
 - canonical HIT cards are individual master assets rather than the older sheet-based runtime;
-- canonical deck documentation currently reports 31 PNG masters and temporary SVG art debt for cards 032–039.
+- canonical `apps/high-land-web/src/game/data/actionCards.ts` explicitly preserves `sheetArt` provenance for cards `001`–`031`, including legacy sheet number, column, and row for each mapped individual master;
+- cards `032`–`039` intentionally have no `sheetArt` mapping and therefore are not derivatives that can be recovered from the retained legacy sheets;
+- canonical deck documentation currently reports 31 PNG masters and temporary SVG art debt for cards 032–039;
+- the legacy package-level board and five HIT-card sheet binaries were byte-identical to `assets/games/high-land/` and were removed from the active legacy package tree in `dtfgenetics/dtf-thc-hub` PR #55; one provenance copy remains under `assets/games/high-land/`.
 
 Decision:
 - do not restore the legacy sheet-based game runtime;
-- retain the sheet images as provenance/source material until the canonical High Land asset inventory records whether each live card was derived from these sheets;
+- retain one copy of the five sheet images as provenance/source material for cards `001`–`031`; the canonical mapping is already encoded in `actionCards.ts`;
 - do not claim the legacy sheets solve the current 032–039 art debt without an explicit visual/content match;
-- after provenance mapping, one retained archival copy is enough; duplicate copies inside the legacy repo do not need separate preservation.
+- one retained archival copy is enough; duplicate package-level copies have now been removed;
+- the sheet-to-current-master mapping requirement is complete for cards `001`–`031`; cards `032`–`039` remain independent canonical art debt and must not be treated as recoverable from the old sheets.
 
 ### Brand and UI SVGs
 
@@ -38,10 +42,10 @@ Legacy unique files:
 - `assets/ui/favicon-dtf420.svg`
 
 Decision:
-- treat as legacy brand candidates, not automatically approved current brand assets;
-- compare against the current site/header/favicon/brand system;
-- if still used or approved, move one canonical copy to the owning brand/UI asset location and record provenance;
-- otherwise mark superseded before archive.
+- these three SVGs are explicitly **superseded legacy assets** and do not need migration into a canonical runtime;
+- current production branding/favicons use newer systems: `dtfgenetics/Thc` generates the THC pot-leaf favicon through `scripts/generate-dtf-thc-favicon.mjs`, while the transitional `dtfgenetics/Dtf420` application renders its current favicon through `app/favicon/route.tsx`;
+- no active canonical code path found during this review references the legacy SVG filenames;
+- preserve their history in `dtf-thc-hub` Git history until that repository is archived; they are not blockers to archive readiness.
 
 ## Empty placeholders
 
@@ -51,7 +55,7 @@ Legacy `.gitkeep` files and empty asset folders have no preservation requirement
 
 The asset lane is complete only when:
 1. every non-placeholder legacy binary is mapped to a canonical asset, provenance archive, or explicit superseded record;
-2. the High Land sheet-to-master relationship is documented;
+2. ~~the High Land sheet-to-master relationship is documented~~ — complete: `actionCards.ts` maps cards `001`–`031` to sheet coordinates, while `032`–`039` are explicitly non-sheet temporary art;
 3. current High Land cards 032–039 have approved final art or remain separately tracked as canonical art debt;
-4. brand/UI SVGs are either adopted canonically or explicitly retired;
+4. ~~brand/UI SVGs are either adopted canonically or explicitly retired~~ — complete: explicitly superseded on 2026-09-30;
 5. no production build references the legacy repository path directly.
