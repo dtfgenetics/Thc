@@ -52,8 +52,11 @@ for(const asset of [
   'vendor/papaparse-5.7.0.min.js'
 ]) ok(fs.existsSync(path.join(root,'site/public-route-patch/assets',asset)),`shared Tools mirror asset missing: ${asset}`);
 
-ok(fs.existsSync(sourceRevisionPath),'canonical Tools source revision pin is missing');
 let sourceRevision={};
+if(!fs.existsSync(sourceRevisionPath)){
+  if(canonicalRootArg) ok(false,'canonical Tools source revision pin is missing during canonical parity validation');
+  else console.warn('Canonical Tools mirror is not source-pinned yet; the next canonical sync will create release-source-revisions/tools.txt.');
+}
 if(fs.existsSync(sourceRevisionPath)){
   sourceRevision=Object.fromEntries(
     fs.readFileSync(sourceRevisionPath,'utf8').trim().split(/\r?\n/)
