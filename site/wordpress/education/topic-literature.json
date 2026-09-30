@@ -661,7 +661,7 @@
             "environment",
             "seed lot/genetic identity"
           ],
-          "successCheck": "The learner uses developmental criteria rather than date alone."
+          "successCheck": "The learner uses observable developmental criteria—root and shoot growth, stage, and environmental context—rather than calendar age alone to justify the next operation."
         }
       ]
     },
@@ -1564,7 +1564,7 @@
       "practiceScenarios": [
         {
           "title": "Yellow leaves after a recipe change",
-          "prompt": "Lower leaves yellow after a nutrient change. Determine whether the recipe is the primary cause.",
+          "prompt": "Lower leaves yellow after a nutrient-program change. Determine whether the recipe is the primary cause by comparing symptom distribution, root-zone chemistry, irrigation behavior, environment, and plant stage before changing inputs again.",
           "evidenceToCollect": [
             "symptom distribution",
             "root health",
@@ -1801,7 +1801,7 @@
         },
         {
           "title": "Control applied but counts do not fall",
-          "prompt": "A treatment was applied, yet target counts remain similar.",
+          "prompt": "A treatment was applied, yet target counts remain similar on follow-up scouting. Determine whether identification, timing, life stage, coverage, environment, or another factor explains the result before escalating control.",
           "evidenceToCollect": [
             "target identification",
             "life stage",
@@ -2003,7 +2003,7 @@
       "practiceScenarios": [
         {
           "title": "Dense canopy after aggressive topping",
-          "prompt": "Training produced many shoots but lower canopy light and airflow worsened.",
+          "prompt": "Training produced many new shoots, but lower-canopy light penetration and airflow worsened. Decide whether the intervention met its original canopy objective using measured distribution, density, recovery, and stage.",
           "evidenceToCollect": [
             "canopy dimensions",
             "PPFD by zone",
@@ -2015,7 +2015,7 @@
         },
         {
           "title": "One plant recovers slowly after bending",
-          "prompt": "A plant lags after structural training while neighbors recover quickly.",
+          "prompt": "One plant lags after structural bending while neighboring plants recover quickly. Determine whether injury severity, individual vigor, root-zone condition, environment, or genotype explains the different recovery response.",
           "evidenceToCollect": [
             "injury location",
             "plant identity",
@@ -2227,7 +2227,7 @@
       "practiceScenarios": [
         {
           "title": "Top flowers look ready before lower flowers",
-          "prompt": "Maturity observations differ strongly by canopy position.",
+          "prompt": "Maturity observations differ strongly between upper and lower canopy positions. Build a representative sampling decision that accounts for defined positions, tissue type, disease or weather risk, and the intended product goal.",
           "evidenceToCollect": [
             "defined sampling positions",
             "tissue type",
@@ -2248,7 +2248,7 @@
             "load geometry",
             "moisture or water activity where available"
           ],
-          "successCheck": "The learner distinguishes room setpoint from local product drying behavior."
+          "successCheck": "The learner distinguishes a stable room setpoint from local product drying behavior by comparing rack position, product temperature, airflow, mass loss, and moisture or water-activity evidence."
         }
       ]
     },
@@ -2450,7 +2450,7 @@
       "practiceScenarios": [
         {
           "title": "Two possible planting sites",
-          "prompt": "One site gets more sun but has poor drainage and wind exposure; another is slightly shaded but better protected.",
+          "prompt": "One planting site receives more sun but has poor drainage and wind exposure; another is slightly shaded but better protected. Compare the sites using light, drainage, wind, water access, frost risk, security, and pollen context.",
           "evidenceToCollect": [
             "sun/DLI estimate",
             "soil/drainage",
@@ -2693,7 +2693,7 @@
       "practiceScenarios": [
         {
           "title": "A/B nutrient trial",
-          "prompt": "You want to know whether a new nutrient program improves growth.",
+          "prompt": "You want to know whether a new nutrient program improves growth. Design a comparison that defines the outcome in advance and separates treatment effects from plant identity, environment, sampling, and measurement variation.",
           "evidenceToCollect": [
             "predefined outcome",
             "control treatment",
@@ -2950,5 +2950,6 @@
     ],
     "topicsExpanded": 13,
     "minimumSectionsPerTopic": 8
-  }
+  },
+  "updatedAt": "2026-09-30"
 }
