@@ -79,9 +79,12 @@ for(const button of filters){
 }
 input.addEventListener('input',()=>{syncUrl();render()});
 
+const loadPayload=(embedded,url,label)=>embedded
+  ? Promise.resolve(embedded)
+  : fetch(url,{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(label+' failed to load');return r.json()});
 Promise.all([
-  fetch('./search-index.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('Search index failed to load');return r.json()}),
-  fetch('../encyclopedia/encyclopedia-index.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('Encyclopedia index failed to load');return r.json()})
+  loadPayload(window.__THC_SEARCH_INDEX__,'./search-index.json','Search index'),
+  loadPayload(window.__THC_ENCYCLOPEDIA_INDEX__,'../encyclopedia/encyclopedia-index.json','Encyclopedia index')
 ]).then(([payload,encyclopedia])=>{
     documents=Array.isArray(payload?.documents)?payload.documents.slice():[];
     const seen=new Set(documents.map(x=>String(x.id)));

@@ -29,10 +29,13 @@ if(!errors.length){
  if(!runtime.includes("../encyclopedia/encyclopedia-index.json")) errors.push('global education search must merge the complete encyclopedia index');
  if(!runtime.includes("name:'aliases'")||!runtime.includes('history.replaceState')) errors.push('global search missing alias/deep-link contract');
  if(!Array.isArray(index.documents)||index.documents.length<20) errors.push('search index must contain at least 20 canonical resources');
+ const globalEncyclopediaSample=index.documents?.find(x=>x.type==='Encyclopedia');
+ for(const field of ['aliases','terms','objective','measurements','misconceptions','coreScience','cultivation','tools']) if(!globalEncyclopediaSample||!(field in globalEncyclopediaSample)) errors.push('global education search encyclopedia document missing rich field '+field);
  for(const required of ['/learn/','/learn/encyclopedia/','/atlas/','/terpene-atlas/','/growlens/','/thc-grow-doc/','/vpd-chart/','/ppfd-chart/']){
    if(!index.documents.some(x=>x.route===required)) errors.push(`search index missing ${required}`);
  }
  if(!publisher.includes("slug: 'search'")) errors.push('WordPress learning publisher no longer includes search route');
+ if(!publisher.includes('embeddedSearchApp')||!publisher.includes('data-thc-search-app="embedded-v1"')||!publisher.includes('__THC_SEARCH_INDEX__')||!publisher.includes('__THC_ENCYCLOPEDIA_INDEX__')) errors.push('WordPress learning publisher missing self-contained search app contract');
  if(!encyclopediaPage.includes('data-q')||!encyclopediaPage.includes('data-topics')||!encyclopediaPage.includes('encyclopedia-v1.mjs')) errors.push('encyclopedia page missing searchable library UI');
  if(!encyclopediaRuntime.includes("Fuse from '/assets/vendor/fuse-7.1.0.min.mjs'")||!encyclopediaRuntime.includes('activePart')) errors.push('encyclopedia runtime missing fuzzy search/topic filtering');
  if(!encyclopediaRuntime.includes("name:'aliases'")||!encyclopediaRuntime.includes('history.replaceState')) errors.push('encyclopedia runtime missing alias/deep-link contract');

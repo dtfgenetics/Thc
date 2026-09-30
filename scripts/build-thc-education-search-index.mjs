@@ -14,7 +14,16 @@ const add=(row)=>{
     title:clean(row.title),
     route:String(row.route),
     summary:clean(row.summary||''),
-    keywords:[...new Set((row.keywords||[]).map(clean).filter(Boolean))].slice(0,24)
+    keywords:[...new Set((row.keywords||[]).map(clean).filter(Boolean))].slice(0,48),
+    terms:(row.terms||[]).map(clean).filter(Boolean),
+    synonyms:(row.synonyms||[]).map(clean).filter(Boolean),
+    aliases:(row.aliases||[]).map(clean).filter(Boolean),
+    objective:clean(row.objective||''),
+    measurements:(row.measurements||[]).map(clean).filter(Boolean),
+    misconceptions:(row.misconceptions||[]).map(clean).filter(Boolean),
+    coreScience:(row.coreScience||[]).map(clean).filter(Boolean),
+    cultivation:(row.cultivation||[]).map(clean).filter(Boolean),
+    tools:(row.tools||[]).map(clean).filter(Boolean)
   });
 };
 
@@ -52,9 +61,19 @@ for(const item of encyclopedia?.lessons||[]){
       ...(item.synonyms||[]),
       ...(item.measurements||[]),
       ...(item.misconceptions||[]),
+      ...(item.aliases||[]),
       ...(item.tools||[]),
       item.topic,item.primaryFormat,item.status
-    ].map(clean).filter(Boolean)
+    ].map(clean).filter(Boolean),
+    terms:item.terms||[],
+    synonyms:item.synonyms||[],
+    aliases:item.aliases||[],
+    objective:item.objective||'',
+    measurements:item.measurements||[],
+    misconceptions:item.misconceptions||[],
+    coreScience:item.coreScience||[],
+    cultivation:item.cultivation||[],
+    tools:item.tools||[]
   });
 }
 
