@@ -19,11 +19,19 @@ function buildFuse(){
     threshold:.34,
     minMatchCharLength:2,
     keys:[
-      {name:'title',weight:.42},
-      {name:'keywords',weight:.28},
-      {name:'summary',weight:.2},
-      {name:'type',weight:.06},
-      {name:'id',weight:.04}
+      {name:'title',weight:.30},
+      {name:'keywords',weight:.18},
+      {name:'terms',weight:.12},
+      {name:'synonyms',weight:.08},
+      {name:'summary',weight:.08},
+      {name:'objective',weight:.07},
+      {name:'measurements',weight:.05},
+      {name:'misconceptions',weight:.04},
+      {name:'coreScience',weight:.03},
+      {name:'cultivation',weight:.025},
+      {name:'tools',weight:.015},
+      {name:'type',weight:.01},
+      {name:'id',weight:.005}
     ]
   });
 }
@@ -76,7 +84,15 @@ Promise.all([
         summary:item.status==='published'
           ? (item.topic+' · '+item.primaryFormat)
           : (item.topic+' · catalogued entry; full lesson is still in review'),
-        keywords:[...(item.keywords||[]),item.topic,item.primaryFormat,item.status].filter(Boolean)
+        keywords:[...(item.keywords||[]),item.topic,item.primaryFormat,item.status].filter(Boolean),
+        terms:item.terms||[],
+        synonyms:item.synonyms||[],
+        objective:item.objective||'',
+        measurements:item.measurements||[],
+        misconceptions:item.misconceptions||[],
+        coreScience:item.coreScience||[],
+        cultivation:item.cultivation||[],
+        tools:item.tools||[]
       });
       seen.add(String(item.id));
     }
