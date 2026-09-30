@@ -60,7 +60,7 @@ const rationaleComplete=l=>{
   return checksOf(l).length>=3&&rationales.length>=checksOf(l).length;
 };
 const approvedVisual=l=>visualsOf(l).some(v=>v?.assetId&&v?.qaStatus==='approved')||Boolean(l.approvedVisualAssetId);
-const sourceCopyIssue=l=>sourcesOf(l).some(s=>/Open sourc(?:e|ee)?\b|sourcee\b/i.test(txt(s)));
+const sourceCopyIssue=l=>sourcesOf(l).some(s=>/Open sourc(?:\b|ee\b)|\bsourcee\b/i.test(txt(s)));
 const placeholderIssue=l=>misconceptionRows(l).some(x=>/see the (controlled )?lesson evidence and context/i.test(typeof x==='string'?x:JSON.stringify(x)));
 
 const rows=registry.entries.map(entry=>{
