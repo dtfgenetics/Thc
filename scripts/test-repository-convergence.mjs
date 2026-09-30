@@ -22,6 +22,8 @@ const atlasLiveCI = read('.github/workflows/verify-atlas-live.yml')
 const atlasOwnershipCI = read('.github/workflows/atlas-route-ownership-ci.yml')
 const atlasOwnershipValidator = read('scripts/validate-atlas-route-ownership.mjs')
 const atlasOperatorDoc = read('docs/operations/ATLAS_LIVE_VERIFIER.md')
+const publicApps = JSON.parse(read('site/deployment/public-apps.json'))
+const repositoryRegistry = JSON.parse(read('data/repository-registry.json'))
 
 assert.match(watch, /push:\n\s+branches: \[main\]\n\s+paths:/)
 assert.match(watch, /pull_request:\n\s+branches: \[main\]\n\s+paths:/)
@@ -113,5 +115,14 @@ for (const source of [atlasLiveCI, atlasOwnershipCI, atlasOwnershipValidator, at
 }
 assert.ok(atlasLiveCI.includes('scripts/verify-atlas-live.mjs'), 'Atlas live workflow must call the canonical verifier path.')
 assert.ok(atlasOwnershipValidator.includes("scripts/verify-atlas-live.mjs"), 'Atlas ownership validator must read the canonical live verifier.')
+
+const archiveOnlyRepos = new Set((repositoryRegistry.repositories || [])
+  .filter((entry) => ['archive_candidate','archive_ready'].includes(entry.status))
+  .map((entry) => entry.repo))
+for (const app of publicApps.apps || []) {
+  assert.ok(!archiveOnlyRepos.has(app.repository), `Archive-only repository must not appear in public app registry: ${app.repository}`)
+}
+assert.ok(!(publicApps.apps || []).some((app) => app.repository === 'dtfgenetics/all-in-one-thc-grow-'), 'All-in-One archive placeholder must stay out of public app registry.')
+assert.ok(!(publicApps.apps || []).some((app) => app.repository === 'dtfgenetics/thc-music-bot-for-discod'), 'Duplicate Discord archive pointer must stay out of public app registry.')
 
 console.log('Repository convergence regression tests passed.')

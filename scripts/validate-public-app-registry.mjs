@@ -18,12 +18,10 @@ const requiredRepositories = new Set([
   'dtfgenetics/Catching-phenos',
   'dtfgenetics/Video-photo-editing-and-communications-posting-',
   'dtfgenetics/Happy-seed-story-s-',
-  'dtfgenetics/all-in-one-thc-grow-',
   'dtfgenetics/thc-grow-hub',
   'dtfgenetics/Thc-learning-courses-',
   'dtfgenetics/Thc-dataset',
   'dtfgenetics/thc-discord-bot-for-music-',
-  'dtfgenetics/thc-music-bot-for-discod',
 ]);
 
 const allowedStatuses = new Set([
@@ -44,6 +42,11 @@ const allowedStatuses = new Set([
 ]);
 
 const packageableStatuses = new Set(['release-candidate', 'ready-to-package', 'production-v20']);
+const repositoryRegistryPath = new URL('../data/repository-registry.json', import.meta.url);
+const repositoryRegistry = JSON.parse(await readFile(repositoryRegistryPath, 'utf8'));
+const archiveOnlyRepositories = new Set((repositoryRegistry.repositories || [])
+  .filter((entry) => ['archive_candidate','archive_ready'].includes(entry.status))
+  .map((entry) => entry.repo));
 const errors = [];
 
 if (registry.schemaVersion !== 1) errors.push('schemaVersion must equal 1');

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
   "sourceOfTruth": "dtfgenetics/Thc",
-  "updated": "2026-09-29",
+  "updated": "2026-09-30",
   "apps": [
     {
       "id": "high-land",
@@ -777,14 +777,6 @@
       "verifiedRevision": "257c5a60c8ec0e7f6a87170f232c37e047458b22"
     },
     {
-      "id": "all-in-one-grow",
-      "title": "All-in-One THC Grow",
-      "repository": "dtfgenetics/all-in-one-thc-grow-",
-      "runtime": "archive-placeholder",
-      "status": "not-deployable",
-      "notes": "Archive-ready placeholder only. No application remains here; evidence governance moved to dtfgenetics/Tools and product functionality belongs in canonical repositories."
-    },
-    {
       "id": "discord-music-bot-a",
       "title": "THC Discord Music Bot",
       "repository": "dtfgenetics/thc-discord-bot-for-music-",
@@ -792,14 +784,6 @@
       "status": "implementation-alpha",
       "build": "npm run check && npm test",
       "notes": "Canonical Discord music-bot repo contains slash commands, per-server queue, voice playback, SSRF-resistant public URL policy, tests, environment template, and CI. Live runtime still requires Discord application credentials and persistent Node hosting."
-    },
-    {
-      "id": "discord-music-bot-b",
-      "title": "THC Music Bot for Discord",
-      "repository": "dtfgenetics/thc-music-bot-for-discod",
-      "runtime": "duplicate-archive-pointer",
-      "status": "do-not-develop",
-      "notes": "Archive-ready compatibility pointer only. No runtime belongs here; canonical implementation is dtfgenetics/thc-discord-bot-for-music-."
     },
     {
       "id": "grow-room-bingo",

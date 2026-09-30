@@ -7,6 +7,7 @@ on:
     paths:
       - site/deployment/public-apps.json
       - data/project-registry.json
+      - data/repository-registry.json
       - scripts/validate-public-app-registry.mjs
       - scripts/validate-portfolio-registry.mjs
       - .github/workflows/public-app-registry-ci.yml

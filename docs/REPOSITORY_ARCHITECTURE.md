@@ -71,6 +71,13 @@ Before moving implementation code:
 
 Do not bulk-copy legacy repositories into this repo. Selective migration is required so duplicate source-of-truth implementations do not return.
 
+## Registry separation
+
+- `data/repository-registry.json` tracks repository ownership, migration, legacy review and archive state.
+- `site/deployment/public-apps.json` tracks actual public/integration applications and routes.
+- Repositories marked `archive_candidate` or `archive_ready` must not be represented as public apps merely to prove they still exist.
+- Historical/archive pointers belong in repository/project registries and archive-readiness documentation, not deployment inventory.
+
 ## Required checks
 
 For repository cleanup work, run:
