@@ -79,28 +79,32 @@
           {
             "branch": "cleanup/remove-legacy-weedopolis-v3-20260930",
             "basis": "merged via dtf-thc-hub PR #72"
+          },
+          {
+            "branch": "cleanup/remove-high-iq-placeholder-v2-20260930",
+            "basis": "target file already absent on current main"
+          },
+          {
+            "branch": "cleanup/remove-legacy-game-engine-20260930",
+            "basis": "legacy game-engine files already absent on current main"
+          },
+          {
+            "branch": "cleanup/remove-legacy-grow-doc-v3-20260930",
+            "basis": "legacy Grow Doc app files already absent on current main"
+          },
+          {
+            "branch": "cleanup/remove-superseded-legacy-brand-assets-20260930",
+            "basis": "superseded brand asset files already absent on current main"
+          },
+          {
+            "branch": "cleanup/remove-generated-preview-tree-20260930",
+            "basis": "generated preview tree already absent on current main"
           }
         ],
         "reconcileNeeded": [
           {
-            "branch": "cleanup/remove-generated-preview-tree-20260930",
-            "reason": "1 unique cleanup commit; branch is behind main"
-          },
-          {
             "branch": "cleanup/remove-grow-doc-data-export-20260930",
             "reason": "7 commits ahead; touches legacy Grow Doc export and packaging"
-          },
-          {
-            "branch": "cleanup/remove-high-iq-placeholder-v2-20260930",
-            "reason": "2 commits ahead; removes legacy placeholder data"
-          },
-          {
-            "branch": "cleanup/remove-legacy-game-engine-20260930",
-            "reason": "5 commits ahead; removes superseded game-engine package"
-          },
-          {
-            "branch": "cleanup/remove-legacy-grow-doc-v3-20260930",
-            "reason": "12 commits ahead; removes legacy Grow Doc implementation and packaging references"
           },
           {
             "branch": "cleanup/remove-migrated-kush-kings-20260930",
@@ -109,10 +113,6 @@
           {
             "branch": "cleanup/remove-migrated-thc-u-know-20260930",
             "reason": "6 commits ahead; removes copied release bundle and registry references"
-          },
-          {
-            "branch": "cleanup/remove-superseded-legacy-brand-assets-20260930",
-            "reason": "3 commits ahead; removes legacy brand assets"
           },
           {
             "branch": "cleanup/retire-scheduled-legacy-production-audit-20260930",
