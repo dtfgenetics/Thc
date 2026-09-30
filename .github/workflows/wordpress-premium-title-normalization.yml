@@ -67,18 +67,18 @@ jobs:
           set -euo pipefail
           canonical_h1(){
             node - "$1" <<'NODE'
-const fs=require('fs');
-const html=fs.readFileSync(process.argv[2],'utf8');
-const match=html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i);
-if(!match) process.exit(2);
-const text=match[1]
-  .replace(/<[^>]+>/g,' ')
-  .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>')
-  .replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'")
-  .replace(/\s+/g,' ').trim();
-if(!text) process.exit(3);
-process.stdout.write(text);
-NODE
+          const fs=require('fs');
+          const html=fs.readFileSync(process.argv[2],'utf8');
+          const match=html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i);
+          if(!match) process.exit(2);
+          const text=match[1]
+            .replace(/<[^>]+>/g,' ')
+            .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>')
+            .replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'")
+            .replace(/\s+/g,' ').trim();
+          if(!text) process.exit(3);
+          process.stdout.write(text);
+          NODE
           }
           verify(){
             path="$1"; slug="$2"; canonical="$3"; body="$RUNNER_TEMP/title-$(echo "$path"|tr '/' '_').html"
