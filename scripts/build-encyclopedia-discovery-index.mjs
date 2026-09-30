@@ -84,6 +84,17 @@ const lessons=(registry.entries||[]).map(entry=>{
   const slug=lesson.slug||slugify(entry.title);
   const tools=toolIdsFor(Number(entry.part));
   const aliases=aliasesFor(entry);
+  const publicFields=published?fields:{
+    objective:'',
+    terms:[],
+    coreScience:[],
+    cultivation:[],
+    measurements:[],
+    misconceptions:[],
+    evidenceLimits:[],
+    crossLinks:[],
+    synonyms:[]
+  };
   return {
     id:entry.id,
     number:Number(entry.number),
@@ -97,8 +108,8 @@ const lessons=(registry.entries||[]).map(entry=>{
     route:published?`/learn/encyclopedia/thc-enc-${String(entry.number).padStart(3,'0')}/`:`/learn/encyclopedia/?lesson=${encodeURIComponent(entry.id)}`,
     tools,
     aliases,
-    ...fields,
-    keywords:[topic?.title,entry.primaryFormat,entry.teachingVisual,entry.id,...fields.terms,...fields.synonyms,...aliases,...tools].map(clean).filter(Boolean)
+    ...publicFields,
+    keywords:[topic?.title,entry.primaryFormat,entry.teachingVisual,entry.id,...(published?fields.terms:[]),...(published?fields.synonyms:[]),...aliases,...tools].map(clean).filter(Boolean)
   };
 });
 
