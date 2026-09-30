@@ -1,0 +1,759 @@
+{
+  "schemaVersion": 1,
+  "name": "THC Encyclopedia Worked Example Visual Briefs",
+  "purpose": "Production-ready visual briefs tied to high-value worked examples. Visuals must teach the reasoning, evidence, and verification method rather than decorate the page.",
+  "sourceExamplesFile": "content/encyclopedia/worked-examples-v1.json",
+  "reviewQueueFile": "site/wordpress/education/encyclopedia-worked-example-review-queue.json",
+  "artDirection": {
+    "style": "academic studio-quality cultivation education; neutral/cream background; natural plant color; crisp scientific diagrams; restrained green/gold accents; no yellow cast; no decorative clutter",
+    "masterCanvas": {
+      "widthPx": 2550,
+      "heightPx": 3300,
+      "dpi": 300,
+      "orientation": "portrait"
+    },
+    "textPolicy": "Use concise labels, legends, and short callouts. Do not bake paragraph text into artwork.",
+    "scientificPolicy": "Visual must separate observation, measurement, interpretation, and verification. No unsupported universal thresholds or causal claims.",
+    "accessibilityPolicy": "Do not rely on color alone. Every state, comparison, or warning must also use labels, shapes, patterns, or position cues.",
+    "copyrightPolicy": "Create original artwork; sources constrain concepts and terminology only.",
+    "publicationPolicy": "Artwork remains artwork-needed until scientific QA, visual QA, label/spelling QA, accessibility QA, mobile crop QA, and placement QA all pass."
+  },
+  "statusValues": [
+    "brief-approved-artwork-needed",
+    "artwork-in-review",
+    "approved",
+    "published"
+  ],
+  "briefs": [
+    {
+      "id": "THC-WE-VIS-049",
+      "lessonId": "THC-ENC-049",
+      "exampleTitle": "Root decline after repeated wet irrigation",
+      "role": "diagnostic-decision-map",
+      "productionStatus": "brief-approved-artwork-needed",
+      "primaryMessage": "Brown roots are evidence of root decline, not proof of one pathogen; diagnosis requires crop pattern, root-zone measurements, and organism evidence.",
+      "layout": [
+        "Whole-root comparison: healthy vs affected",
+        "Root-zone evidence panel: moisture, drainage, EC, temperature, irrigation history",
+        "Differential branch: abiotic predisposition / pathogen / mixed cause",
+        "Verification strip: intervention → repeat root/shoot observations → recheck measurements"
+      ],
+      "requiredLabels": [
+        "Root decline",
+        "Irrigation zone",
+        "Media moisture",
+        "Drainage",
+        "EC",
+        "Root-zone temperature",
+        "Diagnostic sample",
+        "Abiotic predisposition",
+        "Pathogen evidence",
+        "Mixed cause"
+      ],
+      "forbiddenClaims": [
+        "Do not label brown roots as a specific pathogen diagnosis",
+        "Do not imply wet media proves disease",
+        "Do not prescribe a universal irrigation frequency"
+      ],
+      "altText": "Diagnostic decision diagram showing brown-root decline, root-zone measurements, pathogen evidence, competing abiotic causes, and a verification loop.",
+      "caption": "Root decline is interpreted from plant pattern, root-zone conditions, organism evidence, and follow-up—not from root color alone.",
+      "placement": {
+        "lessonId": "THC-ENC-049",
+        "location": "worked-example",
+        "after": "scenario"
+      },
+      "qa": {
+        "scientific": false,
+        "visual": false,
+        "labels": false,
+        "accessibility": false,
+        "mobile": false,
+        "placement": false
+      }
+    },
+    {
+      "id": "THC-WE-VIS-085",
+      "lessonId": "THC-ENC-085",
+      "exampleTitle": "VPD reading looks acceptable, leaves still show excessive demand",
+      "role": "measurement-context-diagram",
+      "productionStatus": "brief-approved-artwork-needed",
+      "primaryMessage": "A room VPD value does not prove every leaf experiences the same vapor-pressure conditions.",
+      "layout": [
+        "Controller sensor vs canopy sensor positions",
+        "Air temperature/RH → VPD calculation",
+        "Leaf temperature measurement overlay",
+        "Context panel: light, airflow, root-zone water",
+        "Verification loop before/after change"
+      ],
+      "requiredLabels": [
+        "Air temperature",
+        "RH",
+        "Leaf temperature",
+        "Air VPD",
+        "Leaf-referenced VPD",
+        "Sensor location",
+        "Airflow",
+        "PPFD",
+        "Root-zone water status"
+      ],
+      "forbiddenClaims": [
+        "Do not show one VPD band as universally optimal",
+        "Do not equate controller value with leaf condition",
+        "Do not imply VPD alone diagnoses stress"
+      ],
+      "altText": "Environmental measurement diagram comparing controller VPD with canopy and leaf conditions, including sensor placement, leaf temperature, light, airflow, and root-zone context.",
+      "caption": "VPD is a derived metric whose interpretation depends on where and how temperature and humidity are measured and on actual leaf conditions.",
+      "placement": {
+        "lessonId": "THC-ENC-085",
+        "location": "worked-example",
+        "after": "reasoning-path"
+      },
+      "qa": {
+        "scientific": false,
+        "visual": false,
+        "labels": false,
+        "accessibility": false,
+        "mobile": false,
+        "placement": false
+      }
+    },
+    {
+      "id": "THC-WE-VIS-092",
+      "lessonId": "THC-ENC-092",
+      "exampleTitle": "A dryback percentage is copied from another facility",
+      "role": "measurement-definition-workflow",
+      "productionStatus": "brief-approved-artwork-needed",
+      "primaryMessage": "Dryback only has meaning when the measured quantity, reference point, method, sensor location, and time interval are defined.",
+      "layout": [
+        "Four measurement methods: VWC / sensor output / container mass / substrate potential",
+        "Post-irrigation reference point",
+        "Time-series decline between irrigations",
+        "Sensor-placement cross-section",
+        "Interpretation panel with EC and plant response"
+      ],
+      "requiredLabels": [
+        "Measurement method",
+        "Units",
+        "Reference point",
+        "Sensor position",
+        "Time interval",
+        "Irrigation event",
+        "Dryback",
+        "Root-zone EC",
+        "Plant response"
+      ],
+      "forbiddenClaims": [
+        "Do not present one dryback percentage as universal",
+        "Do not imply all sensor percentages are equivalent",
+        "Do not imply more dryback is always better"
+      ],
+      "altText": "Dryback measurement workflow showing different measurement bases, a post-irrigation reference, time-series change, sensor position, root-zone EC, and plant response.",
+      "caption": "Dryback is a defined change over time, not a universal percentage that transfers unchanged between substrates, sensors, containers, and crops.",
+      "placement": {
+        "lessonId": "THC-ENC-092",
+        "location": "worked-example",
+        "after": "scenario"
+      },
+      "qa": {
+        "scientific": false,
+        "visual": false,
+        "labels": false,
+        "accessibility": false,
+        "mobile": false,
+        "placement": false
+      }
+    },
+    {
+      "id": "THC-WE-VIS-106",
+      "lessonId": "THC-ENC-106",
+      "exampleTitle": "High center PPFD, weak edge growth",
+      "role": "spatial-map",
+      "productionStatus": "brief-approved-artwork-needed",
+      "primaryMessage": "One center PPFD reading cannot describe canopy uniformity; use a repeatable spatial grid and preserve raw measurements.",
+      "layout": [
+        "Top-down canopy PPFD grid",
+        "Center hotspot and edge low zones",
+        "Fixture spacing/height side view",
+        "Raw values beside summary metric",
+        "Before/after mapping strip"
+      ],
+      "requiredLabels": [
+        "PPFD",
+        "Grid point",
+        "Canopy plane",
+        "Fixture height",
+        "Fixture spacing",
+        "Minimum",
+        "Maximum",
+        "Average",
+        "Uniformity",
+        "Raw values"
+      ],
+      "forbiddenClaims": [
+        "Do not use one center reading to characterize the whole canopy",
+        "Do not hide hotspots behind averages",
+        "Do not imply one uniformity target fits every room"
+      ],
+      "altText": "Top-down PPFD grid showing center hotspots, edge low-light zones, fixture geometry, raw readings, and before-after mapping.",
+      "caption": "Spatial light mapping shows whether averages hide crop-relevant hotspots or low-light zones.",
+      "placement": {
+        "lessonId": "THC-ENC-106",
+        "location": "worked-example",
+        "after": "evidence-to-collect"
+      },
+      "qa": {
+        "scientific": false,
+        "visual": false,
+        "labels": false,
+        "accessibility": false,
+        "mobile": false,
+        "placement": false
+      }
+    },
+    {
+      "id": "THC-WE-VIS-123",
+      "lessonId": "THC-ENC-123",
+      "exampleTitle": "Yellowing appears after a bloom-booster increase",
+      "role": "differential-evidence-board",
+      "productionStatus": "brief-approved-artwork-needed",
+      "primaryMessage": "A deficiency-like symptom should be tested against root-zone chemistry, irrigation, roots, environment, and recent input changes before adding more nutrient.",
+      "layout": [
+        "Observed symptom panel",
+        "Competing explanations board",
+        "Root-zone measurements panel",
+        "Input-change timeline",
+        "Decision/verification strip"
+      ],
+      "requiredLabels": [
+        "Observed symptom",
+        "Root condition",
+        "pH",
+        "EC",
+        "Irrigation",
+        "Recipe change",
+        "Competing explanation",
+        "Verification"
+      ],
+      "forbiddenClaims": [
+        "Do not equate yellowing with phosphorus deficiency",
+        "Do not recommend a fertilizer rate",
+        "Do not make runoff EC a stand-alone diagnosis"
+      ],
+      "altText": "Differential-diagnosis board connecting yellowing symptoms with root condition, pH, EC, irrigation, recent nutrient changes, competing explanations, and verification.",
+      "caption": "Deficiency-like symptoms require root-zone and management evidence before a nutrient correction is justified.",
+      "placement": {
+        "lessonId": "THC-ENC-123",
+        "location": "worked-example",
+        "after": "scenario"
+      },
+      "qa": {
+        "scientific": false,
+        "visual": false,
+        "labels": false,
+        "accessibility": false,
+        "mobile": false,
+        "placement": false
+      }
+    },
+    {
+      "id": "THC-WE-VIS-161",
+      "lessonId": "THC-ENC-161",
+      "exampleTitle": "Clone matches genotype but performs differently",
+      "role": "genotype-state-comparison",
+      "productionStatus": "brief-approved-artwork-needed",
+      "primaryMessage": "Clones normally preserve inherited genotype while health, physiological state, propagation history, and environment can still change phenotype and performance.",
+      "layout": [
+        "Donor → cutting → rooted clone lineage",
+        "Same-genotype badge across plants",
+        "Parallel state variables: roots, pathogen status, reserves, environment",
+        "Decision panel: identity question vs performance question"
+      ],
+      "requiredLabels": [
+        "Inherited genotype",
+        "Donor ID",
+        "Clone ID",
+        "Propagation history",
+        "Root quality",
+        "Pathogen status",
+        "Environment",
+        "Phenotype",
+        "Identity test"
+      ],
+      "forbiddenClaims": [
+        "Do not imply clones are phenotypically identical",
+        "Do not imply poor performance proves mutation",
+        "Do not use genetic testing as a substitute for crop diagnosis"
+      ],
+      "altText": "Clone lineage diagram showing shared inherited genotype alongside differences in root quality, health, propagation history, environment, and phenotype.",
+      "caption": "Clonal propagation preserves inherited genotype but not identical physiological state, health, or performance across conditions.",
+      "placement": {
+        "lessonId": "THC-ENC-161",
+        "location": "worked-example",
+        "after": "reasoning-path"
+      },
+      "qa": {
+        "scientific": false,
+        "visual": false,
+        "labels": false,
+        "accessibility": false,
+        "mobile": false,
+        "placement": false
+      }
+    },
+    {
+      "id": "THC-WE-VIS-261",
+      "lessonId": "THC-ENC-261",
+      "exampleTitle": "One photo is labeled a nutrient deficiency",
+      "role": "diagnostic-workflow",
+      "productionStatus": "brief-approved-artwork-needed",
+      "primaryMessage": "Pattern, history, measurements, competing hypotheses, and verification should precede a product or diagnosis.",
+      "layout": [
+        "Photo observation panel",
+        "Whole-plant/crop map",
+        "Roots/environment/pests/input evidence lanes",
+        "Ranked differential",
+        "Controlled correction → verification"
+      ],
+      "requiredLabels": [
+        "Observation",
+        "Pattern",
+        "History",
+        "Root-zone evidence",
+        "Environment",
+        "Biotic evidence",
+        "Differential",
+        "Verification",
+        "Confidence"
+      ],
+      "forbiddenClaims": [
+        "Do not diagnose from one leaf photo",
+        "Do not treat the most common cause as automatically correct",
+        "Do not imply improvement after stacked changes proves the diagnosis"
+      ],
+      "altText": "Plant diagnostic workflow moving from a leaf observation to whole-crop pattern, root-zone and environmental evidence, ranked hypotheses, and controlled verification.",
+      "caption": "A strong plant diagnosis explains the crop pattern, survives competing explanations, and is verified after a bounded correction.",
+      "placement": {
+        "lessonId": "THC-ENC-261",
+        "location": "worked-example",
+        "after": "scenario"
+      },
+      "qa": {
+        "scientific": false,
+        "visual": false,
+        "labels": false,
+        "accessibility": false,
+        "mobile": false,
+        "placement": false
+      }
+    },
+    {
+      "id": "THC-WE-VIS-303",
+      "lessonId": "THC-ENC-303",
+      "exampleTitle": "Dense flower rot is assumed to be Botrytis",
+      "role": "disease-differential-reference",
+      "productionStatus": "brief-approved-artwork-needed",
+      "primaryMessage": "Flower rot should be described and sampled before assigning Botrytis or another pathogen identity.",
+      "layout": [
+        "Whole flower and internal-tissue views",
+        "Signs vs symptoms panel",
+        "Microclimate context: condensation / dense canopy / airflow",
+        "Differential candidates",
+        "Sample → lab/microscopy → confidence"
+      ],
+      "requiredLabels": [
+        "Symptom",
+        "Sign",
+        "Internal tissue",
+        "Condensation",
+        "Canopy density",
+        "Airflow",
+        "Diagnostic sample",
+        "Differential diagnosis",
+        "Confidence"
+      ],
+      "forbiddenClaims": [
+        "Do not label all gray/brown flower rot as Botrytis",
+        "Do not imply high RH proves infection",
+        "Do not treat a photo as pathogen confirmation"
+      ],
+      "altText": "Disease differential diagram showing flower-rot symptoms, pathogen signs, canopy microclimate, diagnostic sampling, and confidence-based identification.",
+      "caption": "Botrytis diagnosis is strongest when signs, disease pattern, environment, and diagnostic evidence agree.",
+      "placement": {
+        "lessonId": "THC-ENC-303",
+        "location": "worked-example",
+        "after": "scenario"
+      },
+      "qa": {
+        "scientific": false,
+        "visual": false,
+        "labels": false,
+        "accessibility": false,
+        "mobile": false,
+        "placement": false
+      }
+    },
+    {
+      "id": "THC-WE-VIS-321",
+      "lessonId": "THC-ENC-321",
+      "exampleTitle": "Recurring pest problem despite calendar sprays",
+      "role": "ipm-loop",
+      "productionStatus": "brief-approved-artwork-needed",
+      "primaryMessage": "Recurring pest pressure should trigger a prevention-and-monitoring review, not automatic escalation of calendar sprays.",
+      "layout": [
+        "IPM loop: prevent → scout → identify → decide → act → verify",
+        "Hotspot map",
+        "Intake/sanitation/exclusion pathways",
+        "Treatment/beneficial compatibility",
+        "Trend verification"
+      ],
+      "requiredLabels": [
+        "Prevention",
+        "Scouting",
+        "Identification",
+        "Threshold/tolerance",
+        "Intervention",
+        "Verification",
+        "Hotspot",
+        "Intake",
+        "Sanitation",
+        "Compatibility"
+      ],
+      "forbiddenClaims": [
+        "Do not prescribe pesticide frequency",
+        "Do not imply IPM is pesticide rotation",
+        "Do not show one count reduction as proof of control"
+      ],
+      "altText": "Integrated pest management loop linking prevention, scouting, identification, decision thresholds, interventions, compatibility, and repeated verification.",
+      "caption": "IPM is a recurring evidence-and-prevention system, not a calendar spray schedule.",
+      "placement": {
+        "lessonId": "THC-ENC-321",
+        "location": "worked-example",
+        "after": "reasoning-path"
+      },
+      "qa": {
+        "scientific": false,
+        "visual": false,
+        "labels": false,
+        "accessibility": false,
+        "mobile": false,
+        "placement": false
+      }
+    },
+    {
+      "id": "THC-WE-VIS-349",
+      "lessonId": "THC-ENC-349",
+      "exampleTitle": "Drying room setpoint is stable but batches dry unevenly",
+      "role": "spatial-process-map",
+      "productionStatus": "brief-approved-artwork-needed",
+      "primaryMessage": "Stable room setpoints do not guarantee uniform product drying across racks and load geometry.",
+      "layout": [
+        "Drying-room rack map",
+        "Airflow path and obstructions",
+        "Product temperature/RH sampling points",
+        "Drying curves by zone",
+        "Before/after airflow/loading correction"
+      ],
+      "requiredLabels": [
+        "Rack position",
+        "Load density",
+        "Airflow",
+        "Obstruction",
+        "Product temperature",
+        "RH",
+        "Mass loss",
+        "Drying curve",
+        "Zone"
+      ],
+      "forbiddenClaims": [
+        "Do not imply stable room RH guarantees uniform drying",
+        "Do not prescribe one universal setpoint",
+        "Do not hide position-dependent results in one average"
+      ],
+      "altText": "Drying-room map showing rack positions, airflow paths, load density, spatial measurements, and different drying curves across zones.",
+      "caption": "Drying uniformity must be checked across the actual load because room averages can hide position effects.",
+      "placement": {
+        "lessonId": "THC-ENC-349",
+        "location": "worked-example",
+        "after": "evidence-to-collect"
+      },
+      "qa": {
+        "scientific": false,
+        "visual": false,
+        "labels": false,
+        "accessibility": false,
+        "mobile": false,
+        "placement": false
+      }
+    },
+    {
+      "id": "THC-WE-VIS-385",
+      "lessonId": "THC-ENC-385",
+      "exampleTitle": "Small F2 population misses a rare trait combination",
+      "role": "probability-population-diagram",
+      "productionStatus": "brief-approved-artwork-needed",
+      "primaryMessage": "Recovery of a desired F2 combination depends on trait architecture, probability, linkage, and population size.",
+      "layout": [
+        "Parent → F1 → F2 pedigree",
+        "Simple probability illustration",
+        "Population-size ladder",
+        "Rare favorable combination markers",
+        "Observed count vs expected model"
+      ],
+      "requiredLabels": [
+        "F2",
+        "Segregation",
+        "Recombination",
+        "Linkage",
+        "Population size",
+        "Recovery probability",
+        "Observed",
+        "Expected",
+        "Scoring rule"
+      ],
+      "forbiddenClaims": [
+        "Do not imply simple Mendelian ratios apply to every trait",
+        "Do not imply absence in a small population proves impossibility",
+        "Do not show selected winners without the full population context"
+      ],
+      "altText": "F2 breeding diagram linking segregation and recombination with population size, recovery probability, observed classes, and model assumptions.",
+      "caption": "Population size determines how well an F2 can sample rare favorable combinations under the stated genetic model.",
+      "placement": {
+        "lessonId": "THC-ENC-385",
+        "location": "worked-example",
+        "after": "reasoning-path"
+      },
+      "qa": {
+        "scientific": false,
+        "visual": false,
+        "labels": false,
+        "accessibility": false,
+        "mobile": false,
+        "placement": false
+      }
+    },
+    {
+      "id": "THC-WE-VIS-393",
+      "lessonId": "THC-ENC-393",
+      "exampleTitle": "One phenotype wins in one room",
+      "role": "trial-design-comparison",
+      "productionStatus": "brief-approved-artwork-needed",
+      "primaryMessage": "A strong phenotype in one location must be separated from room, position, season, and management effects before being called genetically superior.",
+      "layout": [
+        "Confounded single-room layout",
+        "Blocked/randomized replicated layout",
+        "Candidate + check genotypes",
+        "Outcome distributions",
+        "Retest across environments"
+      ],
+      "requiredLabels": [
+        "Candidate",
+        "Check",
+        "Replicate",
+        "Block",
+        "Randomization",
+        "Position effect",
+        "Environmental noise",
+        "Retest"
+      ],
+      "forbiddenClaims": [
+        "Do not equate one-room superiority with genetic superiority",
+        "Do not count subsamples as independent biological replicates",
+        "Do not hide failed or nonselected plants"
+      ],
+      "altText": "Breeding trial comparison showing a confounded single-room result versus replicated blocked or randomized testing with checks and environmental retesting.",
+      "caption": "Replication and environmental control help separate genetic signal from room and position effects.",
+      "placement": {
+        "lessonId": "THC-ENC-393",
+        "location": "worked-example",
+        "after": "scenario"
+      },
+      "qa": {
+        "scientific": false,
+        "visual": false,
+        "labels": false,
+        "accessibility": false,
+        "mobile": false,
+        "placement": false
+      }
+    },
+    {
+      "id": "THC-WE-VIS-402",
+      "lessonId": "THC-ENC-402",
+      "exampleTitle": "New meter shows more decimal places",
+      "role": "measurement-quality-comparison",
+      "productionStatus": "brief-approved-artwork-needed",
+      "primaryMessage": "Resolution, accuracy, precision, bias, and uncertainty are different measurement properties.",
+      "layout": [
+        "Two meter displays with different decimals",
+        "Reference value comparison",
+        "Repeated-reading distributions",
+        "Bias and uncertainty callouts",
+        "Report-supported-digits strip"
+      ],
+      "requiredLabels": [
+        "Resolution",
+        "Accuracy",
+        "Precision",
+        "Bias",
+        "Uncertainty",
+        "Reference value",
+        "Repeatability",
+        "Supported digits"
+      ],
+      "forbiddenClaims": [
+        "Do not imply more decimal places means more accuracy",
+        "Do not imply calibration removes all uncertainty",
+        "Do not equate close repeat readings with truth"
+      ],
+      "altText": "Measurement-quality diagram comparing display resolution, reference accuracy, repeatability, bias, uncertainty, and supported reported digits.",
+      "caption": "Extra decimal places describe resolution, not whether the measurement is accurate or fit for the decision.",
+      "placement": {
+        "lessonId": "THC-ENC-402",
+        "location": "worked-example",
+        "after": "reasoning-path"
+      },
+      "qa": {
+        "scientific": false,
+        "visual": false,
+        "labels": false,
+        "accessibility": false,
+        "mobile": false,
+        "placement": false
+      }
+    },
+    {
+      "id": "THC-WE-VIS-404",
+      "lessonId": "THC-ENC-404",
+      "exampleTitle": "One sensor is used to represent an entire room",
+      "role": "sampling-plan-map",
+      "productionStatus": "brief-approved-artwork-needed",
+      "primaryMessage": "Representative sampling requires spatial and temporal coverage tied to the decision, not many readings from one convenient sensor.",
+      "layout": [
+        "Room map with one central sensor",
+        "Expanded representative grid",
+        "Airflow/fixture/door gradients",
+        "Time-sampling strip",
+        "Independent samples vs repeated readings"
+      ],
+      "requiredLabels": [
+        "Population",
+        "Sample",
+        "Sensor position",
+        "Spatial gradient",
+        "Time interval",
+        "Independent sample",
+        "Repeated reading",
+        "Representative"
+      ],
+      "forbiddenClaims": [
+        "Do not imply a central sensor is always representative",
+        "Do not treat repeated readings from one point as independent spatial samples",
+        "Do not use averages to erase extremes"
+      ],
+      "altText": "Sampling-plan diagram comparing one central sensor with a representative spatial grid and time-based measurements across room gradients.",
+      "caption": "A sampling plan should represent the population and decision, not just produce many readings from one location.",
+      "placement": {
+        "lessonId": "THC-ENC-404",
+        "location": "worked-example",
+        "after": "evidence-to-collect"
+      },
+      "qa": {
+        "scientific": false,
+        "visual": false,
+        "labels": false,
+        "accessibility": false,
+        "mobile": false,
+        "placement": false
+      }
+    },
+    {
+      "id": "THC-WE-VIS-416",
+      "lessonId": "THC-ENC-416",
+      "exampleTitle": "Testing two irrigation strategies without pseudoreplication",
+      "role": "experimental-unit-diagram",
+      "productionStatus": "brief-approved-artwork-needed",
+      "primaryMessage": "Treatment replication depends on independently assigned experimental units; many plants inside one treated room are not many treatment replicates.",
+      "layout": [
+        "Room A vs Room B confounded design",
+        "Experimental unit definition panel",
+        "Plants as subsamples",
+        "Replicated/block design alternative",
+        "Predefined outcome timeline"
+      ],
+      "requiredLabels": [
+        "Experimental unit",
+        "Treatment assignment",
+        "Biological replicate",
+        "Subsample",
+        "Randomization",
+        "Blocking",
+        "Confounder",
+        "Outcome"
+      ],
+      "forbiddenClaims": [
+        "Do not count plants within one treatment room as independent room-level replicates",
+        "Do not imply two rooms alone prove causation",
+        "Do not imply more subsamples fix missing replication"
+      ],
+      "altText": "Experimental-design diagram contrasting a two-room pseudoreplicated comparison with independent treatment units, subsamples, randomization, and blocking.",
+      "caption": "Replication is determined by independent treatment assignment, not by the number of measurements taken inside one treatment unit.",
+      "placement": {
+        "lessonId": "THC-ENC-416",
+        "location": "worked-example",
+        "after": "scenario"
+      },
+      "qa": {
+        "scientific": false,
+        "visual": false,
+        "labels": false,
+        "accessibility": false,
+        "mobile": false,
+        "placement": false
+      }
+    },
+    {
+      "id": "THC-WE-VIS-417",
+      "lessonId": "THC-ENC-417",
+      "exampleTitle": "Higher light is correlated with higher yield",
+      "role": "causal-diagram",
+      "productionStatus": "brief-approved-artwork-needed",
+      "primaryMessage": "A correlation between light and yield can reflect causation, reverse relationships, confounding, or selection effects.",
+      "layout": [
+        "Observed light-yield scatter",
+        "Alternative causal diagrams",
+        "Confounder examples: cultivar, CO2, density, room, season",
+        "Controlled comparison panel",
+        "Conclusion language ladder: association → stronger causal support"
+      ],
+      "requiredLabels": [
+        "Correlation",
+        "Causation",
+        "Confounder",
+        "Temporal order",
+        "Alternative explanation",
+        "Controlled comparison",
+        "Association"
+      ],
+      "forbiddenClaims": [
+        "Do not imply correlation proves cause",
+        "Do not use statistical strength as proof of causation",
+        "Do not hide variables that changed with light"
+      ],
+      "altText": "Causal-reasoning diagram showing a light-yield correlation, alternative explanations, potential confounders, and stronger controlled designs.",
+      "caption": "Correlation is useful evidence, but causal claims require designs that address timing and credible alternative explanations.",
+      "placement": {
+        "lessonId": "THC-ENC-417",
+        "location": "worked-example",
+        "after": "reasoning-path"
+      },
+      "qa": {
+        "scientific": false,
+        "visual": false,
+        "labels": false,
+        "accessibility": false,
+        "mobile": false,
+        "placement": false
+      }
+    }
+  ]
+}
