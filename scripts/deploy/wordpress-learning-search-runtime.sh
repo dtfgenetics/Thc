@@ -24,8 +24,8 @@ case "$mode" in
     mkdir -p "$stage"
     tar -C "$stage" -xzf "$archive"
     test -s "$stage/dtf-learning-search.php"
-    test -s "$stage/dtf-learning-search/search-v1.mjs"
-    test -s "$stage/dtf-learning-search/encyclopedia-v1.mjs"
+    test -s "$stage/dtf-learning-search/search-v1.js"
+    test -s "$stage/dtf-learning-search/encyclopedia-v1.js"
     php -l "$stage/dtf-learning-search.php" >/dev/null
 
     backup_id="learning-search-$(date -u +%Y%m%dT%H%M%SZ)-${source_sha:0:12}"
