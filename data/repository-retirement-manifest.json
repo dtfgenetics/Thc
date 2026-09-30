@@ -210,6 +210,30 @@
       "branch": "cleanup/remove-legacy-production-entrypoints-20260930",
       "disposition": "delete_safe",
       "basis": "ahead_by_0_behind_by_11_against_main_2026-09-30"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-migrated-weedopolis-20260930",
+      "disposition": "delete_safe",
+      "basis": "superseded_by_merged_pr_72"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-legacy-weedopolis-v2-20260930",
+      "disposition": "delete_safe",
+      "basis": "conflicted_replay_superseded_by_merged_pr_72"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-legacy-weedopolis-v3-20260930",
+      "disposition": "delete_safe",
+      "basis": "merged_via_pr_72"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/retire-legacy-audit-workflow-v2-20260930",
+      "disposition": "delete_safe",
+      "basis": "merged_via_pr_69"
     }
   ]
 }
