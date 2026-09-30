@@ -1,0 +1,509 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Map common grower/search language to encyclopedia subject areas for retrieval only. Aliases improve findability and must not be interpreted as diagnoses.",
+  "rules": [
+    {
+      "id": "yellow-leaves",
+      "aliases": [
+        "yellow leaves",
+        "yellowing leaves",
+        "leaves turning yellow",
+        "lower leaves yellow"
+      ],
+      "targetParts": [
+        7,
+        14
+      ]
+    },
+    {
+      "id": "purple-stems",
+      "aliases": [
+        "purple stems",
+        "red stems",
+        "purple petioles"
+      ],
+      "targetParts": [
+        1,
+        7,
+        14
+      ]
+    },
+    {
+      "id": "leaf-claw",
+      "aliases": [
+        "clawing leaves",
+        "leaf claw",
+        "clawed leaves",
+        "the claw"
+      ],
+      "targetParts": [
+        7,
+        14
+      ]
+    },
+    {
+      "id": "leaf-curl",
+      "aliases": [
+        "curling leaves",
+        "leaf curl",
+        "leaves curling",
+        "curled leaves"
+      ],
+      "targetParts": [
+        5,
+        6,
+        7,
+        14
+      ]
+    },
+    {
+      "id": "taco-leaves",
+      "aliases": [
+        "taco leaves",
+        "tacoing",
+        "canoeing leaves",
+        "leaf canoeing"
+      ],
+      "targetParts": [
+        5,
+        6,
+        14
+      ]
+    },
+    {
+      "id": "light-burn",
+      "aliases": [
+        "light burn",
+        "bleached tops",
+        "top bleaching",
+        "light stress"
+      ],
+      "targetParts": [
+        6,
+        14
+      ]
+    },
+    {
+      "id": "stretch",
+      "aliases": [
+        "stretch",
+        "plant stretching",
+        "too much stretch",
+        "long internodes"
+      ],
+      "targetParts": [
+        6,
+        10,
+        11,
+        14
+      ]
+    },
+    {
+      "id": "foxtailing",
+      "aliases": [
+        "foxtailing",
+        "fox tailing",
+        "foxtail buds"
+      ],
+      "targetParts": [
+        11,
+        14
+      ]
+    },
+    {
+      "id": "high-runoff-ec",
+      "aliases": [
+        "high runoff ec",
+        "runoff ec high",
+        "salt buildup",
+        "salt build up"
+      ],
+      "targetParts": [
+        3,
+        7,
+        14
+      ]
+    },
+    {
+      "id": "nutrient-lockout",
+      "aliases": [
+        "nutrient lockout",
+        "lockout",
+        "nutrient lock out"
+      ],
+      "targetParts": [
+        7,
+        14
+      ]
+    },
+    {
+      "id": "calmag",
+      "aliases": [
+        "calmag",
+        "cal mag",
+        "calcium magnesium problem"
+      ],
+      "targetParts": [
+        7,
+        14
+      ]
+    },
+    {
+      "id": "plant-not-drinking",
+      "aliases": [
+        "plant not drinking",
+        "plant won't drink",
+        "slow water uptake"
+      ],
+      "targetParts": [
+        3,
+        5,
+        7,
+        14
+      ]
+    },
+    {
+      "id": "root-rot",
+      "aliases": [
+        "root rot",
+        "brown roots",
+        "slimy roots",
+        "bad root smell"
+      ],
+      "targetParts": [
+        3,
+        16,
+        17
+      ]
+    },
+    {
+      "id": "seed-germination",
+      "aliases": [
+        "seed won't sprout",
+        "seed not germinating",
+        "germination failed",
+        "stuck seedling"
+      ],
+      "targetParts": [
+        2
+      ]
+    },
+    {
+      "id": "clone-rooting",
+      "aliases": [
+        "clone won't root",
+        "clones not rooting",
+        "cutting won't root",
+        "slow clone rooting"
+      ],
+      "targetParts": [
+        9
+      ]
+    },
+    {
+      "id": "hermaphrodite-language",
+      "aliases": [
+        "hermie",
+        "herm",
+        "hermaphrodite plant",
+        "nanners",
+        "bananas in buds"
+      ],
+      "targetParts": [
+        8,
+        11
+      ]
+    },
+    {
+      "id": "powdery-mildew",
+      "aliases": [
+        "powdery mildew",
+        "white powder on leaves",
+        "pm on leaves"
+      ],
+      "targetParts": [
+        16,
+        17
+      ]
+    },
+    {
+      "id": "bud-rot",
+      "aliases": [
+        "bud rot",
+        "botrytis",
+        "gray mold in buds",
+        "moldy buds"
+      ],
+      "targetParts": [
+        16,
+        18
+      ]
+    },
+    {
+      "id": "spider-mites",
+      "aliases": [
+        "spider mites",
+        "webbing on leaves",
+        "tiny mites"
+      ],
+      "targetParts": [
+        15,
+        17
+      ]
+    },
+    {
+      "id": "fungus-gnats",
+      "aliases": [
+        "fungus gnats",
+        "little flies in soil",
+        "gnats in grow medium"
+      ],
+      "targetParts": [
+        15,
+        17
+      ]
+    },
+    {
+      "id": "thrips",
+      "aliases": [
+        "thrips",
+        "silver streaks on leaves",
+        "thrip damage"
+      ],
+      "targetParts": [
+        15,
+        17
+      ]
+    },
+    {
+      "id": "aphids",
+      "aliases": [
+        "aphids",
+        "sticky leaves insects",
+        "clusters of aphids"
+      ],
+      "targetParts": [
+        15,
+        17
+      ]
+    },
+    {
+      "id": "hot-room",
+      "aliases": [
+        "grow room too hot",
+        "hot grow room",
+        "high room temperature",
+        "heat stress"
+      ],
+      "targetParts": [
+        5,
+        14
+      ]
+    },
+    {
+      "id": "humidity",
+      "aliases": [
+        "humidity too high",
+        "humidity too low",
+        "rh too high",
+        "rh too low"
+      ],
+      "targetParts": [
+        5,
+        18
+      ]
+    },
+    {
+      "id": "vpd-language",
+      "aliases": [
+        "vpd",
+        "vapor pressure deficit",
+        "vapour pressure deficit"
+      ],
+      "targetParts": [
+        5
+      ]
+    },
+    {
+      "id": "dryback-language",
+      "aliases": [
+        "dryback",
+        "dry back",
+        "substrate dryback",
+        "media drying back"
+      ],
+      "targetParts": [
+        3,
+        5,
+        7
+      ]
+    },
+    {
+      "id": "ph-drift",
+      "aliases": [
+        "ph drift",
+        "ph keeps changing",
+        "ph swing"
+      ],
+      "targetParts": [
+        7,
+        21
+      ]
+    },
+    {
+      "id": "ec-ppm",
+      "aliases": [
+        "ppm",
+        "tds",
+        "ec",
+        "electrical conductivity",
+        "feed strength"
+      ],
+      "targetParts": [
+        7,
+        21
+      ]
+    },
+    {
+      "id": "drying-fast",
+      "aliases": [
+        "drying too fast",
+        "buds drying too fast",
+        "fast dry"
+      ],
+      "targetParts": [
+        18
+      ]
+    },
+    {
+      "id": "drying-slow",
+      "aliases": [
+        "drying too slow",
+        "buds staying wet",
+        "slow dry"
+      ],
+      "targetParts": [
+        18
+      ]
+    },
+    {
+      "id": "hay-smell",
+      "aliases": [
+        "hay smell",
+        "grass smell after harvest",
+        "chlorophyll smell"
+      ],
+      "targetParts": [
+        18
+      ]
+    },
+    {
+      "id": "mold-storage",
+      "aliases": [
+        "mold in jars",
+        "mold during cure",
+        "wet buds in storage"
+      ],
+      "targetParts": [
+        16,
+        18
+      ]
+    },
+    {
+      "id": "pollination",
+      "aliases": [
+        "accidental pollination",
+        "seeds in buds",
+        "pollen contamination"
+      ],
+      "targetParts": [
+        11,
+        20
+      ]
+    },
+    {
+      "id": "phenotype",
+      "aliases": [
+        "pheno",
+        "phenotype hunting",
+        "pheno hunt",
+        "keeper selection"
+      ],
+      "targetParts": [
+        8,
+        20
+      ]
+    },
+    {
+      "id": "backcross",
+      "aliases": [
+        "backcross",
+        "bx",
+        "back cross"
+      ],
+      "targetParts": [
+        20
+      ]
+    },
+    {
+      "id": "selfing",
+      "aliases": [
+        "selfing",
+        "s1",
+        "selfed seed"
+      ],
+      "targetParts": [
+        8,
+        20
+      ]
+    },
+    {
+      "id": "dli-language",
+      "aliases": [
+        "dli",
+        "daily light integral",
+        "light per day"
+      ],
+      "targetParts": [
+        6
+      ]
+    },
+    {
+      "id": "ppfd-language",
+      "aliases": [
+        "ppfd",
+        "par meter",
+        "light intensity"
+      ],
+      "targetParts": [
+        6
+      ]
+    },
+    {
+      "id": "co2-language",
+      "aliases": [
+        "co2",
+        "carbon dioxide supplementation",
+        "co2 enrichment"
+      ],
+      "targetParts": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": "trichome-color",
+      "aliases": [
+        "clear cloudy amber",
+        "trichome color",
+        "amber trichomes",
+        "cloudy trichomes"
+      ],
+      "targetParts": [
+        12,
+        18
+      ]
+    }
+  ]
+}
