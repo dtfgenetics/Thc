@@ -51,6 +51,7 @@ jobs:
           node --check scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
           node --check scripts/organize-wordpress-encyclopedia-topics.mjs
           node --check scripts/validate-encyclopedia-release-control.mjs
+          node --check scripts/publish-wordpress-learning-search-indexes.mjs
           npm run build:encyclopedia-scorecard
           node scripts/validate-encyclopedia-completion-scorecard.mjs
           npm run build:encyclopedia-discovery
@@ -114,6 +115,13 @@ jobs:
           echo "backup_dir=$topic_backup_dir" >> "$GITHUB_OUTPUT"
           echo "topics=$(node -p "require(process.argv[1]).activeTopics.length" "$topic_report")" >> "$GITHUB_OUTPUT"
           echo "articles=$(node -p "require(process.argv[1]).articleCount" "$topic_report")" >> "$GITHUB_OUTPUT"
+
+      - name: Publish refreshed encyclopedia search indexes
+        id: search_indexes
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/publish-wordpress-learning-search-indexes.mjs | tee "$RUNNER_TEMP/encyclopedia-search-index-publish.json"
 
       - name: Visitor-verify topic-first index and every current-batch article
         id: verify
