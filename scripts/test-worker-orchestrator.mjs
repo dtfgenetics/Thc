@@ -7,7 +7,7 @@ import { createLease, heartbeatLease, isLeaseExpired, recoveryDisposition } from
 import { classifyReconciliation, reconciliationNeedsMutation } from './orchestrator/reconcile.mjs'
 import { exactHeadMatches, inspectAllowedPaths, inspectCheckRollup, isPathAllowed, normalizeCheck } from './orchestrator/verification.mjs'
 import { classifyJobHealth, findOrphanManagedBranches, parseManagedBranch } from './orchestrator/audit.mjs'
-import { buildExecutionPacket, claimExecutor, executorHandoff, executorResult, heartbeatExecutor } from './orchestrator/executor.mjs'
+import { buildExecutionPacket, buildHandoffPacket, claimExecutor, executorHandoff, executorResult, heartbeatExecutor, renderHandoffMarkdown } from './orchestrator/executor.mjs'
 import { resolveCanonicalRepository } from './orchestrator/repositories.mjs'
 import { epicSummary, materializeJobPlan, topologicalJobOrder, validateEpicManifest } from './orchestrator/epics.mjs'
 import { inspectContractScope, validateAgentContract, verificationProfileFromContract } from './orchestrator/repo-contract.mjs'
@@ -440,6 +440,18 @@ const handoffExecutorJob = executorHandoff(heartbeatExecutorJob, {
 })
 assert.equal(handoffExecutorJob.executor.status, 'HANDED_OFF')
 assert.deepEqual(handoffExecutorJob.executor.handoff.remaining, ['verification'])
+const durableHandoff = buildHandoffPacket(handoffExecutorJob, { issueNumber: 300 })
+assert.equal(durableHandoff.ownership.repository, 'dtfgenetics/Thc')
+assert.deepEqual(durableHandoff.ownership.resources, ['game.high-iq'])
+assert.equal(durableHandoff.branch.currentHeadSha, 'head300b')
+assert.deepEqual(durableHandoff.progress.completed, ['implementation'])
+assert.deepEqual(durableHandoff.progress.remaining, ['verification'])
+assert.equal(durableHandoff.production.liveVerificationRequired, false)
+const durableHandoffMarkdown = renderHandoffMarkdown(handoffExecutorJob, { issueNumber: 300 })
+assert.match(durableHandoffMarkdown, /Durable chat\/agent handoff/)
+assert.match(durableHandoffMarkdown, /Canonical repository: `dtfgenetics\/Thc`/)
+assert.match(durableHandoffMarkdown, /Current head SHA: `head300b`/)
+assert.match(durableHandoffMarkdown, /verification/)
 
 const verifyReadyJob = executorResult(heartbeatExecutorJob, {
   executorId: 'chat:abc',
@@ -563,4 +575,4 @@ assert.throws(() => verificationProfileFromContract(toolsContractFixture, 'missi
 const productionMerged = newJob({ jobId: 'prod-1', title: 'Production', state: 'MERGED', productionImpact: true })
 assert.throws(() => transitionJob(productionMerged, 'DONE'), /Production-impacting/)
 
-console.log(JSON.stringify({ ok: true, tests: 128 }, null, 2))
+console.log(JSON.stringify({ ok: true, tests: 138 }, null, 2))
