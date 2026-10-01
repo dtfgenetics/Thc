@@ -14,6 +14,24 @@ export const FAMILY_PASSIVES = {
 };
 
 const clone = (value) => JSON.parse(JSON.stringify(value));
+const titleRole = (roleTag) => String(roleTag || '').split('-').filter(Boolean).map((part) => part[0]?.toUpperCase() + part.slice(1)).join(' ');
+
+export function prepareCardsWithEffects(cards, effectCatalog) {
+  const profiles = Array.isArray(effectCatalog?.profiles) ? effectCatalog.profiles : [];
+  const byKey = new Map(profiles.map((profile) => [`${profile.family}:${profile.stage}`, profile]));
+  return cards.map((card) => {
+    const profile = byKey.get(`${card.family}:${card.stage}`);
+    if (!profile) throw new Error(`Missing active effect profile for ${card.id}`);
+    return {
+      ...clone(card),
+      abilityName: titleRole(card.roleTag),
+      effectProfileId: profile.id,
+      effectTrigger: profile.trigger,
+      effectRulesText: profile.rulesText,
+      effect: clone(profile.mechanic)
+    };
+  });
+}
 
 export function seededRandom(seed = Date.now()) {
   let s = Math.abs(Number(seed) || 1) % 2147483647;
@@ -47,14 +65,15 @@ function createSide(cards, family, rng) {
   return { family, garden: STARTING_GARDEN, focus: 3, maxFocus: 3, nextFocusPenalty: 0, turnsStarted: 0, hand, deck, lanes: Array(LANES).fill(null), flags: {}, stats: { cardsPlayed: 0, evolutions: 0, attacks: 0, damage: 0, cardsLost: 0 } };
 }
 
-export function createGame({ cards, playerFamily, cpuFamily, seed = Date.now(), startingActor = "player" }) {
+export function createGame({ cards, effectCatalog, playerFamily, cpuFamily, seed = Date.now(), startingActor = "player" }) {
   const rng = seededRandom(seed);
+  const activeCards = prepareCardsWithEffects(cards, effectCatalog);
   if (!["player", "cpu"].includes(startingActor)) throw new Error(`Unknown starting actor: ${startingActor}`);
   if (playerFamily === cpuFamily) {
-    const options = [...new Set(cards.map((card) => card.family))].filter((family) => family !== playerFamily);
+    const options = [...new Set(activeCards.map((card) => card.family))].filter((family) => family !== playerFamily);
     cpuFamily = options[Math.floor(rng() * options.length)];
   }
-  const state = { version: "0.2.1", seed, round: 1, turn: startingActor, winner: null, reason: null, player: createSide(cards, playerFamily, rng), cpu: createSide(cards, cpuFamily, rng), log: [] };
+  const state = { version: "0.3.0", seed, round: 1, turn: startingActor, winner: null, reason: null, player: createSide(activeCards, playerFamily, rng), cpu: createSide(activeCards, cpuFamily, rng), log: [] };
   pushLog(state, `Showdown begins: ${playerFamily.toUpperCase()} vs ${cpuFamily.toUpperCase()}.`);
   drawCard(state, "player");
   drawCard(state, "cpu");
@@ -84,11 +103,50 @@ export function legalPlay(state, actor, cardIndex, laneIndex) {
 
 function makeUnit(card, side) { const kushBonus = side.family === "kush" ? 1 : 0; const maxVigor = card.vigor * 2 + kushBonus; return { ...clone(card), maxVigor, currentVigor: maxVigor, shield: 0, exhausted: false }; }
 
+function applyPlayEffect(state, actor, unit, evolving) {
+  const [selfKey, enemyKey] = sideKeys(actor);
+  const side = state[selfKey];
+  const enemy = state[enemyKey];
+  const mechanics = unit.effect ? [unit.effect, unit.effect.secondaryType ? { type: unit.effect.secondaryType, value: unit.effect.secondaryValue } : null].filter(Boolean) : [];
+  const notes = [];
+  for (const mechanic of mechanics) {
+    const value = Number(mechanic.value) || 0;
+    if (mechanic.type === "shield-on-play") {
+      unit.shield += value;
+      notes.push(`gains ${value} Shield`);
+    } else if (mechanic.type === "shield-on-evolve" && evolving) {
+      unit.shield += value;
+      notes.push(`gains ${value} evolution Shield`);
+    } else if (mechanic.type === "adaptive-refund-or-heal") {
+      if (side.garden < enemy.garden) {
+        side.garden = Math.min(MAX_GARDEN, side.garden + value);
+        notes.push(`heals ${value} Garden`);
+      } else {
+        const before = side.focus;
+        side.focus = Math.min(side.maxFocus, side.focus + value);
+        const refunded = side.focus - before;
+        if (refunded > 0) notes.push(`refunds ${refunded} Focus`);
+      }
+    } else if (mechanic.type === "garden-heal") {
+      const before = side.garden;
+      side.garden = Math.min(MAX_GARDEN, side.garden + value);
+      const healed = side.garden - before;
+      if (healed > 0) notes.push(`heals ${healed} Garden`);
+    } else if (mechanic.type === "draw-on-evolve" && evolving) {
+      let draws = 0;
+      for (let i = 0; i < value; i += 1) if (drawCard(state, actor)) draws += 1;
+      if (draws > 0) notes.push(`draws ${draws} card${draws === 1 ? "" : "s"}`);
+    }
+  }
+  if (notes.length) pushLog(state, `${unit.abilityName}: ${notes.join(", ")}.`);
+}
+
 export function playCard(state, actor, cardIndex, laneIndex) {
   const check = legalPlay(state, actor, cardIndex, laneIndex); if (!check.ok) return check;
   const [selfKey, enemyKey] = sideKeys(actor); const side = state[selfKey]; const enemy = state[enemyKey]; const card = side.hand.splice(cardIndex, 1)[0]; const evolving = card.stage > 1;
   side.focus -= check.cost; if (side.family === "cookies" && card.stage === 1 && !side.flags.cookiesDiscount) side.flags.cookiesDiscount = true;
   const unit = makeUnit(card, side); if (card.stage === 3 && side.family === "frost") unit.shield += 1; side.lanes[laneIndex] = unit; side.stats.cardsPlayed += 1; if (evolving) side.stats.evolutions += 1;
+  applyPlayEffect(state, actor, unit, evolving);
   if (side.family === "skunk" && !side.flags.skunkJam) { enemy.nextFocusPenalty = Math.min(2, enemy.nextFocusPenalty + 1); side.flags.skunkJam = true; pushLog(state, `${card.name} jams 1 Focus from the opponent's next turn.`); }
   if (evolving && side.family === "fruit") side.garden = Math.min(MAX_GARDEN, side.garden + 2);
   pushLog(state, `${actor === "player" ? "You play" : "CPU plays"} ${card.name} into lane ${laneIndex + 1}${evolving ? " as an evolution" : ""}.`);
@@ -109,21 +167,23 @@ export function attack(state, actor, laneIndex) {
   const [selfKey, enemyKey] = sideKeys(actor); const side = state[selfKey]; const enemy = state[enemyKey]; const attacker = side.lanes[laneIndex];
   const firstHazeAttack = side.family === "haze" && !side.flags.hazeAttack;
   side.focus -= check.cost; attacker.exhausted = true; side.stats.attacks += 1; if (firstHazeAttack) side.flags.hazeAttack = true;
-  let damage = attacker.power + (firstHazeAttack ? 1 : 0); if (side.family === "gas" && !side.flags.gasBurst) { damage += 2; side.flags.gasBurst = true; attacker.currentVigor -= 1; }
   const defender = enemy.lanes[laneIndex];
+  let damage = attacker.power + (firstHazeAttack ? 1 : 0); if (side.family === "gas" && !side.flags.gasBurst) { damage += 2; side.flags.gasBurst = true; attacker.currentVigor -= 1; }
+  if (attacker.effect?.type === "attack-bonus") damage += Number(attacker.effect.value) || 0;
+  if (defender?.shield > 0 && attacker.effect?.type === "shield-break-bonus") damage += Number(attacker.effect.value) || 0;
   if (defender) { const destroyed = damageUnit(defender, damage); side.stats.damage += damage; pushLog(state, `${attacker.name} hits ${defender.name} for ${damage}.`); if (destroyed) { pushLog(state, `${defender.name} is knocked out.`); enemy.lanes[laneIndex] = null; enemy.stats.cardsLost += 1; } }
-  else { const direct = 2 + (attacker.stage === 3 ? 1 : 0) + (attacker.power >= 9 ? 1 : 0); enemy.garden = Math.max(0, enemy.garden - direct); side.stats.damage += direct; pushLog(state, `${attacker.name} breaks through lane ${laneIndex + 1} for ${direct} Garden damage.`); }
+  else { const direct = 2 + (attacker.stage === 3 ? 1 : 0) + (attacker.power >= 9 ? 1 : 0) + (attacker.effect?.type === "open-lane-bonus" ? Number(attacker.effect.value) || 0 : 0); enemy.garden = Math.max(0, enemy.garden - direct); side.stats.damage += direct; pushLog(state, `${attacker.name} breaks through lane ${laneIndex + 1} for ${direct} Garden damage.`); }
   if (attacker.currentVigor <= 0) { side.lanes[laneIndex] = null; side.stats.cardsLost += 1; pushLog(state, `${attacker.name} burns out from overpressure.`); }
   resolveWinner(state); return { ok: true, damage };
 }
 
 export function drawCard(state, actor) { const [selfKey] = sideKeys(actor); const side = state[selfKey]; if (!side.deck.length) return null; const card = side.deck.shift(); side.hand.push(card); return card; }
-function recoverPurple(side) { if (side.family !== "purple") return null; const damaged = side.lanes.map((unit, index) => ({ unit, index })).filter(({ unit }) => unit && unit.currentVigor < unit.maxVigor).sort((a, b) => (a.unit.currentVigor / a.unit.maxVigor) - (b.unit.currentVigor / b.unit.maxVigor))[0]; if (!damaged) return null; damaged.unit.currentVigor = Math.min(damaged.unit.maxVigor, damaged.unit.currentVigor + 2); return damaged.unit.name; }
+function recoverPurple(side) { if (side.family !== "purple") return null; const damaged = side.lanes.map((unit, index) => ({ unit, index })).filter(({ unit }) => unit && unit.currentVigor < unit.maxVigor).sort((a, b) => (a.unit.currentVigor / a.unit.maxVigor) - (b.unit.currentVigor / b.unit.maxVigor))[0]; if (!damaged) return null; const bonus = side.lanes.reduce((best, unit) => unit?.effect?.type === "night-recovery-bonus" ? Math.max(best, Number(unit.effect.value) || 0) : best, 0); const amount = 2 + bonus; const before = damaged.unit.currentVigor; damaged.unit.currentVigor = Math.min(damaged.unit.maxVigor, damaged.unit.currentVigor + amount); return { name: damaged.unit.name, amount: damaged.unit.currentVigor - before }; }
 function startTurn(state, actor) { const side = state[actor]; side.maxFocus = Math.min(6, 3 + Math.floor((state.round - 1) / 2)); side.focus = Math.max(0, side.maxFocus - side.nextFocusPenalty); side.nextFocusPenalty = 0; side.flags = {}; side.lanes.forEach((unit) => { if (unit) unit.exhausted = false; }); if (side.turnsStarted > 0) drawCard(state, actor); side.turnsStarted += 1; }
 
 export function endTurn(state, actor) {
   if (state.winner) return { ok: false, reason: "Game is over." }; if (state.turn !== actor) return { ok: false, reason: "Not this side's turn." };
-  const side = state[actor]; const healed = recoverPurple(side); if (healed) pushLog(state, `${healed} recovers 2 Vigor under Purple's Night Recovery.`);
+  const side = state[actor]; const healed = recoverPurple(side); if (healed) pushLog(state, `${healed.name} recovers ${healed.amount} Vigor under Purple's Night Recovery.`);
   if (actor === "player") {
     state.turn = "cpu";
     startTurn(state, "cpu");
