@@ -32,6 +32,9 @@ export function buildExecutionPacket(job, {
     jobId: job.jobId,
     issueNumber: issueNumber ?? null,
     repository: job.repository,
+    canonicalDomain: job.canonicalDomain || null,
+    dispatchMode: job.dispatchMode || 'local',
+    branchProvisioned: job.branchProvisioned !== false,
     project: job.project,
     title: job.title,
     state: job.state,
@@ -75,6 +78,7 @@ export function claimExecutor(job, {
   validateJob(job)
   if (!executorId) throw new Error('executorId is required')
   if (job.state !== 'LEASED') throw new Error(`Executor claim requires LEASED state; found ${job.state}`)
+  if (job.branchProvisioned === false) throw new Error('Executor claim requires the target branch to be provisioned first')
   if (!job.lease) throw new Error('Job has no dispatcher lease')
   if (isLeaseExpired(job.lease, now)) throw new Error('Dispatcher lease has expired; reconcile before executor claim')
   if (job.executor && !['FAILED', 'HANDED_OFF'].includes(job.executor.status)) {
