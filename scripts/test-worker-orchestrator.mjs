@@ -13,6 +13,7 @@ const config = validateConfig({
   baseBranch: 'main',
   maxWorkers: 3,
   maxWorkersPerProject: 1,
+  maxScopedWorkersPerProject: 2,
   lease: { ttlMinutes: 240, heartbeatGraceMinutes: 15, maxAttempts: 3 },
   labels: {
     ready: 'worker:ready',
@@ -90,6 +91,49 @@ const duplicateProjectPlan = planClaims([
 ], [], config)
 assert.equal(duplicateProjectPlan.length, 1, 'only one worker may claim a project when maxWorkersPerProject=1')
 assert.equal(duplicateProjectPlan[0].issueNumber, 20)
+
+
+const sameProjectScopedPlan = planClaims([
+  {
+    ...issue(30, 'High IQ scoped', ['worker:ready', 'project:games']),
+    body: '<!-- worker-plan:{"resourceSet":["game.high-iq"]} -->',
+  },
+  {
+    ...issue(32, 'Plant Atlas scoped', ['worker:ready', 'project:games']),
+    body: '<!-- worker-plan:{"resourceSet":["app.plant-atlas"]} -->',
+  },
+], [], config)
+assert.deepEqual(
+  sameProjectScopedPlan.map((item) => item.issueNumber),
+  [30, 32],
+  'disjoint scoped resources may run concurrently inside one project',
+)
+
+const unscopedBlocksScopedPlan = planClaims([
+  {
+    ...issue(33, 'High IQ waits', ['worker:ready', 'project:games']),
+    body: '<!-- worker-plan:{"resourceSet":["game.high-iq"]} -->',
+  },
+], [
+  { issueNumber: 98, project: 'games', active: true, resourceSet: [] },
+], config)
+assert.deepEqual(unscopedBlocksScopedPlan, [], 'legacy unscoped project work must keep the project exclusive')
+
+const scopedProjectLimitPlan = planClaims([
+  {
+    ...issue(34, 'Scoped one', ['worker:ready', 'project:games']),
+    body: '<!-- worker-plan:{"resourceSet":["game.high-iq"]} -->',
+  },
+  {
+    ...issue(35, 'Scoped two', ['worker:ready', 'project:games']),
+    body: '<!-- worker-plan:{"resourceSet":["game.high-land"]} -->',
+  },
+  {
+    ...issue(36, 'Scoped three', ['worker:ready', 'project:games']),
+    body: '<!-- worker-plan:{"resourceSet":["app.plant-atlas"]} -->',
+  },
+], [], config)
+assert.equal(scopedProjectLimitPlan.length, 2, 'scoped same-project concurrency must respect maxScopedWorkersPerProject')
 
 
 assert.equal(dependencyIssueNumber('issue-123'), 123)
@@ -253,4 +297,4 @@ assert.deepEqual(orphanBranches.map((item) => item.issueNumber), [200])
 const productionMerged = newJob({ jobId: 'prod-1', title: 'Production', state: 'MERGED', productionImpact: true })
 assert.throws(() => transitionJob(productionMerged, 'DONE'), /Production-impacting/)
 
-console.log(JSON.stringify({ ok: true, tests: 76 }, null, 2))
+console.log(JSON.stringify({ ok: true, tests: 82 }, null, 2))

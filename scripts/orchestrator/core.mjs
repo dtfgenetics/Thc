@@ -15,6 +15,7 @@ export function validateConfig(config) {
   if (!config || ![1, 2].includes(config.version)) throw new Error('worker orchestrator config version must be 1 or 2')
   if (!Number.isInteger(config.maxWorkers) || config.maxWorkers < 1) throw new Error('maxWorkers must be a positive integer')
   if (!Number.isInteger(config.maxWorkersPerProject) || config.maxWorkersPerProject < 1) throw new Error('maxWorkersPerProject must be a positive integer')
+  if (!Number.isInteger(config.maxScopedWorkersPerProject || config.maxWorkersPerProject) || (config.maxScopedWorkersPerProject || config.maxWorkersPerProject) < 1) throw new Error('maxScopedWorkersPerProject must be a positive integer when set')
   if (!config.labels?.ready || !config.labels?.claimed || !config.labels?.blocked || !config.labels?.done) throw new Error('ready/claimed/blocked/done labels are required')
   if (!config.workerKinds || Object.keys(config.workerKinds).length === 0) throw new Error('at least one worker kind is required')
 
@@ -166,14 +167,19 @@ export function planClaims(issues, activeClaims, config, satisfiedDependencies =
   const available = Math.max(0, config.maxWorkers - active.length)
   if (available === 0) return []
 
-  const perProject = new Map()
+  const projectState = new Map()
   for (const claim of active) {
     const project = claim.project || 'general'
-    perProject.set(project, (perProject.get(project) || 0) + 1)
+    if (!projectState.has(project)) projectState.set(project, { total: 0, scoped: 0, unscoped: 0 })
+    const state = projectState.get(project)
+    state.total += 1
+    if (cleanStringArray(claim.resourceSet).length) state.scoped += 1
+    else state.unscoped += 1
   }
 
   const activeResources = active.flatMap((claim) => cleanStringArray(claim.resourceSet))
   const plannedResources = []
+  const plannedProjectState = new Map()
   const selected = []
 
   const candidates = issues
@@ -193,10 +199,25 @@ export function planClaims(issues, activeClaims, config, satisfiedDependencies =
       continue
     }
 
-    const count = perProject.get(claim.project) || 0
-    if (count >= config.maxWorkersPerProject) continue
+    const activeState = projectState.get(claim.project) || { total: 0, scoped: 0, unscoped: 0 }
+    const plannedState = plannedProjectState.get(claim.project) || { total: 0, scoped: 0, unscoped: 0 }
+    const scoped = claim.resourceSet.length > 0
 
-    perProject.set(claim.project, count + 1)
+    if (!scoped) {
+      if (activeState.total + plannedState.total >= config.maxWorkersPerProject) continue
+      if (activeState.total + plannedState.total > 0) continue
+    } else {
+      if (activeState.unscoped + plannedState.unscoped > 0) continue
+      const scopedLimit = config.maxScopedWorkersPerProject || config.maxWorkersPerProject
+      if (activeState.scoped + plannedState.scoped >= scopedLimit) continue
+    }
+
+    if (!plannedProjectState.has(claim.project)) plannedProjectState.set(claim.project, { total: 0, scoped: 0, unscoped: 0 })
+    const nextState = plannedProjectState.get(claim.project)
+    nextState.total += 1
+    if (scoped) nextState.scoped += 1
+    else nextState.unscoped += 1
+
     selected.push(claim)
     plannedResources.push(...claim.resourceSet)
   }

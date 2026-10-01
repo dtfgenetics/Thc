@@ -188,6 +188,7 @@ jobs:
             '### Worker allocation',
             `Config version: **${report.configVersion ?? 1}**`,
             `Active workers: **${report.activeWorkers}/${report.maxWorkers}**`,
+            `Scoped workers/project: **${report.maxScopedWorkersPerProject ?? report.maxWorkersPerProject ?? 1}**`,
             `Expired claims: **${report.expiredClaims ?? 0}**`,
             `Ready issues: **${report.readyIssues}**`,
             `Planned claims: **${report.plannedClaims.length}**`,

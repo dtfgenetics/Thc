@@ -292,6 +292,8 @@ if (command === 'status' || command === 'plan') {
     mode: command,
     configVersion: config.version,
     maxWorkers: config.maxWorkers,
+    maxWorkersPerProject: config.maxWorkersPerProject,
+    maxScopedWorkersPerProject: config.maxScopedWorkersPerProject || config.maxWorkersPerProject,
     activeWorkers: liveActive.length,
     expiredClaims: expired.length,
     availableWorkers: Math.max(0, config.maxWorkers - liveActive.length),
