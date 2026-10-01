@@ -29,8 +29,8 @@ SAFE_TARGET = re.compile(r"^[a-z0-9][a-z0-9-]*(?:/[a-z0-9][a-z0-9-]*)*$")
 OVERLAY_TARGET = "dtf-content-overlay"
 OVERLAY_REQUIRED = "dtf-content-overlay/overlay-manifest.json"
 OVERLAY_PREFIX = "dtf-content-overlay/"
-ATLAS_TARGETS = ("atlas", "assets", "assets/images/atlas")
-ATLAS_PREFIXES = ("atlas/", "assets/", "assets/images/atlas/")
+ATLAS_TARGETS = ("atlas", "assets/images/atlas")
+ATLAS_PREFIXES = ("atlas/", "assets/images/atlas/")
 SHARED_EXACT_FILES = (
     "assets/thc-measurement-journal-v1.js",
     "assets/thc-tool-suite-v1.js",
@@ -392,8 +392,10 @@ def patch_payload(payload: bytes, repo_root: pathlib.Path) -> bytes:
     for prefix in ATLAS_PREFIXES:
         if prefix not in prefixes:
             raise SystemExit(f"Atlas support prefix missing from bridge: {prefix}")
-    if "games/" in prefixes or "learn/" in prefixes:
-        raise SystemExit("unsafe broad game/learn prefix is forbidden")
+    forbidden_broad_prefixes = {"games/", "learn/", "assets/"}
+    unsafe_prefixes = sorted(forbidden_broad_prefixes & prefixes)
+    if unsafe_prefixes:
+        raise SystemExit("unsafe broad deployment prefix is forbidden: " + ", ".join(unsafe_prefixes))
     for forbidden in ("index.html", "learn", "blog", "community", "games"):
         if forbidden in targets:
             raise SystemExit(f"WordPress-owned target entered bridge: {forbidden}")
