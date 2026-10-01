@@ -58,6 +58,7 @@ The repository may have up to four active orchestrated tasks overall. Legacy/uns
 ```bash
 node scripts/orchestrator.mjs labels
 node scripts/orchestrator-plan-job.mjs --issue=123 --project=tools --worker-kind=code --resources='tool.vpd' --acceptance='tests pass'
+node scripts/orchestrator-epic.mjs --manifest=configuration/orchestrator/example-epic-manifest.json
 node scripts/orchestrator.mjs status
 node scripts/orchestrator.mjs plan
 node scripts/orchestrator.mjs dispatch
@@ -300,3 +301,41 @@ node scripts/orchestrator-plan-job.mjs \
 ```
 
 Planning and dispatch are intentionally separate. A chat may validate/store a plan without making it immediately dispatchable.
+
+
+## Epic work graphs
+
+Broad requests should become an Epic plus bounded Agent Jobs rather than one oversized worker branch.
+
+Epic manifests use `configuration/orchestrator/epic-manifest.schema.json`. A complete example is stored at `configuration/orchestrator/example-epic-manifest.json`.
+
+Dry-run a manifest:
+
+```bash
+node scripts/orchestrator-epic.mjs \
+  --manifest=configuration/orchestrator/example-epic-manifest.json
+```
+
+Create the Epic and child jobs after the entire graph validates:
+
+```bash
+node scripts/orchestrator-epic.mjs \
+  --manifest=path/to/project-epic.json \
+  --apply=true \
+  --ready=true
+```
+
+The graph validator requires unique job keys, resource scope, acceptance criteria, valid dependency references, and an acyclic dependency graph. Every child job is also passed through the normal canonical-repository/resource routing logic before any issue is created.
+
+On apply:
+
+1. one durable `[EPIC]` issue is created in the control repository;
+2. child jobs are created in topological order;
+3. manifest dependency keys are replaced with actual `issue-N` dependencies;
+4. each child stores its validated `worker-plan` marker;
+5. the Epic is updated with a checklist of child issue numbers;
+6. `--ready=true` makes valid child jobs immediately eligible for the normal dependency-aware dispatcher.
+
+Independent child jobs can be claimed by different chats concurrently. Dependent jobs remain blocked until their prerequisite job issues reach `DONE`.
+
+The controller never deletes partially created work after an infrastructure/API failure. Any created Epic/job issues remain durable evidence for reconciliation and repair.
