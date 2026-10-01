@@ -228,7 +228,7 @@ The `Thc` repository is the control plane, not the canonical implementation home
 A planned job may declare:
 
 ```html
-<!-- worker-plan:{"canonicalDomain":"cultivation tools","resourceSet":["tool.vpd"],"allowedPaths":["src/tools/vpd/**"],"verificationProfile":"tools-canonical"} -->
+<!-- worker-plan:{"canonicalDomain":"cultivation tools","resourceSet":["tool.vpd"],"allowedPaths":["site/public-route-patch/tools/vpd/**"],"verificationProfile":"default"} -->
 ```
 
 The controller resolves `canonicalDomain` through `data/repository-registry.json`.
@@ -293,8 +293,8 @@ node scripts/orchestrator-plan-job.mjs \
   --worker-kind=code \
   --canonical-domain='cultivation tools' \
   --resources='tool.vpd' \
-  --allowed-paths='src/tools/vpd/**' \
-  --verification-profile='tools-canonical' \
+  --allowed-paths='site/public-route-patch/tools/vpd/**' \
+  --verification-profile='default' \
   --acceptance='tool tests pass|mobile result layout remains usable' \
   --apply=true \
   --ready=true
@@ -339,3 +339,31 @@ On apply:
 Independent child jobs can be claimed by different chats concurrently. Dependent jobs remain blocked until their prerequisite job issues reach `DONE`.
 
 The controller never deletes partially created work after an infrastructure/API failure. Any created Epic/job issues remain durable evidence for reconciliation and repair.
+
+
+## Repository-owned agent contracts
+
+Canonical external repositories publish `dtf-agent-contract.json`. The contract belongs to the canonical repository; `Thc` consumes it but does not duplicate or override its product rules.
+
+Contract v1 declares:
+
+- canonical domains owned by the repository;
+- default branch;
+- allowed source roots;
+- protected paths;
+- named verification profiles and commands;
+- production/integration boundary;
+- the central control repository.
+
+Before an external branch is provisioned, `orchestrator-executor.mjs provision` fetches the target repository contract and verifies:
+
+1. the contract identifies the expected target repository and `dtfgenetics/Thc` control repository;
+2. the job canonical domain is actually owned by that repository;
+3. the job base branch matches the repo contract;
+4. the selected verification profile exists in that repo;
+5. every allowed path stays inside a declared source root;
+6. ordinary code/content workers do not cross protected path boundaries.
+
+If any rule fails, provisioning stops before branch creation.
+
+After a successful gate, the durable job records a snapshot of the validated contract, including verification commands and production boundary. The execution packet exposes that snapshot to replacement chats, so handoff does not require reconstructing repository rules from conversation history.
