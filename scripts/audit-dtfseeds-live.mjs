@@ -41,7 +41,7 @@ const routes = [
   },
   {
     key: 'tools', path: '/tools/', minimumText: 600,
-    requiredText: ['Measure it. Document it. Diagnose with context.', 'THC GrowLens', 'THC Grow Doc'],
+    requiredText: ['Grow with records. Diagnose with evidence.', 'THC GrowLens', 'THC Grow Doc', 'Plant Atlas', 'Terpene Atlas'],
     requiredLinks: ['/seeds/', '/shop/', '/growlens/', '/thc-grow-doc/']
   },
   {
