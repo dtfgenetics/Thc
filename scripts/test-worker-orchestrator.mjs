@@ -254,14 +254,39 @@ assert.equal(parseManagedBranch('project/platform/manual-branch'), null)
 
 const healthyAuditJob = {
   ...newJob({ jobId: 'issue-123', issueId: 123, title: 'Audit job', state: 'RUNNING', branch: 'work/games/fix-mobile-i123-abcdef0' }),
-  lease: { leaseId: 'lease-a' },
+  lease: { leaseId: 'lease-a', workerId: 'executor-a' },
+  executor: { executorId: 'executor-a', heartbeatAt: '2026-09-06T12:00:00.000Z', status: 'RUNNING' },
 }
 assert.deepEqual(classifyJobHealth({
   issueNumber: 123,
   job: healthyAuditJob,
   branch: { exists: true, name: healthyAuditJob.branch, headSha: 'abc' },
   prs: [],
+  now: '2026-09-06T12:30:00.000Z',
 }), [])
+
+
+const missingExecutorHealth = classifyJobHealth({
+  issueNumber: 125,
+  job: { ...newJob({ jobId: 'issue-125', issueId: 125, title: 'Missing executor', state: 'RUNNING', branch: 'work/test/missing-exec-i125-abcdef4' }), lease: { leaseId: 'lease-b', workerId: 'dispatcher' } },
+  branch: { exists: true, name: 'work/test/missing-exec-i125-abcdef4' },
+  prs: [],
+  now: '2026-09-06T12:30:00.000Z',
+})
+assert.equal(missingExecutorHealth.some((item) => item.code === 'active-job-missing-executor'), true)
+
+const staleExecutorHealth = classifyJobHealth({
+  issueNumber: 126,
+  job: {
+    ...newJob({ jobId: 'issue-126', issueId: 126, title: 'Stale executor', state: 'RUNNING', branch: 'work/test/stale-exec-i126-abcdef5' }),
+    lease: { leaseId: 'lease-c', workerId: 'executor-c' },
+    executor: { executorId: 'executor-c', heartbeatAt: '2026-09-06T10:00:00.000Z', status: 'RUNNING' },
+  },
+  branch: { exists: true, name: 'work/test/stale-exec-i126-abcdef5' },
+  prs: [],
+  now: '2026-09-06T12:30:00.000Z',
+})
+assert.equal(staleExecutorHealth.some((item) => item.code === 'executor-heartbeat-stale'), true)
 
 const missingBranchHealth = classifyJobHealth({
   issueNumber: 123,
@@ -386,4 +411,4 @@ assert.equal(failedExecutorJob.executor.status, 'FAILED')
 const productionMerged = newJob({ jobId: 'prod-1', title: 'Production', state: 'MERGED', productionImpact: true })
 assert.throws(() => transitionJob(productionMerged, 'DONE'), /Production-impacting/)
 
-console.log(JSON.stringify({ ok: true, tests: 97 }, null, 2))
+console.log(JSON.stringify({ ok: true, tests: 101 }, null, 2))
