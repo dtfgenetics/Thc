@@ -64,7 +64,7 @@ const responsiveLayoutStyle=`<style id="dtf-responsive-layout-v1">${responsiveLa
 const uxPolishStyle=`<style id="dtf-sitewide-ux-polish-v1">${uxPolishCss}</style>`;
 
 const header=getWordPressSitewideHeaderBlock(`${responsiveLayoutStyle}${uxPolishStyle}${SITEWIDE_FOOTER_STYLE_TAG}`);
-for(const token of [SITEWIDE_HEADER_MARKER,'overflow-x:auto','canonical-five-v1','>Seeds</a>','>Learn</a>','>Tools</a>','>Games</a>','>Shop</a>']){
+for(const token of [SITEWIDE_HEADER_MARKER,'overflow-x:auto','canonical-five-v1','>Home</a>','>Seeds</a>','>Learn</a>','>Courses</a>','>Tools</a>','>Games</a>','>Community</a>','>Shop</a>']){
   if(!header.includes(token)) throw new Error(`Generated shared header is missing required compatibility token: ${token}`);
 }
 const footer=getWordPressSitewideFooterBlock({brandImageUrl:brand.source_url});
