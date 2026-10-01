@@ -331,11 +331,15 @@
         "reconcileNeeded": [
           {
             "branch": "ui/learn-visitor-ux-pass",
-            "reason": "legacy learner UI/CSS branch; compare only reusable UX behavior against canonical education/public experience"
+            "reason": "legacy CSS implementation; reusable learner UX/mobile/accessibility intent is preserved in thc-grow-hub PR #163; retire after merge"
           },
           {
             "branch": "system/continuous-improvement-loop",
-            "reason": "contains legacy public-learning navigation/center data; compare against current thc-grow-hub/Thc learning experience before retirement"
+            "reason": "reusable public-learning UX contract migrated to thc-grow-hub PR #163; retire after merge"
+          },
+          {
+            "branch": "fix/ui-ux-foundation-20260921",
+            "reason": "legacy hub-wide UI implementation is obsolete; reusable learner hierarchy/mobile/accessibility/progressive-disclosure intent is preserved in thc-grow-hub PR #163; retire after merge"
           }
         ],
         "rule": "Do not merge diverged cleanup branches wholesale. Rebase or selectively apply only the retirement changes that remain valid against current main, then validate before classifying delete-safe."
