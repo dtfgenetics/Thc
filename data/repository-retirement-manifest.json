@@ -582,6 +582,24 @@
       "branch": "recovery/genetics-propagation-complete",
       "disposition": "delete_safe",
       "basis": "canonical_thc-grow-hub_content/site/genetics-propagation.json_already_contains_the_complete_six-module_genetics/propagation_center"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "integration/genetics-propagation-crosswalk",
+      "disposition": "delete_safe",
+      "basis": "canonical_crosswalk_migrated_and_merged_into_thc-grow-hub_via_PR_pr_161"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "integration/genetics-growdoc-issues",
+      "disposition": "delete_safe",
+      "basis": "canonical_Grow_Doc_mapping_migrated_and_merged_into_Thc-dataset_via_PR_pr_331"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "integration/genetics-growdoc-targets",
+      "disposition": "delete_safe",
+      "basis": "canonical_Grow_Doc_mapping_migrated_and_merged_into_Thc-dataset_via_PR_pr_331"
     }
   ]
 }
