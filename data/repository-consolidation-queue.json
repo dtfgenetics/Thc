@@ -47,7 +47,9 @@
         "Legacy WordPress/deployment tooling classified superseded.",
         "Legacy certification widgets classified historical-only.",
         "Copied Weedopolis implementation and deploy artifacts removed from dtf-thc-hub via PR #72; standalone Weedopolis repo remains canonical.",
-        "Legacy Kush Kings PHP/runtime hardening branches reconciled against canonical dtfgenetics/Thc-chess-git Node/Express/Socket.IO controls."
+        "Legacy Kush Kings PHP/runtime hardening branches reconciled against canonical dtfgenetics/Thc-chess-git Node/Express/Socket.IO controls.",
+        "Genetics/propagation education crosswalk migrated to thc-grow-hub PR #161.",
+        "Genetics/propagation Grow Doc mapping migrated with corrected canonical diagnostic slugs to Thc-dataset PR #331."
       ],
       "canonicalTargets": [
         "dtfgenetics/Thc",
@@ -312,21 +314,21 @@
           {
             "branch": "recovery/genetics-propagation-complete",
             "basis": "canonical thc-grow-hub content/site/genetics-propagation.json already contains the complete six-module genetics/propagation center"
-          }
-        ],
-        "reconcileNeeded": [
-          {
-            "branch": "integration/genetics-growdoc-issues",
-            "reason": "canonical migration opened as Thc-dataset PR #331; retire after merge"
-          },
-          {
-            "branch": "integration/genetics-growdoc-targets",
-            "reason": "canonical migration opened as Thc-dataset PR #331; retire after merge"
           },
           {
             "branch": "integration/genetics-propagation-crosswalk",
-            "reason": "canonical migration opened as thc-grow-hub PR #161; retire after merge"
+            "basis": "canonical crosswalk migrated and merged into thc-grow-hub via PR #161"
           },
+          {
+            "branch": "integration/genetics-growdoc-issues",
+            "basis": "canonical Grow Doc mapping migrated and merged into Thc-dataset via PR #331"
+          },
+          {
+            "branch": "integration/genetics-growdoc-targets",
+            "basis": "canonical Grow Doc mapping migrated and merged into Thc-dataset via PR #331"
+          }
+        ],
+        "reconcileNeeded": [
           {
             "branch": "ui/learn-visitor-ux-pass",
             "reason": "legacy learner UI/CSS branch; compare only reusable UX behavior against canonical education/public experience"
