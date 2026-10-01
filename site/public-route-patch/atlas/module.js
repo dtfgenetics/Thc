@@ -119,6 +119,14 @@
         deep.innerHTML = deepLinks.map(([href, label]) => `<a class="related-link" href="${href}">${label} →</a>`).join('');
         deep.closest('[data-deep-panel]').hidden = false;
       }
+
+      if (!document.querySelector('script[data-atlas-study-runtime]')) {
+        const study = document.createElement('script');
+        study.src = '/atlas/atlas-study-progress-v1.js';
+        study.defer = true;
+        study.dataset.atlasStudyRuntime = '';
+        document.body.appendChild(study);
+      }
     } catch (error) {
       console.error(error);
       const main = $('main');

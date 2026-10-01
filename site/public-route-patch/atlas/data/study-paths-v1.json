@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "storageKey": "dtf.atlas.study-progress.v1",
+  "masteryPolicy": "System completion is user-asserted study progress. It is not a certification, credential, or proof of competency.",
+  "paths": [
+    {
+      "id": "plant-foundations",
+      "title": "Plant Foundations",
+      "summary": "Build a whole-plant model from seed establishment through roots, stems, branching, leaves, flowers, and trichomes.",
+      "outcome": "Connect major structures to their roles in the plant as one biological system.",
+      "systems": [
+        "seed-germination",
+        "root-system",
+        "stem-vascular",
+        "nodes-branching",
+        "leaf-module",
+        "flower-anatomy",
+        "trichomes-resin"
+      ]
+    },
+    {
+      "id": "water-transport",
+      "title": "Water & Transport",
+      "summary": "Follow water and dissolved ions from the root zone through vascular transport, leaf exchange, and atmospheric demand.",
+      "outcome": "Explain how roots, xylem, stomata, transpiration, nutrition, and environment interact.",
+      "systems": [
+        "root-system",
+        "stem-vascular",
+        "water-relations",
+        "leaf-module",
+        "mineral-nutrition",
+        "environmental-physiology"
+      ]
+    },
+    {
+      "id": "diagnostic-reasoning",
+      "title": "Diagnostic Reasoning",
+      "summary": "Move from a healthy baseline to pattern description, measured context, stress biology, and differential diagnosis.",
+      "outcome": "Use observations and measurements to separate plausible explanations before acting.",
+      "systems": [
+        "leaf-module",
+        "root-system",
+        "mineral-nutrition",
+        "environmental-physiology",
+        "stress-defense",
+        "diagnostics"
+      ]
+    },
+    {
+      "id": "canopy-architecture",
+      "title": "Canopy Architecture",
+      "summary": "Connect meristems, branching, vascular support, light capture, signaling, environment, and phenotype.",
+      "outcome": "Understand why canopy form emerges from genetics, signaling, structure, and environment together.",
+      "systems": [
+        "nodes-branching",
+        "stem-vascular",
+        "hormones-signaling",
+        "photosynthesis-carbon",
+        "environmental-physiology",
+        "genetics-phenotype"
+      ]
+    },
+    {
+      "id": "reproduction-breeding-biology",
+      "title": "Reproduction & Breeding Biology",
+      "summary": "Follow reproductive development through flower anatomy, sex expression, pollen, fertilization, seed, inheritance, and phenotype.",
+      "outcome": "Connect reproductive structures and processes with genetics and observable variation.",
+      "systems": [
+        "flower-anatomy",
+        "reproductive-biology",
+        "genetics-phenotype",
+        "hormones-signaling",
+        "seed-germination"
+      ]
+    },
+    {
+      "id": "flower-trichome-observation",
+      "title": "Flower & Trichome Observation",
+      "summary": "Study flower development, secretory structures, stress context, reproductive biology, and evidence-based observation.",
+      "outcome": "Use floral and trichome observations as context without treating appearance as a direct chemistry measurement.",
+      "systems": [
+        "flower-anatomy",
+        "trichomes-resin",
+        "reproductive-biology",
+        "stress-defense",
+        "environmental-physiology",
+        "diagnostics"
+      ]
+    }
+  ]
+}
