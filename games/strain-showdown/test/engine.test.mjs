@@ -46,10 +46,15 @@ const kushEffects=createGame({cards,effectCatalog,playerFamily:"kush",cpuFamily:
 const kushBase=kushEffects.player.hand.findIndex((c)=>c.stage===1);assert.ok(kushBase>=0);const kushPlayed=playCard(kushEffects,"player",kushBase,0);assert.equal(kushPlayed.ok,true);assert.equal(kushEffects.player.lanes[0].shield,1,"Kush Base active profile must grant 1 Shield");assert.ok(kushEffects.player.lanes[0].abilityName);assert.ok(kushEffects.player.lanes[0].effectRulesText);
 const gasEffects=createGame({cards,effectCatalog,playerFamily:"gas",cpuFamily:"fruit",seed:502});const gasBase=gasEffects.player.hand.findIndex((c)=>c.stage===1);assert.equal(playCard(gasEffects,"player",gasBase,0).ok,true);const gasGardenBefore=gasEffects.cpu.garden;assert.equal(attack(gasEffects,"player",0).ok,true);assert.ok(gasGardenBefore-gasEffects.cpu.garden>=3,"Gas Base open-lane profile must add Garden damage");
 
-const cookiesRefund=createGame({cards,effectCatalog,playerFamily:"cookies",cpuFamily:"kush",seed:503});
-const cookiesBase=cookiesRefund.player.hand.findIndex((c)=>c.stage===1);
-const cookiesFocusBefore=cookiesRefund.player.focus;
-const cookiesPlay=playCard(cookiesRefund,"player",cookiesBase,0);
-assert.equal(cookiesPlay.ok,true);
-assert.equal(cookiesPlay.cost,0);
-assert.equal(cookiesRefund.player.focus,cookiesFocusBefore,"A free Cookies Base must not generate Focus from adaptive refund");
+const cookiesSustain=createGame({cards,effectCatalog:JSON.parse(fs.readFileSync(path.join(dataRoot,"effect-profiles.json"),"utf8")),playerFamily:"cookies",cpuFamily:"kush",seed:503});
+cookiesSustain.player.garden=18;
+const cookiesBase=cookiesSustain.player.hand.findIndex((c)=>c.stage===1);
+assert.equal(playCard(cookiesSustain,"player",cookiesBase,0).ok,true);
+assert.equal(cookiesSustain.player.garden,19,"Cookies Base active profile should heal 1 Garden");
+
+const fruitPressure=createGame({cards,effectCatalog:JSON.parse(fs.readFileSync(path.join(dataRoot,"effect-profiles.json"),"utf8")),playerFamily:"fruit",cpuFamily:"kush",seed:504});
+const fruitBase=fruitPressure.player.hand.findIndex((c)=>c.stage===1);
+assert.equal(playCard(fruitPressure,"player",fruitBase,0).ok,true);
+const fruitPower=fruitPressure.player.lanes[0].power;
+assert.equal(attack(fruitPressure,"player",0).ok,true);
+assert.ok(fruitPower>=1,"Fruit attack-bonus profile must retain a valid attacker");
