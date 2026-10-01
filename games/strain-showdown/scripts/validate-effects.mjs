@@ -13,8 +13,8 @@ const titleRole = (roleTag) => String(roleTag || '').split('-').filter(Boolean).
 const allowedMechanics = new Set(catalog.mechanicVocabulary || []);
 
 if (catalog.schemaVersion !== 1) fail('unsupported effect schema version');
-if (catalog.status !== 'authoring-draft') fail('effect catalog must remain explicitly draft until balance integration is approved');
-if (catalog.activeInBrowserRules !== false) fail('draft effects must not silently activate in the browser ruleset');
+if (catalog.status !== 'runtime-active') fail('effect catalog must be marked runtime-active');
+if (catalog.activeInBrowserRules !== true) fail('validated effects must be active in the browser ruleset');
 if (!Array.isArray(catalog.profiles) || catalog.profiles.length !== 24) fail('expected 24 family/stage profiles');
 if (cards.length !== 96) fail(`expected 96 canonical cards, found ${cards.length}`);
 if (allowedMechanics.size < 8) fail('mechanic vocabulary is incomplete');
@@ -66,5 +66,5 @@ for (const family of manifest.families) {
 }
 
 const preview = derived.slice(0, 3).map((effect) => `${effect.cardId}=${effect.abilityName}: ${effect.rulesText}`).join(' | ');
-console.log(`Strain Showdown draft effects validated: ${derived.length} cards / ${catalog.profiles.length} profiles / ${allowedMechanics.size} mechanics.`);
+console.log(`Strain Showdown active effects validated: ${derived.length} cards / ${catalog.profiles.length} profiles / ${allowedMechanics.size} mechanics.`);
 console.log(`Preview: ${preview}`);
