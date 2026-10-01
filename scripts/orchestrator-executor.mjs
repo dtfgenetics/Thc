@@ -84,6 +84,40 @@ try {
     process.exit(0)
   }
 
+
+  if (command === 'provision') {
+    if ((job.dispatchMode || 'local') !== 'external-executor') {
+      throw new Error('provision is only valid for external-executor jobs')
+    }
+    if (job.branchProvisioned !== false) {
+      throw new Error('target branch is already provisioned')
+    }
+    const targetRepo = job.repository
+    if (!targetRepo) throw new Error('job.repository is required for external provisioning')
+    if (!job.branch) throw new Error('job.branch is required for external provisioning')
+    const existing = capture(['api', `repos/${targetRepo}/git/ref/heads/${job.branch}`, '--jq', '.ref'], { allowFailure: true })
+    if (existing) throw new Error(`Refusing to reuse existing external branch ${job.branch}`)
+    const baseSha = capture(['api', `repos/${targetRepo}/git/ref/heads/${job.baseBranch || 'main'}`, '--jq', '.object.sha'])
+    capture([
+      'api', '--method', 'POST', `repos/${targetRepo}/git/refs`,
+      '-f', `ref=refs/heads/${job.branch}`,
+      '-f', `sha=${baseSha}`,
+    ])
+    const next = {
+      ...job,
+      baseSha,
+      branchProvisioned: true,
+      updatedAt: new Date().toISOString(),
+      history: [
+        ...(Array.isArray(job.history) ? job.history : []),
+        { from: job.state, to: job.state, at: new Date().toISOString(), event: 'external-branch-provisioned', repository: targetRepo, branch: job.branch, baseSha },
+      ],
+    }
+    saveJob(repo, issue, next)
+    console.log(JSON.stringify({ ok: true, repo, mode: 'provision', targetRepository: targetRepo, job: next }, null, 2))
+    process.exit(0)
+  }
+
   const executorId = options['executor-id']
   if (!executorId) throw new Error('--executor-id=<id> is required')
 
@@ -161,7 +195,7 @@ try {
     process.exit(0)
   }
 
-  throw new Error('Usage: node scripts/orchestrator-executor.mjs <packet|claim|heartbeat|handoff|result> --issue=N [--executor-id=id] [--lease-id=id]')
+  throw new Error('Usage: node scripts/orchestrator-executor.mjs <packet|provision|claim|heartbeat|handoff|result> --issue=N [--executor-id=id] [--lease-id=id]')
 } catch (error) {
   console.error(JSON.stringify({ ok: false, repo, mode: command, error: error.message }, null, 2))
   process.exit(1)

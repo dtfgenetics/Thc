@@ -153,7 +153,7 @@ function claimIssue(repo, claim, config, workerId) {
   const labels = new Set((issue.labels || []).map((label) => label.name))
   if (!labels.has(config.labels.ready) || labels.has(config.labels.claimed)) throw new Error(`Issue #${claim.issueNumber} is no longer claimable`)
 
-  const baseSha = createBranch(repo, claim)
+  const baseSha = claim.externalRepository ? null : createBranch(repo, claim)
   const lease = createLease({ workerId, workerKind: claim.kind, ttlMinutes: leaseTtlMinutes(config) })
   let job = newJob({
     jobId: `issue-${claim.issueNumber}`,
@@ -161,7 +161,10 @@ function claimIssue(repo, claim, config, workerId) {
     title: claim.title,
     state: 'READY',
     project: claim.project,
-    repository: repo,
+    repository: claim.repository || repo,
+    canonicalDomain: claim.canonicalDomain || null,
+    dispatchMode: claim.dispatchMode || 'local',
+    branchProvisioned: !claim.externalRepository,
     workerKind: claim.kind,
     branch: claim.branch,
     baseBranch: claim.base,
@@ -187,8 +190,9 @@ function claimIssue(repo, claim, config, workerId) {
   capture(['issue', 'comment', String(claim.issueNumber), '--repo', repo, '--body', [
     `Worker leased this task as **${claim.kind}** work.`,
     '',
+    `- Target repository: \`${claim.repository || repo}\``,
     `- Branch: \`${claim.branch}\``,
-    `- Base: \`${claim.base}\` at \`${baseSha}\``,
+    `- Base: \`${claim.base}\`${baseSha ? ` at \`${baseSha}\`` : ' (external branch must be provisioned by an authorized executor)'}`,
     `- Project lane: \`${claim.project}\``,
     `- Resources: \`${claim.resourceSet.length ? claim.resourceSet.join(', ') : 'legacy/unscoped'}\``,
     `- Allowed paths: \`${claim.allowedPaths.length ? claim.allowedPaths.join(', ') : 'legacy/unscoped'}\``,

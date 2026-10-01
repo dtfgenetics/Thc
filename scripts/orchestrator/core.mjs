@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { resolveResourceSet } from './resources.mjs'
 import { resolveVerificationProfile } from './routing.mjs'
+import { resolveCanonicalRepository } from './repositories.mjs'
 
 const PLAN_MARKER_RE = /<!-- worker-plan:(\{.*?\}) -->/s
 
@@ -61,6 +62,8 @@ export function planMetadataFromIssue(issue) {
     resourceSet: [],
     allowedPaths: [],
     verificationProfile: null,
+    canonicalDomain: null,
+    targetRepository: null,
     productionTargets: [],
     dependencies: [],
     acceptanceCriteria: [],
@@ -78,6 +81,8 @@ export function planMetadataFromIssue(issue) {
     resourceSet: cleanStringArray(raw.resourceSet),
     allowedPaths: cleanStringArray(raw.allowedPaths),
     verificationProfile: raw.verificationProfile ? String(raw.verificationProfile).trim() : null,
+    canonicalDomain: raw.canonicalDomain ? String(raw.canonicalDomain).trim() : null,
+    targetRepository: raw.targetRepository ? String(raw.targetRepository).trim() : null,
     productionTargets: cleanStringArray(raw.productionTargets),
     dependencies: cleanStringArray(raw.dependencies),
     acceptanceCriteria: cleanStringArray(raw.acceptanceCriteria),
@@ -118,13 +123,39 @@ export function buildClaim(issue, config) {
   const digest = createHash('sha1').update(`${id}:${issue.title || ''}`).digest('hex').slice(0, 7)
   const branch = `${prefix}/${project}/${slug(issue.title, 32)}-i${id}-${digest}`
   const metadata = planMetadataFromIssue(issue)
-  const resolved = resolveResourceSet(metadata.resourceSet)
-  if (resolved.unknown.length) {
-    throw new Error(`Issue #${issue.number} references unknown resources: ${resolved.unknown.join(', ')}`)
+  const owner = resolveCanonicalRepository({
+    canonicalDomain: metadata.canonicalDomain,
+    explicitRepository: metadata.targetRepository,
+    controlRepository: config.controlRepository || 'dtfgenetics/Thc',
+  })
+
+  let allowedPaths
+  let productionTargets
+  let verificationProfile
+
+  if (owner.external) {
+    if (metadata.resourceSet.length === 0) {
+      throw new Error(`Issue #${issue.number} external canonical work requires a non-empty resourceSet`)
+    }
+    if (metadata.allowedPaths.length === 0) {
+      throw new Error(`Issue #${issue.number} external canonical work requires explicit allowedPaths`)
+    }
+    if (!metadata.verificationProfile) {
+      throw new Error(`Issue #${issue.number} external canonical work requires explicit verificationProfile`)
+    }
+    allowedPaths = [...new Set(metadata.allowedPaths)].sort()
+    productionTargets = [...new Set(metadata.productionTargets)].sort()
+    verificationProfile = metadata.verificationProfile
+  } else {
+    const resolved = resolveResourceSet(metadata.resourceSet)
+    if (resolved.unknown.length) {
+      throw new Error(`Issue #${issue.number} references unknown resources: ${resolved.unknown.join(', ')}`)
+    }
+    allowedPaths = [...new Set([...resolved.allowedPaths, ...metadata.allowedPaths])].sort()
+    productionTargets = [...new Set([...resolved.productionTargets, ...metadata.productionTargets])].sort()
+    verificationProfile = resolveVerificationProfile(metadata.resourceSet, metadata.verificationProfile)
   }
-  const allowedPaths = [...new Set([...resolved.allowedPaths, ...metadata.allowedPaths])].sort()
-  const productionTargets = [...new Set([...resolved.productionTargets, ...metadata.productionTargets])].sort()
-  const verificationProfile = resolveVerificationProfile(metadata.resourceSet, metadata.verificationProfile)
+
   return {
     issueNumber: Number(issue.number),
     title: issue.title,
@@ -133,6 +164,11 @@ export function buildClaim(issue, config) {
     branch,
     base: config.baseBranch || 'main',
     ...metadata,
+    repository: owner.repository,
+    canonicalDomain: owner.canonicalDomain,
+    externalRepository: owner.external,
+    dispatchMode: owner.external ? 'external-executor' : 'local',
+    dispatchable: !owner.external,
     verificationProfile,
     allowedPaths,
     productionTargets,

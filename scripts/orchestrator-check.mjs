@@ -62,9 +62,13 @@ function inspect(repo, issueNumber, profilePath) {
   if (job.state !== 'PR_OPEN') throw new Error(`Issue #${issueNumber} must be PR_OPEN before exact-head verification; found ${job.state}`)
   if (!Number.isInteger(Number(job.prNumber)) || Number(job.prNumber) <= 0) throw new Error('Job has no valid prNumber')
 
-  const { name: profileName, profile } = loadVerificationProfile(job, profilePath)
+  const targetRepo = job.repository || repo
+  const external = targetRepo !== repo
+  const { name: profileName, profile } = external
+    ? { name: job.verificationProfile || 'external-required-checks', profile: { requiresExactHead: true } }
+    : loadVerificationProfile(job, profilePath)
   const pr = json([
-    'pr', 'view', String(job.prNumber), '--repo', repo,
+    'pr', 'view', String(job.prNumber), '--repo', targetRepo,
     '--json', 'number,state,headRefOid,baseRefName,statusCheckRollup,url,files'
   ])
   if (pr.state !== 'OPEN') throw new Error(`PR #${pr.number} must be OPEN for verification; found ${pr.state}`)
@@ -82,6 +86,7 @@ function inspect(repo, issueNumber, profilePath) {
       checkGate: null,
       issue,
       job,
+      targetRepo,
     }
   }
 
@@ -98,6 +103,7 @@ function inspect(repo, issueNumber, profilePath) {
       checkGate: null,
       issue,
       job,
+      targetRepo,
     }
   }
 
@@ -113,6 +119,7 @@ function inspect(repo, issueNumber, profilePath) {
     checkGate,
     issue,
     job,
+    targetRepo,
   }
 }
 
@@ -155,6 +162,7 @@ try {
   console.log(JSON.stringify({
     ok: inspection.ok,
     repo,
+    targetRepository: inspection.targetRepo || repo,
     mode: applyChanges ? 'check-apply' : 'check-dry-run',
     issueNumber,
     profile: inspection.profileName,
