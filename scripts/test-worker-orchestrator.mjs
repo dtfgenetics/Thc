@@ -11,6 +11,7 @@ import { buildExecutionPacket, buildHandoffPacket, claimExecutor, executorHandof
 import { resolveCanonicalRepository } from './orchestrator/repositories.mjs'
 import { epicSummary, materializeJobPlan, topologicalJobOrder, validateEpicManifest } from './orchestrator/epics.mjs'
 import { inspectContractScope, validateAgentContract, verificationProfileFromContract } from './orchestrator/repo-contract.mjs'
+import { buildOperatorStatus } from './orchestrator/operator-status.mjs'
 
 const config = validateConfig({
   version: 2,
@@ -453,6 +454,22 @@ assert.match(durableHandoffMarkdown, /Canonical repository: `dtfgenetics\/Thc`/)
 assert.match(durableHandoffMarkdown, /Current head SHA: `head300b`/)
 assert.match(durableHandoffMarkdown, /verification/)
 
+const operatorStatus = buildOperatorStatus({
+  activeClaims: [
+    { issueNumber: 300, ...handoffExecutorJob, active: true, expired: false },
+    { issueNumber: 301, project: 'tools', state: 'LEASED', resourceSet: ['tool.vpd'], branch: 'work/tools/vpd-i301-abcdef7', active: false, expired: true, lease: { leaseId: 'lease-expired', workerId: 'chat:x', expiresAt: '2026-09-30T20:00:00.000Z' } },
+  ],
+  readyIssues: [issue(302, 'Ready job', ['worker:ready'])],
+  plannedClaims: [{ issueNumber: 302, project: 'education', repository: 'dtfgenetics/thc-grow-hub', branch: 'work/education/next-i302-abcdef8', resourceSet: ['content.education'], verificationProfile: 'repo-control' }],
+  dependencyBlocked: [{ issueNumber: 303, blockers: ['issue-299'] }],
+})
+assert.equal(operatorStatus.summary.activeJobs, 1)
+assert.equal(operatorStatus.summary.expiredJobs, 1)
+assert.equal(operatorStatus.summary.handedOffJobs, 1)
+assert.equal(operatorStatus.resourceClaims['game.high-iq'][0].issueNumber, 300)
+assert.equal(operatorStatus.blockers.some((item) => item.type === 'expired-lease' && item.issueNumber === 301), true)
+assert.equal(operatorStatus.blockers.some((item) => item.type === 'dependency-blocker' && item.issueNumber === 303), true)
+
 const verifyReadyJob = executorResult(heartbeatExecutorJob, {
   executorId: 'chat:abc',
   leaseId: 'lease-exec-1',
@@ -575,4 +592,4 @@ assert.throws(() => verificationProfileFromContract(toolsContractFixture, 'missi
 const productionMerged = newJob({ jobId: 'prod-1', title: 'Production', state: 'MERGED', productionImpact: true })
 assert.throws(() => transitionJob(productionMerged, 'DONE'), /Production-impacting/)
 
-console.log(JSON.stringify({ ok: true, tests: 138 }, null, 2))
+console.log(JSON.stringify({ ok: true, tests: 144 }, null, 2))
