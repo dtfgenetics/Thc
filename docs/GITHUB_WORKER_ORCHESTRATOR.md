@@ -57,6 +57,7 @@ The repository may have up to four active orchestrated tasks overall. Legacy/uns
 
 ```bash
 node scripts/orchestrator.mjs labels
+node scripts/orchestrator-plan-job.mjs --issue=123 --project=tools --worker-kind=code --resources='tool.vpd' --acceptance='tests pass'
 node scripts/orchestrator.mjs status
 node scripts/orchestrator.mjs plan
 node scripts/orchestrator.mjs dispatch
@@ -249,3 +250,53 @@ For external canonical repositories:
 7. the durable lifecycle state remains in the central `Thc` issue.
 
 This prevents integration mirrors or migration repositories from silently becoming a second source of truth.
+
+
+## Validated job planner
+
+New multi-chat work should not hand-edit the machine-readable `worker-plan` marker.
+
+Use `scripts/orchestrator-plan-job.mjs` against an open Agent Job issue. The planner:
+
+- requires one bounded project lane;
+- validates the worker kind;
+- requires at least one explicit resource and acceptance criterion;
+- resolves canonical ownership through the repository registry;
+- resolves local resource paths/production targets or enforces explicit scope for external canonical repos;
+- validates verification routing;
+- replaces stale `project:*`, `priority:*`, and worker-kind labels during re-planning;
+- refuses to re-plan claimed/running/verifying/integration-ready/done jobs;
+- remains dry-run unless `--apply=true`;
+- adds `worker:ready` only when `--ready=true` is explicitly supplied.
+
+Example local job:
+
+```bash
+node scripts/orchestrator-plan-job.mjs \
+  --issue=123 \
+  --project=games \
+  --worker-kind=game \
+  --resources='game.high-iq' \
+  --acceptance='mobile layout passes|gameplay tests pass' \
+  --priority=p1 \
+  --apply=true \
+  --ready=true
+```
+
+Example external canonical Tools job:
+
+```bash
+node scripts/orchestrator-plan-job.mjs \
+  --issue=124 \
+  --project=tools \
+  --worker-kind=code \
+  --canonical-domain='cultivation tools' \
+  --resources='tool.vpd' \
+  --allowed-paths='src/tools/vpd/**' \
+  --verification-profile='tools-canonical' \
+  --acceptance='tool tests pass|mobile result layout remains usable' \
+  --apply=true \
+  --ready=true
+```
+
+Planning and dispatch are intentionally separate. A chat may validate/store a plan without making it immediately dispatchable.
