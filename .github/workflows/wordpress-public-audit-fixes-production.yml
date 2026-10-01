@@ -10,6 +10,7 @@ on:
       - 'data/public-navigation.json'
       - 'site/wordpress/mu-plugins/dtf-shop-seo-meta.php'
       - 'scripts/install-wordpress-shop-seo-meta.mjs'
+      - 'scripts/install-wordpress-shop-seo-meta-core.mjs'
       - 'scripts/normalize-shop-seo-verification-html.mjs'
       - 'scripts/wordpress-ipv4-fetch-bootstrap.mjs'
       - 'scripts/flush-hostinger-litespeed-mcp.mjs'
@@ -58,6 +59,7 @@ jobs:
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
           node --check scripts/install-wordpress-shop-seo-meta.mjs
+          node --check scripts/install-wordpress-shop-seo-meta-core.mjs
           node --check scripts/normalize-shop-seo-verification-html.mjs
           node --check scripts/wordpress-ipv4-fetch-bootstrap.mjs
           node --check scripts/flush-hostinger-litespeed-mcp.mjs
