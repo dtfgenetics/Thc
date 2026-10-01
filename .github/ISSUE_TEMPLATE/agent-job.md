@@ -6,6 +6,8 @@ labels: ""
 assignees: ""
 ---
 
+> Planning note: Do not hand-write the `worker-plan` marker or add `worker:ready` before validation. Use `scripts/orchestrator-plan-job.mjs` to turn this human-readable issue into a validated machine plan.
+
 ## Goal
 
 Describe one concrete outcome.
@@ -17,6 +19,7 @@ Describe one concrete outcome.
 
 ## Canonical owner
 
+- Canonical domain:
 - Repository:
 - Resource(s):
 - Source-of-truth doc:
