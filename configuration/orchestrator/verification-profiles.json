@@ -7,6 +7,8 @@
         "node --check scripts/orchestrator/core.mjs",
         "node --check scripts/orchestrator/resources.mjs",
         "node --check scripts/orchestrator/routing.mjs",
+        "node --check scripts/orchestrator/audit.mjs",
+        "node --check scripts/orchestrator-audit.mjs",
         "node scripts/test-worker-orchestrator.mjs",
         "npm run verify:portfolio",
         "npm run verify:navigation"
