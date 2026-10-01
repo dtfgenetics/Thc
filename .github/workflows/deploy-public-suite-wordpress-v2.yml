@@ -421,6 +421,23 @@ jobs:
           check 'https://dtfseeds.com/tools/' 'pH Meter'
           check 'https://dtfseeds.com/tools/' 'TDS / EC Meter'
           check 'https://dtfseeds.com/tools/' 'VPD Chart'
+          check_asset() {
+            local url="$1" body status
+            body="$(mktemp)"
+            status="$(curl -fsS --retry 5 --retry-delay 5 --output "$body" --write-out '%{http_code}' -H 'Cache-Control: no-cache, no-store, max-age=0' "$url?dtf_asset_verify=${GITHUB_RUN_ID}")"
+            if [[ "$status" != "200" || ! -s "$body" ]]; then
+              echo "Required shared tool asset failed verification: $url (HTTP $status)" >&2
+              rm -f "$body"
+              return 1
+            fi
+            rm -f "$body"
+          }
+          check_asset 'https://dtfseeds.com/assets/vendor/papaparse-5.7.0.min.js'
+          check_asset 'https://dtfseeds.com/assets/vendor/uplot-1.6.32.min.js'
+          check_asset 'https://dtfseeds.com/assets/vendor/uplot-1.6.32.min.css'
+          check_asset 'https://dtfseeds.com/assets/thc-measurement-journal-v1.js'
+          check_asset 'https://dtfseeds.com/assets/thc-tool-suite-v1.js'
+          check_asset 'https://dtfseeds.com/assets/thc-tool-suite-v1.css'
           check 'https://dtfseeds.com/growlens/' 'GrowLens'
           check 'https://dtfseeds.com/thc-grow-doc/' 'Grow Doc'
 
