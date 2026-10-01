@@ -12,10 +12,13 @@ const JSON_REPORT=process.env.DTF_VISUAL_AUDIT_JSON||'sitewide-visual-integrity.
 const MARKDOWN_REPORT=process.env.DTF_VISUAL_AUDIT_MD||'sitewide-visual-integrity.md';
 
 const expectedNav=[
+  ['Home','/'],
   ['Seeds','/seeds/'],
   ['Learn','/learn/'],
+  ['Courses','/courses/'],
   ['Tools','/tools/'],
   ['Games','/games/'],
+  ['Community','/community/'],
   ['Shop','/shop/']
 ];
 const obsoletePrimaryLabels=['Genetics','Diagnostic'];
