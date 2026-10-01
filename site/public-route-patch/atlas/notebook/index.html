@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Atlas Observation Notebook | DTF Genetics</title>
+  <meta name="description" content="Record plant observations, measurements, working differentials, and follow-up checks beside the THC Living Plant Atlas.">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#07170f">
+  <link rel="canonical" href="https://dtfseeds.com/atlas/notebook/">
+  <style>
+    :root{--bg:#07170f;--panel:#0d2518;--panel2:#123622;--paper:#f7f3e9;--ink:#13281b;--muted:#667269;--line:#d6ded5;--accent:#d8bd6a;--green:#2d8050}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--paper);color:var(--ink);line-height:1.55}
+    a{color:inherit}.wrap{width:min(1180px,calc(100% - 32px));margin:auto}
+    header{background:linear-gradient(135deg,var(--bg),var(--panel2));color:#fff;border-bottom:1px solid rgba(255,255,255,.12)}
+    .top{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{text-decoration:none;font-weight:900}.brand small{display:block;color:var(--accent);letter-spacing:.11em;text-transform:uppercase}
+    nav{display:flex;flex-wrap:wrap;gap:8px}nav a{padding:8px 10px;border-radius:9px;text-decoration:none;color:#e2ebe5}nav a:hover{background:rgba(255,255,255,.08)}
+    .hero{padding:58px 0 44px}.eyebrow{margin:0 0 8px;color:var(--accent);font-size:.74rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+    h1{margin:0;max-width:850px;font-size:clamp(2.4rem,6vw,5.2rem);line-height:.95;letter-spacing:-.05em}.hero p:last-child{max-width:780px;color:#cad8cf;font-size:1.05rem}
+    main{padding:38px 0 72px}.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}.summary article{padding:18px;border:1px solid var(--line);border-radius:16px;background:#fff}.summary strong{display:block;font-size:1.65rem}.summary span{color:var(--muted)}
+    .layout{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);gap:22px;align-items:start}.panel{padding:22px;border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:0 12px 32px rgba(19,40,27,.06)}
+    .panel h2{margin:0 0 6px;font-size:1.45rem}.panel>p{margin-top:0;color:var(--muted)}form{display:grid;gap:14px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    label{display:grid;gap:6px;font-weight:800;font-size:.9rem}input,select,textarea{width:100%;min-height:44px;border:1px solid #bdc9bf;border-radius:11px;padding:10px 11px;background:#fff;color:var(--ink);font:inherit}textarea{min-height:110px;resize:vertical}
+    input:focus,select:focus,textarea:focus{outline:3px solid rgba(45,128,80,.16);border-color:var(--green)}.actions{display:flex;flex-wrap:wrap;gap:9px}.button,button{min-height:44px;padding:10px 15px;border:1px solid #b9c8bc;border-radius:11px;background:#eef3ee;color:var(--ink);font:inherit;font-weight:850;cursor:pointer}.primary{border-color:#c7aa55;background:var(--accent);color:var(--bg)}.danger{background:#fff;border-color:#d8b6b6}
+    .status{min-height:24px;color:var(--muted);font-size:.9rem}.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:12px}.toolbar select{width:auto}.entries{display:grid;gap:12px}.entry{padding:16px;border:1px solid var(--line);border-radius:15px;background:#fbfcfa}.entry-head{display:flex;justify-content:space-between;gap:12px;align-items:start}.entry h3{margin:0 0 3px}.entry small{color:var(--muted)}.tags{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.tags span{padding:5px 8px;border-radius:999px;background:#edf3ed;color:#355242;font-size:.76rem;font-weight:800}.entry p{margin:8px 0}.entry-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.empty{padding:26px;border:1px dashed #b8c6ba;border-radius:14px;color:var(--muted);text-align:center}
+    .note{margin:22px 0;padding:16px;border-left:4px solid var(--accent);background:#fff7da}.note strong{display:block;margin-bottom:4px}
+    @media(max-width:860px){.layout{grid-template-columns:1fr}.summary{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column;padding:13px 0}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap top">
+    <a class="brand" href="/atlas/">THC Living Plant Atlas<small>DTF Genetics · Plant Science</small></a>
+    <nav aria-label="Notebook navigation"><a href="/atlas/">Atlas</a><a href="/atlas/notebook/compare/">Compare observations</a><a href="/atlas/diagnostics/">Diagnostics</a><a href="/growlens/">GrowLens</a><a href="/tools/">All Tools</a></nav>
+  </div>
+  <div class="wrap hero">
+    <p class="eyebrow">Atlas Observation Notebook</p>
+    <h1>Record evidence before deciding what it means.</h1>
+    <p>Capture where a change appears, how it progresses, what was measured, what explanations are still plausible, and what observation should happen next. Entries stay on this device unless you export them.</p>
+  </div>
+</header>
+<main class="wrap">
+  <div class="summary" aria-label="Notebook summary">
+    <article><strong data-total>0</strong><span>saved observations</span></article>
+    <article><strong data-open>0</strong><span>open or monitoring</span></article>
+    <article><strong data-resolved>0</strong><span>resolved</span></article>
+  </div>
+  <div class="note"><strong>Observation aid, not a diagnosis.</strong>Similar visible patterns can have different causes. Keep observations and measurements separate from conclusions, and use the Atlas/diagnostic references to test competing explanations.</div>
+  <div class="layout">
+    <section class="panel">
+      <h2 data-editor-title>New observation</h2>
+      <p>Required fields are title and what you actually observed. Everything else adds context.</p>
+      <form data-form>
+        <div class="grid2">
+          <label>Observation date/time<input name="observedAt" type="datetime-local"></label>
+          <label>Status<select name="status"><option>Open observation</option><option>Monitoring</option><option>Resolved</option></select></label>
+        </div>
+        <label>Short title<input name="title" maxlength="180" required placeholder="Example: Lower-canopy color change"></label>
+        <div class="grid2">
+          <label>Plant stage<select name="stage"><option>Unknown / not recorded</option><option>Germination</option><option>Seedling</option><option>Vegetative</option><option>Transition / preflower</option><option>Flower development</option><option>Maturation</option></select></label>
+          <label>Plant area<select name="plantArea"><option>Whole plant</option><option>New growth</option><option>Upper canopy</option><option>Middle canopy</option><option>Lower canopy</option><option>Single branch</option><option>Leaves</option><option>Stem</option><option>Root zone</option><option>Flowers</option></select></label>
+        </div>
+        <div class="grid2">
+          <label>Visible pattern<select name="pattern"><option>Uniform / general</option><option>Interveinal</option><option>Marginal / edge</option><option>Tips / edges</option><option>Spotting / lesions</option><option>Posture / wilt</option><option>Localized</option><option>Patchy / irregular</option><option>Other / unsure</option></select></label>
+          <label>Progression<select name="progression"><option>Just noticed</option><option>Stable</option><option>Slowly expanding</option><option>Rapidly expanding</option><option>Intermittent</option><option>Improving</option></select></label>
+        </div>
+        <label>What did you actually observe?<textarea name="observations" maxlength="6000" required placeholder="Describe visible evidence without assigning a cause."></textarea></label>
+        <div class="grid2">
+          <label>Root-zone moisture<select name="rootZoneMoisture"><option>Unknown / not measured</option><option>Dry</option><option>Moderately moist</option><option>Saturated / recently irrigated</option><option>Variable across the root zone</option></select></label>
+          <label>Temperature context<input name="temperatureContext" maxlength="180" placeholder="Measured value/location/time if available"></label>
+        </div>
+        <div class="grid2">
+          <label>Relative humidity<input name="relativeHumidity" maxlength="40" placeholder="Measured value if available"></label>
+          <label>pH<input name="ph" maxlength="40" placeholder="Measured value/method if available"></label>
+        </div>
+        <div class="grid2">
+          <label>EC / conductivity<input name="ec" maxlength="40" placeholder="Measured value/scale if available"></label>
+          <label>Light / airflow context<input name="lightAirflowContext" maxlength="1000"></label>
+        </div>
+        <label>Irrigation / recent-change context<textarea name="irrigationContext" maxlength="1000"></textarea></label>
+        <label>Working differential<textarea name="workingDifferential" maxlength="3000" placeholder="List plausible explanations; keep uncertainty visible."></textarea></label>
+        <label>Next discriminating check<textarea name="nextCheck" maxlength="2000" placeholder="What observation or measurement would help separate the plausible explanations?"></textarea></label>
+        <div class="actions"><button class="primary" type="submit" data-save>Save observation</button><button type="button" data-cancel hidden>Cancel edit</button></div>
+        <div class="status" data-message role="status" aria-live="polite"></div>
+      </form>
+    </section>
+    <section class="panel">
+      <div class="toolbar"><div><h2>Saved observations</h2><small>Stored locally in this browser.</small></div><select data-filter aria-label="Filter observations by status"><option>All</option><option>Open observation</option><option>Monitoring</option><option>Resolved</option></select></div>
+      <div class="actions" style="margin-bottom:14px"><a class="button" href="/atlas/notebook/compare/">Compare saved observations</a><button type="button" data-export>Export JSON</button><label class="button" style="display:inline-flex;align-items:center">Import JSON<input data-import type="file" accept="application/json" hidden></label></div>
+      <div class="entries" data-entries></div>
+    </section>
+  </div>
+</main>
+<script src="/atlas/notebook/notebook.js" defer></script>
+</body>
+</html>
