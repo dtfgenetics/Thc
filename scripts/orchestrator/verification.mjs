@@ -25,3 +25,43 @@ export function exactHeadMatches(expectedHeadSha, currentHeadSha, requiresExactH
   if (!expectedHeadSha) return true
   return expectedHeadSha === currentHeadSha
 }
+
+
+function normalizeAllowedPath(rule) {
+  return String(rule || '').trim().replace(/\\/g, '/')
+}
+
+export function isPathAllowed(path, allowedPaths = []) {
+  const normalizedPath = String(path || '').trim().replace(/\\/g, '/')
+  if (!normalizedPath) return false
+  const rules = allowedPaths.map(normalizeAllowedPath).filter(Boolean)
+  if (rules.length === 0) return true
+
+  return rules.some((rule) => {
+    if (rule.endsWith('/**')) {
+      const prefix = rule.slice(0, -3)
+      return normalizedPath === prefix || normalizedPath.startsWith(`${prefix}/`)
+    }
+    if (rule.endsWith('/')) {
+      const prefix = rule.slice(0, -1)
+      return normalizedPath === prefix || normalizedPath.startsWith(`${prefix}/`)
+    }
+    return normalizedPath === rule
+  })
+}
+
+export function inspectAllowedPaths(changedPaths = [], allowedPaths = []) {
+  const changed = [...new Set((changedPaths || []).map((path) => String(path || '').trim()).filter(Boolean))].sort()
+  const allowed = [...new Set((allowedPaths || []).map(normalizeAllowedPath).filter(Boolean))].sort()
+  if (allowed.length === 0) {
+    return { ok: true, reason: 'legacy-unscoped-job', changed, allowed, violations: [] }
+  }
+  const violations = changed.filter((path) => !isPathAllowed(path, allowed))
+  return {
+    ok: violations.length === 0,
+    reason: violations.length ? 'changed-files-outside-allowed-paths' : 'changed-files-within-allowed-paths',
+    changed,
+    allowed,
+    violations,
+  }
+}

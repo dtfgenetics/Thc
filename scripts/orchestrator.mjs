@@ -138,6 +138,13 @@ function claimIssue(repo, claim, config, workerId) {
     branch: claim.branch,
     baseBranch: claim.base,
     baseSha,
+    resourceSet: claim.resourceSet,
+    allowedPaths: claim.allowedPaths,
+    verificationProfile: claim.verificationProfile,
+    productionTargets: claim.productionTargets,
+    productionImpact: claim.productionImpact,
+    dependencies: claim.dependencies,
+    acceptanceCriteria: claim.acceptanceCriteria,
     maxAttempts: maxAttempts(config),
   })
   job = transitionJob({ ...job, lease }, 'LEASED', { event: 'dispatch' })
@@ -155,6 +162,9 @@ function claimIssue(repo, claim, config, workerId) {
     `- Branch: \`${claim.branch}\``,
     `- Base: \`${claim.base}\` at \`${baseSha}\``,
     `- Project lane: \`${claim.project}\``,
+    `- Resources: \`${claim.resourceSet.length ? claim.resourceSet.join(', ') : 'legacy/unscoped'}\``,
+    `- Allowed paths: \`${claim.allowedPaths.length ? claim.allowedPaths.join(', ') : 'legacy/unscoped'}\``,
+    `- Verification: \`${claim.verificationProfile || 'repo-control'}\``,
     `- Worker: \`${workerId}\``,
     `- Lease: \`${lease.leaseId}\` until \`${lease.expiresAt}\``,
     '',

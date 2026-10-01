@@ -3,7 +3,7 @@
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { transitionJob, validateJob } from './orchestrator/state.mjs'
-import { exactHeadMatches, inspectCheckRollup } from './orchestrator/verification.mjs'
+import { exactHeadMatches, inspectAllowedPaths, inspectCheckRollup } from './orchestrator/verification.mjs'
 
 const MARKER_RE = /<!-- worker-orchestrator:(\{.*?\}) -->/s
 
@@ -65,7 +65,7 @@ function inspect(repo, issueNumber, profilePath) {
   const { name: profileName, profile } = loadVerificationProfile(job, profilePath)
   const pr = json([
     'pr', 'view', String(job.prNumber), '--repo', repo,
-    '--json', 'number,state,headRefOid,baseRefName,statusCheckRollup,url'
+    '--json', 'number,state,headRefOid,baseRefName,statusCheckRollup,url,files'
   ])
   if (pr.state !== 'OPEN') throw new Error(`PR #${pr.number} must be OPEN for verification; found ${pr.state}`)
   if (!pr.headRefOid) throw new Error(`PR #${pr.number} has no head SHA`)
@@ -85,6 +85,22 @@ function inspect(repo, issueNumber, profilePath) {
     }
   }
 
+  const pathGate = inspectAllowedPaths((pr.files || []).map((file) => file.path), job.allowedPaths || [])
+  if (!pathGate.ok) {
+    return {
+      ok: false,
+      reason: pathGate.reason,
+      profileName,
+      expectedHeadSha: expected,
+      currentHeadSha: pr.headRefOid,
+      pr,
+      pathGate,
+      checkGate: null,
+      issue,
+      job,
+    }
+  }
+
   const checkGate = inspectCheckRollup(pr.statusCheckRollup || [])
   return {
     ok: checkGate.ok,
@@ -93,6 +109,7 @@ function inspect(repo, issueNumber, profilePath) {
     expectedHeadSha: expected,
     currentHeadSha: pr.headRefOid,
     pr,
+    pathGate,
     checkGate,
     issue,
     job,
@@ -110,6 +127,11 @@ function apply(repo, inspection) {
       headSha: inspection.currentHeadSha,
       checkedAt: now,
       checks: inspection.checkGate.checks.map(({ name, conclusion, status }) => ({ name, conclusion, status })),
+      allowedPathGate: inspection.pathGate ? {
+        allowed: inspection.pathGate.allowed,
+        changed: inspection.pathGate.changed,
+        violations: inspection.pathGate.violations,
+      } : null,
     },
   }
   const next = transitionJob(prepared, 'INTEGRATION_READY', { now, event: 'exact-head-verification-passed' })
@@ -139,6 +161,7 @@ try {
     expectedHeadSha: inspection.expectedHeadSha,
     currentHeadSha: inspection.currentHeadSha,
     reason: inspection.reason,
+    pathGate: inspection.pathGate || null,
     checks: inspection.checkGate?.checks || [],
     job,
   }, null, 2))

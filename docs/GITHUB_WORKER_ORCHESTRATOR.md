@@ -83,3 +83,38 @@ Production publication remains owned by the existing cumulative production gatew
 ## What this first version does not do
 
 This control plane does **not** pretend GitHub Actions itself is an AI coding worker. It allocates and governs work safely. The next layer should connect the claimed issue/branch to one or more execution workers (Codex/agent runners, deterministic repair workers, content workers, release workers) and have them report heartbeat/result events back to the claim. Keeping scheduler and executor separate prevents one failed worker from corrupting repository-wide orchestration state.
+
+
+## V2 planned-scope contract
+
+New scoped jobs may include one machine-readable planning marker in the issue body:
+
+```html
+<!-- worker-plan:{"resourceSet":["game.high-iq"],"verificationProfile":"high-iq","dependencies":[],"acceptanceCriteria":["mobile UI remains usable"]} -->
+```
+
+The orchestrator resolves resource IDs through `data/studio-resources.json`. Known resources automatically contribute their allowed source paths and production targets. Explicit `allowedPaths` and `productionTargets` may extend the resolved scope when the planner has a justified cross-resource requirement.
+
+Examples:
+
+- `game.high-iq` resolves the canonical High IQ game/public-route paths and `route:/games/high-iq/`.
+- `platform.site-shell` resolves the shared shell/navigation paths and `shared:site-shell`.
+- `content.education` resolves the controlled education/content paths and `route:/learn/`.
+
+Unknown resource IDs fail planning instead of silently becoming unscoped work.
+
+Active and newly planned jobs with overlapping non-empty `resourceSet` values are not dispatched together. The existing per-project cap remains as a second conservative safety boundary.
+
+At exact-head PR verification, jobs with non-empty `allowedPaths` are fail-closed when the PR changes a file outside the recorded scope. Legacy jobs with no allowed-path scope remain compatible until they are migrated to planned V2 scope.
+
+The intended flow is:
+
+```text
+issue / planner marker
+  -> resource registry resolution
+  -> leased job resourceSet + allowedPaths + productionTargets
+  -> implementation
+  -> PR changed-file scope gate
+  -> exact-head checks
+  -> integration ready
+```
