@@ -9,6 +9,7 @@ import { exactHeadMatches, inspectAllowedPaths, inspectCheckRollup, isPathAllowe
 import { classifyJobHealth, findOrphanManagedBranches, parseManagedBranch } from './orchestrator/audit.mjs'
 import { buildExecutionPacket, claimExecutor, executorHandoff, executorResult, heartbeatExecutor } from './orchestrator/executor.mjs'
 import { resolveCanonicalRepository } from './orchestrator/repositories.mjs'
+import { epicSummary, materializeJobPlan, topologicalJobOrder, validateEpicManifest } from './orchestrator/epics.mjs'
 
 const config = validateConfig({
   version: 2,
@@ -462,7 +463,57 @@ const failedExecutorJob = executorResult(heartbeatExecutorJob, {
 assert.equal(failedExecutorJob.state, 'RETRY_WAIT')
 assert.equal(failedExecutorJob.executor.status, 'FAILED')
 
+
+const epicManifest = validateEpicManifest({
+  schemaVersion: 1,
+  epic: {
+    title: 'Tools modernization',
+    goal: 'Modernize two independent tools after shared infrastructure lands.',
+    project: 'tools',
+    system: 'Cultivation Tools',
+  },
+  jobs: [
+    {
+      key: 'shared-shell',
+      title: 'Build shared tool shell',
+      goal: 'Create the shared shell.',
+      workerKind: 'code',
+      resourceSet: ['platform.site-shell'],
+      acceptanceCriteria: ['shared shell tests pass'],
+    },
+    {
+      key: 'vpd',
+      title: 'Migrate VPD',
+      goal: 'Move VPD to the shared shell.',
+      workerKind: 'code',
+      resourceSet: ['app.growlens'],
+      dependencies: ['shared-shell'],
+      acceptanceCriteria: ['VPD flow passes'],
+    },
+  ],
+})
+assert.deepEqual(topologicalJobOrder(epicManifest).map((job) => job.key), ['shared-shell', 'vpd'])
+assert.deepEqual(epicSummary(epicManifest).jobs.map((job) => job.key), ['shared-shell', 'vpd'])
+const issueMap = new Map([['shared-shell', 501]])
+const materializedVpd = materializeJobPlan(epicManifest.jobs[1], issueMap)
+assert.deepEqual(materializedVpd.dependencies, ['issue-501'])
+assert.throws(() => validateEpicManifest({
+  schemaVersion: 1,
+  epic: { title: 'Cycle', goal: 'Detect cycle', project: 'test' },
+  jobs: [
+    { key: 'a', title: 'A', goal: 'A', workerKind: 'code', resourceSet: ['x'], acceptanceCriteria: ['a'], dependencies: ['b'] },
+    { key: 'b', title: 'B', goal: 'B', workerKind: 'code', resourceSet: ['y'], acceptanceCriteria: ['b'], dependencies: ['a'] },
+  ],
+}), /dependency cycle/)
+assert.throws(() => validateEpicManifest({
+  schemaVersion: 1,
+  epic: { title: 'Unknown dep', goal: 'Detect missing dependency', project: 'test' },
+  jobs: [
+    { key: 'a', title: 'A', goal: 'A', workerKind: 'code', resourceSet: ['x'], acceptanceCriteria: ['a'], dependencies: ['missing'] },
+  ],
+}), /unknown dependency/)
+
 const productionMerged = newJob({ jobId: 'prod-1', title: 'Production', state: 'MERGED', productionImpact: true })
 assert.throws(() => transitionJob(productionMerged, 'DONE'), /Production-impacting/)
 
-console.log(JSON.stringify({ ok: true, tests: 112 }, null, 2))
+console.log(JSON.stringify({ ok: true, tests: 120 }, null, 2))
