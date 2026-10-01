@@ -1,0 +1,256 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-01",
+  "authority": "dtfgenetics/Thc",
+  "branchPolicy": {
+    "preferredPattern": "work/<project-id>/<task>/<session-id>",
+    "newSessionRule": "Every new chat/agent session gets a unique session id and branch. Never implicitly reuse another mutable session branch.",
+    "crossProjectPattern": "multi/<task>",
+    "crossProjectRule": "Use only for deliberate integration work spanning multiple project owners.",
+    "integrationRule": "Integrate the exact validated PR head against current main; do not merge stale heads."
+  },
+  "projects": [
+    {
+      "id": "platform",
+      "aliases": [
+        "dtf-platform",
+        "site-platform",
+        "production-integration"
+      ],
+      "canonicalRepo": "dtfgenetics/Thc",
+      "laneId": "platform",
+      "sourcePaths": [
+        "site/deployment/",
+        "site/design-system/",
+        "data/public-navigation.json",
+        "data/repository-registry.json",
+        "data/project-registry.json",
+        "data/studio-resources.json",
+        ".github/workflows/"
+      ],
+      "validationCommand": "npm run verify:project-os",
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "mode": "canonical-owner"
+      },
+      "notes": "Use for shared repository/release/site-shell integration, not product authoring owned by another repo."
+    },
+    {
+      "id": "growlens",
+      "aliases": [
+        "grow-lens"
+      ],
+      "canonicalRepo": "dtfgenetics/Thc",
+      "laneId": "growlens",
+      "sourcePaths": [
+        "apps/growlens-web/"
+      ],
+      "validationCommand": "npm run verify:growlens",
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/growlens/",
+        "mode": "canonical-production-package"
+      },
+      "notes": "GrowLens is authored in Thc; do not move it to Tools."
+    },
+    {
+      "id": "games",
+      "aliases": [
+        "game-portfolio",
+        "monorepo-games"
+      ],
+      "canonicalRepo": "dtfgenetics/Thc",
+      "laneId": "project-specific",
+      "sourcePaths": [
+        "games/<game-id>/",
+        "apps/<game-id>-web/",
+        "site/public-route-patch/games/<game-id>/"
+      ],
+      "validationCommand": "npm run games:preflight",
+      "registry": "data/game-registry-v2.json",
+      "projectRegistryFallback": true,
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/games/",
+        "mode": "registry-driven"
+      },
+      "notes": "Use the named game's project id/registry entry for a session whenever possible. Standalone games keep their registered canonical repo until explicitly migrated."
+    },
+    {
+      "id": "tools",
+      "aliases": [
+        "tools-suite",
+        "cultivation-tools"
+      ],
+      "canonicalRepo": "dtfgenetics/Tools",
+      "laneId": "tools",
+      "sourcePaths": [
+        "site/public-route-patch/",
+        "shared/",
+        "scripts/"
+      ],
+      "validationCommand": "npm test",
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/",
+        "mode": "version-pinned-canonical-mirror"
+      },
+      "notes": "Canonical focused cultivation/reference tool suite. Excludes GrowLens and Grow Doc."
+    },
+    {
+      "id": "plant-atlas",
+      "aliases": [
+        "atlas"
+      ],
+      "canonicalRepo": "dtfgenetics/Tools",
+      "laneId": "plant-atlas",
+      "sourcePaths": [
+        "site/public-route-patch/atlas/",
+        "scripts/validate-plant-atlas-v4.mjs"
+      ],
+      "validationCommand": "npm test",
+      "focusedValidationCommand": "node scripts/validate-plant-atlas-v4.mjs",
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/atlas/",
+        "mode": "version-pinned-canonical-mirror"
+      },
+      "notes": "Author in Tools only; production copy in Thc is a mirror."
+    },
+    {
+      "id": "terpene-atlas",
+      "aliases": [
+        "terpenes"
+      ],
+      "canonicalRepo": "dtfgenetics/Tools",
+      "laneId": "terpene-atlas",
+      "sourcePaths": [
+        "site/public-route-patch/terpene-atlas/",
+        "scripts/validate-terpene-atlas.mjs"
+      ],
+      "validationCommand": "npm test",
+      "focusedValidationCommand": "node scripts/validate-terpene-atlas.mjs",
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/terpene-atlas/",
+        "mode": "version-pinned-canonical-mirror"
+      },
+      "notes": "Author in Tools only; Dtf420 terpene material remains migration input, not canonical."
+    },
+    {
+      "id": "grow-doc",
+      "aliases": [
+        "growdoc",
+        "diagnostics"
+      ],
+      "canonicalRepo": "dtfgenetics/Thc-dataset",
+      "laneId": "grow-doc",
+      "sourcePaths": [
+        "src/",
+        "dataset/",
+        "model_tuning/",
+        "scripts/"
+      ],
+      "validationCommand": "npm run check && npm test",
+      "buildCommand": "npm run build",
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/thc-grow-doc/",
+        "mode": "version-pinned-deployment-artifact"
+      },
+      "notes": "Canonical diagnostic UI/data/model-control repo. Thc only consumes the release artifact."
+    },
+    {
+      "id": "encyclopedia",
+      "aliases": [
+        "education",
+        "thc-education",
+        "learn"
+      ],
+      "canonicalRepo": "dtfgenetics/thc-grow-hub",
+      "laneId": "education",
+      "sourcePaths": [
+        "content/",
+        "apps/",
+        "packages/",
+        "scripts/"
+      ],
+      "validationCommand": "npm test",
+      "focusedValidationCommand": "npm run validate && npm run validate:encyclopedia-registry && npm run validate:interactive-learning",
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/learn/",
+        "mode": "controlled-publication-integration"
+      },
+      "notes": "Canonical THC encyclopedia/general education. Certification is separate."
+    },
+    {
+      "id": "academy",
+      "aliases": [
+        "certification",
+        "courses",
+        "thc-academy"
+      ],
+      "canonicalRepo": "dtfgenetics/Thc-learning-courses-",
+      "laneId": "academy",
+      "sourcePaths": [
+        "courses/",
+        "apps/",
+        "schemas/",
+        "scripts/",
+        "data/"
+      ],
+      "validationCommand": "npm test",
+      "focusedValidationCommand": "npm run validate && npm run status:check",
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "mode": "source-pin-and-publication-consumer"
+      },
+      "notes": "Canonical certification courses, assessments, practicals and credentials. Keep fail-closed evidence/review gates."
+    },
+    {
+      "id": "genetics",
+      "aliases": [
+        "seeds",
+        "strain-library"
+      ],
+      "canonicalRepo": "dtfgenetics/Thc",
+      "laneId": "platform",
+      "sourcePaths": [
+        "data/genetics/",
+        "site/wordpress/genetics/",
+        "site/wordpress/products/",
+        "site/wordpress/assets/genetics/",
+        "site/wordpress/pages/seeds.html"
+      ],
+      "validationCommand": "npm run verify:project-os",
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "mode": "canonical-owner"
+      },
+      "notes": "Use a dedicated work session even though this currently shares the platform lane."
+    },
+    {
+      "id": "dtf420-migration",
+      "aliases": [
+        "dtf420",
+        "future-shell"
+      ],
+      "canonicalRepo": "dtfgenetics/Dtf420",
+      "laneId": "migration",
+      "sourcePaths": [
+        "app/",
+        "components/",
+        "content/",
+        "data/",
+        "scripts/"
+      ],
+      "validationCommand": "npm run verify:consolidation && npm run verify:static-overlay",
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "mode": "migration-only-no-canonical-cutover"
+      },
+      "notes": "Migration/cutover workspace only. Do not create new canonical Tools, education, certification, diagnostics or game implementations here."
+    }
+  ]
+}
