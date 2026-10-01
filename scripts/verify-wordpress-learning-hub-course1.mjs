@@ -156,7 +156,7 @@ const course = await pageBySlug(local.course.slug, program.id);
 const courseContent = verifyPage(course, {
   label: local.course.route,
   minLength: 1200,
-  required: [local.course.title, 'How to use this course', 'Course map', '18 lessons', 'Integrated practical']
+  required: [local.course.title, 'How to use this course', 'Start with Module 1', '18 lessons', 'Integrated practical']
 });
 must(courseContent.includes('dtf-learning-hub-course1-ui-v3'), 'Course index is missing the guided-learning UI marker.');
 must(courseContent.includes('dtf-learning-hub-course1-layout-v4'), 'Course index is missing the responsive Course 1 layout marker.');
