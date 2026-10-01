@@ -300,28 +300,32 @@
           {
             "branch": "system/production-ownership-registry",
             "basis": "legacy ownership registry superseded by data/repository-registry.json, project registry and game-registry-v2 in dtfgenetics/Thc"
+          },
+          {
+            "branch": "fix/visual-structure-genetics-shop-20260921",
+            "basis": "0 commits ahead of current main; visual structure work is already incorporated or superseded"
+          },
+          {
+            "branch": "recovery/genetics-propagation-center",
+            "basis": "canonical thc-grow-hub content/site/genetics-propagation.json already contains the recovered center and module identities"
+          },
+          {
+            "branch": "recovery/genetics-propagation-complete",
+            "basis": "canonical thc-grow-hub content/site/genetics-propagation.json already contains the complete six-module genetics/propagation center"
           }
         ],
         "reconcileNeeded": [
           {
             "branch": "integration/genetics-growdoc-issues",
-            "reason": "contains genetics-propagation to Grow Doc issue mapping; verify unique controlled IDs/data before retirement"
+            "reason": "canonical migration opened as Thc-dataset PR #331; retire after merge"
           },
           {
             "branch": "integration/genetics-growdoc-targets",
-            "reason": "contains genetics Grow Doc target mapping; compare with canonical Thc-dataset before retirement"
+            "reason": "canonical migration opened as Thc-dataset PR #331; retire after merge"
           },
           {
             "branch": "integration/genetics-propagation-crosswalk",
-            "reason": "contains genetics/propagation education crosswalk; compare with thc-grow-hub and Thc-dataset"
-          },
-          {
-            "branch": "recovery/genetics-propagation-center",
-            "reason": "contains recovered genetics/propagation center data requiring canonical-owner comparison"
-          },
-          {
-            "branch": "recovery/genetics-propagation-complete",
-            "reason": "contains later recovered genetics/propagation data requiring canonical-owner comparison"
+            "reason": "canonical migration opened as thc-grow-hub PR #161; retire after merge"
           },
           {
             "branch": "ui/learn-visitor-ux-pass",
