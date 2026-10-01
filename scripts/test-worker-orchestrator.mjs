@@ -7,6 +7,7 @@ import { createLease, heartbeatLease, isLeaseExpired, recoveryDisposition } from
 import { classifyReconciliation, reconciliationNeedsMutation } from './orchestrator/reconcile.mjs'
 import { exactHeadMatches, inspectAllowedPaths, inspectCheckRollup, isPathAllowed, normalizeCheck } from './orchestrator/verification.mjs'
 import { classifyJobHealth, findOrphanManagedBranches, parseManagedBranch } from './orchestrator/audit.mjs'
+import { buildExecutionPacket, claimExecutor, executorHandoff, executorResult, heartbeatExecutor } from './orchestrator/executor.mjs'
 
 const config = validateConfig({
   version: 2,
@@ -294,7 +295,95 @@ const orphanBranches = findOrphanManagedBranches([
 assert.deepEqual(orphanBranches.map((item) => item.issueNumber), [200])
 
 
+
+const executorSourceJob = {
+  ...newJob({
+    jobId: 'issue-300',
+    issueId: 300,
+    title: 'Executor protocol test',
+    state: 'LEASED',
+    project: 'games',
+    repository: 'dtfgenetics/Thc',
+    workerKind: 'game',
+    branch: 'work/games/executor-protocol-i300-abcdef3',
+    baseBranch: 'main',
+    baseSha: 'base300',
+    resourceSet: ['game.high-iq'],
+    allowedPaths: ['games/high-iq/**'],
+    verificationProfile: 'high-iq',
+    acceptanceCriteria: ['tests pass'],
+  }, { now: '2026-09-30T21:00:00.000Z' }),
+  lease: createLease({
+    workerId: 'github-run:1',
+    workerKind: 'game',
+    ttlMinutes: 60,
+    now: '2026-09-30T21:00:00.000Z',
+    leaseId: 'lease-exec-1',
+  }),
+}
+const packet = buildExecutionPacket(executorSourceJob, { issueNumber: 300 })
+assert.equal(packet.worker.kind, 'game')
+assert.equal(packet.branch.name, executorSourceJob.branch)
+assert.deepEqual(packet.scope.resources, ['game.high-iq'])
+
+const claimedExecutorJob = claimExecutor(executorSourceJob, {
+  executorId: 'chat:abc',
+  provider: 'chatgpt',
+  sessionId: 'session-1',
+  ttlMinutes: 60,
+  now: '2026-09-30T21:05:00.000Z',
+})
+assert.equal(claimedExecutorJob.state, 'RUNNING')
+assert.equal(claimedExecutorJob.lease.workerId, 'chat:abc')
+assert.equal(claimedExecutorJob.executor.executorId, 'chat:abc')
+
+const heartbeatExecutorJob = heartbeatExecutor(claimedExecutorJob, {
+  executorId: 'chat:abc',
+  leaseId: 'lease-exec-1',
+  ttlMinutes: 60,
+  progress: 'editing',
+  headSha: 'head300a',
+  now: '2026-09-30T21:10:00.000Z',
+})
+assert.equal(heartbeatExecutorJob.executor.progress, 'editing')
+assert.equal(heartbeatExecutorJob.executor.lastHeadSha, 'head300a')
+
+const handoffExecutorJob = executorHandoff(heartbeatExecutorJob, {
+  executorId: 'chat:abc',
+  leaseId: 'lease-exec-1',
+  completed: ['implementation'],
+  remaining: ['verification'],
+  blockers: [],
+  headSha: 'head300b',
+  now: '2026-09-30T21:15:00.000Z',
+})
+assert.equal(handoffExecutorJob.executor.status, 'HANDED_OFF')
+assert.deepEqual(handoffExecutorJob.executor.handoff.remaining, ['verification'])
+
+const verifyReadyJob = executorResult(heartbeatExecutorJob, {
+  executorId: 'chat:abc',
+  leaseId: 'lease-exec-1',
+  outcome: 'ready-for-verification',
+  headSha: 'head300c',
+  prNumber: 77,
+  verificationEvidence: ['npm test'],
+  now: '2026-09-30T21:20:00.000Z',
+})
+assert.equal(verifyReadyJob.state, 'VERIFYING')
+assert.equal(verifyReadyJob.expectedHeadSha, 'head300c')
+assert.equal(verifyReadyJob.prNumber, 77)
+
+const failedExecutorJob = executorResult(heartbeatExecutorJob, {
+  executorId: 'chat:abc',
+  leaseId: 'lease-exec-1',
+  outcome: 'failed',
+  failure: 'test-failure',
+  now: '2026-09-30T21:20:00.000Z',
+})
+assert.equal(failedExecutorJob.state, 'RETRY_WAIT')
+assert.equal(failedExecutorJob.executor.status, 'FAILED')
+
 const productionMerged = newJob({ jobId: 'prod-1', title: 'Production', state: 'MERGED', productionImpact: true })
 assert.throws(() => transitionJob(productionMerged, 'DONE'), /Production-impacting/)
 
-console.log(JSON.stringify({ ok: true, tests: 82 }, null, 2))
+console.log(JSON.stringify({ ok: true, tests: 97 }, null, 2))
