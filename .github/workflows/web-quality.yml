@@ -10,6 +10,7 @@ on:
       - 'scripts/discover-public-routes.mjs'
       - 'scripts/check-public-route-health.mjs'
       - 'scripts/audit-responsive-source.mjs'
+      - 'scripts/audit-dtfseeds-live.mjs'
       - 'web-qa.config.mjs'
       - 'lighthouserc.cjs'
       - '.github/workflows/web-quality.yml'
@@ -76,6 +77,9 @@ jobs:
 
       - name: Check public route health
         run: node scripts/check-public-route-health.mjs
+
+      - name: Audit live SEO and indexability
+        run: node scripts/audit-dtfseeds-live.mjs
 
       - name: Upload route-health evidence
         if: always()
