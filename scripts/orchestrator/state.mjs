@@ -83,6 +83,7 @@ export function newJob(input, { now = new Date().toISOString() } = {}) {
     baseBranch: input.baseBranch || 'main',
     baseSha: input.baseSha || null,
     resourceSet: Array.isArray(input.resourceSet) ? input.resourceSet : [],
+    allowedPaths: Array.isArray(input.allowedPaths) ? input.allowedPaths : [],
     verificationProfile: input.verificationProfile || null,
     retryPolicy: input.retryPolicy || 'implementation',
     attempt: Number.isInteger(input.attempt) ? input.attempt : 0,
@@ -109,6 +110,9 @@ export function validateJob(job) {
   if (!Number.isInteger(job.attempt) || job.attempt < 0) throw new Error('attempt must be a non-negative integer')
   if (!Number.isInteger(job.maxAttempts) || job.maxAttempts < 0) throw new Error('maxAttempts must be a non-negative integer')
   if (!Array.isArray(job.resourceSet)) throw new Error('resourceSet must be an array')
+  if (!Array.isArray(job.allowedPaths)) throw new Error('allowedPaths must be an array')
   if (!Array.isArray(job.dependencies)) throw new Error('dependencies must be an array')
+  if (!Array.isArray(job.acceptanceCriteria)) throw new Error('acceptanceCriteria must be an array')
+  if (!Array.isArray(job.productionTargets)) throw new Error('productionTargets must be an array')
   return job
 }
