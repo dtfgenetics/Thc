@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - scripts/reconcile-aioseo-shop-meta.mjs
+      - scripts/verify-canonical-sitemap-inventory.mjs
       - .github/workflows/aioseo-shop-meta-production.yml
 
 permissions:
@@ -99,6 +100,12 @@ jobs:
             throw new Error(`Shop metadata did not converge after cache purge: ${JSON.stringify(last)}`);
           })().catch((error) => { console.error(error); process.exit(1); });
           NODE
+
+      - name: Verify canonical sitemap inventory and Courses SEO state
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/verify-canonical-sitemap-inventory.mjs
 
       - name: Report Shop SEO reconciliation
         if: always()
