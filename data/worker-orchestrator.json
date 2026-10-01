@@ -91,5 +91,6 @@
     "deleteManagedBranchAfterMerge": true,
     "preserveUniqueWorkOnLeaseExpiry": true,
     "reconcileBeforeDispatch": true
-  }
+  },
+  "maxScopedWorkersPerProject": 3
 }
