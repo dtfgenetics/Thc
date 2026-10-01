@@ -132,6 +132,6 @@
     "verify:tool-execution": "node scripts/validate-tool-execution-registry.mjs",
     "audit:workflow-portfolio": "node scripts/audit-workflow-portfolio.mjs",
     "project:plan": "node scripts/project-session-plan.mjs",
-    "verify:project-execution": "node scripts/validate-project-execution-registry.mjs"
+    "verify:project-execution": "node scripts/validate-project-execution-registry.mjs && node scripts/test-project-session-plan.mjs"
   }
 }
