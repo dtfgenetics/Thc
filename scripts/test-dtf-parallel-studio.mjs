@@ -117,4 +117,17 @@ const platform = JSON.parse(laneCheck('work/platform/studio/s2', ['apps/growlens
 assert.equal(platform.ok, true)
 assert.equal(platform.unrestricted, true)
 
+
+const doctorSource = readFileSync('scripts/studio/doctor.mjs', 'utf8')
+for (const token of [
+  'legacyBranchPrs',
+  'directToolMirrorAuthoring',
+  'sync/tools-',
+  'site/public-route-patch/atlas/',
+  'branchHygiene',
+  'toolMirrors'
+]) {
+  assert(doctorSource.includes(token), `Studio doctor missing PR-hygiene contract: ${token}`)
+}
+
 console.log('DTF Parallel Studio regression tests passed.')
