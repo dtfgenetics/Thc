@@ -12,11 +12,13 @@
       <button type="button" class="log-toggle" id="career-log-toggle" aria-expanded="true">Hide log</button>
     </div>
     <p class="hint">Review what changed before choosing the next move. Keyboard: 1–6 chooses an available action, Enter continues after an event.</p>
+    <div class="career-path-summary" id="career-path-summary" aria-label="Career path by era"></div>
     <div class="career-log" id="career-log"></div>
   `;
   gamePanel.append(panel);
 
   const log = panel.querySelector('#career-log');
+  const pathSummary = panel.querySelector('#career-path-summary');
   const toggle = panel.querySelector('#career-log-toggle');
   let viewState = { history: [], resourceLabels: {} };
 
@@ -24,6 +26,34 @@
     const entries = Object.entries(delta);
     if (!entries.length) return 'No resource change';
     return entries.map(([key, value]) => `${value > 0 ? '+' : ''}${value} ${viewState.resourceLabels?.[key] || key}`).join(' · ');
+  }
+
+  const eraForTurn = (turn) => turn <= 6 ? 'Underground' : turn <= 12 ? 'Medical' : 'Legal';
+
+  function renderCareerPath() {
+    if (!Array.isArray(viewState.history) || !viewState.history.length) {
+      pathSummary.replaceChildren();
+      return;
+    }
+    const eras = ['Underground', 'Medical', 'Legal'];
+    pathSummary.replaceChildren(...eras.map((era, eraIndex) => {
+      const records = viewState.history.filter((record) => eraForTurn(Number(record.turn) || 1) === era);
+      const counts = new Map();
+      for (const record of records) {
+        const label = record.action?.label || 'Decision';
+        counts.set(label, (counts.get(label) || 0) + 1);
+      }
+      const leaders = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 2);
+      const card = document.createElement('article');
+      card.className = 'career-path-era';
+      card.dataset.complete = String(records.length >= 6);
+      card.innerHTML = `
+        <span>0${eraIndex + 1} · ${records.length}/6 turns</span>
+        <strong>${era}</strong>
+        <small>${leaders.length ? leaders.map(([label, count]) => `${label} ×${count}`).join(' · ') : 'Path not reached yet'}</small>
+      `;
+      return card;
+    }));
   }
 
   function renderCareerLog() {
@@ -66,6 +96,7 @@
   }
 
   function refresh() {
+    renderCareerPath();
     renderCareerLog();
     refreshActionShortcuts();
   }
