@@ -36,8 +36,7 @@
       "blockers": [
         "Complete legacy asset hash/provenance reconciliation.",
         "Confirm no production automation or bookmarks require this repository.",
-        "Remove or retire remaining duplicate working-tree implementations after canonical parity is proven.",
-        "Complete final review of any remaining non-default branches not yet represented in the retirement manifest."
+        "Remove or retire remaining duplicate working-tree implementations after canonical parity is proven."
       ],
       "completedLanes": [
         "Grow Doc comparison and selective export migration.",
@@ -49,7 +48,8 @@
         "Copied Weedopolis implementation and deploy artifacts removed from dtf-thc-hub via PR #72; standalone Weedopolis repo remains canonical.",
         "Legacy Kush Kings PHP/runtime hardening branches reconciled against canonical dtfgenetics/Thc-chess-git Node/Express/Socket.IO controls.",
         "Genetics/propagation education crosswalk migrated to thc-grow-hub PR #161.",
-        "Genetics/propagation Grow Doc mapping migrated with corrected canonical diagnostic slugs to Thc-dataset PR #331."
+        "Genetics/propagation Grow Doc mapping migrated with corrected canonical diagnostic slugs to Thc-dataset PR #331.",
+        "Reusable public-learning UX contract migrated to thc-grow-hub PR #163; obsolete legacy UI implementation branches retired."
       ],
       "canonicalTargets": [
         "dtfgenetics/Thc",
@@ -326,23 +326,24 @@
           {
             "branch": "integration/genetics-growdoc-targets",
             "basis": "canonical Grow Doc mapping migrated and merged into Thc-dataset via PR #331"
-          }
-        ],
-        "reconcileNeeded": [
-          {
-            "branch": "ui/learn-visitor-ux-pass",
-            "reason": "legacy CSS implementation; reusable learner UX/mobile/accessibility intent is preserved in thc-grow-hub PR #163; retire after merge"
           },
           {
             "branch": "system/continuous-improvement-loop",
-            "reason": "reusable public-learning UX contract migrated to thc-grow-hub PR #163; retire after merge"
+            "basis": "reusable public-learning hierarchy/mobile/accessibility/progressive-disclosure contract migrated and merged into thc-grow-hub via PR #163"
+          },
+          {
+            "branch": "ui/learn-visitor-ux-pass",
+            "basis": "legacy learner CSS implementation superseded; reusable UX intent migrated and merged into thc-grow-hub via PR #163"
           },
           {
             "branch": "fix/ui-ux-foundation-20260921",
-            "reason": "legacy hub-wide UI implementation is obsolete; reusable learner hierarchy/mobile/accessibility/progressive-disclosure intent is preserved in thc-grow-hub PR #163; retire after merge"
+            "basis": "legacy hub-wide UI implementation superseded; reusable learner UX intent preserved in canonical thc-grow-hub contract via PR #163"
           }
         ],
-        "rule": "Do not merge diverged cleanup branches wholesale. Rebase or selectively apply only the retirement changes that remain valid against current main, then validate before classifying delete-safe."
+        "reconcileNeeded": [],
+        "rule": "Do not merge diverged cleanup branches wholesale. Rebase or selectively apply only the retirement changes that remain valid against current main, then validate before classifying delete-safe.",
+        "complete": true,
+        "summary": "All 76 non-default dtf-thc-hub branches are classified in the retirement ledger or have their useful content migrated to canonical owners."
       }
     },
     {
