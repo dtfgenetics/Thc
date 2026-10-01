@@ -236,6 +236,70 @@
           {
             "branch": "reconcile/education-genetics-current-main",
             "basis": "0 commits ahead of current main; branch is fully behind"
+          },
+          {
+            "branch": "audit-bud-or-bluff-production",
+            "basis": "legacy live-audit script superseded by canonical Bud or Bluff ownership, route verification and release controls in dtfgenetics/Thc"
+          },
+          {
+            "branch": "docs/full-dtfseeds-audit-scope",
+            "basis": "legacy audit-scope document superseded by current repository architecture, production standards and project OS checks in dtfgenetics/Thc"
+          },
+          {
+            "branch": "document-production-deploy-flow",
+            "basis": "legacy deployment-flow documentation superseded by canonical dtfgenetics/Thc deployment and release documentation"
+          },
+          {
+            "branch": "feat/bud-or-bluff-production",
+            "basis": "legacy Bud or Bluff implementation superseded by canonical games/bud-or-bluff and current public route in dtfgenetics/Thc"
+          },
+          {
+            "branch": "feat/high-iq-production",
+            "basis": "0 commits ahead of current main; canonical High IQ implementation is owned by dtfgenetics/Thc"
+          },
+          {
+            "branch": "fix/game-route-legacy-redirects",
+            "basis": "legacy route redirect policy superseded by current dtfgenetics/Thc public-route/deployment registries"
+          },
+          {
+            "branch": "fix/game-route-policy-current-main",
+            "basis": "0 commits ahead of current main; route policy is current in canonical dtfgenetics/Thc"
+          },
+          {
+            "branch": "fix/high-land-production-integrity",
+            "basis": "legacy High Land implementation superseded by canonical dtfgenetics/Thc apps/high-land-web and locked source-of-truth contracts"
+          },
+          {
+            "branch": "game-studio-v2-isolated-staging",
+            "basis": "legacy local game-bundle staging superseded by canonical external-game contract and packaging pipeline in dtfgenetics/Thc"
+          },
+          {
+            "branch": "game-ui-playability-polish-20260905",
+            "basis": "legacy High Land/High IQ/Weedopolis UI polish targets obsolete implementations; current canonical game owners contain newer UI/runtime systems"
+          },
+          {
+            "branch": "multiplayer-game-ui-polish-20260905",
+            "basis": "legacy copied Bud or Bluff/THC U Know static bundle polish is superseded by current canonical game/runtime owners"
+          },
+          {
+            "branch": "reconcile/branch-inventory-current-main",
+            "basis": "0 commits ahead of current main; branch inventory work is superseded by repository retirement/consolidation manifests"
+          },
+          {
+            "branch": "reconcile/bud-or-bluff-live-audit-current-main",
+            "basis": "legacy live-audit script superseded by canonical Bud or Bluff production verification controls"
+          },
+          {
+            "branch": "system/full-quality-audit-suite",
+            "basis": "legacy quality audit/ownership registry superseded by current dtfgenetics/Thc project OS and repository architecture checks"
+          },
+          {
+            "branch": "system/full-quality-audit-suite-v2",
+            "basis": "legacy audit suite/workflows superseded by current canonical CI, game registry and production standards checks"
+          },
+          {
+            "branch": "system/production-ownership-registry",
+            "basis": "legacy ownership registry superseded by data/repository-registry.json, project registry and game-registry-v2 in dtfgenetics/Thc"
           }
         ],
         "reconcileNeeded": [
@@ -262,6 +326,10 @@
           {
             "branch": "ui/learn-visitor-ux-pass",
             "reason": "legacy learner UI/CSS branch; compare only reusable UX behavior against canonical education/public experience"
+          },
+          {
+            "branch": "system/continuous-improvement-loop",
+            "reason": "contains legacy public-learning navigation/center data; compare against current thc-grow-hub/Thc learning experience before retirement"
           }
         ],
         "rule": "Do not merge diverged cleanup branches wholesale. Rebase or selectively apply only the retirement changes that remain valid against current main, then validate before classifying delete-safe."
