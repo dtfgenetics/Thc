@@ -8,12 +8,18 @@ if(!raw){
 }
 const execution=JSON.parse(fs.readFileSync('data/project-execution-registry.json','utf8'));
 const projects=JSON.parse(fs.readFileSync('data/project-registry.json','utf8'));
+const externalContracts=JSON.parse(fs.readFileSync('data/external-agent-contract-registry.json','utf8'));
+const contractByRepo=new Map((externalContracts.repositories||[]).map(entry=>[entry.repo,entry]));
+const readiness=(repo)=>repo===externalContracts.controlRepository?{mode:'local',path:null}:contractByRepo.has(repo)?{mode:contractByRepo.get(repo).mode,path:contractByRepo.get(repo).path||externalContracts.contractPath||'dtf-agent-contract.json'}:{mode:'undeclared',path:null};
 const direct=(execution.projects||[]).find(p=>p.id===raw||(p.aliases||[]).includes(raw));
 if(direct){
+  const agent=readiness(direct.canonicalRepo);
   console.log(JSON.stringify({
     ok:true,
     project:direct.id,
     canonicalRepo:direct.canonicalRepo,
+    agentExecutionMode:agent.mode,
+    agentContractPath:agent.path,
     branchPattern:'work/'+direct.id+'/<task>/<session-id>',
     sourcePaths:direct.sourcePaths,
     validationCommand:direct.validationCommand,
@@ -26,10 +32,13 @@ if(direct){
 }
 const registered=(projects.projects||[]).find(p=>String(p.id||'').toLowerCase()===raw);
 if(registered){
+  const agent=readiness(registered.repo);
   console.log(JSON.stringify({
     ok:true,
     project:registered.id,
     canonicalRepo:registered.repo,
+    agentExecutionMode:agent.mode,
+    agentContractPath:agent.path,
     branchPattern:'work/'+registered.id+'/<task>/<session-id>',
     sourceOfTruth:registered.source_of_truth_doc||null,
     status:registered.status,
