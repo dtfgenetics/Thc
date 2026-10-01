@@ -6,7 +6,7 @@ import { newJob, transitionJob, canTransition } from './orchestrator/state.mjs'
 import { createLease, heartbeatLease, isLeaseExpired, recoveryDisposition } from './orchestrator/leases.mjs'
 import { classifyReconciliation, reconciliationNeedsMutation } from './orchestrator/reconcile.mjs'
 import { exactHeadMatches, inspectAllowedPaths, inspectCheckRollup, isPathAllowed, normalizeCheck } from './orchestrator/verification.mjs'
-import { classifyJobHealth, findOrphanManagedBranches, parseManagedBranch } from './orchestrator/audit.mjs'
+import { classifyJobHealth, findDuplicateActiveResourceClaims, findOrphanManagedBranches, findOrphanManagedPrs, parseManagedBranch } from './orchestrator/audit.mjs'
 import { buildExecutionPacket, buildHandoffPacket, claimExecutor, executorHandoff, executorResult, heartbeatExecutor, renderHandoffMarkdown } from './orchestrator/executor.mjs'
 import { resolveCanonicalRepository } from './orchestrator/repositories.mjs'
 import { epicSummary, materializeJobPlan, topologicalJobOrder, validateEpicManifest } from './orchestrator/epics.mjs'
@@ -352,6 +352,21 @@ const orphanBranches = findOrphanManagedBranches([
 ], new Map([[123, healthyAuditJob]]))
 assert.deepEqual(orphanBranches.map((item) => item.issueNumber), [200])
 
+const orphanPrs = findOrphanManagedPrs([
+  { number: 88, state: 'OPEN', headRefName: 'work/games/orphan-i200-abcdef2', headRefOid: 'sha200' },
+  { number: 89, state: 'OPEN', headRefName: healthyAuditJob.branch, headRefOid: 'abc' },
+], new Map([[123, healthyAuditJob]]))
+assert.deepEqual(orphanPrs.map((item) => item.prNumber), [88])
+
+const duplicateClaims = findDuplicateActiveResourceClaims(new Map([
+  [123, { ...healthyAuditJob, resourceSet: ['game.high-iq'] }],
+  [124, { ...prAuditJob, resourceSet: ['game.high-iq'] }],
+  [125, { ...healthyAuditJob, state: 'DONE', resourceSet: ['game.high-iq'] }],
+]))
+assert.equal(duplicateClaims.length, 1)
+assert.equal(duplicateClaims[0].resource, 'game.high-iq')
+assert.deepEqual(duplicateClaims[0].claims.map((item) => item.issueNumber), [123, 124])
+
 
 
 const externalExecutorSourceJob = {
@@ -592,4 +607,4 @@ assert.throws(() => verificationProfileFromContract(toolsContractFixture, 'missi
 const productionMerged = newJob({ jobId: 'prod-1', title: 'Production', state: 'MERGED', productionImpact: true })
 assert.throws(() => transitionJob(productionMerged, 'DONE'), /Production-impacting/)
 
-console.log(JSON.stringify({ ok: true, tests: 144 }, null, 2))
+console.log(JSON.stringify({ ok: true, tests: 149 }, null, 2))
