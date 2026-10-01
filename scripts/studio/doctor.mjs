@@ -34,6 +34,39 @@ const listedText = capture('gh', [
   '--json', 'number,title,headRefName,headRefOid,mergeable,isDraft,url,updatedAt'
 ], { cwd: repoRoot })
 const listed = listedText ? JSON.parse(listedText) : []
+
+const managedBranchPattern = /^(work|project|multi)\//;
+const canonicalToolMirrorPrefixes = [
+  'site/public-route-patch/atlas/',
+  'site/public-route-patch/terpene-atlas/',
+  'site/public-route-patch/tools/',
+  'site/public-route-patch/ph-meter/',
+  'site/public-route-patch/tds-meter/',
+  'site/public-route-patch/vpd-chart/',
+  'site/public-route-patch/ppfd-chart/',
+  'site/public-route-patch/environment-control/',
+  'site/public-route-patch/dew-point/',
+  'site/public-route-patch/water-quality-lab/',
+  'site/public-route-patch/root-zone-temperature/',
+  'site/public-route-patch/dryback-lab/',
+  'site/public-route-patch/fertigation-lab/',
+  'site/public-route-patch/grow-planner/',
+  'site/public-route-patch/photoperiod-planner/',
+  'site/public-route-patch/plant-growth-tracker/',
+  'site/public-route-patch/dry-cure-lab/',
+  'site/public-route-patch/breeder-pedigree/',
+  'site/public-route-patch/co2-ventilation/',
+  'site/public-route-patch/dilution-calculator/',
+  'site/public-route-patch/ipm-scout/',
+  'site/public-route-patch/substrate-calculator/',
+  'site/public-route-patch/unit-converter/'
+];
+
+function directCanonicalMirrorFiles(pr) {
+  if (pr.headRefName.startsWith('sync/tools-')) return [];
+  return (pr.files || []).filter((file) => canonicalToolMirrorPrefixes.some((prefix) => file.startsWith(prefix)));
+}
+
 const prs = []
 
 for (const pr of listed) {
@@ -107,6 +140,10 @@ for (let i = 0; i < prs.length; i += 1) {
 }
 
 const conflictingPrs = prs.filter((pr) => pr.mergeable === 'CONFLICTING')
+const legacyBranchPrs = prs.filter((pr) => !managedBranchPattern.test(pr.headRefName))
+const directToolMirrorAuthoring = prs
+  .map((pr) => ({ pr: pr.number, title: pr.title, branch: pr.headRefName, files: directCanonicalMirrorFiles(pr), url: pr.url }))
+  .filter((item) => item.files.length > 0)
 const unknownResources = prs.filter((pr) => pr.unmatchedFiles.length).map((pr) => ({
   pr: pr.number,
   files: pr.unmatchedFiles,
@@ -124,7 +161,11 @@ const report = {
     sharedProductionTargets: hotspots(targetUse).length,
     supersessionCandidates: supersessionCandidates.length,
     prsWithUnclassifiedFiles: unknownResources.length,
+    legacyBranchPrs: legacyBranchPrs.length,
+    directToolMirrorAuthoringPrs: directToolMirrorAuthoring.length,
   },
+  legacyBranchPrs: legacyBranchPrs.map((pr) => ({ number: pr.number, title: pr.title, branch: pr.headRefName, url: pr.url })),
+  directToolMirrorAuthoring,
   githubConflictingPrs: conflictingPrs.map((pr) => ({
     number: pr.number,
     title: pr.title,
@@ -142,6 +183,8 @@ const report = {
     conflicts: 'Repair red/current-main conflicts at integration, preserving both compatible changes.',
     production: 'Serialize only PRs that share an exact production target.',
     supersession: 'Advisory until unique work and intent are checked.',
+    branchHygiene: 'New work should use work/<project>/<task>/<session>; legacy branches require intentional review before integration.',
+    toolMirrors: 'Focused cultivation-tool mirrors in Thc must normally come from sync/tools-* integration branches after canonical authoring in dtfgenetics/Tools.',
   },
 }
 
