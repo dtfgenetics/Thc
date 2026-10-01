@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import assert from 'node:assert/strict'
-import { buildClaim, isReady, planClaims, planMetadataFromIssue, resourceSetsOverlap, validateConfig } from './orchestrator/core.mjs'
+import { buildClaim, dependenciesSatisfied, dependencyBlockers, dependencyIssueNumber, isReady, planClaims, planMetadataFromIssue, resourceSetsOverlap, validateConfig } from './orchestrator/core.mjs'
 import { newJob, transitionJob, canTransition } from './orchestrator/state.mjs'
 import { createLease, heartbeatLease, isLeaseExpired, recoveryDisposition } from './orchestrator/leases.mjs'
 import { classifyReconciliation, reconciliationNeedsMutation } from './orchestrator/reconcile.mjs'
@@ -91,6 +91,39 @@ assert.equal(duplicateProjectPlan.length, 1, 'only one worker may claim a projec
 assert.equal(duplicateProjectPlan[0].issueNumber, 20)
 
 
+assert.equal(dependencyIssueNumber('issue-123'), 123)
+assert.equal(dependencyIssueNumber('#123'), 123)
+assert.equal(dependencyIssueNumber('bad'), null)
+assert.equal(dependenciesSatisfied(['issue-1'], []), false)
+assert.equal(dependenciesSatisfied(['issue-1'], ['1']), true)
+assert.deepEqual(dependencyBlockers(['issue-1', 'issue-2'], ['1']), ['issue-2'])
+
+const blockedDependencyPlan = planClaims([plannedIssue], [], config, [])
+assert.deepEqual(blockedDependencyPlan, [], 'jobs must wait for incomplete dependencies')
+const releasedDependencyPlan = planClaims([plannedIssue], [], config, ['1'])
+assert.deepEqual(releasedDependencyPlan.map((item) => item.issueNumber), [5], 'completed dependencies must release jobs')
+
+const autoProfileIssue = {
+  ...issue(8, 'Auto-routed game', ['worker:ready', 'project:auto']),
+  body: '<!-- worker-plan:{"resourceSet":["game.high-iq"]} -->',
+}
+assert.equal(buildClaim(autoProfileIssue, config).verificationProfile, 'high-iq')
+const genericGameProfileIssue = {
+  ...issue(9, 'Generic game route', ['worker:ready', 'project:auto2']),
+  body: '<!-- worker-plan:{"resourceSet":["game.some-new-game"]} -->',
+}
+assert.equal(buildClaim(genericGameProfileIssue, config).verificationProfile, 'games-general')
+const atlasProfileIssue = {
+  ...issue(15, 'Atlas route', ['worker:ready', 'project:auto3']),
+  body: '<!-- worker-plan:{"resourceSet":["app.plant-atlas"]} -->',
+}
+assert.equal(buildClaim(atlasProfileIssue, config).verificationProfile, 'repo-control')
+const conflictingProfilesIssue = {
+  ...issue(16, 'Mixed profiles', ['worker:ready', 'project:auto4']),
+  body: '<!-- worker-plan:{"resourceSet":["game.high-iq","content.education"]} -->',
+}
+assert.throws(() => buildClaim(conflictingProfilesIssue, config), /multiple verification profiles/)
+
 const resourceConflictPlan = planClaims([
   plannedIssue,
   {
@@ -103,7 +136,7 @@ const resourceConflictPlan = planClaims([
   },
 ], [
   { issueNumber: 90, project: 'active-other', active: true, resourceSet: ['content.education'] },
-], config)
+], config, ['1'])
 assert.deepEqual(resourceConflictPlan.map((item) => item.issueNumber), [5, 7], 'duplicate resource claims must not be planned together')
 
 
@@ -171,4 +204,4 @@ assert.deepEqual(pathViolation.violations, ['data/public-navigation.json'])
 const productionMerged = newJob({ jobId: 'prod-1', title: 'Production', state: 'MERGED', productionImpact: true })
 assert.throws(() => transitionJob(productionMerged, 'DONE'), /Production-impacting/)
 
-console.log(JSON.stringify({ ok: true, tests: 52 }, null, 2))
+console.log(JSON.stringify({ ok: true, tests: 67 }, null, 2))
