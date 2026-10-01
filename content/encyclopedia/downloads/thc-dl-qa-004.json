@@ -1,0 +1,141 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-QA-004",
+  "title": "Experimental Design and Evidence-System Workbook",
+  "status": "draft_for_review",
+  "purpose": "Support experimental design, causal reasoning, generalization, source control, and evidence-based knowledge-system maintenance.",
+  "lessonIds": [
+    "THC-ENC-416",
+    "THC-ENC-417",
+    "THC-ENC-418",
+    "THC-ENC-419",
+    "THC-ENC-420"
+  ],
+  "sections": [
+    {
+      "id": "experimental-design",
+      "supportsLesson": "THC-ENC-416",
+      "title": "Experimental Design Record",
+      "fields": [
+        "Question",
+        "Hypothesis",
+        "Experimental unit",
+        "Treatment",
+        "Control",
+        "Randomization method",
+        "Replication count",
+        "Blocking factor",
+        "Primary outcome",
+        "Secondary outcome",
+        "Measurement schedule",
+        "Exclusion rule",
+        "Analysis plan",
+        "Power/sample-size rationale",
+        "Deviation",
+        "Interpretation"
+      ]
+    },
+    {
+      "id": "causal-reasoning",
+      "supportsLesson": "THC-ENC-417",
+      "title": "Correlation, Causation, and Confounding Map",
+      "fields": [
+        "Observed association",
+        "Proposed cause",
+        "Outcome",
+        "Temporal order",
+        "Potential confounders",
+        "Potential mediators",
+        "Selection effects",
+        "Measurement bias",
+        "Alternative explanations",
+        "Control strategy",
+        "Evidence for causation",
+        "Evidence against causation",
+        "Residual uncertainty"
+      ]
+    },
+    {
+      "id": "generalization",
+      "supportsLesson": "THC-ENC-418",
+      "title": "Cultivar and System Generalization Record",
+      "fields": [
+        "Source cultivar/line",
+        "Source population",
+        "Developmental stage",
+        "Environment",
+        "System",
+        "Treatment",
+        "Outcome",
+        "Target cultivar/line",
+        "Target population",
+        "Target environment",
+        "Key biological differences",
+        "Replication across genotypes",
+        "Replication across environments",
+        "Generalization confidence",
+        "Boundary statement"
+      ]
+    },
+    {
+      "id": "source-control",
+      "supportsLesson": "THC-ENC-419",
+      "title": "Source, Citation, and Revision Control Record",
+      "fields": [
+        "Claim ID",
+        "Claim text",
+        "Claim type",
+        "Source ID",
+        "Exact citation",
+        "Locator/page/figure",
+        "Source version",
+        "Publication status",
+        "Evidence direction",
+        "Applicability limit",
+        "Reviewer",
+        "Review date",
+        "Supersedes",
+        "Superseded by",
+        "Correction note"
+      ]
+    },
+    {
+      "id": "knowledge-system",
+      "supportsLesson": "THC-ENC-420",
+      "title": "Evidence-Based Knowledge System Control Record",
+      "fields": [
+        "Knowledge item ID",
+        "Entity type",
+        "Owner",
+        "Canonical source",
+        "Claim links",
+        "Evidence links",
+        "Visual links",
+        "Assessment links",
+        "Download links",
+        "Software/tool links",
+        "Review state",
+        "Release state",
+        "Publication state",
+        "Version",
+        "Change summary",
+        "Correction path",
+        "Audit date"
+      ]
+    }
+  ],
+  "qualityRules": [
+    "Define the experimental unit before collecting data.",
+    "Do not infer causation from association alone.",
+    "State where cultivar- or system-specific evidence stops generalizing.",
+    "Tie claims to exact source versions and locators.",
+    "Keep review, release, deployment, and live state as separate controls."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  }
+}
