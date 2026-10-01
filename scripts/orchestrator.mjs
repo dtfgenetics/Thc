@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process'
 import { dependencyBlockers, dependencyIssueNumber, loadConfig, planClaims, planMetadataFromIssue, leaseTtlMinutes, maxAttempts } from './orchestrator/core.mjs'
 import { createLease, heartbeatLease, isLeaseExpired } from './orchestrator/leases.mjs'
 import { newJob, transitionJob } from './orchestrator/state.mjs'
+import { buildOperatorStatus } from './orchestrator/operator-status.mjs'
 
 const MARKER_RE = /<!-- worker-orchestrator:(\{.*?\}) -->/s
 
@@ -290,6 +291,7 @@ const dependencyBlocked = ready.map((issue) => {
 }).filter(Boolean)
 
 if (command === 'status' || command === 'plan') {
+  const operatorStatus = buildOperatorStatus({ activeClaims: active, readyIssues: ready, plannedClaims: plan, dependencyBlocked })
   console.log(JSON.stringify({
     ok: true,
     repo,
@@ -306,6 +308,7 @@ if (command === 'status' || command === 'plan') {
     dependencyBlocked,
     plannedClaims: plan,
     activeClaims: active,
+    operatorStatus,
   }, null, 2))
   process.exit(0)
 }
