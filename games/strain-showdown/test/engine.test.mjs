@@ -7,11 +7,12 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),"..");
 const dataRoot=path.join(root,"data");
 const manifest=JSON.parse(fs.readFileSync(path.join(dataRoot,"roster-manifest.json"),"utf8"));
 const cards=manifest.files.flatMap((file)=>JSON.parse(fs.readFileSync(path.join(dataRoot,file),"utf8")));
+const effectCatalog=JSON.parse(fs.readFileSync(path.join(dataRoot,"effect-profiles.json"),"utf8"));
 assert.equal(cards.length,96);assert.equal(new Set(cards.map((c)=>c.id)).size,96);assert.equal(new Set(cards.map((c)=>c.name)).size,96);
 for(const family of ["kush","haze","skunk","gas","cookies","fruit","purple","frost"]){const subset=cards.filter((c)=>c.family===family);assert.equal(subset.length,12);assert.equal(subset.filter((c)=>c.stage===1).length,6);assert.equal(subset.filter((c)=>c.stage===2).length,4);assert.equal(subset.filter((c)=>c.stage===3).length,2)}
 
-const opening=createGame({cards,playerFamily:"fruit",cpuFamily:"gas",seed:41});
-assert.equal(opening.version,"0.2.1");
+const opening=createGame({cards,effectCatalog,playerFamily:"fruit",cpuFamily:"gas",seed:41});
+assert.equal(opening.version,"0.3.0");
 assert.equal(opening.player.hand.length,6);assert.equal(opening.player.deck.length,6);assert.equal(opening.cpu.hand.length,6);assert.equal(opening.cpu.deck.length,6);
 assert.equal(opening.player.turnsStarted,1);assert.equal(opening.cpu.turnsStarted,0);
 assert.equal(endTurn(opening,"player").ok,true);
@@ -19,17 +20,17 @@ assert.equal(opening.turn,"cpu");assert.equal(opening.cpu.hand.length,6,"second 
 assert.equal(endTurn(opening,"cpu").ok,true);
 assert.equal(opening.turn,"player");assert.equal(opening.player.hand.length,7,"normal draw begins when the starting side begins its second turn");assert.equal(opening.player.deck.length,5);assert.equal(opening.player.turnsStarted,2);
 
-const cpuOpening=createGame({cards,playerFamily:"fruit",cpuFamily:"gas",seed:43,startingActor:"cpu"});
+const cpuOpening=createGame({cards,effectCatalog,playerFamily:"fruit",cpuFamily:"gas",seed:43,startingActor:"cpu"});
 assert.equal(cpuOpening.turn,"cpu");assert.equal(cpuOpening.cpu.turnsStarted,1);assert.equal(cpuOpening.player.turnsStarted,0);
 assert.equal(endTurn(cpuOpening,"cpu").ok,true);assert.equal(cpuOpening.player.hand.length,6);assert.equal(cpuOpening.player.deck.length,6);assert.equal(cpuOpening.player.turnsStarted,1);
 assert.equal(endTurn(cpuOpening,"player").ok,true);assert.equal(cpuOpening.cpu.hand.length,7);assert.equal(cpuOpening.cpu.deck.length,5);assert.equal(cpuOpening.cpu.turnsStarted,2);
-assert.throws(()=>createGame({cards,playerFamily:"fruit",cpuFamily:"gas",startingActor:"spectator"}),/Unknown starting actor/);
+assert.throws(()=>createGame({cards,effectCatalog,playerFamily:"fruit",cpuFamily:"gas",startingActor:"spectator"}),/Unknown starting actor/);
 
-const state=createGame({cards,playerFamily:"fruit",cpuFamily:"gas",seed:42});assert.equal(state.player.hand.length,6);assert.equal(state.player.deck.length,6);assert.equal(state.cpu.hand.length,6);const baseIndex=state.player.hand.findIndex((c)=>c.stage===1);assert.ok(baseIndex>=0);assert.equal(legalPlay(state,"player",baseIndex,0).ok,true);assert.equal(playCard(state,"player",baseIndex,0).ok,true);assert.ok(state.player.lanes[0]);assert.equal(attack(state,"player",0).ok,true);assert.equal(endTurn(state,"player").ok,true);assert.equal(state.turn,"cpu");let steps=0;while(state.turn==="cpu"&&!state.winner&&steps<20){const action=chooseCpuAction(state);if(action.type==="play")playCard(state,"cpu",action.cardIndex,action.lane);else if(action.type==="attack")attack(state,"cpu",action.lane);else{endTurn(state,"cpu");break}steps++}assert.ok(steps<20);
-const skunkState=createGame({cards,playerFamily:"skunk",cpuFamily:"fruit",seed:44});const skunkBase=skunkState.player.hand.findIndex((c)=>c.stage===1);assert.equal(playCard(skunkState,"player",skunkBase,0).ok,true);assert.equal(skunkState.cpu.nextFocusPenalty,1);assert.equal(endTurn(skunkState,"player").ok,true);assert.equal(skunkState.cpu.focus,2);assert.equal(skunkState.cpu.nextFocusPenalty,0);
-const hazeState=createGame({cards,playerFamily:"haze",cpuFamily:"fruit",seed:45});const hazeBase=hazeState.player.hand.findIndex((c)=>c.stage===1);assert.equal(playCard(hazeState,"player",hazeBase,0).ok,true);assert.equal(attack(hazeState,"player",0).ok,true);assert.equal(hazeState.player.focus,1);
+const state=createGame({cards,effectCatalog,playerFamily:"fruit",cpuFamily:"gas",seed:42});assert.equal(state.player.hand.length,6);assert.equal(state.player.deck.length,6);assert.equal(state.cpu.hand.length,6);const baseIndex=state.player.hand.findIndex((c)=>c.stage===1);assert.ok(baseIndex>=0);assert.equal(legalPlay(state,"player",baseIndex,0).ok,true);assert.equal(playCard(state,"player",baseIndex,0).ok,true);assert.ok(state.player.lanes[0]);assert.equal(attack(state,"player",0).ok,true);assert.equal(endTurn(state,"player").ok,true);assert.equal(state.turn,"cpu");let steps=0;while(state.turn==="cpu"&&!state.winner&&steps<20){const action=chooseCpuAction(state);if(action.type==="play")playCard(state,"cpu",action.cardIndex,action.lane);else if(action.type==="attack")attack(state,"cpu",action.lane);else{endTurn(state,"cpu");break}steps++}assert.ok(steps<20);
+const skunkState=createGame({cards,effectCatalog,playerFamily:"skunk",cpuFamily:"fruit",seed:44});const skunkBase=skunkState.player.hand.findIndex((c)=>c.stage===1);assert.equal(playCard(skunkState,"player",skunkBase,0).ok,true);assert.equal(skunkState.cpu.nextFocusPenalty,1);assert.equal(endTurn(skunkState,"player").ok,true);assert.equal(skunkState.cpu.focus,2);assert.equal(skunkState.cpu.nextFocusPenalty,0);
+const hazeState=createGame({cards,effectCatalog,playerFamily:"haze",cpuFamily:"fruit",seed:45});const hazeBase=hazeState.player.hand.findIndex((c)=>c.stage===1);assert.equal(playCard(hazeState,"player",hazeBase,0).ok,true);assert.equal(attack(hazeState,"player",0).ok,true);assert.equal(hazeState.player.focus,1);
 
-const roundLimitState=createGame({cards,playerFamily:"kush",cpuFamily:"haze",seed:99});
+const roundLimitState=createGame({cards,effectCatalog,playerFamily:"kush",cpuFamily:"haze",seed:99});
 roundLimitState.round=18;
 roundLimitState.turn="cpu";
 roundLimitState.player.garden=20;
@@ -40,3 +41,7 @@ assert.ok(["player","cpu","draw"].includes(roundLimitState.winner));
 assert.equal(roundLimitState.reason,"18-round showdown limit");
 
 console.log("Strain Showdown engine tests passed.");
+
+const kushEffects=createGame({cards,effectCatalog,playerFamily:"kush",cpuFamily:"fruit",seed:501});
+const kushBase=kushEffects.player.hand.findIndex((c)=>c.stage===1);assert.ok(kushBase>=0);const kushPlayed=playCard(kushEffects,"player",kushBase,0);assert.equal(kushPlayed.ok,true);assert.equal(kushEffects.player.lanes[0].shield,1,"Kush Base active profile must grant 1 Shield");assert.ok(kushEffects.player.lanes[0].abilityName);assert.ok(kushEffects.player.lanes[0].effectRulesText);
+const gasEffects=createGame({cards,effectCatalog,playerFamily:"gas",cpuFamily:"fruit",seed:502});const gasBase=gasEffects.player.hand.findIndex((c)=>c.stage===1);assert.equal(playCard(gasEffects,"player",gasBase,0).ok,true);const gasGardenBefore=gasEffects.cpu.garden;assert.equal(attack(gasEffects,"player",0).ok,true);assert.ok(gasGardenBefore-gasEffects.cpu.garden>=3,"Gas Base open-lane profile must add Garden damage");
