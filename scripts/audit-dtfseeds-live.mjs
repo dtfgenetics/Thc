@@ -41,7 +41,7 @@ const routes = [
   },
   {
     key: 'tools', path: '/tools/', minimumText: 600,
-    requiredText: ['Measure it. Document it. Diagnose with context.', 'THC GrowLens', 'THC Grow Doc'],
+    requiredText: ['Two primary workflows. One connected tool suite.', 'THC GrowLens', 'THC Grow Doc'],
     requiredLinks: ['/seeds/', '/shop/', '/growlens/', '/thc-grow-doc/']
   },
   {
