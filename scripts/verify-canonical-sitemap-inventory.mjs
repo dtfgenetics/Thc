@@ -7,7 +7,8 @@ const auth=user&&pass?`Basic ${Buffer.from(`${user}:${pass}`).toString('base64')
 const required=['/courses/','/tools/'];
 const seeds=['/sitemap.xml','/sitemap_index.xml','/wp-sitemap.xml'];
 const seen=new Set(), working=new Set(), urls=new Set();
-const norm=(value)=>{try{const u=new URL(value,site);if(u.origin!==new URL(site).origin)return null;let p=u.pathname.replace(/\/{2,}/g,'/');if(!p.endsWith('/'))p+='/';return p;}catch{return null;}};
+const siteOrigin=new URL(site).origin;
+const norm=(value)=>{try{const u=new URL(value,site);if(u.origin!==siteOrigin)return null;let p=u.pathname.replace(/\/{2,}/g,'/');if(!p.endsWith('/'))p+='/';return p;}catch{return null;}};
 async function get(url,headers={}){const r=await fetch(url,{headers:{'User-Agent':'DTFSeeds-Sitemap-Reconcile/1.0','Cache-Control':'no-cache',...headers},redirect:'follow',signal:AbortSignal.timeout(30000)});return {r,text:await r.text()};}
 async function walk(url){if(seen.has(url)||seen.size>=40)return;seen.add(url);const {r,text}=await get(url);if(!r.ok||!/<(?:urlset|sitemapindex)\b/i.test(text))return;working.add(url);for(const raw of [...text.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/gi)].map(m=>m[1].replaceAll('&amp;','&'))){const p=norm(raw);if(p)urls.add(p);if(/\.xml(?:$|\?)/i.test(raw))await walk(new URL(raw,site).href);}}
 for(const p of seeds)await walk(new URL(p,site).href);
