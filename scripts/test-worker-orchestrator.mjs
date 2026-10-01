@@ -8,6 +8,7 @@ import { classifyReconciliation, reconciliationNeedsMutation } from './orchestra
 import { exactHeadMatches, inspectAllowedPaths, inspectCheckRollup, isPathAllowed, normalizeCheck } from './orchestrator/verification.mjs'
 import { classifyJobHealth, findOrphanManagedBranches, parseManagedBranch } from './orchestrator/audit.mjs'
 import { buildExecutionPacket, claimExecutor, executorHandoff, executorResult, heartbeatExecutor } from './orchestrator/executor.mjs'
+import { resolveCanonicalRepository } from './orchestrator/repositories.mjs'
 
 const config = validateConfig({
   version: 2,
@@ -67,6 +68,35 @@ assert.equal(metadata.verificationProfile, 'high-iq')
 assert.equal(metadata.productionImpact, true)
 assert.equal(resourceSetsOverlap(['game.high-iq'], ['game.high-iq']), true)
 assert.equal(resourceSetsOverlap(['game.high-iq'], ['app.plant-atlas']), false)
+
+
+const toolsOwner = resolveCanonicalRepository({ canonicalDomain: 'cultivation tools' })
+assert.equal(toolsOwner.repository, 'dtfgenetics/Tools')
+assert.equal(toolsOwner.external, true)
+assert.throws(
+  () => resolveCanonicalRepository({ canonicalDomain: 'cultivation tools', explicitRepository: 'dtfgenetics/Dtf420' }),
+  /not canonical/,
+)
+
+const externalToolsIssue = {
+  ...issue(40, 'Improve canonical VPD tool', ['worker:ready', 'project:tools']),
+  body: '<!-- worker-plan:{"canonicalDomain":"cultivation tools","resourceSet":["tool.vpd"],"allowedPaths":["src/tools/vpd/**"],"verificationProfile":"tools-canonical","acceptanceCriteria":["tool tests pass"]} -->',
+}
+const externalToolsClaim = buildClaim(externalToolsIssue, config)
+assert.equal(externalToolsClaim.repository, 'dtfgenetics/Tools')
+assert.equal(externalToolsClaim.externalRepository, true)
+assert.equal(externalToolsClaim.dispatchMode, 'external-executor')
+assert.equal(externalToolsClaim.dispatchable, false)
+assert.deepEqual(externalToolsClaim.allowedPaths, ['src/tools/vpd/**'])
+assert.throws(
+  () => buildClaim({
+    ...issue(41, 'Unsafe external job', ['worker:ready', 'project:tools']),
+    body: '<!-- worker-plan:{"canonicalDomain":"cultivation tools","resourceSet":["tool.vpd"],"verificationProfile":"tools-canonical"} -->',
+  }, config),
+  /requires explicit allowedPaths/,
+)
+
+
 const scopedClaim = buildClaim(plannedIssue, config)
 assert.deepEqual(scopedClaim.resourceSet, ['game.high-iq'])
 assert.equal(scopedClaim.verificationProfile, 'high-iq')
@@ -321,6 +351,30 @@ assert.deepEqual(orphanBranches.map((item) => item.issueNumber), [200])
 
 
 
+const externalExecutorSourceJob = {
+  ...newJob({
+    jobId: 'issue-399',
+    issueId: 399,
+    title: 'External executor test',
+    state: 'LEASED',
+    project: 'tools',
+    repository: 'dtfgenetics/Tools',
+    canonicalDomain: 'cultivation tools',
+    dispatchMode: 'external-executor',
+    branchProvisioned: false,
+    workerKind: 'code',
+    branch: 'work/tools/external-i399-abcdef6',
+    allowedPaths: ['src/tools/vpd/**'],
+    verificationProfile: 'tools-canonical',
+  }),
+  lease: createLease({ workerId: 'dispatcher', workerKind: 'code', ttlMinutes: 60, leaseId: 'lease-external' }),
+}
+assert.throws(
+  () => claimExecutor(externalExecutorSourceJob, { executorId: 'chat:external', ttlMinutes: 60 }),
+  /branch to be provisioned/,
+)
+assert.equal(buildExecutionPacket(externalExecutorSourceJob).branchProvisioned, false)
+
 const executorSourceJob = {
   ...newJob({
     jobId: 'issue-300',
@@ -411,4 +465,4 @@ assert.equal(failedExecutorJob.executor.status, 'FAILED')
 const productionMerged = newJob({ jobId: 'prod-1', title: 'Production', state: 'MERGED', productionImpact: true })
 assert.throws(() => transitionJob(productionMerged, 'DONE'), /Production-impacting/)
 
-console.log(JSON.stringify({ ok: true, tests: 101 }, null, 2))
+console.log(JSON.stringify({ ok: true, tests: 112 }, null, 2))
