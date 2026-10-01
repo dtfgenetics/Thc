@@ -6,9 +6,11 @@ on:
       - 'site/public-route-patch/games/protect-the-plants/index.html'
       - 'site/public-route-patch/projects/index.html'
       - 'site/wordpress/mu-plugins/dtf-shop-seo-meta.php'
+      - 'site/wordpress/mu-plugins/dtf-canonical-sitemap.php'
       - 'scripts/deploy-wordpress-public-audit-fixes.mjs'
       - 'scripts/install-wordpress-shop-seo-meta.mjs'
       - 'scripts/install-wordpress-shop-seo-meta-core.mjs'
+      - 'scripts/install-wordpress-canonical-sitemap.mjs'
       - '.github/workflows/public-production-audit-fixes-ci.yml'
       - '.github/workflows/wordpress-public-audit-fixes-production.yml'
 
@@ -32,10 +34,17 @@ jobs:
           node --check scripts/deploy-wordpress-public-audit-fixes.mjs
           node --check scripts/install-wordpress-shop-seo-meta.mjs
           node --check scripts/install-wordpress-shop-seo-meta-core.mjs
+          node --check scripts/install-wordpress-canonical-sitemap.mjs
+          node --check scripts/verify-canonical-sitemap-inventory.mjs
           php -l site/wordpress/mu-plugins/dtf-shop-seo-meta.php
+          php -l site/wordpress/mu-plugins/dtf-canonical-sitemap.php
           grep -Fq "is_shop" site/wordpress/mu-plugins/dtf-shop-seo-meta.php
           grep -Fq 'DTF Genetics Seeds & Current Releases' site/wordpress/mu-plugins/dtf-shop-seo-meta.php
           grep -Fq 'reviewed strain-card artwork' site/wordpress/mu-plugins/dtf-shop-seo-meta.php
+          grep -Fq 'DTF_Canonical_Static_Sitemap_Provider' site/wordpress/mu-plugins/dtf-canonical-sitemap.php
+          grep -Fq "'/courses/'" site/wordpress/mu-plugins/dtf-canonical-sitemap.php
+          grep -Fq "'/tools/'" site/wordpress/mu-plugins/dtf-canonical-sitemap.php
+          grep -Fq "home_url('/wp-sitemap.xml')" site/wordpress/mu-plugins/dtf-canonical-sitemap.php
 
       - name: Validate crawlable public route fixes
         shell: bash
@@ -80,6 +89,13 @@ jobs:
           grep -Fq 'for (const id of previouslyActive) await activate(id).catch(() => {});' scripts/install-wordpress-shop-seo-meta-core.mjs
           ! grep -Fq "WPMU_PLUGIN_DIR . '/dtf-shop-seo-meta.php'" scripts/install-wordpress-shop-seo-meta-core.mjs
           ! grep -Fq '/wp-json/dtf-shop-seo/v1/install' scripts/install-wordpress-shop-seo-meta-core.mjs
+
+          # Canonical sitemap is source-controlled and extends the native WordPress sitemap.
+          grep -Fq "const snippetName='DTF Canonical Sitemap Routes — source controlled';" scripts/install-wordpress-canonical-sitemap.mjs
+          grep -Fq "site/wordpress/mu-plugins/dtf-canonical-sitemap.php" scripts/install-wordpress-canonical-sitemap.mjs
+          grep -Fq '/wp-json/code-snippets/v1/snippets?per_page=100' scripts/install-wordpress-canonical-sitemap.mjs
+          grep -Fq "wp-sitemap-dtf-static-" scripts/install-wordpress-canonical-sitemap.mjs
+          grep -Fq "previouslyActive" scripts/install-wordpress-canonical-sitemap.mjs
 
           # The separate public-route mutator remains transactional for its two
           # explicitly allowed static repair routes.
