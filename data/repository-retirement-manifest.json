@@ -438,6 +438,36 @@
       "branch": "kush-kings-ux-abuse-hardening",
       "disposition": "delete_safe",
       "basis": "canonical_Thc-chess-git_has_session_authentication,_chat_normalization/rate_limiting,_room-code_validation_and_player-seat_guards"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "content/start-here-beginner-pass",
+      "disposition": "delete_safe",
+      "basis": "canonical_thc-grow-hub_already_owns_the_active_THC_First_Grow_Guide_10-page_beginner_path"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "education-reconciliation",
+      "disposition": "delete_safe",
+      "basis": "education_ownership/policy_is_recovered_into_canonical_thc-grow-hub;_legacy_hub_branch_is_historical_provenance"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "feat/course1-public-academy-route",
+      "disposition": "delete_safe",
+      "basis": "canonical_Course_1_is_owned_and_published_from_Thc-learning-courses-;_legacy_academy_route_is_compatibility-only"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "reconcile/education-control-current-main",
+      "disposition": "delete_safe",
+      "basis": "education_control_recovery_is_superseded_by_canonical_thc-grow-hub_ownership_and_current_controls"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "reconcile/education-genetics-current-main",
+      "disposition": "delete_safe",
+      "basis": "0_commits_ahead_of_current_main;_branch_is_fully_behind"
     }
   ]
 }
