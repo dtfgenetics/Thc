@@ -62,6 +62,11 @@ jobs:
           node games/protect-the-plants/test/native-targeting-source.test.mjs
           node games/protect-the-plants/test/gamefeel-v1.test.mjs
           node games/protect-the-plants/test/premium-social-v1.test.mjs
+          node games/protect-the-plants/test/presence-runtime-v1.test.mjs
+          node games/protect-the-plants/test/invite-deeplink-v1.test.mjs
+          node games/protect-the-plants/test/mobile-turn-board-v1.test.mjs
+          node games/protect-the-plants/test/expired-session-recovery-v1.test.mjs
+          node games/protect-the-plants/test/mobile-chat-tab-v1.test.mjs
 
       - name: Exercise authenticated opponent presence
         shell: bash
