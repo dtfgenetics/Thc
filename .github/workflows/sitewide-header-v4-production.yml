@@ -41,7 +41,7 @@ env:
   WP_SITE_URL: https://dtfseeds.com
   # /tools/ and /games/ are static Public Suite hubs. Their owning publisher
   # assembles, reconciles, and verifies those routes after its serialized deploy.
-  WORDPRESS_HEADER_VERIFY_ROUTES: "/,/seeds/,/learn/,/learn/nutrition-media/,/community/,/shop/,/courses/,/gallery/,/about/,/contact/"
+  WORDPRESS_HEADER_VERIFY_ROUTES: "/,/seeds/,/learn/,/learn/nutrition-media/,/learn/encyclopedia/thc-enc-001/,/community/,/shop/,/courses/,/gallery/,/about/,/contact/"
 
 concurrency:
   group: dtfseeds-canonical-sitewide-header-v6
