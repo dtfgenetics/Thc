@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dtfseeds.com/schemas/dtf-agent-contract-v1.json",
+  "title": "DTF Repository Agent Contract",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "repository",
+    "controlRepository",
+    "defaultBranch",
+    "canonicalDomains",
+    "sourceRoots",
+    "verificationProfiles",
+    "production"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "repository": {
+      "type": "string",
+      "minLength": 1
+    },
+    "controlRepository": {
+      "type": "string",
+      "minLength": 1
+    },
+    "defaultBranch": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonicalDomains": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "sourceRoots": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "protectedPaths": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "verificationProfiles": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "commands"
+        ],
+        "properties": {
+          "commands": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "conditionalLiveCommand": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ciAuthoritative": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "production": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}

@@ -65,6 +65,7 @@ export function buildExecutionPacket(job, {
       targets: job.productionTargets || [],
     },
     executor: job.executor || null,
+    agentContract: job.agentContract || null,
   }
 }
 

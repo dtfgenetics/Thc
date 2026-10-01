@@ -64,6 +64,7 @@ jobs:
           node --check scripts/orchestrator/core.mjs
           node --check scripts/orchestrator/resources.mjs
           node --check scripts/orchestrator/repositories.mjs
+          node --check scripts/orchestrator/repo-contract.mjs
           node --check scripts/orchestrator/routing.mjs
           node --check scripts/orchestrator/state.mjs
           node --check scripts/orchestrator/leases.mjs
@@ -72,6 +73,7 @@ jobs:
           node --check scripts/orchestrator/executor.mjs
           node --check scripts/orchestrator/epics.mjs
           node -e "JSON.parse(require('fs').readFileSync('configuration/orchestrator/epic-manifest.schema.json','utf8'))"
+          node -e "JSON.parse(require('fs').readFileSync('configuration/orchestrator/agent-contract.schema.json','utf8'))"
           node scripts/test-worker-orchestrator.mjs
           node scripts/orchestrator-epic.mjs --manifest=configuration/orchestrator/example-epic-manifest.json
 

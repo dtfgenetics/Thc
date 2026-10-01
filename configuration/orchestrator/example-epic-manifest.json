@@ -17,10 +17,9 @@
         "tool.shared-shell"
       ],
       "allowedPaths": [
-        "src/shared/**",
-        "src/components/tool-shell/**"
+        "site/public-route-patch/tools/**"
       ],
-      "verificationProfile": "tools-canonical",
+      "verificationProfile": "experience",
       "acceptanceCriteria": [
         "shared shell tests pass",
         "mobile and desktop layouts remain usable"
@@ -36,9 +35,9 @@
         "tool.vpd"
       ],
       "allowedPaths": [
-        "src/tools/vpd/**"
+        "site/public-route-patch/tools/vpd/**"
       ],
-      "verificationProfile": "tools-canonical",
+      "verificationProfile": "default",
       "dependencies": [
         "shared-tool-shell"
       ],
@@ -57,9 +56,9 @@
         "tool.ppfd"
       ],
       "allowedPaths": [
-        "src/tools/ppfd/**"
+        "site/public-route-patch/tools/ppfd/**"
       ],
-      "verificationProfile": "tools-canonical",
+      "verificationProfile": "default",
       "dependencies": [
         "shared-tool-shell"
       ],

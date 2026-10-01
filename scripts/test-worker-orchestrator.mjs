@@ -10,6 +10,7 @@ import { classifyJobHealth, findOrphanManagedBranches, parseManagedBranch } from
 import { buildExecutionPacket, claimExecutor, executorHandoff, executorResult, heartbeatExecutor } from './orchestrator/executor.mjs'
 import { resolveCanonicalRepository } from './orchestrator/repositories.mjs'
 import { epicSummary, materializeJobPlan, topologicalJobOrder, validateEpicManifest } from './orchestrator/epics.mjs'
+import { inspectContractScope, validateAgentContract, verificationProfileFromContract } from './orchestrator/repo-contract.mjs'
 
 const config = validateConfig({
   version: 2,
@@ -81,18 +82,18 @@ assert.throws(
 
 const externalToolsIssue = {
   ...issue(40, 'Improve canonical VPD tool', ['worker:ready', 'project:tools']),
-  body: '<!-- worker-plan:{"canonicalDomain":"cultivation tools","resourceSet":["tool.vpd"],"allowedPaths":["src/tools/vpd/**"],"verificationProfile":"tools-canonical","acceptanceCriteria":["tool tests pass"]} -->',
+  body: '<!-- worker-plan:{"canonicalDomain":"cultivation tools","resourceSet":["tool.vpd"],"allowedPaths":["site/public-route-patch/tools/vpd/**"],"verificationProfile":"default","acceptanceCriteria":["tool tests pass"]} -->',
 }
 const externalToolsClaim = buildClaim(externalToolsIssue, config)
 assert.equal(externalToolsClaim.repository, 'dtfgenetics/Tools')
 assert.equal(externalToolsClaim.externalRepository, true)
 assert.equal(externalToolsClaim.dispatchMode, 'external-executor')
 assert.equal(externalToolsClaim.dispatchable, false)
-assert.deepEqual(externalToolsClaim.allowedPaths, ['src/tools/vpd/**'])
+assert.deepEqual(externalToolsClaim.allowedPaths, ['site/public-route-patch/tools/vpd/**'])
 assert.throws(
   () => buildClaim({
     ...issue(41, 'Unsafe external job', ['worker:ready', 'project:tools']),
-    body: '<!-- worker-plan:{"canonicalDomain":"cultivation tools","resourceSet":["tool.vpd"],"verificationProfile":"tools-canonical"} -->',
+    body: '<!-- worker-plan:{"canonicalDomain":"cultivation tools","resourceSet":["tool.vpd"],"verificationProfile":"default"} -->',
   }, config),
   /requires explicit allowedPaths/,
 )
@@ -365,8 +366,8 @@ const externalExecutorSourceJob = {
     branchProvisioned: false,
     workerKind: 'code',
     branch: 'work/tools/external-i399-abcdef6',
-    allowedPaths: ['src/tools/vpd/**'],
-    verificationProfile: 'tools-canonical',
+    allowedPaths: ['site/public-route-patch/tools/vpd/**'],
+    verificationProfile: 'default',
   }),
   lease: createLease({ workerId: 'dispatcher', workerKind: 'code', ttlMinutes: 60, leaseId: 'lease-external' }),
 }
@@ -513,7 +514,53 @@ assert.throws(() => validateEpicManifest({
   ],
 }), /unknown dependency/)
 
+
+const toolsContractFixture = validateAgentContract({
+  schemaVersion: 1,
+  repository: 'dtfgenetics/Tools',
+  controlRepository: 'dtfgenetics/Thc',
+  defaultBranch: 'main',
+  canonicalDomains: ['cultivation tools', 'Plant Atlas'],
+  sourceRoots: ['site/', 'scripts/', 'data/', 'docs/', 'package.json', 'AGENTS.md'],
+  protectedPaths: ['.github/workflows/**', '.env*'],
+  verificationProfiles: {
+    default: { commands: ['npm test'], ciAuthoritative: true },
+    experience: { commands: ['npm test', 'npm run audit:experience'], ciAuthoritative: true },
+  },
+  production: { directMutation: false, integrationOwner: 'dtfgenetics/Thc' },
+}, { expectedRepository: 'dtfgenetics/Tools' })
+assert.equal(verificationProfileFromContract(toolsContractFixture, 'default').commands[0], 'npm test')
+const contractJob = {
+  repository: 'dtfgenetics/Tools',
+  canonicalDomain: 'cultivation tools',
+  baseBranch: 'main',
+  workerKind: 'code',
+  allowedPaths: ['site/public-route-patch/tools/vpd/**'],
+  verificationProfile: 'default',
+}
+assert.equal(inspectContractScope(contractJob, toolsContractFixture).ok, true)
+assert.equal(
+  inspectContractScope({ ...contractJob, canonicalDomain: 'not-owned' }, toolsContractFixture)
+    .violations.some((item) => item.code === 'canonical-domain-not-owned'),
+  true,
+)
+assert.equal(
+  inspectContractScope({ ...contractJob, allowedPaths: ['random/**'] }, toolsContractFixture)
+    .violations.some((item) => item.code === 'path-outside-source-roots'),
+  true,
+)
+assert.equal(
+  inspectContractScope({ ...contractJob, allowedPaths: ['.github/workflows/**'] }, toolsContractFixture)
+    .violations.some((item) => item.code === 'protected-path-requires-maintenance-or-release-worker'),
+  true,
+)
+assert.equal(
+  inspectContractScope({ ...contractJob, workerKind: 'repo-maintenance', allowedPaths: ['.github/workflows/**'] }, toolsContractFixture).ok,
+  false,
+)
+assert.throws(() => verificationProfileFromContract(toolsContractFixture, 'missing'), /no verification profile/)
+
 const productionMerged = newJob({ jobId: 'prod-1', title: 'Production', state: 'MERGED', productionImpact: true })
 assert.throws(() => transitionJob(productionMerged, 'DONE'), /Production-impacting/)
 
-console.log(JSON.stringify({ ok: true, tests: 120 }, null, 2))
+console.log(JSON.stringify({ ok: true, tests: 128 }, null, 2))
