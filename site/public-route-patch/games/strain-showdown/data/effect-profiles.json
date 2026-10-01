@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "version": "0.2.0",
+  "version": "0.2.1",
   "status": "runtime-active",
   "activeInBrowserRules": true,
   "assignment": "family-and-stage",
   "abilityNameSource": "card-roleTag",
-  "notes": "These validated family/stage profiles are active in the browser and deterministic simulation rules. Each canonical card derives its ability name from roleTag and its mechanic from family + stage.",
+  "notes": "Active deterministic effect profiles. Balance tuning v0.2.1 caps adaptive refunds to Focus actually paid, prevents duplicate Haze first-attack stacking, and strengthens Fruit sustain/card flow.",
   "mechanicVocabulary": [
     "shield-on-play",
     "attack-bonus",
@@ -190,9 +190,9 @@
       "trigger": "on-play",
       "mechanic": {
         "type": "garden-heal",
-        "value": 1
+        "value": 2
       },
-      "rulesText": "When played, heal 1 Garden."
+      "rulesText": "When played, heal 2 Garden."
     },
     {
       "id": "fruit-2",
@@ -201,9 +201,9 @@
       "trigger": "on-evolve",
       "mechanic": {
         "type": "draw-on-evolve",
-        "value": 1
+        "value": 2
       },
-      "rulesText": "When evolved, draw 1 card."
+      "rulesText": "When evolved, draw 2 cards."
     },
     {
       "id": "fruit-3",
@@ -212,11 +212,11 @@
       "trigger": "on-evolve",
       "mechanic": {
         "type": "garden-heal",
-        "value": 2,
+        "value": 3,
         "secondaryType": "draw-on-evolve",
-        "secondaryValue": 1
+        "secondaryValue": 2
       },
-      "rulesText": "When evolved, heal 2 Garden and draw 1 card."
+      "rulesText": "When evolved, heal 3 Garden and draw 2 cards."
     },
     {
       "id": "purple-1",
