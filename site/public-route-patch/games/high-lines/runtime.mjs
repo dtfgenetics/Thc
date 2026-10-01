@@ -143,7 +143,6 @@ function replaceChallengeUrl() {
   try { globalThis.history?.replaceState?.(null, '', challengeUrl()); } catch { /* optional browser feature */ }
 }
 
-
 function setCode(value) {
   const normalized = normalizeSceneCode(value);
   ui.code.value = normalized;
