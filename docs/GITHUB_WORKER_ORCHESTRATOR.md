@@ -48,9 +48,10 @@ The orchestrator never silently reuses an existing branch.
 `data/worker-orchestrator.json` currently sets:
 
 - `maxWorkers: 4`
-- `maxWorkersPerProject: 1`
+- `maxWorkersPerProject: 1` for legacy/unscoped jobs
+- `maxScopedWorkersPerProject: 3` for jobs with non-empty resource claims
 
-That means the repository can have up to four active orchestrated tasks, but only one active worker in a project lane such as `games`, `education`, `atlas`, or `release`. Increase the per-project value only after overlap/resource locking is expanded enough to make same-project parallelism safe.
+The repository may have up to four active orchestrated tasks overall. Legacy/unscoped work keeps its project lane exclusive. Resource-scoped jobs may share the same project lane when their resources do not overlap, up to the scoped project limit. For example, `game.high-iq` and `game.high-land` may run together under `project:games`, while two `game.high-iq` jobs cannot.
 
 ## Commands
 
@@ -176,3 +177,18 @@ It reports:
 Default audit mode always reports and exits successfully so a discovered orphan does not disable scheduling or hide other state. `--strict=true` exits non-zero when anomalies exist and is intended for explicit governance/cleanup gates.
 
 The audit is deliberately read-only. Recovery remains a separate reconciliation operation so detection cannot accidentally delete or rewrite unique work.
+
+
+## Scoped same-project concurrency
+
+Project labels are an organizational lane, not the final locking primitive.
+
+Scheduling rules:
+
+1. Resource overlap always blocks concurrent dispatch.
+2. A legacy/unscoped active job keeps its entire project lane exclusive.
+3. A new unscoped job will not start while any active/planned job already occupies that project lane.
+4. Scoped jobs with disjoint resources may run together in the same project up to `maxScopedWorkersPerProject`.
+5. The repository-wide `maxWorkers` limit still applies.
+
+This lets multiple chats work on different games, tools, or applications at the same time without relaxing safety for older jobs that have not yet been migrated to explicit resource claims.
