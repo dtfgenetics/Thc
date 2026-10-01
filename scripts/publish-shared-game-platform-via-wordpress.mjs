@@ -9,28 +9,31 @@ if (!username || !password) throw new Error('WordPress credentials are required.
 
 const sourceRoot = path.resolve('site/public-route-patch/games/shared-platform');
 const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
-if (typeof manifest.platformVersion !== 'string' || !/^\\d+\\.\\d+\\.\\d+$/.test(manifest.platformVersion)) {
+if (!/^\d+\.\d+\.\d+$/.test(String(manifest.platformVersion || ''))) {
   throw new Error(`Invalid shared platform version: ${manifest.platformVersion}`);
 }
-if (!Array.isArray(manifest.files) || manifest.files.length < 1) {
-  throw new Error('Shared platform manifest must declare at least one runtime module.');
+if (!Array.isArray(manifest.files) || manifest.files.length === 0) {
+  throw new Error('Shared platform manifest must declare runtime modules.');
 }
-const manifestFiles = manifest.files.map((file) => String(file));
-if (new Set(manifestFiles).size !== manifestFiles.length) {
-  throw new Error('Shared platform manifest contains duplicate runtime modules.');
-}
+const manifestFiles = [...new Set(manifest.files.map((value) => String(value || '').trim()))];
+if (manifestFiles.length !== manifest.files.length) throw new Error('Shared platform manifest contains duplicate module names.');
 for (const rel of manifestFiles) {
-  if (!/^[a-z0-9][a-z0-9._-]*\\.mjs$/i.test(rel)) throw new Error(`Unsafe shared platform module name: ${rel}`);
+  if (!/^[a-z0-9][a-z0-9.-]*\.mjs$/i.test(rel) || rel.includes('..') || rel.includes('/') || rel.includes('\\')) {
+    throw new Error(`Unsafe shared platform manifest file: ${rel}`);
+  }
 }
-if (!manifestFiles.includes('index.mjs')) throw new Error('Shared platform manifest must include index.mjs.');
+for (const required of ['index.mjs', 'settings.mjs']) {
+  if (!manifestFiles.includes(required)) throw new Error(`Shared platform manifest missing required module: ${required}`);
+}
 const releaseFiles = ['.htaccess', 'manifest.json', ...manifestFiles];
+
 for (const rel of releaseFiles) {
   const filePath = path.join(sourceRoot, rel);
   if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile() || fs.statSync(filePath).size === 0) {
     throw new Error(`Missing shared platform release file: ${rel}`);
   }
 }
-for (const moduleName of manifest.files) {
+for (const moduleName of manifestFiles) {
   if (!releaseFiles.includes(moduleName)) throw new Error(`Manifest file is not allowlisted: ${moduleName}`);
 }
 
