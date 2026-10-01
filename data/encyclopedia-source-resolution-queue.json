@@ -8,9 +8,9 @@
     "lessonCount": 420,
     "uniqueSourceReferences": 890,
     "authoritativeRegistryResolved": 17,
-    "volumeRegistryResolved": 26,
-    "volumeRegistryPlaceholders": 28,
-    "missingVolumeRegisterEntries": 63,
+    "volumeRegistryResolved": 84,
+    "volumeRegistryPlaceholders": 33,
+    "missingVolumeRegisterEntries": 0,
     "citationTextNeedsAuthorityReview": 756,
     "approved": 0
   },
@@ -11192,8 +11192,14 @@
       ],
       "useCount": 9,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-004",
+        "title": "Allard — Principles of Plant Breeding",
+        "location": "https://www.wiley.com/en-us/Principles+of+Plant+Breeding%2C+2nd+Edition-p-9780471023098",
+        "useAndLimitation": "Foundational mating systems, selection, population improvement, backcrossing, and line development; general plant breeding, not Cannabis-specific.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11208,8 +11214,14 @@
       ],
       "useCount": 4,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-005",
+        "title": "Acquaah — Principles of Plant Genetics and Breeding",
+        "location": "https://www.wiley.com/en-us/Principles+of+Plant+Genetics+and+Breeding%2C+3rd+Edition-p-9781119626695",
+        "useAndLimitation": "Plant breeding objectives, methods, experimental design, cultivar development, and germplasm use; textbook source.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11229,8 +11241,14 @@
       ],
       "useCount": 9,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-006",
+        "title": "Falconer and Mackay — Introduction to Quantitative Genetics",
+        "location": "https://www.cabidigitallibrary.org/doi/book/10.1079/9780582243026.0000",
+        "useAndLimitation": "Inbreeding, variance, heritability, selection response, and quantitative-trait foundations; model assumptions must be stated.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11249,8 +11267,14 @@
       ],
       "useCount": 8,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-007",
+        "title": "Bernardo — Breeding for Quantitative Traits in Plants",
+        "location": "https://stemmpress.com/",
+        "useAndLimitation": "Selection, prediction, multi-environment testing, genetic gain, and genomic selection; general crop-breeding source.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11265,8 +11289,14 @@
       ],
       "useCount": 4,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-008",
+        "title": "Sawler et al. 2015 — The Genetic Structure of Marijuana and Hemp",
+        "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4550350/",
+        "useAndLimitation": "Genome-wide differentiation and limitations of commercial strain ancestry labels.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11281,8 +11311,14 @@
       ],
       "useCount": 4,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-010",
+        "title": "Lynch et al. 2025 — Cannabis pangenome",
+        "location": "https://pubmed.ncbi.nlm.nih.gov/40437092/",
+        "useAndLimitation": "Structural variation, population mosaic, sex chromosomes, and cannabinoid synthase diversity; research genomes do not replace line-specific testing.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11296,8 +11332,14 @@
       ],
       "useCount": 3,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-011",
+        "title": "Stansell et al. 2025 — U.S. feral Cannabis germplasm diversity",
+        "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12215616/",
+        "useAndLimitation": "Large U.S. feral collection, population structure, chemotype, and conservation value; feral material requires legal and agronomic qualification.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11310,8 +11352,14 @@
       ],
       "useCount": 2,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-012",
+        "title": "Iranian Cannabis population genomics and GWAS, 2025",
+        "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11748290/",
+        "useAndLimitation": "Genetic structure and marker associations for flowering, morphology, sex, yield, and chemotype; population-specific associations require validation.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11324,8 +11372,14 @@
       ],
       "useCount": 2,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-013",
+        "title": "Developing and Testing Molecular Markers in Cannabis, 2021",
+        "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8540786/",
+        "useAndLimitation": "SSR marker development, variety discrimination, diversity, and dioecy assessment; marker panels have population limits.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11339,8 +11393,14 @@
       ],
       "useCount": 3,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-014",
+        "title": "Prentout et al. 2020 — Cannabis sex chromosomes",
+        "location": "https://pubmed.ncbi.nlm.nih.gov/32033943/",
+        "useAndLimitation": "Family-based RNA-seq segregation supporting XX/XY sex chromosomes and sex-linked genes.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11353,8 +11413,14 @@
       ],
       "useCount": 2,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-015",
+        "title": "Riera-Begue et al. 2025 — PCR-based XX/XY sex genotyping",
+        "location": "https://pubmed.ncbi.nlm.nih.gov/40844558/",
+        "useAndLimitation": "Single-pair PCR marker tested across hemp cultivars and crosses; additional germplasm validation remains prudent.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11368,8 +11434,14 @@
       ],
       "useCount": 3,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-016",
+        "title": "Leckie et al. 2024 — Genetic basis of daylength-insensitive flowering",
+        "location": "https://pubmed.ncbi.nlm.nih.gov/38525679/",
+        "useAndLimitation": "Cannabis-specific evidence for loss of photoperiod sensitivity; flowering remains background and environment dependent.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11382,8 +11454,14 @@
       ],
       "useCount": 2,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-017",
+        "title": "Lubell and Brand 2018 — Silver thiosulfate produces male flowers on female hemp",
+        "location": "https://doi.org/10.21273/HORTTECH04188-18",
+        "useAndLimitation": "Foundational Cannabis sex-reversal experiment; genotype, dose, timing, chemical safety, waste, and legal controls apply.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11397,8 +11475,14 @@
       ],
       "useCount": 3,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-018",
+        "title": "Flajšman et al. 2021 — Feminized seed production by manipulation of sex expression",
+        "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8591233/",
+        "useAndLimitation": "Cannabis-specific STS/colloidal-silver studies and progeny context; no universal operating recipe.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11411,8 +11495,14 @@
       ],
       "useCount": 2,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-019",
+        "title": "Characterization of male flower induction by STS, 2024",
+        "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11397453/",
+        "useAndLimitation": "Three-cultivar study showing genotype, stage, concentration, and treatment response differences.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11426,8 +11516,14 @@
       ],
       "useCount": 3,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-020",
+        "title": "Weiblen et al. 2015 — Inheritance of chemical phenotype",
+        "location": "https://pubmed.ncbi.nlm.nih.gov/12586720/",
+        "useAndLimitation": "Classic biparental chemotype segregation study; major ratio locus does not explain all concentration variation.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11441,8 +11537,14 @@
       ],
       "useCount": 3,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-021",
+        "title": "Campbell et al. 2020 — Cannabinoid inheritance relies on complex architecture",
+        "location": "https://pubmed.ncbi.nlm.nih.gov/32322682/",
+        "useAndLimitation": "Line-cross evidence for additive, dominance, maternal, and polygenic effects on cannabinoid concentrations.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11454,8 +11556,14 @@
       ],
       "useCount": 1,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-022",
+        "title": "Grassa et al. 2021 — CBDRx chromosome-resolved genome and QTL",
+        "location": "https://pubmed.ncbi.nlm.nih.gov/33521943/",
+        "useAndLimitation": "Cannabinoid synthase arrays, hemp introgression, and QTL context; one population and reference background.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11467,8 +11575,14 @@
       ],
       "useCount": 1,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-023",
+        "title": "Vergara et al. 2020 — Gene copy number and phytochemistry",
+        "location": "https://pubmed.ncbi.nlm.nih.gov/32010439/",
+        "useAndLimitation": "Cannabinoid-pathway copy-number variation and expression associations; copy number only partly explains phenotype.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11480,8 +11594,14 @@
       ],
       "useCount": 1,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-024",
+        "title": "Structure of the chemotype-determining locus, 2026",
+        "location": "https://pubmed.ncbi.nlm.nih.gov/42064616/",
+        "useAndLimitation": "High-quality genome analysis describing a structurally variable supergene-like B locus; new evidence requiring independent review before release.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11496,8 +11616,14 @@
       ],
       "useCount": 4,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-025",
+        "title": "Machine-learning multi-trait genomic prediction for cannabinoids, 2025",
+        "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11711876/",
+        "useAndLimitation": "High-density genotyping and genomic-prediction research; prediction depends on training population and validation.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11511,8 +11637,14 @@
       ],
       "useCount": 3,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-026",
+        "title": "Stack et al. 2024 — CsMLO1 powdery mildew susceptibility locus",
+        "location": "https://pubmed.ncbi.nlm.nih.gov/37750850/",
+        "useAndLimitation": "Large F2 mapping populations, major and minor QTL, and markers; pathogen and population specific.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11526,8 +11658,14 @@
       ],
       "useCount": 3,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-027",
+        "title": "Seifi et al. 2025 — PM2 powdery mildew resistance locus",
+        "location": "https://pubmed.ncbi.nlm.nih.gov/40182551/",
+        "useAndLimitation": "Dominant chromosome-9 resistance locus and associated markers; requires background and isolate validation.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11539,8 +11677,14 @@
       ],
       "useCount": 1,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-028",
+        "title": "Vignale et al. 2026 — Diverse germplasm screening for powdery mildew resistance",
+        "location": "https://pubmed.ncbi.nlm.nih.gov/41319034/",
+        "useAndLimitation": "Two-year screening of USDA, breeding, and commercial entries; low severity supports further characterization, not automatic release claims.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11552,8 +11696,14 @@
       ],
       "useCount": 1,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-029",
+        "title": "Cannabis disease and resistance source registers from Volumes 15–17",
+        "location": "Internal controlled files",
+        "useAndLimitation": "Organism identity, screening, epidemiology, and IPM boundaries; internal cross-volume source map.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_placeholder_needs_exact_source",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11566,8 +11716,14 @@
       ],
       "useCount": 2,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-030",
+        "title": "FAO Genebank Standards for Plant Genetic Resources",
+        "location": "https://www.fao.org/agriculture/crops/thematic-sitemap/theme/seeds-pgr/gbs/en/",
+        "useAndLimitation": "Acquisition, drying, storage, viability monitoring, regeneration, documentation, safety duplication, and security benchmarks.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11579,8 +11735,14 @@
       ],
       "useCount": 1,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-031",
+        "title": "USDA-ARS hemp germplasm repository and GRIN-Global records",
+        "location": "https://npgsweb.ars-grin.gov/gringlobal/search",
+        "useAndLimitation": "Public germplasm conservation, identity, characterization, and distribution context; accession availability and rules change.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11592,8 +11754,14 @@
       ],
       "useCount": 1,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-032",
+        "title": "ISTA International Rules for Seed Testing",
+        "location": "https://www.seedtest.org/en/international-rules-for-seed-testing-_content---1--1083.html",
+        "useAndLimitation": "Seed sampling, germination, purity, moisture, and reporting methods; current edition and crop method must be verified.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11607,8 +11775,14 @@
       ],
       "useCount": 3,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-033",
+        "title": "Challenges and potentials of new breeding techniques in Cannabis, 2023",
+        "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10285108/",
+        "useAndLimitation": "Review of Cannabis diversity, breeding, selfing, markers, transformation, and editing limitations.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11622,8 +11796,14 @@
       ],
       "useCount": 3,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V20-SRC-034",
+        "title": "Current cultivar, seed, intellectual-property, phytosanitary, and cannabis rules",
+        "location": "Release-date jurisdictional review required",
+        "useAndLimitation": "Naming, release, ownership, seed movement, testing, and legal status are jurisdiction- and date-specific.",
+        "registerFile": "content/encyclopedia/volume-20/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_placeholder_needs_exact_source",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11638,8 +11818,14 @@
       ],
       "useCount": 4,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-002",
+        "title": "THC Cultivation SOP Source Materials Packet v1.0",
+        "location": "Internal controlled file",
+        "useAndLimitation": "Project-controlled operational source map for measurement, records, safety, and QA boundaries.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_placeholder_needs_exact_source",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11651,8 +11837,14 @@
       ],
       "useCount": 1,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-003",
+        "title": "BIPM — The International System of Units (SI Brochure), 9th edition, version 4.01, June 2026",
+        "location": "https://www.bipm.org/en/publications/si-brochure",
+        "useAndLimitation": "Authoritative SI units, symbols, prefixes, quantities, and writing conventions.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11667,8 +11859,14 @@
       ],
       "useCount": 4,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-004",
+        "title": "JCGM 200 — International Vocabulary of Metrology (VIM)",
+        "location": "https://www.bipm.org/en/committees/jc/jcgm/publications",
+        "useAndLimitation": "Authoritative vocabulary for measurement, calibration, verification, accuracy, precision, uncertainty, and traceability.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11681,8 +11879,14 @@
       ],
       "useCount": 2,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-005",
+        "title": "JCGM 100 — Guide to the Expression of Uncertainty in Measurement (GUM)",
+        "location": "https://www.bipm.org/en/committees/jc/jcgm/publications",
+        "useAndLimitation": "General framework for evaluating and reporting measurement uncertainty; current supplements and amendments require release review.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11695,8 +11899,14 @@
       ],
       "useCount": 2,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-006",
+        "title": "NIST — Metrological Traceability",
+        "location": "https://www.nist.gov/calibrations/metrological-traceability",
+        "useAndLimitation": "Explains that traceability is a property of a measurement result through a documented unbroken calibration chain, with each link contributing uncertainty.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11709,8 +11919,14 @@
       ],
       "useCount": 2,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-007",
+        "title": "NIST Technical Note 1297 — Guidelines for Evaluating and Expressing the Uncertainty of NIST Measurement Results",
+        "location": "https://www.nist.gov/pml/nist-technical-note-1297",
+        "useAndLimitation": "Practical uncertainty vocabulary, components, combination, coverage, and reporting.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11727,8 +11943,14 @@
       ],
       "useCount": 6,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-008",
+        "title": "ISO/IEC 17025:2017 — General requirements for the competence of testing and calibration laboratories",
+        "location": "https://www.iso.org/standard/66912.html",
+        "useAndLimitation": "Laboratory competence, impartiality, method control, equipment, traceability, sampling, reporting, and nonconforming work; standard text and current confirmation status require controlled access.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11745,8 +11967,14 @@
       ],
       "useCount": 6,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-009",
+        "title": "NIST/SEMATECH e-Handbook of Statistical Methods",
+        "location": "https://www.itl.nist.gov/div898/handbook/",
+        "useAndLimitation": "Primary reference for experimental design, measurement process characterization, control charts, uncertainty, regression, and statistical graphics.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11761,8 +11989,14 @@
       ],
       "useCount": 4,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-010",
+        "title": "Wilkinson et al. 2016 — The FAIR Guiding Principles for scientific data management and stewardship",
+        "location": "https://www.nature.com/articles/sdata201618",
+        "useAndLimitation": "Findable, accessible, interoperable, and reusable data principles; FAIR does not automatically mean open or high quality.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11777,8 +12011,14 @@
       ],
       "useCount": 4,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-011",
+        "title": "MIAPPE — Minimum Information About a Plant Phenotyping Experiment",
+        "location": "https://www.miappe.org/",
+        "useAndLimitation": "Plant-phenotyping metadata, biological material, environment, experimental design, observations, and data reporting.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11791,8 +12031,14 @@
       ],
       "useCount": 2,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-012",
+        "title": "Papoutsoglou et al. 2020 — Enabling reusability of plant phenomic datasets with MIAPPE 1.1",
+        "location": "https://doi.org/10.1111/nph.16544",
+        "useAndLimitation": "Plant experiment and phenotyping reporting standard with machine-readable context.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11806,8 +12052,14 @@
       ],
       "useCount": 3,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-013",
+        "title": "DataCite Metadata Schema",
+        "location": "https://schema.datacite.org/",
+        "useAndLimitation": "Persistent identifiers, creators, versions, related identifiers, dates, resource types, and citation metadata.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11820,8 +12072,14 @@
       ],
       "useCount": 2,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-014",
+        "title": "Crossref — Crossmark",
+        "location": "https://www.crossref.org/services/crossmark/",
+        "useAndLimitation": "Publisher-maintained record of corrections, retractions, updates, and current document status.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11834,8 +12092,14 @@
       ],
       "useCount": 2,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-015",
+        "title": "NLM — Errata, retractions, and other linked publication notices in PubMed",
+        "location": "https://www.nlm.nih.gov/bsd/policy/errata.html",
+        "useAndLimitation": "Publication-status controls and linked notices; database records must be checked at use and release.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11849,8 +12113,14 @@
       ],
       "useCount": 3,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-016",
+        "title": "W3C PROV-O — The PROV Ontology",
+        "location": "https://www.w3.org/TR/prov-o/",
+        "useAndLimitation": "Machine-readable provenance relationships among entities, activities, agents, derivations, and revisions.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11862,8 +12132,14 @@
       ],
       "useCount": 1,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-017",
+        "title": "NIST — Biological and chemical data provenance guidance and research",
+        "location": "https://www.nist.gov/topics/data-science",
+        "useAndLimitation": "Provenance concepts for samples, methods, transformations, datasets, and analysis chains.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11876,8 +12152,14 @@
       ],
       "useCount": 2,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-018",
+        "title": "ISO 5725 series — Accuracy (trueness and precision) of measurement methods and results",
+        "location": "https://www.iso.org/committee/54970/x/catalogue/",
+        "useAndLimitation": "Repeatability, reproducibility, trueness, precision, and method-performance concepts; current parts require controlled access and version review.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11893,8 +12175,14 @@
       ],
       "useCount": 5,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-019",
+        "title": "JCGM 106 — The role of measurement uncertainty in conformity assessment",
+        "location": "https://www.bipm.org/en/committees/jc/jcgm/publications",
+        "useAndLimitation": "Decision rules, guard bands, acceptance limits, and uncertainty in pass/fail decisions.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11908,8 +12196,14 @@
       ],
       "useCount": 3,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-020",
+        "title": "ASTM Committee D37 on Cannabis",
+        "location": "https://www.astm.org/get-involved/technical-committees/committee-d37",
+        "useAndLimitation": "Current consensus standards and work items for cannabis sampling, testing, quality, security, and processing; exact edition and applicability must be verified.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11921,8 +12215,14 @@
       ],
       "useCount": 1,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-021",
+        "title": "AOAC INTERNATIONAL — Cannabis Analytical Science Program",
+        "location": "https://www.aoac.org/scientific-solutions/cannabis/",
+        "useAndLimitation": "Validated-method and performance-requirement context for cannabinoids, contaminants, and cannabis matrices; method scope must be checked.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11934,8 +12234,14 @@
       ],
       "useCount": 1,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-022",
+        "title": "NIST Cannabis Quality Assurance Program and Reference Materials",
+        "location": "https://www.nist.gov/programs-projects/cannabis-quality-assurance-program",
+        "useAndLimitation": "Interlaboratory comparison and reference-material context for cannabis and hemp measurements.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11947,8 +12253,14 @@
       ],
       "useCount": 1,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-023",
+        "title": "ASTM and instrument-manufacturer water-activity method controls",
+        "location": "https://www.astm.org/",
+        "useAndLimitation": "Sample equilibration, instrument verification, temperature, cleanliness, and device-specific limitations.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11960,8 +12272,14 @@
       ],
       "useCount": 1,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-024",
+        "title": "USDA NRCS — National Engineering Handbook, irrigation and water-management standards",
+        "location": "https://www.nrcs.usda.gov/resources/guides-and-instructions",
+        "useAndLimitation": "Measurement and record concepts for irrigation flow, pressure, application, distribution, and water management.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11974,8 +12292,14 @@
       ],
       "useCount": 2,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-025",
+        "title": "APHA/AWWA/WEF — Standard Methods for the Examination of Water and Wastewater",
+        "location": "https://www.standardmethods.org/",
+        "useAndLimitation": "Method-controlled water sampling and analysis context; exact edition and method access require review.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -11995,8 +12319,14 @@
       ],
       "useCount": 9,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-026",
+        "title": "EPA — Quality System and Quality Assurance Project Plans",
+        "location": "https://www.epa.gov/quality",
+        "useAndLimitation": "Data-quality objectives, sampling design, QA/QC, documentation, validation, and corrective action.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -12008,8 +12338,14 @@
       ],
       "useCount": 1,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-027",
+        "title": "FDA — Investigating Out-of-Specification Test Results for Pharmaceutical Production",
+        "location": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/investigating-out-specification-oos-test-results-pharmaceutical-production",
+        "useAndLimitation": "Structured investigation concepts for suspect results, laboratory review, production review, and scientifically justified conclusions; product-regulatory scope differs.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -12021,8 +12357,14 @@
       ],
       "useCount": 1,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-028",
+        "title": "ICH Q9(R1) — Quality Risk Management",
+        "location": "https://www.ich.org/page/quality-guidelines",
+        "useAndLimitation": "Risk-based decision, hazard, probability, severity, detectability, control, communication, and review concepts; pharmaceutical scope requires bounded transfer.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -12034,8 +12376,14 @@
       ],
       "useCount": 1,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-029",
+        "title": "ISO 9001:2015 — Quality management systems",
+        "location": "https://www.iso.org/standard/62085.html",
+        "useAndLimitation": "Documented process, competence, monitoring, nonconformity, corrective action, and continual improvement concepts; certification is not required for educational use.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -12050,8 +12398,14 @@
       ],
       "useCount": 4,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-030",
+        "title": "Montgomery — Design and Analysis of Experiments",
+        "location": "https://www.wiley.com/en-us/Design+and+Analysis+of+Experiments%2C+10th+Edition-p-9781119722106",
+        "useAndLimitation": "General experimental-design reference for randomization, replication, blocking, factorials, interactions, and model checking.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -12063,8 +12417,14 @@
       ],
       "useCount": 1,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-031",
+        "title": "Lazic 2010 — The problem of pseudoreplication in neuroscientific studies",
+        "location": "https://doi.org/10.1038/nrn2898",
+        "useAndLimitation": "Clear treatment of experimental units, technical replicates, and invalid inflation of sample size; transfer as general design principle.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -12076,8 +12436,14 @@
       ],
       "useCount": 1,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-032",
+        "title": "Gelman and Hill — Data Analysis Using Regression and Multilevel/Hierarchical Models",
+        "location": "https://www.cambridge.org/highereducation/books/data-analysis-using-regression-and-multilevel-hierarchical-models/32A29531C7FD730C3A68951A17C9D983",
+        "useAndLimitation": "Confounding, partial pooling, repeated measures, multilevel data, and model-based interpretation.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_resolved_needs_authority_review",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -12097,8 +12463,14 @@
       ],
       "useCount": 9,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-033",
+        "title": "THC Cannabis Encyclopedia Volumes 01–20 controlled manuscripts",
+        "location": "Internal controlled collection",
+        "useAndLimitation": "Internal examples of morphology, environment, irrigation, diagnostic, postharvest, breeding, and evidence-limit records.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_placeholder_needs_exact_source",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
@@ -12115,8 +12487,14 @@
       ],
       "useCount": 6,
       "resolvedAuthoritativeSourceIds": [],
-      "volumeRegistryRecord": null,
-      "resolutionStatus": "missing_volume_register_entry_needs_resolution",
+      "volumeRegistryRecord": {
+        "id": "V21-SRC-034",
+        "title": "THC Master Content Compilation and Merge Register v1.0",
+        "location": "Internal controlled file",
+        "useAndLimitation": "Permanent IDs, completion definitions, review gates, source hierarchy, visual requirements, page package, and release-state separation.",
+        "registerFile": "content/encyclopedia/volume-21/source-register.json"
+      },
+      "resolutionStatus": "volume_registry_placeholder_needs_exact_source",
       "reviewState": "pending_independent_source_and_claim_review",
       "publicationEffect": "none"
     },
