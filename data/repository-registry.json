@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-09-30",
+  "updated": "2026-10-01",
   "authority": "dtfgenetics/Thc",
   "statuses": {
     "canonical": "Authoritative source for its declared product domain.",
@@ -20,7 +20,8 @@
         "site deployment",
         "monorepo-owned browser games"
       ],
-      "notes": "Primary production orchestration repository for dtfseeds.com."
+      "notes": "Primary production orchestration repository for dtfseeds.com.",
+      "tool_scope": "Production integration/deployment authority and canonical GrowLens owner. Focused tool mirrors are not authored here."
     },
     {
       "repo": "dtfgenetics/Tools",
@@ -33,7 +34,8 @@
         "cultivation math",
         "tool UI/runtime"
       ],
-      "notes": "Tool copies in integration repositories are mirrors only."
+      "notes": "Tool copies in integration repositories are mirrors only. Resolve data/tool-execution-registry.json before editing a public tool route.",
+      "tool_scope": "Canonical owner for the focused cultivation/reference suite, including Tools Hub, Plant Atlas, Terpene Atlas, meters, calculators and workflow tools. Explicitly excludes GrowLens and Grow Doc."
     },
     {
       "repo": "dtfgenetics/thc-grow-hub",
@@ -71,7 +73,8 @@
         "reference metadata",
         "model evaluation/training control"
       ],
-      "notes": "Human-readable master research/source assets may also be governed by documented Drive rules."
+      "notes": "Human-readable master research/source assets may also be governed by documented Drive rules.",
+      "tool_scope": "Canonical owner for THC Grow Doc diagnostics, diagnostic UI/data and model-control/evaluation surfaces."
     },
     {
       "repo": "dtfgenetics/Dtf420",
@@ -85,7 +88,8 @@
         "dtfgenetics/Thc-dataset",
         "dtfgenetics/Thc"
       ],
-      "notes": "Do not create duplicate canonical implementations here before explicit cutover."
+      "notes": "Do not create duplicate canonical implementations here before explicit cutover.",
+      "tool_scope": "No canonical cultivation-tool ownership. Tool routes here are migration/cutover material only."
     },
     {
       "repo": "dtfgenetics/dtf-thc-hub",
@@ -99,7 +103,8 @@
         "dtfgenetics/Thc-learning-courses-",
         "dtfgenetics/Thc-dataset"
       ],
-      "notes": "Contains unique/older site, game, Grow Doc, education-recovery, WordPress deployment, and shared UI artifacts. Migrate unique value before archive."
+      "notes": "Contains unique/older site, game, Grow Doc, education-recovery, WordPress deployment, and shared UI artifacts. Migrate unique value before archive.",
+      "tool_scope": "No canonical cultivation-tool ownership. Legacy copies are migration evidence only."
     },
     {
       "repo": "dtfgenetics/thc-u-know-card-game-",

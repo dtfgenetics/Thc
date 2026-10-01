@@ -1,0 +1,548 @@
+{
+  "schema_version": 1,
+  "updated": "2026-10-01",
+  "authority": "dtfgenetics/Thc",
+  "purpose": "Machine-readable execution and ownership map for every public cultivation tool. Resolve this registry before editing, moving, building, mirroring or deploying a tool.",
+  "rules": [
+    "Every public tool route has exactly one canonical repository.",
+    "dtfgenetics/Thc is the production integration/deployment authority, not automatically the authoring source.",
+    "dtfgenetics/Tools owns the focused cultivation/reference suite but does not own GrowLens or Grow Doc.",
+    "GrowLens is authored in dtfgenetics/Thc/apps/growlens-web.",
+    "Grow Doc is authored in dtfgenetics/Thc-dataset and integrated into Thc as a pinned deployment artifact.",
+    "Dtf420 and dtf-thc-hub are migration workspaces and may not become canonical tool owners without an explicit registry change.",
+    "Generated or synchronized mirrors must never be edited as the upstream source."
+  ],
+  "repositories": {
+    "production_integration": "dtfgenetics/Thc",
+    "focused_tools": "dtfgenetics/Tools",
+    "grow_doc": "dtfgenetics/Thc-dataset",
+    "future_cutover": "dtfgenetics/Dtf420"
+  },
+  "tools": [
+    {
+      "id": "growlens",
+      "name": "THC GrowLens",
+      "category": "primary-workflow",
+      "route": "/growlens/",
+      "canonical": {
+        "repo": "dtfgenetics/Thc",
+        "path": "apps/growlens-web"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": "npm run build:growlens",
+        "verify": "npm run verify:growlens"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/growlens",
+        "mode": "canonical-production-package"
+      },
+      "edit_rule": "Edit GrowLens application/runtime in dtfgenetics/Thc only. Do not implement GrowLens in Tools, Dtf420, or legacy hub repositories."
+    },
+    {
+      "id": "grow-doc",
+      "name": "THC Grow Doc",
+      "category": "primary-workflow",
+      "route": "/thc-grow-doc/",
+      "canonical": {
+        "repo": "dtfgenetics/Thc-dataset",
+        "path": "."
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": "npm run build",
+        "verify": "npm run check && npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/thc-grow-doc",
+        "mode": "version-pinned-deployment-artifact"
+      },
+      "edit_rule": "Edit diagnostics, diagnostic UI, taxonomy, evidence and model-control code in dtfgenetics/Thc-dataset. Thc may only pin/package/deploy the verified artifact."
+    },
+    {
+      "id": "tools-hub",
+      "name": "Tools Hub",
+      "category": "hub",
+      "route": "/tools/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/tools"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/tools",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "plant-atlas",
+      "name": "Plant Atlas",
+      "category": "focused-tool",
+      "route": "/atlas/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/atlas"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/atlas",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "terpene-atlas",
+      "name": "Terpene Atlas",
+      "category": "focused-tool",
+      "route": "/terpene-atlas/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/terpene-atlas"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/terpene-atlas",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "ph-meter",
+      "name": "pH Meter",
+      "category": "focused-tool",
+      "route": "/ph-meter/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/ph-meter"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/ph-meter",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "tds-meter",
+      "name": "TDS / EC Meter",
+      "category": "focused-tool",
+      "route": "/tds-meter/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/tds-meter"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/tds-meter",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "vpd-chart",
+      "name": "VPD Chart",
+      "category": "focused-tool",
+      "route": "/vpd-chart/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/vpd-chart"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/vpd-chart",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "ppfd-dli",
+      "name": "PPFD / DLI Light Lab",
+      "category": "focused-tool",
+      "route": "/ppfd-chart/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/ppfd-chart"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/ppfd-chart",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "environment-control",
+      "name": "Environment Control Center",
+      "category": "focused-tool",
+      "route": "/environment-control/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/environment-control"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/environment-control",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "dew-point",
+      "name": "Dew Point Lab",
+      "category": "focused-tool",
+      "route": "/dew-point/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/dew-point"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/dew-point",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "water-quality-lab",
+      "name": "Water Quality Lab",
+      "category": "focused-tool",
+      "route": "/water-quality-lab/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/water-quality-lab"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/water-quality-lab",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "root-zone-temperature",
+      "name": "Root-Zone Temperature",
+      "category": "focused-tool",
+      "route": "/root-zone-temperature/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/root-zone-temperature"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/root-zone-temperature",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "dryback-lab",
+      "name": "Dryback Lab",
+      "category": "focused-tool",
+      "route": "/dryback-lab/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/dryback-lab"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/dryback-lab",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "fertigation-lab",
+      "name": "Fertigation Lab",
+      "category": "focused-tool",
+      "route": "/fertigation-lab/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/fertigation-lab"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/fertigation-lab",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "grow-planner",
+      "name": "Grow Planner",
+      "category": "focused-tool",
+      "route": "/grow-planner/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/grow-planner"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/grow-planner",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "photoperiod-planner",
+      "name": "Photoperiod Planner",
+      "category": "focused-tool",
+      "route": "/photoperiod-planner/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/photoperiod-planner"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/photoperiod-planner",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "plant-growth-tracker",
+      "name": "Plant Growth Tracker",
+      "category": "focused-tool",
+      "route": "/plant-growth-tracker/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/plant-growth-tracker"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/plant-growth-tracker",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "dry-cure-lab",
+      "name": "Dry & Cure Lab",
+      "category": "focused-tool",
+      "route": "/dry-cure-lab/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/dry-cure-lab"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/dry-cure-lab",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "breeder-pedigree",
+      "name": "Breeder Pedigree Builder",
+      "category": "focused-tool",
+      "route": "/breeder-pedigree/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/breeder-pedigree"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/breeder-pedigree",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "co2-ventilation",
+      "name": "Ventilation / CO2",
+      "category": "focused-tool",
+      "route": "/co2-ventilation/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/co2-ventilation"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/co2-ventilation",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "dilution-calculator",
+      "name": "Dilution Calculator",
+      "category": "focused-tool",
+      "route": "/dilution-calculator/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/dilution-calculator"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/dilution-calculator",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "ipm-scout",
+      "name": "IPM Scout",
+      "category": "focused-tool",
+      "route": "/ipm-scout/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/ipm-scout"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/ipm-scout",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "substrate-calculator",
+      "name": "Substrate Calculator",
+      "category": "focused-tool",
+      "route": "/substrate-calculator/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/substrate-calculator"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/substrate-calculator",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    },
+    {
+      "id": "unit-converter",
+      "name": "Unit Converter",
+      "category": "focused-tool",
+      "route": "/unit-converter/",
+      "canonical": {
+        "repo": "dtfgenetics/Tools",
+        "path": "site/public-route-patch/unit-converter"
+      },
+      "execution": {
+        "working_directory": ".",
+        "build": null,
+        "verify": "npm test"
+      },
+      "integration": {
+        "repo": "dtfgenetics/Thc",
+        "path": "site/public-route-patch/unit-converter",
+        "mode": "generated-or-synchronized-mirror"
+      },
+      "edit_rule": "Author implementation, UI, math and tool-specific data in dtfgenetics/Tools. The Thc copy is a deployable mirror and must not become an alternate authoring source."
+    }
+  ]
+}
