@@ -83,7 +83,7 @@ jobs:
           grep -Fq 'dtf-sitewide-visual-repair-v2-script' scripts/lib/sitewide-visual-repair-v2.mjs
           grep -Fq 'SITEWIDE_VISUAL_REPAIR_STYLE_TAG' scripts/lib/sitewide-header-template-v6.mjs
           grep -Fq 'SITEWIDE_VISUAL_REPAIR_SCRIPT_TAG' scripts/lib/sitewide-header-template-v6.mjs
-          for required in '>Seeds</a>' '>Learn</a>' '>Tools</a>' '>Games</a>' '>Shop</a>'; do
+          for required in '>Home</a>' '>Seeds</a>' '>Learn</a>' '>Courses</a>' '>Tools</a>' '>Games</a>' '>Community</a>' '>Shop</a>'; do
             grep -Fq "$required" scripts/lib/sitewide-header-template-v6.mjs || { echo "Missing canonical nav label: $required" >&2; exit 1; }
           done
           ! grep -Fq '>Genetics</a>' scripts/lib/sitewide-header-template-v6.mjs
