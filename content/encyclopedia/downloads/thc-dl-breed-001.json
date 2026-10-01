@@ -1,0 +1,112 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-BREED-001",
+  "title": "Breeding Program Planning Workbook",
+  "status": "draft_for_review",
+  "purpose": "Provide a traceable working record for breeding objectives, parent qualification, controlled crosses, F1 evaluation, and F2 population planning.",
+  "lessonIds": ["THC-ENC-381","THC-ENC-382","THC-ENC-383","THC-ENC-384","THC-ENC-385"],
+  "sections": [
+    {
+      "id": "target-product-profile",
+      "supportsLesson": "THC-ENC-381",
+      "title": "Target Product Profile",
+      "fields": [
+        "Program ID","Program version","Intended lawful use","Target environments",
+        "Trait name","Trait definition","Measurement unit","Sampling method",
+        "Minimum acceptable value or condition","Preferred value or condition",
+        "Maximum acceptable value or condition","Trait priority or weight",
+        "Unacceptable trait or failure condition","Release criterion","Stop criterion",
+        "Evidence required","Approver","Revision date"
+      ],
+      "decisionPrompt": "Which traits are mandatory, which are desirable, and which tradeoffs are acceptable?"
+    },
+    {
+      "id": "parent-qualification",
+      "supportsLesson": "THC-ENC-382",
+      "title": "Parent Qualification and Complementarity",
+      "fields": [
+        "Parent ID","Source","Pedigree","Identity verification method","Sex genotype if tested",
+        "Observed sex expression","Health and pathogen status","Replicated phenotype summary",
+        "Chemotype data","Volatile profile data","Fertility or pollen/seed quality",
+        "Relationship estimate","Strengths","Weaknesses","Expected complementary traits",
+        "Known liabilities","Backup clone or seed location","Qualification decision","Decision rationale"
+      ],
+      "decisionPrompt": "Does each parent contribute evidence-backed strengths that address the breeding objective without adding an unacceptable liability?"
+    },
+    {
+      "id": "controlled-cross",
+      "supportsLesson": "THC-ENC-383",
+      "title": "Controlled Cross and Identity Record",
+      "fields": [
+        "Cross ID","Seed parent ID","Pollen parent ID","Identity verification method",
+        "Flowering location","Isolation method","Airflow or pollen-control notes",
+        "Pollen lot","Pollen collection date","Pollen storage conditions",
+        "Pollen viability result if measured","Pollination date","Pollinated site or branch",
+        "Personnel","Control or unpollinated check","Unexpected seed set",
+        "Seed harvest date","Seed lot ID","Deviation","Disposition"
+      ],
+      "decisionPrompt": "What evidence would require the seed lot to be downgraded from verified biparental parentage to uncertain parentage?"
+    },
+    {
+      "id": "f1-evaluation",
+      "supportsLesson": "THC-ENC-384",
+      "title": "F1 Family Evaluation",
+      "fields": [
+        "Cross ID","Reciprocal direction","F1 population size","Germination count",
+        "Survival count","Individual plant IDs","Trait mean","Within-family variance",
+        "Parental reference values","Check reference values","Observed off-types",
+        "Fertility","Sex expression","Selected individual IDs","Reason for selection",
+        "Reason for rejection"
+      ],
+      "calculations": [
+        {
+          "name": "Mid-parent heterosis",
+          "formula": "((F1 mean - mid-parent mean) / mid-parent mean) x 100",
+          "limits": "Use only when parent and F1 values were measured under comparable conditions and the trait scale supports percentage comparison."
+        }
+      ],
+      "decisionPrompt": "Does the measured family support a claim of useful F1 performance, and how much within-family variation remains?"
+    },
+    {
+      "id": "f2-population-plan",
+      "supportsLesson": "THC-ENC-385",
+      "title": "F2 Population and Selection Plan",
+      "fields": [
+        "F1 source","F2 seed lot","Target trait combination","Trait model",
+        "Expected favorable-combination frequency","Minimum desired recoveries",
+        "Calculated minimum population","Planned population","Emerged population",
+        "Sex count","Survival count","Testing-loss allowance","Phenotype distribution",
+        "Marker or genotype results","Selected count","Selection intensity",
+        "Family preservation method","Reasons for discard"
+      ],
+      "calculations": [
+        {
+          "name": "Probability of at least one desired individual",
+          "formula": "1 - (1 - p)^n",
+          "variables": {"p":"probability one individual has the desired combination","n":"number of independent individuals"},
+          "limits": "This assumes the stated probability model is valid and does not correct for linkage, viability selection, classification error, or genotype-by-environment effects."
+        },
+        {
+          "name": "Population size for target confidence",
+          "formula": "n >= ln(1 - confidence) / ln(1 - p)",
+          "limits": "Round up and increase further for mortality, sex ratio, testing loss, linkage uncertainty, and the need to retain multiple families."
+        }
+      ],
+      "decisionPrompt": "Is the planned population large enough to recover the target combination with useful confidence while still allowing accurate measurement?"
+    }
+  ],
+  "qualityRules": [
+    "Do not substitute cultivar names for verified identity.",
+    "Do not convert an observed association into a heritable-trait claim without progeny evidence.",
+    "Do not describe an entire F1 or F2 family from one selected plant.",
+    "Preserve failed tests, deviations, and uncertain parentage in the record.",
+    "Keep exploratory breeding records separate from publication or release authorization."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  }
+}
