@@ -1,4 +1,13 @@
 export {
+  browserStorage,
+  storageGet,
+  storageSet,
+  storageRemove,
+  storageReadJson,
+  storageWriteJson,
+} from './storage.mjs';
+
+export {
   SETTINGS_VERSION,
   DEFAULT_GAME_SETTINGS,
   normalizeGameSettings,
@@ -62,4 +71,4 @@ export {
   field,
 } from './validation.mjs';
 
-export const DTF_GAME_PLATFORM_VERSION = '1.6.0';
+export const DTF_GAME_PLATFORM_VERSION = '1.7.0';
