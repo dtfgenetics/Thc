@@ -10,6 +10,10 @@ on:
       - 'configuration/encyclopedia-topics.json'
       - 'content/encyclopedia/**'
       - 'site/wordpress/education/encyclopedia/**'
+      - 'scripts/publish-wordpress-learning-search-indexes.mjs'
+      - 'scripts/deploy/wordpress-learning-search-runtime.sh'
+      - 'site/wordpress/mu-plugins/dtf-learning-search.php'
+      - 'site/wordpress/mu-plugins/dtf-learning-search/**'
       - '.github/workflows/wordpress-encyclopedia-production.yml'
 
 permissions:
@@ -34,6 +38,12 @@ jobs:
       ENCYCLOPEDIA_BATCH_FILE: site/wordpress/education/encyclopedia/current-production-batch.json
       ENCYCLOPEDIA_TOPIC_FILE: configuration/encyclopedia-topics.json
       BACKUP_ROOT: /tmp/dtf-encyclopedia-production
+      HOSTINGER_SSH_HOST: ${{ secrets.HOSTINGER_HOST || secrets.HOSTINGER_SSH_HOST || secrets.SSH_HOST || secrets.SFTP_HOST }}
+      HOSTINGER_SSH_USER: ${{ secrets.HOSTINGER_USER || secrets.HOSTINGER_SSH_USER || secrets.SSH_USER || secrets.SFTP_USER }}
+      HOSTINGER_SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY || secrets.HOSTINGER_SSH_KEY || secrets.SSH_PRIVATE_KEY || secrets.DEPLOY_KEY }}
+      HOSTINGER_SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS || secrets.HOSTINGER_SSH_KNOWN_HOSTS || secrets.SSH_KNOWN_HOSTS }}
+      HOSTINGER_SSH_PORT: ${{ secrets.HOSTINGER_PORT || secrets.HOSTINGER_SSH_PORT || secrets.SSH_PORT || secrets.SFTP_PORT }}
+      HOSTINGER_PUBLIC_ROOT: ${{ secrets.HOSTINGER_PUBLIC_ROOT || vars.HOSTINGER_WORDPRESS_PATH || vars.WORDPRESS_PATH || vars.WP_PATH }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -52,6 +62,9 @@ jobs:
           node --check scripts/organize-wordpress-encyclopedia-topics.mjs
           node --check scripts/validate-encyclopedia-release-control.mjs
           node --check scripts/publish-wordpress-learning-search-indexes.mjs
+          bash -n scripts/deploy/wordpress-learning-search-runtime.sh
+          php -l site/wordpress/mu-plugins/dtf-learning-search.php
+          npm run verify:wordpress-learning-search
           npm run build:encyclopedia-scorecard
           node scripts/validate-encyclopedia-completion-scorecard.mjs
           npm run build:encyclopedia-discovery
@@ -85,6 +98,56 @@ jobs:
           set -euo pipefail
           [[ -n "${WP_API_USERNAME:-}" ]]
           [[ -n "${WP_API_PASSWORD:-}" ]]
+
+      - name: Ensure WordPress learning search runtime is active
+        id: search_runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${HOSTINGER_SSH_HOST:?HOSTINGER_SSH_HOST is required}"
+          : "${HOSTINGER_SSH_USER:?HOSTINGER_SSH_USER is required}"
+          : "${HOSTINGER_SSH_PRIVATE_KEY:?HOSTINGER_SSH_PRIVATE_KEY is required}"
+          : "${HOSTINGER_SSH_KNOWN_HOSTS:?HOSTINGER_SSH_KNOWN_HOSTS is required}"
+          : "${HOSTINGER_PUBLIC_ROOT:?HOSTINGER_PUBLIC_ROOT is required}"
+          [[ "$HOSTINGER_PUBLIC_ROOT" == /*/public_html ]]
+
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$HOSTINGER_SSH_PRIVATE_KEY" > "$HOME/.ssh/dtf_hostinger"
+          chmod 600 "$HOME/.ssh/dtf_hostinger"
+          printf '%s\n' "$HOSTINGER_SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+          port="${HOSTINGER_SSH_PORT:-65002}"
+          ssh_opts=(-i "$HOME/.ssh/dtf_hostinger" -p "$port" -o BatchMode=yes -o StrictHostKeyChecking=yes)
+
+          rm -rf "$RUNNER_TEMP/learning-search-payload"
+          mkdir -p "$RUNNER_TEMP/learning-search-payload/dtf-learning-search"
+          cp site/wordpress/mu-plugins/dtf-learning-search.php "$RUNNER_TEMP/learning-search-payload/"
+          cp -a site/wordpress/mu-plugins/dtf-learning-search/. "$RUNNER_TEMP/learning-search-payload/dtf-learning-search/"
+          tar -C "$RUNNER_TEMP/learning-search-payload" -czf "$RUNNER_TEMP/dtf-learning-search-${GITHUB_SHA}.tgz" .
+
+          remote_archive=".dtf-deploy/learning-search/incoming/dtf-learning-search-${GITHUB_SHA}.tgz"
+          ssh "${ssh_opts[@]}" "$HOSTINGER_SSH_USER@$HOSTINGER_SSH_HOST" 'mkdir -p "$HOME/.dtf-deploy/learning-search/incoming"'
+          scp -i "$HOME/.ssh/dtf_hostinger" -P "$port" -o BatchMode=yes -o StrictHostKeyChecking=yes \
+            "$RUNNER_TEMP/dtf-learning-search-${GITHUB_SHA}.tgz" \
+            "$HOSTINGER_SSH_USER@$HOSTINGER_SSH_HOST:$remote_archive"
+
+          printf -v remote_cmd 'bash -s -- activate %q %q %q' "$HOSTINGER_PUBLIC_ROOT" "$GITHUB_SHA" "$remote_archive"
+          output="$(ssh "${ssh_opts[@]}" "$HOSTINGER_SSH_USER@$HOSTINGER_SSH_HOST" "$remote_cmd" < scripts/deploy/wordpress-learning-search-runtime.sh)"
+          printf '%s\n' "$output"
+          backup_id="$(printf '%s\n' "$output" | sed -n 's/^backup_id=//p' | tail -n 1)"
+          [[ -n "$backup_id" ]]
+          echo "backup_id=$backup_id" >> "$GITHUB_OUTPUT"
+
+          health="$RUNNER_TEMP/learning-search-health.json"
+          curl -4 --fail --silent --show-error --location --retry 6 --retry-all-errors --retry-delay 3 \
+            -H 'Cache-Control: no-cache, no-store, max-age=0' \
+            "$WP_SITE_URL/wp-json/dtf-learning/v1/health?dtf_ency_runtime=${GITHUB_RUN_ID}" -o "$health"
+          HEALTH_PATH="$health" node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const h=JSON.parse(fs.readFileSync(process.env.HEALTH_PATH,'utf8'));
+          if(h.ok!==true || h.version!=='1.0.0') throw new Error('Learning search MU-plugin health endpoint is not active.');
+          console.log('Learning search runtime active:', h);
+          NODE
 
       - name: Publish controlled encyclopedia batch with backup
         id: publish
