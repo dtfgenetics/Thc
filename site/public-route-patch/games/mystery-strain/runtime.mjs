@@ -148,7 +148,6 @@ function prefersReducedMotion() {
   catch { return false; }
 }
 
-
 function renderStats() {
   ui.caseReadout.textContent = state.code;
   ui.questionsLeft.textContent = String(questionsLeft(state));
