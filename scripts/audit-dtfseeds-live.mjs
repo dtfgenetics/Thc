@@ -194,7 +194,7 @@ async function auditRoute(route) {
     if (!canonical) issues.push('Missing canonical URL');
     if (canonical && canonical.replace(/\/$/, '') !== requestedUrl.replace(/\/$/, '')) issues.push(`Canonical points to ${canonical} instead of ${requestedUrl}`);
     if (h1Count < 1) issues.push('Missing crawlable H1');
-    if (h1Count > 1) warnings.push(`Multiple H1 elements detected (${h1Count})`);
+    if (h1Count > 1) issues.push(`Multiple H1 elements detected (${h1Count}); expected exactly one crawlable H1`);
     if (text.length < route.minimumText) issues.push(`Only ${text.length} crawlable text characters; expected at least ${route.minimumText}`);
     if (isNoIndex(html, fetched.headers)) issues.push('Page is marked noindex');
 
