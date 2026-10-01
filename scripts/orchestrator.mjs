@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { execFileSync } from 'node:child_process'
-import { loadConfig, planClaims, leaseTtlMinutes, maxAttempts } from './orchestrator/core.mjs'
+import { dependencyBlockers, dependencyIssueNumber, loadConfig, planClaims, planMetadataFromIssue, leaseTtlMinutes, maxAttempts } from './orchestrator/core.mjs'
 import { createLease, heartbeatLease, isLeaseExpired } from './orchestrator/leases.mjs'
 import { newJob, transitionJob } from './orchestrator/state.mjs'
 
@@ -42,6 +42,34 @@ function listReadyIssues(repo, config) {
     '-f', 'state=open', '-f', `labels=${config.labels.ready}`, '-f', 'per_page=100',
     '--jq', '[.[] | select(.pull_request == null)]'
   ], [])
+}
+
+function resolveSatisfiedDependencies(repo, readyIssues, config) {
+  const dependencyNumbers = [...new Set(readyIssues.flatMap((issue) =>
+    planMetadataFromIssue(issue).dependencies
+      .map(dependencyIssueNumber)
+      .filter((value) => Number.isInteger(value) && value > 0)
+  ))].sort((a, b) => a - b)
+
+  const satisfied = []
+  const states = []
+  for (const number of dependencyNumbers) {
+    const dependencyIssue = json(['api', `repos/${repo}/issues/${number}`], null)
+    if (!dependencyIssue || dependencyIssue.pull_request) {
+      states.push({ issueNumber: number, satisfied: false, reason: 'missing-or-not-job-issue' })
+      continue
+    }
+    const labels = new Set((dependencyIssue.labels || []).map((label) => label.name))
+    const marker = parseMarker(dependencyIssue)
+    const done = labels.has(config.labels.done) || marker?.state === 'DONE'
+    if (done) satisfied.push(String(number))
+    states.push({
+      issueNumber: number,
+      satisfied: done,
+      reason: done ? 'done' : `state:${marker?.state || dependencyIssue.state || 'unknown'}`,
+    })
+  }
+  return { satisfied, states }
 }
 
 function parseMarker(issue) {
@@ -249,7 +277,13 @@ const ready = listReadyIssues(repo, config)
 const active = listActiveClaims(repo, config)
 const liveActive = active.filter((claim) => claim.active !== false)
 const expired = active.filter((claim) => claim.expired)
-const plan = planClaims(ready, liveActive, config)
+const dependencyState = resolveSatisfiedDependencies(repo, ready, config)
+const plan = planClaims(ready, liveActive, config, dependencyState.satisfied)
+const dependencyBlocked = ready.map((issue) => {
+  const metadata = planMetadataFromIssue(issue)
+  const blockers = dependencyBlockers(metadata.dependencies, dependencyState.satisfied)
+  return blockers.length ? { issueNumber: Number(issue.number), blockers } : null
+}).filter(Boolean)
 
 if (command === 'status' || command === 'plan') {
   console.log(JSON.stringify({
@@ -262,6 +296,8 @@ if (command === 'status' || command === 'plan') {
     expiredClaims: expired.length,
     availableWorkers: Math.max(0, config.maxWorkers - liveActive.length),
     readyIssues: ready.length,
+    dependencyState: dependencyState.states,
+    dependencyBlocked,
     plannedClaims: plan,
     activeClaims: active,
   }, null, 2))
@@ -272,7 +308,7 @@ if (command === 'dispatch') {
   ensureLabels(repo, config)
   const apply = options.apply === 'true'
   if (!apply) {
-    console.log(JSON.stringify({ ok: true, repo, mode: 'dispatch-dry-run', plannedClaims: plan, expiredClaims: expired }, null, 2))
+    console.log(JSON.stringify({ ok: true, repo, mode: 'dispatch-dry-run', plannedClaims: plan, dependencyBlocked, expiredClaims: expired }, null, 2))
     process.exit(0)
   }
 
