@@ -9,10 +9,12 @@ const projectRegistryPath = path.join(root, "data", "project-registry.json");
 const publicAppsPath = path.join(root, "site", "deployment", "public-apps.json");
 const retirementManifestPath = path.join(root, "data", "repository-retirement-manifest.json");
 const fileRetirementManifestPath = path.join(root, "data", "file-retirement-manifest.json");
+const consolidationQueuePath = path.join(root, "data", "repository-consolidation-queue.json");
 const projectRegistry = JSON.parse(fs.readFileSync(projectRegistryPath, "utf8"));
 const publicApps = JSON.parse(fs.readFileSync(publicAppsPath, "utf8"));
 const retirementManifest = JSON.parse(fs.readFileSync(retirementManifestPath, "utf8"));
 const fileRetirementManifest = JSON.parse(fs.readFileSync(fileRetirementManifestPath, "utf8"));
+const consolidationQueue = JSON.parse(fs.readFileSync(consolidationQueuePath, "utf8"));
 
 const allowedStatuses = new Set(["canonical","standalone_canonical","migration","legacy_review","archive_candidate","archive_ready"]);
 const repos = registry.repositories ?? [];
@@ -24,6 +26,8 @@ if (fileRetirementManifest.schemaVersion !== 1) errors.push("file retirement man
 if (registry.retirement_controls?.repositoryManifest !== "data/repository-retirement-manifest.json") errors.push("repository registry must link the repository retirement manifest");
 if (registry.retirement_controls?.fileManifest !== "data/file-retirement-manifest.json") errors.push("repository registry must link the file retirement manifest");
 if (retirementManifest.authority !== "dtfgenetics/Thc") errors.push("repository retirement manifest authority must be dtfgenetics/Thc");
+if (consolidationQueue.schemaVersion !== 1) errors.push("repository consolidation queue schemaVersion must equal 1");
+if (consolidationQueue.authority !== "dtfgenetics/Thc") errors.push("repository consolidation queue authority must be dtfgenetics/Thc");
 
 const retirementRepos = Array.isArray(retirementManifest.repositories) ? retirementManifest.repositories : [];
 const retirementBranches = Array.isArray(retirementManifest.branches) ? retirementManifest.branches : [];
@@ -129,6 +133,23 @@ for (const entry of migrationRepos) {
       errors.push(`migration repository has active deployment status: ${entry.repo} -> ${app.status}`);
     }
   }
+}
+
+const cleanupEntries = Array.isArray(consolidationQueue.repositories) ? consolidationQueue.repositories : [];
+const cleanupByRepo = new Map();
+for (const entry of cleanupEntries) {
+  if (!knownRepos.has(entry.repo)) errors.push(`consolidation queue references unknown repository: ${entry.repo}`);
+  if (cleanupByRepo.has(entry.repo)) errors.push(`duplicate consolidation queue repository: ${entry.repo}`);
+  cleanupByRepo.set(entry.repo, entry);
+  if (!["migration","archive_ready"].includes(entry.state)) errors.push(`invalid consolidation state: ${entry.repo} -> ${entry.state}`);
+  const registryEntry = repos.find((repo) => repo.repo === entry.repo);
+  if (registryEntry && registryEntry.status !== entry.state) errors.push(`consolidation queue/registry mismatch: ${entry.repo} -> ${entry.state} vs ${registryEntry.status}`);
+  if (!Array.isArray(entry.exitCriteria) || !entry.exitCriteria.length) errors.push(`consolidation exit criteria required: ${entry.repo}`);
+  if (!Array.isArray(entry.blockers)) errors.push(`consolidation blockers must be an array: ${entry.repo}`);
+}
+
+for (const entry of repos.filter((repo) => ["migration","archive_ready"].includes(repo.status))) {
+  if (!cleanupByRepo.has(entry.repo)) errors.push(`repository requires consolidation queue entry: ${entry.repo}`);
 }
 
 const prohibitedCanonical = new Set(["dtfgenetics/Dtf420","dtfgenetics/dtf-thc-hub"]);

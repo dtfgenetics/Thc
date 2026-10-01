@@ -204,6 +204,420 @@
       "branch": "cleanup/ignore-generated-deploy-output-20260929",
       "disposition": "delete_safe",
       "basis": "merged_via_pr_49"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-legacy-production-entrypoints-20260930",
+      "disposition": "delete_safe",
+      "basis": "ahead_by_0_behind_by_11_against_main_2026-09-30"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-migrated-weedopolis-20260930",
+      "disposition": "delete_safe",
+      "basis": "superseded_by_merged_pr_72"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-legacy-weedopolis-v2-20260930",
+      "disposition": "delete_safe",
+      "basis": "conflicted_replay_superseded_by_merged_pr_72"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-legacy-weedopolis-v3-20260930",
+      "disposition": "delete_safe",
+      "basis": "merged_via_pr_72"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/retire-legacy-audit-workflow-v2-20260930",
+      "disposition": "delete_safe",
+      "basis": "merged_via_pr_69"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-high-iq-placeholder-v2-20260930",
+      "disposition": "delete_safe",
+      "basis": "target_file_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-legacy-game-engine-20260930",
+      "disposition": "delete_safe",
+      "basis": "legacy_game-engine_files_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-legacy-grow-doc-v3-20260930",
+      "disposition": "delete_safe",
+      "basis": "legacy_Grow_Doc_app_files_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-superseded-legacy-brand-assets-20260930",
+      "disposition": "delete_safe",
+      "basis": "superseded_brand_asset_files_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-generated-preview-tree-20260930",
+      "disposition": "delete_safe",
+      "basis": "generated_preview_tree_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-grow-doc-data-export-20260930",
+      "disposition": "delete_safe",
+      "basis": "legacy_Grow_Doc_export_script/data_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-migrated-kush-kings-20260930",
+      "disposition": "delete_safe",
+      "basis": "copied_Kush_Kings_release_bundle_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-migrated-thc-u-know-20260930",
+      "disposition": "delete_safe",
+      "basis": "copied_THC_U_Know_release_bundle_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/retire-scheduled-legacy-production-audit-20260930",
+      "disposition": "delete_safe",
+      "basis": "obsolete_audit_workflow_removal_superseded_by_merged_PR_pr_69"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/dedupe-high-land-legacy-assets-20260930",
+      "disposition": "delete_safe",
+      "basis": "current_main_uses_canonical_shared_high_land_asset_paths_and_duplicate_legacy_assets_are_absent"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/mark-legacy-hub-archive-ready-20260930",
+      "disposition": "delete_safe",
+      "basis": "superseded_by_newer_current-main_migration_controls;_do_not_restore_premature_archive-ready_state"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/mark-legacy-hub-archive-ready-final-20260930",
+      "disposition": "delete_safe",
+      "basis": "0_commits_ahead_of_main;_branch_is_behind_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/mark-legacy-hub-archive-ready-v2-20260930",
+      "disposition": "delete_safe",
+      "basis": "superseded_by_newer_current-main_migration_controls;_do_not_restore_premature_archive-ready_state"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-duplicate-dtf420-shell-20260930",
+      "disposition": "delete_safe",
+      "basis": "duplicate_apps/dtf420_shell_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-high-iq-placeholder-20260930",
+      "disposition": "delete_safe",
+      "basis": "High_IQ_placeholder_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-legacy-grow-doc-20260930",
+      "disposition": "delete_safe",
+      "basis": "legacy_Grow_Doc_app_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-legacy-grow-doc-v2-20260930",
+      "disposition": "delete_safe",
+      "basis": "legacy_Grow_Doc_app_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-orphan-print-generator-20260930",
+      "disposition": "delete_safe",
+      "basis": "orphan_print-generator_package_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/retire-legacy-diagnostic-project-data-20260930",
+      "disposition": "delete_safe",
+      "basis": "legacy_diagnostic_project-data_files_already_absent_on_current_main"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "production-deploy-access-preflight",
+      "disposition": "delete_safe",
+      "basis": "legacy_deployment_validation_superseded_by_canonical_dtfgenetics/Thc_deployment_controls"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "production-deploy-auto-rollback",
+      "disposition": "delete_safe",
+      "basis": "legacy_deployment/rollback_implementation_superseded_by_canonical_dtfgenetics/Thc_deployment_controls"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "production-deploy-workflow",
+      "disposition": "delete_safe",
+      "basis": "legacy_production_deployment_workflow_superseded_by_canonical_dtfgenetics/Thc"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "release/auto-deploy-after-verified-main",
+      "disposition": "delete_safe",
+      "basis": "0_commits_ahead_of_main;_branch_is_fully_behind"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "repair/disable-migration-auto-deploy",
+      "disposition": "delete_safe",
+      "basis": "legacy_deployment_workflow_change_superseded_by_current_migration-only_production_boundary"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "harden-live-kush-kings-audit",
+      "disposition": "delete_safe",
+      "basis": "legacy_static/PHP_live-audit_branch_superseded_by_canonical_Thc-chess-git_production_runtime_smoke,_deployment_checks,_and_dedicated_Node/Socket.IO_deployment"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "kush-kings-authoritative-moves",
+      "disposition": "delete_safe",
+      "basis": "canonical_Thc-chess-git_sendMove_uses_chess.js_authoritative_server-side_legal-move_and_turn_validation_with_persistence_rollback"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "kush-kings-cancel-waiting-room",
+      "disposition": "delete_safe",
+      "basis": "legacy_PHP_waiting-room_flow_superseded_by_canonical_Socket.IO_lobby_join/leave_lifecycle_and_disconnect_cleanup"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "kush-kings-http-method-guards",
+      "disposition": "delete_safe",
+      "basis": "legacy_PHP_endpoint_method_guards_are_obsolete_after_migration_to_Express_routes_plus_authenticated_Socket.IO_session_middleware"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "kush-kings-input-validation",
+      "disposition": "delete_safe",
+      "basis": "canonical_Thc-chess-git_normalizes_room_codes,_chat_messages,_draw/abandon_inputs_and_validates_chess_moves_server-side"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "kush-kings-lifecycle-sync",
+      "disposition": "delete_safe",
+      "basis": "canonical_Thc-chess-git_lobby_join/leave,_reconnect_state,_observer_roster_and_timeout_cleanup_supersede_PHP_lifecycle_sync"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "kush-kings-observer-polling-fix",
+      "disposition": "delete_safe",
+      "basis": "canonical_Thc-chess-git_uses_Socket.IO_observer_roster_and_room_broadcasts_instead_of_legacy_polling"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "kush-kings-private-poll-token",
+      "disposition": "delete_safe",
+      "basis": "legacy_polling_token_is_obsolete_in_canonical_authenticated_session_+_Socket.IO_architecture"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "kush-kings-rematch-flow",
+      "disposition": "delete_safe",
+      "basis": "canonical_Thc-chess-git_project_contract_explicitly_preserves_rematch_behavior_in_the_current_room_architecture"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "kush-kings-ux-abuse-hardening",
+      "disposition": "delete_safe",
+      "basis": "canonical_Thc-chess-git_has_session_authentication,_chat_normalization/rate_limiting,_room-code_validation_and_player-seat_guards"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "content/start-here-beginner-pass",
+      "disposition": "delete_safe",
+      "basis": "canonical_thc-grow-hub_already_owns_the_active_THC_First_Grow_Guide_10-page_beginner_path"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "education-reconciliation",
+      "disposition": "delete_safe",
+      "basis": "education_ownership/policy_is_recovered_into_canonical_thc-grow-hub;_legacy_hub_branch_is_historical_provenance"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "feat/course1-public-academy-route",
+      "disposition": "delete_safe",
+      "basis": "canonical_Course_1_is_owned_and_published_from_Thc-learning-courses-;_legacy_academy_route_is_compatibility-only"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "reconcile/education-control-current-main",
+      "disposition": "delete_safe",
+      "basis": "education_control_recovery_is_superseded_by_canonical_thc-grow-hub_ownership_and_current_controls"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "reconcile/education-genetics-current-main",
+      "disposition": "delete_safe",
+      "basis": "0_commits_ahead_of_current_main;_branch_is_fully_behind"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "audit-bud-or-bluff-production",
+      "disposition": "delete_safe",
+      "basis": "legacy_live-audit_script_superseded_by_canonical_Bud_or_Bluff_ownership,_route_verification_and_release_controls_in_dtfgenetics/Thc"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "docs/full-dtfseeds-audit-scope",
+      "disposition": "delete_safe",
+      "basis": "legacy_audit-scope_document_superseded_by_current_repository_architecture,_production_standards_and_project_OS_checks_in_dtfgenetics/Thc"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "document-production-deploy-flow",
+      "disposition": "delete_safe",
+      "basis": "legacy_deployment-flow_documentation_superseded_by_canonical_dtfgenetics/Thc_deployment_and_release_documentation"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "feat/bud-or-bluff-production",
+      "disposition": "delete_safe",
+      "basis": "legacy_Bud_or_Bluff_implementation_superseded_by_canonical_games/bud-or-bluff_and_current_public_route_in_dtfgenetics/Thc"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "feat/high-iq-production",
+      "disposition": "delete_safe",
+      "basis": "0_commits_ahead_of_current_main;_canonical_High_IQ_implementation_is_owned_by_dtfgenetics/Thc"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "fix/game-route-legacy-redirects",
+      "disposition": "delete_safe",
+      "basis": "legacy_route_redirect_policy_superseded_by_current_dtfgenetics/Thc_public-route/deployment_registries"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "fix/game-route-policy-current-main",
+      "disposition": "delete_safe",
+      "basis": "0_commits_ahead_of_current_main;_route_policy_is_current_in_canonical_dtfgenetics/Thc"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "fix/high-land-production-integrity",
+      "disposition": "delete_safe",
+      "basis": "legacy_High_Land_implementation_superseded_by_canonical_dtfgenetics/Thc_apps/high-land-web_and_locked_source-of-truth_contracts"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "game-studio-v2-isolated-staging",
+      "disposition": "delete_safe",
+      "basis": "legacy_local_game-bundle_staging_superseded_by_canonical_external-game_contract_and_packaging_pipeline_in_dtfgenetics/Thc"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "game-ui-playability-polish-20260905",
+      "disposition": "delete_safe",
+      "basis": "legacy_High_Land/High_IQ/Weedopolis_UI_polish_targets_obsolete_implementations;_current_canonical_game_owners_contain_newer_UI/runtime_systems"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "multiplayer-game-ui-polish-20260905",
+      "disposition": "delete_safe",
+      "basis": "legacy_copied_Bud_or_Bluff/THC_U_Know_static_bundle_polish_is_superseded_by_current_canonical_game/runtime_owners"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "reconcile/branch-inventory-current-main",
+      "disposition": "delete_safe",
+      "basis": "0_commits_ahead_of_current_main;_branch_inventory_work_is_superseded_by_repository_retirement/consolidation_manifests"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "reconcile/bud-or-bluff-live-audit-current-main",
+      "disposition": "delete_safe",
+      "basis": "legacy_live-audit_script_superseded_by_canonical_Bud_or_Bluff_production_verification_controls"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "system/full-quality-audit-suite",
+      "disposition": "delete_safe",
+      "basis": "legacy_quality_audit/ownership_registry_superseded_by_current_dtfgenetics/Thc_project_OS_and_repository_architecture_checks"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "system/full-quality-audit-suite-v2",
+      "disposition": "delete_safe",
+      "basis": "legacy_audit_suite/workflows_superseded_by_current_canonical_CI,_game_registry_and_production_standards_checks"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "system/production-ownership-registry",
+      "disposition": "delete_safe",
+      "basis": "legacy_ownership_registry_superseded_by_data/repository-registry.json,_project_registry_and_game-registry-v2_in_dtfgenetics/Thc"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "fix/visual-structure-genetics-shop-20260921",
+      "disposition": "delete_safe",
+      "basis": "0_commits_ahead_of_current_main;_visual_structure_work_is_already_incorporated_or_superseded"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "recovery/genetics-propagation-center",
+      "disposition": "delete_safe",
+      "basis": "canonical_thc-grow-hub_content/site/genetics-propagation.json_already_contains_the_recovered_center_and_module_identities"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "recovery/genetics-propagation-complete",
+      "disposition": "delete_safe",
+      "basis": "canonical_thc-grow-hub_content/site/genetics-propagation.json_already_contains_the_complete_six-module_genetics/propagation_center"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "integration/genetics-propagation-crosswalk",
+      "disposition": "delete_safe",
+      "basis": "canonical_crosswalk_migrated_and_merged_into_thc-grow-hub_via_PR_pr_161"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "integration/genetics-growdoc-issues",
+      "disposition": "delete_safe",
+      "basis": "canonical_Grow_Doc_mapping_migrated_and_merged_into_Thc-dataset_via_PR_pr_331"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "integration/genetics-growdoc-targets",
+      "disposition": "delete_safe",
+      "basis": "canonical_Grow_Doc_mapping_migrated_and_merged_into_Thc-dataset_via_PR_pr_331"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "system/continuous-improvement-loop",
+      "disposition": "delete_safe",
+      "basis": "reusable_public-learning_hierarchy/mobile/accessibility/progressive-disclosure_contract_migrated_and_merged_into_thc-grow-hub_via_PR_pr_163"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "ui/learn-visitor-ux-pass",
+      "disposition": "delete_safe",
+      "basis": "legacy_learner_CSS_implementation_superseded;_reusable_UX_intent_migrated_and_merged_into_thc-grow-hub_via_PR_pr_163"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "fix/ui-ux-foundation-20260921",
+      "disposition": "delete_safe",
+      "basis": "legacy_hub-wide_UI_implementation_superseded;_reusable_learner_UX_intent_preserved_in_canonical_thc-grow-hub_contract_via_PR_pr_163"
     }
   ]
 }

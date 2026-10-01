@@ -1,0 +1,389 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-09-30",
+  "authority": "dtfgenetics/Thc",
+  "policy": "Every migration or archive-ready repository must have an explicit cleanup record. Migration repositories remain non-canonical until every blocking lane is resolved. Archive-ready repositories remain non-deployable and should be archived rather than deleted.",
+  "repositories": [
+    {
+      "repo": "dtfgenetics/Dtf420",
+      "state": "migration",
+      "target": "controlled-cutover-or-retire-overlap",
+      "blockers": [
+        "Resolve final ownership for Seed Ascent.",
+        "Resolve final production owner and route for Stoner Duck Race.",
+        "Reconcile any remaining unique Next.js-only behavior into canonical domain owners before cutover.",
+        "Reduce non-default branch inventory after unique-commit review.",
+        "Keep tools, education, certification, diagnostics and current production integration non-canonical here until an explicit cutover decision."
+      ],
+      "canonicalTargets": [
+        "dtfgenetics/Thc",
+        "dtfgenetics/Tools",
+        "dtfgenetics/thc-grow-hub",
+        "dtfgenetics/Thc-learning-courses-",
+        "dtfgenetics/Thc-dataset"
+      ],
+      "exitCriteria": [
+        "Every overlapping route/domain is either cut over explicitly or removed as duplicate migration code.",
+        "All unique branch commits are merged, migrated, superseded or classified as historical-only.",
+        "No canonical domain ownership is claimed until a documented platform cutover.",
+        "No production route is owned directly while repository status is migration."
+      ]
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "state": "migration",
+      "target": "archive-ready",
+      "blockers": [
+        "Complete legacy asset hash/provenance reconciliation.",
+        "Confirm no production automation or bookmarks require this repository.",
+        "Remove or retire remaining duplicate working-tree implementations after canonical parity is proven."
+      ],
+      "completedLanes": [
+        "Grow Doc comparison and selective export migration.",
+        "High Land comparison and audio-preference migration.",
+        "High IQ comparison; no code migration required.",
+        "Legacy shared game engine classified superseded.",
+        "Legacy WordPress/deployment tooling classified superseded.",
+        "Legacy certification widgets classified historical-only.",
+        "Copied Weedopolis implementation and deploy artifacts removed from dtf-thc-hub via PR #72; standalone Weedopolis repo remains canonical.",
+        "Legacy Kush Kings PHP/runtime hardening branches reconciled against canonical dtfgenetics/Thc-chess-git Node/Express/Socket.IO controls.",
+        "Genetics/propagation education crosswalk migrated to thc-grow-hub PR #161.",
+        "Genetics/propagation Grow Doc mapping migrated with corrected canonical diagnostic slugs to Thc-dataset PR #331.",
+        "Reusable public-learning UX contract migrated to thc-grow-hub PR #163; obsolete legacy UI implementation branches retired."
+      ],
+      "canonicalTargets": [
+        "dtfgenetics/Thc",
+        "dtfgenetics/Tools",
+        "dtfgenetics/thc-grow-hub",
+        "dtfgenetics/Thc-learning-courses-",
+        "dtfgenetics/Thc-dataset"
+      ],
+      "exitCriteria": [
+        "Every legacy lane is assigned to a canonical owner or historical-only classification.",
+        "Every ahead/diverged branch is migrated, superseded or historical-only.",
+        "No production route or deployment authority depends on the repository.",
+        "Repository registry may then move from migration to archive_candidate/archive_ready."
+      ],
+      "branchReview": {
+        "reviewedAt": "2026-09-30",
+        "deleteSafe": [
+          {
+            "branch": "cleanup/remove-legacy-production-entrypoints-20260930",
+            "basis": "0 commits ahead of main; branch is 11 commits behind main"
+          },
+          {
+            "branch": "cleanup/remove-migrated-weedopolis-20260930",
+            "basis": "superseded by clean replay merged via dtf-thc-hub PR #72"
+          },
+          {
+            "branch": "cleanup/remove-legacy-weedopolis-v2-20260930",
+            "basis": "conflicted replay superseded by merged PR #72"
+          },
+          {
+            "branch": "cleanup/remove-legacy-weedopolis-v3-20260930",
+            "basis": "merged via dtf-thc-hub PR #72"
+          },
+          {
+            "branch": "cleanup/remove-high-iq-placeholder-v2-20260930",
+            "basis": "target file already absent on current main"
+          },
+          {
+            "branch": "cleanup/remove-legacy-game-engine-20260930",
+            "basis": "legacy game-engine files already absent on current main"
+          },
+          {
+            "branch": "cleanup/remove-legacy-grow-doc-v3-20260930",
+            "basis": "legacy Grow Doc app files already absent on current main"
+          },
+          {
+            "branch": "cleanup/remove-superseded-legacy-brand-assets-20260930",
+            "basis": "superseded brand asset files already absent on current main"
+          },
+          {
+            "branch": "cleanup/remove-generated-preview-tree-20260930",
+            "basis": "generated preview tree already absent on current main"
+          },
+          {
+            "branch": "cleanup/remove-grow-doc-data-export-20260930",
+            "basis": "legacy Grow Doc export script/data already absent on current main"
+          },
+          {
+            "branch": "cleanup/remove-migrated-kush-kings-20260930",
+            "basis": "copied Kush Kings release bundle already absent on current main"
+          },
+          {
+            "branch": "cleanup/remove-migrated-thc-u-know-20260930",
+            "basis": "copied THC U Know release bundle already absent on current main"
+          },
+          {
+            "branch": "cleanup/retire-scheduled-legacy-production-audit-20260930",
+            "basis": "obsolete audit workflow removal superseded by merged PR #69"
+          },
+          {
+            "branch": "cleanup/dedupe-high-land-legacy-assets-20260930",
+            "basis": "current main already uses canonical shared High Land asset paths and duplicate legacy asset files are absent"
+          },
+          {
+            "branch": "cleanup/mark-legacy-hub-archive-ready-20260930",
+            "basis": "superseded by newer current-main migration controls; do not restore premature archive-ready state"
+          },
+          {
+            "branch": "cleanup/mark-legacy-hub-archive-ready-final-20260930",
+            "basis": "0 commits ahead of main; branch is behind main"
+          },
+          {
+            "branch": "cleanup/mark-legacy-hub-archive-ready-v2-20260930",
+            "basis": "superseded by newer current-main migration controls; do not restore premature archive-ready state"
+          },
+          {
+            "branch": "cleanup/remove-duplicate-dtf420-shell-20260930",
+            "basis": "duplicate apps/dtf420 shell already absent on current main"
+          },
+          {
+            "branch": "cleanup/remove-high-iq-placeholder-20260930",
+            "basis": "High IQ placeholder already absent on current main"
+          },
+          {
+            "branch": "cleanup/remove-legacy-grow-doc-20260930",
+            "basis": "legacy Grow Doc app already absent on current main"
+          },
+          {
+            "branch": "cleanup/remove-legacy-grow-doc-v2-20260930",
+            "basis": "legacy Grow Doc app already absent on current main"
+          },
+          {
+            "branch": "cleanup/remove-orphan-print-generator-20260930",
+            "basis": "orphan print-generator package already absent on current main"
+          },
+          {
+            "branch": "cleanup/retire-legacy-diagnostic-project-data-20260930",
+            "basis": "legacy diagnostic project-data files already absent on current main"
+          },
+          {
+            "branch": "production-deploy-access-preflight",
+            "basis": "legacy deployment validation superseded by canonical dtfgenetics/Thc deployment controls"
+          },
+          {
+            "branch": "production-deploy-auto-rollback",
+            "basis": "legacy deployment/rollback implementation superseded by canonical dtfgenetics/Thc deployment controls"
+          },
+          {
+            "branch": "production-deploy-workflow",
+            "basis": "legacy production deployment workflow superseded by canonical dtfgenetics/Thc"
+          },
+          {
+            "branch": "release/auto-deploy-after-verified-main",
+            "basis": "0 commits ahead of main; branch is fully behind"
+          },
+          {
+            "branch": "repair/disable-migration-auto-deploy",
+            "basis": "legacy deployment workflow change superseded by current migration-only production boundary"
+          },
+          {
+            "branch": "harden-live-kush-kings-audit",
+            "basis": "legacy static/PHP live-audit branch superseded by canonical Thc-chess-git production runtime smoke, deployment checks, and dedicated Node/Socket.IO deployment"
+          },
+          {
+            "branch": "kush-kings-authoritative-moves",
+            "basis": "canonical Thc-chess-git sendMove uses chess.js authoritative server-side legal-move and turn validation with persistence rollback"
+          },
+          {
+            "branch": "kush-kings-cancel-waiting-room",
+            "basis": "legacy PHP waiting-room flow superseded by canonical Socket.IO lobby join/leave lifecycle and disconnect cleanup"
+          },
+          {
+            "branch": "kush-kings-http-method-guards",
+            "basis": "legacy PHP endpoint method guards are obsolete after migration to Express routes plus authenticated Socket.IO session middleware"
+          },
+          {
+            "branch": "kush-kings-input-validation",
+            "basis": "canonical Thc-chess-git normalizes room codes, chat messages, draw/abandon inputs and validates chess moves server-side"
+          },
+          {
+            "branch": "kush-kings-lifecycle-sync",
+            "basis": "canonical Thc-chess-git lobby join/leave, reconnect state, observer roster and timeout cleanup supersede PHP lifecycle sync"
+          },
+          {
+            "branch": "kush-kings-observer-polling-fix",
+            "basis": "canonical Thc-chess-git uses Socket.IO observer roster and room broadcasts instead of legacy polling"
+          },
+          {
+            "branch": "kush-kings-private-poll-token",
+            "basis": "legacy polling token is obsolete in canonical authenticated session + Socket.IO architecture"
+          },
+          {
+            "branch": "kush-kings-rematch-flow",
+            "basis": "canonical Thc-chess-git project contract explicitly preserves rematch behavior in the current room architecture"
+          },
+          {
+            "branch": "kush-kings-ux-abuse-hardening",
+            "basis": "canonical Thc-chess-git has session authentication, chat normalization/rate limiting, room-code validation and player-seat guards"
+          },
+          {
+            "branch": "content/start-here-beginner-pass",
+            "basis": "canonical thc-grow-hub already owns the active THC First Grow Guide 10-page beginner path"
+          },
+          {
+            "branch": "education-reconciliation",
+            "basis": "education ownership/policy is recovered into canonical thc-grow-hub; legacy hub branch is historical provenance"
+          },
+          {
+            "branch": "feat/course1-public-academy-route",
+            "basis": "canonical Course 1 is owned and published from Thc-learning-courses-; legacy academy route is compatibility-only"
+          },
+          {
+            "branch": "reconcile/education-control-current-main",
+            "basis": "education control recovery is superseded by canonical thc-grow-hub ownership and current controls"
+          },
+          {
+            "branch": "reconcile/education-genetics-current-main",
+            "basis": "0 commits ahead of current main; branch is fully behind"
+          },
+          {
+            "branch": "audit-bud-or-bluff-production",
+            "basis": "legacy live-audit script superseded by canonical Bud or Bluff ownership, route verification and release controls in dtfgenetics/Thc"
+          },
+          {
+            "branch": "docs/full-dtfseeds-audit-scope",
+            "basis": "legacy audit-scope document superseded by current repository architecture, production standards and project OS checks in dtfgenetics/Thc"
+          },
+          {
+            "branch": "document-production-deploy-flow",
+            "basis": "legacy deployment-flow documentation superseded by canonical dtfgenetics/Thc deployment and release documentation"
+          },
+          {
+            "branch": "feat/bud-or-bluff-production",
+            "basis": "legacy Bud or Bluff implementation superseded by canonical games/bud-or-bluff and current public route in dtfgenetics/Thc"
+          },
+          {
+            "branch": "feat/high-iq-production",
+            "basis": "0 commits ahead of current main; canonical High IQ implementation is owned by dtfgenetics/Thc"
+          },
+          {
+            "branch": "fix/game-route-legacy-redirects",
+            "basis": "legacy route redirect policy superseded by current dtfgenetics/Thc public-route/deployment registries"
+          },
+          {
+            "branch": "fix/game-route-policy-current-main",
+            "basis": "0 commits ahead of current main; route policy is current in canonical dtfgenetics/Thc"
+          },
+          {
+            "branch": "fix/high-land-production-integrity",
+            "basis": "legacy High Land implementation superseded by canonical dtfgenetics/Thc apps/high-land-web and locked source-of-truth contracts"
+          },
+          {
+            "branch": "game-studio-v2-isolated-staging",
+            "basis": "legacy local game-bundle staging superseded by canonical external-game contract and packaging pipeline in dtfgenetics/Thc"
+          },
+          {
+            "branch": "game-ui-playability-polish-20260905",
+            "basis": "legacy High Land/High IQ/Weedopolis UI polish targets obsolete implementations; current canonical game owners contain newer UI/runtime systems"
+          },
+          {
+            "branch": "multiplayer-game-ui-polish-20260905",
+            "basis": "legacy copied Bud or Bluff/THC U Know static bundle polish is superseded by current canonical game/runtime owners"
+          },
+          {
+            "branch": "reconcile/branch-inventory-current-main",
+            "basis": "0 commits ahead of current main; branch inventory work is superseded by repository retirement/consolidation manifests"
+          },
+          {
+            "branch": "reconcile/bud-or-bluff-live-audit-current-main",
+            "basis": "legacy live-audit script superseded by canonical Bud or Bluff production verification controls"
+          },
+          {
+            "branch": "system/full-quality-audit-suite",
+            "basis": "legacy quality audit/ownership registry superseded by current dtfgenetics/Thc project OS and repository architecture checks"
+          },
+          {
+            "branch": "system/full-quality-audit-suite-v2",
+            "basis": "legacy audit suite/workflows superseded by current canonical CI, game registry and production standards checks"
+          },
+          {
+            "branch": "system/production-ownership-registry",
+            "basis": "legacy ownership registry superseded by data/repository-registry.json, project registry and game-registry-v2 in dtfgenetics/Thc"
+          },
+          {
+            "branch": "fix/visual-structure-genetics-shop-20260921",
+            "basis": "0 commits ahead of current main; visual structure work is already incorporated or superseded"
+          },
+          {
+            "branch": "recovery/genetics-propagation-center",
+            "basis": "canonical thc-grow-hub content/site/genetics-propagation.json already contains the recovered center and module identities"
+          },
+          {
+            "branch": "recovery/genetics-propagation-complete",
+            "basis": "canonical thc-grow-hub content/site/genetics-propagation.json already contains the complete six-module genetics/propagation center"
+          },
+          {
+            "branch": "integration/genetics-propagation-crosswalk",
+            "basis": "canonical crosswalk migrated and merged into thc-grow-hub via PR #161"
+          },
+          {
+            "branch": "integration/genetics-growdoc-issues",
+            "basis": "canonical Grow Doc mapping migrated and merged into Thc-dataset via PR #331"
+          },
+          {
+            "branch": "integration/genetics-growdoc-targets",
+            "basis": "canonical Grow Doc mapping migrated and merged into Thc-dataset via PR #331"
+          },
+          {
+            "branch": "system/continuous-improvement-loop",
+            "basis": "reusable public-learning hierarchy/mobile/accessibility/progressive-disclosure contract migrated and merged into thc-grow-hub via PR #163"
+          },
+          {
+            "branch": "ui/learn-visitor-ux-pass",
+            "basis": "legacy learner CSS implementation superseded; reusable UX intent migrated and merged into thc-grow-hub via PR #163"
+          },
+          {
+            "branch": "fix/ui-ux-foundation-20260921",
+            "basis": "legacy hub-wide UI implementation superseded; reusable learner UX intent preserved in canonical thc-grow-hub contract via PR #163"
+          }
+        ],
+        "reconcileNeeded": [],
+        "rule": "Do not merge diverged cleanup branches wholesale. Rebase or selectively apply only the retirement changes that remain valid against current main, then validate before classifying delete-safe.",
+        "complete": true,
+        "summary": "All 76 non-default dtf-thc-hub branches are classified in the retirement ledger or have their useful content migrated to canonical owners."
+      }
+    },
+    {
+      "repo": "dtfgenetics/code",
+      "state": "archive_ready",
+      "target": "archive",
+      "blockers": [],
+      "exitCriteria": [
+        "Archive in GitHub; preserve history/name; do not delete."
+      ],
+      "referenceReview": {
+        "reviewedAt": "2026-09-30",
+        "result": "No active code/deployment references found outside canonical retirement/registry documentation; historical provenance references are non-blocking."
+      }
+    },
+    {
+      "repo": "dtfgenetics/thc-music-bot-for-discod",
+      "state": "archive_ready",
+      "target": "archive",
+      "blockers": [],
+      "exitCriteria": [
+        "Archive in GitHub after reference check; preserve history."
+      ],
+      "referenceReview": {
+        "reviewedAt": "2026-09-30",
+        "result": "No active code/deployment references found outside canonical retirement/registry documentation; historical provenance references are non-blocking."
+      }
+    },
+    {
+      "repo": "dtfgenetics/all-in-one-thc-grow-",
+      "state": "archive_ready",
+      "target": "archive",
+      "blockers": [],
+      "exitCriteria": [
+        "Archive in GitHub; canonical cultivation evidence remains in dtfgenetics/Tools."
+      ],
+      "referenceReview": {
+        "reviewedAt": "2026-09-30",
+        "result": "No active code/deployment references found outside canonical retirement/registry documentation; historical provenance references are non-blocking."
+      }
+    }
+  ]
+}
