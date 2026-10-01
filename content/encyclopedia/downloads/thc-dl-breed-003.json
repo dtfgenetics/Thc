@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-BREED-003",
+  "title": "Selection, Trial, and Phenotyping Workbook",
+  "status": "draft_for_review",
+  "purpose": "Turn selection theory into repeatable records for qualitative and quantitative traits, selection response, replicated trials, morphology/yield phenotyping, and laboratory-guided chemotype selection.",
+  "lessonIds": ["THC-ENC-391","THC-ENC-392","THC-ENC-393","THC-ENC-394","THC-ENC-395"],
+  "sections": [
+    {
+      "id": "trait-classification",
+      "supportsLesson": "THC-ENC-391",
+      "title": "Trait Classification and Selection Method",
+      "fields": [
+        "Trait name","Biological definition","Observed distribution","Discrete class or numeric unit",
+        "Observer or instrument","Developmental stage","Environment","Repeatability check",
+        "Marker relationship if used","Selection threshold","Threshold rationale",
+        "Ambiguous cases","Missing data rule","Validation method"
+      ],
+      "decisionPrompt": "Is the trait being measured in a way that matches its actual distribution and biological behavior?"
+    },
+    {
+      "id": "selection-response",
+      "supportsLesson": "THC-ENC-392",
+      "title": "Selection Intensity and Response Record",
+      "fields": [
+        "Base population","Population size","Trait mean","Trait variance",
+        "Selected count","Selected proportion","Selected-group mean","Selection differential",
+        "Heritability or accuracy estimate","Estimate source and limits","Family contribution balance",
+        "Generation interval","Predicted response","Realized progeny response",
+        "Correlated-trait response","Diversity or inbreeding indicator"
+      ],
+      "calculations": [
+        {
+          "name": "Selection differential",
+          "formula": "selected-group mean - base-population mean"
+        },
+        {
+          "name": "Simple breeder's equation",
+          "formula": "R = h^2 x S",
+          "variables": {"R":"predicted response","h^2":"narrow-sense heritability estimate","S":"selection differential"},
+          "limits": "This simplified equation depends on the relevance and quality of the heritability estimate, additive genetic assumptions, and comparable environments."
+        }
+      ],
+      "decisionPrompt": "Did the progeny response match the predicted direction and magnitude closely enough to support the selection model?"
+    },
+    {
+      "id": "replicated-trial",
+      "supportsLesson": "THC-ENC-393",
+      "title": "Replicated Trial Design and Deviation Log",
+      "fields": [
+        "Trial ID","Trial version","Genotype or family IDs","Experimental unit",
+        "Replicate count","Randomization method","Randomization seed if applicable",
+        "Block definition","Check entries","Environment","Position map",
+        "Management protocol","Measurement schedule","Missing or dead units",
+        "Protocol deviations","Environmental deviations","Statistical model",
+        "Effect estimate","Uncertainty interval","Interpretation"
+      ],
+      "qualityRules": [
+        "Define the experimental unit before analysis.",
+        "Do not treat multiple measurements from the same plant as independent biological replicates.",
+        "Preserve missing, dead, and excluded units with a reason."
+      ],
+      "decisionPrompt": "Could the observed difference plausibly be explained by position, environment, management, or measurement rather than genotype?"
+    },
+    {
+      "id": "morphology-yield-phenotyping",
+      "supportsLesson": "THC-ENC-394",
+      "title": "Morphology, Flowering, and Yield Phenotyping Sheet",
+      "fields": [
+        "Plant ID","Family ID","Trait name","Trait definition","Unit",
+        "Instrument or observer","Date","Time","Developmental stage","Sampling position",
+        "Plant height","Plant width","Node count","Branch count",
+        "Flowering milestone","Fresh mass","Dry mass","Moisture basis",
+        "Marketable yield","Rejected yield","Rejection reason","Image reference",
+        "Repeat measurement","Missing-data reason"
+      ],
+      "decisionPrompt": "Are yield and morphology values comparable because stage, sampling position, moisture basis, and rejection rules were controlled?"
+    },
+    {
+      "id": "chemotype-lab-selection",
+      "supportsLesson": "THC-ENC-395",
+      "title": "Chemotype and Volatile Laboratory Selection Record",
+      "fields": [
+        "Plant or family ID","Batch ID","Tissue type","Sampling position",
+        "Developmental stage","Sample mass","Moisture status","Laboratory",
+        "Method identifier","Cannabinoid acids","Neutral cannabinoids",
+        "Reported concentration basis","Cannabinoid ratio","Estimated total analyte yield",
+        "Volatile identities","Volatile reporting basis","Technical replicate information",
+        "Biological replicate information","Reported uncertainty","Environment",
+        "Storage conditions","Selection decision","Decision rationale"
+      ],
+      "qualityRules": [
+        "Compare results only when sampling and analytical basis are compatible.",
+        "Keep concentration, ratio, and total analyte yield as separate concepts.",
+        "Do not treat a single laboratory sample as proof of whole-plant or multi-environment stability."
+      ],
+      "decisionPrompt": "Does the laboratory result support the breeding objective after accounting for sampling position, method, moisture basis, environment, and replicate uncertainty?"
+    }
+  ],
+  "qualityRules": [
+    "Predefine traits and thresholds before reviewing candidate identities when practical.",
+    "Keep raw observations separate from interpretation.",
+    "Record uncertainty and missingness rather than silently excluding inconvenient data.",
+    "Use replicated progeny or family evidence before claiming genetic gain or stability.",
+    "Do not confuse statistical significance with practical breeding importance."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  }
+}
