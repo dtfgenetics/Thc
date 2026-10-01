@@ -76,6 +76,13 @@ export function inspectContractScope(job, contract) {
   validateAgentContract(contract, { expectedRepository: job.repository })
   const violations = []
 
+  if (job.baseBranch && job.baseBranch !== contract.defaultBranch) {
+    violations.push({
+      code: 'default-branch-mismatch',
+      detail: `job base ${job.baseBranch}, contract default ${contract.defaultBranch}`,
+    })
+  }
+
   if (!contractOwnsDomain(contract, job.canonicalDomain)) {
     violations.push({
       code: 'canonical-domain-not-owned',
