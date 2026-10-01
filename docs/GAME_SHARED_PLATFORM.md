@@ -26,11 +26,12 @@ The sync checker and runtime tests are part of `games:preflight`.
 
 ## Current version
 
-Shared runtime version: **1.6.0**
+Shared runtime version: **1.7.0**
 
 Modules:
 
 - `settings.mjs` — persistent normalized preferences and accessibility resolution;
+- `storage.mjs` — guarded browser storage acquisition plus safe get/set/remove and JSON persistence helpers;
 - `audio.mjs` — browser audio unlock/policy and category-level gain management;
 - `input.mjs` — named action mapping for keyboard and virtual/touch inputs;
 - `replay.mjs` — deterministic action/debug recording and sanitized export;
@@ -57,6 +58,14 @@ import {
 When a game is also expected to run from a local relative preview, use a game-specific build/sync step that rewrites or bundles the import rather than copying shared source by hand.
 
 External canonical repositories should adopt the contract deliberately. They may consume the public module where appropriate or implement a compatible adapter in their canonical repo with their own tests.
+
+## Storage contract
+
+`storage.mjs` centralizes the browser-storage failure boundary that previously appeared in multiple games. Use it when a game needs local persistence but should continue working when storage is unavailable, blocked, full, or throws during property access.
+
+`browserStorage()` safely acquires `localStorage`. `storageGet()`, `storageSet()`, and `storageRemove()` convert browser failures into explicit fallback/boolean results. `storageReadJson()` and `storageWriteJson()` add JSON handling without defining a game's save schema.
+
+Game-specific save versions, migrations, validation rules, and recovery policy remain owned by the game. The shared module only owns safe access and serialization boundaries.
 
 ## Settings and accessibility
 
