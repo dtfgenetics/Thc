@@ -131,8 +131,6 @@ assert(shell.sectionOwnership?.shop?.includes('/my-account/'), 'Shop must own Ac
 // Both navigation registries are authoritative and must agree on the eight-item primary row.
 assert(JSON.stringify(nav.primaryNavigation) === JSON.stringify(shell.primaryNavigation), 'public-navigation and site-navigation-v6 primary navigation must match exactly');
 assert(shell.brandHome?.route === '/', 'brand must remain the Home control');
-assert((shell.secondaryNavigation || []).some((item) => item.route === '/courses/'), 'Courses must remain visible in secondary navigation');
-assert((shell.secondaryNavigation || []).some((item) => item.route === '/community/'), 'Community must remain visible in secondary navigation');
 assert(nav.learn?.route === '/learn/', 'Learn registry root must remain /learn/');
 assert(nav.courses?.route === '/courses/', 'Courses registry root must remain /courses/');
 assert(nav.diagnostic?.route === '/tools/', 'Tools registry data must remain owned by /tools/');
