@@ -59,6 +59,14 @@ function listPrs(repo) {
   ], [])
 }
 
+function branchInRepo(repo, branch) {
+  if (!branch) return { exists: false, name: branch || null, headSha: null }
+  const data = json(['api', `repos/${repo}/git/ref/heads/${encodeURIComponent(branch)}`], null)
+  return data
+    ? { exists: true, name: branch, headSha: data.object?.sha || null }
+    : { exists: false, name: branch, headSha: null }
+}
+
 function branchMap(branches) {
   return new Map(branches.map((branch) => [branch.name, { exists: true, ...branch }]))
 }
@@ -72,6 +80,7 @@ try {
   const branches = listBranches(repo)
   const prs = listPrs(repo)
   const branchesByName = branchMap(branches)
+  const externalPrCache = new Map()
   const jobsByIssue = new Map()
   const malformedMarkers = []
 
@@ -97,13 +106,25 @@ try {
       resourceOwners[resource].push(issueNumber)
     }
 
-    const relatedPrs = prs.filter((pr) => pr.headRefName === job.branch)
+    const targetRepo = job.repository || repo
+    let relatedPrs
+    let branch
+    if (targetRepo === repo) {
+      relatedPrs = prs.filter((pr) => pr.headRefName === job.branch)
+      branch = job.branch ? branchesByName.get(job.branch) || { exists: false, name: job.branch } : null
+    } else {
+      if (!externalPrCache.has(targetRepo)) externalPrCache.set(targetRepo, listPrs(targetRepo))
+      relatedPrs = externalPrCache.get(targetRepo).filter((pr) => pr.headRefName === job.branch)
+      branch = job.branchProvisioned === false
+        ? { exists: false, name: job.branch, provisioningPending: true }
+        : branchInRepo(targetRepo, job.branch)
+    }
     const health = classifyJobHealth({
       issueNumber,
       job,
-      branch: job.branch ? branchesByName.get(job.branch) || { exists: false, name: job.branch } : null,
+      branch,
       prs: relatedPrs,
-    })
+    }).filter((entry) => !(entry.code === 'missing-job-branch' && job.branchProvisioned === false))
     anomalies.push(...health.map((entry) => ({ issueNumber, ...entry })))
     jobs.push({
       issueNumber,
