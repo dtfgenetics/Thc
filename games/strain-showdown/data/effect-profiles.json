@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "version": "0.2.2",
+  "version": "0.2.3",
   "status": "runtime-active",
   "activeInBrowserRules": true,
   "assignment": "family-and-stage",
   "abilityNameSource": "card-roleTag",
-  "notes": "Active deterministic effect profiles. Balance tuning v0.2.2 moves Haze and Cookies to lower-tempo situational/sustain effects and gives Fruit a direct combat profile while preserving all 96 active abilities.",
+  "notes": "Active deterministic effect profiles. Balance tuning v0.2.3 keeps Fruit Base as sustain and limits direct attack bonuses to +1 on Select/Elite evolutions; the other seven families remain unchanged from the measured near-balanced v0.2.2 pass.",
   "mechanicVocabulary": [
     "shield-on-play",
     "attack-bonus",
@@ -187,12 +187,12 @@
       "id": "fruit-1",
       "family": "fruit",
       "stage": 1,
-      "trigger": "on-attack",
+      "trigger": "on-play",
       "mechanic": {
-        "type": "attack-bonus",
+        "type": "garden-heal",
         "value": 1
       },
-      "rulesText": "This card gets +1 Power while attacking."
+      "rulesText": "When played, heal 1 Garden."
     },
     {
       "id": "fruit-2",
@@ -212,9 +212,9 @@
       "trigger": "on-attack",
       "mechanic": {
         "type": "attack-bonus",
-        "value": 2
+        "value": 1
       },
-      "rulesText": "This card gets +2 Power while attacking."
+      "rulesText": "This card gets +1 Power while attacking."
     },
     {
       "id": "purple-1",
