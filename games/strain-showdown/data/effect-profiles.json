@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "version": "0.2.1",
+  "version": "0.2.2",
   "status": "runtime-active",
   "activeInBrowserRules": true,
   "assignment": "family-and-stage",
   "abilityNameSource": "card-roleTag",
-  "notes": "Active deterministic effect profiles. Balance tuning v0.2.1 caps adaptive refunds to Focus actually paid, prevents duplicate Haze first-attack stacking, and strengthens Fruit sustain/card flow.",
+  "notes": "Active deterministic effect profiles. Balance tuning v0.2.2 moves Haze and Cookies to lower-tempo situational/sustain effects and gives Fruit a direct combat profile while preserving all 96 active abilities.",
   "mechanicVocabulary": [
     "shield-on-play",
     "attack-bonus",
@@ -57,10 +57,10 @@
       "stage": 1,
       "trigger": "on-attack",
       "mechanic": {
-        "type": "attack-bonus",
+        "type": "shield-break-bonus",
         "value": 1
       },
-      "rulesText": "This card gets +1 Power while attacking."
+      "rulesText": "Against a shielded rival, this attack gets +1 Power."
     },
     {
       "id": "haze-2",
@@ -68,10 +68,10 @@
       "stage": 2,
       "trigger": "on-attack",
       "mechanic": {
-        "type": "attack-bonus",
+        "type": "shield-break-bonus",
         "value": 1
       },
-      "rulesText": "This card gets +1 Power while attacking."
+      "rulesText": "Against a shielded rival, this attack gets +1 Power."
     },
     {
       "id": "haze-3",
@@ -79,10 +79,10 @@
       "stage": 3,
       "trigger": "on-attack",
       "mechanic": {
-        "type": "attack-bonus",
+        "type": "shield-break-bonus",
         "value": 2
       },
-      "rulesText": "This card gets +2 Power while attacking."
+      "rulesText": "Against a shielded rival, this attack gets +2 Power."
     },
     {
       "id": "skunk-1",
@@ -156,10 +156,10 @@
       "stage": 1,
       "trigger": "on-play",
       "mechanic": {
-        "type": "adaptive-refund-or-heal",
+        "type": "garden-heal",
         "value": 1
       },
-      "rulesText": "When played, if your Garden is lower, heal 1 Garden; otherwise refund 1 Focus, up to your maximum."
+      "rulesText": "When played, heal 1 Garden."
     },
     {
       "id": "cookies-2",
@@ -167,10 +167,10 @@
       "stage": 2,
       "trigger": "on-play",
       "mechanic": {
-        "type": "adaptive-refund-or-heal",
+        "type": "garden-heal",
         "value": 1
       },
-      "rulesText": "When evolved, if your Garden is lower, heal 1 Garden; otherwise refund 1 Focus, up to your maximum."
+      "rulesText": "When played as an evolution, heal 1 Garden."
     },
     {
       "id": "cookies-3",
@@ -178,45 +178,43 @@
       "stage": 3,
       "trigger": "on-play",
       "mechanic": {
-        "type": "adaptive-refund-or-heal",
+        "type": "garden-heal",
         "value": 2
       },
-      "rulesText": "When evolved, if your Garden is lower, heal 2 Garden; otherwise refund 2 Focus, up to your maximum."
+      "rulesText": "When played as an evolution, heal 2 Garden."
     },
     {
       "id": "fruit-1",
       "family": "fruit",
       "stage": 1,
-      "trigger": "on-play",
+      "trigger": "on-attack",
       "mechanic": {
-        "type": "garden-heal",
-        "value": 2
+        "type": "attack-bonus",
+        "value": 1
       },
-      "rulesText": "When played, heal 2 Garden."
+      "rulesText": "This card gets +1 Power while attacking."
     },
     {
       "id": "fruit-2",
       "family": "fruit",
       "stage": 2,
-      "trigger": "on-evolve",
+      "trigger": "on-attack",
       "mechanic": {
-        "type": "draw-on-evolve",
-        "value": 2
+        "type": "attack-bonus",
+        "value": 1
       },
-      "rulesText": "When evolved, draw 2 cards."
+      "rulesText": "This card gets +1 Power while attacking."
     },
     {
       "id": "fruit-3",
       "family": "fruit",
       "stage": 3,
-      "trigger": "on-evolve",
+      "trigger": "on-attack",
       "mechanic": {
-        "type": "garden-heal",
-        "value": 3,
-        "secondaryType": "draw-on-evolve",
-        "secondaryValue": 2
+        "type": "attack-bonus",
+        "value": 2
       },
-      "rulesText": "When evolved, heal 3 Garden and draw 2 cards."
+      "rulesText": "This card gets +2 Power while attacking."
     },
     {
       "id": "purple-1",
