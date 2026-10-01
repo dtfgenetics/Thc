@@ -1,0 +1,148 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-QA-002",
+  "title": "Operational Cultivation Records Workbook",
+  "status": "draft_for_review",
+  "purpose": "Provide controlled records for environmental logging, irrigation/fertigation, water quality, morphology/growth, and plant-health scouting.",
+  "lessonIds": [
+    "THC-ENC-406",
+    "THC-ENC-407",
+    "THC-ENC-408",
+    "THC-ENC-409",
+    "THC-ENC-410"
+  ],
+  "sections": [
+    {
+      "id": "environmental-logging",
+      "supportsLesson": "THC-ENC-406",
+      "title": "Environmental Data Logging Record",
+      "fields": [
+        "Sensor ID",
+        "Sensor model",
+        "Calibration/verification status",
+        "Placement",
+        "Height or canopy reference",
+        "Zone",
+        "Timestamp",
+        "Logging interval",
+        "Temperature",
+        "Relative humidity",
+        "VPD if calculated",
+        "CO2 if measured",
+        "Light metric if measured",
+        "Missing-data flag",
+        "Outlier flag",
+        "Aggregation rule",
+        "Daily summary",
+        "Deviation note"
+      ],
+      "decisionPrompt": "Are trends biologically meaningful, or could they be caused by sensor placement, missing data, or aggregation choices?"
+    },
+    {
+      "id": "irrigation-fertigation",
+      "supportsLesson": "THC-ENC-407",
+      "title": "Irrigation and Fertigation Record",
+      "fields": [
+        "Event ID",
+        "Water source",
+        "Source EC",
+        "Source pH",
+        "Recipe or batch ID",
+        "Inputs",
+        "Mix order",
+        "Final volume",
+        "Final EC",
+        "Final pH",
+        "Applied volume",
+        "Zone",
+        "Emitter count",
+        "Distribution check",
+        "Runoff or drain volume",
+        "Runoff EC",
+        "Runoff pH",
+        "Root-zone response",
+        "Corrective action"
+      ]
+    },
+    {
+      "id": "water-quality",
+      "supportsLesson": "THC-ENC-408",
+      "title": "pH, EC, and Water-Quality Record",
+      "fields": [
+        "Sample ID",
+        "Sample source",
+        "Sampling point",
+        "Date/time",
+        "Sample temperature",
+        "Instrument ID",
+        "Verification status",
+        "pH",
+        "EC",
+        "TDS basis if used",
+        "Alkalinity if available",
+        "Hardness if available",
+        "Major ion or lab data if available",
+        "Interpretation",
+        "Limitations"
+      ]
+    },
+    {
+      "id": "growth-measurements",
+      "supportsLesson": "THC-ENC-409",
+      "title": "Morphology and Growth Measurement Record",
+      "fields": [
+        "Plant ID",
+        "Trait",
+        "Anatomical definition",
+        "Reference points",
+        "Unit",
+        "Stage",
+        "Date/time",
+        "Position",
+        "Observer",
+        "Instrument",
+        "Image reference",
+        "Repeat measurement",
+        "Growth interval",
+        "Missing-data reason"
+      ]
+    },
+    {
+      "id": "scouting",
+      "supportsLesson": "THC-ENC-410",
+      "title": "Plant-Health Scouting Record",
+      "fields": [
+        "Scout ID",
+        "Route",
+        "Date/time",
+        "Room/zone",
+        "Plant count inspected",
+        "Symptom or organism",
+        "Observed location",
+        "Incidence",
+        "Severity scale",
+        "Confidence",
+        "Image reference",
+        "Sample collected",
+        "Differential diagnosis",
+        "Escalation trigger",
+        "Action",
+        "Follow-up date"
+      ]
+    }
+  ],
+  "qualityRules": [
+    "Keep sensor identity and placement with the data.",
+    "Separate observed symptoms from diagnosis.",
+    "Record irrigation inputs and root-zone response in the same event chain.",
+    "Do not interpret pH or EC without sampling and instrument context.",
+    "Use repeatable morphology definitions and scouting scales."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  }
+}
