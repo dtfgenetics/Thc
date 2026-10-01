@@ -2,7 +2,7 @@
 name: DTF Work Epic
 about: Parent work item for a validated multi-job work graph
 title: "[EPIC] "
-labels: "type:epic"
+labels: ""
 assignees: ""
 ---
 
