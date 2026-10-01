@@ -45,6 +45,17 @@ body.burn-opponent-turn .boards .board-card:first-child .board-title h3 {
   color: #fff3c2;
 }
 
+button:focus-visible,
+.btn:focus-visible,
+.mobile-tab:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 3px solid #ffd278;
+  outline-offset: 3px;
+}
+
 .cell:focus-visible {
   z-index: 4;
   outline: 3px solid #ffd278;
