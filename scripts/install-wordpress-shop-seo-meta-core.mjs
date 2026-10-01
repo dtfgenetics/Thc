@@ -114,14 +114,53 @@ async function ensureSnippetApi() {
 }
 
 function buildSnippetCode(source) {
-  let code = String(source)
-    .replace(/^\s*<\?php\s*/i, '')
-    .replace(/if\s*\(\s*!defined\(\s*['"]ABSPATH['"]\s*\)\s*\)\s*\{\s*exit;\s*\}\s*/i, '')
-    .trim();
+  const code = String(source);
   if (!code.includes('dtf_shop_seo_description') || !code.includes('document_title_parts')) {
     throw new Error('Reviewed Shop SEO source is missing its canonical title/description hooks.');
   }
-  return `if (!function_exists('dtf_shop_seo_description')) {\n${code}\n}`;
+
+  const description = code.match(/function\s+dtf_shop_seo_description\s*\([^)]*\)[^{]*\{[\s\S]*?return\s+(['"])(.*?)\1\s*;/i)?.[2];
+  const title = code.match(/\$parts\s*\[\s*['"]title['"]\s*\]\s*=\s*(['"])(.*?)\1\s*;/i)?.[2];
+  if (!description || !title) {
+    throw new Error('Reviewed Shop SEO source could not be reduced to its canonical title/description values.');
+  }
+
+  const phpString = (value) => String(value).replaceAll('\\\\', '\\\\\\\\').replaceAll("'", "\\\\'");
+  const safeDescription = phpString(description);
+  const safeTitle = phpString(title);
+
+  // Code Snippets validates/evaluates candidate code during activation. Avoid redeclaring
+  // named functions or PHP return types in the fallback so validation is independent of
+  // any same-request functions left behind by a previously active snippet.
+  return `
+$dtf_shop_seo_is_shop = static function () {
+    return function_exists('is_shop') && is_shop();
+};
+$dtf_shop_seo_description = static function () {
+    return '${safeDescription}';
+};
+
+add_filter('document_title_parts', static function ($parts) use ($dtf_shop_seo_is_shop) {
+    if (!$dtf_shop_seo_is_shop()) return $parts;
+    $parts['title'] = '${safeTitle}';
+    return $parts;
+}, 30);
+
+if (defined('WPSEO_VERSION')) {
+    add_filter('wpseo_metadesc', static function ($current) use ($dtf_shop_seo_is_shop, $dtf_shop_seo_description) {
+        return $dtf_shop_seo_is_shop() ? $dtf_shop_seo_description() : $current;
+    }, 30);
+} elseif (defined('RANK_MATH_VERSION')) {
+    add_filter('rank_math/frontend/description', static function ($current) use ($dtf_shop_seo_is_shop, $dtf_shop_seo_description) {
+        return $dtf_shop_seo_is_shop() ? $dtf_shop_seo_description() : $current;
+    }, 30);
+} else {
+    add_action('wp_head', static function () use ($dtf_shop_seo_is_shop, $dtf_shop_seo_description) {
+        if (!$dtf_shop_seo_is_shop()) return;
+        printf("\\n<meta name=\"description\" content=\"%s\" />\\n", esc_attr($dtf_shop_seo_description()));
+    }, 1);
+}
+`.trim();
 }
 
 async function listSnippets() {
