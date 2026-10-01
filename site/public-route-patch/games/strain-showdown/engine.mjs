@@ -103,7 +103,7 @@ export function legalPlay(state, actor, cardIndex, laneIndex) {
 
 function makeUnit(card, side) { const kushBonus = side.family === "kush" ? 1 : 0; const maxVigor = card.vigor * 2 + kushBonus; return { ...clone(card), maxVigor, currentVigor: maxVigor, shield: 0, exhausted: false }; }
 
-function applyPlayEffect(state, actor, unit, evolving) {
+function applyPlayEffect(state, actor, unit, evolving, paidCost) {
   const [selfKey, enemyKey] = sideKeys(actor);
   const side = state[selfKey];
   const enemy = state[enemyKey];
@@ -123,7 +123,8 @@ function applyPlayEffect(state, actor, unit, evolving) {
         notes.push(`heals ${value} Garden`);
       } else {
         const before = side.focus;
-        side.focus = Math.min(side.maxFocus, side.focus + value);
+        const refund = Math.min(value, Math.max(0, Number(paidCost) || 0));
+        side.focus = Math.min(side.maxFocus, side.focus + refund);
         const refunded = side.focus - before;
         if (refunded > 0) notes.push(`refunds ${refunded} Focus`);
       }
@@ -146,7 +147,7 @@ export function playCard(state, actor, cardIndex, laneIndex) {
   const [selfKey, enemyKey] = sideKeys(actor); const side = state[selfKey]; const enemy = state[enemyKey]; const card = side.hand.splice(cardIndex, 1)[0]; const evolving = card.stage > 1;
   side.focus -= check.cost; if (side.family === "cookies" && card.stage === 1 && !side.flags.cookiesDiscount) side.flags.cookiesDiscount = true;
   const unit = makeUnit(card, side); if (card.stage === 3 && side.family === "frost") unit.shield += 1; side.lanes[laneIndex] = unit; side.stats.cardsPlayed += 1; if (evolving) side.stats.evolutions += 1;
-  applyPlayEffect(state, actor, unit, evolving);
+  applyPlayEffect(state, actor, unit, evolving, check.cost);
   if (side.family === "skunk" && !side.flags.skunkJam) { enemy.nextFocusPenalty = Math.min(2, enemy.nextFocusPenalty + 1); side.flags.skunkJam = true; pushLog(state, `${card.name} jams 1 Focus from the opponent's next turn.`); }
   if (evolving && side.family === "fruit") side.garden = Math.min(MAX_GARDEN, side.garden + 2);
   pushLog(state, `${actor === "player" ? "You play" : "CPU plays"} ${card.name} into lane ${laneIndex + 1}${evolving ? " as an evolution" : ""}.`);
@@ -169,7 +170,10 @@ export function attack(state, actor, laneIndex) {
   side.focus -= check.cost; attacker.exhausted = true; side.stats.attacks += 1; if (firstHazeAttack) side.flags.hazeAttack = true;
   const defender = enemy.lanes[laneIndex];
   let damage = attacker.power + (firstHazeAttack ? 1 : 0); if (side.family === "gas" && !side.flags.gasBurst) { damage += 2; side.flags.gasBurst = true; attacker.currentVigor -= 1; }
-  if (attacker.effect?.type === "attack-bonus") damage += Number(attacker.effect.value) || 0;
+  if (attacker.effect?.type === "attack-bonus") {
+    const profileBonus = Number(attacker.effect.value) || 0;
+    damage += firstHazeAttack ? Math.max(0, profileBonus - 1) : profileBonus;
+  }
   if (defender?.shield > 0 && attacker.effect?.type === "shield-break-bonus") damage += Number(attacker.effect.value) || 0;
   if (defender) { const destroyed = damageUnit(defender, damage); side.stats.damage += damage; pushLog(state, `${attacker.name} hits ${defender.name} for ${damage}.`); if (destroyed) { pushLog(state, `${defender.name} is knocked out.`); enemy.lanes[laneIndex] = null; enemy.stats.cardsLost += 1; } }
   else { const direct = 2 + (attacker.stage === 3 ? 1 : 0) + (attacker.power >= 9 ? 1 : 0) + (attacker.effect?.type === "open-lane-bonus" ? Number(attacker.effect.value) || 0 : 0); enemy.garden = Math.max(0, enemy.garden - direct); side.stats.damage += direct; pushLog(state, `${attacker.name} breaks through lane ${laneIndex + 1} for ${direct} Garden damage.`); }
