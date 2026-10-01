@@ -468,6 +468,102 @@
       "branch": "reconcile/education-genetics-current-main",
       "disposition": "delete_safe",
       "basis": "0_commits_ahead_of_current_main;_branch_is_fully_behind"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "audit-bud-or-bluff-production",
+      "disposition": "delete_safe",
+      "basis": "legacy_live-audit_script_superseded_by_canonical_Bud_or_Bluff_ownership,_route_verification_and_release_controls_in_dtfgenetics/Thc"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "docs/full-dtfseeds-audit-scope",
+      "disposition": "delete_safe",
+      "basis": "legacy_audit-scope_document_superseded_by_current_repository_architecture,_production_standards_and_project_OS_checks_in_dtfgenetics/Thc"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "document-production-deploy-flow",
+      "disposition": "delete_safe",
+      "basis": "legacy_deployment-flow_documentation_superseded_by_canonical_dtfgenetics/Thc_deployment_and_release_documentation"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "feat/bud-or-bluff-production",
+      "disposition": "delete_safe",
+      "basis": "legacy_Bud_or_Bluff_implementation_superseded_by_canonical_games/bud-or-bluff_and_current_public_route_in_dtfgenetics/Thc"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "feat/high-iq-production",
+      "disposition": "delete_safe",
+      "basis": "0_commits_ahead_of_current_main;_canonical_High_IQ_implementation_is_owned_by_dtfgenetics/Thc"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "fix/game-route-legacy-redirects",
+      "disposition": "delete_safe",
+      "basis": "legacy_route_redirect_policy_superseded_by_current_dtfgenetics/Thc_public-route/deployment_registries"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "fix/game-route-policy-current-main",
+      "disposition": "delete_safe",
+      "basis": "0_commits_ahead_of_current_main;_route_policy_is_current_in_canonical_dtfgenetics/Thc"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "fix/high-land-production-integrity",
+      "disposition": "delete_safe",
+      "basis": "legacy_High_Land_implementation_superseded_by_canonical_dtfgenetics/Thc_apps/high-land-web_and_locked_source-of-truth_contracts"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "game-studio-v2-isolated-staging",
+      "disposition": "delete_safe",
+      "basis": "legacy_local_game-bundle_staging_superseded_by_canonical_external-game_contract_and_packaging_pipeline_in_dtfgenetics/Thc"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "game-ui-playability-polish-20260905",
+      "disposition": "delete_safe",
+      "basis": "legacy_High_Land/High_IQ/Weedopolis_UI_polish_targets_obsolete_implementations;_current_canonical_game_owners_contain_newer_UI/runtime_systems"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "multiplayer-game-ui-polish-20260905",
+      "disposition": "delete_safe",
+      "basis": "legacy_copied_Bud_or_Bluff/THC_U_Know_static_bundle_polish_is_superseded_by_current_canonical_game/runtime_owners"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "reconcile/branch-inventory-current-main",
+      "disposition": "delete_safe",
+      "basis": "0_commits_ahead_of_current_main;_branch_inventory_work_is_superseded_by_repository_retirement/consolidation_manifests"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "reconcile/bud-or-bluff-live-audit-current-main",
+      "disposition": "delete_safe",
+      "basis": "legacy_live-audit_script_superseded_by_canonical_Bud_or_Bluff_production_verification_controls"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "system/full-quality-audit-suite",
+      "disposition": "delete_safe",
+      "basis": "legacy_quality_audit/ownership_registry_superseded_by_current_dtfgenetics/Thc_project_OS_and_repository_architecture_checks"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "system/full-quality-audit-suite-v2",
+      "disposition": "delete_safe",
+      "basis": "legacy_audit_suite/workflows_superseded_by_current_canonical_CI,_game_registry_and_production_standards_checks"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "system/production-ownership-registry",
+      "disposition": "delete_safe",
+      "basis": "legacy_ownership_registry_superseded_by_data/repository-registry.json,_project_registry_and_game-registry-v2_in_dtfgenetics/Thc"
     }
   ]
 }
