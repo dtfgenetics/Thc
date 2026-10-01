@@ -349,34 +349,40 @@
       "repo": "dtfgenetics/code",
       "state": "archive_ready",
       "target": "archive",
-      "blockers": [
-        "Confirm no external automation/bookmarks require the empty repository."
-      ],
+      "blockers": [],
       "exitCriteria": [
         "Archive in GitHub; preserve history/name; do not delete."
-      ]
+      ],
+      "referenceReview": {
+        "reviewedAt": "2026-09-30",
+        "result": "No active code/deployment references found outside canonical retirement/registry documentation; historical provenance references are non-blocking."
+      }
     },
     {
       "repo": "dtfgenetics/thc-music-bot-for-discod",
       "state": "archive_ready",
       "target": "archive",
-      "blockers": [
-        "Update any remaining references to dtfgenetics/thc-discord-bot-for-music-."
-      ],
+      "blockers": [],
       "exitCriteria": [
         "Archive in GitHub after reference check; preserve history."
-      ]
+      ],
+      "referenceReview": {
+        "reviewedAt": "2026-09-30",
+        "result": "No active code/deployment references found outside canonical retirement/registry documentation; historical provenance references are non-blocking."
+      }
     },
     {
       "repo": "dtfgenetics/all-in-one-thc-grow-",
       "state": "archive_ready",
       "target": "archive",
-      "blockers": [
-        "Confirm no external automation/bookmarks require the legacy placeholder."
-      ],
+      "blockers": [],
       "exitCriteria": [
         "Archive in GitHub; canonical cultivation evidence remains in dtfgenetics/Tools."
-      ]
+      ],
+      "referenceReview": {
+        "reviewedAt": "2026-09-30",
+        "result": "No active code/deployment references found outside canonical retirement/registry documentation; historical provenance references are non-blocking."
+      }
     }
   ]
 }
