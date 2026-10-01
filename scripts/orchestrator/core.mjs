@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { resolveResourceSet } from './resources.mjs'
 import { resolveVerificationProfile } from './routing.mjs'
-import { resolveCanonicalRepository } from './repositories.mjs'
+import { resolveCanonicalRepository, resolveProjectRepository } from './repositories.mjs'
 
 const PLAN_MARKER_RE = /<!-- worker-plan:(\{.*?\}) -->/s
 
@@ -123,9 +123,12 @@ export function buildClaim(issue, config) {
   const digest = createHash('sha1').update(`${id}:${issue.title || ''}`).digest('hex').slice(0, 7)
   const branch = `${prefix}/${project}/${slug(issue.title, 32)}-i${id}-${digest}`
   const metadata = planMetadataFromIssue(issue)
+  const inferredProjectOwner = !metadata.canonicalDomain && !metadata.targetRepository
+    ? resolveProjectRepository(project)
+    : null
   const owner = resolveCanonicalRepository({
     canonicalDomain: metadata.canonicalDomain,
-    explicitRepository: metadata.targetRepository,
+    explicitRepository: metadata.targetRepository || inferredProjectOwner?.repository || null,
     controlRepository: config.controlRepository || 'dtfgenetics/Thc',
   })
 
