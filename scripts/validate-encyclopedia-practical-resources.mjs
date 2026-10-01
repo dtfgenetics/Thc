@@ -25,6 +25,8 @@ for(const resource of resources){
   else byId.set(resource.resourceId,resource);
 
   if(!resource.path) errors.push(`${resource.resourceId||'unknown'} is missing path.`);
+  if(!arr(resource.lessonIds).length) errors.push(`${resource.resourceId||'unknown'} has no lessonIds.`);
+  if(resource.publicationAuthorized===true && resource.status!=='approved') errors.push(`${resource.resourceId}: publicationAuthorized=true requires status=approved.`);
   else {
     const file=path.join(root,resource.path);
     if(!fs.existsSync(file)) errors.push(`${resource.resourceId}: missing file ${resource.path}`);
@@ -51,7 +53,8 @@ function walk(dir){
         else {
           const resource=byId.get(link.resourceId);
           if(link.path && link.path!==resource.path) errors.push(`${lesson.id}: ${link.resourceId} path differs from registry.`);
-          if(!arr(resource.lessonIds).includes(lesson.id)) warnings.push(`${lesson.id}: ${link.resourceId} does not list this lesson in registry lessonIds.`);
+          if(!arr(resource.lessonIds).includes(lesson.id)) errors.push(`${lesson.id}: ${link.resourceId} does not list this lesson in registry lessonIds.`);
+          if(link.status && link.status!==resource.status) errors.push(`${lesson.id}: ${link.resourceId} status differs from registry.`);
         }
       }
     }
@@ -71,7 +74,7 @@ for(const resource of resources){
         found=arr(lesson.practicalResources).some(x=>x.resourceId===resource.resourceId);
       }
     }
-    if(!found) warnings.push(`${resource.resourceId}: expected lesson link missing from ${lessonId}.`);
+    if(!found) errors.push(`${resource.resourceId}: expected lesson link missing from ${lessonId}.`);
   }
 }
 
