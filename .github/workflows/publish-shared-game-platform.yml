@@ -98,7 +98,8 @@ jobs:
             echo
             echo '- Route: `https://dtfseeds.com/games/shared-platform/`'
             echo '- Module: `https://dtfseeds.com/games/shared-platform/index.mjs`'
-            echo "- Version: `$(node -p "require('./site/public-route-patch/games/shared-platform/manifest.json').platformVersion")`"
+            version="$(node -p "require('./site/public-route-patch/games/shared-platform/manifest.json').platformVersion")"
+            echo "- Version: `$version`"
             echo '- Publication: atomic replacement with SHA-256 verification'
             echo '- Live gate: HTTP status + JavaScript MIME + release-marker verification'
           } >> "$GITHUB_STEP_SUMMARY"
