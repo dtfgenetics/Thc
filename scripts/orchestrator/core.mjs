@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { resolveResourceSet } from './resources.mjs'
+import { resolveVerificationProfile } from './routing.mjs'
 
 const PLAN_MARKER_RE = /<!-- worker-plan:(\{.*?\}) -->/s
 
@@ -122,6 +123,7 @@ export function buildClaim(issue, config) {
   }
   const allowedPaths = [...new Set([...resolved.allowedPaths, ...metadata.allowedPaths])].sort()
   const productionTargets = [...new Set([...resolved.productionTargets, ...metadata.productionTargets])].sort()
+  const verificationProfile = resolveVerificationProfile(metadata.resourceSet, metadata.verificationProfile)
   return {
     issueNumber: Number(issue.number),
     title: issue.title,
@@ -130,13 +132,36 @@ export function buildClaim(issue, config) {
     branch,
     base: config.baseBranch || 'main',
     ...metadata,
+    verificationProfile,
     allowedPaths,
     productionTargets,
     productionImpact: Boolean(metadata.productionImpact || productionTargets.length),
   }
 }
 
-export function planClaims(issues, activeClaims, config) {
+export function dependencyIssueNumber(value) {
+  const match = /^(?:issue-|#)?(\d+)$/.exec(String(value || '').trim())
+  return match ? Number(match[1]) : null
+}
+
+export function dependenciesSatisfied(dependencies = [], satisfiedDependencies = []) {
+  const satisfied = new Set((satisfiedDependencies || []).map((value) => String(value)))
+  return (dependencies || []).every((dependency) => {
+    const issueNumber = dependencyIssueNumber(dependency)
+    if (!issueNumber) return false
+    return satisfied.has(String(issueNumber))
+  })
+}
+
+export function dependencyBlockers(dependencies = [], satisfiedDependencies = []) {
+  const satisfied = new Set((satisfiedDependencies || []).map((value) => String(value)))
+  return (dependencies || []).filter((dependency) => {
+    const issueNumber = dependencyIssueNumber(dependency)
+    return !issueNumber || !satisfied.has(String(issueNumber))
+  })
+}
+
+export function planClaims(issues, activeClaims, config, satisfiedDependencies = []) {
   const active = activeClaims.filter((item) => item.active !== false)
   const available = Math.max(0, config.maxWorkers - active.length)
   if (available === 0) return []
@@ -158,6 +183,8 @@ export function planClaims(issues, activeClaims, config) {
 
   for (const claim of candidates) {
     if (selected.length >= available) break
+
+    if (!dependenciesSatisfied(claim.dependencies, satisfiedDependencies)) continue
 
     if (
       claim.resourceSet.length > 0 &&

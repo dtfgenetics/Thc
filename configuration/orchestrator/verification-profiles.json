@@ -5,6 +5,8 @@
       "commands": [
         "node --check scripts/orchestrator.mjs",
         "node --check scripts/orchestrator/core.mjs",
+        "node --check scripts/orchestrator/resources.mjs",
+        "node --check scripts/orchestrator/routing.mjs",
         "node scripts/test-worker-orchestrator.mjs",
         "npm run verify:portfolio",
         "npm run verify:navigation"
@@ -60,5 +62,28 @@
       ],
       "requiresExactHead": true
     }
+  },
+  "routing": {
+    "preferMatchingProfile": true,
+    "exact": {
+      "platform.repo-control": "repo-control",
+      "platform.release-control": "public-release",
+      "platform.site-shell": "public-release",
+      "app.growlens": "growlens",
+      "content.education": "content-data",
+      "content.genetics": "content-data",
+      "commerce.shop": "public-release",
+      "page.home": "public-release",
+      "page.learn": "content-data",
+      "page.game-hub": "public-release"
+    },
+    "prefix": {
+      "game.": "games-general",
+      "page.": "content-data",
+      "app.": "repo-control",
+      "content.": "content-data",
+      "commerce.": "public-release"
+    },
+    "fallback": "repo-control"
   }
 }
