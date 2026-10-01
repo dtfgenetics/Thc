@@ -600,6 +600,24 @@
       "branch": "integration/genetics-growdoc-targets",
       "disposition": "delete_safe",
       "basis": "canonical_Grow_Doc_mapping_migrated_and_merged_into_Thc-dataset_via_PR_pr_331"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "system/continuous-improvement-loop",
+      "disposition": "delete_safe",
+      "basis": "reusable_public-learning_hierarchy/mobile/accessibility/progressive-disclosure_contract_migrated_and_merged_into_thc-grow-hub_via_PR_pr_163"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "ui/learn-visitor-ux-pass",
+      "disposition": "delete_safe",
+      "basis": "legacy_learner_CSS_implementation_superseded;_reusable_UX_intent_migrated_and_merged_into_thc-grow-hub_via_PR_pr_163"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "fix/ui-ux-foundation-20260921",
+      "disposition": "delete_safe",
+      "basis": "legacy_hub-wide_UI_implementation_superseded;_reusable_learner_UX_intent_preserved_in_canonical_thc-grow-hub_contract_via_PR_pr_163"
     }
   ]
 }
