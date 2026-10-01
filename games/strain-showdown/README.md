@@ -24,7 +24,7 @@ Each family contains 12 strain cards: 6 Tier 1 Base, 4 Tier 2 Select, and 2 Tier
 - A match ends when a Garden reaches 0 or after the 18-round board-strength tiebreak.
 - The current visitor-facing mode is solo vs CPU.
 
-## Draft effect authoring
+## Active effect profiles
 
 The first controlled effect-authoring layer now lives in `data/effect-profiles.json`.
 
@@ -33,7 +33,7 @@ The first controlled effect-authoring layer now lives in `data/effect-profiles.j
 - Each card's existing `roleTag` becomes its draft ability name, so all 96 cards have a stable per-card ability label without duplicating effect logic across 96 scripts.
 - The mechanic vocabulary is deliberately small and machine-validatable: shields, attack bonuses, shield breaking, breakthrough damage, adaptive resource/recovery, Garden healing, evolution draws, recovery bonuses, and evolution protection.
 - `scripts/validate-effects.mjs` proves that all 96 cards are covered and that no unsupported mechanic or out-of-range value enters the draft catalog.
-- These effects are **not active in the browser battle rules yet**. Activation is a separate balance-integration gate so authored text cannot silently change the live ruleset before simulation and human playtesting.
+- These effects are active in deterministic engine and browser battle resolution. The engine derives the mechanic from `family + stage`, while the browser shows each card's `roleTag`-derived ability name and the validated rules text.
 
 ## Verification
 
@@ -59,11 +59,11 @@ The browser build includes family selection, a CPU rival, three-lane play, Base/
 
 The playable prototype is not the final printed TCG ruleset. These remain open and must not be represented as complete:
 
-- activation and measured tuning of the authored draft effect profiles;
+- measured tuning and human playtesting of the active effect profiles;
 - final per-card tournament wording and exceptions after effect playtesting;
 - balance approval based on simulation plus human playtesting;
 - final tournament/rules wording;
 - final card art and rights clearance;
 - print proof and production approval.
 
-Current status: **playable browser prototype + complete draft effect-profile coverage**. The next design phase is engine integration of the validated effect vocabulary, measured balance tuning, and human playtesting rather than rebuilding the browser game from scratch.
+Current status: **playable browser ruleset + active 96-card effect coverage**. The next design phase is measured balance tuning, human playtesting, final tournament wording, and production art/print approval.
