@@ -27,11 +27,46 @@ const errors = [];
 const assert = (condition, message) => { if (!condition) errors.push(message); };
 
 const canonicalPrimary = [
-  { id: 'seeds', label: 'Seeds', route: '/seeds/' },
-  { id: 'learn', label: 'Learn', route: '/learn/' },
-  { id: 'diagnostic', label: 'Tools', route: '/tools/' },
-  { id: 'games', label: 'Games', route: '/games/' },
-  { id: 'shop', label: 'Shop', route: '/shop/' }
+  {
+    "id": "home",
+    "label": "Home",
+    "route": "/"
+  },
+  {
+    "id": "seeds",
+    "label": "Seeds",
+    "route": "/seeds/"
+  },
+  {
+    "id": "learn",
+    "label": "Learn",
+    "route": "/learn/"
+  },
+  {
+    "id": "courses",
+    "label": "Courses",
+    "route": "/courses/"
+  },
+  {
+    "id": "diagnostic",
+    "label": "Tools",
+    "route": "/tools/"
+  },
+  {
+    "id": "games",
+    "label": "Games",
+    "route": "/games/"
+  },
+  {
+    "id": "community",
+    "label": "Community",
+    "route": "/community/"
+  },
+  {
+    "id": "shop",
+    "label": "Shop",
+    "route": "/shop/"
+  }
 ];
 
 assert(shell.status === 'canonical', 'site-navigation-v6 must be marked canonical');
@@ -48,10 +83,10 @@ for (let index = 0; index < canonicalPrimary.length; index += 1) {
 }
 
 const primaryLabels = shell.primaryNavigation.map((item) => item.label);
-for (const required of ['Seeds', 'Learn', 'Tools', 'Games', 'Shop']) {
+for (const required of ['Home', 'Seeds', 'Learn', 'Courses', 'Tools', 'Games', 'Community', 'Shop']) {
   assert(primaryLabels.includes(required), `required primary label '${required}' must appear in the V6 primary navigation`);
 }
-for (const obsolete of ['Home', 'Courses', 'Community', 'Genetics', 'Diagnostic']) {
+for (const obsolete of ['Genetics', 'Diagnostic']) {
   assert(!primaryLabels.includes(obsolete), `retired primary label '${obsolete}' must not appear in the V6 primary navigation`);
 }
 
@@ -69,7 +104,7 @@ for (const rel of deployableShellFiles) {
     if (hrefIndex < 0) continue;
     const linkTail = normalizedPrimary.slice(hrefIndex, hrefIndex + 220);
     assert(linkTail.includes(`>${item.label}</a>`), `${rel} primary navigation route ${item.route} must be labeled ${item.label}`);
-    assert(hrefIndex > lastIndex, `${rel} primary navigation order must match the canonical five-item sequence`);
+    assert(hrefIndex > lastIndex, `${rel} primary navigation order must match the canonical eight-item sequence`);
     lastIndex = hrefIndex;
   }
 
@@ -78,16 +113,13 @@ for (const rel of deployableShellFiles) {
 }
 
 for (const [label, source] of [['v5 WordPress header', headerV5], ['v6 WordPress header', headerV6]]) {
-  assert(source.includes('data-dtf-sitewide-header="canonical-five-v1"'), `${label} must declare the canonical five-item header`);
+  assert(source.includes('data-dtf-sitewide-header="canonical-five-v1"'), `${label} must declare the canonical shared-header marker`);
   for (const item of canonicalPrimary) {
     assert(source.includes(`href="${item.route}"`), `${label} must include primary route ${item.route}`);
   }
-  for (const retired of ['>Home</a>', '>Courses</a>', '>Community</a>']) {
-    assert(!source.includes(retired), `${label} must not expose retired primary item ${retired}`);
-  }
 }
-assert(headerV6.includes("if(group==='learn')active=/^\\/(learn|courses|education|yellow-leaves)\\//.test(path);"), 'v6 WordPress header must map Courses and Learning routes into Learn');
-assert(headerV5.includes("if(a.dataset.dtfNavGroup==='learn')active=/^\\/(learn|courses)\\//.test(path);"), 'v5 WordPress header must map Courses and Learning routes into Learn');
+assert(headerV6.includes("group==='courses'"), 'v6 WordPress header must preserve Courses as its own active-navigation group');
+assert(headerV5.includes("dtfNavGroup==='courses'"), 'v5 compatibility header must preserve Courses as its own active-navigation group');
 
 assert(shell.sectionOwnership?.courses?.includes('/courses/'), 'Courses must own /courses/');
 assert(shell.sectionOwnership?.courses?.includes('/learn/learning-hub/'), 'Courses must own historical Learning Hub course URLs');
@@ -96,7 +128,7 @@ assert(shell.sectionOwnership?.diagnostic?.includes('/thc-grow-doc/'), 'Tools mu
 assert(shell.sectionOwnership?.shop?.includes('/cart/'), 'Shop must own Cart');
 assert(shell.sectionOwnership?.shop?.includes('/my-account/'), 'Shop must own Account');
 
-// Both navigation registries are authoritative and must agree on the five-item primary row.
+// Both navigation registries are authoritative and must agree on the eight-item primary row.
 assert(JSON.stringify(nav.primaryNavigation) === JSON.stringify(shell.primaryNavigation), 'public-navigation and site-navigation-v6 primary navigation must match exactly');
 assert(shell.brandHome?.route === '/', 'brand must remain the Home control');
 assert((shell.secondaryNavigation || []).some((item) => item.route === '/courses/'), 'Courses must remain visible in secondary navigation');
@@ -196,4 +228,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Public navigation validation passed: ${shell.primaryNavigation.length} core primary destinations plus secondary Courses/Community, ${publicGames.length} public games, ${privateGames.length} development-only games.`);
+console.log(`Public navigation validation passed: ${shell.primaryNavigation.length} canonical primary destinations, ${publicGames.length} public games, ${privateGames.length} development-only games.`);
