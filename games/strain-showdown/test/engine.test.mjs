@@ -45,3 +45,11 @@ console.log("Strain Showdown engine tests passed.");
 const kushEffects=createGame({cards,effectCatalog,playerFamily:"kush",cpuFamily:"fruit",seed:501});
 const kushBase=kushEffects.player.hand.findIndex((c)=>c.stage===1);assert.ok(kushBase>=0);const kushPlayed=playCard(kushEffects,"player",kushBase,0);assert.equal(kushPlayed.ok,true);assert.equal(kushEffects.player.lanes[0].shield,1,"Kush Base active profile must grant 1 Shield");assert.ok(kushEffects.player.lanes[0].abilityName);assert.ok(kushEffects.player.lanes[0].effectRulesText);
 const gasEffects=createGame({cards,effectCatalog,playerFamily:"gas",cpuFamily:"fruit",seed:502});const gasBase=gasEffects.player.hand.findIndex((c)=>c.stage===1);assert.equal(playCard(gasEffects,"player",gasBase,0).ok,true);const gasGardenBefore=gasEffects.cpu.garden;assert.equal(attack(gasEffects,"player",0).ok,true);assert.ok(gasGardenBefore-gasEffects.cpu.garden>=3,"Gas Base open-lane profile must add Garden damage");
+
+const cookiesRefund=createGame({cards,effectCatalog,playerFamily:"cookies",cpuFamily:"kush",seed:503});
+const cookiesBase=cookiesRefund.player.hand.findIndex((c)=>c.stage===1);
+const cookiesFocusBefore=cookiesRefund.player.focus;
+const cookiesPlay=playCard(cookiesRefund,"player",cookiesBase,0);
+assert.equal(cookiesPlay.ok,true);
+assert.equal(cookiesPlay.cost,0);
+assert.equal(cookiesRefund.player.focus,cookiesFocusBefore,"A free Cookies Base must not generate Focus from adaptive refund");
