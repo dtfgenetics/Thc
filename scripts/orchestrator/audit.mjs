@@ -10,7 +10,7 @@ export function parseManagedBranch(branch) {
   }
 }
 
-export function classifyJobHealth({ issueNumber, job, branch = null, prs = [] }) {
+export function classifyJobHealth({ issueNumber, job, branch = null, prs = [], now = new Date() }) {
   const anomalies = []
   const terminal = new Set(['DONE', 'CANCELLED', 'SUPERSEDED'])
   const postMerge = new Set(['MERGED', 'STAGING', 'PRODUCTION_READY', 'DEPLOYING', 'LIVE_VERIFYING', 'DONE'])
@@ -56,6 +56,28 @@ export function classifyJobHealth({ issueNumber, job, branch = null, prs = [] })
 
   if (job.lease && terminal.has(job.state)) {
     anomalies.push({ code: 'terminal-job-retains-lease', detail: job.lease.leaseId || 'lease-present' })
+  }
+
+  if (['RUNNING', 'VERIFYING', 'REPAIRING'].includes(job.state) && !job.executor) {
+    anomalies.push({ code: 'active-job-missing-executor', detail: `state ${job.state} has no executor attachment` })
+  }
+
+  if (job.executor && job.lease && job.executor.executorId !== job.lease.workerId) {
+    anomalies.push({
+      code: 'executor-lease-owner-mismatch',
+      detail: `executor ${job.executor.executorId || 'unknown'} != lease worker ${job.lease.workerId || 'unknown'}`,
+    })
+  }
+
+  if (job.executor?.heartbeatAt && ['RUNNING', 'VERIFYING', 'REPAIRING'].includes(job.state)) {
+    const heartbeat = new Date(job.executor.heartbeatAt).getTime()
+    const current = now instanceof Date ? now.getTime() : new Date(now).getTime()
+    if (Number.isFinite(heartbeat) && Number.isFinite(current) && current - heartbeat > 60 * 60 * 1000) {
+      anomalies.push({
+        code: 'executor-heartbeat-stale',
+        detail: `last heartbeat ${job.executor.heartbeatAt}`,
+      })
+    }
   }
 
   return anomalies

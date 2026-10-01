@@ -192,3 +192,28 @@ Scheduling rules:
 5. The repository-wide `maxWorkers` limit still applies.
 
 This lets multiple chats work on different games, tools, or applications at the same time without relaxing safety for older jobs that have not yet been migrated to explicit resource claims.
+
+
+## Executor attachment protocol
+
+Dispatch reserves a job; it does not pretend the scheduler itself is the implementation agent.
+
+A real chat/agent attaches through `scripts/orchestrator-executor.mjs`:
+
+```bash
+node scripts/orchestrator-executor.mjs packet --issue=123
+node scripts/orchestrator-executor.mjs claim --issue=123 --executor-id=chat:abc --provider=chatgpt --session-id=session-1
+node scripts/orchestrator-executor.mjs heartbeat --issue=123 --executor-id=chat:abc --lease-id=<lease> --progress=editing --head-sha=<sha>
+node scripts/orchestrator-executor.mjs handoff --issue=123 --executor-id=chat:abc --lease-id=<lease> --completed='item one|item two' --remaining='verification'
+node scripts/orchestrator-executor.mjs result --issue=123 --executor-id=chat:abc --lease-id=<lease> --outcome=ready-for-verification --head-sha=<sha> --pr=77 --evidence='npm test|npm run build'
+```
+
+The read-only `packet` command returns the complete execution contract: repository, branch/base, resource scope, allowed paths, dependencies, acceptance criteria, verification profile, production targets, and worker capabilities.
+
+`claim` transfers the dispatcher lease to the actual executor and moves the job from `LEASED` to `RUNNING`. Heartbeats renew the same lease and persist progress/head state.
+
+`handoff` persists completed work, remaining work, blockers, and last head SHA so another chat can resume without the previous transcript.
+
+`result --outcome=ready-for-verification` moves the job to `VERIFYING` and records the expected head/PR. `result --outcome=failed` moves it to bounded retry handling.
+
+The durable audit flags active jobs with no executor, executor/lease ownership mismatches, and stale executor heartbeats.
