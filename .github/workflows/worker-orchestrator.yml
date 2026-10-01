@@ -4,13 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'plan, dispatch, reconcile, reconcile all, or exact-head check'
+        description: 'plan, dispatch, audit, reconcile, reconcile all, or exact-head check'
         required: true
         default: plan
         type: choice
         options:
           - plan
           - dispatch
+          - audit
           - reconcile
           - reconcile-all
           - check
@@ -55,6 +56,7 @@ jobs:
           set -euo pipefail
           node --check scripts/orchestrator.mjs
           node --check scripts/orchestrator-reconcile.mjs
+          node --check scripts/orchestrator-audit.mjs
           node --check scripts/orchestrator-check.mjs
           node --check scripts/orchestrator/core.mjs
           node --check scripts/orchestrator/resources.mjs
@@ -62,6 +64,7 @@ jobs:
           node --check scripts/orchestrator/state.mjs
           node --check scripts/orchestrator/leases.mjs
           node --check scripts/orchestrator/reconcile.mjs
+          node --check scripts/orchestrator/audit.mjs
           node scripts/test-worker-orchestrator.mjs
 
       - name: Ensure orchestration labels
@@ -111,6 +114,13 @@ jobs:
           fi
           node scripts/orchestrator-check.mjs "${args[@]}" | tee "$RUNNER_TEMP/worker-check.json"
 
+
+      - name: Audit durable job and branch state
+        if: github.event_name == 'schedule' || inputs.mode == 'audit'
+        run: |
+          set -euo pipefail
+          node scripts/orchestrator-audit.mjs | tee "$RUNNER_TEMP/worker-audit.json"
+
       - name: Plan worker allocation
         if: github.event_name == 'schedule' || inputs.mode == 'plan' || inputs.mode == 'dispatch'
         run: |
@@ -145,6 +155,27 @@ jobs:
             `Failures: **${(report.failures || []).length}**`,
             ...[...counts.entries()].map(([action, count]) => `- ${action}: **${count}**`),
           ];
+          fs.appendFileSync(process.argv[3], `${lines.join('\n')}\n`);
+          NODE
+          fi
+
+          if [[ -s "$RUNNER_TEMP/worker-audit.json" ]]; then
+            node - "$RUNNER_TEMP/worker-audit.json" "$GITHUB_STEP_SUMMARY" <<'NODE'
+          const fs = require('fs');
+          const report = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+          const lines = [
+            '',
+            '### Durable work audit',
+            `Open orchestrator jobs: **${report.counts?.openJobs ?? 0}**`,
+            `Managed branches: **${report.counts?.managedBranches ?? 0}**`,
+            `Anomalies: **${report.counts?.anomalies ?? 0}**`,
+            ...Object.entries(report.stateCounts || {}).map(([state, count]) => `- ${state}: **${count}**`),
+          ];
+          if ((report.anomalies || []).length) {
+            lines.push('', 'Top anomalies:', ...(report.anomalies || []).slice(0, 10).map((item) =>
+              `- ${item.code || 'unknown'}${item.issueNumber ? ` (#${item.issueNumber})` : ''}${item.branch ? ` — \`${item.branch}\`` : ''}`
+            ));
+          }
           fs.appendFileSync(process.argv[3], `${lines.join('\n')}\n`);
           NODE
           fi
