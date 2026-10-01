@@ -14,6 +14,7 @@ const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "
 const dataRoot = path.join(projectRoot, "data");
 const manifest = JSON.parse(fs.readFileSync(path.join(dataRoot, "roster-manifest.json"), "utf8"));
 const cards = manifest.files.flatMap((file) => JSON.parse(fs.readFileSync(path.join(dataRoot, file), "utf8")));
+const effectCatalog = JSON.parse(fs.readFileSync(path.join(dataRoot, "effect-profiles.json"), "utf8"));
 const families = ["kush", "haze", "skunk", "gas", "cookies", "fruit", "purple", "frost"];
 
 const seedArg = process.argv.find((arg) => arg.startsWith("--seeds="));
@@ -69,7 +70,7 @@ function chooseAction(state, actor) {
 
 function runGame(playerFamily, cpuFamily, seed) {
   const startingActor = seed % 2 === 0 ? "player" : "cpu";
-  const state = createGame({ cards, playerFamily, cpuFamily, seed, startingActor });
+  const state = createGame({ cards, effectCatalog, playerFamily, cpuFamily, seed, startingActor });
   let actions = 0;
   while (!state.winner && actions < 600) {
     actions += 1;
@@ -130,7 +131,7 @@ const report = families.map((family) => {
 });
 
 const payload = {
-  ruleset: "0.2.1",
+  ruleset: "0.3.0-effects",
   seedsPerOrderedMatchup: seedsPerMatchup,
   totalGames,
   averageRounds: Number((totalRounds / totalGames).toFixed(2)),
