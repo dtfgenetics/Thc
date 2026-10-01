@@ -89,6 +89,7 @@ export function newJob(input, { now = new Date().toISOString() } = {}) {
     attempt: Number.isInteger(input.attempt) ? input.attempt : 0,
     maxAttempts: Number.isInteger(input.maxAttempts) ? input.maxAttempts : 3,
     lease: input.lease || null,
+    executor: input.executor || null,
     prNumber: input.prNumber ?? null,
     expectedHeadSha: input.expectedHeadSha || null,
     productionImpact: Boolean(input.productionImpact),
@@ -114,5 +115,6 @@ export function validateJob(job) {
   if (!Array.isArray(job.dependencies)) throw new Error('dependencies must be an array')
   if (!Array.isArray(job.acceptanceCriteria)) throw new Error('acceptanceCriteria must be an array')
   if (!Array.isArray(job.productionTargets)) throw new Error('productionTargets must be an array')
+  if (job.executor !== null && job.executor !== undefined && typeof job.executor !== 'object') throw new Error('executor must be an object or null')
   return job
 }
