@@ -51,8 +51,10 @@ jobs:
             test -s "$root/$file" || { echo "Missing shared platform file: $file" >&2; exit 1; }
           done
           grep -Fq 'AddType text/javascript .mjs' "$root/.htaccess"
-          grep -Fq '"platformVersion": "1.1.0"' "$root/manifest.json"
-          grep -Fq "DTF_GAME_PLATFORM_VERSION = '1.1.0'" "$root/index.mjs"
+          PLATFORM_VERSION="$(node -p "JSON.parse(require('fs').readFileSync('$root/manifest.json','utf8')).platformVersion")"
+          test -n "$PLATFORM_VERSION"
+          grep -Fq "DTF_GAME_PLATFORM_VERSION = '$PLATFORM_VERSION'" "$root/index.mjs"
+          echo "PLATFORM_VERSION=$PLATFORM_VERSION" >> "$GITHUB_ENV"
 
       - name: Atomically publish shared platform route
         run: node scripts/publish-shared-game-platform-via-wordpress.mjs
@@ -77,8 +79,8 @@ jobs:
             if (!contentType.toLowerCase().includes(type)) throw new Error(`${file}: unexpected content-type ${contentType}`);
             const body = await response.text();
             if (!body.trim()) throw new Error(`${file}: empty body`);
-            if (file === 'manifest.json' && !body.includes('"platformVersion": "1.1.0"')) throw new Error('manifest version marker missing');
-            if (file === 'index.mjs' && !body.includes("DTF_GAME_PLATFORM_VERSION = '1.1.0'")) throw new Error('index version marker missing');
+            if (file === 'manifest.json' && !body.includes(`"platformVersion": "${process.env.PLATFORM_VERSION}"`)) throw new Error('manifest version marker missing');
+            if (file === 'index.mjs' && !body.includes(`DTF_GAME_PLATFORM_VERSION = '${process.env.PLATFORM_VERSION}'`)) throw new Error('index version marker missing');
           }
           NODE
 
@@ -91,7 +93,7 @@ jobs:
             echo
             echo '- Route: `https://dtfseeds.com/games/shared-platform/`'
             echo '- Module: `https://dtfseeds.com/games/shared-platform/index.mjs`'
-            echo '- Version: `1.1.0`'
+            echo "- Version: \`${PLATFORM_VERSION:-unknown}\`"
             echo '- Publication: atomic replacement with SHA-256 verification'
             echo '- Live gate: HTTP status + JavaScript MIME + release-marker verification'
           } >> "$GITHUB_STEP_SUMMARY"
