@@ -6,6 +6,7 @@ import { newJob, transitionJob, canTransition } from './orchestrator/state.mjs'
 import { createLease, heartbeatLease, isLeaseExpired, recoveryDisposition } from './orchestrator/leases.mjs'
 import { classifyReconciliation, reconciliationNeedsMutation } from './orchestrator/reconcile.mjs'
 import { exactHeadMatches, inspectAllowedPaths, inspectCheckRollup, isPathAllowed, normalizeCheck } from './orchestrator/verification.mjs'
+import { classifyJobHealth, findOrphanManagedBranches, parseManagedBranch } from './orchestrator/audit.mjs'
 
 const config = validateConfig({
   version: 2,
@@ -201,7 +202,55 @@ assert.equal(pathViolation.ok, false)
 assert.deepEqual(pathViolation.violations, ['data/public-navigation.json'])
 
 
+
+const parsedManaged = parseManagedBranch('work/games/fix-mobile-i123-abcdef0')
+assert.equal(parsedManaged.issueNumber, 123)
+assert.equal(parseManagedBranch('project/platform/manual-branch'), null)
+
+const healthyAuditJob = {
+  ...newJob({ jobId: 'issue-123', issueId: 123, title: 'Audit job', state: 'RUNNING', branch: 'work/games/fix-mobile-i123-abcdef0' }),
+  lease: { leaseId: 'lease-a' },
+}
+assert.deepEqual(classifyJobHealth({
+  issueNumber: 123,
+  job: healthyAuditJob,
+  branch: { exists: true, name: healthyAuditJob.branch, headSha: 'abc' },
+  prs: [],
+}), [])
+
+const missingBranchHealth = classifyJobHealth({
+  issueNumber: 123,
+  job: healthyAuditJob,
+  branch: { exists: false, name: healthyAuditJob.branch },
+  prs: [],
+})
+assert.equal(missingBranchHealth.some((item) => item.code === 'missing-job-branch'), true)
+
+const prAuditJob = newJob({
+  jobId: 'issue-124',
+  issueId: 124,
+  title: 'PR audit',
+  state: 'PR_OPEN',
+  branch: 'work/games/pr-audit-i124-abcdef1',
+  prNumber: 50,
+  expectedHeadSha: 'old',
+})
+const prHealth = classifyJobHealth({
+  issueNumber: 124,
+  job: prAuditJob,
+  branch: { exists: true, name: prAuditJob.branch, headSha: 'new' },
+  prs: [{ number: 50, state: 'OPEN', headRefName: prAuditJob.branch, headRefOid: 'new' }],
+})
+assert.equal(prHealth.some((item) => item.code === 'stale-expected-head'), true)
+
+const orphanBranches = findOrphanManagedBranches([
+  { name: 'work/games/orphan-i200-abcdef2', headSha: 'sha200' },
+  { name: healthyAuditJob.branch, headSha: 'abc' },
+], new Map([[123, healthyAuditJob]]))
+assert.deepEqual(orphanBranches.map((item) => item.issueNumber), [200])
+
+
 const productionMerged = newJob({ jobId: 'prod-1', title: 'Production', state: 'MERGED', productionImpact: true })
 assert.throws(() => transitionJob(productionMerged, 'DONE'), /Production-impacting/)
 
-console.log(JSON.stringify({ ok: true, tests: 67 }, null, 2))
+console.log(JSON.stringify({ ok: true, tests: 76 }, null, 2))

@@ -60,6 +60,8 @@ node scripts/orchestrator.mjs status
 node scripts/orchestrator.mjs plan
 node scripts/orchestrator.mjs dispatch
 node scripts/orchestrator.mjs dispatch --apply=true
+node scripts/orchestrator-audit.mjs
+node scripts/orchestrator-audit.mjs --strict=true
 node scripts/test-worker-orchestrator.mjs
 ```
 
@@ -151,3 +153,26 @@ Otherwise routing falls back by resource family:
 - unclassified application/control work -> `repo-control`
 
 If a multi-resource job resolves to more than one verification profile, planning refuses to guess. The planner must declare an explicit profile appropriate for the combined change.
+
+
+## Durable work audit
+
+`scripts/orchestrator-audit.mjs` gives operators and future chats a repository-derived view of active durable work. The scheduled orchestrator runs it in report-only mode.
+
+It reports:
+
+- open orchestrator jobs grouped by lifecycle state;
+- active resource owners;
+- managed worker/project branches;
+- orphan managed branches that no longer have a durable job;
+- active jobs whose recorded branch is missing;
+- `PR_OPEN` / `INTEGRATION_READY` jobs without the expected open PR;
+- recorded PR-number mismatches;
+- expected-head SHA drift on open PRs;
+- post-merge lifecycle states without a matching merged PR;
+- terminal jobs that incorrectly retain a worker lease;
+- malformed orchestrator markers.
+
+Default audit mode always reports and exits successfully so a discovered orphan does not disable scheduling or hide other state. `--strict=true` exits non-zero when anomalies exist and is intended for explicit governance/cleanup gates.
+
+The audit is deliberately read-only. Recovery remains a separate reconciliation operation so detection cannot accidentally delete or rewrite unique work.
