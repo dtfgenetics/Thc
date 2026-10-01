@@ -6,6 +6,17 @@ const errors = [];
 const results = [];
 
 async function fetchContract(entry) {
+  if (entry.remoteAudit === 'controller-only') {
+    return {
+      repo: entry.repo,
+      ok: true,
+      mode: entry.mode,
+      remoteAudit: 'controller-only',
+      skipped: true,
+      reason: 'private-repository-controller-verification-required',
+      violations: [],
+    };
+  }
   const [owner, repo] = String(entry.repo || '').split('/');
   const url = `https://raw.githubusercontent.com/${owner}/${repo}/main/${registry.contractPath}`;
   let response;
@@ -47,6 +58,7 @@ async function fetchContract(entry) {
     repo: entry.repo,
     ok: violations.length === 0,
     mode: entry.mode,
+    remoteAudit: entry.remoteAudit || 'public',
     violations,
   };
 }
@@ -64,6 +76,7 @@ const report = {
   contractPath: registry.contractPath,
   checked: results.length,
   failures: errors.length,
+  controllerOnly: results.filter(result => result.remoteAudit === 'controller-only').length,
   results,
 };
 
