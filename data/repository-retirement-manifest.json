@@ -564,6 +564,24 @@
       "branch": "system/production-ownership-registry",
       "disposition": "delete_safe",
       "basis": "legacy_ownership_registry_superseded_by_data/repository-registry.json,_project_registry_and_game-registry-v2_in_dtfgenetics/Thc"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "fix/visual-structure-genetics-shop-20260921",
+      "disposition": "delete_safe",
+      "basis": "0_commits_ahead_of_current_main;_visual_structure_work_is_already_incorporated_or_superseded"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "recovery/genetics-propagation-center",
+      "disposition": "delete_safe",
+      "basis": "canonical_thc-grow-hub_content/site/genetics-propagation.json_already_contains_the_recovered_center_and_module_identities"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "recovery/genetics-propagation-complete",
+      "disposition": "delete_safe",
+      "basis": "canonical_thc-grow-hub_content/site/genetics-propagation.json_already_contains_the_complete_six-module_genetics/propagation_center"
     }
   ]
 }
