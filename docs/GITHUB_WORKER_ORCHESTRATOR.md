@@ -118,3 +118,36 @@ issue / planner marker
   -> exact-head checks
   -> integration ready
 ```
+
+
+## Dependency-aware dispatch
+
+Planned jobs may declare dependencies using GitHub issue job identifiers such as `issue-123`, `#123`, or `123`.
+
+A dependency is satisfied only when the dependency issue is an orchestrated job that has either:
+
+- the configured `worker:done` label; or
+- an orchestrator marker whose state is `DONE`.
+
+Open, running, merged-but-not-live, malformed, missing, or non-job dependency issues do not satisfy the dependency. This is intentionally fail-closed so downstream work cannot race ahead of prerequisites.
+
+`plan` and dry-run `dispatch` output report dependency blockers.
+
+## Automatic verification routing
+
+When `verificationProfile` is omitted, the controller derives it from the declared resource set using `configuration/orchestrator/verification-profiles.json`.
+
+Routing prefers a profile whose name matches the resource suffix when available:
+
+- `game.high-iq` -> `high-iq`
+- `game.high-land` -> `high-land`
+- `app.growlens` -> `growlens`
+
+Otherwise routing falls back by resource family:
+
+- `game.*` -> `games-general`
+- education/content resources -> `content-data`
+- release/site-shell/commerce resources -> `public-release`
+- unclassified application/control work -> `repo-control`
+
+If a multi-resource job resolves to more than one verification profile, planning refuses to guess. The planner must declare an explicit profile appropriate for the combined change.
