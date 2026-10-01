@@ -25,6 +25,10 @@ for (const lesson of canonical) {
   if (row.sourceReferenceIds.length !== notes.length) errors.push(`${lesson.id}: source reference count mismatch.`);
   for (const note of notes) if (!referenceByRaw.has(note)) errors.push(`${lesson.id}: source note absent from queue: ${note.slice(0, 80)}`);
 }
+const lateVolumeMissing = references.filter(reference => /^V(?:20|21)-SRC-\d{3}$/.test(String(reference.rawReference)) && reference.resolutionStatus === 'missing_volume_register_entry_needs_resolution');
+if (lateVolumeMissing.length) errors.push(`Volume 20–21 source-register regression: ${lateVolumeMissing.length} reference(s) are missing controlled register entries.`);
+if (Number(queue.summary?.missingVolumeRegisterEntries || 0) !== references.filter(reference => reference.resolutionStatus === 'missing_volume_register_entry_needs_resolution').length) errors.push('Source queue summary missingVolumeRegisterEntries is stale.');
+
 for (const reference of references) {
   if (!Array.isArray(reference.lessonIds) || !reference.lessonIds.length) errors.push(`${reference.referenceId}: no lesson usage.`);
   if (!/pending|needs|incomplete|resolved/.test(String(reference.resolutionStatus))) errors.push(`${reference.referenceId}: invalid resolution status.`);
