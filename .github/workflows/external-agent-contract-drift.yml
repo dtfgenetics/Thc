@@ -1,0 +1,39 @@
+name: External Agent Contract Drift
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 13 * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - data/external-agent-contract-registry.json
+      - scripts/audit-remote-agent-contracts.mjs
+      - .github/workflows/external-agent-contract-drift.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - data/external-agent-contract-registry.json
+      - scripts/audit-remote-agent-contracts.mjs
+      - .github/workflows/external-agent-contract-drift.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: external-agent-contract-drift-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify remote canonical and migration contracts
+        run: node scripts/audit-remote-agent-contracts.mjs
