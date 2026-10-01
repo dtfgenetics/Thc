@@ -67,6 +67,9 @@ assert.match(runtime, /document\.body\.dataset\.highLifeEra = era/, 'High Life m
 assert.match(runtime, /new CustomEvent\('high-life:state'/, 'runtime must publish a safe view-state bridge for classic enhancements');
 assert.match(runtime, /publishEnhancementState\(\)/, 'runtime must refresh the enhancement state bridge during render');
 assert.match(enhancements, /addEventListener\('high-life:state'/, 'enhancement script must consume the view-state bridge');
+assert.match(enhancements, /function renderCareerPath\(\)/, 'High Life must render a full three-era career path summary');
+assert.match(enhancements, /Underground', 'Medical', 'Legal/, 'career path summary must preserve all three eras');
+assert.match(enhancements, /records\.length >= 6/, 'career path summary must expose completed eras');
 assert.doesNotMatch(enhancements, /\bif \(!state\b|\bstate\.history\b|(?<![.\w])resourceLabels\?\./, 'enhancement script must not read ES-module-scoped runtime variables directly');
 assert.match(runtime, /function safeFocus\(element\)/, 'High Life should guard focus transitions');
 assert.match(runtime, /safeFocus\(ui\.continue\)/, 'resolved turns should move focus to Continue');
@@ -101,6 +104,8 @@ assert.match(visual, /#game-panel\[data-era-state="medical"\]/, 'Medical era mus
 assert.match(visual, /#game-panel\[data-era-state="legal"\]/, 'Legal era must have a dedicated visual state');
 assert.match(visual, /#game-panel\[data-era-state\] \.event-panel/, 'event presentation must inherit the active era state');
 assert.match(visual, /\.career-log-panel \.log-toggle\{min-height:44px/, 'career log control must retain a 44px touch target');
+assert.match(visual, /\.career-path-summary\{display:grid/, 'career path summary must use a readable grid');
+assert.match(visual, /@media\(max-width:650px\)\{\.career-path-summary\{grid-template-columns:1fr\}/, 'career path summary must stack on phones');
 assert.match(visual, /scroll-margin-top:calc\(var\(--dtf-global-header-height,92px\) \+ 16px\)/, 'turn-resolution anchors must clear the global header');
 assert.doesNotMatch(visual, /\.era-roadmap\{[^}]*position:sticky;top:\.35rem/, 'legacy sticky roadmap offset must not return');
 assert.match(visual, /@media\(prefers-reduced-motion:reduce\)/);
