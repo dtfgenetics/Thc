@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process'
 import { loadConfig, leaseTtlMinutes } from './orchestrator/core.mjs'
 import { buildExecutionPacket, claimExecutor, executorHandoff, executorResult, heartbeatExecutor } from './orchestrator/executor.mjs'
 import { validateJob } from './orchestrator/state.mjs'
+import { inspectContractScope, validateAgentContract } from './orchestrator/repo-contract.mjs'
 
 const MARKER_RE = /<!-- worker-orchestrator:(\{.*?\}) -->/s
 
@@ -72,6 +73,19 @@ function listOption(value) {
   return String(value).split('|').map((item) => item.trim()).filter(Boolean)
 }
 
+function fetchAgentContract(targetRepo, controlRepo) {
+  const raw = capture([
+    'api',
+    `repos/${targetRepo}/contents/dtf-agent-contract.json`,
+    '-H', 'Accept: application/vnd.github.raw+json',
+  ])
+  const contract = JSON.parse(raw)
+  return validateAgentContract(contract, {
+    expectedRepository: targetRepo,
+    expectedControlRepository: controlRepo,
+  })
+}
+
 const { command, options } = parseArgs(process.argv.slice(2))
 const repo = repoFromEnvOrGh()
 const config = loadConfig(options.config || 'data/worker-orchestrator.json')
@@ -95,6 +109,11 @@ try {
     const targetRepo = job.repository
     if (!targetRepo) throw new Error('job.repository is required for external provisioning')
     if (!job.branch) throw new Error('job.branch is required for external provisioning')
+    const contract = fetchAgentContract(targetRepo, repo)
+    const contractGate = inspectContractScope(job, contract)
+    if (!contractGate.ok) {
+      throw new Error(`target repository agent contract rejected job: ${contractGate.violations.map((item) => `${item.code}: ${item.detail}`).join('; ')}`)
+    }
     const existing = capture(['api', `repos/${targetRepo}/git/ref/heads/${job.branch}`, '--jq', '.ref'], { allowFailure: true })
     if (existing) throw new Error(`Refusing to reuse existing external branch ${job.branch}`)
     const baseSha = capture(['api', `repos/${targetRepo}/git/ref/heads/${job.baseBranch || 'main'}`, '--jq', '.object.sha'])
@@ -107,6 +126,15 @@ try {
       ...job,
       baseSha,
       branchProvisioned: true,
+      agentContract: {
+        schemaVersion: contract.schemaVersion,
+        repository: contract.repository,
+        defaultBranch: contract.defaultBranch,
+        canonicalDomain: job.canonicalDomain || null,
+        verificationProfile: contractGate.verificationProfile,
+        production: contract.production,
+        validatedAt: new Date().toISOString(),
+      },
       updatedAt: new Date().toISOString(),
       history: [
         ...(Array.isArray(job.history) ? job.history : []),
@@ -114,7 +142,7 @@ try {
       ],
     }
     saveJob(repo, issue, next)
-    console.log(JSON.stringify({ ok: true, repo, mode: 'provision', targetRepository: targetRepo, job: next }, null, 2))
+    console.log(JSON.stringify({ ok: true, repo, mode: 'provision', targetRepository: targetRepo, contractGate, job: next }, null, 2))
     process.exit(0)
   }
 
