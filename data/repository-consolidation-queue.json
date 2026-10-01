@@ -34,9 +34,9 @@
       "state": "migration",
       "target": "archive-ready",
       "blockers": [
-        "Complete legacy asset hash/provenance reconciliation.",
-        "Confirm no production automation or bookmarks require this repository.",
-        "Remove or retire remaining duplicate working-tree implementations after canonical parity is proven."
+        "Complete remaining legacy asset provenance review for retained source binaries and any non-game asset families; do not delete provenance-held masters without canonical-source confirmation.",
+        "Review and migrate or retire the remaining education-control/recovery metadata still listed in dtf-thc-hub's education lane.",
+        "Review remaining deployment/audit scripts and generated deployment trees; confirm no production automation or external bookmarks depend on this repository."
       ],
       "completedLanes": [
         "Grow Doc comparison and selective export migration.",
@@ -49,7 +49,11 @@
         "Legacy Kush Kings PHP/runtime hardening branches reconciled against canonical dtfgenetics/Thc-chess-git Node/Express/Socket.IO controls.",
         "Genetics/propagation education crosswalk migrated to thc-grow-hub PR #161.",
         "Genetics/propagation Grow Doc mapping migrated with corrected canonical diagnostic slugs to Thc-dataset PR #331.",
-        "Reusable public-learning UX contract migrated to thc-grow-hub PR #163; obsolete legacy UI implementation branches retired."
+        "Reusable public-learning UX contract migrated to thc-grow-hub PR #163; obsolete legacy UI implementation branches retired.",
+        "Legacy High Land and High IQ local runtimes/source-of-truth/question-bank code removed from dtf-thc-hub via PR #73; canonical ownership remains dtfgenetics/Thc.",
+        "Copied Bud or Bluff runtime and standalone-game packaging removed from dtf-thc-hub via PR #74; canonical ownership remains dtfgenetics/Thc.",
+        "Legacy local course rendering, quiz engine, saved-score logic, browser-local certification records, Course 1 projection pipeline, and per-course static generation removed from dtf-thc-hub via PR #75.",
+        "High Land duplicate deployment/audit binaries deduplicated on dtf-thc-hub main; 20,413,725 duplicate bytes removed while six unique provenance/source binaries were retained."
       ],
       "canonicalTargets": [
         "dtfgenetics/Thc",
@@ -65,7 +69,7 @@
         "Repository registry may then move from migration to archive_candidate/archive_ready."
       ],
       "branchReview": {
-        "reviewedAt": "2026-09-30",
+        "reviewedAt": "2026-10-01",
         "deleteSafe": [
           {
             "branch": "cleanup/remove-legacy-production-entrypoints-20260930",
@@ -338,12 +342,47 @@
           {
             "branch": "fix/ui-ux-foundation-20260921",
             "basis": "legacy hub-wide UI implementation superseded; reusable learner UX intent preserved in canonical thc-grow-hub contract via PR #163"
+          },
+          {
+            "branch": "cleanup/dedupe-high-land-provenance-20260930",
+            "basis": "accepted High Land provenance dedupe is on current main with retirement record docs/retirements/2026-09-30-high-land-provenance-dedupe.json; branch is superseded after accepted squash/replay history"
+          },
+          {
+            "branch": "cleanup/remove-legacy-bud-or-bluff-runtime-20261001",
+            "basis": "merged via dtf-thc-hub PR #74; branch is superseded"
+          },
+          {
+            "branch": "cleanup/remove-legacy-education-runtime-20261001",
+            "basis": "merged via dtf-thc-hub PR #75; branch is superseded"
+          },
+          {
+            "branch": "cleanup/remove-legacy-highland-highiq-runtime-20260930",
+            "basis": "merged via dtf-thc-hub PR #73; branch is superseded"
           }
         ],
         "reconcileNeeded": [],
         "rule": "Do not merge diverged cleanup branches wholesale. Rebase or selectively apply only the retirement changes that remain valid against current main, then validate before classifying delete-safe.",
         "complete": true,
-        "summary": "All 76 non-default dtf-thc-hub branches are classified in the retirement ledger or have their useful content migrated to canonical owners."
+        "summary": "All 80 non-default dtf-thc-hub branches are classified; useful content has been migrated, merged, superseded, or preserved as provenance-only."
+      },
+      "activeTreeReview": {
+        "reviewedAt": "2026-10-01",
+        "completedDomains": [
+          "diagnostics",
+          "certification",
+          "game runtimes"
+        ],
+        "remainingDomains": [
+          "education-control/recovery metadata",
+          "asset provenance/source binaries",
+          "deployment/audit integration"
+        ],
+        "notes": [
+          "Game runtime duplication is retired; assets/games remains only for provenance review.",
+          "Certification runtime is retired; canonical assessment/credential behavior remains in dtfgenetics/Thc-learning-courses-.",
+          "Local static course catalog/per-course route generation is retired; /learn is a handoff to canonical learning.",
+          "Diagnostics duplicate runtime/data/export pipeline remains retired."
+        ]
       }
     },
     {

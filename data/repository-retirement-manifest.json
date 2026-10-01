@@ -618,6 +618,30 @@
       "branch": "fix/ui-ux-foundation-20260921",
       "disposition": "delete_safe",
       "basis": "legacy_hub-wide_UI_implementation_superseded;_reusable_learner_UX_intent_preserved_in_canonical_thc-grow-hub_contract_via_PR_pr_163"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/dedupe-high-land-provenance-20260930",
+      "disposition": "delete_safe",
+      "basis": "accepted_provenance_dedupe_present_on_main_and_recorded_in_docs_retirements_2026-09-30"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-legacy-bud-or-bluff-runtime-20261001",
+      "disposition": "delete_safe",
+      "basis": "merged_via_pr_74"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-legacy-education-runtime-20261001",
+      "disposition": "delete_safe",
+      "basis": "merged_via_pr_75"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-legacy-highland-highiq-runtime-20260930",
+      "disposition": "delete_safe",
+      "basis": "merged_via_pr_73"
     }
   ]
 }
