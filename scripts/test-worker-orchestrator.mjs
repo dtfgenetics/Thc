@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 import assert from 'node:assert/strict'
-import { buildClaim, isReady, planClaims, validateConfig } from './orchestrator/core.mjs'
+import { buildClaim, isReady, planClaims, planMetadataFromIssue, resourceSetsOverlap, validateConfig } from './orchestrator/core.mjs'
 import { newJob, transitionJob, canTransition } from './orchestrator/state.mjs'
 import { createLease, heartbeatLease, isLeaseExpired, recoveryDisposition } from './orchestrator/leases.mjs'
 import { classifyReconciliation, reconciliationNeedsMutation } from './orchestrator/reconcile.mjs'
-import { exactHeadMatches, inspectCheckRollup, normalizeCheck } from './orchestrator/verification.mjs'
+import { exactHeadMatches, inspectAllowedPaths, inspectCheckRollup, isPathAllowed, normalizeCheck } from './orchestrator/verification.mjs'
 
 const config = validateConfig({
   version: 2,
@@ -40,6 +40,7 @@ const issue = (number, title, labels, createdAt = '2026-09-06T12:00:00Z') => ({
   labels: labels.map((name) => ({ name })),
   state: 'open',
   created_at: createdAt,
+  body: '',
 })
 
 assert.equal(isReady(issue(1, 'Ready', ['worker:ready']), config), true)
@@ -51,6 +52,22 @@ const claim = buildClaim(issue(4, 'Fix broken game shell', ['worker:ready', 'wor
 assert.equal(claim.project, 'games')
 assert.equal(claim.kind, 'audit')
 assert.match(claim.branch, /^work\/games\/fix-broken-game-shell-i4-[a-f0-9]{7}$/)
+
+const plannedIssue = {
+  ...issue(5, 'Scoped game job', ['worker:ready', 'project:games']),
+  body: '<!-- worker-plan:{"resourceSet":["game.high-iq"],"allowedPaths":["games/high-iq/**","site/public-route-patch/games/high-iq/**"],"verificationProfile":"high-iq","productionTargets":["route:/games/high-iq/"],"dependencies":["issue-1"],"acceptanceCriteria":["mobile works"],"productionImpact":true} -->',
+}
+const metadata = planMetadataFromIssue(plannedIssue)
+assert.deepEqual(metadata.resourceSet, ['game.high-iq'])
+assert.deepEqual(metadata.allowedPaths, ['games/high-iq/**', 'site/public-route-patch/games/high-iq/**'])
+assert.equal(metadata.verificationProfile, 'high-iq')
+assert.equal(metadata.productionImpact, true)
+assert.equal(resourceSetsOverlap(['game.high-iq'], ['game.high-iq']), true)
+assert.equal(resourceSetsOverlap(['game.high-iq'], ['app.plant-atlas']), false)
+const scopedClaim = buildClaim(plannedIssue, config)
+assert.deepEqual(scopedClaim.resourceSet, ['game.high-iq'])
+assert.equal(scopedClaim.verificationProfile, 'high-iq')
+
 
 const planned = planClaims([
   issue(10, 'P2 games', ['worker:ready', 'priority:p2', 'project:games']),
@@ -72,6 +89,23 @@ const duplicateProjectPlan = planClaims([
 ], [], config)
 assert.equal(duplicateProjectPlan.length, 1, 'only one worker may claim a project when maxWorkersPerProject=1')
 assert.equal(duplicateProjectPlan[0].issueNumber, 20)
+
+
+const resourceConflictPlan = planClaims([
+  plannedIssue,
+  {
+    ...issue(6, 'Second scoped game job', ['worker:ready', 'project:other']),
+    body: '<!-- worker-plan:{"resourceSet":["game.high-iq"],"allowedPaths":["games/high-iq/**"]} -->',
+  },
+  {
+    ...issue(7, 'Independent scoped job', ['worker:ready', 'project:third']),
+    body: '<!-- worker-plan:{"resourceSet":["app.plant-atlas"],"allowedPaths":["site/public-route-patch/atlas/**"]} -->',
+  },
+], [
+  { issueNumber: 90, project: 'active-other', active: true, resourceSet: ['content.education'] },
+], config)
+assert.deepEqual(resourceConflictPlan.map((item) => item.issueNumber), [5, 7], 'duplicate resource claims must not be planned together')
+
 
 const job = newJob({ jobId: 'job-1', title: 'Lifecycle test', state: 'READY', project: 'games', productionImpact: false }, { now: '2026-09-06T12:00:00.000Z' })
 assert.equal(canTransition('READY', 'LEASED'), true)
@@ -121,7 +155,20 @@ assert.equal(exactHeadMatches('abc', 'abc', true), true)
 assert.equal(exactHeadMatches('abc', 'def', true), false)
 assert.equal(exactHeadMatches(null, 'def', true), true)
 
+
+assert.equal(isPathAllowed('games/high-iq/index.js', ['games/high-iq/**']), true)
+assert.equal(isPathAllowed('games/high-land/index.js', ['games/high-iq/**']), false)
+assert.equal(isPathAllowed('data/public-navigation.json', ['data/public-navigation.json']), true)
+assert.equal(inspectAllowedPaths(['games/high-iq/index.js'], ['games/high-iq/**']).ok, true)
+const pathViolation = inspectAllowedPaths(
+  ['games/high-iq/index.js', 'data/public-navigation.json'],
+  ['games/high-iq/**'],
+)
+assert.equal(pathViolation.ok, false)
+assert.deepEqual(pathViolation.violations, ['data/public-navigation.json'])
+
+
 const productionMerged = newJob({ jobId: 'prod-1', title: 'Production', state: 'MERGED', productionImpact: true })
 assert.throws(() => transitionJob(productionMerged, 'DONE'), /Production-impacting/)
 
-console.log(JSON.stringify({ ok: true, tests: 37 }, null, 2))
+console.log(JSON.stringify({ ok: true, tests: 52 }, null, 2))
