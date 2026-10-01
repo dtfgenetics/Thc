@@ -4,6 +4,7 @@
     "repo-control": {
       "commands": [
         "node --check scripts/orchestrator.mjs",
+        "node --check scripts/orchestrator-plan-job.mjs",
         "node --check scripts/orchestrator/core.mjs",
         "node --check scripts/orchestrator/resources.mjs",
         "node --check scripts/orchestrator/routing.mjs",
