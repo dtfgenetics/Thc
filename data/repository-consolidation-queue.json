@@ -53,7 +53,9 @@
         "Legacy High Land and High IQ local runtimes/source-of-truth/question-bank code removed from dtf-thc-hub via PR #73; canonical ownership remains dtfgenetics/Thc.",
         "Copied Bud or Bluff runtime and standalone-game packaging removed from dtf-thc-hub via PR #74; canonical ownership remains dtfgenetics/Thc.",
         "Legacy local course rendering, quiz engine, saved-score logic, browser-local certification records, Course 1 projection pipeline, and per-course static generation removed from dtf-thc-hub via PR #75.",
-        "High Land duplicate deployment/audit binaries deduplicated on dtf-thc-hub main; 20,413,725 duplicate bytes removed while six unique provenance/source binaries were retained."
+        "High Land duplicate deployment/audit binaries deduplicated on dtf-thc-hub main; 20,413,725 duplicate bytes removed while six unique provenance/source binaries were retained.",
+        "Recovered learning-center pointer registry removed from dtf-thc-hub via PR #78 after exact Git blob SHA parity with canonical thc-grow-hub source files.",
+        "Legacy generated public_html game output removed from version control; 13 generated files / 328,403 bytes retired with regeneration retained through dist/ packaging."
       ],
       "canonicalTargets": [
         "dtfgenetics/Thc",
@@ -358,12 +360,20 @@
           {
             "branch": "cleanup/remove-legacy-highland-highiq-runtime-20260930",
             "basis": "merged via dtf-thc-hub PR #73; branch is superseded"
+          },
+          {
+            "branch": "cleanup/remove-generated-public-html-20260930",
+            "basis": "accepted generated-output retirement is on current main with docs/retirements/2026-09-30-generated-public-html-output.json; branch is superseded"
+          },
+          {
+            "branch": "cleanup/remove-recovered-learning-registry-20261001",
+            "basis": "merged via dtf-thc-hub PR #78; exact canonical SHA parity recorded before removal"
           }
         ],
         "reconcileNeeded": [],
         "rule": "Do not merge diverged cleanup branches wholesale. Rebase or selectively apply only the retirement changes that remain valid against current main, then validate before classifying delete-safe.",
         "complete": true,
-        "summary": "All 80 non-default dtf-thc-hub branches are classified; useful content has been migrated, merged, superseded, or preserved as provenance-only."
+        "summary": "All 82 non-default dtf-thc-hub branches are classified; accepted cleanup branches are merged/superseded and unique content is preserved in canonical owners or provenance records."
       },
       "activeTreeReview": {
         "reviewedAt": "2026-10-01",
@@ -373,7 +383,7 @@
           "game runtimes"
         ],
         "remainingDomains": [
-          "education-control/recovery metadata",
+          "education-control/navigation metadata",
           "asset provenance/source binaries",
           "deployment/audit integration"
         ],
@@ -381,7 +391,9 @@
           "Game runtime duplication is retired; assets/games remains only for provenance review.",
           "Certification runtime is retired; canonical assessment/credential behavior remains in dtfgenetics/Thc-learning-courses-.",
           "Local static course catalog/per-course route generation is retired; /learn is a handoff to canonical learning.",
-          "Diagnostics duplicate runtime/data/export pipeline remains retired."
+          "Diagnostics duplicate runtime/data/export pipeline remains retired.",
+          "Recovered learning-center registry is retired; exact canonical blobs live in thc-grow-hub.",
+          "Generated deploy/dtfseeds-public-html-upload output is retired from version control and regenerated into dist/ when needed."
         ]
       }
     },

@@ -642,6 +642,18 @@
       "branch": "cleanup/remove-legacy-highland-highiq-runtime-20260930",
       "disposition": "delete_safe",
       "basis": "merged_via_pr_73"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-generated-public-html-20260930",
+      "disposition": "delete_safe",
+      "basis": "accepted_generated_output_retirement_present_on_main_with_retirement_record"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "cleanup/remove-recovered-learning-registry-20261001",
+      "disposition": "delete_safe",
+      "basis": "merged_via_pr_78_after_exact_canonical_sha_parity"
     }
   ]
 }
