@@ -107,9 +107,10 @@ function inspect(repo, issueNumber, now = new Date()) {
   if (!job) throw new Error(`Issue #${issueNumber} has no orchestrator marker`)
   validateJob(job)
 
-  const branch = branchInfo(repo, job.branch)
-  const ahead = branch.exists ? uniqueCommits(repo, job.baseBranch || 'main', job.branch) : 0
-  const prs = prsForBranch(repo, job.branch)
+  const targetRepo = job.repository || repo
+  const branch = job.branchProvisioned === false ? { exists: false, sha: null } : branchInfo(targetRepo, job.branch)
+  const ahead = branch.exists ? uniqueCommits(targetRepo, job.baseBranch || 'main', job.branch) : 0
+  const prs = prsForBranch(targetRepo, job.branch)
   const mergedPr = normalizePr(prs.find((pr) => pr.mergedAt))
   const openPr = normalizePr(prs.find((pr) => pr.state === 'OPEN'))
   const result = classifyReconciliation({
@@ -122,7 +123,7 @@ function inspect(repo, issueNumber, now = new Date()) {
     now,
   })
 
-  return { issue: rawIssue, job, branch, uniqueCommits: ahead, openPr, mergedPr, result }
+  return { issue: rawIssue, job, targetRepo, branch, uniqueCommits: ahead, openPr, mergedPr, result }
 }
 
 function history(job, event, details = {}) {
@@ -226,6 +227,7 @@ function reconcileOne(repo, issueNumber, config, applyChanges) {
   return {
     ok: true,
     issueNumber,
+    targetRepository: inspection.targetRepo,
     branch: inspection.branch,
     uniqueCommits: inspection.uniqueCommits,
     openPr: inspection.openPr,
