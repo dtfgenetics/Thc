@@ -2,7 +2,7 @@
 
 import { execFileSync } from 'node:child_process'
 import { loadConfig, leaseTtlMinutes } from './orchestrator/core.mjs'
-import { buildExecutionPacket, claimExecutor, executorHandoff, executorResult, heartbeatExecutor } from './orchestrator/executor.mjs'
+import { buildExecutionPacket, buildHandoffPacket, claimExecutor, executorHandoff, executorResult, heartbeatExecutor, renderHandoffMarkdown } from './orchestrator/executor.mjs'
 import { validateJob } from './orchestrator/state.mjs'
 import { inspectContractScope, validateAgentContract } from './orchestrator/repo-contract.mjs'
 
@@ -196,15 +196,15 @@ try {
       headSha: options['head-sha'] || null,
     })
     saveJob(repo, issue, next)
-    capture(['issue', 'comment', String(number), '--repo', repo, '--body', [
-      `Executor **${executorId}** recorded a handoff.`,
-      '',
-      `- Head: \`${next.executor?.lastHeadSha || 'not-recorded'}\``,
-      `- Completed: ${next.executor?.handoff?.completed?.length || 0}`,
-      `- Remaining: ${next.executor?.handoff?.remaining?.length || 0}`,
-      `- Blockers: ${next.executor?.handoff?.blockers?.length || 0}`,
-    ].join('\n')])
-    console.log(JSON.stringify({ ok: true, repo, mode: 'handoff', job: next }, null, 2))
+    const handoffMarkdown = renderHandoffMarkdown(next, { issueNumber: number })
+    capture(['issue', 'comment', String(number), '--repo', repo, '--body', handoffMarkdown])
+    console.log(JSON.stringify({
+      ok: true,
+      repo,
+      mode: 'handoff',
+      job: next,
+      handoff: buildHandoffPacket(next, { issueNumber: number }),
+    }, null, 2))
     process.exit(0)
   }
 

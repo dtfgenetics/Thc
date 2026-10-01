@@ -110,3 +110,59 @@ export function findOrphanManagedBranches(branches = [], jobsByIssue = new Map()
   }
   return orphans
 }
+
+export function findOrphanManagedPrs(prs = [], jobsByIssue = new Map()) {
+  const orphans = []
+  for (const pr of prs) {
+    const parsed = parseManagedBranch(pr.headRefName)
+    if (!parsed) continue
+    const job = jobsByIssue.get(parsed.issueNumber)
+    if (!job) {
+      orphans.push({
+        code: 'orphan-managed-pr',
+        prNumber: Number(pr.number),
+        branch: pr.headRefName,
+        headSha: pr.headRefOid || null,
+        issueNumber: parsed.issueNumber,
+        state: pr.state || null,
+      })
+      continue
+    }
+    if (job.branch && job.branch !== pr.headRefName) {
+      orphans.push({
+        code: 'pr-branch-not-current-job-branch',
+        prNumber: Number(pr.number),
+        branch: pr.headRefName,
+        headSha: pr.headRefOid || null,
+        issueNumber: parsed.issueNumber,
+        recordedBranch: job.branch,
+        state: pr.state || null,
+      })
+    }
+  }
+  return orphans
+}
+
+export function findDuplicateActiveResourceClaims(jobsByIssue = new Map()) {
+  const terminal = new Set(['DONE', 'CANCELLED', 'SUPERSEDED'])
+  const owners = new Map()
+  for (const [issueNumber, job] of jobsByIssue.entries()) {
+    if (terminal.has(job?.state)) continue
+    for (const resource of job?.resourceSet || []) {
+      if (!owners.has(resource)) owners.set(resource, [])
+      owners.get(resource).push({
+        issueNumber: Number(issueNumber),
+        jobId: job.jobId || null,
+        state: job.state || null,
+        branch: job.branch || null,
+      })
+    }
+  }
+  return [...owners.entries()]
+    .filter(([, claims]) => claims.length > 1)
+    .map(([resource, claims]) => ({
+      code: 'duplicate-active-resource-claim',
+      resource,
+      claims,
+    }))
+}

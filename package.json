@@ -132,7 +132,9 @@
     "verify:tool-execution": "node scripts/validate-tool-execution-registry.mjs",
     "audit:workflow-portfolio": "node scripts/audit-workflow-portfolio.mjs",
     "project:plan": "node scripts/project-session-plan.mjs",
-    "verify:project-execution": "node scripts/validate-project-execution-registry.mjs",
+    "verify:project-execution": "node scripts/validate-project-execution-registry.mjs && node scripts/test-project-session-plan.mjs && node scripts/test-project-execution-dashboard.mjs",
+    "project:status": "node scripts/project-execution-dashboard.mjs",
+    "project:status:json": "node scripts/project-execution-dashboard.mjs --json",
     "verify:encyclopedia-practical-resources": "node scripts/validate-encyclopedia-practical-resources.mjs"
   }
 }

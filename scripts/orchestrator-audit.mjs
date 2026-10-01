@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { execFileSync } from 'node:child_process'
-import { parseManagedBranch, classifyJobHealth, findOrphanManagedBranches } from './orchestrator/audit.mjs'
+import { parseManagedBranch, classifyJobHealth, findDuplicateActiveResourceClaims, findOrphanManagedBranches, findOrphanManagedPrs } from './orchestrator/audit.mjs'
 
 const MARKER_RE = /<!-- worker-orchestrator:(\{.*?\}) -->/s
 
@@ -143,7 +143,9 @@ try {
 
   const managedBranches = branches.filter((branch) => parseManagedBranch(branch.name))
   const orphanBranches = findOrphanManagedBranches(managedBranches, jobsByIssue)
-  anomalies.push(...orphanBranches)
+  const orphanPrs = findOrphanManagedPrs(prs, jobsByIssue)
+  const duplicateResourceClaims = findDuplicateActiveResourceClaims(jobsByIssue)
+  anomalies.push(...orphanBranches, ...orphanPrs, ...duplicateResourceClaims)
 
   const report = {
     ok: anomalies.length === 0,
@@ -154,11 +156,15 @@ try {
       managedBranches: managedBranches.length,
       anomalies: anomalies.length,
       malformedMarkers: malformedMarkers.length,
+      orphanPrs: orphanPrs.length,
+      duplicateResourceClaims: duplicateResourceClaims.length,
     },
     stateCounts,
     resourceOwners,
     jobs: jobs.sort((a, b) => a.issueNumber - b.issueNumber),
     orphanBranches,
+    orphanPrs,
+    duplicateResourceClaims,
     anomalies,
   }
 

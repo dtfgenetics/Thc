@@ -6,11 +6,12 @@ import { newJob, transitionJob, canTransition } from './orchestrator/state.mjs'
 import { createLease, heartbeatLease, isLeaseExpired, recoveryDisposition } from './orchestrator/leases.mjs'
 import { classifyReconciliation, reconciliationNeedsMutation } from './orchestrator/reconcile.mjs'
 import { exactHeadMatches, inspectAllowedPaths, inspectCheckRollup, isPathAllowed, normalizeCheck } from './orchestrator/verification.mjs'
-import { classifyJobHealth, findOrphanManagedBranches, parseManagedBranch } from './orchestrator/audit.mjs'
-import { buildExecutionPacket, claimExecutor, executorHandoff, executorResult, heartbeatExecutor } from './orchestrator/executor.mjs'
+import { classifyJobHealth, findDuplicateActiveResourceClaims, findOrphanManagedBranches, findOrphanManagedPrs, parseManagedBranch } from './orchestrator/audit.mjs'
+import { buildExecutionPacket, buildHandoffPacket, claimExecutor, executorHandoff, executorResult, heartbeatExecutor, renderHandoffMarkdown } from './orchestrator/executor.mjs'
 import { resolveCanonicalRepository } from './orchestrator/repositories.mjs'
 import { epicSummary, materializeJobPlan, topologicalJobOrder, validateEpicManifest } from './orchestrator/epics.mjs'
 import { inspectContractScope, validateAgentContract, verificationProfileFromContract } from './orchestrator/repo-contract.mjs'
+import { buildOperatorStatus } from './orchestrator/operator-status.mjs'
 
 const config = validateConfig({
   version: 2,
@@ -351,6 +352,21 @@ const orphanBranches = findOrphanManagedBranches([
 ], new Map([[123, healthyAuditJob]]))
 assert.deepEqual(orphanBranches.map((item) => item.issueNumber), [200])
 
+const orphanPrs = findOrphanManagedPrs([
+  { number: 88, state: 'OPEN', headRefName: 'work/games/orphan-i200-abcdef2', headRefOid: 'sha200' },
+  { number: 89, state: 'OPEN', headRefName: healthyAuditJob.branch, headRefOid: 'abc' },
+], new Map([[123, healthyAuditJob]]))
+assert.deepEqual(orphanPrs.map((item) => item.prNumber), [88])
+
+const duplicateClaims = findDuplicateActiveResourceClaims(new Map([
+  [123, { ...healthyAuditJob, resourceSet: ['game.high-iq'] }],
+  [124, { ...prAuditJob, resourceSet: ['game.high-iq'] }],
+  [125, { ...healthyAuditJob, state: 'DONE', resourceSet: ['game.high-iq'] }],
+]))
+assert.equal(duplicateClaims.length, 1)
+assert.equal(duplicateClaims[0].resource, 'game.high-iq')
+assert.deepEqual(duplicateClaims[0].claims.map((item) => item.issueNumber), [123, 124])
+
 
 
 const externalExecutorSourceJob = {
@@ -440,6 +456,34 @@ const handoffExecutorJob = executorHandoff(heartbeatExecutorJob, {
 })
 assert.equal(handoffExecutorJob.executor.status, 'HANDED_OFF')
 assert.deepEqual(handoffExecutorJob.executor.handoff.remaining, ['verification'])
+const durableHandoff = buildHandoffPacket(handoffExecutorJob, { issueNumber: 300 })
+assert.equal(durableHandoff.ownership.repository, 'dtfgenetics/Thc')
+assert.deepEqual(durableHandoff.ownership.resources, ['game.high-iq'])
+assert.equal(durableHandoff.branch.currentHeadSha, 'head300b')
+assert.deepEqual(durableHandoff.progress.completed, ['implementation'])
+assert.deepEqual(durableHandoff.progress.remaining, ['verification'])
+assert.equal(durableHandoff.production.liveVerificationRequired, false)
+const durableHandoffMarkdown = renderHandoffMarkdown(handoffExecutorJob, { issueNumber: 300 })
+assert.match(durableHandoffMarkdown, /Durable chat\/agent handoff/)
+assert.match(durableHandoffMarkdown, /Canonical repository: `dtfgenetics\/Thc`/)
+assert.match(durableHandoffMarkdown, /Current head SHA: `head300b`/)
+assert.match(durableHandoffMarkdown, /verification/)
+
+const operatorStatus = buildOperatorStatus({
+  activeClaims: [
+    { issueNumber: 300, ...handoffExecutorJob, active: true, expired: false },
+    { issueNumber: 301, project: 'tools', state: 'LEASED', resourceSet: ['tool.vpd'], branch: 'work/tools/vpd-i301-abcdef7', active: false, expired: true, lease: { leaseId: 'lease-expired', workerId: 'chat:x', expiresAt: '2026-09-30T20:00:00.000Z' } },
+  ],
+  readyIssues: [issue(302, 'Ready job', ['worker:ready'])],
+  plannedClaims: [{ issueNumber: 302, project: 'education', repository: 'dtfgenetics/thc-grow-hub', branch: 'work/education/next-i302-abcdef8', resourceSet: ['content.education'], verificationProfile: 'repo-control' }],
+  dependencyBlocked: [{ issueNumber: 303, blockers: ['issue-299'] }],
+})
+assert.equal(operatorStatus.summary.activeJobs, 1)
+assert.equal(operatorStatus.summary.expiredJobs, 1)
+assert.equal(operatorStatus.summary.handedOffJobs, 1)
+assert.equal(operatorStatus.resourceClaims['game.high-iq'][0].issueNumber, 300)
+assert.equal(operatorStatus.blockers.some((item) => item.type === 'expired-lease' && item.issueNumber === 301), true)
+assert.equal(operatorStatus.blockers.some((item) => item.type === 'dependency-blocker' && item.issueNumber === 303), true)
 
 const verifyReadyJob = executorResult(heartbeatExecutorJob, {
   executorId: 'chat:abc',
@@ -563,4 +607,4 @@ assert.throws(() => verificationProfileFromContract(toolsContractFixture, 'missi
 const productionMerged = newJob({ jobId: 'prod-1', title: 'Production', state: 'MERGED', productionImpact: true })
 assert.throws(() => transitionJob(productionMerged, 'DONE'), /Production-impacting/)
 
-console.log(JSON.stringify({ ok: true, tests: 128 }, null, 2))
+console.log(JSON.stringify({ ok: true, tests: 149 }, null, 2))
