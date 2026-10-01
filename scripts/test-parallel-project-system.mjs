@@ -24,6 +24,16 @@ function expectStatus(label, expected, args) {
   console.log(`PASS: ${label}`);
 }
 
+expectStatus('work lane accepts owned files for one chat session', 0, [
+  '--branch=work/high-iq/question-ui/chat-a',
+  '--files=games/high-iq/app.js,site/public-route-patch/games/high-iq/index.html'
+]);
+
+expectStatus('work lane rejects unrelated files for one chat session', 1, [
+  '--branch=work/high-iq/question-ui/chat-a',
+  '--files=games/high-life/index.html'
+]);
+
 expectStatus('project lane accepts owned game files', 0, [
   '--branch=project/high-iq/question-ui',
   '--files=games/high-iq/app.js,site/public-route-patch/games/high-iq/index.html'
