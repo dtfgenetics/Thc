@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "epic": {
+    "title": "Cultivation tools UI modernization",
+    "goal": "Standardize shared tool UI, then migrate VPD and PPFD without overlapping work.",
+    "project": "tools",
+    "system": "Cultivation Tools"
+  },
+  "jobs": [
+    {
+      "key": "shared-tool-shell",
+      "title": "Build shared ToolShell foundation",
+      "goal": "Create the shared ToolShell contract used by cultivation tools.",
+      "workerKind": "code",
+      "canonicalDomain": "cultivation tools",
+      "resourceSet": [
+        "tool.shared-shell"
+      ],
+      "allowedPaths": [
+        "src/shared/**",
+        "src/components/tool-shell/**"
+      ],
+      "verificationProfile": "tools-canonical",
+      "acceptanceCriteria": [
+        "shared shell tests pass",
+        "mobile and desktop layouts remain usable"
+      ]
+    },
+    {
+      "key": "vpd-migration",
+      "title": "Migrate VPD to ToolShell",
+      "goal": "Move VPD onto the shared ToolShell without changing calculation behavior.",
+      "workerKind": "code",
+      "canonicalDomain": "cultivation tools",
+      "resourceSet": [
+        "tool.vpd"
+      ],
+      "allowedPaths": [
+        "src/tools/vpd/**"
+      ],
+      "verificationProfile": "tools-canonical",
+      "dependencies": [
+        "shared-tool-shell"
+      ],
+      "acceptanceCriteria": [
+        "VPD calculations are unchanged",
+        "VPD mobile layout passes"
+      ]
+    },
+    {
+      "key": "ppfd-migration",
+      "title": "Migrate PPFD to ToolShell",
+      "goal": "Move PPFD onto the shared ToolShell without graph clipping or calculation regressions.",
+      "workerKind": "code",
+      "canonicalDomain": "cultivation tools",
+      "resourceSet": [
+        "tool.ppfd"
+      ],
+      "allowedPaths": [
+        "src/tools/ppfd/**"
+      ],
+      "verificationProfile": "tools-canonical",
+      "dependencies": [
+        "shared-tool-shell"
+      ],
+      "acceptanceCriteria": [
+        "PPFD graph does not clip",
+        "PPFD calculations are unchanged"
+      ]
+    }
+  ]
+}
