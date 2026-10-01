@@ -3,6 +3,8 @@
   let lastPresence=null;
   let lastBurnEventId='';
 
+  const escapeHtml=value=>String(value??'').replace(/[&<>\"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[char]));
+
   const normalizeText=value=>String(value||'')
     .replace('created the garden.','created the Burn Buds room.')
     .replace('joined the garden.','joined the Burn Buds room.')
@@ -78,7 +80,7 @@
     if(!lastPresence?.opponent)return'<span class="burn-presence waiting"><i></i>Waiting</span>';
     return lastPresence.opponent.online
       ?'<span class="burn-presence online"><i></i>Live</span>'
-      :`<span class="burn-presence away" title="${esc(formatLastSeen(lastPresence.opponent.lastSeenAt))}"><i></i>Reconnecting</span>`;
+      :`<span class="burn-presence away" title="${escapeHtml(formatLastSeen(lastPresence.opponent.lastSeenAt))}"><i></i>Reconnecting</span>`;
   }
 
   function updateSlot(slot,html){
