@@ -9,7 +9,7 @@ if (!username || !password) throw new Error('WordPress credentials are required.
 
 const sourceRoot = path.resolve('site/public-route-patch/games/shared-platform');
 const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
-if (typeof manifest.platformVersion !== 'string' || !/^\\d+\\.\\d+\\.\\d+$/.test(manifest.platformVersion)) {
+if (typeof manifest.platformVersion !== 'string' || !/^\d+\.\d+\.\d+$/.test(manifest.platformVersion)) {
   throw new Error(`Invalid shared platform version: ${manifest.platformVersion}`);
 }
 if (!Array.isArray(manifest.files) || manifest.files.length < 1) {
