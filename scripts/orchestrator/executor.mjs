@@ -69,6 +69,105 @@ export function buildExecutionPacket(job, {
   }
 }
 
+export function buildHandoffPacket(job, { issueNumber = job.issueId } = {}) {
+  validateJob(job)
+  const handoff = job.executor?.handoff || {}
+  return {
+    schemaVersion: 1,
+    job: {
+      id: job.jobId,
+      issueNumber: issueNumber ?? null,
+      title: job.title,
+      state: job.state,
+      project: job.project || null,
+    },
+    ownership: {
+      repository: job.repository || null,
+      canonicalDomain: job.canonicalDomain || null,
+      resources: job.resourceSet || [],
+      allowedPaths: job.allowedPaths || [],
+    },
+    branch: {
+      name: job.branch || null,
+      base: job.baseBranch || 'main',
+      currentHeadSha: job.executor?.lastHeadSha || job.expectedHeadSha || job.baseSha || null,
+    },
+    progress: {
+      completed: Array.isArray(handoff.completed) ? handoff.completed : [],
+      remaining: Array.isArray(handoff.remaining) ? handoff.remaining : [],
+      blockers: Array.isArray(handoff.blockers) ? handoff.blockers : [],
+      recordedAt: handoff.at || null,
+    },
+    verification: {
+      profile: job.verificationProfile || 'repo-control',
+      evidence: job.executor?.verificationEvidence || job.verification?.checks || [],
+      exactVerifiedSha: job.verification?.headSha || null,
+    },
+    pullRequest: {
+      number: job.prNumber ?? null,
+      expectedHeadSha: job.expectedHeadSha || null,
+    },
+    production: {
+      impact: Boolean(job.productionImpact),
+      targets: job.productionTargets || [],
+      liveVerificationRequired: Boolean(job.productionImpact && job.state !== 'DONE'),
+    },
+    resume: 'Continue from the recorded branch/head after re-reading the owning issue, source-of-truth, current PR checks, and active resource lease. Do not create a replacement branch only because the chat changed.',
+  }
+}
+
+function listMarkdown(items, empty = '- None') {
+  return Array.isArray(items) && items.length ? items.map((item) => '- ' + item).join('\n') : empty
+}
+
+export function renderHandoffMarkdown(job, options = {}) {
+  const packet = buildHandoffPacket(job, options)
+  const verificationEvidence = Array.isArray(packet.verification.evidence)
+    ? packet.verification.evidence.map((item) => typeof item === 'string' ? item : (item.name || JSON.stringify(item)))
+    : []
+  return [
+    '## Durable chat/agent handoff',
+    '',
+    '### Job',
+    '- Job: ' + packet.job.id + (packet.job.issueNumber ? ' / issue #' + packet.job.issueNumber : ''),
+    '- Goal: ' + packet.job.title,
+    '- State: `' + packet.job.state + '`',
+    '',
+    '### Ownership',
+    '- Canonical repository: `' + (packet.ownership.repository || 'not-recorded') + '`',
+    '- Canonical domain: `' + (packet.ownership.canonicalDomain || 'not-recorded') + '`',
+    '- Resources: `' + (packet.ownership.resources.length ? packet.ownership.resources.join(', ') : 'none-recorded') + '`',
+    '- Allowed paths: `' + (packet.ownership.allowedPaths.length ? packet.ownership.allowedPaths.join(', ') : 'none-recorded') + '`',
+    '',
+    '### Current implementation state',
+    '- Branch: `' + (packet.branch.name || 'not-recorded') + '`',
+    '- Current head SHA: `' + (packet.branch.currentHeadSha || 'not-recorded') + '`',
+    '- Pull request: ' + (packet.pullRequest.number ? '#' + packet.pullRequest.number : 'not-open'),
+    '',
+    '### Completed',
+    listMarkdown(packet.progress.completed),
+    '',
+    '### Remaining',
+    listMarkdown(packet.progress.remaining),
+    '',
+    '### Blockers',
+    listMarkdown(packet.progress.blockers),
+    '',
+    '### Verification',
+    '- Profile: `' + packet.verification.profile + '`',
+    '- Exact verified SHA: `' + (packet.verification.exactVerifiedSha || 'not-recorded') + '`',
+    listMarkdown(verificationEvidence, '- Evidence: none-recorded'),
+    '',
+    '### Production',
+    '- Impact: ' + (packet.production.impact ? 'yes' : 'no'),
+    '- Targets: `' + (packet.production.targets.length ? packet.production.targets.join(', ') : 'none') + '`',
+    '- Live verification still required: ' + (packet.production.liveVerificationRequired ? 'yes' : 'no'),
+    '',
+    '### Resume instruction',
+    packet.resume,
+  ].join('\n')
+}
+
 export function claimExecutor(job, {
   executorId,
   provider = 'external',
