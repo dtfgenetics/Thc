@@ -57,6 +57,7 @@ jobs:
           node --check scripts/orchestrator.mjs
           node --check scripts/orchestrator-reconcile.mjs
           node --check scripts/orchestrator-audit.mjs
+          node --check scripts/orchestrator-executor.mjs
           node --check scripts/orchestrator-check.mjs
           node --check scripts/orchestrator/core.mjs
           node --check scripts/orchestrator/resources.mjs
@@ -65,6 +66,7 @@ jobs:
           node --check scripts/orchestrator/leases.mjs
           node --check scripts/orchestrator/reconcile.mjs
           node --check scripts/orchestrator/audit.mjs
+          node --check scripts/orchestrator/executor.mjs
           node scripts/test-worker-orchestrator.mjs
 
       - name: Ensure orchestration labels
