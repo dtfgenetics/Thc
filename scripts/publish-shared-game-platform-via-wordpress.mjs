@@ -8,24 +8,22 @@ const password = process.env.WP_API_PASSWORD || '';
 if (!username || !password) throw new Error('WordPress credentials are required.');
 
 const sourceRoot = path.resolve('site/public-route-patch/games/shared-platform');
-const releaseFiles = [
-  '.htaccess',
-  'manifest.json',
-  'index.mjs',
-  'settings.mjs',
-  'replay.mjs',
-  'telemetry.mjs',
-  'input.mjs',
-  'audio.mjs',
-];
-
 const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
-if (manifest.platformVersion !== '1.1.0') {
-  throw new Error(`Unexpected shared platform version: ${manifest.platformVersion}`);
+if (typeof manifest.platformVersion !== 'string' || !/^\\d+\\.\\d+\\.\\d+$/.test(manifest.platformVersion)) {
+  throw new Error(`Invalid shared platform version: ${manifest.platformVersion}`);
 }
-if (!Array.isArray(manifest.files) || manifest.files.length !== 6) {
-  throw new Error('Shared platform manifest must declare six runtime modules.');
+if (!Array.isArray(manifest.files) || manifest.files.length < 1) {
+  throw new Error('Shared platform manifest must declare at least one runtime module.');
 }
+const manifestFiles = manifest.files.map((file) => String(file));
+if (new Set(manifestFiles).size !== manifestFiles.length) {
+  throw new Error('Shared platform manifest contains duplicate runtime modules.');
+}
+for (const rel of manifestFiles) {
+  if (!/^[a-z0-9][a-z0-9._-]*\\.mjs$/i.test(rel)) throw new Error(`Unsafe shared platform module name: ${rel}`);
+}
+if (!manifestFiles.includes('index.mjs')) throw new Error('Shared platform manifest must include index.mjs.');
+const releaseFiles = ['.htaccess', 'manifest.json', ...manifestFiles];
 for (const rel of releaseFiles) {
   const filePath = path.join(sourceRoot, rel);
   if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile() || fs.statSync(filePath).size === 0) {
