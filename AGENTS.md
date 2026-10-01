@@ -62,9 +62,24 @@ There is no requirement to choose the smallest patch or preserve an existing imp
 
 ## Parallel development
 
-Parallel development is allowed. Use separate branches/worktrees when that reduces collisions. `scripts/studio.mjs` and the Parallel Studio skill are useful coordination tools, but project architecture is not locked to them.
+Parallel development is the normal operating model for concurrent chats and agents.
 
-Serialize only operations that would write conflicting data to the same production resource at the same time. That serialization is an integrity measure, not a product-development limitation.
+Before starting a new substantive task:
+
+1. Resolve the project with `npm run project:plan -- <project-id-or-alias>`.
+2. Work in the returned canonical repository.
+3. Create a unique session branch using `work/<project-id>/<task>/<session-id>`.
+4. Do not let two chats share one mutable branch.
+5. Use one PR per session and run the project's focused validation before integration.
+6. For work in this repository, use `node scripts/studio.mjs overlap` / `doctor` when active PRs may touch the same files, resources, or production targets.
+7. Integrate the exact validated PR head against current `main`.
+8. For external canonical repositories, hand off an immutable commit/artifact and update the production integration pin instead of editing the mirror as source.
+
+`multi/<task>` and platform sessions are for deliberate cross-project integration, repository-control, or ownership migrations. They are not the normal feature-development path.
+
+Parallel Studio remains optimistic: unrelated work should continue. Same-file or same-resource overlap is surfaced and reconciled at integration rather than imposing a global development lock. Serialize only final writes that target the same production resource.
+
+The machine-readable execution authority is `data/project-execution-registry.json`; repository ownership remains in `data/repository-registry.json` and named project ownership in `data/project-registry.json`.
 
 ## Game portfolio work
 
