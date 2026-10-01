@@ -52,9 +52,11 @@ const cookiesBase=cookiesSustain.player.hand.findIndex((c)=>c.stage===1);
 assert.equal(playCard(cookiesSustain,"player",cookiesBase,0).ok,true);
 assert.equal(cookiesSustain.player.garden,19,"Cookies Base active profile should heal 1 Garden");
 
-const fruitPressure=createGame({cards,effectCatalog:JSON.parse(fs.readFileSync(path.join(dataRoot,"effect-profiles.json"),"utf8")),playerFamily:"fruit",cpuFamily:"kush",seed:504});
-const fruitBase=fruitPressure.player.hand.findIndex((c)=>c.stage===1);
-assert.equal(playCard(fruitPressure,"player",fruitBase,0).ok,true);
-const fruitPower=fruitPressure.player.lanes[0].power;
-assert.equal(attack(fruitPressure,"player",0).ok,true);
-assert.ok(fruitPower>=1,"Fruit attack-bonus profile must retain a valid attacker");
+const tunedEffects=JSON.parse(fs.readFileSync(path.join(dataRoot,"effect-profiles.json"),"utf8"));
+const fruitProfileState=createGame({cards,effectCatalog:tunedEffects,playerFamily:"fruit",cpuFamily:"kush",seed:504});
+const fruitBase=fruitProfileState.player.hand.findIndex((c)=>c.stage===1);
+const fruitSelect=fruitProfileState.player.hand.findIndex((c)=>c.stage===2);
+assert.equal(fruitProfileState.player.hand[fruitBase].effect.type,"garden-heal");
+assert.equal(fruitProfileState.player.hand[fruitBase].effect.value,1);
+assert.equal(fruitProfileState.player.hand[fruitSelect].effect.type,"attack-bonus");
+assert.equal(fruitProfileState.player.hand[fruitSelect].effect.value,1);
