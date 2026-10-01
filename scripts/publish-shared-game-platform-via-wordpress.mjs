@@ -8,31 +8,32 @@ const password = process.env.WP_API_PASSWORD || '';
 if (!username || !password) throw new Error('WordPress credentials are required.');
 
 const sourceRoot = path.resolve('site/public-route-patch/games/shared-platform');
-const releaseFiles = [
-  '.htaccess',
-  'manifest.json',
-  'index.mjs',
-  'settings.mjs',
-  'replay.mjs',
-  'telemetry.mjs',
-  'input.mjs',
-  'audio.mjs',
-];
-
 const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
-if (manifest.platformVersion !== '1.1.0') {
-  throw new Error(`Unexpected shared platform version: ${manifest.platformVersion}`);
+if (!/^\d+\.\d+\.\d+$/.test(String(manifest.platformVersion || ''))) {
+  throw new Error(`Invalid shared platform version: ${manifest.platformVersion}`);
 }
-if (!Array.isArray(manifest.files) || manifest.files.length !== 6) {
-  throw new Error('Shared platform manifest must declare six runtime modules.');
+if (!Array.isArray(manifest.files) || manifest.files.length === 0) {
+  throw new Error('Shared platform manifest must declare runtime modules.');
 }
+const manifestFiles = [...new Set(manifest.files.map((value) => String(value || '').trim()))];
+if (manifestFiles.length !== manifest.files.length) throw new Error('Shared platform manifest contains duplicate module names.');
+for (const rel of manifestFiles) {
+  if (!/^[a-z0-9][a-z0-9.-]*\.mjs$/i.test(rel) || rel.includes('..') || rel.includes('/') || rel.includes('\\')) {
+    throw new Error(`Unsafe shared platform manifest file: ${rel}`);
+  }
+}
+for (const required of ['index.mjs', 'settings.mjs']) {
+  if (!manifestFiles.includes(required)) throw new Error(`Shared platform manifest missing required module: ${required}`);
+}
+const releaseFiles = ['.htaccess', 'manifest.json', ...manifestFiles];
+
 for (const rel of releaseFiles) {
   const filePath = path.join(sourceRoot, rel);
   if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile() || fs.statSync(filePath).size === 0) {
     throw new Error(`Missing shared platform release file: ${rel}`);
   }
 }
-for (const moduleName of manifest.files) {
+for (const moduleName of manifestFiles) {
   if (!releaseFiles.includes(moduleName)) throw new Error(`Manifest file is not allowlisted: ${moduleName}`);
 }
 
