@@ -1,0 +1,210 @@
+{
+  "schemaVersion": "1.0.0",
+  "volumeId": "THC-ENC-V20",
+  "sources": [
+    {
+      "id": "V20-SRC-001",
+      "title": "THC Cannabis Plant Science Source Packet v1.1",
+      "useAndLimitation": "Internal controlled architecture and Cannabis genetics source map; final claims require direct-source verification.",
+      "location": "Internal controlled file"
+    },
+    {
+      "id": "V20-SRC-002",
+      "title": "THC Cultivation SOP Source Materials Packet v1.0",
+      "useAndLimitation": "Internal controlled source map for identity, biosecurity, records, testing, and safety boundaries.",
+      "location": "Internal controlled file"
+    },
+    {
+      "id": "V20-SRC-003",
+      "title": "THC Master Content Compilation and Merge Register v1.0",
+      "useAndLimitation": "Permanent THC-ENC IDs, domains, completion rules, and release gates.",
+      "location": "Internal controlled file"
+    },
+    {
+      "id": "V20-SRC-004",
+      "title": "Allard — Principles of Plant Breeding",
+      "useAndLimitation": "Foundational mating systems, selection, population improvement, backcrossing, and line development; general plant breeding, not Cannabis-specific.",
+      "location": "https://www.wiley.com/en-us/Principles+of+Plant+Breeding%2C+2nd+Edition-p-9780471023098"
+    },
+    {
+      "id": "V20-SRC-005",
+      "title": "Acquaah — Principles of Plant Genetics and Breeding",
+      "useAndLimitation": "Plant breeding objectives, methods, experimental design, cultivar development, and germplasm use; textbook source.",
+      "location": "https://www.wiley.com/en-us/Principles+of+Plant+Genetics+and+Breeding%2C+3rd+Edition-p-9781119626695"
+    },
+    {
+      "id": "V20-SRC-006",
+      "title": "Falconer and Mackay — Introduction to Quantitative Genetics",
+      "useAndLimitation": "Inbreeding, variance, heritability, selection response, and quantitative-trait foundations; model assumptions must be stated.",
+      "location": "https://www.cabidigitallibrary.org/doi/book/10.1079/9780582243026.0000"
+    },
+    {
+      "id": "V20-SRC-007",
+      "title": "Bernardo — Breeding for Quantitative Traits in Plants",
+      "useAndLimitation": "Selection, prediction, multi-environment testing, genetic gain, and genomic selection; general crop-breeding source.",
+      "location": "https://stemmpress.com/"
+    },
+    {
+      "id": "V20-SRC-008",
+      "title": "Sawler et al. 2015 — The Genetic Structure of Marijuana and Hemp",
+      "useAndLimitation": "Genome-wide differentiation and limitations of commercial strain ancestry labels.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4550350/"
+    },
+    {
+      "id": "V20-SRC-009",
+      "title": "Ren et al. 2021 — Large-scale whole-genome resequencing and Cannabis domestication",
+      "useAndLimitation": "Global population history, domestication, and selection; sampled accessions and historical interpretation limit generalization.",
+      "location": "https://pubmed.ncbi.nlm.nih.gov/34272249/"
+    },
+    {
+      "id": "V20-SRC-010",
+      "title": "Lynch et al. 2025 — Cannabis pangenome",
+      "useAndLimitation": "Structural variation, population mosaic, sex chromosomes, and cannabinoid synthase diversity; research genomes do not replace line-specific testing.",
+      "location": "https://pubmed.ncbi.nlm.nih.gov/40437092/"
+    },
+    {
+      "id": "V20-SRC-011",
+      "title": "Stansell et al. 2025 — U.S. feral Cannabis germplasm diversity",
+      "useAndLimitation": "Large U.S. feral collection, population structure, chemotype, and conservation value; feral material requires legal and agronomic qualification.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12215616/"
+    },
+    {
+      "id": "V20-SRC-012",
+      "title": "Iranian Cannabis population genomics and GWAS, 2025",
+      "useAndLimitation": "Genetic structure and marker associations for flowering, morphology, sex, yield, and chemotype; population-specific associations require validation.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11748290/"
+    },
+    {
+      "id": "V20-SRC-013",
+      "title": "Developing and Testing Molecular Markers in Cannabis, 2021",
+      "useAndLimitation": "SSR marker development, variety discrimination, diversity, and dioecy assessment; marker panels have population limits.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8540786/"
+    },
+    {
+      "id": "V20-SRC-014",
+      "title": "Prentout et al. 2020 — Cannabis sex chromosomes",
+      "useAndLimitation": "Family-based RNA-seq segregation supporting XX/XY sex chromosomes and sex-linked genes.",
+      "location": "https://pubmed.ncbi.nlm.nih.gov/32033943/"
+    },
+    {
+      "id": "V20-SRC-015",
+      "title": "Riera-Begue et al. 2025 — PCR-based XX/XY sex genotyping",
+      "useAndLimitation": "Single-pair PCR marker tested across hemp cultivars and crosses; additional germplasm validation remains prudent.",
+      "location": "https://pubmed.ncbi.nlm.nih.gov/40844558/"
+    },
+    {
+      "id": "V20-SRC-016",
+      "title": "Leckie et al. 2024 — Genetic basis of daylength-insensitive flowering",
+      "useAndLimitation": "Cannabis-specific evidence for loss of photoperiod sensitivity; flowering remains background and environment dependent.",
+      "location": "https://pubmed.ncbi.nlm.nih.gov/38525679/"
+    },
+    {
+      "id": "V20-SRC-017",
+      "title": "Lubell and Brand 2018 — Silver thiosulfate produces male flowers on female hemp",
+      "useAndLimitation": "Foundational Cannabis sex-reversal experiment; genotype, dose, timing, chemical safety, waste, and legal controls apply.",
+      "location": "https://doi.org/10.21273/HORTTECH04188-18"
+    },
+    {
+      "id": "V20-SRC-018",
+      "title": "Flajšman et al. 2021 — Feminized seed production by manipulation of sex expression",
+      "useAndLimitation": "Cannabis-specific STS/colloidal-silver studies and progeny context; no universal operating recipe.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8591233/"
+    },
+    {
+      "id": "V20-SRC-019",
+      "title": "Characterization of male flower induction by STS, 2024",
+      "useAndLimitation": "Three-cultivar study showing genotype, stage, concentration, and treatment response differences.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11397453/"
+    },
+    {
+      "id": "V20-SRC-020",
+      "title": "Weiblen et al. 2015 — Inheritance of chemical phenotype",
+      "useAndLimitation": "Classic biparental chemotype segregation study; major ratio locus does not explain all concentration variation.",
+      "location": "https://pubmed.ncbi.nlm.nih.gov/12586720/"
+    },
+    {
+      "id": "V20-SRC-021",
+      "title": "Campbell et al. 2020 — Cannabinoid inheritance relies on complex architecture",
+      "useAndLimitation": "Line-cross evidence for additive, dominance, maternal, and polygenic effects on cannabinoid concentrations.",
+      "location": "https://pubmed.ncbi.nlm.nih.gov/32322682/"
+    },
+    {
+      "id": "V20-SRC-022",
+      "title": "Grassa et al. 2021 — CBDRx chromosome-resolved genome and QTL",
+      "useAndLimitation": "Cannabinoid synthase arrays, hemp introgression, and QTL context; one population and reference background.",
+      "location": "https://pubmed.ncbi.nlm.nih.gov/33521943/"
+    },
+    {
+      "id": "V20-SRC-023",
+      "title": "Vergara et al. 2020 — Gene copy number and phytochemistry",
+      "useAndLimitation": "Cannabinoid-pathway copy-number variation and expression associations; copy number only partly explains phenotype.",
+      "location": "https://pubmed.ncbi.nlm.nih.gov/32010439/"
+    },
+    {
+      "id": "V20-SRC-024",
+      "title": "Structure of the chemotype-determining locus, 2026",
+      "useAndLimitation": "High-quality genome analysis describing a structurally variable supergene-like B locus; new evidence requiring independent review before release.",
+      "location": "https://pubmed.ncbi.nlm.nih.gov/42064616/"
+    },
+    {
+      "id": "V20-SRC-025",
+      "title": "Machine-learning multi-trait genomic prediction for cannabinoids, 2025",
+      "useAndLimitation": "High-density genotyping and genomic-prediction research; prediction depends on training population and validation.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11711876/"
+    },
+    {
+      "id": "V20-SRC-026",
+      "title": "Stack et al. 2024 — CsMLO1 powdery mildew susceptibility locus",
+      "useAndLimitation": "Large F2 mapping populations, major and minor QTL, and markers; pathogen and population specific.",
+      "location": "https://pubmed.ncbi.nlm.nih.gov/37750850/"
+    },
+    {
+      "id": "V20-SRC-027",
+      "title": "Seifi et al. 2025 — PM2 powdery mildew resistance locus",
+      "useAndLimitation": "Dominant chromosome-9 resistance locus and associated markers; requires background and isolate validation.",
+      "location": "https://pubmed.ncbi.nlm.nih.gov/40182551/"
+    },
+    {
+      "id": "V20-SRC-028",
+      "title": "Vignale et al. 2026 — Diverse germplasm screening for powdery mildew resistance",
+      "useAndLimitation": "Two-year screening of USDA, breeding, and commercial entries; low severity supports further characterization, not automatic release claims.",
+      "location": "https://pubmed.ncbi.nlm.nih.gov/41319034/"
+    },
+    {
+      "id": "V20-SRC-029",
+      "title": "Cannabis disease and resistance source registers from Volumes 15–17",
+      "useAndLimitation": "Organism identity, screening, epidemiology, and IPM boundaries; internal cross-volume source map.",
+      "location": "Internal controlled files"
+    },
+    {
+      "id": "V20-SRC-030",
+      "title": "FAO Genebank Standards for Plant Genetic Resources",
+      "useAndLimitation": "Acquisition, drying, storage, viability monitoring, regeneration, documentation, safety duplication, and security benchmarks.",
+      "location": "https://www.fao.org/agriculture/crops/thematic-sitemap/theme/seeds-pgr/gbs/en/"
+    },
+    {
+      "id": "V20-SRC-031",
+      "title": "USDA-ARS hemp germplasm repository and GRIN-Global records",
+      "useAndLimitation": "Public germplasm conservation, identity, characterization, and distribution context; accession availability and rules change.",
+      "location": "https://npgsweb.ars-grin.gov/gringlobal/search"
+    },
+    {
+      "id": "V20-SRC-032",
+      "title": "ISTA International Rules for Seed Testing",
+      "useAndLimitation": "Seed sampling, germination, purity, moisture, and reporting methods; current edition and crop method must be verified.",
+      "location": "https://www.seedtest.org/en/international-rules-for-seed-testing-_content---1--1083.html"
+    },
+    {
+      "id": "V20-SRC-033",
+      "title": "Challenges and potentials of new breeding techniques in Cannabis, 2023",
+      "useAndLimitation": "Review of Cannabis diversity, breeding, selfing, markers, transformation, and editing limitations.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10285108/"
+    },
+    {
+      "id": "V20-SRC-034",
+      "title": "Current cultivar, seed, intellectual-property, phytosanitary, and cannabis rules",
+      "useAndLimitation": "Naming, release, ownership, seed movement, testing, and legal status are jurisdiction- and date-specific.",
+      "location": "Release-date jurisdictional review required"
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-BREED-004",
+  "title": "Resistance, Progeny, Population, Germplasm, and Release Workbook",
+  "status": "draft_for_review",
+  "purpose": "Provide controlled records for resistance screening, progeny testing, population maintenance, germplasm preservation, and pedigree/release claims.",
+  "lessonIds": ["THC-ENC-396","THC-ENC-397","THC-ENC-398","THC-ENC-399","THC-ENC-400"],
+  "sections": [
+    {
+      "id": "resistance-screening",
+      "supportsLesson": "THC-ENC-396",
+      "title": "Disease and Pest Resistance Screening Record",
+      "fields": [
+        "Host ID","Family ID","Developmental stage","Pathogen or pest species",
+        "Isolate, strain, or population identifier","Challenge method","Challenge dose or exposure",
+        "Susceptible check","Resistant check if available","Replication","Randomization",
+        "Environment","Incidence","Severity","Pest reproduction or pathogen load if measured",
+        "Yield or performance under challenge","Escape suspected","Marker result if used",
+        "Repeat-environment result","Interpretation"
+      ],
+      "qualityRules": [
+        "No visible symptoms alone do not prove genetic resistance.",
+        "Separate resistance from tolerance and disease escape.",
+        "Document pathogen or pest identity and challenge conditions before comparing lines."
+      ],
+      "decisionPrompt": "Does the candidate repeatedly reduce infection, damage, reproduction, or performance loss relative to appropriate checks under confirmed challenge?"
+    },
+    {
+      "id": "progeny-testing",
+      "supportsLesson": "THC-ENC-397",
+      "title": "Progeny Test and Combining Ability Record",
+      "fields": [
+        "Parent ID","Tester or mate ID","Cross ID","Mating design","Family size",
+        "Balanced-family status","Environment","Trait definition","Family mean",
+        "Within-family variance","Parent value","Check value","GCA estimate if modeled",
+        "SCA estimate if modeled","Uncertainty","Selected progeny","Rejected progeny",
+        "Fertility","Off-types","Interpretation limits"
+      ],
+      "decisionPrompt": "Does the parent show repeatable value across relevant mates and environments, or is the result specific to one cross?"
+    },
+    {
+      "id": "population-maintenance",
+      "supportsLesson": "THC-ENC-398",
+      "title": "Population Diversity and Bottleneck Control Record",
+      "fields": [
+        "Population ID","Cycle","Census size","Breeding-parent count","Sex ratio",
+        "Known relationships","Family contributions","Pollen contribution estimate",
+        "Seed contribution estimate","Mortality","Fertility failures","Selection proportion",
+        "Effective population size estimate if used","Marker diversity metric if used",
+        "Contamination check","Backup population or seed location","Corrective action"
+      ],
+      "qualityRules": [
+        "Census size and effective population size are not interchangeable.",
+        "Unequal family contribution can create a bottleneck even in a large crop.",
+        "Preserve contribution records instead of assuming visible diversity equals genetic diversity."
+      ],
+      "decisionPrompt": "Are enough unrelated contributors represented with sufficiently balanced reproductive contribution to preserve the diversity needed by the breeding objective?"
+    },
+    {
+      "id": "germplasm-preservation",
+      "supportsLesson": "THC-ENC-399",
+      "title": "Seed and Germplasm Preservation Record",
+      "fields": [
+        "Accession ID","Origin","Ownership or legal record","Parentage or population source",
+        "Harvest date","Cleaning method","Seed count","Seed mass","Moisture method",
+        "Initial germination","Initial vigor","Package type","Storage temperature",
+        "Storage humidity or moisture control","Storage location","Safety-duplicate location",
+        "Monitoring date","Monitoring germination","Monitoring vigor","Regeneration trigger",
+        "Regeneration population size","Isolation method","Family contribution plan",
+        "Post-regeneration identity check"
+      ],
+      "decisionPrompt": "Is the accession being preserved as both viable material and a genetically representative sample rather than merely kept alive?"
+    },
+    {
+      "id": "pedigree-release-claims",
+      "supportsLesson": "THC-ENC-400",
+      "title": "Pedigree, Generation, Naming, and Release Claim Record",
+      "fields": [
+        "Permanent line ID","Cross ID","Clone ID if applicable","Seed lot ID",
+        "Seed parent ID","Pollen parent ID","Mating event","Generation label",
+        "Population size","Selected count","Seed source","Clone source",
+        "Identity test","Trial evidence","Laboratory evidence","Name","Name version",
+        "Claim text","Claim scope","Evidence supporting claim","Known limitation",
+        "Correction history","Approver","Release date"
+      ],
+      "qualityRules": [
+        "Names do not substitute for identity records.",
+        "Generation labels do not prove uniformity, stability, or commercial readiness.",
+        "Pedigree percentages should not be inferred from names alone.",
+        "Marketing language must not exceed the available breeding, trial, identity, or laboratory evidence."
+      ],
+      "decisionPrompt": "Can every public claim be traced to a specific identity record, generation history, and supporting evidence?"
+    }
+  ],
+  "qualityRules": [
+    "Keep observational, experimental, and release records distinct.",
+    "Preserve negative results, failed regenerations, and uncertainty.",
+    "Do not promote draft evidence into a release claim without explicit review.",
+    "Use permanent IDs so names can change without breaking identity.",
+    "Keep publication authorization separate from scientific completeness."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  }
+}

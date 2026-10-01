@@ -1,0 +1,101 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-QA-001",
+  "title": "Measurement and Traceability Quality Workbook",
+  "status": "draft_for_review",
+  "purpose": "Provide controlled records for units and conversions, uncertainty, calibration, representative sampling, and permanent identifiers.",
+  "lessonIds": ["THC-ENC-401","THC-ENC-402","THC-ENC-403","THC-ENC-404","THC-ENC-405"],
+  "sections": [
+    {
+      "id": "units-conversions",
+      "supportsLesson": "THC-ENC-401",
+      "title": "Units and Conversion Record",
+      "fields": [
+        "Quantity","Original value","Original unit","Unit symbol","Prefix",
+        "Measurement basis","Wet or dry basis","Numerator","Denominator",
+        "Conversion equation","Conversion source","Converted value","Reported unit",
+        "Rounding rule","Dimensional check","Reviewer"
+      ],
+      "qualityRules": [
+        "Preserve the original value and unit.",
+        "State whether concentration or yield values are on wet, dry, area, volume, or mass basis.",
+        "Reject conversions that fail dimensional consistency."
+      ]
+    },
+    {
+      "id": "measurement-uncertainty",
+      "supportsLesson": "THC-ENC-402",
+      "title": "Accuracy, Precision, and Uncertainty Record",
+      "fields": [
+        "Measurand","Method","Sample ID","Reference value if available",
+        "Replicate results","Mean","Spread or standard deviation","Bias estimate",
+        "Instrument resolution","Environmental conditions","Known uncertainty components",
+        "Combined uncertainty if calculated","Expanded uncertainty if calculated",
+        "Coverage factor or confidence statement","Decision rule","Interpretation"
+      ],
+      "decisionPrompt": "Is the observed difference larger than the combined measurement variability and uncertainty relevant to the decision?"
+    },
+    {
+      "id": "calibration-verification",
+      "supportsLesson": "THC-ENC-403",
+      "title": "Calibration and Verification Record",
+      "fields": [
+        "Instrument ID","Model","Serial number","Firmware if relevant","Measurand",
+        "Operating range","Procedure","Reference standard ID","Reference lot",
+        "Reference assigned value","Reference uncertainty","Reference expiry",
+        "Environmental conditions","As-found result","Adjustment performed",
+        "As-left result","Acceptance tolerance","Pass or fail",
+        "Affected-data review","Corrective action","Approver","Next due date"
+      ],
+      "decisionPrompt": "If the instrument was out of tolerance as found, which previous measurements may require review?"
+    },
+    {
+      "id": "sampling-plan",
+      "supportsLesson": "THC-ENC-404",
+      "title": "Representative Sampling Plan",
+      "fields": [
+        "Decision to be supported","Target population","Sampling frame","Sampling unit",
+        "Increment definition","Composite definition","Strata","Randomization method",
+        "Sampling route","Sample count","Sample-count rationale","Locations",
+        "Times","Sample mass or volume","Tools","Containers","Preservation",
+        "Chain of custody","Missing-sample rule","Deviation rule","Retained sample",
+        "Inference statement"
+      ],
+      "qualityRules": [
+        "Define the population before collecting samples.",
+        "Do not generalize beyond the sampled population and time window.",
+        "Record spatial, temporal, and biological sampling structure."
+      ]
+    },
+    {
+      "id": "identifier-control",
+      "supportsLesson": "THC-ENC-405",
+      "title": "Permanent Identifier and Relationship Record",
+      "fields": [
+        "Entity type","Permanent ID","Human-readable label","Source system",
+        "Creation date","Parent IDs","Genetic ID","Source ID","Lot ID",
+        "Current location","Current status","Aliases","Label replacement history",
+        "Correction history","Superseded ID if any","Responsible person"
+      ],
+      "qualityRules": [
+        "Never recycle permanent IDs.",
+        "Changing a display label must not destroy lineage or history.",
+        "Record corrections as corrections rather than silently overwriting prior identity."
+      ]
+    }
+  ],
+  "qualityRules": [
+    "Preserve original observations before conversion or correction.",
+    "Separate instrument capability from biological variability.",
+    "Make every measurement traceable to method, sample, instrument, time, and unit.",
+    "Keep identity history append-only wherever practical.",
+    "Do not promote draft records into release evidence without review."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  }
+}

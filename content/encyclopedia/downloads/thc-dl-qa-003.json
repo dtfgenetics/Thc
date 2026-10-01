@@ -1,0 +1,153 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-QA-003",
+  "title": "Postharvest, Laboratory, and Quality Workbook",
+  "status": "draft_for_review",
+  "purpose": "Provide traceable records for harvest/postharvest handling, laboratory samples, deviations/CAPA, control charts, and scientific-paper review.",
+  "lessonIds": [
+    "THC-ENC-411",
+    "THC-ENC-412",
+    "THC-ENC-413",
+    "THC-ENC-414",
+    "THC-ENC-415"
+  ],
+  "sections": [
+    {
+      "id": "postharvest",
+      "supportsLesson": "THC-ENC-411",
+      "title": "Harvest, Drying, Curing, and Storage Record",
+      "fields": [
+        "Batch ID",
+        "Harvest date/time",
+        "Harvest criterion",
+        "Wet mass",
+        "Drying location",
+        "Temperature log",
+        "RH log",
+        "Airflow condition",
+        "Drying duration",
+        "Dry mass",
+        "Water activity if measured",
+        "Moisture if measured",
+        "Conditioning/curing event",
+        "Storage container",
+        "Storage temperature",
+        "Storage RH",
+        "Sample ID",
+        "Hold/release status",
+        "Deviation"
+      ]
+    },
+    {
+      "id": "lab-tracking",
+      "supportsLesson": "THC-ENC-412",
+      "title": "Laboratory Sample and Result Tracking",
+      "fields": [
+        "Sample ID",
+        "Parent batch ID",
+        "Sampling plan",
+        "Collector",
+        "Collection date/time",
+        "Container",
+        "Preservation",
+        "Chain-of-custody events",
+        "Laboratory",
+        "Method",
+        "Preparation",
+        "Result",
+        "Unit",
+        "Reporting basis",
+        "LOD/LOQ if reported",
+        "Uncertainty if reported",
+        "Result qualifier",
+        "Batch inference",
+        "Reviewer"
+      ]
+    },
+    {
+      "id": "capa",
+      "supportsLesson": "THC-ENC-413",
+      "title": "Deviation, Root Cause, and CAPA Record",
+      "fields": [
+        "Deviation ID",
+        "Requirement",
+        "Observed departure",
+        "Detection time",
+        "Containment",
+        "Evidence preserved",
+        "Affected material/data",
+        "Impact assessment",
+        "Immediate cause",
+        "Root cause method",
+        "Root cause",
+        "Corrective action",
+        "Preventive action",
+        "Owner",
+        "Due date",
+        "Effectiveness check",
+        "Closure decision"
+      ]
+    },
+    {
+      "id": "control-chart",
+      "supportsLesson": "THC-ENC-414",
+      "title": "Trend and Control-Chart Record",
+      "fields": [
+        "Metric",
+        "Process",
+        "Time period",
+        "Data source",
+        "Center line",
+        "Control limit method",
+        "Alert limit",
+        "Specification limit if separate",
+        "Special-cause signal",
+        "Trend/drift note",
+        "Investigation",
+        "Action",
+        "Post-action result"
+      ],
+      "decisionPrompt": "Is the signal evidence of process change, or ordinary variation being overinterpreted?"
+    },
+    {
+      "id": "paper-review",
+      "supportsLesson": "THC-ENC-415",
+      "title": "Scientific Paper Appraisal Record",
+      "fields": [
+        "Citation",
+        "Publication status",
+        "Research question",
+        "Material/genotype",
+        "System/environment",
+        "Experimental unit",
+        "Controls",
+        "Replication",
+        "Randomization",
+        "Methods",
+        "Primary outcome",
+        "Effect size",
+        "Uncertainty",
+        "Statistical analysis",
+        "Limitations",
+        "Conflicts/funding",
+        "Claim supported",
+        "Generalization limits",
+        "Decision relevance"
+      ]
+    }
+  ],
+  "qualityRules": [
+    "Keep batch identity intact through postharvest and laboratory sampling.",
+    "Do not close CAPA without an effectiveness check.",
+    "Separate control limits from product specifications.",
+    "Record laboratory method and reporting basis with every result.",
+    "Evaluate scientific claims from methods and uncertainty, not abstract wording alone."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  }
+}

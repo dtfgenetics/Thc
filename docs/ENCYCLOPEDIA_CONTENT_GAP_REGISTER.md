@@ -38,9 +38,9 @@ Every lesson must ultimately contain or resolve to:
 1. Independently review the 420 materialized assessment-rationale drafts and preserve reviewer evidence.
 2. Produce and approve the 420 teaching visuals from the controlled visual queue; briefs are complete, artwork and asset-level QA are not.
 3. Expand exact source-locator / atomic-claim evidence ledgers beyond the initial controlled evidence batch, using the all-source resolution queue to prioritize unresolved references.
-4. Resolve missing Volume 20–21 source-register entries and replace broad source-family placeholders with exact authorities.
+4. Volume 20–21 source registers are restored from their controlled manuscripts on the education practical-resource branch. After source-queue regeneration, the 63 previously missing references are expected to resolve as 58 HTTPS-backed volume authorities and 5 internal/non-public placeholders; exact claim locators and independent authority review remain pending.
 5. Keep encyclopedia assessment complete on its own. Academy/course links are optional navigation only; course curriculum and certification assessments remain independently controlled.
-6. Add/download printable measurement sheets, decision aids, sampling forms, or checklists where the lesson benefits from one.
+6. Practical record workbooks now cover THC-ENC-381–420 on the education practical-resource branch, with controlled registry, validation, renderer gating, and discovery-index support. Continue extending practical resources to earlier lessons where they materially improve learning.
 7. Maintain release state separately from content existence: draft-complete does not mean independently reviewed, publication-authorized, or live.
 
 ## Evidence/data pipeline

@@ -1,0 +1,210 @@
+{
+  "schemaVersion": "1.0.0",
+  "volumeId": "THC-ENC-V21",
+  "sources": [
+    {
+      "id": "V21-SRC-001",
+      "title": "THC Cannabis Plant Science Source Packet v1.0",
+      "useAndLimitation": "Project-controlled plant-science source map; supports architecture and cross-links, but not final standalone proof.",
+      "location": "Internal controlled file"
+    },
+    {
+      "id": "V21-SRC-002",
+      "title": "THC Cultivation SOP Source Materials Packet v1.0",
+      "useAndLimitation": "Project-controlled operational source map for measurement, records, safety, and QA boundaries.",
+      "location": "Internal controlled file"
+    },
+    {
+      "id": "V21-SRC-003",
+      "title": "BIPM — The International System of Units (SI Brochure), 9th edition, version 4.01, June 2026",
+      "useAndLimitation": "Authoritative SI units, symbols, prefixes, quantities, and writing conventions.",
+      "location": "https://www.bipm.org/en/publications/si-brochure"
+    },
+    {
+      "id": "V21-SRC-004",
+      "title": "JCGM 200 — International Vocabulary of Metrology (VIM)",
+      "useAndLimitation": "Authoritative vocabulary for measurement, calibration, verification, accuracy, precision, uncertainty, and traceability.",
+      "location": "https://www.bipm.org/en/committees/jc/jcgm/publications"
+    },
+    {
+      "id": "V21-SRC-005",
+      "title": "JCGM 100 — Guide to the Expression of Uncertainty in Measurement (GUM)",
+      "useAndLimitation": "General framework for evaluating and reporting measurement uncertainty; current supplements and amendments require release review.",
+      "location": "https://www.bipm.org/en/committees/jc/jcgm/publications"
+    },
+    {
+      "id": "V21-SRC-006",
+      "title": "NIST — Metrological Traceability",
+      "useAndLimitation": "Explains that traceability is a property of a measurement result through a documented unbroken calibration chain, with each link contributing uncertainty.",
+      "location": "https://www.nist.gov/calibrations/metrological-traceability"
+    },
+    {
+      "id": "V21-SRC-007",
+      "title": "NIST Technical Note 1297 — Guidelines for Evaluating and Expressing the Uncertainty of NIST Measurement Results",
+      "useAndLimitation": "Practical uncertainty vocabulary, components, combination, coverage, and reporting.",
+      "location": "https://www.nist.gov/pml/nist-technical-note-1297"
+    },
+    {
+      "id": "V21-SRC-008",
+      "title": "ISO/IEC 17025:2017 — General requirements for the competence of testing and calibration laboratories",
+      "useAndLimitation": "Laboratory competence, impartiality, method control, equipment, traceability, sampling, reporting, and nonconforming work; standard text and current confirmation status require controlled access.",
+      "location": "https://www.iso.org/standard/66912.html"
+    },
+    {
+      "id": "V21-SRC-009",
+      "title": "NIST/SEMATECH e-Handbook of Statistical Methods",
+      "useAndLimitation": "Primary reference for experimental design, measurement process characterization, control charts, uncertainty, regression, and statistical graphics.",
+      "location": "https://www.itl.nist.gov/div898/handbook/"
+    },
+    {
+      "id": "V21-SRC-010",
+      "title": "Wilkinson et al. 2016 — The FAIR Guiding Principles for scientific data management and stewardship",
+      "useAndLimitation": "Findable, accessible, interoperable, and reusable data principles; FAIR does not automatically mean open or high quality.",
+      "location": "https://www.nature.com/articles/sdata201618"
+    },
+    {
+      "id": "V21-SRC-011",
+      "title": "MIAPPE — Minimum Information About a Plant Phenotyping Experiment",
+      "useAndLimitation": "Plant-phenotyping metadata, biological material, environment, experimental design, observations, and data reporting.",
+      "location": "https://www.miappe.org/"
+    },
+    {
+      "id": "V21-SRC-012",
+      "title": "Papoutsoglou et al. 2020 — Enabling reusability of plant phenomic datasets with MIAPPE 1.1",
+      "useAndLimitation": "Plant experiment and phenotyping reporting standard with machine-readable context.",
+      "location": "https://doi.org/10.1111/nph.16544"
+    },
+    {
+      "id": "V21-SRC-013",
+      "title": "DataCite Metadata Schema",
+      "useAndLimitation": "Persistent identifiers, creators, versions, related identifiers, dates, resource types, and citation metadata.",
+      "location": "https://schema.datacite.org/"
+    },
+    {
+      "id": "V21-SRC-014",
+      "title": "Crossref — Crossmark",
+      "useAndLimitation": "Publisher-maintained record of corrections, retractions, updates, and current document status.",
+      "location": "https://www.crossref.org/services/crossmark/"
+    },
+    {
+      "id": "V21-SRC-015",
+      "title": "NLM — Errata, retractions, and other linked publication notices in PubMed",
+      "useAndLimitation": "Publication-status controls and linked notices; database records must be checked at use and release.",
+      "location": "https://www.nlm.nih.gov/bsd/policy/errata.html"
+    },
+    {
+      "id": "V21-SRC-016",
+      "title": "W3C PROV-O — The PROV Ontology",
+      "useAndLimitation": "Machine-readable provenance relationships among entities, activities, agents, derivations, and revisions.",
+      "location": "https://www.w3.org/TR/prov-o/"
+    },
+    {
+      "id": "V21-SRC-017",
+      "title": "NIST — Biological and chemical data provenance guidance and research",
+      "useAndLimitation": "Provenance concepts for samples, methods, transformations, datasets, and analysis chains.",
+      "location": "https://www.nist.gov/topics/data-science"
+    },
+    {
+      "id": "V21-SRC-018",
+      "title": "ISO 5725 series — Accuracy (trueness and precision) of measurement methods and results",
+      "useAndLimitation": "Repeatability, reproducibility, trueness, precision, and method-performance concepts; current parts require controlled access and version review.",
+      "location": "https://www.iso.org/committee/54970/x/catalogue/"
+    },
+    {
+      "id": "V21-SRC-019",
+      "title": "JCGM 106 — The role of measurement uncertainty in conformity assessment",
+      "useAndLimitation": "Decision rules, guard bands, acceptance limits, and uncertainty in pass/fail decisions.",
+      "location": "https://www.bipm.org/en/committees/jc/jcgm/publications"
+    },
+    {
+      "id": "V21-SRC-020",
+      "title": "ASTM Committee D37 on Cannabis",
+      "useAndLimitation": "Current consensus standards and work items for cannabis sampling, testing, quality, security, and processing; exact edition and applicability must be verified.",
+      "location": "https://www.astm.org/get-involved/technical-committees/committee-d37"
+    },
+    {
+      "id": "V21-SRC-021",
+      "title": "AOAC INTERNATIONAL — Cannabis Analytical Science Program",
+      "useAndLimitation": "Validated-method and performance-requirement context for cannabinoids, contaminants, and cannabis matrices; method scope must be checked.",
+      "location": "https://www.aoac.org/scientific-solutions/cannabis/"
+    },
+    {
+      "id": "V21-SRC-022",
+      "title": "NIST Cannabis Quality Assurance Program and Reference Materials",
+      "useAndLimitation": "Interlaboratory comparison and reference-material context for cannabis and hemp measurements.",
+      "location": "https://www.nist.gov/programs-projects/cannabis-quality-assurance-program"
+    },
+    {
+      "id": "V21-SRC-023",
+      "title": "ASTM and instrument-manufacturer water-activity method controls",
+      "useAndLimitation": "Sample equilibration, instrument verification, temperature, cleanliness, and device-specific limitations.",
+      "location": "https://www.astm.org/"
+    },
+    {
+      "id": "V21-SRC-024",
+      "title": "USDA NRCS — National Engineering Handbook, irrigation and water-management standards",
+      "useAndLimitation": "Measurement and record concepts for irrigation flow, pressure, application, distribution, and water management.",
+      "location": "https://www.nrcs.usda.gov/resources/guides-and-instructions"
+    },
+    {
+      "id": "V21-SRC-025",
+      "title": "APHA/AWWA/WEF — Standard Methods for the Examination of Water and Wastewater",
+      "useAndLimitation": "Method-controlled water sampling and analysis context; exact edition and method access require review.",
+      "location": "https://www.standardmethods.org/"
+    },
+    {
+      "id": "V21-SRC-026",
+      "title": "EPA — Quality System and Quality Assurance Project Plans",
+      "useAndLimitation": "Data-quality objectives, sampling design, QA/QC, documentation, validation, and corrective action.",
+      "location": "https://www.epa.gov/quality"
+    },
+    {
+      "id": "V21-SRC-027",
+      "title": "FDA — Investigating Out-of-Specification Test Results for Pharmaceutical Production",
+      "useAndLimitation": "Structured investigation concepts for suspect results, laboratory review, production review, and scientifically justified conclusions; product-regulatory scope differs.",
+      "location": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/investigating-out-specification-oos-test-results-pharmaceutical-production"
+    },
+    {
+      "id": "V21-SRC-028",
+      "title": "ICH Q9(R1) — Quality Risk Management",
+      "useAndLimitation": "Risk-based decision, hazard, probability, severity, detectability, control, communication, and review concepts; pharmaceutical scope requires bounded transfer.",
+      "location": "https://www.ich.org/page/quality-guidelines"
+    },
+    {
+      "id": "V21-SRC-029",
+      "title": "ISO 9001:2015 — Quality management systems",
+      "useAndLimitation": "Documented process, competence, monitoring, nonconformity, corrective action, and continual improvement concepts; certification is not required for educational use.",
+      "location": "https://www.iso.org/standard/62085.html"
+    },
+    {
+      "id": "V21-SRC-030",
+      "title": "Montgomery — Design and Analysis of Experiments",
+      "useAndLimitation": "General experimental-design reference for randomization, replication, blocking, factorials, interactions, and model checking.",
+      "location": "https://www.wiley.com/en-us/Design+and+Analysis+of+Experiments%2C+10th+Edition-p-9781119722106"
+    },
+    {
+      "id": "V21-SRC-031",
+      "title": "Lazic 2010 — The problem of pseudoreplication in neuroscientific studies",
+      "useAndLimitation": "Clear treatment of experimental units, technical replicates, and invalid inflation of sample size; transfer as general design principle.",
+      "location": "https://doi.org/10.1038/nrn2898"
+    },
+    {
+      "id": "V21-SRC-032",
+      "title": "Gelman and Hill — Data Analysis Using Regression and Multilevel/Hierarchical Models",
+      "useAndLimitation": "Confounding, partial pooling, repeated measures, multilevel data, and model-based interpretation.",
+      "location": "https://www.cambridge.org/highereducation/books/data-analysis-using-regression-and-multilevel-hierarchical-models/32A29531C7FD730C3A68951A17C9D983"
+    },
+    {
+      "id": "V21-SRC-033",
+      "title": "THC Cannabis Encyclopedia Volumes 01–20 controlled manuscripts",
+      "useAndLimitation": "Internal examples of morphology, environment, irrigation, diagnostic, postharvest, breeding, and evidence-limit records.",
+      "location": "Internal controlled collection"
+    },
+    {
+      "id": "V21-SRC-034",
+      "title": "THC Master Content Compilation and Merge Register v1.0",
+      "useAndLimitation": "Permanent IDs, completion definitions, review gates, source hierarchy, visual requirements, page package, and release-state separation.",
+      "location": "Internal controlled file"
+    }
+  ]
+}

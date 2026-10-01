@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-BREED-002",
+  "title": "Line Advancement and Breeding-System Evaluation Workbook",
+  "status": "draft_for_review",
+  "purpose": "Support later-generation selection, backcross recovery, selfing/inbreeding evaluation, feminized-seed progeny evaluation, and regular/feminized/autoflower comparison with traceable records.",
+  "lessonIds": ["THC-ENC-386","THC-ENC-387","THC-ENC-388","THC-ENC-389","THC-ENC-390"],
+  "sections": [
+    {
+      "id": "family-advancement",
+      "supportsLesson": "THC-ENC-386",
+      "title": "F3+ Family Advancement Record",
+      "fields": [
+        "Family ID","Pedigree ID","Generation","Mating method","Plants per family",
+        "Environment or replicate","Family trait mean","Within-family variance",
+        "Selected individual IDs","Residual segregation observed","Seed quantity",
+        "Backup seed or clone location","Reason for advancement","Reason for hold",
+        "Reason for rejection","Next-generation test plan"
+      ],
+      "decisionPrompt": "Is the family being advanced because of repeatable family performance, or because of one exceptional individual?"
+    },
+    {
+      "id": "backcross-recovery",
+      "supportsLesson": "THC-ENC-387",
+      "title": "Backcross Recovery Record",
+      "fields": [
+        "Donor parent ID","Recurrent parent ID","Target trait","Evidence for target trait",
+        "Backcross generation","Foreground selection result","Background marker result if used",
+        "Recurrent-parent genome estimate if calculated","Observed target phenotype",
+        "Penetrance or expression notes","Flanking-marker or recombination notes",
+        "Off-target donor traits","Fertility","Selected progeny","Rejected progeny",
+        "Reason for advancement"
+      ],
+      "referenceExpectations": [
+        {"generation":"F1","idealizedRecurrentParentFraction":0.5},
+        {"generation":"BC1","idealizedRecurrentParentFraction":0.75},
+        {"generation":"BC2","idealizedRecurrentParentFraction":0.875},
+        {"generation":"BC3","idealizedRecurrentParentFraction":0.9375}
+      ],
+      "limits": "These fractions are population expectations under simplified assumptions, not guaranteed values for an individual plant.",
+      "decisionPrompt": "Is the target introgression retained while unwanted donor-linked material and recurrent-parent defects are being measured rather than assumed away?"
+    },
+    {
+      "id": "selfing-inbreeding",
+      "supportsLesson": "THC-ENC-388",
+      "title": "Selfing and Inbreeding Evaluation",
+      "fields": [
+        "Parent ID","Starting heterozygosity evidence","Selfing generation","Selfing method category",
+        "Seed set","Germination","Family size","Survival","Vigor measurements",
+        "Fertility measurements","Sex-expression observations","Abnormality count",
+        "Trait variance","Molecular homozygosity if measured","Selected family IDs",
+        "Rejected family IDs","Backup material","Evidence of inbreeding depression"
+      ],
+      "referenceModel": {
+        "statement": "Under an ideal single-locus model, expected heterozygosity halves with each selfed generation.",
+        "limits": "Realized fixation differs by locus and population because of recombination, linkage, viability, selection, and starting genotype."
+      },
+      "decisionPrompt": "Is increased uniformity accompanied by acceptable vigor, fertility, and stability, or is the line showing evidence of inbreeding depression?"
+    },
+    {
+      "id": "feminized-progeny-evaluation",
+      "supportsLesson": "THC-ENC-389",
+      "title": "Feminized-Seed Biology and Progeny Evaluation",
+      "fields": [
+        "Pollen-donor ID","Recipient ID","Verified genetic-sex method if used",
+        "Mating design: selfed or outcrossed","Relatedness","Research authorization record",
+        "Research-material segregation record","Induced flower response summary",
+        "Pollen viability result if measured","Pollination record","Seed set",
+        "Germination","Progeny genetic-sex result if tested","Observed sex expression",
+        "Intersexuality test environment","Vigor","Chemotype","Off-types","Disposition"
+      ],
+      "safetyBoundary": "This workbook records breeding biology and progeny outcomes. It does not provide chemical preparation, concentration, dosing, application, waste-disposal, or product-use instructions.",
+      "decisionPrompt": "Do progeny data support the intended sex outcome and acceptable stability under defined environments without treating feminization as a guarantee of uniformity?"
+    },
+    {
+      "id": "seed-system-comparison",
+      "supportsLesson": "THC-ENC-390",
+      "title": "Regular, Feminized, and Autoflower Trial Comparison",
+      "fields": [
+        "Seed system","Cross type","Parent sex genotype if known","Observed parent sex expression",
+        "Selfed or outcrossed design","Flowering marker or allele if validated",
+        "Photoperiod history","Temperature range","Days to flower","Nodes to flower",
+        "Sex ratio","Observed off-types","Family size","Trait mean","Trait variance",
+        "Target-environment result","Failure condition","Interpretation"
+      ],
+      "comparisonRule": "Compare systems under matched environments and measurements. Seed-system labels do not by themselves establish diversity, stability, chemotype, disease resistance, or legal compliance.",
+      "decisionPrompt": "Which system best matches the stated target profile under the tested environment, and what evidence remains unresolved?"
+    }
+  ],
+  "qualityRules": [
+    "Keep filial generation, selfing generation, and backcross generation as separate fields.",
+    "Do not describe generation labels as proof of stability or quality.",
+    "Treat expected genome fractions and heterozygosity changes as models, not individual guarantees.",
+    "Record negative results and rejected families because they are part of selection evidence.",
+    "Keep research treatment records separated from consumable or production material."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  }
+}
