@@ -217,3 +217,35 @@ The read-only `packet` command returns the complete execution contract: reposito
 `result --outcome=ready-for-verification` moves the job to `VERIFYING` and records the expected head/PR. `result --outcome=failed` moves it to bounded retry handling.
 
 The durable audit flags active jobs with no executor, executor/lease ownership mismatches, and stale executor heartbeats.
+
+
+## Cross-repository canonical routing
+
+The `Thc` repository is the control plane, not the canonical implementation home for every DTF product.
+
+A planned job may declare:
+
+```html
+<!-- worker-plan:{"canonicalDomain":"cultivation tools","resourceSet":["tool.vpd"],"allowedPaths":["src/tools/vpd/**"],"verificationProfile":"tools-canonical"} -->
+```
+
+The controller resolves `canonicalDomain` through `data/repository-registry.json`.
+
+Examples:
+
+- cultivation tools -> `dtfgenetics/Tools`
+- THC encyclopedia/general cultivation education -> `dtfgenetics/thc-grow-hub`
+- certification courses -> `dtfgenetics/Thc-learning-courses-`
+- Grow Doc application -> `dtfgenetics/Thc-dataset`
+
+For external canonical repositories:
+
+1. the central GitHub issue remains the durable job ledger;
+2. dispatch records the target repository and managed branch but does not create that branch in `Thc`;
+3. external jobs require explicit `resourceSet`, `allowedPaths`, and `verificationProfile`;
+4. an authorized executor runs `orchestrator-executor.mjs provision` to create the managed branch in the canonical repo and record its base SHA;
+5. only after provisioning may the executor claim and start the job;
+6. reconciliation, PR discovery, changed-file scope checks, and exact-head verification inspect the canonical target repo;
+7. the durable lifecycle state remains in the central `Thc` issue.
+
+This prevents integration mirrors or migration repositories from silently becoming a second source of truth.
