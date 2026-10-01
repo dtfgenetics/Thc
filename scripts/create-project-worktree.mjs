@@ -22,9 +22,9 @@ const options = Object.fromEntries(process.argv.slice(2).filter((arg) => arg.sta
   return [key, rest.join('=') || 'true'];
 }));
 
-const [projectRaw, taskRaw] = positional;
+const [projectRaw, taskRaw, sessionRaw] = positional;
 if (!projectRaw || !taskRaw) {
-  console.error('Usage: node scripts/create-project-worktree.mjs <project-id> <task> [--base=main] [--multi] [--root=/path]');
+  console.error('Usage: node scripts/create-project-worktree.mjs <project-id> <task> [session-id] [--base=main] [--multi] [--root=/path]');
   process.exit(2);
 }
 
@@ -39,11 +39,17 @@ function slug(value) {
 
 const project = slug(projectRaw);
 const task = slug(taskRaw);
+const session = slug(sessionRaw || options.session || process.env.DTF_SESSION_ID || '');
 const base = slug(options.base || 'main');
 const isMulti = options.multi === 'true';
 
 if (!project || !task || !base) {
   console.error('Project, task, and base must contain letters/numbers after normalization.');
+  process.exit(2);
+}
+if (!isMulti && !session) {
+  console.error('Normal parallel work requires a unique session id: <project-id> <task> <session-id> or --session=<id>.');
+  console.error('Use --multi only for intentional cross-project integration work.');
   process.exit(2);
 }
 
@@ -54,11 +60,11 @@ if (!repoRoot) {
 }
 
 const repoName = basename(repoRoot);
-const branch = isMulti ? `multi/${task}` : `project/${project}/${task}`;
+const branch = isMulti ? `multi/${task}` : `work/${project}/${task}/${session}`;
 const worktreeRoot = options.root
   ? resolve(options.root)
   : join(dirname(repoRoot), `${repoName}-worktrees`);
-const worktreePath = join(worktreeRoot, `${isMulti ? 'multi' : project}-${task}`);
+const worktreePath = join(worktreeRoot, isMulti ? `multi-${task}` : `${project}-${task}-${session}`);
 
 if (existsSync(worktreePath)) {
   console.error(`Worktree path already exists: ${worktreePath}`);
@@ -87,5 +93,5 @@ console.log('Parallel project workspace created.');
 console.log(`Branch:   ${branch}`);
 console.log(`Worktree: ${worktreePath}`);
 console.log('');
-console.log('Each project can now be edited, tested, committed, and pushed without changing the checkout used by other projects.');
+console.log('Each chat/session can now be edited, tested, committed, and pushed without changing the checkout used by other sessions.');
 console.log(`Next: cd ${JSON.stringify(worktreePath)}`);
