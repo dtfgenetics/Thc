@@ -16,6 +16,8 @@ const publicCards = manifest.files
   .sort((a, b) => a.id.localeCompare(b.id));
 const canonicalFamilies = JSON.parse(fs.readFileSync(path.join(dataRoot, 'families.json'), 'utf8'));
 const publicFamilies = JSON.parse(fs.readFileSync(path.join(publicRoot, 'data', 'families.json'), 'utf8'));
+const canonicalEffects = JSON.parse(fs.readFileSync(path.join(dataRoot, 'effect-profiles.json'), 'utf8'));
+const publicEffects = JSON.parse(fs.readFileSync(path.join(publicRoot, 'data', 'effect-profiles.json'), 'utf8'));
 
 if (JSON.stringify(canonicalCards) !== JSON.stringify(publicCards)) {
   throw new Error('Public Strain Showdown roster data is not synchronized with the canonical 96-card roster.');
@@ -23,14 +25,17 @@ if (JSON.stringify(canonicalCards) !== JSON.stringify(publicCards)) {
 if (JSON.stringify(canonicalFamilies) !== JSON.stringify(publicFamilies)) {
   throw new Error('Public Strain Showdown family data is not synchronized with canonical families.json.');
 }
+if (JSON.stringify(canonicalEffects) !== JSON.stringify(publicEffects)) {
+  throw new Error('Public Strain Showdown effect profiles are not synchronized with canonical effect-profiles.json.');
+}
 
 const { target, bundle } = buildBrowserBundle();
 const generated = JSON.parse(fs.readFileSync(target, 'utf8'));
 const bundledCards = [...generated.cards].sort((a, b) => a.id.localeCompare(b.id));
-if (generated.schemaVersion !== 1 || generated.rosterVersion !== manifest.rosterVersion) {
+if (generated.schemaVersion !== 2 || generated.rosterVersion !== manifest.rosterVersion || generated.effectVersion !== canonicalEffects.version) {
   throw new Error('Generated Strain Showdown browser bundle metadata is invalid.');
 }
-if (generated.cardCount !== 96 || generated.familyCount !== 8 || generated.cards.length !== 96 || generated.families.length !== 8) {
+if (generated.cardCount !== 96 || generated.familyCount !== 8 || generated.cards.length !== 96 || generated.families.length !== 8 || generated.effects?.activeInBrowserRules !== true || generated.effects?.profiles?.length !== 24) {
   throw new Error('Generated Strain Showdown browser bundle is incomplete.');
 }
 if (JSON.stringify(bundledCards) !== JSON.stringify(canonicalCards)) {
@@ -38,6 +43,9 @@ if (JSON.stringify(bundledCards) !== JSON.stringify(canonicalCards)) {
 }
 if (JSON.stringify(generated.families) !== JSON.stringify(canonicalFamilies)) {
   throw new Error('Generated Strain Showdown browser bundle family metadata drifted from canonical data.');
+}
+if (JSON.stringify(generated.effects) !== JSON.stringify(canonicalEffects)) {
+  throw new Error('Generated Strain Showdown browser bundle effect profiles drifted from canonical data.');
 }
 if (bundle.cards.length !== generated.cards.length || bundle.families.length !== generated.families.length) {
   throw new Error('Generated Strain Showdown browser bundle write verification failed.');
@@ -56,6 +64,7 @@ if (!html.includes('type="module" src="./app.js"')) throw new Error('Browser mod
 if (!html.includes('./runtime-v2.css') || !html.includes('./runtime-v3.css')) throw new Error('Responsive Strain Showdown runtime layers must be loaded.');
 if (!app.includes('./data/browser-bundle.json')) throw new Error('Browser runtime must prefer the generated canonical roster bundle.');
 if (!app.includes('loadLegacyData')) throw new Error('Browser runtime must retain a fallback when the generated bundle is absent.');
+if (!app.includes('effectCatalog') || !app.includes('ability-text')) throw new Error('Browser runtime must load and display active card abilities.');
 if (html.includes('Prototype record:') || html.includes('Prototype ruleset') || html.includes('gameplay prototype')) {
   throw new Error('Player-facing Strain Showdown must not expose prototype-stage wording.');
 }
