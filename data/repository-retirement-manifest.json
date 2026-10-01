@@ -378,6 +378,66 @@
       "branch": "repair/disable-migration-auto-deploy",
       "disposition": "delete_safe",
       "basis": "legacy_deployment_workflow_change_superseded_by_current_migration-only_production_boundary"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "harden-live-kush-kings-audit",
+      "disposition": "delete_safe",
+      "basis": "legacy_static/PHP_live-audit_branch_superseded_by_canonical_Thc-chess-git_production_runtime_smoke,_deployment_checks,_and_dedicated_Node/Socket.IO_deployment"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "kush-kings-authoritative-moves",
+      "disposition": "delete_safe",
+      "basis": "canonical_Thc-chess-git_sendMove_uses_chess.js_authoritative_server-side_legal-move_and_turn_validation_with_persistence_rollback"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "kush-kings-cancel-waiting-room",
+      "disposition": "delete_safe",
+      "basis": "legacy_PHP_waiting-room_flow_superseded_by_canonical_Socket.IO_lobby_join/leave_lifecycle_and_disconnect_cleanup"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "kush-kings-http-method-guards",
+      "disposition": "delete_safe",
+      "basis": "legacy_PHP_endpoint_method_guards_are_obsolete_after_migration_to_Express_routes_plus_authenticated_Socket.IO_session_middleware"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "kush-kings-input-validation",
+      "disposition": "delete_safe",
+      "basis": "canonical_Thc-chess-git_normalizes_room_codes,_chat_messages,_draw/abandon_inputs_and_validates_chess_moves_server-side"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "kush-kings-lifecycle-sync",
+      "disposition": "delete_safe",
+      "basis": "canonical_Thc-chess-git_lobby_join/leave,_reconnect_state,_observer_roster_and_timeout_cleanup_supersede_PHP_lifecycle_sync"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "kush-kings-observer-polling-fix",
+      "disposition": "delete_safe",
+      "basis": "canonical_Thc-chess-git_uses_Socket.IO_observer_roster_and_room_broadcasts_instead_of_legacy_polling"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "kush-kings-private-poll-token",
+      "disposition": "delete_safe",
+      "basis": "legacy_polling_token_is_obsolete_in_canonical_authenticated_session_+_Socket.IO_architecture"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "kush-kings-rematch-flow",
+      "disposition": "delete_safe",
+      "basis": "canonical_Thc-chess-git_project_contract_explicitly_preserves_rematch_behavior_in_the_current_room_architecture"
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "branch": "kush-kings-ux-abuse-hardening",
+      "disposition": "delete_safe",
+      "basis": "canonical_Thc-chess-git_has_session_authentication,_chat_normalization/rate_limiting,_room-code_validation_and_player-seat_guards"
     }
   ]
 }
