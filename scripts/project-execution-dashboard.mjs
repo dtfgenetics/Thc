@@ -3,6 +3,8 @@ import fs from 'node:fs';
 
 const execution = JSON.parse(fs.readFileSync('data/project-execution-registry.json', 'utf8'));
 const projects = JSON.parse(fs.readFileSync('data/project-registry.json', 'utf8'));
+const externalContracts = JSON.parse(fs.readFileSync('data/external-agent-contract-registry.json', 'utf8'));
+const externalContractByRepo = new Map((externalContracts.repositories || []).map(entry => [entry.repo, entry]));
 
 const execById = new Map();
 const execByAlias = new Map();
@@ -49,6 +51,9 @@ function resolveExecution(project) {
 const rows = (projects.projects || []).map(project => {
   const resolved = resolveExecution(project);
   const entry = resolved.entry;
+  const contract = project.repo === externalContracts.controlRepository
+    ? { mode: 'local', path: null }
+    : externalContractByRepo.get(project.repo) || null;
   return {
     id: project.id,
     name: project.name,
@@ -60,6 +65,8 @@ const rows = (projects.projects || []).map(project => {
     validationCommand: entry.validationCommand,
     integrationRepo: entry.integration?.repo || null,
     integrationMode: entry.integration?.mode || null,
+    agentExecutionMode: contract?.mode || 'undeclared',
+    agentContractPath: contract ? (contract.path || externalContracts.contractPath || 'dtf-agent-contract.json') : null,
     branchPattern: 'work/' + project.id + '/<task>/<session-id>'
   };
 });
@@ -101,6 +108,7 @@ for (const row of rows) {
     row.canonicalRepo,
     row.executionContract,
     row.routeSource,
-    row.integrationMode || 'no-integration-mode'
+    row.integrationMode || 'no-integration-mode',
+    row.agentExecutionMode
   ].join(' | '));
 }
