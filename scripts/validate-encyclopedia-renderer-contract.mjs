@@ -12,6 +12,8 @@ const required=[
   ['misconception section','<h2>Common misconceptions</h2>'],
   ['evidence limits section','<h2>Evidence limits</h2>'],
   ['assessment section','<h2>Check your reasoning</h2>'],
+  ['approved practical-resource section','practicalResourcesHtml'],
+  ['practical-resource approval gate',"status==='approved'&&x.publicRoute"],
   ['learner answer rationales','rationaleHtml'],
   ['rationale disclosure UI','thc-rationale'],
   ['desktop article/sidebar layout','thc-layout'],
