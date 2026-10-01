@@ -28,7 +28,7 @@ const hub=await findPage('learning-hub',869);must(hub,'Learning Hub page not fou
 const program=await findPage(local.program.slug,hub.id);must(program,'Technician I page not found.');
 const course=await findPage(local.course.slug,program.id);must(course,'Course 1 page not found.');
 const courseHtml=checkContent(course,'Course 1');
-must(/Course map/.test(courseHtml)&&/18 lessons/.test(courseHtml)&&/How to use this course/.test(courseHtml),'Course 1 page lacks guided-learning orientation.');
+must(/Start with Module 1/.test(courseHtml)&&/18 lessons/.test(courseHtml)&&/How to use this course/.test(courseHtml),'Course 1 page lacks guided-learning orientation.');
 
 const pages=[];
 let lessonIndex=0;
