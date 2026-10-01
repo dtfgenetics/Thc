@@ -256,6 +256,11 @@ function addDuplicateTitleIssues(results) {
 
 async function auditIndexability() {
   const issues = [];
+  const requiredCanonicalPaths = ['/', '/seeds/', '/learn/', '/courses/', '/tools/', '/games/', '/shop/'];
+  const retiredOrLegacyPaths = [
+    '/explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art/',
+    '/exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools/'
+  ];
   const warnings = [];
   const robotsUrl = normalizedUrl('/robots.txt');
   const robots = await fetchText(robotsUrl, { accept: 'text/plain,*/*' });
@@ -282,6 +287,26 @@ async function auditIndexability() {
   }
 
   if (!working) issues.push('No working XML sitemap was found at robots-declared or standard sitemap locations');
+
+  let sitemapInventory = [];
+  if (working) {
+    const seen = new Set();
+    const queue = [working.url];
+    while (queue.length && seen.size < 30) {
+      const sitemapUrl = queue.shift();
+      if (seen.has(sitemapUrl)) continue;
+      seen.add(sitemapUrl);
+      const result = await fetchText(sitemapUrl, { accept: 'application/xml,text/xml,text/plain,*/*' });
+      if (result.status !== 200) { issues.push(`Sitemap child returned HTTP ${result.status || 'ERR'}: ${sitemapUrl}`); continue; }
+      const locs = [...result.body.matchAll(/<loc>\s*([^<]+)\s*<\/loc>/gi)].map(match => decodeHtml(match[1]).trim());
+      if (/<sitemapindex\b/i.test(result.body)) queue.push(...locs);
+      else sitemapInventory.push(...locs);
+    }
+    sitemapInventory = [...new Set(sitemapInventory)];
+    const inventoryPaths = new Set(sitemapInventory.map(url => { try { return new URL(url).pathname; } catch { return ''; } }));
+    for (const path of requiredCanonicalPaths) if (!inventoryPaths.has(path)) issues.push(`Canonical route missing from XML sitemap inventory: ${path}`);
+    for (const path of retiredOrLegacyPaths) if (inventoryPaths.has(path)) issues.push(`Legacy route still present in XML sitemap inventory: ${path}`);
+  }
   if (working && !declared.length) warnings.push(`robots.txt does not declare a Sitemap line; discovered ${working.url} directly`);
 
   return {
@@ -290,6 +315,9 @@ async function auditIndexability() {
     sitemapDeclared: declared,
     sitemapProbes: probes,
     workingSitemap: working?.url || null,
+    sitemapInventoryCount: sitemapInventory.length,
+    requiredCanonicalPaths,
+    retiredOrLegacyPaths,
     issues,
     warnings,
     passed: issues.length === 0
