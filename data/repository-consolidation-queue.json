@@ -216,9 +216,54 @@
           {
             "branch": "kush-kings-ux-abuse-hardening",
             "basis": "canonical Thc-chess-git has session authentication, chat normalization/rate limiting, room-code validation and player-seat guards"
+          },
+          {
+            "branch": "content/start-here-beginner-pass",
+            "basis": "canonical thc-grow-hub already owns the active THC First Grow Guide 10-page beginner path"
+          },
+          {
+            "branch": "education-reconciliation",
+            "basis": "education ownership/policy is recovered into canonical thc-grow-hub; legacy hub branch is historical provenance"
+          },
+          {
+            "branch": "feat/course1-public-academy-route",
+            "basis": "canonical Course 1 is owned and published from Thc-learning-courses-; legacy academy route is compatibility-only"
+          },
+          {
+            "branch": "reconcile/education-control-current-main",
+            "basis": "education control recovery is superseded by canonical thc-grow-hub ownership and current controls"
+          },
+          {
+            "branch": "reconcile/education-genetics-current-main",
+            "basis": "0 commits ahead of current main; branch is fully behind"
           }
         ],
-        "reconcileNeeded": [],
+        "reconcileNeeded": [
+          {
+            "branch": "integration/genetics-growdoc-issues",
+            "reason": "contains genetics-propagation to Grow Doc issue mapping; verify unique controlled IDs/data before retirement"
+          },
+          {
+            "branch": "integration/genetics-growdoc-targets",
+            "reason": "contains genetics Grow Doc target mapping; compare with canonical Thc-dataset before retirement"
+          },
+          {
+            "branch": "integration/genetics-propagation-crosswalk",
+            "reason": "contains genetics/propagation education crosswalk; compare with thc-grow-hub and Thc-dataset"
+          },
+          {
+            "branch": "recovery/genetics-propagation-center",
+            "reason": "contains recovered genetics/propagation center data requiring canonical-owner comparison"
+          },
+          {
+            "branch": "recovery/genetics-propagation-complete",
+            "reason": "contains later recovered genetics/propagation data requiring canonical-owner comparison"
+          },
+          {
+            "branch": "ui/learn-visitor-ux-pass",
+            "reason": "legacy learner UI/CSS branch; compare only reusable UX behavior against canonical education/public experience"
+          }
+        ],
         "rule": "Do not merge diverged cleanup branches wholesale. Rebase or selectively apply only the retirement changes that remain valid against current main, then validate before classifying delete-safe."
       }
     },
