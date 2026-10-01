@@ -107,11 +107,18 @@ try {
   const priorityLabel = priority ? `priority:${priority.replace(/^priority:/, '')}` : null
 
   const plannedBody = replacePlanMarker(issue.body, plan)
+  const workerLabels = new Set(Object.values(config.workerKinds || {}).map((entry) => entry.label).filter(Boolean))
+  const normalizedLabels = (issue.labels || []).filter((label) => {
+    const name = typeof label === 'string' ? label : label.name
+    return !String(name || '').startsWith('project:') &&
+      !String(name || '').startsWith('priority:') &&
+      !workerLabels.has(name)
+  })
   const synthetic = {
     ...issue,
     body: plannedBody,
     labels: [
-      ...(issue.labels || []),
+      ...normalizedLabels,
       { name: projectLabel },
       { name: workerLabel },
       ...(priorityLabel ? [{ name: priorityLabel }] : []),
@@ -149,7 +156,18 @@ try {
   ensureLabel(repo, workerLabel, '1D76DB', `Worker kind: ${workerKind}`)
   if (priorityLabel) ensureLabel(repo, priorityLabel, 'D93F0B', `Worker priority: ${priorityLabel}`)
 
-  const editArgs = ['issue', 'edit', String(number), '--repo', repo, '--body', plannedBody, '--add-label', projectLabel, '--add-label', workerLabel]
+  const staleRoutingLabels = (issue.labels || [])
+    .map((label) => typeof label === 'string' ? label : label.name)
+    .filter((name) =>
+      String(name || '').startsWith('project:') ||
+      String(name || '').startsWith('priority:') ||
+      workerLabels.has(name)
+    )
+    .filter((name) => ![projectLabel, workerLabel, priorityLabel].includes(name))
+
+  const editArgs = ['issue', 'edit', String(number), '--repo', repo, '--body', plannedBody]
+  for (const stale of staleRoutingLabels) editArgs.push('--remove-label', stale)
+  editArgs.push('--add-label', projectLabel, '--add-label', workerLabel)
   if (priorityLabel) editArgs.push('--add-label', priorityLabel)
   if (ready) editArgs.push('--add-label', config.labels.ready)
   capture(editArgs)
