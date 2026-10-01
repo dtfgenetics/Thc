@@ -54,8 +54,8 @@ function resolveSatisfiedDependencies(repo, readyIssues, config) {
   const satisfied = []
   const states = []
   for (const number of dependencyNumbers) {
-    const dependencyIssue = json(['api', `repos/${repo}/issues/${number}`], null)
-    if (!dependencyIssue || dependencyIssue.pull_request) {
+    const dependencyIssue = json(['api', `repos/${repo}/issues/${number}`], {})
+    if (!dependencyIssue?.number || dependencyIssue.pull_request) {
       states.push({ issueNumber: number, satisfied: false, reason: 'missing-or-not-job-issue' })
       continue
     }
