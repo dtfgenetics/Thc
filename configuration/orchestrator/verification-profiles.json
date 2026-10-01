@@ -5,6 +5,9 @@
       "commands": [
         "node --check scripts/orchestrator.mjs",
         "node --check scripts/orchestrator-plan-job.mjs",
+        "node scripts/orchestrator-epic.mjs --manifest=configuration/orchestrator/example-epic-manifest.json",
+        "node --check scripts/orchestrator/epics.mjs",
+        "node --check scripts/orchestrator-epic.mjs",
         "node --check scripts/orchestrator/core.mjs",
         "node --check scripts/orchestrator/resources.mjs",
         "node --check scripts/orchestrator/routing.mjs",

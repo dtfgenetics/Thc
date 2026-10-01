@@ -56,6 +56,7 @@ jobs:
           set -euo pipefail
           node --check scripts/orchestrator.mjs
           node --check scripts/orchestrator-plan-job.mjs
+          node --check scripts/orchestrator-epic.mjs
           node --check scripts/orchestrator-reconcile.mjs
           node --check scripts/orchestrator-audit.mjs
           node --check scripts/orchestrator-executor.mjs
@@ -69,7 +70,10 @@ jobs:
           node --check scripts/orchestrator/reconcile.mjs
           node --check scripts/orchestrator/audit.mjs
           node --check scripts/orchestrator/executor.mjs
+          node --check scripts/orchestrator/epics.mjs
+          node -e "JSON.parse(require('fs').readFileSync('configuration/orchestrator/epic-manifest.schema.json','utf8'))"
           node scripts/test-worker-orchestrator.mjs
+          node scripts/orchestrator-epic.mjs --manifest=configuration/orchestrator/example-epic-manifest.json
 
       - name: Ensure orchestration labels
         run: node scripts/orchestrator.mjs labels
