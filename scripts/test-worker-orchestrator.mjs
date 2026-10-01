@@ -8,7 +8,7 @@ import { classifyReconciliation, reconciliationNeedsMutation } from './orchestra
 import { exactHeadMatches, inspectAllowedPaths, inspectCheckRollup, isPathAllowed, normalizeCheck } from './orchestrator/verification.mjs'
 import { classifyJobHealth, findDuplicateActiveResourceClaims, findOrphanManagedBranches, findOrphanManagedPrs, parseManagedBranch } from './orchestrator/audit.mjs'
 import { buildExecutionPacket, buildHandoffPacket, claimExecutor, executorHandoff, executorResult, heartbeatExecutor, renderHandoffMarkdown } from './orchestrator/executor.mjs'
-import { resolveCanonicalRepository } from './orchestrator/repositories.mjs'
+import { resolveCanonicalRepository, resolveProjectRepository } from './orchestrator/repositories.mjs'
 import { epicSummary, materializeJobPlan, topologicalJobOrder, validateEpicManifest } from './orchestrator/epics.mjs'
 import { inspectContractScope, validateAgentContract, verificationProfileFromContract } from './orchestrator/repo-contract.mjs'
 import { buildOperatorStatus } from './orchestrator/operator-status.mjs'
@@ -76,6 +76,19 @@ assert.equal(resourceSetsOverlap(['game.high-iq'], ['app.plant-atlas']), false)
 const toolsOwner = resolveCanonicalRepository({ canonicalDomain: 'cultivation tools' })
 assert.equal(toolsOwner.repository, 'dtfgenetics/Tools')
 assert.equal(toolsOwner.external, true)
+
+const weedopolisProjectOwner = resolveProjectRepository('weedopolis')
+assert.equal(weedopolisProjectOwner.repository, 'dtfgenetics/Weedopolis-strain-Edition')
+assert.equal(resolveProjectRepository('games'), null)
+
+const inferredWeedopolisIssue = {
+  ...issue(42, 'Improve Weedopolis turn flow', ['worker:ready', 'project:weedopolis']),
+  body: '<!-- worker-plan:{"resourceSet":["game.weedopolis"],"allowedPaths":["src/**","digital/**"],"verificationProfile":"default","acceptanceCriteria":["turn flow passes"]} -->',
+}
+const inferredWeedopolisClaim = buildClaim(inferredWeedopolisIssue, config)
+assert.equal(inferredWeedopolisClaim.repository, 'dtfgenetics/Weedopolis-strain-Edition')
+assert.equal(inferredWeedopolisClaim.externalRepository, true)
+assert.equal(inferredWeedopolisClaim.dispatchMode, 'external-executor')
 assert.throws(
   () => resolveCanonicalRepository({ canonicalDomain: 'cultivation tools', explicitRepository: 'dtfgenetics/Dtf420' }),
   /not canonical/,
@@ -607,4 +620,4 @@ assert.throws(() => verificationProfileFromContract(toolsContractFixture, 'missi
 const productionMerged = newJob({ jobId: 'prod-1', title: 'Production', state: 'MERGED', productionImpact: true })
 assert.throws(() => transitionJob(productionMerged, 'DONE'), /Production-impacting/)
 
-console.log(JSON.stringify({ ok: true, tests: 149 }, null, 2))
+console.log(JSON.stringify({ ok: true, tests: 155 }, null, 2))
