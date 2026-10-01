@@ -1,6 +1,8 @@
 import { readFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 
+const PLAN_MARKER_RE = /<!-- worker-plan:(\{.*?\}) -->/s
+
 export function loadConfig(path = 'data/worker-orchestrator.json') {
   const config = JSON.parse(readFileSync(path, 'utf8'))
   validateConfig(config)
@@ -44,6 +46,47 @@ export function slug(value, max = 42) {
   return normalized || 'task'
 }
 
+function cleanStringArray(value) {
+  return Array.isArray(value)
+    ? [...new Set(value.map((item) => String(item || '').trim()).filter(Boolean))]
+    : []
+}
+
+export function planMetadataFromIssue(issue) {
+  const match = String(issue?.body || '').match(PLAN_MARKER_RE)
+  if (!match) return {
+    resourceSet: [],
+    allowedPaths: [],
+    verificationProfile: null,
+    productionTargets: [],
+    dependencies: [],
+    acceptanceCriteria: [],
+    productionImpact: false,
+  }
+
+  let raw
+  try {
+    raw = JSON.parse(match[1])
+  } catch {
+    throw new Error(`Issue #${issue?.number ?? '?'} has malformed worker-plan JSON`)
+  }
+
+  return {
+    resourceSet: cleanStringArray(raw.resourceSet),
+    allowedPaths: cleanStringArray(raw.allowedPaths),
+    verificationProfile: raw.verificationProfile ? String(raw.verificationProfile).trim() : null,
+    productionTargets: cleanStringArray(raw.productionTargets),
+    dependencies: cleanStringArray(raw.dependencies),
+    acceptanceCriteria: cleanStringArray(raw.acceptanceCriteria),
+    productionImpact: Boolean(raw.productionImpact || cleanStringArray(raw.productionTargets).length),
+  }
+}
+
+export function resourceSetsOverlap(a = [], b = []) {
+  const left = new Set(cleanStringArray(a))
+  return cleanStringArray(b).some((resource) => left.has(resource))
+}
+
 export function projectFromIssue(issue) {
   const projectLabel = (issue.labels || []).map(labelName).find((name) => name.startsWith('project:'))
   if (projectLabel) return slug(projectLabel.slice('project:'.length), 30)
@@ -64,6 +107,25 @@ export function priorityRank(issue, config) {
   return index === -1 ? (config.priorities || []).length : index
 }
 
+export function buildClaim(issue, config) {
+  const project = projectFromIssue(issue)
+  const kind = workerKindFromIssue(issue, config)
+  const prefix = config.workerKinds[kind]?.branchPrefix || 'work'
+  const id = String(issue.number)
+  const digest = createHash('sha1').update(`${id}:${issue.title || ''}`).digest('hex').slice(0, 7)
+  const branch = `${prefix}/${project}/${slug(issue.title, 32)}-i${id}-${digest}`
+  const metadata = planMetadataFromIssue(issue)
+  return {
+    issueNumber: Number(issue.number),
+    title: issue.title,
+    project,
+    kind,
+    branch,
+    base: config.baseBranch || 'main',
+    ...metadata,
+  }
+}
+
 export function planClaims(issues, activeClaims, config) {
   const active = activeClaims.filter((item) => item.active !== false)
   const available = Math.max(0, config.maxWorkers - active.length)
@@ -75,35 +137,34 @@ export function planClaims(issues, activeClaims, config) {
     perProject.set(project, (perProject.get(project) || 0) + 1)
   }
 
-  return issues
+  const activeResources = active.flatMap((claim) => cleanStringArray(claim.resourceSet))
+  const plannedResources = []
+  const selected = []
+
+  const candidates = issues
     .filter((issue) => isReady(issue, config))
     .sort((a, b) => priorityRank(a, config) - priorityRank(b, config) || new Date(a.created_at || 0) - new Date(b.created_at || 0) || Number(a.number) - Number(b.number))
-    .filter((issue) => {
-      const project = projectFromIssue(issue)
-      const count = perProject.get(project) || 0
-      if (count >= config.maxWorkersPerProject) return false
-      perProject.set(project, count + 1)
-      return true
-    })
-    .slice(0, available)
     .map((issue) => buildClaim(issue, config))
-}
 
-export function buildClaim(issue, config) {
-  const project = projectFromIssue(issue)
-  const kind = workerKindFromIssue(issue, config)
-  const prefix = config.workerKinds[kind]?.branchPrefix || 'work'
-  const id = String(issue.number)
-  const digest = createHash('sha1').update(`${id}:${issue.title || ''}`).digest('hex').slice(0, 7)
-  const branch = `${prefix}/${project}/${slug(issue.title, 32)}-i${id}-${digest}`
-  return {
-    issueNumber: Number(issue.number),
-    title: issue.title,
-    project,
-    kind,
-    branch,
-    base: config.baseBranch || 'main',
+  for (const claim of candidates) {
+    if (selected.length >= available) break
+
+    if (
+      claim.resourceSet.length > 0 &&
+      (resourceSetsOverlap(claim.resourceSet, activeResources) || resourceSetsOverlap(claim.resourceSet, plannedResources))
+    ) {
+      continue
+    }
+
+    const count = perProject.get(claim.project) || 0
+    if (count >= config.maxWorkersPerProject) continue
+
+    perProject.set(claim.project, count + 1)
+    selected.push(claim)
+    plannedResources.push(...claim.resourceSet)
   }
+
+  return selected
 }
 
 export function isReady(issue, config) {
