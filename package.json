@@ -129,6 +129,7 @@
     "verify:learning-route-writers": "node scripts/validate-learning-route-writer-boundaries.mjs",
     "verify:workflow-path-parity": "node scripts/validate-workflow-path-parity.mjs",
     "verify:academy-source-pin": "node scripts/validate-academy-source-pin.mjs",
-    "verify:tool-execution": "node scripts/validate-tool-execution-registry.mjs"
+    "verify:tool-execution": "node scripts/validate-tool-execution-registry.mjs",
+    "audit:workflow-portfolio": "node scripts/audit-workflow-portfolio.mjs"
   }
 }
