@@ -10,14 +10,14 @@ const routes = [
     title: 'Game Hub',
     canonical: '/games/',
     minText: 700,
-    requiredText: ['High IQ', 'High Land', 'THC Weekly Crossword', 'Who Took It?']
+    requiredText: ['High IQ', 'High Land', 'THC Daily Crossword', 'Who Took It?']
   },
   {
     path: '/games/high-iq/',
     title: 'High IQ',
     canonical: '/games/high-iq/',
     minText: 900,
-    requiredText: ['High IQ — Test Higher Cognition', 'Production question bank', '80 validated questions', 'Verification sources']
+    requiredText: ['High IQ — Test Higher Cognition', 'Verified question bank', '200', 'approved questions', 'Visible verification sources']
   },
   {
     path: '/games/high-land/',
