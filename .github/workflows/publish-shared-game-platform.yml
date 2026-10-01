@@ -53,7 +53,7 @@ jobs:
           const path = require('node:path');
           const root = 'site/public-route-patch/games/shared-platform';
           const manifest = JSON.parse(fs.readFileSync(path.join(root, 'manifest.json'), 'utf8'));
-          if (!/^\\d+\\.\\d+\\.\\d+$/.test(String(manifest.platformVersion || ''))) throw new Error('Invalid shared platform version');
+          if (!/^\d+\.\d+\.\d+$/.test(String(manifest.platformVersion || ''))) throw new Error('Invalid shared platform version');
           if (!Array.isArray(manifest.files) || manifest.files.length < 1) throw new Error('Shared platform manifest has no modules');
           for (const file of ['.htaccess', 'manifest.json', ...manifest.files]) {
             const target = path.join(root, file);
