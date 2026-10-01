@@ -46,7 +46,8 @@
         "Legacy shared game engine classified superseded.",
         "Legacy WordPress/deployment tooling classified superseded.",
         "Legacy certification widgets classified historical-only.",
-        "Copied Weedopolis implementation and deploy artifacts removed from dtf-thc-hub via PR #72; standalone Weedopolis repo remains canonical."
+        "Copied Weedopolis implementation and deploy artifacts removed from dtf-thc-hub via PR #72; standalone Weedopolis repo remains canonical.",
+        "Legacy Kush Kings PHP/runtime hardening branches reconciled against canonical dtfgenetics/Thc-chess-git Node/Express/Socket.IO controls."
       ],
       "canonicalTargets": [
         "dtfgenetics/Thc",
@@ -175,50 +176,49 @@
           {
             "branch": "repair/disable-migration-auto-deploy",
             "basis": "legacy deployment workflow change superseded by current migration-only production boundary"
-          }
-        ],
-        "reconcileNeeded": [
+          },
           {
             "branch": "harden-live-kush-kings-audit",
-            "reason": "legacy Kush Kings PHP/runtime branch; verify behavior against canonical dtfgenetics/Thc-chess-git before retirement"
+            "basis": "legacy static/PHP live-audit branch superseded by canonical Thc-chess-git production runtime smoke, deployment checks, and dedicated Node/Socket.IO deployment"
           },
           {
             "branch": "kush-kings-authoritative-moves",
-            "reason": "legacy Kush Kings PHP/runtime branch; verify behavior against canonical dtfgenetics/Thc-chess-git before retirement"
+            "basis": "canonical Thc-chess-git sendMove uses chess.js authoritative server-side legal-move and turn validation with persistence rollback"
           },
           {
             "branch": "kush-kings-cancel-waiting-room",
-            "reason": "legacy Kush Kings PHP/runtime branch; verify behavior against canonical dtfgenetics/Thc-chess-git before retirement"
+            "basis": "legacy PHP waiting-room flow superseded by canonical Socket.IO lobby join/leave lifecycle and disconnect cleanup"
           },
           {
             "branch": "kush-kings-http-method-guards",
-            "reason": "legacy Kush Kings PHP/runtime branch; verify behavior against canonical dtfgenetics/Thc-chess-git before retirement"
+            "basis": "legacy PHP endpoint method guards are obsolete after migration to Express routes plus authenticated Socket.IO session middleware"
           },
           {
             "branch": "kush-kings-input-validation",
-            "reason": "legacy Kush Kings PHP/runtime branch; verify behavior against canonical dtfgenetics/Thc-chess-git before retirement"
+            "basis": "canonical Thc-chess-git normalizes room codes, chat messages, draw/abandon inputs and validates chess moves server-side"
           },
           {
             "branch": "kush-kings-lifecycle-sync",
-            "reason": "legacy Kush Kings PHP/runtime branch; verify behavior against canonical dtfgenetics/Thc-chess-git before retirement"
+            "basis": "canonical Thc-chess-git lobby join/leave, reconnect state, observer roster and timeout cleanup supersede PHP lifecycle sync"
           },
           {
             "branch": "kush-kings-observer-polling-fix",
-            "reason": "legacy Kush Kings PHP/runtime branch; verify behavior against canonical dtfgenetics/Thc-chess-git before retirement"
+            "basis": "canonical Thc-chess-git uses Socket.IO observer roster and room broadcasts instead of legacy polling"
           },
           {
             "branch": "kush-kings-private-poll-token",
-            "reason": "legacy Kush Kings PHP/runtime branch; verify behavior against canonical dtfgenetics/Thc-chess-git before retirement"
+            "basis": "legacy polling token is obsolete in canonical authenticated session + Socket.IO architecture"
           },
           {
             "branch": "kush-kings-rematch-flow",
-            "reason": "legacy Kush Kings PHP/runtime branch; verify behavior against canonical dtfgenetics/Thc-chess-git before retirement"
+            "basis": "canonical Thc-chess-git project contract explicitly preserves rematch behavior in the current room architecture"
           },
           {
             "branch": "kush-kings-ux-abuse-hardening",
-            "reason": "legacy Kush Kings PHP/runtime branch; verify behavior against canonical dtfgenetics/Thc-chess-git before retirement"
+            "basis": "canonical Thc-chess-git has session authentication, chat normalization/rate limiting, room-code validation and player-seat guards"
           }
         ],
+        "reconcileNeeded": [],
         "rule": "Do not merge diverged cleanup branches wholesale. Rebase or selectively apply only the retirement changes that remain valid against current main, then validate before classifying delete-safe."
       }
     },
