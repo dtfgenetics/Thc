@@ -14,6 +14,7 @@ const entries = new Map();
 for (const entry of contracts.repositories || []) {
   ok(typeof entry.repo === 'string' && entry.repo.length > 0, 'every contract entry needs repo');
   ok(['external-executor','migration-only'].includes(entry.mode), 'invalid mode for ' + entry.repo);
+  ok(['public','controller-only'].includes(entry.remoteAudit), 'invalid remoteAudit for ' + entry.repo);
   ok(!entries.has(entry.repo), 'duplicate external contract registry entry: ' + entry.repo);
   entries.set(entry.repo, entry);
 }

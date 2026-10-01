@@ -10,6 +10,9 @@ const byRepo = new Map(registry.repositories.map(entry => [entry.repo, entry]));
 assert.equal(byRepo.get('dtfgenetics/Tools')?.mode, 'external-executor');
 assert.equal(byRepo.get('dtfgenetics/Dtf420')?.mode, 'migration-only');
 assert.equal(byRepo.get('dtfgenetics/dtf-thc-hub')?.mode, 'migration-only');
+assert.equal(byRepo.get('dtfgenetics/thc-grow-hub')?.remoteAudit, 'controller-only');
+assert.equal(byRepo.get('dtfgenetics/dtf-thc-hub')?.remoteAudit, 'controller-only');
+assert.equal(byRepo.get('dtfgenetics/Tools')?.remoteAudit, 'public');
 assert.equal(byRepo.get('dtfgenetics/Thc-guess-who')?.mode, 'external-executor');
 
 console.log('External agent contract registry regression tests passed.');
