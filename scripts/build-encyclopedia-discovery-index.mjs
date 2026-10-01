@@ -72,6 +72,7 @@ function searchFields(lesson){
     misconceptions:flatten(lesson.misconceptions||lesson.sections?.misconceptions),
     evidenceLimits:flatten(evidence||lesson.sections?.evidenceLimits),
     crossLinks:flatten(cross),
+    practicalResources:flatten(arr(lesson.practicalResources).filter(x=>x?.status==='approved').map(x=>x.title||x.resourceId)),
     synonyms:flatten(lesson.synonyms||lesson.acceptedTerms)
   };
 }
@@ -93,6 +94,7 @@ const lessons=(registry.entries||[]).map(entry=>{
     misconceptions:[],
     evidenceLimits:[],
     crossLinks:[],
+    practicalResources:[],
     synonyms:[]
   };
   return {
@@ -109,7 +111,7 @@ const lessons=(registry.entries||[]).map(entry=>{
     tools,
     aliases,
     ...publicFields,
-    keywords:[topic?.title,entry.primaryFormat,entry.teachingVisual,entry.id,...(published?fields.terms:[]),...(published?fields.synonyms:[]),...aliases,...tools].map(clean).filter(Boolean)
+    keywords:[topic?.title,entry.primaryFormat,entry.teachingVisual,entry.id,...(published?fields.terms:[]),...(published?fields.synonyms:[]),...(published?fields.practicalResources:[]),...aliases,...tools].map(clean).filter(Boolean)
   };
 });
 
