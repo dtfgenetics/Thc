@@ -90,6 +90,7 @@ jobs:
           grep -Fq 'LEARNING_V3_SOURCE_PUBLISHER="$atlas_v3"' scripts/run-learning-v3-connected-production.sh
           grep -Fq 'WP_REQUEST_TIMEOUT_MS' scripts/publish-wordpress-learning-center-expansion-v1.mjs
           grep -Fq 'WP_REQUEST_ATTEMPTS' scripts/publish-wordpress-learning-center-expansion-v1.mjs
+          grep -Fq 'already matches desired stored state; skipping redundant WordPress mutation.' scripts/rebuild-wordpress-learning-experience-v3.mjs
           grep -Fq 'data-dtf-learning-expanded-reference="v1"' scripts/run-learning-v3-connected-production.sh
           grep -Fq 'data-dtf-learning-map="v4"' scripts/run-learning-v3-connected-production.sh
           grep -Fq "presentation: 'grouped-progressive-disclosure'" scripts/build-public-learning-center-expansion-v1.mjs
