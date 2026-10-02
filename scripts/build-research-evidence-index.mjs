@@ -40,11 +40,12 @@ function entry(record,kind){
     use_policy:{retrieval:true,training:false,heldout_eval:false,direct_dtf_cultivar_inference:false}
   };
 }
-export function build(root=DEFAULT_ROOT){
+export function build(root=DEFAULT_ROOT,{requireRecords=false}={}){
   const entries=[];
   for(const [provider,folder,name,kind] of ALLOWED){
     for(const record of readJsonl(path.join(root,provider,folder,name))) entries.push(entry(record,kind));
   }
+  if(requireRecords && entries.length===0) throw new Error(`no normalized research records found under ${root}`);
   entries.sort((a,b)=>a.evidence_id.localeCompare(b.evidence_id));
   const seen=new Set();
   for(const e of entries){if(seen.has(e.evidence_id)) throw new Error(`duplicate evidence_id: ${e.evidence_id}`);seen.add(e.evidence_id)}
@@ -58,4 +59,4 @@ function selfTest(){
   fs.rmSync(tmp,{recursive:true,force:true});console.log('research evidence index self-test: PASS');
 }
 if(process.argv.includes('--self-test')) selfTest();
-else {const out=build();fs.mkdirSync(path.dirname(OUT),{recursive:true});fs.writeFileSync(OUT,JSON.stringify(out,null,2)+'\n');console.log(`research evidence index: ${out.entries.length} records`)}
+else {const out=build(DEFAULT_ROOT,{requireRecords:process.argv.includes('--require-records')});fs.mkdirSync(path.dirname(OUT),{recursive:true});fs.writeFileSync(OUT,JSON.stringify(out,null,2)+'\n');console.log(`research evidence index: ${out.entries.length} records`)}
