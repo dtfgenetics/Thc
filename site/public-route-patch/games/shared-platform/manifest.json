@@ -1,18 +1,24 @@
 {
   "schemaVersion": 1,
-  "platformVersion": "1.7.0",
+  "platformVersion": "2.2.0",
   "source": "games/shared-platform/src",
   "files": [
     "index.mjs",
     "settings.mjs",
     "storage.mjs",
+    "save.mjs",
     "replay.mjs",
     "telemetry.mjs",
     "input.mjs",
+    "gamepad.mjs",
     "audio.mjs",
     "random.mjs",
     "experience.mjs",
     "state-machine.mjs",
+    "lifecycle.mjs",
+    "multiplayer.mjs",
+    "liveops.mjs",
+    "observability.mjs",
     "loading.mjs",
     "validation.mjs"
   ]

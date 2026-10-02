@@ -1,0 +1,865 @@
+{
+  "schemaVersion": 1,
+  "purpose": "capability-driven-game-quality-and-release-profiles",
+  "references": [
+    {
+      "id": "poki-quality",
+      "url": "https://developers.poki.com/guide/requirements-quality",
+      "appliesTo": [
+        "device-support",
+        "storage-fallback",
+        "gameplay-lifecycle",
+        "fast-start",
+        "adaptive-controls",
+        "clean-build"
+      ]
+    },
+    {
+      "id": "crazygames-technical",
+      "url": "https://docs.crazygames.com/requirements/technical/",
+      "appliesTo": [
+        "initial-download",
+        "mobile-download",
+        "input-support",
+        "device-performance",
+        "time-to-playable"
+      ]
+    },
+    {
+      "id": "owasp-websocket",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/WebSocket_Security_Cheat_Sheet.html",
+      "appliesTo": [
+        "origin-validation",
+        "message-authorization",
+        "payload-limits",
+        "rate-limits",
+        "heartbeat",
+        "backpressure"
+      ]
+    },
+    {
+      "id": "mdn-pwa-installability",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable",
+      "appliesTo": [
+        "installability-decision",
+        "manifest",
+        "offline-strategy"
+      ]
+    },
+    {
+      "id": "mdn-page-visibility",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API",
+      "appliesTo": [
+        "visibility-interruption",
+        "pause-resume",
+        "audio-user-intent"
+      ]
+    },
+    {
+      "id": "openfeature",
+      "url": "https://openfeature.dev/docs/reference/intro/",
+      "appliesTo": [
+        "feature-flags",
+        "maintenance-mode",
+        "kill-switch",
+        "canary-release"
+      ]
+    },
+    {
+      "id": "opentelemetry-js",
+      "url": "https://opentelemetry.io/docs/languages/js/",
+      "appliesTo": [
+        "server-observability",
+        "metrics",
+        "traces",
+        "networked-game-operations"
+      ]
+    }
+  ],
+  "dimensions": {
+    "gameplayProfile": [
+      "arcade-action",
+      "campaign-rpg",
+      "realtime-multiplayer",
+      "turn-multiplayer",
+      "board-simulation",
+      "card-strategy",
+      "trivia-knowledge",
+      "daily-puzzle",
+      "party-social",
+      "casual-puzzle"
+    ],
+    "rendererProfile": [
+      "dom",
+      "canvas2d",
+      "phaser",
+      "threejs",
+      "react-dom",
+      "svg-dom",
+      "hybrid"
+    ],
+    "sessionProfile": [
+      "micro",
+      "short",
+      "medium",
+      "long",
+      "persistent"
+    ],
+    "persistenceProfile": [
+      "none",
+      "preferences",
+      "progress",
+      "checkpoint",
+      "campaign",
+      "match-recovery",
+      "archive"
+    ],
+    "networkProfile": [
+      "local",
+      "share-code",
+      "request-response-authoritative",
+      "turn-authoritative",
+      "realtime-authoritative",
+      "optional-realtime"
+    ],
+    "contentProfile": [
+      "static",
+      "database-driven",
+      "generated-daily",
+      "versioned-balance",
+      "branching-narrative",
+      "procedural",
+      "knowledge-bank"
+    ],
+    "performanceProfile": [
+      "tiny-ui",
+      "dom-game",
+      "2d-game",
+      "3d-game",
+      "network-app"
+    ],
+    "securityProfile": [
+      "local",
+      "persistent-solo",
+      "casual-online",
+      "competitive-online",
+      "community-online"
+    ],
+    "accessibilityProfile": [
+      "text-ui",
+      "gameplay-ui",
+      "action-game",
+      "3d-game"
+    ]
+  },
+  "performanceBudgets": {
+    "tiny-ui": {
+      "initialBytesSoft": 1048576,
+      "initialBytesHard": 4194304,
+      "targetTimeToPlayableMs": 3000
+    },
+    "dom-game": {
+      "initialBytesSoft": 3145728,
+      "initialBytesHard": 8388608,
+      "targetTimeToPlayableMs": 5000
+    },
+    "2d-game": {
+      "initialBytesSoft": 5242880,
+      "initialBytesHard": 15728640,
+      "targetTimeToPlayableMs": 7000
+    },
+    "3d-game": {
+      "initialBytesSoft": 12582912,
+      "initialBytesHard": 31457280,
+      "targetTimeToPlayableMs": 10000
+    },
+    "network-app": {
+      "initialBytesSoft": 5242880,
+      "initialBytesHard": 15728640,
+      "targetTimeToPlayableMs": 7000
+    }
+  },
+  "requiredChecks": {
+    "core": [
+      "canonical-owner",
+      "canonical-route",
+      "build",
+      "no-broken-assets",
+      "mobile-safe-shell",
+      "release-identity",
+      "privacy-baseline",
+      "storage-fallback-when-persistent"
+    ],
+    "arcade-action": [
+      "frame-rate-independence",
+      "input-latency",
+      "pause-resume",
+      "controller-when-declared",
+      "checkpoint-or-run-recovery"
+    ],
+    "campaign-rpg": [
+      "save-version",
+      "save-migration",
+      "checkpoint-recovery",
+      "content-reachability",
+      "old-save-compatibility"
+    ],
+    "realtime-multiplayer": [
+      "server-authority",
+      "join",
+      "disconnect",
+      "reconnect",
+      "room-cleanup",
+      "rate-limits",
+      "message-validation",
+      "heartbeat"
+    ],
+    "turn-multiplayer": [
+      "server-authority",
+      "turn-validation",
+      "disconnect",
+      "reconnect",
+      "forfeit-rules",
+      "rate-limits",
+      "message-validation"
+    ],
+    "board-simulation": [
+      "deterministic-rules",
+      "state-recovery",
+      "deadlock-check",
+      "win-condition-reachability"
+    ],
+    "card-strategy": [
+      "card-schema",
+      "deck-legality",
+      "effect-reference-integrity",
+      "balance-version"
+    ],
+    "trivia-knowledge": [
+      "question-schema",
+      "duplicate-detection",
+      "answer-key-integrity",
+      "difficulty-distribution",
+      "content-source-state"
+    ],
+    "daily-puzzle": [
+      "generation-validation",
+      "archive-integrity",
+      "daily-state",
+      "storage-fallback"
+    ],
+    "party-social": [
+      "fast-start",
+      "shared-screen-mobile",
+      "content-rotation",
+      "resume-or-reset-contract"
+    ],
+    "casual-puzzle": [
+      "state-integrity",
+      "completion-reachability",
+      "keyboard-touch-parity"
+    ]
+  },
+  "games": {
+    "bud-or-bluff": {
+      "gameplayProfile": "turn-multiplayer",
+      "rendererProfile": "dom",
+      "sessionProfile": "short",
+      "persistenceProfile": "match-recovery",
+      "networkProfile": "turn-authoritative",
+      "contentProfile": "database-driven",
+      "performanceProfile": "network-app",
+      "securityProfile": "community-online",
+      "accessibilityProfile": "text-ui"
+    },
+    "crossword": {
+      "gameplayProfile": "daily-puzzle",
+      "rendererProfile": "dom",
+      "sessionProfile": "persistent",
+      "persistenceProfile": "progress",
+      "networkProfile": "local",
+      "contentProfile": "generated-daily",
+      "performanceProfile": "tiny-ui",
+      "securityProfile": "local",
+      "accessibilityProfile": "text-ui"
+    },
+    "ganjumanji": {
+      "gameplayProfile": "campaign-rpg",
+      "rendererProfile": "phaser",
+      "sessionProfile": "long",
+      "persistenceProfile": "campaign",
+      "networkProfile": "local",
+      "contentProfile": "branching-narrative",
+      "performanceProfile": "2d-game",
+      "securityProfile": "persistent-solo",
+      "accessibilityProfile": "action-game"
+    },
+    "grow-room-bingo": {
+      "gameplayProfile": "casual-puzzle",
+      "rendererProfile": "dom",
+      "sessionProfile": "short",
+      "persistenceProfile": "progress",
+      "networkProfile": "share-code",
+      "contentProfile": "static",
+      "performanceProfile": "tiny-ui",
+      "securityProfile": "local",
+      "accessibilityProfile": "text-ui"
+    },
+    "grow-room-defense": {
+      "gameplayProfile": "arcade-action",
+      "rendererProfile": "dom",
+      "sessionProfile": "short",
+      "persistenceProfile": "progress",
+      "networkProfile": "local",
+      "contentProfile": "static",
+      "performanceProfile": "dom-game",
+      "securityProfile": "local",
+      "accessibilityProfile": "gameplay-ui"
+    },
+    "grower-conversations": {
+      "gameplayProfile": "party-social",
+      "rendererProfile": "dom",
+      "sessionProfile": "short",
+      "persistenceProfile": "progress",
+      "networkProfile": "local",
+      "contentProfile": "database-driven",
+      "performanceProfile": "tiny-ui",
+      "securityProfile": "local",
+      "accessibilityProfile": "text-ui"
+    },
+    "harvest-hustle": {
+      "gameplayProfile": "arcade-action",
+      "rendererProfile": "dom",
+      "sessionProfile": "short",
+      "persistenceProfile": "progress",
+      "networkProfile": "local",
+      "contentProfile": "static",
+      "performanceProfile": "dom-game",
+      "securityProfile": "local",
+      "accessibilityProfile": "gameplay-ui"
+    },
+    "high-iq": {
+      "gameplayProfile": "trivia-knowledge",
+      "rendererProfile": "dom",
+      "sessionProfile": "short",
+      "persistenceProfile": "progress",
+      "networkProfile": "local",
+      "contentProfile": "knowledge-bank",
+      "performanceProfile": "tiny-ui",
+      "securityProfile": "local",
+      "accessibilityProfile": "text-ui"
+    },
+    "high-land": {
+      "gameplayProfile": "board-simulation",
+      "rendererProfile": "hybrid",
+      "sessionProfile": "medium",
+      "persistenceProfile": "match-recovery",
+      "networkProfile": "turn-authoritative",
+      "contentProfile": "database-driven",
+      "performanceProfile": "network-app",
+      "securityProfile": "casual-online",
+      "accessibilityProfile": "gameplay-ui"
+    },
+    "high-life": {
+      "gameplayProfile": "board-simulation",
+      "rendererProfile": "dom",
+      "sessionProfile": "long",
+      "persistenceProfile": "campaign",
+      "networkProfile": "local",
+      "contentProfile": "branching-narrative",
+      "performanceProfile": "dom-game",
+      "securityProfile": "persistent-solo",
+      "accessibilityProfile": "text-ui"
+    },
+    "high-lines": {
+      "gameplayProfile": "casual-puzzle",
+      "rendererProfile": "svg-dom",
+      "sessionProfile": "short",
+      "persistenceProfile": "progress",
+      "networkProfile": "share-code",
+      "contentProfile": "static",
+      "performanceProfile": "tiny-ui",
+      "securityProfile": "local",
+      "accessibilityProfile": "text-ui"
+    },
+    "kush-kings": {
+      "gameplayProfile": "turn-multiplayer",
+      "rendererProfile": "react-dom",
+      "sessionProfile": "medium",
+      "persistenceProfile": "archive",
+      "networkProfile": "turn-authoritative",
+      "contentProfile": "database-driven",
+      "performanceProfile": "network-app",
+      "securityProfile": "competitive-online",
+      "accessibilityProfile": "text-ui"
+    },
+    "lost-in-the-terps": {
+      "gameplayProfile": "casual-puzzle",
+      "rendererProfile": "dom",
+      "sessionProfile": "short",
+      "persistenceProfile": "progress",
+      "networkProfile": "local",
+      "contentProfile": "static",
+      "performanceProfile": "tiny-ui",
+      "securityProfile": "local",
+      "accessibilityProfile": "text-ui"
+    },
+    "mystery-strain": {
+      "gameplayProfile": "casual-puzzle",
+      "rendererProfile": "dom",
+      "sessionProfile": "short",
+      "persistenceProfile": "progress",
+      "networkProfile": "share-code",
+      "contentProfile": "database-driven",
+      "performanceProfile": "tiny-ui",
+      "securityProfile": "local",
+      "accessibilityProfile": "text-ui"
+    },
+    "pheno-draft": {
+      "gameplayProfile": "card-strategy",
+      "rendererProfile": "dom",
+      "sessionProfile": "medium",
+      "persistenceProfile": "archive",
+      "networkProfile": "local",
+      "contentProfile": "versioned-balance",
+      "performanceProfile": "dom-game",
+      "securityProfile": "local",
+      "accessibilityProfile": "text-ui"
+    },
+    "phenoquest": {
+      "gameplayProfile": "campaign-rpg",
+      "rendererProfile": "threejs",
+      "sessionProfile": "long",
+      "persistenceProfile": "campaign",
+      "networkProfile": "local",
+      "contentProfile": "branching-narrative",
+      "performanceProfile": "3d-game",
+      "securityProfile": "persistent-solo",
+      "accessibilityProfile": "3d-game"
+    },
+    "protect-the-plants": {
+      "gameplayProfile": "turn-multiplayer",
+      "rendererProfile": "dom",
+      "sessionProfile": "medium",
+      "persistenceProfile": "match-recovery",
+      "networkProfile": "request-response-authoritative",
+      "contentProfile": "database-driven",
+      "performanceProfile": "network-app",
+      "securityProfile": "casual-online",
+      "accessibilityProfile": "text-ui"
+    },
+    "root-cause": {
+      "gameplayProfile": "casual-puzzle",
+      "rendererProfile": "dom",
+      "sessionProfile": "short",
+      "persistenceProfile": "progress",
+      "networkProfile": "share-code",
+      "contentProfile": "knowledge-bank",
+      "performanceProfile": "tiny-ui",
+      "securityProfile": "local",
+      "accessibilityProfile": "text-ui"
+    },
+    "seed-ascent": {
+      "gameplayProfile": "arcade-action",
+      "rendererProfile": "canvas2d",
+      "sessionProfile": "medium",
+      "persistenceProfile": "progress",
+      "networkProfile": "local",
+      "contentProfile": "static",
+      "performanceProfile": "2d-game",
+      "securityProfile": "persistent-solo",
+      "accessibilityProfile": "action-game"
+    },
+    "seed-man-platformer": {
+      "gameplayProfile": "arcade-action",
+      "rendererProfile": "threejs",
+      "sessionProfile": "medium",
+      "persistenceProfile": "checkpoint",
+      "networkProfile": "local",
+      "contentProfile": "static",
+      "performanceProfile": "3d-game",
+      "securityProfile": "persistent-solo",
+      "accessibilityProfile": "action-game"
+    },
+    "spin-the-strain": {
+      "gameplayProfile": "party-social",
+      "rendererProfile": "hybrid",
+      "sessionProfile": "micro",
+      "persistenceProfile": "progress",
+      "networkProfile": "share-code",
+      "contentProfile": "database-driven",
+      "performanceProfile": "tiny-ui",
+      "securityProfile": "local",
+      "accessibilityProfile": "gameplay-ui"
+    },
+    "stoner-duck-race": {
+      "gameplayProfile": "realtime-multiplayer",
+      "rendererProfile": "phaser",
+      "sessionProfile": "short",
+      "persistenceProfile": "match-recovery",
+      "networkProfile": "optional-realtime",
+      "contentProfile": "static",
+      "performanceProfile": "network-app",
+      "securityProfile": "casual-online",
+      "accessibilityProfile": "action-game"
+    },
+    "strain-match": {
+      "gameplayProfile": "casual-puzzle",
+      "rendererProfile": "dom",
+      "sessionProfile": "short",
+      "persistenceProfile": "progress",
+      "networkProfile": "local",
+      "contentProfile": "static",
+      "performanceProfile": "tiny-ui",
+      "securityProfile": "local",
+      "accessibilityProfile": "text-ui"
+    },
+    "strain-showdown": {
+      "gameplayProfile": "card-strategy",
+      "rendererProfile": "dom",
+      "sessionProfile": "medium",
+      "persistenceProfile": "archive",
+      "networkProfile": "local",
+      "contentProfile": "versioned-balance",
+      "performanceProfile": "dom-game",
+      "securityProfile": "local",
+      "accessibilityProfile": "text-ui"
+    },
+    "terpocalypse": {
+      "gameplayProfile": "arcade-action",
+      "rendererProfile": "canvas2d",
+      "sessionProfile": "medium",
+      "persistenceProfile": "progress",
+      "networkProfile": "local",
+      "contentProfile": "procedural",
+      "performanceProfile": "2d-game",
+      "securityProfile": "persistent-solo",
+      "accessibilityProfile": "action-game"
+    },
+    "thc-rpg": {
+      "gameplayProfile": "campaign-rpg",
+      "rendererProfile": "dom",
+      "sessionProfile": "long",
+      "persistenceProfile": "campaign",
+      "networkProfile": "local",
+      "contentProfile": "branching-narrative",
+      "performanceProfile": "dom-game",
+      "securityProfile": "persistent-solo",
+      "accessibilityProfile": "text-ui"
+    },
+    "thc-u-know": {
+      "gameplayProfile": "turn-multiplayer",
+      "rendererProfile": "react-dom",
+      "sessionProfile": "medium",
+      "persistenceProfile": "match-recovery",
+      "networkProfile": "turn-authoritative",
+      "contentProfile": "database-driven",
+      "performanceProfile": "network-app",
+      "securityProfile": "community-online",
+      "accessibilityProfile": "text-ui"
+    },
+    "trichome-trials": {
+      "gameplayProfile": "party-social",
+      "rendererProfile": "dom",
+      "sessionProfile": "short",
+      "persistenceProfile": "archive",
+      "networkProfile": "local",
+      "contentProfile": "database-driven",
+      "performanceProfile": "tiny-ui",
+      "securityProfile": "local",
+      "accessibilityProfile": "text-ui"
+    },
+    "weedopolis": {
+      "gameplayProfile": "board-simulation",
+      "rendererProfile": "hybrid",
+      "sessionProfile": "long",
+      "persistenceProfile": "campaign",
+      "networkProfile": "local",
+      "contentProfile": "database-driven",
+      "performanceProfile": "dom-game",
+      "securityProfile": "persistent-solo",
+      "accessibilityProfile": "gameplay-ui"
+    },
+    "who-took-it": {
+      "gameplayProfile": "party-social",
+      "rendererProfile": "dom",
+      "sessionProfile": "short",
+      "persistenceProfile": "progress",
+      "networkProfile": "local",
+      "contentProfile": "database-driven",
+      "performanceProfile": "tiny-ui",
+      "securityProfile": "local",
+      "accessibilityProfile": "text-ui"
+    }
+  },
+  "dimensionChecks": {
+    "rendererProfile": {
+      "dom": [
+        "focus-navigation",
+        "layout-overflow",
+        "touch-targets",
+        "semantic-ui"
+      ],
+      "canvas2d": [
+        "canvas-scaling",
+        "device-pixel-ratio",
+        "input-coordinate-mapping",
+        "render-loop-cleanup"
+      ],
+      "phaser": [
+        "scene-transition",
+        "canvas-scaling",
+        "physics-timing",
+        "asset-preload"
+      ],
+      "threejs": [
+        "webgl-fallback",
+        "context-loss-recovery",
+        "gpu-budget",
+        "texture-budget",
+        "quality-scaling"
+      ],
+      "react-dom": [
+        "focus-navigation",
+        "state-reset",
+        "layout-overflow",
+        "touch-targets"
+      ],
+      "svg-dom": [
+        "viewbox-scaling",
+        "focus-navigation",
+        "touch-targets"
+      ],
+      "hybrid": [
+        "renderer-layering",
+        "input-ownership",
+        "layout-overflow",
+        "touch-targets"
+      ]
+    },
+    "sessionProfile": {
+      "micro": [
+        "fast-start",
+        "clean-reset"
+      ],
+      "short": [
+        "fast-start",
+        "pause-resume"
+      ],
+      "medium": [
+        "pause-resume",
+        "state-recovery"
+      ],
+      "long": [
+        "resume-contract",
+        "autosave-or-explicit-no-save",
+        "interruption-recovery"
+      ],
+      "persistent": [
+        "resume-contract",
+        "versioned-persistence",
+        "interruption-recovery"
+      ]
+    },
+    "persistenceProfile": {
+      "none": [
+        "explicit-no-save-contract"
+      ],
+      "preferences": [
+        "restricted-storage-fallback"
+      ],
+      "progress": [
+        "restricted-storage-fallback",
+        "progress-reset-contract"
+      ],
+      "checkpoint": [
+        "save-version",
+        "save-migration",
+        "checkpoint-recovery",
+        "corrupt-save-fallback"
+      ],
+      "campaign": [
+        "save-version",
+        "save-migration",
+        "old-save-compatibility",
+        "corrupt-save-fallback"
+      ],
+      "match-recovery": [
+        "session-schema-contract",
+        "resume-token-safety",
+        "reconnect-recovery",
+        "stale-session-cleanup"
+      ],
+      "archive": [
+        "archive-schema",
+        "archive-integrity",
+        "retention-contract"
+      ]
+    },
+    "networkProfile": {
+      "local": [
+        "offline-network-independence"
+      ],
+      "share-code": [
+        "share-code-validation",
+        "deterministic-share-state"
+      ],
+      "request-response-authoritative": [
+        "server-authority",
+        "action-authorization",
+        "request-rate-limits",
+        "payload-validation"
+      ],
+      "turn-authoritative": [
+        "server-authority",
+        "turn-validation",
+        "action-authorization",
+        "rate-limits",
+        "reconnect"
+      ],
+      "realtime-authoritative": [
+        "server-authority",
+        "message-authorization",
+        "payload-limits",
+        "rate-limits",
+        "heartbeat",
+        "backpressure",
+        "reconnect"
+      ],
+      "optional-realtime": [
+        "local-fallback",
+        "server-authority-online",
+        "message-authorization",
+        "payload-limits",
+        "rate-limits",
+        "heartbeat",
+        "reconnect"
+      ]
+    },
+    "contentProfile": {
+      "static": [
+        "content-reference-integrity"
+      ],
+      "database-driven": [
+        "content-schema",
+        "content-reference-integrity"
+      ],
+      "generated-daily": [
+        "generation-validation",
+        "date-identity",
+        "archive-integrity"
+      ],
+      "versioned-balance": [
+        "balance-version",
+        "data-schema",
+        "effect-reference-integrity"
+      ],
+      "branching-narrative": [
+        "branch-reachability",
+        "dead-end-audit",
+        "ending-reachability"
+      ],
+      "procedural": [
+        "seed-determinism",
+        "generation-bounds",
+        "unwinnable-state-audit"
+      ],
+      "knowledge-bank": [
+        "source-state",
+        "duplicate-detection",
+        "answer-or-rule-integrity"
+      ]
+    },
+    "performanceProfile": {
+      "tiny-ui": [
+        "initial-byte-budget",
+        "time-to-playable",
+        "low-end-browser-smoke"
+      ],
+      "dom-game": [
+        "initial-byte-budget",
+        "time-to-playable",
+        "layout-performance"
+      ],
+      "2d-game": [
+        "initial-byte-budget",
+        "time-to-playable",
+        "frame-pacing",
+        "low-end-device-smoke"
+      ],
+      "3d-game": [
+        "initial-byte-budget",
+        "time-to-playable",
+        "frame-pacing",
+        "gpu-budget",
+        "quality-scaling",
+        "low-end-device-smoke"
+      ],
+      "network-app": [
+        "initial-byte-budget",
+        "time-to-playable",
+        "network-failure-ux",
+        "server-health"
+      ]
+    },
+    "securityProfile": {
+      "local": [
+        "privacy-baseline",
+        "untrusted-import-validation-when-applicable"
+      ],
+      "persistent-solo": [
+        "privacy-baseline",
+        "save-integrity",
+        "untrusted-import-validation-when-applicable"
+      ],
+      "casual-online": [
+        "origin-validation",
+        "message-or-action-authorization",
+        "rate-limits",
+        "abuse-safe-errors"
+      ],
+      "competitive-online": [
+        "origin-validation",
+        "message-or-action-authorization",
+        "rate-limits",
+        "result-authority",
+        "disconnect-forfeit-integrity",
+        "audit-events"
+      ],
+      "community-online": [
+        "origin-validation",
+        "message-or-action-authorization",
+        "rate-limits",
+        "moderation-primitives",
+        "abuse-safe-errors"
+      ]
+    },
+    "accessibilityProfile": {
+      "text-ui": [
+        "keyboard-complete",
+        "visible-focus",
+        "non-color-state",
+        "text-scaling"
+      ],
+      "gameplay-ui": [
+        "keyboard-or-equivalent-input",
+        "visible-focus",
+        "reduced-motion",
+        "non-color-state"
+      ],
+      "action-game": [
+        "input-remap-ready",
+        "pause-access",
+        "reduced-motion",
+        "non-color-critical-feedback"
+      ],
+      "3d-game": [
+        "input-remap-ready",
+        "pause-access",
+        "reduced-motion",
+        "camera-motion-safety",
+        "quality-controls"
+      ]
+    }
+  }
+}

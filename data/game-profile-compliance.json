@@ -1,0 +1,691 @@
+{
+  "schemaVersion": 1,
+  "generatedFrom": [
+    "data/game-registry-v2.json",
+    "configuration/game-qa/game-profiles.json"
+  ],
+  "references": [
+    {
+      "id": "poki-quality",
+      "url": "https://developers.poki.com/guide/requirements-quality",
+      "appliesTo": [
+        "device-support",
+        "storage-fallback",
+        "gameplay-lifecycle",
+        "fast-start",
+        "adaptive-controls",
+        "clean-build"
+      ]
+    },
+    {
+      "id": "crazygames-technical",
+      "url": "https://docs.crazygames.com/requirements/technical/",
+      "appliesTo": [
+        "initial-download",
+        "mobile-download",
+        "input-support",
+        "device-performance",
+        "time-to-playable"
+      ]
+    },
+    {
+      "id": "owasp-websocket",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/WebSocket_Security_Cheat_Sheet.html",
+      "appliesTo": [
+        "origin-validation",
+        "message-authorization",
+        "payload-limits",
+        "rate-limits",
+        "heartbeat",
+        "backpressure"
+      ]
+    },
+    {
+      "id": "mdn-pwa-installability",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable",
+      "appliesTo": [
+        "installability-decision",
+        "manifest",
+        "offline-strategy"
+      ]
+    },
+    {
+      "id": "mdn-page-visibility",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API",
+      "appliesTo": [
+        "visibility-interruption",
+        "pause-resume",
+        "audio-user-intent"
+      ]
+    },
+    {
+      "id": "openfeature",
+      "url": "https://openfeature.dev/docs/reference/intro/",
+      "appliesTo": [
+        "feature-flags",
+        "maintenance-mode",
+        "kill-switch",
+        "canary-release"
+      ]
+    },
+    {
+      "id": "opentelemetry-js",
+      "url": "https://opentelemetry.io/docs/languages/js/",
+      "appliesTo": [
+        "server-observability",
+        "metrics",
+        "traces",
+        "networked-game-operations"
+      ]
+    }
+  ],
+  "summary": {
+    "gameCount": 30,
+    "compliantCount": 24,
+    "debtCount": 11,
+    "gamesWithDebt": 6
+  },
+  "games": [
+    {
+      "id": "bud-or-bluff",
+      "title": "Bud or Bluff",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "turn-multiplayer",
+        "rendererProfile": "dom",
+        "sessionProfile": "short",
+        "persistenceProfile": "match-recovery",
+        "networkProfile": "turn-authoritative",
+        "contentProfile": "database-driven",
+        "performanceProfile": "network-app",
+        "securityProfile": "community-online",
+        "accessibilityProfile": "text-ui"
+      },
+      "compliant": false,
+      "debt": [
+        {
+          "code": "missing-session-or-protocol-version",
+          "severity": "release-blocking-for-strict-profile",
+          "requirement": "Declare a real architecture.sessionSchemaVersion or architecture.protocolVersion and verify reconnect compatibility."
+        },
+        {
+          "code": "online-liveops-adoption-gap",
+          "severity": "game-follow-up",
+          "requirement": "Adopt the shared live-ops and observability contracts in the canonical online runtime and verify maintenance/kill-switch plus operational metrics behavior."
+        }
+      ]
+    },
+    {
+      "id": "crossword",
+      "title": "THC Daily Crossword",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "daily-puzzle",
+        "rendererProfile": "dom",
+        "sessionProfile": "persistent",
+        "persistenceProfile": "progress",
+        "networkProfile": "local",
+        "contentProfile": "generated-daily",
+        "performanceProfile": "tiny-ui",
+        "securityProfile": "local",
+        "accessibilityProfile": "text-ui"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "ganjumanji",
+      "title": "Ganjumanji: The Lost Grower's Temple",
+      "releaseStatus": "packaged",
+      "profile": {
+        "gameplayProfile": "campaign-rpg",
+        "rendererProfile": "phaser",
+        "sessionProfile": "long",
+        "persistenceProfile": "campaign",
+        "networkProfile": "local",
+        "contentProfile": "branching-narrative",
+        "performanceProfile": "2d-game",
+        "securityProfile": "persistent-solo",
+        "accessibilityProfile": "action-game"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "grow-room-bingo",
+      "title": "Grow Room Bingo / Bongwater Bingo",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "casual-puzzle",
+        "rendererProfile": "dom",
+        "sessionProfile": "short",
+        "persistenceProfile": "progress",
+        "networkProfile": "share-code",
+        "contentProfile": "static",
+        "performanceProfile": "tiny-ui",
+        "securityProfile": "local",
+        "accessibilityProfile": "text-ui"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "grow-room-defense",
+      "title": "Grow Room Defense",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "arcade-action",
+        "rendererProfile": "dom",
+        "sessionProfile": "short",
+        "persistenceProfile": "progress",
+        "networkProfile": "local",
+        "contentProfile": "static",
+        "performanceProfile": "dom-game",
+        "securityProfile": "local",
+        "accessibilityProfile": "gameplay-ui"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "grower-conversations",
+      "title": "Grow Room Confessions",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "party-social",
+        "rendererProfile": "dom",
+        "sessionProfile": "short",
+        "persistenceProfile": "progress",
+        "networkProfile": "local",
+        "contentProfile": "database-driven",
+        "performanceProfile": "tiny-ui",
+        "securityProfile": "local",
+        "accessibilityProfile": "text-ui"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "harvest-hustle",
+      "title": "Harvest Hustle",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "arcade-action",
+        "rendererProfile": "dom",
+        "sessionProfile": "short",
+        "persistenceProfile": "progress",
+        "networkProfile": "local",
+        "contentProfile": "static",
+        "performanceProfile": "dom-game",
+        "securityProfile": "local",
+        "accessibilityProfile": "gameplay-ui"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "high-iq",
+      "title": "High IQ — Test Higher Cognition",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "trivia-knowledge",
+        "rendererProfile": "dom",
+        "sessionProfile": "short",
+        "persistenceProfile": "progress",
+        "networkProfile": "local",
+        "contentProfile": "knowledge-bank",
+        "performanceProfile": "tiny-ui",
+        "securityProfile": "local",
+        "accessibilityProfile": "text-ui"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "high-land",
+      "title": "High Land: The Sweet Escape",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "board-simulation",
+        "rendererProfile": "hybrid",
+        "sessionProfile": "medium",
+        "persistenceProfile": "match-recovery",
+        "networkProfile": "turn-authoritative",
+        "contentProfile": "database-driven",
+        "performanceProfile": "network-app",
+        "securityProfile": "casual-online",
+        "accessibilityProfile": "gameplay-ui"
+      },
+      "compliant": false,
+      "debt": [
+        {
+          "code": "missing-session-or-protocol-version",
+          "severity": "release-blocking-for-strict-profile",
+          "requirement": "Declare a real architecture.sessionSchemaVersion or architecture.protocolVersion and verify reconnect compatibility."
+        },
+        {
+          "code": "online-liveops-adoption-gap",
+          "severity": "game-follow-up",
+          "requirement": "Adopt the shared live-ops and observability contracts in the canonical online runtime and verify maintenance/kill-switch plus operational metrics behavior."
+        }
+      ]
+    },
+    {
+      "id": "high-life",
+      "title": "High Life: From Bagseed to Legacy",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "board-simulation",
+        "rendererProfile": "dom",
+        "sessionProfile": "long",
+        "persistenceProfile": "campaign",
+        "networkProfile": "local",
+        "contentProfile": "branching-narrative",
+        "performanceProfile": "dom-game",
+        "securityProfile": "persistent-solo",
+        "accessibilityProfile": "text-ui"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "high-lines",
+      "title": "High Lines",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "casual-puzzle",
+        "rendererProfile": "svg-dom",
+        "sessionProfile": "short",
+        "persistenceProfile": "progress",
+        "networkProfile": "share-code",
+        "contentProfile": "static",
+        "performanceProfile": "tiny-ui",
+        "securityProfile": "local",
+        "accessibilityProfile": "text-ui"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "kush-kings",
+      "title": "Kush Kings Chess",
+      "releaseStatus": "playable-local",
+      "profile": {
+        "gameplayProfile": "turn-multiplayer",
+        "rendererProfile": "react-dom",
+        "sessionProfile": "medium",
+        "persistenceProfile": "archive",
+        "networkProfile": "turn-authoritative",
+        "contentProfile": "database-driven",
+        "performanceProfile": "network-app",
+        "securityProfile": "competitive-online",
+        "accessibilityProfile": "text-ui"
+      },
+      "compliant": false,
+      "debt": [
+        {
+          "code": "online-liveops-adoption-gap",
+          "severity": "game-follow-up",
+          "requirement": "Adopt the shared live-ops and observability contracts in the canonical online runtime and verify maintenance/kill-switch plus operational metrics behavior."
+        }
+      ]
+    },
+    {
+      "id": "lost-in-the-terps",
+      "title": "Lost in the Terps",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "casual-puzzle",
+        "rendererProfile": "dom",
+        "sessionProfile": "short",
+        "persistenceProfile": "progress",
+        "networkProfile": "local",
+        "contentProfile": "static",
+        "performanceProfile": "tiny-ui",
+        "securityProfile": "local",
+        "accessibilityProfile": "text-ui"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "mystery-strain",
+      "title": "Mystery Strain",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "casual-puzzle",
+        "rendererProfile": "dom",
+        "sessionProfile": "short",
+        "persistenceProfile": "progress",
+        "networkProfile": "share-code",
+        "contentProfile": "database-driven",
+        "performanceProfile": "tiny-ui",
+        "securityProfile": "local",
+        "accessibilityProfile": "text-ui"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "pheno-draft",
+      "title": "Pheno Draft",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "card-strategy",
+        "rendererProfile": "dom",
+        "sessionProfile": "medium",
+        "persistenceProfile": "archive",
+        "networkProfile": "local",
+        "contentProfile": "versioned-balance",
+        "performanceProfile": "dom-game",
+        "securityProfile": "local",
+        "accessibilityProfile": "text-ui"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "phenoquest",
+      "title": "PhenoQuest: The Living Seed Vault",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "campaign-rpg",
+        "rendererProfile": "threejs",
+        "sessionProfile": "long",
+        "persistenceProfile": "campaign",
+        "networkProfile": "local",
+        "contentProfile": "branching-narrative",
+        "performanceProfile": "3d-game",
+        "securityProfile": "persistent-solo",
+        "accessibilityProfile": "3d-game"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "protect-the-plants",
+      "title": "Burn Buds",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "turn-multiplayer",
+        "rendererProfile": "dom",
+        "sessionProfile": "medium",
+        "persistenceProfile": "match-recovery",
+        "networkProfile": "request-response-authoritative",
+        "contentProfile": "database-driven",
+        "performanceProfile": "network-app",
+        "securityProfile": "casual-online",
+        "accessibilityProfile": "text-ui"
+      },
+      "compliant": false,
+      "debt": [
+        {
+          "code": "missing-session-or-protocol-version",
+          "severity": "release-blocking-for-strict-profile",
+          "requirement": "Declare a real architecture.sessionSchemaVersion or architecture.protocolVersion and verify reconnect compatibility."
+        },
+        {
+          "code": "online-liveops-adoption-gap",
+          "severity": "game-follow-up",
+          "requirement": "Adopt the shared live-ops and observability contracts in the canonical online runtime and verify maintenance/kill-switch plus operational metrics behavior."
+        }
+      ]
+    },
+    {
+      "id": "root-cause",
+      "title": "Root Cause",
+      "releaseStatus": "vertical-slice",
+      "profile": {
+        "gameplayProfile": "casual-puzzle",
+        "rendererProfile": "dom",
+        "sessionProfile": "short",
+        "persistenceProfile": "progress",
+        "networkProfile": "share-code",
+        "contentProfile": "knowledge-bank",
+        "performanceProfile": "tiny-ui",
+        "securityProfile": "local",
+        "accessibilityProfile": "text-ui"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "seed-ascent",
+      "title": "Seed Man: Seed Ascent",
+      "releaseStatus": "playable-local",
+      "profile": {
+        "gameplayProfile": "arcade-action",
+        "rendererProfile": "canvas2d",
+        "sessionProfile": "medium",
+        "persistenceProfile": "progress",
+        "networkProfile": "local",
+        "contentProfile": "static",
+        "performanceProfile": "2d-game",
+        "securityProfile": "persistent-solo",
+        "accessibilityProfile": "action-game"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "seed-man-platformer",
+      "title": "Seed Man: Grow. Fight. Restore.",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "arcade-action",
+        "rendererProfile": "threejs",
+        "sessionProfile": "medium",
+        "persistenceProfile": "checkpoint",
+        "networkProfile": "local",
+        "contentProfile": "static",
+        "performanceProfile": "3d-game",
+        "securityProfile": "persistent-solo",
+        "accessibilityProfile": "action-game"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "spin-the-strain",
+      "title": "Spin the Strain",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "party-social",
+        "rendererProfile": "hybrid",
+        "sessionProfile": "micro",
+        "persistenceProfile": "progress",
+        "networkProfile": "share-code",
+        "contentProfile": "database-driven",
+        "performanceProfile": "tiny-ui",
+        "securityProfile": "local",
+        "accessibilityProfile": "gameplay-ui"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "stoner-duck-race",
+      "title": "Quack & Bake: Stoner Duck Race",
+      "releaseStatus": "playable-local",
+      "profile": {
+        "gameplayProfile": "realtime-multiplayer",
+        "rendererProfile": "phaser",
+        "sessionProfile": "short",
+        "persistenceProfile": "match-recovery",
+        "networkProfile": "optional-realtime",
+        "contentProfile": "static",
+        "performanceProfile": "network-app",
+        "securityProfile": "casual-online",
+        "accessibilityProfile": "action-game"
+      },
+      "compliant": false,
+      "debt": [
+        {
+          "code": "missing-session-or-protocol-version",
+          "severity": "release-blocking-for-strict-profile",
+          "requirement": "Declare a real architecture.sessionSchemaVersion or architecture.protocolVersion and verify reconnect compatibility."
+        },
+        {
+          "code": "online-liveops-adoption-gap",
+          "severity": "game-follow-up",
+          "requirement": "Adopt the shared live-ops and observability contracts in the canonical online runtime and verify maintenance/kill-switch plus operational metrics behavior."
+        }
+      ]
+    },
+    {
+      "id": "strain-match",
+      "title": "Strain Match",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "casual-puzzle",
+        "rendererProfile": "dom",
+        "sessionProfile": "short",
+        "persistenceProfile": "progress",
+        "networkProfile": "local",
+        "contentProfile": "static",
+        "performanceProfile": "tiny-ui",
+        "securityProfile": "local",
+        "accessibilityProfile": "text-ui"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "strain-showdown",
+      "title": "Strain Showdown",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "card-strategy",
+        "rendererProfile": "dom",
+        "sessionProfile": "medium",
+        "persistenceProfile": "archive",
+        "networkProfile": "local",
+        "contentProfile": "versioned-balance",
+        "performanceProfile": "dom-game",
+        "securityProfile": "local",
+        "accessibilityProfile": "text-ui"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "terpocalypse",
+      "title": "Terpocalypse: Grow Room From Hell",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "arcade-action",
+        "rendererProfile": "canvas2d",
+        "sessionProfile": "medium",
+        "persistenceProfile": "progress",
+        "networkProfile": "local",
+        "contentProfile": "procedural",
+        "performanceProfile": "2d-game",
+        "securityProfile": "persistent-solo",
+        "accessibilityProfile": "action-game"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "thc-rpg",
+      "title": "THC RPG — The First Seed",
+      "releaseStatus": "packaged",
+      "profile": {
+        "gameplayProfile": "campaign-rpg",
+        "rendererProfile": "dom",
+        "sessionProfile": "long",
+        "persistenceProfile": "campaign",
+        "networkProfile": "local",
+        "contentProfile": "branching-narrative",
+        "performanceProfile": "dom-game",
+        "securityProfile": "persistent-solo",
+        "accessibilityProfile": "text-ui"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "thc-u-know",
+      "title": "THC U Know",
+      "releaseStatus": "playable-local",
+      "profile": {
+        "gameplayProfile": "turn-multiplayer",
+        "rendererProfile": "react-dom",
+        "sessionProfile": "medium",
+        "persistenceProfile": "match-recovery",
+        "networkProfile": "turn-authoritative",
+        "contentProfile": "database-driven",
+        "performanceProfile": "network-app",
+        "securityProfile": "community-online",
+        "accessibilityProfile": "text-ui"
+      },
+      "compliant": false,
+      "debt": [
+        {
+          "code": "missing-session-or-protocol-version",
+          "severity": "release-blocking-for-strict-profile",
+          "requirement": "Declare a real architecture.sessionSchemaVersion or architecture.protocolVersion and verify reconnect compatibility."
+        },
+        {
+          "code": "online-liveops-adoption-gap",
+          "severity": "game-follow-up",
+          "requirement": "Adopt the shared live-ops and observability contracts in the canonical online runtime and verify maintenance/kill-switch plus operational metrics behavior."
+        }
+      ]
+    },
+    {
+      "id": "trichome-trials",
+      "title": "Trichome Trials",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "party-social",
+        "rendererProfile": "dom",
+        "sessionProfile": "short",
+        "persistenceProfile": "archive",
+        "networkProfile": "local",
+        "contentProfile": "database-driven",
+        "performanceProfile": "tiny-ui",
+        "securityProfile": "local",
+        "accessibilityProfile": "text-ui"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "weedopolis",
+      "title": "Weedopolis: Strain City Edition",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "board-simulation",
+        "rendererProfile": "hybrid",
+        "sessionProfile": "long",
+        "persistenceProfile": "campaign",
+        "networkProfile": "local",
+        "contentProfile": "database-driven",
+        "performanceProfile": "dom-game",
+        "securityProfile": "persistent-solo",
+        "accessibilityProfile": "gameplay-ui"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "who-took-it",
+      "title": "Who Took It?",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "party-social",
+        "rendererProfile": "dom",
+        "sessionProfile": "short",
+        "persistenceProfile": "progress",
+        "networkProfile": "local",
+        "contentProfile": "database-driven",
+        "performanceProfile": "tiny-ui",
+        "securityProfile": "local",
+        "accessibilityProfile": "text-ui"
+      },
+      "compliant": true,
+      "debt": []
+    }
+  ]
+}

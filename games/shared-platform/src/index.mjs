@@ -8,6 +8,13 @@ export {
 } from './storage.mjs';
 
 export {
+  createSaveEnvelope,
+  validateSaveEnvelope,
+  migrateSaveEnvelope,
+  createVersionedSaveStore,
+} from './save.mjs';
+
+export {
   SETTINGS_VERSION,
   DEFAULT_GAME_SETTINGS,
   normalizeGameSettings,
@@ -38,6 +45,12 @@ export {
 } from './input.mjs';
 
 export {
+  DEFAULT_GAMEPAD_BUTTON_MAP,
+  DEFAULT_GAMEPAD_AXIS_MAP,
+  createGamepadActionMap,
+} from './gamepad.mjs';
+
+export {
   createGameAudioManager,
 } from './audio.mjs';
 
@@ -59,6 +72,28 @@ export {
 } from './state-machine.mjs';
 
 export {
+  GAME_LIFECYCLE_STATES,
+  createGameLifecycle,
+} from './lifecycle.mjs';
+
+export {
+  validateMultiplayerAdapter,
+  createMultiplayerClient,
+} from './multiplayer.mjs';
+
+export {
+  normalizeGameLiveOpsState,
+  resolveGameAvailability,
+  resolveMultiplayerAvailability,
+  createLiveOpsController,
+} from './liveops.mjs';
+
+export {
+  createGameObservability,
+  RECOMMENDED_OPERATIONAL_METRICS,
+} from './observability.mjs';
+
+export {
   LoadingTaskError,
   runLoadTasks,
   loadingResultsToObject,
@@ -71,4 +106,4 @@ export {
   field,
 } from './validation.mjs';
 
-export const DTF_GAME_PLATFORM_VERSION = '1.7.0';
+export const DTF_GAME_PLATFORM_VERSION = '2.2.0';

@@ -1,0 +1,323 @@
+{
+  "schemaVersion": 1,
+  "generatedFrom": [
+    "data/game-profile-compliance.json",
+    "data/game-registry-v2.json"
+  ],
+  "summary": {
+    "itemCount": 11,
+    "gameCount": 6,
+    "priority1": 6,
+    "priority2": 5
+  },
+  "policy": {
+    "noFakeMetadata": "Do not close an item by inventing version numbers or declaring unsupported capabilities. Inspect canonical source and add real evidence.",
+    "ownership": "Implement in canonicalRepository; update central registry/integration metadata in the same coordinated change.",
+    "release": "A queue item is closed only when canonical tests pass and the scoped strict profile check passes."
+  },
+  "items": [
+    {
+      "id": "bud-or-bluff:missing-session-or-protocol-version",
+      "gameId": "bud-or-bluff",
+      "title": "Bud or Bluff",
+      "priority": 1,
+      "releaseStatus": "public-unverified",
+      "debtCode": "missing-session-or-protocol-version",
+      "severity": "release-blocking-for-strict-profile",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "games/bud-or-bluff"
+      ],
+      "integrationRepository": "dtfgenetics/Thc",
+      "publicRoute": "/games/bud-or-bluff/",
+      "action": "Introduce an explicit multiplayer session/protocol version in canonical source and verify reconnect/resume compatibility across the supported version boundary.",
+      "requiredEvidence": [
+        "real sessionSchemaVersion or protocolVersion",
+        "reconnect/resume compatibility test",
+        "stale/incompatible session behavior",
+        "central registry version metadata"
+      ],
+      "verificationCommands": [
+        "node games/bud-or-bluff/test/engine.test.mjs && node games/bud-or-bluff/scripts/build-private-deck.mjs && node games/bud-or-bluff/test/keyboard-v1.test.mjs && node games/bud-or-bluff/test/visual-state-v3.test.mjs && node games/bud-or-bluff/test/online-lobby.test.mjs && node games/bud-or-bluff/test/online-lobby-v2.test.mjs"
+      ],
+      "strictProfileCommand": "npm run games:profiles:strict -- --id bud-or-bluff"
+    },
+    {
+      "id": "bud-or-bluff:online-liveops-adoption-gap",
+      "gameId": "bud-or-bluff",
+      "title": "Bud or Bluff",
+      "priority": 1,
+      "releaseStatus": "public-unverified",
+      "debtCode": "online-liveops-adoption-gap",
+      "severity": "game-follow-up",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "games/bud-or-bluff"
+      ],
+      "integrationRepository": "dtfgenetics/Thc",
+      "publicRoute": "/games/bud-or-bluff/",
+      "action": "Adopt DTF shared live-ops and observability contracts (or a tested compatible adapter) in the canonical online runtime.",
+      "requiredEvidence": [
+        "maintenance/disable behavior",
+        "multiplayer kill-switch behavior",
+        "operational metrics/error instrumentation",
+        "health/live runtime verification"
+      ],
+      "verificationCommands": [
+        "node games/bud-or-bluff/test/engine.test.mjs && node games/bud-or-bluff/scripts/build-private-deck.mjs && node games/bud-or-bluff/test/keyboard-v1.test.mjs && node games/bud-or-bluff/test/visual-state-v3.test.mjs && node games/bud-or-bluff/test/online-lobby.test.mjs && node games/bud-or-bluff/test/online-lobby-v2.test.mjs"
+      ],
+      "strictProfileCommand": "npm run games:profiles:strict -- --id bud-or-bluff"
+    },
+    {
+      "id": "high-land:missing-session-or-protocol-version",
+      "gameId": "high-land",
+      "title": "High Land: The Sweet Escape",
+      "priority": 1,
+      "releaseStatus": "public-unverified",
+      "debtCode": "missing-session-or-protocol-version",
+      "severity": "release-blocking-for-strict-profile",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "apps/high-land-web"
+      ],
+      "integrationRepository": "dtfgenetics/Thc",
+      "publicRoute": "/games/high-land/",
+      "action": "Introduce an explicit multiplayer session/protocol version in canonical source and verify reconnect/resume compatibility across the supported version boundary.",
+      "requiredEvidence": [
+        "real sessionSchemaVersion or protocolVersion",
+        "reconnect/resume compatibility test",
+        "stale/incompatible session behavior",
+        "central registry version metadata"
+      ],
+      "verificationCommands": [
+        "npm run test:high-land && npm run build:high-land"
+      ],
+      "strictProfileCommand": "npm run games:profiles:strict -- --id high-land"
+    },
+    {
+      "id": "high-land:online-liveops-adoption-gap",
+      "gameId": "high-land",
+      "title": "High Land: The Sweet Escape",
+      "priority": 1,
+      "releaseStatus": "public-unverified",
+      "debtCode": "online-liveops-adoption-gap",
+      "severity": "game-follow-up",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "apps/high-land-web"
+      ],
+      "integrationRepository": "dtfgenetics/Thc",
+      "publicRoute": "/games/high-land/",
+      "action": "Adopt DTF shared live-ops and observability contracts (or a tested compatible adapter) in the canonical online runtime.",
+      "requiredEvidence": [
+        "maintenance/disable behavior",
+        "multiplayer kill-switch behavior",
+        "operational metrics/error instrumentation",
+        "health/live runtime verification"
+      ],
+      "verificationCommands": [
+        "npm run test:high-land && npm run build:high-land"
+      ],
+      "strictProfileCommand": "npm run games:profiles:strict -- --id high-land"
+    },
+    {
+      "id": "protect-the-plants:missing-session-or-protocol-version",
+      "gameId": "protect-the-plants",
+      "title": "Burn Buds",
+      "priority": 1,
+      "releaseStatus": "public-unverified",
+      "debtCode": "missing-session-or-protocol-version",
+      "severity": "release-blocking-for-strict-profile",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "games/protect-the-plants"
+      ],
+      "integrationRepository": "dtfgenetics/Thc",
+      "publicRoute": "/games/protect-the-plants/",
+      "action": "Introduce an explicit multiplayer session/protocol version in canonical source and verify reconnect/resume compatibility across the supported version boundary.",
+      "requiredEvidence": [
+        "real sessionSchemaVersion or protocolVersion",
+        "reconnect/resume compatibility test",
+        "stale/incompatible session behavior",
+        "central registry version metadata"
+      ],
+      "verificationCommands": [
+        "node games/protect-the-plants/test/burn-buds-branding.test.mjs && node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs && node games/protect-the-plants/test/api-copy-contract.test.mjs && node games/protect-the-plants/test/runtime-sync-v1.test.mjs && node games/protect-the-plants/test/v2-extras-sync.test.mjs && node games/protect-the-plants/test/native-targeting-source.test.mjs && node games/protect-the-plants/test/gamefeel-v1.test.mjs && php -l site/public-route-patch/games/protect-the-plants/api.php && php -l site/public-route-patch/games/protect-the-plants/presence.php"
+      ],
+      "strictProfileCommand": "npm run games:profiles:strict -- --id protect-the-plants"
+    },
+    {
+      "id": "protect-the-plants:online-liveops-adoption-gap",
+      "gameId": "protect-the-plants",
+      "title": "Burn Buds",
+      "priority": 1,
+      "releaseStatus": "public-unverified",
+      "debtCode": "online-liveops-adoption-gap",
+      "severity": "game-follow-up",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "games/protect-the-plants"
+      ],
+      "integrationRepository": "dtfgenetics/Thc",
+      "publicRoute": "/games/protect-the-plants/",
+      "action": "Adopt DTF shared live-ops and observability contracts (or a tested compatible adapter) in the canonical online runtime.",
+      "requiredEvidence": [
+        "maintenance/disable behavior",
+        "multiplayer kill-switch behavior",
+        "operational metrics/error instrumentation",
+        "health/live runtime verification"
+      ],
+      "verificationCommands": [
+        "node games/protect-the-plants/test/burn-buds-branding.test.mjs && node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs && node games/protect-the-plants/test/api-copy-contract.test.mjs && node games/protect-the-plants/test/runtime-sync-v1.test.mjs && node games/protect-the-plants/test/v2-extras-sync.test.mjs && node games/protect-the-plants/test/native-targeting-source.test.mjs && node games/protect-the-plants/test/gamefeel-v1.test.mjs && php -l site/public-route-patch/games/protect-the-plants/api.php && php -l site/public-route-patch/games/protect-the-plants/presence.php"
+      ],
+      "strictProfileCommand": "npm run games:profiles:strict -- --id protect-the-plants"
+    },
+    {
+      "id": "kush-kings:online-liveops-adoption-gap",
+      "gameId": "kush-kings",
+      "title": "Kush Kings Chess",
+      "priority": 2,
+      "releaseStatus": "playable-local",
+      "debtCode": "online-liveops-adoption-gap",
+      "severity": "game-follow-up",
+      "canonicalRepository": "dtfgenetics/Thc-chess-git",
+      "sourcePaths": [
+        "client",
+        "server"
+      ],
+      "integrationRepository": "dtfgenetics/Thc",
+      "publicRoute": "/games/kush-kings-chess/",
+      "action": "Adopt DTF shared live-ops and observability contracts (or a tested compatible adapter) in the canonical online runtime.",
+      "requiredEvidence": [
+        "maintenance/disable behavior",
+        "multiplayer kill-switch behavior",
+        "operational metrics/error instrumentation",
+        "health/live runtime verification"
+      ],
+      "verificationCommands": [
+        "pnpm test:production-runtime",
+        "pnpm lint",
+        "pnpm live:check"
+      ],
+      "strictProfileCommand": "npm run games:profiles:strict -- --id kush-kings"
+    },
+    {
+      "id": "stoner-duck-race:missing-session-or-protocol-version",
+      "gameId": "stoner-duck-race",
+      "title": "Quack & Bake: Stoner Duck Race",
+      "priority": 2,
+      "releaseStatus": "playable-local",
+      "debtCode": "missing-session-or-protocol-version",
+      "severity": "release-blocking-for-strict-profile",
+      "canonicalRepository": "dtfgenetics/Dtf420",
+      "sourcePaths": [
+        "app/games/stoner-duck-race",
+        "game/stoner-duck-race"
+      ],
+      "integrationRepository": "dtfgenetics/Thc",
+      "publicRoute": "/games/stoner-duck-race",
+      "action": "Introduce an explicit multiplayer session/protocol version in canonical source and verify reconnect/resume compatibility across the supported version boundary.",
+      "requiredEvidence": [
+        "real sessionSchemaVersion or protocolVersion",
+        "reconnect/resume compatibility test",
+        "stale/incompatible session behavior",
+        "central registry version metadata"
+      ],
+      "verificationCommands": [
+        "npm run verify:stoner-duck-race",
+        "npm run typecheck"
+      ],
+      "strictProfileCommand": "npm run games:profiles:strict -- --id stoner-duck-race"
+    },
+    {
+      "id": "stoner-duck-race:online-liveops-adoption-gap",
+      "gameId": "stoner-duck-race",
+      "title": "Quack & Bake: Stoner Duck Race",
+      "priority": 2,
+      "releaseStatus": "playable-local",
+      "debtCode": "online-liveops-adoption-gap",
+      "severity": "game-follow-up",
+      "canonicalRepository": "dtfgenetics/Dtf420",
+      "sourcePaths": [
+        "app/games/stoner-duck-race",
+        "game/stoner-duck-race"
+      ],
+      "integrationRepository": "dtfgenetics/Thc",
+      "publicRoute": "/games/stoner-duck-race",
+      "action": "Adopt DTF shared live-ops and observability contracts (or a tested compatible adapter) in the canonical online runtime.",
+      "requiredEvidence": [
+        "maintenance/disable behavior",
+        "multiplayer kill-switch behavior",
+        "operational metrics/error instrumentation",
+        "health/live runtime verification"
+      ],
+      "verificationCommands": [
+        "npm run verify:stoner-duck-race",
+        "npm run typecheck"
+      ],
+      "strictProfileCommand": "npm run games:profiles:strict -- --id stoner-duck-race"
+    },
+    {
+      "id": "thc-u-know:missing-session-or-protocol-version",
+      "gameId": "thc-u-know",
+      "title": "THC U Know",
+      "priority": 2,
+      "releaseStatus": "playable-local",
+      "debtCode": "missing-session-or-protocol-version",
+      "severity": "release-blocking-for-strict-profile",
+      "canonicalRepository": "dtfgenetics/thc-u-know-card-game-",
+      "sourcePaths": [
+        "apps/web",
+        "apps/server",
+        "packages/shared"
+      ],
+      "integrationRepository": "dtfgenetics/Thc",
+      "publicRoute": "/games/thc-u-know/",
+      "action": "Introduce an explicit multiplayer session/protocol version in canonical source and verify reconnect/resume compatibility across the supported version boundary.",
+      "requiredEvidence": [
+        "real sessionSchemaVersion or protocolVersion",
+        "reconnect/resume compatibility test",
+        "stale/incompatible session behavior",
+        "central registry version metadata"
+      ],
+      "verificationCommands": [
+        "pnpm test",
+        "pnpm test:production-runtime",
+        "pnpm lint",
+        "pnpm live:check"
+      ],
+      "strictProfileCommand": "npm run games:profiles:strict -- --id thc-u-know"
+    },
+    {
+      "id": "thc-u-know:online-liveops-adoption-gap",
+      "gameId": "thc-u-know",
+      "title": "THC U Know",
+      "priority": 2,
+      "releaseStatus": "playable-local",
+      "debtCode": "online-liveops-adoption-gap",
+      "severity": "game-follow-up",
+      "canonicalRepository": "dtfgenetics/thc-u-know-card-game-",
+      "sourcePaths": [
+        "apps/web",
+        "apps/server",
+        "packages/shared"
+      ],
+      "integrationRepository": "dtfgenetics/Thc",
+      "publicRoute": "/games/thc-u-know/",
+      "action": "Adopt DTF shared live-ops and observability contracts (or a tested compatible adapter) in the canonical online runtime.",
+      "requiredEvidence": [
+        "maintenance/disable behavior",
+        "multiplayer kill-switch behavior",
+        "operational metrics/error instrumentation",
+        "health/live runtime verification"
+      ],
+      "verificationCommands": [
+        "pnpm test",
+        "pnpm test:production-runtime",
+        "pnpm lint",
+        "pnpm live:check"
+      ],
+      "strictProfileCommand": "npm run games:profiles:strict -- --id thc-u-know"
+    }
+  ]
+}

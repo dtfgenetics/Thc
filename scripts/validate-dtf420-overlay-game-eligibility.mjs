@@ -19,9 +19,41 @@ function findGame(root,id){
   return candidates[0]||null;
 }
 
-for(const prefix of overlay.routePrefixes||[]){
-  if(!prefix.startsWith('games/')) continue;
-  const id=prefix.slice('games/'.length);
+function gameIdFromPrefix(prefix){
+  if(typeof prefix!=='string'||!prefix.startsWith('games/')) return null;
+  const id=prefix.slice('games/'.length).replace(/\/$/,'');
+  return id||null;
+}
+
+function normalizePublicRoute(route){
+  if(typeof route!=='string') return null;
+  const clean='/' + route.replace(/^\/+|\/+$/g,'');
+  return clean==='/'?'/':clean+'/';
+}
+
+function expectedPublicRoute(id){
+  return `/games/${id}/`;
+}
+
+const activePrefixes=new Set(overlay.routePrefixes||[]);
+const deferredPrefixes=new Set();
+
+for(const deferred of overlay.deferredRoutes||[]){
+  const prefix=deferred?.prefix;
+  if(typeof prefix!=='string'||!prefix.trim()){
+    errors.push('deferred route entry must declare a non-empty prefix');
+    continue;
+  }
+  if(deferredPrefixes.has(prefix)) errors.push(`${prefix}: duplicate deferred route entry`);
+  deferredPrefixes.add(prefix);
+  if(activePrefixes.has(prefix)) errors.push(`${prefix}: route cannot be both active and deferred`);
+  if(!deferred.reason?.trim()) errors.push(`${prefix}: deferred route must record a reason`);
+  if(!deferred.releaseCondition?.trim()) errors.push(`${prefix}: deferred route must record a releaseCondition`);
+}
+
+for(const prefix of activePrefixes){
+  const id=gameIdFromPrefix(prefix);
+  if(!id) continue;
   const locationGame=findGame(locations,id);
   const registryGame=findGame(registry,id);
   if(!locationGame){errors.push(`${prefix}: no game-location registry entry`);continue;}
@@ -41,17 +73,49 @@ for(const prefix of overlay.routePrefixes||[]){
   if(production.overlayEligible!==true) errors.push(`${prefix}: game-location registry does not mark overlayEligible=true`);
   if(release.overlayEligible!==true) errors.push(`${prefix}: game-registry-v2 does not mark overlayEligible=true`);
   if(dev.releasable!==true) errors.push(`${prefix}: Dtf420 development location must be releasable=true before production overlay staging`);
+
+  const actualRoute=normalizePublicRoute(registryGame.publicRoute);
+  const expected=expectedPublicRoute(id);
+  if(actualRoute!==expected) errors.push(`${prefix}: publicRoute must normalize to ${expected}; found ${registryGame.publicRoute}`);
 }
 
-const deferred=new Map((overlay.deferredRoutes||[]).map(x=>[x.prefix,x]));
-for(const blockedId of ['stoner-duck-race']){
-  const prefix=`games/${blockedId}`;
-  const locationGame=findGame(locations,blockedId);
-  const registryGame=findGame(registry,blockedId);
-  if((overlay.routePrefixes||[]).includes(prefix)) errors.push(`${prefix}: must remain out of production overlay while overlayEligible=false`);
-  if(locationGame?.production?.overlayEligible!==false) errors.push(`${prefix}: game-location registry must explicitly mark overlayEligible=false`);
-  if(registryGame?.release?.overlayEligible!==false) errors.push(`${prefix}: game-registry-v2 must explicitly mark overlayEligible=false`);
-  if(!deferred.has(prefix)) errors.push(`${prefix}: deferral reason must remain explicit while route is withheld`);
+for(const prefix of deferredPrefixes){
+  const id=gameIdFromPrefix(prefix);
+  if(!id) continue;
+  const locationGame=findGame(locations,id);
+  const registryGame=findGame(registry,id);
+  if(!locationGame){errors.push(`${prefix}: deferred game has no game-location registry entry`);continue;}
+  if(!registryGame){errors.push(`${prefix}: deferred game has no game-registry-v2 entry`);continue;}
+
+  const dev=(registryGame.developmentLocations||[]).find(x=>x.repository==='dtfgenetics/Dtf420')||{};
+  if(locationGame?.production?.overlayEligible!==false) errors.push(`${prefix}: deferred game-location registry must explicitly mark overlayEligible=false`);
+  if(registryGame?.release?.overlayEligible!==false) errors.push(`${prefix}: deferred game-registry-v2 must explicitly mark overlayEligible=false`);
+  if(dev.releasable!==false) errors.push(`${prefix}: deferred Dtf420 development location must explicitly mark releasable=false`);
+
+  const actualRoute=normalizePublicRoute(registryGame.publicRoute);
+  const expected=expectedPublicRoute(id);
+  if(actualRoute!==expected) errors.push(`${prefix}: publicRoute must normalize to ${expected}; found ${registryGame.publicRoute}`);
+}
+
+for(const game of registry.games||[]){
+  const dev=(game.developmentLocations||[]).find(x=>x.repository==='dtfgenetics/Dtf420');
+  if(!dev) continue;
+  const prefix=`games/${game.id}`;
+  const isActive=activePrefixes.has(prefix);
+  const isDeferred=deferredPrefixes.has(prefix);
+
+  if(game.release?.overlayEligible===true && dev.releasable===true && !isActive){
+    errors.push(`${prefix}: registry says overlayEligible/releasable but route is absent from active overlay prefixes`);
+  }
+  if(game.release?.overlayEligible===false && isActive){
+    errors.push(`${prefix}: registry marks overlayEligible=false but route is active`);
+  }
+  if(dev.releasable===false && isActive){
+    errors.push(`${prefix}: development location is releasable=false but route is active`);
+  }
+  if(game.release?.overlayEligible===false && !isDeferred && !isActive){
+    errors.push(`${prefix}: Dtf420 game is withheld but missing an explicit deferred route record`);
+  }
 }
 
 if(errors.length){
@@ -59,4 +123,4 @@ if(errors.length){
   for(const e of errors) console.error(' - '+e);
   process.exit(1);
 }
-console.log('Dtf420 overlay game eligibility valid: production overlay contains only explicitly migration-integrated, overlay-eligible games.');
+console.log(`Dtf420 overlay game eligibility valid: ${[...activePrefixes].filter(x=>x.startsWith('games/')).length} active game route(s), ${[...deferredPrefixes].filter(x=>x.startsWith('games/')).length} deferred game route(s), all reconciled with canonical registries.`);

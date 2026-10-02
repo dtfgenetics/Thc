@@ -6,6 +6,10 @@ import {
   storageRemove,
   storageReadJson,
   storageWriteJson,
+  createSaveEnvelope,
+  validateSaveEnvelope,
+  migrateSaveEnvelope,
+  createVersionedSaveStore,
   DEFAULT_GAME_SETTINGS,
   createGameSettingsStore,
   effectiveAudioGain,
@@ -15,6 +19,7 @@ import {
   createTelemetryBuffer,
   validateTelemetryEvent,
   createInputActionMap,
+  createGamepadActionMap,
   createGameAudioManager,
   DETERMINISTIC_RNG_ALGORITHM,
   createDeterministicRng,
@@ -24,6 +29,14 @@ import {
   vibrateGame,
   createWakeLockController,
   createStateMachine,
+  createGameLifecycle,
+  GAME_LIFECYCLE_STATES,
+  validateMultiplayerAdapter,
+  createMultiplayerClient,
+  createLiveOpsController,
+  resolveMultiplayerAvailability,
+  createGameObservability,
+  RECOMMENDED_OPERATIONAL_METRICS,
   LoadingTaskError,
   runLoadTasks,
   loadingResultsToObject,
@@ -115,6 +128,77 @@ class FakeAudioContext {
   createGain() { const node = new FakeAudioNode(); node.gain = new FakeAudioParam(); return node; }
   createOscillator() { return new FakeOscillator(); }
   async close() { this.state = 'closed'; }
+}
+
+{
+  const envelope = createSaveEnvelope({
+    gameId: 'save-test',
+    version: 1,
+    releaseVersion: '1.0.0',
+    savedAt: '2026-10-01T00:00:00.000Z',
+    data: { score: 4, inventory: ['seed'] },
+  });
+  assert.equal(validateSaveEnvelope(envelope, { gameId: 'save-test', maxVersion: 2 }).valid, true);
+
+  const migrated = migrateSaveEnvelope(envelope, {
+    gameId: 'save-test',
+    targetVersion: 3,
+    migrations: {
+      1(data) { return { ...data, lives: 3 }; },
+      2(data) { return { ...data, inventory: [...data.inventory, 'water'] }; },
+    },
+    validateData: (data) => Number.isInteger(data.lives) && Array.isArray(data.inventory),
+  });
+  assert.equal(migrated.ok, true);
+  assert.equal(migrated.migrated, true);
+  assert.equal(migrated.save.version, 3);
+  assert.deepEqual(migrated.save.data.inventory, ['seed', 'water']);
+
+  const missingMigration = migrateSaveEnvelope(envelope, {
+    gameId: 'save-test',
+    targetVersion: 2,
+    migrations: {},
+  });
+  assert.equal(missingMigration.ok, false);
+  assert.equal(missingMigration.error, 'missing-migration');
+
+  const storage = memoryStorage();
+  const v1 = createVersionedSaveStore({
+    gameId: 'save-test',
+    version: 1,
+    storage,
+    now: () => '2026-10-01T00:00:00.000Z',
+    validateData: (data) => Number.isInteger(data.score),
+  });
+  assert.equal(v1.save({ score: 10 }).ok, true);
+
+  const v2 = createVersionedSaveStore({
+    gameId: 'save-test',
+    version: 2,
+    storage,
+    migrations: {
+      1(data) { return { ...data, streak: 0 }; },
+    },
+    validateData: (data) => Number.isInteger(data.score) && Number.isInteger(data.streak),
+  });
+  const loaded = v2.load();
+  assert.equal(loaded.ok, true);
+  assert.equal(loaded.status, 'migrated');
+  assert.equal(loaded.save.version, 2);
+  assert.equal(loaded.data.streak, 0);
+  assert.equal(v2.load().status, 'loaded');
+
+  const blocked = createVersionedSaveStore({
+    gameId: 'blocked-save',
+    version: 1,
+    storage: {
+      getItem() { throw new Error('blocked'); },
+      setItem() { throw new Error('blocked'); },
+      removeItem() { throw new Error('blocked'); },
+    },
+  });
+  assert.equal(blocked.load({ fallback: { safe: true } }).status, 'unavailable');
+  assert.equal(blocked.save({ value: 1 }).ok, false);
 }
 
 {
@@ -464,6 +548,155 @@ class FakeAudioContext {
     validateObjectShape(value, schema, { allowUnknown: false }));
   assert.equal(bad.success, false);
   assert.equal(bad.error.issues.length, 3);
+}
+
+{
+  const events = [];
+  const pad = {
+    buttons: Array.from({ length: 16 }, () => ({ pressed: false, value: 0 })),
+    axes: [0, 0],
+  };
+  const navigatorObject = { getGamepads: () => [pad] };
+  const gamepad = createGamepadActionMap({
+    navigatorObject,
+    onAction(action, detail) { events.push({ action, ...detail }); },
+  });
+
+  assert.equal(gamepad.supported(), true);
+  assert.deepEqual(gamepad.poll(), { connected: true, pressed: [] });
+
+  pad.buttons[0] = { pressed: true, value: 1 };
+  gamepad.poll();
+  assert.equal(events.some((event) => event.action === 'confirm' && event.phase === 'press'), true);
+  assert.equal(events.some((event) => event.action === 'primary-action' && event.phase === 'press'), true);
+
+  pad.buttons[0] = { pressed: false, value: 0 };
+  pad.axes[0] = -0.75;
+  gamepad.poll();
+  assert.equal(events.some((event) => event.action === 'move-left' && event.phase === 'press'), true);
+
+  pad.axes[0] = 0;
+  gamepad.poll();
+  assert.equal(events.some((event) => event.action === 'move-left' && event.phase === 'release'), true);
+
+  pad.buttons[9] = { pressed: true, value: 1 };
+  gamepad.poll();
+  assert.equal(gamepad.pressedActions().includes('pause'), true);
+  gamepad.stop('test-stop');
+  assert.equal(gamepad.pressedActions().length, 0);
+
+  const unsupported = createGamepadActionMap({ navigatorObject: {} });
+  assert.equal(unsupported.supported(), false);
+  assert.throws(() => createGamepadActionMap({ axisThreshold: 0 }), /axisThreshold/);
+}
+
+{
+  let tick = 1000;
+  const tracked = [];
+  const transitions = [];
+  const lifecycle = createGameLifecycle({
+    gameId: 'lifecycle-test',
+    releaseVersion: '2.0.0',
+    now: () => tick,
+    telemetry: { track(name, payload) { tracked.push({ name, payload }); } },
+    onTransition(event) { transitions.push(event); },
+  });
+
+  assert.deepEqual(GAME_LIFECYCLE_STATES, [
+    'booting',
+    'loading',
+    'ready',
+    'playing',
+    'paused',
+    'completed',
+    'failed',
+  ]);
+  assert.equal(lifecycle.state(), 'booting');
+  tick += 10;
+  lifecycle.loading({ phase: 'core-assets' });
+  tick += 20;
+  lifecycle.ready({ coreBytes: 1234 });
+  tick += 30;
+  lifecycle.play({ inputMode: 'touch' });
+  tick += 40;
+  lifecycle.pause({ reason: 'visibility' });
+  tick += 50;
+  lifecycle.play({ reason: 'resume' });
+  tick += 60;
+  lifecycle.complete({ outcome: 'win' });
+
+  assert.equal(lifecycle.state(), 'completed');
+  assert.equal(lifecycle.isTerminal(), true);
+  assert.equal(lifecycle.history().length, 7);
+  assert.equal(transitions.at(-1).to, 'completed');
+  assert.equal(tracked.at(-1).name, 'lifecycle_transition');
+  assert.equal(tracked.at(-1).payload.outcome, 'win');
+  assert.throws(() => lifecycle.play(), /invalid lifecycle transition/);
+
+  const failed = createGameLifecycle({ gameId: 'failed-game' });
+  failed.loading();
+  failed.fail({ code: 'asset_load' });
+  assert.equal(failed.state(), 'failed');
+  assert.throws(() => failed.ready(), /invalid lifecycle transition/);
+
+  const privateMetadata = createGameLifecycle({ gameId: 'privacy-test' });
+  assert.throws(
+    () => privateMetadata.loading({ playerName: 'private identity' }),
+    /private field/,
+  );
+}
+
+{
+  const events = [];
+  const states = [];
+  const adapter = {
+    transport: 'test',
+    protocolVersion: 1,
+    async connect() { return { ok: true }; },
+    async createRoom() { return { room: { code: 'ABCD' }, player: { id: 'p1' } }; },
+    async joinRoom(code) { return { room: { code }, player: { id: 'p2' } }; },
+    async leaveRoom() { return { ok: true }; },
+    async reconnect(token) { return { room: { code: 'ABCD' }, player: { id: token } }; },
+    sendAction(type, payload) { events.push({ type, payload }); return true; },
+    subscribeState(listener) { states.push(listener); return () => states.splice(states.indexOf(listener), 1); },
+  };
+  assert.deepEqual(validateMultiplayerAdapter(adapter), { valid: true, errors: [] });
+  const multiplayer = createMultiplayerClient({ adapter, gameId: 'mp-test' });
+  await multiplayer.connect();
+  await multiplayer.joinRoom('ABCD');
+  assert.equal(multiplayer.status(), 'joined');
+  assert.equal(multiplayer.protocolVersion, 1);
+  multiplayer.sendAction('roll', { value: 6 });
+  assert.deepEqual(events.at(-1), { type: 'roll', payload: { value: 6 } });
+  await multiplayer.leaveRoom();
+  assert.equal(multiplayer.status(), 'connected');
+
+  const liveops = createLiveOpsController();
+  assert.equal(liveops.multiplayerAvailability().available, true);
+  liveops.update({ multiplayerEnabled: false, message: 'maintenance' });
+  assert.equal(liveops.multiplayerAvailability().mode, 'multiplayer-disabled');
+  liveops.update({ maintenance: true });
+  assert.equal(liveops.gameAvailability().mode, 'maintenance');
+  assert.equal(resolveMultiplayerAvailability({ enabled: false }).mode, 'disabled');
+}
+
+{
+  const emitted = [];
+  let now = 100;
+  const ops = createGameObservability({
+    gameId: 'ops-test',
+    releaseVersion: '1.2.3',
+    now: () => ++now,
+    sink: { emit(record) { emitted.push(record); } },
+  });
+  ops.counter('players_connected', 2, { region: 'test', roomCode: 'PRIVATE' });
+  ops.timing('network_latency_ms', 42, { transport: 'socketio' });
+  ops.error('runtime_error', Object.assign(new Error('boom'), { code: 'E_TEST' }), { playerName: 'private' });
+  assert.equal(emitted.length, 3);
+  assert.equal(emitted[0].attributes.roomCode, undefined);
+  assert.equal(emitted[2].attributes.playerName, undefined);
+  assert.equal(emitted[2].attributes.errorCode, 'E_TEST');
+  assert.ok(RECOMMENDED_OPERATIONAL_METRICS.includes('rooms_active'));
 }
 
 console.log('shared game platform runtime tests passed');
