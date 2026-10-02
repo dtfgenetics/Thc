@@ -72,6 +72,7 @@ grep -Fq '!isRetiredMedia(item) && isApprovedLearningMedia(item)' "$owner_v3"
 grep -Fq 'media.filter(item => item?.source_url && !isRetiredMedia(item) && isApprovedLearningMedia(item))' "$owner_v3"
 grep -Fq "owner: 'wordpress-rest-raw-first'" "$owner_v3"
 grep -Fq "content?.raw || content?.rendered || ''" "$owner_v3"
+grep -Fq 'already matches desired stored state; skipping redundant WordPress mutation.' "$owner_v3"
 
 LEARNING_V4_OWNER_AWARE_PUBLISHER="$owner_v4" \
 LEARNING_VISUAL_OWNER_AWARE_PUBLISHER="$owner_visual" \
