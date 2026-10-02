@@ -89,4 +89,4 @@ export {
   field,
 } from './validation.mjs';
 
-export const DTF_GAME_PLATFORM_VERSION = '2.0.0';
+export const DTF_GAME_PLATFORM_VERSION = '2.1.0';
