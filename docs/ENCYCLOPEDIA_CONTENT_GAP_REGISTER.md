@@ -89,3 +89,14 @@ The goal is to make the strict command pass without weakening the standard.
 - Academy/Course membership is explicitly excluded as an Encyclopedia completion or release requirement.
 - Baseline validation checks identity, state consistency, and release-boundary preservation.
 - Strict validation fails until all 420 lessons are truly release-ready; do not weaken the strict gate to make unfinished work appear complete.
+
+
+## Canonical source pin
+
+- Canonical authoring repository: `dtfgenetics/thc-grow-hub`.
+- Production integration source target: `site/wordpress/education/encyclopedia-deployment-target.json`.
+- The target must use a full immutable 40-character commit SHA; production integration must not float on `main`.
+- Resolver: `scripts/resolve-encyclopedia-deployment-target.mjs`.
+- Validator: `scripts/validate-encyclopedia-source-pin.mjs`.
+- Environment handoff: `THC_ENCYCLOPEDIA_SOURCE_SHA`.
+- This is a source-target contract only. It does not by itself prove byte-for-byte parity, scientific approval, or publication authorization.
