@@ -156,6 +156,8 @@
     "test:ncbi-runinfo-fetcher": "node scripts/fetch-ncbi-sra-runinfo.mjs --self-test",
     "fetch:ncbi-sra-runinfo": "node scripts/fetch-ncbi-sra-runinfo.mjs",
     "build:research-evidence-index": "node scripts/build-research-evidence-index.mjs",
-    "verify:research-evidence-index": "node scripts/build-research-evidence-index.mjs --self-test && node scripts/validate-research-evidence-index.mjs"
+    "verify:research-evidence-index": "node scripts/build-research-evidence-index.mjs --self-test && node scripts/validate-research-evidence-index.mjs && npm run test:research-evidence-query",
+    "query:research-evidence": "node scripts/query-research-evidence.mjs",
+    "test:research-evidence-query": "node scripts/query-research-evidence.mjs --self-test"
   }
 }
