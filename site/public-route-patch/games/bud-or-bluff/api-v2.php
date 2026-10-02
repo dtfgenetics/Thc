@@ -13,6 +13,16 @@ const BOB_REVEAL_OPTIONS = [6,9,12,20];
 const BOB_ROUND_OPTIONS = [8,12,16,20];
 const BOB_PROTOCOL_VERSION = 1;
 
+function liveops_state(): array {
+    $maintenance = getenv('DTF_BOB_MAINTENANCE_MODE') === 'true';
+    $enabledRaw = getenv('DTF_BOB_MULTIPLAYER_ENABLED');
+    $multiplayerEnabled = $enabledRaw === false || $enabledRaw === '' || $enabledRaw !== 'false';
+    return [
+        'maintenance' => $maintenance,
+        'multiplayerEnabled' => $multiplayerEnabled,
+    ];
+}
+
 function out(array $p,int $s=200):void{http_response_code($s);echo json_encode($p,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);exit;}
 function fail(string $m,int $s=400):void{out(['error'=>$m],$s);}
 function body():array{$d=json_decode(file_get_contents('php://input')?:'{}',true);if(!is_array($d))fail('Invalid JSON body.');return $d;}
@@ -23,6 +33,19 @@ function clean_name($v):string{$s=trim(preg_replace('/[\x00-\x1F\x7F]/u','',strv
 function clean_text($v):string{$s=trim(preg_replace('/[\x00-\x1F\x7F]/u',' ',strval($v)));return cut($s,240);}
 function code6($v):string{$s=strtoupper(trim(strval($v)));if(!preg_match('/^[A-Z0-9]{6}$/',$s))fail('A valid 6-character room code is required.');return $s;}
 function room_code():string{$a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';$s='';for($i=0;$i<6;$i++)$s.=$a[random_int(0,strlen($a)-1)];return $s;}
+function ops_increment(string $name):void{
+  $key='bob2_ops';
+  $ops=store_get($key);
+  if(!is_array($ops))$ops=['requests'=>0,'create'=>0,'join'=>0,'state'=>0,'chat'=>0,'updatedAt'=>now_ms()];
+  $ops['requests']=intval($ops['requests']??0)+1;
+  if(array_key_exists($name,$ops))$ops[$name]=intval($ops[$name]??0)+1;
+  $ops['updatedAt']=now_ms();
+  store_set($key,$ops,BOB_TTL);
+}
+function ops_snapshot():array{
+  $ops=store_get('bob2_ops');
+  return is_array($ops)?$ops:['requests'=>0,'create'=>0,'join'=>0,'state'=>0,'chat'=>0,'updatedAt'=>null];
+}
 function enforce_protocol():void{$raw=$_SERVER['HTTP_X_DTF_GAME_PROTOCOL']??'';if($raw==='')return;$version=intval($raw);if($version!==BOB_PROTOCOL_VERSION)fail('Client protocol is incompatible with this room server.',409);}
 header('X-DTF-Game-Protocol: '.strval(BOB_PROTOCOL_VERSION));
 
@@ -98,6 +121,22 @@ function public_state(array $r,int $me):array{$status=$r['status'];$card=null;if
 function validate_setting($v,array $allowed,string $label):int{$n=intval($v);if(!in_array($n,$allowed,true))fail('Invalid '.$label.'.');return $n;}
 
 $action=$_GET['action']??'state';if($_SERVER['REQUEST_METHOD']==='OPTIONS')out([],204);enforce_protocol();
+$liveops=liveops_state();
+if($action==='health'){
+  out([
+    'ok'=>true,
+    'service'=>'bud-or-bluff',
+    'protocolVersion'=>BOB_PROTOCOL_VERSION,
+    'maintenance'=>$liveops['maintenance'],
+    'multiplayerEnabled'=>$liveops['multiplayerEnabled'],
+    'storage'=>$useWp?'wordpress-transients':'temporary-files',
+    'metrics'=>ops_snapshot(),
+    'serverNow'=>now_ms()
+  ]);
+}
+if($liveops['maintenance'])fail('Bud or Bluff is temporarily under maintenance.',503);
+if(!$liveops['multiplayerEnabled'])fail('Bud or Bluff multiplayer is temporarily disabled.',503);
+ops_increment($action);
 if($action==='create'&&$_SERVER['REQUEST_METHOD']==='POST'){rate_limit('create',6,60);$b=body();$name=clean_name($b['name']??'');$rounds=validate_setting($b['rounds']??12,BOB_ROUND_OPTIONS,'round count');$vote=validate_setting($b['voteSeconds']??24,BOB_VOTE_OPTIONS,'vote timer');$reveal=validate_setting($b['revealSeconds']??9,BOB_REVEAL_OPTIONS,'reveal timer');do{$code=room_code();$exists=store_get('bob2_room_'.$code);}while($exists);$p=player_new($name,true);presence_touch($p['id']);$deck=cards();$r=['code'=>$code,'status'=>'lobby','hostId'=>$p['id'],'players'=>[$p],'round'=>0,'roundLimit'=>min($rounds,count($deck)),'deckOrder'=>shuffle_idx(count($deck)),'voteSeconds'=>$vote,'revealSeconds'=>$reveal,'autoAdvance'=>!isset($b['autoAdvance'])||!empty($b['autoAdvance']),'joinLocked'=>false,'voteEndsAt'=>null,'revealEndsAt'=>null,'roundSummary'=>null,'chat'=>[],'lastEvent'=>null,'revision'=>0,'createdAt'=>now_ms(),'updatedAt'=>now_ms()];system_msg($r,$name.' opened the room.');room_save($r);out(['protocolVersion'=>BOB_PROTOCOL_VERSION,'code'=>$code,'playerId'=>$p['id'],'token'=>$p['token']]);}
 if($action==='join'&&$_SERVER['REQUEST_METHOD']==='POST'){rate_limit('join',30,60);$b=body();$code=code6($b['code']??'');$name=clean_name($b['name']??'');$result=with_lock($code,function()use($code,$name){$r=room_get($code);if($r['status']!=='lobby'||!empty($r['joinLocked']))fail('This lobby is locked.');if(count(active_players($r))>=BOB_MAX_PLAYERS)fail('This room is full.');foreach($r['players'] as $p)if(!empty($p['active'])&&strcasecmp($p['name'],$name)===0)fail('That player name is already in this room.');$p=player_new($name,false);presence_touch($p['id']);$r['players'][]=$p;system_msg($r,$name.' joined the room.');room_save($r);return ['code'=>$code,'playerId'=>$p['id'],'token'=>$p['token']];});out($result);}
 
