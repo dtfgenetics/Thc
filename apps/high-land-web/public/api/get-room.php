@@ -8,6 +8,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     api_send_json(['ok' => false, 'error' => 'GET required.'], 405);
 }
 
+api_require_multiplayer_available();
+api_record_operation('get');
+
 $roomCode = api_clean_room_code($_GET['room'] ?? $_GET['roomCode'] ?? '');
 $room = api_require_room($roomCode);
 
