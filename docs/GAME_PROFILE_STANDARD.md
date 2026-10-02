@@ -63,6 +63,15 @@ The profile catalog records the external standards used to shape these rules.
   - rate limiting
   - heartbeat/idle cleanup
   - backpressure and security monitoring
+- MDN PWA installability: https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable
+  - explicit installability/manifest decisions
+  - offline behavior as progressive enhancement
+- MDN Page Visibility API: https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
+  - interruption handling and user-intent-preserving resume behavior
+- OpenFeature: https://openfeature.dev/docs/reference/intro/
+  - provider-neutral feature flags, maintenance mode, staged rollout, and kill switches
+- OpenTelemetry JavaScript: https://opentelemetry.io/docs/languages/js/
+  - server-side traces and metrics for networked game operations
 
 These references inform the DTF standard; DTF games are not required to use any specific third-party publishing platform.
 
@@ -89,3 +98,5 @@ Strict profile warnings are intentional work items, not permission to invent met
 - correct the persistence profile if the game does not actually promise durable recovery.
 
 Do not assign fake save versions solely to satisfy validation.
+
+`data/game-profile-compliance.json` is generated from the registry and profile catalog. Keep it current with `npm run games:profiles:report`; CI verifies freshness with `npm run games:profiles:report-check`. Use `npm run games:profiles:strict -- --id <game-id>` for a release-scoped compliance gate.
