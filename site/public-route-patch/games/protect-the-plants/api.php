@@ -9,6 +9,7 @@ const PTP_TTL = 10800;
 const PTP_GRID = 15;
 const PTP_MAX_BODY = 16384;
 const PTP_MAX_EVENTS = 80;
+const PTP_PROTOCOL_VERSION = 1;
 const PTP_FORMATIONS = [
     ['id' => 'mother-row', 'name' => 'Mother Row', 'size' => 5],
     ['id' => 'trellis-row', 'name' => 'Trellis Row', 'size' => 4],
@@ -16,6 +17,19 @@ const PTP_FORMATIONS = [
     ['id' => 'bushy-pheno', 'name' => 'Bushy Pheno', 'size' => 3],
     ['id' => 'solo-pots', 'name' => 'Solo Pots', 'size' => 2],
 ];
+
+function enforce_protocol(): void
+{
+    $raw = $_SERVER['HTTP_X_DTF_GAME_PROTOCOL'] ?? '';
+    if ($raw === '') {
+        return;
+    }
+    if (intval($raw) !== PTP_PROTOCOL_VERSION) {
+        fail('Client protocol is incompatible with this Burn Buds server.', 409);
+    }
+}
+
+header('X-DTF-Game-Protocol: ' . strval(PTP_PROTOCOL_VERSION));
 
 function out(array $payload, int $status = 200): void
 {
@@ -264,6 +278,7 @@ function public_state(array $room, int $meIndex): array
     $me = $room['players'][$meIndex];
     $opp = $room['players'][$oppIndex] ?? null;
     return [
+        'protocolVersion' => PTP_PROTOCOL_VERSION,
         'code' => $room['code'],
         'status' => $room['status'],
         'turnPlayerId' => $room['turnPlayerId'],
@@ -404,6 +419,7 @@ $action = $_GET['action'] ?? 'state';
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     out([], 204);
 }
+enforce_protocol();
 
 if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $b = body();
@@ -437,7 +453,7 @@ if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     ];
     system_msg($room, $name . ' created the Burn Buds room.');
     room_save($room);
-    out(['code' => $code, 'playerId' => $p['id'], 'token' => $p['token']]);
+    out(['protocolVersion' => PTP_PROTOCOL_VERSION, 'code' => $code, 'playerId' => $p['id'], 'token' => $p['token']]);
 }
 
 if ($action === 'join' && $_SERVER['REQUEST_METHOD'] === 'POST') {
