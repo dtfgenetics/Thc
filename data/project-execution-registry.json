@@ -180,7 +180,8 @@
       "integration": {
         "repo": "dtfgenetics/Thc",
         "path": "site/public-route-patch/learn/",
-        "mode": "controlled-publication-integration"
+        "mode": "controlled-publication-integration",
+        "sourcePin": "site/wordpress/education/encyclopedia-deployment-target.json"
       },
       "notes": "Canonical THC encyclopedia/general education. Certification is separate."
     },

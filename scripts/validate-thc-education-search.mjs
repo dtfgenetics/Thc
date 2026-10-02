@@ -17,7 +17,8 @@ const files={
   tech1Public:'site/wordpress/education/tech1-courses-public-v1.json',
   tech2Public:'site/wordpress/education/tech2-courses-public-v1.json',
   academyTarget:'site/wordpress/education/academy-deployment-target.json',
-  staticRecords:'configuration/education-search-static-records.json'
+  staticRecords:'configuration/education-search-static-records.json',
+  builder:'scripts/build-thc-education-search-index.mjs'
 };
 const errors=[];
 for(const [name,file] of Object.entries(files)) if(!fs.existsSync(file)) errors.push(`${name} missing: ${file}`);
@@ -59,7 +60,7 @@ if(!errors.length){
      if(row.status!=='public-academic')errors.push(ref.id+': public Academy search row must identify public-academic status');
      if(row.sourceRepository!=='dtfgenetics/Thc-learning-courses-')errors.push(ref.id+': public Academy search row lost canonical source repository');
      if(row.sourceRef!==academyTarget.sourceSha)errors.push(ref.id+': public Academy search row source ref does not match deployment target');
-     if(!/^\\/learn\\/learning-hub\\//.test(row.route||''))errors.push(ref.id+': public Academy search row has unexpected route '+(row.route||'<missing>'));
+     if(!/^\/learn\/learning-hub\//.test(row.route||''))errors.push(ref.id+': public Academy search row has unexpected route '+(row.route||'<missing>'));
    }
  }
  const course1=courseCatalog.courses?.find(x=>x.id==='COURSE-LH-TECH1-001');
