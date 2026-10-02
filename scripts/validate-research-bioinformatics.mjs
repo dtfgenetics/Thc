@@ -77,6 +77,20 @@ const importContract = JSON.parse(fs.readFileSync(path.join(root,'data/research/
 if (importContract.target_vocabulary !== vocabulary.vocabulary_id) {
   errors.push('GRIN import contract vocabulary id does not match trait vocabulary');
 }
+const germplasmSchema = JSON.parse(fs.readFileSync(path.join(root,'data/research/germplasm-record.schema.json'),'utf8'));
+const passportMapping = importContract.passport_field_mapping || {};
+const passportTraits = vocabulary.traits.filter(t => t.category === 'passport').map(t => t.trait_name);
+for (const traitName of passportTraits) {
+  const target = passportMapping[traitName];
+  if (!target) {
+    errors.push(`passport trait missing explicit target mapping: ${traitName}`);
+    continue;
+  }
+  if (!germplasmSchema.properties?.[target]) errors.push(`passport target absent from germplasm schema: ${traitName} -> ${target}`);
+}
+for (const sourceName of Object.keys(passportMapping)) {
+  if (!passportTraits.includes(sourceName)) errors.push(`passport mapping references non-passport vocabulary field: ${sourceName}`);
+}
 if (errors.length) {
   console.error('Bioinformatics vocabulary/import validation failed:');
   for (const error of errors) console.error(`- ${error}`);
