@@ -1,0 +1,35 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://dtfseeds.com/schemas/research/chemotype-observation-1.0.0.json",
+  "title":"DTF chemotype/metabolite observation",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["record_id","source_id","sample_id","analyte","value","units","assay_method","provenance"],
+  "properties":{
+    "record_id":{"type":"string","minLength":3},
+    "source_id":{"type":"string","minLength":3},
+    "sample_id":{"type":"string","minLength":1},
+    "accession_id":{"type":["string","null"]},
+    "plant_id":{"type":["string","null"]},
+    "tissue":{"type":["string","null"]},
+    "sampling_stage":{"type":["string","null"]},
+    "sample_date":{"type":["string","null"]},
+    "analyte":{"type":"string","minLength":1},
+    "analyte_form":{"type":["string","null"]},
+    "value":{"type":["number","null"]},
+    "units":{"type":"string","minLength":1},
+    "basis":{"type":["string","null"]},
+    "assay_method":{"type":"string","minLength":2},
+    "instrument":{"type":["string","null"]},
+    "laboratory":{"type":["string","null"]},
+    "lod":{"type":["number","null"]},
+    "loq":{"type":["number","null"]},
+    "quality_control":{"type":["object","null"],"additionalProperties":true},
+    "provenance":{"type":"object","additionalProperties":true,"required":["source_url","retrieved_at"],"properties":{
+      "source_url":{"type":"string","format":"uri"},
+      "retrieved_at":{"type":"string","format":"date"},
+      "source_record_id":{"type":["string","null"]},
+      "protocol_reference":{"type":["string","null"]}
+    }}
+  }
+}
