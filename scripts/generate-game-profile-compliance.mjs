@@ -28,9 +28,9 @@ function buildDebt(game, profile){
   }
   if(['request-response-authoritative','turn-authoritative','realtime-authoritative','optional-realtime'].includes(profile.networkProfile)){
     debt.push({
-      code:'online-liveops-platform-gap',
-      severity:'platform-follow-up',
-      requirement:'Provide maintenance/kill-switch behavior and server observability before mature production multiplayer.'
+      code:'online-liveops-adoption-gap',
+      severity:'game-follow-up',
+      requirement:'Adopt the shared live-ops and observability contracts in the canonical online runtime and verify maintenance/kill-switch plus operational metrics behavior.'
     });
   }
   return debt;
