@@ -67,7 +67,7 @@ async function waitForServer() {
 async function json(action, { method = 'GET', body, session } = {}) {
   const qs = new URLSearchParams({ action });
   if (session?.code) qs.set('code', session.code);
-  const headers = { 'Content-Type': 'application/json' };
+  const headers = { 'Content-Type': 'application/json', 'X-DTF-Game-Protocol': '1' };
   if (session?.playerId) headers['X-Player-Id'] = session.playerId;
   if (session?.token) headers['X-Player-Token'] = session.token;
   const res = await fetch(`${base}/api-v2.php?${qs}`, { method, headers, body: body ? JSON.stringify(body) : undefined });
@@ -78,6 +78,24 @@ async function json(action, { method = 'GET', body, session } = {}) {
 
 try {
   await waitForServer();
+
+  const incompatible = await fetch(`${base}/api-v2.php?action=create`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-DTF-Game-Protocol': '999' },
+    body: JSON.stringify({ name: 'Old Client', rounds: 8 }),
+  });
+  assert.equal(incompatible.status, 409, 'explicit incompatible protocol must be rejected');
+  const incompatibleBody = await incompatible.json();
+  assert.match(incompatibleBody.error || '', /protocol/i);
+
+  const legacyCompatible = await fetch(`${base}/api-v2.php?action=create`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: 'Legacy Client', rounds: 8 }),
+  });
+  assert.equal(legacyCompatible.status, 200, 'missing protocol header remains temporarily compatible during v1 migration');
+  assert.equal(legacyCompatible.headers.get('x-dtf-game-protocol'), '1');
+
   const host = await json('create', { method: 'POST', body: { name: 'Host', rounds: 8, voteSeconds: 24, revealSeconds: 9, autoAdvance: false } });
   const sessions = [host];
   for (let i = 2; i <= 9; i++) sessions.push(await json('join', { method: 'POST', body: { code: host.code, name: `Player ${i}` } }));

@@ -38,5 +38,11 @@
     "multiplayer-lobby-tested": true,
     "production-route-present": true,
     "final-card-database-legal-review": false
+  },
+  "protocolVersion": 1,
+  "protocol": {
+    "version": 1,
+    "header": "X-DTF-Game-Protocol",
+    "migrationPolicy": "Missing header is accepted during v1 migration; explicit incompatible versions receive HTTP 409."
   }
 }
