@@ -25,7 +25,8 @@ const files = [
   'data/research/hemp-data-availability-index-v1.json',
   'data/research/public-cannabis-genomics-datasets-v1.json',
   'data/research/sequence-sample-record.schema.json',
-  'data/research/research-acquisition-contract-v1.json'
+  'data/research/research-acquisition-contract-v1.json',
+  'data/research/cannabis-genomics-reproducibility-v1.json'
 ];
 
 const errors = [];
@@ -165,3 +166,18 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(`Public genomics/acquisition validation passed for ${datasetIds.size} dataset families.`);
+
+const reproducibility = JSON.parse(fs.readFileSync(path.join(root,'data/research/cannabis-genomics-reproducibility-v1.json'),'utf8'));
+const reproducibilityIds = new Set();
+for (const resource of reproducibility.resources || []) {
+  if (reproducibilityIds.has(resource.id)) errors.push(`duplicate reproducibility resource id: ${resource.id}`);
+  reproducibilityIds.add(resource.id);
+  if (!resource.url && !resource.doi) errors.push(`reproducibility resource missing locator: ${resource.id}`);
+  if (resource.reuse_status === 'INGESTIBLE_PUBLIC_DATA' && !resource.license) errors.push(`ingestible public data must declare license: ${resource.id}`);
+}
+if (errors.length) {
+  console.error('Reproducibility registry validation failed:');
+  for (const error of errors) console.error(`- ${error}`);
+  process.exit(1);
+}
+console.log(`Reproducibility registry validation passed for ${reproducibilityIds.size} resources.`);
