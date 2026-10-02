@@ -1,0 +1,563 @@
+{
+  "schema_version": "1.0.0",
+  "vocabulary_id": "USDA-HEMP-PHENOTYPING-V4",
+  "source_title": "USDA Hemp Phenotyping and Protocol Handbook, Version 4",
+  "source_date": "2025-12-16",
+  "accessed": "2026-10-01",
+  "source_url": "https://www.ars.usda.gov/ARSUSERFILES/80600500/HDM_DATA/HDM_20251215.pdf",
+  "storage_guidance": {
+    "row_identifier": "PUID",
+    "preferred_shape": "tidy data",
+    "source_convention": "trait_name values are intended for spreadsheet column headings before inclusion in GRIN-Global",
+    "units_default": "SI unless otherwise indicated"
+  },
+  "datatypes": {
+    "nvarchar": "Unicode variable-length text",
+    "decimal": "Exact decimal numeric value",
+    "int": "Integer",
+    "datetime": "Date/time",
+    "categorical": "Categorical value",
+    "media": "File/media reference"
+  },
+  "traits": [
+    {
+      "trait_name": "taxonomy_species_id",
+      "category": "passport",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Scientific/taxonomic accession identifier field."
+    },
+    {
+      "trait_name": "PUID",
+      "category": "passport",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Persistent unique accession identifier and preferred row key."
+    },
+    {
+      "trait_name": "improvement_status",
+      "category": "passport",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Material improvement status such as wild, landrace, breeding material or hybrid."
+    },
+    {
+      "trait_name": "plant_name",
+      "category": "passport",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Top/display name assigned to the material."
+    },
+    {
+      "trait_name": "accession_pedigree",
+      "category": "passport",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Known pedigree or selection history."
+    },
+    {
+      "trait_name": "ploidy",
+      "category": "passport",
+      "datatype": "int",
+      "units": null,
+      "description": "Known ploidy."
+    },
+    {
+      "trait_name": "accession_ipr",
+      "category": "passport",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Plant variety protection/patent/breeder-right status when applicable."
+    },
+    {
+      "trait_name": "crop_use",
+      "category": "passport",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Intended use such as oil, fiber, secondary metabolite or ecosystem services."
+    },
+    {
+      "trait_name": "source_cooperator_id",
+      "category": "passport",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Person/organization providing germplasm."
+    },
+    {
+      "trait_name": "collector_cooperator_id",
+      "category": "passport",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Individual collecting sample."
+    },
+    {
+      "trait_name": "developer",
+      "category": "passport",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Organization or person that bred the material."
+    },
+    {
+      "trait_name": "number_plants_sampled",
+      "category": "passport",
+      "datatype": "int",
+      "units": null,
+      "description": "Number of plants sampled for accession collection."
+    },
+    {
+      "trait_name": "source_date",
+      "category": "passport",
+      "datatype": "datetime",
+      "units": null,
+      "description": "Date germplasm was collected from source material."
+    },
+    {
+      "trait_name": "geography_id",
+      "category": "passport",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Internal geographic identifier."
+    },
+    {
+      "trait_name": "elevation_meters",
+      "category": "passport",
+      "datatype": "decimal",
+      "units": "m",
+      "description": "Elevation of collecting site above sea level."
+    },
+    {
+      "trait_name": "latitude",
+      "category": "passport",
+      "datatype": "decimal",
+      "units": "decimal_degree",
+      "description": "Latitude separated from handbook combined latitude/longitude field for normalized storage."
+    },
+    {
+      "trait_name": "longitude",
+      "category": "passport",
+      "datatype": "decimal",
+      "units": "decimal_degree",
+      "description": "Longitude separated from handbook combined latitude/longitude field for normalized storage."
+    },
+    {
+      "trait_name": "coordinate_method",
+      "category": "passport",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Georeferencing method, e.g. GPS, map or estimated."
+    },
+    {
+      "trait_name": "uncertainty",
+      "category": "passport",
+      "datatype": "decimal",
+      "units": "m",
+      "description": "Maximum coordinate uncertainty radius."
+    },
+    {
+      "trait_name": "georeference_datum",
+      "category": "passport",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Spatial reference system; handbook prefers WGS84."
+    },
+    {
+      "trait_name": "accession_inv_voucher_note",
+      "category": "passport",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Additional voucher information."
+    },
+    {
+      "trait_name": "ht",
+      "category": "architecture",
+      "datatype": "decimal",
+      "units": "cm",
+      "description": "Stem height from ground to apical inflorescence tip."
+    },
+    {
+      "trait_name": "mcd",
+      "category": "architecture",
+      "datatype": "decimal",
+      "units": "cm",
+      "description": "Maximum canopy diameter."
+    },
+    {
+      "trait_name": "mcdh",
+      "category": "architecture",
+      "datatype": "decimal",
+      "units": "cm",
+      "description": "Height at maximum canopy diameter."
+    },
+    {
+      "trait_name": "trkl",
+      "category": "architecture",
+      "datatype": "decimal",
+      "units": "cm",
+      "description": "Trunk length from ground to first branch."
+    },
+    {
+      "trait_name": "inl",
+      "category": "architecture",
+      "datatype": "decimal",
+      "units": "cm",
+      "description": "Average internode length along primary stem."
+    },
+    {
+      "trait_name": "hyp_a",
+      "category": "architecture",
+      "datatype": "decimal",
+      "units": "cm",
+      "description": "Derived upper kite-model hypotenuse."
+    },
+    {
+      "trait_name": "hyp_b",
+      "category": "architecture",
+      "datatype": "decimal",
+      "units": "cm",
+      "description": "Derived lower kite-model hypotenuse."
+    },
+    {
+      "trait_name": "kite_perimeter",
+      "category": "architecture",
+      "datatype": "decimal",
+      "units": "cm",
+      "description": "Derived kite-model perimeter."
+    },
+    {
+      "trait_name": "kite_area",
+      "category": "architecture",
+      "datatype": "decimal",
+      "units": "m2",
+      "description": "Derived kite-model area."
+    },
+    {
+      "trait_name": "ba",
+      "category": "architecture",
+      "datatype": "decimal",
+      "units": "degree",
+      "description": "Kite-model branch angle."
+    },
+    {
+      "trait_name": "nodes",
+      "category": "architecture",
+      "datatype": "int",
+      "units": null,
+      "description": "Number of internodes/nodes per plant."
+    },
+    {
+      "trait_name": "nodes_opp",
+      "category": "architecture",
+      "datatype": "int",
+      "units": null,
+      "description": "Number of opposite internodes."
+    },
+    {
+      "trait_name": "nodes_alt",
+      "category": "architecture",
+      "datatype": "int",
+      "units": null,
+      "description": "Number of alternate internodes."
+    },
+    {
+      "trait_name": "branches",
+      "category": "architecture",
+      "datatype": "int",
+      "units": null,
+      "description": "Number of branches per plant."
+    },
+    {
+      "trait_name": "kite_circularity",
+      "category": "architecture",
+      "datatype": "categorical",
+      "units": null,
+      "description": "Derived apical-dominance/circularity measure; source labels datatype categorical."
+    },
+    {
+      "trait_name": "dia",
+      "category": "architecture",
+      "datatype": "decimal",
+      "units": "mm",
+      "description": "Stem diameter at soil level."
+    },
+    {
+      "trait_name": "pith_diameter",
+      "category": "architecture",
+      "datatype": "decimal",
+      "units": "mm",
+      "description": "Pith diameter at stem midpoint."
+    },
+    {
+      "trait_name": "uav_xxx",
+      "category": "architecture",
+      "datatype": "placeholder",
+      "units": null,
+      "description": "Handbook placeholder for future UAV traits; do not use as a final canonical trait."
+    },
+    {
+      "trait_name": "architecture_remarks",
+      "category": "architecture",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Architecture measurement context and remarks."
+    },
+    {
+      "trait_name": "petiole_length",
+      "category": "leaf",
+      "datatype": "decimal",
+      "units": "cm",
+      "description": "Petiole length."
+    },
+    {
+      "trait_name": "central_leaflet_length",
+      "category": "leaf",
+      "datatype": "decimal",
+      "units": "cm",
+      "description": "Central leaflet length."
+    },
+    {
+      "trait_name": "central_leaflet_width",
+      "category": "leaf",
+      "datatype": "decimal",
+      "units": "cm",
+      "description": "Central leaflet width."
+    },
+    {
+      "trait_name": "leaf_color_L",
+      "category": "leaf",
+      "datatype": "decimal",
+      "units": null,
+      "description": "CIELAB L* leaf color."
+    },
+    {
+      "trait_name": "leaf_color_a",
+      "category": "leaf",
+      "datatype": "decimal",
+      "units": null,
+      "description": "CIELAB a* leaf color."
+    },
+    {
+      "trait_name": "leaf_color_b",
+      "category": "leaf",
+      "datatype": "decimal",
+      "units": null,
+      "description": "CIELAB b* leaf color."
+    },
+    {
+      "trait_name": "leaf_variegation",
+      "category": "leaf",
+      "datatype": "nvarchar",
+      "units": "Y/N",
+      "description": "Whether leaf variegation is present."
+    },
+    {
+      "trait_name": "leaf_scan_protocol",
+      "category": "leaf",
+      "datatype": "media",
+      "units": ".jpg/.png",
+      "description": "Leaf scan/image artifact reference."
+    },
+    {
+      "trait_name": "sex_ratio",
+      "category": "sex_inflorescence",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Flowering population sex ratio recorded F:M:O."
+    },
+    {
+      "trait_name": "date_flower_female",
+      "category": "sex_inflorescence",
+      "datatype": "datetime",
+      "units": null,
+      "description": "First observed female flowering date."
+    },
+    {
+      "trait_name": "date_flower_male",
+      "category": "sex_inflorescence",
+      "datatype": "datetime",
+      "units": null,
+      "description": "First observed male flowering date."
+    },
+    {
+      "trait_name": "date_flower_monoecious",
+      "category": "sex_inflorescence",
+      "datatype": "datetime",
+      "units": null,
+      "description": "First observed monoecious flowering date."
+    },
+    {
+      "trait_name": "days_2_female",
+      "category": "sex_inflorescence",
+      "datatype": "int",
+      "units": "d",
+      "description": "Days from sowing to female flowering."
+    },
+    {
+      "trait_name": "days_2_male",
+      "category": "sex_inflorescence",
+      "datatype": "int",
+      "units": "d",
+      "description": "Days from sowing to male flowering."
+    },
+    {
+      "trait_name": "days_2_monoecious",
+      "category": "sex_inflorescence",
+      "datatype": "int",
+      "units": "d",
+      "description": "Days from sowing to monoecious flowering."
+    },
+    {
+      "trait_name": "maturity",
+      "category": "sex_inflorescence",
+      "datatype": "int",
+      "units": "d",
+      "description": "Days from germination to commercial maturity."
+    },
+    {
+      "trait_name": "day_neutrality",
+      "category": "sex_inflorescence",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Flowering behavior/critical day length or day-neutral response."
+    },
+    {
+      "trait_name": "inflor_length",
+      "category": "sex_inflorescence",
+      "datatype": "decimal",
+      "units": "cm",
+      "description": "Length of uppermost inflorescence cluster excluding leaves."
+    },
+    {
+      "trait_name": "inflor_weight",
+      "category": "sex_inflorescence",
+      "datatype": "decimal",
+      "units": null,
+      "description": "Dry inflorescence weight; handbook unit line appears inconsistent and requires source-unit review."
+    },
+    {
+      "trait_name": "inflor_yield",
+      "category": "sex_inflorescence",
+      "datatype": "decimal",
+      "units": "kg/ha",
+      "description": "Inflorescence dry-weight yield derived using planting density."
+    },
+    {
+      "trait_name": "inflor_color",
+      "category": "sex_inflorescence",
+      "datatype": "nvarchar",
+      "units": "L*a*b*",
+      "description": "Inflorescence color at commercial maturity."
+    },
+    {
+      "trait_name": "sex_remarks",
+      "category": "sex_inflorescence",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Sex/flowering experimental context and remarks."
+    },
+    {
+      "trait_name": "hundred_seed_weight",
+      "category": "seed",
+      "datatype": "decimal",
+      "units": "g",
+      "description": "Mass of 100 seeds."
+    },
+    {
+      "trait_name": "thousand_seed_weight",
+      "category": "seed",
+      "datatype": "decimal",
+      "units": "g",
+      "description": "Mass of 1000 seeds."
+    },
+    {
+      "trait_name": "seed_image",
+      "category": "seed",
+      "datatype": "media",
+      "units": ".jpg/.png",
+      "description": "Seed image artifact."
+    },
+    {
+      "trait_name": "seed_size_length",
+      "category": "seed",
+      "datatype": "nvarchar",
+      "units": "mm",
+      "description": "Largest:smallest:median seed length value as defined by source."
+    },
+    {
+      "trait_name": "seed_size_width",
+      "category": "seed",
+      "datatype": "nvarchar",
+      "units": "mm",
+      "description": "Largest:smallest:median seed width value as defined by source."
+    },
+    {
+      "trait_name": "shatter_fraction",
+      "category": "seed",
+      "datatype": "decimal",
+      "units": "%",
+      "description": "Fraction/percentage of seed shattered from raceme."
+    },
+    {
+      "trait_name": "percent_germ",
+      "category": "seed",
+      "datatype": "decimal",
+      "units": "%",
+      "description": "Seed germination percentage."
+    },
+    {
+      "trait_name": "fiber_yield",
+      "category": "fiber",
+      "datatype": "decimal",
+      "units": "kg/ha",
+      "description": "Fiber yield."
+    },
+    {
+      "trait_name": "non_fiber",
+      "category": "fiber",
+      "datatype": "placeholder",
+      "units": null,
+      "description": "Protocol/trait not yet determined by handbook; do not treat as production-ready."
+    },
+    {
+      "trait_name": "fiber_remarks",
+      "category": "fiber",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Fiber descriptor remarks."
+    },
+    {
+      "trait_name": "chemotype",
+      "category": "secondary_metabolites",
+      "datatype": "int",
+      "units": "1-6",
+      "description": "USDA chemotype class."
+    },
+    {
+      "trait_name": "chemotype_segregation",
+      "category": "secondary_metabolites",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Chemotype segregation remarks/representation."
+    },
+    {
+      "trait_name": "metabolite_remarks",
+      "category": "secondary_metabolites",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Additional metabolite identification/remarks."
+    },
+    {
+      "trait_name": "fungal_xxx",
+      "category": "pathogen_pest",
+      "datatype": "placeholder",
+      "units": "%",
+      "description": "Template for named fungal/oomycete disease-severity traits; replace xxx with resolved pathogen trait key."
+    },
+    {
+      "trait_name": "disease_remarks",
+      "category": "pathogen_pest",
+      "datatype": "nvarchar",
+      "units": null,
+      "description": "Disease scoring context including causal organism where known."
+    }
+  ]
+}
