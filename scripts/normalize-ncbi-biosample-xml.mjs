@@ -20,6 +20,14 @@ function primaryId(xml,db) {
   const re=new RegExp(`<PrimaryId[^>]*db="${db}"[^>]*>([^<]+)<\\/PrimaryId>`,'i');
   const m=xml.match(re); return m?decodeXml(m[1].trim()):null;
 }
+function nestedPrimaryId(xml,parent) {
+  const re=new RegExp(`<${parent}\\b[^>]*>[\\s\\S]*?<PrimaryId(?:\\s[^>]*)?>([^<]+)<\\/PrimaryId>[\\s\\S]*?<\\/${parent}>`,'i');
+  const m=xml.match(re); return m?decodeXml(m[1].trim()):null;
+}
+function linkedId(xml,db) {
+  const re=new RegExp(`<(?:Id|PrimaryId)[^>]*(?:db|db_label)="${db}"[^>]*>([^<]+)<\\/(?:Id|PrimaryId)>`,'i');
+  const m=xml.match(re); return m?decodeXml(m[1].trim()):null;
+}
 function normalizeAttributeName(value='') {
   return String(value).trim().toLowerCase().replace(/[\s-]+/g,'_');
 }
@@ -40,14 +48,15 @@ function parseBioSamples(xml,{sourceId,retrievedAt}) {
       const name=attr(meta,'harmonized_name') || attr(meta,'attribute_name') || attr(meta,'display_name') || 'unknown_attribute';
       attrs[normalizeAttributeName(name)]=raw;
     }
-    const project=primaryId(chunk,'BioProject') || tag(chunk,'BioProject');
-    const sampleName=primaryId(chunk,'SRA') ? (attrs.cultivar || attrs.sample_name || tag(chunk,'Title')) : (attrs.cultivar || attrs.sample_name || tag(chunk,'Title'));
+    const project=nestedPrimaryId(chunk,'BioProject') || attrs.project_accession || null;
+    const sraSample=linkedId(chunk,'SRA');
+    const sampleName=attrs.sample_name || attrs.cultivar || tag(chunk,'Title');
     records.push({
       record_id:`BIOSAMPLE-${biosample}`,
       source_id:sourceId,
       biosample,
       sample_name:sampleName || null,
-      sra_sample_accession:primaryId(chunk,'SRA') || null,
+      sra_sample_accession:sraSample || null,
       bioproject:project || attrs.project_accession || null,
       organism,
       package:tag(chunk,'Package'),
@@ -70,12 +79,12 @@ function parseBioSamples(xml,{sourceId,retrievedAt}) {
   return {records,quarantine};
 }
 function selfTest(){
-  const xml=`<BioSampleSet><BioSample accession="SAMN46071458"><SampleId><PrimaryId db="BioSample">SAMN46071458</PrimaryId><PrimaryId db="SRA">SRS23688594</PrimaryId></SampleId><Descriptor><Title>Plant sample from Cannabis sativa</Title></Descriptor><Organism taxonomy_id="3483"><OrganismName>Cannabis sativa</OrganismName></Organism><BioProject><PrimaryId db="BioProject">PRJNA1206134</PrimaryId></BioProject><Package>Plant; version 1.0</Package><Attributes><Attribute attribute_name="cultivar" harmonized_name="cultivar">ND-23-AA-02-12</Attribute><Attribute attribute_name="collection date" harmonized_name="collection_date">2023</Attribute><Attribute attribute_name="geographic location" harmonized_name="geo_loc_name">USA: ND</Attribute><Attribute attribute_name="tissue" harmonized_name="tissue">Leaf</Attribute></Attributes></BioSample></BioSampleSet>`;
+  const xml=`<BioSampleSet><BioSample accession="SAMN46071458"><SampleId><PrimaryId db="BioSample">SAMN46071458</PrimaryId><Id db="SRA">SRS23688594</Id></SampleId><Descriptor><Title>Plant sample from Cannabis sativa</Title></Descriptor><Organism taxonomy_id="3483"><OrganismName>Cannabis sativa</OrganismName></Organism><BioProject><PrimaryId>PRJNA1206134</PrimaryId></BioProject><Package>Plant; version 1.0</Package><Attributes><Attribute attribute_name="cultivar" harmonized_name="cultivar">ND-23-AA-02-12</Attribute><Attribute attribute_name="collection date" harmonized_name="collection_date">2023</Attribute><Attribute attribute_name="geographic location" harmonized_name="geo_loc_name">USA: ND</Attribute><Attribute attribute_name="tissue" harmonized_name="tissue">Leaf</Attribute></Attributes></BioSample></BioSampleSet>`;
   const out=parseBioSamples(xml,{sourceId:'FERAL-CANNABIS-PRJNA1206134',retrievedAt:'2026-10-02'});
   const errors=[];
   if(out.records.length!==1) errors.push('expected one BioSample record');
   const r=out.records[0];
-  if(r?.biosample!=='SAMN46071458'||r?.bioproject!=='PRJNA1206134'||r?.cultivar!=='ND-23-AA-02-12'||r?.geo_loc_name!=='USA: ND') errors.push('BioSample field mapping failed');
+  if(r?.biosample!=='SAMN46071458'||r?.bioproject!=='PRJNA1206134'||r?.sra_sample_accession!=='SRS23688594'||r?.cultivar!=='ND-23-AA-02-12'||r?.geo_loc_name!=='USA: ND') errors.push('BioSample field mapping failed');
   if(out.quarantine.length!==0) errors.push('unexpected BioSample quarantine');
   if(errors.length){console.error(errors.join('\n'));process.exit(1);}
   console.log('NCBI BioSample XML normalizer self-test passed.');
