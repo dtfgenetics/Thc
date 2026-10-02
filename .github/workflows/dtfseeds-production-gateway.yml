@@ -452,4 +452,35 @@ jobs:
     if: needs.plan.outputs.deploy != 'true'
     runs-on: ubuntu-latest
     steps:
-      - run: echo 'No production-owned paths changed; no deployment was required.'
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Record no-op production decision
+        env:
+          RELEASE_SOURCE_SHA: ${{ github.sha }}
+          RELEASE_RUN_ID: ${{ github.run_id }}
+          RELEASE_RUN_ATTEMPT: ${{ github.run_attempt }}
+          RELEASE_EVENT_NAME: ${{ github.event_name }}
+          RELEASE_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'auto' }}
+          RELEASE_PLAN_JSON: ${{ needs.plan.outputs.plan }}
+          RELEASE_FRESHNESS: 'true'
+          RELEASE_VERIFY_FRESHNESS: 'true'
+          RELEASE_CHECKPOINT_OUTCOME: skipped
+          RELEASE_ENFORCE_OUTCOME: skipped
+          RELEASE_OBSERVABILITY_OUTPUT: ${{ runner.temp }}/dtf-release-observability.json
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'No production-owned paths changed; no deployment was required.'
+          node scripts/build-release-observability.mjs --check --output="$RELEASE_OBSERVABILITY_OUTPUT"
+          cat "$RELEASE_OBSERVABILITY_OUTPUT" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload no-op release observability ledger
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-release-observability-${{ github.run_id }}
+          path: ${{ runner.temp }}/dtf-release-observability.json
+          if-no-files-found: error
+          retention-days: 30
