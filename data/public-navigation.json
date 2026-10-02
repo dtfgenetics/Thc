@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "updated": "2026-09-27",
+  "updated": "2026-10-02",
   "site": "https://dtfseeds.com",
   "principles": {
-    "maxPrimaryNavItems": 5,
+    "maxPrimaryNavItems": 8,
     "primaryAction": "Diagnose a Plant",
     "primaryActionLocation": "home-quick-actions",
     "statusLabels": [
@@ -12,9 +12,14 @@
       "development",
       "private"
     ],
-    "rule": "The shared primary navigation stays task-focused: Seeds, Learn, Tools, Games, Shop. The logo/brand is the Home control. Courses and Community remain prominent secondary destinations so they do not compete with the five core visitor tasks. Search, Account, Cart, company/support links, and direct tool CTAs stay outside the primary navigation."
+    "rule": "The shared primary navigation uses one canonical eight-section row: Home, Seeds, Learn, Courses, Tools, Games, Community, Shop. Search, Account, Cart, company/support links, and direct tool CTAs remain utility or contextual actions."
   },
   "primaryNavigation": [
+    {
+      "id": "home",
+      "label": "Home",
+      "route": "/"
+    },
     {
       "id": "seeds",
       "label": "Seeds",
@@ -26,6 +31,11 @@
       "route": "/learn/"
     },
     {
+      "id": "courses",
+      "label": "Courses",
+      "route": "/courses/"
+    },
+    {
       "id": "diagnostic",
       "label": "Tools",
       "route": "/tools/"
@@ -34,6 +44,11 @@
       "id": "games",
       "label": "Games",
       "route": "/games/"
+    },
+    {
+      "id": "community",
+      "label": "Community",
+      "route": "/community/"
     },
     {
       "id": "shop",
