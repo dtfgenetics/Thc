@@ -6,6 +6,14 @@ const registry=JSON.parse(fs.readFileSync(path.join(root,'content/encyclopedia/c
 const topics=JSON.parse(fs.readFileSync(path.join(root,'configuration/encyclopedia-topics.json'),'utf8')).topics||[];
 const release=JSON.parse(fs.readFileSync(path.join(root,'site/wordpress/education/encyclopedia/current-production-batch.json'),'utf8'));
 const searchLanguage=JSON.parse(fs.readFileSync(path.join(root,'configuration/encyclopedia-search-language.json'),'utf8'));
+const clean=v=>String(v??'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+const arr=v=>Array.isArray(v)?v:[];
+const flatten=v=>arr(v).map(x=>{
+  if(typeof x==='string')return x;
+  if(!x||typeof x!=='object')return '';
+  return [x.term,x.definition,x.field,x.requirement,x.name,x.label,x.title,x.text].filter(Boolean).join(' ');
+}).map(clean).filter(Boolean);
+const slugify=value=>String(value??'').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 const evidenceRoot=path.join(root,'content/encyclopedia/evidence');
 const sourceRegistry=JSON.parse(fs.readFileSync(path.join(evidenceRoot,'authoritative-sources.json'),'utf8'));
 const sourceById=new Map((sourceRegistry.sources||[]).map(source=>[source.id,source]));
@@ -27,14 +35,6 @@ for(const name of fs.readdirSync(evidenceRoot).filter(name=>/^evidence-batch-\d+
 }
 const topicByPart=new Map(topics.map(topic=>[Number(topic.part),topic]));
 
-const clean=v=>String(v??'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
-const arr=v=>Array.isArray(v)?v:[];
-const flatten=v=>arr(v).map(x=>{
-  if(typeof x==='string')return x;
-  if(!x||typeof x!=='object')return '';
-  return [x.term,x.definition,x.field,x.requirement,x.name,x.label,x.title,x.text].filter(Boolean).join(' ');
-}).map(clean).filter(Boolean);
-const slugify=value=>String(value??'').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 
 const lessonById=new Map();
 function walk(dir){
