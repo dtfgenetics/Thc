@@ -12,7 +12,11 @@ const files={
   learnData:'site/public-route-patch/learn/section-data-v1.json',
   searchLanguage:'configuration/encyclopedia-search-language.json',
   wordpressRuntime:'site/wordpress/mu-plugins/dtf-learning-search.php',
-  wordpressRuntimeBuilder:'scripts/build-wordpress-learning-search-runtime.mjs'
+  wordpressRuntimeBuilder:'scripts/build-wordpress-learning-search-runtime.mjs',
+  courseCatalog:'site/wordpress/education/course-catalog-v4.json',
+  tech1Public:'site/wordpress/education/tech1-courses-public-v1.json',
+  tech2Public:'site/wordpress/education/tech2-courses-public-v1.json',
+  academyTarget:'site/wordpress/education/academy-deployment-target.json'
 };
 const errors=[];
 for(const [name,file] of Object.entries(files)) if(!fs.existsSync(file)) errors.push(`${name} missing: ${file}`);
@@ -26,11 +30,29 @@ if(!errors.length){
  const encyclopediaIndex=JSON.parse(fs.readFileSync(files.encyclopediaIndex,'utf8'));
  const learnData=JSON.parse(fs.readFileSync(files.learnData,'utf8'));
  const searchLanguage=JSON.parse(fs.readFileSync(files.searchLanguage,'utf8'));
+ const courseCatalog=JSON.parse(fs.readFileSync(files.courseCatalog,'utf8'));
+ const tech1Public=JSON.parse(fs.readFileSync(files.tech1Public,'utf8'));
+ const tech2Public=JSON.parse(fs.readFileSync(files.tech2Public,'utf8'));
+ const academyTarget=JSON.parse(fs.readFileSync(files.academyTarget,'utf8'));
  if(!page.includes('Search THC Education')||!page.includes('data-search-input')||!page.includes('search-v1.mjs')) errors.push('search page missing primary UI/runtime contract');
  if(!runtime.includes("Fuse from '/assets/vendor/fuse-7.1.0.min.mjs'")||!runtime.includes('threshold:.34')||!runtime.includes('includeScore:true')) errors.push('search runtime missing pinned fuzzy-search contract');
  if(!runtime.includes("../encyclopedia/encyclopedia-index.json")) errors.push('global education search must merge the complete encyclopedia index');
  if(!runtime.includes("name:'aliases'")||!runtime.includes('history.replaceState')) errors.push('global search missing alias/deep-link contract');
  if(!Array.isArray(index.documents)||index.documents.length<20) errors.push('search index must contain at least 20 canonical resources');
+ const publicCourseRefs=[...(tech1Public.courses||[]),...(tech2Public.courses||[])];
+ for(const ref of publicCourseRefs){
+   const row=index.documents?.find(x=>x.id===ref.id);
+   if(!row)errors.push('search index missing public Academy course '+ref.id);
+   else{
+     if(row.type!=='Courses')errors.push(ref.id+': public Academy search row must use Courses type');
+     if(row.status!=='public-academic')errors.push(ref.id+': public Academy search row must identify public-academic status');
+     if(row.sourceRepository!=='dtfgenetics/Thc-learning-courses-')errors.push(ref.id+': public Academy search row lost canonical source repository');
+     if(row.sourceRef!==academyTarget.sourceSha)errors.push(ref.id+': public Academy search row source ref does not match deployment target');
+     if(!/^\\/learn\\/learning-hub\\//.test(row.route||''))errors.push(ref.id+': public Academy search row has unexpected route '+(row.route||'<missing>'));
+   }
+ }
+ const course1=courseCatalog.courses?.find(x=>x.id==='COURSE-LH-TECH1-001');
+ if(course1?.publicLessonReleaseAvailable===true&&!index.documents?.some(x=>x.id===course1.id&&x.route===course1.href))errors.push('search index missing public Technician I Course 1');
  const globalEncyclopediaSample=index.documents?.find(x=>x.type==='Encyclopedia');
  for(const field of ['aliases','terms','objective','measurements','misconceptions','coreScience','cultivation','tools']) if(!globalEncyclopediaSample||!(field in globalEncyclopediaSample)) errors.push('global education search encyclopedia document missing rich field '+field);
  for(const required of ['/learn/','/learn/encyclopedia/','/atlas/','/terpene-atlas/','/growlens/','/thc-grow-doc/','/vpd-chart/','/ppfd-chart/']){
