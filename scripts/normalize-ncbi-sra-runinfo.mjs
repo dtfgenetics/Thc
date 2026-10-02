@@ -41,8 +41,11 @@ function normalize(text,{sourceId,bioproject,retrievedAt,sourceUrl}) {
       record_id:`SRA-${run}`,
       source_id:sourceId,
       bioproject:project,
+      study_accession:pick(raw,'SRAStudy','Study','study_accession'),
+      experiment_accession:pick(raw,'Experiment','experiment_accession'),
       run_accession:run,
       biosample:pick(raw,'BioSample','biosample'),
+      sra_sample_accession:pick(raw,'Sample','SRASample','sra_sample_accession'),
       sample_name:pick(raw,'SampleName','Sample Name','sample_name'),
       organism,
       library_strategy:pick(raw,'LibraryStrategy','Library Strategy'),
@@ -63,19 +66,20 @@ function normalize(text,{sourceId,bioproject,retrievedAt,sourceUrl}) {
       attributes:{},
       provenance:{source_url:sourceUrl,retrieved_at:retrievedAt,source_record_id:run}
     };
-    const known=new Set(['Run','run_accession','run','BioProject','bioproject','ScientificName','Organism','organism','BioSample','biosample','SampleName','Sample Name','sample_name','LibraryStrategy','Library Strategy','LibrarySource','Library Source','LibrarySelection','Library Selection','Platform','Model','Instrument','instrument_model','LibraryLayout','Library Layout','avgLength','AvgLength','AverageLength','spots','Spots','bases','Bases','size_MB','Bytes','bytes','GRIN_Accession','Accession_ID','accession_id','PUID','grin_puid','sex','Sex','AssemblyName','AssemblyAccession','assembly_accession','ReferenceAssembly','reference_assembly']);
+    const known=new Set(['Run','run_accession','run','BioProject','bioproject','SRAStudy','Study','study_accession','Experiment','experiment_accession','BioSample','biosample','Sample','SRASample','sra_sample_accession','ScientificName','Organism','organism','SampleName','Sample Name','sample_name','LibraryStrategy','Library Strategy','LibrarySource','Library Source','LibrarySelection','Library Selection','Platform','Model','Instrument','instrument_model','LibraryLayout','Library Layout','avgLength','AvgLength','AverageLength','spots','Spots','bases','Bases','size_MB','Bytes','bytes','GRIN_Accession','Accession_ID','accession_id','PUID','grin_puid','sex','Sex','AssemblyName','AssemblyAccession','assembly_accession','ReferenceAssembly','reference_assembly']);
     for(const [k,v] of Object.entries(raw)) if(v!==''&&!known.has(k)) record.attributes[k]=v;
     records.push(record);
   });
   return {records,quarantine};
 }
 function selfTest(){
-  const csv='Run,BioProject,BioSample,ScientificName,LibraryStrategy,Platform,spots,bases,size_MB,sex\nSRR1,PRJNA1,SAMN1,Cannabis sativa,WGS,PACBIO_SMRT,10,1000,2.5,male\n,PRJNA1,SAMN2,Cannabis sativa,WGS,ILLUMINA,1,100,1,female';
+  const csv='Run,BioProject,SRAStudy,Experiment,BioSample,Sample,ScientificName,LibraryStrategy,Platform,spots,bases,size_MB,sex\nSRR1,PRJNA1,SRP1,SRX1,SAMN1,SRS1,Cannabis sativa,WGS,PACBIO_SMRT,10,1000,2.5,male\n,PRJNA1,SRP1,SRX2,SAMN2,SRS2,Cannabis sativa,WGS,ILLUMINA,1,100,1,female';
   const out=normalize(csv,{sourceId:'TEST',bioproject:'PRJNA1',retrievedAt:'2026-10-01',sourceUrl:'https://example.test'});
   const errors=[];
   if(out.records.length!==1) errors.push('expected one valid SRA record');
   if(out.quarantine.length!==1) errors.push('expected one quarantined SRA row');
   if(out.records[0]?.bytes!==2621440) errors.push('size_MB conversion failed');
+  if(out.records[0]?.study_accession!=='SRP1'||out.records[0]?.experiment_accession!=='SRX1'||out.records[0]?.sra_sample_accession!=='SRS1') errors.push('SRA identity mapping failed');
   if(errors.length){console.error(errors.join('\n'));process.exit(1);}
   console.log('NCBI SRA RunInfo normalizer self-test passed.');
 }
