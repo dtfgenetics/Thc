@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "platformVersion": "2.1.0",
+  "platformVersion": "2.2.0",
   "source": "games/shared-platform/src",
   "files": [
     "index.mjs",
@@ -17,6 +17,7 @@
     "state-machine.mjs",
     "lifecycle.mjs",
     "liveops.mjs",
+    "observability.mjs",
     "multiplayer.mjs",
     "loading.mjs",
     "validation.mjs"
