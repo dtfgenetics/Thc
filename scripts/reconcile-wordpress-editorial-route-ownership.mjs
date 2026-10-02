@@ -356,7 +356,9 @@ async function verifyPublicRoutes() {
   for (const check of preserveChecks) verified.push(await verifyCheck(check));
 
   const blog = await probe('/blog/');
-  if (/Cannabis Culture Insights/i.test(blog.text)) throw new Error('Legacy Cannabis Culture Insights Blog shell remains live after route ownership repair.');
+  if (/Cannabis Culture Insights|Explore Our Collection|email@email\.com|\+123456789/i.test(blog.text)) {
+    throw new Error('Legacy Blog shell markers remain live after route ownership repair.');
+  }
   return verified;
 }
 
