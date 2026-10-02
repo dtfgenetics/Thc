@@ -147,6 +147,7 @@ const educationSource = readFileSync('.github/workflows/deploy-thc-learning-cent
 const harvestOutdoorSource = readFileSync('.github/workflows/wordpress-harvest-outdoor-v6-production.yml', 'utf8')
 const learningTransactionSource = readFileSync('scripts/run-learning-v3-connected-production.sh', 'utf8')
 const educationPublisherSource = readFileSync('scripts/publish-wordpress-learning-center-expansion-v1.mjs', 'utf8')
+const learningV3PublisherSource = readFileSync('scripts/rebuild-wordpress-learning-experience-v3.mjs', 'utf8')
 const educationLiveStart = educationSource.indexOf('      - name: Fresh anonymous production verification')
 const educationLiveEnd = educationSource.indexOf('      - name: Upload rollback and release evidence')
 const educationLiveSource = educationLiveStart >= 0 && educationLiveEnd > educationLiveStart ? educationSource.slice(educationLiveStart, educationLiveEnd) : ''
@@ -170,6 +171,17 @@ if (!educationSource.includes("WP_REQUEST_TIMEOUT_MS: '60000'") || !educationSou
 if (!educationPublisherSource.includes('_fields=id,slug,parent,status,link')) contractErrors.push('Education WordPress discovery queries no longer constrain response fields')
 if (!educationPublisherSource.includes('status=publish&per_page=10&_fields=id,slug,parent,status,link')) contractErrors.push('Education Learn-parent discovery no longer has a published-page fallback')
 if (!learningTransactionSource.includes('--connect-timeout 15 --max-time 60')) contractErrors.push('Canonical Learning V3 live verification is not bounded against hung network requests')
+for (const requiredTrigger of [
+  "scripts/rebuild-wordpress-learning-experience-v3.mjs",
+  "scripts/run-learning-v3-production.mjs",
+  "scripts/reconcile-wordpress-learning-v3-ownership.mjs",
+  "scripts/improve-wordpress-learning-v4.mjs",
+  "scripts/apply-learning-visual-v1.mjs",
+  "scripts/publish-learning-expanded-references-owner-aware.mjs"
+]) {
+  if (!educationSource.includes(requiredTrigger)) contractErrors.push(`Education workflow does not trigger when canonical owner-chain source changes: ${requiredTrigger}`)
+}
+if (!learningV3PublisherSource.includes('already matches desired stored state; skipping redundant WordPress mutation.')) contractErrors.push('Canonical Learning V3 publisher lost its idempotent unchanged-page mutation guard')
 if (!educationLiveSource) {
   contractErrors.push('Education release is missing the anonymous production verification step')
 } else {
