@@ -44,5 +44,17 @@
     "version": 1,
     "header": "X-DTF-Game-Protocol",
     "migrationPolicy": "Missing header is accepted during v1 migration; explicit incompatible versions receive HTTP 409."
+  },
+  "liveOps": {
+    "maintenanceEnv": "DTF_BOB_MAINTENANCE_MODE",
+    "multiplayerEnabledEnv": "DTF_BOB_MULTIPLAYER_ENABLED",
+    "healthAction": "api-v2.php?action=health",
+    "operationalMetrics": [
+      "requests",
+      "create",
+      "join",
+      "state",
+      "chat"
+    ]
   }
 }

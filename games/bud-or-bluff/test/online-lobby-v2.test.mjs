@@ -79,6 +79,16 @@ async function json(action, { method = 'GET', body, session } = {}) {
 try {
   await waitForServer();
 
+  const health = await fetch(`${base}/api-v2.php?action=health`);
+  assert.equal(health.status, 200, 'health endpoint must remain available');
+  const healthBody = await health.json();
+  assert.equal(healthBody.ok, true);
+  assert.equal(healthBody.protocolVersion, 1);
+  assert.equal(healthBody.maintenance, false);
+  assert.equal(healthBody.multiplayerEnabled, true);
+  assert.ok(healthBody.metrics && Number.isInteger(healthBody.metrics.requests));
+
+
   const incompatible = await fetch(`${base}/api-v2.php?action=create`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'X-DTF-Game-Protocol': '999' },
