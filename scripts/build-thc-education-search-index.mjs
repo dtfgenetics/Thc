@@ -23,7 +23,11 @@ const add=(row)=>{
     misconceptions:(row.misconceptions||[]).map(clean).filter(Boolean),
     coreScience:(row.coreScience||[]).map(clean).filter(Boolean),
     cultivation:(row.cultivation||[]).map(clean).filter(Boolean),
-    tools:(row.tools||[]).map(clean).filter(Boolean)
+    tools:(row.tools||[]).map(clean).filter(Boolean),
+    program:clean(row.program||''),
+    status:clean(row.status||''),
+    sourceRepository:clean(row.sourceRepository||''),
+    sourceRef:clean(row.sourceRef||'')
   });
 };
 
@@ -44,6 +48,55 @@ const nav=readJson('data/public-navigation.json');
 for(const item of nav?.learn?.sections||[]) add({id:'learn-'+item.route.replace(/\W+/g,'-'),type:'Learning',title:item.label,route:item.route,summary:'Teaching Healthy Cultivation learning resource.',keywords:[item.label]});
 for(const item of nav?.courses?.sections||[]) add({id:'course-'+item.route.replace(/\W+/g,'-'),type:'Courses',title:item.label,route:item.route,summary:'Structured THC course or learning pathway.',keywords:['course','academy',item.label]});
 for(const item of nav?.tools||[]) if(item.public) add({id:'tool-'+item.id,type:'Tool',title:item.title,route:item.route,summary:'Public THC cultivation reference or workflow tool.',keywords:[item.id,item.title]});
+
+const courseCatalog=readJson('site/wordpress/education/course-catalog-v4.json');
+const publicCourseManifests=[
+  readJson('site/wordpress/education/tech1-courses-public-v1.json'),
+  readJson('site/wordpress/education/tech2-courses-public-v1.json')
+].filter(Boolean);
+const catalogCourseById=new Map((courseCatalog?.courses||[]).map(course=>[String(course.id),course]));
+
+for(const manifest of publicCourseManifests){
+  const program=manifest?.program||{};
+  const baseRoute=String(program.route||'').replace(/\/$/,'');
+  for(const courseRef of manifest?.courses||[]){
+    const catalogCourse=catalogCourseById.get(String(courseRef.id))||{};
+    const route=(catalogCourse.href||((baseRoute&&courseRef.slug)?baseRoute+'/'+courseRef.slug+'/':''));
+    if(!route)continue;
+    add({
+      id:courseRef.id,
+      type:'Courses',
+      title:catalogCourse.title||String(courseRef.slug||courseRef.id).replace(/-/g,' '),
+      route,
+      summary:catalogCourse.summary||('Public academic course in '+(program.title||'THC Academy')+'.'),
+      keywords:[
+        'course','academy','certification training',program.title,program.slug,
+        catalogCourse.pathLabel,catalogCourse.statusLabel,courseRef.id,courseRef.releaseId
+      ],
+      program:program.title||'',
+      status:'public-academic',
+      sourceRepository:manifest.source?.repository||'',
+      sourceRef:manifest.source?.ref||''
+    });
+  }
+}
+
+for(const course of courseCatalog?.courses||[]){
+  if(!course?.id||!course?.href||course.publicLessonReleaseAvailable!==true)continue;
+  add({
+    id:course.id,
+    type:'Courses',
+    title:course.title,
+    route:course.href,
+    summary:course.summary||'Public THC Academy academic course.',
+    keywords:['course','academy',course.pathLabel,course.statusLabel,course.id],
+    program:course.pathLabel||'',
+    status:'public-academic',
+    sourceRepository:'dtfgenetics/Thc-learning-courses-',
+    sourceRef:readJson('site/wordpress/education/academy-deployment-target.json')?.sourceSha||''
+  });
+}
+
 
 const encyclopedia=readJson('site/public-route-patch/learn/encyclopedia/encyclopedia-index.json');
 for(const item of encyclopedia?.lessons||[]){
