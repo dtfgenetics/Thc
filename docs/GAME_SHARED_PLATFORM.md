@@ -26,19 +26,22 @@ The sync checker and runtime tests are part of `games:preflight`.
 
 ## Current version
 
-Shared runtime version: **1.7.0**
+Shared runtime version: **2.0.0**
 
 Modules:
 
 - `settings.mjs` — persistent normalized preferences and accessibility resolution;
 - `storage.mjs` — guarded browser storage acquisition plus safe get/set/remove and JSON persistence helpers;
+- `save.mjs` — versioned save envelopes, ordered migrations, validation hooks, safe fallback, and migration persistence;
 - `audio.mjs` — browser audio unlock/policy and category-level gain management;
 - `input.mjs` — named action mapping for keyboard and virtual/touch inputs;
+- `gamepad.mjs` — standardized Gamepad API buttons/axes mapped into the same named game actions;
 - `replay.mjs` — deterministic action/debug recording and sanitized export;
 - `telemetry.mjs` — opt-in, privacy-safe local telemetry buffering;
 - `random.mjs` — deterministic seeded random streams for reproducible gameplay;
 - `experience.mjs` — native share/copy fallback, fullscreen, optional vibration, and Screen Wake Lock lifecycle helpers;
 - `state-machine.mjs` — queued finite-state transitions for reusable player/enemy/UI controllers;
+- `lifecycle.mjs` — common boot/loading/ready/play/pause/complete/fail lifecycle with privacy-safe telemetry hooks;
 - `loading.mjs` — engine-neutral parallel loading tasks with progress, bounded retry, and aggregated failures;
 - `validation.mjs` — safe JSON parsing plus small explicit object/field validators for untrusted saves/imports;
 - `index.mjs` — stable public export surface.
@@ -65,7 +68,7 @@ External canonical repositories should adopt the contract deliberately. They may
 
 `browserStorage()` safely acquires `localStorage`. `storageGet()`, `storageSet()`, and `storageRemove()` convert browser failures into explicit fallback/boolean results. `storageReadJson()` and `storageWriteJson()` add JSON handling without defining a game's save schema.
 
-Game-specific save versions, migrations, validation rules, and recovery policy remain owned by the game. The shared module only owns safe access and serialization boundaries.
+Game-specific save schemas and recovery policy remain owned by the game. `save.mjs` now provides the shared envelope/migration mechanism: the game declares its real save version, ordered migrations, and validation callback; the platform handles safe migration flow and persistence boundaries. Do not invent save versions merely to satisfy validation.
 
 ## Settings and accessibility
 
@@ -112,7 +115,13 @@ Prefer action names such as:
 - `primary-action`
 - `secondary-action`
 
-Do not scatter raw key checks throughout rendering/gameplay code when the game adopts this module. Touch/virtual controls can call `trigger(action)` so keyboard and mobile controls converge on the same action path.
+Do not scatter raw key checks throughout rendering/gameplay code when the game adopts this module. Touch/virtual controls can call `trigger(action)` so keyboard and mobile controls converge on the same action path. `createGamepadActionMap()` adds standardized controller polling and maps D-pad/axes/buttons into those same named actions; only games whose profile declares controller value should adopt it.
+
+## Lifecycle contract
+
+`createGameLifecycle()` standardizes `booting → loading → ready → playing ↔ paused → completed/failed`. Games use it to align gameplay-start timing, pause/resume, telemetry, performance measurement, and interruption handling without surrendering engine-specific scene/state ownership.
+
+Lifecycle metadata is privacy-filtered. Visibility or audio resume behavior must preserve prior user intent rather than blindly autoplaying when a tab becomes visible again.
 
 ## Browser experience contract
 
@@ -185,6 +194,20 @@ Recommended event names include:
 
 Never place personally identifying information, private room codes, messages, credentials, or authentication data in telemetry payloads.
 
+## Game profiles and capability-driven QA
+
+Every registered game must resolve through `configuration/game-qa/game-profiles.json`. The profile combines gameplay, renderer, session, persistence, network, content, performance, security, and accessibility dimensions. Each dimension contributes required QA checks, so unlike games are not forced through irrelevant requirements.
+
+Use:
+
+```bash
+npm run games:resolve -- <game>
+npm run games:profiles:check
+npm run games:profiles:strict
+```
+
+See `docs/GAME_PROFILE_STANDARD.md` for the canonical workflow and external standards used to shape the contract.
+
 ## Asset/performance budgets
 
 The shared payload scanner uses:
@@ -254,9 +277,11 @@ The portfolio harness verifies visitor-facing fundamentals across many games. Ga
 
 After first-game adoption validates the shared runtime, the next shared systems should be evaluated in this order:
 
-1. DTF Player Passport / achievements and local progression interface;
-2. shared daily/weekly challenge contract where titles benefit from it;
-3. optional telemetry/balance consumer integration;
-4. multiplayer lobby/reconnect primitives for compatible games;
-5. asset manifest/provenance contract for larger art/audio pipelines;
-6. broader visual-regression baselines once screenshot stability is proven.
+1. affected-game verification from the dependency graph;
+2. migrate one reference game fully onto lifecycle/input/save/profile contracts;
+3. common multiplayer adapter and authority/security contract;
+4. guest/player identity and optional cloud-save adapter;
+5. feature flags, maintenance mode, and emergency kill switches;
+6. server observability for networked titles;
+7. asset manifest/provenance/CDN contract for larger art/audio pipelines;
+8. broader visual-regression baselines once screenshot stability is proven.
