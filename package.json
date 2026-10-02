@@ -89,7 +89,7 @@
     "games:skill:check": "node scripts/test-dtf-game-development-skill.mjs",
     "games:registry:preflight-check": "node scripts/test-game-registry-preflight.mjs",
     "games:registry:guidance-check": "node scripts/test-game-registry-guidance.mjs",
-    "games:consistency": "npm run games:registry:check && npm run games:locations:check && npm run games:external-check && npm run games:release-pins:check && npm run games:resolve-check && npm run verify:dtf420-overlay-game-eligibility",
+    "games:consistency": "npm run games:registry:check && npm run games:locations:check && npm run games:external-check && npm run games:release-pins:check && npm run games:profiles:check && npm run games:resolve-check && npm run verify:dtf420-overlay-game-eligibility",
     "verify:repository-architecture": "node scripts/validate-repository-registry.mjs",
     "verify:education-structure": "node scripts/validate-encyclopedia-structure.mjs",
     "verify:education-420": "node scripts/validate-encyclopedia-structure.mjs --strict-420",
