@@ -38,6 +38,12 @@ export {
 } from './input.mjs';
 
 export {
+  DEFAULT_GAMEPAD_BUTTON_MAP,
+  DEFAULT_GAMEPAD_AXIS_MAP,
+  createGamepadActionMap,
+} from './gamepad.mjs';
+
+export {
   createGameAudioManager,
 } from './audio.mjs';
 
@@ -76,4 +82,4 @@ export {
   field,
 } from './validation.mjs';
 
-export const DTF_GAME_PLATFORM_VERSION = '1.8.0';
+export const DTF_GAME_PLATFORM_VERSION = '1.9.0';
