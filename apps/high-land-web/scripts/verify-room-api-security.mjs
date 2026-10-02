@@ -19,7 +19,8 @@ await Promise.all([
   access(path.join(apiRoot, 'join-room.php')),
   access(path.join(apiRoot, 'get-room.php')),
   access(path.join(apiRoot, 'update-room.php')),
-  access(path.join(apiRoot, 'append-event.php'))
+  access(path.join(apiRoot, 'append-event.php')),
+  access(path.join(apiRoot, 'health.php'))
 ]);
 
 const server = spawn('php', ['-S', `127.0.0.1:${port}`, routerPath], {
@@ -81,6 +82,13 @@ async function waitForServer() {
 let roomCode = '';
 try {
   await waitForServer();
+
+  const health = await request('health.php');
+  assert(health.status === 200 && health.payload?.ok, 'High Land health endpoint failed.');
+  assert(health.payload?.apiVersion === '1.1.0', 'High Land health must publish API version.');
+  assert(health.payload?.maintenance === false, 'High Land should not default to maintenance.');
+  assert(health.payload?.multiplayerEnabled === true, 'High Land multiplayer should default enabled.');
+
 
   const created = await post('create-room.php', {
     game: 'high-land',
@@ -208,7 +216,11 @@ try {
   });
   assert(validEvent.status === 200 && validEvent.payload?.ok, `Authenticated event append failed: ${validEvent.status}`);
 
-  console.log(`High Land room API security verification passed for room ${roomCode}.`);
+  const afterHealth = await request('health.php');
+  assert(Number(afterHealth.payload?.metrics?.requests ?? 0) >= 1, 'High Land health must expose operation metrics.');
+  assert(Number(afterHealth.payload?.roomsStored ?? 0) >= 1, 'High Land health must expose stored room count.');
+
+  console.log(`High Land room API security/live-ops verification passed for room ${roomCode}.`);
 } finally {
   if (roomCode) {
     const roomBase = path.join(apiRoot, '_rooms', roomCode);
