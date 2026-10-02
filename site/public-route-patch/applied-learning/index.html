@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="THC Applied Learning Lab — evidence-linked cultivation learning tools and calculations.">
+  <meta name="dtf-academy-source-sha" content="7ffb4810a48091c3c61714ccc1663d8a2a1d4e88">
+  <title>THC Applied Learning Lab | DTF Seeds</title>
+  <link rel="canonical" href="https://dtfseeds.com/applied-learning/">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="/"><span>DTF</span> Genetics</a>
+  <nav aria-label="Primary">
+    <a href="/seeds/">Seeds</a><a href="/learn/">Learn</a><a href="/tools/">Tools</a><a href="/games/">Games</a><a href="/shop/">Shop</a>
+  </nav>
+</header>
+<main>
+  <section class="hero">
+    <p class="eyebrow">Teaching Healthy Cultivation · Development Preview</p>
+    <h1>Applied Learning Lab</h1>
+    <p class="lede">Practice measurement quality, quantitative reasoning, and evidence-based differential thinking with Academy-linked tools.</p>
+    <div class="notice"><strong>Learning boundary:</strong> These draft activities are not credential evidence, crop diagnosis, universal cultivation targets, or authorization to change controlled equipment or procedures.</div>
+  </section>
+
+  <nav class="tool-nav" aria-label="Applied learning tools">
+    <a href="#graph">Knowledge Graph</a><a href="#measurement">Measurement School</a><a href="#math">Crop Math</a><a href="#differential">Same Symptom</a>
+  </nav>
+
+  <section id="graph" class="panel">
+    <div class="section-head"><div><p class="eyebrow">Knowledge Graph</p><h2>Canonical Academy explorer</h2></div>
+      <label>Filter nodes<input id="graph-filter" type="search" placeholder="VPD, nutrition, safety…"></label></div>
+    <p>The graph indexes current Academy IDs rather than duplicating curriculum text. The first public relationship connects the VPD evidence claim to its competency.</p>
+    <p id="graph-stats" class="muted"></p>
+    <ul id="graph-nodes" class="cards"></ul>
+    <div id="graph-relationship" class="relationship"></div>
+  </section>
+
+  <section id="measurement" class="panel">
+    <p class="eyebrow">Measurement School</p>
+    <h2>Representative canopy sensor placement</h2>
+    <p>Compare multiple crop-zone measurements before treating one convenient sensor as a room-wide answer.</p>
+    <ol class="steps">
+      <li>Choose at least three crop-zone measurement positions.</li>
+      <li>Record temperature and relative humidity with the same units and time window.</li>
+      <li>Record sensor ID/location, nearby equipment influence, and whether leaf temperature was measured.</li>
+      <li>Compare spatial variation before making a room-wide interpretation.</li>
+    </ol>
+    <form id="measurement-form">
+      <div class="fields">
+        <label>Air temperature (°C)<input name="temperatureC" type="number" step="any" required></label>
+        <label>Relative humidity (%)<input name="relativeHumidityPct" type="number" step="any" min="0" max="100" required></label>
+        <label>Sensor/crop-zone location<input name="sensorLocation" required></label>
+        <label>Potential local bias<input name="biasNotes" placeholder="Nearby light, dehumidifier, wall…"></label>
+      </div>
+      <button type="submit">Review local evidence</button>
+    </form>
+    <pre id="measurement-output" class="output" aria-live="polite"></pre>
+  </section>
+
+  <section id="math" class="panel">
+    <p class="eyebrow">Crop Math</p>
+    <h2>DLI from PPFD and photoperiod</h2>
+    <p>Daily light integral is photon dose over time. This calculator uses the canonical relation <code>PPFD × hours × 3600 ÷ 1,000,000</code>.</p>
+    <form id="dli-form">
+      <div class="fields">
+        <label>Representative PPFD (µmol/m²/s)<input name="ppfd" type="number" min="0" max="5000" step="any" required></label>
+        <label>Photoperiod (hours/day)<input name="hours" type="number" min="0.01" max="24" step="any" required></label>
+      </div>
+      <button type="submit">Calculate DLI</button>
+    </form>
+    <div id="dli-result" class="result" aria-live="polite"></div>
+    <ul class="limitations">
+      <li>The result is a photon-dose calculation, not a universal target.</li>
+      <li>Equal DLI can come from different intensity/time combinations and does not prove equal plant response.</li>
+      <li>Use representative canopy PPFD, not an isolated peak reading.</li>
+      <li>Interpret with spectrum, stage, temperature, water status, CO₂ context, and crop response.</li>
+    </ul>
+  </section>
+
+  <section id="differential" class="panel">
+    <p class="eyebrow">Same Symptom, Different Cause</p>
+    <h2>Yellowing leaves: build a differential first</h2>
+    <p><strong>Observed pattern:</strong> Older lower leaves are yellowing while newer growth remains comparatively greener.</p>
+    <div class="hypotheses" id="hypotheses"></div>
+    <h3>Evidence that separates the possibilities</h3>
+    <ul>
+      <li>Record tissue age, position, distribution, and progression before naming a cause.</li>
+      <li>Compare feed and root-zone pH/EC using consistent methods.</li>
+      <li>Review irrigation/moisture history and root condition.</li>
+      <li>Compare affected and unaffected zones for temperature, humidity, airflow, and light context.</li>
+      <li>Use laboratory or tissue analysis where appropriate and authorized when stronger evidence is needed.</li>
+    </ul>
+    <div class="notice">This activity teaches differential reasoning. It does not diagnose a crop or prescribe a nutrient, pesticide, HVAC, electrical, irrigation, or other controlled operational change.</div>
+  </section>
+
+  <footer>
+    <p>Canonical Academy source: <code>7ffb4810a48091c3c61714ccc1663d8a2a1d4e88</code></p>
+    <p>DTF Genetics · Dream the Future</p>
+  </footer>
+</main>
+<script src="./app.js" defer></script>
+</body>
+</html>

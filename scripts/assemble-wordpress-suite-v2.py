@@ -288,6 +288,15 @@ payload = replace_once(
     "Projects live-verification marker",
 )
 
+# Applied Learning target/required/prefix scope is derived from public-apps.json by
+# wordpress_suite_registry_patch.py. Keep only the transactional live verification here.
+payload = replace_once(
+    payload,
+    b"['/growlens/', 'GrowLens'], ['/thc-grow-doc/', 'Grow Doc']",
+    b"['/growlens/', 'GrowLens'], ['/thc-grow-doc/', 'Grow Doc'], ['/applied-learning/', 'Applied Learning Lab']",
+    "Applied Learning live verification",
+)
+
 # The app-only transaction should prove the game page and PHP runtime work,
 # without rolling back app routes because separate WordPress-owned pages drift.
 payload = replace_once(

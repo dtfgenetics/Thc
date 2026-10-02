@@ -111,6 +111,16 @@ jobs:
           set -euo pipefail
           npm run verify:cultivation-reference-tools
 
+      - name: Validate Applied Learning production mirror
+        run: |
+          set -euo pipefail
+          node scripts/validate-applied-learning-production-mirror.mjs
+          test -s site/public-route-patch/applied-learning/index.html
+          test -s site/public-route-patch/applied-learning/app.js
+          test -s site/public-route-patch/applied-learning/styles.css
+          test -s site/public-route-patch/applied-learning/data.json
+          test -s site/public-route-patch/applied-learning/source-revision.txt
+
       - name: Validate Grow Doc release source pin
         run: |
           set -euo pipefail

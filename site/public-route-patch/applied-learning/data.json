@@ -1,0 +1,477 @@
+{
+  "schemaVersion": 1,
+  "sourceRepository": "dtfgenetics/Thc-learning-courses-",
+  "sourceSha": "7ffb4810a48091c3c61714ccc1663d8a2a1d4e88",
+  "releaseState": "development-preview",
+  "graph": {
+    "id": "ALGRAPH-ACADEMY-SEED-001",
+    "version": "0.1.0",
+    "status": "draft",
+    "title": "THC Academy Canonical Knowledge Graph Seed",
+    "summary": "Canonical-ID projection for applied-learning exploration. Nodes point to existing Academy objects; this file does not duplicate curriculum text.",
+    "nodes": [
+      {
+        "id": "ALNODE-COMP-BREED-GENOMICS-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-BREED-GENOMICS-001"
+      },
+      {
+        "id": "ALNODE-COMP-BREED-POP-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-BREED-POP-001"
+      },
+      {
+        "id": "ALNODE-COMP-CANOPY-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-CANOPY-001"
+      },
+      {
+        "id": "ALNODE-COMP-CANOPY-ADV-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-CANOPY-ADV-001"
+      },
+      {
+        "id": "ALNODE-COMP-CROP-PLAN-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-CROP-PLAN-001"
+      },
+      {
+        "id": "ALNODE-COMP-CULT-EQUIPMENT-CARE-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-CULT-EQUIPMENT-CARE-001"
+      },
+      {
+        "id": "ALNODE-COMP-CULT-TRACEABILITY-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-CULT-TRACEABILITY-001"
+      },
+      {
+        "id": "ALNODE-COMP-ENV-ADV-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-ENV-ADV-001"
+      },
+      {
+        "id": "ALNODE-COMP-ENV-VPD-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-ENV-VPD-001"
+      },
+      {
+        "id": "ALNODE-COMP-FLOWER-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-FLOWER-001"
+      },
+      {
+        "id": "ALNODE-COMP-FLOWER-ADV-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-FLOWER-ADV-001"
+      },
+      {
+        "id": "ALNODE-COMP-GENETICS-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-GENETICS-001"
+      },
+      {
+        "id": "ALNODE-COMP-HOME-START-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-HOME-START-001"
+      },
+      {
+        "id": "ALNODE-COMP-HOME-WORKFLOW-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-HOME-WORKFLOW-001"
+      },
+      {
+        "id": "ALNODE-COMP-HYDRO-ADV-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-HYDRO-ADV-001"
+      },
+      {
+        "id": "ALNODE-COMP-IPM-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-IPM-001"
+      },
+      {
+        "id": "ALNODE-COMP-IPM-ADV-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-IPM-ADV-001"
+      },
+      {
+        "id": "ALNODE-COMP-IRRIGATION-ADV-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-IRRIGATION-ADV-001"
+      },
+      {
+        "id": "ALNODE-COMP-LIGHT-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-LIGHT-001"
+      },
+      {
+        "id": "ALNODE-COMP-LIGHT-ADV-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-LIGHT-ADV-001"
+      },
+      {
+        "id": "ALNODE-COMP-NUTRIENT-DIAG-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-NUTRIENT-DIAG-001"
+      },
+      {
+        "id": "ALNODE-COMP-NUTRITION-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-NUTRITION-001"
+      },
+      {
+        "id": "ALNODE-COMP-OUTDOOR-ESTABLISH-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-OUTDOOR-ESTABLISH-001"
+      },
+      {
+        "id": "ALNODE-COMP-OUTDOOR-MGMT-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-OUTDOOR-MGMT-001"
+      },
+      {
+        "id": "ALNODE-COMP-OUTDOOR-RISK-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-OUTDOOR-RISK-001"
+      },
+      {
+        "id": "ALNODE-COMP-OUTDOOR-SITE-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-OUTDOOR-SITE-001"
+      },
+      {
+        "id": "ALNODE-COMP-PLANT-BIO-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-PLANT-BIO-001"
+      },
+      {
+        "id": "ALNODE-COMP-POSTHARVEST-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-POSTHARVEST-001"
+      },
+      {
+        "id": "ALNODE-COMP-POSTHARVEST-PROCESS-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-POSTHARVEST-PROCESS-001"
+      },
+      {
+        "id": "ALNODE-COMP-POSTHARVEST-QA-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-POSTHARVEST-QA-001"
+      },
+      {
+        "id": "ALNODE-COMP-PRO-QA-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-PRO-QA-001"
+      },
+      {
+        "id": "ALNODE-COMP-PRO-SOP-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-PRO-SOP-001"
+      },
+      {
+        "id": "ALNODE-COMP-PROP-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-PROP-001"
+      },
+      {
+        "id": "ALNODE-COMP-RESPONSIBLE-LEGAL-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-RESPONSIBLE-LEGAL-001"
+      },
+      {
+        "id": "ALNODE-COMP-ROOTZONE-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-ROOTZONE-001"
+      },
+      {
+        "id": "ALNODE-COMP-SAFETY-WORK-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-SAFETY-WORK-001"
+      },
+      {
+        "id": "ALNODE-COMP-SOIL-BIO-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-SOIL-BIO-001"
+      },
+      {
+        "id": "ALNODE-COMP-SPACE-BIOSEC-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-SPACE-BIOSEC-001"
+      },
+      {
+        "id": "ALNODE-COMP-TC-ASEPTIC-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-TC-ASEPTIC-001"
+      },
+      {
+        "id": "ALNODE-COMP-TC-REGEN-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-TC-REGEN-001"
+      },
+      {
+        "id": "ALNODE-COMP-WATER-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-WATER-001"
+      },
+      {
+        "id": "ALNODE-COMP-WATER-QUALITY-ADV-001",
+        "canonicalType": "competency",
+        "canonicalId": "COMP-WATER-QUALITY-ADV-001"
+      },
+      {
+        "id": "ALNODE-CLAIM-CANOPY-001",
+        "canonicalType": "claim",
+        "canonicalId": "CLAIM-CANOPY-001"
+      },
+      {
+        "id": "ALNODE-CLAIM-ENV-VPD-001",
+        "canonicalType": "claim",
+        "canonicalId": "CLAIM-ENV-VPD-001"
+      },
+      {
+        "id": "ALNODE-CLAIM-GENETICS-001",
+        "canonicalType": "claim",
+        "canonicalId": "CLAIM-GENETICS-001"
+      },
+      {
+        "id": "ALNODE-CLAIM-IPM-001",
+        "canonicalType": "claim",
+        "canonicalId": "CLAIM-IPM-001"
+      },
+      {
+        "id": "ALNODE-CLAIM-LIGHT-001",
+        "canonicalType": "claim",
+        "canonicalId": "CLAIM-LIGHT-001"
+      },
+      {
+        "id": "ALNODE-CLAIM-NUTRITION-001",
+        "canonicalType": "claim",
+        "canonicalId": "CLAIM-NUTRITION-001"
+      },
+      {
+        "id": "ALNODE-CLAIM-PLANT-BIO-001",
+        "canonicalType": "claim",
+        "canonicalId": "CLAIM-PLANT-BIO-001"
+      },
+      {
+        "id": "ALNODE-CLAIM-POSTHARVEST-001",
+        "canonicalType": "claim",
+        "canonicalId": "CLAIM-POSTHARVEST-001"
+      }
+    ],
+    "edges": [
+      {
+        "id": "ALEDGE-VPD-CLAIM-COMP-001",
+        "source": "ALNODE-CLAIM-ENV-VPD-001",
+        "target": "ALNODE-COMP-ENV-VPD-001",
+        "relationship": "supports-competency",
+        "evidenceIds": [
+          "REF-VPD-002"
+        ]
+      }
+    ]
+  },
+  "measurement": {
+    "id": "ALMEAS-SENSOR-PLACEMENT-001",
+    "version": "0.1.0",
+    "status": "draft",
+    "title": "Representative Canopy Sensor Placement",
+    "summary": "Use multiple crop-zone readings to distinguish representative environmental evidence from a convenient but potentially biased single sensor location.",
+    "competencyIds": [
+      "COMP-ENV-VPD-001"
+    ],
+    "objectiveIds": [
+      "LO-ENV-VPD-001"
+    ],
+    "referenceIds": [
+      "REF-VPD-002"
+    ],
+    "canonicalSources": [
+      "LESSON-ENV-VPD-001",
+      "CLAIM-ENV-VPD-001"
+    ],
+    "steps": [
+      {
+        "id": "map",
+        "instruction": "Identify at least three crop-zone measurement positions and record why each position is representative or potentially biased.",
+        "evidence": "location notes"
+      },
+      {
+        "id": "measure",
+        "instruction": "Record temperature and relative humidity at each position using the same units and time window.",
+        "evidence": "three paired readings"
+      },
+      {
+        "id": "context",
+        "instruction": "Record sensor identifier, height/zone, timestamp, nearby equipment influence, and whether leaf temperature was measured or assumed.",
+        "evidence": "measurement context"
+      },
+      {
+        "id": "compare",
+        "instruction": "Compare the spatial pattern before making a room-wide interpretation. State what additional plant, airflow, or root-zone evidence would reduce uncertainty.",
+        "evidence": "short interpretation"
+      }
+    ],
+    "evidenceFields": [
+      {
+        "id": "temperatureC",
+        "label": "Air temperature",
+        "type": "number",
+        "unit": "°C",
+        "required": true
+      },
+      {
+        "id": "relativeHumidityPct",
+        "label": "Relative humidity",
+        "type": "number",
+        "unit": "%",
+        "required": true
+      },
+      {
+        "id": "sensorLocation",
+        "label": "Sensor/crop-zone location",
+        "type": "text",
+        "unit": null,
+        "required": true
+      },
+      {
+        "id": "timestamp",
+        "label": "Measurement timestamp",
+        "type": "timestamp",
+        "unit": null,
+        "required": true
+      },
+      {
+        "id": "biasNotes",
+        "label": "Potential local bias or equipment influence",
+        "type": "text",
+        "unit": null,
+        "required": true
+      }
+    ],
+    "safetyBoundary": "This activity teaches measurement quality and interpretation. It does not authorize HVAC, electrical, compressed-gas, pesticide, or other controlled equipment/service work, and it does not define universal cultivation targets."
+  },
+  "calculator": {
+    "id": "ALCALC-DLI-001",
+    "version": "0.1.0",
+    "status": "draft",
+    "title": "Crop Math: DLI from PPFD and Photoperiod",
+    "summary": "Calculate daily light integral from representative PPFD and the actual photoperiod while keeping intensity, distribution and environmental context visible.",
+    "calculation": "dli-from-ppfd",
+    "competencyIds": [
+      "COMP-LIGHT-001"
+    ],
+    "objectiveIds": [
+      "LO-LIGHT-DLI-003"
+    ],
+    "referenceIds": [
+      "REF-LIGHT-001",
+      "REF-PURDUE-DLI-238"
+    ],
+    "canonicalSources": [
+      "LESSON-LIGHT-DLI-003"
+    ],
+    "inputFields": [
+      {
+        "id": "ppfdUmolM2S",
+        "label": "Representative PPFD",
+        "unit": "µmol/m²/s",
+        "min": 0,
+        "max": 5000
+      },
+      {
+        "id": "photoperiodHours",
+        "label": "Photoperiod",
+        "unit": "hours/day",
+        "min": 0.01,
+        "max": 24
+      }
+    ],
+    "output": {
+      "label": "Daily light integral",
+      "unit": "mol/m²/day"
+    },
+    "limitations": [
+      "The result is a photon-dose calculation, not a universal cultivation target.",
+      "Equal DLI can result from different PPFD/photoperiod combinations and does not prove equal biological response.",
+      "Use representative canopy PPFD rather than an isolated peak reading.",
+      "Interpret the result with spectrum, crop stage, temperature, water status, carbon dioxide and plant response."
+    ]
+  },
+  "differential": {
+    "id": "ALDIFF-YELLOWING-001",
+    "version": "0.1.0",
+    "status": "draft",
+    "title": "Same Symptom, Different Cause: Yellowing Leaves",
+    "summary": "Practice separating a visible yellowing pattern from competing nutritional, root-zone and environmental explanations before choosing the next evidence to collect.",
+    "observedPattern": "Older lower leaves are yellowing while newer growth remains comparatively greener.",
+    "competencyIds": [
+      "COMP-NUTRITION-001",
+      "COMP-PLANT-BIO-001"
+    ],
+    "referenceIds": [
+      "REF-NUTRIENT-DEFICIENCY-001",
+      "REF-NUTRITION-001",
+      "REF-PLANT-BIO-001"
+    ],
+    "canonicalSources": [
+      "LESSON-NUTRITION-001",
+      "LESSON-PLANT-BIO-001"
+    ],
+    "hypotheses": [
+      {
+        "id": "low-or-limited-nutrient-availability",
+        "label": "Low supply or limited nutrient availability",
+        "whyPlausible": "A tissue-age pattern can be consistent with a mobile-nutrient limitation, but the visual pattern alone is not proof.",
+        "evidenceThatRaisesConfidence": [
+          "feed/source analysis shows insufficient supply",
+          "root-zone pH trend supports reduced availability",
+          "pattern progresses consistently across matched plants"
+        ],
+        "evidenceThatLowersConfidence": [
+          "root-zone EC is already excessive",
+          "roots show clear oxygen/water stress",
+          "pattern is localized to a heat or airflow anomaly"
+        ]
+      },
+      {
+        "id": "root-zone-stress",
+        "label": "Root-zone water, aeration or salinity stress",
+        "whyPlausible": "Root dysfunction can limit uptake even when nutrients are present in the feed.",
+        "evidenceThatRaisesConfidence": [
+          "abnormal root-zone moisture or aeration history",
+          "elevated root-zone EC",
+          "root discoloration or reduced root vigor where visible"
+        ],
+        "evidenceThatLowersConfidence": [
+          "root-zone measurements are stable and matched controls share the same conditions",
+          "independent tissue/feed evidence supports a specific supply deficiency"
+        ]
+      },
+      {
+        "id": "environmental-or-localized-stress",
+        "label": "Environmental or localized canopy stress",
+        "whyPlausible": "Temperature, airflow, light distribution and other localized conditions can produce stress patterns that overlap with nutrient symptoms.",
+        "evidenceThatRaisesConfidence": [
+          "symptoms map to one zone",
+          "recent setpoint/equipment change precedes the pattern",
+          "matched root-zone chemistry differs little between affected and unaffected plants"
+        ],
+        "evidenceThatLowersConfidence": [
+          "pattern follows tissue age across the entire crop",
+          "environmental measurements are spatially uniform while nutrition/root-zone evidence diverges"
+        ]
+      }
+    ],
+    "discriminatingEvidence": [
+      "Record tissue age, organ position, distribution and progression before naming a cause.",
+      "Compare feed and root-zone pH/EC using consistent methods.",
+      "Review irrigation/moisture history and root condition.",
+      "Compare affected and unaffected zones for temperature, humidity, airflow and light context.",
+      "Use laboratory/tissue analysis where appropriate and authorized when the decision requires stronger evidence."
+    ],
+    "boundary": "This activity teaches differential reasoning. It does not diagnose a crop, prescribe a nutrient correction, or authorize pesticide, HVAC, electrical, irrigation-system or other controlled operational changes."
+  }
+}

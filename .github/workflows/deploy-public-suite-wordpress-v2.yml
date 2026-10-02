@@ -82,6 +82,7 @@ jobs:
           node --check scripts/cleanup-stale-wordpress-suite-snippets.mjs
           node --check scripts/promote-public-game-routes-via-wordpress.mjs
           node --check scripts/verify-external-release-candidates-live.mjs
+          node scripts/validate-applied-learning-production-mirror.mjs
           grep -Fq "status: 'production-candidate'" scripts/verify-external-release-candidates-live.mjs
           grep -Fq 'data-dtf-shell="header-v6"' scripts/promote-public-game-routes-via-wordpress.mjs
           grep -Fq 'data-dtf-shell="footer-v6"' scripts/promote-public-game-routes-via-wordpress.mjs
@@ -423,6 +424,8 @@ jobs:
           check 'https://dtfseeds.com/tools/' 'VPD Chart'
           check 'https://dtfseeds.com/growlens/' 'GrowLens'
           check 'https://dtfseeds.com/thc-grow-doc/' 'Grow Doc'
+          check 'https://dtfseeds.com/applied-learning/' 'Applied Learning Lab'
+          check 'https://dtfseeds.com/applied-learning/' '7ffb4810a48091c3c61714ccc1663d8a2a1d4e88'
 
       - name: Verify external release candidate games live
         shell: bash

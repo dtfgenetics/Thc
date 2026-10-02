@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
   "sourceOfTruth": "dtfgenetics/Thc",
-  "updated": "2026-09-30",
+  "updated": "2026-10-02",
   "apps": [
     {
       "id": "high-land",
@@ -916,6 +916,21 @@
       "status": "ready-to-package",
       "build": "node games/root-cause/scripts/validate-data.mjs && node games/root-cause/test/engine.test.mjs && node games/root-cause/test/public-runtime.test.mjs && node --check site/public-route-patch/games/root-cause/app.js && node --check site/public-route-patch/games/root-cause/runtime.mjs && node --check site/public-route-patch/games/root-cause/engine.mjs && cmp games/root-cause/src/engine.mjs site/public-route-patch/games/root-cause/engine.mjs",
       "notes": "Self-hosted deterministic six-case cultivation diagnostics deduction game. Browser runtime now imports the canonical tested module engine through a thin app bootstrap; the duplicate browser rules engine is no longer loaded. Regression coverage protects diagnostic limits, challenge sharing fallback, V5 header/admin-bar offsets, stacked-result reveal, 44px controls, reduced motion, and forced colors. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+    },
+    {
+      "id": "applied-learning",
+      "title": "THC Applied Learning Lab",
+      "repository": "dtfgenetics/Thc-learning-courses-",
+      "sourcePath": "site/public-route-patch/applied-learning",
+      "mirrorPath": "site/public-route-patch/applied-learning",
+      "route": "/applied-learning/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node scripts/validate-applied-learning-production-mirror.mjs",
+      "canonicalRepository": "dtfgenetics/Thc-learning-courses-",
+      "integrationRepository": "dtfgenetics/Thc",
+      "notes": "Static development-preview learner surface driven by learner-safe mirrored canonical data for Knowledge Graph, Measurement School, Crop Math and evidence-based differential reasoning. Production mirror is pinned to the exact Academy source SHA; credential use remains unauthorized.",
+      "canonicalSourcePath": "apps/web/public"
     }
   ]
 }
