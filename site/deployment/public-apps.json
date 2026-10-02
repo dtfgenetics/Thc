@@ -921,7 +921,7 @@
       "id": "applied-learning",
       "title": "THC Applied Learning Lab",
       "repository": "dtfgenetics/Thc-learning-courses-",
-      "sourcePath": "apps/web/public",
+      "sourcePath": "site/public-route-patch/applied-learning",
       "mirrorPath": "site/public-route-patch/applied-learning",
       "route": "/applied-learning/",
       "runtime": "static-data-driven",
@@ -929,7 +929,8 @@
       "build": "node scripts/validate-applied-learning-production-mirror.mjs",
       "canonicalRepository": "dtfgenetics/Thc-learning-courses-",
       "integrationRepository": "dtfgenetics/Thc",
-      "notes": "Development-preview learner surface for canonical Knowledge Graph, Measurement School, Crop Math and evidence-based differential reasoning. Production mirror is pinned to the exact Academy source SHA and contains only learner-safe data; credential use remains unauthorized."
+      "notes": "Development-preview learner surface for canonical Knowledge Graph, Measurement School, Crop Math and evidence-based differential reasoning. Production mirror is pinned to the exact Academy source SHA and contains only learner-safe data; credential use remains unauthorized.",
+      "canonicalSourcePath": "apps/web/public"
     }
   ]
 }
