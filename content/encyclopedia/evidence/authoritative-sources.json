@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "registryId": "thc-encyclopedia-authoritative-source-registry",
-  "updatedAt": "2026-09-30",
+  "updatedAt": "2026-10-02",
   "scope": "Controlled external authority and peer-reviewed source registry for THC-ENC claim-level evidence collection. Source inclusion does not approve a lesson, publish a draft, or complete independent science review.",
   "rules": [
     "Source records identify authority and applicability; they do not create publication authorization.",
@@ -224,6 +224,92 @@
       "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11060664/",
       "aliases": [],
       "useAndLimitations": "Use for plant membrane ion transport, electrochemical gradients, transport proteins, and energy coupling. It is broad plant physiology and does not establish cannabis-specific nutrient targets or transporter kinetics.",
+      "reviewUse": "claim-level source"
+    },
+    {
+      "id": "ENC-AUTH-016",
+      "sourceType": "official_database",
+      "authorityClass": "government_chemical_identity_database",
+      "title": "PubChem PUG REST",
+      "publisher": "National Library of Medicine / National Center for Biotechnology Information",
+      "year": 2026,
+      "url": "https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest",
+      "aliases": [
+        "pubchem_pug_rest"
+      ],
+      "useAndLimitations": "Use for stable PubChem CID-based chemical identity, structure identifiers, and database-reported molecular properties. PubChem identity records do not by themselves establish cannabis-specific abundance, cultivation response, pharmacology, or health effects.",
+      "reviewUse": "chemical-identity authority"
+    },
+    {
+      "id": "ENC-AUTH-017",
+      "sourceType": "official_handbook",
+      "authorityClass": "government_hemp_phenotyping_standard",
+      "title": "USDA Hemp Phenotyping and Protocol Handbook, Version 4",
+      "publisher": "USDA Agricultural Research Service",
+      "year": 2025,
+      "url": "https://www.ars.usda.gov/northeast-area/geneva-ny/plant-genetic-resources-unit-pgru/docs/hemp-descriptors/",
+      "aliases": [
+        "usda_hemp_phenotyping_handbook_v4_2025"
+      ],
+      "useAndLimitations": "Use for hemp-specific descriptor definitions, germplasm characterization, and measurement protocols. Preserve method/version context; descriptor definitions do not establish universal cultivation targets.",
+      "reviewUse": "hemp-phenotyping authority"
+    },
+    {
+      "id": "ENC-AUTH-018",
+      "sourceType": "data_standard",
+      "authorityClass": "plant_phenotyping_metadata_standard",
+      "title": "Minimum Information About Plant Phenotyping Experiments (MIAPPE) v1.2",
+      "publisher": "MIAPPE / EMBL-EBI",
+      "year": 2024,
+      "url": "https://www.miappe.org/releases/",
+      "aliases": [
+        "miappe_v1_2_2024"
+      ],
+      "useAndLimitations": "Use for experiment, biological-material, environment, treatment, observation-variable, and data-management metadata. MIAPPE structures evidence but does not validate a biological or cultivation claim.",
+      "reviewUse": "evidence-method authority"
+    },
+    {
+      "id": "ENC-AUTH-019",
+      "sourceType": "official_database",
+      "authorityClass": "government_germplasm_database",
+      "title": "USDA GRIN-Global Cannabis sativa L. taxon and germplasm records",
+      "publisher": "USDA Agricultural Research Service",
+      "year": 2026,
+      "url": "https://npgsweb.ars-grin.gov/gringlobal/taxon/taxonomydetail?id=8862",
+      "aliases": [
+        "usda_grin_cannabis_sativa_taxon_8862",
+        "V20-SRC-032"
+      ],
+      "useAndLimitations": "Use for accession identity, taxonomy, passport metadata, germplasm conservation context, and current availability metadata. Availability and counts are volatile and require retrieval timestamps.",
+      "reviewUse": "germplasm-identity authority"
+    },
+    {
+      "id": "ENC-AUTH-020",
+      "sourceType": "institutional_primary",
+      "authorityClass": "institutional_hemp_germplasm_context",
+      "title": "The USDA-ARS Hemp Germplasm Repository",
+      "publisher": "Cornell University / USDA-ARS",
+      "year": 2024,
+      "url": "https://hemp.cals.cornell.edu/resources/reports-factsheets/2024-factsheets/the-usda-ars-hemp-germplasm-repository/",
+      "aliases": [
+        "cornell_hemp_usda_ars_germplasm_2024"
+      ],
+      "useAndLimitations": "Use for institutional context on the USDA-ARS hemp germplasm program and its characterization goals. Current accession counts and availability must be refreshed from GRIN-Global.",
+      "reviewUse": "germplasm-program authority"
+    },
+    {
+      "id": "ENC-AUTH-021",
+      "sourceType": "doctoral_dissertation",
+      "authorityClass": "cannabis_genetics_primary_research",
+      "title": "Toth (2022). Elucidating the Genetic Control of Qualitative Traits in Hemp",
+      "publisher": "Cornell University",
+      "year": 2022,
+      "doi": "10.7298/bvsc-7x71",
+      "url": "https://ecommons.cornell.edu/entities/publication/2e01f4c6-f0bc-4fe6-a800-568535c523f5",
+      "aliases": [
+        "cornell_toth_hemp_genetics_2022"
+      ],
+      "useAndLimitations": "Use for study-scoped hemp genetics findings including flowering-time loci and qualitative trait genetics. Preserve germplasm, population, and analysis context; do not universalize dissertation findings across all Cannabis.",
       "reviewUse": "claim-level source"
     }
   ]
