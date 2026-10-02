@@ -28,5 +28,6 @@ assert.equal(ganjumanji.profile.gameplayProfile,'campaign-rpg');
 assert.equal(ganjumanji.profile.rendererProfile,'phaser');
 assert.ok(ganjumanji.requiredChecks.includes('save-migration'));
 assert.ok(ganjumanji.performanceBudget.targetTimeToPlayableMs);
+assert.equal(ganjumanji.strictProfileCommand,'npm run games:profiles:strict -- --id ganjumanji');
 
 console.log('canonical game resolver contract OK');
