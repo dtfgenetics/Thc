@@ -50,7 +50,7 @@ function parseBioSamples(xml,{sourceId,retrievedAt}) {
     }
     const project=nestedPrimaryId(chunk,'BioProject') || attrs.project_accession || null;
     const sraSample=linkedId(chunk,'SRA');
-    const sampleName=attrs.sample_name || attrs.cultivar || tag(chunk,'Title');
+    const sampleName=attrs.sample_name || attrs.cultivar || null;
     records.push({
       record_id:`BIOSAMPLE-${biosample}`,
       source_id:sourceId,
