@@ -108,4 +108,21 @@ window.THCMeasurementJournal?.create({
 <script type="module">
 import {mountLiveToolAdapter} from '/assets/thc-live-tool-adapter-v1.mjs';
 mountLiveToolAdapter({container:document.getElementById('liveToolAdapter'),tool:'ph',title:'Live pH sensor adapter'});
+</script>
+<script type="module">
+import {collectManualCultivationMeasurement} from '/assets/thc-cultivation-data-ui-v1.mjs';
+const button=document.getElementById('savePhRecord');
+button?.addEventListener('click',()=>{
+  const value=Number(document.getElementById('ph').value);
+  if(!Number.isFinite(value)||value<0||value>14)return;
+  const temp=Number(document.getElementById('phSampleTemp')?.value);
+  collectManualCultivationMeasurement({
+    type:'solution',toolId:'ph-meter',observedAt:document.getElementById('phDate')?.value,
+    metrics:{ph:value,solutionTemperatureC:Number.isFinite(temp)?temp:null},
+    values:{sampleContext:document.getElementById('context')?.value},
+    deviceModel:document.getElementById('phMeterId')?.value||null,
+    calibrationId:document.getElementById('phCalibrationDate')?.value||null,
+    method:'ph-meter-journal'
+  });
+});
 </script></body></html>

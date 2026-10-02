@@ -106,4 +106,22 @@ window.THCMeasurementJournal?.create({
 <script type="module">
 import {mountLiveToolAdapter} from '/assets/thc-live-tool-adapter-v1.mjs';
 mountLiveToolAdapter({container:document.getElementById('liveToolAdapter'),tool:'tds',title:'Live EC / TDS sensor adapter'});
+</script>
+<script type="module">
+import {collectManualCultivationMeasurement} from '/assets/thc-cultivation-data-ui-v1.mjs';
+const button=document.getElementById('saveEcRecord');
+button?.addEventListener('click',()=>{
+  const raw=Number(document.getElementById('ec').value);
+  const ec= document.getElementById('ecunit')?.value==='us'?raw/1000:raw;
+  if(!Number.isFinite(ec)||ec<0)return;
+  const temp=Number(document.getElementById('ecSampleTemp')?.value);
+  collectManualCultivationMeasurement({
+    type:'solution',toolId:'tds-meter',observedAt:document.getElementById('ecDate')?.value,
+    metrics:{ecMsCm:ec,solutionTemperatureC:Number.isFinite(temp)?temp:null},
+    values:{sampleContext:document.getElementById('sample')?.value},
+    deviceModel:document.getElementById('ecMeterId')?.value||null,
+    calibrationId:document.getElementById('ecCalibrationDate')?.value||null,
+    method:'ec-meter-journal'
+  });
+});
 </script></body></html>
