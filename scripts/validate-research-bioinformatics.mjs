@@ -20,7 +20,9 @@ const files = [
   'data/research/brapi-2.1-mapping-v1.json',
   'data/research/cornell-hemp-genetics-literature-v1.json',
   'data/research/cannabis-reference-genomes-v1.json',
-  'data/research/usda-hemp-project-family-v1.json'
+  'data/research/usda-hemp-project-family-v1.json',
+  'data/research/cornell-published-marker-registry-v1.json',
+  'data/research/hemp-data-availability-index-v1.json'
 ];
 
 const errors = [];
@@ -118,3 +120,28 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(`Bioinformatics schema/standards validation passed for ${Object.keys(schemaRequirements).length} canonical entity families.`);
+
+const publishedMarkers = JSON.parse(fs.readFileSync(path.join(root,'data/research/cornell-published-marker-registry-v1.json'),'utf8'));
+const genomeRegistry = JSON.parse(fs.readFileSync(path.join(root,'data/research/cannabis-reference-genomes-v1.json'),'utf8'));
+const assemblyIds = new Set((genomeRegistry.references || []).map(r => r.assembly_accession).filter(Boolean));
+if (!assemblyIds.has(publishedMarkers.source.assembly_accession)) {
+  errors.push(`published marker assembly not present in genome registry: ${publishedMarkers.source.assembly_accession}`);
+}
+const markerIds = new Set();
+for (const marker of publishedMarkers.loci || []) {
+  if (markerIds.has(marker.marker_id)) errors.push(`duplicate published marker id: ${marker.marker_id}`);
+  markerIds.add(marker.marker_id);
+  if (!Number.isInteger(marker.position) || marker.position < 1) errors.push(`invalid marker position: ${marker.marker_id}`);
+}
+const availability = JSON.parse(fs.readFileSync(path.join(root,'data/research/hemp-data-availability-index-v1.json'),'utf8'));
+for (const resource of availability.resources || []) {
+  if (resource.ingestion_lane?.includes('TRAIN') && resource.rights_note?.toLowerCase().includes('reserved')) {
+    errors.push(`rights-restricted resource cannot be training lane: ${resource.id}`);
+  }
+}
+if (errors.length) {
+  console.error('Bioinformatics marker/data-availability validation failed:');
+  for (const error of errors) console.error(`- ${error}`);
+  process.exit(1);
+}
+console.log(`Published marker/data-availability validation passed for ${markerIds.size} marker records and ${availability.resources.length} research resources.`);
