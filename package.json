@@ -164,6 +164,7 @@
     "audit:platform-convergence:check": "node scripts/report-platform-convergence.mjs --check",
     "audit:platform-convergence:json": "node scripts/report-platform-convergence.mjs --json",
     "audit:platform-convergence:live": "node scripts/report-platform-convergence.mjs --live",
-    "audit:platform-convergence:strict-live": "node scripts/report-platform-convergence.mjs --live --strict-live"
+    "audit:platform-convergence:strict-live": "node scripts/report-platform-convergence.mjs --live --strict-live",
+    "verify:encyclopedia-research-leases": "npm run build:encyclopedia-research-queue && node scripts/validate-encyclopedia-research-leases.mjs"
   }
 }
