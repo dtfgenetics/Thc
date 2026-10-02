@@ -10,6 +10,14 @@ const PTP_GRID = 15;
 const PTP_MAX_BODY = 16384;
 const PTP_MAX_EVENTS = 80;
 const PTP_PROTOCOL_VERSION = 1;
+
+function liveops_state(): array
+{
+    return [
+        'maintenance' => getenv('DTF_BURN_BUDS_MAINTENANCE_MODE') === 'true',
+        'multiplayerEnabled' => getenv('DTF_BURN_BUDS_MULTIPLAYER_ENABLED') !== 'false'
+    ];
+}
 const PTP_FORMATIONS = [
     ['id' => 'mother-row', 'name' => 'Mother Row', 'size' => 5],
     ['id' => 'trellis-row', 'name' => 'Trellis Row', 'size' => 4],
@@ -163,6 +171,29 @@ function store_set(string $key, array $value, int $ttl = PTP_TTL): bool
     $path = sys_get_temp_dir() . '/' . $key . '.json';
     $written = @file_put_contents($path, $encoded, LOCK_EX);
     return $written !== false && is_file($path);
+}
+
+function ops_increment(string $name): void
+{
+    $key = 'ptp_ops';
+    $ops = store_get($key);
+    if (!is_array($ops)) {
+        $ops = ['requests' => 0, 'create' => 0, 'join' => 0, 'state' => 0, 'fire' => 0, 'chat' => 0, 'updatedAt' => null];
+    }
+    $ops['requests'] = intval($ops['requests'] ?? 0) + 1;
+    if (array_key_exists($name, $ops)) {
+        $ops[$name] = intval($ops[$name] ?? 0) + 1;
+    }
+    $ops['updatedAt'] = now_ms();
+    store_set($key, $ops, PTP_TTL);
+}
+
+function ops_snapshot(): array
+{
+    $ops = store_get('ptp_ops');
+    return is_array($ops)
+        ? $ops
+        : ['requests' => 0, 'create' => 0, 'join' => 0, 'state' => 0, 'fire' => 0, 'chat' => 0, 'updatedAt' => null];
 }
 
 function room_get(string $code): array
@@ -420,6 +451,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     out([], 204);
 }
 enforce_protocol();
+$liveops = liveops_state();
+if ($action === 'health') {
+    out([
+        'ok' => true,
+        'service' => 'burn-buds',
+        'protocolVersion' => PTP_PROTOCOL_VERSION,
+        'maintenance' => $liveops['maintenance'],
+        'multiplayerEnabled' => $liveops['multiplayerEnabled'],
+        'storage' => $useWp ? 'wordpress-transients' : 'temporary-files',
+        'metrics' => ops_snapshot(),
+        'serverNow' => now_ms(),
+    ]);
+}
+if ($liveops['maintenance']) {
+    fail('Burn Buds is temporarily under maintenance.', 503);
+}
+if (!$liveops['multiplayerEnabled']) {
+    fail('Burn Buds multiplayer is temporarily disabled.', 503);
+}
+ops_increment($action);
 
 if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $b = body();
