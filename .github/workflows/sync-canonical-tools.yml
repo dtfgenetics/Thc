@@ -24,7 +24,15 @@ jobs:
       - name: Checkout THC integration repository
         uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
+
+      - name: Start from latest integration main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
 
       - name: Clone canonical Tools repository
         env:
@@ -87,6 +95,12 @@ jobs:
           fi
           git commit -m "Sync canonical cultivation tools from dtfgenetics/Tools"
           git fetch origin main
-          git rebase origin/main
+          if [ "$(git rev-parse origin/main)" != "$(git rev-parse HEAD^)" ]; then
+            echo "::notice::THC main advanced during canonical sync; rebasing and revalidating."
+            git rebase origin/main
+          fi
           TOOLS_REPO_DIR=/tmp/tools npm run verify:cultivation-reference-tools
+          expected_tools_sha="$(git -C /tmp/tools rev-parse HEAD)"
+          pinned_tools_sha="$(sed -n 's/^commit=//p' site/public-route-patch/assets/release-source-revisions/tools.txt)"
+          test "${pinned_tools_sha}" = "${expected_tools_sha}"
           git push origin HEAD:main
