@@ -1,1 +1,103 @@
-{"id":"THC-ENC-022","number":22,"title":"Seed Lot Identity, Provenance, and Chain of Custody","objective":"Build a traceable seed-lot record that separates supplied names from verified genetic and performance evidence.","terms":[{"term":"Seed lot","definition":"A defined quantity of seed represented as one traceable production or handling unit."},{"term":"Provenance","definition":"Documented origin and movement history of biological material."},{"term":"Chain of custody","definition":"Chronological record of possession, transfer, sampling, subdivision, and disposition."},{"term":"Aliquot","definition":"A measured subdivision taken from a larger lot while preserving the parent-lot link."}],"coreScience":["A cultivar or strain name is not a complete identity. A controlled seed record combines the supplied name with source, breeder or institution, parentage claim, generation, production date if known, receipt date, quantity, package identifiers, and an internally assigned lot ID. Genetic or chemical verification, when available, is stored as evidence rather than substituted for the original supplied information.","Chain of custody matters because lots are opened, sampled, divided, transferred, tested, planted, returned, or discarded. Each event can introduce labeling error, moisture exposure, contamination, or selection bias. A child container must retain the parent lot ID and receive its own unique container or aliquot ID.","A useful identity system records uncertainty. Terms such as 'unverified supplied pedigree,' 'open-pollinated,' 'mixed lot,' or 'source not documented' are more accurate than inventing certainty. When two lots carry the same commercial name, keep them separate until evidence supports combining their records."],"cultivationRelevance":["Traceability protects breeding conclusions, crop comparisons, and inventory decisions. Without it, a high germination result or desirable phenotype cannot be reliably connected to its source.","Use tamper-evident or otherwise controlled containers where appropriate, restrict label rewriting, and reconcile physical counts with the inventory after each sampling or planting event."],"measureAndRecord":[{"field":"Lot identity","requirement":"Unique lot ID, supplied name, source, breeder, generation, and parentage claim."},{"field":"Receipt","requirement":"Date, package condition, quantity received, receiver, and photographs where useful."},{"field":"Container history","requirement":"Container ID, seal status, storage location, and every opening or transfer."},{"field":"Sampling","requirement":"Aliquot ID, quantity, purpose, operator, date, and remaining balance."},{"field":"Evidence","requirement":"Germination result, phenotype record, laboratory test, marker test, or unresolved status."}],"misconceptions":["The package name is enough: Names can be reused, misspelled, or applied to different material.","Small home collections do not need lot IDs: A simple ID prevents the same errors at any scale.","Combining leftovers is harmless: Pooling destroys the ability to connect results to a source lot."],"evidenceLimits":["Chain of custody documents handling; it does not prove that a supplier's pedigree or identity claim is genetically correct."],"crossLinks":"THC-ENC-002–005, THC-ENC-020, THC-ENC-170, THC-ENC-388, and the seed inventory data standard.","sourceNotes":["Food and Agriculture Organization of the United Nations (2014). Genebank Standards for Plant Genetic Resources for Food and Agriculture. https://www.fao.org/4/i3704e/i3704e.pdf","International Seed Testing Association. International Rules for Seed Testing 2026, Chapter 2: Sampling. Seed-lot sampling and reporting framework. https://www.seedtest.org/en/publications/international-rules-seed-testing.html"],"slug":"seed-lot-identity-provenance-and-chain-of-custody","route":"/encyclopedia/seed-lot-identity-provenance-and-chain-of-custody"}
+{
+  "id": "THC-ENC-022",
+  "number": 22,
+  "title": "Seed Lot Identity, Provenance, and Chain of Custody",
+  "objective": "Build a traceable seed-lot record that separates supplied names from verified genetic and performance evidence.",
+  "terms": [
+    {
+      "term": "Seed lot",
+      "definition": "A defined quantity of seed represented as one traceable production or handling unit."
+    },
+    {
+      "term": "Provenance",
+      "definition": "Documented origin and movement history of biological material."
+    },
+    {
+      "term": "Chain of custody",
+      "definition": "Chronological record of possession, transfer, sampling, subdivision, and disposition."
+    },
+    {
+      "term": "Aliquot",
+      "definition": "A measured subdivision taken from a larger lot while preserving the parent-lot link."
+    }
+  ],
+  "coreScience": [
+    "A cultivar or strain name is not a complete identity. A controlled seed record combines the supplied name with source, breeder or institution, parentage claim, generation, production date if known, receipt date, quantity, package identifiers, and an internally assigned lot ID. Genetic or chemical verification, when available, is stored as evidence rather than substituted for the original supplied information.",
+    "Chain of custody matters because lots are opened, sampled, divided, transferred, tested, planted, returned, or discarded. Each event can introduce labeling error, moisture exposure, contamination, or selection bias. A child container must retain the parent lot ID and receive its own unique container or aliquot ID.",
+    "A useful identity system records uncertainty. Terms such as 'unverified supplied pedigree,' 'open-pollinated,' 'mixed lot,' or 'source not documented' are more accurate than inventing certainty. When two lots carry the same commercial name, keep them separate until evidence supports combining their records."
+  ],
+  "cultivationRelevance": [
+    "Traceability protects breeding conclusions, crop comparisons, and inventory decisions. Without it, a high germination result or desirable phenotype cannot be reliably connected to its source.",
+    "Use tamper-evident or otherwise controlled containers where appropriate, restrict label rewriting, and reconcile physical counts with the inventory after each sampling or planting event."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Lot identity",
+      "requirement": "Unique lot ID, supplied name, source, breeder, generation, and parentage claim."
+    },
+    {
+      "field": "Receipt",
+      "requirement": "Date, package condition, quantity received, receiver, and photographs where useful."
+    },
+    {
+      "field": "Container history",
+      "requirement": "Container ID, seal status, storage location, and every opening or transfer."
+    },
+    {
+      "field": "Sampling",
+      "requirement": "Aliquot ID, quantity, purpose, operator, date, and remaining balance."
+    },
+    {
+      "field": "Evidence",
+      "requirement": "Germination result, phenotype record, laboratory test, marker test, or unresolved status."
+    }
+  ],
+  "misconceptions": [
+    "The package name is enough: Names can be reused, misspelled, or applied to different material.",
+    "Small home collections do not need lot IDs: A simple ID prevents the same errors at any scale.",
+    "Combining leftovers is harmless: Pooling destroys the ability to connect results to a source lot."
+  ],
+  "evidenceLimits": [
+    "Chain of custody documents handling; it does not prove that a supplier's pedigree or identity claim is genetically correct."
+  ],
+  "crossLinks": "THC-ENC-002–005, THC-ENC-020, THC-ENC-170, THC-ENC-388, and the seed inventory data standard.",
+  "sourceNotes": [
+    "Food and Agriculture Organization of the United Nations (2014). Genebank Standards for Plant Genetic Resources for Food and Agriculture. https://www.fao.org/4/i3704e/i3704e.pdf",
+    "International Seed Testing Association. International Rules for Seed Testing 2026, Chapter 2: Sampling. Seed-lot sampling and reporting framework. https://www.seedtest.org/en/publications/international-rules-seed-testing.html"
+  ],
+  "slug": "seed-lot-identity-provenance-and-chain-of-custody",
+  "route": "/encyclopedia/seed-lot-identity-provenance-and-chain-of-custody",
+  "knowledgeCheck": [
+    "For \"Seed Lot Identity, Provenance, and Chain of Custody\", explain the mechanism behind this objective: Build a traceable seed-lot record that separates supplied names from verified genetic and performance evidence. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"The package name is enough: Names can be reused, misspelled, or applied to different material.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Traceability protects breeding conclusions, crop comparisons, and inventory decisions. Without it, a high germination result or desirable phenotype cannot be reliably connected to its source. Build a verification plan using the lesson's record set (Lot identity: Unique lot ID, supplied name, source, breeder, generation, and parentage claim.; Receipt: Date, package condition, quantity received, receiver, and photographs where useful.; Container history: Container ID, seal status, storage location, and every opening or transfer.; Sampling: Aliquot ID, quantity, purpose, operator, date, and remaining balance.; Evidence: Germination result, phenotype record, laboratory test, marker test, or unresolved status.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  },
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia canonical 420 source set",
+    "evidenceControl": "claim_level_evidence_migration_pending",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending",
+    "externalReviewType": "plant_science_and_cultivation_reference",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_from_publication",
+    "releaseGateReason": [
+      "claim_level_evidence_migration_pending",
+      "approved_teaching_visual_pending",
+      "assessment_rationale_independent_review_pending",
+      "visitor_facing_release_verification_pending"
+    ],
+    "materializedBy": "scripts/materialize-encyclopedia-release-controls.mjs",
+    "materializedAt": "source-controlled"
+  }
+}

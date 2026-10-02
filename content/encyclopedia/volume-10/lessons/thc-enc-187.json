@@ -4,12 +4,30 @@
   "title": "Mainlining and Repeated Structural Training",
   "objective": "Analyze mainlining as a sequence of repeated structural interventions that changes branch hierarchy and canopy geometry, while separating its plausible plant-development mechanisms from cultivation claims that remain weakly standardized or insufficiently tested.",
   "terms": [
-    {"term":"mainlining","definition":"Cannabis cultivation terminology for a repeated structural-training system that combines shoot-tip removal, selective branch retention or removal, and branch positioning to create a deliberately organized canopy."},
-    {"term":"manifold","definition":"Grower terminology for a deliberately constructed central branching framework intended to distribute several retained leaders from a limited number of structural junctions."},
-    {"term":"repeated intervention","definition":"A management sequence in which a plant is altered more than once, so each later response depends partly on recovery and architecture created by earlier actions."},
-    {"term":"branch hierarchy","definition":"The ordered relationship among the main stem, primary branches, secondary branches, and higher-order shoots."},
-    {"term":"architectural symmetry","definition":"Similarity in position, size, or developmental status among selected branches; visual symmetry does not guarantee equal physiology or resource flow."},
-    {"term":"recovery interval","definition":"The observed period between an intervention and restoration of stable growth; it varies with plant condition and is not a universal fixed duration."}
+    {
+      "term": "mainlining",
+      "definition": "Cannabis cultivation terminology for a repeated structural-training system that combines shoot-tip removal, selective branch retention or removal, and branch positioning to create a deliberately organized canopy."
+    },
+    {
+      "term": "manifold",
+      "definition": "Grower terminology for a deliberately constructed central branching framework intended to distribute several retained leaders from a limited number of structural junctions."
+    },
+    {
+      "term": "repeated intervention",
+      "definition": "A management sequence in which a plant is altered more than once, so each later response depends partly on recovery and architecture created by earlier actions."
+    },
+    {
+      "term": "branch hierarchy",
+      "definition": "The ordered relationship among the main stem, primary branches, secondary branches, and higher-order shoots."
+    },
+    {
+      "term": "architectural symmetry",
+      "definition": "Similarity in position, size, or developmental status among selected branches; visual symmetry does not guarantee equal physiology or resource flow."
+    },
+    {
+      "term": "recovery interval",
+      "definition": "The observed period between an intervention and restoration of stable growth; it varies with plant condition and is not a universal fixed duration."
+    }
   ],
   "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
   "coreScience": [
@@ -23,11 +41,26 @@
     "Use the intended crop goal to judge the architecture: height control, horizontal space filling, uniform light exposure, branch support, harvest uniformity, or another measurable endpoint. Symmetry is a design feature, not an independent yield metric."
   ],
   "measureAndRecord": [
-    {"field":"Training sequence","requirement":"Plant ID, each intervention date, developmental stage, exact shoot or node affected, tissue removed, branches retained, branches repositioned, and support system used."},
-    {"field":"Recovery between stages","requirement":"Time to resumed extension, leaf production, branch activation, wound condition, wilting or growth suppression, and any skipped or delayed intervention."},
-    {"field":"Framework geometry","requirement":"Retained leader count, branch order, branch angles, canopy width, leader-height variation, spacing among leaders, and structural failures."},
-    {"field":"Environment","requirement":"Light distribution, plant density, root-zone system, irrigation, nutrition, temperature, humidity, and major stress events during the sequence."},
-    {"field":"Final comparison","requirement":"Per-plant and/or per-area yield, uniformity, defined chemistry metrics, labor inputs, crop duration, breakage, and an appropriate comparison treatment where possible."}
+    {
+      "field": "Training sequence",
+      "requirement": "Plant ID, each intervention date, developmental stage, exact shoot or node affected, tissue removed, branches retained, branches repositioned, and support system used."
+    },
+    {
+      "field": "Recovery between stages",
+      "requirement": "Time to resumed extension, leaf production, branch activation, wound condition, wilting or growth suppression, and any skipped or delayed intervention."
+    },
+    {
+      "field": "Framework geometry",
+      "requirement": "Retained leader count, branch order, branch angles, canopy width, leader-height variation, spacing among leaders, and structural failures."
+    },
+    {
+      "field": "Environment",
+      "requirement": "Light distribution, plant density, root-zone system, irrigation, nutrition, temperature, humidity, and major stress events during the sequence."
+    },
+    {
+      "field": "Final comparison",
+      "requirement": "Per-plant and/or per-area yield, uniformity, defined chemistry metrics, labor inputs, crop duration, breakage, and an appropriate comparison treatment where possible."
+    }
   ],
   "misconceptions": [
     "A symmetrical manifold guarantees equal nutrient and hormone flow to every branch.",
@@ -61,5 +94,19 @@
     "websiteAction": "publish_with_review_notice"
   },
   "slug": "mainlining-and-repeated-structural-training",
-  "route": "/encyclopedia/mainlining-and-repeated-structural-training"
+  "route": "/encyclopedia/mainlining-and-repeated-structural-training",
+  "knowledgeCheck": [
+    "For \"Mainlining and Repeated Structural Training\", explain the mechanism behind this objective: Analyze mainlining as a sequence of repeated structural interventions that changes branch hierarchy and canopy geometry, while separating its plausible plant-development mechanisms from cultivation claims that remain weakly standardized or insufficiently tested. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"A symmetrical manifold guarantees equal nutrient and hormone flow to every branch.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Evaluate repeated structural training as a sequence, not as a single treatment. Record what was changed at each stage and whether the plant had resumed stable growth before the next intervention. This makes it possible to distinguish architecture benefits from cumulative injury or lost growth time. Build a verification plan using the lesson's record set (Training sequence: Plant ID, each intervention date, developmental stage, exact shoot or node affected, tissue removed, branches retained, branches repositioned, and support system used.; Recovery between stages: Time to resumed extension, leaf production, branch activation, wound condition, wilting or growth suppression, and any skipped or delayed intervention.; Framework geometry: Retained leader count, branch order, branch angles, canopy width, leader-height variation, spacing among leaders, and structural failures.; Environment: Light distribution, plant density, root-zone system, irrigation, nutrition, temperature, humidity, and major stress events during the sequence.; Final comparison: Per-plant and/or per-area yield, uniformity, defined chemistry metrics, labor inputs, crop duration, breakage, and an appropriate comparison treatment where possible.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  }
 }

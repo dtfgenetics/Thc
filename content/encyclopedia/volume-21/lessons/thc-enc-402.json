@@ -26,7 +26,14 @@
     "Characterize critical meters and methods using references, repeats, range checks, and documented uncertainty or practical tolerance. Report meaningful digits and avoid ranking plants or treatments by differences smaller than the process can resolve."
   ],
   "measureAndRecord": [
-    "Measurand; method; sample; reference value; repeated results; mean/spread; bias estimate; resolution; environmental conditions; uncertainty components; combined/expanded uncertainty where used; coverage statement; decision rule."
+    {
+      "field": "Measurement identity record",
+      "requirement": "For Accuracy, Precision, Resolution, and Uncertainty, record quantity, unit, instrument or source system, sample or plant identity, time, location, method, basis, and raw value. Preserve the original controlled note: Measurand; method; sample; reference value; repeated results; mean/spread; bias estimate; resolution; environmental conditions; uncertainty components; combined/expanded uncertainty where used; coverage statement; decision rule."
+    },
+    {
+      "field": "Traceability and review record",
+      "requirement": "Record calibration or verification status, conversion or calculation rule, reviewer, uncertainty or limitation, revision history, linked evidence, and the decision made from the record."
+    }
   ],
   "misconceptions": [
     "More decimal places mean greater accuracy.",

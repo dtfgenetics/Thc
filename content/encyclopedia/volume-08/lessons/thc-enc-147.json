@@ -1,1 +1,105 @@
-{"id":"THC-ENC-147","number":147,"title":"Genotype-by-Environment Interaction","objective":"Recognize and measure when genotypes respond differently across environments, including changes in ranking.","terms":[{"term":"GxE","definition":"Statistical and biological dependence of genotype performance on environment."},{"term":"Crossover interaction","definition":"Genotypes change rank across environments."},{"term":"Stability","definition":"Consistency defined for a trait and target range, not an absolute property of a cultivar."},{"term":"Target population of environments","definition":"Production conditions for which a breeding or selection decision is intended."}],"coreScience":["A main genotype effect describes average differences; a main environment effect describes average shifts; GxE describes different response patterns. If two cultivars both gain the same amount under higher light, the environment changed the mean without crossover. If one gains and the other declines, the interaction changes cultivar choice.","Environment includes more than geographic site. Room, season, photoperiod, spectrum, density, substrate, irrigation, fertility, temperature, disease pressure, and operator practice can create different test environments. Confounding all factors at once can show that rooms differ but cannot identify why.","Stability is trait-specific. A cultivar can be stable for flowering date but unstable for yield, cannabinoid concentration, disease severity, or architecture. Mean performance and stability must be reported together; a consistently poor genotype is stable but not useful."],"cultivationRelevance":["Trial promising cultivars across the real production envelope before scaling. Include a common check genotype and replicated positions so room drift and spatial gradients can be separated from genetics.","Use matched chemistry sampling and harvest maturity. Comparing one cultivar at peak maturity with another on the same calendar day can create a developmental artifact that looks like GxE."],"measureAndRecord":[{"field":"Target environments","requirement":"Sites or rooms, seasons, management ranges, expected stresses, and market objective."},{"field":"Design","requirement":"Genotypes, checks, replicates, blocks, randomization, and common protocol."},{"field":"Covariates","requirement":"Actual light, temperature, humidity, root-zone EC/pH, water, disease, and maturity."},{"field":"Analysis","requirement":"Genotype, environment, GxE terms, rank changes, uncertainty, and missing-data treatment."},{"field":"Decision","requirement":"Broad adaptation, environment-specific placement, retest conditions, and rejected extrapolations."}],"misconceptions":["The best cultivar is best everywhere: Crossover interactions can reverse rankings.","One room proves genetic stability: Stability requires defined variation across multiple relevant environments.","GxE is just experimental noise: Interactions can be reproducible and central to local adaptation."],"evidenceLimits":["Multi-environment cannabis datasets remain much stronger for hemp than for controlled-environment drug-type germplasm. Environment categories must be measured, not inferred from room labels."],"crossLinks":"THC-ENC-080, THC-ENC-145-146, THC-ENC-191-200, THC-ENC-341-360, and THC-GROW-030.","sourceNotes":["Campbell B.J. et al. (2019). Genotype x environment interactions of industrial hemp cultivars. Agrosystems, Geosciences & Environment 2:1-11.","Petit J. et al. (2020). Genetic variability of morphological, flowering, and biomass quality traits in hemp. Frontiers in Plant Science 11:102.","Stack G.M. et al. (2023). Correlations among morphological and biochemical traits in high-cannabinoid hemp. Plant Direct 7:e503.","THC Cannabis Plant Science Source Packet v1.1 (project source, May 2026)."],"slug":"genotype-by-environment-interaction","route":"/encyclopedia/genotype-by-environment-interaction"}
+{
+  "id": "THC-ENC-147",
+  "number": 147,
+  "title": "Genotype-by-Environment Interaction",
+  "objective": "Recognize and measure when genotypes respond differently across environments, including changes in ranking.",
+  "terms": [
+    {
+      "term": "GxE",
+      "definition": "Statistical and biological dependence of genotype performance on environment."
+    },
+    {
+      "term": "Crossover interaction",
+      "definition": "Genotypes change rank across environments."
+    },
+    {
+      "term": "Stability",
+      "definition": "Consistency defined for a trait and target range, not an absolute property of a cultivar."
+    },
+    {
+      "term": "Target population of environments",
+      "definition": "Production conditions for which a breeding or selection decision is intended."
+    }
+  ],
+  "coreScience": [
+    "A main genotype effect describes average differences; a main environment effect describes average shifts; GxE describes different response patterns. If two cultivars both gain the same amount under higher light, the environment changed the mean without crossover. If one gains and the other declines, the interaction changes cultivar choice.",
+    "Environment includes more than geographic site. Room, season, photoperiod, spectrum, density, substrate, irrigation, fertility, temperature, disease pressure, and operator practice can create different test environments. Confounding all factors at once can show that rooms differ but cannot identify why.",
+    "Stability is trait-specific. A cultivar can be stable for flowering date but unstable for yield, cannabinoid concentration, disease severity, or architecture. Mean performance and stability must be reported together; a consistently poor genotype is stable but not useful."
+  ],
+  "cultivationRelevance": [
+    "Trial promising cultivars across the real production envelope before scaling. Include a common check genotype and replicated positions so room drift and spatial gradients can be separated from genetics.",
+    "Use matched chemistry sampling and harvest maturity. Comparing one cultivar at peak maturity with another on the same calendar day can create a developmental artifact that looks like GxE."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Target environments",
+      "requirement": "Sites or rooms, seasons, management ranges, expected stresses, and market objective."
+    },
+    {
+      "field": "Design",
+      "requirement": "Genotypes, checks, replicates, blocks, randomization, and common protocol."
+    },
+    {
+      "field": "Covariates",
+      "requirement": "Actual light, temperature, humidity, root-zone EC/pH, water, disease, and maturity."
+    },
+    {
+      "field": "Analysis",
+      "requirement": "Genotype, environment, GxE terms, rank changes, uncertainty, and missing-data treatment."
+    },
+    {
+      "field": "Decision",
+      "requirement": "Broad adaptation, environment-specific placement, retest conditions, and rejected extrapolations."
+    }
+  ],
+  "misconceptions": [
+    "The best cultivar is best everywhere: Crossover interactions can reverse rankings.",
+    "One room proves genetic stability: Stability requires defined variation across multiple relevant environments.",
+    "GxE is just experimental noise: Interactions can be reproducible and central to local adaptation."
+  ],
+  "evidenceLimits": [
+    "Multi-environment cannabis datasets remain much stronger for hemp than for controlled-environment drug-type germplasm. Environment categories must be measured, not inferred from room labels."
+  ],
+  "crossLinks": "THC-ENC-080, THC-ENC-145-146, THC-ENC-191-200, THC-ENC-341-360, and THC-GROW-030.",
+  "sourceNotes": [
+    "Campbell B.J. et al. (2019). Genotype x environment interactions of industrial hemp cultivars. Agrosystems, Geosciences & Environment 2:1-11.",
+    "Petit J. et al. (2020). Genetic variability of morphological, flowering, and biomass quality traits in hemp. Frontiers in Plant Science 11:102.",
+    "Stack G.M. et al. (2023). Correlations among morphological and biochemical traits in high-cannabinoid hemp. Plant Direct 7:e503.",
+    "THC Cannabis Plant Science Source Packet v1.1 (project source, May 2026)."
+  ],
+  "slug": "genotype-by-environment-interaction",
+  "route": "/encyclopedia/genotype-by-environment-interaction",
+  "knowledgeCheck": [
+    "For \"Genotype-by-Environment Interaction\", explain the mechanism behind this objective: Recognize and measure when genotypes respond differently across environments, including changes in ranking. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"The best cultivar is best everywhere: Crossover interactions can reverse rankings.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Trial promising cultivars across the real production envelope before scaling. Include a common check genotype and replicated positions so room drift and spatial gradients can be separated from genetics. Build a verification plan using the lesson's record set (Target environments: Sites or rooms, seasons, management ranges, expected stresses, and market objective.; Design: Genotypes, checks, replicates, blocks, randomization, and common protocol.; Covariates: Actual light, temperature, humidity, root-zone EC/pH, water, disease, and maturity.; Analysis: Genotype, environment, GxE terms, rank changes, uncertainty, and missing-data treatment.; Decision: Broad adaptation, environment-specific placement, retest conditions, and rejected extrapolations.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  },
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia canonical 420 source set",
+    "evidenceControl": "claim_level_evidence_migration_pending",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending",
+    "externalReviewType": "plant_science_and_cultivation_reference",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_from_publication",
+    "releaseGateReason": [
+      "claim_level_evidence_migration_pending",
+      "approved_teaching_visual_pending",
+      "assessment_rationale_independent_review_pending",
+      "visitor_facing_release_verification_pending"
+    ],
+    "materializedBy": "scripts/materialize-encyclopedia-release-controls.mjs",
+    "materializedAt": "source-controlled"
+  }
+}

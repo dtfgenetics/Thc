@@ -27,7 +27,14 @@
     "Create a structured evidence-extraction record instead of saving only a citation. Separate what the study observed, what the authors inferred, what the project may publish, and what remains unresolved."
   ],
   "measureAndRecord": [
-    "Citation/DOI/version/status; claim; exact evidence location; material and identity; design and experimental unit; treatment/control; sample size; method; endpoint/units; effect/uncertainty; limitations; conflicts; data availability; applicability; project decision; reviewer/date."
+    {
+      "field": "Measurement identity record",
+      "requirement": "For Reading a Scientific Paper, record quantity, unit, instrument or source system, sample or plant identity, time, location, method, basis, and raw value. Preserve the original controlled note: Citation/DOI/version/status; claim; exact evidence location; material and identity; design and experimental unit; treatment/control; sample size; method; endpoint/units; effect/uncertainty; limitations; conflicts; data availability; applicability; project decision; reviewer/date."
+    },
+    {
+      "field": "Traceability and review record",
+      "requirement": "Record calibration or verification status, conversion or calculation rule, reviewer, uncertainty or limitation, revision history, linked evidence, and the decision made from the record."
+    }
   ],
   "misconceptions": [
     "Peer reviewed means the paper is correct and universally applicable.",
@@ -37,7 +44,7 @@
   "evidenceLimits": [
     "Paper appraisal reduces misuse but cannot reveal all errors, unpublished data, undisclosed deviations, or future corrections."
   ],
-  "crossLinks": "THC-ENC-416–420; every lesson claim ledger and source register.",
+  "crossLinks": "THC-ENC-416–420; every lesson claim ledger and source register.; THC-ENC-419 for source hierarchy and revision control; THC-ENC-416 for experimental design and controls.",
   "sourceNotes": [
     "V21-SRC-009",
     "V21-SRC-014",

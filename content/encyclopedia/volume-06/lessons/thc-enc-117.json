@@ -1,1 +1,104 @@
-{"id":"THC-ENC-117","number":117,"title":"Photoperiodic Flower Induction","objective":"Describe flower induction as genotype-specific perception of recurring light-dark cycles and separate induction, visible flowering, and later development.","terms":[{"term":"Floral induction","definition":"Physiological commitment toward reproductive development before flowers are necessarily visible."},{"term":"Floral initiation","definition":"Formation of reproductive meristem structures following induction."},{"term":"Short-day response","definition":"Flowering promoted when day length is sufficiently short or the uninterrupted night sufficiently long."},{"term":"Days to flower","definition":"Operational endpoint that must define the visible or anatomical criterion used."}],"coreScience":["Photoperiod cannabis generally initiates reproductive development after repeated inductive cycles with sufficiently long nights. Leaves perceive light and transmit flowering signals to meristems. Visible pistillate structures occur after upstream signaling, so the timer switch date is not the same as the date of induction or the date of visible flower.","The threshold is not universally 12 hours. Controlled research across essential-oil, grain, and fiber hemp found cultivar-dependent critical responses and showed that small day-length changes could delay flowering in some genotypes. Seed lots sharing a name may also differ genetically.","Temperature, plant age, maturity, stress, light intensity, twilight, night interruption, spectrum, and prior photoperiod can modify response. Day-neutral germplasm follows a different developmental control pattern. Production records must therefore identify genotype, source, propagation history, and operational milestone."],"cultivationRelevance":["Accurate induction records support crop scheduling, stretch management, space planning, sex-expression scouting, and comparison of cultivars.","Changing photoperiod and intensity simultaneously alters both developmental signaling and photon dose; the two changes should be recorded separately."],"measureAndRecord":[{"field":"Genotype","requirement":"Cultivar, source lot, clone or seed, photoperiod classification, and prior observed response."},{"field":"Light cycle","requirement":"Measured day length, night length, transitions, spectrum, twilight or leaks, and DLI."},{"field":"Milestones","requirement":"Switch date, first preflower, first defined floral initiation sign, stretch interval, and full-flower criterion."},{"field":"Plant state","requirement":"Age, node count, size, health, stress, training, and reproductive maturity at switch."},{"field":"Environment","requirement":"Day/night temperature, VPD, irrigation, root-zone status, CO2, and deviations."}],"misconceptions":["The flip instantly creates flowers: Induction and meristem transition precede visible flower development.","Twelve hours is the natural threshold for all cannabis: It is a common conservative schedule; critical response varies by genotype and conditions.","More darkness always means faster or better flowering: Excess dark time reduces daily photons and may not improve developmental or yield outcomes."],"evidenceLimits":["Published critical photoperiods are specific to tested germplasm and endpoints. They cannot authenticate a cultivar name or predict every indoor drug-type response."],"crossLinks":"THC-ENC-073-075, THC-ENC-104, THC-ENC-112, THC-ENC-118, THC-ENC-157-160, and THC-GROW-120.","sourceNotes":["Zhang M. et al. (2021). Photoperiodic Flowering Response of Essential Oil, Grain, and Fiber Hemp Cultivars. Frontiers in Plant Science 12:694153.","Dang M., Muthu Arachchige N., and Campbell L.G. (2022). Optimizing Photoperiod Switch to Maximize Floral Biomass and Cannabinoid Yield: A Meta-Analytic Quantile Regression Approach. Frontiers in Plant Science 12:797425.","THC Cannabis Plant Science Source Packet v1.1 (project source, May 2026)."],"slug":"photoperiodic-flower-induction","route":"/encyclopedia/photoperiodic-flower-induction"}
+{
+  "id": "THC-ENC-117",
+  "number": 117,
+  "title": "Photoperiodic Flower Induction",
+  "objective": "Describe flower induction as genotype-specific perception of recurring light-dark cycles and separate induction, visible flowering, and later development.",
+  "terms": [
+    {
+      "term": "Floral induction",
+      "definition": "Physiological commitment toward reproductive development before flowers are necessarily visible."
+    },
+    {
+      "term": "Floral initiation",
+      "definition": "Formation of reproductive meristem structures following induction."
+    },
+    {
+      "term": "Short-day response",
+      "definition": "Flowering promoted when day length is sufficiently short or the uninterrupted night sufficiently long."
+    },
+    {
+      "term": "Days to flower",
+      "definition": "Operational endpoint that must define the visible or anatomical criterion used."
+    }
+  ],
+  "coreScience": [
+    "Photoperiod cannabis generally initiates reproductive development after repeated inductive cycles with sufficiently long nights. Leaves perceive light and transmit flowering signals to meristems. Visible pistillate structures occur after upstream signaling, so the timer switch date is not the same as the date of induction or the date of visible flower.",
+    "The threshold is not universally 12 hours. Controlled research across essential-oil, grain, and fiber hemp found cultivar-dependent critical responses and showed that small day-length changes could delay flowering in some genotypes. Seed lots sharing a name may also differ genetically.",
+    "Temperature, plant age, maturity, stress, light intensity, twilight, night interruption, spectrum, and prior photoperiod can modify response. Day-neutral germplasm follows a different developmental control pattern. Production records must therefore identify genotype, source, propagation history, and operational milestone."
+  ],
+  "cultivationRelevance": [
+    "Accurate induction records support crop scheduling, stretch management, space planning, sex-expression scouting, and comparison of cultivars.",
+    "Changing photoperiod and intensity simultaneously alters both developmental signaling and photon dose; the two changes should be recorded separately."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Genotype",
+      "requirement": "Cultivar, source lot, clone or seed, photoperiod classification, and prior observed response."
+    },
+    {
+      "field": "Light cycle",
+      "requirement": "Measured day length, night length, transitions, spectrum, twilight or leaks, and DLI."
+    },
+    {
+      "field": "Milestones",
+      "requirement": "Switch date, first preflower, first defined floral initiation sign, stretch interval, and full-flower criterion."
+    },
+    {
+      "field": "Plant state",
+      "requirement": "Age, node count, size, health, stress, training, and reproductive maturity at switch."
+    },
+    {
+      "field": "Environment",
+      "requirement": "Day/night temperature, VPD, irrigation, root-zone status, CO2, and deviations."
+    }
+  ],
+  "misconceptions": [
+    "The flip instantly creates flowers: Induction and meristem transition precede visible flower development.",
+    "Twelve hours is the natural threshold for all cannabis: It is a common conservative schedule; critical response varies by genotype and conditions.",
+    "More darkness always means faster or better flowering: Excess dark time reduces daily photons and may not improve developmental or yield outcomes."
+  ],
+  "evidenceLimits": [
+    "Published critical photoperiods are specific to tested germplasm and endpoints. They cannot authenticate a cultivar name or predict every indoor drug-type response."
+  ],
+  "crossLinks": "THC-ENC-073-075, THC-ENC-104, THC-ENC-112, THC-ENC-118, THC-ENC-157-160, and THC-GROW-120.",
+  "sourceNotes": [
+    "Zhang M. et al. (2021). Photoperiodic Flowering Response of Essential Oil, Grain, and Fiber Hemp Cultivars. Frontiers in Plant Science 12:694153.",
+    "Dang M., Muthu Arachchige N., and Campbell L.G. (2022). Optimizing Photoperiod Switch to Maximize Floral Biomass and Cannabinoid Yield: A Meta-Analytic Quantile Regression Approach. Frontiers in Plant Science 12:797425.",
+    "THC Cannabis Plant Science Source Packet v1.1 (project source, May 2026)."
+  ],
+  "slug": "photoperiodic-flower-induction",
+  "route": "/encyclopedia/photoperiodic-flower-induction",
+  "knowledgeCheck": [
+    "For \"Photoperiodic Flower Induction\", explain the mechanism behind this objective: Describe flower induction as genotype-specific perception of recurring light-dark cycles and separate induction, visible flowering, and later development. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"The flip instantly creates flowers: Induction and meristem transition precede visible flower development.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Accurate induction records support crop scheduling, stretch management, space planning, sex-expression scouting, and comparison of cultivars. Build a verification plan using the lesson's record set (Genotype: Cultivar, source lot, clone or seed, photoperiod classification, and prior observed response.; Light cycle: Measured day length, night length, transitions, spectrum, twilight or leaks, and DLI.; Milestones: Switch date, first preflower, first defined floral initiation sign, stretch interval, and full-flower criterion.; Plant state: Age, node count, size, health, stress, training, and reproductive maturity at switch.; Environment: Day/night temperature, VPD, irrigation, root-zone status, CO2, and deviations.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  },
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia canonical 420 source set",
+    "evidenceControl": "claim_level_evidence_migration_pending",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending",
+    "externalReviewType": "plant_science_and_cultivation_reference",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_from_publication",
+    "releaseGateReason": [
+      "claim_level_evidence_migration_pending",
+      "approved_teaching_visual_pending",
+      "assessment_rationale_independent_review_pending",
+      "visitor_facing_release_verification_pending"
+    ],
+    "materializedBy": "scripts/materialize-encyclopedia-release-controls.mjs",
+    "materializedAt": "source-controlled"
+  }
+}

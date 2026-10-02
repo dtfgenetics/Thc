@@ -25,7 +25,14 @@
     "Treat promising resistance as a hypothesis until repeated with verified challenge and progeny. Preserve isolates, check reactions, images, raw scores, and marker data."
   ],
   "measureAndRecord": [
-    "Host IDs and stage; pathogen/pest species and isolate; inoculum or infestation method/dose; checks; environment; randomization/replication; incidence, severity and reproduction over time; yield/tolerance; markers; escapes; repeat environments."
+    {
+      "field": "Breeding decision record",
+      "requirement": "For Disease and Pest Resistance Screening, record program ID, generation or cross ID, parent or family IDs, target traits, selection criteria, trait units, rejection rules, and the decision date. Preserve the original controlled note: Host IDs and stage; pathogen/pest species and isolate; inoculum or infestation method/dose; checks; environment; randomization/replication; incidence, severity and reproduction over time; yield/tolerance; markers; escapes; repeat environments."
+    },
+    {
+      "field": "Evidence and population record",
+      "requirement": "Record population size, sampling method, trial environment, replication, lab or field measurements, pedigree or marker evidence when used, selected individuals or families, and the reason the result does or does not meet the release standard."
+    }
   ],
   "misconceptions": [
     "No visible disease proves resistance.",

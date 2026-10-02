@@ -69,5 +69,38 @@
     "Dunn B. Hydroponics. Oklahoma State University Extension HLA-6442. Revised 2025."
   ],
   "slug": "root-respiration-and-oxygen-demand",
-  "route": "/encyclopedia/root-respiration-and-oxygen-demand"
+  "route": "/encyclopedia/root-respiration-and-oxygen-demand",
+  "knowledgeCheck": [
+    "For \"Root Respiration and Oxygen Demand\", explain the mechanism behind this objective: Explain why roots require oxygen and recognize how media saturation, temperature, and biological activity change oxygen supply and demand. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Roots only need water and nutrients: Root metabolism also requires oxygen.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — The practical target is not 'dry media'; it is a repeatable air-water balance. Irrigation should fully wet the intended root volume, then allow adequate drainage and gas exchange before the next event. Build a verification plan using the lesson's record set (Irrigation: Start and stop times, volume, drainage, interval, and observed saturation.; Root-zone conditions: Temperature, moisture or water content, and dissolved oxygen when instrumented.; Media: Particle size, porosity data, compaction, decomposition, and container geometry.; Plant response: Wilt, slowed growth, leaf color, root color/odor, and recovery after irrigation changes.; System reliability: Pump status, aeration status, alarm events, and maintenance.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  },
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia canonical 420 source set",
+    "evidenceControl": "claim_level_evidence_migration_pending",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending",
+    "externalReviewType": "plant_science_and_cultivation_reference",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_from_publication",
+    "releaseGateReason": [
+      "claim_level_evidence_migration_pending",
+      "approved_teaching_visual_pending",
+      "assessment_rationale_independent_review_pending",
+      "visitor_facing_release_verification_pending"
+    ],
+    "materializedBy": "scripts/materialize-encyclopedia-release-controls.mjs",
+    "materializedAt": "source-controlled"
+  }
 }

@@ -1,0 +1,44 @@
+name: Encyclopedia Architecture Control
+
+on:
+  pull_request:
+    paths:
+      - "content/encyclopedia/**"
+      - "configuration/encyclopedia-*.json"
+      - "site/public-route-patch/learn/**"
+      - "site/wordpress/education/encyclopedia/**"
+      - "site/wordpress/mu-plugins/dtf-learning-search.php"
+      - "scripts/*encyclopedia*.mjs"
+      - "scripts/build-thc-education-search-index.mjs"
+      - "scripts/validate-thc-education-search.mjs"
+      - "package.json"
+      - ".github/workflows/encyclopedia-architecture-control.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "content/encyclopedia/**"
+      - "configuration/encyclopedia-*.json"
+      - "site/public-route-patch/learn/**"
+      - "site/wordpress/education/encyclopedia/**"
+      - "site/wordpress/mu-plugins/dtf-learning-search.php"
+      - "scripts/*encyclopedia*.mjs"
+      - "scripts/build-thc-education-search-index.mjs"
+      - "scripts/validate-thc-education-search.mjs"
+      - "package.json"
+      - ".github/workflows/encyclopedia-architecture-control.yml"
+
+jobs:
+  encyclopedia-architecture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Verify controlled 420 structure
+        run: npm run verify:education-420
+      - name: Verify canonical encyclopedia architecture
+        run: npm run verify:encyclopedia-architecture
+      - name: Verify searchable education indexes
+        run: npm run validate:education-search

@@ -25,7 +25,14 @@
     "Evaluate several plants per family and several families per cross. Use consistent family IDs, keep selection notes, and confirm important traits with replicated trials and laboratory data."
   ],
   "measureAndRecord": [
-    "Family and pedigree ID; generation and mating method; plants per family; environments/replicates; family mean and variance; selected individuals; residual segregation; seed quantity and backup; reasons for advancement; stability across generations."
+    {
+      "field": "Breeding decision record",
+      "requirement": "For F3 and Later-Generation Family Selection, record program ID, generation or cross ID, parent or family IDs, target traits, selection criteria, trait units, rejection rules, and the decision date. Preserve the original controlled note: Family and pedigree ID; generation and mating method; plants per family; environments/replicates; family mean and variance; selected individuals; residual segregation; seed quantity and backup; reasons for advancement; stability across generations."
+    },
+    {
+      "field": "Evidence and population record",
+      "requirement": "Record population size, sampling method, trial environment, replication, lab or field measurements, pedigree or marker evidence when used, selected individuals or families, and the reason the result does or does not meet the release standard."
+    }
   ],
   "misconceptions": [
     "F3 automatically means stable.",

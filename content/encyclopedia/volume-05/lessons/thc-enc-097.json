@@ -1,1 +1,104 @@
-{"id":"THC-ENC-097","number":97,"title":"Cold Stress and Chilling Injury","objective":"Identify how low tissue and root-zone temperatures alter membranes, metabolism, photosynthesis, water transport, and recovery in cannabis.","terms":[{"term":"Chilling stress","definition":"Injury or functional suppression caused by low, nonfreezing temperature in a sensitive plant."},{"term":"Freezing injury","definition":"Damage associated with extracellular or intracellular ice formation."},{"term":"Photoinhibition","definition":"Reduction in photosynthetic capacity when absorbed light exceeds safe processing and repair."},{"term":"Cold acclimation","definition":"Physiological adjustment that increases tolerance to subsequent low temperature."}],"coreScience":["Cold slows enzyme activity, membrane transport, respiration, root growth, and water movement. Leaves may remain exposed to substantial light while carbon metabolism and repair slow, increasing photoinhibition risk. Chilled roots can restrict uptake even when air conditions appear acceptable.","Membrane lipids, genotype, prior acclimation, tissue age, duration, and rate of cooling influence injury. Symptoms can include slowed growth, drooping, discoloration, marginal injury, delayed rooting, and nutrient-like patterns. These signs are not unique and may appear after the cold event.","Night-time radiation, cold supply air, exterior surfaces, irrigation solution, outdoor transplant shock, and power failures can chill tissues below the room average. Condensation may accompany cooling when surfaces approach the dew point, adding disease risk to physiological stress."],"cultivationRelevance":["Investigate minimum and duration, not only the daily average. Map cold surfaces and supply-air paths, measure root-zone and leaf temperature, and inspect equipment histories. During recovery, warm gradually and coordinate light so photosynthetic demand does not outrun repair.","Distinguish chronic cool growth from an acute excursion. Record whether new growth resumes and whether reproductive development, roots, or specific canopy zones remain affected before deciding crop disposition."],"measureAndRecord":[{"field":"Exposure","requirement":"Minimum air, leaf, and root-zone temperature; duration; cooling and warming rate; and operating state."},{"field":"Dew risk","requirement":"RH, dew point, surface temperature, condensation, and wetness duration."},{"field":"Plant response","requirement":"Tissue and location, symptom onset, growth rate, water use, and root condition."},{"field":"Recovery","requirement":"Warming method, light adjustment, time to restored function, and residual injury."},{"field":"Cause","requirement":"Weather, HVAC, door, power, irrigation-temperature, or control-system event and CAPA."}],"misconceptions":["No frost means no cold injury: Chilling-sensitive function can decline above freezing.","Purple tissue proves phosphorus deficiency: Genetics, cold, light, sugar status, and nutrient issues can overlap visually.","Warm air immediately repairs chilled roots: Root-zone temperature and damaged physiology may recover more slowly."],"evidenceLimits":["Cold tolerance differs widely among cannabis germplasm and developmental stages. Use facility-specific alarm limits based on measured crop response, not folklore labels such as indica or sativa."],"crossLinks":"THC-ENC-065-068, THC-ENC-083, THC-ENC-090, THC-ENC-096, THC-ENC-100, and emergency-response SOPs.","sourceNotes":["Nobel P.S. (2009). Physicochemical and Environmental Plant Physiology, 4th ed. Academic Press.","THC Cannabis Plant Science Source Packet v1.1 (project source, May 2026).","THC Cultivation SOP Source Materials Packet v1.0 (project source, May 2026)."],"slug":"cold-stress-and-chilling-injury","route":"/encyclopedia/cold-stress-and-chilling-injury"}
+{
+  "id": "THC-ENC-097",
+  "number": 97,
+  "title": "Cold Stress and Chilling Injury",
+  "objective": "Identify how low tissue and root-zone temperatures alter membranes, metabolism, photosynthesis, water transport, and recovery in cannabis.",
+  "terms": [
+    {
+      "term": "Chilling stress",
+      "definition": "Injury or functional suppression caused by low, nonfreezing temperature in a sensitive plant."
+    },
+    {
+      "term": "Freezing injury",
+      "definition": "Damage associated with extracellular or intracellular ice formation."
+    },
+    {
+      "term": "Photoinhibition",
+      "definition": "Reduction in photosynthetic capacity when absorbed light exceeds safe processing and repair."
+    },
+    {
+      "term": "Cold acclimation",
+      "definition": "Physiological adjustment that increases tolerance to subsequent low temperature."
+    }
+  ],
+  "coreScience": [
+    "Cold slows enzyme activity, membrane transport, respiration, root growth, and water movement. Leaves may remain exposed to substantial light while carbon metabolism and repair slow, increasing photoinhibition risk. Chilled roots can restrict uptake even when air conditions appear acceptable.",
+    "Membrane lipids, genotype, prior acclimation, tissue age, duration, and rate of cooling influence injury. Symptoms can include slowed growth, drooping, discoloration, marginal injury, delayed rooting, and nutrient-like patterns. These signs are not unique and may appear after the cold event.",
+    "Night-time radiation, cold supply air, exterior surfaces, irrigation solution, outdoor transplant shock, and power failures can chill tissues below the room average. Condensation may accompany cooling when surfaces approach the dew point, adding disease risk to physiological stress."
+  ],
+  "cultivationRelevance": [
+    "Investigate minimum and duration, not only the daily average. Map cold surfaces and supply-air paths, measure root-zone and leaf temperature, and inspect equipment histories. During recovery, warm gradually and coordinate light so photosynthetic demand does not outrun repair.",
+    "Distinguish chronic cool growth from an acute excursion. Record whether new growth resumes and whether reproductive development, roots, or specific canopy zones remain affected before deciding crop disposition."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Exposure",
+      "requirement": "Minimum air, leaf, and root-zone temperature; duration; cooling and warming rate; and operating state."
+    },
+    {
+      "field": "Dew risk",
+      "requirement": "RH, dew point, surface temperature, condensation, and wetness duration."
+    },
+    {
+      "field": "Plant response",
+      "requirement": "Tissue and location, symptom onset, growth rate, water use, and root condition."
+    },
+    {
+      "field": "Recovery",
+      "requirement": "Warming method, light adjustment, time to restored function, and residual injury."
+    },
+    {
+      "field": "Cause",
+      "requirement": "Weather, HVAC, door, power, irrigation-temperature, or control-system event and CAPA."
+    }
+  ],
+  "misconceptions": [
+    "No frost means no cold injury: Chilling-sensitive function can decline above freezing.",
+    "Purple tissue proves phosphorus deficiency: Genetics, cold, light, sugar status, and nutrient issues can overlap visually.",
+    "Warm air immediately repairs chilled roots: Root-zone temperature and damaged physiology may recover more slowly."
+  ],
+  "evidenceLimits": [
+    "Cold tolerance differs widely among cannabis germplasm and developmental stages. Use facility-specific alarm limits based on measured crop response, not folklore labels such as indica or sativa."
+  ],
+  "crossLinks": "THC-ENC-065-068, THC-ENC-083, THC-ENC-090, THC-ENC-096, THC-ENC-100, and emergency-response SOPs.",
+  "sourceNotes": [
+    "Nobel P.S. (2009). Physicochemical and Environmental Plant Physiology, 4th ed. Academic Press.",
+    "THC Cannabis Plant Science Source Packet v1.1 (project source, May 2026).",
+    "THC Cultivation SOP Source Materials Packet v1.0 (project source, May 2026)."
+  ],
+  "slug": "cold-stress-and-chilling-injury",
+  "route": "/encyclopedia/cold-stress-and-chilling-injury",
+  "knowledgeCheck": [
+    "For \"Cold Stress and Chilling Injury\", explain the mechanism behind this objective: Identify how low tissue and root-zone temperatures alter membranes, metabolism, photosynthesis, water transport, and recovery in cannabis. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"No frost means no cold injury: Chilling-sensitive function can decline above freezing.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Investigate minimum and duration, not only the daily average. Map cold surfaces and supply-air paths, measure root-zone and leaf temperature, and inspect equipment histories. During recovery, warm gradually and coordinate light so photosynthetic demand does not outrun repair. Build a verification plan using the lesson's record set (Exposure: Minimum air, leaf, and root-zone temperature; duration; cooling and warming rate; and operating state.; Dew risk: RH, dew point, surface temperature, condensation, and wetness duration.; Plant response: Tissue and location, symptom onset, growth rate, water use, and root condition.; Recovery: Warming method, light adjustment, time to restored function, and residual injury.; Cause: Weather, HVAC, door, power, irrigation-temperature, or control-system event and CAPA.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  },
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia canonical 420 source set",
+    "evidenceControl": "claim_level_evidence_migration_pending",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending",
+    "externalReviewType": "plant_science_and_cultivation_reference",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_from_publication",
+    "releaseGateReason": [
+      "claim_level_evidence_migration_pending",
+      "approved_teaching_visual_pending",
+      "assessment_rationale_independent_review_pending",
+      "visitor_facing_release_verification_pending"
+    ],
+    "materializedBy": "scripts/materialize-encyclopedia-release-controls.mjs",
+    "materializedAt": "source-controlled"
+  }
+}

@@ -24,7 +24,14 @@
     "Record genetic sex, observed sex expression, mating design, and flowering response separately. Test under controlled and target-field photoperiods."
   ],
   "measureAndRecord": [
-    "Seed system and cross type; parent sex genotype/expression; flowering allele or marker if validated; photoperiod history; days/nodes to flower; sex ratio; off-types; selfed versus outcrossed design; diversity and family structure."
+    {
+      "field": "Breeding decision record",
+      "requirement": "For Regular, Feminized, and Autoflower Breeding Contexts, record program ID, generation or cross ID, parent or family IDs, target traits, selection criteria, trait units, rejection rules, and the decision date. Preserve the original controlled note: Seed system and cross type; parent sex genotype/expression; flowering allele or marker if validated; photoperiod history; days/nodes to flower; sex ratio; off-types; selfed versus outcrossed design; diversity and family structure."
+    },
+    {
+      "field": "Evidence and population record",
+      "requirement": "Record population size, sampling method, trial environment, replication, lab or field measurements, pedigree or marker evidence when used, selected individuals or families, and the reason the result does or does not meet the release standard."
+    }
   ],
   "misconceptions": [
     "Autoflowering progeny are unaffected by light schedule.",

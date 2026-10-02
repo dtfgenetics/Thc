@@ -25,7 +25,14 @@
     "Record source, propagation mode, genetic verification where used, and health status. Replicate critical claims across multiple justified cultivars or clearly label them cultivar-specific."
   ],
   "measureAndRecord": [
-    "Controlled genetic ID and aliases; source and chain; seed/clone/tissue-culture mode; parentage evidence; molecular marker method; health/pathogen status; environment and management; stage; phenotype and chemistry; interaction analysis; target population; transfer statement."
+    {
+      "field": "Measurement identity record",
+      "requirement": "For Cultivar-Specific Evidence and Generalization Limits, record quantity, unit, instrument or source system, sample or plant identity, time, location, method, basis, and raw value. Preserve the original controlled note: Controlled genetic ID and aliases; source and chain; seed/clone/tissue-culture mode; parentage evidence; molecular marker method; health/pathogen status; environment and management; stage; phenotype and chemistry; interaction analysis; target population; transfer statement."
+    },
+    {
+      "field": "Traceability and review record",
+      "requirement": "Record calibration or verification status, conversion or calculation rule, reviewer, uncertainty or limitation, revision history, linked evidence, and the decision made from the record."
+    }
   ],
   "misconceptions": [
     "Cultivars with the same name are genetically identical.",

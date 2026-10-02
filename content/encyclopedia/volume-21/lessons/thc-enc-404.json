@@ -26,7 +26,14 @@
     "Write the sampling plan before inspection or testing. Include a map, selection rule, number of units, sample mass or volume, handling, retained samples, and inference limits."
   ],
   "measureAndRecord": [
-    "Target population and decision; sampling frame; unit/increment/composite definition; strata; randomization or route; sample count and rationale; locations/times; sample mass/volume; tools/containers; preservation; chain of custody; missing/deviation rule; retained sample; inference statement."
+    {
+      "field": "Measurement identity record",
+      "requirement": "For Sampling Plans and Representative Measurements, record quantity, unit, instrument or source system, sample or plant identity, time, location, method, basis, and raw value. Preserve the original controlled note: Target population and decision; sampling frame; unit/increment/composite definition; strata; randomization or route; sample count and rationale; locations/times; sample mass/volume; tools/containers; preservation; chain of custody; missing/deviation rule; retained sample; inference statement."
+    },
+    {
+      "field": "Traceability and review record",
+      "requirement": "Record calibration or verification status, conversion or calculation rule, reviewer, uncertainty or limitation, revision history, linked evidence, and the decision made from the record."
+    }
   ],
   "misconceptions": [
     "A larger composite always detects localized contamination.",

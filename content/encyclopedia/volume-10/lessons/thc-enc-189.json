@@ -4,13 +4,34 @@
   "title": "Pruning Lower Shoots and Sink Competition",
   "objective": "Explain how removing lower shoots changes canopy structure and the population of competing sinks, while avoiding the oversimplification that resources removed from one branch are automatically redirected in a fixed amount to retained flowers.",
   "terms": [
-    {"term":"sink","definition":"A plant organ or tissue that imports and uses or stores assimilates and resources because its current demand exceeds local production."},
-    {"term":"source","definition":"A plant organ, commonly a mature photosynthetic leaf, that exports assimilated carbon to other tissues."},
-    {"term":"source-sink relationship","definition":"The dynamic production, transport, competition, and allocation of assimilates among organs as plant development and environment change."},
-    {"term":"lower-shoot pruning","definition":"Removal of selected shoots or branches from lower or otherwise targeted canopy positions to alter architecture and reproductive distribution."},
-    {"term":"sink strength","definition":"The relative ability of a growing organ to attract and utilize imported resources, reflecting organ size, developmental activity, metabolism, transport connection, and other factors."},
-    {"term":"assimilate partitioning","definition":"Distribution of recently fixed carbon and related resources among competing organs and tissues."},
-    {"term":"canopy stratification","definition":"Vertical organization of plant organs into layers that can differ in light, microclimate, age, and physiological performance."}
+    {
+      "term": "sink",
+      "definition": "A plant organ or tissue that imports and uses or stores assimilates and resources because its current demand exceeds local production."
+    },
+    {
+      "term": "source",
+      "definition": "A plant organ, commonly a mature photosynthetic leaf, that exports assimilated carbon to other tissues."
+    },
+    {
+      "term": "source-sink relationship",
+      "definition": "The dynamic production, transport, competition, and allocation of assimilates among organs as plant development and environment change."
+    },
+    {
+      "term": "lower-shoot pruning",
+      "definition": "Removal of selected shoots or branches from lower or otherwise targeted canopy positions to alter architecture and reproductive distribution."
+    },
+    {
+      "term": "sink strength",
+      "definition": "The relative ability of a growing organ to attract and utilize imported resources, reflecting organ size, developmental activity, metabolism, transport connection, and other factors."
+    },
+    {
+      "term": "assimilate partitioning",
+      "definition": "Distribution of recently fixed carbon and related resources among competing organs and tissues."
+    },
+    {
+      "term": "canopy stratification",
+      "definition": "Vertical organization of plant organs into layers that can differ in light, microclimate, age, and physiological performance."
+    }
   ],
   "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
   "coreScience": [
@@ -24,11 +45,26 @@
     "Before pruning, distinguish a productive lower branch receiving useful light from a chronically shaded or weak sink. After pruning, evaluate retained-leaf area, canopy light, branch response, and final yield distribution rather than assuming redistribution occurred."
   ],
   "measureAndRecord": [
-    {"field":"Removed growth","requirement":"Plant ID, date, developmental stage, branch order and vertical position, number of shoots removed, and fresh or dry removed biomass when useful."},
-    {"field":"Leaf-area context","requirement":"Whether photosynthetic leaves were removed with shoots, approximate foliage distribution, and representative light measurements before and after when available."},
-    {"field":"Remaining sinks","requirement":"Number and position of retained reproductive shoots or inflorescences, branch hierarchy, and subsequent changes in their size or growth rate."},
-    {"field":"Canopy environment","requirement":"Lower-canopy light, visible shading, leaf senescence, airflow-related observations, density, and environmental conditions."},
-    {"field":"Outcome","requirement":"Total and positional dry yield, cannabinoid or other quality data when measured, uniformity, labor, and any discarded low-quality fraction; do not infer redistribution without endpoint data."}
+    {
+      "field": "Removed growth",
+      "requirement": "Plant ID, date, developmental stage, branch order and vertical position, number of shoots removed, and fresh or dry removed biomass when useful."
+    },
+    {
+      "field": "Leaf-area context",
+      "requirement": "Whether photosynthetic leaves were removed with shoots, approximate foliage distribution, and representative light measurements before and after when available."
+    },
+    {
+      "field": "Remaining sinks",
+      "requirement": "Number and position of retained reproductive shoots or inflorescences, branch hierarchy, and subsequent changes in their size or growth rate."
+    },
+    {
+      "field": "Canopy environment",
+      "requirement": "Lower-canopy light, visible shading, leaf senescence, airflow-related observations, density, and environmental conditions."
+    },
+    {
+      "field": "Outcome",
+      "requirement": "Total and positional dry yield, cannabinoid or other quality data when measured, uniformity, labor, and any discarded low-quality fraction; do not infer redistribution without endpoint data."
+    }
   ],
   "misconceptions": [
     "Resources from a removed branch are transferred one-for-one into the remaining flowers.",
@@ -62,5 +98,19 @@
     "websiteAction": "publish_with_review_notice"
   },
   "slug": "pruning-lower-shoots-and-sink-competition",
-  "route": "/encyclopedia/pruning-lower-shoots-and-sink-competition"
+  "route": "/encyclopedia/pruning-lower-shoots-and-sink-competition",
+  "knowledgeCheck": [
+    "For \"Pruning Lower Shoots and Sink Competition\", explain the mechanism behind this objective: Explain how removing lower shoots changes canopy structure and the population of competing sinks, while avoiding the oversimplification that resources removed from one branch are automatically redirected in a fixed amount to retained flowers. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Resources from a removed branch are transferred one-for-one into the remaining flowers.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Define why lower shoots are being removed: reduce shaded reproductive sites, improve access, change airflow pathways, standardize harvest positions, or test resource allocation. Different objectives require different outcome measurements. Build a verification plan using the lesson's record set (Removed growth: Plant ID, date, developmental stage, branch order and vertical position, number of shoots removed, and fresh or dry removed biomass when useful.; Leaf-area context: Whether photosynthetic leaves were removed with shoots, approximate foliage distribution, and representative light measurements before and after when available.; Remaining sinks: Number and position of retained reproductive shoots or inflorescences, branch hierarchy, and subsequent changes in their size or growth rate.; Canopy environment: Lower-canopy light, visible shading, leaf senescence, airflow-related observations, density, and environmental conditions.; Outcome: Total and positional dry yield, cannabinoid or other quality data when measured, uniformity, labor, and any discarded low-quality fraction; do not infer redistribution without endpoint data.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  }
 }

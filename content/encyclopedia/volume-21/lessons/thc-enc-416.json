@@ -26,7 +26,14 @@
     "Use a one-page design map linking question, mechanism, treatment, experimental unit, control, blocks, randomization, measurements, analysis, and transfer limits."
   ],
   "measureAndRecord": [
-    "Question/hypothesis; biological material; experimental unit; treatments and doses; control; allocation/randomization; blocks; independent replication; subsamples; endpoints; measurement method; sample-size rationale; exclusions; analysis; protocol deviations; repeat cycles."
+    {
+      "field": "Measurement identity record",
+      "requirement": "For Experimental Design, Controls, and Replication, record quantity, unit, instrument or source system, sample or plant identity, time, location, method, basis, and raw value. Preserve the original controlled note: Question/hypothesis; biological material; experimental unit; treatments and doses; control; allocation/randomization; blocks; independent replication; subsamples; endpoints; measurement method; sample-size rationale; exclusions; analysis; protocol deviations; repeat cycles."
+    },
+    {
+      "field": "Traceability and review record",
+      "requirement": "Record calibration or verification status, conversion or calculation rule, reviewer, uncertainty or limitation, revision history, linked evidence, and the decision made from the record."
+    }
   ],
   "misconceptions": [
     "Every plant is an independent replicate even when one shared system receives the treatment.",

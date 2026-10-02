@@ -4,13 +4,34 @@
   "title": "Node Development and Training Timing",
   "objective": "Use node, internode, meristem, tissue maturity, and whole-plant developmental status to interpret training timing instead of treating a fixed plant age or universal node number as a biological rule.",
   "terms": [
-    {"term":"node","definition":"A position on the stem where leaves, axillary buds, branches, or reproductive structures are attached."},
-    {"term":"internode","definition":"The stem segment between two adjacent nodes."},
-    {"term":"phytomer","definition":"A repeating developmental shoot unit containing a node, leaf or leaves, axillary bud, and associated internode."},
-    {"term":"axillary meristem","definition":"A meristem formed in the leaf axil that can produce an axillary bud and later a lateral shoot or reproductive structure."},
-    {"term":"developmental stage","definition":"A biologically defined phase or structural condition of the plant rather than simply the number of days since propagation."},
-    {"term":"tissue maturation","definition":"Progressive anatomical and mechanical change as expanding stem and leaf tissues complete growth, strengthen, and develop more mature cell-wall characteristics."},
-    {"term":"recovery","definition":"Restoration of stable growth and function after a management intervention, injury, transplant, environmental change, or other stress."}
+    {
+      "term": "node",
+      "definition": "A position on the stem where leaves, axillary buds, branches, or reproductive structures are attached."
+    },
+    {
+      "term": "internode",
+      "definition": "The stem segment between two adjacent nodes."
+    },
+    {
+      "term": "phytomer",
+      "definition": "A repeating developmental shoot unit containing a node, leaf or leaves, axillary bud, and associated internode."
+    },
+    {
+      "term": "axillary meristem",
+      "definition": "A meristem formed in the leaf axil that can produce an axillary bud and later a lateral shoot or reproductive structure."
+    },
+    {
+      "term": "developmental stage",
+      "definition": "A biologically defined phase or structural condition of the plant rather than simply the number of days since propagation."
+    },
+    {
+      "term": "tissue maturation",
+      "definition": "Progressive anatomical and mechanical change as expanding stem and leaf tissues complete growth, strengthen, and develop more mature cell-wall characteristics."
+    },
+    {
+      "term": "recovery",
+      "definition": "Restoration of stable growth and function after a management intervention, injury, transplant, environmental change, or other stress."
+    }
   ],
   "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
   "coreScience": [
@@ -24,11 +45,26 @@
     "Avoid stacking major interventions simply because a calendar calls for them. When a plant is recovering from transplant, water stress, root dysfunction, pest injury, disease, or another structural intervention, document recovery before interpreting the next response."
   ],
   "measureAndRecord": [
-    {"field":"Developmental position","requirement":"Plant ID, propagation type, age for scheduling context, node count on the reference shoot, and the exact node or shoot affected."},
-    {"field":"Tissue condition","requirement":"Stem diameter when useful, visible flexibility or rigidity, active expansion, prior wounds, branch attachment condition, and signs of tissue damage or weakness."},
-    {"field":"Growth status","requirement":"Recent height or shoot-extension change, new-leaf production, root-zone condition, irrigation status, and major environmental or health stressors."},
-    {"field":"Intervention timing","requirement":"Date, developmental phase, relation to transplant or reproductive transition, and time since any prior major training action."},
-    {"field":"Recovery response","requirement":"Time to resumed shoot growth, bud activation, leaf expansion, wound closure where applicable, breakage, wilting, chlorosis, or other adverse response."}
+    {
+      "field": "Developmental position",
+      "requirement": "Plant ID, propagation type, age for scheduling context, node count on the reference shoot, and the exact node or shoot affected."
+    },
+    {
+      "field": "Tissue condition",
+      "requirement": "Stem diameter when useful, visible flexibility or rigidity, active expansion, prior wounds, branch attachment condition, and signs of tissue damage or weakness."
+    },
+    {
+      "field": "Growth status",
+      "requirement": "Recent height or shoot-extension change, new-leaf production, root-zone condition, irrigation status, and major environmental or health stressors."
+    },
+    {
+      "field": "Intervention timing",
+      "requirement": "Date, developmental phase, relation to transplant or reproductive transition, and time since any prior major training action."
+    },
+    {
+      "field": "Recovery response",
+      "requirement": "Time to resumed shoot growth, bud activation, leaf expansion, wound closure where applicable, breakage, wilting, chlorosis, or other adverse response."
+    }
   ],
   "misconceptions": [
     "Every cannabis plant is ready for the same training action at the same node number.",
@@ -61,5 +97,19 @@
     "websiteAction": "publish_with_review_notice"
   },
   "slug": "node-development-and-training-timing",
-  "route": "/encyclopedia/node-development-and-training-timing"
+  "route": "/encyclopedia/node-development-and-training-timing",
+  "knowledgeCheck": [
+    "For \"Node Development and Training Timing\", explain the mechanism behind this objective: Use node, internode, meristem, tissue maturity, and whole-plant developmental status to interpret training timing instead of treating a fixed plant age or universal node number as a biological rule. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Every cannabis plant is ready for the same training action at the same node number.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Describe the plant before training using node count, active shoot number, stem condition, growth rate, and developmental stage. These observations make a training record transferable in a way that a statement such as 'week three' does not. Build a verification plan using the lesson's record set (Developmental position: Plant ID, propagation type, age for scheduling context, node count on the reference shoot, and the exact node or shoot affected.; Tissue condition: Stem diameter when useful, visible flexibility or rigidity, active expansion, prior wounds, branch attachment condition, and signs of tissue damage or weakness.; Growth status: Recent height or shoot-extension change, new-leaf production, root-zone condition, irrigation status, and major environmental or health stressors.; Intervention timing: Date, developmental phase, relation to transplant or reproductive transition, and time since any prior major training action.; Recovery response: Time to resumed shoot growth, bud activation, leaf expansion, wound closure where applicable, breakage, wilting, chlorosis, or other adverse response.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  }
 }

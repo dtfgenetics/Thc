@@ -24,7 +24,14 @@
     "Decide whether the program wants elite individual clones, predictable seed families, or parental lines. Design progeny tests to match that objective."
   ],
   "measureAndRecord": [
-    "Parent/tester/cross IDs; mating design; family size and balance; environments; trait definitions; family means and variances; parental and check values; GCA/SCA model and uncertainty; selected progeny; fertility and off-types."
+    {
+      "field": "Breeding decision record",
+      "requirement": "For Progeny Testing and Combining Ability, record program ID, generation or cross ID, parent or family IDs, target traits, selection criteria, trait units, rejection rules, and the decision date. Preserve the original controlled note: Parent/tester/cross IDs; mating design; family size and balance; environments; trait definitions; family means and variances; parental and check values; GCA/SCA model and uncertainty; selected progeny; fertility and off-types."
+    },
+    {
+      "field": "Evidence and population record",
+      "requirement": "Record population size, sampling method, trial environment, replication, lab or field measurements, pedigree or marker evidence when used, selected individuals or families, and the reason the result does or does not meet the release standard."
+    }
   ],
   "misconceptions": [
     "The best parent phenotype always gives the best progeny.",

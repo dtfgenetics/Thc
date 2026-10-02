@@ -4,13 +4,34 @@
   "title": "Plant Architecture as a Genetic and Managed Trait",
   "objective": "Explain cannabis plant architecture as an emergent phenotype shaped by genotype, developmental stage, environment, spacing, and management, and show how to measure architecture without reducing it to retail ancestry labels or one ideal canopy form.",
   "terms": [
-    {"term":"plant architecture","definition":"The three-dimensional arrangement and developmental pattern of stems, branches, leaves, nodes, internodes, and reproductive structures on a plant."},
-    {"term":"phytomer","definition":"A repeating shoot unit consisting of a node, its leaf or leaves, associated axillary bud or branch, and the adjacent internode."},
-    {"term":"branch order","definition":"A hierarchical description of branches according to their origin, such as primary branches from the main stem and secondary branches from primary branches."},
-    {"term":"internode length","definition":"The measured distance between adjacent nodes on a shoot."},
-    {"term":"phenotypic plasticity","definition":"The capacity of one genotype to express different phenotypes under different environmental or management conditions."},
-    {"term":"canopy density","definition":"The amount and spatial distribution of foliage and shoots within a defined canopy volume or area."},
-    {"term":"planting density","definition":"The number of plants established per unit cultivation area, which changes competition, light distribution, airflow, and space available for architecture."}
+    {
+      "term": "plant architecture",
+      "definition": "The three-dimensional arrangement and developmental pattern of stems, branches, leaves, nodes, internodes, and reproductive structures on a plant."
+    },
+    {
+      "term": "phytomer",
+      "definition": "A repeating shoot unit consisting of a node, its leaf or leaves, associated axillary bud or branch, and the adjacent internode."
+    },
+    {
+      "term": "branch order",
+      "definition": "A hierarchical description of branches according to their origin, such as primary branches from the main stem and secondary branches from primary branches."
+    },
+    {
+      "term": "internode length",
+      "definition": "The measured distance between adjacent nodes on a shoot."
+    },
+    {
+      "term": "phenotypic plasticity",
+      "definition": "The capacity of one genotype to express different phenotypes under different environmental or management conditions."
+    },
+    {
+      "term": "canopy density",
+      "definition": "The amount and spatial distribution of foliage and shoots within a defined canopy volume or area."
+    },
+    {
+      "term": "planting density",
+      "definition": "The number of plants established per unit cultivation area, which changes competition, light distribution, airflow, and space available for architecture."
+    }
   ],
   "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
   "coreScience": [
@@ -24,11 +45,26 @@
     "When comparing cultivars or training systems, use replicated plants and the same developmental stage and environment where possible. Separating genotype effects from density, lighting, and pruning effects prevents architecture differences from being misattributed."
   ],
   "measureAndRecord": [
-    {"field":"Plant dimensions","requirement":"Height from substrate surface to highest living shoot, maximum canopy width, and a defined second canopy axis when useful."},
-    {"field":"Shoot organization","requirement":"Node count on reference shoots, internode lengths at stated positions, primary and secondary branch counts, branch angles, and branch order."},
-    {"field":"Canopy distribution","requirement":"Foliage or shoot density by vertical zone, visible gaps, lower-canopy senescence, and representative light measurements at defined positions when available."},
-    {"field":"Context","requirement":"Genotype or accession ID, propagation type, developmental stage, planting density, container/root-zone system, lighting, environmental conditions, and training history."},
-    {"field":"Outcome metric","requirement":"Define the endpoint before comparison: per-plant yield, yield per area, uniformity, quality metric, labor, breakage, or another stated response."}
+    {
+      "field": "Plant dimensions",
+      "requirement": "Height from substrate surface to highest living shoot, maximum canopy width, and a defined second canopy axis when useful."
+    },
+    {
+      "field": "Shoot organization",
+      "requirement": "Node count on reference shoots, internode lengths at stated positions, primary and secondary branch counts, branch angles, and branch order."
+    },
+    {
+      "field": "Canopy distribution",
+      "requirement": "Foliage or shoot density by vertical zone, visible gaps, lower-canopy senescence, and representative light measurements at defined positions when available."
+    },
+    {
+      "field": "Context",
+      "requirement": "Genotype or accession ID, propagation type, developmental stage, planting density, container/root-zone system, lighting, environmental conditions, and training history."
+    },
+    {
+      "field": "Outcome metric",
+      "requirement": "Define the endpoint before comparison: per-plant yield, yield per area, uniformity, quality metric, labor, breakage, or another stated response."
+    }
   ],
   "misconceptions": [
     "A retail sativa or indica label is enough to predict final plant architecture.",
@@ -61,5 +97,19 @@
     "websiteAction": "publish_with_review_notice"
   },
   "slug": "plant-architecture-as-a-genetic-and-managed-trait",
-  "route": "/encyclopedia/plant-architecture-as-a-genetic-and-managed-trait"
+  "route": "/encyclopedia/plant-architecture-as-a-genetic-and-managed-trait",
+  "knowledgeCheck": [
+    "For \"Plant Architecture as a Genetic and Managed Trait\", explain the mechanism behind this objective: Explain cannabis plant architecture as an emergent phenotype shaped by genotype, developmental stage, environment, spacing, and management, and show how to measure architecture without reducing it to retail ancestry labels or one ideal canopy form. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"A retail sativa or indica label is enough to predict final plant architecture.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Record architecture as measurable plant data before deciding whether a plant is too tall, too dense, too sparse, or poorly branched. Height alone does not describe the distribution of productive shoots or the internal canopy environment. Build a verification plan using the lesson's record set (Plant dimensions: Height from substrate surface to highest living shoot, maximum canopy width, and a defined second canopy axis when useful.; Shoot organization: Node count on reference shoots, internode lengths at stated positions, primary and secondary branch counts, branch angles, and branch order.; Canopy distribution: Foliage or shoot density by vertical zone, visible gaps, lower-canopy senescence, and representative light measurements at defined positions when available.; Context: Genotype or accession ID, propagation type, developmental stage, planting density, container/root-zone system, lighting, environmental conditions, and training history.; Outcome metric: Define the endpoint before comparison: per-plant yield, yield per area, uniformity, quality metric, labor, breakage, or another stated response.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  }
 }

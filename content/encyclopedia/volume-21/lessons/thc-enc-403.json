@@ -26,7 +26,14 @@
     "Create instrument-specific schedules based on risk and use, not one universal calendar. Place independent checks around critical measurements and define hold, correction, data review, and return-to-service criteria."
   ],
   "measureAndRecord": [
-    "Instrument ID/model/serial/firmware; measurand/range; procedure; reference ID/lot/value/uncertainty/expiry; environmental conditions; as-found results; adjustment; as-left results; tolerance; pass/fail; affected-data review; approver; next due date."
+    {
+      "field": "Measurement identity record",
+      "requirement": "For Calibration, Verification, and Traceability, record quantity, unit, instrument or source system, sample or plant identity, time, location, method, basis, and raw value. Preserve the original controlled note: Instrument ID/model/serial/firmware; measurand/range; procedure; reference ID/lot/value/uncertainty/expiry; environmental conditions; as-found results; adjustment; as-left results; tolerance; pass/fail; affected-data review; approver; next due date."
+    },
+    {
+      "field": "Traceability and review record",
+      "requirement": "Record calibration or verification status, conversion or calculation rule, reviewer, uncertainty or limitation, revision history, linked evidence, and the decision made from the record."
+    }
   ],
   "misconceptions": [
     "A calibration sticker proves every result is traceable and fit for purpose.",

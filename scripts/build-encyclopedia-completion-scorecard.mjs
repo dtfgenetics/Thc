@@ -1,29 +1,17 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
 
 const root=process.cwd();
 const registry=JSON.parse(fs.readFileSync(path.join(root,'content/encyclopedia/current-controlled-registry.json'),'utf8'));
 const topics=JSON.parse(fs.readFileSync(path.join(root,'configuration/encyclopedia-topics.json'),'utf8')).topics||[];
 const topicByPart=new Map(topics.map(topic=>[Number(topic.part),topic]));
+const generatedAt=process.env.ENCYCLOPEDIA_BUILD_TIMESTAMP||'source-controlled';
 
 const lessonById=new Map();
-const readJson=file=>{try{return JSON.parse(fs.readFileSync(file,'utf8'))}catch{return null}};
-const walk=dir=>{
-  if(!fs.existsSync(dir))return;
-  for(const entry of fs.readdirSync(dir,{withFileTypes:true})){
-    const file=path.join(dir,entry.name);
-    if(entry.isDirectory())walk(file);
-    else if(entry.isFile()&&entry.name.endsWith('.json')){
-      const json=readJson(file);
-      if(!json)continue;
-      if(/^THC-ENC-\d{3,}$/.test(json.id||'')) lessonById.set(json.id,{...json,_file:path.relative(root,file)});
-      for(const lesson of Array.isArray(json.lessons)?json.lessons:[]){
-        if(/^THC-ENC-\d{3,}$/.test(lesson.id||'')) lessonById.set(lesson.id,{...lesson,_file:path.relative(root,file)});
-      }
-    }
-  }
-};
-walk(path.join(root,'content/encyclopedia'));
+for(const lesson of readCanonicalEncyclopediaLessons(root)){
+  lessonById.set(lesson.id,{...lesson,_file:lesson.__path});
+}
 
 const arr=v=>Array.isArray(v)?v:[];
 const text=v=>String(v??'').trim();
@@ -90,7 +78,7 @@ const parts=topics.map(topic=>{
   };
 });
 const output={
-  schemaVersion:1,generatedAt:new Date().toISOString(),
+  schemaVersion:1,generatedAt,
   lessonCount:lessons.length,averageScore:average,readinessCounts:counts,
   scoringNote:'A readiness score measures completion of the THC lesson contract; it is not a scientific-quality rating or publication authorization.',
   parts,lessons

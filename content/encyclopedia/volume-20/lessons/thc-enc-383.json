@@ -25,7 +25,14 @@
     "Use one permanent cross ID from parent qualification through seed inventory and progeny trial. Separate breeding seed from production seed and preserve exceptions and uncertainty."
   ],
   "measureAndRecord": [
-    "Cross ID; verified maternal and pollen parent IDs; genotype/identity method; flowering and isolation map; pollen lot, viability and collection date; pollination date/site; exclusion method; control plants; unexpected seed set; seed harvest lot; deviations and disposition."
+    {
+      "field": "Breeding decision record",
+      "requirement": "For Controlled Crosses and Parent Verification, record program ID, generation or cross ID, parent or family IDs, target traits, selection criteria, trait units, rejection rules, and the decision date. Preserve the original controlled note: Cross ID; verified maternal and pollen parent IDs; genotype/identity method; flowering and isolation map; pollen lot, viability and collection date; pollination date/site; exclusion method; control plants; unexpected seed set; seed harvest lot; deviations and disposition."
+    },
+    {
+      "field": "Evidence and population record",
+      "requirement": "Record population size, sampling method, trial environment, replication, lab or field measurements, pedigree or marker evidence when used, selected individuals or families, and the reason the result does or does not meet the release standard."
+    }
   ],
   "misconceptions": [
     "Seed collected from a labeled female automatically has the intended father.",

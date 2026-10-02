@@ -4,9 +4,11 @@ import path from 'node:path';
 const root=process.cwd();
 const registry=JSON.parse(fs.readFileSync(path.join(root,'content/encyclopedia/current-controlled-registry.json'),'utf8'));
 const topics=JSON.parse(fs.readFileSync(path.join(root,'configuration/encyclopedia-topics.json'),'utf8')).topics||[];
+const parts=JSON.parse(fs.readFileSync(path.join(root,'content/encyclopedia/parts.json'),'utf8')).parts||[];
 const release=JSON.parse(fs.readFileSync(path.join(root,'site/wordpress/education/encyclopedia/current-production-batch.json'),'utf8'));
 const searchLanguage=JSON.parse(fs.readFileSync(path.join(root,'configuration/encyclopedia-search-language.json'),'utf8'));
 const topicByPart=new Map(topics.map(topic=>[Number(topic.part),topic]));
+const partByPart=new Map(parts.map(part=>[Number(part.part),part]));
 
 const clean=v=>String(v??'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
 const arr=v=>Array.isArray(v)?v:[];
@@ -58,6 +60,17 @@ function toolIdsFor(part){
   return [...ids];
 }
 
+function templateTypeFor(part,format=''){
+  const name=String(format||'').toLowerCase();
+  if(part===15)return 'pest-diagnostic-reference';
+  if(part===16)return 'disease-viroid-reference';
+  if(part===14)return 'abiotic-diagnostic-reference';
+  if(part===17)return 'ipm-biosecurity-reference';
+  if(part===21||name.includes('data')||name.includes('qa'))return 'measurement-research-reference';
+  if([12,13].includes(part))return 'secondary-metabolite-reference';
+  return 'plant-science-reference';
+}
+
 function searchFields(lesson){
   const terms=arr(lesson.terms).length?lesson.terms:lesson.termsToKnow;
   const measurements=arr(lesson.measureAndRecord).length?lesson.measureAndRecord:lesson.measurements;
@@ -85,6 +98,9 @@ const lessons=(registry.entries||[]).map(entry=>{
   const slug=lesson.slug||slugify(entry.title);
   const tools=toolIdsFor(Number(entry.part));
   const aliases=aliasesFor(entry);
+  const part=Number(entry.part);
+  const partInfo=partByPart.get(part);
+  const templateType=templateTypeFor(part,entry.primaryFormat||lesson.primaryFormat);
   const publicFields=published?fields:{
     objective:'',
     terms:[],
@@ -100,14 +116,21 @@ const lessons=(registry.entries||[]).map(entry=>{
   return {
     id:entry.id,
     number:Number(entry.number),
-    part:Number(entry.part),
+    part,
     topic:topic?.title||`Part ${entry.part}`,
     topicSlug:topic?.slug||`part-${entry.part}`,
+    canonicalPartTitle:partInfo?.title||topic?.title||`Part ${entry.part}`,
+    partScope:partInfo?.scope||topic?.description||'',
     title:entry.title,
+    stableSlug:`thc-enc-${String(entry.number).padStart(3,'0')}`,
+    titleSlug:slugify(entry.title),
+    azInitial:(entry.title.match(/[A-Za-z0-9]/)?.[0]||'#').toUpperCase(),
     primaryFormat:entry.primaryFormat||lesson.primaryFormat||'Reference',
+    templateType,
     teachingVisual:entry.teachingVisual||lesson.requiredTeachingVisual||null,
     status:published?'published':'catalogued-review',
     route:published?`/learn/encyclopedia/thc-enc-${String(entry.number).padStart(3,'0')}/`:`/learn/encyclopedia/?lesson=${encodeURIComponent(entry.id)}`,
+    partHubRoute:`/learn/encyclopedia/?topic=${part}`,
     tools,
     aliases,
     ...publicFields,
@@ -117,7 +140,16 @@ const lessons=(registry.entries||[]).map(entry=>{
 
 const topicRows=topics.map(topic=>{
   const rows=lessons.filter(x=>x.part===Number(topic.part));
-  return {...topic,count:rows.length,publishedCount:rows.filter(x=>x.status==='published').length};
+  const canonical=partByPart.get(Number(topic.part));
+  return {
+    ...topic,
+    canonicalTitle:canonical?.title||topic.title,
+    scope:canonical?.scope||topic.description,
+    route:`/learn/encyclopedia/?topic=${Number(topic.part)}`,
+    templateTypes:[...new Set(rows.map(x=>x.templateType))].sort(),
+    count:rows.length,
+    publishedCount:rows.filter(x=>x.status==='published').length
+  };
 });
 const facets={
   topic:Object.fromEntries(topicRows.map(x=>[x.title,x.count])),
@@ -129,6 +161,7 @@ const output={
   generatedAt:new Date().toISOString(),
   publicationCutoff,
   lessonCount:lessons.length,
+  canonicalManifest:'content/encyclopedia/canonical-420-manifest.json',
   searchLanguageVersion:Number(searchLanguage.schemaVersion||1),
   note:'Generated from the controlled registry and canonical lesson source. Review-only entries stay discoverable without exposing unreleased lesson bodies.',
   facets,

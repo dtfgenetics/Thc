@@ -1,1 +1,105 @@
-{"id":"THC-ENC-065","number":65,"title":"Net Photosynthesis Versus Gross Photosynthesis","objective":"Distinguish gross carbon fixation, leaf respiration, net CO2 exchange, and whole-crop carbon balance so that measurements are not mislabeled as yield.","terms":[{"term":"Gross photosynthesis","definition":"Total carbon fixed before subtracting respiratory carbon loss."},{"term":"Net assimilation","definition":"Measured leaf CO2 uptake after concurrent respiratory and photorespiratory effects."},{"term":"Carbon balance","definition":"Carbon gained minus carbon lost across a defined organ, plant, crop, or time interval."},{"term":"Light compensation point","definition":"Light level at which photosynthetic carbon gain balances respiratory carbon loss under defined conditions."}],"coreScience":["Gross photosynthesis is not normally observed directly by a standard leaf gas-exchange reading. A chamber reports net exchange: CO2 entering through photosynthetic fixation minus CO2 released by mitochondrial respiration and other processes occurring during the measurement. Different methods estimate gross photosynthesis by combining net exchange with modeled or measured respiration.","Scale changes meaning. A sunlit upper leaf can have positive net assimilation while shaded leaves, stems, roots, and developing tissues consume carbohydrates. Over a dark period the crop is a net respiratory carbon source. Over days, carbon is also lost through leaf drop, root turnover, exudates, volatile compounds, pruning, and harvested or discarded tissue.","Dry biomass integrates carbon gain and mineral accumulation over time but does not reveal when or where the gain occurred. Flower yield is further separated from total biomass by allocation. A treatment can raise leaf photosynthesis without raising harvestable yield if leaf area, duration, sink capacity, or respiration changes in the opposite direction."],"cultivationRelevance":["Label measurements precisely: leaf net assimilation at stated chamber settings, whole-plant dry-mass gain over stated dates, or harvested inflorescence dry mass under a defined trim standard.","When comparing treatments, include leaf area and duration. A rate per square meter of leaf and a crop total per square meter of floor are not interchangeable."],"measureAndRecord":[{"field":"Measurement scale","requirement":"Leaf, branch, plant, canopy, room, area basis, and time interval."},{"field":"Exchange method","requirement":"Instrument, chamber, light, CO2, temperature, VPD, flow, and corrections."},{"field":"Biomass","requirement":"Fresh/dry basis, organ fractions, sampling dates, drying endpoint, and destructive replicate."},{"field":"Losses","requirement":"Pruning, abscission, mortality, root discard, and unharvested biomass."},{"field":"Production result","requirement":"Flower dry mass per plant and area, quality measures, energy/time inputs, and uncertainty."}],"misconceptions":["Net photosynthesis is gross photosynthesis: Net exchange already includes simultaneous carbon losses.","A high leaf rate guarantees high yield: Leaf area, duration, canopy distribution, respiration, and allocation also determine production.","Darkness stops plant metabolism: Respiration and transport continue in darkness."],"evidenceLimits":["Methods for estimating daytime respiration and gross photosynthesis use assumptions that can change results. Avoid comparing values produced by different protocols as if they were identical."],"crossLinks":"THC-ENC-064, THC-ENC-066–072, THC-ENC-079, THC-ENC-109–110, and yield-analysis lessons.","sourceNotes":["Taiz L, Moller IM, Murphy A, and Zeiger E. Plant Physiology and Development. 7th ed. Oxford University Press, 2022.  Publisher record","Rodriguez-Morrison V, Llewellyn D, and Zheng Y. Cannabis Yield, Potency, and Leaf Photosynthesis Respond Differently to Increasing Light Levels in an Indoor Environment. Frontiers in Plant Science. 2021;12:646020.  Open source","Collado CE et al. Supplemental Greenhouse Lighting Increased the Water Use Efficiency, Crop Growth, and Cutting Production in Cannabis sativa. Frontiers in Plant Science. 2024;15:1371702.  Open source","THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet v1. May 2026.  Project source packet."],"slug":"net-photosynthesis-versus-gross-photosynthesis","route":"/encyclopedia/net-photosynthesis-versus-gross-photosynthesis"}
+{
+  "id": "THC-ENC-065",
+  "number": 65,
+  "title": "Net Photosynthesis Versus Gross Photosynthesis",
+  "objective": "Distinguish gross carbon fixation, leaf respiration, net CO2 exchange, and whole-crop carbon balance so that measurements are not mislabeled as yield.",
+  "terms": [
+    {
+      "term": "Gross photosynthesis",
+      "definition": "Total carbon fixed before subtracting respiratory carbon loss."
+    },
+    {
+      "term": "Net assimilation",
+      "definition": "Measured leaf CO2 uptake after concurrent respiratory and photorespiratory effects."
+    },
+    {
+      "term": "Carbon balance",
+      "definition": "Carbon gained minus carbon lost across a defined organ, plant, crop, or time interval."
+    },
+    {
+      "term": "Light compensation point",
+      "definition": "Light level at which photosynthetic carbon gain balances respiratory carbon loss under defined conditions."
+    }
+  ],
+  "coreScience": [
+    "Gross photosynthesis is not normally observed directly by a standard leaf gas-exchange reading. A chamber reports net exchange: CO2 entering through photosynthetic fixation minus CO2 released by mitochondrial respiration and other processes occurring during the measurement. Different methods estimate gross photosynthesis by combining net exchange with modeled or measured respiration.",
+    "Scale changes meaning. A sunlit upper leaf can have positive net assimilation while shaded leaves, stems, roots, and developing tissues consume carbohydrates. Over a dark period the crop is a net respiratory carbon source. Over days, carbon is also lost through leaf drop, root turnover, exudates, volatile compounds, pruning, and harvested or discarded tissue.",
+    "Dry biomass integrates carbon gain and mineral accumulation over time but does not reveal when or where the gain occurred. Flower yield is further separated from total biomass by allocation. A treatment can raise leaf photosynthesis without raising harvestable yield if leaf area, duration, sink capacity, or respiration changes in the opposite direction."
+  ],
+  "cultivationRelevance": [
+    "Label measurements precisely: leaf net assimilation at stated chamber settings, whole-plant dry-mass gain over stated dates, or harvested inflorescence dry mass under a defined trim standard.",
+    "When comparing treatments, include leaf area and duration. A rate per square meter of leaf and a crop total per square meter of floor are not interchangeable."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Measurement scale",
+      "requirement": "Leaf, branch, plant, canopy, room, area basis, and time interval."
+    },
+    {
+      "field": "Exchange method",
+      "requirement": "Instrument, chamber, light, CO2, temperature, VPD, flow, and corrections."
+    },
+    {
+      "field": "Biomass",
+      "requirement": "Fresh/dry basis, organ fractions, sampling dates, drying endpoint, and destructive replicate."
+    },
+    {
+      "field": "Losses",
+      "requirement": "Pruning, abscission, mortality, root discard, and unharvested biomass."
+    },
+    {
+      "field": "Production result",
+      "requirement": "Flower dry mass per plant and area, quality measures, energy/time inputs, and uncertainty."
+    }
+  ],
+  "misconceptions": [
+    "Net photosynthesis is gross photosynthesis: Net exchange already includes simultaneous carbon losses.",
+    "A high leaf rate guarantees high yield: Leaf area, duration, canopy distribution, respiration, and allocation also determine production.",
+    "Darkness stops plant metabolism: Respiration and transport continue in darkness."
+  ],
+  "evidenceLimits": [
+    "Methods for estimating daytime respiration and gross photosynthesis use assumptions that can change results. Avoid comparing values produced by different protocols as if they were identical."
+  ],
+  "crossLinks": "THC-ENC-064, THC-ENC-066–072, THC-ENC-079, THC-ENC-109–110, and yield-analysis lessons.",
+  "sourceNotes": [
+    "Taiz L, Moller IM, Murphy A, and Zeiger E. Plant Physiology and Development. 7th ed. Oxford University Press, 2022.  Publisher record",
+    "Rodriguez-Morrison V, Llewellyn D, and Zheng Y. Cannabis Yield, Potency, and Leaf Photosynthesis Respond Differently to Increasing Light Levels in an Indoor Environment. Frontiers in Plant Science. 2021;12:646020.  Open source",
+    "Collado CE et al. Supplemental Greenhouse Lighting Increased the Water Use Efficiency, Crop Growth, and Cutting Production in Cannabis sativa. Frontiers in Plant Science. 2024;15:1371702.  Open source",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet v1. May 2026.  Project source packet."
+  ],
+  "slug": "net-photosynthesis-versus-gross-photosynthesis",
+  "route": "/encyclopedia/net-photosynthesis-versus-gross-photosynthesis",
+  "knowledgeCheck": [
+    "For \"Net Photosynthesis Versus Gross Photosynthesis\", explain the mechanism behind this objective: Distinguish gross carbon fixation, leaf respiration, net CO2 exchange, and whole-crop carbon balance so that measurements are not mislabeled as yield. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Net photosynthesis is gross photosynthesis: Net exchange already includes simultaneous carbon losses.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Label measurements precisely: leaf net assimilation at stated chamber settings, whole-plant dry-mass gain over stated dates, or harvested inflorescence dry mass under a defined trim standard. Build a verification plan using the lesson's record set (Measurement scale: Leaf, branch, plant, canopy, room, area basis, and time interval.; Exchange method: Instrument, chamber, light, CO2, temperature, VPD, flow, and corrections.; Biomass: Fresh/dry basis, organ fractions, sampling dates, drying endpoint, and destructive replicate.; Losses: Pruning, abscission, mortality, root discard, and unharvested biomass.; Production result: Flower dry mass per plant and area, quality measures, energy/time inputs, and uncertainty.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  },
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia canonical 420 source set",
+    "evidenceControl": "claim_level_evidence_migration_pending",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending",
+    "externalReviewType": "plant_science_and_cultivation_reference",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_from_publication",
+    "releaseGateReason": [
+      "claim_level_evidence_migration_pending",
+      "approved_teaching_visual_pending",
+      "assessment_rationale_independent_review_pending",
+      "visitor_facing_release_verification_pending"
+    ],
+    "materializedBy": "scripts/materialize-encyclopedia-release-controls.mjs",
+    "materializedAt": "source-controlled"
+  }
+}

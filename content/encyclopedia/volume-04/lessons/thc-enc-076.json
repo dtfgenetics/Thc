@@ -1,1 +1,105 @@
-{"id":"THC-ENC-076","number":76,"title":"Plant Hormones: Ethylene","objective":"Explain ethylene synthesis, perception, transport, and interactions with growth, senescence, abscission, stress, and cannabis reproductive expression.","terms":[{"term":"Ethylene","definition":"Gaseous plant hormone produced from methionine through ACC and involved in development and stress responses."},{"term":"ACC","definition":"1-aminocyclopropane-1-carboxylic acid, immediate precursor of ethylene."},{"term":"Abscission","definition":"Programmed separation of an organ through a specialized cell layer."},{"term":"Senescence","definition":"Regulated decline and nutrient remobilization preceding organ death."}],"coreScience":["Ethylene is synthesized by living tissues and diffuses through air spaces. It participates in seedling responses, cell expansion, root architecture, wound signaling, flooding responses, senescence, abscission, and interactions with pathogens. Production and sensitivity vary by organ, stage, oxygen, injury, and other hormones.","Because ethylene is a gas, measured room concentration reflects tissue production, air mixing, ventilation, leakage, and other removal processes. However, internal synthesis and perception continue even in a ventilated room. Mechanical damage, pathogens, root hypoxia, and senescing tissues can raise local signaling before a room sensor detects anything.","Cannabis sex expression has been manipulated experimentally with compounds that affect ethylene synthesis or signaling, and ethylene-related genes are part of the reproductive network. These tools do not reduce sex determination to one hormone. Genotype, photoperiod, developmental stage, stress, and interacting pathways remain important."],"cultivationRelevance":["Remove diseased and decomposing plant waste promptly and investigate the cause of premature abscission. Ventilation is useful, but it is not a substitute for root and disease control.","Treat any chemical manipulation of ethylene signaling as a regulated experimental operation requiring label, exposure, residue, and reproductive-containment review."],"measureAndRecord":[{"field":"Tissue/event","requirement":"Organ, stage, wound, wilt, root hypoxia, disease, senescence, or abscission event."},{"field":"Environment","requirement":"Temperature, airflow, ventilation, plant density, root-zone oxygen risk, and waste load."},{"field":"Ethylene measure","requirement":"Sensor or assay method, location, calibration, sampling time, and detection limit."},{"field":"Treatment","requirement":"Compound identity, active ingredient, concentration, legal status, timing, and controls."},{"field":"Response","requirement":"Leaf angle, abscission, senescence, root response, flower sex expression, and recovery."}],"misconceptions":["Ethylene only ripens fruit: It regulates many vegetative, stress, and reproductive processes.","Ventilation eliminates ethylene biology: Plants synthesize and perceive ethylene internally and locally.","Ethylene alone determines cannabis sex: Sex expression is genetic and developmental, with hormonal and environmental modulation."],"evidenceLimits":["Room ethylene measurements can miss local tissue concentrations. Cannabis chemical-manipulation results are treatment- and genotype-specific and may not be lawful for consumable crops."],"crossLinks":"THC-ENC-015–018, THC-ENC-073–080, THC-ENC-195, and THC-ENC-241–260.","sourceNotes":["Taiz L, Moller IM, Murphy A, and Zeiger E. Plant Physiology and Development. 7th ed. Oxford University Press, 2022.  Publisher record","Garcia-de Heer L, Kretzschmar T, and Mieog J. Harnessing Sex Reversion via Chemical Intervention in Cannabis sativa L. Plants. 2026;15:1291.  Open source","THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet v1. May 2026.  Project source packet.","Canadian Food Inspection Agency. The Biology of Cannabis sativa L. (Cannabis, Hemp, Marijuana). 2021.  Open source"],"slug":"plant-hormones-ethylene","route":"/encyclopedia/plant-hormones-ethylene"}
+{
+  "id": "THC-ENC-076",
+  "number": 76,
+  "title": "Plant Hormones: Ethylene",
+  "objective": "Explain ethylene synthesis, perception, transport, and interactions with growth, senescence, abscission, stress, and cannabis reproductive expression.",
+  "terms": [
+    {
+      "term": "Ethylene",
+      "definition": "Gaseous plant hormone produced from methionine through ACC and involved in development and stress responses."
+    },
+    {
+      "term": "ACC",
+      "definition": "1-aminocyclopropane-1-carboxylic acid, immediate precursor of ethylene."
+    },
+    {
+      "term": "Abscission",
+      "definition": "Programmed separation of an organ through a specialized cell layer."
+    },
+    {
+      "term": "Senescence",
+      "definition": "Regulated decline and nutrient remobilization preceding organ death."
+    }
+  ],
+  "coreScience": [
+    "Ethylene is synthesized by living tissues and diffuses through air spaces. It participates in seedling responses, cell expansion, root architecture, wound signaling, flooding responses, senescence, abscission, and interactions with pathogens. Production and sensitivity vary by organ, stage, oxygen, injury, and other hormones.",
+    "Because ethylene is a gas, measured room concentration reflects tissue production, air mixing, ventilation, leakage, and other removal processes. However, internal synthesis and perception continue even in a ventilated room. Mechanical damage, pathogens, root hypoxia, and senescing tissues can raise local signaling before a room sensor detects anything.",
+    "Cannabis sex expression has been manipulated experimentally with compounds that affect ethylene synthesis or signaling, and ethylene-related genes are part of the reproductive network. These tools do not reduce sex determination to one hormone. Genotype, photoperiod, developmental stage, stress, and interacting pathways remain important."
+  ],
+  "cultivationRelevance": [
+    "Remove diseased and decomposing plant waste promptly and investigate the cause of premature abscission. Ventilation is useful, but it is not a substitute for root and disease control.",
+    "Treat any chemical manipulation of ethylene signaling as a regulated experimental operation requiring label, exposure, residue, and reproductive-containment review."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Tissue/event",
+      "requirement": "Organ, stage, wound, wilt, root hypoxia, disease, senescence, or abscission event."
+    },
+    {
+      "field": "Environment",
+      "requirement": "Temperature, airflow, ventilation, plant density, root-zone oxygen risk, and waste load."
+    },
+    {
+      "field": "Ethylene measure",
+      "requirement": "Sensor or assay method, location, calibration, sampling time, and detection limit."
+    },
+    {
+      "field": "Treatment",
+      "requirement": "Compound identity, active ingredient, concentration, legal status, timing, and controls."
+    },
+    {
+      "field": "Response",
+      "requirement": "Leaf angle, abscission, senescence, root response, flower sex expression, and recovery."
+    }
+  ],
+  "misconceptions": [
+    "Ethylene only ripens fruit: It regulates many vegetative, stress, and reproductive processes.",
+    "Ventilation eliminates ethylene biology: Plants synthesize and perceive ethylene internally and locally.",
+    "Ethylene alone determines cannabis sex: Sex expression is genetic and developmental, with hormonal and environmental modulation."
+  ],
+  "evidenceLimits": [
+    "Room ethylene measurements can miss local tissue concentrations. Cannabis chemical-manipulation results are treatment- and genotype-specific and may not be lawful for consumable crops."
+  ],
+  "crossLinks": "THC-ENC-015–018, THC-ENC-073–080, THC-ENC-195, and THC-ENC-241–260.",
+  "sourceNotes": [
+    "Taiz L, Moller IM, Murphy A, and Zeiger E. Plant Physiology and Development. 7th ed. Oxford University Press, 2022.  Publisher record",
+    "Garcia-de Heer L, Kretzschmar T, and Mieog J. Harnessing Sex Reversion via Chemical Intervention in Cannabis sativa L. Plants. 2026;15:1291.  Open source",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet v1. May 2026.  Project source packet.",
+    "Canadian Food Inspection Agency. The Biology of Cannabis sativa L. (Cannabis, Hemp, Marijuana). 2021.  Open source"
+  ],
+  "slug": "plant-hormones-ethylene",
+  "route": "/encyclopedia/plant-hormones-ethylene",
+  "knowledgeCheck": [
+    "For \"Plant Hormones: Ethylene\", explain the mechanism behind this objective: Explain ethylene synthesis, perception, transport, and interactions with growth, senescence, abscission, stress, and cannabis reproductive expression. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Ethylene only ripens fruit: It regulates many vegetative, stress, and reproductive processes.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Remove diseased and decomposing plant waste promptly and investigate the cause of premature abscission. Ventilation is useful, but it is not a substitute for root and disease control. Build a verification plan using the lesson's record set (Tissue/event: Organ, stage, wound, wilt, root hypoxia, disease, senescence, or abscission event.; Environment: Temperature, airflow, ventilation, plant density, root-zone oxygen risk, and waste load.; Ethylene measure: Sensor or assay method, location, calibration, sampling time, and detection limit.; Treatment: Compound identity, active ingredient, concentration, legal status, timing, and controls.; Response: Leaf angle, abscission, senescence, root response, flower sex expression, and recovery.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  },
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia canonical 420 source set",
+    "evidenceControl": "claim_level_evidence_migration_pending",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending",
+    "externalReviewType": "plant_science_and_cultivation_reference",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_from_publication",
+    "releaseGateReason": [
+      "claim_level_evidence_migration_pending",
+      "approved_teaching_visual_pending",
+      "assessment_rationale_independent_review_pending",
+      "visitor_facing_release_verification_pending"
+    ],
+    "materializedBy": "scripts/materialize-encyclopedia-release-controls.mjs",
+    "materializedAt": "source-controlled"
+  }
+}

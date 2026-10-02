@@ -4,12 +4,30 @@
   "title": "Juvenility, Maturity, and Cutting Competence",
   "objective": "Explain how ontogenetic age, tissue position, donor condition, and genotype affect a cutting’s competence to form roots.",
   "terms": [
-    {"term":"juvenility","definition":"An early developmental phase in which tissues express juvenile characteristics and may differ in propagation response from mature tissues."},
-    {"term":"maturation","definition":"Developmental progression from juvenile toward mature physiological and morphological states."},
-    {"term":"competence","definition":"The capacity of a tissue to respond to developmental and environmental signals and execute a process such as adventitious rooting."},
-    {"term":"rejuvenation","definition":"A shift toward juvenile-like developmental or propagation behavior; it does not by itself imply a change or reset of genotype."},
-    {"term":"ontogeny","definition":"The developmental history of an organism or tissue from its origin through later stages."},
-    {"term":"physiological age","definition":"A tissue’s functional developmental state as shaped by ontogeny, environment, and management rather than calendar age alone."}
+    {
+      "term": "juvenility",
+      "definition": "An early developmental phase in which tissues express juvenile characteristics and may differ in propagation response from mature tissues."
+    },
+    {
+      "term": "maturation",
+      "definition": "Developmental progression from juvenile toward mature physiological and morphological states."
+    },
+    {
+      "term": "competence",
+      "definition": "The capacity of a tissue to respond to developmental and environmental signals and execute a process such as adventitious rooting."
+    },
+    {
+      "term": "rejuvenation",
+      "definition": "A shift toward juvenile-like developmental or propagation behavior; it does not by itself imply a change or reset of genotype."
+    },
+    {
+      "term": "ontogeny",
+      "definition": "The developmental history of an organism or tissue from its origin through later stages."
+    },
+    {
+      "term": "physiological age",
+      "definition": "A tissue’s functional developmental state as shaped by ontogeny, environment, and management rather than calendar age alone."
+    }
   ],
   "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
   "coreScience": [
@@ -21,7 +39,14 @@
     "Standardize donor age class, branch position, node number, harvest interval, and mother-management history during trials. Rotate or rehabilitate mothers only after comparing propagation and crop performance."
   ],
   "measureAndRecord": [
-    {"field":"Controlled record set","requirement":"Mother age and propagation generation; vegetative or reproductive history; branch position; node age; rooting percentage; days to root; root mass or length; transplant survival; morphology after establishment."}
+    {
+      "field": "Source and identity record",
+      "requirement": "For Juvenility, Maturity, and Cutting Competence, record donor or batch ID, plant or tray ID, date, operator, source position, starting condition, sanitation step, and any test or quarantine status. Preserve the original controlled note: Controlled record set: Mother age and propagation generation; vegetative or reproductive history; branch position; node age; rooting percentage; days to root; root mass or length; transplant survival; morphology after establishment."
+    },
+    {
+      "field": "Rooting or establishment outcome",
+      "requirement": "Record rooting percentage, time to visible root or establishment, losses, abnormal growth, environmental conditions, treatment differences, and follow-up observations that would confirm or revise the interpretation."
+    }
   ],
   "misconceptions": [
     "Calendar age alone predicts rooting.",
@@ -41,16 +66,30 @@
   ],
   "publicationAuthorized": true,
   "reviewControl": {
-    "controlledManuscript":"Volume 09 v1.0",
-    "evidenceControl":"complete",
-    "secondaryEvidenceReview":"complete_cross_species_qualified",
-    "externalReview":"pending_not_recorded",
-    "externalReviewType":"propagation_science",
-    "publicationAuthorized":true,
-    "publicationAuthorization":"project_owner_2026-08-24",
-    "independentApproval":false,
-    "websiteAction":"publish_with_review_notice"
+    "controlledManuscript": "Volume 09 v1.0",
+    "evidenceControl": "complete",
+    "secondaryEvidenceReview": "complete_cross_species_qualified",
+    "externalReview": "pending_not_recorded",
+    "externalReviewType": "propagation_science",
+    "publicationAuthorized": true,
+    "publicationAuthorization": "project_owner_2026-08-24",
+    "independentApproval": false,
+    "websiteAction": "publish_with_review_notice"
   },
   "slug": "juvenility-maturity-and-cutting-competence",
-  "route": "/encyclopedia/juvenility-maturity-and-cutting-competence"
+  "route": "/encyclopedia/juvenility-maturity-and-cutting-competence",
+  "knowledgeCheck": [
+    "For \"Juvenility, Maturity, and Cutting Competence\", explain the mechanism behind this objective: Explain how ontogenetic age, tissue position, donor condition, and genotype affect a cutting’s competence to form roots. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Calendar age alone predicts rooting.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Standardize donor age class, branch position, node number, harvest interval, and mother-management history during trials. Rotate or rehabilitate mothers only after comparing propagation and crop performance. Build a verification plan using the lesson's record set (Controlled record set: Mother age and propagation generation; vegetative or reproductive history; branch position; node age; rooting percentage; days to root; root mass or length; transplant survival; morphology after establishment.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  }
 }

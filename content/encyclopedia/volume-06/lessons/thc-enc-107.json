@@ -1,1 +1,104 @@
-{"id":"THC-ENC-107","number":107,"title":"Inverse Square Effects and Fixture Geometry","objective":"Use inverse-square reasoning only where its assumptions apply and explain how extended fixtures, overlap, reflectance, and canopy geometry alter distance effects.","terms":[{"term":"Inverse-square law","definition":"For an ideal point source in open space, irradiance decreases in proportion to one divided by distance squared."},{"term":"Point source","definition":"Idealized source whose dimensions are negligible relative to measurement distance."},{"term":"Beam distribution","definition":"Angular pattern of radiation leaving a fixture."},{"term":"Near field","definition":"Region where source dimensions and local optics strongly affect the distribution."}],"coreScience":["The inverse-square law is exact for an ideal point source radiating into open space. Horticultural bars, panels, reflectors, lenses, multiple fixtures, walls, and nearby canopies violate that simplified geometry. At distances comparable with fixture dimensions, different parts of an extended source are at different distances and angles from the sensor.","Lowering a fixture generally increases local intensity and reduces the footprint, often worsening hotspots unless overlap and dimming are adjusted. Raising it can improve overlap but increases spill and interception by non-crop surfaces. Reflective boundaries return some photons, while dust, ageing, and dark surfaces change the result.","Geometry should be solved with photometric or ray-tracing information when available and verified by a measured grid. The inverse-square relationship is useful for direction and hazard awareness, but a ratio calculation is not a substitute for an installed map."],"cultivationRelevance":["Fixture height decisions affect intensity, uniformity, access, headroom, heat distribution, worker exposure, and the rate at which a growing canopy approaches the source.","Canopy training changes the optical target; the same room may require remapping after stretch, trellis fill, or fixture repositioning."],"measureAndRecord":[{"field":"Geometry","requirement":"Fixture dimensions, count, coordinates, height above measurement plane, tilt, and beam optics."},{"field":"Boundaries","requirement":"Wall, curtain, floor, bench, and canopy reflectance condition plus obstructions."},{"field":"Operating state","requirement":"Dimming, spectral channels, power, temperature, and stabilization time."},{"field":"Map","requirement":"Grid values before and after the geometry change using the same protocol."},{"field":"Constraint review","requirement":"Clearance, electrical listing, manufacturer limits, maintenance access, and safety controls."}],"misconceptions":["Double distance always quarters PPFD: That rule assumes a point source in open space and usually fails for close extended arrays and overlapping fixtures.","Lower is always more efficient: Lowering can create unusable hotspots, poor overlap, access problems, and stress.","Reflective walls make photons free: Returned light has losses and a changed angular distribution; it must be measured."],"evidenceLimits":["Exact prediction requires the fixture distribution, room optical properties, and crop geometry. Installed maps remain the acceptance surface."],"crossLinks":"THC-ENC-102, THC-ENC-105-106, THC-ENC-111, THC-ENC-119-120, and THC-GROW-011.","sourceNotes":["Resource Innovation Institute (2021). LED Lighting for Cannabis Cultivation and Controlled Environment Agriculture: Best Practices Guide.","THC Cultivation SOP Source Materials Packet v1.0 (project source, May 2026).","THC Cannabis Plant Science Source Packet v1.1 (project source, May 2026)."],"slug":"inverse-square-effects-and-fixture-geometry","route":"/encyclopedia/inverse-square-effects-and-fixture-geometry"}
+{
+  "id": "THC-ENC-107",
+  "number": 107,
+  "title": "Inverse Square Effects and Fixture Geometry",
+  "objective": "Use inverse-square reasoning only where its assumptions apply and explain how extended fixtures, overlap, reflectance, and canopy geometry alter distance effects.",
+  "terms": [
+    {
+      "term": "Inverse-square law",
+      "definition": "For an ideal point source in open space, irradiance decreases in proportion to one divided by distance squared."
+    },
+    {
+      "term": "Point source",
+      "definition": "Idealized source whose dimensions are negligible relative to measurement distance."
+    },
+    {
+      "term": "Beam distribution",
+      "definition": "Angular pattern of radiation leaving a fixture."
+    },
+    {
+      "term": "Near field",
+      "definition": "Region where source dimensions and local optics strongly affect the distribution."
+    }
+  ],
+  "coreScience": [
+    "The inverse-square law is exact for an ideal point source radiating into open space. Horticultural bars, panels, reflectors, lenses, multiple fixtures, walls, and nearby canopies violate that simplified geometry. At distances comparable with fixture dimensions, different parts of an extended source are at different distances and angles from the sensor.",
+    "Lowering a fixture generally increases local intensity and reduces the footprint, often worsening hotspots unless overlap and dimming are adjusted. Raising it can improve overlap but increases spill and interception by non-crop surfaces. Reflective boundaries return some photons, while dust, ageing, and dark surfaces change the result.",
+    "Geometry should be solved with photometric or ray-tracing information when available and verified by a measured grid. The inverse-square relationship is useful for direction and hazard awareness, but a ratio calculation is not a substitute for an installed map."
+  ],
+  "cultivationRelevance": [
+    "Fixture height decisions affect intensity, uniformity, access, headroom, heat distribution, worker exposure, and the rate at which a growing canopy approaches the source.",
+    "Canopy training changes the optical target; the same room may require remapping after stretch, trellis fill, or fixture repositioning."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Geometry",
+      "requirement": "Fixture dimensions, count, coordinates, height above measurement plane, tilt, and beam optics."
+    },
+    {
+      "field": "Boundaries",
+      "requirement": "Wall, curtain, floor, bench, and canopy reflectance condition plus obstructions."
+    },
+    {
+      "field": "Operating state",
+      "requirement": "Dimming, spectral channels, power, temperature, and stabilization time."
+    },
+    {
+      "field": "Map",
+      "requirement": "Grid values before and after the geometry change using the same protocol."
+    },
+    {
+      "field": "Constraint review",
+      "requirement": "Clearance, electrical listing, manufacturer limits, maintenance access, and safety controls."
+    }
+  ],
+  "misconceptions": [
+    "Double distance always quarters PPFD: That rule assumes a point source in open space and usually fails for close extended arrays and overlapping fixtures.",
+    "Lower is always more efficient: Lowering can create unusable hotspots, poor overlap, access problems, and stress.",
+    "Reflective walls make photons free: Returned light has losses and a changed angular distribution; it must be measured."
+  ],
+  "evidenceLimits": [
+    "Exact prediction requires the fixture distribution, room optical properties, and crop geometry. Installed maps remain the acceptance surface."
+  ],
+  "crossLinks": "THC-ENC-102, THC-ENC-105-106, THC-ENC-111, THC-ENC-119-120, and THC-GROW-011.",
+  "sourceNotes": [
+    "Resource Innovation Institute (2021). LED Lighting for Cannabis Cultivation and Controlled Environment Agriculture: Best Practices Guide.",
+    "THC Cultivation SOP Source Materials Packet v1.0 (project source, May 2026).",
+    "THC Cannabis Plant Science Source Packet v1.1 (project source, May 2026)."
+  ],
+  "slug": "inverse-square-effects-and-fixture-geometry",
+  "route": "/encyclopedia/inverse-square-effects-and-fixture-geometry",
+  "knowledgeCheck": [
+    "For \"Inverse Square Effects and Fixture Geometry\", explain the mechanism behind this objective: Use inverse-square reasoning only where its assumptions apply and explain how extended fixtures, overlap, reflectance, and canopy geometry alter distance effects. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Double distance always quarters PPFD: That rule assumes a point source in open space and usually fails for close extended arrays and overlapping fixtures.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Fixture height decisions affect intensity, uniformity, access, headroom, heat distribution, worker exposure, and the rate at which a growing canopy approaches the source. Build a verification plan using the lesson's record set (Geometry: Fixture dimensions, count, coordinates, height above measurement plane, tilt, and beam optics.; Boundaries: Wall, curtain, floor, bench, and canopy reflectance condition plus obstructions.; Operating state: Dimming, spectral channels, power, temperature, and stabilization time.; Map: Grid values before and after the geometry change using the same protocol.; Constraint review: Clearance, electrical listing, manufacturer limits, maintenance access, and safety controls.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  },
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia canonical 420 source set",
+    "evidenceControl": "claim_level_evidence_migration_pending",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending",
+    "externalReviewType": "plant_science_and_cultivation_reference",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_from_publication",
+    "releaseGateReason": [
+      "claim_level_evidence_migration_pending",
+      "approved_teaching_visual_pending",
+      "assessment_rationale_independent_review_pending",
+      "visitor_facing_release_verification_pending"
+    ],
+    "materializedBy": "scripts/materialize-encyclopedia-release-controls.mjs",
+    "materializedAt": "source-controlled"
+  }
+}

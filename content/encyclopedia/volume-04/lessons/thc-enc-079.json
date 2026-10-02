@@ -1,1 +1,105 @@
-{"id":"THC-ENC-079","number":79,"title":"Growth Rate, Development, and Biomass Partitioning","objective":"Separate size, growth rate, developmental stage, and allocation and calculate interpretable plant and crop performance metrics.","terms":[{"term":"Absolute growth rate","definition":"Change in mass, area, height, or another size variable per unit time."},{"term":"Relative growth rate","definition":"Growth per unit existing plant mass over a defined interval."},{"term":"Specific leaf area","definition":"Leaf area per unit leaf dry mass."},{"term":"Harvest index","definition":"Harvested target-organ dry mass divided by total relevant plant dry mass under a defined standard."}],"coreScience":["Growth is an increase in size or mass; development is progression through organized stages and organ identities. A tall plant may have elongated without accumulating proportionally more dry matter. A flowering plant may continue vegetative growth while reallocating increasing resources to inflorescences. Height, node number, leaf area, dry mass, and stage therefore answer different questions.","Biomass partitioning divides accumulated material among roots, stems, leaves, flowers, and storage pools. Partitioning changes with genotype, stage, light distribution, plant density, nutrition, water, temperature, pruning, and sink demand. A practice that reduces total biomass can still increase the fraction in a target organ, while a higher fraction does not guarantee greater target-organ mass.","Growth analysis requires repeated measurements or destructive replicate harvests. Relative growth rate is best calculated from logarithms of dry mass over a defined interval. Specific leaf area helps describe thin versus dense leaf construction. Harvest index requires a consistent denominator, drying endpoint, trim standard, and treatment of removed organs."],"cultivationRelevance":["Build a measurement schedule before treatments begin. Baseline imbalance cannot be corrected statistically after the fact without assumptions.","Report yield per plant and per area, plus crop time and relevant inputs. A training or density treatment can change these metrics in opposite directions."],"measureAndRecord":[{"field":"Development","requirement":"Emergence/clone date, node stages, photoperiod switch, flower stages, and harvest date."},{"field":"Non-destructive growth","requirement":"Height, node count, branch count, canopy area, stem diameter, and leaf-area proxy."},{"field":"Dry biomass","requirement":"Root, stem, leaf, flower, removed, and dead tissue; drying method and endpoint."},{"field":"Calculated metrics","requirement":"Absolute/relative growth rate, specific leaf area, root:shoot ratio, and harvest index with formula."},{"field":"Production basis","requirement":"Per plant, per square meter, per day, cultivar, replicate, losses, and resource inputs."}],"misconceptions":["Tallest means fastest-growing: Height can increase through internode elongation without proportional biomass gain.","Higher harvest index always means higher yield: The fraction can rise while total biomass falls.","One final weight explains growth: It does not reveal timing, allocation shifts, or starting differences."],"evidenceLimits":["Destructive sampling uses different plants across dates and assumes replicates are comparable. Fresh mass is strongly affected by water status; dry mass requires a documented stable endpoint."],"crossLinks":"THC-ENC-006, THC-ENC-065, THC-ENC-071–072, THC-ENC-080, THC-ENC-221–260, and yield/recordkeeping lessons.","sourceNotes":["Taiz L, Moller IM, Murphy A, and Zeiger E. Plant Physiology and Development. 7th ed. Oxford University Press, 2022.  Publisher record","Alden MJ and Faust JE. Cultivation Strategies to Modify Biomass Partitioning and Improve Yield in Controlled-Environment Production of High-Cannabidiol Cannabis. HortScience. 2024;59:1511-1519.  Open source","Danziger N and Bernstein N. Too Dense or Not Too Dense: Higher Planting Density Reduces Cannabinoid Uniformity but Increases Yield per Area in Drug-Type Medical Cannabis. Frontiers in Plant Science. 2022;13:713481.  Open source","Jost R et al. Sink Strength, Nutrient Allocation, Cannabinoid Yield, and Associated Transcript Profiles Vary in Two Drug-Type Cannabis Chemovars. Journal of Experimental Botany. 2025;76:152-174.  Open source"],"slug":"growth-rate-development-and-biomass-partitioning","route":"/encyclopedia/growth-rate-development-and-biomass-partitioning"}
+{
+  "id": "THC-ENC-079",
+  "number": 79,
+  "title": "Growth Rate, Development, and Biomass Partitioning",
+  "objective": "Separate size, growth rate, developmental stage, and allocation and calculate interpretable plant and crop performance metrics.",
+  "terms": [
+    {
+      "term": "Absolute growth rate",
+      "definition": "Change in mass, area, height, or another size variable per unit time."
+    },
+    {
+      "term": "Relative growth rate",
+      "definition": "Growth per unit existing plant mass over a defined interval."
+    },
+    {
+      "term": "Specific leaf area",
+      "definition": "Leaf area per unit leaf dry mass."
+    },
+    {
+      "term": "Harvest index",
+      "definition": "Harvested target-organ dry mass divided by total relevant plant dry mass under a defined standard."
+    }
+  ],
+  "coreScience": [
+    "Growth is an increase in size or mass; development is progression through organized stages and organ identities. A tall plant may have elongated without accumulating proportionally more dry matter. A flowering plant may continue vegetative growth while reallocating increasing resources to inflorescences. Height, node number, leaf area, dry mass, and stage therefore answer different questions.",
+    "Biomass partitioning divides accumulated material among roots, stems, leaves, flowers, and storage pools. Partitioning changes with genotype, stage, light distribution, plant density, nutrition, water, temperature, pruning, and sink demand. A practice that reduces total biomass can still increase the fraction in a target organ, while a higher fraction does not guarantee greater target-organ mass.",
+    "Growth analysis requires repeated measurements or destructive replicate harvests. Relative growth rate is best calculated from logarithms of dry mass over a defined interval. Specific leaf area helps describe thin versus dense leaf construction. Harvest index requires a consistent denominator, drying endpoint, trim standard, and treatment of removed organs."
+  ],
+  "cultivationRelevance": [
+    "Build a measurement schedule before treatments begin. Baseline imbalance cannot be corrected statistically after the fact without assumptions.",
+    "Report yield per plant and per area, plus crop time and relevant inputs. A training or density treatment can change these metrics in opposite directions."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Development",
+      "requirement": "Emergence/clone date, node stages, photoperiod switch, flower stages, and harvest date."
+    },
+    {
+      "field": "Non-destructive growth",
+      "requirement": "Height, node count, branch count, canopy area, stem diameter, and leaf-area proxy."
+    },
+    {
+      "field": "Dry biomass",
+      "requirement": "Root, stem, leaf, flower, removed, and dead tissue; drying method and endpoint."
+    },
+    {
+      "field": "Calculated metrics",
+      "requirement": "Absolute/relative growth rate, specific leaf area, root:shoot ratio, and harvest index with formula."
+    },
+    {
+      "field": "Production basis",
+      "requirement": "Per plant, per square meter, per day, cultivar, replicate, losses, and resource inputs."
+    }
+  ],
+  "misconceptions": [
+    "Tallest means fastest-growing: Height can increase through internode elongation without proportional biomass gain.",
+    "Higher harvest index always means higher yield: The fraction can rise while total biomass falls.",
+    "One final weight explains growth: It does not reveal timing, allocation shifts, or starting differences."
+  ],
+  "evidenceLimits": [
+    "Destructive sampling uses different plants across dates and assumes replicates are comparable. Fresh mass is strongly affected by water status; dry mass requires a documented stable endpoint."
+  ],
+  "crossLinks": "THC-ENC-006, THC-ENC-065, THC-ENC-071–072, THC-ENC-080, THC-ENC-221–260, and yield/recordkeeping lessons.",
+  "sourceNotes": [
+    "Taiz L, Moller IM, Murphy A, and Zeiger E. Plant Physiology and Development. 7th ed. Oxford University Press, 2022.  Publisher record",
+    "Alden MJ and Faust JE. Cultivation Strategies to Modify Biomass Partitioning and Improve Yield in Controlled-Environment Production of High-Cannabidiol Cannabis. HortScience. 2024;59:1511-1519.  Open source",
+    "Danziger N and Bernstein N. Too Dense or Not Too Dense: Higher Planting Density Reduces Cannabinoid Uniformity but Increases Yield per Area in Drug-Type Medical Cannabis. Frontiers in Plant Science. 2022;13:713481.  Open source",
+    "Jost R et al. Sink Strength, Nutrient Allocation, Cannabinoid Yield, and Associated Transcript Profiles Vary in Two Drug-Type Cannabis Chemovars. Journal of Experimental Botany. 2025;76:152-174.  Open source"
+  ],
+  "slug": "growth-rate-development-and-biomass-partitioning",
+  "route": "/encyclopedia/growth-rate-development-and-biomass-partitioning",
+  "knowledgeCheck": [
+    "For \"Growth Rate, Development, and Biomass Partitioning\", explain the mechanism behind this objective: Separate size, growth rate, developmental stage, and allocation and calculate interpretable plant and crop performance metrics. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Tallest means fastest-growing: Height can increase through internode elongation without proportional biomass gain.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Build a measurement schedule before treatments begin. Baseline imbalance cannot be corrected statistically after the fact without assumptions. Build a verification plan using the lesson's record set (Development: Emergence/clone date, node stages, photoperiod switch, flower stages, and harvest date.; Non-destructive growth: Height, node count, branch count, canopy area, stem diameter, and leaf-area proxy.; Dry biomass: Root, stem, leaf, flower, removed, and dead tissue; drying method and endpoint.; Calculated metrics: Absolute/relative growth rate, specific leaf area, root:shoot ratio, and harvest index with formula.; Production basis: Per plant, per square meter, per day, cultivar, replicate, losses, and resource inputs.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  },
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia canonical 420 source set",
+    "evidenceControl": "claim_level_evidence_migration_pending",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending",
+    "externalReviewType": "plant_science_and_cultivation_reference",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_from_publication",
+    "releaseGateReason": [
+      "claim_level_evidence_migration_pending",
+      "approved_teaching_visual_pending",
+      "assessment_rationale_independent_review_pending",
+      "visitor_facing_release_verification_pending"
+    ],
+    "materializedBy": "scripts/materialize-encyclopedia-release-controls.mjs",
+    "materializedAt": "source-controlled"
+  }
+}

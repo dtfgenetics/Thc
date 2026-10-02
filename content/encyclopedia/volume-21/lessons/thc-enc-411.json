@@ -25,7 +25,14 @@
     "Use one event timeline and linked IDs so a reviewer can reconstruct who handled each batch, where it was, what conditions occurred, which samples represented it, and who authorized release."
   ],
   "measureAndRecord": [
-    "Crop/plant/harvest/sub-batch IDs; decision and approver; cut/trim/transfer times; personnel/tools/cleaning; incoming/final mass; drying location and load map; sensor data; moisture/aW method and sample map; defects/holds; conditioning/storage container; excursions; laboratory and retained samples; release/disposition."
+    {
+      "field": "Measurement identity record",
+      "requirement": "For Harvest, Drying, Curing, and Storage Records, record quantity, unit, instrument or source system, sample or plant identity, time, location, method, basis, and raw value. Preserve the original controlled note: Crop/plant/harvest/sub-batch IDs; decision and approver; cut/trim/transfer times; personnel/tools/cleaning; incoming/final mass; drying location and load map; sensor data; moisture/aW method and sample map; defects/holds; conditioning/storage container; excursions; laboratory and retained samples; release/disposition."
+    },
+    {
+      "field": "Traceability and review record",
+      "requirement": "Record calibration or verification status, conversion or calculation rule, reviewer, uncertainty or limitation, revision history, linked evidence, and the decision made from the record."
+    }
   ],
   "misconceptions": [
     "A dry-room average describes every flower.",

@@ -27,7 +27,14 @@
     "Define an ID grammar, issuing authority, uniqueness check, label durability, replacement rule, and parent-child model before scaling data collection."
   ],
   "measureAndRecord": [
-    "Entity type; permanent ID; human-readable label; source system; creation date; parent IDs; genetic/source/lot IDs; current location; status; aliases; label replacement; correction/supersession history; responsible person."
+    {
+      "field": "Measurement identity record",
+      "requirement": "For Plant, Batch, Room, and Genetic Identifiers, record quantity, unit, instrument or source system, sample or plant identity, time, location, method, basis, and raw value. Preserve the original controlled note: Entity type; permanent ID; human-readable label; source system; creation date; parent IDs; genetic/source/lot IDs; current location; status; aliases; label replacement; correction/supersession history; responsible person."
+    },
+    {
+      "field": "Traceability and review record",
+      "requirement": "Record calibration or verification status, conversion or calculation rule, reviewer, uncertainty or limitation, revision history, linked evidence, and the decision made from the record."
+    }
   ],
   "misconceptions": [
     "A cultivar name uniquely identifies genetics.",

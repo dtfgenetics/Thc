@@ -1,1 +1,106 @@
-{"id":"THC-ENC-074","number":74,"title":"Plant Hormones: Cytokinins","objective":"Explain cytokinin synthesis, transport, cell-division and shoot-development roles, and why cytokinin effects depend on auxin balance, genotype, tissue, and nutrient status.","terms":[{"term":"Cytokinin","definition":"Adenine-derived growth regulator involved in cell division, shoot development, nutrient signaling, and senescence."},{"term":"Organogenesis","definition":"Formation of organs such as shoots or roots from meristematic or cultured tissue."},{"term":"Hormone crosstalk","definition":"Interaction among signaling pathways that changes the response to any one hormone."},{"term":"Competence","definition":"Ability of a tissue to perceive a signal and execute a developmental response."}],"coreScience":["Cytokinins are produced in several tissues, including active roots and developing organs, and move through xylem, phloem, and local cell networks. They influence cell division, meristem activity, chloroplast development, axillary-bud growth, nutrient allocation, and senescence. Their effects are conditional rather than universally stimulatory.","Auxin and cytokinin interactions are especially important in tissue culture and branching. In vitro, their relative activities can bias shoot formation, root formation, callus, or abnormal growth, but the effective range depends on genotype, explant, basal medium, light, and prior physiological state. A ratio is not a transferable recipe.","Cytokinin also participates in root-to-shoot communication about nutrient supply. High or poorly timed exposure can reduce rooting, produce excessive shoot proliferation, alter morphology, or cause physiological disorders. Endogenous signaling and exogenous plant-growth-regulator treatment must be kept conceptually separate."],"cultivationRelevance":["Treat tissue-culture cytokinin protocols as genotype-specific experiments with hormone-free and known-protocol controls. Record carryover across subcultures.","Do not diagnose slow branching as a cytokinin deficiency. Check apical dominance, node maturity, light, roots, water, nutrients, temperature, and disease first."],"measureAndRecord":[{"field":"Material","requirement":"Genotype, explant type, node, physiological age, source plant, and health status."},{"field":"Regulator","requirement":"Cytokinin identity, concentration, auxin combination, exposure duration, and subculture count."},{"field":"Culture/system","requirement":"Basal medium, vessels, light, temperature, gas exchange, and contamination status."},{"field":"Response","requirement":"Bud break, shoot count, length, callus, rooting, hyperhydricity, and off-types."},{"field":"Acclimation","requirement":"Ex vitro survival, morphology, rooting, growth stability, and retained treatment history."}],"misconceptions":["Cytokinin simply makes plants bushy: Branching also depends on auxin, sugars, strigolactones, buds, roots, and environment.","One auxin-to-cytokinin ratio works for cannabis: Genotype, explant, medium, and treatment history shift response.","Delayed senescence is always beneficial: Retaining green tissue does not guarantee continued carbon export or disease-free function."],"evidenceLimits":["Cannabis cytokinin research is concentrated in micropropagation and varies greatly by genotype. Visual shoot multiplication alone does not establish genetic identity, epigenetic stability, pathogen freedom, or long-term phenotypic fidelity."],"crossLinks":"THC-ENC-073, THC-ENC-075–079, THC-ENC-201–220, and THC-ENC-221–240.","sourceNotes":["Taiz L, Moller IM, Murphy A, and Zeiger E. Plant Physiology and Development. 7th ed. Oxford University Press, 2022.  Publisher record","THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet v1. May 2026.  Project source packet.","THC - Teaching Healthy Cultivation. Cultivation SOP Source Materials Packet v1. May 2026.  Project source packet.","Holmes JE et al. Variables Affecting Shoot Growth and Plantlet Recovery in Tissue Cultures of Drug-Type Cannabis sativa L. Frontiers in Plant Science. 2021;12:732344.  Open source","Hesami M et al. Effect of Explant Source on Phenotypic Changes of In Vitro Grown Cannabis Plantlets over Multiple Subcultures. Biology. 2023;12:443.  Open source"],"slug":"plant-hormones-cytokinins","route":"/encyclopedia/plant-hormones-cytokinins"}
+{
+  "id": "THC-ENC-074",
+  "number": 74,
+  "title": "Plant Hormones: Cytokinins",
+  "objective": "Explain cytokinin synthesis, transport, cell-division and shoot-development roles, and why cytokinin effects depend on auxin balance, genotype, tissue, and nutrient status.",
+  "terms": [
+    {
+      "term": "Cytokinin",
+      "definition": "Adenine-derived growth regulator involved in cell division, shoot development, nutrient signaling, and senescence."
+    },
+    {
+      "term": "Organogenesis",
+      "definition": "Formation of organs such as shoots or roots from meristematic or cultured tissue."
+    },
+    {
+      "term": "Hormone crosstalk",
+      "definition": "Interaction among signaling pathways that changes the response to any one hormone."
+    },
+    {
+      "term": "Competence",
+      "definition": "Ability of a tissue to perceive a signal and execute a developmental response."
+    }
+  ],
+  "coreScience": [
+    "Cytokinins are produced in several tissues, including active roots and developing organs, and move through xylem, phloem, and local cell networks. They influence cell division, meristem activity, chloroplast development, axillary-bud growth, nutrient allocation, and senescence. Their effects are conditional rather than universally stimulatory.",
+    "Auxin and cytokinin interactions are especially important in tissue culture and branching. In vitro, their relative activities can bias shoot formation, root formation, callus, or abnormal growth, but the effective range depends on genotype, explant, basal medium, light, and prior physiological state. A ratio is not a transferable recipe.",
+    "Cytokinin also participates in root-to-shoot communication about nutrient supply. High or poorly timed exposure can reduce rooting, produce excessive shoot proliferation, alter morphology, or cause physiological disorders. Endogenous signaling and exogenous plant-growth-regulator treatment must be kept conceptually separate."
+  ],
+  "cultivationRelevance": [
+    "Treat tissue-culture cytokinin protocols as genotype-specific experiments with hormone-free and known-protocol controls. Record carryover across subcultures.",
+    "Do not diagnose slow branching as a cytokinin deficiency. Check apical dominance, node maturity, light, roots, water, nutrients, temperature, and disease first."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Material",
+      "requirement": "Genotype, explant type, node, physiological age, source plant, and health status."
+    },
+    {
+      "field": "Regulator",
+      "requirement": "Cytokinin identity, concentration, auxin combination, exposure duration, and subculture count."
+    },
+    {
+      "field": "Culture/system",
+      "requirement": "Basal medium, vessels, light, temperature, gas exchange, and contamination status."
+    },
+    {
+      "field": "Response",
+      "requirement": "Bud break, shoot count, length, callus, rooting, hyperhydricity, and off-types."
+    },
+    {
+      "field": "Acclimation",
+      "requirement": "Ex vitro survival, morphology, rooting, growth stability, and retained treatment history."
+    }
+  ],
+  "misconceptions": [
+    "Cytokinin simply makes plants bushy: Branching also depends on auxin, sugars, strigolactones, buds, roots, and environment.",
+    "One auxin-to-cytokinin ratio works for cannabis: Genotype, explant, medium, and treatment history shift response.",
+    "Delayed senescence is always beneficial: Retaining green tissue does not guarantee continued carbon export or disease-free function."
+  ],
+  "evidenceLimits": [
+    "Cannabis cytokinin research is concentrated in micropropagation and varies greatly by genotype. Visual shoot multiplication alone does not establish genetic identity, epigenetic stability, pathogen freedom, or long-term phenotypic fidelity."
+  ],
+  "crossLinks": "THC-ENC-073, THC-ENC-075–079, THC-ENC-201–220, and THC-ENC-221–240.",
+  "sourceNotes": [
+    "Taiz L, Moller IM, Murphy A, and Zeiger E. Plant Physiology and Development. 7th ed. Oxford University Press, 2022.  Publisher record",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet v1. May 2026.  Project source packet.",
+    "THC - Teaching Healthy Cultivation. Cultivation SOP Source Materials Packet v1. May 2026.  Project source packet.",
+    "Holmes JE et al. Variables Affecting Shoot Growth and Plantlet Recovery in Tissue Cultures of Drug-Type Cannabis sativa L. Frontiers in Plant Science. 2021;12:732344.  Open source",
+    "Hesami M et al. Effect of Explant Source on Phenotypic Changes of In Vitro Grown Cannabis Plantlets over Multiple Subcultures. Biology. 2023;12:443.  Open source"
+  ],
+  "slug": "plant-hormones-cytokinins",
+  "route": "/encyclopedia/plant-hormones-cytokinins",
+  "knowledgeCheck": [
+    "For \"Plant Hormones: Cytokinins\", explain the mechanism behind this objective: Explain cytokinin synthesis, transport, cell-division and shoot-development roles, and why cytokinin effects depend on auxin balance, genotype, tissue, and nutrient status. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Cytokinin simply makes plants bushy: Branching also depends on auxin, sugars, strigolactones, buds, roots, and environment.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Treat tissue-culture cytokinin protocols as genotype-specific experiments with hormone-free and known-protocol controls. Record carryover across subcultures. Build a verification plan using the lesson's record set (Material: Genotype, explant type, node, physiological age, source plant, and health status.; Regulator: Cytokinin identity, concentration, auxin combination, exposure duration, and subculture count.; Culture/system: Basal medium, vessels, light, temperature, gas exchange, and contamination status.; Response: Bud break, shoot count, length, callus, rooting, hyperhydricity, and off-types.; Acclimation: Ex vitro survival, morphology, rooting, growth stability, and retained treatment history.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  },
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia canonical 420 source set",
+    "evidenceControl": "claim_level_evidence_migration_pending",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending",
+    "externalReviewType": "plant_science_and_cultivation_reference",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_from_publication",
+    "releaseGateReason": [
+      "claim_level_evidence_migration_pending",
+      "approved_teaching_visual_pending",
+      "assessment_rationale_independent_review_pending",
+      "visitor_facing_release_verification_pending"
+    ],
+    "materializedBy": "scripts/materialize-encyclopedia-release-controls.mjs",
+    "materializedAt": "source-controlled"
+  }
+}

@@ -24,7 +24,14 @@
     "Track selfing generation separately from filial generation, compare each selfed family with the parent and outcrossed checks, and record losses rather than discarding them from the analysis."
   ],
   "measureAndRecord": [
-    "Parent ID and heterozygosity; selfing method; S generation; seed set and germination; family size; vigor, fertility, sex and abnormality rates; trait variance; molecular homozygosity; selected families and preserved backups."
+    {
+      "field": "Breeding decision record",
+      "requirement": "For Selfing, Inbreeding, and Inbreeding Depression, record program ID, generation or cross ID, parent or family IDs, target traits, selection criteria, trait units, rejection rules, and the decision date. Preserve the original controlled note: Parent ID and heterozygosity; selfing method; S generation; seed set and germination; family size; vigor, fertility, sex and abnormality rates; trait variance; molecular homozygosity; selected families and preserved backups."
+    },
+    {
+      "field": "Evidence and population record",
+      "requirement": "Record population size, sampling method, trial environment, replication, lab or field measurements, pedigree or marker evidence when used, selected individuals or families, and the reason the result does or does not meet the release standard."
+    }
   ],
   "misconceptions": [
     "S1 seed is genetically identical to the mother.",

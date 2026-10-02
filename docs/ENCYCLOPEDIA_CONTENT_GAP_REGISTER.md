@@ -10,6 +10,7 @@ Updated: 2026-09-29
 - Volumes 18–21: 80 controlled draft lessons stored in 16 five-lesson collections.
 - Current authority model: Master 420-Entry Content Map v1.1 is the base registry; later controlled Volume 18–21 manuscripts are version-controlled overrides for their ranges.
 - Machine-readable authority: `content/encyclopedia/current-controlled-registry.json`.
+- Generated canonical manifest: `content/encyclopedia/canonical-420-manifest.json` now projects the controlled registry into one release-facing data contract with exact titles, stable ID routes, Part hubs, A-Z metadata, subject-library mappings, template types, tool integrations, redirect candidates, production gates, and certification-boundary metadata.
 
 ## Assessment coverage
 
@@ -52,6 +53,8 @@ Every lesson must ultimately contain or resolve to:
 - All-source resolution queue: `data/encyclopedia-source-resolution-queue.json`.
 - Materialized assessment/rationale package: `data/encyclopedia-assessment-rationale-package.json`.
 - Controlled visual-production queue: `content/encyclopedia/visual-production-queue-v1.json`.
+- Canonical architecture validator: `scripts/validate-encyclopedia-canonical-architecture.mjs`.
+- Release-status report: `data/encyclopedia-release-status.json` and `docs/ENCYCLOPEDIA_RELEASE_STATUS.md`.
 - Source collection and claim mapping are review-pending by design. They do not approve lessons, change `publicationAuthorized`, or release held drafts.
 
 ## Validation commands
@@ -75,5 +78,10 @@ Every lesson must ultimately contain or resolve to:
 - `npm run verify:encyclopedia-production-queues`
   - builds and validates 420/420 assessment-rationale drafts, visual briefs, and source-resolution records;
   - hard-fails any accidental approval or publication-state promotion in generated production queues.
+
+- `npm run verify:encyclopedia-architecture`
+  - regenerates the canonical 420 manifest, completion scorecard, evidence tracking, visual queue, discovery index, redirect candidates, and release report;
+  - hard-fails duplicate IDs/routes/slugs, broken THC-ENC references, incomplete search records, review-only body leakage, invalid source metadata, missing visual metadata, and published placeholder/draft markers;
+  - keeps deployment state truthful by reporting source-only changes as `SOURCE_ONLY_NOT_VERIFIED_LIVE` until visitor-facing verification is performed.
 
 The goal is to make the strict command pass without weakening the standard.

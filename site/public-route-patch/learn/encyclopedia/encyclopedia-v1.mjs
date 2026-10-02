@@ -7,6 +7,7 @@ const topicsHost=document.querySelector('[data-topics]');
 const library=document.querySelector('[data-library]');
 const statusText=document.querySelector('[data-status-text]');
 const formatHost=document.querySelector('[data-format-filters]');
+const letterHost=document.querySelector('[data-letter-filters]');
 const title=document.querySelector('[data-library-title]');
 const visibleStat=document.querySelector('[data-stat-visible]');
 const publishedStat=document.querySelector('[data-stat-published]');
@@ -17,6 +18,7 @@ let fuse=null;
 let activeStatus='all';
 let activeFormat='all';
 let activePart=null;
+let activeLetter='all';
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const normalize=v=>String(v??'').trim().toLowerCase();
@@ -27,6 +29,7 @@ function syncUrl(){
  if(activePart)params.set('topic',String(activePart));else params.delete('topic');
  if(activeStatus!=='all')params.set('status',activeStatus);else params.delete('status');
  if(activeFormat!=='all')params.set('format',activeFormat);else params.delete('format');
+ if(activeLetter!=='all')params.set('letter',activeLetter);else params.delete('letter');
  params.delete('lesson');
  const next=params.toString()?location.pathname+'?'+params.toString():location.pathname;
  history.replaceState(null,'',next);
@@ -40,15 +43,16 @@ function filtered(){
  if(activePart)rows=rows.filter(x=>x.part===activePart);
  if(activeStatus!=='all')rows=rows.filter(x=>x.status===activeStatus);
  if(activeFormat!=='all')rows=rows.filter(x=>normalize(x.primaryFormat)===normalize(activeFormat));
+ if(activeLetter!=='all')rows=rows.filter(x=>normalize(x.azInitial||'#')===normalize(activeLetter));
  return rows;
 }
 function renderTopics(){
- topicsHost.innerHTML=payload.topics.map(t=>'<button class="topic" type="button" data-part="'+t.part+'"><span class="topic-num">Part '+String(t.part).padStart(2,'0')+' · '+t.range[0]+'–'+t.range[1]+'</span><h3>'+esc(t.title)+'</h3><p>'+esc(t.description)+'</p><div class="topic-meta">'+t.publishedCount+' published · '+t.count+' catalogued</div></button>').join('');
+ topicsHost.innerHTML=payload.topics.map(t=>'<button class="topic" type="button" data-part="'+t.part+'" aria-pressed="'+String(activePart===Number(t.part))+'"><span class="topic-num">Part '+String(t.part).padStart(2,'0')+' · '+t.range[0]+'–'+t.range[1]+'</span><h3>'+esc(t.canonicalTitle||t.title)+'</h3><p>'+esc(t.scope||t.description)+'</p><div class="topic-meta">'+t.publishedCount+' published · '+t.count+' catalogued · '+(t.templateTypes||[]).length+' templates</div></button>').join('');
  for(const button of topicsHost.querySelectorAll('[data-part]')){
   button.addEventListener('click',()=>{
    const part=Number(button.dataset.part);
    activePart=activePart===part?null:part;
-   syncUrl();render();
+   syncUrl();renderTopics();render();
    document.querySelector('[data-library-title]')?.scrollIntoView({behavior:'smooth',block:'start'});
   });
  }
@@ -58,6 +62,13 @@ function renderFormats(){
  formatHost.innerHTML='<button class="chip" type="button" data-format="all" aria-pressed="true">All formats</button>'+formats.map(x=>'<button class="chip" type="button" data-format="'+esc(x)+'" aria-pressed="false">'+esc(x)+'</button>').join('');
  for(const button of formatHost.querySelectorAll('[data-format]')){
   button.addEventListener('click',()=>{activeFormat=button.dataset.format;setPressed(formatHost,button);syncUrl();render()});
+ }
+}
+function renderLetters(){
+ const letters=[...new Set(payload.lessons.map(x=>x.azInitial||'#'))].sort((a,b)=>a.localeCompare(b));
+ letterHost.innerHTML='<button class="chip" type="button" data-letter="all" aria-pressed="true">A-Z</button>'+letters.map(x=>'<button class="chip" type="button" data-letter="'+esc(x)+'" aria-pressed="false">'+esc(x)+'</button>').join('');
+ for(const button of letterHost.querySelectorAll('[data-letter]')){
+  button.addEventListener('click',()=>{activeLetter=button.dataset.letter;setPressed(letterHost,button);syncUrl();render()});
  }
 }
 function render(){
@@ -70,6 +81,7 @@ function render(){
  if(topic)parts.push(topic.title);
  if(activeStatus!=='all')parts.push(activeStatus==='published'?'published only':'in review only');
  if(activeFormat!=='all')parts.push(activeFormat);
+ if(activeLetter!=='all')parts.push('A-Z '+activeLetter);
  statusText.textContent=rows.length+' entr'+(rows.length===1?'y':'ies')+(parts.length?' · '+parts.join(' · '):'');
  library.innerHTML=rows.length?rows.map(item=>{
   const published=item.status==='published';
@@ -82,10 +94,10 @@ function render(){
 document.querySelector('[data-status-filters]').addEventListener('click',e=>{
  const b=e.target.closest('[data-status]');if(!b)return;activeStatus=b.dataset.status;setPressed(e.currentTarget,b);syncUrl();render();
 });
-q.addEventListener('input',()=>{activePart=null;syncUrl();render()});
-clear.addEventListener('click',()=>{q.value='';activePart=null;activeStatus='all';activeFormat='all';const statusAll=document.querySelector('[data-status="all"]');if(statusAll)setPressed(document.querySelector('[data-status-filters]'),statusAll);renderFormats();syncUrl();render();q.focus()});
+q.addEventListener('input',()=>{activePart=null;renderTopics();syncUrl();render()});
+clear.addEventListener('click',()=>{q.value='';activePart=null;activeStatus='all';activeFormat='all';activeLetter='all';const statusAll=document.querySelector('[data-status="all"]');if(statusAll)setPressed(document.querySelector('[data-status-filters]'),statusAll);renderTopics();renderFormats();renderLetters();syncUrl();render();q.focus()});
 
-const params=new URLSearchParams(location.search);const requested=params.get('lesson');const requestedQuery=params.get('q');const requestedTopic=Number(params.get('topic'));const requestedStatus=params.get('status');const requestedFormat=params.get('format');
+const params=new URLSearchParams(location.search);const requested=params.get('lesson');const requestedQuery=params.get('q');const requestedTopic=Number(params.get('topic'));const requestedStatus=params.get('status');const requestedFormat=params.get('format');const requestedLetter=params.get('letter');
 const loadIndex=window.__THC_ENCYCLOPEDIA_INDEX__?Promise.resolve(window.__THC_ENCYCLOPEDIA_INDEX__):fetch('./encyclopedia-index.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('Index failed to load');return r.json()});
 loadIndex.then(data=>{
  payload=data;
@@ -113,13 +125,16 @@ loadIndex.then(data=>{
   {name:'keywords',weight:.025}
  ]
 });
- renderTopics();renderFormats();
+ renderTopics();renderFormats();renderLetters();
  if(requested){q.value=requested}
  else if(requestedQuery){q.value=requestedQuery}
  if(Number.isInteger(requestedTopic)&&payload.topics.some(x=>Number(x.part)===requestedTopic))activePart=requestedTopic;
  if(['published','catalogued-review'].includes(requestedStatus))activeStatus=requestedStatus;
  if(requestedFormat&&payload.lessons.some(x=>normalize(x.primaryFormat)===normalize(requestedFormat)))activeFormat=requestedFormat;
+ if(requestedLetter&&payload.lessons.some(x=>normalize(x.azInitial)===normalize(requestedLetter)))activeLetter=requestedLetter.toUpperCase();
  const statusButton=document.querySelector('[data-status="'+activeStatus+'"]');if(statusButton)setPressed(document.querySelector('[data-status-filters]'),statusButton);
  const formatButton=[...formatHost.querySelectorAll('[data-format]')].find(x=>normalize(x.dataset.format)===normalize(activeFormat));if(formatButton)setPressed(formatHost,formatButton);
+ const letterButton=[...letterHost.querySelectorAll('[data-letter]')].find(x=>normalize(x.dataset.letter)===normalize(activeLetter));if(letterButton)setPressed(letterHost,letterButton);
+ renderTopics();
  render();
 }).catch(error=>{console.error('[THC encyclopedia]',error);statusText.textContent='The encyclopedia index could not load.';library.innerHTML='<div class="empty"><strong>Encyclopedia index unavailable.</strong><p>Use the Learning Center while this index is restored.</p></div>'});

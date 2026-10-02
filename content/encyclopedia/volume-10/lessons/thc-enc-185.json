@@ -4,13 +4,34 @@
   "title": "Topping and Meristem Removal",
   "objective": "Explain what changes biologically when an actively growing shoot apex is removed, how topping differs from simple bending or branch removal, and how to evaluate recovery and architecture without promising a universal yield response.",
   "terms": [
-    {"term":"shoot apical meristem","definition":"The actively dividing tissue at the shoot tip that produces new stem, leaf, and axillary-meristem structures."},
-    {"term":"topping","definition":"Deliberate removal of the actively growing terminal portion of a shoot to interrupt its current apical growth and alter subsequent branch hierarchy."},
-    {"term":"decapitation","definition":"A plant-development research term for removal of a shoot apex; its physiological effects are often used to study apical dominance and branching."},
-    {"term":"axillary bud","definition":"A bud at a node that can remain inhibited or develop into a lateral shoot after changes in signaling, resources, or competing shoot activity."},
-    {"term":"wound response","definition":"Local and systemic biological responses initiated when tissues are cut or damaged, including sealing, defense, hydraulic adjustment, and repair processes."},
-    {"term":"branch hierarchy","definition":"The ordered relationship among the main stem, primary branches, secondary branches, and higher-order shoots."},
-    {"term":"source-sink relationship","definition":"The changing movement and allocation of carbon, water, mineral nutrients, and other resources among producing and consuming plant organs."}
+    {
+      "term": "shoot apical meristem",
+      "definition": "The actively dividing tissue at the shoot tip that produces new stem, leaf, and axillary-meristem structures."
+    },
+    {
+      "term": "topping",
+      "definition": "Deliberate removal of the actively growing terminal portion of a shoot to interrupt its current apical growth and alter subsequent branch hierarchy."
+    },
+    {
+      "term": "decapitation",
+      "definition": "A plant-development research term for removal of a shoot apex; its physiological effects are often used to study apical dominance and branching."
+    },
+    {
+      "term": "axillary bud",
+      "definition": "A bud at a node that can remain inhibited or develop into a lateral shoot after changes in signaling, resources, or competing shoot activity."
+    },
+    {
+      "term": "wound response",
+      "definition": "Local and systemic biological responses initiated when tissues are cut or damaged, including sealing, defense, hydraulic adjustment, and repair processes."
+    },
+    {
+      "term": "branch hierarchy",
+      "definition": "The ordered relationship among the main stem, primary branches, secondary branches, and higher-order shoots."
+    },
+    {
+      "term": "source-sink relationship",
+      "definition": "The changing movement and allocation of carbon, water, mineral nutrients, and other resources among producing and consuming plant organs."
+    }
   ],
   "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
   "coreScience": [
@@ -24,11 +45,26 @@
     "Use clean, appropriate cutting practices under the cultivation site's sanitation and biosecurity procedures, and avoid presenting a cut as biologically harmless. After topping, observe wound condition, branch activation, whole-plant water status, and resumed growth before interpreting the final architecture."
   ],
   "measureAndRecord": [
-    {"field":"Cut identity","requirement":"Plant ID, shoot identity, date, developmental stage, exact node or position, and whether only the terminal apex or additional leaf/stem tissue was removed."},
-    {"field":"Pre-cut architecture","requirement":"Plant height, node count, active branches, reference internode lengths, canopy dimensions, and recent growth status."},
-    {"field":"Wound and recovery","requirement":"Visible cut condition, wilting, discoloration, infection concerns, time to stable new growth, and any branch or stem failure."},
-    {"field":"Branch response","requirement":"Which axillary buds grew, number of sustained replacement shoots, their elongation rates or lengths, branch angles, and resulting hierarchy."},
-    {"field":"Crop outcome","requirement":"Final canopy dimensions and the relevant endpoint such as dry inflorescence mass, yield per area, chemical concentration, compound yield, uniformity, or labor; keep these metrics separate."}
+    {
+      "field": "Cut identity",
+      "requirement": "Plant ID, shoot identity, date, developmental stage, exact node or position, and whether only the terminal apex or additional leaf/stem tissue was removed."
+    },
+    {
+      "field": "Pre-cut architecture",
+      "requirement": "Plant height, node count, active branches, reference internode lengths, canopy dimensions, and recent growth status."
+    },
+    {
+      "field": "Wound and recovery",
+      "requirement": "Visible cut condition, wilting, discoloration, infection concerns, time to stable new growth, and any branch or stem failure."
+    },
+    {
+      "field": "Branch response",
+      "requirement": "Which axillary buds grew, number of sustained replacement shoots, their elongation rates or lengths, branch angles, and resulting hierarchy."
+    },
+    {
+      "field": "Crop outcome",
+      "requirement": "Final canopy dimensions and the relevant endpoint such as dry inflorescence mass, yield per area, chemical concentration, compound yield, uniformity, or labor; keep these metrics separate."
+    }
   ],
   "misconceptions": [
     "Topping always creates exactly two equal leaders.",
@@ -63,5 +99,19 @@
     "websiteAction": "publish_with_review_notice"
   },
   "slug": "topping-and-meristem-removal",
-  "route": "/encyclopedia/topping-and-meristem-removal"
+  "route": "/encyclopedia/topping-and-meristem-removal",
+  "knowledgeCheck": [
+    "For \"Topping and Meristem Removal\", explain the mechanism behind this objective: Explain what changes biologically when an actively growing shoot apex is removed, how topping differs from simple bending or branch removal, and how to evaluate recovery and architecture without promising a universal yield response. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Topping always creates exactly two equal leaders.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Define the reason for topping before performing or evaluating it: changing height, redistributing shoot dominance, filling horizontal space, altering light distribution, creating a comparison architecture, or another measurable goal. The intervention is successful only if the defined plant and crop endpoints improve without unacceptable loss or injury. Build a verification plan using the lesson's record set (Cut identity: Plant ID, shoot identity, date, developmental stage, exact node or position, and whether only the terminal apex or additional leaf/stem tissue was removed.; Pre-cut architecture: Plant height, node count, active branches, reference internode lengths, canopy dimensions, and recent growth status.; Wound and recovery: Visible cut condition, wilting, discoloration, infection concerns, time to stable new growth, and any branch or stem failure.; Branch response: Which axillary buds grew, number of sustained replacement shoots, their elongation rates or lengths, branch angles, and resulting hierarchy.; Crop outcome: Final canopy dimensions and the relevant endpoint such as dry inflorescence mass, yield per area, chemical concentration, compound yield, uniformity, or labor; keep these metrics separate.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  }
 }

@@ -25,7 +25,14 @@
     "Create a phenotype dictionary shared across breeding, cultivation, laboratory, and postharvest teams. Pilot it before the main population."
   ],
   "measureAndRecord": [
-    "Trait name and definition; unit; instrument/observer; stage/date/time; plant and position; height/width/nodes/branches; flowering milestones; fresh/dry fractions; marketable and rejected yield; moisture basis; images; repeatability and missingness."
+    {
+      "field": "Breeding decision record",
+      "requirement": "For Phenotyping Morphology, Flowering, and Yield, record program ID, generation or cross ID, parent or family IDs, target traits, selection criteria, trait units, rejection rules, and the decision date. Preserve the original controlled note: Trait name and definition; unit; instrument/observer; stage/date/time; plant and position; height/width/nodes/branches; flowering milestones; fresh/dry fractions; marketable and rejected yield; moisture basis; images; repeatability and missingness."
+    },
+    {
+      "field": "Evidence and population record",
+      "requirement": "Record population size, sampling method, trial environment, replication, lab or field measurements, pedigree or marker evidence when used, selected individuals or families, and the reason the result does or does not meet the release standard."
+    }
   ],
   "misconceptions": [
     "Dry flower weight and harvest yield are interchangeable.",

@@ -1,1 +1,105 @@
-{"id":"THC-ENC-144","number":144,"title":"Quantitative Traits and Polygenic Inheritance","objective":"Explain continuous trait variation using multiple loci, environmental effects, linkage, and interactions rather than a single-gene story.","terms":[{"term":"Quantitative trait","definition":"Phenotype measured on a scale and influenced by multiple genetic and nongenetic factors."},{"term":"QTL","definition":"Genomic region statistically associated with variation in a quantitative trait in a defined population."},{"term":"Epistasis","definition":"Effect of one locus depends on genotype at another locus."},{"term":"Pleiotropy","definition":"A locus influences more than one measured trait."}],"coreScience":["Plant height, flowering date, biomass, branch architecture, disease response, and most chemical concentrations vary quantitatively. Many loci contribute small or moderate effects; the environment, development, and measurement process add more variation. A smooth distribution does not mean genes are unimportant, and a significant QTL does not mean one gene controls the trait.","QTL location and effect size depend on the parents, recombination represented in the mapping population, sample size, environment, statistical model, and marker density. Linked causal variants can appear as one broad region. Pleiotropy and tight linkage can also make several traits map together without proving one mechanism.","Selection on a quantitative trait changes allele frequencies across many loci. Correlated responses can be helpful or costly: selecting later flowering, greater biomass, or a particular cannabinoid profile may shift other traits because of shared biology, linkage, or population structure."],"cultivationRelevance":["Define each breeding target numerically before selection. 'Strong,' 'frosty,' or 'fast' must become measurable endpoints with sampling rules, dates, and environmental context.","Replicated family means, check cultivars, randomized positions, and multi-trait records are more reliable than selecting only the largest individual from an uneven room."],"measureAndRecord":[{"field":"Trait protocol","requirement":"Operational definition, unit, sample organ, stage, instrument, observer, and repeatability."},{"field":"Population","requirement":"Pedigree, family structure, n, missing plants, selection history, and relatedness."},{"field":"Environment","requirement":"Site or room, season, substrate, light, nutrition, stress, and spatial block."},{"field":"Analysis","requirement":"Model, covariates, marker set, multiple-testing control, effect estimate, and uncertainty."},{"field":"Selection","requirement":"Index or threshold, correlated traits, retained families, rejected families, and validation generation."}],"misconceptions":["A QTL is the gene: A QTL is an associated region until causal variants and mechanism are demonstrated.","The highest individual has the best genetics: An extreme value can reflect environment, error, or a favorable interaction.","Polygenic means unpredictable: Prediction is possible, but accuracy depends on training population, heritability, and validation."],"evidenceLimits":["Published cannabis QTL studies represent limited crosses and germplasm. Effect sizes often shrink when tested in new populations or environments, and association is not proof of causation."],"crossLinks":"THC-ENC-141-147, THC-ENC-183-200, THC-ENC-341-360, and THC-GROW-030.","sourceNotes":["Woods P. et al. (2021). Quantitative trait loci controlling agronomic and biochemical traits in Cannabis sativa. Genetics 219:iyab099.","Stack G.M. et al. (2023). Correlations among morphological and biochemical traits in high-cannabinoid hemp. Plant Direct 7:e503.","Petit J. et al. (2020). Genetic variability of morphological, flowering, and biomass quality traits in hemp. Frontiers in Plant Science 11:102.","THC Cannabis Plant Science Source Packet v1.1 (project source, May 2026)."],"slug":"quantitative-traits-and-polygenic-inheritance","route":"/encyclopedia/quantitative-traits-and-polygenic-inheritance"}
+{
+  "id": "THC-ENC-144",
+  "number": 144,
+  "title": "Quantitative Traits and Polygenic Inheritance",
+  "objective": "Explain continuous trait variation using multiple loci, environmental effects, linkage, and interactions rather than a single-gene story.",
+  "terms": [
+    {
+      "term": "Quantitative trait",
+      "definition": "Phenotype measured on a scale and influenced by multiple genetic and nongenetic factors."
+    },
+    {
+      "term": "QTL",
+      "definition": "Genomic region statistically associated with variation in a quantitative trait in a defined population."
+    },
+    {
+      "term": "Epistasis",
+      "definition": "Effect of one locus depends on genotype at another locus."
+    },
+    {
+      "term": "Pleiotropy",
+      "definition": "A locus influences more than one measured trait."
+    }
+  ],
+  "coreScience": [
+    "Plant height, flowering date, biomass, branch architecture, disease response, and most chemical concentrations vary quantitatively. Many loci contribute small or moderate effects; the environment, development, and measurement process add more variation. A smooth distribution does not mean genes are unimportant, and a significant QTL does not mean one gene controls the trait.",
+    "QTL location and effect size depend on the parents, recombination represented in the mapping population, sample size, environment, statistical model, and marker density. Linked causal variants can appear as one broad region. Pleiotropy and tight linkage can also make several traits map together without proving one mechanism.",
+    "Selection on a quantitative trait changes allele frequencies across many loci. Correlated responses can be helpful or costly: selecting later flowering, greater biomass, or a particular cannabinoid profile may shift other traits because of shared biology, linkage, or population structure."
+  ],
+  "cultivationRelevance": [
+    "Define each breeding target numerically before selection. 'Strong,' 'frosty,' or 'fast' must become measurable endpoints with sampling rules, dates, and environmental context.",
+    "Replicated family means, check cultivars, randomized positions, and multi-trait records are more reliable than selecting only the largest individual from an uneven room."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Trait protocol",
+      "requirement": "Operational definition, unit, sample organ, stage, instrument, observer, and repeatability."
+    },
+    {
+      "field": "Population",
+      "requirement": "Pedigree, family structure, n, missing plants, selection history, and relatedness."
+    },
+    {
+      "field": "Environment",
+      "requirement": "Site or room, season, substrate, light, nutrition, stress, and spatial block."
+    },
+    {
+      "field": "Analysis",
+      "requirement": "Model, covariates, marker set, multiple-testing control, effect estimate, and uncertainty."
+    },
+    {
+      "field": "Selection",
+      "requirement": "Index or threshold, correlated traits, retained families, rejected families, and validation generation."
+    }
+  ],
+  "misconceptions": [
+    "A QTL is the gene: A QTL is an associated region until causal variants and mechanism are demonstrated.",
+    "The highest individual has the best genetics: An extreme value can reflect environment, error, or a favorable interaction.",
+    "Polygenic means unpredictable: Prediction is possible, but accuracy depends on training population, heritability, and validation."
+  ],
+  "evidenceLimits": [
+    "Published cannabis QTL studies represent limited crosses and germplasm. Effect sizes often shrink when tested in new populations or environments, and association is not proof of causation."
+  ],
+  "crossLinks": "THC-ENC-141-147, THC-ENC-183-200, THC-ENC-341-360, and THC-GROW-030.",
+  "sourceNotes": [
+    "Woods P. et al. (2021). Quantitative trait loci controlling agronomic and biochemical traits in Cannabis sativa. Genetics 219:iyab099.",
+    "Stack G.M. et al. (2023). Correlations among morphological and biochemical traits in high-cannabinoid hemp. Plant Direct 7:e503.",
+    "Petit J. et al. (2020). Genetic variability of morphological, flowering, and biomass quality traits in hemp. Frontiers in Plant Science 11:102.",
+    "THC Cannabis Plant Science Source Packet v1.1 (project source, May 2026)."
+  ],
+  "slug": "quantitative-traits-and-polygenic-inheritance",
+  "route": "/encyclopedia/quantitative-traits-and-polygenic-inheritance",
+  "knowledgeCheck": [
+    "For \"Quantitative Traits and Polygenic Inheritance\", explain the mechanism behind this objective: Explain continuous trait variation using multiple loci, environmental effects, linkage, and interactions rather than a single-gene story. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"A QTL is the gene: A QTL is an associated region until causal variants and mechanism are demonstrated.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Define each breeding target numerically before selection. 'Strong,' 'frosty,' or 'fast' must become measurable endpoints with sampling rules, dates, and environmental context. Build a verification plan using the lesson's record set (Trait protocol: Operational definition, unit, sample organ, stage, instrument, observer, and repeatability.; Population: Pedigree, family structure, n, missing plants, selection history, and relatedness.; Environment: Site or room, season, substrate, light, nutrition, stress, and spatial block.; Analysis: Model, covariates, marker set, multiple-testing control, effect estimate, and uncertainty.; Selection: Index or threshold, correlated traits, retained families, rejected families, and validation generation.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  },
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia canonical 420 source set",
+    "evidenceControl": "claim_level_evidence_migration_pending",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending",
+    "externalReviewType": "plant_science_and_cultivation_reference",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_from_publication",
+    "releaseGateReason": [
+      "claim_level_evidence_migration_pending",
+      "approved_teaching_visual_pending",
+      "assessment_rationale_independent_review_pending",
+      "visitor_facing_release_verification_pending"
+    ],
+    "materializedBy": "scripts/materialize-encyclopedia-release-controls.mjs",
+    "materializedAt": "source-controlled"
+  }
+}

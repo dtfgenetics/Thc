@@ -4,12 +4,30 @@
   "title": "FIM-Style Cuts and Variable Outcomes",
   "objective": "Explain why partial or irregular cuts through an actively developing shoot apex can produce variable architecture, and distinguish documented meristem biology from informal claims about predictable FIM outcomes.",
   "terms": [
-    {"term":"FIM-style cut","definition":"Cultivation terminology for a partial or irregular cut through the developing shoot tip intended to alter apical growth without cleanly removing the entire terminal meristem region."},
-    {"term":"shoot apical meristem","definition":"The actively dividing shoot-tip tissue that maintains stem cells and initiates new leaves, nodes, and associated axillary structures."},
-    {"term":"leaf primordium","definition":"An early developing leaf structure initiated near the shoot apical meristem."},
-    {"term":"meristem injury","definition":"Physical damage to some or all of a meristematic region that can change subsequent organ initiation, symmetry, or shoot continuation."},
-    {"term":"organogenesis","definition":"The developmental process by which new plant organs such as leaves and shoots are initiated and formed."},
-    {"term":"variable outcome","definition":"A response that is not reliably identical among plants because the exact tissue affected, developmental stage, genotype, environment, and recovery differ."}
+    {
+      "term": "FIM-style cut",
+      "definition": "Cultivation terminology for a partial or irregular cut through the developing shoot tip intended to alter apical growth without cleanly removing the entire terminal meristem region."
+    },
+    {
+      "term": "shoot apical meristem",
+      "definition": "The actively dividing shoot-tip tissue that maintains stem cells and initiates new leaves, nodes, and associated axillary structures."
+    },
+    {
+      "term": "leaf primordium",
+      "definition": "An early developing leaf structure initiated near the shoot apical meristem."
+    },
+    {
+      "term": "meristem injury",
+      "definition": "Physical damage to some or all of a meristematic region that can change subsequent organ initiation, symmetry, or shoot continuation."
+    },
+    {
+      "term": "organogenesis",
+      "definition": "The developmental process by which new plant organs such as leaves and shoots are initiated and formed."
+    },
+    {
+      "term": "variable outcome",
+      "definition": "A response that is not reliably identical among plants because the exact tissue affected, developmental stage, genotype, environment, and recovery differ."
+    }
   ],
   "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
   "coreScience": [
@@ -23,11 +41,26 @@
     "Do not interpret malformed young leaves immediately after a partial cut as a nutrient disorder without considering direct injury to developing primordia. Follow new growth beyond the damaged region before assigning a systemic diagnosis."
   ],
   "measureAndRecord": [
-    {"field":"Cut description","requirement":"Plant and shoot ID, date, node position, developmental stage, approximate portion of the terminal tissue affected, and photographs before and after where possible."},
-    {"field":"Immediate injury","requirement":"Visible meristem loss, damaged primordia, split tissue, wilting, discoloration, or intact terminal growth."},
-    {"field":"Shoot response","requirement":"Number and identity of sustained growing points, axillary-bud activation, leader symmetry, distorted leaves, and time to resumed extension."},
-    {"field":"Architecture outcome","requirement":"Height, branch number/order, canopy spread, dominant-leader count, and whether later pruning or support changed the response."},
-    {"field":"Crop endpoint","requirement":"Defined yield, quality, uniformity, labor, or structural endpoint compared with a reference when possible."}
+    {
+      "field": "Cut description",
+      "requirement": "Plant and shoot ID, date, node position, developmental stage, approximate portion of the terminal tissue affected, and photographs before and after where possible."
+    },
+    {
+      "field": "Immediate injury",
+      "requirement": "Visible meristem loss, damaged primordia, split tissue, wilting, discoloration, or intact terminal growth."
+    },
+    {
+      "field": "Shoot response",
+      "requirement": "Number and identity of sustained growing points, axillary-bud activation, leader symmetry, distorted leaves, and time to resumed extension."
+    },
+    {
+      "field": "Architecture outcome",
+      "requirement": "Height, branch number/order, canopy spread, dominant-leader count, and whether later pruning or support changed the response."
+    },
+    {
+      "field": "Crop endpoint",
+      "requirement": "Defined yield, quality, uniformity, labor, or structural endpoint compared with a reference when possible."
+    }
   ],
   "misconceptions": [
     "A FIM-style cut reliably produces the same number of leaders every time.",
@@ -60,5 +93,19 @@
     "websiteAction": "publish_with_review_notice"
   },
   "slug": "fim-style-cuts-and-variable-outcomes",
-  "route": "/encyclopedia/fim-style-cuts-and-variable-outcomes"
+  "route": "/encyclopedia/fim-style-cuts-and-variable-outcomes",
+  "knowledgeCheck": [
+    "For \"FIM-Style Cuts and Variable Outcomes\", explain the mechanism behind this objective: Explain why partial or irregular cuts through an actively developing shoot apex can produce variable architecture, and distinguish documented meristem biology from informal claims about predictable FIM outcomes. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"A FIM-style cut reliably produces the same number of leaders every time.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Record FIM-style cuts as partial meristem injuries rather than assuming a fixed architectural result. If the goal is comparison or repeatability, document the exact shoot position, developmental stage, visible tissue removed, subsequent leader count, and recovery. Build a verification plan using the lesson's record set (Cut description: Plant and shoot ID, date, node position, developmental stage, approximate portion of the terminal tissue affected, and photographs before and after where possible.; Immediate injury: Visible meristem loss, damaged primordia, split tissue, wilting, discoloration, or intact terminal growth.; Shoot response: Number and identity of sustained growing points, axillary-bud activation, leader symmetry, distorted leaves, and time to resumed extension.; Architecture outcome: Height, branch number/order, canopy spread, dominant-leader count, and whether later pruning or support changed the response.; Crop endpoint: Defined yield, quality, uniformity, labor, or structural endpoint compared with a reference when possible.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  }
 }

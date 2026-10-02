@@ -98,30 +98,35 @@ export function buildLessonAnswerRationalesV1(lesson){
   const records=(Array.isArray(lesson?.measureAndRecord)?lesson.measureAndRecord:[]).map(item=>typeof item==='string'?item:`${item?.field||'Record'}: ${item?.requirement||''}`).filter(Boolean);
   const misconceptions=(Array.isArray(lesson?.misconceptions)?lesson.misconceptions:[]).filter(Boolean);
   const limits=(Array.isArray(lesson?.evidenceLimits)?lesson.evidenceLimits:[lesson?.evidenceLimits]).filter(Boolean);
+  const normalizePoints=points=>points.map(point=>{
+    const text=String(point||'').trim();
+    if(text.length>=40) return text;
+    return `${text} Treat this as a required evidence field with timing, method, and reviewer context so the learner's answer remains verifiable.`;
+  });
 
-  const mechanism=[
+  const mechanism=normalizePoints([
     `A strong answer should connect the response to the lesson objective: ${objective}`,
     science[0]||'Use the lesson mechanism rather than a memorized target.',
     science[1]||'Use a second lesson-specific science statement to support the explanation.',
     records[0]?`The most useful verification evidence includes ${records[0]}.`:'Choose an observation or measurement that directly tests the proposed mechanism.',
     limits[0]?`Keep this limit explicit: ${limits[0]}`:'State the conditions under which the conclusion may not transfer.'
-  ].filter(Boolean);
+  ].filter(Boolean));
 
-  const misconception=[
+  const misconception=normalizePoints([
     `The shortcut is unreliable because the lesson explicitly teaches a more conditional explanation.`,
     misconceptions[0]?`Representative misconception: ${String(misconceptions[0])}`:'Identify the unsupported shortcut in the claim.',
     science[0]||'Use the lesson science to explain why the shortcut can fail.',
     records[1]?`A useful discriminator is ${records[1]}.`:(records[0]?`A useful discriminator is ${records[0]}.`:'Name evidence that separates competing explanations.'),
     limits[0]?`Do not overextend the conclusion beyond this limit: ${limits[0]}`:'Preserve uncertainty when the evidence does not distinguish causes.'
-  ].filter(Boolean);
+  ].filter(Boolean));
 
-  const applied=[
+  const applied=normalizePoints([
     relevance[0]?`In practice: ${relevance[0]}`:`Apply the lesson to a real cultivation decision without changing multiple variables at once.`,
     records[0]?`Record before action: ${records[0]}.`:'Record the baseline condition before acting.',
     records[1]?`Also record: ${records[1]}.`:'Record a second independent observation or measurement.',
     `After the action, repeat the same measurement or observation so the comparison is valid.`,
     limits[0]?`Revise the interpretation if the result conflicts with the lesson limit or the expected response: ${limits[0]}`:'Revise the interpretation when follow-up evidence contradicts the original hypothesis.'
-  ].filter(Boolean);
+  ].filter(Boolean));
 
   return {
     schemaVersion:1,

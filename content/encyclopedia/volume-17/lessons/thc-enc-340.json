@@ -89,5 +89,19 @@
     "websiteAction": "hold_for_review"
   },
   "slug": "ipm-program-audit-and-continuous-improvement",
-  "route": "/encyclopedia/ipm-program-audit-and-continuous-improvement"
+  "route": "/encyclopedia/ipm-program-audit-and-continuous-improvement",
+  "knowledgeCheck": [
+    "For \"IPM Program Audit and Continuous Improvement\", explain the mechanism behind this objective: Audit an IPM program as a complete system by reviewing prevention, monitoring, diagnosis, decisions, interventions, records, outcomes, recurring failures, and improvement actions over time. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"An IPM audit is the same as checking whether pesticides were applied correctly.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Audit IPM at a defined cadence and after major incidents or crop cycles rather than only when severe problems occur. Build a verification plan using the lesson's record set (Scope: Record crop cycles, rooms, pests/pathogens, time period, and IPM processes included in the audit.; Process indicators: Record compliance and timeliness for scouting, quarantine, sanitation, trap service, training, response, and follow-up.; Outcome indicators: Record incidence/severity trends, crop impact, recurrence, intervention frequency, and unresolved incidents using comparable denominators.; Findings: Classify strengths, gaps, repeated failure modes, data-quality limitations, and risk priorities.; Improvement loop: Record actions, owners, deadlines, effectiveness measures, and the next review date.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  }
 }

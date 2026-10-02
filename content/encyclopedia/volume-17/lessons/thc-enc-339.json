@@ -89,5 +89,19 @@
     "websiteAction": "hold_for_review"
   },
   "slug": "corrective-and-preventive-action",
-  "route": "/encyclopedia/corrective-and-preventive-action"
+  "route": "/encyclopedia/corrective-and-preventive-action",
+  "knowledgeCheck": [
+    "For \"Corrective and Preventive Action\", explain the mechanism behind this objective: Use a documented corrective-and-preventive-action process to contain plant-health problems, identify contributing causes, implement proportionate changes, and verify that recurrence risk is actually reduced. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"CAPA means writing down what happened after the fact.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Open CAPA for recurring, systemic, severe, high-risk, or audit-significant failures rather than for every trivial observation. Build a verification plan using the lesson's record set (Problem statement: Record what happened, where, when, affected material, evidence, and the operational or plant-health consequence.; Containment/correction: Record immediate steps taken to control exposure or restore the process.; Cause analysis: Record verified contributing causes, unresolved hypotheses, and supporting evidence.; Actions: Record corrective/preventive action, owner, due date, implementation evidence, and any SOP/training/equipment changes.; Effectiveness: Define and record the follow-up metric, review date, result, and closure or escalation decision.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  }
 }

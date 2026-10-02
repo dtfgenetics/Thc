@@ -1,1 +1,104 @@
-{"id":"THC-ENC-096","number":96,"title":"Heat Stress and Cooling Responses","objective":"Separate warm growth conditions from heat stress and evaluate leaf energy balance, root-zone temperature, and recovery before assigning setpoints.","terms":[{"term":"Heat stress","definition":"Temperature exposure that disrupts function or causes injury relative to the genotype and developmental state."},{"term":"Thermotolerance","definition":"Capacity to maintain function or survive damaging heat."},{"term":"Heat-shock response","definition":"Protective molecular response involving chaperones and other stress-regulated processes."},{"term":"Sensible heat","definition":"Energy transferred as a temperature difference without phase change."}],"coreScience":["Leaf temperature, not room temperature alone, determines the thermal condition of photosynthetic tissue. Radiation can warm leaves above air; transpiration and convection can cool them. When water supply or stomatal conductance declines, evaporative cooling weakens and leaf temperature may rise rapidly.","Moderate warming changes enzyme kinetics, respiration, development, and VPD. At damaging temperatures, membranes become unstable, proteins lose function, photosystems are impaired, and reproductive tissues may be especially sensitive. High night temperature can increase respiratory carbon loss even without visible daytime scorch.","Heat load also affects roots and equipment. Warm root zones hold less dissolved oxygen and can accelerate respiration and microbial processes. Local heat from fixtures, drivers, ducts, pumps, sunlit walls, or failed cooling can create zones that an average sensor misses."],"cultivationRelevance":["Use leaf-temperature maps, canopy air measurements, root-zone temperature, PPFD, irrigation status, and HVAC state to identify the pathway. Cooling may involve reducing radiant load, improving heat exchange, restoring water supply, shading a greenhouse, increasing ventilation, or using evaporative cooling where climate and water quality allow.","Avoid abrupt overcorrection with cold, dry air. A strong supply jet can create low leaf VPD in one place and high evaporative demand in another. Confirm recovery through leaf temperature, posture, gas exchange or growth, and injury progression."],"measureAndRecord":[{"field":"Exposure","requirement":"Air, leaf, and root-zone temperature; duration; rate of change; PPFD; RH; and VPD."},{"field":"Location","requirement":"Mapped zone, leaf class, equipment or radiation source, and distance."},{"field":"Plant response","requirement":"Leaf angle, edge or tip injury, bleaching, growth change, water use, and reproductive symptoms."},{"field":"Control response","requirement":"HVAC, vent, shade, fan, irrigation, or lighting action and timing."},{"field":"Recovery","requirement":"Temperature normalization, residual injury, new growth, and crop disposition."}],"misconceptions":["A warm room is automatically heat stress: Stress is defined by tissue temperature, duration, plant state, and functional response.","Air temperature equals leaf temperature: Radiation, convection, and transpiration create differences.","More humidity always solves heat: It can reduce evaporative demand but may limit cooling, increase condensation risk, and burden dehumidification."],"evidenceLimits":["Cannabis temperature-response studies often use specific genotypes, leaf-level measurements, or short exposures. Do not convert one experimental optimum into a universal room setpoint."],"crossLinks":"THC-ENC-066-068, THC-ENC-082-089, THC-ENC-094, THC-ENC-097-100, and lighting heat-load analysis.","sourceNotes":["Chandra S. et al. (2008). Photosynthetic Response of Cannabis sativa L. to Variations in Photosynthetic Photon Flux Densities, Temperature and CO2 Conditions. Physiology and Molecular Biology of Plants 14:299-306.","Nobel P.S. (2009). Physicochemical and Environmental Plant Physiology, 4th ed. Academic Press.","Shamshiri R.R. et al. (2018). Review of optimum temperature, humidity and vapour pressure deficit for greenhouse microclimate evaluation and control. International Agrophysics 32:287-302."],"slug":"heat-stress-and-cooling-responses","route":"/encyclopedia/heat-stress-and-cooling-responses"}
+{
+  "id": "THC-ENC-096",
+  "number": 96,
+  "title": "Heat Stress and Cooling Responses",
+  "objective": "Separate warm growth conditions from heat stress and evaluate leaf energy balance, root-zone temperature, and recovery before assigning setpoints.",
+  "terms": [
+    {
+      "term": "Heat stress",
+      "definition": "Temperature exposure that disrupts function or causes injury relative to the genotype and developmental state."
+    },
+    {
+      "term": "Thermotolerance",
+      "definition": "Capacity to maintain function or survive damaging heat."
+    },
+    {
+      "term": "Heat-shock response",
+      "definition": "Protective molecular response involving chaperones and other stress-regulated processes."
+    },
+    {
+      "term": "Sensible heat",
+      "definition": "Energy transferred as a temperature difference without phase change."
+    }
+  ],
+  "coreScience": [
+    "Leaf temperature, not room temperature alone, determines the thermal condition of photosynthetic tissue. Radiation can warm leaves above air; transpiration and convection can cool them. When water supply or stomatal conductance declines, evaporative cooling weakens and leaf temperature may rise rapidly.",
+    "Moderate warming changes enzyme kinetics, respiration, development, and VPD. At damaging temperatures, membranes become unstable, proteins lose function, photosystems are impaired, and reproductive tissues may be especially sensitive. High night temperature can increase respiratory carbon loss even without visible daytime scorch.",
+    "Heat load also affects roots and equipment. Warm root zones hold less dissolved oxygen and can accelerate respiration and microbial processes. Local heat from fixtures, drivers, ducts, pumps, sunlit walls, or failed cooling can create zones that an average sensor misses."
+  ],
+  "cultivationRelevance": [
+    "Use leaf-temperature maps, canopy air measurements, root-zone temperature, PPFD, irrigation status, and HVAC state to identify the pathway. Cooling may involve reducing radiant load, improving heat exchange, restoring water supply, shading a greenhouse, increasing ventilation, or using evaporative cooling where climate and water quality allow.",
+    "Avoid abrupt overcorrection with cold, dry air. A strong supply jet can create low leaf VPD in one place and high evaporative demand in another. Confirm recovery through leaf temperature, posture, gas exchange or growth, and injury progression."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Exposure",
+      "requirement": "Air, leaf, and root-zone temperature; duration; rate of change; PPFD; RH; and VPD."
+    },
+    {
+      "field": "Location",
+      "requirement": "Mapped zone, leaf class, equipment or radiation source, and distance."
+    },
+    {
+      "field": "Plant response",
+      "requirement": "Leaf angle, edge or tip injury, bleaching, growth change, water use, and reproductive symptoms."
+    },
+    {
+      "field": "Control response",
+      "requirement": "HVAC, vent, shade, fan, irrigation, or lighting action and timing."
+    },
+    {
+      "field": "Recovery",
+      "requirement": "Temperature normalization, residual injury, new growth, and crop disposition."
+    }
+  ],
+  "misconceptions": [
+    "A warm room is automatically heat stress: Stress is defined by tissue temperature, duration, plant state, and functional response.",
+    "Air temperature equals leaf temperature: Radiation, convection, and transpiration create differences.",
+    "More humidity always solves heat: It can reduce evaporative demand but may limit cooling, increase condensation risk, and burden dehumidification."
+  ],
+  "evidenceLimits": [
+    "Cannabis temperature-response studies often use specific genotypes, leaf-level measurements, or short exposures. Do not convert one experimental optimum into a universal room setpoint."
+  ],
+  "crossLinks": "THC-ENC-066-068, THC-ENC-082-089, THC-ENC-094, THC-ENC-097-100, and lighting heat-load analysis.",
+  "sourceNotes": [
+    "Chandra S. et al. (2008). Photosynthetic Response of Cannabis sativa L. to Variations in Photosynthetic Photon Flux Densities, Temperature and CO2 Conditions. Physiology and Molecular Biology of Plants 14:299-306.",
+    "Nobel P.S. (2009). Physicochemical and Environmental Plant Physiology, 4th ed. Academic Press.",
+    "Shamshiri R.R. et al. (2018). Review of optimum temperature, humidity and vapour pressure deficit for greenhouse microclimate evaluation and control. International Agrophysics 32:287-302."
+  ],
+  "slug": "heat-stress-and-cooling-responses",
+  "route": "/encyclopedia/heat-stress-and-cooling-responses",
+  "knowledgeCheck": [
+    "For \"Heat Stress and Cooling Responses\", explain the mechanism behind this objective: Separate warm growth conditions from heat stress and evaluate leaf energy balance, root-zone temperature, and recovery before assigning setpoints. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"A warm room is automatically heat stress: Stress is defined by tissue temperature, duration, plant state, and functional response.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Use leaf-temperature maps, canopy air measurements, root-zone temperature, PPFD, irrigation status, and HVAC state to identify the pathway. Cooling may involve reducing radiant load, improving heat exchange, restoring water supply, shading a greenhouse, increasing ventilation, or using evaporative cooling where climate and water quality allow. Build a verification plan using the lesson's record set (Exposure: Air, leaf, and root-zone temperature; duration; rate of change; PPFD; RH; and VPD.; Location: Mapped zone, leaf class, equipment or radiation source, and distance.; Plant response: Leaf angle, edge or tip injury, bleaching, growth change, water use, and reproductive symptoms.; Control response: HVAC, vent, shade, fan, irrigation, or lighting action and timing.; Recovery: Temperature normalization, residual injury, new growth, and crop disposition.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  },
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia canonical 420 source set",
+    "evidenceControl": "claim_level_evidence_migration_pending",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending",
+    "externalReviewType": "plant_science_and_cultivation_reference",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_from_publication",
+    "releaseGateReason": [
+      "claim_level_evidence_migration_pending",
+      "approved_teaching_visual_pending",
+      "assessment_rationale_independent_review_pending",
+      "visitor_facing_release_verification_pending"
+    ],
+    "materializedBy": "scripts/materialize-encyclopedia-release-controls.mjs",
+    "materializedAt": "source-controlled"
+  }
+}

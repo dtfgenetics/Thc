@@ -1,1 +1,104 @@
-{"id":"THC-ENC-081","number":81,"title":"Water Potential and the Soil-Plant-Atmosphere Continuum","objective":"Explain water movement through substrate, roots, xylem, leaves, and air using water-potential gradients rather than the vague idea that roots simply pull water upward.","terms":[{"term":"Water potential","definition":"Potential energy of water relative to a defined reference, commonly expressed in megapascals (MPa)."},{"term":"Osmotic potential","definition":"Contribution from dissolved solutes; adding solute makes this component more negative."},{"term":"Pressure potential","definition":"Hydrostatic pressure contribution, including positive turgor in living cells and tension in xylem."},{"term":"Soil-plant-atmosphere continuum","definition":"Connected pathway through which water moves from the root zone to the atmosphere."}],"coreScience":["Water moves spontaneously from higher water potential to lower water potential. In a hydrated crop, the substrate is usually less negative than the root, xylem, leaf, and evaporating air pathway. The gradient is maintained by evaporation from moist cell walls inside the leaf and diffusion through stomata. Roots do not create an isolated upward pump; they are one hydraulic segment in a continuous pathway.","Total water potential may be represented as the sum of solute, pressure, gravitational, and matric components, with the relevant terms depending on the system and scale. A nutrient solution can be physically present yet difficult to acquire when its solute concentration is high. Likewise, a peat or coco substrate can contain substantial water while holding part of it at a matric potential that roots access only slowly.","Plant water status reflects both supply and hydraulic demand. Root length, root damage, substrate contact, salinity, temperature, xylem continuity, leaf area, stomatal behavior, radiation, air movement, and atmospheric vapor demand all change the gradient or resistance. A room reading alone cannot identify which segment is limiting."],"cultivationRelevance":["Diagnose wilting by checking the whole pathway: root-zone water content and EC, root condition, recent irrigation, leaf temperature, light load, VPD, airflow, and the time course of recovery. Adding water without checking oxygen and salinity can worsen an already saturated or saline root zone.","Use plant water potential only when the method and reference tissue are controlled. Pressure chambers, psychrometers, and other research tools answer different questions than substrate sensors or pot weight; their readings are not interchangeable."],"measureAndRecord":[{"field":"Root-zone state","requirement":"Substrate type, water content or mass, matric-potential method if used, EC, temperature, and sampling position."},{"field":"Atmospheric demand","requirement":"Canopy air temperature, RH, air VPD, leaf temperature, and airflow condition."},{"field":"Plant response","requirement":"Leaf angle, wilting score, stomatal or gas-exchange measurement if available, and recovery time."},{"field":"Irrigation event","requirement":"Start time, delivered volume, distribution result, and drainage."},{"field":"Interpretation","requirement":"Most likely limiting segment, competing explanations, action, and post-action observation."}],"misconceptions":["Wet means available: Water can be present while oxygen is restricted, salinity is high, or hydraulic contact and uptake are poor.","Roots pump water to the top: Transpiration-driven tension and the continuous hydraulic pathway are central to bulk xylem flow.","One water-potential value defines the crop: Values vary by tissue, time, method, environment, and genotype."],"evidenceLimits":["Water-potential thresholds from another crop, cultivar, organ, instrument, or time of day are not universal cannabis irrigation triggers. Interpret the value with the complete method and environment."],"crossLinks":"THC-ENC-049-052, THC-ENC-069, THC-ENC-083-090, and THC-ENC-191-200.","sourceNotes":["Nobel P.S. (2009). Physicochemical and Environmental Plant Physiology, 4th ed. Academic Press.","THC Cannabis Plant Science Source Packet v1.1 (project source, May 2026).","THC Cultivation SOP Source Materials Packet v1.0 (project source, May 2026)."],"slug":"water-potential-and-the-soil-plant-atmosphere-continuum","route":"/encyclopedia/water-potential-and-the-soil-plant-atmosphere-continuum"}
+{
+  "id": "THC-ENC-081",
+  "number": 81,
+  "title": "Water Potential and the Soil-Plant-Atmosphere Continuum",
+  "objective": "Explain water movement through substrate, roots, xylem, leaves, and air using water-potential gradients rather than the vague idea that roots simply pull water upward.",
+  "terms": [
+    {
+      "term": "Water potential",
+      "definition": "Potential energy of water relative to a defined reference, commonly expressed in megapascals (MPa)."
+    },
+    {
+      "term": "Osmotic potential",
+      "definition": "Contribution from dissolved solutes; adding solute makes this component more negative."
+    },
+    {
+      "term": "Pressure potential",
+      "definition": "Hydrostatic pressure contribution, including positive turgor in living cells and tension in xylem."
+    },
+    {
+      "term": "Soil-plant-atmosphere continuum",
+      "definition": "Connected pathway through which water moves from the root zone to the atmosphere."
+    }
+  ],
+  "coreScience": [
+    "Water moves spontaneously from higher water potential to lower water potential. In a hydrated crop, the substrate is usually less negative than the root, xylem, leaf, and evaporating air pathway. The gradient is maintained by evaporation from moist cell walls inside the leaf and diffusion through stomata. Roots do not create an isolated upward pump; they are one hydraulic segment in a continuous pathway.",
+    "Total water potential may be represented as the sum of solute, pressure, gravitational, and matric components, with the relevant terms depending on the system and scale. A nutrient solution can be physically present yet difficult to acquire when its solute concentration is high. Likewise, a peat or coco substrate can contain substantial water while holding part of it at a matric potential that roots access only slowly.",
+    "Plant water status reflects both supply and hydraulic demand. Root length, root damage, substrate contact, salinity, temperature, xylem continuity, leaf area, stomatal behavior, radiation, air movement, and atmospheric vapor demand all change the gradient or resistance. A room reading alone cannot identify which segment is limiting."
+  ],
+  "cultivationRelevance": [
+    "Diagnose wilting by checking the whole pathway: root-zone water content and EC, root condition, recent irrigation, leaf temperature, light load, VPD, airflow, and the time course of recovery. Adding water without checking oxygen and salinity can worsen an already saturated or saline root zone.",
+    "Use plant water potential only when the method and reference tissue are controlled. Pressure chambers, psychrometers, and other research tools answer different questions than substrate sensors or pot weight; their readings are not interchangeable."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Root-zone state",
+      "requirement": "Substrate type, water content or mass, matric-potential method if used, EC, temperature, and sampling position."
+    },
+    {
+      "field": "Atmospheric demand",
+      "requirement": "Canopy air temperature, RH, air VPD, leaf temperature, and airflow condition."
+    },
+    {
+      "field": "Plant response",
+      "requirement": "Leaf angle, wilting score, stomatal or gas-exchange measurement if available, and recovery time."
+    },
+    {
+      "field": "Irrigation event",
+      "requirement": "Start time, delivered volume, distribution result, and drainage."
+    },
+    {
+      "field": "Interpretation",
+      "requirement": "Most likely limiting segment, competing explanations, action, and post-action observation."
+    }
+  ],
+  "misconceptions": [
+    "Wet means available: Water can be present while oxygen is restricted, salinity is high, or hydraulic contact and uptake are poor.",
+    "Roots pump water to the top: Transpiration-driven tension and the continuous hydraulic pathway are central to bulk xylem flow.",
+    "One water-potential value defines the crop: Values vary by tissue, time, method, environment, and genotype."
+  ],
+  "evidenceLimits": [
+    "Water-potential thresholds from another crop, cultivar, organ, instrument, or time of day are not universal cannabis irrigation triggers. Interpret the value with the complete method and environment."
+  ],
+  "crossLinks": "THC-ENC-049-052, THC-ENC-069, THC-ENC-083-090, and THC-ENC-191-200.",
+  "sourceNotes": [
+    "Nobel P.S. (2009). Physicochemical and Environmental Plant Physiology, 4th ed. Academic Press.",
+    "THC Cannabis Plant Science Source Packet v1.1 (project source, May 2026).",
+    "THC Cultivation SOP Source Materials Packet v1.0 (project source, May 2026)."
+  ],
+  "slug": "water-potential-and-the-soil-plant-atmosphere-continuum",
+  "route": "/encyclopedia/water-potential-and-the-soil-plant-atmosphere-continuum",
+  "knowledgeCheck": [
+    "For \"Water Potential and the Soil-Plant-Atmosphere Continuum\", explain the mechanism behind this objective: Explain water movement through substrate, roots, xylem, leaves, and air using water-potential gradients rather than the vague idea that roots simply pull water upward. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Wet means available: Water can be present while oxygen is restricted, salinity is high, or hydraulic contact and uptake are poor.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Diagnose wilting by checking the whole pathway: root-zone water content and EC, root condition, recent irrigation, leaf temperature, light load, VPD, airflow, and the time course of recovery. Adding water without checking oxygen and salinity can worsen an already saturated or saline root zone. Build a verification plan using the lesson's record set (Root-zone state: Substrate type, water content or mass, matric-potential method if used, EC, temperature, and sampling position.; Atmospheric demand: Canopy air temperature, RH, air VPD, leaf temperature, and airflow condition.; Plant response: Leaf angle, wilting score, stomatal or gas-exchange measurement if available, and recovery time.; Irrigation event: Start time, delivered volume, distribution result, and drainage.; Interpretation: Most likely limiting segment, competing explanations, action, and post-action observation.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  },
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia canonical 420 source set",
+    "evidenceControl": "claim_level_evidence_migration_pending",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending",
+    "externalReviewType": "plant_science_and_cultivation_reference",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_from_publication",
+    "releaseGateReason": [
+      "claim_level_evidence_migration_pending",
+      "approved_teaching_visual_pending",
+      "assessment_rationale_independent_review_pending",
+      "visitor_facing_release_verification_pending"
+    ],
+    "materializedBy": "scripts/materialize-encyclopedia-release-controls.mjs",
+    "materializedAt": "source-controlled"
+  }
+}

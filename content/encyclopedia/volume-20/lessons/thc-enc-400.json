@@ -26,7 +26,14 @@
     "Assign permanent IDs before names. Link every public description to a versioned release record and retained reference material."
   ],
   "measureAndRecord": [
-    "Permanent line/cross/clone/lot IDs; parent IDs and roles; every mating and generation; population and selected counts; seed and clone sources; identity tests; trial and laboratory evidence; name/version; claim wording and scope; corrections, approver and release date."
+    {
+      "field": "Breeding decision record",
+      "requirement": "For Pedigrees, Generations, Naming, and Release Claims, record program ID, generation or cross ID, parent or family IDs, target traits, selection criteria, trait units, rejection rules, and the decision date. Preserve the original controlled note: Permanent line/cross/clone/lot IDs; parent IDs and roles; every mating and generation; population and selected counts; seed and clone sources; identity tests; trial and laboratory evidence; name/version; claim wording and scope; corrections, approver and release date."
+    },
+    {
+      "field": "Evidence and population record",
+      "requirement": "Record population size, sampling method, trial environment, replication, lab or field measurements, pedigree or marker evidence when used, selected individuals or families, and the reason the result does or does not meet the release standard."
+    }
   ],
   "misconceptions": [
     "A name proves a cultivar is genetically distinct.",

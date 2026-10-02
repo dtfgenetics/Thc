@@ -1,1 +1,105 @@
-{"id":"THC-ENC-095","number":95,"title":"Overwatering, Hypoxia, and Root Decline","objective":"Explain how excessive water-filled pore space and poor drainage restrict root respiration and increase the risk of secondary root decline.","terms":[{"term":"Hypoxia","definition":"Oxygen concentration below that needed to sustain normal tissue function."},{"term":"Anoxia","definition":"Near absence of oxygen."},{"term":"Water-filled pore space","definition":"Fraction of substrate pore volume occupied by water rather than air."},{"term":"Anaerobic metabolism","definition":"Energy pathways used when oxygen supply is insufficient, yielding much less usable energy than aerobic respiration."}],"coreScience":["Roots require oxygen for mitochondrial respiration, active transport, maintenance, growth, and defense. Gas diffusion through water-filled pores is far slower than through air-filled pores, so saturation, compaction, perched water, blocked drains, warm solution, and high root respiration can deplete oxygen near roots.","Hypoxic roots lose energy for membrane transport and ion regulation. Water and nutrient uptake can decline even though the substrate is wet. Roots may discolor, lose fine branches, shed cells, and produce abnormal odors, but color and odor alone do not identify a pathogen or prove oxygen concentration.","Overwet conditions can favor root-pathogen complexes by weakening host tissue and changing the rhizosphere. Pythium-like organisms, Fusarium species, and other agents require correct diagnosis. Hypoxia is an abiotic condition; it is not itself a fungal disease, although both can coexist."],"cultivationRelevance":["Correct the hydraulic cause: verify drain holes and slope, emitter output, event size, pause, substrate physical properties, container geometry, standing drainage, solution temperature, and root occupancy. More fan speed above the canopy does not restore pore-space oxygen when the container stays saturated.","Reduce irrigation carefully while maintaining usable root-zone moisture. Severely damaged roots cannot immediately support the previous canopy demand, so coordinate light and VPD during recovery and avoid adding concentrated fertilizer to a compromised root system."],"measureAndRecord":[{"field":"Water history","requirement":"Event volume and frequency, drainage time, standing water, VWC or mass curve, and recent changes."},{"field":"Root-zone structure","requirement":"Substrate batch, porosity information, compaction, container, drains, and root occupancy."},{"field":"Oxygen context","requirement":"Dissolved oxygen if measured, root-zone temperature, saturation duration, and sampling method."},{"field":"Plant and roots","requirement":"Wilting, leaf color, water use, root color, texture, odor, and laboratory result if used."},{"field":"Correction","requirement":"Hydraulic repair, schedule change, environmental support, sanitation action, and recovery trend."}],"misconceptions":["Overwatering is simply too many milliliters: Frequency, drainage, pore structure, root demand, and saturation duration determine the oxygen result.","Wet plants cannot be thirsty: Hypoxic or diseased roots may fail to supply the shoot.","Brown roots prove Pythium: Abiotic injury, staining, age, and multiple pathogens can look similar."],"evidenceLimits":["Root-zone oxygen thresholds and visual symptoms are system-specific. Confirm pathogens with appropriate diagnostics and treat pesticides or biological products only under current labels and law."],"crossLinks":"THC-ENC-047-060, THC-ENC-090-094, THC-ENC-205-220, and root-disease diagnostics.","sourceNotes":["Drew M.C. (1997). Oxygen Deficiency and Root Metabolism: Injury and Acclimation Under Hypoxia and Anoxia. Annual Review of Plant Physiology and Plant Molecular Biology 48:223-250.","Striker G.G. (2023). An Overview of Oxygen Transport in Plants: Diffusion and Convection. Plant Biology 25:842-847.","Punja Z.K. (2021). Emerging Diseases of Cannabis sativa and Sustainable Management. Pest Management Science 77:3857-3870.","Nobel P.S. (2009). Physicochemical and Environmental Plant Physiology, 4th ed. Academic Press."],"slug":"overwatering-hypoxia-and-root-decline","route":"/encyclopedia/overwatering-hypoxia-and-root-decline"}
+{
+  "id": "THC-ENC-095",
+  "number": 95,
+  "title": "Overwatering, Hypoxia, and Root Decline",
+  "objective": "Explain how excessive water-filled pore space and poor drainage restrict root respiration and increase the risk of secondary root decline.",
+  "terms": [
+    {
+      "term": "Hypoxia",
+      "definition": "Oxygen concentration below that needed to sustain normal tissue function."
+    },
+    {
+      "term": "Anoxia",
+      "definition": "Near absence of oxygen."
+    },
+    {
+      "term": "Water-filled pore space",
+      "definition": "Fraction of substrate pore volume occupied by water rather than air."
+    },
+    {
+      "term": "Anaerobic metabolism",
+      "definition": "Energy pathways used when oxygen supply is insufficient, yielding much less usable energy than aerobic respiration."
+    }
+  ],
+  "coreScience": [
+    "Roots require oxygen for mitochondrial respiration, active transport, maintenance, growth, and defense. Gas diffusion through water-filled pores is far slower than through air-filled pores, so saturation, compaction, perched water, blocked drains, warm solution, and high root respiration can deplete oxygen near roots.",
+    "Hypoxic roots lose energy for membrane transport and ion regulation. Water and nutrient uptake can decline even though the substrate is wet. Roots may discolor, lose fine branches, shed cells, and produce abnormal odors, but color and odor alone do not identify a pathogen or prove oxygen concentration.",
+    "Overwet conditions can favor root-pathogen complexes by weakening host tissue and changing the rhizosphere. Pythium-like organisms, Fusarium species, and other agents require correct diagnosis. Hypoxia is an abiotic condition; it is not itself a fungal disease, although both can coexist."
+  ],
+  "cultivationRelevance": [
+    "Correct the hydraulic cause: verify drain holes and slope, emitter output, event size, pause, substrate physical properties, container geometry, standing drainage, solution temperature, and root occupancy. More fan speed above the canopy does not restore pore-space oxygen when the container stays saturated.",
+    "Reduce irrigation carefully while maintaining usable root-zone moisture. Severely damaged roots cannot immediately support the previous canopy demand, so coordinate light and VPD during recovery and avoid adding concentrated fertilizer to a compromised root system."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Water history",
+      "requirement": "Event volume and frequency, drainage time, standing water, VWC or mass curve, and recent changes."
+    },
+    {
+      "field": "Root-zone structure",
+      "requirement": "Substrate batch, porosity information, compaction, container, drains, and root occupancy."
+    },
+    {
+      "field": "Oxygen context",
+      "requirement": "Dissolved oxygen if measured, root-zone temperature, saturation duration, and sampling method."
+    },
+    {
+      "field": "Plant and roots",
+      "requirement": "Wilting, leaf color, water use, root color, texture, odor, and laboratory result if used."
+    },
+    {
+      "field": "Correction",
+      "requirement": "Hydraulic repair, schedule change, environmental support, sanitation action, and recovery trend."
+    }
+  ],
+  "misconceptions": [
+    "Overwatering is simply too many milliliters: Frequency, drainage, pore structure, root demand, and saturation duration determine the oxygen result.",
+    "Wet plants cannot be thirsty: Hypoxic or diseased roots may fail to supply the shoot.",
+    "Brown roots prove Pythium: Abiotic injury, staining, age, and multiple pathogens can look similar."
+  ],
+  "evidenceLimits": [
+    "Root-zone oxygen thresholds and visual symptoms are system-specific. Confirm pathogens with appropriate diagnostics and treat pesticides or biological products only under current labels and law."
+  ],
+  "crossLinks": "THC-ENC-047-060, THC-ENC-090-094, THC-ENC-205-220, and root-disease diagnostics.",
+  "sourceNotes": [
+    "Drew M.C. (1997). Oxygen Deficiency and Root Metabolism: Injury and Acclimation Under Hypoxia and Anoxia. Annual Review of Plant Physiology and Plant Molecular Biology 48:223-250.",
+    "Striker G.G. (2023). An Overview of Oxygen Transport in Plants: Diffusion and Convection. Plant Biology 25:842-847.",
+    "Punja Z.K. (2021). Emerging Diseases of Cannabis sativa and Sustainable Management. Pest Management Science 77:3857-3870.",
+    "Nobel P.S. (2009). Physicochemical and Environmental Plant Physiology, 4th ed. Academic Press."
+  ],
+  "slug": "overwatering-hypoxia-and-root-decline",
+  "route": "/encyclopedia/overwatering-hypoxia-and-root-decline",
+  "knowledgeCheck": [
+    "For \"Overwatering, Hypoxia, and Root Decline\", explain the mechanism behind this objective: Explain how excessive water-filled pore space and poor drainage restrict root respiration and increase the risk of secondary root decline. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Overwatering is simply too many milliliters: Frequency, drainage, pore structure, root demand, and saturation duration determine the oxygen result.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Correct the hydraulic cause: verify drain holes and slope, emitter output, event size, pause, substrate physical properties, container geometry, standing drainage, solution temperature, and root occupancy. More fan speed above the canopy does not restore pore-space oxygen when the container stays saturated. Build a verification plan using the lesson's record set (Water history: Event volume and frequency, drainage time, standing water, VWC or mass curve, and recent changes.; Root-zone structure: Substrate batch, porosity information, compaction, container, drains, and root occupancy.; Oxygen context: Dissolved oxygen if measured, root-zone temperature, saturation duration, and sampling method.; Plant and roots: Wilting, leaf color, water use, root color, texture, odor, and laboratory result if used.; Correction: Hydraulic repair, schedule change, environmental support, sanitation action, and recovery trend.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  },
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia canonical 420 source set",
+    "evidenceControl": "claim_level_evidence_migration_pending",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending",
+    "externalReviewType": "plant_science_and_cultivation_reference",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_from_publication",
+    "releaseGateReason": [
+      "claim_level_evidence_migration_pending",
+      "approved_teaching_visual_pending",
+      "assessment_rationale_independent_review_pending",
+      "visitor_facing_release_verification_pending"
+    ],
+    "materializedBy": "scripts/materialize-encyclopedia-release-controls.mjs",
+    "materializedAt": "source-controlled"
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-003",
+  "createdAt": "2026-10-02",
+  "scope": "Consensus-assisted claim-level evidence additions for cannabis nutrient diagnostics, nitrogen response, cannabinoid genomics, and Hop Latent Viroid source grounding.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Consensus retrieval is discovery support; the source registry and claim mappings remain review-pending until independent science review.",
+    "Each source supports only the scoped claim and stated applicability.",
+    "No claim mapping changes publication authorization, production-candidate status, or visual/assessment approval state."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0022",
+      "lessonId": "THC-ENC-122",
+      "sourceIds": [
+        "ENC-AUTH-017"
+      ],
+      "claimType": "cannabis-primary",
+      "supportedClaim": "Cannabis nitrogen supply can alter biomass, photosynthetic function, water relations, and tissue ionome, so nitrogen guidance should be framed as genotype, stage, environment, and method dependent.",
+      "sourceLocator": "Saloner and Bernstein 2020 controlled long-photoperiod cannabis nitrogen experiment with five nitrogen concentrations and measured morpho-physiological and ionome outcomes.",
+      "applicability": "Supports nitrogen-forms and nitrogen-response lessons with cannabis-specific controlled evidence.",
+      "limitations": "Long-photoperiod medical cannabis study under controlled room and soilless-media conditions; does not establish universal nitrogen targets for all cultivars, substrates, growth stages, or production goals.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0023",
+      "lessonId": "THC-ENC-131",
+      "sourceIds": [
+        "ENC-AUTH-016"
+      ],
+      "claimType": "cannabis-primary",
+      "supportedClaim": "Visual nutrient symptoms in cannabis can be documented by nutrient omission/toxicity treatments and tissue analysis, but symptom location and appearance still require measured context before diagnosis.",
+      "sourceLocator": "Cockson et al. 2019 cannabis nutrient-disorder characterization using induced nutrient omission/toxicity, MRML tissue analysis, and staged symptom descriptions/photographs.",
+      "applicability": "Supports nutrient-mobility and symptom-location reasoning with cannabis-specific symptom documentation.",
+      "limitations": "Study conditions used Cannabis sativa 'T1' in silica sand culture; symptom expression and tissue thresholds may not transfer directly to all genetics, media, environments, or mixed-stress cases.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0024",
+      "lessonId": "THC-ENC-139",
+      "sourceIds": [
+        "ENC-AUTH-016",
+        "ENC-AUTH-017"
+      ],
+      "claimType": "cannabis-primary-synthesis",
+      "supportedClaim": "Deficiency and toxicity diagnosis in cannabis should combine symptoms, tissue or root-zone measurements, treatment history, and cultivar/environment context rather than relying on a single visual cue.",
+      "sourceLocator": "Cockson et al. 2019 nutrient-disorder symptom/tissue-analysis study plus Saloner and Bernstein 2020 nitrogen-response study with physiological and ionome measurements.",
+      "applicability": "Supports the diagnostic root-cause frame for nutrient disorders and corrective-action decisions.",
+      "limitations": "Cross-source synthesis across different experimental systems; independent review is still needed before translating into production diagnostic algorithms or corrective setpoints.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0025",
+      "lessonId": "THC-ENC-141",
+      "sourceIds": [
+        "ENC-AUTH-018"
+      ],
+      "claimType": "cannabis-genomics-primary",
+      "supportedClaim": "Cannabinoid synthase loci can help explain THC:CBD chemotype inheritance, but a detected genomic feature does not by itself predict overall vigor, yield, potency, aroma, or crop performance.",
+      "sourceLocator": "Grassa et al. 2021 chromosome-resolved CBDRx cannabis genome assembly, cannabinoid synthase expression, population genetic analysis, and QTL mapping discussion.",
+      "applicability": "Supports DNA, genes, alleles, chromosomes, and marker-limit language in the genetics lessons.",
+      "limitations": "Cannabinoid synthase architecture is relevant to chemotype; whole-crop outcomes still require phenotype, environment, management, and replicated trial evidence.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0026",
+      "lessonId": "THC-ENC-237",
+      "sourceIds": [
+        "ENC-AUTH-018"
+      ],
+      "claimType": "cannabis-genomics-primary",
+      "supportedClaim": "Genetics can contribute to cannabinoid profile through cannabinoid synthase loci, while overall cannabinoid content also depends on additional genomic regions and non-genetic production context.",
+      "sourceLocator": "Grassa et al. 2021 findings on CBDAS/THCAS locus structure and the note that overall cannabinoid content was associated with other chromosomes.",
+      "applicability": "Supports genetics-versus-environment framing for cannabinoid profile lessons.",
+      "limitations": "Does not quantify environmental, developmental, harvest, or analytical contributions for every cultivar; production decisions need measured chemotype data.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0027",
+      "lessonId": "THC-ENC-310",
+      "sourceIds": [
+        "ENC-AUTH-019"
+      ],
+      "claimType": "cannabis-pathogen-primary",
+      "supportedClaim": "Hop Latent Viroid management in cannabis should rely on testing, propagation controls, sanitation, and clean-plant workflows because asymptomatic plants and multiple tissues/pathways can carry or spread HLVd.",
+      "sourceLocator": "Punja et al. 2025 RT-PCR/RT-qPCR study of HLVd transmission, spread, longevity, sanitation treatments, reproductive tissues, seed transmission, and meristem tip culture.",
+      "applicability": "Supports HLVd, disease-cycle, propagation, and sanitation lessons with cannabis-specific pathogen evidence.",
+      "limitations": "Management outcomes are genotype-, tissue-, assay-, facility-, and protocol-dependent. Detection of amplifiable RNA and infectious risk must be interpreted within the study methods and independent diagnostic review.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0028",
+      "lessonId": "THC-ENC-332",
+      "sourceIds": [
+        "ENC-AUTH-019"
+      ],
+      "claimType": "diagnostic-method-primary",
+      "supportedClaim": "High-consequence cannabis disease or viroid decisions should distinguish field observations from assay-based detection and preserve sample, tissue, timing, and method context.",
+      "sourceLocator": "Punja et al. 2025 HLVd detection and transmission work using RT-PCR/RT-qPCR across plant tissues, propagation material, solution samples, and treated tissues.",
+      "applicability": "Supports diagnostic-escalation and evidence-boundary language in the pest/disease identification lesson.",
+      "limitations": "HLVd-specific assay evidence does not generalize to every pathogen; assay performance and sampling strategy remain target specific.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}

@@ -1,1 +1,105 @@
-{"id":"THC-ENC-156","number":156,"title":"Polyploidy and Chromosome-Doubling Claims","objective":"Evaluate polyploid plants with verified ploidy, matched controls, fertility tests, and replicated phenotype and chemistry rather than size or potency assumptions.","terms":[{"term":"Polyploid","definition":"Having more than two complete chromosome sets."},{"term":"Tetraploid","definition":"Four chromosome sets, often written 4x when base-number context is clear."},{"term":"Mixoploid","definition":"Tissue or individual containing cells with different ploidy levels."},{"term":"Flow cytometry","definition":"Relative nuclear-DNA measurement commonly used to screen ploidy against a reference."}],"coreScience":["Chromosome doubling can be induced by antimitotic chemicals that disrupt spindle formation, but treatment also causes mortality, chimerism, abnormal growth, and occupational hazards. Large stomata, thick leaves, or altered morphology can suggest polyploidy but cannot confirm it.","Verification should combine calibrated flow cytometry with chromosome counts or another orthogonal method when claims are consequential. Samples from multiple shoots can detect mixoploidy. Stable transmission, pollen fertility, seed set, and offspring ploidy determine whether the material functions as a breeding line.","Cannabis studies report changed morphology and chemistry after polyploidization, but results differ among genotypes and ploidy levels. Some tetraploids increased particular cannabinoids; other genotypes decreased, and triploids may have lower fertility or different profiles. Whole-genome duplication is not a universal potency switch."],"cultivationRelevance":["Treat induced polyploids as experimental germplasm requiring containment, verification, and replicated comparison with the original diploid clone under the same environment.","Do not recommend chromosome-doubling chemicals as a casual grow technique. Antimitotic agents used in research require qualified laboratory controls, exposure assessment, and legal waste handling."],"measureAndRecord":[{"field":"Induction","requirement":"Starting genotype, tissue, agent, concentration, exposure, controls, survival, and safety authorization."},{"field":"Ploidy verification","requirement":"Instrument, diploid standard, peak ratio, coefficient of variation, tissue sites, and chromosome confirmation."},{"field":"Stability","requirement":"Resampling dates, shoots tested, mixoploidy, vegetative passages, and offspring ploidy."},{"field":"Phenotype","requirement":"Matched diploid design, replication, morphology, fertility, yield, chemistry, and defects."},{"field":"Claim","requirement":"Exact trait, effect size, uncertainty, genotype scope, and failed or neutral outcomes."}],"misconceptions":["Bigger cells mean a verified tetraploid: Morphology is a screen, not a ploidy measurement.","Polyploid cannabis is automatically stronger: Chemical and agronomic responses are genotype- and ploidy-dependent.","Triploids are always sterile: Fertility can be reduced but must be measured in the specific material."],"evidenceLimits":["Available cannabis studies cover few cultivars, induction protocols, and environments. Survivorship and selection bias can exaggerate success, and long-term stability remains incompletely characterized."],"crossLinks":"THC-ENC-141-148, THC-ENC-181-200, THC-ENC-261-280, and THC-GROW-030.","sourceNotes":["Parsons J.L. et al. (2019). Polyploidization for the genetic improvement of Cannabis sativa. Frontiers in Plant Science 10:476.","Fernandes H.P. et al. (2023). Cultivar-dependent phenotypic and chemotypic responses to induced polyploidy in Cannabis sativa. Frontiers in Plant Science 14:1233191.","Ryu B.R. et al. (2024). Chromosome-level haploid assembly of Cannabis sativa L. Scientific Data.","THC Cannabis Plant Science Source Packet v1.1 (project source, May 2026)."],"slug":"polyploidy-and-chromosome-doubling-claims","route":"/encyclopedia/polyploidy-and-chromosome-doubling-claims"}
+{
+  "id": "THC-ENC-156",
+  "number": 156,
+  "title": "Polyploidy and Chromosome-Doubling Claims",
+  "objective": "Evaluate polyploid plants with verified ploidy, matched controls, fertility tests, and replicated phenotype and chemistry rather than size or potency assumptions.",
+  "terms": [
+    {
+      "term": "Polyploid",
+      "definition": "Having more than two complete chromosome sets."
+    },
+    {
+      "term": "Tetraploid",
+      "definition": "Four chromosome sets, often written 4x when base-number context is clear."
+    },
+    {
+      "term": "Mixoploid",
+      "definition": "Tissue or individual containing cells with different ploidy levels."
+    },
+    {
+      "term": "Flow cytometry",
+      "definition": "Relative nuclear-DNA measurement commonly used to screen ploidy against a reference."
+    }
+  ],
+  "coreScience": [
+    "Chromosome doubling can be induced by antimitotic chemicals that disrupt spindle formation, but treatment also causes mortality, chimerism, abnormal growth, and occupational hazards. Large stomata, thick leaves, or altered morphology can suggest polyploidy but cannot confirm it.",
+    "Verification should combine calibrated flow cytometry with chromosome counts or another orthogonal method when claims are consequential. Samples from multiple shoots can detect mixoploidy. Stable transmission, pollen fertility, seed set, and offspring ploidy determine whether the material functions as a breeding line.",
+    "Cannabis studies report changed morphology and chemistry after polyploidization, but results differ among genotypes and ploidy levels. Some tetraploids increased particular cannabinoids; other genotypes decreased, and triploids may have lower fertility or different profiles. Whole-genome duplication is not a universal potency switch."
+  ],
+  "cultivationRelevance": [
+    "Treat induced polyploids as experimental germplasm requiring containment, verification, and replicated comparison with the original diploid clone under the same environment.",
+    "Do not recommend chromosome-doubling chemicals as a casual grow technique. Antimitotic agents used in research require qualified laboratory controls, exposure assessment, and legal waste handling."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Induction",
+      "requirement": "Starting genotype, tissue, agent, concentration, exposure, controls, survival, and safety authorization."
+    },
+    {
+      "field": "Ploidy verification",
+      "requirement": "Instrument, diploid standard, peak ratio, coefficient of variation, tissue sites, and chromosome confirmation."
+    },
+    {
+      "field": "Stability",
+      "requirement": "Resampling dates, shoots tested, mixoploidy, vegetative passages, and offspring ploidy."
+    },
+    {
+      "field": "Phenotype",
+      "requirement": "Matched diploid design, replication, morphology, fertility, yield, chemistry, and defects."
+    },
+    {
+      "field": "Claim",
+      "requirement": "Exact trait, effect size, uncertainty, genotype scope, and failed or neutral outcomes."
+    }
+  ],
+  "misconceptions": [
+    "Bigger cells mean a verified tetraploid: Morphology is a screen, not a ploidy measurement.",
+    "Polyploid cannabis is automatically stronger: Chemical and agronomic responses are genotype- and ploidy-dependent.",
+    "Triploids are always sterile: Fertility can be reduced but must be measured in the specific material."
+  ],
+  "evidenceLimits": [
+    "Available cannabis studies cover few cultivars, induction protocols, and environments. Survivorship and selection bias can exaggerate success, and long-term stability remains incompletely characterized."
+  ],
+  "crossLinks": "THC-ENC-141-148, THC-ENC-181-200, THC-ENC-261-280, and THC-GROW-030.",
+  "sourceNotes": [
+    "Parsons J.L. et al. (2019). Polyploidization for the genetic improvement of Cannabis sativa. Frontiers in Plant Science 10:476.",
+    "Fernandes H.P. et al. (2023). Cultivar-dependent phenotypic and chemotypic responses to induced polyploidy in Cannabis sativa. Frontiers in Plant Science 14:1233191.",
+    "Ryu B.R. et al. (2024). Chromosome-level haploid assembly of Cannabis sativa L. Scientific Data.",
+    "THC Cannabis Plant Science Source Packet v1.1 (project source, May 2026)."
+  ],
+  "slug": "polyploidy-and-chromosome-doubling-claims",
+  "route": "/encyclopedia/polyploidy-and-chromosome-doubling-claims",
+  "knowledgeCheck": [
+    "For \"Polyploidy and Chromosome-Doubling Claims\", explain the mechanism behind this objective: Evaluate polyploid plants with verified ploidy, matched controls, fertility tests, and replicated phenotype and chemistry rather than size or potency assumptions. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Bigger cells mean a verified tetraploid: Morphology is a screen, not a ploidy measurement.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Treat induced polyploids as experimental germplasm requiring containment, verification, and replicated comparison with the original diploid clone under the same environment. Build a verification plan using the lesson's record set (Induction: Starting genotype, tissue, agent, concentration, exposure, controls, survival, and safety authorization.; Ploidy verification: Instrument, diploid standard, peak ratio, coefficient of variation, tissue sites, and chromosome confirmation.; Stability: Resampling dates, shoots tested, mixoploidy, vegetative passages, and offspring ploidy.; Phenotype: Matched diploid design, replication, morphology, fertility, yield, chemistry, and defects.; Claim: Exact trait, effect size, uncertainty, genotype scope, and failed or neutral outcomes.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  },
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia canonical 420 source set",
+    "evidenceControl": "claim_level_evidence_migration_pending",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending",
+    "externalReviewType": "plant_science_and_cultivation_reference",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_from_publication",
+    "releaseGateReason": [
+      "claim_level_evidence_migration_pending",
+      "approved_teaching_visual_pending",
+      "assessment_rationale_independent_review_pending",
+      "visitor_facing_release_verification_pending"
+    ],
+    "materializedBy": "scripts/materialize-encyclopedia-release-controls.mjs",
+    "materializedAt": "source-controlled"
+  }
+}

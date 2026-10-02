@@ -1,1 +1,106 @@
-{"id":"THC-ENC-120","number":120,"title":"Lighting Energy, Heat, Efficacy, and Crop Response","objective":"Connect electrical input, photon delivery, thermal load, canopy interception, biological conversion, and saleable output in one auditable lighting-performance chain.","terms":[{"term":"Photon efficacy","definition":"Fixture PPF divided by electrical input, expressed as micromoles per joule under stated conditions."},{"term":"Light-use efficiency","definition":"Crop output divided by an explicitly defined photon input; numerator and denominator must be stated."},{"term":"Lighting power density","definition":"Electrical lighting power per unit crop or floor area."},{"term":"HVAC interaction","definition":"Effect of lighting power and heat location on cooling, dehumidification, airflow, and energy demand."}],"coreScience":["Lighting performance is a chain: electrical energy enters fixtures; some becomes photons; photons are distributed through the room; a fraction reaches and is intercepted by the canopy; absorbed photons support photochemistry and signaling; the crop allocates carbon to tissues; harvest, trimming, quality standards, and losses determine saleable output. Optimizing one link does not guarantee system optimization.","Nearly all electrical lighting input ultimately becomes heat in the facility or its exhaust path. Fixture efficacy reduces electrical input for a photon target, but driver location, radiant transfer, airflow, dehumidification, and operating schedule determine HVAC consequences. Lighting changes also alter transpiration and latent load.","Useful denominators include kWh per crop cycle, mol photons delivered per square metre, kWh per gram of saleable dry output, or photons per unit biomass. None is sufficient alone. Quality, uniformity, crop duration, water, labor, capital, rejected product, and safety must accompany efficiency claims."],"cultivationRelevance":["A stage-aware lighting plan should use measured maps, DLI, plant response, room capacity, and marginal output—not the fixture's maximum setting—as the control basis.","Trials should compare a defined baseline and treatment under matched cultivar, canopy, environment, and harvest methods, then report both biological and energy outcomes."],"measureAndRecord":[{"field":"Electrical","requirement":"Fixture and room kW, voltage, power factor where relevant, operating hours, dimming profile, and measured kWh."},{"field":"Photon","requirement":"PPF/ePPF basis, installed PPFD/ePPFD maps, DLI, uniformity, canopy interception proxy, and depreciation."},{"field":"Thermal","requirement":"Fixture and driver location, sensible load, leaf temperature, HVAC and dehumidification response, and peak conditions."},{"field":"Crop","requirement":"Cultivar, stage, area, cycle time, biomass, saleable yield, grade distribution, chemistry method, and rejects."},{"field":"Efficiency and economics","requirement":"Declared equations, boundaries, capital, maintenance, labor, energy rate, and sensitivity assumptions."}],"misconceptions":["Highest fixture efficacy is automatically best: Distribution, spectrum, reliability, controls, crop response, and total system energy also matter.","More light is profitable until plants burn: Marginal yield and quality gains can fall below marginal energy, HVAC, labor, and risk costs earlier.","Grams per watt is a complete metric: It omits time, area, actual kWh, photon band, quality, crop losses, and environmental support."],"evidenceLimits":["Economic optima change with genotype, market, facility, climate, utility rates, capital, labor, quality standards, and risk. Published biological responses cannot determine a universal commercial setpoint."],"crossLinks":"THC-ENC-081-100, THC-ENC-101-119, THC-ENC-121-140, and THC-GROW-060.","sourceNotes":["Resource Innovation Institute (2021). LED Lighting for Cannabis Cultivation and Controlled Environment Agriculture: Best Practices Guide.","Rodriguez-Morrison V., Llewellyn D., and Zheng Y. (2021). Cannabis Yield, Potency, and Leaf Photosynthesis Respond Differently to Increasing Light Levels in an Indoor Environment. Frontiers in Plant Science 12:646020.","Llewellyn D. et al. (2022). Indoor Grown Cannabis Yield Increased Proportionally With Light Intensity, but Ultraviolet Radiation Did Not Affect Yield or Cannabinoid Content. Frontiers in Plant Science 13:974018.","Holweg M.M.S.F. et al. (2024). The Role of Red and White Light in Optimizing Growth and Accumulation of Plant Specialized Metabolites at Two Light Intensities in Medical Cannabis. Frontiers in Plant Science 15:1393803.","Garrido J. et al. (2025). Subcanopy and Inter-Canopy Supplemental Light Enhances and Standardizes Yields in Medicinal Cannabis. Plants 14:1532."],"slug":"lighting-energy-heat-efficacy-and-crop-response","route":"/encyclopedia/lighting-energy-heat-efficacy-and-crop-response"}
+{
+  "id": "THC-ENC-120",
+  "number": 120,
+  "title": "Lighting Energy, Heat, Efficacy, and Crop Response",
+  "objective": "Connect electrical input, photon delivery, thermal load, canopy interception, biological conversion, and saleable output in one auditable lighting-performance chain.",
+  "terms": [
+    {
+      "term": "Photon efficacy",
+      "definition": "Fixture PPF divided by electrical input, expressed as micromoles per joule under stated conditions."
+    },
+    {
+      "term": "Light-use efficiency",
+      "definition": "Crop output divided by an explicitly defined photon input; numerator and denominator must be stated."
+    },
+    {
+      "term": "Lighting power density",
+      "definition": "Electrical lighting power per unit crop or floor area."
+    },
+    {
+      "term": "HVAC interaction",
+      "definition": "Effect of lighting power and heat location on cooling, dehumidification, airflow, and energy demand."
+    }
+  ],
+  "coreScience": [
+    "Lighting performance is a chain: electrical energy enters fixtures; some becomes photons; photons are distributed through the room; a fraction reaches and is intercepted by the canopy; absorbed photons support photochemistry and signaling; the crop allocates carbon to tissues; harvest, trimming, quality standards, and losses determine saleable output. Optimizing one link does not guarantee system optimization.",
+    "Nearly all electrical lighting input ultimately becomes heat in the facility or its exhaust path. Fixture efficacy reduces electrical input for a photon target, but driver location, radiant transfer, airflow, dehumidification, and operating schedule determine HVAC consequences. Lighting changes also alter transpiration and latent load.",
+    "Useful denominators include kWh per crop cycle, mol photons delivered per square metre, kWh per gram of saleable dry output, or photons per unit biomass. None is sufficient alone. Quality, uniformity, crop duration, water, labor, capital, rejected product, and safety must accompany efficiency claims."
+  ],
+  "cultivationRelevance": [
+    "A stage-aware lighting plan should use measured maps, DLI, plant response, room capacity, and marginal output—not the fixture's maximum setting—as the control basis.",
+    "Trials should compare a defined baseline and treatment under matched cultivar, canopy, environment, and harvest methods, then report both biological and energy outcomes."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Electrical",
+      "requirement": "Fixture and room kW, voltage, power factor where relevant, operating hours, dimming profile, and measured kWh."
+    },
+    {
+      "field": "Photon",
+      "requirement": "PPF/ePPF basis, installed PPFD/ePPFD maps, DLI, uniformity, canopy interception proxy, and depreciation."
+    },
+    {
+      "field": "Thermal",
+      "requirement": "Fixture and driver location, sensible load, leaf temperature, HVAC and dehumidification response, and peak conditions."
+    },
+    {
+      "field": "Crop",
+      "requirement": "Cultivar, stage, area, cycle time, biomass, saleable yield, grade distribution, chemistry method, and rejects."
+    },
+    {
+      "field": "Efficiency and economics",
+      "requirement": "Declared equations, boundaries, capital, maintenance, labor, energy rate, and sensitivity assumptions."
+    }
+  ],
+  "misconceptions": [
+    "Highest fixture efficacy is automatically best: Distribution, spectrum, reliability, controls, crop response, and total system energy also matter.",
+    "More light is profitable until plants burn: Marginal yield and quality gains can fall below marginal energy, HVAC, labor, and risk costs earlier.",
+    "Grams per watt is a complete metric: It omits time, area, actual kWh, photon band, quality, crop losses, and environmental support."
+  ],
+  "evidenceLimits": [
+    "Economic optima change with genotype, market, facility, climate, utility rates, capital, labor, quality standards, and risk. Published biological responses cannot determine a universal commercial setpoint."
+  ],
+  "crossLinks": "THC-ENC-081-100, THC-ENC-101-119, THC-ENC-121-140, and THC-GROW-060.",
+  "sourceNotes": [
+    "Resource Innovation Institute (2021). LED Lighting for Cannabis Cultivation and Controlled Environment Agriculture: Best Practices Guide.",
+    "Rodriguez-Morrison V., Llewellyn D., and Zheng Y. (2021). Cannabis Yield, Potency, and Leaf Photosynthesis Respond Differently to Increasing Light Levels in an Indoor Environment. Frontiers in Plant Science 12:646020.",
+    "Llewellyn D. et al. (2022). Indoor Grown Cannabis Yield Increased Proportionally With Light Intensity, but Ultraviolet Radiation Did Not Affect Yield or Cannabinoid Content. Frontiers in Plant Science 13:974018.",
+    "Holweg M.M.S.F. et al. (2024). The Role of Red and White Light in Optimizing Growth and Accumulation of Plant Specialized Metabolites at Two Light Intensities in Medical Cannabis. Frontiers in Plant Science 15:1393803.",
+    "Garrido J. et al. (2025). Subcanopy and Inter-Canopy Supplemental Light Enhances and Standardizes Yields in Medicinal Cannabis. Plants 14:1532."
+  ],
+  "slug": "lighting-energy-heat-efficacy-and-crop-response",
+  "route": "/encyclopedia/lighting-energy-heat-efficacy-and-crop-response",
+  "knowledgeCheck": [
+    "For \"Lighting Energy, Heat, Efficacy, and Crop Response\", explain the mechanism behind this objective: Connect electrical input, photon delivery, thermal load, canopy interception, biological conversion, and saleable output in one auditable lighting-performance chain. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Highest fixture efficacy is automatically best: Distribution, spectrum, reliability, controls, crop response, and total system energy also matter.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — A stage-aware lighting plan should use measured maps, DLI, plant response, room capacity, and marginal output—not the fixture's maximum setting—as the control basis. Build a verification plan using the lesson's record set (Electrical: Fixture and room kW, voltage, power factor where relevant, operating hours, dimming profile, and measured kWh.; Photon: PPF/ePPF basis, installed PPFD/ePPFD maps, DLI, uniformity, canopy interception proxy, and depreciation.; Thermal: Fixture and driver location, sensible load, leaf temperature, HVAC and dehumidification response, and peak conditions.; Crop: Cultivar, stage, area, cycle time, biomass, saleable yield, grade distribution, chemistry method, and rejects.; Efficiency and economics: Declared equations, boundaries, capital, maintenance, labor, energy rate, and sensitivity assumptions.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  },
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia canonical 420 source set",
+    "evidenceControl": "claim_level_evidence_migration_pending",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending",
+    "externalReviewType": "plant_science_and_cultivation_reference",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_from_publication",
+    "releaseGateReason": [
+      "claim_level_evidence_migration_pending",
+      "approved_teaching_visual_pending",
+      "assessment_rationale_independent_review_pending",
+      "visitor_facing_release_verification_pending"
+    ],
+    "materializedBy": "scripts/materialize-encyclopedia-release-controls.mjs",
+    "materializedAt": "source-controlled"
+  }
+}

@@ -1,1 +1,105 @@
-{"id":"THC-ENC-098","number":98,"title":"Carbon Dioxide Supply, Ventilation, and Enrichment Context","objective":"Manage CO2 as a measured photosynthetic input and occupational hazard, coordinated with light, ventilation, crop demand, and fail-safe controls.","terms":[{"term":"CO2 concentration","definition":"Mole fraction of carbon dioxide in air, commonly reported in micromoles per mole or parts per million."},{"term":"Enrichment","definition":"Controlled addition of carbon dioxide above the incoming-air baseline."},{"term":"Ventilation loss","definition":"Removal of supplied CO2 when enriched air is exhausted or exchanged."},{"term":"Asphyxiant","definition":"Gas that can create unsafe breathing conditions by physiological effects or displacement of oxygen."}],"coreScience":["Cannabis is a C3 plant, and leaf photosynthesis can respond to elevated CO2 when light, temperature, water, mineral supply, leaf area, and sink capacity are adequate. Short-term leaf responses do not guarantee proportional whole-crop yield, quality, or economic return. Acclimation and other limiting factors can reduce the benefit.","A dense lit canopy can draw CO2 below the incoming-air level in poorly ventilated zones, while enrichment can be rapidly lost through exhaust. Distribution matters: injection near one sensor can satisfy the controller without supplying the canopy uniformly. Combustion sources add heat, moisture, and potential contaminants and require qualified design.","CO2 is colorless and odorless. NIOSH lists a recommended exposure limit of 5,000 ppm as a time-weighted average, 30,000 ppm as a short-term limit, and 40,000 ppm as immediately dangerous to life or health. Cultivation control targets are not safety limits. Current occupational rules, alarms, ventilation, entry controls, and emergency procedures govern the facility."],"cultivationRelevance":["Establish the un-enriched baseline under actual ventilation, lights, and canopy demand. If enrichment is justified, interlock injection with lights and ventilation status, use independent safety monitoring and alarms, prevent occupancy during unsafe conditions, and verify shutdown and purge behavior.","Evaluate response with canopy CO2 maps, growth and yield, input mass, ventilation losses, energy use, and quality data. Stop enrichment when the limiting resource or safety system cannot be maintained."],"measureAndRecord":[{"field":"Baseline","requirement":"Outdoor or incoming CO2, room concentration by zone, ventilation state, lights, and canopy condition."},{"field":"Supply","requirement":"Source, purity or combustion system, flow, distribution points, schedule, and consumption."},{"field":"Control","requirement":"Sensor IDs, target logic, interlocks, alarms, shutdown, purge, and access controls."},{"field":"Crop context","requirement":"PPFD, photoperiod, temperature, leaf temperature, irrigation, nutrition, and stage."},{"field":"Verification","requirement":"Canopy map, exposure-monitor test, leak check, response data, and safety drill."}],"misconceptions":["More CO2 always increases yield: Response is limited by light, temperature, water, nutrition, canopy, sinks, and duration.","A plant controller is a safety monitor: Independent life-safety design, alarms, and procedures are required.","CO2 sinks and stays evenly at floor level: Density matters, but jets, heat, fans, canopy uptake, and ventilation control actual distribution."],"evidenceLimits":["This lesson does not design a CO2 system. Compressed gas, combustion, detection, ventilation, and occupational exposure controls require qualified design and current jurisdictional compliance."],"crossLinks":"THC-ENC-062-065, THC-ENC-088-089, THC-ENC-096, THC-ENC-099-100, and facility life-safety controls.","sourceNotes":["Chandra S. et al. (2008). Photosynthetic Response of Cannabis sativa L. to Variations in Photosynthetic Photon Flux Densities, Temperature and CO2 Conditions. Physiology and Molecular Biology of Plants 14:299-306.","Chandra S. et al. (2011). Photosynthetic Response of Cannabis sativa L., an Important Medicinal Plant, to Elevated Levels of CO2. Physiology and Molecular Biology of Plants 17:291-295.","National Institute for Occupational Safety and Health. NIOSH Pocket Guide to Chemical Hazards: Carbon Dioxide.","Oklahoma State University Extension (2023). Greenhouse Carbon Dioxide Supplementation. HLA-6723."],"slug":"carbon-dioxide-supply-ventilation-and-enrichment-context","route":"/encyclopedia/carbon-dioxide-supply-ventilation-and-enrichment-context"}
+{
+  "id": "THC-ENC-098",
+  "number": 98,
+  "title": "Carbon Dioxide Supply, Ventilation, and Enrichment Context",
+  "objective": "Manage CO2 as a measured photosynthetic input and occupational hazard, coordinated with light, ventilation, crop demand, and fail-safe controls.",
+  "terms": [
+    {
+      "term": "CO2 concentration",
+      "definition": "Mole fraction of carbon dioxide in air, commonly reported in micromoles per mole or parts per million."
+    },
+    {
+      "term": "Enrichment",
+      "definition": "Controlled addition of carbon dioxide above the incoming-air baseline."
+    },
+    {
+      "term": "Ventilation loss",
+      "definition": "Removal of supplied CO2 when enriched air is exhausted or exchanged."
+    },
+    {
+      "term": "Asphyxiant",
+      "definition": "Gas that can create unsafe breathing conditions by physiological effects or displacement of oxygen."
+    }
+  ],
+  "coreScience": [
+    "Cannabis is a C3 plant, and leaf photosynthesis can respond to elevated CO2 when light, temperature, water, mineral supply, leaf area, and sink capacity are adequate. Short-term leaf responses do not guarantee proportional whole-crop yield, quality, or economic return. Acclimation and other limiting factors can reduce the benefit.",
+    "A dense lit canopy can draw CO2 below the incoming-air level in poorly ventilated zones, while enrichment can be rapidly lost through exhaust. Distribution matters: injection near one sensor can satisfy the controller without supplying the canopy uniformly. Combustion sources add heat, moisture, and potential contaminants and require qualified design.",
+    "CO2 is colorless and odorless. NIOSH lists a recommended exposure limit of 5,000 ppm as a time-weighted average, 30,000 ppm as a short-term limit, and 40,000 ppm as immediately dangerous to life or health. Cultivation control targets are not safety limits. Current occupational rules, alarms, ventilation, entry controls, and emergency procedures govern the facility."
+  ],
+  "cultivationRelevance": [
+    "Establish the un-enriched baseline under actual ventilation, lights, and canopy demand. If enrichment is justified, interlock injection with lights and ventilation status, use independent safety monitoring and alarms, prevent occupancy during unsafe conditions, and verify shutdown and purge behavior.",
+    "Evaluate response with canopy CO2 maps, growth and yield, input mass, ventilation losses, energy use, and quality data. Stop enrichment when the limiting resource or safety system cannot be maintained."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Baseline",
+      "requirement": "Outdoor or incoming CO2, room concentration by zone, ventilation state, lights, and canopy condition."
+    },
+    {
+      "field": "Supply",
+      "requirement": "Source, purity or combustion system, flow, distribution points, schedule, and consumption."
+    },
+    {
+      "field": "Control",
+      "requirement": "Sensor IDs, target logic, interlocks, alarms, shutdown, purge, and access controls."
+    },
+    {
+      "field": "Crop context",
+      "requirement": "PPFD, photoperiod, temperature, leaf temperature, irrigation, nutrition, and stage."
+    },
+    {
+      "field": "Verification",
+      "requirement": "Canopy map, exposure-monitor test, leak check, response data, and safety drill."
+    }
+  ],
+  "misconceptions": [
+    "More CO2 always increases yield: Response is limited by light, temperature, water, nutrition, canopy, sinks, and duration.",
+    "A plant controller is a safety monitor: Independent life-safety design, alarms, and procedures are required.",
+    "CO2 sinks and stays evenly at floor level: Density matters, but jets, heat, fans, canopy uptake, and ventilation control actual distribution."
+  ],
+  "evidenceLimits": [
+    "This lesson does not design a CO2 system. Compressed gas, combustion, detection, ventilation, and occupational exposure controls require qualified design and current jurisdictional compliance."
+  ],
+  "crossLinks": "THC-ENC-062-065, THC-ENC-088-089, THC-ENC-096, THC-ENC-099-100, and facility life-safety controls.",
+  "sourceNotes": [
+    "Chandra S. et al. (2008). Photosynthetic Response of Cannabis sativa L. to Variations in Photosynthetic Photon Flux Densities, Temperature and CO2 Conditions. Physiology and Molecular Biology of Plants 14:299-306.",
+    "Chandra S. et al. (2011). Photosynthetic Response of Cannabis sativa L., an Important Medicinal Plant, to Elevated Levels of CO2. Physiology and Molecular Biology of Plants 17:291-295.",
+    "National Institute for Occupational Safety and Health. NIOSH Pocket Guide to Chemical Hazards: Carbon Dioxide.",
+    "Oklahoma State University Extension (2023). Greenhouse Carbon Dioxide Supplementation. HLA-6723."
+  ],
+  "slug": "carbon-dioxide-supply-ventilation-and-enrichment-context",
+  "route": "/encyclopedia/carbon-dioxide-supply-ventilation-and-enrichment-context",
+  "knowledgeCheck": [
+    "For \"Carbon Dioxide Supply, Ventilation, and Enrichment Context\", explain the mechanism behind this objective: Manage CO2 as a measured photosynthetic input and occupational hazard, coordinated with light, ventilation, crop demand, and fail-safe controls. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"More CO2 always increases yield: Response is limited by light, temperature, water, nutrition, canopy, sinks, and duration.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Establish the un-enriched baseline under actual ventilation, lights, and canopy demand. If enrichment is justified, interlock injection with lights and ventilation status, use independent safety monitoring and alarms, prevent occupancy during unsafe conditions, and verify shutdown and purge behavior. Build a verification plan using the lesson's record set (Baseline: Outdoor or incoming CO2, room concentration by zone, ventilation state, lights, and canopy condition.; Supply: Source, purity or combustion system, flow, distribution points, schedule, and consumption.; Control: Sensor IDs, target logic, interlocks, alarms, shutdown, purge, and access controls.; Crop context: PPFD, photoperiod, temperature, leaf temperature, irrigation, nutrition, and stage.; Verification: Canopy map, exposure-monitor test, leak check, response data, and safety drill.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  },
+  "publicationAuthorized": false,
+  "reviewControl": {
+    "controlledManuscript": "THC Cannabis Encyclopedia canonical 420 source set",
+    "evidenceControl": "claim_level_evidence_migration_pending",
+    "secondaryEvidenceReview": "pending",
+    "externalReview": "pending",
+    "externalReviewType": "plant_science_and_cultivation_reference",
+    "publicationAuthorized": false,
+    "independentApproval": false,
+    "websiteAction": "hold_from_publication",
+    "releaseGateReason": [
+      "claim_level_evidence_migration_pending",
+      "approved_teaching_visual_pending",
+      "assessment_rationale_independent_review_pending",
+      "visitor_facing_release_verification_pending"
+    ],
+    "materializedBy": "scripts/materialize-encyclopedia-release-controls.mjs",
+    "materializedAt": "source-controlled"
+  }
+}
