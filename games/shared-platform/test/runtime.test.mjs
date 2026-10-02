@@ -6,6 +6,10 @@ import {
   storageRemove,
   storageReadJson,
   storageWriteJson,
+  createSaveEnvelope,
+  validateSaveEnvelope,
+  migrateSaveEnvelope,
+  createVersionedSaveStore,
   DEFAULT_GAME_SETTINGS,
   createGameSettingsStore,
   effectiveAudioGain,
@@ -118,6 +122,77 @@ class FakeAudioContext {
   createGain() { const node = new FakeAudioNode(); node.gain = new FakeAudioParam(); return node; }
   createOscillator() { return new FakeOscillator(); }
   async close() { this.state = 'closed'; }
+}
+
+{
+  const envelope = createSaveEnvelope({
+    gameId: 'save-test',
+    version: 1,
+    releaseVersion: '1.0.0',
+    savedAt: '2026-10-01T00:00:00.000Z',
+    data: { score: 4, inventory: ['seed'] },
+  });
+  assert.equal(validateSaveEnvelope(envelope, { gameId: 'save-test', maxVersion: 2 }).valid, true);
+
+  const migrated = migrateSaveEnvelope(envelope, {
+    gameId: 'save-test',
+    targetVersion: 3,
+    migrations: {
+      1(data) { return { ...data, lives: 3 }; },
+      2(data) { return { ...data, inventory: [...data.inventory, 'water'] }; },
+    },
+    validateData: (data) => Number.isInteger(data.lives) && Array.isArray(data.inventory),
+  });
+  assert.equal(migrated.ok, true);
+  assert.equal(migrated.migrated, true);
+  assert.equal(migrated.save.version, 3);
+  assert.deepEqual(migrated.save.data.inventory, ['seed', 'water']);
+
+  const missingMigration = migrateSaveEnvelope(envelope, {
+    gameId: 'save-test',
+    targetVersion: 2,
+    migrations: {},
+  });
+  assert.equal(missingMigration.ok, false);
+  assert.equal(missingMigration.error, 'missing-migration');
+
+  const storage = memoryStorage();
+  const v1 = createVersionedSaveStore({
+    gameId: 'save-test',
+    version: 1,
+    storage,
+    now: () => '2026-10-01T00:00:00.000Z',
+    validateData: (data) => Number.isInteger(data.score),
+  });
+  assert.equal(v1.save({ score: 10 }).ok, true);
+
+  const v2 = createVersionedSaveStore({
+    gameId: 'save-test',
+    version: 2,
+    storage,
+    migrations: {
+      1(data) { return { ...data, streak: 0 }; },
+    },
+    validateData: (data) => Number.isInteger(data.score) && Number.isInteger(data.streak),
+  });
+  const loaded = v2.load();
+  assert.equal(loaded.ok, true);
+  assert.equal(loaded.status, 'migrated');
+  assert.equal(loaded.save.version, 2);
+  assert.equal(loaded.data.streak, 0);
+  assert.equal(v2.load().status, 'loaded');
+
+  const blocked = createVersionedSaveStore({
+    gameId: 'blocked-save',
+    version: 1,
+    storage: {
+      getItem() { throw new Error('blocked'); },
+      setItem() { throw new Error('blocked'); },
+      removeItem() { throw new Error('blocked'); },
+    },
+  });
+  assert.equal(blocked.load({ fallback: { safe: true } }).status, 'unavailable');
+  assert.equal(blocked.save({ value: 1 }).ok, false);
 }
 
 {
