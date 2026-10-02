@@ -56,10 +56,13 @@ const report = {
   schemaVersion: 'thc-encyclopedia-release-status@1',
   generatedBy: 'scripts/report-encyclopedia-release-status.mjs',
   generatedAt: stableGeneratedAt('data/encyclopedia-release-status.json'),
-  repository: {
+  sourceSnapshot: {
+    kind: 'working-tree-diagnostic',
     branch: git('branch', '--show-current'),
-    head: git('rev-parse', 'HEAD'),
-    dirty: Boolean(git('status', '--short'))
+    observedHead: git('rev-parse', 'HEAD'),
+    dirty: Boolean(git('status', '--short')),
+    authoritativeReleaseIdentity: false,
+    note: 'Diagnostic source snapshot only. The authoritative release identity is established by the merged commit and visitor-facing deployment verification.'
   },
   sourceState: {
     canonicalManifestEntries: arr(manifest.entries).length,
