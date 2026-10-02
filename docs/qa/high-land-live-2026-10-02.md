@@ -6,7 +6,7 @@ Public route: https://dtfseeds.com/games/high-land/
 Production publishing run: https://github.com/dtfgenetics/Thc/actions/runs/37037872953 (success).
 Verified live entry bundle: `/games/high-land/assets/index-D6Tn9JB1.js`.
 Live SHA-256: `125ee3964330ee9d18a832095b44f0d76b0c3cf4d9cba9f7ca8758e4d761bad3`, identical to the tested build from the previous release validation.
-Browser observations: approximately 20:10–20:15 UTC, 2026-10-02.
+Browser observations: approximately 20:10–20:13 UTC, 2026-10-02.
 
 | Acceptance check | Result | Evidence |
 | --- | --- | --- |
