@@ -24,6 +24,8 @@ import {
   vibrateGame,
   createWakeLockController,
   createStateMachine,
+  createGameLifecycle,
+  GAME_LIFECYCLE_STATES,
   LoadingTaskError,
   runLoadTasks,
   loadingResultsToObject,
@@ -464,6 +466,62 @@ class FakeAudioContext {
     validateObjectShape(value, schema, { allowUnknown: false }));
   assert.equal(bad.success, false);
   assert.equal(bad.error.issues.length, 3);
+}
+
+{
+  let tick = 1000;
+  const tracked = [];
+  const transitions = [];
+  const lifecycle = createGameLifecycle({
+    gameId: 'lifecycle-test',
+    releaseVersion: '2.0.0',
+    now: () => tick,
+    telemetry: { track(name, payload) { tracked.push({ name, payload }); } },
+    onTransition(event) { transitions.push(event); },
+  });
+
+  assert.deepEqual(GAME_LIFECYCLE_STATES, [
+    'booting',
+    'loading',
+    'ready',
+    'playing',
+    'paused',
+    'completed',
+    'failed',
+  ]);
+  assert.equal(lifecycle.state(), 'booting');
+  tick += 10;
+  lifecycle.loading({ phase: 'core-assets' });
+  tick += 20;
+  lifecycle.ready({ coreBytes: 1234 });
+  tick += 30;
+  lifecycle.play({ inputMode: 'touch' });
+  tick += 40;
+  lifecycle.pause({ reason: 'visibility' });
+  tick += 50;
+  lifecycle.play({ reason: 'resume' });
+  tick += 60;
+  lifecycle.complete({ outcome: 'win' });
+
+  assert.equal(lifecycle.state(), 'completed');
+  assert.equal(lifecycle.isTerminal(), true);
+  assert.equal(lifecycle.history().length, 7);
+  assert.equal(transitions.at(-1).to, 'completed');
+  assert.equal(tracked.at(-1).name, 'lifecycle_transition');
+  assert.equal(tracked.at(-1).payload.outcome, 'win');
+  assert.throws(() => lifecycle.play(), /invalid lifecycle transition/);
+
+  const failed = createGameLifecycle({ gameId: 'failed-game' });
+  failed.loading();
+  failed.fail({ code: 'asset_load' });
+  assert.equal(failed.state(), 'failed');
+  assert.throws(() => failed.ready(), /invalid lifecycle transition/);
+
+  const privateMetadata = createGameLifecycle({ gameId: 'privacy-test' });
+  assert.throws(
+    () => privateMetadata.loading({ playerName: 'private identity' }),
+    /private field/,
+  );
 }
 
 console.log('shared game platform runtime tests passed');
