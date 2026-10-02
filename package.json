@@ -159,6 +159,11 @@
     "verify:research-evidence-index": "node scripts/build-research-evidence-index.mjs --self-test && npm run test:research-evidence-pipeline && node scripts/validate-research-evidence-index.mjs && npm run test:research-evidence-query",
     "test:research-evidence-pipeline": "node scripts/test-research-evidence-pipeline.mjs",
     "query:research-evidence": "node scripts/query-research-evidence.mjs",
-    "test:research-evidence-query": "node scripts/query-research-evidence.mjs --self-test"
+    "test:research-evidence-query": "node scripts/query-research-evidence.mjs --self-test",
+    "audit:platform-convergence": "node scripts/report-platform-convergence.mjs",
+    "audit:platform-convergence:check": "node scripts/report-platform-convergence.mjs --check",
+    "audit:platform-convergence:json": "node scripts/report-platform-convergence.mjs --json",
+    "audit:platform-convergence:live": "node scripts/report-platform-convergence.mjs --live",
+    "audit:platform-convergence:strict-live": "node scripts/report-platform-convergence.mjs --live --strict-live"
   }
 }
