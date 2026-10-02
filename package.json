@@ -149,9 +149,11 @@
     "project:status:json": "node scripts/project-execution-dashboard.mjs --json",
     "verify:encyclopedia-practical-resources": "node scripts/validate-encyclopedia-practical-resources.mjs",
     "verify:external-agent-contracts": "node scripts/validate-external-agent-contract-registry.mjs && node scripts/test-external-agent-contract-registry.mjs",
-    "verify:research-bioinformatics": "node scripts/validate-research-bioinformatics.mjs && npm run test:grin-hemp-normalizer && npm run test:ncbi-sra-normalizer && npm run test:ncbi-biosample-normalizer",
+    "verify:research-bioinformatics": "node scripts/validate-research-bioinformatics.mjs && npm run test:grin-hemp-normalizer && npm run test:ncbi-sra-normalizer && npm run test:ncbi-biosample-normalizer && npm run test:ncbi-runinfo-fetcher",
     "test:grin-hemp-normalizer": "node scripts/normalize-grin-hemp-export.mjs --self-test",
     "test:ncbi-sra-normalizer": "node scripts/normalize-ncbi-sra-runinfo.mjs --self-test",
-    "test:ncbi-biosample-normalizer": "node scripts/normalize-ncbi-biosample-xml.mjs --self-test"
+    "test:ncbi-biosample-normalizer": "node scripts/normalize-ncbi-biosample-xml.mjs --self-test",
+    "test:ncbi-runinfo-fetcher": "node scripts/fetch-ncbi-sra-runinfo.mjs --self-test",
+    "fetch:ncbi-sra-runinfo": "node scripts/fetch-ncbi-sra-runinfo.mjs"
   }
 }
