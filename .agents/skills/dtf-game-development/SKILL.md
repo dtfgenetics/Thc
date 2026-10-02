@@ -15,8 +15,9 @@ Resolve the exact game before implementation. The registry describes current rea
 Before implementation:
 
 1. Read `data/game-registry-v2.json`.
-2. Normalize the requested title and resolve it through `aliasMap`.
-3. Read the matching game entry and establish:
+2. Read `configuration/game-qa/game-profiles.json` and resolve the game's capability profile.
+3. Normalize the requested title and resolve it through `aliasMap`.
+4. Read the matching game entry and establish:
    - canonical game ID and title;
    - product goal and primary verbs;
    - `production.repository` and `production.sourcePaths`;
@@ -27,9 +28,11 @@ Before implementation:
    - asset references;
    - build/test commands;
    - `release.status`, blockers, and next milestone.
-4. Read the game contract/source-of-truth in the canonical repo.
-5. Inspect canonical source before proposing or editing code.
-6. Then use the appropriate Game Studio skill for architecture, Phaser, UI, assets, or playtesting.
+5. Resolve the profile-driven QA requirements: gameplay, renderer, session, persistence, network, content, performance, security, and accessibility.
+6. Read the game contract/source-of-truth in the canonical repo.
+7. Inspect canonical source before proposing or editing code.
+8. Run `npm run games:profiles:check` before implementation and include the game-specific profile checks in release verification.
+9. Then use the appropriate Game Studio skill for architecture, Phaser, UI, assets, or playtesting.
 
 Never infer authority from a folder name or deployed copy.
 
@@ -54,7 +57,7 @@ A commit, build, package, or deployment attempt is not proof of production. Only
 
 A game task is ready for implementation only after these are known:
 
-`canonical game ID → goal → canonical repo/source → game contract → architecture → alternate copies → build/tests → release state → next milestone`
+`canonical game ID → goal → canonical repo/source → game profile → game contract → architecture → alternate copies → build/tests → release state → next milestone`
 
 Use Game Studio after this DTF-specific resolution, not instead of it.
 
