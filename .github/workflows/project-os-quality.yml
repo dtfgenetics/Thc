@@ -3,6 +3,13 @@ name: Project OS Quality Gate
 on:
   pull_request:
     paths:
+      - "data/public-navigation.json"
+      - "data/site-navigation-v6.json"
+      - "data/site-registry.json"
+      - "site/deployment/public-apps.json"
+      - "scripts/validate-shared-ui-standard.mjs"
+      - "scripts/validate-portfolio-registry.mjs"
+      - "scripts/validate-public-navigation.mjs"
       - "data/asset-state-registry.json"
       - "data/asset-state-registry.schema.json"
       - "data/asset-manifest.json"
@@ -22,6 +29,13 @@ on:
   push:
     branches: [main]
     paths:
+      - "data/public-navigation.json"
+      - "data/site-navigation-v6.json"
+      - "data/site-registry.json"
+      - "site/deployment/public-apps.json"
+      - "scripts/validate-shared-ui-standard.mjs"
+      - "scripts/validate-portfolio-registry.mjs"
+      - "scripts/validate-public-navigation.mjs"
       - "data/asset-state-registry.json"
       - "data/asset-state-registry.schema.json"
       - "data/asset-manifest.json"
