@@ -63,6 +63,7 @@ const canonical={
   requiredChecks:uniqueRequiredChecks,
   performanceBudget:profileCatalog.performanceBudgets?.[profile.performanceProfile] ?? null,
   profileReferences:profileCatalog.references ?? [],
+  strictProfileCommand:`npm run games:profiles:strict -- --id ${game.id}`,
 };
 
 if(asJson){
@@ -81,6 +82,7 @@ console.log(`Public route: ${canonical.publicRoute ?? '—'}`);
 console.log(`Release status: ${canonical.releaseStatus ?? '—'}`);
 console.log(`Overlay eligible: ${canonical.overlayEligible===null ? '—' : String(canonical.overlayEligible)}`);
 console.log(`Build/verification: ${canonical.buildCommand ?? '—'}`);
+console.log(`Strict profile release check: ${canonical.strictProfileCommand}`);
 console.log('Profile:');
 for(const [name,value] of Object.entries(canonical.profile)) console.log(`- ${name}: ${value ?? '—'}`);
 if(canonical.performanceBudget){
