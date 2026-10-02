@@ -75,7 +75,7 @@ jobs:
       - name: Audit encyclopedia learning quality
         run: npm run audit:encyclopedia-learning-quality
       - name: Audit substantive lesson quality
-        run: npm run audit:encyclopedia-substantive-quality
+        run: npm run audit:encyclopedia-substantive-quality:strict
       - name: Build rich discovery index
         run: npm run build:encyclopedia-discovery
       - name: Build global education search
@@ -93,7 +93,7 @@ jobs:
       - name: Validate encyclopedia production skill
         run: npm run verify:encyclopedia-skill
       - name: Validate controlled lesson structure
-        run: npm run verify:encyclopedia-content-control
+        run: npm run verify:encyclopedia-content-strict
       - name: Validate assessments
         run: npm run verify:encyclopedia-assessments
       - name: Upload generated encyclopedia artifacts
