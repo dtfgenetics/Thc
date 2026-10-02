@@ -40,8 +40,8 @@ jobs:
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      WP_REQUEST_TIMEOUT_MS: '20000'
-      WP_REQUEST_ATTEMPTS: '3'
+      WP_REQUEST_TIMEOUT_MS: '60000'
+      WP_REQUEST_ATTEMPTS: '5'
       APPLY_LEARNING_V3: 'true'
       APPLY_LEARNING_V3_OWNERSHIP: 'true'
       BACKUP_ROOT: /tmp/dtf-learning-center-expansion
