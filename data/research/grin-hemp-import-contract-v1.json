@@ -15,7 +15,8 @@
     "Reject unknown trait names into a quarantine report instead of silently renaming them.",
     "Do not promote placeholder traits ending in _xxx or marked placeholder into canonical production measurements.",
     "Derived fields such as days_2_* and kite_* must be tagged derived when recalculated rather than copied from source.",
-    "Preserve source URL, retrieval date, original column name, and source record identifier."
+    "Preserve source URL, retrieval date, original column name, and source record identifier.",
+    "Every USDA vocabulary field categorized as passport must have an explicit target mapping; silent passport-field drops are forbidden."
   ],
   "identity_fields": [
     {
@@ -81,5 +82,28 @@
     "unit conflict",
     "ambiguous duplicate accession",
     "source provenance missing"
-  ]
+  ],
+  "passport_field_mapping": {
+    "taxonomy_species_id": "taxonomy_species_id",
+    "PUID": "puid",
+    "improvement_status": "improvement_status",
+    "plant_name": "plant_name",
+    "accession_pedigree": "pedigree",
+    "ploidy": "ploidy",
+    "accession_ipr": "accession_ipr",
+    "crop_use": "crop_use",
+    "source_cooperator_id": "source_cooperator_id",
+    "collector_cooperator_id": "collector_cooperator_id",
+    "developer": "developer",
+    "number_plants_sampled": "number_plants_sampled",
+    "source_date": "source_date",
+    "geography_id": "geography_id",
+    "elevation_meters": "elevation_meters",
+    "latitude": "latitude",
+    "longitude": "longitude",
+    "coordinate_method": "coordinate_method",
+    "uncertainty": "uncertainty",
+    "georeference_datum": "georeference_datum",
+    "accession_inv_voucher_note": "accession_inv_voucher_note"
+  }
 }
