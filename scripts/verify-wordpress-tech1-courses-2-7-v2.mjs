@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import process from 'node:process';
+import { collectPublicLessonIds } from './lib/academy-public-scope.mjs';
 
 const site = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
 const user = process.env.WP_API_USERNAME || '';
@@ -61,8 +62,11 @@ const verified = [];
 for (const entry of config.courses) {
   const release = await sourceJson(`content/public-releases/${entry.releaseId}.json`);
   must(release.courseId === entry.id && release.publicationState === 'published', `${entry.id}: source public release is not published.`);
-  const module = await sourceJson(`content/modules/${release.publicScope.modules[0]}.json`);
-  must((module.lessons || []).length === 4, `${entry.id}: source module must contain four lessons.`);
+  const modules = new Map();
+  for (const moduleId of release.publicScope.modules || []) {
+    modules.set(moduleId, await sourceJson(`content/modules/${moduleId}.json`));
+  }
+  const lessonIds = collectPublicLessonIds(release, modules);
 
   const root = await find(entry.slug, program.id);
   must(root && root.status === 'publish', `${entry.id}: course root missing or not published.`);
@@ -76,8 +80,8 @@ for (const entry of config.courses) {
   must(anonymousRoot.includes(sourceRef), `${entry.id}: anonymous root missing exact source snapshot.`);
 
   let expectedAssets = 0;
-  for (let index = 0; index < module.lessons.length; index++) {
-    const lessonId = module.lessons[index];
+  for (let index = 0; index < lessonIds.length; index++) {
+    const lessonId = lessonIds[index];
     const sourceLesson = await sourceJson(`content/lessons/${lessonId}.json`);
     const ids = expectedAssetIds(sourceLesson);
     expectedAssets += ids.length;
@@ -111,7 +115,7 @@ for (const entry of config.courses) {
     must(finalHtml.includes('view=final'), `${entry.id}: summative assessment deep link must target the graded-final view.`);
   }
 
-  verified.push({ courseId: entry.id, route: rootRoute, rootPageId: root.id, lessons: 4, anonymousRoot: true, anonymousLessons: 4, sourceRef, governedAssetReferencesVerified: expectedAssets });
+  verified.push({ courseId: entry.id, route: rootRoute, rootPageId: root.id, lessons: lessonIds.length, anonymousRoot: true, anonymousLessons: lessonIds.length, sourceRef, governedAssetReferencesVerified: expectedAssets });
 }
 
 console.log(JSON.stringify({ result: 'success', sourceRepository: config.source.repository, sourceRef, verified }, null, 2));
