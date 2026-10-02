@@ -27,7 +27,23 @@ jobs:
           fetch-depth: 0
 
       - name: Clone canonical Tools repository
-        run: git clone --depth 1 https://github.com/dtfgenetics/Tools.git /tmp/tools
+        env:
+          REQUESTED_TOOLS_SHA: ${{ github.event.client_payload.tools_sha || '' }}
+        run: |
+          set -euo pipefail
+          git clone --depth 1 https://github.com/dtfgenetics/Tools.git /tmp/tools
+          actual_sha="$(git -C /tmp/tools rev-parse HEAD)"
+          if [ -n "${REQUESTED_TOOLS_SHA}" ]; then
+            if ! [[ "${REQUESTED_TOOLS_SHA}" =~ ^[0-9a-f]{40}$ ]]; then
+              echo "::error::Invalid tools_sha dispatch payload: ${REQUESTED_TOOLS_SHA}"
+              exit 1
+            fi
+            if [ "${actual_sha}" != "${REQUESTED_TOOLS_SHA}" ]; then
+              echo "::notice::Tools main advanced from dispatched ${REQUESTED_TOOLS_SHA} to ${actual_sha}; syncing the newer canonical main."
+            else
+              echo "Validated dispatched canonical Tools SHA ${REQUESTED_TOOLS_SHA}."
+            fi
+          fi
 
       - name: Synchronize canonical tool routes and shared assets
         shell: bash
