@@ -4241,7 +4241,7 @@
         "networkModel": "game-specific/local unless canonical runtime states otherwise",
         "multiplayerAuthority": "game-specific",
         "persistence": "game-specific",
-        "saveVersion": null,
+        "saveVersion": 1,
         "inputModes": [
           "keyboard",
           "mouse/touch"
@@ -4297,7 +4297,8 @@
         "blockers": [
           "Exact current visitor-route verification metadata is not recorded in v2 yet."
         ],
-        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification.",
+        "canonicalSaveRevision": "0111f12bb500e58c9edfb9e4d395dac92bbd8729"
       },
       "developmentLocations": [
         {
