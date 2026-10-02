@@ -4,15 +4,38 @@ import path from 'node:path';
 const root=process.cwd();
 const out=path.join(root,'site/public-route-patch/learn/search/search-index.json');
 const docs=new Map();
+const routeOwners=new Map();
+const idPriorities=new Map();
 
 const clean=(v)=>String(v??'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
-const add=(row)=>{
+const add=(row,priority=20)=>{
   if(!row?.id||!row?.title||!row?.route)return;
-  docs.set(String(row.id),{
-    id:String(row.id),
+  const id=String(row.id);
+  const route=String(row.route);
+  const existingIdPriority=idPriorities.get(id)??-Infinity;
+  if(existingIdPriority>priority)return;
+
+  const previous=docs.get(id);
+  if(previous){
+    const previousOwner=routeOwners.get(previous.route);
+    if(previousOwner?.id===id)routeOwners.delete(previous.route);
+  }
+
+  const routeOwner=routeOwners.get(route);
+  if(routeOwner&&routeOwner.id!==id){
+    if(routeOwner.priority>priority){
+      if(previous)routeOwners.set(previous.route,{id,priority:existingIdPriority});
+      return;
+    }
+    docs.delete(routeOwner.id);
+    idPriorities.delete(routeOwner.id);
+  }
+
+  docs.set(id,{
+    id,
     type:clean(row.type||'Reference'),
     title:clean(row.title),
-    route:String(row.route),
+    route,
     summary:clean(row.summary||''),
     keywords:[...new Set((row.keywords||[]).map(clean).filter(Boolean))].slice(0,48),
     terms:(row.terms||[]).map(clean).filter(Boolean),
@@ -29,6 +52,8 @@ const add=(row)=>{
     sourceRepository:clean(row.sourceRepository||''),
     sourceRef:clean(row.sourceRef||'')
   });
+  routeOwners.set(route,{id,priority});
+  idPriorities.set(id,priority);
 };
 
 function readJson(rel){
@@ -44,10 +69,13 @@ function walk(dir,cb){
   }
 }
 
+const curated=readJson('configuration/education-search-static-records.json');
+for(const item of curated?.documents||[]) add(item,30);
+
 const nav=readJson('data/public-navigation.json');
-for(const item of nav?.learn?.sections||[]) add({id:'learn-'+item.route.replace(/\W+/g,'-'),type:'Learning',title:item.label,route:item.route,summary:'Teaching Healthy Cultivation learning resource.',keywords:[item.label]});
-for(const item of nav?.courses?.sections||[]) add({id:'course-'+item.route.replace(/\W+/g,'-'),type:'Courses',title:item.label,route:item.route,summary:'Structured THC course or learning pathway.',keywords:['course','academy',item.label]});
-for(const item of nav?.tools||[]) if(item.public) add({id:'tool-'+item.id,type:'Tool',title:item.title,route:item.route,summary:'Public THC cultivation reference or workflow tool.',keywords:[item.id,item.title]});
+for(const item of nav?.learn?.sections||[]) add({id:'learn-'+item.route.replace(/\W+/g,'-'),type:'Learning',title:item.label,route:item.route,summary:'Teaching Healthy Cultivation learning resource.',keywords:[item.label]},10);
+for(const item of nav?.courses?.sections||[]) add({id:'course-'+item.route.replace(/\W+/g,'-'),type:'Courses',title:item.label,route:item.route,summary:'Structured THC course or learning pathway.',keywords:['course','academy',item.label]},10);
+for(const item of nav?.tools||[]) if(item.public) add({id:'tool-'+item.id,type:'Tool',title:item.title,route:item.route,summary:'Public THC cultivation reference or workflow tool.',keywords:[item.id,item.title]},10);
 
 const courseCatalog=readJson('site/wordpress/education/course-catalog-v4.json');
 const publicCourseManifests=[
@@ -77,7 +105,7 @@ for(const manifest of publicCourseManifests){
       status:'public-academic',
       sourceRepository:manifest.source?.repository||'',
       sourceRef:manifest.source?.ref||''
-    });
+    },50);
   }
 }
 
@@ -94,7 +122,7 @@ for(const course of courseCatalog?.courses||[]){
     status:'public-academic',
     sourceRepository:'dtfgenetics/Thc-learning-courses-',
     sourceRef:readJson('site/wordpress/education/academy-deployment-target.json')?.sourceSha||''
-  });
+  },50);
 }
 
 
@@ -127,7 +155,7 @@ for(const item of encyclopedia?.lessons||[]){
     coreScience:item.coreScience||[],
     cultivation:item.cultivation||[],
     tools:item.tools||[]
-  });
+  },50);
 }
 
 const systems=readJson('site/public-route-patch/atlas/data/systems.json');
@@ -141,7 +169,7 @@ for(const x of Array.isArray(systems)?systems:(systems?.systems||[])){
     route:x.route||`/atlas/${id}/`,
     summary:x.summary||x.description||'Cannabis plant anatomy and systems reference.',
     keywords:[...(x.keywords||[]),...(x.structures||[]).map(v=>typeof v==='string'?v:v?.name)]
-  });
+  },40);
 }
 
 const terpenes=readJson('site/public-route-patch/terpene-atlas/data/terpene-catalog-v1.json');
@@ -155,11 +183,8 @@ for(const x of Array.isArray(terpenes)?terpenes:(terpenes?.compounds||terpenes?.
     route:`/terpene-atlas/?compound=${encodeURIComponent(id)}`,
     summary:x.notes||x.summary||'Terpene chemistry and occurrence reference.',
     keywords:[...(x.aliases||[]),...(x.sensoryDescriptors||x.aroma||[]),x.class,x.formula]
-  });
+  },40);
 }
-
-const existing=readJson('site/public-route-patch/learn/search/search-index.json');
-for(const x of existing?.documents||[]) if(!docs.has(String(x.id))) add(x);
 
 const documents=[...docs.values()].sort((a,b)=>a.type.localeCompare(b.type)||a.title.localeCompare(b.title));
 fs.mkdirSync(path.dirname(out),{recursive:true});
