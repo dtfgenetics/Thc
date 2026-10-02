@@ -1,0 +1,80 @@
+name: Temporary PRJNA1206134 RunInfo acquisition
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/tmp-prjna1206134-runinfo.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  acquire:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Fetch official NCBI RunInfo
+        run: |
+          set -euo pipefail
+          mkdir -p data/research/imported/ncbi/raw data/research/imported/ncbi/normalized
+          node scripts/fetch-ncbi-sra-runinfo.mjs PRJNA1206134 \
+            --output data/research/imported/ncbi/raw/PRJNA1206134-runinfo.csv
+      - name: Normalize run metadata
+        run: |
+          set -euo pipefail
+          node scripts/normalize-ncbi-sra-runinfo.mjs \
+            data/research/imported/ncbi/raw/PRJNA1206134-runinfo.csv \
+            data/research/imported/ncbi/normalized/PRJNA1206134-runs.jsonl \
+            FERAL-CANNABIS-PRJNA1206134 \
+            PRJNA1206134 \
+            2026-10-02
+      - name: Write acquisition manifest
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import crypto from 'node:crypto';
+          const raw='data/research/imported/ncbi/raw/PRJNA1206134-runinfo.csv';
+          const normalized='data/research/imported/ncbi/normalized/PRJNA1206134-runs.jsonl';
+          const quarantine='data/research/imported/ncbi/normalized/PRJNA1206134-runs.quarantine.jsonl';
+          const sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+          const lines=p=>fs.existsSync(p)?fs.readFileSync(p,'utf8').split(/\r?\n/).filter(Boolean).length:0;
+          const manifest={
+            schema_version:'1.0.0',
+            source_id:'FERAL-CANNABIS-PRJNA1206134',
+            bioproject:'PRJNA1206134',
+            acquired_at:'2026-10-02',
+            source_method:'NCBI SRA Run Info CGI',
+            acquisition_command:'node scripts/fetch-ncbi-sra-runinfo.mjs PRJNA1206134 --output '+raw,
+            files:{
+              raw:{path:raw,sha256:sha(raw),rows:Math.max(0,lines(raw)-1)},
+              normalized:{path:normalized,sha256:sha(normalized),records:lines(normalized)},
+              quarantine:{path:quarantine,sha256:sha(quarantine),records:lines(quarantine)}
+            }
+          };
+          fs.writeFileSync('data/research/imported/ncbi/PRJNA1206134-manifest.json',JSON.stringify(manifest,null,2)+'\n');
+          if(manifest.files.raw.rows < 700) throw new Error('Unexpectedly small PRJNA1206134 RunInfo export');
+          if(manifest.files.normalized.records < 700) throw new Error('Unexpectedly small normalized PRJNA1206134 run set');
+          NODE
+      - name: Commit generated snapshot to PR branch
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/research/imported/ncbi/
+          if git diff --cached --quiet; then
+            echo "No generated data changes."
+            exit 0
+          fi
+          git commit -m "Add PRJNA1206134 NCBI RunInfo snapshot"
+          git push origin HEAD:${{ github.head_ref }}
