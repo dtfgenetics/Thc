@@ -136,6 +136,7 @@
     "project:status": "node scripts/project-execution-dashboard.mjs",
     "project:status:json": "node scripts/project-execution-dashboard.mjs --json",
     "verify:encyclopedia-practical-resources": "node scripts/validate-encyclopedia-practical-resources.mjs",
-    "verify:external-agent-contracts": "node scripts/validate-external-agent-contract-registry.mjs && node scripts/test-external-agent-contract-registry.mjs"
+    "verify:external-agent-contracts": "node scripts/validate-external-agent-contract-registry.mjs && node scripts/test-external-agent-contract-registry.mjs",
+    "verify:research-bioinformatics": "node scripts/validate-research-bioinformatics.mjs"
   }
 }
