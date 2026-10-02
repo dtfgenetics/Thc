@@ -95,7 +95,8 @@ for(const game of scopedGames){
   }
   if(values.persistenceProfile==='match-recovery'){
     const recoveryVersion=game.architecture?.sessionSchemaVersion ?? game.architecture?.protocolVersion ?? null;
-    if(!Number.isInteger(recoveryVersion)){
+    const validRecoveryVersion=(Number.isInteger(recoveryVersion)&&recoveryVersion>=1)||(typeof recoveryVersion==='string'&&recoveryVersion.trim().length>0);
+    if(!validRecoveryVersion){
       warn(`${game.id}: match-recovery should declare architecture.sessionSchemaVersion or architecture.protocolVersion before strict production compliance`);
     }
   }

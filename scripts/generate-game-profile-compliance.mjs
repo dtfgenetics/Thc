@@ -17,9 +17,9 @@ function buildDebt(game, profile){
       requirement:'Declare a real architecture.saveVersion and preserve migration/recovery evidence.'
     });
   }
-  if(profile.persistenceProfile==='match-recovery'
-    && !Number.isInteger(game.architecture?.sessionSchemaVersion)
-    && !Number.isInteger(game.architecture?.protocolVersion)){
+  const recoveryVersion=game.architecture?.sessionSchemaVersion ?? game.architecture?.protocolVersion ?? null;
+  const validRecoveryVersion=(Number.isInteger(recoveryVersion)&&recoveryVersion>=1)||(typeof recoveryVersion==='string'&&recoveryVersion.trim().length>0);
+  if(profile.persistenceProfile==='match-recovery' && !validRecoveryVersion){
     debt.push({
       code:'missing-session-or-protocol-version',
       severity:'release-blocking-for-strict-profile',

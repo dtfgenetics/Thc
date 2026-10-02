@@ -82,7 +82,7 @@
   "summary": {
     "gameCount": 30,
     "compliantCount": 24,
-    "debtCount": 11,
+    "debtCount": 6,
     "gamesWithDebt": 6
   },
   "games": [
@@ -103,11 +103,6 @@
       },
       "compliant": false,
       "debt": [
-        {
-          "code": "missing-session-or-protocol-version",
-          "severity": "release-blocking-for-strict-profile",
-          "requirement": "Declare a real architecture.sessionSchemaVersion or architecture.protocolVersion and verify reconnect compatibility."
-        },
         {
           "code": "online-liveops-adoption-gap",
           "severity": "game-follow-up",
@@ -258,11 +253,6 @@
       },
       "compliant": false,
       "debt": [
-        {
-          "code": "missing-session-or-protocol-version",
-          "severity": "release-blocking-for-strict-profile",
-          "requirement": "Declare a real architecture.sessionSchemaVersion or architecture.protocolVersion and verify reconnect compatibility."
-        },
         {
           "code": "online-liveops-adoption-gap",
           "severity": "game-follow-up",
@@ -420,11 +410,6 @@
       "compliant": false,
       "debt": [
         {
-          "code": "missing-session-or-protocol-version",
-          "severity": "release-blocking-for-strict-profile",
-          "requirement": "Declare a real architecture.sessionSchemaVersion or architecture.protocolVersion and verify reconnect compatibility."
-        },
-        {
           "code": "online-liveops-adoption-gap",
           "severity": "game-follow-up",
           "requirement": "Adopt the shared live-ops and observability contracts in the canonical online runtime and verify maintenance/kill-switch plus operational metrics behavior."
@@ -521,11 +506,6 @@
       "compliant": false,
       "debt": [
         {
-          "code": "missing-session-or-protocol-version",
-          "severity": "release-blocking-for-strict-profile",
-          "requirement": "Declare a real architecture.sessionSchemaVersion or architecture.protocolVersion and verify reconnect compatibility."
-        },
-        {
           "code": "online-liveops-adoption-gap",
           "severity": "game-follow-up",
           "requirement": "Adopt the shared live-ops and observability contracts in the canonical online runtime and verify maintenance/kill-switch plus operational metrics behavior."
@@ -621,11 +601,6 @@
       },
       "compliant": false,
       "debt": [
-        {
-          "code": "missing-session-or-protocol-version",
-          "severity": "release-blocking-for-strict-profile",
-          "requirement": "Declare a real architecture.sessionSchemaVersion or architecture.protocolVersion and verify reconnect compatibility."
-        },
         {
           "code": "online-liveops-adoption-gap",
           "severity": "game-follow-up",
