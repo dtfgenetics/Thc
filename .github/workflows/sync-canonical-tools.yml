@@ -10,6 +10,9 @@ on:
 permissions:
   contents: write
 
+# Scheduled runs are the safety net. Tools should also dispatch `sync-canonical-tools`
+# after canonical main changes so THC does not remain stale for up to a schedule interval.
+
 concurrency:
   group: sync-canonical-cultivation-tools
   cancel-in-progress: false
