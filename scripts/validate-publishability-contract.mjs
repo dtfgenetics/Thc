@@ -146,6 +146,7 @@ const gatewaySource = readFileSync('.github/workflows/dtfseeds-production-gatewa
 const educationSource = readFileSync('.github/workflows/deploy-thc-learning-center-expansion-v1.yml', 'utf8')
 const harvestOutdoorSource = readFileSync('.github/workflows/wordpress-harvest-outdoor-v6-production.yml', 'utf8')
 const learningTransactionSource = readFileSync('scripts/run-learning-v3-connected-production.sh', 'utf8')
+const educationPublisherSource = readFileSync('scripts/publish-wordpress-learning-center-expansion-v1.mjs', 'utf8')
 const educationLiveStart = educationSource.indexOf('      - name: Fresh anonymous production verification')
 const educationLiveEnd = educationSource.indexOf('      - name: Upload rollback and release evidence')
 const educationLiveSource = educationLiveStart >= 0 && educationLiveEnd > educationLiveStart ? educationSource.slice(educationLiveStart, educationLiveEnd) : ''
@@ -165,6 +166,10 @@ if (!educationSource.includes('group: dtfseeds-learning-experience-v3')) contrac
 if (educationOwnerRefresh < 0 || !educationSource.includes('bash scripts/run-learning-v3-connected-production.sh')) contractErrors.push('Education expansion does not refresh the canonical Learning V3 owner before checking /learn/ convergence')
 if (educationConvergence < 0 || educationOwnerRefresh > educationConvergence) contractErrors.push('Education expansion checks Learn convergence before the canonical owner transaction completes')
 if (!educationSource.includes('node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-learning-center-expansion-v1.mjs') || !educationSource.includes('node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/update-wordpress-learn-expansion-v1.mjs')) contractErrors.push('Education WordPress backing-page publication/read-only convergence is not forced through the established IPv4 transport')
+if (!educationSource.includes("WP_REQUEST_TIMEOUT_MS: '60000'") || !educationSource.includes("WP_REQUEST_ATTEMPTS: '5'")) contractErrors.push('Education WordPress backing-page publisher no longer has the hardened retry window')
+if (!educationPublisherSource.includes('_fields=id,slug,parent,status,link')) contractErrors.push('Education WordPress discovery queries no longer constrain response fields')
+if (!educationPublisherSource.includes('status=publish&per_page=10&_fields=id,slug,parent,status,link')) contractErrors.push('Education Learn-parent discovery no longer has a published-page fallback')
+if (!learningTransactionSource.includes('--connect-timeout 15 --max-time 60')) contractErrors.push('Canonical Learning V3 live verification is not bounded against hung network requests')
 if (!educationLiveSource) {
   contractErrors.push('Education release is missing the anonymous production verification step')
 } else {
