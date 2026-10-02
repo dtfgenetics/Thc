@@ -14,6 +14,9 @@ const evidence = read('data/encyclopedia-evidence-tracking.json');
 const rationales = read('data/encyclopedia-assessment-rationale-package.json');
 const visuals = read('content/encyclopedia/visual-production-queue-v1.json');
 const sourceQueue = read('data/encyclopedia-source-resolution-queue.json');
+const evidencePriority = fs.existsSync(path.join(root,'data','encyclopedia-evidence-priority.json'))
+  ? read('data/encyclopedia-evidence-priority.json')
+  : { lessons: [] };
 const practicalRegistry = fs.existsSync(path.join(root,'content','encyclopedia','downloads','registry.json'))
   ? read('content/encyclopedia/downloads/registry.json')
   : { resources: [] };
@@ -24,6 +27,7 @@ const evidenceById = byId(evidence.lessons);
 const rationaleById = byId(rationales.lessons);
 const visualById = byId(visuals.items);
 const sourceById = byId(sourceQueue.lessons || sourceQueue.items || []);
+const priorityById = byId(evidencePriority.lessons || []);
 
 const practicalCounts = new Map();
 for (const resource of arr(practicalRegistry.resources)) {
@@ -40,6 +44,7 @@ const lessons = ids.map(id => {
   const r = rationaleById.get(id) || {};
   const v = visualById.get(id) || {};
   const q = sourceById.get(id) || {};
+  const p = priorityById.get(id) || {};
 
   const contentComplete = Number(s.score || 0) >= 90;
   const claimEvidenceComplete = Number(e?.evidence?.claimEvidenceCount || 0) > 0 &&
@@ -56,6 +61,14 @@ const lessons = ids.map(id => {
   if(!visualApproved) blockers.push('teaching_visual_not_approved');
   if(!rationaleReviewed) blockers.push('assessment_rationale_review_pending');
   if(!publicationAuthorized) blockers.push('publication_not_authorized');
+
+  const nextActions = [];
+  if(!contentComplete) nextActions.push('repair_lesson_content_contract');
+  if(!claimEvidenceComplete) nextActions.push('map_atomic_claim_evidence');
+  if(!sourcesResolved) nextActions.push('resolve_source_authority_and_exact_locator');
+  if(!visualApproved) nextActions.push('produce_and_review_teaching_visual');
+  if(!rationaleReviewed) nextActions.push('independent_assessment_rationale_review');
+  if(!publicationAuthorized) nextActions.push('complete_release_review_before_authorization');
 
   let state = 'blocked';
   if(blockers.length === 0) state = 'release_ready';
@@ -107,6 +120,13 @@ const lessons = ids.map(id => {
       externalReview:e?.publicationState?.externalReview ?? null
     },
     blockers,
+    workPriority:{
+      evidenceRiskScore:Number(p.riskScore || 0),
+      evidencePriorityScore:Number(p.priorityScore || 0),
+      riskFlags:p.riskFlags || {},
+      nextActions
+    },
+    sourceResolutionState:q.resolutionState || null,
     optionalLinks:{
       coursesRequired:false,
       note:'Academy/Course membership is intentionally not an Encyclopedia completion or release criterion.'
@@ -133,6 +153,26 @@ const byPart = [...new Set(lessons.map(x=>x.part))].sort((a,b)=>a-b).map(part=>{
   };
 });
 
+const workQueue = [...lessons]
+  .filter(x=>x.state!=='release_ready')
+  .sort((a,b)=>
+    b.workPriority.evidencePriorityScore-a.workPriority.evidencePriorityScore ||
+    b.workPriority.evidenceRiskScore-a.workPriority.evidenceRiskScore ||
+    b.blockers.length-a.blockers.length ||
+    a.number-b.number
+  )
+  .map((x,index)=>({
+    rank:index+1,
+    lessonId:x.id,
+    part:x.part,
+    title:x.title,
+    state:x.state,
+    blockers:x.blockers,
+    nextActions:x.workPriority.nextActions,
+    evidencePriorityScore:x.workPriority.evidencePriorityScore,
+    evidenceRiskScore:x.workPriority.evidenceRiskScore
+  }));
+
 const output = {
   schemaVersion:'1.0.0',
   artifactId:'thc-encyclopedia-production-readiness',
@@ -152,6 +192,7 @@ const output = {
     blockerCounts
   },
   byPart,
+  workQueue,
   lessons
 };
 
