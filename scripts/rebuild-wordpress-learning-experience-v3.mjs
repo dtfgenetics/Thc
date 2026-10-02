@@ -86,6 +86,19 @@ async function updatePage(page, content, title) {
   if (!page?.id) return;
   await writeFile(join(backupDir, `page-${page.id}-${page.slug}-before.json`), `${JSON.stringify(page, null, 2)}\n`);
   if (!apply) return;
+
+  const storedContent = typeof page?.content === 'string'
+    ? page.content
+    : (page?.content?.raw || page?.content?.rendered || '');
+  const storedTitle = plain(typeof page?.title === 'string'
+    ? page.title
+    : (page?.title?.raw || page?.title?.rendered || ''));
+
+  if (storedContent === content && storedTitle === plain(title) && page.status === 'publish') {
+    console.log(`Learning V3 page ${page.id} (${page.slug}) already matches desired stored state; skipping redundant WordPress mutation.`);
+    return;
+  }
+
   await request(`/wp-json/wp/v2/pages/${page.id}`, {
     method: 'POST',
     body: JSON.stringify({ content, title, status: 'publish' })
