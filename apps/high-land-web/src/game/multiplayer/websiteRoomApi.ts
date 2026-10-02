@@ -1,7 +1,10 @@
 import type { HighLandRoomPlayer, HighLandRoomState } from './roomState';
 import type { GameState } from '../types/gameTypes';
 
+export const HIGH_LAND_ROOM_API_VERSION = '1.1.0';
+
 export type WebsiteRoomPayload = {
+  apiVersion?: string;
   code: string;
   status?: HighLandRoomState['status'];
   players?: HighLandRoomPlayer[];
@@ -54,6 +57,9 @@ async function parseWebsiteRoomResponse(response: Response): Promise<HighLandRoo
 }
 
 function normalizeWebsiteRoom(room: WebsiteRoomPayload): HighLandRoomState {
+  if (room.apiVersion && room.apiVersion !== HIGH_LAND_ROOM_API_VERSION) {
+    throw new Error(`High Land room API version ${room.apiVersion} is incompatible with client ${HIGH_LAND_ROOM_API_VERSION}.`);
+  }
   const players = Array.isArray(room.players) ? room.players.map(normalizeWebsitePlayer) : [];
   const host = players.find((player) => player.host) ?? players[0];
   const createdAt = room.createdAt ?? new Date().toISOString();
