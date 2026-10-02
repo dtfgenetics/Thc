@@ -4,32 +4,203 @@
   "title": "DTF germplasm record",
   "type": "object",
   "additionalProperties": false,
-  "required": ["record_id","source_id","accession_id","taxon","population_scope","provenance"],
+  "required": [
+    "record_id",
+    "source_id",
+    "accession_id",
+    "taxon",
+    "population_scope",
+    "provenance"
+  ],
   "properties": {
-    "record_id": {"type":"string","minLength":3},
-    "source_id": {"type":"string","minLength":3},
-    "accession_id": {"type":"string","minLength":1},
-    "puid": {"type":["string","null"]},
-    "taxon": {"type":"string","minLength":3},
-    "plant_name": {"type":["string","null"]},
-    "population_scope": {"type":"string","minLength":3},
-    "improvement_status": {"type":["string","null"]},
-    "pedigree": {"type":["string","null"]},
-    "ploidy": {"type":["integer","null"],"minimum":1},
-    "crop_use": {"type":["string","null"]},
-    "origin": {"type":["string","null"]},
-    "developer": {"type":["string","null"]},
-    "source_date": {"type":["string","null"]},
+    "record_id": {
+      "type": "string",
+      "minLength": 3
+    },
+    "source_id": {
+      "type": "string",
+      "minLength": 3
+    },
+    "accession_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "puid": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "taxon": {
+      "type": "string",
+      "minLength": 3
+    },
+    "plant_name": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "population_scope": {
+      "type": "string",
+      "minLength": 3
+    },
+    "improvement_status": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "pedigree": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ploidy": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "crop_use": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "origin": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "developer": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_date": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "provenance": {
-      "type":"object",
+      "type": "object",
       "additionalProperties": false,
-      "required":["source_url","retrieved_at"],
-      "properties":{
-        "source_url":{"type":"string","format":"uri"},
-        "retrieved_at":{"type":"string","format":"date"},
-        "source_record_id":{"type":["string","null"]},
-        "notes":{"type":["string","null"]}
+      "required": [
+        "source_url",
+        "retrieved_at"
+      ],
+      "properties": {
+        "source_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "retrieved_at": {
+          "type": "string",
+          "format": "date"
+        },
+        "source_record_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
       }
+    },
+    "taxonomy_species_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "accession_ipr": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_cooperator_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "collector_cooperator_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "number_plants_sampled": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "geography_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "elevation_meters": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "latitude": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": -90,
+      "maximum": 90
+    },
+    "longitude": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": -180,
+      "maximum": 180
+    },
+    "coordinate_method": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "uncertainty": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "georeference_datum": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "accession_inv_voucher_note": {
+      "type": [
+        "string",
+        "null"
+      ]
     }
   }
 }
