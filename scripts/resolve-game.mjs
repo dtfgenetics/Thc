@@ -25,9 +25,9 @@ if(!game){
   process.exit(1);
 }
 
-const assignment=profileCatalog.games?.[game.id] ?? [];
+const assignment=profileCatalog.games?.[game.id] ?? {};
 const dimensionNames=Object.keys(profileCatalog.dimensions||{});
-const profile=Object.fromEntries(dimensionNames.map((name,index)=>[name,assignment[index] ?? null]));
+const profile=Object.fromEntries(dimensionNames.map((name)=>[name,assignment[name] ?? null]));
 const requiredChecks=[
   ...(profileCatalog.requiredChecks?.core ?? []),
   ...(profileCatalog.requiredChecks?.[profile.gameplayProfile] ?? []),
