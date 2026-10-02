@@ -789,6 +789,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          node scripts/test-sitewide-footer-reconciliation.mjs
           node scripts/apply-sitewide-header.mjs release
           node scripts/apply-sitewide-header.mjs release --check
           for file in release/games/index.html release/growlens/index.html release/thc-grow-doc/index.html release/tools/index.html release/projects/index.html; do

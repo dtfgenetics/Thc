@@ -167,14 +167,11 @@ function legacyFooterScore(fragment) {
   const signals = [
     'dtf genetics',
     'dream the future',
-    'href="/seeds/',
-    'href="/learn/',
-    'href="/tools/',
-    'href="/games/',
-    'href="/community/',
-    'href="/shop/',
   ];
-  return signals.reduce((score, signal) => score + (lower.includes(signal) ? 1 : 0), 0);
+  const routes = ['seeds', 'learn', 'tools', 'games', 'community', 'shop'];
+  const linkTargets = [...lower.matchAll(/\bhref\s*=\s*["']([^"']*)["']/g)].map((match) => match[1]);
+  return signals.reduce((score, signal) => score + (lower.includes(signal) ? 1 : 0), 0)
+    + routes.filter((route) => linkTargets.some((target) => target.startsWith(`/${route}/`))).length;
 }
 
 function removeLegacyGlobalFooter(html) {
