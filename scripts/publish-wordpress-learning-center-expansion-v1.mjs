@@ -152,7 +152,7 @@ function assertStoredPage(page, route, learnId) {
   }
 }
 
-const learnRows = await request('/wp-json/wp/v2/pages?slug=learn&context=edit&per_page=10');
+const learnRows = await request('/wp-json/wp/v2/pages?slug=learn&context=edit&per_page=10&_fields=id,slug,parent,status,link');
 if (!Array.isArray(learnRows) || learnRows.length !== 1) throw new Error(`Expected exactly one Learn parent page, found ${Array.isArray(learnRows) ? learnRows.length : 'invalid response'}`);
 const learn = learnRows[0];
 const results = [];
@@ -161,7 +161,7 @@ for (const route of routes) {
   const html = await readFile(join(sourceRoot, route.slug, 'index.html'), 'utf8');
   verifyGeneratedStaticPage(html, route);
   const content = sourceContent(html, route);
-  const candidates = await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(route.slug)}&context=edit&per_page=100`);
+  const candidates = await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(route.slug)}&context=edit&per_page=100&_fields=id,slug,parent,status,link`);
   const children = Array.isArray(candidates) ? candidates.filter((page) => Number(page.parent) === Number(learn.id)) : [];
   if (children.length > 1) throw new Error(`Multiple /learn/${route.slug}/ child pages exist; refusing ambiguous update.`);
 
