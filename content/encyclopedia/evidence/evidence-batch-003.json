@@ -1,0 +1,125 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-003",
+  "createdAt": "2026-10-02",
+  "scope": "Shared-source bridge evidence for hemp phenotyping, plant-experiment metadata, germplasm identity, chemistry identity, and flowering genetics.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Shared source identities are mapped only to scoped claims and do not approve a full lesson.",
+    "Database identity evidence is distinct from biological-effect evidence.",
+    "Government and standards records remain version- and retrieval-context dependent where fields are volatile.",
+    "Existing lesson publication and review states remain unchanged."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0022",
+      "lessonId": "THC-ENC-001",
+      "sourceIds": [
+        "ENC-AUTH-018"
+      ],
+      "claimType": "evidence-method",
+      "supportedClaim": "Plant phenotyping evidence is more reusable when biological material, environment, treatments, observation variables, methods, and data context are recorded in a structured way.",
+      "sourceLocator": "MIAPPE v1.2 release and standard fields for plant phenotyping experiment metadata.",
+      "applicability": "Supports the encyclopedia evidence framework and its requirement to preserve context around measurements and experiments.",
+      "limitations": "MIAPPE is a metadata standard; it does not validate a cultivation target or prove a biological relationship.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0023",
+      "lessonId": "THC-ENC-150",
+      "sourceIds": [
+        "ENC-AUTH-019",
+        "ENC-AUTH-020"
+      ],
+      "claimType": "germplasm-identity",
+      "supportedClaim": "A germplasm accession is a controlled identity record with passport and repository context and should not be treated as interchangeable with an informal cultivar or market strain name.",
+      "sourceLocator": "USDA GRIN-Global Cannabis taxon/accession records and Cornell/USDA-ARS hemp germplasm repository program description.",
+      "applicability": "Supports distinctions among accession, cultivar, line, clone, and displayed name.",
+      "limitations": "Repository identity does not by itself prove genetic uniformity, ownership, commercial naming equivalence, or current availability.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0024",
+      "lessonId": "THC-ENC-203",
+      "sourceIds": [
+        "ENC-AUTH-021"
+      ],
+      "claimType": "cannabis-genetics-primary",
+      "supportedClaim": "Flowering behavior in hemp can have major genetic determinants; the cited dissertation reports two major flowering-time loci on chromosome 1 named Autoflower1 and Early1.",
+      "sourceLocator": "Toth 2022 Cornell dissertation abstract and dissertation p. ii, as preserved in the reviewed Grow Doc claim record.",
+      "applicability": "Supports the lesson's treatment of autoflowering/day-neutral phenotypes as genetically influenced rather than purely environmental labels.",
+      "limitations": "The mapped loci are study- and germplasm-specific evidence and are not sufficient to predict flowering behavior in every Cannabis genotype.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0025",
+      "lessonId": "THC-ENC-247",
+      "sourceIds": [
+        "ENC-AUTH-016"
+      ],
+      "claimType": "chemical-identity",
+      "supportedClaim": "Limonene discussion should distinguish a chemically identified compound record from cultivar aroma labels or inferred biological effects, using stable compound identity where possible.",
+      "sourceLocator": "PubChem PUG REST compound-domain and CID property-table specification.",
+      "applicability": "Supports chemical-identity discipline for the limonene lesson and downstream Terpene Atlas records.",
+      "limitations": "PubChem establishes database identity and properties; it does not establish limonene abundance in a plant sample or a cannabis-specific physiological or human effect.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0026",
+      "lessonId": "THC-ENC-250",
+      "sourceIds": [
+        "ENC-AUTH-016"
+      ],
+      "claimType": "chemical-identity",
+      "supportedClaim": "Beta-caryophyllene records should use stable chemical identifiers and stereochemistry-aware structure data rather than relying only on a common-name string.",
+      "sourceLocator": "PubChem PUG REST compound identifiers and property-table interface.",
+      "applicability": "Supports chemical-identity discipline for beta-caryophyllene and shared chemistry tooling.",
+      "limitations": "Chemical identity does not establish concentration, sensory prominence, dose, pharmacology, or cannabis-specific biological effect.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0027",
+      "lessonId": "THC-ENC-399",
+      "sourceIds": [
+        "ENC-AUTH-019",
+        "ENC-AUTH-020"
+      ],
+      "claimType": "germplasm-conservation",
+      "supportedClaim": "Seed and germplasm conservation records should preserve accession identity and repository/passport context so regeneration, characterization, and distribution remain traceable.",
+      "sourceLocator": "USDA GRIN-Global Cannabis germplasm records and Cornell/USDA-ARS hemp germplasm repository program description.",
+      "applicability": "Supports the lesson's identity and documentation requirements for germplasm backup and regeneration.",
+      "limitations": "These sources do not provide one universal storage interval or regeneration threshold for every seed lot; lot-specific viability and storage evidence remain necessary.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0028",
+      "lessonId": "THC-ENC-409",
+      "sourceIds": [
+        "ENC-AUTH-017",
+        "ENC-AUTH-018"
+      ],
+      "claimType": "phenotyping-standard",
+      "supportedClaim": "Morphology and growth measurements are more comparable when trait definitions, units, timing, biological material, and measurement methods are controlled and recorded.",
+      "sourceLocator": "USDA Hemp Phenotyping and Protocol Handbook v4 descriptor/protocol framework plus MIAPPE v1.2 observation metadata structure.",
+      "applicability": "Supports standardized plant-height, stem, flowering-time, biomass, and related measurement records.",
+      "limitations": "Specific descriptor methods and units must remain tied to the applicable handbook version and experiment design; they are not universal performance targets.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0029",
+      "lessonId": "THC-ENC-416",
+      "sourceIds": [
+        "ENC-AUTH-018"
+      ],
+      "claimType": "experimental-design-metadata",
+      "supportedClaim": "Experimental conclusions are more interpretable when study design, biological material, environment, treatments, observation variables, and data files are described together.",
+      "sourceLocator": "MIAPPE v1.2 plant phenotyping experiment metadata model.",
+      "applicability": "Supports the lesson's requirement to document controls, replication, treatments, material identity, and observation context.",
+      "limitations": "MIAPPE structures metadata and does not by itself determine whether replication is statistically adequate or a causal conclusion is justified.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
