@@ -118,6 +118,7 @@
     "verify:encyclopedia-production-queues": "npm run verify:encyclopedia-assessment-rationales && npm run verify:encyclopedia-visual-queue && npm run verify:encyclopedia-source-queue",
     "materialize:encyclopedia-assessments": "node scripts/materialize-encyclopedia-assessments.mjs",
     "materialize:encyclopedia-readiness-fields": "node scripts/materialize-encyclopedia-readiness-fields.mjs",
+    "materialize:encyclopedia-release-controls": "node scripts/materialize-encyclopedia-release-controls.mjs",
     "verify:encyclopedia-assessments": "node scripts/validate-encyclopedia-assessments.mjs",
     "verify:encyclopedia-rubrics": "node scripts/validate-encyclopedia-rubrics.mjs",
     "build:encyclopedia-rubrics": "node scripts/build-encyclopedia-rubric-package.mjs",

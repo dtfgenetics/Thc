@@ -11,7 +11,7 @@ Generated: 2026-10-02T22:04:03.881Z
 
 ## Readiness
 
-- Average score: 88/100
+- Average score: 89/100
 - Production candidates: 0/420
 - Readiness counts: needs-polish=420
 

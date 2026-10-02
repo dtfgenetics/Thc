@@ -18,7 +18,7 @@
     "withClaimEvidence": 24,
     "withoutClaimEvidence": 396,
     "withResolvedAuthoritativeSources": 41,
-    "publicationHoldsPreserved": 85,
+    "publicationHoldsPreserved": 245,
     "evidenceStatuses": {
       "claim_evidence_batch_started": 24,
       "source_notes_only_claim_ledger_pending": 396
@@ -35,10 +35,10 @@
       "route": "/encyclopedia/how-to-read-cannabis-plant-science-critically",
       "slug": "how-to-read-cannabis-plant-science-critically",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -70,7 +70,8 @@
         ],
         "reviewState": "source_collected_needs_independent_review",
         "needs": [
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -84,10 +85,10 @@
       "route": "/encyclopedia/accepted-botanical-identity-and-nomenclature",
       "slug": "accepted-botanical-identity-and-nomenclature",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -116,7 +117,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -130,10 +132,10 @@
       "route": "/encyclopedia/taxonomic-debate-one-species-multiple-lineages",
       "slug": "taxonomic-debate-one-species-multiple-lineages",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -162,7 +164,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -176,10 +179,10 @@
       "route": "/encyclopedia/domestication-dispersal-and-human-selection",
       "slug": "domestication-dispersal-and-human-selection",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -206,7 +209,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -220,10 +224,10 @@
       "route": "/encyclopedia/hemp-drug-type-cannabis-and-botanical-versus-legal-categories",
       "slug": "hemp-drug-type-cannabis-and-botanical-versus-legal-categories",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -250,7 +254,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -264,10 +269,10 @@
       "route": "/encyclopedia/annual-growth-habit-and-the-whole-plant-life-cycle",
       "slug": "annual-growth-habit-and-the-whole-plant-life-cycle",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -296,7 +301,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -310,10 +316,10 @@
       "route": "/encyclopedia/the-cannabis-achene-what-growers-call-a-seed",
       "slug": "the-cannabis-achene-what-growers-call-a-seed",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -338,7 +344,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -352,10 +359,10 @@
       "route": "/encyclopedia/embryo-cotyledons-radicle-hypocotyl-and-plumule",
       "slug": "embryo-cotyledons-radicle-hypocotyl-and-plumule",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -384,7 +391,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -398,10 +406,10 @@
       "route": "/encyclopedia/root-system-architecture",
       "slug": "root-system-architecture",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -426,7 +434,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -440,10 +449,10 @@
       "route": "/encyclopedia/stem-anatomy-and-vascular-transport",
       "slug": "stem-anatomy-and-vascular-transport",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -468,7 +477,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -482,10 +492,10 @@
       "route": "/encyclopedia/nodes-internodes-and-branch-attachment",
       "slug": "nodes-internodes-and-branch-attachment",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -510,7 +520,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -524,10 +535,10 @@
       "route": "/encyclopedia/leaf-morphology-leaflets-and-phyllotaxy",
       "slug": "leaf-morphology-leaflets-and-phyllotaxy",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -552,7 +563,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -566,10 +578,10 @@
       "route": "/encyclopedia/meristems-buds-and-apical-dominance",
       "slug": "meristems-buds-and-apical-dominance",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -594,7 +606,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -608,10 +621,10 @@
       "route": "/encyclopedia/primary-growth-secondary-thickening-and-structural-support",
       "slug": "primary-growth-secondary-thickening-and-structural-support",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -638,7 +651,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -652,10 +666,10 @@
       "route": "/encyclopedia/dioecy-monoecy-and-sexual-plasticity",
       "slug": "dioecy-monoecy-and-sexual-plasticity",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -682,7 +696,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -696,10 +711,10 @@
       "route": "/encyclopedia/male-flower-and-inflorescence-anatomy",
       "slug": "male-flower-and-inflorescence-anatomy",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -724,7 +739,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -738,10 +754,10 @@
       "route": "/encyclopedia/female-flower-bract-stigma-and-inflorescence-anatomy",
       "slug": "female-flower-bract-stigma-and-inflorescence-anatomy",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -768,7 +784,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -782,10 +799,10 @@
       "route": "/encyclopedia/wind-pollination-fertilization-and-seed-set",
       "slug": "wind-pollination-fertilization-and-seed-set",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -812,7 +829,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -826,10 +844,10 @@
       "route": "/encyclopedia/glandular-and-nonglandular-trichome-classes",
       "slug": "glandular-and-nonglandular-trichome-classes",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -856,7 +874,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -870,10 +889,10 @@
       "route": "/encyclopedia/morphological-measurement-and-botanical-recordkeeping",
       "slug": "morphological-measurement-and-botanical-recordkeeping",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -898,7 +917,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -912,10 +932,10 @@
       "route": "/encyclopedia/seed-development-and-maturation-on-the-mother-plant",
       "slug": "seed-development-and-maturation-on-the-mother-plant",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -942,7 +962,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -956,10 +977,10 @@
       "route": "/encyclopedia/seed-lot-identity-provenance-and-chain-of-custody",
       "slug": "seed-lot-identity-provenance-and-chain-of-custody",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -984,7 +1005,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -998,10 +1020,10 @@
       "route": "/encyclopedia/seed-viability-versus-seed-vigor",
       "slug": "seed-viability-versus-seed-vigor",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1032,7 +1054,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1046,10 +1069,10 @@
       "route": "/encyclopedia/seed-moisture-temperature-oxygen-and-storage-life",
       "slug": "seed-moisture-temperature-oxygen-and-storage-life",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1076,7 +1099,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1090,10 +1114,10 @@
       "route": "/encyclopedia/dormancy-and-why-cannabis-seed-responses-vary",
       "slug": "dormancy-and-why-cannabis-seed-responses-vary",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1120,7 +1144,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1134,10 +1159,10 @@
       "route": "/encyclopedia/imbibition-the-first-phase-of-germination",
       "slug": "imbibition-the-first-phase-of-germination",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1162,7 +1187,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1176,10 +1202,10 @@
       "route": "/encyclopedia/enzyme-activation-and-reserve-mobilization",
       "slug": "enzyme-activation-and-reserve-mobilization",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1206,7 +1232,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1220,10 +1247,10 @@
       "route": "/encyclopedia/temperature-effects-on-germination-rate",
       "slug": "temperature-effects-on-germination-rate",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1248,7 +1275,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1262,10 +1290,10 @@
       "route": "/encyclopedia/moisture-without-oxygen-deprivation",
       "slug": "moisture-without-oxygen-deprivation",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1292,7 +1320,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1306,10 +1335,10 @@
       "route": "/encyclopedia/radicle-emergence-and-germination-scoring",
       "slug": "radicle-emergence-and-germination-scoring",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1338,7 +1367,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1352,10 +1382,10 @@
       "route": "/encyclopedia/root-hairs-and-early-nutrient-acquisition",
       "slug": "root-hairs-and-early-nutrient-acquisition",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1382,7 +1412,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1396,10 +1427,10 @@
       "route": "/encyclopedia/hypocotyl-elongation-and-seed-coat-shedding",
       "slug": "hypocotyl-elongation-and-seed-coat-shedding",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1424,7 +1455,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1438,10 +1470,10 @@
       "route": "/encyclopedia/cotyledon-function-and-the-first-true-leaves",
       "slug": "cotyledon-function-and-the-first-true-leaves",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1466,7 +1498,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1480,10 +1513,10 @@
       "route": "/encyclopedia/seedling-light-acclimation",
       "slug": "seedling-light-acclimation",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1508,7 +1541,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1522,10 +1556,10 @@
       "route": "/encyclopedia/seedling-watering-and-root-zone-oxygen",
       "slug": "seedling-watering-and-root-zone-oxygen",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1550,7 +1584,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1564,10 +1599,10 @@
       "route": "/encyclopedia/seedling-nutrition-and-salinity-sensitivity",
       "slug": "seedling-nutrition-and-salinity-sensitivity",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1592,7 +1627,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1606,10 +1642,10 @@
       "route": "/encyclopedia/damping-off-biology-and-prevention",
       "slug": "damping-off-biology-and-prevention",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1636,7 +1672,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1650,10 +1687,10 @@
       "route": "/encyclopedia/normal-weak-and-abnormal-seedling-evaluation",
       "slug": "normal-weak-and-abnormal-seedling-evaluation",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1680,7 +1717,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1694,10 +1732,10 @@
       "route": "/encyclopedia/transplant-readiness-and-hardening-off",
       "slug": "transplant-readiness-and-hardening-off",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1722,7 +1760,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1736,10 +1775,10 @@
       "route": "/encyclopedia/germination-testing-metrics-and-failure-analysis",
       "slug": "germination-testing-metrics-and-failure-analysis",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1766,7 +1805,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1780,10 +1820,10 @@
       "route": "/encyclopedia/root-tips-meristems-and-zones-of-development",
       "slug": "root-tips-meristems-and-zones-of-development",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1814,7 +1854,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1828,10 +1869,10 @@
       "route": "/encyclopedia/lateral-roots-root-hairs-and-functional-surface-area",
       "slug": "lateral-roots-root-hairs-and-functional-surface-area",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1860,7 +1901,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1874,10 +1916,10 @@
       "route": "/encyclopedia/root-respiration-and-oxygen-demand",
       "slug": "root-respiration-and-oxygen-demand",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1914,7 +1956,8 @@
         ],
         "reviewState": "source_collected_needs_independent_review",
         "needs": [
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1928,10 +1971,10 @@
       "route": "/encyclopedia/water-uptake-pathways-through-roots",
       "slug": "water-uptake-pathways-through-roots",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -1966,7 +2009,8 @@
         ],
         "reviewState": "source_collected_needs_independent_review",
         "needs": [
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -1980,10 +2024,10 @@
       "route": "/encyclopedia/ion-uptake-and-membrane-transport",
       "slug": "ion-uptake-and-membrane-transport",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2017,7 +2061,8 @@
         ],
         "reviewState": "source_collected_needs_independent_review",
         "needs": [
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2031,10 +2076,10 @@
       "route": "/encyclopedia/root-exudates-and-rhizosphere-signaling",
       "slug": "root-exudates-and-rhizosphere-signaling",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2061,7 +2106,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2075,10 +2121,10 @@
       "route": "/encyclopedia/rhizosphere-microbes-functions-and-limits-of-claims",
       "slug": "rhizosphere-microbes-functions-and-limits-of-claims",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2105,7 +2151,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2119,10 +2166,10 @@
       "route": "/encyclopedia/mycorrhizal-associations-in-cannabis-and-hemp",
       "slug": "mycorrhizal-associations-in-cannabis-and-hemp",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2153,7 +2200,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2167,10 +2215,10 @@
       "route": "/encyclopedia/root-zone-pathogens-and-predisposing-conditions",
       "slug": "root-zone-pathogens-and-predisposing-conditions",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2201,7 +2249,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2215,10 +2264,10 @@
       "route": "/encyclopedia/soil-texture-structure-and-aggregation",
       "slug": "soil-texture-structure-and-aggregation",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2245,7 +2294,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2259,10 +2309,10 @@
       "route": "/encyclopedia/organic-matter-humus-and-carbon-cycling",
       "slug": "organic-matter-humus-and-carbon-cycling",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2291,7 +2341,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2305,10 +2356,10 @@
       "route": "/encyclopedia/cation-exchange-capacity-and-nutrient-buffering",
       "slug": "cation-exchange-capacity-and-nutrient-buffering",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2337,7 +2388,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2351,10 +2403,10 @@
       "route": "/encyclopedia/porosity-air-filled-porosity-and-water-holding-capacity",
       "slug": "porosity-air-filled-porosity-and-water-holding-capacity",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2383,7 +2435,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2397,10 +2450,10 @@
       "route": "/encyclopedia/peat-based-substrates",
       "slug": "peat-based-substrates",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2431,7 +2484,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2445,10 +2499,10 @@
       "route": "/encyclopedia/coco-coir-properties-and-management",
       "slug": "coco-coir-properties-and-management",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2477,7 +2531,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2491,10 +2546,10 @@
       "route": "/encyclopedia/compost-living-soil-and-biological-variability",
       "slug": "compost-living-soil-and-biological-variability",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2523,7 +2578,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2537,10 +2593,10 @@
       "route": "/encyclopedia/rockwool-perlite-and-inert-media",
       "slug": "rockwool-perlite-and-inert-media",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2569,7 +2625,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2583,10 +2640,10 @@
       "route": "/encyclopedia/deep-water-film-drip-and-aeroponic-root-environments",
       "slug": "deep-water-film-drip-and-aeroponic-root-environments",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2613,7 +2670,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2627,10 +2685,10 @@
       "route": "/encyclopedia/container-geometry-root-restriction-and-transplanting",
       "slug": "container-geometry-root-restriction-and-transplanting",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2659,7 +2717,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2673,10 +2732,10 @@
       "route": "/encyclopedia/media-testing-batch-qualification-and-reuse-decisions",
       "slug": "media-testing-batch-qualification-and-reuse-decisions",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2707,7 +2766,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2721,10 +2781,10 @@
       "route": "/encyclopedia/plant-cells-tissues-and-organ-systems",
       "slug": "plant-cells-tissues-and-organ-systems",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2753,7 +2813,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2767,10 +2828,10 @@
       "route": "/encyclopedia/chloroplasts-chlorophyll-and-light-capture",
       "slug": "chloroplasts-chlorophyll-and-light-capture",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2799,7 +2860,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2813,10 +2875,10 @@
       "route": "/encyclopedia/the-light-reactions-of-photosynthesis",
       "slug": "the-light-reactions-of-photosynthesis",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2845,7 +2907,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2859,10 +2922,10 @@
       "route": "/encyclopedia/carbon-fixation-and-the-calvin-cycle",
       "slug": "carbon-fixation-and-the-calvin-cycle",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2893,7 +2956,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2907,10 +2971,10 @@
       "route": "/encyclopedia/net-photosynthesis-versus-gross-photosynthesis",
       "slug": "net-photosynthesis-versus-gross-photosynthesis",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2939,7 +3003,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2953,10 +3018,10 @@
       "route": "/encyclopedia/photorespiration-and-temperature-stress",
       "slug": "photorespiration-and-temperature-stress",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -2985,7 +3050,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -2999,10 +3065,10 @@
       "route": "/encyclopedia/cellular-respiration-and-night-metabolism",
       "slug": "cellular-respiration-and-night-metabolism",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3031,7 +3097,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3045,10 +3112,10 @@
       "route": "/encyclopedia/stomata-guard-cells-and-gas-exchange",
       "slug": "stomata-guard-cells-and-gas-exchange",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3077,7 +3144,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3091,10 +3159,10 @@
       "route": "/encyclopedia/xylem-transport-and-the-cohesion-tension-mechanism",
       "slug": "xylem-transport-and-the-cohesion-tension-mechanism",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3121,7 +3189,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3135,10 +3204,10 @@
       "route": "/encyclopedia/phloem-transport-and-sugar-allocation",
       "slug": "phloem-transport-and-sugar-allocation",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3167,7 +3236,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3181,10 +3251,10 @@
       "route": "/encyclopedia/source-leaves-and-sink-tissues",
       "slug": "source-leaves-and-sink-tissues",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3213,7 +3283,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3227,10 +3298,10 @@
       "route": "/encyclopedia/leaf-area-canopy-photosynthesis-and-self-shading",
       "slug": "leaf-area-canopy-photosynthesis-and-self-shading",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3259,7 +3330,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3273,10 +3345,10 @@
       "route": "/encyclopedia/plant-hormones-auxin",
       "slug": "plant-hormones-auxin",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3309,7 +3381,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3323,10 +3396,10 @@
       "route": "/encyclopedia/plant-hormones-cytokinins",
       "slug": "plant-hormones-cytokinins",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3357,7 +3430,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3371,10 +3445,10 @@
       "route": "/encyclopedia/plant-hormones-gibberellins",
       "slug": "plant-hormones-gibberellins",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3405,7 +3479,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3419,10 +3494,10 @@
       "route": "/encyclopedia/plant-hormones-ethylene",
       "slug": "plant-hormones-ethylene",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3451,7 +3526,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3465,10 +3541,10 @@
       "route": "/encyclopedia/abscisic-acid-and-water-stress-signaling",
       "slug": "abscisic-acid-and-water-stress-signaling",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3495,7 +3571,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3509,10 +3586,10 @@
       "route": "/encyclopedia/jasmonates-salicylates-and-defense-signaling",
       "slug": "jasmonates-salicylates-and-defense-signaling",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3541,7 +3618,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3555,10 +3633,10 @@
       "route": "/encyclopedia/growth-rate-development-and-biomass-partitioning",
       "slug": "growth-rate-development-and-biomass-partitioning",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3587,7 +3665,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3601,10 +3680,10 @@
       "route": "/encyclopedia/genotype-by-environment-effects-on-physiology",
       "slug": "genotype-by-environment-effects-on-physiology",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3633,7 +3712,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3647,10 +3727,10 @@
       "route": "/encyclopedia/water-potential-and-the-soil-plant-atmosphere-continuum",
       "slug": "water-potential-and-the-soil-plant-atmosphere-continuum",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3677,7 +3757,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3691,10 +3772,10 @@
       "route": "/encyclopedia/transpiration-as-a-physical-and-biological-process",
       "slug": "transpiration-as-a-physical-and-biological-process",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3721,7 +3802,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3735,10 +3817,10 @@
       "route": "/encyclopedia/relative-humidity-dew-point-and-condensation",
       "slug": "relative-humidity-dew-point-and-condensation",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3765,7 +3847,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3779,10 +3862,10 @@
       "route": "/encyclopedia/saturation-vapor-pressure-and-temperature",
       "slug": "saturation-vapor-pressure-and-temperature",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3809,7 +3892,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3823,10 +3907,10 @@
       "route": "/encyclopedia/vapor-pressure-deficit-meaning-and-calculation",
       "slug": "vapor-pressure-deficit-meaning-and-calculation",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3855,7 +3939,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3869,10 +3954,10 @@
       "route": "/encyclopedia/air-vpd-versus-leaf-vpd",
       "slug": "air-vpd-versus-leaf-vpd",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3901,7 +3986,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3915,10 +4001,10 @@
       "route": "/encyclopedia/leaf-temperature-measurement",
       "slug": "leaf-temperature-measurement",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3947,7 +4033,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -3961,10 +4048,10 @@
       "route": "/encyclopedia/boundary-layers-and-air-movement",
       "slug": "boundary-layers-and-air-movement",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -3993,7 +4080,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4007,10 +4095,10 @@
       "route": "/encyclopedia/canopy-microclimates-and-dead-zones",
       "slug": "canopy-microclimates-and-dead-zones",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4039,7 +4127,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4053,10 +4142,10 @@
       "route": "/encyclopedia/root-zone-moisture-and-plant-water-status",
       "slug": "root-zone-moisture-and-plant-water-status",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4085,7 +4174,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4099,10 +4189,10 @@
       "route": "/encyclopedia/irrigation-volume-frequency-and-distribution-uniformity",
       "slug": "irrigation-volume-frequency-and-distribution-uniformity",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4131,7 +4221,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4145,10 +4236,10 @@
       "route": "/encyclopedia/dryback-measurement-interpretation-and-limits",
       "slug": "dryback-measurement-interpretation-and-limits",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4177,7 +4268,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4191,10 +4283,10 @@
       "route": "/encyclopedia/runoff-leaching-fraction-and-salt-movement",
       "slug": "runoff-leaching-fraction-and-salt-movement",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4223,7 +4315,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4237,10 +4330,10 @@
       "route": "/encyclopedia/drought-stress-and-recovery",
       "slug": "drought-stress-and-recovery",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4267,7 +4360,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4281,10 +4375,10 @@
       "route": "/encyclopedia/overwatering-hypoxia-and-root-decline",
       "slug": "overwatering-hypoxia-and-root-decline",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4313,7 +4407,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4327,10 +4422,10 @@
       "route": "/encyclopedia/heat-stress-and-cooling-responses",
       "slug": "heat-stress-and-cooling-responses",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4357,7 +4452,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4371,10 +4467,10 @@
       "route": "/encyclopedia/cold-stress-and-chilling-injury",
       "slug": "cold-stress-and-chilling-injury",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4401,7 +4497,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4415,10 +4512,10 @@
       "route": "/encyclopedia/carbon-dioxide-supply-ventilation-and-enrichment-context",
       "slug": "carbon-dioxide-supply-ventilation-and-enrichment-context",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4447,7 +4544,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4461,10 +4559,10 @@
       "route": "/encyclopedia/sensor-placement-mapping-and-calibration",
       "slug": "sensor-placement-mapping-and-calibration",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4491,7 +4589,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4505,10 +4604,10 @@
       "route": "/encyclopedia/stage-aware-environmental-setpoints-and-risk-review",
       "slug": "stage-aware-environmental-setpoints-and-risk-review",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4537,7 +4636,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4551,10 +4651,10 @@
       "route": "/encyclopedia/light-as-photons-par-and-epar",
       "slug": "light-as-photons-par-and-epar",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4583,7 +4683,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4597,10 +4698,10 @@
       "route": "/encyclopedia/ppf-ppfd-and-fixture-output",
       "slug": "ppf-ppfd-and-fixture-output",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4627,7 +4728,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4641,10 +4743,10 @@
       "route": "/encyclopedia/daily-light-integral-calculation",
       "slug": "daily-light-integral-calculation",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4673,7 +4775,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4687,10 +4790,10 @@
       "route": "/encyclopedia/photoperiod-and-total-daily-photons",
       "slug": "photoperiod-and-total-daily-photons",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4719,7 +4822,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4733,10 +4837,10 @@
       "route": "/encyclopedia/measuring-canopy-light-correctly",
       "slug": "measuring-canopy-light-correctly",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4763,7 +4867,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4777,10 +4882,10 @@
       "route": "/encyclopedia/light-maps-and-uniformity-metrics",
       "slug": "light-maps-and-uniformity-metrics",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4807,7 +4912,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4821,10 +4927,10 @@
       "route": "/encyclopedia/inverse-square-effects-and-fixture-geometry",
       "slug": "inverse-square-effects-and-fixture-geometry",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4851,7 +4957,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4865,10 +4972,10 @@
       "route": "/encyclopedia/led-hid-fluorescent-and-sunlight-comparisons",
       "slug": "led-hid-fluorescent-and-sunlight-comparisons",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4895,7 +5002,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4909,10 +5017,10 @@
       "route": "/encyclopedia/photosynthetic-response-curves",
       "slug": "photosynthetic-response-curves",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4941,7 +5049,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4955,10 +5064,10 @@
       "route": "/encyclopedia/light-compensation-and-saturation-points",
       "slug": "light-compensation-and-saturation-points",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -4985,7 +5094,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -4999,10 +5109,10 @@
       "route": "/encyclopedia/photoinhibition-and-high-light-stress",
       "slug": "photoinhibition-and-high-light-stress",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5031,7 +5141,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5045,10 +5156,10 @@
       "route": "/encyclopedia/phytochrome-and-red-far-red-signaling",
       "slug": "phytochrome-and-red-far-red-signaling",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5077,7 +5188,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5091,10 +5203,10 @@
       "route": "/encyclopedia/cryptochromes-phototropins-and-blue-light",
       "slug": "cryptochromes-phototropins-and-blue-light",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5121,7 +5233,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5135,10 +5248,10 @@
       "route": "/encyclopedia/green-light-and-canopy-penetration",
       "slug": "green-light-and-canopy-penetration",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5165,7 +5278,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5179,10 +5293,10 @@
       "route": "/encyclopedia/ultraviolet-radiation-evidence-and-safety",
       "slug": "ultraviolet-radiation-evidence-and-safety",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5209,7 +5323,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5223,10 +5338,10 @@
       "route": "/encyclopedia/spectrum-effects-on-morphology",
       "slug": "spectrum-effects-on-morphology",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5255,7 +5370,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5269,10 +5385,10 @@
       "route": "/encyclopedia/photoperiodic-flower-induction",
       "slug": "photoperiodic-flower-induction",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5299,7 +5415,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5313,10 +5430,10 @@
       "route": "/encyclopedia/night-interruption-and-light-leak-risk",
       "slug": "night-interruption-and-light-leak-risk",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5343,7 +5460,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5357,10 +5475,10 @@
       "route": "/encyclopedia/intercanopy-and-intracanopy-lighting",
       "slug": "intercanopy-and-intracanopy-lighting",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5389,7 +5507,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5403,10 +5522,10 @@
       "route": "/encyclopedia/lighting-energy-heat-efficacy-and-crop-response",
       "slug": "lighting-energy-heat-efficacy-and-crop-response",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5437,7 +5556,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5451,10 +5571,10 @@
       "route": "/encyclopedia/essential-elements-and-the-criteria-for-essentiality",
       "slug": "essential-elements-and-the-criteria-for-essentiality",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5483,7 +5603,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5497,10 +5618,10 @@
       "route": "/encyclopedia/nitrogen-forms-uptake-and-metabolism",
       "slug": "nitrogen-forms-uptake-and-metabolism",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5534,7 +5655,8 @@
         ],
         "reviewState": "source_collected_needs_independent_review",
         "needs": [
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5548,10 +5670,10 @@
       "route": "/encyclopedia/phosphorus-function-and-overapplication-risk",
       "slug": "phosphorus-function-and-overapplication-risk",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5580,7 +5702,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5594,10 +5717,10 @@
       "route": "/encyclopedia/potassium-and-osmotic-regulation",
       "slug": "potassium-and-osmotic-regulation",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5626,7 +5749,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5640,10 +5764,10 @@
       "route": "/encyclopedia/calcium-transport-and-growing-tissue-disorders",
       "slug": "calcium-transport-and-growing-tissue-disorders",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5672,7 +5796,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5686,10 +5811,10 @@
       "route": "/encyclopedia/magnesium-chlorophyll-and-enzyme-function",
       "slug": "magnesium-chlorophyll-and-enzyme-function",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5718,7 +5843,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5732,10 +5858,10 @@
       "route": "/encyclopedia/sulfur-and-sulfur-containing-metabolism",
       "slug": "sulfur-and-sulfur-containing-metabolism",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5764,7 +5890,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5778,10 +5905,10 @@
       "route": "/encyclopedia/iron-availability-and-chlorosis",
       "slug": "iron-availability-and-chlorosis",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5810,7 +5937,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5824,10 +5952,10 @@
       "route": "/encyclopedia/manganese-zinc-copper-and-molybdenum",
       "slug": "manganese-zinc-copper-and-molybdenum",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5856,7 +5984,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5870,10 +5999,10 @@
       "route": "/encyclopedia/boron-chloride-and-nickel",
       "slug": "boron-chloride-and-nickel",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5902,7 +6031,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5916,10 +6046,10 @@
       "route": "/encyclopedia/nutrient-mobility-and-symptom-location",
       "slug": "nutrient-mobility-and-symptom-location",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5953,7 +6083,8 @@
         ],
         "reviewState": "source_collected_needs_independent_review",
         "needs": [
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -5967,10 +6098,10 @@
       "route": "/encyclopedia/solution-ph-and-root-zone-ph",
       "slug": "solution-ph-and-root-zone-ph",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -5999,7 +6130,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6013,10 +6145,10 @@
       "route": "/encyclopedia/alkalinity-hardness-and-acid-requirement",
       "slug": "alkalinity-hardness-and-acid-requirement",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6045,7 +6177,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6059,10 +6192,10 @@
       "route": "/encyclopedia/electrical-conductivity-and-salinity",
       "slug": "electrical-conductivity-and-salinity",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6091,7 +6224,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6105,10 +6239,10 @@
       "route": "/encyclopedia/ppm-scales-and-why-ec-is-more-transferable",
       "slug": "ppm-scales-and-why-ec-is-more-transferable",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6137,7 +6271,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6151,10 +6286,10 @@
       "route": "/encyclopedia/nutrient-antagonism-synergy-and-ratio-myths",
       "slug": "nutrient-antagonism-synergy-and-ratio-myths",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6183,7 +6318,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6197,10 +6333,10 @@
       "route": "/encyclopedia/fertigation-mixing-order-and-precipitation-risk",
       "slug": "fertigation-mixing-order-and-precipitation-risk",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6229,7 +6365,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6243,10 +6380,10 @@
       "route": "/encyclopedia/runoff-pour-through-slurry-and-tissue-testing",
       "slug": "runoff-pour-through-slurry-and-tissue-testing",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6275,7 +6412,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6289,10 +6427,10 @@
       "route": "/encyclopedia/deficiency-toxicity-and-root-cause-diagnosis",
       "slug": "deficiency-toxicity-and-root-cause-diagnosis",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6327,7 +6465,8 @@
         ],
         "reviewState": "source_collected_needs_independent_review",
         "needs": [
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6341,10 +6480,10 @@
       "route": "/encyclopedia/nutrient-records-trend-review-and-corrective-action",
       "slug": "nutrient-records-trend-review-and-corrective-action",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6375,7 +6514,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6389,10 +6529,10 @@
       "route": "/encyclopedia/dna-genes-alleles-and-chromosomes",
       "slug": "dna-genes-alleles-and-chromosomes",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6426,7 +6566,8 @@
         ],
         "reviewState": "source_collected_needs_independent_review",
         "needs": [
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6440,10 +6581,10 @@
       "route": "/encyclopedia/diploidy-meiosis-and-genetic-recombination",
       "slug": "diploidy-meiosis-and-genetic-recombination",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6472,7 +6613,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6486,10 +6628,10 @@
       "route": "/encyclopedia/mendelian-inheritance-and-its-limits",
       "slug": "mendelian-inheritance-and-its-limits",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6518,7 +6660,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6532,10 +6675,10 @@
       "route": "/encyclopedia/quantitative-traits-and-polygenic-inheritance",
       "slug": "quantitative-traits-and-polygenic-inheritance",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6564,7 +6707,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6578,10 +6722,10 @@
       "route": "/encyclopedia/heritability-and-environmental-variance",
       "slug": "heritability-and-environmental-variance",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6610,7 +6754,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6624,10 +6769,10 @@
       "route": "/encyclopedia/genotype-phenotype-and-phenotypic-plasticity",
       "slug": "genotype-phenotype-and-phenotypic-plasticity",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6656,7 +6801,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6670,10 +6816,10 @@
       "route": "/encyclopedia/genotype-by-environment-interaction",
       "slug": "genotype-by-environment-interaction",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6702,7 +6848,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6716,10 +6863,10 @@
       "route": "/encyclopedia/cannabis-genome-structure-and-repetitive-dna",
       "slug": "cannabis-genome-structure-and-repetitive-dna",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6748,7 +6895,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6762,10 +6910,10 @@
       "route": "/encyclopedia/population-structure-in-hemp-and-drug-type-cannabis",
       "slug": "population-structure-in-hemp-and-drug-type-cannabis",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6794,7 +6942,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6808,10 +6957,10 @@
       "route": "/encyclopedia/cultivar-strain-line-accession-and-clone",
       "slug": "cultivar-strain-line-accession-and-clone",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6840,7 +6989,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6854,10 +7004,10 @@
       "route": "/encyclopedia/chemotype-as-a-measured-chemical-phenotype",
       "slug": "chemotype-as-a-measured-chemical-phenotype",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6886,7 +7036,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6900,10 +7051,10 @@
       "route": "/encyclopedia/thcas-cbdas-and-major-cannabinoid-acid-synthases",
       "slug": "thcas-cbdas-and-major-cannabinoid-acid-synthases",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6932,7 +7083,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6946,10 +7098,10 @@
       "route": "/encyclopedia/sex-chromosomes-and-sex-linked-markers",
       "slug": "sex-chromosomes-and-sex-linked-markers",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -6978,7 +7130,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -6992,10 +7145,10 @@
       "route": "/encyclopedia/monoecy-and-alternative-sexual-systems",
       "slug": "monoecy-and-alternative-sexual-systems",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -7024,7 +7177,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -7038,10 +7192,10 @@
       "route": "/encyclopedia/intersex-expression-genetics-development-and-stress",
       "slug": "intersex-expression-genetics-development-and-stress",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -7070,7 +7224,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -7084,10 +7239,10 @@
       "route": "/encyclopedia/polyploidy-and-chromosome-doubling-claims",
       "slug": "polyploidy-and-chromosome-doubling-claims",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -7116,7 +7271,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -7130,10 +7286,10 @@
       "route": "/encyclopedia/epigenetics-and-developmental-memory",
       "slug": "epigenetics-and-developmental-memory",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -7162,7 +7318,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -7176,10 +7333,10 @@
       "route": "/encyclopedia/genetic-identity-testing-and-marker-systems",
       "slug": "genetic-identity-testing-and-marker-systems",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -7208,7 +7365,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -7222,10 +7380,10 @@
       "route": "/encyclopedia/clonal-fidelity-somatic-mutation-and-off-types",
       "slug": "clonal-fidelity-somatic-mutation-and-off-types",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -7254,7 +7412,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
@@ -7268,10 +7427,10 @@
       "route": "/encyclopedia/genetic-claims-naming-integrity-and-evidence-standards",
       "slug": "genetic-claims-naming-integrity-and-evidence-standards",
       "publicationState": {
-        "publicationAuthorized": null,
-        "websiteAction": null,
-        "externalReview": null,
-        "evidenceControl": null,
+        "publicationAuthorized": false,
+        "websiteAction": "hold_from_publication",
+        "externalReview": "pending",
+        "evidenceControl": "claim_level_evidence_migration_pending",
         "assessmentRationaleStatus": null,
         "preservationNote": "Evidence tracking does not change publication or review state."
       },
@@ -7300,7 +7459,8 @@
         "reviewState": "claim_level_evidence_needed",
         "needs": [
           "claim_level_evidence_mapping",
-          "source_note_authority_resolution"
+          "source_note_authority_resolution",
+          "publication_hold_preserved"
         ]
       }
     },
