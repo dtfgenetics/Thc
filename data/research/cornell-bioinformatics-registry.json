@@ -203,88 +203,101 @@
     }
   ],
   "canonical_record_requirements": {
-    "germplasm": [
-      "source_id",
-      "accession_id",
-      "taxon",
-      "population_scope",
-      "origin",
-      "pedigree",
-      "generation",
-      "provenance"
-    ],
-    "genotype": [
-      "source_id",
-      "accession_id",
-      "reference_genome",
-      "marker_panel",
-      "marker_id",
-      "chromosome",
-      "position",
-      "allele",
-      "genotype_call",
-      "call_method"
-    ],
-    "phenotype": [
-      "source_id",
-      "accession_or_plant_id",
-      "trait_id",
-      "trait_label",
-      "value",
-      "units",
-      "scoring_method",
-      "developmental_stage",
-      "environment",
-      "observation_date"
-    ],
-    "experiment": [
-      "source_id",
-      "experiment_id",
-      "location",
-      "design",
-      "replication",
-      "treatment",
-      "population",
-      "environment",
-      "measurement_protocol"
-    ],
-    "chemotype": [
-      "source_id",
-      "sample_id",
-      "analyte",
-      "value",
-      "units",
-      "assay_method",
-      "sampling_stage",
-      "laboratory"
-    ],
-    "lineage": [
-      "source_id",
-      "progeny_id",
-      "parent_1",
-      "parent_2",
-      "generation",
-      "breeding_method",
-      "selection_event",
-      "selection_reason"
-    ]
+    "germplasm": {
+      "schema": "data/research/germplasm-record.schema.json",
+      "required": [
+        "record_id",
+        "source_id",
+        "accession_id",
+        "taxon",
+        "population_scope",
+        "provenance"
+      ]
+    },
+    "genotype": {
+      "schema": "data/research/genotype-marker-call.schema.json",
+      "required": [
+        "record_id",
+        "source_id",
+        "sample_id",
+        "marker_panel",
+        "marker_id",
+        "reference_genome",
+        "call_method",
+        "provenance"
+      ]
+    },
+    "phenotype": {
+      "schema": "data/research/phenotype-observation.schema.json",
+      "required": [
+        "record_id",
+        "source_id",
+        "accession_or_plant_id",
+        "trait_name",
+        "value",
+        "observation_context",
+        "provenance"
+      ]
+    },
+    "experiment": {
+      "schema": "data/research/experiment-record.schema.json",
+      "required": [
+        "record_id",
+        "source_id",
+        "experiment_id",
+        "title",
+        "study_type",
+        "biological_material",
+        "design",
+        "provenance"
+      ]
+    },
+    "chemotype": {
+      "schema": "data/research/chemotype-observation.schema.json",
+      "required": [
+        "record_id",
+        "source_id",
+        "sample_id",
+        "analyte",
+        "value",
+        "units",
+        "assay_method",
+        "provenance"
+      ]
+    },
+    "lineage": {
+      "schema": "data/research/lineage-record.schema.json",
+      "required": [
+        "record_id",
+        "source_id",
+        "progeny_id",
+        "generation",
+        "breeding_method",
+        "parents",
+        "provenance"
+      ]
+    }
   },
   "next_ingestion_targets": [
     {
       "priority": "P0",
-      "target": "Resolve GRIN Cannabis sativa accession exports and observation exports using accession/PUID + trait_name as canonical join keys."
+      "target": "Obtain a controlled GRIN Cannabis sativa accession/observation export and run it through scripts/normalize-grin-hemp-export.mjs."
     },
     {
       "priority": "P0",
-      "target": "Resolve actual Hemp DArTag marker identifiers/coordinates from DArT/Breeding Insight or the public microhaplotype database; do not infer coordinates."
+      "target": "Resolve public NCBI/GRIN sequence records produced by USDA project 445646 as they are released, binding every call to accession/sample/reference identifiers."
+    },
+    {
+      "priority": "P0",
+      "target": "Resolve actual Hemp DArTag marker identifiers/coordinates from DArT/Breeding Insight or its public microhaplotype release; never infer coordinates."
     },
     {
       "priority": "P1",
-      "target": "Map USDA Hemp Phenotyping and Protocol Handbook trait_name vocabulary into the phenotype observation schema."
+      "target": "Resolve supplementary/tabular accession-level disease data behind USDA/Cornell powdery mildew, Septoria and downy mildew publications."
     },
     {
       "priority": "P1",
-      "target": "Identify Cornell publications/datasets with machine-readable hemp phenotype, chemotype, flowering, sex-expression or high-throughput imaging data."
+      "target": "Map USDA trait_name variables to exact Crop Ontology/Plant Ontology terms only where a confident semantic match exists."
     }
   ]
 }
