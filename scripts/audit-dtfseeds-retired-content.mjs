@@ -1,6 +1,6 @@
 const BASE = 'https://dtfseeds.com';
+// /blog/ is canonical WordPress-owned Field Notes content and is intentionally not retired.
 const retiredRoutes = [
-  '/blog/',
   '/exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools/',
   '/explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art/'
 ];
