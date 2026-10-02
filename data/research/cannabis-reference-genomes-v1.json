@@ -3,6 +3,28 @@
   "updated": "2026-10-01",
   "references": [
     {
+      "id": "CBDRX-CS10-NCBI",
+      "organism": "Cannabis sativa",
+      "assembly_name": "cs10",
+      "assembly_accession": "GCF_900626175.2",
+      "annotation_release": "100.20200513",
+      "status": "previous NCBI assembly; coordinate system used in Cornell Autoflower1/Early1 mapping study",
+      "source_url": "https://www.ncbi.nlm.nih.gov/gene/115717615",
+      "use_status": "LEGACY_COORDINATE_REFERENCE",
+      "note": "Preserve for published marker reproducibility. Do not mix with current assembly or Otto II coordinates."
+    },
+    {
+      "id": "CANNABIS-CURRENT-NCBI-ASM2916894V1",
+      "organism": "Cannabis sativa",
+      "assembly_name": "ASM2916894v1",
+      "assembly_accession": "GCF_029168945.1",
+      "annotation_release": "RS_2023_11",
+      "status": "current NCBI RefSeq assembly observed in gene records during 2026 audit",
+      "source_url": "https://www.ncbi.nlm.nih.gov/gene/115717615",
+      "use_status": "CURRENT_REFERENCE_CANDIDATE",
+      "note": "Treat this assembly as a distinct coordinate system. Do not reinterpret CBDRx-cs10 marker positions on this assembly without a documented liftover."
+    },
+    {
       "id": "OTTO-II-HAP1-NCBI-2026",
       "organism": "Cannabis sativa",
       "isolate": "Otto II",
@@ -24,5 +46,11 @@
       "use_status": "REFERENCE_METADATA_ONLY",
       "note": "Do not invent assembly accession/chromosome coordinates until NCBI links public project data."
     }
+  ],
+  "coordinate_policy": [
+    "Every marker/variant coordinate must name an assembly accession and chromosome/reference sequence.",
+    "Coordinates from CBDRx-cs10 GCF_900626175.2 remain in that assembly until a validated liftover is recorded.",
+    "Otto II BioProject metadata does not establish a usable assembly coordinate system until public assembly accessions are linked.",
+    "A current NCBI assembly is not automatically equivalent to the assembly used in a historical publication."
   ]
 }
