@@ -40,6 +40,8 @@ function buildFuse(){
       {name:'coreScience',weight:.03},
       {name:'cultivation',weight:.025},
       {name:'tools',weight:.015},
+      {name:'program',weight:.03},
+      {name:'status',weight:.01},
       {name:'type',weight:.01},
       {name:'id',weight:.005}
     ]
