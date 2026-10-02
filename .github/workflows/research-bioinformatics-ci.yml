@@ -9,6 +9,8 @@ on:
       - 'scripts/normalize-ncbi-*.mjs'
       - 'scripts/fetch-ncbi-*.mjs'
       - 'scripts/validate-research-bioinformatics.mjs'
+      - 'scripts/test-export-tools-research-evidence.mjs'
+      - 'scripts/export-tools-research-evidence.mjs'
       - 'scripts/*research-evidence-index.mjs'
       - 'scripts/query-research-evidence.mjs'
       - 'scripts/test-research-evidence-pipeline.mjs'
@@ -22,6 +24,8 @@ on:
       - 'scripts/normalize-ncbi-*.mjs'
       - 'scripts/fetch-ncbi-*.mjs'
       - 'scripts/validate-research-bioinformatics.mjs'
+      - 'scripts/test-export-tools-research-evidence.mjs'
+      - 'scripts/export-tools-research-evidence.mjs'
       - 'package.json'
 
 permissions:
@@ -38,4 +42,6 @@ jobs:
         with:
           node-version: '22'
       - name: Validate research schemas and adapters
-        run: npm run verify:research-bioinformatics
+        run: |
+          npm run verify:research-bioinformatics
+          node scripts/test-export-tools-research-evidence.mjs
