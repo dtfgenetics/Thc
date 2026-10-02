@@ -1,0 +1,303 @@
+{
+  "schema_version": "1.0.0",
+  "updated": "2026-10-01",
+  "purpose": "Machine-readable registry for Cornell, USDA-ARS, GRIN and Breeding Insight bioinformatics/genetics resources that can support DTF Genetics and THC research systems without conflating public references with ingestible datasets.",
+  "policy": {
+    "default_reuse_lane": "REFERENCE_ONLY",
+    "rules": [
+      "A public webpage is not automatically a redistributable dataset.",
+      "Do not ingest files, images, genotype matrices or marker payloads until the source-specific license or public-use terms are verified.",
+      "Keep hemp-population evidence separate from DTF drug-type cultivar observations.",
+      "Preserve source identity, accession identifiers, marker identifiers, genome/reference build, trait definitions, environment and study population with every derived record.",
+      "Do not promote source metadata or literature claims into DTF-observed phenotype/genotype truth."
+    ]
+  },
+  "sources": [
+    {
+      "id": "CORNELL-HEMP-SMART-001",
+      "organization": "Cornell University CALS",
+      "title": "Lawrence B. Smart — hemp breeding and genomics program",
+      "source_url": "https://cals.cornell.edu/people/lawrence-b-smart",
+      "resource_type": "program_reference",
+      "species_scope": [
+        "Cannabis sativa L."
+      ],
+      "population_scope": "industrial hemp breeding populations",
+      "topics": [
+        "breeding",
+        "genomics",
+        "cannabinoid profile",
+        "sex determination",
+        "pest resistance",
+        "disease resistance",
+        "flowering time",
+        "yield"
+      ],
+      "data_value": "Defines Cornell's active hemp genetics/breeding scope and authoritative program context.",
+      "payload_status": "REFERENCE_METADATA_ONLY",
+      "reuse_lane": "REFERENCE_ONLY",
+      "rights_status": "VERIFY_SOURCE_SPECIFIC_TERMS_BEFORE_COPYING_ASSETS_OR_BULK_CONTENT",
+      "downstream_consumers": [
+        "encyclopedia",
+        "breeder-journal",
+        "plant-atlas",
+        "research-index"
+      ],
+      "accessed": "2026-10-01"
+    },
+    {
+      "id": "BI-HEMP-DARTAG-001",
+      "organization": "Breeding Insight / Cornell University / USDA-ARS",
+      "title": "Hemp_DArTag_BI_Cornell_University v1.0",
+      "source_url": "https://breedinginsight.org/breeding-solutions/open-source-dartag-marker-panels/open-source-hemp-marker-panel/",
+      "resource_type": "genomic_marker_panel",
+      "species_scope": [
+        "Cannabis sativa"
+      ],
+      "population_scope": "USDA germplasm plus public whole-genome sequencing resources",
+      "topics": [
+        "SNP",
+        "InDel",
+        "microhaplotype",
+        "sex-linked loci",
+        "pseudoautosomal loci",
+        "genomic coverage",
+        "marker-assisted breeding"
+      ],
+      "reported_marker_count": 3040,
+      "reported_discovery_accessions": 92,
+      "reference_genome_context": "Otto II reference reported by source",
+      "data_value": "High-priority marker vocabulary and genomic-coordinate source for future DTF genotype/marker support.",
+      "payload_status": "SOURCE_VERIFIED_PAYLOAD_DISCOVERY_PENDING",
+      "reuse_lane": "PUBLIC_USE_CANDIDATE_VERIFY_DOWNLOAD_TERMS_AND_PAYLOAD_LICENSE",
+      "rights_status": "SOURCE_DESCRIBES_PANEL_AS_FUNDED_FOR_PUBLIC_USE; VERIFY_DOWNLOAD/PAYLOAD TERMS BEFORE REDISTRIBUTION",
+      "downstream_consumers": [
+        "breeder-journal",
+        "plant-atlas",
+        "genetics-tools",
+        "research-index"
+      ],
+      "accessed": "2026-10-01"
+    },
+    {
+      "id": "USDA-ARS-GRIN-HEMP-001",
+      "organization": "USDA Agricultural Research Service / National Plant Germplasm System",
+      "title": "Cannabis sativa L. germplasm and phenotype records in GRIN-Global",
+      "source_url": "https://npgsweb.ars-grin.gov/gringlobal/taxon/taxonomydetail?id=8862",
+      "resource_type": "germplasm_database",
+      "species_scope": [
+        "Cannabis sativa L."
+      ],
+      "population_scope": "USDA NPGS Cannabis sativa germplasm, including Geneva PGRU hemp holdings",
+      "topics": [
+        "germplasm",
+        "passport data",
+        "phenotype",
+        "PUID",
+        "accession",
+        "trait_name",
+        "GRIN-Global"
+      ],
+      "data_value": "Primary public accession/phenotype system for USDA hemp germplasm; intended source for normalized germplasm and phenotype exports.",
+      "payload_status": "PUBLIC_DATABASE_EXPORT_DISCOVERY_IN_PROGRESS",
+      "reuse_lane": "PUBLIC_DATA_WITH_RECORD_LEVEL_PROVENANCE",
+      "rights_status": "VERIFY EXPORT-SPECIFIC TERMS; KEEP GERMPLASM DISTRIBUTION/SMTA RULES SEPARATE FROM DATA REUSE",
+      "downstream_consumers": [
+        "breeder-journal",
+        "plant-atlas",
+        "grow-data",
+        "grow-doc",
+        "encyclopedia",
+        "research-index"
+      ],
+      "accessed": "2026-10-01"
+    },
+    {
+      "id": "USDA-ARS-GENEVA-HEMP-DISEASE-001",
+      "organization": "USDA Agricultural Research Service / Cornell University",
+      "title": "Evaluation and Breeding of Diverse Hemp Germplasm for Disease Resistance",
+      "source_url": "https://www.ars.usda.gov/research/project/?accnNo=445656",
+      "resource_type": "germplasm_experiment_program",
+      "species_scope": [
+        "Cannabis sativa L."
+      ],
+      "population_scope": "diverse regulatory-compliant hemp accessions evaluated in Geneva, New York",
+      "topics": [
+        "powdery mildew",
+        "downy mildew",
+        "Septoria leaf spot",
+        "disease severity",
+        "germplasm",
+        "field phenotyping",
+        "randomized complete block design"
+      ],
+      "data_value": "Disease-resistance phenotype source with experimental-design metadata and planned GRIN availability.",
+      "payload_status": "PROJECT_METADATA_VERIFIED_GRIN_DATASET_DISCOVERY_PENDING",
+      "reuse_lane": "REFERENCE_ONLY_UNTIL_GRIN_RECORDS_RESOLVED",
+      "rights_status": "USDA_SOURCE; VERIFY_EXACT_GRIN_RECORD/EXPORT TERMS AND RECORD-LEVEL PROVENANCE",
+      "downstream_consumers": [
+        "grow-doc",
+        "plant-atlas",
+        "breeder-journal",
+        "encyclopedia",
+        "research-index"
+      ],
+      "accessed": "2026-10-01"
+    },
+    {
+      "id": "CORNELL-DIGITAL-HEMP-PHENOTYPING-001",
+      "organization": "Cornell Institute for Digital Agriculture",
+      "title": "Larry Smart — high-throughput phenotyping in hemp breeding",
+      "source_url": "https://digitalagriculture.cornell.edu/faculty/larry-smart/",
+      "resource_type": "methods_reference",
+      "species_scope": [
+        "Cannabis sativa L."
+      ],
+      "population_scope": "Cornell hemp breeding program",
+      "topics": [
+        "remote sensing",
+        "robotics",
+        "database tools",
+        "high-throughput phenotyping",
+        "data integration"
+      ],
+      "data_value": "Architecture and methods reference for DTF phenotype collection, imaging and plant-atlas data design.",
+      "payload_status": "REFERENCE_METADATA_ONLY",
+      "reuse_lane": "REFERENCE_ONLY",
+      "rights_status": "NO DATASET PAYLOAD IDENTIFIED ON SOURCE PAGE",
+      "downstream_consumers": [
+        "plant-atlas",
+        "breeder-journal",
+        "grow-data",
+        "research-index"
+      ],
+      "accessed": "2026-10-01"
+    },
+    {
+      "id": "CORNELL-HEMP-SEX-FIBER-001",
+      "organization": "Cornell University CALS",
+      "title": "Bahiya Zahl — hemp genetics, sex determination and fiber-quality breeding research",
+      "source_url": "https://cals.cornell.edu/news/2025/02/bahiya-zahl-transforming-hemp-through-breeding",
+      "resource_type": "research_context",
+      "species_scope": [
+        "Cannabis sativa L."
+      ],
+      "population_scope": "hemp",
+      "topics": [
+        "sex determination",
+        "fiber quality",
+        "dioecy",
+        "breeding"
+      ],
+      "data_value": "Research-context source for sex-expression and breeding ontology design; not treated as a genotype dataset.",
+      "payload_status": "REFERENCE_METADATA_ONLY",
+      "reuse_lane": "REFERENCE_ONLY",
+      "rights_status": "NO BULK DATASET IDENTIFIED ON SOURCE PAGE",
+      "downstream_consumers": [
+        "encyclopedia",
+        "breeder-journal",
+        "plant-atlas",
+        "research-index"
+      ],
+      "accessed": "2026-10-01"
+    }
+  ],
+  "canonical_record_requirements": {
+    "germplasm": {
+      "schema": "data/research/germplasm-record.schema.json",
+      "required": [
+        "record_id",
+        "source_id",
+        "accession_id",
+        "taxon",
+        "population_scope",
+        "provenance"
+      ]
+    },
+    "genotype": {
+      "schema": "data/research/genotype-marker-call.schema.json",
+      "required": [
+        "record_id",
+        "source_id",
+        "sample_id",
+        "marker_panel",
+        "marker_id",
+        "reference_genome",
+        "call_method",
+        "provenance"
+      ]
+    },
+    "phenotype": {
+      "schema": "data/research/phenotype-observation.schema.json",
+      "required": [
+        "record_id",
+        "source_id",
+        "accession_or_plant_id",
+        "trait_name",
+        "value",
+        "observation_context",
+        "provenance"
+      ]
+    },
+    "experiment": {
+      "schema": "data/research/experiment-record.schema.json",
+      "required": [
+        "record_id",
+        "source_id",
+        "experiment_id",
+        "title",
+        "study_type",
+        "biological_material",
+        "design",
+        "provenance"
+      ]
+    },
+    "chemotype": {
+      "schema": "data/research/chemotype-observation.schema.json",
+      "required": [
+        "record_id",
+        "source_id",
+        "sample_id",
+        "analyte",
+        "value",
+        "units",
+        "assay_method",
+        "provenance"
+      ]
+    },
+    "lineage": {
+      "schema": "data/research/lineage-record.schema.json",
+      "required": [
+        "record_id",
+        "source_id",
+        "progeny_id",
+        "generation",
+        "breeding_method",
+        "parents",
+        "provenance"
+      ]
+    }
+  },
+  "next_ingestion_targets": [
+    {
+      "priority": "P0",
+      "target": "Obtain a controlled GRIN Cannabis sativa accession/observation export and run it through scripts/normalize-grin-hemp-export.mjs."
+    },
+    {
+      "priority": "P0",
+      "target": "Resolve public NCBI/GRIN sequence records produced by USDA project 445646 as they are released, binding every call to accession/sample/reference identifiers."
+    },
+    {
+      "priority": "P0",
+      "target": "Resolve actual Hemp DArTag marker identifiers/coordinates from DArT/Breeding Insight or its public microhaplotype release; never infer coordinates."
+    },
+    {
+      "priority": "P1",
+      "target": "Resolve supplementary/tabular accession-level disease data behind USDA/Cornell powdery mildew, Septoria and downy mildew publications."
+    },
+    {
+      "priority": "P1",
+      "target": "Map USDA trait_name variables to exact Crop Ontology/Plant Ontology terms only where a confident semantic match exists."
+    }
+  ]
+}

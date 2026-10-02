@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0.0",
+  "updated": "2026-10-01",
+  "source": {
+    "title": "Identification and mapping of major-effect flowering time loci Autoflower1 and Early1 in Cannabis sativa L.",
+    "doi": "10.3389/fpls.2022.991680",
+    "url": "https://www.frontiersin.org/journals/plant-science/articles/10.3389/fpls.2022.991680/full",
+    "reference_genome": "CBDRx-cs10",
+    "assembly_accession": "GCF_900626175.2",
+    "chromosome": "NC_044371.1",
+    "data_availability": [
+      "SRR20046529",
+      "SRR20046530",
+      "SRR20046531",
+      "SRR20046532"
+    ]
+  },
+  "loci": [
+    {
+      "marker_id": "AUTO-1",
+      "trait_locus": "Autoflower1",
+      "position": 18464905,
+      "chromosome": "NC_044371.1",
+      "assay": "PACE",
+      "use_note": "published flowering/photoperiod marker"
+    },
+    {
+      "marker_id": "AUTO-2",
+      "trait_locus": "Autoflower1",
+      "position": 19701425,
+      "chromosome": "NC_044371.1",
+      "assay": "PACE",
+      "use_note": "used by authors for wide-germplasm testing"
+    },
+    {
+      "marker_id": "AUTO-3",
+      "trait_locus": "Autoflower1",
+      "position": 19731625,
+      "chromosome": "NC_044371.1",
+      "assay": "PACE",
+      "use_note": "published flowering/photoperiod marker"
+    },
+    {
+      "marker_id": "AUTO-4",
+      "trait_locus": "Autoflower1",
+      "position": 19991224,
+      "chromosome": "NC_044371.1",
+      "assay": "PACE",
+      "use_note": "published flowering/photoperiod marker"
+    },
+    {
+      "marker_id": "AUTO-5",
+      "trait_locus": "Autoflower1",
+      "position": 21536161,
+      "chromosome": "NC_044371.1",
+      "assay": "PACE",
+      "use_note": "published flowering/photoperiod marker"
+    },
+    {
+      "marker_id": "EARLY-1",
+      "trait_locus": "Early1",
+      "position": 41445929,
+      "chromosome": "NC_044371.1",
+      "assay": "PACE",
+      "use_note": "used by authors for wide-germplasm testing"
+    },
+    {
+      "marker_id": "EARLY-2",
+      "trait_locus": "Early1",
+      "position": 46288769,
+      "chromosome": "NC_044371.1",
+      "assay": "PACE",
+      "use_note": "published early-flowering marker"
+    }
+  ],
+  "locus_context": {
+    "Autoflower1": {
+      "significant_region_bp": [
+        17740000,
+        22940000
+      ],
+      "high_significance_window_bp": [
+        18590000,
+        19700000
+      ],
+      "inheritance_context": "recessive major-effect locus in reported mapping population"
+    },
+    "Early1": {
+      "context": "major-effect flowering-time locus; use paper/supplement for population-specific interpretation"
+    }
+  },
+  "limitations": [
+    "Coordinates are specific to CBDRx-cs10 GCF_900626175.2 and must not be silently lifted onto Otto II or another assembly.",
+    "Association/diagnostic performance is population dependent; published markers are not universal guarantees across all Cannabis germplasm.",
+    "Primer sequences are intentionally not duplicated in this registry; use the cited source for assay implementation."
+  ]
+}
