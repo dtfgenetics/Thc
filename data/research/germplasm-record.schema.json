@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dtfseeds.com/schemas/research/germplasm-record-1.0.0.json",
+  "title": "DTF germplasm record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["record_id","source_id","accession_id","taxon","population_scope","provenance"],
+  "properties": {
+    "record_id": {"type":"string","minLength":3},
+    "source_id": {"type":"string","minLength":3},
+    "accession_id": {"type":"string","minLength":1},
+    "puid": {"type":["string","null"]},
+    "taxon": {"type":"string","minLength":3},
+    "plant_name": {"type":["string","null"]},
+    "population_scope": {"type":"string","minLength":3},
+    "improvement_status": {"type":["string","null"]},
+    "pedigree": {"type":["string","null"]},
+    "ploidy": {"type":["integer","null"],"minimum":1},
+    "crop_use": {"type":["string","null"]},
+    "origin": {"type":["string","null"]},
+    "developer": {"type":["string","null"]},
+    "source_date": {"type":["string","null"]},
+    "provenance": {
+      "type":"object",
+      "additionalProperties": false,
+      "required":["source_url","retrieved_at"],
+      "properties":{
+        "source_url":{"type":"string","format":"uri"},
+        "retrieved_at":{"type":"string","format":"date"},
+        "source_record_id":{"type":["string","null"]},
+        "notes":{"type":["string","null"]}
+      }
+    }
+  }
+}
