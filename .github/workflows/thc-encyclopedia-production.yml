@@ -14,8 +14,14 @@ on:
       - 'data/encyclopedia-assessment-rationale-package.json'
       - 'data/encyclopedia-source-resolution-queue.json'
       - 'site/public-route-patch/learn/encyclopedia/**'
+      - 'site/wordpress/education/encyclopedia-deployment-target.json'
+      - 'scripts/resolve-encyclopedia-deployment-target.mjs'
+      - 'scripts/validate-encyclopedia-source-pin.mjs'
       - 'site/public-route-patch/learn/search/**'
       - 'site/wordpress/education/encyclopedia/**'
+      - 'site/wordpress/education/encyclopedia-deployment-target.json'
+      - 'scripts/resolve-encyclopedia-deployment-target.mjs'
+      - 'scripts/validate-encyclopedia-source-pin.mjs'
       - 'scripts/build-wordpress-learning-search-runtime.mjs'
       - 'site/wordpress/mu-plugins/dtf-learning-search/**'
       - 'site/wordpress/mu-plugins/dtf-learning-search.php'
@@ -65,6 +71,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Validate canonical encyclopedia source pin
+        run: npm run verify:encyclopedia-source-pin
       - name: Build completion scorecard
         run: npm run build:encyclopedia-scorecard
       - name: Build evidence tracking
