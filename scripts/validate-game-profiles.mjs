@@ -29,18 +29,21 @@ for(const id of mappedIds){
 
 for(const game of registry.games||[]){
   const assignment=profiles.games?.[game.id];
-  if(!Array.isArray(assignment)) continue;
-  if(assignment.length!==dimensionNames.length){
-    fail(`${game.id}: profile assignment must contain exactly ${dimensionNames.length} dimensions in canonical order`);
+  if(!assignment || typeof assignment!=='object' || Array.isArray(assignment)) {
+    fail(`${game.id}: profile assignment must be an object with named dimensions`);
     continue;
   }
 
   const values={};
-  dimensionNames.forEach((name,index)=>{
-    const value=assignment[index];
+  for(const name of dimensionNames){
+    const value=assignment[name];
     values[name]=value;
-    if(!(dimensions[name]||[]).includes(value)) fail(`${game.id}: unknown ${name} value ${value}`);
-  });
+    if(typeof value!=='string') fail(`${game.id}: missing ${name}`);
+    else if(!(dimensions[name]||[]).includes(value)) fail(`${game.id}: unknown ${name} value ${value}`);
+  }
+  for(const extra of Object.keys(assignment)){
+    if(!dimensionNames.includes(extra)) fail(`${game.id}: unknown profile dimension ${extra}`);
+  }
 
   if(!profiles.performanceBudgets?.[values.performanceProfile]){
     fail(`${game.id}: missing performance budget for ${values.performanceProfile}`);
