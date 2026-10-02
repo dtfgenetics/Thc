@@ -17,7 +17,8 @@ const files={
   tech1Public:'site/wordpress/education/tech1-courses-public-v1.json',
   tech2Public:'site/wordpress/education/tech2-courses-public-v1.json',
   academyTarget:'site/wordpress/education/academy-deployment-target.json',
-  staticRecords:'configuration/education-search-static-records.json'
+  staticRecords:'configuration/education-search-static-records.json',
+  builder:'scripts/build-thc-education-search-index.mjs'
 };
 const errors=[];
 for(const [name,file] of Object.entries(files)) if(!fs.existsSync(file)) errors.push(`${name} missing: ${file}`);
