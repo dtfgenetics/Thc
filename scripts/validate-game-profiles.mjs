@@ -89,7 +89,8 @@ for(const game of scopedGames){
   }
 
   const saveVersion=game.architecture?.saveVersion;
-  if(['campaign','checkpoint'].includes(values.persistenceProfile)&&!Number.isInteger(saveVersion)){
+  const validSaveVersion=(Number.isInteger(saveVersion)&&saveVersion>=1)||(typeof saveVersion==='string'&&saveVersion.trim().length>0);
+  if(['campaign','checkpoint'].includes(values.persistenceProfile)&&!validSaveVersion){
     warn(`${game.id}: ${values.persistenceProfile} persistence should declare architecture.saveVersion before strict production compliance`);
   }
   if(values.persistenceProfile==='match-recovery'){
