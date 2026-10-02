@@ -81,9 +81,9 @@
   ],
   "summary": {
     "gameCount": 30,
-    "compliantCount": 23,
-    "debtCount": 12,
-    "gamesWithDebt": 7
+    "compliantCount": 24,
+    "debtCount": 11,
+    "gamesWithDebt": 6
   },
   "games": [
     {
@@ -666,14 +666,8 @@
         "securityProfile": "persistent-solo",
         "accessibilityProfile": "gameplay-ui"
       },
-      "compliant": false,
-      "debt": [
-        {
-          "code": "missing-save-version",
-          "severity": "release-blocking-for-strict-profile",
-          "requirement": "Declare a real architecture.saveVersion and preserve migration/recovery evidence."
-        }
-      ]
+      "compliant": true,
+      "debt": []
     },
     {
       "id": "who-took-it",
