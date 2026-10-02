@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated": "2026-10-01",
+  "updated": "2026-10-02",
   "grin": {
     "official_workflow": {
       "source_url": "https://www.grin-global.org/docs/gg_observations_and_descriptors.pdf",
@@ -44,5 +44,17 @@
         "Do not translate coordinates between assemblies without a recorded liftover."
       ]
     }
+  },
+  "ncbi_biosample": {
+    "source_url": "https://www.ncbi.nlm.nih.gov/biosample/",
+    "expected_input": "NCBI BioSample XML export",
+    "schema": "data/research/biosample-record.schema.json",
+    "command": "node scripts/normalize-ncbi-biosample-xml.mjs <biosample.xml> <output.jsonl> <source-id> <retrieved-date>",
+    "rules": [
+      "BioSample accession is the primary specimen identifier.",
+      "Preserve BioProject/SRA sample links and all source attributes.",
+      "Normalize convenience fields such as cultivar, tissue, collection_date and geo_loc_name while retaining the complete attribute object.",
+      "Do not create GRIN accession/PUID links from cultivar or sample names alone."
+    ]
   }
 }

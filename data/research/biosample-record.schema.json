@@ -1,15 +1,15 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://dtfseeds.com/schemas/research/sequence-sample-record-1.0.0.json",
-  "title": "DTF public sequence sample/run record",
+  "$id": "https://dtfseeds.com/schemas/research/biosample-record-1.0.0.json",
+  "title": "DTF public BioSample metadata record",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "record_id",
     "source_id",
-    "bioproject",
-    "run_accession",
+    "biosample",
     "organism",
+    "attributes",
     "provenance"
   ],
   "properties": {
@@ -21,21 +21,23 @@
       "type": "string",
       "minLength": 3
     },
-    "bioproject": {
-      "type": "string",
-      "pattern": "^PRJ[A-Z]{2}[0-9]+$"
-    },
-    "run_accession": {
-      "type": "string",
-      "minLength": 3
-    },
     "biosample": {
+      "type": "string",
+      "pattern": "^SAM[NED][0-9]+$"
+    },
+    "sample_name": {
       "type": [
         "string",
         "null"
       ]
     },
-    "sample_name": {
+    "sra_sample_accession": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bioproject": {
       "type": [
         "string",
         "null"
@@ -45,68 +47,41 @@
       "type": "string",
       "minLength": 2
     },
-    "library_strategy": {
+    "package": {
       "type": [
         "string",
         "null"
       ]
     },
-    "library_source": {
+    "cultivar": {
       "type": [
         "string",
         "null"
       ]
     },
-    "library_selection": {
+    "tissue": {
       "type": [
         "string",
         "null"
       ]
     },
-    "platform": {
+    "collection_date": {
       "type": [
         "string",
         "null"
       ]
     },
-    "instrument": {
+    "geo_loc_name": {
       "type": [
         "string",
         "null"
       ]
     },
-    "layout": {
+    "sex": {
       "type": [
         "string",
         "null"
       ]
-    },
-    "read_length": {
-      "type": [
-        "number",
-        "null"
-      ]
-    },
-    "spots": {
-      "type": [
-        "integer",
-        "null"
-      ],
-      "minimum": 0
-    },
-    "bases": {
-      "type": [
-        "integer",
-        "null"
-      ],
-      "minimum": 0
-    },
-    "bytes": {
-      "type": [
-        "integer",
-        "null"
-      ],
-      "minimum": 0
     },
     "accession_id": {
       "type": [
@@ -120,26 +95,15 @@
         "null"
       ]
     },
-    "sex": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "assembly_accession": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "reference_assembly": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
     "attributes": {
       "type": "object",
+      "additionalProperties": true
+    },
+    "submission": {
+      "type": [
+        "object",
+        "null"
+      ],
       "additionalProperties": true
     },
     "provenance": {
@@ -165,24 +129,6 @@
           ]
         }
       }
-    },
-    "study_accession": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "experiment_accession": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "sra_sample_accession": {
-      "type": [
-        "string",
-        "null"
-      ]
     }
   }
 }

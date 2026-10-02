@@ -26,7 +26,9 @@ const files = [
   'data/research/public-cannabis-genomics-datasets-v1.json',
   'data/research/sequence-sample-record.schema.json',
   'data/research/research-acquisition-contract-v1.json',
-  'data/research/cannabis-genomics-reproducibility-v1.json'
+  'data/research/cannabis-genomics-reproducibility-v1.json',
+  'data/research/biosample-record.schema.json',
+  'data/research/pilots/feral-cannabis-prjna1206134-pilot-v1.json'
 ];
 
 const errors = [];
@@ -195,3 +197,23 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(`Reproducibility registry validation passed for ${reproducibilityIds.size} resources.`);
+
+const pilot = JSON.parse(fs.readFileSync(path.join(root,'data/research/pilots/feral-cannabis-prjna1206134-pilot-v1.json'),'utf8'));
+const biosampleSchema = JSON.parse(fs.readFileSync(path.join(root,'data/research/biosample-record.schema.json'),'utf8'));
+const sequenceSchema = JSON.parse(fs.readFileSync(path.join(root,'data/research/sequence-sample-record.schema.json'),'utf8'));
+if (!biosampleSchema.properties?.biosample || !sequenceSchema.properties?.experiment_accession || !sequenceSchema.properties?.sra_sample_accession) {
+  errors.push('BioSample/SRA canonical identity fields missing from schemas');
+}
+if (pilot.biosample?.biosample !== pilot.sequence_run?.biosample) errors.push('pilot BioSample does not match sequence run BioSample');
+if (pilot.biosample?.sample_name !== pilot.sequence_run?.sample_name) errors.push('pilot sample name does not match sequence run sample name');
+if (pilot.biosample?.bioproject !== pilot.sequence_run?.bioproject) errors.push('pilot BioProject does not match sequence run BioProject');
+if (pilot.sequence_run?.bases !== null || pilot.sequence_run?.bytes !== null) {
+  errors.push('pilot must not fabricate exact bases/bytes from rounded NCBI display values');
+}
+if (!acquisitionContract.ncbi_biosample?.command) errors.push('NCBI BioSample acquisition command missing');
+if (errors.length) {
+  console.error('BioSample/SRA pilot validation failed:');
+  for (const error of errors) console.error(`- ${error}`);
+  process.exit(1);
+}
+console.log(`BioSample/SRA pilot validation passed for ${pilot.biosample.biosample} / ${pilot.sequence_run.run_accession}.`);

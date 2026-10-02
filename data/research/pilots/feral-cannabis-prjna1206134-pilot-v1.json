@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0.0",
+  "updated": "2026-10-02",
+  "purpose": "End-to-end provenance pilot linking one public feral Cannabis BioSample to its SRA experiment and run without inferring unreported GRIN identity or exact rounded byte/base values.",
+  "source_project": "FERAL-CANNABIS-PRJNA1206134",
+  "biosample": {
+    "record_id": "BIOSAMPLE-SAMN46071458",
+    "source_id": "FERAL-CANNABIS-PRJNA1206134",
+    "biosample": "SAMN46071458",
+    "sample_name": "ND-23-AA-02-12",
+    "sra_sample_accession": "SRS23688594",
+    "bioproject": "PRJNA1206134",
+    "organism": "Cannabis sativa",
+    "package": "Plant; version 1.0",
+    "cultivar": "ND-23-AA-02-12",
+    "tissue": "Leaf",
+    "collection_date": "2023",
+    "geo_loc_name": "USA: ND",
+    "sex": null,
+    "accession_id": null,
+    "grin_puid": null,
+    "attributes": {
+      "age": "Unknown"
+    },
+    "submission": {
+      "organization": "University of Wisconsin-Madison",
+      "submitter": "Eliot Stanton",
+      "submission_date": "2025-01-03"
+    },
+    "provenance": {
+      "source_url": "https://www.ncbi.nlm.nih.gov/biosample/SAMN46071458",
+      "retrieved_at": "2026-10-02",
+      "source_record_id": "SAMN46071458"
+    }
+  },
+  "sequence_run": {
+    "record_id": "SRA-SRR31884228",
+    "source_id": "FERAL-CANNABIS-PRJNA1206134",
+    "bioproject": "PRJNA1206134",
+    "study_accession": "SRP555143",
+    "experiment_accession": "SRX27242671",
+    "run_accession": "SRR31884228",
+    "biosample": "SAMN46071458",
+    "sra_sample_accession": "SRS23688594",
+    "sample_name": "ND-23-AA-02-12",
+    "organism": "Cannabis sativa",
+    "library_strategy": "GBS",
+    "library_source": "GENOMIC",
+    "library_selection": "Restriction Digest",
+    "platform": "ILLUMINA",
+    "instrument": "Illumina NovaSeq X Plus",
+    "layout": "PAIRED",
+    "read_length": null,
+    "spots": 6148093,
+    "bases": null,
+    "bytes": null,
+    "accession_id": null,
+    "grin_puid": null,
+    "sex": null,
+    "assembly_accession": null,
+    "reference_assembly": null,
+    "attributes": {
+      "design": "Genotype by sequencing (GBS) using ApeKI restriction enzyme",
+      "reported_bases": "1.8G",
+      "reported_download_size": "550Mb",
+      "published": "2025-08-01"
+    },
+    "provenance": {
+      "source_url": "https://www.ncbi.nlm.nih.gov/sra/SRX27242671",
+      "retrieved_at": "2026-10-02",
+      "source_record_id": "SRR31884228"
+    }
+  },
+  "identity_assertions": [
+    {
+      "left": "biosample.biosample",
+      "right": "sequence_run.biosample",
+      "status": "VERIFIED_EXACT"
+    },
+    {
+      "left": "biosample.sample_name",
+      "right": "sequence_run.sample_name",
+      "status": "VERIFIED_EXACT"
+    },
+    {
+      "left": "biosample.bioproject",
+      "right": "sequence_run.bioproject",
+      "status": "VERIFIED_EXACT"
+    }
+  ],
+  "limitations": [
+    "No GRIN accession/PUID is assigned because the inspected NCBI records do not explicitly provide one.",
+    "NCBI page display values 1.8G bases and 550Mb download size are retained as reported strings rather than converted into fabricated exact counts."
+  ]
+}
