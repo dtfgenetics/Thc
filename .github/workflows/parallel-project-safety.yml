@@ -45,7 +45,7 @@ jobs:
       - name: Verify project lane
         env:
           PROJECT_BRANCH: ${{ github.head_ref || github.ref_name }}
-          PROJECT_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          PROJECT_BASE: ${{ github.event_name == 'pull_request' && 'origin/main' || github.event.before }}
           PROJECT_HEAD: ${{ github.sha }}
         run: node scripts/project-lane-check.mjs
 

@@ -111,6 +111,15 @@
         "games/seed-man-platformer/",
         "site/public-route-patch/games/seed-man-platformer/"
       ]
+    },
+    "research": {
+      "prefixes": [
+        "data/research/",
+        "scripts/normalize-grin-",
+        "scripts/normalize-ncbi-",
+        "scripts/validate-research-"
+      ],
+      "description": "Scientific research, bioinformatics, public-dataset provenance, and research ingestion tooling."
     }
   }
 }
