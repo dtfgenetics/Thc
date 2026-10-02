@@ -8,7 +8,9 @@ const outputPath='data/game-profile-compliance.json';
 
 function buildDebt(game, profile){
   const debt=[];
-  if(['campaign','checkpoint'].includes(profile.persistenceProfile) && !Number.isInteger(game.architecture?.saveVersion)){
+  const saveVersion=game.architecture?.saveVersion;
+  const validSaveVersion=(Number.isInteger(saveVersion)&&saveVersion>=1)||(typeof saveVersion==='string'&&saveVersion.trim().length>0);
+  if(['campaign','checkpoint'].includes(profile.persistenceProfile) && !validSaveVersion){
     debt.push({
       code:'missing-save-version',
       severity:'release-blocking-for-strict-profile',
