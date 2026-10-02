@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0.0",
+  "updated": "2026-10-01",
+  "grin": {
+    "official_workflow": {
+      "source_url": "https://www.grin-global.org/docs/gg_observations_and_descriptors.pdf",
+      "accession_export": [
+        "Search Cannabis sativa L. accessions in the GRIN-Global public website.",
+        "Use the Results export control to export accession/passport results as CSV or spreadsheet.",
+        "Preserve ACCESSION and any PUID/source identifiers."
+      ],
+      "observation_export": [
+        "From accession results, select View Observation Data.",
+        "Use Export to create a CSV containing all displayed observation data.",
+        "Retain GRIN descriptor/trait labels exactly in the raw landing copy."
+      ]
+    },
+    "landing_policy": {
+      "raw_folder": "data/research/imported/grin/raw/",
+      "normalized_folder": "data/research/imported/grin/normalized/",
+      "command": "node scripts/normalize-grin-hemp-export.mjs <input.csv> <output-dir> <source-url> <retrieved-date>",
+      "rules": [
+        "Never scrape the display HTML when the official CSV/Excel export is available.",
+        "Keep raw exports immutable.",
+        "Normalize into germplasm/phenotype JSONL and quarantine unknown fields.",
+        "Do not conflate NPGS physical-material distribution/SMTA rules with public metadata reuse."
+      ]
+    }
+  },
+  "ncbi_sra": {
+    "landing_policy": {
+      "raw_folder": "data/research/imported/ncbi/raw/",
+      "normalized_folder": "data/research/imported/ncbi/normalized/",
+      "expected_inputs": [
+        "NCBI SRA RunInfo CSV",
+        "BioSample metadata export",
+        "assembly report where applicable"
+      ],
+      "command": "node scripts/normalize-ncbi-sra-runinfo.mjs <runinfo.csv> <output.jsonl> <source-id> <bioproject> <retrieved-date>",
+      "rules": [
+        "Run accession and BioSample are identity anchors; cultivar/sample display names are not sufficient identifiers.",
+        "Preserve BioProject, BioSample, Run, platform and library metadata.",
+        "Do not assign GRIN accession IDs unless the public source explicitly links them.",
+        "Do not translate coordinates between assemblies without a recorded liftover."
+      ]
+    }
+  }
+}
