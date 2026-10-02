@@ -288,6 +288,33 @@ payload = replace_once(
     "Projects live-verification marker",
 )
 
+# Applied Learning is a suite-owned top-level static development-preview app.
+# Widen the guarded post-hash bridge scope without changing the canonical base fragments.
+payload = replace_once(
+    payload,
+    b"'growlens','thc-grow-doc','tools','projects','puzzles'",
+    b"'growlens','thc-grow-doc','tools','projects','puzzles','applied-learning'",
+    "Applied Learning target allowlist",
+)
+payload = replace_once(
+    payload,
+    b"'thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json'",
+    b"'thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json','applied-learning/index.html','applied-learning/app.js','applied-learning/styles.css','applied-learning/data.json','applied-learning/source-revision.txt'",
+    "Applied Learning required-file list",
+)
+payload = replace_once(
+    payload,
+    b"'growlens/','thc-grow-doc/','tools/','projects/','puzzles/'",
+    b"'growlens/','thc-grow-doc/','tools/','projects/','puzzles/','applied-learning/'",
+    "Applied Learning prefix allowlist",
+)
+payload = replace_once(
+    payload,
+    b"['/growlens/', 'GrowLens'], ['/thc-grow-doc/', 'Grow Doc']",
+    b"['/growlens/', 'GrowLens'], ['/thc-grow-doc/', 'Grow Doc'], ['/applied-learning/', 'Applied Learning Lab']",
+    "Applied Learning live verification",
+)
+
 # The app-only transaction should prove the game page and PHP runtime work,
 # without rolling back app routes because separate WordPress-owned pages drift.
 payload = replace_once(
