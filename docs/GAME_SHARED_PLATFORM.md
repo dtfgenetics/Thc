@@ -26,7 +26,7 @@ The sync checker and runtime tests are part of `games:preflight`.
 
 ## Current version
 
-Shared runtime version: **2.0.0**
+Shared runtime version: **2.2.0**
 
 Modules:
 
@@ -42,6 +42,9 @@ Modules:
 - `experience.mjs` — native share/copy fallback, fullscreen, optional vibration, and Screen Wake Lock lifecycle helpers;
 - `state-machine.mjs` — queued finite-state transitions for reusable player/enemy/UI controllers;
 - `lifecycle.mjs` — common boot/loading/ready/play/pause/complete/fail lifecycle with privacy-safe telemetry hooks;
+- `multiplayer.mjs` — transport-neutral connect/create/join/reconnect/leave/action/state contract with explicit protocol versioning;
+- `liveops.mjs` — maintenance, disable, and multiplayer kill-switch state resolution;
+- `observability.mjs` — provider-neutral operational counters, gauges, timings, errors, and safe metric attributes;
 - `loading.mjs` — engine-neutral parallel loading tasks with progress, bounded retry, and aggregated failures;
 - `validation.mjs` — safe JSON parsing plus small explicit object/field validators for untrusted saves/imports;
 - `index.mjs` — stable public export surface.
@@ -279,9 +282,8 @@ After first-game adoption validates the shared runtime, the next shared systems 
 
 1. affected-game verification from the dependency graph;
 2. migrate one reference game fully onto lifecycle/input/save/profile contracts;
-3. common multiplayer adapter and authority/security contract;
+3. adopt the shared multiplayer/live-ops/observability contracts in each online canonical game;
 4. guest/player identity and optional cloud-save adapter;
-5. feature flags, maintenance mode, and emergency kill switches;
-6. server observability for networked titles;
-7. asset manifest/provenance/CDN contract for larger art/audio pipelines;
-8. broader visual-regression baselines once screenshot stability is proven.
+5. feature-flag provider integration and staged rollout policy;
+6. asset manifest/provenance/CDN contract for larger art/audio pipelines;
+7. broader visual-regression baselines once screenshot stability is proven.
