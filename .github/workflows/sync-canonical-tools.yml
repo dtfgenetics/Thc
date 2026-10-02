@@ -67,4 +67,7 @@ jobs:
             exit 0
           fi
           git commit -m "Sync canonical cultivation tools from dtfgenetics/Tools"
+          git fetch origin main
+          git rebase origin/main
+          TOOLS_REPO_DIR=/tmp/tools npm run verify:cultivation-reference-tools
           git push origin HEAD:main
