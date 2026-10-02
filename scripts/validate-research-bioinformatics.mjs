@@ -28,7 +28,8 @@ const files = [
   'data/research/research-acquisition-contract-v1.json',
   'data/research/cannabis-genomics-reproducibility-v1.json',
   'data/research/biosample-record.schema.json',
-  'data/research/pilots/feral-cannabis-prjna1206134-pilot-v1.json'
+  'data/research/pilots/feral-cannabis-prjna1206134-pilot-v1.json',
+  'data/research/pilots/feral-cannabis-prjna1206134-run-batch-v1.json'
 ];
 
 const errors = [];
@@ -217,3 +218,24 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(`BioSample/SRA pilot validation passed for ${pilot.biosample.biosample} / ${pilot.sequence_run.run_accession}.`);
+
+const runBatch = JSON.parse(fs.readFileSync(path.join(root,'data/research/pilots/feral-cannabis-prjna1206134-run-batch-v1.json'),'utf8'));
+const runIds = new Set();
+const experimentIds = new Set();
+for (const record of runBatch.records || []) {
+  if (runIds.has(record.run_accession)) errors.push(`duplicate pilot run accession: ${record.run_accession}`);
+  runIds.add(record.run_accession);
+  if (experimentIds.has(record.experiment_accession)) errors.push(`duplicate pilot experiment accession: ${record.experiment_accession}`);
+  experimentIds.add(record.experiment_accession);
+  if (record.bioproject !== runBatch.bioproject) errors.push(`pilot BioProject mismatch: ${record.run_accession}`);
+  if (record.study_accession !== runBatch.study_accession) errors.push(`pilot SRA study mismatch: ${record.run_accession}`);
+  if (record.bases !== null || record.bytes !== null) errors.push(`rounded NCBI sizes must not become exact values: ${record.run_accession}`);
+  if (!record.biosample || !record.sra_sample_accession || !record.experiment_accession) errors.push(`incomplete SRA identity chain: ${record.run_accession}`);
+}
+if (runIds.size < 2) errors.push('public genomics run batch must prove at least two distinct records');
+if (errors.length) {
+  console.error('Public genomics run-batch validation failed:');
+  for (const error of errors) console.error(`- ${error}`);
+  process.exit(1);
+}
+console.log(`Public genomics run-batch validation passed for ${runIds.size} verified runs.`);
