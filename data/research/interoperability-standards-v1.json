@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0.0",
+  "updated": "2026-10-01",
+  "standards": [
+    {
+      "id": "BRAPI-2.1",
+      "name": "Breeding API (BrAPI)",
+      "version": "2.1",
+      "status": "latest stable release according to BrAPI specification page",
+      "purpose": "Interoperability for plant breeding databases and tools",
+      "source_url": "https://brapi.org/specification",
+      "modules": {
+        "core": [
+          "Programs",
+          "Trials",
+          "Studies",
+          "Locations",
+          "People",
+          "Lists"
+        ],
+        "germplasm": [
+          "Germplasm",
+          "Germplasm Attributes",
+          "Seed Lots",
+          "Crosses",
+          "Pedigree",
+          "Progeny"
+        ],
+        "phenotyping": [
+          "Observation Units",
+          "Observations",
+          "Observation Variables",
+          "Traits",
+          "Scales",
+          "Methods",
+          "Images"
+        ],
+        "genotyping": [
+          "Samples",
+          "Markers",
+          "Variant Sets",
+          "Variants",
+          "Call Sets",
+          "Calls",
+          "References",
+          "Reads",
+          "Vendor Orders"
+        ]
+      }
+    },
+    {
+      "id": "MIAPPE-1.2",
+      "name": "Minimum Information About Plant Phenotyping Experiments",
+      "version": "1.2",
+      "status": "current release published October 2024",
+      "purpose": "Experiment/study/biological-material/observation-variable metadata for reusable plant phenotyping",
+      "source_url": "https://www.miappe.org/releases/"
+    },
+    {
+      "id": "CROP-ONTOLOGY",
+      "name": "Crop Ontology conceptual model",
+      "version": "current",
+      "purpose": "Trait-variable standardization using trait + method + scale",
+      "source_url": "https://cropontology.org/about",
+      "note": "No Cannabis-specific Crop Ontology was identified in the current public ontology list during this audit; retain USDA trait_name as canonical local vocabulary and map to broader ontology terms only when a confident exact mapping exists."
+    },
+    {
+      "id": "USDA-HEMP-PHENOTYPING-V4",
+      "name": "USDA Hemp Phenotyping and Protocol Handbook",
+      "version": "4.0",
+      "purpose": "Cannabis sativa germplasm descriptors, trait names, methods and protocols",
+      "source_url": "https://www.ars.usda.gov/northeast-area/geneva-ny/plant-genetic-resources-unit-pgru/docs/hemp-descriptors/"
+    }
+  ],
+  "dtf_entity_mapping": {
+    "germplasm": {
+      "schema": "data/research/germplasm-record.schema.json",
+      "brapi_module": "BrAPI-Germplasm",
+      "miappe_entity": "Biological Material"
+    },
+    "experiment": {
+      "schema": "data/research/experiment-record.schema.json",
+      "brapi_module": "BrAPI-Core/BrAPI-Phenotyping",
+      "miappe_entity": "Study"
+    },
+    "phenotype": {
+      "schema": "data/research/phenotype-observation.schema.json",
+      "brapi_module": "BrAPI-Phenotyping",
+      "miappe_entity": "Observed Variable / observation"
+    },
+    "genotype": {
+      "schema": "data/research/genotype-marker-call.schema.json",
+      "brapi_module": "BrAPI-Genotyping",
+      "miappe_entity": "Biological Material + assay/genotyping extension"
+    },
+    "chemotype": {
+      "schema": "data/research/chemotype-observation.schema.json",
+      "brapi_module": "BrAPI-Phenotyping",
+      "miappe_entity": "Observed Variable / observation"
+    },
+    "lineage": {
+      "schema": "data/research/lineage-record.schema.json",
+      "brapi_module": "BrAPI-Germplasm",
+      "miappe_entity": "Biological Material provenance"
+    }
+  }
+}

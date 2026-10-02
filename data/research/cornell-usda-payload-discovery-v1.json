@@ -1,0 +1,63 @@
+{
+  "schema_version":"1.0.0",
+  "updated":"2026-10-01",
+  "findings":[
+    {
+      "source_id":"BI-HEMP-DARTAG-001",
+      "status":"SERVICE_ACCESS_CONFIRMED_NO_DIRECT_MARKER_TABLE_FOUND",
+      "verified_facts":{
+        "panel_name":"Hemp_DArTag_BI_Cornell_University",
+        "version":"1.0",
+        "marker_loci":3040,
+        "discovery_accessions":92,
+        "reference_genome":"Otto II",
+        "amplicon_bp":109,
+        "variant_types":["SNP","InDel","microhaplotype"],
+        "locus_classes":["autosomal","pseudoautosomal","sex-specific"],
+        "access_method":"DArT Targeted Genotyping service",
+        "recommended_output":"Missing Allele Discovery Counts (MADC)"
+      },
+      "ingestion_decision":"Do not fabricate or infer marker coordinates. Wait for an actual DArT/Breeding Insight payload or public microhaplotype export with explicit rights/provenance.",
+      "source_url":"https://breedinginsight.org/breeding-solutions/open-source-dartag-marker-panels/open-source-hemp-marker-panel/"
+    },
+    {
+      "source_id":"USDA-ARS-GRIN-HEMP-001",
+      "status":"PUBLIC_GERMPLASM_AND_PHENOTYPE_INFRASTRUCTURE_CONFIRMED",
+      "verified_facts":{
+        "taxon":"Cannabis sativa L.",
+        "grin_taxon_id":8862,
+        "npgs_accession_count_reported":869,
+        "active_accessions_reported":712,
+        "available_accessions_reported":92,
+        "geneva_site_cannabis_sativa_accessions_reported":806,
+        "geneva_site":"USDA-ARS Plant Genetic Resources Unit, Geneva, New York",
+        "phenotyping_storage":"GRIN-Global",
+        "preferred_table_shape":"trait_name columns with PUID row identifiers; tidy-data conventions preferred"
+      },
+      "ingestion_decision":"Build adapters around accession/PUID + trait_name. Use live GRIN exports as source payloads; do not scrape display pages into canonical phenotype truth when an export is available.",
+      "source_urls":[
+        "https://npgsweb.ars-grin.gov/gringlobal/taxon/taxonomydetail?id=8862",
+        "https://npgsweb.ars-grin.gov/gringlobal/site?id=17",
+        "https://www.ars.usda.gov/ARSUSERFILES/80600500/HDM_DATA/HDM_20251215.pdf"
+      ]
+    },
+    {
+      "source_id":"USDA-ARS-GENEVA-HEMP-DISEASE-001",
+      "status":"EXPERIMENT_DESIGN_AND_FUTURE_GRIN_PUBLICATION_CONFIRMED",
+      "verified_facts":{
+        "annual_accessions":100,
+        "locations":["Geneva, NY","Lexington, KY"],
+        "field_design":"randomized complete block design",
+        "replicates":3,
+        "plants_per_plot":5,
+        "disease_targets":["powdery mildew","Fusarium head blight","Septoria leaf spot","downy mildew"],
+        "scoring_interval_days":"7-10",
+        "genotyping":"genome-wide marker platform",
+        "planned_analysis":"genome-wide association analysis",
+        "planned_publication":"disease evaluation data and resistant breeding lines through GRIN"
+      },
+      "ingestion_decision":"Treat the current project page as experiment metadata only. Promote disease observations only after GRIN/publication records resolve to actual accession-level values.",
+      "source_url":"https://www.ars.usda.gov/research/project/?accnNo=445216"
+    }
+  ]
+}

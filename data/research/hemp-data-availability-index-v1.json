@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0.0",
+  "updated": "2026-10-01",
+  "resources": [
+    {
+      "id": "CORNELL-FLOWERING-BSA-2022",
+      "source_url": "https://www.frontiersin.org/journals/plant-science/articles/10.3389/fpls.2022.991680/full",
+      "doi": "10.3389/fpls.2022.991680",
+      "access": "open article + supplementary material + NCBI SRA",
+      "machine_payloads": [
+        "SRR20046529",
+        "SRR20046530",
+        "SRR20046531",
+        "SRR20046532"
+      ],
+      "ingestion_lane": "PUBLIC_SEQUENCE_DATA_CANDIDATE",
+      "next_action": "resolve SRA metadata/sample relationships before ingesting sequence-derived calls"
+    },
+    {
+      "id": "USDA-CORNELL-POWDERY-MILDEW-2026",
+      "source_url": "https://apsjournals.apsnet.org/doi/10.1094/PDIS-07-25-1591-RE",
+      "doi": "10.1094/PDIS-07-25-1591-RE",
+      "access": "open article; supplementary tables posted",
+      "machine_payloads": [
+        "Supplementary Tables S1-S4 and figure supplements listed by publisher"
+      ],
+      "ingestion_lane": "SUPPLEMENT_DISCOVERY_AND_RIGHTS_REVIEW",
+      "next_action": "resolve exact supplemental download URLs and table reuse terms; cross-link accession-level values to GRIN when possible"
+    },
+    {
+      "id": "USDA-CORNELL-SEPTORIA-2026",
+      "source_url": "https://apsjournals.apsnet.org/doi/pdf/10.1094/PDIS-07-25-1367-RE",
+      "doi": "10.1094/PDIS-07-25-1367-RE",
+      "access": "article + supplementary tables S1-S2",
+      "machine_payloads": [
+        "Supplementary Table S1",
+        "Supplementary Table S2"
+      ],
+      "ingestion_lane": "SUPPLEMENT_DISCOVERY_AND_RIGHTS_REVIEW",
+      "next_action": "resolve supplemental files and map accession/rAUDPC/final severity fields to phenotype observations"
+    },
+    {
+      "id": "USDA-CORNELL-DOWNY-MILDEW-2026",
+      "source_url": "https://apsjournals.apsnet.org/doi/10.1094/PDIS-09-25-1916-RE",
+      "doi": "10.1094/PDIS-09-25-1916-RE",
+      "access": "publisher article with supplementary figures S1-S9 and tables S1-S2",
+      "machine_payloads": [
+        "Supplementary Table S1",
+        "Supplementary Table S2"
+      ],
+      "ingestion_lane": "REFERENCE/SUPPLEMENT_REVIEW_ONLY",
+      "rights_note": "Publisher page explicitly reserves text/data-mining and AI-training rights; do not use as training corpus without permission.",
+      "next_action": "use factual findings and accession links within permitted reference/research use; prefer GRIN public observations for reusable structured data"
+    },
+    {
+      "id": "CORNELL-SEASON-LONG-2021",
+      "source_url": "https://onlinelibrary.wiley.com/doi/full/10.1111/gcbb.12793",
+      "doi": "10.1111/gcbb.12793",
+      "access": "open article + supplementary PDF",
+      "machine_payloads": [],
+      "ingestion_lane": "REFERENCE_ONLY_DATA_BY_REQUEST",
+      "rights_note": "Article states underlying study data are available from the corresponding author upon reasonable request.",
+      "next_action": "do not claim a public raw dataset; use published summary/supplement or request data through the authors if needed"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://dtfseeds.com/schemas/research/provenance-envelope-1.0.0.json",
+  "title":"DTF scientific-data provenance envelope",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["source_id","source_url","retrieved_at","evidence_scope","reuse_status","review_status"],
+  "properties":{
+    "source_id":{"type":"string","minLength":3},
+    "source_url":{"type":"string","format":"uri"},
+    "retrieved_at":{"type":"string","format":"date"},
+    "source_record_id":{"type":["string","null"]},
+    "source_version":{"type":["string","null"]},
+    "publication_doi":{"type":["string","null"]},
+    "dataset_doi":{"type":["string","null"]},
+    "license":{"type":["string","null"]},
+    "rights_holder":{"type":["string","null"]},
+    "evidence_scope":{"type":"string","minLength":2},
+    "population_scope":{"type":["string","null"]},
+    "species_scope":{"type":"array","items":{"type":"string"}},
+    "reuse_status":{"enum":["REFERENCE_ONLY","METADATA_ONLY","PUBLIC_DATA_CANDIDATE","INGESTIBLE","RESTRICTED","QUARANTINE"]},
+    "review_status":{"enum":["UNREVIEWED","SOURCE_VERIFIED","PAYLOAD_VERIFIED","RIGHTS_VERIFIED","INGESTION_VERIFIED"]},
+    "checksum":{"type":["string","null"]},
+    "derived_from":{"type":"array","items":{"type":"string"}},
+    "transform_version":{"type":["string","null"]},
+    "limitations":{"type":"array","items":{"type":"string"}}
+  }
+}

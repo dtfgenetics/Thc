@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0.0",
+  "updated": "2026-10-01",
+  "datasets": [
+    {
+      "id": "CANNABIS-PANGENOME-PRJNA1140642",
+      "title": "Cannabis Reference Pangenome",
+      "source_type": "public genomic resource",
+      "primary_project": "PRJNA1140642",
+      "sequence_project": "PRJNA904266",
+      "organism": "Cannabis sativa",
+      "public_scale": {
+        "assemblies_reported": 193,
+        "chromosome_scale_assemblies_reported": 150,
+        "sra_experiments": 97,
+        "biosamples": 95,
+        "sra_data_gbases": 2614,
+        "sra_data_tbytes": 1.93,
+        "usda_grin_reference_assemblies": 11
+      },
+      "diversity_scope": [
+        "types I-V",
+        "male/female",
+        "monoecious/dioecious",
+        "day-neutral/daylength-sensitive",
+        "hemp",
+        "feral",
+        "marijuana",
+        "breeding trios"
+      ],
+      "public_resources": [
+        "NCBI SRA PRJNA904266",
+        "Salk pangenome assemblies/annotations/JBrowse",
+        "Figshare Cannabis Pangenome project",
+        "Supplementary Table 1 with US NPGS links",
+        "public analysis code repositories"
+      ],
+      "source_urls": [
+        "https://www.ncbi.nlm.nih.gov/bioproject/904266",
+        "https://www.ncbi.nlm.nih.gov/bioproject/1140642",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC12286863/"
+      ],
+      "ingestion_lane": "PUBLIC_GENOMIC_RESOURCE",
+      "dtf_uses": [
+        "reference-genome selection",
+        "pangenome-aware marker interpretation",
+        "structural variation research",
+        "gene annotation research",
+        "germplasm-to-genome linking"
+      ],
+      "limitations": [
+        "Assemblies are not interchangeable coordinate systems; preserve assembly/haplotype identity.",
+        "USDA-linked accessions are a subset of the full pangenome.",
+        "Do not use cultivar labels alone as identity; preserve BioSample/assembly/GRIN links."
+      ]
+    },
+    {
+      "id": "FERAL-CANNABIS-PRJNA1206134",
+      "title": "Genetic diversity, population structure, and chemical variation in North American feral Cannabis sativa germplasm",
+      "source_type": "public GBS genomic resource",
+      "project": "PRJNA1206134",
+      "organism": "Cannabis sativa",
+      "public_scale": {
+        "sra_experiments": 760,
+        "biosamples": 760,
+        "sra_data_gbases": 1003,
+        "sra_data_tbytes": 0.33,
+        "sampled_plants_reported": 760,
+        "sampled_states_reported": 12,
+        "high_quality_snps_reported": 21037
+      },
+      "reference_assembly": "GCF_900626175.2",
+      "sequencing_method": "ApeKI genotyping-by-sequencing; Illumina NovaSeq 6000; 150 bp paired-end",
+      "phenotype_chemotype_scope": {
+        "cannabinoid_profiled_accessions_reported": 523,
+        "compounds_reported": 8,
+        "total_cannabinoid_range_percent_dry_weight": "0.21-4.73",
+        "population_clusters_reported": 5
+      },
+      "source_urls": [
+        "https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1206134",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC12215616/"
+      ],
+      "ingestion_lane": "PUBLIC_SEQUENCE_DATA_PLUS_SUPPLEMENTARY_PHENOTYPE_REFERENCE",
+      "dtf_uses": [
+        "population genetics",
+        "regional adaptation research",
+        "genetic-diversity baseline",
+        "chemotype-genotype research",
+        "germplasm selection context"
+      ],
+      "limitations": [
+        "Feral U.S. populations are not representative of all Cannabis market classes.",
+        "Published cannabinoid and population assignments must retain population/site context.",
+        "Most non-sequence data are supplementary or available by request; do not invent missing accession mappings."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dtfseeds.com/schemas/research/phenotype-observation-1.0.0.json",
+  "title": "DTF phenotype observation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["record_id","source_id","accession_or_plant_id","trait_name","value","observation_context","provenance"],
+  "properties": {
+    "record_id":{"type":"string","minLength":3},
+    "source_id":{"type":"string","minLength":3},
+    "accession_or_plant_id":{"type":"string","minLength":1},
+    "puid":{"type":["string","null"]},
+    "trait_name":{"type":"string","minLength":1},
+    "trait_label":{"type":["string","null"]},
+    "value":{"type":["string","number","integer","boolean","null"]},
+    "units":{"type":["string","null"]},
+    "datatype":{"type":["string","null"],"enum":["nvarchar","decimal","int","datetime","boolean",null]},
+    "scoring_method":{"type":["string","null"]},
+    "developmental_stage":{"type":["string","null"]},
+    "observation_date":{"type":["string","null"]},
+    "observation_context":{
+      "type":"object",
+      "additionalProperties":true,
+      "properties":{
+        "experiment_id":{"type":["string","null"]},
+        "location":{"type":["string","null"]},
+        "environment":{"type":["string","null"]},
+        "treatment":{"type":["string","null"]},
+        "replicate":{"type":["string","integer","null"]}
+      }
+    },
+    "provenance":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":["source_url","retrieved_at"],
+      "properties":{
+        "source_url":{"type":"string","format":"uri"},
+        "retrieved_at":{"type":"string","format":"date"},
+        "source_record_id":{"type":["string","null"]},
+        "protocol_reference":{"type":["string","null"]}
+      }
+    }
+  }
+}
