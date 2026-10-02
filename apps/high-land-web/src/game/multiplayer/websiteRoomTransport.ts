@@ -142,8 +142,10 @@ export function createWebsiteRoomTransport(options: WebsiteRoomTransportOptions 
         if (!active) return;
         try {
           const room = await getWebsiteRoomApi(apiBaseUrl, roomCode);
+          if (!active) return;
           onSnapshot({ status: 'connected', room, error: null });
         } catch (error) {
+          if (!active) return;
           onSnapshot({ status: 'error', room: null, error: error instanceof Error ? error.message : 'Could not load room.' });
         }
         if (active) timer = window.setTimeout(poll, pollMs);

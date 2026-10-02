@@ -186,3 +186,53 @@ describe('website room transport credentials', () => {
     expect(second).toBe(first);
   });
 });
+
+describe('website room subscription lifecycle', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it.each(['success', 'failure'] as const)('ignores a late %s after leaving while another room remains active', async (outcome) => {
+    vi.useFakeTimers();
+    vi.stubGlobal('window', { setTimeout, clearTimeout });
+    let resolveOld!: (response: Response) => void;
+    let rejectOld!: (error: Error) => void;
+    const pendingOld = new Promise<Response>((resolve, reject) => {
+      resolveOld = resolve;
+      rejectOld = reject;
+    });
+    const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+      if (String(input).includes('room=OLD123')) return pendingOld;
+      const payload = roomResponse();
+      payload.room.code = 'NEW123';
+      return new Response(JSON.stringify(payload), { status: 200 });
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    const transport = createWebsiteRoomTransport({
+      apiBaseUrl: 'https://dtfseeds.com/games/high-land/api/',
+      credentialStorage: null,
+      legacyCredentialStorage: null
+    });
+    const oldSnapshot = vi.fn();
+    const newSnapshot = vi.fn();
+    const leaveOld = transport.subscribe('OLD123', oldSnapshot);
+    leaveOld();
+    const leaveNew = transport.subscribe('NEW123', newSnapshot);
+
+    if (outcome === 'success') resolveOld(new Response(JSON.stringify(roomResponse()), { status: 200 }));
+    else rejectOld(new Error('Old room request failed'));
+    await vi.advanceTimersByTimeAsync(0);
+
+    expect(oldSnapshot).not.toHaveBeenCalled();
+    expect(newSnapshot).toHaveBeenCalledWith(expect.objectContaining({
+      status: 'connected', room: expect.objectContaining({ code: 'NEW123' })
+    }));
+    await vi.advanceTimersByTimeAsync(2000);
+    expect(fetchMock.mock.calls.filter(([input]) => String(input).includes('room=OLD123'))).toHaveLength(1);
+    expect(newSnapshot).toHaveBeenCalledTimes(2);
+    leaveNew();
+    await vi.advanceTimersByTimeAsync(4000);
+    expect(newSnapshot).toHaveBeenCalledTimes(2);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+});
