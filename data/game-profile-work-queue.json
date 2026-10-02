@@ -5,9 +5,9 @@
     "data/game-registry-v2.json"
   ],
   "summary": {
-    "itemCount": 12,
-    "gameCount": 7,
-    "priority1": 7,
+    "itemCount": 11,
+    "gameCount": 6,
+    "priority1": 6,
     "priority2": 5
   },
   "policy": {
@@ -171,34 +171,6 @@
         "node games/protect-the-plants/test/burn-buds-branding.test.mjs && node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs && node games/protect-the-plants/test/api-copy-contract.test.mjs && node games/protect-the-plants/test/runtime-sync-v1.test.mjs && node games/protect-the-plants/test/v2-extras-sync.test.mjs && node games/protect-the-plants/test/native-targeting-source.test.mjs && node games/protect-the-plants/test/gamefeel-v1.test.mjs && php -l site/public-route-patch/games/protect-the-plants/api.php && php -l site/public-route-patch/games/protect-the-plants/presence.php"
       ],
       "strictProfileCommand": "npm run games:profiles:strict -- --id protect-the-plants"
-    },
-    {
-      "id": "weedopolis:missing-save-version",
-      "gameId": "weedopolis",
-      "title": "Weedopolis: Strain City Edition",
-      "priority": 1,
-      "releaseStatus": "public-unverified",
-      "debtCode": "missing-save-version",
-      "severity": "release-blocking-for-strict-profile",
-      "canonicalRepository": "dtfgenetics/Weedopolis-strain-Edition",
-      "sourcePaths": [
-        "src",
-        "digital",
-        "data"
-      ],
-      "integrationRepository": "dtfgenetics/Thc",
-      "publicRoute": "/games/weedopolis/",
-      "action": "Version the durable save schema in canonical source, preserve backward compatibility, and add migration/corrupt-save regression coverage.",
-      "requiredEvidence": [
-        "real save version in canonical source",
-        "migration/backward-compatibility test",
-        "corrupt/restricted-storage fallback test",
-        "central registry architecture.saveVersion"
-      ],
-      "verificationCommands": [
-        "npm run validate && npm run check:preview && npm run build:preview"
-      ],
-      "strictProfileCommand": "npm run games:profiles:strict -- --id weedopolis"
     },
     {
       "id": "kush-kings:online-liveops-adoption-gap",
