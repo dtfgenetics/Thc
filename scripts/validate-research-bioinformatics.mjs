@@ -22,7 +22,10 @@ const files = [
   'data/research/cannabis-reference-genomes-v1.json',
   'data/research/usda-hemp-project-family-v1.json',
   'data/research/cornell-published-marker-registry-v1.json',
-  'data/research/hemp-data-availability-index-v1.json'
+  'data/research/hemp-data-availability-index-v1.json',
+  'data/research/public-cannabis-genomics-datasets-v1.json',
+  'data/research/sequence-sample-record.schema.json',
+  'data/research/research-acquisition-contract-v1.json'
 ];
 
 const errors = [];
@@ -145,3 +148,20 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(`Published marker/data-availability validation passed for ${markerIds.size} marker records and ${availability.resources.length} research resources.`);
+
+const publicDatasets = JSON.parse(fs.readFileSync(path.join(root,'data/research/public-cannabis-genomics-datasets-v1.json'),'utf8'));
+const datasetIds = new Set();
+for (const ds of publicDatasets.datasets || []) {
+  if (datasetIds.has(ds.id)) errors.push(`duplicate public genomics dataset id: ${ds.id}`);
+  datasetIds.add(ds.id);
+  if (!ds.ingestion_lane) errors.push(`missing ingestion lane: ${ds.id}`);
+}
+const acquisitionContract = JSON.parse(fs.readFileSync(path.join(root,'data/research/research-acquisition-contract-v1.json'),'utf8'));
+if (!acquisitionContract.grin?.official_workflow?.observation_export?.length) errors.push('GRIN observation export workflow missing');
+if (!acquisitionContract.ncbi_sra?.landing_policy?.command) errors.push('NCBI SRA acquisition command missing');
+if (errors.length) {
+  console.error('Public genomics/acquisition validation failed:');
+  for (const error of errors) console.error(`- ${error}`);
+  process.exit(1);
+}
+console.log(`Public genomics/acquisition validation passed for ${datasetIds.size} dataset families.`);
