@@ -42,7 +42,10 @@ for (const token of [
 for (const token of [
   'data-dtf-shell="header-v6"',
   'data-dtf-sitewide-header="canonical-five-v1"',
+  'href="/" data-dtf-nav-group="home">Home</a>',
+  'href="/courses/" data-dtf-nav-group="courses">Courses</a>',
   'href="/tools/" data-dtf-nav-group="tools">Tools</a>',
+  'href="/community/" data-dtf-nav-group="community">Community</a>',
   'aria-expanded="false"',
   'aria-controls="dtf-global-primary-nav"',
   "event.key==='Escape'",
@@ -56,7 +59,7 @@ for (const token of [
   'href="/tools/">Tools</a>',
 ]) requireToken(footer, token, 'footer');
 
-const canonicalLabels = ['Seeds','Learn','Tools','Games','Shop'];
+const canonicalLabels = ['Home','Seeds','Learn','Courses','Tools','Games','Community','Shop'];
 for (const [label, nav] of [['public-navigation', publicNav.primaryNavigation], ['site-navigation-v6', siteNav.primaryNavigation], ['site-registry', siteRegistry.information_architecture?.canonical_primary_navigation]]) {
   const labels = (nav || []).map(item => item.label);
   if (JSON.stringify(labels) !== JSON.stringify(canonicalLabels)) failures.push(`${label}: canonical labels drifted: ${JSON.stringify(labels)}`);
@@ -78,7 +81,7 @@ if (failures.length) {
 console.log(JSON.stringify({
   ok: true,
   shell: 'header-v6/footer-v6',
-  navigation: ['Seeds','Learn','Tools','Games','Shop'],
+  navigation: ['Home','Seeds','Learn','Courses','Tools','Games','Community','Shop'],
   responsiveStates: ['desktop','tablet','mobile','narrow-mobile'],
   enforced: [
     'shared container system',
