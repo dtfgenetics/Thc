@@ -9,7 +9,9 @@ const files = [
   'data/research/germplasm-record.schema.json',
   'data/research/phenotype-observation.schema.json',
   'data/research/genotype-marker-call.schema.json',
-  'data/research/cornell-usda-payload-discovery-v1.json'
+  'data/research/cornell-usda-payload-discovery-v1.json',
+  'data/research/usda-hemp-trait-vocabulary-v4.json',
+  'data/research/grin-hemp-import-contract-v1.json'
 ];
 
 const errors = [];
@@ -46,3 +48,23 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(`Bioinformatics research validation passed for ${files.length} JSON files and ${discovery.findings.length} discovery findings.`);
+
+const vocabulary = JSON.parse(fs.readFileSync(path.join(root,'data/research/usda-hemp-trait-vocabulary-v4.json'),'utf8'));
+const names = new Set();
+for (const trait of vocabulary.traits) {
+  if (!trait.trait_name || names.has(trait.trait_name)) errors.push(`duplicate/blank trait: ${trait.trait_name}`);
+  names.add(trait.trait_name);
+  if (trait.datatype === 'placeholder' && !trait.trait_name.includes('xxx') && trait.trait_name !== 'non_fiber') {
+    errors.push(`placeholder trait not explicitly recognizable: ${trait.trait_name}`);
+  }
+}
+const importContract = JSON.parse(fs.readFileSync(path.join(root,'data/research/grin-hemp-import-contract-v1.json'),'utf8'));
+if (importContract.target_vocabulary !== vocabulary.vocabulary_id) {
+  errors.push('GRIN import contract vocabulary id does not match trait vocabulary');
+}
+if (errors.length) {
+  console.error('Bioinformatics vocabulary/import validation failed:');
+  for (const error of errors) console.error(`- ${error}`);
+  process.exit(1);
+}
+console.log(`USDA hemp vocabulary validated: ${vocabulary.traits.length} named fields/traits.`);
