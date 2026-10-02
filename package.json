@@ -170,6 +170,7 @@
     "verify:encyclopedia-production-readiness:strict": "npm run verify:encyclopedia-production-readiness && node scripts/validate-encyclopedia-production-readiness.mjs --strict",
     "resolve:encyclopedia-source-pin": "node scripts/resolve-encyclopedia-deployment-target.mjs",
     "verify:encyclopedia-source-pin": "node scripts/validate-encyclopedia-source-pin.mjs",
-    "verify:encyclopedia-shared-source-bridge": "node scripts/validate-encyclopedia-shared-source-bridge.mjs"
+    "verify:encyclopedia-shared-source-bridge": "node scripts/validate-encyclopedia-shared-source-bridge.mjs",
+    "verify:encyclopedia-research-completions": "npm run verify:encyclopedia-research-leases && node scripts/reconcile-encyclopedia-research-completions.mjs"
   }
 }
