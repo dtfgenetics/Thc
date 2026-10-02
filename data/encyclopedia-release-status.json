@@ -4,7 +4,7 @@
   "generatedAt": "2026-10-02T22:04:03.881Z",
   "repository": {
     "branch": "codex/thc-420-architecture",
-    "head": "380b752d2045f42c4e616d5c632c1e1c91af517b",
+    "head": "280477b5a4d72ab9eada05a368df0f338a312620",
     "dirty": true
   },
   "sourceState": {
@@ -56,13 +56,13 @@
   "evidenceState": {
     "lessonCount": 420,
     "withSourceNotes": 420,
-    "withClaimEvidence": 17,
-    "withoutClaimEvidence": 403,
-    "withResolvedAuthoritativeSources": 34,
+    "withClaimEvidence": 24,
+    "withoutClaimEvidence": 396,
+    "withResolvedAuthoritativeSources": 41,
     "publicationHoldsPreserved": 85,
     "evidenceStatuses": {
-      "claim_evidence_batch_started": 17,
-      "source_notes_only_claim_ledger_pending": 403
+      "claim_evidence_batch_started": 24,
+      "source_notes_only_claim_ledger_pending": 396
     }
   },
   "visualState": {
@@ -87,7 +87,7 @@
   },
   "blockers": [
     "420 core entries are not production-candidate in the completion scorecard.",
-    "403 entries still need claim-level evidence mapping.",
+    "396 entries still need claim-level evidence mapping.",
     "420 entries still need approved teaching visual assets.",
     "Public discovery marks 335/420 entries as published; the rest remain catalogued-review."
   ]

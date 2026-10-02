@@ -17,8 +17,8 @@ Generated: 2026-10-02T22:04:03.881Z
 
 ## Evidence And Visuals
 
-- Claim evidence mapped: 17/420
-- Claim evidence pending: 403
+- Claim evidence mapped: 24/420
+- Claim evidence pending: 396
 - Approved teaching visuals: 0/420
 - Visual briefs ready: 420/420
 
@@ -38,6 +38,6 @@ No live deployment or visitor-facing verification was performed by this report.
 ## Remaining Blockers
 
 - 420 core entries are not production-candidate in the completion scorecard.
-- 403 entries still need claim-level evidence mapping.
+- 396 entries still need claim-level evidence mapping.
 - 420 entries still need approved teaching visual assets.
 - Public discovery marks 335/420 entries as published; the rest remain catalogued-review.
