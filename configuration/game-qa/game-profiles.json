@@ -1,0 +1,557 @@
+{
+  "schemaVersion": 1,
+  "purpose": "capability-driven-game-quality-and-release-profiles",
+  "references": [
+    {
+      "id": "poki-quality",
+      "url": "https://developers.poki.com/guide/requirements-quality",
+      "appliesTo": [
+        "device-support",
+        "storage-fallback",
+        "gameplay-lifecycle",
+        "fast-start",
+        "adaptive-controls",
+        "clean-build"
+      ]
+    },
+    {
+      "id": "crazygames-technical",
+      "url": "https://docs.crazygames.com/requirements/technical/",
+      "appliesTo": [
+        "initial-download",
+        "mobile-download",
+        "input-support",
+        "device-performance",
+        "time-to-playable"
+      ]
+    },
+    {
+      "id": "owasp-websocket",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/WebSocket_Security_Cheat_Sheet.html",
+      "appliesTo": [
+        "origin-validation",
+        "message-authorization",
+        "payload-limits",
+        "rate-limits",
+        "heartbeat",
+        "backpressure"
+      ]
+    }
+  ],
+  "dimensions": {
+    "gameplayProfile": [
+      "arcade-action",
+      "campaign-rpg",
+      "realtime-multiplayer",
+      "turn-multiplayer",
+      "board-simulation",
+      "card-strategy",
+      "trivia-knowledge",
+      "daily-puzzle",
+      "party-social",
+      "casual-puzzle"
+    ],
+    "rendererProfile": [
+      "dom",
+      "canvas2d",
+      "phaser",
+      "threejs",
+      "react-dom",
+      "svg-dom",
+      "hybrid"
+    ],
+    "sessionProfile": [
+      "micro",
+      "short",
+      "medium",
+      "long",
+      "persistent"
+    ],
+    "persistenceProfile": [
+      "none",
+      "preferences",
+      "progress",
+      "checkpoint",
+      "campaign",
+      "match-recovery",
+      "archive"
+    ],
+    "networkProfile": [
+      "local",
+      "share-code",
+      "request-response-authoritative",
+      "turn-authoritative",
+      "realtime-authoritative",
+      "optional-realtime"
+    ],
+    "contentProfile": [
+      "static",
+      "database-driven",
+      "generated-daily",
+      "versioned-balance",
+      "branching-narrative",
+      "procedural",
+      "knowledge-bank"
+    ],
+    "performanceProfile": [
+      "tiny-ui",
+      "dom-game",
+      "2d-game",
+      "3d-game",
+      "network-app"
+    ],
+    "securityProfile": [
+      "local",
+      "persistent-solo",
+      "casual-online",
+      "competitive-online",
+      "community-online"
+    ],
+    "accessibilityProfile": [
+      "text-ui",
+      "gameplay-ui",
+      "action-game",
+      "3d-game"
+    ]
+  },
+  "performanceBudgets": {
+    "tiny-ui": {
+      "initialBytesSoft": 1048576,
+      "initialBytesHard": 4194304,
+      "targetTimeToPlayableMs": 3000
+    },
+    "dom-game": {
+      "initialBytesSoft": 3145728,
+      "initialBytesHard": 8388608,
+      "targetTimeToPlayableMs": 5000
+    },
+    "2d-game": {
+      "initialBytesSoft": 5242880,
+      "initialBytesHard": 15728640,
+      "targetTimeToPlayableMs": 7000
+    },
+    "3d-game": {
+      "initialBytesSoft": 12582912,
+      "initialBytesHard": 31457280,
+      "targetTimeToPlayableMs": 10000
+    },
+    "network-app": {
+      "initialBytesSoft": 5242880,
+      "initialBytesHard": 15728640,
+      "targetTimeToPlayableMs": 7000
+    }
+  },
+  "requiredChecks": {
+    "core": [
+      "canonical-owner",
+      "canonical-route",
+      "build",
+      "no-broken-assets",
+      "mobile-safe-shell",
+      "release-identity",
+      "privacy-baseline",
+      "storage-fallback-when-persistent"
+    ],
+    "arcade-action": [
+      "frame-rate-independence",
+      "input-latency",
+      "pause-resume",
+      "controller-when-declared",
+      "checkpoint-or-run-recovery"
+    ],
+    "campaign-rpg": [
+      "save-version",
+      "save-migration",
+      "checkpoint-recovery",
+      "content-reachability",
+      "old-save-compatibility"
+    ],
+    "realtime-multiplayer": [
+      "server-authority",
+      "join",
+      "disconnect",
+      "reconnect",
+      "room-cleanup",
+      "rate-limits",
+      "message-validation",
+      "heartbeat"
+    ],
+    "turn-multiplayer": [
+      "server-authority",
+      "turn-validation",
+      "disconnect",
+      "reconnect",
+      "forfeit-rules",
+      "rate-limits",
+      "message-validation"
+    ],
+    "board-simulation": [
+      "deterministic-rules",
+      "state-recovery",
+      "deadlock-check",
+      "win-condition-reachability"
+    ],
+    "card-strategy": [
+      "card-schema",
+      "deck-legality",
+      "effect-reference-integrity",
+      "balance-version"
+    ],
+    "trivia-knowledge": [
+      "question-schema",
+      "duplicate-detection",
+      "answer-key-integrity",
+      "difficulty-distribution",
+      "content-source-state"
+    ],
+    "daily-puzzle": [
+      "generation-validation",
+      "archive-integrity",
+      "daily-state",
+      "storage-fallback"
+    ],
+    "party-social": [
+      "fast-start",
+      "shared-screen-mobile",
+      "content-rotation",
+      "resume-or-reset-contract"
+    ],
+    "casual-puzzle": [
+      "state-integrity",
+      "completion-reachability",
+      "keyboard-touch-parity"
+    ]
+  },
+  "games": {
+    "bud-or-bluff": [
+      "turn-multiplayer",
+      "dom",
+      "short",
+      "match-recovery",
+      "turn-authoritative",
+      "database-driven",
+      "network-app",
+      "community-online",
+      "text-ui"
+    ],
+    "crossword": [
+      "daily-puzzle",
+      "dom",
+      "persistent",
+      "progress",
+      "local",
+      "generated-daily",
+      "tiny-ui",
+      "local",
+      "text-ui"
+    ],
+    "ganjumanji": [
+      "campaign-rpg",
+      "phaser",
+      "long",
+      "campaign",
+      "local",
+      "branching-narrative",
+      "2d-game",
+      "persistent-solo",
+      "action-game"
+    ],
+    "grow-room-bingo": [
+      "casual-puzzle",
+      "dom",
+      "short",
+      "progress",
+      "share-code",
+      "static",
+      "tiny-ui",
+      "local",
+      "text-ui"
+    ],
+    "grow-room-defense": [
+      "arcade-action",
+      "dom",
+      "short",
+      "progress",
+      "local",
+      "static",
+      "dom-game",
+      "local",
+      "gameplay-ui"
+    ],
+    "grower-conversations": [
+      "party-social",
+      "dom",
+      "short",
+      "progress",
+      "local",
+      "database-driven",
+      "tiny-ui",
+      "local",
+      "text-ui"
+    ],
+    "harvest-hustle": [
+      "arcade-action",
+      "dom",
+      "short",
+      "progress",
+      "local",
+      "static",
+      "dom-game",
+      "local",
+      "gameplay-ui"
+    ],
+    "high-iq": [
+      "trivia-knowledge",
+      "dom",
+      "short",
+      "progress",
+      "local",
+      "knowledge-bank",
+      "tiny-ui",
+      "local",
+      "text-ui"
+    ],
+    "high-land": [
+      "board-simulation",
+      "hybrid",
+      "medium",
+      "match-recovery",
+      "turn-authoritative",
+      "database-driven",
+      "network-app",
+      "casual-online",
+      "gameplay-ui"
+    ],
+    "high-life": [
+      "board-simulation",
+      "dom",
+      "long",
+      "campaign",
+      "local",
+      "branching-narrative",
+      "dom-game",
+      "persistent-solo",
+      "text-ui"
+    ],
+    "high-lines": [
+      "casual-puzzle",
+      "svg-dom",
+      "short",
+      "progress",
+      "share-code",
+      "static",
+      "tiny-ui",
+      "local",
+      "text-ui"
+    ],
+    "kush-kings": [
+      "turn-multiplayer",
+      "react-dom",
+      "medium",
+      "archive",
+      "turn-authoritative",
+      "database-driven",
+      "network-app",
+      "competitive-online",
+      "text-ui"
+    ],
+    "lost-in-the-terps": [
+      "casual-puzzle",
+      "dom",
+      "short",
+      "progress",
+      "local",
+      "static",
+      "tiny-ui",
+      "local",
+      "text-ui"
+    ],
+    "mystery-strain": [
+      "casual-puzzle",
+      "dom",
+      "short",
+      "progress",
+      "share-code",
+      "database-driven",
+      "tiny-ui",
+      "local",
+      "text-ui"
+    ],
+    "pheno-draft": [
+      "card-strategy",
+      "dom",
+      "medium",
+      "archive",
+      "local",
+      "versioned-balance",
+      "dom-game",
+      "local",
+      "text-ui"
+    ],
+    "phenoquest": [
+      "campaign-rpg",
+      "threejs",
+      "long",
+      "campaign",
+      "local",
+      "branching-narrative",
+      "3d-game",
+      "persistent-solo",
+      "3d-game"
+    ],
+    "protect-the-plants": [
+      "turn-multiplayer",
+      "dom",
+      "medium",
+      "match-recovery",
+      "request-response-authoritative",
+      "database-driven",
+      "network-app",
+      "casual-online",
+      "text-ui"
+    ],
+    "root-cause": [
+      "casual-puzzle",
+      "dom",
+      "short",
+      "progress",
+      "share-code",
+      "knowledge-bank",
+      "tiny-ui",
+      "local",
+      "text-ui"
+    ],
+    "seed-ascent": [
+      "arcade-action",
+      "canvas2d",
+      "medium",
+      "checkpoint",
+      "local",
+      "static",
+      "2d-game",
+      "persistent-solo",
+      "action-game"
+    ],
+    "seed-man-platformer": [
+      "arcade-action",
+      "threejs",
+      "medium",
+      "checkpoint",
+      "local",
+      "static",
+      "3d-game",
+      "persistent-solo",
+      "action-game"
+    ],
+    "spin-the-strain": [
+      "party-social",
+      "hybrid",
+      "micro",
+      "progress",
+      "share-code",
+      "database-driven",
+      "tiny-ui",
+      "local",
+      "gameplay-ui"
+    ],
+    "stoner-duck-race": [
+      "realtime-multiplayer",
+      "phaser",
+      "short",
+      "match-recovery",
+      "optional-realtime",
+      "static",
+      "network-app",
+      "casual-online",
+      "action-game"
+    ],
+    "strain-match": [
+      "casual-puzzle",
+      "dom",
+      "short",
+      "progress",
+      "local",
+      "static",
+      "tiny-ui",
+      "local",
+      "text-ui"
+    ],
+    "strain-showdown": [
+      "card-strategy",
+      "dom",
+      "medium",
+      "archive",
+      "local",
+      "versioned-balance",
+      "dom-game",
+      "local",
+      "text-ui"
+    ],
+    "terpocalypse": [
+      "arcade-action",
+      "canvas2d",
+      "medium",
+      "progress",
+      "local",
+      "procedural",
+      "2d-game",
+      "persistent-solo",
+      "action-game"
+    ],
+    "thc-rpg": [
+      "campaign-rpg",
+      "dom",
+      "long",
+      "campaign",
+      "local",
+      "branching-narrative",
+      "dom-game",
+      "persistent-solo",
+      "text-ui"
+    ],
+    "thc-u-know": [
+      "turn-multiplayer",
+      "react-dom",
+      "medium",
+      "match-recovery",
+      "turn-authoritative",
+      "database-driven",
+      "network-app",
+      "community-online",
+      "text-ui"
+    ],
+    "trichome-trials": [
+      "party-social",
+      "dom",
+      "short",
+      "archive",
+      "local",
+      "database-driven",
+      "tiny-ui",
+      "local",
+      "text-ui"
+    ],
+    "weedopolis": [
+      "board-simulation",
+      "hybrid",
+      "long",
+      "campaign",
+      "local",
+      "database-driven",
+      "dom-game",
+      "persistent-solo",
+      "gameplay-ui"
+    ],
+    "who-took-it": [
+      "party-social",
+      "dom",
+      "short",
+      "progress",
+      "local",
+      "database-driven",
+      "tiny-ui",
+      "local",
+      "text-ui"
+    ]
+  }
+}
