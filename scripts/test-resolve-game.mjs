@@ -24,5 +24,9 @@ const ganjumanji=resolve('ganjumanji');
 assert.equal(ganjumanji.canonicalRepository,'dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple');
 assert.equal(ganjumanji.publicRoute,'/games/ganjumanji/');
 assert.ok(ganjumanji.buildCommand);
+assert.equal(ganjumanji.profile.gameplayProfile,'campaign-rpg');
+assert.equal(ganjumanji.profile.rendererProfile,'phaser');
+assert.ok(ganjumanji.requiredChecks.includes('save-migration'));
+assert.ok(ganjumanji.performanceBudget.targetTimeToPlayableMs);
 
 console.log('canonical game resolver contract OK');
