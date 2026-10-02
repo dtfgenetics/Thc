@@ -149,7 +149,7 @@
     "project:status:json": "node scripts/project-execution-dashboard.mjs --json",
     "verify:encyclopedia-practical-resources": "node scripts/validate-encyclopedia-practical-resources.mjs",
     "verify:external-agent-contracts": "node scripts/validate-external-agent-contract-registry.mjs && node scripts/test-external-agent-contract-registry.mjs",
-    "verify:research-bioinformatics": "node scripts/validate-research-bioinformatics.mjs && npm run test:grin-hemp-normalizer && npm run test:ncbi-sra-normalizer && npm run test:ncbi-biosample-normalizer && npm run test:ncbi-runinfo-fetcher && npm run verify:research-evidence-index",
+    "verify:research-bioinformatics": "node scripts/validate-research-bioinformatics.mjs && npm run test:grin-hemp-normalizer && npm run test:ncbi-sra-normalizer && npm run test:ncbi-biosample-normalizer && npm run test:ncbi-runinfo-fetcher && npm run verify:research-evidence-index && npm run verify:public-research-evidence",
     "test:grin-hemp-normalizer": "node scripts/normalize-grin-hemp-export.mjs --self-test",
     "test:ncbi-sra-normalizer": "node scripts/normalize-ncbi-sra-runinfo.mjs --self-test",
     "test:ncbi-biosample-normalizer": "node scripts/normalize-ncbi-biosample-xml.mjs --self-test",
@@ -170,6 +170,8 @@
     "verify:encyclopedia-production-readiness:strict": "npm run verify:encyclopedia-production-readiness && node scripts/validate-encyclopedia-production-readiness.mjs --strict",
     "resolve:encyclopedia-source-pin": "node scripts/resolve-encyclopedia-deployment-target.mjs",
     "verify:encyclopedia-source-pin": "node scripts/validate-encyclopedia-source-pin.mjs",
-    "verify:encyclopedia-shared-source-bridge": "node scripts/validate-encyclopedia-shared-source-bridge.mjs"
+    "verify:encyclopedia-shared-source-bridge": "node scripts/validate-encyclopedia-shared-source-bridge.mjs",
+    "build:public-research-evidence": "node scripts/build-public-research-evidence.mjs",
+    "verify:public-research-evidence": "npm run build:public-research-evidence && node scripts/validate-public-research-evidence.mjs"
   }
 }
