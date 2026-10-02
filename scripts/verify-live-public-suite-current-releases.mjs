@@ -57,6 +57,14 @@ const routes = [
       { path: '_runtime/src/engine/game-state.js', markers: ['export function setStarterChoice','export function addStoredUnit'] }
     ]
   },
+  {
+    path: '/applied-learning/',
+    markers: ['THC Applied Learning Lab','Development Preview','7ffb4810a48091c3c61714ccc1663d8a2a1d4e88'],
+    assets: [
+      { path: 'app.js', markers: ['SOURCE_SHA','data.json','ppfd*hours*3600/1_000_000'] },
+      { path: 'data.json', markers: ['ALGRAPH-ACADEMY-SEED-001','ALMEAS-SENSOR-PLACEMENT-001','ALCALC-DLI-001','ALDIFF-YELLOWING-001','7ffb4810a48091c3c61714ccc1663d8a2a1d4e88'] }
+    ]
+  },
   { path: '/games/weedopolis/', markers: ['Weedopolis'] },
   { path: '/games/crossword/', markers: ['Crossword'] }
 ];
