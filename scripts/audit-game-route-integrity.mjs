@@ -8,6 +8,8 @@ setDefaultResultOrder('ipv4first');
 const BASE = 'https://dtfseeds.com';
 const nav = JSON.parse(fs.readFileSync('data/public-navigation.json', 'utf8'));
 const deployment = JSON.parse(fs.readFileSync('site/deployment/public-apps.json', 'utf8'));
+const highLifeEvents = JSON.parse(fs.readFileSync('site/public-route-patch/games/high-life/data/events.json', 'utf8'));
+const highLifeEventIds = highLifeEvents.map((event) => event?.id);
 const games = nav.games.filter((game) => game.public && game.route);
 const failures = [];
 const results = [];
@@ -124,7 +126,7 @@ const runtimeJsonProbes = {
     }
   ],
   'high-life': [
-    { path: 'data/events.json', validate: (data) => Array.isArray(data) && data.length === 18 }
+    { path: 'data/events.json', validate: (data) => Array.isArray(data) && data.length === highLifeEvents.length && data.every((event, index) => event?.id === highLifeEventIds[index]) }
   ],
   'grower-conversations': [
     { path: 'data/prompt-bank.json', validate: (data) => data?.cardCount === 96 && Object.keys(data?.categories || {}).length === 8 }
