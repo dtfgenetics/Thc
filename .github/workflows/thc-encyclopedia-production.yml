@@ -73,6 +73,8 @@ jobs:
           node-version: '22'
       - name: Validate canonical encyclopedia source pin
         run: npm run verify:encyclopedia-source-pin
+      - name: Validate shared authoritative source bridge
+        run: npm run verify:encyclopedia-shared-source-bridge
       - name: Build completion scorecard
         run: npm run build:encyclopedia-scorecard
       - name: Build evidence tracking
