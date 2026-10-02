@@ -59,6 +59,11 @@ export {
 } from './state-machine.mjs';
 
 export {
+  GAME_LIFECYCLE_STATES,
+  createGameLifecycle,
+} from './lifecycle.mjs';
+
+export {
   LoadingTaskError,
   runLoadTasks,
   loadingResultsToObject,
@@ -71,4 +76,4 @@ export {
   field,
 } from './validation.mjs';
 
-export const DTF_GAME_PLATFORM_VERSION = '1.7.0';
+export const DTF_GAME_PLATFORM_VERSION = '1.8.0';
