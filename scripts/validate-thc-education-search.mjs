@@ -42,15 +42,17 @@ if(!errors.length){
  const wordpressRuntimeBuilder=fs.readFileSync(files.wordpressRuntimeBuilder,'utf8');
  for(const marker of ['register_rest_route','wp_footer','data-dtf-learning-search-runtime="mu-v1"','current_user_can(\'manage_options\')']) if(!wordpressRuntime.includes(marker)) errors.push('WordPress learning search runtime missing '+marker);
  if(!wordpressRuntimeBuilder.includes('build-wordpress-learning-search-runtime')&&!wordpressRuntimeBuilder.includes('dtf-learning-search')) errors.push('WordPress learning search runtime builder contract missing');
- if(!encyclopediaPage.includes('data-q')||!encyclopediaPage.includes('data-topics')||!encyclopediaPage.includes('encyclopedia-v1.mjs')) errors.push('encyclopedia page missing searchable library UI');
+ if(!encyclopediaPage.includes('data-q')||!encyclopediaPage.includes('data-topics')||!encyclopediaPage.includes('data-letter-filters')||!encyclopediaPage.includes('encyclopedia-v1.mjs')) errors.push('encyclopedia page missing searchable library/A-Z UI');
  if(!encyclopediaRuntime.includes("Fuse from '/assets/vendor/fuse-7.1.0.min.mjs'")||!encyclopediaRuntime.includes('activePart')) errors.push('encyclopedia runtime missing fuzzy search/topic filtering');
- if(!encyclopediaRuntime.includes("name:'aliases'")||!encyclopediaRuntime.includes('history.replaceState')) errors.push('encyclopedia runtime missing alias/deep-link contract');
+ if(!encyclopediaRuntime.includes("name:'aliases'")||!encyclopediaRuntime.includes('activeLetter')||!encyclopediaRuntime.includes('history.replaceState')) errors.push('encyclopedia runtime missing alias/A-Z/deep-link contract');
  if(!Array.isArray(encyclopediaIndex.lessons)||encyclopediaIndex.lessons.length<420) errors.push('encyclopedia discovery index must contain at least the 420 controlled entries');
  if(!Array.isArray(encyclopediaIndex.topics)||encyclopediaIndex.topics.length<21) errors.push('encyclopedia discovery index must contain at least the 21 controlled base topics');
  if(Number(encyclopediaIndex.schemaVersion)<2) errors.push('encyclopedia discovery index must use rich search schema v2+');
  if(!encyclopediaIndex.facets?.topic||!encyclopediaIndex.facets?.format||!encyclopediaIndex.facets?.status) errors.push('encyclopedia discovery index missing topic/format/status facets');
  const sample=encyclopediaIndex.lessons?.find(x=>x.status==='published');
- for(const field of ['objective','terms','coreScience','measurements','misconceptions','tools','aliases']) if(!sample||!(field in sample)) errors.push('encyclopedia discovery document missing rich field '+field);
+ for(const field of ['objective','terms','coreScience','measurements','misconceptions','tools','aliases','azInitial','templateType','canonicalPartTitle','partHubRoute']) if(!sample||!(field in sample)) errors.push('encyclopedia discovery document missing rich field '+field);
+ const topicSample=encyclopediaIndex.topics?.[0];
+ for(const field of ['canonicalTitle','scope','route','templateTypes']) if(!topicSample||!(field in topicSample)) errors.push('encyclopedia topic hub record missing '+field);
  if(Number(encyclopediaIndex.searchLanguageVersion)<1) errors.push('encyclopedia discovery index missing search-language version');
  if(!Array.isArray(searchLanguage.rules)||searchLanguage.rules.length<20) errors.push('controlled encyclopedia search language must contain at least 20 useful alias rules');
  for(const rule of searchLanguage.rules||[]){if(!rule.id||!Array.isArray(rule.aliases)||rule.aliases.length<1)errors.push('invalid encyclopedia search-language rule '+(rule.id||'<missing-id>'));}

@@ -6,20 +6,21 @@
     "controlledRegistry": "content/encyclopedia/current-controlled-registry.json",
     "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
     "evidenceBatches": [
-      "content/encyclopedia/evidence/evidence-batch-001.json"
+      "content/encyclopedia/evidence/evidence-batch-001.json",
+      "content/encyclopedia/evidence/evidence-batch-002.json"
     ]
   },
   "scope": "All 420 controlled THC-ENC lessons. This artifact tracks evidence-readiness only and does not authorize publication.",
   "summary": {
     "lessonCount": 420,
     "withSourceNotes": 420,
-    "withClaimEvidence": 14,
-    "withoutClaimEvidence": 406,
-    "withResolvedAuthoritativeSources": 31,
+    "withClaimEvidence": 17,
+    "withoutClaimEvidence": 403,
+    "withResolvedAuthoritativeSources": 34,
     "publicationHoldsPreserved": 85,
     "evidenceStatuses": {
-      "claim_evidence_batch_started": 14,
-      "source_notes_only_claim_ledger_pending": 406
+      "claim_evidence_batch_started": 17,
+      "source_notes_only_claim_ledger_pending": 403
     }
   },
   "lessons": [
@@ -1898,14 +1899,20 @@
         ]
       },
       "evidence": {
-        "status": "source_notes_only_claim_ledger_pending",
-        "authoritativeSourceIds": [],
-        "claimEvidenceCount": 0,
-        "claimEvidenceIds": [],
-        "batchIds": [],
-        "reviewState": "claim_level_evidence_needed",
+        "status": "claim_evidence_batch_started",
+        "authoritativeSourceIds": [
+          "ENC-AUTH-013"
+        ],
+        "claimEvidenceCount": 2,
+        "claimEvidenceIds": [
+          "ENC-EVID-0020",
+          "ENC-EVID-0021"
+        ],
+        "batchIds": [
+          "ENC-EVID-BATCH-002"
+        ],
+        "reviewState": "source_collected_needs_independent_review",
         "needs": [
-          "claim_level_evidence_mapping",
           "source_note_authority_resolution"
         ]
       }
@@ -1944,14 +1951,20 @@
         ]
       },
       "evidence": {
-        "status": "source_notes_only_claim_ledger_pending",
-        "authoritativeSourceIds": [],
-        "claimEvidenceCount": 0,
-        "claimEvidenceIds": [],
-        "batchIds": [],
-        "reviewState": "claim_level_evidence_needed",
+        "status": "claim_evidence_batch_started",
+        "authoritativeSourceIds": [
+          "ENC-AUTH-014"
+        ],
+        "claimEvidenceCount": 2,
+        "claimEvidenceIds": [
+          "ENC-EVID-0016",
+          "ENC-EVID-0017"
+        ],
+        "batchIds": [
+          "ENC-EVID-BATCH-002"
+        ],
+        "reviewState": "source_collected_needs_independent_review",
         "needs": [
-          "claim_level_evidence_mapping",
           "source_note_authority_resolution"
         ]
       }
@@ -1988,14 +2001,21 @@
         ]
       },
       "evidence": {
-        "status": "source_notes_only_claim_ledger_pending",
-        "authoritativeSourceIds": [],
-        "claimEvidenceCount": 0,
-        "claimEvidenceIds": [],
-        "batchIds": [],
-        "reviewState": "claim_level_evidence_needed",
+        "status": "claim_evidence_batch_started",
+        "authoritativeSourceIds": [
+          "ENC-AUTH-013",
+          "ENC-AUTH-015"
+        ],
+        "claimEvidenceCount": 2,
+        "claimEvidenceIds": [
+          "ENC-EVID-0018",
+          "ENC-EVID-0019"
+        ],
+        "batchIds": [
+          "ENC-EVID-BATCH-002"
+        ],
+        "reviewState": "source_collected_needs_independent_review",
         "needs": [
-          "claim_level_evidence_mapping",
           "source_note_authority_resolution"
         ]
       }

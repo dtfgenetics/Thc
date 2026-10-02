@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dtfseeds.com/schemas/thc-encyclopedia-canonical-manifest-v1.schema.json",
+  "title": "THC Plant Science Encyclopedia canonical manifest",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "manifestId",
+    "identityContract",
+    "sourceAuthority",
+    "systemsBoundary",
+    "parts",
+    "entries",
+    "subjectLibrary",
+    "specializedTemplates",
+    "knowledgeGraph",
+    "releaseGates"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "thc-encyclopedia-canonical-manifest@1"
+    },
+    "manifestId": {
+      "const": "thc-encyclopedia-canonical-420-manifest"
+    },
+    "identityContract": {
+      "type": "object",
+      "required": ["coreIdPattern", "coreStart", "coreEnd", "coreCount", "partCount", "lessonsPerPart", "expansionRule"],
+      "properties": {
+        "coreIdPattern": { "const": "THC-ENC-001..THC-ENC-420" },
+        "coreStart": { "const": "THC-ENC-001" },
+        "coreEnd": { "const": "THC-ENC-420" },
+        "coreCount": { "const": 420 },
+        "partCount": { "const": 21 },
+        "lessonsPerPart": { "const": 20 },
+        "expansionRule": { "type": "string", "minLength": 20 }
+      }
+    },
+    "parts": {
+      "type": "array",
+      "minItems": 21,
+      "maxItems": 21,
+      "items": { "$ref": "#/$defs/part" }
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 420,
+      "items": { "$ref": "#/$defs/entry" }
+    }
+  },
+  "$defs": {
+    "part": {
+      "type": "object",
+      "required": ["part", "canonicalTitle", "displayTitle", "slug", "startId", "endId", "entryIds", "hub"],
+      "properties": {
+        "part": { "type": "integer", "minimum": 1 },
+        "canonicalTitle": { "type": "string", "minLength": 3 },
+        "displayTitle": { "type": "string", "minLength": 3 },
+        "slug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "startId": { "type": "string", "pattern": "^THC-ENC-[0-9]{3}$" },
+        "endId": { "type": "string", "pattern": "^THC-ENC-[0-9]{3}$" },
+        "entryIds": {
+          "type": "array",
+          "minItems": 20,
+          "maxItems": 20,
+          "items": { "type": "string", "pattern": "^THC-ENC-[0-9]{3}$" }
+        },
+        "hub": {
+          "type": "object",
+          "required": ["route", "description", "primaryTemplate"],
+          "properties": {
+            "route": { "type": "string", "pattern": "^/learn/encyclopedia/" },
+            "description": { "type": "string", "minLength": 20 },
+            "primaryTemplate": { "type": "string", "minLength": 3 }
+          }
+        }
+      }
+    },
+    "entry": {
+      "type": "object",
+      "required": [
+        "id",
+        "number",
+        "part",
+        "title",
+        "stableSlug",
+        "canonicalRoute",
+        "titleSlug",
+        "primaryFormat",
+        "templateType",
+        "publicationStatus",
+        "requiredTeachingVisual",
+        "production"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^THC-ENC-[0-9]{3,}$" },
+        "number": { "type": "integer", "minimum": 1 },
+        "part": { "type": "integer", "minimum": 1 },
+        "title": { "type": "string", "minLength": 3 },
+        "stableSlug": { "type": "string", "pattern": "^thc-enc-[0-9]{3,}$" },
+        "canonicalRoute": { "type": "string", "pattern": "^/learn/encyclopedia/thc-enc-[0-9]{3,}/$" },
+        "titleSlug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "primaryFormat": { "type": "string", "minLength": 3 },
+        "templateType": { "type": "string", "minLength": 3 },
+        "publicationStatus": { "type": "string", "minLength": 3 },
+        "requiredTeachingVisual": { "type": ["string", "null"] },
+        "production": { "type": "object" }
+      }
+    }
+  }
+}
