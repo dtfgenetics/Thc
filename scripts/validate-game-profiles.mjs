@@ -49,7 +49,12 @@ for(const game of registry.games||[]){
     fail(`${game.id}: missing performance budget for ${values.performanceProfile}`);
   }
   if(!profiles.requiredChecks?.[values.gameplayProfile]){
-    fail(`${game.id}: missing requiredChecks profile for ${values.gameplayProfile}`);
+    fail(`${game.id}: missing gameplay requiredChecks profile for ${values.gameplayProfile}`);
+  }
+  for(const dimension of ['rendererProfile','sessionProfile','persistenceProfile','networkProfile','contentProfile','performanceProfile','securityProfile','accessibilityProfile']){
+    if(!profiles.dimensionChecks?.[dimension]?.[values[dimension]]){
+      fail(`${game.id}: missing dimensionChecks for ${dimension}=${values[dimension]}`);
+    }
   }
 
   const onlineNetwork=new Set(['request-response-authoritative','turn-authoritative','realtime-authoritative','optional-realtime']);
@@ -73,8 +78,14 @@ for(const game of registry.games||[]){
   }
 
   const saveVersion=game.architecture?.saveVersion;
-  if(['campaign','checkpoint','match-recovery'].includes(values.persistenceProfile)&&!Number.isInteger(saveVersion)){
+  if(['campaign','checkpoint'].includes(values.persistenceProfile)&&!Number.isInteger(saveVersion)){
     warn(`${game.id}: ${values.persistenceProfile} persistence should declare architecture.saveVersion before strict production compliance`);
+  }
+  if(values.persistenceProfile==='match-recovery'){
+    const recoveryVersion=game.architecture?.sessionSchemaVersion ?? game.architecture?.protocolVersion ?? null;
+    if(!Number.isInteger(recoveryVersion)){
+      warn(`${game.id}: match-recovery should declare architecture.sessionSchemaVersion or architecture.protocolVersion before strict production compliance`);
+    }
   }
 
   const architectureNetwork=String(game.architecture?.networkModel||'').toLowerCase();
