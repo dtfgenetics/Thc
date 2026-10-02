@@ -5,6 +5,7 @@ const lossSubtitle=document.querySelector('#plantLossSubtitle');
 const routeSummary=document.querySelector('[data-public-product="Burn Buds"]');
 const PRODUCT='Burn Buds';
 const GRID=15;
+const PROTOCOL_VERSION=1;
 const FORMATIONS=[
   {id:'mother-row',name:'Mother Row',size:5,desc:'High-coverage backbone.'},
   {id:'trellis-row',name:'Trellis Row',size:4,desc:'Wide trellised coverage.'},
@@ -36,7 +37,7 @@ const miniLeaf=()=>budMark('mini-leaf');
 function roomFromUrl(){const value=new URLSearchParams(location.search).get('room')?.trim().toUpperCase()||'';return /^[A-Z0-9]{6}$/.test(value)?value:''}
 let toastTimer=null;
 function toast(msg,{error=false,duration=error?6000:2200}={}){if(toastTimer)clearTimeout(toastTimer);toastEl.textContent=msg;toastEl.classList.toggle('error',error);toastEl.classList.add('show');toastEl.setAttribute('role',error?'alert':'status');toastTimer=setTimeout(()=>{toastEl.classList.remove('show');toastEl.classList.remove('error')},duration)}
-async function api(action,{method='GET',body=null,auth=true}={}){const q=new URLSearchParams({action});if(auth&&identity.code)q.set('code',identity.code);const headers={};if(body!==null)headers['Content-Type']='application/json';if(auth&&identity.playerId){headers['X-Player-Id']=identity.playerId;headers['X-Player-Token']=identity.token}const r=await fetch(`${apiUrl}?${q}`,{method,headers,body:body===null?null:JSON.stringify(body),cache:'no-store'});const data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(data.error||'Request failed');return data}
+async function api(action,{method='GET',body=null,auth=true}={}){const q=new URLSearchParams({action});if(auth&&identity.code)q.set('code',identity.code);const headers={'X-DTF-Game-Protocol':String(PROTOCOL_VERSION)};if(body!==null)headers['Content-Type']='application/json';if(auth&&identity.playerId){headers['X-Player-Id']=identity.playerId;headers['X-Player-Token']=identity.token}const r=await fetch(`${apiUrl}?${q}`,{method,headers,body:body===null?null:JSON.stringify(body),cache:'no-store'});const data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(data.error||'Request failed');if(data.protocolVersion!=null&&data.protocolVersion!==PROTOCOL_VERSION)throw new Error('This Burn Buds client is out of date. Refresh before continuing.');return data}
 function shell(content,{game=false}={}){return `<div class="shell"><header class="sitebar"><a class="brand-lockup" href="${game?'#':'/games/'}" ${game?'data-action="lobby"':''}>${budMark()}<span class="brand-copy"><small>DTF Genetics</small><strong>${PRODUCT}</strong></span></a><nav class="navlinks"><button class="navlink active" data-action="lobby">Lobby</button>${game?'<span class="navlink">Battle Grid</span><span class="navlink">Burn Log</span>':''}<a class="navlink" href="/games/">Game Hub</a></nav></header><main class="main">${content}</main></div>`}
 function formationVisual(spec){return `<div class="formation-visual">${Array.from({length:Math.min(spec.size,5)},()=>budMark('demo-plant')).join('')}</div>`}
 function formationCards(){return `<div class="formation-grid">${FORMATIONS.map(f=>`<article class="formation-card" data-formation="${f.id}"><h4>${esc(f.name)}</h4>${formationVisual(f)}<p>${esc(f.desc)} · ${f.size} cells</p></article>`).join('')}</div>`}
