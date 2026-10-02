@@ -5,7 +5,10 @@ on:
     branches: [main]
     paths:
       - 'data/studio-resources.json'
+      - 'data/repository-registry.json'
       - 'site/deployment/release-lanes.json'
+      - 'site/deployment/public-apps.json'
+      - 'package.json'
       - 'site/wordpress/**'
       - 'site/public-route-patch/**'
       - 'apps/**'
@@ -16,7 +19,10 @@ on:
     branches: [main]
     paths:
       - 'data/studio-resources.json'
+      - 'data/repository-registry.json'
       - 'site/deployment/release-lanes.json'
+      - 'site/deployment/public-apps.json'
+      - 'package.json'
       - 'site/wordpress/**'
       - 'site/public-route-patch/**'
       - 'apps/**'
@@ -53,12 +59,19 @@ jobs:
           node --check scripts/studio/integrate-generated-change.mjs
           node --check scripts/validate-publishability-contract.mjs
           node --check scripts/validate-learning-public-convergence-contract.mjs
+          node --check scripts/report-platform-convergence.mjs
 
       - name: Enforce Learning public convergence boundary
         run: |
           set -euo pipefail
           node scripts/validate-learning-public-convergence-contract.mjs \
             | tee "$RUNNER_TEMP/learning-public-convergence-contract.txt"
+
+      - name: Enforce platform convergence contract
+        run: |
+          set -euo pipefail
+          node scripts/report-platform-convergence.mjs --check --json \
+            | tee "$RUNNER_TEMP/platform-convergence.json"
 
       - name: Enforce repo-to-live contract
         run: |
@@ -76,6 +89,12 @@ jobs:
               echo '### Learning public convergence'
               echo '```text'
               cat "$RUNNER_TEMP/learning-public-convergence-contract.txt"
+              echo '```'
+            fi
+            if [[ -s "$RUNNER_TEMP/platform-convergence.json" ]]; then
+              echo '### Platform convergence'
+              echo '```json'
+              cat "$RUNNER_TEMP/platform-convergence.json"
               echo '```'
             fi
             if [[ -s "$RUNNER_TEMP/publishability-contract.json" ]]; then
