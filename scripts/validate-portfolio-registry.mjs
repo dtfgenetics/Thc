@@ -228,14 +228,15 @@ if (!shellDoc.sectionOwnership?.courses?.includes('/learn/learning-hub/')) error
 if (!shellDoc.sectionOwnership?.diagnostic?.includes('/growlens/')) errors.push('site-navigation-v6: Diagnostic must own GrowLens');
 if (!shellDoc.sectionOwnership?.diagnostic?.includes('/thc-grow-doc/')) errors.push('site-navigation-v6: Diagnostic must own THC Grow Doc');
 
-// All three architecture registries are authoritative for the primary row and
-// must remain byte-for-byte equivalent in id, label, route, and order.
-const registrySiteNav = sitesDoc.information_architecture?.canonical_primary_navigation;
+// The visitor-facing public-navigation registry and the V6 shell registry are both
+// authoritative for the eight-section primary row and must remain byte-for-byte equivalent in
+// id, label, route, and order. site-registry retains a legacy embedded copy.
+const legacySiteNav = sitesDoc.information_architecture?.canonical_primary_navigation;
+if (Array.isArray(legacySiteNav) && legacySiteNav.length) {
+  warnings.push('site-registry: embedded canonical_primary_navigation is legacy; public-navigation + site-navigation-v6 are authoritative');
+}
 if (JSON.stringify(navigationDoc.primaryNavigation) !== JSON.stringify(siteNavigation)) {
   errors.push('public-navigation: primaryNavigation must exactly match site-navigation-v6 primaryNavigation');
-}
-if (JSON.stringify(registrySiteNav) !== JSON.stringify(siteNavigation)) {
-  errors.push('site-registry: canonical_primary_navigation must exactly match site-navigation-v6 primaryNavigation');
 }
 
 if (warnings.length) {
