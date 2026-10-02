@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-004",
+  "createdAt": "2026-10-02",
+  "scope": "Consensus-assisted claim-level evidence additions for cannabis lighting, photobiology, light intensity, spectrum, yield, and DLI/PPFD framing.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Consensus retrieval is discovery support; the source registry and claim mappings remain review-pending until independent science review.",
+    "Each source supports only the scoped claim and stated applicability.",
+    "No claim mapping changes publication authorization, production-candidate status, visual approval, or assessment approval state."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0029",
+      "lessonId": "THC-ENC-101",
+      "sourceIds": [
+        "ENC-AUTH-020"
+      ],
+      "claimType": "cannabis-photobiology-review",
+      "supportedClaim": "Cannabis lighting lessons should distinguish photon quantity, wavelength, photoperiod, and photoreceptor-mediated responses rather than treating light as one undifferentiated input.",
+      "sourceLocator": "Wu et al. 2019 review of plant photobiology and cannabis production implications, covering wavelength, intensity, photoperiod, photosynthesis, photomorphogenesis, and photoreceptors.",
+      "applicability": "Supports introductory PAR/ePAR and light-as-photons framing in the lighting volume.",
+      "limitations": "Review-level evidence; individual production recommendations still require cultivar, spectrum, fixture, environment, and measured outcome data.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0030",
+      "lessonId": "THC-ENC-102",
+      "sourceIds": [
+        "ENC-AUTH-020",
+        "ENC-AUTH-023"
+      ],
+      "claimType": "cannabis-lighting-synthesis",
+      "supportedClaim": "PPF, PPFD, fixture type, and light distribution should be treated as measurement and design variables that affect cannabis yield only in interaction with genetics, density, environment, and management.",
+      "sourceLocator": "Wu et al. 2019 photobiology review plus Backer et al. 2019 cannabis yield meta-analysis identifying light intensity, light type, plant density, variety, fertilization, and flowering duration as yield factors.",
+      "applicability": "Supports PPF/PPFD and fixture-output lessons with cannabis-specific synthesis.",
+      "limitations": "Meta-analysis and review evidence do not establish a universal fixture specification or PPFD target.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0031",
+      "lessonId": "THC-ENC-103",
+      "sourceIds": [
+        "ENC-AUTH-020",
+        "ENC-AUTH-022"
+      ],
+      "claimType": "cannabis-light-intensity-primary",
+      "supportedClaim": "Daily light and PPFD concepts should be tied to photoperiod, crop stage, spectrum, and measured response; higher flowering light intensity can increase biomass and cannabinoid outcomes in a tested hemp system but should not be translated into a universal DLI rule.",
+      "sourceLocator": "Wu et al. 2019 review of photoperiod and intensity plus Hahm et al. 2025 flowering hemp LED intensity experiment at 200, 400, and 600 micromol m-2 s-1 under 12/12 h photoperiod.",
+      "applicability": "Supports DLI calculation and stage-aware light-dose interpretation.",
+      "limitations": "Hahm et al. studied one hemp cultivar, white LED treatments, and a defined flowering period; DLI transfer requires independent review and local validation.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0032",
+      "lessonId": "THC-ENC-106",
+      "sourceIds": [
+        "ENC-AUTH-023"
+      ],
+      "claimType": "cannabis-yield-meta-analysis",
+      "supportedClaim": "Light maps and uniformity metrics matter because cannabis yield is influenced by light intensity and type in combination with density, variety, container, fertilization, and flowering duration.",
+      "sourceLocator": "Backer et al. 2019 meta-analysis of cannabis yield factors.",
+      "applicability": "Supports the need to measure spatial light distribution instead of relying only on nominal fixture output.",
+      "limitations": "Does not define a universal uniformity target or replace crop-specific light maps and harvest records.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0033",
+      "lessonId": "THC-ENC-108",
+      "sourceIds": [
+        "ENC-AUTH-020",
+        "ENC-AUTH-023"
+      ],
+      "claimType": "cannabis-lighting-synthesis",
+      "supportedClaim": "LED, HID, fluorescent, and sunlight comparisons should separate spectral quality, intensity, distribution, heat, photoperiod, and energy use rather than ranking fixture classes as universally superior.",
+      "sourceLocator": "Wu et al. 2019 review of horticultural/cannabis lighting systems and Backer et al. 2019 yield-factor meta-analysis.",
+      "applicability": "Supports fixture comparison lessons and energy/crop-response framing.",
+      "limitations": "Evidence is context dependent; fixture class alone does not predict crop performance without measured canopy light, heat, spectrum, and plant response.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0034",
+      "lessonId": "THC-ENC-109",
+      "sourceIds": [
+        "ENC-AUTH-020",
+        "ENC-AUTH-022"
+      ],
+      "claimType": "cannabis-light-response-synthesis",
+      "supportedClaim": "Photosynthetic response and cannabinoid response should be kept conceptually separate: a tested increase in light intensity can increase biomass and cannabinoid accumulation, but response curves and optima remain cultivar, stage, and environment specific.",
+      "sourceLocator": "Wu et al. 2019 photobiology review plus Hahm et al. 2025 hemp flowering light-intensity experiment.",
+      "applicability": "Supports photosynthetic-response-curve language and limits around cannabinoid-response claims.",
+      "limitations": "One high-light hemp experiment does not define photosynthetic saturation or economic optimum for all cannabis systems.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0035",
+      "lessonId": "THC-ENC-112",
+      "sourceIds": [
+        "ENC-AUTH-020",
+        "ENC-AUTH-021"
+      ],
+      "claimType": "cannabis-spectrum-primary",
+      "supportedClaim": "Red, far-red, blue, and broader spectrum decisions should be presented as photomorphogenic and metabolic signals with cultivar-specific responses, not as fixed spectrum recipes.",
+      "sourceLocator": "Wu et al. 2019 photobiology review and Danziger and Bernstein 2021 medical cannabis light-spectrum study.",
+      "applicability": "Supports phytochrome, red/far-red, blue:red, and spectrum-effect lessons.",
+      "limitations": "Spectrum effects are cultivar and experimental-context dependent; independent review is needed before translating into fixture presets.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0036",
+      "lessonId": "THC-ENC-120",
+      "sourceIds": [
+        "ENC-AUTH-020",
+        "ENC-AUTH-023"
+      ],
+      "claimType": "cannabis-energy-yield-synthesis",
+      "supportedClaim": "Lighting energy, heat, efficacy, and crop response should be evaluated together because cannabis yield depends on light variables alongside genetics, density, crop duration, nutrition, and other facility factors.",
+      "sourceLocator": "Wu et al. 2019 lighting-system review and Backer et al. 2019 cannabis yield meta-analysis.",
+      "applicability": "Supports energy-versus-crop-response framing in the final lighting lesson.",
+      "limitations": "Does not approve any specific fixture, energy model, or yield forecast without site-specific measurement and cost review.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
