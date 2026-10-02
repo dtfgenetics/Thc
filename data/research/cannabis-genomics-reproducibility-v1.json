@@ -17,16 +17,19 @@
         "SexChromosomes"
       ],
       "linked_project": "CANNABIS-PANGENOME-PRJNA1140642",
-      "reuse_status": "PUBLIC_CODE_VERIFY_REPOSITORY_LICENSE_AT_INGEST_TIME"
+      "reuse_status": "PUBLIC_CODE_REFERENCE_ONLY_UNTIL_LICENSE_VERIFIED",
+      "commit_sha": "a7b5934c117f3f5e24ef09150a41c226182c154b",
+      "license_status": "NO_REPOSITORY_LICENSE_DECLARED"
     },
     {
       "id": "CANNABIS-PANGENOME-SHARED-GITHUB",
       "type": "analysis_code",
       "title": "CannabisPangenomeShared",
       "url": "https://github.com/anthony-aylward/CannabisPangenomeShared",
-      "public": true,
+      "public": false,
       "linked_project": "CANNABIS-PANGENOME-PRJNA1140642",
-      "reuse_status": "PUBLIC_CODE_VERIFY_REPOSITORY_LICENSE_AT_INGEST_TIME"
+      "reuse_status": "REFERENCE_ONLY_UNTIL_RETRIEVABLE_AND_LICENSE_VERIFIED",
+      "availability_status": "UPSTREAM_LINKED_BUT_NOT_INDEPENDENTLY_RETRIEVABLE_IN_2026_10_AUDIT"
     },
     {
       "id": "CANNABIS-PANGENOME-VININGLAB-GITHUB",
@@ -43,7 +46,8 @@
         "marker BLAST materials"
       ],
       "linked_project": "CANNABIS-PANGENOME-PRJNA1140642",
-      "reuse_status": "GPL_CODE_LANE"
+      "reuse_status": "GPL_CODE_LANE",
+      "commit_sha": "3c3d9672cff4df811df2d44d4f17d608af9f9f4b"
     },
     {
       "id": "CANNABIS-PANGENOME-SCAFFOLDED-FIGSHARE",
@@ -74,16 +78,19 @@
       "id": "CANNABIS-PANGENOME-SUPPLEMENT-TABLE1",
       "type": "sample_mapping",
       "title": "Cannabis pangenome Supplementary Table 1",
-      "doi": "10.6084/m9.figshare.25869319.v1",
-      "url": "https://doi.org/10.6084/m9.figshare.25869319.v1",
+      "doi": "10.6084/m9.figshare.25869319.v2",
+      "url": "https://doi.org/10.6084/m9.figshare.25869319.v2",
       "public": true,
       "linked_project": "CANNABIS-PANGENOME-PRJNA1140642",
       "reuse_status": "PUBLIC_METADATA_MAPPING",
       "data_value": "Links assemblies/samples to corresponding resources, including US NPGS accessions reported by the study.",
-      "version_status": "PUBLICATION_PINNED_V1",
+      "version_status": "CURRENT_UPSTREAM_README_V2",
       "notes": [
-        "The pangenome publication cites version 1. A later version was not independently verified in this audit."
-      ]
+        "The published article cites version 1.",
+        "The current CannabisPangenomeAnalyses README identifies version 2 as the data-availability table.",
+        "Preserve the DOI/version used for each downstream analysis."
+      ],
+      "publication_pinned_doi": "10.6084/m9.figshare.25869319.v1"
     },
     {
       "id": "CANNABIS-PANGENOME-ANNOTATIONS-FIGSHARE",
@@ -122,6 +129,7 @@
     "Prefer DOI/version-pinned Figshare and NCBI identifiers over mutable landing-page names.",
     "Record repository commit SHA when code is vendored or used to reproduce an analysis.",
     "Preserve the upstream license per file/resource; do not collapse GPL, CC0, CC BY and unspecified resources into one reuse class.",
-    "Large public assemblies should be referenced by immutable upstream ID/checksum rather than copied into the website repository unless a downstream tool requires a managed local mirror."
+    "Large public assemblies should be referenced by immutable upstream ID/checksum rather than copied into the website repository unless a downstream tool requires a managed local mirror.",
+    "If a current upstream repository points to a newer data version than the publication, record both the publication-pinned version and the current upstream version."
   ]
 }
