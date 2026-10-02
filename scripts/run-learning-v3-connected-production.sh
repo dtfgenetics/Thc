@@ -167,6 +167,7 @@ verify_routes=(
 for route in "${verify_routes[@]}"; do
   body="/tmp/dtf-learning-retired-visual-check-$(printf '%s' "$route" | tr '/' '_').html"
   curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+    --connect-timeout 15 --max-time 60 \
     -H 'Cache-Control: no-cache, no-store, max-age=0' \
     -H 'Pragma: no-cache' \
     "${WP_SITE_URL:-https://dtfseeds.com}${route}?dtf_learning_visual_gate=${GITHUB_RUN_ID:-local}-$(date +%s%N)" \
