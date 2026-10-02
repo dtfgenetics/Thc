@@ -10,6 +10,7 @@ on:
       - 'scripts/fetch-ncbi-*.mjs'
       - 'scripts/validate-research-bioinformatics.mjs'
       - 'scripts/*research-evidence-index.mjs'
+      - 'scripts/test-research-evidence-pipeline.mjs'
       - 'package.json'
       - '.github/workflows/research-bioinformatics-ci.yml'
   push:
