@@ -166,7 +166,7 @@
     "audit:platform-convergence:live": "node scripts/report-platform-convergence.mjs --live",
     "audit:platform-convergence:strict-live": "node scripts/report-platform-convergence.mjs --live --strict-live",
     "build:encyclopedia-production-readiness": "node scripts/build-encyclopedia-production-readiness.mjs",
-    "verify:encyclopedia-production-readiness": "npm run build:encyclopedia-scorecard && npm run build:encyclopedia-evidence && npm run verify:encyclopedia-production-queues && npm run build:encyclopedia-production-readiness && node scripts/validate-encyclopedia-production-readiness.mjs",
+    "verify:encyclopedia-production-readiness": "npm run build:encyclopedia-scorecard && npm run build:encyclopedia-evidence && npm run build:encyclopedia-evidence-priority && npm run verify:encyclopedia-production-queues && npm run build:encyclopedia-production-readiness && node scripts/validate-encyclopedia-production-readiness.mjs",
     "verify:encyclopedia-production-readiness:strict": "npm run verify:encyclopedia-production-readiness && node scripts/validate-encyclopedia-production-readiness.mjs --strict"
   }
 }
