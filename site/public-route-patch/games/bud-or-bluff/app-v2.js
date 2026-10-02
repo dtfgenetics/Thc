@@ -1,6 +1,7 @@
 (() => {
   const API = 'api-v2.php';
   const POLL_MS = 1250;
+  const PROTOCOL_VERSION = 1;
   const SESSION_KEY = 'dtf_bob_session_v2';
   const SOUND_KEY = 'dtf_bob_sound_v2';
   function storageGet(key){try{return globalThis.localStorage?.getItem(key)??null}catch{return null}}
@@ -73,9 +74,9 @@
 
   async function request(action,options={}){
     const qs=new URLSearchParams({action});if(session?.code)qs.set('code',session.code);
-    const headers={'Content-Type':'application/json'};if(session?.playerId)headers['X-Player-Id']=session.playerId;if(session?.token)headers['X-Player-Token']=session.token;
+    const headers={'Content-Type':'application/json','X-DTF-Game-Protocol':String(PROTOCOL_VERSION)};if(session?.playerId)headers['X-Player-Id']=session.playerId;if(session?.token)headers['X-Player-Token']=session.token;
     const res=await fetch(`${API}?${qs}`,{method:options.method||'GET',headers,body:options.body?JSON.stringify(options.body):undefined,cache:'no-store'});
-    const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.error||'The room server rejected that request.');return data;
+    const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.error||'The room server rejected that request.');if(data.protocolVersion!=null&&data.protocolVersion!==PROTOCOL_VERSION)throw new Error('This Bud or Bluff client is out of date. Refresh before continuing.');return data;
   }
 
   function setConnection(ok,label){reconnecting=!ok;if(!els.connection)return;els.connection.textContent=label||(ok?'Connected':'Reconnecting…');els.connection.classList.toggle('bad',!ok);}
