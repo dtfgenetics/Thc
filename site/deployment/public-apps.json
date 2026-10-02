@@ -373,7 +373,11 @@
       "route": "/games/weedopolis/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "npm run validate && npm run check:preview && npm run build:preview"
+      "build": "npm run validate && npm run check:preview && npm run build:preview",
+      "sourcePath": ".",
+      "mirrorPath": "site/public-route-patch/games/weedopolis",
+      "canonicalRepository": "dtfgenetics/Weedopolis-strain-Edition",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "crossword",
@@ -384,7 +388,11 @@
       "runtime": "static",
       "status": "ready-to-package",
       "build": "npm test && npm run verify && npm run build",
-      "notes": "Production Vite base is /games/crossword/. The tested puzzle-data contract remains /puzzles/... and is published at the site root by the DTFSeeds suite deployer."
+      "notes": "Production Vite base is /games/crossword/. The tested puzzle-data contract remains /puzzles/... and is published at the site root by the DTFSeeds suite deployer.",
+      "sourcePath": ".",
+      "mirrorPath": "site/public-route-patch/games/crossword",
+      "canonicalRepository": "dtfgenetics/Thc-crossword-",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "who-took-it",
@@ -416,7 +424,10 @@
         "fullValidation": "npm run check",
         "playwright": false
       },
-      "notes": "Canonical standalone React/Vite build from dtfgenetics/Thc-guess-who/03_digital-game. Production visual art is approved: 25 suspect portraits, 5 canonical missing-item assets, 20 UI/HUD assets, and one case-room environment. The full npm run check gate includes deterministic data/art registry validation, UI and environment validation, production-asset auditing, smoke and balance checks, dependency audit, production build, and mystery-privacy verification. No Playwright is used."
+      "notes": "Canonical standalone React/Vite build from dtfgenetics/Thc-guess-who/03_digital-game. Production visual art is approved: 25 suspect portraits, 5 canonical missing-item assets, 20 UI/HUD assets, and one case-room environment. The full npm run check gate includes deterministic data/art registry validation, UI and environment validation, production-asset auditing, smoke and balance checks, dependency audit, production build, and mystery-privacy verification. No Playwright is used.",
+      "mirrorPath": "site/public-route-patch/games/who-took-it",
+      "canonicalRepository": "dtfgenetics/Thc-guess-who",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "thc-grow-doc",
@@ -426,7 +437,10 @@
       "runtime": "static-php",
       "status": "ready-to-package",
       "build": "npm run validate:sources && npm run validate:acquisition && npm run validate:transfer && npm run validate:model-eval && npm run check && npm test && npm run build",
-      "notes": "Plant-health evidence and diagnostic-reference application; current differential ranking is structured/rule-based rather than a validated pixel classifier. Preserve its PHP proxy in the production bundle."
+      "notes": "Plant-health evidence and diagnostic-reference application; current differential ranking is structured/rule-based rather than a validated pixel classifier. Preserve its PHP proxy in the production bundle.",
+      "sourcePath": ".",
+      "canonicalRepository": "dtfgenetics/Thc-dataset",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "high-iq",
@@ -568,7 +582,11 @@
         "publicPromotion": false,
         "apiOrigin": "same-origin-default",
         "splitOriginVariable": "THC_U_KNOW_SERVER_ORIGIN"
-      }
+      },
+      "sourcePath": ".",
+      "canonicalRepository": "dtfgenetics/thc-u-know-card-game-",
+      "integrationRepository": "dtfgenetics/Thc",
+      "publicSurface": false
     },
     {
       "id": "kush-kings",
@@ -591,7 +609,11 @@
         "liveCheck": "npm run live:check",
         "manualGate": "two-browser-mobile",
         "publicPromotion": false
-      }
+      },
+      "sourcePath": ".",
+      "canonicalRepository": "dtfgenetics/Thc-chess-git",
+      "integrationRepository": "dtfgenetics/Thc",
+      "publicSurface": false
     },
     {
       "id": "thc-grow-hub",
@@ -600,7 +622,12 @@
       "route": "/learn/",
       "runtime": "private-source-controlled-publication",
       "status": "preview-artifact-integration",
-      "notes": "Private source contains the academy/encyclopedia platform, reader, sources library, SOPs, downloads, diagnostic center, glossary, and production-readiness checks. Do not bypass production/readiness.json."
+      "notes": "Private source contains the academy/encyclopedia platform, reader, sources library, SOPs, downloads, diagnostic center, glossary, and production-readiness checks. Do not bypass production/readiness.json.",
+      "sourcePath": ".",
+      "mirrorPath": "site/wordpress/pages/learn.html",
+      "canonicalRepository": "dtfgenetics/thc-grow-hub",
+      "integrationRepository": "dtfgenetics/Thc",
+      "build": "npm run validate:education-search"
     },
     {
       "id": "thc-academy-certification",
@@ -609,7 +636,12 @@
       "route": "/courses/",
       "runtime": "wordpress-controlled-publication",
       "status": "release-gated-content",
-      "notes": "Canonical course, lesson, assessment, practical, learner-tool and credential-rule source. The dtfgenetics/Thc WordPress publishers pin an exact source SHA, publish /courses/, /learn/academy/ and /learn/learning-hub/ descendants, and must preserve fail-closed professional certification gates."
+      "notes": "Canonical course, lesson, assessment, practical, learner-tool and credential-rule source. The dtfgenetics/Thc WordPress publishers pin an exact source SHA, publish /courses/, /learn/academy/ and /learn/learning-hub/ descendants, and must preserve fail-closed professional certification gates.",
+      "sourcePath": ".",
+      "mirrorPath": "site/wordpress/education/course-catalog-v4.json",
+      "canonicalRepository": "dtfgenetics/Thc-learning-courses-",
+      "integrationRepository": "dtfgenetics/Thc",
+      "build": "npm run verify:academy-source-pin"
     },
     {
       "id": "bud-or-bluff",
@@ -680,7 +712,8 @@
         "canonicalRoute": "/games/protect-the-plants/",
         "publicReleaseAllowed": false
       },
-      "notes": "Tested 15×15 fleet-battle engine retained only as design/engine history. It does not own a public route. All browser gameplay, multiplayer, branding, deployment, assets, reconnect work, mobile QA, and future production development belong to canonical Burn Buds at /games/protect-the-plants/."
+      "notes": "Tested 15×15 fleet-battle engine retained only as design/engine history. It does not own a public route. All browser gameplay, multiplayer, branding, deployment, assets, reconnect work, mobile QA, and future production development belong to canonical Burn Buds at /games/protect-the-plants/.",
+      "publicSurface": false
     },
     {
       "id": "terpocalypse",
@@ -727,7 +760,11 @@
         "keeperCuttings": true,
         "modalGameplayShortcutGuard": true
       },
-      "verifiedRevision": "de6c26d9073d9154bbcade43b64768cf6a7ba2a0"
+      "verifiedRevision": "de6c26d9073d9154bbcade43b64768cf6a7ba2a0",
+      "sourcePath": ".",
+      "mirrorPath": "site/public-route-patch/games/thc-rpg",
+      "canonicalRepository": "dtfgenetics/Thc-rpg",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "happy-seed-stories",
@@ -735,7 +772,11 @@
       "repository": "dtfgenetics/Happy-seed-story-s-",
       "runtime": "controlled-publishing-source",
       "status": "release-gated-content",
-      "notes": "Story/science production source only. Book 1 remains controlled until manuscript, science, art, proof, accessibility and release gates are explicitly locked; do not publish working drafts as finished books."
+      "notes": "Story/science production source only. Book 1 remains controlled until manuscript, science, art, proof, accessibility and release gates are explicitly locked; do not publish working drafts as finished books.",
+      "sourcePath": ".",
+      "canonicalRepository": "dtfgenetics/Happy-seed-story-s-",
+      "integrationRepository": "dtfgenetics/Thc",
+      "publicSurface": false
     },
     {
       "id": "creator-engine",
@@ -743,7 +784,11 @@
       "repository": "dtfgenetics/Video-photo-editing-and-communications-posting-",
       "runtime": "internal-tool",
       "status": "private-operations-only",
-      "notes": "Pre-alpha local production scaffold with CI. Do not expose publicly without authentication and a production web surface."
+      "notes": "Pre-alpha local production scaffold with CI. Do not expose publicly without authentication and a production web surface.",
+      "sourcePath": ".",
+      "canonicalRepository": "dtfgenetics/Video-photo-editing-and-communications-posting-",
+      "integrationRepository": "dtfgenetics/Thc",
+      "publicSurface": false
     },
     {
       "id": "ganjumanji",
@@ -774,7 +819,11 @@
           5
         ]
       },
-      "verifiedRevision": "257c5a60c8ec0e7f6a87170f232c37e047458b22"
+      "verifiedRevision": "257c5a60c8ec0e7f6a87170f232c37e047458b22",
+      "sourcePath": ".",
+      "mirrorPath": "site/public-route-patch/games/ganjumanji",
+      "canonicalRepository": "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple",
+      "integrationRepository": "dtfgenetics/Thc"
     },
     {
       "id": "discord-music-bot-a",
@@ -783,7 +832,11 @@
       "runtime": "node-discord-voice",
       "status": "implementation-alpha",
       "build": "npm run check && npm test",
-      "notes": "Canonical Discord music-bot repo contains slash commands, per-server queue, voice playback, SSRF-resistant public URL policy, tests, environment template, and CI. Live runtime still requires Discord application credentials and persistent Node hosting."
+      "notes": "Canonical Discord music-bot repo contains slash commands, per-server queue, voice playback, SSRF-resistant public URL policy, tests, environment template, and CI. Live runtime still requires Discord application credentials and persistent Node hosting.",
+      "sourcePath": ".",
+      "canonicalRepository": "dtfgenetics/thc-discord-bot-for-music-",
+      "integrationRepository": "dtfgenetics/Thc",
+      "publicSurface": false
     },
     {
       "id": "grow-room-bingo",
