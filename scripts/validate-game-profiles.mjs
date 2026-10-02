@@ -1,0 +1,104 @@
+#!/usr/bin/env node
+import fs from 'node:fs';
+
+const registry=JSON.parse(fs.readFileSync('data/game-registry-v2.json','utf8'));
+const profiles=JSON.parse(fs.readFileSync('configuration/game-qa/game-profiles.json','utf8'));
+const errors=[];
+const warnings=[];
+const strict=process.argv.includes('--strict');
+
+const dimensions=profiles.dimensions||{};
+const dimensionNames=Object.keys(dimensions);
+
+function fail(message){ errors.push(message); }
+function warn(message){ warnings.push(message); }
+
+if(profiles.schemaVersion!==1) fail('game profile schemaVersion must be 1');
+if(!Array.isArray(profiles.references)||profiles.references.length<3) fail('profile catalog must retain external reference records');
+if(!profiles.games||typeof profiles.games!=='object') fail('profile catalog games map is required');
+
+const registryIds=new Set((registry.games||[]).map(game=>game.id));
+const mappedIds=new Set(Object.keys(profiles.games||{}));
+
+for(const id of registryIds){
+  if(!mappedIds.has(id)) fail(`${id}: missing game profile assignment`);
+}
+for(const id of mappedIds){
+  if(!registryIds.has(id)) fail(`${id}: game profile assignment points to unknown registry game`);
+}
+
+for(const game of registry.games||[]){
+  const assignment=profiles.games?.[game.id];
+  if(!Array.isArray(assignment)) continue;
+  if(assignment.length!==dimensionNames.length){
+    fail(`${game.id}: profile assignment must contain exactly ${dimensionNames.length} dimensions in canonical order`);
+    continue;
+  }
+
+  const values={};
+  dimensionNames.forEach((name,index)=>{
+    const value=assignment[index];
+    values[name]=value;
+    if(!(dimensions[name]||[]).includes(value)) fail(`${game.id}: unknown ${name} value ${value}`);
+  });
+
+  if(!profiles.performanceBudgets?.[values.performanceProfile]){
+    fail(`${game.id}: missing performance budget for ${values.performanceProfile}`);
+  }
+  if(!profiles.requiredChecks?.[values.gameplayProfile]){
+    fail(`${game.id}: missing requiredChecks profile for ${values.gameplayProfile}`);
+  }
+
+  const onlineNetwork=new Set(['request-response-authoritative','turn-authoritative','realtime-authoritative','optional-realtime']);
+  const onlineSecurity=new Set(['casual-online','competitive-online','community-online']);
+  if(onlineNetwork.has(values.networkProfile)&&!onlineSecurity.has(values.securityProfile)){
+    fail(`${game.id}: online network profile ${values.networkProfile} requires an online security profile`);
+  }
+  if(!onlineNetwork.has(values.networkProfile)&&onlineSecurity.has(values.securityProfile)){
+    warn(`${game.id}: online security profile ${values.securityProfile} is stronger than current network profile ${values.networkProfile}`);
+  }
+
+  if(values.gameplayProfile==='realtime-multiplayer'&&!['realtime-authoritative','optional-realtime'].includes(values.networkProfile)){
+    fail(`${game.id}: realtime-multiplayer must use realtime-authoritative or optional-realtime network profile`);
+  }
+  if(values.gameplayProfile==='turn-multiplayer'&&!['turn-authoritative','request-response-authoritative'].includes(values.networkProfile)){
+    fail(`${game.id}: turn-multiplayer must use turn-authoritative or request-response-authoritative network profile`);
+  }
+
+  if(values.rendererProfile==='threejs'&&values.performanceProfile!=='3d-game'){
+    fail(`${game.id}: Three.js renderer must use 3d-game performance profile`);
+  }
+
+  const saveVersion=game.architecture?.saveVersion;
+  if(['campaign','checkpoint','match-recovery'].includes(values.persistenceProfile)&&!Number.isInteger(saveVersion)){
+    warn(`${game.id}: ${values.persistenceProfile} persistence should declare architecture.saveVersion before strict production compliance`);
+  }
+
+  const architectureNetwork=String(game.architecture?.networkModel||'').toLowerCase();
+  if(values.networkProfile==='local' && /(socket|multiplayer|server-authoritative|colyseus)/.test(architectureNetwork)){
+    warn(`${game.id}: profile says local but architecture.networkModel suggests networked runtime: ${game.architecture.networkModel}`);
+  }
+
+  if(values.gameplayProfile==='campaign-rpg' && !['long','persistent'].includes(values.sessionProfile)){
+    fail(`${game.id}: campaign-rpg should use long or persistent session profile`);
+  }
+}
+
+for(const [name,budget] of Object.entries(profiles.performanceBudgets||{})){
+  if(!Number.isInteger(budget.initialBytesSoft)||!Number.isInteger(budget.initialBytesHard)||budget.initialBytesSoft>budget.initialBytesHard){
+    fail(`${name}: invalid initial byte budget`);
+  }
+  if(!Number.isInteger(budget.targetTimeToPlayableMs)||budget.targetTimeToPlayableMs<1000){
+    fail(`${name}: invalid targetTimeToPlayableMs`);
+  }
+}
+
+for(const warning of warnings) console.warn(`WARN: ${warning}`);
+
+if(errors.length || (strict&&warnings.length)){
+  console.error(`Game profile validation failed: ${errors.length} error(s), ${warnings.length} warning(s)${strict?' (strict mode)':''}.`);
+  for(const error of errors) console.error(`- ${error}`);
+  process.exit(1);
+}
+
+console.log(`Game profiles valid: ${registryIds.size} games covered across ${dimensionNames.length} dimensions; ${warnings.length} compliance warning(s).`);
