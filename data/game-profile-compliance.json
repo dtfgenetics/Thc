@@ -39,6 +39,44 @@
         "heartbeat",
         "backpressure"
       ]
+    },
+    {
+      "id": "mdn-pwa-installability",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable",
+      "appliesTo": [
+        "installability-decision",
+        "manifest",
+        "offline-strategy"
+      ]
+    },
+    {
+      "id": "mdn-page-visibility",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API",
+      "appliesTo": [
+        "visibility-interruption",
+        "pause-resume",
+        "audio-user-intent"
+      ]
+    },
+    {
+      "id": "openfeature",
+      "url": "https://openfeature.dev/docs/reference/intro/",
+      "appliesTo": [
+        "feature-flags",
+        "maintenance-mode",
+        "kill-switch",
+        "canary-release"
+      ]
+    },
+    {
+      "id": "opentelemetry-js",
+      "url": "https://opentelemetry.io/docs/languages/js/",
+      "appliesTo": [
+        "server-observability",
+        "metrics",
+        "traces",
+        "networked-game-operations"
+      ]
     }
   ],
   "summary": {
