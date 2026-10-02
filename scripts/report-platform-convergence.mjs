@@ -139,6 +139,7 @@ for (const app of apps) {
 for (const [route, count] of routeCounts) if (count > 1) errors.push(`duplicate public route ${route} appears ${count} times`);
 for (const [id, count] of idCounts) if (count > 1) errors.push(`duplicate public app id ${id} appears ${count} times`);
 
+const publicSurfaceApps = apps.filter(isPublicSurface);
 const statusCounts = Object.fromEntries(
   [...apps.reduce((map, app) => map.set(app.status || 'missing', (map.get(app.status || 'missing') || 0) + 1), new Map())]
     .sort(([a], [b]) => a.localeCompare(b))
@@ -165,9 +166,9 @@ if (liveMode) {
   const concurrency = Math.max(1, Number(process.env.DTF_CONVERGENCE_CONCURRENCY || 6));
   let cursor = 0;
   async function worker() {
-    while (cursor < apps.length) {
+    while (cursor < publicSurfaceApps.length) {
       const index = cursor++;
-      const app = apps[index];
+      const app = publicSurfaceApps[index];
       const result = await fetchText(`${baseUrl}${app.route}?audit=${Date.now()}-${index}`);
       const html = result.body || '';
       const row = {
@@ -191,7 +192,7 @@ if (liveMode) {
       if (row.ok && !row.canonical) warnings.push(`live ${app.route} has no canonical link`);
     }
   }
-  await Promise.all(Array.from({ length: Math.min(concurrency, Math.max(1, apps.length)) }, () => worker()));
+  await Promise.all(Array.from({ length: Math.min(concurrency, Math.max(1, publicSurfaceApps.length)) }, () => worker()));
 
   const deployedMaster = buildManifest?.master || null;
   const sourceMatchesDeployment = Boolean(sourceHead && deployedMaster && sourceHead === deployedMaster);
@@ -225,10 +226,11 @@ const report = {
     archiveReadyRepositories: archiveReady.sort()
   },
   publicApps: {
-    count: apps.length,
+    recordCount: apps.length,
+    count: publicSurfaceApps.length,
     statuses: statusCounts,
     repositories: unique(apps.map((app) => app.repository).filter(Boolean)).sort(),
-    routes: apps.filter(isPublicSurface).map((app) => ({
+    routes: publicSurfaceApps.map((app) => ({
       id: app.id,
       title: app.title,
       route: app.route,
@@ -251,7 +253,7 @@ if (jsonMode) {
   console.log(`Generated: ${report.generatedAt}`);
   console.log(`Source HEAD: ${sourceHead || 'unavailable'}`);
   console.log(`Repository registry: ${repositories.length} repositories; ${canonicalOwners.length} canonical/standalone owners`);
-  console.log(`Public apps: ${apps.length}`);
+  console.log(`Public surfaces: ${publicSurfaceApps.length}; registry records: ${apps.length}`);
   console.log(`Statuses: ${Object.entries(statusCounts).map(([status, count]) => `${status}=${count}`).join(', ') || 'none'}`);
   console.log(`Migration repos: ${[...migrationRepos].join(', ') || 'none'}`);
   console.log(`Archive-ready repos: ${archiveReady.join(', ') || 'none'}`);
