@@ -77,3 +77,15 @@ Every lesson must ultimately contain or resolve to:
   - hard-fails any accidental approval or publication-state promotion in generated production queues.
 
 The goal is to make the strict command pass without weakening the standard.
+
+
+## Unified production-readiness artifact
+
+- Generated artifact: `data/encyclopedia-production-readiness.json`.
+- Builder: `scripts/build-encyclopedia-production-readiness.mjs`.
+- Validator: `scripts/validate-encyclopedia-production-readiness.mjs`.
+- Scope: one readiness row for each controlled THC-ENC lesson.
+- Readiness combines the existing lesson-contract scorecard, evidence/source tracking, teaching-visual queue, assessment-rationale review state, optional practical-resource coverage, and publication authorization.
+- Academy/Course membership is explicitly excluded as an Encyclopedia completion or release requirement.
+- Baseline validation checks identity, state consistency, and release-boundary preservation.
+- Strict validation fails until all 420 lessons are truly release-ready; do not weaken the strict gate to make unfinished work appear complete.
