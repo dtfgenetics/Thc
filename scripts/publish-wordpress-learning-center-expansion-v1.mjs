@@ -152,9 +152,16 @@ function assertStoredPage(page, route, learnId) {
   }
 }
 
-const learnRows = await request('/wp-json/wp/v2/pages?slug=learn&context=edit&per_page=10&_fields=id,slug,parent,status,link');
+let learnRows;
+try {
+  learnRows = await request('/wp-json/wp/v2/pages?slug=learn&context=edit&per_page=10&_fields=id,slug,parent,status,link');
+} catch (error) {
+  console.warn(`Authenticated Learn-parent discovery failed after retries: ${error?.message || error}. Falling back to public published-page discovery.`);
+  learnRows = await request('/wp-json/wp/v2/pages?slug=learn&status=publish&per_page=10&_fields=id,slug,parent,status,link');
+}
 if (!Array.isArray(learnRows) || learnRows.length !== 1) throw new Error(`Expected exactly one Learn parent page, found ${Array.isArray(learnRows) ? learnRows.length : 'invalid response'}`);
 const learn = learnRows[0];
+if (learn.status !== 'publish' || learn.slug !== 'learn') throw new Error(`Learn parent discovery returned an unexpected record: ${JSON.stringify(learn)}`);
 const results = [];
 
 for (const route of routes) {
