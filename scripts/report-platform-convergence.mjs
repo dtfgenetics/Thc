@@ -79,23 +79,44 @@ const archiveReady = repositories.filter((repo) => repo.status === 'archive_read
 
 const routeCounts = new Map();
 const idCounts = new Map();
+const NON_PUBLIC_STATUSES = new Set([
+  'do-not-develop',
+  'private-operations-only',
+  'implementation-alpha'
+]);
+
+function isPublicSurface(app) {
+  if (app.publicSurface === false) return false;
+  if (app.publicSurface === true) return true;
+  if (NON_PUBLIC_STATUSES.has(app.status)) return false;
+  return Boolean(app.route);
+}
+
 for (const app of apps) {
-  routeCounts.set(app.route, (routeCounts.get(app.route) || 0) + 1);
+  const publicSurface = isPublicSurface(app);
+  if (publicSurface && app.route) routeCounts.set(app.route, (routeCounts.get(app.route) || 0) + 1);
   idCounts.set(app.id, (idCounts.get(app.id) || 0) + 1);
 
   if (!app.id) errors.push('public app is missing id');
   if (!app.title) errors.push(`${app.id || '(unknown)'} is missing title`);
-  if (!app.route || !/^\/.+\/$/.test(app.route)) errors.push(`${app.id || '(unknown)'} has invalid route ${app.route || '(missing)'}`);
+  if (publicSurface && (!app.route || !/^\/.+\/$/.test(app.route))) errors.push(`${app.id || '(unknown)'} has invalid route ${app.route || '(missing)'}`);
   if (!app.repository) errors.push(`${app.id || '(unknown)'} is missing repository`);
-  if (!app.sourcePath) errors.push(`${app.id || '(unknown)'} is missing sourcePath`);
   if (!app.runtime) warnings.push(`${app.id || '(unknown)'} is missing runtime classification`);
   if (!app.status) errors.push(`${app.id || '(unknown)'} is missing release status`);
-  if (!app.build) errors.push(`${app.id || '(unknown)'} is missing deterministic build/verification command`);
+  if (publicSurface && !app.build) errors.push(`${app.id || '(unknown)'} is missing deterministic build/verification command`);
+
+  const externalRepository = Boolean(app.repository && app.repository !== 'dtfgenetics/Thc');
+  if (publicSurface && !externalRepository && !app.sourcePath) {
+    errors.push(`${app.id || '(unknown)'} is missing sourcePath`);
+  }
+  if (publicSurface && externalRepository && !app.mirrorPath && !app.sourcePath) {
+    errors.push(`${app.id || '(unknown)'} is missing integration mirror/sourcePath`);
+  }
 
   if (app.repository && !repoByName.has(app.repository)) {
     warnings.push(`${app.id}: repository ${app.repository} is absent from repository-registry.json`);
   }
-  if (app.repository && migrationRepos.has(app.repository)) {
+  if (publicSurface && app.repository && migrationRepos.has(app.repository)) {
     errors.push(`${app.id}: public route is owned by migration repository ${app.repository}`);
   }
   if (app.canonicalRepository && migrationRepos.has(app.canonicalRepository)) {
@@ -107,7 +128,7 @@ for (const app of apps) {
   if (app.integrationRepository && app.integrationRepository !== 'dtfgenetics/Thc') {
     warnings.push(`${app.id}: integrationRepository is ${app.integrationRepository}, expected dtfgenetics/Thc for DTFSeeds public-suite integration`);
   }
-  if (app.sourcePath && !fs.existsSync(path.join(ROOT, app.sourcePath))) {
+  if (app.sourcePath && !externalRepository && !fs.existsSync(path.join(ROOT, app.sourcePath))) {
     errors.push(`${app.id}: sourcePath does not exist: ${app.sourcePath}`);
   }
   if (app.mirrorPath && !fs.existsSync(path.join(ROOT, app.mirrorPath))) {
@@ -207,7 +228,7 @@ const report = {
     count: apps.length,
     statuses: statusCounts,
     repositories: unique(apps.map((app) => app.repository).filter(Boolean)).sort(),
-    routes: apps.map((app) => ({
+    routes: apps.filter(isPublicSurface).map((app) => ({
       id: app.id,
       title: app.title,
       route: app.route,
