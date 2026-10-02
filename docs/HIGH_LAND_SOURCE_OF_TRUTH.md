@@ -23,6 +23,7 @@
 - Dice movement must exactly equal spaces moved.
 - Tokens render on board-path coordinates rather than in a detached UI area.
 - Multiplayer requires player names and room/invite flow.
+- Website room API compatibility is pinned to semantic API version `1.1.0`. Explicitly different versions are incompatible; version-less legacy room snapshots are accepted only as a migration fallback.
 - HIT/action cards, skip-turn rules, finish/win logic, reverse-turn logic, and background-audio mute behavior must remain testable.
 - Board artwork and HIT-card artwork must come from approved Drive assets or explicitly approved new originals.
 
