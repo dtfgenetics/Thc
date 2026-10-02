@@ -15,6 +15,7 @@ import {
   createTelemetryBuffer,
   validateTelemetryEvent,
   createInputActionMap,
+  createGamepadActionMap,
   createGameAudioManager,
   DETERMINISTIC_RNG_ALGORITHM,
   createDeterministicRng,
@@ -466,6 +467,46 @@ class FakeAudioContext {
     validateObjectShape(value, schema, { allowUnknown: false }));
   assert.equal(bad.success, false);
   assert.equal(bad.error.issues.length, 3);
+}
+
+{
+  const events = [];
+  const pad = {
+    buttons: Array.from({ length: 16 }, () => ({ pressed: false, value: 0 })),
+    axes: [0, 0],
+  };
+  const navigatorObject = { getGamepads: () => [pad] };
+  const gamepad = createGamepadActionMap({
+    navigatorObject,
+    onAction(action, detail) { events.push({ action, ...detail }); },
+  });
+
+  assert.equal(gamepad.supported(), true);
+  assert.deepEqual(gamepad.poll(), { connected: true, pressed: [] });
+
+  pad.buttons[0] = { pressed: true, value: 1 };
+  gamepad.poll();
+  assert.equal(events.some((event) => event.action === 'confirm' && event.phase === 'press'), true);
+  assert.equal(events.some((event) => event.action === 'primary-action' && event.phase === 'press'), true);
+
+  pad.buttons[0] = { pressed: false, value: 0 };
+  pad.axes[0] = -0.75;
+  gamepad.poll();
+  assert.equal(events.some((event) => event.action === 'move-left' && event.phase === 'press'), true);
+
+  pad.axes[0] = 0;
+  gamepad.poll();
+  assert.equal(events.some((event) => event.action === 'move-left' && event.phase === 'release'), true);
+
+  pad.buttons[9] = { pressed: true, value: 1 };
+  gamepad.poll();
+  assert.equal(gamepad.pressedActions().includes('pause'), true);
+  gamepad.stop('test-stop');
+  assert.equal(gamepad.pressedActions().length, 0);
+
+  const unsupported = createGamepadActionMap({ navigatorObject: {} });
+  assert.equal(unsupported.supported(), false);
+  assert.throws(() => createGamepadActionMap({ axisThreshold: 0 }), /axisThreshold/);
 }
 
 {
