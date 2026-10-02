@@ -553,5 +553,275 @@
       "securityProfile": "local",
       "accessibilityProfile": "text-ui"
     }
+  },
+  "dimensionChecks": {
+    "rendererProfile": {
+      "dom": [
+        "focus-navigation",
+        "layout-overflow",
+        "touch-targets",
+        "semantic-ui"
+      ],
+      "canvas2d": [
+        "canvas-scaling",
+        "device-pixel-ratio",
+        "input-coordinate-mapping",
+        "render-loop-cleanup"
+      ],
+      "phaser": [
+        "scene-transition",
+        "canvas-scaling",
+        "physics-timing",
+        "asset-preload"
+      ],
+      "threejs": [
+        "webgl-fallback",
+        "context-loss-recovery",
+        "gpu-budget",
+        "texture-budget",
+        "quality-scaling"
+      ],
+      "react-dom": [
+        "focus-navigation",
+        "state-reset",
+        "layout-overflow",
+        "touch-targets"
+      ],
+      "svg-dom": [
+        "viewbox-scaling",
+        "focus-navigation",
+        "touch-targets"
+      ],
+      "hybrid": [
+        "renderer-layering",
+        "input-ownership",
+        "layout-overflow",
+        "touch-targets"
+      ]
+    },
+    "sessionProfile": {
+      "micro": [
+        "fast-start",
+        "clean-reset"
+      ],
+      "short": [
+        "fast-start",
+        "pause-resume"
+      ],
+      "medium": [
+        "pause-resume",
+        "state-recovery"
+      ],
+      "long": [
+        "resume-contract",
+        "autosave-or-explicit-no-save",
+        "interruption-recovery"
+      ],
+      "persistent": [
+        "resume-contract",
+        "versioned-persistence",
+        "interruption-recovery"
+      ]
+    },
+    "persistenceProfile": {
+      "none": [
+        "explicit-no-save-contract"
+      ],
+      "preferences": [
+        "restricted-storage-fallback"
+      ],
+      "progress": [
+        "restricted-storage-fallback",
+        "progress-reset-contract"
+      ],
+      "checkpoint": [
+        "save-version",
+        "save-migration",
+        "checkpoint-recovery",
+        "corrupt-save-fallback"
+      ],
+      "campaign": [
+        "save-version",
+        "save-migration",
+        "old-save-compatibility",
+        "corrupt-save-fallback"
+      ],
+      "match-recovery": [
+        "session-schema-contract",
+        "resume-token-safety",
+        "reconnect-recovery",
+        "stale-session-cleanup"
+      ],
+      "archive": [
+        "archive-schema",
+        "archive-integrity",
+        "retention-contract"
+      ]
+    },
+    "networkProfile": {
+      "local": [
+        "offline-network-independence"
+      ],
+      "share-code": [
+        "share-code-validation",
+        "deterministic-share-state"
+      ],
+      "request-response-authoritative": [
+        "server-authority",
+        "action-authorization",
+        "request-rate-limits",
+        "payload-validation"
+      ],
+      "turn-authoritative": [
+        "server-authority",
+        "turn-validation",
+        "action-authorization",
+        "rate-limits",
+        "reconnect"
+      ],
+      "realtime-authoritative": [
+        "server-authority",
+        "message-authorization",
+        "payload-limits",
+        "rate-limits",
+        "heartbeat",
+        "backpressure",
+        "reconnect"
+      ],
+      "optional-realtime": [
+        "local-fallback",
+        "server-authority-online",
+        "message-authorization",
+        "payload-limits",
+        "rate-limits",
+        "heartbeat",
+        "reconnect"
+      ]
+    },
+    "contentProfile": {
+      "static": [
+        "content-reference-integrity"
+      ],
+      "database-driven": [
+        "content-schema",
+        "content-reference-integrity"
+      ],
+      "generated-daily": [
+        "generation-validation",
+        "date-identity",
+        "archive-integrity"
+      ],
+      "versioned-balance": [
+        "balance-version",
+        "data-schema",
+        "effect-reference-integrity"
+      ],
+      "branching-narrative": [
+        "branch-reachability",
+        "dead-end-audit",
+        "ending-reachability"
+      ],
+      "procedural": [
+        "seed-determinism",
+        "generation-bounds",
+        "unwinnable-state-audit"
+      ],
+      "knowledge-bank": [
+        "source-state",
+        "duplicate-detection",
+        "answer-or-rule-integrity"
+      ]
+    },
+    "performanceProfile": {
+      "tiny-ui": [
+        "initial-byte-budget",
+        "time-to-playable",
+        "low-end-browser-smoke"
+      ],
+      "dom-game": [
+        "initial-byte-budget",
+        "time-to-playable",
+        "layout-performance"
+      ],
+      "2d-game": [
+        "initial-byte-budget",
+        "time-to-playable",
+        "frame-pacing",
+        "low-end-device-smoke"
+      ],
+      "3d-game": [
+        "initial-byte-budget",
+        "time-to-playable",
+        "frame-pacing",
+        "gpu-budget",
+        "quality-scaling",
+        "low-end-device-smoke"
+      ],
+      "network-app": [
+        "initial-byte-budget",
+        "time-to-playable",
+        "network-failure-ux",
+        "server-health"
+      ]
+    },
+    "securityProfile": {
+      "local": [
+        "privacy-baseline",
+        "untrusted-import-validation-when-applicable"
+      ],
+      "persistent-solo": [
+        "privacy-baseline",
+        "save-integrity",
+        "untrusted-import-validation-when-applicable"
+      ],
+      "casual-online": [
+        "origin-validation",
+        "message-or-action-authorization",
+        "rate-limits",
+        "abuse-safe-errors"
+      ],
+      "competitive-online": [
+        "origin-validation",
+        "message-or-action-authorization",
+        "rate-limits",
+        "result-authority",
+        "disconnect-forfeit-integrity",
+        "audit-events"
+      ],
+      "community-online": [
+        "origin-validation",
+        "message-or-action-authorization",
+        "rate-limits",
+        "moderation-primitives",
+        "abuse-safe-errors"
+      ]
+    },
+    "accessibilityProfile": {
+      "text-ui": [
+        "keyboard-complete",
+        "visible-focus",
+        "non-color-state",
+        "text-scaling"
+      ],
+      "gameplay-ui": [
+        "keyboard-or-equivalent-input",
+        "visible-focus",
+        "reduced-motion",
+        "non-color-state"
+      ],
+      "action-game": [
+        "input-remap-ready",
+        "pause-access",
+        "reduced-motion",
+        "non-color-critical-feedback"
+      ],
+      "3d-game": [
+        "input-remap-ready",
+        "pause-access",
+        "reduced-motion",
+        "camera-motion-safety",
+        "quality-controls"
+      ]
+    }
   }
 }
