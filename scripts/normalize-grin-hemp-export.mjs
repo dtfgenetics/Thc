@@ -71,7 +71,7 @@ function normalize(rows, sourceUrl, retrievedAt) {
       population_scope:'USDA NPGS Cannabis sativa germplasm',
       improvement_status:raw['IMPROVEMENT LEVEL'] || raw.improvement_status || null,
       pedigree:raw.accession_pedigree || null,
-      ploidy:raw.ploidy ? coerce(raw.ploidy,'int') : null,
+      ploidy:raw.ploidy && Number.isInteger(Number(raw.ploidy)) ? Number(raw.ploidy) : null,
       crop_use:raw.crop_use || null,
       origin:raw.ORIGIN || raw.origin || null,
       developer:raw.developer || null,
@@ -81,6 +81,7 @@ function normalize(rows, sourceUrl, retrievedAt) {
 
     let hasPassport = false;
     for (const name of passportNames) if (raw[name] !== undefined && raw[name] !== '') hasPassport = true;
+    if (raw.ploidy && passport.ploidy === null) quarantine.push({row:idx+2,reason:'unparseable datatype',column:'ploidy',value:raw.ploidy,expected:'int',accession_id:accession||null,puid:puid||null});
     if (hasPassport || accession || puid) germplasm.push(passport);
 
     for (const [name,value] of Object.entries(raw)) {
