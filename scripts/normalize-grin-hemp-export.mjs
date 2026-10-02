@@ -184,7 +184,7 @@ else {
     console.error('Usage: node scripts/normalize-grin-hemp-export.mjs <input.csv> [output-dir] [source-url] [retrieved-date]');
     process.exit(2);
   }
-  const outputDir = args[1] || path.join(root,'data/research/imported/grin');
+  const outputDir = args[1] || path.join(root,'data/research/imported/grin/normalized');
   const sourceUrl = args[2] || 'https://npgsweb.ars-grin.gov/gringlobal/search';
   const retrievedAt = args[3] || new Date().toISOString().slice(0,10);
   const rows = parseCsv(fs.readFileSync(input,'utf8'));
