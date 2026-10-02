@@ -8,6 +8,13 @@ export {
 } from './storage.mjs';
 
 export {
+  createSaveEnvelope,
+  validateSaveEnvelope,
+  migrateSaveEnvelope,
+  createVersionedSaveStore,
+} from './save.mjs';
+
+export {
   SETTINGS_VERSION,
   DEFAULT_GAME_SETTINGS,
   normalizeGameSettings,
@@ -82,4 +89,4 @@ export {
   field,
 } from './validation.mjs';
 
-export const DTF_GAME_PLATFORM_VERSION = '1.9.0';
+export const DTF_GAME_PLATFORM_VERSION = '2.0.0';
