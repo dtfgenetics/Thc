@@ -1,32 +1,7 @@
 {
-  "schemaVersion": 1,
-  "generated": "2026-09-27",
+  "schemaVersion": 2,
+  "generated": "2026-10-02",
   "documents": [
-    {
-      "id": "learn-home",
-      "type": "Learning hub",
-      "title": "Teaching Healthy Cultivation",
-      "route": "/learn/",
-      "summary": "Plant science, cultivation references, pathways, visuals, encyclopedia material and practical learning.",
-      "keywords": [
-        "cannabis education",
-        "cultivation",
-        "plant science",
-        "learn"
-      ]
-    },
-    {
-      "id": "start-here",
-      "type": "Guide",
-      "title": "Start Here",
-      "route": "/learn/start-here/",
-      "summary": "Beginner pathway into plant biology, environment, roots, sanitation, measurement and observation.",
-      "keywords": [
-        "beginner",
-        "first grow",
-        "fundamentals"
-      ]
-    },
     {
       "id": "plant-atlas",
       "type": "Atlas",
@@ -57,57 +32,464 @@
       ]
     },
     {
-      "id": "encyclopedia",
-      "type": "Reference",
-      "title": "Cannabis Plant Science Encyclopedia",
-      "route": "/learn/encyclopedia/",
-      "summary": "Reference-level plant science and cultivation concepts organized into permanent THC encyclopedia topics.",
+      "id": "COURSE-LH-TECH2-001",
+      "type": "Courses",
+      "title": "Advanced Crop Observation & Diagnostic Reasoning",
+      "route": "/learn/learning-hub/cultivation-technician-ii/advanced-crop-observation-diagnostic-reasoning/",
+      "summary": "Multi-factor crop diagnosis using plant, environmental, root-zone, nutrition, spatial, temporal, and QA evidence while separating observation from unsupported causal claims.",
       "keywords": [
-        "encyclopedia",
-        "reference",
-        "THC-ENC"
+        "course",
+        "academy",
+        "certification training",
+        "THC Cultivation Technician II",
+        "cultivation-technician-ii",
+        "Curriculum built · public lesson release pending review",
+        "COURSE-LH-TECH2-001",
+        "PUBLIC-RELEASE-LH-TECH2-001"
+      ],
+      "terms": [],
+      "synonyms": [],
+      "aliases": [],
+      "objective": "",
+      "measurements": [],
+      "misconceptions": [],
+      "coreScience": [],
+      "cultivation": [],
+      "tools": [],
+      "program": "THC Cultivation Technician II",
+      "status": "public-academic",
+      "sourceRepository": "dtfgenetics/Thc-learning-courses-",
+      "sourceRef": "7ffb4810a48091c3c61714ccc1663d8a2a1d4e88"
+    },
+    {
+      "id": "COURSE-LH-TECH2-002",
+      "type": "Courses",
+      "title": "Environmental Data, Sensors & Equipment Response",
+      "route": "/learn/learning-hub/cultivation-technician-ii/environmental-data-sensors-equipment-response/",
+      "summary": "Sensor validity, representative placement, command-versus-response checks, light mapping, measured irrigation distribution, safe troubleshooting boundaries, fault classification, maintenance handoff, and post-action verification.",
+      "keywords": [
+        "course",
+        "academy",
+        "certification training",
+        "THC Cultivation Technician II",
+        "cultivation-technician-ii",
+        "Curriculum built · public lesson release pending review",
+        "COURSE-LH-TECH2-002",
+        "PUBLIC-RELEASE-LH-TECH2-002"
+      ],
+      "terms": [],
+      "synonyms": [],
+      "aliases": [],
+      "objective": "",
+      "measurements": [],
+      "misconceptions": [],
+      "coreScience": [],
+      "cultivation": [],
+      "tools": [],
+      "program": "THC Cultivation Technician II",
+      "status": "public-academic",
+      "sourceRepository": "dtfgenetics/Thc-learning-courses-",
+      "sourceRef": "7ffb4810a48091c3c61714ccc1663d8a2a1d4e88"
+    },
+    {
+      "id": "COURSE-LH-TECH1-003",
+      "type": "Courses",
+      "title": "Environmental, Light & Sensor Fundamentals",
+      "route": "/learn/learning-hub/cultivation-technician-i/environmental-light-sensor-fundamentals/",
+      "summary": "Temperature, RH and VPD context, PPFD and photoperiod checks, sensor placement and verification, alarm and trend interpretation, environmental records, and shift handoff.",
+      "keywords": [
+        "course",
+        "academy",
+        "certification training",
+        "THC Cultivation Technician I",
+        "cultivation-technician-i",
+        "Curriculum built · public lesson release pending review",
+        "COURSE-LH-TECH1-003",
+        "PUBLIC-RELEASE-LH-TECH1-003"
+      ],
+      "terms": [],
+      "synonyms": [],
+      "aliases": [],
+      "objective": "",
+      "measurements": [],
+      "misconceptions": [],
+      "coreScience": [],
+      "cultivation": [],
+      "tools": [],
+      "program": "THC Cultivation Technician I",
+      "status": "public-academic",
+      "sourceRepository": "dtfgenetics/Thc-learning-courses-",
+      "sourceRef": "7ffb4810a48091c3c61714ccc1663d8a2a1d4e88"
+    },
+    {
+      "id": "COURSE-LH-TECH2-003",
+      "type": "Courses",
+      "title": "Fertigation Execution, Verification & Root-Zone Interpretation",
+      "route": "/learn/learning-hub/cultivation-technician-ii/fertigation-execution-verification-root-zone-interpretation/",
+      "summary": "Approved batch readiness, material identity, controlled fertigation execution, measurement verification, root-zone and irrigation troubleshooting, chemical-safety boundaries, and evidence-based escalation without independent recipe design.",
+      "keywords": [
+        "course",
+        "academy",
+        "certification training",
+        "THC Cultivation Technician II",
+        "cultivation-technician-ii",
+        "Curriculum built · public lesson release pending review",
+        "COURSE-LH-TECH2-003",
+        "PUBLIC-RELEASE-LH-TECH2-003"
+      ],
+      "terms": [],
+      "synonyms": [],
+      "aliases": [],
+      "objective": "",
+      "measurements": [],
+      "misconceptions": [],
+      "coreScience": [],
+      "cultivation": [],
+      "tools": [],
+      "program": "THC Cultivation Technician II",
+      "status": "public-academic",
+      "sourceRepository": "dtfgenetics/Thc-learning-courses-",
+      "sourceRef": "7ffb4810a48091c3c61714ccc1663d8a2a1d4e88"
+    },
+    {
+      "id": "COURSE-LH-TECH1-006",
+      "type": "Courses",
+      "title": "Harvest, Postharvest, Traceability & Shift Handoff",
+      "route": "/learn/learning-hub/cultivation-technician-i/harvest-postharvest-traceability-shift-handoff/",
+      "summary": "Harvest authorization, clean-work readiness, controlled handling, material protection, dry-room receiving, harvest genealogy, quantity reconciliation, holds, deviations, and reconstructable handoff.",
+      "keywords": [
+        "course",
+        "academy",
+        "certification training",
+        "THC Cultivation Technician I",
+        "cultivation-technician-i",
+        "Curriculum built · public lesson release pending review",
+        "COURSE-LH-TECH1-006",
+        "PUBLIC-RELEASE-LH-TECH1-006"
+      ],
+      "terms": [],
+      "synonyms": [],
+      "aliases": [],
+      "objective": "",
+      "measurements": [],
+      "misconceptions": [],
+      "coreScience": [],
+      "cultivation": [],
+      "tools": [],
+      "program": "THC Cultivation Technician I",
+      "status": "public-academic",
+      "sourceRepository": "dtfgenetics/Thc-learning-courses-",
+      "sourceRef": "7ffb4810a48091c3c61714ccc1663d8a2a1d4e88"
+    },
+    {
+      "id": "COURSE-LH-TECH2-006",
+      "type": "Courses",
+      "title": "Harvest/Postharvest Deviations & Quality Response",
+      "route": "/learn/learning-hub/cultivation-technician-ii/harvest-postharvest-deviations-quality-response/",
+      "summary": "Postharvest containment, process-trend interpretation, product measurements, lot genealogy and affected-scope reasoning, QA role boundaries, deviation evidence, and reconstructable handoff without independent product disposition authority.",
+      "keywords": [
+        "course",
+        "academy",
+        "certification training",
+        "THC Cultivation Technician II",
+        "cultivation-technician-ii",
+        "Curriculum built · public lesson release pending review",
+        "COURSE-LH-TECH2-006",
+        "PUBLIC-RELEASE-LH-TECH2-006"
+      ],
+      "terms": [],
+      "synonyms": [],
+      "aliases": [],
+      "objective": "",
+      "measurements": [],
+      "misconceptions": [],
+      "coreScience": [],
+      "cultivation": [],
+      "tools": [],
+      "program": "THC Cultivation Technician II",
+      "status": "public-academic",
+      "sourceRepository": "dtfgenetics/Thc-learning-courses-",
+      "sourceRef": "7ffb4810a48091c3c61714ccc1663d8a2a1d4e88"
+    },
+    {
+      "id": "COURSE-LH-TECH1-007",
+      "type": "Courses",
+      "title": "Integrated Cultivation Technician Practice Lab",
+      "route": "/learn/learning-hub/cultivation-technician-i/integrated-cultivation-technician-practice-lab/",
+      "summary": "Integrated supervised practice linking Technician I crop-work evidence, Practicals A–F, critical-failure controls, evaluator evidence, remediation/retest rules, and the shift capstone.",
+      "keywords": [
+        "course",
+        "academy",
+        "certification training",
+        "THC Cultivation Technician I",
+        "cultivation-technician-i",
+        "Integrated lab built · validation pending",
+        "COURSE-LH-TECH1-007",
+        "PUBLIC-RELEASE-LH-TECH1-007"
+      ],
+      "terms": [],
+      "synonyms": [],
+      "aliases": [],
+      "objective": "",
+      "measurements": [],
+      "misconceptions": [],
+      "coreScience": [],
+      "cultivation": [],
+      "tools": [],
+      "program": "THC Cultivation Technician I",
+      "status": "public-academic",
+      "sourceRepository": "dtfgenetics/Thc-learning-courses-",
+      "sourceRef": "7ffb4810a48091c3c61714ccc1663d8a2a1d4e88"
+    },
+    {
+      "id": "COURSE-LH-TECH2-008",
+      "type": "Courses",
+      "title": "Integrated Technician II Simulation Lab",
+      "route": "/learn/learning-hub/cultivation-technician-ii/integrated-technician-ii-simulation-lab/",
+      "summary": "Integrated diagnostic-shift practice linking all seven Technician II practicals, non-compensatory critical-error controls, evaluator calibration, accessibility and equivalent-form controls, remediation/retest rules, and the Senior Technician capstone.",
+      "keywords": [
+        "course",
+        "academy",
+        "certification training",
+        "THC Cultivation Technician II",
+        "cultivation-technician-ii",
+        "Integrated lab built · validation pending",
+        "COURSE-LH-TECH2-008",
+        "PUBLIC-RELEASE-LH-TECH2-008"
+      ],
+      "terms": [],
+      "synonyms": [],
+      "aliases": [],
+      "objective": "",
+      "measurements": [],
+      "misconceptions": [],
+      "coreScience": [],
+      "cultivation": [],
+      "tools": [],
+      "program": "THC Cultivation Technician II",
+      "status": "public-academic",
+      "sourceRepository": "dtfgenetics/Thc-learning-courses-",
+      "sourceRef": "7ffb4810a48091c3c61714ccc1663d8a2a1d4e88"
+    },
+    {
+      "id": "COURSE-LH-TECH2-004",
+      "type": "Courses",
+      "title": "Plant Health, IPM & Biosecurity Troubleshooting",
+      "route": "/learn/learning-hub/cultivation-technician-ii/plant-health-ipm-biosecurity-troubleshooting/",
+      "summary": "Comparable scouting, incidence and severity trends, spatial evidence, intervention follow-up, quarantine and biosecurity, QA records, and treatment-authority boundaries.",
+      "keywords": [
+        "course",
+        "academy",
+        "certification training",
+        "THC Cultivation Technician II",
+        "cultivation-technician-ii",
+        "Curriculum built · public lesson release pending review",
+        "COURSE-LH-TECH2-004",
+        "PUBLIC-RELEASE-LH-TECH2-004"
+      ],
+      "terms": [],
+      "synonyms": [],
+      "aliases": [],
+      "objective": "",
+      "measurements": [],
+      "misconceptions": [],
+      "coreScience": [],
+      "cultivation": [],
+      "tools": [],
+      "program": "THC Cultivation Technician II",
+      "status": "public-academic",
+      "sourceRepository": "dtfgenetics/Thc-learning-courses-",
+      "sourceRef": "7ffb4810a48091c3c61714ccc1663d8a2a1d4e88"
+    },
+    {
+      "id": "COURSE-LH-TECH1-002",
+      "type": "Courses",
+      "title": "Plant Observation, Growth Stages & Crop Records",
+      "route": "/learn/learning-hub/cultivation-technician-i/plant-observation-growth-stages-crop-records/",
+      "summary": "Structured crop walks, representative observation, growth-stage and reproductive morphology records, diagnostic boundaries, photographs, crop records, and shift handoff.",
+      "keywords": [
+        "course",
+        "academy",
+        "certification training",
+        "THC Cultivation Technician I",
+        "cultivation-technician-i",
+        "Curriculum built · public lesson release pending review",
+        "COURSE-LH-TECH1-002",
+        "PUBLIC-RELEASE-LH-TECH1-002"
+      ],
+      "terms": [],
+      "synonyms": [],
+      "aliases": [],
+      "objective": "",
+      "measurements": [],
+      "misconceptions": [],
+      "coreScience": [],
+      "cultivation": [],
+      "tools": [],
+      "program": "THC Cultivation Technician I",
+      "status": "public-academic",
+      "sourceRepository": "dtfgenetics/Thc-learning-courses-",
+      "sourceRef": "7ffb4810a48091c3c61714ccc1663d8a2a1d4e88"
+    },
+    {
+      "id": "COURSE-LH-TECH2-005",
+      "type": "Courses",
+      "title": "Propagation & Canopy Performance Troubleshooting",
+      "route": "/learn/learning-hub/cultivation-technician-ii/propagation-canopy-performance-troubleshooting/",
+      "summary": "Propagation performance, donor and batch comparisons, advanced canopy and flowering response review, sanitation/IPM context, evidence-based troubleshooting, and QA handoff.",
+      "keywords": [
+        "course",
+        "academy",
+        "certification training",
+        "THC Cultivation Technician II",
+        "cultivation-technician-ii",
+        "Curriculum built · public lesson release pending review",
+        "COURSE-LH-TECH2-005",
+        "PUBLIC-RELEASE-LH-TECH2-005"
+      ],
+      "terms": [],
+      "synonyms": [],
+      "aliases": [],
+      "objective": "",
+      "measurements": [],
+      "misconceptions": [],
+      "coreScience": [],
+      "cultivation": [],
+      "tools": [],
+      "program": "THC Cultivation Technician II",
+      "status": "public-academic",
+      "sourceRepository": "dtfgenetics/Thc-learning-courses-",
+      "sourceRef": "7ffb4810a48091c3c61714ccc1663d8a2a1d4e88"
+    },
+    {
+      "id": "COURSE-LH-TECH1-005",
+      "type": "Courses",
+      "title": "Propagation, Canopy, IPM Scouting & Crop Care",
+      "route": "/learn/learning-hub/cultivation-technician-i/propagation-canopy-ipm-scouting-crop-care/",
+      "summary": "Propagation and transplant identity, routine canopy work, IPM scouting evidence, biosecurity and quarantine, SOP authority boundaries, QA records, and shift handoff.",
+      "keywords": [
+        "course",
+        "academy",
+        "certification training",
+        "THC Cultivation Technician I",
+        "cultivation-technician-i",
+        "Curriculum built · public lesson release pending review",
+        "COURSE-LH-TECH1-005",
+        "PUBLIC-RELEASE-LH-TECH1-005"
+      ],
+      "terms": [],
+      "synonyms": [],
+      "aliases": [],
+      "objective": "",
+      "measurements": [],
+      "misconceptions": [],
+      "coreScience": [],
+      "cultivation": [],
+      "tools": [],
+      "program": "THC Cultivation Technician I",
+      "status": "public-academic",
+      "sourceRepository": "dtfgenetics/Thc-learning-courses-",
+      "sourceRef": "7ffb4810a48091c3c61714ccc1663d8a2a1d4e88"
+    },
+    {
+      "id": "COURSE-LH-TECH1-001",
+      "type": "Courses",
+      "title": "Safety, Responsible Practice & Cultivation Workflows",
+      "route": "/learn/learning-hub/cultivation-technician-i/safety-responsible-practice-cultivation-workflows/",
+      "summary": "Build the workplace decision habits expected of a cultivation technician: hazard recognition, biosecurity, controlled instructions, traceability, equipment boundaries, trustworthy records, and professional shift handoff.",
+      "keywords": [
+        "course",
+        "academy",
+        "THC Cultivation Technician I",
+        "Available academic course",
+        "COURSE-LH-TECH1-001"
+      ],
+      "terms": [],
+      "synonyms": [],
+      "aliases": [],
+      "objective": "",
+      "measurements": [],
+      "misconceptions": [],
+      "coreScience": [],
+      "cultivation": [],
+      "tools": [],
+      "program": "THC Cultivation Technician I",
+      "status": "public-academic",
+      "sourceRepository": "dtfgenetics/Thc-learning-courses-",
+      "sourceRef": "7ffb4810a48091c3c61714ccc1663d8a2a1d4e88"
+    },
+    {
+      "id": "academy",
+      "type": "Courses",
+      "title": "THC Academy",
+      "route": "/courses/",
+      "summary": "Structured curriculum, lessons, practice, assessments and certification-oriented learning pathways.",
+      "keywords": [
+        "courses",
+        "academy",
+        "certification",
+        "assessment"
       ]
     },
     {
-      "id": "infographics",
-      "type": "Visual library",
-      "title": "THC Visual Education Library",
-      "route": "/learn/infographics/",
-      "summary": "Educational diagrams, charts and reference visuals for plant science and cultivation topics.",
+      "id": "COURSE-LH-TECH2-007",
+      "type": "Courses",
+      "title": "Traceability, Production Metrics, Shift Coordination & Peer Support",
+      "route": "/learn/learning-hub/cultivation-technician-ii/traceability-production-metrics-shift-coordination-peer-support/",
+      "summary": "Genealogy and reconciliation, KPI denominator and trend discipline, controlled-record integrity, SOP-based peer coaching, unresolved-work prioritization, and supervisor-ready shift handoff without formal supervisory authority.",
       "keywords": [
-        "infographics",
-        "visuals",
-        "charts",
-        "diagrams"
-      ]
+        "course",
+        "academy",
+        "certification training",
+        "THC Cultivation Technician II",
+        "cultivation-technician-ii",
+        "Curriculum built · public lesson release pending review",
+        "COURSE-LH-TECH2-007",
+        "PUBLIC-RELEASE-LH-TECH2-007"
+      ],
+      "terms": [],
+      "synonyms": [],
+      "aliases": [],
+      "objective": "",
+      "measurements": [],
+      "misconceptions": [],
+      "coreScience": [],
+      "cultivation": [],
+      "tools": [],
+      "program": "THC Cultivation Technician II",
+      "status": "public-academic",
+      "sourceRepository": "dtfgenetics/Thc-learning-courses-",
+      "sourceRef": "7ffb4810a48091c3c61714ccc1663d8a2a1d4e88"
     },
     {
-      "id": "plant-health",
-      "type": "Subject",
-      "title": "Plant Health, Scouting, Disease, Pests and IPM",
-      "route": "/learn/plant-health/",
-      "summary": "Observation, scouting, sanitation, quarantine, pest identification, disease context and evidence-based IPM.",
+      "id": "COURSE-LH-TECH1-004",
+      "type": "Courses",
+      "title": "Water, Root Zone, Nutrition & Irrigation Fundamentals",
+      "route": "/learn/learning-hub/cultivation-technician-i/water-root-zone-nutrition-irrigation-fundamentals/",
+      "summary": "Water sample identity, pH and EC measurement, root-zone moisture and dryback trends, nutrition evidence, authorized irrigation/fertigation work orders, equipment care, and reconstructable records.",
       "keywords": [
-        "ipm",
-        "pests",
-        "disease",
-        "scouting",
-        "quarantine",
-        "yellow leaves"
-      ]
-    },
-    {
-      "id": "cultivation-science",
-      "type": "Subject",
-      "title": "Cultivation Science",
-      "route": "/learn/cultivation-science/",
-      "summary": "Connected cultivation science across environment, lighting, irrigation, nutrition, crop stages and measurements.",
-      "keywords": [
-        "grow science",
-        "environment",
-        "lighting",
-        "nutrition"
-      ]
+        "course",
+        "academy",
+        "certification training",
+        "THC Cultivation Technician I",
+        "cultivation-technician-i",
+        "Curriculum built · public lesson release pending review",
+        "COURSE-LH-TECH1-004",
+        "PUBLIC-RELEASE-LH-TECH1-004"
+      ],
+      "terms": [],
+      "synonyms": [],
+      "aliases": [],
+      "objective": "",
+      "measurements": [],
+      "misconceptions": [],
+      "coreScience": [],
+      "cultivation": [],
+      "tools": [],
+      "program": "THC Cultivation Technician I",
+      "status": "public-academic",
+      "sourceRepository": "dtfgenetics/Thc-learning-courses-",
+      "sourceRef": "7ffb4810a48091c3c61714ccc1663d8a2a1d4e88"
     },
     {
       "id": "symptoms",
@@ -124,16 +506,40 @@
       ]
     },
     {
-      "id": "sops",
-      "type": "Reference",
-      "title": "SOPs and Measurement",
-      "route": "/learn/sops/",
-      "summary": "Measurement procedures for pH, EC, PPFD, DLI, VPD, scouting, sanitation, calibration and records.",
+      "id": "start-here",
+      "type": "Guide",
+      "title": "Start Here",
+      "route": "/learn/start-here/",
+      "summary": "Beginner pathway into plant biology, environment, roots, sanitation, measurement and observation.",
       "keywords": [
-        "sop",
-        "measurement",
-        "calibration",
-        "procedure"
+        "beginner",
+        "first grow",
+        "fundamentals"
+      ]
+    },
+    {
+      "id": "learn-home",
+      "type": "Learning hub",
+      "title": "Teaching Healthy Cultivation",
+      "route": "/learn/",
+      "summary": "Plant science, cultivation references, pathways, visuals, encyclopedia material and practical learning.",
+      "keywords": [
+        "cannabis education",
+        "cultivation",
+        "plant science",
+        "learn"
+      ]
+    },
+    {
+      "id": "encyclopedia",
+      "type": "Reference",
+      "title": "Cannabis Plant Science Encyclopedia",
+      "route": "/learn/encyclopedia/",
+      "summary": "Reference-level plant science and cultivation concepts organized into permanent THC encyclopedia topics.",
+      "keywords": [
+        "encyclopedia",
+        "reference",
+        "THC-ENC"
       ]
     },
     {
@@ -162,6 +568,19 @@
       ]
     },
     {
+      "id": "sops",
+      "type": "Reference",
+      "title": "SOPs and Measurement",
+      "route": "/learn/sops/",
+      "summary": "Measurement procedures for pH, EC, PPFD, DLI, VPD, scouting, sanitation, calibration and records.",
+      "keywords": [
+        "sop",
+        "measurement",
+        "calibration",
+        "procedure"
+      ]
+    },
+    {
       "id": "sources",
       "type": "Research",
       "title": "THC Evidence and Research Sources",
@@ -175,43 +594,87 @@
       ]
     },
     {
-      "id": "academy",
-      "type": "Courses",
-      "title": "THC Academy",
-      "route": "/courses/",
-      "summary": "Structured curriculum, lessons, practice, assessments and certification-oriented learning pathways.",
+      "id": "cultivation-science",
+      "type": "Subject",
+      "title": "Cultivation Science",
+      "route": "/learn/cultivation-science/",
+      "summary": "Connected cultivation science across environment, lighting, irrigation, nutrition, crop stages and measurements.",
       "keywords": [
-        "courses",
-        "academy",
-        "certification",
-        "assessment"
+        "grow science",
+        "environment",
+        "lighting",
+        "nutrition"
       ]
     },
     {
-      "id": "growlens",
-      "type": "Tool",
-      "title": "THC GrowLens",
-      "route": "/growlens/",
-      "summary": "Grow records, crop observations, photos, tasks and cultivation history in one workflow.",
+      "id": "propagation",
+      "type": "Subject",
+      "title": "Genetics, Crop Planning, Mother Stock, Cloning and Propagation",
+      "route": "/learn/propagation/",
+      "summary": "Genetics, crop planning, mother plants, cloning, propagation, identity and selection records.",
       "keywords": [
-        "journal",
-        "grow log",
-        "records",
-        "photos"
+        "genetics",
+        "cloning",
+        "mother plant",
+        "propagation",
+        "breeding"
       ]
     },
     {
-      "id": "grow-doc",
-      "type": "Tool",
-      "title": "THC Grow Doc",
-      "route": "/thc-grow-doc/",
-      "summary": "Evidence-first plant-health diagnostic workflow using observations, context, differentials and verification.",
+      "id": "environment",
+      "type": "Subject",
+      "title": "Light, Climate and Canopy Environment",
+      "route": "/learn/environment/",
+      "summary": "PPFD, DLI, photoperiod, temperature, humidity, VPD, airflow, canopy mapping and environmental control.",
       "keywords": [
-        "diagnose",
-        "plant doctor",
-        "deficiency",
-        "pest",
-        "disease"
+        "environment",
+        "lighting",
+        "climate",
+        "airflow",
+        "canopy"
+      ]
+    },
+    {
+      "id": "plant-health",
+      "type": "Subject",
+      "title": "Plant Health, Scouting, Disease, Pests and IPM",
+      "route": "/learn/plant-health/",
+      "summary": "Observation, scouting, sanitation, quarantine, pest identification, disease context and evidence-based IPM.",
+      "keywords": [
+        "ipm",
+        "pests",
+        "disease",
+        "scouting",
+        "quarantine",
+        "yellow leaves"
+      ]
+    },
+    {
+      "id": "root-zone",
+      "type": "Subject",
+      "title": "Root Zone, Water and Nutrition",
+      "route": "/learn/root-zone/",
+      "summary": "Media, root oxygen, source water, pH, EC, irrigation, dryback, nutrients and corrective action.",
+      "keywords": [
+        "roots",
+        "water",
+        "nutrition",
+        "media",
+        "irrigation",
+        "dryback"
+      ]
+    },
+    {
+      "id": "setup",
+      "type": "Subject",
+      "title": "Set Up Before You Grow",
+      "route": "/learn/setup/",
+      "summary": "Location, electrical and water safety, equipment mapping, sanitation, pest exclusion and room commissioning.",
+      "keywords": [
+        "setup",
+        "grow room",
+        "safety",
+        "equipment"
       ]
     },
     {
@@ -241,17 +704,30 @@
       ]
     },
     {
-      "id": "vpd-chart",
+      "id": "grow-doc",
       "type": "Tool",
-      "title": "VPD Chart",
-      "route": "/vpd-chart/",
-      "summary": "Calculate leaf VPD and analyze environmental logger CSV trends from temperature, RH and leaf temperature.",
+      "title": "THC Grow Doc",
+      "route": "/thc-grow-doc/",
+      "summary": "Evidence-first plant-health diagnostic workflow using observations, context, differentials and verification.",
       "keywords": [
-        "vpd",
-        "humidity",
-        "temperature",
-        "leaf temperature",
-        "environment"
+        "diagnose",
+        "plant doctor",
+        "deficiency",
+        "pest",
+        "disease"
+      ]
+    },
+    {
+      "id": "growlens",
+      "type": "Tool",
+      "title": "THC GrowLens",
+      "route": "/growlens/",
+      "summary": "Grow records, crop observations, photos, tasks and cultivation history in one workflow.",
+      "keywords": [
+        "journal",
+        "grow log",
+        "records",
+        "photos"
       ]
     },
     {
@@ -269,59 +745,30 @@
       ]
     },
     {
-      "id": "setup",
-      "type": "Subject",
-      "title": "Set Up Before You Grow",
-      "route": "/learn/setup/",
-      "summary": "Location, electrical and water safety, equipment mapping, sanitation, pest exclusion and room commissioning.",
+      "id": "vpd-chart",
+      "type": "Tool",
+      "title": "VPD Chart",
+      "route": "/vpd-chart/",
+      "summary": "Calculate leaf VPD and analyze environmental logger CSV trends from temperature, RH and leaf temperature.",
       "keywords": [
-        "setup",
-        "grow room",
-        "safety",
-        "equipment"
+        "vpd",
+        "humidity",
+        "temperature",
+        "leaf temperature",
+        "environment"
       ]
     },
     {
-      "id": "root-zone",
-      "type": "Subject",
-      "title": "Root Zone, Water and Nutrition",
-      "route": "/learn/root-zone/",
-      "summary": "Media, root oxygen, source water, pH, EC, irrigation, dryback, nutrients and corrective action.",
+      "id": "infographics",
+      "type": "Visual library",
+      "title": "THC Visual Education Library",
+      "route": "/learn/infographics/",
+      "summary": "Educational diagrams, charts and reference visuals for plant science and cultivation topics.",
       "keywords": [
-        "roots",
-        "water",
-        "nutrition",
-        "media",
-        "irrigation",
-        "dryback"
-      ]
-    },
-    {
-      "id": "environment",
-      "type": "Subject",
-      "title": "Light, Climate and Canopy Environment",
-      "route": "/learn/environment/",
-      "summary": "PPFD, DLI, photoperiod, temperature, humidity, VPD, airflow, canopy mapping and environmental control.",
-      "keywords": [
-        "environment",
-        "lighting",
-        "climate",
-        "airflow",
-        "canopy"
-      ]
-    },
-    {
-      "id": "propagation",
-      "type": "Subject",
-      "title": "Genetics, Crop Planning, Mother Stock, Cloning and Propagation",
-      "route": "/learn/propagation/",
-      "summary": "Genetics, crop planning, mother plants, cloning, propagation, identity and selection records.",
-      "keywords": [
-        "genetics",
-        "cloning",
-        "mother plant",
-        "propagation",
-        "breeding"
+        "infographics",
+        "visuals",
+        "charts",
+        "diagrams"
       ]
     }
   ]
