@@ -120,6 +120,12 @@
         deep.closest('[data-deep-panel]').hidden = false;
       }
 
+      const evidenceCard=document.createElement('section');
+      evidenceCard.className='content-card'; evidenceCard.dataset.atlasEvidence='';
+      evidenceCard.innerHTML='<h2>Research evidence</h2><p>Loading reviewed and structured evidence…</p>';
+      document.querySelector('aside.content-stack')?.appendChild(evidenceCard);
+      import('/atlas/atlas-evidence-v1.mjs').then(({loadAtlasEvidence,renderAtlasEvidencePanel})=>loadAtlasEvidence({systemId:system.id}).then(e=>renderAtlasEvidencePanel(evidenceCard,e))).catch(error=>{console.warn('Atlas evidence unavailable',error); evidenceCard.innerHTML='<h2>Research evidence</h2><p>Evidence services are temporarily unavailable. Atlas learning content remains available.</p>';});
+
       if (!document.querySelector('script[data-atlas-study-runtime]')) {
         const study = document.createElement('script');
         study.src = '/atlas/atlas-study-progress-v1.js';
