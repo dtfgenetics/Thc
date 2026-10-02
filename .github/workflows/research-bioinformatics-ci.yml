@@ -1,0 +1,36 @@
+name: Research Bioinformatics CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'data/research/**'
+      - 'scripts/normalize-grin-hemp-export.mjs'
+      - 'scripts/normalize-ncbi-sra-runinfo.mjs'
+      - 'scripts/validate-research-bioinformatics.mjs'
+      - 'package.json'
+      - '.github/workflows/research-bioinformatics-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'data/research/**'
+      - 'scripts/normalize-grin-hemp-export.mjs'
+      - 'scripts/normalize-ncbi-sra-runinfo.mjs'
+      - 'scripts/validate-research-bioinformatics.mjs'
+      - 'package.json'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify research bioinformatics
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate research schemas and adapters
+        run: npm run verify:research-bioinformatics
