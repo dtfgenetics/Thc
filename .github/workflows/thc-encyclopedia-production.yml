@@ -62,6 +62,8 @@ jobs:
           node-version: '22'
       - name: Build completion scorecard
         run: npm run build:encyclopedia-scorecard
+      - name: Validate reviewed dataset claim bridge
+        run: npm run verify:encyclopedia-dataset-claim-bridge
       - name: Build evidence tracking
         run: npm run build:encyclopedia-evidence
       - name: Build evidence priority queue
