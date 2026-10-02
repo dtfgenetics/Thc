@@ -1,5 +1,5 @@
 import { setDefaultResultOrder } from 'node:dns';
-import { writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 
 setDefaultResultOrder('ipv4first');
 
@@ -11,16 +11,9 @@ const MAX_IMAGES=Math.max(0,Number(process.env.DTF_VISUAL_AUDIT_MAX_IMAGES||250)
 const JSON_REPORT=process.env.DTF_VISUAL_AUDIT_JSON||'sitewide-visual-integrity.json';
 const MARKDOWN_REPORT=process.env.DTF_VISUAL_AUDIT_MD||'sitewide-visual-integrity.md';
 
-const expectedNav=[
-  ['Home','/'],
-  ['Seeds','/seeds/'],
-  ['Learn','/learn/'],
-  ['Courses','/courses/'],
-  ['Tools','/tools/'],
-  ['Games','/games/'],
-  ['Community','/community/'],
-  ['Shop','/shop/']
-];
+const navigationRegistry=JSON.parse(await readFile(new URL('../data/public-navigation.json',import.meta.url),'utf8'));
+const expectedNav=(navigationRegistry.primaryNavigation||[]).map(item=>[String(item.label||''),String(item.route||'')]);
+if(!expectedNav.length) throw new Error('Canonical primary navigation registry is empty');
 const obsoletePrimaryLabels=['Genetics','Diagnostic'];
 const seedRoutes=['/','/seeds/','/learn/','/courses/','/tools/','/games/','/projects/','/community/','/shop/'];
 const densityRoutes=new Set(['/learn/','/tools/','/games/','/projects/']);
