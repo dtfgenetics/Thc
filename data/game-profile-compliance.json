@@ -81,9 +81,9 @@
   ],
   "summary": {
     "gameCount": 30,
-    "compliantCount": 20,
-    "debtCount": 15,
-    "gamesWithDebt": 10
+    "compliantCount": 23,
+    "debtCount": 12,
+    "gamesWithDebt": 7
   },
   "games": [
     {
@@ -285,14 +285,8 @@
         "securityProfile": "persistent-solo",
         "accessibilityProfile": "text-ui"
       },
-      "compliant": false,
-      "debt": [
-        {
-          "code": "missing-save-version",
-          "severity": "release-blocking-for-strict-profile",
-          "requirement": "Declare a real architecture.saveVersion and preserve migration/recovery evidence."
-        }
-      ]
+      "compliant": true,
+      "debt": []
     },
     {
       "id": "high-lines",
@@ -405,14 +399,8 @@
         "securityProfile": "persistent-solo",
         "accessibilityProfile": "3d-game"
       },
-      "compliant": false,
-      "debt": [
-        {
-          "code": "missing-save-version",
-          "severity": "release-blocking-for-strict-profile",
-          "requirement": "Declare a real architecture.saveVersion and preserve migration/recovery evidence."
-        }
-      ]
+      "compliant": true,
+      "debt": []
     },
     {
       "id": "protect-the-plants",
@@ -469,21 +457,15 @@
         "gameplayProfile": "arcade-action",
         "rendererProfile": "canvas2d",
         "sessionProfile": "medium",
-        "persistenceProfile": "checkpoint",
+        "persistenceProfile": "progress",
         "networkProfile": "local",
         "contentProfile": "static",
         "performanceProfile": "2d-game",
         "securityProfile": "persistent-solo",
         "accessibilityProfile": "action-game"
       },
-      "compliant": false,
-      "debt": [
-        {
-          "code": "missing-save-version",
-          "severity": "release-blocking-for-strict-profile",
-          "requirement": "Declare a real architecture.saveVersion and preserve migration/recovery evidence."
-        }
-      ]
+      "compliant": true,
+      "debt": []
     },
     {
       "id": "seed-man-platformer",
