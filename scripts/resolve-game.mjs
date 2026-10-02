@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 
 const registry=JSON.parse(fs.readFileSync('data/game-registry-v2.json','utf8'));
+const profileCatalog=JSON.parse(fs.readFileSync('configuration/game-qa/game-profiles.json','utf8'));
 const args=process.argv.slice(2).filter(arg=>arg!=='--json');
 const asJson=process.argv.includes('--json');
 const requested=args.join(' ').trim();
@@ -23,6 +24,14 @@ if(!game){
   console.error(`Registry alias resolves to missing game: ${canonicalId}`);
   process.exit(1);
 }
+
+const assignment=profileCatalog.games?.[game.id] ?? [];
+const dimensionNames=Object.keys(profileCatalog.dimensions||{});
+const profile=Object.fromEntries(dimensionNames.map((name,index)=>[name,assignment[index] ?? null]));
+const requiredChecks=[
+  ...(profileCatalog.requiredChecks?.core ?? []),
+  ...(profileCatalog.requiredChecks?.[profile.gameplayProfile] ?? []),
+];
 
 const canonical={
   id:game.id,
@@ -46,6 +55,10 @@ const canonical={
   developmentLocations:game.developmentLocations ?? [],
   deprecatedLocations:game.deprecatedLocations ?? [],
   architecture:game.architecture ?? {},
+  profile,
+  requiredChecks,
+  performanceBudget:profileCatalog.performanceBudgets?.[profile.performanceProfile] ?? null,
+  profileReferences:profileCatalog.references ?? [],
 };
 
 if(asJson){
@@ -64,6 +77,15 @@ console.log(`Public route: ${canonical.publicRoute ?? '—'}`);
 console.log(`Release status: ${canonical.releaseStatus ?? '—'}`);
 console.log(`Overlay eligible: ${canonical.overlayEligible===null ? '—' : String(canonical.overlayEligible)}`);
 console.log(`Build/verification: ${canonical.buildCommand ?? '—'}`);
+console.log('Profile:');
+for(const [name,value] of Object.entries(canonical.profile)) console.log(`- ${name}: ${value ?? '—'}`);
+if(canonical.performanceBudget){
+  console.log(`Performance budget: soft ${canonical.performanceBudget.initialBytesSoft} B, hard ${canonical.performanceBudget.initialBytesHard} B, target playable ${canonical.performanceBudget.targetTimeToPlayableMs} ms`);
+}
+if(canonical.requiredChecks.length){
+  console.log('Required profile checks:');
+  for(const check of canonical.requiredChecks) console.log(`- ${check}`);
+}
 console.log('');
 console.log('Next milestone:');
 console.log(canonical.nextMilestone ?? '—');
