@@ -6,6 +6,12 @@ const profiles=JSON.parse(fs.readFileSync('configuration/game-qa/game-profiles.j
 const errors=[];
 const warnings=[];
 const strict=process.argv.includes('--strict');
+const idIndex=process.argv.indexOf('--id');
+const requestedId=idIndex>=0 ? process.argv[idIndex+1] : null;
+if(idIndex>=0 && !requestedId){
+  console.error('Usage: node scripts/validate-game-profiles.mjs [--strict] [--id <game-id>]');
+  process.exit(2);
+}
 
 const dimensions=profiles.dimensions||{};
 const dimensionNames=Object.keys(dimensions);
@@ -27,7 +33,12 @@ for(const id of mappedIds){
   if(!registryIds.has(id)) fail(`${id}: game profile assignment points to unknown registry game`);
 }
 
-for(const game of registry.games||[]){
+const scopedGames=requestedId
+  ? (registry.games||[]).filter(game=>game.id===requestedId)
+  : (registry.games||[]);
+if(requestedId && scopedGames.length===0) fail(`unknown game id: ${requestedId}`);
+
+for(const game of scopedGames){
   const assignment=profiles.games?.[game.id];
   if(!assignment || typeof assignment!=='object' || Array.isArray(assignment)) {
     fail(`${game.id}: profile assignment must be an object with named dimensions`);
@@ -115,4 +126,4 @@ if(errors.length || (strict&&warnings.length)){
   process.exit(1);
 }
 
-console.log(`Game profiles valid: ${registryIds.size} games covered across ${dimensionNames.length} dimensions; ${warnings.length} compliance warning(s).`);
+console.log(`Game profiles valid: ${requestedId ? 1 : registryIds.size} game(s) checked across ${dimensionNames.length} dimensions; ${warnings.length} compliance warning(s).`);
