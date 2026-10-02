@@ -52,5 +52,18 @@
     "Coordinates from CBDRx-cs10 GCF_900626175.2 remain in that assembly until a validated liftover is recorded.",
     "Otto II BioProject metadata does not establish a usable assembly coordinate system until public assembly accessions are linked.",
     "A current NCBI assembly is not automatically equivalent to the assembly used in a historical publication."
+  ],
+  "reference_families": [
+    {
+      "id": "CANNABIS-REFERENCE-PANGENOME-2025",
+      "source": "Cannabis Reference Pangenome",
+      "umbrella_bioproject": "PRJNA1140642",
+      "sequence_bioproject": "PRJNA904266",
+      "assembly_count_reported": 193,
+      "chromosome_scale_count_reported": 150,
+      "usda_grin_reference_count_reported": 11,
+      "use_status": "PANGENOME_REFERENCE_FAMILY",
+      "note": "Prefer assembly/haplotype-specific coordinates. Use pangenome graph resources for cross-genotype structural context rather than pretending one linear assembly represents the species."
+    }
   ]
 }
