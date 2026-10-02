@@ -32,6 +32,10 @@ const requiredChecks=[
   ...(profileCatalog.requiredChecks?.core ?? []),
   ...(profileCatalog.requiredChecks?.[profile.gameplayProfile] ?? []),
 ];
+for(const [dimension,value] of Object.entries(profile)){
+  for(const check of profileCatalog.dimensionChecks?.[dimension]?.[value] ?? []) requiredChecks.push(check);
+}
+const uniqueRequiredChecks=[...new Set(requiredChecks)];
 
 const canonical={
   id:game.id,
@@ -56,7 +60,7 @@ const canonical={
   deprecatedLocations:game.deprecatedLocations ?? [],
   architecture:game.architecture ?? {},
   profile,
-  requiredChecks,
+  requiredChecks:uniqueRequiredChecks,
   performanceBudget:profileCatalog.performanceBudgets?.[profile.performanceProfile] ?? null,
   profileReferences:profileCatalog.references ?? [],
 };
