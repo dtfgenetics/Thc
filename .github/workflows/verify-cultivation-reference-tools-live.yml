@@ -32,6 +32,9 @@ jobs:
       - name: Clone canonical Tools repository
         run: git clone --depth 1 https://github.com/dtfgenetics/Tools.git /tmp/tools
 
+      - name: Require current canonical Tools mirror
+        run: node scripts/validate-canonical-tools-mirror.mjs /tmp/tools
+
       - name: Verify visitor-facing canonical tool routes
         env:
           DTF_SITE_URL: https://dtfseeds.com
