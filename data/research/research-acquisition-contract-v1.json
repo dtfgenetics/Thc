@@ -43,6 +43,24 @@
         "Do not assign GRIN accession IDs unless the public source explicitly links them.",
         "Do not translate coordinates between assemblies without a recorded liftover."
       ]
+    },
+    "official_runinfo_cgi": {
+      "documentation_url": "https://www.ncbi.nlm.nih.gov/books/NBK242621/",
+      "endpoint": "https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi",
+      "query_parameters": {
+        "save": "efetch",
+        "db": "sra",
+        "rettype": "runinfo",
+        "term": "<Entrez query or project accession>"
+      },
+      "command": "node scripts/fetch-ncbi-sra-runinfo.mjs <query> --output <runinfo.csv>",
+      "example": "node scripts/fetch-ncbi-sra-runinfo.mjs PRJNA1206134 --output data/research/imported/ncbi/raw/PRJNA1206134-runinfo.csv",
+      "rules": [
+        "Use HTTPS even though older NCBI documentation examples show HTTP.",
+        "Validate that the response is RunInfo CSV before writing downstream normalized data.",
+        "Do not overwrite an existing raw export unless --force is explicitly supplied.",
+        "Treat raw RunInfo exports as immutable acquisition artifacts once recorded."
+      ]
     }
   },
   "ncbi_biosample": {

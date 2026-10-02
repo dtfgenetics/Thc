@@ -239,3 +239,15 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(`Public genomics run-batch validation passed for ${runIds.size} verified runs.`);
+
+const runInfoCgi = acquisitionContract.ncbi_sra?.official_runinfo_cgi;
+if (!runInfoCgi?.endpoint?.startsWith('https://')) errors.push('NCBI RunInfo CGI endpoint must use HTTPS');
+if (runInfoCgi?.query_parameters?.rettype !== 'runinfo') errors.push('NCBI RunInfo CGI must request rettype=runinfo');
+if (runInfoCgi?.query_parameters?.db !== 'sra') errors.push('NCBI RunInfo CGI must target db=sra');
+if (!runInfoCgi?.command?.includes('fetch-ncbi-sra-runinfo.mjs')) errors.push('NCBI RunInfo acquisition command missing fetcher');
+if (errors.length) {
+  console.error('NCBI RunInfo acquisition validation failed:');
+  for (const error of errors) console.error(`- ${error}`);
+  process.exit(1);
+}
+console.log('NCBI RunInfo acquisition contract validation passed.');

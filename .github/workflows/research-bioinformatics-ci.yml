@@ -7,6 +7,7 @@ on:
       - 'data/research/**'
       - 'scripts/normalize-grin-hemp-export.mjs'
       - 'scripts/normalize-ncbi-*.mjs'
+      - 'scripts/fetch-ncbi-*.mjs'
       - 'scripts/validate-research-bioinformatics.mjs'
       - 'package.json'
       - '.github/workflows/research-bioinformatics-ci.yml'
@@ -16,6 +17,7 @@ on:
       - 'data/research/**'
       - 'scripts/normalize-grin-hemp-export.mjs'
       - 'scripts/normalize-ncbi-*.mjs'
+      - 'scripts/fetch-ncbi-*.mjs'
       - 'scripts/validate-research-bioinformatics.mjs'
       - 'package.json'
 
