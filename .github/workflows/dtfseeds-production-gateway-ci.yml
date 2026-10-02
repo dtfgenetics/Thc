@@ -7,6 +7,10 @@ on:
       - site/deployment/release-lanes.json
       - scripts/plan-dtfseeds-release.mjs
       - scripts/run-workflow-and-wait.sh
+      - configuration/release-observability-contract.json
+      - scripts/build-release-observability.mjs
+      - scripts/test-release-observability.mjs
+      - scripts/validate-release-observability.mjs
       - .github/workflows/dtfseeds-production-gateway.yml
       - .github/workflows/dtfseeds-production-gateway-ci.yml
   workflow_dispatch:
@@ -33,6 +37,11 @@ jobs:
           set -euo pipefail
           node --check scripts/plan-dtfseeds-release.mjs
           bash -n scripts/run-workflow-and-wait.sh
+          node --check scripts/build-release-observability.mjs
+          node --check scripts/test-release-observability.mjs
+          node --check scripts/validate-release-observability.mjs
+          node scripts/test-release-observability.mjs
+          node scripts/validate-release-observability.mjs
           node -e "JSON.parse(require('fs').readFileSync('site/deployment/release-lanes.json','utf8'))"
           grep -Fq 'concurrency:' .github/workflows/dtfseeds-production-gateway.yml
           grep -Fq 'cancel-in-progress: false' .github/workflows/dtfseeds-production-gateway.yml
