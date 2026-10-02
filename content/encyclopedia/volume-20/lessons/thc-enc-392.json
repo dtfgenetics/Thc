@@ -24,7 +24,14 @@
     "Define how many individuals and families will be retained before evaluation. Monitor effective parent number and compare predicted gain with realized progeny performance."
   ],
   "measureAndRecord": [
-    "Base population; trait mean and variance; heritability/accuracy estimate; selected proportion; selection differential; family contributions; generation interval; predicted response; realized progeny response; correlated traits; inbreeding indicators."
+    {
+      "field": "Breeding decision record",
+      "requirement": "For Selection Intensity and Genetic Gain, record program ID, generation or cross ID, parent or family IDs, target traits, selection criteria, trait units, rejection rules, and the decision date. Preserve the original controlled note: Base population; trait mean and variance; heritability/accuracy estimate; selected proportion; selection differential; family contributions; generation interval; predicted response; realized progeny response; correlated traits; inbreeding indicators."
+    },
+    {
+      "field": "Evidence and population record",
+      "requirement": "Record population size, sampling method, trial environment, replication, lab or field measurements, pedigree or marker evidence when used, selected individuals or families, and the reason the result does or does not meet the release standard."
+    }
   ],
   "misconceptions": [
     "Selecting only the top plant creates the fastest long-term progress.",

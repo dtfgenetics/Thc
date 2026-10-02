@@ -4,13 +4,34 @@
   "title": "Screen and Trellis Systems",
   "objective": "Explain screens and trellises as physical canopy-support and shoot-positioning systems, and show how their effects depend on architecture, spacing, light distribution, airflow, access, and the training decisions made around the support structure.",
   "terms": [
-    {"term":"trellis","definition":"A physical support structure used to hold, guide, separate, or stabilize plant shoots."},
-    {"term":"screen","definition":"A grid-like support or positioning surface used to distribute shoots across a defined area; in cannabis cultivation it is often associated with the informal term Screen of Green or SCROG."},
-    {"term":"shoot positioning","definition":"Deliberate placement or redirection of shoots to change their location, orientation, spacing, or support within a canopy."},
-    {"term":"canopy plane","definition":"A practical reference surface describing the height or spatial layer at which actively growing shoots or reproductive structures are distributed."},
-    {"term":"self-shading","definition":"Reduction of light to one plant organ because other leaves or shoots on the same plant intercept radiation first."},
-    {"term":"support load","definition":"The mechanical weight and force carried by a branch, attachment point, tie, net, frame, or other support component."},
-    {"term":"canopy access","definition":"The ability to inspect, measure, prune, harvest, and service plants without excessive obstruction from foliage or support structures."}
+    {
+      "term": "trellis",
+      "definition": "A physical support structure used to hold, guide, separate, or stabilize plant shoots."
+    },
+    {
+      "term": "screen",
+      "definition": "A grid-like support or positioning surface used to distribute shoots across a defined area; in cannabis cultivation it is often associated with the informal term Screen of Green or SCROG."
+    },
+    {
+      "term": "shoot positioning",
+      "definition": "Deliberate placement or redirection of shoots to change their location, orientation, spacing, or support within a canopy."
+    },
+    {
+      "term": "canopy plane",
+      "definition": "A practical reference surface describing the height or spatial layer at which actively growing shoots or reproductive structures are distributed."
+    },
+    {
+      "term": "self-shading",
+      "definition": "Reduction of light to one plant organ because other leaves or shoots on the same plant intercept radiation first."
+    },
+    {
+      "term": "support load",
+      "definition": "The mechanical weight and force carried by a branch, attachment point, tie, net, frame, or other support component."
+    },
+    {
+      "term": "canopy access",
+      "definition": "The ability to inspect, measure, prune, harvest, and service plants without excessive obstruction from foliage or support structures."
+    }
   ],
   "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
   "coreScience": [
@@ -24,11 +45,26 @@
     "Keep structural support distinct from plant-density decisions. A screen can spread one plant over more area or organize several plants in less space, and those scenarios create different competition, root-zone, irrigation, and yield-per-area questions."
   ],
   "measureAndRecord": [
-    {"field":"Support geometry","requirement":"Grid or support type, height, dimensions, spacing of support points or openings, attachment method, and whether one or multiple support layers are present."},
-    {"field":"Shoot distribution","requirement":"Number of retained leaders, shoot positions, canopy width, height variation, overlap, empty areas, and branch order at defined dates."},
-    {"field":"Light environment","requirement":"Representative PPFD or other relevant light readings at defined canopy positions and times, plus visible self-shading and lower-canopy decline."},
-    {"field":"Mechanical condition","requirement":"Branch loading, bending at support points, abrasion, constriction, breakage, net/frame movement, and any failed attachments."},
-    {"field":"Access and health","requirement":"Ability to inspect both canopy surfaces and lower stems, airflow-related observations, sanitation access, pest/disease findings, and harvest or maintenance constraints."}
+    {
+      "field": "Support geometry",
+      "requirement": "Grid or support type, height, dimensions, spacing of support points or openings, attachment method, and whether one or multiple support layers are present."
+    },
+    {
+      "field": "Shoot distribution",
+      "requirement": "Number of retained leaders, shoot positions, canopy width, height variation, overlap, empty areas, and branch order at defined dates."
+    },
+    {
+      "field": "Light environment",
+      "requirement": "Representative PPFD or other relevant light readings at defined canopy positions and times, plus visible self-shading and lower-canopy decline."
+    },
+    {
+      "field": "Mechanical condition",
+      "requirement": "Branch loading, bending at support points, abrasion, constriction, breakage, net/frame movement, and any failed attachments."
+    },
+    {
+      "field": "Access and health",
+      "requirement": "Ability to inspect both canopy surfaces and lower stems, airflow-related observations, sanitation access, pest/disease findings, and harvest or maintenance constraints."
+    }
   ],
   "misconceptions": [
     "A flat-looking screen guarantees equal light to every flowering site.",
@@ -62,5 +98,19 @@
     "websiteAction": "publish_with_review_notice"
   },
   "slug": "screen-and-trellis-systems",
-  "route": "/encyclopedia/screen-and-trellis-systems"
+  "route": "/encyclopedia/screen-and-trellis-systems",
+  "knowledgeCheck": [
+    "For \"Screen and Trellis Systems\", explain the mechanism behind this objective: Explain screens and trellises as physical canopy-support and shoot-positioning systems, and show how their effects depend on architecture, spacing, light distribution, airflow, access, and the training decisions made around the support structure. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"A flat-looking screen guarantees equal light to every flowering site.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Evaluate a support system by measurable functions: branch stability, shoot spacing, canopy height variation, light distribution, inspection access, airflow-related observations, and harvest accessibility. Do not score a trellis only by whether the grid appears full. Build a verification plan using the lesson's record set (Support geometry: Grid or support type, height, dimensions, spacing of support points or openings, attachment method, and whether one or multiple support layers are present.; Shoot distribution: Number of retained leaders, shoot positions, canopy width, height variation, overlap, empty areas, and branch order at defined dates.; Light environment: Representative PPFD or other relevant light readings at defined canopy positions and times, plus visible self-shading and lower-canopy decline.; Mechanical condition: Branch loading, bending at support points, abrasion, constriction, breakage, net/frame movement, and any failed attachments.; Access and health: Ability to inspect both canopy surfaces and lower stems, airflow-related observations, sanitation access, pest/disease findings, and harvest or maintenance constraints.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  }
 }

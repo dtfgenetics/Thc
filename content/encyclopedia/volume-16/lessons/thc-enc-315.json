@@ -93,5 +93,19 @@
     "websiteAction": "publish_with_review_notice"
   },
   "slug": "false-negatives-composite-samples-and-test-timing",
-  "route": "/encyclopedia/false-negatives-composite-samples-and-test-timing"
+  "route": "/encyclopedia/false-negatives-composite-samples-and-test-timing",
+  "knowledgeCheck": [
+    "For \"False Negatives, Composite Samples, and Test Timing\", explain the mechanism behind this objective: Interpret negative Cannabis pathogen tests as sample- and time-specific evidence, understand how tissue distribution, pathogen load, assay sensitivity, inhibitors, sampling error, pooling, and infection timing can produce false negatives, and design retesting decisions around biological risk rather than certainty language. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"A negative PCR means the whole plant is guaranteed pathogen-free: A negative result means the target was not detected in the tested specimen under that assay's conditions; tissue choice, timing, target load, specimen quality, and assay limits still constrain what can be concluded.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Report negatives as 'not detected in this sample' with tissue, method, laboratory, and date rather than using the unqualified word 'clean.' Build a verification plan using the lesson's record set (Negative-result metadata: Record pathogen target, assay, laboratory, tissue, plant ID or pool members, date, plant stage, symptom/exposure status, and quality-control notes.; Timing: Record known or estimated exposure date and days between exposure, symptom onset, sampling, and any retest.; Pool design: Record number of plants/tissues combined, contribution per source, pooling method, laboratory validation or instruction, and individual identities retained for follow-up.; Retest rationale: State whether retesting is driven by high exposure, persistent symptoms, early timing, tissue-distribution concern, invalid controls, poor specimen integrity, or a formal clearance protocol.; Discordance: When tests disagree, preserve all results and investigate method, tissue, timing, and biological explanations rather than deleting the inconvenient result.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  }
 }

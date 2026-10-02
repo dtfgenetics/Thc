@@ -25,7 +25,14 @@
     "Use backcrossing for a defined introgression goal, not as a generic path to “make it like the parent.” Preserve donor, recurrent parent, intermediates, and flanking-marker data."
   ],
   "measureAndRecord": [
-    "Donor/recurrent IDs; target trait and causal/linked evidence; backcross generation; markers and recombination; recurrent genome estimate; phenotype and penetrance; donor segment size; fertility; off-target traits; selected and rejected progeny."
+    {
+      "field": "Breeding decision record",
+      "requirement": "For Backcrossing and Recurrent-Parent Recovery, record program ID, generation or cross ID, parent or family IDs, target traits, selection criteria, trait units, rejection rules, and the decision date. Preserve the original controlled note: Donor/recurrent IDs; target trait and causal/linked evidence; backcross generation; markers and recombination; recurrent genome estimate; phenotype and penetrance; donor segment size; fertility; off-target traits; selected and rejected progeny."
+    },
+    {
+      "field": "Evidence and population record",
+      "requirement": "Record population size, sampling method, trial environment, replication, lab or field measurements, pedigree or marker evidence when used, selected individuals or families, and the reason the result does or does not meet the release standard."
+    }
   ],
   "misconceptions": [
     "Each backcross offspring has exactly the expected genome percentage.",

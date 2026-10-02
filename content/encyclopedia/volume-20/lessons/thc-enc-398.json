@@ -24,7 +24,14 @@
     "Calculate and monitor parent and family contributions every cycle. Preserve an unselected base sample and document all bottlenecks."
   ],
   "measureAndRecord": [
-    "Population and cycle ID; census size; breeding parents; sex ratio; relationships; pollen and seed contribution by family; mortality and fertility; selection proportion; effective-size estimate; allele/marker diversity; contamination checks; backups."
+    {
+      "field": "Breeding decision record",
+      "requirement": "For Population Maintenance and Avoiding Genetic Bottlenecks, record program ID, generation or cross ID, parent or family IDs, target traits, selection criteria, trait units, rejection rules, and the decision date. Preserve the original controlled note: Population and cycle ID; census size; breeding parents; sex ratio; relationships; pollen and seed contribution by family; mortality and fertility; selection proportion; effective-size estimate; allele/marker diversity; contamination checks; backups."
+    },
+    {
+      "field": "Evidence and population record",
+      "requirement": "Record population size, sampling method, trial environment, replication, lab or field measurements, pedigree or marker evidence when used, selected individuals or families, and the reason the result does or does not meet the release standard."
+    }
   ],
   "misconceptions": [
     "A field with hundreds of plants cannot have a bottleneck.",

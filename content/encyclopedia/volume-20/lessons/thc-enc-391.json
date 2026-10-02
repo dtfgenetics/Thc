@@ -24,7 +24,14 @@
     "Write the biological model, measurement scale, unit, and decision rule for every selected trait. Preserve raw values even when a pass/fail decision is required."
   ],
   "measureAndRecord": [
-    "Trait definition and distribution; categorical classes or numeric unit; observer/instrument; repeatability; environment and stage; marker/phenotype relationship; threshold and rationale; missing and ambiguous cases."
+    {
+      "field": "Breeding decision record",
+      "requirement": "For Qualitative Versus Quantitative Selection, record program ID, generation or cross ID, parent or family IDs, target traits, selection criteria, trait units, rejection rules, and the decision date. Preserve the original controlled note: Trait definition and distribution; categorical classes or numeric unit; observer/instrument; repeatability; environment and stage; marker/phenotype relationship; threshold and rationale; missing and ambiguous cases."
+    },
+    {
+      "field": "Evidence and population record",
+      "requirement": "Record population size, sampling method, trial environment, replication, lab or field measurements, pedigree or marker evidence when used, selected individuals or families, and the reason the result does or does not meet the release standard."
+    }
   ],
   "misconceptions": [
     "A trait with three visible classes must be controlled by one gene.",

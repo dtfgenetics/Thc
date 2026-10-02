@@ -25,7 +25,14 @@
     "Publish a controlled phenotype dictionary before collecting trial data. Train observers using examples and counterexamples, then retain raw measurements and images."
   ],
   "measureAndRecord": [
-    "Plant/genetic/treatment IDs; stage/date/time; trait name and definition; anatomy and reference points; position; instrument; units; observer; repeated measurement; image ID/scale/lighting; fresh/dry/trim basis; missing/damaged rule."
+    {
+      "field": "Measurement identity record",
+      "requirement": "For Morphology and Growth Measurements, record quantity, unit, instrument or source system, sample or plant identity, time, location, method, basis, and raw value. Preserve the original controlled note: Plant/genetic/treatment IDs; stage/date/time; trait name and definition; anatomy and reference points; position; instrument; units; observer; repeated measurement; image ID/scale/lighting; fresh/dry/trim basis; missing/damaged rule."
+    },
+    {
+      "field": "Traceability and review record",
+      "requirement": "Record calibration or verification status, conversion or calculation rule, reviewer, uncertainty or limitation, revision history, linked evidence, and the decision made from the record."
+    }
   ],
   "misconceptions": [
     "Tall, bushy, frosty, and dense are complete phenotype measurements.",

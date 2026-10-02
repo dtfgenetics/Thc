@@ -26,7 +26,14 @@
     "Maintain a sample manifest and result-review checklist. Preserve original reports, amended reports, machine-readable data where possible, and the decision record that used them."
   ],
   "measureAndRecord": [
-    "Sample/source/batch IDs; collection plan and increments; collector/time; container/preservation; custody transfers; lab/accession; matrix; preparation/homogenization; method/version/scope; units/basis; LOD/LOQ; QC/qualifiers; result/uncertainty; report revision; retained sample; review and disposition."
+    {
+      "field": "Measurement identity record",
+      "requirement": "For Laboratory Sample and Result Tracking, record quantity, unit, instrument or source system, sample or plant identity, time, location, method, basis, and raw value. Preserve the original controlled note: Sample/source/batch IDs; collection plan and increments; collector/time; container/preservation; custody transfers; lab/accession; matrix; preparation/homogenization; method/version/scope; units/basis; LOD/LOQ; QC/qualifiers; result/uncertainty; report revision; retained sample; review and disposition."
+    },
+    {
+      "field": "Traceability and review record",
+      "requirement": "Record calibration or verification status, conversion or calculation rule, reviewer, uncertainty or limitation, revision history, linked evidence, and the decision made from the record."
+    }
   ],
   "misconceptions": [
     "A COA proves every unit in the batch has the reported value.",

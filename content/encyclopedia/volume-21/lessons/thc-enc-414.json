@@ -26,7 +26,14 @@
     "Use charts for stable, repeated processes such as meter checks, irrigation delivery, room conditions, drying mass, laboratory controls, and recurring quality metrics. Define who reviews signals and what action follows."
   ],
   "measureAndRecord": [
-    "Process and measurand; data source; sampling/subgroup rule; time base; chart type; center and limit method; reference period; specification/alert/action limits; missing/outlier rule; annotations; signal; investigation; action; effectiveness."
+    {
+      "field": "Measurement identity record",
+      "requirement": "For Control Charts, Trends, and Alert Limits, record quantity, unit, instrument or source system, sample or plant identity, time, location, method, basis, and raw value. Preserve the original controlled note: Process and measurand; data source; sampling/subgroup rule; time base; chart type; center and limit method; reference period; specification/alert/action limits; missing/outlier rule; annotations; signal; investigation; action; effectiveness."
+    },
+    {
+      "field": "Traceability and review record",
+      "requirement": "Record calibration or verification status, conversion or calculation rule, reviewer, uncertainty or limitation, revision history, linked evidence, and the decision made from the record."
+    }
   ],
   "misconceptions": [
     "A point inside control limits is automatically acceptable.",

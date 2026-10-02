@@ -25,7 +25,14 @@
     "Create separate records for field meter checks and laboratory water analysis, then link both to the source, date, treatment, irrigation event, and decision."
   ],
   "measureAndRecord": [
-    "Sample ID/source/location/time; sample type and preservation; temperature; instrument/method; standard IDs/expected/observed; pH/EC and compensation; alkalinity/hardness/ions/metals/microbes where relevant; units; detection limits; lab/method/scope; interpretation and action."
+    {
+      "field": "Measurement identity record",
+      "requirement": "For pH, EC, and Water-Quality Records, record quantity, unit, instrument or source system, sample or plant identity, time, location, method, basis, and raw value. Preserve the original controlled note: Sample ID/source/location/time; sample type and preservation; temperature; instrument/method; standard IDs/expected/observed; pH/EC and compensation; alkalinity/hardness/ions/metals/microbes where relevant; units; detection limits; lab/method/scope; interpretation and action."
+    },
+    {
+      "field": "Traceability and review record",
+      "requirement": "Record calibration or verification status, conversion or calculation rule, reviewer, uncertainty or limitation, revision history, linked evidence, and the decision made from the record."
+    }
   ],
   "misconceptions": [
     "Equal EC means equal nutrient composition.",

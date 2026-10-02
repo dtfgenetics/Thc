@@ -26,7 +26,14 @@
     "Use fixed scouting routes plus targeted risk zones. Trend plant, trap, and symptom data over time and link actions to lawful label and quarantine records."
   ],
   "measureAndRecord": [
-    "Field/room/zone; route and sampled units; date/time/observer/weather; plant IDs and stage; organ/position; incidence denominator; severity scale; symptom/sign; organism and confidence; photo/specimen/test IDs; environmental/treatment context; threshold/action; outcome."
+    {
+      "field": "Measurement identity record",
+      "requirement": "For Scouting and Plant-Health Records, record quantity, unit, instrument or source system, sample or plant identity, time, location, method, basis, and raw value. Preserve the original controlled note: Field/room/zone; route and sampled units; date/time/observer/weather; plant IDs and stage; organ/position; incidence denominator; severity scale; symptom/sign; organism and confidence; photo/specimen/test IDs; environmental/treatment context; threshold/action; outcome."
+    },
+    {
+      "field": "Traceability and review record",
+      "requirement": "Record calibration or verification status, conversion or calculation rule, reviewer, uncertainty or limitation, revision history, linked evidence, and the decision made from the record."
+    }
   ],
   "misconceptions": [
     "One symptomatic leaf establishes the diagnosis.",

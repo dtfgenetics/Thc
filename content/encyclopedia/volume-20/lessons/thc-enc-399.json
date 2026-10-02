@@ -26,7 +26,14 @@
     "Create an accession-level conservation plan with active material, long-term base storage, and geographically separate safety duplication."
   ],
   "measureAndRecord": [
-    "Accession and origin; legal/ownership records; parentage/population sample; harvest and cleaning; seed count and mass; moisture method; initial germination/vigor; package and storage conditions; monitoring dates/results; regeneration population and isolation; family contribution; backup location."
+    {
+      "field": "Breeding decision record",
+      "requirement": "For Seed Storage, Germplasm Backup, and Regeneration, record program ID, generation or cross ID, parent or family IDs, target traits, selection criteria, trait units, rejection rules, and the decision date. Preserve the original controlled note: Accession and origin; legal/ownership records; parentage/population sample; harvest and cleaning; seed count and mass; moisture method; initial germination/vigor; package and storage conditions; monitoring dates/results; regeneration population and isolation; family contribution; backup location."
+    },
+    {
+      "field": "Evidence and population record",
+      "requirement": "Record population size, sampling method, trial environment, replication, lab or field measurements, pedigree or marker evidence when used, selected individuals or families, and the reason the result does or does not meet the release standard."
+    }
   ],
   "misconceptions": [
     "A freezer automatically preserves seed indefinitely.",

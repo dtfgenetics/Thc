@@ -24,7 +24,14 @@
     "Create the target product profile before making crosses. Use it to choose parents, population sizes, trial environments, laboratory panels, rejection rules, and release evidence."
   ],
   "measureAndRecord": [
-    "Program ID and version; intended lawful use; target environments; trait definitions and units; minimum/optimum/maximum values; trait weights; unacceptable traits; testing methods; sample numbers; release and stop criteria; approver and revision history."
+    {
+      "field": "Breeding decision record",
+      "requirement": "For Breeding Goals and Target Product Profiles, record program ID, generation or cross ID, parent or family IDs, target traits, selection criteria, trait units, rejection rules, and the decision date. Preserve the original controlled note: Program ID and version; intended lawful use; target environments; trait definitions and units; minimum/optimum/maximum values; trait weights; unacceptable traits; testing methods; sample numbers; release and stop criteria; approver and revision history."
+    },
+    {
+      "field": "Evidence and population record",
+      "requirement": "Record population size, sampling method, trial environment, replication, lab or field measurements, pedigree or marker evidence when used, selected individuals or families, and the reason the result does or does not meet the release standard."
+    }
   ],
   "misconceptions": [
     "The best-looking plant is automatically the best breeding parent.",

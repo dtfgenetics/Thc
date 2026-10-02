@@ -24,7 +24,14 @@
     "Calculate a minimum population from trait probabilities, then increase it for mortality, sex ratio, testing losses, recombination uncertainty, and the need for multiple selected families."
   ],
   "measureAndRecord": [
-    "F1 source and mating; F2 seed lot; planned and emerged population; trait model and expected frequency; sex and survival; phenotype distributions; genotypes/markers; family preservation; selected count and intensity; reasons for discard."
+    {
+      "field": "Breeding decision record",
+      "requirement": "For F2 Segregation and Population Size, record program ID, generation or cross ID, parent or family IDs, target traits, selection criteria, trait units, rejection rules, and the decision date. Preserve the original controlled note: F1 source and mating; F2 seed lot; planned and emerged population; trait model and expected frequency; sex and survival; phenotype distributions; genotypes/markers; family preservation; selected count and intensity; reasons for discard."
+    },
+    {
+      "field": "Evidence and population record",
+      "requirement": "Record population size, sampling method, trial environment, replication, lab or field measurements, pedigree or marker evidence when used, selected individuals or families, and the reason the result does or does not meet the release standard."
+    }
   ],
   "misconceptions": [
     "A small F2 shows every possible phenotype.",

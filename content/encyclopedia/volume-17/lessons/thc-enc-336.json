@@ -89,5 +89,19 @@
     "websiteAction": "hold_for_review"
   },
   "slug": "biological-controls",
-  "route": "/encyclopedia/biological-controls"
+  "route": "/encyclopedia/biological-controls",
+  "knowledgeCheck": [
+    "For \"Biological Controls\", explain the mechanism behind this objective: Select, deploy, and evaluate biological-control organisms or microbial products by matching the target pest or pathogen, life stage, crop environment, release timing, compatibility, and follow-up monitoring. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"One beneficial insect controls every greenhouse pest.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Confirm pest identity and life stage before selecting a predator, parasitoid, nematode, fungus, bacterium, or other biological tactic. Build a verification plan using the lesson's record set (Target: Record pest/pathogen identity, life stage, abundance, and crop location before release.; Biological agent: Record species or product, supplier/lot where applicable, release rate or method, date, and location.; Environment: Record temperature, humidity, crop stage, canopy condition, and any factor known to affect establishment or activity.; Compatibility: Record recent or planned pesticide, disinfectant, or other interventions that may affect the biological agent.; Outcome: Use repeated pest and beneficial counts or other target-specific evidence to evaluate suppression and decide whether to repeat, adjust, or escalate.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  }
 }

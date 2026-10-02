@@ -90,5 +90,19 @@
     "websiteAction": "hold_for_review"
   },
   "slug": "pesticide-law-label-compliance-and-resistance-management",
-  "route": "/encyclopedia/pesticide-law-label-compliance-and-resistance-management"
+  "route": "/encyclopedia/pesticide-law-label-compliance-and-resistance-management",
+  "knowledgeCheck": [
+    "For \"Pesticide Law, Label Compliance, and Resistance Management\", explain the mechanism behind this objective: Interpret pesticide labels, legal use boundaries, worker and environmental protections, and resistance-management principles without turning general IPM guidance into unauthorized product-use instructions. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"If a pesticide is sold in a store, it is legal on Cannabis.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Verify the current product label and jurisdiction before use; do not rely on an old recommendation, retailer claim, or another state's program. Build a verification plan using the lesson's record set (Legal basis: Record the current label and jurisdictional authorization used to confirm the crop/site and application are permitted.; Application record: Record product identity, registration information where applicable, rate, volume, method, target, area, date/time, and applicator.; Worker/environmental controls: Record required PPE, restricted-entry interval, ventilation or posting requirements, and relevant environmental precautions.; Resistance context: Record mode-of-action group where available and recent treatments so repeated selection pressure can be evaluated.; Outcome: Record post-treatment pest counts, injury, crop response, and any evidence suggesting misapplication, poor coverage, or possible resistance.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  }
 }

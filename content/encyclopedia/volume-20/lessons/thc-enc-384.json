@@ -25,7 +25,14 @@
     "Do not market a variable F1 family as uniform without data. Measure within-family variance and preserve individual IDs for selected F1 plants."
   ],
   "measureAndRecord": [
-    "Cross and reciprocal direction; parent heterozygosity and relatedness; F1 population size; germination and vigor; trait mean and within-family variance; parental and check performance; heterosis calculation and reference; fertility, sex and off-types."
+    {
+      "field": "Breeding decision record",
+      "requirement": "For F1 Populations and Heterozygosity, record program ID, generation or cross ID, parent or family IDs, target traits, selection criteria, trait units, rejection rules, and the decision date. Preserve the original controlled note: Cross and reciprocal direction; parent heterozygosity and relatedness; F1 population size; germination and vigor; trait mean and within-family variance; parental and check performance; heterosis calculation and reference; fertility, sex and off-types."
+    },
+    {
+      "field": "Evidence and population record",
+      "requirement": "Record population size, sampling method, trial environment, replication, lab or field measurements, pedigree or marker evidence when used, selected individuals or families, and the reason the result does or does not meet the release standard."
+    }
   ],
   "misconceptions": [
     "All F1 seed from two parents is genetically identical.",

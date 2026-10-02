@@ -89,5 +89,19 @@
     "websiteAction": "hold_for_review"
   },
   "slug": "isolation-removal-and-waste-handling",
-  "route": "/encyclopedia/isolation-removal-and-waste-handling"
+  "route": "/encyclopedia/isolation-removal-and-waste-handling",
+  "knowledgeCheck": [
+    "For \"Isolation, Removal, and Waste Handling\", explain the mechanism behind this objective: Use isolation, plant or material removal, containment, transport, and waste controls to reduce biological spread while preserving identity, worker safety, and traceable records. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Removing one symptomatic plant proves the incident is over.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Define suspect, confirmed, cleared, and waste status visibly enough that workers do not accidentally move held material. Build a verification plan using the lesson's record set (Material identity: Record plant/batch/lot, room or zone, quantity, condition, and reason for isolation or removal.; Containment: Record bag/container type, route, staging area, tools, personnel, and sanitation controls used during movement.; Disposition: Record final waste or quarantine destination and any jurisdiction-required handling or destruction record.; Exposure review: Record adjacent material, shared tools, personnel movement, water, carts, or other plausible pathways that require follow-up.; Verification: Record follow-up scouting, testing, sanitation verification, or other evidence used to close or extend the hold.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  }
 }

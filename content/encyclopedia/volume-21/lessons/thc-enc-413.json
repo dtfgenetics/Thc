@@ -25,7 +25,14 @@
     "Use a single controlled deviation record linked to affected plants, batches, instruments, files, samples, SOP versions, and release decisions."
   ],
   "measureAndRecord": [
-    "Deviation ID; requirement and version; event date/time/location; reporter; affected entities; immediate safety/containment; raw evidence; timeline; impact and uncertainty; causes and evidence; correction; CAPA owner/due date; change control; effectiveness metric/date; disposition/approver; closure."
+    {
+      "field": "Measurement identity record",
+      "requirement": "For Deviations, Root-Cause Analysis, and CAPA, record quantity, unit, instrument or source system, sample or plant identity, time, location, method, basis, and raw value. Preserve the original controlled note: Deviation ID; requirement and version; event date/time/location; reporter; affected entities; immediate safety/containment; raw evidence; timeline; impact and uncertainty; causes and evidence; correction; CAPA owner/due date; change control; effectiveness metric/date; disposition/approver; closure."
+    },
+    {
+      "field": "Traceability and review record",
+      "requirement": "Record calibration or verification status, conversion or calculation rule, reviewer, uncertainty or limitation, revision history, linked evidence, and the decision made from the record."
+    }
   ],
   "misconceptions": [
     "Passing a retest automatically invalidates the original failure.",

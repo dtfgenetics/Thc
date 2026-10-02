@@ -4,12 +4,30 @@
   "title": "Cutting Selection and Carbohydrate Status",
   "objective": "Select cuttings using measured tissue quality rather than a rigid node-count recipe.",
   "terms": [
-    {"term":"source–sink status","definition":"The current balance between exporting and importing assimilates or other resources within plant tissues."},
-    {"term":"carbohydrate reserve","definition":"Stored soluble sugars and starch that can support metabolism when current supply is limited."},
-    {"term":"cutting diameter","definition":"Stem thickness measured at a defined position on the cutting."},
-    {"term":"leaf area","definition":"The surface area of leaves retained on a cutting or measured on a plant."},
-    {"term":"apical meristem","definition":"Actively dividing tissue at the shoot tip that produces new shoot organs."},
-    {"term":"donor nutrition","definition":"The nutrient status and recent nutrition history of the source plant from which a cutting is taken."}
+    {
+      "term": "source–sink status",
+      "definition": "The current balance between exporting and importing assimilates or other resources within plant tissues."
+    },
+    {
+      "term": "carbohydrate reserve",
+      "definition": "Stored soluble sugars and starch that can support metabolism when current supply is limited."
+    },
+    {
+      "term": "cutting diameter",
+      "definition": "Stem thickness measured at a defined position on the cutting."
+    },
+    {
+      "term": "leaf area",
+      "definition": "The surface area of leaves retained on a cutting or measured on a plant."
+    },
+    {
+      "term": "apical meristem",
+      "definition": "Actively dividing tissue at the shoot tip that produces new shoot organs."
+    },
+    {
+      "term": "donor nutrition",
+      "definition": "The nutrient status and recent nutrition history of the source plant from which a cutting is taken."
+    }
   ],
   "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
   "coreScience": [
@@ -21,7 +39,14 @@
     "Harvest uniform cuttings from identified donor zones. Protect them from desiccation, heat, crushing, and long delays. Reject tissue with pests, lesions, weak stems, unresolved nutrient stress, or abnormal growth."
   ],
   "measureAndRecord": [
-    {"field":"Controlled record set","requirement":"Source branch and node; length; basal diameter; fresh mass if used; leaf count/area proxy; apex retained or removed; time from cut to insertion; rooting and survival outcomes."}
+    {
+      "field": "Source and identity record",
+      "requirement": "For Cutting Selection and Carbohydrate Status, record donor or batch ID, plant or tray ID, date, operator, source position, starting condition, sanitation step, and any test or quarantine status. Preserve the original controlled note: Controlled record set: Source branch and node; length; basal diameter; fresh mass if used; leaf count/area proxy; apex retained or removed; time from cut to insertion; rooting and survival outcomes."
+    },
+    {
+      "field": "Rooting or establishment outcome",
+      "requirement": "Record rooting percentage, time to visible root or establishment, losses, abnormal growth, environmental conditions, treatment differences, and follow-up observations that would confirm or revise the interpretation."
+    }
   ],
   "misconceptions": [
     "Every cutting needs exactly the same number of nodes.",
@@ -40,16 +65,30 @@
   ],
   "publicationAuthorized": true,
   "reviewControl": {
-    "controlledManuscript":"Volume 09 v1.0",
-    "evidenceControl":"complete",
-    "secondaryEvidenceReview":"complete_qualified",
-    "externalReview":"pending_not_recorded",
-    "externalReviewType":"propagation_science",
-    "publicationAuthorized":true,
-    "publicationAuthorization":"project_owner_2026-08-24",
-    "independentApproval":false,
-    "websiteAction":"publish_with_review_notice"
+    "controlledManuscript": "Volume 09 v1.0",
+    "evidenceControl": "complete",
+    "secondaryEvidenceReview": "complete_qualified",
+    "externalReview": "pending_not_recorded",
+    "externalReviewType": "propagation_science",
+    "publicationAuthorized": true,
+    "publicationAuthorization": "project_owner_2026-08-24",
+    "independentApproval": false,
+    "websiteAction": "publish_with_review_notice"
   },
   "slug": "cutting-selection-and-carbohydrate-status",
-  "route": "/encyclopedia/cutting-selection-and-carbohydrate-status"
+  "route": "/encyclopedia/cutting-selection-and-carbohydrate-status",
+  "knowledgeCheck": [
+    "For \"Cutting Selection and Carbohydrate Status\", explain the mechanism behind this objective: Select cuttings using measured tissue quality rather than a rigid node-count recipe. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Every cutting needs exactly the same number of nodes.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Harvest uniform cuttings from identified donor zones. Protect them from desiccation, heat, crushing, and long delays. Reject tissue with pests, lesions, weak stems, unresolved nutrient stress, or abnormal growth. Build a verification plan using the lesson's record set (Controlled record set: Source branch and node; length; basal diameter; fresh mass if used; leaf count/area proxy; apex retained or removed; time from cut to insertion; rooting and survival outcomes.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  }
 }

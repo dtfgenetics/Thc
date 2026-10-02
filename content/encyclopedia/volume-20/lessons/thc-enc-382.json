@@ -25,7 +25,14 @@
     "Create a parent dossier and a trait-complementarity matrix before flowering. Retain backup clones or verified seed, and document why each parent was chosen and what risk it introduces."
   ],
   "measureAndRecord": [
-    "Parent ID and source; sex genotype and expression; pedigree and genotyping; health and pathogen status; replicated trait means and variation; chemotype and volatile data; fertility and pollen/seed quality; relationship estimate; strengths, weaknesses, risks, and backup location."
+    {
+      "field": "Breeding decision record",
+      "requirement": "For Parent Selection and Complementary Traits, record program ID, generation or cross ID, parent or family IDs, target traits, selection criteria, trait units, rejection rules, and the decision date. Preserve the original controlled note: Parent ID and source; sex genotype and expression; pedigree and genotyping; health and pathogen status; replicated trait means and variation; chemotype and volatile data; fertility and pollen/seed quality; relationship estimate; strengths, weaknesses, risks, and backup location."
+    },
+    {
+      "field": "Evidence and population record",
+      "requirement": "Record population size, sampling method, trial environment, replication, lab or field measurements, pedigree or marker evidence when used, selected individuals or families, and the reason the result does or does not meet the release standard."
+    }
   ],
   "misconceptions": [
     "Crossing two elite plants guarantees elite offspring.",

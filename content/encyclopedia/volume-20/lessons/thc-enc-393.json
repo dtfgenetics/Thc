@@ -24,7 +24,14 @@
     "Use a written trial protocol and analysis plan before planting. Define the experimental unit, replication, blocks, randomization, checks, exclusions, and primary outcomes."
   ],
   "measureAndRecord": [
-    "Trial ID/version; genotypes/families; experimental units; randomization seed and map; blocks/checks; environments; management; measurements and timing; missing/dead units; deviations; statistical model; effect estimates and intervals."
+    {
+      "field": "Breeding decision record",
+      "requirement": "For Replicated Trials and Environmental Noise, record program ID, generation or cross ID, parent or family IDs, target traits, selection criteria, trait units, rejection rules, and the decision date. Preserve the original controlled note: Trial ID/version; genotypes/families; experimental units; randomization seed and map; blocks/checks; environments; management; measurements and timing; missing/dead units; deviations; statistical model; effect estimates and intervals."
+    },
+    {
+      "field": "Evidence and population record",
+      "requirement": "Record population size, sampling method, trial environment, replication, lab or field measurements, pedigree or marker evidence when used, selected individuals or families, and the reason the result does or does not meet the release standard."
+    }
   ],
   "misconceptions": [
     "Ten measurements from one plant are ten replicates.",

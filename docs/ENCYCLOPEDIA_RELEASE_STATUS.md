@@ -11,9 +11,9 @@ Generated: 2026-10-02T22:04:03.881Z
 
 ## Readiness
 
-- Average score: 79/100
+- Average score: 88/100
 - Production candidates: 0/420
-- Readiness counts: needs-polish=388, incomplete=22, major-gaps=10
+- Readiness counts: needs-polish=420
 
 ## Evidence And Visuals
 

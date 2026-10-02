@@ -4,14 +4,38 @@
   "title": "Low-Stress Bending and Thigmomorphogenesis",
   "objective": "Explain what plants can perceive and change after mechanical bending, distinguish repositioning from wounding, and evaluate low-stress training claims without treating grower terminology as a standardized cannabis research treatment.",
   "terms": [
-    {"term":"mechanical stimulus","definition":"A physical force or deformation experienced by plant tissue, including bending, touch, wind, vibration, compression, or tension."},
-    {"term":"thigmomorphogenesis","definition":"Longer-term changes in plant growth or form that develop in response to repeated or sustained mechanical stimulation."},
-    {"term":"mechanoperception","definition":"The biological detection and transduction of mechanical force or deformation into cellular and whole-plant responses."},
-    {"term":"strain","definition":"Deformation of a material or tissue relative to its original dimensions when force is applied."},
-    {"term":"gravitropism","definition":"Directional growth responses to gravity that can reorient shoots after they are displaced from their previous position."},
-    {"term":"elastic deformation","definition":"A deformation from which tissue substantially returns toward its original shape after the applied force is removed."},
-    {"term":"plastic deformation","definition":"A lasting deformation that remains after an applied force is removed."},
-    {"term":"wound","definition":"Physical disruption of tissue integrity that can activate repair, defense, hydraulic, and metabolic responses distinct from noninjurious repositioning."}
+    {
+      "term": "mechanical stimulus",
+      "definition": "A physical force or deformation experienced by plant tissue, including bending, touch, wind, vibration, compression, or tension."
+    },
+    {
+      "term": "thigmomorphogenesis",
+      "definition": "Longer-term changes in plant growth or form that develop in response to repeated or sustained mechanical stimulation."
+    },
+    {
+      "term": "mechanoperception",
+      "definition": "The biological detection and transduction of mechanical force or deformation into cellular and whole-plant responses."
+    },
+    {
+      "term": "strain",
+      "definition": "Deformation of a material or tissue relative to its original dimensions when force is applied."
+    },
+    {
+      "term": "gravitropism",
+      "definition": "Directional growth responses to gravity that can reorient shoots after they are displaced from their previous position."
+    },
+    {
+      "term": "elastic deformation",
+      "definition": "A deformation from which tissue substantially returns toward its original shape after the applied force is removed."
+    },
+    {
+      "term": "plastic deformation",
+      "definition": "A lasting deformation that remains after an applied force is removed."
+    },
+    {
+      "term": "wound",
+      "definition": "Physical disruption of tissue integrity that can activate repair, defense, hydraulic, and metabolic responses distinct from noninjurious repositioning."
+    }
   ],
   "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
   "coreScience": [
@@ -25,11 +49,26 @@
     "Evaluate the result by canopy exposure, branch survival, new growth, structural integrity, and the crop endpoint that matters. A branch staying in the desired position is not by itself evidence of improved plant performance."
   ],
   "measureAndRecord": [
-    {"field":"Mechanical intervention","requirement":"Plant and shoot ID, date, developmental stage, bend or support location, initial and final orientation when measurable, duration of restraint, and whether force was applied once or repeatedly."},
-    {"field":"Tissue integrity","requirement":"Record intact tissue, visible crease, abrasion, epidermal split, stem crack, crushing, loss of turgor, or branch failure separately."},
-    {"field":"Reorientation and recovery","requirement":"Time to resumed extension, change in shoot angle, new vertical growth, leaf orientation, and any persistent deformation."},
-    {"field":"Canopy effect","requirement":"Light exposure or representative light measurements at defined positions, canopy width/height, branch overlap, and airflow-related observations before and after repositioning."},
-    {"field":"Outcome","requirement":"Breakage rate, branch survival, growth, final architecture, and defined yield or quality endpoints compared with a reference treatment where possible."}
+    {
+      "field": "Mechanical intervention",
+      "requirement": "Plant and shoot ID, date, developmental stage, bend or support location, initial and final orientation when measurable, duration of restraint, and whether force was applied once or repeatedly."
+    },
+    {
+      "field": "Tissue integrity",
+      "requirement": "Record intact tissue, visible crease, abrasion, epidermal split, stem crack, crushing, loss of turgor, or branch failure separately."
+    },
+    {
+      "field": "Reorientation and recovery",
+      "requirement": "Time to resumed extension, change in shoot angle, new vertical growth, leaf orientation, and any persistent deformation."
+    },
+    {
+      "field": "Canopy effect",
+      "requirement": "Light exposure or representative light measurements at defined positions, canopy width/height, branch overlap, and airflow-related observations before and after repositioning."
+    },
+    {
+      "field": "Outcome",
+      "requirement": "Breakage rate, branch survival, growth, final architecture, and defined yield or quality endpoints compared with a reference treatment where possible."
+    }
   ],
   "misconceptions": [
     "Low-stress training means the plant experiences no mechanical signal or physiological response.",
@@ -64,5 +103,19 @@
     "websiteAction": "publish_with_review_notice"
   },
   "slug": "low-stress-bending-and-thigmomorphogenesis",
-  "route": "/encyclopedia/low-stress-bending-and-thigmomorphogenesis"
+  "route": "/encyclopedia/low-stress-bending-and-thigmomorphogenesis",
+  "knowledgeCheck": [
+    "For \"Low-Stress Bending and Thigmomorphogenesis\", explain the mechanism behind this objective: Explain what plants can perceive and change after mechanical bending, distinguish repositioning from wounding, and evaluate low-stress training claims without treating grower terminology as a standardized cannabis research treatment. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Low-stress training means the plant experiences no mechanical signal or physiological response.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Treat bending primarily as a change in shoot position and canopy architecture, then separately document whether tissue injury occurred. This distinction helps explain whether later changes are likely associated with altered light distribution, gravitropic reorientation, mechanical acclimation, wound recovery, or several processes together. Build a verification plan using the lesson's record set (Mechanical intervention: Plant and shoot ID, date, developmental stage, bend or support location, initial and final orientation when measurable, duration of restraint, and whether force was applied once or repeatedly.; Tissue integrity: Record intact tissue, visible crease, abrasion, epidermal split, stem crack, crushing, loss of turgor, or branch failure separately.; Reorientation and recovery: Time to resumed extension, change in shoot angle, new vertical growth, leaf orientation, and any persistent deformation.; Canopy effect: Light exposure or representative light measurements at defined positions, canopy width/height, branch overlap, and airflow-related observations before and after repositioning.; Outcome: Breakage rate, branch survival, growth, final architecture, and defined yield or quality endpoints compared with a reference treatment where possible.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  }
 }

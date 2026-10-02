@@ -24,7 +24,14 @@
     "Separate sex-reversal research plants from consumable or production material. Treat feminization as a breeding tool with progeny testing, not a guarantee printed on a label."
   ],
   "measureAndRecord": [
-    "Donor/recipient IDs; genetic-sex method; relatedness and mating design; treatment authorization and segregation; flower and pollen response; viability; pollination and seed set; germination; progeny sex/genotype/expression; intersexuality test environments; disposition."
+    {
+      "field": "Breeding decision record",
+      "requirement": "For Feminized Seed Production Biology, record program ID, generation or cross ID, parent or family IDs, target traits, selection criteria, trait units, rejection rules, and the decision date. Preserve the original controlled note: Donor/recipient IDs; genetic-sex method; relatedness and mating design; treatment authorization and segregation; flower and pollen response; viability; pollination and seed set; germination; progeny sex/genotype/expression; intersexuality test environments; disposition."
+    },
+    {
+      "field": "Evidence and population record",
+      "requirement": "Record population size, sampling method, trial environment, replication, lab or field measurements, pedigree or marker evidence when used, selected individuals or families, and the reason the result does or does not meet the release standard."
+    }
   ],
   "misconceptions": [
     "Feminized seed is genetically identical to the female parent.",

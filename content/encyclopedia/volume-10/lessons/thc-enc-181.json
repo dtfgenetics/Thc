@@ -4,13 +4,34 @@
   "title": "Apical Dominance and Branching Control",
   "objective": "Explain how the shoot apex, axillary buds, plant hormones, resource status, and environment interact to control branch outgrowth, and distinguish the general plant mechanism from cannabis-specific cultivation evidence.",
   "terms": [
-    {"term":"apical dominance","definition":"The tendency of an actively growing primary shoot apex to suppress or delay outgrowth of axillary buds below it through integrated hormonal, developmental, and resource signals."},
-    {"term":"axillary bud","definition":"A bud formed in the axil of a leaf at a node that can remain inhibited or grow into a lateral shoot."},
-    {"term":"auxin","definition":"A class of plant hormones, including indole-3-acetic acid, involved in growth, polarity, vascular development, and indirect regulation of axillary bud outgrowth."},
-    {"term":"cytokinin","definition":"A class of plant hormones that can promote axillary bud activation and interact with other branching signals."},
-    {"term":"strigolactone","definition":"A class of carotenoid-derived plant signals that participates in suppression of shoot branching and integrates with auxin, cytokinin, nutrient, and sugar signaling."},
-    {"term":"correlative inhibition","definition":"Suppression of one growing organ or bud by other active organs through whole-plant signaling and competition rather than by a single local signal."},
-    {"term":"bud outgrowth","definition":"The transition of an axillary bud from an inhibited state into sustained elongation as a branch."}
+    {
+      "term": "apical dominance",
+      "definition": "The tendency of an actively growing primary shoot apex to suppress or delay outgrowth of axillary buds below it through integrated hormonal, developmental, and resource signals."
+    },
+    {
+      "term": "axillary bud",
+      "definition": "A bud formed in the axil of a leaf at a node that can remain inhibited or grow into a lateral shoot."
+    },
+    {
+      "term": "auxin",
+      "definition": "A class of plant hormones, including indole-3-acetic acid, involved in growth, polarity, vascular development, and indirect regulation of axillary bud outgrowth."
+    },
+    {
+      "term": "cytokinin",
+      "definition": "A class of plant hormones that can promote axillary bud activation and interact with other branching signals."
+    },
+    {
+      "term": "strigolactone",
+      "definition": "A class of carotenoid-derived plant signals that participates in suppression of shoot branching and integrates with auxin, cytokinin, nutrient, and sugar signaling."
+    },
+    {
+      "term": "correlative inhibition",
+      "definition": "Suppression of one growing organ or bud by other active organs through whole-plant signaling and competition rather than by a single local signal."
+    },
+    {
+      "term": "bud outgrowth",
+      "definition": "The transition of an axillary bud from an inhibited state into sustained elongation as a branch."
+    }
   ],
   "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
   "coreScience": [
@@ -24,11 +45,26 @@
     "When a lateral bud does not grow after the main apex is removed, investigate developmental stage, light exposure, root-zone health, water status, nutrition, recent stress, and competing shoots before assuming that the training action failed."
   ],
   "measureAndRecord": [
-    {"field":"Architecture before intervention","requirement":"Plant age or developmental stage, node count, active apex count, branch order, plant height, canopy width, and visible axillary-bud status."},
-    {"field":"Architecture change","requirement":"Date, plant ID, affected shoot or node, intervention category, tissue removed or repositioned, and whether the primary apex remained intact."},
-    {"field":"Bud response","requirement":"Which axillary buds resumed growth, time to visible sustained outgrowth, branch elongation, and any buds that remained inhibited."},
-    {"field":"Whole-plant context","requirement":"Light distribution, spacing or density, root-zone status, irrigation, nutrition, temperature, humidity, and major stress events during the observation period."},
-    {"field":"Outcome","requirement":"Final branch distribution, canopy dimensions, inflorescence distribution, dry yield or other defined endpoint, and variability among replicate plants when available."}
+    {
+      "field": "Architecture before intervention",
+      "requirement": "Plant age or developmental stage, node count, active apex count, branch order, plant height, canopy width, and visible axillary-bud status."
+    },
+    {
+      "field": "Architecture change",
+      "requirement": "Date, plant ID, affected shoot or node, intervention category, tissue removed or repositioned, and whether the primary apex remained intact."
+    },
+    {
+      "field": "Bud response",
+      "requirement": "Which axillary buds resumed growth, time to visible sustained outgrowth, branch elongation, and any buds that remained inhibited."
+    },
+    {
+      "field": "Whole-plant context",
+      "requirement": "Light distribution, spacing or density, root-zone status, irrigation, nutrition, temperature, humidity, and major stress events during the observation period."
+    },
+    {
+      "field": "Outcome",
+      "requirement": "Final branch distribution, canopy dimensions, inflorescence distribution, dry yield or other defined endpoint, and variability among replicate plants when available."
+    }
   ],
   "misconceptions": [
     "Auxin from the top simply flows into side buds and turns them off.",
@@ -62,5 +98,19 @@
     "websiteAction": "publish_with_review_notice"
   },
   "slug": "apical-dominance-and-branching-control",
-  "route": "/encyclopedia/apical-dominance-and-branching-control"
+  "route": "/encyclopedia/apical-dominance-and-branching-control",
+  "knowledgeCheck": [
+    "For \"Apical Dominance and Branching Control\", explain the mechanism behind this objective: Explain how the shoot apex, axillary buds, plant hormones, resource status, and environment interact to control branch outgrowth, and distinguish the general plant mechanism from cannabis-specific cultivation evidence. Which observation or measurement would best test whether that mechanism is operating in the real crop?",
+    "A learner claims, \"Auxin from the top simply flows into side buds and turns them off.\" Use the lesson's science and evidence limits to explain why that claim is unreliable, then name one observation or measurement that could separate the competing explanations.",
+    "Applied case — Interpret topping, pruning, bending, branch removal, and trellising as ways of changing a living branch-control system rather than as fixed recipes. Compare the resulting architecture, canopy exposure, branch order, recovery, and final crop measurements against an untrained or differently trained reference whenever practical. Build a verification plan using the lesson's record set (Architecture before intervention: Plant age or developmental stage, node count, active apex count, branch order, plant height, canopy width, and visible axillary-bud status.; Architecture change: Date, plant ID, affected shoot or node, intervention category, tissue removed or repositioned, and whether the primary apex remained intact.; Bud response: Which axillary buds resumed growth, time to visible sustained outgrowth, branch elongation, and any buds that remained inhibited.; Whole-plant context: Light distribution, spacing or density, root-zone status, irrigation, nutrition, temperature, humidity, and major stress events during the observation period.; Outcome: Final branch distribution, canopy dimensions, inflorescence distribution, dry yield or other defined endpoint, and variability among replicate plants when available.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
+    "scoringIntent": "Require lesson-specific evidence, not memorized universal targets.",
+    "materializedBy": "scripts/materialize-encyclopedia-assessments.mjs",
+    "materializedAt": "source-controlled",
+    "reviewState": "generated_draft_needs_independent_review",
+    "publicationEffect": "none_review_state_unchanged"
+  }
 }
