@@ -133,7 +133,7 @@ function selfTest() {
   const out = normalize(parseCsv(csv),'https://example.test/grin.csv','2026-10-01');
   const fail = [];
   if (out.germplasm.length !== 2) fail.push('expected 2 germplasm records');
-  if (out.phenotypes.length !== 2) fail.push('expected 2 valid phenotype observations');
+  if (out.phenotypes.length !== 3) fail.push('expected 3 valid phenotype observations');
   if (!out.quarantine.some(x=>x.reason==='placeholder trait')) fail.push('missing placeholder quarantine');
   if (!out.quarantine.some(x=>x.reason==='unknown trait_name')) fail.push('missing unknown-trait quarantine');
   if (out.quarantine.filter(x=>x.reason==='unparseable datatype').length < 2) fail.push('missing phenotype/ploidy datatype quarantine');
