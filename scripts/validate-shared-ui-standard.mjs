@@ -57,9 +57,15 @@ for (const token of [
 ]) requireToken(footer, token, 'footer');
 
 const canonicalLabels = ['Home','Seeds','Learn','Courses','Tools','Games','Community','Shop'];
-for (const [label, nav] of [['public-navigation', publicNav.primaryNavigation], ['site-navigation-v6', siteNav.primaryNavigation], ['site-registry', siteRegistry.information_architecture?.canonical_primary_navigation]]) {
+for (const [label, nav] of [['public-navigation', publicNav.primaryNavigation], ['site-navigation-v6', siteNav.primaryNavigation]]) {
   const labels = (nav || []).map(item => item.label);
   if (JSON.stringify(labels) !== JSON.stringify(canonicalLabels)) failures.push(`${label}: canonical labels drifted: ${JSON.stringify(labels)}`);
+}
+
+const registryFamilies = siteRegistry.information_architecture?.route_families || [];
+for (const required of canonicalLabels) {
+  const route = required === 'Home' ? '/' : `/${required.toLowerCase()}/`;
+  if (!registryFamilies.some(item => item.root === route)) failures.push(`site-registry: missing canonical route family ${route}`);
 }
 
 if (header.includes('>Diagnostic</a>') || footer.includes('>Diagnostic</a>')) {
