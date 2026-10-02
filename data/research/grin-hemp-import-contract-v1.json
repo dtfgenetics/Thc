@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0.0",
+  "contract_id": "GRIN-HEMP-IMPORT-V1",
+  "source_system": "USDA NPGS GRIN-Global",
+  "target_vocabulary": "USDA-HEMP-PHENOTYPING-V4",
+  "source_urls": [
+    "https://npgsweb.ars-grin.gov/gringlobal/search",
+    "https://npgsweb.ars-grin.gov/gringlobal/taxon/taxonomydetail?id=8862"
+  ],
+  "required_ingest_rules": [
+    "Use accession/PUID as identity; never match only on plant_name.",
+    "Preserve the original GRIN accession identifier and PUID when present.",
+    "Keep passport metadata separate from phenotype observations.",
+    "Convert wide GRIN/handbook-style trait columns to long phenotype rows without changing source values.",
+    "Reject unknown trait names into a quarantine report instead of silently renaming them.",
+    "Do not promote placeholder traits ending in _xxx or marked placeholder into canonical production measurements.",
+    "Derived fields such as days_2_* and kite_* must be tagged derived when recalculated rather than copied from source.",
+    "Preserve source URL, retrieval date, original column name, and source record identifier."
+  ],
+  "identity_fields": [
+    {
+      "source_candidates": [
+        "PUID",
+        "puid"
+      ],
+      "target": "puid",
+      "required": false
+    },
+    {
+      "source_candidates": [
+        "ACCESSION",
+        "accession",
+        "accession_id"
+      ],
+      "target": "accession_id",
+      "required": true
+    },
+    {
+      "source_candidates": [
+        "PLANT NAME",
+        "plant_name"
+      ],
+      "target": "plant_name",
+      "required": false
+    },
+    {
+      "source_candidates": [
+        "TAXONOMY",
+        "taxonomy",
+        "taxonomy_species_id"
+      ],
+      "target": "taxon",
+      "required": false
+    }
+  ],
+  "passport_field_policy": {
+    "target_schema": "data/research/germplasm-record.schema.json",
+    "categories": [
+      "passport"
+    ],
+    "behavior": "one normalized germplasm record per accession identity"
+  },
+  "phenotype_field_policy": {
+    "target_schema": "data/research/phenotype-observation.schema.json",
+    "categories": [
+      "architecture",
+      "leaf",
+      "sex_inflorescence",
+      "seed",
+      "fiber",
+      "secondary_metabolites",
+      "pathogen_pest"
+    ],
+    "behavior": "one observation row per accession/plant + trait_name + context"
+  },
+  "quarantine_reasons": [
+    "missing accession identity",
+    "unknown trait_name",
+    "placeholder trait",
+    "unparseable datatype",
+    "unit conflict",
+    "ambiguous duplicate accession",
+    "source provenance missing"
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0.0",
+  "standard": "BrAPI 2.1",
+  "source_url": "https://brapi.org/specification",
+  "mapping": [
+    {
+      "dtf": "germplasm.accession_id",
+      "brapi": "germplasmDbId/externalReferences",
+      "direction": "bidirectional"
+    },
+    {
+      "dtf": "germplasm.plant_name",
+      "brapi": "germplasmName",
+      "direction": "bidirectional"
+    },
+    {
+      "dtf": "germplasm.pedigree",
+      "brapi": "pedigree/pedigreeString",
+      "direction": "bidirectional"
+    },
+    {
+      "dtf": "lineage.parents",
+      "brapi": "pedigree/crosses/progeny",
+      "direction": "bidirectional"
+    },
+    {
+      "dtf": "lineage.seed_lot_id",
+      "brapi": "seedLots.seedLotDbId",
+      "direction": "bidirectional"
+    },
+    {
+      "dtf": "experiment.experiment_id",
+      "brapi": "studyDbId/trialDbId",
+      "direction": "bidirectional"
+    },
+    {
+      "dtf": "experiment.location",
+      "brapi": "locationDbId/location",
+      "direction": "bidirectional"
+    },
+    {
+      "dtf": "experiment.biological_material",
+      "brapi": "observationUnits/germplasmDbId",
+      "direction": "bidirectional"
+    },
+    {
+      "dtf": "phenotype.trait_name",
+      "brapi": "observationVariable.trait/observationVariableName",
+      "direction": "bidirectional"
+    },
+    {
+      "dtf": "phenotype.scoring_method",
+      "brapi": "observationVariable.method",
+      "direction": "bidirectional"
+    },
+    {
+      "dtf": "phenotype.units",
+      "brapi": "observationVariable.scale",
+      "direction": "bidirectional"
+    },
+    {
+      "dtf": "phenotype.value",
+      "brapi": "observation.value",
+      "direction": "bidirectional"
+    },
+    {
+      "dtf": "genotype.sample_id",
+      "brapi": "samples.sampleDbId",
+      "direction": "bidirectional"
+    },
+    {
+      "dtf": "genotype.reference_genome",
+      "brapi": "referenceSets/referenceSetDbId",
+      "direction": "bidirectional"
+    },
+    {
+      "dtf": "genotype.marker_id",
+      "brapi": "variants.variantDbId or marker identifier",
+      "direction": "conditional"
+    },
+    {
+      "dtf": "genotype.genotype_call",
+      "brapi": "calls.genotypeValue",
+      "direction": "conditional"
+    },
+    {
+      "dtf": "chemotype.analyte",
+      "brapi": "observationVariable",
+      "direction": "bidirectional"
+    },
+    {
+      "dtf": "chemotype.value",
+      "brapi": "observation.value",
+      "direction": "bidirectional"
+    }
+  ],
+  "implementation_policy": [
+    "Implement only BrAPI endpoints needed by DTF consumers; full endpoint coverage is not required for BrAPI use.",
+    "Do not expose DTF-private breeding observations through a public BrAPI endpoint without an explicit publication decision.",
+    "Use stable internal IDs and externalReferences rather than treating display names as identifiers.",
+    "Preserve method and scale with phenotype/chemotype variables so values remain interpretable."
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "schema_version": "1.0.0",
+  "updated": "2026-10-01",
+  "projects": [
+    {
+      "id": "USDA-ARS-HEMP-CONSERVATION-444227",
+      "accn_no": "444227",
+      "title": "Conservation, Characterization, Evaluation, and Utilization of Hemp Genetic Resources and Associated Descriptive Information",
+      "project_type": "In-House Appropriated",
+      "start_date": "2023-05-15",
+      "end_date": "2028-05-14",
+      "url": "https://www.ars.usda.gov/research/project/?accnNo=444227",
+      "role": "core USDA hemp germplasm program",
+      "outputs": [
+        "GRIN-Global characterization data",
+        "phenotyping methods",
+        "genomics",
+        "tissue culture",
+        "publications"
+      ]
+    },
+    {
+      "id": "USDA-ARS-HEMP-WGS-445646",
+      "accn_no": "445646",
+      "title": "Whole Genome Sequencing and Sex Determination of the National Plant Germplasm Hemp Collection",
+      "project_type": "Non-Assistance Cooperative Agreement",
+      "start_date": "2024-01-01",
+      "end_date": "2026-12-31",
+      "url": "https://www.ars.usda.gov/research/project/?accnNo=445646",
+      "role": "whole-collection genomics",
+      "verified_scope": {
+        "approximate_accessions": 600,
+        "approximate_individual_plants": 1200,
+        "sequencing": "long-read 2x genome sequencing",
+        "sexes_per_accession": "approximately one male and one female",
+        "planned_public_destinations": [
+          "NCBI",
+          "GRIN-Global"
+        ]
+      }
+    },
+    {
+      "id": "USDA-ARS-HEMP-DISEASE-UMBRELLA-445216",
+      "accn_no": "445216",
+      "title": "Evaluation and Breeding of Diverse Hemp Germplasm for Disease Resistance",
+      "project_type": "Interagency Reimbursable Agreement",
+      "start_date": "2023-08-30",
+      "end_date": "2027-08-31",
+      "url": "https://www.ars.usda.gov/research/project/?accnNo=445216",
+      "role": "umbrella disease resistance evaluation and breeding",
+      "diseases": [
+        "powdery mildew",
+        "Fusarium head blight",
+        "Septoria leaf spot",
+        "downy mildew"
+      ],
+      "design": "100 accessions/year; three replicates of five-plant plots; randomized complete block; Geneva NY and Lexington KY",
+      "outputs": [
+        "disease severity",
+        "genotyping",
+        "GWAS",
+        "marker-assisted breeding",
+        "GRIN resistant lines"
+      ]
+    },
+    {
+      "id": "USDA-CORNELL-HEMP-DISEASE-445656",
+      "accn_no": "445656",
+      "title": "Evaluation and Breeding of Diverse Hemp Germplasm for Disease Resistance",
+      "project_type": "Cooperative Agreement",
+      "start_date": "2024-01-01",
+      "end_date": "2024-12-31",
+      "url": "https://www.ars.usda.gov/research/project/?accnNo=445656",
+      "role": "Cornell Geneva field disease evaluation",
+      "diseases": [
+        "powdery mildew",
+        "downy mildew",
+        "Septoria leaf spot"
+      ]
+    },
+    {
+      "id": "USDA-CORNELL-HEMP-DISEASE-449089",
+      "accn_no": "449089",
+      "title": "Evaluation and Breeding of Diverse Hemp Germplasm for Disease Resistance",
+      "project_type": "Cooperative Agreement",
+      "start_date": "2026-01-02",
+      "end_date": "2027-07-31",
+      "url": "https://www.ars.usda.gov/research/project/?accnNo=449089",
+      "role": "current Cornell disease-resistance collaboration",
+      "diseases": [
+        "powdery mildew",
+        "downy mildew",
+        "Septoria leaf spot"
+      ]
+    },
+    {
+      "id": "USDA-KENTUCKY-HEMP-FUSARIUM-448075",
+      "accn_no": "448075",
+      "title": "Evaluation and Breeding of Diverse Hemp Germplasm for Disease Resistance",
+      "project_type": "Cooperative Agreement",
+      "start_date": "2025-06-01",
+      "end_date": "2027-08-31",
+      "url": "https://www.ars.usda.gov/research/project/?accnNo=448075",
+      "role": "Kentucky Fusarium head blight evaluation",
+      "diseases": [
+        "Fusarium head blight"
+      ]
+    }
+  ],
+  "relevant_publications": [
+    {
+      "title": "Screening diverse Cannabis sativa germplasm for resistance to Golovinomyces ambrosiae",
+      "publication_date": "2025-11-29",
+      "doi": "10.1094/PDIS-07-25-1591-RE",
+      "url": "https://www.ars.usda.gov/research/publications/publication/?seqNo115=427232",
+      "relevance": "powdery mildew resistance"
+    },
+    {
+      "title": "Screening of Cannabis sativa germplasm for susceptibility to Septoria Leaf Spot",
+      "publication_date": "2026-04-15",
+      "doi": "10.1094/PDIS-07-25-1367-RE",
+      "url": "https://www.ars.usda.gov/research/publications/publication/?seqNo115=427233",
+      "relevance": "Septoria resistance/susceptibility"
+    },
+    {
+      "title": "Evaluation of downy mildew resistance in the USDA Hemp Germplasm Repository using high-throughput and traditional phenotyping methods",
+      "publication_date": "2026-03-29",
+      "doi": "10.1094/PDIS-09-25-1916-RE",
+      "url": "https://www.ars.usda.gov/research/publications/publication/?seqNo115=428781",
+      "relevance": "downy mildew resistance and high-throughput phenotyping"
+    }
+  ]
+}

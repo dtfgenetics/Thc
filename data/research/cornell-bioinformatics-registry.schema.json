@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dtfseeds.com/schemas/research/cornell-bioinformatics-registry-1.0.0.json",
+  "title": "DTF Cornell bioinformatics source registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "updated", "purpose", "policy", "sources", "canonical_record_requirements", "next_ingestion_targets"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "updated": {"type": "string", "format": "date"},
+    "purpose": {"type": "string", "minLength": 20},
+    "policy": {
+      "type": "object",
+      "required": ["default_reuse_lane", "rules"],
+      "properties": {
+        "default_reuse_lane": {"type": "string"},
+        "rules": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "organization", "title", "source_url", "resource_type", "species_scope", "population_scope", "topics", "data_value", "payload_status", "reuse_lane", "rights_status", "downstream_consumers", "accessed"],
+        "properties": {
+          "id": {"type": "string", "minLength": 5},
+          "organization": {"type": "string"},
+          "title": {"type": "string"},
+          "source_url": {"type": "string", "format": "uri"},
+          "resource_type": {"type": "string"},
+          "species_scope": {"type": "array", "items": {"type": "string"}},
+          "population_scope": {"type": "string"},
+          "topics": {"type": "array", "items": {"type": "string"}},
+          "reported_marker_count": {"type": "integer", "minimum": 1},
+          "reported_discovery_accessions": {"type": "integer", "minimum": 1},
+          "reference_genome_context": {"type": "string"},
+          "data_value": {"type": "string"},
+          "payload_status": {"type": "string"},
+          "reuse_lane": {"type": "string"},
+          "rights_status": {"type": "string"},
+          "downstream_consumers": {"type": "array", "items": {"type": "string"}},
+          "accessed": {"type": "string", "format": "date"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "canonical_record_requirements": {"type": "object"},
+    "next_ingestion_targets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["priority", "target"],
+        "properties": {
+          "priority": {"enum": ["P0", "P1", "P2", "P3"]},
+          "target": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://dtfseeds.com/schemas/research/sequence-sample-record-1.0.0.json",
+  "title":"DTF public sequence sample/run record",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["record_id","source_id","bioproject","run_accession","organism","provenance"],
+  "properties":{
+    "record_id":{"type":"string","minLength":3},
+    "source_id":{"type":"string","minLength":3},
+    "bioproject":{"type":"string","pattern":"^PRJ[A-Z]{2}[0-9]+$"},
+    "run_accession":{"type":"string","minLength":3},
+    "biosample":{"type":["string","null"]},
+    "sample_name":{"type":["string","null"]},
+    "organism":{"type":"string","minLength":2},
+    "library_strategy":{"type":["string","null"]},
+    "library_source":{"type":["string","null"]},
+    "library_selection":{"type":["string","null"]},
+    "platform":{"type":["string","null"]},
+    "instrument":{"type":["string","null"]},
+    "layout":{"type":["string","null"]},
+    "read_length":{"type":["number","null"]},
+    "spots":{"type":["integer","null"],"minimum":0},
+    "bases":{"type":["integer","null"],"minimum":0},
+    "bytes":{"type":["integer","null"],"minimum":0},
+    "accession_id":{"type":["string","null"]},
+    "grin_puid":{"type":["string","null"]},
+    "sex":{"type":["string","null"]},
+    "assembly_accession":{"type":["string","null"]},
+    "reference_assembly":{"type":["string","null"]},
+    "attributes":{"type":"object","additionalProperties":true},
+    "provenance":{"type":"object","additionalProperties":false,"required":["source_url","retrieved_at"],"properties":{
+      "source_url":{"type":"string","format":"uri"},
+      "retrieved_at":{"type":"string","format":"date"},
+      "source_record_id":{"type":["string","null"]}
+    }}
+  }
+}
