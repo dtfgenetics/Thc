@@ -31,6 +31,10 @@ import {
   createStateMachine,
   createGameLifecycle,
   GAME_LIFECYCLE_STATES,
+  validateMultiplayerAdapter,
+  createMultiplayerClient,
+  createLiveOpsController,
+  resolveMultiplayerAvailability,
   LoadingTaskError,
   runLoadTasks,
   loadingResultsToObject,
@@ -638,6 +642,40 @@ class FakeAudioContext {
     () => privateMetadata.loading({ playerName: 'private identity' }),
     /private field/,
   );
+}
+
+{
+  const events = [];
+  const states = [];
+  const adapter = {
+    transport: 'test',
+    protocolVersion: 1,
+    async connect() { return { ok: true }; },
+    async createRoom() { return { room: { code: 'ABCD' }, player: { id: 'p1' } }; },
+    async joinRoom(code) { return { room: { code }, player: { id: 'p2' } }; },
+    async leaveRoom() { return { ok: true }; },
+    async reconnect(token) { return { room: { code: 'ABCD' }, player: { id: token } }; },
+    sendAction(type, payload) { events.push({ type, payload }); return true; },
+    subscribeState(listener) { states.push(listener); return () => states.splice(states.indexOf(listener), 1); },
+  };
+  assert.deepEqual(validateMultiplayerAdapter(adapter), { valid: true, errors: [] });
+  const multiplayer = createMultiplayerClient({ adapter, gameId: 'mp-test' });
+  await multiplayer.connect();
+  await multiplayer.joinRoom('ABCD');
+  assert.equal(multiplayer.status(), 'joined');
+  assert.equal(multiplayer.protocolVersion, 1);
+  multiplayer.sendAction('roll', { value: 6 });
+  assert.deepEqual(events.at(-1), { type: 'roll', payload: { value: 6 } });
+  await multiplayer.leaveRoom();
+  assert.equal(multiplayer.status(), 'connected');
+
+  const liveops = createLiveOpsController();
+  assert.equal(liveops.multiplayerAvailability().available, true);
+  liveops.update({ multiplayerEnabled: false, message: 'maintenance' });
+  assert.equal(liveops.multiplayerAvailability().mode, 'multiplayer-disabled');
+  liveops.update({ maintenance: true });
+  assert.equal(liveops.gameAvailability().mode, 'maintenance');
+  assert.equal(resolveMultiplayerAvailability({ enabled: false }).mode, 'disabled');
 }
 
 console.log('shared game platform runtime tests passed');
