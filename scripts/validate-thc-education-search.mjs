@@ -16,7 +16,8 @@ const files={
   courseCatalog:'site/wordpress/education/course-catalog-v4.json',
   tech1Public:'site/wordpress/education/tech1-courses-public-v1.json',
   tech2Public:'site/wordpress/education/tech2-courses-public-v1.json',
-  academyTarget:'site/wordpress/education/academy-deployment-target.json'
+  academyTarget:'site/wordpress/education/academy-deployment-target.json',
+  staticRecords:'configuration/education-search-static-records.json'
 };
 const errors=[];
 for(const [name,file] of Object.entries(files)) if(!fs.existsSync(file)) errors.push(`${name} missing: ${file}`);
@@ -34,11 +35,21 @@ if(!errors.length){
  const tech1Public=JSON.parse(fs.readFileSync(files.tech1Public,'utf8'));
  const tech2Public=JSON.parse(fs.readFileSync(files.tech2Public,'utf8'));
  const academyTarget=JSON.parse(fs.readFileSync(files.academyTarget,'utf8'));
+ const staticRecords=JSON.parse(fs.readFileSync(files.staticRecords,'utf8'));
  if(!page.includes('Search THC Education')||!page.includes('data-search-input')||!page.includes('search-v1.mjs')) errors.push('search page missing primary UI/runtime contract');
  if(!runtime.includes("Fuse from '/assets/vendor/fuse-7.1.0.min.mjs'")||!runtime.includes('threshold:.34')||!runtime.includes('includeScore:true')) errors.push('search runtime missing pinned fuzzy-search contract');
  if(!runtime.includes("../encyclopedia/encyclopedia-index.json")) errors.push('global education search must merge the complete encyclopedia index');
  if(!runtime.includes("name:'aliases'")||!runtime.includes('history.replaceState')) errors.push('global search missing alias/deep-link contract');
  if(!Array.isArray(index.documents)||index.documents.length<20) errors.push('search index must contain at least 20 canonical resources');
+ if(!Array.isArray(staticRecords.documents)||staticRecords.documents.length<1)errors.push('curated static search records must be explicit and non-empty');
+ const routeCounts=new Map();
+ for(const row of index.documents||[]){
+   routeCounts.set(row.route,(routeCounts.get(row.route)||0)+1);
+ }
+ for(const [route,count] of routeCounts)if(count>1)errors.push('search index contains duplicate route '+route+' ('+count+' records)');
+ const builderSource=fs.readFileSync(files.builder,'utf8');
+ if(builderSource.includes("readJson('site/public-route-patch/learn/search/search-index.json')"))errors.push('search generator must not ingest its own previous output');
+ if(!builderSource.includes("configuration/education-search-static-records.json"))errors.push('search generator must consume explicit curated static records');
  const publicCourseRefs=[...(tech1Public.courses||[]),...(tech2Public.courses||[])];
  for(const ref of publicCourseRefs){
    const row=index.documents?.find(x=>x.id===ref.id);
