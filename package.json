@@ -171,6 +171,6 @@
     "resolve:encyclopedia-source-pin": "node scripts/resolve-encyclopedia-deployment-target.mjs",
     "verify:encyclopedia-source-pin": "node scripts/validate-encyclopedia-source-pin.mjs",
     "verify:encyclopedia-shared-source-bridge": "node scripts/validate-encyclopedia-shared-source-bridge.mjs",
-    "verify:release-observability": "node scripts/validate-release-observability.mjs"
+    "verify:release-observability": "node --check scripts/build-release-observability.mjs && node --check scripts/validate-release-observability.mjs && node --check scripts/test-release-observability.mjs && node scripts/test-release-observability.mjs && node scripts/validate-release-observability.mjs"
   }
 }
