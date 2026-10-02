@@ -35,6 +35,8 @@ import {
   createMultiplayerClient,
   createLiveOpsController,
   resolveMultiplayerAvailability,
+  createGameObservability,
+  RECOMMENDED_OPERATIONAL_METRICS,
   LoadingTaskError,
   runLoadTasks,
   loadingResultsToObject,
@@ -676,6 +678,25 @@ class FakeAudioContext {
   liveops.update({ maintenance: true });
   assert.equal(liveops.gameAvailability().mode, 'maintenance');
   assert.equal(resolveMultiplayerAvailability({ enabled: false }).mode, 'disabled');
+}
+
+{
+  const emitted = [];
+  let now = 100;
+  const ops = createGameObservability({
+    gameId: 'ops-test',
+    releaseVersion: '1.2.3',
+    now: () => ++now,
+    sink: { emit(record) { emitted.push(record); } },
+  });
+  ops.counter('players_connected', 2, { region: 'test', roomCode: 'PRIVATE' });
+  ops.timing('network_latency_ms', 42, { transport: 'socketio' });
+  ops.error('runtime_error', Object.assign(new Error('boom'), { code: 'E_TEST' }), { playerName: 'private' });
+  assert.equal(emitted.length, 3);
+  assert.equal(emitted[0].attributes.roomCode, undefined);
+  assert.equal(emitted[2].attributes.playerName, undefined);
+  assert.equal(emitted[2].attributes.errorCode, 'E_TEST');
+  assert.ok(RECOMMENDED_OPERATIONAL_METRICS.includes('rooms_active'));
 }
 
 console.log('shared game platform runtime tests passed');
