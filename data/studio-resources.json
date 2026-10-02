@@ -67,7 +67,11 @@
         ".github/workflows/deploy-public-suite-wordpress-v2.yml",
         ".github/workflows/deploy-games-suite-lock-recovery.yml",
         ".github/workflows/deploy-thc-learning-center-expansion-v1.yml",
-        ".github/workflows/wordpress-harvest-outdoor-v6-production.yml"
+        ".github/workflows/wordpress-harvest-outdoor-v6-production.yml",
+        "configuration/release-observability-contract.json",
+        "scripts/build-release-observability.mjs",
+        "scripts/test-release-observability.mjs",
+        "scripts/validate-release-observability.mjs"
       ],
       "productionTargets": [
         "shared:release-control"
