@@ -77,6 +77,23 @@ export {
 } from './lifecycle.mjs';
 
 export {
+  validateMultiplayerAdapter,
+  createMultiplayerClient,
+} from './multiplayer.mjs';
+
+export {
+  normalizeGameLiveOpsState,
+  resolveGameAvailability,
+  resolveMultiplayerAvailability,
+  createLiveOpsController,
+} from './liveops.mjs';
+
+export {
+  createGameObservability,
+  RECOMMENDED_OPERATIONAL_METRICS,
+} from './observability.mjs';
+
+export {
   LoadingTaskError,
   runLoadTasks,
   loadingResultsToObject,
