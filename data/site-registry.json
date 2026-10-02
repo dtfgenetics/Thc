@@ -1,9 +1,14 @@
 {
   "schema_version": "1.0.0",
-  "updated": "2026-09-12",
+  "updated": "2026-10-02",
   "information_architecture": {
     "contract": "Every public page belongs to one visitor-facing root and one authoritative production writer. Shared header/footer styling may span roots; content publishers may not overwrite routes they do not own.",
     "canonical_primary_navigation": [
+      {
+        "id": "home",
+        "label": "Home",
+        "route": "/"
+      },
       {
         "id": "seeds",
         "label": "Seeds",
@@ -15,6 +20,11 @@
         "route": "/learn/"
       },
       {
+        "id": "courses",
+        "label": "Courses",
+        "route": "/courses/"
+      },
+      {
         "id": "diagnostic",
         "label": "Tools",
         "route": "/tools/"
@@ -23,6 +33,11 @@
         "id": "games",
         "label": "Games",
         "route": "/games/"
+      },
+      {
+        "id": "community",
+        "label": "Community",
+        "route": "/community/"
       },
       {
         "id": "shop",
@@ -173,7 +188,7 @@
       {
         "route": "/learn/learning-hub/",
         "primary_root": "courses",
-        "note": "Existing Learning Hub URLs remain stable. Courses remain a secondary destination and the primary header groups course routes under Learn."
+        "note": "Existing Learning Hub URLs remain stable. Courses is a first-class primary destination and owns structured course routes, while Learn remains the free topic-first reference system."
       },
       {
         "route": "/growlens/",
