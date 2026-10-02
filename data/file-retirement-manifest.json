@@ -37,6 +37,30 @@
       ],
       "historyRetention": "git-history",
       "reintroductionAllowed": false
+    },
+    {
+      "id": "seeds-mu-override-incident-generations",
+      "retiredPaths": [
+        ".github/workflows/repair-seeds-mu-override.yml",
+        ".github/workflows/repair-seeds-mu-override-v2.yml",
+        ".github/workflows/repair-seeds-mu-backup-collision.yml",
+        ".github/repair-seeds-mu-override-trigger.txt",
+        ".github/repair-seeds-mu-override-v2-trigger.txt",
+        ".github/repair-seeds-mu-backup-collision-trigger.txt",
+        "scripts/run-seeds-mu-repair-v2.mjs",
+        "scripts/run-seeds-mu-repair-with-catalog-markers.mjs",
+        "scripts/reconcile-seeds-mu-backup-collision.mjs"
+      ],
+      "disposition": "removed-from-active-tree",
+      "reason": "Incident-specific Seeds WordPress MU override recovery generations were superseded by the retained shared repair primitive and broader current DTF WordPress override repair path.",
+      "canonicalOwners": [
+        "scripts/repair-seeds-mu-override.mjs",
+        ".github/workflows/wordpress-dtf-override-repair.yml",
+        "scripts/repair-dtf-wordpress-override.mjs",
+        "scripts/run-dtf-wordpress-override-repair-current.sh"
+      ],
+      "historyRetention": "git-history",
+      "reintroductionAllowed": false
     }
   ]
 }
