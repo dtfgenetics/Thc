@@ -126,9 +126,9 @@ function jsonl(items){ return items.map(x=>JSON.stringify(x)).join('\n') + (item
 
 function selfTest() {
   const csv = [
-    'ACCESSION,PUID,PLANT NAME,TAXONOMY,ORIGIN,ht,days_2_female,uav_xxx,unknown_field',
-    'G 1,PUID-1,Example,Cannabis sativa L.,US,125.5,52,test,bad',
-    'G 2,PUID-2,Example2,Cannabis sativa L.,CA,not-a-number,60,,'
+    'ACCESSION,PUID,PLANT NAME,TAXONOMY,ORIGIN,ploidy,ht,days_2_female,uav_xxx,unknown_field',
+    'G 1,PUID-1,Example,Cannabis sativa L.,US,2,125.5,52,test,bad',
+    'G 2,PUID-2,Example2,Cannabis sativa L.,CA,bad-ploidy,not-a-number,60,,'
   ].join('\n');
   const out = normalize(parseCsv(csv),'https://example.test/grin.csv','2026-10-01');
   const fail = [];
@@ -136,7 +136,7 @@ function selfTest() {
   if (out.phenotypes.length !== 2) fail.push('expected 2 valid phenotype observations');
   if (!out.quarantine.some(x=>x.reason==='placeholder trait')) fail.push('missing placeholder quarantine');
   if (!out.quarantine.some(x=>x.reason==='unknown trait_name')) fail.push('missing unknown-trait quarantine');
-  if (!out.quarantine.some(x=>x.reason==='unparseable datatype')) fail.push('missing datatype quarantine');
+  if (out.quarantine.filter(x=>x.reason==='unparseable datatype').length < 2) fail.push('missing phenotype/ploidy datatype quarantine');
   if (fail.length) { console.error(fail.join('\n')); process.exit(1); }
   console.log('GRIN hemp normalizer self-test passed.');
 }
