@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root=process.cwd();
+const strict=process.argv.includes('--strict');
 const encRoot=path.join(root,'content','encyclopedia');
 const registry=JSON.parse(fs.readFileSync(path.join(encRoot,'current-controlled-registry.json'),'utf8'));
 const outPath=path.join(root,'data','encyclopedia-substantive-quality-audit.json');
@@ -81,3 +82,7 @@ console.log(`Substantive encyclopedia audit: ${rows.length} lessons; ${output.le
 console.log(JSON.stringify(issueCounts,null,2));
 console.log('Highest-priority lessons: '+ranked.slice(0,20).map(x=>x.id+'('+x.issueCount+')').join(', '));
 if(rows.length!==420) process.exit(1);
+if(strict && output.lessonsWithIssues>0){
+  console.error(`Strict substantive encyclopedia audit failed: ${output.lessonsWithIssues} lesson(s) have substantive quality findings.`);
+  process.exit(1);
+}
