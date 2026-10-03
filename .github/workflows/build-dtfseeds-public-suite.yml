@@ -798,10 +798,13 @@ jobs:
             grep -Fq 'data-dtf-shell="footer-v6"' "$file"
             grep -Fq 'data-dtf-sitewide-footer="canonical-eight-v1"' "$file"
             grep -Fq 'dtf-shared-footer-v6-style' "$file"
+            grep -Fq '>Home</a>' "$file"
             grep -Fq '>Seeds</a>' "$file"
             grep -Fq '>Learn</a>' "$file"
+            grep -Fq '>Courses</a>' "$file"
             grep -Fq '>Tools</a>' "$file"
             grep -Fq '>Games</a>' "$file"
+            grep -Fq '>Community</a>' "$file"
             grep -Fq '>Shop</a>' "$file"
             grep -Fq 'dtf-sitewide-header-v6-script' "$file"
           done
