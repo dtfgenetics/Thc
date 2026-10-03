@@ -5,7 +5,7 @@ Baseline: dtfgenetics/Thc@42153095b83bdce5e05748ca0bcffa22d4bdb43b.
 | Priority | Finding | Required work |
 |---|---|---|
 | High | /dtf-build.json returns 404; source/live revision cannot be compared | Publish a manifest identifying the deployed release, then verify it against immutable release artifacts. |
-| High | Substantive audit flags 178/420 encyclopedia lessons | Review lessons 181–190 first; improve explanations, measurements, evidence limits and sources in the current canonical content owner. |
+| Resolved in current main | Earlier substantive audit flagged 178/420 encyclopedia lessons | Current deterministic substantive lesson audit now passes all 420 controlled lessons. Do not use the earlier 178-lesson snapshot as an active work queue; use generated completion/evidence/visual/review ledgers for remaining work. |
 | Medium | Certification reference opens Learning Hub | This branch points it to /courses/#credentials, clarifies roadmap wording, and extends composition validation. |
 | Medium | /games/phenoquest/, /games/thc-rpg/, /games/ganjumanji/ lack canonical links | Add canonical metadata in each current canonical owner and rebuild/deploy its artifact. |
 | Medium | 340 encyclopedia assessment warnings | Review generated checks before materializing them; schema success is not an instructional-quality guarantee. |
