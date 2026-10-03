@@ -23,6 +23,13 @@ for (const item of items) {
   if (!Array.isArray(item.sourceAnchors) || item.sourceAnchors.length < 2) errors.push(`${item.lessonId}: needs at least 2 source anchors.`);
   if (!item.altTextDraft || !item.captionDraft) errors.push(`${item.lessonId}: accessibility copy is incomplete.`);
   if (item.approvedAssetId !== null) errors.push(`${item.lessonId}: queue builder must not approve an asset.`);
+  if (item.productionStatus === 'artwork_produced_review_pending') {
+    if (!item.canonicalAssetPath) errors.push(`${item.lessonId}: produced artwork must name its canonical asset path.`);
+    else if (!fs.existsSync(path.join(root, item.canonicalAssetPath))) errors.push(`${item.lessonId}: canonical produced artwork is missing from the repository.`);
+    if (item.assetQaStatus !== 'produced_pending_asset_qa') errors.push(`${item.lessonId}: produced artwork must remain pending asset QA.`);
+  } else if (item.productionStatus !== 'brief_ready_artwork_needed') {
+    errors.push(`${item.lessonId}: unsupported visual production status ${item.productionStatus}.`);
+  }
   if (!/pending/.test(String(item.accuracyReview))) errors.push(`${item.lessonId}: accuracy review must remain pending.`);
   if (item.publicationEffect !== 'none_review_state_unchanged') errors.push(`${item.lessonId}: visual brief must not change publication state.`);
 }
@@ -33,4 +40,4 @@ if (errors.length) {
   errors.slice(0, 80).forEach(error => console.error(` - ${error}`));
   process.exit(1);
 }
-console.log('Encyclopedia visual queue PASS: 420/420 lessons have controlled briefs; no artwork is misclassified as approved.');
+console.log(`Encyclopedia visual queue PASS: 420/420 lessons have controlled briefs; ${items.filter(item=>item.productionStatus==='artwork_produced_review_pending').length} produced assets remain review-pending and no artwork is misclassified as approved.`);
