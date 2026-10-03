@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "generatedAt": "2026-09-29",
-  "publicationCutoff": 380,
+  "publicationCutoff": 395,
   "note": "All 420 controlled encyclopedia entries are discoverable. Entries above the current publication cutoff are catalogued for navigation but their lesson content remains under review.",
   "topics": [
     {
@@ -242,7 +242,7 @@
       ],
       "description": "Selection, crossing, generations, population structure, inbreeding, preservation, evaluation, and genetic conservation.",
       "count": 20,
-      "publishedCount": 0
+      "publishedCount": 15
     },
     {
       "part": 21,
@@ -9223,14 +9223,60 @@
       "topicSlug": "breeding-conservation",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Breeding objective and target-product profile map",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-381",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-381/",
       "keywords": [
         "Breeding & Genetic Conservation",
         "Science lesson",
         "Breeding objective and target-product profile map",
-        "THC-ENC-381"
-      ]
+        "THC-ENC-381",
+        "breeding objective",
+        "target product profile",
+        "trait definition",
+        "selection criterion",
+        "constraint",
+        "ideotype",
+        "market class",
+        "release standard"
+      ],
+      "objective": "Convert a broad breeding idea into measurable, prioritized traits, testing environments, product uses, and release criteria.",
+      "terms": [
+        "breeding objective",
+        "target product profile",
+        "trait definition",
+        "selection criterion",
+        "constraint",
+        "ideotype",
+        "market class",
+        "release standard"
+      ],
+      "coreScience": [
+        "A breeding program begins with a decision about what population should become better, for whom, and under which environments. “Higher quality,” “better yield,” or “strong genetics” are not testable objectives. A target product profile translates intended lawful use into measurable traits such as flowering response, maturity window, biomass or inflorescence yield, cannabinoid ratio, volatile profile, seed or fiber properties, architecture, disease response, environmental adaptation, uniformity, and postharvest performance.",
+        "Traits can conflict. Later maturity may raise yield in one environment but increase frost or disease exposure. Dense flowers may improve visual yield while increasing drying and microbial risk. High concentration in a small sample may not maximize total analyte yield per plant or per area. A useful profile therefore ranks must-have traits, desired traits, unacceptable traits, and tradeoffs. It also names the testing methods, units, sample positions, environments, and minimum evidence required.",
+        "The objective controls population design. A rare single-gene trait may require marker-assisted introgression and backcrossing; a highly quantitative trait may require large populations, replicated trials, family selection, and genomic prediction. The target must remain version-controlled because regulations, product standards, climates, and customer needs change. Changing the objective after observing the results creates biased selection and makes progress difficult to audit."
+      ],
+      "cultivation": [
+        "Create the target product profile before making crosses. Use it to choose parents, population sizes, trial environments, laboratory panels, rejection rules, and release evidence."
+      ],
+      "measurements": [
+        "Record the program ID and version, intended lawful product use, target environments, trait definitions, units, measurement methods, trait weights, minimum acceptable values, preferred ranges, and explicit disqualifying traits before selection begins.",
+        "For each evaluated population, preserve population and generation IDs, parentage, sample size, environment, developmental stage, raw trait measurements, missing or rejected observations, and the selection decision. Do not retain only the winning plants; the discarded distribution is needed to estimate response and tradeoffs.",
+        "At each advancement or release decision, document the evidence used, uncertainty, correlated tradeoffs, number of candidates tested, release and stop criteria, approver, date, and any revision to the target product profile. Version changes should explain why the target changed rather than silently rewriting the original objective."
+      ],
+      "misconceptions": [
+        "The best-looking plant is automatically the best breeding parent. A strong phenotype in one plant can reflect environment, crop position, disease escape, or nonheritable effects; breeding value is better judged with family, progeny, replicated phenotype, or validated marker evidence appropriate to the trait.",
+        "Every desired trait can be maximized at the same time. Traits can be genetically or physiologically correlated, and improving one target can reduce another, so a breeding objective needs priorities, constraints, and explicit tradeoff rules.",
+        "A cultivar can be released from one successful grow. One environment cannot establish stability, adaptation, uniformity, or repeatability across the target production range; claims should match the number and diversity of environments actually tested."
+      ],
+      "evidenceLimits": [
+        "Trait priorities, legal thresholds, market needs, and environmental risks are program-specific and can change over time. A target product profile is a controlled decision document, not evidence that the desired combination is genetically achievable.",
+        "Estimated breeding values, genetic correlations, response to selection, and expected gain depend on the sampled population, trait definitions, measurement quality, environment, and model assumptions. Results should not be generalized to untested populations or environments without supporting data."
+      ],
+      "crossLinks": [
+        "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-382",
@@ -9241,14 +9287,62 @@
       "topicSlug": "breeding-conservation",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Parent evidence and complementarity matrix",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-382",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-382/",
       "keywords": [
         "Breeding & Genetic Conservation",
         "Science lesson",
         "Parent evidence and complementarity matrix",
-        "THC-ENC-382"
-      ]
+        "THC-ENC-382",
+        "parental value",
+        "complementarity",
+        "breeding value",
+        "genetic diversity",
+        "phenotype",
+        "genotype",
+        "combining ability",
+        "donor parent",
+        "recurrent parent"
+      ],
+      "objective": "Select parents from verified identity, heritable performance, complementary strengths, diversity, fertility, and evidence quality rather than reputation alone.",
+      "terms": [
+        "parental value",
+        "complementarity",
+        "breeding value",
+        "genetic diversity",
+        "phenotype",
+        "genotype",
+        "combining ability",
+        "donor parent",
+        "recurrent parent"
+      ],
+      "coreScience": [
+        "A parent contributes alleles, cytoplasm when used as the seed parent, and a sampling of its family history. The strongest individual phenotype is not always the best parent. Performance can reflect environment, position, crop load, disease escape, or measurement error, and a visually impressive clone may transmit little of the feature that made it desirable.",
+        "Parent selection should combine identity, pedigree, replicated phenotype, laboratory data, fertility, sex stability, disease status, and genetic relationship. Complementarity means that one parent supplies strengths missing from the other while neither introduces unacceptable liabilities. Two parents with the same weakness rarely solve it simply because their names or aromas differ. Conversely, extreme genetic distance can create useful variation but also disrupt favorable allele combinations and increase segregation.",
+        "Use family and progeny information when possible. A parent that repeatedly produces acceptable offspring across mates may have high general combining ability. A parent that performs unusually well with one specific mate may show specific combining ability. Molecular markers can confirm identity, sex genotype, major loci, and relationship, but they do not replace phenotype for traits not fully explained by those markers. Quarantine and pathogen testing are part of parent qualification because disease can be transmitted with living material and can distort trait evaluation."
+      ],
+      "cultivation": [
+        "Create a parent dossier and a trait-complementarity matrix before flowering. Retain backup clones or verified seed, and document why each parent was chosen and what risk it introduces."
+      ],
+      "measurements": [
+        "For every candidate parent, record permanent plant and source IDs, pedigree, verified sex expression, genotype or fingerprint data when available, quarantine and pathogen status, fertility, backup location, and the exact traits the parent is intended to contribute.",
+        "Compare parents using replicated measurements where possible: trait means and variation, chemistry, flowering behavior, architecture, yield components, fertility, and health. Record the environment, sample position, developmental stage, laboratory method, and relationship estimate so apparent complementarity is not confused with measurement or environmental differences.",
+        "Before making the cross, document the strengths, liabilities, evidence quality, expected complementary contribution, unacceptable risks, and the decision rule for advancing or replacing each parent. Retain the rejected-parent rationale so later progeny performance can be traced back to the original selection assumptions."
+      ],
+      "misconceptions": [
+        "Crossing two elite plants guarantees elite offspring. Each parent transmits a segregating sample of alleles, so progeny can recombine strengths and weaknesses in many ways; elite phenotype alone does not guarantee favorable combining ability.",
+        "Unrelated parents are always superior to related parents. Greater genetic distance can increase variation, but it can also break favorable allele combinations or introduce new liabilities; relatedness should be considered alongside the breeding objective, diversity needs, and observed progeny performance.",
+        "A cultivar name proves genetic identity and parentage. Names are labels, not genetic tests; identity and parentage require traceable records and, when necessary, sufficiently informative molecular or progeny evidence."
+      ],
+      "evidenceLimits": [
+        "Breeding value and combining ability are estimates defined for specific traits, populations, mates, environments, and measurement systems. Performance with one mate or in one environment does not establish universal parental value.",
+        "Marker data can support identity, relatedness, sex genotype, or known loci, but it cannot substitute for phenotype when the trait is polygenic, environmentally responsive, poorly tagged, or not captured by the marker panel."
+      ],
+      "crossLinks": [
+        "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-383",
@@ -9259,14 +9353,62 @@
       "topicSlug": "breeding-conservation",
       "primaryFormat": "Procedure",
       "teachingVisual": "Controlled-cross identity and pollen-flow workflow",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-383",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-383/",
       "keywords": [
         "Breeding & Genetic Conservation",
         "Procedure",
         "Controlled-cross identity and pollen-flow workflow",
-        "THC-ENC-383"
-      ]
+        "THC-ENC-383",
+        "controlled cross",
+        "seed parent",
+        "pollen parent",
+        "isolation",
+        "emasculation",
+        "pollen exclusion",
+        "chain of identity",
+        "cross ID",
+        "contamination check"
+      ],
+      "objective": "Preserve parent identity and prevent unintended pollen, sample, label, and generation errors during controlled crossing.",
+      "terms": [
+        "controlled cross",
+        "seed parent",
+        "pollen parent",
+        "isolation",
+        "emasculation",
+        "pollen exclusion",
+        "chain of identity",
+        "cross ID",
+        "contamination check"
+      ],
+      "coreScience": [
+        "A controlled cross is a documented transfer of pollen from a verified pollen parent to a verified seed parent while excluding unintended pollen. In Cannabis, wind-dispersed pollen, delayed pollen release, mixed tools, mislabeled clones, and overlooked male or intersexual flowers can compromise a cross. A physical bag or separate room is not sufficient unless airflow, timing, seals, handling, and later seed recovery are controlled.",
+        "Verification begins before flowering. Confirm parent IDs from permanent records and, when appropriate, genotype markers or fingerprints. Map every flowering plant, inspect for unexpected sex expression, and define pollen collection, storage, viability, and disposal methods. Pollinated branches or plants require durable cross labels tied to a cross record. Open-pollinated seed from a mixed room must not be represented as a known biparental cross.",
+        "After seed set, preserve maternal plant, branch or inflorescence position, pollination date, pollen lot, personnel, and harvest lot. Progeny testing or markers can detect some errors, but no marker panel proves complete parentage unless it is sufficiently informative for the candidate parents. Control plants and unpollinated checks help identify stray pollen. Failed identity or contamination control should downgrade the seed lot rather than be hidden by a confident name."
+      ],
+      "cultivation": [
+        "Use one permanent cross ID from parent qualification through seed inventory and progeny trial. Separate breeding seed from production seed and preserve exceptions and uncertainty."
+      ],
+      "measurements": [
+        "Assign a permanent cross ID before pollen collection and record verified seed-parent and pollen-parent IDs, identity method, flowering location, isolation method, and the map of all nearby flowering plants that could contribute unintended pollen.",
+        "For each pollination event, record pollen lot, collection date, storage condition, viability check if used, pollination date and site, exclusion method, personnel, tools, and any deviation such as damaged bags, airflow changes, unexpected male or intersexual flowers, or mixed handling.",
+        "At seed harvest, link the seed lot back to the exact cross ID, maternal plant and pollinated site. Record control-plant seed set, unexpected seed set, contamination concerns, seed-lot disposition, and any parentage test performed; downgrade uncertain lots instead of converting uncertainty into a confident pedigree."
+      ],
+      "misconceptions": [
+        "Seed collected from a labeled female automatically has the intended father. Maternal identity does not establish pollen identity; stray pollen, mixed pollen lots, labeling errors, or unnoticed male and intersexual flowers can create unintended parentage.",
+        "A closed door prevents Cannabis pollen movement. Pollen can move with airflow, leaks, HVAC, clothing, tools, and personnel, so isolation must control pathways and handling rather than rely on a room label alone.",
+        "One matching marker proves parentage. A marker is informative only relative to the candidate-parent set and its allele frequencies; reliable parentage requires enough informative loci, correct samples, and exclusion of plausible alternative parents."
+      ],
+      "evidenceLimits": [
+        "Parentage confidence depends on the isolation design, candidate-parent set, pollen handling, label integrity, sample quality, and informativeness of any marker panel. No record or assay can retrospectively remove uncertainty that was never controlled or documented.",
+        "A progeny or marker check can detect some crossing errors but does not prove perfect pollen exclusion. Release claims should distinguish documented parentage, supported parentage, and unresolved contamination risk."
+      ],
+      "crossLinks": [
+        "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-384",
@@ -9277,14 +9419,62 @@
       "topicSlug": "breeding-conservation",
       "primaryFormat": "Science lesson",
       "teachingVisual": "F1 allele and heterozygosity concept diagram",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-384",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-384/",
       "keywords": [
         "Breeding & Genetic Conservation",
         "Science lesson",
         "F1 allele and heterozygosity concept diagram",
-        "THC-ENC-384"
-      ]
+        "THC-ENC-384",
+        "F1",
+        "homozygous",
+        "heterozygous",
+        "dominance",
+        "heterosis",
+        "maternal effect",
+        "reciprocal cross",
+        "hybrid",
+        "parental phase"
+      ],
+      "objective": "Interpret F1 uniformity, heterozygosity, dominance, maternal effects, and hybrid performance without assuming every F1 is identical or superior.",
+      "terms": [
+        "F1",
+        "homozygous",
+        "heterozygous",
+        "dominance",
+        "heterosis",
+        "maternal effect",
+        "reciprocal cross",
+        "hybrid",
+        "parental phase"
+      ],
+      "coreScience": [
+        "The F1 generation is the first filial generation from two parents. At a locus where the parents are fixed for different alleles, every true F1 is heterozygous. Cannabis parents, however, are often highly heterozygous rather than fully inbred. Their F1 offspring can therefore segregate at many loci and may vary substantially even though they share the same two named parents.",
+        "Uniform F1 hybrids usually require stable, sufficiently homozygous or otherwise predictable parental lines. Heterosis is performance above a defined parental reference, not simply vigor in a healthy seedling. It can arise from dominance, overdominance, epistasis, masking of deleterious alleles, and population divergence. Hybrid vigor in one environment or trait does not prove superior quality, stability, fertility, or transmission.",
+        "Reciprocal crosses can differ because the seed parent contributes cytoplasm, seed size, maternal environment, and early developmental effects. Parent sex also changes which chromosomes and recombination histories can be transmitted in dioecious material. Evaluate both reciprocal directions when the program depends on seed traits, vigor, flowering, or chemistry and when lawful logistics permit. F1 records must distinguish a single selected F1 clone from the entire F1 family."
+      ],
+      "cultivation": [
+        "Do not market a variable F1 family as uniform without data. Measure within-family variance and preserve individual IDs for selected F1 plants."
+      ],
+      "measurements": [
+        "Record both parent IDs, reciprocal direction, parent heterozygosity or inbreeding information when known, F1 seed-lot identity, planned and emerged population size, and any marker data used to confirm that the family is the intended cross.",
+        "Measure within-family distributions rather than only the best individual. Record germination, vigor, flowering, architecture, chemistry or other target traits, parental and check performance, environment, sample size, and variance so apparent F1 uniformity or heterosis is tied to a defined reference.",
+        "If heterosis is claimed, state the calculation and reference explicitly, such as mid-parent or better-parent performance, and retain the underlying values. Record fertility, sex expression, off-types, reciprocal differences, and whether a selected F1 clone is being described separately from the seed family."
+      ],
+      "misconceptions": [
+        "All F1 seed from two parents is genetically identical. That is only approached when parental genotypes are sufficiently fixed and predictable; heterozygous Cannabis parents can produce substantial segregation within the F1 family.",
+        "F1 always means uniform and vigorous. F1 identifies a generation, not a quality grade. Uniformity and heterosis are empirical properties that must be measured against the parents or another defined reference.",
+        "A selected F1 clone describes every seed in the F1 lot. One clone represents one genotype sampled from the family; its phenotype, chemistry, fertility, or stability cannot be assigned to unsampled siblings without family-level evidence."
+      ],
+      "evidenceLimits": [
+        "F1 variation depends on parental heterozygosity, allele phase, relatedness, cytoplasmic effects, seed environment, trait architecture, and measurement conditions. Generation labels alone do not establish genetic uniformity.",
+        "Heterosis estimates depend on the reference population, trait, environment, sample size, and error structure. Superior performance in one trait or environment does not demonstrate general superiority, stability, or heritable transmission."
+      ],
+      "crossLinks": [
+        "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-385",
@@ -9295,14 +9485,60 @@
       "topicSlug": "breeding-conservation",
       "primaryFormat": "Science lesson",
       "teachingVisual": "F2 segregation and recovery-probability chart",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-385",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-385/",
       "keywords": [
         "Breeding & Genetic Conservation",
         "Science lesson",
         "F2 segregation and recovery-probability chart",
-        "THC-ENC-385"
-      ]
+        "THC-ENC-385",
+        "F2",
+        "segregation",
+        "recombination",
+        "linkage",
+        "Mendelian ratio",
+        "transgressive segregation",
+        "population size",
+        "selection differential"
+      ],
+      "objective": "Design F2 populations around trait architecture, recombination, linkage, rare-combination probability, and selection capacity.",
+      "terms": [
+        "F2",
+        "segregation",
+        "recombination",
+        "linkage",
+        "Mendelian ratio",
+        "transgressive segregation",
+        "population size",
+        "selection differential"
+      ],
+      "coreScience": [
+        "An F2 population is commonly produced by selfing or intercrossing F1 individuals. It exposes new homozygous and recombinant combinations, making it valuable for mapping and selection. Simple 1:2:1 or 3:1 expectations apply only under defined single-locus assumptions with clear phenotypes, adequate sample size, no distortion, and reliable classification. Most horticultural traits involve multiple loci, dominance, epistasis, linkage, genotype-by-environment interaction, and measurement error.",
+        "Population size should be based on the probability of the desired combination and the number of individuals that can be measured accurately. Recovering several independent favorable alleles in one individual can require far more plants than intuition suggests. Linkage can make combinations harder or easier to recover depending on allele phase and recombination distance. Selecting too few plants creates a genetic bottleneck and can fix hidden defects.",
+        "F2 individuals should be permanently identified and, where possible, preserved by clone or seed family before destructive testing. Selection can target individuals, but traits with low heritability often need F3 family confirmation. The rarest-looking phenotype is not automatically transgressive or heritable. Compare against parents and checks under the same conditions, and retain unselected or less selected material when conservation of diversity is part of the objective."
+      ],
+      "cultivation": [
+        "Calculate a minimum population from trait probabilities, then increase it for mortality, sex ratio, testing losses, recombination uncertainty, and the need for multiple selected families."
+      ],
+      "measurements": [
+        "Record the exact F1 source and mating, F2 seed-lot identity, planned population, emerged and surviving population, sex distribution where relevant, and the genetic model used to estimate the frequency of the target phenotype or genotype.",
+        "Measure the full F2 distribution for the selected traits and keep individual IDs tied to phenotype, genotype or marker data, environment, developmental stage, and family-preservation method. Record missing, dead, culled, and unscorable plants so the observed ratios are not biased by hidden attrition.",
+        "At selection, document the number retained, selection intensity, reasons for discard, whether selections were preserved as clones or families, and which traits require F3 or later confirmation. Compare observed frequencies with the stated model, but treat deviations as a prompt to test assumptions rather than force the data into an expected ratio."
+      ],
+      "misconceptions": [
+        "A small F2 shows every possible phenotype. Rare recombinant or multilocus combinations may be absent simply because the sample is too small, even when the underlying alleles are present in the population.",
+        "All F2 ratios follow one-gene Mendelian expectations. Simple ratios require specific assumptions about locus number, dominance, viability, penetrance, classification, and independence; linkage, epistasis, polygenic control, and environmental effects can change the observed distribution.",
+        "The most extreme F2 plant will breed true. An extreme phenotype can still be heterozygous, environmentally amplified, or caused by interacting loci, so fixation and heritability require progeny or family confirmation."
+      ],
+      "evidenceLimits": [
+        "Expected segregation and recovery probabilities are only as good as the genetic model, linkage assumptions, penetrance, viability, classification accuracy, and sampling plan. A poor model can make a perfectly valid population look abnormal.",
+        "Observed F2 frequencies estimate one finite sample from one cross and environment. They should not be generalized to other parental combinations or used to claim fixation until later-generation or progeny evidence supports the inference."
+      ],
+      "crossLinks": [
+        "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-386",
@@ -9313,14 +9549,62 @@
       "topicSlug": "breeding-conservation",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Pedigree-family selection sequence",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-386",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-386/",
       "keywords": [
         "Breeding & Genetic Conservation",
         "Science lesson",
         "Pedigree-family selection sequence",
-        "THC-ENC-386"
-      ]
+        "THC-ENC-386",
+        "F3 family",
+        "pedigree selection",
+        "family mean",
+        "within-family selection",
+        "between-family selection",
+        "line",
+        "fixation",
+        "bulk",
+        "single-seed descent"
+      ],
+      "objective": "Use family means, within-family variation, replication, and advancing-generation records to increase fixation without losing useful diversity.",
+      "terms": [
+        "F3 family",
+        "pedigree selection",
+        "family mean",
+        "within-family selection",
+        "between-family selection",
+        "line",
+        "fixation",
+        "bulk",
+        "single-seed descent"
+      ],
+      "coreScience": [
+        "F3 and later generations allow breeders to compare descendants of individual F2 selections. Selfing increases homozygosity on average, but each family fixes different segments and retains different residual heterozygosity. A family that looks uniform for one visible trait may still segregate for chemistry, disease response, flowering, or hidden deleterious alleles.",
+        "Family selection separates two questions: which families have useful average performance, and which individuals within those families deserve advancement? For quantitative traits, replicated family means can be more reliable than one F2 plant. Within-family selection is useful when meaningful variation remains. Pedigree selection preserves ancestry and selection decisions; bulk and single-seed-descent methods preserve different amounts of selection and diversity. The method should match labor, traits, generation time, and the target product profile.",
+        "Do not advance only one seed or clone per generation unless a deliberate bottleneck is acceptable. Maintain backup seed, sibling lines, and failed-line records. Confirm stability across environments and generations rather than using “F3,” “F4,” or “F5” as a quality claim. Generation labels describe ancestry and mating history, not uniformity, vigor, or commercial readiness."
+      ],
+      "cultivation": [
+        "Evaluate several plants per family and several families per cross. Use consistent family IDs, keep selection notes, and confirm important traits with replicated trials and laboratory data."
+      ],
+      "measurements": [
+        "Record family and pedigree ID, generation, mating method, plants per family, environments, replicates, and the exact trait definitions used before selection. Keep family identities stable so changes in mean performance and residual segregation can be followed across generations.",
+        "Compare both between-family and within-family variation. Preserve raw measurements, family means, within-family variance, selected and rejected individuals, missing plants, and the environment and stage at which each trait was scored.",
+        "At advancement, record which families and individuals were retained, seed or clone backups, evidence for stability, and the reason each line was advanced, held, or discarded. Generation labels should never substitute for measured stability."
+      ],
+      "misconceptions": [
+        "F3 automatically means stable. Selfing increases homozygosity on average, but different loci fix at different rates and an F3 family can still segregate strongly for morphology, chemistry, fertility, disease response, or sex expression.",
+        "One selected plant represents its whole family. A single plant is one genotype sampled from a segregating family; family value requires information about siblings, progeny, or replicated performance.",
+        "Later generation always means better quality. Additional generations can increase fixation, but they can also fix undesirable alleles or create bottlenecks; quality still depends on the breeding objective and measured performance."
+      ],
+      "evidenceLimits": [
+        "Expected fixation depends on starting heterozygosity, mating design, linkage, selection, viability, and population size. A generation number alone cannot establish uniformity or genetic stability.",
+        "Family means become more informative when enough plants and environments are sampled. Small or heavily selected families can exaggerate apparent stability and should be interpreted cautiously."
+      ],
+      "crossLinks": [
+        "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-387",
@@ -9331,14 +9615,62 @@
       "topicSlug": "breeding-conservation",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Backcross genome-recovery and linkage-drag diagram",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-387",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-387/",
       "keywords": [
         "Breeding & Genetic Conservation",
         "Science lesson",
         "Backcross genome-recovery and linkage-drag diagram",
-        "THC-ENC-387"
-      ]
+        "THC-ENC-387",
+        "backcross",
+        "recurrent parent",
+        "donor parent",
+        "introgression",
+        "linkage drag",
+        "foreground selection",
+        "background selection",
+        "BC1",
+        "BC2"
+      ],
+      "objective": "Introgress a defined donor trait while measuring recurrent-parent recovery, linkage drag, trait expression, and background performance.",
+      "terms": [
+        "backcross",
+        "recurrent parent",
+        "donor parent",
+        "introgression",
+        "linkage drag",
+        "foreground selection",
+        "background selection",
+        "BC1",
+        "BC2"
+      ],
+      "coreScience": [
+        "Backcrossing repeatedly mates selected progeny to a recurrent parent to introduce a donor trait while recovering the recurrent background. Under an idealized model with unlinked neutral loci and no selection, expected recurrent-parent genome proportion rises from about one-half in the F1 to three-quarters in BC1, seven-eighths in BC2, and so forth. Individual progeny vary around those expectations, and regions linked to the donor allele can remain large.",
+        "The donor trait must be verified in every generation. Foreground selection tracks the target allele or phenotype; background selection estimates recovery elsewhere in the genome. Recombinants near the target can reduce linkage drag. A marker associated in one population may fail in another if it is not causal or tightly linked, so validation is essential.",
+        "Backcrossing can lose donor traits controlled by many genes or environmental interactions. It can also restore recurrent-parent defects that the original cross had masked. Reciprocal fertility, sex, cytoplasm, and legal chemotype limits may constrain the design. After the desired introgression, selfing or intercrossing may be needed to fix the allele, followed by replicated performance and quality testing."
+      ],
+      "cultivation": [
+        "Use backcrossing for a defined introgression goal, not as a generic path to “make it like the parent.” Preserve donor, recurrent parent, intermediates, and flanking-marker data."
+      ],
+      "measurements": [
+        "Record donor and recurrent-parent IDs, target trait, evidence that the trait is causal or linked to the tracked marker, backcross generation, population size, and the marker or phenotype criteria used for foreground selection.",
+        "For each generation, track target-trait expression, recurrent-parent genome estimate when measured, donor-segment size, recombination near the target, fertility, off-target traits, and the number of progeny screened and rejected.",
+        "At advancement, document which recombinants were retained, what evidence supports reduced linkage drag, and whether final performance was confirmed phenotypically after the desired introgression. Preserve donor, recurrent parent, and intermediate generations as references where practical."
+      ],
+      "misconceptions": [
+        "Each backcross offspring has exactly the expected genome percentage. The familiar fractions are population expectations under simplifying assumptions; individual progeny vary because recombination is random.",
+        "Backcrossing preserves every desirable donor trait. Selection usually focuses on a defined introgressed target, while other donor alleles can be lost unless they are deliberately retained.",
+        "A linked marker is equivalent to the causal allele. Recombination can separate a linked marker from the causal variant, and associations can fail in a different genetic background."
+      ],
+      "evidenceLimits": [
+        "Genome-recovery expectations assume simplified inheritance and do not predict the exact recurrent-parent proportion or donor-segment size in an individual plant.",
+        "Marker-assisted backcrossing is only as reliable as marker validation, map position, population size, and phenotype confirmation. Strong introgression claims require both identity evidence and target-trait performance."
+      ],
+      "crossLinks": [
+        "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-388",
@@ -9349,14 +9681,60 @@
       "topicSlug": "breeding-conservation",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Heterozygosity decline and inbreeding-risk chart",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-388",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-388/",
       "keywords": [
         "Breeding & Genetic Conservation",
         "Science lesson",
         "Heterozygosity decline and inbreeding-risk chart",
-        "THC-ENC-388"
-      ]
+        "THC-ENC-388",
+        "selfing",
+        "inbreeding coefficient",
+        "homozygosity",
+        "residual heterozygosity",
+        "inbreeding depression",
+        "deleterious recessive",
+        "purging",
+        "S1"
+      ],
+      "objective": "Explain how selfing changes genotype frequencies, exposes recessive alleles, increases line uniformity, and can reduce vigor or fertility.",
+      "terms": [
+        "selfing",
+        "inbreeding coefficient",
+        "homozygosity",
+        "residual heterozygosity",
+        "inbreeding depression",
+        "deleterious recessive",
+        "purging",
+        "S1"
+      ],
+      "coreScience": [
+        "Selfing mates a plant with genetically female pollen derived from itself or otherwise allows self-fertilization. Under an ideal diploid single-locus model, heterozygosity is expected to halve with each selfed generation. The genome does not become instantly homozygous, and different regions fix at different times because of recombination, selection, viability, and structural variation.",
+        "Inbreeding exposes recessive alleles and can reveal hidden defects in vigor, fertility, development, disease response, sex expression, and seed quality. Inbreeding depression is the decline in performance caused by increased homozygosity for deleterious alleles and loss of favorable heterozygous combinations. Its magnitude differs among populations and traits. Selection can remove some severe defects, but “purging” is not guaranteed and may narrow diversity.",
+        "An S1 family is a population of selfed offspring from one parent, not a clone of that parent. It can segregate widely when the parent is heterozygous. Selfing can help reveal genotype, create mapping populations, and develop lines, but it should be paired with population size, family testing, and backup conservation. Do not interpret short-term uniformity in a few plants as genetic stability."
+      ],
+      "cultivation": [
+        "Track selfing generation separately from filial generation, compare each selfed family with the parent and outcrossed checks, and record losses rather than discarding them from the analysis."
+      ],
+      "measurements": [
+        "Record parent identity, starting heterozygosity information when available, selfing method, S generation, seed set, germination, family size, and all losses before phenotype scoring.",
+        "Track vigor, fertility, abnormality rate, sex expression, trait variance, and molecular homozygosity if measured. Compare selfed families with the parent and, where useful, an outcrossed or noninbred reference under the same environment.",
+        "At each generation, record selected families, discarded families, the reasons for removal, retained diversity, and backup seed or clones. Treat mortality and weak plants as data rather than silently excluding them from conclusions about inbreeding."
+      ],
+      "misconceptions": [
+        "S1 seed is genetically identical to the mother. Selfing reshuffles the mother's alleles and can expose recessive variation, so S1 offspring can differ markedly from one another and from the parent.",
+        "Selfing always creates a stable line in one generation. One selfed generation increases homozygosity but leaves substantial residual heterozygosity when the parent was heterozygous.",
+        "Inbreeding depression affects every Cannabis population equally. Its magnitude depends on the starting genetic load, trait, population history, environment, and the alleles that become homozygous."
+      ],
+      "evidenceLimits": [
+        "Theoretical heterozygosity decline is an expectation, not a measurement of realized fixation in a particular line. Selection, viability, linkage, and structural variation can change the observed pattern.",
+        "Apparent recovery from inbreeding depression can reflect selection or environmental differences and should not be described as genetic purging without appropriate generational evidence."
+      ],
+      "crossLinks": [
+        "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-389",
@@ -9367,14 +9745,60 @@
       "topicSlug": "breeding-conservation",
       "primaryFormat": "Science lesson",
       "teachingVisual": "XX sex-reversal and feminized-seed biology diagram",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-389",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-389/",
       "keywords": [
         "Breeding & Genetic Conservation",
         "Science lesson",
         "XX sex-reversal and feminized-seed biology diagram",
-        "THC-ENC-389"
-      ]
+        "THC-ENC-389",
+        "feminized seed",
+        "XX",
+        "sex reversal",
+        "masculinization",
+        "ethylene signaling",
+        "silver thiosulfate",
+        "pollen fertility",
+        "sex expression"
+      ],
+      "objective": "Explain the genetic and hormonal basis of producing pollen on genetically female plants while separating biology from operational chemical procedures.",
+      "terms": [
+        "feminized seed",
+        "XX",
+        "sex reversal",
+        "masculinization",
+        "ethylene signaling",
+        "silver thiosulfate",
+        "pollen fertility",
+        "sex expression"
+      ],
+      "coreScience": [
+        "Dioecious Cannabis commonly has XX females and XY males. Feminized seed production uses pollen from a genetically female plant that has been induced to form functional male flowers. Because the pollen donor lacks a Y chromosome, the intended progeny are genetically female under the XX/XY model. This does not mean every progeny plant will show identical morphology, chemistry, fertility, or environmental sex expression.",
+        "Ethylene signaling strongly influences sex expression. Silver-based ethylene inhibitors, especially silver thiosulfate in research, can induce male flowers on female plants. Response depends on genotype, developmental stage, application method, concentration, plant condition, and environment. Treated plants and materials require chemical-safety, waste, legal, and product-separation controls; this plant-science volume does not provide an application recipe or authorize product use.",
+        "Breeding quality depends on more than obtaining seeds. Verify the pollen donor’s genetic sex, identity, disease status, fertility, pollen viability, and the recipient’s identity. Evaluate seed set, germination, offspring sex genotype and expression, intersexuality under defined environments, vigor, chemistry, and off-types. Self-feminized seed increases inbreeding, while feminized seed from two different XX parents is an outcross. Those designs have different segregation and risk."
+      ],
+      "cultivation": [
+        "Separate sex-reversal research plants from consumable or production material. Treat feminization as a breeding tool with progeny testing, not a guarantee printed on a label."
+      ],
+      "measurements": [
+        "Record pollen-donor and seed-parent IDs, verified genetic sex when tested, relationship between parents, mating design, segregation of treated research material from production material, and the authorization and safety controls governing the treatment.",
+        "Track induced flower development, pollen production, pollen viability, pollination success, seed set, germination, progeny sex genotype or phenotype, and the environments used to evaluate sex expression and intersexuality.",
+        "At progeny evaluation, distinguish self-feminized families from outcrossed feminized families, record off-types and fertility, and document what material was retained, rejected, or disposed of. Do not infer family stability from successful pollen induction alone."
+      ],
+      "misconceptions": [
+        "Feminized seed is genetically identical to the female parent. An outcrossed feminized family combines two XX parents, while a selfed family still segregates wherever the pollen donor is heterozygous.",
+        "All pollen from an induced female is equally fertile. Pollen production and fertility can vary by genotype, developmental stage, treatment response, environment, and handling.",
+        "Feminization proves the progeny cannot express intersexual flowers. Genetic sex and environmental sex expression are different endpoints; progeny still require evaluation under defined conditions."
+      ],
+      "evidenceLimits": [
+        "The XX/XY model explains the intended sex-chromosome outcome, but observed sex expression can also be influenced by genotype, developmental state, and environment.",
+        "Evidence that a plant produced induced pollen does not establish progeny uniformity, stability, fertility, or commercial suitability. Those claims require separate progeny testing."
+      ],
+      "crossLinks": [
+        "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-390",
@@ -9385,14 +9809,60 @@
       "topicSlug": "breeding-conservation",
       "primaryFormat": "Comparison",
       "teachingVisual": "Seed-system breeding comparison plate",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-390",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-390/",
       "keywords": [
         "Breeding & Genetic Conservation",
         "Comparison",
         "Seed-system breeding comparison plate",
-        "THC-ENC-390"
-      ]
+        "THC-ENC-390",
+        "regular seed",
+        "feminized seed",
+        "autoflowering",
+        "photoperiod sensitivity",
+        "dioecious",
+        "monoecious",
+        "sex genotype",
+        "flowering locus"
+      ],
+      "objective": "Compare mating control, sex segregation, generation design, flowering biology, diversity, and testing needs across regular, feminized, and autoflower breeding.",
+      "terms": [
+        "regular seed",
+        "feminized seed",
+        "autoflowering",
+        "photoperiod sensitivity",
+        "dioecious",
+        "monoecious",
+        "sex genotype",
+        "flowering locus"
+      ],
+      "coreScience": [
+        "Regular dioecious crosses commonly combine an XX seed parent and XY pollen parent, producing both genetic sexes. They preserve Y-linked variation and support male-parent evaluation but require early sex management and careful pollen control. Feminized crosses use genetically female pollen and are designed to produce XX progeny; they can be selfed or outcrossed and therefore differ greatly in diversity and inbreeding.",
+        "Autoflowering describes reduced dependence on daylength for flowering. It is not a separate universal breeding system and can be incorporated into regular or feminized material. Recent genetics work links daylength-insensitive flowering to specific genomic changes, but flowering time remains influenced by genotype, age, temperature, light, nutrition, root restriction, and stress. Crossing an autoflower parent with a photoperiod parent does not guarantee all F1 progeny will flower automatically; inheritance depends on the alleles and background.",
+        "Choose a system from the target product profile. Fiber, grain, seed, cannabinoid, breeding, and research programs value sex ratio, architecture, flowering, seed output, uniformity, and generation speed differently. Preserve accurate generation and sex terminology. “Regular,” “feminized,” and “auto” do not communicate homozygosity, stability, chemotype, disease resistance, or legal compliance."
+      ],
+      "cultivation": [
+        "Record genetic sex, observed sex expression, mating design, and flowering response separately. Test under controlled and target-field photoperiods."
+      ],
+      "measurements": [
+        "Record seed system, cross type, parent sex genotype and observed expression, whether the mating is selfed or outcrossed, flowering-response markers if validated, and the parental flowering phenotype under known photoperiods.",
+        "Track photoperiod history, age or node count at flowering, days to reproductive transition, sex ratio, off-types, segregation for flowering behavior, and family structure across both controlled and target production environments.",
+        "At advancement, document which claims apply to the specific family: regular, feminized, daylength-insensitive, photoperiod-responsive, selfed, or outcrossed. Keep these labels separate from claims about stability, diversity, potency, yield, or legal compliance."
+      ],
+      "misconceptions": [
+        "Autoflowering progeny are unaffected by light schedule. Daylength-insensitive flowering reduces photoperiod dependence, but development and flowering time can still respond to age, temperature, light quantity, root environment, and other stresses.",
+        "Feminized means inbred. Feminized seed describes the sex of the pollen donor; it can come from selfing or from a cross between two different XX parents.",
+        "Regular seed is genetically more diverse in every case. Diversity depends on the actual parents, relationships, population size, and breeding history, not the regular/feminized label by itself."
+      ],
+      "evidenceLimits": [
+        "Seed-system terms describe mating or flowering context and do not establish homozygosity, uniformity, chemotype, disease resistance, vigor, or legal status.",
+        "Flowering behavior should be evaluated in the relevant genetic background and environments. Marker associations or one successful grow do not justify universal inheritance claims."
+      ],
+      "crossLinks": [
+        "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-391",
@@ -9403,14 +9873,60 @@
       "topicSlug": "breeding-conservation",
       "primaryFormat": "Comparison",
       "teachingVisual": "Qualitative and quantitative trait comparison plate",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-391",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-391/",
       "keywords": [
         "Breeding & Genetic Conservation",
         "Comparison",
         "Qualitative and quantitative trait comparison plate",
-        "THC-ENC-391"
-      ]
+        "THC-ENC-391",
+        "qualitative trait",
+        "quantitative trait",
+        "penetrance",
+        "expressivity",
+        "polygenic",
+        "threshold trait",
+        "heritability",
+        "phenotype distribution"
+      ],
+      "objective": "Choose selection and validation methods based on whether variation is discrete, continuous, thresholded, or mixed.",
+      "terms": [
+        "qualitative trait",
+        "quantitative trait",
+        "penetrance",
+        "expressivity",
+        "polygenic",
+        "threshold trait",
+        "heritability",
+        "phenotype distribution"
+      ],
+      "coreScience": [
+        "Qualitative traits form discrete classes under a sufficiently clear model, such as presence of a validated resistance allele or major chemotype category in a defined cross. Quantitative traits form continuous distributions because many genes, environment, development, and measurement contribute. Plant height, yield, flowering time, total cannabinoid concentration, volatile abundance, and disease severity are commonly quantitative even when breeders apply pass/fail thresholds.",
+        "A trait can have both major-gene and quantitative components. Cannabinoid ratio can show Mendelian-like classes while absolute concentration remains polygenic and environmentally sensitive. Powdery mildew response can involve major resistance or susceptibility loci plus smaller loci, pathogen isolate, leaf stage, and environment. A visual category may hide a continuous measurement.",
+        "Qualitative selection can be efficient when class definitions are accurate and the phenotype or marker has high penetrance. Quantitative selection requires replicated measurements, family information, environmental sampling, and statistical estimates. Converting every trait to a score does not make it objective; scale construction, observer training, repeatability, and missing values matter. Selection thresholds should be set before looking at preferred individuals."
+      ],
+      "cultivation": [
+        "Write the biological model, measurement scale, unit, and decision rule for every selected trait. Preserve raw values even when a pass/fail decision is required."
+      ],
+      "measurements": [
+        "Define the trait before selection: state whether it is categorical, ordinal, continuous, or thresholded; record the unit or class definition, observer or instrument, developmental stage, and the population in which the trait is being evaluated.",
+        "Measure repeatability and ambiguity explicitly. Record repeated scores or measurements, environment, stage, marker relationship when used, missing cases, borderline classes, and the proportion of observations that cannot be assigned confidently.",
+        "At selection, document the threshold or ranking rule, why it was chosen, how much of the population was retained, and whether the decision depends on a qualitative major-effect trait, a quantitative distribution, or both."
+      ],
+      "misconceptions": [
+        "A trait with three visible classes must be controlled by one gene. Discrete-looking classes can arise from thresholds, epistasis, multiple loci, environment, or scoring conventions.",
+        "A numeric score is automatically quantitative and reliable. Numbers can still represent subjective ordinal ratings; repeatability, calibration, and biological meaning must be established.",
+        "Major-gene resistance eliminates environmental effects. Even a major resistance allele can show background, isolate, developmental, or environmental dependence."
+      ],
+      "evidenceLimits": [
+        "Whether a trait behaves as qualitative or quantitative depends on genetic architecture, measurement resolution, population, environment, and the decision being made.",
+        "Selection thresholds can create artificial classes in continuous variation. Claims about inheritance should be based on segregation or validated genetic evidence, not the appearance of categories alone."
+      ],
+      "crossLinks": [
+        "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-392",
@@ -9421,14 +9937,60 @@
       "topicSlug": "breeding-conservation",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Breeder’s equation and retained-diversity diagram",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-392",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-392/",
       "keywords": [
         "Breeding & Genetic Conservation",
         "Science lesson",
         "Breeder’s equation and retained-diversity diagram",
-        "THC-ENC-392"
-      ]
+        "THC-ENC-392",
+        "selection intensity",
+        "selection differential",
+        "response to selection",
+        "heritability",
+        "accuracy",
+        "genetic variance",
+        "generation interval",
+        "correlated response"
+      ],
+      "objective": "Relate selection differential, accuracy, heritability, genetic variation, generation interval, and diversity retention to expected and realized gain.",
+      "terms": [
+        "selection intensity",
+        "selection differential",
+        "response to selection",
+        "heritability",
+        "accuracy",
+        "genetic variance",
+        "generation interval",
+        "correlated response"
+      ],
+      "coreScience": [
+        "Selection intensity describes how strongly a breeder favors the upper or lower part of a measured population. Stronger selection can increase short-term gain when measurements are accurate and heritable variation exists, but it reduces the number of parents and can accelerate inbreeding, drift, and loss of rare favorable alleles.",
+        "The breeder’s equation is often summarized as response equals narrow-sense heritability multiplied by the selection differential. More complete forms include selection intensity, accuracy, additive genetic variation, and generation interval. These are expectations for a defined population and environment, not promises. Heritability is not a permanent property of a trait; it changes with population, environment, design, and measurement error.",
+        "Selection on one trait can change others because of genetic correlations and physiological tradeoffs. Selecting only concentration may reduce yield, uniformity, fertility, or disease resistance. Index selection combines weighted traits, while independent culling requires minimum standards for each trait. Realized gain must be measured by comparing descendants with a valid base population or check across environments. Selecting the best-looking survivors without recording mortality overestimates progress."
+      ],
+      "cultivation": [
+        "Define how many individuals and families will be retained before evaluation. Monitor effective parent number and compare predicted gain with realized progeny performance."
+      ],
+      "measurements": [
+        "Record the base population, generation, trait definition, population mean and variance, relationship structure when known, selected proportion, and the accuracy or heritability estimate used for predicting response.",
+        "Calculate and retain the selection differential, family contributions, selected-parent values, generation interval, predicted response, and any correlated traits that could change as a consequence of selection.",
+        "After progeny evaluation, compare realized response with the prediction and record changes in diversity, inbreeding indicators, fertility, and family representation. Revise the selection strategy when short-term gain is being purchased with excessive loss of diversity."
+      ],
+      "misconceptions": [
+        "Selecting only the top plant creates the fastest long-term progress. Extreme selection can increase short-term differential while sharply reducing effective population size and future response.",
+        "High heritability means the environment does not matter. Heritability is population- and environment-specific and can be high even when environmental effects are substantial.",
+        "A higher parental value proves genetic gain without progeny comparison. Genetic gain is a change in population performance across generations, not merely a difference among selected parents."
+      ],
+      "evidenceLimits": [
+        "Predicted response depends on valid variance components, relationships, trait definitions, selection intensity, and target environments. Estimates can change when any of those change.",
+        "Realized gain should be measured against a comparable base or control population; environmental drift between generations can mimic genetic progress."
+      ],
+      "crossLinks": [
+        "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-393",
@@ -9439,14 +10001,60 @@
       "topicSlug": "breeding-conservation",
       "primaryFormat": "Data / QA",
       "teachingVisual": "Replicated multi-environment trial layout",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-393",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-393/",
       "keywords": [
         "Breeding & Genetic Conservation",
         "Data / QA",
         "Replicated multi-environment trial layout",
-        "THC-ENC-393"
-      ]
+        "THC-ENC-393",
+        "replication",
+        "randomization",
+        "block",
+        "check cultivar",
+        "experimental unit",
+        "genotype-by-environment interaction",
+        "spatial trend",
+        "pseudoreplication"
+      ],
+      "objective": "Separate genetic signal from position, room, season, management, and measurement effects using replication, randomization, blocking, and checks.",
+      "terms": [
+        "replication",
+        "randomization",
+        "block",
+        "check cultivar",
+        "experimental unit",
+        "genotype-by-environment interaction",
+        "spatial trend",
+        "pseudoreplication"
+      ],
+      "coreScience": [
+        "A single plant in a single location cannot separate genotype from environment. Replication means independent experimental units receiving the same genotype or family. Repeated measurements on one plant improve temporal detail but are not biological replicates. Clones can provide genetically matched units, while seed families provide a distribution that must be modeled correctly.",
+        "Randomization reduces systematic bias, and blocking groups units that share a known gradient such as bench, room zone, field strip, irrigation line, harvest date, or drying rack. Check cultivars connect trials across time and location. Border plants and guard rows can reduce edge effects. Trial maps must be preserved so spatial trends can be inspected rather than averaged away.",
+        "Genotype-by-environment interaction occurs when relative performance changes across environments. A line can be broadly adapted, specifically adapted, or unstable. Multi-environment trials should represent target production systems, not merely the easiest rooms. Management deviations, missing plants, pest events, instrument failures, and selective harvests belong in the dataset. Statistical significance does not replace effect size, uncertainty, biological relevance, or repeatability."
+      ],
+      "cultivation": [
+        "Use a written trial protocol and analysis plan before planting. Define the experimental unit, replication, blocks, randomization, checks, exclusions, and primary outcomes."
+      ],
+      "measurements": [
+        "Record trial ID and version, genotype or family IDs, true experimental units, number of replicates, blocking factors, randomization procedure, check entries, and the environment or room map before the trial begins.",
+        "During the trial, preserve management records, environmental measurements, observation timing, missing or dead units, protocol deviations, and repeated observations while keeping repeated measurements distinct from independent replication.",
+        "At analysis, document the statistical model, fixed and random effects, contrasts or comparisons planned in advance, effect estimates, uncertainty intervals, and the population of environments to which conclusions are intended to apply."
+      ],
+      "misconceptions": [
+        "Ten measurements from one plant are ten replicates. Repeated measurements improve precision on that plant but do not create ten independent experimental units.",
+        "Clones eliminate environmental variation. Clones reduce genetic variation among replicates; they do not remove position, microclimate, handling, pathogen, or measurement differences.",
+        "A significant result from one room proves broad adaptation. A result is only directly supported for the tested genotypes and environment unless additional environments establish transferability."
+      ],
+      "evidenceLimits": [
+        "Valid inference depends on the experimental unit, randomization, replication, missing-data mechanism, model assumptions, and the environments actually sampled.",
+        "Statistical significance does not measure practical importance or broad adaptation. Effect size, uncertainty, and genotype-by-environment behavior are required for those claims."
+      ],
+      "crossLinks": [
+        "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-394",
@@ -9457,14 +10065,62 @@
       "topicSlug": "breeding-conservation",
       "primaryFormat": "Data / QA",
       "teachingVisual": "Standardized Cannabis phenotype measurement plate",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-394",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-394/",
       "keywords": [
         "Breeding & Genetic Conservation",
         "Data / QA",
         "Standardized Cannabis phenotype measurement plate",
-        "THC-ENC-394"
-      ]
+        "THC-ENC-394",
+        "phenotype",
+        "ontology",
+        "developmental stage",
+        "architecture",
+        "harvest index",
+        "fresh mass",
+        "dry mass",
+        "marketable yield",
+        "observer repeatability"
+      ],
+      "objective": "Measure plant architecture, development, flowering, biomass, and product yield with controlled definitions and repeatable sampling.",
+      "terms": [
+        "phenotype",
+        "ontology",
+        "developmental stage",
+        "architecture",
+        "harvest index",
+        "fresh mass",
+        "dry mass",
+        "marketable yield",
+        "observer repeatability"
+      ],
+      "coreScience": [
+        "Phenotyping converts plant observations into data. Terms such as “stretch,” “dense,” “fast,” “branchy,” or “heavy” are not comparable until the measurement, reference point, stage, and unit are defined. Height may be measured from media surface to apex; canopy width may require two perpendicular axes; flowering onset may mean first preflower, first pistillate inflorescence, or a defined proportion of flowering nodes.",
+        "Yield must identify the product and basis. Whole-plant fresh mass, trimmed wet flower, dry inflorescence, marketable flower, seed, fiber, and total analyte yield answer different questions. Moisture correction, stem and leaf fractions, rejected material, sampling, and postharvest losses affect comparisons. Concentration multiplied by representative dry mass can estimate total analyte yield, but both components carry uncertainty.",
+        "Use stage-specific protocols, training images, calibrated instruments, and repeatability checks. Record plant positions and destructive-sampling history. Automated images, lidar, and computer vision can increase throughput but require ground truth and can inherit bias from lighting, occlusion, segmentation, and training data. Preserve raw images and metadata rather than only final scores."
+      ],
+      "cultivation": [
+        "Create a phenotype dictionary shared across breeding, cultivation, laboratory, and postharvest teams. Pilot it before the main population."
+      ],
+      "measurements": [
+        "Define every phenotype operationally before scoring: trait name, unit, instrument or observer, plant position, developmental stage, date and time, and any image or reference standard used for training scorers.",
+        "Record plant height, width, node and branch metrics, flowering milestones, fresh and dry fractions, moisture basis, harvest components, rejected material, and management factors such as density or training that can alter morphology and yield.",
+        "Estimate measurement repeatability for high-priority traits and retain images, missing values, outlier notes, and calibration records. Report yield with its exact basis—per plant, area, time, fresh mass, dry mass, or marketable fraction."
+      ],
+      "misconceptions": [
+        "Dry flower weight and harvest yield are interchangeable. Yield depends on the defined harvest fraction, drying basis, rejected material, and denominator used.",
+        "A photograph is an objective phenotype by itself. Images require scale, view, lighting, developmental stage, and a defined scoring or measurement method to become reproducible data.",
+        "Every breeder uses generation and flowering terms the same way. Terms such as transition, first flower, full flower, maturity, and harvest need explicit operational definitions."
+      ],
+      "evidenceLimits": [
+        "Morphology and yield are strongly affected by density, training, environment, developmental timing, water status, harvest definition, and measurement method.",
+        "Phenotypes measured under one production system should not be treated as intrinsic cultivar constants without multi-environment or standardized confirmation."
+      ],
+      "crossLinks": [
+        "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-395",
@@ -9475,14 +10131,60 @@
       "topicSlug": "breeding-conservation",
       "primaryFormat": "Data / QA",
       "teachingVisual": "Chemotype sampling-to-selection workflow",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-395",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-395/",
       "keywords": [
         "Breeding & Genetic Conservation",
         "Data / QA",
         "Chemotype sampling-to-selection workflow",
-        "THC-ENC-395"
-      ]
+        "THC-ENC-395",
+        "chemotype",
+        "cannabinoid ratio",
+        "concentration",
+        "dry basis",
+        "total analyte yield",
+        "volatile profile",
+        "sample position",
+        "analytical uncertainty"
+      ],
+      "objective": "Use representative, method-controlled chemical data while separating major chemotype, concentration, total yield, volatile profile, and stability.",
+      "terms": [
+        "chemotype",
+        "cannabinoid ratio",
+        "concentration",
+        "dry basis",
+        "total analyte yield",
+        "volatile profile",
+        "sample position",
+        "analytical uncertainty"
+      ],
+      "coreScience": [
+        "Chemotype can refer to major cannabinoid ratio classes, while concentration describes the amount measured in a sample. The classic THC/CBD ratio can show Mendelian-like inheritance in defined crosses, but absolute cannabinoid concentrations are more complex and can involve multiple loci, copy-number and structural variation, gene expression, maternal effects, development, and environment.",
+        "Laboratory selection begins with sampling. Cannabinoids and volatiles vary among flowers, positions, developmental stages, handling methods, drying conditions, and laboratories. One visually resinous flower is not a representative plant sample. Report wet or dry basis, moisture method, sample mass, tissue and position, harvest stage, preparation, analytical method, calibration, uncertainty, and the laboratory’s decision rules.",
+        "Terpene and broader volatile profiles are highly dimensional. Relative percentages can change because other compounds are lost; absolute amounts and total dry mass provide different information. Aroma names are not chemical phenotypes, and measured chemicals do not prove sensory effect or human outcome. Confirm selected profiles across clones, seed families, environments, harvests, and storage. Legal cannabinoid compliance requires current rules and representative sampling."
+      ],
+      "cultivation": [
+        "Predefine the chemical target and sample plan. Use checks, retained samples, and repeat tests before advancing or naming a line."
+      ],
+      "measurements": [
+        "Record plant, family, batch, tissue type, sampling position, developmental stage, sample mass, fresh or dry basis, moisture method, collection time, storage condition, and chain of custody for every chemistry sample.",
+        "Record laboratory, analytical method, calibration or quality-control information when available, cannabinoid acids and neutrals separately, relevant ratios, volatile identities, reporting units, replicate results, and analytical uncertainty.",
+        "Compare concentration with total analyte production where the breeding objective requires it. Preserve biomass or yield data so a high percentage is not confused with high total production per plant or area."
+      ],
+      "misconceptions": [
+        "A high percentage means the plant produced the most cannabinoid. Concentration and total analyte yield are different quantities and can rank plants differently.",
+        "One COA defines the genetic chemotype permanently. Chemistry varies with tissue, stage, environment, handling, and analytical method, so repeated standardized samples are needed for stable claims.",
+        "A terpene percentage proves aroma or effect. Chemical abundance does not by itself establish sensory perception or human effect, which require separate evidence."
+      ],
+      "evidenceLimits": [
+        "Chemical phenotype is specific to genotype, tissue, developmental stage, environment, sampling, storage, laboratory method, and reporting basis.",
+        "Laboratory results should be interpreted with analytical uncertainty and sample representativeness; a precise number from an unrepresentative sample is not a precise description of the whole plant or cultivar."
+      ],
+      "crossLinks": [
+        "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-396",
