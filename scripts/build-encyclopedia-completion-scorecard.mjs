@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
+import { effectiveLessonAssessment } from './lib/encyclopedia-assessment-v2.mjs';
 
 const root=process.cwd();
 const registry=JSON.parse(fs.readFileSync(path.join(root,'content/encyclopedia/current-controlled-registry.json'),'utf8'));
@@ -27,7 +28,7 @@ const arr=v=>Array.isArray(v)?v:[];
 const text=v=>String(v??'').trim();
 const termsOf=l=>arr(l.terms).length?arr(l.terms):arr(l.termsToKnow);
 const measureOf=l=>arr(l.measureAndRecord).length?arr(l.measureAndRecord):arr(l.measurements);
-const checksOf=l=>arr(l.knowledgeCheck).length?arr(l.knowledgeCheck):arr(l.assessment?.knowledgeCheck);
+const checksOf=l=>effectiveLessonAssessment(l).prompts;
 const sourcesOf=l=>arr(l.sourceNotes).length?arr(l.sourceNotes):arr(l.evidence);
 const visualsOf=l=>arr(l.visuals);
 const crossOf=l=>{
