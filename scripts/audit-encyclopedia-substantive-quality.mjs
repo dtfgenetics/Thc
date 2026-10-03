@@ -77,11 +77,6 @@ const cross=l=>{
 };
 const generic=/\b(see (the )?lesson|as appropriate|where appropriate|proper|correct|best practice|monitor closely|follow guidance|use judgment)\b/i;
 const sourceAuthority=/\b(university|extension|usda|epa|nist|cornell|penn state|journal|doi|frontiers|plants|hortscience|pubmed|ncbi|ashrae|astm|iso|fao|who|government|department|institute|society|pmc|peer[- ]reviewed|systematic review|review)\b/i;
-const resolvedSourceText=source=>{
-  const raw=txt(typeof source==='string'?source:JSON.stringify(source));
-  const resolved=sourceRegistry.get(raw);
-  return resolved?txt([resolved.id,resolved.title,resolved.useAndLimitation,resolved.location].filter(Boolean).join(' ')):raw;
-};
 
 const rows=(registry.entries||[]).map(entry=>{
   const l=lessons.get(entry.id)||{};
