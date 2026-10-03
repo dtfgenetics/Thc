@@ -35,11 +35,16 @@ async function sourceJson(rel) {
   return response.json();
 }
 function expectedAssetIds(lesson) {
-  return (lesson?.content?.blocks || []).flatMap(block => {
-    if (block?.type === 'image' && block.assetId && (block.src || block.url)) return [block.assetId];
-    if (block?.type === 'resource' && block.extensions?.assetId && block.href) return [block.extensions.assetId];
-    return [];
-  });
+  const ids = [];
+  const add = id => { if (id && !ids.includes(id)) ids.push(id); };
+  for (const block of lesson?.content?.blocks || []) {
+    if (block?.type === 'image' && block.assetId && (block.src || block.url)) add(block.assetId);
+    if (block?.type === 'resource' && block.extensions?.assetId && block.href) add(block.extensions.assetId);
+  }
+  for (const visual of lesson?.content?.extensions?.primaryVisuals || []) {
+    if (visual?.type === 'image' && visual.assetId && (visual.src || visual.url)) add(visual.assetId);
+  }
+  return ids;
 }
 async function anonymousHtml(route, label) {
   let last = '';
