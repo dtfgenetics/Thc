@@ -15,7 +15,7 @@ const visualMap = fs.existsSync(visualMapPath) ? readJson(visualMapPath) : { ite
 const producedVisualById = new Map(arr(visualMap.items).map(item => [item.id, item]));
 const canonicalVisualRoot = path.join(root, 'site', 'wordpress', 'assets', 'infographics');
 const canonicalVisualFiles = fs.existsSync(canonicalVisualRoot)
-  ? fs.readdirSync(canonicalVisualRoot).filter(name => /\.(?:png|jpe?g|webp)$/i.test(name)).sort()
+  ? fs.readdirSync(canonicalVisualRoot).filter(name => /\.(?:png|jpe?g|webp|svg)$/i.test(name)).sort()
   : [];
 const discoveredAssetsById = new Map();
 for (const name of canonicalVisualFiles) {
