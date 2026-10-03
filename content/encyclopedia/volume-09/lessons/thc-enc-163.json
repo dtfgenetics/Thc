@@ -4,12 +4,30 @@
   "title": "Juvenility, Maturity, and Cutting Competence",
   "objective": "Explain how ontogenetic age, tissue position, donor condition, and genotype affect a cutting’s competence to form roots.",
   "terms": [
-    {"term":"juvenility","definition":"An early developmental phase in which tissues express juvenile characteristics and may differ in propagation response from mature tissues."},
-    {"term":"maturation","definition":"Developmental progression from juvenile toward mature physiological and morphological states."},
-    {"term":"competence","definition":"The capacity of a tissue to respond to developmental and environmental signals and execute a process such as adventitious rooting."},
-    {"term":"rejuvenation","definition":"A shift toward juvenile-like developmental or propagation behavior; it does not by itself imply a change or reset of genotype."},
-    {"term":"ontogeny","definition":"The developmental history of an organism or tissue from its origin through later stages."},
-    {"term":"physiological age","definition":"A tissue’s functional developmental state as shaped by ontogeny, environment, and management rather than calendar age alone."}
+    {
+      "term": "juvenility",
+      "definition": "An early developmental phase in which tissues express juvenile characteristics and may differ in propagation response from mature tissues."
+    },
+    {
+      "term": "maturation",
+      "definition": "Developmental progression from juvenile toward mature physiological and morphological states."
+    },
+    {
+      "term": "competence",
+      "definition": "The capacity of a tissue to respond to developmental and environmental signals and execute a process such as adventitious rooting."
+    },
+    {
+      "term": "rejuvenation",
+      "definition": "A shift toward juvenile-like developmental or propagation behavior; it does not by itself imply a change or reset of genotype."
+    },
+    {
+      "term": "ontogeny",
+      "definition": "The developmental history of an organism or tissue from its origin through later stages."
+    },
+    {
+      "term": "physiological age",
+      "definition": "A tissue’s functional developmental state as shaped by ontogeny, environment, and management rather than calendar age alone."
+    }
   ],
   "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
   "coreScience": [
@@ -21,12 +39,23 @@
     "Standardize donor age class, branch position, node number, harvest interval, and mother-management history during trials. Rotate or rehabilitate mothers only after comparing propagation and crop performance."
   ],
   "measureAndRecord": [
-    {"field":"Controlled record set","requirement":"Mother age and propagation generation; vegetative or reproductive history; branch position; node age; rooting percentage; days to root; root mass or length; transplant survival; morphology after establishment."}
+    {
+      "field": "Controlled record set",
+      "requirement": "Mother age and propagation generation; vegetative or reproductive history; branch position; node age; rooting percentage; days to root; root mass or length; transplant survival; morphology after establishment."
+    },
+    {
+      "field": "Process checkpoint",
+      "requirement": "For juvenility, maturity, and cutting competence, record the relevant developmental stage, environment, operator or treatment condition, and time sequence so the biological response can be separated from handling and facility effects."
+    },
+    {
+      "field": "Outcome and verification",
+      "requirement": "Record the defined success endpoint, failures and off-types, replicate or batch variation, and any identity, health, rooting, survival, or follow-up test used to verify that the apparent result persisted after establishment."
+    }
   ],
   "misconceptions": [
-    "Calendar age alone predicts rooting.",
-    "Taking a new cutting resets all biological history.",
-    "Revegetated material is automatically rejuvenated and superior."
+    "Calendar age alone predicts rooting. Visible similarity alone does not prove equivalent physiological state, health status, or later performance; identity and outcome measurements answer different questions.",
+    "Taking a new cutting resets all biological history. A single observation or negative symptom check cannot exclude latent infection, developmental history, or protocol-specific effects; use the appropriate follow-up test or repeated observation.",
+    "Revegetated material is automatically rejuvenated and superior. Cultivar names, appearance, and one successful batch are not substitutes for traceable identity, controlled comparison, and repeatable propagation outcomes."
   ],
   "evidenceLimits": [
     "Cannabis-specific evidence on formal rejuvenation and phase change is limited. Do not claim a universal maximum mother age or clone generation without controlled data."
@@ -41,15 +70,15 @@
   ],
   "publicationAuthorized": true,
   "reviewControl": {
-    "controlledManuscript":"Volume 09 v1.0",
-    "evidenceControl":"complete",
-    "secondaryEvidenceReview":"complete_cross_species_qualified",
-    "externalReview":"pending_not_recorded",
-    "externalReviewType":"propagation_science",
-    "publicationAuthorized":true,
-    "publicationAuthorization":"project_owner_2026-08-24",
-    "independentApproval":false,
-    "websiteAction":"publish_with_review_notice"
+    "controlledManuscript": "Volume 09 v1.0",
+    "evidenceControl": "complete",
+    "secondaryEvidenceReview": "complete_cross_species_qualified",
+    "externalReview": "pending_not_recorded",
+    "externalReviewType": "propagation_science",
+    "publicationAuthorized": true,
+    "publicationAuthorization": "project_owner_2026-08-24",
+    "independentApproval": false,
+    "websiteAction": "publish_with_review_notice"
   },
   "slug": "juvenility-maturity-and-cutting-competence",
   "route": "/encyclopedia/juvenility-maturity-and-cutting-competence"
