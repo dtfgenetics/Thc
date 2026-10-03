@@ -46,7 +46,7 @@ const lessons = ids.map(id => {
   const q = sourceById.get(id) || {};
   const p = priorityById.get(id) || {};
 
-  const contentComplete = Number(s.score || 0) >= 90;
+  const contentComplete = s.contentContractComplete === true;
   const claimEvidenceComplete = Number(e?.evidence?.claimEvidenceCount || 0) > 0 &&
     arr(e?.evidence?.needs).every(need => need !== 'claim_level_evidence_mapping' && need !== 'source_note_authority_resolution');
   const sourcesResolved = arr(e?.sourceNotes?.unresolvedRefs).length === 0;
@@ -84,6 +84,8 @@ const lessons = ids.map(id => {
     canonicalFile:s.file,
     state,
     readinessScore:Number(s.score || 0),
+    contentScore:Number(s.contentScore || 0),
+    contentMaxScore:Number(s.contentMaxScore || 0),
     content:{
       complete:contentComplete,
       missing:arr(s.missing)
