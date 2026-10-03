@@ -6,7 +6,11 @@ const courses=fs.readFileSync('scripts/publish-wordpress-certification-catalog-v
 const games=fs.readFileSync('site/public-route-patch/games/index.html','utf8');
 const seeds=fs.readFileSync('site/wordpress/pages/seeds.html','utf8');
 const courseUi=fs.readFileSync('scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs','utf8');
+const catalog=JSON.parse(fs.readFileSync('site/wordpress/education/course-catalog-v4.json','utf8'));
 const failures=[];
+const certification=catalog.learningSurfaces?.find(surface=>surface.title==='Certification');
+if(certification?.href!=='/courses/#credentials') failures.push('Certification reference must open the credential roadmap, not the Learning Hub.');
+
 const need=(src,token,label)=>{if(!src.includes(token)) failures.push(`${label}: missing ${token}`);};
 
 for(const token of [
