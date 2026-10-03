@@ -27,15 +27,18 @@
     "Apply a source hierarchy and publication-decision field to every claim. Schedule freshness reviews for law, standards, methods, health and safety, product limits, and fast-moving science."
   ],
   "measureAndRecord": [
-    "Claim ID; source type/tier; full citation/identifier; version/date; access date; exact evidence location; evidence role; population/method; limits; correction/retraction check; project decision; reviewer/date; next review; superseded version and affected outputs."
+    "Assign each important claim a stable claim ID and record source type, evidence tier, full citation, persistent identifier, version, publication date, access date, and exact evidence location.",
+    "Record the source's role for the claim, studied population, methods, limitations, correction or retraction status, reviewer, review date, and the decision made from that evidence.",
+    "When evidence changes, preserve the superseded source and decision, link the new version, identify affected lessons or outputs, and schedule the next review instead of deleting history."
   ],
   "misconceptions": [
-    "A DOI means the source is permanent and unchanged.",
-    "The newest source is automatically the strongest source.",
-    "Deleting superseded files prevents users from seeing old information."
+    "A DOI means the source is permanent and unchanged. The identifier is persistent, but articles can receive corrections, retractions, updated versions, or changed supplementary material.",
+    "The newest source is automatically the strongest source. Evidence strength depends on design, relevance, sample quality, bias, replication, and consistency—not publication date alone.",
+    "Deleting superseded files prevents users from seeing old information. Controlled archives are needed to understand what evidence supported earlier decisions and which outputs require correction."
   ],
   "evidenceLimits": [
-    "Source-control systems reduce stale or misapplied evidence but cannot guarantee that publications are error-free or that all updates are discoverable."
+    "Source hierarchy and revision control reduce stale or misapplied evidence but cannot guarantee that publications are error-free or that all corrections are discoverable immediately.",
+    "Evidence tiers should guide scrutiny rather than replace direct appraisal of methods, relevance, and limitations for the specific claim."
   ],
   "crossLinks": "THC-ENC-415–418; THC-ENC-420; all source registers, claim ledgers, and release records.",
   "sourceNotes": [
