@@ -12,6 +12,8 @@ on:
       - 'scripts/publish-wordpress-encyclopedia-*.mjs'
       - 'scripts/organize-wordpress-encyclopedia-topics.mjs'
       - 'configuration/encyclopedia-topics.json'
+      - 'configuration/encyclopedia-production-floor.json'
+      - 'scripts/validate-encyclopedia-production-pointer.mjs'
       - 'site/wordpress/education/encyclopedia/**'
       - 'scripts/publish-wordpress-learning-search-indexes.mjs'
       - 'scripts/deploy/wordpress-learning-search-runtime.sh'
@@ -66,6 +68,8 @@ jobs:
           node --check scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
           node --check scripts/organize-wordpress-encyclopedia-topics.mjs
           node --check scripts/validate-encyclopedia-release-control.mjs
+          node --check scripts/validate-encyclopedia-production-pointer.mjs
+          node scripts/validate-encyclopedia-production-pointer.mjs
           node --check scripts/publish-wordpress-learning-search-indexes.mjs
           node --check scripts/deploy-wordpress-learning-search-runtime-via-rest.mjs
           bash -n scripts/deploy/wordpress-learning-search-runtime.sh
