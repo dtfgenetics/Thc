@@ -1,29 +1,27 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
 
 const root=process.cwd();
 const registry=JSON.parse(fs.readFileSync(path.join(root,'content/encyclopedia/current-controlled-registry.json'),'utf8'));
 const topics=JSON.parse(fs.readFileSync(path.join(root,'configuration/encyclopedia-topics.json'),'utf8')).topics||[];
 const topicByPart=new Map(topics.map(topic=>[Number(topic.part),topic]));
 
-const lessonById=new Map();
-const readJson=file=>{try{return JSON.parse(fs.readFileSync(file,'utf8'))}catch{return null}};
-const walk=dir=>{
-  if(!fs.existsSync(dir))return;
-  for(const entry of fs.readdirSync(dir,{withFileTypes:true})){
-    const file=path.join(dir,entry.name);
-    if(entry.isDirectory())walk(file);
-    else if(entry.isFile()&&entry.name.endsWith('.json')){
-      const json=readJson(file);
-      if(!json)continue;
-      if(/^THC-ENC-\d{3,}$/.test(json.id||'')) lessonById.set(json.id,{...json,_file:path.relative(root,file)});
-      for(const lesson of Array.isArray(json.lessons)?json.lessons:[]){
-        if(/^THC-ENC-\d{3,}$/.test(lesson.id||'')) lessonById.set(lesson.id,{...lesson,_file:path.relative(root,file)});
-      }
-    }
+const canonicalLessons=readCanonicalEncyclopediaLessons(root);
+if(canonicalLessons.length!==420){
+  console.error(`Completion scorecard requires 420 canonical lessons; found ${canonicalLessons.length}.`);
+  process.exit(1);
+}
+const lessonById=new Map(canonicalLessons.map(lesson=>[
+  lesson.id,
+  {...lesson,_file:lesson.__path}
+]));
+for(const lesson of canonicalLessons){
+  if(lesson.__sourceKind!=='individual-canonical'){
+    console.error(`${lesson.id}: scorecard must use individual canonical lesson files, found ${lesson.__sourceKind}.`);
+    process.exit(1);
   }
-};
-walk(path.join(root,'content/encyclopedia'));
+}
 
 const arr=v=>Array.isArray(v)?v:[];
 const text=v=>String(v??'').trim();
@@ -64,11 +62,20 @@ function scoreLesson(entry){
     criterion(Boolean(l.reviewControl||l.revision),2,'release control')
   ];
   const score=c.reduce((sum,x)=>sum+x.points,0);
+  const contentLabels=new Set([
+    'objective','terms','core science','cultivation relevance','measurement guidance',
+    'misconceptions','evidence limits','cross-links','source notes / evidence','lesson-specific assessment'
+  ]);
+  const contentCriteria=c.filter(x=>contentLabels.has(x.label));
+  const contentMaxScore=contentCriteria.reduce((sum,x)=>sum+x.weight,0);
+  const contentScore=contentCriteria.reduce((sum,x)=>sum+x.points,0);
+  const contentContractComplete=contentCriteria.every(x=>x.ok);
   const topic=topicByPart.get(Number(entry.part));
   const publicationAuthorized=l.reviewControl?.publicationAuthorized??l.publicationAuthorized??null;
   return {
     id:entry.id,number:entry.number,part:entry.part,topic:topic?.title||`Part ${entry.part}`,
     title:entry.title,file:l._file||null,score,maxScore:100,
+    contentScore,contentMaxScore,contentContractComplete,
     readiness:score>=90?'production-candidate':score>=75?'needs-polish':score>=50?'incomplete':'major-gaps',
     publicationAuthorized,
     missing:c.filter(x=>!x.ok).map(x=>x.label),
@@ -92,7 +99,7 @@ const parts=topics.map(topic=>{
 const output={
   schemaVersion:1,generatedAt:new Date().toISOString(),
   lessonCount:lessons.length,averageScore:average,readinessCounts:counts,
-  scoringNote:'A readiness score measures completion of the THC lesson contract; it is not a scientific-quality rating or publication authorization.',
+  scoringNote:'Overall readiness includes content plus downstream visual/review/release controls. contentScore/contentContractComplete isolate the learner-facing lesson-content contract and do not imply scientific approval or publication authorization.',
   parts,lessons
 };
 const out=path.join(root,'data/encyclopedia-completion-scorecard.json');
