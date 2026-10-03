@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0.0",
+  "registryId": "thc-encyclopedia-research-leases",
+  "rules": [
+    "Generated research queue is immutable input; lease state lives only here.",
+    "At most one active lease may exist per workUnitId.",
+    "Expired leases do not block reassignment.",
+    "Completed units require outcome.type and outcome.reference.",
+    "Allowed outcomes: reviewed_claim_binding, documented_limitation, no_source_decision."
+  ],
+  "leases": []
+}

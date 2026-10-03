@@ -83,6 +83,8 @@ jobs:
         run: npm run verify:encyclopedia-shared-source-bridge
       - name: Build completion scorecard
         run: npm run build:encyclopedia-scorecard
+      - name: Validate encyclopedia research pipeline
+        run: npm run verify:encyclopedia-research-pipeline
       - name: Build evidence tracking
         run: npm run build:encyclopedia-evidence
       - name: Build evidence priority queue

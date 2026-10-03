@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "contractId": "thc-dataset-reviewed-claim-bridge",
+  "upstream": {
+    "repository": "dtfgenetics/Thc-dataset",
+    "reviewedClaimSchema": "dataset/schemas/reviewed_claim_v1.schema.json",
+    "relationshipSchema": "dataset/schemas/claim_relationship_v1.schema.json",
+    "identityField": "claim_sha256"
+  },
+  "rules": [
+    "THC-dataset remains the source of truth for reviewed scientific claims referenced through datasetClaimSha256.",
+    "An encyclopedia evidence record may reference an upstream reviewed claim but must not copy or redefine its review state.",
+    "Only upstream claims with review_state=approved, citation_verified=true, rights_state=reviewed, and rag_eligible=true are eligible for reviewed-claim binding.",
+    "Scope and limitations from the upstream claim must be preserved when translating evidence into lesson prose.",
+    "A dataset binding does not authorize encyclopedia publication; lesson publication controls remain independent."
+  ],
+  "bindingFields": {
+    "datasetClaimSha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "datasetSourceId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "datasetRepository": {
+      "const": "dtfgenetics/Thc-dataset"
+    },
+    "datasetSchemaVersion": {
+      "const": "grow-doc-reviewed-claim-v1"
+    }
+  }
+}
