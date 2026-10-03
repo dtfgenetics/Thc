@@ -25,15 +25,18 @@
     "Before stating “X caused Y,” draw the plausible pathways and list competing explanations. Phrase conclusions at the level supported: observed association, treatment effect under the experiment, mechanism, or transfer hypothesis."
   ],
   "measureAndRecord": [
-    "Exposure and outcome definitions; time order; population; candidate confounders/mediators/colliders; allocation; control; repeated measures; missingness; model; effect estimate/uncertainty; sensitivity checks; alternative explanations; causal wording decision."
+    "Define exposure, outcome, population, time order, and the causal question explicitly. Draw or document plausible confounders, mediators, colliders, selection mechanisms, and alternative explanations before choosing adjustment variables.",
+    "Record allocation or intervention status, controls, repeated measures, missingness, model specification, effect estimates, uncertainty, sensitivity analyses, and whether key variables were measured before or after the exposure.",
+    "Match the final wording to the design: use association language for observational evidence unless stronger causal assumptions are justified, and state which assumptions remain untested."
   ],
   "misconceptions": [
-    "A strong correlation proves a strong causal effect.",
-    "Controlling for every available variable always improves causal inference.",
-    "A predictive model identifies which intervention will change the outcome."
+    "A strong correlation proves a strong causal effect. Correlation can be produced by confounding, reverse causation, selection, shared trends, or measurement structure.",
+    "Controlling for every available variable always improves causal inference. Adjusting for mediators, colliders, or variables affected by the exposure can create bias.",
+    "A predictive model identifies which intervention will change the outcome. Prediction can exploit associations that are useful for forecasting without representing causal mechanisms."
   ],
   "evidenceLimits": [
-    "Causal conclusions depend on design and assumptions that may be partly untestable; unmeasured confounding and selection can remain."
+    "Causal conclusions depend on design plus assumptions about confounding, selection, measurement, interference, and model structure; some assumptions cannot be verified from the observed data alone.",
+    "Sensitivity analysis can show how conclusions change under alternative assumptions but cannot prove that unmeasured bias is absent."
   ],
   "crossLinks": "THC-ENC-415–418; THC-ENC-393; THC-ENC-414.",
   "sourceNotes": [
