@@ -25,15 +25,18 @@
     "Use one event timeline and linked IDs so a reviewer can reconstruct who handled each batch, where it was, what conditions occurred, which samples represented it, and who authorized release."
   ],
   "measureAndRecord": [
-    "Crop/plant/harvest/sub-batch IDs; decision and approver; cut/trim/transfer times; personnel/tools/cleaning; incoming/final mass; drying location and load map; sensor data; moisture/aW method and sample map; defects/holds; conditioning/storage container; excursions; laboratory and retained samples; release/disposition."
+    "Link crop, plant, harvest, and sub-batch IDs to the harvest decision, approver, cut time, trim status, personnel, tools, sanitation, incoming mass, and transfer history.",
+    "Record drying location, load map, sensor IDs, environmental data, airflow context, sample positions, moisture or water-activity method, mass change, defects, and any holds or deviations.",
+    "Record conditioning or storage container, transfer times, temperature or humidity excursions, laboratory samples, retained samples, release decision, and final disposition so the complete postharvest chain can be reconstructed."
   ],
   "misconceptions": [
-    "A dry-room average describes every flower.",
-    "A fixed day count defines drying or curing completion.",
-    "A passing COA erases missing batch identity or uncontrolled exposure."
+    "A dry-room average describes every flower. Product temperature, airflow, density, position, and flower size can create substantial within-room variation.",
+    "A fixed day count defines drying or curing completion. Time alone does not establish moisture distribution, water activity, chemical stability, or microbial risk.",
+    "A passing COA erases missing batch identity or uncontrolled exposure. Analytical results cannot restore chain of identity or prove that unrecorded handling did not affect unsampled material."
   ],
   "evidenceLimits": [
-    "Postharvest specifications, sampling, tests, storage, remediation, and release authority vary by product and jurisdiction."
+    "Postharvest specifications, testing requirements, storage conditions, remediation rules, and release authority vary by product, process, evidence base, and jurisdiction.",
+    "Measurements taken from a few locations or samples may not describe the full drying load or batch without a representative sampling plan."
   ],
   "crossLinks": "THC-ENC-341–360; THC-UG-029–032; THC-ENC-404–406; THC-ENC-412–414.",
   "sourceNotes": [
