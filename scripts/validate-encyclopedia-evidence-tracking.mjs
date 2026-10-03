@@ -88,6 +88,19 @@ const expectedById = new Map(arr(registry.entries).map(entry => [entry.id, entry
 const sourceRegistry = fs.existsSync(sourceRegistryPath) ? readJson(sourceRegistryPath) : { sources: [] };
 const tracking = fs.existsSync(trackingPath) ? readJson(trackingPath) : { lessons: [] };
 const batches = readEvidenceBatches();
+const controlledSourceById=new Map();
+for(let volumeNumber=1;volumeNumber<=21;volumeNumber+=1){
+  const volume=String(volumeNumber).padStart(2,'0');
+  const file=path.join(encRoot,`volume-${volume}`,'source-register.json');
+  if(!fs.existsSync(file)) continue;
+  const register=readJson(file);
+  for(const source of arr(register.sources)){
+    if(!source?.id){fail(`${rel(file)}: source record missing id`);continue;}
+    if(controlledSourceById.has(source.id)) fail(`Duplicate controlled source id ${source.id}`);
+    controlledSourceById.set(source.id,{...source,__path:rel(file)});
+    if(!source.title) fail(`${source.id}: controlled source title missing`);
+  }
+}
 
 if (arr(registry.entries).length !== 420) fail(`Controlled registry must contain 420 entries; found ${arr(registry.entries).length}`);
 if (lessons.length !== 420) fail(`Canonical lesson resolver must find 420 lessons; found ${lessons.length}`);
@@ -155,6 +168,15 @@ for (let index = 0; index < arr(tracking.lessons).length; index += 1) {
   if (row.publicationState?.publicationAuthorized !== publicationAuthorized) {
     fail(`${row.id}: tracking publicationAuthorized changed from canonical lesson state`);
   }
+  const lessonSourceRefs=arr(lesson.sourceNotes).map(note=>typeof note==='string'?note:(note?.id||note?.sourceId||note?.title||'')).map(x=>String(x||'').trim()).filter(Boolean);
+  const expectedControlledSourceIds=lessonSourceRefs.filter(ref=>controlledSourceById.has(ref)).sort();
+  const actualControlledSourceIds=arr(row.sourceNotes?.resolvedControlledSourceIds).slice().sort();
+  if(JSON.stringify(actualControlledSourceIds)!==JSON.stringify(expectedControlledSourceIds)){
+    fail(`${row.id}: resolved controlled source ids do not match canonical lesson/source-register state`);
+  }
+  for(const ref of lessonSourceRefs.filter(ref=>/^V\d{2}-SRC-\d{3}$/.test(ref))){
+    if(!controlledSourceById.has(ref)) fail(`${row.id}: controlled source reference ${ref} has no source-register record`);
+  }
   const expectedEvidenceIds = (evidenceByLesson.get(row.id) || []).slice().sort();
   const actualEvidenceIds = arr(row.evidence?.claimEvidenceIds).slice().sort();
   if (JSON.stringify(actualEvidenceIds) !== JSON.stringify(expectedEvidenceIds)) {
@@ -184,7 +206,7 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Encyclopedia evidence tracking PASS: ${arr(tracking.lessons).length}/420 lessons tracked, ${sourceIds.size} authoritative sources, ${evidenceIds.size} claim-evidence records.`);
+console.log(`Encyclopedia evidence tracking PASS: ${arr(tracking.lessons).length}/420 lessons tracked, ${sourceIds.size} authoritative sources, ${controlledSourceById.size} controlled volume sources, ${evidenceIds.size} claim-evidence records.`);
 if (warnings.length) {
   console.warn(`Warnings (${warnings.length}):`);
   for (const warning of warnings) console.warn(` - ${warning}`);
