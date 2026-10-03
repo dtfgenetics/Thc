@@ -24,15 +24,18 @@
     "Track selfing generation separately from filial generation, compare each selfed family with the parent and outcrossed checks, and record losses rather than discarding them from the analysis."
   ],
   "measureAndRecord": [
-    "Parent ID and heterozygosity; selfing method; S generation; seed set and germination; family size; vigor, fertility, sex and abnormality rates; trait variance; molecular homozygosity; selected families and preserved backups."
+    "Before evaluating selfing, inbreeding, and inbreeding depression, record the breeding population, generation, identities, and measurement context, including Parent ID and heterozygosity, selfing method, S generation, seed set and germination. Keep definitions and identifiers stable so ancestry, family, and phenotype records remain comparable across generations.",
+    "During evaluation, track family size, vigor, fertility, sex and abnormality rates together with the mating design, environment, developmental stage, replicate or family structure, and any selection event that could alter interpretation. Preserve raw values and rejected or missing cases rather than only the selected outcome.",
+    "At the decision point, document trait variance, molecular homozygosity, selected families and preserved backups.. State the evidence supporting advancement, note uncertainty and correlated tradeoffs, and retain enough pedigree and sample traceability to reconstruct the decision later."
   ],
   "misconceptions": [
-    "S1 seed is genetically identical to the mother.",
-    "Selfing always creates a stable line in one generation.",
-    "Inbreeding depression affects every Cannabis population equally."
+    "S1 seed is genetically identical to the mother. This ignores segregation, environmental effects, sampling error, and the possibility that the observed phenotype does not transmit predictably to progeny.",
+    "Selfing always creates a stable line in one generation. A label, generation name, or single phenotype does not establish genetic value by itself; use family, progeny, marker, or replicated performance evidence appropriate to the trait.",
+    "Inbreeding depression affects every Cannabis population equally. The claim should not be generalized beyond the tested population, parents, environments, and measurement methods without additional validation."
   ],
   "evidenceLimits": [
-    "Heterozygosity decline is an expectation; realized fixation and depression depend on starting genotype, selection, linkage, viability, and population size."
+    "Heterozygosity decline is an expectation; realized fixation and depression depend on starting genotype, selection, linkage, viability, and population size. Expected genetic ratios, breeding values, and response magnitudes are model- and population-dependent, so they should not be presented as guaranteed outcomes for untested parents or environments.",
+    "Evidence from markers, pedigrees, replicated phenotypes, progeny tests, and laboratory assays answers different questions. Strong release claims require the relevant evidence type, adequate sample size, traceable methods, and confirmation that the result persists in the target breeding population and environment."
   ],
   "crossLinks": "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems.",
   "sourceNotes": [
