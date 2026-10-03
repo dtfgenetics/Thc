@@ -125,9 +125,9 @@ console.log(JSON.stringify(summary,null,2));
 const hardErrors=[];
 if(rows.length<420)hardErrors.push('Controlled registry contains fewer than 420 lessons.');
 if(summary.represented!==rows.length)hardErrors.push('Not every controlled lesson is represented in source.');
+if(summary.sourceCopyIssues)hardErrors.push(summary.sourceCopyIssues+' lesson(s) contain malformed source-copy labels.');
+if(summary.placeholderIssues)hardErrors.push(summary.placeholderIssues+' lesson(s) contain generic misconception placeholder text.');
 if(strict){
-  if(summary.sourceCopyIssues)hardErrors.push(summary.sourceCopyIssues+' lesson(s) contain malformed source-copy labels.');
-  if(summary.placeholderIssues)hardErrors.push(summary.placeholderIssues+' lesson(s) contain generic misconception placeholder text.');
   if(summary.individualCanonical!==rows.length)hardErrors.push((rows.length-summary.individualCanonical)+' lesson(s) are not individual canonical files.');
   if(summary.visualComplete!==rows.length)hardErrors.push((rows.length-summary.visualComplete)+' lesson(s) lack an approved teaching visual.');
   if(summary.assessmentMaterialized!==rows.length)hardErrors.push((rows.length-summary.assessmentMaterialized)+' lesson(s) lack three materialized lesson-specific checks.');
