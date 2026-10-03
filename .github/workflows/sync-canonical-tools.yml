@@ -53,6 +53,18 @@ jobs:
             fi
           fi
 
+      - name: Report canonical mirror lag before synchronization
+        shell: bash
+        run: |
+          set -euo pipefail
+          canonical_sha="$(git -C /tmp/tools rev-parse HEAD)"
+          pinned_sha="$(sed -n 's/^commit=//p' site/public-route-patch/assets/release-source-revisions/tools.txt || true)"
+          if [ "${pinned_sha}" = "${canonical_sha}" ]; then
+            echo "Canonical Tools mirror already current at ${canonical_sha}."
+          else
+            echo "::warning::Canonical Tools mirror is stale: pinned ${pinned_sha:-missing}, canonical ${canonical_sha}. Synchronization will repair it."
+          fi
+
       - name: Synchronize canonical tool routes and shared assets
         shell: bash
         run: |
