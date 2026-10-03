@@ -100,10 +100,16 @@ verify_public() {
 }
 
 verify_public '/' 'data-dtf-layout="home-v3"'
-verify_public '/learn/' 'data-dtf-layout="learn-v3"' 'data-dtf-learning-map="v4"' 'Open the THC Living Plant Atlas'
+verify_public '/learn/' 'data-dtf-layout="learn-v3"' 'data-dtf-learning-map="v4"' 'Open the THC Living Plant Atlas' 'Professional Courses' 'href="/courses/"'
 verify_public '/learn/atlas/' 'THC Living Plant Atlas'
 verify_public '/learn/atlas/atlas-3d/index.html' 'atlas-runtime.js'
 verify_public '/games/' '23 playable browser games'
 verify_public '/tools/' 'Grow with records. Diagnose with evidence.'
+
+learn_public="/tmp/dtf-learning-recovery-public-_learn_.html"
+if grep -Fqi -- 'Structured learning sequences and course-based progression.' "$learn_public"; then
+  echo 'Legacy Academy course-card copy is still masking canonical Learn after recovery.' >&2
+  exit 1
+fi
 
 echo 'Learning owner storage recovery completed with strict stored-owner and visitor acceptance.'
