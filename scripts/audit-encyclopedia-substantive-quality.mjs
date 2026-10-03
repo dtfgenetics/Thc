@@ -76,7 +76,14 @@ const cross=l=>{
   return [];
 };
 const generic=/\b(see (the )?lesson|as appropriate|where appropriate|proper|correct|best practice|monitor closely|follow guidance|use judgment)\b/i;
-const sourceAuthority=/\b(university|extension|usda|epa|nist|cornell|penn state|journal|doi|frontiers|plants|hortscience|pubmed|ncbi|ashrae|astm|iso|fao|who|government|department|institute|society|pmc|peer[- ]reviewed|systematic review|review)\b/i;
+const sourceAuthority=/\b(university|extension|usda|epa|nist|cornell|penn state|journal|doi|frontiers|plants|hortscience|pubmed|ncbi|ashrae|astm|iso|fao|who|government|department|institute|society|pmc|peer[- ]reviewed|systematic review|review|bmc|plos|nature|genome research|genome biology|scientific data|new phytologist|plant physiology|plant direct|scientia horticulturae|academic press|genetics|agrosystems)\b/i;
+const hasAuthoritySignal=value=>{
+  const text=txt(value);
+  if(sourceAuthority.test(text)) return true;
+  const hasYear=/(?:19|20)\d{2}/.test(text);
+  const looksBibliographic=/\bet al\.?\b|\b\d+\s*\([^)]+\)?:\s*\d+|\bvol\.?\s*\d+\b/i.test(text);
+  return hasYear&&looksBibliographic;
+};
 
 const rows=(registry.entries||[]).map(entry=>{
   const l=lessons.get(entry.id)||{};
@@ -95,7 +102,7 @@ const rows=(registry.entries||[]).map(entry=>{
   if(misconception.length<2||misconception.filter(x=>words(typeof x==='string'?x:JSON.stringify(x))>=4).length<2) issues.push('thin-misconceptions');
   if(limits.length<1||limits.every(x=>words(x)<8)) issues.push('thin-evidence-limits');
   if(src.length<2) issues.push('insufficient-sources');
-  if(src.length>=2&&src.filter(x=>sourceAuthority.test(resolvedSourceText(l,x))).length<1) issues.push('weak-source-authority-signal');
+  if(src.length>=2&&src.filter(x=>hasAuthoritySignal(resolvedSourceText(l,x))).length<1) issues.push('weak-source-authority-signal');
   if(cross(l).length<2) issues.push('thin-cross-links');
   const body=[objective,...core,...relevance,...measure,...misconception,...limits].map(x=>typeof x==='string'?x:JSON.stringify(x));
   if(body.filter(x=>generic.test(x)).length>=3) issues.push('generic-language');
