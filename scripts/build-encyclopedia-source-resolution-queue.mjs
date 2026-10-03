@@ -41,7 +41,7 @@ function citationLooksTraceable(reference) {
   if(value.length<24) return false;
   if(/https:\/\/|doi\s*[:.]|10\.\d{4,9}\//i.test(value)) return true;
   const hasYear=/(?:19|20)\d{2}/.test(value);
-  const hasAuthority=/\b(et al\.?|journal|university|extension|usda|epa|fda|nih|nist|astm|iso|ncbi|pubmed|frontiers|hortscience|plant physiology|scientific reports|royal botanic|department|institute|society|proceedings|review)\b/i.test(value);
+  const hasAuthority=/\b(et al\.?|journal|university|extension|usda|epa|fda|nih|nist|astm|iso|ncbi|pubmed|frontiers|hortscience|plant physiology|scientific reports|royal botanic|department|institute|society|proceedings|review|bmc|plos|nature|genome biology|genome research|new phytologist|scientia horticulturae|genetics|plant direct|academic press|industrial crops|horticulturae|applications in plant sciences|antioxidants|applied sciences|canadian journal|phytochemical analysis|biosystems engineering|agrophysics|acs)\b/i.test(value);
   return hasYear && hasAuthority;
 }
 

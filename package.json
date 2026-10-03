@@ -180,6 +180,7 @@
     "build:public-research-evidence": "node scripts/build-public-research-evidence.mjs",
     "verify:public-research-evidence": "npm run build:public-research-evidence && node scripts/validate-public-research-evidence.mjs",
     "build:encyclopedia-claim-evidence-candidates": "node scripts/build-encyclopedia-claim-evidence-candidates.mjs",
-    "verify:encyclopedia-claim-evidence-candidates": "npm run build:encyclopedia-source-queue && npm run build:encyclopedia-claim-evidence-candidates && node scripts/validate-encyclopedia-claim-evidence-candidates.mjs"
+    "verify:encyclopedia-claim-evidence-candidates": "npm run build:encyclopedia-source-queue && npm run build:encyclopedia-claim-evidence-candidates && node scripts/validate-encyclopedia-claim-evidence-candidates.mjs",
+    "audit:encyclopedia-substantive-quality:strict": "node scripts/audit-encyclopedia-substantive-quality.mjs --strict"
   }
 }

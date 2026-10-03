@@ -106,7 +106,7 @@ jobs:
       - name: Audit encyclopedia learning quality
         run: npm run audit:encyclopedia-learning-quality
       - name: Audit substantive lesson quality
-        run: npm run audit:encyclopedia-substantive-quality
+        run: npm run audit:encyclopedia-substantive-quality:strict
       - name: Build rich discovery index
         run: npm run build:encyclopedia-discovery
       - name: Build global education search
