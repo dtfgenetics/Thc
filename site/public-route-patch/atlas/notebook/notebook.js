@@ -1,3 +1,4 @@
+import {collectManualCultivationMeasurement} from '/assets/thc-cultivation-data-ui-v1.mjs';
 (() => {
   const KEY='dtf.atlas.observation-notebook.v1';
   const MAX=250;
@@ -66,6 +67,7 @@
     const existing=editingId?current.entries.find(x=>x.id===editingId):null;
     const next={...data,id:existing?.id||id(),createdAt:existing?.createdAt||now,updatedAt:now,title,observations};
     save({version:1,entries:[next,...current.entries.filter(x=>x.id!==next.id)]});
+    collectManualCultivationMeasurement({type:'plant-observation',toolId:'plant-atlas',observedAt:next.observedAt?new Date(next.observedAt).toISOString():now,stage:next.stage,values:{symptoms:[title,observations],locationOnPlant:next.plantArea,visiblePattern:next.pattern,progression:next.progression,status:next.status,recordAction:existing?'updated':'created'},method:'atlas-observation-notebook'});
     reset();setMessage(existing?'Observation updated.':'Observation saved on this device.');render();
   });
   entriesRoot.addEventListener('click',(event)=>{

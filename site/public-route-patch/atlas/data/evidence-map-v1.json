@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "systems": {
+    "genetics-phenotype": {
+      "reviewedScopeTerms": ["genetics", "phenotype", "genotype", "cultivar", "genomics"],
+      "structuredKinds": ["genomics-run", "biosample", "plant-trait"],
+      "intro": "Use sequence and phenotype records to study variation and inheritance without treating a public accession as evidence for a DTF cultivar.",
+      "questions": ["Which identifiers tie the observation to a BioProject, BioSample, experiment, or accession?", "Was the reported trait measured, described, or inferred?", "Does the population and environment match the question being asked?"]
+    },
+    "environmental-physiology": {
+      "reviewedScopeTerms": ["environment", "physiology", "vpd", "temperature", "humidity", "light", "transpiration"],
+      "structuredKinds": ["environment-response", "plant-trait"],
+      "intro": "Environmental responses depend on developmental stage, genotype, root-zone conditions, light, temperature, humidity, and measurement method.",
+      "questions": ["What environmental variables were actually measured?", "At what developmental stage and tissue position?", "Which interacting variables limit transfer of the result to another grow?"]
+    }
+  }
+}
