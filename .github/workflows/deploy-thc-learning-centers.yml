@@ -26,6 +26,7 @@ on:
       - 'scripts/validate-encyclopedia-search-benchmark.mjs'
       - 'scripts/build-wordpress-learning-search-runtime.mjs'
       - 'scripts/deploy/wordpress-learning-search-runtime.sh'
+      - 'scripts/deploy-wordpress-learning-search-runtime-via-rest.mjs'
       - 'site/wordpress/mu-plugins/dtf-learning-search.php'
       - 'site/wordpress/mu-plugins/dtf-learning-search/**'
       - 'site/public-route-patch/learn/search/**'
@@ -78,6 +79,7 @@ jobs:
           node --check scripts/publish-wordpress-learning-center-pages.mjs
           node --check scripts/update-wordpress-learn-learning-center.mjs
           node --check scripts/build-wordpress-learning-search-runtime.mjs
+          node --check scripts/deploy-wordpress-learning-search-runtime-via-rest.mjs
           node scripts/validate-learning-route-writer-boundaries.mjs
           bash -n scripts/deploy/wordpress-learning-search-runtime.sh
           php -l site/wordpress/mu-plugins/dtf-learning-search.php
@@ -163,9 +165,11 @@ jobs:
           done
 
           if [[ "$ssh_ready" != true ]]; then
-            echo 'Hostinger SSH deployment credentials are unavailable; requiring the existing live learning-search runtime to exactly match current repository assets.'
+            echo 'Hostinger SSH deployment credentials are unavailable; deploying the source-controlled learning-search runtime through the authenticated WordPress REST bridge.'
+            node scripts/deploy-wordpress-learning-search-runtime-via-rest.mjs \
+              | tee "$RUNNER_TEMP/learning-search-rest-deploy.json"
             verify_live_runtime
-            echo "runtime_mode=verified-existing" >> "$GITHUB_OUTPUT"
+            echo "runtime_mode=wordpress-rest-bridge" >> "$GITHUB_OUTPUT"
             echo "backup_id=" >> "$GITHUB_OUTPUT"
             exit 0
           fi
