@@ -71,6 +71,20 @@ const registryPath = path.join(encRoot, 'current-controlled-registry.json');
 const sourceRegistryPath = path.join(evidenceRoot, 'authoritative-sources.json');
 const registry = readJson(registryPath);
 const sourceRegistry = fs.existsSync(sourceRegistryPath) ? readJson(sourceRegistryPath) : { sources: [] };
+const volumeSourceRegisters=[];
+const controlledSourceById=new Map();
+for(let volumeNumber=1;volumeNumber<=21;volumeNumber+=1){
+  const volume=String(volumeNumber).padStart(2,'0');
+  const file=path.join(encRoot,`volume-${volume}`,'source-register.json');
+  if(!fs.existsSync(file)) continue;
+  const register=readJson(file);
+  volumeSourceRegisters.push(rel(file));
+  for(const source of arr(register.sources)){
+    if(!source?.id) continue;
+    if(controlledSourceById.has(source.id)) throw new Error(`Duplicate controlled volume source id ${source.id}`);
+    controlledSourceById.set(source.id,{...source,__path:rel(file),__volume:volumeNumber});
+  }
+}
 const batches = readEvidenceBatches();
 const lessons = readCanonicalLessons();
 
@@ -107,10 +121,11 @@ function recordFor(entry) {
   const lesson = lessonById.get(entry.id);
   const refs = lesson ? sourceRefsFor(lesson) : [];
   const resolvedFromNotes = refs.map(ref => sourceById.has(ref) ? ref : sourceAliasToId.get(ref)).filter(Boolean);
+  const resolvedControlledFromNotes = refs.filter(ref => controlledSourceById.has(ref));
   const claimEvidence = evidenceByLesson.get(entry.id) || [];
   const resolvedFromEvidence = claimEvidence.flatMap(item => arr(item.sourceIds)).filter(id => sourceById.has(id));
   const authoritativeSourceIds = [...new Set([...resolvedFromNotes, ...resolvedFromEvidence])].sort();
-  const unresolvedSourceRefs = refs.filter(ref => !sourceById.has(ref) && !sourceAliasToId.has(ref));
+  const unresolvedSourceRefs = refs.filter(ref => !sourceById.has(ref) && !sourceAliasToId.has(ref) && !controlledSourceById.has(ref));
   const publicationAuthorized = lesson?.reviewControl?.publicationAuthorized ?? lesson?.publicationAuthorized ?? null;
   const evidenceStatus = claimEvidence.length
     ? 'claim_evidence_batch_started'
@@ -139,6 +154,11 @@ function recordFor(entry) {
       count: refs.length,
       refs,
       resolvedAuthoritativeSourceIds: [...new Set(resolvedFromNotes)].sort(),
+      resolvedControlledSourceIds: [...new Set(resolvedControlledFromNotes)].sort(),
+      controlledSourceRecords: [...new Set(resolvedControlledFromNotes)].sort().map(id=>{
+        const source=controlledSourceById.get(id);
+        return {id,title:source?.title||null,location:source?.location||null,useAndLimitation:source?.useAndLimitation||null,sourceRegister:source?.__path||null};
+      }),
       unresolvedRefs: unresolvedSourceRefs
     },
     evidence: {
@@ -164,6 +184,8 @@ const summary = {
   withClaimEvidence: trackingLessons.filter(row => row.evidence.claimEvidenceCount > 0).length,
   withoutClaimEvidence: trackingLessons.filter(row => row.evidence.claimEvidenceCount === 0).length,
   withResolvedAuthoritativeSources: trackingLessons.filter(row => row.evidence.authoritativeSourceIds.length > 0).length,
+  withResolvedControlledSources: trackingLessons.filter(row => row.sourceNotes.resolvedControlledSourceIds.length > 0).length,
+  controlledVolumeSourceCount: controlledSourceById.size,
   publicationHoldsPreserved: trackingLessons.filter(row => row.publicationState.publicationAuthorized === false).length,
   evidenceStatuses: trackingLessons.reduce((acc, row) => {
     acc[row.evidence.status] = (acc[row.evidence.status] || 0) + 1;
@@ -178,6 +200,7 @@ const output = {
   generatedFrom: {
     controlledRegistry: rel(registryPath),
     sourceRegistry: fs.existsSync(sourceRegistryPath) ? rel(sourceRegistryPath) : null,
+    volumeSourceRegisters,
     evidenceBatches: batches.map(batch => batch.__path)
   },
   scope: 'All 420 controlled THC-ENC lessons. This artifact tracks evidence-readiness only and does not authorize publication.',
