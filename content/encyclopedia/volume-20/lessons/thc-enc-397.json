@@ -24,18 +24,18 @@
     "Decide whether the program wants elite individual clones, predictable seed families, or parental lines. Design progeny tests to match that objective."
   ],
   "measureAndRecord": [
-    "Before evaluating progeny testing and combining ability, record the breeding population, generation, identities, and measurement context, including Parent/tester/cross IDs, mating design, family size and balance, environments. Keep definitions and identifiers stable so ancestry, family, and phenotype records remain comparable across generations.",
-    "During evaluation, track trait definitions, family means and variances, parental and check values together with the mating design, environment, developmental stage, replicate or family structure, and any selection event that could alter interpretation. Preserve raw values and rejected or missing cases rather than only the selected outcome.",
-    "At the decision point, document GCA/SCA model and uncertainty, selected progeny, fertility and off-types.. State the evidence supporting advancement, note uncertainty and correlated tradeoffs, and retain enough pedigree and sample traceability to reconstruct the decision later."
+    "Record parent, tester, and cross IDs, mating design, family size, balance among crosses, environments, trait definitions, and checks. Keep the tester set explicit because combining ability is defined relative to that mating population.",
+    "Measure family means, within-family variance, parental performance, fertility, off-types, and trait covariance across environments. Retain the raw progeny distribution rather than only top-family summaries.",
+    "Document the statistical model used for general and specific combining ability, uncertainty of estimates, tester representation, selected crosses, and whether conclusions were confirmed in an independent generation or environment."
   ],
   "misconceptions": [
-    "The best parent phenotype always gives the best progeny. This ignores segregation, environmental effects, sampling error, and the possibility that the observed phenotype does not transmit predictably to progeny.",
-    "One exceptional child proves a superior cross. A label, generation name, or single phenotype does not establish genetic value by itself; use family, progeny, marker, or replicated performance evidence appropriate to the trait.",
-    "Combining ability is a permanent value independent of testers and environments. The claim should not be generalized beyond the tested population, parents, environments, and measurement methods without additional validation."
+    "The best parent phenotype always gives the best progeny. Individual phenotype and breeding value are related imperfectly, especially for low-heritability or strongly environment-dependent traits.",
+    "One exceptional child proves a superior cross. A single outlier may not represent the family mean or repeat in another progeny sample.",
+    "Combining ability is a permanent value independent of testers and environments. Estimates depend on the parent set, mating design, traits, and environments used."
   ],
   "evidenceLimits": [
-    "Combining-ability estimates apply to the tested parent set, mating design, traits, environments, and model. Expected genetic ratios, breeding values, and response magnitudes are model- and population-dependent, so they should not be presented as guaranteed outcomes for untested parents or environments.",
-    "Evidence from markers, pedigrees, replicated phenotypes, progeny tests, and laboratory assays answers different questions. Strong release claims require the relevant evidence type, adequate sample size, traceable methods, and confirmation that the result persists in the target breeding population and environment."
+    "General and specific combining-ability estimates are conditional on the tested parent and tester population and should not be treated as universal properties.",
+    "Unbalanced family sizes, selective missingness, and weak environmental replication can bias combining-ability estimates and inflate confidence."
   ],
   "crossLinks": "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems.",
   "sourceNotes": [
