@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-011",
+  "createdAt": "2026-10-03",
+  "scope": "Claim-level reproductive-development, photoperiod, floral morphology, pollen, fertilization, seed maturation, sex-expression, senescence, and reproductive-record evidence for remaining unmapped THC-ENC-201 through THC-ENC-220 lessons.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Photoperiod and developmental timing remain cultivar-, endpoint-, and environment-dependent; no tested schedule is generalized as a universal cannabis constant.",
+    "Pollen appearance, staining, germination, transport, deposition, fertilization, and seed formation are distinct biological and measurement stages.",
+    "Review and general plant evidence support interpretation but do not replace cannabis-specific experimental evidence where performance thresholds are claimed.",
+    "Claim mapping does not constitute independent science review, publication authorization, assessment approval, or visual approval."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0080",
+      "lessonId": "THC-ENC-201",
+      "sourceIds": [
+        "ENC-AUTH-061",
+        "ENC-AUTH-054",
+        "ENC-AUTH-066"
+      ],
+      "claimType": "reproductive-transition",
+      "supportedClaim": "The cannabis transition toward reproductive development is staged and genotype-dependent: solitary floral development, photoperiod-triggered inflorescence morphogenesis, and cultivar-specific flowering initiation should not be collapsed into one universal calendar event.",
+      "sourceLocator": "Ahrens et al. 2023 abstract/results across ten cultivars; Spitzer-Rimon et al. 2019 florogenesis observations; Alter et al. 2024 abstract/results on short-day inflorescence morphogenesis.",
+      "applicability": "Supports staged developmental records and separation of preflower, floral initiation, and inflorescence development.",
+      "limitations": "Definitions and timing endpoints differ among studies and cultivars; exact day counts are not universal.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0081",
+      "lessonId": "THC-ENC-202",
+      "sourceIds": [
+        "ENC-AUTH-061",
+        "ENC-AUTH-062"
+      ],
+      "claimType": "photoperiod-response",
+      "supportedClaim": "Cannabis/hemp flowering response varies among cultivars and can shift over photoperiod differences smaller than one hour, so 12/12 is a common production convention rather than a universal biological critical photoperiod.",
+      "sourceLocator": "Ahrens et al. 2023 12–15 h indoor photoperiod experiment; Zhang et al. 2021 controlled photoperiod experiments across essential-oil, grain, and fiber hemp cultivars.",
+      "applicability": "Supports cultivar-specific photoperiod thresholds and explicit flowering endpoints.",
+      "limitations": "Thresholds depend on cultivar, source, environment, light intensity, endpoint, and experiment duration.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0082",
+      "lessonId": "THC-ENC-204",
+      "sourceIds": [
+        "ENC-AUTH-054",
+        "ENC-AUTH-032"
+      ],
+      "claimType": "preflower-morphology",
+      "supportedClaim": "Solitary cannabis flowers and sex-specific floral structures can appear before full inflorescence development, so visible preflowers indicate reproductive development without proving whole-plant flowering stage or a universal maturity threshold.",
+      "sourceLocator": "Spitzer-Rimon et al. 2019 solitary-flower/florogenesis observations; Punja and Holmes 2020 pistillate, staminate, and intersex floral morphology.",
+      "applicability": "Supports anatomical confirmation of preflowers and node-position phenology records.",
+      "limitations": "Visible timing and node position vary among genotypes and environments; no fixed age or node count is established.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0083",
+      "lessonId": "THC-ENC-205",
+      "sourceIds": [
+        "ENC-AUTH-054",
+        "ENC-AUTH-032",
+        "ENC-AUTH-060"
+      ],
+      "claimType": "inflorescence-architecture",
+      "supportedClaim": "Female cannabis inflorescences are structured assemblies of many floral and supporting organs whose architecture varies with developmental position and plant architecture; visual compactness alone does not establish maturity or chemistry.",
+      "sourceLocator": "Spitzer-Rimon et al. 2019 architecture/florogenesis; Punja and Holmes 2020 reproductive morphology; Shape Matters 2021 within-plant positional/chemical variation.",
+      "applicability": "Supports measurement of inflorescence position, size, density, and associated canopy context.",
+      "limitations": "Terminology and morphology vary across genotypes and studies; architecture does not independently determine chemical quality.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0084",
+      "lessonId": "THC-ENC-206",
+      "sourceIds": [
+        "ENC-AUTH-066"
+      ],
+      "claimType": "early-flower-elongation",
+      "supportedClaim": "In the studied female cannabis material, short-day transition produced an initial phase of rapid internode/stem elongation followed by reduced elongation and condensed inflorescence formation, demonstrating that early-flower stretch is a developmental phase rather than a universal multiplier.",
+      "sourceLocator": "Alter et al. 2024 abstract and results on the two-phase short-day response.",
+      "applicability": "Supports repeated height/internode measurements through reproductive transition.",
+      "limitations": "Exact timing and magnitude were observed in a limited cultivar context and should not be generalized.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0085",
+      "lessonId": "THC-ENC-207",
+      "sourceIds": [
+        "ENC-AUTH-032",
+        "ENC-AUTH-063",
+        "ENC-AUTH-031"
+      ],
+      "claimType": "male-floral-development",
+      "supportedClaim": "Mature staminate cannabis flowers release pollen, but visible anther maturity, pollen quantity, atmospheric release, and functional pollen viability are separate observations that should be recorded independently.",
+      "sourceLocator": "Punja and Holmes 2020 staminate/anther morphology; Gaudet et al. 2020 developmental-stage/germination work; Nimmala et al. 2024 pollen transport context.",
+      "applicability": "Supports anthesis staging and separation of pollen release from viability.",
+      "limitations": "Diurnal release timing and quantity vary with genotype and environment and are not universally characterized.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0086",
+      "lessonId": "THC-ENC-208",
+      "sourceIds": [
+        "ENC-AUTH-063",
+        "ENC-AUTH-064"
+      ],
+      "claimType": "pollen-viability-methods",
+      "supportedClaim": "Cannabis pollen structural/non-abortion measures and in-vitro germination measure different properties and can diverge, so appearance or staining alone cannot substitute for a functional germination assay.",
+      "sourceLocator": "Gaudet et al. 2020 germination assay and storage study; Wizenberg et al. 2022 paired non-abortion and germination/viability comparisons.",
+      "applicability": "Supports explicit pollen-fitness method naming and separation of morphology from functional viability.",
+      "limitations": "In-vitro germination remains a laboratory proxy and does not guarantee successful fertilization in planta.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0087",
+      "lessonId": "THC-ENC-211",
+      "sourceIds": [
+        "ENC-AUTH-032",
+        "ENC-AUTH-065"
+      ],
+      "claimType": "fertilization-development",
+      "supportedClaim": "Pollen receipt is not equivalent to completed fertilization: compatible pollen must germinate and grow pollen tubes before fertilization, after which cannabis inflorescence development and chemistry can diverge from unfertilized controls.",
+      "sourceLocator": "Punja and Holmes 2020 pollen germination/pollen-tube observations; Lipson Feder et al. 2021 fertilized-versus-unfertilized cannabis inflorescence study.",
+      "applicability": "Supports the sequence from pollination to fertilization and early seed-development evidence.",
+      "limitations": "Detailed hour-by-hour cannabis embryo development across cultivars remains incompletely characterized.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0088",
+      "lessonId": "THC-ENC-212",
+      "sourceIds": [
+        "ENC-AUTH-065"
+      ],
+      "claimType": "seedless-flower-fertilization",
+      "supportedClaim": "In the tested cannabis chemovars, fertilization after pollination changed subsequent inflorescence development and predominantly reduced phytocannabinoid accumulation while terpenoid responses varied, supporting seedless production as pollen/fertilization exclusion rather than a universal potency rule.",
+      "sourceLocator": "Lipson Feder et al. 2021 abstract, results, and conclusions comparing fertilized and unfertilized inflorescences.",
+      "applicability": "Supports biological explanation of seedless flower production and the distinction between reproductive state and chemical testing.",
+      "limitations": "Magnitude and direction of chemistry changes vary by compound and chemovar; no universal potency-loss percentage is established.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0089",
+      "lessonId": "THC-ENC-214",
+      "sourceIds": [
+        "ENC-AUTH-063",
+        "ENC-AUTH-064"
+      ],
+      "claimType": "pollen-storage",
+      "supportedClaim": "Cannabis pollen storage performance depends on developmental stage, preparation, storage conditions, and the viability assay used; a validated cryogenic protocol cannot be generalized to ordinary freezer storage or indefinite shelf life.",
+      "sourceLocator": "Gaudet et al. 2020 developmental-stage and cryopreservation/germination results; Wizenberg et al. 2022 room/freezer pollen-fitness comparisons.",
+      "applicability": "Supports storage-history records and post-storage functional testing.",
+      "limitations": "Published protocols differ and measured proxies are not interchangeable; no universal storage duration is established.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0090",
+      "lessonId": "THC-ENC-215",
+      "sourceIds": [
+        "ENC-AUTH-031",
+        "ENC-AUTH-033",
+        "ENC-AUTH-063"
+      ],
+      "claimType": "pollen-containment",
+      "supportedClaim": "Cannabis pollen is mobile in air and can be captured/quantified with defined methods, so containment should be managed as source-pathway-recipient risk with workflow and viability controls rather than a single guaranteed isolation distance or cleanup method.",
+      "sourceLocator": "Nimmala et al. 2024 atmospheric dispersal modeling; Wizenberg et al. 2020 controlled capture/quantification methods; Gaudet et al. 2020 viability context.",
+      "applicability": "Supports containment, transfer-pathway records, and verification of pollen-control procedures.",
+      "limitations": "These sources do not establish one universal room-decontamination protocol or zero-risk isolation radius.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0091",
+      "lessonId": "THC-ENC-216",
+      "sourceIds": [
+        "ENC-AUTH-068"
+      ],
+      "claimType": "seed-maturity",
+      "supportedClaim": "Hemp seed maturation can be heterogeneous, and mature, semi-mature, and immature seed groups differ in germination/emergence performance, supporting direct maturity and seed-quality records rather than one visual rule.",
+      "sourceLocator": "Yılmaz, Yıldırım, and Gür 2025 germination/emergence comparison across maturity stages.",
+      "applicability": "Supports asynchronous seed-maturation and postharvest quality-testing concepts.",
+      "limitations": "The study concerns hemp material and does not define a universal harvest percentage, color, or days-after-pollination threshold for all cannabis seed crops.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0092",
+      "lessonId": "THC-ENC-217",
+      "sourceIds": [
+        "ENC-AUTH-067",
+        "ENC-AUTH-066",
+        "ENC-AUTH-032"
+      ],
+      "claimType": "sex-expression-plasticity",
+      "supportedClaim": "Cannabis sex expression is context-dependent and can reflect interacting genetic, hormonal, developmental, treatment, and environmental factors, so one observed stressor should not be assigned as the sole cause of intersex expression without stronger evidence.",
+      "sourceLocator": "Richards et al. 2026 review abstract/synthesis; Alter et al. 2024 reproductive hormone/photoperiod study; Punja and Holmes 2020 intersex floral morphology.",
+      "applicability": "Supports repeated phenotyping and environment/treatment records for intersex monitoring.",
+      "limitations": "The review summarizes heterogeneous evidence; universal environmental trigger thresholds are not established.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0093",
+      "lessonId": "THC-ENC-218",
+      "sourceIds": [
+        "ENC-AUTH-066"
+      ],
+      "claimType": "photoperiod-reversion",
+      "supportedClaim": "In the studied female cannabis material, returning short-day plants to long days increased internode elongation and disrupted condensed inflorescence architecture, demonstrating reversible photoperiod-regulated morphology rather than a simple developmental clock reset.",
+      "sourceLocator": "Alter et al. 2024 abstract/results on return-to-long-day treatment and inflorescence disassembly.",
+      "applicability": "Supports biological explanation of reversion/revegetative morphology and reflowering as a new transition.",
+      "limitations": "Reversion timing, cloning success, and later yield were not established universally across modern cultivars.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0094",
+      "lessonId": "THC-ENC-219",
+      "sourceIds": [
+        "ENC-AUTH-003"
+      ],
+      "claimType": "trichome-maturation",
+      "supportedClaim": "Cannabis glandular trichome morphology and maturation vary with plant age and genotype and can be asynchronous within inflorescences, so trichome appearance is an informative but imperfect maturity indicator rather than a universal harvest threshold.",
+      "sourceLocator": "Livingston et al. 2023 trichome development, morphology, maturation, age, genotype, and postharvest observations.",
+      "applicability": "Supports microscopy sampling and caution around color-only harvest rules.",
+      "limitations": "Visual trichome state does not independently establish a target cannabinoid profile or optimal harvest time for every genotype.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0095",
+      "lessonId": "THC-ENC-220",
+      "sourceIds": [
+        "ENC-AUTH-063",
+        "ENC-AUTH-068",
+        "ENC-AUTH-018"
+      ],
+      "claimType": "reproductive-record-traceability",
+      "supportedClaim": "Reproductive records should preserve parent/sample identity, developmental or maturity state, handling/storage history, testing method, and lot relationships because those variables materially affect pollen and seed outcomes and later interpretation.",
+      "sourceLocator": "Gaudet et al. 2020 pollen stage/storage/testing metadata; Yılmaz et al. 2025 seed maturity/performance; MIAPPE v1.2 experiment/biological-material/observation metadata structure.",
+      "applicability": "Supports traceable parent-to-pollination-to-seed-lot documentation and explicit links to later tests.",
+      "limitations": "Records preserve intended and observed identity but do not prove genetic parentage or replace seed-quality/molecular testing.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
