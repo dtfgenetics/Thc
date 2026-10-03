@@ -13,6 +13,7 @@ on:
       - 'data/encyclopedia-evidence-tracking.json'
       - 'data/encyclopedia-assessment-rationale-package.json'
       - 'data/encyclopedia-source-resolution-queue.json'
+      - 'data/encyclopedia-claim-evidence-candidates.json'
       - 'site/public-route-patch/learn/encyclopedia/**'
       - 'site/wordpress/education/encyclopedia-deployment-target.json'
       - 'scripts/resolve-encyclopedia-deployment-target.mjs'
@@ -51,6 +52,7 @@ on:
       - 'data/encyclopedia-evidence-tracking.json'
       - 'data/encyclopedia-assessment-rationale-package.json'
       - 'data/encyclopedia-source-resolution-queue.json'
+      - 'data/encyclopedia-claim-evidence-candidates.json'
       - 'site/public-route-patch/learn/encyclopedia/**'
       - 'site/wordpress/education/encyclopedia-deployment-target.json'
       - 'scripts/resolve-encyclopedia-deployment-target.mjs'
@@ -95,6 +97,8 @@ jobs:
         run: node scripts/validate-encyclopedia-evidence-tracking.mjs
       - name: Build and validate encyclopedia production queues
         run: npm run verify:encyclopedia-production-queues
+      - name: Build claim-evidence candidate ledger
+        run: npm run verify:encyclopedia-claim-evidence-candidates
       - name: Build unified production readiness
         run: npm run build:encyclopedia-production-readiness
       - name: Validate unified production readiness
@@ -134,6 +138,7 @@ jobs:
             data/encyclopedia-evidence-priority.json
             data/encyclopedia-assessment-rationale-package.json
             data/encyclopedia-source-resolution-queue.json
+            data/encyclopedia-claim-evidence-candidates.json
             data/encyclopedia-production-readiness.json
             content/encyclopedia/visual-production-queue-v1.json
             data/encyclopedia-learning-quality-audit.json
