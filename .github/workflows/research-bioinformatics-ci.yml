@@ -11,6 +11,9 @@ on:
       - 'scripts/validate-research-bioinformatics.mjs'
       - 'scripts/test-export-tools-research-evidence.mjs'
       - 'scripts/export-tools-research-evidence.mjs'
+      - 'scripts/build-public-research-evidence.mjs'
+      - 'scripts/validate-public-research-evidence.mjs'
+      - 'site/public-route-patch/data/research/evidence/**'
       - 'scripts/*research-evidence-index.mjs'
       - 'scripts/query-research-evidence.mjs'
       - 'scripts/test-research-evidence-pipeline.mjs'
@@ -26,6 +29,9 @@ on:
       - 'scripts/validate-research-bioinformatics.mjs'
       - 'scripts/test-export-tools-research-evidence.mjs'
       - 'scripts/export-tools-research-evidence.mjs'
+      - 'scripts/build-public-research-evidence.mjs'
+      - 'scripts/validate-public-research-evidence.mjs'
+      - 'site/public-route-patch/data/research/evidence/**'
       - 'package.json'
 
 permissions:

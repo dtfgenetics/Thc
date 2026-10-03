@@ -1,0 +1,89 @@
+{
+  "schema": "thc-research-evidence-dataset",
+  "version": 1,
+  "datasetId": "ncbi-sra-prjna1206134-v1",
+  "generatedAt": "2026-10-02T00:00:00.000Z",
+  "sources": [
+    {
+      "sourceId": "ncbi:PRJNA1206134",
+      "provider": "NCBI SRA",
+      "retrievedAt": "2026-10-02T00:00:00.000Z",
+      "identifiers": {
+        "bioproject": "PRJNA1206134",
+        "study_accession": "SRP555143"
+      },
+      "provenance": {
+        "acquisition": "Run Selector / RunInfo",
+        "source_id": "FERAL-CANNABIS-PRJNA1206134"
+      }
+    }
+  ],
+  "records": [
+    {
+      "recordId": "ncbi-sra:SRR31884228",
+      "kind": "genomics-run",
+      "sourceId": "ncbi:PRJNA1206134",
+      "identifiers": {
+        "bioproject": "PRJNA1206134",
+        "study_accession": "SRP555143",
+        "experiment_accession": "SRX27242671",
+        "run_accession": "SRR31884228",
+        "biosample": "SAMN46071458",
+        "sra_sample_accession": "SRS23688594"
+      },
+      "facts": {
+        "organism": "Cannabis sativa",
+        "library_strategy": "GBS",
+        "library_source": "GENOMIC",
+        "library_selection": "Restriction Digest",
+        "platform": "ILLUMINA",
+        "instrument": "Illumina NovaSeq X Plus",
+        "layout": "PAIRED",
+        "spots": {
+          "value": 6148093,
+          "unit": "count"
+        },
+        "sample_name": "ND-23-AA-02-12",
+        "reported_bases": "1.8G",
+        "reported_download_size": "550Mb"
+      },
+      "provenance": {
+        "source_url": "https://www.ncbi.nlm.nih.gov/sra/SRX27242671",
+        "source_record_id": "SRR31884228"
+      }
+    },
+    {
+      "recordId": "ncbi-sra:SRR31883762",
+      "kind": "genomics-run",
+      "sourceId": "ncbi:PRJNA1206134",
+      "identifiers": {
+        "bioproject": "PRJNA1206134",
+        "study_accession": "SRP555143",
+        "experiment_accession": "SRX27242465",
+        "run_accession": "SRR31883762",
+        "biosample": "SAMN46071416",
+        "sra_sample_accession": "SRS23688388"
+      },
+      "facts": {
+        "organism": "Cannabis sativa",
+        "library_strategy": "GBS",
+        "library_source": "GENOMIC",
+        "library_selection": "Restriction Digest",
+        "platform": "ILLUMINA",
+        "instrument": "Illumina NovaSeq X Plus",
+        "layout": "PAIRED",
+        "spots": {
+          "value": 6670786,
+          "unit": "count"
+        },
+        "sample_name": "SD-23-JH-06-09",
+        "reported_bases": "2G",
+        "reported_download_size": "588Mb"
+      },
+      "provenance": {
+        "source_url": "https://www.ncbi.nlm.nih.gov/sra/SRX27242465",
+        "source_record_id": "SRR31883762"
+      }
+    }
+  ]
+}

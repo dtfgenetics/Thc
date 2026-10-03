@@ -62,6 +62,12 @@ for (const [label, nav] of [['public-navigation', publicNav.primaryNavigation], 
   if (JSON.stringify(labels) !== JSON.stringify(canonicalLabels)) failures.push(`${label}: canonical labels drifted: ${JSON.stringify(labels)}`);
 }
 
+const registryFamilies = siteRegistry.information_architecture?.route_families || [];
+for (const required of canonicalLabels) {
+  const route = required === 'Home' ? '/' : `/${required.toLowerCase()}/`;
+  if (!registryFamilies.some(item => item.root === route)) failures.push(`site-registry: missing canonical route family ${route}`);
+}
+
 if (header.includes('>Diagnostic</a>') || footer.includes('>Diagnostic</a>')) {
   failures.push('canonical shell must label /tools/ as Tools, not Diagnostic');
 }
@@ -78,7 +84,7 @@ if (failures.length) {
 console.log(JSON.stringify({
   ok: true,
   shell: 'header-v6/footer-v6',
-  navigation: ['Home','Seeds','Learn','Courses','Tools','Games','Community','Shop'],
+  navigation: canonicalLabels,
   responsiveStates: ['desktop','tablet','mobile','narrow-mobile'],
   enforced: [
     'shared container system',
