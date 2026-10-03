@@ -118,10 +118,20 @@ const report = { generatedAt: new Date().toISOString(), apply, pages: [], backup
 for (const target of targets) {
   const pages = await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(target.slug)}&context=edit&status=publish&per_page=10`);
   if (!Array.isArray(pages) || pages.length !== 1) throw new Error(`Expected exactly one published ${target.slug} page`);
-  const page = pages[0];
-  const before = raw(page.content);
-  for (const marker of target.required) {
-    if (!before.includes(marker)) throw new Error(`/${target.slug}/ is missing required owner marker: ${marker}`);
+  let page = pages[0];
+  let before = raw(page.content);
+  // WordPress can return a stale collection representation immediately after
+  // the preceding owner-aware V4/expanded-reference write. Refresh the exact
+  // page record before treating a required owner marker as missing.
+  for (let attempt = 1; attempt <= 5; attempt += 1) {
+    const missing = target.required.filter(marker => !before.includes(marker));
+    if (!missing.length) break;
+    if (attempt === 5) {
+      throw new Error(`/${target.slug}/ is missing required owner marker(s) after exact-page refresh: ${missing.join(', ')}`);
+    }
+    await sleep(1000 * attempt);
+    page = await request(`/wp-json/wp/v2/pages/${page.id}?context=edit`);
+    before = raw(page.content);
   }
   let content = stripStyle(before, 'dtf-visual-v1-shared');
   content = stripStyle(content, 'dtf-learning-owner-v1');
