@@ -127,6 +127,9 @@ jobs:
         run: npm run verify:encyclopedia-content-control
       - name: Validate assessments
         run: npm run verify:encyclopedia-assessments
+      - name: Audit live encyclopedia copy
+        if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
+        run: node scripts/audit-live-encyclopedia-copy.mjs
       - name: Upload generated encyclopedia artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -143,6 +146,7 @@ jobs:
             content/encyclopedia/visual-production-queue-v1.json
             data/encyclopedia-learning-quality-audit.json
             data/encyclopedia-substantive-quality-audit.json
+            live-encyclopedia-copy-audit.json
             site/public-route-patch/learn/encyclopedia/encyclopedia-index.json
             site/public-route-patch/learn/search/search-index.json
           if-no-files-found: error
