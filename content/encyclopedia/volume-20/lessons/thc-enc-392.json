@@ -24,18 +24,18 @@
     "Define how many individuals and families will be retained before evaluation. Monitor effective parent number and compare predicted gain with realized progeny performance."
   ],
   "measureAndRecord": [
-    "Before evaluating selection intensity and genetic gain, record the breeding population, generation, identities, and measurement context, including Base population, trait mean and variance, heritability/accuracy estimate, selected proportion. Keep definitions and identifiers stable so ancestry, family, and phenotype records remain comparable across generations.",
-    "During evaluation, track selection differential, family contributions, generation interval, predicted response together with the mating design, environment, developmental stage, replicate or family structure, and any selection event that could alter interpretation. Preserve raw values and rejected or missing cases rather than only the selected outcome.",
-    "At the decision point, document realized progeny response, correlated traits, inbreeding indicators.. State the evidence supporting advancement, note uncertainty and correlated tradeoffs, and retain enough pedigree and sample traceability to reconstruct the decision later."
+    "Record the base population, generation, trait definition, population mean and variance, relationship structure when known, selected proportion, and the accuracy or heritability estimate used for predicting response.",
+    "Calculate and retain the selection differential, family contributions, selected-parent values, generation interval, predicted response, and any correlated traits that could change as a consequence of selection.",
+    "After progeny evaluation, compare realized response with the prediction and record changes in diversity, inbreeding indicators, fertility, and family representation. Revise the selection strategy when short-term gain is being purchased with excessive loss of diversity."
   ],
   "misconceptions": [
-    "Selecting only the top plant creates the fastest long-term progress. This ignores segregation, environmental effects, sampling error, and the possibility that the observed phenotype does not transmit predictably to progeny.",
-    "High heritability means the environment does not matter. A label, generation name, or single phenotype does not establish genetic value by itself; use family, progeny, marker, or replicated performance evidence appropriate to the trait.",
-    "A higher parental value proves genetic gain without progeny comparison. The claim should not be generalized beyond the tested population, parents, environments, and measurement methods without additional validation."
+    "Selecting only the top plant creates the fastest long-term progress. Extreme selection can increase short-term differential while sharply reducing effective population size and future response.",
+    "High heritability means the environment does not matter. Heritability is population- and environment-specific and can be high even when environmental effects are substantial.",
+    "A higher parental value proves genetic gain without progeny comparison. Genetic gain is a change in population performance across generations, not merely a difference among selected parents."
   ],
   "evidenceLimits": [
-    "Predicted gain depends on the validity of variance estimates, relationships, selection model, population, and target environments. Expected genetic ratios, breeding values, and response magnitudes are model- and population-dependent, so they should not be presented as guaranteed outcomes for untested parents or environments.",
-    "Evidence from markers, pedigrees, replicated phenotypes, progeny tests, and laboratory assays answers different questions. Strong release claims require the relevant evidence type, adequate sample size, traceable methods, and confirmation that the result persists in the target breeding population and environment."
+    "Predicted response depends on valid variance components, relationships, trait definitions, selection intensity, and target environments. Estimates can change when any of those change.",
+    "Realized gain should be measured against a comparable base or control population; environmental drift between generations can mimic genetic progress."
   ],
   "crossLinks": "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems.",
   "sourceNotes": [
