@@ -26,15 +26,18 @@
     "Maintain a sample manifest and result-review checklist. Preserve original reports, amended reports, machine-readable data where possible, and the decision record that used them."
   ],
   "measureAndRecord": [
-    "Sample/source/batch IDs; collection plan and increments; collector/time; container/preservation; custody transfers; lab/accession; matrix; preparation/homogenization; method/version/scope; units/basis; LOD/LOQ; QC/qualifiers; result/uncertainty; report revision; retained sample; review and disposition."
+    "Record source plant or batch ID, sampling plan, increments or subsamples, collector, date and time, container, preservation, custody transfers, laboratory accession number, and matrix.",
+    "Record preparation and homogenization method, analytical method and version, accreditation scope where relevant, units and basis, LOD or LOQ, QC results, qualifiers, reported result, uncertainty, and report revision.",
+    "Link each result back to the exact decision it supports. Preserve amended reports, retained-sample information, review notes, and final disposition rather than replacing earlier result versions."
   ],
   "misconceptions": [
-    "A COA proves every unit in the batch has the reported value.",
-    "Not detected means the analyte is absent.",
-    "Accreditation means every method and matrix used by the laboratory is within scope."
+    "A COA proves every unit in the batch has the reported value. The result characterizes the submitted sample under the method used and supports batch inference only to the extent the sampling plan is representative.",
+    "Not detected means the analyte is absent. It means the analyte was not detected above the method's reporting or detection threshold under the tested conditions.",
+    "Accreditation means every method and matrix used by the laboratory is within scope. Scope is method- and matrix-specific and should be checked for the actual test."
   ],
   "evidenceLimits": [
-    "Laboratory competence and method performance do not repair biased sampling, identity loss, inappropriate inference, or a result outside method scope."
+    "Laboratory competence and method performance do not repair biased sampling, lost identity, inappropriate inference, or use of a method outside its validated scope.",
+    "Results near detection limits, thresholds, or specifications should be interpreted with method uncertainty, sample variability, and the applicable decision rule."
   ],
   "crossLinks": "THC-ENC-359; THC-ENC-395; THC-ENC-404–405; THC-ENC-411; THC-ENC-413.",
   "sourceNotes": [
