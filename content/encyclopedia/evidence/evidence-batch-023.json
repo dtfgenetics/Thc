@@ -1,0 +1,327 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-023",
+  "createdAt": "2026-10-03",
+  "scope": "Claim-level measurement, data systems, quality, experimental design, research literacy, provenance, and evidence-control evidence for THC-ENC-401 through THC-ENC-420.",
+  "sourceRegistry": "content/encyclopedia/volume-21/source-register.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Measurement claims must preserve measurand, unit, method, calibration/verification state, sampling design, uncertainty, and decision context.",
+    "Research-literacy claims must distinguish association, causation, experimental unit, replication, confounding, source hierarchy, revision state, and transfer limits.",
+    "All mappings remain pending independent science review."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0261",
+      "lessonId": "THC-ENC-401",
+      "sourceIds": [
+        "V21-SRC-003",
+        "V21-SRC-004",
+        "V21-SRC-005"
+      ],
+      "claimType": "measurement-units-and-conversion-discipline",
+      "supportedClaim": "Use quantities, units, symbols, prefixes, bases, and dimensional checks consistently so cultivation records can be interpreted and reproduced. A number without a defined quantity and unit is not a complete measurement. “500” could mean microlitres, millilitres, litres, milligrams per litre, microsiemens per centimetre, watts, micromoles per square metre per second, or an instrument count. Controlled records name the quantity first, then the value, unit, method, basis, position, and time. SI rules distinguish unit symbols from abbreviations: symbols are not pluralized, are case sensitive, and do not take periods except at the end of a sentence.",
+      "sourceLocator": "Controlled Volume 21 source register: V21-SRC-003, V21-SRC-004, V21-SRC-005.",
+      "applicability": "Supports the lesson's measurement, calibration, sampling, records, quality-system, experimental-design, research-literacy, provenance, or evidence-control reasoning while preserving method and uncertainty context.",
+      "limitations": "Correct units prevent one class of error but do not establish instrument accuracy, sample representativeness, or biological causation.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0262",
+      "lessonId": "THC-ENC-402",
+      "sourceIds": [
+        "V21-SRC-004",
+        "V21-SRC-005",
+        "V21-SRC-007",
+        "V21-SRC-018"
+      ],
+      "claimType": "accuracy-precision-resolution-and-uncertainty",
+      "supportedClaim": "Distinguish measurement trueness, precision, repeatability, resolution, bias, variability, and uncertainty. Accuracy is a qualitative concept describing closeness between a measured value and the quantity value being measured. It is not a numerical synonym for precision. Trueness concerns systematic difference from a reference, while precision concerns agreement among repeated measurements under stated conditions. A meter can produce tightly clustered values that are consistently biased, or scattered values whose average is near a reference. Neither pattern should be described only as “accurate” without evidence.",
+      "sourceLocator": "Controlled Volume 21 source register: V21-SRC-004, V21-SRC-005, V21-SRC-007, V21-SRC-018.",
+      "applicability": "Supports the lesson's measurement, calibration, sampling, records, quality-system, experimental-design, research-literacy, provenance, or evidence-control reasoning while preserving method and uncertainty context.",
+      "limitations": "Uncertainty statements depend on the measurement model, available evidence, coverage method, and intended decision; they do not correct biased sampling or wrong measurand definitions.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0263",
+      "lessonId": "THC-ENC-403",
+      "sourceIds": [
+        "V21-SRC-004",
+        "V21-SRC-006",
+        "V21-SRC-007",
+        "V21-SRC-008"
+      ],
+      "claimType": "calibration-verification-and-traceability",
+      "supportedClaim": "Control instruments through calibration, verification, reference standards, as-found condition, adjustments, and traceable records. Calibration establishes a relationship between indications and reference quantity values under stated conditions. It does not automatically adjust an instrument, prove fitness for every use, or create permanent accuracy. Verification checks whether specified requirements are met. Adjustment changes instrument response. These activities must be named correctly because a routine check against a buffer or standard may be verification rather than a full calibration.",
+      "sourceLocator": "Controlled Volume 21 source register: V21-SRC-004, V21-SRC-006, V21-SRC-007, V21-SRC-008.",
+      "applicability": "Supports the lesson's measurement, calibration, sampling, records, quality-system, experimental-design, research-literacy, provenance, or evidence-control reasoning while preserving method and uncertainty context.",
+      "limitations": "Calibration evidence cannot compensate for nonrepresentative samples, unsuitable methods, uncontrolled environmental effects, or undocumented data handling.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0264",
+      "lessonId": "THC-ENC-404",
+      "sourceIds": [
+        "V21-SRC-008",
+        "V21-SRC-009",
+        "V21-SRC-019",
+        "V21-SRC-020"
+      ],
+      "claimType": "sampling-plans-and-representative-measurements",
+      "supportedClaim": "Design sampling that connects the stated population and decision to representative spatial, temporal, and biological observations. A measurement describes the material actually observed or submitted. Extending it to a plant, room, irrigation zone, field, batch, or cultivar requires a sampling design. Begin by defining the target population and decision. A “room average” can refer to sensors, plants, canopy positions, or time points. A “batch sample” can refer to a few selected flowers, randomized increments, a composite, or material chosen for appearance. These designs support different inferences.",
+      "sourceLocator": "Controlled Volume 21 source register: V21-SRC-008, V21-SRC-009, V21-SRC-019, V21-SRC-020.",
+      "applicability": "Supports the lesson's measurement, calibration, sampling, records, quality-system, experimental-design, research-literacy, provenance, or evidence-control reasoning while preserving method and uncertainty context.",
+      "limitations": "Representative sampling reduces but does not eliminate uncertainty; rare hotspots, changing populations, inaccessible units, and destructive testing can remain unresolved.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0265",
+      "lessonId": "THC-ENC-405",
+      "sourceIds": [
+        "V21-SRC-010",
+        "V21-SRC-011",
+        "V21-SRC-013",
+        "V21-SRC-016"
+      ],
+      "claimType": "plant-batch-room-and-genetic-identifiers",
+      "supportedClaim": "Build permanent identifiers that preserve biological identity, location, lineage, treatment, and batch relationships without overwriting history. Identity and location are different. A plant can move rooms while remaining the same plant, and a room can hold many changing plants. Permanent identifiers should not encode mutable facts that will later become false. Use separate fields for plant ID, genetic-source ID, seed lot, clone batch, mother plant, room, bench, position, treatment, harvest batch, sample, and storage container.",
+      "sourceLocator": "Controlled Volume 21 source register: V21-SRC-010, V21-SRC-011, V21-SRC-013, V21-SRC-016.",
+      "applicability": "Supports the lesson's measurement, calibration, sampling, records, quality-system, experimental-design, research-literacy, provenance, or evidence-control reasoning while preserving method and uncertainty context.",
+      "limitations": "Identifiers preserve traceability only when labels, relationships, access controls, backups, and human practices remain reliable.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0266",
+      "lessonId": "THC-ENC-406",
+      "sourceIds": [
+        "V21-SRC-006",
+        "V21-SRC-009",
+        "V21-SRC-010",
+        "V21-SRC-026"
+      ],
+      "claimType": "environmental-data-logging",
+      "supportedClaim": "Collect environmental time-series data with controlled sensor identity, placement, timing, missing-data, and aggregation rules. Environmental data are inseparable from place and time. Temperature, humidity, carbon dioxide, light, soil moisture, pressure, airflow, and leaf wetness can vary across centimetres and seconds. A data channel therefore needs sensor ID, measured quantity, unit, location, height, orientation, shielding, surrounding crop condition, logging interval, controller relationship, and clock basis.",
+      "sourceLocator": "Controlled Volume 21 source register: V21-SRC-006, V21-SRC-009, V21-SRC-010, V21-SRC-026.",
+      "applicability": "Supports the lesson's measurement, calibration, sampling, records, quality-system, experimental-design, research-literacy, provenance, or evidence-control reasoning while preserving method and uncertainty context.",
+      "limitations": "Logged values represent sensor exposure and method; they may not represent leaf, flower, root, worker, or room conditions outside the sampled locations.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0267",
+      "lessonId": "THC-ENC-407",
+      "sourceIds": [
+        "V21-SRC-024",
+        "V21-SRC-025",
+        "V21-SRC-026"
+      ],
+      "claimType": "irrigation-and-fertigation-records",
+      "supportedClaim": "Create records that connect water source, mixture, equipment, applied volume, distribution, root-zone response, and corrective action. An irrigation record should describe what entered the system, what the system delivered, and what the root zone experienced. A recipe alone is incomplete. Record water source, batch, treatment, temperature, starting chemistry, stock identities, lot numbers, mixing order, target and measured concentrations, tank volume, agitation, pH and EC method, and release decision.",
+      "sourceLocator": "Controlled Volume 21 source register: V21-SRC-024, V21-SRC-025, V21-SRC-026.",
+      "applicability": "Supports the lesson's measurement, calibration, sampling, records, quality-system, experimental-design, research-literacy, provenance, or evidence-control reasoning while preserving method and uncertainty context.",
+      "limitations": "Irrigation metrics and targets depend on root-zone system, geometry, stage, climate, cultivar, sampling, and measurement method.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0268",
+      "lessonId": "THC-ENC-408",
+      "sourceIds": [
+        "V21-SRC-004",
+        "V21-SRC-008",
+        "V21-SRC-025"
+      ],
+      "claimType": "ph-ec-and-water-quality-records",
+      "supportedClaim": "Record water and solution measurements with controlled sampling, temperature, instrument checks, chemistry context, and interpretation limits. pH and electrical conductivity are method-dependent measurements, not complete descriptions of water. pH describes hydrogen-ion activity under the method conditions. EC describes the solution’s ability to conduct current and is influenced by ion concentration, mobility, temperature, and instrument compensation. Two waters can share EC but contain very different ions, alkalinity, sodium, chloride, nutrients, or contaminants.",
+      "sourceLocator": "Controlled Volume 21 source register: V21-SRC-004, V21-SRC-008, V21-SRC-025.",
+      "applicability": "Supports the lesson's measurement, calibration, sampling, records, quality-system, experimental-design, research-literacy, provenance, or evidence-control reasoning while preserving method and uncertainty context.",
+      "limitations": "Field meters provide narrow quantities; complete water fitness depends on intended use, chemistry, treatment, sampling, seasonal variation, and current requirements.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0269",
+      "lessonId": "THC-ENC-409",
+      "sourceIds": [
+        "V21-SRC-011",
+        "V21-SRC-012"
+      ],
+      "claimType": "morphology-and-growth-measurements",
+      "supportedClaim": "Convert descriptive plant appearance into repeatable measurements using defined anatomy, position, stage, reference points, and image methods. Morphology becomes comparable data only after the trait is operationally defined. Plant height can mean substrate line to highest natural point, apical tip after straightening, or support height. Canopy width can mean one axis, two perpendicular axes, or projected area. Node count depends on which nodes are included. Stem diameter depends on measurement height and tool. Each definition changes the result.",
+      "sourceLocator": "Controlled Volume 21 source register: V21-SRC-011, V21-SRC-012.",
+      "applicability": "Supports the lesson's measurement, calibration, sampling, records, quality-system, experimental-design, research-literacy, provenance, or evidence-control reasoning while preserving method and uncertainty context.",
+      "limitations": "Phenotypes depend on genetics, environment, management, stage, observer, and method; measurements describe traits but do not by themselves identify causes.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0270",
+      "lessonId": "THC-ENC-410",
+      "sourceIds": [
+        "V21-SRC-011",
+        "V21-SRC-026"
+      ],
+      "claimType": "scouting-and-plant-health-records",
+      "supportedClaim": "Record plant-health observations using repeatable routes, units, severity scales, organism confidence, and diagnostic boundaries. Scouting is structured observation, not a casual walk. Define the crop population, route, number and type of units, plant parts, canopy layers, substrate or soil zones, traps, and observation interval. Incidence is the proportion of units affected; severity is the amount of tissue or impact within an affected unit. Counts, ratings, and percentages require an explicit denominator and scale.",
+      "sourceLocator": "Controlled Volume 21 source register: V21-SRC-011, V21-SRC-026.",
+      "applicability": "Supports the lesson's measurement, calibration, sampling, records, quality-system, experimental-design, research-literacy, provenance, or evidence-control reasoning while preserving method and uncertainty context.",
+      "limitations": "Scouting sensitivity depends on timing, distribution, observer, life stage, sampling, symptoms, and diagnostic method.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0271",
+      "lessonId": "THC-ENC-411",
+      "sourceIds": [
+        "V21-SRC-008",
+        "V21-SRC-019",
+        "V21-SRC-020",
+        "V21-SRC-023"
+      ],
+      "claimType": "harvest-drying-curing-and-storage-records",
+      "supportedClaim": "Preserve batch identity and measured conditions from harvest decision through drying, conditioning, storage, sampling, hold, and release. Postharvest records begin before the first cut. Link the harvest decision to crop identity, cultivar or line, field or room, flowering history, plant-health status, treatments, weather, maturity observations, assigned batch, tools, workers, and destination. Whole-plant, branch, wet-trim, dry-trim, and separated-flower workflows create different units and must retain labels through every transfer.",
+      "sourceLocator": "Controlled Volume 21 source register: V21-SRC-008, V21-SRC-019, V21-SRC-020, V21-SRC-023.",
+      "applicability": "Supports the lesson's measurement, calibration, sampling, records, quality-system, experimental-design, research-literacy, provenance, or evidence-control reasoning while preserving method and uncertainty context.",
+      "limitations": "Postharvest specifications, sampling, tests, storage, remediation, and release authority vary by product and jurisdiction.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0272",
+      "lessonId": "THC-ENC-412",
+      "sourceIds": [
+        "V21-SRC-008",
+        "V21-SRC-020",
+        "V21-SRC-021",
+        "V21-SRC-022"
+      ],
+      "claimType": "laboratory-sample-and-result-tracking",
+      "supportedClaim": "Connect laboratory results to sample identity, chain of custody, preparation, method, scope, uncertainty, and batch inference. A laboratory result belongs to the submitted sample and method. Extending it to a plant, batch, product, or cultivar requires representative sampling and intact identity. The record should link sample ID, source population, increments, composite or individual status, collector, date, mass, container, preservation, transport, receipt condition, laboratory accession, subsampling, preparation, and remaining retained material.",
+      "sourceLocator": "Controlled Volume 21 source register: V21-SRC-008, V21-SRC-020, V21-SRC-021, V21-SRC-022.",
+      "applicability": "Supports the lesson's measurement, calibration, sampling, records, quality-system, experimental-design, research-literacy, provenance, or evidence-control reasoning while preserving method and uncertainty context.",
+      "limitations": "Laboratory competence and method performance do not repair biased sampling, identity loss, inappropriate inference, or a result outside method scope.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0273",
+      "lessonId": "THC-ENC-413",
+      "sourceIds": [
+        "V21-SRC-008",
+        "V21-SRC-026",
+        "V21-SRC-027",
+        "V21-SRC-028"
+      ],
+      "claimType": "deviations-root-cause-analysis-and-capa",
+      "supportedClaim": "Control departures from requirements through containment, evidence preservation, impact assessment, root-cause analysis, corrective action, and effectiveness verification. A deviation is a departure from an approved requirement, method, range, identity, process, or record. First protect people, crop, samples, equipment, and data. Containment can include stopping work, isolating material, preserving logs, marking affected units, securing samples, and preventing further processing. A correction restores an immediate condition; it is not automatically a corrective action that prevents recurrence.",
+      "sourceLocator": "Controlled Volume 21 source register: V21-SRC-008, V21-SRC-026, V21-SRC-027, V21-SRC-028.",
+      "applicability": "Supports the lesson's measurement, calibration, sampling, records, quality-system, experimental-design, research-literacy, provenance, or evidence-control reasoning while preserving method and uncertainty context.",
+      "limitations": "Root-cause certainty can remain incomplete; decisions must state evidence, uncertainty, residual risk, and authority.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0274",
+      "lessonId": "THC-ENC-414",
+      "sourceIds": [
+        "V21-SRC-009",
+        "V21-SRC-018",
+        "V21-SRC-019",
+        "V21-SRC-026"
+      ],
+      "claimType": "control-charts-trends-and-alert-limits",
+      "supportedClaim": "Use time-series graphics and control charts to distinguish expected variation, unusual signals, drift, and decision limits. A run chart preserves values in time order and can reveal shifts, trends, cycles, and sudden changes. A control chart adds statistically derived limits based on a stable process model. Control limits describe expected process variation; specification, alert, and action limits describe requirements or decisions. They are not interchangeable. A process can be stable but consistently outside a specification, or unstable while most individual points remain inside a wide specification.",
+      "sourceLocator": "Controlled Volume 21 source register: V21-SRC-009, V21-SRC-018, V21-SRC-019, V21-SRC-026.",
+      "applicability": "Supports the lesson's measurement, calibration, sampling, records, quality-system, experimental-design, research-literacy, provenance, or evidence-control reasoning while preserving method and uncertainty context.",
+      "limitations": "Control-chart validity depends on a suitable process model, independent or appropriately modeled data, stable measurement, and controlled subgrouping.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0275",
+      "lessonId": "THC-ENC-415",
+      "sourceIds": [
+        "V21-SRC-009",
+        "V21-SRC-014",
+        "V21-SRC-015",
+        "V21-SRC-030"
+      ],
+      "claimType": "reading-a-scientific-paper",
+      "supportedClaim": "Evaluate a paper by connecting its question, material, design, methods, results, uncertainty, limitations, and publication status to the claim being used. Begin with the claim you need to evaluate, not the paper’s title. Identify the research question, biological material, cultivar or accession, propagation mode, plant count, experimental unit, environment, treatments, controls, endpoints, sampling positions, methods, and analysis. Abstracts compress evidence and may omit exclusions, null results, protocol details, uncertainty, and limitations.",
+      "sourceLocator": "Controlled Volume 21 source register: V21-SRC-009, V21-SRC-014, V21-SRC-015, V21-SRC-030.",
+      "applicability": "Supports the lesson's measurement, calibration, sampling, records, quality-system, experimental-design, research-literacy, provenance, or evidence-control reasoning while preserving method and uncertainty context.",
+      "limitations": "Paper appraisal reduces misuse but cannot reveal all errors, unpublished data, undisclosed deviations, or future corrections.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0276",
+      "lessonId": "THC-ENC-416",
+      "sourceIds": [
+        "V21-SRC-009",
+        "V21-SRC-026",
+        "V21-SRC-030",
+        "V21-SRC-031"
+      ],
+      "claimType": "experimental-design-controls-and-replication",
+      "supportedClaim": "Design cultivation experiments with defined experimental units, controls, randomization, replication, blocking, and preplanned analysis. The experimental unit is the smallest independently assigned unit. If one nutrient tank supplies twenty plants and the tank receives the treatment, the tank—not each plant—is generally the experimental unit for that treatment. Measuring many leaves, flowers, or time points creates subsamples or repeated observations, not additional independent treatment replicates. Misidentifying the unit inflates apparent sample size and confidence.",
+      "sourceLocator": "Controlled Volume 21 source register: V21-SRC-009, V21-SRC-026, V21-SRC-030, V21-SRC-031.",
+      "applicability": "Supports the lesson's measurement, calibration, sampling, records, quality-system, experimental-design, research-literacy, provenance, or evidence-control reasoning while preserving method and uncertainty context.",
+      "limitations": "A well-designed experiment supports the defined population and conditions; external validity still requires replication across genetics, systems, and environments.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0277",
+      "lessonId": "THC-ENC-417",
+      "sourceIds": [
+        "V21-SRC-009",
+        "V21-SRC-030",
+        "V21-SRC-032"
+      ],
+      "claimType": "correlation-causation-and-confounding",
+      "supportedClaim": "Separate association from causal evidence by identifying temporal order, confounders, mediators, selection effects, and alternative explanations. Correlation describes variables changing together; it does not identify why. Temperature and irrigation volume may rise together because hot weather causes both. Diseased plants may receive more treatment because symptoms prompted intervention, creating an association between treatment and poor outcome even when the treatment did not cause the disease. Reverse causation and management response are common in observational cultivation records.",
+      "sourceLocator": "Controlled Volume 21 source register: V21-SRC-009, V21-SRC-030, V21-SRC-032.",
+      "applicability": "Supports the lesson's measurement, calibration, sampling, records, quality-system, experimental-design, research-literacy, provenance, or evidence-control reasoning while preserving method and uncertainty context.",
+      "limitations": "Causal conclusions depend on design and assumptions that may be partly untestable; unmeasured confounding and selection can remain.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0278",
+      "lessonId": "THC-ENC-418",
+      "sourceIds": [
+        "V21-SRC-011",
+        "V21-SRC-012"
+      ],
+      "claimType": "cultivar-specific-evidence-and-generalization-limits",
+      "supportedClaim": "Evaluate whether evidence from one cultivar, line, clone, population, stage, and system can support a broader cultivation claim. Cannabis populations can differ in flowering response, architecture, sex expression, disease susceptibility, nutrient response, water use, cannabinoid-acid profile, volatile composition, and stress tolerance. A commercial cultivar name may not uniquely identify a genotype. Seed-derived plants within a named population can segregate, while clones share a source genotype but can differ through health, epigenetic state, pathogen status, age, and environment.",
+      "sourceLocator": "Controlled Volume 21 source register: V21-SRC-011, V21-SRC-012.",
+      "applicability": "Supports the lesson's measurement, calibration, sampling, records, quality-system, experimental-design, research-literacy, provenance, or evidence-control reasoning while preserving method and uncertainty context.",
+      "limitations": "Transfer depends on the genetic population, identity quality, environment, management, stage, health, method, and outcome definition.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0279",
+      "lessonId": "THC-ENC-419",
+      "sourceIds": [
+        "V21-SRC-010",
+        "V21-SRC-013",
+        "V21-SRC-014",
+        "V21-SRC-015"
+      ],
+      "claimType": "source-hierarchy-citation-and-revision-control",
+      "supportedClaim": "Select sources by claim type, cite exact evidence, track versions and corrections, and preserve supersession history. Source quality depends on the claim. A primary experiment can support what was measured under its design. A systematic review can summarize a body of evidence but inherits differences and weaknesses among studies. Official regulations, pesticide labels, standards, instrument manuals, and government methods control legal or operational requirements within their scope. Extension sources translate knowledge but should not replace primary evidence for high-risk numerical claims.",
+      "sourceLocator": "Controlled Volume 21 source register: V21-SRC-010, V21-SRC-013, V21-SRC-014, V21-SRC-015.",
+      "applicability": "Supports the lesson's measurement, calibration, sampling, records, quality-system, experimental-design, research-literacy, provenance, or evidence-control reasoning while preserving method and uncertainty context.",
+      "limitations": "Source-control systems reduce stale or misapplied evidence but cannot guarantee that publications are error-free or that all updates are discoverable.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0280",
+      "lessonId": "THC-ENC-420",
+      "sourceIds": [
+        "V21-SRC-010",
+        "V21-SRC-013",
+        "V21-SRC-016",
+        "V21-SRC-017"
+      ],
+      "claimType": "building-an-evidence-based-cultivation-knowledge-system",
+      "supportedClaim": "Integrate permanent identities, claims, evidence, manuscripts, visuals, assessments, downloads, software, reviews, releases, and corrections into one auditable system. A knowledge system is more than a folder of documents. Every lesson, course, SOP, guide, visual, form, source, claim, route, download, and release needs a permanent identity and defined relationship. The canonical source should be clear: Drive can control manuscripts, evidence, visual masters, rights, and approval; a repository can control structured website content and code. Copies and exports are derivatives that must retain source version and checksum or revision evidence.",
+      "sourceLocator": "Controlled Volume 21 source register: V21-SRC-010, V21-SRC-013, V21-SRC-016, V21-SRC-017.",
+      "applicability": "Supports the lesson's measurement, calibration, sampling, records, quality-system, experimental-design, research-literacy, provenance, or evidence-control reasoning while preserving method and uncertainty context.",
+      "limitations": "Governance can make evidence auditable and correctable, but quality still depends on qualified reviewers, accurate source interpretation, maintained systems, and explicit accountability.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}

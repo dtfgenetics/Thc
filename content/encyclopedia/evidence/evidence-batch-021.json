@@ -1,0 +1,326 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-021",
+  "createdAt": "2026-10-03",
+  "scope": "Claim-level outdoor, greenhouse, and protected-cultivation ecology evidence for THC-ENC-361 through THC-ENC-380.",
+  "sourceRegistry": "content/encyclopedia/volume-19/source-register.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Climate normals, extension guidance, and protected-culture studies must be interpreted within site, season, structure, crop, and measurement context.",
+    "No universal planting date, irrigation interval, wind tolerance, disease threshold, exclusion distance, greenhouse setpoint, or legal recommendation is inferred.",
+    "All mappings remain pending independent science review."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0221",
+      "lessonId": "THC-ENC-361",
+      "sourceIds": [
+        "V19-SRC-003",
+        "V19-SRC-004",
+        "V19-SRC-010",
+        "V19-SRC-033"
+      ],
+      "claimType": "site-selection-and-production-goals",
+      "supportedClaim": "Evaluate an outdoor or protected-cultivation site by matching lawful production goals to climate, soil, water, access, contamination, infrastructure, and risk. A cultivation site is a biological environment, a logistics system, and a risk boundary. The same parcel can be suitable for fiber, grain, seed, nursery stock, or unpollinated flower under one management plan and unsuitable under another. Start with the intended crop, cultivar type, planting and harvest window, quality specification, testing obligations, labor model, irrigation demand, security, and postharvest capacity.",
+      "sourceLocator": "Controlled Volume 19 source register: V19-SRC-003, V19-SRC-004, V19-SRC-010, V19-SRC-033.",
+      "applicability": "Supports the lesson's outdoor, greenhouse, or protected-culture ecology reasoning while preserving site, season, weather, soil, structure, genotype, and measurement context.",
+      "limitations": "No universal site score applies across crop goals, jurisdictions, soils, climates, structures, and product specifications.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0222",
+      "lessonId": "THC-ENC-362",
+      "sourceIds": [
+        "V19-SRC-005",
+        "V19-SRC-006",
+        "V19-SRC-003"
+      ],
+      "claimType": "latitude-daylength-and-seasonal-flowering",
+      "supportedClaim": "Explain how latitude, date, twilight, cultivar genetics, and plant history interact to control seasonal flowering. Cannabis flowering is controlled by genetics interacting with the daily light-dark cycle. Many cultivars are quantitative short-day plants: flowering becomes faster or more complete as daylength falls below a cultivar-dependent threshold. The threshold is not universally 12 hours. Controlled studies have found meaningful differences among cultivars and responses to changes as small as minutes near a critical photoperiod. Low-intensity civil twilight can also be biologically effective.",
+      "sourceLocator": "Controlled Volume 19 source register: V19-SRC-005, V19-SRC-006, V19-SRC-003.",
+      "applicability": "Supports the lesson's outdoor, greenhouse, or protected-culture ecology reasoning while preserving site, season, weather, soil, structure, genotype, and measurement context.",
+      "limitations": "Critical photoperiod values are cultivar-, method-, intensity-, stage-, and history-specific.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0223",
+      "lessonId": "THC-ENC-363",
+      "sourceIds": [
+        "V19-SRC-003",
+        "V19-SRC-009",
+        "V19-SRC-033"
+      ],
+      "claimType": "climate-normals-and-local-weather-records",
+      "supportedClaim": "Use long-term climate baselines and site weather records without confusing averages with guarantees. Climate normals summarize long-term observations, commonly over 30 years. They help compare sites and seasons, but an average monthly temperature or rainfall total does not show the timing, intensity, or sequence that plants experience. Two seasons with the same rainfall can differ biologically if one receives gentle weekly rain and the other receives one storm followed by drought.",
+      "sourceLocator": "Controlled Volume 19 source register: V19-SRC-003, V19-SRC-009, V19-SRC-033.",
+      "applicability": "Supports the lesson's outdoor, greenhouse, or protected-culture ecology reasoning while preserving site, season, weather, soil, structure, genotype, and measurement context.",
+      "limitations": "Station records may not represent canopy, soil, slope, tunnel, or greenhouse microclimates.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0224",
+      "lessonId": "THC-ENC-364",
+      "sourceIds": [
+        "V19-SRC-003",
+        "V19-SRC-004",
+        "V19-SRC-023"
+      ],
+      "claimType": "microclimates-slope-aspect-and-cold-air-drainage",
+      "supportedClaim": "Predict and verify small-scale temperature, radiation, wind, and moisture differences across a site. Microclimate is the environment experienced at the crop rather than at a regional weather station. Elevation differences of only a few meters, slope direction, nearby trees, buildings, water, soil color, surface cover, and wind exposure can change temperature, humidity, radiation, and wetness.",
+      "sourceLocator": "Controlled Volume 19 source register: V19-SRC-003, V19-SRC-004, V19-SRC-023.",
+      "applicability": "Supports the lesson's outdoor, greenhouse, or protected-culture ecology reasoning while preserving site, season, weather, soil, structure, genotype, and measurement context.",
+      "limitations": "Microclimate patterns change with canopy size, season, soil moisture, wind direction, structures, and land management.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0225",
+      "lessonId": "THC-ENC-365",
+      "sourceIds": [
+        "V19-SRC-003",
+        "V19-SRC-016",
+        "V19-SRC-017"
+      ],
+      "claimType": "sun-path-shade-and-outdoor-dli",
+      "supportedClaim": "Measure how solar geometry, weather, obstructions, structures, and canopy development shape outdoor daily light integral. Outdoor light changes continuously with latitude, date, time, cloud cover, smoke, terrain, trees, buildings, greenhouse coverings, and the crop itself. Sun-path diagrams show where the sun can appear, while measurements show how much photosynthetically active radiation reaches a specific position.",
+      "sourceLocator": "Controlled Volume 19 source register: V19-SRC-003, V19-SRC-016, V19-SRC-017.",
+      "applicability": "Supports the lesson's outdoor, greenhouse, or protected-culture ecology reasoning while preserving site, season, weather, soil, structure, genotype, and measurement context.",
+      "limitations": "Cannabis light-response findings are cultivar-, stage-, density-, temperature-, water-, and system-specific.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0226",
+      "lessonId": "THC-ENC-366",
+      "sourceIds": [
+        "V19-SRC-004",
+        "V19-SRC-010",
+        "V19-SRC-011",
+        "V19-SRC-034"
+      ],
+      "claimType": "field-soil-testing-and-preparation",
+      "supportedClaim": "Combine mapped soil information, field profile inspection, representative sampling, and laboratory analysis before amendment or construction. Field soil is spatially variable. A mapped soil unit provides a planning description, not a guarantee that every point has the same texture, depth, drainage, organic matter, pH, salinity, nutrient status, or contamination history. Construction, fill, erosion, compaction, manure piles, former roads, and localized flooding can create conditions not obvious in the map.",
+      "sourceLocator": "Controlled Volume 19 source register: V19-SRC-004, V19-SRC-010, V19-SRC-011, V19-SRC-034.",
+      "applicability": "Supports the lesson's outdoor, greenhouse, or protected-culture ecology reasoning while preserving site, season, weather, soil, structure, genotype, and measurement context.",
+      "limitations": "Laboratory extraction methods and interpretation ranges differ; soil results must be matched to method, crop, product goal, and local guidance.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0227",
+      "lessonId": "THC-ENC-367",
+      "sourceIds": [
+        "V19-SRC-004",
+        "V19-SRC-008",
+        "V19-SRC-018",
+        "V19-SRC-019"
+      ],
+      "claimType": "raised-beds-containers-and-in-ground-rooting",
+      "supportedClaim": "Compare root-zone volume, buffering, drainage, temperature, irrigation, anchorage, and disease risk among in-ground, raised-bed, and container systems. In-ground soil connects roots to a large and heterogeneous volume. It can buffer temperature and drying but may contain compaction, poor drainage, variable fertility, pathogens, or contaminants. Raised beds increase control over depth and amendment but can interrupt capillary continuity, shed or collect water depending on construction, and warm or dry faster than surrounding soil.",
+      "sourceLocator": "Controlled Volume 19 source register: V19-SRC-004, V19-SRC-008, V19-SRC-018, V19-SRC-019.",
+      "applicability": "Supports the lesson's outdoor, greenhouse, or protected-culture ecology reasoning while preserving site, season, weather, soil, structure, genotype, and measurement context.",
+      "limitations": "Performance depends on geometry, material properties, climate, plant size, irrigation hardware, and management.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0228",
+      "lessonId": "THC-ENC-368",
+      "sourceIds": [
+        "V19-SRC-003",
+        "V19-SRC-009"
+      ],
+      "claimType": "transplanting-and-outdoor-acclimation",
+      "supportedClaim": "Move plants outdoors while controlling light, wind, temperature, humidity, root, and handling transitions. A greenhouse or indoor plant has leaves and stems developed under a specific light spectrum, intensity, air movement, humidity, temperature, and root environment. Outdoor transfer can abruptly increase solar radiation, ultraviolet exposure, wind, vapor-pressure demand, temperature variation, and root-zone drying. Injury can occur even when the outdoor average temperature appears suitable.",
+      "sourceLocator": "Controlled Volume 19 source register: V19-SRC-003, V19-SRC-009.",
+      "applicability": "Supports the lesson's outdoor, greenhouse, or protected-culture ecology reasoning while preserving site, season, weather, soil, structure, genotype, and measurement context.",
+      "limitations": "Acclimation responses vary with cultivar, stage, root condition, prior environment, and outdoor weather sequence.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0229",
+      "lessonId": "THC-ENC-369",
+      "sourceIds": [
+        "V19-SRC-008",
+        "V19-SRC-009",
+        "V19-SRC-018",
+        "V19-SRC-019"
+      ],
+      "claimType": "irrigation-scheduling-and-distribution-uniformity",
+      "supportedClaim": "Schedule irrigation from measured crop and root-zone conditions while verifying that the system applies water uniformly. An irrigation schedule answers when to irrigate and how much to apply. It should combine root-zone water storage, crop size, weather demand, rainfall, system capacity, drainage, salinity, and product goals. Plant appearance alone is a late and ambiguous signal, while a fixed calendar ignores changing weather and root depth.",
+      "sourceLocator": "Controlled Volume 19 source register: V19-SRC-008, V19-SRC-009, V19-SRC-018, V19-SRC-019.",
+      "applicability": "Supports the lesson's outdoor, greenhouse, or protected-culture ecology reasoning while preserving site, season, weather, soil, structure, genotype, and measurement context.",
+      "limitations": "Water use and crop coefficients are system-, climate-, canopy-, genotype-, stage-, and method-specific.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0230",
+      "lessonId": "THC-ENC-370",
+      "sourceIds": [
+        "V19-SRC-020",
+        "V19-SRC-021",
+        "V19-SRC-013",
+        "V19-SRC-034"
+      ],
+      "claimType": "mulches-cover-crops-and-soil-moisture",
+      "supportedClaim": "Evaluate surface covers and living vegetation through water, temperature, erosion, nutrients, pests, fire, and disease tradeoffs. Mulch changes radiation, evaporation, raindrop impact, runoff, soil temperature, weed emergence, and soil-contact conditions. Organic residues can add carbon and nutrients as they decompose, while plastic films can strongly alter heat and water movement. Material thickness, color, particle size, continuity, contamination, and fire behavior matter.",
+      "sourceLocator": "Controlled Volume 19 source register: V19-SRC-020, V19-SRC-021, V19-SRC-013, V19-SRC-034.",
+      "applicability": "Supports the lesson's outdoor, greenhouse, or protected-culture ecology reasoning while preserving site, season, weather, soil, structure, genotype, and measurement context.",
+      "limitations": "Results depend on climate, species, residue, soil, irrigation, crop stage, pest complex, and prior land use.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0231",
+      "lessonId": "THC-ENC-371",
+      "sourceIds": [
+        "V19-SRC-023",
+        "V19-SRC-031",
+        "V19-SRC-034"
+      ],
+      "claimType": "wind-exposure-and-structural-support",
+      "supportedClaim": "Relate wind speed, gusts, turbulence, canopy form, soil anchorage, and support design to plant injury and system failure. Wind imposes force on leaves, branches, stems, trellises, tunnels, and greenhouse coverings. Force rises rapidly with wind speed, while a tall wide canopy increases drag and leverage. Repeated moderate movement can strengthen stems, but acute gusts can split unions, abrade tissue, uproot plants, collapse supports, or tear films.",
+      "sourceLocator": "Controlled Volume 19 source register: V19-SRC-023, V19-SRC-031, V19-SRC-034.",
+      "applicability": "Supports the lesson's outdoor, greenhouse, or protected-culture ecology reasoning while preserving site, season, weather, soil, structure, genotype, and measurement context.",
+      "limitations": "Structural design requires site-specific loads, materials, installation, inspection, and qualified engineering where applicable.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0232",
+      "lessonId": "THC-ENC-372",
+      "sourceIds": [
+        "V19-SRC-009",
+        "V19-SRC-011",
+        "V19-SRC-012",
+        "V19-SRC-031"
+      ],
+      "claimType": "heat-drought-and-sunscald",
+      "supportedClaim": "Separate atmospheric heat, radiation load, root-zone drought, hydraulic limitation, and tissue sunscald. Air temperature is not leaf temperature. Solar radiation, wind, humidity, transpiration, leaf angle, color, and boundary-layer thickness can make tissues warmer or cooler than the surrounding air. Drought reduces the water available for transpiration and can drive stomatal closure, higher leaf temperature, reduced photosynthesis, wilting, leaf loss, and impaired growth.",
+      "sourceLocator": "Controlled Volume 19 source register: V19-SRC-009, V19-SRC-011, V19-SRC-012, V19-SRC-031.",
+      "applicability": "Supports the lesson's outdoor, greenhouse, or protected-culture ecology reasoning while preserving site, season, weather, soil, structure, genotype, and measurement context.",
+      "limitations": "Thresholds vary with genotype, acclimation, stage, tissue, radiation, humidity, wind, root system, salinity, and measurement method.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0233",
+      "lessonId": "THC-ENC-373",
+      "sourceIds": [
+        "V19-SRC-013",
+        "V19-SRC-014",
+        "V19-SRC-015",
+        "V19-SRC-033"
+      ],
+      "claimType": "rain-dew-and-flower-disease-pressure",
+      "supportedClaim": "Evaluate how wetness duration, flower architecture, temperature, inoculum, injury, and crop stage influence disease risk. Rain and dew affect disease through more than relative humidity. Free water, tissue wetness duration, splash, wound creation, spore movement, flower density, temperature, and drying rate determine whether a favorable infection window develops. A weather station can report moderate RH while interior flowers remain wet.",
+      "sourceLocator": "Controlled Volume 19 source register: V19-SRC-013, V19-SRC-014, V19-SRC-015, V19-SRC-033.",
+      "applicability": "Supports the lesson's outdoor, greenhouse, or protected-culture ecology reasoning while preserving site, season, weather, soil, structure, genotype, and measurement context.",
+      "limitations": "Disease risk and test interpretation are pathogen-, cultivar-, tissue-, stage-, weather-, sampling-, and jurisdiction-specific.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0234",
+      "lessonId": "THC-ENC-374",
+      "sourceIds": [
+        "V19-SRC-025",
+        "V19-SRC-026",
+        "V19-SRC-027",
+        "V19-SRC-033"
+      ],
+      "claimType": "smoke-dust-and-particulate-contamination",
+      "supportedClaim": "Separate plant physiological effects, worker exposure, surface deposition, chemical contamination, and product-release decisions during smoke or dust events. Smoke and dust are mixtures, not single stresses. Particles can shade leaves, alter leaf temperature, obstruct or influence stomata, carry chemicals, abrade surfaces, and become trapped by trichomes and flower structures. Controlled studies in other plant species show that dust effects depend on particle size, load, leaf traits, timing, and chemistry. Cannabis-specific dose-response and product-cleaning evidence are limited.",
+      "sourceLocator": "Controlled Volume 19 source register: V19-SRC-025, V19-SRC-026, V19-SRC-027, V19-SRC-033.",
+      "applicability": "Supports the lesson's outdoor, greenhouse, or protected-culture ecology reasoning while preserving site, season, weather, soil, structure, genotype, and measurement context.",
+      "limitations": "Cannabis-specific evidence is sparse; chemical identity, dose, product form, sampling, analytical scope, and jurisdiction control conclusions.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0235",
+      "lessonId": "THC-ENC-375",
+      "sourceIds": [
+        "V19-SRC-024",
+        "V19-SRC-034"
+      ],
+      "claimType": "wildlife-vertebrate-damage-and-exclusion",
+      "supportedClaim": "Identify vertebrate damage from evidence and select lawful exclusion measures that do not create new crop, worker, or ecological hazards. Wildlife injury can include browsing, broken branches, stem girdling, digging, root disturbance, burrows, contamination, and irrigation damage. The same symptom can have several causes: clipped leaves may reflect deer, rabbits, rodents, insects, tools, or wind. Identification should use tracks, droppings, bite pattern, height, camera records, timing, and spatial distribution.",
+      "sourceLocator": "Controlled Volume 19 source register: V19-SRC-024, V19-SRC-034.",
+      "applicability": "Supports the lesson's outdoor, greenhouse, or protected-culture ecology reasoning while preserving site, season, weather, soil, structure, genotype, and measurement context.",
+      "limitations": "Wildlife laws, species behavior, migration, pressure, terrain, and structure design vary locally.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0236",
+      "lessonId": "THC-ENC-376",
+      "sourceIds": [
+        "V19-SRC-028",
+        "V19-SRC-029",
+        "V19-SRC-030",
+        "V19-SRC-031"
+      ],
+      "claimType": "outdoor-pest-and-beneficial-insect-ecology",
+      "supportedClaim": "Interpret outdoor arthropod communities by separating presence, injury, natural enemies, pollinators, and decision thresholds. Outdoor cannabis hosts pests, predators, parasitoids, pollinators, decomposers, and incidental visitors. Finding an insect does not establish that it is causing damage, and finding a predator does not prove that a pest population is controlled. The crop stage, plant part, abundance, injury pattern, weather, field margin, and natural-enemy activity all matter.",
+      "sourceLocator": "Controlled Volume 19 source register: V19-SRC-028, V19-SRC-029, V19-SRC-030, V19-SRC-031.",
+      "applicability": "Supports the lesson's outdoor, greenhouse, or protected-culture ecology reasoning while preserving site, season, weather, soil, structure, genotype, and measurement context.",
+      "limitations": "Occurrence records do not establish economic thresholds, treatment efficacy, or legal control options for every location.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0237",
+      "lessonId": "THC-ENC-377",
+      "sourceIds": [
+        "V19-SRC-007",
+        "V19-SRC-005",
+        "V19-SRC-034"
+      ],
+      "claimType": "pollen-drift-and-neighboring-crops",
+      "supportedClaim": "Assess unwanted pollination through source strength, flowering overlap, wind, atmospheric stability, distance, topography, and receptor sensitivity. Cannabis is wind pollinated and can release large quantities of small pollen grains. Risk requires a source, viable pollen, overlapping flowering, atmospheric transport, and receptive female flowers. Distance reduces average deposition but does not create a sharp zero-risk boundary.",
+      "sourceLocator": "Controlled Volume 19 source register: V19-SRC-007, V19-SRC-005, V19-SRC-034.",
+      "applicability": "Supports the lesson's outdoor, greenhouse, or protected-culture ecology reasoning while preserving site, season, weather, soil, structure, genotype, and measurement context.",
+      "limitations": "Pollen viability, release, atmospheric transport, deposition, fertilization, and seed set are distinct processes with substantial spatial and temporal variability.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0238",
+      "lessonId": "THC-ENC-378",
+      "sourceIds": [
+        "V19-SRC-014",
+        "V19-SRC-015",
+        "V19-SRC-016"
+      ],
+      "claimType": "greenhouse-ventilation-shading-and-humidity",
+      "supportedClaim": "Control greenhouse climate by balancing solar load, ventilation, air movement, shading, heating, cooling, irrigation, and moisture removal. A greenhouse captures solar energy and restricts air exchange. Temperature and humidity result from radiation, plant transpiration, wet surfaces, ventilation, leakage, heating, cooling, dehumidification, fogging, crop load, and outside air. Opening vents changes both heat and moisture; it may cool effectively in dry wind or bring warm humid air into the structure.",
+      "sourceLocator": "Controlled Volume 19 source register: V19-SRC-014, V19-SRC-015, V19-SRC-016.",
+      "applicability": "Supports the lesson's outdoor, greenhouse, or protected-culture ecology reasoning while preserving site, season, weather, soil, structure, genotype, and measurement context.",
+      "limitations": "Setpoints and equipment performance are structure-, climate-, crop-load-, cultivar-, stage-, sensor-, and control-system-specific.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0239",
+      "lessonId": "THC-ENC-379",
+      "sourceIds": [
+        "V19-SRC-017",
+        "V19-SRC-008",
+        "V19-SRC-022",
+        "V19-SRC-034"
+      ],
+      "claimType": "high-tunnels-and-season-extension",
+      "supportedClaim": "Explain how high tunnels alter radiation, temperature, humidity, rainfall, wind, soil, season length, and crop risk. A high tunnel is a covered, usually passively ventilated structure that modifies rather than fully controls weather. It excludes much direct rain, reduces some wind, raises daytime temperature, changes nighttime heat loss, alters radiation, and can extend planting or harvest windows. The same structure can overheat rapidly, trap humidity, reduce light, concentrate salts, and fail under wind or snow.",
+      "sourceLocator": "Controlled Volume 19 source register: V19-SRC-017, V19-SRC-008, V19-SRC-022, V19-SRC-034.",
+      "applicability": "Supports the lesson's outdoor, greenhouse, or protected-culture ecology reasoning while preserving site, season, weather, soil, structure, genotype, and measurement context.",
+      "limitations": "High-tunnel outcomes depend on local climate, structure, film, ventilation, soil, irrigation, cultivar, density, and season.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0240",
+      "lessonId": "THC-ENC-380",
+      "sourceIds": [
+        "V19-SRC-003",
+        "V19-SRC-018",
+        "V19-SRC-027",
+        "V19-SRC-033"
+      ],
+      "claimType": "weather-response-plans-and-outdoor-crop-records",
+      "supportedClaim": "Build a traceable prepare–monitor–respond–recover system for outdoor and protected-crop weather events. Outdoor crop management requires decisions before, during, and after weather events. A response plan converts forecast and measured information into named actions. It should define who monitors, which source is authoritative, which crop blocks and systems are vulnerable, what thresholds trigger preparation or shutdown, and who can release work or product afterward.",
+      "sourceLocator": "Controlled Volume 19 source register: V19-SRC-003, V19-SRC-018, V19-SRC-027, V19-SRC-033.",
+      "applicability": "Supports the lesson's outdoor, greenhouse, or protected-culture ecology reasoning while preserving site, season, weather, soil, structure, genotype, and measurement context.",
+      "limitations": "Triggers, worker protections, structural limits, sampling, product holds, and release authority require local rules, qualified review, and current procedures.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}

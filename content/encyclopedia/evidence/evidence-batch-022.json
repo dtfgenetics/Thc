@@ -1,0 +1,333 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-022",
+  "createdAt": "2026-10-03",
+  "scope": "Claim-level breeding, selection, population genetics, phenotyping, progeny testing, germplasm conservation, pedigree, and release-claim evidence for THC-ENC-381 through THC-ENC-400.",
+  "sourceRegistry": "content/encyclopedia/volume-20/source-register.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Genetic and breeding claims must preserve population, parent, generation, environment, trait definition, sample size, and analysis context.",
+    "No cross, feminization method, selection intensity, resistance phenotype, chemotype, or population result is treated as a universal guarantee.",
+    "All mappings remain pending independent science review."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0241",
+      "lessonId": "THC-ENC-381",
+      "sourceIds": [
+        "V20-SRC-004",
+        "V20-SRC-005",
+        "V20-SRC-007",
+        "V20-SRC-011"
+      ],
+      "claimType": "breeding-goals-and-target-product-profiles",
+      "supportedClaim": "Convert a broad breeding idea into measurable, prioritized traits, testing environments, product uses, and release criteria. A breeding program begins with a decision about what population should become better, for whom, and under which environments. “Higher quality,” “better yield,” or “strong genetics” are not testable objectives. A target product profile translates intended lawful use into measurable traits such as flowering response, maturity window, biomass or inflorescence yield, cannabinoid ratio, volatile profile, seed or fiber properties, architecture, disease response, environmental adaptation, uniformity, and postharvest performance.",
+      "sourceLocator": "Controlled Volume 20 source register: V20-SRC-004, V20-SRC-005, V20-SRC-007, V20-SRC-011.",
+      "applicability": "Supports the lesson's breeding, population-genetic, phenotyping, selection, germplasm, or release-claim reasoning while preserving population, generation, environment, sample-size, and measurement context.",
+      "limitations": "Trait priorities, legal thresholds, market needs, and environmental risks are program-specific and must be refreshed before each release.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0242",
+      "lessonId": "THC-ENC-382",
+      "sourceIds": [
+        "V20-SRC-004",
+        "V20-SRC-008",
+        "V20-SRC-010",
+        "V20-SRC-013"
+      ],
+      "claimType": "parent-selection-and-complementary-traits",
+      "supportedClaim": "Select parents from verified identity, heritable performance, complementary strengths, diversity, fertility, and evidence quality rather than reputation alone. A parent contributes alleles, cytoplasm when used as the seed parent, and a sampling of its family history. The strongest individual phenotype is not always the best parent. Performance can reflect environment, position, crop load, disease escape, or measurement error, and a visually impressive clone may transmit little of the feature that made it desirable.",
+      "sourceLocator": "Controlled Volume 20 source register: V20-SRC-004, V20-SRC-008, V20-SRC-010, V20-SRC-013.",
+      "applicability": "Supports the lesson's breeding, population-genetic, phenotyping, selection, germplasm, or release-claim reasoning while preserving population, generation, environment, sample-size, and measurement context.",
+      "limitations": "Breeding value and combining ability can only be estimated within defined populations, mates, environments, and measured traits.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0243",
+      "lessonId": "THC-ENC-383",
+      "sourceIds": [
+        "V20-SRC-004",
+        "V20-SRC-014",
+        "V20-SRC-015",
+        "V20-SRC-033"
+      ],
+      "claimType": "controlled-crosses-and-parent-verification",
+      "supportedClaim": "Preserve parent identity and prevent unintended pollen, sample, label, and generation errors during controlled crossing. A controlled cross is a documented transfer of pollen from a verified pollen parent to a verified seed parent while excluding unintended pollen. In Cannabis, wind-dispersed pollen, delayed pollen release, mixed tools, mislabeled clones, and overlooked male or intersexual flowers can compromise a cross. A physical bag or separate room is not sufficient unless airflow, timing, seals, handling, and later seed recovery are controlled.",
+      "sourceLocator": "Controlled Volume 20 source register: V20-SRC-004, V20-SRC-014, V20-SRC-015, V20-SRC-033.",
+      "applicability": "Supports the lesson's breeding, population-genetic, phenotyping, selection, germplasm, or release-claim reasoning while preserving population, generation, environment, sample-size, and measurement context.",
+      "limitations": "Parentage confidence depends on isolation, candidate-parent set, marker informativeness, sampling, and record integrity.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0244",
+      "lessonId": "THC-ENC-384",
+      "sourceIds": [
+        "V20-SRC-004",
+        "V20-SRC-006",
+        "V20-SRC-008",
+        "V20-SRC-010"
+      ],
+      "claimType": "f1-populations-and-heterozygosity",
+      "supportedClaim": "Interpret F1 uniformity, heterozygosity, dominance, maternal effects, and hybrid performance without assuming every F1 is identical or superior. The F1 generation is the first filial generation from two parents. At a locus where the parents are fixed for different alleles, every true F1 is heterozygous. Cannabis parents, however, are often highly heterozygous rather than fully inbred. Their F1 offspring can therefore segregate at many loci and may vary substantially even though they share the same two named parents.",
+      "sourceLocator": "Controlled Volume 20 source register: V20-SRC-004, V20-SRC-006, V20-SRC-008, V20-SRC-010.",
+      "applicability": "Supports the lesson's breeding, population-genetic, phenotyping, selection, germplasm, or release-claim reasoning while preserving population, generation, environment, sample-size, and measurement context.",
+      "limitations": "F1 variation depends on parental heterozygosity, allele phase, relatedness, cytoplasm, seed environment, and trait architecture.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0245",
+      "lessonId": "THC-ENC-385",
+      "sourceIds": [
+        "V20-SRC-004",
+        "V20-SRC-006",
+        "V20-SRC-007",
+        "V20-SRC-020"
+      ],
+      "claimType": "f2-segregation-and-population-size",
+      "supportedClaim": "Design F2 populations around trait architecture, recombination, linkage, rare-combination probability, and selection capacity. An F2 population is commonly produced by selfing or intercrossing F1 individuals. It exposes new homozygous and recombinant combinations, making it valuable for mapping and selection. Simple 1:2:1 or 3:1 expectations apply only under defined single-locus assumptions with clear phenotypes, adequate sample size, no distortion, and reliable classification. Most horticultural traits involve multiple loci, dominance, epistasis, linkage, genotype-by-environment interaction, and measurement error.",
+      "sourceLocator": "Controlled Volume 20 source register: V20-SRC-004, V20-SRC-006, V20-SRC-007, V20-SRC-020.",
+      "applicability": "Supports the lesson's breeding, population-genetic, phenotyping, selection, germplasm, or release-claim reasoning while preserving population, generation, environment, sample-size, and measurement context.",
+      "limitations": "Expected ratios and recovery probabilities depend on correct genetic models, linkage, penetrance, environment, sampling, viability, and classification.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0246",
+      "lessonId": "THC-ENC-386",
+      "sourceIds": [
+        "V20-SRC-004",
+        "V20-SRC-005",
+        "V20-SRC-006",
+        "V20-SRC-007"
+      ],
+      "claimType": "f3-and-later-generation-family-selection",
+      "supportedClaim": "Use family means, within-family variation, replication, and advancing-generation records to increase fixation without losing useful diversity. F3 and later generations allow breeders to compare descendants of individual F2 selections. Selfing increases homozygosity on average, but each family fixes different segments and retains different residual heterozygosity. A family that looks uniform for one visible trait may still segregate for chemistry, disease response, flowering, or hidden deleterious alleles.",
+      "sourceLocator": "Controlled Volume 20 source register: V20-SRC-004, V20-SRC-005, V20-SRC-006, V20-SRC-007.",
+      "applicability": "Supports the lesson's breeding, population-genetic, phenotyping, selection, germplasm, or release-claim reasoning while preserving population, generation, environment, sample-size, and measurement context.",
+      "limitations": "Fixation rate and family reliability depend on mating design, heterozygosity, population size, selection, linkage, and trait architecture.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0247",
+      "lessonId": "THC-ENC-387",
+      "sourceIds": [
+        "V20-SRC-004",
+        "V20-SRC-007",
+        "V20-SRC-026",
+        "V20-SRC-027"
+      ],
+      "claimType": "backcrossing-and-recurrent-parent-recovery",
+      "supportedClaim": "Introgress a defined donor trait while measuring recurrent-parent recovery, linkage drag, trait expression, and background performance. Backcrossing repeatedly mates selected progeny to a recurrent parent to introduce a donor trait while recovering the recurrent background. Under an idealized model with unlinked neutral loci and no selection, expected recurrent-parent genome proportion rises from about one-half in the F1 to three-quarters in BC1, seven-eighths in BC2, and so forth. Individual progeny vary around those expectations, and regions linked to the donor allele can remain large.",
+      "sourceLocator": "Controlled Volume 20 source register: V20-SRC-004, V20-SRC-007, V20-SRC-026, V20-SRC-027.",
+      "applicability": "Supports the lesson's breeding, population-genetic, phenotyping, selection, germplasm, or release-claim reasoning while preserving population, generation, environment, sample-size, and measurement context.",
+      "limitations": "Recovery and linkage drag depend on recombination, chromosome location, marker density, selection, population size, and the validity of the trait model.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0248",
+      "lessonId": "THC-ENC-388",
+      "sourceIds": [
+        "V20-SRC-004",
+        "V20-SRC-006",
+        "V20-SRC-016",
+        "V20-SRC-018"
+      ],
+      "claimType": "selfing-inbreeding-and-inbreeding-depression",
+      "supportedClaim": "Explain how selfing changes genotype frequencies, exposes recessive alleles, increases line uniformity, and can reduce vigor or fertility. Selfing mates a plant with genetically female pollen derived from itself or otherwise allows self-fertilization. Under an ideal diploid single-locus model, heterozygosity is expected to halve with each selfed generation. The genome does not become instantly homozygous, and different regions fix at different times because of recombination, selection, viability, and structural variation.",
+      "sourceLocator": "Controlled Volume 20 source register: V20-SRC-004, V20-SRC-006, V20-SRC-016, V20-SRC-018.",
+      "applicability": "Supports the lesson's breeding, population-genetic, phenotyping, selection, germplasm, or release-claim reasoning while preserving population, generation, environment, sample-size, and measurement context.",
+      "limitations": "Heterozygosity decline is an expectation; realized fixation and depression depend on starting genotype, selection, linkage, viability, and population size.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0249",
+      "lessonId": "THC-ENC-389",
+      "sourceIds": [
+        "V20-SRC-014",
+        "V20-SRC-015",
+        "V20-SRC-017",
+        "V20-SRC-018"
+      ],
+      "claimType": "feminized-seed-production-biology",
+      "supportedClaim": "Explain the genetic and hormonal basis of producing pollen on genetically female plants while separating biology from operational chemical procedures. Dioecious Cannabis commonly has XX females and XY males. Feminized seed production uses pollen from a genetically female plant that has been induced to form functional male flowers. Because the pollen donor lacks a Y chromosome, the intended progeny are genetically female under the XX/XY model. This does not mean every progeny plant will show identical morphology, chemistry, fertility, or environmental sex expression.",
+      "sourceLocator": "Controlled Volume 20 source register: V20-SRC-014, V20-SRC-015, V20-SRC-017, V20-SRC-018.",
+      "applicability": "Supports the lesson's breeding, population-genetic, phenotyping, selection, germplasm, or release-claim reasoning while preserving population, generation, environment, sample-size, and measurement context.",
+      "limitations": "Sex genotype, induced flower production, pollen fertility, offspring sex expression, and environmental plasticity are distinct endpoints.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0250",
+      "lessonId": "THC-ENC-390",
+      "sourceIds": [
+        "V20-SRC-014",
+        "V20-SRC-016",
+        "V20-SRC-017",
+        "V20-SRC-018"
+      ],
+      "claimType": "regular-feminized-and-autoflower-breeding-contexts",
+      "supportedClaim": "Compare mating control, sex segregation, generation design, flowering biology, diversity, and testing needs across regular, feminized, and autoflower breeding. Regular dioecious crosses commonly combine an XX seed parent and XY pollen parent, producing both genetic sexes. They preserve Y-linked variation and support male-parent evaluation but require early sex management and careful pollen control. Feminized crosses use genetically female pollen and are designed to produce XX progeny; they can be selfed or outcrossed and therefore differ greatly in diversity and inbreeding.",
+      "sourceLocator": "Controlled Volume 20 source register: V20-SRC-014, V20-SRC-016, V20-SRC-017, V20-SRC-018.",
+      "applicability": "Supports the lesson's breeding, population-genetic, phenotyping, selection, germplasm, or release-claim reasoning while preserving population, generation, environment, sample-size, and measurement context.",
+      "limitations": "Seed-system labels summarize mating or flowering context, not overall genetic quality or predictability.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0251",
+      "lessonId": "THC-ENC-391",
+      "sourceIds": [
+        "V20-SRC-006",
+        "V20-SRC-007",
+        "V20-SRC-020",
+        "V20-SRC-021"
+      ],
+      "claimType": "qualitative-versus-quantitative-selection",
+      "supportedClaim": "Choose selection and validation methods based on whether variation is discrete, continuous, thresholded, or mixed. Qualitative traits form discrete classes under a sufficiently clear model, such as presence of a validated resistance allele or major chemotype category in a defined cross. Quantitative traits form continuous distributions because many genes, environment, development, and measurement contribute. Plant height, yield, flowering time, total cannabinoid concentration, volatile abundance, and disease severity are commonly quantitative even when breeders apply pass/fail thresholds.",
+      "sourceLocator": "Controlled Volume 20 source register: V20-SRC-006, V20-SRC-007, V20-SRC-020, V20-SRC-021.",
+      "applicability": "Supports the lesson's breeding, population-genetic, phenotyping, selection, germplasm, or release-claim reasoning while preserving population, generation, environment, sample-size, and measurement context.",
+      "limitations": "Trait classification depends on population, measurement resolution, environment, genetic background, and the decision purpose.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0252",
+      "lessonId": "THC-ENC-392",
+      "sourceIds": [
+        "V20-SRC-006",
+        "V20-SRC-007",
+        "V20-SRC-025"
+      ],
+      "claimType": "selection-intensity-and-genetic-gain",
+      "supportedClaim": "Relate selection differential, accuracy, heritability, genetic variation, generation interval, and diversity retention to expected and realized gain. Selection intensity describes how strongly a breeder favors the upper or lower part of a measured population. Stronger selection can increase short-term gain when measurements are accurate and heritable variation exists, but it reduces the number of parents and can accelerate inbreeding, drift, and loss of rare favorable alleles.",
+      "sourceLocator": "Controlled Volume 20 source register: V20-SRC-006, V20-SRC-007, V20-SRC-025.",
+      "applicability": "Supports the lesson's breeding, population-genetic, phenotyping, selection, germplasm, or release-claim reasoning while preserving population, generation, environment, sample-size, and measurement context.",
+      "limitations": "Predicted gain depends on the validity of variance estimates, relationships, selection model, population, and target environments.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0253",
+      "lessonId": "THC-ENC-393",
+      "sourceIds": [
+        "V20-SRC-005",
+        "V20-SRC-006",
+        "V20-SRC-007",
+        "V20-SRC-025"
+      ],
+      "claimType": "replicated-trials-and-environmental-noise",
+      "supportedClaim": "Separate genetic signal from position, room, season, management, and measurement effects using replication, randomization, blocking, and checks. A single plant in a single location cannot separate genotype from environment. Replication means independent experimental units receiving the same genotype or family. Repeated measurements on one plant improve temporal detail but are not biological replicates. Clones can provide genetically matched units, while seed families provide a distribution that must be modeled correctly.",
+      "sourceLocator": "Controlled Volume 20 source register: V20-SRC-005, V20-SRC-006, V20-SRC-007, V20-SRC-025.",
+      "applicability": "Supports the lesson's breeding, population-genetic, phenotyping, selection, germplasm, or release-claim reasoning while preserving population, generation, environment, sample-size, and measurement context.",
+      "limitations": "Inference is limited to sampled genotypes, environments, management, measurement methods, and valid experimental units.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0254",
+      "lessonId": "THC-ENC-394",
+      "sourceIds": [
+        "V20-SRC-005",
+        "V20-SRC-012"
+      ],
+      "claimType": "phenotyping-morphology-flowering-and-yield",
+      "supportedClaim": "Measure plant architecture, development, flowering, biomass, and product yield with controlled definitions and repeatable sampling. Phenotyping converts plant observations into data. Terms such as “stretch,” “dense,” “fast,” “branchy,” or “heavy” are not comparable until the measurement, reference point, stage, and unit are defined. Height may be measured from media surface to apex; canopy width may require two perpendicular axes; flowering onset may mean first preflower, first pistillate inflorescence, or a defined proportion of flowering nodes.",
+      "sourceLocator": "Controlled Volume 20 source register: V20-SRC-005, V20-SRC-012.",
+      "applicability": "Supports the lesson's breeding, population-genetic, phenotyping, selection, germplasm, or release-claim reasoning while preserving population, generation, environment, sample-size, and measurement context.",
+      "limitations": "Morphology and yield depend on environment, density, training, stage, harvest definition, moisture basis, and observer or model performance.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0255",
+      "lessonId": "THC-ENC-395",
+      "sourceIds": [
+        "V20-SRC-020",
+        "V20-SRC-021",
+        "V20-SRC-022",
+        "V20-SRC-023"
+      ],
+      "claimType": "chemotype-and-terpene-selection-with-laboratory-data",
+      "supportedClaim": "Use representative, method-controlled chemical data while separating major chemotype, concentration, total yield, volatile profile, and stability. Chemotype can refer to major cannabinoid ratio classes, while concentration describes the amount measured in a sample. The classic THC/CBD ratio can show Mendelian-like inheritance in defined crosses, but absolute cannabinoid concentrations are more complex and can involve multiple loci, copy-number and structural variation, gene expression, maternal effects, development, and environment.",
+      "sourceLocator": "Controlled Volume 20 source register: V20-SRC-020, V20-SRC-021, V20-SRC-022, V20-SRC-023.",
+      "applicability": "Supports the lesson's breeding, population-genetic, phenotyping, selection, germplasm, or release-claim reasoning while preserving population, generation, environment, sample-size, and measurement context.",
+      "limitations": "Chemical phenotype is sample-, method-, stage-, environment-, handling-, and genotype-specific; legal thresholds require current review.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0256",
+      "lessonId": "THC-ENC-396",
+      "sourceIds": [
+        "V20-SRC-026",
+        "V20-SRC-027",
+        "V20-SRC-028"
+      ],
+      "claimType": "disease-and-pest-resistance-screening",
+      "supportedClaim": "Distinguish genetic resistance, tolerance, susceptibility, and disease escape through controlled challenge, replication, pathogen identity, and multi-stage evidence. Resistance reduces infection, colonization, reproduction, or damage by a defined organism under defined conditions. Tolerance allows acceptable performance despite infection or injury. Escape occurs when a plant avoids exposure or favorable conditions. A plant with no visible disease in one room may be resistant, unexposed, younger, spatially protected, or incorrectly scored.",
+      "sourceLocator": "Controlled Volume 20 source register: V20-SRC-026, V20-SRC-027, V20-SRC-028.",
+      "applicability": "Supports the lesson's breeding, population-genetic, phenotyping, selection, germplasm, or release-claim reasoning while preserving population, generation, environment, sample-size, and measurement context.",
+      "limitations": "Resistance is organism-, isolate-, host-stage-, environment-, background-, scoring-, and population-specific.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0257",
+      "lessonId": "THC-ENC-397",
+      "sourceIds": [
+        "V20-SRC-004",
+        "V20-SRC-006",
+        "V20-SRC-007",
+        "V20-SRC-025"
+      ],
+      "claimType": "progeny-testing-and-combining-ability",
+      "supportedClaim": "Estimate parental breeding value from offspring performance across mates, families, environments, and target traits. A progeny test evaluates a parent by measuring its descendants. This is essential when the parent’s own phenotype is misleading, when traits are expressed only in one sex or late stage, or when selection aims at transmission rather than clone performance. Families can be half-sibs, full-sibs, selfs, testcrosses, or structured diallel and factorial sets.",
+      "sourceLocator": "Controlled Volume 20 source register: V20-SRC-004, V20-SRC-006, V20-SRC-007, V20-SRC-025.",
+      "applicability": "Supports the lesson's breeding, population-genetic, phenotyping, selection, germplasm, or release-claim reasoning while preserving population, generation, environment, sample-size, and measurement context.",
+      "limitations": "Combining-ability estimates apply to the tested parent set, mating design, traits, environments, and model.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0258",
+      "lessonId": "THC-ENC-398",
+      "sourceIds": [
+        "V20-SRC-006",
+        "V20-SRC-008",
+        "V20-SRC-010",
+        "V20-SRC-011"
+      ],
+      "claimType": "population-maintenance-and-avoiding-genetic-bottlenecks",
+      "supportedClaim": "Maintain useful allelic diversity by controlling parent number, sex ratio, family contribution, drift, selection, and contamination. The number of plants in a population is not the same as its effective population size. Unequal sex ratios, few successful pollen parents, unequal seed contribution, related matings, reproductive failure, and strong selection can make a large grow genetically equivalent to a much smaller breeding population. Small effective size increases drift, inbreeding, and loss of rare alleles.",
+      "sourceLocator": "Controlled Volume 20 source register: V20-SRC-006, V20-SRC-008, V20-SRC-010, V20-SRC-011.",
+      "applicability": "Supports the lesson's breeding, population-genetic, phenotyping, selection, germplasm, or release-claim reasoning while preserving population, generation, environment, sample-size, and measurement context.",
+      "limitations": "Effective population size and diversity estimates depend on mating system, family contribution, marker coverage, generation history, and sampling.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0259",
+      "lessonId": "THC-ENC-399",
+      "sourceIds": [
+        "V20-SRC-030",
+        "V20-SRC-031",
+        "V20-SRC-032",
+        "V20-SRC-011"
+      ],
+      "claimType": "seed-storage-germplasm-backup-and-regeneration",
+      "supportedClaim": "Preserve seed and living genetic resources through identity control, drying, storage, viability monitoring, safety duplication, and genetically responsible regeneration. Germplasm conservation protects future breeding options. Seed lots need accession identity, parentage or collection origin, harvest and processing records, initial quality, and legal status. Cannabis seed is generally managed as an orthodox seed under dry, cold genebank practices, but each lot’s moisture response, viability, vigor, and storage behavior should be verified rather than assumed.",
+      "sourceLocator": "Controlled Volume 20 source register: V20-SRC-030, V20-SRC-031, V20-SRC-032, V20-SRC-011.",
+      "applicability": "Supports the lesson's breeding, population-genetic, phenotyping, selection, germplasm, or release-claim reasoning while preserving population, generation, environment, sample-size, and measurement context.",
+      "limitations": "Storage longevity and regeneration fidelity depend on seed condition, moisture, temperature, package, population size, mating, health, and monitoring methods.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0260",
+      "lessonId": "THC-ENC-400",
+      "sourceIds": [
+        "V20-SRC-008",
+        "V20-SRC-010",
+        "V20-SRC-013",
+        "V20-SRC-030"
+      ],
+      "claimType": "pedigrees-generations-naming-and-release-claims",
+      "supportedClaim": "Use unambiguous pedigree and generation records while preventing names and marketing claims from exceeding the evidence. A pedigree records biological ancestry and mating events. A product name is not a pedigree. Generation labels must state the mating that created them: F1 and F2 describe filial generations from a defined cross; S1 describes selfed offspring from one parent; BC1 describes the first backcross to a named recurrent parent. Industry usage is inconsistent, so every project should publish its controlled definitions and never infer stability from the label alone.",
+      "sourceLocator": "Controlled Volume 20 source register: V20-SRC-008, V20-SRC-010, V20-SRC-013, V20-SRC-030.",
+      "applicability": "Supports the lesson's breeding, population-genetic, phenotyping, selection, germplasm, or release-claim reasoning while preserving population, generation, environment, sample-size, and measurement context.",
+      "limitations": "Pedigree records show declared ancestry; they do not by themselves prove genetic identity, trait transmission, uniformity, stability, ownership, or legal status.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}

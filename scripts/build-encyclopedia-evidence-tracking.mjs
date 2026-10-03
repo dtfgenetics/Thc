@@ -74,11 +74,34 @@ const sourceRegistry = fs.existsSync(sourceRegistryPath) ? readJson(sourceRegist
 const batches = readEvidenceBatches();
 const lessons = readCanonicalLessons();
 
-const sourceById = new Map(arr(sourceRegistry.sources).map(source => [source.id, source]));
+const volumeSources = [];
+for (let volumeNumber = 1; volumeNumber <= 21; volumeNumber += 1) {
+  const volume = String(volumeNumber).padStart(2, '0');
+  const registerPath = path.join(encRoot, `volume-${volume}`, 'source-register.json');
+  if (!fs.existsSync(registerPath)) continue;
+  const register = readJson(registerPath);
+  for (const source of arr(register.sources)) {
+    const location = norm(source.location);
+    if (!/^https:\/\//.test(location)) continue;
+    volumeSources.push({
+      ...source,
+      url: location,
+      sourceType: source.sourceType || 'controlled_volume_source',
+      authorityClass: source.authorityClass || `volume_${volumeNumber}_external_source`,
+      __registerPath: rel(registerPath)
+    });
+  }
+}
+
+const sourceById = new Map([
+  ...arr(sourceRegistry.sources).map(source => [source.id, source]),
+  ...volumeSources.map(source => [source.id, source])
+]);
 const sourceAliasToId = new Map();
 for (const source of arr(sourceRegistry.sources)) {
   for (const alias of arr(source.aliases)) sourceAliasToId.set(alias, source.id);
 }
+for (const source of volumeSources) sourceAliasToId.set(source.id, source.id);
 
 const evidenceByLesson = new Map();
 for (const batch of batches) {
@@ -178,6 +201,7 @@ const output = {
   generatedFrom: {
     controlledRegistry: rel(registryPath),
     sourceRegistry: fs.existsSync(sourceRegistryPath) ? rel(sourceRegistryPath) : null,
+    controlledVolumeSourceRegistries: [...new Set(volumeSources.map(source => source.__registerPath))].sort(),
     evidenceBatches: batches.map(batch => batch.__path)
   },
   scope: 'All 420 controlled THC-ENC lessons. This artifact tracks evidence-readiness only and does not authorize publication.',
