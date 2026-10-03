@@ -12,7 +12,6 @@ on:
       - 'scripts/publish-wordpress-encyclopedia-*.mjs'
       - 'scripts/organize-wordpress-encyclopedia-topics.mjs'
       - 'configuration/encyclopedia-topics.json'
-      - 'content/encyclopedia/**'
       - 'site/wordpress/education/encyclopedia/**'
       - 'scripts/publish-wordpress-learning-search-indexes.mjs'
       - 'scripts/deploy/wordpress-learning-search-runtime.sh'
@@ -27,7 +26,7 @@ permissions:
 
 concurrency:
   group: dtfseeds-encyclopedia-production
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   publish:
