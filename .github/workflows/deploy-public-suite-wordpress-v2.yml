@@ -425,7 +425,7 @@ jobs:
           check 'https://dtfseeds.com/growlens/' 'GrowLens'
           check 'https://dtfseeds.com/thc-grow-doc/' 'Grow Doc'
           check 'https://dtfseeds.com/applied-learning/' 'Applied Learning Lab'
-          check 'https://dtfseeds.com/applied-learning/' '7ffb4810a48091c3c61714ccc1663d8a2a1d4e88'
+          check 'https://dtfseeds.com/applied-learning/' 'dcb6733082c2caf31502112f952c254feeca1e5f'
 
       - name: Verify external release candidate games live
         shell: bash
