@@ -28,7 +28,23 @@ for(const lesson of canonicalLessons){
 }
 
 const values=(l,a,b)=>arr(l?.[a]).length?arr(l[a]):arr(l?.[b]);
+const sourceRegisterByPart=new Map();
+for(let part=1;part<=21;part++){
+  const registerPath=path.join(encRoot,`volume-${String(part).padStart(2,'0')}`,'source-register.json');
+  if(!fs.existsSync(registerPath)) continue;
+  const register=JSON.parse(fs.readFileSync(registerPath,'utf8'));
+  sourceRegisterByPart.set(part,new Map(arr(register.sources).map(source=>[source.id,source])));
+}
 const sources=l=>values(l,'sourceNotes','evidence');
+const resolvedSourceText=(lesson,source)=>{
+  if(typeof source==='string'){
+    const register=sourceRegisterByPart.get(Number(lesson.__part||lesson.part||Math.ceil(Number(lesson.number||0)/20)));
+    const controlled=register?.get(source);
+    if(controlled) return txt([controlled.title,controlled.useAndLimitation,controlled.location].filter(Boolean).join(' '));
+    return txt(source);
+  }
+  return txt(typeof source==='object'?JSON.stringify(source):source);
+};
 const measures=l=>values(l,'measureAndRecord','measurements');
 const measurementGuidanceComplete=l=>{
   const rows=measures(l);
@@ -80,7 +96,7 @@ const rows=(registry.entries||[]).map(entry=>{
   if(misconception.length<2||misconception.filter(x=>words(typeof x==='string'?x:JSON.stringify(x))>=10).length<2) issues.push('thin-misconceptions');
   if(limits.length<1||limits.every(x=>words(x)<12)) issues.push('thin-evidence-limits');
   if(src.length<2) issues.push('insufficient-sources');
-  if(src.length>=2&&src.filter(x=>sourceAuthority.test(txt(typeof x==='string'?x:JSON.stringify(x)))).length<1) issues.push('weak-source-authority-signal');
+  if(src.length>=2&&src.filter(x=>sourceAuthority.test(resolvedSourceText(l,x))).length<1) issues.push('weak-source-authority-signal');
   if(cross(l).length<2) issues.push('thin-cross-links');
   const body=[objective,...core,...relevance,...measure,...misconception,...limits].map(x=>typeof x==='string'?x:JSON.stringify(x));
   if(body.filter(x=>generic.test(x)).length>=3) issues.push('generic-language');
