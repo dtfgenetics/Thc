@@ -41,8 +41,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: dtfseeds-academy-tech1-publication
-  cancel-in-progress: false
+  group: dtfseeds-academy-tech1-publication-${{ github.event.pull_request.number || 'production' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   validate:
