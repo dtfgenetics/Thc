@@ -2,7 +2,7 @@
   "schemaVersion": "1.0.0",
   "batchId": "ENC-EVID-BATCH-012",
   "createdAt": "2026-10-03",
-  "scope": "Claim-level trichome development, gland-class, secretory-cell ultrastructure, sampling, and cannabinoid precursor evidence for THC-ENC-221 through THC-ENC-227.",
+  "scope": "Claim-level trichome morphology, cannabinoid biosynthesis, cannabinoid transformation, developmental, sampling, and analytical evidence for THC-ENC-221 through THC-ENC-240.",
   "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
   "status": "source_collection_initial",
   "reviewState": "needs_independent_science_review",
@@ -108,6 +108,183 @@
       "sourceLocator": "Stout et al. 2012 LC-MS/MS, CsAAE1 expression/activity, and localization results; Livingston et al. 2022 pathway-localization results.",
       "applicability": "Supports hexanoyl-CoA and isoprenoid precursor context in trichome cannabinoid biosynthesis.",
       "limitations": "The upstream origin of hexanoate and quantitative control of intact-plant pathway flux remain incompletely resolved; precursor presence does not imply a cultivation prescription.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0103",
+      "lessonId": "THC-ENC-228",
+      "sourceIds": [
+        "ENC-AUTH-072"
+      ],
+      "claimType": "olivetolic-acid-biosynthesis",
+      "supportedClaim": "Cannabis olivetolic acid formation requires tetraketide synthase together with olivetolic acid cyclase, which directs cyclization of the linear polyketide intermediate to olivetolic acid.",
+      "sourceLocator": "Gagne et al. 2012 biochemical characterization and trichome expression evidence.",
+      "applicability": "Supports the enzymatic route to olivetolic acid.",
+      "limitations": "In-vitro enzyme chemistry does not quantify intact-plant flux control or prove which cultivation variables limit the pathway.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0104",
+      "lessonId": "THC-ENC-229",
+      "sourceIds": [
+        "ENC-AUTH-073",
+        "ENC-AUTH-078"
+      ],
+      "claimType": "cbga-precursor",
+      "supportedClaim": "CBGA formation joins the olivetolic-acid and geranyl-diphosphate branches and places CBGA upstream of several major cannabinoid-acid products.",
+      "sourceLocator": "Fellermeier and Zenk 1998 CBGA-forming prenyltransferase activity; Luo et al. 2019 reconstructed cannabinoid biosynthesis.",
+      "applicability": "Supports CBGA as a major shared precursor in the canonical pathway.",
+      "limitations": "Biochemical and engineered-host evidence does not define pathway flux or abundance in intact cannabis flowers.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0105",
+      "lessonId": "THC-ENC-230",
+      "sourceIds": [
+        "ENC-AUTH-074",
+        "ENC-AUTH-076"
+      ],
+      "claimType": "thca-synthase",
+      "supportedClaim": "Functional THCA synthase catalyzes oxidative cyclization of CBGA to THCA, while the genomic region containing cannabinoid-acid synthase loci is structurally complex.",
+      "sourceLocator": "Sirikantaramas et al. 2004 cloning and heterologous expression; Grassa et al. 2018 genomic mapping.",
+      "applicability": "Supports the enzyme-substrate relationship and cautions against simplistic genotype interpretation.",
+      "limitations": "Presence or similarity of a synthase sequence does not by itself establish functional enzyme activity or measured flower chemotype.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0106",
+      "lessonId": "THC-ENC-231",
+      "sourceIds": [
+        "ENC-AUTH-075",
+        "ENC-AUTH-076"
+      ],
+      "claimType": "cbda-synthase",
+      "supportedClaim": "Recombinant CBDA synthase converts CBGA to CBDA and is closely related to THCA synthase, while chemotype-associated synthase loci occur in a structurally complex genomic region.",
+      "sourceLocator": "Taura et al. 2007 biochemical characterization; Grassa et al. 2018 locus mapping.",
+      "applicability": "Supports CBDAS function and separates enzyme identity from whole-plant chemical measurement.",
+      "limitations": "CBDAS genotype does not by itself quantify absolute CBDA/CBD concentration or prove absence of other cannabinoid acids.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0107",
+      "lessonId": "THC-ENC-232",
+      "sourceIds": [
+        "ENC-AUTH-076"
+      ],
+      "claimType": "cbca-pathway",
+      "supportedClaim": "Cannabis genomic and functional mapping identified CBCAS activity within the cannabinoid oxidocyclase family, supporting CBCA as a biosynthetic product rather than merely an analytical artifact.",
+      "sourceLocator": "Grassa et al. 2018 physical/genetic map and CBCAS characterization.",
+      "applicability": "Supports a CBCA-forming pathway within the cannabinoid oxidocyclase family.",
+      "limitations": "Minor-product abundance and enzyme specificity can vary, so pathway presence does not establish a universal CBCA concentration.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0108",
+      "lessonId": "THC-ENC-233",
+      "sourceIds": [
+        "ENC-AUTH-077",
+        "ENC-AUTH-078"
+      ],
+      "claimType": "varin-pathway",
+      "supportedClaim": "Propyl-side-chain cannabinoids can arise from alternate precursor use, and C3/C5 cannabinoid composition shows non-simple inheritance in a studied cannabis F2 population.",
+      "sourceLocator": "Welling et al. 2019 segregation analysis; Luo et al. 2019 reconstructed pentyl/varin pathways.",
+      "applicability": "Supports varin cannabinoids as alternate biosynthetic branches rather than degradation products of pentyl cannabinoids.",
+      "limitations": "Inheritance observed in one population should not be generalized as a universal Mendelian ratio.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0109",
+      "lessonId": "THC-ENC-234",
+      "sourceIds": [
+        "ENC-AUTH-079"
+      ],
+      "claimType": "acid-neutral-distinction",
+      "supportedClaim": "Acidic cannabinoids and their neutral counterparts are chemically distinct analytes, and controlled heating can convert acidic forms toward neutral forms through decarboxylation.",
+      "sourceLocator": "Wang et al. 2016 controlled decarboxylation study.",
+      "applicability": "Supports separate reporting of acidic and neutral cannabinoids and method-aware interpretation.",
+      "limitations": "Observed acid/neutral ratios depend on sample history and analytical method and should not be treated as fixed cultivar constants.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0110",
+      "lessonId": "THC-ENC-235",
+      "sourceIds": [
+        "ENC-AUTH-079"
+      ],
+      "claimType": "decarboxylation",
+      "supportedClaim": "Cannabinoid-acid decarboxylation is time- and temperature-dependent under controlled analytical conditions and differs among cannabinoid acids.",
+      "sourceLocator": "Wang et al. 2016 kinetic decarboxylation experiments.",
+      "applicability": "Supports reaction-specific, condition-dependent decarboxylation chemistry.",
+      "limitations": "The tested laboratory conditions do not define one universal operational processing schedule for plant material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0111",
+      "lessonId": "THC-ENC-236",
+      "sourceIds": [
+        "ENC-AUTH-080"
+      ],
+      "claimType": "postharvest-degradation",
+      "supportedClaim": "Cannabis phytocannabinoid profiles change after harvest as a function of storage duration, temperature, sample form, and matrix, demonstrating that postharvest chemistry is dynamic.",
+      "sourceLocator": "Milay et al. 2020 one-year controlled storage study.",
+      "applicability": "Supports oxidation/degradation and storage-change boundaries.",
+      "limitations": "The study covers selected chemovars, matrices, and conditions and does not establish one degradation rate for all cannabis products.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0112",
+      "lessonId": "THC-ENC-237",
+      "sourceIds": [
+        "ENC-AUTH-076",
+        "ENC-AUTH-081"
+      ],
+      "claimType": "genotype-environment-chemistry",
+      "supportedClaim": "Cannabinoid phenotype reflects genetic pathway architecture but measured concentration also varies with tissue position and production context, so genotype and environment should not be collapsed into one explanation.",
+      "sourceLocator": "Grassa et al. 2018 genetic architecture; Namdar et al. 2018 position- and method-dependent chemistry.",
+      "applicability": "Supports separating chemotype genetics from absolute concentration and sampling effects.",
+      "limitations": "These sources do not quantify the complete genotype-by-environment response surface for all cultivars.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0113",
+      "lessonId": "THC-ENC-238",
+      "sourceIds": [
+        "ENC-AUTH-003",
+        "ENC-AUTH-081"
+      ],
+      "claimType": "developmental-accumulation",
+      "supportedClaim": "Cannabis trichome morphology changes across flower development, while measured cannabinoid composition also varies by inflorescence position and sampling method, making developmental comparisons dependent on standardized sampling.",
+      "sourceLocator": "Punja et al. 2023 developmental trichome study; Namdar et al. 2018 spatial chemistry study.",
+      "applicability": "Supports developmental-stage records and repeated, position-controlled sampling.",
+      "limitations": "The sources do not justify a universal harvest week or a single morphology-based chemical optimum.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0114",
+      "lessonId": "THC-ENC-239",
+      "sourceIds": [
+        "ENC-AUTH-003",
+        "ENC-AUTH-080"
+      ],
+      "claimType": "trichome-color-limit",
+      "supportedClaim": "Visible trichome color and senescence can change during maturation and postharvest handling, while cannabinoid chemistry also changes with storage; color therefore cannot be treated as a direct quantitative cannabinoid assay.",
+      "sourceLocator": "Punja et al. 2023 trichome maturation observations; Milay et al. 2020 postharvest chemistry.",
+      "applicability": "Supports using trichome color only as a field observation unless locally validated against chemistry.",
+      "limitations": "No universal color threshold is established for potency, cannabinoid ratio, or harvest timing.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0115",
+      "lessonId": "THC-ENC-240",
+      "sourceIds": [
+        "ENC-AUTH-082",
+        "ENC-AUTH-081"
+      ],
+      "claimType": "sampling-testing-claims",
+      "supportedClaim": "Cannabis inflorescence is chemically heterogeneous, so laboratory results support batch-level claims only to the extent that sampling, identity, preparation, analytical method, and reporting basis are fit for purpose.",
+      "sourceLocator": "Sarma et al. 2020 USP expert-panel quality review; Namdar et al. 2018 position/method variability.",
+      "applicability": "Supports representative sampling and claims discipline for cannabinoid testing.",
+      "limitations": "A laboratory result describes the submitted sample and method and cannot prove exact composition of every unit in a heterogeneous batch.",
       "reviewState": "source_collected_needs_science_review"
     }
   ]
