@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import assert from 'node:assert/strict';
 
 const root='site/public-route-patch/applied-learning';
@@ -13,6 +14,10 @@ assert.equal(data.sourceRepository,'dtfgenetics/Thc-learning-courses-');
 assert.equal(data.sourceSha,target.sourceSha,'Applied Learning mirror must match Academy deployment target');
 assert.equal(revision.repository,data.sourceRepository);
 assert.equal(revision.commit,data.sourceSha);
+assert.match(js,new RegExp(`const SOURCE_SHA=['"]${data.sourceSha}['"]`),'runtime source pin must match exported data');
+assert.match(html,/<script\b[^>]*type="module"[^>]*src="\.\/app\.js"[^>]*><\/script>/,'top-level await runtime must load as a module');
+const syntax=spawnSync(process.execPath,['--input-type=module','--check'],{input:js,encoding:'utf8'});
+assert.equal(syntax.status,0,`Applied Learning module syntax: ${syntax.stderr}`);
 assert.equal(revision.route,'/applied-learning/');
 assert.equal(revision.status,'development-preview');
 
