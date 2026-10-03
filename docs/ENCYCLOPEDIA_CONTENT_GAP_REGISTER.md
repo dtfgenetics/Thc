@@ -37,7 +37,7 @@ Every lesson must ultimately contain or resolve to:
 
 1. Independently review the 420 materialized assessment-rationale drafts and preserve reviewer evidence. All 1260 rationale drafts remain review-pending; draft completeness is not approval.
 2. Complete teaching-visual production and independent asset review. Repository inventory currently contains lesson-prefixed canonical artwork for 48 controlled lesson IDs (67 lesson-specific files); these are produced candidates, not approved assets. The remaining 372 lesson IDs still need lesson-specific artwork unless a later controlled asset is mapped.
-3. Expand exact source-locator / atomic-claim evidence ledgers using the all-source resolution queue. Repository evidence inventory currently maps 125/420 lessons through 132 claim-evidence records and 94 controlled authorities across 15 batches; all mappings remain pending independent science review.
+3. Expand exact source-locator / atomic-claim evidence ledgers using the all-source resolution queue. Repository evidence inventory currently maps 139/420 lessons through 146 unique claim-evidence records and 103 controlled authorities across 14 active batch files; all mappings remain pending independent science review.
 4. Volume 20–21 source registers are restored from their controlled manuscripts on the education practical-resource branch. After source-queue regeneration, the 63 previously missing references are expected to resolve as 58 HTTPS-backed volume authorities and 5 internal/non-public placeholders; exact claim locators and independent authority review remain pending.
 5. Keep encyclopedia assessment complete on its own. Academy/course links are optional navigation only; course curriculum and certification assessments remain independently controlled.
 6. Practical record workbooks now cover THC-ENC-381–420 on the education practical-resource branch, with controlled registry, validation, renderer gating, and discovery-index support. Continue extending practical resources to earlier lessons where they materially improve learning.
@@ -46,11 +46,12 @@ Every lesson must ultimately contain or resolve to:
 ## Evidence/data pipeline
 
 - Controlled source registry: `content/encyclopedia/evidence/authoritative-sources.json`.
-- Claim evidence batches: `content/encyclopedia/evidence/evidence-batch-001.json` through `content/encyclopedia/evidence/evidence-batch-015.json`.
+- Active claim-evidence batches: `evidence-batch-001.json` through `evidence-batch-012.json`, plus `evidence-batch-015.json` and `evidence-batch-016.json`. Redundant split Part 12 batches 013/014 were removed after concurrent-work reconciliation because batch 012 already contains the canonical 221–240 mappings.
 - Shared-source bridge: Batch 003 maps the canonical PubChem, USDA GRIN, USDA Hemp Phenotyping v4, MIAPPE v1.2, and Cornell hemp genetics/germplasm identities into scoped encyclopedia claims without changing publication state.
 - Disease/diagnostic evidence: Batch 004 adds scoped Cornell and Oregon State Extension support for heat-stress differentials, Botrytis, Fusarium, HLVd, site risk, scouting records, and cultivar/environment generalization limits; all mappings remain pending independent science review.
 - Part 10/11 evidence expansion: Batches 009–011 convert existing cannabis architecture, training, photoperiod, reproductive-development, pollen, fertilization, seed-maturity, sex-expression, and reproductive-record research into controlled claim mappings without changing review or publication state.
-- Part 12/13 evidence expansion: Batches 012–015 add bounded primary-source mappings for trichome biology, cannabinoid biosynthesis/analysis, terpenes, volatile chemistry, postharvest stability, chemovar interpretation, and entourage-claim boundaries; all remain pending independent science review.
+- Part 12/13 evidence expansion: canonical batch 012 plus batch 015 add bounded primary-source mappings for trichome biology, cannabinoid biosynthesis/analysis, terpenes, volatile chemistry, postharvest stability, chemovar interpretation, and entourage-claim boundaries; all remain pending independent science review.
+- Part 14 evidence expansion: batch 016 completes diagnostic/stress evidence coverage for THC-ENC-261–280 while preserving earlier mappings for heat, cold, high-light, humidity, phytotoxicity, and foliar injury.
 - Generated risk-priority queue: `data/encyclopedia-evidence-priority.json`.
 - Generated 420-lesson tracking artifact: `data/encyclopedia-evidence-tracking.json`.
 - All-source resolution queue: `data/encyclopedia-source-resolution-queue.json`.
