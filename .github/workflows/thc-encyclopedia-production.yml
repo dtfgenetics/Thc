@@ -110,6 +110,13 @@ jobs:
         run: npm run audit:encyclopedia-learning-quality
       - name: Audit substantive lesson quality
         run: npm run audit:encyclopedia-substantive-quality:strict
+      - name: Validate full controlled publication manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/build-encyclopedia-full-release-manifest.mjs "$RUNNER_TEMP/encyclopedia-full-catalog.json"
+          node scripts/validate-encyclopedia-release-control.mjs "$RUNNER_TEMP/encyclopedia-full-catalog.json"
+
       - name: Build rich discovery index
         run: npm run build:encyclopedia-discovery
       - name: Build global education search
