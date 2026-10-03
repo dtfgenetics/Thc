@@ -26,6 +26,13 @@ for (const item of items) {
   if (item.productionStatus === 'artwork_produced_review_pending') {
     if (!item.canonicalAssetPath) errors.push(`${item.lessonId}: produced artwork must name its canonical asset path.`);
     else if (!fs.existsSync(path.join(root, item.canonicalAssetPath))) errors.push(`${item.lessonId}: canonical produced artwork is missing from the repository.`);
+    if (!Array.isArray(item.canonicalAssetPaths) || item.canonicalAssetPaths.length < 1) errors.push(`${item.lessonId}: produced artwork must retain its canonical candidate list.`);
+    else {
+      for (const assetPath of item.canonicalAssetPaths) {
+        if (!fs.existsSync(path.join(root, assetPath))) errors.push(`${item.lessonId}: visual candidate is missing from the repository: ${assetPath}`);
+      }
+      if (Number(item.assetCandidateCount) !== item.canonicalAssetPaths.length) errors.push(`${item.lessonId}: asset candidate count does not match canonical asset paths.`);
+    }
     if (item.assetQaStatus !== 'produced_pending_asset_qa') errors.push(`${item.lessonId}: produced artwork must remain pending asset QA.`);
   } else if (item.productionStatus !== 'brief_ready_artwork_needed') {
     errors.push(`${item.lessonId}: unsupported visual production status ${item.productionStatus}.`);
