@@ -10,6 +10,8 @@ on:
       - "scripts/validate-shared-ui-standard.mjs"
       - "scripts/validate-portfolio-registry.mjs"
       - "scripts/validate-public-navigation.mjs"
+      - "scripts/report-platform-convergence.mjs"
+      - "scripts/test-platform-convergence-live.mjs"
       - "data/asset-state-registry.json"
       - "data/asset-state-registry.schema.json"
       - "data/asset-manifest.json"
@@ -36,6 +38,8 @@ on:
       - "scripts/validate-shared-ui-standard.mjs"
       - "scripts/validate-portfolio-registry.mjs"
       - "scripts/validate-public-navigation.mjs"
+      - "scripts/report-platform-convergence.mjs"
+      - "scripts/test-platform-convergence-live.mjs"
       - "data/asset-state-registry.json"
       - "data/asset-state-registry.schema.json"
       - "data/asset-manifest.json"
@@ -98,3 +102,6 @@ jobs:
 
       - name: Validate public-suite qualification workflow
         run: npm run validate:public-suite-qualification-workflow
+
+      - name: Test live deployment revision verification
+        run: node scripts/test-platform-convergence-live.mjs
