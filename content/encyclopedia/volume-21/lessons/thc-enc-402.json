@@ -26,15 +26,18 @@
     "Characterize critical meters and methods using references, repeats, range checks, and documented uncertainty or practical tolerance. Report meaningful digits and avoid ranking plants or treatments by differences smaller than the process can resolve."
   ],
   "measureAndRecord": [
-    "Measurand; method; sample; reference value; repeated results; mean/spread; bias estimate; resolution; environmental conditions; uncertainty components; combined/expanded uncertainty where used; coverage statement; decision rule."
+    "Define the measurand, sample, method, reference or comparison value, instrument resolution, environmental conditions, and intended decision before interpreting repeat measurements.",
+    "Record repeated results, mean, spread, apparent bias, resolution, known calibration information, and identified uncertainty contributors. Keep technical repeats distinct from independent biological replicates.",
+    "When uncertainty is reported, record how it was estimated, whether it is standard or expanded uncertainty, the coverage factor or confidence interpretation where applicable, and the decision rule used near a specification or threshold."
   ],
   "misconceptions": [
-    "More decimal places mean greater accuracy.",
-    "Three readings from one sample are three independent biological replicates.",
-    "Uncertainty means the true value is guaranteed to lie inside one reported interval."
+    "More decimal places mean greater accuracy. Display resolution can exceed the actual accuracy supported by calibration, sampling, and method performance.",
+    "Three readings from one sample are three independent biological replicates. Repeat readings estimate measurement repeatability on that sample; they do not increase the number of independent biological units.",
+    "Uncertainty means the true value is guaranteed to lie inside one reported interval. Uncertainty statements describe quantified doubt under a stated model and coverage convention, not an absolute guarantee."
   ],
   "evidenceLimits": [
-    "Uncertainty statements depend on the measurement model, available evidence, coverage method, and intended decision; they do not correct biased sampling or wrong measurand definitions."
+    "Uncertainty estimates depend on the measurement model, available calibration and repeatability evidence, environmental controls, and chosen coverage method.",
+    "A precise instrument reading cannot repair biased sampling, an ill-defined measurand, or a method that is unsuitable for the matrix or decision."
   ],
   "crossLinks": "THC-ENC-401; THC-ENC-403–404; THC-ENC-412; THC-ENC-414.",
   "sourceNotes": [
