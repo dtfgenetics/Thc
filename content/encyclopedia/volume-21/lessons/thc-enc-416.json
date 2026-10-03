@@ -26,15 +26,18 @@
     "Use a one-page design map linking question, mechanism, treatment, experimental unit, control, blocks, randomization, measurements, analysis, and transfer limits."
   ],
   "measureAndRecord": [
-    "Question/hypothesis; biological material; experimental unit; treatments and doses; control; allocation/randomization; blocks; independent replication; subsamples; endpoints; measurement method; sample-size rationale; exclusions; analysis; protocol deviations; repeat cycles."
+    "State the question or hypothesis, biological material, experimental unit, treatment and dose definitions, control, allocation method, randomization, blocking factors, and sample-size rationale before collecting outcome data.",
+    "Record independent replicates separately from subsamples and repeated observations. Preserve room, bench, reservoir, tray, pot, or plant relationships so pseudoreplication can be detected during analysis.",
+    "Record endpoints, measurement methods, planned exclusions, missing data, protocol deviations, analysis plan, and repeat cycles. When one shared system receives a treatment, treat that shared system—not each plant inside it—as the experimental unit unless the design supports otherwise."
   ],
   "misconceptions": [
-    "Every plant is an independent replicate even when one shared system receives the treatment.",
-    "Random placement eliminates the need to record room position.",
-    "A large number of measurements can compensate for having one treatment unit."
+    "Every plant is an independent replicate even when one shared system receives the treatment. Plants sharing one treatment-delivery unit can be subsamples of the same experimental unit.",
+    "Random placement eliminates the need to record room position. Position should still be recorded because gradients and implementation failures can remain after randomization.",
+    "A large number of measurements can compensate for having one treatment unit. Technical depth cannot replace independent treatment replication for estimating treatment-to-treatment variability."
   ],
   "evidenceLimits": [
-    "A well-designed experiment supports the defined population and conditions; external validity still requires replication across genetics, systems, and environments."
+    "A strong design supports inference for the defined material, treatments, and environment; external validity still requires replication across relevant genetics, systems, and conditions.",
+    "Randomization and replication reduce bias and estimate variation but do not repair an incorrectly defined experimental unit or an intervention that cannot be independently applied."
   ],
   "crossLinks": "THC-ENC-393–397; THC-ENC-404; THC-ENC-409; THC-ENC-417–418.",
   "sourceNotes": [
