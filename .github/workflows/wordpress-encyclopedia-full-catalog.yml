@@ -1,0 +1,131 @@
+name: Publish THC Encyclopedia Full Catalog
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'content/encyclopedia/**'
+      - 'scripts/build-encyclopedia-full-release-manifest.mjs'
+      - 'scripts/publish-wordpress-encyclopedia-canonical-batch.mjs'
+      - 'scripts/verify-wordpress-encyclopedia-full-catalog.mjs'
+      - 'scripts/organize-wordpress-encyclopedia-topics.mjs'
+      - 'scripts/publish-wordpress-learning-search-indexes.mjs'
+      - 'configuration/encyclopedia-topics.json'
+      - 'site/wordpress/mu-plugins/dtf-learning-search.php'
+      - 'site/wordpress/mu-plugins/dtf-learning-search/**'
+      - '.github/workflows/wordpress-encyclopedia-full-catalog.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-encyclopedia-production
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish and verify all 420 controlled Encyclopedia lessons
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      BACKUP_ROOT: /tmp/dtf-encyclopedia-full-catalog
+      ENCYCLOPEDIA_BATCH_FILE: /tmp/dtf-encyclopedia-full-catalog-manifest.json
+      ENCYCLOPEDIA_TOPIC_FILE: configuration/encyclopedia-topics.json
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build full controlled catalog manifest
+        run: |
+          set -euo pipefail
+          node scripts/build-encyclopedia-full-release-manifest.mjs "$ENCYCLOPEDIA_BATCH_FILE"
+          cmp "$ENCYCLOPEDIA_BATCH_FILE" site/wordpress/education/encyclopedia/full-controlled-catalog.json
+
+      - name: Validate canonical 420-lesson release
+        run: |
+          set -euo pipefail
+          npm run audit:encyclopedia-substantive-quality:strict
+          npm run verify:encyclopedia-content-control
+          npm run verify:encyclopedia-assessments
+          npm run verify:encyclopedia-renderer
+          node scripts/validate-encyclopedia-release-control.mjs "$ENCYCLOPEDIA_BATCH_FILE"
+          node - <<'NODE'
+          const fs=require('fs');
+          const m=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_BATCH_FILE,'utf8'));
+          if(m.lessonFiles.length!==420) throw new Error('Full-catalog release must contain 420 lessons.');
+          const ids=m.lessonFiles.map(f=>JSON.parse(fs.readFileSync(f,'utf8')).id);
+          if(new Set(ids).size!==420) throw new Error('Duplicate lesson IDs in full-catalog release.');
+          if(ids[0]!=='THC-ENC-001'||ids[419]!=='THC-ENC-420') throw new Error('Permanent-ID range is incomplete.');
+          console.log('Validated permanent THC-ENC-001–420 catalog.');
+          NODE
+
+      - name: Require WordPress credentials
+        run: |
+          set -euo pipefail
+          [[ -n "${WP_API_USERNAME:-}" ]]
+          [[ -n "${WP_API_PASSWORD:-}" ]]
+
+      - name: Publish canonical 420-lesson catalog
+        id: publish
+        run: |
+          set -euo pipefail
+          node scripts/publish-wordpress-encyclopedia-canonical-batch.mjs | tee "$RUNNER_TEMP/full-catalog-publish.json"
+          backup_dir="$(cat "$BACKUP_ROOT/latest-backup-path.txt")"
+          report="$backup_dir/encyclopedia-publication-report.json"
+          test -s "$report"
+          count="$(node -p "require(process.argv[1]).published.length" "$report")"
+          listed="$(node -p "require(process.argv[1]).index.listedLessons" "$report")"
+          [[ "$count" -eq 420 ]]
+          [[ "$listed" -ge 420 ]]
+          echo "backup_dir=$backup_dir" >> "$GITHUB_OUTPUT"
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+
+      - name: Rebuild topic hubs
+        run: |
+          set -euo pipefail
+          export BACKUP_ROOT=/tmp/dtf-encyclopedia-full-catalog-topics
+          node scripts/organize-wordpress-encyclopedia-topics.mjs
+
+      - name: Rebuild full-catalog discovery and global search
+        env:
+          ENCYCLOPEDIA_DISCOVERY_RELEASE_MANIFEST: site/wordpress/education/encyclopedia/full-controlled-catalog.json
+        run: |
+          set -euo pipefail
+          npm run build:encyclopedia-discovery
+          node scripts/build-thc-education-search-index.mjs
+          node scripts/validate-thc-education-search.mjs
+
+      - name: Publish refreshed learning search indexes
+        run: node scripts/publish-wordpress-learning-search-indexes.mjs
+
+      - name: Verify all 420 public routes
+        run: node scripts/verify-wordpress-encyclopedia-full-catalog.mjs "$ENCYCLOPEDIA_BATCH_FILE"
+
+      - name: Upload full-catalog verification
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thc-encyclopedia-full-catalog-${{ github.run_id }}
+          path: |
+            full-encyclopedia-live-verification.json
+            ${{ steps.publish.outputs.report }}
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload rollback package
+        if: always() && steps.publish.outputs.backup_dir != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thc-encyclopedia-full-catalog-rollback-${{ github.run_id }}
+          path: ${{ steps.publish.outputs.backup_dir }}
+          if-no-files-found: error
+          retention-days: 30

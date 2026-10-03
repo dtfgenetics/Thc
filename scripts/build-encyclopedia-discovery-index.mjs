@@ -4,7 +4,12 @@ import path from 'node:path';
 const root=process.cwd();
 const registry=JSON.parse(fs.readFileSync(path.join(root,'content/encyclopedia/current-controlled-registry.json'),'utf8'));
 const topics=JSON.parse(fs.readFileSync(path.join(root,'configuration/encyclopedia-topics.json'),'utf8')).topics||[];
-const release=JSON.parse(fs.readFileSync(path.join(root,'site/wordpress/education/encyclopedia/current-production-batch.json'),'utf8'));
+const releaseManifestPath=process.env.ENCYCLOPEDIA_DISCOVERY_RELEASE_MANIFEST||(
+  fs.existsSync(path.join(root,'site/wordpress/education/encyclopedia/full-controlled-catalog.json'))
+    ? 'site/wordpress/education/encyclopedia/full-controlled-catalog.json'
+    : 'site/wordpress/education/encyclopedia/current-production-batch.json'
+);
+const release=JSON.parse(fs.readFileSync(path.join(root,releaseManifestPath),'utf8'));
 const searchLanguage=JSON.parse(fs.readFileSync(path.join(root,'configuration/encyclopedia-search-language.json'),'utf8'));
 const clean=v=>String(v??'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
 const arr=v=>Array.isArray(v)?v:[];
@@ -164,6 +169,7 @@ const output={
   schemaVersion:3,
   generatedAt:new Date().toISOString(),
   publicationCutoff,
+  releaseManifest:releaseManifestPath,
   lessonCount:lessons.length,
   searchLanguageVersion:Number(searchLanguage.schemaVersion||1),
   note:'Generated from the controlled registry, canonical lesson source, and claim-level evidence registry. Review-only entries stay discoverable without exposing unreleased lesson bodies; evidence mappings do not imply scientific approval.',

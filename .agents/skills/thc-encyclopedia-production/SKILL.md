@@ -48,7 +48,8 @@ Read before editing:
 - `content/encyclopedia/lesson-template.json`
 - `content/encyclopedia/coverage-baseline.json`
 - `docs/ENCYCLOPEDIA_CONTENT_GAP_REGISTER.md`
-- `site/wordpress/education/encyclopedia/current-production-batch.json`
+- `site/wordpress/education/encyclopedia/full-controlled-catalog.json` — full 420-lesson release/search authority
+- `site/wordpress/education/encyclopedia/current-production-batch.json` — legacy/targeted batch pointer only
 - `data/encyclopedia-completion-scorecard.json` when generated
 - `scripts/build-encyclopedia-completion-scorecard.mjs`
 - `scripts/build-encyclopedia-discovery-index.mjs`
@@ -209,6 +210,13 @@ Assessment must test content actually taught by that lesson.
 ### 8. Release control
 
 Do not infer publication authorization from completeness score.
+
+For full-catalog publication:
+- generate `site/wordpress/education/encyclopedia/full-controlled-catalog.json` from the controlled registry and require byte-for-byte parity in CI;
+- use the full-catalog manifest for discovery/search publication state;
+- canonical lesson changes publish through `.github/workflows/wordpress-encyclopedia-full-catalog.yml`;
+- `current-production-batch.json` is reserved for deliberate targeted/legacy batch work and must not define the full-catalog search cutoff;
+- full-catalog and targeted WordPress writes share one concurrency group so they cannot overwrite each other in parallel.
 
 Before publishing:
 - lesson identity matches registry;
