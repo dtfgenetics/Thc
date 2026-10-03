@@ -27,15 +27,18 @@
     "Define an ID grammar, issuing authority, uniqueness check, label durability, replacement rule, and parent-child model before scaling data collection."
   ],
   "measureAndRecord": [
-    "Entity type; permanent ID; human-readable label; source system; creation date; parent IDs; genetic/source/lot IDs; current location; status; aliases; label replacement; correction/supersession history; responsible person."
+    "Assign a permanent machine-readable ID to each plant, batch, room, genetic line, clone, seed lot, or other tracked entity. Record entity type, creation date, source system, parent relationships, source or lot IDs, and responsible person.",
+    "Maintain a separate human-readable label and alias history so labels can change without changing identity. Record location, status, transfers, relabeling events, and relationships among plant, batch, genetic, and room records.",
+    "When an identifier is wrong, preserve the original record, mark it superseded or corrected, link it to the replacement, record who made the change and why, and avoid deleting the audit trail."
   ],
   "misconceptions": [
-    "A cultivar name uniquely identifies genetics.",
-    "A room number can serve as the plant identifier.",
-    "Deleting an incorrect ID is cleaner than retaining the correction history."
+    "A cultivar name uniquely identifies genetics. The same name can be used for unrelated or genetically variable material, while the same genotype can be sold under different names.",
+    "A room number can serve as the plant identifier. Rooms identify locations or environments; plants need independent IDs so movement does not destroy traceability.",
+    "Deleting an incorrect ID is cleaner than retaining the correction history. Deletion hides the error path and makes it harder to reconstruct which records, samples, or decisions were affected."
   ],
   "evidenceLimits": [
-    "Identifiers preserve traceability only when labels, relationships, access controls, backups, and human practices remain reliable."
+    "Identifiers support traceability only when labels, relationships, access controls, backups, and human practices remain reliable.",
+    "A perfect ID system cannot prove biological identity by itself; genetic, source, or chain-of-custody evidence may still be required for disputed or high-risk records."
   ],
   "crossLinks": "THC-ENC-383; THC-ENC-394–400; THC-ENC-404; THC-ENC-411–413.",
   "sourceNotes": [
