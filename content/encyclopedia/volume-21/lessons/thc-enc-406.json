@@ -26,15 +26,18 @@
     "Build a sensor map and data dictionary. Test the complete path from sensor to database to graph to alarm, including time synchronization, missing-data flags, export, and backup."
   ],
   "measureAndRecord": [
-    "Channel and sensor ID; quantity/unit; location/height/orientation; calibration/verification; logger/controller/firmware; interval; timestamp/time zone; raw value; validity flag; missing-data reason; aggregation equation; alarm/action; maintenance/change record."
+    "Record channel and sensor ID, quantity, unit, location, height, orientation, calibration or verification state, logger or controller ID, firmware, logging interval, timestamp convention, and time zone.",
+    "Preserve raw values with validity flags, missing-data reasons, maintenance events, power or network interruptions, and changes in sensor placement. Do not keep only dashboard summaries.",
+    "For every aggregation such as hourly mean, daily maximum, DLI, or VPD summary, record the source interval, calculation method, missing-data rule, and alarm or action threshold so the summary can be reproduced."
   ],
   "misconceptions": [
-    "More frequent logging automatically creates more independent information.",
-    "A daily mean proves the crop never exceeded a limit.",
-    "A wireless dashboard preserves raw data permanently."
+    "More frequent logging automatically creates more independent information. High-frequency observations from the same sensor are often strongly autocorrelated and may add detail without increasing independent replication.",
+    "A daily mean proves the crop never exceeded a limit. A mean can hide short excursions, spatial extremes, or sensor failures that matter biologically.",
+    "A wireless dashboard preserves raw data permanently. Dashboards may resample, overwrite, smooth, or lose data unless raw retention and backup are explicitly configured."
   ],
   "evidenceLimits": [
-    "Logged values represent sensor exposure and method; they may not represent leaf, flower, root, worker, or room conditions outside the sampled locations."
+    "Logged values represent the sensor's exposure and method, not every leaf, flower, root zone, worker, or location in the room.",
+    "Sensor density, placement, response time, shielding, calibration, and aggregation choices determine what environmental variation can actually be inferred."
   ],
   "crossLinks": "THC-ENC-083–120; THC-ENC-363–365; THC-ENC-378; THC-ENC-403–404; THC-ENC-414.",
   "sourceNotes": [
