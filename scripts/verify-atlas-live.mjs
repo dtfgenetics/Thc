@@ -1,3 +1,7 @@
+import { setDefaultResultOrder } from 'node:dns';
+
+setDefaultResultOrder('ipv4first');
+
 const siteUrl = (process.env.DTF_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -29,17 +33,36 @@ async function fetchFresh(route) {
   });
 }
 
+function networkDetail(error) {
+  if (!(error instanceof Error)) return String(error);
+  const cause = error.cause;
+  if (cause && typeof cause === 'object') {
+    const nested = Array.isArray(cause.errors)
+      ? cause.errors.map((entry) => {
+          if (!entry || typeof entry !== 'object') return String(entry);
+          return [entry.code, entry.message].filter(Boolean).join(': ');
+        }).filter(Boolean)
+      : [];
+    if (nested.length) return nested.join(' | ');
+    return [cause.code, cause.message].filter(Boolean).join(': ') || error.message;
+  }
+  return error.message || error.name;
+}
+
 async function retry(label, check) {
   let last = 'not attempted';
-  for (let attempt = 1; attempt <= 7; attempt += 1) {
+  for (let attempt = 1; attempt <= 9; attempt += 1) {
     try {
       const result = await check();
       if (result.ok) return result;
       last = result.reason;
+      if (!/HTTP (?:408|425|429|5\d\d)\b/i.test(last)) break;
     } catch (error) {
-      last = error instanceof Error ? error.message : String(error);
+      last = networkDetail(error);
+      const retryable = /ETIMEDOUT|ENETUNREACH|ECONNRESET|ECONNREFUSED|EAI_AGAIN|UND_ERR_|fetch failed|network|timed out/i.test(last);
+      if (!retryable) break;
     }
-    if (attempt < 7) await sleep(1200 + attempt * 900);
+    if (attempt < 9) await sleep(1400 + attempt * 1000);
   }
   throw new Error(`${label} failed live verification: ${last}`);
 }
