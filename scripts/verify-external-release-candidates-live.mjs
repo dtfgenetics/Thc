@@ -1,5 +1,8 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { setDefaultResultOrder } from 'node:dns';
+
+setDefaultResultOrder('ipv4first');
 
 const siteUrl = (process.env.DTF_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
 const cacheTag = process.env.GITHUB_RUN_ID || Date.now();
@@ -29,15 +32,61 @@ const candidates = [
   }
 ];
 
+const FETCH_ATTEMPTS = Number.parseInt(process.env.EXTERNAL_RELEASE_LIVE_FETCH_ATTEMPTS || '6', 10);
+const FETCH_TIMEOUT_MS = Number.parseInt(process.env.EXTERNAL_RELEASE_LIVE_FETCH_TIMEOUT_MS || '30000', 10);
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+function networkDetail(error) {
+  if (!(error instanceof Error)) return String(error);
+  const cause = error.cause;
+  if (cause && typeof cause === 'object') {
+    const nested = Array.isArray(cause.errors)
+      ? cause.errors.map(entry => {
+          if (!entry || typeof entry !== 'object') return String(entry);
+          return [entry.code, entry.message].filter(Boolean).join(': ');
+        }).filter(Boolean)
+      : [];
+    if (nested.length) return nested.join(' | ');
+    return [cause.code, cause.message].filter(Boolean).join(': ') || error.message;
+  }
+  return error.message || error.name;
+}
+
+function retryableStatus(status) {
+  return status === 408 || status === 425 || status === 429 || status >= 500;
+}
+
 async function fetchNoRedirect(path) {
-  const response = await fetch(`${siteUrl}${path}${path.includes('?') ? '&' : '?'}dtf_external_verify=${cacheTag}`, {
-    redirect: 'manual',
-    headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Pragma: 'no-cache' },
-    signal: AbortSignal.timeout(30_000)
-  });
-  assert.equal(response.status, 200, `${path} returned HTTP ${response.status}`);
-  assert.ok(!response.headers.get('location'), `${path} unexpectedly redirected`);
-  return response;
+  const separator = path.includes('?') ? '&' : '?';
+  const url = siteUrl + path + separator + 'dtf_external_verify=' + cacheTag;
+  let lastError;
+  for (let attempt = 1; attempt <= FETCH_ATTEMPTS; attempt += 1) {
+    try {
+      const response = await fetch(url, {
+        redirect: 'manual',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, max-age=0',
+          Pragma: 'no-cache',
+          'User-Agent': 'DTFSeeds-External-Release-Live-Verify/1.1'
+        },
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS)
+      });
+      if (response.status >= 300 && response.status < 400) {
+        throw new Error(path + ' unexpectedly redirected to ' + (response.headers.get('location') || '(unknown)'));
+      }
+      if (response.status === 200) return response;
+      lastError = new Error(path + ' returned HTTP ' + response.status);
+      if (!retryableStatus(response.status) || attempt === FETCH_ATTEMPTS) throw lastError;
+      await response.body?.cancel().catch(() => {});
+    } catch (error) {
+      lastError = error;
+      const detail = networkDetail(error);
+      const retryable = /ETIMEDOUT|ENETUNREACH|ECONNRESET|ECONNREFUSED|EAI_AGAIN|UND_ERR_|fetch failed|network/i.test(detail);
+      if (!retryable || attempt === FETCH_ATTEMPTS) break;
+    }
+    await sleep(900 * attempt);
+  }
+  throw new Error(path + ' failed after ' + FETCH_ATTEMPTS + ' attempts: ' + networkDetail(lastError));
 }
 
 function collectLocalRefs(html, route) {
