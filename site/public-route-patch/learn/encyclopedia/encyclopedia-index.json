@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "generatedAt": "2026-09-29",
-  "publicationCutoff": 365,
+  "publicationCutoff": 380,
   "note": "All 420 controlled encyclopedia entries are discoverable. Entries above the current publication cutoff are catalogued for navigation but their lesson content remains under review.",
   "topics": [
     {
@@ -230,7 +230,7 @@
       ],
       "description": "Site selection, weather, microclimate, soil, irrigation, wind, rain, greenhouse ecology, and outdoor crop risks.",
       "count": 20,
-      "publishedCount": 5
+      "publishedCount": 20
     },
     {
       "part": 20,
@@ -8235,14 +8235,64 @@
       "topicSlug": "outdoor-greenhouse",
       "primaryFormat": "Data / QA",
       "teachingVisual": "Field soil sampling and profile record",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-366",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-366/",
       "keywords": [
         "Outdoor & Greenhouse Growing",
         "Data / QA",
         "Field soil sampling and profile record",
-        "THC-ENC-366"
-      ]
+        "THC-ENC-366",
+        "soil map unit",
+        "horizon",
+        "texture",
+        "structure",
+        "bulk density",
+        "infiltration",
+        "drainage class",
+        "composite sample",
+        "salinity",
+        "contaminant"
+      ],
+      "objective": "Combine mapped soil information, field profile inspection, representative sampling, and laboratory analysis before amendment or construction.",
+      "terms": [
+        "soil map unit",
+        "horizon",
+        "texture",
+        "structure",
+        "bulk density",
+        "infiltration",
+        "drainage class",
+        "composite sample",
+        "salinity",
+        "contaminant"
+      ],
+      "coreScience": [
+        "Field soil is spatially variable. A mapped soil unit provides a planning description, not a guarantee that every point has the same texture, depth, drainage, organic matter, pH, salinity, nutrient status, or contamination history. Construction, fill, erosion, compaction, manure piles, former roads, and localized flooding can create conditions not obvious in the map.",
+        "Separate soil physical, chemical, and biological questions. Dig profile pits or cores to examine horizons, rooting depth, restrictive layers, mottling, stones, compaction, and water movement. Collect representative laboratory samples by defined depth and management zone. Keep unusual areas separate rather than diluting them into a large composite.",
+        "Preparation should follow diagnosis. Deep tillage does not permanently fix poor structure when traffic and wet working continue. Adding compost can change nutrients, salts, water retention, and contaminants. Lime, sulfur, gypsum, fertilizers, and organic amendments require rates based on test results, material analysis, incorporation depth, and crop purpose. Product crops require particular caution with metal-contaminated or historically treated soils."
+      ],
+      "cultivation": [
+        "Reject or isolate unsuitable zones, correct drainage and traffic before planting, and create baseline tests that allow changes to be evaluated later."
+      ],
+      "measurements": [
+        "Before evaluating field soil testing and preparation, record the site, crop, and measurement context, including Soil survey map, field history, sampling zones/depth/date, cores per composite. Use fixed locations, definitions, and instruments so later comparisons are not confounded by changing observation methods.",
+        "During the observation period, track profile description, texture, bulk density/penetration, infiltration/drainage together with date and time, weather or structure state, crop stage, and any intervention that could change the response. Preserve raw measurements and notable spatial variation rather than only summary values.",
+        "At the decision point, document pH/EC/organic matter/nutrients, metals or residues when indicated, amendment analysis/rate, post-treatment verification.. Compare the result with the production objective, note uncertainty and exceptions, and retain enough traceability to reconstruct why the action was taken."
+      ],
+      "misconceptions": [
+        "Dark soil is automatically fertile and safe. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured.",
+        "One sample represents an entire field. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing.",
+        "More compost always improves soil. The statement should not be treated as a universal rule across sites, seasons, structures, cultivars, or management systems without local validation."
+      ],
+      "evidenceLimits": [
+        "Laboratory extraction methods and interpretation ranges differ; soil results must be matched to method, crop, product goal, and local guidance. Numerical thresholds and response magnitudes should therefore be treated as context-specific unless the cited evidence matches the site, cultivar, developmental stage, measurement method, and production system under review.",
+        "Climate normals, extension guidance, engineering references, and non-cannabis crop studies can support mechanism and planning, but they do not establish a universal cannabis target. Current local weather, site measurements, structural limits, and applicable rules remain required controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-041–060; THC-ENC-121–140; THC-ENC-367; THC-ENC-369–370."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-367",
@@ -8253,14 +8303,60 @@
       "topicSlug": "outdoor-greenhouse",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Root-zone geometry comparison plate",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-367",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-367/",
       "keywords": [
         "Outdoor & Greenhouse Growing",
         "Science lesson",
         "Root-zone geometry comparison plate",
-        "THC-ENC-367"
-      ]
+        "THC-ENC-367",
+        "root-zone volume",
+        "perched water",
+        "capillary continuity",
+        "thermal buffering",
+        "root restriction",
+        "drainage outlet",
+        "anchorage",
+        "hydraulic conductivity"
+      ],
+      "objective": "Compare root-zone volume, buffering, drainage, temperature, irrigation, anchorage, and disease risk among in-ground, raised-bed, and container systems.",
+      "terms": [
+        "root-zone volume",
+        "perched water",
+        "capillary continuity",
+        "thermal buffering",
+        "root restriction",
+        "drainage outlet",
+        "anchorage",
+        "hydraulic conductivity"
+      ],
+      "coreScience": [
+        "In-ground soil connects roots to a large and heterogeneous volume. It can buffer temperature and drying but may contain compaction, poor drainage, variable fertility, pathogens, or contaminants. Raised beds increase control over depth and amendment but can interrupt capillary continuity, shed or collect water depending on construction, and warm or dry faster than surrounding soil.",
+        "Containers create a finite root zone with strong edge effects. Media height, particle size, container geometry, outlet position, irrigation frequency, and root density shape air-water balance. A large container is not equivalent to field soil, and a shallow wide bed behaves differently from a tall narrow pot with the same volume.",
+        "System choice also changes anchorage and infrastructure. Large outdoor plants in containers can become top-heavy and vulnerable to wind. Beds and pots may need structural support, runoff capture, winter protection, and more frequent monitoring. In-ground systems can be harder to isolate after soilborne disease or contamination."
+      ],
+      "cultivation": [
+        "Choose a rooting system from site limitations and production goals, then validate drainage, irrigation distribution, temperature, anchorage, and root access under the actual crop size."
+      ],
+      "measurements": [
+        "Before evaluating raised beds, containers, and in-ground rooting, record the site, crop, and measurement context, including System dimensions and volume, soil/media recipe and analysis, bed/container material, drainage outlets. Use fixed locations, definitions, and instruments so later comparisons are not confounded by changing observation methods.",
+        "During the observation period, track infiltration or saturation test, temperature and moisture by depth, irrigation frequency/volume, root distribution together with date and time, weather or structure state, crop stage, and any intervention that could change the response. Preserve raw measurements and notable spatial variation rather than only summary values.",
+        "At the decision point, document anchorage, runoff, disease and corrective actions.. Compare the result with the production objective, note uncertainty and exceptions, and retain enough traceability to reconstruct why the action was taken."
+      ],
+      "misconceptions": [
+        "A larger pot always means fewer irrigation problems. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured.",
+        "Raised beds automatically drain well. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing.",
+        "In-ground plants cannot become root restricted. The statement should not be treated as a universal rule across sites, seasons, structures, cultivars, or management systems without local validation."
+      ],
+      "evidenceLimits": [
+        "Performance depends on geometry, material properties, climate, plant size, irrigation hardware, and management. Numerical thresholds and response magnitudes should therefore be treated as context-specific unless the cited evidence matches the site, cultivar, developmental stage, measurement method, and production system under review.",
+        "Climate normals, extension guidance, engineering references, and non-cannabis crop studies can support mechanism and planning, but they do not establish a universal cannabis target. Current local weather, site measurements, structural limits, and applicable rules remain required controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-041–060; THC-ENC-366; THC-ENC-369–372."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-368",
@@ -8271,14 +8367,60 @@
       "topicSlug": "outdoor-greenhouse",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Hardening-off transition sequence",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-368",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-368/",
       "keywords": [
         "Outdoor & Greenhouse Growing",
         "Science lesson",
         "Hardening-off transition sequence",
-        "THC-ENC-368"
-      ]
+        "THC-ENC-368",
+        "acclimation",
+        "hardening",
+        "transplant shock",
+        "boundary layer",
+        "root-ball integrity",
+        "sunscald",
+        "vapor-pressure gradient",
+        "establishment"
+      ],
+      "objective": "Move plants outdoors while controlling light, wind, temperature, humidity, root, and handling transitions.",
+      "terms": [
+        "acclimation",
+        "hardening",
+        "transplant shock",
+        "boundary layer",
+        "root-ball integrity",
+        "sunscald",
+        "vapor-pressure gradient",
+        "establishment"
+      ],
+      "coreScience": [
+        "A greenhouse or indoor plant has leaves and stems developed under a specific light spectrum, intensity, air movement, humidity, temperature, and root environment. Outdoor transfer can abruptly increase solar radiation, ultraviolet exposure, wind, vapor-pressure demand, temperature variation, and root-zone drying. Injury can occur even when the outdoor average temperature appears suitable.",
+        "Acclimation is a staged exposure process. Increase outdoor duration and light gradually, protect from extreme midday radiation and wind at first, and monitor leaf temperature and water status. Plants need enough root occupancy to hold the plug or root ball together without severe circling or restriction. Water before transplanting to a workable moisture state, protect roots from sun and air, plant at the intended depth, remove air gaps, and irrigate the root zone rather than flooding the entire field by habit.",
+        "Transplant success depends on post-plant weather. Cold nights, heat, gusts, heavy rain, saturated soil, and low humidity can each slow establishment. The correct schedule is therefore weather- and plant-specific rather than a fixed number of days."
+      ],
+      "cultivation": [
+        "Use a transplant-readiness checklist and small test group. Delay transfer when extreme weather or unprepared irrigation would create unnecessary loss."
+      ],
+      "measurements": [
+        "Before evaluating transplanting and outdoor acclimation, record the site, crop, and measurement context, including Plant ID/source/age/node, propagation environment, root-ball condition, acclimation dates/durations/light/wind, transplant date/time. Use fixed locations, definitions, and instruments so later comparisons are not confounded by changing observation methods.",
+        "During the observation period, track soil/media temperature and moisture, weather, planting depth, irrigation, wilting together with date and time, weather or structure state, crop stage, and any intervention that could change the response. Preserve raw measurements and notable spatial variation rather than only summary values.",
+        "At the decision point, document burn, breakage, growth restart, and mortality.. Compare the result with the production objective, note uncertainty and exceptions, and retain enough traceability to reconstruct why the action was taken."
+      ],
+      "misconceptions": [
+        "Hardening off means deliberately starving plants of water. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured.",
+        "Cloudy weather eliminates transplant stress. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing.",
+        "A wilted transplant always needs more fertilizer. The statement should not be treated as a universal rule across sites, seasons, structures, cultivars, or management systems without local validation."
+      ],
+      "evidenceLimits": [
+        "Acclimation responses vary with cultivar, stage, root condition, prior environment, and outdoor weather sequence. Numerical thresholds and response magnitudes should therefore be treated as context-specific unless the cited evidence matches the site, cultivar, developmental stage, measurement method, and production system under review.",
+        "Climate normals, extension guidance, engineering references, and non-cannabis crop studies can support mechanism and planning, but they do not establish a universal cannabis target. Current local weather, site measurements, structural limits, and applicable rules remain required controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-021–040; THC-ENC-081–100; THC-ENC-361–365; THC-ENC-369."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-369",
@@ -8289,14 +8431,60 @@
       "topicSlug": "outdoor-greenhouse",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Irrigation-zone uniformity map",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-369",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-369/",
       "keywords": [
         "Outdoor & Greenhouse Growing",
         "Science lesson",
         "Irrigation-zone uniformity map",
-        "THC-ENC-369"
-      ]
+        "THC-ENC-369",
+        "irrigation schedule",
+        "distribution uniformity",
+        "emitter flow",
+        "application depth",
+        "soil water deficit",
+        "evapotranspiration",
+        "pressure variation",
+        "catch test"
+      ],
+      "objective": "Schedule irrigation from measured crop and root-zone conditions while verifying that the system applies water uniformly.",
+      "terms": [
+        "irrigation schedule",
+        "distribution uniformity",
+        "emitter flow",
+        "application depth",
+        "soil water deficit",
+        "evapotranspiration",
+        "pressure variation",
+        "catch test"
+      ],
+      "coreScience": [
+        "An irrigation schedule answers when to irrigate and how much to apply. It should combine root-zone water storage, crop size, weather demand, rainfall, system capacity, drainage, salinity, and product goals. Plant appearance alone is a late and ambiguous signal, while a fixed calendar ignores changing weather and root depth.",
+        "Distribution uniformity describes how evenly water reaches the managed area. Clogged emitters, pressure loss, elevation, line length, manufacturing variation, leaks, root intrusion, and damaged tubing create dry and wet zones. An average system flow can hide individual plant failure. Surface and subsurface drip alter evaporation, weeds, wetting geometry, inspection, and maintenance; one method is not universally superior.",
+        "Measure applied volume and wetting patterns. Compare emitter flows or catch-can depths at representative high, low, near, far, and pressure-risk positions. Irrigate to a defined soil or media target and verify the result at multiple depths. Rainfall may not recharge the effective root zone uniformly, particularly under dense canopies or plastic."
+      ],
+      "cultivation": [
+        "Create irrigation zones that match soil, slope, crop size, and hardware. Use warning limits for pressure, emitter flow, soil moisture, runoff, and drainage, and document corrective actions."
+      ],
+      "measurements": [
+        "Before evaluating irrigation scheduling and distribution uniformity, record the site, crop, and measurement context, including Zone/plant/soil, weather and ET source, rainfall, root depth, pre/post moisture by depth. Use fixed locations, definitions, and instruments so later comparisons are not confounded by changing observation methods.",
+        "During the observation period, track system pressure, emitter specification and measured flow, run time, applied volume/depth together with date and time, weather or structure state, crop stage, and any intervention that could change the response. Preserve raw measurements and notable spatial variation rather than only summary values.",
+        "At the decision point, document distribution metric, drainage/runoff, salinity, maintenance and crop response.. Compare the result with the production objective, note uncertainty and exceptions, and retain enough traceability to reconstruct why the action was taken."
+      ],
+      "misconceptions": [
+        "The same runtime gives the same water to every plant. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured.",
+        "Rainfall means irrigation can always be skipped. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing.",
+        "Subsurface drip cannot clog because it is protected. The statement should not be treated as a universal rule across sites, seasons, structures, cultivars, or management systems without local validation."
+      ],
+      "evidenceLimits": [
+        "Water use and crop coefficients are system-, climate-, canopy-, genotype-, stage-, and method-specific. Numerical thresholds and response magnitudes should therefore be treated as context-specific unless the cited evidence matches the site, cultivar, developmental stage, measurement method, and production system under review.",
+        "Climate normals, extension guidance, engineering references, and non-cannabis crop studies can support mechanism and planning, but they do not establish a universal cannabis target. Current local weather, site measurements, structural limits, and applicable rules remain required controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-081–100; THC-ENC-366–367; THC-ENC-370; THC-GROW-042; THC-GROW-070."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-370",
@@ -8307,14 +8495,64 @@
       "topicSlug": "outdoor-greenhouse",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Surface-management tradeoff diagram",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-370",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-370/",
       "keywords": [
         "Outdoor & Greenhouse Growing",
         "Science lesson",
         "Surface-management tradeoff diagram",
-        "THC-ENC-370"
-      ]
+        "THC-ENC-370",
+        "mulch",
+        "cover crop",
+        "residue",
+        "evaporation",
+        "infiltration",
+        "soil temperature",
+        "competition",
+        "termination",
+        "allelopathy",
+        "inoculum"
+      ],
+      "objective": "Evaluate surface covers and living vegetation through water, temperature, erosion, nutrients, pests, fire, and disease tradeoffs.",
+      "terms": [
+        "mulch",
+        "cover crop",
+        "residue",
+        "evaporation",
+        "infiltration",
+        "soil temperature",
+        "competition",
+        "termination",
+        "allelopathy",
+        "inoculum"
+      ],
+      "coreScience": [
+        "Mulch changes radiation, evaporation, raindrop impact, runoff, soil temperature, weed emergence, and soil-contact conditions. Organic residues can add carbon and nutrients as they decompose, while plastic films can strongly alter heat and water movement. Material thickness, color, particle size, continuity, contamination, and fire behavior matter.",
+        "Cover crops protect soil and support roots and organisms, but they also use water, nutrients, light, and space. Species choice and termination timing affect residue, nitrogen release or immobilization, insects, rodents, traffic, and disease. A cover crop that benefits one rotation can increase inoculum risk for another crop; recent hemp field research, for example, found cover-crop history affected Fusarium head blight and mycotoxin outcomes.",
+        "Surface management must be integrated with irrigation. Drip lines above or below mulch create different wetting and inspection conditions. Dense residues can hide leaks, pests, stems, or standing water. Bare soil may warm quickly but lose moisture and erode."
+      ],
+      "cultivation": [
+        "Define the purpose of mulch or cover crop, select clean material, monitor moisture and temperature beneath it, and record pest and disease effects rather than assuming a practice is universally regenerative."
+      ],
+      "measurements": [
+        "Before evaluating mulches, cover crops, and soil moisture, record the site, crop, and measurement context, including Material/species/source, seeding or application rate, thickness/coverage, termination. Use fixed locations, definitions, and instruments so later comparisons are not confounded by changing observation methods.",
+        "During the observation period, track soil temperature/moisture/infiltration, irrigation position, weeds, pests/rodents together with date and time, weather or structure state, crop stage, and any intervention that could change the response. Preserve raw measurements and notable spatial variation rather than only summary values.",
+        "At the decision point, document disease, nutrient tests, fire and contamination checks, corrective action.. Compare the result with the production objective, note uncertainty and exceptions, and retain enough traceability to reconstruct why the action was taken."
+      ],
+      "misconceptions": [
+        "All mulch cools soil. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured.",
+        "Every cover crop saves irrigation water. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing.",
+        "Plant residues cannot increase disease risk. The statement should not be treated as a universal rule across sites, seasons, structures, cultivars, or management systems without local validation."
+      ],
+      "evidenceLimits": [
+        "Results depend on climate, species, residue, soil, irrigation, crop stage, pest complex, and prior land use. Numerical thresholds and response magnitudes should therefore be treated as context-specific unless the cited evidence matches the site, cultivar, developmental stage, measurement method, and production system under review.",
+        "Climate normals, extension guidance, engineering references, and non-cannabis crop studies can support mechanism and planning, but they do not establish a universal cannabis target. Current local weather, site measurements, structural limits, and applicable rules remain required controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-366–369; THC-ENC-373; THC-ENC-376."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-371",
@@ -8325,14 +8563,64 @@
       "topicSlug": "outdoor-greenhouse",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Wind-load and support concept diagram",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-371",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-371/",
       "keywords": [
         "Outdoor & Greenhouse Growing",
         "Science lesson",
         "Wind-load and support concept diagram",
-        "THC-ENC-371"
-      ]
+        "THC-ENC-371",
+        "wind load",
+        "gust",
+        "turbulence",
+        "drag",
+        "lodging",
+        "leverage",
+        "anchorage",
+        "trellis",
+        "shelterbelt",
+        "porosity"
+      ],
+      "objective": "Relate wind speed, gusts, turbulence, canopy form, soil anchorage, and support design to plant injury and system failure.",
+      "terms": [
+        "wind load",
+        "gust",
+        "turbulence",
+        "drag",
+        "lodging",
+        "leverage",
+        "anchorage",
+        "trellis",
+        "shelterbelt",
+        "porosity"
+      ],
+      "coreScience": [
+        "Wind imposes force on leaves, branches, stems, trellises, tunnels, and greenhouse coverings. Force rises rapidly with wind speed, while a tall wide canopy increases drag and leverage. Repeated moderate movement can strengthen stems, but acute gusts can split unions, abrade tissue, uproot plants, collapse supports, or tear films.",
+        "The wind experienced inside a crop differs from the weather-station wind. Terrain, buildings, tree lines, solid fences, row orientation, canopy porosity, and openings create acceleration, turbulence, and sheltered zones. Solid barriers can produce strong eddies downwind; designed porous windbreaks reduce speed over a broader area.",
+        "Support must be designed for the mature wet canopy, not the transplant. Stakes, netting, anchors, posts, wires, ties, and attachment points each have load limits and failure modes. Ties that are too tight can girdle expanding stems, while unsupported heavy flowers can split after rain. Protected structures require engineering for local wind and snow loads."
+      ],
+      "cultivation": [
+        "Map prevailing and storm winds, orient rows and structures deliberately, install support before plants become difficult to handle, and inspect after every major event."
+      ],
+      "measurements": [
+        "Before evaluating wind exposure and structural support, record the site, crop, and measurement context, including Wind station/height, gust/direction, terrain and barriers, row orientation. Use fixed locations, definitions, and instruments so later comparisons are not confounded by changing observation methods.",
+        "During the observation period, track plant height/width, support component/specification, anchor depth, tie positions together with date and time, weather or structure state, crop stage, and any intervention that could change the response. Preserve raw measurements and notable spatial variation rather than only summary values.",
+        "At the decision point, document wet canopy condition, damage type/location, repairs, structure inspection.. Compare the result with the production objective, note uncertainty and exceptions, and retain enough traceability to reconstruct why the action was taken."
+      ],
+      "misconceptions": [
+        "More plant movement always creates stronger plants. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured.",
+        "A solid fence gives the best wind protection. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing.",
+        "A trellis that holds dry plants will hold rain-loaded plants. The statement should not be treated as a universal rule across sites, seasons, structures, cultivars, or management systems without local validation."
+      ],
+      "evidenceLimits": [
+        "Structural design requires site-specific loads, materials, installation, inspection, and qualified engineering where applicable. Numerical thresholds and response magnitudes should therefore be treated as context-specific unless the cited evidence matches the site, cultivar, developmental stage, measurement method, and production system under review.",
+        "Climate normals, extension guidance, engineering references, and non-cannabis crop studies can support mechanism and planning, but they do not establish a universal cannabis target. Current local weather, site measurements, structural limits, and applicable rules remain required controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-011–014; THC-ENC-181–200; THC-ENC-364; THC-ENC-379–380."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-372",
@@ -8343,14 +8631,60 @@
       "topicSlug": "outdoor-greenhouse",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Heat-drought injury mechanism map",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-372",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-372/",
       "keywords": [
         "Outdoor & Greenhouse Growing",
         "Science lesson",
         "Heat-drought injury mechanism map",
-        "THC-ENC-372"
-      ]
+        "THC-ENC-372",
+        "heat stress",
+        "drought stress",
+        "leaf temperature",
+        "vapor-pressure demand",
+        "stomatal closure",
+        "hydraulic conductance",
+        "sunscald",
+        "acclimation"
+      ],
+      "objective": "Separate atmospheric heat, radiation load, root-zone drought, hydraulic limitation, and tissue sunscald.",
+      "terms": [
+        "heat stress",
+        "drought stress",
+        "leaf temperature",
+        "vapor-pressure demand",
+        "stomatal closure",
+        "hydraulic conductance",
+        "sunscald",
+        "acclimation"
+      ],
+      "coreScience": [
+        "Air temperature is not leaf temperature. Solar radiation, wind, humidity, transpiration, leaf angle, color, and boundary-layer thickness can make tissues warmer or cooler than the surrounding air. Drought reduces the water available for transpiration and can drive stomatal closure, higher leaf temperature, reduced photosynthesis, wilting, leaf loss, and impaired growth.",
+        "Sunscald is localized tissue injury caused by excessive radiation and temperature, often after sudden exposure, pruning, transplanting, or canopy movement. It should be distinguished from nutrient disorders, pathogens, spray injury, and drought-wide symptoms. Heat and drought interact, but wet soil does not guarantee cooling when roots are diseased, saline, oxygen-limited, or too small.",
+        "Hemp and cannabis studies show strong genotype and system effects. Water-use values reported for one crop density or climate cannot be transferred directly to large isolated outdoor plants. Drought can alter biomass, fibers, chemistry, and plant-arthropod interactions rather than producing one predictable “stress enhancement.”"
+      ],
+      "cultivation": [
+        "Use leaf and root-zone measurements, not air temperature alone. Maintain reliable irrigation, reduce abrupt exposure, preserve root oxygen, and define emergency actions for pump failure, heat waves, and wildfire-related power loss."
+      ],
+      "measurements": [
+        "Before evaluating heat, drought, and sunscald, record the site, crop, and measurement context, including Air/leaf/soil temperature, RH/VPD, solar radiation/DLI, wind. Use fixed locations, definitions, and instruments so later comparisons are not confounded by changing observation methods.",
+        "During the observation period, track soil moisture by depth, irrigation and pressure, plant water status observations, EC/salinity together with date and time, weather or structure state, crop stage, and any intervention that could change the response. Preserve raw measurements and notable spatial variation rather than only summary values.",
+        "At the decision point, document symptom distribution, recovery, biomass and quality effects.. Compare the result with the production objective, note uncertainty and exceptions, and retain enough traceability to reconstruct why the action was taken."
+      ],
+      "misconceptions": [
+        "Heat stress begins at one universal air temperature. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured.",
+        "Wilting proves the soil is dry. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing.",
+        "Drought reliably increases cannabinoid quality. The statement should not be treated as a universal rule across sites, seasons, structures, cultivars, or management systems without local validation."
+      ],
+      "evidenceLimits": [
+        "Thresholds vary with genotype, acclimation, stage, tissue, radiation, humidity, wind, root system, salinity, and measurement method. Numerical thresholds and response magnitudes should therefore be treated as context-specific unless the cited evidence matches the site, cultivar, developmental stage, measurement method, and production system under review.",
+        "Climate normals, extension guidance, engineering references, and non-cannabis crop studies can support mechanism and planning, but they do not establish a universal cannabis target. Current local weather, site measurements, structural limits, and applicable rules remain required controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-081–100; THC-ENC-261–280; THC-ENC-365; THC-ENC-369."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-373",
@@ -8361,14 +8695,62 @@
       "topicSlug": "outdoor-greenhouse",
       "primaryFormat": "Diagnostic",
       "teachingVisual": "Flower wetness and disease-risk decision tree",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-373",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-373/",
       "keywords": [
         "Outdoor & Greenhouse Growing",
         "Diagnostic",
         "Flower wetness and disease-risk decision tree",
-        "THC-ENC-373"
-      ]
+        "THC-ENC-373",
+        "leaf wetness",
+        "dew point",
+        "wetness duration",
+        "inoculum",
+        "latent infection",
+        "flower density",
+        "Botrytis",
+        "Fusarium",
+        "disease triangle"
+      ],
+      "objective": "Evaluate how wetness duration, flower architecture, temperature, inoculum, injury, and crop stage influence disease risk.",
+      "terms": [
+        "leaf wetness",
+        "dew point",
+        "wetness duration",
+        "inoculum",
+        "latent infection",
+        "flower density",
+        "Botrytis",
+        "Fusarium",
+        "disease triangle"
+      ],
+      "coreScience": [
+        "Rain and dew affect disease through more than relative humidity. Free water, tissue wetness duration, splash, wound creation, spore movement, flower density, temperature, and drying rate determine whether a favorable infection window develops. A weather station can report moderate RH while interior flowers remain wet.",
+        "Dense inflorescences create protected microenvironments. Rain can wet outer tissues and enter interior spaces; dew can form when tissue temperature falls to the local dew point. Hail, wind abrasion, insect feeding, senescence, and trapped debris create infection sites. Recent hemp field work detected latent Fusarium before visible disease and found stronger infection around flowering with relationships to rain and RH. Greenhouse Cannabis studies likewise show that Botrytis outcomes depend on stage, cultivar, isolate, and environment.",
+        "Absence of visible mold is not proof of absence. Conversely, wet weather does not prove disease. Diagnosis needs representative inspection, environmental history, organism testing where appropriate, and careful separation of abiotic discoloration from infection."
+      ],
+      "cultivation": [
+        "Map wetness-prone zones, scout inside representative flowers without spreading contamination, protect clean blocks, improve spacing and drainage, and use documented hold and testing procedures for suspect material."
+      ],
+      "measurements": [
+        "Before evaluating rain, dew, and flower-disease pressure, record the site, crop, and measurement context, including Rain amount/intensity/time, dew point and wetness duration, canopy/flower position, cultivar and flower density. Use fixed locations, definitions, and instruments so later comparisons are not confounded by changing observation methods.",
+        "During the observation period, track temperature/RH, wind and drying time, injury/pests, symptoms/odor together with date and time, weather or structure state, crop stage, and any intervention that could change the response. Preserve raw measurements and notable spatial variation rather than only summary values.",
+        "At the decision point, document sample and test method, hold/disposition, corrective action.. Compare the result with the production objective, note uncertainty and exceptions, and retain enough traceability to reconstruct why the action was taken."
+      ],
+      "misconceptions": [
+        "Low average RH means flowers cannot stay wet. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured.",
+        "Visible mold can be trimmed away to clear the batch. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing.",
+        "Every brown flower after rain is Botrytis. The statement should not be treated as a universal rule across sites, seasons, structures, cultivars, or management systems without local validation."
+      ],
+      "evidenceLimits": [
+        "Disease risk and test interpretation are pathogen-, cultivar-, tissue-, stage-, weather-, sampling-, and jurisdiction-specific. Numerical thresholds and response magnitudes should therefore be treated as context-specific unless the cited evidence matches the site, cultivar, developmental stage, measurement method, and production system under review.",
+        "Climate normals, extension guidance, engineering references, and non-cannabis crop studies can support mechanism and planning, but they do not establish a universal cannabis target. Current local weather, site measurements, structural limits, and applicable rules remain required controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-301–340; THC-ENC-371–372; THC-ENC-378–380."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-374",
@@ -8379,14 +8761,62 @@
       "topicSlug": "outdoor-greenhouse",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Particle source-pathway-response diagram",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-374",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-374/",
       "keywords": [
         "Outdoor & Greenhouse Growing",
         "Science lesson",
         "Particle source-pathway-response diagram",
-        "THC-ENC-374"
-      ]
+        "THC-ENC-374",
+        "particulate matter",
+        "deposition",
+        "resuspension",
+        "source",
+        "exposure pathway",
+        "gas exchange",
+        "residue",
+        "hold",
+        "representative sampling"
+      ],
+      "objective": "Separate plant physiological effects, worker exposure, surface deposition, chemical contamination, and product-release decisions during smoke or dust events.",
+      "terms": [
+        "particulate matter",
+        "deposition",
+        "resuspension",
+        "source",
+        "exposure pathway",
+        "gas exchange",
+        "residue",
+        "hold",
+        "representative sampling"
+      ],
+      "coreScience": [
+        "Smoke and dust are mixtures, not single stresses. Particles can shade leaves, alter leaf temperature, obstruct or influence stomata, carry chemicals, abrade surfaces, and become trapped by trichomes and flower structures. Controlled studies in other plant species show that dust effects depend on particle size, load, leaf traits, timing, and chemistry. Cannabis-specific dose-response and product-cleaning evidence are limited.",
+        "A wildfire-smoke event also creates worker and operational hazards. Air-quality guidance for people does not determine whether a crop is releasable. Product decisions require the event source, duration, wind, ash or particle deposition, irrigation-water impacts, nearby combustion materials, product stage, sampling design, analytical methods, and current rules.",
+        "Do not assume rain or washing makes exposed flowers safe. Water may move particles deeper, promote disease, or create unvalidated residues. Do not assume a visually clean crop is chemically unaffected. Separate plant-health observation from contamination and release testing."
+      ],
+      "cultivation": [
+        "Create a smoke/dust response plan before the season. Suspend unsafe work, document air and deposition conditions, protect water and equipment, place exposed product on hold when indicated, and use qualified laboratories and regulators for disposition."
+      ],
+      "measurements": [
+        "Before evaluating smoke, dust, and particulate contamination, record the site, crop, and measurement context, including Event source/location/time, AQI/PM data and station, wind/rain, visible ash/dust, crop stage and exposure duration. Use fixed locations, definitions, and instruments so later comparisons are not confounded by changing observation methods.",
+        "During the observation period, track worker restrictions, water/soil impacts, photographs, sample map and chain of custody together with date and time, weather or structure state, crop stage, and any intervention that could change the response. Preserve raw measurements and notable spatial variation rather than only summary values.",
+        "At the decision point, document analyte panel, results, cleaning attempt if authorized, disposition.. Compare the result with the production objective, note uncertainty and exceptions, and retain enough traceability to reconstruct why the action was taken."
+      ],
+      "misconceptions": [
+        "If leaves still photosynthesize, the crop is safe. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured.",
+        "Rain automatically cleans smoke-exposed flowers. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing.",
+        "Air-quality data alone prove product contamination or safety. The statement should not be treated as a universal rule across sites, seasons, structures, cultivars, or management systems without local validation."
+      ],
+      "evidenceLimits": [
+        "Cannabis-specific evidence is sparse; chemical identity, dose, product form, sampling, analytical scope, and jurisdiction control conclusions. Numerical thresholds and response magnitudes should therefore be treated as context-specific unless the cited evidence matches the site, cultivar, developmental stage, measurement method, and production system under review.",
+        "Climate normals, extension guidance, engineering references, and non-cannabis crop studies can support mechanism and planning, but they do not establish a universal cannabis target. Current local weather, site measurements, structural limits, and applicable rules remain required controls."
+      ],
+      "crossLinks": [
+        "THC-C031; THC-ENC-261–280; THC-ENC-301–340; THC-ENC-380."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-375",
@@ -8397,14 +8827,64 @@
       "topicSlug": "outdoor-greenhouse",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Wildlife evidence and exclusion matrix",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-375",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-375/",
       "keywords": [
         "Outdoor & Greenhouse Growing",
         "Science lesson",
         "Wildlife evidence and exclusion matrix",
-        "THC-ENC-375"
-      ]
+        "THC-ENC-375",
+        "vertebrate pest",
+        "browse",
+        "girdling",
+        "burrow",
+        "track",
+        "exclusion",
+        "fence",
+        "netting",
+        "deterrent",
+        "non-target species"
+      ],
+      "objective": "Identify vertebrate damage from evidence and select lawful exclusion measures that do not create new crop, worker, or ecological hazards.",
+      "terms": [
+        "vertebrate pest",
+        "browse",
+        "girdling",
+        "burrow",
+        "track",
+        "exclusion",
+        "fence",
+        "netting",
+        "deterrent",
+        "non-target species"
+      ],
+      "coreScience": [
+        "Wildlife injury can include browsing, broken branches, stem girdling, digging, root disturbance, burrows, contamination, and irrigation damage. The same symptom can have several causes: clipped leaves may reflect deer, rabbits, rodents, insects, tools, or wind. Identification should use tracks, droppings, bite pattern, height, camera records, timing, and spatial distribution.",
+        "Exclusion is usually more reliable than repeated harassment, but it must match the animal and site. Fence height, mesh size, bottom sealing, gates, corners, soil contact, climbing surfaces, and maintenance determine performance. Bird netting can trap wildlife and workers if poorly installed. Electric fencing, traps, repellents, and wildlife handling are regulated and require lawful, labeled, and humane use.",
+        "Vegetation, mulch, debris, water, cover crops, and structures can provide habitat. Removing all habitat can harm beneficial species and erosion control, while uncontrolled habitat beside the crop can increase pressure. Management should separate crop protection from broader ecological goals."
+      ],
+      "cultivation": [
+        "Use evidence to identify the likely animal, install preventive exclusion before crop value rises, inspect the entire perimeter, and record non-target impacts."
+      ],
+      "measurements": [
+        "Before evaluating wildlife, vertebrate damage, and exclusion, record the site, crop, and measurement context, including Damage type/height/distribution, tracks/droppings/camera, species confidence, time. Use fixed locations, definitions, and instruments so later comparisons are not confounded by changing observation methods.",
+        "During the observation period, track crop stage, attractants and habitat, fence/net specification, gate and ground gaps together with date and time, weather or structure state, crop stage, and any intervention that could change the response. Preserve raw measurements and notable spatial variation rather than only summary values.",
+        "At the decision point, document inspection, repair, non-target injury, lawful authority.. Compare the result with the production objective, note uncertainty and exceptions, and retain enough traceability to reconstruct why the action was taken."
+      ],
+      "misconceptions": [
+        "All missing leaves are deer damage. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured.",
+        "A taller fence fixes every wildlife problem. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing.",
+        "Repellents work indefinitely without adaptation. The statement should not be treated as a universal rule across sites, seasons, structures, cultivars, or management systems without local validation."
+      ],
+      "evidenceLimits": [
+        "Wildlife laws, species behavior, migration, pressure, terrain, and structure design vary locally. Numerical thresholds and response magnitudes should therefore be treated as context-specific unless the cited evidence matches the site, cultivar, developmental stage, measurement method, and production system under review.",
+        "Climate normals, extension guidance, engineering references, and non-cannabis crop studies can support mechanism and planning, but they do not establish a universal cannabis target. Current local weather, site measurements, structural limits, and applicable rules remain required controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-281–300; THC-ENC-321–340; THC-ENC-370; THC-ENC-380."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-376",
@@ -8415,14 +8895,62 @@
       "topicSlug": "outdoor-greenhouse",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Outdoor arthropod food-web diagram",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-376",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-376/",
       "keywords": [
         "Outdoor & Greenhouse Growing",
         "Science lesson",
         "Outdoor arthropod food-web diagram",
-        "THC-ENC-376"
-      ]
+        "THC-ENC-376",
+        "arthropod community",
+        "herbivore",
+        "predator",
+        "parasitoid",
+        "pollinator",
+        "injury",
+        "damage",
+        "economic threshold",
+        "phenology"
+      ],
+      "objective": "Interpret outdoor arthropod communities by separating presence, injury, natural enemies, pollinators, and decision thresholds.",
+      "terms": [
+        "arthropod community",
+        "herbivore",
+        "predator",
+        "parasitoid",
+        "pollinator",
+        "injury",
+        "damage",
+        "economic threshold",
+        "phenology"
+      ],
+      "coreScience": [
+        "Outdoor cannabis hosts pests, predators, parasitoids, pollinators, decomposers, and incidental visitors. Finding an insect does not establish that it is causing damage, and finding a predator does not prove that a pest population is controlled. The crop stage, plant part, abundance, injury pattern, weather, field margin, and natural-enemy activity all matter.",
+        "Hemp field studies show strong effects of cultivar, flowering time, stress, and season. Corn earworm injury can differ among varieties and maturity classes. Tachinid parasitoids can attack larvae, but host and parasitoid outcomes are variable. Water and wind stress can alter plant chemistry and the arthropod community, so pest pressure cannot be interpreted independently of crop condition.",
+        "Scouting should use repeatable routes and units. Record eggs, immatures, adults, injury, predators, parasitoid evidence, and spatial clusters. Preserve unknown specimens or photographs. Management must follow current labels and local law; beneficial presence is not permission to release a biological control organism or apply an unapproved product."
+      ],
+      "cultivation": [
+        "Build a field-specific pest calendar and action framework. Protect beneficials through identification and selective, lawful decisions rather than assuming every insect requires treatment."
+      ],
+      "measurements": [
+        "Before evaluating outdoor pest and beneficial-insect ecology, record the site, crop, and measurement context, including Date/weather, field/zone/plant part, scouting method and units, pest stage/count. Use fixed locations, definitions, and instruments so later comparisons are not confounded by changing observation methods.",
+        "During the observation period, track injury and crop stage, predator/parasitoid/pollinator, specimen/image ID, trend together with date and time, weather or structure state, crop stage, and any intervention that could change the response. Preserve raw measurements and notable spatial variation rather than only summary values.",
+        "At the decision point, document threshold basis, action, label/legal check, outcome.. Compare the result with the production objective, note uncertainty and exceptions, and retain enough traceability to reconstruct why the action was taken."
+      ],
+      "misconceptions": [
+        "Every insect on cannabis is a pest. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured.",
+        "Beneficial insects eliminate the need for scouting. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing.",
+        "More nitrogen prevents caterpillar damage. The statement should not be treated as a universal rule across sites, seasons, structures, cultivars, or management systems without local validation."
+      ],
+      "evidenceLimits": [
+        "Occurrence records do not establish economic thresholds, treatment efficacy, or legal control options for every location. Numerical thresholds and response magnitudes should therefore be treated as context-specific unless the cited evidence matches the site, cultivar, developmental stage, measurement method, and production system under review.",
+        "Climate normals, extension guidance, engineering references, and non-cannabis crop studies can support mechanism and planning, but they do not establish a universal cannabis target. Current local weather, site measurements, structural limits, and applicable rules remain required controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-281–300; THC-ENC-321–340; THC-ENC-370; THC-ENC-373."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-377",
@@ -8433,14 +8961,62 @@
       "topicSlug": "outdoor-greenhouse",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Pollen source-pathway-receptor map",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-377",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-377/",
       "keywords": [
         "Outdoor & Greenhouse Growing",
         "Science lesson",
         "Pollen source-pathway-receptor map",
-        "THC-ENC-377"
-      ]
+        "THC-ENC-377",
+        "pollen shed",
+        "receptor",
+        "flowering overlap",
+        "dispersal kernel",
+        "deposition",
+        "gene flow",
+        "isolation distance",
+        "male sterility",
+        "wind pollination"
+      ],
+      "objective": "Assess unwanted pollination through source strength, flowering overlap, wind, atmospheric stability, distance, topography, and receptor sensitivity.",
+      "terms": [
+        "pollen shed",
+        "receptor",
+        "flowering overlap",
+        "dispersal kernel",
+        "deposition",
+        "gene flow",
+        "isolation distance",
+        "male sterility",
+        "wind pollination"
+      ],
+      "coreScience": [
+        "Cannabis is wind pollinated and can release large quantities of small pollen grains. Risk requires a source, viable pollen, overlapping flowering, atmospheric transport, and receptive female flowers. Distance reduces average deposition but does not create a sharp zero-risk boundary.",
+        "Recent U.S. modeling shows that dispersal patterns vary by region, month, time of day, convection, and wind shear. Daytime conditions can transport pollen broadly, while nighttime conditions can favor deposition nearer the source. The model illustrates why one universal isolation distance is scientifically weak. Local male plants, feral hemp, breeding blocks, fiber or grain fields, and contaminated seed lots can all act as sources.",
+        "Screens, tree lines, and border crops cannot guarantee containment. Detection and response should include flowering surveys, wind records, neighbor communication where lawful, genetic-source records, and seed-set monitoring. Removing males after pollen release may reduce future shed but cannot reverse pollination already completed."
+      ],
+      "cultivation": [
+        "Map potential pollen sources well before flowering, separate seed-production and unpollinated-flower goals, inspect plants early and repeatedly, and document risk decisions."
+      ],
+      "measurements": [
+        "Before evaluating pollen drift and neighboring crops, record the site, crop, and measurement context, including Crop/line/sex system, source locations and areas, male/monoecious/feral observations, flowering overlap. Use fixed locations, definitions, and instruments so later comparisons are not confounded by changing observation methods.",
+        "During the observation period, track wind direction/speed/stability, distance/topography/barriers, pollen monitoring if used together with date and time, weather or structure state, crop stage, and any intervention that could change the response. Preserve raw measurements and notable spatial variation rather than only summary values.",
+        "At the decision point, document seed set, affected lots, communication and corrective action.. Compare the result with the production objective, note uncertainty and exceptions, and retain enough traceability to reconstruct why the action was taken."
+      ],
+      "misconceptions": [
+        "A fixed buffer guarantees no pollen. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured.",
+        "Pollen only moves during strong winds. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing.",
+        "Removing a male after visible pollen release prevents all seed set. The statement should not be treated as a universal rule across sites, seasons, structures, cultivars, or management systems without local validation."
+      ],
+      "evidenceLimits": [
+        "Pollen viability, release, atmospheric transport, deposition, fertilization, and seed set are distinct processes with substantial spatial and temporal variability. Numerical thresholds and response magnitudes should therefore be treated as context-specific unless the cited evidence matches the site, cultivar, developmental stage, measurement method, and production system under review.",
+        "Climate normals, extension guidance, engineering references, and non-cannabis crop studies can support mechanism and planning, but they do not establish a universal cannabis target. Current local weather, site measurements, structural limits, and applicable rules remain required controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-015–018; THC-ENC-201–220; THC-ENC-361–364; THC-ENC-380."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-378",
@@ -8451,14 +9027,62 @@
       "topicSlug": "outdoor-greenhouse",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Greenhouse heat and moisture balance diagram",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-378",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-378/",
       "keywords": [
         "Outdoor & Greenhouse Growing",
         "Science lesson",
         "Greenhouse heat and moisture balance diagram",
-        "THC-ENC-378"
-      ]
+        "THC-ENC-378",
+        "ventilation rate",
+        "sensible heat",
+        "latent heat",
+        "solar gain",
+        "shading coefficient",
+        "condensation",
+        "air exchange",
+        "dehumidification",
+        "horizontal airflow"
+      ],
+      "objective": "Control greenhouse climate by balancing solar load, ventilation, air movement, shading, heating, cooling, irrigation, and moisture removal.",
+      "terms": [
+        "ventilation rate",
+        "sensible heat",
+        "latent heat",
+        "solar gain",
+        "shading coefficient",
+        "condensation",
+        "air exchange",
+        "dehumidification",
+        "horizontal airflow"
+      ],
+      "coreScience": [
+        "A greenhouse captures solar energy and restricts air exchange. Temperature and humidity result from radiation, plant transpiration, wet surfaces, ventilation, leakage, heating, cooling, dehumidification, fogging, crop load, and outside air. Opening vents changes both heat and moisture; it may cool effectively in dry wind or bring warm humid air into the structure.",
+        "Shading reduces solar gain but also reduces photosynthetic light. Material, position, deployment timing, cleanliness, and spectral transmission determine the effect. Internal air movement can reduce local gradients and condensation risk but does not remove moisture from the structure. Fans can also spread spores or create damaging jets.",
+        "Cannabis greenhouse studies show that light, humidity, cultivar, and crop stage influence growth, water use, chemistry, and disease. A single room-average RH or VPD value cannot describe dense flowers, cold surfaces, corners, or zones behind curtains. Environmental targets must therefore be measured spatially and adjusted to the crop and outside conditions."
+      ],
+      "cultivation": [
+        "Map canopy and risk-zone sensors, stage ventilation and shading, maintain drains and screens, inspect condensation, and verify climate after crop loading or structural changes."
+      ],
+      "measurements": [
+        "Before evaluating greenhouse ventilation, shading, and humidity, record the site, crop, and measurement context, including Outside and inside temperature/RH/dew point, solar radiation/DLI, vent and fan position, airflow map. Use fixed locations, definitions, and instruments so later comparisons are not confounded by changing observation methods.",
+        "During the observation period, track shade material/deployment, heating/cooling/dehumidification state, irrigation and leaf wetness, canopy/flower temperature together with date and time, weather or structure state, crop stage, and any intervention that could change the response. Preserve raw measurements and notable spatial variation rather than only summary values.",
+        "At the decision point, document condensation, disease observations, alarms/actions.. Compare the result with the production objective, note uncertainty and exceptions, and retain enough traceability to reconstruct why the action was taken."
+      ],
+      "misconceptions": [
+        "More fan speed always lowers humidity. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured.",
+        "Shade cloth only changes temperature. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing.",
+        "One controller sensor represents the whole greenhouse. The statement should not be treated as a universal rule across sites, seasons, structures, cultivars, or management systems without local validation."
+      ],
+      "evidenceLimits": [
+        "Setpoints and equipment performance are structure-, climate-, crop-load-, cultivar-, stage-, sensor-, and control-system-specific. Numerical thresholds and response magnitudes should therefore be treated as context-specific unless the cited evidence matches the site, cultivar, developmental stage, measurement method, and production system under review.",
+        "Climate normals, extension guidance, engineering references, and non-cannabis crop studies can support mechanism and planning, but they do not establish a universal cannabis target. Current local weather, site measurements, structural limits, and applicable rules remain required controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-081–120; THC-ENC-365; THC-ENC-373; THC-ENC-379."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-379",
@@ -8469,14 +9093,60 @@
       "topicSlug": "outdoor-greenhouse",
       "primaryFormat": "Science lesson",
       "teachingVisual": "High-tunnel opportunity and risk comparison",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-379",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-379/",
       "keywords": [
         "Outdoor & Greenhouse Growing",
         "Science lesson",
         "High-tunnel opportunity and risk comparison",
-        "THC-ENC-379"
-      ]
+        "THC-ENC-379",
+        "high tunnel",
+        "unheated greenhouse",
+        "season extension",
+        "passive ventilation",
+        "film transmission",
+        "thermal inversion",
+        "snow load",
+        "roll-up side"
+      ],
+      "objective": "Explain how high tunnels alter radiation, temperature, humidity, rainfall, wind, soil, season length, and crop risk.",
+      "terms": [
+        "high tunnel",
+        "unheated greenhouse",
+        "season extension",
+        "passive ventilation",
+        "film transmission",
+        "thermal inversion",
+        "snow load",
+        "roll-up side"
+      ],
+      "coreScience": [
+        "A high tunnel is a covered, usually passively ventilated structure that modifies rather than fully controls weather. It excludes much direct rain, reduces some wind, raises daytime temperature, changes nighttime heat loss, alters radiation, and can extend planting or harvest windows. The same structure can overheat rapidly, trap humidity, reduce light, concentrate salts, and fail under wind or snow.",
+        "Cannabis and hemp research has found system- and cultivar-specific differences between high tunnels and open fields. Greater vegetative growth or yield in one cultivar does not prove universal quality improvement. Tunnel film, age, orientation, ventilation, soil, density, irrigation, harvest date, and disease pressure all influence outcomes.",
+        "Season extension is biological and operational. Earlier planting can expose plants to cold soils and low light; later harvest can expose dense flowers to humidity and limited drying capacity. Passive structures need opening, closing, anchoring, drainage, repair, and emergency plans. Local engineering and code requirements govern structural safety."
+      ],
+      "cultivation": [
+        "Use tunnels to address a defined constraint, not as a generic upgrade. Instrument the structure, map edge and center zones, and compare tunnel and outdoor blocks before scaling."
+      ],
+      "measurements": [
+        "Before evaluating high tunnels and season extension, record the site, crop, and measurement context, including Structure dimensions/orientation/material/age, engineering and anchoring, vent/side positions, inside/outside temperature/RH/DLI/wind. Use fixed locations, definitions, and instruments so later comparisons are not confounded by changing observation methods.",
+        "During the observation period, track soil temperature/moisture/salts, crop density/cultivar, rain exclusion, disease together with date and time, weather or structure state, crop stage, and any intervention that could change the response. Preserve raw measurements and notable spatial variation rather than only summary values.",
+        "At the decision point, document yield/quality, film damage, storm response.. Compare the result with the production objective, note uncertainty and exceptions, and retain enough traceability to reconstruct why the action was taken."
+      ],
+      "misconceptions": [
+        "A high tunnel is a climate-controlled greenhouse. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured.",
+        "Rain exclusion eliminates flower disease. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing.",
+        "High-tunnel results transfer unchanged across cultivars. The statement should not be treated as a universal rule across sites, seasons, structures, cultivars, or management systems without local validation."
+      ],
+      "evidenceLimits": [
+        "High-tunnel outcomes depend on local climate, structure, film, ventilation, soil, irrigation, cultivar, density, and season. Numerical thresholds and response magnitudes should therefore be treated as context-specific unless the cited evidence matches the site, cultivar, developmental stage, measurement method, and production system under review.",
+        "Climate normals, extension guidance, engineering references, and non-cannabis crop studies can support mechanism and planning, but they do not establish a universal cannabis target. Current local weather, site measurements, structural limits, and applicable rules remain required controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-361–365; THC-ENC-369; THC-ENC-373; THC-ENC-378–380."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-380",
@@ -8487,14 +9157,62 @@
       "topicSlug": "outdoor-greenhouse",
       "primaryFormat": "Data / QA",
       "teachingVisual": "Weather-event response and crop record",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-380",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-380/",
       "keywords": [
         "Outdoor & Greenhouse Growing",
         "Data / QA",
         "Weather-event response and crop record",
-        "THC-ENC-380"
-      ]
+        "THC-ENC-380",
+        "trigger",
+        "warning level",
+        "action level",
+        "emergency response",
+        "hold",
+        "deviation",
+        "recovery",
+        "change control",
+        "event record"
+      ],
+      "objective": "Build a traceable prepare–monitor–respond–recover system for outdoor and protected-crop weather events.",
+      "terms": [
+        "trigger",
+        "warning level",
+        "action level",
+        "emergency response",
+        "hold",
+        "deviation",
+        "recovery",
+        "change control",
+        "event record"
+      ],
+      "coreScience": [
+        "Outdoor crop management requires decisions before, during, and after weather events. A response plan converts forecast and measured information into named actions. It should define who monitors, which source is authoritative, which crop blocks and systems are vulnerable, what thresholds trigger preparation or shutdown, and who can release work or product afterward.",
+        "Events include frost, heat, drought, pump failure, heavy rain, flooding, hail, high wind, lightning, snow load, smoke, power loss, greenhouse overheating, torn film, and prolonged leaf wetness. One event can create several secondary hazards: a storm can damage supports, contaminate water, interrupt irrigation, spread disease, block access, and mix plant identities.",
+        "Records must preserve the timeline. Capture forecast, actual conditions, sensor status, worker restrictions, actions, deviations, photographs, samples, crop response, repairs, and release decisions. A controller returning to normal does not prove that roots, flowers, structures, water, and product are acceptable."
+      ],
+      "cultivation": [
+        "Create block-specific checklists and seasonal drills. Pre-stage labels, backup power or water where justified, repair materials, worker communication, sampling supplies, and hold locations."
+      ],
+      "measurements": [
+        "Before evaluating weather response plans and outdoor crop records, record the site, crop, and measurement context, including Event ID/type, forecast source/time, trigger and authority, affected blocks/structures, pre-event conditions. Use fixed locations, definitions, and instruments so later comparisons are not confounded by changing observation methods.",
+        "During the observation period, track actions, measured weather, power/water/irrigation status, injury/contamination/disease, photographs/samples together with date and time, weather or structure state, crop stage, and any intervention that could change the response. Preserve raw measurements and notable spatial variation rather than only summary values.",
+        "At the decision point, document holds, repairs, CAPA, approver and release date.. Compare the result with the production objective, note uncertainty and exceptions, and retain enough traceability to reconstruct why the action was taken."
+      ],
+      "misconceptions": [
+        "A weather alert is a complete response plan. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured.",
+        "If plants look normal after a storm, no record is needed. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing.",
+        "Returning equipment to setpoint automatically clears the crop. The statement should not be treated as a universal rule across sites, seasons, structures, cultivars, or management systems without local validation."
+      ],
+      "evidenceLimits": [
+        "Triggers, worker protections, structural limits, sampling, product holds, and release authority require local rules, qualified review, and current procedures. Numerical thresholds and response magnitudes should therefore be treated as context-specific unless the cited evidence matches the site, cultivar, developmental stage, measurement method, and production system under review.",
+        "Climate normals, extension guidance, engineering references, and non-cannabis crop studies can support mechanism and planning, but they do not establish a universal cannabis target. Current local weather, site measurements, structural limits, and applicable rules remain required controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-363–379; THC-GROW-150; THC-GROW-160."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-381",
