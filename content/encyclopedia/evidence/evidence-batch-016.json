@@ -1,0 +1,219 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-016",
+  "createdAt": "2026-10-03",
+  "scope": "Claim-level diagnostic workflow, nutrient-pattern, water-balance, light, root-zone oxygen, salinity, pH/water-quality, wound, and sampling evidence for the remaining unmapped Part 14 lessons.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Symptom position, color, curl, necrosis, and wilt are observations with overlapping causes; they are not single-cause diagnostic tests.",
+    "Direct cannabis nutrient, light, temperature, and salinity experiments remain bounded to tested genotypes, root systems, treatment ranges, developmental stages, and methods.",
+    "General plant/greenhouse guidance may support mechanisms and sampling workflows but does not establish cannabis-specific injury thresholds.",
+    "All mappings remain pending independent science review."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0133",
+      "lessonId": "THC-ENC-261",
+      "sourceIds": [
+        "ENC-AUTH-095",
+        "ENC-AUTH-027"
+      ],
+      "claimType": "diagnostic-workflow",
+      "supportedClaim": "Plant diagnosis is strengthened by symptom progression, whole-plant/site pattern, cultural history, affected-versus-unaffected comparisons, and representative confirmation rather than matching one image or symptom to one product.",
+      "sourceLocator": "Penn State Diagnostic Problem 101 progression/pattern/history workflow; Cornell abiotic-versus-biotic hemp pattern guidance.",
+      "applicability": "Supports pattern-before-product differential diagnosis and explicit uncertainty.",
+      "limitations": "Pattern narrows a differential but does not by itself prove causation; mixed disorders and exceptions occur.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0134",
+      "lessonId": "THC-ENC-262",
+      "sourceIds": [
+        "ENC-AUTH-096",
+        "ENC-AUTH-097",
+        "ENC-AUTH-098"
+      ],
+      "claimType": "symptom-distribution-nutrition",
+      "supportedClaim": "Cannabis responses to nitrogen, phosphorus, and potassium supply vary with nutrient, genotype, growth state, tissue, and experimental context, so symptom age/location can guide a differential but cannot serve as a universal nutrient-photo key.",
+      "sourceLocator": "Saloner & Bernstein 2020 N study; Shiponi & Bernstein 2021 P study; Saloner, Sacks & Bernstein 2019 K genotype study.",
+      "applicability": "Supports tissue-age and position as diagnostic observations requiring root-zone and environmental context.",
+      "limitations": "Controlled nutrient-response studies do not validate one symptom pattern as uniquely diagnostic in mixed production disorders.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0135",
+      "lessonId": "THC-ENC-263",
+      "sourceIds": [
+        "ENC-AUTH-096",
+        "ENC-AUTH-097",
+        "ENC-AUTH-098",
+        "ENC-AUTH-040"
+      ],
+      "claimType": "chlorosis-differential",
+      "supportedClaim": "Cannabis nutrient supply can alter chlorophyll-related physiology, morphology, ionomics, and growth, while similar chlorosis can arise from multiple nutrient/root/environment mechanisms; visual chlorosis therefore requires supporting measurements.",
+      "sourceLocator": "Direct N/P/K cannabis experiments plus Wee et al. cannabis/hemp nutrition review.",
+      "applicability": "Supports chlorosis classification as a hypothesis generator rather than a diagnosis.",
+      "limitations": "Real production symptoms can be multifactorial and treatment thresholds from controlled trials are not universal.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0136",
+      "lessonId": "THC-ENC-264",
+      "sourceIds": [
+        "ENC-AUTH-095",
+        "ENC-AUTH-027"
+      ],
+      "claimType": "necrosis-differential",
+      "supportedClaim": "Necrosis, scorch, and margin injury are nonspecific endpoints whose diagnostic value depends on progression, spatial pattern, exposure history, roots, environment, and signs of biotic agents.",
+      "sourceLocator": "Penn State diagnostic progression/pattern guidance; Cornell hemp abiotic-versus-biotic field guidance.",
+      "applicability": "Supports differential diagnosis for irreversible necrotic injury.",
+      "limitations": "External injury pattern cannot reliably identify one chemical, nutrient, pathogen, hydraulic, thermal, or mechanical cause without corroborating evidence.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0137",
+      "lessonId": "THC-ENC-265",
+      "sourceIds": [
+        "ENC-AUTH-095",
+        "ENC-AUTH-096",
+        "ENC-AUTH-097",
+        "ENC-AUTH-098"
+      ],
+      "claimType": "leaf-distortion-differential",
+      "supportedClaim": "Leaf curling, cupping, clawing, twisting, and distortion are low-specificity observations; cannabis nutrient experiments demonstrate morphology changes with supply, but plant diagnostic guidance requires pests, pathogens, environment, roots, and management history to remain in the differential.",
+      "sourceLocator": "Penn State diagnostic workflow plus direct cannabis N/P/K studies.",
+      "applicability": "Supports precise morphology records without slang symptom-to-cause shortcuts.",
+      "limitations": "No cited study validates a single leaf-shape pattern as a universal cannabis nutrient diagnosis.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0138",
+      "lessonId": "THC-ENC-266",
+      "sourceIds": [
+        "ENC-AUTH-099",
+        "ENC-AUTH-013"
+      ],
+      "claimType": "wilt-water-balance",
+      "supportedClaim": "Cannabis gas exchange and water use respond to interacting light and temperature, while plant root hypoxia can constrain respiration and uptake; wilting must therefore be interpreted as a supply-demand symptom with both dry-root and wet/hypoxic-root possibilities.",
+      "sourceLocator": "Chandra et al. 2008 controlled cannabis PPFD/temperature/CO2 gas exchange; Loreti & Perata 2020 plant hypoxia review.",
+      "applicability": "Supports paired substrate/root/atmospheric measurements for wet-versus-dry wilt.",
+      "limitations": "Neither source defines a universal cannabis moisture or oxygen threshold for wilt across root systems.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0139",
+      "lessonId": "THC-ENC-267",
+      "sourceIds": [
+        "ENC-AUTH-102",
+        "ENC-AUTH-095"
+      ],
+      "claimType": "edema-water-imbalance",
+      "supportedClaim": "Greenhouse edema can arise when water uptake exceeds transpiration under conditions such as wet root zones, high humidity, low light, cool air, and poor ventilation, but similar blistering/corking symptoms require pest, pathogen, spray, and other differentials.",
+      "sourceLocator": "Penn State Edema of Geranium cause/symptom guidance plus general diagnostic workflow.",
+      "applicability": "Supports the water-imbalance mechanism while explicitly marking cross-species transfer to cannabis.",
+      "limitations": "Direct cannabis edema research is sparse, so this mechanism is not cannabis-specific proof from appearance alone.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0140",
+      "lessonId": "THC-ENC-271",
+      "sourceIds": [
+        "ENC-AUTH-046",
+        "ENC-AUTH-060"
+      ],
+      "claimType": "low-light-architecture",
+      "supportedClaim": "Cannabis morphology and canopy position respond to light environment, so elongation and stretch should be interpreted using measured photon environment, architecture, genotype, density, temperature, and developmental stage rather than a universal internode cutoff.",
+      "sourceLocator": "Rodriguez-Morrison et al. 2021 controlled indoor light response; Shape Matters 2021 architecture/light-gradient context.",
+      "applicability": "Supports low-light/shade-avoidance differential measurement.",
+      "limitations": "These studies do not define one PPFD or internode length that universally constitutes etiolation injury.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0141",
+      "lessonId": "THC-ENC-273",
+      "sourceIds": [
+        "ENC-AUTH-013",
+        "ENC-AUTH-053"
+      ],
+      "claimType": "root-zone-hypoxia",
+      "supportedClaim": "Low root-zone oxygen constrains aerobic metabolism and can contribute to impaired root function, while excess moisture and root disease can overlap; cannabis root-zone hypoxia diagnosis therefore requires oxygen/saturation/root/pathogen context.",
+      "sourceLocator": "Loreti & Perata plant hypoxia mechanisms; NC State hemp Pythium/excess-moisture context.",
+      "applicability": "Supports oxygen-supply and disease differentials in saturated root zones.",
+      "limitations": "A universal cannabis dissolved-oxygen injury threshold is not established across substrates, temperatures, root densities, and genotypes.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0142",
+      "lessonId": "THC-ENC-274",
+      "sourceIds": [
+        "ENC-AUTH-100"
+      ],
+      "claimType": "cannabis-salinity",
+      "supportedClaim": "Drug-type cannabis growth, physiology, yield, and cannabinoid concentration respond to NaCl stress in a root-system-dependent manner, demonstrating salinity and ion-specific stress while also showing that treatment response depends on solution context.",
+      "sourceLocator": "Yep, Gale & Zheng 2020 controlled hydroponic/aquaponic NaCl experiment.",
+      "applicability": "Supports salinity/osmotic-stress diagnosis with explicit salt, EC, root-system, duration, and genotype context.",
+      "limitations": "The tested NaCl levels in one chemovar/system are not universal irrigation or root-zone injury thresholds.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0143",
+      "lessonId": "THC-ENC-275",
+      "sourceIds": [
+        "ENC-AUTH-097",
+        "ENC-AUTH-040",
+        "ENC-AUTH-101"
+      ],
+      "claimType": "ph-nutrient-availability",
+      "supportedClaim": "Root-zone pH interacts with nutrient supply and ion availability, while irrigation-water alkalinity affects media pH buffering; pH-driven nutrient unavailability therefore requires method, water alkalinity, nutrient composition, medium, roots, and tissue context.",
+      "sourceLocator": "Shiponi & Bernstein 2021 P/root-zone pH responses; Wee et al. nutrition review; Penn State water-quality pH/alkalinity guidance.",
+      "applicability": "Supports pH as one causal variable in a nutrient-availability differential rather than a universal lockout chart.",
+      "limitations": "No cited source defines one universal cannabis pH injury threshold across soil, peat, coco, hydroponics, and recirculating systems.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0144",
+      "lessonId": "THC-ENC-276",
+      "sourceIds": [
+        "ENC-AUTH-101"
+      ],
+      "claimType": "water-alkalinity-sodium",
+      "supportedClaim": "Irrigation-water pH, alkalinity, hardness, and EC describe different chemical properties and should be measured separately; alkalinity controls acid-buffering behavior and salts can accumulate with repeated irrigation.",
+      "sourceLocator": "Penn State 2025 Water Quality Toolkit sections on pH, alkalinity, hardness, EC/TDS, calibration, and records.",
+      "applicability": "Supports water-quality records and separation of pH from buffering/salinity interpretation.",
+      "limitations": "General greenhouse screening ranges are not universal cannabis sodium, chloride, hardness, alkalinity, or salinity limits.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0145",
+      "lessonId": "THC-ENC-278",
+      "sourceIds": [
+        "ENC-AUTH-030",
+        "ENC-AUTH-055",
+        "ENC-AUTH-060"
+      ],
+      "claimType": "mechanical-training-injury",
+      "supportedClaim": "Cannabis architecture manipulation can change plant form and production outcomes, while general plant wound biology shows that tissue injury requires repair and functional recovery; visible attachment or swelling does not prove intact vascular or mechanical function.",
+      "sourceLocator": "Omary et al. wound/regeneration review; Danziger & Bernstein 2021 architecture studies.",
+      "applicability": "Supports separating deliberate training architecture from unintended mechanical damage and monitoring recovery.",
+      "limitations": "Cannabis wound-biomechanics thresholds and load-bearing recovery are not well standardized; severe cases may require structural inspection.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0146",
+      "lessonId": "THC-ENC-280",
+      "sourceIds": [
+        "ENC-AUTH-103",
+        "ENC-AUTH-095"
+      ],
+      "claimType": "diagnostic-sampling-verification",
+      "supportedClaim": "Diagnostic quality depends on representative living samples, multiple symptom stages, roots when relevant, photographs, and contextual history; corrective action should be followed by repeat observation rather than treated as proof because an intervention was attempted.",
+      "sourceLocator": "Texas A&M Plant Sampling guidance; Penn State diagnostic workflow and recommendation for clinic confirmation when needed.",
+      "applicability": "Supports case IDs, representative affected/unaffected sampling, preserved history, and verification after a controlled corrective action.",
+      "limitations": "Laboratory tests answer specific questions and can be non-diagnostic or incidental when specimen choice, timing, target selection, or interpretation are poor.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
