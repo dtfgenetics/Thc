@@ -11,7 +11,7 @@ on:
     paths:
       - 'configuration/encyclopedia-production-floor.json'
       - 'scripts/validate-encyclopedia-production-pointer.mjs'
-      - 'site/wordpress/education/encyclopedia/**'
+      - 'site/wordpress/education/encyclopedia/current-production-batch.json'
       - 'scripts/publish-wordpress-learning-search-indexes.mjs'
       - 'scripts/deploy/wordpress-learning-search-runtime.sh'
       - 'scripts/deploy-wordpress-learning-search-runtime-via-rest.mjs'
