@@ -6,6 +6,45 @@ const generic=fs.readFileSync('scripts/publish-wordpress-learning-center-pages.m
 const expansion=fs.readFileSync('scripts/publish-wordpress-learning-center-expansion-v1.mjs','utf8');
 const errors=[];
 
+const rootWriterContracts = [
+  {
+    path: 'scripts/update-wordpress-learn-learning-center.mjs',
+    forbidden: ["method: 'POST'", 'method:"POST"', 'DTF-LEARNING-CENTER-START'],
+    label: 'Learning Centers root guard'
+  },
+  {
+    path: 'scripts/rebuild-wordpress-learn-visual-v4.mjs',
+    forbidden: ["method: 'POST'", 'method:"POST"', 'APPLY_LEARN_V4'],
+    label: 'retired standalone Learn V4 guard'
+  },
+  {
+    path: 'scripts/publish-wordpress-learn-task-nav-v5.mjs',
+    forbidden: ["method: 'POST'", 'method:"POST"', 'APPLY_LEARN_TASK_NAV_V5'],
+    label: 'retired Task Nav V5 guard'
+  },
+  {
+    path: 'scripts/ensure-learn-infographic-entry.mjs',
+    forbidden: ["method: 'POST'", 'method:"POST"', 'dtf-learn-infographic-entry:start'],
+    label: 'retired Learn infographic injector guard'
+  }
+];
+for (const contract of rootWriterContracts) {
+  const source=fs.readFileSync(contract.path,'utf8');
+  for (const token of contract.forbidden) {
+    if (source.includes(token)) errors.push(`${contract.label} regained forbidden Learn-root writer token: ${token}`);
+  }
+}
+
+const workflowContracts = [
+  ['.github/workflows/deploy-thc-learning-centers.yml','APPLY_LEARNING_CENTER_ROOT'],
+  ['.github/workflows/wordpress-learn-visual-v4-production.yml','APPLY_LEARN_V4'],
+  ['.github/workflows/wordpress-learn-task-nav-v5.yml','APPLY_LEARN_TASK_NAV_V5']
+];
+for (const [workflow,token] of workflowContracts) {
+  const source=fs.readFileSync(workflow,'utf8');
+  if(source.includes(token)) errors.push(`${workflow} regained forbidden standalone Learn-root apply token: ${token}`);
+}
+
 const slugs=(source)=>[...source.matchAll(/\{\s*slug:\s*'([^']+)'/g)].map(m=>m[1]);
 const genericSlugs=new Set(slugs(generic));
 const expansionSlugs=new Set(slugs(expansion));
