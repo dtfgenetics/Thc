@@ -25,22 +25,18 @@
     "Define reference samples and balances, correct for removed samples and hardware, retain raw data, and use warning/action criteria for stalled or excessive rates."
   ],
   "measureAndRecord": [
-    "Scale/sensor ID and verification",
-    "sample geometry",
-    "raw mass/time",
-    "temperature/RH",
-    "intervention events",
-    "slope method",
-    "moisture/aW checks",
-    "endpoint and release."
+    "Before evaluating drying curves and rate-of-change interpretation, record the starting context and identifiers, including Scale/sensor ID and verification, sample geometry, raw mass/time. Use the same definitions and measurement locations for every comparison so changes can be attributed to the process rather than inconsistent observation.",
+    "During the process, track temperature/RH, intervention events, slope method along with time, location, material state, and any intervention or environmental change that could alter the response. Preserve raw observations instead of recording only a final pass/fail judgment.",
+    "At the decision point, document moisture/aW checks, endpoint and release.. Compare endpoints against the stated objective, note spatial or replicate variation, and retain enough traceability to reconstruct how the conclusion was reached."
   ],
   "misconceptions": [
-    "A flat mass curve proves every flower is dry.",
-    "One plant’s mass curve represents the entire room.",
-    "A faster slope always means a better process."
+    "A flat mass curve proves every flower is dry. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used.",
+    "One plant’s mass curve represents the entire room. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.",
+    "A faster slope always means a better process. The claim cannot be generalized across cultivars, loads, rooms, packages, or laboratories without controlled comparison and documented uncertainty."
   ],
   "evidenceLimits": [
-    "Mass change includes water and volatile loss and can be affected by handling; it is not a complete composition measurement."
+    "Mass change includes water and volatile loss and can be affected by handling; it is not a complete composition measurement. Numerical targets and response magnitudes should therefore be treated as system-specific unless the cited evidence directly matches the cultivar or material form, process geometry, measurement method, environmental conditions, and product objective being evaluated.",
+    "Evidence from reviews, standards, food or pharmaceutical quality systems, or non-cannabis plant materials can support general mechanisms and measurement practice, but those sources do not by themselves establish a universal cannabis process target. Current jurisdictional release requirements and validated local methods remain separate controls."
   ],
   "crossLinks": "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems.",
   "sourceNotes": [

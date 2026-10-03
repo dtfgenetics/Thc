@@ -24,23 +24,18 @@
     "Load only material meeting a defined precondition, avoid overfill, sample multiple depths, mix under controlled sanitation where appropriate, and hold material with condensation, odor, heat, or elevated aW."
   ],
   "measureAndRecord": [
-    "Container/material/lot",
-    "fill mass and volume",
-    "flower size",
-    "start mass/moisture/aW by location",
-    "headspace temperature/RH",
-    "opening/mixing",
-    "condensation",
-    "repeat samples",
-    "release."
+    "Before evaluating container curing and moisture redistribution, record the starting context and identifiers, including Container/material/lot, fill mass and volume, flower size. Use the same definitions and measurement locations for every comparison so changes can be attributed to the process rather than inconsistent observation.",
+    "During the process, track start mass/moisture/aW by location, headspace temperature/RH, opening/mixing along with time, location, material state, and any intervention or environmental change that could alter the response. Preserve raw observations instead of recording only a final pass/fail judgment.",
+    "At the decision point, document condensation, repeat samples, release.. Compare endpoints against the stated objective, note spatial or replicate variation, and retain enough traceability to reconstruct how the conclusion was reached."
   ],
   "misconceptions": [
-    "Opening a container once per day makes all flowers uniform.",
-    "A humidity indicator in headspace directly measures internal flower aW.",
-    "Adding moisture is a risk-free way to correct overdrying."
+    "Opening a container once per day makes all flowers uniform. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used.",
+    "A humidity indicator in headspace directly measures internal flower aW. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.",
+    "Adding moisture is a risk-free way to correct overdrying. The claim cannot be generalized across cultivars, loads, rooms, packages, or laboratories without controlled comparison and documented uncertainty."
   ],
   "evidenceLimits": [
-    "Container conditioning is geometry- and material-specific. Product-contact and moisture-addition rules require current review."
+    "Container conditioning is geometry- and material-specific. Product-contact and moisture-addition rules require current review. Numerical targets and response magnitudes should therefore be treated as system-specific unless the cited evidence directly matches the cultivar or material form, process geometry, measurement method, environmental conditions, and product objective being evaluated.",
+    "Evidence from reviews, standards, food or pharmaceutical quality systems, or non-cannabis plant materials can support general mechanisms and measurement practice, but those sources do not by themselves establish a universal cannabis process target. Current jurisdictional release requirements and validated local methods remain separate controls."
   ],
   "crossLinks": "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems.",
   "sourceNotes": [

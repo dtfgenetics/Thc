@@ -24,22 +24,18 @@
     "Map air movement and product mass/aW across rack levels, corners, center, supply, and return locations under the actual load. Revalidate after layout, fan, filter, or crop-geometry changes."
   ],
   "measureAndRecord": [
-    "Room/rack map",
-    "load mass and spacing",
-    "fan/HVAC/filters",
-    "airspeed method",
-    "temperature/RH",
-    "sample mass curves",
-    "final moisture/aW by location",
-    "quality and microbial results."
+    "Before evaluating airflow, loading density, and drying uniformity, record the starting context and identifiers, including Room/rack map, load mass and spacing, fan/HVAC/filters. Use the same definitions and measurement locations for every comparison so changes can be attributed to the process rather than inconsistent observation.",
+    "During the process, track airspeed method, temperature/RH, sample mass curves, along with time, location, material state, and any intervention or environmental change that could alter the response. Preserve raw observations instead of recording only a final pass/fail judgment.",
+    "At the decision point, document final moisture/aW by location, quality and microbial results.. Compare endpoints against the stated objective, note spatial or replicate variation, and retain enough traceability to reconstruct how the conclusion was reached."
   ],
   "misconceptions": [
-    "More fan speed always creates more uniform drying.",
-    "Equal rack spacing guarantees equal airflow.",
-    "An average final water activity clears every location."
+    "More fan speed always creates more uniform drying. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used.",
+    "Equal rack spacing guarantees equal airflow. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.",
+    "An average final water activity clears every location. The claim cannot be generalized across cultivars, loads, rooms, packages, or laboratories without controlled comparison and documented uncertainty."
   ],
   "evidenceLimits": [
-    "There is no universal airspeed or loading-density target for every room and flower form."
+    "There is no universal airspeed or loading-density target for every room and flower form. Numerical targets and response magnitudes should therefore be treated as system-specific unless the cited evidence directly matches the cultivar or material form, process geometry, measurement method, environmental conditions, and product objective being evaluated.",
+    "Evidence from reviews, standards, food or pharmaceutical quality systems, or non-cannabis plant materials can support general mechanisms and measurement practice, but those sources do not by themselves establish a universal cannabis process target. Current jurisdictional release requirements and validated local methods remain separate controls."
   ],
   "crossLinks": "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems.",
   "sourceNotes": [
