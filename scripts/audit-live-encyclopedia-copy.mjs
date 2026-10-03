@@ -4,8 +4,10 @@ import { readFile, writeFile } from 'node:fs/promises';
 const BASE_URL=(process.env.DTF_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const REGISTRY='content/encyclopedia/current-controlled-registry.json';
 const OUT='live-encyclopedia-copy-audit.json';
-const CONCURRENCY=Math.max(1,Math.min(24,Number(process.env.ENC_LIVE_AUDIT_CONCURRENCY||10)));
-const TIMEOUT=Math.max(5000,Number(process.env.ENC_LIVE_AUDIT_TIMEOUT_MS||20000));
+const CONCURRENCY=Math.max(1,Math.min(12,Number(process.env.ENC_LIVE_AUDIT_CONCURRENCY||6)));
+const TIMEOUT=Math.max(5000,Number(process.env.ENC_LIVE_AUDIT_TIMEOUT_MS||15000));
+const RETRIES=Math.max(1,Math.min(5,Number(process.env.ENC_LIVE_AUDIT_RETRIES||3)));
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 
 const registry=JSON.parse(await readFile(REGISTRY,'utf8'));
 const entries=Array.isArray(registry.entries)?registry.entries:[];
@@ -31,28 +33,38 @@ function decodeHtml(value=''){
 
 async function fetchRoute(id){
   const slug=id.toLowerCase();
-  const url=`${BASE_URL}/learn/encyclopedia/${slug}/?dtf_live_copy_audit=${Date.now()}`;
-  try{
-    const response=await fetch(url,{
-      redirect:'follow',
-      signal:AbortSignal.timeout(TIMEOUT),
-      headers:{'user-agent':'DTF-Encyclopedia-Live-Copy-Audit/1.0','cache-control':'no-cache'}
-    });
-    const body=await response.text();
-    const text=decodeHtml(body);
-    const matched=defects.filter(d=>d.re.test(text));
-    const found=matched.map(d=>d.id);
-    const defectSnippets=matched.map(d=>{
-      const match=text.match(d.re);
-      const index=match?.index??-1;
-      const start=Math.max(0,index-240);
-      const end=Math.min(text.length,index+(match?.[0]?.length||0)+240);
-      return {id:d.id,snippet:index>=0?text.slice(start,end):null};
-    });
-    return {id,url,status:response.status,live:response.status===200,defects:found,defectSnippets,passed:response.status===404||response.status===200&&found.length===0};
-  }catch(error){
-    return {id,url,status:0,live:false,defects:['fetch-failure'],error:error instanceof Error?error.message:String(error),passed:false};
+  let lastError=null;
+  for(let attempt=1;attempt<=RETRIES;attempt++){
+    const url=`${BASE_URL}/learn/encyclopedia/${slug}/?dtf_live_copy_audit=${Date.now()}-${attempt}`;
+    try{
+      const response=await fetch(url,{
+        redirect:'follow',
+        signal:AbortSignal.timeout(TIMEOUT),
+        headers:{'user-agent':'DTF-Encyclopedia-Live-Copy-Audit/1.0','cache-control':'no-cache, no-store'}
+      });
+      if(response.status===429||response.status>=500){
+        lastError=new Error(`HTTP ${response.status}`);
+        if(attempt<RETRIES){await sleep(500*attempt);continue;}
+      }
+      const body=await response.text();
+      const text=decodeHtml(body);
+      const matched=defects.filter(d=>d.re.test(text));
+      const found=matched.map(d=>d.id);
+      const defectSnippets=matched.map(d=>{
+        const match=text.match(d.re);
+        const index=match?.index??-1;
+        const start=Math.max(0,index-240);
+        const end=Math.min(text.length,index+(match?.[0]?.length||0)+240);
+        return {id:d.id,snippet:index>=0?text.slice(start,end):null};
+      });
+      return {id,url,status:response.status,live:response.status===200,defects:found,defectSnippets,attempts:attempt,passed:response.status===404||response.status===200&&found.length===0};
+    }catch(error){
+      lastError=error;
+      if(attempt<RETRIES){await sleep(500*attempt);continue;}
+    }
   }
+  const url=`${BASE_URL}/learn/encyclopedia/${slug}/`;
+  return {id,url,status:0,live:false,defects:['fetch-failure'],error:lastError instanceof Error?lastError.message:String(lastError),attempts:RETRIES,passed:false};
 }
 
 const results=new Array(entries.length);
