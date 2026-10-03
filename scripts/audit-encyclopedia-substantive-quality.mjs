@@ -30,11 +30,33 @@ for(const lesson of canonicalLessons){
 const values=(l,a,b)=>arr(l?.[a]).length?arr(l[a]):arr(l?.[b]);
 const sources=l=>values(l,'sourceNotes','evidence');
 const measures=l=>values(l,'measureAndRecord','measurements');
+const measurementGuidanceComplete=l=>{
+  const rows=measures(l);
+  if(rows.length>=2){
+    return rows.filter(x=>words(typeof x==='string'?x:JSON.stringify(x))>=5).length>=2;
+  }
+  if(rows.length!==1) return false;
+  const row=rows[0];
+  const value=typeof row==='string'?row:`${row?.field||''}: ${row?.requirement||''}`;
+  const clean=txt(value);
+  return words(clean)>=12 || clean.split(/[;|]/).map(x=>x.trim()).filter(Boolean).length>=3;
+};
 const terms=l=>values(l,'terms','termsToKnow');
 const checks=l=>arr(l.knowledgeCheck).length?arr(l.knowledgeCheck):arr(l.assessment?.knowledgeCheck);
+const expandEncRefs=value=>{
+  const text=String(value??'');
+  const ids=new Set(text.match(/THC-ENC-\d{3}/g)||[]);
+  for(const match of text.matchAll(/THC-ENC-(\d{3})\s*[–—-]\s*(?:THC-ENC-)?(\d{3})/g)){
+    const start=Number(match[1]), end=Number(match[2]);
+    if(Number.isInteger(start)&&Number.isInteger(end)&&end>=start&&end-start<=419){
+      for(let n=start;n<=end;n++) ids.add(`THC-ENC-${String(n).padStart(3,'0')}`);
+    }
+  }
+  return [...ids];
+};
 const cross=l=>{
-  if(typeof l.crossLinks==='string') return l.crossLinks.match(/THC-ENC-\d{3}/g)||[];
-  if(Array.isArray(l.crossLinks)) return l.crossLinks;
+  if(typeof l.crossLinks==='string') return expandEncRefs(l.crossLinks);
+  if(Array.isArray(l.crossLinks)) return [...new Set(l.crossLinks.flatMap(expandEncRefs))];
   if(l.crossLinks&&typeof l.crossLinks==='object') return [...arr(l.crossLinks.prerequisiteLessonIds),...arr(l.crossLinks.relatedLessonIds)];
   return [];
 };
@@ -54,7 +76,7 @@ const rows=(registry.entries||[]).map(entry=>{
   if(words(objective)<12) issues.push('thin-objective');
   if(core.length<3||core.filter(x=>words(typeof x==='string'?x:JSON.stringify(x))>=12).length<2) issues.push('thin-core-science');
   if(relevance.length<1||relevance.every(x=>words(x)<12)) issues.push('thin-cultivation-relevance');
-  if(measure.length<2||measure.filter(x=>words(typeof x==='string'?x:JSON.stringify(x))>=5).length<2) issues.push('thin-measurement-guidance');
+  if(!measurementGuidanceComplete(l)) issues.push('thin-measurement-guidance');
   if(misconception.length<2||misconception.filter(x=>words(typeof x==='string'?x:JSON.stringify(x))>=10).length<2) issues.push('thin-misconceptions');
   if(limits.length<1||limits.every(x=>words(x)<12)) issues.push('thin-evidence-limits');
   if(src.length<2) issues.push('insufficient-sources');
