@@ -11,12 +11,15 @@ const assetRoot=path.join(process.cwd(),'site/wordpress/assets/infographics');
 if(!user||!pass) throw new Error('Missing WordPress API credentials.');
 const auth=Buffer.from(`${user}:${pass}`).toString('base64');
 const map=JSON.parse(await readFile(mapFile,'utf8'));
-if(map?.schemaVersion!==1||!Array.isArray(map.items)||map.items.length!==20) throw new Error('Visual map must contain exactly 20 schemaVersion 1 items.');
+if(map?.schemaVersion!==1||!Array.isArray(map.items)||map.items.length<1||map.items.length>420) throw new Error('Visual map must contain 1-420 schemaVersion 1 items.');
 
-const expectedIds=Array.from({length:20},(_,i)=>`THC-ENC-${String(i+41).padStart(3,'0')}`);
 const ids=map.items.map(x=>x.id);
-if(new Set(ids).size!==20||expectedIds.some(id=>!ids.includes(id))) throw new Error('Visual map IDs must be exactly THC-ENC-041 through THC-ENC-060.');
-if(new Set(map.items.map(x=>x.assetPath)).size!==20) throw new Error('Visual map asset paths must be unique.');
+if(new Set(ids).size!==ids.length) throw new Error('Visual map lesson IDs must be unique.');
+if(map.batch==='encyclopedia-all-visuals-v1'){
+  const expectedIds=Array.from({length:420},(_,i)=>`THC-ENC-${String(i+1).padStart(3,'0')}`);
+  if(ids.length!==420||expectedIds.some(id=>!ids.includes(id))) throw new Error('Full visual map must contain exactly THC-ENC-001 through THC-ENC-420.');
+}
+if(new Set(map.items.map(x=>x.assetPath)).size!==map.items.length) throw new Error('Visual map asset paths must be unique.');
 for(const item of map.items){
   if(!item.title||!/^THC-ENC-\d{3}$/.test(item.id)||!/\.(?:jpe?g|png|webp)$/i.test(item.assetPath)) throw new Error(`Invalid visual map item: ${JSON.stringify(item)}`);
 }
@@ -65,12 +68,12 @@ async function uploadCanonicalMedia(item,identity){
   const text=await res.text(); let created;
   try{created=text?JSON.parse(text):null;}catch{created=text;}
   if(!res.ok||!created?.id) throw new Error(`${item.id}: media upload failed ${res.status}: ${typeof created==='string'?created.slice(0,900):JSON.stringify(created).slice(0,900)}`);
-  const description=`DTF Genetics THC Encyclopedia companion infographic. Repository path: ${item.assetPath}. SHA-256: ${identity.hash}.`;
+  const description=`DTF Genetics THC Encyclopedia companion teaching visual. Repository path: ${item.assetPath}. SHA-256: ${identity.hash}.`;
   const updated=await wp(`/media/${created.id}`,{method:'POST',body:{
     slug:identity.slug,
     title:item.title,
-    alt_text:`${item.title} — companion infographic`,
-    caption:`${item.id} companion infographic for Teaching Healthy Cultivation.`,
+    alt_text:item.altText||`${item.title} — companion teaching visual`,
+    caption:`${item.id} companion teaching visual for Teaching Healthy Cultivation.`,
     description
   }});
   if(!String(updated?.source_url||'').includes('/wp-content/uploads/')) throw new Error(`${item.id}: uploaded media source URL is not a WordPress upload URL.`);
@@ -128,8 +131,8 @@ await writeFile(path.join(backupDir,'pre-write-pages.json'),JSON.stringify(prefl
 })),null,2));
 
 function visualBlock(x){
-  const id=esc(x.item.id), title=esc(x.item.title), src=esc(x.media.source_url);
-  return `<!-- THC-ENC-VISUAL:${id} START -->\n<figure class="thc-lesson-visual" data-thc-lesson-visual-id="${id}" style="margin:24px 0 30px;padding:14px;background:#f4f8f5;border:1px solid #dbe8df;border-radius:18px">\n<a href="${src}" target="_blank" rel="noopener"><img src="${src}" alt="${title} — companion infographic" loading="lazy" decoding="async" style="display:block;width:100%;height:auto;border-radius:12px"></a>\n<figcaption style="margin:10px 4px 2px;line-height:1.55;color:#587064"><strong>${id} companion infographic.</strong> Visual support for this controlled lesson. <a href="/learn/infographics/">Open the searchable infographic library →</a></figcaption>\n</figure>\n<!-- THC-ENC-VISUAL:${id} END -->`;
+  const id=esc(x.item.id), title=esc(x.item.title), alt=esc(x.item.altText||`${x.item.title} — companion teaching visual`), src=esc(x.media.source_url);
+  return `<!-- THC-ENC-VISUAL:${id} START -->\n<figure class="thc-lesson-visual" data-thc-lesson-visual-id="${id}" style="margin:24px 0 30px;padding:14px;background:#f4f8f5;border:1px solid #dbe8df;border-radius:18px">\n<a href="${src}" target="_blank" rel="noopener"><img src="${src}" alt="${alt}" loading="lazy" decoding="async" style="display:block;width:100%;height:auto;border-radius:12px"></a>\n<figcaption style="margin:10px 4px 2px;line-height:1.55;color:#587064"><strong>${id} companion teaching visual.</strong> Visual support for this controlled lesson. <a href="/learn/infographics/">Open the searchable infographic library →</a></figcaption>\n</figure>\n<!-- THC-ENC-VISUAL:${id} END -->`;
 }
 function nextContent(x){
   const marker=new RegExp(`<!-- THC-ENC-VISUAL:${x.item.id} START -->[\\s\\S]*?<!-- THC-ENC-VISUAL:${x.item.id} END -->\\s*`,'g');
