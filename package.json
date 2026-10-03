@@ -178,6 +178,7 @@
     "verify:encyclopedia-research-completions": "npm run verify:encyclopedia-research-leases && node scripts/reconcile-encyclopedia-research-completions.mjs",
     "verify:encyclopedia-research-pipeline": "npm run verify:encyclopedia-dataset-claim-bridge && npm run build:encyclopedia-dataset-evidence-resolution && npm run verify:encyclopedia-research-completions",
     "build:public-research-evidence": "node scripts/build-public-research-evidence.mjs",
-    "verify:public-research-evidence": "npm run build:public-research-evidence && node scripts/validate-public-research-evidence.mjs"
+    "verify:public-research-evidence": "npm run build:public-research-evidence && node scripts/validate-public-research-evidence.mjs",
+    "audit:encyclopedia-substantive-quality:strict": "node scripts/audit-encyclopedia-substantive-quality.mjs --strict"
   }
 }
