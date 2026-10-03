@@ -75,11 +75,11 @@ const cross=l=>{
   return [];
 };
 const generic=/\b(see (the )?lesson|as appropriate|where appropriate|proper|correct|best practice|monitor closely|follow guidance|use judgment)\b/i;
-const sourceAuthority=/\b(university|extension|usda|epa|fda|nih|nist|cornell|penn state|journal|doi|frontiers|plants|hortscience|pubmed|ncbi|ashrae|astm|iso|fao|who|government|department|institute|society|bmc|genome biology|genome research|plos|scientific reports|new phytologist|plant physiology|scientia horticulturae|genetics|plant direct|nature|science|academic press|acs|phytochemical analysis|horticulturae|industrial crops|biosystems engineering|agrophysics)\b/i;
+const sourceAuthority=/\b(university|extension|usda|epa|fda|nih|nist|cornell|penn state|journal|doi|frontiers|plants|hortscience|pubmed|ncbi|ashrae|astm|iso|fao|who|government|department|institute|society|bmc|genome biology|genome research|plos|scientific reports|new phytologist|plant physiology|scientia horticulturae|genetics|plant direct|nature|science|academic press|acs|phytochemical analysis|horticulturae|industrial crops|biosystems engineering|agrophysics|bipm|jcgm)\b/i;
 const hasSourceAuthoritySignal=value=>{
   const text=txt(value);
   if(sourceAuthority.test(text)) return true;
-  if(/https:\/\/(?:www\.)?(?:ncbi\.nlm\.nih\.gov|pubmed\.ncbi\.nlm\.nih\.gov|pmc\.ncbi\.nlm\.nih\.gov|usda\.gov|epa\.gov|fda\.gov|nist\.gov|astm\.org)/i.test(text)) return true;
+  if(/https:\/\/(?:www\.)?(?:ncbi\.nlm\.nih\.gov|pubmed\.ncbi\.nlm\.nih\.gov|pmc\.ncbi\.nlm\.nih\.gov|usda\.gov|epa\.gov|fda\.gov|nist\.gov|astm\.org|bipm\.org)/i.test(text)) return true;
   if(/\b(?:19|20)\d{2}\b/.test(text)&&/\b(et al\.?|press|review|reports|biology|genome|genetics|horticulturae|phytology|physiology|agriculture|chemistry|analytical|bioanalytical|phytochemical|crops|engineering)\b/i.test(text)) return true;
   return false;
 };
