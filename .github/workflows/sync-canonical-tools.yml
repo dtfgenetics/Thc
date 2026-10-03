@@ -104,3 +104,10 @@ jobs:
           pinned_tools_sha="$(sed -n 's/^commit=//p' site/public-route-patch/assets/release-source-revisions/tools.txt)"
           test "${pinned_tools_sha}" = "${expected_tools_sha}"
           git push origin HEAD:main
+          git fetch origin main
+          remote_tools_sha="$(git show origin/main:site/public-route-patch/assets/release-source-revisions/tools.txt | sed -n 's/^commit=//p')"
+          if [ "${remote_tools_sha}" != "${expected_tools_sha}" ]; then
+            echo "::error::Canonical Tools mirror did not converge after push: expected ${expected_tools_sha}, found ${remote_tools_sha:-missing}."
+            exit 1
+          fi
+          echo "Canonical Tools mirror converged to ${remote_tools_sha}."
