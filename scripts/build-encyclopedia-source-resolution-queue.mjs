@@ -36,6 +36,26 @@ function authorityMatches(reference) {
   }).map(source => source.id);
 }
 
+function citationLooksTraceable(reference) {
+  const value=String(reference||'').trim();
+  if(value.length<24) return false;
+  if(/https:\/\/|doi\s*[:.]|10\.\d{4,9}\//i.test(value)) return true;
+  const hasYear=/(?:19|20)\d{2}/.test(value);
+  const hasAuthority=/\b(et al\.?|journal|university|extension|usda|epa|fda|nih|nist|astm|iso|ncbi|pubmed|frontiers|hortscience|plant physiology|scientific reports|royal botanic|department|institute|society|proceedings|review)\b/i.test(value);
+  return hasYear && hasAuthority;
+}
+
+function referenceTraceability(reference) {
+  const authorityIds=authorityMatches(reference);
+  if(authorityIds.length) return {traceable:true,authorityIds,kind:'central-authority'};
+  const volumeSource=volumeSourceById.get(reference)||null;
+  if(volumeSource?.location && /^https:\/\//.test(volumeSource.location)) {
+    return {traceable:true,authorityIds:[],kind:'volume-register-external'};
+  }
+  if(citationLooksTraceable(reference)) return {traceable:true,authorityIds:[],kind:'bibliographic-citation'};
+  return {traceable:false,authorityIds:[],kind:volumeSource?'volume-register-placeholder':'unresolved'};
+}
+
 const usage = new Map();
 for (const lesson of lessons) {
   for (const note of lesson.sourceNotes || []) {
@@ -47,7 +67,8 @@ for (const lesson of lessons) {
 }
 
 const references = [...usage.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([reference, lessonIds], index) => {
-  const authorityIds = [...new Set(authorityMatches(reference))].sort();
+  const trace=referenceTraceability(reference);
+  const authorityIds = [...new Set(trace.authorityIds)].sort();
   const volumeSource = volumeSourceById.get(reference) || null;
   const status = authorityIds.length
     ? 'authoritative_registry_resolved_needs_claim_review'
@@ -57,7 +78,9 @@ const references = [...usage.entries()].sort(([a], [b]) => a.localeCompare(b)).m
         : 'volume_registry_placeholder_needs_exact_source'
       : /^V\d{2}-SRC-\d{3}$/.test(reference)
         ? 'missing_volume_register_entry_needs_resolution'
-        : 'citation_text_needs_authority_review';
+        : trace.traceable
+          ? 'citation_traceable_needs_authority_review'
+          : 'citation_text_needs_resolution';
   return {
     referenceId: `ENC-SRC-CAND-${String(index + 1).padStart(4, '0')}`,
     rawReference: reference,
@@ -78,16 +101,26 @@ const references = [...usage.entries()].sort(([a], [b]) => a.localeCompare(b)).m
 });
 
 const referenceIdByRaw = new Map(references.map(row => [row.rawReference, row.referenceId]));
-const lessonRows = lessons.map(lesson => ({
-  lessonId: lesson.id,
-  number: Number(lesson.number),
-  part: lesson.__part,
-  canonicalFile: lesson.__path,
-  sourceReferenceIds: (lesson.sourceNotes || []).map(sourceText).filter(Boolean).map(reference => referenceIdByRaw.get(reference)),
-  resolutionState: (lesson.sourceNotes || []).map(sourceText).filter(Boolean).every(reference => authorityMatches(reference).length)
-    ? 'authority_links_available_claim_review_pending'
-    : 'source_resolution_incomplete'
-}));
+const lessonRows = lessons.map(lesson => {
+  const refs=(lesson.sourceNotes||[]).map(sourceText).filter(Boolean);
+  const traces=refs.map(referenceTraceability);
+  const allCentral=refs.length>0 && traces.every(trace=>trace.authorityIds.length>0);
+  const allTraceable=refs.length>0 && traces.every(trace=>trace.traceable);
+  return {
+    lessonId: lesson.id,
+    number: Number(lesson.number),
+    part: lesson.__part,
+    canonicalFile: lesson.__path,
+    sourceReferenceIds: refs.map(reference => referenceIdByRaw.get(reference)),
+    traceableReferenceCount: traces.filter(trace=>trace.traceable).length,
+    sourceReferenceCount: refs.length,
+    resolutionState: allCentral
+      ? 'authority_links_available_claim_review_pending'
+      : allTraceable
+        ? 'source_traceable_authority_review_pending'
+        : 'source_resolution_incomplete'
+  };
+});
 
 const countStatus = status => references.filter(row => row.resolutionStatus === status).length;
 const output = {
@@ -103,7 +136,9 @@ const output = {
     volumeRegistryResolved: countStatus('volume_registry_resolved_needs_authority_review'),
     volumeRegistryPlaceholders: countStatus('volume_registry_placeholder_needs_exact_source'),
     missingVolumeRegisterEntries: countStatus('missing_volume_register_entry_needs_resolution'),
-    citationTextNeedsAuthorityReview: countStatus('citation_text_needs_authority_review'),
+    citationTraceableNeedsAuthorityReview: countStatus('citation_traceable_needs_authority_review'),
+    citationTextNeedsResolution: countStatus('citation_text_needs_resolution'),
+    lessonsWithAllSourcesTraceable: lessonRows.filter(row => row.resolutionState !== 'source_resolution_incomplete').length,
     approved: 0
   },
   authoritativeSourceRegistry: relativePath(root, authorityPath),
