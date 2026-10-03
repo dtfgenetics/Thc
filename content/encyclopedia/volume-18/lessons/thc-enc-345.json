@@ -25,23 +25,18 @@
     "Measure product and air conditions, mass change, load geometry, and spatial distribution. Avoid copying a temperature/RH recipe without validating product response and safety."
   ],
   "measureAndRecord": [
-    "Wet mass",
-    "air/product/surface temperature",
-    "RH/dew point",
-    "airflow",
-    "rack/location",
-    "load density",
-    "mass versus time",
-    "energy/dehumidification state",
-    "final moisture/aW and chemistry."
+    "Before evaluating drying as heat and mass transfer, record the starting context and identifiers, including Wet mass, air/product/surface temperature, RH/dew point. Use the same definitions and measurement locations for every comparison so changes can be attributed to the process rather than inconsistent observation.",
+    "During the process, track airflow, rack/location, load density, along with time, location, material state, and any intervention or environmental change that could alter the response. Preserve raw observations instead of recording only a final pass/fail judgment.",
+    "At the decision point, document mass versus time, energy/dehumidification state, final moisture/aW and chemistry.. Compare endpoints against the stated objective, note spatial or replicate variation, and retain enough traceability to reconstruct how the conclusion was reached."
   ],
   "misconceptions": [
-    "Drying is simply waiting for water to evaporate.",
-    "Room RH alone determines drying rate.",
-    "A constant room setpoint produces a constant product drying rate."
+    "Drying is simply waiting for water to evaporate. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used.",
+    "Room RH alone determines drying rate. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.",
+    "A constant room setpoint produces a constant product drying rate. The claim cannot be generalized across cultivars, loads, rooms, packages, or laboratories without controlled comparison and documented uncertainty."
   ],
   "evidenceLimits": [
-    "Transfer coefficients and diffusion behavior are material- and system-specific."
+    "Transfer coefficients and diffusion behavior are material- and system-specific. Numerical targets and response magnitudes should therefore be treated as system-specific unless the cited evidence directly matches the cultivar or material form, process geometry, measurement method, environmental conditions, and product objective being evaluated.",
+    "Evidence from reviews, standards, food or pharmaceutical quality systems, or non-cannabis plant materials can support general mechanisms and measurement practice, but those sources do not by themselves establish a universal cannabis process target. Current jurisdictional release requirements and validated local methods remain separate controls."
   ],
   "crossLinks": "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems.",
   "sourceNotes": [
