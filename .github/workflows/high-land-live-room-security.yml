@@ -10,7 +10,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: high-land-live-room-security
@@ -240,31 +239,25 @@ jobs:
           PY
           grep -Fq '"ok": true' "$RUNNER_TEMP/high-land-live-security.json"
 
-      - name: Report live High Land security verification
+      - name: Summarize live High Land security verification
         if: always()
-        continue-on-error: true
-        uses: actions/github-script@v7
+        shell: bash
         env:
           JOB_STATUS: ${{ job.status }}
           PROBE_OUTCOME: ${{ steps.probe.outcome }}
           DEPLOY_RUN: ${{ github.event.workflow_run.id || '' }}
-        with:
-          script: |
-            const deploy = process.env.DEPLOY_RUN
-              ? `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.DEPLOY_RUN}`
-              : 'manual verification';
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## High Land live room security verification',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Triggered by deployment: ${deploy}`,
-                `Overall: **${process.env.JOB_STATUS}**`,
-                `Live room security probe: **${process.env.PROBE_OUTCOME || 'not reached'}**`,
-                '',
-                'Visitor-facing API checks: public room snapshots redact auth material; wrong rejoin credentials fail; forged host credentials fail; guests cannot start; out-of-turn mutations fail; authenticated host/guest turns succeed; forged event writes fail; authenticated event writes succeed. The isolated probe room is marked complete and expires through the normal room TTL cleanup.'
-              ].join('\n')
-            });
+        run: |
+          {
+            echo '## High Land live room security verification'
+            echo
+            echo "- Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            if [ -n "${DEPLOY_RUN}" ]; then
+              echo "- Triggered by deployment: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${DEPLOY_RUN}"
+            else
+              echo "- Triggered by deployment: manual verification"
+            fi
+            echo "- Overall: **${JOB_STATUS}**"
+            echo "- Live room security probe: **${PROBE_OUTCOME:-not reached}**"
+            echo
+            echo 'Visitor-facing API checks cover redacted auth material, rejected forged/rejoin credentials, host/turn authority, and authenticated event writes. Probe evidence remains in this workflow run rather than an issue comment.'
+          } >> "$GITHUB_STEP_SUMMARY"
