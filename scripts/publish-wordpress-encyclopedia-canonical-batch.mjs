@@ -16,6 +16,16 @@ if(batch.publicationAuthorized===false||batch.status==='blocked_external_review'
   throw new Error(`Batch ${batch.batch||input} is review-only and not authorized for publication.`);
 }
 
+const malformedPublicCopy=/\b(?:Open|ppen) sourc(?:\b|ee\b)|\bsourcee\b|\babstracte\b/i;
+const genericMisconceptionPlaceholder=/see the (controlled )?lesson evidence and context/i;
+const textValue=value=>typeof value==='string'?value:(value&&typeof value==='object'?JSON.stringify(value):'');
+function assertPublicationCopyClean(lesson){
+  const badSource=(Array.isArray(lesson.sourceNotes)?lesson.sourceNotes:[]).find(note=>malformedPublicCopy.test(textValue(note)));
+  if(badSource) throw new Error(`${lesson.id} contains malformed public source copy and cannot be published: ${textValue(badSource).slice(0,120)}`);
+  const badMisconception=(Array.isArray(lesson.misconceptions)?lesson.misconceptions:[]).find(row=>genericMisconceptionPlaceholder.test(textValue(row)));
+  if(badMisconception) throw new Error(`${lesson.id} contains placeholder misconception copy and cannot be published.`);
+}
+
 const lessons=[];
 for(const file of batch.lessonFiles){
   const lesson=JSON.parse(await readFile(file,'utf8'));
@@ -24,6 +34,7 @@ for(const file of batch.lessonFiles){
   if(lesson.reviewControl?.publicationAuthorized===false){
     throw new Error(`${lesson.id} is blocked from publication by reviewControl.publicationAuthorized=false`);
   }
+  assertPublicationCopyClean(lesson);
   lessons.push({...lesson,_sourceFile:file});
 }
 
