@@ -26,15 +26,18 @@
     "Create instrument-specific schedules based on risk and use, not one universal calendar. Place independent checks around critical measurements and define hold, correction, data review, and return-to-service criteria."
   ],
   "measureAndRecord": [
-    "Instrument ID/model/serial/firmware; measurand/range; procedure; reference ID/lot/value/uncertainty/expiry; environmental conditions; as-found results; adjustment; as-left results; tolerance; pass/fail; affected-data review; approver; next due date."
+    "Record instrument ID, model, serial number, firmware where relevant, measurand, range, calibration or verification procedure, reference standard ID, lot, assigned value, uncertainty, expiry, and environmental conditions.",
+    "Preserve as-found results before adjustment, any adjustment made, as-left results, tolerance, pass/fail decision, operator, date, and next due date. Do not overwrite the pre-adjustment state.",
+    "When a check fails, document the affected date range and data, assess whether prior measurements may be invalid, record corrective action, and obtain review approval before closing the event."
   ],
   "misconceptions": [
-    "A calibration sticker proves every result is traceable and fit for purpose.",
-    "Calibration and verification are the same activity.",
-    "A failed check affects only the measurement taken immediately before it."
+    "A calibration sticker proves every result is traceable and fit for purpose. Traceability also requires a documented chain to appropriate references, a suitable method, and evidence that the instrument was performing within the needed range.",
+    "Calibration and verification are the same activity. Calibration establishes the relationship between indication and reference values; verification checks whether performance meets a defined requirement.",
+    "A failed check affects only the measurement taken immediately before it. The period of questionable data can extend back to the last known acceptable verification unless additional evidence narrows the interval."
   ],
   "evidenceLimits": [
-    "Calibration evidence cannot compensate for nonrepresentative samples, unsuitable methods, uncontrolled environmental effects, or undocumented data handling."
+    "Calibration evidence does not compensate for nonrepresentative samples, unsuitable methods, uncontrolled environmental effects, or incorrect data handling.",
+    "Traceability supports comparability of measurements but does not prove that the measurement is biologically meaningful or sufficient for a cultivation decision."
   ],
   "crossLinks": "THC-ENC-402; THC-ENC-406–408; THC-ENC-412–414.",
   "sourceNotes": [
