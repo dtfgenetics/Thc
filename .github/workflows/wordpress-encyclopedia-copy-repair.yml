@@ -5,7 +5,6 @@ on:
   push:
     branches: [main]
     paths:
-      - 'content/encyclopedia/**'
       - 'scripts/repair-wordpress-encyclopedia-copy-defects.mjs'
       - 'scripts/publish-wordpress-encyclopedia-canonical-batch.mjs'
       - 'scripts/audit-live-encyclopedia-copy.mjs'
@@ -23,7 +22,7 @@ permissions:
 
 concurrency:
   group: dtfseeds-encyclopedia-copy-repair
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   repair:
