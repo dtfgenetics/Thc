@@ -25,15 +25,18 @@
     "Use a single controlled deviation record linked to affected plants, batches, instruments, files, samples, SOP versions, and release decisions."
   ],
   "measureAndRecord": [
-    "Deviation ID; requirement and version; event date/time/location; reporter; affected entities; immediate safety/containment; raw evidence; timeline; impact and uncertainty; causes and evidence; correction; CAPA owner/due date; change control; effectiveness metric/date; disposition/approver; closure."
+    "Assign a deviation ID and record the applicable requirement and version, event date and time, location, affected entities, reporter, immediate safety or containment action, and preserved raw evidence.",
+    "Build a timeline and assess impact, uncertainty, extent, and potential recurrence before assigning causes. Distinguish direct cause, contributing factors, systemic conditions, and unsupported assumptions.",
+    "Record correction, corrective and preventive actions, owner, due date, linked change control, effectiveness metric, verification date, residual risk, disposition, approver, and closure evidence."
   ],
   "misconceptions": [
-    "Passing a retest automatically invalidates the original failure.",
-    "Root cause is always one person or one failed component.",
-    "Completing the action item proves the CAPA was effective."
+    "Passing a retest automatically invalidates the original failure. A retest is additional evidence and does not erase the need to explain the original result and determine whether the retest was justified.",
+    "Root cause is always one person or one failed component. Complex failures can arise from interacting process, equipment, training, environment, design, and management factors.",
+    "Completing the action item proves the CAPA was effective. Effectiveness requires evidence that recurrence risk or the targeted process measure actually improved after implementation."
   ],
   "evidenceLimits": [
-    "Root-cause certainty can remain incomplete; decisions must state evidence, uncertainty, residual risk, and authority."
+    "Root-cause certainty can remain incomplete even after a careful investigation; decisions should state evidence strength, uncertainty, residual risk, and authority.",
+    "CAPA systems can improve control but cannot guarantee zero recurrence, especially when underlying mechanisms are only partially understood."
   ],
   "crossLinks": "THC-ENC-360; THC-ENC-405–412; THC-ENC-414; all controlled release records.",
   "sourceNotes": [
