@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-006",
+  "createdAt": "2026-10-03",
+  "scope": "High-priority claim-level evidence for ethylene, defense signaling, micronutrient interpretation, bacterial disease, and virus/viroid differential-diagnosis lessons.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Mappings remain review-pending and do not authorize publication.",
+    "Direct cannabis/hemp evidence is bounded to the studied genotype, treatment, pathogen, and method.",
+    "General nutrient or defense interpretation must not be converted into universal cannabis thresholds."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0049",
+      "lessonId": "THC-ENC-076",
+      "sourceIds": [
+        "ENC-AUTH-038"
+      ],
+      "claimType": "cannabis-sex-expression-primary",
+      "supportedClaim": "Cannabis sex expression can be altered experimentally by chemical interventions affecting hormone pathways, supporting a role for hormone signaling while not reducing sex determination to a single hormone.",
+      "sourceLocator": "Garcia-de Heer, Kretzschmar, and Mieog 2026, Plants 15(9):1291, DOI 10.3390/plants15091291.",
+      "applicability": "Supports the lesson's cannabis-specific statement that ethylene-related signaling can participate in sex-expression manipulation.",
+      "limitations": "Treatment effects are chemical-, dose-, stage-, genotype-, and protocol-specific and do not establish universal cultivation use or legal suitability.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0050",
+      "lessonId": "THC-ENC-078",
+      "sourceIds": [
+        "ENC-AUTH-039"
+      ],
+      "claimType": "cannabis-defense-signaling-primary",
+      "supportedClaim": "Salicylic-acid and other hormone signals can alter cannabis prenyltransferase promoter activity and cannabinoid-pathway responses, demonstrating signaling-pathway effects without proving crop-wide disease resistance or yield benefit.",
+      "sourceLocator": "Sands et al. 2023, Scientific Reports 13:8620, DOI 10.1038/s41598-023-35303-4.",
+      "applicability": "Supports the lesson's cannabis-specific mechanistic example linking defense-related hormone signaling and cannabinoid-pathway regulation.",
+      "limitations": "Promoter and metabolite responses do not establish universal elicitor prescriptions, disease efficacy, residue safety, or productivity gains.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0051",
+      "lessonId": "THC-ENC-129",
+      "sourceIds": [
+        "ENC-AUTH-040"
+      ],
+      "claimType": "cannabis-nutrition-review",
+      "supportedClaim": "Hemp and drug-type Cannabis can differ in nutrient acquisition, utilization, phenology, and source-sink relationships, so nutrient interpretation should preserve genotype and production-type context rather than assume one universal crop response.",
+      "sourceLocator": "Wee et al. 2025, Journal of Experimental Botany 76(1):94-108, DOI 10.1093/jxb/erae362.",
+      "applicability": "Supports cannabis-specific nutrient-use and source-sink context used alongside general plant micronutrient physiology.",
+      "limitations": "The review emphasizes nitrogen and phosphorus and does not establish validated cannabis deficiency/toxicity thresholds for Mn, Zn, Cu, or Mo.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0052",
+      "lessonId": "THC-ENC-309",
+      "sourceIds": [
+        "ENC-AUTH-041"
+      ],
+      "claimType": "hemp-bacterial-pathology-primary",
+      "supportedClaim": "Serratia marcescens has been demonstrated to cause a leaf-spot disease on industrial hemp, providing a confirmed bacterial Cannabis pathosystem while leaving many other bacterial detections non-causal until pathogenicity evidence exists.",
+      "sourceLocator": "Schappe, Ritchie, and Thiessen 2020, Plant Disease 104(4):1248, DOI 10.1094/PDIS-04-19-0782-PDN.",
+      "applicability": "Supports the lesson's distinction between confirmed bacterial disease and opportunistic/endophytic detection.",
+      "limitations": "One confirmed pathosystem does not make bacterial disease the default explanation for angular, necrotic, or water-soaked lesions.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0053",
+      "lessonId": "THC-ENC-312",
+      "sourceIds": [
+        "ENC-AUTH-042",
+        "ENC-AUTH-043"
+      ],
+      "claimType": "cannabis-virus-diagnostics",
+      "supportedClaim": "Cannabis/hemp can host multiple viruses and viroids, and molecular detection must be separated from causal attribution of nonspecific mosaic, chlorosis, curling, or stunting symptoms; BCTV is one confirmed hemp virus with genotype- and context-dependent effects.",
+      "sourceLocator": "Punja et al. 2024, IJMS 25(1):14, DOI 10.3390/ijms25010014; Han et al. 2026, Phytopathology 116(5):813-824, DOI 10.1094/PHYTO-09-25-0297-R.",
+      "applicability": "Supports the lesson's symptom-overlap, molecular-diagnostics, and causal-inference boundaries for virus/viroid-like presentations.",
+      "limitations": "Detection does not establish symptom causation for every sample, and BCTV findings should not be generalized to all viruses, cultivars, regions, or coinfections.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
