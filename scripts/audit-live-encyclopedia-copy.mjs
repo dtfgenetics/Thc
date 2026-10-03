@@ -40,8 +40,16 @@ async function fetchRoute(id){
     });
     const body=await response.text();
     const text=decodeHtml(body);
-    const found=defects.filter(d=>d.re.test(text)).map(d=>d.id);
-    return {id,url,status:response.status,live:response.status===200,defects:found,passed:response.status===404||response.status===200&&found.length===0};
+    const matched=defects.filter(d=>d.re.test(text));
+    const found=matched.map(d=>d.id);
+    const defectSnippets=matched.map(d=>{
+      const match=text.match(d.re);
+      const index=match?.index??-1;
+      const start=Math.max(0,index-240);
+      const end=Math.min(text.length,index+(match?.[0]?.length||0)+240);
+      return {id:d.id,snippet:index>=0?text.slice(start,end):null};
+    });
+    return {id,url,status:response.status,live:response.status===200,defects:found,defectSnippets,passed:response.status===404||response.status===200&&found.length===0};
   }catch(error){
     return {id,url,status:0,live:false,defects:['fetch-failure'],error:error instanceof Error?error.message:String(error),passed:false};
   }
