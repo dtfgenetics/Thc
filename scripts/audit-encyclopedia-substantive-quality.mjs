@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
 
 const root=process.cwd();
 const encRoot=path.join(root,'content','encyclopedia');
@@ -9,20 +10,22 @@ const outPath=path.join(root,'data','encyclopedia-substantive-quality-audit.json
 const arr=v=>Array.isArray(v)?v:[];
 const txt=v=>String(v??'').replace(/\s+/g,' ').trim();
 const words=v=>txt(v).split(/\s+/).filter(Boolean).length;
-const lessons=new Map();
+const canonicalLessons=readCanonicalEncyclopediaLessons(root);
+const lessons=new Map(canonicalLessons.map(lesson=>[
+  lesson.id,
+  {...lesson,__file:lesson.__path}
+]));
 
-function walk(dir){
-  for(const e of fs.readdirSync(dir,{withFileTypes:true})){
-    const file=path.join(dir,e.name);
-    if(e.isDirectory()) walk(file);
-    else if(e.isFile()&&e.name.endsWith('.json')){
-      let j; try{j=JSON.parse(fs.readFileSync(file,'utf8'));}catch{continue}
-      if(/^THC-ENC-\d{3}$/.test(j.id||'')) lessons.set(j.id,{...j,__file:path.relative(root,file)});
-      for(const l of arr(j.lessons)) if(/^THC-ENC-\d{3}$/.test(l?.id||'')) lessons.set(l.id,{...l,__file:path.relative(root,file)});
-    }
+if(canonicalLessons.length!==420){
+  console.error(`Substantive audit requires 420 canonical lessons; found ${canonicalLessons.length}.`);
+  process.exit(1);
+}
+for(const lesson of canonicalLessons){
+  if(lesson.__sourceKind!=='individual-canonical'){
+    console.error(`${lesson.id}: substantive audit must use individual canonical lesson files, found ${lesson.__sourceKind}.`);
+    process.exit(1);
   }
 }
-walk(encRoot);
 
 const values=(l,a,b)=>arr(l?.[a]).length?arr(l[a]):arr(l?.[b]);
 const sources=l=>values(l,'sourceNotes','evidence');
