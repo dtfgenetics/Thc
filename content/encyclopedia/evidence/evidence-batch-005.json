@@ -1,0 +1,149 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-005",
+  "createdAt": "2026-10-03",
+  "scope": "Claim-level evidence for flowering behavior, canopy airflow/pathology, wound recovery, pollen/reproductive biology, antioxidant assays, cold stress, and humidity physiology lessons resolved during the Encyclopedia completion audit.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Mappings remain review-pending and do not authorize publication.",
+    "Each source supports only the scoped claim and stated applicability.",
+    "Quantitative treatment effects remain bounded to the studied genotype, environment, method, and experimental design."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0039",
+      "lessonId": "THC-ENC-193",
+      "sourceIds": [
+        "ENC-AUTH-028"
+      ],
+      "claimType": "cannabis-flowering-genetics-primary",
+      "supportedClaim": "Cannabis includes photoperiod-sensitive and photoperiod-insensitive flowering behavior with genetic control of photoperiod response; this distinction supports caution when discussing reproductive reversion and daylength manipulation.",
+      "sourceLocator": "Dowling et al. 2024, The Plant Journal, DOI 10.1111/tpj.16769.",
+      "applicability": "Supports the lesson's photoperiod-response distinction and the limitation that revegetation behavior cannot be generalized across all genotypes.",
+      "limitations": "Does not directly test the cultivation practice called monster cropping or establish a yield benefit from reproductive reversion.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0040",
+      "lessonId": "THC-ENC-197",
+      "sourceIds": [
+        "ENC-AUTH-029"
+      ],
+      "claimType": "cannabis-pathology-primary",
+      "supportedClaim": "Within the tested greenhouse cannabis system, enhanced air circulation changed inflorescence microclimate and reduced Botrytis bud-rot incidence, supporting the relevance of within-canopy air movement to disease risk.",
+      "sourceLocator": "Buirs, Lung, and Punja 2025, Canadian Journal of Plant Pathology, DOI 10.1080/07060661.2025.2478250.",
+      "applicability": "Supports the lesson's emphasis on canopy microclimate, air movement, and disease-risk context.",
+      "limitations": "Does not establish a universal airflow velocity, fan layout, or disease-control guarantee across facilities and genotypes.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0041",
+      "lessonId": "THC-ENC-198",
+      "sourceIds": [
+        "ENC-AUTH-028"
+      ],
+      "claimType": "cannabis-flowering-genetics-primary",
+      "supportedClaim": "Photoperiod-insensitive cannabis/hemp material has genetically distinct flowering behavior, so developmental time available for recovery from training should not be assumed equivalent to photoperiod-sensitive material.",
+      "sourceLocator": "Dowling et al. 2024, The Plant Journal, DOI 10.1111/tpj.16769.",
+      "applicability": "Supports the lesson's biological distinction between photoperiod-sensitive and autoflowering/day-neutral material.",
+      "limitations": "Does not test topping, bending, defoliation, or define a universal recovery interval for autoflowering plants.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0042",
+      "lessonId": "THC-ENC-199",
+      "sourceIds": [
+        "ENC-AUTH-030"
+      ],
+      "claimType": "plant-wound-regeneration-review",
+      "supportedClaim": "Plant wound recovery involves coordinated local and systemic regeneration signals and cannot be reduced to a single visible recovery cue such as restored turgor.",
+      "sourceLocator": "Omary, Matosevich, and Efroni 2023, New Phytologist, DOI 10.1111/nph.18487.",
+      "applicability": "Supports the lesson's separation of immediate water-status recovery, wound repair, and resumed growth.",
+      "limitations": "General plant review rather than cannabis-specific training research; no cannabis recovery duration is established.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0043",
+      "lessonId": "THC-ENC-209",
+      "sourceIds": [
+        "ENC-AUTH-031"
+      ],
+      "claimType": "cannabis-pollen-transport-primary",
+      "supportedClaim": "Windborne cannabis/hemp pollen transport varies with meteorology and spatial context, supporting probabilistic cross-pollination risk assessment rather than one guaranteed isolation radius.",
+      "sourceLocator": "Nimmala, Ross, and Foroutan 2024, Scientific Reports 14:20605, DOI 10.1038/s41598-024-70633-x.",
+      "applicability": "Supports the lesson's pollen-dispersal and source-pathway-recipient framework.",
+      "limitations": "Atmospheric modeling and deposition do not directly quantify successful fertilization probability for every field or facility.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0044",
+      "lessonId": "THC-ENC-210",
+      "sourceIds": [
+        "ENC-AUTH-032"
+      ],
+      "claimType": "cannabis-reproductive-biology-primary",
+      "supportedClaim": "Cannabis pollen can germinate and produce pollen tubes on receptive stigmatic tissue, while successful seed formation requires more than visible pollen deposition alone.",
+      "sourceLocator": "Punja and Holmes 2020, Frontiers in Plant Science 11:718, DOI 10.3389/fpls.2020.00718.",
+      "applicability": "Supports cannabis-specific floral morphology, pollen germination, pollen-tube growth, and later seed-formation context.",
+      "limitations": "Does not define a universal stigma-receptivity window or color rule across cultivars.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0045",
+      "lessonId": "THC-ENC-213",
+      "sourceIds": [
+        "ENC-AUTH-033",
+        "ENC-AUTH-031"
+      ],
+      "claimType": "cannabis-pollen-methods-primary",
+      "supportedClaim": "Controlled cannabis breeding requires explicit pollen collection/handling and containment records because cannabis is wind-pollinated and pollen can be mobile beyond the intended cross.",
+      "sourceLocator": "Wizenberg, Weis, and Campbell 2020 DOI 10.1002/aps3.11389, combined with Nimmala, Ross, and Foroutan 2024 DOI 10.1038/s41598-024-70633-x.",
+      "applicability": "Supports chain-of-identity, pollen-handling, and containment reasoning for controlled crosses.",
+      "limitations": "Controlled handling improves parentage confidence but does not equal DNA-confirmed parentage.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0046",
+      "lessonId": "THC-ENC-254",
+      "sourceIds": [
+        "ENC-AUTH-034",
+        "ENC-AUTH-035"
+      ],
+      "claimType": "cannabis-antioxidant-assay-primary",
+      "supportedClaim": "Hemp/cannabis antioxidant-assay outcomes depend on tissue, cultivar/sample set, extraction, and assay method; DPPH, ABTS, FRAP, and related measurements should not be treated as interchangeable biological endpoints.",
+      "sourceLocator": "Jacuńska et al. 2026 DOI 10.3390/app16062957 and Chen et al. 2024 DOI 10.3390/antiox13060749.",
+      "applicability": "Supports the lesson's method-aware treatment of phenolic and antioxidant measurements.",
+      "limitations": "In-vitro extract assays do not establish intact-plant stress tolerance or human clinical efficacy.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0047",
+      "lessonId": "THC-ENC-269",
+      "sourceIds": [
+        "ENC-AUTH-036"
+      ],
+      "claimType": "hemp-cold-stress-primary",
+      "supportedClaim": "Cold response in hemp varies with cultivar, plant age, acclimation, exposure pattern, and measured endpoint, so one temperature cannot be treated as a universal cannabis injury threshold.",
+      "sourceLocator": "Galic et al. 2022, Horticulturae 8(6):531, DOI 10.3390/horticulturae8060531.",
+      "applicability": "Supports the lesson's genotype-, age-, and method-bounded interpretation of cold injury.",
+      "limitations": "Specific experimental temperatures and responses should not be generalized to all cannabis germplasm or production systems.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0048",
+      "lessonId": "THC-ENC-272",
+      "sourceIds": [
+        "ENC-AUTH-037"
+      ],
+      "claimType": "cannabis-humidity-primary",
+      "supportedClaim": "In the tested CBD-dominant cannabis genotype, very high canopy relative humidity altered development, biomass, flowering timing, and cannabinoid concentration, demonstrating that humidity can materially affect crop physiology under specific conditions.",
+      "sourceLocator": "Corredor-Perilla, Kwon, and Park 2025, Frontiers in Plant Science 16:1678142, DOI 10.3389/fpls.2025.1678142.",
+      "applicability": "Supports the lesson's humidity/VPD mechanism and the need to interpret RH together with temperature and crop context.",
+      "limitations": "The study compares specific treatment ranges in one genotype and does not define universal cannabis RH or VPD targets.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
