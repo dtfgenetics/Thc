@@ -7,6 +7,7 @@ on:
       - 'content/encyclopedia/evidence/**'
       - 'configuration/encyclopedia-topics.json'
       - 'configuration/encyclopedia-search-language.json'
+      - 'configuration/encyclopedia-production-floor.json'
       - 'configuration/education-search-static-records.json'
       - 'configuration/encyclopedia-search-benchmark.json'
       - 'data/encyclopedia-completion-scorecard.json'
@@ -82,6 +83,8 @@ jobs:
           node-version: '22'
       - name: Validate canonical encyclopedia source pin
         run: npm run verify:encyclopedia-source-pin
+      - name: Validate forward-only production pointer
+        run: node scripts/validate-encyclopedia-production-pointer.mjs
       - name: Validate shared authoritative source bridge
         run: npm run verify:encyclopedia-shared-source-bridge
       - name: Build completion scorecard
