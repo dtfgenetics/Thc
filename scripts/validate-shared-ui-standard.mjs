@@ -57,7 +57,7 @@ for (const token of [
 ]) requireToken(footer, token, 'footer');
 
 const canonicalLabels = ['Home','Seeds','Learn','Courses','Tools','Games','Community','Shop'];
-for (const [label, nav] of [['public-navigation', publicNav.primaryNavigation], ['site-navigation-v6', siteNav.primaryNavigation]]) {
+for (const [label, nav] of [['public-navigation', publicNav.primaryNavigation], ['site-navigation-v6', siteNav.primaryNavigation], ['site-registry', siteRegistry.information_architecture?.canonical_primary_navigation]]) {
   const labels = (nav || []).map(item => item.label);
   if (JSON.stringify(labels) !== JSON.stringify(canonicalLabels)) failures.push(`${label}: canonical labels drifted: ${JSON.stringify(labels)}`);
 }
