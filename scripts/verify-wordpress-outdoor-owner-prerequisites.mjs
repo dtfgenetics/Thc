@@ -1,4 +1,5 @@
 import process from 'node:process';
+import {buildWordPressPageQuery,requireSingleWordPressPage} from './wordpress-learning-page-query.mjs';
 
 const site=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const user=process.env.WP_API_USERNAME||'';
@@ -28,10 +29,9 @@ async function request(path){
   throw last;
 }
 
-async function page(slug){
-  const rows=await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&context=edit&per_page=20`);
-  if(!Array.isArray(rows)||rows.length!==1) throw new Error(`Expected exactly one WordPress page for ${slug}; found ${Array.isArray(rows)?rows.length:'invalid response'}`);
-  return rows[0];
+async function page(slug,parentId=null){
+  const rows=await request(buildWordPressPageQuery(slug,{parentId}));
+  return requireSingleWordPressPage(rows,{slug,parentId});
 }
 
 const specs=[
@@ -45,8 +45,9 @@ const specs=[
   {slug:'outdoor',required:['data-dtf-topic="outdoor-cultivation"']}
 ];
 const results=[];
+const learn=await page('learn');
 for(const spec of specs){
-  const item=await page(spec.slug);
+  const item=spec.slug==='learn'?learn:await page(spec.slug,learn.id);
   const content=rendered(item.content);
   for(const marker of spec.required){
     if(!content.includes(marker)) throw new Error(`${spec.slug}: missing required WordPress ownership marker ${marker}`);

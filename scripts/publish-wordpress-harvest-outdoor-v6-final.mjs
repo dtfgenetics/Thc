@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
+import {buildWordPressPageQuery,requireSingleWordPressPage} from './wordpress-learning-page-query.mjs';
 
 const ROOT=process.cwd();
 const site=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
@@ -145,10 +146,9 @@ async function request(path,options={}){
   throw last;
 }
 
-async function pageBySlug(slug){
-  const rows=await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&context=edit&per_page=20`);
-  if(!Array.isArray(rows)||rows.length!==1) fail(`${slug}: expected exactly one WordPress page, found ${Array.isArray(rows)?rows.length:'invalid response'}`);
-  return rows[0];
+async function pageBySlug(slug,parentId=null){
+  const rows=await request(buildWordPressPageQuery(slug,{parentId}));
+  return requireSingleWordPressPage(rows,{slug,parentId});
 }
 
 function sourceCards(curriculum,ids){
@@ -188,10 +188,11 @@ function stripOwnBlock(spec,html){
   return `${html.slice(0,a)}${html.slice(b+end.length)}`.trim();
 }
 
+const learnPage=await pageBySlug('learn');
 const plans=[];
 for(const entry of loaded){
   const {spec,curriculum}=entry;
-  const page=await pageBySlug(spec.slug);
+  const page=await pageBySlug(spec.slug,learnPage.id);
   const before=rendered(page.content);
   if(!before.includes(spec.ownerMarker)) fail(`${spec.id}: page is not the expected V3 subject owner (${spec.ownerMarker} missing)`);
   if(!before.includes(spec.guideMarker)) fail(`${spec.id}: page is missing V4 guided-learning ownership (${spec.guideMarker} missing)`);
@@ -214,7 +215,7 @@ try{
     updated.push(plan);
   }
   for(const plan of plans){
-    const check=await pageBySlug(plan.spec.slug);
+    const check=await pageBySlug(plan.spec.slug,learnPage.id);
     const html=rendered(check.content);
     if(!html.includes(plan.spec.ownerMarker)||!html.includes(plan.spec.guideMarker)||!html.includes(plan.spec.dataMarker)) fail(`${plan.spec.id}: post-write ownership marker verification failed`);
     if(count(html,'data-hov6-chapter=')!==8||count(html,'class="hov6-lesson"')!==32) fail(`${plan.spec.id}: post-write chapter/lesson count verification failed`);
