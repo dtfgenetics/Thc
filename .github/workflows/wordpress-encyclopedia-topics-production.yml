@@ -114,9 +114,7 @@ jobs:
           grep -Fqi -- 'thc-enc-060' "$roots"
           grep -Fqi -- 'Infographic included' "$roots"
 
-          lesson="$RUNNER_TEMP/lesson-041.html"
-          get_page '/learn/encyclopedia/thc-enc-041/' 'data-thc-lesson-visual-id="THC-ENC-041"' "$lesson"
-          grep -Fqi -- '/wp-content/uploads/' "$lesson"
+          # Teaching visuals are validated from the canonical visual ledger, not a legacy THC-ENC-041 asset.
 
       - name: Upload rollback and organization evidence
         if: always() && steps.organize.outputs.backup_dir != ''
