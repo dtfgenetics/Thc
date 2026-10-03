@@ -47,8 +47,10 @@ const lessons = ids.map(id => {
   const p = priorityById.get(id) || {};
 
   const contentComplete = s.contentContractComplete === true;
-  const claimEvidenceComplete = Number(e?.evidence?.claimEvidenceCount || 0) > 0 &&
-    arr(e?.evidence?.needs).every(need => need !== 'claim_level_evidence_mapping' && need !== 'source_note_authority_resolution');
+  const claimEvidenceMapped = Number(e?.evidence?.claimEvidenceCount || 0) > 0;
+  const claimEvidenceReviewState = String(e?.evidence?.reviewState || '');
+  const claimEvidenceReviewed = ['independent_science_review_complete','approved'].includes(claimEvidenceReviewState);
+  const claimEvidenceComplete = claimEvidenceMapped && claimEvidenceReviewed;
   const sourcesResolved = q.resolutionState === 'authority_links_available_claim_review_pending' || q.resolutionState === 'source_traceable_authority_review_pending';
   const visualApproved = Boolean(v.approvedAssetId) && v.assetQaStatus === 'approved';
   const rationaleReviewed = r.reviewState === 'approved' || r.reviewState === 'independent_review_complete';
@@ -64,7 +66,8 @@ const lessons = ids.map(id => {
 
   const nextActions = [];
   if(!contentComplete) nextActions.push('repair_lesson_content_contract');
-  if(!claimEvidenceComplete) nextActions.push('map_atomic_claim_evidence');
+  if(!claimEvidenceMapped) nextActions.push('map_atomic_claim_evidence');
+  else if(!claimEvidenceReviewed) nextActions.push('independent_claim_evidence_review');
   if(!sourcesResolved) nextActions.push('resolve_source_authority_and_exact_locator');
   if(!visualApproved) nextActions.push('produce_and_review_teaching_visual');
   if(!rationaleReviewed) nextActions.push('independent_assessment_rationale_review');
@@ -92,6 +95,9 @@ const lessons = ids.map(id => {
     },
     evidence:{
       claimEvidenceCount:Number(e?.evidence?.claimEvidenceCount || 0),
+      claimEvidenceMapped,
+      claimEvidenceReviewState:claimEvidenceReviewState||null,
+      claimEvidenceReviewed,
       claimEvidenceComplete,
       authoritativeSourceCount:arr(e?.evidence?.authoritativeSourceIds).length,
       unresolvedSourceRefs:arr(e?.sourceNotes?.unresolvedRefs),
@@ -185,6 +191,8 @@ const output = {
   summary:{
     lessonCount:lessons.length,
     contentComplete:count(x=>x.content.complete),
+    evidenceMapped:count(x=>x.evidence.claimEvidenceMapped),
+    evidenceReviewed:count(x=>x.evidence.claimEvidenceReviewed),
     evidenceComplete:count(x=>x.evidence.claimEvidenceComplete && x.evidence.sourcesResolved),
     visualApproved:count(x=>x.visual.approved),
     rationaleReviewed:count(x=>x.assessment.reviewed),
