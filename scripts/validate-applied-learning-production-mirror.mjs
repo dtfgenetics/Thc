@@ -55,3 +55,5 @@ for(const file of ['index.html','app.js','styles.css','data.json','source-revisi
   assert.ok(fs.statSync(`${root}/${file}`).size>0,`${file} must be non-empty`);
 }
 console.log(`Applied Learning production mirror valid at ${data.sourceSha} with ${data.graph.nodes.length} canonical graph nodes.`);
+
+await import('./test-applied-learning-production-runtime.mjs');
