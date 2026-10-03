@@ -8,7 +8,10 @@ const manifest=JSON.parse(await readFile(manifestPath,'utf8'));
 if(!Array.isArray(manifest.lessonFiles)||manifest.lessonFiles.length!==420) throw new Error('Full catalog verifier requires exactly 420 lesson files.');
 const timeout=Math.max(5000,Number(process.env.ENC_FULL_VERIFY_TIMEOUT_MS||25000));
 const concurrency=Math.max(1,Math.min(24,Number(process.env.ENC_FULL_VERIFY_CONCURRENCY||12)));
-const rows=manifest.lessonFiles.map((file,index)=>({file,id:`THC-ENC-${String(index+1).padStart(3,'0')}`}));
+const rows=await Promise.all(manifest.lessonFiles.map(async file=>{const lesson=JSON.parse(await readFile(file,'utf8'));if(!/^THC-ENC-\d{3}$/.test(lesson.id)) throw new Error(`Invalid lesson ID in ${file}`);return {file,id:lesson.id};}));
+const ids=rows.map(x=>x.id);
+if(new Set(ids).size!==420) throw new Error('Full catalog manifest contains duplicate lesson IDs.');
+if(!ids.includes('THC-ENC-001')||!ids.includes('THC-ENC-420')) throw new Error('Full catalog permanent-ID range is incomplete.');
 let cursor=0;
 const results=new Array(rows.length);
 async function worker(){
