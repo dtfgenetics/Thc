@@ -1,0 +1,137 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-018",
+  "createdAt": "2026-10-03",
+  "scope": "Claim-level disease-framework, oomycete root-rot, latent-infection, diagnostic-sampling, false-negative, propagation-transmission, environmental-reservoir, and incident-record evidence for unmapped Part 16 lessons.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Disease symptoms, pathogen detection, infection, and causal attribution are separate evidence levels.",
+    "Cannabis/hemp-specific evidence is preferred where available; general plant-diagnostic guidance is used only for method or workflow principles.",
+    "Negative tests remain specimen-, assay-, tissue-, timing-, and target-specific evidence rather than proof of whole-crop freedom from infection.",
+    "These mappings do not approve lessons, visuals, assessment rationales, treatment recommendations, or publication state."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0166",
+      "lessonId": "THC-ENC-301",
+      "sourceIds": [
+        "ENC-AUTH-025",
+        "ENC-AUTH-042",
+        "ENC-AUTH-095"
+      ],
+      "claimType": "disease-triangle-and-cycle",
+      "supportedClaim": "Cannabis disease risk and diagnosis should integrate susceptible-host context, pathogen evidence, environmental favorability, time and disease progression rather than treating symptom appearance or environmental conditions alone as proof of infection.",
+      "sourceLocator": "Cornell weather/disease-progression guidance; Punja et al. 2024 cannabis pathogen-diagnostics review; Penn State diagnostic progression/pattern workflow.",
+      "applicability": "Supports the disease-triangle/disease-cycle reasoning framework and separation of risk from causal diagnosis.",
+      "limitations": "The general disease framework does not define organism-specific infection requirements, thresholds, latent periods, or control measures for every Cannabis pathogen.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0167",
+      "lessonId": "THC-ENC-305",
+      "sourceIds": [
+        "ENC-AUTH-052",
+        "ENC-AUTH-053",
+        "ENC-AUTH-042"
+      ],
+      "claimType": "pythium-oomycete-root-rot",
+      "supportedClaim": "Pythium is an oomycete root-disease group associated with water-saturated root zones and documented hemp root rot, while symptom overlap and species diversity require diagnostic confirmation before attributing Cannabis root decline to Pythium.",
+      "sourceLocator": "Penn State greenhouse Pythium guidance; NC State hemp Pythium root-rot guidance; Punja et al. 2024 Cannabis pathogen-diagnostics review.",
+      "applicability": "Supports oomycete biology, water/root-zone risk context, and the requirement to distinguish presence or symptoms from confirmed causal disease.",
+      "limitations": "General greenhouse and hemp guidance do not establish universal Cannabis incidence, environmental thresholds, species prevalence, or treatment efficacy.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0168",
+      "lessonId": "THC-ENC-313",
+      "sourceIds": [
+        "ENC-AUTH-026",
+        "ENC-AUTH-042",
+        "ENC-AUTH-024"
+      ],
+      "claimType": "latent-and-asymptomatic-infection",
+      "supportedClaim": "Cannabis/hemp infection can be visually subtle or asymptomatic, so scouting and laboratory testing answer different questions and should be combined according to pathogen biology and consequence.",
+      "sourceLocator": "Oregon State HLVd guidance; Punja et al. 2024 molecular-diagnostics review; Cornell hemp scouting workflow.",
+      "applicability": "Supports explicit separation of visible symptoms, latent/asymptomatic infection, scouting evidence, and target-specific testing.",
+      "limitations": "HLVd is a strong Cannabis example but its tissue distribution and detectability must not be generalized to unrelated fungi, bacteria, viruses or oomycetes.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0169",
+      "lessonId": "THC-ENC-314",
+      "sourceIds": [
+        "ENC-AUTH-103",
+        "ENC-AUTH-042",
+        "ENC-AUTH-024"
+      ],
+      "claimType": "diagnostic-sampling",
+      "supportedClaim": "Representative plant-disease sampling should preserve relevant tissue, include symptom progression and healthy-versus-affected context where useful, and be matched to the diagnostic question because poor sampling can limit laboratory interpretation before analysis begins.",
+      "sourceLocator": "Texas A&M plant-sampling guidance; Punja et al. 2024 Cannabis diagnostics review; Cornell hemp scouting and recordkeeping guidance.",
+      "applicability": "Supports representative specimen selection, contextual metadata and separation of sampling quality from laboratory method performance.",
+      "limitations": "There is no universal Cannabis specimen protocol; tissue, preservation, sample number, pooling and timing depend on the suspected organism and validated assay.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0170",
+      "lessonId": "THC-ENC-315",
+      "sourceIds": [
+        "ENC-AUTH-026",
+        "ENC-AUTH-042",
+        "ENC-AUTH-103"
+      ],
+      "claimType": "false-negatives-and-test-timing",
+      "supportedClaim": "A negative Cannabis pathogen test is evidence about the tested specimen under a specific assay and timing, not absolute proof that the whole plant or crop is pathogen-free; tissue choice, target distribution, sampling quality and assay limits can produce false-negative interpretations.",
+      "sourceLocator": "Oregon State HLVd testing guidance; Punja et al. 2024 Cannabis molecular-diagnostics review; Texas A&M representative plant-sampling guidance.",
+      "applicability": "Supports cautious interpretation of negative results and risk-based retesting/sampling decisions.",
+      "limitations": "Exact preferred tissues, pool sizes, detection limits and retest intervals are pathogen- and assay-specific and must come from validated methods rather than a universal rule.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0171",
+      "lessonId": "THC-ENC-316",
+      "sourceIds": [
+        "ENC-AUTH-026",
+        "ENC-AUTH-042"
+      ],
+      "claimType": "clone-and-tool-mediated-transmission",
+      "supportedClaim": "Vegetative propagation and sap-contaminated handling can move important Cannabis pathogens or viroids from infected stock into new plants, making source-stock testing and sanitation part of transmission-risk control.",
+      "sourceLocator": "Oregon State HLVd transmission/sanitation guidance; Punja et al. 2024 Cannabis pathogen and molecular-diagnostics review.",
+      "applicability": "Supports propagation-pathway and mechanical-transmission risk reasoning without assuming every surface contact causes infection.",
+      "limitations": "Transmission efficiency, persistence, infectious dose and sanitation efficacy vary by pathogen, material, surface, exposure and protocol.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0172",
+      "lessonId": "THC-ENC-317",
+      "sourceIds": [
+        "ENC-AUTH-052",
+        "ENC-AUTH-053",
+        "ENC-AUTH-042"
+      ],
+      "claimType": "facility-and-water-reservoirs",
+      "supportedClaim": "Water, root-zone media and shared production environments can act as reservoirs or movement pathways for plant pathogens, but environmental detection must be distinguished from viable inoculum, source attribution and confirmed plant infection.",
+      "sourceLocator": "Penn State Pythium water/reservoir guidance; NC State hemp root-disease guidance; Punja et al. 2024 Cannabis diagnostics review.",
+      "applicability": "Supports reservoir/pathway reasoning for recirculating water, media and facility environments while preserving causal-evidence boundaries.",
+      "limitations": "Persistence, infectivity, sampling sensitivity and reservoir importance differ among fungi, oomycetes, bacteria, viruses and viroids; nucleic-acid detection alone may not establish infectious viability.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0173",
+      "lessonId": "THC-ENC-320",
+      "sourceIds": [
+        "ENC-AUTH-024",
+        "ENC-AUTH-042",
+        "ENC-AUTH-095"
+      ],
+      "claimType": "disease-incident-records-and-closure",
+      "supportedClaim": "Traceable disease-incident records should preserve symptom/testing chronology, spatial patterns, diagnostic evidence, interventions and outcomes so later crop cycles can distinguish recurrence from resolved incidents and avoid treating one negative observation as proof of eradication.",
+      "sourceLocator": "Cornell hemp scouting/recordkeeping guidance; Punja et al. 2024 Cannabis diagnostics review; Penn State plant-problem diagnostic workflow.",
+      "applicability": "Supports evidence-preserving incident review, causal uncertainty and verification-oriented closure decisions.",
+      "limitations": "Containment, testing frequency, closure criteria, reporting duties and eradication claims depend on pathogen biology, production system, jurisdiction and facility risk.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
