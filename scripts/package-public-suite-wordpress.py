@@ -172,6 +172,7 @@ if len(external_targets) != len(set(external_targets)):
     raise SystemExit("duplicate external game deployment targets")
 
 allowed = [
+    "dtf-build.json",
     "games/index.html",
     "games/dtf-route.css",
     "games/dtf-shell.css",
@@ -257,6 +258,7 @@ if len(registered_local_game_targets) != len(set(registered_local_game_targets))
     raise SystemExit("duplicate registered local game targets in public-app registry")
 
 required = [
+    "dtf-build.json",
     "ph-meter/index.html",
     "tds-meter/index.html",
     "vpd-chart/index.html",

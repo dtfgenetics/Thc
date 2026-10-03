@@ -10,6 +10,9 @@ on:
       - "scripts/validate-shared-ui-standard.mjs"
       - "scripts/validate-portfolio-registry.mjs"
       - "scripts/validate-public-navigation.mjs"
+      - "scripts/package-public-suite-wordpress.py"
+      - "scripts/assemble-wordpress-suite-v2.py"
+      - "scripts/test-wordpress-suite-build-manifest.py"
       - "scripts/report-platform-convergence.mjs"
       - "scripts/test-platform-convergence-live.mjs"
       - "data/asset-state-registry.json"
@@ -38,6 +41,9 @@ on:
       - "scripts/validate-shared-ui-standard.mjs"
       - "scripts/validate-portfolio-registry.mjs"
       - "scripts/validate-public-navigation.mjs"
+      - "scripts/package-public-suite-wordpress.py"
+      - "scripts/assemble-wordpress-suite-v2.py"
+      - "scripts/test-wordpress-suite-build-manifest.py"
       - "scripts/report-platform-convergence.mjs"
       - "scripts/test-platform-convergence-live.mjs"
       - "data/asset-state-registry.json"
@@ -105,3 +111,6 @@ jobs:
 
       - name: Test live deployment revision verification
         run: node scripts/test-platform-convergence-live.mjs
+
+      - name: Test WordPress suite revision manifest packaging
+        run: python3 scripts/test-wordpress-suite-build-manifest.py
