@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-010",
+  "createdAt": "2026-10-03",
+  "scope": "Claim-level evidence for the remaining unmapped Part 10 canopy-adjustment, wound-recovery, spacing, canopy-depth, canopy-geometry, and measurement lessons.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Direct cannabis evidence is used for architecture, canopy-position, density, and treatment-response claims only within studied contexts.",
+    "General wound biology, measurement policy, and metadata standards support method and interpretation, not cannabis-specific performance thresholds.",
+    "Evidence mappings remain review-pending and do not authorize publication, visual approval, or assessment approval."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0074",
+      "lessonId": "THC-ENC-191",
+      "sourceIds": [
+        "ENC-AUTH-055",
+        "ENC-AUTH-060"
+      ],
+      "claimType": "canopy-adjustment-evidence-limit",
+      "supportedClaim": "Repositioning foliage can change local shading while preserving leaf area, but peer-reviewed cannabis literature supports broader architecture/light-position effects rather than a universal leaf-tucking schedule or guaranteed yield benefit.",
+      "sourceLocator": "Danziger and Bernstein 2021 architecture-modulation study; Danziger and Bernstein 2021 Plants 10(9):1834 abstract/results on architecture, light penetration, and within-plant spatial variation.",
+      "applicability": "Supports treating leaf tucking as a reversible canopy adjustment whose effect should be measured rather than assumed.",
+      "limitations": "Neither source is a controlled leaf-tucking trial, so no timing, frequency, or yield rule is established.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0075",
+      "lessonId": "THC-ENC-192",
+      "sourceIds": [
+        "ENC-AUTH-030",
+        "ENC-AUTH-055",
+        "ENC-AUTH-058"
+      ],
+      "claimType": "wound-recovery-and-training-limit",
+      "supportedClaim": "High-stress stem manipulation combines structural injury with later regeneration and branch-control responses; recovery should be assessed as wound repair and resumed function, not inferred from visible swelling alone.",
+      "sourceLocator": "Omary et al. 2023 review of systemic plant regeneration and wound repair; Danziger and Bernstein 2021 architecture-treatment context; Ijoma et al. 2026 review of high-stress cannabis training and research gaps.",
+      "applicability": "Supports conservative supercropping recovery monitoring and separation of wound healing from production claims.",
+      "limitations": "Direct standardized cannabis supercropping trials remain limited; no universal injury severity or recovery interval is established.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0076",
+      "lessonId": "THC-ENC-194",
+      "sourceIds": [
+        "ENC-AUTH-056",
+        "ENC-AUTH-060"
+      ],
+      "claimType": "spacing-and-density",
+      "supportedClaim": "Cannabis planting density changes yield per plant, yield per area, lower-canopy conditions, and chemical uniformity, so spacing decisions require area-based as well as plant-based measurements.",
+      "sourceLocator": "Danziger and Bernstein 2022 abstract/results/conclusions on 1 versus 2 plants per square meter and density-by-architecture effects; Shape Matters 2021 canopy-position and light-gradient findings.",
+      "applicability": "Supports measuring spacing, canopy closure, internal conditions, and both per-plant and per-area yield.",
+      "limitations": "The tested densities, cultivar, and greenhouse conditions are not universal spacing targets.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0077",
+      "lessonId": "THC-ENC-195",
+      "sourceIds": [
+        "ENC-AUTH-056",
+        "ENC-AUTH-060"
+      ],
+      "claimType": "canopy-light-gradient",
+      "supportedClaim": "Large and/or dense cannabis canopies can develop strong vertical light gradients associated with lower-canopy changes in morphology and cannabinoid concentration, supporting multi-depth light mapping rather than reliance on a top-canopy reading.",
+      "sourceLocator": "Shape Matters 2021 abstract/results on light penetration and cannabinoid gradients in large plants; Danziger and Bernstein 2022 abstract/results on chronic lower-canopy light deprivation under higher density.",
+      "applicability": "Supports vertical PPFD profiles and mapped canopy-depth interpretation.",
+      "limitations": "The studies do not establish one universal productive canopy depth or fixed lower-canopy PPFD cutoff.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0078",
+      "lessonId": "THC-ENC-196",
+      "sourceIds": [
+        "ENC-AUTH-056",
+        "ENC-AUTH-060"
+      ],
+      "claimType": "canopy-geometry-context",
+      "supportedClaim": "Cannabis architecture changes within-canopy light distribution and chemical uniformity, but available studies do not establish that one horizontal or vertical canopy geometry is universally superior across lighting layouts, densities, cultivars, and production objectives.",
+      "sourceLocator": "Shape Matters 2021 architecture/light-position results and conclusions; Danziger and Bernstein 2022 density-by-architecture interaction results.",
+      "applicability": "Supports matching canopy geometry to lighting geometry and normalizing outcomes by clearly defined system denominators.",
+      "limitations": "Neither study is a standardized horizontal-versus-vertical production-system trial.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0079",
+      "lessonId": "THC-ENC-200",
+      "sourceIds": [
+        "ENC-AUTH-007",
+        "ENC-AUTH-018",
+        "ENC-AUTH-056",
+        "ENC-AUTH-060"
+      ],
+      "claimType": "canopy-measurement-framework",
+      "supportedClaim": "Canopy comparisons require repeatable locations, defined measurands and units, controlled measurement context, and clear normalization because yield per plant, yield per area, canopy position, and photon environment answer different questions.",
+      "sourceLocator": "NIST metrological-traceability policy for measurand/traceability/uncertainty; MIAPPE v1.2 metadata structure for treatments, environments, biological material, and observations; Danziger and Bernstein 2022 and Shape Matters 2021 for cannabis plant-versus-area and spatial canopy outcomes.",
+      "applicability": "Supports the lesson's grid-based canopy records, light maps, intervention logs, harvest-zone identity, and denominator discipline.",
+      "limitations": "NIST and MIAPPE structure measurement evidence but do not establish cannabis performance targets; cannabis studies remain system-specific.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
