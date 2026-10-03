@@ -6,8 +6,6 @@ const registry=JSON.parse(fs.readFileSync(path.join(root,'content/encyclopedia/c
 const topics=JSON.parse(fs.readFileSync(path.join(root,'configuration/encyclopedia-topics.json'),'utf8')).topics||[];
 const release=JSON.parse(fs.readFileSync(path.join(root,'site/wordpress/education/encyclopedia/current-production-batch.json'),'utf8'));
 const searchLanguage=JSON.parse(fs.readFileSync(path.join(root,'configuration/encyclopedia-search-language.json'),'utf8'));
-const topicByPart=new Map(topics.map(topic=>[Number(topic.part),topic]));
-
 const clean=v=>String(v??'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
 const arr=v=>Array.isArray(v)?v:[];
 const flatten=v=>arr(v).map(x=>{
@@ -16,6 +14,27 @@ const flatten=v=>arr(v).map(x=>{
   return [x.term,x.definition,x.field,x.requirement,x.name,x.label,x.title,x.text].filter(Boolean).join(' ');
 }).map(clean).filter(Boolean);
 const slugify=value=>String(value??'').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const evidenceRoot=path.join(root,'content/encyclopedia/evidence');
+const sourceRegistry=JSON.parse(fs.readFileSync(path.join(evidenceRoot,'authoritative-sources.json'),'utf8'));
+const sourceById=new Map((sourceRegistry.sources||[]).map(source=>[source.id,source]));
+const evidenceByLesson=new Map();
+for(const name of fs.readdirSync(evidenceRoot).filter(name=>/^evidence-batch-\d+\.json$/.test(name)).sort()){
+  const batch=JSON.parse(fs.readFileSync(path.join(evidenceRoot,name),'utf8'));
+  for(const item of batch.claimEvidence||[]){
+    const rows=evidenceByLesson.get(item.lessonId)||[];
+    rows.push({
+      evidenceId:item.evidenceId,
+      claimType:item.claimType||null,
+      sourceIds:arr(item.sourceIds),
+      supportedClaim:clean(item.supportedClaim),
+      limitations:clean(item.limitations),
+      reviewState:item.reviewState||null
+    });
+    evidenceByLesson.set(item.lessonId,rows);
+  }
+}
+const topicByPart=new Map(topics.map(topic=>[Number(topic.part),topic]));
+
 
 const lessonById=new Map();
 function walk(dir){
@@ -85,6 +104,22 @@ const lessons=(registry.entries||[]).map(entry=>{
   const slug=lesson.slug||slugify(entry.title);
   const tools=toolIdsFor(Number(entry.part));
   const aliases=aliasesFor(entry);
+  const evidenceRows=evidenceByLesson.get(entry.id)||[];
+  const evidenceSourceIds=[...new Set(evidenceRows.flatMap(row=>row.sourceIds))];
+  const evidenceSources=evidenceSourceIds.map(id=>sourceById.get(id)).filter(Boolean);
+  const publicEvidence=published?{
+    claimCount:evidenceRows.length,
+    claimTypes:[...new Set(evidenceRows.map(row=>row.claimType).filter(Boolean))],
+    sourceIds:evidenceSourceIds,
+    sourceTitles:evidenceSources.map(source=>clean(source.title)),
+    reviewState:evidenceRows.length?'source_collected_needs_science_review':'not_started'
+  }:{
+    claimCount:evidenceRows.length,
+    claimTypes:[],
+    sourceIds:[],
+    sourceTitles:[],
+    reviewState:evidenceRows.length?'evidence_mapped_body_withheld':'not_started'
+  };
   const publicFields=published?fields:{
     objective:'',
     terms:[],
@@ -110,8 +145,9 @@ const lessons=(registry.entries||[]).map(entry=>{
     route:published?`/learn/encyclopedia/thc-enc-${String(entry.number).padStart(3,'0')}/`:`/learn/encyclopedia/?lesson=${encodeURIComponent(entry.id)}`,
     tools,
     aliases,
+    evidence:publicEvidence,
     ...publicFields,
-    keywords:[topic?.title,entry.primaryFormat,entry.teachingVisual,entry.id,...(published?fields.terms:[]),...(published?fields.synonyms:[]),...(published?fields.practicalResources:[]),...aliases,...tools].map(clean).filter(Boolean)
+    keywords:[topic?.title,entry.primaryFormat,entry.teachingVisual,entry.id,...(published?fields.terms:[]),...(published?fields.synonyms:[]),...(published?fields.practicalResources:[]),...(published?publicEvidence.claimTypes:[]),...(published?publicEvidence.sourceTitles:[]),...aliases,...tools].map(clean).filter(Boolean)
   };
 });
 
@@ -125,12 +161,12 @@ const facets={
   status:Object.fromEntries([...new Set(lessons.map(x=>x.status))].map(status=>[status,lessons.filter(x=>x.status===status).length]))
 };
 const output={
-  schemaVersion:2,
+  schemaVersion:3,
   generatedAt:new Date().toISOString(),
   publicationCutoff,
   lessonCount:lessons.length,
   searchLanguageVersion:Number(searchLanguage.schemaVersion||1),
-  note:'Generated from the controlled registry and canonical lesson source. Review-only entries stay discoverable without exposing unreleased lesson bodies.',
+  note:'Generated from the controlled registry, canonical lesson source, and claim-level evidence registry. Review-only entries stay discoverable without exposing unreleased lesson bodies; evidence mappings do not imply scientific approval.',
   facets,
   topics:topicRows,
   lessons

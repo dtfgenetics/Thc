@@ -761,7 +761,6 @@
         "modalGameplayShortcutGuard": true
       },
       "verifiedRevision": "de6c26d9073d9154bbcade43b64768cf6a7ba2a0",
-      "sourcePath": ".",
       "mirrorPath": "site/public-route-patch/games/thc-rpg",
       "canonicalRepository": "dtfgenetics/Thc-rpg",
       "integrationRepository": "dtfgenetics/Thc"
@@ -796,7 +795,7 @@
       "repository": "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple",
       "runtime": "static-phaser",
       "status": "ready-to-package",
-      "notes": "Canonical code remains in the standalone Ganjumanji repository. Revision 257c5a60c8ec0e7f6a87170f232c37e047458b22 is the current green 0.4.1 five-region production candidate with 10 relic seeds, save v5, separate autosave/safe-checkpoint recovery, deterministic campaign/content/input/storage/solvability tests, release-safe campaign solver validation, shipped UI-contract validation, TypeScript/Vite build, release validation, current GitHub Actions CI, and production artifact generation. DTFSeeds packaging must rebuild this exact pinned revision and run validate:ui before promotion. Exact post-deploy live-route verification remains required before production-ready status.",
+      "notes": "Canonical code remains in the standalone Ganjumanji repository. Revision 257c5a60c8ec0e7f6a87170f232c37e047458b22 is the green 0.4.1 five-region production candidate with 10 relic seeds, save v5, separate autosave/safe-checkpoint recovery, deterministic campaign/content/input/storage/solvability tests with release-safe campaign solver validation, shipped UI-contract validation, TypeScript/Vite build, release validation, current GitHub Actions CI, and production artifact generation. DTFSeeds packaging must rebuild this exact pinned revision and run validate:ui before promotion. Exact post-deploy live-route verification remains required before production-ready status.",
       "route": "/games/ganjumanji/",
       "build": "npm test && npm run validate:ui && npm run build && npm run validate:release",
       "machineData": {
@@ -820,7 +819,6 @@
         ]
       },
       "verifiedRevision": "257c5a60c8ec0e7f6a87170f232c37e047458b22",
-      "sourcePath": ".",
       "mirrorPath": "site/public-route-patch/games/ganjumanji",
       "canonicalRepository": "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple",
       "integrationRepository": "dtfgenetics/Thc"

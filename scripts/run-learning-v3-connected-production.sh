@@ -72,6 +72,7 @@ grep -Fq '!isRetiredMedia(item) && isApprovedLearningMedia(item)' "$owner_v3"
 grep -Fq 'media.filter(item => item?.source_url && !isRetiredMedia(item) && isApprovedLearningMedia(item))' "$owner_v3"
 grep -Fq "owner: 'wordpress-rest-raw-first'" "$owner_v3"
 grep -Fq "content?.raw || content?.rendered || ''" "$owner_v3"
+grep -Fq 'already matches desired stored state; skipping redundant WordPress mutation.' "$owner_v3"
 
 LEARNING_V4_OWNER_AWARE_PUBLISHER="$owner_v4" \
 LEARNING_VISUAL_OWNER_AWARE_PUBLISHER="$owner_visual" \
@@ -167,6 +168,7 @@ verify_routes=(
 for route in "${verify_routes[@]}"; do
   body="/tmp/dtf-learning-retired-visual-check-$(printf '%s' "$route" | tr '/' '_').html"
   curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+    --connect-timeout 15 --max-time 60 \
     -H 'Cache-Control: no-cache, no-store, max-age=0' \
     -H 'Pragma: no-cache' \
     "${WP_SITE_URL:-https://dtfseeds.com}${route}?dtf_learning_visual_gate=${GITHUB_RUN_ID:-local}-$(date +%s%N)" \

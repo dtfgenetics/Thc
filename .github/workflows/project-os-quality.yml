@@ -3,6 +3,18 @@ name: Project OS Quality Gate
 on:
   pull_request:
     paths:
+      - "data/public-navigation.json"
+      - "data/site-navigation-v6.json"
+      - "data/site-registry.json"
+      - "site/deployment/public-apps.json"
+      - "scripts/validate-shared-ui-standard.mjs"
+      - "scripts/validate-portfolio-registry.mjs"
+      - "scripts/validate-public-navigation.mjs"
+      - "scripts/package-public-suite-wordpress.py"
+      - "scripts/assemble-wordpress-suite-v2.py"
+      - "scripts/test-wordpress-suite-build-manifest.py"
+      - "scripts/report-platform-convergence.mjs"
+      - "scripts/test-platform-convergence-live.mjs"
       - "data/asset-state-registry.json"
       - "data/asset-state-registry.schema.json"
       - "data/asset-manifest.json"
@@ -22,6 +34,18 @@ on:
   push:
     branches: [main]
     paths:
+      - "data/public-navigation.json"
+      - "data/site-navigation-v6.json"
+      - "data/site-registry.json"
+      - "site/deployment/public-apps.json"
+      - "scripts/validate-shared-ui-standard.mjs"
+      - "scripts/validate-portfolio-registry.mjs"
+      - "scripts/validate-public-navigation.mjs"
+      - "scripts/package-public-suite-wordpress.py"
+      - "scripts/assemble-wordpress-suite-v2.py"
+      - "scripts/test-wordpress-suite-build-manifest.py"
+      - "scripts/report-platform-convergence.mjs"
+      - "scripts/test-platform-convergence-live.mjs"
       - "data/asset-state-registry.json"
       - "data/asset-state-registry.schema.json"
       - "data/asset-manifest.json"
@@ -84,3 +108,9 @@ jobs:
 
       - name: Validate public-suite qualification workflow
         run: npm run validate:public-suite-qualification-workflow
+
+      - name: Test live deployment revision verification
+        run: node scripts/test-platform-convergence-live.mjs
+
+      - name: Test WordPress suite revision manifest packaging
+        run: python3 scripts/test-wordpress-suite-build-manifest.py

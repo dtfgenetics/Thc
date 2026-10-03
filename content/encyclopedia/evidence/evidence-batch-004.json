@@ -1,0 +1,141 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-004",
+  "createdAt": "2026-10-03",
+  "scope": "Claim-level hemp disease, viroid, diagnostic-pattern, scouting, and site-risk evidence for high-priority encyclopedia gaps.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Extension observations and management guidance are scoped to the crop, geography, production system, and conditions described by the source.",
+    "Symptoms and environmental risk factors support a differential diagnosis but do not prove pathogen identity.",
+    "Regulated-product use is not inferred from historical extension guidance; current labels, registrations, and jurisdictional rules control product use.",
+    "Claim evidence does not change lesson publication or independent-review state."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0030",
+      "lessonId": "THC-ENC-268",
+      "sourceIds": [
+        "ENC-AUTH-027"
+      ],
+      "claimType": "hemp-diagnostic-extension",
+      "supportedClaim": "Heat stress can contribute to leaf curling and scorching in hemp, but those visible signs must be interpreted with spatial pattern, recent weather, water status, and competing biotic or nutritional explanations.",
+      "sourceLocator": "Cornell 2024 Abiotic vs. biotic issues in hemp fields fact sheet, temperature-extremes and field-pattern discussion.",
+      "applicability": "Supports heat-stress symptom vocabulary and differential-diagnosis discipline.",
+      "limitations": "Visible curling or scorching is not specific to heat injury; severity and expression vary with plant condition, exposure, genotype, and interacting stresses.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0031",
+      "lessonId": "THC-ENC-303",
+      "sourceIds": [
+        "ENC-AUTH-022",
+        "ENC-AUTH-025"
+      ],
+      "claimType": "hemp-disease-extension",
+      "supportedClaim": "Botrytis gray mold is a documented hemp disease in field and greenhouse production, and high humidity with poor airflow can increase disease-favorable conditions.",
+      "sourceLocator": "Cornell Diseases Affecting Hemp in New York 2020 disease survey plus 2024 weather-and-disease fact sheet Botrytis risk context.",
+      "applicability": "Supports Botrytis disease context and environmental-risk reasoning for inflorescence-rot differentials.",
+      "limitations": "Cornell occurrence observations are New York-specific, and humidity or poor airflow alone does not diagnose Botrytis or establish a universal intervention threshold.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0032",
+      "lessonId": "THC-ENC-304",
+      "sourceIds": [
+        "ENC-AUTH-023",
+        "ENC-AUTH-022"
+      ],
+      "claimType": "hemp-pathology-extension",
+      "supportedClaim": "Fusarium species can cause root, crown, and vascular wilt disease in hemp; Fusarium oxysporum vascular wilt is soilborne and can colonize root vascular tissue, producing wilt-associated symptoms.",
+      "sourceLocator": "Cornell Fusarium vascular wilt of hemp fact sheet and Diseases Affecting Hemp in New York 2020 root/crown/wilt sections.",
+      "applicability": "Supports the lesson's organism, tissue, and disease-process explanation for Fusarium differentials.",
+      "limitations": "Wilt, yellowing, crown lesions, and root decline overlap with other pathogens and abiotic stresses; species-level diagnosis requires appropriate laboratory or diagnostic confirmation.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0033",
+      "lessonId": "THC-ENC-304",
+      "sourceIds": [
+        "ENC-AUTH-023",
+        "ENC-AUTH-025"
+      ],
+      "claimType": "hemp-disease-risk",
+      "supportedClaim": "Poor drainage and prolonged wet root-zone conditions can increase concern for Fusarium wilt and related root-disease problems, so drainage and site history belong in the diagnostic record.",
+      "sourceLocator": "Cornell Fusarium vascular wilt management discussion and 2024 weather-and-disease fact sheet drainage/waterlogging context.",
+      "applicability": "Supports site/root-zone context collection and preventive reasoning.",
+      "limitations": "Wet conditions change disease risk but do not establish Fusarium as the cause of wilt; irrigation, oxygen stress, other root pathogens, and substrate conditions remain competing explanations.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0034",
+      "lessonId": "THC-ENC-310",
+      "sourceIds": [
+        "ENC-AUTH-026"
+      ],
+      "claimType": "hemp-viroid-extension",
+      "supportedClaim": "Hop latent viroid can be associated with stunting, yellowing, brittle branching, altered leaf form, reduced rooting performance, and reduced reproductive performance in hemp/cannabis, while symptom expression can also be subtle or absent.",
+      "sourceLocator": "Oregon State University Extension 2024 Hop latent viroid in hemp, symptom-expression and production-impact sections.",
+      "applicability": "Supports symptom variability and the need to keep HLVd in the differential without treating appearance as confirmation.",
+      "limitations": "Symptoms vary with viroid strain, genetics, environment, plant age, and viroid titer; visual observation alone cannot confirm infection.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0035",
+      "lessonId": "THC-ENC-310",
+      "sourceIds": [
+        "ENC-AUTH-026"
+      ],
+      "claimType": "hemp-viroid-management",
+      "supportedClaim": "HLVd risk management should emphasize tested planting stock, separation or exclusion of uncertain material, removal of confirmed infected plants, and sanitation of tools and surfaces that may contact infectious sap.",
+      "sourceLocator": "Oregon State University Extension 2024 Hop latent viroid in hemp, recommended management section.",
+      "applicability": "Supports prevention, stock testing, sanitation, and containment workflow language.",
+      "limitations": "The source notes that complete viroid inactivation on contaminated tools is not guaranteed by one universal procedure; sanitation methods require current protocol and evidence review.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0036",
+      "lessonId": "THC-ENC-361",
+      "sourceIds": [
+        "ENC-AUTH-022",
+        "ENC-AUTH-025",
+        "ENC-AUTH-008",
+        "ENC-AUTH-009"
+      ],
+      "claimType": "site-risk-planning",
+      "supportedClaim": "Outdoor site selection should consider drainage, historical and expected moisture conditions, local climate patterns, and mapped soil information before crop establishment rather than treating site choice as a single-variable decision.",
+      "sourceLocator": "Cornell hemp disease-prevention/site-drainage guidance, Cornell weather-and-disease context, NOAA climate normals, and USDA NRCS Web Soil Survey.",
+      "applicability": "Supports multi-factor site-selection records and pre-plant risk assessment.",
+      "limitations": "Climate normals and mapped soils are planning baselines; current field sampling, microclimate, drainage modifications, extreme events, and crop objectives still require direct site verification.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0037",
+      "lessonId": "THC-ENC-410",
+      "sourceIds": [
+        "ENC-AUTH-024"
+      ],
+      "claimType": "hemp-scouting-workflow",
+      "supportedClaim": "Plant-health scouting records should preserve location, date, growth stage, observed symptoms or pests, spatial hot spots, weather context, and incidence/severity observations so changes can be compared over time.",
+      "sourceLocator": "Cornell 2024 Scouting a hemp field for disease and insects, disease severity/incidence and record-keeping sections.",
+      "applicability": "Supports structured scouting and plant-health records for field and diagnostic workflows.",
+      "limitations": "Scouting records document observations and patterns; they do not replace confirmatory diagnosis when pathogen identity or regulated treatment decisions are material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0038",
+      "lessonId": "THC-ENC-418",
+      "sourceIds": [
+        "ENC-AUTH-026"
+      ],
+      "claimType": "generalization-limit",
+      "supportedClaim": "Disease symptom expression can depend on plant genetics, environment, pathogen or viroid strain, and pathogen load, so observations from one cultivar or production condition should not be generalized as a universal symptom threshold.",
+      "sourceLocator": "Oregon State University Extension 2024 HLVd symptom-variability discussion.",
+      "applicability": "Provides a cannabis/hemp-specific example of cultivar- and environment-dependent evidence limits.",
+      "limitations": "This source is specific to HLVd; the same magnitude or direction of genotype-by-environment effects cannot be assumed for unrelated disorders.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}

@@ -373,6 +373,17 @@ def patch_payload(payload: bytes, repo_root: pathlib.Path) -> bytes:
     payload = _apply_atlas_support_scope(payload)
     payload = _apply_shared_exact_files(payload)
 
+    targets_before_shared = _array_values(payload, b"targets")
+    missing_shared_targets = [path for path in SHARED_EXACT_FILES if path not in targets_before_shared]
+    if missing_shared_targets:
+        insertion = "        " + ",".join(repr(path) for path in missing_shared_targets) + ",\n"
+        payload = _replace_once(
+            payload,
+            b"        'growlens','thc-grow-doc','tools','projects','puzzles'\n",
+            insertion.encode() + b"        'growlens','thc-grow-doc','tools','projects','puzzles'\n",
+            "shared exact-file transaction targets",
+        )
+
     targets = _array_values(payload, b"targets")
     required = _array_values(payload, b"required")
     prefixes = _array_values(payload, b"prefixes")
@@ -392,6 +403,9 @@ def patch_payload(payload: bytes, repo_root: pathlib.Path) -> bytes:
     for prefix in ATLAS_PREFIXES:
         if prefix not in prefixes:
             raise SystemExit(f"Atlas support prefix missing from bridge: {prefix}")
+    for path in SHARED_EXACT_FILES:
+        if path not in targets:
+            raise SystemExit(f"shared exact-file target missing from bridge: {path}")
     if "games/" in prefixes or "learn/" in prefixes:
         raise SystemExit("unsafe broad game/learn prefix is forbidden")
     for forbidden in ("index.html", "learn", "blog", "community", "games"):

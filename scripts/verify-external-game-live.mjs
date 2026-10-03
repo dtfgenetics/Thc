@@ -20,6 +20,15 @@ function errorDetail(error) {
   if (!(error instanceof Error)) return String(error);
   const cause = error.cause;
   if (cause && typeof cause === 'object') {
+    const nested = Array.isArray(cause.errors)
+      ? cause.errors.map((entry) => {
+          if (!entry || typeof entry !== 'object') return String(entry);
+          const code = 'code' in entry ? String(entry.code) : '';
+          const message = 'message' in entry ? String(entry.message) : '';
+          return [code, message].filter(Boolean).join(': ');
+        }).filter(Boolean)
+      : [];
+    if (nested.length) return nested.join(' | ');
     const code = 'code' in cause ? String(cause.code) : '';
     const message = 'message' in cause ? String(cause.message) : '';
     if (code || message) return [code, message].filter(Boolean).join(': ');

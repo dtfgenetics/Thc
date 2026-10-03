@@ -12,6 +12,17 @@ on:
       - 'scripts/normalize-html-visible-text.mjs'
       - 'scripts/wordpress-ipv4-fetch-bootstrap.mjs'
       - 'scripts/run-learning-v3-connected-production.sh'
+      - 'scripts/rebuild-wordpress-learning-experience-v3.mjs'
+      - 'scripts/run-learning-v3-production.mjs'
+      - 'scripts/reconcile-wordpress-learning-v3-ownership.mjs'
+      - 'scripts/improve-wordpress-learning-v4.mjs'
+      - 'scripts/apply-learning-visual-v1.mjs'
+      - 'scripts/publish-learning-expanded-references-owner-aware.mjs'
+      - 'scripts/clear-wordpress-home-featured-media.mjs'
+      - 'scripts/scrub-retired-public-visuals.mjs'
+      - 'scripts/install-wordpress-learning-semantic-heading.mjs'
+      - 'site/wordpress/snippets/dtf-learning-semantic-heading.php'
+      - 'scripts/verify-public-learning-visual-quarantine.mjs'
       - 'scripts/prepare-learning-v3-atlas-publisher.mjs'
       - 'scripts/prepare-learning-v3-owner-aware-publisher.mjs'
       - 'scripts/prepare-learning-owner-aware-followup-publishers.mjs'
@@ -40,8 +51,8 @@ jobs:
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      WP_REQUEST_TIMEOUT_MS: '20000'
-      WP_REQUEST_ATTEMPTS: '3'
+      WP_REQUEST_TIMEOUT_MS: '60000'
+      WP_REQUEST_ATTEMPTS: '5'
       APPLY_LEARNING_V3: 'true'
       APPLY_LEARNING_V3_OWNERSHIP: 'true'
       BACKUP_ROOT: /tmp/dtf-learning-center-expansion
@@ -80,6 +91,7 @@ jobs:
           grep -Fq 'LEARNING_V3_SOURCE_PUBLISHER="$atlas_v3"' scripts/run-learning-v3-connected-production.sh
           grep -Fq 'WP_REQUEST_TIMEOUT_MS' scripts/publish-wordpress-learning-center-expansion-v1.mjs
           grep -Fq 'WP_REQUEST_ATTEMPTS' scripts/publish-wordpress-learning-center-expansion-v1.mjs
+          grep -Fq 'already matches desired stored state; skipping redundant WordPress mutation.' scripts/rebuild-wordpress-learning-experience-v3.mjs
           grep -Fq 'data-dtf-learning-expanded-reference="v1"' scripts/run-learning-v3-connected-production.sh
           grep -Fq 'data-dtf-learning-map="v4"' scripts/run-learning-v3-connected-production.sh
           grep -Fq "presentation: 'grouped-progressive-disclosure'" scripts/build-public-learning-center-expansion-v1.mjs

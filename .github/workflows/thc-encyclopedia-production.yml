@@ -38,6 +38,12 @@ on:
   push:
     branches: [main]
     paths:
+      - 'site/public-route-patch/learn/search/**'
+      - 'site/wordpress/mu-plugins/dtf-learning-search/**'
+      - 'site/wordpress/mu-plugins/dtf-learning-search.php'
+      - 'scripts/build-wordpress-learning-search-runtime.mjs'
+      - 'scripts/build-thc-education-search-index.mjs'
+      - 'scripts/validate-thc-education-search.mjs'
       - 'content/encyclopedia/**'
       - 'content/encyclopedia/evidence/**'
       - 'configuration/encyclopedia-topics.json'

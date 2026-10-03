@@ -1,6 +1,9 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import process from 'node:process';
+import { setDefaultResultOrder } from 'node:dns';
+
+setDefaultResultOrder('ipv4first');
 
 const siteUrl = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
 const username = process.env.WP_API_USERNAME || '';
@@ -53,9 +56,25 @@ function isRetiredText(value) {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+function requestErrorDetail(error) {
+  if (!(error instanceof Error)) return String(error);
+  const cause = error.cause;
+  if (cause && typeof cause === 'object') {
+    const nested = Array.isArray(cause.errors)
+      ? cause.errors.map((entry) => {
+          if (!entry || typeof entry !== 'object') return String(entry);
+          return [entry.code, entry.message].filter(Boolean).join(': ');
+        }).filter(Boolean)
+      : [];
+    if (nested.length) return nested.join(' | ');
+    return [cause.code, cause.message].filter(Boolean).join(': ') || error.message;
+  }
+  return error.message || error.name;
+}
+
 async function request(path, options = {}) {
   let lastError;
-  for (let attempt = 1; attempt <= 5; attempt += 1) {
+  for (let attempt = 1; attempt <= 7; attempt += 1) {
     try {
       const response = await fetch(`${siteUrl}${path}`, {
         ...options,
@@ -70,8 +89,13 @@ async function request(path, options = {}) {
       const text = await response.text();
       let body = null;
       try { body = text ? JSON.parse(text) : null; } catch { body = text; }
-      if ((response.status === 429 || response.status >= 500) && attempt < 5) {
-        await sleep(attempt * 1600);
+
+      const retryableStatus = response.status === 408
+        || response.status === 425
+        || response.status === 429
+        || response.status >= 500;
+      if (retryableStatus && attempt < 7) {
+        await sleep(attempt * 1800);
         continue;
       }
       if (!response.ok) {
@@ -80,13 +104,13 @@ async function request(path, options = {}) {
       return body;
     } catch (error) {
       lastError = error;
-      if (attempt < 5) {
-        await sleep(attempt * 1600);
-        continue;
-      }
+      const detail = requestErrorDetail(error);
+      const retryable = /ETIMEDOUT|ENETUNREACH|ECONNRESET|ECONNREFUSED|EAI_AGAIN|UND_ERR_|fetch failed|network|timed out/i.test(detail);
+      if (!retryable || attempt === 7) break;
+      await sleep(attempt * 1800);
     }
   }
-  throw lastError;
+  throw new Error(`${options.method || 'GET'} ${path} failed after retries: ${requestErrorDetail(lastError)}`);
 }
 
 function rendered(value) {

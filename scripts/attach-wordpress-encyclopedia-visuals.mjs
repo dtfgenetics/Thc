@@ -45,6 +45,37 @@ async function request(endpoint,{method='GET',body}={}){
   return {data:parsed,headers:res.headers};
 }
 async function wp(endpoint,opts){return (await request(endpoint,opts)).data;}
+async function uploadCanonicalMedia(item,identity){
+  const bytes=await readFile(identity.full);
+  const ext=path.extname(item.assetPath).toLowerCase();
+  const mime=ext==='.png'?'image/png':ext==='.webp'?'image/webp':'image/jpeg';
+  const filename=path.basename(item.assetPath).replace(/["\r\n]/g,'_');
+  const res=await fetch(`${site}/wp-json/wp/v2/media`,{
+    method:'POST',
+    headers:{
+      Authorization:`Basic ${auth}`,
+      'Content-Type':mime,
+      'Content-Disposition':`attachment; filename="${filename}"`,
+      'Cache-Control':'no-cache, no-store, max-age=0',
+      Pragma:'no-cache'
+    },
+    body:bytes,
+    signal:AbortSignal.timeout(60_000)
+  });
+  const text=await res.text(); let created;
+  try{created=text?JSON.parse(text):null;}catch{created=text;}
+  if(!res.ok||!created?.id) throw new Error(`${item.id}: media upload failed ${res.status}: ${typeof created==='string'?created.slice(0,900):JSON.stringify(created).slice(0,900)}`);
+  const description=`DTF Genetics THC Encyclopedia companion infographic. Repository path: ${item.assetPath}. SHA-256: ${identity.hash}.`;
+  const updated=await wp(`/media/${created.id}`,{method:'POST',body:{
+    slug:identity.slug,
+    title:item.title,
+    alt_text:`${item.title} — companion infographic`,
+    caption:`${item.id} companion infographic for Teaching Healthy Cultivation.`,
+    description
+  }});
+  if(!String(updated?.source_url||'').includes('/wp-content/uploads/')) throw new Error(`${item.id}: uploaded media source URL is not a WordPress upload URL.`);
+  return updated;
+}
 async function getAll(endpoint){
   const out=[];
   for(let page=1;;page++){
@@ -66,8 +97,14 @@ for(const item of map.items){
     const description=String(m.description?.raw||m.description?.rendered||'');
     return m.slug===identity.slug||description.includes(pathMarker);
   }).map(m=>[m.id,m])).values()];
-  if(mediaMatches.length!==1) throw new Error(`${item.id}: expected exactly one WordPress media item for ${item.assetPath} (slug ${identity.slug}), found ${mediaMatches.length}.`);
-  const mediaItem=mediaMatches[0];
+  if(mediaMatches.length>1) throw new Error(`${item.id}: expected at most one WordPress media item for ${item.assetPath} (slug ${identity.slug}), found ${mediaMatches.length}.`);
+  let mediaItem=mediaMatches[0]||null;
+  let mediaCreated=false;
+  if(!mediaItem){
+    mediaItem=await uploadCanonicalMedia(item,identity);
+    media.push(mediaItem);
+    mediaCreated=true;
+  }
   if(!String(mediaItem.source_url||'').includes('/wp-content/uploads/')) throw new Error(`${item.id}: media source URL is not a WordPress upload URL.`);
 
   const pages=await wp(`/pages?slug=${encodeURIComponent(stablePageSlug(item.id))}&context=edit&per_page=100`);
@@ -77,14 +114,14 @@ for(const item of map.items){
   const raw=String(page.content?.raw||'');
   if(!raw.includes('<h2>Terms to know</h2>')) throw new Error(`${item.id}: canonical insertion marker is missing.`);
 
-  preflight.push({item,media:mediaItem,page,raw,mediaSlug:mediaItem.slug,assetHash:identity.hash});
+  preflight.push({item,media:mediaItem,page,raw,mediaSlug:mediaItem.slug,assetHash:identity.hash,mediaCreated});
 }
 
 const now=new Date().toISOString().replace(/[:.]/g,'-');
 const backupDir=path.join(backupRoot,now);
 await mkdir(backupDir,{recursive:true});
 await writeFile(path.join(backupDir,'preflight.json'),JSON.stringify(preflight.map(x=>({
-  id:x.item.id,title:x.item.title,assetPath:x.item.assetPath,assetSha256:x.assetHash,pageId:x.page.id,pageLink:x.page.link,mediaId:x.media.id,mediaSlug:x.mediaSlug,mediaSourceUrl:x.media.source_url
+  id:x.item.id,title:x.item.title,assetPath:x.item.assetPath,assetSha256:x.assetHash,pageId:x.page.id,pageLink:x.page.link,mediaId:x.media.id,mediaSlug:x.mediaSlug,mediaSourceUrl:x.media.source_url,mediaCreated:x.mediaCreated
 })),null,2));
 await writeFile(path.join(backupDir,'pre-write-pages.json'),JSON.stringify(preflight.map(x=>({
   id:x.item.id,pageId:x.page.id,status:x.page.status,slug:x.page.slug,title:x.page.title?.raw||x.page.title?.rendered||'',content:x.raw,excerpt:x.page.excerpt?.raw||''
@@ -125,6 +162,14 @@ try{
       rollback.failed.push({id:done.id,error:String(rollbackError?.message||rollbackError)});
     }
   }
+  for(const created of preflight.filter(x=>x.mediaCreated).reverse()){
+    try{
+      await wp(`/media/${created.media.id}?force=true`,{method:'DELETE'});
+      rollback.succeeded.push(`${created.item.id}:media`);
+    }catch(mediaRollbackError){
+      rollback.failed.push({id:`${created.item.id}:media`,error:String(mediaRollbackError?.message||mediaRollbackError)});
+    }
+  }
   await writeFile(path.join(backupDir,'rollback-result.json'),JSON.stringify(rollback,null,2));
   throw error;
 }
@@ -133,8 +178,8 @@ const report={
   batch:map.batch,
   mapFile,
   lessonVisualsAttached:updated.length,
-  existingWordPressMediaReused:updated.length,
-  newMediaUploads:0,
+  existingWordPressMediaReused:preflight.filter(x=>!x.mediaCreated).length,
+  newMediaUploads:preflight.filter(x=>x.mediaCreated).length,
   updated,
   rollback,
   backupDir,

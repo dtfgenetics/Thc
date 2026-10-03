@@ -47,6 +47,13 @@ const add=(row,priority=20)=>{
     coreScience:(row.coreScience||[]).map(clean).filter(Boolean),
     cultivation:(row.cultivation||[]).map(clean).filter(Boolean),
     tools:(row.tools||[]).map(clean).filter(Boolean),
+    evidence:{
+      claimCount:Number(row.evidence?.claimCount||0),
+      claimTypes:(row.evidence?.claimTypes||[]).map(clean).filter(Boolean),
+      sourceIds:(row.evidence?.sourceIds||[]).map(clean).filter(Boolean),
+      sourceTitles:(row.evidence?.sourceTitles||[]).map(clean).filter(Boolean),
+      reviewState:clean(row.evidence?.reviewState||'')
+    },
     program:clean(row.program||''),
     status:clean(row.status||''),
     sourceRepository:clean(row.sourceRepository||''),
@@ -154,7 +161,8 @@ for(const item of encyclopedia?.lessons||[]){
     misconceptions:item.misconceptions||[],
     coreScience:item.coreScience||[],
     cultivation:item.cultivation||[],
-    tools:item.tools||[]
+    tools:item.tools||[],
+    evidence:item.evidence||{}
   },50);
 }
 
@@ -188,5 +196,5 @@ for(const x of Array.isArray(terpenes)?terpenes:(terpenes?.compounds||terpenes?.
 
 const documents=[...docs.values()].sort((a,b)=>a.type.localeCompare(b.type)||a.title.localeCompare(b.title));
 fs.mkdirSync(path.dirname(out),{recursive:true});
-fs.writeFileSync(out,JSON.stringify({schemaVersion:2,generated:new Date().toISOString(),documents},null,2)+'\n');
+fs.writeFileSync(out,JSON.stringify({schemaVersion:3,generated:new Date().toISOString(),documents},null,2)+'\n');
 console.log(`THC education search index: ${documents.length} documents -> ${path.relative(root,out)}`);

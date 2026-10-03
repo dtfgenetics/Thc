@@ -352,6 +352,15 @@ payload = replace_once(
 from wordpress_suite_registry_patch import patch_payload
 payload = patch_payload(payload, pathlib.Path(__file__).resolve().parents[1])
 
+# Include one exact revision-metadata file in the rollback-capable transaction.
+# Apply after registry normalization so its guarded anchors remain unchanged.
+for variable in ("targets", "required", "exact_files"):
+    old = f"${variable} = [".encode()
+    addition = b"\n        'dtf-build.json'," if variable != "exact_files" else b"'dtf-build.json',"
+    payload = replace_once(payload, old, old + addition, f"build manifest {variable}")
+    evidence = b"\n        'data/research/evidence/latest.json'," if variable != "exact_files" else b"'data/research/evidence/latest.json',"
+    payload = replace_once(payload, old, old + evidence, f"research evidence {variable}")
+
 final_actual = hashlib.sha256(payload).hexdigest()
 OUTPUT.parent.mkdir(parents=True, exist_ok=True)
 OUTPUT.write_bytes(payload)

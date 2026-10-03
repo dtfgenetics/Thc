@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "registryId": "thc-encyclopedia-authoritative-source-registry",
-  "updatedAt": "2026-10-02",
+  "updatedAt": "2026-10-03",
   "scope": "Controlled external authority and peer-reviewed source registry for THC-ENC claim-level evidence collection. Source inclusion does not approve a lesson, publish a draft, or complete independent science review.",
   "rules": [
     "Source records identify authority and applicability; they do not create publication authorization.",
@@ -311,6 +311,72 @@
       ],
       "useAndLimitations": "Use for study-scoped hemp genetics findings including flowering-time loci and qualitative trait genetics. Preserve germplasm, population, and analysis context; do not universalize dissertation findings across all Cannabis.",
       "reviewUse": "claim-level source"
+    },
+    {
+      "id": "ENC-AUTH-022",
+      "sourceType": "extension_fact_sheet",
+      "authorityClass": "university_hemp_disease_extension",
+      "title": "Diseases Affecting Hemp in New York (2020 Version)",
+      "publisher": "Cornell University",
+      "year": 2020,
+      "url": "https://hemp.cals.cornell.edu/resource/diseases-affecting-hemp-new-york-2020/",
+      "useAndLimitations": "Use for hemp-specific disease occurrence, prevention context, and symptom/pathogen examples documented in New York production. Geography, cultivar, season, production system, and current product registrations limit transfer.",
+      "reviewUse": "claim-level hemp disease source"
+    },
+    {
+      "id": "ENC-AUTH-023",
+      "sourceType": "extension_fact_sheet",
+      "authorityClass": "university_hemp_pathology_extension",
+      "title": "Fusarium vascular wilt of hemp",
+      "publisher": "Cornell University",
+      "year": 2021,
+      "url": "https://hemp.cals.cornell.edu/resources/reports-factsheets/2022-cornell-hemp-field-day-handouts/fusarium-vascular-wilt-of-hemp/",
+      "useAndLimitations": "Use for hemp Fusarium vascular-wilt signs, soilborne-pathogen context, vascular colonization, and drainage-oriented prevention. Do not infer species identity from wilt symptoms alone.",
+      "reviewUse": "claim-level hemp pathology source"
+    },
+    {
+      "id": "ENC-AUTH-024",
+      "sourceType": "extension_fact_sheet",
+      "authorityClass": "university_hemp_scouting_extension",
+      "title": "Scouting a hemp field for disease and insects",
+      "publisher": "Cornell University",
+      "year": 2024,
+      "url": "https://hemp.cals.cornell.edu/resources/reports-factsheets/2024-factsheets/scouting-a-hemp-field-for-disease-and-insects/",
+      "useAndLimitations": "Use for field scouting workflow, incidence/severity concepts, spatial-pattern observations, and recordkeeping. Scouting observations narrow a differential but do not independently establish pathogen identity.",
+      "reviewUse": "diagnostic-workflow authority"
+    },
+    {
+      "id": "ENC-AUTH-025",
+      "sourceType": "extension_fact_sheet",
+      "authorityClass": "university_hemp_disease_environment_extension",
+      "title": "The role of weather in disease progression",
+      "publisher": "Cornell University",
+      "year": 2024,
+      "url": "https://hemp.cals.cornell.edu/resources/reports-factsheets/2024-factsheets/the-role-of-weather-in-disease-progression/",
+      "useAndLimitations": "Use for hemp disease-risk context involving humidity, rainfall, leaf wetness, drainage, temperature, and airflow. Weather context changes disease probability; it is not a pathogen diagnosis.",
+      "reviewUse": "disease-risk context authority"
+    },
+    {
+      "id": "ENC-AUTH-026",
+      "sourceType": "peer_reviewed_extension",
+      "authorityClass": "university_hemp_viroid_extension",
+      "title": "Hop latent viroid in hemp",
+      "publisher": "Oregon State University Extension Service",
+      "year": 2024,
+      "url": "https://extension.oregonstate.edu/catalog/em-9570-hop-latent-viroid-hemp",
+      "useAndLimitations": "Use for HLVd symptom variability, clean-stock/testing, sanitation, exclusion, and transmission-risk context in hemp. Symptoms alone are not diagnostic; testing and production-context review remain necessary.",
+      "reviewUse": "claim-level hemp viroid source"
+    },
+    {
+      "id": "ENC-AUTH-027",
+      "sourceType": "extension_fact_sheet",
+      "authorityClass": "university_hemp_diagnostic_extension",
+      "title": "Abiotic vs. biotic issues in hemp fields",
+      "publisher": "Cornell University",
+      "year": 2024,
+      "url": "https://hemp.cals.cornell.edu/resources/reports-factsheets/2024-factsheets/abiotic-vs-biotic-issues-in-hemp-fields/",
+      "useAndLimitations": "Use for pattern-based distinction between abiotic and biotic stress and hemp-specific examples of water, temperature, nutrient, wind, and root-disease symptoms. Pattern recognition is differential evidence, not proof of cause.",
+      "reviewUse": "diagnostic-reasoning authority"
     }
   ]
 }
