@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-007",
+  "createdAt": "2026-10-03",
+  "scope": "High-priority claim-level evidence for breeding objectives, feminized seed biology, high-light response, source-sink allocation, and chemical phytotoxicity.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Mappings remain review-pending and do not authorize publication.",
+    "Direct Cannabis evidence is bounded to the studied genotype, environment, and method.",
+    "Textbook and extension authorities support general method or diagnostic context, not Cannabis-specific quantitative thresholds."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0054",
+      "lessonId": "THC-ENC-381",
+      "sourceIds": [
+        "ENC-AUTH-044"
+      ],
+      "claimType": "plant-breeding-method",
+      "supportedClaim": "A breeding program should define measurable target traits, testing environments, selection objectives, tradeoffs, and acceptance criteria before selection so genetic progress can be evaluated against a stable target.",
+      "sourceLocator": "Acquaah, Principles of Plant Genetics and Breeding, 3rd ed., chapters on breeding objectives, selection, testing, and cultivar development.",
+      "applicability": "Supports the lesson's target-product-profile and explicit breeding-goal framework.",
+      "limitations": "General plant breeding authority; Cannabis-specific trait priorities, legal thresholds, and market requirements remain program- and jurisdiction-specific.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0055",
+      "lessonId": "THC-ENC-389",
+      "sourceIds": [
+        "ENC-AUTH-045"
+      ],
+      "claimType": "cannabis-feminized-seed-primary",
+      "supportedClaim": "Functional pollen and feminized seed can be produced from genetically female Cannabis plants through induced male flowering, supporting the biological basis of feminized seed production while leaving treatment response genotype- and protocol-dependent.",
+      "sourceLocator": "Flajšman, Slapnik, and Murovec 2021, Frontiers in Plant Science 12:718092, DOI 10.3389/fpls.2021.718092.",
+      "applicability": "Supports the lesson's feminized-seed biology, induced male-flower formation, pollen functionality, and seed-production context.",
+      "limitations": "Does not establish one universal induction recipe, legal product-use rule, or guarantee identical progeny phenotype or sex expression under every environment.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0056",
+      "lessonId": "THC-ENC-270",
+      "sourceIds": [
+        "ENC-AUTH-046"
+      ],
+      "claimType": "cannabis-light-response-primary",
+      "supportedClaim": "Indoor flowering cannabis can acclimate and continue increasing inflorescence yield across a broad tested PPFD range even when leaf-level photosynthesis saturates earlier, so a single PPFD value should not be treated as a universal photoinhibition or 'light burn' threshold.",
+      "sourceLocator": "Rodriguez-Morrison, Llewellyn, and Zheng 2021, Frontiers in Plant Science 12:646020, DOI 10.3389/fpls.2021.646020.",
+      "applicability": "Supports the lesson's separation of leaf photosynthetic saturation, whole-canopy yield response, acclimation, and injury diagnosis.",
+      "limitations": "Results are limited to the tested genotype, flowering environment, CO2/water/nutrient conditions, spectrum, photoperiod, and PPFD treatments.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0057",
+      "lessonId": "THC-ENC-070",
+      "sourceIds": [
+        "ENC-AUTH-047"
+      ],
+      "claimType": "cannabis-source-sink-primary",
+      "supportedClaim": "Drug-type Cannabis chemovars can differ in sink strength, nutrient allocation, cannabinoid yield, and associated transcript profiles, supporting the lesson's view that carbon and nutrient allocation are dynamic and genotype-dependent rather than simple one-direction transport.",
+      "sourceLocator": "Jost et al. 2025, Journal of Experimental Botany 76(1):152-174, DOI 10.1093/jxb/erae367.",
+      "applicability": "Supports Cannabis-specific source-sink allocation and chemovar-dependent partitioning context alongside general phloem physiology.",
+      "limitations": "Two-chemovar study; does not establish universal allocation coefficients or prove source-sink movement from appearance alone.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0058",
+      "lessonId": "THC-ENC-277",
+      "sourceIds": [
+        "ENC-AUTH-048"
+      ],
+      "claimType": "extension-phytotoxicity-diagnostics",
+      "supportedClaim": "Chemical phytotoxicity can arise from intended or unintended chemical exposure through air, water, soil, or direct application and can mimic other abiotic or biotic plant disorders, so exposure history and spatial pattern are needed before attribution.",
+      "sourceLocator": "University of Missouri Extension, Preventing and Managing Plant Diseases — Phytotoxicity section.",
+      "applicability": "Supports the lesson's diagnostic distinction between chemical injury, exposure pathway, symptom pattern, and alternative causes.",
+      "limitations": "General extension guidance rather than Cannabis-specific toxicology; real-world chemical use, residues, worker safety, and crop disposition require current product labels and jurisdictional review.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
