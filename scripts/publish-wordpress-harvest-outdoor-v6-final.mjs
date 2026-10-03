@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
+import {buildWordPressPageQuery,requireSingleWordPressPage} from './wordpress-learning-page-query.mjs';
 
 const ROOT=process.cwd();
 const site=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
@@ -146,11 +147,8 @@ async function request(path,options={}){
 }
 
 async function pageBySlug(slug,parentId=null){
-  const parent=parentId===null?'':`&parent=${encodeURIComponent(String(parentId))}`;
-  const rows=await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}${parent}&context=edit&per_page=20`);
-  const scope=parentId===null?'site-wide':`under parent ${parentId}`;
-  if(!Array.isArray(rows)||rows.length!==1) fail(`${slug}: expected exactly one WordPress page (${scope}), found ${Array.isArray(rows)?rows.length:'invalid response'}`);
-  return rows[0];
+  const rows=await request(buildWordPressPageQuery(slug,{parentId}));
+  return requireSingleWordPressPage(rows,{slug,parentId});
 }
 
 function sourceCards(curriculum,ids){
