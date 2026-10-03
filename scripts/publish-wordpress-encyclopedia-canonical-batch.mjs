@@ -42,7 +42,7 @@ const esc=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replac
 const stableSlug=id=>id.toLowerCase();
 const list=a=>`<ul class="thc-list">${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
 const terms=a=>`<dl class="thc-terms">${(a||[]).map(x=>`<div><dt>${esc(x.term)}</dt><dd>${esc(x.definition)}</dd></div>`).join('')}</dl>`;
-const records=a=>`<div class="thc-records">${(a||[]).map(x=>`<article><h3>${esc(x.field)}</h3><p>${esc(x.requirement)}</p></article>`).join('')}</div>`;
+const records=a=>`<div class="thc-records">${(a||[]).map((x,i)=>{if(x&&typeof x==='object')return `<article><h3>${esc(x.field||`Measurement ${i+1}`)}</h3><p>${esc(x.requirement||x.description||'')}</p></article>`;return `<article><h3>Measurement ${i+1}</h3><p>${esc(String(x||''))}</p></article>`;}).join('')}</div>`;
 const misconceptionPairs=a=>(a||[]).map(x=>{if(x&&typeof x==='object'){return [String(x.claim||x.misconception||'').trim(),String(x.correction||x.explanation||'').trim()]};const s=String(x);const i=s.indexOf(':');return i>0?[s.slice(0,i).trim(),s.slice(i+1).trim()]:[s.trim(),''];}).filter(([claim])=>claim);
 const paired=a=>`<div class="thc-paired">${a.map(([claim,correction])=>`<article><strong>Misconception:</strong> ${esc(claim)}${correction?`<br><strong>Correction:</strong> ${esc(correction)}`:''}</article>`).join('')}</div>`;
 const evidence=a=>Array.isArray(a)?a:[a].filter(Boolean);
