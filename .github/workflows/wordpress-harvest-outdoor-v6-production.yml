@@ -11,6 +11,8 @@ on:
       - 'site/wordpress/education/outdoor-applied-v1.json'
       - 'site/wordpress/education/topic-literature.json'
       - 'scripts/verify-wordpress-outdoor-owner-prerequisites.mjs'
+      - 'scripts/wordpress-learning-page-query.mjs'
+      - 'scripts/test-wordpress-learning-page-query.mjs'
       - 'scripts/enhance-wordpress-learning-v4.mjs'
       - 'scripts/enhance-wordpress-topic-expansions-v4.mjs'
       - 'scripts/publish-wordpress-harvest-outdoor-v6-final.mjs'
@@ -28,6 +30,8 @@ on:
       - 'site/wordpress/education/outdoor-applied-v1.json'
       - 'site/wordpress/education/topic-literature.json'
       - 'scripts/verify-wordpress-outdoor-owner-prerequisites.mjs'
+      - 'scripts/wordpress-learning-page-query.mjs'
+      - 'scripts/test-wordpress-learning-page-query.mjs'
       - 'scripts/enhance-wordpress-learning-v4.mjs'
       - 'scripts/enhance-wordpress-topic-expansions-v4.mjs'
       - 'scripts/publish-wordpress-harvest-outdoor-v6-final.mjs'
@@ -70,6 +74,7 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/verify-wordpress-outdoor-owner-prerequisites.mjs
+          node scripts/test-wordpress-learning-page-query.mjs
 
           node --check scripts/enhance-wordpress-learning-v4.mjs
           node --check scripts/enhance-wordpress-topic-expansions-v4.mjs
