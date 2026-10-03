@@ -131,6 +131,7 @@ if ($useWp) {
 
 function persistent_option_key(string $key): string
 {
+    // Keep fallback records namespaced and opaque while preserving the room TTL.
     return 'dtf_burn_buds_' . hash('sha256', $key);
 }
 
