@@ -1,0 +1,303 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-020",
+  "createdAt": "2026-10-03",
+  "scope": "Claim-level harvest and postharvest plant-material science evidence for THC-ENC-341 through THC-ENC-360.",
+  "sourceRegistry": "content/encyclopedia/volume-18/source-register.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Cannabis postharvest evidence is material-, cultivar-, load-, equipment-, environment-, sampling-, and method-specific.",
+    "Standards and food/pharmaceutical quality frameworks support measurement and QA concepts only within their stated scope and do not automatically become cannabis law.",
+    "All mappings remain pending independent science review."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0201",
+      "lessonId": "THC-ENC-341",
+      "sourceIds": [
+        "V18-SRC-003",
+        "V18-SRC-004"
+      ],
+      "claimType": "harvest-maturity-as-a-multi-signal-decision",
+      "supportedClaim": "Define harvest maturity by product objective, developmental evidence, representative sampling, environmental risk, and downstream quality rather than one visual cue. Harvest maturity is a management decision, not a single universal biological endpoint. Reproductive tissues, glandular trichomes, cannabinoids, volatiles, seed development, senescence, and disease risk follow overlapping but nonidentical trajectories.",
+      "sourceLocator": "Controlled Volume 18 source register: V18-SRC-003, V18-SRC-004.",
+      "applicability": "Supports the lesson's harvest/postharvest mechanism, measurement, or quality-system reasoning while preserving material form, cultivar, process geometry, method, and product-objective context.",
+      "limitations": "No universal cannabis harvest day or visual threshold is validated across genotypes, positions, products, and methods.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0202",
+      "lessonId": "THC-ENC-342",
+      "sourceIds": [
+        "V18-SRC-005",
+        "V18-SRC-006"
+      ],
+      "claimType": "whole-plant-versus-branch-harvest",
+      "supportedClaim": "Compare whole-plant and sectional harvest through handling, drying geometry, spatial maturity, labor, contamination, and traceability. Whole-plant harvest preserves large connected structures and can reduce the number of cuts and handling events. Branch or sectional harvest can separate maturity zones, improve loading control, and make damaged or diseased material easier to segregate.",
+      "sourceLocator": "Controlled Volume 18 source register: V18-SRC-005, V18-SRC-006.",
+      "applicability": "Supports the lesson's harvest/postharvest mechanism, measurement, or quality-system reasoning while preserving material form, cultivar, process geometry, method, and product-objective context.",
+      "limitations": "Comparisons are cultivar-, architecture-, load-, room-, and airflow-specific.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0203",
+      "lessonId": "THC-ENC-343",
+      "sourceIds": [
+        "V18-SRC-007"
+      ],
+      "claimType": "harvest-sanitation-and-batch-segregation",
+      "supportedClaim": "Protect identity and hygiene from cutting through transport, loading, trim, drying, sampling, and waste disposition. Harvest converts living crop tissue into handled plant material with many new contact surfaces. Tools, gloves, bins, carts, racks, floors, labels, and workers can transfer debris, microbes, allergens, residues, and plant identity.",
+      "sourceLocator": "Controlled Volume 18 source register: V18-SRC-007.",
+      "applicability": "Supports the lesson's harvest/postharvest mechanism, measurement, or quality-system reasoning while preserving material form, cultivar, process geometry, method, and product-objective context.",
+      "limitations": "Product-contact, microbial, allergen, waste, and inventory requirements vary by jurisdiction and production model.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0204",
+      "lessonId": "THC-ENC-344",
+      "sourceIds": [
+        "V18-SRC-009",
+        "V18-SRC-005"
+      ],
+      "claimType": "wet-trimming-versus-dry-trimming",
+      "supportedClaim": "Compare trimming timing through leaf removal, surface exposure, drying rate, handling damage, microbial risk, chemistry, and labor. Wet trimming removes leaves before drying, while dry trimming removes them after material has lost substantial water. Each changes load geometry, exposed surface area, airflow pathways, labor timing, and the physical state of glandular trichomes.",
+      "sourceLocator": "Controlled Volume 18 source register: V18-SRC-009, V18-SRC-005.",
+      "applicability": "Supports the lesson's harvest/postharvest mechanism, measurement, or quality-system reasoning while preserving material form, cultivar, process geometry, method, and product-objective context.",
+      "limitations": "One cultivar or trimming geometry does not establish a universal method advantage.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0205",
+      "lessonId": "THC-ENC-345",
+      "sourceIds": [
+        "V18-SRC-010",
+        "V18-SRC-011"
+      ],
+      "claimType": "drying-as-heat-and-mass-transfer",
+      "supportedClaim": "Explain drying through energy transfer, internal moisture movement, surface evaporation, air transport, and changing material resistance. Drying removes water by moving moisture from internal tissues toward surfaces and then transferring vapor into surrounding air. Heat supplies energy for evaporation; airflow and vapor-pressure conditions carry moisture away.",
+      "sourceLocator": "Controlled Volume 18 source register: V18-SRC-010, V18-SRC-011.",
+      "applicability": "Supports the lesson's harvest/postharvest mechanism, measurement, or quality-system reasoning while preserving material form, cultivar, process geometry, method, and product-objective context.",
+      "limitations": "Transfer coefficients and diffusion behavior are material- and system-specific.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0206",
+      "lessonId": "THC-ENC-346",
+      "sourceIds": [
+        "V18-SRC-010",
+        "V18-SRC-012",
+        "V18-SRC-013"
+      ],
+      "claimType": "moisture-content-and-water-activity",
+      "supportedClaim": "Separate the amount of water in material from the thermodynamic availability of water for reactions and microbial growth. Moisture content is the mass of water relative to wet or dry material under a defined method. Water activity is the ratio of water-vapor pressure above the sample to that above pure water at the same temperature.",
+      "sourceLocator": "Controlled Volume 18 source register: V18-SRC-010, V18-SRC-012, V18-SRC-013.",
+      "applicability": "Supports the lesson's harvest/postharvest mechanism, measurement, or quality-system reasoning while preserving material form, cultivar, process geometry, method, and product-objective context.",
+      "limitations": "Safety and quality limits are product- and jurisdiction-specific and require representative sampling.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0207",
+      "lessonId": "THC-ENC-347",
+      "sourceIds": [
+        "V18-SRC-010",
+        "V18-SRC-013",
+        "V18-SRC-014"
+      ],
+      "claimType": "equilibrium-moisture-and-moisture-sorption",
+      "supportedClaim": "Explain equilibrium moisture, sorption isotherms, hysteresis, temperature, and moisture redistribution. At equilibrium, a material has no net moisture exchange with surrounding air under a stable temperature and humidity. Equilibrium moisture content links material water content to environmental relative humidity and temperature.",
+      "sourceLocator": "Controlled Volume 18 source register: V18-SRC-010, V18-SRC-013, V18-SRC-014.",
+      "applicability": "Supports the lesson's harvest/postharvest mechanism, measurement, or quality-system reasoning while preserving material form, cultivar, process geometry, method, and product-objective context.",
+      "limitations": "Published cannabis sorption data remain limited; cultivar and matrix differences require local characterization.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0208",
+      "lessonId": "THC-ENC-348",
+      "sourceIds": [
+        "V18-SRC-011"
+      ],
+      "claimType": "air-temperature-rh-and-product-temperature-during-drying",
+      "supportedClaim": "Relate air and product temperatures, RH, dew point, evaporation, and transition conditions during drying. Fresh material can remain cooler than surrounding air because evaporation consumes latent heat. As drying slows, product temperature may approach air temperature, but radiation, airflow, load, and surface conditions create local differences.",
+      "sourceLocator": "Controlled Volume 18 source register: V18-SRC-011.",
+      "applicability": "Supports the lesson's harvest/postharvest mechanism, measurement, or quality-system reasoning while preserving material form, cultivar, process geometry, method, and product-objective context.",
+      "limitations": "Infrared and contact measurements have method-specific errors; placement and calibration require control.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0209",
+      "lessonId": "THC-ENC-349",
+      "sourceIds": [
+        "V18-SRC-011",
+        "V18-SRC-016"
+      ],
+      "claimType": "airflow-loading-density-and-drying-uniformity",
+      "supportedClaim": "Map how rack spacing, flower density, obstructions, fan paths, and recirculation create drying distributions. Airflow carries heat and vapor, but the load resists and redirects it. Dense hanging plants, trays, bins, racks, walls, and packaging create pressure drops, bypass paths, and sheltered pockets.",
+      "sourceLocator": "Controlled Volume 18 source register: V18-SRC-011, V18-SRC-016.",
+      "applicability": "Supports the lesson's harvest/postharvest mechanism, measurement, or quality-system reasoning while preserving material form, cultivar, process geometry, method, and product-objective context.",
+      "limitations": "There is no universal airspeed or loading-density target for every room and flower form.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0210",
+      "lessonId": "THC-ENC-350",
+      "sourceIds": [
+        "V18-SRC-010",
+        "V18-SRC-011",
+        "V18-SRC-017"
+      ],
+      "claimType": "drying-curves-and-rate-of-change-interpretation",
+      "supportedClaim": "Use mass, moisture, aW, temperature, and time-series data to distinguish drying phases, stalls, overshoot, and spatial variation. A drying curve plots a defined moisture-related measure against time. Container or representative-product mass can provide continuous trend, while destructive moisture or aW tests provide periodic endpoints.",
+      "sourceLocator": "Controlled Volume 18 source register: V18-SRC-010, V18-SRC-011, V18-SRC-017.",
+      "applicability": "Supports the lesson's harvest/postharvest mechanism, measurement, or quality-system reasoning while preserving material form, cultivar, process geometry, method, and product-objective context.",
+      "limitations": "Mass change includes water and volatile loss and can be affected by handling; it is not a complete composition measurement.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0211",
+      "lessonId": "THC-ENC-351",
+      "sourceIds": [
+        "V18-SRC-018",
+        "V18-SRC-019",
+        "V18-SRC-020"
+      ],
+      "claimType": "terpene-retention-and-volatile-loss",
+      "supportedClaim": "Explain volatile retention through biosynthetic starting profile, vapor pressure, temperature, airflow, tissue damage, time, and packaging. Volatile compounds can leave material through evaporation, air exchange, damaged trichomes, and packaging permeation, or change through oxidation and other reactions. Compounds differ greatly in volatility and odor threshold.",
+      "sourceLocator": "Controlled Volume 18 source register: V18-SRC-018, V18-SRC-019, V18-SRC-020.",
+      "applicability": "Supports the lesson's harvest/postharvest mechanism, measurement, or quality-system reasoning while preserving material form, cultivar, process geometry, method, and product-objective context.",
+      "limitations": "Aroma depends on trace nonterpenoids and sensory thresholds as well as measured terpenes.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0212",
+      "lessonId": "THC-ENC-352",
+      "sourceIds": [
+        "V18-SRC-018",
+        "V18-SRC-021",
+        "V18-SRC-022"
+      ],
+      "claimType": "cannabinoid-stability-during-postharvest",
+      "supportedClaim": "Separate acidic-cannabinoid retention, decarboxylation, oxidation, sampling, moisture basis, and total mass. Living and freshly harvested cannabis commonly contains cannabinoid acids. Drying and storage can produce decarboxylation, oxidation, isomerization, or other change depending on temperature, time, light, oxygen, matrix, and handling.",
+      "sourceLocator": "Controlled Volume 18 source register: V18-SRC-018, V18-SRC-021, V18-SRC-022.",
+      "applicability": "Supports the lesson's harvest/postharvest mechanism, measurement, or quality-system reasoning while preserving material form, cultivar, process geometry, method, and product-objective context.",
+      "limitations": "Stability pathways and rates are matrix- and condition-specific. Legal calculations require current review.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0213",
+      "lessonId": "THC-ENC-353",
+      "sourceIds": [
+        "V18-SRC-010",
+        "V18-SRC-018",
+        "V18-SRC-023"
+      ],
+      "claimType": "curing-definition-measurement-and-limits",
+      "supportedClaim": "Define curing operationally and distinguish it from drying, storage, moisture equilibration, fermentation, and unmeasured quality claims. Curing is used inconsistently. In cannabis practice it may mean a controlled conditioning period after primary drying, during which moisture redistributes and aroma, texture, combustibility, or chemical profile may change.",
+      "sourceLocator": "Controlled Volume 18 source register: V18-SRC-010, V18-SRC-018, V18-SRC-023.",
+      "applicability": "Supports the lesson's harvest/postharvest mechanism, measurement, or quality-system reasoning while preserving material form, cultivar, process geometry, method, and product-objective context.",
+      "limitations": "Cannabis curing science remains limited, and many popular explanations are hypotheses rather than demonstrated mechanisms.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0214",
+      "lessonId": "THC-ENC-354",
+      "sourceIds": [
+        "V18-SRC-010",
+        "V18-SRC-013",
+        "V18-SRC-023"
+      ],
+      "claimType": "container-curing-and-moisture-redistribution",
+      "supportedClaim": "Control container loading, headspace, moisture migration, mixing, sampling, condensation, and release during conditioning. Material placed in a closed or semi-closed container redistributes moisture among wetter interiors, drier surfaces, air, and the container. Average aW can change as the sample equilibrates.",
+      "sourceLocator": "Controlled Volume 18 source register: V18-SRC-010, V18-SRC-013, V18-SRC-023.",
+      "applicability": "Supports the lesson's harvest/postharvest mechanism, measurement, or quality-system reasoning while preserving material form, cultivar, process geometry, method, and product-objective context.",
+      "limitations": "Container conditioning is geometry- and material-specific. Product-contact and moisture-addition rules require current review.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0215",
+      "lessonId": "THC-ENC-355",
+      "sourceIds": [
+        "V18-SRC-025",
+        "V18-SRC-026"
+      ],
+      "claimType": "mold-and-microbial-risk-during-drying-and-curing",
+      "supportedClaim": "Assess microbial risk through starting load, wetness duration, aW, temperature, sanitation, tissue damage, sampling, and organism/toxin testing. Harvested material can carry field and facility microbes. Slow moisture removal, wet pockets, condensation, warm conditions, damaged flowers, poor sanitation, and dense loads can permit growth.",
+      "sourceLocator": "Controlled Volume 18 source register: V18-SRC-025, V18-SRC-026.",
+      "applicability": "Supports the lesson's harvest/postharvest mechanism, measurement, or quality-system reasoning while preserving material form, cultivar, process geometry, method, and product-objective context.",
+      "limitations": "Microbial limits, methods, remediation, and disposition vary by jurisdiction and product.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0216",
+      "lessonId": "THC-ENC-356",
+      "sourceIds": [
+        "V18-SRC-027",
+        "V18-SRC-028"
+      ],
+      "claimType": "packaging-materials-and-barrier-properties",
+      "supportedClaim": "Evaluate packaging through water-vapor, oxygen, light, volatile, seal, sorption, compatibility, and physical-protection properties. Packaging controls exchange with the environment through material permeability and seals. Water-vapor and oxygen transmission, light exposure, volatile permeation, and headspace affect stability.",
+      "sourceLocator": "Controlled Volume 18 source register: V18-SRC-027, V18-SRC-028.",
+      "applicability": "Supports the lesson's harvest/postharvest mechanism, measurement, or quality-system reasoning while preserving material form, cultivar, process geometry, method, and product-objective context.",
+      "limitations": "Food-contact, child-resistant, labeling, product, and environmental packaging rules require current review.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0217",
+      "lessonId": "THC-ENC-357",
+      "sourceIds": [
+        "V18-SRC-021",
+        "V18-SRC-029",
+        "V18-SRC-030"
+      ],
+      "claimType": "oxygen-light-and-temperature-in-storage",
+      "supportedClaim": "Explain storage change through reaction kinetics, oxygen and light exposure, temperature, moisture, sample form, and package performance. Higher temperature generally accelerates many chemical reactions and volatile loss, but the rate and pathway differ among cannabinoids, terpenes, sulfur compounds, pigments, and microbes.",
+      "sourceLocator": "Controlled Volume 18 source register: V18-SRC-021, V18-SRC-029, V18-SRC-030.",
+      "applicability": "Supports the lesson's harvest/postharvest mechanism, measurement, or quality-system reasoning while preserving material form, cultivar, process geometry, method, and product-objective context.",
+      "limitations": "Shelf life is product-, package-, method-, and specification-specific.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0218",
+      "lessonId": "THC-ENC-358",
+      "sourceIds": [
+        "V18-SRC-012",
+        "V18-SRC-031",
+        "V18-SRC-032"
+      ],
+      "claimType": "water-activity-measurement-and-instrument-control",
+      "supportedClaim": "Collect defensible aW data through representative samples, temperature equilibration, calibration/verification, cleanliness, and uncertainty. Water-activity instruments estimate equilibrium vapor pressure above a sample using a defined sensor and chamber. Sample temperature, equilibration, chamber cleanliness, volatile interference, sample depth, and instrument range affect results.",
+      "sourceLocator": "Controlled Volume 18 source register: V18-SRC-012, V18-SRC-031, V18-SRC-032.",
+      "applicability": "Supports the lesson's harvest/postharvest mechanism, measurement, or quality-system reasoning while preserving material form, cultivar, process geometry, method, and product-objective context.",
+      "limitations": "Instrument and standard instructions are current-device controls. Acceptance criteria require laboratory validation.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0219",
+      "lessonId": "THC-ENC-359",
+      "sourceIds": [
+        "V18-SRC-033",
+        "V18-SRC-034"
+      ],
+      "claimType": "product-sampling-batch-uniformity-and-coa-limits",
+      "supportedClaim": "Build representative postharvest samples and interpret certificates of analysis within sampling and analytical uncertainty. A certificate of analysis reports results for the submitted laboratory sample. It does not establish uniformity of the whole batch unless the sampling design, number and distribution of increments, homogenization, and analytical uncertainty support that inference.",
+      "sourceLocator": "Controlled Volume 18 source register: V18-SRC-033, V18-SRC-034.",
+      "applicability": "Supports the lesson's harvest/postharvest mechanism, measurement, or quality-system reasoning while preserving material form, cultivar, process geometry, method, and product-objective context.",
+      "limitations": "Official sampling and compliance rules vary by jurisdiction and must be refreshed at release.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0220",
+      "lessonId": "THC-ENC-360",
+      "sourceIds": [
+        "V18-SRC-035"
+      ],
+      "claimType": "postharvest-deviation-and-release-review",
+      "supportedClaim": "Control postharvest deviations through containment, impact assessment, investigation, sampling, CAPA, and authorized release or disposition. A postharvest deviation is departure from an approved process, range, identity, sanitation, environmental, sampling, packaging, or storage requirement. Not every deviation makes product unacceptable, but every significant deviation requires controlled assessment.",
+      "sourceLocator": "Controlled Volume 18 source register: V18-SRC-035.",
+      "applicability": "Supports the lesson's harvest/postharvest mechanism, measurement, or quality-system reasoning while preserving material form, cultivar, process geometry, method, and product-objective context.",
+      "limitations": "Specifications, OOS procedures, remediation, and release authority are jurisdiction- and quality-system-specific.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
