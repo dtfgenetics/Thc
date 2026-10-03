@@ -14,17 +14,29 @@ const auth='Basic '+Buffer.from(`${user}:${pass}`).toString('base64');
 const malformedPublicCopy=/\b(?:Open|ppen) sourc(?:\b|ee\b)|\bsourcee\b|\babstracte\b/i;
 const genericMisconceptionPlaceholder=/Correction:\s*See the (?:controlled )?lesson evidence and context\.?/i;
 
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 async function wp(endpoint){
-  const response=await fetch(`${site}/wp-json/wp/v2${endpoint}`,{
-    redirect:'follow',
-    signal:AbortSignal.timeout(60000),
-    headers:{Authorization:auth,Accept:'application/json','Cache-Control':'no-cache','User-Agent':'DTF-Encyclopedia-Copy-Repair/1.0'}
-  });
-  const text=await response.text();
-  let body=text;
-  try{body=text?JSON.parse(text):null}catch{}
-  if(!response.ok) throw new Error(`GET ${endpoint} failed ${response.status}: ${typeof body==='string'?body.slice(0,600):JSON.stringify(body).slice(0,600)}`);
-  return {body,headers:response.headers};
+  let lastError=null;
+  for(let attempt=1;attempt<=4;attempt++){
+    try{
+      const response=await fetch(`${site}/wp-json/wp/v2${endpoint}`,{
+        redirect:'follow',
+        signal:AbortSignal.timeout(60000),
+        headers:{Authorization:auth,Accept:'application/json','Cache-Control':'no-cache','User-Agent':'DTF-Encyclopedia-Copy-Repair/1.1'}
+      });
+      const text=await response.text();
+      let body=text;
+      try{body=text?JSON.parse(text):null}catch{}
+      if(!response.ok) throw new Error(`GET ${endpoint} failed ${response.status}: ${typeof body==='string'?body.slice(0,600):JSON.stringify(body).slice(0,600)}`);
+      return {body,headers:response.headers};
+    }catch(error){
+      lastError=error;
+      if(attempt===4) break;
+      console.warn(`WordPress API attempt ${attempt}/4 failed for ${endpoint}: ${error instanceof Error?error.message:String(error)}`);
+      await sleep(1500*attempt);
+    }
+  }
+  throw lastError;
 }
 async function findPage(slug,parent=null){
   const {body}=await wp(`/pages?slug=${encodeURIComponent(slug)}&context=edit&per_page=100`);
@@ -34,7 +46,7 @@ async function findPage(slug,parent=null){
 async function allChildren(parent){
   const out=[];
   for(let page=1;;page++){
-    const {body,headers}=await wp(`/pages?parent=${parent}&context=edit&status=publish&per_page=100&page=${page}&orderby=slug&order=asc`);
+    const {body,headers}=await wp(`/pages?parent=${parent}&context=edit&status=publish&per_page=50&page=${page}&orderby=slug&order=asc`);
     if(!Array.isArray(body)) throw new Error('WordPress child-page response was not an array.');
     out.push(...body);
     const totalPages=Number(headers.get('x-wp-totalpages')||1);
@@ -54,13 +66,22 @@ const decodeHtml=value=>String(value||'')
   .replace(/\s+/g,' ')
   .trim();
 async function fetchPublic(slug){
-  const response=await fetch(`${site}/learn/encyclopedia/${slug}/?dtf_copy_repair=${Date.now()}`,{
-    redirect:'follow',
-    signal:AbortSignal.timeout(30000),
-    headers:{'Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache','User-Agent':'DTF-Encyclopedia-Copy-Repair/1.1'}
-  });
-  const body=await response.text();
-  return {status:response.status,text:decodeHtml(body)};
+  let lastError=null;
+  for(let attempt=1;attempt<=3;attempt++){
+    try{
+      const response=await fetch(`${site}/learn/encyclopedia/${slug}/?dtf_copy_repair=${Date.now()}-${attempt}`,{
+        redirect:'follow',
+        signal:AbortSignal.timeout(30000),
+        headers:{'Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache','User-Agent':'DTF-Encyclopedia-Copy-Repair/1.2'}
+      });
+      const body=await response.text();
+      return {status:response.status,text:decodeHtml(body)};
+    }catch(error){
+      lastError=error;
+      if(attempt<3) await sleep(1000*attempt);
+    }
+  }
+  return {status:0,text:'',error:lastError instanceof Error?lastError.message:String(lastError)};
 }
 const defectKinds=html=>{
   const kinds=[];
