@@ -1,0 +1,310 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-019",
+  "createdAt": "2026-10-03",
+  "scope": "Claim-level IPM, biosecurity, sanitation, scouting, threshold, control, pesticide-law, CAPA, and program-audit evidence for THC-ENC-321 through THC-ENC-340.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Generic greenhouse and institutional IPM guidance supports methods and decision structure but does not create universal Cannabis efficacy thresholds.",
+    "Pesticide and disinfectant use remains governed by current labels, registrations, worker-safety requirements, residue rules, and jurisdictional law.",
+    "All mappings remain pending independent science review."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0181",
+      "lessonId": "THC-ENC-321",
+      "sourceIds": [
+        "ENC-AUTH-121",
+        "ENC-AUTH-122",
+        "ENC-AUTH-112"
+      ],
+      "claimType": "ipm-prevention-hierarchy",
+      "supportedClaim": "Integrated pest management is a decision system that prioritizes prevention, monitoring, correct identification, context-specific thresholds, and lower-risk controls before escalation.",
+      "sourceLocator": "See registered source(s) for the scoped IPM, biosecurity, sanitation, diagnostic, legal, or quality-system evidence described in this record.",
+      "applicability": "Supports the lesson-level mechanism and decision workflow while keeping crop, pest/pathogen, facility, measurement, regulatory, and local operating context explicit.",
+      "limitations": "IPM categories and thresholds are context-dependent; these sources do not establish universal cannabis economic thresholds or pesticide permissions.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0182",
+      "lessonId": "THC-ENC-322",
+      "sourceIds": [
+        "ENC-AUTH-123",
+        "ENC-AUTH-124",
+        "ENC-AUTH-116"
+      ],
+      "claimType": "facility-zoning-workflow",
+      "supportedClaim": "Clean-to-dirty movement, separation of propagation/intake areas, and controlled personnel/material flow can reduce opportunities for pest and pathogen movement through a facility.",
+      "sourceLocator": "See registered source(s) for the scoped IPM, biosecurity, sanitation, diagnostic, legal, or quality-system evidence described in this record.",
+      "applicability": "Supports the lesson-level mechanism and decision workflow while keeping crop, pest/pathogen, facility, measurement, regulatory, and local operating context explicit.",
+      "limitations": "Facility layout and movement controls reduce risk but do not guarantee exclusion; organism biology, compliance, and local workflow remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0183",
+      "lessonId": "THC-ENC-323",
+      "sourceIds": [
+        "ENC-AUTH-122",
+        "ENC-AUTH-124",
+        "ENC-AUTH-116"
+      ],
+      "claimType": "plant-intake-quarantine",
+      "supportedClaim": "Incoming plants can introduce pests or latent pathogens, so intake inspection, quarantine, source records, and testing are distinct biosecurity controls.",
+      "sourceLocator": "See registered source(s) for the scoped IPM, biosecurity, sanitation, diagnostic, legal, or quality-system evidence described in this record.",
+      "applicability": "Supports the lesson-level mechanism and decision workflow while keeping crop, pest/pathogen, facility, measurement, regulatory, and local operating context explicit.",
+      "limitations": "Quarantine duration and testing frequency cannot be universalized across pests, pathogens, source risk, crop stage, and facility design.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0184",
+      "lessonId": "THC-ENC-324",
+      "sourceIds": [
+        "ENC-AUTH-123",
+        "ENC-AUTH-116"
+      ],
+      "claimType": "personnel-entry-controls",
+      "supportedClaim": "Personnel, clothing, footwear, and work sequence can move contaminated material, making entry controls and clean-area-first workflow relevant to biosecurity.",
+      "sourceLocator": "See registered source(s) for the scoped IPM, biosecurity, sanitation, diagnostic, legal, or quality-system evidence described in this record.",
+      "applicability": "Supports the lesson-level mechanism and decision workflow while keeping crop, pest/pathogen, facility, measurement, regulatory, and local operating context explicit.",
+      "limitations": "The importance of each personnel pathway is organism- and facility-specific; hygiene measures must remain compatible with worker-safety requirements.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0185",
+      "lessonId": "THC-ENC-325",
+      "sourceIds": [
+        "ENC-AUTH-123",
+        "ENC-AUTH-125",
+        "ENC-AUTH-116"
+      ],
+      "claimType": "tool-bench-container-sanitation",
+      "supportedClaim": "Tools, benches, containers, and propagation surfaces can serve as contamination or transmission pathways, and sanitation works best when soil and organic debris are removed before disinfection.",
+      "sourceLocator": "See registered source(s) for the scoped IPM, biosecurity, sanitation, diagnostic, legal, or quality-system evidence described in this record.",
+      "applicability": "Supports the lesson-level mechanism and decision workflow while keeping crop, pest/pathogen, facility, measurement, regulatory, and local operating context explicit.",
+      "limitations": "Sanitation efficacy depends on organism, surface, cleaning quality, product, concentration, contact time, and label directions.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0186",
+      "lessonId": "THC-ENC-326",
+      "sourceIds": [
+        "ENC-AUTH-123",
+        "ENC-AUTH-125"
+      ],
+      "claimType": "cleaning-versus-disinfection",
+      "supportedClaim": "Cleaning physically removes soil and organic matter, while disinfection applies an appropriate antimicrobial process to a cleaned surface; the two steps are not interchangeable.",
+      "sourceLocator": "See registered source(s) for the scoped IPM, biosecurity, sanitation, diagnostic, legal, or quality-system evidence described in this record.",
+      "applicability": "Supports the lesson-level mechanism and decision workflow while keeping crop, pest/pathogen, facility, measurement, regulatory, and local operating context explicit.",
+      "limitations": "A disinfectant cannot compensate for poor surface preparation, and no one chemistry is universally compatible or effective for every organism or material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0187",
+      "lessonId": "THC-ENC-327",
+      "sourceIds": [
+        "ENC-AUTH-123",
+        "ENC-AUTH-125"
+      ],
+      "claimType": "contact-time-surface-preparation",
+      "supportedClaim": "Disinfectant performance depends on preparation of the surface and achieving the labeled concentration and wet contact time under compatible conditions.",
+      "sourceLocator": "See registered source(s) for the scoped IPM, biosecurity, sanitation, diagnostic, legal, or quality-system evidence described in this record.",
+      "applicability": "Supports the lesson-level mechanism and decision workflow while keeping crop, pest/pathogen, facility, measurement, regulatory, and local operating context explicit.",
+      "limitations": "Contact time and concentration are product-specific label requirements, not generic cannabis recipes.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0188",
+      "lessonId": "THC-ENC-328",
+      "sourceIds": [
+        "ENC-AUTH-052",
+        "ENC-AUTH-053",
+        "ENC-AUTH-116"
+      ],
+      "claimType": "water-system-hygiene",
+      "supportedClaim": "Irrigation water, reservoirs, recirculating solution, and wet root-zone systems can move or maintain plant pathogens, so water-system hygiene belongs in disease prevention and trace-back.",
+      "sourceLocator": "See registered source(s) for the scoped IPM, biosecurity, sanitation, diagnostic, legal, or quality-system evidence described in this record.",
+      "applicability": "Supports the lesson-level mechanism and decision workflow while keeping crop, pest/pathogen, facility, measurement, regulatory, and local operating context explicit.",
+      "limitations": "Reservoir detection or wet conditions do not prove a specific plant disease; organism-specific diagnostics and validated treatment methods remain necessary.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0189",
+      "lessonId": "THC-ENC-329",
+      "sourceIds": [
+        "ENC-AUTH-126",
+        "ENC-AUTH-124"
+      ],
+      "claimType": "pest-exclusion",
+      "supportedClaim": "Screens, sealed openings, protected intake points, and controlled doors can reduce pest entry, but exclusion design must account for pest size and ventilation penalties.",
+      "sourceLocator": "See registered source(s) for the scoped IPM, biosecurity, sanitation, diagnostic, legal, or quality-system evidence described in this record.",
+      "applicability": "Supports the lesson-level mechanism and decision workflow while keeping crop, pest/pathogen, facility, measurement, regulatory, and local operating context explicit.",
+      "limitations": "No universal mesh size or sealing specification fits every pest, structure, climate, or airflow requirement.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0190",
+      "lessonId": "THC-ENC-330",
+      "sourceIds": [
+        "ENC-AUTH-029",
+        "ENC-AUTH-025",
+        "ENC-AUTH-053"
+      ],
+      "claimType": "environmental-disease-prevention",
+      "supportedClaim": "Humidity, leaf or flower wetness, airflow, drainage, and temperature can change disease-favorable conditions and therefore belong in preventive environmental management.",
+      "sourceLocator": "See registered source(s) for the scoped IPM, biosecurity, sanitation, diagnostic, legal, or quality-system evidence described in this record.",
+      "applicability": "Supports the lesson-level mechanism and decision workflow while keeping crop, pest/pathogen, facility, measurement, regulatory, and local operating context explicit.",
+      "limitations": "Environmental risk factors alter probability but do not diagnose a pathogen or establish a universal cannabis setpoint.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0191",
+      "lessonId": "THC-ENC-331",
+      "sourceIds": [
+        "ENC-AUTH-127",
+        "ENC-AUTH-112",
+        "ENC-AUTH-024"
+      ],
+      "claimType": "representative-scouting",
+      "supportedClaim": "Repeatable scouting routes, plant-part inspection, traps where appropriate, spatial records, and consistent counting methods support trend detection better than ad hoc observations.",
+      "sourceLocator": "See registered source(s) for the scoped IPM, biosecurity, sanitation, diagnostic, legal, or quality-system evidence described in this record.",
+      "applicability": "Supports the lesson-level mechanism and decision workflow while keeping crop, pest/pathogen, facility, measurement, regulatory, and local operating context explicit.",
+      "limitations": "Trap counts and selected-plant observations are samples rather than whole-crop censuses; interpretation depends on route, device, crop stage, and pest behavior.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0192",
+      "lessonId": "THC-ENC-332",
+      "sourceIds": [
+        "ENC-AUTH-128",
+        "ENC-AUTH-103",
+        "ENC-AUTH-042"
+      ],
+      "claimType": "diagnostic-escalation",
+      "supportedClaim": "When symptoms overlap or management consequences are material, diagnosis should escalate from observation to representative sampling and organism-appropriate laboratory methods.",
+      "sourceLocator": "See registered source(s) for the scoped IPM, biosecurity, sanitation, diagnostic, legal, or quality-system evidence described in this record.",
+      "applicability": "Supports the lesson-level mechanism and decision workflow while keeping crop, pest/pathogen, facility, measurement, regulatory, and local operating context explicit.",
+      "limitations": "Laboratory detection still requires interpretation of tissue choice, timing, assay performance, and causal relevance.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0193",
+      "lessonId": "THC-ENC-333",
+      "sourceIds": [
+        "ENC-AUTH-111",
+        "ENC-AUTH-121",
+        "ENC-AUTH-122"
+      ],
+      "claimType": "thresholds-decisions",
+      "supportedClaim": "Action thresholds connect monitored pest or damage evidence with crop value, tolerance, stage, and control options; hemp-specific economic thresholds remain incomplete for many pests.",
+      "sourceLocator": "See registered source(s) for the scoped IPM, biosecurity, sanitation, diagnostic, legal, or quality-system evidence described in this record.",
+      "applicability": "Supports the lesson-level mechanism and decision workflow while keeping crop, pest/pathogen, facility, measurement, regulatory, and local operating context explicit.",
+      "limitations": "A threshold from another crop, facility, or region should not be presented as a universal cannabis constant.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0194",
+      "lessonId": "THC-ENC-334",
+      "sourceIds": [
+        "ENC-AUTH-112",
+        "ENC-AUTH-121",
+        "ENC-AUTH-029"
+      ],
+      "claimType": "cultural-controls",
+      "supportedClaim": "Cultural controls modify crop and production conditions to reduce pest or disease pressure and are most defensible when linked to a defined target and monitored outcome.",
+      "sourceLocator": "See registered source(s) for the scoped IPM, biosecurity, sanitation, diagnostic, legal, or quality-system evidence described in this record.",
+      "applicability": "Supports the lesson-level mechanism and decision workflow while keeping crop, pest/pathogen, facility, measurement, regulatory, and local operating context explicit.",
+      "limitations": "General cultural practices do not guarantee control and can create tradeoffs in crop performance or microclimate.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0195",
+      "lessonId": "THC-ENC-335",
+      "sourceIds": [
+        "ENC-AUTH-112",
+        "ENC-AUTH-126",
+        "ENC-AUTH-121"
+      ],
+      "claimType": "mechanical-physical-controls",
+      "supportedClaim": "Mechanical and physical controls such as exclusion, removal, barriers, trapping, or localized physical intervention can reduce pest pressure without relying solely on pesticides.",
+      "sourceLocator": "See registered source(s) for the scoped IPM, biosecurity, sanitation, diagnostic, legal, or quality-system evidence described in this record.",
+      "applicability": "Supports the lesson-level mechanism and decision workflow while keeping crop, pest/pathogen, facility, measurement, regulatory, and local operating context explicit.",
+      "limitations": "Performance is target- and system-specific; physical controls can alter airflow, labor, or crop conditions and require follow-up monitoring.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0196",
+      "lessonId": "THC-ENC-336",
+      "sourceIds": [
+        "ENC-AUTH-113",
+        "ENC-AUTH-112"
+      ],
+      "claimType": "biological-controls",
+      "supportedClaim": "Biological control depends on matching the beneficial organism or microbial agent to the target, life stage, environment, timing, and compatibility with other IPM tactics.",
+      "sourceLocator": "See registered source(s) for the scoped IPM, biosecurity, sanitation, diagnostic, legal, or quality-system evidence described in this record.",
+      "applicability": "Supports the lesson-level mechanism and decision workflow while keeping crop, pest/pathogen, facility, measurement, regulatory, and local operating context explicit.",
+      "limitations": "Release rates and efficacy are species-, supplier-, crop-, climate-, and facility-specific and should not be universalized.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0197",
+      "lessonId": "THC-ENC-337",
+      "sourceIds": [
+        "ENC-AUTH-129",
+        "ENC-AUTH-121"
+      ],
+      "claimType": "pesticide-label-resistance",
+      "supportedClaim": "Pesticide use is governed by the current legally enforceable label and registration context, while resistance management requires preserving mode-of-action and use-history information rather than repeating one tactic blindly.",
+      "sourceLocator": "See registered source(s) for the scoped IPM, biosecurity, sanitation, diagnostic, legal, or quality-system evidence described in this record.",
+      "applicability": "Supports the lesson-level mechanism and decision workflow while keeping crop, pest/pathogen, facility, measurement, regulatory, and local operating context explicit.",
+      "limitations": "This lesson does not authorize any pesticide; crop/site language, jurisdiction, worker protection, residue rules, and the current label control real use.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0198",
+      "lessonId": "THC-ENC-338",
+      "sourceIds": [
+        "ENC-AUTH-116",
+        "ENC-AUTH-121",
+        "ENC-AUTH-131"
+      ],
+      "claimType": "isolation-removal-waste",
+      "supportedClaim": "Isolation and removal can reduce exposure from confirmed or high-risk material when paired with controlled movement, documentation, and lawful waste handling.",
+      "sourceLocator": "See registered source(s) for the scoped IPM, biosecurity, sanitation, diagnostic, legal, or quality-system evidence described in this record.",
+      "applicability": "Supports the lesson-level mechanism and decision workflow while keeping crop, pest/pathogen, facility, measurement, regulatory, and local operating context explicit.",
+      "limitations": "Removal decisions and waste requirements are organism-, facility-, and jurisdiction-specific; visual appearance alone is not confirmation.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0199",
+      "lessonId": "THC-ENC-339",
+      "sourceIds": [
+        "ENC-AUTH-130",
+        "ENC-AUTH-121"
+      ],
+      "claimType": "capa-plant-health",
+      "supportedClaim": "Corrective and preventive action separates containment, root-cause investigation, corrective action, preventive action, responsibility, and effectiveness verification.",
+      "sourceLocator": "See registered source(s) for the scoped IPM, biosecurity, sanitation, diagnostic, legal, or quality-system evidence described in this record.",
+      "applicability": "Supports the lesson-level mechanism and decision workflow while keeping crop, pest/pathogen, facility, measurement, regulatory, and local operating context explicit.",
+      "limitations": "CAPA is a transferable quality framework, not proof that a particular plant-health cause has been identified or eliminated.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0200",
+      "lessonId": "THC-ENC-340",
+      "sourceIds": [
+        "ENC-AUTH-121",
+        "ENC-AUTH-130",
+        "ENC-AUTH-131"
+      ],
+      "claimType": "ipm-program-audit",
+      "supportedClaim": "An IPM program should be audited against objective records of prevention, monitoring, decisions, actions, outcomes, deviations, and corrective measures so performance can improve over time.",
+      "sourceLocator": "See registered source(s) for the scoped IPM, biosecurity, sanitation, diagnostic, legal, or quality-system evidence described in this record.",
+      "applicability": "Supports the lesson-level mechanism and decision workflow while keeping crop, pest/pathogen, facility, measurement, regulatory, and local operating context explicit.",
+      "limitations": "Audit evidence supports system evaluation but does not create universal performance benchmarks or replace organism-specific science and regulatory review.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
