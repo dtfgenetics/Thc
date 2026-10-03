@@ -118,7 +118,8 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/build-encyclopedia-full-release-manifest.mjs "$RUNNER_TEMP/encyclopedia-full-catalog.json"
-          node scripts/validate-encyclopedia-release-control.mjs "$RUNNER_TEMP/encyclopedia-full-catalog.json"
+          cmp "$RUNNER_TEMP/encyclopedia-full-catalog.json" site/wordpress/education/encyclopedia/full-controlled-catalog.json
+          node scripts/validate-encyclopedia-release-control.mjs site/wordpress/education/encyclopedia/full-controlled-catalog.json
 
       - name: Build rich discovery index
         run: npm run build:encyclopedia-discovery
