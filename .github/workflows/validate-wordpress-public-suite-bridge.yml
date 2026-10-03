@@ -185,7 +185,7 @@ jobs:
               'stale touched lock refuses takeover': 'dtf_stale_touched_lock' in text,
               'client recovery inspects persisted state': 'const state = await getState();' in text and 'recoverFailure' in text,
           }
-          match = re.search(r"const liveChecks = (\\[[\\s\\S]*?\\]);", text)
+          match = re.search(r"const liveChecks = (\[[\s\S]*?\]);", text)
           assert match, 'generated liveChecks contract not found'
           routes = ast.literal_eval(match.group(1))
           for route in ('/games/', '/tools/', '/projects/'):
