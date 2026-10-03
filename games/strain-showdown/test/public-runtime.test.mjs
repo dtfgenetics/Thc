@@ -14,17 +14,21 @@ const runtimeV2 = fs.readFileSync('site/public-route-patch/games/strain-showdown
 const runtimeV3 = fs.readFileSync('site/public-route-patch/games/strain-showdown/runtime-v3.css', 'utf8');
 const runtimeV4 = fs.readFileSync('site/public-route-patch/games/strain-showdown/runtime-v4.css', 'utf8');
 
-assert.equal(bundle.schemaVersion, 1);
+assert.equal(bundle.schemaVersion, 2);
 assert.equal(bundle.cardCount, 96);
 assert.equal(bundle.familyCount, 8);
 assert.equal(bundle.cards.length, 96);
 assert.equal(bundle.families.length, 8);
+assert.equal(bundle.effects.activeInBrowserRules, true);
+assert.equal(bundle.effects.profiles.length, 24);
 for (const family of ['kush', 'haze', 'skunk', 'gas', 'cookies', 'fruit', 'purple', 'frost']) {
   assert.equal(bundle.cards.filter((card) => card.family === family).length, 12, `${family} must have 12 cards`);
 }
 
 assert.match(app, /fetch\('\.\/data\/browser-bundle\.json'/);
 assert.match(app, /async function loadLegacyData\(\)/);
+assert.match(app, /effectCatalog/);
+assert.match(app, /ability-text/);
 assert.match(app, /let matchToken = 0;/);
 assert.match(app, /token !== matchToken/);
 assert.match(app, /function requestRestart\(\)/);
@@ -63,6 +67,7 @@ assert.match(runtimeV4, /\.card\.selected::after\{content:"SELECTED"/);
 assert.match(runtimeV4, /env\(safe-area-inset-bottom\)/);
 assert.match(runtimeV4, /@media\(forced-colors:active\)/);
 assert.match(runtimeV4, /@media\(prefers-reduced-motion:reduce\)/);
+assert.match(runtimeV4, /\.ability-text\{/);
 
 fs.rmSync(bundlePath, { force: true });
 console.log('Strain Showdown bundled runtime, match isolation, restart guard, final responsive UI and accessibility checks passed.');
