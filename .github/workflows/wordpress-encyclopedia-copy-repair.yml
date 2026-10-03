@@ -1,0 +1,55 @@
+name: Repair THC Encyclopedia Live Copy Drift
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Publish THC Encyclopedia Production
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-encyclopedia-copy-repair
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      BACKUP_ROOT: /tmp/dtf-encyclopedia-copy-repair
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate repair tooling
+        run: |
+          node --check scripts/repair-wordpress-encyclopedia-copy-defects.mjs
+          node --check scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
+          node --check scripts/audit-live-encyclopedia-copy.mjs
+      - name: Repair eligible stale live copy
+        run: node scripts/repair-wordpress-encyclopedia-copy-defects.mjs
+      - name: Verify live encyclopedia copy
+        run: node scripts/audit-live-encyclopedia-copy.mjs
+      - name: Upload repair evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: encyclopedia-copy-repair-${{ github.run_id }}
+          path: |
+            /tmp/encyclopedia-copy-repair-scan.json
+            /tmp/dtf-encyclopedia-copy-repair
+            live-encyclopedia-copy-audit.json
+          if-no-files-found: warn
+          retention-days: 30
