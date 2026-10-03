@@ -4,13 +4,34 @@
   "title": "Wound Response and Adventitious Root Formation",
   "objective": "Describe the sequence from cutting injury to adventitious-root emergence and vascular connection.",
   "terms": [
-    {"term":"wound response","definition":"The coordinated cellular and physiological responses initiated after tissue injury."},
-    {"term":"dedifferentiation","definition":"A change in which differentiated cells regain developmental flexibility and may re-enter division or adopt a new fate."},
-    {"term":"root initial","definition":"An early cell or small group of cells committed to developing into a root structure."},
-    {"term":"root primordium","definition":"An organized developing root structure formed before emergence through surrounding tissue."},
-    {"term":"callus","definition":"A mass of proliferating, relatively unorganized cells that can form after wounding; visible callus is not equivalent to root formation."},
-    {"term":"vascular connection","definition":"Functional continuity of conducting tissues between a developing root and the parent stem tissue."},
-    {"term":"adventitious root","definition":"A root initiated from non-root tissue such as a stem cutting."}
+    {
+      "term": "wound response",
+      "definition": "The coordinated cellular and physiological responses initiated after tissue injury."
+    },
+    {
+      "term": "dedifferentiation",
+      "definition": "A change in which differentiated cells regain developmental flexibility and may re-enter division or adopt a new fate."
+    },
+    {
+      "term": "root initial",
+      "definition": "An early cell or small group of cells committed to developing into a root structure."
+    },
+    {
+      "term": "root primordium",
+      "definition": "An organized developing root structure formed before emergence through surrounding tissue."
+    },
+    {
+      "term": "callus",
+      "definition": "A mass of proliferating, relatively unorganized cells that can form after wounding; visible callus is not equivalent to root formation."
+    },
+    {
+      "term": "vascular connection",
+      "definition": "Functional continuity of conducting tissues between a developing root and the parent stem tissue."
+    },
+    {
+      "term": "adventitious root",
+      "definition": "A root initiated from non-root tissue such as a stem cutting."
+    }
   ],
   "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
   "coreScience": [
@@ -22,12 +43,23 @@
     "Use one controlled cutting and wounding method during a trial. Protect the basal tissue from crushing and contamination. Evaluate organized root development, not merely swelling or callus."
   ],
   "measureAndRecord": [
-    {"field":"Controlled record set","requirement":"Cut geometry; wounding treatment; basal discoloration; callus score; first root date; root number, length, and distribution; transplant survival."}
+    {
+      "field": "Controlled record set",
+      "requirement": "Cut geometry; wounding treatment; basal discoloration; callus score; first root date; root number, length, and distribution; transplant survival."
+    },
+    {
+      "field": "Process checkpoint",
+      "requirement": "For wound response and adventitious root formation, record the relevant developmental stage, environment, operator or treatment condition, and time sequence so the biological response can be separated from handling and facility effects."
+    },
+    {
+      "field": "Outcome and verification",
+      "requirement": "Record the defined success endpoint, failures and off-types, replicate or batch variation, and any identity, health, rooting, survival, or follow-up test used to verify that the apparent result persisted after establishment."
+    }
   ],
   "misconceptions": [
-    "Callus means roots are guaranteed.",
-    "A 45-degree cut is universally superior.",
-    "More scraping or splitting always creates more roots."
+    "Callus means roots are guaranteed. Visible similarity alone does not prove equivalent physiological state, health status, or later performance; identity and outcome measurements answer different questions.",
+    "A 45-degree cut is universally superior. A single observation or negative symptom check cannot exclude latent infection, developmental history, or protocol-specific effects; use the appropriate follow-up test or repeated observation.",
+    "More scraping or splitting always creates more roots. Cultivar names, appearance, and one successful batch are not substitutes for traceable identity, controlled comparison, and repeatable propagation outcomes."
   ],
   "evidenceLimits": [
     "The cellular origin of adventitious roots and response to wounding can vary by genotype and tissue. One production study does not establish a universal cannabis wounding rule."
@@ -42,15 +74,15 @@
   ],
   "publicationAuthorized": true,
   "reviewControl": {
-    "controlledManuscript":"Volume 09 v1.0",
-    "evidenceControl":"complete",
-    "secondaryEvidenceReview":"complete_qualified",
-    "externalReview":"pending_not_recorded",
-    "externalReviewType":"propagation_science",
-    "publicationAuthorized":true,
-    "publicationAuthorization":"project_owner_2026-08-24",
-    "independentApproval":false,
-    "websiteAction":"publish_with_review_notice"
+    "controlledManuscript": "Volume 09 v1.0",
+    "evidenceControl": "complete",
+    "secondaryEvidenceReview": "complete_qualified",
+    "externalReview": "pending_not_recorded",
+    "externalReviewType": "propagation_science",
+    "publicationAuthorized": true,
+    "publicationAuthorization": "project_owner_2026-08-24",
+    "independentApproval": false,
+    "websiteAction": "publish_with_review_notice"
   },
   "slug": "wound-response-and-adventitious-root-formation",
   "route": "/encyclopedia/wound-response-and-adventitious-root-formation"

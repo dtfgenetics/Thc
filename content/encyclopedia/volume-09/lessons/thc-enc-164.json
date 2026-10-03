@@ -4,12 +4,30 @@
   "title": "Cutting Selection and Carbohydrate Status",
   "objective": "Select cuttings using measured tissue quality rather than a rigid node-count recipe.",
   "terms": [
-    {"term":"source–sink status","definition":"The current balance between exporting and importing assimilates or other resources within plant tissues."},
-    {"term":"carbohydrate reserve","definition":"Stored soluble sugars and starch that can support metabolism when current supply is limited."},
-    {"term":"cutting diameter","definition":"Stem thickness measured at a defined position on the cutting."},
-    {"term":"leaf area","definition":"The surface area of leaves retained on a cutting or measured on a plant."},
-    {"term":"apical meristem","definition":"Actively dividing tissue at the shoot tip that produces new shoot organs."},
-    {"term":"donor nutrition","definition":"The nutrient status and recent nutrition history of the source plant from which a cutting is taken."}
+    {
+      "term": "source–sink status",
+      "definition": "The current balance between exporting and importing assimilates or other resources within plant tissues."
+    },
+    {
+      "term": "carbohydrate reserve",
+      "definition": "Stored soluble sugars and starch that can support metabolism when current supply is limited."
+    },
+    {
+      "term": "cutting diameter",
+      "definition": "Stem thickness measured at a defined position on the cutting."
+    },
+    {
+      "term": "leaf area",
+      "definition": "The surface area of leaves retained on a cutting or measured on a plant."
+    },
+    {
+      "term": "apical meristem",
+      "definition": "Actively dividing tissue at the shoot tip that produces new shoot organs."
+    },
+    {
+      "term": "donor nutrition",
+      "definition": "The nutrient status and recent nutrition history of the source plant from which a cutting is taken."
+    }
   ],
   "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
   "coreScience": [
@@ -21,12 +39,23 @@
     "Harvest uniform cuttings from identified donor zones. Protect them from desiccation, heat, crushing, and long delays. Reject tissue with pests, lesions, weak stems, unresolved nutrient stress, or abnormal growth."
   ],
   "measureAndRecord": [
-    {"field":"Controlled record set","requirement":"Source branch and node; length; basal diameter; fresh mass if used; leaf count/area proxy; apex retained or removed; time from cut to insertion; rooting and survival outcomes."}
+    {
+      "field": "Controlled record set",
+      "requirement": "Source branch and node; length; basal diameter; fresh mass if used; leaf count/area proxy; apex retained or removed; time from cut to insertion; rooting and survival outcomes."
+    },
+    {
+      "field": "Process checkpoint",
+      "requirement": "For cutting selection and carbohydrate status, record the relevant developmental stage, environment, operator or treatment condition, and time sequence so the biological response can be separated from handling and facility effects."
+    },
+    {
+      "field": "Outcome and verification",
+      "requirement": "Record the defined success endpoint, failures and off-types, replicate or batch variation, and any identity, health, rooting, survival, or follow-up test used to verify that the apparent result persisted after establishment."
+    }
   ],
   "misconceptions": [
-    "Every cutting needs exactly the same number of nodes.",
-    "Bigger cuttings always root faster.",
-    "Removing most leaf area always improves rooting."
+    "Every cutting needs exactly the same number of nodes. Visible similarity alone does not prove equivalent physiological state, health status, or later performance; identity and outcome measurements answer different questions.",
+    "Bigger cuttings always root faster. A single observation or negative symptom check cannot exclude latent infection, developmental history, or protocol-specific effects; use the appropriate follow-up test or repeated observation.",
+    "Removing most leaf area always improves rooting. Cultivar names, appearance, and one successful batch are not substitutes for traceable identity, controlled comparison, and repeatable propagation outcomes."
   ],
   "evidenceLimits": [
     "Direct carbohydrate measurements are uncommon in production. Morphology can act as a proxy, but its relationship to rooting must be validated for each genotype and protocol."
@@ -40,15 +69,15 @@
   ],
   "publicationAuthorized": true,
   "reviewControl": {
-    "controlledManuscript":"Volume 09 v1.0",
-    "evidenceControl":"complete",
-    "secondaryEvidenceReview":"complete_qualified",
-    "externalReview":"pending_not_recorded",
-    "externalReviewType":"propagation_science",
-    "publicationAuthorized":true,
-    "publicationAuthorization":"project_owner_2026-08-24",
-    "independentApproval":false,
-    "websiteAction":"publish_with_review_notice"
+    "controlledManuscript": "Volume 09 v1.0",
+    "evidenceControl": "complete",
+    "secondaryEvidenceReview": "complete_qualified",
+    "externalReview": "pending_not_recorded",
+    "externalReviewType": "propagation_science",
+    "publicationAuthorized": true,
+    "publicationAuthorization": "project_owner_2026-08-24",
+    "independentApproval": false,
+    "websiteAction": "publish_with_review_notice"
   },
   "slug": "cutting-selection-and-carbohydrate-status",
   "route": "/encyclopedia/cutting-selection-and-carbohydrate-status"

@@ -1,31 +1,87 @@
 {
-  "id":"THC-ENC-178",
-  "number":178,
-  "title":"Contamination, Hyperhydricity, and Culture Disorders",
-  "objective":"Differentiate contamination, hyperhydricity, browning, callus overgrowth, and other culture disorders using timing and pattern.",
-  "terms":[
-    {"term":"microbial contamination","definition":"Unwanted growth or presence of bacteria, fungi, yeasts, or other microorganisms in a culture system."},
-    {"term":"hyperhydricity","definition":"Abnormal watery, translucent, brittle in vitro growth associated with excessive tissue hydration and altered anatomy."},
-    {"term":"phenolic browning","definition":"Darkening of tissue or medium associated with oxidation of phenolic compounds released after stress or injury."},
-    {"term":"necrosis","definition":"Localized or extensive death of plant cells or tissues."},
-    {"term":"callus","definition":"A mass of relatively unorganized proliferating plant cells that can form at wounds or in culture; callus is not synonymous with roots or shoots."},
-    {"term":"vitrification","definition":"In cryopreservation, formation of an amorphous glass-like state rather than damaging ice crystals; this meaning is distinct from the older use of vitrification as a synonym for hyperhydricity."},
-    {"term":"latent contamination","definition":"Contamination that is present but not immediately visible and may become apparent only after time, stress, or repeated transfer."}
+  "id": "THC-ENC-178",
+  "number": 178,
+  "title": "Contamination, Hyperhydricity, and Culture Disorders",
+  "objective": "Differentiate contamination, hyperhydricity, browning, callus overgrowth, and other culture disorders using timing and pattern.",
+  "terms": [
+    {
+      "term": "microbial contamination",
+      "definition": "Unwanted growth or presence of bacteria, fungi, yeasts, or other microorganisms in a culture system."
+    },
+    {
+      "term": "hyperhydricity",
+      "definition": "Abnormal watery, translucent, brittle in vitro growth associated with excessive tissue hydration and altered anatomy."
+    },
+    {
+      "term": "phenolic browning",
+      "definition": "Darkening of tissue or medium associated with oxidation of phenolic compounds released after stress or injury."
+    },
+    {
+      "term": "necrosis",
+      "definition": "Localized or extensive death of plant cells or tissues."
+    },
+    {
+      "term": "callus",
+      "definition": "A mass of relatively unorganized proliferating plant cells that can form at wounds or in culture; callus is not synonymous with roots or shoots."
+    },
+    {
+      "term": "vitrification",
+      "definition": "In cryopreservation, formation of an amorphous glass-like state rather than damaging ice crystals; this meaning is distinct from the older use of vitrification as a synonym for hyperhydricity."
+    },
+    {
+      "term": "latent contamination",
+      "definition": "Contamination that is present but not immediately visible and may become apparent only after time, stress, or repeated transfer."
+    }
   ],
-  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
-  "coreScience":[
+  "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
+  "coreScience": [
     "Contamination may be obvious as bacterial turbidity, fungal mycelium, yeast growth, discoloration, odor, or tissue collapse, but slow internal contaminants can appear after multiple transfers. Timing, location, and repeated association with a donor help identify the pathway.",
     "Hyperhydricity is abnormal watery, translucent, brittle growth associated with excess tissue hydration and altered anatomy. It is different from cryogenic vitrification, which describes glass formation during cryopreservation.",
     "Phenolic browning, chlorosis, necrosis, weak elongation, excessive callus, fasciated shoots, and failure to root can result from explant injury, medium, PGRs, vessel humidity, ethylene, light, temperature, subculture interval, or genotype."
   ],
-  "cultivationRelevance":["Quarantine affected vessels, protect the clean area, record the first detection, and investigate donor, medium lot, operator, transfer session, vessel, and incubator patterns. Do not subculture questionable material into clean production."],
-  "measureAndRecord":[{"field":"Controlled record set","requirement":"Culture ID; donor; passage; medium/vessel; symptom type; day detected; spatial/session pattern; microscopy or identification; disposal; corrective action; recurrence."}],
-  "misconceptions":["All glassy tissue is contamination.","Clear media proves the plant is healthy.","Moving an abnormal shoot to fresh media always fixes the cause."],
-  "evidenceLimits":["Visual classification is preliminary. Microbial identity and physiological cause may require laboratory or controlled comparative work."],
-  "crossLinks":"THC-ENC-175–177 for tissue-culture workflow and media; THC-ENC-301–340 for disease, viroid, biosecurity, sanitation, and release controls.",
-  "sourceNotes":["Holmes JE et al. (2021). Frontiers in Plant Science 12:732344.","Ioannidis K et al. (2022). Plants 11:2569.","V09-SRC-002 project pathology/sanitation control source."],
-  "publicationAuthorized":true,
-  "reviewControl":{"controlledManuscript":"Volume 09 v1.0","evidenceControl":"complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"tissue_culture_and_plant_pathology_diagnostics","publicationAuthorized":true,"publicationAuthorization":"project_owner_2026-08-24","independentApproval":false,"websiteAction":"publish_with_review_notice"},
-  "slug":"contamination-hyperhydricity-and-culture-disorders",
-  "route":"/encyclopedia/contamination-hyperhydricity-and-culture-disorders"
+  "cultivationRelevance": [
+    "Quarantine affected vessels, protect the clean area, record the first detection, and investigate donor, medium lot, operator, transfer session, vessel, and incubator patterns. Do not subculture questionable material into clean production."
+  ],
+  "measureAndRecord": [
+    {
+      "field": "Controlled record set",
+      "requirement": "Culture ID; donor; passage; medium/vessel; symptom type; day detected; spatial/session pattern; microscopy or identification; disposal; corrective action; recurrence."
+    },
+    {
+      "field": "Process checkpoint",
+      "requirement": "For contamination, hyperhydricity, and culture disorders, record the relevant developmental stage, environment, operator or treatment condition, and time sequence so the biological response can be separated from handling and facility effects."
+    },
+    {
+      "field": "Outcome and verification",
+      "requirement": "Record the defined success endpoint, failures and off-types, replicate or batch variation, and any identity, health, rooting, survival, or follow-up test used to verify that the apparent result persisted after establishment."
+    }
+  ],
+  "misconceptions": [
+    "All glassy tissue is contamination. Visible similarity alone does not prove equivalent physiological state, health status, or later performance; identity and outcome measurements answer different questions.",
+    "Clear media proves the plant is healthy. A single observation or negative symptom check cannot exclude latent infection, developmental history, or protocol-specific effects; use the appropriate follow-up test or repeated observation.",
+    "Moving an abnormal shoot to fresh media always fixes the cause. Cultivar names, appearance, and one successful batch are not substitutes for traceable identity, controlled comparison, and repeatable propagation outcomes."
+  ],
+  "evidenceLimits": [
+    "Visual classification is preliminary. Microbial identity and physiological cause may require laboratory or controlled comparative work."
+  ],
+  "crossLinks": "THC-ENC-175–177 for tissue-culture workflow and media; THC-ENC-301–340 for disease, viroid, biosecurity, sanitation, and release controls.",
+  "sourceNotes": [
+    "Holmes JE et al. (2021). Frontiers in Plant Science 12:732344.",
+    "Ioannidis K et al. (2022). Plants 11:2569.",
+    "V09-SRC-002 project pathology/sanitation control source."
+  ],
+  "publicationAuthorized": true,
+  "reviewControl": {
+    "controlledManuscript": "Volume 09 v1.0",
+    "evidenceControl": "complete",
+    "secondaryEvidenceReview": "complete_qualified",
+    "externalReview": "pending_not_recorded",
+    "externalReviewType": "tissue_culture_and_plant_pathology_diagnostics",
+    "publicationAuthorized": true,
+    "publicationAuthorization": "project_owner_2026-08-24",
+    "independentApproval": false,
+    "websiteAction": "publish_with_review_notice"
+  },
+  "slug": "contamination-hyperhydricity-and-culture-disorders",
+  "route": "/encyclopedia/contamination-hyperhydricity-and-culture-disorders"
 }
