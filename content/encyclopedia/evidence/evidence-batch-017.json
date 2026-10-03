@@ -1,0 +1,277 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-017",
+  "createdAt": "2026-10-03",
+  "scope": "Claim-level pest identification, vector biology, monitoring, threshold, biological-control, and IPM-record evidence for the remaining unmapped Part 15 lessons.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Pest presence, injury pattern, vector capability, disease infection, economic injury, and treatment decision are separate evidence levels.",
+    "General greenhouse IPM guidance supports monitoring and decision methods but does not create cannabis-specific thresholds or pesticide recommendations.",
+    "All mappings remain pending independent science review."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0147",
+      "lessonId": "THC-ENC-281",
+      "sourceIds": [
+        "ENC-AUTH-104",
+        "ENC-AUTH-105"
+      ],
+      "claimType": "pest-diagnostic-framework",
+      "supportedClaim": "Hemp/cannabis hosts a diverse arthropod and mollusk complex, and reliable diagnosis depends on specimen identity, life stage, injury pattern, and production context rather than symptom appearance alone.",
+      "sourceLocator": "See registered source(s) for the scoped identification, biology, monitoring, or IPM evidence described in this record.",
+      "applicability": "Supports lesson-level diagnostic, scouting, or IPM reasoning while keeping species identity, crop context, and measurement method explicit.",
+      "limitations": "Does not authorize pesticide use or establish a universal cannabis action threshold; regional, genotype, life-stage, production-system, regulatory, and sampling context remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0148",
+      "lessonId": "THC-ENC-282",
+      "sourceIds": [
+        "ENC-AUTH-104",
+        "ENC-AUTH-105"
+      ],
+      "claimType": "two-spotted-spider-mite",
+      "supportedClaim": "Two-spotted spider mite is a documented hemp/cannabis pest; stippling, webbing, mite life stages, and magnified inspection support diagnosis, while cannabis-specific economic thresholds remain limited.",
+      "sourceLocator": "See registered source(s) for the scoped identification, biology, monitoring, or IPM evidence described in this record.",
+      "applicability": "Supports lesson-level diagnostic, scouting, or IPM reasoning while keeping species identity, crop context, and measurement method explicit.",
+      "limitations": "Does not authorize pesticide use or establish a universal cannabis action threshold; regional, genotype, life-stage, production-system, regulatory, and sampling context remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0149",
+      "lessonId": "THC-ENC-283",
+      "sourceIds": [
+        "ENC-AUTH-106"
+      ],
+      "claimType": "hemp-russet-mite",
+      "supportedClaim": "Hemp russet mite is a directly studied hemp pest whose biology, injury, and management remain incompletely quantified, so microscopic/species confirmation should be separated from assumptions about crop-loss thresholds.",
+      "sourceLocator": "See registered source(s) for the scoped identification, biology, monitoring, or IPM evidence described in this record.",
+      "applicability": "Supports lesson-level diagnostic, scouting, or IPM reasoning while keeping species identity, crop context, and measurement method explicit.",
+      "limitations": "Does not authorize pesticide use or establish a universal cannabis action threshold; regional, genotype, life-stage, production-system, regulatory, and sampling context remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0150",
+      "lessonId": "THC-ENC-284",
+      "sourceIds": [
+        "ENC-AUTH-104",
+        "ENC-AUTH-105"
+      ],
+      "claimType": "broad-mite",
+      "supportedClaim": "Broad mite is documented in indoor Cannabis/hemp pest systems, but its distortion symptoms overlap with abiotic and other biotic causes and require organism-level confirmation.",
+      "sourceLocator": "See registered source(s) for the scoped identification, biology, monitoring, or IPM evidence described in this record.",
+      "applicability": "Supports lesson-level diagnostic, scouting, or IPM reasoning while keeping species identity, crop context, and measurement method explicit.",
+      "limitations": "Does not authorize pesticide use or establish a universal cannabis action threshold; regional, genotype, life-stage, production-system, regulatory, and sampling context remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0151",
+      "lessonId": "THC-ENC-285",
+      "sourceIds": [
+        "ENC-AUTH-104",
+        "ENC-AUTH-105"
+      ],
+      "claimType": "thrips",
+      "supportedClaim": "Thrips, including western flower thrips in cannabis/hemp systems, require life-stage/species-aware identification because feeding injury and vector risk are not interchangeable with the mere presence of thrips.",
+      "sourceLocator": "See registered source(s) for the scoped identification, biology, monitoring, or IPM evidence described in this record.",
+      "applicability": "Supports lesson-level diagnostic, scouting, or IPM reasoning while keeping species identity, crop context, and measurement method explicit.",
+      "limitations": "Does not authorize pesticide use or establish a universal cannabis action threshold; regional, genotype, life-stage, production-system, regulatory, and sampling context remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0152",
+      "lessonId": "THC-ENC-286",
+      "sourceIds": [
+        "ENC-AUTH-107",
+        "ENC-AUTH-105"
+      ],
+      "claimType": "cannabis-aphid",
+      "supportedClaim": "Cannabis aphid is a well-supported Cannabis/hemp pest, while common aphid species differ strongly in host suitability; species identity and feeding biology matter to interpretation.",
+      "sourceLocator": "See registered source(s) for the scoped identification, biology, monitoring, or IPM evidence described in this record.",
+      "applicability": "Supports lesson-level diagnostic, scouting, or IPM reasoning while keeping species identity, crop context, and measurement method explicit.",
+      "limitations": "Does not authorize pesticide use or establish a universal cannabis action threshold; regional, genotype, life-stage, production-system, regulatory, and sampling context remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0153",
+      "lessonId": "THC-ENC-287",
+      "sourceIds": [
+        "ENC-AUTH-107"
+      ],
+      "claimType": "other-aphids",
+      "supportedClaim": "Cotton aphid, green peach aphid, and cannabis aphid show different host-suitability and feeding behavior on the tested hemp cultivar, so aphid presence should not be generalized across species or genotypes.",
+      "sourceLocator": "See registered source(s) for the scoped identification, biology, monitoring, or IPM evidence described in this record.",
+      "applicability": "Supports lesson-level diagnostic, scouting, or IPM reasoning while keeping species identity, crop context, and measurement method explicit.",
+      "limitations": "Does not authorize pesticide use or establish a universal cannabis action threshold; regional, genotype, life-stage, production-system, regulatory, and sampling context remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0154",
+      "lessonId": "THC-ENC-288",
+      "sourceIds": [
+        "ENC-AUTH-108",
+        "ENC-AUTH-104",
+        "ENC-AUTH-105"
+      ],
+      "claimType": "whitefly-vector",
+      "supportedClaim": "Whiteflies are documented in cannabis/hemp production, and Bemisia tabaci can transmit lettuce chlorosis virus to cannabis under experimental conditions; vector presence alone does not establish infection.",
+      "sourceLocator": "See registered source(s) for the scoped identification, biology, monitoring, or IPM evidence described in this record.",
+      "applicability": "Supports lesson-level diagnostic, scouting, or IPM reasoning while keeping species identity, crop context, and measurement method explicit.",
+      "limitations": "Does not authorize pesticide use or establish a universal cannabis action threshold; regional, genotype, life-stage, production-system, regulatory, and sampling context remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0155",
+      "lessonId": "THC-ENC-289",
+      "sourceIds": [
+        "ENC-AUTH-112"
+      ],
+      "claimType": "fungus-gnat",
+      "supportedClaim": "Fungus gnats are established greenhouse root-zone pests whose adults/larvae and moisture-associated occurrence can be monitored with greenhouse IPM methods; cannabis-specific action thresholds remain unstandardized.",
+      "sourceLocator": "See registered source(s) for the scoped identification, biology, monitoring, or IPM evidence described in this record.",
+      "applicability": "Supports lesson-level diagnostic, scouting, or IPM reasoning while keeping species identity, crop context, and measurement method explicit.",
+      "limitations": "Does not authorize pesticide use or establish a universal cannabis action threshold; regional, genotype, life-stage, production-system, regulatory, and sampling context remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0156",
+      "lessonId": "THC-ENC-290",
+      "sourceIds": [
+        "ENC-AUTH-112"
+      ],
+      "claimType": "shore-fly",
+      "supportedClaim": "Shore flies are common greenhouse organisms associated with wet, algae-rich areas and should be distinguished from fungus gnats because presence does not imply equivalent root injury or disease risk.",
+      "sourceLocator": "See registered source(s) for the scoped identification, biology, monitoring, or IPM evidence described in this record.",
+      "applicability": "Supports lesson-level diagnostic, scouting, or IPM reasoning while keeping species identity, crop context, and measurement method explicit.",
+      "limitations": "Does not authorize pesticide use or establish a universal cannabis action threshold; regional, genotype, life-stage, production-system, regulatory, and sampling context remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0157",
+      "lessonId": "THC-ENC-291",
+      "sourceIds": [
+        "ENC-AUTH-104",
+        "ENC-AUTH-105"
+      ],
+      "claimType": "leafminer",
+      "supportedClaim": "Leafminers are documented on hemp, but species identity and injury severity vary; mined tissue is a diagnostic observation rather than proof of a universal economic threat.",
+      "sourceLocator": "See registered source(s) for the scoped identification, biology, monitoring, or IPM evidence described in this record.",
+      "applicability": "Supports lesson-level diagnostic, scouting, or IPM reasoning while keeping species identity, crop context, and measurement method explicit.",
+      "limitations": "Does not authorize pesticide use or establish a universal cannabis action threshold; regional, genotype, life-stage, production-system, regulatory, and sampling context remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0158",
+      "lessonId": "THC-ENC-293",
+      "sourceIds": [
+        "ENC-AUTH-110"
+      ],
+      "claimType": "leafhopper-bctv",
+      "supportedClaim": "Beet leafhopper and beet curly top virus interact with hemp in field systems, but disease risk depends on vector infection status, movement, virus strain, genotype, and landscape context.",
+      "sourceLocator": "See registered source(s) for the scoped identification, biology, monitoring, or IPM evidence described in this record.",
+      "applicability": "Supports lesson-level diagnostic, scouting, or IPM reasoning while keeping species identity, crop context, and measurement method explicit.",
+      "limitations": "Does not authorize pesticide use or establish a universal cannabis action threshold; regional, genotype, life-stage, production-system, regulatory, and sampling context remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0159",
+      "lessonId": "THC-ENC-294",
+      "sourceIds": [
+        "ENC-AUTH-109"
+      ],
+      "claimType": "root-aphid",
+      "supportedClaim": "Rice root aphid is directly documented using indoor Cannabis roots and producing alate dispersal forms, while crop-loss relationships and universal action thresholds remain unresolved.",
+      "sourceLocator": "See registered source(s) for the scoped identification, biology, monitoring, or IPM evidence described in this record.",
+      "applicability": "Supports lesson-level diagnostic, scouting, or IPM reasoning while keeping species identity, crop context, and measurement method explicit.",
+      "limitations": "Does not authorize pesticide use or establish a universal cannabis action threshold; regional, genotype, life-stage, production-system, regulatory, and sampling context remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0160",
+      "lessonId": "THC-ENC-295",
+      "sourceIds": [
+        "ENC-AUTH-104"
+      ],
+      "claimType": "mollusk-seedling-injury",
+      "supportedClaim": "Slugs and snails occur within documented hemp pest complexes; chewing injury and moisture-associated activity can support diagnosis, but cannabis-specific economic thresholds are not established.",
+      "sourceLocator": "See registered source(s) for the scoped identification, biology, monitoring, or IPM evidence described in this record.",
+      "applicability": "Supports lesson-level diagnostic, scouting, or IPM reasoning while keeping species identity, crop context, and measurement method explicit.",
+      "limitations": "Does not authorize pesticide use or establish a universal cannabis action threshold; regional, genotype, life-stage, production-system, regulatory, and sampling context remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0161",
+      "lessonId": "THC-ENC-296",
+      "sourceIds": [
+        "ENC-AUTH-104",
+        "ENC-AUTH-107"
+      ],
+      "claimType": "secondary-pest-indicators",
+      "supportedClaim": "Ants, parasitoid wasps, and other associated arthropods can indicate pest or beneficial activity, but their ecological role is species- and context-specific and should not be inferred from trap presence alone.",
+      "sourceLocator": "See registered source(s) for the scoped identification, biology, monitoring, or IPM evidence described in this record.",
+      "applicability": "Supports lesson-level diagnostic, scouting, or IPM reasoning while keeping species identity, crop context, and measurement method explicit.",
+      "limitations": "Does not authorize pesticide use or establish a universal cannabis action threshold; regional, genotype, life-stage, production-system, regulatory, and sampling context remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0162",
+      "lessonId": "THC-ENC-297",
+      "sourceIds": [
+        "ENC-AUTH-112",
+        "ENC-AUTH-111"
+      ],
+      "claimType": "pest-monitoring-methods",
+      "supportedClaim": "Sticky cards, visual inspection, beat/shake sampling, and life-stage records provide complementary pest-monitoring information and should be used consistently for trend detection rather than treated as whole-crop censuses.",
+      "sourceLocator": "See registered source(s) for the scoped identification, biology, monitoring, or IPM evidence described in this record.",
+      "applicability": "Supports lesson-level diagnostic, scouting, or IPM reasoning while keeping species identity, crop context, and measurement method explicit.",
+      "limitations": "Does not authorize pesticide use or establish a universal cannabis action threshold; regional, genotype, life-stage, production-system, regulatory, and sampling context remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0163",
+      "lessonId": "THC-ENC-298",
+      "sourceIds": [
+        "ENC-AUTH-111"
+      ],
+      "claimType": "action-thresholds",
+      "supportedClaim": "IPM action thresholds depend on monitored pest abundance/damage, crop value, development stage, market tolerance, and control costs; local quantitative thresholds must not be presented as universal cannabis constants.",
+      "sourceLocator": "See registered source(s) for the scoped identification, biology, monitoring, or IPM evidence described in this record.",
+      "applicability": "Supports lesson-level diagnostic, scouting, or IPM reasoning while keeping species identity, crop context, and measurement method explicit.",
+      "limitations": "Does not authorize pesticide use or establish a universal cannabis action threshold; regional, genotype, life-stage, production-system, regulatory, and sampling context remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0164",
+      "lessonId": "THC-ENC-299",
+      "sourceIds": [
+        "ENC-AUTH-113",
+        "ENC-AUTH-112"
+      ],
+      "claimType": "biological-control-compatibility",
+      "supportedClaim": "Biological control requires matching natural enemies to identified pests/life stages, environmental fit, residue history, and compatible interventions; compatibility is agent- and context-specific.",
+      "sourceLocator": "See registered source(s) for the scoped identification, biology, monitoring, or IPM evidence described in this record.",
+      "applicability": "Supports lesson-level diagnostic, scouting, or IPM reasoning while keeping species identity, crop context, and measurement method explicit.",
+      "limitations": "Does not authorize pesticide use or establish a universal cannabis action threshold; regional, genotype, life-stage, production-system, regulatory, and sampling context remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0165",
+      "lessonId": "THC-ENC-300",
+      "sourceIds": [
+        "ENC-AUTH-112",
+        "ENC-AUTH-111",
+        "ENC-AUTH-024"
+      ],
+      "claimType": "pest-records-trends",
+      "supportedClaim": "Consistent pest counts, life-stage records, spatial mapping, crop-stage context, and action/outcome records support local trend analysis and threshold development without replacing taxonomic identification or diagnosis.",
+      "sourceLocator": "See registered source(s) for the scoped identification, biology, monitoring, or IPM evidence described in this record.",
+      "applicability": "Supports lesson-level diagnostic, scouting, or IPM reasoning while keeping species identity, crop context, and measurement method explicit.",
+      "limitations": "Does not authorize pesticide use or establish a universal cannabis action threshold; regional, genotype, life-stage, production-system, regulatory, and sampling context remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
