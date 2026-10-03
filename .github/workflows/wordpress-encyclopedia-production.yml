@@ -12,6 +12,7 @@ on:
       - 'site/wordpress/education/encyclopedia/**'
       - 'scripts/publish-wordpress-learning-search-indexes.mjs'
       - 'scripts/deploy/wordpress-learning-search-runtime.sh'
+      - 'scripts/deploy-wordpress-learning-search-runtime-via-rest.mjs'
       - 'site/wordpress/mu-plugins/dtf-learning-search.php'
       - 'site/wordpress/mu-plugins/dtf-learning-search/**'
       - '.github/workflows/wordpress-encyclopedia-production.yml'
@@ -62,6 +63,7 @@ jobs:
           node --check scripts/organize-wordpress-encyclopedia-topics.mjs
           node --check scripts/validate-encyclopedia-release-control.mjs
           node --check scripts/publish-wordpress-learning-search-indexes.mjs
+          node --check scripts/deploy-wordpress-learning-search-runtime-via-rest.mjs
           bash -n scripts/deploy/wordpress-learning-search-runtime.sh
           php -l site/wordpress/mu-plugins/dtf-learning-search.php
           npm run verify:wordpress-learning-search
@@ -104,13 +106,35 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          : "${HOSTINGER_SSH_HOST:?HOSTINGER_SSH_HOST is required}"
-          : "${HOSTINGER_SSH_USER:?HOSTINGER_SSH_USER is required}"
-          : "${HOSTINGER_SSH_PRIVATE_KEY:?HOSTINGER_SSH_PRIVATE_KEY is required}"
-          : "${HOSTINGER_SSH_KNOWN_HOSTS:?HOSTINGER_SSH_KNOWN_HOSTS is required}"
-          : "${HOSTINGER_PUBLIC_ROOT:?HOSTINGER_PUBLIC_ROOT is required}"
-          [[ "$HOSTINGER_PUBLIC_ROOT" == /*/public_html ]]
+          verify_health() {
+            health="$RUNNER_TEMP/learning-search-health.json"
+            curl -4 --fail --silent --show-error --location --retry 6 --retry-all-errors --retry-delay 3 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              "$WP_SITE_URL/wp-json/dtf-learning/v1/health?dtf_ency_runtime=$GITHUB_RUN_ID" -o "$health"
+            HEALTH_PATH="$health" node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const h=JSON.parse(fs.readFileSync(process.env.HEALTH_PATH,'utf8'));
+          if(h.ok!==true || h.version!=='1.0.0') throw new Error('Learning search MU-plugin health endpoint is not active.');
+          console.log('Learning search runtime active:', h);
+          NODE
+          }
 
+          ssh_ready=true
+          for required in HOSTINGER_SSH_HOST HOSTINGER_SSH_USER HOSTINGER_SSH_PRIVATE_KEY HOSTINGER_SSH_KNOWN_HOSTS HOSTINGER_PUBLIC_ROOT; do
+            if [[ -z "${!required:-}" ]]; then ssh_ready=false; fi
+          done
+
+          if [[ "$ssh_ready" != true ]]; then
+            echo 'Hostinger SSH deployment credentials are unavailable; deploying Learning Search through the authenticated WordPress REST bridge.'
+            node scripts/deploy-wordpress-learning-search-runtime-via-rest.mjs \
+              | tee "$RUNNER_TEMP/encyclopedia-learning-search-rest-deploy.json"
+            verify_health
+            echo "runtime_mode=wordpress-rest-bridge" >> "$GITHUB_OUTPUT"
+            echo "backup_id=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          [[ "$HOSTINGER_PUBLIC_ROOT" == /*/public_html ]]
           install -d -m 700 "$HOME/.ssh"
           printf '%s\n' "$HOSTINGER_SSH_PRIVATE_KEY" > "$HOME/.ssh/dtf_hostinger"
           chmod 600 "$HOME/.ssh/dtf_hostinger"
@@ -137,17 +161,9 @@ jobs:
           backup_id="$(printf '%s\n' "$output" | sed -n 's/^backup_id=//p' | tail -n 1)"
           [[ -n "$backup_id" ]]
           echo "backup_id=$backup_id" >> "$GITHUB_OUTPUT"
+          echo "runtime_mode=ssh" >> "$GITHUB_OUTPUT"
 
-          health="$RUNNER_TEMP/learning-search-health.json"
-          curl -4 --fail --silent --show-error --location --retry 6 --retry-all-errors --retry-delay 3 \
-            -H 'Cache-Control: no-cache, no-store, max-age=0' \
-            "$WP_SITE_URL/wp-json/dtf-learning/v1/health?dtf_ency_runtime=${GITHUB_RUN_ID}" -o "$health"
-          HEALTH_PATH="$health" node --input-type=module <<'NODE'
-          import fs from 'node:fs';
-          const h=JSON.parse(fs.readFileSync(process.env.HEALTH_PATH,'utf8'));
-          if(h.ok!==true || h.version!=='1.0.0') throw new Error('Learning search MU-plugin health endpoint is not active.');
-          console.log('Learning search runtime active:', h);
-          NODE
+          verify_health
 
       - name: Publish controlled encyclopedia batch with backup
         id: publish
