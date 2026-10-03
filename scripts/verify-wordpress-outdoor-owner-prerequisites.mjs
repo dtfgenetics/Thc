@@ -28,9 +28,11 @@ async function request(path){
   throw last;
 }
 
-async function page(slug){
-  const rows=await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&context=edit&per_page=20`);
-  if(!Array.isArray(rows)||rows.length!==1) throw new Error(`Expected exactly one WordPress page for ${slug}; found ${Array.isArray(rows)?rows.length:'invalid response'}`);
+async function page(slug,parentId=null){
+  const parent=parentId===null?'':`&parent=${encodeURIComponent(String(parentId))}`;
+  const rows=await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}${parent}&context=edit&per_page=20`);
+  const scope=parentId===null?'site-wide':`under parent ${parentId}`;
+  if(!Array.isArray(rows)||rows.length!==1) throw new Error(`Expected exactly one WordPress page for ${slug} (${scope}); found ${Array.isArray(rows)?rows.length:'invalid response'}`);
   return rows[0];
 }
 
@@ -45,8 +47,9 @@ const specs=[
   {slug:'outdoor',required:['data-dtf-topic="outdoor-cultivation"']}
 ];
 const results=[];
+const learn=await page('learn');
 for(const spec of specs){
-  const item=await page(spec.slug);
+  const item=spec.slug==='learn'?learn:await page(spec.slug,learn.id);
   const content=rendered(item.content);
   for(const marker of spec.required){
     if(!content.includes(marker)) throw new Error(`${spec.slug}: missing required WordPress ownership marker ${marker}`);
