@@ -75,7 +75,14 @@ const cross=l=>{
   return [];
 };
 const generic=/\b(see (the )?lesson|as appropriate|where appropriate|proper|correct|best practice|monitor closely|follow guidance|use judgment)\b/i;
-const sourceAuthority=/\b(university|extension|usda|epa|nist|cornell|penn state|journal|doi|frontiers|plants|hortscience|pubmed|ncbi|ashrae|astm|iso|fao|who|government|department|institute|society)\b/i;
+const sourceAuthority=/\b(university|extension|usda|epa|fda|nih|nist|cornell|penn state|journal|doi|frontiers|plants|hortscience|pubmed|ncbi|ashrae|astm|iso|fao|who|government|department|institute|society|bmc|genome biology|genome research|plos|scientific reports|new phytologist|plant physiology|scientia horticulturae|genetics|plant direct|nature|science|academic press|acs|phytochemical analysis|horticulturae|industrial crops|biosystems engineering|agrophysics)\b/i;
+const hasSourceAuthoritySignal=value=>{
+  const text=txt(value);
+  if(sourceAuthority.test(text)) return true;
+  if(/https:\/\/(?:www\.)?(?:ncbi\.nlm\.nih\.gov|pubmed\.ncbi\.nlm\.nih\.gov|pmc\.ncbi\.nlm\.nih\.gov|usda\.gov|epa\.gov|fda\.gov|nist\.gov|astm\.org)/i.test(text)) return true;
+  if(/\b(?:19|20)\d{2}\b/.test(text)&&/\b(et al\.?|press|review|reports|biology|genome|genetics|horticulturae|phytology|physiology|agriculture|chemistry|analytical|bioanalytical|phytochemical|crops|engineering)\b/i.test(text)) return true;
+  return false;
+};
 
 const rows=(registry.entries||[]).map(entry=>{
   const l=lessons.get(entry.id)||{};
@@ -94,7 +101,7 @@ const rows=(registry.entries||[]).map(entry=>{
   if(misconception.length<2||misconception.filter(x=>words(typeof x==='string'?x:JSON.stringify(x))>=4).length<2) issues.push('thin-misconceptions');
   if(limits.length<1||limits.every(x=>words(x)<8)) issues.push('thin-evidence-limits');
   if(src.length<2) issues.push('insufficient-sources');
-  if(src.length>=2&&src.filter(x=>sourceAuthority.test(resolvedSourceText(l,x))).length<1) issues.push('weak-source-authority-signal');
+  if(src.length>=2&&src.filter(x=>hasSourceAuthoritySignal(resolvedSourceText(l,x))).length<1) issues.push('weak-source-authority-signal');
   if(cross(l).length<2) issues.push('thin-cross-links');
   const body=[objective,...core,...relevance,...measure,...misconception,...limits].map(x=>typeof x==='string'?x:JSON.stringify(x));
   if(body.filter(x=>generic.test(x)).length>=3) issues.push('generic-language');
