@@ -30,9 +30,9 @@
 
     <section class="setup panel" id="setup-panel" hidden>
       <div class="section-title"><div><p class="eyebrow">NEW CAREER</p><h2>Start a career</h2></div><span class="setup-chip">18 TURN RUN</span></div>
-      <label>Grower name <input id="player-name" maxlength="40" value="Grower"></label>
-      <label>Seed <input id="seed" type="number" min="1" max="4294967295" value="420"></label>
-      <p class="hint">The same seed plus the same choices produces the same event sequence, which makes alternate career paths comparable. In-progress careers autosave on this device.</p>
+      <label>Grower name <input id="player-name" maxlength="40" value="Grower" autocomplete="nickname" enterkeyhint="next"></label>
+      <label>Seed <input id="seed" type="number" min="1" max="4294967295" value="420" inputmode="numeric" enterkeyhint="done" aria-describedby="seed-help"></label>
+      <p class="hint" id="seed-help">The same seed plus the same choices produces the same event sequence, which makes alternate career paths comparable. In-progress careers autosave on this device.</p>
       <div class="actions">
         <button class="primary" id="start-game">Begin Underground Era</button>
         <button id="resume-game" type="button" hidden>Resume saved career</button>
@@ -55,7 +55,7 @@
           <p class="eyebrow">Current era</p>
           <h2 id="era-name">Underground Era</h2>
           <p id="turn-label"></p>
-          <progress id="era-progress" max="6" value="0"></progress>
+          <progress id="era-progress" max="6" value="0" aria-labelledby="era-name"></progress>
         </article>
         <article class="panel score-card"><p class="eyebrow">Projected legacy</p><strong id="score-preview">0</strong><span>points</span></article>
       </div>
