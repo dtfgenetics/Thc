@@ -1,6 +1,7 @@
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
+import { assetIdFromBlock, lessonPrimaryVisuals, lessonAssetBlocks } from './lib/academy-public-assets.mjs';
 
 const validateOnly = process.argv.includes('--validate-only');
 const apply = String(process.env.APPLY_TECH1_PUBLIC_COURSES || '').toLowerCase() === 'true';
@@ -46,15 +47,6 @@ function sourceAssetUrl(value) {
   if (/^https:\/\//i.test(value)) return value;
   if (isControlledRasterAssetPath(value)) return `${rawBase}/apps/web/public${value}`;
   return value;
-}
-function assetIdFromBlock(block) {
-  return block?.assetId || block?.extensions?.assetId || null;
-}
-function lessonAssetBlocks(lesson) {
-  return (lesson?.content?.blocks || []).filter(block =>
-    (block?.type === 'image' && assetIdFromBlock(block) && (block.src || block.url)) ||
-    (block?.type === 'resource' && assetIdFromBlock(block) && block.href)
-  );
 }
 
 async function loadCourse(entry) {
@@ -197,11 +189,12 @@ function renderLesson(course, lesson, index) {
   const sections = (content.sections || []).map(section => `<section class="t1c-section"><h2>${esc(section.title)}</h2><p>${esc(section.body)}</p></section>`).join('');
   const examples = (content.workedExamples || []).length ? `<section class="t1c-section t1c-panel"><h2>Worked examples</h2><ul>${content.workedExamples.map(item => `<li>${esc(item)}</li>`).join('')}</ul></section>` : '';
   const mistakes = (content.commonMistakes || []).length ? `<section class="t1c-section t1c-panel"><h2>Common mistakes</h2><ul>${content.commonMistakes.map(item => `<li>${esc(item)}</li>`).join('')}</ul></section>` : '';
+  const primaryVisuals = lessonPrimaryVisuals(lesson).map(renderBlock).join('');
   const blocks = (content.blocks || []).map(renderBlock).join('');
   const nav = [];
   if (index > 0) nav.push(`<a class="t1c-btn" href="${course.route}lesson-${String(index).padStart(2, '0')}/">← Previous lesson</a>`);
   if (index < course.lessons.length - 1) nav.push(`<a class="t1c-btn" href="${course.route}lesson-${String(index + 2).padStart(2, '0')}/">Next lesson →</a>`);
-  return shell(`${crumbs(course, `Lesson ${index + 1}`)}<div class="t1c-mobile-progress" role="status" aria-label="Lesson ${index + 1} of ${course.lessons.length}"><span>Lesson ${index + 1} of ${course.lessons.length}</span><div><i style="width:${Math.round(((index + 1) / course.lessons.length) * 100)}%"></i></div></div><header class="t1c-hero"><span class="t1c-k">Course ${course.number} · Lesson ${index + 1}</span><h1>${esc(lesson.title)}</h1><p>${esc(content.overview)}</p><div class="t1c-meta"><span class="t1c-pill">${esc(lesson.estimatedMinutes || '')} min</span><span class="t1c-pill">${esc((lesson.learningObjectives || []).length)} objectives</span></div></header>${vocab ? `<section class="t1c-section"><h2>Key vocabulary</h2><div class="t1c-vocab">${vocab}</div></section>` : ''}${sections}${examples}${mistakes}${blocks}${content.practicalApplication ? `<section class="t1c-section t1c-panel"><h2>Practical application</h2><p>${esc(content.practicalApplication)}</p></section>` : ''}<section class="t1c-section t1c-panel"><h2>Lesson summary</h2><p>${esc(content.summary)}</p></section><div class="t1c-nav t1c-lesson-nav"><span class="t1c-lesson-count">Lesson ${index + 1} of ${course.lessons.length}</span>${nav.join('')}</div><div class="t1c-boundary"><strong>Training boundary:</strong> Public lesson completion is academic learning evidence only. It does not issue the THC Cultivation Technician I professional certification.</div>`);
+  return shell(`${crumbs(course, `Lesson ${index + 1}`)}<div class="t1c-mobile-progress" role="status" aria-label="Lesson ${index + 1} of ${course.lessons.length}"><span>Lesson ${index + 1} of ${course.lessons.length}</span><div><i style="width:${Math.round(((index + 1) / course.lessons.length) * 100)}%"></i></div></div><header class="t1c-hero"><span class="t1c-k">Course ${course.number} · Lesson ${index + 1}</span><h1>${esc(lesson.title)}</h1><p>${esc(content.overview)}</p><div class="t1c-meta"><span class="t1c-pill">${esc(lesson.estimatedMinutes || '')} min</span><span class="t1c-pill">${esc((lesson.learningObjectives || []).length)} objectives</span></div></header>${vocab ? `<section class="t1c-section"><h2>Key vocabulary</h2><div class="t1c-vocab">${vocab}</div></section>` : ''}${sections}${examples}${mistakes}${primaryVisuals}${blocks}${content.practicalApplication ? `<section class="t1c-section t1c-panel"><h2>Practical application</h2><p>${esc(content.practicalApplication)}</p></section>` : ''}<section class="t1c-section t1c-panel"><h2>Lesson summary</h2><p>${esc(content.summary)}</p></section><div class="t1c-nav t1c-lesson-nav"><span class="t1c-lesson-count">Lesson ${index + 1} of ${course.lessons.length}</span>${nav.join('')}</div><div class="t1c-boundary"><strong>Training boundary:</strong> Public lesson completion is academic learning evidence only. It does not issue the THC Cultivation Technician I professional certification.</div>`);
 }
 function renderAssessment(course, assessment, label) {
   if (assessment.purpose === 'summative') {

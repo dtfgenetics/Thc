@@ -12,6 +12,7 @@ on:
       - scripts/verify-wordpress-tech1-courses-2-7-v2.mjs
       - scripts/test-tech1-public-source-scope.mjs
       - scripts/lib/academy-public-scope.mjs
+      - scripts/lib/academy-public-assets.mjs
       - scripts/run-wordpress-with-retry.mjs
       - scripts/publish-wordpress-academy-build-identity.mjs
       - scripts/resolve-academy-deployment-target.mjs
@@ -29,6 +30,7 @@ on:
       - scripts/verify-wordpress-tech1-courses-2-7-v2.mjs
       - scripts/test-tech1-public-source-scope.mjs
       - scripts/lib/academy-public-scope.mjs
+      - scripts/lib/academy-public-assets.mjs
       - scripts/run-wordpress-with-retry.mjs
       - scripts/publish-wordpress-academy-build-identity.mjs
       - scripts/resolve-academy-deployment-target.mjs
@@ -39,8 +41,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: dtfseeds-academy-tech1-publication
-  cancel-in-progress: false
+  group: dtfseeds-academy-tech1-publication-${{ github.event.pull_request.number || 'production' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   validate:
@@ -56,6 +58,7 @@ jobs:
           node --check scripts/publish-wordpress-certification-catalog-v6.mjs
           node --check scripts/verify-wordpress-tech1-courses-2-7-v2.mjs
           node --check scripts/lib/academy-public-scope.mjs
+          node --check scripts/lib/academy-public-assets.mjs
           node scripts/test-tech1-public-source-scope.mjs
           node --check scripts/run-wordpress-with-retry.mjs
           node --check scripts/publish-wordpress-academy-build-identity.mjs
