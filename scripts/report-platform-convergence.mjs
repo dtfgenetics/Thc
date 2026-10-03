@@ -7,7 +7,7 @@ const ROOT = process.cwd();
 const args = new Set(process.argv.slice(2));
 const jsonMode = args.has('--json');
 const checkMode = args.has('--check');
-const liveMode = args.has('--live');
+const liveMode = args.has('--live') || args.has('--strict-live');
 const strictLive = args.has('--strict-live');
 const baseArg = process.argv.find((arg) => arg.startsWith('--base-url='));
 const baseUrl = (baseArg ? baseArg.slice('--base-url='.length) : process.env.DTF_PUBLIC_ORIGIN || 'https://dtfseeds.com').replace(/\/$/, '');
@@ -196,8 +196,12 @@ if (liveMode) {
 
   const deployedMaster = buildManifest?.master || null;
   const sourceMatchesDeployment = Boolean(sourceHead && deployedMaster && sourceHead === deployedMaster);
-  if (strictLive && sourceHead && deployedMaster && !sourceMatchesDeployment) {
-    errors.push(`live master revision ${deployedMaster} does not match source HEAD ${sourceHead}`);
+  if (strictLive) {
+    if (!sourceHead) errors.push('source HEAD unavailable; cannot verify the deployed revision');
+    if (!buildResponse.ok) errors.push('live build manifest unavailable; cannot verify the deployed revision');
+    else if (!buildManifest || typeof buildManifest !== 'object' || Array.isArray(buildManifest)) errors.push('live build manifest must be a JSON object');
+    else if (typeof deployedMaster !== 'string' || !/^[0-9a-f]{40}$/i.test(deployedMaster)) errors.push('live build manifest requires a full master commit SHA');
+    else if (sourceHead && !sourceMatchesDeployment) errors.push(`live master revision ${deployedMaster} does not match source HEAD ${sourceHead}`);
   }
 
   live = {
@@ -276,4 +280,4 @@ if (jsonMode) {
 }
 
 if (checkMode && errors.length) process.exitCode = 1;
-if (strictLive && live && live.routes.some((row) => !row.ok)) process.exitCode = 1;
+if (strictLive && !report.ok) process.exitCode = 1;
