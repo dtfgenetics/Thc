@@ -17,6 +17,17 @@ const slugify=value=>String(value??'').toLowerCase().normalize('NFKD').replace(/
 const evidenceRoot=path.join(root,'content/encyclopedia/evidence');
 const sourceRegistry=JSON.parse(fs.readFileSync(path.join(evidenceRoot,'authoritative-sources.json'),'utf8'));
 const sourceById=new Map((sourceRegistry.sources||[]).map(source=>[source.id,source]));
+for(let volumeNumber=1;volumeNumber<=21;volumeNumber+=1){
+  const volume=String(volumeNumber).padStart(2,'0');
+  const registerPath=path.join(root,'content','encyclopedia',`volume-${volume}`,'source-register.json');
+  if(!fs.existsSync(registerPath))continue;
+  const register=JSON.parse(fs.readFileSync(registerPath,'utf8'));
+  for(const source of register.sources||[]){
+    const location=String(source.location||'').trim();
+    if(!/^https:\/\//.test(location))continue;
+    sourceById.set(source.id,{...source,url:location});
+  }
+}
 const evidenceByLesson=new Map();
 for(const name of fs.readdirSync(evidenceRoot).filter(name=>/^evidence-batch-\d+\.json$/.test(name)).sort()){
   const batch=JSON.parse(fs.readFileSync(path.join(evidenceRoot,name),'utf8'));
