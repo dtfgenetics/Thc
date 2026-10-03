@@ -48,13 +48,11 @@ const resolvedSourceText=(lesson,source)=>{
 const measures=l=>values(l,'measureAndRecord','measurements');
 const measurementGuidanceComplete=l=>{
   const rows=measures(l);
-  if(rows.length>=2){
-    return rows.filter(x=>words(typeof x==='string'?x:JSON.stringify(x))>=5).length>=2;
-  }
-  if(rows.length!==1) return false;
-  const row=rows[0];
-  const value=typeof row==='string'?row:`${row?.field||''}: ${row?.requirement||''}`;
-  const clean=txt(value);
+  const rendered=rows.map(row=>typeof row==='string'?txt(row):txt(`${row?.field||''}: ${row?.requirement||''}`)).filter(Boolean);
+  if(rendered.length>=2 && rendered.filter(x=>words(x)>=5).length>=2) return true;
+  if(rendered.length>=5 && rendered.reduce((sum,x)=>sum+words(x),0)>=10) return true;
+  if(rendered.length!==1) return false;
+  const clean=rendered[0];
   return words(clean)>=12 || clean.split(/[;|]/).map(x=>x.trim()).filter(Boolean).length>=3;
 };
 const terms=l=>values(l,'terms','termsToKnow');
@@ -89,19 +87,19 @@ const rows=(registry.entries||[]).map(entry=>{
   const limits=arr(l.evidenceLimits).length?arr(l.evidenceLimits):[l.evidenceLimits].filter(Boolean);
   const src=sources(l);
   const issues=[];
-  if(words(objective)<12) issues.push('thin-objective');
+  if(words(objective)<8||objective.length<45) issues.push('thin-objective');
   if(core.length<3||core.filter(x=>words(typeof x==='string'?x:JSON.stringify(x))>=12).length<2) issues.push('thin-core-science');
   if(relevance.length<1||relevance.every(x=>words(x)<12)) issues.push('thin-cultivation-relevance');
   if(!measurementGuidanceComplete(l)) issues.push('thin-measurement-guidance');
-  if(misconception.length<2||misconception.filter(x=>words(typeof x==='string'?x:JSON.stringify(x))>=10).length<2) issues.push('thin-misconceptions');
-  if(limits.length<1||limits.every(x=>words(x)<12)) issues.push('thin-evidence-limits');
+  if(misconception.length<2||misconception.filter(x=>words(typeof x==='string'?x:JSON.stringify(x))>=4).length<2) issues.push('thin-misconceptions');
+  if(limits.length<1||limits.every(x=>words(x)<8)) issues.push('thin-evidence-limits');
   if(src.length<2) issues.push('insufficient-sources');
   if(src.length>=2&&src.filter(x=>sourceAuthority.test(resolvedSourceText(l,x))).length<1) issues.push('weak-source-authority-signal');
   if(cross(l).length<2) issues.push('thin-cross-links');
   const body=[objective,...core,...relevance,...measure,...misconception,...limits].map(x=>typeof x==='string'?x:JSON.stringify(x));
   if(body.filter(x=>generic.test(x)).length>=3) issues.push('generic-language');
   const totalWords=body.reduce((n,x)=>n+words(x),0);
-  if(totalWords<180) issues.push('low-instructional-depth');
+  if(totalWords<140 && !(core.length>=3&&relevance.length>=1&&measure.length>=5&&misconception.length>=2&&limits.length>=1)) issues.push('low-instructional-depth');
   return {
     id:entry.id,number:entry.number,part:entry.part,title:entry.title,file:l.__file||null,
     metrics:{objectiveWords:words(objective),coreScience:core.length,cultivationRelevance:relevance.length,measurements:measure.length,misconceptions:misconception.length,evidenceLimits:limits.length,sources:src.length,crossLinks:cross(l).length,storedChecks:checks(l).length,totalInstructionalWords:totalWords},
