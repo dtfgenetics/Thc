@@ -30,7 +30,7 @@ subprocess.run(
 # drifts away from the canonical eight-section shell or the shared progressive-
 # disclosure layer. This keeps production from publishing a mixed shell or a
 # long hub page without the content-density behavior validated by V6.
-expected_labels = ['Seeds', 'Learn', 'Tools', 'Games', 'Shop']
+expected_labels = ['Home', 'Seeds', 'Learn', 'Courses', 'Tools', 'Games', 'Community', 'Shop']
 for relative in ('tools/index.html', 'games/index.html', 'projects/index.html'):
     candidate = release_dir / relative
     if not candidate.is_file() or candidate.stat().st_size < 1:
