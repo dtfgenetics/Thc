@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "generatedAt": "2026-09-29",
-  "publicationCutoff": 335,
+  "publicationCutoff": 350,
   "note": "All 420 controlled encyclopedia entries are discoverable. Entries above the current publication cutoff are catalogued for navigation but their lesson content remains under review.",
   "topics": [
     {
@@ -206,7 +206,7 @@
       ],
       "description": "Integrated pest management, prevention, scouting, sanitation, exclusion, thresholds, records, and biosecurity.",
       "count": 20,
-      "publishedCount": 15
+      "publishedCount": 20
     },
     {
       "part": 18,
@@ -218,7 +218,7 @@
       ],
       "description": "Harvest timing, handling, drying, curing, moisture and water activity, storage, quality, and postharvest science.",
       "count": 20,
-      "publishedCount": 0
+      "publishedCount": 10
     },
     {
       "part": 19,
@@ -6297,14 +6297,62 @@
       "topicSlug": "ipm-biosecurity",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Concept diagram",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-336",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-336/",
       "keywords": [
         "IPM, Biosecurity & Sanitation",
         "Science lesson",
         "Concept diagram",
-        "THC-ENC-336"
-      ]
+        "THC-ENC-336",
+        "biological control Use of living natural enemies, antagonists, or biologically derived agents to reduce a pest or pathogen population or its impact.",
+        "augmentative release Deliberate introduction of beneficial organisms to increase natural-enemy pressure in a managed crop.",
+        "predator A beneficial organism that consumes multiple prey individuals during its lifetime.",
+        "parasitoid An organism whose immature stage develops on or in a host and ultimately kills that host.",
+        "compatibility The degree to which biological controls remain effective alongside environmental conditions, pesticides, sanitation practices, and other IPM tactics."
+      ],
+      "objective": "Select, deploy, and evaluate biological-control organisms or microbial products by matching the target pest or pathogen, life stage, crop environment, release timing, compatibility, and follow-up monitoring.",
+      "terms": [
+        "biological control Use of living natural enemies, antagonists, or biologically derived agents to reduce a pest or pathogen population or its impact.",
+        "augmentative release Deliberate introduction of beneficial organisms to increase natural-enemy pressure in a managed crop.",
+        "predator A beneficial organism that consumes multiple prey individuals during its lifetime.",
+        "parasitoid An organism whose immature stage develops on or in a host and ultimately kills that host.",
+        "compatibility The degree to which biological controls remain effective alongside environmental conditions, pesticides, sanitation practices, and other IPM tactics."
+      ],
+      "coreScience": [
+        "Biological control is most reliable when the beneficial organism is matched to the target species and life stage, because predators, parasitoids, entomopathogens, and antagonists differ in host range and environmental requirements.",
+        "Preventive or early releases can outperform rescue releases after a pest population is already widespread because establishment and reproduction of the beneficial population take time.",
+        "Temperature, humidity, crop architecture, prey density, pesticide residues, sanitation, and release method can strongly alter biological-control performance.",
+        "Biological control is compatible with IPM only when follow-up scouting measures target and beneficial populations separately; releasing a beneficial organism is not evidence that control was achieved.",
+        "A pesticide or disinfectant program can suppress or eliminate beneficial organisms, so label directions and compatibility information must be reviewed before combining tactics."
+      ],
+      "cultivation": [
+        "Confirm pest identity and life stage before selecting a predator, parasitoid, nematode, fungus, bacterium, or other biological tactic.",
+        "Record release date, product or organism identity, lot where applicable, release density or method, target zone, and environmental conditions.",
+        "Scout both pest and beneficial populations after release and use trend data rather than one observation to decide whether the program is working.",
+        "Treat compatibility with pesticides, sanitation, and climate control as an operational requirement rather than an afterthought."
+      ],
+      "measurements": [
+        "Target Record pest/pathogen identity, life stage, abundance, and crop location before release.",
+        "Biological agent Record species or product, supplier/lot where applicable, release rate or method, date, and location.",
+        "Environment Record temperature, humidity, crop stage, canopy condition, and any factor known to affect establishment or activity.",
+        "Compatibility Record recent or planned pesticide, disinfectant, or other interventions that may affect the biological agent.",
+        "Outcome Use repeated pest and beneficial counts or other target-specific evidence to evaluate suppression and decide whether to repeat, adjust, or escalate."
+      ],
+      "misconceptions": [
+        "One beneficial insect controls every greenhouse pest.",
+        "Biological control always works after a severe outbreak has developed.",
+        "Natural enemies are unaffected by pesticide residues.",
+        "Seeing beneficial organisms proves the pest is controlled.",
+        "Biological control removes the need for sanitation and scouting."
+      ],
+      "evidenceLimits": [
+        "Performance is target-, environment-, crop-, timing-, supplier-, and compatibility-dependent. Greenhouse evidence is strong for many biological-control systems, but results should not be generalized into universal Cannabis release rates or efficacy claims without crop- and facility-specific evidence."
+      ],
+      "crossLinks": [
+        "THC-ENC-331–333 for scouting and decisions; THC-ENC-334–335 for cultural and physical controls; THC-ENC-337 for pesticide compatibility and legal use; THC-ENC-340 for program audit."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-337",
@@ -6315,14 +6363,62 @@
       "topicSlug": "ipm-biosecurity",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Concept diagram",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-337",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-337/",
       "keywords": [
         "IPM, Biosecurity & Sanitation",
         "Science lesson",
         "Concept diagram",
-        "THC-ENC-337"
-      ]
+        "THC-ENC-337",
+        "pesticide label The legally enforceable directions, restrictions, precautions, and conditions approved for a registered pesticide product.",
+        "use site The crop, structure, area, or situation on which a pesticide is legally permitted to be used according to its labeling and applicable law.",
+        "restricted-entry interval A label-defined period after certain agricultural pesticide applications during which worker entry is restricted except under specified conditions.",
+        "mode of action The biochemical or physiological process through which a pesticide affects its target organism.",
+        "resistance management Practices intended to reduce selection pressure for heritable pesticide resistance, often including rotation among effective modes of action and integration with nonchemical controls."
+      ],
+      "objective": "Interpret pesticide labels, legal use boundaries, worker and environmental protections, and resistance-management principles without turning general IPM guidance into unauthorized product-use instructions.",
+      "terms": [
+        "pesticide label The legally enforceable directions, restrictions, precautions, and conditions approved for a registered pesticide product.",
+        "use site The crop, structure, area, or situation on which a pesticide is legally permitted to be used according to its labeling and applicable law.",
+        "restricted-entry interval A label-defined period after certain agricultural pesticide applications during which worker entry is restricted except under specified conditions.",
+        "mode of action The biochemical or physiological process through which a pesticide affects its target organism.",
+        "resistance management Practices intended to reduce selection pressure for heritable pesticide resistance, often including rotation among effective modes of action and integration with nonchemical controls."
+      ],
+      "coreScience": [
+        "In the United States, pesticide labeling is legally enforceable. A registered product must be used consistently with its labeling and applicable federal, state, tribal, and local requirements.",
+        "The label defines critical conditions such as permitted sites and crops, target pests where required, application rates, timing, equipment, personal protective equipment, restricted-entry intervals, preharvest intervals where applicable, and environmental precautions.",
+        "A product being sold legally does not mean it is automatically legal for use on Cannabis or hemp in every jurisdiction; crop and use-site eligibility must be verified from current labeling and state requirements.",
+        "Repeated reliance on the same effective mode of action can increase selection pressure for resistant pest populations. Resistance management therefore combines label-compliant rotations or mixtures where permitted with scouting, thresholds, sanitation, cultural, physical, and biological tactics.",
+        "Treatment success must be measured after application. Poor control can reflect resistance, incorrect identification, timing, coverage, environmental conditions, application error, product degradation, or other causes and should not be attributed to resistance without evidence."
+      ],
+      "cultivation": [
+        "Verify the current product label and jurisdiction before use; do not rely on an old recommendation, retailer claim, or another state's program.",
+        "Record product name, EPA registration number where applicable, lot or batch when required, applicator identity, target, site, date, rate, volume, method, PPE, reentry constraints, and outcome according to site requirements.",
+        "Use resistance-management group information when available and avoid unnecessary repeated exposure to the same mode of action.",
+        "Escalate uncertainty about legal use, worker protection, residue, or crop eligibility to the qualified responsible person or regulator rather than guessing."
+      ],
+      "measurements": [
+        "Legal basis Record the current label and jurisdictional authorization used to confirm the crop/site and application are permitted.",
+        "Application record Record product identity, registration information where applicable, rate, volume, method, target, area, date/time, and applicator.",
+        "Worker/environmental controls Record required PPE, restricted-entry interval, ventilation or posting requirements, and relevant environmental precautions.",
+        "Resistance context Record mode-of-action group where available and recent treatments so repeated selection pressure can be evaluated.",
+        "Outcome Record post-treatment pest counts, injury, crop response, and any evidence suggesting misapplication, poor coverage, or possible resistance."
+      ],
+      "misconceptions": [
+        "If a pesticide is sold in a store, it is legal on Cannabis.",
+        "Using less than the label rate is always legal and effective.",
+        "A failed treatment proves pesticide resistance.",
+        "Rotating brand names automatically rotates modes of action.",
+        "The label is only a recommendation."
+      ],
+      "evidenceLimits": [
+        "Pesticide legality and registration change by product, crop, jurisdiction, and date. This lesson provides regulatory and resistance-management literacy, not product authorization or a treatment recommendation."
+      ],
+      "crossLinks": [
+        "THC-ENC-321 for IPM hierarchy; THC-ENC-333 for decision records; THC-ENC-336 for biological-control compatibility; THC-ENC-339 for corrective action; THC-ENC-340 for program audit."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-338",
@@ -6333,14 +6429,62 @@
       "topicSlug": "ipm-biosecurity",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Chart / measurement",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-338",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-338/",
       "keywords": [
         "IPM, Biosecurity & Sanitation",
         "Science lesson",
         "Chart / measurement",
-        "THC-ENC-338"
-      ]
+        "THC-ENC-338",
+        "isolation Physical or procedural separation used to limit contact or movement between suspect or confirmed affected material and unaffected production areas.",
+        "hold A controlled status that prevents movement, use, release, or disposal until a defined decision is made.",
+        "containment Measures used to prevent pests, pathogens, plant material, liquids, debris, or contaminated equipment from spreading beyond a defined boundary.",
+        "waste stream A defined route for collecting, identifying, handling, storing, transporting, and disposing of discarded materials.",
+        "chain of identity Records that preserve which plant, batch, room, or lot generated the removed or discarded material."
+      ],
+      "objective": "Use isolation, plant or material removal, containment, transport, and waste controls to reduce biological spread while preserving identity, worker safety, and traceable records.",
+      "terms": [
+        "isolation Physical or procedural separation used to limit contact or movement between suspect or confirmed affected material and unaffected production areas.",
+        "hold A controlled status that prevents movement, use, release, or disposal until a defined decision is made.",
+        "containment Measures used to prevent pests, pathogens, plant material, liquids, debris, or contaminated equipment from spreading beyond a defined boundary.",
+        "waste stream A defined route for collecting, identifying, handling, storing, transporting, and disposing of discarded materials.",
+        "chain of identity Records that preserve which plant, batch, room, or lot generated the removed or discarded material."
+      ],
+      "coreScience": [
+        "Isolation reduces opportunities for contact and transfer but does not prove that unaffected material is pathogen- or pest-free.",
+        "Removal can lower pest abundance or inoculum, yet movement of affected plants or debris can spread arthropods, spores, sap, soil, water, or contaminated tools if handling is poorly controlled.",
+        "Containment planning should account for the target's likely transmission route, including direct contact, sap, tools, vectors, airborne particles, water, media, and personnel movement.",
+        "Waste handling is part of biosecurity. Containers, routes, staging areas, cleanup, and final disposition should be defined so discarded material is not carried through clean zones without control.",
+        "Regulated cannabis waste requirements vary by jurisdiction, so biological-risk handling and legal waste requirements must both be satisfied."
+      ],
+      "cultivation": [
+        "Define suspect, confirmed, cleared, and waste status visibly enough that workers do not accidentally move held material.",
+        "Use the shortest practical controlled route for removing affected material and clean or disinfect reusable tools and surfaces according to validated procedures.",
+        "Preserve plant and batch identity through removal so incident review can reconstruct where the material came from and what other material may have been exposed.",
+        "Do not assume disposal alone closes an incident; follow-up scouting, testing, sanitation verification, and source investigation may still be needed."
+      ],
+      "measurements": [
+        "Material identity Record plant/batch/lot, room or zone, quantity, condition, and reason for isolation or removal.",
+        "Containment Record bag/container type, route, staging area, tools, personnel, and sanitation controls used during movement.",
+        "Disposition Record final waste or quarantine destination and any jurisdiction-required handling or destruction record.",
+        "Exposure review Record adjacent material, shared tools, personnel movement, water, carts, or other plausible pathways that require follow-up.",
+        "Verification Record follow-up scouting, testing, sanitation verification, or other evidence used to close or extend the hold."
+      ],
+      "misconceptions": [
+        "Removing one symptomatic plant proves the incident is over.",
+        "A sealed bag eliminates every contamination risk.",
+        "Waste rules are identical in every jurisdiction.",
+        "Material can be moved through clean areas safely as long as it will be discarded later.",
+        "Isolation is the same as confirmation of diagnosis."
+      ],
+      "evidenceLimits": [
+        "The correct isolation radius, hold duration, testing plan, and waste method depend on the suspected hazard, transmission route, crop system, jurisdiction, and facility controls; no single quarantine or disposal procedure fits every Cannabis incident."
+      ],
+      "crossLinks": [
+        "THC-ENC-322–327 for zoning and sanitation; THC-ENC-332 for diagnostic escalation; THC-ENC-339 for CAPA; THC-ENC-340 for program audit."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-339",
@@ -6351,14 +6495,62 @@
       "topicSlug": "ipm-biosecurity",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Concept diagram",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-339",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-339/",
       "keywords": [
         "IPM, Biosecurity & Sanitation",
         "Science lesson",
         "Concept diagram",
-        "THC-ENC-339"
-      ]
+        "THC-ENC-339",
+        "correction Immediate action taken to address an observed problem or nonconformity.",
+        "corrective action Action intended to eliminate or reduce the cause of an identified problem so it is less likely to recur.",
+        "preventive action Action intended to reduce the likelihood of a potential problem before it occurs or spreads.",
+        "root-cause analysis Structured investigation of contributing causes rather than stopping at the most visible symptom.",
+        "effectiveness check Predefined follow-up evidence used to determine whether an action achieved its intended result."
+      ],
+      "objective": "Use a documented corrective-and-preventive-action process to contain plant-health problems, identify contributing causes, implement proportionate changes, and verify that recurrence risk is actually reduced.",
+      "terms": [
+        "correction Immediate action taken to address an observed problem or nonconformity.",
+        "corrective action Action intended to eliminate or reduce the cause of an identified problem so it is less likely to recur.",
+        "preventive action Action intended to reduce the likelihood of a potential problem before it occurs or spreads.",
+        "root-cause analysis Structured investigation of contributing causes rather than stopping at the most visible symptom.",
+        "effectiveness check Predefined follow-up evidence used to determine whether an action achieved its intended result."
+      ],
+      "coreScience": [
+        "A correction fixes the immediate condition; a corrective action addresses why it happened. Removing an infested plant, for example, does not by itself address the intake, scouting, sanitation, environmental, or movement failure that allowed the problem to establish.",
+        "Root-cause analysis should distinguish verified causes from hypotheses and consider interacting contributors such as stock quality, facility design, training, environmental conditions, equipment, procedures, records, and timing.",
+        "Actions should be proportionate to risk and should specify ownership, due dates, required evidence, and how effectiveness will be judged.",
+        "Effectiveness checks need objective evidence such as reduced recurrence, improved scouting metrics, resolved sanitation failures, restored environmental control, completed training, or successful verification testing.",
+        "CAPA becomes useful only when lessons are fed back into SOPs, training, maintenance, purchasing, quarantine, scouting, or design controls rather than archived as paperwork."
+      ],
+      "cultivation": [
+        "Open CAPA for recurring, systemic, severe, high-risk, or audit-significant failures rather than for every trivial observation.",
+        "Separate immediate containment from long-term corrective action so urgent control does not substitute for causal investigation.",
+        "Assign actions to named owners with deadlines and measurable closure criteria.",
+        "Review similar rooms, crops, tools, or workflows for the same failure mode before assuming the problem is isolated."
+      ],
+      "measurements": [
+        "Problem statement Record what happened, where, when, affected material, evidence, and the operational or plant-health consequence.",
+        "Containment/correction Record immediate steps taken to control exposure or restore the process.",
+        "Cause analysis Record verified contributing causes, unresolved hypotheses, and supporting evidence.",
+        "Actions Record corrective/preventive action, owner, due date, implementation evidence, and any SOP/training/equipment changes.",
+        "Effectiveness Define and record the follow-up metric, review date, result, and closure or escalation decision."
+      ],
+      "misconceptions": [
+        "CAPA means writing down what happened after the fact.",
+        "The first plausible cause is the root cause.",
+        "Removing affected plants closes the corrective action.",
+        "More training is always an adequate corrective action.",
+        "A CAPA is complete when the task is marked done rather than when effectiveness is verified."
+      ],
+      "evidenceLimits": [
+        "CAPA is a quality-system method rather than a Cannabis-specific biological law. The depth of investigation and documentation should scale with risk, recurrence, regulatory requirements, and the complexity of the production system."
+      ],
+      "crossLinks": [
+        "THC-ENC-332–333 for diagnostic and decision records; THC-ENC-338 for containment/removal; THC-ENC-340 for program audit and continuous improvement; THC-ENC-401–420 future measurement/quality-system layer."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-340",
@@ -6369,14 +6561,62 @@
       "topicSlug": "ipm-biosecurity",
       "primaryFormat": "Data / QA",
       "teachingVisual": "Record / example",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-340",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-340/",
       "keywords": [
         "IPM, Biosecurity & Sanitation",
         "Data / QA",
         "Record / example",
-        "THC-ENC-340"
-      ]
+        "THC-ENC-340",
+        "program audit Structured review of whether an IPM system is designed, implemented, documented, and effective as intended.",
+        "leading indicator A measure of preventive or process performance that can change before crop loss occurs, such as scouting completion or quarantine compliance.",
+        "lagging indicator A measure that reflects outcomes already experienced, such as infestation severity, crop loss, or repeated treatment.",
+        "trend analysis Comparison of comparable records over time to identify direction, recurrence, seasonality, or persistent weak points.",
+        "continuous improvement Repeated use of evidence from operations and outcomes to refine procedures, training, monitoring, controls, and resource allocation."
+      ],
+      "objective": "Audit an IPM program as a complete system by reviewing prevention, monitoring, diagnosis, decisions, interventions, records, outcomes, recurring failures, and improvement actions over time.",
+      "terms": [
+        "program audit Structured review of whether an IPM system is designed, implemented, documented, and effective as intended.",
+        "leading indicator A measure of preventive or process performance that can change before crop loss occurs, such as scouting completion or quarantine compliance.",
+        "lagging indicator A measure that reflects outcomes already experienced, such as infestation severity, crop loss, or repeated treatment.",
+        "trend analysis Comparison of comparable records over time to identify direction, recurrence, seasonality, or persistent weak points.",
+        "continuous improvement Repeated use of evidence from operations and outcomes to refine procedures, training, monitoring, controls, and resource allocation."
+      ],
+      "coreScience": [
+        "An IPM audit should evaluate the full prevention-to-verification chain rather than counting pesticide applications or checking whether a scouting form exists.",
+        "Useful audits combine leading indicators such as inspection completion, quarantine compliance, sanitation verification, trap servicing, training, and response time with lagging indicators such as pest incidence, disease severity, crop loss, repeat events, and treatment frequency.",
+        "Trend analysis requires comparable denominators and methods. Counts from different room sizes, trap densities, scouting routes, crop stages, or sampling effort should not be compared as though they were equivalent.",
+        "Repeated failures can reveal structural causes such as intake risk, blind spots in scouting, sanitation breakdowns, environmental instability, training gaps, ineffective thresholds, or incompatible control programs.",
+        "Continuous improvement closes the loop by converting audit findings into prioritized actions, assigning owners, verifying completion, and checking whether outcomes improve in subsequent cycles."
+      ],
+      "cultivation": [
+        "Audit IPM at a defined cadence and after major incidents or crop cycles rather than only when severe problems occur.",
+        "Review records across zones and time so one clean room or successful treatment does not hide system-wide weaknesses.",
+        "Track both process compliance and biological outcome; strong paperwork with worsening pest trends is not a successful program.",
+        "Use findings to update scouting routes, quarantine, sanitation, thresholds, training, environmental controls, vendor controls, and CAPA priorities."
+      ],
+      "measurements": [
+        "Scope Record crop cycles, rooms, pests/pathogens, time period, and IPM processes included in the audit.",
+        "Process indicators Record compliance and timeliness for scouting, quarantine, sanitation, trap service, training, response, and follow-up.",
+        "Outcome indicators Record incidence/severity trends, crop impact, recurrence, intervention frequency, and unresolved incidents using comparable denominators.",
+        "Findings Classify strengths, gaps, repeated failure modes, data-quality limitations, and risk priorities.",
+        "Improvement loop Record actions, owners, deadlines, effectiveness measures, and the next review date."
+      ],
+      "misconceptions": [
+        "An IPM audit is the same as checking whether pesticides were applied correctly.",
+        "More completed forms always mean the IPM program is improving.",
+        "Raw trap counts can be compared across any room or time period.",
+        "A crop cycle without a major outbreak proves prevention is adequate.",
+        "Continuous improvement means changing procedures frequently even without evidence."
+      ],
+      "evidenceLimits": [
+        "Audit metrics are only as reliable as the underlying sampling, denominators, definitions, and record quality. Benchmarks should be interpreted within the crop, facility, season, and management system rather than treated as universal Cannabis standards."
+      ],
+      "crossLinks": [
+        "THC-ENC-321 for IPM architecture; THC-ENC-331–333 for monitoring and decisions; THC-ENC-339 for CAPA; THC-ENC-401–420 future measurement/data/quality layer."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-341",
@@ -6387,14 +6627,60 @@
       "topicSlug": "harvest-postharvest",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Concept diagram",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-341",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-341/",
       "keywords": [
         "Harvest & Postharvest",
         "Science lesson",
         "Concept diagram",
-        "THC-ENC-341"
-      ]
+        "THC-ENC-341",
+        "harvest maturity",
+        "developmental stage",
+        "trichome observation",
+        "stigma",
+        "inflorescence position",
+        "cannabinoid profile",
+        "weather risk",
+        "product objective"
+      ],
+      "objective": "Define harvest maturity by product objective, developmental evidence, representative sampling, environmental risk, and downstream quality rather than one visual cue.",
+      "terms": [
+        "harvest maturity",
+        "developmental stage",
+        "trichome observation",
+        "stigma",
+        "inflorescence position",
+        "cannabinoid profile",
+        "weather risk",
+        "product objective"
+      ],
+      "coreScience": [
+        "Harvest maturity is a management decision, not a single universal biological endpoint. Reproductive tissues, glandular trichomes, cannabinoids, volatiles, seed development, senescence, and disease risk follow overlapping but nonidentical trajectories.",
+        "Visible stigma change and trichome appearance can support a local staging system, but each depends on tissue, position, illumination, observer, genotype, and post-pollination status. Chemical analysis describes the submitted sample and can differ across the plant.",
+        "The best harvest date can change with the intended product, legal cannabinoid limit, weather, disease, labor, drying capacity, seed maturity, and quality target. A later maximum concentration may not maximize total saleable yield or safety."
+      ],
+      "cultivation": [
+        "Predefine product and compliance goals, sample multiple positions, record biological milestones, review disease and weather, confirm postharvest capacity, and document why the batch was released for harvest."
+      ],
+      "measurements": [
+        "Before evaluating harvest maturity as a multi-signal decision, record the starting context and identifiers, including Genotype/batch, flowering milestone, plant and flower positions. Use the same definitions and measurement locations for every comparison so changes can be attributed to the process rather than inconsistent observation.",
+        "During the process, track trichome/stigma protocol, cannabinoid and volatile samples, disease/seed status, along with time, location, material state, and any intervention or environmental change that could alter the response. Preserve raw observations instead of recording only a final pass/fail judgment.",
+        "At the decision point, document weather/environment, biomass estimate, harvest decision and approver.. Compare endpoints against the stated objective, note spatial or replicate variation, and retain enough traceability to reconstruct how the conclusion was reached."
+      ],
+      "misconceptions": [
+        "A fixed amber-trichome percentage defines maturity for every cultivar. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used.",
+        "The highest cannabinoid percentage is always the best harvest point. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.",
+        "All flowers on one plant reach maturity together. The claim cannot be generalized across cultivars, loads, rooms, packages, or laboratories without controlled comparison and documented uncertainty."
+      ],
+      "evidenceLimits": [
+        "No universal cannabis harvest day or visual threshold is validated across genotypes, positions, products, and methods. Numerical targets and response magnitudes should therefore be treated as system-specific unless the cited evidence directly matches the cultivar or material form, process geometry, measurement method, environmental conditions, and product objective being evaluated.",
+        "Evidence from reviews, standards, food or pharmaceutical quality systems, or non-cannabis plant materials can support general mechanisms and measurement practice, but those sources do not by themselves establish a universal cannabis process target. Current jurisdictional release requirements and validated local methods remain separate controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-342",
@@ -6405,14 +6691,58 @@
       "topicSlug": "harvest-postharvest",
       "primaryFormat": "Comparison",
       "teachingVisual": "Comparison plate",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-342",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-342/",
       "keywords": [
         "Harvest & Postharvest",
         "Comparison",
         "Comparison plate",
-        "THC-ENC-342"
-      ]
+        "THC-ENC-342",
+        "whole-plant harvest",
+        "branch harvest",
+        "sectional harvest",
+        "load geometry",
+        "stem-to-flower ratio",
+        "handling damage",
+        "traceability"
+      ],
+      "objective": "Compare whole-plant and sectional harvest through handling, drying geometry, spatial maturity, labor, contamination, and traceability.",
+      "terms": [
+        "whole-plant harvest",
+        "branch harvest",
+        "sectional harvest",
+        "load geometry",
+        "stem-to-flower ratio",
+        "handling damage",
+        "traceability"
+      ],
+      "coreScience": [
+        "Whole-plant harvest preserves large connected structures and can reduce the number of cuts and handling events. Branch or sectional harvest can separate maturity zones, improve loading control, and make damaged or diseased material easier to segregate.",
+        "Geometry changes drying. Large stems, overlapping branches, flower density, hanging orientation, and local airflow affect heat and moisture transfer. A whole plant and separated branches cannot be assumed to follow the same drying curve under the same room setting.",
+        "Sectional harvesting increases labels, cuts, surfaces, labor, and opportunities for mix-ups or cross-contamination. Whole-plant harvesting can conceal interior defects and create uneven load density."
+      ],
+      "cultivation": [
+        "Choose a method from plant architecture, disease status, room capacity, product objective, labor, support, and traceability. Validate drying uniformity and quality for the actual load form."
+      ],
+      "measurements": [
+        "Before evaluating whole-plant versus branch harvest, record the starting context and identifiers, including Harvest unit and ID, cut sequence, plant/branch position, wet mass and stem fraction. Use the same definitions and measurement locations for every comparison so changes can be attributed to the process rather than inconsistent observation.",
+        "During the process, track damage, load spacing, drying curve by zone, along with time, location, material state, and any intervention or environmental change that could alter the response. Preserve raw observations instead of recording only a final pass/fail judgment.",
+        "At the decision point, document labor, microbial/chemical result, yield and grade.. Compare endpoints against the stated objective, note spatial or replicate variation, and retain enough traceability to reconstruct how the conclusion was reached."
+      ],
+      "misconceptions": [
+        "Whole-plant drying is always slower and therefore always better. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used.",
+        "Branch harvest automatically makes every flower uniform. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.",
+        "Harvest geometry has no effect once room RH is controlled. The claim cannot be generalized across cultivars, loads, rooms, packages, or laboratories without controlled comparison and documented uncertainty."
+      ],
+      "evidenceLimits": [
+        "Comparisons are cultivar-, architecture-, load-, room-, and airflow-specific. Numerical targets and response magnitudes should therefore be treated as system-specific unless the cited evidence directly matches the cultivar or material form, process geometry, measurement method, environmental conditions, and product objective being evaluated.",
+        "Evidence from reviews, standards, food or pharmaceutical quality systems, or non-cannabis plant materials can support general mechanisms and measurement practice, but those sources do not by themselves establish a universal cannabis process target. Current jurisdictional release requirements and validated local methods remain separate controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-343",
@@ -6423,14 +6753,62 @@
       "topicSlug": "harvest-postharvest",
       "primaryFormat": "Procedure",
       "teachingVisual": "Workflow",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-343",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-343/",
       "keywords": [
         "Harvest & Postharvest",
         "Procedure",
         "Workflow",
-        "THC-ENC-343"
-      ]
+        "THC-ENC-343",
+        "batch",
+        "lot",
+        "segregation",
+        "harvest tool",
+        "food-contact surface",
+        "chain of identity",
+        "hold",
+        "contaminated material",
+        "line clearance"
+      ],
+      "objective": "Protect identity and hygiene from cutting through transport, loading, trim, drying, sampling, and waste disposition.",
+      "terms": [
+        "batch",
+        "lot",
+        "segregation",
+        "harvest tool",
+        "food-contact surface",
+        "chain of identity",
+        "hold",
+        "contaminated material",
+        "line clearance"
+      ],
+      "coreScience": [
+        "Harvest converts living crop tissue into handled plant material with many new contact surfaces. Tools, gloves, bins, carts, racks, floors, labels, and workers can transfer debris, microbes, allergens, residues, and plant identity.",
+        "Batch segregation is physical and documentary. Adjacent material can mix through fallen flowers, trim, shared bins, air movement, labels, tools, or cleaning gaps even when plants were separate before cutting.",
+        "Sanitation does not make diseased or contaminated material acceptable. Suspect material requires a defined hold, sample, disposition, and movement route independent of routine crop flow."
+      ],
+      "cultivation": [
+        "Perform line clearance, verify clean equipment, assign batch and sub-batch IDs, use controlled containers, protect product from floor and waste contact, and document every transfer."
+      ],
+      "measurements": [
+        "Before evaluating harvest sanitation and batch segregation, record the starting context and identifiers, including Room/batch/sub-batch, personnel/tools/equipment, cleaning status, harvest start/end. Use the same definitions and measurement locations for every comparison so changes can be attributed to the process rather than inconsistent observation.",
+        "During the process, track containers/racks, transfers, spills/mix-ups, along with time, location, material state, and any intervention or environmental change that could alter the response. Preserve raw observations instead of recording only a final pass/fail judgment.",
+        "At the decision point, document holds, waste, samples and release.. Compare endpoints against the stated objective, note spatial or replicate variation, and retain enough traceability to reconstruct how the conclusion was reached."
+      ],
+      "misconceptions": [
+        "Harvested flower is safe because the plant was healthy. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used.",
+        "A label on the room is enough to preserve batch identity. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.",
+        "Routine cleaning can convert suspect product into releasable product. The claim cannot be generalized across cultivars, loads, rooms, packages, or laboratories without controlled comparison and documented uncertainty."
+      ],
+      "evidenceLimits": [
+        "Product-contact, microbial, allergen, waste, and inventory requirements vary by jurisdiction and production model. Numerical targets and response magnitudes should therefore be treated as system-specific unless the cited evidence directly matches the cultivar or material form, process geometry, measurement method, environmental conditions, and product objective being evaluated.",
+        "Evidence from reviews, standards, food or pharmaceutical quality systems, or non-cannabis plant materials can support general mechanisms and measurement practice, but those sources do not by themselves establish a universal cannabis process target. Current jurisdictional release requirements and validated local methods remain separate controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-344",
@@ -6441,14 +6819,60 @@
       "topicSlug": "harvest-postharvest",
       "primaryFormat": "Comparison",
       "teachingVisual": "Comparison plate",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-344",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-344/",
       "keywords": [
         "Harvest & Postharvest",
         "Comparison",
         "Comparison plate",
-        "THC-ENC-344"
-      ]
+        "THC-ENC-344",
+        "wet trim",
+        "dry trim",
+        "fan leaf",
+        "sugar leaf",
+        "surface area",
+        "handling loss",
+        "trichome loss",
+        "trim fraction"
+      ],
+      "objective": "Compare trimming timing through leaf removal, surface exposure, drying rate, handling damage, microbial risk, chemistry, and labor.",
+      "terms": [
+        "wet trim",
+        "dry trim",
+        "fan leaf",
+        "sugar leaf",
+        "surface area",
+        "handling loss",
+        "trichome loss",
+        "trim fraction"
+      ],
+      "coreScience": [
+        "Wet trimming removes leaves before drying, while dry trimming removes them after material has lost substantial water. Each changes load geometry, exposed surface area, airflow pathways, labor timing, and the physical state of glandular trichomes.",
+        "Direct cannabis research found trimming treatment effects on measured cannabinoid and terpene outcomes in one chemovar, but results depend on cultivar, treatment definition, drying system, sample composition, and analytical basis.",
+        "Dry material is brittle and can shed trichomes or fragments during handling; wet material is more deformable and can smear resin or compact in containers. Neither method is inherently more sanitary without controlled tools, surfaces, and workflow."
+      ],
+      "cultivation": [
+        "Define exactly which leaves are removed, when, how, and from which product grade. Compare drying curves, chemistry, microbes, handling loss, labor, and final quality using matched batches."
+      ],
+      "measurements": [
+        "Before evaluating wet trimming versus dry trimming, record the starting context and identifiers, including Trim timing and definition, leaf/flower/stem mass, wet/dry state, handling events. Use the same definitions and measurement locations for every comparison so changes can be attributed to the process rather than inconsistent observation.",
+        "During the process, track trichome/fragment loss, drying curve, chemistry, along with time, location, material state, and any intervention or environmental change that could alter the response. Preserve raw observations instead of recording only a final pass/fail judgment.",
+        "At the decision point, document microbes, labor, grade and rejects.. Compare endpoints against the stated objective, note spatial or replicate variation, and retain enough traceability to reconstruct how the conclusion was reached."
+      ],
+      "misconceptions": [
+        "Wet trimming always destroys terpenes. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used.",
+        "Dry trimming always preserves more resin. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.",
+        "Removing more leaf always increases flower potency. The claim cannot be generalized across cultivars, loads, rooms, packages, or laboratories without controlled comparison and documented uncertainty."
+      ],
+      "evidenceLimits": [
+        "One cultivar or trimming geometry does not establish a universal method advantage. Numerical targets and response magnitudes should therefore be treated as system-specific unless the cited evidence directly matches the cultivar or material form, process geometry, measurement method, environmental conditions, and product objective being evaluated.",
+        "Evidence from reviews, standards, food or pharmaceutical quality systems, or non-cannabis plant materials can support general mechanisms and measurement practice, but those sources do not by themselves establish a universal cannabis process target. Current jurisdictional release requirements and validated local methods remain separate controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-345",
@@ -6459,14 +6883,62 @@
       "topicSlug": "harvest-postharvest",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Concept diagram",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-345",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-345/",
       "keywords": [
         "Harvest & Postharvest",
         "Science lesson",
         "Concept diagram",
-        "THC-ENC-345"
-      ]
+        "THC-ENC-345",
+        "heat transfer",
+        "mass transfer",
+        "evaporation",
+        "diffusion",
+        "convection",
+        "latent heat",
+        "boundary layer",
+        "internal resistance",
+        "drying front"
+      ],
+      "objective": "Explain drying through energy transfer, internal moisture movement, surface evaporation, air transport, and changing material resistance.",
+      "terms": [
+        "heat transfer",
+        "mass transfer",
+        "evaporation",
+        "diffusion",
+        "convection",
+        "latent heat",
+        "boundary layer",
+        "internal resistance",
+        "drying front"
+      ],
+      "coreScience": [
+        "Drying removes water by moving moisture from internal tissues toward surfaces and then transferring vapor into surrounding air. Heat supplies energy for evaporation; airflow and vapor-pressure conditions carry moisture away.",
+        "Early drying can include free surface water and rapid mass loss, while later drying increasingly depends on internal diffusion, tissue structure, cuticle, flower density, stems, and equilibrium with air.",
+        "Room temperature and RH are inputs, not a complete process description. Product temperature, airflow, load geometry, recirculation, dehumidification, and moisture generation determine the local driving force."
+      ],
+      "cultivation": [
+        "Measure product and air conditions, mass change, load geometry, and spatial distribution. Avoid copying a temperature/RH recipe without validating product response and safety."
+      ],
+      "measurements": [
+        "Before evaluating drying as heat and mass transfer, record the starting context and identifiers, including Wet mass, air/product/surface temperature, RH/dew point. Use the same definitions and measurement locations for every comparison so changes can be attributed to the process rather than inconsistent observation.",
+        "During the process, track airflow, rack/location, load density, along with time, location, material state, and any intervention or environmental change that could alter the response. Preserve raw observations instead of recording only a final pass/fail judgment.",
+        "At the decision point, document mass versus time, energy/dehumidification state, final moisture/aW and chemistry.. Compare endpoints against the stated objective, note spatial or replicate variation, and retain enough traceability to reconstruct how the conclusion was reached."
+      ],
+      "misconceptions": [
+        "Drying is simply waiting for water to evaporate. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used.",
+        "Room RH alone determines drying rate. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.",
+        "A constant room setpoint produces a constant product drying rate. The claim cannot be generalized across cultivars, loads, rooms, packages, or laboratories without controlled comparison and documented uncertainty."
+      ],
+      "evidenceLimits": [
+        "Transfer coefficients and diffusion behavior are material- and system-specific. Numerical targets and response magnitudes should therefore be treated as system-specific unless the cited evidence directly matches the cultivar or material form, process geometry, measurement method, environmental conditions, and product objective being evaluated.",
+        "Evidence from reviews, standards, food or pharmaceutical quality systems, or non-cannabis plant materials can support general mechanisms and measurement practice, but those sources do not by themselves establish a universal cannabis process target. Current jurisdictional release requirements and validated local methods remain separate controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-346",
@@ -6477,14 +6949,60 @@
       "topicSlug": "harvest-postharvest",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Comparison plate",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-346",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-346/",
       "keywords": [
         "Harvest & Postharvest",
         "Science lesson",
         "Comparison plate",
-        "THC-ENC-346"
-      ]
+        "THC-ENC-346",
+        "moisture content",
+        "wet basis",
+        "dry basis",
+        "water activity",
+        "vapor-pressure ratio",
+        "equilibrium relative humidity",
+        "bound water",
+        "free water"
+      ],
+      "objective": "Separate the amount of water in material from the thermodynamic availability of water for reactions and microbial growth.",
+      "terms": [
+        "moisture content",
+        "wet basis",
+        "dry basis",
+        "water activity",
+        "vapor-pressure ratio",
+        "equilibrium relative humidity",
+        "bound water",
+        "free water"
+      ],
+      "coreScience": [
+        "Moisture content is the mass of water relative to wet or dry material under a defined method. Water activity is the ratio of water-vapor pressure above the sample to that above pure water at the same temperature.",
+        "Two samples can have similar moisture content but different water activity because composition, structure, salts, sugars, temperature, and sorption history alter how tightly water is associated with the matrix.",
+        "Water activity helps assess microbial-growth and chemical-stability risk, but one value does not prove absence of pathogens, toxins, uneven wet pockets, or future moisture migration."
+      ],
+      "cultivation": [
+        "Record both metrics where relevant, including method, basis, temperature, equilibration, and sample preparation. Do not convert moisture percentage to aW with a universal formula."
+      ],
+      "measurements": [
+        "Before evaluating moisture content and water activity, record the starting context and identifiers, including Sample identity, wet/dry basis, oven or analyzer method. Use the same definitions and measurement locations for every comparison so changes can be attributed to the process rather than inconsistent observation.",
+        "During the process, track aW instrument/temperature, equilibration, replicate, along with time, location, material state, and any intervention or environmental change that could alter the response. Preserve raw observations instead of recording only a final pass/fail judgment.",
+        "At the decision point, document water distribution, microbes and storage condition.. Compare endpoints against the stated objective, note spatial or replicate variation, and retain enough traceability to reconstruct how the conclusion was reached."
+      ],
+      "misconceptions": [
+        "Moisture content and water activity are the same measurement. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used.",
+        "A dry-feeling flower must have safe water activity. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.",
+        "One aW result represents every flower in the batch. The claim cannot be generalized across cultivars, loads, rooms, packages, or laboratories without controlled comparison and documented uncertainty."
+      ],
+      "evidenceLimits": [
+        "Safety and quality limits are product- and jurisdiction-specific and require representative sampling. Numerical targets and response magnitudes should therefore be treated as system-specific unless the cited evidence directly matches the cultivar or material form, process geometry, measurement method, environmental conditions, and product objective being evaluated.",
+        "Evidence from reviews, standards, food or pharmaceutical quality systems, or non-cannabis plant materials can support general mechanisms and measurement practice, but those sources do not by themselves establish a universal cannabis process target. Current jurisdictional release requirements and validated local methods remain separate controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-347",
@@ -6495,14 +7013,58 @@
       "topicSlug": "harvest-postharvest",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Concept diagram",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-347",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-347/",
       "keywords": [
         "Harvest & Postharvest",
         "Science lesson",
         "Concept diagram",
-        "THC-ENC-347"
-      ]
+        "THC-ENC-347",
+        "equilibrium moisture content",
+        "sorption isotherm",
+        "adsorption",
+        "desorption",
+        "hysteresis",
+        "equilibrium RH",
+        "hygroscopicity"
+      ],
+      "objective": "Explain equilibrium moisture, sorption isotherms, hysteresis, temperature, and moisture redistribution.",
+      "terms": [
+        "equilibrium moisture content",
+        "sorption isotherm",
+        "adsorption",
+        "desorption",
+        "hysteresis",
+        "equilibrium RH",
+        "hygroscopicity"
+      ],
+      "coreScience": [
+        "At equilibrium, a material has no net moisture exchange with surrounding air under a stable temperature and humidity. Equilibrium moisture content links material water content to environmental relative humidity and temperature.",
+        "Sorption isotherms differ during drying and rewetting, a phenomenon called hysteresis. Flower structure, composition, particle size, prior drying, temperature, and cultivar can change the relation.",
+        "Material rarely reaches perfect equilibrium instantly. Dense flowers and sealed containers can maintain internal gradients while external air or a surface reading appears stable."
+      ],
+      "cultivation": [
+        "Use sorption concepts to understand why overdried material can reabsorb moisture and why container equilibration takes time. Validate with cannabis material rather than generic plant charts."
+      ],
+      "measurements": [
+        "Before evaluating equilibrium moisture and moisture sorption, record the starting context and identifiers, including Sample form, initial moisture/aW, temperature/RH. Use the same definitions and measurement locations for every comparison so changes can be attributed to the process rather than inconsistent observation.",
+        "During the process, track adsorption/desorption history, mass over time, along with time, location, material state, and any intervention or environmental change that could alter the response. Preserve raw observations instead of recording only a final pass/fail judgment.",
+        "At the decision point, document equilibrium criterion, replicate and cultivar.. Compare endpoints against the stated objective, note spatial or replicate variation, and retain enough traceability to reconstruct how the conclusion was reached."
+      ],
+      "misconceptions": [
+        "A product immediately matches room RH when placed in the room. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used.",
+        "Rewetting follows the exact reverse path of drying. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.",
+        "One equilibrium-moisture value applies to all cannabis flowers. The claim cannot be generalized across cultivars, loads, rooms, packages, or laboratories without controlled comparison and documented uncertainty."
+      ],
+      "evidenceLimits": [
+        "Published cannabis sorption data remain limited; cultivar and matrix differences require local characterization. Numerical targets and response magnitudes should therefore be treated as system-specific unless the cited evidence directly matches the cultivar or material form, process geometry, measurement method, environmental conditions, and product objective being evaluated.",
+        "Evidence from reviews, standards, food or pharmaceutical quality systems, or non-cannabis plant materials can support general mechanisms and measurement practice, but those sources do not by themselves establish a universal cannabis process target. Current jurisdictional release requirements and validated local methods remain separate controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-348",
@@ -6513,14 +7075,58 @@
       "topicSlug": "harvest-postharvest",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Concept diagram",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-348",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-348/",
       "keywords": [
         "Harvest & Postharvest",
         "Science lesson",
         "Concept diagram",
-        "THC-ENC-348"
-      ]
+        "THC-ENC-348",
+        "dry-bulb temperature",
+        "product temperature",
+        "relative humidity",
+        "dew point",
+        "evaporative cooling",
+        "condensation",
+        "sensor placement"
+      ],
+      "objective": "Relate air and product temperatures, RH, dew point, evaporation, and transition conditions during drying.",
+      "terms": [
+        "dry-bulb temperature",
+        "product temperature",
+        "relative humidity",
+        "dew point",
+        "evaporative cooling",
+        "condensation",
+        "sensor placement"
+      ],
+      "coreScience": [
+        "Fresh material can remain cooler than surrounding air because evaporation consumes latent heat. As drying slows, product temperature may approach air temperature, but radiation, airflow, load, and surface conditions create local differences.",
+        "Relative humidity rises where moisture enters air and falls after dehumidification or heating. Cold product or surfaces can reach dew point during harvest loading, lights-off transitions, refrigeration, or room recovery.",
+        "A wall sensor can miss flower-zone conditions. Sensors near supply air, wet loads, doors, exterior surfaces, and dense racks experience different exposure."
+      ],
+      "cultivation": [
+        "Pair air and product measurements at representative locations and transitions. Prevent condensation and damaging direct jets while documenting HVAC and dehumidifier cycling."
+      ],
+      "measurements": [
+        "Before evaluating air temperature, rh, and product temperature during drying, record the starting context and identifiers, including Air/product/surface temperature, RH/dew point, sensor ID/location. Use the same definitions and measurement locations for every comparison so changes can be attributed to the process rather than inconsistent observation.",
+        "During the process, track wet load, airflow, HVAC state, along with time, location, material state, and any intervention or environmental change that could alter the response. Preserve raw observations instead of recording only a final pass/fail judgment.",
+        "At the decision point, document condensation/wetness, mass loss and product response.. Compare endpoints against the stated objective, note spatial or replicate variation, and retain enough traceability to reconstruct how the conclusion was reached."
+      ],
+      "misconceptions": [
+        "Product temperature always equals room temperature. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used.",
+        "Low room RH guarantees no condensation. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.",
+        "One sensor near the controller represents the drying load. The claim cannot be generalized across cultivars, loads, rooms, packages, or laboratories without controlled comparison and documented uncertainty."
+      ],
+      "evidenceLimits": [
+        "Infrared and contact measurements have method-specific errors; placement and calibration require control. Numerical targets and response magnitudes should therefore be treated as system-specific unless the cited evidence directly matches the cultivar or material form, process geometry, measurement method, environmental conditions, and product objective being evaluated.",
+        "Evidence from reviews, standards, food or pharmaceutical quality systems, or non-cannabis plant materials can support general mechanisms and measurement practice, but those sources do not by themselves establish a universal cannabis process target. Current jurisdictional release requirements and validated local methods remain separate controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-349",
@@ -6531,14 +7137,60 @@
       "topicSlug": "harvest-postharvest",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Chart / measurement",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-349",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-349/",
       "keywords": [
         "Harvest & Postharvest",
         "Science lesson",
         "Chart / measurement",
-        "THC-ENC-349"
-      ]
+        "THC-ENC-349",
+        "loading density",
+        "airflow distribution",
+        "dead zone",
+        "short circuit",
+        "pressure drop",
+        "rack spacing",
+        "uniformity",
+        "edge effect"
+      ],
+      "objective": "Map how rack spacing, flower density, obstructions, fan paths, and recirculation create drying distributions.",
+      "terms": [
+        "loading density",
+        "airflow distribution",
+        "dead zone",
+        "short circuit",
+        "pressure drop",
+        "rack spacing",
+        "uniformity",
+        "edge effect"
+      ],
+      "coreScience": [
+        "Airflow carries heat and vapor, but the load resists and redirects it. Dense hanging plants, trays, bins, racks, walls, and packaging create pressure drops, bypass paths, and sheltered pockets.",
+        "High velocity at one location can overdry surfaces or damage material while other locations remain wet. Visible branch movement does not prove uniform exchange inside flowers or behind racks.",
+        "Uniformity must be assessed across space and time. Mean room mass loss can hide wet sub-batches and overdried edge material."
+      ],
+      "cultivation": [
+        "Map air movement and product mass/aW across rack levels, corners, center, supply, and return locations under the actual load. Revalidate after layout, fan, filter, or crop-geometry changes."
+      ],
+      "measurements": [
+        "Before evaluating airflow, loading density, and drying uniformity, record the starting context and identifiers, including Room/rack map, load mass and spacing, fan/HVAC/filters. Use the same definitions and measurement locations for every comparison so changes can be attributed to the process rather than inconsistent observation.",
+        "During the process, track airspeed method, temperature/RH, sample mass curves, along with time, location, material state, and any intervention or environmental change that could alter the response. Preserve raw observations instead of recording only a final pass/fail judgment.",
+        "At the decision point, document final moisture/aW by location, quality and microbial results.. Compare endpoints against the stated objective, note spatial or replicate variation, and retain enough traceability to reconstruct how the conclusion was reached."
+      ],
+      "misconceptions": [
+        "More fan speed always creates more uniform drying. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used.",
+        "Equal rack spacing guarantees equal airflow. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.",
+        "An average final water activity clears every location. The claim cannot be generalized across cultivars, loads, rooms, packages, or laboratories without controlled comparison and documented uncertainty."
+      ],
+      "evidenceLimits": [
+        "There is no universal airspeed or loading-density target for every room and flower form. Numerical targets and response magnitudes should therefore be treated as system-specific unless the cited evidence directly matches the cultivar or material form, process geometry, measurement method, environmental conditions, and product objective being evaluated.",
+        "Evidence from reviews, standards, food or pharmaceutical quality systems, or non-cannabis plant materials can support general mechanisms and measurement practice, but those sources do not by themselves establish a universal cannabis process target. Current jurisdictional release requirements and validated local methods remain separate controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-350",
@@ -6549,14 +7201,62 @@
       "topicSlug": "harvest-postharvest",
       "primaryFormat": "Data / QA",
       "teachingVisual": "Chart / measurement",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-350",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-350/",
       "keywords": [
         "Harvest & Postharvest",
         "Data / QA",
         "Chart / measurement",
-        "THC-ENC-350"
-      ]
+        "THC-ENC-350",
+        "drying curve",
+        "mass loss",
+        "drying rate",
+        "slope",
+        "plateau",
+        "endpoint",
+        "overshoot",
+        "sample interval",
+        "smoothing"
+      ],
+      "objective": "Use mass, moisture, aW, temperature, and time-series data to distinguish drying phases, stalls, overshoot, and spatial variation.",
+      "terms": [
+        "drying curve",
+        "mass loss",
+        "drying rate",
+        "slope",
+        "plateau",
+        "endpoint",
+        "overshoot",
+        "sample interval",
+        "smoothing"
+      ],
+      "coreScience": [
+        "A drying curve plots a defined moisture-related measure against time. Container or representative-product mass can provide continuous trend, while destructive moisture or aW tests provide periodic endpoints.",
+        "The rate changes as available surface water declines and internal resistance increases. A plateau can indicate approach to equilibrium, sensor resolution, airflow failure, high room humidity, or a sample no longer representing the load.",
+        "Calculated slopes depend on interval, smoothing, missing data, scale drift, product removal, and container changes. An apparent endpoint requires confirmation with the relevant quality and safety measurements."
+      ],
+      "cultivation": [
+        "Define reference samples and balances, correct for removed samples and hardware, retain raw data, and use warning/action criteria for stalled or excessive rates."
+      ],
+      "measurements": [
+        "Before evaluating drying curves and rate-of-change interpretation, record the starting context and identifiers, including Scale/sensor ID and verification, sample geometry, raw mass/time. Use the same definitions and measurement locations for every comparison so changes can be attributed to the process rather than inconsistent observation.",
+        "During the process, track temperature/RH, intervention events, slope method along with time, location, material state, and any intervention or environmental change that could alter the response. Preserve raw observations instead of recording only a final pass/fail judgment.",
+        "At the decision point, document moisture/aW checks, endpoint and release.. Compare endpoints against the stated objective, note spatial or replicate variation, and retain enough traceability to reconstruct how the conclusion was reached."
+      ],
+      "misconceptions": [
+        "A flat mass curve proves every flower is dry. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used.",
+        "One plant’s mass curve represents the entire room. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.",
+        "A faster slope always means a better process. The claim cannot be generalized across cultivars, loads, rooms, packages, or laboratories without controlled comparison and documented uncertainty."
+      ],
+      "evidenceLimits": [
+        "Mass change includes water and volatile loss and can be affected by handling; it is not a complete composition measurement. Numerical targets and response magnitudes should therefore be treated as system-specific unless the cited evidence directly matches the cultivar or material form, process geometry, measurement method, environmental conditions, and product objective being evaluated.",
+        "Evidence from reviews, standards, food or pharmaceutical quality systems, or non-cannabis plant materials can support general mechanisms and measurement practice, but those sources do not by themselves establish a universal cannabis process target. Current jurisdictional release requirements and validated local methods remain separate controls."
+      ],
+      "crossLinks": [
+        "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-351",
