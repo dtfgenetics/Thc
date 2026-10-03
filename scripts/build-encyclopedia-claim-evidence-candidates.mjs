@@ -23,7 +23,9 @@ const rows=[];
 let claimNumber=0;
 for(const lesson of lessons){
   const sourceRow=queueLessonById.get(lesson.id)||{};
-  const sourceReferenceIds=arr(sourceRow.sourceReferenceIds).filter(Boolean);
+  const allSourceReferenceIds=arr(sourceRow.sourceReferenceIds).filter(Boolean);
+  const evidenceSourceReferenceIds=allSourceReferenceIds.filter(id=>referenceById.get(id)?.traceabilityRequired!==false);
+  const controlContextReferenceIds=allSourceReferenceIds.filter(id=>referenceById.get(id)?.traceabilityRequired===false);
   const claimInputs=[
     {kind:'objective',text:lesson.objective},
     ...arr(lesson.coreScience).map(text=>({kind:'core-science',text}))
@@ -31,7 +33,7 @@ for(const lesson of lessons){
 
   const claims=claimInputs.map((item,index)=>{
     claimNumber+=1;
-    const sources=sourceReferenceIds.map(id=>referenceById.get(id)).filter(Boolean);
+    const sources=evidenceSourceReferenceIds.map(id=>referenceById.get(id)).filter(Boolean);
     return {
       candidateId:`ENC-CLAIM-CAND-${String(claimNumber).padStart(5,'0')}`,
       lessonId:lesson.id,
@@ -40,11 +42,14 @@ for(const lesson of lessons){
       claimIndex:index+1,
       claimKind:item.kind,
       candidateClaim:clean(item.text),
-      sourceReferenceIds,
+      sourceReferenceIds:evidenceSourceReferenceIds,
       candidateSourceTraceability:sources.map(source=>({
         referenceId:source.referenceId,
         rawReference:source.rawReference,
         resolutionStatus:source.resolutionStatus,
+        referenceKind:source.referenceKind||null,
+        traceabilityRequired:source.traceabilityRequired!==false,
+        traceable:source.traceable===true,
         resolvedAuthoritativeSourceIds:arr(source.resolvedAuthoritativeSourceIds),
         volumeRegistryRecord:source.volumeRegistryRecord||null
       })),
@@ -62,7 +67,9 @@ for(const lesson of lessons){
     canonicalFile:lesson.__path,
     sourceTraceabilityState:sourceRow.resolutionState||'source_resolution_incomplete',
     claimCount:claims.length,
-    sourceReferenceCount:sourceReferenceIds.length,
+    sourceReferenceCount:evidenceSourceReferenceIds.length,
+    controlContextNoteCount:controlContextReferenceIds.length,
+    controlContextReferenceIds,
     claims
   });
 }

@@ -14,6 +14,7 @@ const authorityIds = new Set((readJson(authorityPath).sources || []).map(source 
 const references = Array.isArray(queue.references) ? queue.references : [];
 const lessonRows = Array.isArray(queue.lessons) ? queue.lessons : [];
 const referenceByRaw = new Map(references.map(row => [row.rawReference, row]));
+const referenceById = new Map(references.map(row => [row.referenceId, row]));
 
 if (lessonRows.length !== 420) errors.push(`Expected 420 lesson source rows; found ${lessonRows.length}.`);
 if (new Set(lessonRows.map(row => row.lessonId)).size !== lessonRows.length) errors.push('Lesson source rows must have unique lesson IDs.');
@@ -23,14 +24,30 @@ for (const lesson of canonical) {
   if (!row) { errors.push(`${lesson.id}: missing lesson source row.`); continue; }
   const notes = (lesson.sourceNotes || []).map(note => typeof note === 'string' ? note.trim() : String(note?.title || note?.id || note?.sourceId || '').trim()).filter(Boolean);
   if (row.sourceReferenceIds.length !== notes.length) errors.push(`${lesson.id}: source reference count mismatch.`);
+  if (Number(row.sourceReferenceCount || 0) !== notes.length) errors.push(`${lesson.id}: sourceReferenceCount mismatch.`);
+  if (Number(row.evidenceReferenceCount || 0) + Number(row.controlContextNoteCount || 0) !== notes.length) errors.push(`${lesson.id}: evidence/control source accounting mismatch.`);
+  if (Number(row.traceableReferenceCount || 0) > Number(row.evidenceReferenceCount || 0)) errors.push(`${lesson.id}: traceable evidence count exceeds evidence references.`);
+  if (Number(row.unresolvedEvidenceReferenceCount || 0) > Number(row.evidenceReferenceCount || 0)) errors.push(`${lesson.id}: unresolved evidence count exceeds evidence references.`);
+  if (row.resolutionState !== 'source_resolution_incomplete') {
+    if (Number(row.evidenceReferenceCount || 0) < 2) errors.push(`${lesson.id}: resolved source state requires at least two evidence references.`);
+    if (Number(row.unresolvedEvidenceReferenceCount || 0) !== 0) errors.push(`${lesson.id}: resolved source state cannot retain unresolved evidence references.`);
+  }
+  for (const refId of row.sourceReferenceIds || []) if (!referenceById.has(refId)) errors.push(`${lesson.id}: unknown source reference id ${refId}.`);
   for (const note of notes) if (!referenceByRaw.has(note)) errors.push(`${lesson.id}: source note absent from queue: ${note.slice(0, 80)}`);
 }
 const lateVolumeMissing = references.filter(reference => /^V(?:20|21)-SRC-\d{3}$/.test(String(reference.rawReference)) && reference.resolutionStatus === 'missing_volume_register_entry_needs_resolution');
 if (lateVolumeMissing.length) errors.push(`Volume 20–21 source-register regression: ${lateVolumeMissing.length} reference(s) are missing controlled register entries.`);
 if (Number(queue.summary?.missingVolumeRegisterEntries || 0) !== references.filter(reference => reference.resolutionStatus === 'missing_volume_register_entry_needs_resolution').length) errors.push('Source queue summary missingVolumeRegisterEntries is stale.');
+if (Number(queue.summary?.controlNotesExcludedFromEvidenceTraceability || 0) !== references.filter(reference => reference.resolutionStatus === 'control_note_resolved_not_evidence_source').length) errors.push('Source queue summary control-note count is stale.');
+if (Number(queue.summary?.lessonsWithAllSourcesTraceable || 0) !== lessonRows.filter(row => row.resolutionState !== 'source_resolution_incomplete').length) errors.push('Source queue summary traceable lesson count is stale.');
+if (Number(queue.summary?.lessonsNeedingSourceResolution || 0) !== lessonRows.filter(row => row.resolutionState === 'source_resolution_incomplete').length) errors.push('Source queue summary unresolved lesson count is stale.');
 
 for (const reference of references) {
   if (!Array.isArray(reference.lessonIds) || !reference.lessonIds.length) errors.push(`${reference.referenceId}: no lesson usage.`);
+  if (typeof reference.traceabilityRequired !== 'boolean') errors.push(`${reference.referenceId}: traceabilityRequired must be boolean.`);
+  if (typeof reference.traceable !== 'boolean') errors.push(`${reference.referenceId}: traceable must be boolean.`);
+  if (!reference.traceabilityRequired && reference.resolutionStatus !== 'control_note_resolved_not_evidence_source') errors.push(`${reference.referenceId}: non-evidence note must use control-note resolution status.`);
+  if (!reference.traceabilityRequired && reference.traceable) errors.push(`${reference.referenceId}: control/context notes must not be counted as traceable evidence.`);
   if (!/pending|needs|incomplete|resolved/.test(String(reference.resolutionStatus))) errors.push(`${reference.referenceId}: invalid resolution status.`);
   if (!/pending/.test(String(reference.reviewState))) errors.push(`${reference.referenceId}: review must remain pending.`);
   if (reference.publicationEffect !== 'none') errors.push(`${reference.referenceId}: publication effect must be none.`);

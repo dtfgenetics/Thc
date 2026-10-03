@@ -13,6 +13,7 @@ if(!errors.length){
   const data=JSON.parse(fs.readFileSync(file,'utf8'));
   const sourceQueue=JSON.parse(fs.readFileSync(sourceFile,'utf8'));
   const refs=new Set(arr(sourceQueue.references).map(row=>row.referenceId));
+  const refById=new Map(arr(sourceQueue.references).map(row=>[row.referenceId,row]));
   const seenLessons=new Set();
   const seenCandidates=new Set();
 
@@ -28,6 +29,12 @@ if(!errors.length){
     seenLessons.add(row.lessonId);
     if(!row.canonicalFile?.includes('/lessons/thc-enc-')) errors.push(`${row.lessonId}: canonicalFile must be an individual lesson path`);
     if(!arr(row.claims).length) errors.push(`${row.lessonId}: candidate claims missing`);
+    const controlRefs=arr(row.controlContextReferenceIds);
+    for(const refId of controlRefs){
+      const ref=refById.get(refId);
+      if(!ref) errors.push(`${row.lessonId}: unknown control/context reference ${refId}`);
+      else if(ref.traceabilityRequired!==false) errors.push(`${row.lessonId}: control/context reference ${refId} is marked as evidence-required`);
+    }
 
     for(const claim of arr(row.claims)){
       if(!/^ENC-CLAIM-CAND-\d{5}$/.test(claim.candidateId||'')) errors.push(`${row.lessonId}: invalid candidateId ${claim.candidateId||'(missing)'}`);
@@ -40,7 +47,11 @@ if(!errors.length){
       if(claim.reviewState!=='pending_independent_science_review') errors.push(`${claim.candidateId}: reviewState must remain pending independent review`);
       if(claim.publicationEffect!=='none') errors.push(`${claim.candidateId}: publicationEffect must be none`);
       if('supportedClaim' in claim) errors.push(`${claim.candidateId}: candidate ledger must not assert supportedClaim`);
-      for(const refId of arr(claim.sourceReferenceIds)) if(!refs.has(refId)) errors.push(`${claim.candidateId}: unknown source reference ${refId}`);
+      for(const refId of arr(claim.sourceReferenceIds)) {
+        if(!refs.has(refId)) errors.push(`${claim.candidateId}: unknown source reference ${refId}`);
+        const ref=refById.get(refId);
+        if(ref?.traceabilityRequired===false) errors.push(`${claim.candidateId}: control/context note ${refId} cannot be attached as candidate claim evidence`);
+      }
     }
   }
 
