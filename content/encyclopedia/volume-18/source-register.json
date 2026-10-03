@@ -2,41 +2,223 @@
   "schemaVersion": "1.0.0",
   "volumeId": "THC-ENC-V18",
   "sources": [
-    {"id":"V18-SRC-001","title":"THC Cannabis Plant Science Source Packet v1.0","useAndLimitation":"Project plant-development, postharvest, evidence, and transfer boundaries.","location":null},
-    {"id":"V18-SRC-002","title":"THC Cultivation SOP Source Materials Packet v1.0","useAndLimitation":"Project source for harvest, drying, water activity, sampling, QA, sanitation, deviations, and release.","location":null},
-    {"id":"V18-SRC-003","title":"Livingston et al. (2023). Glandular trichome development and maturation in high-THC cannabis. Journal of Cannabis Research.","useAndLimitation":"Trichome-stage heterogeneity and color limits.","location":"https://pmc.ncbi.nlm.nih.gov/articles/PMC10071647/"},
-    {"id":"V18-SRC-004","title":"Cannabis harvest-timing and developmental chemistry studies","useAndLimitation":"Position-, genotype-, tissue-, and method-specific; exact claim mapping pending.","location":null},
-    {"id":"V18-SRC-005","title":"Postharvest Operations of Cannabis and Their Effect on Cannabinoid Content: A Review (2022)","useAndLimitation":"Drying, trimming, psychrometrics, moisture, curing, storage, and evidence gaps.","location":"https://pmc.ncbi.nlm.nih.gov/articles/PMC9404914/"},
-    {"id":"V18-SRC-006","title":"Cannabis load-geometry and drying studies","useAndLimitation":"Whole/branch/tray method effects; exact mapping pending.","location":null},
-    {"id":"V18-SRC-007","title":"Current postharvest hygiene and product-contact standards","useAndLimitation":"Sanitation, segregation, and product protection.","location":null},
-    {"id":"V18-SRC-008","title":"Current cannabis inventory, waste, and batch-control rules","useAndLimitation":"Jurisdiction-specific release review.","location":null},
-    {"id":"V18-SRC-009","title":"Optimization of Trimming Techniques for Medical Cannabis (2024)","useAndLimitation":"One-chemovar trimming study; no universal method superiority.","location":"https://pmc.ncbi.nlm.nih.gov/articles/PMC11249524/"},
-    {"id":"V18-SRC-010","title":"Post-Harvest Operations to Generate High-Quality Medicinal Cannabis Products: A Systemic Review (2022)","useAndLimitation":"Drying, equilibrium moisture, aW, storage, and quality context.","location":"https://pmc.ncbi.nlm.nih.gov/articles/PMC8911901/"},
-    {"id":"V18-SRC-011","title":"General drying, heat/mass transfer, psychrometrics, and cannabis drying research","useAndLimitation":"System-specific transfer coefficients and product-temperature context.","location":null},
-    {"id":"V18-SRC-012","title":"ASTM and current water-activity measurement standards for cannabis/foods","useAndLimitation":"Method and device controls; exact standards access and version require release review.","location":null},
-    {"id":"V18-SRC-013","title":"Moisture-sorption and equilibrium literature for plant materials","useAndLimitation":"Hysteresis and matrix-specific relations.","location":null},
-    {"id":"V18-SRC-014","title":"Cannabis sorption-isotherm research","useAndLimitation":"Limited and cultivar-specific; exact mapping pending.","location":null},
-    {"id":"V18-SRC-015","title":"Volume 05 sensor, dew-point, and leaf/product-temperature controls","useAndLimitation":"Measurement pairing and local surface risk.","location":null},
-    {"id":"V18-SRC-016","title":"Dry-room airflow and load-uniformity literature","useAndLimitation":"Occupied-load mapping and spatial outcomes.","location":null},
-    {"id":"V18-SRC-017","title":"Drying-curve and gravimetric measurement methods","useAndLimitation":"Raw data, slope, scale, and endpoint controls.","location":null},
-    {"id":"V18-SRC-018","title":"The influence of drying and storage on cannabis volatilome and cannabinoids (2024)","useAndLimitation":"Three-variety comparative drying and storage study.","location":"https://pmc.ncbi.nlm.nih.gov/articles/PMC11180634/"},
-    {"id":"V18-SRC-019","title":"In Pursuit of Optimal Quality: Cultivar-Specific Drying Approaches (2024)","useAndLimitation":"Chemovar-specific controlled-atmosphere drying.","location":"https://pmc.ncbi.nlm.nih.gov/articles/PMC11013261/"},
-    {"id":"V18-SRC-020","title":"Cannabis VSC and terpene studies from Volume 13","useAndLimitation":"Trace odorants and compound-specific loss.","location":null},
-    {"id":"V18-SRC-021","title":"Metabolic Profiling of Cannabis Secondary Metabolites for Storage Conditions (2020)","useAndLimitation":"One-year whole/ground, temperature, cannabinoid, and terpene stability.","location":"https://pmc.ncbi.nlm.nih.gov/articles/PMC7593247/"},
-    {"id":"V18-SRC-022","title":"Cannabinoid decarboxylation and degradation studies from Volume 12","useAndLimitation":"Matrix-, time-, temperature-, light-, and oxygen-specific.","location":null},
-    {"id":"V18-SRC-023","title":"Postharvest drying/curing study in industrial hemp (2025)","useAndLimitation":"Curing, moisture absorption, microbes, and knowledge gaps.","location":"https://pmc.ncbi.nlm.nih.gov/articles/PMC11821007/"},
-    {"id":"V18-SRC-024","title":"Volume 16 postharvest microbial and mycotoxin source register","useAndLimitation":"Organism, viable count, toxin, and remediation distinctions.","location":null},
-    {"id":"V18-SRC-025","title":"Current official cannabis microbial testing requirements","useAndLimitation":"Jurisdiction-specific and unstable.","location":null},
-    {"id":"V18-SRC-026","title":"Current worker mold/dust and product-disposition controls","useAndLimitation":"Safety and release boundaries.","location":null},
-    {"id":"V18-SRC-027","title":"Packaging barrier and stability engineering literature","useAndLimitation":"WVTR, OTR, light, closure, sorption, and compatibility.","location":null},
-    {"id":"V18-SRC-028","title":"Current food-contact, child-resistant, labeling, and cannabis packaging rules","useAndLimitation":"Review each release.","location":null},
-    {"id":"V18-SRC-029","title":"Cannabis storage and accelerated-stability studies","useAndLimitation":"Real-time versus accelerated inference.","location":null},
-    {"id":"V18-SRC-030","title":"Improved Long-Term Preservation of Cannabis Inflorescence (2024)","useAndLimitation":"Treatment-specific storage findings; not a universal prescription.","location":"https://pmc.ncbi.nlm.nih.gov/articles/PMC11013627/"},
-    {"id":"V18-SRC-031","title":"NIST Policy on Metrological Traceability","useAndLimitation":"Traceability plus fitness-for-purpose and uncertainty.","location":"https://www.nist.gov/calibrations/traceability"},
-    {"id":"V18-SRC-032","title":"Current water-activity instrument manuals and check-standard instructions","useAndLimitation":"Device-specific release controls.","location":null},
-    {"id":"V18-SRC-033","title":"Cannabis spatial sampling and method-variation studies","useAndLimitation":"Batch heterogeneity and COA limits.","location":null},
-    {"id":"V18-SRC-034","title":"Current official sampling, laboratory, and proficiency requirements","useAndLimitation":"Jurisdiction-specific.","location":null},
-    {"id":"V18-SRC-035","title":"Quality-system deviation, OOS, CAPA, and release standards","useAndLimitation":"Controlled investigation and authorization.","location":null},
-    {"id":"V18-SRC-036","title":"Current product remediation, rework, disposal, and release rules","useAndLimitation":"Review each release.","location":null}
-  ]
+    {
+      "id": "V18-SRC-001",
+      "title": "THC Cannabis Plant Science Source Packet v1.0",
+      "useAndLimitation": "Project plant-development, postharvest, evidence, and transfer boundaries.",
+      "location": null
+    },
+    {
+      "id": "V18-SRC-002",
+      "title": "THC Cultivation SOP Source Materials Packet v1.0",
+      "useAndLimitation": "Project source for harvest, drying, water activity, sampling, QA, sanitation, deviations, and release.",
+      "location": null
+    },
+    {
+      "id": "V18-SRC-003",
+      "title": "Livingston et al. (2023). Glandular trichome development and maturation in high-THC cannabis. Journal of Cannabis Research.",
+      "useAndLimitation": "Trichome-stage heterogeneity and color limits.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10071647/"
+    },
+    {
+      "id": "V18-SRC-004",
+      "title": "Livingston et al. (2023). Glandular trichome development and maturation in high-THC cannabis. Journal of Cannabis Research.",
+      "useAndLimitation": "Cannabis-specific trichome-development evidence; maturation signals vary by tissue position, genotype, developmental stage, and measurement method, so trichome appearance should not be treated as a single universal harvest clock.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10071647/"
+    },
+    {
+      "id": "V18-SRC-005",
+      "title": "Postharvest Operations of Cannabis and Their Effect on Cannabinoid Content: A Review (2022)",
+      "useAndLimitation": "Drying, trimming, psychrometrics, moisture, curing, storage, and evidence gaps.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9404914/"
+    },
+    {
+      "id": "V18-SRC-006",
+      "title": "Postharvest Operations of Cannabis and Their Effect on Cannabinoid Content: A Review (2022)",
+      "useAndLimitation": "Cannabis postharvest review covering drying, trimming, curing, packaging, storage, moisture, and water activity; process outcomes remain cultivar-, load-, equipment-, and environment-specific.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9404914/"
+    },
+    {
+      "id": "V18-SRC-007",
+      "title": "U.S. FDA — Current Good Manufacturing Practices (CGMPs) for Food and Dietary Supplements",
+      "useAndLimitation": "Authoritative sanitation and hygienic-design principles for personnel, equipment, sanitary operations, and process controls; used as a transferable hygiene framework, not as a claim that food CGMP law universally governs cannabis flower.",
+      "location": "https://www.fda.gov/food/guidance-regulation-food-and-dietary-supplements/current-good-manufacturing-practices-cgmps-food-and-dietary-supplements"
+    },
+    {
+      "id": "V18-SRC-008",
+      "title": "Current cannabis inventory, waste, and batch-control rules",
+      "useAndLimitation": "Jurisdiction-specific release review.",
+      "location": null
+    },
+    {
+      "id": "V18-SRC-009",
+      "title": "Optimization of Trimming Techniques for Medical Cannabis (2024)",
+      "useAndLimitation": "One-chemovar trimming study; no universal method superiority.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11249524/"
+    },
+    {
+      "id": "V18-SRC-010",
+      "title": "Post-Harvest Operations to Generate High-Quality Medicinal Cannabis Products: A Systemic Review (2022)",
+      "useAndLimitation": "Drying, equilibrium moisture, aW, storage, and quality context.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8911901/"
+    },
+    {
+      "id": "V18-SRC-011",
+      "title": "Postharvest Operations of Cannabis and Their Effect on Cannabinoid Content: A Review (2022)",
+      "useAndLimitation": "Cannabis-specific synthesis of drying, equilibrium moisture, water activity, sorption, packaging, and storage principles; heat/mass-transfer coefficients remain system-specific.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9404914/"
+    },
+    {
+      "id": "V18-SRC-012",
+      "title": "ASTM D8196-22 — Standard Practice for Determination of Water Activity (aw) in Cannabis Flower",
+      "useAndLimitation": "Cannabis-specific water-activity measurement practice; standards version, instrument instructions, sample conditioning, and jurisdictional applicability require release-time verification.",
+      "location": "https://store.astm.org/d8196-22.html"
+    },
+    {
+      "id": "V18-SRC-013",
+      "title": "U.S. FDA — Water Activity (aw) in Foods",
+      "useAndLimitation": "Authoritative definition of water activity, ERH relationship, temperature sensitivity, and sorption-isotherm concepts; food microbial thresholds are not automatically cannabis release specifications.",
+      "location": "https://www.fda.gov/inspections-compliance-enforcement-and-criminal-investigations/inspection-technical-guides/water-activity-aw-foods"
+    },
+    {
+      "id": "V18-SRC-014",
+      "title": "Postharvest Operations of Cannabis and Their Effect on Cannabinoid Content: A Review (2022)",
+      "useAndLimitation": "Cannabis-focused discussion of water activity, equilibrium moisture content, sorption isotherms, drying, and packaging; cultivar-specific sorption behavior and hysteresis remain evidence gaps.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9404914/"
+    },
+    {
+      "id": "V18-SRC-015",
+      "title": "Volume 05 sensor, dew-point, and leaf/product-temperature controls",
+      "useAndLimitation": "Measurement pairing and local surface risk.",
+      "location": null
+    },
+    {
+      "id": "V18-SRC-016",
+      "title": "Postharvest Operations of Cannabis and Their Effect on Cannabinoid Content: A Review (2022)",
+      "useAndLimitation": "Supports drying-air, loading, psychrometric, and process-uniformity concepts; facility airflow mapping and load geometry require occupied-system verification.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9404914/"
+    },
+    {
+      "id": "V18-SRC-017",
+      "title": "Postharvest Operations of Cannabis and Their Effect on Cannabinoid Content: A Review (2022)",
+      "useAndLimitation": "Supports gravimetric drying, moisture-loss curves, drying kinetics, and endpoint concepts; weighing method, scale resolution, sampling location, and batch heterogeneity must be controlled locally.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9404914/"
+    },
+    {
+      "id": "V18-SRC-018",
+      "title": "The influence of drying and storage on cannabis volatilome and cannabinoids (2024)",
+      "useAndLimitation": "Three-variety comparative drying and storage study.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11180634/"
+    },
+    {
+      "id": "V18-SRC-019",
+      "title": "In Pursuit of Optimal Quality: Cultivar-Specific Drying Approaches (2024)",
+      "useAndLimitation": "Chemovar-specific controlled-atmosphere drying.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11013261/"
+    },
+    {
+      "id": "V18-SRC-020",
+      "title": "Oswald et al. (2021). Identification of a New Family of Prenylated Volatile Sulfur Compounds in Cannabis.",
+      "useAndLimitation": "Cannabis-specific volatile sulfur compound study including changes through flowering, curing, and storage; aroma chemistry is chemovar- and method-dependent.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8638000/"
+    },
+    {
+      "id": "V18-SRC-021",
+      "title": "Metabolic Profiling of Cannabis Secondary Metabolites for Storage Conditions (2020)",
+      "useAndLimitation": "One-year whole/ground, temperature, cannabinoid, and terpene stability.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7593247/"
+    },
+    {
+      "id": "V18-SRC-022",
+      "title": "The biosynthesis of the cannabinoids (2021 review)",
+      "useAndLimitation": "Mechanistic review covering cannabinoid-acid decarboxylation and degradation with heat, oxygen, light, and time; quantitative kinetics depend on matrix and process conditions.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7962319/"
+    },
+    {
+      "id": "V18-SRC-023",
+      "title": "Postharvest drying/curing study in industrial hemp (2025)",
+      "useAndLimitation": "Curing, moisture absorption, microbes, and knowledge gaps.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11821007/"
+    },
+    {
+      "id": "V18-SRC-024",
+      "title": "Volume 16 postharvest microbial and mycotoxin source register",
+      "useAndLimitation": "Organism, viable count, toxin, and remediation distinctions.",
+      "location": null
+    },
+    {
+      "id": "V18-SRC-025",
+      "title": "ASTM D8196-22 and D8197-22 — Cannabis flower water-activity practice and storage specification",
+      "useAndLimitation": "Cannabis-specific water-activity quality-control standards; these do not replace jurisdiction-specific microbial testing panels, action limits, sampling rules, or laboratory accreditation requirements.",
+      "location": "https://store.astm.org/d8196-22.html"
+    },
+    {
+      "id": "V18-SRC-026",
+      "title": "CDC/NIOSH — Cannabis Industry Workplace Safety and Health Hazards",
+      "useAndLimitation": "Authoritative cannabis-worker hazard guidance covering biological exposures, microbials, organic particulate matter, and controls; worker-protection evidence does not determine product release status.",
+      "location": "https://www.cdc.gov/niosh/cannabis/about/index.html"
+    },
+    {
+      "id": "V18-SRC-027",
+      "title": "Postharvest Operations of Cannabis and Their Effect on Cannabinoid Content: A Review (2022)",
+      "useAndLimitation": "Cannabis packaging and storage review covering moisture transfer, material permeability, temperature, and quality changes; package qualification still requires product- and material-specific barrier data.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9404914/"
+    },
+    {
+      "id": "V18-SRC-028",
+      "title": "U.S. CPSC — Poison Prevention Packaging Act and 16 CFR Part 1700",
+      "useAndLimitation": "Authoritative U.S. federal framework for child-resistant/senior-friendly special packaging where the PPPA applies; cannabis packaging and labeling requirements remain jurisdiction- and product-specific and require release-time review.",
+      "location": "https://www.cpsc.gov/Poison-Prevention-Packaging-Act"
+    },
+    {
+      "id": "V18-SRC-029",
+      "title": "Metabolic Profiling of Cannabis Secondary Metabolites for Evaluation of Optimal Postharvest Storage Conditions (2020)",
+      "useAndLimitation": "Cannabis-specific one-year storage study examining whole versus ground inflorescence, temperature, cannabinoids, and terpenoids; results are chemovar-, matrix-, container-, and condition-specific.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7593247/"
+    },
+    {
+      "id": "V18-SRC-030",
+      "title": "Improved Long-Term Preservation of Cannabis Inflorescence (2024)",
+      "useAndLimitation": "Treatment-specific storage findings; not a universal prescription.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11013627/"
+    },
+    {
+      "id": "V18-SRC-031",
+      "title": "NIST Policy on Metrological Traceability",
+      "useAndLimitation": "Traceability plus fitness-for-purpose and uncertainty.",
+      "location": "https://www.nist.gov/calibrations/traceability"
+    },
+    {
+      "id": "V18-SRC-032",
+      "title": "ASTM D8196-22 — Standard Practice for Determination of Water Activity (aw) in Cannabis Flower",
+      "useAndLimitation": "Cannabis-specific measurement practice; instrument-specific calibration/check-standard procedures must follow the current manufacturer method and controlled laboratory procedure.",
+      "location": "https://store.astm.org/d8196-22.html"
+    },
+    {
+      "id": "V18-SRC-033",
+      "title": "Correlations among morphological and biochemical traits in high-CBD hemp (2023)",
+      "useAndLimitation": "Cannabis/hemp evidence for intra-plant and inter-cultivar cannabinoid and biomass variation; supports representative-sampling caution, not a universal sampling design.",
+      "location": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10280002/"
+    },
+    {
+      "id": "V18-SRC-034",
+      "title": "USDA Agricultural Marketing Service — Hemp Sampling and Laboratory Testing Guidelines",
+      "useAndLimitation": "Official U.S. hemp compliance sampling/testing framework for total delta-9 THC on defined lots; it does not substitute for state-specific adult-use/medical cannabis sampling, microbial, pesticide, metals, or proficiency requirements.",
+      "location": "https://www.ams.usda.gov/rules-regulations/hemp/information-laboratories/lab-testing-guidelines"
+    },
+    {
+      "id": "V18-SRC-035",
+      "title": "U.S. FDA — Corrective and Preventive Actions (CAPA), Quality System Inspection Technique",
+      "useAndLimitation": "General quality-system framework for investigating problems, identifying causes, implementing corrective/preventive action, verifying effectiveness, and documenting results; used as a transferable quality method, not as cannabis-specific regulation.",
+      "location": "https://www.fda.gov/media/76038/download"
+    },
+    {
+      "id": "V18-SRC-036",
+      "title": "Current product remediation, rework, disposal, and release rules",
+      "useAndLimitation": "Review each release.",
+      "location": null
+    }
+  ],
+  "reviewedAt": "2026-10-03",
+  "reviewNote": "External-source resolution pass completed for major postharvest science, water-activity, packaging, sampling, worker-safety, and CAPA references. Jurisdiction-specific cannabis inventory, microbial, remediation, waste, and release rules remain explicit release-time controls rather than falsely generalized national rules."
 }
