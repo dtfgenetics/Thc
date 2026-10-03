@@ -24,24 +24,18 @@
     "Map representative and worst-case positions before planting and as the canopy changes. Use integrated sensors or repeated measurements, record shading events, and evaluate light together with leaf temperature and water status."
   ],
   "measureAndRecord": [
-    "Location/date/latitude",
-    "sun-path obstruction",
-    "sensor/model/calibration",
-    "PPFD interval",
-    "calculated DLI",
-    "cloud/smoke",
-    "film/transmission",
-    "canopy position",
-    "leaf temperature",
-    "irrigation and stress response."
+    "Before evaluating sun path, shade, and outdoor dli, record the site, crop, and measurement context, including Location/date/latitude, sun-path obstruction, sensor/model/calibration, PPFD interval. Use fixed locations, definitions, and instruments so later comparisons are not confounded by changing observation methods.",
+    "During the observation period, track calculated DLI, cloud/smoke, film/transmission together with date and time, weather or structure state, crop stage, and any intervention that could change the response. Preserve raw measurements and notable spatial variation rather than only summary values.",
+    "At the decision point, document canopy position, leaf temperature, irrigation and stress response.. Compare the result with the production objective, note uncertainty and exceptions, and retain enough traceability to reconstruct why the action was taken."
   ],
   "misconceptions": [
-    "Full sun means the same DLI in every season.",
-    "A single noon reading proves adequate light.",
-    "Shade always reduces quality."
+    "Full sun means the same DLI in every season. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured.",
+    "A single noon reading proves adequate light. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing.",
+    "Shade always reduces quality. The statement should not be treated as a universal rule across sites, seasons, structures, cultivars, or management systems without local validation."
   ],
   "evidenceLimits": [
-    "Cannabis light-response findings are cultivar-, stage-, density-, temperature-, water-, and system-specific."
+    "Cannabis light-response findings are cultivar-, stage-, density-, temperature-, water-, and system-specific. Numerical thresholds and response magnitudes should therefore be treated as context-specific unless the cited evidence matches the site, cultivar, developmental stage, measurement method, and production system under review.",
+    "Climate normals, extension guidance, engineering references, and non-cannabis crop studies can support mechanism and planning, but they do not establish a universal cannabis target. Current local weather, site measurements, structural limits, and applicable rules remain required controls."
   ],
   "crossLinks": "THC-ENC-101–120; THC-ENC-363–364; THC-ENC-372; THC-ENC-378–379.",
   "sourceNotes": [
