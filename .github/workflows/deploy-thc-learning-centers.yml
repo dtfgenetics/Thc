@@ -219,13 +219,13 @@ jobs:
           node scripts/publish-wordpress-learning-center-pages.mjs | tee "$RUNNER_TEMP/learning-pages.json"
           echo "outcome=success" >> "$GITHUB_OUTPUT"
 
-      - name: Link the WordPress Learn page to all learning centers
+      - name: Verify canonical Learn root ownership
         id: navigation
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/update-wordpress-learn-learning-center.mjs | tee "$RUNNER_TEMP/learn-navigation.json"
-          echo "outcome=success" >> "$GITHUB_OUTPUT"
+          node scripts/update-wordpress-learn-learning-center.mjs | tee "$RUNNER_TEMP/learn-root-guard.json"
+          echo "outcome=read-only-success" >> "$GITHUB_OUTPUT"
 
       - name: Verify live learning centers and Learn navigation
         id: live
@@ -287,10 +287,12 @@ jobs:
           curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 \
             -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
             "https://dtfseeds.com/learn/?dtf_learning=${GITHUB_RUN_ID}" -o "$learn"
-          grep -Fqi 'Choose a path, search a topic, or diagnose a plant.' "$learn"
-          for href in /learn/start-here/ /learn/library/ /learn/beginner-guides/ /learn/academy/ /learn/encyclopedia/ /learn/infographics/ /learn/sops/ /learn/glossary/ /learn/records/ /learn/search/ /learn/setup/ /learn/root-zone/ /learn/environment/ /learn/plant-health/ /learn/propagation/ /thc-grow-doc/; do
-            grep -Fq "$href" "$learn"
-          done
+          grep -Fq 'data-dtf-layout="learn-v3"' "$learn"
+          grep -Fq 'data-dtf-learning-map="v4"' "$learn"
+          grep -Fq '/courses/' "$learn"
+          grep -Fq '/learn/encyclopedia/' "$learn"
+          ! grep -Fq 'Teaching Healthy Cultivation · Customer Learning System' "$learn"
+          ! grep -Fq 'Course-based learning that connects plant science' "$learn"
           echo "outcome=success" >> "$GITHUB_OUTPUT"
 
       - name: Roll back search runtime if Learning Center release fails
@@ -331,7 +333,7 @@ jobs:
             echo "- Result: ${JOB_STATUS:-unknown}"
             echo "- Learning routes built: ${ROUTE_COUNT:-not-run}"
             echo "- WordPress child-page publication: ${PAGE_OUTCOME:-not-run}"
-            echo "- Learn navigation update: ${NAV_OUTCOME:-not-run}"
+            echo "- Learn root ownership verification: ${NAV_OUTCOME:-not-run}"
             echo "- Visitor-facing verification: ${LIVE_OUTCOME:-not-run}"
             echo "- Search runtime backup: ${SEARCH_BACKUP:-not-created}"
             echo '- Deployment evidence is recorded in this Actions run and rollback artifact; issue #46 is no longer used as a telemetry sink.'
