@@ -11,6 +11,7 @@ const arr=v=>Array.isArray(v)?v:[];
 const txt=v=>String(v??'').replace(/\s+/g,' ').trim();
 const words=v=>txt(v).split(/\s+/).filter(Boolean).length;
 const lessons=new Map();
+const sourceRegistry=new Map();
 
 function walk(dir){
   for(const e of fs.readdirSync(dir,{withFileTypes:true})){
@@ -18,6 +19,9 @@ function walk(dir){
     if(e.isDirectory()) walk(file);
     else if(e.isFile()&&e.name.endsWith('.json')){
       let j; try{j=JSON.parse(fs.readFileSync(file,'utf8'));}catch{continue}
+      if(e.name==='source-register.json'){
+        for(const source of arr(j.sources)) if(source?.id) sourceRegistry.set(source.id,source);
+      }
       if(/^THC-ENC-\d{3}$/.test(j.id||'')) {
         const candidate={...j,__file:path.relative(root,file)};
         const prior=lessons.get(j.id);
@@ -47,7 +51,12 @@ const cross=l=>{
   return [];
 };
 const generic=/\b(see (the )?lesson|as appropriate|where appropriate|proper|correct|best practice|monitor closely|follow guidance|use judgment)\b/i;
-const sourceAuthority=/\b(university|extension|usda|epa|nist|cornell|penn state|journal|doi|frontiers|plants|hortscience|pubmed|ncbi|ashrae|astm|iso|fao|who|government|department|institute|society)\b/i;
+const sourceAuthority=/\b(university|extension|usda|epa|nist|cornell|penn state|journal|doi|frontiers|plants|hortscience|pubmed|ncbi|ashrae|astm|iso|fao|who|government|department|institute|society|pmc|peer[- ]reviewed|systematic review|review)\b/i;
+const resolvedSourceText=source=>{
+  const raw=txt(typeof source==='string'?source:JSON.stringify(source));
+  const resolved=sourceRegistry.get(raw);
+  return resolved?txt([resolved.id,resolved.title,resolved.useAndLimitation,resolved.location].filter(Boolean).join(' ')):raw;
+};
 
 const rows=(registry.entries||[]).map(entry=>{
   const l=lessons.get(entry.id)||{};
@@ -66,7 +75,7 @@ const rows=(registry.entries||[]).map(entry=>{
   if(misconception.length<2||misconception.filter(x=>words(typeof x==='string'?x:JSON.stringify(x))>=10).length<2) issues.push('thin-misconceptions');
   if(limits.length<1||limits.every(x=>words(x)<12)) issues.push('thin-evidence-limits');
   if(src.length<2) issues.push('insufficient-sources');
-  if(src.length>=2&&src.filter(x=>sourceAuthority.test(txt(typeof x==='string'?x:JSON.stringify(x)))).length<1) issues.push('weak-source-authority-signal');
+  if(src.length>=2&&src.filter(x=>sourceAuthority.test(resolvedSourceText(x))).length<1) issues.push('weak-source-authority-signal');
   if(cross(l).length<2) issues.push('thin-cross-links');
   const body=[objective,...core,...relevance,...measure,...misconception,...limits].map(x=>typeof x==='string'?x:JSON.stringify(x));
   if(body.filter(x=>generic.test(x)).length>=3) issues.push('generic-language');
