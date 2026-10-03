@@ -66,14 +66,19 @@ jobs:
           PY
           php -l "$RUNNER_TEMP/dtf-suite-v2-snippet.php"
 
-      - name: Build current public suite fixture
+      - name: Build exact candidate public suite fixture
         id: current_build
+        env:
+          FIXTURE_REF: ${{ github.head_ref || github.ref_name }}
+          FIXTURE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         shell: bash
         run: |
           set -euo pipefail
-          run_url="$(gh workflow run build-dtfseeds-public-suite.yml --ref main)"
+          run_url="$(gh workflow run build-dtfseeds-public-suite.yml --ref "$FIXTURE_REF")"
           run_id="${run_url##*/}"
           [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse public-suite build run from: $run_url" >&2; exit 1; }
+          actual_sha="$(gh run view "$run_id" --json headSha --jq .headSha)"
+          [[ "$actual_sha" == "$FIXTURE_SHA" ]] || { echo "Fixture revision mismatch: expected $FIXTURE_SHA, got $actual_sha" >&2; exit 1; }
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
           gh run watch "$run_id" --exit-status
 
@@ -221,6 +226,6 @@ jobs:
             echo "- Commit: $GITHUB_SHA"
             echo "- Result: ${{ job.status }}"
             echo "- Current-suite build run: ${{ steps.current_build.outputs.run_id }}"
-            echo '- Fixture is generated from current main; no pinned stale artifact is used.'
+            echo '- Fixture is generated from the exact candidate revision; stale or mismatched build revisions fail closed.'
             echo '- Validation covers the unique per-deployment REST namespace, one-time bearer token, transactional rollback controls, current game routes, archive integrity, and WordPress-owned route exclusions.'
           } >> "$GITHUB_STEP_SUMMARY"
