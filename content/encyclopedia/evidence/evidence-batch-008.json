@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-008",
+  "createdAt": "2026-10-03",
+  "scope": "High-priority claim-level evidence for foliar chemical injury, hemp caterpillar pests, greenhouse sanitation, cleaning/disinfection process control, and irrigation-system disease pathways.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Mappings remain review-pending and do not authorize publication.",
+    "Extension sources support scoped diagnostic or sanitation claims and do not authorize pesticide/disinfectant use.",
+    "Cannabis/hemp disease and pest observations remain region-, host-, and system-dependent."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0059",
+      "lessonId": "THC-ENC-279",
+      "sourceIds": [
+        "ENC-AUTH-049"
+      ],
+      "claimType": "extension-phytotoxicity-diagnostics",
+      "supportedClaim": "Chemical phytotoxicity can produce spotting, margin injury, stunting, and other symptoms that overlap with disease or nutrition problems, so application history and exposure pattern are important evidence when investigating foliar burn.",
+      "sourceLocator": "Penn State Extension, Bedding Plant Diseases — phytotoxicity section, updated 2025.",
+      "applicability": "Supports the lesson's separation of visible foliar injury from chemical identity and its emphasis on exposure reconstruction.",
+      "limitations": "General bedding-plant guidance; does not identify a residue, authorize a chemical, or establish Cannabis-specific susceptibility thresholds.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0060",
+      "lessonId": "THC-ENC-292",
+      "sourceIds": [
+        "ENC-AUTH-050"
+      ],
+      "claimType": "hemp-insect-extension",
+      "supportedClaim": "Corn earworm larvae are documented feeding on hemp reproductive tissues including flower buds and seeds, supporting direct inspection of flowers, larvae, frass, and feeding damage rather than relying on adult-trap counts alone.",
+      "sourceLocator": "Utah State University Extension, Corn Earworm — Hemp.",
+      "applicability": "Supports one documented hemp bud-feeding caterpillar example within the lesson's broader caterpillar differential.",
+      "limitations": "Regional extension source; does not establish universal cannabis thresholds, species composition, or treatment timing.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0061",
+      "lessonId": "THC-ENC-325",
+      "sourceIds": [
+        "ENC-AUTH-051"
+      ],
+      "claimType": "greenhouse-sanitation-extension",
+      "supportedClaim": "Greenhouse sanitation should physically remove plant debris, soil, media, and other organic matter before disinfection because organic residues can shelter organisms or reduce disinfectant effectiveness.",
+      "sourceLocator": "UMass Amherst, Cleaning and Disinfecting the Greenhouse.",
+      "applicability": "Supports the lesson's clean-then-disinfect sequence and surface/container sanitation framework.",
+      "limitations": "Exact disinfectant performance depends on product, organism, surface, organic load, concentration, temperature, contact time, and current label directions.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0062",
+      "lessonId": "THC-ENC-326",
+      "sourceIds": [
+        "ENC-AUTH-051"
+      ],
+      "claimType": "greenhouse-sanitation-extension",
+      "supportedClaim": "Cleaning and disinfection are distinct process steps: cleaning removes debris and organic matter, while disinfection is applied afterward under product- and surface-specific conditions.",
+      "sourceLocator": "UMass Amherst, Cleaning and Disinfecting the Greenhouse.",
+      "applicability": "Directly supports the lesson's cleaning-versus-disinfection distinction.",
+      "limitations": "Does not establish a universal disinfectant recipe or validate all products against every plant pathogen.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0063",
+      "lessonId": "THC-ENC-328",
+      "sourceIds": [
+        "ENC-AUTH-052",
+        "ENC-AUTH-053"
+      ],
+      "claimType": "waterborne-root-disease-extension",
+      "supportedClaim": "Pythium can move through contaminated irrigation water and become important in greenhouse, hydroponic, or recirculating systems; hemp-specific guidance also links excess moisture and contaminated surface-water sources with Pythium root-rot risk.",
+      "sourceLocator": "Penn State Extension, Pythium; NC State Extension, Root Diseases Prevalent in Industrial Hemp.",
+      "applicability": "Supports the lesson's water-system hygiene and shared-exposure-pathway reasoning.",
+      "limitations": "Water-pathway evidence does not prove infection, viability, dose, or causation in a particular crop without diagnostic confirmation.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
